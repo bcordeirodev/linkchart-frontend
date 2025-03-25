@@ -8,7 +8,7 @@ import App from './App';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const metadata = await generateMetadata({
-	title: 'Fuse React - NextJS',
+	title: 'Poc - SPGG',
 	description: 'Fuse React - NextJS by FuseTech',
 	cardImage: '/card.png',
 	robots: 'follow, index',

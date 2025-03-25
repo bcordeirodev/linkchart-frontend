@@ -66,7 +66,7 @@ function NavbarStyle1Content(props: NavbarStyle1ContentProps) {
 				</div>
 			</StyledContent>
 
-			<GoToDocBox className="mx-3 my-4" />
+			{/* <GoToDocBox className="mx-3 my-4" /> */}
 
 			<Divider />
 

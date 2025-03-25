@@ -66,7 +66,7 @@ function NavbarMobileLayout3(props: NavbarMobileLayout3Props) {
 				</div>
 			</StyledContent>
 
-			<GoToDocBox className="mx-3 my-4" />
+			{/* <GoToDocBox className="mx-3 my-4" /> */}
 
 			<Divider />
 

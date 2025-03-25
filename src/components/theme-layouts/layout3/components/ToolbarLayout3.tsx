@@ -57,7 +57,7 @@ function ToolbarLayout3(props: ToolbarLayout3Props) {
 					<div className="flex items-center overflow-x-auto px-2 md:px-4 space-x-1.5">
 						{isMobile && <NavigationSearch />}
 						<LanguageSwitcher />
-						<AdjustFontSize />
+						{/* <AdjustFontSize /> */}
 						<FullScreenToggle />
 						<QuickPanelToggleButton />
 						{!isMobile && (

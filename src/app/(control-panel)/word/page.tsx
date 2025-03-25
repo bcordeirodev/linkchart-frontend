@@ -123,12 +123,12 @@ function WordList() {
         }}
         data={data}
         columns={columns}
-        enableColumnOrdering={false}
-				enableGrouping={false}
-				enableColumnPinning={false}
-				enableFacetedValues={false}
+        enableColumnOrdering={true}
+				enableGrouping={true}
+				enableColumnPinning={true}
+				enableFacetedValues={true}
 				enableRowActions={false}
-				enableRowSelection={false}
+				enableRowSelection={true}
       />
     </Paper>
   );

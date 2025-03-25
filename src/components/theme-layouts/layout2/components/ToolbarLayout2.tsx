@@ -48,7 +48,7 @@ function ToolbarLayout2(props: ToolbarLayout2Props) {
 
 					<div className="flex items-center overflow-x-auto px-2 md:px-4 space-x-1.5">
 						<LanguageSwitcher />
-						<AdjustFontSize />
+						{/* <AdjustFontSize /> */}
 						<FullScreenToggle />
 						<NavigationSearch />
 						<QuickPanelToggleButton />

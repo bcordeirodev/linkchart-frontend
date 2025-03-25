@@ -78,7 +78,7 @@ function ToolbarLayout1(props: ToolbarLayout1Props) {
 
 					<div className="flex items-center overflow-x-auto px-2 md:px-4 space-x-1.5">
 						<LanguageSwitcher />
-						<AdjustFontSize />
+						{/* <AdjustFontSize /> */}
 						<FullScreenToggle />
 						<LightDarkModeToggle
 							lightTheme={_.find(themeOptions, { id: 'Default' })}
