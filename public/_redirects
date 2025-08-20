@@ -1,1 +1,25 @@
+# Short links - serve frontend page for preview, backend handles direct redirects
+# /r/*  http://localhost:8000/api/r/:splat  200
+
+# API routes to backend
+/api/*  http://localhost:8000/api/:splat  200
+
+# Authentication routes
+/auth/*  /auth/:splat  200
+
+# Error pages
+/404  /404  200
+/401  /401  200
+
+# Protected routes - redirect to sign-in if not authenticated
+/dashboard  /dashboard  200
+/link/*  /link/:splat  200
+/analytics  /analytics  200
+
+# Public routes
+/shorter  /shorter  200
+/sign-in  /sign-in  200
+/sign-out  /sign-out  200
+
+# Fallback for SPA - all other routes should serve index.html
 /*    /index.html   200

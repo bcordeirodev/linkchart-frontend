@@ -1,7 +1,6 @@
 import Link from '@fuse/core/Link';
 import { CSSProperties, ReactNode } from 'react';
-import usePathname from '@fuse/hooks/usePathname';
-import useNavigate from '@fuse/hooks/useNavigate';
+import { usePathname, useNavigate } from '@/hooks';
 import clsx from 'clsx';
 
 export type NavLinkAdapterPropsType = {

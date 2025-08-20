@@ -16,7 +16,7 @@ import _ from 'lodash';
 import { memo, useEffect, useReducer, useRef, ReactNode } from 'react';
 import Autosuggest, { RenderInputComponentProps, RenderSuggestionParams, ChangeEvent } from 'react-autosuggest';
 import * as React from 'react';
-import useNavigate from '@fuse/hooks/useNavigate';
+import { useNavigate } from '@/hooks';
 import FuseSvgIcon from '../FuseSvgIcon';
 import { FuseFlatNavItemType } from '../FuseNavigation/types/FuseNavItemType';
 

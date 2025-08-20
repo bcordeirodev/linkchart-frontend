@@ -10,13 +10,46 @@ const nextConfig = {
 		// your project has type errors.
 		ignoreBuildErrors: true
 	},
-	webpack: (config) => {
+	// Next.js 15 uses App Router by default when src/app exists
+	experimental: {},
+	webpack: (config, { isServer }) => {
 		if (config.module && config.module.rules) {
 			config.module.rules.push({
 				test: /\.(json|js|ts|tsx|jsx)$/,
 				resourceQuery: /raw/,
 				use: 'raw-loader'
 			});
+		}
+
+		// Fix para ApexCharts
+		config.resolve = config.resolve || {};
+		config.resolve.fallback = {
+			...config.resolve.fallback,
+			fs: false,
+			path: false,
+		};
+
+		// Melhorar configuração de chunks para evitar problemas com ApexCharts
+		if (!isServer) {
+			config.optimization = config.optimization || {};
+			config.optimization.splitChunks = {
+				...config.optimization.splitChunks,
+				cacheGroups: {
+					...config.optimization.splitChunks.cacheGroups,
+					apexcharts: {
+						test: /[\\/]node_modules[\\/](apexcharts|react-apexcharts)[\\/]/,
+						name: 'apexcharts',
+						chunks: 'all',
+						priority: 10,
+					},
+					vendor: {
+						test: /[\\/]node_modules[\\/]/,
+						name: 'vendors',
+						chunks: 'all',
+						priority: 5,
+					},
+				},
+			};
 		}
 
 		return config;

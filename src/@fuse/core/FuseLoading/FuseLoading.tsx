@@ -1,4 +1,4 @@
-import { useTimeout } from '@fuse/hooks';
+import { useTimeout } from '@/hooks';
 import { useState } from 'react';
 import clsx from 'clsx';
 import Box from '@mui/material/Box';

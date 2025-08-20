@@ -1,4 +1,4 @@
-import MainLayout from 'src/components/MainLayout';
+import MainLayout from 'src/components/layout/MainLayout';
 import AuthGuardRedirect from '@auth/AuthGuardRedirect';
 
 function Layout({ children }) {

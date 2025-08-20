@@ -1,6 +1,9 @@
 const locale = {
 	APPLICATIONS: 'Programlar',
-	EXAMPLE: 'Örnek Sayfa'
+	DASHBOARD: 'Gösterge Paneli',
+	LINKS: 'Bağlantılar',
+	CREATE_LINK: 'Bağlantı Oluştur',
+	ANALYTICS: 'Analitik'
 };
 
 export default locale;

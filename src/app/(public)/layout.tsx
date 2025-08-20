@@ -1,19 +1,9 @@
-import MainLayout from '../../components/MainLayout';
+/**
+ * Layout público simplificado
+ * Sem header, footer ou sistema de autenticação
+ * Para páginas como login, signup, redirecionamento, etc.
+ */
 
-function Layout(props: { children: React.ReactNode }) {
-	const { children } = props;
-
-	return (
-		<MainLayout
-			navbar={false}
-			toolbar={false}
-			leftSidePanel={false}
-			rightSidePanel={false}
-			footer={false}
-		>
-			{children}
-		</MainLayout>
-	);
+export default function PublicLayout({ children }: { children: React.ReactNode }) {
+    return <>{children}</>;
 }
-
-export default Layout;

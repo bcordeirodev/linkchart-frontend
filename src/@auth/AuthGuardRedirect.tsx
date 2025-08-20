@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import FuseUtils from '@fuse/utils';
 import {
 	getSessionRedirectUrl,
@@ -8,9 +8,9 @@ import {
 	setSessionRedirectUrl
 } from '@fuse/core/FuseAuthorization/sessionRedirectUrl';
 import { FuseRouteObjectType } from '@fuse/core/FuseLayout/FuseLayout';
-import usePathname from '@fuse/hooks/usePathname';
+import { usePathname } from '@/hooks';
 import FuseLoading from '@fuse/core/FuseLoading';
-import useNavigate from '@fuse/hooks/useNavigate';
+import { useNavigate } from '@/hooks';
 import useUser from './useUser';
 
 type AuthGuardProps = {
@@ -27,53 +27,88 @@ function AuthGuardRedirect({ auth, children, loginRedirectUrl = '/' }: AuthGuard
 	const [accessGranted, setAccessGranted] = useState<boolean>(false);
 	const pathname = usePathname();
 
-	// Function to handle redirection
-	const handleRedirection = useCallback(() => {
-		const redirectUrl = getSessionRedirectUrl() || loginRedirectUrl;
+	// Define ignored paths that shouldn't trigger redirects
+	const ignoredPaths = useMemo(
+		() => ['/', '/callback', '/sign-in', '/sign-out', '/logout', '/404', '/401', '/shorter'],
+		[]
+	);
 
+	// Function to handle redirection with improved logic
+	const handleRedirection = useCallback(() => {
+		const savedRedirectUrl = getSessionRedirectUrl();
+		const targetUrl = savedRedirectUrl || loginRedirectUrl;
+
+		// Enhanced redirection logic
 		if (isGuest) {
+			// Save current path for post-login redirect (if not already saved)
+			if (!savedRedirectUrl && !ignoredPaths.includes(pathname)) {
+				setSessionRedirectUrl(pathname);
+			}
+
 			navigate('/sign-in');
 		} else {
-			navigate(redirectUrl);
+			// User is authenticated, redirect to intended destination
+			const finalUrl = targetUrl === '/sign-in' ? '/' : targetUrl;
+			navigate(finalUrl);
 			resetSessionRedirectUrl();
 		}
-	}, [isGuest, loginRedirectUrl]);
+	}, [isGuest, loginRedirectUrl, navigate, pathname, ignoredPaths]);
 
-	// Check user's permissions and set access granted state
+	// Enhanced permission checking and access control
 	useEffect(() => {
 		const isOnlyGuestAllowed = Array.isArray(auth) && auth.length === 0;
 		const userHasPermission = FuseUtils.hasPermission(auth, userRole);
-		const ignoredPaths = ['/', '/callback', '/sign-in', '/sign-out', '/logout', '/404'];
+		const isIgnoredPath = ignoredPaths.includes(pathname);
 
+		// Grant access immediately for allowed scenarios
 		if (!auth || (auth && userHasPermission) || (isOnlyGuestAllowed && isGuest)) {
-			resetSessionRedirectUrl();
+			// Clear any stored redirect URL since access is granted
+			if (getSessionRedirectUrl()) {
+				resetSessionRedirectUrl();
+			}
+
 			setAccessGranted(true);
 			return;
 		}
 
+		// Handle permission violations
 		if (!userHasPermission) {
-			if (isGuest && !ignoredPaths.includes(pathname)) {
+			setAccessGranted(false);
+
+			if (isGuest && !isIgnoredPath) {
+				// Guest trying to access protected route - save current path
 				setSessionRedirectUrl(pathname);
-			} else if (!isGuest && !ignoredPaths.includes(pathname)) {
-				/**
-				 * If user is member but don't have permission to view the route
-				 * redirected to main route '/'
-				 */
+			} else if (!isGuest && !isIgnoredPath) {
+				// Authenticated user without proper permissions
 				if (isOnlyGuestAllowed) {
+					// Route is guest-only but user is authenticated
 					setSessionRedirectUrl('/');
 				} else {
+					// User lacks required permissions
 					setSessionRedirectUrl('/401');
 				}
 			}
+
+			// Trigger redirection after setting up redirect URL
+			handleRedirection();
 		}
+	}, [auth, userRole, isGuest, pathname, handleRedirection, ignoredPaths]);
 
-		handleRedirection();
-	}, [auth, userRole, isGuest, pathname]);
+	// Enhanced loading state with context information
+	if (!accessGranted) {
+		return (
+			<div className="flex flex-1 flex-col items-center justify-center p-4">
+				<FuseLoading />
+				<div className="mt-4 text-center">
+					<p className="text-sm text-gray-600 dark:text-gray-400">
+						{isGuest ? 'Redirecting to sign in...' : 'Checking permissions...'}
+					</p>
+				</div>
+			</div>
+		);
+	}
 
-	// Return children if access is granted, otherwise null
-	return accessGranted ? children : <FuseLoading />;
+	return children;
 }
-
-// the landing page "/" redirected to /example but the example npt
 
 export default AuthGuardRedirect;

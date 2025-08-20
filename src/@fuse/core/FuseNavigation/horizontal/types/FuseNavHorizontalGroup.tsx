@@ -2,7 +2,7 @@
 
 import NavLinkAdapter from '@fuse/core/NavLinkAdapter';
 import { styled, useTheme } from '@mui/material/styles';
-import { useDebounce } from '@fuse/hooks';
+import { useDebounce } from '@/hooks';
 import Grow from '@mui/material/Grow';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -15,7 +15,7 @@ import { ListItemButton, ListItemButtonProps } from '@mui/material';
 import isUrlInChildren from '@fuse/core/FuseNavigation/isUrlInChildren';
 import { WithRouterProps } from '@fuse/core/withRouter/withRouter';
 import * as PopperJS from '@popperjs/core';
-import usePathname from '@fuse/hooks/usePathname';
+import { usePathname } from '@/hooks';
 import FuseNavItem, { FuseNavItemComponentProps } from '../../FuseNavItem';
 import FuseSvgIcon from '../../../FuseSvgIcon';
 

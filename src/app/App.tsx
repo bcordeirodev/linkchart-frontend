@@ -8,6 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Provider } from 'react-redux';
 import ErrorBoundary from '@fuse/utils/ErrorBoundary';
 import AppContext from 'src/contexts/AppContext';
+// import FixHydrationIssues from '@/components/FixHydrationIssues';
 
 import { FuseSettingsProvider } from '@fuse/core/FuseSettings/FuseSettingsProvider';
 import { I18nProvider } from '@i18n/I18nProvider';
@@ -50,6 +51,7 @@ function App(props: AppProps) {
 											containerRoot: 'bottom-0 right-0 mb-13 md:mb-17 mr-2 lg:mr-20 z-99'
 										}}
 									>
+										{/* <FixHydrationIssues /> */}
 										{children}
 									</SnackbarProvider>
 								</MainThemeProvider>

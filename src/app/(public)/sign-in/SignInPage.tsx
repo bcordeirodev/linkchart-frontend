@@ -1,151 +1,405 @@
 import Typography from '@mui/material/Typography';
 import Link from '@fuse/core/Link';
-import AvatarGroup from '@mui/material/AvatarGroup';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import CardContent from '@mui/material/CardContent';
-import { lighten } from '@mui/material/styles';
 import AuthJsForm from '@auth/forms/AuthJsForm';
+import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import { alpha } from '@mui/material/styles';
 
 /**
- * The sign in page.
+ * The sign in page - Enhanced modern design (Compact Version)
  */
 function SignInPage() {
 	return (
-		<div className="flex min-w-0 flex-1 flex-col items-center sm:flex-row sm:justify-center md:items-start md:justify-start">
-			<Paper className="h-full w-full px-4 py-2 ltr:border-r-1 rtl:border-l-1 sm:h-auto sm:w-auto sm:rounded-xl sm:p-12 sm:shadow-sm md:flex md:h-full md:w-1/2 md:items-center md:justify-end md:rounded-none md:p-16 md:shadow-none">
-				<CardContent className="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">
-					<img
-						className="w-12"
-						src="/assets/images/logo/logo.svg"
-						alt="logo"
-					/>
-
-					<Typography className="mt-8 text-4xl font-extrabold leading-[1.25] tracking-tight">
-						Sign in
-					</Typography>
-
-					<div className="mt-0.5 flex items-baseline font-medium">
-						<Typography>Don't have an account?</Typography>
-						<Link
-							className="ml-1"
-							to="/sign-up"
-						>
-							Sign up
-						</Link>
-					</div>
-
-					<AuthJsForm formType="signin" />
-
-					<Box
-						className="mt-6 text-md leading-[1.625] rounded-lg py-2 px-4"
-						sx={{
-							backgroundColor: (theme) => lighten(theme.palette.primary.main, 0.8),
-							color: 'primary.dark'
-						}}
-					>
-						You are browsing <b>Fuse React Demo</b>. Click on the "Sign in" button to access the Demo and
-						Documentation.
-					</Box>
-				</CardContent>
-			</Paper>
-
+		<Box
+			sx={{
+				minHeight: '100vh',
+				display: 'flex',
+				flexDirection: { xs: 'column', md: 'row' },
+				background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
+				overflow: 'hidden'
+			}}
+		>
+			{/* Login Form Section */}
 			<Box
-				className="relative hidden h-full flex-auto items-center justify-center overflow-hidden p-16 md:flex lg:px-28"
-				sx={{ backgroundColor: 'primary.dark', color: 'primary.contrastText' }}
+				sx={{
+					flex: { xs: 1, md: '0 0 45%' },
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					p: { xs: 3, sm: 4, md: 6 },
+					position: 'relative',
+					'&::before': {
+						content: '""',
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						background: `radial-gradient(ellipse at top left, ${alpha('#3b82f6', 0.1)} 0%, transparent 50%)`,
+						pointerEvents: 'none'
+					}
+				}}
 			>
-				<svg
-					className="pointer-events-none absolute inset-0"
-					viewBox="0 0 960 540"
-					width="100%"
-					height="100%"
-					preserveAspectRatio="xMidYMax slice"
-					xmlns="http://www.w3.org/2000/svg"
+				<Paper
+					elevation={24}
+					sx={{
+						width: '100%',
+						maxWidth: 420,
+						p: { xs: 3, sm: 4 },
+						background: alpha('#ffffff', 0.05),
+						backdropFilter: 'blur(20px)',
+						border: `1px solid ${alpha('#ffffff', 0.1)}`,
+						borderRadius: 3,
+						position: 'relative',
+						overflow: 'hidden',
+						'&::before': {
+							content: '""',
+							position: 'absolute',
+							top: 0,
+							left: 0,
+							right: 0,
+							height: '1px',
+							background: 'linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.5) 50%, transparent 100%)'
+						}
+					}}
 				>
-					<Box
-						component="g"
-						className="opacity-5"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="100"
-					>
-						<circle
-							r="234"
-							cx="196"
-							cy="23"
-						/>
-						<circle
-							r="234"
-							cx="790"
-							cy="491"
-						/>
-					</Box>
-				</svg>
-				<Box
-					component="svg"
-					className="absolute -right-16 -top-16 opacity-20"
-					sx={{ color: 'primary.light' }}
-					viewBox="0 0 220 192"
-					width="220px"
-					height="192px"
-					fill="none"
-				>
-					<defs>
-						<pattern
-							id="837c3e70-6c3a-44e6-8854-cc48c737b659"
-							x="0"
-							y="0"
-							width="20"
-							height="20"
-							patternUnits="userSpaceOnUse"
-						>
-							<rect
-								x="0"
-								y="0"
-								width="4"
-								height="4"
-								fill="currentColor"
-							/>
-						</pattern>
-					</defs>
-					<rect
-						width="220"
-						height="192"
-						fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"
-					/>
-				</Box>
-
-				<div className="relative z-10 w-full max-w-4xl">
-					<div className="text-7xl font-bold leading-none text-gray-100">
-						<div>Welcome to</div>
-						<div>our community</div>
-					</div>
-					<div className="mt-6 text-lg leading-6 tracking-tight text-gray-400">
-						Fuse helps developers to build organized and well coded dashboards full of beautiful and rich
-						modules. Join us and start building your application today.
-					</div>
-					<div className="mt-8 flex items-center">
-						<AvatarGroup
+					{/* Logo and Brand - Compacto */}
+					<Box sx={{ mb: 3, textAlign: 'center' }}>
+						<Box
 							sx={{
-								'& .MuiAvatar-root': {
-									borderColor: 'primary.main'
-								}
+								display: 'inline-flex',
+								alignItems: 'center',
+								gap: 2,
+								mb: 2
 							}}
 						>
-							<Avatar src="/assets/images/avatars/female-18.jpg" />
-							<Avatar src="/assets/images/avatars/female-11.jpg" />
-							<Avatar src="/assets/images/avatars/male-09.jpg" />
-							<Avatar src="/assets/images/avatars/male-16.jpg" />
-						</AvatarGroup>
+							<Box
+								sx={{
+									display: 'inline-flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									width: 48,
+									height: 48,
+									borderRadius: 2,
+									background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+									boxShadow: '0 4px 16px rgba(59, 130, 246, 0.3)',
+									transition: 'transform 0.3s ease',
+									'&:hover': {
+										transform: 'scale(1.05)'
+									}
+								}}
+							>
+								<FuseSvgIcon size={24} sx={{ color: 'white' }}>
+									heroicons-outline:link
+								</FuseSvgIcon>
+							</Box>
 
-						<div className="ml-4 font-medium tracking-tight text-gray-400">
-							More than 17k people joined us, it's your turn
-						</div>
-					</div>
-				</div>
+							<Typography
+								variant="h5"
+								sx={{
+									fontWeight: 800,
+									color: 'white',
+									background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)',
+									backgroundClip: 'text',
+									WebkitBackgroundClip: 'text',
+									WebkitTextFillColor: 'transparent'
+								}}
+							>
+								Link Charts
+							</Typography>
+						</Box>
+
+						<Typography
+							variant="h4"
+							sx={{
+								fontWeight: 700,
+								color: 'white',
+								mb: 1,
+								fontSize: { xs: '1.5rem', sm: '1.75rem' }
+							}}
+						>
+							Bem-vindo de volta
+						</Typography>
+
+						<Typography
+							variant="body2"
+							sx={{
+								color: alpha('#ffffff', 0.7),
+								fontSize: '0.9rem'
+							}}
+						>
+							Acesse sua conta e otimize seus links
+						</Typography>
+					</Box>
+
+					{/* Login Form */}
+					<AuthJsForm formType="signin" />
+
+					{/* Sign Up Link */}
+					<Box
+						sx={{
+							mt: 3,
+							pt: 2,
+							borderTop: `1px solid ${alpha('#ffffff', 0.1)}`,
+							textAlign: 'center'
+						}}
+					>
+						<Typography
+							variant="body2"
+							sx={{ color: alpha('#ffffff', 0.7) }}
+						>
+							Não possui uma conta?{' '}
+							<Link
+								to="/sign-up"
+								sx={{
+									color: '#3b82f6',
+									fontWeight: 600,
+									textDecoration: 'none',
+									transition: 'all 0.2s ease',
+									'&:hover': {
+										color: '#60a5fa',
+										textDecoration: 'underline'
+									}
+								}}
+							>
+								Criar conta gratuita
+							</Link>
+						</Typography>
+					</Box>
+				</Paper>
 			</Box>
-		</div>
+
+			{/* Hero Section */}
+			<Box
+				sx={{
+					flex: { xs: 0, md: '0 0 55%' },
+					display: { xs: 'none', md: 'flex' },
+					alignItems: 'center',
+					justifyContent: 'center',
+					p: 6,
+					position: 'relative',
+					background: 'linear-gradient(135deg, #1e40af 0%, #3730a3 50%, #581c87 100%)',
+					overflow: 'hidden',
+					'&::before': {
+						content: '""',
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						background: `radial-gradient(ellipse at center, ${alpha('#ffffff', 0.1)} 0%, transparent 70%)`,
+						pointerEvents: 'none'
+					}
+				}}
+			>
+				{/* Animated Background Elements */}
+				<Box
+					sx={{
+						position: 'absolute',
+						width: 200,
+						height: 200,
+						top: '20%',
+						left: '10%',
+						borderRadius: '50%',
+						background: `radial-gradient(circle, ${alpha('#60a5fa', 0.2)} 0%, transparent 70%)`,
+						animation: 'pulse 4s ease-in-out infinite'
+					}}
+				/>
+				<Box
+					sx={{
+						position: 'absolute',
+						width: 150,
+						height: 150,
+						bottom: '30%',
+						right: '15%',
+						borderRadius: '50%',
+						background: `radial-gradient(circle, ${alpha('#a78bfa', 0.15)} 0%, transparent 70%)`,
+						animation: 'pulse 4s ease-in-out infinite 2s'
+					}}
+				/>
+
+				{/* Floating Elements */}
+				{[
+					{ icon: 'heroicons-outline:link', top: '15%', left: '15%', delay: '0s', color: '#60a5fa' },
+					{ icon: 'heroicons-outline:chart-bar', top: '25%', right: '20%', delay: '1s', color: '#a78bfa' },
+					{ icon: 'heroicons-outline:cursor-arrow-rays', bottom: '35%', left: '20%', delay: '2s', color: '#34d399' },
+					{ icon: 'heroicons-outline:globe-alt', bottom: '20%', right: '25%', delay: '3s', color: '#fbbf24' }
+				].map((item, index) => (
+					<Box
+						key={index}
+						sx={{
+							position: 'absolute',
+							...item,
+							width: 48,
+							height: 48,
+							borderRadius: 2,
+							background: `linear-gradient(135deg, ${alpha(item.color, 0.2)} 0%, ${alpha(item.color, 0.05)} 100%)`,
+							backdropFilter: 'blur(10px)',
+							border: `1px solid ${alpha(item.color, 0.2)}`,
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							animation: `float 6s ease-in-out infinite ${item.delay}`,
+							'@keyframes float': {
+								'0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+								'50%': { transform: 'translateY(-20px) rotate(5deg)' }
+							}
+						}}
+					>
+						<FuseSvgIcon size={24} sx={{ color: item.color }}>
+							{item.icon}
+						</FuseSvgIcon>
+					</Box>
+				))}
+
+				{/* Main Content */}
+				<Box sx={{ textAlign: 'center', zIndex: 10, maxWidth: 600 }}>
+					<Typography
+						variant="h1"
+						sx={{
+							fontSize: { xs: '3rem', md: '4rem', lg: '4.5rem' },
+							fontWeight: 900,
+							lineHeight: 1.1,
+							mb: 3,
+							background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #cbd5e1 100%)',
+							backgroundClip: 'text',
+							WebkitBackgroundClip: 'text',
+							WebkitTextFillColor: 'transparent'
+						}}
+					>
+						Transforme seus{' '}
+						<Box
+							component="span"
+							sx={{
+								background: 'linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #34d399 100%)',
+								backgroundClip: 'text',
+								WebkitBackgroundClip: 'text',
+								WebkitTextFillColor: 'transparent'
+							}}
+						>
+							links em resultados
+						</Box>
+					</Typography>
+
+					<Typography
+						variant="h5"
+						sx={{
+							color: alpha('#ffffff', 0.9),
+							lineHeight: 1.6,
+							mb: 6,
+							fontWeight: 400,
+							maxWidth: 500,
+							mx: 'auto'
+						}}
+					>
+						Gerencie, monitore e otimize todos os seus links em um só lugar.
+						Analytics completos em tempo real.
+					</Typography>
+
+					{/* Feature Cards */}
+					<Box
+						sx={{
+							display: 'grid',
+							gridTemplateColumns: 'repeat(3, 1fr)',
+							gap: 4,
+							mt: 6
+						}}
+					>
+						{[
+							{
+								icon: 'heroicons-outline:link',
+								title: 'Gerenciamento',
+								description: 'Organize seus links de forma intuitiva',
+								color: '#60a5fa'
+							},
+							{
+								icon: 'heroicons-outline:chart-bar',
+								title: 'Analytics',
+								description: 'Performance e métricas em tempo real',
+								color: '#a78bfa'
+							},
+							{
+								icon: 'heroicons-outline:shield-check',
+								title: 'Segurança',
+								description: 'Controle e proteção avançada',
+								color: '#34d399'
+							}
+						].map((feature, index) => (
+							<Box
+								key={index}
+								sx={{
+									textAlign: 'center',
+									p: 3,
+									borderRadius: 2,
+									background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)} 0%, ${alpha('#ffffff', 0.02)} 100%)`,
+									backdropFilter: 'blur(10px)',
+									border: `1px solid ${alpha('#ffffff', 0.1)}`,
+									transition: 'all 0.3s ease',
+									'&:hover': {
+										transform: 'translateY(-8px)',
+										background: `linear-gradient(135deg, ${alpha('#ffffff', 0.15)} 0%, ${alpha('#ffffff', 0.05)} 100%)`,
+										border: `1px solid ${alpha(feature.color, 0.3)}`
+									}
+								}}
+							>
+								<Box
+									sx={{
+										width: 56,
+										height: 56,
+										borderRadius: 2,
+										background: `linear-gradient(135deg, ${alpha(feature.color, 0.2)} 0%, ${alpha(feature.color, 0.05)} 100%)`,
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										mx: 'auto',
+										mb: 2,
+										border: `1px solid ${alpha(feature.color, 0.2)}`
+									}}
+								>
+									<FuseSvgIcon size={28} sx={{ color: feature.color }}>
+										{feature.icon}
+									</FuseSvgIcon>
+								</Box>
+
+								<Typography
+									variant="h6"
+									sx={{
+										color: 'white',
+										fontWeight: 700,
+										mb: 1
+									}}
+								>
+									{feature.title}
+								</Typography>
+
+								<Typography
+									variant="body2"
+									sx={{
+										color: alpha('#ffffff', 0.8),
+										lineHeight: 1.5
+									}}
+								>
+									{feature.description}
+								</Typography>
+							</Box>
+						))}
+					</Box>
+				</Box>
+
+				{/* Global Styles for Animations */}
+				<style>{`
+					@keyframes pulse {
+						0%, 100% { transform: scale(1); opacity: 0.3; }
+						50% { transform: scale(1.1); opacity: 0.1; }
+					}
+					@keyframes float {
+						0%, 100% { transform: translateY(0px) rotate(0deg); }
+						50% { transform: translateY(-20px) rotate(5deg); }
+					}
+				`}</style>
+			</Box>
+		</Box>
 	);
 }
 

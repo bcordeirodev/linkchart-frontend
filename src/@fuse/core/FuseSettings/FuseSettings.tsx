@@ -1,13 +1,13 @@
 import { styled } from '@mui/material/styles';
 import { Controller, useForm } from 'react-hook-form';
-import themeLayoutConfigs, { themeLayoutDefaultsProps } from 'src/components/theme-layouts/themeLayoutConfigs';
+import { themeLayoutConfigs, themeLayoutDefaultsProps } from '@/themes';
 import _ from 'lodash';
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Switch, Typography } from '@mui/material';
 import { memo, useEffect, useMemo } from 'react';
 import { Palette } from '@mui/material/styles/createPalette';
 import { PartialDeep } from 'type-fest';
 import FuseLayoutConfigs from '@fuse/core/FuseSettings/FuseLayoutConfigs';
-import usePrevious from '@fuse/hooks/usePrevious';
+import { usePrevious } from '@/hooks';
 import PaletteSelector from './palette-generator/PaletteSelector';
 import SectionPreview from './palette-generator/SectionPreview';
 

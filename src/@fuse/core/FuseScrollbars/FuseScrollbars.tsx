@@ -4,7 +4,7 @@ import MobileDetect from 'mobile-detect';
 import PerfectScrollbar from 'perfect-scrollbar';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import React, { useEffect, useRef, ReactNode, useCallback, useState, useMemo } from 'react';
-import usePathname from '@fuse/hooks/usePathname';
+import { usePathname } from '@/hooks';
 import useFuseSettings from '@fuse/core/FuseSettings/hooks/useFuseSettings';
 
 const Root = styled('div')(() => ({

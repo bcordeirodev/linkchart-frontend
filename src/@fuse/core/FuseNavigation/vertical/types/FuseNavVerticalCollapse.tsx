@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react';
 import List, { ListProps } from '@mui/material/List';
 import isUrlInChildren from '@fuse/core/FuseNavigation/isUrlInChildren';
 import { ListItemButton } from '@mui/material';
-import usePathname from '@fuse/hooks/usePathname';
+import { usePathname } from '@/hooks';
 import FuseNavBadge from '../../FuseNavBadge';
 import FuseNavItem, { FuseNavItemComponentProps } from '../../FuseNavItem';
 import FuseSvgIcon from '../../../FuseSvgIcon';

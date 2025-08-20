@@ -1,4 +1,3 @@
-import { amber } from '@mui/material/colors';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Input from '@mui/material/Input';
@@ -112,24 +111,6 @@ function FuseShortcuts(props: FuseShortcutsProps) {
 									</Link>
 								)
 						)}
-
-						<Tooltip
-							title="Click to add/remove shortcut"
-							placement={variant === 'horizontal' ? 'bottom' : 'left'}
-						>
-							<IconButton
-								className="h-9 w-9 p-0 rounded-none"
-								aria-haspopup="true"
-								onClick={addMenuClick}
-							>
-								<FuseSvgIcon
-									size={20}
-									sx={{ color: amber[600] }}
-								>
-									heroicons-solid:star
-								</FuseSvgIcon>
-							</IconButton>
-						</Tooltip>
 					</Box>
 				);
 			}, [addMenu, variant, shortcutItems])}

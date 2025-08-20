@@ -3,12 +3,15 @@ import 'src/styles/splash-screen.css';
 import 'src/styles/index.css';
 import { SessionProvider } from 'next-auth/react';
 import { auth } from '@auth/authJs';
-import generateMetadata from '../utils/generateMetadata';
+import generateMetadata from '@/utils/generateMetadata';
 import App from './App';
+
+// Importar estilos do Leaflet
+import 'leaflet/dist/leaflet.css';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const metadata = await generateMetadata({
-	title: 'Poc - SPGG',
+	title: 'Shorter URL',
 	description: 'Fuse React - NextJS by FuseTech',
 	cardImage: '/card.png',
 	robots: 'follow, index',

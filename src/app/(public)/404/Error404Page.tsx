@@ -2,14 +2,48 @@ import Typography from '@mui/material/Typography';
 import { motion } from 'motion/react';
 import Link from '@fuse/core/Link';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import { useSession } from 'next-auth/react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, usePathname } from '@/hooks';
 
 /**
- * The Error404Page component renders a custom 404 error page.
+ * Enhanced Error404Page component with smart navigation suggestions.
  */
 function Error404Page() {
 	const { status } = useSession();
+	const navigate = useNavigate();
+	const pathname = usePathname();
 	const isAuthenticated = status === 'authenticated';
+	const [suggestions, setSuggestions] = useState<string[]>([]);
+
+	// Generate navigation suggestions based on current path
+	useEffect(() => {
+		const pathSegments = pathname.split('/').filter(Boolean);
+		const suggestionList: string[] = [];
+
+		if (isAuthenticated) {
+			suggestionList.push('/dashboard', '/link');
+
+			// Suggest parent paths
+			if (pathSegments.length > 1) {
+				suggestionList.push(`/${pathSegments[0]}`);
+			}
+		} else {
+			suggestionList.push('/shorter');
+		}
+
+		setSuggestions([...new Set(suggestionList)]);
+	}, [pathname, isAuthenticated]);
+
+	// Handle going back in browser history
+	const handleGoBack = useCallback(() => {
+		if (window.history.length > 1) {
+			navigate(-1);
+		} else {
+			navigate('/');
+		}
+	}, [navigate]);
 
 	return (
 		<div className="flex flex-1 flex-col items-center justify-center p-4">
@@ -250,21 +284,58 @@ function Error404Page() {
 						The page you requested could not be found.
 					</Typography>
 				</motion.div>
-				{isAuthenticated ? (
-					<Link
-						className="mt-12 block font-normal"
-						to="/"
-					>
-						Back to Home
-					</Link>
-				) : (
-					<Link
-						className="mt-12 block font-normal"
-						to="/sign-in"
-					>
-						Back to sign-in
-					</Link>
-				)}
+				<motion.div
+					initial={{ opacity: 0, y: 40 }}
+					animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
+					className="mt-8 flex flex-col items-center gap-4"
+				>
+					<div className="flex gap-4 flex-wrap justify-center">
+						<Button
+							variant="contained"
+							onClick={handleGoBack}
+							className="min-w-[120px]"
+						>
+							Go Back
+						</Button>
+						<Link to="/">
+							<Button variant="outlined">Home</Button>
+						</Link>
+						{isAuthenticated &&
+							suggestions.map((path) => (
+								<Link
+									key={path}
+									to={path}
+								>
+									<Button
+										variant="text"
+										size="small"
+									>
+										{path === '/dashboard'
+											? 'Dashboard'
+											: path === '/link'
+												? 'Links'
+												: path === '/analytics'
+													? 'Analytics'
+													: path.charAt(1).toUpperCase() + path.slice(2)}
+									</Button>
+								</Link>
+							))}
+						{!isAuthenticated && (
+							<Link to="/sign-in">
+								<Button variant="outlined">Sign In</Button>
+							</Link>
+						)}
+					</div>
+					{suggestions.length > 0 && (
+						<Typography
+							variant="body2"
+							color="text.secondary"
+							className="text-center mt-2"
+						>
+							Or try one of these pages instead
+						</Typography>
+					)}
+				</motion.div>
 			</div>
 		</div>
 	);

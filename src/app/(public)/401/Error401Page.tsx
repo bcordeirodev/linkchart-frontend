@@ -2,14 +2,48 @@ import Typography from '@mui/material/Typography';
 import { motion } from 'motion/react';
 import Link from '@fuse/core/Link';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import { useSession } from 'next-auth/react';
+import { useCallback, useEffect, useState } from 'react';
+import { getSessionRedirectUrl, resetSessionRedirectUrl } from '@fuse/core/FuseAuthorization/sessionRedirectUrl';
+import { useNavigate } from '@/hooks';
 
 /**
- * Error 401 page.
+ * Enhanced Error 401 page with smart redirection handling.
  */
 function Error401Page() {
 	const { status } = useSession();
+	const navigate = useNavigate();
 	const isAuthenticated = status === 'authenticated';
+	const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+
+	// Get the intended redirect URL
+	useEffect(() => {
+		const savedUrl = getSessionRedirectUrl();
+		setRedirectUrl(savedUrl);
+	}, []);
+
+	// Handle navigation back to intended destination or home
+	const handleGoBack = useCallback(() => {
+		if (isAuthenticated) {
+			const targetUrl = redirectUrl && redirectUrl !== '/401' ? redirectUrl : '/';
+			resetSessionRedirectUrl();
+			navigate(targetUrl);
+		} else {
+			navigate('/sign-in');
+		}
+	}, [isAuthenticated, redirectUrl, navigate]);
+
+	// Auto-redirect after a delay if user is authenticated
+	useEffect(() => {
+		if (isAuthenticated && redirectUrl && redirectUrl !== '/401') {
+			const timer = setTimeout(() => {
+				handleGoBack();
+			}, 3000); // 3 second delay
+
+			return () => clearTimeout(timer);
+		}
+	}, [isAuthenticated, redirectUrl, handleGoBack]);
 
 	return (
 		<div className="flex flex-1 flex-col items-center justify-center p-4">
@@ -213,21 +247,60 @@ function Error401Page() {
 						You do not have permission to view this page.
 					</Typography>
 				</motion.div>
-				{isAuthenticated ? (
-					<Link
-						className="mt-12 block font-normal"
-						to="/"
-					>
-						Back to Home
-					</Link>
-				) : (
-					<Link
-						className="mt-12 block font-normal"
-						to="/sign-in"
-					>
-						Back to sign-in
-					</Link>
-				)}
+				<motion.div
+					initial={{ opacity: 0, y: 40 }}
+					animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
+					className="mt-8 flex flex-col items-center gap-4"
+				>
+					{isAuthenticated ? (
+						<>
+							{redirectUrl && redirectUrl !== '/401' && (
+								<Typography
+									variant="body2"
+									color="text.secondary"
+									className="text-center"
+								>
+									Redirecting you back in 3 seconds...
+								</Typography>
+							)}
+							<div className="flex gap-4">
+								<Button
+									variant="contained"
+									onClick={handleGoBack}
+									className="min-w-[120px]"
+								>
+									{redirectUrl && redirectUrl !== '/401' ? 'Go Back' : 'Go Home'}
+								</Button>
+								<Link to="/">
+									<Button variant="outlined">Home</Button>
+								</Link>
+							</div>
+						</>
+					) : (
+						<>
+							<Typography
+								variant="body2"
+								color="text.secondary"
+								className="text-center"
+							>
+								Please sign in to access this page
+							</Typography>
+							<div className="flex gap-4">
+								<Link to="/sign-in">
+									<Button
+										variant="contained"
+										className="min-w-[120px]"
+									>
+										Sign In
+									</Button>
+								</Link>
+								<Link to="/">
+									<Button variant="outlined">Home</Button>
+								</Link>
+							</div>
+						</>
+					)}
+				</motion.div>
 			</div>
 		</div>
 	);

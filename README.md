@@ -1,34 +1,115 @@
+# 🔗 Link Chart - Frontend
 
-# Fuse React Versions
-## Available Versions
-- **Fuse React ViteJs** - Single Page Application (SPA)
-  - ViteJs offers a fast development experience with its instant server start and hot module replacement, making it ideal for SPAs where quick feedback and performance are crucial.
-- **Fuse React NextJs** - Server Side Rendering (SSR)
-  - NextJs excels in SSR by providing automatic static optimization and server-side rendering capabilities, which enhance SEO and initial load performance, making it perfect for dynamic web applications.
+Interface moderna da aplicação Link Chart desenvolvida em Next.js 15 com React 19.
 
-## GitHub Branches
+## 🚀 Tecnologias
 
-| | **ViteJs** | **NextJs** |
-|---------|------|----------|
-| **Demo** | [`vitejs-demo`](https://github.com/withinpixels/fuse-react/tree/vitejs-demo) [🌐](https://fuse-react-vitejs-demo.fusetheme.com) | [`nextjs-demo`](https://github.com/withinpixels/fuse-react/tree/nextjs-demo) [🌐](https://fuse-react-nextjs-demo.fusetheme.com) |
-| **Skeleton** | [`vitejs-skeleton`](https://github.com/withinpixels/fuse-react/tree/vitejs-skeleton) [🌐](https://fuse-react-vitejs-skeleton.fusetheme.com) | [`nextjs-skeleton`](https://github.com/withinpixels/fuse-react/tree/nextjs-skeleton) [🌐](https://fuse-react-nextjs-skeleton.fusetheme.com) |
-| **Development Demo** | [`vitejs-demo-dev`](https://github.com/withinpixels/fuse-react/tree/vitejs-demo-dev) [🌐](https://fuse-react-vitejs-demo-dev.fusetheme.com) | [`nextjs-demo-dev`](https://github.com/withinpixels/fuse-react/tree/nextjs-demo-dev) [🌐](https://fuse-react-nextjs-demo-dev.fusetheme.com) |
-| **Development Skeleton** | [`vitejs-skeleton-dev`](https://github.com/withinpixels/fuse-react/tree/vitejs-skeleton-dev) [🌐](https://fuse-react-vitejs-skeleton-dev.fusetheme.com) | [`nextjs-skeleton-dev`](https://github.com/withinpixels/fuse-react/tree/nextjs-skeleton-dev) [🌐](https://fuse-react-nextjs-skeleton-dev.fusetheme.com) |
+- **Next.js 15**
+- **React 19**
+- **TypeScript**
+- **Material-UI (MUI) 6**
+- **ApexCharts**
+- **React Leaflet**
+- **Framer Motion**
 
+## 📦 Instalação Local
 
-## CLI Reference Links
+```bash
+# Clonar repositório
+git clone git@github.com:bcordeirodev/linkchart-frontend.git
+cd linkchart-frontend
 
-- [ViteJs CLI Documentation](https://vitejs.dev/guide/cli.html)
+# Instalar dependências
+npm install
 
-- [NextJs CLI Documentation](https://nextjs.org/docs/api-reference/cli)
+# Copiar configurações
+cp .env.example .env.local
 
-## License
+# Iniciar desenvolvimento
+npm run dev
+```
 
-- [License Information](https://themeforest.net/licenses/terms/regular)
+## 🌐 Deploy na Vercel
 
-## More
+### Deploy Automático:
+1. Conecte este repositório na Vercel
+2. Configure as variáveis de ambiente
+3. Deploy automático a cada push
 
-- [Fuse Theme Official Website](https://fusetheme.com/)
+### Deploy Manual:
+```bash
+# Instalar Vercel CLI
+npm i -g vercel
 
+# Deploy
+vercel --prod
+```
 
-# poc-frontend
+## 🔧 Scripts Disponíveis
+
+```bash
+# Desenvolvimento
+npm run dev
+
+# Build de produção
+npm run build
+
+# Iniciar produção
+npm start
+
+# Linting
+npm run lint
+npm run lint:fix
+
+# Formatação
+npm run format
+npm run format:check
+```
+
+## 📊 Funcionalidades
+
+- ✅ Dashboard de analytics
+- ✅ Encurtamento de URLs
+- ✅ Mapas de calor interativos
+- ✅ Gráficos avançados
+- ✅ Autenticação segura
+- ✅ Interface responsiva
+- ✅ Tema dark/light
+- ✅ PWA ready
+
+## 🎨 Componentes
+
+- **Analytics Dashboard**: Métricas em tempo real
+- **Link Manager**: Gerenciamento de links
+- **Heatmaps**: Visualização geográfica
+- **Charts**: Gráficos interativos
+- **Forms**: Formulários otimizados
+- **Auth**: Sistema de autenticação
+
+## ⚡ Performance
+
+- **Bundle Splitting**: Carregamento otimizado
+- **Image Optimization**: WebP/AVIF automático
+- **Static Generation**: SSG onde possível
+- **Edge Runtime**: Vercel Edge Functions
+- **CDN Global**: Cache distribuído
+
+## 🔒 Segurança
+
+- **CSP Headers**: Content Security Policy
+- **XSS Protection**: Proteção contra ataques
+- **HSTS**: HTTP Strict Transport Security
+- **Secure Cookies**: Cookies seguros
+- **CORS**: Cross-Origin configurado
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature
+3. Commit suas mudanças
+4. Push para a branch
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.

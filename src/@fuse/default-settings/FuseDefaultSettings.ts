@@ -82,9 +82,9 @@ export function getParsedQuerySettings(): FuseSettingsConfigType | object {
 
 	// Generating route params from settings
 	/* const settings = qs.stringify({
-        defaultSettings: JSON.stringify(defaultSettings, {strictNullHandling: true})
-    });
-    console.info(settings); */
+		defaultSettings: JSON.stringify(defaultSettings, {strictNullHandling: true})
+	});
+	console.info(settings); */
 }
 
 /**
@@ -92,7 +92,7 @@ export function getParsedQuerySettings(): FuseSettingsConfigType | object {
  */
 export const defaultThemeOptions = {
 	typography: {
-		fontFamily: ['Inter var', 'Roboto', '"Helvetica"', 'Arial', 'sans-serif'].join(','),
+		fontFamily: ['sans-serif', 'Inter var', 'Roboto', '"Helvetica"', 'Arial'].join(','),
 		fontWeightLight: 300,
 		fontWeightRegular: 400,
 		fontWeightMedium: 500

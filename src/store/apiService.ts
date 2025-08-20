@@ -1,21 +1,19 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query';
-import { API_BASE_URL, globalHeaders } from '@/utils/apiFetch';
+import { API_BASE_URL } from '@/constants/api';
 
 const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, object, FetchBaseQueryMeta> = async (
 	args,
-	api,
+	apiContext,
 	extraOptions
 ) => {
 	const result = await fetchBaseQuery({
 		baseUrl: API_BASE_URL,
-		prepareHeaders: (headers) => {
-			Object.entries(globalHeaders).forEach(([key, value]) => {
-				headers.set(key, value);
-			});
+		prepareHeaders: async (headers) => {
+			// O novo cliente API já gerencia autenticação automaticamente
 			return headers;
 		}
-	})(args, api, extraOptions);
+	})(args, apiContext, extraOptions);
 
 	// Example of handling specific error codes
 	if (result.error && result.error.status === 401) {

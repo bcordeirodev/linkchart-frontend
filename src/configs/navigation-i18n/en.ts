@@ -1,7 +1,9 @@
 const locale = {
 	APPLICATIONS: 'Applications',
-	EXAMPLE: 'Example',
-	WORD: 'Word'
+	DASHBOARD: 'Dashboard',
+	LINKS: 'Links',
+	CREATE_LINK: 'Create Link',
+	ANALYTICS: 'Analytics'
 };
 
 export default locale;

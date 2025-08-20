@@ -29,7 +29,7 @@ const settingsConfig: FuseSettingsConfigType = {
 	/**
 	 * The customScrollbars property defines whether or not to use custom scrollbars in the application.
 	 */
-	customScrollbars: true,
+	customScrollbars: false,
 
 	/**
 	 * The direction property defines the text direction for the application.
@@ -39,9 +39,9 @@ const settingsConfig: FuseSettingsConfigType = {
 	 * The theme object defines the color theme for the application.
 	 */
 	theme: {
-		main: themesConfig.default,
+		main: themesConfig.defaultDark,
 		navbar: themesConfig.defaultDark,
-		toolbar: themesConfig.default,
+		toolbar: themesConfig.defaultDark,
 		footer: themesConfig.defaultDark
 	},
 
@@ -56,7 +56,7 @@ const settingsConfig: FuseSettingsConfigType = {
 	/**
 	 * The loginRedirectUrl property defines the default redirect URL for the logged-in user.
 	 */
-	loginRedirectUrl: '/'
+	loginRedirectUrl: '/link'
 };
 
 export default settingsConfig;

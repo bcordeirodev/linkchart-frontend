@@ -3,32 +3,37 @@ import { FuseNavItemType } from '@fuse/core/FuseNavigation/types/FuseNavItemType
 import ar from './navigation-i18n/ar';
 import en from './navigation-i18n/en';
 import tr from './navigation-i18n/tr';
-import { m } from 'motion/dist/react';
 
 i18n.addResourceBundle('en', 'navigation', en);
 i18n.addResourceBundle('tr', 'navigation', tr);
 i18n.addResourceBundle('ar', 'navigation', ar);
 
 /**
- * The navigationConfig object is an array of navigation items for the Fuse application.
+ * Configuração de navegação simplificada
+ * Itens principais do sistema unificado
  */
 const navigationConfig: FuseNavItemType[] = [
 	{
-		id: 'example-component',
-		title: 'Example',
-		translate: 'EXAMPLE',
+		id: 'analytics-component',
+		title: 'Analytics',
 		type: 'item',
-		icon: 'heroicons-outline:star',
-		url: 'example'
+		url: '/analytics',
+		icon: 'heroicons-outline:chart-bar'
 	},
 	{
-		id: 'word-component',
-		title: 'word',
-		translate: 'WORD',
+		id: 'links-component',
+		title: 'Gerenciar Links',
 		type: 'item',
-		icon: 'heroicons-outline:star',
-		url: 'word'
-	}	
+		url: '/link',
+		icon: 'heroicons-outline:link'
+	},
+	{
+		id: 'profile-component',
+		title: 'Perfil',
+		type: 'item',
+		url: '/profile',
+		icon: 'heroicons-outline:user-circle'
+	}
 ];
 
 export default navigationConfig;
