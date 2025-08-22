@@ -15,8 +15,10 @@ interface AudienceInsightsProps {
 
 export function AudienceInsights({ deviceBreakdown, totalClicks }: AudienceInsightsProps) {
     // Calcular insights
-    const primaryDevice = deviceBreakdown.reduce((max, device) =>
-        device.clicks > max.clicks ? device : max, deviceBreakdown[0]);
+    const primaryDevice = deviceBreakdown.length > 0
+        ? deviceBreakdown.reduce((max, device) =>
+            device.clicks > max.clicks ? device : max, deviceBreakdown[0])
+        : { device: '--', clicks: 0 };
 
     const mobileDevices = deviceBreakdown.filter(device =>
         device.device.toLowerCase().includes('mobile') ||

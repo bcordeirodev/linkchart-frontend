@@ -28,8 +28,12 @@ export function TemporalInsights({ hourlyData, weeklyData }: TemporalInsightsPro
 
     // Calcular estatísticas
     const totalClicks = hourlyData.reduce((sum, hour) => sum + hour.clicks, 0);
-    const peakHour = hourlyData.reduce((max, hour) => hour.clicks > max.clicks ? hour : max, hourlyData[0]);
-    const peakDay = weeklyData.reduce((max, day) => day.clicks > max.clicks ? day : max, weeklyData[0]);
+    const peakHour = hourlyData.length > 0
+        ? hourlyData.reduce((max, hour) => hour.clicks > max.clicks ? hour : max, hourlyData[0])
+        : { label: '--', clicks: 0 };
+    const peakDay = weeklyData.length > 0
+        ? weeklyData.reduce((max, day) => day.clicks > max.clicks ? day : max, weeklyData[0])
+        : { day_name: '--', clicks: 0 };
     const avgClicksPerHour = totalClicks / 24;
     const avgClicksPerDay = totalClicks / 7;
 
@@ -51,8 +55,12 @@ export function TemporalInsights({ hourlyData, weeklyData }: TemporalInsightsPro
     const activeDays = weeklyData.filter(day => day.clicks > avgClicksPerDay).length;
 
     // Identificar padrões
-    const isWeekendActive = weeklyData[0].clicks + weeklyData[6].clicks > weeklyData.slice(1, 6).reduce((sum, day) => sum + day.clicks, 0);
-    const isBusinessHoursActive = hourlyData.slice(9, 18).reduce((sum, hour) => sum + hour.clicks, 0) > hourlyData.slice(0, 9).reduce((sum, hour) => sum + hour.clicks, 0) + hourlyData.slice(18, 24).reduce((sum, hour) => sum + hour.clicks, 0);
+    const isWeekendActive = weeklyData.length >= 7
+        ? weeklyData[0].clicks + weeklyData[6].clicks > weeklyData.slice(1, 6).reduce((sum, day) => sum + day.clicks, 0)
+        : false;
+    const isBusinessHoursActive = hourlyData.length >= 24
+        ? hourlyData.slice(9, 18).reduce((sum, hour) => sum + hour.clicks, 0) > hourlyData.slice(0, 9).reduce((sum, hour) => sum + hour.clicks, 0) + hourlyData.slice(18, 24).reduce((sum, hour) => sum + hour.clicks, 0)
+        : false;
 
     return (
         <Box sx={{ mt: 3 }}>

@@ -11,6 +11,7 @@ import { signIn } from 'next-auth/react';
 import FormHelperText from '@mui/material/FormHelperText';
 import { Alert } from '@mui/material';
 import signinErrors from './signinErrors';
+import { signUp } from '@/services/auth.service';
 
 /**
  * Form Validation Schema
@@ -56,20 +57,36 @@ function AuthJsCredentialsSignUpForm() {
 
 	async function onSubmit(formData: FormType) {
 		const { displayName, email, password } = formData;
-		const result = await signIn('credentials', {
-			displayName,
-			email,
-			password,
-			formType: 'signup',
-			redirect: false
-		});
 
-		if (result?.error) {
-			setError('root', { type: 'manual', message: signinErrors[result.error] });
+		try {
+			// Primeiro registra o usuário via API
+			await signUp({
+				name: displayName,
+				email,
+				password,
+				password_confirmation: password
+			});
+
+			// Depois faz login automático
+			const result = await signIn('credentials', {
+				email,
+				password,
+				redirect: false
+			});
+
+			if (result?.error) {
+				setError('root', { type: 'manual', message: signinErrors[result.error] });
+				return false;
+			}
+
+			return true;
+		} catch (error: any) {
+			setError('root', {
+				type: 'manual',
+				message: error.message || 'Erro ao criar conta. Tente novamente.'
+			});
 			return false;
 		}
-
-		return true;
 	}
 
 	return (

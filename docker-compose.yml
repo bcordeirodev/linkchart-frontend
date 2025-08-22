@@ -1,0 +1,107 @@
+# ==========================================
+# DOCKER COMPOSE - FRONTEND + BACKEND
+# ==========================================
+
+services:
+  # Frontend Next.js
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: linkchartfrontend-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:8000/api
+      - API_BASE_URL=http://backend:8000/api
+      - NEXT_PUBLIC_BASE_URL=http://localhost:3000
+      - NEXT_PUBLIC_FRONTEND_URL=http://localhost:3000
+      - AUTH_URL=http://localhost:3000
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=Jk9vT3N2cXl5Z0p4b3F1dGZrT3Z3c2R5R2F2c3F1c3J3b3F1c3R2c3F1dGZrT3Z3c2Q=
+      - GOOGLE_CLIENT_ID=752687363878-6dai5pmt33iua9l4mmeuh9l1fafirpsn.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+    networks:
+      - linkchartnet
+    command: npm run dev
+
+  # Backend Laravel (referenciando container do back-end)
+  backend:
+    image: linkchartapi-dev:latest
+    container_name: linkchartapi-backend
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ../back-end:/var/www
+      - ../back-end/storage/logs:/var/www/storage/logs
+      - ../back-end/storage/app:/var/www/storage/app
+    depends_on:
+      - database
+      - redis
+    networks:
+      - linkchartnet
+    environment:
+      - CONTAINER_ROLE=app
+      - DB_HOST=database
+      - REDIS_HOST=redis
+
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    container_name: linkchartdb-backend
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: link_chart
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - linkchartnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d link_chart"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: linkchartredis-backend
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - linkchartnet
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  linkchartnet:
+    driver: bridge
+    name: linkchartnet

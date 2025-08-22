@@ -12,6 +12,17 @@ const nextConfig = {
 	},
 	// Next.js 15 uses App Router by default when src/app exists
 	experimental: {},
+	// Docker/Container configuration
+	output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
+	// Configuração para proxies e redirecionamento
+	async rewrites() {
+		return [
+			{
+				source: '/api/:path*',
+				destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost'}/api/:path*`,
+			},
+		];
+	},
 	webpack: (config, { isServer }) => {
 		if (config.module && config.module.rules) {
 			config.module.rules.push({

@@ -22,34 +22,67 @@ const storage = createStorage({
  * Definição dos provedores de autenticação.
  * Inclui autenticação por credenciais (email e senha), Google e Facebook.
  */
+// Debug das variáveis de ambiente
+console.log('🔍 Google Auth Debug:', {
+	clientId: process.env.GOOGLE_CLIENT_ID ? '✅ Configurado' : '❌ Não encontrado',
+	clientSecret: process.env.GOOGLE_CLIENT_SECRET ? '✅ Configurado' : '❌ Não encontrado',
+	nodeEnv: process.env.NODE_ENV
+});
+
+// Debug da função de login
+console.log('🔍 Login function imported:', typeof login);
+
 export const providers: Provider[] = [
 	// Provedor de email e senha
 	Credentials({
+		id: 'credentials',
 		name: 'Credentials',
 		credentials: {
 			email: { label: 'Email', type: 'email' },
 			password: { label: 'Password', type: 'password' }
 		},
-		async authorize(formInput: { email: string; password: string }) {
+		async authorize(credentials) {
+			console.log('🔐 NextAuth authorize() chamado com:', {
+				email: credentials?.email,
+				password: '***',
+				allParams: Object.keys(credentials || {})
+			});
+
+			// Validação básica
+			if (!credentials?.email || !credentials?.password) {
+				console.error('❌ Email ou password não fornecidos:', credentials);
+				return null;
+			}
+
+			// Remoção do teste temporário - agora usando autenticação real
+
 			try {
+				console.log('📡 Chamando auth.service.signIn...');
 				const data: IAuthResponse = await login({
-					email: formInput.email,
-					password: formInput.password
+					email: credentials.email as string,
+					password: credentials.password as string
 				});
 
+				console.log('🎯 Resposta da API:', data ? '✅ Sucesso' : '❌ Sem dados');
+
 				if (!data) {
+					console.error('❌ Auth retornou dados vazios');
 					return null;
 				}
 
-				return {
+				const userResult = {
 					id: data.user.id,
 					name: data.user.name,
 					email: data.user.email,
 					accessToken: data.token,
 					role: ['admin']
 				};
+
+				console.log('✅ Authorize bem-sucedido para:', data.user.email);
+				return userResult;
 			} catch (e) {
-				console.error('Ocorreu um erro ao efetuar o login.', e);
+				console.error('❌ Erro no authorize:', e);
+				console.error('❌ Stack trace:', e instanceof Error ? e.stack : 'N/A');
 				return null;
 			}
 		}
@@ -94,23 +127,20 @@ const config = {
 		 */
 		async jwt({ token, user, account }) {
 			if (user) {
-				token.accessToken = (user as any).accessToken;
+				token.accessToken = (user as { accessToken?: string }).accessToken;
 				token.id = user.id;
 
 				if (account?.provider === 'google' && user) {
-					try {
-						const { user: dbUser, token: apiToken } = await api.post<{ user: IUserDB; token: string }>(
-							'auth/google',
-							{ email: user.email, name: user.name }
-						);
+					// Google Auth funciona independente do backend
+					// O NextAuth já tem todos os dados necessários
+					console.log('✅ Login Google realizado com sucesso');
 
-						token.accessToken = apiToken;
-						token.id = dbUser.id;
-						token.name = dbUser.name;
-						token.email = dbUser.email;
-					} catch (e) {
-						console.error('Ocorreu um erro ao efetuar o login do google.', e);
-					}
+					// Usar dados do Google diretamente
+					token.accessToken = account.access_token; // Token do Google OAuth
+					token.id = user.id;
+					token.name = user.name;
+					token.email = user.email;
+					token.picture = user.image;
 				}
 			}
 

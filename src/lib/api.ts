@@ -53,6 +53,7 @@ class ApiClient {
 	constructor(baseURL: string = API_BASE_URL, timeout: number = REQUEST_TIMEOUT) {
 		this.baseURL = baseURL;
 		this.timeout = timeout;
+		console.log('🔧 API Client configurado com:', { baseURL, timeout });
 	}
 
 	/**
@@ -172,6 +173,8 @@ class ApiClient {
 		const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
 		const headers = await this.createHeaders(customHeaders, ctx);
 
+		console.log(`🌐 API ${method} request:`, { url, headers, data });
+
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
@@ -181,6 +184,12 @@ class ApiClient {
 				headers,
 				body: data ? JSON.stringify(data) : null,
 				signal: controller.signal
+			});
+
+			console.log(`📡 API ${method} response:`, {
+				status: response.status,
+				statusText: response.statusText,
+				url
 			});
 
 			clearTimeout(timeoutId);

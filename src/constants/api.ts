@@ -92,6 +92,7 @@ export const getTimeout = (): number => {
 
 // Exports para compatibilidade com código antigo
 export const API_BASE_URL = API_CONFIG.BASE_URL;
+console.log('🔧 API_BASE_URL configurada como:', API_BASE_URL);
 export const API_ENDPOINTS = {
 	AUTH: {
 		LOGIN: API_CONFIG.ENDPOINTS.AUTH.LOGIN,

@@ -46,7 +46,7 @@ function AuthJsCredentialsSignInForm() {
 	const { isValid, dirtyFields, errors } = formState;
 
 	useEffect(() => {
-		setValue('email', 'test@example.com', {
+		setValue('email', 'test@api.com', {
 			shouldDirty: true,
 			shouldValidate: true
 		});
@@ -59,6 +59,8 @@ function AuthJsCredentialsSignInForm() {
 	async function onSubmit(formData: FormType) {
 		const { email, password } = formData;
 
+		console.log('📝 Form onSubmit chamado:', { email, password: '***' });
+
 		const result = await signIn('credentials', {
 			email,
 			password,
@@ -66,11 +68,15 @@ function AuthJsCredentialsSignInForm() {
 			redirect: false
 		});
 
+		console.log('🎯 signIn result:', result);
+
 		if (result?.error) {
+			console.error('❌ signIn error:', result.error);
 			setError('root', { type: 'manual', message: signinErrors[result.error] });
 			return false;
 		}
 
+		console.log('✅ Login bem-sucedido');
 		return true;
 	}
 

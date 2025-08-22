@@ -5,15 +5,20 @@ import { authJsProviderMap } from '@auth/authJs';
 const providerLogoPath = 'https://authjs.dev/img/providers';
 
 function AuthJsProviderSelect() {
+	// Debug: verificar providers disponíveis
+	console.log('🔍 AuthJsProviderSelect - Providers disponíveis:', authJsProviderMap);
+
 	function handleSignIn(providerId: string) {
 		try {
-			signIn(providerId, { callbackUrl: '/example' });
+			console.log('🚀 Iniciando login com provider:', providerId);
+			signIn(providerId, { callbackUrl: '/dashboard' });
 		} catch (error) {
-			console.error(error);
+			console.error('❌ Erro no login:', error);
 		}
 	}
 
 	if (authJsProviderMap?.length === 0) {
+		console.warn('⚠️ Nenhum provider disponível');
 		return null;
 	}
 

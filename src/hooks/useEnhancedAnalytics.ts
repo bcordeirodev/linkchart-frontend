@@ -109,7 +109,7 @@ export function useEnhancedAnalytics(linkId: string) {
             let response: EnhancedAnalyticsData;
             try {
                 const apiResponse = await api.get<ApiResponse<EnhancedAnalyticsData>>(
-                    `analytics/link/${linkId}/comprehensive`
+                    `/api/analytics/link/${linkId}/comprehensive`
                 );
                 // O endpoint protegido retorna dados dentro de 'data'
                 response = apiResponse.data || (apiResponse as unknown as EnhancedAnalyticsData);

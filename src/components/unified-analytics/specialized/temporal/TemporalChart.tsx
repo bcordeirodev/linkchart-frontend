@@ -15,14 +15,18 @@ export function TemporalChart({ hourlyData, weeklyData }: TemporalChartProps) {
     const isDark = theme.palette.mode === 'dark';
 
     // Encontrar horário de pico
-    const peakHour = hourlyData.reduce((prev, current) =>
-        prev.clicks > current.clicks ? prev : current
-    );
+    const peakHour = hourlyData.length > 0
+        ? hourlyData.reduce((prev, current) =>
+            prev.clicks > current.clicks ? prev : current
+        )
+        : { label: '--', clicks: 0 };
 
     // Encontrar dia de pico
-    const peakDay = weeklyData.reduce((prev, current) =>
-        prev.clicks > current.clicks ? prev : current
-    );
+    const peakDay = weeklyData.length > 0
+        ? weeklyData.reduce((prev, current) =>
+            prev.clicks > current.clicks ? prev : current
+        )
+        : { day_name: '--', clicks: 0 };
 
     const getTotalClicks = (data: { clicks: number }[]) => {
         return data.reduce((sum, item) => sum + item.clicks, 0);

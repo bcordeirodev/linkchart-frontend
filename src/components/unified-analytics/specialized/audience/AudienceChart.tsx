@@ -22,8 +22,10 @@ export function AudienceChart({ deviceBreakdown, totalClicks }: AudienceChartPro
 
     // Calcular estatísticas
     const totalDevices = deviceBreakdown.reduce((sum, device) => sum + device.clicks, 0);
-    const primaryDevice = deviceBreakdown.reduce((max, device) =>
-        device.clicks > max.clicks ? device : max, deviceBreakdown[0]);
+    const primaryDevice = deviceBreakdown.length > 0
+        ? deviceBreakdown.reduce((max, device) =>
+            device.clicks > max.clicks ? device : max, deviceBreakdown[0])
+        : { device: '--', clicks: 0 };
 
     // Preparar dados para gráficos
     const deviceChartData = deviceBreakdown.map(device => ({
