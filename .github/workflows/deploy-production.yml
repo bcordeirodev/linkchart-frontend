@@ -1,154 +1,83 @@
-name: Deploy Frontend to DigitalOcean Production
+name: 🚀 Deploy Frontend to Production
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
 
 env:
-  NODE_VERSION: '20'
-  REGISTRY: ghcr.io
-  IMAGE_NAME: linkchartapp-frontend
+  NODE_VERSION: '22'
+  DEPLOY_HOST: 138.197.121.81
+  PROJECT_PATH: /var/www/linkchartapp-frontend
+  DOCKER_COMPOSE_FILE: docker/docker-compose.production.yml
 
 jobs:
-  build-and-deploy:
+  deploy:
+    name: 🏗️ Deploy Frontend to Production Server
     runs-on: ubuntu-latest
-    
+    environment: production
+    timeout-minutes: 20
+
     steps:
-    - name: 🚀 Checkout code
+    - name: 📦 Checkout code
       uses: actions/checkout@v4
 
-    - name: 🔧 Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: 'package-lock.json'
-
-    - name: 📦 Install dependencies
-      run: npm ci --prefer-offline --no-audit
-
-    - name: 🏗️ Build application
-      run: npm run build:production
-      env:
-        NODE_ENV: production
-        NEXT_TELEMETRY_DISABLED: 1
-
-    - name: 🐳 Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: 🔐 Log in to Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: 📝 Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-          type=sha,prefix={{branch}}-
-          type=raw,value=latest,enable={{is_default_branch}}
-
-    - name: 🏗️ Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        file: ./docker/Dockerfile.production
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-        platforms: linux/amd64
-
-    - name: 🔍 Debug SSH Configuration
-      run: |
-        echo "🔍 Debugging SSH configuration..."
-        echo "Host: ${{ secrets.DIGITALOCEAN_HOST }}"
-        echo "Username: ${{ secrets.DIGITALOCEAN_USERNAME }}"
-        if [ -n "${{ secrets.DIGITALOCEAN_SSH_KEY }}" ]; then
-          echo "✅ SSH Key is configured (length: ${#DIGITALOCEAN_SSH_KEY})"
-          echo "First 50 chars: ${DIGITALOCEAN_SSH_KEY:0:50}..."
-          echo "Last 50 chars: ${DIGITALOCEAN_SSH_KEY: -50}..."
-        else
-          echo "❌ SSH Key is empty or not configured"
-        fi
-      env:
-        DIGITALOCEAN_SSH_KEY: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
-
-    - name: 🚀 Deploy to DigitalOcean
+    - name: 🚀 Deploy to Production Server
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.DIGITALOCEAN_HOST }}
-        username: ${{ secrets.DIGITALOCEAN_USERNAME }}
+        host: ${{ env.DEPLOY_HOST }}
+        username: root
         key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
-        port: 22
-        timeout: 60s
-        command_timeout: 30m
         script: |
-          echo "🚀 Starting deployment..."
-          echo "Current user: $(whoami)"
-          echo "Current directory: $(pwd)"
-          echo "Server IP: $(curl -s ifconfig.me)"
+          echo "🚀 Iniciando deploy do frontend..."
           
-          # Navegar para o diretório do projeto
-          cd /var/www/linkchartapp-frontend || exit 1
-          echo "✅ Navigated to project directory"
+          # Criar diretório se não existir
+          mkdir -p ${{ env.PROJECT_PATH }}
+          cd ${{ env.PROJECT_PATH }}
           
-          # Verificar se Docker está rodando
-          docker ps || echo "❌ Docker not running"
-          
-          # Criar network se não existir
-          docker network create linkchartapp-network 2>/dev/null || echo "Network already exists"
-          
-          # Fazer backup da versão atual
-          docker tag linkchartapp-frontend:latest linkchartapp-frontend:backup-$(date +%Y%m%d-%H%M%S) || echo "⚠️ No existing image to backup"
+          # Fazer backup da versão atual (se existir)
+          echo "💾 Fazendo backup da versão atual..."
+          docker tag linkchartapp-frontend:latest linkchartapp-frontend:backup-$(date +%Y%m%d-%H%M%S) 2>/dev/null || echo "No previous version to backup"
           
           # Parar containers antigos
-          docker-compose -f docker/docker-compose.production.yml down || echo "⚠️ No containers to stop"
+          echo "🛑 Parando containers antigos..."
+          docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} down 2>/dev/null || echo "No containers to stop"
           
-          # Fazer pull da nova imagem
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker pull ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+          # Build da aplicação
+          echo "🏗️ Building aplicação..."
+          docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} build --no-cache
           
-          # Atualizar tag local
-          docker tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest linkchartapp-frontend:latest
-          
-          # Subir nova versão
-          docker-compose -f docker/docker-compose.production.yml up -d
+          # Iniciar serviços
+          echo "🚀 Iniciando serviços..."
+          docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} up -d
           
           # Aguardar inicialização
-          echo "⏳ Waiting for application to start..."
+          echo "⏳ Aguardando inicialização..."
           sleep 30
           
           # Verificar se está funcionando
-          echo "🔍 Checking application health..."
-          curl -f http://localhost:3000/health || curl -f http://localhost:3000/ || echo "❌ Health check failed"
+          echo "🔍 Verificando se está funcionando..."
+          sleep 10
+          for i in {1..6}; do
+            if curl -f http://localhost:3000/ 2>/dev/null || curl -f http://localhost:3000/health 2>/dev/null; then
+              echo "✅ Aplicação funcionando corretamente"
+              break
+            else
+              echo "⏳ Tentativa $i/6 - Aguardando aplicação inicializar..."
+              sleep 10
+            fi
+          done
           
-          # Limpar imagens antigas (manter últimas 3)
+          # Verificação final
+          if ! curl -f http://localhost:3000/ 2>/dev/null && ! curl -f http://localhost:3000/health 2>/dev/null; then
+            echo "❌ Aplicação não está funcionando após 60s"
+            docker logs linkchartapp-frontend
+            exit 1
+          fi
+          
+          # Limpar imagens antigas
+          echo "🧹 Limpando imagens antigas..."
           docker image prune -f
-          docker images | grep linkchartapp-frontend | tail -n +4 | awk '{print $3}' | xargs -r docker rmi || true
+          docker images | grep linkchartapp-frontend | tail -n +4 | awk '{print $3}' | xargs -r docker rmi 2>/dev/null || echo "No old images to clean"
           
           echo "✅ Deploy completed successfully!"
-
-    - name: 🔔 Notify deployment status
-      if: always()
-      run: |
-        if [ "${{ job.status }}" == "success" ]; then
-          echo "✅ Deployment successful!"
-        else
-          echo "❌ Deployment failed!"
-          exit 1
-        fi
-
-    - name: 🧹 Cleanup
-      if: always()
-      run: |
-        docker system prune -f || true
-        npm cache clean --force || true
