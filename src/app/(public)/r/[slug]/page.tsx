@@ -109,10 +109,30 @@ export default function LinkPreviewPage() {
 		}, 1000);
 	};
 
-	const handleRedirect = () => {
-		if (link) {
-			// Redirecionar via backend para registrar clique
-			window.location.href = `${process.env.NEXT_PUBLIC_API_URL || 'http://138.197.121.81'}/api/r/${slug}`;
+	const handleRedirect = async () => {
+		if (!slug) return;
+
+		try {
+			// Chama o endpoint único que registra métricas e retorna URL
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://138.197.121.81'}/api/r/${slug}`, {
+				method: 'GET',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				}
+			});
+
+			const data = await response.json();
+
+			if (response.ok && data.success && data.redirect_url) {
+				// Redireciona para a URL original
+				window.location.href = data.redirect_url;
+			} else {
+				// Trata erros
+				setError(data.message || 'Erro ao processar redirecionamento');
+			}
+		} catch (err) {
+			setError('Erro de conexão ao processar redirecionamento');
 		}
 	};
 
@@ -137,7 +157,7 @@ export default function LinkPreviewPage() {
 			return;
 		}
 
-		// Buscar informações do link - Chamada pública sem autenticação
+		// Buscar informações do link usando o endpoint unificado (sem registrar clique ainda)
 		fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://138.197.121.81'}/api/link/by-slug/${slug}`, {
 			method: 'GET',
 			headers: {
