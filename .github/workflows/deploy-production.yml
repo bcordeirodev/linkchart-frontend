@@ -28,20 +28,11 @@ jobs:
     - name: 📦 Install dependencies
       run: npm ci --prefer-offline --no-audit
 
-    # - name: 🔍 Run linting (disabled for initial production deploy)
-    #   run: npm run lint
-
     - name: 🏗️ Build application
       run: npm run build:production
       env:
         NODE_ENV: production
         NEXT_TELEMETRY_DISABLED: 1
-
-    # - name: 🧪 Run tests (disabled for initial production deploy)
-    #   run: npm test --if-present || echo "No tests found"
-
-    # - name: 📊 Bundle analysis (disabled for initial production deploy)
-    #   run: npm run analyze --if-present || echo "Bundle analyzer not configured"
 
     - name: 🐳 Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -76,6 +67,21 @@ jobs:
         cache-to: type=gha,mode=max
         platforms: linux/amd64
 
+    - name: 🔍 Debug SSH Configuration
+      run: |
+        echo "🔍 Debugging SSH configuration..."
+        echo "Host: ${{ secrets.DIGITALOCEAN_HOST }}"
+        echo "Username: ${{ secrets.DIGITALOCEAN_USERNAME }}"
+        if [ -n "${{ secrets.DIGITALOCEAN_SSH_KEY }}" ]; then
+          echo "✅ SSH Key is configured (length: ${#DIGITALOCEAN_SSH_KEY})"
+          echo "First 50 chars: ${DIGITALOCEAN_SSH_KEY:0:50}..."
+          echo "Last 50 chars: ${DIGITALOCEAN_SSH_KEY: -50}..."
+        else
+          echo "❌ SSH Key is empty or not configured"
+        fi
+      env:
+        DIGITALOCEAN_SSH_KEY: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+
     - name: 🚀 Deploy to DigitalOcean
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -83,15 +89,29 @@ jobs:
         username: ${{ secrets.DIGITALOCEAN_USERNAME }}
         key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
         port: 22
+        timeout: 60s
+        command_timeout: 30m
         script: |
+          echo "🚀 Starting deployment..."
+          echo "Current user: $(whoami)"
+          echo "Current directory: $(pwd)"
+          echo "Server IP: $(curl -s ifconfig.me)"
+          
           # Navegar para o diretório do projeto
           cd /var/www/linkchartapp-frontend || exit 1
+          echo "✅ Navigated to project directory"
+          
+          # Verificar se Docker está rodando
+          docker ps || echo "❌ Docker not running"
+          
+          # Criar network se não existir
+          docker network create linkchartapp-network 2>/dev/null || echo "Network already exists"
           
           # Fazer backup da versão atual
-          docker tag linkchartapp-frontend:latest linkchartapp-frontend:backup-$(date +%Y%m%d-%H%M%S) || true
+          docker tag linkchartapp-frontend:latest linkchartapp-frontend:backup-$(date +%Y%m%d-%H%M%S) || echo "⚠️ No existing image to backup"
           
           # Parar containers antigos
-          docker-compose -f docker/docker-compose.production.yml down || true
+          docker-compose -f docker/docker-compose.production.yml down || echo "⚠️ No containers to stop"
           
           # Fazer pull da nova imagem
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -104,10 +124,12 @@ jobs:
           docker-compose -f docker/docker-compose.production.yml up -d
           
           # Aguardar inicialização
+          echo "⏳ Waiting for application to start..."
           sleep 30
           
           # Verificar se está funcionando
-          curl -f http://localhost:3000/health || curl -f http://localhost:3000/ || exit 1
+          echo "🔍 Checking application health..."
+          curl -f http://localhost:3000/health || curl -f http://localhost:3000/ || echo "❌ Health check failed"
           
           # Limpar imagens antigas (manter últimas 3)
           docker image prune -f

@@ -1,0 +1,182 @@
+# Cursor AI Rules - Link Chat Project
+
+## 🏗️ Arquitetura e Padrões
+
+### 📋 Antes de Qualquer Desenvolvimento
+1. **SEMPRE** ler `ARCHITECTURE_STRATEGY.md` e `COMPONENT_REUSE_MAP.md`
+2. **VERIFICAR** componentes existentes em `/src/components/` antes de criar novos
+3. **REUTILIZAR** hooks existentes em `/src/hooks/`
+4. **USAR** tipos centralizados em `/src/types/`
+5. **APLICAR** utilitários de `/src/utils/`
+
+### 🎯 Estrutura Obrigatória para Novos Módulos
+
+#### Estrutura de Arquivos:
+```
+src/app/[grupo]/[modulo]/page.tsx           // Página principal (< 100 linhas)
+src/components/[modulo]/[Modulo]Header.tsx  // Header padrão
+src/components/[modulo]/[Modulo]Metrics.tsx // Métricas (usar MetricCard)
+src/components/[modulo]/[Modulo]Tabs.tsx    // Tabs (usar TabPanel)
+src/types/[modulo].ts                       // Tipos centralizados
+src/hooks/use[Modulo].ts                    // Hook customizado
+```
+
+#### Template de Página:
+```typescript
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { Box, Alert, CircularProgress, Typography } from '@mui/material';
+import { [Modulo]Header } from '@/components/[modulo]/[Modulo]Header';
+import { [Modulo]Metrics } from '@/components/[modulo]/[Modulo]Metrics';
+import { [Modulo]Tabs } from '@/components/[modulo]/[Modulo]Tabs';
+import { use[Modulo] } from '@/hooks/use[Modulo]';
+
+function [Modulo]Page() {
+    const { data, loading, error } = use[Modulo]();
+    
+    if (loading) return <LoadingState />;
+    if (error) return <ErrorState />;
+    
+    return (
+        <Box sx={{ p: 3 }}>
+            <[Modulo]Header />
+            <[Modulo]Metrics summary={data.summary} />
+            <[Modulo]Tabs data={data} />
+        </Box>
+    );
+}
+
+export default [Modulo]Page;
+```
+
+## 🧩 Componentes Base OBRIGATÓRIOS
+
+### Layout e Estrutura:
+- `PageBreadcrumb` - SEMPRE usar para navegação
+- `EnhancedPaper` - Container padrão estilizado
+- `MetricCard` - Cards de métricas (NÃO criar novos)
+- `ChartCard` - Container de gráficos (NÃO criar novos)
+- `TabPanel` - Painéis de tabs (NÃO criar novos)
+
+### Charts e Analytics:
+- `ApexChartWrapper` - Wrapper de gráficos
+- `formatAreaChart()` - Formatação de gráficos de área
+- `formatBarChart()` - Formatação de gráficos de barras
+- `formatPieChart()` - Formatação de gráficos de pizza
+
+### Formulários:
+- `LinkForm` - Formulário unificado de links
+- `URLShortenerForm` - Formulário de encurtamento
+- `URLInput` - Input especializado para URLs
+
+## 🎨 Padrões de Design
+
+### Cores para Métricas:
+```typescript
+primary: 'primary'      // Dados principais
+secondary: 'secondary'  // Dados secundários  
+success: 'success'      // Dados positivos
+info: 'info'           // Informações
+warning: 'warning'     // Atenção
+error: 'error'         // Problemas
+```
+
+### Cores para Charts:
+```typescript
+'#1976d2'  // Azul principal
+'#2e7d32'  // Verde
+'#dc004e'  // Rosa
+'#9c27b0'  // Roxo
+'#ff9800'  // Laranja
+'#d32f2f'  // Vermelho
+```
+
+### Espaçamentos Padrão:
+```typescript
+{ p: 3 }        // Padding de página
+{ mb: 4 }       // Margin bottom entre seções
+{ spacing: 3 }  // Grid spacing
+{ spacing: 2 }  // Stack spacing
+```
+
+## 🔧 Hooks e Utilitários
+
+### Hooks Disponíveis:
+- `useLinks()` - Gerenciamento de links
+- `useAnalytics()` - Dados de analytics
+- `useLinkForm()` - Formulários de link
+- `useClipboard()` - Clipboard
+- `useDebounce()` - Debounce
+
+### Utilitários Disponíveis:
+- `formatAreaChart()` - Formatação de gráficos
+- `formatUrlForDisplay()` - Formatação de URLs
+- `capitalizeFirst()` - Capitalização
+- `api.get/post/put/delete()` - Cliente API
+
+## 🚫 O Que NÃO Fazer
+
+### ❌ Evitar Sempre:
+- Criar MetricCard customizado (usar o existente)
+- Criar ChartCard customizado (usar o existente)
+- Criar TabPanel customizado (usar o existente)
+- Duplicar lógica de formatação de charts
+- Criar tipos duplicados para dados similares
+- Páginas com mais de 100 linhas
+- Componentes com mais de 200 linhas
+
+### ❌ Imports Incorretos:
+- `@/auth/useUser` ❌ (usar `@auth/useUser` ✅)
+- Imports relativos longos ❌ (usar aliases ✅)
+- Imports de componentes não existentes ❌
+
+## ✅ Validações Obrigatórias
+
+### Antes de Commit:
+```bash
+npm run build          # Build deve passar
+npx tsc --noEmit      # TypeScript sem erros críticos
+```
+
+### Checklist de Qualidade:
+- [ ] Reutiliza >= 70% dos componentes existentes
+- [ ] Página principal < 100 linhas
+- [ ] Componentes < 200 linhas
+- [ ] Zero duplicação de código
+- [ ] Tipos centralizados
+- [ ] JSDoc em componentes principais
+- [ ] Build compila sem erros
+- [ ] Responsivo (mobile-first)
+
+## 🎯 Exemplos de Sucesso
+
+### ✅ Módulos Bem Implementados:
+- `dashboard/` - 130 linhas, bem componentizado
+- `analytics/` - 93 linhas, modular
+- `profile/` - 96 linhas, componentizado
+- `link/` - 103 linhas, reutiliza componentes
+- `rate-limit/` - 79 linhas, segue padrão
+
+### 📊 Resultados Alcançados:
+- Bundle sizes reduzidos em 50-88%
+- Código duplicado = 0%
+- Componentes reutilizáveis = 15+
+- Tipos centralizados = 100%
+- Padrão consistente = 100%
+
+## 🚀 Para o Cursor AI
+
+### 🤖 Instruções Específicas:
+1. **SEMPRE** consultar este arquivo antes de criar novos módulos
+2. **PRIORIZAR** reutilização sobre criação
+3. **SEGUIR** templates e padrões definidos
+4. **MANTER** consistência arquitetural
+5. **OTIMIZAR** performance através de componentização
+
+### 📋 Prompt Sugerido:
+"Criar módulo [nome] seguindo ARCHITECTURE_STRATEGY.md, reutilizando componentes de COMPONENT_REUSE_MAP.md, mantendo página < 100 linhas e usando padrões estabelecidos"
+
+---
+
+**🎯 OBJETIVO**: Manter código limpo, performático e consistente através de reutilização inteligente de componentes!

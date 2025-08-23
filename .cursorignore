@@ -1,0 +1,12 @@
+# Cursor ignore file
+# Remove .env files from ignore to allow editing
+!.env
+!.env.production
+!.env.*
+!**/.env
+!**/.env.*
+!**/.env.production*
+
+# Keep ignoring common files that shouldn't be edited
+node_modules/
+vendor/
