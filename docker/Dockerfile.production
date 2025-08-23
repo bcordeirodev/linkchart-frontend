@@ -25,8 +25,8 @@ RUN apk add --no-cache \
 COPY package*.json ./
 COPY next.config.production.mjs ./next.config.mjs
 
-# Instalar dependências (incluindo devDependencies para build)
-RUN npm ci --prefer-offline --no-audit
+# Instalar todas as dependências (incluindo devDependencies para build)
+RUN npm ci --prefer-offline --no-audit --include=dev
 
 # Copiar código fonte
 COPY . .
