@@ -106,7 +106,7 @@ export default function LinkPreviewPage() {
 				}
 				return prev - 1;
 			});
-		}, 1000);
+		}, 500);
 	};
 
 	const handleRedirect = async () => {
@@ -114,7 +114,7 @@ export default function LinkPreviewPage() {
 
 		try {
 			// Chama o endpoint único que registra métricas e retorna URL
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://138.197.121.81'}/api/r/${slug}`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost'}/api/r/${slug}`, {
 				method: 'GET',
 				headers: {
 					'Accept': 'application/json',
@@ -157,12 +157,13 @@ export default function LinkPreviewPage() {
 			return;
 		}
 
-		// Buscar informações do link usando o endpoint unificado (sem registrar clique ainda)
-		fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://138.197.121.81'}/api/link/by-slug/${slug}`, {
+		// Buscar informações do link usando endpoint unificado em modo preview (sem registrar clique)
+		fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost'}/api/r/${slug}?preview=true`, {
 			method: 'GET',
 			headers: {
 				'Accept': 'application/json',
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'X-Preview-Mode': 'true'
 			}
 		})
 			.then(response => {
@@ -172,11 +173,11 @@ export default function LinkPreviewPage() {
 				return response.json();
 			})
 			.then((response) => {
-				if (response.data) {
+				if (response.success && response.data) {
 					setLink(response.data);
 					setLoading(false);
 				} else {
-					setError('Link não encontrado');
+					setError(response.message || 'Link não encontrado');
 					setLoading(false);
 				}
 			})
@@ -184,14 +185,18 @@ export default function LinkPreviewPage() {
 				setError(err.message || 'Link não encontrado');
 				setLoading(false);
 			});
-	}, [slug]); // Removido showPreview e startCountdown das dependências
+	}, [slug, link]); // Adicionado link como dependência para evitar loops
 
 	// useEffect separado para iniciar countdown quando link for carregado
 	useEffect(() => {
 		if (link && !loading && !error && !showPreview && countdown === 3) {
-			startCountdown();
+			const timer = setTimeout(() => {
+				startCountdown();
+			}, 100); // Pequeno delay para evitar conflitos
+
+			return () => clearTimeout(timer);
 		}
-	}, [link, loading, error, showPreview]);
+	}, [link, loading, error, showPreview, countdown]);
 
 	// Componente de Loading
 	if (loading) {

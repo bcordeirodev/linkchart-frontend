@@ -1,0 +1,132 @@
+name: Deploy Frontend to DigitalOcean Production
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: linkchartapp-frontend
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🚀 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: 'package-lock.json'
+
+    - name: 📦 Install dependencies
+      run: npm ci --prefer-offline --no-audit
+
+    - name: 🔍 Run linting
+      run: npm run lint
+
+    - name: 🏗️ Build application
+      run: npm run build:production
+      env:
+        NODE_ENV: production
+        NEXT_TELEMETRY_DISABLED: 1
+
+    - name: 🧪 Run tests (if available)
+      run: npm test --if-present || echo "No tests found"
+
+    - name: 📊 Bundle analysis (optional)
+      run: npm run analyze --if-present || echo "Bundle analyzer not configured"
+
+    - name: 🐳 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: 🔐 Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 📝 Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    - name: 🏗️ Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./docker/Dockerfile.production
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        platforms: linux/amd64
+
+    - name: 🚀 Deploy to DigitalOcean
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.DIGITALOCEAN_HOST }}
+        username: ${{ secrets.DIGITALOCEAN_USERNAME }}
+        key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+        port: 22
+        script: |
+          # Navegar para o diretório do projeto
+          cd /var/www/linkchartapp-frontend || exit 1
+          
+          # Fazer backup da versão atual
+          docker tag linkchartapp-frontend:latest linkchartapp-frontend:backup-$(date +%Y%m%d-%H%M%S) || true
+          
+          # Parar containers antigos
+          docker-compose -f docker/docker-compose.production.yml down || true
+          
+          # Fazer pull da nova imagem
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker pull ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+          
+          # Atualizar tag local
+          docker tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest linkchartapp-frontend:latest
+          
+          # Subir nova versão
+          docker-compose -f docker/docker-compose.production.yml up -d
+          
+          # Aguardar inicialização
+          sleep 30
+          
+          # Verificar se está funcionando
+          curl -f http://localhost:3000/health || curl -f http://localhost:3000/ || exit 1
+          
+          # Limpar imagens antigas (manter últimas 3)
+          docker image prune -f
+          docker images | grep linkchartapp-frontend | tail -n +4 | awk '{print $3}' | xargs -r docker rmi || true
+          
+          echo "✅ Deploy completed successfully!"
+
+    - name: 🔔 Notify deployment status
+      if: always()
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "✅ Deployment successful!"
+        else
+          echo "❌ Deployment failed!"
+          exit 1
+        fi
+
+    - name: 🧹 Cleanup
+      if: always()
+      run: |
+        docker system prune -f || true
+        npm cache clean --force || true

@@ -36,8 +36,8 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'api.linkchartapp.com',
+        protocol: 'http',
+        hostname: '138.197.121.81',
         pathname: '/storage/**',
       },
     ],
@@ -73,7 +73,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: https: blob:",
-              "connect-src 'self' https://api.linkchartapp.com https://www.google-analytics.com",
+              "connect-src 'self' http://138.197.121.81 https://www.google-analytics.com",
               "frame-src 'none'",
             ].join('; '),
           },
@@ -151,7 +151,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://api.linkchartapp.com/api/:path*',
+        destination: 'http://138.197.121.81/api/:path*',
       },
     ];
   },

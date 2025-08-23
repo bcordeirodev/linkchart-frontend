@@ -1,0 +1,89 @@
+# ===========================================
+# DOCKERFILE DE PRODUÇÃO - LINKCHARTAPP FRONTEND
+# ===========================================
+
+# Estágio 1: Build da aplicação
+FROM node:20-alpine AS builder
+
+# Metadados
+LABEL maintainer="LinkChart Team"
+LABEL description="LinkChart Frontend - Production Build"
+LABEL version="1.0.0"
+
+# Definir diretório de trabalho
+WORKDIR /app
+
+# Instalar dependências do sistema necessárias
+RUN apk add --no-cache \
+    libc6-compat \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/cache/apk/*
+
+# Copiar arquivos de dependências
+COPY package*.json ./
+COPY next.config.production.mjs ./next.config.mjs
+
+# Instalar dependências
+RUN npm ci --only=production --prefer-offline --no-audit
+
+# Copiar código fonte
+COPY . .
+
+# Copiar configuração de produção
+COPY .env.production ./.env.local
+
+# Build da aplicação
+RUN npm run build:production
+
+# Estágio 2: Runtime de produção
+FROM node:20-alpine AS runner
+
+# Instalar dependências mínimas do sistema
+RUN apk add --no-cache \
+    dumb-init \
+    curl \
+    && rm -rf /var/cache/apk/*
+
+# Criar usuário não-root
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Definir diretório de trabalho
+WORKDIR /app
+
+# Copiar arquivos necessários do builder
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+
+# Copiar build da aplicação
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copiar scripts
+COPY --chown=nextjs:nodejs docker/scripts/prod-entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Criar diretórios necessários
+RUN mkdir -p /app/.next/cache && chown nextjs:nodejs /app/.next/cache
+
+# Configurar variáveis de ambiente
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Expor porta
+EXPOSE 3000
+
+# Mudar para usuário não-root
+USER nextjs
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3000/health || curl -f http://localhost:3000/ || exit 1
+
+# Comando de inicialização
+ENTRYPOINT ["dumb-init", "--", "/usr/local/bin/entrypoint.sh"]
+CMD ["node", "server.js"]
