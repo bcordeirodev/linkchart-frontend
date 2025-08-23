@@ -112,7 +112,7 @@ export default function LinkPreviewPage() {
 	const handleRedirect = () => {
 		if (link) {
 			// Redirecionar via backend para registrar clique
-			window.location.href = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/r/${slug}`;
+			window.location.href = `${process.env.NEXT_PUBLIC_API_URL || 'http://138.197.121.81'}/api/r/${slug}`;
 		}
 	};
 
@@ -132,8 +132,13 @@ export default function LinkPreviewPage() {
 			return;
 		}
 
+		// Evitar múltiplas chamadas se já temos o link
+		if (link) {
+			return;
+		}
+
 		// Buscar informações do link - Chamada pública sem autenticação
-		fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/link/by-slug/${slug}`, {
+		fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://138.197.121.81'}/api/link/by-slug/${slug}`, {
 			method: 'GET',
 			headers: {
 				'Accept': 'application/json',
@@ -150,11 +155,6 @@ export default function LinkPreviewPage() {
 				if (response.data) {
 					setLink(response.data);
 					setLoading(false);
-
-					// Iniciar countdown automático se não for preview
-					if (!showPreview) {
-						startCountdown();
-					}
 				} else {
 					setError('Link não encontrado');
 					setLoading(false);
@@ -164,7 +164,14 @@ export default function LinkPreviewPage() {
 				setError(err.message || 'Link não encontrado');
 				setLoading(false);
 			});
-	}, [slug, showPreview, startCountdown]);
+	}, [slug]); // Removido showPreview e startCountdown das dependências
+
+	// useEffect separado para iniciar countdown quando link for carregado
+	useEffect(() => {
+		if (link && !loading && !error && !showPreview && countdown === 3) {
+			startCountdown();
+		}
+	}, [link, loading, error, showPreview]);
 
 	// Componente de Loading
 	if (loading) {

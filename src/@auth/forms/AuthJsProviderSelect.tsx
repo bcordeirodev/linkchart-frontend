@@ -13,7 +13,7 @@ function AuthJsProviderSelect() {
 			console.log('🚀 Iniciando login com provider:', providerId);
 			signIn(providerId, { callbackUrl: '/dashboard' });
 		} catch (error) {
-			console.error('❌ Erro no login:', error);
+			console.error('❌ Erro no login: ', error);
 		}
 	}
 
