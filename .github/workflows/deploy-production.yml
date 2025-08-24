@@ -52,7 +52,7 @@ jobs:
           
           # Parar containers antigos
           echo "🛑 Parando containers antigos..."
-          docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} down 2>/dev/null || echo "No containers to stop"
+          docker compose -f docker/docker-compose.production.yml down 2>/dev/null || echo "No containers to stop"
           
           # Limpar imagens conflitantes
           echo "🧹 Limpando imagens conflitantes..."
@@ -60,11 +60,11 @@ jobs:
           
           # Build da aplicação
           echo "🏗️ Building aplicação..."
-          docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} build --no-cache
+          docker compose -f docker/docker-compose.production.yml build --no-cache
           
           # Iniciar serviços
           echo "🚀 Iniciando serviços..."
-          docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} up -d
+          docker compose -f docker/docker-compose.production.yml up -d
           
           # Aguardar inicialização
           echo "⏳ Aguardando inicialização..."
