@@ -43,6 +43,10 @@ jobs:
           echo "🛑 Parando containers antigos..."
           docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} down 2>/dev/null || echo "No containers to stop"
           
+          # Limpar imagens conflitantes
+          echo "🧹 Limpando imagens conflitantes..."
+          docker rmi linkchartapp-frontend:latest 2>/dev/null || echo "No conflicting image to remove"
+          
           # Build da aplicação
           echo "🏗️ Building aplicação..."
           docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} build --no-cache
