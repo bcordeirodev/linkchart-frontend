@@ -26,7 +26,8 @@ COPY package*.json ./
 COPY next.config.production.mjs ./next.config.mjs
 
 # Instalar todas as dependências (incluindo devDependencies para build)
-RUN npm ci --prefer-offline --no-audit --ignore-scripts
+# Usar npm install para resolver conflitos React 19 + MUI automaticamente
+RUN npm install --prefer-offline --no-audit --ignore-scripts
 
 # Copiar código fonte
 COPY . .
