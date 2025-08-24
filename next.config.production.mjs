@@ -72,7 +72,14 @@ const nextConfig = {
         tls: false,
       };
     }
-    return config;
+    
+    // Configurações específicas para resolver problemas de clientModules
+    config.experiments = {
+      ...config.experiments,
+      topLevelAwait: true,
+    };
+    
+    return config;g
   },
 
   // Configurações de reescrita
@@ -85,8 +92,14 @@ const nextConfig = {
     ];
   },
 
-  // Output comentado para resolver erro de clientModules
-  // output: 'standalone',
+  // Output standalone para Docker
+  output: 'standalone',
+  
+  // Configurações específicas para Next.js 15
+  experimental: {
+    serverComponentsExternalPackages: [],
+    trace: false,
+  },
 };
 
 export default nextConfig;

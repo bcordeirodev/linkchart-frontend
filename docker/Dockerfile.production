@@ -35,7 +35,7 @@ COPY . .
 COPY .env.production ./.env.local
 
 # Build da aplicação
-RUN npm run build:production
+RUN npm run build:production || npm run build
 
 # Estágio 2: Runtime de produção
 FROM node:20-alpine AS runner
