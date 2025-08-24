@@ -51,8 +51,9 @@ jobs:
           echo "🧹 Limpando imagens conflitantes..."
           docker rmi linkchartapp-frontend:latest 2>/dev/null || echo "No conflicting image to remove"
           
-          # Limpar cache do Docker
-          echo "🧹 Limpando cache do Docker..."
+          # Limpeza completa do Docker
+          echo "🧹 Limpeza completa do Docker..."
+          docker system prune -a -f
           docker builder prune -f
           
           # Build da aplicação
