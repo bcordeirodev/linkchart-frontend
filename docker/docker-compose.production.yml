@@ -3,6 +3,7 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.production
+    image: linkchartapp-frontend:latest
     container_name: linkchartapp-frontend
     restart: unless-stopped
     ports:
