@@ -26,7 +26,7 @@ COPY package*.json ./
 COPY next.config.production.mjs ./next.config.mjs
 
 # Instalar todas as dependências (incluindo devDependencies para build)
-RUN npm ci --prefer-offline --no-audit --force --ignore-scripts --include=dev
+RUN npm install --prefer-offline --no-audit --force --ignore-scripts
 
 # Copiar código fonte
 COPY . .
