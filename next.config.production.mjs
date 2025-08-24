@@ -79,7 +79,7 @@ const nextConfig = {
       topLevelAwait: true,
     };
     
-    return config;g
+    return config;
   },
 
   // Configurações de reescrita
@@ -94,6 +94,10 @@ const nextConfig = {
 
   // Output standalone para Docker
   output: 'standalone',
+  
+  // Configurações de build otimizadas
+  swcMinify: true,
+  compress: true,
   
   // Configurações específicas para Next.js 15
   experimental: {

@@ -1,9 +1,6 @@
 services:
   frontend:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.production
-    image: linkchartapp-frontend:latest
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/linkchartapp-frontend:latest
     container_name: linkchartapp-frontend
     restart: unless-stopped
     ports:
@@ -11,3 +8,26 @@ services:
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=http://138.197.121.81
+      - NEXT_PUBLIC_BASE_URL=https://linkchartapp.com
+      - NEXT_PUBLIC_SITE_URL=https://linkchartapp.com
+      - API_BASE_URL=http://138.197.121.81
+      - AUTH_URL=https://linkchartapp.com
+      - NEXTAUTH_URL=https://linkchartapp.com
+      - NEXT_PUBLIC_APP_NAME=Link Chart
+      - NEXT_PUBLIC_APP_VERSION=1.0.0
+      - NEXT_PUBLIC_APP_DESCRIPTION=Encurtador de URLs profissional com analytics avançados
+      - NEXT_TELEMETRY_DISABLED=1
+      - NEXT_PUBLIC_ENABLE_ANALYTICS=true
+      - NEXT_PUBLIC_ENABLE_PWA=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - frontend-network
+
+networks:
+  frontend-network:
+    driver: bridge

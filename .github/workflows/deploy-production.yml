@@ -6,59 +6,110 @@ on:
   workflow_dispatch:
 
 env:
+  REGISTRY: docker.io
+  IMAGE_NAME: linkchartapp-frontend
   NODE_VERSION: '22'
-  DEPLOY_HOST: 138.197.121.81
-  PROJECT_PATH: /var/www/linkchartapp-frontend
-  DOCKER_COMPOSE_FILE: docker/docker-compose.production.yml
 
 jobs:
-  deploy:
-    name: 🏗️ Deploy Frontend to Production Server
+  build-and-deploy:
+    name: 🏗️ Build and Deploy Frontend
     runs-on: ubuntu-latest
     environment: production
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
     - name: 📦 Checkout code
       uses: actions/checkout@v4
 
+    - name: 🔐 Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: 🐳 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: 📋 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: 📥 Install dependencies
+      run: npm ci --prefer-offline --no-audit
+
+    - name: 🧪 Run tests (optional)
+      run: npm run lint
+
+    - name: 🏗️ Build application
+      run: npm run build:production
+      env:
+        NODE_ENV: production
+        NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+        AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+        GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+        NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        API_BASE_URL: ${{ secrets.API_BASE_URL }}
+        AUTH_URL: ${{ secrets.AUTH_URL }}
+        NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+        NEXT_PUBLIC_APP_NAME: ${{ secrets.NEXT_PUBLIC_APP_NAME }}
+        NEXT_PUBLIC_APP_VERSION: ${{ secrets.NEXT_PUBLIC_APP_VERSION }}
+        NEXT_PUBLIC_APP_DESCRIPTION: ${{ secrets.NEXT_PUBLIC_APP_DESCRIPTION }}
+        NEXT_TELEMETRY_DISABLED: 1
+        NEXT_PUBLIC_ENABLE_ANALYTICS: true
+        NEXT_PUBLIC_ENABLE_PWA: true
+
+    - name: 🐳 Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./docker/Dockerfile.production
+        push: true
+        tags: |
+          ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        build-args: |
+          NODE_ENV=production
+          NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}
+          NEXT_PUBLIC_SITE_URL=${{ secrets.NEXT_PUBLIC_SITE_URL }}
+          API_BASE_URL=${{ secrets.API_BASE_URL }}
+          AUTH_SECRET=${{ secrets.AUTH_SECRET }}
+          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          AUTH_URL=${{ secrets.AUTH_URL }}
+          NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+          NEXT_PUBLIC_APP_NAME=${{ secrets.NEXT_PUBLIC_APP_NAME }}
+          NEXT_PUBLIC_APP_VERSION=${{ secrets.NEXT_PUBLIC_APP_VERSION }}
+          NEXT_PUBLIC_APP_DESCRIPTION=${{ secrets.NEXT_PUBLIC_APP_DESCRIPTION }}
+          NEXT_TELEMETRY_DISABLED=1
+          NEXT_PUBLIC_ENABLE_ANALYTICS=true
+          NEXT_PUBLIC_ENABLE_PWA=true
+
     - name: 🚀 Deploy to Production Server
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ env.DEPLOY_HOST }}
+        host: ${{ secrets.DEPLOY_HOST }}
         username: root
         key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
         script: |
           echo "🚀 Iniciando deploy do frontend..."
           
           # Criar diretório se não existir
-          mkdir -p ${{ env.PROJECT_PATH }}
-          cd ${{ env.PROJECT_PATH }}
-          
-          # Verificar docker-compose
-          echo "🔧 Verificando docker-compose..."
-          echo "✅ Docker-compose configurado corretamente"
-          
-          # Fazer backup da versão atual (se existir)
-          echo "💾 Fazendo backup da versão atual..."
-          docker tag linkchartapp-frontend:latest linkchartapp-frontend:backup-$(date +%Y%m%d-%H%M%S) 2>/dev/null || echo "No previous version to backup"
+          mkdir -p /var/www/linkchartapp-frontend
+          cd /var/www/linkchartapp-frontend
           
           # Parar containers antigos
           echo "🛑 Parando containers antigos..."
           docker compose -f docker/docker-compose.production.yml down 2>/dev/null || echo "No containers to stop"
           
-          # Limpar imagens conflitantes
-          echo "🧹 Limpando imagens conflitantes..."
-          docker rmi linkchartapp-frontend:latest 2>/dev/null || echo "No conflicting image to remove"
-          
-          # Limpeza completa do Docker
-          echo "🧹 Limpeza completa do Docker..."
-          docker system prune -a -f
-          docker builder prune -f
-          
-          # Build da aplicação
-          echo "🏗️ Building aplicação..."
-          docker compose -f docker/docker-compose.production.yml build --no-cache --pull
+          # Pull da nova imagem
+          echo "📥 Baixando nova imagem..."
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/linkchartapp-frontend:latest
           
           # Iniciar serviços
           echo "🚀 Iniciando serviços..."
@@ -70,18 +121,23 @@ jobs:
           
           # Verificar se está funcionando
           echo "🔍 Verificando se está funcionando..."
-          sleep 10
-          if curl -f http://localhost:3000/ 2>/dev/null; then
-            echo "✅ Aplicação funcionando corretamente"
-          else
-            echo "❌ Aplicação não está funcionando"
-            docker logs linkchartapp-frontend
-            exit 1
-          fi
+          for i in {1..5}; do
+            if curl -f http://localhost:3000/ 2>/dev/null; then
+              echo "✅ Aplicação funcionando corretamente"
+              break
+            else
+              echo "⏳ Tentativa $i/5 - Aguardando..."
+              if [ $i -eq 5 ]; then
+                echo "❌ Aplicação não está funcionando após 5 tentativas"
+                docker logs linkchartapp-frontend
+                exit 1
+              fi
+              sleep 10
+            fi
+          done
           
           # Limpar imagens antigas
           echo "🧹 Limpando imagens antigas..."
           docker image prune -f
-          docker images | grep linkchartapp-frontend | tail -n +4 | awk '{print $3}' | xargs -r docker rmi 2>/dev/null || echo "No old images to clean"
           
           echo "✅ Deploy completed successfully!"

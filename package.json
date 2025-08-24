@@ -105,7 +105,7 @@
     "dev": "cp .env.development .env && next dev --turbo",
     "prod": "cp .env.production .env && next dev --turbo",
     "build": "next build",
-    "build:production": "cp .env.production .env.local && next build",
+    "build:production": "next build",
     "start": "next start",
     "start:production": "NODE_ENV=production next start",
     "lint": "eslint ./src --config ./eslint.config.mjs",
