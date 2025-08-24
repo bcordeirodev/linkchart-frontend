@@ -9,7 +9,7 @@ env:
   NODE_VERSION: '22'
   DEPLOY_HOST: 138.197.121.81
   PROJECT_PATH: /var/www/linkchartapp-frontend
-  DOCKER_COMPOSE_FILE: docker-compose.production.yml
+  DOCKER_COMPOSE_FILE: docker/docker-compose.production.yml
 
 jobs:
   deploy:
@@ -35,10 +35,16 @@ jobs:
           mkdir -p ${{ env.PROJECT_PATH }}
           cd ${{ env.PROJECT_PATH }}
           
-          # Copiar docker-compose para o servidor
-          echo "🔧 Copiando docker-compose..."
-          cp docker-compose.production.yml docker-compose.production.yml
-          echo "✅ Docker-compose copiado"
+          # Verificar e corrigir docker-compose se necessário
+          echo "🔧 Verificando docker-compose..."
+          if grep -q "image:" docker/docker-compose.production.yml; then
+            echo "❌ Docker-compose tem 'image:' - corrigindo..."
+            sed -i '/image:/d' docker/docker-compose.production.yml
+            sed -i '/version:/d' docker/docker-compose.production.yml
+            echo "✅ Docker-compose corrigido"
+          else
+            echo "✅ Docker-compose já está correto"
+          fi
           
           # Fazer backup da versão atual (se existir)
           echo "💾 Fazendo backup da versão atual..."

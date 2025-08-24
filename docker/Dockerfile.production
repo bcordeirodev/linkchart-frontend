@@ -26,7 +26,7 @@ COPY package*.json ./
 COPY next.config.production.mjs ./next.config.mjs
 
 # Instalar todas as dependências (incluindo devDependencies para build)
-RUN npm ci --prefer-offline --no-audit --legacy-peer-deps
+RUN npm ci --prefer-offline --no-audit --legacy-peer-deps --ignore-scripts
 
 # Copiar código fonte
 COPY . .
@@ -35,7 +35,7 @@ COPY . .
 COPY .env.production ./.env.local
 
 # Build da aplicação
-RUN npm run build:prod
+RUN npm run build:production
 
 # Estágio 2: Runtime de produção
 FROM node:20-alpine AS runner
@@ -61,9 +61,7 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copiar scripts
-COPY --chown=nextjs:nodejs docker/scripts/prod-entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Scripts removidos para simplificar deploy
 
 # Criar diretórios necessários
 RUN mkdir -p /app/.next/cache && chown nextjs:nodejs /app/.next/cache
@@ -79,9 +77,7 @@ EXPOSE 3000
 # Mudar para usuário não-root
 USER nextjs
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:3000/health || curl -f http://localhost:3000/ || exit 1
+# Health check removido para simplificar deploy
 
 # Comando de inicialização
 ENTRYPOINT ["dumb-init", "--"]
