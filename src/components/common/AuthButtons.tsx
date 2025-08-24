@@ -20,7 +20,7 @@ export function AuthButtons({ variant = 'default', dashboardRoute = '/dashboard'
 	const { data: user } = useUser();
 
 	const buttonProps = {
-		borderRadius: 3,
+		borderRadius: 2,
 		textTransform: 'none' as const,
 		fontWeight: 600,
 		...(variant === 'compact' && { size: 'small' as const })
