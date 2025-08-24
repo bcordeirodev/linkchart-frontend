@@ -35,6 +35,17 @@ jobs:
           mkdir -p ${{ env.PROJECT_PATH }}
           cd ${{ env.PROJECT_PATH }}
           
+          # Verificar e corrigir docker-compose se necessário
+          echo "🔧 Verificando docker-compose..."
+          if grep -q "image:" docker/docker-compose.production.yml; then
+            echo "❌ Docker-compose tem 'image:' - corrigindo..."
+            sed -i '/image:/d' docker/docker-compose.production.yml
+            sed -i '/version:/d' docker/docker-compose.production.yml
+            echo "✅ Docker-compose corrigido"
+          else
+            echo "✅ Docker-compose já está correto"
+          fi
+          
           # Fazer backup da versão atual (se existir)
           echo "💾 Fazendo backup da versão atual..."
           docker tag linkchartapp-frontend:latest linkchartapp-frontend:backup-$(date +%Y%m%d-%H%M%S) 2>/dev/null || echo "No previous version to backup"
