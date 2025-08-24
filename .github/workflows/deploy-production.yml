@@ -58,19 +58,10 @@ jobs:
           # Verificar se está funcionando
           echo "🔍 Verificando se está funcionando..."
           sleep 10
-          for i in {1..6}; do
-            if curl -f http://localhost:3000/ 2>/dev/null || curl -f http://localhost:3000/health 2>/dev/null; then
-              echo "✅ Aplicação funcionando corretamente"
-              break
-            else
-              echo "⏳ Tentativa $i/6 - Aguardando aplicação inicializar..."
-              sleep 10
-            fi
-          done
-          
-          # Verificação final
-          if ! curl -f http://localhost:3000/ 2>/dev/null && ! curl -f http://localhost:3000/health 2>/dev/null; then
-            echo "❌ Aplicação não está funcionando após 60s"
+          if curl -f http://localhost:3000/ 2>/dev/null; then
+            echo "✅ Aplicação funcionando corretamente"
+          else
+            echo "❌ Aplicação não está funcionando"
             docker logs linkchartapp-frontend
             exit 1
           fi

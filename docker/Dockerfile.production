@@ -26,7 +26,7 @@ COPY package*.json ./
 COPY next.config.production.mjs ./next.config.mjs
 
 # Instalar todas as dependências (incluindo devDependencies para build)
-RUN npm ci --prefer-offline --no-audit --include=dev
+RUN npm ci --prefer-offline --no-audit --legacy-peer-deps
 
 # Copiar código fonte
 COPY . .
@@ -35,7 +35,7 @@ COPY . .
 COPY .env.production ./.env.local
 
 # Build da aplicação
-RUN npm run build:production
+RUN npm run build:prod
 
 # Estágio 2: Runtime de produção
 FROM node:20-alpine AS runner
@@ -70,7 +70,6 @@ RUN mkdir -p /app/.next/cache && chown nextjs:nodejs /app/.next/cache
 
 # Configurar variáveis de ambiente
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
@@ -85,5 +84,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:3000/health || curl -f http://localhost:3000/ || exit 1
 
 # Comando de inicialização
-ENTRYPOINT ["dumb-init", "--", "/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "server.js"]
