@@ -4,7 +4,6 @@
 Tailwind base styles
 */
 @import 'tailwindcss/preflight.css' layer(base);
-
 @import './app-base.css';
 
 /**
