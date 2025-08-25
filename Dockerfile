@@ -42,7 +42,7 @@ COPY . .
 # Definir variáveis de ambiente para build
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV STANDALONE=true
+# ENV STANDALONE=true
 ENV TAILWIND_MODE=build
 ENV TAILWIND_DISABLE_OXIDE=1
 
