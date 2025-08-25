@@ -15,7 +15,7 @@ DOCKERHUB_TOKEN = seu_token_dockerhub
 ### 2. **Server Deploy**
 ```
 DEPLOY_HOST = 138.197.121.81
-DIGITALOCEAN_SSH_KEY = sua_chave_ssh_privada
+DEPLOY_SSH_KEY = sua_chave_ssh_privada
 ```
 
 ### 3. **Environment Variables**

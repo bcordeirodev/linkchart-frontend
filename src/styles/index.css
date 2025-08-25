@@ -7,12 +7,12 @@ Tailwind base styles
 @import './app-base.css';
 
 /**
-Tailwind theme styles
+ Tailwind theme styles
 */
 @import 'tailwindcss/theme.css' layer(theme);
 
 /**
-Tailwind utilities styles
+ Tailwind utilities styles
 */
 @import 'tailwindcss/utilities.css' layer(utilities);
 
