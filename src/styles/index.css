@@ -23,7 +23,7 @@ Tailwind theme styles
 }
 
 /**
-Tailwind plugins
+Tailwind plugin
 */
 @plugin "../@fuse/tailwind/plugins/icon-size.js";
 
