@@ -11,7 +11,10 @@ const nextConfig = {
 		ignoreBuildErrors: true
 	},
 	// Next.js 15 uses App Router by default when src/app exists
-	experimental: {},
+	experimental: {
+		optimizePackageImports: ['tailwindcss'],
+		webpackBuildWorker: false,
+	},
 	// Docker/Container configuration
 	output: process.env.NODE_ENV === 'production' && process.env.STANDALONE === 'true' ? 'standalone' : undefined,
 	// Configuração para proxies e redirecionamento
