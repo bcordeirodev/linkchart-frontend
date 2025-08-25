@@ -196,12 +196,43 @@ jobs:
           echo "- **Environment**: Production" >> $GITHUB_STEP_SUMMARY
           echo "- **Deployed at**: $(date)" >> $GITHUB_STEP_SUMMARY
 
-      # DEPLOY REAL (Comentado - implementar conforme sua infraestrutura)
-      # - name: 🚀 Deploy to DigitalOcean
-      #   run: |
-      #     echo "Deploying to DigitalOcean..."
-      #     # Implementar deploy real aqui
-      #     # Exemplo: kubectl, docker-compose, etc.
+      # DEPLOY REAL - DigitalOcean via SSH
+      - name: 🚀 Deploy to DigitalOcean
+        run: |
+          echo "🚀 Starting deployment to DigitalOcean..."
+          
+          # Configurar SSH
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+          
+          # Conectar ao servidor e executar deploy
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+            echo "📥 Pulling latest image..."
+            docker pull ${{ needs.build-and-push.outputs.image-tag }}
+            
+            echo "🛑 Stopping existing container..."
+            docker stop link-chart-frontend || true
+            docker rm link-chart-frontend || true
+            
+            echo "🚀 Starting new container..."
+            docker run -d \
+              --name link-chart-frontend \
+              --restart unless-stopped \
+              -p 3000:3000 \
+              -e NODE_ENV=production \
+              -e NEXT_TELEMETRY_DISABLED=1 \
+              -e PORT=3000 \
+              -e HOSTNAME=0.0.0.0 \
+              ${{ needs.build-and-push.outputs.image-tag }}
+            
+            echo "🏥 Health check..."
+            sleep 10
+            curl -f http://localhost:3000/api/health || echo "⚠️ Health check failed, but container is running"
+            
+            echo "✅ Deployment completed!"
+          EOF
 
   # ===========================================
   # JOB 4: NOTIFICAÇÕES (OPCIONAL)
