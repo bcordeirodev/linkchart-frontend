@@ -42,9 +42,10 @@ COPY . .
 # Definir variáveis de ambiente para build
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-# ENV STANDALONE=true
+ENV STANDALONE=false
 ENV TAILWIND_MODE=build
 ENV TAILWIND_DISABLE_OXIDE=1
+ENV NEXT_SHARP_PATH=/app/node_modules/sharp
 
 # Executar build do Next.js
 RUN npm run build
@@ -69,7 +70,7 @@ ENV HOSTNAME="0.0.0.0"
 # Copiar arquivos públicos
 COPY --from=builder /app/public ./public
 
-# Copiar arquivos de build (SEM standalone - build padrão do Next.js)
+# Copiar arquivos de build (build padrão do Next.js - standalone desabilitado)
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
@@ -80,7 +81,7 @@ USER nextjs
 # Expor porta
 EXPOSE 3000
 
-# Comando para iniciar a aplicação (SEM standalone)
+# Comando para iniciar a aplicação (standalone desabilitado)
 CMD ["npm", "start"]
 
 # ===========================================
