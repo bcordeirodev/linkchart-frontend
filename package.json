@@ -105,6 +105,7 @@
   },
   "scripts": {
     "dev": "NODE_ENV=development next dev --turbo",
+    "dev:prod": "NODE_ENV=production next dev --turbo",
     "build": "next build",
     "start": "next start",
     "start:prod": "NODE_ENV=production next start",
