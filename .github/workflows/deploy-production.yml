@@ -216,7 +216,7 @@ jobs:
       - name: 📊 Job Status Summary
         run: |
           echo "## 📊 Pipeline Status" >> $GITHUB_STEP_SUMMARY
-          echo "- **Validation**: ${{ needs.validate.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Validation**: ${{ needs.quick-build.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Build & Push**: ${{ needs.build-and-push.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Deploy**: ${{ needs.deploy.result }}" >> $GITHUB_STEP_SUMMARY
           
