@@ -53,7 +53,7 @@ class ApiClient {
 	constructor(baseURL: string = API_BASE_URL, timeout: number = REQUEST_TIMEOUT) {
 		this.baseURL = baseURL;
 		this.timeout = timeout;
-		console.log('🔧 API Client configurado :', { baseURL, timeout });
+		console.log('🔧 API Client configurado::', { baseURL, timeout });
 	}
 
 	/**
