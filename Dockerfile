@@ -69,9 +69,10 @@ ENV HOSTNAME="0.0.0.0"
 # Copiar arquivos públicos
 COPY --from=builder /app/public ./public
 
-# Copiar arquivos de build (standalone)
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Copiar arquivos de build (SEM standalone - build padrão do Next.js)
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 
 # Mudar para usuário não-root
 USER nextjs
@@ -79,8 +80,8 @@ USER nextjs
 # Expor porta
 EXPOSE 3000
 
-# Comando para iniciar a aplicação
-CMD ["node", "server.js"]
+# Comando para iniciar a aplicação (SEM standalone)
+CMD ["npm", "start"]
 
 # ===========================================
 # LABELS PARA METADADOS
