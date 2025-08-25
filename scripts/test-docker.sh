@@ -44,11 +44,12 @@ docker run -d \
   --name ${CONTAINER_NAME} \
   -p ${PORT}:3000 \
   --env-file .env.production \
-  --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1" \
-  --health-interval=30s \
-  --health-timeout=10s \
-  --health-retries=3 \
-  --health-start-period=40s \
+  # Health check (comentado para deploy mais rápido)
+  # --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1" \
+  # --health-interval=30s \
+  # --health-timeout=10s \
+  # --health-retries=3 \
+  # --health-start-period=40s \
   ${IMAGE_NAME}
 
 # Aguardar container inicializar

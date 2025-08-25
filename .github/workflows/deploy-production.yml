@@ -35,10 +35,10 @@ permissions:
 
 jobs:
   # ===========================================
-  # JOB 1: ANÁLISE E VALIDAÇÃO
+  # JOB 1: BUILD RÁPIDO (SEM VALIDAÇÕES)
   # ===========================================
-  validate:
-    name: 🔍 Code Analysis & Validation
+  quick-build:
+    name: ⚡ Quick Build & Validation
     runs-on: ubuntu-latest
     
     steps:
@@ -57,22 +57,40 @@ jobs:
         run: |
           npm ci --prefer-offline --no-audit
           
-      # LINT CHECK (Comentado para implementação futura)
+      # ===========================================
+      # VERIFICAÇÕES AVANÇADAS (COMENTADAS PARA DEPLOY RÁPIDO)
+      # ===========================================
+      
+      # LINT CHECK (Descomente para ativar)
       # - name: 🔍 Run ESLint
       #   run: npm run lint
       #   continue-on-error: false
 
-      # TYPESCRIPT CHECK (Comentado para implementação futura)  
+      # TYPESCRIPT CHECK (Descomente para ativar)
       # - name: 🔧 TypeScript Check
       #   run: npx tsc --noEmit
       #   continue-on-error: false
 
-      # PRETTIER CHECK (Comentado para implementação futura)
+      # PRETTIER CHECK (Descomente para ativar)
       # - name: 💅 Format Check
       #   run: npm run format:check
       #   continue-on-error: false
 
-      - name: 🏗️ Test Build
+      # TESTES UNITÁRIOS (Descomente para ativar)
+      # - name: 🧪 Run Tests
+      #   run: npm test
+      #   continue-on-error: false
+
+      # AUDIT DE SEGURANÇA (Descomente para ativar)
+      # - name: 🔒 Security Audit
+      #   run: npm audit --audit-level=moderate
+      #   continue-on-error: false
+
+      # ===========================================
+      # BUILD ESSENCIAL (MANTIDO)
+      # ===========================================
+      
+      - name: 🏗️ Production Build
         run: |
           npm run build
         env:
@@ -80,11 +98,12 @@ jobs:
           NEXT_TELEMETRY_DISABLED: 1
           STANDALONE: true
 
-      - name: 📊 Build Analysis
+      - name: ✅ Build Success
         run: |
-          echo "Build completed successfully!"
-          ls -la .next/
-          du -sh .next/
+          echo "## 🚀 Build Rápido Concluído" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Dependencies**: Instaladas" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Build**: Next.js compilado" >> $GITHUB_STEP_SUMMARY
+          echo "- ⚡ **Status**: Pronto para deploy" >> $GITHUB_STEP_SUMMARY
 
   # ===========================================
   # JOB 2: BUILD E PUSH DA IMAGEM DOCKER
@@ -92,7 +111,7 @@ jobs:
   build-and-push:
     name: 🐳 Build & Push Docker Image
     runs-on: ubuntu-latest
-    needs: validate
+    needs: quick-build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     outputs:
@@ -124,13 +143,21 @@ jobs:
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
 
+      # ===========================================
+      # BUILD DOCKER (SINGLE-PLATFORM PARA VELOCIDADE)
+      # ===========================================
+      # Nota: Build apenas para linux/amd64 para evitar problemas com Tailwind CSS 4.0
+      # Para ativar multi-platform (amd64 + arm64), descomente a linha abaixo e
+      # configure as variáveis de ambiente necessárias no Dockerfile
+      # platforms: linux/amd64,linux/arm64
+      
       - name: 🏗️ Build and push Docker image
         id: build
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -182,7 +209,7 @@ jobs:
   notify:
     name: 📢 Notifications
     runs-on: ubuntu-latest
-    needs: [validate, build-and-push, deploy]
+    needs: [quick-build, build-and-push, deploy]
     if: always()
 
     steps:

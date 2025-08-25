@@ -43,6 +43,8 @@ COPY . .
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV STANDALONE=true
+ENV TAILWIND_MODE=build
+ENV TAILWIND_DISABLE_OXIDE=1
 
 # Executar build do Next.js
 RUN npm run build
