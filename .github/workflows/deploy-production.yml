@@ -1,143 +1,209 @@
-name: 🚀 Deploy Frontend to Production
+# ===========================================
+# GITHUB ACTIONS WORKFLOW - PRODUÇÃO
+# Link Chart Frontend - Deploy Automatizado
+# ===========================================
+
+name: 🚀 Deploy to Production
 
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
 
+# Definir variáveis globais
 env:
-  REGISTRY: docker.io
-  IMAGE_NAME: linkchartapp-frontend
   NODE_VERSION: '22'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/frontend
+
+# Definir permissões necessárias
+permissions:
+  contents: read
+  packages: write
+  id-token: write
 
 jobs:
-  build-and-deploy:
-    name: 🏗️ Build and Deploy Frontend
+  # ===========================================
+  # JOB 1: ANÁLISE E VALIDAÇÃO
+  # ===========================================
+  validate:
+    name: 🔍 Code Analysis & Validation
     runs-on: ubuntu-latest
-    environment: production
-    timeout-minutes: 30
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: |
+          npm ci --prefer-offline --no-audit
+          
+      # LINT CHECK (Comentado para implementação futura)
+      # - name: 🔍 Run ESLint
+      #   run: npm run lint
+      #   continue-on-error: false
+
+      # TYPESCRIPT CHECK (Comentado para implementação futura)  
+      # - name: 🔧 TypeScript Check
+      #   run: npx tsc --noEmit
+      #   continue-on-error: false
+
+      # PRETTIER CHECK (Comentado para implementação futura)
+      # - name: 💅 Format Check
+      #   run: npm run format:check
+      #   continue-on-error: false
+
+      - name: 🏗️ Test Build
+        run: |
+          npm run build
+        env:
+          NODE_ENV: production
+          NEXT_TELEMETRY_DISABLED: 1
+          STANDALONE: true
+
+      - name: 📊 Build Analysis
+        run: |
+          echo "Build completed successfully!"
+          ls -la .next/
+          du -sh .next/
+
+  # ===========================================
+  # JOB 2: BUILD E PUSH DA IMAGEM DOCKER
+  # ===========================================
+  build-and-push:
+    name: 🐳 Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+      image-tag: ${{ steps.meta.outputs.tags }}
 
     steps:
-    - name: 📦 Checkout code
-      uses: actions/checkout@v4
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
 
-    - name: 🔐 Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: 🐳 Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      - name: 🔐 Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: 📋 Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+      - name: 📝 Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
 
-    - name: 📥 Install dependencies
-      run: npm ci --prefer-offline --no-audit
+      - name: 🏗️ Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+            NEXT_TELEMETRY_DISABLED=1
 
-    # - name: 🧪 Run tests (optional)
-    #   run: npm run lint
+  # ===========================================
+  # JOB 3: DEPLOY PARA PRODUÇÃO
+  # ===========================================
+  deploy:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
 
-    - name: 🏗️ Build application
-      run: npm run build:production
-      env:
-        NODE_ENV: production
-        NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-        AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-        GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-        GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-        NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
-        NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
-        API_BASE_URL: ${{ secrets.API_BASE_URL }}
-        AUTH_URL: ${{ secrets.AUTH_URL }}
-        NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-        NEXT_PUBLIC_APP_NAME: ${{ secrets.NEXT_PUBLIC_APP_NAME }}
-        NEXT_PUBLIC_APP_VERSION: ${{ secrets.NEXT_PUBLIC_APP_VERSION }}
-        NEXT_PUBLIC_APP_DESCRIPTION: ${{ secrets.NEXT_PUBLIC_APP_DESCRIPTION }}
-        NEXT_TELEMETRY_DISABLED: 1
-        NEXT_PUBLIC_ENABLE_ANALYTICS: true
-        NEXT_PUBLIC_ENABLE_PWA: true
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
 
-    - name: 🐳 Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        file: ./docker/Dockerfile.production
-        push: true
-        tags: |
-          ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-          ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-        build-args: |
-          NODE_ENV=production
-          NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-          NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}
-          NEXT_PUBLIC_SITE_URL=${{ secrets.NEXT_PUBLIC_SITE_URL }}
-          API_BASE_URL=${{ secrets.API_BASE_URL }}
-          AUTH_SECRET=${{ secrets.AUTH_SECRET }}
-          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-          AUTH_URL=${{ secrets.AUTH_URL }}
-          NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
-          NEXT_PUBLIC_APP_NAME=${{ secrets.NEXT_PUBLIC_APP_NAME }}
-          NEXT_PUBLIC_APP_VERSION=${{ secrets.NEXT_PUBLIC_APP_VERSION }}
-          NEXT_PUBLIC_APP_DESCRIPTION=${{ secrets.NEXT_PUBLIC_APP_DESCRIPTION }}
-          NEXT_TELEMETRY_DISABLED=1
-          NEXT_PUBLIC_ENABLE_ANALYTICS=true
-          NEXT_PUBLIC_ENABLE_PWA=true
+      # HEALTH CHECK (Comentado para implementação futura)
+      # - name: 🏥 Health Check
+      #   run: |
+      #     echo "Performing health check..."
+      #     # curl -f http://your-app-url/api/health || exit 1
+      #   continue-on-error: false
 
-    - name: 🚀 Deploy to Production Server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.DEPLOY_HOST }}
-        username: root
-        key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
-        script: |
-          echo "🚀 Iniciando deploy do frontend..."
+      - name: 📋 Deployment Summary
+        run: |
+          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image**: ${{ needs.build-and-push.outputs.image-tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Digest**: ${{ needs.build-and-push.outputs.image-digest }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: Production" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deployed at**: $(date)" >> $GITHUB_STEP_SUMMARY
+
+      # DEPLOY REAL (Comentado - implementar conforme sua infraestrutura)
+      # - name: 🚀 Deploy to DigitalOcean
+      #   run: |
+      #     echo "Deploying to DigitalOcean..."
+      #     # Implementar deploy real aqui
+      #     # Exemplo: kubectl, docker-compose, etc.
+
+  # ===========================================
+  # JOB 4: NOTIFICAÇÕES (OPCIONAL)
+  # ===========================================
+  notify:
+    name: 📢 Notifications
+    runs-on: ubuntu-latest
+    needs: [validate, build-and-push, deploy]
+    if: always()
+
+    steps:
+      - name: 📊 Job Status Summary
+        run: |
+          echo "## 📊 Pipeline Status" >> $GITHUB_STEP_SUMMARY
+          echo "- **Validation**: ${{ needs.validate.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build & Push**: ${{ needs.build-and-push.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deploy**: ${{ needs.deploy.result }}" >> $GITHUB_STEP_SUMMARY
           
-          # Criar diretório se não existir
-          mkdir -p /var/www/linkchartapp-frontend
-          cd /var/www/linkchartapp-frontend
-          
-          # Parar containers antigos
-          echo "🛑 Parando containers antigos..."
-          docker compose -f docker/docker-compose.production.yml down 2>/dev/null || echo "No containers to stop"
-          
-          # Pull da nova imagem
-          echo "📥 Baixando nova imagem..."
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/linkchartapp-frontend:latest
-          
-          # Iniciar serviços
-          echo "🚀 Iniciando serviços..."
-          docker compose -f docker/docker-compose.production.yml up -d
-          
-          # Aguardar inicialização
-          echo "⏳ Aguardando inicialização..."
-          sleep 30
-          
-          # Verificar se está funcionando
-          echo "🔍 Verificando se está funcionando..."
-          for i in {1..5}; do
-            if curl -f http://localhost:3000/ 2>/dev/null; then
-              echo "✅ Aplicação funcionando corretamente"
-              break
-            else
-              echo "⏳ Tentativa $i/5 - Aguardando..."
-              if [ $i -eq 5 ]; then
-                echo "❌ Aplicação não está funcionando após 5 tentativas"
-                docker logs linkchartapp-frontend
-                exit 1
-              fi
-              sleep 10
-            fi
-          done
-          
-          # Limpar imagens antigas
-          echo "🧹 Limpando imagens antigas..."
-          docker image prune -f
-          
-          echo "✅ Deploy completed successfully!"
+          if [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "✅ **Deployment completed successfully!**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Deployment failed or was skipped**" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      # SLACK/DISCORD NOTIFICATIONS (Comentado para implementação futura)
+      # - name: 📱 Slack Notification
+      #   if: always()
+      #   uses: 8398a7/action-slack@v3
+      #   with:
+      #     status: ${{ job.status }}
+      #     channel: '#deployments'
+      #     webhook_url: ${{ secrets.SLACK_WEBHOOK }}

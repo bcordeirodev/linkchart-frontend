@@ -8,7 +8,6 @@ import type { Provider } from 'next-auth/providers';
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 import { signIn as login } from '@/services/auth.service';
-import { api } from '@/lib/api';
 
 /**
  * Cria uma instância de armazenamento utilizando o driver de memória.
@@ -18,19 +17,6 @@ const storage = createStorage({
 	driver: memoryDriver()
 });
 
-/**
- * Definição dos provedores de autenticação.
- * Inclui autenticação por credenciais (email e senha), Google e Facebook.
- */
-// Debug das variáveis de ambiente
-console.log('🔍 Google Auth Debug:', {
-	clientId: process.env.GOOGLE_CLIENT_ID ? '✅ Configurado' : '❌ Não encontrado',
-	clientSecret: process.env.GOOGLE_CLIENT_SECRET ? '✅ Configurado' : '❌ Não encontrado',
-	nodeEnv: process.env.NODE_ENV
-});
-
-// Debug da função de login
-console.log('🔍 Login function imported:', typeof login);
 
 export const providers: Provider[] = [
 	// Provedor de email e senha
@@ -42,12 +28,6 @@ export const providers: Provider[] = [
 			password: { label: 'Password', type: 'password' }
 		},
 		async authorize(credentials) {
-			console.log('🔐 NextAuth authorize() chamado com:', {
-				email: credentials?.email,
-				password: '***',
-				allParams: Object.keys(credentials || {})
-			});
-
 			// Validação básica
 			if (!credentials?.email || !credentials?.password) {
 				console.error('❌ Email ou password não fornecidos:', credentials);
@@ -57,13 +37,10 @@ export const providers: Provider[] = [
 			// Remoção do teste temporário - agora usando autenticação real
 
 			try {
-				console.log('📡 Chamando auth.service.signIn...');
 				const data: IAuthResponse = await login({
 					email: credentials.email as string,
 					password: credentials.password as string
 				});
-
-				console.log('🎯 Resposta da API:', data ? '✅ Sucesso' : '❌ Sem dados');
 
 				if (!data) {
 					console.error('❌ Auth retornou dados vazios');
@@ -78,7 +55,6 @@ export const providers: Provider[] = [
 					role: ['admin']
 				};
 
-				console.log('✅ Authorize bem-sucedido para:', data.user.email);
 				return userResult;
 			} catch (e) {
 				console.error('❌ Erro no authorize:', e);
