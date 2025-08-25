@@ -88,7 +88,7 @@ class ApiClient {
 			if (ctx?.req) {
 				const token = await getToken({
 					req: ctx.req as Parameters<typeof getToken>[0]['req'],
-					secret: process.env.NEXTAUTH_SECRET!
+					secret: process.env.AUTH_SECRET!
 				});
 				return (token as { accessToken?: string })?.accessToken ?? null;
 			}
