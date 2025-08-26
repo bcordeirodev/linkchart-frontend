@@ -72,6 +72,9 @@
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0"
   },
+  "resolutions": {
+    "@parcel/watcher-wasm": "2.5.1"
+  },
   "devDependencies": {
     "@eslint/eslintrc": "3.2.0",
     "@eslint/js": "9.16.0",

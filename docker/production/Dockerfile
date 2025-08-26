@@ -20,8 +20,10 @@ FROM base AS deps
 # Copiar arquivos de dependências
 COPY package.json package-lock.json* ./
 
-# Instalar todas as dependências (incluindo devDependencies para build)
-RUN npm ci --prefer-offline --no-audit --legacy-peer-deps --ignore-scripts --include=dev
+    # Instalar todas as dependências (incluindo devDependencies para build)
+    # Usar npm install como fallback se npm ci falhar
+    RUN npm ci --prefer-offline --no-audit --legacy-peer-deps --ignore-scripts --include=dev || \
+        npm install --prefer-offline --no-audit --legacy-peer-deps --ignore-scripts --include=dev
 
 # ===========================================
 # STAGE 2: BUILD
