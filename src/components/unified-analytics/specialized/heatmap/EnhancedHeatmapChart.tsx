@@ -11,7 +11,7 @@ const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapCo
 const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const CircleMarker = dynamic(() => import('react-leaflet').then(mod => mod.CircleMarker), { ssr: false });
 const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
-const MarkerClusterGroup = dynamic(() => import('react-leaflet-cluster').then(mod => mod.default), { ssr: false });
+const MarkerClusterGroup = dynamic(() => import('react-leaflet-markercluster').then(mod => mod.default), { ssr: false });
 
 interface EnhancedHeatmapChartProps {
     data: HeatmapPoint[];
