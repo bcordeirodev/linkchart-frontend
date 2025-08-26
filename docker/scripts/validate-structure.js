@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configurações
-const SRC_DIR = path.join(__dirname, '../src');
+const SRC_DIR = path.join(__dirname, '../../src');
 const CLIENT_HOOKS = ['useState', 'useEffect', 'useCallback', 'useMemo', 'useRef', 'useContext', 'useReducer'];
 const MAX_PAGE_LINES = 100;
 const MAX_COMPONENT_LINES = 250;

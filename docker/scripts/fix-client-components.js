@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configurações
-const SRC_DIR = path.join(__dirname, '../src');
+const SRC_DIR = path.join(__dirname, '../../src');
 const CLIENT_HOOKS = ['useState', 'useEffect', 'useCallback', 'useMemo', 'useRef', 'useContext', 'useReducer'];
 
 // Cores para output

@@ -19,7 +19,7 @@
 
 ## 🛠️ Ferramentas Criadas
 
-### 1. **Script de Validação** (`scripts/validate-structure.js`)
+### 1. **Script de Validação** (`docker/scripts/validate-structure.js`)
 ```bash
 npm run validate
 ```
@@ -28,7 +28,7 @@ npm run validate
 - Testa build automaticamente
 - Fornece relatório detalhado
 
-### 2. **Script de Correção Automática** (`scripts/fix-client-components.js`)
+### 2. **Script de Correção Automática** (`docker/scripts/fix-client-components.js`)
 ```bash
 npm run fix:client
 ```

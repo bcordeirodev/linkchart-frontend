@@ -76,11 +76,11 @@ npm run dev
 ### Package.json Scripts
 ```json
 {
-  "validate": "node scripts/validate-structure.js",
+  "validate": "node docker/scripts/validate-structure.js",
   "fix:all": "npm run fix:client && npm run lint:fix && npm run format && npm run validate",
-  "cleanup": "node scripts/cleanup.js",
-  "docker:build": "./scripts/build-docker.sh",
-  "docker:test": "./scripts/test-docker.sh",
+  "cleanup": "node docker/scripts/cleanup.js",
+  "docker:build": "./docker/scripts/build-docker.sh",
+  "docker:test": "./docker/scripts/test-docker.sh",
   "docker:all": "npm run cleanup && npm run docker:build && npm run docker:test"
 }
 ```

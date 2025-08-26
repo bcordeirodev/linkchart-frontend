@@ -31,7 +31,7 @@ fi
 echo -e "${YELLOW}📋 Informações do Build:${NC}"
 echo -e "   • Imagem: ${FULL_IMAGE_NAME}"
 echo -e "   • Contexto: $(pwd)"
-echo -e "   • Dockerfile: ./Dockerfile"
+echo -e "   • Dockerfile: ./docker/production/Dockerfile"
 echo ""
 
 # Limpar imagens antigas (opcional)
@@ -51,6 +51,7 @@ npm run validate || {
 
 docker build \
   --tag ${FULL_IMAGE_NAME} \
+  --file ./docker/production/Dockerfile \
   --build-arg NODE_ENV=production \
   --build-arg NEXT_TELEMETRY_DISABLED=1 \
   --progress=plain \

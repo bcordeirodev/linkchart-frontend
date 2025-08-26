@@ -19,7 +19,6 @@ FROM base AS deps
 
 # Copiar arquivos de dependências
 COPY package.json package-lock.json* ./
-COPY next.config.production.mjs ./next.config.mjs
 
 # Instalar todas as dependências (incluindo devDependencies para build)
 RUN npm ci --prefer-offline --no-audit --legacy-peer-deps --ignore-scripts --include=dev
@@ -35,7 +34,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 
 # Copiar arquivos de configuração primeiro
-COPY tsconfig.json next.config.production.mjs postcss.config.js tailwind.config.ts ./
+COPY tsconfig.json next.config.mjs postcss.config.js tailwind.config.ts ./
 
 # Copiar código fonte
 COPY . .

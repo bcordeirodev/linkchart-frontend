@@ -3,7 +3,7 @@
 # Link Chart Frontend - Ambiente de Desenvolvimento
 # ===========================================
 
-version: '3.8'
+# Docker Compose v2 não precisa da versão
 
 services:
   # ===========================================
@@ -43,7 +43,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
     
     env_file:
-      - .env.local
+      - ../../.env.local
     
     command: npm run dev
     
