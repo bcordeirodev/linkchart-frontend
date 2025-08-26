@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, useCallback } from 'react';
 import { LinkPerformanceDashboard } from '@/types/linkPerformance';
 import { analyticsService } from '@/services';

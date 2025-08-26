@@ -21,7 +21,7 @@ FROM base AS deps
 COPY package.json package-lock.json* ./
 
 # Instalar todas as dependências (incluindo devDependencies para o build)
-RUN npm ci --legacy-peer-deps --ignore-scripts --include=dev
+RUN npm ci --legacy-peer-deps --prefer-offline --no-audit --include=dev
 
 # ===========================================
 # STAGE 2: BUILD
@@ -45,6 +45,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV STANDALONE=true
 ENV TAILWIND_MODE=build
 ENV TAILWIND_DISABLE_OXIDE=1
+
+# Validar estrutura do projeto antes do build
+RUN npm run validate
 
 # Executar build do Next.js
 RUN npm run build

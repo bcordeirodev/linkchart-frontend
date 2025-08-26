@@ -36,8 +36,10 @@ export { default as MainThemeProvider } from '@/contexts/MainThemeProvider';
 export { useResponsive } from './hooks/useResponsive';
 
 // Configurações de layout
-export { default as themeLayoutConfigs, themeLayoutDefaultsProps } from './config/layoutConfigs';
-export { default as themeLayouts, themeLayoutsType } from './layouts/themeLayouts';
+export { default as themeLayoutConfigs } from './config/layoutConfigs';
+export type { themeLayoutDefaultsProps } from './config/layoutConfigs';
+export { default as themeLayouts } from './layouts/themeLayouts';
+export type { themeLayoutsType } from './layouts/themeLayouts';
 
 // Navigation
 export { default as useNavigation } from './navigation/useNavigation';

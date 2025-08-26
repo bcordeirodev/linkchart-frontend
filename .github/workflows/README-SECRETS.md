@@ -55,3 +55,22 @@ NEXT_PUBLIC_APP_DESCRIPTION = Encurtador de URLs profissional com analytics avan
 - **Cache otimizado**: Dependências cacheadas entre builds
 - **Timeout reduzido**: De 45min para 30min
 - **Build local**: Sem dependência de recursos do servidor
+- **Validação automática**: Estrutura do projeto validada antes do build
+- **Scripts otimizados**: Ferramentas de limpeza e manutenção automática
+
+## 🛠️ Scripts Disponíveis
+
+```bash
+# Validação e correção
+npm run validate          # Validar estrutura do projeto
+npm run fix:all          # Corrigir tudo automaticamente
+npm run cleanup          # Limpar arquivos temporários
+
+# Docker local
+npm run docker:build     # Build da imagem Docker
+npm run docker:test      # Testar imagem Docker
+npm run docker:all       # Limpeza + Build + Teste
+
+# Desenvolvimento
+docker-compose -f docker-compose.dev.yml up  # Ambiente de desenvolvimento
+```

@@ -1,3 +1,5 @@
+'use client';
+
 import { alpha, ThemeProvider } from '@mui/material/styles';
 import { memo, ReactNode, useEffect, useLayoutEffect } from 'react';
 import { Theme } from '@mui/material/styles/createTheme';

@@ -1,3 +1,5 @@
+'use client';
+
 import { Reducer } from '@reduxjs/toolkit';
 import { useEffect, useState } from 'react';
 import rootReducer from './rootReducer';

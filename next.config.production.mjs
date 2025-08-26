@@ -100,9 +100,12 @@ const nextConfig = {
   compress: true,
   
   // Configurações específicas para Next.js 15
+  serverExternalPackages: [],
   experimental: {
-    serverComponentsExternalPackages: [],
     trace: false,
+    // Desabilitar recursos que podem causar problemas de clientModules
+    serverComponents: false,
+    appDir: false,
   },
 };
 

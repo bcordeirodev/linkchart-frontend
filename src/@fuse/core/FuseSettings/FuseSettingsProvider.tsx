@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
 import _ from 'lodash';
 import { defaultSettings, getParsedQuerySettings } from '@fuse/default-settings';

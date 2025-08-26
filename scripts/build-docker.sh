@@ -42,6 +42,13 @@ docker rmi ${FULL_IMAGE_NAME} 2>/dev/null || echo -e "${YELLOW}   Nenhuma imagem
 echo -e "${YELLOW}🏗️  Iniciando build da imagem Docker...${NC}"
 echo ""
 
+# Validar projeto antes do build Docker
+echo -e "${YELLOW}🔍 Validando estrutura do projeto...${NC}"
+npm run validate || {
+    echo -e "${RED}❌ Validação do projeto falhou!${NC}"
+    exit 1
+}
+
 docker build \
   --tag ${FULL_IMAGE_NAME} \
   --build-arg NODE_ENV=production \

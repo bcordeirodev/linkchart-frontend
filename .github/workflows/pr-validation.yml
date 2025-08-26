@@ -44,20 +44,15 @@ jobs:
         run: |
           npm ci --prefer-offline --no-audit
 
-      # LINT CHECK (Comentado para implementação futura)
-      # - name: 🔍 ESLint Check
-      #   run: npm run lint
-      #   continue-on-error: false
+      - name: 🔍 Project Structure Validation
+        run: |
+          npm run validate
+        continue-on-error: false
 
-      # TYPESCRIPT CHECK (Comentado para implementação futura)
-      # - name: 🔧 TypeScript Check
-      #   run: npx tsc --noEmit
-      #   continue-on-error: false
-
-      # PRETTIER CHECK (Comentado para implementação futura)
-      # - name: 💅 Format Check
-      #   run: npm run format:check
-      #   continue-on-error: false
+      - name: 🔧 TypeScript Check
+        run: |
+          npx tsc --noEmit
+        continue-on-error: true
 
       - name: 🏗️ Build Test
         run: |

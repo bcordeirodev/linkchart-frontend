@@ -1,3 +1,5 @@
+'use client';
+
 import Typography from '@mui/material/Typography';
 import Link from '@fuse/core/Link';
 import AvatarGroup from '@mui/material/AvatarGroup';

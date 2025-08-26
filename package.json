@@ -112,7 +112,14 @@
     "lint:fix": "eslint --fix ./src --config ./eslint.config.mjs",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "audit": "npm audit --production"
+    "audit": "npm audit --production",
+    "validate": "node scripts/validate-structure.js",
+    "validate:fix": "npm run lint:fix && npm run format && npm run validate",
+    "fix:client": "node scripts/fix-client-components.js",
+    "fix:all": "npm run fix:client && npm run lint:fix && npm run format && npm run validate",
+    "cleanup": "node scripts/cleanup.js",
+    "docker:build": "./scripts/build-docker.sh",
+    "docker:all": "npm run cleanup && npm run docker:build && npm run docker:test"
   },
   "engines": {
     "node": ">=22.12.0",

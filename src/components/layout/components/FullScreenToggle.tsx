@@ -1,3 +1,5 @@
+'use client';
+
 import Tooltip from '@mui/material/Tooltip';
 import clsx from 'clsx';
 import { useEffect, useLayoutEffect, useState } from 'react';

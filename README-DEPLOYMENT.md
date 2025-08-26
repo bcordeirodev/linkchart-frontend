@@ -39,9 +39,6 @@ Este documento descreve a implementação completa do workflow de produção par
 # Build da imagem
 ./scripts/build-docker.sh
 
-# Teste local
-./scripts/test-docker.sh
-
 # Build manual
 docker build -t linkchartapp-frontend:local .
 
@@ -150,9 +147,6 @@ npm run start
 ```bash
 # Build da imagem
 ./scripts/build-docker.sh
-
-# Testar imagem
-./scripts/test-docker.sh
 
 # Acessar aplicação
 open http://localhost:3002

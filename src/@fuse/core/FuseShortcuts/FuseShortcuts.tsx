@@ -1,3 +1,5 @@
+'use client';
+
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Input from '@mui/material/Input';

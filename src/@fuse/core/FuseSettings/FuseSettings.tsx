@@ -1,3 +1,5 @@
+'use client';
+
 import { styled } from '@mui/material/styles';
 import { Controller, useForm } from 'react-hook-form';
 import { themeLayoutConfigs, themeLayoutDefaultsProps } from '@/themes';

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Reducer, Slice } from '@reduxjs/toolkit';
 import generateReducersFromSlices from './generateReducersFromSlices';

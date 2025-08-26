@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, useCallback } from 'react';
 import { AnalyticsData } from '@/types/analytics';
 import { analyticsService } from '@/services';

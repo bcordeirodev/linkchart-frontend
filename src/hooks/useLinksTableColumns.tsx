@@ -1,3 +1,5 @@
+'use client';
+
 import { useMemo, useCallback } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
 import { Box, Chip, IconButton, Tooltip, Avatar, Typography } from '@mui/material';

@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import Typography from '@mui/material/Typography';

@@ -1,3 +1,5 @@
+'use client';
+
 import { Control } from 'react-hook-form';
 import { debounce } from 'lodash';
 import { Controller } from 'react-hook-form';

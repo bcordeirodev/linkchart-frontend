@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback, useState } from 'react';
 import { useNavigate } from '@/hooks';
 import { resetSessionRedirectUrl } from '@fuse/core/FuseAuthorization/sessionRedirectUrl';

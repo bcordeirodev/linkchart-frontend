@@ -1,3 +1,5 @@
+'use client';
+
 import { useTimeout } from '@/hooks';
 import { useState } from 'react';
 import clsx from 'clsx';

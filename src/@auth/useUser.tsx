@@ -1,3 +1,5 @@
+'use client';
+
 import { useSession, signOut } from 'next-auth/react';
 import { useMemo } from 'react';
 import { IUser } from '@/types/user';

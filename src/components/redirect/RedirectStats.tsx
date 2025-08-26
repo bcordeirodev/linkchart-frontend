@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import Card from '@mui/material/Card';

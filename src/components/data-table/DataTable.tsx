@@ -1,3 +1,5 @@
+'use client';
+
 import { MaterialReactTable, useMaterialReactTable, MaterialReactTableProps, MRT_Icons } from 'material-react-table';
 import _ from 'lodash';
 import { useMemo } from 'react';
