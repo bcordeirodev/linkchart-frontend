@@ -216,7 +216,7 @@ jobs:
                     sleep 2
                     
                     for i in {1..3}; do
-                      if curl -f -s http://localhost/health > /dev/null; then
+                      if curl -f -s http://localhost:3000/api/health > /dev/null; then
                         echo "✅ Health check passou (tentativa $i)"
                         break
                       else
@@ -253,7 +253,7 @@ jobs:
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "### 🌐 Acesso à Aplicação" >> $GITHUB_STEP_SUMMARY
                   echo "- **URL Principal**: http://${{ secrets.SSH_HOST }}" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Health Check**: http://${{ secrets.SSH_HOST }}/health" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Health Check**: http://${{ secrets.SSH_HOST }}/api/health" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "### ✅ Status: Deploy Concluído com Sucesso!" >> $GITHUB_STEP_SUMMARY
 
@@ -299,7 +299,7 @@ jobs:
                     echo "### 🎉 **DEPLOY REALIZADO COM SUCESSO!**" >> $GITHUB_STEP_SUMMARY
                     echo "" >> $GITHUB_STEP_SUMMARY
                     echo "🌐 **Aplicação está online**: http://${{ secrets.SSH_HOST }}" >> $GITHUB_STEP_SUMMARY
-                    echo "🔍 **Monitoramento**: http://${{ secrets.SSH_HOST }}/health" >> $GITHUB_STEP_SUMMARY
+                    echo "🔍 **Monitoramento**: http://${{ secrets.SSH_HOST }}/api/health" >> $GITHUB_STEP_SUMMARY
                   else
                     echo "### ❌ **DEPLOY FALHOU**" >> $GITHUB_STEP_SUMMARY
                     echo "" >> $GITHUB_STEP_SUMMARY
