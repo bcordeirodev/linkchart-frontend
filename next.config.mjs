@@ -12,23 +12,33 @@ const nextConfig = {
 	},
 	// Docker/Container configuration - Standalone habilitado para produção
 	output: process.env.NODE_ENV === 'production' && process.env.STANDALONE === 'true' ? 'standalone' : undefined,
-	
+
 	// Otimizações para client modules e performance
 	experimental: {
 		// Otimizar imports de bibliotecas
 		optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lodash'],
 		// Melhor tree-shaking
-		esmExternals: true
+		esmExternals: true,
+		// Desabilitar features experimentais problemáticas
+		serverActions: {
+			allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002']
+		}
 	},
-	
+
+	// Fix para clientModules no Next.js 15 - removido temporariamente
+	// serverExternalPackages: ['@mui/material', '@mui/icons-material'],
+
 	// Configurações de bundle
 	compiler: {
 		// Remove console.logs em produção
-		removeConsole: process.env.NODE_ENV === 'production' ? {
-			exclude: ['error', 'warn']
-		} : false
+		removeConsole:
+			process.env.NODE_ENV === 'production'
+				? {
+						exclude: ['error', 'warn']
+					}
+				: false
 	},
-	
+
 	webpack: (config, { dev, isServer }) => {
 		// Raw loader para arquivos específicos
 		if (config.module && config.module.rules) {
