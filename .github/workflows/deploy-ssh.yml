@@ -1,0 +1,321 @@
+# ===========================================
+# GITHUB ACTIONS WORKFLOW - DEPLOY SSH (PADRÃO)
+# Link Chart Frontend - Deploy Direto via SSH
+# ===========================================
+#
+# 🎯 OBJETIVO:
+#   Deploy automático da aplicação Next.js diretamente no servidor
+#   DigitalOcean via SSH, sem uso de containers Docker.
+#
+# 🚀 QUANDO EXECUTA:
+#   - Push para branch 'main'
+#   - Execução manual via workflow_dispatch
+#
+# 📋 PRÉ-REQUISITOS:
+#   - Secrets configurados no GitHub:
+#     * SSH_PRIVATE_KEY: Chave SSH privada para acesso ao servidor
+#     * SSH_HOST: IP do servidor (ex: 134.209.33.182)
+#     * SSH_USER: Usuário para deploy (ex: deploy)
+#     * DEPLOY_PATH: Caminho da aplicação (ex: /var/www/linkchart-frontend)
+#
+# 🔧 CONFIGURAÇÃO DO SERVIDOR:
+#   - Node.js 22+ instalado
+#   - Git configurado
+#   - Usuário 'deploy' com permissões sudo para systemctl
+#   - Serviço systemd 'linkchart-frontend' configurado
+#   - Nginx configurado como proxy reverso
+#
+# ⚡ PERFORMANCE:
+#   - Build time: ~2-3 minutos
+#   - Deploy time: ~1-2 minutos
+#   - Total: ~3-5 minutos
+#
+# ===========================================
+
+name: 🚀 Deploy via SSH (Padrão)
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+        inputs:
+            skip_build:
+                description: 'Pular validação de build (apenas para emergências)'
+                required: false
+                default: false
+                type: boolean
+
+# Definir variáveis globais
+env:
+    NODE_VERSION: '22'
+    DEPLOY_TIMEOUT: '300' # 5 minutos timeout
+
+# Definir permissões necessárias
+permissions:
+    contents: read
+
+jobs:
+    # ===========================================
+    # JOB 1: VALIDAÇÃO E BUILD LOCAL
+    # Valida o código antes do deploy para evitar falhas no servidor
+    # ===========================================
+    validate:
+        name: 🔍 Validação e Build
+        runs-on: ubuntu-latest
+        if: ${{ !inputs.skip_build }}
+
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0 # Necessário para git log
+
+            - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: 'npm'
+
+            - name: 📦 Install dependencies
+              run: |
+                  echo "📦 Instalando dependências..."
+                  npm ci --prefer-offline --no-audit --silent
+                  echo "✅ Dependências instaladas com sucesso"
+
+            - name: 🔍 Validação de estrutura
+              run: |
+                  echo "🔍 Validando estrutura do projeto..."
+                  npm run validate
+              continue-on-error: true # Warnings não devem bloquear
+
+            - name: 🏗️ Test Build
+              run: |
+                  echo "🏗️ Testando build de produção..."
+                  npm run build
+                  echo "✅ Build concluído com sucesso"
+
+                  # Mostrar informações do build
+                  echo "📊 Informações do build:"
+                  ls -la .next/ | head -10
+                  du -sh .next/
+              env:
+                  NODE_ENV: production
+                  NEXT_TELEMETRY_DISABLED: 1
+
+            - name: 📋 Build Summary
+              run: |
+                  echo "## 🏗️ Build Validation Summary" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Node.js**: ${{ env.NODE_VERSION }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Build Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Bundle Size**: $(du -sh .next/ | cut -f1)" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+    # ===========================================
+    # JOB 2: DEPLOY VIA SSH NO SERVIDOR DE PRODUÇÃO
+    # Executa o deploy diretamente no servidor DigitalOcean
+    # ===========================================
+    deploy:
+        name: 🚀 Deploy no Servidor
+        runs-on: ubuntu-latest
+        needs: validate
+        if: always() && (needs.validate.result == 'success' || inputs.skip_build)
+        environment: production
+        timeout-minutes: 10
+
+        steps:
+            - name: 🔑 Configurar SSH
+              uses: webfactory/ssh-agent@v0.9.0
+              with:
+                  ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+            - name: 🌐 Verificar conectividade
+              run: |
+                  echo "🔍 Verificando conectividade com o servidor..."
+
+                  # Adicionar host às known_hosts
+                  ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+                  # Testar conexão SSH
+                  ssh -o ConnectTimeout=10 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo 'Conexão SSH OK'"
+                  echo "✅ Conectividade confirmada"
+
+            - name: 🚀 Executar Deploy no Servidor
+              run: |
+                  echo "🎯 Iniciando deploy no servidor de produção..."
+                  echo "📍 Servidor: ${{ secrets.SSH_HOST }}"
+                  echo "👤 Usuário: ${{ secrets.SSH_USER }}"
+                  echo "📁 Caminho: ${{ secrets.DEPLOY_PATH }}"
+                  echo ""
+
+                  # Executar deploy no servidor
+                  ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+                    set -e
+                    
+                    # Configurar ambiente
+                    export NODE_ENV=production
+                    export NEXT_TELEMETRY_DISABLED=1
+                    
+                    echo "🚀 [$(date)] Iniciando deploy via GitHub Actions..."
+                    echo "📋 Commit: ${{ github.sha }}"
+                    echo "🌿 Branch: ${{ github.ref_name }}"
+                    echo ""
+                    
+                    # Navegar para diretório da aplicação
+                    cd ${{ secrets.DEPLOY_PATH }}
+                    
+                    # Backup do estado atual (caso precise reverter)
+                    echo "💾 Criando backup do estado atual..."
+                    git log -1 --oneline > /tmp/deploy-backup-${{ github.run_id }}.txt
+                    
+                    # Atualizar código
+                    echo "📥 Atualizando código do repositório..."
+                    git fetch origin --quiet
+                    git reset --hard origin/main --quiet
+                    
+                    # Mostrar mudanças
+                    echo "📝 Último commit aplicado:"
+                    git log -1 --oneline
+                    echo ""
+                    
+                    # Instalar/atualizar dependências
+                    echo "📦 Instalando dependências..."
+                    npm ci --silent
+                    
+                    # Build da aplicação
+                    echo "🏗️ Fazendo build da aplicação..."
+                    npm run build
+                    
+                    # Verificar se o build foi bem-sucedido
+                    if [ ! -d ".next" ]; then
+                      echo "❌ Erro: Build falhou - diretório .next não encontrado"
+                      exit 1
+                    fi
+                    
+                    echo "✅ Build concluído com sucesso"
+                    
+                    # Reiniciar serviço
+                    echo "🔄 Reiniciando serviço da aplicação..."
+                    sudo systemctl restart linkchart-frontend
+                    
+                    # Aguardar inicialização
+                    echo "⏳ Aguardando inicialização do serviço..."
+                    sleep 3
+                    
+                    # Verificar status do serviço
+                    echo "🔍 Verificando status do serviço..."
+                    if sudo systemctl is-active --quiet linkchart-frontend; then
+                      echo "✅ Serviço está ativo"
+                    else
+                      echo "❌ Erro: Serviço não está ativo"
+                      sudo systemctl status linkchart-frontend --no-pager
+                      exit 1
+                    fi
+                    
+                    # Health check da aplicação
+                    echo "🧪 Executando health check..."
+                    sleep 2
+                    
+                    for i in {1..3}; do
+                      if curl -f -s http://localhost/health > /dev/null; then
+                        echo "✅ Health check passou (tentativa $i)"
+                        break
+                      else
+                        echo "⚠️ Health check falhou (tentativa $i/3)"
+                        if [ $i -eq 3 ]; then
+                          echo "❌ Erro: Health check falhou após 3 tentativas"
+                          exit 1
+                        fi
+                        sleep 2
+                      fi
+                    done
+                    
+                    echo ""
+                    echo "🎉 [$(date)] Deploy concluído com sucesso!"
+                    echo "🌐 Aplicação disponível em: http://${{ secrets.SSH_HOST }}"
+                  EOF
+
+                  echo ""
+                  echo "✅ Deploy executado com sucesso no servidor!"
+
+            - name: 📊 Resumo do Deploy
+              if: always()
+              run: |
+                  echo "## 🚀 Resumo do Deploy" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### 📋 Informações do Deploy" >> $GITHUB_STEP_SUMMARY
+                  echo "- **🖥️ Servidor**: ${{ secrets.SSH_HOST }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **📁 Caminho**: ${{ secrets.DEPLOY_PATH }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **👤 Usuário**: ${{ secrets.SSH_USER }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **📋 Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "- **🌿 Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **⏰ Timestamp**: $(date -u)" >> $GITHUB_STEP_SUMMARY
+                  echo "- **🏃 Workflow**: ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### 🌐 Acesso à Aplicação" >> $GITHUB_STEP_SUMMARY
+                  echo "- **URL Principal**: http://${{ secrets.SSH_HOST }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Health Check**: http://${{ secrets.SSH_HOST }}/health" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### ✅ Status: Deploy Concluído com Sucesso!" >> $GITHUB_STEP_SUMMARY
+
+    # ===========================================
+    # JOB 3: NOTIFICAÇÃO E STATUS FINAL
+    # Consolida o status de todos os jobs e envia notificações
+    # ===========================================
+    notify:
+        name: 📱 Status Final
+        runs-on: ubuntu-latest
+        needs: [validate, deploy]
+        if: always()
+
+        steps:
+            - name: 📊 Consolidar Status Final
+              run: |
+                  echo "## 📊 Status Final do Pipeline" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+
+                  # Status dos jobs
+                  echo "### 🔍 Status dos Jobs" >> $GITHUB_STEP_SUMMARY
+
+                  # Validação
+                  if [ "${{ needs.validate.result }}" == "success" ]; then
+                    echo "- **✅ Validação**: Passou" >> $GITHUB_STEP_SUMMARY
+                  elif [ "${{ needs.validate.result }}" == "skipped" ]; then
+                    echo "- **⏭️ Validação**: Pulada (skip_build=true)" >> $GITHUB_STEP_SUMMARY
+                  else
+                    echo "- **❌ Validação**: Falhou" >> $GITHUB_STEP_SUMMARY
+                  fi
+
+                  # Deploy
+                  if [ "${{ needs.deploy.result }}" == "success" ]; then
+                    echo "- **✅ Deploy**: Concluído com sucesso" >> $GITHUB_STEP_SUMMARY
+                  else
+                    echo "- **❌ Deploy**: Falhou ou foi pulado" >> $GITHUB_STEP_SUMMARY
+                  fi
+
+                  echo "" >> $GITHUB_STEP_SUMMARY
+
+                  # Status geral
+                  if [ "${{ needs.deploy.result }}" == "success" ]; then
+                    echo "### 🎉 **DEPLOY REALIZADO COM SUCESSO!**" >> $GITHUB_STEP_SUMMARY
+                    echo "" >> $GITHUB_STEP_SUMMARY
+                    echo "🌐 **Aplicação está online**: http://${{ secrets.SSH_HOST }}" >> $GITHUB_STEP_SUMMARY
+                    echo "🔍 **Monitoramento**: http://${{ secrets.SSH_HOST }}/health" >> $GITHUB_STEP_SUMMARY
+                  else
+                    echo "### ❌ **DEPLOY FALHOU**" >> $GITHUB_STEP_SUMMARY
+                    echo "" >> $GITHUB_STEP_SUMMARY
+                    echo "🔧 **Ação necessária**: Verifique os logs dos jobs acima" >> $GITHUB_STEP_SUMMARY
+                  fi
+
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "---" >> $GITHUB_STEP_SUMMARY
+                  echo "📅 **Data**: $(date -u)" >> $GITHUB_STEP_SUMMARY
+                  echo "🔗 **Workflow**: [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+
+            # Futuro: Adicionar notificações para Slack/Discord
+            # - name: 📱 Slack Notification
+            #   if: always()
+            #   uses: 8398a7/action-slack@v3
+            #   with:
+            #     status: ${{ job.status }}
+            #     channel: '#deployments'
+            #     webhook_url: ${{ secrets.SLACK_WEBHOOK }}

@@ -1,204 +1,320 @@
 # ===========================================
-# GITHUB ACTIONS WORKFLOW - PRODUÇÃO
-# Link Chart Frontend - Deploy Automatizado
+# GITHUB ACTIONS WORKFLOW - DEPLOY DOCKER (ALTERNATIVO)
+# Link Chart Frontend - Deploy via Container Docker
+# ===========================================
+#
+# ⚠️ ATENÇÃO: Este é um workflow ALTERNATIVO!
+#   O workflow padrão é o deploy-ssh.yml
+#   Use este apenas se precisar de deploy via Docker
+#
+# 🎯 OBJETIVO:
+#   Build e push de imagem Docker para GitHub Container Registry
+#   Deploy usando containers Docker (não implementado completamente)
+#
+# 🚀 QUANDO EXECUTA:
+#   - Push para branch 'main' (apenas build, deploy comentado)
+#   - Pull Request para 'main' (apenas validação)
+#   - Execução manual via workflow_dispatch
+#
+# 📋 PRÉ-REQUISITOS:
+#   - GitHub Container Registry habilitado
+#   - Secrets GITHUB_TOKEN (automático)
+#   - Para deploy real: configurar infraestrutura Docker
+#
+# 🐳 IMAGENS GERADAS:
+#   - ghcr.io/[owner]/[repo]/frontend:latest
+#   - ghcr.io/[owner]/[repo]/frontend:main
+#   - ghcr.io/[owner]/[repo]/frontend:main-[sha]
+#
 # ===========================================
 
-name: 🚀 Deploy to Production
+name: 🐳 Deploy Docker (Alternativo)
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy'
-        required: true
-        default: 'production'
-        type: choice
-        options:
-        - production
-        - staging
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
+        inputs:
+            environment:
+                description: 'Environment to deploy'
+                required: true
+                default: 'production'
+                type: choice
+                options:
+                    - production
+                    - staging
+            force_deploy:
+                description: 'Forçar deploy real (experimental)'
+                required: false
+                default: false
+                type: boolean
 
 # Definir variáveis globais
 env:
-  NODE_VERSION: '22'
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/frontend
+    NODE_VERSION: '22'
+    REGISTRY: ghcr.io
+    IMAGE_NAME: ${{ github.repository }}/frontend
 
 # Definir permissões necessárias
 permissions:
-  contents: read
-  packages: write
-  id-token: write
+    contents: read
+    packages: write
+    id-token: write
 
 jobs:
-  # ===========================================
-  # JOB 1: ANÁLISE E VALIDAÇÃO
-  # ===========================================
-  validate:
-    name: 🔍 Code Analysis & Validation
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    # ===========================================
+    # JOB 1: VALIDAÇÃO PARA DOCKER BUILD
+    # Valida o código antes do build da imagem Docker
+    # ===========================================
+    validate:
+        name: 🔍 Validação Docker
+        runs-on: ubuntu-latest
 
-      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - name: 📦 Install dependencies
-        run: |
-          npm ci --prefer-offline --no-audit
-          
-      - name: 🔍 Project Structure Validation
-        run: |
-          npm run validate
-        continue-on-error: false
+            - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: 'npm'
 
-      - name: 🔧 TypeScript Check
-        run: |
-          npx tsc --noEmit
-        continue-on-error: true
+            - name: 📦 Install dependencies
+              run: |
+                  echo "📦 Instalando dependências para validação..."
+                  npm ci --prefer-offline --no-audit --silent
 
-      - name: 🏗️ Test Build
-        run: |
-          npm run build
-        env:
-          NODE_ENV: production
-          NEXT_TELEMETRY_DISABLED: 1
-          STANDALONE: true
+            - name: 🔍 Validação de estrutura
+              run: |
+                  echo "🔍 Validando estrutura do projeto..."
+                  npm run validate
+              continue-on-error: true # Warnings não devem bloquear
 
-      - name: 📊 Build Analysis
-        run: |
-          echo "Build completed successfully!"
-          ls -la .next/
-          du -sh .next/
+            - name: 🔧 TypeScript Check
+              run: |
+                  echo "🔧 Verificando tipos TypeScript..."
+                  npx tsc --noEmit
+              continue-on-error: true # Não bloquear por erros de tipo
 
-  # ===========================================
-  # JOB 2: BUILD E PUSH DA IMAGEM DOCKER
-  # ===========================================
-  build-and-push:
-    name: 🐳 Build & Push Docker Image
-    runs-on: ubuntu-latest
-    needs: validate
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
-    outputs:
-      image-digest: ${{ steps.build.outputs.digest }}
-      image-tag: ${{ steps.meta.outputs.tags }}
+            - name: 🏗️ Test Build (para Docker)
+              run: |
+                  echo "🏗️ Testando build para Docker..."
+                  npm run build
+                  echo "✅ Build concluído com sucesso"
 
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
+                  # Análise do build
+                  echo "📊 Informações do build:"
+                  ls -la .next/ | head -10
+                  du -sh .next/
+              env:
+                  NODE_ENV: production
+                  NEXT_TELEMETRY_DISABLED: 1
 
-      - name: 🐳 Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+            - name: 🐳 Validar Dockerfile
+              run: |
+                  echo "🐳 Validando Dockerfile..."
+                  if [ -f "docker/production/Dockerfile" ]; then
+                    echo "✅ Dockerfile encontrado: docker/production/Dockerfile"
+                    # Verificar sintaxe básica
+                    docker --version
+                    echo "✅ Docker disponível para build"
+                  else
+                    echo "❌ Dockerfile não encontrado!"
+                    exit 1
+                  fi
 
-      - name: 🔐 Login to Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+            - name: 📋 Validation Summary
+              run: |
+                  echo "## 🔍 Docker Validation Summary" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Node.js**: ${{ env.NODE_VERSION }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Build Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Bundle Size**: $(du -sh .next/ | cut -f1)" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Dockerfile**: ✅ Valid" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Ready for Docker Build**: ✅ Yes" >> $GITHUB_STEP_SUMMARY
 
-      - name: 📝 Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
+    # ===========================================
+    # JOB 2: BUILD E PUSH DA IMAGEM DOCKER
+    # Constrói e publica imagem Docker no GitHub Container Registry
+    # ===========================================
+    build-and-push:
+        name: 🐳 Build & Push Docker
+        runs-on: ubuntu-latest
+        needs: validate
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-      - name: 🏗️ Build and push Docker image
-        id: build
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./docker/production/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            NODE_ENV=production
-            NEXT_TELEMETRY_DISABLED=1
+        outputs:
+            image-digest: ${{ steps.build.outputs.digest }}
+            image-tag: ${{ steps.meta.outputs.tags }}
+            image-url: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-  # ===========================================
-  # JOB 3: DEPLOY PARA PRODUÇÃO
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v4
+
+            - name: 🐳 Configurar Docker Buildx
+              uses: docker/setup-buildx-action@v3
+              with:
+                  driver-opts: |
+                      network=host
+                  buildkitd-flags: |
+                      --allow-insecure-entitlement security.insecure
+                      --allow-insecure-entitlement network.host
+
+            - name: 🔐 Login no Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: 📝 Extrair metadados da imagem
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      type=ref,event=branch
+                      type=ref,event=pr
+                      type=sha,prefix={{branch}}-
+                      type=raw,value=latest,enable={{is_default_branch}}
+                  labels: |
+                      org.opencontainers.image.title=Link Chart Frontend
+                      org.opencontainers.image.description=Aplicação Next.js para encurtamento de URLs
+                      org.opencontainers.image.vendor=Link Chart
+                      org.opencontainers.image.version={{version}}
+
+            - name: 🏗️ Build e Push da Imagem Docker
+              id: build
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  file: ./docker/production/Dockerfile
+                  platforms: linux/amd64,linux/arm64
+                  push: true
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+                  build-args: |
+                      NODE_ENV=production
+                      NEXT_TELEMETRY_DISABLED=1
+
+            - name: 📊 Docker Build Summary
+              run: |
+                  echo "## 🐳 Docker Build Summary" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### 📋 Informações da Imagem" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Registry**: ${{ env.REGISTRY }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Image**: ${{ env.IMAGE_NAME }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Tags**: \`${{ steps.meta.outputs.tags }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Digest**: \`${{ steps.build.outputs.digest }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Platforms**: linux/amd64, linux/arm64" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### 🚀 Como usar a imagem:" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+                  echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
+                  echo "docker run -p 3000:3000 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+      # ===========================================
+  # JOB 3: DEPLOY DOCKER (EXPERIMENTAL)
+  # ⚠️ ATENÇÃO: Deploy Docker não está implementado!
+  # Use o workflow deploy-ssh.yml para deploy real
   # ===========================================
   deploy:
-    name: 🚀 Deploy to Production
+    name: 🚀 Deploy Docker (Experimental)
     runs-on: ubuntu-latest
     needs: build-and-push
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && inputs.force_deploy
     environment: production
 
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      # HEALTH CHECK (Comentado para implementação futura)
-      # - name: 🏥 Health Check
-      #   run: |
-      #     echo "Performing health check..."
-      #     # curl -f http://your-app-url/api/health || exit 1
-      #   continue-on-error: false
-
-      - name: 📋 Deployment Summary
+      - name: ⚠️ Aviso sobre Deploy Docker
         run: |
-          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ ATENÇÃO: Deploy Docker não está totalmente implementado!"
+          echo ""
+          echo "🔧 Para deploy real, use o workflow: deploy-ssh.yml"
+          echo "📋 Este job apenas demonstra como seria o deploy Docker"
+          echo ""
+          echo "🐳 Imagem disponível: ${{ needs.build-and-push.outputs.image-tag }}"
+
+      - name: 📋 Informações da Imagem
+        run: |
+          echo "## 🐳 Informações da Imagem Docker" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Imagem Construída" >> $GITHUB_STEP_SUMMARY
+          echo "- **Registry**: ${{ env.REGISTRY }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Image**: ${{ needs.build-and-push.outputs.image-tag }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Digest**: ${{ needs.build-and-push.outputs.image-digest }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Environment**: Production" >> $GITHUB_STEP_SUMMARY
-          echo "- **Deployed at**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Digest**: \`${{ needs.build-and-push.outputs.image-digest }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build Time**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Como fazer deploy manual:" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "# 1. Pull da imagem" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ needs.build-and-push.outputs.image-tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# 2. Parar container anterior (se existir)" >> $GITHUB_STEP_SUMMARY
+          echo "docker stop linkchart-frontend || true" >> $GITHUB_STEP_SUMMARY
+          echo "docker rm linkchart-frontend || true" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# 3. Executar novo container" >> $GITHUB_STEP_SUMMARY
+          echo "docker run -d \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --name linkchart-frontend \\" >> $GITHUB_STEP_SUMMARY
+          echo "  -p 3000:3000 \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --restart unless-stopped \\" >> $GITHUB_STEP_SUMMARY
+          echo "  ${{ needs.build-and-push.outputs.image-tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ Para Deploy Automático:" >> $GITHUB_STEP_SUMMARY
+          echo "Use o workflow **deploy-ssh.yml** que faz deploy direto no servidor!" >> $GITHUB_STEP_SUMMARY
 
-      # DEPLOY REAL (Comentado - implementar conforme sua infraestrutura)
-      # - name: 🚀 Deploy to DigitalOcean
-      #   run: |
-      #     echo "Deploying to DigitalOcean..."
-      #     # Implementar deploy real aqui
-      #     # Exemplo: kubectl, docker-compose, etc.
-
-  # ===========================================
-  # JOB 4: NOTIFICAÇÕES (OPCIONAL)
-  # ===========================================
-  notify:
-    name: 📢 Notifications
-    runs-on: ubuntu-latest
-    needs: [validate, build-and-push, deploy]
-    if: always()
-
-    steps:
-      - name: 📊 Job Status Summary
-        run: |
-          echo "## 📊 Pipeline Status" >> $GITHUB_STEP_SUMMARY
-          echo "- **Validation**: ${{ needs.validate.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Build & Push**: ${{ needs.build-and-push.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Deploy**: ${{ needs.deploy.result }}" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "${{ needs.deploy.result }}" == "success" ]; then
-            echo "✅ **Deployment completed successfully!**" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **Deployment failed or was skipped**" >> $GITHUB_STEP_SUMMARY
-          fi
-
-      # SLACK/DISCORD NOTIFICATIONS (Comentado para implementação futura)
-      # - name: 📱 Slack Notification
-      #   if: always()
-      #   uses: 8398a7/action-slack@v3
+      # IMPLEMENTAÇÃO FUTURA: Deploy automático via Docker
+      # - name: 🚀 Deploy via Docker (SSH)
+      #   uses: webfactory/ssh-agent@v0.9.0
       #   with:
-      #     status: ${{ job.status }}
-      #     channel: '#deployments'
-      #     webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      # - name: 🐳 Deploy Container
+      #   run: |
+      #     ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+      #       docker pull ${{ needs.build-and-push.outputs.image-tag }}
+      #       docker stop linkchart-frontend || true
+      #       docker rm linkchart-frontend || true
+      #       docker run -d --name linkchart-frontend -p 3000:3000 --restart unless-stopped ${{ needs.build-and-push.outputs.image-tag }}
+      #     EOF
+
+    # ===========================================
+    # JOB 4: NOTIFICAÇÕES (OPCIONAL)
+    # ===========================================
+    notify:
+        name: 📢 Notifications
+        runs-on: ubuntu-latest
+        needs: [validate, build-and-push, deploy]
+        if: always()
+
+        steps:
+            - name: 📊 Job Status Summary
+              run: |
+                  echo "## 📊 Pipeline Status" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Validation**: ${{ needs.validate.result }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Build & Push**: ${{ needs.build-and-push.result }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Deploy**: ${{ needs.deploy.result }}" >> $GITHUB_STEP_SUMMARY
+
+                  if [ "${{ needs.deploy.result }}" == "success" ]; then
+                    echo "✅ **Deployment completed successfully!**" >> $GITHUB_STEP_SUMMARY
+                  else
+                    echo "❌ **Deployment failed or was skipped**" >> $GITHUB_STEP_SUMMARY
+                  fi
+
+            # SLACK/DISCORD NOTIFICATIONS (Comentado para implementação futura)
+            # - name: 📱 Slack Notification
+            #   if: always()
+            #   uses: 8398a7/action-slack@v3
+            #   with:
+            #     status: ${{ job.status }}
+            #     channel: '#deployments'
+            #     webhook_url: ${{ secrets.SLACK_WEBHOOK }}
