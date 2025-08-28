@@ -110,9 +110,23 @@ npm run format:check
 4. Push para a branch
 5. Abra um Pull Request
 
+## 🚀 Deploy
+
+### **Deploy Automático**
+```bash
+git push origin main  # Deploy automático via GitHub Actions
+```
+
+### **Monitoramento**
+- **Aplicação**: http://134.209.33.182
+- **Health Check**: http://134.209.33.182/api/health
+- **GitHub Actions**: https://github.com/bcordeirodev/linkchart-frontend/actions
+
+### **Documentação**
+- [📋 Guia de Deploy](DEPLOY_GUIDE.md)
+- [🔧 Workflows](WORKFLOWS_SUMMARY.md)
+- [🐳 Docker & Scripts](docker/README.md)
+
 ## 📄 Licença
 
 Este projeto está sob a licença MIT.
-# Deploy Test qui 28 ago 2025 14:28:10 -03
-# Deploy Test qui 28 ago 2025 14:58:27 -03
-# Deploy Test qui 28 ago 2025 15:28:36 -03

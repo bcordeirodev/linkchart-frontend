@@ -173,9 +173,9 @@ git push origin main
 
 ### 3. **Monitorar:**
 
--   GitHub Actions: https://github.com/[repo]/actions
+-   GitHub Actions: https://github.com/bcordeirodev/linkchart-frontend/actions
 -   Aplicação: http://134.209.33.182
--   Health: http://134.209.33.182/health
+-   Health: http://134.209.33.182/api/health
 
 ---
 
