@@ -1,25 +1,21 @@
 'use client';
 
-import { Analytics } from '@/components/unified-analytics/Analytics';
-import { useEnhancedAnalytics } from '@/hooks/useEnhancedAnalytics';
-import { useLinks } from '@/hooks/useLinks';
+import { Box, Typography } from '@mui/material';
 
 /**
  * Página principal do control panel - Dashboard Analytics
+ * Versão ultra-simplificada para debug
  */
 export default function ControlPanelPage() {
-	const { data, loading, error, refetch } = useEnhancedAnalytics('1'); // ID 1 para analytics geral
-	const { links } = useLinks();
-
 	return (
-		<Analytics
-			data={data}
-			loading={loading}
-			error={error}
-			showHeader={true}
-			showTabs={true}
-			linksData={links}
-			showDashboardTab={true}
-		/>
+		<Box sx={{ p: 3 }}>
+			<Typography
+				variant="h4"
+				gutterBottom
+			>
+				🎯 Dashboard Analytics
+			</Typography>
+			<Typography variant="body1">Página principal funcionando!</Typography>
+		</Box>
 	);
 }
