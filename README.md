@@ -4,13 +4,13 @@ Interface moderna da aplicação Link Chart desenvolvida em Next.js 15 com React
 
 ## 🚀 Tecnologias
 
-- **Next.js 15**
-- **React 19**
-- **TypeScript**
-- **Material-UI (MUI) 6**
-- **ApexCharts**
-- **React Leaflet**
-- **Framer Motion**
+-   **Next.js 15**
+-   **React 19**
+-   **TypeScript**
+-   **Material-UI (MUI) 6**
+-   **ApexCharts**
+-   **React Leaflet**
+-   **Framer Motion**
 
 ## 📦 Instalação Local
 
@@ -32,11 +32,13 @@ npm run dev
 ## 🌐 Deploy na Vercel
 
 ### Deploy Automático:
+
 1. Conecte este repositório na Vercel
 2. Configure as variáveis de ambiente
 3. Deploy automático a cada push
 
 ### Deploy Manual:
+
 ```bash
 # Instalar Vercel CLI
 npm i -g vercel
@@ -68,39 +70,39 @@ npm run format:check
 
 ## 📊 Funcionalidades
 
-- ✅ Dashboard de analytics
-- ✅ Encurtamento de URLs
-- ✅ Mapas de calor interativos
-- ✅ Gráficos avançados
-- ✅ Autenticação segura
-- ✅ Interface responsiva
-- ✅ Tema dark/light
-- ✅ PWA ready
+-   ✅ Dashboard de analytics
+-   ✅ Encurtamento de URLs
+-   ✅ Mapas de calor interativos
+-   ✅ Gráficos avançados
+-   ✅ Autenticação segura
+-   ✅ Interface responsiva
+-   ✅ Tema dark/light
+-   ✅ PWA ready
 
 ## 🎨 Componentes
 
-- **Analytics Dashboard**: Métricas em tempo real
-- **Link Manager**: Gerenciamento de links
-- **Heatmaps**: Visualização geográfica
-- **Charts**: Gráficos interativos
-- **Forms**: Formulários otimizados
-- **Auth**: Sistema de autenticação
+-   **Analytics Dashboard**: Métricas em tempo real
+-   **Link Manager**: Gerenciamento de links
+-   **Heatmaps**: Visualização geográfica
+-   **Charts**: Gráficos interativos
+-   **Forms**: Formulários otimizados
+-   **Auth**: Sistema de autenticação
 
 ## ⚡ Performance
 
-- **Bundle Splitting**: Carregamento otimizado
-- **Image Optimization**: WebP/AVIF automático
-- **Static Generation**: SSG onde possível
-- **Edge Runtime**: Vercel Edge Functions
-- **CDN Global**: Cache distribuído
+-   **Bundle Splitting**: Carregamento otimizado
+-   **Image Optimization**: WebP/AVIF automático
+-   **Static Generation**: SSG onde possível
+-   **Edge Runtime**: Vercel Edge Functions
+-   **CDN Global**: Cache distribuído
 
 ## 🔒 Segurança
 
-- **CSP Headers**: Content Security Policy
-- **XSS Protection**: Proteção contra ataques
-- **HSTS**: HTTP Strict Transport Security
-- **Secure Cookies**: Cookies seguros
-- **CORS**: Cross-Origin configurado
+-   **CSP Headers**: Content Security Policy
+-   **XSS Protection**: Proteção contra ataques
+-   **HSTS**: HTTP Strict Transport Security
+-   **Secure Cookies**: Cookies seguros
+-   **CORS**: Cross-Origin configurado
 
 ## 🤝 Contribuição
 
@@ -113,19 +115,22 @@ npm run format:check
 ## 🚀 Deploy
 
 ### **Deploy Automático**
+
 ```bash
 git push origin main  # Deploy automático via GitHub Actions
 ```
 
 ### **Monitoramento**
-- **Aplicação**: http://134.209.33.182
-- **Health Check**: http://134.209.33.182/api/health
-- **GitHub Actions**: https://github.com/bcordeirodev/linkchart-frontend/actions
+
+-   **Aplicação**: http://134.209.33.182
+-   **Health Check**: http://134.209.33.182/api/health
+-   **GitHub Actions**: https://github.com/bcordeirodev/linkchart-frontend/actions
 
 ### **Documentação**
-- [📋 Guia de Deploy](DEPLOY_GUIDE.md)
-- [🔧 Workflows](WORKFLOWS_SUMMARY.md)
-- [🐳 Docker & Scripts](docker/README.md)
+
+-   [📋 Guia de Deploy](DEPLOY_GUIDE.md)
+-   [🔧 Workflows](WORKFLOWS_SUMMARY.md)
+-   [🐳 Docker & Scripts](docker/README.md)
 
 ## 📄 Licença
 
