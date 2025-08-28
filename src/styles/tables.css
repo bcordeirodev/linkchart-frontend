@@ -11,8 +11,8 @@ Basic Table Styles
 
 table.simple {
 	width: 100%;
-	border: none;
 	border-spacing: 0;
+	border: none;
 	text-align: left;
 }
 
