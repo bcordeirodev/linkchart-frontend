@@ -6,12 +6,21 @@ import { HeatmapPoint } from '@/hooks/useEnhancedAnalytics';
 import dynamic from 'next/dynamic';
 import { MyLocation, FilterList } from '@mui/icons-material';
 
-// Importação dinâmica do Leaflet
-const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
-const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
-const CircleMarker = dynamic(() => import('react-leaflet').then(mod => mod.CircleMarker), { ssr: false });
-const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
-const MarkerClusterGroup = dynamic(() => import('react-leaflet-markercluster').then(mod => mod.default), { ssr: false });
+// Importação dinâmica mais segura do Leaflet
+const SafeLeafletComponents = dynamic(() => 
+    import('react-leaflet').then(mod => ({
+        MapContainer: mod.MapContainer,
+        TileLayer: mod.TileLayer,
+        CircleMarker: mod.CircleMarker,
+        Popup: mod.Popup
+    })), 
+    { ssr: false }
+);
+
+const SafeMarkerClusterGroup = dynamic(() => 
+    import('react-leaflet-markercluster').then(mod => mod.default), 
+    { ssr: false }
+);
 
 interface EnhancedHeatmapChartProps {
     data: HeatmapPoint[];

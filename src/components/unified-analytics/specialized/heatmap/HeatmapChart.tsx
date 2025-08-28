@@ -5,7 +5,7 @@ import { Box, Typography, Card, CardContent, CircularProgress, Chip, Stack } fro
 import { HeatmapPoint } from '@/hooks/useEnhancedAnalytics';
 import dynamic from 'next/dynamic';
 
-// Importação dinâmica mais robusta do Leaflet
+// Importação dinâmica mais segura do Leaflet
 const DynamicMap = dynamic(() => import('./LeafletMapComponent'), {
     ssr: false,
     loading: () => (
@@ -22,7 +22,30 @@ const DynamicMap = dynamic(() => import('./LeafletMapComponent'), {
             <CircularProgress />
         </Box>
     )
-}) as React.ComponentType<{ data: HeatmapPoint[]; height: number; maxClicks: number }>;
+});
+
+// Wrapper seguro para o componente de mapa
+const SafeMapWrapper: React.FC<{ data: HeatmapPoint[]; height: number; maxClicks: number }> = (props) => {
+    // Verificar se estamos no cliente
+    if (typeof window === 'undefined') {
+        return (
+            <Box
+                sx={{
+                    height: props.height,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(0,0,0,0.05)',
+                    borderRadius: 2
+                }}
+            >
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    return <DynamicMap {...props} />;
+};
 
 interface HeatmapChartProps {
     data: HeatmapPoint[];
@@ -135,7 +158,7 @@ export function HeatmapChart({ data, height = 500, title = 'Mapa de Calor Mundia
 
                 {/* Mapa */}
                 <Box sx={{ height: height - 100, position: 'relative' }}>
-                    <DynamicMap
+                    <SafeMapWrapper
                         data={data}
                         height={height - 100}
                         maxClicks={maxClicks}

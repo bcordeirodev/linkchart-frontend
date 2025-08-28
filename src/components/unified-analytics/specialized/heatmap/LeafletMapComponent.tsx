@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { HeatmapPoint } from '@/hooks/useEnhancedAnalytics';
 
-// Importações condicionais do Leaflet
-let MapContainer: React.ComponentType<any> | null = null;
-let TileLayer: React.ComponentType<any> | null = null;
-let CircleMarker: React.ComponentType<any> | null = null;
-let Popup: React.ComponentType<any> | null = null;
+// Componentes seguros para SSR
+interface SafeMapComponents {
+    MapContainer: React.ComponentType<any> | null;
+    TileLayer: React.ComponentType<any> | null;
+    CircleMarker: React.ComponentType<any> | null;
+    Popup: React.ComponentType<any> | null;
+}
 
 interface LeafletMapComponentProps {
     data: HeatmapPoint[];
@@ -17,15 +19,27 @@ interface LeafletMapComponentProps {
 }
 
 export default function LeafletMapComponent({ data, height, maxClicks }: LeafletMapComponentProps) {
+    const [mapComponents, setMapComponents] = useState<SafeMapComponents>({
+        MapContainer: null,
+        TileLayer: null,
+        CircleMarker: null,
+        Popup: null
+    });
     const [mapReady, setMapReady] = useState(false);
     const [mapError, setMapError] = useState(false);
 
     useEffect(() => {
-        // Importar componentes do Leaflet dinamicamente
+        // Verificar se estamos no cliente
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        // Importar componentes do Leaflet dinamicamente de forma segura
         const loadLeaflet = async () => {
             try {
-                // Importar CSS do Leaflet
-                if (typeof window !== 'undefined') {
+                // Verificar se o Leaflet CSS já foi carregado
+                const existingCss = document.querySelector('link[href*="leaflet"]');
+                if (!existingCss) {
                     const leafletCss = document.createElement('link');
                     leafletCss.rel = 'stylesheet';
                     leafletCss.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
@@ -34,12 +48,17 @@ export default function LeafletMapComponent({ data, height, maxClicks }: Leaflet
                     document.head.appendChild(leafletCss);
                 }
 
-                // Importar componentes React-Leaflet
-                const reactLeaflet = await import('react-leaflet');
-                MapContainer = reactLeaflet.MapContainer;
-                TileLayer = reactLeaflet.TileLayer;
-                CircleMarker = reactLeaflet.CircleMarker;
-                Popup = reactLeaflet.Popup;
+                // Importar componentes React-Leaflet de forma mais segura
+                const [reactLeaflet] = await Promise.all([
+                    import('react-leaflet')
+                ]);
+
+                setMapComponents({
+                    MapContainer: reactLeaflet.MapContainer,
+                    TileLayer: reactLeaflet.TileLayer,
+                    CircleMarker: reactLeaflet.CircleMarker,
+                    Popup: reactLeaflet.Popup
+                });
 
                 setMapReady(true);
             } catch (error) {
@@ -110,7 +129,7 @@ export default function LeafletMapComponent({ data, height, maxClicks }: Leaflet
         );
     }
 
-    if (!mapReady || !MapContainer) {
+    if (!mapReady || !mapComponents.MapContainer) {
         return (
             <Box
                 sx={{
@@ -134,6 +153,8 @@ export default function LeafletMapComponent({ data, height, maxClicks }: Leaflet
 
     try {
         // Verificar se todos os componentes foram carregados
+        const { MapContainer, TileLayer, CircleMarker, Popup } = mapComponents;
+        
         if (!MapContainer || !TileLayer || !CircleMarker || !Popup) {
             return (
                 <Box
