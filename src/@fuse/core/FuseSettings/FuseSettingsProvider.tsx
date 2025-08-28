@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
-import _ from 'lodash';
-import { defaultSettings, getParsedQuerySettings } from '@fuse/default-settings';
-import settingsConfig from 'src/configs/settingsConfig';
+import settingsConfig from '@/configs/settingsConfig';
 import { themeLayoutConfigs } from '@/themes';
-import { FuseSettingsConfigType, FuseThemesType } from '@fuse/core/FuseSettings/FuseSettings';
 import useUser from '@auth/useUser';
+import { FuseSettingsConfigType, FuseThemesType } from '@fuse/core/FuseSettings/FuseSettings';
+import { defaultSettings, getParsedQuerySettings } from '@fuse/default-settings/FuseDefaultSettings';
+import _ from 'lodash';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { PartialDeep } from 'type-fest';
 import FuseSettingsContext from './FuseSettingsContext';
 
@@ -26,10 +26,14 @@ const generateSettings = (
 	_defaultSettings: FuseSettingsConfigType,
 	_newSettings: PartialDeep<FuseSettingsConfigType>
 ) => {
+	const layoutStyle = _newSettings?.layout?.style;
+
+	if (!layoutStyle) return _defaultSettings;
+
 	return _.merge(
 		{},
 		_defaultSettings,
-		{ layout: { config: themeLayoutConfigs[_newSettings?.layout?.style]?.defaults } },
+		{ layout: { config: themeLayoutConfigs[layoutStyle]?.defaults } },
 		_newSettings
 	);
 };
@@ -86,20 +90,16 @@ export function FuseSettingsProvider({ children }: { children: ReactNode }) {
 		[data, setSettings]
 	);
 
-	return (
-		<FuseSettingsContext
-			value={useMemo(
-				() => ({
-					data,
-					setSettings,
-					changeTheme
-				}),
-				[data, setSettings]
-			)}
-		>
-			{children}
-		</FuseSettingsContext>
+	const contextValue = useMemo(
+		() => ({
+			data,
+			setSettings,
+			changeTheme
+		}),
+		[data, setSettings, changeTheme]
 	);
+
+	return <FuseSettingsContext.Provider value={contextValue}>{children}</FuseSettingsContext.Provider>;
 }
 
 export default FuseSettingsProvider;

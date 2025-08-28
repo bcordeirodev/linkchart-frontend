@@ -1,10 +1,9 @@
 'use client';
-import React, { useState, useEffect, useMemo } from 'react';
-import _ from 'lodash';
 import useFuseSettings from '@fuse/core/FuseSettings/hooks/useFuseSettings';
+import _ from 'lodash';
+import React, { useEffect, useMemo, useState } from 'react';
 import i18n from './i18n';
-import I18nContext from './I18nContext';
-import { LanguageType } from './I18nContext';
+import I18nContext, { LanguageType } from './I18nContext';
 
 type I18nProviderProps = {
 	children: React.ReactNode;
@@ -39,20 +38,16 @@ export function I18nProvider(props: I18nProviderProps) {
 		}
 	}, [languageId, setSettings, settingsThemeDirection]);
 
-	return (
-		<I18nContext
-			value={useMemo(
-				() => ({
-					language: _.find(languages, { id: languageId }),
-					languageId,
-					langDirection: i18n.dir(languageId),
-					languages,
-					changeLanguage
-				}),
-				[languageId]
-			)}
-		>
-			{children}
-		</I18nContext>
+	const contextValue = useMemo(
+		() => ({
+			language: _.find(languages, { id: languageId }),
+			languageId,
+			langDirection: i18n.dir(languageId),
+			languages,
+			changeLanguage
+		}),
+		[languageId]
 	);
+
+	return <I18nContext.Provider value={contextValue}>{children}</I18nContext.Provider>;
 }

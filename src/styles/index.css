@@ -1,8 +1,10 @@
+@import './app-base.css';
+@import './print.css';
+@import './tables.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import './app-base.css';
 
 :root {
 	/* Breakpoints */
@@ -86,9 +88,6 @@
 		max-width: 40rem;
 	}
 	@media (width >= 48rem) {
-		max-width: 48rem;
-	}
-	@media (width >= 64rem) {
 		max-width: 64rem;
 	}
 	@media (width >= 80rem) {
@@ -103,12 +102,3 @@
 	font-size: var(--text-base);
 	line-height: var(--text-base-line-height);
 }
-/**
-Print styles
-*/
-@import './print.css';
-
-/**
-Tables styles
-*/
-@import './tables.css';

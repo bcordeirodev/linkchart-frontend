@@ -1,11 +1,11 @@
 'use client';
 
+import { usePathname } from '@/hooks';
+import { themeLayoutsType } from '@/themes';
+import { FuseSettingsConfigType } from '@fuse/core/FuseSettings/FuseSettings';
+import useFuseSettings from '@fuse/core/FuseSettings/hooks/useFuseSettings';
 import _ from 'lodash';
 import React, { useEffect, useMemo } from 'react';
-import { FuseSettingsConfigType } from '@fuse/core/FuseSettings/FuseSettings';
-import { themeLayoutsType } from '@/themes';
-import { usePathname } from '@/hooks';
-import useFuseSettings from '@fuse/core/FuseSettings/hooks/useFuseSettings';
 import FuseLayoutSettingsContext from './FuseLayoutSettingsContext';
 
 export type FuseRouteObjectType = {
@@ -43,22 +43,22 @@ function FuseLayout(props: FuseLayoutProps) {
 		window.scrollTo(0, 0);
 	}, [pathname]);
 
-	return (
-		<FuseLayoutSettingsContext value={layoutSetting}>
-			{useMemo(() => {
-				return Object.entries(layouts).map(([key, Layout]) => {
-					if (key === layoutStyle) {
-						return (
-							<React.Fragment key={key}>
-								<Layout>{children}</Layout>
-							</React.Fragment>
-						);
-					}
+	const layoutContent = useMemo(() => {
+		return Object.entries(layouts).map(([key, Layout]) => {
+			if (key === layoutStyle) {
+				return (
+					<React.Fragment key={key}>
+						<Layout>{children}</Layout>
+					</React.Fragment>
+				);
+			}
 
-					return null;
-				});
-			}, [layoutStyle, layouts, children])}
-		</FuseLayoutSettingsContext>
+			return null;
+		});
+	}, [layoutStyle, layouts, children]);
+
+	return (
+		<FuseLayoutSettingsContext.Provider value={layoutSetting}>{layoutContent}</FuseLayoutSettingsContext.Provider>
 	);
 }
 

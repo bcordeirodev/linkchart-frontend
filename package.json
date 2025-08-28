@@ -107,7 +107,7 @@
 		"typescript-plugin-css-modules": "5.1.0"
 	},
 	"scripts": {
-		"dev": "NODE_ENV=development next dev --turbo",
+		"dev": "NODE_ENV=development next dev",
 		"build": "next build",
 		"start": "next start",
 		"start:prod": "NODE_ENV=production next start",
