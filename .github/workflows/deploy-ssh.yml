@@ -195,7 +195,7 @@ jobs:
                     
                     # Reiniciar serviço
                     echo "🔄 Reiniciando serviço da aplicação..."
-                    sudo systemctl restart linkchart-frontend
+                    sudo systemctl restart linkchart-frontend.service
                     
                     # Aguardar inicialização
                     echo "⏳ Aguardando inicialização do serviço..."
@@ -203,11 +203,11 @@ jobs:
                     
                     # Verificar status do serviço
                     echo "🔍 Verificando status do serviço..."
-                    if sudo systemctl is-active --quiet linkchart-frontend; then
+                    if sudo systemctl is-active --quiet linkchart-frontend.service; then
                       echo "✅ Serviço está ativo"
                     else
                       echo "❌ Erro: Serviço não está ativo"
-                      sudo systemctl status linkchart-frontend --no-pager
+                      sudo systemctl status linkchart-frontend.service --no-pager
                       exit 1
                     fi
                     
