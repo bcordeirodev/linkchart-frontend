@@ -113,3 +113,4 @@ npm run format:check
 ## 📄 Licença
 
 Este projeto está sob a licença MIT.
+# Deploy Test qui 28 ago 2025 14:28:10 -03
