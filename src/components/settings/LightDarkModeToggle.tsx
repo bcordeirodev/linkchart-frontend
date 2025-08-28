@@ -1,17 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
-import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import { useAppDispatch } from '@/store/hooks';
 import { FuseThemeOption } from '@/themes';
-import clsx from 'clsx';
+import useUser from '@auth/useUser';
+import { FuseSettingsConfigType } from '@fuse/core/FuseSettings/FuseSettings';
 import { useMainTheme } from '@fuse/core/FuseSettings/hooks/fuseThemeHooks';
 import useFuseSettings from '@fuse/core/FuseSettings/hooks/useFuseSettings';
-import { FuseSettingsConfigType } from '@fuse/core/FuseSettings/FuseSettings';
-import useUser from '@auth/useUser';
-import { useAppDispatch } from '@/store/hooks';
+import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import clsx from 'clsx';
+import React, { useState } from 'react';
 
 type LightDarkModeToggleProps = {
 	className?: string;
@@ -67,8 +67,8 @@ function LightDarkModeToggle(props: LightDarkModeToggleProps) {
 				onClick={handleClick}
 				className={clsx('border border-divider', className)}
 			>
-				{mainTheme.palette.mode === 'light' && <FuseSvgIcon>heroicons-outline:sun</FuseSvgIcon>}
 				{mainTheme.palette.mode === 'dark' && <FuseSvgIcon>heroicons-outline:moon</FuseSvgIcon>}
+				{mainTheme.palette.mode === 'light' && <FuseSvgIcon>heroicons-outline:sun</FuseSvgIcon>}
 			</IconButton>
 			<Menu
 				id="light-dark-toggle-menu"
