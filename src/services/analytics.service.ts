@@ -175,7 +175,7 @@ export class AnalyticsService extends BaseService {
     async getEnhancedLinkAnalytics(linkId: string): Promise<EnhancedAnalyticsData> {
         this.validateId(linkId, 'Link ID');
 
-        const endpoint = `/api/analytics/link/${linkId}/comprehensive`;
+        const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_COMPREHENSIVE(linkId);
 
         const fallbackData: EnhancedAnalyticsData = {
             has_data: false,
@@ -221,7 +221,7 @@ export class AnalyticsService extends BaseService {
     async getLinkGeographicData(linkId: string): Promise<any> {
         this.validateId(linkId, 'Link ID');
 
-        const endpoint = `/api/analytics/link/${linkId}/geographic`;
+        const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_GEOGRAPHIC(linkId);
 
         return this.get<any>(endpoint, {
             fallback: null,
@@ -235,7 +235,7 @@ export class AnalyticsService extends BaseService {
     async getLinkHeatmap(linkId: string): Promise<any> {
         this.validateId(linkId, 'Link ID');
 
-        const endpoint = `/api/analytics/link/${linkId}/heatmap`;
+        const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_HEATMAP(linkId);
 
         return this.get<any>(endpoint, {
             fallback: null,
@@ -249,7 +249,7 @@ export class AnalyticsService extends BaseService {
     async getLinkInsights(linkId: string): Promise<any> {
         this.validateId(linkId, 'Link ID');
 
-        const endpoint = `/api/analytics/link/${linkId}/insights`;
+        const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_INSIGHTS(linkId);
 
         return this.get<any>(endpoint, {
             fallback: [],

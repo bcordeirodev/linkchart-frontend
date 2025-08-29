@@ -10,10 +10,11 @@ type useUser = {
 	updateUser: (updates: Partial<IUser>) => Promise<IUser | undefined>;
 	updateUserSettings: (newSettings: IUser['settings']) => Promise<IUser['settings'] | undefined>;
 	signOut: () => void;
+	refreshUser: () => Promise<void>;
 };
 
 function useUser(): useUser {
-	const { user, logout, updateUser: authUpdateUser } = useAuth();
+	const { user, logout, updateUser: authUpdateUser, refreshUser: authRefreshUser } = useAuth();
 	const isGuest = useMemo(() => !user?.role || user?.role?.length === 0, [user]);
 
 	/**
@@ -54,12 +55,20 @@ function useUser(): useUser {
 		logout();
 	}
 
+	/**
+	 * Refresh user data from API
+	 */
+	async function handleRefreshUser() {
+		await authRefreshUser();
+	}
+
 	return {
 		data: user,
 		isGuest,
 		signOut: handleSignOut,
 		updateUser: handleUpdateUser,
-		updateUserSettings: handleUpdateUserSettings
+		updateUserSettings: handleUpdateUserSettings,
+		refreshUser: handleRefreshUser
 	};
 }
 

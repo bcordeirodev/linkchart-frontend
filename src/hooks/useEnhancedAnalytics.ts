@@ -122,13 +122,13 @@ export function useEnhancedAnalytics(linkId: string) {
                 response = apiResponse.data || (apiResponse as unknown as EnhancedAnalyticsData);
             } catch (authError) {
                 // Se falhar por autenticação, usar endpoint de teste temporário com fetch direto
-                if (process.env.NODE_ENV === 'development') {
+                if (import.meta.env.DEV) {
                     console.warn('Endpoint protegido falhou, usando endpoint de teste:', authError);
                 }
 
                 try {
                     const directResponse = await fetch(
-                        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
+                        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
                         {
                             method: 'GET',
                             headers: {
@@ -143,7 +143,7 @@ export function useEnhancedAnalytics(linkId: string) {
                     }
 
                     const testResponse = await directResponse.json();
-                    if (process.env.NODE_ENV === 'development') {
+                    if (import.meta.env.DEV) {
                         console.log('✅ Dados recebidos do endpoint de teste:', testResponse);
                     }
 
@@ -151,7 +151,7 @@ export function useEnhancedAnalytics(linkId: string) {
                     setData(testResponse);
                     return;
                 } catch (testError) {
-                    if (process.env.NODE_ENV === 'development') {
+                    if (import.meta.env.DEV) {
                         console.error('❌ Falha também no endpoint de teste:', testError);
                     }
                     throw testError;
@@ -187,7 +187,7 @@ export function useEnhancedAnalytics(linkId: string) {
                 // Fallback para dados do endpoint de teste com fetch direto
                 try {
                     const directResponse = await fetch(
-                        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
+                        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
                         {
                             method: 'GET',
                             headers: {
@@ -204,14 +204,14 @@ export function useEnhancedAnalytics(linkId: string) {
                     const testResponse = await directResponse.json();
                     return testResponse.geographic?.heatmap_data || [];
                 } catch (testError) {
-                    if (process.env.NODE_ENV === 'development') {
+                    if (import.meta.env.DEV) {
                         console.error('❌ Falha no endpoint de teste:', testError);
                     }
                     return [];
                 }
             }
         } catch (err) {
-            if (process.env.NODE_ENV === 'development') {
+            if (import.meta.env.DEV) {
                 console.error('Error fetching heatmap data:', err);
             }
             return [];
@@ -241,7 +241,7 @@ export function useEnhancedAnalytics(linkId: string) {
                 // Fallback para dados básicos com fetch direto
                 try {
                     const directResponse = await fetch(
-                        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
+                        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
                         {
                             method: 'GET',
                             headers: {
@@ -263,14 +263,14 @@ export function useEnhancedAnalytics(linkId: string) {
                         heatmap_data: testResponse.geographic?.heatmap_data || []
                     };
                 } catch (testError) {
-                    if (process.env.NODE_ENV === 'development') {
+                    if (import.meta.env.DEV) {
                         console.error('❌ Falha no endpoint de teste:', testError);
                     }
                     return null;
                 }
             }
         } catch (err) {
-            if (process.env.NODE_ENV === 'development') {
+            if (import.meta.env.DEV) {
                 console.error('Error fetching geographic data:', err);
             }
             return null;
@@ -296,7 +296,7 @@ export function useEnhancedAnalytics(linkId: string) {
                 // Fallback para insights básicos com fetch direto
                 try {
                     const directResponse = await fetch(
-                        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
+                        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
                         {
                             method: 'GET',
                             headers: {
@@ -328,14 +328,14 @@ export function useEnhancedAnalytics(linkId: string) {
                         ]
                     );
                 } catch (testError) {
-                    if (process.env.NODE_ENV === 'development') {
+                    if (import.meta.env.DEV) {
                         console.error('❌ Falha no endpoint de teste:', testError);
                     }
                     return [];
                 }
             }
         } catch (err) {
-            if (process.env.NODE_ENV === 'development') {
+            if (import.meta.env.DEV) {
                 console.error('Error fetching insights:', err);
             }
             return [];

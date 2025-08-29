@@ -77,6 +77,13 @@ class ApiClient {
 		try {
 			// Cliente (Browser)
 			if (typeof window !== 'undefined') {
+				// Primeiro tenta buscar o token diretamente
+				const token = localStorage.getItem('token');
+				if (token) {
+					return token;
+				}
+
+				// Fallback: busca no objeto user (para compatibilidade)
 				const user = localStorage.getItem('user');
 				if (user) {
 					const userData = JSON.parse(user);

@@ -76,6 +76,15 @@ class AuthService extends BaseService {
 			}
 		);
 	}
+
+	/**
+	 * Atualiza perfil do usuário
+	 */
+	async updateProfile(updates: Partial<IUserDB>): Promise<IUserDB> {
+		return this.put<IUserDB>(API_ENDPOINTS.AUTH.UPDATE_PROFILE, updates, {
+			context: 'update_profile'
+		});
+	}
 }
 
 // Instância singleton do serviço

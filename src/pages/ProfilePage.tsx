@@ -54,7 +54,7 @@ function ProfilePage() {
     // Estados de loading
     if (isLoading) {
         return (
-            <AuthGuardRedirect auth={['admin']}>
+            <AuthGuardRedirect auth={['user', 'admin']}>
                 <MainLayout>
                     <Box
                         sx={{
@@ -80,7 +80,7 @@ function ProfilePage() {
 
     if (!user) {
         return (
-            <AuthGuardRedirect auth={['admin']}>
+            <AuthGuardRedirect auth={['user', 'admin']}>
                 <MainLayout>
                     <Alert severity="error">Erro ao carregar dados do usuário. Tente fazer login novamente.</Alert>
                 </MainLayout>
@@ -89,7 +89,7 @@ function ProfilePage() {
     }
 
     return (
-        <AuthGuardRedirect auth={['admin']}>
+        <AuthGuardRedirect auth={['user', 'admin']}>
             <MainLayout>
                 <Box sx={{ p: 3, maxWidth: 1200, mx: 'auto' }}>
                     <ProfileHeader />

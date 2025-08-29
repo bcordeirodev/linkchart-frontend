@@ -22,27 +22,34 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 	}
 
 	componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-		// You can also log the error to an error reporting service
+		// Log detalhado do erro no console
 		this.setState({ error, errorInfo });
 
-		console.error('Uncaught error:', error, errorInfo);
+		// Console logging detalhado
+		console.group('🚨 ErrorBoundary - Erro Capturado');
+		console.error('Erro:', error);
+		console.error('Stack Trace:', error.stack);
+		console.error('Component Stack:', errorInfo.componentStack);
+		console.error('Timestamp:', new Date().toISOString());
+		console.error('URL:', window.location.href);
+		console.error('User Agent:', navigator.userAgent);
+		console.groupEnd();
+
+		// Log para o sistema de monitoramento se disponível
+		// (removido para simplificar)
 	}
 
 	render() {
 		const { children = null } = this.props;
-		const { error, errorInfo, hasError } = this.state;
+		const { hasError } = this.state;
 
 		if (hasError) {
-			return (
-				<div className="bg-white p-6">
-					<h1 className="text-2xl font-semibold">Something went wrong.</h1>
-					<p className="text-base whitespace-pre-wrap">
-						{error && error.toString()}
-						<br />
-						{errorInfo && errorInfo.componentStack}
-					</p>
-				</div>
-			);
+			// Log adicional no console para facilitar debugging
+			console.error('🔴 ErrorBoundary capturou erro - verifique o console acima');
+
+			// Retorna null para não renderizar nada na tela
+			// O erro fica apenas no console
+			return null;
 		}
 
 		return children;

@@ -9,11 +9,12 @@ import AuthGuardRedirect from '@auth/AuthGuardRedirect';
  * Analytics Rico com funcionalidades de dashboard integradas
  */
 function AnalyticsPage() {
-    const { data, loading, error, refetch } = useEnhancedAnalytics('1'); // ID 1 para analytics geral
     const { links } = useLinks();
+    const firstLinkId = links.length > 0 ? links[0].id.toString() : '1';
+    const { data, loading, error, refetch } = useEnhancedAnalytics(firstLinkId);
 
     return (
-        <AuthGuardRedirect auth={['admin']}>
+        <AuthGuardRedirect auth={['user', 'admin']}>
             <MainLayout>
                 <Analytics
                     data={data}

@@ -49,7 +49,7 @@ function LinkPage() {
 
     if (loading) {
         return (
-            <AuthGuardRedirect auth={['admin']}>
+            <AuthGuardRedirect auth={['user', 'admin']}>
                 <MainLayout>
                     <FuseLoading />
                 </MainLayout>
@@ -58,7 +58,7 @@ function LinkPage() {
     }
 
     return (
-        <AuthGuardRedirect auth={['admin']}>
+        <AuthGuardRedirect auth={['user', 'admin']}>
             <MainLayout>
                 <Box sx={{ p: 3, maxWidth: '100%', overflow: 'hidden' }}>
                     <LinksHeader />

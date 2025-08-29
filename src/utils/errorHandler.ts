@@ -1,3 +1,5 @@
+import React from 'react';
+
 /**
  * Sistema de monitoramento de erros
  * Centraliza o tratamento e logging de erros
@@ -42,15 +44,32 @@ class ErrorHandler {
             this.errors = this.errors.slice(-this.maxErrors);
         }
 
-        // Log no console em desenvolvimento
-        if (import.meta.env.DEV) {
-            console.error('Error logged:', errorInfo);
-        }
+        // Log detalhado no console
+        this.logToConsole(errorInfo);
 
         // Em produção, enviar para serviço de monitoramento
         if (import.meta.env.PROD) {
             this.sendToMonitoring(errorInfo);
         }
+    }
+
+    /**
+     * Log detalhado no console
+     */
+    private logToConsole(errorInfo: ErrorInfo): void {
+        console.group(`🔍 ErrorHandler - ${errorInfo.message}`);
+        console.error('Mensagem:', errorInfo.message);
+        console.error('Stack Trace:', errorInfo.stack);
+        console.error('Timestamp:', errorInfo.timestamp);
+        console.error('URL:', errorInfo.url);
+        console.error('User Agent:', errorInfo.userAgent);
+
+        if (errorInfo.context && Object.keys(errorInfo.context).length > 0) {
+            console.error('Contexto:', errorInfo.context);
+        }
+
+        console.error('Total de Erros no Handler:', this.errors.length);
+        console.groupEnd();
     }
 
     /**
@@ -86,6 +105,40 @@ class ErrorHandler {
     }
 
     /**
+     * Registra erro de validação
+     */
+    public logValidationError(field: string, value: unknown, rule: string): void {
+        this.logError(`Validation Error: ${field} failed ${rule}`, {
+            field,
+            value,
+            rule,
+            type: 'validation_error'
+        });
+    }
+
+    /**
+     * Registra erro de componente React
+     */
+    public logReactError(error: Error, componentName?: string, props?: Record<string, unknown>): void {
+        this.logError(error, {
+            componentName,
+            props,
+            type: 'react_error'
+        });
+    }
+
+    /**
+     * Registra erro de hook
+     */
+    public logHookError(error: Error, hookName: string, dependencies?: unknown[]): void {
+        this.logError(error, {
+            hookName,
+            dependencies,
+            type: 'hook_error'
+        });
+    }
+
+    /**
      * Obtém relatório de erros
      */
     public getErrorReport(): ErrorReport {
@@ -101,6 +154,7 @@ class ErrorHandler {
      */
     public clearErrors(): void {
         this.errors = [];
+        console.log('🧹 ErrorHandler: Todos os erros foram limpos');
     }
 
     /**
@@ -123,6 +177,37 @@ class ErrorHandler {
         const cutoff = new Date(Date.now() - minutes * 60 * 1000);
         const recentErrors = this.errors.filter((error) => new Date(error.timestamp) > cutoff);
         return recentErrors.length > 10; // Mais de 10 erros em 5 minutos
+    }
+
+    /**
+     * Obtém estatísticas de erros por tipo
+     */
+    public getErrorStats(): Record<string, number> {
+        const stats: Record<string, number> = {};
+
+        this.errors.forEach((error) => {
+            const type = error.context?.type as string || 'unknown';
+            stats[type] = (stats[type] || 0) + 1;
+        });
+
+        return stats;
+    }
+
+    /**
+     * Mostra resumo dos erros no console
+     */
+    public showErrorSummary(): void {
+        const stats = this.getErrorStats();
+
+        console.group('📊 ErrorHandler - Resumo de Erros');
+        console.log('Total de Erros:', this.errors.length);
+        console.log('Erros por Tipo:', stats);
+
+        if (this.errors.length > 0) {
+            console.log('Último Erro:', this.errors[this.errors.length - 1]);
+        }
+
+        console.groupEnd();
     }
 }
 
@@ -149,6 +234,12 @@ export const setupGlobalErrorHandling = (): void => {
                 type: 'unhandled_promise'
             });
         });
+
+        // Adiciona ao window para acesso global
+        (window as any).errorHandler = errorHandler;
+        (window as any).showErrorSummary = () => errorHandler.showErrorSummary();
+        (window as any).clearErrors = () => errorHandler.clearErrors();
+        (window as any).getErrorStats = () => errorHandler.getErrorStats();
     }
 };
 
@@ -166,4 +257,39 @@ export const withErrorHandling = <T extends unknown[], R>(fn: (...args: T) => R 
             throw error;
         }
     };
+};
+
+// Função para capturar erros de componentes React
+export const withReactErrorHandling = <P extends Record<string, unknown>>(
+    Component: React.ComponentType<P>,
+    componentName?: string
+) => {
+    const WrappedComponent = (props: P) => {
+        try {
+            return React.createElement(Component, props);
+        } catch (error) {
+            errorHandler.logReactError(
+                error instanceof Error ? error : new Error(String(error)),
+                componentName || Component.name,
+                props
+            );
+
+            // Renderiza fallback em caso de erro
+            return React.createElement('div', {
+                className: 'p-4 border border-red-200 bg-red-50 rounded'
+            }, [
+                React.createElement('p', {
+                    key: 'error',
+                    className: 'text-red-600'
+                }, `Erro ao renderizar componente ${componentName || Component.name}`),
+                React.createElement('p', {
+                    key: 'details',
+                    className: 'text-sm text-red-500'
+                }, 'Verifique o console para mais detalhes')
+            ]);
+        }
+    };
+
+    WrappedComponent.displayName = `withReactErrorHandling(${componentName || Component.name})`;
+    return WrappedComponent;
 };

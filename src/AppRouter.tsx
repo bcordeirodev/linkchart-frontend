@@ -87,6 +87,10 @@ function AppRouter() {
                 }
             />
             <Route
+                path="/links"
+                element={<Navigate to="/link" replace />}
+            />
+            <Route
                 path="/profile"
                 element={
                     <LoadingWrapper>

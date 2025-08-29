@@ -1,7 +1,8 @@
 import { Alert } from '@mui/material';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { useState } from 'react';
+import { getSessionRedirectUrl, resetSessionRedirectUrl } from '@fuse/core/FuseAuthorization/sessionRedirectUrl';
 
 type AuthJsFormProps = { formType: 'signin' | 'signup' };
 
@@ -49,12 +50,22 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setLoading(true);
 		try {
 			await onLogin(email, password);
+
+			// Navegação após login bem-sucedido
+			const redirectUrl = getSessionRedirectUrl();
+			const targetUrl = redirectUrl || '/analytics';
+
+			console.log('🎯 Redirecionando após login para:', targetUrl);
+			resetSessionRedirectUrl();
+			navigate(targetUrl);
+
 		} catch (error) {
 			console.error('Erro no login:', error);
 		} finally {

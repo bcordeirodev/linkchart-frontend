@@ -39,15 +39,36 @@ export const API_CONFIG = {
 		// Auth
 		AUTH: {
 			LOGIN: '/api/auth/login',
-			LOGOUT: '/api/auth/logout',
+			LOGOUT: '/api/logout',
 			REGISTER: '/api/auth/register',
-			PROFILE: '/api/auth/profile',
-			ME: '/api/auth/me',
-			UPDATE_PROFILE: '/api/auth/profile',
+			PROFILE: '/api/profile',
+			ME: '/api/me',
+			UPDATE_PROFILE: '/api/profile',
 		},
 
-		// Rate Limiting
-		RATE_LIMIT: '/api/rate-limit',
+
+
+		// Logs
+		LOGS: '/api/logs',
+		LOGS_DIAGNOSTIC: '/api/logs/diagnostic',
+		LOGS_RECENT_ERRORS: '/api/logs/recent-errors',
+		LOGS_TEST: '/api/logs/test',
+		LOGS_FILE: (filename: string) => `/api/logs/${filename}`,
+
+		// Reports
+		REPORTS_DASHBOARD: (linkId: string) => `/api/reports/link/${linkId}/dashboard`,
+		REPORTS_EXECUTIVE: (linkId: string) => `/api/reports/link/${linkId}/executive`,
+
+		// Enhanced Analytics
+		ANALYTICS_COMPREHENSIVE: (linkId: string) => `/api/analytics/link/${linkId}/comprehensive`,
+		ANALYTICS_GEOGRAPHIC: (linkId: string) => `/api/analytics/link/${linkId}/geographic`,
+		ANALYTICS_TEMPORAL: (linkId: string) => `/api/analytics/link/${linkId}/temporal`,
+		ANALYTICS_AUDIENCE: (linkId: string) => `/api/analytics/link/${linkId}/audience`,
+		ANALYTICS_HEATMAP: (linkId: string) => `/api/analytics/link/${linkId}/heatmap`,
+		ANALYTICS_INSIGHTS: (linkId: string) => `/api/analytics/link/${linkId}/insights`,
+
+		// Redirects
+		REDIRECT: (slug: string) => `/api/r/${slug}`,
 	},
 
 	// Configurações de cache

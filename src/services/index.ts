@@ -24,11 +24,22 @@ export type { UserProfile, UpdateProfileRequest, UpdateProfileResponse } from '.
 // Analytics Service
 export { analyticsService } from './analytics.service';
 
+// Logs Service
+export { logsService } from './logs.service';
+export type { LogEntry, SystemDiagnostic } from './logs.service';
+
+// Reports Service
+export { reportsService } from './reports.service';
+export type { DashboardReport, ExecutiveReport } from './reports.service';
+
 // Imports locais para o objeto services
 import { authService as _authService } from './auth.service';
 import { linkService as _linkService } from './link.service';
 import { profileService as _profileService } from './profile.service';
 import { analyticsService as _analyticsService } from './analytics.service';
+
+import { logsService as _logsService } from './logs.service';
+import { reportsService as _reportsService } from './reports.service';
 
 /**
  * Objeto consolidado com todos os services
@@ -42,7 +53,9 @@ export const services = {
     auth: _authService,
     link: _linkService,
     profile: _profileService,
-    analytics: _analyticsService
+    analytics: _analyticsService,
+    logs: _logsService,
+    reports: _reportsService
 } as const;
 
 /**
@@ -57,6 +70,8 @@ export function useServices() {
         auth: _authService,
         link: _linkService,
         profile: _profileService,
-        analytics: _analyticsService
+        analytics: _analyticsService,
+        logs: _logsService,
+        reports: _reportsService
     };
 }
