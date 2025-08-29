@@ -2,6 +2,7 @@
 
 import { Grid, Box, Typography } from '@mui/material';
 import MetricCard from '@/components/ui/MetricCard';
+import { MetricsProps } from '@/types';
 import {
     TrendingUp,
     Visibility,

@@ -1,7 +1,23 @@
 /**
- * Tipos para dados de Analytics
- * Centralizados para evitar duplicação e inconsistências
+ * 📊 TIPOS DE ANALYTICS
+ * Estruturas de dados específicas para analytics e métricas
+ * Importa tipos comuns de api.ts para evitar duplicação
  */
+
+import {
+	HeatmapPoint,
+	CountryData,
+	StateData,
+	CityData,
+	HourlyData,
+	DayOfWeekData,
+	DeviceData,
+	BusinessInsight
+} from './api';
+
+// ========================================
+// 📊 ANALYTICS DATA STRUCTURES
+// ========================================
 
 export interface AnalyticsData {
 	overview: {
@@ -25,6 +41,10 @@ export interface AnalyticsData {
 	};
 	insights: BusinessInsight[];
 }
+
+// ========================================
+// 📈 LEGACY ANALYTICS TYPES (Manter compatibilidade)
+// ========================================
 
 export interface ClicksByDay extends Record<string, unknown> {
 	day: string;
@@ -77,108 +97,4 @@ export interface LinksCreatedByDay extends Record<string, unknown> {
 	total: number;
 }
 
-// Novos tipos para a estrutura atualizada
-export interface HeatmapPoint {
-	lat: number;
-	lng: number;
-	city: string;
-	country: string;
-	clicks: number;
-}
 
-export interface CountryData {
-	country: string;
-	iso_code: string;
-	clicks: number;
-	currency: string;
-	[key: string]: unknown;
-}
-
-export interface StateData {
-	country: string;
-	state: string;
-	state_name: string;
-	clicks: number;
-	[key: string]: unknown;
-}
-
-export interface CityData {
-	city: string;
-	state: string;
-	country: string;
-	clicks: number;
-	[key: string]: unknown;
-}
-
-export interface HourlyData {
-	hour: number;
-	clicks: number;
-	label: string;
-	[key: string]: unknown;
-}
-
-export interface DayOfWeekData {
-	day: number;
-	day_name: string;
-	clicks: number;
-	[key: string]: unknown;
-}
-
-export interface DeviceData {
-	device: string;
-	clicks: number;
-}
-
-export interface BusinessInsight {
-	type: string;
-	title: string;
-	description: string;
-	priority: 'high' | 'medium' | 'low';
-}
-
-/**
- * Props para componentes de Analytics
- */
-export interface AnalyticsComponentProps {
-	data: {
-		overview: {
-			total_clicks: number;
-			unique_visitors: number;
-			countries_reached: number;
-			avg_daily_clicks: number;
-		};
-		geographic: {
-			heatmap_data: HeatmapPoint[];
-			top_countries: CountryData[];
-			top_states: StateData[];
-			top_cities: CityData[];
-		};
-		temporal: {
-			clicks_by_hour: HourlyData[];
-			clicks_by_day_of_week: DayOfWeekData[];
-		};
-		audience: {
-			device_breakdown: DeviceData[];
-		};
-		insights: BusinessInsight[];
-	} | null;
-}
-
-export interface ChartDataPoint {
-	x: string | number;
-	y: number;
-}
-
-export interface ChartSeries {
-	name: string;
-	data: ChartDataPoint[];
-}
-
-export interface ChartOptions {
-	chart: {
-		type: string;
-		[key: string]: unknown;
-	};
-	colors?: string[];
-	[key: string]: unknown;
-}

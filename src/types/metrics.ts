@@ -1,54 +1,53 @@
 /**
- * Tipos para API de métricas unificadas
- * Define os contratos da API /metrics/dashboard
+ * 📈 TIPOS DE MÉTRICAS
+ * Re-exporta tipos de API para métricas e dashboard
+ * Mantém compatibilidade com tipos existentes
  */
 
-export interface MetricsDashboardResponse {
-    success: boolean;
-    timeframe: string;
-    metrics: {
-        dashboard: {
-            total_links: number;
-            active_links: number;
-            total_clicks: number;
-            avg_clicks_per_link: number;
-        };
-        analytics: {
-            total_clicks: number;
-            unique_visitors: number;
-            conversion_rate: number;
-            avg_daily_clicks: number;
-        };
-        performance: {
-            total_redirects_24h: number;
-            unique_visitors: number;
-            avg_response_time: number;
-            success_rate: number;
-        };
-        geographic: {
-            countries_reached: number;
-            cities_reached: number;
-        };
-        audience: {
-            device_types: number;
-        };
-    };
-    summary: {
-        total_clicks: number;
-        total_links: number;
-        active_links: number;
-        unique_visitors: number;
-        success_rate: number;
-        avg_response_time: number;
-        countries_reached: number;
-        links_with_traffic: number;
-        most_accessed_link?: string;
-    };
+// ========================================
+// 📈 METRICS TYPES (Re-exports from API)
+// ========================================
+
+export type {
+    MetricsDashboardResponse,
+    MetricsCategoryResponse
+} from './api';
+
+// ========================================
+// 🎯 METRICS-SPECIFIC TYPES
+// ========================================
+
+export interface MetricsTimeframe {
+    label: string;
+    value: string;
+    days: number;
 }
 
-export interface MetricsCategoryResponse {
-    success: boolean;
-    category: string;
+export interface MetricsFilter {
     timeframe: string;
-    metrics: Record<string, number>;
+    category?: string;
+    link_id?: string;
+}
+
+export interface MetricsTrend {
+    current: number;
+    previous: number;
+    change: number;
+    change_percentage: number;
+    trend: 'up' | 'down' | 'stable';
+}
+
+export interface MetricsComparison {
+    metric: string;
+    current_period: {
+        value: number;
+        label: string;
+    };
+    previous_period: {
+        value: number;
+        label: string;
+    };
+    change: number;
+    change_percentage: number;
+    trend: 'up' | 'down' | 'stable';
 }

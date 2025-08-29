@@ -1,37 +1,25 @@
-import { AnalyticsData } from '@/types/analytics';
+/**
+ * 📊 TIPOS UNIFICADOS PARA ANALYTICS
+ * Re-exporta tipos centralizados e adiciona configurações específicas
+ * @deprecated Use types from @/types instead
+ */
+
+import { ReactNode } from 'react';
 
 // ========================================
-// 📊 TIPOS UNIFICADOS PARA ANALYTICS E DASHBOARD
+// 📊 RE-EXPORTS FROM CENTRALIZED TYPES
 // ========================================
 
-export interface AnalyticsProps {
-    data: AnalyticsData | null;
-    loading?: boolean;
-    error?: string | null;
-    linkId?: string;
-    showHeader?: boolean;
-    showTabs?: boolean;
-    linksData?: LinkData[];
-    showDashboardTab?: boolean;
-}
+export type {
+    AnalyticsProps,
+    MetricsProps,
+    ChartsProps,
+    LinkData,
+} from '@/types';
 
-// DashboardProps removido - funcionalidade integrada ao Analytics
-
-export interface MetricsProps {
-    data: AnalyticsData | null;
-    totalLinks?: number;
-    activeLinks?: number;
-    totalClicks?: number;
-    avgClicksPerLink?: number;
-    variant?: 'dashboard' | 'analytics' | 'both';
-}
-
-export interface ChartsProps {
-    data: AnalyticsData | null;
-    variant?: 'dashboard' | 'analytics' | 'full';
-    height?: number;
-    showAllCharts?: boolean;
-}
+// ========================================
+// 🎯 UNIFIED ANALYTICS SPECIFIC TYPES
+// ========================================
 
 export interface DashboardViewConfig {
     showMetrics: boolean;
@@ -49,20 +37,28 @@ export interface AnalyticsViewConfig {
     defaultTab: number;
 }
 
-export interface LinkData {
-    id: number;
-    title?: string;
-    slug: string;
-    original_url: string;
-    clicks: number;
-    is_active: boolean;
-}
-
 export interface QuickAction {
     title: string;
     description: string;
-    icon: React.ReactNode;
+    icon: ReactNode;
     color: string;
     gradient: string;
     path: string;
+}
+
+export interface AnalyticsTab {
+    id: string;
+    label: string;
+    icon?: ReactNode;
+    content: ReactNode;
+    disabled?: boolean;
+}
+
+export interface AnalyticsSection {
+    id: string;
+    title: string;
+    description?: string;
+    component: ReactNode;
+    loading?: boolean;
+    error?: string | null;
 }

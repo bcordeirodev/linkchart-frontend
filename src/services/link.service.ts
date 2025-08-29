@@ -1,5 +1,6 @@
 import { BaseService } from './base.service';
 import { API_CONFIG } from '@/constants/api';
+import { LinkResponse, LinkCreateRequest, LinkUpdateRequest } from '@/types';
 
 /**
  * Serviço para gerenciamento de links
@@ -11,38 +12,7 @@ import { API_CONFIG } from '@/constants/api';
  * - Fallbacks automáticos
  */
 
-export interface CreateLinkRequest {
-	original_url: string;
-	expires_at?: string;
-	starts_in?: string;
-	custom_slug?: string;
-	is_active?: boolean;
-}
-
-export interface UpdateLinkRequest {
-	original_url?: string;
-	title?: string;
-	slug?: string;
-	description?: string;
-	expires_at?: string;
-	starts_in?: string;
-	is_active?: boolean;
-	utm_source?: string;
-	utm_medium?: string;
-	utm_campaign?: string;
-	utm_term?: string;
-	utm_content?: string;
-}
-
-export interface CreateLinkResponse {
-	message: string;
-	data: {
-		slug: string;
-		short_url: string;
-		original_url: string;
-		expires_at: string | null;
-	};
-}
+// Tipos centralizados importados de @/types
 
 /**
  * Classe de serviço para links usando BaseService
@@ -55,10 +25,10 @@ class LinkService extends BaseService {
 	/**
 	 * Cria um novo link encurtado
 	 */
-	async save(body: CreateLinkRequest): Promise<CreateLinkResponse> {
+	async save(body: LinkCreateRequest): Promise<LinkResponse> {
 		this.validateRequired(body, ['original_url']);
 
-		return this.post<CreateLinkResponse>(API_CONFIG.ENDPOINTS.CREATE_LINK, body, {
+		return this.post<LinkResponse>(API_CONFIG.ENDPOINTS.CREATE_LINK, body, {
 			context: 'create_link'
 		});
 	}
@@ -66,10 +36,10 @@ class LinkService extends BaseService {
 	/**
 	 * Atualiza um link existente
 	 */
-	async update(id: string, body: UpdateLinkRequest): Promise<ILinkResponse> {
+	async update(id: string, body: LinkUpdateRequest): Promise<LinkResponse> {
 		this.validateId(id, 'Link ID');
 
-		return this.put<ILinkResponse>(API_CONFIG.ENDPOINTS.UPDATE_LINK(id), body, {
+		return this.put<LinkResponse>(API_CONFIG.ENDPOINTS.UPDATE_LINK(id), body, {
 			context: 'update_link'
 		});
 	}
@@ -77,8 +47,8 @@ class LinkService extends BaseService {
 	/**
 	 * Busca todos os links do usuário
 	 */
-	async all(): Promise<ILinkResponse[]> {
-		const fallbackData: ILinkResponse[] = [
+	async all(): Promise<LinkResponse[]> {
+		const fallbackData: LinkResponse[] = [
 			{
 				id: 1,
 				user_id: 1,
@@ -113,7 +83,7 @@ class LinkService extends BaseService {
 			}
 		];
 
-		return this.get<ILinkResponse[]>(API_CONFIG.ENDPOINTS.LINKS, {
+		return this.get<LinkResponse[]>(API_CONFIG.ENDPOINTS.LINKS, {
 			fallback: fallbackData,
 			context: 'get_all_links'
 		});
@@ -122,7 +92,7 @@ class LinkService extends BaseService {
 	/**
 	 * Busca um link específico por ID
 	 */
-	async findOne(id: string): Promise<{ data: ILinkResponse }> {
+	async findOne(id: string): Promise<{ data: LinkResponse }> {
 		this.validateId(id, 'Link ID');
 
 		const fallbackData = {
@@ -144,7 +114,7 @@ class LinkService extends BaseService {
 			}
 		};
 
-		return this.get<{ data: ILinkResponse }>(API_CONFIG.ENDPOINTS.LINK(id), {
+		return this.get<{ data: LinkResponse }>(API_CONFIG.ENDPOINTS.LINK(id), {
 			fallback: fallbackData,
 			context: 'get_link_by_id'
 		});

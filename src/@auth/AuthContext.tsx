@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { IUser, IUserDB, IAuthResponse } from '@/types/user';
+import { IUser, LoginResponse, UserResponse } from '@/types';
 import { authService } from '@/services';
 
 interface AuthContextType {
@@ -22,9 +22,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<IUser | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Converter IUserDB para IUser
-    const convertUserDBToUser = (userDB: IUserDB): IUser => ({
-        id: userDB.id,
+    // Converter UserResponse para IUser
+    const convertUserDBToUser = (userDB: UserResponse): IUser => ({
+        id: String(userDB.id),
         email: userDB.email,
         displayName: userDB.name,
         role: ['user'], // Role padrão, pode ser expandido depois
@@ -117,7 +117,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             console.log('🔐 Iniciando login para:', email);
 
             // Chamada real à API
-            const response: IAuthResponse = await authService.signIn({ email, password });
+            const response: LoginResponse = await authService.signIn({ email, password });
             console.log('✅ Login bem-sucedido, resposta recebida');
 
             // Armazenar token

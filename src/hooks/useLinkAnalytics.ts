@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { linkService, analyticsService } from '@/services';
+import { LinkResponse } from '@/types';
 
 interface LinkAnalyticsData {
 	clicks_over_time: { date: string; clicks: number }[];
@@ -14,7 +15,7 @@ interface LinkAnalyticsData {
 }
 
 interface UseLinkAnalyticsReturn {
-	linkData: ILinkResponse | null;
+	linkData: LinkResponse | null;
 	analyticsData: LinkAnalyticsData | null;
 	loading: boolean;
 	error: string | null;
@@ -27,7 +28,7 @@ interface UseLinkAnalyticsReturn {
  * Implementa fallback robusto para diferentes cenários
  */
 export function useLinkAnalytics(id: string): UseLinkAnalyticsReturn {
-	const [linkData, setLinkData] = useState<ILinkResponse | null>(null);
+	const [linkData, setLinkData] = useState<LinkResponse | null>(null);
 	const [analyticsData, setAnalyticsData] = useState<LinkAnalyticsData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);

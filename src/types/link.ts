@@ -1,59 +1,74 @@
+/**
+ * 🔗 TIPOS DE LINKS
+ * Re-exporta tipos de API e adiciona tipos específicos de links
+ * Mantém compatibilidade com interfaces globais existentes
+ */
+
+import { LinkCreateRequest, LinkUpdateRequest, LinkResponse } from './api';
+
+// ========================================
+// 🔗 LINK TYPES (Re-exports from API)
+// ========================================
+
+export type { LinkCreateRequest, LinkUpdateRequest, LinkResponse } from './api';
+
+// ========================================
+// 🌍 GLOBAL INTERFACES (Manter compatibilidade)
+// ========================================
+
 declare global {
-	interface ILinkCreate {
-		original_url: string;
-		title?: string;
-		slug?: string;
-		description?: string;
-		expires_at?: string;
-		starts_in?: string;
-		is_active?: boolean;
-		click_limit?: number;
-		utm_source?: string;
-		utm_medium?: string;
-		utm_campaign?: string;
-		utm_term?: string;
-		utm_content?: string;
-	}
-
-	interface ILinkUpdate {
-		original_url?: string;
-		title?: string;
-		slug?: string;
-		description?: string;
-		expires_at?: string;
-		starts_in?: string;
-		is_active?: boolean;
-		click_limit?: number;
-		utm_source?: string;
-		utm_medium?: string;
-		utm_campaign?: string;
-		utm_term?: string;
-		utm_content?: string;
-	}
-
-	interface ILinkResponse {
-		id: number;
-		user_id: number;
-		slug: string;
-		title?: string;
-		description?: string;
-		expires_at: string | null;
-		is_active: boolean;
-		created_at: string;
-		updated_at: string;
-		starts_in: string | null;
-		is_expired: boolean;
-		is_active_valid: boolean;
-		original_url: string;
-		clicks: number;
-		click_limit?: number;
-		shorted_url: string;
-		utm_source?: string;
-		utm_medium?: string;
-		utm_campaign?: string;
-		utm_term?: string;
-		utm_content?: string;
-	}
+	// Mantidas para compatibilidade durante transição
+	interface ILinkCreate extends LinkCreateRequest { }
+	interface ILinkUpdate extends LinkUpdateRequest { }
+	interface ILinkResponse extends LinkResponse { }
 }
 
-export {};
+// ========================================
+// 🎯 LINK-SPECIFIC TYPES
+// ========================================
+
+export interface LinkStats {
+	total_clicks: number;
+	unique_visitors: number;
+	conversion_rate: number;
+	avg_daily_clicks: number;
+	last_click_at: string | null;
+}
+
+export interface LinkAnalytics {
+	link: LinkResponse;
+	stats: LinkStats;
+	geographic_data: {
+		country: string;
+		clicks: number;
+		percentage: number;
+	}[];
+	device_data: {
+		device: string;
+		clicks: number;
+		percentage: number;
+	}[];
+	referrer_data: {
+		referrer: string;
+		clicks: number;
+		percentage: number;
+	}[];
+}
+
+export interface LinkFilters {
+	search?: string;
+	status?: 'all' | 'active' | 'inactive' | 'expired';
+	date_range?: {
+		start: string;
+		end: string;
+	};
+	sort_by?: 'created_at' | 'updated_at' | 'clicks' | 'title';
+	sort_order?: 'asc' | 'desc';
+}
+
+export interface LinkBulkAction {
+	action: 'activate' | 'deactivate' | 'delete';
+	link_ids: number[];
+}
+
+export { };

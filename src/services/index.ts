@@ -11,11 +11,11 @@ export type { ServiceResponse, PaginatedResponse, ErrorResponse } from './base.s
 
 // Authentication Service
 export { authService, signIn, signUp, getMe, signOut } from './auth.service';
-export type { LoginRequest, RegisterRequest } from './auth.service';
+// Tipos de Auth agora são importados de @/types
 
 // Link Service
 export { linkService, save, update, all, findOne, remove, getAnalytics } from './link.service';
-export type { CreateLinkRequest, UpdateLinkRequest, CreateLinkResponse } from './link.service';
+// Tipos de Link agora são importados de @/types
 
 // Profile Service
 export { profileService, getCurrentUser, updateProfile } from './profile.service';

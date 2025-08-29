@@ -1,104 +1,247 @@
+/**
+ * 🎨 ESTILOS PRINCIPAIS - Link Charts
+ * Arquivo principal de estilos com importações organizadas
+ */
+
+/* ========================================
+   📋 IMPORTS DE ESTILOS
+   ======================================== */
+
 @import './app-base.css';
 @import './print.css';
 @import './tables.css';
+
+/* ========================================
+   🎨 TAILWIND CSS
+   ======================================== */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ========================================
+   📏 CSS CUSTOM PROPERTIES
+   ======================================== */
+
 :root {
-	/* Breakpoints */
-	--breakpoint-xs: 0px;
-	--breakpoint-sm: 37.5rem; /* 600px */
-	--breakpoint-md: 60rem; /* 960px */
-	--breakpoint-lg: 80rem; /* 1280px */
-	--breakpoint-xl: 120rem; /* 1920px */
+    /* 📱 Breakpoints */
+    --breakpoint-xs: 0px;
+    --breakpoint-sm: 600px;
+    --breakpoint-md: 960px;
+    --breakpoint-lg: 1280px;
+    --breakpoint-xl: 1920px;
 
-	/* Container sizes */
-	--container-3xs: 16rem;
-	--container-2xs: 18rem;
-	--container-xs: 20rem;
-	--container-sm: 24rem;
-	--container-md: 28rem;
-	--container-lg: 32rem;
-	--container-xl: 36rem;
-	--container-2xl: 42rem;
-	--container-3xl: 48rem;
-	--container-4xl: 56rem;
-	--container-5xl: 64rem;
-	--container-6xl: 72rem;
-	--container-7xl: 80rem;
+    /* 📦 Container Sizes */
+    --container-xs: 320px;
+    --container-sm: 384px;
+    --container-md: 448px;
+    --container-lg: 512px;
+    --container-xl: 576px;
+    --container-2xl: 672px;
+    --container-3xl: 768px;
+    --container-4xl: 896px;
+    --container-5xl: 1024px;
+    --container-6xl: 1152px;
+    --container-7xl: 1280px;
 
-	/* Text sizes */
-	--text-xs: 0.5625rem; /* 9px */
-	--text-xs-line-height: calc(1 / 0.5625);
+    /* 🔤 Typography Scale */
+    --text-xs: 0.75rem;      /* 12px */
+    --text-sm: 0.875rem;     /* 14px */
+    --text-base: 1rem;       /* 16px */
+    --text-lg: 1.125rem;     /* 18px */
+    --text-xl: 1.25rem;      /* 20px */
+    --text-2xl: 1.5rem;      /* 24px */
+    --text-3xl: 1.875rem;    /* 30px */
+    --text-4xl: 2.25rem;     /* 36px */
+    --text-5xl: 3rem;        /* 48px */
 
-	--text-sm: 0.6875rem; /* 11px */
-	--text-sm-line-height: calc(1.25 / 0.6875);
+    /* 🎨 Colors */
+    --color-primary: #1976d2;
+    --color-secondary: #dc004e;
+    --color-success: #2e7d32;
+    --color-warning: #ed6c02;
+    --color-error: #d32f2f;
+    --color-info: #0288d1;
+    
+    /* 🌓 Theme Colors */
+    --bg-default: #ffffff;
+    --bg-paper: #ffffff;
+    --text-primary: rgba(0, 0, 0, 0.87);
+    --text-secondary: rgba(0, 0, 0, 0.6);
+    
+    /* 🌙 Dark Theme Colors */
+    --bg-default-dark: #121212;
+    --bg-paper-dark: #1e1e1e;
+    --text-primary-dark: rgba(255, 255, 255, 0.87);
+    --text-secondary-dark: rgba(255, 255, 255, 0.6);
 
-	--text-md: 0.75rem; /* 12px */
-	--text-md-line-height: calc(1.25 / 0.75);
+    /* 📐 Spacing */
+    --spacing-xs: 0.25rem;    /* 4px */
+    --spacing-sm: 0.5rem;     /* 8px */
+    --spacing-md: 1rem;       /* 16px */
+    --spacing-lg: 1.5rem;     /* 24px */
+    --spacing-xl: 2rem;       /* 32px */
+    --spacing-2xl: 3rem;      /* 48px */
 
-	--text-base: 0.8125rem; /* 13px */
-	--text-base-line-height: calc(1.5 / 0.8125);
+    /* 🎭 Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
 
-	--text-lg: 0.875rem; /* 14px */
-	--text-lg-line-height: calc(1.5 / 0.875);
+    /* 🔄 Transitions */
+    --transition-fast: 150ms ease-in-out;
+    --transition-normal: 300ms ease-in-out;
+    --transition-slow: 500ms ease-in-out;
 
-	--text-xl: 1rem; /* 16px */
-	--text-xl-line-height: calc(1.5 / 1);
-
-	--text-2xl: 1.125rem; /* 18px */
-	--text-2xl-line-height: calc(1.75 / 1.125);
-
-	--text-3xl: 1.375rem; /* 22px */
-	--text-3xl-line-height: calc(1.75 / 1.375);
-
-	--text-4xl: 1.5rem; /* 24px */
-	--text-4xl-line-height: calc(2 / 1.5);
-
-	--text-5xl: 1.75rem; /* 28px */
-	--text-5xl-line-height: calc(2 / 1.75);
-
-	--text-6xl: 2.25rem; /* 36px */
-	--text-6xl-line-height: calc(2 / 2.25);
-
-	--text-7xl: 3rem; /* 48px */
-	--text-7xl-line-height: calc(2 / 3);
-
-	--text-8xl: 3.5rem; /* 56px */
-	--text-8xl-line-height: calc(2 / 3.5);
-
-	--text-9xl: 4rem; /* 64px */
-	--text-9xl-line-height: calc(2 / 4);
-
-	--text-10xl: 5rem; /* 80px */
-	--text-10xl-line-height: calc(2 / 5);
+    /* 📱 Z-Index Scale */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    --z-toast: 9999;
 }
+
+/* ========================================
+   🌙 DARK MODE VARIABLES
+   ======================================== */
+
+[data-theme="dark"] {
+    --bg-default: var(--bg-default-dark);
+    --bg-paper: var(--bg-paper-dark);
+    --text-primary: var(--text-primary-dark);
+    --text-secondary: var(--text-secondary-dark);
+}
+
+/* ========================================
+   🎨 UTILITY CLASSES
+   ======================================== */
 
 @layer utilities {
-	[dir='rtl'] [class*='space-x-'] > :not([hidden]) ~ :not([hidden]) {
-		--tw-space-x-reverse: 1;
-	}
+    /* RTL Support */
+    [dir='rtl'] [class*='space-x-'] > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-x-reverse: 1;
+    }
+
+    /* Focus Styles */
+    .focus-ring {
+        @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+    }
+
+    /* Responsive Text */
+    .text-responsive {
+        font-size: clamp(var(--text-sm), 2.5vw, var(--text-lg));
+    }
+
+    /* Smooth Scrolling */
+    .scroll-smooth {
+        scroll-behavior: smooth;
+    }
+
+    /* Hide Scrollbar */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Custom Shadows */
+    .shadow-elevation-1 { box-shadow: var(--shadow-sm); }
+    .shadow-elevation-2 { box-shadow: var(--shadow-md); }
+    .shadow-elevation-3 { box-shadow: var(--shadow-lg); }
+    .shadow-elevation-4 { box-shadow: var(--shadow-xl); }
 }
+
+/* ========================================
+   📦 CONTAINER SYSTEM
+   ======================================== */
 
 .container {
-	max-width: 100%;
-	@media (width >= 40rem) {
-		max-width: 40rem;
-	}
-	@media (width >= 48rem) {
-		max-width: 64rem;
-	}
-	@media (width >= 80rem) {
-		max-width: 70rem;
-	}
-	@media (width >= 96rem) {
-		max-width: 70rem;
-	}
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
 }
 
+@media (min-width: 640px) {
+    .container { max-width: 640px; }
+}
+
+@media (min-width: 768px) {
+    .container { max-width: 768px; }
+}
+
+@media (min-width: 1024px) {
+    .container { max-width: 1024px; }
+}
+
+@media (min-width: 1280px) {
+    .container { max-width: 1280px; }
+}
+
+@media (min-width: 1536px) {
+    .container { max-width: 1536px; }
+}
+
+/* ========================================
+   📝 TYPOGRAPHY
+   ======================================== */
+
 .prose {
-	font-size: var(--text-base);
-	line-height: var(--text-base-line-height);
+    font-size: var(--text-base);
+    line-height: 1.7;
+    color: var(--text-primary);
+}
+
+.prose h1 { font-size: var(--text-3xl); font-weight: 700; }
+.prose h2 { font-size: var(--text-2xl); font-weight: 600; }
+.prose h3 { font-size: var(--text-xl); font-weight: 600; }
+.prose h4 { font-size: var(--text-lg); font-weight: 500; }
+.prose h5 { font-size: var(--text-base); font-weight: 500; }
+.prose h6 { font-size: var(--text-sm); font-weight: 500; }
+
+/* ========================================
+   🎨 COMPONENT UTILITIES
+   ======================================== */
+
+/* Loading Spinner */
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Fade In Animation */
+.fade-in {
+    animation: fadeIn var(--transition-normal) ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Slide Up Animation */
+.slide-up {
+    animation: slideUp var(--transition-normal) ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

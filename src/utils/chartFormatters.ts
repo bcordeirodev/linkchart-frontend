@@ -1,4 +1,4 @@
-import { ChartOptions, ChartSeries } from '@/types/analytics';
+import { ChartOptions, ChartSeries } from '@/types';
 
 /**
  * Utilitários para formatação de dados de gráficos

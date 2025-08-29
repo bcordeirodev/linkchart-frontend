@@ -1,6 +1,6 @@
 import { BaseService } from './base.service';
 import { API_ENDPOINTS } from '@/constants/api';
-import { IAuthResponse, IUserDB } from '@/types/user';
+import { LoginResponse, UserResponse, LoginRequest, RegisterRequest } from '@/types';
 
 /**
  * Serviço de autenticação
@@ -12,17 +12,7 @@ import { IAuthResponse, IUserDB } from '@/types/user';
  * - Fallbacks automáticos
  */
 
-export interface LoginRequest {
-	email: string;
-	password: string;
-}
-
-export interface RegisterRequest {
-	name: string;
-	email: string;
-	password: string;
-	password_confirmation: string;
-}
+// Tipos centralizados importados de @/types
 
 /**
  * Classe de serviço para autenticação usando BaseService
@@ -35,10 +25,10 @@ class AuthService extends BaseService {
 	/**
 	 * Realiza login do usuário
 	 */
-	async signIn(body: LoginRequest): Promise<IAuthResponse> {
+	async signIn(body: LoginRequest): Promise<LoginResponse> {
 		this.validateRequired(body, ['email', 'password']);
 
-		return this.post<IAuthResponse>(API_ENDPOINTS.AUTH.LOGIN, body, {
+		return this.post<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, body, {
 			context: 'sign_in'
 		});
 	}
@@ -46,10 +36,10 @@ class AuthService extends BaseService {
 	/**
 	 * Registra um novo usuário
 	 */
-	async signUp(body: RegisterRequest): Promise<IAuthResponse> {
+	async signUp(body: RegisterRequest): Promise<LoginResponse> {
 		this.validateRequired(body, ['name', 'email', 'password', 'password_confirmation']);
 
-		return this.post<IAuthResponse>(API_ENDPOINTS.AUTH.REGISTER, body, {
+		return this.post<LoginResponse>(API_ENDPOINTS.AUTH.REGISTER, body, {
 			context: 'sign_up'
 		});
 	}
@@ -57,8 +47,8 @@ class AuthService extends BaseService {
 	/**
 	 * Busca dados do usuário autenticado
 	 */
-	async getMe(): Promise<IUserDB> {
-		return this.get<IUserDB>(API_ENDPOINTS.AUTH.ME, {
+	async getMe(): Promise<UserResponse> {
+		return this.get<UserResponse>(API_ENDPOINTS.AUTH.ME, {
 			context: 'get_me'
 		});
 	}
@@ -80,8 +70,8 @@ class AuthService extends BaseService {
 	/**
 	 * Atualiza perfil do usuário
 	 */
-	async updateProfile(updates: Partial<IUserDB>): Promise<IUserDB> {
-		return this.put<IUserDB>(API_ENDPOINTS.AUTH.UPDATE_PROFILE, updates, {
+	async updateProfile(updates: Partial<UserResponse>): Promise<UserResponse> {
+		return this.put<UserResponse>(API_ENDPOINTS.AUTH.UPDATE_PROFILE, updates, {
 			context: 'update_profile'
 		});
 	}

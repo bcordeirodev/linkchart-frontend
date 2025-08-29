@@ -37,7 +37,10 @@ function useUser(): useUser {
 	async function handleUpdateUserSettings(newSettings: IUser['settings']) {
 		if (!user) return undefined;
 
-		const newUser = setIn(user, 'settings', newSettings) as IUser;
+		const newUser = {
+			...user,
+			settings: newSettings
+		};
 
 		if (_.isEqual(user, newUser)) {
 			return undefined;

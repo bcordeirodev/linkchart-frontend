@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAppDispatch } from '@/store/hooks';
 import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import { linkService } from '@/services';
+import { LinkResponse, LinkCreateRequest, LinkUpdateRequest } from '@/types';
 
 /**
  * Hook personalizado para gerenciar links
@@ -13,7 +14,7 @@ import { linkService } from '@/services';
  * - DRY: Centraliza a lógica de gerenciamento de links
  */
 export function useLinks() {
-	const [links, setLinks] = useState<ILinkResponse[]>([]);
+	const [links, setLinks] = useState<LinkResponse[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const dispatch = useAppDispatch();
@@ -46,7 +47,7 @@ export function useLinks() {
 	 * Cria um novo link
 	 */
 	const createLink = useCallback(
-		async (data: ILinkCreate) => {
+		async (data: LinkCreateRequest) => {
 			setLoading(true);
 			setError(null);
 
@@ -56,7 +57,7 @@ export function useLinks() {
 				await loadLinks();
 				dispatch(
 					showMessage({
-						message: response.message || 'Link criado com sucesso!',
+						message: 'Link criado com sucesso!',
 						variant: 'success'
 					})
 				);
@@ -82,7 +83,7 @@ export function useLinks() {
 	 * Atualiza um link existente
 	 */
 	const updateLink = useCallback(
-		async (id: string, data: ILinkUpdate) => {
+		async (id: string, data: LinkUpdateRequest) => {
 			setLoading(true);
 			setError(null);
 

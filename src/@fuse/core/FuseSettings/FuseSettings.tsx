@@ -2,7 +2,7 @@
 
 import { styled } from '@mui/material/styles';
 import { Controller, useForm } from 'react-hook-form';
-import { themeLayoutConfigs, themeLayoutDefaultsProps } from '@/themes';
+import { themeLayouts, themeLayoutConfigs, themeLayoutDefaultsProps } from '@/themes';
 import _ from 'lodash';
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Switch, Typography } from '@mui/material';
 import { memo, useEffect, useMemo } from 'react';

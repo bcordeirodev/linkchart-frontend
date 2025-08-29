@@ -3,6 +3,7 @@
 import { useMemo, useCallback } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
 import { Box, Chip, IconButton, Tooltip, Avatar, Typography } from '@mui/material';
+import { LinkResponse } from '@/types';
 import {
 	DeleteOutlined,
 	EditOutlined,
@@ -116,7 +117,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 		[onDelete]
 	);
 
-	const columns = useMemo<MRT_ColumnDef<ILinkResponse>[]>(
+	const columns = useMemo<MRT_ColumnDef<LinkResponse>[]>(
 		() => [
 			{
 				accessorKey: 'title',

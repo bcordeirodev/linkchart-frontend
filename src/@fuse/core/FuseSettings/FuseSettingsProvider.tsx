@@ -1,7 +1,7 @@
 'use client';
 
 import settingsConfig from '@/configs/settingsConfig';
-import { themeLayoutConfigs } from '@/themes';
+import { themeLayouts, themeLayoutConfigs } from '@/themes';
 import useUser from '@auth/useUser';
 import { FuseSettingsConfigType, FuseThemesType } from '@fuse/core/FuseSettings/FuseSettings';
 import { defaultSettings, getParsedQuerySettings } from '@fuse/default-settings/FuseDefaultSettings';
