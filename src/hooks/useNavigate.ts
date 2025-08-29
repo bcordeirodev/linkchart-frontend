@@ -1,10 +1,8 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
+import { useNavigate as useReactRouterNavigate } from 'react-router-dom';
 
 /**
- * Hook personalizado para navegação compatível com Next.js
- * Oferece interface similar ao React Router para facilitar migração
+ * Hook personalizado para navegação compatível com React Router
+ * Interface unificada para navegação
  *
  * @example
  * ```tsx
@@ -21,19 +19,19 @@ import { useRouter } from 'next/navigation';
  * ```
  */
 function useNavigate(): (url: string | number) => void {
-	const router = useRouter();
+	const navigate = useReactRouterNavigate();
 
 	return (url) => {
 		if (typeof url === 'string') {
-			router.push(url);
+			navigate(url);
 		}
 
 		if (url === -1) {
-			router.back();
+			navigate(-1);
 		}
 
 		if (url === 1) {
-			router.forward();
+			navigate(1);
 		}
 	};
 }

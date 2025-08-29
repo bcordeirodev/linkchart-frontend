@@ -9,7 +9,7 @@ import { LinkChartsLayout } from '@/components/layout';
 /**
  * Tipo para layouts de tema
  */
-export type themeLayoutsType = Record<string, ComponentType<{ children?: React.ReactNode }>>;
+export type themeLayoutsType = Record<string, ComponentType<{ children: React.ReactNode }>>;
 
 /**
  * Layouts disponíveis para Link Charts
@@ -20,4 +20,3 @@ const themeLayouts: themeLayoutsType = {
 };
 
 export default themeLayouts;
-export type { themeLayoutsType };

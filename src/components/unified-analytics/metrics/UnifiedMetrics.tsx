@@ -19,7 +19,7 @@ import {
 interface MetricDefinition {
     id: string;
     title: string;
-    getValue: (data: any, linksData?: any[]) => string | number;
+    getValue: (data: any, linksData?: any[], performanceData?: any) => string | number;
     icon: React.ReactNode;
     color: 'primary' | 'secondary' | 'success' | 'warning' | 'info' | 'error';
     subtitle?: string;

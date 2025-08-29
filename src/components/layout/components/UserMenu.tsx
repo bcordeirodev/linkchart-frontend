@@ -7,7 +7,7 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-import Link from '@fuse/core/Link';
+import { useNavigate } from 'react-router-dom';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { darken } from '@mui/material/styles';
 import { alpha } from '@mui/system/colorManipulator';
@@ -29,6 +29,7 @@ function UserMenu(props: UserMenuProps) {
 	const { className, popoverProps, arrowIcon = 'heroicons-outline:chevron-up' } = props;
 	const { data: user, signOut, isGuest } = useUser();
 	const [userMenu, setUserMenu] = useState<HTMLElement | null>(null);
+	const navigate = useNavigate();
 	const userMenuClick = (event: React.MouseEvent<HTMLElement>) => {
 		setUserMenu(event.currentTarget);
 	};
@@ -139,21 +140,13 @@ function UserMenu(props: UserMenuProps) {
 			>
 				{isGuest ? (
 					<>
-						<MenuItem
-							component={Link}
-							to="/sign-in"
-							role="button"
-						>
+						<MenuItem onClick={() => navigate('/sign-in')} role="button">
 							<ListItemIcon className="min-w-9">
 								<FuseSvgIcon>heroicons-outline:lock-closed</FuseSvgIcon>
 							</ListItemIcon>
 							<ListItemText primary="Sign In" />
 						</MenuItem>
-						<MenuItem
-							component={Link}
-							to="/sign-up"
-							role="button"
-						>
+						<MenuItem onClick={() => navigate('/sign-up')} role="button">
 							<ListItemIcon className="min-w-9">
 								<FuseSvgIcon>heroicons-outline:user-plus</FuseSvgIcon>
 							</ListItemIcon>
@@ -162,23 +155,13 @@ function UserMenu(props: UserMenuProps) {
 					</>
 				) : (
 					<>
-						<MenuItem
-							component={Link}
-							to="/profile"
-							onClick={userMenuClose}
-							role="button"
-						>
+						<MenuItem onClick={() => { userMenuClose(); navigate('/profile'); }} role="button">
 							<ListItemIcon className="min-w-9">
 								<FuseSvgIcon>heroicons-outline:user-circle</FuseSvgIcon>
 							</ListItemIcon>
 							<ListItemText primary="My Profile" />
 						</MenuItem>
-						<MenuItem
-							component={Link}
-							to="/apps/mailbox"
-							onClick={userMenuClose}
-							role="button"
-						>
+						<MenuItem onClick={() => { userMenuClose(); navigate('/apps/mailbox'); }} role="button">
 							<ListItemIcon className="min-w-9">
 								<FuseSvgIcon>heroicons-outline:envelope</FuseSvgIcon>
 							</ListItemIcon>

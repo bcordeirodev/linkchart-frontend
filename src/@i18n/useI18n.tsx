@@ -5,7 +5,7 @@ import I18nContext from './I18nContext';
 import { I18nContextType } from './I18nContext';
 
 const useI18n = () => {
-	const context = useContext<I18nContextType>(I18nContext);
+	const context = useContext<I18nContextType | undefined>(I18nContext);
 
 	if (!context) {
 		throw new Error('useI18n must be used within an I18nProvider');

@@ -19,7 +19,7 @@ type ThemePreviewProps = {
  * The component is memoized to prevent unnecessary re-renders.
  */
 function ThemePreview(props: ThemePreviewProps) {
-	const { theme, className, onSelect = () => {} } = props;
+	const { theme, className, onSelect = () => { } } = props;
 	const { section, id } = theme;
 
 	const { navbar, toolbar, footer, main } = section;
@@ -35,8 +35,8 @@ function ThemePreview(props: ThemePreviewProps) {
 					}
 				)}
 				style={{
-					backgroundColor: main.palette.background.default,
-					color: main.palette.text.primary
+					backgroundColor: main.palette?.background?.default ?? '#ffffff',
+					color: main.palette?.text?.primary ?? '#000000'
 				}}
 				onClick={() => {
 					onSelect(theme);
@@ -46,8 +46,8 @@ function ThemePreview(props: ThemePreviewProps) {
 				<div
 					className="flex flex-col w-1/3 min-h-full p-1 border-r-1 border-gray-700"
 					style={{
-						backgroundColor: navbar.palette.background.default,
-						color: navbar.palette.text.primary
+						backgroundColor: navbar.palette?.background?.default ?? '#f5f5f5',
+						color: navbar.palette?.text?.primary ?? '#000000'
 					}}
 				>
 					<span className="text-sm">Navbar</span>
@@ -57,8 +57,8 @@ function ThemePreview(props: ThemePreviewProps) {
 					<div
 						className="w-full px-1 py-1 border-b-1 border-gray-700"
 						style={{
-							backgroundColor: toolbar.palette.background.default,
-							color: toolbar.palette.text.primary
+							backgroundColor: toolbar?.palette?.background?.default ?? '#ffffff',
+							color: toolbar?.palette?.text?.primary ?? '#000000'
 						}}
 					>
 						<span className="text-sm">Toolbar</span>
@@ -68,8 +68,8 @@ function ThemePreview(props: ThemePreviewProps) {
 						<div
 							className="relative h-11 w-full px-1"
 							style={{
-								backgroundColor: main.palette.primary.main,
-								color: main.palette.primary.contrastText
+								backgroundColor: main.palette?.primary?.main ?? '#1976d2',
+								color: main.palette?.primary?.contrastText ?? '#ffffff'
 							}}
 						>
 							<span className="text-sm">Header</span>
@@ -77,8 +77,8 @@ function ThemePreview(props: ThemePreviewProps) {
 							<div
 								className="absolute bottom-0 right-0 mb-2.5 mr-2 flex h-6 w-6 items-center justify-center rounded-full text-xs shadow-1 z-10"
 								style={{
-									backgroundColor: main.palette.secondary.main,
-									color: main.palette.secondary.contrastText
+									backgroundColor: main.palette?.secondary?.main ?? '#dc004e',
+									color: main.palette?.secondary?.contrastText ?? '#ffffff'
 								}}
 							>
 								<span className="">S</span>
@@ -89,8 +89,8 @@ function ThemePreview(props: ThemePreviewProps) {
 							<div
 								className="relative w-full h-full rounded-sm p-1 shadow-1"
 								style={{
-									backgroundColor: main.palette.background.paper,
-									color: main.palette.text.primary
+									backgroundColor: main.palette?.background?.paper ?? '#ffffff',
+									color: main.palette?.text?.primary ?? '#000000'
 								}}
 							>
 								<span className="text-sm">Paper</span>
@@ -105,8 +105,8 @@ function ThemePreview(props: ThemePreviewProps) {
 					<div
 						className="w-full px-2 py-1 border-t-1 border-gray-700"
 						style={{
-							backgroundColor: footer.palette.background.default,
-							color: footer.palette.text.primary
+							backgroundColor: footer.palette?.background?.default ?? '#f5f5f5',
+							color: footer.palette?.text?.primary ?? '#000000'
 						}}
 					>
 						<span className="text-sm">Footer</span>

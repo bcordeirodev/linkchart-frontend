@@ -37,7 +37,7 @@ function NavLinkAdapter(props: NavLinkAdapterPropsType) {
 	const navigate = useNavigate();
 	const pathname = usePathname();
 
-	const targetUrl = to || href;
+	const targetUrl = (to || href || '/') as string;
 
 	const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
 		e.preventDefault();
@@ -56,22 +56,17 @@ function NavLinkAdapter(props: NavLinkAdapterPropsType) {
 	return (
 		<Link
 			to={targetUrl}
-			passHref
-			legacyBehavior
+			onClick={handleClick}
+			onKeyDown={handleKeyDown}
+			className={clsx(
+				_props.className,
+				isActive ? activeClassName : '',
+				pathname === targetUrl && 'pointer-events-none'
+			)}
+			style={isActive ? { ..._props.style, ...activeStyle } : _props.style}
+			role={role}
 		>
-			<a
-				role={role}
-				onClick={handleClick}
-				onKeyDown={handleKeyDown}
-				className={clsx(
-					_props.className,
-					isActive ? activeClassName : '',
-					pathname === targetUrl && 'pointer-events-none'
-				)}
-				style={isActive ? { ..._props.style, ...activeStyle } : _props.style}
-			>
-				{children}
-			</a>
+			{children}
 		</Link>
 	);
 }

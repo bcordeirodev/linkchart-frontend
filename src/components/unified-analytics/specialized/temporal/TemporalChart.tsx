@@ -68,16 +68,16 @@ export function TemporalChart({ hourlyData, weeklyData }: TemporalChartProps) {
                                     type="area"
                                     height={300}
                                     {...formatAreaChart(
-                                        hourlyData,
+                                        hourlyData as Record<string, unknown>[],
                                         'label',
                                         'clicks',
                                         '#ff9800',
                                         isDark
                                     )}
                                     options={{
-                                        ...formatAreaChart(hourlyData, 'label', 'clicks', '#ff9800', isDark).options,
+                                        ...formatAreaChart(hourlyData as Record<string, unknown>[], 'label', 'clicks', '#ff9800', isDark).options,
                                         xaxis: {
-                                            ...formatAreaChart(hourlyData, 'label', 'clicks', '#ff9800', isDark).options?.xaxis,
+                                            ...(formatAreaChart(hourlyData, 'label', 'clicks', '#ff9800', isDark).options?.xaxis || {}),
                                             title: {
                                                 text: 'Hora do Dia',
                                             },
@@ -170,7 +170,7 @@ export function TemporalChart({ hourlyData, weeklyData }: TemporalChartProps) {
                                     options={{
                                         ...formatBarChart(weeklyData, 'day_name', 'clicks', '#9c27b0', false, isDark).options,
                                         xaxis: {
-                                            ...formatBarChart(weeklyData, 'day_name', 'clicks', '#9c27b0', false, isDark).options?.xaxis,
+                                            ...(formatBarChart(weeklyData, 'day_name', 'clicks', '#9c27b0', false, isDark).options?.xaxis || {}),
                                             title: {
                                                 text: 'Dia da Semana',
                                             },

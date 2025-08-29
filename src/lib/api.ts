@@ -1,12 +1,4 @@
-import { getSession } from 'next-auth/react';
-import { getToken } from 'next-auth/jwt';
-import type { NextApiRequest } from 'next';
-import type { NextRequest } from 'next/server';
 import { API_BASE_URL, REQUEST_TIMEOUT } from '@/constants/api';
-
-export type RequestContext = {
-	req: NextApiRequest | NextRequest;
-};
 
 export interface ApiResponse<T = unknown> {
 	data?: T;
@@ -38,11 +30,10 @@ export class FetchApiError extends Error {
  * Cliente API consolidado e centralizado
  *
  * Funcionalidades:
- * - Autenticação automática via NextAuth
+ * - Autenticação automática via localStorage
  * - Tratamento de erros padronizado
  * - Timeout configurável
  * - Headers globais
- * - Suporte a Server-Side e Client-Side
  * - Type safety completo
  */
 class ApiClient {
@@ -80,23 +71,17 @@ class ApiClient {
 	}
 
 	/**
-	 * Obtém o token de autenticação do NextAuth
+	 * Obtém o token de autenticação do localStorage
 	 */
-	private async getAuthToken(ctx?: RequestContext): Promise<string | null> {
+	private async getAuthToken(): Promise<string | null> {
 		try {
-			// Servidor (SSR/API Routes)
-			if (ctx?.req) {
-				const token = await getToken({
-					req: ctx.req as Parameters<typeof getToken>[0]['req'],
-					secret: process.env.NEXTAUTH_SECRET!
-				});
-				return (token as { accessToken?: string })?.accessToken ?? null;
-			}
-
 			// Cliente (Browser)
 			if (typeof window !== 'undefined') {
-				const session = await getSession();
-				return session?.accessToken ?? null;
+				const user = localStorage.getItem('user');
+				if (user) {
+					const userData = JSON.parse(user);
+					return userData.token || userData.accessToken || null;
+				}
 			}
 
 			return null;
@@ -109,15 +94,15 @@ class ApiClient {
 	/**
 	 * Cria headers padrão para requisições
 	 */
-	private async createHeaders(customHeaders: HeadersInit = {}, ctx?: RequestContext): Promise<HeadersInit> {
-		const headers: HeadersInit = {
+	private async createHeaders(customHeaders: HeadersInit = {}): Promise<Record<string, string>> {
+		const headers: Record<string, string> = {
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
 			...this.globalHeaders,
-			...customHeaders
+			...(customHeaders as Record<string, string>)
 		};
 
-		const token = await this.getAuthToken(ctx);
+		const token = await this.getAuthToken();
 
 		if (token) {
 			headers['Authorization'] = `Bearer ${token}`;
@@ -167,11 +152,10 @@ class ApiClient {
 		method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
 		endpoint: string,
 		data: unknown = null,
-		customHeaders: HeadersInit = {},
-		ctx?: RequestContext
+		customHeaders: HeadersInit = {}
 	): Promise<T> {
 		const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
-		const headers = await this.createHeaders(customHeaders, ctx);
+		const headers = await this.createHeaders(customHeaders);
 
 		console.log(`🌐 API ${method} request:`, { url, headers, data });
 
@@ -226,36 +210,36 @@ class ApiClient {
 	/**
 	 * Requisição GET
 	 */
-	async get<T>(endpoint: string, customHeaders?: HeadersInit, ctx?: RequestContext): Promise<T> {
-		return this.request<T>('GET', endpoint, null, customHeaders, ctx);
+	async get<T>(endpoint: string, customHeaders?: HeadersInit,): Promise<T> {
+		return this.request<T>('GET', endpoint, null, customHeaders);
 	}
 
 	/**
 	 * Requisição POST
 	 */
-	async post<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit, ctx?: RequestContext): Promise<T> {
-		return this.request<T>('POST', endpoint, data, customHeaders, ctx);
+	async post<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit,): Promise<T> {
+		return this.request<T>('POST', endpoint, data, customHeaders);
 	}
 
 	/**
 	 * Requisição PUT
 	 */
-	async put<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit, ctx?: RequestContext): Promise<T> {
-		return this.request<T>('PUT', endpoint, data, customHeaders, ctx);
+	async put<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit,): Promise<T> {
+		return this.request<T>('PUT', endpoint, data, customHeaders);
 	}
 
 	/**
 	 * Requisição PATCH
 	 */
-	async patch<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit, ctx?: RequestContext): Promise<T> {
-		return this.request<T>('PATCH', endpoint, data, customHeaders, ctx);
+	async patch<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit,): Promise<T> {
+		return this.request<T>('PATCH', endpoint, data, customHeaders);
 	}
 
 	/**
 	 * Requisição DELETE
 	 */
-	async delete<T>(endpoint: string, customHeaders?: HeadersInit, ctx?: RequestContext): Promise<T> {
-		return this.request<T>('DELETE', endpoint, null, customHeaders, ctx);
+	async delete<T>(endpoint: string, customHeaders?: HeadersInit,): Promise<T> {
+		return this.request<T>('DELETE', endpoint, null, customHeaders);
 	}
 
 	/**
@@ -264,13 +248,12 @@ class ApiClient {
 	async upload<T>(
 		endpoint: string,
 		formData: FormData,
-		customHeaders?: HeadersInit,
-		ctx?: RequestContext
+		customHeaders?: HeadersInit
 	): Promise<T> {
 		const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
 
 		// Para upload, não definimos Content-Type para permitir boundary automático
-		const headers = await this.createHeaders({}, ctx);
+		const headers = await this.createHeaders({});
 		delete (headers as Record<string, string>)['Content-Type'];
 
 		// Adiciona headers customizados (exceto Content-Type)

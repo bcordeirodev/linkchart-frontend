@@ -1,5 +1,5 @@
 import FuseLoading from '@fuse/core/FuseLoading';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
 

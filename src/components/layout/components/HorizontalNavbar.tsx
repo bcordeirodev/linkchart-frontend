@@ -22,7 +22,7 @@ import {
     Tooltip
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useRouter, usePathname } from 'next/navigation';
+import { useNavigate, useLocation } from 'react-router-dom';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import Logo from './Logo';
 import UserMenu from './UserMenu';
@@ -117,8 +117,9 @@ const navigationItems = [
  */
 function HorizontalNavbar() {
     const [moreMenuAnchor, setMoreMenuAnchor] = useState<null | HTMLElement>(null);
-    const router = useRouter();
-    const pathname = usePathname();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const pathname = location.pathname;
     const theme = useTheme();
 
     const handleMoreMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -130,7 +131,7 @@ function HorizontalNavbar() {
     };
 
     const handleNavigation = (url: string) => {
-        router.push(url);
+        navigate(url);
         handleMoreMenuClose();
     };
 

@@ -8,8 +8,8 @@
 // Configurações da API
 export const API_CONFIG = {
 	// URLs base por ambiente
-	BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
-	TEST_URL: process.env.NEXT_PUBLIC_TEST_API_URL || 'http://localhost:8000',
+	BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost',
+	TEST_URL: import.meta.env.VITE_TEST_API_URL || 'http://localhost',
 
 	// Timeouts
 	TIMEOUT: 10000, // 10 segundos
@@ -77,12 +77,12 @@ export const buildTestUrl = (endpoint: string): string => {
 
 // Função para verificar se estamos em desenvolvimento
 export const isDevelopment = (): boolean => {
-	return process.env.NODE_ENV === 'development';
+	return import.meta.env.DEV;
 };
 
 // Função para verificar se estamos em produção
 export const isProduction = (): boolean => {
-	return process.env.NODE_ENV === 'production';
+	return import.meta.env.PROD;
 };
 
 // Função para obter timeout baseado no ambiente
@@ -99,6 +99,8 @@ export const API_ENDPOINTS = {
 		REGISTER: API_CONFIG.ENDPOINTS.AUTH.REGISTER,
 		LOGOUT: API_CONFIG.ENDPOINTS.AUTH.LOGOUT,
 		PROFILE: API_CONFIG.ENDPOINTS.AUTH.PROFILE,
+		ME: API_CONFIG.ENDPOINTS.AUTH.ME,
+		UPDATE_PROFILE: API_CONFIG.ENDPOINTS.AUTH.UPDATE_PROFILE,
 	}
 };
 

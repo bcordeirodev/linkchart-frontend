@@ -2,7 +2,7 @@
 
 import { Box, Typography, Button, Alert } from '@mui/material';
 import { Save, ArrowBack } from '@mui/icons-material';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { LinkFormFields } from './LinkFormFields';
 import { useLinkForm } from '@/hooks/useLinkForm';
 import { LinkFormData } from './LinkFormSchema';
@@ -22,7 +22,7 @@ interface LinkFormProps {
  * Usado tanto para criação quanto edição
  */
 export function LinkForm({ mode, linkId, initialData, title, onSuccess, showBackButton = true }: LinkFormProps) {
-	const router = useRouter();
+	const navigate = useNavigate();
 
 	const {
 		control,
@@ -61,7 +61,7 @@ export function LinkForm({ mode, linkId, initialData, title, onSuccess, showBack
 					{showBackButton && (
 						<Button
 							startIcon={<ArrowBack />}
-							onClick={() => router.back()}
+							onClick={() => navigate(-1)}
 							variant="outlined"
 							sx={{ borderRadius: 2 }}
 						>
@@ -112,7 +112,7 @@ export function LinkForm({ mode, linkId, initialData, title, onSuccess, showBack
 					>
 						<Button
 							variant="outlined"
-							onClick={() => router.back()}
+							onClick={() => navigate(-1)}
 							disabled={loading}
 							sx={{
 								borderRadius: 3,

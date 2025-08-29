@@ -1,10 +1,10 @@
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { ComponentType, memo } from 'react';
 
 export type WithRouterProps = {
-	pathname?: ReturnType<typeof usePathname>;
+	pathname?: ReturnType<typeof useLocation>;
 	params?: Record<string, string>;
-	router?: ReturnType<typeof useRouter>;
+	router?: ReturnType<typeof useNavigate>;
 };
 
 /**
@@ -14,17 +14,17 @@ export type WithRouterProps = {
  */
 const withRouter = <Props extends WithRouterProps>(Component: ComponentType<Props>) =>
 	memo(function WithRouterWrapper(props: Omit<Props, keyof WithRouterProps>) {
-		const pathname = usePathname();
-		const router = useRouter();
-		const searchParams = useSearchParams();
+			const location = useLocation();
+	const navigate = useNavigate();
+	const searchParams = useSearchParams();
 		const params = Object.fromEntries(searchParams.entries());
 
 		return (
 			<Component
 				{...(props as Props)}
-				pathname={pathname}
+				pathname={location.pathname}
 				params={params}
-				router={router}
+				router={navigate}
 			/>
 		);
 	});

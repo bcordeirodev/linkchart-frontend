@@ -52,7 +52,7 @@ function ThemeSelector({ options, onSelect, selectedId }: ThemeSelectorProps) {
 									height: 80,
 									borderRadius: 1,
 									mb: 1,
-									background: `linear-gradient(135deg, ${option.section.main.palette.primary.main} 0%, ${option.section.main.palette.secondary.main} 100%)`,
+									background: `linear-gradient(135deg, ${option?.section?.main?.palette?.primary?.main} 0%, ${option?.section?.main?.palette?.secondary?.main} 100%)`,
 									display: 'flex',
 									alignItems: 'center',
 									justifyContent: 'center'

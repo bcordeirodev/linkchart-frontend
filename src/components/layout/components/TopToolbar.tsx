@@ -68,7 +68,10 @@ function TopToolbar() {
 					<FullScreenToggle />
 
 					{/* Toggle tema claro/escuro */}
-					<LightDarkModeToggle />
+					<LightDarkModeToggle
+						lightTheme={{ id: 'light', section: {} as any }}
+						darkTheme={{ id: 'dark', section: {} as any }}
+					/>
 
 					{/* Menu do usuário */}
 					{!isMobile && <UserMenu />}

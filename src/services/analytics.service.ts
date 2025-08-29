@@ -178,6 +178,15 @@ export class AnalyticsService extends BaseService {
         const endpoint = `/api/analytics/link/${linkId}/comprehensive`;
 
         const fallbackData: EnhancedAnalyticsData = {
+            has_data: false,
+            link_info: {
+                id: 0,
+                title: '',
+                short_url: '',
+                original_url: '',
+                created_at: '',
+                is_active: false
+            },
             overview: {
                 total_clicks: 0,
                 unique_visitors: 0,

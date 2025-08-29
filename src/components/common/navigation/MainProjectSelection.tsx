@@ -53,13 +53,13 @@ function MainProjectSelection() {
 			renderValue={(_selectedValue) => (
 				<div style={{ display: 'flex', alignItems: 'center' }}>
 					<img
-						src={theme.palette.mode === 'dark' ? selectedProject.darkLogo : selectedProject.logo}
-						alt={`${selectedProject.name} Logo`}
+						src={theme.palette.mode === 'dark' ? selectedProject?.darkLogo : selectedProject?.logo}
+						alt={`${selectedProject?.name} Logo`}
 						width={20}
 						height={20}
 						style={{ marginRight: 8 }}
 					/>
-					<Typography className="text-md font-semibold">{selectedProject.name}</Typography>
+					<Typography className="text-md font-semibold">{selectedProject?.name}</Typography>
 				</div>
 			)}
 			sx={{

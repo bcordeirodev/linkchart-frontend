@@ -52,7 +52,7 @@ function FuseNavVerticalLayout2(props: FuseNavigationProps) {
 				className
 			)}
 		>
-			{navigation.map((_item) => (
+			{navigation?.map((_item) => (
 				<FuseNavVerticalTab
 					key={_item.id}
 					type={`vertical-${_item.type}`}

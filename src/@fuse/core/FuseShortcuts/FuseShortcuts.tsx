@@ -44,7 +44,7 @@ function FuseShortcuts(props: FuseShortcutsProps) {
 			? shortcuts.map((id) => _.find(navigation, { id }))
 			: ([] as FuseFlatNavItemType[]);
 
-		setShortcutItems(_shortcutItems);
+		setShortcutItems(_shortcutItems as never);
 	}, [shortcuts]);
 
 	function addMenuClick(event: React.MouseEvent<HTMLElement>) {
@@ -105,7 +105,7 @@ function FuseShortcuts(props: FuseShortcutsProps) {
 													<FuseSvgIcon size={20}>{_item.icon}</FuseSvgIcon>
 												) : (
 													<span className="text-2xl font-semibold uppercase">
-														{_item.title[0]}
+														{_item.title?.[0] ?? ''}
 													</span>
 												)}
 											</IconButton>
@@ -217,7 +217,7 @@ function ShortcutMenuItem(props: {
 					{item.icon ? (
 						<FuseSvgIcon>{item.icon}</FuseSvgIcon>
 					) : (
-						<span className="text-center text-2xl font-semibold uppercase">{item.title[0]}</span>
+						<span className="text-center text-2xl font-semibold uppercase">{item.title?.[0] ?? '?'}</span>
 					)}
 				</ListItemIcon>
 				<ListItemText primary={item.title} />

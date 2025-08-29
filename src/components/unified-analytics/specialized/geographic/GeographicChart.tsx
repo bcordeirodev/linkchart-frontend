@@ -50,7 +50,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
                                         type="bar"
                                         height={300}
                                         {...formatBarChart(
-                                            countries.slice(0, 8),
+                                            countries.slice(0, 8) as Record<string, unknown>[],
                                             'country',
                                             'clicks',
                                             '#1976d2',

@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/store/hooks';
 import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import { useLinks } from '@/hooks/useLinks';
@@ -44,7 +44,7 @@ export function useLinkForm({
 	onSuccess,
 	redirectOnSuccess
 }: UseLinkFormOptions = {}): UseLinkFormReturn {
-	const router = useRouter();
+	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const { createLink, updateLink } = useLinks();
 
@@ -85,8 +85,8 @@ export function useLinkForm({
 				// Converter datas para ISO string se existirem
 				const submitData = {
 					...data,
-					expires_at: data.expires_at?.toISOString() || null,
-					starts_in: data.starts_in?.toISOString() || null
+					expires_at: data.expires_at ? data.expires_at.toISOString() : undefined,
+					starts_in: data.starts_in ? data.starts_in.toISOString() : undefined
 				};
 
 				let result;
@@ -112,7 +112,7 @@ export function useLinkForm({
 				onSuccess?.(result);
 
 				if (redirectOnSuccess) {
-					router.push(redirectOnSuccess);
+					navigate(redirectOnSuccess);
 				}
 			} catch (_error) {
 				dispatch(
@@ -125,7 +125,7 @@ export function useLinkForm({
 				setLoading(false);
 			}
 		},
-		[mode, linkId, createLink, updateLink, dispatch, router, onSuccess, redirectOnSuccess]
+		[mode, linkId, createLink, updateLink, dispatch, navigate, onSuccess, redirectOnSuccess]
 	);
 
 	return {

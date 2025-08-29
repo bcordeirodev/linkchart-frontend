@@ -3,48 +3,33 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Card, CardContent, CircularProgress, Chip, Stack } from '@mui/material';
 import { HeatmapPoint } from '@/hooks/useEnhancedAnalytics';
-import dynamic from 'next/dynamic';
+import { lazy, Suspense } from 'react';
 
 // Importação dinâmica mais segura do Leaflet
-const DynamicMap = dynamic(() => import('./LeafletMapComponent'), {
-    ssr: false,
-    loading: () => (
-        <Box
-            sx={{
-                height: 500,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(0,0,0,0.05)',
-                borderRadius: 2
-            }}
-        >
-            <CircularProgress />
-        </Box>
-    )
-});
+const DynamicMap = lazy(() => import('./LeafletMapComponent'));
 
 // Wrapper seguro para o componente de mapa
 const SafeMapWrapper: React.FC<{ data: HeatmapPoint[]; height: number; maxClicks: number }> = (props) => {
-    // Verificar se estamos no cliente
-    if (typeof window === 'undefined') {
-        return (
-            <Box
-                sx={{
-                    height: props.height,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: 'rgba(0,0,0,0.05)',
-                    borderRadius: 2
-                }}
-            >
-                <CircularProgress />
-            </Box>
-        );
-    }
-
-    return <DynamicMap {...props} />;
+    return (
+        <Suspense
+            fallback={
+                <Box
+                    sx={{
+                        height: props.height,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'rgba(0,0,0,0.05)',
+                        borderRadius: 2
+                    }}
+                >
+                    <CircularProgress />
+                </Box>
+            }
+        >
+            <DynamicMap {...props} />
+        </Suspense>
+    );
 };
 
 interface HeatmapChartProps {

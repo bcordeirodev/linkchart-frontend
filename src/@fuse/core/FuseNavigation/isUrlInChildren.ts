@@ -16,7 +16,7 @@ const isUrlInChildren = (parent: FuseNavItemType, url: Pathname) => {
 			}
 		}
 
-		if (navItem.url === url || url.includes(navItem.url)) {
+		if (navItem.url === url || (navItem.url && url.includes(navItem.url))) {
 			return true;
 		}
 	}

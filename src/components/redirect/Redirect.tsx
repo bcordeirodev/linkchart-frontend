@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { Navigate } from 'react-router-dom';
 
 type RedirectProps = {
 	to: string;
@@ -8,9 +8,7 @@ type RedirectProps = {
 function Redirect(props: RedirectProps) {
 	const { to, children = null } = props;
 
-	redirect(to);
-
-	return children;
+	return <Navigate to={to} replace />;
 }
 
 export default Redirect;

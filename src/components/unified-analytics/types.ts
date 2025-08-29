@@ -52,9 +52,10 @@ export interface AnalyticsViewConfig {
 export interface LinkData {
     id: number;
     title?: string;
+    slug: string;
     original_url: string;
-    clicks?: number;
-    is_active?: boolean;
+    clicks: number;
+    is_active: boolean;
 }
 
 export interface QuickAction {

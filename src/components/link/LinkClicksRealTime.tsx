@@ -70,7 +70,7 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 		try {
 			setLoading(true);
 			const response = await api.get(`link/${linkId}/clicks`);
-			setData(response);
+			setData(response as ClickData);
 			setLastUpdate(new Date());
 		} catch (error) {
 			console.error('Erro ao carregar dados de cliques:', error);

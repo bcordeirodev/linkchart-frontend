@@ -206,7 +206,7 @@ class FuseNavigationHelper {
 				const parent = navigation.find((navItem) => navItem.order === parentOrder);
 
 				if (parent) {
-					itemMap[parent.id].children.push(itemMap[item.id]);
+					itemMap[parent.id]?.children?.push(itemMap[item.id] as never);
 				}
 			} else {
 				rootItems.push(itemMap[item.id]);

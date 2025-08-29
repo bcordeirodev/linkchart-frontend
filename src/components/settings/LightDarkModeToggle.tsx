@@ -2,6 +2,7 @@
 
 import { useAppDispatch } from '@/store/hooks';
 import { FuseThemeOption } from '@/themes';
+import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import useUser from '@auth/useUser';
 import { FuseSettingsConfigType } from '@fuse/core/FuseSettings/FuseSettings';
 import { useMainTheme } from '@fuse/core/FuseSettings/hooks/fuseThemeHooks';

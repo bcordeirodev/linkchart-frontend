@@ -98,7 +98,7 @@ function FuseNavHorizontalGroup(props: FuseNavHorizontalGroupProps) {
 								)}
 								onMouseEnter={() => handleToggle(true)}
 								onMouseLeave={() => handleToggle(false)}
-								aria-owns={opened ? 'menu-fuse-list-grow' : null}
+								aria-owns={opened ? 'menu-fuse-list-grow' : undefined}
 								aria-haspopup="true"
 								sx={item.sx}
 								{...itemProps}
@@ -118,7 +118,7 @@ function FuseNavHorizontalGroup(props: FuseNavHorizontalGroupProps) {
 									classes={{ primary: 'text-md truncate' }}
 								/>
 
-								{nestedLevel > 0 && (
+								{(nestedLevel ?? 0) > 0 && (
 									<IconButton
 										disableRipple
 										className="h-4 w-4 p-0 ltr:ml-1 rtl:mr-1"
@@ -146,7 +146,7 @@ function FuseNavHorizontalGroup(props: FuseNavHorizontalGroupProps) {
 									ref={ref}
 									style={{
 										...style,
-										zIndex: 999 + nestedLevel
+										zIndex: 999 + (nestedLevel ?? 0)
 									}}
 									data-placement={placement}
 									className={clsx('z-999', !opened && 'pointer-events-none')}
@@ -182,7 +182,7 @@ function FuseNavHorizontalGroup(props: FuseNavHorizontalGroupProps) {
 							)
 						}
 					</Popper>,
-					document.querySelector('#root')
+					document.querySelector('#root') || document.body
 				)}
 			</Manager>
 		);

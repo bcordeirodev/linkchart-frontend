@@ -31,7 +31,7 @@ function NumberFormController(props: NumberFormControllerProps) {
 				control={control}
 				render={({ field: { onChange, value } }) => (
 					<NumberTextField
-						value={+value}
+						value={+(value ?? 0)}
 						onChange={onChange}
 						item={item}
 					/>

@@ -1,31 +1,51 @@
-'use client';
+import { Link as RouterLink } from 'react-router-dom';
+import { ReactNode, forwardRef, AnchorHTMLAttributes } from 'react';
 
-import NextLink, { LinkProps as NextLinkProps } from 'next/link';
-import { ReactNode } from 'react';
-
-type CustomLinkProps = Omit<NextLinkProps, 'href'> & {
+type CustomLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
 	to?: string;
 	href?: string;
 	children?: ReactNode;
 	className?: string;
 	role?: string;
-	ref?: React.RefObject<HTMLAnchorElement>;
+	target?: string;
+	rel?: string;
+	sx?: unknown;
 };
 
-function Link(props: CustomLinkProps) {
-	const { ref, to, href, children, className, role, ...rest } = props;
+const Link = forwardRef<HTMLAnchorElement, CustomLinkProps>((props, ref) => {
+	const { to, href, children, className, role, target, rel, sx, ...rest } = props;
+	const linkTo = to || href || '';
 
+	// If it's an external link, use a regular anchor tag
+	if (linkTo.startsWith('http') || linkTo.startsWith('mailto:') || linkTo.startsWith('tel:')) {
+		return (
+			<a
+				href={linkTo}
+				className={className}
+				role={role}
+				target={target}
+				rel={rel}
+				ref={ref}
+				{...rest}
+			>
+				{children}
+			</a>
+		);
+	}
+
+	// Otherwise use React Router Link
 	return (
-		<NextLink
+		<RouterLink
+			to={linkTo}
 			className={className}
-			href={to || href || ''}
 			role={role}
+			target={target}
 			ref={ref}
 			{...rest}
 		>
 			{children}
-		</NextLink>
+		</RouterLink>
 	);
-}
+});
 
 export default Link;

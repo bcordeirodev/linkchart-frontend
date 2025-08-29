@@ -1,7 +1,7 @@
 'use client';
 
 import { Typography, Button } from '@mui/material';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import Link from '@fuse/core/Link';
 
 interface ErrorPageLayoutProps {

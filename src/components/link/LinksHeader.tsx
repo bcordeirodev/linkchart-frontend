@@ -2,7 +2,7 @@
 
 import { Box, Typography, Button } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import PageBreadcrumb from '@/components/utilities/PageBreadcrumb';
 
 interface LinksHeaderProps {
@@ -14,13 +14,13 @@ interface LinksHeaderProps {
  * Inclui título e botão de criação
  */
 export function LinksHeader({ onCreateNew }: LinksHeaderProps) {
-	const router = useRouter();
+	const navigate = useNavigate();
 
 	const handleCreateNew = () => {
 		if (onCreateNew) {
 			onCreateNew();
 		} else {
-			router.push('/link/create');
+			navigate('/link/create');
 		}
 	};
 

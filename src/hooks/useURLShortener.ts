@@ -13,6 +13,7 @@ interface IShortUrl {
 interface CreateUrlData {
 	original_url: string;
 	isActive?: boolean;
+	[key: string]: unknown;
 }
 
 interface UseURLShortenerReturn {
@@ -39,7 +40,7 @@ export function useURLShortener(): UseURLShortenerReturn {
 		try {
 			// Usar o service centralizado que já normaliza a URL
 			const response = await linkService.createShortUrl(data);
-			const shortUrl = response.data;
+			const shortUrl = response.data as IShortUrl;
 			setShorted(shortUrl);
 			return shortUrl;
 		} catch (_err) {

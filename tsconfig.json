@@ -28,51 +28,39 @@
       ]
     },
     "declaration": true,
-    "target": "esnext",
+    "target": "ES2020",
+    "useDefineForClassFields": true,
     "lib": [
-      "dom",
-      "dom.iterable",
-      "es2020",
-      "scripthost"
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
     ],
-    "plugins": [
-      {
-        "name": "typescript-plugin-css-modules"
-      },
-      {
-        "name": "next"
-      }
-    ],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "strict": false,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "strictNullChecks": true
+    "jsx": "react-jsx",
+    "types": ["vite/client"]
   },
-  "exclude": [
-    "src/app/(public)/documentation/material-ui-components/components/**/*",
-    "src/app/(public)/documentation/material-ui-components/doc/**/*",
-    "node_modules"
-  ],
   "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx",
-    "./src/global.d.ts",
-    "tailwind.config.ts",
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "next.config.mjs",
-    "build/types/**/*.ts"
+    "src",
+    "vite.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
   ]
 }

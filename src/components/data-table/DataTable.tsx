@@ -8,7 +8,7 @@ import { Theme } from '@mui/material/styles/createTheme';
 import DataTableTopToolbar from './DataTableTopToolbar';
 
 const tableIcons: Partial<MRT_Icons> = {
-	ArrowDownwardIcon: (props) => (
+	ArrowDownwardIcon: (props: any) => (
 		<FuseSvgIcon
 			size={20}
 			{...props}
@@ -28,7 +28,7 @@ const tableIcons: Partial<MRT_Icons> = {
 			heroicons-outline:arrows-pointing-out
 		</FuseSvgIcon>
 	),
-	FilterListIcon: (props) => (
+	FilterListIcon: (props: any) => (
 		<FuseSvgIcon
 			size={16}
 			{...props}
@@ -39,7 +39,7 @@ const tableIcons: Partial<MRT_Icons> = {
 	FilterListOffIcon: () => <FuseSvgIcon size={20}>heroicons-outline:funnel</FuseSvgIcon>,
 	FullscreenExitIcon: () => <FuseSvgIcon size={20}>heroicons-outline:arrows-pointing-in</FuseSvgIcon>,
 	FullscreenIcon: () => <FuseSvgIcon size={20}>heroicons-outline:arrows-pointing-out</FuseSvgIcon>,
-	SearchIcon: (props) => (
+	SearchIcon: (props: any) => (
 		<FuseSvgIcon
 			color="action"
 			size={20}
@@ -52,7 +52,7 @@ const tableIcons: Partial<MRT_Icons> = {
 	ViewColumnIcon: () => <FuseSvgIcon size={20}>heroicons-outline:view-columns</FuseSvgIcon>,
 	MoreVertIcon: () => <FuseSvgIcon size={20}>heroicons-outline:ellipsis-vertical</FuseSvgIcon>,
 	MoreHorizIcon: () => <FuseSvgIcon size={20}>heroicons-outline:ellipsis-horizontal</FuseSvgIcon>,
-	SortIcon: (props) => (
+	SortIcon: (props: any) => (
 		<FuseSvgIcon
 			size={20}
 			{...props}
@@ -60,7 +60,7 @@ const tableIcons: Partial<MRT_Icons> = {
 			heroicons-outline:arrows-up-down
 		</FuseSvgIcon>
 	),
-	PushPinIcon: (props) => (
+	PushPinIcon: (props: any) => (
 		<FuseSvgIcon
 			size={20}
 			{...props}
@@ -71,12 +71,13 @@ const tableIcons: Partial<MRT_Icons> = {
 	VisibilityOffIcon: () => <FuseSvgIcon size={20}>heroicons-outline:eye-slash</FuseSvgIcon>
 };
 
-function DataTable<TData>(props: MaterialReactTableProps<TData>) {
+function DataTable<TData extends Record<string, any>>(props: MaterialReactTableProps<TData>) {
 	const { columns, data, ...rest } = props;
 
 	const defaults = useMemo(
 		() =>
 			_.defaults(rest, {
+				columns: columns || [],
 				initialState: {
 					density: 'spacious',
 					showColumnFilters: false,
@@ -86,6 +87,7 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 						right: ['mrt-row-actions']
 					},
 					pagination: {
+						pageIndex: 0,
 						pageSize: 15
 					},
 					enableFullScreenToggle: false
@@ -201,8 +203,8 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 
 	const tableOptions = useMemo(
 		() => ({
-			columns,
-			data,
+			columns: columns || [],
+			data: data || [],
 			...defaults,
 			...rest
 		}),

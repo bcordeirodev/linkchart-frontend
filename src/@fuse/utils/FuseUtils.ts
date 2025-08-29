@@ -16,7 +16,7 @@ type TreeNode = {
 export type FuseRouteItemType = {
 	path?: string;
 	element?: React.ReactNode;
-	auth?: string[] | [];
+	auth?: string[] | [] | null;
 	settings?: DeepPartial<FuseSettingsConfigType>;
 	children?: FuseRouteItemType[];
 };
@@ -363,7 +363,7 @@ class FuseUtils {
 	/**
 	 * The hasPermission function checks if a user has permission to access a resource.
 	 */
-	static hasPermission(authArr: string[] | string | undefined, userRole: IUser['role']): boolean {
+	static hasPermission(authArr: string[] | string | null | undefined, userRole: IUser['role']): boolean {
 		/**
 		 * If auth array is not defined
 		 * Pass and allow
@@ -405,31 +405,31 @@ class FuseUtils {
 		return !data
 			? null
 			: data.reduce((list: unknown[], entry: { children?: [] }) => {
-					let clone: unknown = null;
+				let clone: unknown = null;
 
-					if (predicate(entry)) {
-						// if the object matches the filter, clone it as it is
-						clone = { ...entry };
+				if (predicate(entry)) {
+					// if the object matches the filter, clone it as it is
+					clone = { ...entry };
+				}
+
+				if (entry.children != null) {
+					// if the object has childrens, filter the list of children
+					const children = this.filterRecursive(entry.children, predicate);
+
+					if (children && children?.length > 0) {
+						// if any of the children matches, clone the parent object, overwrite
+						// the children list with the filtered list
+						clone = { ...entry, children };
 					}
+				}
 
-					if (entry.children != null) {
-						// if the object has childrens, filter the list of children
-						const children = this.filterRecursive(entry.children, predicate);
+				// if there's a cloned object, push it to the output list
+				if (clone) {
+					list.push(clone);
+				}
 
-						if (children && children?.length > 0) {
-							// if any of the children matches, clone the parent object, overwrite
-							// the children list with the filtered list
-							clone = { ...entry, children };
-						}
-					}
-
-					// if there's a cloned object, push it to the output list
-					if (clone) {
-						list.push(clone);
-					}
-
-					return list;
-				}, []);
+				return list;
+			}, []);
 	}
 }
 

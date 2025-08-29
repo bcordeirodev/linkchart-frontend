@@ -70,7 +70,7 @@ function FuseSettings(props: FuseSettingsProps) {
 	const form = watch();
 	const formLayoutStyle = watch('layout.style');
 
-	const layoutFormConfigs = useMemo(() => themeLayoutConfigs[formLayoutStyle].form, [formLayoutStyle]);
+	const layoutFormConfigs = useMemo(() => themeLayoutConfigs[formLayoutStyle as keyof typeof themeLayoutConfigs]?.form, [formLayoutStyle]);
 
 	const prevForm = usePrevious(form ? _.merge({}, form) : null);
 	const prevSettings = usePrevious(settings ? _.merge({}, settings) : null);
@@ -102,7 +102,10 @@ function FuseSettings(props: FuseSettingsProps) {
 		// If form changed update theme settings
 		if (formChanged) {
 			if (settings.layout.style !== newSettings.layout.style) {
-				_.set(newSettings, 'layout.config', themeLayoutConfigs[newSettings?.layout?.style]?.defaults);
+				const layoutStyle = newSettings?.layout?.style;
+				if (layoutStyle && layoutStyle in themeLayoutConfigs) {
+					_.set(newSettings, 'layout.config', themeLayoutConfigs[layoutStyle as keyof typeof themeLayoutConfigs]?.defaults);
+				}
 			}
 
 			onChange(newSettings);

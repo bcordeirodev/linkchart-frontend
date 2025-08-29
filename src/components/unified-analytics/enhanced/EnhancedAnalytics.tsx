@@ -24,7 +24,7 @@ import {
     Lightbulb,
     Map
 } from '@mui/icons-material';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { useEnhancedAnalytics } from '@/hooks/useEnhancedAnalytics';
 import MetricCard from '@/components/ui/MetricCard';
 import PageBreadcrumb from '@/components/utilities/PageBreadcrumb';
@@ -39,7 +39,7 @@ interface EnhancedAnalyticsProps {
 }
 
 export function EnhancedAnalytics({ linkId }: EnhancedAnalyticsProps) {
-    const router = useRouter();
+    const navigate = useNavigate();
     const theme = useTheme();
     const [tabValue, setTabValue] = useState(0);
 
@@ -109,7 +109,7 @@ export function EnhancedAnalytics({ linkId }: EnhancedAnalyticsProps) {
                     <Button
                         variant="outlined"
                         startIcon={<ArrowBack />}
-                        onClick={() => router.push('/link')}
+                        onClick={() => navigate('/link')}
                     >
                         Voltar para Lista
                     </Button>
@@ -161,7 +161,7 @@ export function EnhancedAnalytics({ linkId }: EnhancedAnalyticsProps) {
                 <Button
                     variant="outlined"
                     startIcon={<ArrowBack />}
-                    onClick={() => router.push('/link')}
+                    onClick={() => navigate('/link')}
                 >
                     Voltar para Lista
                 </Button>

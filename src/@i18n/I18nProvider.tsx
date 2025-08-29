@@ -3,7 +3,7 @@ import useFuseSettings from '@fuse/core/FuseSettings/hooks/useFuseSettings';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import i18n from './i18n';
-import I18nContext, { LanguageType } from './I18nContext';
+import I18nContext, { I18nContextType, LanguageType } from './I18nContext';
 
 type I18nProviderProps = {
 	children: React.ReactNode;
@@ -49,5 +49,5 @@ export function I18nProvider(props: I18nProviderProps) {
 		[languageId]
 	);
 
-	return <I18nContext.Provider value={contextValue}>{children}</I18nContext.Provider>;
+	return <I18nContext.Provider value={contextValue as I18nContextType}>{children}</I18nContext.Provider>;
 }

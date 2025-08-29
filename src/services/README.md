@@ -12,6 +12,22 @@ Esta pasta contém a arquitetura centralizada de services para comunicação com
 - **Facilitar** manutenção e debugging
 - **Garantir** type safety completo
 
+## 🚨 REGRA OBRIGATÓRIA
+
+**❌ NUNCA use `api.get()`, `api.post()`, etc. diretamente nos componentes/hooks!**
+
+**✅ SEMPRE use os services centralizados para qualquer endpoint!**
+
+### Exemplos de Uso CORRETO:
+```typescript
+// ✅ CORRETO - Via service
+const links = await linkService.all();
+const analytics = await analyticsService.getAnalytics();
+
+// ❌ INCORRETO - Direto no componente
+const response = await api.get('/api/links');
+```
+
 ## 📁 Estrutura
 
 ```

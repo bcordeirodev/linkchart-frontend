@@ -26,7 +26,7 @@ function useNavigation() {
     const navigation = useMemo(() => {
         function setAdditionalData(data: FuseNavItemType[]): FuseNavItemType[] {
             return data?.map((item) => ({
-                hasPermission: Boolean(FuseUtils.hasPermission(item?.auth, userRole)),
+                hasPermission: Boolean(FuseUtils.hasPermission(item?.auth, userRole ?? null)),
                 ...item,
                 ...(item?.translate && item?.title ? { title: i18n.t(`navigation:${item?.translate}`) } : {}),
                 ...(item?.children ? { children: setAdditionalData(item?.children) } : {})

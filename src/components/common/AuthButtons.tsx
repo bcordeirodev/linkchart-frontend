@@ -2,7 +2,7 @@
 
 import { Button, Box } from '@mui/material';
 import { Login, PersonAdd, Visibility } from '@mui/icons-material';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import useUser from '@auth/useUser';
 
 interface AuthButtonsProps {
@@ -16,7 +16,7 @@ interface AuthButtonsProps {
  * Mostra botão dashboard para usuários logados
  */
 export function AuthButtons({ variant = 'default', dashboardRoute = '/dashboard' }: AuthButtonsProps) {
-	const router = useRouter();
+	const navigate = useNavigate();
 	const { data: user } = useUser();
 
 	const buttonProps = {
@@ -31,7 +31,7 @@ export function AuthButtons({ variant = 'default', dashboardRoute = '/dashboard'
 			<Button
 				variant="contained"
 				startIcon={<Visibility />}
-				onClick={() => router.push(dashboardRoute)}
+				onClick={() => navigate(dashboardRoute)}
 				sx={{
 					...buttonProps,
 					background: 'linear-gradient(135deg, #0A74DA 0%, #00A4EF 100%)',
@@ -50,7 +50,7 @@ export function AuthButtons({ variant = 'default', dashboardRoute = '/dashboard'
 			<Button
 				variant="outlined"
 				startIcon={<Login />}
-				onClick={() => router.push('/sign-in')}
+				onClick={() => navigate('/sign-in')}
 				sx={buttonProps}
 			>
 				Entrar
@@ -58,7 +58,7 @@ export function AuthButtons({ variant = 'default', dashboardRoute = '/dashboard'
 			<Button
 				variant="contained"
 				startIcon={<PersonAdd />}
-				onClick={() => router.push('/sign-up')}
+				onClick={() => navigate('/sign-up')}
 				sx={{
 					...buttonProps,
 					background: 'linear-gradient(135deg, #0A74DA 0%, #00A4EF 100%)',

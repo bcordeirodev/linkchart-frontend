@@ -15,7 +15,7 @@ type PageBreadcrumbProps = BreadcrumbsProps & {
 };
 
 // Function to get the navigation item based on URL
-function getNavigationItem(url: string, navigationItems: FuseNavItemType[]): FuseNavItemType {
+function getNavigationItem(url: string, navigationItems: FuseNavItemType[]): FuseNavItemType | null {
 	for (const item of navigationItems) {
 		if (item.url === url) {
 			return item;
@@ -29,7 +29,7 @@ function getNavigationItem(url: string, navigationItems: FuseNavItemType[]): Fus
 			}
 		}
 	}
-	return null;
+	return null as never;
 }
 
 function PageBreadcrumb(props: PageBreadcrumbProps) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -66,7 +66,7 @@ export default function RedirectStats({
 			setStats(response);
 			setLastUpdate(new Date());
 		} catch (err: unknown) {
-			setError(err.message || 'Erro ao carregar estatísticas');
+			setError((err as Error).message || 'Erro ao carregar estatísticas');
 		} finally {
 			setLoading(false);
 		}

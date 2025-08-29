@@ -60,7 +60,7 @@ type RenderInputComponentType = {
 };
 
 function renderInputComponent(props: RenderInputComponentProps) {
-	const { variant, ref, inputRef = () => {}, key, ...other } = props as RenderInputComponentType;
+	const { variant, ref, inputRef = () => { }, key, ...other } = props as RenderInputComponentType;
 	return (
 		<div
 			className="relative w-full"
@@ -118,8 +118,9 @@ function renderInputComponent(props: RenderInputComponentProps) {
 }
 
 function renderSuggestion(suggestion: FuseFlatNavItemType, { query, isHighlighted }: RenderSuggestionParams) {
-	const matches = match(suggestion.title, query);
-	const parts = parse(suggestion.title, matches);
+	const title = suggestion.title ?? '';
+	const matches = match(title, query);
+	const parts = parse(title, matches);
 
 	return (
 		<MenuItem
@@ -130,7 +131,7 @@ function renderSuggestion(suggestion: FuseFlatNavItemType, { query, isHighlighte
 				{suggestion.icon ? (
 					<FuseSvgIcon>{suggestion.icon}</FuseSvgIcon>
 				) : (
-					<span className="w-6 text-center text-2xl font-semibold uppercase">{suggestion.title[0]}</span>
+					<span className="w-6 text-center text-2xl font-semibold uppercase">{title[0] ?? '?'}</span>
 				)}
 			</ListItemIcon>
 			<ListItemText
@@ -177,7 +178,7 @@ function getSuggestions(value: string, data: FuseFlatNavItemType[]): FuseFlatNav
 }
 
 function getSuggestionValue(suggestion: FuseFlatNavItemType) {
-	return suggestion.title;
+	return suggestion.title ?? '';
 }
 
 type StateType = {

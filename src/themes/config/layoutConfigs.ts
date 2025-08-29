@@ -69,7 +69,5 @@ const layout1Config = {
 const themeLayoutConfigs = {
     layout1: layout1Config
 };
-
 export { layout1Config };
-export type { themeLayoutDefaultsProps };
 export default themeLayoutConfigs;

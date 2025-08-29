@@ -64,7 +64,7 @@ export const defaultSettings = {
  * The getParsedQuerySettings function parses the query string to retrieve the default settings for the Fuse application.
  * It returns a FuseSettingsConfigType object that can be used to configure the application.
  */
-export function getParsedQuerySettings(): FuseSettingsConfigType | object {
+export function getParsedQuerySettings(): FuseSettingsConfigType | object | null {
 	if (typeof window === 'undefined') {
 		return null;
 	}

@@ -51,7 +51,7 @@ function FuseNavHorizontalLayout1(props: FuseNavigationProps) {
 				className
 			)}
 		>
-			{navigation.map((_item) => (
+			{navigation?.map((_item) => (
 				<FuseNavItem
 					key={_item.id}
 					type={`horizontal-${_item.type}`}

@@ -3,24 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Box, Typography, Card, CardContent, CircularProgress, Chip, Stack, Button } from '@mui/material';
 import { HeatmapPoint } from '@/hooks/useEnhancedAnalytics';
-import dynamic from 'next/dynamic';
 import { MyLocation, FilterList } from '@mui/icons-material';
-
-// Importação dinâmica mais segura do Leaflet
-const SafeLeafletComponents = dynamic(() => 
-    import('react-leaflet').then(mod => ({
-        MapContainer: mod.MapContainer,
-        TileLayer: mod.TileLayer,
-        CircleMarker: mod.CircleMarker,
-        Popup: mod.Popup
-    })), 
-    { ssr: false }
-);
-
-const SafeMarkerClusterGroup = dynamic(() => 
-    import('react-leaflet-markercluster').then(mod => mod.default), 
-    { ssr: false }
-);
 
 interface EnhancedHeatmapChartProps {
     data: HeatmapPoint[];
@@ -60,35 +43,6 @@ export function EnhancedHeatmapChart({ data, height = 600, title = "Mapa de Calo
         return data.filter(point => point.clicks >= minClicksFilter);
     }, [data, minClicksFilter]);
 
-    // Calcular centro do mapa baseado nos dados filtrados
-    const getMapCenter = () => {
-        if (filteredData.length === 0) return [0, 0];
-
-        const totalLat = filteredData.reduce((sum, point) => sum + point.lat, 0);
-        const totalLng = filteredData.reduce((sum, point) => sum + point.lng, 0);
-
-        return [totalLat / filteredData.length, totalLng / filteredData.length];
-    };
-
-    // Calcular raio do marcador baseado no número de cliques
-    const getMarkerRadius = (clicks: number) => {
-        const minRadius = 6;
-        const maxRadius = 25;
-        const normalizedClicks = clicks / stats.maxClicks;
-        return minRadius + (normalizedClicks * (maxRadius - minRadius));
-    };
-
-    // Calcular cor do marcador baseado no número de cliques
-    const getMarkerColor = (clicks: number) => {
-        const normalizedClicks = clicks / stats.maxClicks;
-
-        if (normalizedClicks > 0.8) return '#d32f2f'; // Vermelho escuro
-        if (normalizedClicks > 0.6) return '#f57c00'; // Laranja
-        if (normalizedClicks > 0.4) return '#ff9800'; // Laranja claro
-        if (normalizedClicks > 0.2) return '#ffc107'; // Amarelo
-        return '#4caf50'; // Verde
-    };
-
     // Agrupar dados por país para estatísticas
     const countryStats = useMemo(() => {
         const countryMap = new Map<string, { clicks: number; cities: Set<string> }>();
@@ -106,230 +60,116 @@ export function EnhancedHeatmapChart({ data, height = 600, title = "Mapa de Calo
             .map(([country, data]) => ({
                 country,
                 clicks: data.clicks,
-                cities: data.cities.size,
+                cities: Array.from(data.cities)
             }))
             .sort((a, b) => b.clicks - a.clicks)
-            .slice(0, 5);
+            .slice(0, 10);
     }, [filteredData]);
 
-    // Se não há dados, mostrar mensagem de "sem dados"
-    if (!data || data.length === 0) {
+    if (!isClient) {
         return (
-            <Card>
-                <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                        🗺️ {title}
-                    </Typography>
-                    <Box
-                        sx={{
-                            height,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            bgcolor: 'action.hover',
-                            borderRadius: 2,
-                            border: '2px dashed',
-                            borderColor: 'divider',
-                        }}
-                    >
-                        <Box sx={{ textAlign: 'center' }}>
-                            <Typography variant="h6" color="text.secondary" gutterBottom>
-                                🌍 Mapa de Calor
-                            </Typography>
-                            <Typography color="text.secondary">
-                                Os dados geográficos aparecerão aqui quando houver cliques suficientes
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                Compartilhe seu link para ver de onde vêm os cliques!
-                            </Typography>
-                        </Box>
-                    </Box>
+            <Card sx={{ height: height }}>
+                <CardContent sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <CircularProgress />
                 </CardContent>
             </Card>
         );
     }
 
-    // Se ainda não está no cliente, mostrar loader
-    if (!isClient) {
+    if (!data || data.length === 0) {
         return (
-            <Card>
-                <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                        🗺️ {title}
+            <Card sx={{ height: height }}>
+                <CardContent
+                    sx={{
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                        textAlign: 'center'
+                    }}
+                >
+                    <Typography variant="h6" color="text.secondary" gutterBottom>
+                        📍 {title}
                     </Typography>
-                    <Box
-                        sx={{
-                            height,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            bgcolor: 'action.hover',
-                            borderRadius: 2,
-                        }}
-                    >
-                        <CircularProgress />
-                        <Typography variant="body2" sx={{ ml: 2 }}>
-                            Carregando mapa...
-                        </Typography>
-                    </Box>
+                    <Typography variant="body2" color="text.secondary">
+                        Nenhum dado geográfico disponível ainda.
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+                        Os dados aparecerão aqui conforme os cliques forem registrados.
+                    </Typography>
                 </CardContent>
             </Card>
         );
     }
 
     return (
-        <Card>
-            <CardContent>
-                <Typography variant="h6" gutterBottom>
-                    🗺️ {title}
-                </Typography>
+        <Card sx={{ height: height }}>
+            <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                {/* Header */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Typography variant="h6" fontWeight="bold">
+                        📍 {title}
+                    </Typography>
 
-                {/* Estatísticas rápidas */}
-                <Stack direction="row" spacing={2} sx={{ mb: 2 }} flexWrap="wrap">
-                    <Chip
-                        label={`${stats.totalClicks} cliques`}
-                        color="primary"
-                        size="small"
-                    />
-                    <Chip
-                        label={`${stats.uniqueCountries} países`}
-                        color="secondary"
-                        size="small"
-                    />
-                    <Chip
-                        label={`${stats.uniqueCities} cidades`}
-                        color="info"
-                        size="small"
-                    />
-                    <Chip
-                        label={`${filteredData.length} locais`}
-                        color="success"
-                        size="small"
-                    />
-                </Stack>
-
-                {/* Controles do mapa */}
-                <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-                    <Button
-                        size="small"
-                        variant="outlined"
-                        startIcon={<FilterList />}
-                        onClick={() => setMinClicksFilter(prev => prev === 1 ? 2 : 1)}
-                    >
-                        Min {minClicksFilter}+ cliques
-                    </Button>
-                    <Button
-                        size="small"
-                        variant="outlined"
-                        startIcon={<MyLocation />}
-                        onClick={() => setShowAllMarkers(!showAllMarkers)}
-                    >
-                        {showAllMarkers ? 'Agrupar' : 'Expandir'}
-                    </Button>
-                </Stack>
-
-                {/* Mapa interativo */}
-                <Box
-                    sx={{
-                        height,
-                        borderRadius: 2,
-                        overflow: 'hidden',
-                        border: '1px solid',
-                        borderColor: 'divider',
-                        position: 'relative',
-                    }}
-                >
-                    {/* Loader sobreposto - só mostra se o mapa ainda não carregou */}
-                    {!mapLoaded && (
-                        <Box
-                            sx={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                bgcolor: 'rgba(255, 255, 255, 0.8)',
-                                zIndex: 1000,
-                            }}
+                    <Stack direction="row" spacing={1}>
+                        <Button
+                            size="small"
+                            variant={showAllMarkers ? "contained" : "outlined"}
+                            onClick={() => setShowAllMarkers(true)}
+                            startIcon={<MyLocation />}
                         >
-                            <CircularProgress />
-                        </Box>
-                    )}
+                            Todos
+                        </Button>
+                        <Button
+                            size="small"
+                            variant={!showAllMarkers ? "contained" : "outlined"}
+                            onClick={() => setShowAllMarkers(false)}
+                            startIcon={<FilterList />}
+                        >
+                            Agrupados
+                        </Button>
+                    </Stack>
+                </Box>
 
-                    <MapContainer
-                        center={getMapCenter() as [number, number]}
-                        zoom={2}
-                        style={{ height: '100%', width: '100%' }}
-                        whenReady={() => setMapLoaded(true)}
-                    >
-                        <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
+                {/* Filtro de cliques mínimos */}
+                <Box sx={{ mb: 2 }}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                        Cliques mínimos: {minClicksFilter}
+                    </Typography>
+                    <input
+                        type="range"
+                        min="1"
+                        max={Math.max(...data.map(p => p.clicks), 10)}
+                        value={minClicksFilter}
+                        onChange={(e) => setMinClicksFilter(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                    />
+                </Box>
 
-                        {showAllMarkers ? (
-                            // Mostrar todos os marcadores
-                            filteredData.map((point, index) => (
-                                <CircleMarker
-                                    key={index}
-                                    center={[point.lat, point.lng]}
-                                    radius={getMarkerRadius(point.clicks)}
-                                    fillColor={getMarkerColor(point.clicks)}
-                                    color={getMarkerColor(point.clicks)}
-                                    weight={2}
-                                    opacity={0.8}
-                                    fillOpacity={0.6}
-                                >
-                                    <Popup>
-                                        <Box sx={{ p: 1, minWidth: 200 }}>
-                                            <Typography variant="subtitle2" fontWeight="bold">
-                                                📍 {point.city}, {point.country}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                <strong>{point.clicks}</strong> cliques
-                                            </Typography>
-                                            <Typography variant="caption" color="text.secondary">
-                                                Lat: {point.lat.toFixed(4)}, Lng: {point.lng.toFixed(4)}
-                                            </Typography>
-                                        </Box>
-                                    </Popup>
-                                </CircleMarker>
-                            ))
-                        ) : (
-                            // Usar clustering (se disponível)
-                            <MarkerClusterGroup>
-                                {filteredData.map((point, index) => (
-                                    <CircleMarker
-                                        key={index}
-                                        center={[point.lat, point.lng]}
-                                        radius={getMarkerRadius(point.clicks)}
-                                        fillColor={getMarkerColor(point.clicks)}
-                                        color={getMarkerColor(point.clicks)}
-                                        weight={2}
-                                        opacity={0.8}
-                                        fillOpacity={0.6}
-                                    >
-                                        <Popup>
-                                            <Box sx={{ p: 1, minWidth: 200 }}>
-                                                <Typography variant="subtitle2" fontWeight="bold">
-                                                    📍 {point.city}, {point.country}
-                                                </Typography>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    <strong>{point.clicks}</strong> cliques
-                                                </Typography>
-                                                <Typography variant="caption" color="text.secondary">
-                                                    Lat: {point.lat.toFixed(4)}, Lng: {point.lng.toFixed(4)}
-                                                </Typography>
-                                            </Box>
-                                        </Popup>
-                                    </CircleMarker>
-                                ))}
-                            </MarkerClusterGroup>
-                        )}
-                    </MapContainer>
+                {/* Estatísticas */}
+                <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+                    <Chip label={`Total: ${stats.totalClicks} cliques`} color="primary" />
+                    <Chip label={`Países: ${stats.uniqueCountries}`} color="secondary" />
+                    <Chip label={`Cidades: ${stats.uniqueCities}`} color="info" />
+                    <Chip label={`Média: ${Math.round(stats.avgClicksPerLocation)} cliques/local`} color="success" />
+                </Box>
+
+                {/* Mapa simplificado - Grid de países */}
+                <Box sx={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 2, overflow: 'auto' }}>
+                    {countryStats.map((country, index) => (
+                        <Card key={index} variant="outlined" sx={{ p: 2 }}>
+                            <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                                🌍 {country.country}
+                            </Typography>
+                            <Typography variant="h6" color="primary">
+                                {country.clicks} cliques
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                                {country.cities.length} cidades
+                            </Typography>
+                        </Card>
+                    ))}
                 </Box>
 
                 {/* Estatísticas por país */}

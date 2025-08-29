@@ -15,7 +15,7 @@ const getInitialSettings = (): FuseSettingsConfigType => {
 	const defaultLayoutStyle = settingsConfig.layout?.style || 'layout1';
 	const layout = {
 		style: defaultLayoutStyle,
-		config: themeLayoutConfigs[defaultLayoutStyle]?.defaults
+		config: themeLayoutConfigs[defaultLayoutStyle as keyof typeof themeLayoutConfigs]?.defaults
 	};
 	return _.merge({}, defaultSettings, { layout }, settingsConfig, getParsedQuerySettings());
 };
@@ -33,7 +33,7 @@ const generateSettings = (
 	return _.merge(
 		{},
 		_defaultSettings,
-		{ layout: { config: themeLayoutConfigs[layoutStyle]?.defaults } },
+		{ layout: { config: themeLayoutConfigs[layoutStyle as keyof typeof themeLayoutConfigs]?.defaults } },
 		_newSettings
 	);
 };

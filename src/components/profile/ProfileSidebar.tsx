@@ -3,7 +3,7 @@
 import { Box, Typography, Chip, Stack } from '@mui/material';
 import { CalendarToday, Shield, Verified } from '@mui/icons-material';
 import EnhancedPaper from '@/components/ui/EnhancedPaper';
-import { UserProfile } from '@/services/profile.service';
+import { UserProfile } from '@/services';
 
 interface ProfileSidebarProps {
 	user: UserProfile;

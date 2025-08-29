@@ -1,9 +1,6 @@
-'use client';
-
-import { useSession, signOut } from 'next-auth/react';
 import { useMemo } from 'react';
 import { IUser } from '@/types/user';
-import { authUpdateDbUser } from '@auth/authApi';
+import { useAuth } from './AuthContext';
 import _ from 'lodash';
 import setIn from '@/utils/setIn';
 
@@ -12,12 +9,11 @@ type useUser = {
 	isGuest: boolean;
 	updateUser: (updates: Partial<IUser>) => Promise<IUser | undefined>;
 	updateUserSettings: (newSettings: IUser['settings']) => Promise<IUser['settings'] | undefined>;
-	signOut: typeof signOut;
+	signOut: () => void;
 };
 
 function useUser(): useUser {
-	const { data, update } = useSession();
-	const user = useMemo(() => data?.db, [data]);
+	const { user, logout, updateUser: authUpdateUser } = useAuth();
 	const isGuest = useMemo(() => !user?.role || user?.role?.length === 0, [user]);
 
 	/**
@@ -26,13 +22,7 @@ function useUser(): useUser {
 	 */
 	async function handleUpdateUser(_data: Partial<IUser>) {
 		try {
-			const updatedUser = await authUpdateDbUser(_data);
-
-			// Update AuthJs session data
-			setTimeout(() => {
-				update();
-			}, 300);
-
+			const updatedUser = await authUpdateUser(_data);
 			return updatedUser;
 		} catch (error) {
 			throw new Error('Failed to update user');
@@ -44,6 +34,8 @@ function useUser(): useUser {
 	 * Uses current auth provider's updateUser method
 	 */
 	async function handleUpdateUserSettings(newSettings: IUser['settings']) {
+		if (!user) return undefined;
+
 		const newUser = setIn(user, 'settings', newSettings) as IUser;
 
 		if (_.isEqual(user, newUser)) {
@@ -58,8 +50,8 @@ function useUser(): useUser {
 	/**
 	 * Sign out
 	 */
-	async function handleSignOut() {
-		return signOut();
+	function handleSignOut() {
+		logout();
 	}
 
 	return {

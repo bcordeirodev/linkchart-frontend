@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAppDispatch } from '@/store/hooks';
 import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
-import * as linkService from '@/services/link.service';
+import { linkService } from '@/services';
 
 /**
  * Hook personalizado para gerenciar links

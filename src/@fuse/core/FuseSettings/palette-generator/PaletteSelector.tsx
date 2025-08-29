@@ -77,7 +77,9 @@ function PaletteSelector(props: PaletteSelectorProps) {
 		});
 	}, [formType, openDialog, trigger]);
 
-	const backgroundColorValidation = (colorVal: string) => {
+	const backgroundColorValidation = (colorVal: string | undefined) => {
+		if (!colorVal) return true;
+
 		if (formType === 'light' && isDark(colorVal)) {
 			return 'Must be a light color';
 		}

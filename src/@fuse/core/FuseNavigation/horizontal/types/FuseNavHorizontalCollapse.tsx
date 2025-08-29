@@ -91,7 +91,7 @@ function FuseNavHorizontalCollapse(props: FuseNavHorizontalCollapseProps) {
 									)}
 									onMouseEnter={() => handleToggle(true)}
 									onMouseLeave={() => handleToggle(false)}
-									aria-owns={opened ? 'menu-fuse-list-grow' : null}
+									aria-owns={opened ? 'menu-fuse-list-grow' : undefined}
 									aria-haspopup="true"
 									sx={item.sx}
 									{...itemProps}
@@ -144,7 +144,7 @@ function FuseNavHorizontalCollapse(props: FuseNavHorizontalCollapseProps) {
 											ref={ref}
 											style={{
 												...style,
-												zIndex: 999 + nestedLevel + 1
+												zIndex: 999 + (nestedLevel ?? 0) + 1
 											}}
 											data-placement={placement}
 											className={clsx('z-999', !opened && 'pointer-events-none')}
@@ -172,7 +172,7 @@ function FuseNavHorizontalCollapse(props: FuseNavHorizontalCollapseProps) {
 																	key={_item.id}
 																	type={`horizontal-${_item.type}`}
 																	item={_item}
-																	nestedLevel={nestedLevel + 1}
+																	nestedLevel={(nestedLevel ?? 0) + 1}
 																	dense={dense}
 																/>
 															))}
@@ -184,7 +184,7 @@ function FuseNavHorizontalCollapse(props: FuseNavHorizontalCollapseProps) {
 									)
 								}
 							</Popper>,
-							document.querySelector('#root')
+							document.querySelector('#root') || document.body
 						)}
 				</Manager>
 			</ul>

@@ -1,10 +1,8 @@
-'use client';
-
-import { usePathname as useNextPathname } from 'next/navigation';
+import { useLocation } from 'react-router-dom';
 
 /**
  * Hook personalizado para obter pathname atual
- * Wrapper do Next.js usePathname para consistência
+ * Wrapper do React Router useLocation para consistência
  *
  * @example
  * ```tsx
@@ -13,7 +11,8 @@ import { usePathname as useNextPathname } from 'next/navigation';
  * ```
  */
 function usePathname() {
-	return useNextPathname();
+	const location = useLocation();
+	return location.pathname;
 }
 
 export default usePathname;

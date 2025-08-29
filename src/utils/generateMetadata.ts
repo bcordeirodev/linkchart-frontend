@@ -1,4 +1,38 @@
-import type { Metadata } from 'next';
+// Metadata type for React apps
+export interface Metadata {
+	title?: string;
+	description?: string;
+	keywords?: string[];
+	author?: string;
+	authors?: { name: string; url: string }[];
+	creator?: string;
+	publisher?: string;
+	robots?: string;
+	referrer?: string;
+	icons?: { icon: string };
+	metadataBase?: URL;
+	openGraph?: {
+		title?: string;
+		description?: string;
+		url?: string;
+		siteName?: string;
+		images?: {
+			url: string;
+			width?: number;
+			height?: number;
+		}[];
+		locale?: string;
+		type?: string;
+	};
+	twitter?: {
+		card?: string;
+		site?: string;
+		creator?: string;
+		title?: string;
+		description?: string;
+		images?: string[];
+	};
+}
 
 async function generateMetadata(meta: {
 	title: string;
@@ -23,7 +57,7 @@ async function generateMetadata(meta: {
 			url: meta.url,
 			title: meta.title,
 			description: meta.description,
-			images: [meta.cardImage],
+			images: [{ url: meta.cardImage }],
 			type: 'website',
 			siteName: meta.title
 		},

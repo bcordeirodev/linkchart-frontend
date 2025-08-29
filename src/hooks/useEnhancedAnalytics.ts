@@ -16,6 +16,7 @@ export interface CountryData {
     iso_code: string;
     clicks: number;
     currency: string;
+    [key: string]: unknown;
 }
 
 export interface StateData {
@@ -23,6 +24,7 @@ export interface StateData {
     state: string;
     state_name: string;
     clicks: number;
+    [key: string]: unknown;
 }
 
 export interface CityData {
@@ -30,18 +32,21 @@ export interface CityData {
     state: string;
     country: string;
     clicks: number;
+    [key: string]: unknown;
 }
 
 export interface HourlyData {
     hour: number;
     clicks: number;
     label: string;
+    [key: string]: unknown;
 }
 
 export interface DayOfWeekData {
     day: number;
     day_name: string;
     clicks: number;
+    [key: string]: unknown;
 }
 
 export interface DeviceData {

@@ -43,12 +43,12 @@ class ErrorHandler {
         }
 
         // Log no console em desenvolvimento
-        if (process.env.NODE_ENV === 'development') {
+        if (import.meta.env.DEV) {
             console.error('Error logged:', errorInfo);
         }
 
         // Em produção, enviar para serviço de monitoramento
-        if (process.env.NODE_ENV === 'production') {
+        if (import.meta.env.PROD) {
             this.sendToMonitoring(errorInfo);
         }
     }
@@ -108,7 +108,7 @@ class ErrorHandler {
      */
     private sendToMonitoring(errorInfo: ErrorInfo): void {
         // Implementar integração com Sentry ou outro serviço
-        if (process.env.SENTRY_DSN) {
+        if (import.meta.env.VITE_SENTRY_DSN) {
             // Sentry.captureException(errorInfo);
         }
 

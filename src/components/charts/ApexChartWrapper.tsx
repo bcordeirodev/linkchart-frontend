@@ -1,34 +1,12 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+import { lazy, Suspense } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { ChartFallback } from './ChartFallback';
 
 // Importação dinâmica do ApexCharts com tratamento de erro melhorado
-const Chart = dynamic(() => import('react-apexcharts').then((mod) => mod.default), {
-	ssr: false,
-	loading: () => (
-		<Box
-			sx={{
-				height: 350,
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-				flexDirection: 'column',
-				gap: 2
-			}}
-		>
-			<CircularProgress />
-			<Typography
-				variant="body2"
-				color="text.secondary"
-			>
-				Carregando gráfico...
-			</Typography>
-		</Box>
-	)
-});
+const Chart = lazy(() => import('react-apexcharts').then((mod) => ({ default: mod.default })));
 
 interface ApexChartWrapperProps {
 	type: 'line' | 'area' | 'bar' | 'pie' | 'donut' | 'radialBar' | 'scatter' | 'bubble' | 'heatmap' | 'treemap';

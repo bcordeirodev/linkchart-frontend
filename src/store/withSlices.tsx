@@ -17,7 +17,7 @@ export const injectReducersGroupedByCommonKey = async (slices: SlicesType): Prom
 		Object.keys(reducers).forEach((key) => {
 			// Only inject if it has not been injected yet
 			if (!injectedReducers.has(key)) {
-				const reducer = reducers[key] as Reducer;
+				const reducer = reducers[key as keyof typeof reducers] as Reducer;
 
 				if (!key || !reducer) {
 					return;
@@ -48,26 +48,26 @@ export const injectReducersGroupedByCommonKey = async (slices: SlicesType): Prom
  */
 const withSlices =
 	<P extends object>(slices: SlicesType) =>
-	(WrappedComponent: React.FC<P>) => {
-		return function WithInjectedReducer(props: P) {
-			const [isInjected, setIsInjected] = React.useState(false);
+		(WrappedComponent: React.FC<P>) => {
+			return function WithInjectedReducer(props: P) {
+				const [isInjected, setIsInjected] = React.useState(false);
 
-			React.useEffect(() => {
-				const injectSlices = async () => {
-					// Inject slices and dispatch an init action to "wake up" the reducers
-					await injectReducersGroupedByCommonKey(slices);
-					setIsInjected(true);
-				};
+				React.useEffect(() => {
+					const injectSlices = async () => {
+						// Inject slices and dispatch an init action to "wake up" the reducers
+						await injectReducersGroupedByCommonKey(slices);
+						setIsInjected(true);
+					};
 
-				injectSlices();
-			}, []);
+					injectSlices();
+				}, []);
 
-			if (!isInjected) {
-				return null; // Or a loading indicator
-			}
+				if (!isInjected) {
+					return null; // Or a loading indicator
+				}
 
-			return <WrappedComponent {...props} />;
+				return <WrappedComponent {...props} />;
+			};
 		};
-	};
 
 export default withSlices;

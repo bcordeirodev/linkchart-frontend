@@ -22,6 +22,7 @@ type AuthGuardProps = {
 function AuthGuardRedirect({ auth, children, loginRedirectUrl = '/' }: AuthGuardProps) {
 	const { data: user, isGuest } = useUser();
 	const userRole = user?.role;
+	const userRoleForPermission = userRole === null ? undefined : userRole;
 	const navigate = useNavigate();
 
 	const [accessGranted, setAccessGranted] = useState<boolean>(false);
@@ -29,7 +30,7 @@ function AuthGuardRedirect({ auth, children, loginRedirectUrl = '/' }: AuthGuard
 
 	// Define ignored paths that shouldn't trigger redirects
 	const ignoredPaths = useMemo(
-		() => ['/', '/callback', '/sign-in', '/sign-out', '/logout', '/404', '/401', '/shorter'],
+		() => ['/', '/callback', '/sign-in', '/sign-out', '/logout', '/401', '/404', '/shorter'],
 		[]
 	);
 
@@ -57,7 +58,7 @@ function AuthGuardRedirect({ auth, children, loginRedirectUrl = '/' }: AuthGuard
 	// Enhanced permission checking and access control
 	useEffect(() => {
 		const isOnlyGuestAllowed = Array.isArray(auth) && auth.length === 0;
-		const userHasPermission = FuseUtils.hasPermission(auth, userRole);
+		const userHasPermission = FuseUtils.hasPermission(auth === null ? undefined : auth, userRoleForPermission as never) as boolean;
 		const isIgnoredPath = ignoredPaths.includes(pathname);
 
 		// Grant access immediately for allowed scenarios

@@ -131,7 +131,7 @@ function FuseNavVerticalCollapse(props: FuseNavItemComponentProps) {
 
 				{item.children && (
 					<Collapse
-						in={open}
+						in={Boolean(open)}
 						className="collapse-children"
 					>
 						{item.children.map((_item) => (

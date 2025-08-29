@@ -12,7 +12,7 @@ import {
 	CancelOutlined,
 	AnalyticsOutlined
 } from '@mui/icons-material';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/store/hooks';
 import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 
@@ -25,7 +25,7 @@ interface UseLinksTableColumnsProps {
  * Centraliza a definição das colunas e suas ações
  */
 export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
-	const router = useRouter();
+	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
 	// Função para calcular larguras proporcionais que ocupam 100% da tela
@@ -262,7 +262,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 						<Tooltip title="Ver Analytics">
 							<IconButton
 								size="small"
-								onClick={() => router.push(`/link/${row.original.id}/analytics`)}
+								onClick={() => navigate(`/link/${row.original.id}/analytics`)}
 								sx={{
 									color: 'success.main',
 									'&:hover': {
@@ -278,7 +278,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 						<Tooltip title="Editar link">
 							<IconButton
 								size="small"
-								onClick={() => router.push(`/link/${row.original.id}/edit`)}
+								onClick={() => navigate(`/link/${row.original.id}/edit`)}
 								sx={{
 									color: 'warning.main',
 									'&:hover': {
@@ -294,7 +294,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 						<Tooltip title="Gerar QR Code">
 							<IconButton
 								size="small"
-								onClick={() => router.push(`/link/${row.original.id}/qr`)}
+								onClick={() => navigate(`/link/${row.original.id}/qr`)}
 								sx={{
 									color: 'secondary.main',
 									'&:hover': {
@@ -327,7 +327,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				)
 			}
 		],
-		[router, copyToClipboard, handleDeleteLink, columnSizes]
+		[copyToClipboard, handleDeleteLink, columnSizes, navigate]
 	);
 
 	return columns;

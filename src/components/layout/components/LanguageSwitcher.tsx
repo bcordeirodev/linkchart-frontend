@@ -7,7 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-import Link from '@fuse/core/Link';
+import { useNavigate } from 'react-router-dom';
 import { LanguageType } from '@i18n/I18nContext';
 import useI18n from '@i18n/useI18n';
 
@@ -16,6 +16,7 @@ import useI18n from '@i18n/useI18n';
  */
 function LanguageSwitcher() {
 	const { language, languages, changeLanguage } = useI18n();
+	const navigate = useNavigate();
 
 	const [menu, setMenu] = useState<null | HTMLElement>(null);
 
@@ -90,9 +91,10 @@ function LanguageSwitcher() {
 				))}
 
 				<MenuItem
-					component={Link}
-					to="/documentation/configuration/multi-language"
-					onClick={langMenuClose}
+					onClick={() => {
+						langMenuClose();
+						navigate('/documentation/configuration/multi-language');
+					}}
 					role="button"
 				>
 					<ListItemText primary="Learn More" />

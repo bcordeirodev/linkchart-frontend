@@ -67,10 +67,11 @@ function FuseScrollbars(props: FuseScrollbarsProps) {
 
 	const hookUpEvents = useCallback(() => {
 		Object.keys(handlerNameByEvent).forEach((key) => {
-			const callback = props[handlerNameByEvent[key] as keyof FuseScrollbarsProps] as (T: HTMLDivElement) => void;
+			const handlerName = handlerNameByEvent[key as keyof typeof handlerNameByEvent];
+			const callback = (props as any)[handlerName] as ((T: HTMLDivElement) => void) | undefined;
 
-			if (callback) {
-				const handler: EventListener = () => callback(containerRef.current);
+			if (callback && containerRef.current) {
+				const handler: EventListener = () => callback(containerRef.current!);
 				handlerByEvent.current.set(key, handler);
 
 				if (containerRef.current) {
@@ -153,12 +154,14 @@ function FuseScrollbars(props: FuseScrollbarsProps) {
 			className={className}
 			style={style}
 			ref={(el) => {
-				containerRef.current = el;
+				if (el) {
+					(containerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
 
-				if (typeof ref === 'function') {
-					ref(el);
-				} else if (ref) {
-					ref.current = el;
+					if (typeof ref === 'function') {
+						ref(el);
+					} else if (ref) {
+						(ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
+					}
 				}
 			}}
 		>

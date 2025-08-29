@@ -6,7 +6,7 @@ import { Edit, Save, Cancel, Person, Email, PhotoCamera } from '@mui/icons-mater
 import { useAppDispatch } from '@/store/hooks';
 import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import EnhancedPaper from '@/components/ui/EnhancedPaper';
-import { updateProfile, UserProfile } from '@/services/profile.service';
+import { profileService, UserProfile } from '@/services';
 
 interface ProfileFormData {
 	name: string;
@@ -42,7 +42,7 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 	const handleSave = useCallback(async () => {
 		setSaving(true);
 		try {
-			const response = await updateProfile({
+			const response = await profileService.updateProfile({
 				name: formData.name,
 				email: formData.email
 			});

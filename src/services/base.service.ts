@@ -123,7 +123,7 @@ export abstract class BaseService {
      * Log de sucesso (apenas em desenvolvimento)
      */
     private logSuccess(method: string, endpoint: string): void {
-        if (process.env.NODE_ENV === 'development') {
+        if (import.meta.env.DEV) {
             // eslint-disable-next-line no-console
             console.log(`✅ ${this.serviceName} ${method} ${endpoint} - Success`);
         }
