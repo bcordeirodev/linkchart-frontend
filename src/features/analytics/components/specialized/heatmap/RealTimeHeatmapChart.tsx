@@ -107,7 +107,9 @@ export function RealTimeHeatmapChart({
                 stats,
                 firstPoint: data && data.length > 0 ? data[0] : null,
                 mapReady,
-                isClient
+                isClient,
+                dataIsArray: Array.isArray(data),
+                dataType: typeof data
             });
         }
     }, [data, linkId, globalMode, loading, error, stats, mapReady, isClient]);
@@ -166,7 +168,17 @@ export function RealTimeHeatmapChart({
         const totalLat = data.reduce((sum: number, point: HeatmapPoint) => sum + point.lat, 0);
         const totalLng = data.reduce((sum: number, point: HeatmapPoint) => sum + point.lng, 0);
 
-        return [totalLat / data.length, totalLng / data.length];
+        const center: [number, number] = [totalLat / data.length, totalLng / data.length];
+        
+        if (process.env.NODE_ENV === 'development') {
+            console.log('🗺️ RealTimeHeatmapChart: Centro do mapa calculado:', {
+                center,
+                dataLength: data.length,
+                firstPoint: data[0] ? [data[0].lat, data[0].lng] : null
+            });
+        }
+
+        return center;
     }, [data]);
 
     // Calcular raio do marcador baseado no número de cliques
@@ -280,11 +292,13 @@ export function RealTimeHeatmapChart({
         console.log('🔍 RealTimeHeatmapChart: Verificando estado vazio:', {
             hasData: !!data,
             dataLength: data?.length || 0,
-            shouldShowEmpty: !data || data.length === 0
+            loading,
+            shouldShowEmpty: !loading && (!data || data.length === 0),
+            dataIsArray: Array.isArray(data)
         });
     }
 
-    if (!data || data.length === 0) {
+    if (!loading && (!data || data.length === 0)) {
         return (
             <Card sx={{ height: height, borderRadius: '16px' }}>
                 <CardContent sx={{
@@ -501,17 +515,27 @@ export function RealTimeHeatmapChart({
                             url={getTileUrl(mapStyle)}
                         />
 
-                        {data.map((point: HeatmapPoint, index: number) => (
-                            <CircleMarker
-                                key={`${point.lat}-${point.lng}-${index}-${point.clicks}`}
-                                center={[point.lat, point.lng]}
-                                radius={getMarkerRadius(point.clicks, stats?.maxClicks || 1)}
-                                fillColor={getMarkerColor(point.clicks, stats?.maxClicks || 1)}
-                                color={getMarkerColor(point.clicks, stats?.maxClicks || 1)}
-                                weight={2}
-                                opacity={0.8}
-                                fillOpacity={0.6}
-                            >
+                        {data.map((point: HeatmapPoint, index: number) => {
+                            if (process.env.NODE_ENV === 'development' && index === 0) {
+                                console.log('🎯 RealTimeHeatmapChart: Renderizando marcador:', {
+                                    point,
+                                    radius: getMarkerRadius(point.clicks, stats?.maxClicks || 1),
+                                    color: getMarkerColor(point.clicks, stats?.maxClicks || 1),
+                                    maxClicks: stats?.maxClicks
+                                });
+                            }
+                            
+                            return (
+                                <CircleMarker
+                                    key={`${point.lat}-${point.lng}-${index}-${point.clicks}`}
+                                    center={[point.lat, point.lng]}
+                                    radius={getMarkerRadius(point.clicks, stats?.maxClicks || 1)}
+                                    fillColor={getMarkerColor(point.clicks, stats?.maxClicks || 1)}
+                                    color={getMarkerColor(point.clicks, stats?.maxClicks || 1)}
+                                    weight={2}
+                                    opacity={0.8}
+                                    fillOpacity={0.6}
+                                >
                                 <Popup>
                                     <Box sx={{ p: 1, minWidth: 200 }}>
                                         <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
@@ -546,7 +570,8 @@ export function RealTimeHeatmapChart({
                                     </Box>
                                 </Popup>
                             </CircleMarker>
-                        ))}
+                            );
+                        })}
                     </MapContainer>
                 </Box>
             </CardContent>

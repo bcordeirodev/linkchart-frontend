@@ -294,13 +294,19 @@ export function useHeatmapData({
         setFilteredData(filtered);
 
         if (filtered.length > 0) {
-            setStats(calculateStats(filtered));
+            const calculatedStats = calculateStats(filtered);
+            setStats(calculatedStats);
+            console.log('📊 useHeatmapData: Stats calculadas:', calculatedStats);
+        } else {
+            setStats(null);
+            console.log('📊 useHeatmapData: Nenhum dado para calcular stats');
         }
 
         console.log('🔄 useHeatmapData: Dados filtrados atualizados:', {
             originalLength: data.length,
             filteredLength: filtered.length,
-            minClicks
+            minClicks,
+            firstFilteredPoint: filtered.length > 0 ? filtered[0] : null
         });
     }, [data, minClicks, calculateStats]);
 
