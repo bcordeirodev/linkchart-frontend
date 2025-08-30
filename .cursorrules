@@ -131,12 +131,31 @@ error: 'error'         // Problemas
 - Imports relativos longos ❌ (usar aliases ✅)
 - Imports de componentes não existentes ❌
 
+### 🧹 Limpeza Obrigatória de Arquivos:
+- **SEMPRE** remover arquivos mortos após refatorações
+- **IDENTIFICAR** e deletar componentes não utilizados
+- **LIMPAR** imports não referenciados
+- **REMOVER** tipos/interfaces não utilizados
+- **EXCLUIR** hooks não referenciados
+- **DELETAR** utilitários órfãos
+- **VERIFICAR** dependências não utilizadas no package.json
+
 ## ✅ Validações Obrigatórias
 
 ### Antes de Commit:
 ```bash
 npm run build          # Build deve passar
 npx tsc --noEmit      # TypeScript sem erros críticos
+```
+
+### 🔍 Comandos para Identificar Arquivos Mortos:
+```bash
+# Verificar imports não utilizados
+npx unimported
+# Analisar dependências não utilizadas  
+npx depcheck
+# Buscar arquivos órfãos (sem referências)
+find src -name "*.ts" -o -name "*.tsx" | xargs grep -L "export"
 ```
 
 ### Checklist de Qualidade:
@@ -148,6 +167,29 @@ npx tsc --noEmit      # TypeScript sem erros críticos
 - [ ] JSDoc em componentes principais
 - [ ] Build compila sem erros
 - [ ] Responsivo (mobile-first)
+- [ ] **Arquivos mortos/não utilizados removidos**
+
+## 🔄 Processo de Refatoração/Melhoria
+
+### 📋 Checklist Obrigatório:
+1. **IMPLEMENTAR** a melhoria/ajuste
+2. **EXECUTAR** comandos de detecção de arquivos mortos
+3. **REMOVER** todos os arquivos não utilizados encontrados
+4. **LIMPAR** imports/exports órfãos
+5. **VERIFICAR** se build ainda funciona
+6. **CONFIRMAR** que funcionalidade não foi quebrada
+
+### 🧹 Tipos de Arquivos para Limpar:
+- Componentes não referenciados
+- Hooks não utilizados
+- Tipos/interfaces órfãos
+- Utilitários sem uso
+- Imagens/assets não referenciados
+- Arquivos de configuração obsoletos
+- Dependencies no package.json não utilizadas
+
+### ⚡ Regra de Ouro:
+> **"TODA refatoração/melhoria DEVE incluir limpeza de arquivos mortos"**
 
 ## 🎯 Exemplos de Sucesso
 
@@ -173,10 +215,11 @@ npx tsc --noEmit      # TypeScript sem erros críticos
 3. **SEGUIR** templates e padrões definidos
 4. **MANTER** consistência arquitetural
 5. **OTIMIZAR** performance através de componentização
+6. **LIMPAR** arquivos mortos/não utilizados após refatorações e melhorias
 
 ### 📋 Prompt Sugerido:
 "Criar módulo [nome] seguindo ARCHITECTURE_STRATEGY.md, reutilizando componentes de COMPONENT_REUSE_MAP.md, mantendo página < 100 linhas e usando padrões estabelecidos"
 
 ---
 
-**🎯 OBJETIVO**: Manter código limpo, performático e consistente através de reutilização inteligente de componentes!
+**🎯 OBJETIVO**: Manter código limpo, performático e consistente através de reutilização inteligente de componentes e limpeza constante de arquivos mortos!
