@@ -164,7 +164,9 @@ class ApiClient {
 		const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
 		const headers = await this.createHeaders(customHeaders);
 
-		console.log(`🌐 API ${method} request:`, { url, headers, data });
+		if (import.meta.env.DEV) {
+			console.log(`🌐 API ${method} request:`, { url, headers: { ...headers, Authorization: headers.Authorization ? '[HIDDEN]' : undefined }, data });
+		}
 
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), this.timeout);
@@ -177,11 +179,13 @@ class ApiClient {
 				signal: controller.signal
 			});
 
-			console.log(`📡 API ${method} response:`, {
-				status: response.status,
-				statusText: response.statusText,
-				url
-			});
+			if (import.meta.env.DEV) {
+				console.log(`📡 API ${method} response:`, {
+					status: response.status,
+					statusText: response.statusText,
+					url
+				});
+			}
 
 			clearTimeout(timeoutId);
 

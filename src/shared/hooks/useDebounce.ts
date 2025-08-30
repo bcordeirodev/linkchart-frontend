@@ -26,7 +26,7 @@ function useDebounce<T extends (...args: never[]) => void>(callback: T, delay: n
 			// Cleanup para cancelar chamadas pendentes
 			return () => clearTimeout(timeoutId);
 		}) as unknown as T,
-		[delay]
+		[delay] // eslint-disable-line react-hooks/exhaustive-deps
 	);
 
 	useEffect(() => {

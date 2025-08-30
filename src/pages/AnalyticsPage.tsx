@@ -10,7 +10,7 @@ import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
  */
 function AnalyticsPage() {
     const { links } = useLinks();
-    const firstLinkId = links.length > 0 ? links[0].id.toString() : '1';
+    const firstLinkId = links.length > 0 ? links[0].id.toString() : '2';
     const { data, loading, error, refetch } = useEnhancedAnalytics(firstLinkId);
 
     return (

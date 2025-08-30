@@ -114,7 +114,7 @@ export default class AnalyticsService extends BaseService {
     /**
      * Busca dados de performance para links
      */
-    async getLinkPerformance(linkId: string = '1'): Promise<LinkPerformanceDashboard> {
+    async getLinkPerformance(linkId: string = '2'): Promise<LinkPerformanceDashboard> {
         const metrics = await this.getDashboardMetrics();
 
         // Adaptar resposta para formato esperado pelo frontend

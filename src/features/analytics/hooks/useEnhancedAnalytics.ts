@@ -109,6 +109,10 @@ export function useEnhancedAnalytics(linkId: string) {
         try {
             setLoading(true);
             setError(null);
+            
+            if (import.meta.env.DEV) {
+                console.log(`🔍 Buscando analytics para link ${linkId}...`);
+            }
 
             // Tentar usar o novo endpoint primeiro
             let response: EnhancedAnalyticsData;
@@ -118,10 +122,18 @@ export function useEnhancedAnalytics(linkId: string) {
                 );
                 // O endpoint protegido retorna dados dentro de 'data'
                 response = apiResponse.data || (apiResponse as unknown as EnhancedAnalyticsData);
-            } catch (authError) {
-                // Se falhar por autenticação, usar endpoint de teste temporário com fetch direto
+                
                 if (import.meta.env.DEV) {
-                    console.warn('Endpoint protegido falhou, usando endpoint de teste:', authError);
+                    console.log(`✅ Dados reais carregados para link ${linkId}:`, {
+                        total_clicks: response.overview?.total_clicks,
+                        countries: response.geographic?.top_countries?.length,
+                        has_data: response.has_data
+                    });
+                }
+            } catch (authError) {
+                // Se falhar por autenticação, usar endpoint de teste temporário
+                if (import.meta.env.DEV) {
+                    console.warn(`🔄 Link ${linkId} não encontrado, tentando endpoint de teste`);
                 }
 
                 try {

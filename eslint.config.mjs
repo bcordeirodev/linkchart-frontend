@@ -41,7 +41,6 @@ export default tseslint.config({
     extends: [
         // Eslint
         eslint.configs.recommended,
-        ...compat.extends('next/core-web-vitals'),
         // TypeScript
         ...tseslint.configs.recommended,
         ...tseslint.configs.stylistic,
