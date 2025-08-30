@@ -45,6 +45,7 @@ export function useHeatmapData({
     minClicks = 1,
     globalMode = false
 }: UseHeatmapDataOptions) {
+    console.log('🚀 useHeatmapData: Iniciado com parâmetros:', { linkId, globalMode, enableRealtime, minClicks });
     const [data, setData] = useState<HeatmapPoint[]>([]);
     const [stats, setStats] = useState<HeatmapStats | null>(null);
     const [loading, setLoading] = useState(true);
@@ -96,8 +97,8 @@ export function useHeatmapData({
                 console.log('🌐 useHeatmapData: Fazendo requisição para:', endpoint, { linkId, globalMode });
                 const response = await api.get(endpoint) as any;
 
-                                console.log('📡 useHeatmapData: Resposta da API:', response);
-                
+                console.log('📡 useHeatmapData: Resposta da API:', response);
+
                 // A resposta da API é diretamente: {"success":true,"data":[...]}
                 if (response.success && response.data) {
                     heatmapData = response.data as HeatmapPoint[];
