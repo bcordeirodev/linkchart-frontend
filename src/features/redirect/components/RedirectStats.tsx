@@ -42,6 +42,8 @@ interface RedirectStatsProps {
 	refreshInterval?: number;
 	showRecentActivity?: boolean;
 	maxTopLinks?: number;
+	error?: string;
+	shortCode?: string;
 }
 
 /**
@@ -50,21 +52,23 @@ interface RedirectStatsProps {
 export default function RedirectStats({
 	refreshInterval = 30000,
 	showRecentActivity = true,
-	maxTopLinks = 5
+	maxTopLinks = 5,
+	error,
+	shortCode
 }: RedirectStatsProps) {
 	const [stats, setStats] = useState<RedirectStatsData | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	const [fetchError, setFetchError] = useState<string | null>(null);
 	const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
 	const fetchStats = async () => {
 		try {
-			setError(null);
+			setFetchError(null);
 			const response = await api.get<RedirectStatsData>('analytics/redirect-stats');
 			setStats(response);
 			setLastUpdate(new Date());
 		} catch (err: unknown) {
-			setError((err as Error).message || 'Erro ao carregar estatísticas');
+			setFetchError((err as Error).message || 'Erro ao carregar estatísticas');
 		} finally {
 			setLoading(false);
 		}
@@ -465,3 +469,5 @@ export default function RedirectStats({
 		</motion.div>
 	);
 }
+
+// Export já definido na função
