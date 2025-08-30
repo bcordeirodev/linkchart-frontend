@@ -1,21 +1,25 @@
-// Hooks de negócio
-export { useURLShortener } from './useURLShortener';
-export { useClipboard } from './useClipboard';
-export { useShareAPI } from './useShareAPI';
-export { useAnalytics } from './useAnalytics';
-export { useLinkAnalytics } from './useLinkAnalytics';
-export { useLinksTableColumns } from './useLinksTableColumns';
-export { useLinkForm } from './useLinkForm';
-export { useLinkPerformance } from './useLinkPerformance';
+/**
+ * 🎣 HOOKS EXPORTS (Backward Compatibility)
+ * Re-exports para manter compatibilidade
+ */
 
-// Hooks existentes
-export { useLinks } from './useLinks';
-export { useRedirectWithDelay } from './useRedirectWithDelay';
+// Shared hooks
+export * from '../shared/hooks/useDebounce';
+export * from '../shared/hooks/useClipboard';
+export * from '../shared/hooks/useTimeout';
+export * from '../shared/hooks/usePrevious';
+export * from '../shared/hooks/useThemeMediaQuery';
+export * from '../shared/hooks/useNavigate';
+export * from '../shared/hooks/usePathname';
 
-// Hooks utilitários (migrados do @fuse)
-export { default as useDebounce } from './useDebounce';
-export { default as usePrevious } from './usePrevious';
-export { default as useThemeMediaQuery } from './useThemeMediaQuery';
-export { default as useNavigate } from './useNavigate';
-export { default as usePathname } from './usePathname';
-export { default as useTimeout } from './useTimeout';
+// Feature hooks
+export * from '../features/analytics/hooks/useAnalytics';
+export * from '../features/analytics/hooks/useEnhancedAnalytics';
+export * from '../features/analytics/hooks/useLinkAnalytics';
+export * from '../features/analytics/hooks/useLinkPerformance';
+export * from '../features/links/hooks/useLinks';
+export * from '../features/links/hooks/useLinkForm';
+export * from '../features/links/hooks/useURLShortener';
+export * from '../features/links/hooks/useLinksTableColumns';
+export * from '../features/links/hooks/useShareAPI';
+export * from '../features/redirect/hooks/useRedirectWithDelay';

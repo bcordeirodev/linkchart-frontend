@@ -3,7 +3,7 @@ import { createTheme, getContrastRatio, Theme } from '@mui/material/styles';
 import _ from 'lodash';
 import { defaultThemeOptions, extendThemeWithMixins, mustHaveThemeOptions } from '@fuse/default-settings';
 import { ThemeOptions } from '@mui/material/styles/createTheme';
-import { darkPaletteText, lightPaletteText } from '@/configs/themesConfig';
+import { darkPaletteText, lightPaletteText } from '@/lib/themesConfig';
 import useFuseSettings from './useFuseSettings';
 
 type Direction = 'ltr' | 'rtl';

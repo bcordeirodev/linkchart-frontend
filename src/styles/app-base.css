@@ -1,182 +1,24 @@
 /**
- * 🎨 ESTILOS BASE PERSONALIZADOS - Link Charts
- * Estilos fundamentais para otimização e consistência
+ * 🎨 BASE STYLES
+ * Estilos base da aplicação
  */
 
-/* ========================================
-   🔧 RESET E OTIMIZAÇÕES GLOBAIS
-   ======================================== */
-
 * {
-    /* Otimização de renderização de texto */
-    text-rendering: optimizeLegibility;
-    -webkit-text-rendering: optimizeLegibility;
-    -moz-text-rendering: optimizeLegibility;
-    -ms-text-rendering: optimizeLegibility;
-    -o-text-rendering: optimizeLegibility;
-    
-    /* Remove highlight azul no mobile */
-    -webkit-tap-highlight-color: transparent;
-    
-    /* Box sizing consistente */
     box-sizing: border-box;
 }
-
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
-/* Remove outline padrão - será substituído por focus-ring */
-*:focus {
-    outline: none;
-}
-
-/* ========================================
-   🌐 HTML E BODY BASE
-   ======================================== */
 
 html {
-    font-family: 
-        'Inter', 
-        -apple-system, 
-        BlinkMacSystemFont, 
-        'Segoe UI', 
-        Roboto, 
-        'Helvetica Neue', 
-        Arial, 
-        sans-serif;
-    
-    /* Suporte a fontes variáveis */
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-    font-variation-settings: normal;
-    
-    /* Scroll suave */
     scroll-behavior: smooth;
-    
-    /* Altura total */
-    height: 100%;
 }
 
 body {
-    /* Typography */
-    line-height: 1.5;
-    font-size: var(--text-base, 1rem);
-    color: var(--text-primary);
-    background-color: var(--bg-default);
-    
-    /* Layout */
     margin: 0;
     padding: 0;
-    min-height: 100vh;
-    width: 100%;
-    
-    /* Flexbox para layout completo */
-    display: flex;
-    flex-direction: column;
-    
-    /* Performance */
-    overflow-x: hidden;
+    font-family: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    
-    /* Transições suaves para mudanças de tema */
-    transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-/* ========================================
-   🎯 CONTAINERS PRINCIPAIS
-   ======================================== */
-
-#root,
 #app {
-    display: flex;
-    flex: 1 1 auto;
-    width: 100%;
     min-height: 100vh;
-    flex-direction: column;
-}
-
-.ps > .ps__rail-y,
-.ps > .ps__rail-x {
-	z-index: 99;
-}
-
-[dir='rtl'] .ps__thumb-y {
-	right: auto !important;
-	left: 2px !important;
-}
-
-[dir='rtl'] .ps > .ps__rail-y {
-	left: 0 !important;
-	right: auto !important;
-}
-
-a[role='button'] {
-	text-decoration: none;
-}
-
-[role='tooltip'] {
-	z-index: 9999;
-}
-
-.MuiModal-root {
-	z-index: 9999;
-}
-
-/* Medium Devices, Desktops Only */
-@media only screen and (min-width: 992px) {
-	::-webkit-scrollbar {
-		width: 8px;
-		height: 8px;
-		background-color: rgba(0, 0, 0, 0);
-	}
-
-	::-webkit-scrollbar:hover {
-		width: 8px;
-		height: 8px;
-		background-color: rgba(0, 0, 0, 0.06);
-	}
-
-	::-webkit-scrollbar-thumb {
-		border: 2px solid transparent;
-		border-radius: 20px;
-	}
-
-	::-webkit-scrollbar-thumb:active {
-		border-radius: 20px;
-	}
-}
-
-form label {
-	z-index: 99;
-}
-
-body.no-animate *,
-body.no-animate *::before,
-body.no-animate *::after {
-	transition: none !important;
-	animation: none !important;
-}
-
-button:focus {
-	outline: none;
-}
-
-/* Removes webkit's autofill backgorund color */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-	transition-delay: 9999s;
-	transition-property: background-color, color;
-}
-
-:focus {
-	outline-color: transparent;
-}
-
-/*fullcalendar Fix*/
-.fc-scrollgrid-section-liquid {
-	height: 1px !important;
 }

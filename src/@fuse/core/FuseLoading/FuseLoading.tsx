@@ -1,6 +1,4 @@
-'use client';
-
-import { useTimeout } from '@/hooks';
+import { useTimeout } from '@/shared/hooks';
 import { useState } from 'react';
 import clsx from 'clsx';
 import Box from '@mui/material/Box';

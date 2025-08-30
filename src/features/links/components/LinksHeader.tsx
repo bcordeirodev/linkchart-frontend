@@ -1,0 +1,68 @@
+import { Box, Typography, Button } from '@mui/material';
+import { Add } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
+
+// Styled Components
+import {
+	LinkPageContainer,
+	LinksHeaderContainer,
+	LinksHeaderDecoration,
+	LinksHeaderContent,
+	LinksHeaderTitle,
+	LinksHeaderSubtitle,
+	LinksHeaderActions,
+	CreateLinkButton
+} from './styles/Link.styled';
+
+interface LinksHeaderProps {
+	onCreateNew?: () => void;
+}
+
+/**
+ * Cabeçalho da página de links
+ * Inclui título e botão de criação
+ */
+export function LinksHeader({ onCreateNew }: LinksHeaderProps) {
+	const navigate = useNavigate();
+
+	const handleCreateNew = () => {
+		if (onCreateNew) {
+			onCreateNew();
+		} else {
+			navigate('/link/create');
+		}
+	};
+
+	return (
+		<LinkPageContainer>
+			{/* <PageBreadcrumb /> */}
+			<LinksHeaderContainer>
+				{/* Elemento decorativo */}
+				<LinksHeaderDecoration />
+
+				<LinksHeaderContent>
+					<LinksHeaderTitle variant="h3">
+						Gerenciar Links
+					</LinksHeaderTitle>
+					<LinksHeaderSubtitle>
+						Crie, edite e monitore seus links encurtados
+					</LinksHeaderSubtitle>
+				</LinksHeaderContent>
+
+				<LinksHeaderActions>
+					<CreateLinkButton
+						variant="contained"
+						size="large"
+						startIcon={<Add />}
+						onClick={handleCreateNew}
+					>
+						Criar Novo Link
+					</CreateLinkButton>
+				</LinksHeaderActions>
+			</LinksHeaderContainer>
+		</LinkPageContainer>
+	);
+}
+
+export default LinksHeader;

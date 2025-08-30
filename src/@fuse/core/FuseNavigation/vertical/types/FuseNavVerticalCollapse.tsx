@@ -1,4 +1,3 @@
-'use client';
 import NavLinkAdapter from '@fuse/core/NavLinkAdapter';
 import { alpha, styled } from '@mui/material/styles';
 import Collapse from '@mui/material/Collapse';
@@ -9,7 +8,7 @@ import { useMemo, useState } from 'react';
 import List, { ListProps } from '@mui/material/List';
 import isUrlInChildren from '@fuse/core/FuseNavigation/isUrlInChildren';
 import { ListItemButton } from '@mui/material';
-import { usePathname } from '@/hooks';
+import { usePathname } from '@/shared/hooks';
 import FuseNavBadge from '../../FuseNavBadge';
 import FuseNavItem, { FuseNavItemComponentProps } from '../../FuseNavItem';
 import FuseSvgIcon from '../../../FuseSvgIcon';

@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import useUser from '@auth/useUser';
+import useUser from '../lib/auth/useUser';
 
 /**
  * Enhanced Error404Page component with smart navigation suggestions.

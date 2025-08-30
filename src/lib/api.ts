@@ -1,4 +1,4 @@
-import { API_BASE_URL, REQUEST_TIMEOUT } from '@/constants/api';
+import { API_BASE_URL, REQUEST_TIMEOUT } from './api/endpoints';
 
 export interface ApiResponse<T = unknown> {
 	data?: T;

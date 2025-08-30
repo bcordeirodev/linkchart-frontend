@@ -4,16 +4,16 @@ import { Security, Speed, Analytics, Star, PersonAdd, CheckCircle, TrendingUp } 
 import { useNavigate } from 'react-router-dom';
 
 // Componentes reutilizáveis
-import { BrandLogo } from '@/components/common/BrandLogo';
-import { AuthButtons } from '@/components/common/AuthButtons';
-import { HeroSection } from '@/components/sections/HeroSection';
-import { BenefitsSection } from '@/components/sections/BenefitsSection';
-import { URLShortenerForm } from '@/components/forms/URLShortenerForm';
-import { ShortUrlResult } from '@/components/results/ShortUrlResult';
+import { BrandLogo } from '@/shared/ui/base/BrandLogo';
+import { AuthButtons } from '@/shared/ui/base/AuthButtons';
+import { HeroSection } from '@/shared/layout/HeroSection';
+import { BenefitsSection } from '@/shared/layout/BenefitsSection';
+import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
+import { ShortUrlResult } from '@/features/links/components/ShortUrlResult';
 
 // Hooks
-import useUser from '@auth/useUser';
-import { pulse } from '@/utils/animations';
+import useUser from '../lib/auth/useUser';
+import { pulse } from '@/shared/ui/animations';
 
 interface IShortUrl {
     slug: string;

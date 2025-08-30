@@ -1,7 +1,5 @@
-'use client';
-
-import { usePathname } from '@/hooks';
-import { themeLayoutsType } from '@/themes';
+import { usePathname } from '@/shared/hooks';
+import { themeLayoutsType } from '@/lib/theme';
 import { FuseSettingsConfigType } from '@fuse/core/FuseSettings/FuseSettings';
 import useFuseSettings from '@fuse/core/FuseSettings/hooks/useFuseSettings';
 import _ from 'lodash';

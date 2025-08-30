@@ -2,15 +2,15 @@ import { useMemo, useState } from 'react';
 import { Box, Alert, useMediaQuery, useTheme } from '@mui/material';
 import { type MRT_RowSelectionState } from 'material-react-table';
 import FuseLoading from '@fuse/core/FuseLoading';
-import DataTable from 'src/components/data-table/DataTable';
+import DataTable from '../shared/ui/data-display/DataTable';
 
-import { useLinks } from '@/hooks/useLinks';
-import { LinksHeader } from '@/components/link/LinksHeader';
-import { UnifiedMetrics } from '@/components/unified-analytics/metrics/UnifiedMetrics';
-import { LinksFilters } from '@/components/link/LinksFilters';
-import { useLinksTableColumns } from '@/hooks/useLinksTableColumns';
-import MainLayout from '@/components/layout/MainLayout';
-import AuthGuardRedirect from '@auth/AuthGuardRedirect';
+import { useLinks } from '@/features/links/hooks/useLinks';
+import { LinksHeader } from '@/features/links/components/LinksHeader';
+import { UnifiedMetrics } from '@/features/analytics/components/metrics/UnifiedMetrics';
+import { LinksFilters } from '@/features/links/components/LinksFilters';
+import { useLinksTableColumns } from '@/features/links/hooks/useLinksTableColumns';
+import MainLayout from '@/shared/layout/MainLayout';
+import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 
 /**
  * Página de listagem de links refatorada
@@ -33,7 +33,7 @@ function LinkPage() {
             const matchesSearch =
                 link.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 link.original_url.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                link.slug?.toLowerCase().includes(searchTerm.toLowerCase());
+                (link.slug || link.custom_slug)?.toLowerCase().includes(searchTerm.toLowerCase());
 
             const matchesStatus =
                 statusFilter === 'all' ||

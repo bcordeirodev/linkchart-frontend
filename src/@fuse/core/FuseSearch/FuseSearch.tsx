@@ -1,5 +1,3 @@
-'use client';
-
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
@@ -18,7 +16,7 @@ import _ from 'lodash';
 import { memo, useEffect, useReducer, useRef, ReactNode } from 'react';
 import Autosuggest, { RenderInputComponentProps, RenderSuggestionParams, ChangeEvent } from 'react-autosuggest';
 import * as React from 'react';
-import { useNavigate } from '@/hooks';
+import { useNavigate } from '@/shared/hooks';
 import FuseSvgIcon from '../FuseSvgIcon';
 import { FuseFlatNavItemType } from '../FuseNavigation/types/FuseNavItemType';
 

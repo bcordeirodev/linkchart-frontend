@@ -5,13 +5,13 @@ import { enUS } from 'date-fns/locale/en-US';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Provider } from 'react-redux';
 import ErrorBoundary from '@fuse/utils/ErrorBoundary';
-import AppContext from 'src/contexts/AppContext';
+import AppContext from './lib/AppContext';
 
 import { FuseSettingsProvider } from '@fuse/core/FuseSettings/FuseSettingsProvider';
-import { I18nProvider } from '@i18n/I18nProvider';
-import { AuthProvider } from '@auth/AuthContext';
-import store from './store/store';
-import MainThemeProvider from './contexts/MainThemeProvider';
+import { I18nProvider } from './lib/i18n/I18nProvider';
+import { AuthProvider } from './lib/auth/AuthContext';
+import store from './lib/store/store';
+import MainThemeProvider from './lib/theme/MainThemeProvider';
 import AppRouter from './AppRouter';
 
 /**

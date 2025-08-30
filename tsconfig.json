@@ -2,30 +2,37 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@auth/*": [
-        "./src/@auth/*"
-      ],
-      "@i18n": [
-        "./src/@i18n/index"
-      ],
-      "@i18n/*": [
-        "./src/@i18n/*"
-      ],
-      "@fuse/*": [
-        "./src/@fuse/*"
-      ],
-      "@history*": [
-        "./src/@history"
-      ],
-      "@mock-utils/*": [
-        "./src/@mock-utils/*"
-      ],
-      "@schema": [
-        "./src/@schema"
-      ],
-      "@/*": [
-        "./src/*"
-      ]
+      // Main aliases
+      "@/*": ["./src/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/app/*": ["./src/app/*"],
+      
+      // Feature aliases
+      "@/auth/*": ["./src/features/auth/*"],
+      "@/analytics/*": ["./src/features/analytics/*"],
+      "@/links/*": ["./src/features/links/*"],
+      "@/profile/*": ["./src/features/profile/*"],
+      "@/redirect/*": ["./src/features/redirect/*"],
+      
+      // Shared aliases
+      "@/ui/*": ["./src/shared/ui/*"],
+      "@/layout/*": ["./src/shared/layout/*"],
+      "@/hooks/*": ["./src/shared/hooks/*"],
+      
+      // Lib aliases
+      "@/api/*": ["./src/lib/api/*"],
+      "@/theme/*": ["./src/lib/theme/*"],
+      "@/store/*": ["./src/lib/store/*"],
+      "@/utils/*": ["./src/lib/utils/*"],
+      "@/i18n/*": ["./src/lib/i18n/*"],
+      
+      // Legacy support (temporary)
+      "@fuse/*": ["./src/@fuse/*"],
+      "@history*": ["./src/@history"],
+      "@mock-utils/*": ["./src/@mock-utils/*"],
+      "@schema": ["./src/@schema"]
     },
     "declaration": true,
     "target": "ES2020",

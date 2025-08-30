@@ -1,8 +1,6 @@
-'use client';
-
-import settingsConfig from '@/configs/settingsConfig';
-import { themeLayouts, themeLayoutConfigs } from '@/themes';
-import useUser from '@auth/useUser';
+import settingsConfig from '@/lib/settingsConfig';
+import { themeLayouts, themeLayoutConfigs } from '@/lib/theme';
+import useUser from '@/lib/auth/useUser';
 import { FuseSettingsConfigType, FuseThemesType } from '@fuse/core/FuseSettings/FuseSettings';
 import { defaultSettings, getParsedQuerySettings } from '@fuse/default-settings/FuseDefaultSettings';
 import _ from 'lodash';

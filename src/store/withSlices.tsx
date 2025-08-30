@@ -1,10 +1,8 @@
-'use client';
-
 import React from 'react';
 import { Reducer, Slice } from '@reduxjs/toolkit';
-import generateReducersFromSlices from './generateReducersFromSlices';
-import rootReducer from './rootReducer';
-import store from './store';
+import generateReducersFromSlices from '../lib/store/generateReducersFromSlices';
+import rootReducer from '../lib/store/rootReducer';
+import store from '../lib/store/store';
 
 export type SlicesType = Slice[];
 

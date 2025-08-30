@@ -455,3 +455,5 @@ export interface FeatureFlag {
     description?: string;
     rolloutPercentage?: number;
 }
+export interface ChartOptions { [key: string]: any; }
+export interface ChartData { [key: string]: any; }

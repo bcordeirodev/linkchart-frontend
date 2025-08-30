@@ -1,6 +1,6 @@
 import Link from '@fuse/core/Link';
 import { CSSProperties, ReactNode } from 'react';
-import { usePathname, useNavigate } from '@/hooks';
+import { usePathname, useNavigate } from '@/shared/hooks';
 import clsx from 'clsx';
 
 export type NavLinkAdapterPropsType = {
@@ -17,7 +17,7 @@ export type NavLinkAdapterPropsType = {
 };
 
 /**
- * The NavLinkAdapter component is a wrapper around the Next.js Link component.
+ * The NavLinkAdapter component is a wrapper around the React.js Link component.
  * It adds the ability to navigate programmatically using the useRouter hook.
  * The component is memoized to prevent unnecessary re-renders.
  */

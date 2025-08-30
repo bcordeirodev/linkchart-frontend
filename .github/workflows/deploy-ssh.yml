@@ -4,7 +4,7 @@
 # ===========================================
 #
 # 🎯 OBJETIVO:
-#   Deploy automático da aplicação Next.js diretamente no servidor
+#   Deploy automático da aplicação React.js diretamente no servidor
 #   DigitalOcean via SSH, sem uso de containers Docker.
 #
 # 🚀 QUANDO EXECUTA:

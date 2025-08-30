@@ -1,4 +1,3 @@
-'use client';
 import { styled } from '@mui/material/styles';
 import { Box, BoxProps } from '@mui/material';
 import Icon from '@mui/material/Icon';

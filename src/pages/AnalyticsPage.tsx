@@ -1,8 +1,8 @@
-import { Analytics } from '@/components/unified-analytics/Analytics';
-import { useEnhancedAnalytics } from '@/hooks/useEnhancedAnalytics';
-import { useLinks } from '@/hooks/useLinks';
-import MainLayout from '@/components/layout/MainLayout';
-import AuthGuardRedirect from '@auth/AuthGuardRedirect';
+import { Analytics } from '@/features/analytics/components/Analytics';
+import { useEnhancedAnalytics } from '@/features/analytics/hooks/useEnhancedAnalytics';
+import { useLinks } from '@/features/links/hooks/useLinks';
+import MainLayout from '@/shared/layout/MainLayout';
+import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 
 /**
  * Página de analytics unificada COMPLETA

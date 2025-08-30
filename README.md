@@ -1,10 +1,10 @@
 # 🔗 Link Chart - Frontend
 
-Interface moderna da aplicação Link Chart desenvolvida em Next.js 15 com React 19.
+Interface moderna da aplicação Link Chart desenvolvida em React.js 15 com React 19.
 
 ## 🚀 Tecnologias
 
--   **Next.js 15**
+-   **React.js 15**
 -   **React 19**
 -   **TypeScript**
 -   **Material-UI (MUI) 6**

@@ -39,7 +39,7 @@ DEPLOY_PATH: /var/www/linkchart-frontend
 ### 📁 **Estrutura no Servidor**
 
 ```
-/var/www/linkchart-frontend/     # Aplicação Next.js
+/var/www/linkchart-frontend/     # Aplicação React.js
 /var/log/linkchart/              # Logs da aplicação
 /etc/nginx/sites-available/      # Configuração Nginx
 /etc/systemd/system/             # Serviço systemd
@@ -193,7 +193,7 @@ tail -f /var/log/linkchart/nginx-access.log
 
 -   `.github/workflows/deploy-ssh.yml` - Workflow principal
 -   `package.json` - Dependências e scripts
--   `next.config.mjs` - Configuração Next.js
+-   `next.config.mjs` - Configuração React.js
 -   `tailwind.config.ts` - Configuração Tailwind
 
 ### 📚 **Documentação**

@@ -2,11 +2,11 @@ import Typography from '@mui/material/Typography';
 import Link from '@fuse/core/Link';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import AuthJsForm from '@auth/forms/AuthJsForm';
+import AuthJsForm from '../lib/auth/forms/AuthJsForm';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { alpha } from '@mui/material/styles';
-import authRoles from '@auth/authRoles';
-import AuthGuardRedirect from '@auth/AuthGuardRedirect';
+import authRoles from '../lib/auth/authRoles';
+import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 
 /**
  * The sign in page - Enhanced modern design (Compact Version)

@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { IUser, LoginResponse, UserResponse } from '@/types';
-import { authService } from '@/services';
+import { User, LoginResponse, UserResponse } from '../types';
+import { authService } from '@/lib/auth/auth.service';
 
 interface AuthContextType {
-    user: IUser | null;
+    user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
-    updateUser: (updates: Partial<IUser>) => Promise<IUser | undefined>;
+    updateUser: (updates: Partial<User>) => Promise<User | undefined>;
     refreshUser: () => Promise<void>;
 }
 
@@ -19,11 +19,11 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-    const [user, setUser] = useState<IUser | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Converter UserResponse para IUser
-    const convertUserDBToUser = (userDB: UserResponse): IUser => ({
+    // Converter UserResponse para User
+    const convertUserDBToUser = (userDB: UserResponse): User => ({
         id: String(userDB.id),
         email: userDB.email,
         displayName: userDB.name,
@@ -155,7 +155,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
-    const updateUser = async (updates: Partial<IUser>): Promise<IUser | undefined> => {
+    const updateUser = async (updates: Partial<User>): Promise<User | undefined> => {
         if (!user) return undefined;
 
         try {

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import * as colors from '@mui/material/colors';
 import { FuseSettingsConfigType } from '@fuse/core/FuseSettings/FuseSettings';
-import { IUser } from '@/types/user';
+import { User } from '@/features/profile/types/user';
 import { DeepPartial } from 'react-hook-form';
 import { PartialDeep } from 'type-fest';
 import EventEmitter from './EventEmitter';
@@ -363,7 +363,7 @@ class FuseUtils {
 	/**
 	 * The hasPermission function checks if a user has permission to access a resource.
 	 */
-	static hasPermission(authArr: string[] | string | null | undefined, userRole: IUser['role']): boolean {
+	static hasPermission(authArr: string[] | string | null | undefined, userRole: User['role']): boolean {
 		/**
 		 * If auth array is not defined
 		 * Pass and allow

@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Box, Grid, Alert, CircularProgress, Typography } from '@mui/material';
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
-import useUser from '@auth/useUser';
-import { profileService, UserProfile } from '@/services';
-import { ProfileHeader } from '@/components/profile/ProfileHeader';
-import { ProfileForm } from '@/components/profile/ProfileForm';
-import { ProfileSidebar } from '@/components/profile/ProfileSidebar';
-import MainLayout from '@/components/layout/MainLayout';
-import AuthGuardRedirect from '@auth/AuthGuardRedirect';
+import useUser from '../lib/auth/useUser';
+import { profileService, UserProfile } from '@/lib/services';
+import { ProfileHeader } from '@/features/profile/components/ProfileHeader';
+import { ProfileForm } from '@/features/profile/components/ProfileForm';
+import { ProfileSidebar } from '@/features/profile/components/ProfileSidebar';
+import MainLayout from '@/shared/layout/MainLayout';
+import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 
 /**
  * Página de perfil do usuário refatorada

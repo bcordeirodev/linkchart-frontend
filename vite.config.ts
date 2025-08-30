@@ -16,7 +16,33 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
+            // Main aliases
             '@': path.resolve(__dirname, './src'),
+            '@/shared': path.resolve(__dirname, './src/shared'),
+            '@/features': path.resolve(__dirname, './src/features'),
+            '@/lib': path.resolve(__dirname, './src/lib'),
+            '@/app': path.resolve(__dirname, './src/app'),
+
+            // Feature aliases
+            '@/auth': path.resolve(__dirname, './src/features/auth'),
+            '@/analytics': path.resolve(__dirname, './src/features/analytics'),
+            '@/links': path.resolve(__dirname, './src/features/links'),
+            '@/profile': path.resolve(__dirname, './src/features/profile'),
+            '@/redirect': path.resolve(__dirname, './src/features/redirect'),
+
+            // Shared aliases
+            '@/ui': path.resolve(__dirname, './src/shared/ui'),
+            '@/layout': path.resolve(__dirname, './src/shared/layout'),
+            '@/hooks': path.resolve(__dirname, './src/shared/hooks'),
+
+            // Lib aliases
+            '@/api': path.resolve(__dirname, './src/lib/api'),
+            '@/theme': path.resolve(__dirname, './src/lib/theme'),
+            '@/store': path.resolve(__dirname, './src/lib/store'),
+            '@/utils': path.resolve(__dirname, './src/lib/utils'),
+            '@/i18n': path.resolve(__dirname, './src/lib/i18n'),
+
+            // Legacy support (temporary)
             '@auth': path.resolve(__dirname, './src/@auth'),
             '@i18n': path.resolve(__dirname, './src/@i18n'),
             '@fuse': path.resolve(__dirname, './src/@fuse'),

@@ -1,9 +1,7 @@
-'use client';
-
 import { MouseEvent, ReactNode, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import _ from 'lodash';
-import { darkPaletteText, lightPaletteText } from 'src/configs/themesConfig';
+import { darkPaletteText, lightPaletteText } from '@/lib/themesConfig';
 import { Theme, darken, getContrastRatio, lighten } from '@mui/material/styles';
 import { useTheme } from '@mui/styles';
 import AppBar from '@mui/material/AppBar';

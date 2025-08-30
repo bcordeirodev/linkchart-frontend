@@ -1,6 +1,6 @@
 # ===========================================
 # DOCKERFILE OTIMIZADO PARA PRODUÇÃO
-# Link Chart - Frontend Next.js 15
+# Link Chart - Frontend React.js 15
 # ===========================================
 
 # Usar imagem oficial do Node.js 22 Alpine (menor e mais segura)
@@ -49,7 +49,7 @@ ENV TAILWIND_DISABLE_OXIDE=1
 # Validar estrutura do projeto antes do build
 RUN npm run validate
 
-# Executar build do Next.js
+# Executar build do React.js
 RUN npm run build
 
 # ===========================================
@@ -90,5 +90,5 @@ CMD ["node", "server.js"]
 # ===========================================
 LABEL maintainer="Link Chart Team"
 LABEL version="1.0.0"
-LABEL description="Link Chart Frontend - Next.js 15 Application"
+LABEL description="Link Chart Frontend - React.js 15 Application"
 LABEL org.opencontainers.image.source="https://github.com/your-username/link-chart"

@@ -4,9 +4,9 @@ import AvatarGroup from '@mui/material/AvatarGroup';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import AuthJsForm from '@auth/forms/AuthJsForm';
-import authRoles from '@auth/authRoles';
-import AuthGuardRedirect from '@auth/AuthGuardRedirect';
+import AuthJsForm from '../lib/auth/forms/AuthJsForm';
+import authRoles from '../lib/auth/authRoles';
+import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 
 /**
  * The sign up page.

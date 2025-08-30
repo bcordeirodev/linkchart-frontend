@@ -6,7 +6,7 @@ import SnackbarContent from '@mui/material/SnackbarContent';
 import Typography from '@mui/material/Typography';
 import { memo } from 'react';
 import { hideMessage, selectFuseMessageOptions, selectFuseMessageState } from '@fuse/core/FuseMessage/fuseMessageSlice';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import FuseSvgIcon from '../FuseSvgIcon';
 
 export type FuseMessageVariantType = 'success' | 'error' | 'warning' | 'info';

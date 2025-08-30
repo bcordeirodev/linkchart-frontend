@@ -1,5 +1,3 @@
-'use client';
-
 import { fuseDark } from '@fuse/colors';
 import { lightBlue, red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
