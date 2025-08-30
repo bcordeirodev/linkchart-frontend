@@ -4,7 +4,8 @@ import { useEffect, useLayoutEffect, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 
-const useEnhancedEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+// React puro - sempre usar useLayoutEffect
+const useEnhancedEffect = useLayoutEffect;
 
 type FullScreenDocumentType = Document & {
 	mozCancelFullScreen?: () => void;

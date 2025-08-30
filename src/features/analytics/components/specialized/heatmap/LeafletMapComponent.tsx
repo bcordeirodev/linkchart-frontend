@@ -27,12 +27,7 @@ export default function LeafletMapComponent({ data, height, maxClicks }: Leaflet
     const [mapError, setMapError] = useState(false);
 
     useEffect(() => {
-        // Verificar se estamos no cliente
-        if (typeof window === 'undefined') {
-            return;
-        }
-
-        // Importar componentes do Leaflet dinamicamente de forma segura
+        // Importar componentes do Leaflet dinamicamente (React puro - sempre no cliente)
         const loadLeaflet = async () => {
             try {
                 // Verificar se o Leaflet CSS já foi carregado
@@ -152,7 +147,7 @@ export default function LeafletMapComponent({ data, height, maxClicks }: Leaflet
     try {
         // Verificar se todos os componentes foram carregados
         const { MapContainer, TileLayer, CircleMarker, Popup } = mapComponents;
-        
+
         if (!MapContainer || !TileLayer || !CircleMarker || !Popup) {
             return (
                 <Box
