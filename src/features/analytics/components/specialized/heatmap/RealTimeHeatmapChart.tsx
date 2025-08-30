@@ -14,32 +14,27 @@ import {
     Slider,
     FormControlLabel,
     Switch,
-    Divider,
     alpha,
     useTheme
 } from '@mui/material';
 import {
-    MyLocation,
-    FilterList,
     Refresh,
     Fullscreen,
     Timeline,
     Public,
     LocationOn,
-    Speed,
-    Visibility,
-    VisibilityOff
+    Speed
 } from '@mui/icons-material';
 import { useHeatmapData, HeatmapPoint } from '../../../hooks/useHeatmapData';
 
 // Componentes seguros para SSR
 interface SafeMapComponents {
-    MapContainer: React.ComponentType<any> | null;
-    TileLayer: React.ComponentType<any> | null;
-    CircleMarker: React.ComponentType<any> | null;
-    Popup: React.ComponentType<any> | null;
-    LayersControl: React.ComponentType<any> | null;
-    LayerGroup: React.ComponentType<any> | null;
+    MapContainer: React.ComponentType<any> | null; // eslint-disable-line @typescript-eslint/no-explicit-any
+    TileLayer: React.ComponentType<any> | null; // eslint-disable-line @typescript-eslint/no-explicit-any
+    CircleMarker: React.ComponentType<any> | null; // eslint-disable-line @typescript-eslint/no-explicit-any
+    Popup: React.ComponentType<any> | null; // eslint-disable-line @typescript-eslint/no-explicit-any
+    LayersControl: React.ComponentType<any> | null; // eslint-disable-line @typescript-eslint/no-explicit-any
+    LayerGroup: React.ComponentType<any> | null; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 interface RealTimeHeatmapChartProps {
@@ -100,19 +95,21 @@ export function RealTimeHeatmapChart({
         globalMode
     });
 
-    // Debug: Log dos dados recebidos
+    // Debug: Log dos dados recebidos (apenas em desenvolvimento)
     useEffect(() => {
-        console.log('🗺️ RealTimeHeatmapChart: Dados recebidos:', {
-            dataLength: data?.length || 0,
-            linkId,
-            globalMode,
-            loading,
-            error,
-            stats,
-            firstPoint: data && data.length > 0 ? data[0] : null,
-            mapReady,
-            isClient
-        });
+        if (process.env.NODE_ENV === 'development') {
+            console.log('🗺️ RealTimeHeatmapChart: Dados recebidos:', {
+                dataLength: data?.length || 0,
+                linkId,
+                globalMode,
+                loading,
+                error,
+                stats,
+                firstPoint: data && data.length > 0 ? data[0] : null,
+                mapReady,
+                isClient
+            });
+        }
     }, [data, linkId, globalMode, loading, error, stats, mapReady, isClient]);
 
     useEffect(() => {
@@ -150,7 +147,9 @@ export function RealTimeHeatmapChart({
 
                 setMapReady(true);
             } catch (error) {
-                console.error('Erro ao carregar Leaflet:', error);
+                if (process.env.NODE_ENV === 'development') {
+                    console.error('Erro ao carregar Leaflet:', error);
+                }
                 setMapError(true);
             }
         };
@@ -277,11 +276,13 @@ export function RealTimeHeatmapChart({
     }
 
     // Renderizar estado vazio
-    console.log('🔍 RealTimeHeatmapChart: Verificando estado vazio:', {
-        hasData: !!data,
-        dataLength: data?.length || 0,
-        shouldShowEmpty: !data || data.length === 0
-    });
+    if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 RealTimeHeatmapChart: Verificando estado vazio:', {
+            hasData: !!data,
+            dataLength: data?.length || 0,
+            shouldShowEmpty: !data || data.length === 0
+        });
+    }
 
     if (!data || data.length === 0) {
         return (

@@ -285,16 +285,26 @@ export function useHeatmapData({
         };
     }, []);
 
+    // Estado para dados filtrados
+    const [filteredData, setFilteredData] = useState<HeatmapPoint[]>([]);
+
     // Filtrar dados por cliques mínimos quando o filtro muda
     useEffect(() => {
-        if (data.length > 0) {
-            const filteredData = data.filter((point: HeatmapPoint) => point.clicks >= minClicks);
-            setStats(calculateStats(filteredData));
+        const filtered = data.filter((point: HeatmapPoint) => point.clicks >= minClicks);
+        setFilteredData(filtered);
+
+        if (filtered.length > 0) {
+            setStats(calculateStats(filtered));
         }
+
+        console.log('🔄 useHeatmapData: Dados filtrados atualizados:', {
+            originalLength: data.length,
+            filteredLength: filtered.length,
+            minClicks
+        });
     }, [data, minClicks, calculateStats]);
 
     // Log do estado final
-    const filteredData = data.filter((point: HeatmapPoint) => point.clicks >= minClicks);
     useEffect(() => {
         console.log('📈 useHeatmapData: Estado final:', {
             dataLength: filteredData.length,
