@@ -64,6 +64,17 @@ export function Charts({
         (data.temporal.clicks_by_day_of_week && data.temporal.clicks_by_day_of_week.length > 0)
     );
 
+    // Debug em desenvolvimento
+    if (import.meta.env.DEV) {
+        console.log('📊 Charts Debug:', {
+            hasTemporalData,
+            temporal_hour_count: data.temporal?.clicks_by_hour?.length || 0,
+            temporal_week_count: data.temporal?.clicks_by_day_of_week?.length || 0,
+            hasGeographicData: data.geographic?.top_countries?.length || 0,
+            hasDeviceData: data.audience?.device_breakdown?.length || 0
+        });
+    }
+
     // Verificar se há dados geográficos válidos
     const hasGeographicData = data.geographic && (
         (data.geographic.top_countries && data.geographic.top_countries.length > 0) ||

@@ -96,7 +96,7 @@ export const formatAreaChart = (
 				data: data
 					.filter((item) => item && typeof item === 'object')
 					.map((item) => ({
-						x: String(item[xKey] || ''),
+						x: String(item[xKey] !== undefined && item[xKey] !== null ? item[xKey] : ''),
 						y: Number(item[yKey] || 0)
 					}))
 			}
@@ -151,7 +151,7 @@ export const formatBarChart = (
 				data: data
 					.filter((item) => item && typeof item === 'object')
 					.map((item) => ({
-						x: String(item[xKey] || ''),
+						x: String(item[xKey] !== undefined && item[xKey] !== null ? item[xKey] : ''),
 						y: Number(item[yKey] || 0)
 					}))
 			}
