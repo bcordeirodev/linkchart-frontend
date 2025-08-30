@@ -221,6 +221,6 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 			</Suspense>
 		</ChartContainer>
 	);
-};
+}
 
 export default ApexChartWrapper;

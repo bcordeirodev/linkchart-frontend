@@ -109,7 +109,7 @@ export function useEnhancedAnalytics(linkId: string) {
         try {
             setLoading(true);
             setError(null);
-            
+
             if (import.meta.env.DEV) {
                 console.log(`🔍 Buscando analytics para link ${linkId}...`);
             }
@@ -122,7 +122,7 @@ export function useEnhancedAnalytics(linkId: string) {
                 );
                 // O endpoint protegido retorna dados dentro de 'data'
                 response = apiResponse.data || (apiResponse as unknown as EnhancedAnalyticsData);
-                
+
                 if (import.meta.env.DEV) {
                     console.log(`✅ Dados reais carregados para link ${linkId}:`, {
                         total_clicks: response.overview?.total_clicks,
