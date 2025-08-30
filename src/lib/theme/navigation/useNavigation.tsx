@@ -5,12 +5,10 @@
 
 import { useMemo } from 'react';
 import navigationConfig from '@/lib/navigationConfig';
-import useUser from '@/@auth/useUser';
+import useUser from '@/lib/auth/useUser';
 import useI18n from '@/lib/i18n/useI18n';
 import i18n from '@/lib/i18n';
-import FuseUtils from '@fuse/utils';
-import FuseNavigationHelper from '@fuse/utils/FuseNavigationHelper';
-import { FuseNavItemType } from '@fuse/core/FuseNavigation/types/FuseNavItemType';
+import { FuseUtils, FuseNavigationHelper, FuseNavItemType } from '@framework';
 
 /**
  * Hook de navegação para Link Charts

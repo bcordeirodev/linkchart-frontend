@@ -64,17 +64,6 @@ export function Charts({
         (data.temporal.clicks_by_day_of_week && data.temporal.clicks_by_day_of_week.length > 0)
     );
 
-    // Debug em desenvolvimento
-    if (import.meta.env.DEV) {
-        console.log('📊 Charts Debug:', {
-            hasTemporalData,
-            temporal_hour_count: data.temporal?.clicks_by_hour?.length || 0,
-            temporal_week_count: data.temporal?.clicks_by_day_of_week?.length || 0,
-            hasGeographicData: data.geographic?.top_countries?.length || 0,
-            hasDeviceData: data.audience?.device_breakdown?.length || 0
-        });
-    }
-
     // Verificar se há dados geográficos válidos
     const hasGeographicData = data.geographic && (
         (data.geographic.top_countries && data.geographic.top_countries.length > 0) ||
@@ -85,6 +74,11 @@ export function Charts({
     const hasDeviceData = data.audience &&
         data.audience.device_breakdown &&
         data.audience.device_breakdown.length > 0;
+
+    // Debug apenas se houver problemas
+    if (import.meta.env.DEV && (!hasTemporalData && !hasGeographicData && !hasDeviceData)) {
+        console.warn('📊 Charts: Nenhum dado disponível para gráficos');
+    }
 
     return (
         <ResponsiveChartsGrid container spacing={2} variant={variant}>

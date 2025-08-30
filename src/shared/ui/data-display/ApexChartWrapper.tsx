@@ -59,15 +59,12 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 		return false;
 	});
 
-	// Debug em desenvolvimento
-	if (import.meta.env.DEV) {
-		console.log(`📊 ApexChart ${type} Debug:`, {
+	// Debug reduzido - apenas se houver problema
+	if (import.meta.env.DEV && (!hasValidData || !hasDataPoints)) {
+		console.warn(`⚠️ ApexChart ${type} sem dados:`, {
 			hasValidData,
 			hasDataPoints,
-			seriesLength: series?.length || 0,
-			seriesType: Array.isArray(series) ? 'array' : typeof series,
-			firstSeries: series?.[0],
-			options: !!options
+			seriesLength: series?.length || 0
 		});
 	}
 
@@ -79,12 +76,9 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 	}, [hasDataPoints]);
 
 	const handleChartLoad = useCallback(() => {
-		if (import.meta.env.DEV) {
-			console.log(`✅ ApexChart ${type} carregado com sucesso!`);
-		}
 		setIsLoading(false);
 		setHasError(false);
-	}, [type]);
+	}, []);
 
 	const handleChartError = useCallback((error?: any) => {
 		if (import.meta.env.DEV) {
@@ -189,20 +183,6 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 	// Renderizar o gráfico diretamente (React puro - sem SSR)
 	return (
 		<ChartContainer>
-			{import.meta.env.DEV && (
-				<div style={{
-					position: 'absolute',
-					top: 0,
-					right: 0,
-					background: 'rgba(0,0,0,0.7)',
-					color: 'white',
-					padding: '4px 8px',
-					fontSize: '10px',
-					zIndex: 1000
-				}}>
-					{type} | {hasDataPoints ? '✅' : '❌'} | {isLoading ? '⏳' : hasError ? '❌' : '✅'}
-				</div>
-			)}
 			<Suspense
 				fallback={
 					<LoadingContainer style={{ height }}>
@@ -228,15 +208,7 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 							},
 							events: {
 								mounted: () => {
-									if (import.meta.env.DEV) {
-										console.log(`✅ ApexChart ${type} mounted successfully!`);
-									}
 									handleChartLoad();
-								},
-								rendered: () => {
-									if (import.meta.env.DEV) {
-										console.log(`🎨 ApexChart ${type} rendered!`);
-									}
 								}
 							}
 						},
