@@ -2,10 +2,10 @@ import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { CircularProgress } from '@mui/material';
 
 // Import dinâmico para compatibilidade com Vite
-const Chart = React.lazy(() => 
-    import('react-apexcharts').then(module => ({ 
-        default: module.default 
-    }))
+const Chart = React.lazy(() =>
+	import('react-apexcharts').then(module => ({
+		default: module.default
+	}))
 );
 
 // Styled Components
@@ -45,7 +45,6 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 	options,
 	series
 }) => {
-	const [isClient, setIsClient] = useState(false);
 	const [hasError, setHasError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -73,27 +72,11 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 	}
 
 	useEffect(() => {
-		setIsClient(true);
-
-		// Se não há dados, não é erro - é apenas sem dados
-		if (!hasDataPoints) {
+		// Em React puro, inicializar imediatamente
+		if (hasDataPoints) {
 			setIsLoading(false);
-			return;
 		}
-
-		// Timeout para detectar problemas de carregamento
-		const timeout = setTimeout(() => {
-			if (isLoading) {
-				if (import.meta.env.DEV) {
-					console.warn(`⏰ ApexChart ${type} timeout após 10s - forçando erro`);
-				}
-				setHasError(true);
-				setIsLoading(false);
-			}
-		}, 10000); // 10 segundos
-
-		return () => clearTimeout(timeout);
-	}, [isLoading, hasDataPoints]);
+	}, [hasDataPoints]);
 
 	const handleChartLoad = useCallback(() => {
 		if (import.meta.env.DEV) {
@@ -111,17 +94,7 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 		setIsLoading(false);
 	}, [type, series, options]);
 
-	// Loading state durante hidratação
-	if (!isClient) {
-		return (
-			<LoadingContainer style={{ height }}>
-				<CircularProgress size={40} thickness={4} />
-				<LoadingText>
-					Preparando gráfico...
-				</LoadingText>
-			</LoadingContainer>
-		);
-	}
+	// Removido: Loading state durante hidratação (não necessário em React puro)
 
 	// No data state
 	if (!hasDataPoints) {
@@ -213,7 +186,7 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 		);
 	}
 
-	// Renderizar o gráfico
+	// Renderizar o gráfico diretamente (React puro - sem SSR)
 	return (
 		<ChartContainer>
 			{import.meta.env.DEV && (
@@ -234,7 +207,7 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 				fallback={
 					<LoadingContainer style={{ height }}>
 						<CircularProgress size={40} />
-						<LoadingText>Renderizando...</LoadingText>
+						<LoadingText>Carregando...</LoadingText>
 					</LoadingContainer>
 				}
 			>
@@ -250,10 +223,6 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 							height: height,
 							background: 'transparent',
 							fontFamily: 'Inter, system-ui, sans-serif',
-							animations: {
-								enabled: true,
-								speed: 800,
-							},
 							toolbar: {
 								show: false
 							},
@@ -264,9 +233,9 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 									}
 									handleChartLoad();
 								},
-								animationEnd: () => {
+								rendered: () => {
 									if (import.meta.env.DEV) {
-										console.log(`🎬 ApexChart ${type} animation finished`);
+										console.log(`🎨 ApexChart ${type} rendered!`);
 									}
 								}
 							}
