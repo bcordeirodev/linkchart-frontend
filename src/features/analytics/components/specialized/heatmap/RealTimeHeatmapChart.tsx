@@ -100,6 +100,18 @@ export function RealTimeHeatmapChart({
         globalMode
     });
 
+    // Debug: Log dos dados recebidos
+    useEffect(() => {
+        console.log('🗺️ RealTimeHeatmapChart: Dados recebidos:', {
+            dataLength: data?.length || 0,
+            linkId,
+            globalMode,
+            loading,
+            error,
+            stats
+        });
+    }, [data, linkId, globalMode, loading, error, stats]);
+
     useEffect(() => {
         setIsClient(true);
     }, []);

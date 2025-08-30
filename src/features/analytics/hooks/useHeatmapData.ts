@@ -75,7 +75,10 @@ export function useHeatmapData({
     // Buscar dados do heatmap
     const fetchHeatmapData = useCallback(async (showLoading = false): Promise<HeatmapPoint[]> => {
         // Se não temos linkId e não está em modo global, retornar vazio
-        if (!linkId && !globalMode) return [];
+        if (!linkId && !globalMode) {
+            console.log('🔍 useHeatmapData: Sem linkId e não está em modo global, retornando vazio');
+            return [];
+        }
 
         try {
             if (showLoading) setLoading(true);
@@ -90,13 +93,23 @@ export function useHeatmapData({
                     ? '/api/analytics/global/heatmap'
                     : `/api/analytics/link/${linkId}/heatmap`;
 
-                const response = await api.get(endpoint) as { data: any };
+                console.log('🌐 useHeatmapData: Fazendo requisição para:', endpoint, { linkId, globalMode });
+                const response = await api.get(endpoint) as any;
 
-                if (response.data?.success && response.data?.data) {
-                    heatmapData = response.data.data as HeatmapPoint[];
+                                console.log('📡 useHeatmapData: Resposta da API:', response);
+                
+                // A resposta da API é diretamente: {"success":true,"data":[...]}
+                if (response.success && response.data) {
+                    heatmapData = response.data as HeatmapPoint[];
+                    console.log('✅ useHeatmapData: Dados encontrados em response.data:', heatmapData.length, 'pontos');
                 } else if (Array.isArray(response.data)) {
                     heatmapData = response.data as HeatmapPoint[];
+                    console.log('✅ useHeatmapData: Dados encontrados como array direto:', heatmapData.length, 'pontos');
+                } else if (Array.isArray(response)) {
+                    heatmapData = response as HeatmapPoint[];
+                    console.log('✅ useHeatmapData: Dados encontrados como array na resposta:', heatmapData.length, 'pontos');
                 } else {
+                    console.error('❌ useHeatmapData: Estrutura de dados não reconhecida:', response);
                     throw new Error('Dados não encontrados na resposta da API');
                 }
             } catch (authError) {
@@ -180,11 +193,13 @@ export function useHeatmapData({
 
             // Filtrar dados por cliques mínimos
             const filteredData = heatmapData.filter((point: HeatmapPoint) => point.clicks >= minClicks);
+            console.log('🔍 useHeatmapData: Dados filtrados (minClicks >= ' + minClicks + '):', filteredData.length, 'pontos');
 
             if (mountedRef.current) {
                 setData(filteredData);
                 setStats(calculateStats(filteredData));
                 setLastUpdate(new Date());
+                console.log('💾 useHeatmapData: Dados salvos no estado:', filteredData.length, 'pontos');
             }
 
             return filteredData;
