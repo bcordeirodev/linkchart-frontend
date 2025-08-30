@@ -95,11 +95,24 @@ export function useHeatmapData({
                     : `/api/analytics/link/${linkId}/heatmap`;
 
                 console.log('🌐 useHeatmapData: Fazendo requisição para:', endpoint, { linkId, globalMode });
-                const response = await api.get(endpoint) as any;
 
-                console.log('📡 useHeatmapData: Resposta da API:', response);
+                let response: any;
+                try {
+                    response = await api.get(endpoint) as any;
+                    console.log('📡 useHeatmapData: Resposta da API recebida com sucesso:', response);
+                } catch (apiError) {
+                    console.error('💥 useHeatmapData: Erro na chamada da API:', apiError);
+                    throw apiError;
+                }
 
                 // A resposta da API é diretamente: {"success":true,"data":[...]}
+                console.log('🔍 useHeatmapData: Verificando estrutura da resposta:', {
+                    hasSuccess: !!response.success,
+                    hasData: !!response.data,
+                    dataType: Array.isArray(response.data) ? 'array' : typeof response.data,
+                    dataLength: Array.isArray(response.data) ? response.data.length : 'N/A'
+                });
+
                 if (response.success && response.data) {
                     heatmapData = response.data as HeatmapPoint[];
                     console.log('✅ useHeatmapData: Dados encontrados em response.data:', heatmapData.length, 'pontos');
@@ -206,7 +219,8 @@ export function useHeatmapData({
             return filteredData;
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-            console.error('Erro ao buscar dados do heatmap:', errorMessage);
+            console.error('❌ useHeatmapData: Erro ao buscar dados do heatmap:', errorMessage);
+            console.error('❌ useHeatmapData: Erro completo:', err);
 
             if (mountedRef.current) {
                 setError(errorMessage);
@@ -220,11 +234,13 @@ export function useHeatmapData({
                     avgClicksPerLocation: 0,
                     lastUpdate: new Date().toISOString()
                 });
+                setLoading(false); // Importante: definir loading como false em caso de erro
             }
 
             return [];
         } finally {
             if (mountedRef.current && showLoading) {
+                console.log('🏁 useHeatmapData: Finalizando requisição, setLoading(false)');
                 setLoading(false);
             }
         }
@@ -277,8 +293,21 @@ export function useHeatmapData({
         }
     }, [data, minClicks, calculateStats]);
 
+    // Log do estado final
+    const filteredData = data.filter((point: HeatmapPoint) => point.clicks >= minClicks);
+    useEffect(() => {
+        console.log('📈 useHeatmapData: Estado final:', {
+            dataLength: filteredData.length,
+            originalDataLength: data.length,
+            loading,
+            error,
+            stats: stats ? `${stats.totalClicks} cliques, ${stats.uniqueCountries} países` : null,
+            lastUpdate: lastUpdate?.toLocaleTimeString()
+        });
+    }, [filteredData.length, data.length, loading, error, stats, lastUpdate]);
+
     return {
-        data: data.filter((point: HeatmapPoint) => point.clicks >= minClicks),
+        data: filteredData,
         stats,
         loading,
         error,

@@ -108,9 +108,12 @@ export function RealTimeHeatmapChart({
             globalMode,
             loading,
             error,
-            stats
+            stats,
+            firstPoint: data && data.length > 0 ? data[0] : null,
+            mapReady,
+            isClient
         });
-    }, [data, linkId, globalMode, loading, error, stats]);
+    }, [data, linkId, globalMode, loading, error, stats, mapReady, isClient]);
 
     useEffect(() => {
         setIsClient(true);
@@ -274,6 +277,12 @@ export function RealTimeHeatmapChart({
     }
 
     // Renderizar estado vazio
+    console.log('🔍 RealTimeHeatmapChart: Verificando estado vazio:', {
+        hasData: !!data,
+        dataLength: data?.length || 0,
+        shouldShowEmpty: !data || data.length === 0
+    });
+
     if (!data || data.length === 0) {
         return (
             <Card sx={{ height: height, borderRadius: '16px' }}>
