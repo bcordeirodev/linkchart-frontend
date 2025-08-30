@@ -54,6 +54,8 @@ export default defineConfig({
     define: {
         global: 'globalThis',
         'process.env': {},
+        // Fix para ApexCharts
+        'window.ApexCharts': 'undefined',
     },
     server: {
         port: 3000,
@@ -82,6 +84,12 @@ export default defineConfig({
             '@emotion/react',
             '@emotion/styled',
             'react-router-dom',
+            // Chart libraries
+            'apexcharts',
+            'react-apexcharts',
+        ],
+        exclude: [
+            // Evitar problemas de SSR/CSR
         ],
     },
 });

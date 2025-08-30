@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { CircularProgress } from '@mui/material';
-import Chart from 'react-apexcharts';
+
+// Import dinâmico para compatibilidade com Vite
+const Chart = React.lazy(() => 
+    import('react-apexcharts').then(module => ({ 
+        default: module.default 
+    }))
+);
 
 // Styled Components
 import {
@@ -211,13 +217,13 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 	return (
 		<ChartContainer>
 			{import.meta.env.DEV && (
-				<div style={{ 
-					position: 'absolute', 
-					top: 0, 
-					right: 0, 
-					background: 'rgba(0,0,0,0.7)', 
-					color: 'white', 
-					padding: '4px 8px', 
+				<div style={{
+					position: 'absolute',
+					top: 0,
+					right: 0,
+					background: 'rgba(0,0,0,0.7)',
+					color: 'white',
+					padding: '4px 8px',
 					fontSize: '10px',
 					zIndex: 1000
 				}}>
@@ -232,41 +238,45 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 					</LoadingContainer>
 				}
 			>
-				{(() => {
-					try {
-						return (
-							<Chart
-								type={type}
-								height={height}
-								width={width}
-								options={{
-									...options,
-									chart: {
-										...((options.chart as object) || {}),
-										background: 'transparent',
-										fontFamily: 'Inter, system-ui, sans-serif',
-										animations: {
-											enabled: true,
-											speed: 800,
-										},
-									},
-									theme: {
-										mode: 'light',
-									},
-								}}
-								series={series as ApexAxisChartSeries}
-								onLoad={handleChartLoad}
-								onError={handleChartError}
-							/>
-						);
-					} catch (renderError) {
-						if (import.meta.env.DEV) {
-							console.error('📊 Chart Render Error:', { type, renderError, series, options });
-						}
-						handleChartError(renderError);
-						return null;
-					}
-				})()}
+				<Chart
+					type={type}
+					height={height}
+					width={width}
+					options={{
+						...options,
+						chart: {
+							...((options.chart as object) || {}),
+							type: type,
+							height: height,
+							background: 'transparent',
+							fontFamily: 'Inter, system-ui, sans-serif',
+							animations: {
+								enabled: true,
+								speed: 800,
+							},
+							toolbar: {
+								show: false
+							},
+							events: {
+								mounted: () => {
+									if (import.meta.env.DEV) {
+										console.log(`✅ ApexChart ${type} mounted successfully!`);
+									}
+									handleChartLoad();
+								},
+								animationEnd: () => {
+									if (import.meta.env.DEV) {
+										console.log(`🎬 ApexChart ${type} animation finished`);
+									}
+								}
+							}
+						},
+						theme: {
+							mode: 'light',
+						},
+					}}
+					series={series}
+				/>
 			</Suspense>
 		</ChartContainer>
 	);
