@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { lazy, Suspense } from 'react';
+import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { CircularProgress } from '@mui/material';
+import Chart from 'react-apexcharts';
 
 // Styled Components
 import {
@@ -18,8 +18,7 @@ import {
 	NoDataDescription
 } from './ApexChartWrapper.styled';
 
-// Importação dinâmica do ApexCharts
-const Chart = lazy(() => import('react-apexcharts'));
+// Chart importado diretamente para melhor debug
 
 interface ApexChartWrapperProps {
 	type: 'line' | 'area' | 'bar' | 'pie' | 'donut' | 'radialBar' | 'scatter' | 'bubble' | 'heatmap' | 'treemap';
@@ -51,6 +50,18 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 		(typeof s === 'object' && s !== null && 'data' in s && Array.isArray(s.data) && s.data.length > 0)
 	);
 
+	// Debug em desenvolvimento
+	if (import.meta.env.DEV) {
+		console.log(`📊 ApexChart ${type} Debug:`, {
+			hasValidData,
+			hasDataPoints,
+			seriesLength: series?.length || 0,
+			seriesType: Array.isArray(series) ? 'array' : typeof series,
+			firstSeries: series?.[0],
+			options: !!options
+		});
+	}
+
 	useEffect(() => {
 		setIsClient(true);
 
@@ -76,10 +87,13 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 		setHasError(false);
 	}, []);
 
-	const handleChartError = useCallback(() => {
+	const handleChartError = useCallback((error?: any) => {
+		if (import.meta.env.DEV) {
+			console.error('📊 ApexChart Error:', { type, error, series, options });
+		}
 		setHasError(true);
 		setIsLoading(false);
-	}, []);
+	}, [type, series, options]);
 
 	// Loading state durante hidratação
 	if (!isClient) {
@@ -206,7 +220,6 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 							fontFamily: 'Inter, system-ui, sans-serif',
 							animations: {
 								enabled: true,
-								easing: 'easeinout',
 								speed: 800,
 							},
 						},

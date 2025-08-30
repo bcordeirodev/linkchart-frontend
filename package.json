@@ -75,7 +75,8 @@
 		"vite-tsconfig-paths": "^5.0.0"
 	},
 	"scripts": {
-		"dev": "vite",
+		"dev": "vite --host --logLevel info",
+		"dev:debug": "DEBUG=* vite --host --logLevel info",
 		"build": "tsc && vite build",
 		"preview": "vite preview",
 		"start": "vite preview --host",
