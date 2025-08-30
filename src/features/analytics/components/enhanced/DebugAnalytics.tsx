@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Card, CardContent, Button, Alert } from '@mui/material';
-import { api } from '@/lib/api';
+import { api } from '@/lib/api/client';
 
 interface DebugAnalyticsProps {
     linkId: string;

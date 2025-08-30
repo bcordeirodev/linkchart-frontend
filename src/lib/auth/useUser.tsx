@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { User } from '@/features/profile/types/user';
 import { useAuth } from './AuthContext';
 import _ from 'lodash';
-import setIn from '@/lib/utils/setIn';
+// Removed: setIn não utilizado
 
 type useUser = {
 	data: User | null;

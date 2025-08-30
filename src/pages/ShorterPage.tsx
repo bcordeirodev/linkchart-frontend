@@ -13,7 +13,7 @@ import { ShortUrlResult } from '@/features/links/components/ShortUrlResult';
 
 // Hooks
 import useUser from '../lib/auth/useUser';
-import { pulse } from '@/shared/ui/animations';
+// Removed: animations não utilizadas
 
 interface IShortUrl {
     slug: string;
@@ -220,7 +220,7 @@ const ShorterPage: React.FC = () => {
                                             background: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)',
                                             color: 'white',
                                             fontWeight: 700,
-                                            animation: `${pulse} 2s infinite`
+                                            animation: 'pulse 2s infinite'
                                         }}
                                     />
                                     <Typography

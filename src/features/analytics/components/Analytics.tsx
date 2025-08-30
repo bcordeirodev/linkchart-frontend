@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Alert, CircularProgress, Button, useTheme, Fade, Tab } from '@mui/material';
+import { Box, Alert, CircularProgress, Button, useTheme, Fade, Tab, Typography } from '@mui/material';
 import { Header } from './Header';
 import { UnifiedMetrics } from './metrics/UnifiedMetrics';
 import { Charts } from './charts/Charts';
@@ -7,7 +7,7 @@ import { GeographicAnalysis } from './analysis/GeographicAnalysis';
 import { TemporalAnalysis } from './analysis/TemporalAnalysis';
 import { AudienceAnalysis } from './analysis/AudienceAnalysis';
 import { HeatmapAnalysis } from './analysis/HeatmapAnalysis';
-import { BusinessInsights } from './analysis/BusinessInsights';
+import { BusinessInsights } from './insights/BusinessInsights';
 import { PerformanceAnalysis } from './analysis/PerformanceAnalysis';
 import { TopLinks } from './dashboard/TopLinks';
 import { TabPanel } from '@/shared/ui/base/TabPanel';
@@ -339,7 +339,7 @@ export function Analytics({
                     <TabPanel value={tabValue} index={showDashboardTab ? 7 : 6}>
                         <SectionContainer elevation={0}>
                             <BusinessInsights
-                                data={data}
+                                insights={data?.insights || []}
                             />
                         </SectionContainer>
                     </TabPanel>

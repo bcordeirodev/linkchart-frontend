@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
-import { useThemeMediaQuery } from '@/themes';
+import { useThemeMediaQuery } from '@/lib/theme';
 import Logo from './Logo';
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({

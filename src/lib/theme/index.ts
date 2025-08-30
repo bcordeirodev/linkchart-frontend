@@ -25,7 +25,7 @@ export {
     changeThemeMode
 } from '@fuse/core/FuseSettings/hooks/fuseThemeHooks';
 
-export { useThemeMediaQuery } from '../hooks/useThemeMediaQuery';
+export { default as useThemeMediaQuery } from '@/shared/hooks/useThemeMediaQuery';
 export { useResponsive } from './hooks/useResponsive';
 
 // ========================================

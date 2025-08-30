@@ -3,7 +3,7 @@
  * Simplifica o uso de breakpoints em toda a aplicação
  */
 
-import { useThemeMediaQuery } from '../../hooks/useThemeMediaQuery';
+import useThemeMediaQuery from '@/shared/hooks/useThemeMediaQuery';
 
 // ========================================
 // 📊 TYPES

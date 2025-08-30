@@ -27,4 +27,4 @@ export * from './navigation/ThemeAwareBackground';
 export * from './navigation/TitleReferenceLink';
 
 // Animations
-export * from './animations';
+// Removed: animations não utilizadas

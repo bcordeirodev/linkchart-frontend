@@ -1,5 +1,4 @@
-import { api, FetchApiError } from '@/lib/api';
-import { errorHandler } from '@/lib/utils/errorHandler';
+import { api, FetchApiError } from '@/lib/api/client';
 
 /**
  * Serviço base para todos os services
@@ -101,17 +100,16 @@ export abstract class BaseService {
     private handleError<T>(method: string, endpoint: string, error: unknown, fallback?: T, context?: string): T {
         const errorMessage = error instanceof FetchApiError ? error.message : String(error);
 
-        // Log do erro
-        errorHandler.logError(error instanceof Error ? error : String(error), {
-            service: this.serviceName,
-            method,
-            endpoint,
-            context: context || `${this.serviceName}_${method.toLowerCase()}`
-        });
+        // Log do erro em desenvolvimento
+        if (import.meta.env.DEV) {
+            console.error(`❌ ${this.serviceName} ${method} ${endpoint}:`, error);
+        }
 
         // Se há fallback, usar e logar
         if (fallback !== undefined) {
-            errorHandler.logFallbackError(errorMessage, `${this.serviceName}_fallback`);
+            if (import.meta.env.DEV) {
+                console.warn(`🔄 ${this.serviceName} usando fallback para ${endpoint}`);
+            }
             return fallback;
         }
 

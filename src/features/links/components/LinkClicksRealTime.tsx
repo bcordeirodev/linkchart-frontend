@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { Refresh, Computer, Smartphone, Tablet, Public, Schedule, TrendingUp } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
-import { api } from '@/lib/api';
+import { api } from '@/lib/api/client';
 
 interface ClicksRealTimeProps {
 	linkId: string;

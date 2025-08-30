@@ -24,8 +24,5 @@ export * from './i18n';
 export * from './store/store';
 
 // Utils
-export * from './utils/errorHandler';
-export * from './utils/generateMetadata';
 export * from './utils/buildOptimization';
-export * from './utils/setIn';
 export * from './utils/logs.service';

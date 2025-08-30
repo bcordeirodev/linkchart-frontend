@@ -14,7 +14,7 @@ import ClickIcon from '@mui/icons-material/Mouse';
 import SpeedIcon from '@mui/icons-material/Speed';
 import SecurityIcon from '@mui/icons-material/Security';
 import DevicesIcon from '@mui/icons-material/Devices';
-import { api } from '@/lib/api';
+import { api } from '@/lib/api/client';
 
 interface RedirectStatsData {
 	totalClicks: number;

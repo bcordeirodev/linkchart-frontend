@@ -30,7 +30,7 @@ import { EnhancedHeatmapChart } from '../specialized/heatmap';
 import { GeographicChart, GeographicInsights } from '../specialized/geographic';
 import { TemporalChart, TemporalInsights } from '../specialized/temporal';
 import { AudienceChart, AudienceInsights } from '../specialized/audience';
-import { BusinessInsights } from '../specialized/insights';
+import { BusinessInsights } from '../insights/BusinessInsights';
 
 interface EnhancedAnalyticsProps {
     linkId: string;

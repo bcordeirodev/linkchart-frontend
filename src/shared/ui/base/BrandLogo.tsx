@@ -1,6 +1,6 @@
 import { Avatar, Typography, Box } from '@mui/material';
 import { Link as LinkIcon } from '@mui/icons-material';
-import { float } from '@/shared/ui/animations';
+// Removed: animations não utilizadas
 
 interface BrandLogoProps {
 	size?: 'small' | 'medium' | 'large';
@@ -36,7 +36,7 @@ export function BrandLogo({ size = 'medium', showText = true, onClick }: BrandLo
 					width: avatar,
 					height: avatar,
 					background: 'linear-gradient(135deg, #0A74DA 0%, #00A4EF 100%)',
-					animation: `${float} 3s ease-in-out infinite`
+					animation: 'float 3s ease-in-out infinite'
 				}}
 			>
 				<LinkIcon sx={{ fontSize: avatar * 0.6 }} />

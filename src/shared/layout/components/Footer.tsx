@@ -8,7 +8,7 @@ import { Box, Typography, Link, Divider, IconButton, Tooltip, Chip, alpha } from
 import { styled } from '@mui/material/styles';
 import LinkIcon from '@mui/icons-material/Link';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { useThemeMediaQuery } from '@/themes';
+import { useThemeMediaQuery } from '@/lib/theme';
 
 const StyledFooter = styled(Box)(({ theme }) => ({
 	background: `linear-gradient(135deg, 

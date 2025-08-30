@@ -61,9 +61,10 @@ export const FILE_STRUCTURE_RULES = {
 export const IMPORT_OPTIMIZATION = {
     // Aliases recomendados
     RECOMMENDED_ALIASES: {
-        '@auth': 'src/@auth',
         '@fuse': 'src/@fuse',
-        '@/lib/i18n': 'src/@/lib/i18n',
+        '@/lib': 'src/lib',
+        '@/shared': 'src/shared',
+        '@/features': 'src/features',
         '@': 'src'
     },
 

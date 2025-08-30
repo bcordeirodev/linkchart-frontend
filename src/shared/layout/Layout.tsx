@@ -6,7 +6,7 @@
 import { memo, ReactNode } from 'react';
 import { styled } from '@mui/material/styles';
 import FuseMessage from '@fuse/core/FuseMessage';
-import { useThemeMediaQuery } from '@/themes';
+import { useThemeMediaQuery } from '@/lib/theme';
 
 // Componentes essenciais
 import Navbar from './components/Navbar';

@@ -5,7 +5,7 @@ import { usePathname } from '@/shared/hooks';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
 import Link from '@fuse/core/Link';
-import { useNavigation } from '@/themes';
+import { useNavigation } from '@/lib/theme';
 
 type PageBreadcrumbProps = BreadcrumbsProps & {
 	className?: string;

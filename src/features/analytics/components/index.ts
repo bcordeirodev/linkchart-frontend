@@ -27,7 +27,7 @@ export * from './specialized/temporal';
 export * from './specialized/geographic';
 export * from './specialized/audience';
 export * from './specialized/heatmap';
-export * from './specialized/insights';
+// Removed: insights não utilizados
 export * from './specialized/common';
 
 // === ANÁLISES ESPECIALIZADAS ===
@@ -35,7 +35,7 @@ export { GeographicAnalysis } from './analysis/GeographicAnalysis';
 export { TemporalAnalysis } from './analysis/TemporalAnalysis';
 export { AudienceAnalysis } from './analysis/AudienceAnalysis';
 export { HeatmapAnalysis } from './analysis/HeatmapAnalysis';
-export { BusinessInsights } from './analysis/BusinessInsights';
+export { BusinessInsights } from './insights/BusinessInsights';
 export { PerformanceAnalysis } from './analysis/PerformanceAnalysis';
 
 // === UTILITÁRIOS E COMMON ===
