@@ -1,4 +1,4 @@
-import { styled } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 import { Box, Container, Paper, Tab, Tabs } from '@mui/material';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
@@ -215,13 +215,13 @@ export const EmptyStateContainer = styled(Paper)(({ theme }) => ({
 export const TabsContainer = styled(Paper)(({ theme }) => ({
     marginBottom: theme.spacing(2),
     background: theme.palette.mode === 'dark'
-        ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)'
-        : 'linear-gradient(135deg, rgba(25, 118, 210, 0.04) 0%, rgba(25, 118, 210, 0.02) 100%)',
-    border: `1px solid ${theme.palette.divider}`,
+        ? alpha(theme.palette.background.paper, 0.7)
+        : alpha(theme.palette.background.paper, 0.9),
+    border: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
     borderRadius: theme.spacing(1.5),
     padding: theme.spacing(1),
     backdropFilter: 'blur(10px)',
-    boxShadow: theme.shadows[2],
+    boxShadow: theme.shadows[1],
 
     [theme.breakpoints.down('md')]: {
         borderRadius: theme.spacing(1),
@@ -262,28 +262,28 @@ export const StyledTabs = styled(Tabs)(({ theme }) => ({
 
         '&.Mui-selected': {
             background: theme.palette.mode === 'dark'
-                ? 'linear-gradient(135deg, rgba(25, 118, 210, 0.25) 0%, rgba(25, 118, 210, 0.15) 100%)'
-                : 'linear-gradient(135deg, rgba(25, 118, 210, 0.12) 0%, rgba(25, 118, 210, 0.08) 100%)',
+                ? alpha(theme.palette.background.paper, 0.85)
+                : alpha(theme.palette.background.paper, 0.92),
             color: theme.palette.primary.main,
-            fontWeight: 700,
-            border: `2px solid ${theme.palette.primary.main}40`,
-            boxShadow: `0 8px 32px ${theme.palette.primary.main}20`,
-            transform: 'translateY(-2px)',
+            fontWeight: 600,
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+            boxShadow: theme.shadows[2],
+            transform: 'translateY(-1px)',
 
             '&::before': {
-                background: `linear-gradient(135deg, ${theme.palette.primary.main}10 0%, transparent 100%)`,
+                background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.03)} 0%, transparent 100%)`,
             },
         },
 
         '&:hover:not(.Mui-selected)': {
             background: theme.palette.mode === 'dark'
-                ? 'rgba(255, 255, 255, 0.08)'
-                : 'rgba(25, 118, 210, 0.04)',
+                ? alpha(theme.palette.background.paper, 0.4)
+                : alpha(theme.palette.background.paper, 0.6),
             color: theme.palette.primary.main,
-            transform: 'translateY(-1px)',
+            transform: 'translateY(-0.5px)',
 
             '&::before': {
-                background: `linear-gradient(135deg, ${theme.palette.primary.main}05 0%, transparent 100%)`,
+                background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.02)} 0%, transparent 100%)`,
             },
         },
 
@@ -314,8 +314,8 @@ export const StyledTabs = styled(Tabs)(({ theme }) => ({
 
         '&:hover': {
             background: theme.palette.mode === 'dark'
-                ? 'rgba(255, 255, 255, 0.08)'
-                : 'rgba(25, 118, 210, 0.08)',
+                ? alpha(theme.palette.background.paper, 0.3)
+                : alpha(theme.palette.background.paper, 0.5),
         },
 
         '&.Mui-disabled': {

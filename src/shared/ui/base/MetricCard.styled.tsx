@@ -12,15 +12,18 @@ import { Card, CardContent as MuiCardContent, Typography, Box, Avatar } from '@m
 
 export const MetricCardContainer = styled(Card)(({ theme }) => ({
     height: '100%',
+    minHeight: '140px',
     position: 'relative',
     overflow: 'hidden',
-    borderRadius: theme.spacing(1.5),
+    borderRadius: '16px', // Bordas mais arredondadas
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     backdropFilter: 'blur(10px)',
+    boxShadow: theme.shadows[3],
 
-    // Hover effects
+    // Hover effects melhorados
     '&:hover': {
-        transform: 'translateY(-4px)',
+        transform: 'translateY(-6px)',
+        boxShadow: theme.shadows[8],
         '&::before': {
             opacity: 1,
         },
@@ -83,17 +86,19 @@ export const getCardStyles = (theme: any, colorVariant: ColorVariantProps['color
 
     return {
         background: isDark
-            ? `linear-gradient(135deg, ${colors.main}25 0%, ${colors.main}15 100%)`
-            : `linear-gradient(135deg, ${colors.main}20 0%, ${colors.main}10 100%)`,
-        border: `1px solid ${colors.main}50`,
-        iconBg: isDark ? `${colors.main}35` : `${colors.main}25`,
+            ? `linear-gradient(135deg, ${colors.main}30 0%, ${colors.main}20 50%, ${colors.main}10 100%)`
+            : `linear-gradient(135deg, ${colors.main}25 0%, ${colors.main}15 50%, ${colors.main}08 100%)`,
+        border: `1px solid ${colors.main}40`,
+        iconBg: isDark
+            ? `linear-gradient(135deg, ${colors.main}40 0%, ${colors.main}25 100%)`
+            : `linear-gradient(135deg, ${colors.main}30 0%, ${colors.main}20 100%)`,
         iconColor: colors.main,
         accent: colors.light,
-        glowEffect: `linear-gradient(135deg, ${colors.light}30 0%, ${colors.main}15 50%, transparent 70%)`,
+        glowEffect: `linear-gradient(135deg, ${colors.light}40 0%, ${colors.main}20 50%, transparent 70%)`,
         bottomLine: `linear-gradient(90deg, ${colors.main} 0%, ${colors.light} 100%)`,
         hoverShadow: isDark
-            ? `0 12px 40px ${colors.main}25`
-            : `0 12px 40px ${colors.main}20`,
+            ? `0 16px 48px ${colors.main}30`
+            : `0 16px 48px ${colors.main}25`,
     };
 };
 
@@ -141,8 +146,9 @@ export const CardTitle = styled(Typography)(({ theme }) => ({
     fontSize: '0.75rem',
     lineHeight: 1.2,
     color: theme.palette.mode === 'dark'
-        ? 'rgba(255, 255, 255, 0.8)'
-        : 'rgba(0, 0, 0, 0.7)',
+        ? 'rgba(255, 255, 255, 0.85)'
+        : 'rgba(0, 0, 0, 0.75)',
+    fontFamily: 'Inter, system-ui, sans-serif',
 }));
 
 export const CardValue = styled(Typography)(({ theme }) => ({
@@ -150,6 +156,7 @@ export const CardValue = styled(Typography)(({ theme }) => ({
     marginBottom: theme.spacing(1),
     lineHeight: 1.1,
     fontSize: '2rem',
+    fontFamily: 'Inter, system-ui, sans-serif',
 
     [theme.breakpoints.down('md')]: {
         fontSize: '1.75rem',
@@ -164,8 +171,9 @@ export const CardSubtitle = styled(Typography)(({ theme }) => ({
     fontSize: '0.875rem',
     fontWeight: 500,
     color: theme.palette.mode === 'dark'
-        ? 'rgba(255, 255, 255, 0.6)'
-        : 'rgba(0, 0, 0, 0.6)',
+        ? 'rgba(255, 255, 255, 0.65)'
+        : 'rgba(0, 0, 0, 0.65)',
+    fontFamily: 'Inter, system-ui, sans-serif',
 }));
 
 // ========================================
@@ -201,6 +209,7 @@ export const CardIcon = styled(Avatar)(({ theme }) => ({
     height: 64,
     border: `2px solid transparent`,
     transition: 'all 0.3s ease',
+    borderRadius: '12px', // Bordas arredondadas no ícone
 
     '& svg': {
         fontSize: '1.75rem',

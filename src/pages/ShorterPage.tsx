@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import { Container, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,13 +19,17 @@ function ShorterPage() {
     const navigate = useNavigate();
     const { data: user } = useUser();
 
-    const handleSuccess = (shortUrl: any) => {
+    const handleSuccess = (shortUrl: unknown) => {
         // URL encurtada com sucesso - pode mostrar resultado
-        console.log('URL encurtada:', shortUrl);
+        if (import.meta.env.DEV) {
+            console.log('URL encurtada:', shortUrl);
+        }
     };
 
     const handleError = (error: string) => {
-        console.error('Erro ao encurtar URL:', error);
+        if (import.meta.env.DEV) {
+            console.error('Erro ao encurtar URL:', error);
+        }
     };
 
     return (

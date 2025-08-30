@@ -7,11 +7,12 @@ import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 /**
  * Página de analytics unificada COMPLETA
  * Analytics Rico com funcionalidades de dashboard integradas
+ * Heatmap global quando não há linkId específico
  */
 function AnalyticsPage() {
     const { links } = useLinks();
-    const firstLinkId = links.length > 0 ? links[0].id.toString() : '2';
-    const { data, loading, error, refetch } = useEnhancedAnalytics(firstLinkId);
+    const firstLinkId = links.length > 0 ? links[0].id.toString() : undefined;
+    const { data, loading, error, refetch } = useEnhancedAnalytics(firstLinkId || '2');
 
     return (
         <AuthGuardRedirect auth={['user', 'admin']}>
@@ -20,6 +21,7 @@ function AnalyticsPage() {
                     data={data}
                     loading={loading}
                     error={error}
+                    linkId={firstLinkId} // Passa linkId apenas se existir
                     showHeader={true}
                     showTabs={true}
                     linksData={links}

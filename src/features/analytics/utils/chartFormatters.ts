@@ -6,47 +6,79 @@ import { ChartOptions, ChartSeries } from '@/types';
  */
 
 /**
- * Configuração de tooltip adaptável ao tema
+ * Configuração de tooltip adaptável ao tema - melhorada
  */
 const getTooltipConfig = (isDark = false) => ({
 	theme: isDark ? 'dark' : 'light',
 	style: {
 		fontSize: '14px',
-		fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+		fontFamily: 'Inter, system-ui, sans-serif',
+		borderRadius: '12px',
+		boxShadow: isDark
+			? '0 8px 32px rgba(0, 0, 0, 0.4)'
+			: '0 8px 32px rgba(0, 0, 0, 0.1)'
 	},
 	fillSeriesColor: false,
 	x: {
-		show: true
+		show: true,
+		formatter: (value: string) => `<strong>${value}</strong>`
 	},
 	y: {
-		formatter: (value: number) => `${value.toLocaleString()} cliques`
+		formatter: (value: number) => `<span style="color: #1976d2; font-weight: 600;">${value.toLocaleString()}</span> cliques`
 	},
 	marker: {
-		show: true
-	}
+		show: true,
+		radius: 6
+	},
+	fixed: {
+		enabled: false
+	},
+	followCursor: true
 });
 
 /**
- * Configuração de textos adaptável ao tema
+ * Configuração de textos adaptável ao tema - melhorada
  */
 const getTextConfig = (isDark = false) => {
-	const textColor = isDark ? '#ffffff' : '#000000';
-	const gridColor = isDark ? '#374151' : '#e5e7eb';
+	const textColor = isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.75)';
+	const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+	const subtitleColor = isDark ? 'rgba(255, 255, 255, 0.65)' : 'rgba(0, 0, 0, 0.65)';
 
 	return {
+		title: {
+			style: {
+				fontSize: '16px',
+				fontWeight: '600',
+				color: textColor,
+				fontFamily: 'Inter, system-ui, sans-serif'
+			}
+		},
+		subtitle: {
+			style: {
+				fontSize: '14px',
+				color: subtitleColor,
+				fontFamily: 'Inter, system-ui, sans-serif'
+			}
+		},
 		xaxis: {
 			labels: {
 				style: {
 					colors: textColor,
 					fontSize: '12px',
-					fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-				}
+					fontFamily: 'Inter, system-ui, sans-serif',
+					fontWeight: '500'
+				},
+				rotate: 0,
+				trim: true,
+				maxHeight: 60
 			},
 			axisBorder: {
-				color: gridColor
+				color: gridColor,
+				height: 1
 			},
 			axisTicks: {
-				color: gridColor
+				color: gridColor,
+				height: 4
 			}
 		},
 		yaxis: {
@@ -54,13 +86,34 @@ const getTextConfig = (isDark = false) => {
 				style: {
 					colors: textColor,
 					fontSize: '12px',
-					fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-				}
+					fontFamily: 'Inter, system-ui, sans-serif',
+					fontWeight: '500'
+				},
+				formatter: (value: number) => value.toLocaleString()
 			}
 		},
 		grid: {
 			borderColor: gridColor,
-			strokeDashArray: 3
+			strokeDashArray: 2,
+			xaxis: {
+				lines: {
+					show: false
+				}
+			},
+			yaxis: {
+				lines: {
+					show: true
+				}
+			}
+		},
+		legend: {
+			labels: {
+				colors: textColor,
+				useSeriesColors: false
+			},
+			fontFamily: 'Inter, system-ui, sans-serif',
+			fontSize: '13px',
+			fontWeight: '500'
 		}
 	};
 };
@@ -102,17 +155,47 @@ export const formatAreaChart = (
 			}
 		],
 		options: {
-			chart: { type: 'area' },
+			chart: {
+				type: 'area',
+				borderRadius: 12,
+				toolbar: {
+					show: false
+				},
+				animations: {
+					enabled: true,
+					easing: 'easeinout',
+					speed: 800
+				}
+			},
 			colors: [color],
 			fill: {
 				type: 'gradient',
 				gradient: {
-					shadeIntensity: 1,
-					opacityFrom: 0.7,
-					opacityTo: 0.9
+					shade: 'light',
+					type: 'vertical',
+					shadeIntensity: 0.25,
+					gradientToColors: [color],
+					inverseColors: false,
+					opacityFrom: 0.6,
+					opacityTo: 0.1,
+					stops: [0, 100]
 				}
 			},
-			stroke: { curve: 'smooth', width: 2 },
+			stroke: {
+				curve: 'smooth',
+				width: 3,
+				lineCap: 'round'
+			},
+			markers: {
+				size: 0,
+				hover: {
+					size: 8,
+					sizeOffset: 2
+				}
+			},
+			dataLabels: {
+				enabled: false
+			},
 			tooltip: getTooltipConfig(isDark),
 			...getTextConfig(isDark)
 		}
@@ -157,13 +240,28 @@ export const formatBarChart = (
 			}
 		],
 		options: {
-			chart: { type: 'bar' },
+			chart: {
+				type: 'bar',
+				toolbar: {
+					show: false
+				},
+				animations: {
+					enabled: true,
+					easing: 'easeinout',
+					speed: 800
+				}
+			},
 			colors: [color],
 			plotOptions: {
 				bar: {
 					horizontal,
-					borderRadius: 4
+					borderRadius: horizontal ? [0, 8, 8, 0] : [8, 8, 0, 0],
+					columnWidth: '60%',
+					barHeight: '60%'
 				}
+			},
+			dataLabels: {
+				enabled: false
 			},
 			tooltip: getTooltipConfig(isDark),
 			...getTextConfig(isDark)
@@ -198,9 +296,44 @@ export const formatPieChart = (
 	return {
 		series: filteredData.map((item) => Number(item[valueKey] || 0)),
 		options: {
-			chart: { type: 'donut' },
+			chart: {
+				type: 'donut',
+				animations: {
+					enabled: true,
+					easing: 'easeinout',
+					speed: 800
+				}
+			},
 			labels: filteredData.map((item) => String(item[labelKey] || '')),
-			colors: ['#1976d2', '#dc004e', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4'],
+			colors: ['#1976d2', '#2e7d32', '#dc004e', '#9c27b0', '#ff9800', '#d32f2f', '#0288d1', '#7b1fa2'],
+			plotOptions: {
+				pie: {
+					donut: {
+						size: '70%',
+						labels: {
+							show: true,
+							name: {
+								show: true,
+								fontSize: '14px',
+								fontFamily: 'Inter, system-ui, sans-serif',
+								fontWeight: 600,
+								color: isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.75)'
+							},
+							value: {
+								show: true,
+								fontSize: '16px',
+								fontFamily: 'Inter, system-ui, sans-serif',
+								fontWeight: 700,
+								color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.8)',
+								formatter: (val: string) => parseInt(val).toLocaleString()
+							}
+						}
+					}
+				}
+			},
+			dataLabels: {
+				enabled: false
+			},
 			responsive: [
 				{
 					breakpoint: 480,
@@ -214,11 +347,23 @@ export const formatPieChart = (
 					}
 				}
 			],
-			tooltip: getTooltipConfig(isDark),
-			legend: {
-				labels: {
-					colors: isDark ? '#ffffff' : '#000000'
+			tooltip: {
+				...getTooltipConfig(isDark),
+				y: {
+					formatter: (value: number) => `<span style="color: #1976d2; font-weight: 600;">${value.toLocaleString()}</span>`
 				}
+			},
+			legend: {
+				position: 'right',
+				offsetY: 0,
+				height: 230,
+				labels: {
+					colors: isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.75)',
+					useSeriesColors: false
+				},
+				fontFamily: 'Inter, system-ui, sans-serif',
+				fontSize: '13px',
+				fontWeight: '500'
 			}
 		}
 	};

@@ -241,7 +241,15 @@ export const defaultThemeOptions = {
 		MuiTab: {
 			styleOverrides: {
 				root: {
-					textTransform: 'none'
+					textTransform: 'none',
+					transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+					'&.Mui-selected': {
+						backgroundColor: 'rgba(25, 118, 210, 0.06)',
+						color: 'primary.main',
+						'&:hover': {
+							backgroundColor: 'rgba(25, 118, 210, 0.08)'
+						}
+					}
 				}
 			}
 		},

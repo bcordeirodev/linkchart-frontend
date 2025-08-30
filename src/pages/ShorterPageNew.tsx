@@ -18,6 +18,7 @@ interface IShortUrl {
     short_url: string;
     original_url: string;
     title?: string;
+    expires_at: string | null;
 }
 
 /**
@@ -30,19 +31,20 @@ function ShorterPage() {
     const [shorted, setShorted] = useState<IShortUrl | null>(null);
 
     const {
-        shortenUrl,
+        createShortUrl,
         loading,
         error
     } = useURLShortener();
 
     const handleShorten = async (data: { original_url: string; title?: string }) => {
         try {
-            const result = await shortenUrl(data);
+            const result = await createShortUrl(data);
             setShorted({
                 slug: result.slug || '',
                 short_url: result.short_url || '',
                 original_url: result.original_url || data.original_url,
-                title: result.title || data.title
+                title: data.title,
+                expires_at: result.expires_at || null
             });
         } catch (err) {
             console.error('Erro ao encurtar URL:', err);
@@ -63,9 +65,8 @@ function ShorterPage() {
                 {!shorted ? (
                     <Box>
                         <URLShortenerForm
-                            onSubmit={handleShorten}
-                            loading={loading}
-                            error={error}
+                            onSuccess={handleShorten}
+                            onError={(err) => console.error(err)}
                         />
 
                         {/* Upgrade CTA for non-logged users */}

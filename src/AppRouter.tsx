@@ -6,6 +6,9 @@ import FuseLoading from '@fuse/core/FuseLoading';
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 const LinkPage = lazy(() => import('./pages/LinkPage'));
+const LinkCreatePage = lazy(() => import('./pages/LinkCreatePage'));
+const LinkEditPage = lazy(() => import('./pages/LinkEditPage'));
+const LinkAnalyticsPage = lazy(() => import('./pages/LinkAnalyticsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const ShorterPage = lazy(() => import('./pages/ShorterPage'));
 const RedirectPage = lazy(() => import('./pages/RedirectPage'));
@@ -79,10 +82,34 @@ function AppRouter() {
                 }
             />
             <Route
-                path="/link/*"
+                path="/link"
                 element={
                     <LoadingWrapper>
                         <LinkPage />
+                    </LoadingWrapper>
+                }
+            />
+            <Route
+                path="/link/create"
+                element={
+                    <LoadingWrapper>
+                        <LinkCreatePage />
+                    </LoadingWrapper>
+                }
+            />
+            <Route
+                path="/link/edit/:id"
+                element={
+                    <LoadingWrapper>
+                        <LinkEditPage />
+                    </LoadingWrapper>
+                }
+            />
+            <Route
+                path="/link/analytics/:id"
+                element={
+                    <LoadingWrapper>
+                        <LinkAnalyticsPage />
                     </LoadingWrapper>
                 }
             />

@@ -26,7 +26,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEnhancedAnalytics } from '@/features/analytics/hooks/useEnhancedAnalytics';
 import MetricCard from '@/shared/ui/base/MetricCard';
 import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
-import { EnhancedHeatmapChart } from '../specialized/heatmap';
+import { RealTimeHeatmapChart } from '../specialized/heatmap';
 import { GeographicChart, GeographicInsights } from '../specialized/geographic';
 import { TemporalChart, TemporalInsights } from '../specialized/temporal';
 import { AudienceChart, AudienceInsights } from '../specialized/audience';
@@ -215,7 +215,15 @@ export function EnhancedAnalytics({ linkId }: EnhancedAnalyticsProps) {
 
             {/* Conteúdo das Tabs */}
             {tabValue === 0 && (
-                <EnhancedHeatmapChart data={data?.geographic?.heatmap_data || []} />
+                <RealTimeHeatmapChart
+                    linkId={linkId}
+                    height={700}
+                    title="Mapa de Calor Global - Tempo Real"
+                    enableRealtime={true}
+                    refreshInterval={30000}
+                    showControls={true}
+                    showStats={true}
+                />
             )}
 
             {tabValue === 1 && (

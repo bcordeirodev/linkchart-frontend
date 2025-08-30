@@ -63,7 +63,9 @@ export function BenefitsSection({
 			sx={{
 				py: { xs: 8, md: 12 },
 				px: { xs: 2, sm: 3, md: 4 },
-				background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.02)} 0%, ${alpha(theme.palette.secondary.main, 0.02)} 100%)`,
+				background: theme.palette.mode === 'dark'
+					? `linear-gradient(135deg, ${alpha(theme.palette.background.default, 0.8)} 0%, ${alpha(theme.palette.background.paper, 0.6)} 100%)`
+					: `linear-gradient(135deg, ${alpha(theme.palette.background.default, 0.9)} 0%, ${alpha(theme.palette.background.paper, 0.7)} 100%)`,
 				position: 'relative',
 				overflow: 'hidden'
 			}}
@@ -76,11 +78,9 @@ export function BenefitsSection({
 						sx={{
 							fontWeight: 700,
 							mb: 3,
-							background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-							backgroundClip: 'text',
-							WebkitBackgroundClip: 'text',
-							color: 'transparent',
-							fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }
+							color: 'text.primary',
+							fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+							fontFamily: 'Inter, system-ui, sans-serif'
 						}}
 					>
 						{title}
@@ -91,7 +91,8 @@ export function BenefitsSection({
 						sx={{
 							lineHeight: 1.6,
 							fontWeight: 400,
-							fontSize: { xs: '1.1rem', sm: '1.25rem' }
+							fontSize: { xs: '1.1rem', sm: '1.25rem' },
+							fontFamily: 'Inter, system-ui, sans-serif'
 						}}
 					>
 						{subtitle}
@@ -109,15 +110,26 @@ export function BenefitsSection({
 								sx={{
 									p: 4,
 									height: '100%',
-									borderRadius: 3,
-									background: alpha(theme.palette.background.paper, 0.7),
-									border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+									borderRadius: '16px',
+									background: theme.palette.mode === 'dark'
+										? alpha(theme.palette.background.paper, 0.8)
+										: alpha(theme.palette.background.paper, 0.9),
+									border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
 									transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 									cursor: 'pointer',
+									boxShadow: theme.shadows[3],
 									'&:hover': {
-										transform: 'translateY(-8px)',
-										boxShadow: `0 20px 40px ${alpha(theme.palette.primary.main, 0.15)}`,
-										border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
+										transform: 'translateY(-4px)',
+										boxShadow: theme.shadows[8],
+										borderColor: alpha(theme.palette.primary.main, 0.4),
+										background: theme.palette.mode === 'dark'
+											? alpha(theme.palette.background.paper, 0.95)
+											: alpha(theme.palette.background.paper, 1)
+									},
+									'&:focus': {
+										outline: 'none',
+										borderColor: theme.palette.primary.main,
+										boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
 									}
 								}}
 							>
@@ -126,18 +138,20 @@ export function BenefitsSection({
 									sx={{
 										fontWeight: 600,
 										mb: 2,
-										color: theme.palette.text.primary,
-										lineHeight: 1.3
+										color: 'text.primary',
+										lineHeight: 1.3,
+										fontFamily: 'Inter, system-ui, sans-serif'
 									}}
 								>
 									{benefit.title}
 								</Typography>
 								<Typography
-									variant="body1"
+									variant="body2"
 									color="text.secondary"
 									sx={{
 										lineHeight: 1.6,
-										fontSize: '0.95rem'
+										fontSize: '0.95rem',
+										fontFamily: 'Inter, system-ui, sans-serif'
 									}}
 								>
 									{benefit.description}
@@ -148,7 +162,7 @@ export function BenefitsSection({
 				))}
 			</Grid>
 
-			{/* Background Decoration */}
+			{/* Background Decoration - Elementos sutis */}
 			<Box
 				sx={{
 					position: 'absolute',
@@ -156,7 +170,7 @@ export function BenefitsSection({
 					right: '-10%',
 					width: '30%',
 					height: '60%',
-					background: `radial-gradient(circle, ${alpha(theme.palette.primary.main, 0.05)} 0%, transparent 70%)`,
+					background: `radial-gradient(circle, ${alpha(theme.palette.divider, 0.08)} 0%, transparent 70%)`,
 					borderRadius: '50%',
 					zIndex: -1
 				}}
@@ -168,7 +182,7 @@ export function BenefitsSection({
 					left: '-5%',
 					width: '25%',
 					height: '40%',
-					background: `radial-gradient(circle, ${alpha(theme.palette.secondary.main, 0.05)} 0%, transparent 70%)`,
+					background: `radial-gradient(circle, ${alpha(theme.palette.divider, 0.06)} 0%, transparent 70%)`,
 					borderRadius: '50%',
 					zIndex: -1
 				}}

@@ -1,5 +1,6 @@
-import { Box, TextField, FormControl, InputLabel, Select, MenuItem, InputAdornment, useTheme } from '@mui/material';
-import { Search } from '@mui/icons-material';
+import { Box, TextField, FormControl, InputLabel, Select, MenuItem, InputAdornment, useTheme, Typography, Chip } from '@mui/material';
+import { Search, FilterList } from '@mui/icons-material';
+import { alpha } from '@mui/material/styles';
 
 interface LinksFiltersProps {
 	searchTerm: string;
@@ -9,135 +10,210 @@ interface LinksFiltersProps {
 }
 
 /**
- * Filtros para a listagem de links
- * Busca por texto e filtro por status
+ * Filtros para a listagem de links - melhorados
+ * Busca por texto e filtro por status com design padronizado
  */
 export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatusChange }: LinksFiltersProps) {
 	const theme = useTheme();
 
+	const getStatusLabel = (status: string) => {
+		const labels = {
+			all: 'Todos os Links',
+			active: 'Links Ativos',
+			inactive: 'Links Inativos'
+		};
+		return labels[status as keyof typeof labels] || status;
+	};
+
+	const getStatusColor = (status: string) => {
+		const colors = {
+			all: 'default',
+			active: 'success',
+			inactive: 'warning'
+		};
+		return colors[status as keyof typeof colors] || 'default';
+	};
+
 	return (
 		<Box
 			sx={{
-				background:
-					theme.palette.mode === 'dark' ? `${theme.palette.background.paper}CC` : 'rgba(255, 255, 255, 0.9)',
+				background: theme.palette.mode === 'dark'
+					? alpha(theme.palette.background.paper, 0.8)
+					: alpha('#ffffff', 0.9),
 				backdropFilter: 'blur(20px)',
-				borderRadius: 3,
+				borderRadius: '16px',
 				p: 3,
 				mb: 4,
-				border: `1px solid ${
-					theme.palette.mode === 'dark' ? `${theme.palette.primary.main}20` : `${theme.palette.divider}80`
-				}`,
-				boxShadow:
-					theme.palette.mode === 'dark' ? '0 8px 32px rgba(0, 0, 0, 0.4)' : '0 8px 32px rgba(0, 0, 0, 0.1)',
-				display: 'flex',
-				gap: 3,
-				flexDirection: { xs: 'column', sm: 'row' },
-				alignItems: { xs: 'stretch', sm: 'center' },
-				transition: 'all 0.3s ease-in-out',
+				border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
+				boxShadow: theme.shadows[3],
+				transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 				'&:hover': {
-					background:
-						theme.palette.mode === 'dark'
-							? `${theme.palette.background.paper}E6`
-							: 'rgba(255, 255, 255, 0.95)',
-					boxShadow:
-						theme.palette.mode === 'dark'
-							? '0 12px 40px rgba(0, 0, 0, 0.5)'
-							: '0 12px 40px rgba(0, 0, 0, 0.15)',
-					transform: 'translateY(-2px)'
+					boxShadow: theme.shadows[8],
+					transform: 'translateY(-4px)',
+					background: theme.palette.mode === 'dark'
+						? alpha(theme.palette.background.paper, 0.9)
+						: alpha('#ffffff', 0.95)
 				}
 			}}
 		>
-			<TextField
-				placeholder="Buscar por título, URL ou slug..."
-				value={searchTerm}
-				onChange={(e) => onSearchChange(e.target.value)}
-				sx={{
-					flex: 1,
-					minWidth: 300,
-					'& .MuiOutlinedInput-root': {
-						borderRadius: 3,
-						background:
-							theme.palette.mode === 'dark'
-								? `${theme.palette.background.default}80`
-								: 'rgba(255, 255, 255, 0.8)',
-						transition: 'all 0.3s ease-in-out',
-						border: `1px solid ${theme.palette.divider}`,
-						'&:hover': {
-							background:
-								theme.palette.mode === 'dark'
-									? `${theme.palette.background.default}CC`
-									: 'rgba(255, 255, 255, 0.95)',
-							transform: 'translateY(-1px)',
-							boxShadow:
-								theme.palette.mode === 'dark'
-									? '0 4px 12px rgba(0, 0, 0, 0.3)'
-									: '0 4px 12px rgba(0, 0, 0, 0.1)',
-							borderColor: theme.palette.primary.main
-						},
-						'&.Mui-focused': {
-							background:
-								theme.palette.mode === 'dark'
-									? theme.palette.background.default
-									: 'rgba(255, 255, 255, 1)',
-							boxShadow: `0 4px 20px ${theme.palette.primary.main}33`,
-							borderColor: theme.palette.primary.main
-						}
-					}
-				}}
-				InputProps={{
-					startAdornment: (
-						<InputAdornment position="start">
-							<Search sx={{ color: 'primary.main', fontSize: 20 }} />
-						</InputAdornment>
-					)
-				}}
-			/>
+			{/* Header dos filtros */}
+			<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+				<FilterList sx={{ color: 'primary.main', mr: 1 }} />
+				<Typography
+					variant="h6"
+					sx={{
+						fontWeight: 600,
+						color: 'text.primary',
+						fontFamily: 'Inter, system-ui, sans-serif'
+					}}
+				>
+					Filtros
+				</Typography>
+				{(searchTerm || statusFilter !== 'all') && (
+					<Chip
+						label={`${searchTerm ? '1' : '0'} filtro${searchTerm ? '' : 's'} ativo${searchTerm ? '' : 's'}`}
+						size="small"
+						color="primary"
+						sx={{ ml: 'auto', fontWeight: 500 }}
+					/>
+				)}
+			</Box>
 
-			<FormControl
+			{/* Controles de filtro */}
+			<Box
 				sx={{
-					minWidth: 200,
-					'& .MuiOutlinedInput-root': {
-						borderRadius: 3,
-						background:
-							theme.palette.mode === 'dark'
-								? `${theme.palette.background.default}80`
-								: 'rgba(255, 255, 255, 0.8)',
-						transition: 'all 0.3s ease-in-out',
-						border: `1px solid ${theme.palette.divider}`,
-						'&:hover': {
-							background:
-								theme.palette.mode === 'dark'
-									? `${theme.palette.background.default}CC`
-									: 'rgba(255, 255, 255, 0.95)',
-							transform: 'translateY(-1px)',
-							boxShadow:
-								theme.palette.mode === 'dark'
-									? '0 4px 12px rgba(0, 0, 0, 0.3)'
-									: '0 4px 12px rgba(0, 0, 0, 0.1)',
-							borderColor: theme.palette.primary.main
-						},
-						'&.Mui-focused': {
-							background:
-								theme.palette.mode === 'dark'
-									? theme.palette.background.default
-									: 'rgba(255, 255, 255, 1)',
-							boxShadow: `0 4px 20px ${theme.palette.primary.main}33`,
-							borderColor: theme.palette.primary.main
-						}
-					}
+					display: 'flex',
+					gap: 2,
+					flexDirection: { xs: 'column', sm: 'row' },
+					alignItems: { xs: 'stretch', sm: 'center' }
 				}}
 			>
-				<InputLabel>Status</InputLabel>
-				<Select
-					value={statusFilter}
-					label="Status"
-					onChange={(e) => onStatusChange(e.target.value)}
+				<TextField
+					placeholder="Buscar por título, URL ou slug..."
+					value={searchTerm}
+					onChange={(e) => onSearchChange(e.target.value)}
+					fullWidth
+					sx={{
+						flex: 1,
+						minWidth: 300,
+						'& .MuiOutlinedInput-root': {
+							borderRadius: '12px',
+							backgroundColor: theme.palette.mode === 'dark'
+								? alpha(theme.palette.background.default, 0.6)
+								: alpha('#ffffff', 0.8),
+							border: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
+							transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+							fontFamily: 'Inter, system-ui, sans-serif',
+							'&:hover': {
+								backgroundColor: theme.palette.mode === 'dark'
+									? alpha(theme.palette.background.default, 0.8)
+									: alpha('#ffffff', 0.95),
+								borderColor: alpha(theme.palette.primary.main, 0.5),
+								boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`
+							},
+							'&.Mui-focused': {
+								backgroundColor: theme.palette.mode === 'dark'
+									? theme.palette.background.default
+									: '#ffffff',
+								borderColor: theme.palette.primary.main,
+								boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+							},
+							'& fieldset': {
+								border: 'none'
+							}
+						},
+						'& .MuiInputBase-input': {
+							fontFamily: 'Inter, system-ui, sans-serif',
+							fontSize: '0.95rem'
+						}
+					}}
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">
+								<Search sx={{
+									color: 'primary.main',
+									fontSize: 22,
+									opacity: 0.7
+								}} />
+							</InputAdornment>
+						)
+					}}
+				/>
+
+				<FormControl
+					sx={{
+						minWidth: 180,
+						'& .MuiOutlinedInput-root': {
+							borderRadius: '12px',
+							backgroundColor: theme.palette.mode === 'dark'
+								? alpha(theme.palette.background.default, 0.6)
+								: alpha('#ffffff', 0.8),
+							border: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
+							transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+							'&:hover': {
+								backgroundColor: theme.palette.mode === 'dark'
+									? alpha(theme.palette.background.default, 0.8)
+									: alpha('#ffffff', 0.95),
+								borderColor: alpha(theme.palette.primary.main, 0.5),
+								boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`
+							},
+							'&.Mui-focused': {
+								backgroundColor: theme.palette.mode === 'dark'
+									? theme.palette.background.default
+									: '#ffffff',
+								borderColor: theme.palette.primary.main,
+								boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+							},
+							'& fieldset': {
+								border: 'none'
+							}
+						},
+						'& .MuiInputLabel-root': {
+							fontFamily: 'Inter, system-ui, sans-serif',
+							fontWeight: 500
+						},
+						'& .MuiSelect-select': {
+							fontFamily: 'Inter, system-ui, sans-serif',
+							fontWeight: 500
+						}
+					}}
 				>
-					<MenuItem value="all">Todos</MenuItem>
-					<MenuItem value="active">Ativos</MenuItem>
-					<MenuItem value="inactive">Inativos</MenuItem>
-				</Select>
-			</FormControl>
+					<InputLabel>Status do Link</InputLabel>
+					<Select
+						value={statusFilter}
+						label="Status do Link"
+						onChange={(e) => onStatusChange(e.target.value)}
+					>
+						<MenuItem value="all" sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+							<Chip
+								label="Todos"
+								size="small"
+								color="default"
+								sx={{ mr: 1, fontWeight: 500 }}
+							/>
+							Todos os Links
+						</MenuItem>
+						<MenuItem value="active" sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+							<Chip
+								label="Ativo"
+								size="small"
+								color="success"
+								sx={{ mr: 1, fontWeight: 500 }}
+							/>
+							Links Ativos
+						</MenuItem>
+						<MenuItem value="inactive" sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+							<Chip
+								label="Inativo"
+								size="small"
+								color="warning"
+								sx={{ mr: 1, fontWeight: 500 }}
+							/>
+							Links Inativos
+						</MenuItem>
+					</Select>
+				</FormControl>
+			</Box>
 		</Box>
 	);
 }

@@ -4,7 +4,7 @@ import { Box, ThemeProvider, CssBaseline, createTheme } from '@mui/material';
 
 // Components
 import { RedirectLoader } from '@/features/redirect/components/RedirectLoader';
-import { RedirectStats } from '@/features/redirect/components/RedirectStats';
+import RedirectStats from '@/features/redirect/components/RedirectStats';
 
 // Hooks
 import { useRedirectWithDelay } from '@/features/redirect/hooks/useRedirectWithDelay';
@@ -33,7 +33,7 @@ function RedirectPage() {
     const [isValidLink, setIsValidLink] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
 
-    const { countdown, isRedirecting } = useRedirectWithDelay(targetUrl, 3000);
+    const { countdown, isRedirecting } = useRedirectWithDelay(targetUrl, { delay: 3000 });
 
     useEffect(() => {
         const fetchRedirectData = async () => {
@@ -57,7 +57,7 @@ function RedirectPage() {
                 } else {
                     setError('Link inativo ou expirado');
                 }
-            } catch (err) {
+            } catch (_err) {
                 setError('Erro ao carregar dados do link');
             }
         };

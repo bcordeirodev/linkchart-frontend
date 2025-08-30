@@ -184,7 +184,7 @@ export function useEnhancedAnalytics(linkId: string) {
         try {
             // Tentar endpoint protegido primeiro
             try {
-                const apiResponse = await api.get<ApiResponse<HeatmapPoint[]>>(`analytics/link/${linkId}/heatmap`);
+                const apiResponse = await api.get<ApiResponse<HeatmapPoint[]>>(`/api/analytics/link/${linkId}/heatmap`);
                 const response =
                     apiResponse.data ||
                     (apiResponse as unknown as { heatmap_data?: HeatmapPoint[]; data?: HeatmapPoint[] });

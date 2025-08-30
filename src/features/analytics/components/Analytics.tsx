@@ -179,7 +179,6 @@ export function Analytics({
                                 value={tabValue}
                                 onChange={handleTabChange}
                                 variant="scrollable"
-                                scrollButtons="auto"
                             >
                                 {tabLabels.map((tab, index) => (
                                     <Tab
@@ -331,7 +330,7 @@ export function Analytics({
                     {/* Heatmap Tab */}
                     <TabPanel value={tabValue} index={showDashboardTab ? 6 : 5}>
                         <SectionContainer elevation={0}>
-                            <HeatmapAnalysis data={data} />
+                            <HeatmapAnalysis data={data} linkId={linkId} />
                         </SectionContainer>
                     </TabPanel>
 
