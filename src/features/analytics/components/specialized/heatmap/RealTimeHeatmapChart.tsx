@@ -109,10 +109,12 @@ export function RealTimeHeatmapChart({
                 mapReady,
                 isClient,
                 dataIsArray: Array.isArray(data),
-                dataType: typeof data
+                dataType: typeof data,
+                minClicksFilter,
+                hasStats: !!stats
             });
         }
-    }, [data, linkId, globalMode, loading, error, stats, mapReady, isClient]);
+    }, [data, linkId, globalMode, loading, error, stats, mapReady, isClient, minClicksFilter]);
 
     useEffect(() => {
         setIsClient(true);
@@ -169,7 +171,7 @@ export function RealTimeHeatmapChart({
         const totalLng = data.reduce((sum: number, point: HeatmapPoint) => sum + point.lng, 0);
 
         const center: [number, number] = [totalLat / data.length, totalLng / data.length];
-        
+
         if (process.env.NODE_ENV === 'development') {
             console.log('🗺️ RealTimeHeatmapChart: Centro do mapa calculado:', {
                 center,
@@ -183,10 +185,16 @@ export function RealTimeHeatmapChart({
 
     // Calcular raio do marcador baseado no número de cliques
     const getMarkerRadius = useCallback((clicks: number, maxClicks: number) => {
-        const minRadius = 6;
-        const maxRadius = 25;
-        const normalizedClicks = clicks / maxClicks;
-        return minRadius + normalizedClicks * (maxRadius - minRadius);
+        const minRadius = 12; // Aumentado de 6 para 12
+        const maxRadius = 35; // Aumentado de 25 para 35
+        const normalizedClicks = maxClicks > 0 ? clicks / maxClicks : 0;
+        const radius = minRadius + normalizedClicks * (maxRadius - minRadius);
+
+        if (process.env.NODE_ENV === 'development') {
+            console.log('📏 Calculando raio:', { clicks, maxClicks, normalizedClicks, radius });
+        }
+
+        return radius;
     }, []);
 
     // Calcular cor do marcador baseado no número de cliques
@@ -446,7 +454,10 @@ export function RealTimeHeatmapChart({
                                 </Typography>
                                 <Slider
                                     value={minClicksFilter}
-                                    onChange={(_, value) => setMinClicksFilter(value as number)}
+                                    onChange={(_, value) => {
+                                        console.log('🎚️ Mudando filtro de cliques para:', value);
+                                        setMinClicksFilter(value as number);
+                                    }}
                                     min={1}
                                     max={stats?.maxClicks || 100}
                                     size="small"
@@ -506,7 +517,7 @@ export function RealTimeHeatmapChart({
                 }}>
                     <MapContainer
                         center={getMapCenter()}
-                        zoom={2}
+                        zoom={4}
                         style={{ height: '100%', width: '100%' }}
                         scrollWheelZoom={true}
                     >
@@ -524,7 +535,7 @@ export function RealTimeHeatmapChart({
                                     maxClicks: stats?.maxClicks
                                 });
                             }
-                            
+
                             return (
                                 <CircleMarker
                                     key={`${point.lat}-${point.lng}-${index}-${point.clicks}`}
@@ -532,44 +543,44 @@ export function RealTimeHeatmapChart({
                                     radius={getMarkerRadius(point.clicks, stats?.maxClicks || 1)}
                                     fillColor={getMarkerColor(point.clicks, stats?.maxClicks || 1)}
                                     color={getMarkerColor(point.clicks, stats?.maxClicks || 1)}
-                                    weight={2}
-                                    opacity={0.8}
-                                    fillOpacity={0.6}
+                                    weight={3}
+                                    opacity={1.0}
+                                    fillOpacity={0.8}
                                 >
-                                <Popup>
-                                    <Box sx={{ p: 1, minWidth: 200 }}>
-                                        <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                                            📍 {point.city}, {point.country}
-                                        </Typography>
-                                        <Typography variant="h6" color="primary" gutterBottom>
-                                            {point.clicks.toLocaleString()} cliques
-                                        </Typography>
-                                        <Typography variant="caption" color="text.secondary">
-                                            Coordenadas: {point.lat.toFixed(4)}, {point.lng.toFixed(4)}
-                                        </Typography>
-                                        {point.state_name && (
-                                            <Typography variant="caption" color="text.secondary" display="block">
-                                                Estado/Região: {point.state_name}
+                                    <Popup>
+                                        <Box sx={{ p: 1, minWidth: 200 }}>
+                                            <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                                                📍 {point.city}, {point.country}
                                             </Typography>
-                                        )}
-                                        {point.iso_code && (
-                                            <Typography variant="caption" color="text.secondary" display="block">
-                                                Código: {point.iso_code} | Moeda: {point.currency}
+                                            <Typography variant="h6" color="primary" gutterBottom>
+                                                {point.clicks.toLocaleString()} cliques
                                             </Typography>
-                                        )}
-                                        {point.continent && (
-                                            <Typography variant="caption" color="text.secondary" display="block">
-                                                Continente: {point.continent}
+                                            <Typography variant="caption" color="text.secondary">
+                                                Coordenadas: {point.lat.toFixed(4)}, {point.lng.toFixed(4)}
                                             </Typography>
-                                        )}
-                                        {point.last_click && (
-                                            <Typography variant="caption" color="primary" display="block" sx={{ mt: 1 }}>
-                                                Último clique: {new Date(point.last_click).toLocaleString('pt-BR')}
-                                            </Typography>
-                                        )}
-                                    </Box>
-                                </Popup>
-                            </CircleMarker>
+                                            {point.state_name && (
+                                                <Typography variant="caption" color="text.secondary" display="block">
+                                                    Estado/Região: {point.state_name}
+                                                </Typography>
+                                            )}
+                                            {point.iso_code && (
+                                                <Typography variant="caption" color="text.secondary" display="block">
+                                                    Código: {point.iso_code} | Moeda: {point.currency}
+                                                </Typography>
+                                            )}
+                                            {point.continent && (
+                                                <Typography variant="caption" color="text.secondary" display="block">
+                                                    Continente: {point.continent}
+                                                </Typography>
+                                            )}
+                                            {point.last_click && (
+                                                <Typography variant="caption" color="primary" display="block" sx={{ mt: 1 }}>
+                                                    Último clique: {new Date(point.last_click).toLocaleString('pt-BR')}
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                    </Popup>
+                                </CircleMarker>
                             );
                         })}
                     </MapContainer>
