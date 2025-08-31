@@ -114,6 +114,14 @@ function AppRouter() {
                 }
             />
             <Route
+                path="/link/:id/analytics"
+                element={
+                    <LoadingWrapper>
+                        <LinkAnalyticsPage />
+                    </LoadingWrapper>
+                }
+            />
+            <Route
                 path="/links"
                 element={<Navigate to="/link" replace />}
             />
