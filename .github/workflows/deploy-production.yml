@@ -207,33 +207,30 @@ jobs:
           echo "🚀 Manual deployment command:"
           echo "ssh root@134.209.33.182 'cd /var/www/linkchart-frontend && git pull origin main && docker compose -f docker-compose.prod.yml down && docker build -f Dockerfile.prod -t linkcharts-frontend:latest . --no-cache && docker compose -f docker-compose.prod.yml up -d'"
 
+      - name: 🧪 Test SSH Connection
+        if: steps.check-ssh.outputs.ssh_configured == 'true'
+        run: |
+          echo "🔐 Testing SSH connection..."
+          ssh -o StrictHostKeyChecking=no root@134.209.33.182 'echo "✅ SSH connection successful!" && whoami && pwd'
+
       - name: 🚀 Execute Deployment
         if: steps.check-ssh.outputs.ssh_configured == 'true'
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_HOST }} << 'EOF'
+          echo "🚀 Starting deployment via SSH..."
+          ssh -o StrictHostKeyChecking=no root@134.209.33.182 << 'EOF'
+            set -e
             cd /var/www/linkchart-frontend
             
             echo "🚀 Starting deployment..."
-            
-            # Criar backup
-            echo "📦 Creating backup..."
-            mkdir -p backups
-            BACKUP_DIR="backups/$(date +%Y%m%d_%H%M%S)"
-            if [ -d "dist" ]; then
-              cp -r dist/ $BACKUP_DIR-dist/ 2>/dev/null || true
-            fi
+            echo "📍 Current directory: $(pwd)"
+            echo "👤 Current user: $(whoami)"
             
             # Atualizar código
             echo "📥 Updating code..."
             git fetch origin
             git reset --hard origin/main
             git pull origin main
-            
-            # Limpar cache do Vite e Node
-            echo "🧹 Cleaning Vite and Node cache..."
-            rm -rf node_modules/.vite 2>/dev/null || true
-            rm -rf dist/ 2>/dev/null || true
-            rm -rf .vite/ 2>/dev/null || true
+            echo "✅ Code updated to: $(git log --oneline -1)"
             
             # Parar containers existentes
             echo "🛑 Stopping existing containers..."
@@ -241,12 +238,13 @@ jobs:
             
             # Limpar TUDO do Docker para forçar rebuild completo
             echo "🧹 Cleaning ALL Docker cache..."
-            docker system prune -af --volumes
+            docker system prune -af
             docker builder prune -af
             
             # Rebuild com timestamp único para evitar cache
             echo "🏗️ Building new image with latest code..."
             TIMESTAMP=$(date +%s)
+            echo "🔖 Building with timestamp: $TIMESTAMP"
             docker build -f Dockerfile.prod -t linkcharts-frontend:$TIMESTAMP . --no-cache --pull
             docker tag linkcharts-frontend:$TIMESTAMP linkcharts-frontend:latest
             
@@ -260,19 +258,12 @@ jobs:
             
             if curl -f http://localhost:3000/health > /dev/null 2>&1; then
               echo "✅ Deployment successful!"
+              echo "🌐 Application available at: http://134.209.33.182:3000"
             else
-              echo "❌ Health check failed, rolling back..."
-              docker compose -f docker-compose.prod.yml down
-              if [ -d "$BACKUP_DIR-dist" ] && [ "$(ls -A $BACKUP_DIR-dist)" ]; then
-                cp -r $BACKUP_DIR-dist/* dist/
-                docker compose -f docker-compose.prod.yml up -d
-              fi
+              echo "❌ Health check failed!"
+              docker compose -f docker-compose.prod.yml logs --tail=20
               exit 1
             fi
-            
-            # Limpeza de backups antigos (manter apenas os 5 mais recentes)
-            echo "🧹 Cleaning old backups..."
-            find backups -maxdepth 1 -type d -name "20*" | sort -r | tail -n +6 | xargs rm -rf 2>/dev/null || true
             
             echo "🎉 Deployment completed successfully!"
           EOF
