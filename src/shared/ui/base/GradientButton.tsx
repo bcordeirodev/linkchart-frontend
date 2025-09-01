@@ -1,12 +1,8 @@
 import React from 'react';
-import { ButtonProps, Box, Typography } from '@mui/material';
+import { ButtonProps, Typography } from '@mui/material';
 
 // Styled Components
-import {
-	GradientButtonContainer,
-	GradientButtonContent,
-	GradientButtonSpinner
-} from './styles/UI.styled';
+import { GradientButtonContainer, GradientButtonContent, GradientButtonSpinner } from './styles/UI.styled';
 
 interface GradientButtonProps extends Omit<ButtonProps, 'children'> {
 	children: React.ReactNode;
@@ -14,8 +10,6 @@ interface GradientButtonProps extends Omit<ButtonProps, 'children'> {
 	loading?: boolean;
 	shimmerEffect?: boolean;
 }
-
-
 
 /**
  * Botão com gradiente reutilizável
@@ -42,14 +36,15 @@ export function GradientButton({
 			{loading ? (
 				<GradientButtonContent>
 					<GradientButtonSpinner />
-					<Typography variant="inherit" sx={{ fontWeight: 'inherit' }}>
+					<Typography
+						variant="inherit"
+						sx={{ fontWeight: 'inherit' }}
+					>
 						Carregando...
 					</Typography>
 				</GradientButtonContent>
 			) : (
-				<GradientButtonContent>
-					{children}
-				</GradientButtonContent>
+				<GradientButtonContent>{children}</GradientButtonContent>
 			)}
 		</GradientButtonContainer>
 	);

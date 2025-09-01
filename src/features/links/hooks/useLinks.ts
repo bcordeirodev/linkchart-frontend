@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
+import { showMessage } from '@/lib/store/messageSlice';
 import { linkService } from '../../../lib/services';
 import { LinkResponse, LinkCreateRequest, LinkUpdateRequest } from '@/types';
 

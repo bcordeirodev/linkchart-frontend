@@ -9,18 +9,18 @@ export interface LinkPerformanceDashboard {
 	clicksToday: number;
 	clicksThisWeek: number;
 	clicksThisMonth: number;
-	topReferrers: Array<{
+	topReferrers: {
 		referrer: string;
 		clicks: number;
-	}>;
-	topCountries: Array<{
+	}[];
+	topCountries: {
 		country: string;
 		clicks: number;
-	}>;
-	clicksOverTime: Array<{
+	}[];
+	clicksOverTime: {
 		date: string;
 		clicks: number;
-	}>;
+	}[];
 	summary?: {
 		success_rate?: number;
 		avg_response_time?: number;
@@ -29,25 +29,25 @@ export interface LinkPerformanceDashboard {
 		total_links_with_traffic?: number;
 		most_accessed_link?: string;
 	};
-	hourly_data?: Array<{
+	hourly_data?: {
 		hour: string;
 		clicks: number;
-	}>;
-	link_performance?: Array<{
+	}[];
+	link_performance?: {
 		link_id: string;
 		clicks: number;
 		performance: number;
-	}>;
-	traffic_sources?: Array<{
+	}[];
+	traffic_sources?: {
 		source: string;
 		clicks: number;
-	}>;
-	geographic_data?: Array<{
+	}[];
+	geographic_data?: {
 		country: string;
 		clicks: number;
-	}>;
-	device_data?: Array<{
+	}[];
+	device_data?: {
 		device: string;
 		clicks: number;
-	}>;
+	}[];
 }

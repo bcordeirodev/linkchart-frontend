@@ -1,7 +1,5 @@
-import { Box, Typography, Button } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
 
 // Styled Components
 import {
@@ -42,12 +40,8 @@ export function LinksHeader({ onCreateNew }: LinksHeaderProps) {
 				<LinksHeaderDecoration />
 
 				<LinksHeaderContent>
-					<LinksHeaderTitle variant="h3">
-						Gerenciar Links
-					</LinksHeaderTitle>
-					<LinksHeaderSubtitle>
-						Crie, edite e monitore seus links encurtados
-					</LinksHeaderSubtitle>
+					<LinksHeaderTitle variant="h3">Gerenciar Links</LinksHeaderTitle>
+					<LinksHeaderSubtitle>Crie, edite e monitore seus links encurtados</LinksHeaderSubtitle>
 				</LinksHeaderContent>
 
 				<LinksHeaderActions>

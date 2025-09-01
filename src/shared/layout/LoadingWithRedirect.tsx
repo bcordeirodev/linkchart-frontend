@@ -1,4 +1,4 @@
-import FuseLoading from '@fuse/core/FuseLoading';
+import { Loading } from '@/shared/components';
 import { motion } from 'framer-motion';
 import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -32,7 +32,7 @@ function LoadingWithRedirect({ message = 'Redirecting...', showProgress = true, 
 						transition: { delay: (delay + 200) / 1000 }
 					}}
 				>
-					<FuseLoading />
+					<Loading />
 				</motion.div>
 
 				<motion.div

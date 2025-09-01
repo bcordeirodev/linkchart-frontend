@@ -1,39 +1,17 @@
 import Breadcrumbs, { BreadcrumbsProps } from '@mui/material/Breadcrumbs';
-import { FuseNavItemType } from '@fuse/core/FuseNavigation/types/FuseNavItemType';
 import { usePathname } from '@/shared/hooks';
-
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
-import Link from '@fuse/core/Link';
-import { useNavigation } from '@/lib/theme';
+import { Link } from '@/shared/components';
 
 type PageBreadcrumbProps = BreadcrumbsProps & {
 	className?: string;
 	skipHome?: boolean;
 };
 
-// Function to get the navigation item based on URL
-function getNavigationItem(url: string, navigationItems: FuseNavItemType[]): FuseNavItemType | null {
-	for (const item of navigationItems) {
-		if (item.url === url) {
-			return item;
-		}
-
-		if (item.children) {
-			const childItem = getNavigationItem(url, item.children);
-
-			if (childItem) {
-				return childItem;
-			}
-		}
-	}
-	return null as never;
-}
-
 function PageBreadcrumb(props: PageBreadcrumbProps) {
 	const { className, skipHome = false, ...rest } = props;
 	const pathname = usePathname();
-	const { navigation } = useNavigation();
 
 	const crumbs = pathname
 		.split('/')
@@ -41,8 +19,8 @@ function PageBreadcrumb(props: PageBreadcrumbProps) {
 		.reduce(
 			(acc: { title: string; url: string }[], part, index, array) => {
 				const url = `/${array.slice(0, index + 1).join('/')}`;
-				const navItem = getNavigationItem(url, navigation);
-				const title = navItem?.title || part;
+				// Título simples baseado no path
+				const title = part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' ');
 
 				acc.push({ title, url });
 				return acc;

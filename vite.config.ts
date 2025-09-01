@@ -42,8 +42,7 @@ export default defineConfig({
             '@/utils': path.resolve(__dirname, './src/lib/utils'),
             '@/i18n': path.resolve(__dirname, './src/lib/i18n'),
 
-            // Legacy support (temporary)
-            '@fuse': path.resolve(__dirname, './src/@fuse'),
+
             '@history': path.resolve(__dirname, './src/@history'),
             '@mock-utils': path.resolve(__dirname, './src/@mock-utils'),
             '@schema': path.resolve(__dirname, './src/@schema'),

@@ -1,8 +1,8 @@
 import { useState, useCallback, useMemo } from 'react';
-import { Box, Typography, Grid, CircularProgress, Stack } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { Edit, Save, Cancel, Person, Email, PhotoCamera } from '@mui/icons-material';
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
+import { showMessage } from '@/lib/store/messageSlice';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { profileService, UserProfile } from '../../../lib/services';
 
@@ -122,14 +122,10 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 					</LoadingOverlay>
 				)}
 
-				<ProfileBadge>
-					Ativo
-				</ProfileBadge>
+				<ProfileBadge>Ativo</ProfileBadge>
 
 				<ProfileHeader>
-					<ProfileTitle>
-						Informações Pessoais
-					</ProfileTitle>
+					<ProfileTitle>Informações Pessoais</ProfileTitle>
 					{!isEditing && (
 						<EditButton
 							variant="contained"
@@ -144,13 +140,9 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 				<ProfileGrid>
 					<AvatarSection>
 						<AvatarContainer>
-							<StyledAvatar>
-								{formData.name?.[0]?.toUpperCase()}
-							</StyledAvatar>
+							<StyledAvatar>{formData.name?.[0]?.toUpperCase()}</StyledAvatar>
 							{isEditing && (
-								<PhotoUploadButton
-									onClick={handlePhotoUpload}
-								>
+								<PhotoUploadButton onClick={handlePhotoUpload}>
 									<PhotoCamera />
 								</PhotoUploadButton>
 							)}

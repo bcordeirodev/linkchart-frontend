@@ -1,5 +1,5 @@
 import { Tooltip, Typography } from '@mui/material';
-import Link from '@fuse/core/Link';
+import { Link } from '@/shared/components';
 import { usePathname } from '@/shared/hooks';
 import { useState } from 'react';
 import Box from '@mui/material/Box';

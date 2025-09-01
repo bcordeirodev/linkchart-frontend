@@ -1,177 +1,181 @@
 /**
- * Footer principal para Link Charts
- * Versão limpa e minimalista
+ * 🦶 FOOTER COMPONENT - LINK CHART
+ * Componente de rodapé da aplicação
+ * 
+ * @description
+ * Footer responsivo com informações da aplicação, links úteis e copyright.
+ * Integra com o sistema de temas para consistência visual.
+ * 
+ * @features
+ * - ✅ Design responsivo
+ * - ✅ Integração com temas
+ * - ✅ Links úteis
+ * - ✅ Informações de copyright
+ * - ✅ Estilo minimalista
+ * 
+ * @since 2.0.0
  */
 
-import { memo } from 'react';
-import { Box, Typography, Link, Divider, IconButton, Tooltip, Chip, alpha } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import LinkIcon from '@mui/icons-material/Link';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import { useThemeMediaQuery } from '@/lib/theme';
-
-const StyledFooter = styled(Box)(({ theme }) => ({
-	background: `linear-gradient(135deg, 
-		${alpha(theme.palette.background.paper, 0.95)} 0%,
-		${alpha(theme.palette.background.paper, 0.98)} 100%
-	)`,
-	backdropFilter: 'blur(20px)',
-	borderTop: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-	padding: theme.spacing(3, 4),
-	marginTop: 'auto',
-	position: 'relative',
-	'&::before': {
-		content: '""',
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		right: 0,
-		height: '1px',
-		background: `linear-gradient(90deg, 
-			transparent 0%,
-			${alpha(theme.palette.primary.main, 0.1)} 20%,
-			${alpha(theme.palette.primary.main, 0.2)} 50%,
-			${alpha(theme.palette.primary.main, 0.1)} 80%,
-			transparent 100%
-		)`
-	},
-	[theme.breakpoints.down('md')]: {
-		padding: theme.spacing(2.5, 3)
-	},
-	[theme.breakpoints.down('sm')]: {
-		padding: theme.spacing(2)
-	}
-}));
+import {
+    Box,
+    Container,
+    Typography,
+    Link,
+    useTheme,
+    alpha
+} from '@mui/material';
+import { GitHub, LinkedIn, Twitter } from '@mui/icons-material';
 
 /**
- * Footer principal para Link Charts
+ * Props do componente Footer
  */
-function Footer() {
-	const currentYear = new Date().getFullYear();
-	const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('md'));
-
-	return (
-		<StyledFooter>
-			<Box
-				sx={{
-					display: 'flex',
-					flexDirection: { xs: 'column', sm: 'row' },
-					alignItems: 'center',
-					justifyContent: 'space-between',
-					gap: 2
-				}}
-			>
-				{/* Logo e branding */}
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					<LinkIcon
-						color="primary"
-						fontSize="small"
-					/>
-					<Typography
-						variant="body2"
-						sx={{ fontWeight: 600 }}
-					>
-						Link Charts
-					</Typography>
-					<Typography
-						variant="caption"
-						color="text.secondary"
-					>
-						- Encurtador inteligente
-					</Typography>
-				</Box>
-
-				{/* Status do Sistema */}
-				{!isMobile && (
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-						<Chip
-							label="✨ MVP Gratuito"
-							size="small"
-							variant="filled"
-							color="success"
-							sx={{
-								fontWeight: 600,
-								fontSize: '0.75rem',
-								borderRadius: 2,
-								px: 0.5,
-								background: (theme) => `linear-gradient(135deg, 
-									${theme.palette.success.light} 0%, 
-									${theme.palette.success.main} 100%
-								)`,
-								boxShadow: (theme) => `0 2px 8px ${alpha(theme.palette.success.main, 0.2)}`
-							}}
-						/>
-						<Chip
-							label="🟢 Sistema Online"
-							size="small"
-							variant="filled"
-							color="primary"
-							sx={{
-								fontWeight: 600,
-								fontSize: '0.75rem',
-								borderRadius: 2,
-								px: 0.5,
-								background: (theme) => `linear-gradient(135deg, 
-									${theme.palette.primary.light} 0%, 
-									${theme.palette.primary.main} 100%
-								)`,
-								boxShadow: (theme) => `0 2px 8px ${alpha(theme.palette.primary.main, 0.2)}`
-							}}
-						/>
-					</Box>
-				)}
-
-				{/* Links e copyright */}
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					<Link
-						href="/shorter"
-						color="text.secondary"
-						underline="hover"
-						variant="caption"
-					>
-						Encurtar
-					</Link>
-
-					<Divider
-						orientation="vertical"
-						flexItem
-					/>
-
-					<Link
-						href="/analytics"
-						color="text.secondary"
-						underline="hover"
-						variant="caption"
-					>
-						Analytics
-					</Link>
-
-					<Divider
-						orientation="vertical"
-						flexItem
-					/>
-
-					<Typography
-						variant="caption"
-						color="text.secondary"
-					>
-						© {currentYear}
-					</Typography>
-
-					<Tooltip title="Projeto Open Source">
-						<IconButton
-							size="small"
-							color="inherit"
-							href="#"
-							onClick={(e) => e.preventDefault()}
-						>
-							<GitHubIcon fontSize="small" />
-						</IconButton>
-					</Tooltip>
-				</Box>
-			</Box>
-		</StyledFooter>
-	);
+interface FooterProps {
+    /** Estilo do footer */
+    style?: 'fixed' | 'static' | 'sticky';
 }
 
-export default memo(Footer);
+/**
+ * Componente de rodapé da aplicação
+ */
+export function Footer({ style = 'static' }: FooterProps) {
+    const theme = useTheme();
+    const currentYear = new Date().getFullYear();
+
+    const footerSx = {
+        backgroundColor: alpha(theme.palette.background.paper, 0.95),
+        backdropFilter: 'blur(10px)',
+        borderTop: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+        py: 3,
+        mt: 'auto',
+        ...(style === 'fixed' && {
+            position: 'fixed' as const,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: theme.zIndex.appBar - 1
+        }),
+        ...(style === 'sticky' && {
+            position: 'sticky' as const,
+            bottom: 0
+        })
+    };
+
+    return (
+        <Box component="footer" sx={footerSx}>
+            <Container maxWidth="lg">
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 2
+                    }}
+                >
+                    {/* Copyright */}
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ textAlign: { xs: 'center', md: 'left' } }}
+                    >
+                        © {currentYear} Link Chart. Todos os direitos reservados.
+                    </Typography>
+
+                    {/* Links */}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            gap: 3,
+                            alignItems: 'center'
+                        }}
+                    >
+                        <Link
+                            href="/privacy"
+                            color="text.secondary"
+                            underline="hover"
+                            variant="body2"
+                        >
+                            Privacidade
+                        </Link>
+                        <Link
+                            href="/terms"
+                            color="text.secondary"
+                            underline="hover"
+                            variant="body2"
+                        >
+                            Termos
+                        </Link>
+                        <Link
+                            href="/support"
+                            color="text.secondary"
+                            underline="hover"
+                            variant="body2"
+                        >
+                            Suporte
+                        </Link>
+                    </Box>
+
+                    {/* Social Links */}
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Link
+                            href="https://github.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            color="text.secondary"
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                p: 0.5,
+                                borderRadius: 1,
+                                '&:hover': {
+                                    color: 'primary.main',
+                                    backgroundColor: alpha(theme.palette.primary.main, 0.1)
+                                }
+                            }}
+                        >
+                            <GitHub fontSize="small" />
+                        </Link>
+                        <Link
+                            href="https://linkedin.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            color="text.secondary"
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                p: 0.5,
+                                borderRadius: 1,
+                                '&:hover': {
+                                    color: 'primary.main',
+                                    backgroundColor: alpha(theme.palette.primary.main, 0.1)
+                                }
+                            }}
+                        >
+                            <LinkedIn fontSize="small" />
+                        </Link>
+                        <Link
+                            href="https://twitter.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            color="text.secondary"
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                p: 0.5,
+                                borderRadius: 1,
+                                '&:hover': {
+                                    color: 'primary.main',
+                                    backgroundColor: alpha(theme.palette.primary.main, 0.1)
+                                }
+                            }}
+                        >
+                            <Twitter fontSize="small" />
+                        </Link>
+                    </Box>
+                </Box>
+            </Container>
+        </Box>
+    );
+}
+
+export default Footer;

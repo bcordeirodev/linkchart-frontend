@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
+import { showMessage } from '@/lib/store/messageSlice';
 import { useLinks } from '@/features/links/hooks/useLinks';
 import { linkFormSchema, LinkFormData, defaultLinkFormValues } from '@/features/links/components/LinkFormSchema';
 

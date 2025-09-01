@@ -1,12 +1,10 @@
-import themesConfig from './themesConfig';
-import { FuseSettingsConfigType } from '@fuse/core/FuseSettings/FuseSettings';
-
+import { LayoutSettingsConfigType } from '@/shared/layout/core';
 import i18n from './i18n/i18n';
 
 /**
  * The settingsConfig object is a configuration object for the Fuse application's settings.
  */
-const settingsConfig: FuseSettingsConfigType = {
+const settingsConfig: LayoutSettingsConfigType = {
 	/**
 	 * The layout object defines the layout style and configuration for the application.
 	 */
@@ -21,9 +19,20 @@ const settingsConfig: FuseSettingsConfigType = {
 		 */
 		config: {
 			navbar: {
+				display: true,
+				folded: false,
+				position: 'left',
 				style: 'style-2'
+			},
+			toolbar: {
+				display: true,
+				style: 'static'
+			},
+			footer: {
+				display: true,
+				style: 'static'
 			}
-		} // checkout default layout configs at src/components/theme-layouts for example  src/components/theme-layouts/layout1/Layout1Config.js
+		}
 	},
 
 	/**
@@ -39,10 +48,10 @@ const settingsConfig: FuseSettingsConfigType = {
 	 * The theme object defines the color theme for the application.
 	 */
 	theme: {
-		main: themesConfig.defaultDark,
-		navbar: themesConfig.defaultDark,
-		toolbar: themesConfig.defaultDark,
-		footer: themesConfig.defaultDark
+		main: 'defaultDark',
+		navbar: 'defaultDark',
+		toolbar: 'defaultDark',
+		footer: 'defaultDark'
 	},
 
 	/**

@@ -18,9 +18,9 @@ export type { LinkCreateRequest, LinkUpdateRequest, LinkResponse } from './api';
 
 declare global {
 	// Mantidas para compatibilidade durante transição
-	interface ILinkCreate extends LinkCreateRequest { }
-	interface ILinkUpdate extends LinkUpdateRequest { }
-	interface ILinkResponse extends LinkResponse { }
+	interface ILinkCreate extends LinkCreateRequest {}
+	interface ILinkUpdate extends LinkUpdateRequest {}
+	interface ILinkResponse extends LinkResponse {}
 }
 
 // ========================================
@@ -71,4 +71,4 @@ export interface LinkBulkAction {
 	link_ids: number[];
 }
 
-export { };
+export {};

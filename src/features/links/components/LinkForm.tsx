@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Alert, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import { Save, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { LinkFormFields } from './LinkFormFields';
@@ -85,9 +85,7 @@ export function LinkForm({ mode, linkId, initialData, title, onSuccess, showBack
 							Voltar
 						</BackButton>
 					)}
-					<FormTitle>
-						{formTitle}
-					</FormTitle>
+					<FormTitle>{formTitle}</FormTitle>
 				</FormHeader>
 			)}
 
@@ -104,9 +102,7 @@ export function LinkForm({ mode, linkId, initialData, title, onSuccess, showBack
 						</LoadingOverlay>
 					)}
 
-					<FormBadge mode={mode}>
-						{mode === 'create' ? 'Novo' : 'Edição'}
-					</FormBadge>
+					<FormBadge mode={mode}>{mode === 'create' ? 'Novo' : 'Edição'}</FormBadge>
 
 					<form onSubmit={handleSubmit}>
 						<FormFieldsContainer>
@@ -134,7 +130,16 @@ export function LinkForm({ mode, linkId, initialData, title, onSuccess, showBack
 							<SubmitButton
 								type="submit"
 								variant="contained"
-								startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Save />}
+								startIcon={
+									loading ? (
+										<CircularProgress
+											size={20}
+											color="inherit"
+										/>
+									) : (
+										<Save />
+									)
+								}
 								disabled={!isValid || loading || (mode === 'edit' && !isDirty)}
 								mode={mode}
 								isLoading={loading}

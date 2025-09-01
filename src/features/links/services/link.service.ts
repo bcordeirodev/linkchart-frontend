@@ -50,8 +50,8 @@ export default class LinkService extends BaseService {
 	async all(): Promise<LinkResponse[]> {
 		const fallbackData: LinkResponse[] = [
 			{
-				id: "1",
-				user_id: "1",
+				id: '1',
+				user_id: '1',
 				title: 'Link Principal',
 				slug: 'principal',
 				original_url: 'https://escolaplanejamento.sit.spgg.rs.gov.br/',
@@ -98,7 +98,7 @@ export default class LinkService extends BaseService {
 		const fallbackData = {
 			data: {
 				id: id,
-				user_id: "1",
+				user_id: '1',
 				title: 'Link de Exemplo',
 				slug: 'exemplo',
 				original_url: 'https://example.com',
@@ -148,11 +148,12 @@ export default class LinkService extends BaseService {
 	/**
 	 * Cria uma URL encurtada (legacy)
 	 */
-	async createShortUrl(data: { original_url: string;[key: string]: unknown }): Promise<{ data: unknown }> {
+	async createShortUrl(data: { original_url: string; [key: string]: unknown }): Promise<{ data: unknown }> {
 		this.validateRequired(data, ['original_url']);
 
 		// Normalizar URL - adicionar https:// se não tiver protocolo
 		let url = data.original_url.trim();
+
 		if (!/^https?:\/\//i.test(url)) {
 			url = `https://${url}`;
 		}

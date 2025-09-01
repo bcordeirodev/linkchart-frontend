@@ -4,9 +4,9 @@
  * Re-exporta tipos de API e adiciona tipos específicos do frontend
  */
 
-import { FuseSettingsConfigType } from '@fuse/core/FuseSettings/FuseSettings';
+import { LayoutSettingsConfigType } from '@/shared/layout/core';
 import { PartialDeep } from 'type-fest';
-import { LoginResponse, UserResponse } from './api';
+import { UserResponse } from './api';
 
 // ========================================
 // 👤 USER TYPES (Re-exports from API)
@@ -18,8 +18,6 @@ export type { LoginResponse, UserResponse, RegisterRequest } from './api';
 // 🔐 AUTH TYPES
 // ========================================
 
-
-
 /**
  * Frontend user object with UI-specific properties
  */
@@ -30,11 +28,9 @@ export interface User {
 	photoURL?: string;
 	email?: string;
 	shortcuts?: string[];
-	settings?: PartialDeep<FuseSettingsConfigType>;
+	settings?: PartialDeep<LayoutSettingsConfigType>;
 	loginRedirectUrl?: string;
 }
-
-
 
 // ========================================
 // 🎯 USER-SPECIFIC TYPES

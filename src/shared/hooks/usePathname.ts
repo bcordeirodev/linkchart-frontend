@@ -5,6 +5,6 @@ import { useLocation } from 'react-router-dom';
  * Compatível com React.js usePathname
  */
 export default function usePathname(): string {
-    const location = useLocation();
-    return location.pathname;
+	const location = useLocation();
+	return location.pathname;
 }

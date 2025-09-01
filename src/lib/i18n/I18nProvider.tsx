@@ -1,4 +1,4 @@
-import useFuseSettings from '@fuse/core/FuseSettings/hooks/useFuseSettings';
+import { useLayoutSettings } from '@/shared/layout/core';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import i18n from './i18n';
@@ -16,7 +16,7 @@ const languages: LanguageType[] = [
 
 export function I18nProvider(props: I18nProviderProps) {
 	const { children } = props;
-	const { data: settings, setSettings } = useFuseSettings();
+	const { data: settings, setSettings } = useLayoutSettings();
 	const settingsThemeDirection = useMemo(() => settings.direction, [settings]);
 	const [languageId, setLanguageId] = useState(i18n.options.lng);
 

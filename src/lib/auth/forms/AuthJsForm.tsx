@@ -2,7 +2,7 @@ import { Alert, TextField, Button, Box, Typography, CircularProgress } from '@mu
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { useState } from 'react';
-import { getSessionRedirectUrl, resetSessionRedirectUrl } from '@fuse/core/FuseAuthorization/sessionRedirectUrl';
+import { getSessionRedirectUrl, resetSessionRedirectUrl } from '@/lib/auth/sessionRedirectUrl';
 import { alpha, useTheme } from '@mui/material/styles';
 
 type AuthJsFormProps = { formType: 'signin' | 'signup' };
@@ -84,85 +84,23 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 		>
 			<TextField
 				type="email"
+				label="Email"
 				placeholder="Digite seu email"
 				value={email}
 				onChange={(e) => setEmail(e.target.value)}
 				required
 				fullWidth
 				variant="outlined"
-				sx={{
-					'& .MuiOutlinedInput-root': {
-						borderRadius: '12px',
-						backgroundColor: alpha('#ffffff', 0.08),
-						backdropFilter: 'blur(10px)',
-						border: `1px solid ${alpha('#ffffff', 0.15)}`,
-						transition: 'all 0.3s ease',
-						'& fieldset': {
-							border: 'none'
-						},
-						'&:hover': {
-							backgroundColor: alpha('#ffffff', 0.12),
-							borderColor: alpha('#ffffff', 0.25),
-							transform: 'translateY(-2px)',
-							boxShadow: `0 8px 25px ${alpha('#000000', 0.15)}`
-						},
-						'&.Mui-focused': {
-							backgroundColor: alpha('#ffffff', 0.15),
-							borderColor: theme.palette.primary.main,
-							boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
-						}
-					},
-					'& .MuiInputBase-input': {
-						color: 'white',
-						fontSize: '1rem',
-						padding: '14px 16px',
-						'&::placeholder': {
-							color: alpha('#ffffff', 0.6),
-							opacity: 1
-						}
-					}
-				}}
 			/>
 			<TextField
 				type="password"
+				label="Senha"
 				placeholder="Digite sua senha"
 				value={password}
 				onChange={(e) => setPassword(e.target.value)}
 				required
 				fullWidth
 				variant="outlined"
-				sx={{
-					'& .MuiOutlinedInput-root': {
-						borderRadius: '12px',
-						backgroundColor: alpha('#ffffff', 0.08),
-						backdropFilter: 'blur(10px)',
-						border: `1px solid ${alpha('#ffffff', 0.15)}`,
-						transition: 'all 0.3s ease',
-						'& fieldset': {
-							border: 'none'
-						},
-						'&:hover': {
-							backgroundColor: alpha('#ffffff', 0.12),
-							borderColor: alpha('#ffffff', 0.25),
-							transform: 'translateY(-2px)',
-							boxShadow: `0 8px 25px ${alpha('#000000', 0.15)}`
-						},
-						'&.Mui-focused': {
-							backgroundColor: alpha('#ffffff', 0.15),
-							borderColor: theme.palette.primary.main,
-							boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
-						}
-					},
-					'& .MuiInputBase-input': {
-						color: 'white',
-						fontSize: '1rem',
-						padding: '14px 16px',
-						'&::placeholder': {
-							color: alpha('#ffffff', 0.6),
-							opacity: 1
-						}
-					}
-				}}
 			/>
 			<Button
 				type="submit"
@@ -170,32 +108,6 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				fullWidth
 				variant="contained"
 				size="large"
-				sx={{
-					borderRadius: '12px',
-					padding: '14px 24px',
-					fontSize: '1rem',
-					fontWeight: 600,
-					background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
-					color: 'white',
-					textTransform: 'none',
-					boxShadow: '0 8px 25px rgba(25, 118, 210, 0.3)',
-					transition: 'all 0.3s ease',
-					'&:hover': {
-						background: 'linear-gradient(135deg, #1565c0 0%, #0d47a1 100%)',
-						boxShadow: '0 12px 35px rgba(25, 118, 210, 0.4)',
-						transform: 'translateY(-2px)'
-					},
-					'&:active': {
-						transform: 'translateY(0px)',
-						boxShadow: '0 4px 15px rgba(25, 118, 210, 0.3)'
-					},
-					'&:disabled': {
-						background: alpha('#ffffff', 0.1),
-						color: alpha('#ffffff', 0.5),
-						boxShadow: 'none',
-						transform: 'none'
-					}
-				}}
 			>
 				{loading ? (
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -214,8 +126,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				variant="body2"
 				sx={{
 					textAlign: 'center',
-					color: alpha('#ffffff', 0.7),
-					fontSize: '0.875rem',
+					color: 'text.secondary',
 					mt: 1
 				}}
 			>

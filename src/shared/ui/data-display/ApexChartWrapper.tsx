@@ -3,7 +3,7 @@ import { CircularProgress } from '@mui/material';
 
 // Import dinâmico para compatibilidade com Vite
 const Chart = React.lazy(() =>
-	import('react-apexcharts').then(module => ({
+	import('react-apexcharts').then((module) => ({
 		default: module.default
 	}))
 );
@@ -38,26 +38,26 @@ interface ApexChartWrapperProps {
  * 📊 APEX CHART WRAPPER COM STYLED COMPONENTS
  * Wrapper melhorado com tratamento de erro e loading states
  */
-const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
-	type,
-	height = 350,
-	width = '100%',
-	options,
-	series
-}) => {
+const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350, width = '100%', options, series }) => {
 	const [hasError, setHasError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
 	// Verificar se há dados válidos
 	const hasValidData = series && Array.isArray(series) && series.length > 0;
-	const hasDataPoints = hasValidData && series.some(s => {
-		// Para gráficos donut/pie: series é array de números [3599, 2113, 236]
-		if (typeof s === 'number' && s > 0) return true;
-		// Para gráficos line/area/bar: series é objeto {name: "Total", data: [...]}
-		if (Array.isArray(s) && s.length > 0) return true;
-		if (typeof s === 'object' && s !== null && 'data' in s && Array.isArray(s.data) && s.data.length > 0) return true;
-		return false;
-	});
+	const hasDataPoints =
+		hasValidData &&
+		series.some((s) => {
+			// Para gráficos donut/pie: series é array de números [3599, 2113, 236]
+			if (typeof s === 'number' && s > 0) return true;
+
+			// Para gráficos line/area/bar: series é objeto {name: "Total", data: [...]}
+			if (Array.isArray(s) && s.length > 0) return true;
+
+			if (typeof s === 'object' && s !== null && 'data' in s && Array.isArray(s.data) && s.data.length > 0)
+				return true;
+
+			return false;
+		});
 
 	// Debug reduzido - apenas se houver problema
 	if (import.meta.env.DEV && (!hasValidData || !hasDataPoints)) {
@@ -80,13 +80,17 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 		setHasError(false);
 	}, []);
 
-	const handleChartError = useCallback((error?: any) => {
-		if (import.meta.env.DEV) {
-			console.error('📊 ApexChart Error:', { type, error, series, options });
-		}
-		setHasError(true);
-		setIsLoading(false);
-	}, [type, series, options]);
+	const handleChartError = useCallback(
+		(error?: any) => {
+			if (import.meta.env.DEV) {
+				console.error('📊 ApexChart Error:', { type, error, series, options });
+			}
+
+			setHasError(true);
+			setIsLoading(false);
+		},
+		[type, series, options]
+	);
 
 	// Removido: Loading state durante hidratação (não necessário em React puro)
 
@@ -95,9 +99,7 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 		return (
 			<NoDataContainer style={{ height }}>
 				<NoDataIcon>📈</NoDataIcon>
-				<NoDataTitle variant="h6">
-					Sem Dados Disponíveis
-				</NoDataTitle>
+				<NoDataTitle variant="h6">Sem Dados Disponíveis</NoDataTitle>
 				<NoDataDescription>
 					Este gráfico será exibido quando houver dados suficientes para análise.
 				</NoDataDescription>
@@ -110,11 +112,13 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 		// Calcular estatísticas dos dados para mostrar algo útil
 		const getDataStats = () => {
 			try {
-				const allData = series.flatMap(s => {
-					if (Array.isArray(s)) return s.filter(v => typeof v === 'number') as number[];
+				const allData = series.flatMap((s) => {
+					if (Array.isArray(s)) return s.filter((v) => typeof v === 'number') as number[];
+
 					if (typeof s === 'object' && s !== null && 'data' in s) {
-						return Array.isArray(s.data) ? s.data.filter(v => typeof v === 'number') as number[] : [];
+						return Array.isArray(s.data) ? (s.data.filter((v) => typeof v === 'number') as number[]) : [];
 					}
+
 					return [];
 				});
 
@@ -136,12 +140,9 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 		return (
 			<ErrorContainer style={{ height }}>
 				<ErrorIcon>📊</ErrorIcon>
-				<ErrorTitle variant="h6">
-					Gráfico {type}
-				</ErrorTitle>
+				<ErrorTitle variant="h6">Gráfico {type}</ErrorTitle>
 				<ErrorDescription>
-					Houve um problema ao carregar o gráfico.
-					Visualização temporariamente indisponível.
+					Houve um problema ao carregar o gráfico. Visualização temporariamente indisponível.
 				</ErrorDescription>
 
 				{stats && (
@@ -172,10 +173,11 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 	if (isLoading) {
 		return (
 			<LoadingContainer style={{ height }}>
-				<CircularProgress size={50} thickness={4} />
-				<LoadingText>
-					Carregando gráfico {type}...
-				</LoadingText>
+				<CircularProgress
+					size={50}
+					thickness={4}
+				/>
+				<LoadingText>Carregando gráfico {type}...</LoadingText>
 			</LoadingContainer>
 		);
 	}
@@ -213,14 +215,14 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 							}
 						},
 						theme: {
-							mode: 'light',
-						},
+							mode: 'light'
+						}
 					}}
 					series={series}
 				/>
 			</Suspense>
 		</ChartContainer>
 	);
-}
+};
 
 export default ApexChartWrapper;

@@ -3,13 +3,13 @@
  */
 
 export interface ApiError {
-    message: string;
-    status: number;
-    code?: string;
+	message: string;
+	status: number;
+	code?: string;
 }
 
 export interface ChartSeries {
-    name: string;
-    data: number[];
-    color?: string;
+	name: string;
+	data: number[];
+	color?: string;
 }

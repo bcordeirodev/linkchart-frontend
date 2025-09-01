@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material';
-import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
 
 /**
  * Cabeçalho da página de perfil

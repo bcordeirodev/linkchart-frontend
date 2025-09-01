@@ -4,7 +4,7 @@
  */
 
 // Base Components
-export * from './base/MetricCard';
+export * from './base/MetricCardOptimized';
 export * from './base/ChartCard';
 export * from './base/EnhancedPaper';
 export * from './base/EmptyState';

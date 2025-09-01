@@ -45,18 +45,21 @@ export function useLinkAnalytics(id: string): UseLinkAnalyticsReturn {
 
 			// Converter estrutura para o formato esperado
 			setAnalyticsData({
-				clicks_over_time: analyticsResponse.temporal?.clicks_by_hour?.map((hour: any) => ({
-					date: hour.label || hour.date,
-					clicks: hour.clicks
-				})) || [],
-				clicks_by_country: analyticsResponse.geographic?.top_countries?.map((country: any) => ({
-					country: country.country,
-					clicks: country.clicks
-				})) || [],
-				clicks_by_device: analyticsResponse.audience?.device_breakdown?.map((device: any) => ({
-					device: device.device,
-					clicks: device.clicks
-				})) || [],
+				clicks_over_time:
+					analyticsResponse.temporal?.clicks_by_hour?.map((hour: any) => ({
+						date: hour.label || hour.date,
+						clicks: hour.clicks
+					})) || [],
+				clicks_by_country:
+					analyticsResponse.geographic?.top_countries?.map((country: any) => ({
+						country: country.country,
+						clicks: country.clicks
+					})) || [],
+				clicks_by_device:
+					analyticsResponse.audience?.device_breakdown?.map((device: any) => ({
+						device: device.device,
+						clicks: device.clicks
+					})) || [],
 				clicks_by_referer: [],
 				total_clicks: analyticsResponse.overview?.total_clicks || 0,
 				unique_visitors: analyticsResponse.overview?.unique_visitors || 0,

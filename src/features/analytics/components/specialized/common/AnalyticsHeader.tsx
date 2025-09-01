@@ -1,6 +1,5 @@
 import { Box, Typography, IconButton, Tooltip } from '@mui/material';
 import { Refresh, Download, Share } from '@mui/icons-material';
-import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
 
 interface AnalyticsHeaderProps {
 	onRefresh?: () => void;
@@ -20,10 +19,10 @@ export function AnalyticsHeader({ onRefresh, onDownload, onShare, loading = fals
 			<Box
 				sx={{
 					background: (theme) =>
-						`linear-gradient(135deg, ${theme.palette.warning?.main || '#ed6c02'}14 0%, ${theme.palette.warning?.main || '#ed6c02'}0A 100%)`,
+						`linear-gradient(135deg, ${theme.palette.primary.main}14 0%, ${theme.palette.primary.main}0A 100%)`,
 					borderRadius: 3,
 					p: 4,
-					border: (theme) => `1px solid ${theme.palette.warning?.main || '#ed6c02'}1A`,
+					border: (theme) => `1px solid ${theme.palette.primary.main}1A`,
 					display: 'flex',
 					justifyContent: 'space-between',
 					alignItems: 'center',
@@ -40,7 +39,7 @@ export function AnalyticsHeader({ onRefresh, onDownload, onShare, loading = fals
 						width: 120,
 						height: 120,
 						background: (theme) =>
-							`linear-gradient(135deg, ${theme.palette.warning?.main || '#ed6c02'}1A 0%, ${theme.palette.warning?.main || '#ed6c02'}0D 100%)`,
+							`linear-gradient(135deg, ${theme.palette.primary.main}1A 0%, ${theme.palette.primary.main}0D 100%)`,
 						borderRadius: '50%',
 						opacity: 0.7
 					}}
@@ -52,7 +51,7 @@ export function AnalyticsHeader({ onRefresh, onDownload, onShare, loading = fals
 						sx={{
 							fontWeight: 700,
 							background: (theme) =>
-								`linear-gradient(135deg, ${theme.palette.warning?.main || '#ed6c02'} 0%, ${theme.palette.warning?.light || '#ff9800'} 100%)`,
+								`linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
 							backgroundClip: 'text',
 							WebkitBackgroundClip: 'text',
 							WebkitTextFillColor: 'transparent',

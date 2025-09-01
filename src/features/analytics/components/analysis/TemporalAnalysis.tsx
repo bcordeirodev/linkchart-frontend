@@ -5,7 +5,7 @@ import { AnalyticsData } from '@/features/analytics/types/analytics';
 import { TemporalChart, TemporalInsights } from '../specialized/temporal';
 
 interface TemporalAnalysisProps {
-    data: AnalyticsData;
+	data: AnalyticsData;
 }
 
 /**
@@ -13,25 +13,34 @@ interface TemporalAnalysisProps {
  * Mantém toda funcionalidade do módulo temporal original
  */
 export function TemporalAnalysis({ data }: TemporalAnalysisProps) {
-    return (
-        <Grid container spacing={3}>
-            {/* Componente original preservado */}
-            <Grid item xs={12}>
-                <TemporalChart
-                    hourlyData={data.temporal?.clicks_by_hour || []}
-                    weeklyData={data.temporal?.clicks_by_day_of_week || []}
-                />
-            </Grid>
+	return (
+		<Grid
+			container
+			spacing={3}
+		>
+			{/* Componente original preservado */}
+			<Grid
+				item
+				xs={12}
+			>
+				<TemporalChart
+					hourlyData={data.temporal?.clicks_by_hour || []}
+					weeklyData={data.temporal?.clicks_by_day_of_week || []}
+				/>
+			</Grid>
 
-            {/* Insights temporais preservados */}
-            <Grid item xs={12}>
-                <TemporalInsights
-                    hourlyData={data.temporal?.clicks_by_hour || []}
-                    weeklyData={data.temporal?.clicks_by_day_of_week || []}
-                />
-            </Grid>
-        </Grid>
-    );
+			{/* Insights temporais preservados */}
+			<Grid
+				item
+				xs={12}
+			>
+				<TemporalInsights
+					hourlyData={data.temporal?.clicks_by_hour || []}
+					weeklyData={data.temporal?.clicks_by_day_of_week || []}
+				/>
+			</Grid>
+		</Grid>
+	);
 }
 
 export default TemporalAnalysis;

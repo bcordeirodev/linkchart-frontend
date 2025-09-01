@@ -1,6 +1,56 @@
-import themesConfig from './themesConfig';
+/**
+ * 🎨 OPÇÕES DE TEMA ORGANIZADAS - LINK CHART
+ * Configurações pré-definidas de temas para diferentes seções da aplicação
+ *
+ * @description
+ * Este arquivo define as combinações de temas para diferentes seções da interface:
+ * - main: Área principal da aplicação
+ * - navbar: Barra de navegação superior
+ * - toolbar: Barra de ferramentas
+ * - footer: Rodapé da aplicação
+ *
+ * @example
+ * ```typescript
+ * import themeOptions from '@/lib/themeOptions';
+ *
+ * // Obter opções de tema
+ * const availableThemes = themeOptions;
+ *
+ * // Aplicar tema específico
+ * const skyBlueTheme = themeOptions.find(t => t.id === 'Sky Blue');
+ * ```
+ *
+ * @see {@link ./theme/themes.ts} - Definições completas dos temas
+ * @since 1.0.0
+ */
 
-const themeOptions = [
+import { themesConfig } from './theme';
+
+/**
+ * Tipo para opções de tema
+ * @interface ThemeOption
+ */
+export interface ThemeOption {
+	/** Identificador único do tema */
+	id: string;
+	/** Configurações de tema por seção */
+	section: {
+		/** Tema da área principal */
+		main: typeof themesConfig.default;
+		/** Tema da navbar */
+		navbar: typeof themesConfig.default;
+		/** Tema da toolbar */
+		toolbar: typeof themesConfig.default;
+		/** Tema do footer */
+		footer: typeof themesConfig.default;
+	};
+}
+
+/**
+ * Opções de tema pré-configuradas
+ * @constant {ThemeOption[]}
+ */
+const themeOptions: ThemeOption[] = [
 	{
 		id: 'Default',
 		section: {
@@ -20,149 +70,47 @@ const themeOptions = [
 		}
 	},
 	{
-		id: 'Charcoal Teal',
+		id: 'Sky Blue',
 		section: {
-			main: themesConfig.charcoalTeal,
-			navbar: themesConfig.charcoalTealDark,
-			toolbar: themesConfig.charcoalTeal,
-			footer: themesConfig.charcoalTealDark
+			main: themesConfig.skyBlue,
+			navbar: themesConfig.skyBlueDark,
+			toolbar: themesConfig.skyBlue,
+			footer: themesConfig.skyBlueDark
 		}
 	},
 	{
-		id: 'Charcoal Teal Dark',
+		id: 'Sky Blue Dark',
 		section: {
-			main: themesConfig.charcoalTealDark,
-			navbar: themesConfig.charcoalTealDark,
-			toolbar: themesConfig.charcoalTealDark,
-			footer: themesConfig.charcoalTealDark
-		}
-	},
-	{
-		id: 'Blue Silver',
-		section: {
-			main: themesConfig.darkBlueSilver,
-			navbar: themesConfig.darkBlueSilverDark,
-			toolbar: themesConfig.darkBlueSilver,
-			footer: themesConfig.darkBlueSilverDark
-		}
-	},
-	{
-		id: 'Blue Silver Dark',
-		section: {
-			main: themesConfig.darkBlueSilverDark,
-			navbar: themesConfig.darkBlueSilverDark,
-			toolbar: themesConfig.darkBlueSilverDark,
-			footer: themesConfig.darkBlueSilverDark
-		}
-	},
-	{
-		id: 'Slate Crimson',
-		section: {
-			main: themesConfig.slateCrimson,
-			navbar: themesConfig.slateCrimsonDark,
-			toolbar: themesConfig.slateCrimson,
-			footer: themesConfig.slateCrimsonDark
-		}
-	},
-	{
-		id: 'Slate Crimson Dark',
-		section: {
-			main: themesConfig.slateCrimsonDark,
-			navbar: themesConfig.slateCrimsonDark,
-			toolbar: themesConfig.slateCrimsonDark,
-			footer: themesConfig.slateCrimsonDark
-		}
-	},
-	{
-		id: 'Emarald Gold',
-		section: {
-			main: themesConfig.emeraldGold,
-			navbar: themesConfig.emeraldGoldDark,
-			toolbar: themesConfig.emeraldGold,
-			footer: themesConfig.emeraldGoldDark
-		}
-	},
-	{
-		id: 'Emarald Gold Dark',
-		section: {
-			main: themesConfig.emeraldGoldDark,
-			navbar: themesConfig.emeraldGoldDark,
-			toolbar: themesConfig.emeraldGoldDark,
-			footer: themesConfig.emeraldGoldDark
-		}
-	},
-	{
-		id: 'Indigo Coral',
-		section: {
-			main: themesConfig.indigoCoral,
-			navbar: themesConfig.indigoCoralDark,
-			toolbar: themesConfig.indigoCoral,
-			footer: themesConfig.indigoCoralDark
-		}
-	},
-	{
-		id: 'Indigo Coral Dark',
-		section: {
-			main: themesConfig.indigoCoralDark,
-			navbar: themesConfig.indigoCoralDark,
-			toolbar: themesConfig.indigoCoralDark,
-			footer: themesConfig.indigoCoralDark
-		}
-	},
-	{
-		id: 'Sky Blue Orange',
-		section: {
-			main: themesConfig.skyBlueOrange,
-			navbar: themesConfig.skyBlueOrangeDark,
-			toolbar: themesConfig.skyBlueOrange,
-			footer: themesConfig.skyBlueOrangeDark
-		}
-	},
-	{
-		id: 'Sky Blue Orange Dark',
-		section: {
-			main: themesConfig.skyBlueOrangeDark,
-			navbar: themesConfig.skyBlueOrangeDark,
-			toolbar: themesConfig.skyBlueOrangeDark,
-			footer: themesConfig.skyBlueOrangeDark
-		}
-	},
-	{
-		id: 'Soft Green Maroon',
-		section: {
-			main: themesConfig.softGreenMaroon,
-			navbar: themesConfig.softGreenMaroonDark,
-			toolbar: themesConfig.softGreenMaroon,
-			footer: themesConfig.softGreenMaroonDark
-		}
-	},
-	{
-		id: 'Soft Green Maroon Dark',
-		section: {
-			main: themesConfig.softGreenMaroonDark,
-			navbar: themesConfig.softGreenMaroonDark,
-			toolbar: themesConfig.softGreenMaroonDark,
-			footer: themesConfig.softGreenMaroonDark
-		}
-	},
-	{
-		id: 'Cool Grey Pink',
-		section: {
-			main: themesConfig.coolGreyPink,
-			navbar: themesConfig.coolGreyPinkDark,
-			toolbar: themesConfig.coolGreyPink,
-			footer: themesConfig.coolGreyPinkDark
-		}
-	},
-	{
-		id: 'Cool Grey Pink Dark',
-		section: {
-			main: themesConfig.coolGreyPinkDark,
-			navbar: themesConfig.coolGreyPinkDark,
-			toolbar: themesConfig.coolGreyPinkDark,
-			footer: themesConfig.coolGreyPinkDark
+			main: themesConfig.skyBlueDark,
+			navbar: themesConfig.skyBlueDark,
+			toolbar: themesConfig.skyBlueDark,
+			footer: themesConfig.skyBlueDark
 		}
 	}
 ];
+
+/**
+ * Lista de IDs de temas disponíveis
+ * @constant {string[]}
+ */
+export const availableThemeIds = themeOptions.map((option) => option.id);
+
+/**
+ * Obtém opção de tema por ID
+ * @param {string} themeId - ID do tema
+ * @returns {ThemeOption | undefined} Opção de tema encontrada
+ */
+export const getThemeOption = (themeId: string): ThemeOption | undefined => {
+	return themeOptions.find((option) => option.id === themeId);
+};
+
+/**
+ * Verifica se um tema é escuro
+ * @param {string} themeId - ID do tema
+ * @returns {boolean} True se o tema for escuro
+ */
+export const isDarkTheme = (themeId: string): boolean => {
+	return themeId.toLowerCase().includes('dark');
+};
 
 export default themeOptions;

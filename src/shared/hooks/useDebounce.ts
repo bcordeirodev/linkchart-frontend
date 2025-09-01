@@ -1,40 +1,24 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 /**
  * Hook personalizado para debounce de funções
- * Útil para otimizar performance em inputs e buscas
- *
- * @example
- * ```tsx
- * const debouncedSearch = useDebounce(handleSearch, 300);
- * ```
+ * Versão simplificada para evitar conflitos de ESLint
  */
 function useDebounce<T extends (...args: never[]) => void>(callback: T, delay: number): T {
-	const callbackRef = useRef<T>(callback);
-
-	// Atualizar callback atual a cada mudança
-	useEffect(() => {
-		callbackRef.current = callback;
-	}, [callback]);
+	const timeoutRef = useRef<NodeJS.Timeout>();
 
 	const debouncedFn = useCallback(
-		((...args: never[]) => {
-			const timeoutId = setTimeout(() => {
-				callbackRef.current(...args);
+		(...args: never[]) => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current);
+			}
+
+			timeoutRef.current = setTimeout(() => {
+				callback(...args);
 			}, delay);
-
-			// Cleanup para cancelar chamadas pendentes
-			return () => clearTimeout(timeoutId);
-		}) as unknown as T,
-		[delay] // eslint-disable-line react-hooks/exhaustive-deps
-	);
-
-	useEffect(() => {
-		// Cleanup ao desmontar componente
-		return () => {
-			// Cancelar qualquer timeout pendente
-		};
-	}, [debouncedFn]);
+		},
+		[callback, delay]
+	) as T;
 
 	return debouncedFn;
 }

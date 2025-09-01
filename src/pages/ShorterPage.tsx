@@ -1,4 +1,3 @@
-import React from 'react';
 import { Container, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,52 +15,53 @@ import useUser from '../lib/auth/useUser';
  * Seguindo regra de < 100 linhas por página
  */
 function ShorterPage() {
-    const navigate = useNavigate();
-    const { data: user } = useUser();
+	const navigate = useNavigate();
+	const { data: user } = useUser();
 
-    const handleSuccess = (shortUrl: unknown) => {
-        // URL encurtada com sucesso - pode mostrar resultado
-        if (import.meta.env.DEV) {
-            console.log('URL encurtada:', shortUrl);
-        }
-    };
+	const handleSuccess = (shortUrl: unknown) => {
+		// URL encurtada com sucesso - pode mostrar resultado
+		if (import.meta.env.DEV) {
+			console.log('URL encurtada:', shortUrl);
+		}
+	};
 
-    const handleError = (error: string) => {
-        if (import.meta.env.DEV) {
-            console.error('Erro ao encurtar URL:', error);
-        }
-    };
+	const handleError = (error: string) => {
+		if (import.meta.env.DEV) {
+			console.error('Erro ao encurtar URL:', error);
+		}
+	};
 
-    return (
-        <Box sx={{ minHeight: '100vh' }}>
-            {/* Hero Section */}
-            <ShorterHero />
+	return (
+		<Box sx={{ minHeight: '100vh' }}>
+			{/* Hero Section */}
+			<ShorterHero />
 
-            {/* Main Content */}
-            <Container maxWidth="md" sx={{ py: 4 }}>
-                <URLShortenerForm
-                    onSuccess={handleSuccess}
-                    onError={handleError}
-                />
+			{/* Main Content */}
+			<Container
+				maxWidth="md"
+				sx={{ py: 4 }}
+			>
+				<URLShortenerForm
+					onSuccess={handleSuccess}
+					onError={handleError}
+				/>
 
-                {/* Upgrade CTA for non-logged users */}
-                {!user && (
-                    <UpgradeCTA onSignUp={() => navigate('/sign-up')} />
-                )}
-            </Container>
+				{/* Upgrade CTA for non-logged users */}
+				{!user && <UpgradeCTA onSignUp={() => navigate('/sign-up')} />}
+			</Container>
 
-            {/* Stats Section */}
-            <Container maxWidth="lg">
-                <ShorterStats />
-            </Container>
+			{/* Stats Section */}
+			<Container maxWidth="lg">
+				<ShorterStats />
+			</Container>
 
-            {/* Benefits Section */}
-            <BenefitsSection />
+			{/* Benefits Section */}
+			<BenefitsSection />
 
-            {/* Hero Section (bottom) */}
-            <HeroSection />
-        </Box>
-    );
+			{/* Hero Section (bottom) */}
+			<HeroSection />
+		</Box>
+	);
 }
 
 export default ShorterPage;

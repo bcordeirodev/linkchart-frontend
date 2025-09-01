@@ -6,7 +6,7 @@ import { AudienceChart, AudienceInsights } from '../specialized/audience';
 import { UnifiedMetrics } from '../metrics/UnifiedMetrics';
 
 interface AudienceAnalysisProps {
-    data: AnalyticsData;
+	data: AnalyticsData;
 }
 
 /**
@@ -14,35 +14,47 @@ interface AudienceAnalysisProps {
  * Mantém toda funcionalidade do módulo audience original
  */
 export function AudienceAnalysis({ data }: AudienceAnalysisProps) {
-    return (
-        <Grid container spacing={3}>
-            {/* Métricas de Audiência */}
-            <Grid item xs={12}>
-                <UnifiedMetrics
-                    data={data}
-                    categories={['audience']}
-                    showTitle={true}
-                    title="👥 Métricas de Audiência"
-                />
-            </Grid>
+	return (
+		<Grid
+			container
+			spacing={3}
+		>
+			{/* Métricas de Audiência */}
+			<Grid
+				item
+				xs={12}
+			>
+				<UnifiedMetrics
+					data={data}
+					categories={['audience']}
+					showTitle={true}
+					title="👥 Métricas de Audiência"
+				/>
+			</Grid>
 
-            {/* Componente original preservado */}
-            <Grid item xs={12}>
-                <AudienceChart
-                    deviceBreakdown={data.audience?.device_breakdown || []}
-                    totalClicks={data.overview?.total_clicks || 0}
-                />
-            </Grid>
+			{/* Componente original preservado */}
+			<Grid
+				item
+				xs={12}
+			>
+				<AudienceChart
+					deviceBreakdown={data.audience?.device_breakdown || []}
+					totalClicks={data.overview?.total_clicks || 0}
+				/>
+			</Grid>
 
-            {/* Insights de audiência preservados */}
-            <Grid item xs={12}>
-                <AudienceInsights
-                    deviceBreakdown={data.audience?.device_breakdown || []}
-                    totalClicks={data.overview?.total_clicks || 0}
-                />
-            </Grid>
-        </Grid>
-    );
+			{/* Insights de audiência preservados */}
+			<Grid
+				item
+				xs={12}
+			>
+				<AudienceInsights
+					deviceBreakdown={data.audience?.device_breakdown || []}
+					totalClicks={data.overview?.total_clicks || 0}
+				/>
+			</Grid>
+		</Grid>
+	);
 }
 
 export default AudienceAnalysis;

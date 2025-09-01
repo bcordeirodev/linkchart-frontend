@@ -28,7 +28,18 @@ export function TabPanel(props: TabPanelProps) {
 			aria-labelledby={`tab-${index}`}
 			{...other}
 		>
-			{value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+			{value === index && (
+				<Box
+					sx={{
+						p: 3,
+						mt: 2, // Espaçamento adicional após as tabs
+						position: 'relative', // Garantir posicionamento correto
+						zIndex: 1 // Garantir que fique abaixo das tabs
+					}}
+				>
+					{children}
+				</Box>
+			)}
 		</div>
 	);
 }

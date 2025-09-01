@@ -1,17 +1,17 @@
 import { SnackbarProvider } from 'notistack';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { enUS } from 'date-fns/locale/en-US';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Provider } from 'react-redux';
-import ErrorBoundary from '@fuse/utils/ErrorBoundary';
+import { ErrorBoundary } from '@/lib/utils';
 import AppContext from './lib/AppContext';
+import { applyGlobalStyles, MainThemeProvider } from './lib/theme';
 
-import { FuseSettingsProvider } from '@fuse/core/FuseSettings/FuseSettingsProvider';
+import { LayoutProvider } from '@/shared/layout/core';
 import { I18nProvider } from './lib/i18n/I18nProvider';
 import { AuthProvider } from './lib/auth/AuthContext';
 import store from './lib/store/store';
-import MainThemeProvider from './lib/theme/MainThemeProvider';
 import AppRouter from './AppRouter';
 
 /**
@@ -19,6 +19,11 @@ import AppRouter from './AppRouter';
  */
 function App() {
 	const val = useMemo(() => ({}), []);
+
+	// Aplicar estilos globais padronizados quando o componente montar
+	useEffect(() => {
+		applyGlobalStyles();
+	}, []);
 
 	return (
 		<ErrorBoundary>
@@ -32,7 +37,7 @@ function App() {
 					<Provider store={store}>
 						{/* Auth Provider */}
 						<AuthProvider>
-							<FuseSettingsProvider>
+							<LayoutProvider>
 								<I18nProvider>
 									{/* Theme Provider */}
 									<MainThemeProvider>
@@ -51,7 +56,7 @@ function App() {
 										</SnackbarProvider>
 									</MainThemeProvider>
 								</I18nProvider>
-							</FuseSettingsProvider>
+							</LayoutProvider>
 						</AuthProvider>
 					</Provider>
 				</LocalizationProvider>

@@ -14,9 +14,7 @@ const getTooltipConfig = (isDark = false) => ({
 		fontSize: '14px',
 		fontFamily: 'Inter, system-ui, sans-serif',
 		borderRadius: '12px',
-		boxShadow: isDark
-			? '0 8px 32px rgba(0, 0, 0, 0.4)'
-			: '0 8px 32px rgba(0, 0, 0, 0.1)'
+		boxShadow: isDark ? '0 8px 32px rgba(0, 0, 0, 0.4)' : '0 8px 32px rgba(0, 0, 0, 0.1)'
 	},
 	fillSeriesColor: false,
 	x: {
@@ -24,7 +22,8 @@ const getTooltipConfig = (isDark = false) => ({
 		formatter: (value: string) => `<strong>${value}</strong>`
 	},
 	y: {
-		formatter: (value: number) => `<span style="color: #1976d2; font-weight: 600;">${value.toLocaleString()}</span> cliques`
+		formatter: (value: number) =>
+			`<span style="color: #1976d2; font-weight: 600;">${value.toLocaleString()}</span> cliques`
 	},
 	marker: {
 		show: true,
@@ -350,7 +349,8 @@ export const formatPieChart = (
 			tooltip: {
 				...getTooltipConfig(isDark),
 				y: {
-					formatter: (value: number) => `<span style="color: #1976d2; font-weight: 600;">${value.toLocaleString()}</span>`
+					formatter: (value: number) =>
+						`<span style="color: #1976d2; font-weight: 600;">${value.toLocaleString()}</span>`
 				}
 			},
 			legend: {

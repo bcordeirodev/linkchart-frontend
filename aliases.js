@@ -28,8 +28,7 @@ const aliases = (prefix = `src`) => ({
   '@/utils': `${prefix}/lib/utils`,
   '@/i18n': `${prefix}/lib/i18n`,
   
-  // Legacy support (temporary)
-  '@fuse': `${prefix}/@fuse`,
+
   '@history': `${prefix}/@history`,
   "@mock-utils": `${prefix}/@mock-utils`,
   '@schema': `${prefix}/@schema`

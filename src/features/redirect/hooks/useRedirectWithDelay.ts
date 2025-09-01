@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from '@/hooks';
-import { resetSessionRedirectUrl } from '@fuse/core/FuseAuthorization/sessionRedirectUrl';
+import { resetSessionRedirectUrl } from '@/lib/auth/sessionRedirectUrl';
 
 interface UseRedirectWithDelayOptions {
 	delay?: number;

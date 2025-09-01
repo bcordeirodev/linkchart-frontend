@@ -6,7 +6,7 @@
 import AuthService from '../auth/auth.service';
 export const authService = new AuthService();
 
-// Link services  
+// Link services
 import LinkService from '../../features/links/services/link.service';
 export const linkService = new LinkService();
 

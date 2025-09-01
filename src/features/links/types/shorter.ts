@@ -3,8 +3,6 @@
  * Tipos específicos para o sistema de encurtamento de URLs
  */
 
-import { LinkResponse } from './api';
-
 // ========================================
 // 🔗 SHORTENER TYPES
 // ========================================

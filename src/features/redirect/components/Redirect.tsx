@@ -8,7 +8,12 @@ type RedirectProps = {
 function Redirect(props: RedirectProps) {
 	const { to, children = null } = props;
 
-	return <Navigate to={to} replace />;
+	return (
+		<Navigate
+			to={to}
+			replace
+		/>
+	);
 }
 
 export default Redirect;

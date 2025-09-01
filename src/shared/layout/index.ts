@@ -1,16 +1,28 @@
 /**
- * Exports centralizados do sistema de layout
+ * 🏗️ LAYOUT SYSTEM EXPORTS - LINK CHART
+ * Exportação centralizada do sistema de layout completo
+ * 
+ * @description
+ * Este arquivo centraliza todas as exportações do sistema de layout
+ * da aplicação Link Chart, incluindo componentes, hooks e tipos.
+ * 
+ * @since 2.0.0
  */
 
-export { default as Layout } from './Layout';
-export { default as Navbar } from './components/Navbar';
-export { default as HorizontalNavbar } from './components/HorizontalNavbar';
-export { default as TopToolbar } from './components/TopToolbar';
-export { default as Footer } from './components/Footer';
-
-// Layout principal do Link Charts
-export { default as LinkChartsLayout } from './LinkChartsLayout';
-export { default as ModernLayout } from './ModernLayout';
-
-// Mantém compatibilidade com layout atual
+// ========================================
+// 🏗️ LAYOUT COMPONENTS
+// ========================================
 export { default as MainLayout } from './MainLayout';
+export { default as HeroSection } from './HeroSection';
+export { default as BenefitsSection } from './BenefitsSection';
+export { default as LoadingWithRedirect } from './LoadingWithRedirect';
+
+// ========================================
+// 🔧 CORE LAYOUT SYSTEM
+// ========================================
+export * from './core';
+
+// ========================================
+// 🧩 LAYOUT UTILITIES
+// ========================================
+// Adicionar utilitários de layout conforme necessário

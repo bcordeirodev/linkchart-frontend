@@ -1,4 +1,15 @@
-import { Box, TextField, FormControl, InputLabel, Select, MenuItem, InputAdornment, useTheme, Typography, Chip } from '@mui/material';
+import {
+	Box,
+	TextField,
+	FormControl,
+	InputLabel,
+	Select,
+	MenuItem,
+	InputAdornment,
+	useTheme,
+	Typography,
+	Chip
+} from '@mui/material';
 import { Search, FilterList } from '@mui/icons-material';
 import { alpha } from '@mui/material/styles';
 
@@ -37,9 +48,8 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 	return (
 		<Box
 			sx={{
-				background: theme.palette.mode === 'dark'
-					? alpha(theme.palette.background.paper, 0.8)
-					: alpha('#ffffff', 0.9),
+				background:
+					theme.palette.mode === 'dark' ? alpha(theme.palette.background.paper, 0.8) : alpha('#ffffff', 0.9),
 				backdropFilter: 'blur(20px)',
 				borderRadius: '16px',
 				p: 3,
@@ -50,9 +60,10 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 				'&:hover': {
 					boxShadow: theme.shadows[8],
 					transform: 'translateY(-4px)',
-					background: theme.palette.mode === 'dark'
-						? alpha(theme.palette.background.paper, 0.9)
-						: alpha('#ffffff', 0.95)
+					background:
+						theme.palette.mode === 'dark'
+							? alpha(theme.palette.background.paper, 0.9)
+							: alpha('#ffffff', 0.95)
 				}
 			}}
 		>
@@ -98,23 +109,24 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 						minWidth: 300,
 						'& .MuiOutlinedInput-root': {
 							borderRadius: '12px',
-							backgroundColor: theme.palette.mode === 'dark'
-								? alpha(theme.palette.background.default, 0.6)
-								: alpha('#ffffff', 0.8),
+							backgroundColor:
+								theme.palette.mode === 'dark'
+									? alpha(theme.palette.background.default, 0.6)
+									: alpha('#ffffff', 0.8),
 							border: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
 							transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 							fontFamily: 'Inter, system-ui, sans-serif',
 							'&:hover': {
-								backgroundColor: theme.palette.mode === 'dark'
-									? alpha(theme.palette.background.default, 0.8)
-									: alpha('#ffffff', 0.95),
+								backgroundColor:
+									theme.palette.mode === 'dark'
+										? alpha(theme.palette.background.default, 0.8)
+										: alpha('#ffffff', 0.95),
 								borderColor: alpha(theme.palette.primary.main, 0.5),
 								boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`
 							},
 							'&.Mui-focused': {
-								backgroundColor: theme.palette.mode === 'dark'
-									? theme.palette.background.default
-									: '#ffffff',
+								backgroundColor:
+									theme.palette.mode === 'dark' ? theme.palette.background.default : '#ffffff',
 								borderColor: theme.palette.primary.main,
 								boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
 							},
@@ -130,11 +142,13 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 					InputProps={{
 						startAdornment: (
 							<InputAdornment position="start">
-								<Search sx={{
-									color: 'primary.main',
-									fontSize: 22,
-									opacity: 0.7
-								}} />
+								<Search
+									sx={{
+										color: 'primary.main',
+										fontSize: 22,
+										opacity: 0.7
+									}}
+								/>
 							</InputAdornment>
 						)
 					}}
@@ -145,22 +159,23 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 						minWidth: 180,
 						'& .MuiOutlinedInput-root': {
 							borderRadius: '12px',
-							backgroundColor: theme.palette.mode === 'dark'
-								? alpha(theme.palette.background.default, 0.6)
-								: alpha('#ffffff', 0.8),
+							backgroundColor:
+								theme.palette.mode === 'dark'
+									? alpha(theme.palette.background.default, 0.6)
+									: alpha('#ffffff', 0.8),
 							border: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
 							transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 							'&:hover': {
-								backgroundColor: theme.palette.mode === 'dark'
-									? alpha(theme.palette.background.default, 0.8)
-									: alpha('#ffffff', 0.95),
+								backgroundColor:
+									theme.palette.mode === 'dark'
+										? alpha(theme.palette.background.default, 0.8)
+										: alpha('#ffffff', 0.95),
 								borderColor: alpha(theme.palette.primary.main, 0.5),
 								boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`
 							},
 							'&.Mui-focused': {
-								backgroundColor: theme.palette.mode === 'dark'
-									? theme.palette.background.default
-									: '#ffffff',
+								backgroundColor:
+									theme.palette.mode === 'dark' ? theme.palette.background.default : '#ffffff',
 								borderColor: theme.palette.primary.main,
 								boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
 							},
@@ -184,7 +199,10 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 						label="Status do Link"
 						onChange={(e) => onStatusChange(e.target.value)}
 					>
-						<MenuItem value="all" sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+						<MenuItem
+							value="all"
+							sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+						>
 							<Chip
 								label="Todos"
 								size="small"
@@ -193,7 +211,10 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 							/>
 							Todos os Links
 						</MenuItem>
-						<MenuItem value="active" sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+						<MenuItem
+							value="active"
+							sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+						>
 							<Chip
 								label="Ativo"
 								size="small"
@@ -202,7 +223,10 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 							/>
 							Links Ativos
 						</MenuItem>
-						<MenuItem value="inactive" sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+						<MenuItem
+							value="inactive"
+							sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+						>
 							<Chip
 								label="Inativo"
 								size="small"

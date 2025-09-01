@@ -15,12 +15,17 @@ export * from './components/ShortUrlResult';
 export * from './components/CopyButton';
 export * from './components/ShareActions';
 
+// Analytics Components (NOVO)
+export * from './components/analytics';
+
 // Hooks
 export * from './hooks/useLinks';
 export * from './hooks/useLinkForm';
 export * from './hooks/useURLShortener';
 export * from './hooks/useLinksTableColumns';
 export * from './hooks/useShareAPI';
+// export * from './hooks/useLinkAnalytics'; // Original mantido para compatibilidade
+export * from './hooks/useLinkAnalyticsOptimized'; // Novo hook otimizado
 
 // Services
 export * from './services/link.service';
@@ -28,3 +33,4 @@ export * from './services/link.service';
 // Types
 export * from './types/link';
 export * from './types/shorter';
+export * from './types/analytics';

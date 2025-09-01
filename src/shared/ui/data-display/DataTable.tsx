@@ -1,72 +1,72 @@
 import { MaterialReactTable, useMaterialReactTable, MaterialReactTableProps, MRT_Icons } from 'material-react-table';
 import _ from 'lodash';
 import { useMemo } from 'react';
-import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import { SvgIcon } from '@/shared/components';
 import { Theme } from '@mui/material/styles/createTheme';
 import DataTableTopToolbar from './DataTableTopToolbar';
 
 const tableIcons: Partial<MRT_Icons> = {
 	ArrowDownwardIcon: (props: any) => (
-		<FuseSvgIcon
+		<SvgIcon
 			size={20}
 			{...props}
 		>
 			heroicons-outline:arrow-down-circle
-		</FuseSvgIcon>
+		</SvgIcon>
 	),
-	ClearAllIcon: () => <FuseSvgIcon size={20}>heroicons-outline:adjustments-horizontal</FuseSvgIcon>,
-	DensityLargeIcon: () => <FuseSvgIcon size={20}>heroicons-outline:bars-3-bottom-left</FuseSvgIcon>,
-	DensityMediumIcon: () => <FuseSvgIcon size={20}>heroicons-outline:bars-3</FuseSvgIcon>,
-	DensitySmallIcon: () => <FuseSvgIcon size={20}>heroicons-outline:bars-2</FuseSvgIcon>,
+	ClearAllIcon: () => <SvgIcon size={20}>heroicons-outline:adjustments-horizontal</SvgIcon>,
+	DensityLargeIcon: () => <SvgIcon size={20}>heroicons-outline:bars-3-bottom-left</SvgIcon>,
+	DensityMediumIcon: () => <SvgIcon size={20}>heroicons-outline:bars-3</SvgIcon>,
+	DensitySmallIcon: () => <SvgIcon size={20}>heroicons-outline:bars-2</SvgIcon>,
 	DragHandleIcon: () => (
-		<FuseSvgIcon
+		<SvgIcon
 			className="rotate-45"
 			size={14}
 		>
 			heroicons-outline:arrows-pointing-out
-		</FuseSvgIcon>
+		</SvgIcon>
 	),
 	FilterListIcon: (props: any) => (
-		<FuseSvgIcon
+		<SvgIcon
 			size={16}
 			{...props}
 		>
 			heroicons-outline:funnel
-		</FuseSvgIcon>
+		</SvgIcon>
 	),
-	FilterListOffIcon: () => <FuseSvgIcon size={20}>heroicons-outline:funnel</FuseSvgIcon>,
-	FullscreenExitIcon: () => <FuseSvgIcon size={20}>heroicons-outline:arrows-pointing-in</FuseSvgIcon>,
-	FullscreenIcon: () => <FuseSvgIcon size={20}>heroicons-outline:arrows-pointing-out</FuseSvgIcon>,
+	FilterListOffIcon: () => <SvgIcon size={20}>heroicons-outline:funnel</SvgIcon>,
+	FullscreenExitIcon: () => <SvgIcon size={20}>heroicons-outline:arrows-pointing-in</SvgIcon>,
+	FullscreenIcon: () => <SvgIcon size={20}>heroicons-outline:arrows-pointing-out</SvgIcon>,
 	SearchIcon: (props: any) => (
-		<FuseSvgIcon
+		<SvgIcon
 			color="action"
 			size={20}
 			{...props}
 		>
 			heroicons-outline:magnifying-glass
-		</FuseSvgIcon>
+		</SvgIcon>
 	),
-	SearchOffIcon: () => <FuseSvgIcon size={20}>heroicons-outline:magnifying-glass</FuseSvgIcon>,
-	ViewColumnIcon: () => <FuseSvgIcon size={20}>heroicons-outline:view-columns</FuseSvgIcon>,
-	MoreVertIcon: () => <FuseSvgIcon size={20}>heroicons-outline:ellipsis-vertical</FuseSvgIcon>,
-	MoreHorizIcon: () => <FuseSvgIcon size={20}>heroicons-outline:ellipsis-horizontal</FuseSvgIcon>,
+	SearchOffIcon: () => <SvgIcon size={20}>heroicons-outline:magnifying-glass</SvgIcon>,
+	ViewColumnIcon: () => <SvgIcon size={20}>heroicons-outline:view-columns</SvgIcon>,
+	MoreVertIcon: () => <SvgIcon size={20}>heroicons-outline:ellipsis-vertical</SvgIcon>,
+	MoreHorizIcon: () => <SvgIcon size={20}>heroicons-outline:ellipsis-horizontal</SvgIcon>,
 	SortIcon: (props: any) => (
-		<FuseSvgIcon
+		<SvgIcon
 			size={20}
 			{...props}
 		>
 			heroicons-outline:arrows-up-down
-		</FuseSvgIcon>
+		</SvgIcon>
 	),
 	PushPinIcon: (props: any) => (
-		<FuseSvgIcon
+		<SvgIcon
 			size={20}
 			{...props}
 		>
 			heroicons-outline:bookmark
-		</FuseSvgIcon>
+		</SvgIcon>
 	),
-	VisibilityOffIcon: () => <FuseSvgIcon size={20}>heroicons-outline:eye-slash</FuseSvgIcon>
+	VisibilityOffIcon: () => <SvgIcon size={20}>heroicons-outline:eye-slash</SvgIcon>
 };
 
 function DataTable<TData extends Record<string, any>>(props: MaterialReactTableProps<TData>) {

@@ -96,5 +96,3 @@ export interface LinksCreatedByDay extends Record<string, unknown> {
 	day: string;
 	total: number;
 }
-
-

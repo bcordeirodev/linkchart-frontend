@@ -12,34 +12,34 @@ import { ReactNode } from 'react';
 
 // Local component types
 export interface AnalyticsProps {
-    data?: any;
-    loading?: boolean;
-    error?: string | null;
-    linkId?: string;
-    showHeader?: boolean;
-    showTabs?: boolean;
-    linksData?: any[];
-    showDashboardTab?: boolean;
+	data?: any;
+	loading?: boolean;
+	error?: string | null;
+	linkId?: string;
+	showHeader?: boolean;
+	showTabs?: boolean;
+	linksData?: any[];
+	showDashboardTab?: boolean;
 }
 
 export interface MetricsProps {
-    summary?: any;
-    loading?: boolean;
+	summary?: any;
+	loading?: boolean;
 }
 
 export interface ChartsProps {
-    data?: any;
-    loading?: boolean;
-    variant?: 'analytics' | 'dashboard' | 'full';
-    height?: number;
-    showAllCharts?: boolean;
+	data?: any;
+	loading?: boolean;
+	variant?: 'analytics' | 'dashboard' | 'full';
+	height?: number;
+	showAllCharts?: boolean;
 }
 
 export interface LinkData {
-    id: string;
-    url: string;
-    clicks: number;
-    created_at: string;
+	id: string;
+	url: string;
+	clicks: number;
+	created_at: string;
 }
 
 // ========================================
@@ -47,43 +47,43 @@ export interface LinkData {
 // ========================================
 
 export interface DashboardViewConfig {
-    showMetrics: boolean;
-    showTopLinks: boolean;
-    showQuickActions: boolean;
-    showCharts: boolean;
-    chartsVariant: 'dashboard' | 'analytics' | 'full';
+	showMetrics: boolean;
+	showTopLinks: boolean;
+	showQuickActions: boolean;
+	showCharts: boolean;
+	chartsVariant: 'dashboard' | 'analytics' | 'full';
 }
 
 export interface AnalyticsViewConfig {
-    showHeader: boolean;
-    showMetrics: boolean;
-    showTabs: boolean;
-    showSpecializedAnalysis: boolean;
-    defaultTab: number;
+	showHeader: boolean;
+	showMetrics: boolean;
+	showTabs: boolean;
+	showSpecializedAnalysis: boolean;
+	defaultTab: number;
 }
 
 export interface QuickAction {
-    title: string;
-    description: string;
-    icon: ReactNode;
-    color: string;
-    gradient: string;
-    path: string;
+	title: string;
+	description: string;
+	icon: ReactNode;
+	color: string;
+	gradient: string;
+	path: string;
 }
 
 export interface AnalyticsTab {
-    id: string;
-    label: string;
-    icon?: ReactNode;
-    content: ReactNode;
-    disabled?: boolean;
+	id: string;
+	label: string;
+	icon?: ReactNode;
+	content: ReactNode;
+	disabled?: boolean;
 }
 
 export interface AnalyticsSection {
-    id: string;
-    title: string;
-    description?: string;
-    component: ReactNode;
-    loading?: boolean;
-    error?: string | null;
+	id: string;
+	title: string;
+	description?: string;
+	component: ReactNode;
+	loading?: boolean;
+	error?: string | null;
 }

@@ -30,31 +30,8 @@ export function URLInput({
 			helperText={error || ' '}
 			sx={{
 				'& .MuiOutlinedInput-root': {
-					borderRadius: 3,
-					fontSize: '1rem',
 					minHeight: 52,
-					background: alpha(theme.palette.background.paper, 0.9),
-					backdropFilter: 'blur(20px)',
-					border: `2px solid ${alpha(theme.palette.primary.main, 0.15)}`,
-					transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-					'&:hover': {
-						borderColor: alpha(theme.palette.primary.main, 0.4),
-						background: alpha(theme.palette.background.paper, 0.95),
-						transform: 'translateY(-1px)',
-						boxShadow: `0 6px 20px ${alpha(theme.palette.primary.main, 0.15)}`
-					},
-					'&.Mui-focused': {
-						borderColor: theme.palette.primary.main,
-						background: alpha(theme.palette.background.paper, 1),
-						boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.12)}`,
-						transform: 'translateY(-1px)'
-					},
-					'&.Mui-error': {
-						borderColor: theme.palette.error.main,
-						'&:hover': {
-							borderColor: theme.palette.error.main
-						}
-					}
+					fontSize: '1rem'
 				},
 				'& .MuiInputBase-input': {
 					padding: '14px 16px',

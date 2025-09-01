@@ -1,9 +1,9 @@
 import Typography from '@mui/material/Typography';
-import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import { SvgIcon } from '@/shared/components';
 import { Chip } from '@mui/material';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
-import Link from '@fuse/core/Link';
+import { Link } from '@/shared/components';
 
 export type PageTitleProps = {
 	className?: string;
@@ -27,7 +27,7 @@ function PageTitle(props: PageTitleProps) {
 					role="button"
 					color="text.secondary"
 				>
-					<FuseSvgIcon>remix:arrow-left-line</FuseSvgIcon>
+					<SvgIcon>remix:arrow-left-line</SvgIcon>
 					<span>{backTitle}</span>
 				</Typography>
 			)}

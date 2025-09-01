@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Typography, CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import useRedirectWithDelay from '@/features/redirect/hooks/useRedirectWithDelay';
 import LoadingWithRedirect from '@/shared/layout/LoadingWithRedirect';
 
@@ -77,12 +77,13 @@ function SmartRedirect({
 					<RedirectCard>
 						<RedirectDecoration />
 						<RedirectContent>
-							<RedirectTitle variant="h6" gutterBottom>
+							<RedirectTitle
+								variant="h6"
+								gutterBottom
+							>
 								{title}
 							</RedirectTitle>
-							<RedirectMessage variant="body2">
-								{message}
-							</RedirectMessage>
+							<RedirectMessage variant="body2">{message}</RedirectMessage>
 						</RedirectContent>
 						<RedirectActions>
 							<ContinueButton
@@ -112,9 +113,7 @@ function SmartRedirect({
 								<LoadingSpinner>
 									<CircularProgress size={50} />
 								</LoadingSpinner>
-								<LoadingText>
-									{title}
-								</LoadingText>
+								<LoadingText>{title}</LoadingText>
 							</LoadingContainer>
 
 							{showCountdown && countdown > 0 && (
@@ -123,19 +122,13 @@ function SmartRedirect({
 									animate={{ opacity: 1 }}
 								>
 									<CountdownDisplay>
-										<CountdownNumber>
-											{countdown}
-										</CountdownNumber>
-										<CountdownLabel>
-											segundos restantes
-										</CountdownLabel>
+										<CountdownNumber>{countdown}</CountdownNumber>
+										<CountdownLabel>segundos restantes</CountdownLabel>
 									</CountdownDisplay>
 								</motion.div>
 							)}
 
-							<RedirectMessage sx={{ mt: 2 }}>
-								{message}
-							</RedirectMessage>
+							<RedirectMessage sx={{ mt: 2 }}>{message}</RedirectMessage>
 						</RedirectContent>
 
 						<RedirectActions>

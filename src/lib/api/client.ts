@@ -79,12 +79,14 @@ class ApiClient {
 			if (typeof window !== 'undefined') {
 				// Primeiro tenta buscar o token diretamente
 				const token = localStorage.getItem('token');
+
 				if (token) {
 					return token;
 				}
 
 				// Fallback: busca no objeto user (para compatibilidade)
 				const user = localStorage.getItem('user');
+
 				if (user) {
 					const userData = JSON.parse(user);
 					return userData.token || userData.accessToken || null;
@@ -165,7 +167,11 @@ class ApiClient {
 		const headers = await this.createHeaders(customHeaders);
 
 		if (import.meta.env.DEV) {
-			console.log(`🌐 API ${method} request:`, { url, headers: { ...headers, Authorization: headers.Authorization ? '[HIDDEN]' : undefined }, data });
+			console.log(`🌐 API ${method} request:`, {
+				url,
+				headers: { ...headers, Authorization: headers.Authorization ? '[HIDDEN]' : undefined },
+				data
+			});
 		}
 
 		const controller = new AbortController();
@@ -221,46 +227,42 @@ class ApiClient {
 	/**
 	 * Requisição GET
 	 */
-	async get<T>(endpoint: string, customHeaders?: HeadersInit,): Promise<T> {
+	async get<T>(endpoint: string, customHeaders?: HeadersInit): Promise<T> {
 		return this.request<T>('GET', endpoint, null, customHeaders);
 	}
 
 	/**
 	 * Requisição POST
 	 */
-	async post<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit,): Promise<T> {
+	async post<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit): Promise<T> {
 		return this.request<T>('POST', endpoint, data, customHeaders);
 	}
 
 	/**
 	 * Requisição PUT
 	 */
-	async put<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit,): Promise<T> {
+	async put<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit): Promise<T> {
 		return this.request<T>('PUT', endpoint, data, customHeaders);
 	}
 
 	/**
 	 * Requisição PATCH
 	 */
-	async patch<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit,): Promise<T> {
+	async patch<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit): Promise<T> {
 		return this.request<T>('PATCH', endpoint, data, customHeaders);
 	}
 
 	/**
 	 * Requisição DELETE
 	 */
-	async delete<T>(endpoint: string, customHeaders?: HeadersInit,): Promise<T> {
+	async delete<T>(endpoint: string, customHeaders?: HeadersInit): Promise<T> {
 		return this.request<T>('DELETE', endpoint, null, customHeaders);
 	}
 
 	/**
 	 * Função utilitária para fazer upload de arquivos
 	 */
-	async upload<T>(
-		endpoint: string,
-		formData: FormData,
-		customHeaders?: HeadersInit
-	): Promise<T> {
+	async upload<T>(endpoint: string, formData: FormData, customHeaders?: HeadersInit): Promise<T> {
 		const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
 
 		// Para upload, não definimos Content-Type para permitir boundary automático

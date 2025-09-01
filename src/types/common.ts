@@ -14,11 +14,11 @@ export type OptionalFields<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, 
 export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 export type DeepPartial<T> = {
-    [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
 export type DeepRequired<T> = {
-    [P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
+	[P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
 };
 
 export type Nullable<T> = T | null;
@@ -34,18 +34,18 @@ export type Timestamp = string | Date;
 // ========================================
 
 export interface BaseEntity {
-    id: ID;
-    created_at: Timestamp;
-    updated_at: Timestamp;
+	id: ID;
+	created_at: Timestamp;
+	updated_at: Timestamp;
 }
 
 export interface TimestampedEntity {
-    created_at: Timestamp;
-    updated_at: Timestamp;
+	created_at: Timestamp;
+	updated_at: Timestamp;
 }
 
 export interface SoftDeletableEntity extends TimestampedEntity {
-    deleted_at: Timestamp | null;
+	deleted_at: Timestamp | null;
 }
 
 // ========================================
@@ -56,25 +56,11 @@ export type Size = 'small' | 'medium' | 'large';
 
 export type Variant = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
 
-export type Color =
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'warning'
-    | 'error'
-    | 'info'
-    | 'inherit'
-    | 'default';
+export type Color = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'inherit' | 'default';
 
 export type Severity = 'error' | 'warning' | 'info' | 'success';
 
-export type Position =
-    | 'top-left'
-    | 'top-center'
-    | 'top-right'
-    | 'bottom-left'
-    | 'bottom-center'
-    | 'bottom-right';
+export type Position = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
 export type Orientation = 'horizontal' | 'vertical';
 
@@ -101,27 +87,25 @@ export type Status = 'idle' | 'loading' | 'success' | 'error';
 export type LoadingState = 'idle' | 'pending' | 'fulfilled' | 'rejected';
 
 export interface AsyncState<T = unknown> {
-    data: T | null;
-    loading: boolean;
-    error: string | null;
-    status: Status;
+	data: T | null;
+	loading: boolean;
+	error: string | null;
+	status: Status;
 }
 
 export interface PaginationState {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
+	page: number;
+	pageSize: number;
+	total: number;
+	totalPages: number;
 }
 
 export interface SortState {
-    field: string;
-    direction: 'asc' | 'desc';
+	field: string;
+	direction: 'asc' | 'desc';
 }
 
-export interface FilterState {
-    [key: string]: unknown;
-}
+export type FilterState = Record<string, unknown>;
 
 // ========================================
 // 🎭 EVENT TYPES
@@ -144,23 +128,23 @@ export type SuccessHandler<T = unknown> = (data: T) => void;
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export type ContentType =
-    | 'application/json'
-    | 'application/x-www-form-urlencoded'
-    | 'multipart/form-data'
-    | 'text/plain';
+	| 'application/json'
+	| 'application/x-www-form-urlencoded'
+	| 'multipart/form-data'
+	| 'text/plain';
 
 export interface RequestConfig {
-    method?: HttpMethod;
-    headers?: Record<string, string>;
-    timeout?: number;
-    signal?: AbortSignal;
+	method?: HttpMethod;
+	headers?: Record<string, string>;
+	timeout?: number;
+	signal?: AbortSignal;
 }
 
 export interface ApiError {
-    message: string;
-    status: number;
-    code?: string;
-    details?: Record<string, unknown>;
+	message: string;
+	status: number;
+	code?: string;
+	details?: Record<string, unknown>;
 }
 
 // ========================================
@@ -172,19 +156,19 @@ export type FieldValue = string | number | boolean | Date | null | undefined;
 export type FieldError = string | null;
 
 export interface FieldState {
-    value: FieldValue;
-    error: FieldError;
-    touched: boolean;
-    dirty: boolean;
+	value: FieldValue;
+	error: FieldError;
+	touched: boolean;
+	dirty: boolean;
 }
 
 export interface FormState<T = Record<string, FieldValue>> {
-    values: T;
-    errors: Partial<Record<keyof T, FieldError>>;
-    touched: Partial<Record<keyof T, boolean>>;
-    dirty: boolean;
-    valid: boolean;
-    submitting: boolean;
+	values: T;
+	errors: Partial<Record<keyof T, FieldError>>;
+	touched: Partial<Record<keyof T, boolean>>;
+	dirty: boolean;
+	valid: boolean;
+	submitting: boolean;
 }
 
 // ========================================
@@ -192,18 +176,18 @@ export interface FormState<T = Record<string, FieldValue>> {
 // ========================================
 
 export interface SearchState {
-    query: string;
-    filters: FilterState;
-    sort: SortState;
-    pagination: PaginationState;
+	query: string;
+	filters: FilterState;
+	sort: SortState;
+	pagination: PaginationState;
 }
 
 export interface SearchResult<T = unknown> {
-    data: T[];
-    total: number;
-    page: number;
-    pageSize: number;
-    totalPages: number;
+	data: T[];
+	total: number;
+	page: number;
+	pageSize: number;
+	totalPages: number;
 }
 
 // ========================================
@@ -211,29 +195,29 @@ export interface SearchResult<T = unknown> {
 // ========================================
 
 export type ChartType =
-    | 'line'
-    | 'area'
-    | 'bar'
-    | 'column'
-    | 'pie'
-    | 'donut'
-    | 'scatter'
-    | 'bubble'
-    | 'heatmap'
-    | 'radar';
+	| 'line'
+	| 'area'
+	| 'bar'
+	| 'column'
+	| 'pie'
+	| 'donut'
+	| 'scatter'
+	| 'bubble'
+	| 'heatmap'
+	| 'radar';
 
 export interface ChartPoint {
-    x: string | number | Date;
-    y: number;
-    label?: string;
-    color?: string;
+	x: string | number | Date;
+	y: number;
+	label?: string;
+	color?: string;
 }
 
 export interface ChartSeries {
-    name: string;
-    data: ChartPoint[];
-    color?: string;
-    type?: ChartType;
+	name: string;
+	data: ChartPoint[];
+	color?: string;
+	type?: ChartType;
 }
 
 // ========================================
@@ -241,19 +225,19 @@ export interface ChartSeries {
 // ========================================
 
 export interface MenuItem {
-    id: string;
-    label: string;
-    icon?: ReactNode;
-    href?: string;
-    onClick?: () => void;
-    disabled?: boolean;
-    divider?: boolean;
-    children?: MenuItem[];
+	id: string;
+	label: string;
+	icon?: ReactNode;
+	href?: string;
+	onClick?: () => void;
+	disabled?: boolean;
+	divider?: boolean;
+	children?: MenuItem[];
 }
 
 export interface MenuSection {
-    title?: string;
-    items: MenuItem[];
+	title?: string;
+	items: MenuItem[];
 }
 
 // ========================================
@@ -263,12 +247,12 @@ export interface MenuSection {
 export type ThemeMode = 'light' | 'dark' | 'auto';
 
 export interface ThemeConfig {
-    mode: ThemeMode;
-    primaryColor: string;
-    secondaryColor: string;
-    fontFamily: string;
-    fontSize: number;
-    borderRadius: number;
+	mode: ThemeMode;
+	primaryColor: string;
+	secondaryColor: string;
+	fontFamily: string;
+	fontSize: number;
+	borderRadius: number;
 }
 
 // ========================================
@@ -276,19 +260,19 @@ export interface ThemeConfig {
 // ========================================
 
 export interface Notification {
-    id: string;
-    title: string;
-    message: string;
-    type: Severity;
-    duration?: number;
-    actions?: NotificationAction[];
-    timestamp: Date;
+	id: string;
+	title: string;
+	message: string;
+	type: Severity;
+	duration?: number;
+	actions?: NotificationAction[];
+	timestamp: Date;
 }
 
 export interface NotificationAction {
-    label: string;
-    onClick: () => void;
-    color?: Color;
+	label: string;
+	onClick: () => void;
+	color?: Color;
 }
 
 // ========================================
@@ -296,20 +280,20 @@ export interface NotificationAction {
 // ========================================
 
 export interface AnalyticsEvent {
-    name: string;
-    properties?: Record<string, unknown>;
-    timestamp?: Date;
-    userId?: string;
-    sessionId?: string;
+	name: string;
+	properties?: Record<string, unknown>;
+	timestamp?: Date;
+	userId?: string;
+	sessionId?: string;
 }
 
 export interface AnalyticsPageView {
-    page: string;
-    title?: string;
-    referrer?: string;
-    timestamp?: Date;
-    userId?: string;
-    sessionId?: string;
+	page: string;
+	title?: string;
+	referrer?: string;
+	timestamp?: Date;
+	userId?: string;
+	sessionId?: string;
 }
 
 // ========================================
@@ -321,11 +305,11 @@ export type Permission = string;
 export type Role = string;
 
 export interface User {
-    id: ID;
-    name: string;
-    email: string;
-    roles: Role[];
-    permissions: Permission[];
+	id: ID;
+	name: string;
+	email: string;
+	roles: Role[];
+	permissions: Permission[];
 }
 
 // ========================================
@@ -335,11 +319,11 @@ export interface User {
 export type DeviceType = 'mobile' | 'tablet' | 'desktop';
 
 export interface DeviceInfo {
-    type: DeviceType;
-    os: string;
-    browser: string;
-    version: string;
-    userAgent: string;
+	type: DeviceType;
+	os: string;
+	browser: string;
+	version: string;
+	userAgent: string;
 }
 
 // ========================================
@@ -347,13 +331,13 @@ export interface DeviceInfo {
 // ========================================
 
 export interface Location {
-    country: string;
-    countryCode: string;
-    region: string;
-    city: string;
-    latitude?: number;
-    longitude?: number;
-    timezone?: string;
+	country: string;
+	countryCode: string;
+	region: string;
+	city: string;
+	latitude?: number;
+	longitude?: number;
+	timezone?: string;
 }
 
 // ========================================
@@ -363,43 +347,43 @@ export interface Location {
 export type TimeUnit = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
 
 export type TimeRange = {
-    start: Date;
-    end: Date;
+	start: Date;
+	end: Date;
 };
 
 export type RelativeTimeRange =
-    | 'last_hour'
-    | 'last_24_hours'
-    | 'last_7_days'
-    | 'last_30_days'
-    | 'last_90_days'
-    | 'last_year'
-    | 'all_time';
+	| 'last_hour'
+	| 'last_24_hours'
+	| 'last_7_days'
+	| 'last_30_days'
+	| 'last_90_days'
+	| 'last_year'
+	| 'all_time';
 
 // ========================================
 // 🎨 STYLE TYPES
 // ========================================
 
 export interface StyleProps {
-    className?: string;
-    style?: React.CSSProperties;
+	className?: string;
+	style?: React.CSSProperties;
 }
 
 export interface SpacingProps {
-    m?: number | string;
-    mt?: number | string;
-    mr?: number | string;
-    mb?: number | string;
-    ml?: number | string;
-    mx?: number | string;
-    my?: number | string;
-    p?: number | string;
-    pt?: number | string;
-    pr?: number | string;
-    pb?: number | string;
-    pl?: number | string;
-    px?: number | string;
-    py?: number | string;
+	m?: number | string;
+	mt?: number | string;
+	mr?: number | string;
+	mb?: number | string;
+	ml?: number | string;
+	mx?: number | string;
+	my?: number | string;
+	p?: number | string;
+	pt?: number | string;
+	pr?: number | string;
+	pb?: number | string;
+	pl?: number | string;
+	px?: number | string;
+	py?: number | string;
 }
 
 // ========================================
@@ -407,16 +391,16 @@ export interface SpacingProps {
 // ========================================
 
 export interface AsyncOperation<T = unknown> {
-    execute: () => Promise<T>;
-    cancel?: () => void;
-    retry?: () => Promise<T>;
+	execute: () => Promise<T>;
+	cancel?: () => void;
+	retry?: () => Promise<T>;
 }
 
 export interface RetryOptions {
-    maxAttempts: number;
-    delay: number;
-    backoff?: 'linear' | 'exponential';
-    onRetry?: (attempt: number, error: Error) => void;
+	maxAttempts: number;
+	delay: number;
+	backoff?: 'linear' | 'exponential';
+	onRetry?: (attempt: number, error: Error) => void;
 }
 
 // ========================================
@@ -424,15 +408,15 @@ export interface RetryOptions {
 // ========================================
 
 export interface ComponentWithChildren {
-    children: ReactNode;
+	children: ReactNode;
 }
 
 export interface ComponentWithClassName {
-    className?: string;
+	className?: string;
 }
 
 export interface ComponentWithTestId {
-    'data-testid'?: string;
+	'data-testid'?: string;
 }
 
 export type BaseProps = ComponentWithChildren & ComponentWithClassName & ComponentWithTestId;
@@ -442,18 +426,18 @@ export type BaseProps = ComponentWithChildren & ComponentWithClassName & Compone
 // ========================================
 
 export interface AppConfig {
-    name: string;
-    version: string;
-    environment: 'development' | 'staging' | 'production';
-    apiUrl: string;
-    features: Record<string, boolean>;
+	name: string;
+	version: string;
+	environment: 'development' | 'staging' | 'production';
+	apiUrl: string;
+	features: Record<string, boolean>;
 }
 
 export interface FeatureFlag {
-    name: string;
-    enabled: boolean;
-    description?: string;
-    rolloutPercentage?: number;
+	name: string;
+	enabled: boolean;
+	description?: string;
+	rolloutPercentage?: number;
 }
-export interface ChartOptions { [key: string]: any; }
-export interface ChartData { [key: string]: any; }
+export type ChartOptions = Record<string, any>;
+export type ChartData = Record<string, any>;

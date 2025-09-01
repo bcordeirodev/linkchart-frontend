@@ -63,15 +63,19 @@ export function BenefitsSection({
 			sx={{
 				py: { xs: 8, md: 12 },
 				px: { xs: 2, sm: 3, md: 4 },
-				background: theme.palette.mode === 'dark'
-					? `linear-gradient(135deg, ${alpha(theme.palette.background.default, 0.8)} 0%, ${alpha(theme.palette.background.paper, 0.6)} 100%)`
-					: `linear-gradient(135deg, ${alpha(theme.palette.background.default, 0.9)} 0%, ${alpha(theme.palette.background.paper, 0.7)} 100%)`,
+				background:
+					theme.palette.mode === 'dark'
+						? `linear-gradient(135deg, ${alpha(theme.palette.background.default, 0.8)} 0%, ${alpha(theme.palette.background.paper, 0.6)} 100%)`
+						: `linear-gradient(135deg, ${alpha(theme.palette.background.default, 0.9)} 0%, ${alpha(theme.palette.background.paper, 0.7)} 100%)`,
 				position: 'relative',
 				overflow: 'hidden'
 			}}
 		>
 			{/* Header */}
-			<Fade in timeout={800}>
+			<Fade
+				in
+				timeout={800}
+			>
 				<Box sx={{ textAlign: 'center', mb: 8, maxWidth: 800, mx: 'auto' }}>
 					<Typography
 						variant="h2"
@@ -101,19 +105,33 @@ export function BenefitsSection({
 			</Fade>
 
 			{/* Benefits Grid */}
-			<Grid container spacing={4} sx={{ maxWidth: 1200, mx: 'auto' }}>
+			<Grid
+				container
+				spacing={4}
+				sx={{ maxWidth: 1200, mx: 'auto' }}
+			>
 				{benefits.map((benefit, index) => (
-					<Grid item xs={12} sm={6} md={4} key={index}>
-						<Grow in timeout={1000 + index * 200}>
+					<Grid
+						item
+						xs={12}
+						sm={6}
+						md={4}
+						key={index}
+					>
+						<Grow
+							in
+							timeout={1000 + index * 200}
+						>
 							<Paper
 								elevation={0}
 								sx={{
 									p: 4,
 									height: '100%',
 									borderRadius: '16px',
-									background: theme.palette.mode === 'dark'
-										? alpha(theme.palette.background.paper, 0.8)
-										: alpha(theme.palette.background.paper, 0.9),
+									background:
+										theme.palette.mode === 'dark'
+											? alpha(theme.palette.background.paper, 0.8)
+											: alpha(theme.palette.background.paper, 0.9),
 									border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
 									transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 									cursor: 'pointer',
@@ -122,9 +140,10 @@ export function BenefitsSection({
 										transform: 'translateY(-4px)',
 										boxShadow: theme.shadows[8],
 										borderColor: alpha(theme.palette.primary.main, 0.4),
-										background: theme.palette.mode === 'dark'
-											? alpha(theme.palette.background.paper, 0.95)
-											: alpha(theme.palette.background.paper, 1)
+										background:
+											theme.palette.mode === 'dark'
+												? alpha(theme.palette.background.paper, 0.95)
+												: alpha(theme.palette.background.paper, 1)
 									},
 									'&:focus': {
 										outline: 'none',

@@ -18,7 +18,7 @@ export const API_CONFIG = {
 	// Headers padrão
 	DEFAULT_HEADERS: {
 		'Content-Type': 'application/json',
-		'Accept': 'application/json',
+		Accept: 'application/json'
 	},
 
 	// Endpoints
@@ -43,10 +43,8 @@ export const API_CONFIG = {
 			REGISTER: '/api/auth/register',
 			PROFILE: '/api/profile',
 			ME: '/api/me',
-			UPDATE_PROFILE: '/api/profile',
+			UPDATE_PROFILE: '/api/profile'
 		},
-
-
 
 		// Logs
 		LOGS: '/api/logs',
@@ -68,22 +66,22 @@ export const API_CONFIG = {
 		ANALYTICS_INSIGHTS: (linkId: string) => `/api/analytics/link/${linkId}/insights`,
 
 		// Redirects
-		REDIRECT: (slug: string) => `/api/r/${slug}`,
+		REDIRECT: (slug: string) => `/api/r/${slug}`
 	},
 
 	// Configurações de cache
 	CACHE: {
 		ANALYTICS_TTL: 5 * 60 * 1000, // 5 minutos
 		LINKS_TTL: 2 * 60 * 1000, // 2 minutos
-		USER_TTL: 10 * 60 * 1000, // 10 minutos
+		USER_TTL: 10 * 60 * 1000 // 10 minutos
 	},
 
 	// Configurações de fallback
 	FALLBACK: {
 		ENABLED: true,
 		RETRY_DELAY: 1000, // 1 segundo
-		MAX_RETRIES: 2,
-	},
+		MAX_RETRIES: 2
+	}
 };
 
 // Função para construir URLs completas
@@ -121,7 +119,7 @@ export const API_ENDPOINTS = {
 		LOGOUT: API_CONFIG.ENDPOINTS.AUTH.LOGOUT,
 		PROFILE: API_CONFIG.ENDPOINTS.AUTH.PROFILE,
 		ME: API_CONFIG.ENDPOINTS.AUTH.ME,
-		UPDATE_PROFILE: API_CONFIG.ENDPOINTS.AUTH.UPDATE_PROFILE,
+		UPDATE_PROFILE: API_CONFIG.ENDPOINTS.AUTH.UPDATE_PROFILE
 	}
 };
 

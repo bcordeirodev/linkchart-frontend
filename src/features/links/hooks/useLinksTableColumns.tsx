@@ -13,7 +13,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
+import { showMessage } from '@/lib/store/messageSlice';
 
 interface UseLinksTableColumnsProps {
 	onDelete: (id: string) => Promise<void>;
@@ -261,7 +261,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 						<Tooltip title="Ver Analytics">
 							<IconButton
 								size="small"
-								onClick={() => navigate(`/link/${row.original.id}/analytics`)}
+								onClick={() => navigate(`/link/analytic/${row.original.id}`)}
 								sx={{
 									color: 'success.main',
 									'&:hover': {
@@ -277,7 +277,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 						<Tooltip title="Editar link">
 							<IconButton
 								size="small"
-								onClick={() => navigate(`/link/${row.original.id}/edit`)}
+								onClick={() => navigate(`/link/edit/${row.original.id}`)}
 								sx={{
 									color: 'warning.main',
 									'&:hover': {
@@ -293,7 +293,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 						<Tooltip title="Gerar QR Code">
 							<IconButton
 								size="small"
-								onClick={() => navigate(`/link/${row.original.id}/qr`)}
+								onClick={() => navigate(`/link/qr/${row.original.id}`)}
 								sx={{
 									color: 'secondary.main',
 									'&:hover': {

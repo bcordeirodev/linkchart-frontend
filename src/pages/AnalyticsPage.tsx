@@ -10,26 +10,26 @@ import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
  * Heatmap global quando não há linkId específico
  */
 function AnalyticsPage() {
-    const { links } = useLinks();
-    const firstLinkId = links.length > 0 ? links[0].id.toString() : undefined;
-    const { data, loading, error, refetch } = useEnhancedAnalytics(firstLinkId || '2');
+	const { links } = useLinks();
+	const firstLinkId = links.length > 0 ? links[0].id.toString() : undefined;
+	const { data, loading, error, refetch } = useEnhancedAnalytics(firstLinkId || '2');
 
-    return (
-        <AuthGuardRedirect auth={['user', 'admin']}>
-            <MainLayout>
-                <Analytics
-                    data={data}
-                    loading={loading}
-                    error={error}
-                    linkId={firstLinkId} // Passa linkId apenas se existir
-                    showHeader={true}
-                    showTabs={true}
-                    linksData={links}
-                    showDashboardTab={true}
-                />
-            </MainLayout>
-        </AuthGuardRedirect>
-    );
+	return (
+		<AuthGuardRedirect auth={['user', 'admin']}>
+			<MainLayout>
+				<Analytics
+					data={data}
+					loading={loading}
+					error={error}
+					linkId={firstLinkId}
+					showHeader={true}
+					showTabs={true}
+					linksData={links}
+					showDashboardTab={true}
+				/>
+			</MainLayout>
+		</AuthGuardRedirect>
+	);
 }
 
 export default AnalyticsPage;

@@ -13,18 +13,18 @@ import { LinkResponse } from '@/features/links/types/api';
 // ========================================
 
 export interface BaseComponentProps {
-    children?: ReactNode;
-    className?: string;
-    sx?: SxProps<Theme>;
+	children?: ReactNode;
+	className?: string;
+	sx?: SxProps<Theme>;
 }
 
 export interface LoadingProps {
-    loading?: boolean;
-    error?: string | null;
+	loading?: boolean;
+	error?: string | null;
 }
 
 export interface DataComponentProps<T = unknown> extends BaseComponentProps, LoadingProps {
-    data: T | null;
+	data: T | null;
 }
 
 // ========================================
@@ -32,27 +32,27 @@ export interface DataComponentProps<T = unknown> extends BaseComponentProps, Loa
 // ========================================
 
 export interface AnalyticsProps extends DataComponentProps<AnalyticsData> {
-    linkId?: string;
-    showHeader?: boolean;
-    showTabs?: boolean;
-    linksData?: LinkData[];
-    showDashboardTab?: boolean;
+	linkId?: string;
+	showHeader?: boolean;
+	showTabs?: boolean;
+	linksData?: LinkData[];
+	showDashboardTab?: boolean;
 }
 
 export interface MetricsProps extends DataComponentProps<AnalyticsData> {
-    totalLinks?: number;
-    activeLinks?: number;
-    totalClicks?: number;
-    avgClicksPerLink?: number;
-    variant?: 'dashboard' | 'analytics' | 'both';
-    categories?: string[];
-    showTitle?: boolean;
+	totalLinks?: number;
+	activeLinks?: number;
+	totalClicks?: number;
+	avgClicksPerLink?: number;
+	variant?: 'dashboard' | 'analytics' | 'both';
+	categories?: string[];
+	showTitle?: boolean;
 }
 
 export interface ChartsProps extends DataComponentProps<AnalyticsData> {
-    variant?: 'dashboard' | 'analytics' | 'full';
-    height?: number;
-    showAllCharts?: boolean;
+	variant?: 'dashboard' | 'analytics' | 'full';
+	height?: number;
+	showAllCharts?: boolean;
 }
 
 // ========================================
@@ -60,45 +60,45 @@ export interface ChartsProps extends DataComponentProps<AnalyticsData> {
 // ========================================
 
 export interface ChartDataPoint {
-    x: string | number;
-    y: number;
-    [key: string]: unknown;
+	x: string | number;
+	y: number;
+	[key: string]: unknown;
 }
 
 export interface ChartSeries {
-    name: string;
-    data: ChartDataPoint[];
-    color?: string;
+	name: string;
+	data: ChartDataPoint[];
+	color?: string;
 }
 
 export interface ChartOptions {
-    chart: {
-        type: string;
-        height?: number;
-        [key: string]: unknown;
-    };
-    colors?: string[];
-    title?: {
-        text: string;
-        [key: string]: unknown;
-    };
-    [key: string]: unknown;
+	chart: {
+		type: string;
+		height?: number;
+		[key: string]: unknown;
+	};
+	colors?: string[];
+	title?: {
+		text: string;
+		[key: string]: unknown;
+	};
+	[key: string]: unknown;
 }
 
 export interface ChartProps extends BaseComponentProps {
-    series: ChartSeries[];
-    options: ChartOptions;
-    type: 'line' | 'area' | 'bar' | 'pie' | 'donut' | 'heatmap';
-    height?: number;
-    width?: string | number;
+	series: ChartSeries[];
+	options: ChartOptions;
+	type: 'line' | 'area' | 'bar' | 'pie' | 'donut' | 'heatmap';
+	height?: number;
+	width?: string | number;
 }
 
 export interface ApexChartWrapperProps extends BaseComponentProps {
-    series: unknown[];
-    options: Record<string, unknown>;
-    type: string;
-    height?: number;
-    width?: string | number;
+	series: unknown[];
+	options: Record<string, unknown>;
+	type: string;
+	height?: number;
+	width?: string | number;
 }
 
 // ========================================
@@ -106,15 +106,15 @@ export interface ApexChartWrapperProps extends BaseComponentProps {
 // ========================================
 
 export interface MetricCardProps extends BaseComponentProps {
-    title: string;
-    value: string | number;
-    change?: number;
-    changeType?: 'increase' | 'decrease' | 'neutral';
-    icon?: ReactNode;
-    color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
-    variant?: 'default' | 'compact' | 'detailed';
-    subtitle?: string;
-    loading?: boolean;
+	title: string;
+	value: string | number;
+	subtitle?: string;
+	icon: ReactNode;
+	color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
+	trend?: {
+		value: number;
+		isPositive: boolean;
+	};
 }
 
 // ========================================
@@ -122,42 +122,42 @@ export interface MetricCardProps extends BaseComponentProps {
 // ========================================
 
 export interface FormFieldProps extends BaseComponentProps {
-    name: string;
-    label?: string;
-    placeholder?: string;
-    required?: boolean;
-    disabled?: boolean;
-    error?: boolean;
-    helperText?: string;
+	name: string;
+	label?: string;
+	placeholder?: string;
+	required?: boolean;
+	disabled?: boolean;
+	error?: boolean;
+	helperText?: string;
 }
 
 export interface LinkFormProps extends BaseComponentProps {
-    initialData?: Partial<LinkResponse>;
-    onSubmit: (data: LinkFormData) => void | Promise<void>;
-    loading?: boolean;
-    mode?: 'create' | 'edit';
+	initialData?: Partial<LinkResponse>;
+	onSubmit: (data: LinkFormData) => void | Promise<void>;
+	loading?: boolean;
+	mode?: 'create' | 'edit';
 }
 
 export interface LinkFormData {
-    original_url: string;
-    title?: string;
-    slug?: string;
-    description?: string;
-    expires_at?: string;
-    starts_in?: string;
-    is_active?: boolean;
-    click_limit?: number;
-    utm_source?: string;
-    utm_medium?: string;
-    utm_campaign?: string;
-    utm_term?: string;
-    utm_content?: string;
+	original_url: string;
+	title?: string;
+	slug?: string;
+	description?: string;
+	expires_at?: string;
+	starts_in?: string;
+	is_active?: boolean;
+	click_limit?: number;
+	utm_source?: string;
+	utm_medium?: string;
+	utm_campaign?: string;
+	utm_term?: string;
+	utm_content?: string;
 }
 
 export interface URLShortenerFormProps extends BaseComponentProps {
-    onSubmit: (url: string) => void | Promise<void>;
-    loading?: boolean;
-    placeholder?: string;
+	onSubmit: (url: string) => void | Promise<void>;
+	loading?: boolean;
+	placeholder?: string;
 }
 
 // ========================================
@@ -165,24 +165,24 @@ export interface URLShortenerFormProps extends BaseComponentProps {
 // ========================================
 
 export interface TableColumn<T = unknown> {
-    id: keyof T;
-    label: string;
-    minWidth?: number;
-    align?: 'left' | 'right' | 'center';
-    format?: (value: unknown) => string | ReactNode;
-    sortable?: boolean;
+	id: keyof T;
+	label: string;
+	minWidth?: number;
+	align?: 'left' | 'right' | 'center';
+	format?: (value: unknown) => string | ReactNode;
+	sortable?: boolean;
 }
 
 export interface TableProps<T = unknown> extends BaseComponentProps {
-    data: T[];
-    columns: TableColumn<T>[];
-    loading?: boolean;
-    onRowClick?: (row: T) => void;
-    pagination?: boolean;
-    pageSize?: number;
-    searchable?: boolean;
-    selectable?: boolean;
-    onSelectionChange?: (selectedIds: string[] | number[]) => void;
+	data: T[];
+	columns: TableColumn<T>[];
+	loading?: boolean;
+	onRowClick?: (row: T) => void;
+	pagination?: boolean;
+	pageSize?: number;
+	searchable?: boolean;
+	selectable?: boolean;
+	onSelectionChange?: (selectedIds: string[] | number[]) => void;
 }
 
 // ========================================
@@ -190,25 +190,25 @@ export interface TableProps<T = unknown> extends BaseComponentProps {
 // ========================================
 
 export interface LayoutProps extends BaseComponentProps {
-    title?: string;
-    breadcrumbs?: BreadcrumbItem[];
-    actions?: ReactNode;
-    sidebar?: ReactNode;
-    footer?: ReactNode;
+	title?: string;
+	breadcrumbs?: BreadcrumbItem[];
+	actions?: ReactNode;
+	sidebar?: ReactNode;
+	footer?: ReactNode;
 }
 
 export interface BreadcrumbItem {
-    label: string;
-    href?: string;
-    icon?: ReactNode;
-    current?: boolean;
+	label: string;
+	href?: string;
+	icon?: ReactNode;
+	current?: boolean;
 }
 
 export interface HeaderProps extends BaseComponentProps {
-    title?: string;
-    subtitle?: string;
-    actions?: ReactNode;
-    breadcrumbs?: BreadcrumbItem[];
+	title?: string;
+	subtitle?: string;
+	actions?: ReactNode;
+	breadcrumbs?: BreadcrumbItem[];
 }
 
 // ========================================
@@ -216,33 +216,33 @@ export interface HeaderProps extends BaseComponentProps {
 // ========================================
 
 export interface TabPanelProps extends BaseComponentProps {
-    value: number;
-    index: number;
-    children: ReactNode;
+	value: number;
+	index: number;
+	children: ReactNode;
 }
 
 export interface TabsProps extends BaseComponentProps {
-    tabs: TabItem[];
-    value: number;
-    onChange: (value: number) => void;
-    orientation?: 'horizontal' | 'vertical';
-    variant?: 'standard' | 'scrollable' | 'fullWidth';
+	tabs: TabItem[];
+	value: number;
+	onChange: (value: number) => void;
+	orientation?: 'horizontal' | 'vertical';
+	variant?: 'standard' | 'scrollable' | 'fullWidth';
 }
 
 export interface TabItem {
-    label: string;
-    content: ReactNode;
-    disabled?: boolean;
-    icon?: ReactNode;
+	label: string;
+	content: ReactNode;
+	disabled?: boolean;
+	icon?: ReactNode;
 }
 
 export interface ModalProps extends BaseComponentProps {
-    open: boolean;
-    onClose: () => void;
-    title?: string;
-    maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    fullWidth?: boolean;
-    actions?: ReactNode;
+	open: boolean;
+	onClose: () => void;
+	title?: string;
+	maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+	fullWidth?: boolean;
+	actions?: ReactNode;
 }
 
 // ========================================
@@ -250,30 +250,30 @@ export interface ModalProps extends BaseComponentProps {
 // ========================================
 
 export interface LinkData {
-    id: number;
-    title?: string;
-    slug: string;
-    original_url: string;
-    clicks: number;
-    is_active: boolean;
-    created_at?: string;
-    updated_at?: string;
+	id: number;
+	title?: string;
+	slug: string;
+	original_url: string;
+	clicks: number;
+	is_active: boolean;
+	created_at?: string;
+	updated_at?: string;
 }
 
 export interface LinksHeaderProps extends BaseComponentProps {
-    title?: string;
-    subtitle?: string;
-    showCreateButton?: boolean;
-    onCreateClick?: () => void;
+	title?: string;
+	subtitle?: string;
+	showCreateButton?: boolean;
+	onCreateClick?: () => void;
 }
 
 export interface LinksFiltersProps extends BaseComponentProps {
-    searchTerm: string;
-    onSearchChange: (value: string) => void;
-    statusFilter: string;
-    onStatusChange: (value: string) => void;
-    dateRange?: [Date | null, Date | null];
-    onDateRangeChange?: (range: [Date | null, Date | null]) => void;
+	searchTerm: string;
+	onSearchChange: (value: string) => void;
+	statusFilter: string;
+	onStatusChange: (value: string) => void;
+	dateRange?: [Date | null, Date | null];
+	onDateRangeChange?: (range: [Date | null, Date | null]) => void;
 }
 
 // ========================================
@@ -281,15 +281,15 @@ export interface LinksFiltersProps extends BaseComponentProps {
 // ========================================
 
 export interface RedirectProps extends BaseComponentProps {
-    slug: string;
-    delay?: number;
-    showCountdown?: boolean;
-    onRedirect?: () => void;
+	slug: string;
+	delay?: number;
+	showCountdown?: boolean;
+	onRedirect?: () => void;
 }
 
 export interface RedirectStatsProps extends BaseComponentProps {
-    slug: string;
-    showDetails?: boolean;
+	slug: string;
+	showDetails?: boolean;
 }
 
 // ========================================
@@ -297,17 +297,17 @@ export interface RedirectStatsProps extends BaseComponentProps {
 // ========================================
 
 export interface ProfileFormProps extends BaseComponentProps {
-    initialData?: UserProfileData;
-    onSubmit: (data: UserProfileData) => void | Promise<void>;
-    loading?: boolean;
+	initialData?: UserProfileData;
+	onSubmit: (data: UserProfileData) => void | Promise<void>;
+	loading?: boolean;
 }
 
 export interface UserProfileData {
-    name: string;
-    email: string;
-    current_password?: string;
-    password?: string;
-    password_confirmation?: string;
+	name: string;
+	email: string;
+	current_password?: string;
+	password?: string;
+	password_confirmation?: string;
 }
 
 // ========================================
@@ -315,11 +315,11 @@ export interface UserProfileData {
 // ========================================
 
 export interface SearchProps extends BaseComponentProps {
-    value: string;
-    onChange: (value: string) => void;
-    placeholder?: string;
-    debounceMs?: number;
-    onSearch?: (value: string) => void;
+	value: string;
+	onChange: (value: string) => void;
+	placeholder?: string;
+	debounceMs?: number;
+	onSearch?: (value: string) => void;
 }
 
 // ========================================
@@ -327,10 +327,10 @@ export interface SearchProps extends BaseComponentProps {
 // ========================================
 
 export interface ThemeToggleProps extends BaseComponentProps {
-    variant?: 'icon' | 'switch' | 'button';
+	variant?: 'icon' | 'switch' | 'button';
 }
 
 export interface ColorSchemeProps {
-    mode: 'light' | 'dark';
-    toggleMode: () => void;
+	mode: 'light' | 'dark';
+	toggleMode: () => void;
 }

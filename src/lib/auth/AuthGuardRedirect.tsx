@@ -1,18 +1,18 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import FuseUtils from '@fuse/utils';
+import { FuseUtils } from '@/lib/utils';
 import {
 	getSessionRedirectUrl,
 	resetSessionRedirectUrl,
 	setSessionRedirectUrl
-} from '@fuse/core/FuseAuthorization/sessionRedirectUrl';
-import { FuseRouteObjectType } from '@fuse/core/FuseLayout/FuseLayout';
+} from '@/lib/auth/sessionRedirectUrl';
+// Tipo removido - usando tipo genérico
 import { usePathname } from '@/shared/hooks';
-import FuseLoading from '@fuse/core/FuseLoading';
+import { Loading } from '@/shared/components';
 import { useNavigate } from '@/shared/hooks';
 import useUser from './useUser';
 
 type AuthGuardProps = {
-	auth: FuseRouteObjectType['auth'];
+	auth: string[] | [] | null | undefined;
 	children: React.ReactNode;
 	loginRedirectUrl?: string;
 };
@@ -56,7 +56,10 @@ function AuthGuardRedirect({ auth, children, loginRedirectUrl = '/' }: AuthGuard
 	// Enhanced permission checking and access control
 	useEffect(() => {
 		const isOnlyGuestAllowed = Array.isArray(auth) && auth.length === 0;
-		const userHasPermission = FuseUtils.hasPermission(auth === null ? undefined : auth, userRoleForPermission as never) as boolean;
+		const userHasPermission = FuseUtils.hasPermission(
+			auth === null ? undefined : auth,
+			userRoleForPermission as never
+		) as boolean;
 		const isIgnoredPath = ignoredPaths.includes(pathname);
 
 		// Grant access immediately for allowed scenarios
@@ -97,7 +100,7 @@ function AuthGuardRedirect({ auth, children, loginRedirectUrl = '/' }: AuthGuard
 	if (!accessGranted) {
 		return (
 			<div className="flex flex-1 flex-col items-center justify-center p-4">
-				<FuseLoading />
+				<Loading />
 				<div className="mt-4 text-center">
 					<p className="text-sm text-gray-600 dark:text-gray-400">
 						{isGuest ? 'Redirecting to sign in...' : 'Checking permissions...'}
