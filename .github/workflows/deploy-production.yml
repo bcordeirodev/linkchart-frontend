@@ -237,9 +237,9 @@ jobs:
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
             
             # Limpar TUDO do Docker para forçar rebuild completo
-            echo "🧹 Cleaning ALL Docker cache..."
-            docker system prune -af
-            docker builder prune -af
+            # echo "🧹 Cleaning ALL Docker cache..."
+            # docker system prune -af
+            # docker builder prune -af
             
             # Rebuild com timestamp único para evitar cache
             echo "🏗️ Building new image with latest code..."

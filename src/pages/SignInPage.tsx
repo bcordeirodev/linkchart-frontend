@@ -137,7 +137,7 @@ function SignInPage() {
 									lineHeight: 1.6
 								}}
 							>
-								Acesse sua conta e otimize seus links aqui!!
+								Acesse sua conta e otimize seus links aqui!!!
 							</Typography>
 						</Box>
 
