@@ -170,7 +170,7 @@ jobs:
     
     environment:
       name: production
-      url: https://linkcharts.com
+      url: http://134.209.33.182:3000
     
     steps:
       - name: 📥 Checkout Code
@@ -179,7 +179,7 @@ jobs:
       - name: 🔐 Setup SSH Key
         uses: webfactory/ssh-agent@v0.8.0
         with:
-          ssh-private-key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          ssh-private-key: ${{ secrets.SSH_KEY }}
 
       - name: 📋 Prepare Deploy Files
         run: |
@@ -242,14 +242,14 @@ jobs:
           echo "🏥 Health check..."
           sleep 30
           
-          if curl -f http://localhost/health > /dev/null 2>&1; then
+          if curl -f http://localhost:3000/health > /dev/null 2>&1; then
             echo "✅ Deployment successful!"
           else
             echo "❌ Health check failed, rolling back..."
-            sudo docker-compose -f docker-compose.prod.yml down
+            sudo docker compose -f docker-compose.prod.yml down
             if [ -d "$BACKUP_DIR" ] && [ "$(ls -A $BACKUP_DIR)" ]; then
               sudo cp -r $BACKUP_DIR/* $APP_DIR/
-              sudo docker-compose -f docker-compose.prod.yml up -d
+              sudo docker compose -f docker-compose.prod.yml up -d
             fi
             exit 1
           fi
@@ -285,8 +285,8 @@ jobs:
           sleep 60
           
           # Testes básicos
-          curl -f https://linkcharts.com/health
-          curl -f https://linkcharts.com/
+          curl -f http://134.209.33.182:3000/health
+          curl -f http://134.209.33.182:3000/
           
           echo "✅ Post-deploy tests passed!"
 
@@ -294,7 +294,7 @@ jobs:
         if: success()
         run: |
           echo "🎉 Deployment to production completed successfully!"
-          echo "🌐 Application is live at: https://linkcharts.com"
+          echo "🌐 Application is live at: http://134.209.33.182:3000"
 
       - name: 📢 Notify Failure
         if: failure()

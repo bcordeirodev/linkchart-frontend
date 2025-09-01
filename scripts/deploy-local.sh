@@ -43,9 +43,9 @@ if ! docker info > /dev/null 2>&1; then
     exit 1
 fi
 
-# Verificar se docker-compose está disponível
-if ! command -v docker-compose &> /dev/null; then
-    log_error "docker-compose não encontrado. Por favor, instale o docker-compose."
+# Verificar se docker compose está disponível
+if ! docker compose version &> /dev/null; then
+    log_error "docker compose não encontrado. Por favor, instale o Docker Compose."
     exit 1
 fi
 
@@ -53,7 +53,7 @@ log_info "Iniciando deploy local..."
 
 # 1. Limpeza de containers e imagens antigas
 log_info "🧹 Limpando containers e imagens antigas..."
-docker-compose -f docker-compose.prod.yml down --remove-orphans 2>/dev/null || true
+docker compose -f docker-compose.local.yml down --remove-orphans 2>/dev/null || true
 docker system prune -f
 
 # 2. Verificar arquivo .env.production
@@ -89,7 +89,7 @@ fi
 
 # 5. Iniciar containers
 log_info "🚀 Iniciando containers..."
-docker-compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.local.yml up -d
 
 if [ $? -eq 0 ]; then
     log_success "Containers iniciados com sucesso"
@@ -108,14 +108,14 @@ max_attempts=12
 attempt=1
 
 while [ $attempt -le $max_attempts ]; do
-    if curl -f http://localhost/health > /dev/null 2>&1; then
+    if curl -f http://localhost:3000/health > /dev/null 2>&1; then
         log_success "Health check passou! Aplicação está funcionando."
         break
     else
         if [ $attempt -eq $max_attempts ]; then
             log_error "Health check falhou após $max_attempts tentativas"
             log_info "Mostrando logs dos containers..."
-            docker-compose -f docker-compose.prod.yml logs --tail=50
+            docker compose -f docker-compose.local.yml logs --tail=50
             exit 1
         fi
         log_warning "Tentativa $attempt/$max_attempts falhou, tentando novamente em 5s..."
@@ -128,14 +128,14 @@ done
 log_info "🧪 Executando testes básicos..."
 
 # Testar página principal
-if curl -f http://localhost/ > /dev/null 2>&1; then
+if curl -f http://localhost:3000/ > /dev/null 2>&1; then
     log_success "Página principal acessível"
 else
     log_error "Página principal não acessível"
 fi
 
 # Testar assets estáticos
-if curl -f http://localhost/favicon.ico > /dev/null 2>&1; then
+if curl -f http://localhost:3000/favicon.ico > /dev/null 2>&1; then
     log_success "Assets estáticos acessíveis"
 else
     log_warning "Alguns assets podem não estar acessíveis"
@@ -146,20 +146,20 @@ echo
 log_success "🎉 Deploy local concluído com sucesso!"
 echo
 echo -e "${BLUE}📋 INFORMAÇÕES DO DEPLOY:${NC}"
-echo "🌐 URL da aplicação: http://localhost"
-echo "🏥 Health check: http://localhost/health"
-echo "📊 Status Nginx: http://localhost/nginx_status (apenas local)"
+echo "🌐 URL da aplicação: http://localhost:3000"
+echo "🏥 Health check: http://localhost:3000/health"
+echo "📊 Status Nginx: http://localhost:3000/nginx_status (apenas local)"
 echo
 echo -e "${BLUE}🐳 COMANDOS ÚTEIS:${NC}"
-echo "📋 Ver logs: docker-compose -f docker-compose.prod.yml logs -f"
-echo "🛑 Parar: docker-compose -f docker-compose.prod.yml down"
-echo "🔄 Reiniciar: docker-compose -f docker-compose.prod.yml restart"
-echo "🧹 Limpeza completa: docker-compose -f docker-compose.prod.yml down --volumes --remove-orphans"
+echo "📋 Ver logs: docker compose -f docker-compose.local.yml logs -f"
+echo "🛑 Parar: docker compose -f docker-compose.local.yml down"
+echo "🔄 Reiniciar: docker compose -f docker-compose.local.yml restart"
+echo "🧹 Limpeza completa: docker compose -f docker-compose.local.yml down --volumes --remove-orphans"
 echo
 
 # 10. Mostrar status dos containers
 log_info "📊 Status dos containers:"
-docker-compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.local.yml ps
 
 echo
-log_success "✨ Deploy local finalizado! A aplicação está rodando em http://localhost"
+log_success "✨ Deploy local finalizado! A aplicação está rodando em http://localhost:3000"
