@@ -179,18 +179,14 @@ jobs:
       - name: 🔐 Setup SSH Key
         uses: webfactory/ssh-agent@v0.8.0
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+          ssh-private-key: ${{ secrets.PRODUCTION_SSH_KEY }}
 
-      - name: 📋 Prepare Deploy Files
+      - name: 📋 Prepare Deploy Script
         run: |
-          # Criar diretório temporário para deploy
+          # Criar script de deploy simplificado
           mkdir -p deploy-files
           
-          # Copiar arquivos necessários
-          cp docker-compose.prod.yml deploy-files/
-          cp -r docker/ deploy-files/
-          
-          # Criar script de deploy
+          # Criar script de deploy otimizado
           cat > deploy-files/deploy.sh << 'EOF'
           #!/bin/bash
           set -e
@@ -198,45 +194,40 @@ jobs:
           echo "🚀 Starting deployment..."
           
           # Variáveis
-          APP_DIR="/opt/linkcharts/frontend"
-          BACKUP_DIR="/opt/linkcharts/backups/$(date +%Y%m%d_%H%M%S)"
+          APP_DIR="/var/www/linkchart-frontend"
+          BACKUP_DIR="/var/www/linkchart-frontend/backups/$(date +%Y%m%d_%H%M%S)"
+          
+          # Ir para diretório da aplicação
+          cd $APP_DIR
           
           # Criar backup
           echo "📦 Creating backup..."
-          sudo mkdir -p $BACKUP_DIR
-          if [ -d "$APP_DIR" ]; then
-            sudo cp -r $APP_DIR/* $BACKUP_DIR/ 2>/dev/null || true
+          mkdir -p backups
+          if [ -d "dist" ]; then
+            cp -r dist/ $BACKUP_DIR-dist/ 2>/dev/null || true
           fi
           
-          # Criar diretório da aplicação
-          sudo mkdir -p $APP_DIR
-          sudo mkdir -p $APP_DIR/logs/nginx
-          sudo mkdir -p $APP_DIR/ssl
-          
-          # Copiar arquivos
-          echo "📁 Copying files..."
-          sudo cp -r * $APP_DIR/
-          
-          # Definir permissões
-          sudo chown -R $USER:$USER $APP_DIR
-          sudo chmod +x $APP_DIR/deploy.sh
+          # Atualizar código
+          echo "📥 Updating code..."
+          git fetch origin
+          git reset --hard origin/main
+          git pull origin main
           
           # Parar containers existentes
           echo "🛑 Stopping existing containers..."
-          cd $APP_DIR
-          sudo docker-compose -f docker-compose.prod.yml down --remove-orphans || true
+          docker compose -f docker-compose.prod.yml down --remove-orphans || true
           
           # Limpar imagens antigas
           echo "🧹 Cleaning old images..."
-          sudo docker system prune -f
+          docker system prune -f
           
-          # Fazer pull da nova imagem
-          echo "📥 Pulling new image..."
-          sudo docker-compose -f docker-compose.prod.yml pull
+          # Rebuild da aplicação com código atualizado
+          echo "🏗️ Building new image..."
+          docker build -f Dockerfile.prod -t linkcharts-frontend:latest .
           
           # Iniciar containers
           echo "🚀 Starting containers..."
-          sudo docker-compose -f docker-compose.prod.yml up -d
+          docker compose -f docker-compose.prod.yml up -d
           
           # Verificar saúde
           echo "🏥 Health check..."
@@ -246,37 +237,81 @@ jobs:
             echo "✅ Deployment successful!"
           else
             echo "❌ Health check failed, rolling back..."
-            sudo docker compose -f docker-compose.prod.yml down
-            if [ -d "$BACKUP_DIR" ] && [ "$(ls -A $BACKUP_DIR)" ]; then
-              sudo cp -r $BACKUP_DIR/* $APP_DIR/
-              sudo docker compose -f docker-compose.prod.yml up -d
+            docker compose -f docker-compose.prod.yml down
+            if [ -d "$BACKUP_DIR-dist" ] && [ "$(ls -A $BACKUP_DIR-dist)" ]; then
+              cp -r $BACKUP_DIR-dist/* dist/
+              docker compose -f docker-compose.prod.yml up -d
             fi
             exit 1
           fi
           
           # Limpeza de backups antigos (manter apenas os 5 mais recentes)
           echo "🧹 Cleaning old backups..."
-          sudo find /opt/linkcharts/backups -maxdepth 1 -type d -name "20*" | sort -r | tail -n +6 | sudo xargs rm -rf
+          sudo find /var/www/linkchart-frontend/backups -maxdepth 1 -type d -name "20*" | sort -r | tail -n +6 | sudo xargs rm -rf
           
           echo "🎉 Deployment completed successfully!"
           EOF
           
           chmod +x deploy-files/deploy.sh
 
-      - name: 📤 Upload to Server
-        run: |
-          # Fazer upload dos arquivos
-          scp -o StrictHostKeyChecking=no -r deploy-files/* ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_HOST }}:/tmp/linkcharts-deploy/
-          
       - name: 🚀 Execute Deployment
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_HOST }} << 'EOF'
-            cd /tmp/linkcharts-deploy
-            chmod +x deploy.sh
-            ./deploy.sh
+            cd /var/www/linkchart-frontend
             
-            # Limpeza
-            rm -rf /tmp/linkcharts-deploy
+            echo "🚀 Starting deployment..."
+            
+            # Criar backup
+            echo "📦 Creating backup..."
+            mkdir -p backups
+            BACKUP_DIR="backups/$(date +%Y%m%d_%H%M%S)"
+            if [ -d "dist" ]; then
+              cp -r dist/ $BACKUP_DIR-dist/ 2>/dev/null || true
+            fi
+            
+            # Atualizar código
+            echo "📥 Updating code..."
+            git fetch origin
+            git reset --hard origin/main
+            git pull origin main
+            
+            # Parar containers existentes
+            echo "🛑 Stopping existing containers..."
+            docker compose -f docker-compose.prod.yml down --remove-orphans || true
+            
+            # Limpar imagens antigas
+            echo "🧹 Cleaning old images..."
+            docker system prune -f
+            
+            # Rebuild da aplicação
+            echo "🏗️ Building new image..."
+            docker build -f Dockerfile.prod -t linkcharts-frontend:latest .
+            
+            # Iniciar containers
+            echo "🚀 Starting containers..."
+            docker compose -f docker-compose.prod.yml up -d
+            
+            # Verificar saúde
+            echo "🏥 Health check..."
+            sleep 30
+            
+            if curl -f http://localhost:3000/health > /dev/null 2>&1; then
+              echo "✅ Deployment successful!"
+            else
+              echo "❌ Health check failed, rolling back..."
+              docker compose -f docker-compose.prod.yml down
+              if [ -d "$BACKUP_DIR-dist" ] && [ "$(ls -A $BACKUP_DIR-dist)" ]; then
+                cp -r $BACKUP_DIR-dist/* dist/
+                docker compose -f docker-compose.prod.yml up -d
+              fi
+              exit 1
+            fi
+            
+            # Limpeza de backups antigos (manter apenas os 5 mais recentes)
+            echo "🧹 Cleaning old backups..."
+            find backups -maxdepth 1 -type d -name "20*" | sort -r | tail -n +6 | xargs rm -rf 2>/dev/null || true
+            
+            echo "🎉 Deployment completed successfully!"
           EOF
 
       - name: 🧪 Post-Deploy Tests
