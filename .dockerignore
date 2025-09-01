@@ -1,50 +1,116 @@
-# ===========================================
-# DOCKERIGNORE - LINK CHART FRONTEND
-# ===========================================
+# 🐳 DOCKER IGNORE - LINK CHART FRONTEND
+# Arquivos e diretórios que não devem ser incluídos na imagem Docker
 
-# Dependências
-node_modules
+# ========================================
+# 📁 DEVELOPMENT FILES
+# ========================================
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 
-# Build outputs
-.next/
-out/
-build/
+# ========================================
+# 🔧 BUILD & CACHE
+# ========================================
 dist/
+build/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+.vite/
+coverage/
 
-# Arquivos de desenvolvimento
+# ========================================
+# 🔐 ENVIRONMENT & SECRETS
+# ========================================
+.env
 .env.local
 .env.development
 .env.test
+.env.production.local
+.env.development.local
 
-# Logs
-*.log
-logs/
+# ========================================
+# 🗂️ VERSION CONTROL
+# ========================================
+.git/
+.gitignore
+.gitattributes
+.github/
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# ========================================
+# 📝 DOCUMENTATION
+# ========================================
+README.md
+CHANGELOG.md
+LICENSE
+*.md
+docs/
 
-# Coverage directory usado por ferramentas como istanbul
+# ========================================
+# 🧪 TESTING
+# ========================================
+.nyc_output/
 coverage/
 *.lcov
+test/
+tests/
+__tests__/
+**/*.test.js
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.js
+**/*.spec.ts
+**/*.spec.tsx
 
-# Arquivos temporários
-.tmp/
-.temp/
-
-# IDE e editores
+# ========================================
+# 🔧 CONFIGURATION FILES
+# ========================================
+.eslintrc*
+.prettierrc*
+.editorconfig
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS generated files
+# ========================================
+# 📦 PACKAGE MANAGERS
+# ========================================
+yarn.lock
+package-lock.json
+.pnpm-lock.yaml
+
+# ========================================
+# 🐳 DOCKER
+# ========================================
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# ========================================
+# 📊 LOGS & TEMP
+# ========================================
+logs/
+*.log
+tmp/
+temp/
+.tmp/
+
+# ========================================
+# 🔍 ANALYSIS & REPORTS
+# ========================================
+.nyc_output/
+coverage/
+*.tgz
+*.tar.gz
+
+# ========================================
+# 🎯 OS SPECIFIC
+# ========================================
 .DS_Store
 .DS_Store?
 ._*
@@ -53,49 +119,8 @@ coverage/
 ehthumbs.db
 Thumbs.db
 
-# Git
-.git/
-.gitignore
-.gitattributes
-
-# Docker
-Dockerfile*
-.dockerignore
-docker-compose*.yml
-
-# CI/CD
-.github/
-.gitlab-ci.yml
-.travis.yml
-.circleci/
-
-# Documentação
-README.md
-CHANGELOG.md
-LICENSE
-*.md
-
-# Testes
-__tests__/
-**/*.test.js
-**/*.test.ts
-**/*.test.tsx
-**/*.spec.js
-**/*.spec.ts
-**/*.spec.tsx
-jest.config.js
-cypress/
-cypress.json
-
-# Linting e formatação
-.eslintrc*
-.prettierrc*
-.editorconfig
-
-# TypeScript (manter tsconfig.json para build)
-# tsconfig.json
-
-# Outros arquivos de configuração
-.nvmrc
-.node-version
-Makefile
+# ========================================
+# 🚫 MISC
+# ========================================
+*.tsbuildinfo
+.eslintcache

@@ -1,0 +1,121 @@
+# 🐳 DOCKER COMPOSE - PRODUCTION
+# Configuração para produção do Link Chart Frontend
+
+version: '3.8'
+
+services:
+  # ========================================
+  # 🚀 FRONTEND APPLICATION
+  # ========================================
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        - NODE_ENV=production
+    
+    container_name: linkcharts-frontend-prod
+    
+    restart: unless-stopped
+    
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    environment:
+      - NODE_ENV=production
+      - TZ=America/Sao_Paulo
+    
+    volumes:
+      # Logs persistentes
+      - ./logs/nginx:/var/log/nginx
+      # SSL certificates (se usar HTTPS)
+      - ./ssl:/etc/nginx/ssl:ro
+      # Configurações customizadas (opcional)
+      - ./docker/nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/default.prod.conf:/etc/nginx/conf.d/default.conf:ro
+    
+    networks:
+      - linkcharts-network
+    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(\`linkcharts.com\`, \`www.linkcharts.com\`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  # ========================================
+  # 🔄 REVERSE PROXY (TRAEFIK) - OPCIONAL
+  # ========================================
+  traefik:
+    image: traefik:v3.0
+    container_name: linkcharts-traefik
+    
+    restart: unless-stopped
+    
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Dashboard
+    
+    environment:
+      - TRAEFIK_API_DASHBOARD=true
+      - TRAEFIK_API_INSECURE=true
+      - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
+      - TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443
+      - TRAEFIK_PROVIDERS_DOCKER=true
+      - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL=admin@linkcharts.com
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_STORAGE=/acme.json
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_HTTPCHALLENGE_ENTRYPOINT=web
+    
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./acme.json:/acme.json
+      - ./logs/traefik:/var/log/traefik
+    
+    networks:
+      - linkcharts-network
+    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(\`traefik.linkcharts.com\`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.service=api@internal"
+
+# ========================================
+# 🌐 NETWORKS
+# ========================================
+networks:
+  linkcharts-network:
+    driver: bridge
+    name: linkcharts-network
+
+# ========================================
+# 💾 VOLUMES
+# ========================================
+volumes:
+  nginx-logs:
+    driver: local
+  traefik-logs:
+    driver: local
+  ssl-certs:
+    driver: local

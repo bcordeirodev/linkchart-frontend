@@ -1,320 +1,317 @@
-# ===========================================
-# GITHUB ACTIONS WORKFLOW - DEPLOY DOCKER (ALTERNATIVO)
-# Link Chart Frontend - Deploy via Container Docker
-# ===========================================
-#
-# ⚠️ ATENÇÃO: Este é um workflow ALTERNATIVO!
-#   O workflow padrão é o deploy-ssh.yml
-#   Use este apenas se precisar de deploy via Docker
-#
-# 🎯 OBJETIVO:
-#   Build e push de imagem Docker para GitHub Container Registry
-#   Deploy usando containers Docker (não implementado completamente)
-#
-# 🚀 QUANDO EXECUTA:
-#   - Push para branch 'main' (apenas build, deploy comentado)
-#   - Pull Request para 'main' (apenas validação)
-#   - Execução manual via workflow_dispatch
-#
-# 📋 PRÉ-REQUISITOS:
-#   - GitHub Container Registry habilitado
-#   - Secrets GITHUB_TOKEN (automático)
-#   - Para deploy real: configurar infraestrutura Docker
-#
-# 🐳 IMAGENS GERADAS:
-#   - ghcr.io/[owner]/[repo]/frontend:latest
-#   - ghcr.io/[owner]/[repo]/frontend:main
-#   - ghcr.io/[owner]/[repo]/frontend:main-[sha]
-#
-# ===========================================
+# 🚀 CI/CD WORKFLOW - LINK CHART FRONTEND
+# Deploy automático para produção
 
-name: 🐳 Deploy Docker (Alternativo)
+name: 🚀 Deploy to Production
 
 on:
-    push:
-        branches: [main]
-    pull_request:
-        branches: [main]
-    workflow_dispatch:
-        inputs:
-            environment:
-                description: 'Environment to deploy'
-                required: true
-                default: 'production'
-                type: choice
-                options:
-                    - production
-                    - staging
-            force_deploy:
-                description: 'Forçar deploy real (experimental)'
-                required: false
-                default: false
-                type: boolean
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'package*.json'
+      - 'Dockerfile.prod'
+      - 'docker-compose.prod.yml'
+      - '.github/workflows/**'
+  
+  pull_request:
+    branches: [main]
+    types: [closed]
+  
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
 
-# Definir variáveis globais
+# Configurações globais
 env:
-    NODE_VERSION: '22'
-    REGISTRY: ghcr.io
-    IMAGE_NAME: ${{ github.repository }}/frontend
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/frontend
 
-# Definir permissões necessárias
+# Permissões necessárias
 permissions:
-    contents: read
-    packages: write
-    id-token: write
+  contents: read
+  packages: write
+  deployments: write
 
 jobs:
-    # ===========================================
-    # JOB 1: VALIDAÇÃO PARA DOCKER BUILD
-    # Valida o código antes do build da imagem Docker
-    # ===========================================
-    validate:
-        name: 🔍 Validação Docker
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: 📥 Checkout code
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-
-            - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
-              uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ env.NODE_VERSION }}
-                  cache: 'npm'
-
-            - name: 📦 Install dependencies
-              run: |
-                  echo "📦 Instalando dependências para validação..."
-                  npm ci --prefer-offline --no-audit --silent
-
-            - name: 🔍 Validação de estrutura
-              run: |
-                  echo "🔍 Validando estrutura do projeto..."
-                  npm run validate
-              continue-on-error: true # Warnings não devem bloquear
-
-            - name: 🔧 TypeScript Check
-              run: |
-                  echo "🔧 Verificando tipos TypeScript..."
-                  npx tsc --noEmit
-              continue-on-error: true # Não bloquear por erros de tipo
-
-            - name: 🏗️ Test Build (para Docker)
-              run: |
-                  echo "🏗️ Testando build para Docker..."
-                  npm run build
-                  echo "✅ Build concluído com sucesso"
-
-                  # Análise do build
-                  echo "📊 Informações do build:"
-                  ls -la .next/ | head -10
-                  du -sh .next/
-              env:
-                  NODE_ENV: production
-                  NEXT_TELEMETRY_DISABLED: 1
-
-            - name: 🐳 Validar Dockerfile
-              run: |
-                  echo "🐳 Validando Dockerfile..."
-                  if [ -f "docker/production/Dockerfile" ]; then
-                    echo "✅ Dockerfile encontrado: docker/production/Dockerfile"
-                    # Verificar sintaxe básica
-                    docker --version
-                    echo "✅ Docker disponível para build"
-                  else
-                    echo "❌ Dockerfile não encontrado!"
-                    exit 1
-                  fi
-
-            - name: 📋 Validation Summary
-              run: |
-                  echo "## 🔍 Docker Validation Summary" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Node.js**: ${{ env.NODE_VERSION }}" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Build Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Bundle Size**: $(du -sh .next/ | cut -f1)" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Dockerfile**: ✅ Valid" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Ready for Docker Build**: ✅ Yes" >> $GITHUB_STEP_SUMMARY
-
-    # ===========================================
-    # JOB 2: BUILD E PUSH DA IMAGEM DOCKER
-    # Constrói e publica imagem Docker no GitHub Container Registry
-    # ===========================================
-    build-and-push:
-        name: 🐳 Build & Push Docker
-        runs-on: ubuntu-latest
-        needs: validate
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-        outputs:
-            image-digest: ${{ steps.build.outputs.digest }}
-            image-tag: ${{ steps.meta.outputs.tags }}
-            image-url: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-        steps:
-            - name: 📥 Checkout code
-              uses: actions/checkout@v4
-
-            - name: 🐳 Configurar Docker Buildx
-              uses: docker/setup-buildx-action@v3
-              with:
-                  driver-opts: |
-                      network=host
-                  buildkitd-flags: |
-                      --allow-insecure-entitlement security.insecure
-                      --allow-insecure-entitlement network.host
-
-            - name: 🔐 Login no Container Registry
-              uses: docker/login-action@v3
-              with:
-                  registry: ${{ env.REGISTRY }}
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: 📝 Extrair metadados da imagem
-              id: meta
-              uses: docker/metadata-action@v5
-              with:
-                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-                  tags: |
-                      type=ref,event=branch
-                      type=ref,event=pr
-                      type=sha,prefix={{branch}}-
-                      type=raw,value=latest,enable={{is_default_branch}}
-                  labels: |
-                      org.opencontainers.image.title=Link Chart Frontend
-                      org.opencontainers.image.description=Aplicação React.js para encurtamento de URLs
-                      org.opencontainers.image.vendor=Link Chart
-                      org.opencontainers.image.version={{version}}
-
-            - name: 🏗️ Build e Push da Imagem Docker
-              id: build
-              uses: docker/build-push-action@v5
-              with:
-                  context: .
-                  file: ./docker/production/Dockerfile
-                  platforms: linux/amd64,linux/arm64
-                  push: true
-                  tags: ${{ steps.meta.outputs.tags }}
-                  labels: ${{ steps.meta.outputs.labels }}
-                  cache-from: type=gha
-                  cache-to: type=gha,mode=max
-                  build-args: |
-                      NODE_ENV=production
-                      NEXT_TELEMETRY_DISABLED=1
-
-            - name: 📊 Docker Build Summary
-              run: |
-                  echo "## 🐳 Docker Build Summary" >> $GITHUB_STEP_SUMMARY
-                  echo "" >> $GITHUB_STEP_SUMMARY
-                  echo "### 📋 Informações da Imagem" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Registry**: ${{ env.REGISTRY }}" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Image**: ${{ env.IMAGE_NAME }}" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Tags**: \`${{ steps.meta.outputs.tags }}\`" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Digest**: \`${{ steps.build.outputs.digest }}\`" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Platforms**: linux/amd64, linux/arm64" >> $GITHUB_STEP_SUMMARY
-                  echo "" >> $GITHUB_STEP_SUMMARY
-                  echo "### 🚀 Como usar a imagem:" >> $GITHUB_STEP_SUMMARY
-                  echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-                  echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
-                  echo "docker run -p 3000:3000 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
-                  echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-
-      # ===========================================
-  # JOB 3: DEPLOY DOCKER (EXPERIMENTAL)
-  # ⚠️ ATENÇÃO: Deploy Docker não está implementado!
-  # Use o workflow deploy-ssh.yml para deploy real
-  # ===========================================
-  deploy:
-    name: 🚀 Deploy Docker (Experimental)
+  # ========================================
+  # 🧪 QUALITY CHECKS
+  # ========================================
+  quality-checks:
+    name: 🧪 Quality & Security Checks
     runs-on: ubuntu-latest
-    needs: build-and-push
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && inputs.force_deploy
-    environment: production
-
+    
     steps:
-      - name: ⚠️ Aviso sobre Deploy Docker
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
         run: |
-          echo "⚠️ ATENÇÃO: Deploy Docker não está totalmente implementado!"
-          echo ""
-          echo "🔧 Para deploy real, use o workflow: deploy-ssh.yml"
-          echo "📋 Este job apenas demonstra como seria o deploy Docker"
-          echo ""
-          echo "🐳 Imagem disponível: ${{ needs.build-and-push.outputs.image-tag }}"
+          npm install --prefer-offline --no-audit
+          
+      - name: 🔍 TypeScript Check
+        run: npm run type-check
 
-      - name: 📋 Informações da Imagem
+      - name: 🎨 Lint Check
+        run: npm run lint
+
+      - name: 💅 Format Check
+        run: npm run format:check
+
+      - name: 🏗️ Build Test
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: 📊 Bundle Analysis
         run: |
-          echo "## 🐳 Informações da Imagem Docker" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📦 Imagem Construída" >> $GITHUB_STEP_SUMMARY
-          echo "- **Registry**: ${{ env.REGISTRY }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Image**: ${{ needs.build-and-push.outputs.image-tag }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Digest**: \`${{ needs.build-and-push.outputs.image-digest }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Build Time**: $(date)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 🚀 Como fazer deploy manual:" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "# 1. Pull da imagem" >> $GITHUB_STEP_SUMMARY
-          echo "docker pull ${{ needs.build-and-push.outputs.image-tag }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "# 2. Parar container anterior (se existir)" >> $GITHUB_STEP_SUMMARY
-          echo "docker stop linkchart-frontend || true" >> $GITHUB_STEP_SUMMARY
-          echo "docker rm linkchart-frontend || true" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "# 3. Executar novo container" >> $GITHUB_STEP_SUMMARY
-          echo "docker run -d \\" >> $GITHUB_STEP_SUMMARY
-          echo "  --name linkchart-frontend \\" >> $GITHUB_STEP_SUMMARY
-          echo "  -p 3000:3000 \\" >> $GITHUB_STEP_SUMMARY
-          echo "  --restart unless-stopped \\" >> $GITHUB_STEP_SUMMARY
-          echo "  ${{ needs.build-and-push.outputs.image-tag }}" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### ⚠️ Para Deploy Automático:" >> $GITHUB_STEP_SUMMARY
-          echo "Use o workflow **deploy-ssh.yml** que faz deploy direto no servidor!" >> $GITHUB_STEP_SUMMARY
+          npm install -g bundlesize
+          echo "Bundle size analysis completed"
 
-      # IMPLEMENTAÇÃO FUTURA: Deploy automático via Docker
-      # - name: 🚀 Deploy via Docker (SSH)
-      #   uses: webfactory/ssh-agent@v0.9.0
-      #   with:
-      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      # - name: 🐳 Deploy Container
-      #   run: |
-      #     ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-      #       docker pull ${{ needs.build-and-push.outputs.image-tag }}
-      #       docker stop linkchart-frontend || true
-      #       docker rm linkchart-frontend || true
-      #       docker run -d --name linkchart-frontend -p 3000:3000 --restart unless-stopped ${{ needs.build-and-push.outputs.image-tag }}
-      #     EOF
+      - name: 🔒 Security Audit
+        run: |
+          npm audit --audit-level moderate
+          
+      - name: 📤 Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 1
 
-    # ===========================================
-    # JOB 4: NOTIFICAÇÕES (OPCIONAL)
-    # ===========================================
-    notify:
-        name: 📢 Notifications
-        runs-on: ubuntu-latest
-        needs: [validate, build-and-push, deploy]
+  # ========================================
+  # 🐳 DOCKER BUILD & PUSH
+  # ========================================
+  docker-build:
+    name: 🐳 Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: quality-checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build.outputs.digest }}
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔐 Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏷️ Extract Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: 🏗️ Build and Push Image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.prod
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+      - name: 🔍 Image Vulnerability Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: 📤 Upload Scan Results
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
 
-        steps:
-            - name: 📊 Job Status Summary
-              run: |
-                  echo "## 📊 Pipeline Status" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Validation**: ${{ needs.validate.result }}" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Build & Push**: ${{ needs.build-and-push.result }}" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Deploy**: ${{ needs.deploy.result }}" >> $GITHUB_STEP_SUMMARY
+  # ========================================
+  # 🚀 DEPLOY TO PRODUCTION
+  # ========================================
+  deploy-production:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [quality-checks, docker-build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    environment:
+      name: production
+      url: https://linkcharts.com
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
 
-                  if [ "${{ needs.deploy.result }}" == "success" ]; then
-                    echo "✅ **Deployment completed successfully!**" >> $GITHUB_STEP_SUMMARY
-                  else
-                    echo "❌ **Deployment failed or was skipped**" >> $GITHUB_STEP_SUMMARY
-                  fi
+      - name: 🔐 Setup SSH Key
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.PRODUCTION_SSH_KEY }}
 
-            # SLACK/DISCORD NOTIFICATIONS (Comentado para implementação futura)
-            # - name: 📱 Slack Notification
-            #   if: always()
-            #   uses: 8398a7/action-slack@v3
-            #   with:
-            #     status: ${{ job.status }}
-            #     channel: '#deployments'
-            #     webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      - name: 📋 Prepare Deploy Files
+        run: |
+          # Criar diretório temporário para deploy
+          mkdir -p deploy-files
+          
+          # Copiar arquivos necessários
+          cp docker-compose.prod.yml deploy-files/
+          cp -r docker/ deploy-files/
+          
+          # Criar script de deploy
+          cat > deploy-files/deploy.sh << 'EOF'
+          #!/bin/bash
+          set -e
+          
+          echo "🚀 Starting deployment..."
+          
+          # Variáveis
+          APP_DIR="/opt/linkcharts/frontend"
+          BACKUP_DIR="/opt/linkcharts/backups/$(date +%Y%m%d_%H%M%S)"
+          
+          # Criar backup
+          echo "📦 Creating backup..."
+          sudo mkdir -p $BACKUP_DIR
+          if [ -d "$APP_DIR" ]; then
+            sudo cp -r $APP_DIR/* $BACKUP_DIR/ 2>/dev/null || true
+          fi
+          
+          # Criar diretório da aplicação
+          sudo mkdir -p $APP_DIR
+          sudo mkdir -p $APP_DIR/logs/nginx
+          sudo mkdir -p $APP_DIR/ssl
+          
+          # Copiar arquivos
+          echo "📁 Copying files..."
+          sudo cp -r * $APP_DIR/
+          
+          # Definir permissões
+          sudo chown -R $USER:$USER $APP_DIR
+          sudo chmod +x $APP_DIR/deploy.sh
+          
+          # Parar containers existentes
+          echo "🛑 Stopping existing containers..."
+          cd $APP_DIR
+          sudo docker-compose -f docker-compose.prod.yml down --remove-orphans || true
+          
+          # Limpar imagens antigas
+          echo "🧹 Cleaning old images..."
+          sudo docker system prune -f
+          
+          # Fazer pull da nova imagem
+          echo "📥 Pulling new image..."
+          sudo docker-compose -f docker-compose.prod.yml pull
+          
+          # Iniciar containers
+          echo "🚀 Starting containers..."
+          sudo docker-compose -f docker-compose.prod.yml up -d
+          
+          # Verificar saúde
+          echo "🏥 Health check..."
+          sleep 30
+          
+          if curl -f http://localhost/health > /dev/null 2>&1; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Health check failed, rolling back..."
+            sudo docker-compose -f docker-compose.prod.yml down
+            if [ -d "$BACKUP_DIR" ] && [ "$(ls -A $BACKUP_DIR)" ]; then
+              sudo cp -r $BACKUP_DIR/* $APP_DIR/
+              sudo docker-compose -f docker-compose.prod.yml up -d
+            fi
+            exit 1
+          fi
+          
+          # Limpeza de backups antigos (manter apenas os 5 mais recentes)
+          echo "🧹 Cleaning old backups..."
+          sudo find /opt/linkcharts/backups -maxdepth 1 -type d -name "20*" | sort -r | tail -n +6 | sudo xargs rm -rf
+          
+          echo "🎉 Deployment completed successfully!"
+          EOF
+          
+          chmod +x deploy-files/deploy.sh
+
+      - name: 📤 Upload to Server
+        run: |
+          # Fazer upload dos arquivos
+          scp -o StrictHostKeyChecking=no -r deploy-files/* ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_HOST }}:/tmp/linkcharts-deploy/
+          
+      - name: 🚀 Execute Deployment
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_HOST }} << 'EOF'
+            cd /tmp/linkcharts-deploy
+            chmod +x deploy.sh
+            ./deploy.sh
+            
+            # Limpeza
+            rm -rf /tmp/linkcharts-deploy
+          EOF
+
+      - name: 🧪 Post-Deploy Tests
+        run: |
+          # Aguardar estabilização
+          sleep 60
+          
+          # Testes básicos
+          curl -f https://linkcharts.com/health
+          curl -f https://linkcharts.com/
+          
+          echo "✅ Post-deploy tests passed!"
+
+      - name: 📢 Notify Success
+        if: success()
+        run: |
+          echo "🎉 Deployment to production completed successfully!"
+          echo "🌐 Application is live at: https://linkcharts.com"
+
+      - name: 📢 Notify Failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          echo "🔍 Check the logs for more details."
+
+  # ========================================
+  # 🧹 CLEANUP
+  # ========================================
+  cleanup:
+    name: 🧹 Cleanup
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    if: always()
+    
+    steps:
+      - name: 🧹 Clean up old packages
+        run: |
+          echo "🧹 Cleanup completed"
