@@ -46,7 +46,8 @@ COPY .env.production ./.env.production
 RUN rm -rf node_modules/.vite dist .vite 2>/dev/null || true
 
 # Build da aplicação para produção (sem cache)
-RUN npm run build -- --force
+ENV VITE_FORCE_REBUILD=true
+RUN npm run build
  
 # ========================================
 # 🚀 STAGE 2: PRODUCTION
