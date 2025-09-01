@@ -156,17 +156,7 @@ jobs:
           echo "🛑 Stopping existing containers..."
           docker compose -f docker-compose.prod.yml down --remove-orphans || true
           
-          # Limpar imagens antigas
-          echo "🧹 Cleaning old images..."
-          docker system prune -f
-          
-          # Rebuild da aplicação com código atualizado
-          echo "🏗️ Building new image..."
-          docker build -f Dockerfile.prod -t linkcharts-frontend:latest .
-          
-          # Iniciar containers
-          echo "🚀 Starting containers..."
-          docker compose -f docker-compose.prod.yml up -d
+          # O build será feito dentro do script SSH
           
           # Verificar saúde
           echo "🏥 Health check..."
@@ -218,12 +208,12 @@ jobs:
             echo "🛑 Stopping existing containers..."
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
             
-            # Limpar imagens antigas
+            # Limpar imagens antigas e rebuild
             echo "🧹 Cleaning old images..."
             docker system prune -f
             
             # Rebuild da aplicação (sem cache para garantir código atualizado)
-            echo "🏗️ Building new image..."
+            echo "🏗️ Building new image with latest code..."
             docker build -f Dockerfile.prod -t linkcharts-frontend:latest . --no-cache
             
             # Iniciar containers
