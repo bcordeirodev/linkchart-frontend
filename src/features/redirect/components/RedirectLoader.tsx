@@ -1,6 +1,12 @@
-import { Box, Typography, CircularProgress, Card, CardContent, Chip } from '@mui/material';
+import { Box, Typography, CircularProgress, Card, CardContent, Chip, useTheme } from '@mui/material';
 import { Launch as LaunchIcon, Speed as SpeedIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import {
+	createGlassCard,
+	createComponentColorSet,
+	createPresetShadows,
+	createPresetAnimations
+} from '@/lib/theme';
 
 interface RedirectLoaderProps {
 	targetUrl: string;
@@ -10,9 +16,16 @@ interface RedirectLoaderProps {
 
 /**
  * Componente de loading para redirecionamento
- * Componentizado seguindo padrão do projeto
+ * Componentizado seguindo padrão do projeto com utilitários de tema
  */
 export function RedirectLoader({ targetUrl, countdown, isRedirecting }: RedirectLoaderProps) {
+	const theme = useTheme();
+
+	// Usa utilitários de tema
+	const primaryColors = createComponentColorSet(theme, 'primary');
+	const shadows = createPresetShadows(theme);
+	const animations = createPresetAnimations(theme);
+
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
@@ -20,13 +33,13 @@ export function RedirectLoader({ targetUrl, countdown, isRedirecting }: Redirect
 			transition={{ duration: 0.5 }}
 		>
 			<Card
-				elevation={8}
+				elevation={0}
 				sx={{
 					maxWidth: 500,
 					mx: 'auto',
-					background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-					border: '1px solid rgba(255, 255, 255, 0.1)',
-					backdropFilter: 'blur(10px)'
+					// Usa glassmorphism padronizado
+					...(createGlassCard(theme, 'primary') as any),
+					boxShadow: shadows.primaryGlow
 				}}
 			>
 				<CardContent sx={{ p: 4, textAlign: 'center' }}>
@@ -35,7 +48,8 @@ export function RedirectLoader({ targetUrl, countdown, isRedirecting }: Redirect
 							size={60}
 							thickness={4}
 							sx={{
-								color: '#3b82f6',
+								// Usa cores padronizadas
+								color: primaryColors.main,
 								'& .MuiCircularProgress-circle': {
 									strokeLinecap: 'round'
 								}

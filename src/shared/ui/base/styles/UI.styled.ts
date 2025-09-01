@@ -280,22 +280,23 @@ export const GradientButtonContainer = styled(Button, {
 	shimmerEffect?: boolean;
 	isLoading?: boolean;
 }>(({ theme, gradient = 'primary', shimmerEffect = false, isLoading = false }) => {
+	// Usa cores do tema ao invés de hardcoded
 	const gradients = {
 		primary: {
-			background: 'linear-gradient(135deg, #0A74DA 0%, #00A4EF 50%, #6366F1 100%)',
-			hover: 'linear-gradient(135deg, #0960C0 0%, #0090D1 50%, #5B5CE6 100%)'
+			background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 50%, ${theme.palette.secondary.main} 100%)`,
+			hover: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 50%, ${theme.palette.secondary.dark} 100%)`
 		},
 		success: {
-			background: 'linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%)',
-			hover: 'linear-gradient(135deg, #45A049 0%, #7CB342 100%)'
+			background: `linear-gradient(135deg, ${theme.palette.success.main} 0%, ${theme.palette.success.light} 100%)`,
+			hover: `linear-gradient(135deg, ${theme.palette.success.dark} 0%, ${theme.palette.success.main} 100%)`
 		},
 		warning: {
-			background: 'linear-gradient(135deg, #FF9800 0%, #FFC107 100%)',
-			hover: 'linear-gradient(135deg, #F57C00 0%, #FFA000 100%)'
+			background: `linear-gradient(135deg, ${theme.palette.warning.main} 0%, ${theme.palette.warning.light} 100%)`,
+			hover: `linear-gradient(135deg, ${theme.palette.warning.dark} 0%, ${theme.palette.warning.main} 100%)`
 		},
 		error: {
-			background: 'linear-gradient(135deg, #F44336 0%, #E91E63 100%)',
-			hover: 'linear-gradient(135deg, #D32F2F 0%, #C2185B 100%)'
+			background: `linear-gradient(135deg, ${theme.palette.error.main} 0%, ${theme.palette.error.light} 100%)`,
+			hover: `linear-gradient(135deg, ${theme.palette.error.dark} 0%, ${theme.palette.error.main} 100%)`
 		}
 	};
 

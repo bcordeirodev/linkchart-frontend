@@ -1,23 +1,37 @@
-import { Box, Typography, Container, alpha, useTheme } from '@mui/material';
+import { Box, Typography, Container, useTheme } from '@mui/material';
+import {
+	createThemeGradient,
+	createGlassCard,
+	createTextGradient,
+	createPresetAnimations,
+	createSpacingUtils
+} from '@/lib/theme';
 
 /**
  * Hero section da página shorter
- * Componentizado seguindo padrão do projeto
+ * Componentizado seguindo padrão do projeto com utilitários de tema
  */
 export function ShorterHero() {
 	const theme = useTheme();
 
+	// Usa utilitários de tema
+	const spacing = createSpacingUtils(theme);
+	const animations = createPresetAnimations(theme);
+
 	return (
 		<Box
 			sx={{
-				background: `linear-gradient(135deg, 
-                    ${alpha(theme.palette.primary.main, 0.1)} 0%, 
-                    ${alpha(theme.palette.secondary.main, 0.05)} 50%,
-                    ${alpha(theme.palette.primary.main, 0.08)} 100%
-                )`,
+				// Usa gradiente de tema
+				background: createThemeGradient(theme, {
+					variant: 'primary',
+					direction: 'to-bottom-right',
+					opacity: 0.1
+				}),
 				py: { xs: 6, md: 10 },
 				position: 'relative',
 				overflow: 'hidden',
+				// Usa animações padronizadas
+				...animations.fadeIn,
 				'&::before': {
 					content: '""',
 					position: 'absolute',
@@ -42,10 +56,8 @@ export function ShorterHero() {
 						sx={{
 							fontWeight: 800,
 							fontSize: { xs: '2.5rem', md: '3.5rem', lg: '4rem' },
-							background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-							backgroundClip: 'text',
-							WebkitBackgroundClip: 'text',
-							WebkitTextFillColor: 'transparent',
+							// Usa gradiente de texto padronizado
+							...createTextGradient(theme, 'primary'),
 							mb: 2,
 							lineHeight: 1.2
 						}}

@@ -1,25 +1,33 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
+import {
+	createGlassCard,
+	createTextGradient,
+	createThemeGradient,
+	createPresetAnimations
+} from '@/lib/theme';
 
 /**
  * Cabeçalho da página de perfil
- * Inclui breadcrumb e título da seção
+ * Inclui breadcrumb e título da seção com utilitários de tema
  */
 export function ProfileHeader() {
+	const theme = useTheme();
+
+	// Usa utilitários de tema
+	const animations = createPresetAnimations(theme);
 	return (
 		<Box sx={{ mb: 5 }}>
 			{/* <PageBreadcrumb /> */}
 			<Box
 				sx={{
-					background: (theme) =>
-						theme.palette.mode === 'dark'
-							? `linear-gradient(135deg, ${theme.palette.secondary.main}20 0%, ${theme.palette.secondary.main}10 100%)`
-							: `linear-gradient(135deg, ${theme.palette.secondary.main}14 0%, ${theme.palette.secondary.main}0A 100%)`,
+					// Usa glassmorphism padronizado
+					...(createGlassCard(theme, 'secondary') as any),
 					borderRadius: 3,
 					p: 4,
-					border: (theme) =>
-						`1px solid ${theme.palette.secondary.main}${theme.palette.mode === 'dark' ? '40' : '1A'}`,
 					position: 'relative',
-					overflow: 'hidden'
+					overflow: 'hidden',
+					// Usa animações padronizadas
+					...animations.fadeIn
 				}}
 			>
 				{/* Elemento decorativo */}
@@ -30,10 +38,12 @@ export function ProfileHeader() {
 						right: -30,
 						width: 150,
 						height: 150,
-						background: (theme) =>
-							theme.palette.mode === 'dark'
-								? `radial-gradient(circle, ${theme.palette.secondary.main}30 0%, transparent 70%)`
-								: `linear-gradient(135deg, ${theme.palette.secondary.main}1A 0%, ${theme.palette.secondary.main}0D 100%)`,
+						// Usa gradiente de tema
+						background: createThemeGradient(theme, {
+							variant: 'secondary',
+							direction: 'to-bottom-right',
+							opacity: 0.3
+						}),
 						borderRadius: '50%',
 						opacity: 0.6
 					}}
@@ -45,11 +55,8 @@ export function ProfileHeader() {
 						component="h1"
 						sx={{
 							fontWeight: 700,
-							background: (theme) =>
-								`linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.secondary.light} 100%)`,
-							backgroundClip: 'text',
-							WebkitBackgroundClip: 'text',
-							WebkitTextFillColor: 'transparent',
+							// Usa gradiente de texto padronizado
+							...createTextGradient(theme, 'secondary'),
 							mb: 2
 						}}
 					>

@@ -22,6 +22,7 @@ export const RedirectContainer = styled('div')(({ theme }) => ({
 	justifyContent: 'center',
 	padding: theme.spacing(4),
 	minHeight: '100vh',
+	// Usa gradiente padronizado do tema
 	background: `linear-gradient(135deg, 
         ${alpha(theme.palette.primary.main, 0.05)} 0%, 
         ${alpha(theme.palette.secondary.main, 0.03)} 100%
