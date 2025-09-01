@@ -5,14 +5,14 @@
 
 // Hooks de tema Fuse
 export {
-    useMainTheme,
-    useNavbarTheme,
-    useToolbarTheme,
-    useFooterTheme,
-    changeThemeMode,
-    useContrastMainTheme,
-    useMainThemeDark,
-    useMainThemeLight
+	useMainTheme,
+	useNavbarTheme,
+	useToolbarTheme,
+	useFooterTheme,
+	changeThemeMode,
+	useContrastMainTheme,
+	useMainThemeDark,
+	useMainThemeLight
 } from './fuseThemeHooks';
 
 // Hook de configurações Fuse

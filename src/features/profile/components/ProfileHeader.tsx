@@ -1,10 +1,5 @@
 import { Box, Typography, useTheme } from '@mui/material';
-import {
-	createGlassCard,
-	createTextGradient,
-	createThemeGradient,
-	createPresetAnimations
-} from '@/lib/theme';
+import { createGlassCard, createTextGradient, createThemeGradient, createPresetAnimations } from '@/lib/theme';
 
 /**
  * Cabeçalho da página de perfil

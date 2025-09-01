@@ -1,12 +1,12 @@
 /**
  * 🏗️ LAYOUT SETTINGS CONTEXT - LINK CHART
  * Contexto para gerenciamento de configurações de layout
- * 
+ *
  * @description
  * Este contexto fornece acesso às configurações de layout em toda
  * a aplicação, permitindo que componentes leiam e modifiquem
  * configurações de layout de forma centralizada.
- * 
+ *
  * @since 2.0.0
  */
 
@@ -18,14 +18,14 @@ import { LayoutSettingsConfigType, LayoutThemesType } from './types';
  * @interface LayoutSettingsContextType
  */
 export interface LayoutSettingsContextType {
-    /** Dados das configurações atuais */
-    data: LayoutSettingsConfigType;
-    /** Função para definir novas configurações */
-    setSettings: (settings: Partial<LayoutSettingsConfigType>) => LayoutSettingsConfigType;
-    /** Função para alterar tema */
-    changeTheme: (theme: LayoutThemesType) => void;
-    /** Configurações (compatibilidade com FuseSettings) */
-    settings?: any;
+	/** Dados das configurações atuais */
+	data: LayoutSettingsConfigType;
+	/** Função para definir novas configurações */
+	setSettings: (settings: Partial<LayoutSettingsConfigType>) => LayoutSettingsConfigType;
+	/** Função para alterar tema */
+	changeTheme: (theme: LayoutThemesType) => void;
+	/** Configurações (compatibilidade com FuseSettings) */
+	settings?: any;
 }
 
 /**

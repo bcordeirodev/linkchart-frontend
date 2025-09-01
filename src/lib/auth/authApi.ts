@@ -25,11 +25,9 @@ export async function authCreateDbUser(user: PartialDeep<User>): Promise<User> {
 	return api.post<User>('/auth/register', UserModel(user));
 }
 
-
 /**
  * Update user profile
  */
 export function authUpdateDbUser(user: PartialDeep<User>): Promise<User> {
 	return api.put<User>('/profile', UserModel(user));
 }
-

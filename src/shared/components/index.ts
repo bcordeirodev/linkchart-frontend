@@ -1,11 +1,11 @@
 /**
  * 🧩 SHARED COMPONENTS INDEX - LINK CHART
  * Componentes compartilhados centralizados
- * 
+ *
  * @description
  * Exporta todos os componentes compartilhados do projeto,
  * incluindo componentes migrados do @fuse e novos componentes.
- * 
+ *
  * @since 2.0.0
  */
 

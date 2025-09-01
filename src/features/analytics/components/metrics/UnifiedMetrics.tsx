@@ -218,7 +218,7 @@ export function UnifiedMetrics({
 	performanceData,
 	categories,
 	showTitle = false,
-	title = 'Métricas',
+	title = 'Métricas'
 }: UnifiedMetricsProps) {
 	const theme = useTheme();
 
@@ -295,7 +295,10 @@ export function UnifiedMetrics({
 							<span>📊</span>
 							{title}
 						</Typography>
-						<Typography variant="body2" color="text.secondary">
+						<Typography
+							variant="body2"
+							color="text.secondary"
+						>
 							{relevantMetrics.length} métricas • {categories.join(', ')}
 						</Typography>
 					</Box>

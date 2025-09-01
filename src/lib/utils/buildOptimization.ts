@@ -46,7 +46,6 @@ export const FILE_STRUCTURE_RULES = {
 export const IMPORT_OPTIMIZATION = {
 	// Aliases recomendados
 	RECOMMENDED_ALIASES: {
-
 		'@/lib': 'src/lib',
 		'@/shared': 'src/shared',
 		'@/features': 'src/features',

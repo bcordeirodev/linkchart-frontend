@@ -11,15 +11,15 @@
  * Aplica estilos globais padronizados na aplicação
  */
 export const applyGlobalStyles = () => {
-    // Remove estilos existentes
-    const existing = document.getElementById('global-theme-styles');
+	// Remove estilos existentes
+	const existing = document.getElementById('global-theme-styles');
 
-    if (existing) existing.remove();
+	if (existing) existing.remove();
 
-    // Aplica estilos globais padronizados
-    const style = document.createElement('style');
-    style.id = 'global-theme-styles';
-    style.textContent = `
+	// Aplica estilos globais padronizados
+	const style = document.createElement('style');
+	style.id = 'global-theme-styles';
+	style.textContent = `
 		/* Botões padronizados */
 		.MuiButton-root {
 			border-radius: 12px !important;
@@ -84,7 +84,7 @@ export const applyGlobalStyles = () => {
 		.MuiTypography-h6 { font-weight: 600 !important; line-height: 1.4 !important; }
 	`;
 
-    document.head.appendChild(style);
+	document.head.appendChild(style);
 };
 
 export default applyGlobalStyles;

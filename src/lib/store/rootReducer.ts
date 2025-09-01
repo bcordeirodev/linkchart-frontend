@@ -2,7 +2,7 @@ import { combineSlices } from '@reduxjs/toolkit';
 import apiService from './apiService';
 
 // Empty interface for declaration merging
-export interface LazyLoadedSlices { }
+export interface LazyLoadedSlices {}
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.

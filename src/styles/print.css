@@ -4,17 +4,17 @@
  */
 
 @media print {
-    * {
-        background: white !important;
-        color: black !important;
-        box-shadow: none !important;
-    }
-    
-    .no-print {
-        display: none !important;
-    }
-    
-    @page {
-        margin: 1cm;
-    }
+	* {
+		background: white !important;
+		color: black !important;
+		box-shadow: none !important;
+	}
+
+	.no-print {
+		display: none !important;
+	}
+
+	@page {
+		margin: 1cm;
+	}
 }

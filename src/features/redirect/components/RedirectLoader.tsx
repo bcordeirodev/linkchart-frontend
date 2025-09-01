@@ -1,12 +1,7 @@
 import { Box, Typography, CircularProgress, Card, CardContent, Chip, useTheme } from '@mui/material';
 import { Launch as LaunchIcon, Speed as SpeedIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
-import {
-	createGlassCard,
-	createComponentColorSet,
-	createPresetShadows,
-	createPresetAnimations
-} from '@/lib/theme';
+import { createGlassCard, createComponentColorSet, createPresetShadows, createPresetAnimations } from '@/lib/theme';
 
 interface RedirectLoaderProps {
 	targetUrl: string;

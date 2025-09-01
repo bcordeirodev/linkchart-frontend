@@ -4,12 +4,7 @@
  */
 
 // Re-export da nova estrutura consolidada
-export {
-    allThemes,
-    simplifiedThemes,
-    extendedThemes,
-    themesConfig
-} from '../themes';
+export { allThemes, simplifiedThemes, extendedThemes, themesConfig } from '../themes';
 
 // Compatibilidade mantida através da nova estrutura consolidada
 

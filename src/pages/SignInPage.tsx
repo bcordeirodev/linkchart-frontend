@@ -157,7 +157,7 @@ function SignInPage() {
 								variant="body2"
 								sx={{ color: alpha('#ffffff', 0.7) }}
 							>
-								Não possui uma conta?{' '}
+								Não possui uma conta??{' '}
 								<Link
 									to="/sign-up"
 									sx={{

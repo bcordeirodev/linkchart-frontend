@@ -1,9 +1,5 @@
 import { Box, Typography, Container, useTheme } from '@mui/material';
-import {
-	createThemeGradient,
-	createTextGradient,
-	createPresetAnimations
-} from '@/lib/theme';
+import { createThemeGradient, createTextGradient, createPresetAnimations } from '@/lib/theme';
 
 /**
  * Hero section da página shorter

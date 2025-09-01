@@ -1,10 +1,6 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { FuseUtils } from '@/lib/utils';
-import {
-	getSessionRedirectUrl,
-	resetSessionRedirectUrl,
-	setSessionRedirectUrl
-} from '@/lib/auth/sessionRedirectUrl';
+import { getSessionRedirectUrl, resetSessionRedirectUrl, setSessionRedirectUrl } from '@/lib/auth/sessionRedirectUrl';
 // Tipo removido - usando tipo genérico
 import { usePathname } from '@/shared/hooks';
 import { Loading } from '@/shared/components';

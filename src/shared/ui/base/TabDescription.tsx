@@ -6,11 +6,7 @@
 import { memo } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { SvgIcon } from '@/shared/components';
-import {
-	createThemeGradient,
-	createSpacingUtils,
-	getBorderColors
-} from '@/lib/theme';
+import { createThemeGradient, createSpacingUtils, getBorderColors } from '@/lib/theme';
 
 interface TabDescriptionProps {
 	icon: string;

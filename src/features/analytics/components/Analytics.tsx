@@ -13,10 +13,7 @@ import { TopLinks } from './dashboard/TopLinks';
 import { TabPanel } from '@/shared/ui/base/TabPanel';
 import TabDescription from '@/shared/ui/base/TabDescription';
 import { AnalyticsProps } from './types';
-import {
-	createGlassCard,
-	createPresetAnimations
-} from '@/lib/theme';
+import { createGlassCard, createPresetAnimations } from '@/lib/theme';
 
 /**
  * 🎨 ANALYTICS COMPLETAMENTE REDESENHADO
@@ -46,7 +43,10 @@ export function Analytics({
 	// Loading state simplificado
 	if (loading) {
 		return (
-			<Container maxWidth="xl" sx={{ py: 3 }}>
+			<Container
+				maxWidth="xl"
+				sx={{ py: 3 }}
+			>
 				<Box
 					sx={{
 						...(createGlassCard(theme, 'neutral') as any),
@@ -61,10 +61,16 @@ export function Analytics({
 					}}
 				>
 					<CircularProgress size={40} />
-					<Typography variant="h6" sx={{ mt: 2 }}>
+					<Typography
+						variant="h6"
+						sx={{ mt: 2 }}
+					>
 						Carregando Analytics
 					</Typography>
-					<Typography variant="body2" color="text.secondary">
+					<Typography
+						variant="body2"
+						color="text.secondary"
+					>
 						Preparando seus dados...
 					</Typography>
 				</Box>
@@ -75,7 +81,10 @@ export function Analytics({
 	// Error state simplificado
 	if (error) {
 		return (
-			<Container maxWidth="xl" sx={{ py: 3 }}>
+			<Container
+				maxWidth="xl"
+				sx={{ py: 3 }}
+			>
 				<Box
 					sx={{
 						...(createGlassCard(theme, 'neutral') as any),
@@ -90,10 +99,17 @@ export function Analytics({
 						borderColor: 'error.main'
 					}}
 				>
-					<Typography variant="h6" sx={{ mb: 1 }}>
+					<Typography
+						variant="h6"
+						sx={{ mb: 1 }}
+					>
 						⚠️ Erro ao carregar dados
 					</Typography>
-					<Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+					<Typography
+						variant="body2"
+						color="text.secondary"
+						sx={{ mb: 2 }}
+					>
 						{error || 'Não foi possível carregar os analytics'}
 					</Typography>
 					<Button
@@ -111,7 +127,10 @@ export function Analytics({
 	// No data state simplificado
 	if (!data) {
 		return (
-			<Container maxWidth="xl" sx={{ py: 3 }}>
+			<Container
+				maxWidth="xl"
+				sx={{ py: 3 }}
+			>
 				<Box>
 					{showHeader && (
 						<Header
@@ -133,10 +152,16 @@ export function Analytics({
 							p: 4
 						}}
 					>
-						<Typography variant="h6" sx={{ mb: 1 }}>
+						<Typography
+							variant="h6"
+							sx={{ mb: 1 }}
+						>
 							📈 Analytics em Preparação
 						</Typography>
-						<Typography variant="body2" color="text.secondary">
+						<Typography
+							variant="body2"
+							color="text.secondary"
+						>
 							Compartilhe seus links para desbloquear insights detalhados!
 						</Typography>
 					</Box>
@@ -163,7 +188,10 @@ export function Analytics({
 	const avgClicksPerLink = totalLinks > 0 ? Math.round(totalClicks / totalLinks) : 0;
 
 	return (
-		<Container maxWidth="xl" sx={{ py: 3 }}>
+		<Container
+			maxWidth="xl"
+			sx={{ py: 3 }}
+		>
 			<Box>
 				{/* Header compacto */}
 				{showHeader && (

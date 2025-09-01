@@ -1,12 +1,12 @@
 /**
  * 🏗️ LAYOUT TYPES - LINK CHART
  * Tipos TypeScript para o sistema de layout
- * 
+ *
  * @description
  * Este arquivo define todos os tipos relacionados ao sistema de layout
  * da aplicação Link Chart, incluindo configurações, temas e estruturas
  * de dados utilizadas pelos componentes de layout.
- * 
+ *
  * @since 2.0.0
  */
 
@@ -25,14 +25,14 @@ export type LayoutStyle = 'layout1' | 'layout2' | 'layout3';
  * @interface NavbarConfig
  */
 export interface NavbarConfig {
-    /** Exibir navbar */
-    display: boolean;
-    /** Navbar recolhida */
-    folded: boolean;
-    /** Posição da navbar */
-    position: 'left' | 'right' | 'top';
-    /** Estilo da navbar (compatibilidade) */
-    style?: string;
+	/** Exibir navbar */
+	display: boolean;
+	/** Navbar recolhida */
+	folded: boolean;
+	/** Posição da navbar */
+	position: 'left' | 'right' | 'top';
+	/** Estilo da navbar (compatibilidade) */
+	style?: string;
 }
 
 /**
@@ -40,10 +40,10 @@ export interface NavbarConfig {
  * @interface ToolbarConfig
  */
 export interface ToolbarConfig {
-    /** Exibir toolbar */
-    display: boolean;
-    /** Estilo da toolbar */
-    style: 'fixed' | 'static' | 'sticky';
+	/** Exibir toolbar */
+	display: boolean;
+	/** Estilo da toolbar */
+	style: 'fixed' | 'static' | 'sticky';
 }
 
 /**
@@ -51,10 +51,10 @@ export interface ToolbarConfig {
  * @interface FooterConfig
  */
 export interface FooterConfig {
-    /** Exibir footer */
-    display: boolean;
-    /** Estilo do footer */
-    style: 'fixed' | 'static' | 'sticky';
+	/** Exibir footer */
+	display: boolean;
+	/** Estilo do footer */
+	style: 'fixed' | 'static' | 'sticky';
 }
 
 /**
@@ -62,12 +62,12 @@ export interface FooterConfig {
  * @interface LayoutConfig
  */
 export interface LayoutConfig {
-    /** Configuração da navbar */
-    navbar: NavbarConfig;
-    /** Configuração da toolbar */
-    toolbar: ToolbarConfig;
-    /** Configuração do footer */
-    footer: FooterConfig;
+	/** Configuração da navbar */
+	navbar: NavbarConfig;
+	/** Configuração da toolbar */
+	toolbar: ToolbarConfig;
+	/** Configuração do footer */
+	footer: FooterConfig;
 }
 
 /**
@@ -75,14 +75,14 @@ export interface LayoutConfig {
  * @interface LayoutTheme
  */
 export interface LayoutTheme {
-    /** Tema principal */
-    main: any;
-    /** Tema da navbar */
-    navbar: any;
-    /** Tema da toolbar */
-    toolbar: any;
-    /** Tema do footer */
-    footer: any;
+	/** Tema principal */
+	main: any;
+	/** Tema da navbar */
+	navbar: any;
+	/** Tema da toolbar */
+	toolbar: any;
+	/** Tema do footer */
+	footer: any;
 }
 
 /**
@@ -90,25 +90,25 @@ export interface LayoutTheme {
  * @interface LayoutSettingsConfigType
  */
 export interface LayoutSettingsConfigType {
-    /** Configurações de layout */
-    layout: {
-        /** Estilo do layout */
-        style: LayoutStyle;
-        /** Configurações específicas */
-        config: LayoutConfig;
-    };
-    /** Configurações de tema */
-    theme: LayoutTheme;
-    /** Direção do layout */
-    direction: LayoutDirection;
-    /** Configurações adicionais (compatibilidade) */
-    settings?: any;
-    /** Configuração de auth padrão */
-    defaultAuth?: string[] | [] | null | undefined;
-    /** Scrollbars customizadas */
-    customScrollbars?: boolean;
-    /** URL de redirecionamento de login */
-    loginRedirectUrl?: string;
+	/** Configurações de layout */
+	layout: {
+		/** Estilo do layout */
+		style: LayoutStyle;
+		/** Configurações específicas */
+		config: LayoutConfig;
+	};
+	/** Configurações de tema */
+	theme: LayoutTheme;
+	/** Direção do layout */
+	direction: LayoutDirection;
+	/** Configurações adicionais (compatibilidade) */
+	settings?: any;
+	/** Configuração de auth padrão */
+	defaultAuth?: string[] | [] | null | undefined;
+	/** Scrollbars customizadas */
+	customScrollbars?: boolean;
+	/** URL de redirecionamento de login */
+	loginRedirectUrl?: string;
 }
 
 /**
@@ -116,14 +116,14 @@ export interface LayoutSettingsConfigType {
  * @interface LayoutThemesType
  */
 export interface LayoutThemesType {
-    /** Tema principal */
-    main: string;
-    /** Tema da navbar */
-    navbar: string;
-    /** Tema da toolbar */
-    toolbar: string;
-    /** Tema do footer */
-    footer: string;
+	/** Tema principal */
+	main: string;
+	/** Tema da navbar */
+	navbar: string;
+	/** Tema da toolbar */
+	toolbar: string;
+	/** Tema do footer */
+	footer: string;
 }
 
 /**
@@ -131,10 +131,10 @@ export interface LayoutThemesType {
  * @interface LayoutComponentProps
  */
 export interface LayoutComponentProps {
-    /** Elementos filhos */
-    children: React.ReactNode;
-    /** Classe CSS adicional */
-    className?: string;
+	/** Elementos filhos */
+	children: React.ReactNode;
+	/** Classe CSS adicional */
+	className?: string;
 }
 
 /**
@@ -142,10 +142,10 @@ export interface LayoutComponentProps {
  * @interface MainLayoutProps
  */
 export interface MainLayoutProps extends LayoutComponentProps {
-    /** Configurações de layout */
-    layouts: Record<string, React.ComponentType<LayoutComponentProps>>;
-    /** Configurações forçadas */
-    settings?: Partial<LayoutSettingsConfigType['layout']>;
+	/** Configurações de layout */
+	layouts: Record<string, React.ComponentType<LayoutComponentProps>>;
+	/** Configurações forçadas */
+	settings?: Partial<LayoutSettingsConfigType['layout']>;
 }
 
 /**
@@ -153,8 +153,8 @@ export interface MainLayoutProps extends LayoutComponentProps {
  * @interface LayoutDefaults
  */
 export interface LayoutDefaults {
-    /** Configuração padrão */
-    defaults: LayoutConfig;
-    /** Formulário de configuração */
-    form?: any; // Tipo específico para formulários de configuração
+	/** Configuração padrão */
+	defaults: LayoutConfig;
+	/** Formulário de configuração */
+	form?: any; // Tipo específico para formulários de configuração
 }
