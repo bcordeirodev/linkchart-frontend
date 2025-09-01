@@ -15,7 +15,7 @@ const authRoles = {
 	/**
 	 * The user role grants access to users with the 'admin', 'staff', or 'user' role.
 	 */
-	user: ['admin', 'staff', 'user'],
+	user: ['admin', 'user', 'staff'],
 
 	/**
 	 * The onlyGuest role grants access to unauthenticated users.
