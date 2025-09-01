@@ -1,10 +1,8 @@
 import { Box, Typography, Container, useTheme } from '@mui/material';
 import {
 	createThemeGradient,
-	createGlassCard,
 	createTextGradient,
-	createPresetAnimations,
-	createSpacingUtils
+	createPresetAnimations
 } from '@/lib/theme';
 
 /**
@@ -15,7 +13,7 @@ export function ShorterHero() {
 	const theme = useTheme();
 
 	// Usa utilitários de tema
-	const spacing = createSpacingUtils(theme);
+	// const spacing = createSpacingUtils(theme); // Removido temporariamente
 	const animations = createPresetAnimations(theme);
 
 	return (

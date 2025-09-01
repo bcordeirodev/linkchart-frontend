@@ -9,7 +9,6 @@ import { SvgIcon } from '@/shared/components';
 import {
 	createThemeGradient,
 	createSpacingUtils,
-	createResponsiveValue,
 	getBorderColors
 } from '@/lib/theme';
 
@@ -25,7 +24,7 @@ interface TabDescriptionProps {
  */
 function TabDescription({ icon, title, description, highlight }: TabDescriptionProps) {
 	const theme = useTheme();
-	const spacing = createSpacingUtils(theme);
+	// const spacing = createSpacingUtils(theme); // Removido temporariamente
 	const borders = getBorderColors(theme, 'primary');
 
 	return (
@@ -36,7 +35,7 @@ function TabDescription({ icon, title, description, highlight }: TabDescriptionP
 					opacity: 0.05,
 					direction: 'to-bottom-right'
 				}),
-				border: `1px solid ${(borders as any).accent || borders.default}`,
+				border: `1px solid ${borders.default}`,
 				borderRadius: 2,
 				p: { xs: 2, sm: 3 },
 				mb: { xs: 2, sm: 3 },

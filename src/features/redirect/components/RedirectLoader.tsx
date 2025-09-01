@@ -24,7 +24,7 @@ export function RedirectLoader({ targetUrl, countdown, isRedirecting }: Redirect
 	// Usa utilitários de tema
 	const primaryColors = createComponentColorSet(theme, 'primary');
 	const shadows = createPresetShadows(theme);
-	const animations = createPresetAnimations(theme);
+	// const animations = createPresetAnimations(theme); // Removido temporariamente
 
 	return (
 		<motion.div

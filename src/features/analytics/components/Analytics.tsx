@@ -14,11 +14,8 @@ import { TabPanel } from '@/shared/ui/base/TabPanel';
 import TabDescription from '@/shared/ui/base/TabDescription';
 import { AnalyticsProps } from './types';
 import {
-	createSpacingUtils,
 	createGlassCard,
-	createPresetShadows,
-	createPresetAnimations,
-	createResponsiveValue
+	createPresetAnimations
 } from '@/lib/theme';
 
 /**
@@ -38,9 +35,8 @@ export function Analytics({
 	const [tabValue, setTabValue] = useState(0);
 	const theme = useTheme();
 
-	// // Usa utilitários de tema
-	// const spacing = createSpacingUtils(theme);
-	// const shadows = createPresetShadows(theme);
+	// Usa utilitários de tema
+	// Utilitários removidos temporariamente para corrigir linting
 	const animations = createPresetAnimations(theme);
 
 	const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {

@@ -54,15 +54,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			const user = convertUserDBToUser(userDB);
 			setUser(user);
 			localStorage.setItem('user', JSON.stringify(user));
-			console.log('✅ Usuário atualizado via refreshUser');
+			// console.log('✅ Usuário atualizado via refreshUser');
 		} catch (error) {
-			console.error('❌ Erro ao buscar usuário no refreshUser:', error);
+			// console.error('❌ Erro ao buscar usuário no refreshUser:', error);
 
 			// Verificar se é erro de autenticação (401) ou erro de rede
 			const isAuthError = error && typeof error === 'object' && 'status' in error && error.status === 401;
 
 			if (isAuthError) {
-				console.log('🔑 Token inválido detectado, limpando sessão');
+				// console.log('🔑 Token inválido detectado, limpando sessão');
 				setUser(null);
 				localStorage.removeItem('token');
 				localStorage.removeItem('user');
@@ -88,13 +88,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 						// Verificar se o token ainda é válido (sem limpar se falhar)
 						try {
 							await authService.getMe();
-							console.log('✅ Token válido, usuário mantido');
+							// console.log('✅ Token válido, usuário mantido');
 						} catch (error) {
-							console.warn('⚠️ Token pode estar expirado, mas mantendo sessão local:', error);
+							// console.warn('⚠️ Token pode estar expirado, mas mantendo sessão local:', error);
 							// Não limpar o token aqui - deixar que seja tratado nas próximas requisições
 						}
 					} catch (error) {
-						console.error('Erro ao parsear usuário armazenado:', error);
+						// console.error('Erro ao parsear usuário armazenado:', error);
 						localStorage.removeItem('user');
 						localStorage.removeItem('token');
 						setUser(null);
@@ -115,23 +115,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 	const login = async (email: string, password: string): Promise<void> => {
 		try {
-			console.log('🔐 Iniciando login para:', email);
+			// console.log('🔐 Iniciando login para:', email);
 
 			// Chamada real à API
 			const response: LoginResponse = await authService.signIn({ email, password });
-			console.log('✅ Login bem-sucedido, resposta recebida');
+			// console.log('✅ Login bem-sucedido, resposta recebida');
 
 			// Armazenar token
 			localStorage.setItem('token', response.token);
-			console.log('💾 Token armazenado no localStorage');
+			// console.log('💾 Token armazenado no localStorage');
 
 			// Converter e armazenar usuário
 			const user = convertUserDBToUser(response.user);
 			setUser(user);
 			localStorage.setItem('user', JSON.stringify(user));
-			console.log('👤 Usuário convertido e armazenado:', { id: user.id, email: user.email, role: user.role });
+			// console.log('👤 Usuário convertido e armazenado:', { id: user.id, email: user.email, role: user.role });
 		} catch (error) {
-			console.error('❌ Erro no login:', error);
+			// console.error('❌ Erro no login:', error);
 			throw new Error('Login falhou. Verifique suas credenciais.');
 		}
 	};
