@@ -19,15 +19,17 @@ export async function authGetDbUserByEmail(email: string): Promise<User> {
 }
 
 /**
+ * Create user (use register endpoint)
+ */
+export async function authCreateDbUser(user: PartialDeep<User>): Promise<User> {
+	return api.post<User>('/auth/register', UserModel(user));
+}
+
+
+/**
  * Update user profile
  */
 export function authUpdateDbUser(user: PartialDeep<User>): Promise<User> {
 	return api.put<User>('/profile', UserModel(user));
 }
 
-/**
- * Create user (use register endpoint)
- */
-export async function authCreateDbUser(user: PartialDeep<User>): Promise<User> {
-	return api.post<User>('/auth/register', UserModel(user));
-}
