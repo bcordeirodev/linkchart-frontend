@@ -42,8 +42,11 @@ COPY aliases.js ./
 # Copiar arquivo de ambiente de produção
 COPY .env.production ./.env.production
 
-# Build da aplicação para produção
-RUN npm run build
+# Limpar cache do Vite antes do build
+RUN rm -rf node_modules/.vite dist .vite 2>/dev/null || true
+
+# Build da aplicação para produção (sem cache)
+RUN npm run build -- --force
  
 # ========================================
 # 🚀 STAGE 2: PRODUCTION
