@@ -222,9 +222,9 @@ jobs:
             echo "🧹 Cleaning old images..."
             docker system prune -f
             
-            # Rebuild da aplicação
+            # Rebuild da aplicação (sem cache para garantir código atualizado)
             echo "🏗️ Building new image..."
-            docker build -f Dockerfile.prod -t linkcharts-frontend:latest .
+            docker build -f Dockerfile.prod -t linkcharts-frontend:latest . --no-cache
             
             # Iniciar containers
             echo "🚀 Starting containers..."
