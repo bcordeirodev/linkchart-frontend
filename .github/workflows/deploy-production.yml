@@ -236,21 +236,14 @@ jobs:
             echo "🛑 Stopping existing containers..."
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
             
-            # Limpar TUDO do Docker para forçar rebuild completo
-            # echo "🧹 Cleaning ALL Docker cache..."
-            # docker system prune -af
-            # docker builder prune -af
+            # Limpar imagens antigas para forçar rebuild completo
+            echo "🧹 Cleaning old images..."
+            docker rmi $(docker images -q linkcharts-frontend) 2>/dev/null || true
+            docker rmi $(docker images -q linkchart-frontend-frontend) 2>/dev/null || true
             
-            # Rebuild com timestamp único para evitar cache
-            echo "🏗️ Building new image with latest code..."
-            TIMESTAMP=$(date +%s)
-            echo "🔖 Building with timestamp: $TIMESTAMP"
-            docker build -f Dockerfile.prod -t linkcharts-frontend:$TIMESTAMP . --no-cache --pull
-            docker tag linkcharts-frontend:$TIMESTAMP linkcharts-frontend:latest
-            
-            # Iniciar containers
-            echo "🚀 Starting containers..."
-            docker compose -f docker-compose.prod.yml up -d
+            # Build e iniciar containers (tudo em um comando)
+            echo "🏗️ Building and starting containers with latest code..."
+            docker compose -f docker-compose.prod.yml up -d --build --force-recreate
             
             # Verificar saúde
             echo "🏥 Health check..."
