@@ -137,7 +137,7 @@ function SignInPage() {
 									lineHeight: 1.6
 								}}
 							>
-								Acesse sua conta e otimize seus links aqui com o Link Chart - Teste rollfront
+								Acesse sua conta e otimize seus links aqui com o Link Chart - Integração completa!
 							</Typography>
 						</Box>
 
