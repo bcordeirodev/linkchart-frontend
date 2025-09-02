@@ -122,15 +122,18 @@ git push origin main  # Deploy automático via GitHub Actions
 
 ### **Monitoramento**
 
--   **Aplicação**: http://134.209.33.182
--   **Health Check**: http://134.209.33.182/api/health
+-   **Aplicação**: http://134.209.33.182:3000
+-   **Health Check**: http://134.209.33.182:3000/health
 -   **GitHub Actions**: https://github.com/bcordeirodev/linkchart-frontend/actions
 
-### **Documentação**
+### **📋 Documentação Completa**
 
--   [📋 Guia de Deploy](DEPLOY_GUIDE.md)
--   [🔧 Workflows](WORKFLOWS_SUMMARY.md)
--   [🐳 Docker & Scripts](docker/README.md)
+📋 **[Deploy Guide Completo](./deploy/README.md)** - Documentação principal de deploy
+
+#### 📁 Documentação Adicional:
+- [GitHub Secrets Setup](./deploy/docs/GITHUB_SECRETS_SETUP.md) - Configuração dos secrets
+- [Scripts de Deploy](./deploy/scripts/) - Scripts automatizados
+- [Configurações Docker](./deploy/docker/) - Configurações Nginx e Docker
 
 ## 📄 Licença
 
