@@ -1,8 +1,6 @@
 # 🐳 DOCKER COMPOSE - PRODUCTION
 # Configuração para produção do Link Chart Frontend
 
-version: '3.8'
-
 services:
   # ========================================
   # 🚀 FRONTEND APPLICATION
@@ -55,7 +53,7 @@ services:
 # ========================================
 networks:
   linkcharts-network:
-    driver: bridge
+    external: true
     name: linkcharts-network
 
 # ========================================

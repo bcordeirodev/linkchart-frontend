@@ -1,8 +1,6 @@
 # 🐳 DOCKER COMPOSE - LOCAL TEST
 # Configuração simplificada para testes locais
 
-version: '3.8'
-
 services:
   # ========================================
   # 🚀 FRONTEND APPLICATION (LOCAL)
