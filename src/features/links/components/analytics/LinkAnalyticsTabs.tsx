@@ -1,23 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Box, Tab, Grid } from '@mui/material';
-import { Map, Public, Schedule, Devices, Lightbulb, Analytics, Dashboard } from '@mui/icons-material';
+import { Tabs, Tab } from '@mui/material';
+import { EmptyState } from '@/shared/ui/base/EmptyState';
 import { TabPanel } from '@/shared/ui/base/TabPanel';
-import { FuseTabs } from '@/features/analytics/components/specialized/common';
+// Removido: ícones Material-UI para usar emojis consistentes
+import { Box, Grid } from '@mui/material';
+import React, { useState } from 'react';
 import { LinkAnalyticsData } from '../../types/analytics';
 
 // Importar componentes especializados reutilizáveis
-import { RealTimeHeatmapChart } from '@/features/analytics/components/specialized/heatmap';
-import { GeographicChart, GeographicInsights } from '@/features/analytics/components/specialized/geographic';
-import { TemporalChart, TemporalInsights } from '@/features/analytics/components/specialized/temporal';
-import { AudienceChart, AudienceInsights } from '@/features/analytics/components/specialized/audience';
+import { PerformanceAnalysis } from '@/features/analytics/components/perfomance/PerformanceAnalysis';
 import { BusinessInsights } from '@/features/analytics/components/insights/BusinessInsights';
-import { PerformanceAnalysis } from '@/features/analytics/components/analysis/PerformanceAnalysis';
+import { AudienceAnalysis } from '@/features/analytics/components/audience/AudienceAnalysis';
+import { GeographicChart, GeographicInsights } from '@/features/analytics/components/geographic';
+import { HeatmapAnalysis } from '@/features/analytics/components/heatmap';
+import { TemporalChart, TemporalInsights } from '@/features/analytics/components/temporal';
 
 // Importar componentes do dashboard
-import { UnifiedMetrics } from '@/features/analytics/components/metrics/UnifiedMetrics';
-import { Charts } from '@/features/analytics/components/charts/Charts';
+import { Charts } from '@/features/analytics/components/dashboard/charts/Charts';
+import { DashboardMetrics } from '@/features/analytics/components/dashboard/DashboardMetrics';
 import TabDescription from '@/shared/ui/base/TabDescription';
 
 interface LinkAnalyticsTabsProps {
@@ -31,61 +32,76 @@ interface LinkAnalyticsTabsProps {
  * Reutiliza componentes especializados do módulo analytics
  * Segue padrões arquiteturais: < 200 linhas, usa TabPanel base
  */
-export function LinkAnalyticsTabs({ data, linkId, loading = false }: LinkAnalyticsTabsProps) {
+export function LinkAnalyticsTabs({ data, linkId, loading: _loading = false }: LinkAnalyticsTabsProps) {
 	const [tabValue, setTabValue] = useState(0);
 
 	const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
 		setTabValue(newValue);
 	};
 
+	// Configuração padronizada de tabs (EXATO mesmo padrão do Analytics.tsx)
+	const tabLabels = [
+		{ label: 'Dashboard', icon: '🎯', description: 'Visão geral consolidada' },
+		{ label: 'Performance', icon: '⚡', description: 'Velocidade e disponibilidade' },
+		{ label: 'Geografia', icon: '🌍', description: 'Análise geográfica' },
+		{ label: 'Temporal', icon: '⏰', description: 'Tendências temporais' },
+		{ label: 'Audiência', icon: '👥', description: 'Perfil da audiência' },
+		{ label: 'Heatmap', icon: '🔥', description: 'Mapa de calor' },
+		{ label: 'Insights', icon: '💡', description: 'Insights de negócio' }
+	];
+
 	if (!data?.has_data) {
 		return (
-			<Box sx={{ textAlign: 'center', py: 6 }}>
-				<Analytics sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
-				<Box sx={{ typography: 'h6', mb: 1 }}>🚀 Analytics Detalhados em Preparação</Box>
-				<Box sx={{ typography: 'body2', color: 'text.secondary' }}>
-					Compartilhe seu link para desbloquear análises geográficas, temporais e de audiência!
-				</Box>
-			</Box>
+			<EmptyState
+				variant="charts"
+				icon="🚀"
+				title="Analytics Detalhados em Preparação"
+				description="Compartilhe seu link para desbloquear análises geográficas, temporais e de audiência!"
+				height={400}
+			/>
 		);
 	}
 
 	return (
 		<Box sx={{ position: 'relative' }}>
 			<Box>
-				<FuseTabs
+				<Tabs
 					value={tabValue}
 					onChange={handleTabChange}
+					variant="scrollable"
+					scrollButtons="auto"
+					sx={{
+						'& .MuiTabs-indicator': {
+							backgroundColor: 'primary.main',
+							height: 3,
+							borderRadius: '3px 3px 0 0'
+						},
+						'& .MuiTab-root': {
+							minHeight: 48,
+							textTransform: 'none',
+							fontWeight: 500,
+							fontSize: '0.875rem',
+							'&.Mui-selected': {
+								color: 'primary.main'
+							}
+						}
+					}}
 				>
-					<Tab
-						label="Dashboard"
-						icon={<Dashboard />}
-					/>
-					<Tab
-						label="Mapa de Calor"
-						icon={<Map />}
-					/>
-					<Tab
-						label="Geografia"
-						icon={<Public />}
-					/>
-					<Tab
-						label="Temporal"
-						icon={<Schedule />}
-					/>
-					<Tab
-						label="Audiência"
-						icon={<Devices />}
-					/>
-					<Tab
-						label="Performance"
-						icon={<Analytics />}
-					/>
-					<Tab
-						label="Insights"
-						icon={<Lightbulb />}
-					/>
-				</FuseTabs>
+					{tabLabels.map((tab, index) => (
+						<Tab
+							key={index}
+							label={tab.label}
+							icon={<span style={{ fontSize: '1.2rem' }}>{tab.icon}</span>}
+							iconPosition="start"
+							sx={{
+								gap: 1,
+								'& .MuiTab-iconWrapper': {
+									marginBottom: 0
+								}
+							}}
+						/>
+					))}
+				</Tabs>
 			</Box>
 
 			{/* Tab Panels */}
@@ -112,13 +128,10 @@ export function LinkAnalyticsTabs({ data, linkId, loading = false }: LinkAnalyti
 						item
 						xs={12}
 					>
-						<UnifiedMetrics
-							data={data}
-							linksData={[]} // Para link individual, não precisa de array
-							categories={['analytics']}
+						<DashboardMetrics
+							summary={data?.overview}
 							showTitle={true}
-							title="📊 Métricas Principais"
-							maxCols={4}
+							title="Métricas Principais"
 						/>
 					</Grid>
 
@@ -137,19 +150,14 @@ export function LinkAnalyticsTabs({ data, linkId, loading = false }: LinkAnalyti
 				</Grid>
 			</TabPanel>
 
-			{/* Mapa de Calor Tab */}
+			{/* Performance Tab */}
 			<TabPanel
 				value={tabValue}
 				index={1}
 			>
-				<RealTimeHeatmapChart
-					linkId={linkId}
-					height={600}
-					title="Mapa de Calor - Visualização em Tempo Real"
-					enableRealtime={true}
-					refreshInterval={30000}
-					showControls={true}
-					showStats={true}
+				<PerformanceAnalysis
+					data={data as unknown as import('@/types').AnalyticsData}
+					linksData={[]}
 				/>
 			</TabPanel>
 
@@ -223,9 +231,9 @@ export function LinkAnalyticsTabs({ data, linkId, loading = false }: LinkAnalyti
 						hourlyData={data?.temporal?.clicks_by_hour || []}
 						weeklyData={
 							data?.temporal?.clicks_by_day_of_week?.map((d) => ({
-								day: parseInt(d.day) || 0,
+								day: typeof d.day === 'string' ? parseInt(d.day) || 0 : d.day || 0,
 								clicks: d.clicks,
-								day_name: d.day_name || d.day
+								day_name: d.day_name || String(d.day)
 							})) || []
 						}
 					/>
@@ -234,9 +242,9 @@ export function LinkAnalyticsTabs({ data, linkId, loading = false }: LinkAnalyti
 							hourlyData={data?.temporal?.clicks_by_hour || []}
 							weeklyData={
 								data?.temporal?.clicks_by_day_of_week?.map((d) => ({
-									day: parseInt(d.day) || 0,
+									day: typeof d.day === 'string' ? parseInt(d.day) || 0 : d.day || 0,
 									clicks: d.clicks,
-									day_name: d.day_name || d.day
+									day_name: d.day_name || String(d.day)
 								})) || []
 							}
 						/>
@@ -248,28 +256,16 @@ export function LinkAnalyticsTabs({ data, linkId, loading = false }: LinkAnalyti
 				value={tabValue}
 				index={4}
 			>
-				<Box>
-					<AudienceChart
-						deviceBreakdown={data?.audience?.device_breakdown || []}
-						totalClicks={data?.overview?.total_clicks || 0}
-					/>
-					<Box sx={{ mt: 3 }}>
-						<AudienceInsights
-							deviceBreakdown={data?.audience?.device_breakdown || []}
-							totalClicks={data?.overview?.total_clicks || 0}
-						/>
-					</Box>
-				</Box>
+				<AudienceAnalysis data={data} />
 			</TabPanel>
 
+			{/* Heatmap Tab */}
 			<TabPanel
 				value={tabValue}
 				index={5}
 			>
-				<PerformanceAnalysis
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					data={data as any}
-					linksData={[]} // Para link individual, não precisa de array
+				<HeatmapAnalysis
+					linkId={linkId}
 				/>
 			</TabPanel>
 

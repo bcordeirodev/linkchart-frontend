@@ -96,20 +96,9 @@ export const FormContent = styled(Box)(({ theme }) => ({
 	padding: theme.spacing(4),
 	border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
 	boxShadow: `0 8px 32px ${alpha(theme.palette.common.black, 0.08)}`,
-	backdropFilter: 'blur(20px)',
+
 	position: 'relative',
 	overflow: 'hidden',
-
-	'&::before': {
-		content: '""',
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		right: 0,
-		height: '2px',
-		background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-		opacity: 0.6
-	},
 
 	[theme.breakpoints.down('md')]: {
 		padding: theme.spacing(3),

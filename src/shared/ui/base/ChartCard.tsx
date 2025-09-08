@@ -1,73 +1,96 @@
-import { Card, CardContent, Typography, Box } from '@mui/material';
+/**
+ * 📈 CHART CARD - COMPONENTE BASE
+ * Container padronizado para gráficos
+ */
 
-interface ChartCardProps {
-	title: string;
-	children: React.ReactNode;
-	action?: React.ReactNode;
+import React from 'react';
+import { Card, CardContent, CardHeader, Typography, Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { createGlassCard } from '@/lib/theme';
+import { BaseComponentProps } from '../components';
+
+interface ChartCardProps extends BaseComponentProps {
+    title?: string;
+    subtitle?: string;
+    action?: React.ReactNode;
+    height?: number | string;
+    loading?: boolean;
 }
 
 /**
- * Componente de card para gráficos reutilizável
- * Padroniza a apresentação de gráficos em todo o sistema
- *
- * @example
- * ```tsx
- * <ChartCard title="Vendas por Mês">
- *   <ApexChart {...chartProps} />
- * </ChartCard>
- * ```
+ * Componente ChartCard seguindo padrões arquiteturais
+ * Container padronizado para todos os gráficos da aplicação
  */
-export function ChartCard({ title, children, action }: ChartCardProps) {
-	return (
-		<Card
-			sx={{
-				height: '100%',
-				display: 'flex',
-				flexDirection: 'column',
-				borderRadius: 3,
-				boxShadow: (theme) =>
-					theme.palette.mode === 'dark' ? '0 4px 20px rgba(0, 0, 0, 0.3)' : '0 4px 20px rgba(0, 0, 0, 0.08)',
-				border: (theme) => `1px solid ${theme.palette.divider}`,
-				transition: 'all 0.3s ease-in-out',
-				'&:hover': {
-					transform: 'translateY(-2px)',
-					boxShadow: (theme) =>
-						theme.palette.mode === 'dark'
-							? '0 8px 30px rgba(0, 0, 0, 0.4)'
-							: '0 8px 30px rgba(0, 0, 0, 0.12)',
-					borderColor: 'primary.main'
-				}
-			}}
-		>
-			<CardContent sx={{ flexGrow: 1, p: 3 }}>
-				<Box
-					sx={{
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'space-between',
-						mb: 3,
-						pb: 2,
-						borderBottom: '1px solid',
-						borderColor: 'divider'
-					}}
-				>
-					<Typography
-						variant="h6"
-						sx={{
-							mb: 0,
-							fontWeight: 600,
-							color: 'text.primary',
-							fontSize: '1.1rem'
-						}}
-					>
-						{title}
-					</Typography>
-					{action}
-				</Box>
-				<Box sx={{ position: 'relative' }}>{children}</Box>
-			</CardContent>
-		</Card>
-	);
+export function ChartCard({
+    title,
+    subtitle,
+    action,
+    height = 400,
+    loading = false,
+    children,
+    sx,
+    ...other
+}: ChartCardProps) {
+    const theme = useTheme();
+
+    return (
+        <Card
+            sx={{
+                ...createGlassCard(theme, 'neutral'),
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                ...sx
+            } as any}
+            {...other}
+        >
+            {(title || action) && (
+                <CardHeader
+                    title={title && (
+                        <Typography variant="h6" component="h3">
+                            {title}
+                        </Typography>
+                    )}
+                    subheader={subtitle && (
+                        <Typography variant="body2" color="text.secondary">
+                            {subtitle}
+                        </Typography>
+                    )}
+                    action={action}
+                    sx={{ pb: 1 }}
+                />
+            )}
+
+            <CardContent
+                sx={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    pt: title || action ? 1 : 3
+                }}
+            >
+                <Box
+                    sx={{
+                        flex: 1,
+                        height: typeof height === 'number' ? `${height}px` : height,
+                        minHeight: 300,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'relative'
+                    }}
+                >
+                    {loading ? (
+                        <Typography color="text.secondary">
+                            Carregando gráfico...
+                        </Typography>
+                    ) : (
+                        children
+                    )}
+                </Box>
+            </CardContent>
+        </Card>
+    );
 }
 
 export default ChartCard;

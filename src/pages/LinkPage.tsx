@@ -6,7 +6,7 @@ import DataTable from '../shared/ui/data-display/DataTable';
 
 import { useLinks } from '@/features/links/hooks/useLinks';
 import { LinksHeader } from '@/features/links/components/LinksHeader';
-import { UnifiedMetrics } from '@/features/analytics/components/metrics/UnifiedMetrics';
+import { DashboardMetrics } from '@/features/analytics/components/dashboard/DashboardMetrics';
 import { LinksFilters } from '@/features/links/components/LinksFilters';
 import { useLinksTableColumns } from '@/features/links/hooks/useLinksTableColumns';
 import MainLayout from '@/shared/layout/MainLayout';
@@ -63,10 +63,8 @@ function LinkPage() {
 				<Box sx={{ p: 3, maxWidth: '100%', overflow: 'hidden' }}>
 					<LinksHeader />
 
-					<UnifiedMetrics
-						data={null}
+					<DashboardMetrics
 						linksData={links}
-						categories={['dashboard']}
 						showTitle={false}
 					/>
 

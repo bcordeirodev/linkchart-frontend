@@ -88,7 +88,12 @@ const getTextConfig = (isDark = false) => {
 					fontFamily: 'Inter, system-ui, sans-serif',
 					fontWeight: '500'
 				},
-				formatter: (value: number) => value.toLocaleString()
+				formatter: (value: number | string) => {
+					// Para gráficos horizontais, o yaxis mostra os labels (países)
+					// Para gráficos verticais, o yaxis mostra os valores numéricos
+					if (typeof value === 'string') return value;
+					return value.toLocaleString();
+				}
 			}
 		},
 		grid: {
@@ -126,7 +131,7 @@ export const formatAreaChart = (
 	yKey: string,
 	color = '#1976d2',
 	isDark = false
-): { series: ChartSeries[]; options: ChartOptions } => {
+): { series: ChartSeries[]; options: any } => {
 	// Validação de segurança
 	if (!data || !Array.isArray(data) || data.length === 0) {
 		return {
@@ -211,7 +216,7 @@ export const formatBarChart = (
 	color = '#1976d2',
 	horizontal = false,
 	isDark = false
-): { series: ChartSeries[]; options: ChartOptions } => {
+): { series: ChartSeries[]; options: any } => {
 	// Validação de segurança
 	if (!data || !Array.isArray(data) || data.length === 0) {
 		return {
@@ -219,13 +224,12 @@ export const formatBarChart = (
 			options: {
 				chart: { type: 'bar' },
 				colors: [color],
-				noData: { text: 'Nenhum dado disponível' },
-				tooltip: getTooltipConfig(isDark),
-				...getTextConfig(isDark)
+				noData: { text: 'Nenhum dado disponível' }
 			}
 		};
 	}
 
+	// Usar o mesmo padrão do formatAreaChart que funciona
 	return {
 		series: [
 			{
@@ -241,9 +245,7 @@ export const formatBarChart = (
 		options: {
 			chart: {
 				type: 'bar',
-				toolbar: {
-					show: false
-				},
+				toolbar: { show: false },
 				animations: {
 					enabled: true,
 					easing: 'easeinout',
@@ -254,9 +256,9 @@ export const formatBarChart = (
 			plotOptions: {
 				bar: {
 					horizontal,
-					borderRadius: horizontal ? [0, 8, 8, 0] : [8, 8, 0, 0],
-					columnWidth: '60%',
-					barHeight: '60%'
+					borderRadius: horizontal ? [0, 4, 4, 0] : [4, 4, 0, 0],
+					columnWidth: '70%',
+					barHeight: '70%'
 				}
 			},
 			dataLabels: {

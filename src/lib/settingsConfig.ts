@@ -2,27 +2,19 @@ import { LayoutSettingsConfigType } from '@/shared/layout/core';
 import i18n from './i18n/i18n';
 
 /**
- * The settingsConfig object is a configuration object for the Fuse application's settings.
+ * Configurações simplificadas da aplicação Link Chart
  */
 const settingsConfig: LayoutSettingsConfigType = {
 	/**
-	 * The layout object defines the layout style and configuration for the application.
+	 * Configuração de layout - apenas layout1
 	 */
 	layout: {
-		/**
-		 * The style property defines the layout style for the application.
-		 */
-		style: 'layout1', // layout1 layout2 layout3
-		/**
-		 * The config property defines the layout configuration for the application.
-		 * Check out default layout configs at src/components/theme-layouts for example src/components/theme-layouts/layout1/Layout1Config.js
-		 */
+		style: 'layout1',
 		config: {
 			navbar: {
 				display: true,
 				folded: false,
-				position: 'left',
-				style: 'style-2'
+				position: 'left'
 			},
 			toolbar: {
 				display: true,
@@ -36,16 +28,12 @@ const settingsConfig: LayoutSettingsConfigType = {
 	},
 
 	/**
-	 * The customScrollbars property defines whether or not to use custom scrollbars in the application.
+	 * Direção do texto
 	 */
-	customScrollbars: false,
+	direction: i18n.dir(i18n.options.lng) || 'ltr',
 
 	/**
-	 * The direction property defines the text direction for the application.
-	 */
-	direction: i18n.dir(i18n.options.lng) || 'ltr', // rtl, ltr
-	/**
-	 * The theme object defines the color theme for the application.
+	 * Configuração de tema
 	 */
 	theme: {
 		main: 'defaultDark',
@@ -55,15 +43,12 @@ const settingsConfig: LayoutSettingsConfigType = {
 	},
 
 	/**
-	 * The defaultAuth property defines the default authorization roles for the application.
-	 * To make the whole app auth protected by default set defaultAuth:['admin','staff','user']
-	 * To make the whole app accessible without authorization by default set defaultAuth: null
-	 * The individual route configs which have auth option won't be overridden.
+	 * Autorização padrão
 	 */
 	defaultAuth: ['admin'],
 
 	/**
-	 * The loginRedirectUrl property defines the default redirect URL for the logged-in user.
+	 * URL de redirecionamento após login
 	 */
 	loginRedirectUrl: '/link'
 };

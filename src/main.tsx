@@ -6,6 +6,7 @@ import App from './App';
 // Import styles
 import './styles/splash-screen.css';
 import './styles/index.css';
+import './styles/animations.css';
 import 'leaflet/dist/leaflet.css';
 
 // Configuração de captura de erros globais (React puro - sempre no browser)
@@ -44,7 +45,12 @@ const root = ReactDOM.createRoot(rootElement);
 
 root.render(
 	<React.StrictMode>
-		<BrowserRouter>
+		<BrowserRouter
+			future={{
+				v7_startTransition: true,
+				v7_relativeSplatPath: true
+			}}
+		>
 			<App />
 		</BrowserRouter>
 	</React.StrictMode>

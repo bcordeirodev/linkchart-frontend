@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { Search, FilterList } from '@mui/icons-material';
 import { alpha } from '@mui/material/styles';
+import { createGlassCard } from '@/lib/theme';
 
 interface LinksFiltersProps {
 	searchTerm: string;
@@ -45,25 +46,17 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 		return colors[status as keyof typeof colors] || 'default';
 	};
 
+	const glassCardStyles = createGlassCard(theme);
+
 	return (
 		<Box
 			sx={{
-				background:
-					theme.palette.mode === 'dark' ? alpha(theme.palette.background.paper, 0.8) : alpha('#ffffff', 0.9),
-				backdropFilter: 'blur(20px)',
-				borderRadius: '16px',
+				...glassCardStyles,
 				p: 3,
 				mb: 4,
-				border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
-				boxShadow: theme.shadows[3],
-				transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 				'&:hover': {
 					boxShadow: theme.shadows[8],
-					transform: 'translateY(-4px)',
-					background:
-						theme.palette.mode === 'dark'
-							? alpha(theme.palette.background.paper, 0.9)
-							: alpha('#ffffff', 0.95)
+					transform: 'translateY(-4px)'
 				}
 			}}
 		>
@@ -100,6 +93,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 				}}
 			>
 				<TextField
+					variant="filled"
 					placeholder="Buscar por título, URL ou slug..."
 					value={searchTerm}
 					onChange={(e) => onSearchChange(e.target.value)}
@@ -107,36 +101,8 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 					sx={{
 						flex: 1,
 						minWidth: 300,
-						'& .MuiOutlinedInput-root': {
-							borderRadius: '12px',
-							backgroundColor:
-								theme.palette.mode === 'dark'
-									? alpha(theme.palette.background.default, 0.6)
-									: alpha('#ffffff', 0.8),
-							border: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
-							transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-							fontFamily: 'Inter, system-ui, sans-serif',
-							'&:hover': {
-								backgroundColor:
-									theme.palette.mode === 'dark'
-										? alpha(theme.palette.background.default, 0.8)
-										: alpha('#ffffff', 0.95),
-								borderColor: alpha(theme.palette.primary.main, 0.5),
-								boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`
-							},
-							'&.Mui-focused': {
-								backgroundColor:
-									theme.palette.mode === 'dark' ? theme.palette.background.default : '#ffffff',
-								borderColor: theme.palette.primary.main,
-								boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
-							},
-							'& fieldset': {
-								border: 'none'
-							}
-						},
-						'& .MuiInputBase-input': {
-							fontFamily: 'Inter, system-ui, sans-serif',
-							fontSize: '0.95rem'
+						'& .MuiFilledInput-root': {
+							minHeight: 52
 						}
 					}}
 					InputProps={{
@@ -157,7 +123,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 				<FormControl
 					sx={{
 						minWidth: 180,
-						'& .MuiOutlinedInput-root': {
+						'& .MuiFilledInput-root': {
 							borderRadius: '12px',
 							backgroundColor:
 								theme.palette.mode === 'dark'

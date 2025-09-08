@@ -1,6 +1,7 @@
-import { TextField, Box, alpha, useTheme } from '@mui/material';
+import { TextField, Box, useTheme } from '@mui/material';
 import { Public } from '@mui/icons-material';
 import { UseFormRegisterReturn } from 'react-hook-form';
+import { createComponentColorSet } from '@/lib/theme';
 
 interface URLInputProps {
 	register?: UseFormRegisterReturn;
@@ -20,25 +21,19 @@ export function URLInput({
 	fullWidth = true
 }: URLInputProps) {
 	const theme = useTheme();
+	const primaryColors = createComponentColorSet(theme, 'primary');
 
 	return (
 		<TextField
 			{...register}
+			variant="filled"
 			placeholder={placeholder}
 			fullWidth={fullWidth}
 			error={!!error}
 			helperText={error || ' '}
 			sx={{
-				'& .MuiOutlinedInput-root': {
-					minHeight: 52,
-					fontSize: '1rem'
-				},
-				'& .MuiInputBase-input': {
-					padding: '14px 16px',
-					'&::placeholder': {
-						opacity: 0.7,
-						fontWeight: 400
-					}
+				'& .MuiFilledInput-root': {
+					minHeight: 52
 				},
 				'& .MuiFormHelperText-root': {
 					minHeight: 20,
@@ -56,8 +51,8 @@ export function URLInput({
 							mr: 1.2,
 							p: 1.2,
 							borderRadius: 2,
-							background: alpha(theme.palette.primary.main, 0.12),
-							border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`
+							background: primaryColors.background,
+							border: `1px solid ${primaryColors.border}`
 						}}
 					>
 						<Public

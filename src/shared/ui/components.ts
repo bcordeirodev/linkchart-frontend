@@ -5,8 +5,7 @@
 
 import { ReactNode } from 'react';
 import { SxProps, Theme } from '@mui/material';
-import { AnalyticsData } from '@/features/analytics/types/analytics';
-import { LinkResponse } from '@/features/links/types/api';
+import type { AnalyticsData, LinkResponse, ChartOptions, ChartSeries } from '@/types';
 
 // ========================================
 // 🎨 COMMON COMPONENT TYPES
@@ -65,25 +64,10 @@ export interface ChartDataPoint {
 	[key: string]: unknown;
 }
 
-export interface ChartSeries {
-	name: string;
-	data: ChartDataPoint[];
-	color?: string;
-}
+// ChartSeries agora importado de @/types
 
-export interface ChartOptions {
-	chart: {
-		type: string;
-		height?: number;
-		[key: string]: unknown;
-	};
-	colors?: string[];
-	title?: {
-		text: string;
-		[key: string]: unknown;
-	};
-	[key: string]: unknown;
-}
+// ChartOptions movido para @/types/core/charts
+// @deprecated Use ChartOptions from @/types instead
 
 export interface ChartProps extends BaseComponentProps {
 	series: ChartSeries[];

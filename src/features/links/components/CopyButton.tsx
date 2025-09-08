@@ -1,21 +1,22 @@
-import { Button } from '@mui/material';
-import { ContentCopy, CheckCircle } from '@mui/icons-material';
-import { useClipboard } from '@/shared/hooks';
+import { IconButton, Tooltip } from '@mui/material';
+import { AppIcon } from '@/lib/icons';
+import useClipboard from '@/shared/hooks/useClipboard';
+import { showSuccessMessage } from '@/lib/store/messageSlice';
 
 interface CopyButtonProps {
 	text: string;
-	variant?: 'contained' | 'outlined' | 'text';
+	tooltip?: string;
 	size?: 'small' | 'medium' | 'large';
-	onCopy?: () => void;
 }
 
 /**
- * Botão de copiar reutilizável com estado visual
- * Gerencia automaticamente o estado de copiado
+ * 📋 Botão de Cópia - COMPONENTIZADO
+ * Usa hook useClipboard, feedback visual, tooltip
  */
-export function CopyButton({ text, variant = 'contained', size = 'medium', onCopy }: CopyButtonProps) {
+export function CopyButton({ text, tooltip = 'Copiar', size = 'medium' }: CopyButtonProps) {
 	const { copied, copy } = useClipboard({
-		onSuccess: onCopy
+		timeout: 2000,
+		onSuccess: () => showSuccessMessage('Copiado com sucesso!')
 	});
 
 	const handleCopy = () => {
@@ -23,26 +24,21 @@ export function CopyButton({ text, variant = 'contained', size = 'medium', onCop
 	};
 
 	return (
-		<Button
-			variant={variant}
-			size={size}
-			startIcon={copied ? <CheckCircle /> : <ContentCopy />}
-			onClick={handleCopy}
-			disabled={copied}
-			sx={{
-				borderRadius: 2,
-				textTransform: 'none',
-				fontWeight: 600,
-				...(copied && {
-					bgcolor: 'success.main',
+		<Tooltip title={copied ? 'Copiado!' : tooltip}>
+			<IconButton
+				onClick={handleCopy}
+				size={size}
+				color={copied ? 'success' : 'primary'}
+				sx={{
+					transition: 'all 0.2s ease-in-out',
 					'&:hover': {
-						bgcolor: 'success.dark'
+						transform: 'scale(1.1)'
 					}
-				})
-			}}
-		>
-			{copied ? 'Copiado!' : 'Copiar'}
-		</Button>
+				}}
+			>
+				<AppIcon intent="copy" />
+			</IconButton>
+		</Tooltip>
 	);
 }
 

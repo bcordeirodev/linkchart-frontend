@@ -439,5 +439,5 @@ export interface FeatureFlag {
 	description?: string;
 	rolloutPercentage?: number;
 }
-export type ChartOptions = Record<string, any>;
-export type ChartData = Record<string, any>;
+// ChartOptions e ChartData movidos para @/types/core/charts
+// @deprecated Use types from @/types instead

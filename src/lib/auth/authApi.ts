@@ -1,4 +1,4 @@
-import { User } from '@/features/profile/types/user';
+import type { User } from '@/types';
 import UserModel from '@/features/profile/types/UserModel';
 import { PartialDeep } from 'type-fest';
 import { api } from '@/lib/api/client';

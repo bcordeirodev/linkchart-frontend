@@ -4,13 +4,13 @@
  * Mantém compatibilidade com interfaces globais existentes
  */
 
-import { LinkCreateRequest, LinkUpdateRequest, LinkResponse } from './api';
+import type { LinkCreateRequest, LinkUpdateRequest, LinkResponse } from '@/types';
 
 // ========================================
 // 🔗 LINK TYPES (Re-exports from API)
 // ========================================
 
-export type { LinkCreateRequest, LinkUpdateRequest, LinkResponse } from './api';
+export type { LinkCreateRequest, LinkUpdateRequest, LinkResponse } from '@/types';
 
 // ========================================
 // 🌍 GLOBAL INTERFACES (Manter compatibilidade)
@@ -18,9 +18,9 @@ export type { LinkCreateRequest, LinkUpdateRequest, LinkResponse } from './api';
 
 declare global {
 	// Mantidas para compatibilidade durante transição
-	interface ILinkCreate extends LinkCreateRequest {}
-	interface ILinkUpdate extends LinkUpdateRequest {}
-	interface ILinkResponse extends LinkResponse {}
+	interface ILinkCreate extends LinkCreateRequest { }
+	interface ILinkUpdate extends LinkUpdateRequest { }
+	interface ILinkResponse extends LinkResponse { }
 }
 
 // ========================================
@@ -71,4 +71,4 @@ export interface LinkBulkAction {
 	link_ids: number[];
 }
 
-export {};
+export { };

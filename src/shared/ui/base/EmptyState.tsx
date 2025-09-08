@@ -1,112 +1,109 @@
+/**
+ * 🚫 EMPTY STATE - COMPONENTE BASE
+ * Componente para estados vazios padronizado
+ */
+
 import React from 'react';
+import { Box, Typography, Button } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { BaseComponentProps } from '../components';
 
-// Styled Components
-import {
-	EmptyStateContainer,
-	EmptyStateIcon,
-	EmptyStateTitle,
-	EmptyStateDescription,
-	EmptyStateActions,
-	EmptyStateActionButton
-} from './styles/UI.styled';
-
-interface EmptyStateProps {
-	icon?: string;
-	title?: string;
-	description?: string;
-	height?: number | string;
-	showActions?: boolean;
-	primaryAction?: {
-		label: string;
-		onClick: () => void;
-	};
-	secondaryAction?: {
-		label: string;
-		onClick: () => void;
-	};
-	variant?: 'charts' | 'data' | 'general';
+interface EmptyStateProps extends BaseComponentProps {
+    variant?: 'default' | 'charts' | 'data' | 'search';
+    icon?: string | React.ReactNode;
+    title: string;
+    description?: string;
+    action?: {
+        label: string;
+        onClick: () => void;
+    };
+    height?: number | string;
 }
 
 /**
- * 🎨 EMPTY STATE COMPONENT
- * Componente elegante para estados vazios com diferentes variantes
+ * Componente EmptyState seguindo padrões arquiteturais
+ * Usado para exibir estados vazios de forma consistente
  */
-export const EmptyState: React.FC<EmptyStateProps> = ({
-	icon,
-	title,
-	description,
-	height = 300,
-	showActions = false,
-	primaryAction,
-	secondaryAction,
-	variant = 'general'
-}) => {
-	// Configurações por variante
-	const getVariantConfig = () => {
-		switch (variant) {
-			case 'charts':
-				return {
-					icon: icon || '📊',
-					title: title || 'Gráficos em Preparação',
-					description:
-						description ||
-						'Os gráficos aparecerão quando houver dados suficientes para análise. Compartilhe seus links para começar a coletar dados!'
-				};
-			case 'data':
-				return {
-					icon: icon || '📈',
-					title: title || 'Sem Dados Disponíveis',
-					description:
-						description ||
-						'Ainda não há dados para exibir. Comece criando e compartilhando seus links encurtados.'
-				};
-			default:
-				return {
-					icon: icon || '📋',
-					title: title || 'Nenhum Item Encontrado',
-					description: description || 'Não há itens para exibir no momento.'
-				};
-		}
-	};
+export function EmptyState({
+    variant = 'default',
+    icon,
+    title,
+    description,
+    action,
+    height = 300,
+    sx,
+    ...other
+}: EmptyStateProps) {
+    const _theme = useTheme();
 
-	const config = getVariantConfig();
+    const variantConfig = {
+        default: { icon: '📭', color: 'text.secondary' },
+        charts: { icon: '📊', color: 'primary.main' },
+        data: { icon: '📄', color: 'info.main' },
+        search: { icon: '🔍', color: 'warning.main' }
+    };
 
-	return (
-		<EmptyStateContainer
-			elevation={0}
-			variant={variant as never}
-			customHeight={height}
-		>
-			<EmptyStateIcon>{config.icon}</EmptyStateIcon>
+    const config = variantConfig[variant];
+    const displayIcon = icon || config.icon;
 
-			<EmptyStateTitle variant="h6">{config.title}</EmptyStateTitle>
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: typeof height === 'number' ? `${height}px` : height,
+                textAlign: 'center',
+                py: 4,
+                px: 2,
+                ...sx
+            }}
+            {...other}
+        >
+            <Box
+                sx={{
+                    fontSize: '3rem',
+                    mb: 2,
+                    opacity: 0.7
+                }}
+            >
+                {typeof displayIcon === 'string' ? displayIcon : displayIcon}
+            </Box>
 
-			<EmptyStateDescription variant="body2">{config.description}</EmptyStateDescription>
+            <Typography
+                variant="h6"
+                component="h3"
+                sx={{
+                    mb: 1,
+                    color: config.color,
+                    fontWeight: 600
+                }}
+            >
+                {title}
+            </Typography>
 
-			{showActions && (primaryAction || secondaryAction) && (
-				<EmptyStateActions>
-					{primaryAction && (
-						<EmptyStateActionButton
-							buttonVariant="primary"
-							onClick={primaryAction.onClick}
-							size="medium"
-						>
-							{primaryAction.label}
-						</EmptyStateActionButton>
-					)}
-					{secondaryAction && (
-						<EmptyStateActionButton
-							buttonVariant="secondary"
-							onClick={secondaryAction.onClick}
-							size="medium"
-						>
-							{secondaryAction.label}
-						</EmptyStateActionButton>
-					)}
-				</EmptyStateActions>
-			)}
-		</EmptyStateContainer>
-	);
-};
+            {description && (
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 3, maxWidth: 400 }}
+                >
+                    {description}
+                </Typography>
+            )}
+
+            {action && (
+                <Button
+                    variant="outlined"
+                    onClick={action.onClick}
+                    sx={{ mt: 1 }}
+                >
+                    {action.label}
+                </Button>
+            )}
+        </Box>
+    );
+}
 
 export default EmptyState;

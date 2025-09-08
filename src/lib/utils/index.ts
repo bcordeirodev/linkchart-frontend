@@ -14,4 +14,4 @@
 export { default as ErrorBoundary } from './ErrorBoundary';
 
 // Legacy compatibility
-export { default as FuseUtils } from './legacyUtils';
+export { default as FuseUtils } from './authUtils';

@@ -1,12 +1,11 @@
-import Typography from '@mui/material/Typography';
-import { Link } from '@/shared/components';
+import { Link, SvgIcon } from '@/shared/components';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import AuthJsForm from '../lib/auth/forms/AuthJsForm';
-import { SvgIcon } from '@/shared/components';
 import { alpha } from '@mui/material/styles';
-import authRoles from '../lib/auth/authRoles';
+import Typography from '@mui/material/Typography';
 import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
+import authRoles from '../lib/auth/authRoles';
+import AuthJsForm from '../lib/auth/forms/AuthJsForm';
 
 /**
  * The sign in page - Enhanced modern design (Compact Version)

@@ -1,56 +1,32 @@
+/**
+ * @deprecated Este hook foi substituído por hooks individuais
+ * 
+ * Use os hooks específicos ao invés deste:
+ * - useDashboardData para dados do dashboard
+ * - useTemporalData para dados temporais
+ * - useGeographicData para dados geográficos
+ * - useAudienceData para dados de audiência
+ * - useInsightsData para insights
+ * - useHeatmapData para heatmap
+ * - useLinkPerformance para performance
+ * 
+ * Este arquivo será removido na próxima versão.
+ */
+
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api/client';
+import type {
+	HeatmapPoint,
+	CountryData,
+	StateData,
+	CityData,
+	HourlyData,
+	DayOfWeekData,
+	DeviceData
+} from '@/types';
 
-export interface HeatmapPoint {
-	lat: number;
-	lng: number;
-	city: string;
-	country: string;
-	clicks: number;
-}
-
-export interface CountryData {
-	country: string;
-	iso_code: string;
-	clicks: number;
-	currency: string;
-	[key: string]: unknown;
-}
-
-export interface StateData {
-	country: string;
-	state: string;
-	state_name: string;
-	clicks: number;
-	[key: string]: unknown;
-}
-
-export interface CityData {
-	city: string;
-	state: string;
-	country: string;
-	clicks: number;
-	[key: string]: unknown;
-}
-
-export interface HourlyData {
-	hour: number;
-	clicks: number;
-	label: string;
-	[key: string]: unknown;
-}
-
-export interface DayOfWeekData {
-	day: number;
-	day_name: string;
-	clicks: number;
-	[key: string]: unknown;
-}
-
-export interface DeviceData {
-	device: string;
-	clicks: number;
-}
+// Tipos movidos para @/types/core/api
+// @deprecated Use types from @/types instead
 
 export interface BusinessInsight {
 	type: string;
@@ -110,9 +86,6 @@ export function useEnhancedAnalytics(linkId: string) {
 			setLoading(true);
 			setError(null);
 
-			if (import.meta.env.DEV) {
-				console.log(`🔍 Buscando analytics para link ${linkId}...`);
-			}
 
 			// Tentar usar o novo endpoint primeiro
 			let response: EnhancedAnalyticsData;
@@ -123,18 +96,8 @@ export function useEnhancedAnalytics(linkId: string) {
 				// O endpoint protegido retorna dados dentro de 'data'
 				response = apiResponse.data || (apiResponse as unknown as EnhancedAnalyticsData);
 
-				if (import.meta.env.DEV) {
-					console.log(`✅ Dados reais carregados para link ${linkId}:`, {
-						total_clicks: response.overview?.total_clicks,
-						countries: response.geographic?.top_countries?.length,
-						has_data: response.has_data
-					});
-				}
 			} catch (authError) {
 				// Se falhar por autenticação, usar endpoint de teste temporário
-				if (import.meta.env.DEV) {
-					console.warn(`🔄 Link ${linkId} não encontrado, tentando endpoint de teste`);
-				}
 
 				try {
 					const directResponse = await fetch(
@@ -154,17 +117,11 @@ export function useEnhancedAnalytics(linkId: string) {
 
 					const testResponse = await directResponse.json();
 
-					if (import.meta.env.DEV) {
-						console.log('✅ Dados recebidos do endpoint de teste:', testResponse);
-					}
 
 					// Agora o endpoint de teste retorna dados completos
 					setData(testResponse);
 					return;
 				} catch (testError) {
-					if (import.meta.env.DEV) {
-						console.error('❌ Falha também no endpoint de teste:', testError);
-					}
 
 					throw testError;
 				}
@@ -180,185 +137,11 @@ export function useEnhancedAnalytics(linkId: string) {
 		}
 	}, [linkId]);
 
-	const fetchHeatmapData = useCallback(async (): Promise<HeatmapPoint[]> => {
-		if (!linkId) return [];
+	// ✅ fetchHeatmapData removido - usar useHeatmapData hook
 
-		try {
-			// Tentar endpoint protegido primeiro
-			try {
-				const apiResponse = await api.get<ApiResponse<HeatmapPoint[]>>(`/api/analytics/link/${linkId}/heatmap`);
-				const response =
-					apiResponse.data ||
-					(apiResponse as unknown as { heatmap_data?: HeatmapPoint[]; data?: HeatmapPoint[] });
-				return (
-					(response as { heatmap_data?: HeatmapPoint[]; data?: HeatmapPoint[] }).heatmap_data ||
-					(response as { heatmap_data?: HeatmapPoint[]; data?: HeatmapPoint[] }).data ||
-					(response as HeatmapPoint[])
-				);
-			} catch (_authError) {
-				// Fallback para dados do endpoint de teste com fetch direto
-				try {
-					const directResponse = await fetch(
-						`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
-						{
-							method: 'GET',
-							headers: {
-								'Content-Type': 'application/json',
-								Accept: 'application/json'
-							}
-						}
-					);
+	// ✅ fetchGeographicData removido - usar useGeographicData hook
 
-					if (!directResponse.ok) {
-						throw new Error(`HTTP ${directResponse.status}: ${directResponse.statusText}`);
-					}
-
-					const testResponse = await directResponse.json();
-					return testResponse.geographic?.heatmap_data || [];
-				} catch (testError) {
-					if (import.meta.env.DEV) {
-						console.error('❌ Falha no endpoint de teste:', testError);
-					}
-
-					return [];
-				}
-			}
-		} catch (err) {
-			if (import.meta.env.DEV) {
-				console.error('Error fetching heatmap data:', err);
-			}
-
-			return [];
-		}
-	}, [linkId]);
-
-	const fetchGeographicData = useCallback(async () => {
-		if (!linkId) return null;
-
-		try {
-			// Tentar endpoint protegido primeiro
-			try {
-				const apiResponse = await api.get<ApiResponse<{ geographic: EnhancedAnalyticsData['geographic'] }>>(
-					`analytics/link/${linkId}/geographic`
-				);
-				const response =
-					apiResponse.data ||
-					(apiResponse as unknown as {
-						geographic?: EnhancedAnalyticsData['geographic'];
-						data?: EnhancedAnalyticsData['geographic'];
-					});
-				return (
-					(response as { geographic?: EnhancedAnalyticsData['geographic'] }).geographic ||
-					(response as { data?: EnhancedAnalyticsData['geographic'] }).data
-				);
-			} catch (_authError) {
-				// Fallback para dados básicos com fetch direto
-				try {
-					const directResponse = await fetch(
-						`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
-						{
-							method: 'GET',
-							headers: {
-								'Content-Type': 'application/json',
-								Accept: 'application/json'
-							}
-						}
-					);
-
-					if (!directResponse.ok) {
-						throw new Error(`HTTP ${directResponse.status}: ${directResponse.statusText}`);
-					}
-
-					const testResponse = await directResponse.json();
-					return {
-						top_countries: testResponse.geographic?.top_countries || [],
-						top_states: testResponse.geographic?.top_states || [],
-						top_cities: testResponse.geographic?.top_cities || [],
-						heatmap_data: testResponse.geographic?.heatmap_data || []
-					};
-				} catch (testError) {
-					if (import.meta.env.DEV) {
-						console.error('❌ Falha no endpoint de teste:', testError);
-					}
-
-					return null;
-				}
-			}
-		} catch (err) {
-			if (import.meta.env.DEV) {
-				console.error('Error fetching geographic data:', err);
-			}
-
-			return null;
-		}
-	}, [linkId]);
-
-	const fetchInsights = useCallback(async (): Promise<BusinessInsight[]> => {
-		if (!linkId) return [];
-
-		try {
-			// Tentar endpoint protegido primeiro
-			try {
-				const apiResponse = await api.get<ApiResponse<BusinessInsight[]>>(`analytics/link/${linkId}/insights`);
-				const response =
-					apiResponse.data ||
-					(apiResponse as unknown as { insights?: BusinessInsight[]; data?: BusinessInsight[] });
-				return (
-					(response as { insights?: BusinessInsight[] }).insights ||
-					(response as { data?: BusinessInsight[] }).data ||
-					(response as BusinessInsight[])
-				);
-			} catch (_authError) {
-				// Fallback para insights básicos com fetch direto
-				try {
-					const directResponse = await fetch(
-						`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
-						{
-							method: 'GET',
-							headers: {
-								'Content-Type': 'application/json',
-								Accept: 'application/json'
-							}
-						}
-					);
-
-					if (!directResponse.ok) {
-						throw new Error(`HTTP ${directResponse.status}: ${directResponse.statusText}`);
-					}
-
-					const testResponse = await directResponse.json();
-					return (
-						testResponse.insights || [
-							{
-								type: 'geographic',
-								title: 'Alcance Global',
-								description: `Seu link alcançou ${testResponse.overview?.countries_reached || 0} países diferentes.`,
-								priority: 'medium' as const
-							},
-							{
-								type: 'performance',
-								title: 'Alto Engajamento',
-								description: `Com ${testResponse.overview?.total_clicks || 0} cliques registrados.`,
-								priority: 'high' as const
-							}
-						]
-					);
-				} catch (testError) {
-					if (import.meta.env.DEV) {
-						console.error('❌ Falha no endpoint de teste:', testError);
-					}
-
-					return [];
-				}
-			}
-		} catch (err) {
-			if (import.meta.env.DEV) {
-				console.error('Error fetching insights:', err);
-			}
-
-			return [];
-		}
-	}, [linkId]);
+	// ✅ fetchInsights removido - usar useInsightsData hook
 
 	useEffect(() => {
 		fetchAnalytics();
@@ -372,9 +155,6 @@ export function useEnhancedAnalytics(linkId: string) {
 		data,
 		loading,
 		error,
-		refetch,
-		fetchHeatmapData,
-		fetchGeographicData,
-		fetchInsights
+		refetch
 	};
 }

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { PartialDeep } from 'type-fest';
-import { User } from '@/features/profile/types/user';
+import type { User } from '@/types';
 
 /**
  * Creates a new user object with the specified data.

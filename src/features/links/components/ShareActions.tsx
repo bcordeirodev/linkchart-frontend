@@ -1,6 +1,5 @@
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { Launch, Share } from '@mui/icons-material';
-import { alpha, useTheme } from '@mui/material/styles';
+import { AppIcon } from '@/lib/icons';
 import { useShareAPI } from '@/features/links/hooks/useShareAPI';
 
 interface ShareActionsProps {
@@ -18,7 +17,6 @@ export function ShareActions({
 	title = 'Link Encurtado - LinkChart',
 	text = 'Confira este link encurtado:'
 }: ShareActionsProps) {
-	const theme = useTheme();
 	const { shareOrCopy } = useShareAPI();
 
 	const handleShare = () => {
@@ -33,33 +31,29 @@ export function ShareActions({
 		<Box sx={{ display: 'flex', gap: 1 }}>
 			<Tooltip title="Abrir link">
 				<IconButton
+					color="primary"
 					onClick={handleOpenLink}
 					sx={{
-						bgcolor: alpha(theme.palette.primary.main, 0.1),
-						'&:hover': {
-							bgcolor: alpha(theme.palette.primary.main, 0.2),
-							transform: 'translateY(-1px)'
-						},
-						transition: 'all 0.2s ease'
+						bgcolor: 'primary.main',
+						color: 'primary.contrastText',
+						'&:hover': { bgcolor: 'primary.dark' }
 					}}
 				>
-					<Launch />
+					<AppIcon intent="url" />
 				</IconButton>
 			</Tooltip>
 
 			<Tooltip title="Compartilhar">
 				<IconButton
+					color="secondary"
 					onClick={handleShare}
 					sx={{
-						bgcolor: alpha(theme.palette.secondary.main, 0.1),
-						'&:hover': {
-							bgcolor: alpha(theme.palette.secondary.main, 0.2),
-							transform: 'translateY(-1px)'
-						},
-						transition: 'all 0.2s ease'
+						bgcolor: 'secondary.main',
+						color: 'secondary.contrastText',
+						'&:hover': { bgcolor: 'secondary.dark' }
 					}}
 				>
-					<Share />
+					<AppIcon intent="share" />
 				</IconButton>
 			</Tooltip>
 		</Box>

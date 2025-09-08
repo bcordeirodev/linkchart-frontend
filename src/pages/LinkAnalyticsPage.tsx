@@ -1,11 +1,12 @@
 'use client';
 
-import { Box, Alert, CircularProgress } from '@mui/material';
+import { Box, Alert } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import MainLayout from '@/shared/layout/MainLayout';
 import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
-import { useLinkAnalyticsOptimized } from '@/features/links/hooks/useLinkAnalyticsOptimized';
+import { useLinkAnalyticsOptimized } from '@/features/links/hooks/useLinkAnalytics';
 import { LinkAnalyticsHeader, LinkAnalyticsMetrics, LinkAnalyticsTabs } from '@/features/links/components/analytics';
+import { EmptyState } from '@/shared/ui/base/EmptyState';
 
 /**
  * 📊 Página de Analytics Individual de Link - REFATORADA
@@ -32,18 +33,14 @@ function LinkAnalyticsPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<Box
-						sx={{
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-							minHeight: 400,
-							flexDirection: 'column',
-							gap: 2
-						}}
-					>
-						<CircularProgress size={60} />
-						<Box sx={{ typography: 'h6' }}>Carregando analytics do link...</Box>
+					<Box sx={{ p: 3 }}>
+						<EmptyState
+							variant="data"
+							icon="📊"
+							title="Carregando Analytics"
+							description="Preparando dados detalhados do link..."
+							height={400}
+						/>
 					</Box>
 				</MainLayout>
 			</AuthGuardRedirect>
@@ -70,7 +67,7 @@ function LinkAnalyticsPage() {
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
-				<Box>
+				<Box sx={{ p: 3 }}>
 					<LinkAnalyticsHeader
 						linkId={id}
 						linkInfo={linkInfo}

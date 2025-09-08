@@ -20,7 +20,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { PartialDeep } from 'type-fest';
 import _ from 'lodash';
-import { themeLayoutConfigs } from '@/lib/theme';
 import useUser from '@/lib/auth/useUser';
 import settingsConfig from '@/lib/settingsConfig';
 import { LayoutSettingsContext } from './LayoutSettingsContext';
@@ -51,13 +50,8 @@ const defaultLayoutSettings: LayoutSettingsConfigType = {
  * Gera configurações iniciais do layout
  */
 const getInitialLayoutSettings = (): LayoutSettingsConfigType => {
-	const defaultLayoutStyle = settingsConfig.layout?.style || 'layout1';
-	const layout = {
-		style: defaultLayoutStyle,
-		config: themeLayoutConfigs[defaultLayoutStyle as keyof typeof themeLayoutConfigs]?.defaults
-	};
-
-	return _.merge({}, defaultLayoutSettings, { layout }, settingsConfig);
+	// Usa diretamente as configurações do settingsConfig
+	return _.merge({}, defaultLayoutSettings, settingsConfig);
 };
 
 /**
@@ -67,20 +61,8 @@ const generateLayoutSettings = (
 	defaultSettings: LayoutSettingsConfigType,
 	newSettings: PartialDeep<LayoutSettingsConfigType>
 ): LayoutSettingsConfigType => {
-	const layoutStyle = newSettings?.layout?.style;
-
-	if (!layoutStyle) return defaultSettings;
-
-	return _.merge(
-		{},
-		defaultSettings,
-		{
-			layout: {
-				config: themeLayoutConfigs[layoutStyle as keyof typeof themeLayoutConfigs]?.defaults
-			}
-		},
-		newSettings
-	);
+	// Simplesmente mescla as configurações - sempre usa layout1
+	return _.merge({}, defaultSettings, newSettings);
 };
 
 /**

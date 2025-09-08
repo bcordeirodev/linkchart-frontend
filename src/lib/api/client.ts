@@ -134,8 +134,21 @@ class ApiClient {
 				errorData = await response.json();
 
 				if (typeof errorData === 'object' && errorData !== null) {
-					const data = errorData as { message?: string; error?: string };
-					errorMessage = data.message || data.error || errorMessage;
+					const data = errorData as {
+						message?: string;
+						error?: string;
+						errors?: Record<string, string[]>;
+					};
+
+					// Se há erros específicos de validação, formatá-los
+					if (data.errors && typeof data.errors === 'object') {
+						const validationErrors = Object.entries(data.errors)
+							.map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
+							.join('; ');
+						errorMessage = `Erros de validação: ${validationErrors}`;
+					} else {
+						errorMessage = data.message || data.error || errorMessage;
+					}
 				}
 			} else {
 				const textError = await response.text();

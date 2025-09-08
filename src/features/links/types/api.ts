@@ -12,30 +12,27 @@ export interface LinkCreateRequest {
 }
 
 export interface LinkUpdateRequest {
+	// Campos principais
+	original_url?: string;
 	title?: string;
-	description?: string;
-	tags?: string[];
-	expires_at?: string;
-	is_active?: boolean;
-}
-
-export interface LinkResponse {
-	id: string;
-	original_url: string;
-	short_url: string;
 	slug?: string;
-	custom_slug?: string;
-	title?: string;
 	description?: string;
-	tags?: string[];
-	clicks: number;
-	is_active: boolean;
+	is_active?: boolean;
+
+	// Datas
 	expires_at?: string | null;
-	created_at: string;
-	updated_at: string;
-	user_id: string;
-	shorted_url?: string;
 	starts_in?: string | null;
-	is_expired?: boolean;
-	is_active_valid?: boolean;
+
+	// Limites
+	click_limit?: number | null;
+
+	// UTM
+	utm_source?: string;
+	utm_medium?: string;
+	utm_campaign?: string;
+	utm_term?: string;
+	utm_content?: string;
+
+	// Tags (compatibilidade)
+	tags?: string[];
 }

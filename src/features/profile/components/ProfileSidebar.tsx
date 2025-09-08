@@ -1,7 +1,7 @@
-import { Box, Typography, Chip, Stack } from '@mui/material';
-import { CalendarToday, Shield, Verified } from '@mui/icons-material';
+import { UserProfile } from '@/services';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
-import { UserProfile } from '../../../lib/services';
+import { CalendarToday, Shield, Verified } from '@mui/icons-material';
+import { Box, Chip, Stack, Typography } from '@mui/material';
 
 interface ProfileSidebarProps {
 	user: UserProfile;

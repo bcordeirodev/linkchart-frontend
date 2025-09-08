@@ -1,4 +1,4 @@
-import { Add } from '@mui/icons-material';
+import { AppIcon } from '@/lib/icons';
 import { useNavigate } from 'react-router-dom';
 
 // Styled Components
@@ -48,7 +48,7 @@ export function LinksHeader({ onCreateNew }: LinksHeaderProps) {
 					<CreateLinkButton
 						variant="contained"
 						size="large"
-						startIcon={<Add />}
+						startIcon={<AppIcon intent="create" size={20} />}
 						onClick={handleCreateNew}
 					>
 						Criar Novo Link

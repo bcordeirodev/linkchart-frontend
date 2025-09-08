@@ -1,6 +1,6 @@
 /**
  * 🎨 SISTEMA DE TEMAS CENTRALIZADO - Link Chart
- * Exportação única e otimizada de todos os recursos de tema
+ * Exportação simplificada dos recursos essenciais de tema
  */
 
 // ========================================
@@ -9,18 +9,29 @@
 export { default as MainThemeProvider } from './MainThemeProvider';
 
 // ========================================
+// 🎯 DESIGN SYSTEM
+// ========================================
+export {
+	createDesignTokens,
+	useDesignTokens,
+	applySpacing,
+	applyBorderRadius,
+	createColorVariation,
+	spacingTokens,
+	borderRadiusTokens,
+	layoutSpacing,
+	animationDurations,
+	animationEasings,
+	layoutDimensions
+} from './designSystem';
+
+export type { ColorVariant, ColorIntensity } from './designSystem';
+
+// ========================================
 // 🎛️ THEME HOOKS ESSENCIAIS
 // ========================================
 export {
 	useMainTheme,
-	useNavbarTheme,
-	useToolbarTheme,
-	useFooterTheme,
-	changeThemeMode,
-	useContrastMainTheme,
-	useMainThemeDark,
-	useMainThemeLight,
-	useFuseSettings,
 	useResponsive,
 	useThemeMediaQuery
 } from './hooks';
@@ -30,7 +41,6 @@ export {
 // ========================================
 export { applyGlobalStyles } from './globalStyles';
 export { allThemes, allThemes as themesConfig, simplifiedThemes, extendedThemes } from './themes';
-export { themeLayoutConfigs } from './config';
 
 // ========================================
 // 🎨 COLORS
@@ -38,7 +48,7 @@ export { themeLayoutConfigs } from './config';
 export { fuseDark, skyBlue, lightPaletteText, darkPaletteText, brandColors } from './colors';
 
 // ========================================
-// ⚙️ CONFIGURATIONS
+// ⚙️ CONFIGURATIONS ESSENCIAIS
 // ========================================
 export {
 	defaultSettings,
@@ -54,70 +64,69 @@ export {
 } from './config';
 
 // ========================================
-// 🛠️ THEME UTILITIES
+// 🛠️ THEME UTILITIES USADOS
 // ========================================
 export {
+	// Color utilities
 	getThemeColor,
 	getColorVariantMap,
 	getStateColors,
 	getBackgroundColors,
 	getTextColors,
 	getBorderColors,
-	createGradient,
 	createComponentColorSet,
+
+	// Glass effects - usado em vários componentes
 	createGlassEffect,
 	createGlassCard,
 	createGlassNavbar,
 	createGlassModal,
 	createGlassButton,
+
+	// Gradients - usado em vários componentes
+	createGradient,
 	createThemeGradient,
 	createPresetGradients,
 	createTextGradient,
+
+	// Spacing - usado no design system
 	getSpacing,
 	createPadding,
 	createMargin,
 	createGap,
 	createSpacingUtils,
 	createResponsiveSpacing,
+
+	// Shadows - usado no design system
 	createShadow,
 	createPresetShadows,
 	createStateShadows,
+
+	// Responsive - usado no design system
 	createResponsiveValue,
 	createResponsiveTypography,
 	createVisibilityUtils,
+
+	// Animations - usado em vários componentes
 	createTransition,
 	createFadeAnimation,
 	createSlideAnimation,
 	createScaleAnimation,
 	createPresetAnimations,
 	createStateAnimations,
-	createResponsiveAnimation
+	createResponsiveAnimation,
+
 } from './utils';
 
 // ========================================
-// 📊 TYPE EXPORTS
+// 📊 TYPE EXPORTS ESSENCIAIS
 // ========================================
 export type {
 	FuseThemeType,
 	FuseThemesType,
 	ThemeLayoutDefaultsProps,
 	FuseSettingsConfigType,
-	RadioOptionType,
-	FormFieldBaseType,
-	RadioFieldType,
-	NumberFieldType,
-	SwitchFieldType,
-	GroupFieldType,
-	GroupFieldChildrenType,
-	AnyFormFieldType,
-	ThemeFormConfigTypes,
 	ColorPalette,
 	TextColors,
 	BrandColor
 } from './types';
-
-// ========================================
-// 🔄 COMPATIBILITY EXPORTS
-// ========================================
-// Para compatibilidade com código existente
-// export type { ThemeLayoutDefaultsProps as themeLayoutDefaultsProps };

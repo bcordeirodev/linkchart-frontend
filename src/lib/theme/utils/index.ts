@@ -1,25 +1,31 @@
 /**
  * 🛠️ THEME UTILITIES - LINK CHART
- * Utilitários centralizados para facilitar o uso do sistema de temas
+ * Utilitários essenciais de tema - apenas os que são realmente usados
  *
  * @description
- * Conjunto de utilitários que simplificam o uso do tema nos componentes,
- * reduzindo duplicação de código e garantindo consistência visual.
- *
- * @features
- * - ✅ Utilitários de cores padronizados
- * - ✅ Mixins para glassmorphism e gradientes
- * - ✅ Helpers de responsividade
- * - ✅ Funções de spacing e shadows
- * - ✅ TypeScript completo
+ * Conjunto simplificado de utilitários que são realmente utilizados
+ * nos componentes da aplicação.
  *
  * @since 2.0.0
  */
 
+// Utilitários de cores - usado em MetricCardOptimized
 export * from './colorUtils';
+
+// Utilitários de glass effect - usado em vários componentes
 export * from './glassUtils';
+
+// Utilitários de gradiente - usado em vários componentes
 export * from './gradientUtils';
-export * from './spacingUtils';
-export * from './shadowUtils';
-export * from './responsiveUtils';
+
+// Utilitários de animação - usado em vários componentes
 export * from './animationUtils';
+
+// Utilitários de spacing - usado no design system
+export * from './spacingUtils';
+
+// Utilitários de shadow - usado no design system
+export * from './shadowUtils';
+
+// Utilitários responsivos - usado no design system
+export * from './responsiveUtils';

@@ -64,7 +64,31 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 		console.warn(`⚠️ ApexChart ${type} sem dados:`, {
 			hasValidData,
 			hasDataPoints,
-			seriesLength: series?.length || 0
+			seriesLength: series?.length || 0,
+			series,
+			options
+		});
+	}
+
+	// Debug específico para gráficos de barras
+	if (import.meta.env.DEV && type === 'bar') {
+		console.log(`📊 ApexChart ${type} - Debug detalhado:`, {
+			type,
+			hasValidData,
+			hasDataPoints,
+			series,
+			seriesData: (series[0] as any)?.data,
+			seriesValidation: series?.map(s => ({
+				isObject: typeof s === 'object' && s !== null,
+				hasData: 'data' in s,
+				dataIsArray: Array.isArray((s as any).data),
+				dataLength: (s as any).data?.length || 0
+			})),
+			options: {
+				chart: options.chart,
+				plotOptions: options.plotOptions,
+				dataLabels: options.dataLabels
+			}
 		});
 	}
 

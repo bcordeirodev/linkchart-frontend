@@ -1,15 +1,11 @@
 import { useMemo, useCallback } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
-import { Box, Chip, IconButton, Tooltip, Avatar, Typography } from '@mui/material';
+import { Box, Chip, Avatar, Typography } from '@mui/material';
+import { LinkTableActions } from '@/shared/ui/patterns';
 import { LinkResponse } from '@/types';
 import {
-	DeleteOutlined,
-	EditOutlined,
-	ContentCopyOutlined,
-	QrCodeOutlined,
 	CheckCircleOutlined,
-	CancelOutlined,
-	AnalyticsOutlined
+	CancelOutlined
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/lib/store/hooks';
@@ -173,21 +169,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 						>
 							{cell.getValue<string>()}
 						</Typography>
-						<Tooltip title="Copiar link">
-							<IconButton
-								size="small"
-								onClick={() => copyToClipboard(cell.getValue<string>(), 'Link')}
-								sx={{
-									color: 'primary.main',
-									'&:hover': {
-										bgcolor: 'primary.light',
-										color: 'primary.dark'
-									}
-								}}
-							>
-								<ContentCopyOutlined fontSize="small" />
-							</IconButton>
-						</Tooltip>
+						{/* Botão removido - usar TableActions na coluna de ações */}
 					</Box>
 				)
 			},
@@ -257,72 +239,13 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				minSize: 180,
 				enableSorting: false,
 				Cell: ({ row }) => (
-					<Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
-						<Tooltip title="Ver Analytics">
-							<IconButton
-								size="small"
-								onClick={() => navigate(`/link/analytic/${row.original.id}`)}
-								sx={{
-									color: 'success.main',
-									'&:hover': {
-										bgcolor: 'success.light',
-										color: 'success.dark',
-										transform: 'scale(1.1)'
-									}
-								}}
-							>
-								<AnalyticsOutlined fontSize="small" />
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="Editar link">
-							<IconButton
-								size="small"
-								onClick={() => navigate(`/link/edit/${row.original.id}`)}
-								sx={{
-									color: 'warning.main',
-									'&:hover': {
-										bgcolor: 'warning.light',
-										color: 'warning.dark',
-										transform: 'scale(1.1)'
-									}
-								}}
-							>
-								<EditOutlined fontSize="small" />
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="Gerar QR Code">
-							<IconButton
-								size="small"
-								onClick={() => navigate(`/link/qr/${row.original.id}`)}
-								sx={{
-									color: 'secondary.main',
-									'&:hover': {
-										bgcolor: 'secondary.light',
-										color: 'secondary.dark',
-										transform: 'scale(1.1)'
-									}
-								}}
-							>
-								<QrCodeOutlined fontSize="small" />
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="Excluir link">
-							<IconButton
-								size="small"
-								onClick={() => handleDeleteLink(row.original.id)}
-								sx={{
-									color: 'error.main',
-									'&:hover': {
-										bgcolor: 'error.light',
-										color: 'error.dark',
-										transform: 'scale(1.1)'
-									}
-								}}
-							>
-								<DeleteOutlined fontSize="small" />
-							</IconButton>
-						</Tooltip>
-					</Box>
+					<LinkTableActions
+						onAnalytics={() => navigate(`/link/analytic/${row.original.id}`)}
+						onEdit={() => navigate(`/link/edit/${row.original.id}`)}
+						onCopy={() => copyToClipboard(row.original.short_url, 'Link copiado!')}
+						onQR={() => navigate(`/link/qr/${row.original.id}`)}
+						onDelete={() => handleDeleteLink(String(row.original.id))}
+					/>
 				)
 			}
 		],

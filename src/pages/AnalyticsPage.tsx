@@ -1,30 +1,34 @@
 import { Analytics } from '@/features/analytics/components/Analytics';
-import { useEnhancedAnalytics } from '@/features/analytics/hooks/useEnhancedAnalytics';
 import { useLinks } from '@/features/links/hooks/useLinks';
 import MainLayout from '@/shared/layout/MainLayout';
 import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 
 /**
- * Página de analytics unificada COMPLETA
- * Analytics Rico com funcionalidades de dashboard integradas
- * Heatmap global quando não há linkId específico
+ * Página de analytics global REFATORADA
+ * 
+ * @description
+ * Agora usa modo global sem depender do endpoint comprehensive.
+ * Cada tab carrega seus dados individualmente através de hooks específicos.
+ * 
+ * @architecture
+ * - Não precisa mais de useEnhancedAnalytics
+ * - Cada componente de tab usa seu próprio hook
+ * - Modo global ativado por linkId=undefined
  */
 function AnalyticsPage() {
 	const { links } = useLinks();
-	const firstLinkId = links.length > 0 ? links[0].id.toString() : undefined;
-	const { data, loading, error, refetch } = useEnhancedAnalytics(firstLinkId || '2');
 
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
 				<Analytics
-					data={data}
-					loading={loading}
-					error={error}
-					linkId={firstLinkId}
+					data={null} // Não precisa mais de data centralizada
+					loading={false} // Cada tab gerencia seu próprio loading
+					error={null} // Cada tab gerencia seu próprio erro
+					linkId={undefined} // Modo global - cada hook detecta automaticamente
 					showHeader={true}
 					showTabs={true}
-					linksData={links}
+					linksData={links as any} // Compatibilidade de tipos
 					showDashboardTab={true}
 				/>
 			</MainLayout>

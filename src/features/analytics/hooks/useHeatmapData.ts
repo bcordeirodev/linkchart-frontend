@@ -1,290 +1,283 @@
+/**
+ * @fileoverview Hook personalizado para gerenciar dados de heatmap
+ * @author Link Chart Team
+ * @version 2.0.0
+ */
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { api } from '@/lib/api/client';
+import type {
+	HeatmapPoint,
+} from '@/types';
 
-export interface HeatmapPoint {
-	lat: number;
-	lng: number;
-	city: string;
-	country: string;
-	clicks: number;
-	iso_code?: string;
-	currency?: string;
-	state_name?: string;
-	continent?: string;
-	timezone?: string;
-	last_click?: string;
-}
-
-export interface HeatmapStats {
+// Interfaces locais para o hook
+interface HeatmapStats {
+	totalPoints: number;
 	totalClicks: number;
+	avgClicksPerPoint: number;
+	topCountry: string;
+	topCity: string;
+	coveragePercentage: number;
 	maxClicks: number;
-	uniqueCountries: number;
-	uniqueCities: number;
-	avgClicksPerLocation: number;
-	lastUpdate: string;
 }
 
 interface UseHeatmapDataOptions {
-	linkId?: string; // Opcional - se não fornecido, busca dados globais
-	refreshInterval?: number; // em ms, padrão 30s
+	linkId?: string;
+	globalMode?: boolean;
 	enableRealtime?: boolean;
+	refreshInterval?: number;
 	minClicks?: number;
-	globalMode?: boolean; // Modo global - todos os links ativos
 }
 
-interface ApiResponse<T = unknown> {
+interface UseHeatmapDataReturn {
+	data: HeatmapPoint[];
+	stats: HeatmapStats | null;
+	loading: boolean;
+	error: string | null;
+	refresh: () => void;
+	lastUpdate: Date | null;
+}
+
+interface HeatmapApiResponse {
 	success: boolean;
-	data: T;
-	error?: string;
+	data: HeatmapPoint[];
+	metadata?: {
+		total_points: number;
+		total_clicks: number;
+		countries: number;
+		cities: number;
+	};
 }
 
+/**
+ * Hook personalizado para buscar e gerenciar dados de heatmap
+ * 
+ * @description
+ * Este hook fornece uma interface unificada para:
+ * - Buscar dados de heatmap (global ou por link específico)
+ * - Gerenciar atualizações em tempo real
+ * - Calcular estatísticas agregadas
+ * - Tratar erros e estados de carregamento
+ * 
+ * @example
+ * ```tsx
+ * // Modo global (todos os links)
+ * const { data, stats, loading } = useHeatmapData({
+ *   globalMode: true,
+ *   enableRealtime: true
+ * });
+ * 
+ * // Link específico
+ * const { data, stats, loading } = useHeatmapData({
+ *   linkId: '123',
+ *   minClicks: 5
+ * });
+ * ```
+ */
 export function useHeatmapData({
 	linkId,
-	refreshInterval = 30000, // 30 segundos
+	refreshInterval = 30000,
 	enableRealtime = true,
 	minClicks = 1,
 	globalMode = false
-}: UseHeatmapDataOptions) {
-	console.log('🚀 useHeatmapData: Iniciado com parâmetros:', { linkId, globalMode, enableRealtime, minClicks });
+}: UseHeatmapDataOptions = {}): UseHeatmapDataReturn {
+
+	// Estados principais
 	const [data, setData] = useState<HeatmapPoint[]>([]);
 	const [stats, setStats] = useState<HeatmapStats | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
+	// Refs para controle de ciclo de vida
 	const intervalRef = useRef<NodeJS.Timeout | null>(null);
-	const mountedRef = useRef(true);
+	const abortControllerRef = useRef<AbortController | null>(null);
 
-	// Calcular estatísticas dos dados
+	/**
+	 * Calcula estatísticas agregadas dos dados do heatmap
+	 */
 	const calculateStats = useCallback((heatmapData: HeatmapPoint[]): HeatmapStats => {
+		if (!heatmapData.length) {
+			return {
+				totalPoints: 0,
+				totalClicks: 0,
+				maxClicks: 0,
+				topCountry: 'N/A',
+				topCity: 'N/A',
+				avgClicksPerPoint: 0,
+				coveragePercentage: 0,
+			};
+		}
+
 		const totalClicks = heatmapData.reduce((sum, point) => sum + point.clicks, 0);
-		const maxClicks = Math.max(...heatmapData.map((point) => point.clicks), 1);
-		const uniqueCountries = new Set(heatmapData.map((point) => point.country)).size;
-		const uniqueCities = new Set(heatmapData.map((point) => point.city)).size;
-		const avgClicksPerLocation = heatmapData.length > 0 ? totalClicks / heatmapData.length : 0;
+		const maxClicks = Math.max(...heatmapData.map(point => point.clicks));
+		const countries = Array.from(new Set(heatmapData.map(point => point.country)));
+		const cities = Array.from(new Set(heatmapData.map(point => point.city)));
+		const avgClicksPerPoint = totalClicks / heatmapData.length;
 
 		return {
+			totalPoints: heatmapData.length,
 			totalClicks,
 			maxClicks,
-			uniqueCountries,
-			uniqueCities,
-			avgClicksPerLocation,
-			lastUpdate: new Date().toISOString()
+			topCountry: countries[0] || 'N/A',
+			topCity: cities[0] || 'N/A',
+			avgClicksPerPoint,
+			coveragePercentage: Math.round((countries.length / 195) * 100), // 195 países no mundo
 		};
 	}, []);
 
-	// Buscar dados do heatmap
-	const fetchHeatmapData = useCallback(
-		async (showLoading = false): Promise<HeatmapPoint[]> => {
-			// Se não temos linkId e não está em modo global, retornar vazio
-			if (!linkId && !globalMode) {
-				console.log('🔍 useHeatmapData: Sem linkId e não está em modo global, retornando vazio');
-				return [];
+	/**
+	 * Determina o endpoint correto baseado no modo (global ou específico)
+	 */
+	const getEndpoint = useCallback((isRealtime = false): string => {
+		const baseUrl = globalMode ? '/api/analytics/global/heatmap' : `/api/analytics/link/${linkId}/heatmap`;
+		return isRealtime ? `${baseUrl}/realtime` : baseUrl;
+	}, [globalMode, linkId]);
+
+	/**
+	 * Busca dados do heatmap da API
+	 */
+	const fetchHeatmapData = useCallback(async (showLoading = false): Promise<HeatmapPoint[]> => {
+		// Validação inicial
+		if (!linkId && !globalMode) {
+			return [];
+		}
+
+		// Cancelar requisição anterior se existir
+		if (abortControllerRef.current) {
+			abortControllerRef.current.abort();
+		}
+
+		// Criar novo AbortController para esta requisição
+		const abortController = new AbortController();
+		abortControllerRef.current = abortController;
+
+		try {
+			if (showLoading) {
+				setLoading(true);
+				setError(null);
 			}
+
+			let heatmapData: HeatmapPoint[] = [];
 
 			try {
-				if (showLoading) setLoading(true);
-
-				setError(null);
-
 				// Tentar endpoint protegido primeiro
-				let heatmapData: HeatmapPoint[] = [];
+				const endpoint = getEndpoint(false);
+				const response = await api.get<HeatmapApiResponse>(endpoint);
 
+				// Verificar se a requisição foi cancelada
+				if (abortController.signal.aborted) {
+					return [];
+				}
+
+				if (response.success && Array.isArray(response.data)) {
+					heatmapData = response.data;
+				} else {
+					throw new Error('Formato de resposta inválido');
+				}
+			} catch (authError) {
+				// Verificar se foi cancelamento
+				if (abortController.signal.aborted) {
+					return [];
+				}
+
+				// Fallback para endpoint público em tempo real
 				try {
-					// Escolher endpoint baseado no modo
-					const endpoint = globalMode
-						? '/api/analytics/global/heatmap'
-						: `/api/analytics/link/${linkId}/heatmap`;
+					const realtimeEndpoint = getEndpoint(true);
+					const realtimeUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${realtimeEndpoint}`;
 
-					console.log('🌐 useHeatmapData: Fazendo requisição para:', endpoint, { linkId, globalMode });
-
-					let response: any;
-					try {
-						response = (await api.get(endpoint)) as any;
-						console.log('📡 useHeatmapData: Resposta da API recebida com sucesso:', response);
-					} catch (apiError) {
-						console.error('💥 useHeatmapData: Erro na chamada da API:', apiError);
-						throw apiError;
-					}
-
-					// A resposta da API é diretamente: {"success":true,"data":[...]}
-					console.log('🔍 useHeatmapData: Verificando estrutura da resposta:', {
-						hasSuccess: !!response.success,
-						hasData: !!response.data,
-						dataType: Array.isArray(response.data) ? 'array' : typeof response.data,
-						dataLength: Array.isArray(response.data) ? response.data.length : 'N/A'
+					const realtimeResponse = await fetch(realtimeUrl, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							Accept: 'application/json'
+						}
 					});
 
-					if (response.success && response.data) {
-						heatmapData = response.data as HeatmapPoint[];
-						console.log(
-							'✅ useHeatmapData: Dados encontrados em response.data:',
-							heatmapData.length,
-							'pontos'
-						);
-					} else if (Array.isArray(response.data)) {
-						heatmapData = response.data as HeatmapPoint[];
-						console.log(
-							'✅ useHeatmapData: Dados encontrados como array direto:',
-							heatmapData.length,
-							'pontos'
-						);
-					} else if (Array.isArray(response)) {
-						heatmapData = response as HeatmapPoint[];
-						console.log(
-							'✅ useHeatmapData: Dados encontrados como array na resposta:',
-							heatmapData.length,
-							'pontos'
-						);
-					} else {
-						console.error('❌ useHeatmapData: Estrutura de dados não reconhecida:', response);
-						throw new Error('Dados não encontrados na resposta da API');
+					if (!realtimeResponse.ok) {
+						throw new Error(`HTTP ${realtimeResponse.status}: ${realtimeResponse.statusText}`);
 					}
-				} catch (authError) {
-					// Fallback para endpoint de teste (apenas para links específicos)
-					if (!globalMode && linkId) {
-						console.warn('Tentando endpoint de teste para heatmap:', authError);
 
-						try {
-							const testResponse = await fetch(
-								`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/test-analytics/${linkId}`,
-								{
-									method: 'GET',
-									headers: {
-										'Content-Type': 'application/json',
-										Accept: 'application/json'
-									}
-								}
-							);
+					const realtimeData: HeatmapApiResponse = await realtimeResponse.json();
 
-							if (!testResponse.ok) {
-								throw new Error(`HTTP ${testResponse.status}: ${testResponse.statusText}`);
-							}
-
-							const testData = await testResponse.json();
-							heatmapData = testData.geographic?.heatmap_data || [];
-						} catch (testError) {
-							console.error('Falha no endpoint de teste:', testError);
-
-							// Tentar endpoint de tempo real sem autenticação
-							try {
-								const realtimeEndpoint = globalMode
-									? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/analytics/global/heatmap/realtime`
-									: `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/analytics/link/${linkId}/heatmap/realtime`;
-
-								const realtimeResponse = await fetch(realtimeEndpoint, {
-									method: 'GET',
-									headers: {
-										'Content-Type': 'application/json',
-										Accept: 'application/json'
-									}
-								});
-
-								if (realtimeResponse.ok) {
-									const realtimeData = await realtimeResponse.json();
-									heatmapData = realtimeData.data || [];
-								} else {
-									throw new Error(`Realtime endpoint failed: ${realtimeResponse.status}`);
-								}
-							} catch (realtimeError) {
-								console.error('Falha no endpoint de tempo real:', realtimeError);
-								// Retornar array vazio em vez de dados mock
-								heatmapData = [];
-							}
-						}
-					} else {
-						// Para modo global, tentar endpoint de tempo real direto
-						try {
-							const realtimeResponse = await fetch(
-								`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/analytics/global/heatmap/realtime`,
-								{
-									method: 'GET',
-									headers: {
-										'Content-Type': 'application/json',
-										Accept: 'application/json'
-									}
-								}
-							);
-
-							if (realtimeResponse.ok) {
-								const realtimeData = await realtimeResponse.json();
-								heatmapData = realtimeData.data || [];
-							} else {
-								throw new Error(`Global realtime endpoint failed: ${realtimeResponse.status}`);
-							}
-						} catch (realtimeError) {
-							console.error('Falha no endpoint global de tempo real:', realtimeError);
-							heatmapData = [];
-						}
+					if (realtimeData.success && Array.isArray(realtimeData.data)) {
+						heatmapData = realtimeData.data;
 					}
-				}
-
-				// Filtrar dados por cliques mínimos
-				const filteredData = heatmapData.filter((point: HeatmapPoint) => point.clicks >= minClicks);
-				console.log(
-					'🔍 useHeatmapData: Dados filtrados (minClicks >= ' + minClicks + '):',
-					filteredData.length,
-					'pontos'
-				);
-
-				if (mountedRef.current) {
-					setData(filteredData);
-					setStats(calculateStats(filteredData));
-					setLastUpdate(new Date());
-					console.log('💾 useHeatmapData: Dados salvos no estado:', filteredData.length, 'pontos');
-				}
-
-				return filteredData;
-			} catch (err) {
-				const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-				console.error('❌ useHeatmapData: Erro ao buscar dados do heatmap:', errorMessage);
-				console.error('❌ useHeatmapData: Erro completo:', err);
-
-				if (mountedRef.current) {
-					setError(errorMessage);
-					// Em caso de erro, retornar dados vazios
-					setData([]);
-					setStats({
-						totalClicks: 0,
-						maxClicks: 0,
-						uniqueCountries: 0,
-						uniqueCities: 0,
-						avgClicksPerLocation: 0,
-						lastUpdate: new Date().toISOString()
-					});
-					setLoading(false); // Importante: definir loading como false em caso de erro
-				}
-
-				return [];
-			} finally {
-				if (mountedRef.current && showLoading) {
-					console.log('🏁 useHeatmapData: Finalizando requisição, setLoading(false)');
-					setLoading(false);
+				} catch (realtimeError) {
+					// Se ambos falharem, usar dados vazios
+					heatmapData = [];
 				}
 			}
-		},
-		[linkId, globalMode, minClicks, calculateStats]
-	);
 
-	// Refresh manual
+			// Verificar se a requisição foi cancelada antes de processar
+			if (abortController.signal.aborted) {
+				return [];
+			}
+
+			// Filtrar por cliques mínimos
+			const filteredData = heatmapData.filter(point => point.clicks >= minClicks);
+
+			// Verificar novamente se não foi cancelada
+			if (abortController.signal.aborted) {
+				return [];
+			}
+
+			// Atualizar estado (sem verificar mountedRef - deixar React gerenciar)
+			setData(filteredData);
+			setStats(calculateStats(filteredData));
+			setLastUpdate(new Date());
+
+			return filteredData;
+
+		} catch (err) {
+			// Verificar se foi cancelamento (não é erro real)
+			if (abortController.signal.aborted) {
+				return [];
+			}
+
+			const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido ao buscar dados do heatmap';
+
+			setError(errorMessage);
+			setData([]);
+			setStats(calculateStats([]));
+
+			return [];
+		} finally {
+			// Sempre definir loading como false no final (se não foi cancelado)
+			if (!abortController.signal.aborted && showLoading) {
+				setLoading(false);
+			}
+		}
+	}, [linkId, globalMode, minClicks, calculateStats, getEndpoint]);
+
+	/**
+	 * Função para atualização manual dos dados
+	 */
 	const refresh = useCallback(() => {
 		fetchHeatmapData(true);
 	}, [fetchHeatmapData]);
 
-	// Configurar polling para tempo real
+	/**
+	 * Configurar busca inicial e polling para tempo real
+	 */
 	useEffect(() => {
-		if (!enableRealtime || (!linkId && !globalMode)) return;
+
+		// Validar se deve executar
+		if (!enableRealtime || (!linkId && !globalMode)) {
+			return;
+		}
 
 		// Buscar dados iniciais
 		fetchHeatmapData(true);
 
-		// Configurar polling
+		// Configurar polling se habilitado
 		if (refreshInterval > 0) {
 			intervalRef.current = setInterval(() => {
 				fetchHeatmapData(false); // Não mostrar loading nas atualizações automáticas
 			}, refreshInterval);
 		}
 
+		// Cleanup do interval
 		return () => {
 			if (intervalRef.current) {
 				clearInterval(intervalRef.current);
@@ -293,61 +286,31 @@ export function useHeatmapData({
 		};
 	}, [linkId, globalMode, enableRealtime, refreshInterval, fetchHeatmapData]);
 
-	// Cleanup no unmount
+	/**
+	 * Cleanup no unmount do componente
+	 */
 	useEffect(() => {
 		return () => {
-			mountedRef.current = false;
+			// Cancelar requisições pendentes
+			if (abortControllerRef.current) {
+				abortControllerRef.current.abort();
+			}
 
+			// Limpar interval
 			if (intervalRef.current) {
 				clearInterval(intervalRef.current);
 			}
 		};
 	}, []);
 
-	// Estado para dados filtrados
-	const [filteredData, setFilteredData] = useState<HeatmapPoint[]>([]);
-
-	// Filtrar dados por cliques mínimos quando o filtro muda
-	useEffect(() => {
-		const filtered = data.filter((point: HeatmapPoint) => point.clicks >= minClicks);
-		setFilteredData(filtered);
-
-		if (filtered.length > 0) {
-			const calculatedStats = calculateStats(filtered);
-			setStats(calculatedStats);
-			console.log('📊 useHeatmapData: Stats calculadas:', calculatedStats);
-		} else {
-			setStats(null);
-			console.log('📊 useHeatmapData: Nenhum dado para calcular stats');
-		}
-
-		console.log('🔄 useHeatmapData: Dados filtrados atualizados:', {
-			originalLength: data.length,
-			filteredLength: filtered.length,
-			minClicks,
-			firstFilteredPoint: filtered.length > 0 ? filtered[0] : null
-		});
-	}, [data, minClicks, calculateStats]);
-
-	// Log do estado final
-	useEffect(() => {
-		console.log('📈 useHeatmapData: Estado final:', {
-			dataLength: filteredData.length,
-			originalDataLength: data.length,
-			loading,
-			error,
-			stats: stats ? `${stats.totalClicks} cliques, ${stats.uniqueCountries} países` : null,
-			lastUpdate: lastUpdate?.toLocaleTimeString()
-		});
-	}, [filteredData.length, data.length, loading, error, stats, lastUpdate]);
-
 	return {
-		data: filteredData,
+		data,
 		stats,
 		loading,
 		error,
-		lastUpdate,
+		lastUpdate: lastUpdate,
 		refresh,
-		isRealtime: enableRealtime
 	};
 }
+
+export default useHeatmapData;

@@ -1,6 +1,6 @@
+import { LoginResponse, UserResponse } from '@/types';
 import { BaseService } from '../api/base.service';
 import { API_ENDPOINTS } from '../api/endpoints';
-import { LoginResponse, UserResponse } from '@/types';
 
 interface LoginRequest {
 	email: string;

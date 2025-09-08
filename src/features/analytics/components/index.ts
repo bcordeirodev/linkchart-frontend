@@ -9,37 +9,29 @@ export { Analytics } from './Analytics';
 export { Header } from './Header';
 
 // === MÉTRICAS E VISÃO GERAL ===
-// export { Metrics } from './metrics/Metrics'; // REMOVIDO - usar UnifiedMetrics
-export { UnifiedMetrics } from './metrics/UnifiedMetrics';
+export { DashboardMetrics } from './dashboard';
+export { AnalyticsMetrics } from './analytics';
+export { GeographicMetrics } from './geographic';
+export { AudienceMetrics } from './audience';
 
 // === GRÁFICOS E VISUALIZAÇÕES ===
-export { Charts } from './charts/Charts';
+export { Charts } from './dashboard/charts/Charts';
 
 // === COMPONENTES DE DASHBOARD ===
 export { TopLinks } from './dashboard/TopLinks';
 
-// === ANALYTICS ESPECIALIZADOS ===
-export { EnhancedAnalytics } from './enhanced/EnhancedAnalytics';
-export { DebugAnalytics } from './enhanced/DebugAnalytics';
-
 // === COMPONENTES ESPECIALIZADOS ORIGINAIS ===
-export * from './specialized/temporal';
-export * from './specialized/geographic';
-export * from './specialized/audience';
-export * from './specialized/heatmap';
-// Removed: insights não utilizados
-export * from './specialized/common';
+export * from './audience';
+export * from './geographic';
+export * from './heatmap';
+export * from './temporal';
 
 // === ANÁLISES ESPECIALIZADAS ===
-export { GeographicAnalysis } from './analysis/GeographicAnalysis';
-export { TemporalAnalysis } from './analysis/TemporalAnalysis';
-export { AudienceAnalysis } from './analysis/AudienceAnalysis';
-export { HeatmapAnalysis } from './analysis/HeatmapAnalysis';
+// GeographicAnalysis removido - usar GeographicChart e GeographicInsights diretamente
+export { PerformanceAnalysis } from './perfomance/PerformanceAnalysis';
 export { BusinessInsights } from './insights/BusinessInsights';
-export { PerformanceAnalysis } from './analysis/PerformanceAnalysis';
-
 // === UTILITÁRIOS E COMMON ===
 // Agora incluídos via export * from './specialized/common'
 
 // === TIPOS ===
-export type { AnalyticsProps, MetricsProps, ChartsProps } from './types';
+export type { AnalyticsProps, ChartsProps, MetricsProps } from './types';

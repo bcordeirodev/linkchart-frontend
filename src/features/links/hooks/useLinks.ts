@@ -1,8 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
-import { linkService } from '../../../lib/services';
-import { LinkResponse, LinkCreateRequest, LinkUpdateRequest } from '@/types';
+import { linkService } from '@/services';
+import { LinkCreateRequest, LinkResponse, LinkUpdateRequest } from '@/types';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+// Extend types to match Record<string, unknown>
+interface LinkCreateRequestExtended extends LinkCreateRequest, Record<string, unknown> {}
+interface LinkUpdateRequestExtended extends LinkUpdateRequest, Record<string, unknown> {}
+
+// Cache simples para evitar chamadas duplicadas
+let linksCache: LinkResponse[] | null = null;
+let cacheTimestamp = 0;
+const CACHE_DURATION = 5000; // 5 segundos
 
 /**
  * Hook personalizado para gerenciar links
@@ -16,43 +25,65 @@ export function useLinks() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const dispatch = useAppDispatch();
+	const loadingRef = useRef(false);
 
 	/**
-	 * Carrega todos os links do usuário
+	 * Carrega todos os links do usuário com cache
 	 */
-	const loadLinks = useCallback(async () => {
-		setLoading(true);
-		setError(null);
+	const loadLinks = useCallback(
+		async (forceRefresh = false) => {
+			// Evita chamadas duplicadas
+			if (loadingRef.current) return;
 
-		try {
-			const response = await linkService.all();
-			setLinks(response);
-		} catch (_err) {
-			const errorMessage = 'Erro ao carregar links';
-			setError(errorMessage);
-			dispatch(
-				showMessage({
-					message: errorMessage,
-					variant: 'error'
-				})
-			);
-		} finally {
-			setLoading(false);
-		}
-	}, [dispatch]);
+			// Verifica cache
+			const now = Date.now();
+
+			if (!forceRefresh && linksCache && now - cacheTimestamp < CACHE_DURATION) {
+				setLinks(linksCache);
+				return;
+			}
+
+			loadingRef.current = true;
+			setLoading(true);
+			setError(null);
+
+			try {
+				const response = await linkService.all();
+				setLinks(response);
+
+				// Atualiza cache
+				linksCache = response;
+				cacheTimestamp = now;
+			} catch (_err) {
+				const errorMessage = 'Erro ao carregar links';
+				setError(errorMessage);
+				dispatch(
+					showMessage({
+						message: errorMessage,
+						variant: 'error'
+					})
+				);
+			} finally {
+				setLoading(false);
+				loadingRef.current = false;
+			}
+		},
+		[dispatch]
+	);
 
 	/**
 	 * Cria um novo link
 	 */
 	const createLink = useCallback(
-		async (data: LinkCreateRequest) => {
+		async (data: LinkCreateRequestExtended) => {
 			setLoading(true);
 			setError(null);
 
 			try {
 				const response = await linkService.save(data);
-				// Recarregar a lista de links após criar um novo
-				await loadLinks();
+				// Invalidar cache e recarregar a lista de links após criar um novo
+				linksCache = null;
+				await loadLinks(true);
 				dispatch(
 					showMessage({
 						message: 'Link criado com sucesso!',
@@ -81,7 +112,7 @@ export function useLinks() {
 	 * Atualiza um link existente
 	 */
 	const updateLink = useCallback(
-		async (id: string, data: LinkUpdateRequest) => {
+		async (id: string, data: LinkUpdateRequestExtended) => {
 			setLoading(true);
 			setError(null);
 

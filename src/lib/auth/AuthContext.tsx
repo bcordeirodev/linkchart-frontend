@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, LoginResponse, UserResponse } from '@/types';
-import { authService } from '../services';
+import { authService } from '@/services';
+import { LoginResponse, User, UserResponse } from '@/types';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
 	user: User | null;
@@ -25,6 +25,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 	// Converter UserResponse para User
 	const convertUserDBToUser = (userDB: UserResponse): User => ({
 		id: String(userDB.id),
+		name: userDB.name || userDB.email, // Usar name ou email como fallback
 		email: userDB.email,
 		displayName: userDB.name,
 		role: ['user'], // Role padrão, pode ser expandido depois
@@ -33,7 +34,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 				style: 'layout1',
 				config: {}
 			},
-			customScrollbars: true,
 			direction: 'ltr'
 		}
 	});

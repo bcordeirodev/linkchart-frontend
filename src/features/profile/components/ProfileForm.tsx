@@ -1,29 +1,29 @@
-import { useState, useCallback, useMemo } from 'react';
-import { CircularProgress } from '@mui/material';
-import { Edit, Save, Cancel, Person, Email, PhotoCamera } from '@mui/icons-material';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
+import { profileService, UserProfile } from '@/services';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
-import { profileService, UserProfile } from '../../../lib/services';
+import { Cancel, Edit, Email, Person, PhotoCamera, Save } from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
+import { useCallback, useMemo, useState } from 'react';
 
 // Styled Components
 import {
+	ActionButtonsContainer,
+	AvatarContainer,
+	AvatarSection,
+	CancelButton,
+	EditButton,
+	FormFieldsContainer,
+	LoadingOverlay,
+	PhotoUploadButton,
+	ProfileBadge,
 	ProfileContainer,
+	ProfileGrid,
 	ProfileHeader,
 	ProfileTitle,
-	AvatarSection,
-	AvatarContainer,
-	StyledAvatar,
-	PhotoUploadButton,
-	FormFieldsContainer,
-	StyledTextField,
-	EditButton,
-	ActionButtonsContainer,
-	CancelButton,
 	SaveButton,
-	ProfileGrid,
-	LoadingOverlay,
-	ProfileBadge
+	StyledAvatar,
+	StyledTextField
 } from './styles/Profile.styled';
 
 interface ProfileFormData {

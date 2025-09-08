@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { linkService } from '../../../lib/services';
+import { linkService } from '@/services';
+import { useCallback, useState } from 'react';
 
 interface IShortUrl {
 	slug: string;

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { User } from '@/features/profile/types/user';
+import type { User } from '@/types';
 import { useAuth } from './AuthContext';
 import _ from 'lodash';
 // Removed: setIn não utilizado

@@ -1,11 +1,10 @@
 /**
  * 🏗️ LAYOUT TYPES - LINK CHART
- * Tipos TypeScript para o sistema de layout
+ * Tipos TypeScript simplificados para o sistema de layout
  *
  * @description
- * Este arquivo define todos os tipos relacionados ao sistema de layout
- * da aplicação Link Chart, incluindo configurações, temas e estruturas
- * de dados utilizadas pelos componentes de layout.
+ * Tipos essenciais para o sistema de layout da aplicação Link Chart.
+ * Simplificado para usar apenas layout1 e configurações necessárias.
  *
  * @since 2.0.0
  */
@@ -16,50 +15,44 @@
 export type LayoutDirection = 'ltr' | 'rtl';
 
 /**
- * Estilos de layout disponíveis
+ * Estilo de layout - apenas layout1 é usado
  */
-export type LayoutStyle = 'layout1' | 'layout2' | 'layout3';
+export type LayoutStyle = 'layout1';
 
 /**
  * Configuração da navbar
- * @interface NavbarConfig
  */
 export interface NavbarConfig {
 	/** Exibir navbar */
 	display: boolean;
 	/** Navbar recolhida */
 	folded: boolean;
-	/** Posição da navbar */
-	position: 'left' | 'right' | 'top';
-	/** Estilo da navbar (compatibilidade) */
-	style?: string;
+	/** Posição da navbar - sempre left */
+	position: 'left';
 }
 
 /**
  * Configuração da toolbar
- * @interface ToolbarConfig
  */
 export interface ToolbarConfig {
 	/** Exibir toolbar */
 	display: boolean;
 	/** Estilo da toolbar */
-	style: 'fixed' | 'static' | 'sticky';
+	style: 'fixed' | 'static';
 }
 
 /**
  * Configuração do footer
- * @interface FooterConfig
  */
 export interface FooterConfig {
 	/** Exibir footer */
 	display: boolean;
-	/** Estilo do footer */
-	style: 'fixed' | 'static' | 'sticky';
+	/** Estilo do footer - sempre static */
+	style: 'static';
 }
 
 /**
  * Configuração do layout
- * @interface LayoutConfig
  */
 export interface LayoutConfig {
 	/** Configuração da navbar */
@@ -71,28 +64,26 @@ export interface LayoutConfig {
 }
 
 /**
- * Configuração de tema do layout
- * @interface LayoutTheme
+ * Configuração de tema do layout - simplificado
  */
 export interface LayoutTheme {
 	/** Tema principal */
-	main: any;
+	main: string;
 	/** Tema da navbar */
-	navbar: any;
+	navbar: string;
 	/** Tema da toolbar */
-	toolbar: any;
+	toolbar: string;
 	/** Tema do footer */
-	footer: any;
+	footer: string;
 }
 
 /**
  * Configuração completa do layout
- * @interface LayoutSettingsConfigType
  */
 export interface LayoutSettingsConfigType {
 	/** Configurações de layout */
 	layout: {
-		/** Estilo do layout */
+		/** Estilo do layout - sempre layout1 */
 		style: LayoutStyle;
 		/** Configurações específicas */
 		config: LayoutConfig;
@@ -101,19 +92,14 @@ export interface LayoutSettingsConfigType {
 	theme: LayoutTheme;
 	/** Direção do layout */
 	direction: LayoutDirection;
-	/** Configurações adicionais (compatibilidade) */
-	settings?: any;
 	/** Configuração de auth padrão */
 	defaultAuth?: string[] | [] | null | undefined;
-	/** Scrollbars customizadas */
-	customScrollbars?: boolean;
 	/** URL de redirecionamento de login */
 	loginRedirectUrl?: string;
 }
 
 /**
  * Tipo para temas de layout
- * @interface LayoutThemesType
  */
 export interface LayoutThemesType {
 	/** Tema principal */
@@ -128,7 +114,6 @@ export interface LayoutThemesType {
 
 /**
  * Props para componentes de layout
- * @interface LayoutComponentProps
  */
 export interface LayoutComponentProps {
 	/** Elementos filhos */
@@ -139,7 +124,6 @@ export interface LayoutComponentProps {
 
 /**
  * Props para o componente de layout principal
- * @interface MainLayoutProps
  */
 export interface MainLayoutProps extends LayoutComponentProps {
 	/** Configurações de layout */
@@ -150,11 +134,8 @@ export interface MainLayoutProps extends LayoutComponentProps {
 
 /**
  * Configurações padrão de layout
- * @interface LayoutDefaults
  */
 export interface LayoutDefaults {
 	/** Configuração padrão */
 	defaults: LayoutConfig;
-	/** Formulário de configuração */
-	form?: any; // Tipo específico para formulários de configuração
 }

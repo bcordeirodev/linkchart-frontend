@@ -37,17 +37,7 @@ import {
 	ListItemText,
 	Tooltip
 } from '@mui/material';
-import {
-	Menu as MenuIcon,
-	Analytics,
-	Link as LinkIcon,
-	Settings,
-	Logout,
-	Person,
-	TrendingUp,
-	Close,
-	BarChart
-} from '@mui/icons-material';
+import { AppIcon } from '@/lib/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { alpha } from '@mui/material/styles';
@@ -118,13 +108,13 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 		{
 			label: 'Analytics',
 			path: '/analytics',
-			icon: <TrendingUp />,
+			icon: <AppIcon intent="analytics" size={20} />,
 			description: 'Global analytics & insights'
 		},
 		{
 			label: 'Links',
 			path: '/link',
-			icon: <LinkIcon />,
+			icon: <AppIcon intent="link" size={20} />,
 			description: 'Manage your links'
 		}
 	];
@@ -231,7 +221,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 							}
 						}}
 					>
-						<BarChart sx={{ color: 'white', fontSize: 20 }} />
+						<AppIcon intent="analytics" size={20} color="white" />
 					</Box>
 
 					{/* Logo Text */}
@@ -354,7 +344,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 								}
 							}}
 						>
-							{mobileMenuOpen ? <Close /> : <MenuIcon />}
+							{mobileMenuOpen ? <AppIcon intent="cancel" size={24} /> : <AppIcon intent="menu" size={24} />}
 						</IconButton>
 					)}
 
@@ -487,7 +477,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 						}}
 					>
 						<ListItemIcon>
-							<Person />
+							<AppIcon intent="profile" size={20} />
 						</ListItemIcon>
 						<ListItemText
 							primary="Profile Settings"
@@ -509,7 +499,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 						}}
 					>
 						<ListItemIcon>
-							<Settings />
+							<AppIcon intent="settings" size={20} />
 						</ListItemIcon>
 						<ListItemText
 							primary="Preferences"
@@ -531,7 +521,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 						}}
 					>
 						<ListItemIcon>
-							<Logout sx={{ color: theme.palette.error.main }} />
+							<AppIcon intent="logout" size={20} color={theme.palette.error.main} />
 						</ListItemIcon>
 						<ListItemText
 							primary="Sign Out"

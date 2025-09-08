@@ -3,9 +3,6 @@
  * Tipos para autenticação e gerenciamento de usuários
  * Re-exporta tipos de API e adiciona tipos específicos do frontend
  */
-
-import { LayoutSettingsConfigType } from '@/shared/layout/core';
-import { PartialDeep } from 'type-fest';
 import { UserResponse } from './api';
 
 // ========================================
@@ -14,23 +11,6 @@ import { UserResponse } from './api';
 
 export type { LoginResponse, UserResponse, RegisterRequest } from './api';
 
-// ========================================
-// 🔐 AUTH TYPES
-// ========================================
-
-/**
- * Frontend user object with UI-specific properties
- */
-export interface User {
-	id: string;
-	role: string[] | string | null;
-	displayName: string;
-	photoURL?: string;
-	email?: string;
-	shortcuts?: string[];
-	settings?: PartialDeep<LayoutSettingsConfigType>;
-	loginRedirectUrl?: string;
-}
 
 // ========================================
 // 🎯 USER-SPECIFIC TYPES
@@ -62,7 +42,7 @@ export interface UserPreferences {
 }
 
 export interface UserSession {
-	user: User;
+	user: import('@/types').User;
 	token: string;
 	expires_at: string;
 	last_activity: string;

@@ -8,8 +8,6 @@
    ======================================== */
 
 @import './app-base.css';
-@import './print.css';
-@import './tables.css';
 
 /* ========================================
    🎨 TAILWIND CSS
@@ -239,4 +237,21 @@ a,
 	outline: 2px solid var(--color-primary);
 	outline-offset: 2px;
 	border-radius: var(--border-radius-sm);
+}
+
+/* Remover outline padrão dos inputs Material-UI para evitar duplo border */
+.MuiOutlinedInput-root:focus-visible,
+.MuiTextField-root :focus-visible,
+.MuiInputBase-root:focus-visible,
+.MuiInput-root:focus-visible,
+.MuiFilledInput-root:focus-visible {
+	outline: none !important;
+}
+
+/* Manter acessibilidade para botões e outros elementos interativos */
+.MuiButton-root:focus-visible,
+.MuiIconButton-root:focus-visible,
+button:focus-visible:not([class*='MuiInput']):not([class*='MuiOutlined']) {
+	outline: 2px solid var(--color-primary) !important;
+	outline-offset: 2px !important;
 }

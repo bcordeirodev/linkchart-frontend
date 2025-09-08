@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { URLInput } from './URLInput';
 import { GradientButton } from '@/shared/ui/base/GradientButton';
 import { useURLShortener } from '@/features/links/hooks/useURLShortener';
+import { createGlassCard } from '@/lib/theme';
 
 interface IFormData {
 	originalUrl: string;

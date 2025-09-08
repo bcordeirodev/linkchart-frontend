@@ -3,7 +3,7 @@
  * Configurações essenciais do Material-UI organizadas por categoria
  */
 
-import { ThemeOptions } from '@mui/material/styles/createTheme';
+import { ThemeOptions, Theme } from '@mui/material/styles/createTheme';
 
 // ========================================
 // 🎯 CONFIGURAÇÕES ESSENCIAIS
@@ -49,24 +49,35 @@ const buttonComponents = {
 			color: 'inherit' as const
 		},
 		styleOverrides: {
-			root: {
+			root: ({ theme }: { theme: Theme }) => ({
 				textTransform: 'none',
-				borderRadius: 8
-			},
+				borderRadius: theme.spacing(1.5), // 12px
+				fontWeight: 600,
+				transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+				'&:hover': {
+					transform: 'translateY(-1px)'
+				}
+			}),
 			sizeMedium: {
 				height: 36,
 				minHeight: 36,
-				maxHeight: 36
+				maxHeight: 36,
+				paddingLeft: 16,
+				paddingRight: 16
 			},
 			sizeSmall: {
 				height: 32,
 				minHeight: 32,
-				maxHeight: 32
+				maxHeight: 32,
+				paddingLeft: 12,
+				paddingRight: 12
 			},
 			sizeLarge: {
 				height: 40,
 				minHeight: 40,
-				maxHeight: 40
+				maxHeight: 40,
+				paddingLeft: 20,
+				paddingRight: 20
 			},
 			contained: {
 				boxShadow: 'none',
@@ -78,7 +89,9 @@ const buttonComponents = {
 	},
 	MuiIconButton: {
 		styleOverrides: {
-			root: { borderRadius: 8 },
+			root: ({ theme }: { theme: Theme }) => ({
+				borderRadius: theme.spacing(1.5) // 12px PADRÃO
+			}),
 			sizeMedium: { width: 36, height: 36, maxHeight: 36 },
 			sizeSmall: { width: 32, height: 32, maxHeight: 32 },
 			sizeLarge: { width: 40, height: 40, maxHeight: 40 }
@@ -86,7 +99,11 @@ const buttonComponents = {
 	},
 	MuiButtonGroup: {
 		defaultProps: { color: 'secondary' as const },
-		styleOverrides: { contained: { borderRadius: 8 } }
+		styleOverrides: {
+			root: ({ theme }: { theme: Theme }) => ({
+				borderRadius: theme.spacing(1.5) // 12px PADRÃO
+			})
+		}
 	}
 };
 
@@ -114,17 +131,29 @@ const inputComponents = {
 	},
 	MuiInputBase: {
 		styleOverrides: {
-			root: {
+			root: ({ theme }: { theme: Theme }) => ({
 				minHeight: 36,
-				borderRadius: 8,
+				borderRadius: theme.spacing(1.5), // 12px PADRÃO
 				lineHeight: 1
-			},
+			}),
 			legend: { fontSize: '0.75em' },
 			input: { padding: '5px 11px' },
 			adornedStart: { paddingLeft: '11px!important' },
-			sizeSmall: { height: 32, minHeight: 32, borderRadius: 8 },
-			sizeMedium: { height: 36, minHeight: 36, borderRadius: 8 },
-			sizeLarge: { height: 40, minHeight: 40, borderRadius: 8 }
+			sizeSmall: ({ theme }: { theme: Theme }) => ({
+				height: 32,
+				minHeight: 32,
+				borderRadius: theme.spacing(1.5)
+			}),
+			sizeMedium: ({ theme }: { theme: Theme }) => ({
+				height: 36,
+				minHeight: 36,
+				borderRadius: theme.spacing(1.5)
+			}),
+			sizeLarge: ({ theme }: { theme: Theme }) => ({
+				height: 40,
+				minHeight: 40,
+				borderRadius: theme.spacing(1.5)
+			})
 		}
 	},
 	MuiOutlinedInput: {
@@ -136,11 +165,36 @@ const inputComponents = {
 	},
 	MuiFilledInput: {
 		styleOverrides: {
-			root: {
-				borderRadius: 8,
-				'&:before, &:after': { display: 'none' }
-			},
-			input: { padding: '5px 11px' }
+			root: ({ theme }: { theme: Theme }) => ({
+				paddingLeft: `10px`,
+				borderRadius: theme.spacing(1),
+				backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)',
+				transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+				'&:hover:not(.Mui-disabled)': {
+					backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)'
+				},
+				'&.Mui-focused': {
+					backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)'
+				},
+				'&:after': {
+					borderBottomColor: theme.palette.primary.main,
+					borderBottomWidth: '2px'
+				},
+				'&:before': {
+					display: 'none'
+				}
+			}),
+			input: ({ theme }: { theme: Theme }) => ({
+				padding: '16px 20px 12px 20px',
+				fontSize: '1rem',
+				'&::placeholder': {
+					paddingLeft: '4px',
+					opacity: 0.7
+				}
+			}),
+			inputMultiline: {
+				padding: '16px 20px 12px 20px'
+			}
 		}
 	},
 	MuiSelect: {
@@ -155,26 +209,35 @@ const inputComponents = {
 const surfaceComponents = {
 	MuiPaper: {
 		styleOverrides: {
-			root: { backgroundImage: 'none' },
-			rounded: { borderRadius: 12 }
+			root: ({ theme }: { theme: Theme }) => ({
+				backgroundImage: 'none',
+				borderRadius: theme.spacing(2) // 16px
+			})
 		}
 	},
 	MuiCard: {
 		styleOverrides: {
-			root: {
-				borderRadius: 12,
-				transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
-			}
+			root: ({ theme }: { theme: Theme }) => ({
+				borderRadius: theme.spacing(2), // 16px
+				transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+				'&:hover': {
+					transform: 'translateY(-2px)'
+				}
+			})
 		}
 	},
 	MuiDialog: {
 		styleOverrides: {
-			paper: { borderRadius: 12 }
+			paper: ({ theme }: { theme: Theme }) => ({
+				borderRadius: theme.spacing(1.5) // 12px PADRÃO
+			})
 		}
 	},
 	MuiPopover: {
 		styleOverrides: {
-			paper: { borderRadius: 8 }
+			paper: ({ theme }: { theme: Theme }) => ({
+				borderRadius: theme.spacing(1.5) // 12px PADRÃO
+			})
 		}
 	}
 };
@@ -238,6 +301,14 @@ const utilityComponents = {
 		styleOverrides: { root: { marginRight: 0 } }
 	},
 	MuiTypography: {
+		styleOverrides: {
+			h1: { fontWeight: 700, lineHeight: 1.2 },
+			h2: { fontWeight: 700, lineHeight: 1.3 },
+			h3: { fontWeight: 600, lineHeight: 1.3 },
+			h4: { fontWeight: 600, lineHeight: 1.4 },
+			h5: { fontWeight: 600, lineHeight: 1.4 },
+			h6: { fontWeight: 600, lineHeight: 1.4 }
+		},
 		variants: [
 			{
 				props: { color: 'text.secondary' },

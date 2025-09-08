@@ -23,6 +23,7 @@ import { Box, useTheme } from '@mui/material';
 import { useMainTheme, useResponsive } from '@/lib/theme';
 import { Layout, MainLayoutProps as CoreMainLayoutProps } from './core';
 import { Navbar, Footer } from './components';
+import { Message } from '@/shared/components';
 
 /**
  * Props do MainLayout
@@ -45,25 +46,17 @@ type MainLayoutProps = Omit<CoreMainLayoutProps, 'layouts'> & {
  * @returns {JSX.Element} Layout configurado
  */
 function MainLayout(props: MainLayoutProps) {
-	const { children, navbar, toolbar, footer, settings = {}, className, ...rest } = props;
+	const { children, navbar, toolbar, footer, settings: _settings = {}, className, ...rest } = props;
 
 	// Hooks de tema
 	const theme = useTheme();
 	const mainTheme = useMainTheme();
-	const { isMobile, isTablet } = useResponsive();
+	const { isMobile } = useResponsive();
 
 	/**
 	 * Configurações mescladas com tema e responsividade
 	 */
 	const mergedSettings = useMemo(() => {
-		const shorthandSettings = {
-			config: {
-				...(navbar !== undefined && { navbar: { display: navbar } }),
-				...(toolbar !== undefined && { toolbar: { display: toolbar } }),
-				...(footer !== undefined && { footer: { display: footer } })
-			}
-		};
-
 		// Configurações responsivas baseadas no tema
 		const responsiveSettings = {
 			layout: {
@@ -87,7 +80,7 @@ function MainLayout(props: MainLayoutProps) {
 		};
 
 		return responsiveSettings.layout;
-	}, [settings, navbar, toolbar, footer, isMobile]);
+	}, [navbar, toolbar, footer, isMobile]);
 
 	/**
 	 * Layouts com tema aplicado
@@ -104,10 +97,14 @@ function MainLayout(props: MainLayoutProps) {
 						className={className}
 						sx={{
 							minHeight: '100vh',
+							width: '100vw',
+							margin: 0,
+							padding: 0,
 							backgroundColor: theme.palette.background.default,
 							color: theme.palette.text.primary,
 							display: 'flex',
 							flexDirection: 'column',
+							overflow: 'hidden', // Evita scroll desnecessário
 							transition: theme.transitions.create(['background-color', 'color'], {
 								duration: theme.transitions.duration.standard
 							}),
@@ -138,19 +135,33 @@ function MainLayout(props: MainLayoutProps) {
 								isMobile={isMobile}
 								onMobileMenuToggle={() => {
 									// TODO: Implementar toggle do menu mobile
-									console.log('Toggle mobile menu');
+									// Placeholder para funcionalidade futura
 								}}
 							/>
 						)}
 
-						{/* Main Content */}
+						{/* Main Content - Full Screen */}
 						<Box
 							component="main"
 							sx={{
 								flexGrow: 1,
+								width: '100%',
+								height: '100%',
+								position: 'relative',
+								overflow: 'auto', // Permite scroll interno se necessário
 								pt: showNavbar ? { xs: 7, sm: 8 } : 0, // Espaço para navbar fixa
 								pb: showFooter && footerStyle === 'fixed' ? 8 : 0, // Espaço para footer fixo
-								minHeight: showNavbar ? 'calc(100vh - 64px)' : '100vh'
+								minHeight: showNavbar ? 'calc(100vh - 64px)' : '100vh',
+								// Garante que filhos ocupem toda a área disponível
+								'& > *': {
+									width: '100%',
+									minHeight: 'inherit',
+									boxSizing: 'border-box'
+								},
+								// Remove margens padrão de elementos filhos
+								'& > * > *': {
+									margin: 0
+								}
 							}}
 						>
 							{children}
@@ -172,6 +183,8 @@ function MainLayout(props: MainLayoutProps) {
 			settings={mergedSettings}
 		>
 			{children}
+			{/* Global Message Component */}
+			<Message />
 		</Layout>
 	);
 }

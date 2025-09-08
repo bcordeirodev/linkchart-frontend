@@ -1,14 +1,9 @@
 /**
  * Shared Hooks API Types
+ * @deprecated Use types from @/types instead
  */
 
-export interface LinkResponse {
-	id: string;
-	original_url: string;
-	short_url: string;
-	clicks: number;
-	created_at: string;
-}
+import type { LinkResponse } from '@/types';
 
 export interface AnalyticsResponse {
 	totalClicks: number;

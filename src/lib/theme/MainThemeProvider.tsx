@@ -1,36 +1,3 @@
-/**
- * 🎨 MAIN THEME PROVIDER - LINK CHART
- * Provider principal de tema da aplicação com suporte a RTL e otimizações
- *
- * @description
- * Este provider é responsável por aplicar o tema selecionado em toda a aplicação.
- * Inclui suporte para direção de texto (RTL/LTR), cache de estilos otimizado
- * e integração completa com Material-UI.
- *
- * @features
- * - ✅ Suporte a RTL/LTR
- * - ✅ Cache de estilos otimizado com Emotion
- * - ✅ Integração com Material-UI
- * - ✅ Aplicação automática de temas Fuse
- * - ✅ Layers CSS para organização
- *
- * @example
- * ```tsx
- * import { MainThemeProvider } from '@/lib/theme';
- *
- * function App() {
- *   return (
- *     <MainThemeProvider>
- *       <YourAppContent />
- *     </MainThemeProvider>
- *   );
- * }
- * ```
- *
- * @since 1.0.0
- * @version 2.0.0
- */
-
 import * as React from 'react';
 import { useMemo } from 'react';
 import rtlPlugin from 'stylis-plugin-rtl';

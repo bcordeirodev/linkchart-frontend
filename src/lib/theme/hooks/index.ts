@@ -1,22 +1,10 @@
 /**
  * 🎣 HOOKS DE TEMA CENTRALIZADOS - LINK CHART
- * Exportação única de todos os hooks relacionados ao tema
+ * Exportação única dos hooks essenciais de tema
  */
 
-// Hooks de tema Fuse
-export {
-	useMainTheme,
-	useNavbarTheme,
-	useToolbarTheme,
-	useFooterTheme,
-	changeThemeMode,
-	useContrastMainTheme,
-	useMainThemeDark,
-	useMainThemeLight
-} from './fuseThemeHooks';
-
-// Hook de configurações Fuse
-export { default as useFuseSettings } from './useFuseSettings';
+// Hook de tema principal
+export { useMainTheme } from './fuseThemeHooks';
 
 // Hook responsivo
 export { useResponsive } from './useResponsive';
