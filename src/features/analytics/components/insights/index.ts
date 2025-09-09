@@ -6,14 +6,11 @@ export { useInsightsData } from '../../hooks/useInsightsData';
 
 // Tipos
 export type {
-    BusinessInsight,
-    InsightsData,
-    InsightsStats,
-    UseInsightsDataOptions,
-    UseInsightsDataReturn
+	BusinessInsight,
+	InsightsData,
+	InsightsStats,
+	UseInsightsDataOptions,
+	UseInsightsDataReturn
 } from '../../hooks/useInsightsData';
 
-export type {
-    InsightType,
-    InsightPriority
-} from '@/types/analytics';
+export type { InsightType, InsightPriority } from '@/types/analytics';

@@ -29,12 +29,12 @@ audience/
 import { AudienceAnalysis } from '@/features/analytics/components/audience';
 
 function GlobalAnalytics() {
-  return (
-    <AudienceAnalysis 
-      globalMode={true}
-      title="📊 Audiência Global"
-    />
-  );
+	return (
+		<AudienceAnalysis
+			globalMode={true}
+			title="📊 Audiência Global"
+		/>
+	);
 }
 ```
 
@@ -44,12 +44,12 @@ function GlobalAnalytics() {
 import { AudienceAnalysis } from '@/features/analytics/components/audience';
 
 function LinkAnalytics({ linkId }: { linkId: string }) {
-  return (
-    <AudienceAnalysis 
-      linkId={linkId}
-      title={`📊 Audiência - Link ${linkId}`}
-    />
-  );
+	return (
+		<AudienceAnalysis
+			linkId={linkId}
+			title={`📊 Audiência - Link ${linkId}`}
+		/>
+	);
 }
 ```
 
@@ -59,12 +59,12 @@ function LinkAnalytics({ linkId }: { linkId: string }) {
 import { AudienceAnalysis } from '@/features/analytics/components/audience';
 
 function LegacyAnalytics({ data }: { data: any }) {
-  return (
-    <AudienceAnalysis 
-      data={data}
-      showTitle={false}
-    />
-  );
+	return (
+		<AudienceAnalysis
+			data={data}
+			showTitle={false}
+		/>
+	);
 }
 ```
 
@@ -72,12 +72,12 @@ function LegacyAnalytics({ data }: { data: any }) {
 
 ### **Funcionalidades:**
 
-- ✅ **Busca automática** de dados (global ou específico)
-- ✅ **Tempo real** com polling configurável
-- ✅ **Gestão de estado** completa (loading, error, data)
-- ✅ **Cancelamento de requisições** para evitar race conditions
-- ✅ **Cálculo de estatísticas** agregadas
-- ✅ **Refresh manual** dos dados
+-   ✅ **Busca automática** de dados (global ou específico)
+-   ✅ **Tempo real** com polling configurável
+-   ✅ **Gestão de estado** completa (loading, error, data)
+-   ✅ **Cancelamento de requisições** para evitar race conditions
+-   ✅ **Cálculo de estatísticas** agregadas
+-   ✅ **Refresh manual** dos dados
 
 ### **Exemplo de Uso:**
 
@@ -85,31 +85,24 @@ function LegacyAnalytics({ data }: { data: any }) {
 import { useAudienceData } from '@/features/analytics/components/audience';
 
 function CustomAudienceComponent() {
-  const { 
-    data, 
-    stats, 
-    loading, 
-    error, 
-    refresh,
-    isRealtime 
-  } = useAudienceData({
-    linkId: '123',
-    enableRealtime: true,
-    refreshInterval: 30000, // 30 segundos
-    includeDetails: true
-  });
+	const { data, stats, loading, error, refresh, isRealtime } = useAudienceData({
+		linkId: '123',
+		enableRealtime: true,
+		refreshInterval: 30000, // 30 segundos
+		includeDetails: true
+	});
 
-  if (loading) return <div>Carregando...</div>;
-  if (error) return <div>Erro: {error}</div>;
+	if (loading) return <div>Carregando...</div>;
+	if (error) return <div>Erro: {error}</div>;
 
-  return (
-    <div>
-      <h3>Dispositivos: {data?.device_breakdown?.length}</h3>
-      <p>Total de cliques: {stats?.totalClicks}</p>
-      <p>Dispositivo principal: {stats?.primaryDevice}</p>
-      <button onClick={refresh}>Atualizar</button>
-    </div>
-  );
+	return (
+		<div>
+			<h3>Dispositivos: {data?.device_breakdown?.length}</h3>
+			<p>Total de cliques: {stats?.totalClicks}</p>
+			<p>Dispositivo principal: {stats?.primaryDevice}</p>
+			<button onClick={refresh}>Atualizar</button>
+		</div>
+	);
 }
 ```
 
@@ -123,14 +116,14 @@ Renderiza gráficos interativos de distribuição de audiência.
 import { AudienceChart } from '@/features/analytics/components/audience';
 
 <AudienceChart
-  deviceBreakdown={devices}
-  browserBreakdown={browsers}
-  osBreakdown={operatingSystems}
-  totalClicks={1000}
-  height={400}
-  showPieChart={true}
-  showBarChart={true}
-/>
+	deviceBreakdown={devices}
+	browserBreakdown={browsers}
+	osBreakdown={operatingSystems}
+	totalClicks={1000}
+	height={400}
+	showPieChart={true}
+	showBarChart={true}
+/>;
 ```
 
 ### **AudienceInsights**
@@ -141,11 +134,11 @@ Fornece insights estratégicos baseados nos dados.
 import { AudienceInsights } from '@/features/analytics/components/audience';
 
 <AudienceInsights
-  deviceBreakdown={devices}
-  browserBreakdown={browsers}
-  totalClicks={1000}
-  showAdvancedInsights={true}
-/>
+	deviceBreakdown={devices}
+	browserBreakdown={browsers}
+	totalClicks={1000}
+	showAdvancedInsights={true}
+/>;
 ```
 
 ### **AudienceMetrics**
@@ -156,11 +149,11 @@ Exibe métricas agregadas em cards.
 import { AudienceMetrics } from '@/features/analytics/components/audience';
 
 <AudienceMetrics
-  data={audienceData}
-  showTitle={true}
-  title="📊 Métricas de Audiência"
-  variant="detailed"
-/>
+	data={audienceData}
+	showTitle={true}
+	title="📊 Métricas de Audiência"
+	variant="detailed"
+/>;
 ```
 
 ## 🔧 **Configuração Avançada**
@@ -169,11 +162,11 @@ import { AudienceMetrics } from '@/features/analytics/components/audience';
 
 ```typescript
 interface UseAudienceDataOptions {
-  linkId?: string;              // ID do link específico
-  globalMode?: boolean;         // Modo global (todos os links)
-  enableRealtime?: boolean;     // Habilitar tempo real
-  refreshInterval?: number;     // Intervalo de atualização (ms)
-  includeDetails?: boolean;     // Incluir dados detalhados
+	linkId?: string; // ID do link específico
+	globalMode?: boolean; // Modo global (todos os links)
+	enableRealtime?: boolean; // Habilitar tempo real
+	refreshInterval?: number; // Intervalo de atualização (ms)
+	includeDetails?: boolean; // Incluir dados detalhados
 }
 ```
 
@@ -181,21 +174,23 @@ interface UseAudienceDataOptions {
 
 ```typescript
 interface AudienceData {
-  device_breakdown: DeviceData[];     // Dispositivos
-  browser_breakdown?: BrowserData[];  // Navegadores
-  os_breakdown?: OSData[];            // Sistemas operacionais
-  referrer_breakdown?: ReferrerData[]; // Fontes de tráfego
-  stats?: AudienceStats;              // Estatísticas agregadas
+	device_breakdown: DeviceData[]; // Dispositivos
+	browser_breakdown?: BrowserData[]; // Navegadores
+	os_breakdown?: OSData[]; // Sistemas operacionais
+	referrer_breakdown?: ReferrerData[]; // Fontes de tráfego
+	stats?: AudienceStats; // Estatísticas agregadas
 }
 ```
 
 ## 🌐 **Endpoints da API**
 
 ### **Link Específico:**
-- `GET /api/analytics/link/{linkId}/audience`
+
+-   `GET /api/analytics/link/{linkId}/audience`
 
 ### **Global (Métricas Unificadas):**
-- `GET /api/metrics/dashboard?category=audience`
+
+-   `GET /api/metrics/dashboard?category=audience`
 
 ### **Estrutura da Resposta:**
 
@@ -237,27 +232,27 @@ O módulo utiliza o sistema de temas do Material-UI e pode ser personalizado atr
 import { ThemeProvider } from '@mui/material/styles';
 
 const customTheme = {
-  palette: {
-    primary: { main: '#1976d2' },
-    secondary: { main: '#dc004e' }
-  }
+	palette: {
+		primary: { main: '#1976d2' },
+		secondary: { main: '#dc004e' }
+	}
 };
 
 <ThemeProvider theme={customTheme}>
-  <AudienceAnalysis {...props} />
-</ThemeProvider>
+	<AudienceAnalysis {...props} />
+</ThemeProvider>;
 ```
 
 ### **Cores dos Gráficos:**
 
 ```typescript
 const chartColors = [
-  '#1976d2', // Azul principal
-  '#2e7d32', // Verde
-  '#dc004e', // Rosa
-  '#9c27b0', // Roxo
-  '#ff9800', // Laranja
-  '#d32f2f'  // Vermelho
+	'#1976d2', // Azul principal
+	'#2e7d32', // Verde
+	'#dc004e', // Rosa
+	'#9c27b0', // Roxo
+	'#ff9800', // Laranja
+	'#d32f2f' // Vermelho
 ];
 ```
 
@@ -266,6 +261,7 @@ const chartColors = [
 ### **Problemas Comuns:**
 
 #### **1. Dados não carregam**
+
 ```bash
 # Verificar se o endpoint está funcionando
 curl -H "Authorization: Bearer TOKEN" \
@@ -273,26 +269,29 @@ curl -H "Authorization: Bearer TOKEN" \
 ```
 
 #### **2. Erro de CORS**
-- Verificar configuração no `back-end/config/cors.php`
-- Confirmar que o frontend está na lista de origens permitidas
+
+-   Verificar configuração no `back-end/config/cors.php`
+-   Confirmar que o frontend está na lista de origens permitidas
 
 #### **3. Hook não atualiza**
+
 ```tsx
 // Forçar refresh manual
 const { refresh } = useAudienceData({ linkId: '123' });
 
 useEffect(() => {
-  refresh();
+	refresh();
 }, [someCondition]);
 ```
 
 #### **4. Performance lenta**
+
 ```tsx
 // Reduzir intervalo de polling
 const { data } = useAudienceData({
-  linkId: '123',
-  refreshInterval: 120000, // 2 minutos em vez de 1
-  includeDetails: false    // Menos dados detalhados
+	linkId: '123',
+	refreshInterval: 120000, // 2 minutos em vez de 1
+	includeDetails: false // Menos dados detalhados
 });
 ```
 
@@ -300,34 +299,36 @@ const { data } = useAudienceData({
 
 ### **Estatísticas Calculadas:**
 
-- **Total de Cliques:** Soma de todos os cliques registrados
-- **Visitantes Únicos:** Estimativa baseada em padrões de uso
-- **Dispositivo Principal:** Dispositivo com maior número de cliques
-- **Taxa de Novos Visitantes:** Percentual de visitantes novos vs. retornantes
-- **Taxa de Rejeição:** Percentual de visitantes que saem rapidamente
-- **Duração Média da Sessão:** Tempo médio de permanência
+-   **Total de Cliques:** Soma de todos os cliques registrados
+-   **Visitantes Únicos:** Estimativa baseada em padrões de uso
+-   **Dispositivo Principal:** Dispositivo com maior número de cliques
+-   **Taxa de Novos Visitantes:** Percentual de visitantes novos vs. retornantes
+-   **Taxa de Rejeição:** Percentual de visitantes que saem rapidamente
+-   **Duração Média da Sessão:** Tempo médio de permanência
 
 ### **Insights Automáticos:**
 
-- **Mobile-First:** Quando mobile > 60% dos cliques
-- **Desktop-Focused:** Quando desktop > 60% dos cliques
-- **Audiência Equilibrada:** Quando diferença < 10%
-- **Alta Diversidade:** Quando > 3 tipos de dispositivos
-- **Recomendações Estratégicas:** Baseadas no perfil da audiência
+-   **Mobile-First:** Quando mobile > 60% dos cliques
+-   **Desktop-Focused:** Quando desktop > 60% dos cliques
+-   **Audiência Equilibrada:** Quando diferença < 10%
+-   **Alta Diversidade:** Quando > 3 tipos de dispositivos
+-   **Recomendações Estratégicas:** Baseadas no perfil da audiência
 
 ## 🚀 **Roadmap**
 
 ### **Versão 2.1 (Próxima):**
-- [ ] Suporte a filtros por período
-- [ ] Comparação entre períodos
-- [ ] Exportação de dados
-- [ ] Alertas personalizados
+
+-   [ ] Suporte a filtros por período
+-   [ ] Comparação entre períodos
+-   [ ] Exportação de dados
+-   [ ] Alertas personalizados
 
 ### **Versão 2.2 (Futuro):**
-- [ ] Integração com Google Analytics
-- [ ] Segmentação avançada de audiência
-- [ ] Predições baseadas em ML
-- [ ] Dashboard customizável
+
+-   [ ] Integração com Google Analytics
+-   [ ] Segmentação avançada de audiência
+-   [ ] Predições baseadas em ML
+-   [ ] Dashboard customizável
 
 ## 🤝 **Contribuição**
 
@@ -341,13 +342,15 @@ Para contribuir com o módulo de audiência:
 ## 📝 **Changelog**
 
 ### **v2.0.0 (Atual)**
-- ✅ Hook `useAudienceData` implementado
-- ✅ Suporte a modo global e específico
-- ✅ Tipos centralizados e documentados
-- ✅ Componentes refatorados e otimizados
-- ✅ Documentação completa
+
+-   ✅ Hook `useAudienceData` implementado
+-   ✅ Suporte a modo global e específico
+-   ✅ Tipos centralizados e documentados
+-   ✅ Componentes refatorados e otimizados
+-   ✅ Documentação completa
 
 ### **v1.0.0 (Legado)**
-- ✅ Componentes básicos de audiência
-- ✅ Integração com `useEnhancedAnalytics`
-- ✅ Gráficos e insights básicos
+
+-   ✅ Componentes básicos de audiência
+-   ✅ Integração com `useEnhancedAnalytics`
+-   ✅ Gráficos e insights básicos

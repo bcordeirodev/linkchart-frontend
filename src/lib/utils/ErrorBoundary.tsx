@@ -18,17 +18,7 @@
  */
 
 import { Component, ErrorInfo, ReactNode } from 'react';
-import {
-	Box,
-	Typography,
-	Button,
-	Paper,
-	Alert,
-	Accordion,
-	AccordionSummary,
-	AccordionDetails,
-	useTheme
-} from '@mui/material';
+import { Box, Typography, Button, Paper, Alert, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { ErrorOutline, Refresh, ExpandMore, BugReport } from '@mui/icons-material';
 
 /**

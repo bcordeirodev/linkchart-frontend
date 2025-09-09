@@ -41,6 +41,7 @@ export const getSpacing = (theme: Theme, size: SpacingSize | number): string | n
 	if (typeof size === 'number') {
 		return theme.spacing(size);
 	}
+
 	return theme.spacing(spacingSizeMap[size]);
 };
 

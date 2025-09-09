@@ -2,12 +2,12 @@
  * @fileoverview Componente de mapa de calor interativo em tempo real
  * @author Link Chart Team
  * @version 2.0.0
- * 
+ *
  * @description
  * Componente principal para renderização de mapas de calor interativos.
  * Suporta carregamento dinâmico do Leaflet, múltiplos estilos de mapa,
  * controles interativos e atualizações em tempo real.
- * 
+ *
  * @features
  * - Carregamento dinâmico do Leaflet (SSR safe)
  * - Múltiplos estilos de mapa (street, satellite, dark)
@@ -87,21 +87,21 @@ interface SafeMapComponents {
 
 /**
  * Componente de mapa de calor interativo com suporte a tempo real
- * 
+ *
  * @description
  * Renderiza um mapa interativo com:
  * - Pontos de calor baseados em cliques geográficos
  * - Controles para filtros e visualização
  * - Atualizações em tempo real
  * - Suporte para modo global e específico por link
- * 
+ *
  * @example
  * ```tsx
  * // Modo global
  * <RealTimeHeatmapChart data={heatmapData} />
- * 
+ *
  * // Com controles personalizados
- * <RealTimeHeatmapChart 
+ * <RealTimeHeatmapChart
  *   data={heatmapData}
  *   height={500}
  *   showControls={true}
@@ -229,9 +229,13 @@ export function RealTimeHeatmapChart({
 		const normalizedClicks = clicks / maxClicks;
 
 		if (normalizedClicks > 0.8) return '#d32f2f'; // Vermelho intenso
+
 		if (normalizedClicks > 0.6) return '#f57c00'; // Laranja escuro
+
 		if (normalizedClicks > 0.4) return '#ff9800'; // Laranja
+
 		if (normalizedClicks > 0.2) return '#ffc107'; // Amarelo
+
 		return '#4caf50'; // Verde
 	}, []);
 
@@ -599,7 +603,6 @@ export function RealTimeHeatmapChart({
 						/>
 
 						{data.map((point: HeatmapPoint, index: number) => {
-
 							return (
 								<CircleMarker
 									key={`${point.lat}-${point.lng}-${index}-${point.clicks}`}

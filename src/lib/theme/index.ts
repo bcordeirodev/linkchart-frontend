@@ -30,11 +30,7 @@ export type { ColorVariant, ColorIntensity } from './designSystem';
 // ========================================
 // 🎛️ THEME HOOKS ESSENCIAIS
 // ========================================
-export {
-	useMainTheme,
-	useResponsive,
-	useThemeMediaQuery
-} from './hooks';
+export { useMainTheme, useResponsive, useThemeMediaQuery } from './hooks';
 
 // ========================================
 // 🎨 THEME CONFIGURATION
@@ -114,8 +110,7 @@ export {
 	createScaleAnimation,
 	createPresetAnimations,
 	createStateAnimations,
-	createResponsiveAnimation,
-
+	createResponsiveAnimation
 } from './utils';
 
 // ========================================

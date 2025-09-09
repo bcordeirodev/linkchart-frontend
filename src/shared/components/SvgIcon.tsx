@@ -19,7 +19,7 @@
 
 import { forwardRef, ReactNode } from 'react';
 import { styled } from '@mui/material/styles';
-import { Box, BoxProps, Icon, SvgIcon as MuiSvgIcon } from '@mui/material';
+import { Box, BoxProps, Icon } from '@mui/material';
 import clsx from 'clsx';
 
 /**
@@ -127,6 +127,7 @@ export const SvgIcon = forwardRef<SVGSVGElement, SvgIconProps>((props, ref) => {
 
 	// Se contém ':', trata como path de ícone SVG externo
 	let iconPath = children;
+
 	if (children.includes(':')) {
 		iconPath = children.replace(':', '.svg#');
 	}

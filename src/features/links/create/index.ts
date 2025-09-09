@@ -6,8 +6,8 @@
 // Components
 export * from './components';
 
-// Hooks
-export * from './hooks';
+// Hooks (deprecated - usando React Hook Form diretamente)
+// export * from './hooks';
 
 // Types
 export * from './types';

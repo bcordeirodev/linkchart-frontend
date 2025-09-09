@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form';
 import { URLInput } from './URLInput';
 import { GradientButton } from '@/shared/ui/base/GradientButton';
 import { useURLShortener } from '@/features/links/hooks/useURLShortener';
-import { createGlassCard } from '@/lib/theme';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
 
 interface IFormData {
 	originalUrl: string;
@@ -19,6 +20,7 @@ interface URLShortenerFormProps {
  * Gerencia validação, submissão e estados
  */
 export function URLShortenerForm({ onSuccess, onError }: URLShortenerFormProps) {
+	const dispatch = useAppDispatch();
 	const {
 		handleSubmit,
 		register,
@@ -34,10 +36,18 @@ export function URLShortenerForm({ onSuccess, onError }: URLShortenerFormProps) 
 				original_url: formData.originalUrl,
 				isActive: true
 			});
+
+			// Mostrar mensagem de sucesso
+			dispatch(showSuccessMessage('URL encurtada com sucesso!'));
+
 			onSuccess?.(result);
 		} catch (_err) {
 			const errorMessage = 'Erro ao encurtar a URL. Tente novamente.';
 			setError('originalUrl', { type: 'manual', message: errorMessage });
+
+			// Mostrar mensagem de erro
+			dispatch(showErrorMessage(errorMessage));
+
 			onError?.(errorMessage);
 		}
 	};

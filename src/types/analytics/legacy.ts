@@ -12,10 +12,10 @@
  * ```typescript
  * // Legado
  * const clicks: ClicksByDay = { day: '2024-01-15', total: 150 };
- * 
+ *
  * // Novo
- * const clicks: DailyData = { 
- *   date: '2024-01-15', 
+ * const clicks: DailyData = {
+ *   date: '2024-01-15',
  *   clicks: 150,
  *   day_of_week: 1,
  *   day_name: 'Monday'
@@ -23,10 +23,10 @@
  * ```
  */
 export interface ClicksByDay extends Record<string, unknown> {
-    /** Data no formato YYYY-MM-DD */
-    day: string;
-    /** Total de cliques no dia */
-    total: number;
+	/** Data no formato YYYY-MM-DD */
+	day: string;
+	/** Total de cliques no dia */
+	total: number;
 }
 
 /**
@@ -36,10 +36,10 @@ export interface ClicksByDay extends Record<string, unknown> {
  * ```typescript
  * // Legado
  * const clicks: ClicksByCountry = { country: 'Brazil', total: 500 };
- * 
+ *
  * // Novo
- * const clicks: CountryData = { 
- *   country: 'Brazil', 
+ * const clicks: CountryData = {
+ *   country: 'Brazil',
  *   iso_code: 'BR',
  *   clicks: 500,
  *   percentage: 25.5,
@@ -48,10 +48,10 @@ export interface ClicksByDay extends Record<string, unknown> {
  * ```
  */
 export interface ClicksByCountry extends Record<string, unknown> {
-    /** Nome do país */
-    country: string;
-    /** Total de cliques do país */
-    total: number;
+	/** Nome do país */
+	country: string;
+	/** Total de cliques do país */
+	total: number;
 }
 
 /**
@@ -59,10 +59,10 @@ export interface ClicksByCountry extends Record<string, unknown> {
  * @deprecated Use CityData from '@/types/core/api' instead
  */
 export interface ClicksByCity extends Record<string, unknown> {
-    /** Nome da cidade */
-    city: string;
-    /** Total de cliques da cidade */
-    total: number;
+	/** Nome da cidade */
+	city: string;
+	/** Total de cliques da cidade */
+	total: number;
 }
 
 /**
@@ -72,20 +72,20 @@ export interface ClicksByCity extends Record<string, unknown> {
  * ```typescript
  * // Legado
  * const clicks: ClicksByDevice = { device: 'Mobile', total: 300 };
- * 
+ *
  * // Novo
- * const clicks: DeviceData = { 
- *   device: 'Mobile', 
+ * const clicks: DeviceData = {
+ *   device: 'Mobile',
  *   clicks: 300,
  *   percentage: 60.0
  * };
  * ```
  */
 export interface ClicksByDevice extends Record<string, unknown> {
-    /** Nome do dispositivo (Desktop, Mobile, Tablet) */
-    device: string;
-    /** Total de cliques do dispositivo */
-    total: number;
+	/** Nome do dispositivo (Desktop, Mobile, Tablet) */
+	device: string;
+	/** Total de cliques do dispositivo */
+	total: number;
 }
 
 /**
@@ -93,10 +93,10 @@ export interface ClicksByDevice extends Record<string, unknown> {
  * @deprecated Use BrowserData from '@/types/analytics/audience' instead
  */
 export interface ClicksByUserAgent extends Record<string, unknown> {
-    /** String do User Agent */
-    user_agent: string;
-    /** Total de cliques deste User Agent */
-    total: number;
+	/** String do User Agent */
+	user_agent: string;
+	/** Total de cliques deste User Agent */
+	total: number;
 }
 
 /**
@@ -106,10 +106,10 @@ export interface ClicksByUserAgent extends Record<string, unknown> {
  * ```typescript
  * // Legado
  * const clicks: ClicksByReferer = { referer: 'google.com', total: 200 };
- * 
+ *
  * // Novo
- * const clicks: ReferrerData = { 
- *   referrer: 'google.com', 
+ * const clicks: ReferrerData = {
+ *   referrer: 'google.com',
  *   clicks: 200,
  *   category: 'search',
  *   percentage: 40.0
@@ -117,10 +117,10 @@ export interface ClicksByUserAgent extends Record<string, unknown> {
  * ```
  */
 export interface ClicksByReferer extends Record<string, unknown> {
-    /** URL ou domínio do referrer */
-    referer: string;
-    /** Total de cliques deste referrer */
-    total: number;
+	/** URL ou domínio do referrer */
+	referer: string;
+	/** Total de cliques deste referrer */
+	total: number;
 }
 
 /**
@@ -128,10 +128,10 @@ export interface ClicksByReferer extends Record<string, unknown> {
  * @deprecated Será substituído por UTMData em versão futura
  */
 export interface ClicksByCampaign extends Record<string, unknown> {
-    /** Nome da campanha UTM */
-    utm_campaign: string;
-    /** Total de cliques da campanha */
-    total: number;
+	/** Nome da campanha UTM */
+	utm_campaign: string;
+	/** Total de cliques da campanha */
+	total: number;
 }
 
 /**
@@ -139,12 +139,12 @@ export interface ClicksByCampaign extends Record<string, unknown> {
  * @deprecated Use estrutura normalizada com LinkStats e DailyData
  */
 export interface ClicksGroupedByLinkAndDay extends Record<string, unknown> {
-    /** ID do link */
-    link_id: number;
-    /** Data no formato YYYY-MM-DD */
-    day: string;
-    /** Total de cliques do link no dia */
-    total: number;
+	/** ID do link */
+	link_id: number;
+	/** Data no formato YYYY-MM-DD */
+	day: string;
+	/** Total de cliques do link no dia */
+	total: number;
 }
 
 /**
@@ -153,11 +153,11 @@ export interface ClicksGroupedByLinkAndDay extends Record<string, unknown> {
  * @example
  * ```typescript
  * // Legado
- * const topLink: TopLink = { 
- *   original_url: 'https://example.com', 
- *   clicks_count: 1000 
+ * const topLink: TopLink = {
+ *   original_url: 'https://example.com',
+ *   clicks_count: 1000
  * };
- * 
+ *
  * // Novo
  * const linkStats: LinkStats = {
  *   link_id: '123',
@@ -171,10 +171,10 @@ export interface ClicksGroupedByLinkAndDay extends Record<string, unknown> {
  * ```
  */
 export interface TopLink extends Record<string, unknown> {
-    /** URL original do link */
-    original_url: string;
-    /** Número total de cliques */
-    clicks_count: number;
+	/** URL original do link */
+	original_url: string;
+	/** Número total de cliques */
+	clicks_count: number;
 }
 
 /**
@@ -182,10 +182,10 @@ export interface TopLink extends Record<string, unknown> {
  * @deprecated Use estrutura normalizada com DailyData
  */
 export interface LinksCreatedByDay extends Record<string, unknown> {
-    /** Data no formato YYYY-MM-DD */
-    day: string;
-    /** Total de links criados no dia */
-    total: number;
+	/** Data no formato YYYY-MM-DD */
+	day: string;
+	/** Total de links criados no dia */
+	total: number;
 }
 
 /**
@@ -193,13 +193,13 @@ export interface LinksCreatedByDay extends Record<string, unknown> {
  * @deprecated Guia de migração - remover após migração completa
  */
 export type LegacyTypeMigrationMap = {
-    ClicksByDay: 'DailyData from @/types/analytics/temporal';
-    ClicksByCountry: 'CountryData from @/types/core/api';
-    ClicksByCity: 'CityData from @/types/core/api';
-    ClicksByDevice: 'DeviceData from @/types/core/api';
-    ClicksByUserAgent: 'BrowserData from @/types/analytics/audience';
-    ClicksByReferer: 'ReferrerData from @/types/analytics/audience';
-    TopLink: 'LinkStats from @/types/core/links';
+	ClicksByDay: 'DailyData from @/types/analytics/temporal';
+	ClicksByCountry: 'CountryData from @/types/core/api';
+	ClicksByCity: 'CityData from @/types/core/api';
+	ClicksByDevice: 'DeviceData from @/types/core/api';
+	ClicksByUserAgent: 'BrowserData from @/types/analytics/audience';
+	ClicksByReferer: 'ReferrerData from @/types/analytics/audience';
+	TopLink: 'LinkStats from @/types/core/links';
 };
 
 /**
@@ -207,38 +207,41 @@ export type LegacyTypeMigrationMap = {
  * @deprecated Usar apenas durante período de migração
  */
 export namespace LegacyConverters {
-    /**
-     * Converte ClicksByDay para DailyData
-     */
-    export function clicksByDayToDailyData(legacy: ClicksByDay): {
-        date: string;
-        clicks: number;
-        day_of_week: number;
-        day_name: string;
-    } {
-        const date = new Date(legacy.day);
-        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	/**
+	 * Converte ClicksByDay para DailyData
+	 */
+	export function clicksByDayToDailyData(legacy: ClicksByDay): {
+		date: string;
+		clicks: number;
+		day_of_week: number;
+		day_name: string;
+	} {
+		const date = new Date(legacy.day);
+		const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        return {
-            date: legacy.day,
-            clicks: legacy.total,
-            day_of_week: date.getDay(),
-            day_name: dayNames[date.getDay()]
-        };
-    }
+		return {
+			date: legacy.day,
+			clicks: legacy.total,
+			day_of_week: date.getDay(),
+			day_name: dayNames[date.getDay()]
+		};
+	}
 
-    /**
-     * Converte ClicksByDevice para DeviceData
-     */
-    export function clicksByDeviceToDeviceData(legacy: ClicksByDevice, totalClicks: number): {
-        device: string;
-        clicks: number;
-        percentage: number;
-    } {
-        return {
-            device: legacy.device,
-            clicks: legacy.total,
-            percentage: (legacy.total / totalClicks) * 100
-        };
-    }
+	/**
+	 * Converte ClicksByDevice para DeviceData
+	 */
+	export function clicksByDeviceToDeviceData(
+		legacy: ClicksByDevice,
+		totalClicks: number
+	): {
+		device: string;
+		clicks: number;
+		percentage: number;
+	} {
+		return {
+			device: legacy.device,
+			clicks: legacy.total,
+			percentage: (legacy.total / totalClicks) * 100
+		};
+	}
 }

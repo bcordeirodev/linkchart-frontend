@@ -92,7 +92,7 @@ export const createSlideAnimation = (
 /**
  * Cria animação de scale
  */
-export const createScaleAnimation = (theme: Theme, scale: number = 1.05, config: AnimationConfig = {}): SxProps => {
+export const createScaleAnimation = (theme: Theme, scale = 1.05, config: AnimationConfig = {}): SxProps => {
 	return {
 		transition: createTransition(theme, 'transform', config),
 		'&:hover': {
@@ -104,7 +104,7 @@ export const createScaleAnimation = (theme: Theme, scale: number = 1.05, config:
 /**
  * Cria animação de rotação
  */
-export const createRotateAnimation = (theme: Theme, degrees: number = 5, config: AnimationConfig = {}): SxProps => {
+export const createRotateAnimation = (theme: Theme, degrees = 5, config: AnimationConfig = {}): SxProps => {
 	return {
 		transition: createTransition(theme, 'transform', config),
 		'&:hover': {

@@ -11,7 +11,6 @@ import { UserResponse } from './api';
 
 export type { LoginResponse, UserResponse, RegisterRequest } from './api';
 
-
 // ========================================
 // 🎯 USER-SPECIFIC TYPES
 // ========================================

@@ -1,4 +1,5 @@
 import { Box, Typography, Grid, Paper, Fade, Grow, alpha, useTheme } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 interface Benefit {
 	title: string;
@@ -56,6 +57,13 @@ export function BenefitsSection({
 	benefits = defaultBenefits
 }: BenefitsSectionProps) {
 	const theme = useTheme();
+	const [headerMounted, setHeaderMounted] = useState(false);
+
+	useEffect(() => {
+		// Garante que o header está montado antes de iniciar a animação
+		const timer = setTimeout(() => setHeaderMounted(true), 150);
+		return () => clearTimeout(timer);
+	}, []);
 
 	return (
 		<Box
@@ -72,37 +80,43 @@ export function BenefitsSection({
 			}}
 		>
 			{/* Header */}
-			<Fade
-				in
-				timeout={800}
-			>
-				<Box sx={{ textAlign: 'center', mb: 8, maxWidth: 800, mx: 'auto' }}>
-					<Typography
-						variant="h2"
-						sx={{
-							fontWeight: 700,
-							mb: 3,
-							color: 'text.primary',
-							fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-							fontFamily: 'Inter, system-ui, sans-serif'
-						}}
-					>
-						{title}
-					</Typography>
-					<Typography
-						variant="h5"
-						color="text.secondary"
-						sx={{
-							lineHeight: 1.6,
-							fontWeight: 400,
-							fontSize: { xs: '1.1rem', sm: '1.25rem' },
-							fontFamily: 'Inter, system-ui, sans-serif'
-						}}
-					>
-						{subtitle}
-					</Typography>
-				</Box>
-			</Fade>
+			<Box>
+				<Fade
+					in={headerMounted}
+					timeout={800}
+					mountOnEnter
+					unmountOnExit
+				>
+					<Box>
+						<Box sx={{ textAlign: 'center', mb: 8, maxWidth: 800, mx: 'auto' }}>
+							<Typography
+								variant="h2"
+								sx={{
+									fontWeight: 700,
+									mb: 3,
+									color: 'text.primary',
+									fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+									fontFamily: 'Inter, system-ui, sans-serif'
+								}}
+							>
+								{title}
+							</Typography>
+							<Typography
+								variant="h5"
+								color="text.secondary"
+								sx={{
+									lineHeight: 1.6,
+									fontWeight: 400,
+									fontSize: { xs: '1.1rem', sm: '1.25rem' },
+									fontFamily: 'Inter, system-ui, sans-serif'
+								}}
+							>
+								{subtitle}
+							</Typography>
+						</Box>
+					</Box>
+				</Fade>
+			</Box>
 
 			{/* Benefits Grid */}
 			<Grid

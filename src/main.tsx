@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 
-// Import styles
-import './styles/splash-screen.css';
-import './styles/index.css';
-import './styles/animations.css';
-import 'leaflet/dist/leaflet.css';
+// Import styles - ORDEM CORRETA para evitar conflitos
+import './styles/index.css';        // ✅ Tailwind primeiro (base, components, utilities)
+import './styles/app-base.css';     // ✅ CSS base da aplicação
+import './styles/animations.css';   // ✅ Animações customizadas
+import './styles/splash-screen.css'; // ✅ Splash screen específico
+import 'leaflet/dist/leaflet.css';   // ✅ CSS de bibliotecas externas por último
 
 // Configuração de captura de erros globais (React puro - sempre no browser)
 // Captura erros não tratados

@@ -1,4 +1,5 @@
-import { Fade, Slide, Grow } from '@mui/material';
+import { Fade, Slide, Grow, Box } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { Rocket } from '@mui/icons-material';
 
 // Styled Components
@@ -19,41 +20,55 @@ export function HeroSection({
 	subtitle = 'Plataforma avançada para encurtamento de URLs com analytics em tempo real e QR codes automáticos.',
 	chipText = '✨ Novo: Limite de cliques personalizável!'
 }: HeroSectionProps) {
+	const [heroMounted, setHeroMounted] = useState(false);
+
+	useEffect(() => {
+		// Garante que o hero está montado antes de iniciar a animação
+		const timer = setTimeout(() => setHeroMounted(true), 100);
+		return () => clearTimeout(timer);
+	}, []);
+
 	return (
-		<Fade
-			in
-			timeout={800}
-		>
-			<HeroContainer>
-				<Slide
-					direction="down"
-					in
-					timeout={1000}
-				>
-					<HeroTitle variant="h1">{title}</HeroTitle>
-				</Slide>
+		<Box>
+			<Fade
+				in={heroMounted}
+				timeout={800}
+				mountOnEnter
+				unmountOnExit
+			>
+				<Box>
+					<HeroContainer>
+						<Slide
+							direction="down"
+							in
+							timeout={1000}
+						>
+							<HeroTitle variant="h1">{title}</HeroTitle>
+						</Slide>
 
-				<Slide
-					direction="up"
-					in
-					timeout={1200}
-				>
-					<HeroSubtitle variant="h6">{subtitle}</HeroSubtitle>
-				</Slide>
+						<Slide
+							direction="up"
+							in
+							timeout={1200}
+						>
+							<HeroSubtitle variant="h6">{subtitle}</HeroSubtitle>
+						</Slide>
 
-				<Grow
-					in
-					timeout={1500}
-				>
-					<HeroChip
-						icon={<Rocket />}
-						label={chipText}
-						color="primary"
-						variant="filled"
-					/>
-				</Grow>
-			</HeroContainer>
-		</Fade>
+						<Grow
+							in
+							timeout={1500}
+						>
+							<HeroChip
+								icon={<Rocket />}
+								label={chipText}
+								color="primary"
+								variant="filled"
+							/>
+						</Grow>
+					</HeroContainer>
+				</Box>
+			</Fade>
+		</Box>
 	);
 }
 

@@ -18,7 +18,7 @@
  */
 
 import { forwardRef, ReactNode, AnchorHTMLAttributes } from 'react';
-import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { Link as MuiLink, LinkProps as MuiLinkProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
 

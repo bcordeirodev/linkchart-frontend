@@ -77,6 +77,7 @@ function MainThemeProvider({ children }: MainThemeProviderProps) {
 			console.warn('MainTheme não encontrado, usando tema padrão');
 			return createTheme();
 		}
+
 		return createTheme(mainTheme);
 	}, [mainTheme]);
 

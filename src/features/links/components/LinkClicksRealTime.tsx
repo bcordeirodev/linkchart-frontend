@@ -18,6 +18,8 @@ import {
 import { Refresh, Computer, Smartphone, Tablet, Public, Schedule, TrendingUp } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api/client';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 
 interface ClicksRealTimeProps {
 	linkId: string;
@@ -60,6 +62,7 @@ interface ClickData {
  * Componente de dados de cliques em tempo real
  */
 export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
+	const dispatch = useAppDispatch();
 	const [data, setData] = useState<ClickData | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
@@ -72,6 +75,7 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 			setLastUpdate(new Date());
 		} catch (error) {
 			console.error('Erro ao carregar dados de cliques:', error);
+			dispatch(showErrorMessage('Erro ao carregar dados de cliques em tempo real'));
 		} finally {
 			setLoading(false);
 		}

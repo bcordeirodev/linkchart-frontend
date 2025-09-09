@@ -16,7 +16,6 @@ export {
 // Configurações MUI organizadas
 export { muiComponents, typography, breakpoints } from './muiComponents';
 
-
 // Compatibilidade com código existente (re-exports das versões otimizadas)
 export {
 	optimizedSettings as defaultSettings,

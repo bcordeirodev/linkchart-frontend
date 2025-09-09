@@ -183,8 +183,6 @@ function MainLayout(props: MainLayoutProps) {
 			settings={mergedSettings}
 		>
 			{children}
-			{/* Global Message Component */}
-			<Message />
 		</Layout>
 	);
 }

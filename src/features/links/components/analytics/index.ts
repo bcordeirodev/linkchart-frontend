@@ -5,9 +5,6 @@
 
 export { default as LinkAnalyticsHeader } from './LinkAnalyticsHeader';
 export { default as LinkAnalyticsMetrics } from './LinkAnalyticsMetrics';
-export { default as LinkAnalyticsTabs } from './LinkAnalyticsTabs';
+export { default as LinkAnalyticsTabsOptimized } from './LinkAnalyticsTabs';
+export { LinkDashboard } from './LinkDashboard';
 
-// Re-export tipos se necessário
-// export type { LinkAnalyticsHeaderProps } from './LinkAnalyticsHeader';
-// export type { LinkAnalyticsMetricsProps } from './LinkAnalyticsMetrics';
-// export type { LinkAnalyticsTabsProps } from './LinkAnalyticsTabs';

@@ -38,6 +38,10 @@ const config: Config = {
         // require('./src/@fuse/tailwind/plugins/icon-size.js'),
     ],
     darkMode: 'class',
+    important: true, // ✅ Força Tailwind a ter prioridade sobre MUI
+    corePlugins: {
+        preflight: false, // ✅ Desabilita reset CSS do Tailwind para não conflitar com MUI
+    },
 };
 
 export default config;

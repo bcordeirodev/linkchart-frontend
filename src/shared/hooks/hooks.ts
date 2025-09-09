@@ -25,7 +25,7 @@ export interface UseAsyncActions<T> {
 	setError: (error: string | null) => void;
 }
 
-export interface UseAsync<T> extends UseAsyncState<T>, UseAsyncActions<T> { }
+export interface UseAsync<T> extends UseAsyncState<T>, UseAsyncActions<T> {}
 
 // ========================================
 // 🔗 LINKS HOOKS TYPES
@@ -45,7 +45,7 @@ export interface UseLinksActions {
 	getLink: (id: string) => Promise<LinkResponse>;
 }
 
-export interface UseLinks extends UseLinksState, UseLinksActions { }
+export interface UseLinks extends UseLinksState, UseLinksActions {}
 
 export interface LinkCreateData {
 	original_url: string;
@@ -96,7 +96,7 @@ export interface UseAnalyticsActions {
 	clearAnalytics: () => void;
 }
 
-export interface UseAnalytics extends UseAnalyticsState, UseAnalyticsActions { }
+export interface UseAnalytics extends UseAnalyticsState, UseAnalyticsActions {}
 
 export interface UseAnalyticsOptions {
 	linkId?: string;
@@ -123,7 +123,7 @@ export interface UseMetricsActions {
 	refreshMetrics: () => Promise<void>;
 }
 
-export interface UseMetrics extends UseMetricsState, UseMetricsActions { }
+export interface UseMetrics extends UseMetricsState, UseMetricsActions {}
 
 // ========================================
 // 🚀 PERFORMANCE HOOKS TYPES
@@ -140,7 +140,7 @@ export interface UsePerformanceActions {
 	refreshPerformance: () => Promise<void>;
 }
 
-export interface UsePerformance extends UsePerformanceState, UsePerformanceActions { }
+export interface UsePerformance extends UsePerformanceState, UsePerformanceActions {}
 
 // ========================================
 // 🔐 AUTH HOOKS TYPES
@@ -162,7 +162,7 @@ export interface UseAuthActions {
 	clearError: () => void;
 }
 
-export interface UseAuth extends UseAuthState, UseAuthActions { }
+export interface UseAuth extends UseAuthState, UseAuthActions {}
 
 export interface AuthUser {
 	id: number;
@@ -204,7 +204,7 @@ export interface UseFormActions<T> {
 	validate: () => boolean;
 }
 
-export interface UseForm<T> extends UseFormState<T>, UseFormActions<T> { }
+export interface UseForm<T> extends UseFormState<T>, UseFormActions<T> {}
 
 export interface UseFormOptions<T> {
 	initialValues: T;
@@ -242,7 +242,7 @@ export interface UseLinkFormActions {
 	generateSlug: () => void;
 }
 
-export interface UseLinkForm extends UseLinkFormState, UseLinkFormActions { }
+export interface UseLinkForm extends UseLinkFormState, UseLinkFormActions {}
 
 export interface LinkFormValues {
 	original_url: string;
@@ -274,7 +274,7 @@ export interface UseClipboardActions {
 	reset: () => void;
 }
 
-export interface UseClipboard extends UseClipboardState, UseClipboardActions { }
+export interface UseClipboard extends UseClipboardState, UseClipboardActions {}
 
 export interface UseDebounceOptions {
 	delay?: number;
@@ -319,7 +319,7 @@ export interface UseApiActions {
 	delete: <T>(url: string, options?: RequestOptions) => Promise<T>;
 }
 
-export interface UseApi extends UseApiState, UseApiActions { }
+export interface UseApi extends UseApiState, UseApiActions {}
 
 export interface RequestOptions {
 	headers?: Record<string, string>;
@@ -366,4 +366,4 @@ export interface UseRedirectActions {
 	cancelRedirect: () => void;
 }
 
-export interface UseRedirect extends UseRedirectState, UseRedirectActions { }
+export interface UseRedirect extends UseRedirectState, UseRedirectActions {}

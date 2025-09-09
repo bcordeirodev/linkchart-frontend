@@ -92,6 +92,7 @@ const getTextConfig = (isDark = false) => {
 					// Para gráficos horizontais, o yaxis mostra os labels (países)
 					// Para gráficos verticais, o yaxis mostra os valores numéricos
 					if (typeof value === 'string') return value;
+
 					return value.toLocaleString();
 				}
 			}
@@ -229,22 +230,120 @@ export const formatBarChart = (
 		};
 	}
 
-	// Usar o mesmo padrão do formatAreaChart que funciona
+	// Processar dados de forma mais simples para ApexCharts
+	const processedData = data
+		.filter((item) => item && typeof item === 'object')
+		.map((item, index) => ({
+			x: String(item[xKey] !== undefined && item[xKey] !== null ? item[xKey] : ''),
+			y: Number(item[yKey] || 0)
+		}));
+
+	const categories = data
+		.filter((item) => item && typeof item === 'object')
+		.map((item) => String(item[xKey] !== undefined && item[xKey] !== null ? item[xKey] : ''));
+
+	// Configuração simplificada para barras horizontais
+	if (horizontal) {
+		return {
+			series: [
+				{
+					name: 'Cliques',
+					data: processedData
+				}
+			],
+			options: {
+				chart: {
+					type: 'bar',
+					height: 350,
+					toolbar: { show: false },
+					animations: {
+						enabled: true,
+						easing: 'easeinout',
+						speed: 800
+					}
+				},
+				colors: [color],
+				plotOptions: {
+					bar: {
+						horizontal: true,
+						borderRadius: 2,
+						barHeight: '60%',
+						distributed: false
+					}
+				},
+				dataLabels: {
+					enabled: true,
+					style: {
+						colors: ['#fff'],
+						fontSize: '11px',
+						fontWeight: 'bold'
+					},
+					formatter: function (val: number) {
+						return val.toString();
+					}
+				},
+				xaxis: {
+					type: 'numeric',
+					labels: {
+						style: {
+							colors: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+							fontSize: '12px'
+						}
+					}
+				},
+				yaxis: {
+					labels: {
+						style: {
+							colors: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+							fontSize: '12px'
+						}
+					}
+				},
+				grid: {
+					borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+					xaxis: {
+						lines: {
+							show: true
+						}
+					},
+					yaxis: {
+						lines: {
+							show: false
+						}
+					}
+				},
+				tooltip: getTooltipConfig(isDark),
+				fill: {
+					opacity: 1
+				},
+				stroke: {
+					show: true,
+					width: 1,
+					colors: ['transparent']
+				}
+			}
+		};
+	}
+
+	// Configuração para barras verticais (original)
+	const processedDataVertical = data
+		.filter((item) => item && typeof item === 'object')
+		.map((item) => ({
+			x: String(item[xKey] !== undefined && item[xKey] !== null ? item[xKey] : ''),
+			y: Number(item[yKey] || 0)
+		}));
+
 	return {
 		series: [
 			{
 				name: 'Cliques',
-				data: data
-					.filter((item) => item && typeof item === 'object')
-					.map((item) => ({
-						x: String(item[xKey] !== undefined && item[xKey] !== null ? item[xKey] : ''),
-						y: Number(item[yKey] || 0)
-					}))
+				data: processedDataVertical
 			}
 		],
 		options: {
 			chart: {
 				type: 'bar',
+				height: 350,
 				toolbar: { show: false },
 				animations: {
 					enabled: true,
@@ -255,17 +354,66 @@ export const formatBarChart = (
 			colors: [color],
 			plotOptions: {
 				bar: {
-					horizontal,
-					borderRadius: horizontal ? [0, 4, 4, 0] : [4, 4, 0, 0],
-					columnWidth: '70%',
-					barHeight: '70%'
+					horizontal: false,
+					borderRadius: 2,
+					columnWidth: '60%',
+					distributed: false
 				}
 			},
 			dataLabels: {
-				enabled: false
+				enabled: true,
+				style: {
+					colors: [isDark ? '#fff' : '#333'],
+					fontSize: '11px',
+					fontWeight: 'bold'
+				},
+				formatter: function (val: number) {
+					return val.toString();
+				},
+				offsetY: -20
 			},
-			tooltip: getTooltipConfig(isDark),
-			...getTextConfig(isDark)
+			fill: {
+				opacity: 1,
+				type: 'solid'
+			},
+			stroke: {
+				show: true,
+				width: 1,
+				colors: ['transparent']
+			},
+			xaxis: {
+				type: 'category',
+				categories: processedDataVertical.map(item => item.x),
+				labels: {
+					style: {
+						colors: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+						fontSize: '12px'
+					}
+				}
+			},
+			yaxis: {
+				labels: {
+					style: {
+						colors: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+						fontSize: '12px'
+					},
+					formatter: (value: number) => Math.round(value).toString()
+				}
+			},
+			grid: {
+				borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+				yaxis: {
+					lines: {
+						show: true
+					}
+				},
+				xaxis: {
+					lines: {
+						show: false
+					}
+				}
+			},
+			tooltip: getTooltipConfig(isDark)
 		}
 	};
 };

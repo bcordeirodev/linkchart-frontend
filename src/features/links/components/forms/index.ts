@@ -4,7 +4,7 @@
  */
 
 // Shared Form Components
-export * from './LinkFormFieldsSimple';
+export * from './LinkFormFields';
 
 // Schema & Types
 export * from './LinkFormSchema';

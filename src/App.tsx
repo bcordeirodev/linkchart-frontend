@@ -13,6 +13,7 @@ import { I18nProvider } from './lib/i18n/I18nProvider';
 import { AuthProvider } from './lib/auth/AuthContext';
 import store from './lib/store/store';
 import AppRouter from './AppRouter';
+import { Message } from '@/shared/components/Message';
 
 /**
  * The main App component.
@@ -53,6 +54,8 @@ function App() {
 											}}
 										>
 											<AppRouter />
+											{/* Global Message Component - Renderizado fora do layout */}
+											<Message />
 										</SnackbarProvider>
 									</MainThemeProvider>
 								</I18nProvider>

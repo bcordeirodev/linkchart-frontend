@@ -53,8 +53,18 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 			// Para gráficos line/area/bar: series é objeto {name: "Total", data: [...]}
 			if (Array.isArray(s) && s.length > 0) return true;
 
-			if (typeof s === 'object' && s !== null && 'data' in s && Array.isArray(s.data) && s.data.length > 0)
-				return true;
+			if (typeof s === 'object' && s !== null && 'data' in s) {
+				const data = (s as any).data;
+				// Verificar se data é array e tem elementos válidos
+				if (Array.isArray(data) && data.length > 0) {
+					// Para gráficos de barras, verificar se os objetos têm x e y
+					return data.some((item) =>
+						item &&
+						typeof item === 'object' &&
+						('x' in item || 'y' in item || typeof item === 'number')
+					);
+				}
+			}
 
 			return false;
 		});
@@ -78,9 +88,9 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 			hasDataPoints,
 			series,
 			seriesData: (series[0] as any)?.data,
-			seriesValidation: series?.map(s => ({
+			seriesValidation: series?.map((s) => ({
 				isObject: typeof s === 'object' && s !== null,
-				hasData: 'data' in s,
+				hasData: 'data' in (s as object),
 				dataIsArray: Array.isArray((s as any).data),
 				dataLength: (s as any).data?.length || 0
 			})),
@@ -226,16 +236,23 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 						chart: {
 							...((options.chart as object) || {}),
 							type: type,
-							height: height,
 							background: 'transparent',
 							fontFamily: 'Inter, system-ui, sans-serif',
 							toolbar: {
-								show: false
+								show: false,
+								...((options.chart as any)?.toolbar || {})
 							},
 							events: {
 								mounted: () => {
 									handleChartLoad();
-								}
+								},
+								...((options.chart as any)?.events || {})
+							},
+							animations: {
+								enabled: true,
+								easing: 'easeinout',
+								speed: 800,
+								...((options.chart as any)?.animations || {})
 							}
 						},
 						theme: {

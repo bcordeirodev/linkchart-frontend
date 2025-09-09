@@ -13,11 +13,11 @@ interface UseLinkAnalyticsReturn {
 
 /**
  * 🔄 Hook otimizado para analytics de link individual REFATORADO
- * 
+ *
  * @description
  * Agora usa hooks individuais por tab ao invés do useEnhancedAnalytics.
  * Cada componente de analytics do link usa seu próprio hook específico.
- * 
+ *
  * @architecture
  * - Não depende mais do endpoint comprehensive
  * - Busca apenas dados básicos do link
@@ -28,9 +28,9 @@ export function useLinkAnalyticsOptimized(linkId: string): UseLinkAnalyticsRetur
 	const [linkError, setLinkError] = useState<string | null>(null);
 	const [linkLoading, setLinkLoading] = useState(true);
 
-	// Dados básicos do analytics - apenas para compatibilidade
+	// Dados básicos do analytics - estrutura mínima para compatibilidade
 	// Os dados detalhados são carregados pelos hooks individuais de cada tab
-	const [analyticsData, setAnalyticsData] = useState<any>(null);
+	const [analyticsData, setAnalyticsData] = useState<LinkAnalyticsData | null>(null);
 	const [analyticsLoading, setAnalyticsLoading] = useState(false);
 	const [analyticsError, setAnalyticsError] = useState<string | null>(null);
 
@@ -66,12 +66,33 @@ export function useLinkAnalyticsOptimized(linkId: string): UseLinkAnalyticsRetur
 				has_data: true,
 				link_info: linkInfo,
 				// Dados detalhados são carregados pelos hooks individuais
-				overview: null,
-				geographic: null,
-				temporal: null,
-				audience: null,
-				insights: null
-			});
+				overview: {
+					total_clicks: linkInfo.clicks || 0,
+					unique_visitors: Math.floor((linkInfo.clicks || 0) * 0.8), // Estimativa
+					avg_daily_clicks: Math.floor((linkInfo.clicks || 0) / 30),
+					conversion_rate: 0,
+					countries_reached: 0,
+					bounce_rate: 0,
+					peak_hour: '--:--'
+				},
+				geographic: {
+					top_countries: [],
+					top_states: [],
+					top_cities: [],
+					heatmap_data: []
+				},
+				temporal: {
+					clicks_by_hour: [],
+					clicks_by_day_of_week: []
+				},
+				audience: {
+					device_breakdown: []
+				},
+				insights: []
+			} as LinkAnalyticsData);
+		} else {
+			// Limpar dados quando não há linkInfo
+			setAnalyticsData(null);
 		}
 	}, [linkInfo]);
 

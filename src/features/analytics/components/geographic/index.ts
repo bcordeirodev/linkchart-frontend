@@ -7,8 +7,4 @@ export { GeographicMetrics } from './GeographicMetrics';
 export { useGeographicData } from '../../hooks/useGeographicData';
 
 // Tipos
-export type {
-    GeographicStats,
-    UseGeographicDataOptions,
-    UseGeographicDataReturn
-} from '../../hooks/useGeographicData';
+export type { GeographicStats, UseGeographicDataOptions, UseGeographicDataReturn } from '../../hooks/useGeographicData';

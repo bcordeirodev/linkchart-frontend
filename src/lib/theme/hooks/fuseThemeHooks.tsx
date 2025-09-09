@@ -26,6 +26,7 @@ const resolveTheme = (themeKey: string | FuseThemeType): FuseThemeType => {
 	}
 
 	const theme = allThemes[themeKey as keyof typeof allThemes];
+
 	if (!theme) {
 		console.warn(`Tema '${themeKey}' não encontrado, usando tema padrão`);
 		return allThemes.default;

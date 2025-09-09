@@ -67,6 +67,7 @@ export const createLinearGradient = (
 	const angle = directionMap[direction];
 
 	let colorStops = colors;
+
 	if (stops && stops.length === colors.length) {
 		colorStops = colors.map((color, index) => `${color} ${stops[index]}%`);
 	}
@@ -77,18 +78,14 @@ export const createLinearGradient = (
 /**
  * Cria um gradiente radial
  */
-export const createRadialGradient = (
-	colors: string[],
-	position: string = 'center',
-	shape: string = 'ellipse'
-): string => {
+export const createRadialGradient = (colors: string[], position = 'center', shape = 'ellipse'): string => {
 	return `radial-gradient(${shape} at ${position}, ${colors.join(', ')})`;
 };
 
 /**
  * Cria um gradiente cônico
  */
-export const createConicGradient = (colors: string[], angle: number = 0, position: string = 'center'): string => {
+export const createConicGradient = (colors: string[], angle = 0, position = 'center'): string => {
 	return `conic-gradient(from ${angle}deg at ${position}, ${colors.join(', ')})`;
 };
 
@@ -107,6 +104,7 @@ export const createThemeGradient = (theme: Theme, config: GradientConfig): strin
 
 	// Se cores customizadas não foram fornecidas, usa as do tema
 	let colors = customColors;
+
 	if (!colors) {
 		const paletteColor = theme.palette[variant];
 		colors = [paletteColor.light, paletteColor.main, paletteColor.dark];

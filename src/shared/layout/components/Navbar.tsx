@@ -108,13 +108,23 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 		{
 			label: 'Analytics',
 			path: '/analytics',
-			icon: <AppIcon intent="analytics" size={20} />,
+			icon: (
+				<AppIcon
+					intent="analytics"
+					size={20}
+				/>
+			),
 			description: 'Global analytics & insights'
 		},
 		{
 			label: 'Links',
 			path: '/link',
-			icon: <AppIcon intent="link" size={20} />,
+			icon: (
+				<AppIcon
+					intent="link"
+					size={20}
+				/>
+			),
 			description: 'Manage your links'
 		}
 	];
@@ -221,7 +231,11 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 							}
 						}}
 					>
-						<AppIcon intent="analytics" size={20} color="white" />
+						<AppIcon
+							intent="analytics"
+							size={20}
+							color="white"
+						/>
 					</Box>
 
 					{/* Logo Text */}
@@ -304,16 +318,16 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 											},
 											'&::after': isActive
 												? {
-														content: '""',
-														position: 'absolute',
-														bottom: 4,
-														left: '50%',
-														transform: 'translateX(-50%)',
-														width: '60%',
-														height: 2,
-														background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-														borderRadius: 1
-													}
+													content: '""',
+													position: 'absolute',
+													bottom: 4,
+													left: '50%',
+													transform: 'translateX(-50%)',
+													width: '60%',
+													height: 2,
+													background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+													borderRadius: 1
+												}
 												: {}
 										}}
 									>
@@ -344,7 +358,17 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 								}
 							}}
 						>
-							{mobileMenuOpen ? <AppIcon intent="cancel" size={24} /> : <AppIcon intent="menu" size={24} />}
+							{mobileMenuOpen ? (
+								<AppIcon
+									intent="cancel"
+									size={24}
+								/>
+							) : (
+								<AppIcon
+									intent="menu"
+									size={24}
+								/>
+							)}
 						</IconButton>
 					)}
 
@@ -477,33 +501,14 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 						}}
 					>
 						<ListItemIcon>
-							<AppIcon intent="profile" size={20} />
+							<AppIcon
+								intent="profile"
+								size={20}
+							/>
 						</ListItemIcon>
 						<ListItemText
 							primary="Profile Settings"
 							secondary="Manage your account"
-						/>
-					</MenuItem>
-
-					<MenuItem
-						onClick={() => {
-							handleMenuClose();
-							handleNavigation('/settings');
-						}}
-						sx={{
-							py: 1.5,
-							px: 3,
-							'&:hover': {
-								background: alpha(theme.palette.primary.main, 0.08)
-							}
-						}}
-					>
-						<ListItemIcon>
-							<AppIcon intent="settings" size={20} />
-						</ListItemIcon>
-						<ListItemText
-							primary="Preferences"
-							secondary="App settings & themes"
 						/>
 					</MenuItem>
 
@@ -521,7 +526,11 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 						}}
 					>
 						<ListItemIcon>
-							<AppIcon intent="logout" size={20} color={theme.palette.error.main} />
+							<AppIcon
+								intent="logout"
+								size={20}
+								color={theme.palette.error.main}
+							/>
 						</ListItemIcon>
 						<ListItemText
 							primary="Sign Out"

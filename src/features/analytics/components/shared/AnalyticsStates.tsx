@@ -11,18 +11,18 @@ interface AnalyticsStatesProps {
 
 /**
  * 🎭 ANALYTICS STATES - GERENCIADOR DE ESTADOS
- * 
+ *
  * @description
  * Componente responsável por renderizar os estados especiais:
  * - Loading: Indicador de carregamento
  * - Error: Mensagem de erro com ação de retry
  * - Empty: Estado vazio com orientações
- * 
+ *
  * @responsibilities
  * - Renderizar estados de loading, error e empty
  * - Manter consistência visual entre estados
  * - Fornecer ações apropriadas (retry, orientações)
- * 
+ *
  * @usage
  * ```tsx
  * <AnalyticsStates
@@ -33,12 +33,7 @@ interface AnalyticsStatesProps {
  * />
  * ```
  */
-export function AnalyticsStates({
-	loading,
-	error,
-	hasData,
-	showHeader = true
-}: AnalyticsStatesProps) {
+export function AnalyticsStates({ loading, error, hasData, showHeader = true }: AnalyticsStatesProps) {
 	const theme = useTheme();
 	const animations = createPresetAnimations(theme);
 
@@ -69,10 +64,16 @@ export function AnalyticsStates({
 					}}
 				>
 					<CircularProgress size={40} />
-					<Typography variant="h6" sx={{ mt: 2 }}>
+					<Typography
+						variant="h6"
+						sx={{ mt: 2 }}
+					>
 						Carregando Analytics
 					</Typography>
-					<Typography variant="body2" color="text.secondary">
+					<Typography
+						variant="body2"
+						color="text.secondary"
+					>
 						Preparando seus dados...
 					</Typography>
 				</Box>
@@ -106,7 +107,10 @@ export function AnalyticsStates({
 						...animations.fadeIn
 					}}
 				>
-					<Typography variant="h6" sx={{ mb: 1 }}>
+					<Typography
+						variant="h6"
+						sx={{ mb: 1 }}
+					>
 						⚠️ Erro ao carregar dados
 					</Typography>
 					<Typography
@@ -153,10 +157,16 @@ export function AnalyticsStates({
 						...animations.fadeIn
 					}}
 				>
-					<Typography variant="h6" sx={{ mb: 1 }}>
+					<Typography
+						variant="h6"
+						sx={{ mb: 1 }}
+					>
 						📈 Analytics em Preparação
 					</Typography>
-					<Typography variant="body2" color="text.secondary">
+					<Typography
+						variant="body2"
+						color="text.secondary"
+					>
 						Compartilhe seus links para desbloquear insights detalhados!
 					</Typography>
 				</Box>

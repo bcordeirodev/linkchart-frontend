@@ -165,7 +165,7 @@ export const CreateLinkButton = styled(Button)(({ theme }) => ({
 	textTransform: 'none',
 	fontWeight: 600,
 	fontSize: '1rem',
-	padding: theme.spacing(1.5, 4),
+	padding: `${theme.spacing(1.5)} ${theme.spacing(4)}`,
 	background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.secondary.light} 100%)`,
 	boxShadow: `0 4px 15px ${alpha(theme.palette.secondary.main, 0.4)}`,
 	transition: theme.transitions.create(['all'], {
@@ -208,12 +208,12 @@ export const CreateLinkButton = styled(Button)(({ theme }) => ({
 
 	[theme.breakpoints.down('md')]: {
 		fontSize: '0.875rem',
-		padding: theme.spacing(1.25, 3)
+		padding: `${theme.spacing(1.25)} ${theme.spacing(3)}`
 	},
 
 	[theme.breakpoints.down('sm')]: {
 		width: '100%',
-		justifyContent: 'center'
+		padding: `${theme.spacing(1.25)} ${theme.spacing(2.5)}`
 	}
 }));
 

@@ -4,7 +4,7 @@ import { Box, Typography, Chip, useTheme } from '@mui/material';
 import { AppIcon } from '@/lib/icons';
 import { useNavigate } from 'react-router-dom';
 import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
-import { LinkResponse } from '@/features/links/types/link';
+import { LinkResponse } from '@/types';
 import { createTextGradient, useDesignTokens } from '@/lib/theme';
 import { Button } from '@mui/material';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
@@ -76,7 +76,11 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 									mr: 2
 								}}
 							>
-								<AppIcon intent="analytics" size={24} color={theme.palette.primary.main} />
+								<AppIcon
+									intent="analytics"
+									size={24}
+									color={theme.palette.primary.main}
+								/>
 							</Box>
 							<Typography
 								variant="h4"

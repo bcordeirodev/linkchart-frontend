@@ -15,16 +15,16 @@ export { useAudienceData } from '../../hooks/useAudienceData';
 
 // Tipos (re-exports)
 export type {
-    DeviceData,
-    BrowserData,
-    OSData,
-    ReferrerData,
-    AudienceData,
-    AudienceStats,
-    UseAudienceDataOptions,
-    UseAudienceDataReturn,
-    AudienceAnalysisProps,
-    AudienceChartProps,
-    AudienceMetricsProps,
-    AudienceInsightsProps
+	DeviceData,
+	BrowserData,
+	OSData,
+	ReferrerData,
+	AudienceData,
+	AudienceStats,
+	UseAudienceDataOptions,
+	UseAudienceDataReturn,
+	AudienceAnalysisProps,
+	AudienceChartProps,
+	AudienceMetricsProps,
+	AudienceInsightsProps
 } from '@/types/analytics';

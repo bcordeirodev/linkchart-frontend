@@ -6,9 +6,9 @@ import { useTheme } from '@mui/material/styles';
 
 interface GeographicInsightsProps {
 	data: HeatmapPoint[];
-	countries: { country: string; iso_code: string; clicks: number; currency: string }[];
-	states: { country: string; state: string; state_name: string; clicks: number }[];
-	cities: { city: string; state: string; country: string; clicks: number }[];
+	countries: { country: string; iso_code?: string; clicks: number; currency?: string }[];
+	states: { country?: string; state: string; state_name?: string; clicks: number }[];
+	cities: { city: string; state?: string; country?: string; clicks: number }[];
 }
 
 export function GeographicInsights({ data, countries, states, cities }: GeographicInsightsProps) {
@@ -24,7 +24,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 	const countryChartData = countries.slice(0, 8).map((country) => ({
 		name: country.country,
 		value: country.clicks,
-		currency: country.currency
+		currency: country.currency || 'USD'
 	}));
 
 	const cityChartData = cities.slice(0, 6).map((city) => ({

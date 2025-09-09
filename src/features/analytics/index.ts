@@ -4,9 +4,8 @@
  */
 
 // Components
-export { Analytics } from './components/Analytics';
-export { AnalyticsContainer } from './components/AnalyticsContainer';
-export * from './components/dashboard/charts/Charts';
+export { Analytics, AnalyticsContainer } from './components/Analytics';
+export * from './components/dashboard/shared/charts/Charts';
 export * from './components/Header';
 
 // Enhanced Components (with dedicated hooks)

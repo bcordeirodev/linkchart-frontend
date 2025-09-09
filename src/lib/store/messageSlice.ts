@@ -72,7 +72,7 @@ const initialState: MessageState = {
 	options: {
 		variant: 'info',
 		anchorOrigin: {
-			vertical: 'top',
+			vertical: 'bottom',
 			horizontal: 'center'
 		},
 		autoHideDuration: 4000,
@@ -116,6 +116,7 @@ export const messageSlice = createSlice({
 			// Se há mensagens na fila, mostra a próxima
 			if (state.queue.length > 0) {
 				const nextMessage = state.queue.shift();
+
 				if (nextMessage) {
 					state.open = true;
 					state.options = nextMessage;
@@ -145,6 +146,7 @@ export const messageSlice = createSlice({
 				// Mostra próxima da fila se houver
 				if (state.queue.length > 0) {
 					const nextMessage = state.queue.shift();
+
 					if (nextMessage) {
 						state.open = true;
 						state.options = nextMessage;
@@ -168,7 +170,7 @@ rootReducer.inject(messageSlice);
 const injectedSlice = messageSlice.injectInto(rootReducer);
 
 declare module './rootReducer' {
-	export interface LazyLoadedSlices extends WithSlice<typeof messageSlice> {}
+	export interface LazyLoadedSlices extends WithSlice<typeof messageSlice> { }
 }
 
 // Export actions

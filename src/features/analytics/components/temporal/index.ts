@@ -1,5 +1,4 @@
-export { TemporalAnalysisEnhanced } from './TemporalAnalysis';
-export { TemporalAnalysisEnhanced as TemporalAnalysis } from './TemporalAnalysis';
+export { default as TemporalAnalysis } from './TemporalAnalysis';
 export { TemporalChart } from './TemporalChart';
 export { TemporalInsights } from './TemporalInsights';
 
@@ -7,8 +6,4 @@ export { TemporalInsights } from './TemporalInsights';
 export { useTemporalData } from '../../hooks/useTemporalData';
 
 // Tipos
-export type {
-    TemporalStats,
-    UseTemporalDataOptions,
-    UseTemporalDataReturn
-} from '../../hooks/useTemporalData';
+export type { TemporalStats, UseTemporalDataOptions, UseTemporalDataReturn } from '../../hooks/useTemporalData';

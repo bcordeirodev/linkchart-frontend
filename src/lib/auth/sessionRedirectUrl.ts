@@ -49,6 +49,7 @@ interface StoredRedirectData {
 const isSessionStorageAvailable = (): boolean => {
 	try {
 		if (typeof window === 'undefined') return false;
+
 		if (!('sessionStorage' in window)) return false;
 
 		// Teste de escrita/leitura
@@ -89,6 +90,7 @@ const isValidRedirectUrl = (url: string): boolean => {
 
 		// Bloqueia protocolos perigosos
 		const dangerousProtocols = ['javascript:', 'data:', 'vbscript:'];
+
 		if (dangerousProtocols.some((protocol) => url.toLowerCase().startsWith(protocol))) {
 			console.warn(`${CONFIG.logPrefix} Protocolo perigoso detectado:`, url);
 			return false;
@@ -219,6 +221,7 @@ export const getRedirectInfo = (): StoredRedirectData | null => {
 
 	try {
 		const storedData = window.sessionStorage.getItem(CONFIG.storageKey);
+
 		if (!storedData) return null;
 
 		const data: StoredRedirectData = JSON.parse(storedData);
@@ -245,9 +248,11 @@ export const cleanupExpiredRedirects = (): void => {
 
 	try {
 		const info = getRedirectInfo();
+
 		if (!info) return; // Já foi limpo ou não existe
 
 		const now = Date.now();
+
 		if (now - info.timestamp > CONFIG.maxAge) {
 			resetSessionRedirectUrl();
 			console.debug(`${CONFIG.logPrefix} URL de redirect expirada removida durante limpeza`);

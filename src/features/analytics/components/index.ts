@@ -5,20 +5,20 @@
 // Mantém toda funcionalidade existente com melhor organização
 
 // === COMPONENTES PRINCIPAIS ===
-export { Analytics } from './Analytics';
+export { Analytics, AnalyticsContainer } from './Analytics';
 export { Header } from './Header';
 
 // === MÉTRICAS E VISÃO GERAL ===
 export { DashboardMetrics } from './dashboard';
-export { AnalyticsMetrics } from './analytics';
+export { default as AnalyticsMetrics } from './dashboard/shared/DashboardMetrics';
 export { GeographicMetrics } from './geographic';
 export { AudienceMetrics } from './audience';
 
 // === GRÁFICOS E VISUALIZAÇÕES ===
-export { Charts } from './dashboard/charts/Charts';
+export { Charts } from './dashboard/shared/charts/Charts';
 
 // === COMPONENTES DE DASHBOARD ===
-export { TopLinks } from './dashboard/TopLinks';
+export { TopLinks } from './dashboard/shared/TopLinks';
 
 // === COMPONENTES ESPECIALIZADOS ORIGINAIS ===
 export * from './audience';

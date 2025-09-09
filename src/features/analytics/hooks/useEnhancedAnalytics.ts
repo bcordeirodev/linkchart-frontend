@@ -1,6 +1,6 @@
 /**
  * @deprecated Este hook foi substituído por hooks individuais
- * 
+ *
  * Use os hooks específicos ao invés deste:
  * - useDashboardData para dados do dashboard
  * - useTemporalData para dados temporais
@@ -9,21 +9,13 @@
  * - useInsightsData para insights
  * - useHeatmapData para heatmap
  * - useLinkPerformance para performance
- * 
+ *
  * Este arquivo será removido na próxima versão.
  */
 
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api/client';
-import type {
-	HeatmapPoint,
-	CountryData,
-	StateData,
-	CityData,
-	HourlyData,
-	DayOfWeekData,
-	DeviceData
-} from '@/types';
+import type { HeatmapPoint, CountryData, StateData, CityData, HourlyData, DayOfWeekData, DeviceData } from '@/types';
 
 // Tipos movidos para @/types/core/api
 // @deprecated Use types from @/types instead
@@ -86,7 +78,6 @@ export function useEnhancedAnalytics(linkId: string) {
 			setLoading(true);
 			setError(null);
 
-
 			// Tentar usar o novo endpoint primeiro
 			let response: EnhancedAnalyticsData;
 			try {
@@ -95,7 +86,6 @@ export function useEnhancedAnalytics(linkId: string) {
 				);
 				// O endpoint protegido retorna dados dentro de 'data'
 				response = apiResponse.data || (apiResponse as unknown as EnhancedAnalyticsData);
-
 			} catch (authError) {
 				// Se falhar por autenticação, usar endpoint de teste temporário
 
@@ -117,12 +107,10 @@ export function useEnhancedAnalytics(linkId: string) {
 
 					const testResponse = await directResponse.json();
 
-
 					// Agora o endpoint de teste retorna dados completos
 					setData(testResponse);
 					return;
 				} catch (testError) {
-
 					throw testError;
 				}
 			}

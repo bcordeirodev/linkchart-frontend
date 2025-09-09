@@ -6,7 +6,7 @@ import DataTable from '../shared/ui/data-display/DataTable';
 
 import { useLinks } from '@/features/links/hooks/useLinks';
 import { LinksHeader } from '@/features/links/components/LinksHeader';
-import { DashboardMetrics } from '@/features/analytics/components/dashboard/DashboardMetrics';
+import { DashboardMetrics } from '@/features/analytics/components/dashboard/shared/DashboardMetrics';
 import { LinksFilters } from '@/features/links/components/LinksFilters';
 import { useLinksTableColumns } from '@/features/links/hooks/useLinksTableColumns';
 import MainLayout from '@/shared/layout/MainLayout';

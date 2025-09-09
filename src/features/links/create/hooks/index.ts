@@ -3,4 +3,5 @@
  * Barrel exports para hooks de criação
  */
 
-export * from './useCreateLink';
+// Hook useCreateLink foi deprecado em favor do React Hook Form
+// Implementação direta nos componentes CreateLinkForm e EditLinkForm

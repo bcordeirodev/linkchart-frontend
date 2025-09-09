@@ -59,13 +59,13 @@ export default class LinkService extends BaseService {
 				title: 'Link Principal',
 				slug: 'principal',
 				original_url: 'https://escolaplanejamento.sit.spgg.rs.gov.br/',
-				short_url: `${API_CONFIG.BASE_URL}/r/principal`,
+				short_url: `${API_CONFIG.BASE_URL}/api/r/principal`,
 				clicks: 23463,
 				is_active: true,
 				created_at: '2025-08-18T19:56:20.000000Z',
 				updated_at: '2025-08-18T19:56:20.000000Z',
 				expires_at: null,
-				starts_in: null,
+				starts_in: null
 			},
 			{
 				id: `2`,
@@ -73,13 +73,13 @@ export default class LinkService extends BaseService {
 				title: 'Link Secundário',
 				slug: 'secundario',
 				original_url: 'https://example.com',
-				short_url: `${API_CONFIG.BASE_URL}/r/secundario`,
+				short_url: `${API_CONFIG.BASE_URL}/api/r/secundario`,
 				clicks: 1234,
 				is_active: true,
 				created_at: '2025-08-19T10:30:00.000000Z',
 				updated_at: '2025-08-19T10:30:00.000000Z',
 				expires_at: null,
-				starts_in: null,
+				starts_in: null
 			}
 		];
 
@@ -100,16 +100,16 @@ export default class LinkService extends BaseService {
 				id: id,
 				user_id: '1',
 				title: 'Link de Exemplo',
-				slug: 'exemplo',
+				slug: `exemplo-${id}`,
 				original_url: 'https://example.com',
-				short_url: `${API_CONFIG.BASE_URL}/r/exemplo`,
-				shorted_url: `${API_CONFIG.BASE_URL}/r/exemplo`,
+				short_url: `http://localhost:3000/r/exemplo-${id}`,
+				shorted_url: `http://localhost:3000/r/exemplo-${id}`,
 				clicks: 23463,
 				is_active: true,
 				created_at: new Date().toISOString(),
 				updated_at: new Date().toISOString(),
 				expires_at: null,
-				starts_in: null,
+				starts_in: null
 			}
 		};
 

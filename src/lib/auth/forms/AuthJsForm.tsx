@@ -91,6 +91,34 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				required
 				fullWidth
 				variant="outlined"
+				sx={{
+					'& .MuiOutlinedInput-root': {
+						borderRadius: 2,
+						backgroundColor: '#ffffff',
+						'& input': {
+							color: '#212121',
+							'&::placeholder': {
+								color: '#5F6368',
+								opacity: 1
+							}
+						},
+						'& fieldset': {
+							borderColor: alpha('#000000', 0.2)
+						},
+						'&:hover fieldset': {
+							borderColor: '#0A74DA'
+						},
+						'&.Mui-focused fieldset': {
+							borderColor: '#0A74DA'
+						}
+					},
+					'& .MuiInputLabel-root': {
+						color: '#5F6368',
+						'&.Mui-focused': {
+							color: '#0A74DA'
+						}
+					}
+				}}
 			/>
 			<TextField
 				type="password"
@@ -101,6 +129,34 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				required
 				fullWidth
 				variant="outlined"
+				sx={{
+					'& .MuiOutlinedInput-root': {
+						borderRadius: 2,
+						backgroundColor: '#ffffff',
+						'& input': {
+							color: '#212121',
+							'&::placeholder': {
+								color: '#5F6368',
+								opacity: 1
+							}
+						},
+						'& fieldset': {
+							borderColor: alpha('#000000', 0.2)
+						},
+						'&:hover fieldset': {
+							borderColor: '#0A74DA'
+						},
+						'&.Mui-focused fieldset': {
+							borderColor: '#0A74DA'
+						}
+					},
+					'& .MuiInputLabel-root': {
+						color: '#5F6368',
+						'&.Mui-focused': {
+							color: '#0A74DA'
+						}
+					}
+				}}
 			/>
 			<Button
 				type="submit"
@@ -108,6 +164,22 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				fullWidth
 				variant="contained"
 				size="large"
+				sx={{
+					mt: 1,
+					py: 1.5,
+					borderRadius: 2,
+					fontSize: '1.1rem',
+					fontWeight: 600,
+					textTransform: 'none',
+					background: 'linear-gradient(135deg, #0A74DA 0%, #0D47A1 100%)',
+					'&:hover': {
+						background: 'linear-gradient(135deg, #0D47A1 0%, #002171 100%)'
+					},
+					'&:disabled': {
+						background: '#E0E0E0',
+						color: '#9E9E9E'
+					}
+				}}
 			>
 				{loading ? (
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -126,7 +198,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				variant="body2"
 				sx={{
 					textAlign: 'center',
-					color: 'text.secondary',
+					color: '#5F6368',
 					mt: 1
 				}}
 			>

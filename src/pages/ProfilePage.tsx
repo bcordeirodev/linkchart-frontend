@@ -1,6 +1,7 @@
 import { ProfileForm } from '@/features/profile/components/ProfileForm';
 import { ProfileHeader } from '@/features/profile/components/ProfileHeader';
 import { ProfileSidebar } from '@/features/profile/components/ProfileSidebar';
+import { PasswordChangeForm } from '@/features/profile/components/PasswordChangeForm';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
 import { profileService, UserProfile } from '@/services';
@@ -103,10 +104,13 @@ function ProfilePage() {
 							xs={12}
 							md={8}
 						>
-							<ProfileForm
-								user={user}
-								onUserUpdate={handleUserUpdate}
-							/>
+							<Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+								<ProfileForm
+									user={user}
+									onUserUpdate={handleUserUpdate}
+								/>
+								<PasswordChangeForm />
+							</Box>
 						</Grid>
 
 						<Grid

@@ -148,24 +148,24 @@ function SignInPage() {
 							sx={{
 								mt: 3,
 								pt: 2,
-								borderTop: `1px solid ${alpha('#ffffff', 0.1)}`,
+								borderTop: `1px solid ${alpha('#000000', 0.1)}`,
 								textAlign: 'center'
 							}}
 						>
 							<Typography
 								variant="body2"
-								sx={{ color: alpha('#ffffff', 0.7) }}
+								sx={{ color: '#5F6368' }}
 							>
-								Não possui uma conta??{' '}
+								Não possui uma conta?{' '}
 								<Link
 									to="/sign-up"
 									sx={{
-										color: '#3b82f6',
+										color: '#0A74DA',
 										fontWeight: 600,
 										textDecoration: 'none',
 										transition: 'all 0.2s ease',
 										'&:hover': {
-											color: '#60a5fa',
+											color: '#0D47A1',
 											textDecoration: 'underline'
 										}
 									}}

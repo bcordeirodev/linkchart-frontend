@@ -143,7 +143,10 @@ class ApiClient {
 					// Se há erros específicos de validação, formatá-los
 					if (data.errors && typeof data.errors === 'object') {
 						const validationErrors = Object.entries(data.errors)
-							.map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
+							.map(
+								([field, messages]) =>
+									`${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`
+							)
 							.join('; ');
 						errorMessage = `Erros de validação: ${validationErrors}`;
 					} else {

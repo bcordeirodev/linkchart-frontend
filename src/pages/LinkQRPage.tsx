@@ -1,13 +1,24 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Typography, Button, Card, CardContent, Alert } from '@mui/material';
+import { Box, Typography, Button, Card, CardContent, Alert, CircularProgress } from '@mui/material';
 import { ArrowBack, Download, Share } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
+// import QRCode from 'qrcode'; // Removido import estático
 import MainLayout from '@/shared/layout/MainLayout';
 import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 import { useLinks } from '@/features/links/hooks/useLinks';
 import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
+import { useShareAPI } from '@/features/links/hooks/useShareAPI';
+
+/**
+ * Constrói a URL encurtada baseada no slug
+ */
+const buildShortUrl = (slug: string): string => {
+	// URL encurtada deve apontar para o frontend (redirect page)
+	const frontendUrl = window.location.origin || 'http://localhost:3000';
+	return `${frontendUrl}/r/${slug}`;
+};
 
 /**
  * 📱 Página de QR Code para Link Individual
@@ -17,9 +28,11 @@ function LinkQRPage() {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const { getLink } = useLinks();
+	const { shareOrCopy } = useShareAPI();
 	const [linkInfo, setLinkInfo] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('');
 
 	useEffect(() => {
 		const fetchLink = async () => {
@@ -28,8 +41,49 @@ function LinkQRPage() {
 			try {
 				setLoading(true);
 				const link = await getLink(id);
+
+				// Construir short_url se não existir
+				if (link && !link.short_url && link.slug) {
+					link.short_url = buildShortUrl(link.slug);
+				}
+
 				setLinkInfo(link);
+
+				// Gerar QR Code
+				if (link?.short_url) {
+
+					// Validar se a URL é válida
+					try {
+						new URL(link.short_url);
+					} catch (urlError) {
+						setError('URL encurtada inválida');
+						return;
+					}
+
+					try {
+						// Import dinâmico da biblioteca QRCode
+						const QRCode = await import('qrcode');
+						const qrDataUrl = await QRCode.default.toDataURL(link.short_url, {
+							width: 200,
+							margin: 2,
+							color: {
+								dark: '#000000',
+								light: '#FFFFFF'
+							},
+							errorCorrectionLevel: 'M'
+						});
+						console.log('✅ QR Code gerado com sucesso');
+						setQrCodeDataUrl(qrDataUrl);
+					} catch (qrError) {
+						console.error('❌ Erro ao gerar QR Code:', qrError);
+						setError(`Erro ao gerar QR Code: ${qrError instanceof Error ? qrError.message : 'Erro desconhecido'}`);
+					}
+				} else {
+					console.warn('⚠️ Link não possui short_url:', link);
+					setError('Link não possui URL encurtada válida');
+				}
 			} catch (err) {
+				console.error('❌ Erro ao carregar link:', err);
 				setError('Erro ao carregar informações do link');
 			} finally {
 				setLoading(false);
@@ -37,20 +91,32 @@ function LinkQRPage() {
 		};
 
 		fetchLink();
-	}, [id, getLink]);
+	}, [id]); // Removido getLink das dependências para evitar re-renders
 
 	const handleBack = () => {
 		navigate('/link');
 	};
 
 	const handleDownloadQR = () => {
-		// Implementar download do QR Code
-		console.log('Download QR Code');
+		if (!qrCodeDataUrl || !linkInfo) return;
+
+		// Criar link de download
+		const link = document.createElement('a');
+		link.download = `qr-code-${linkInfo.slug || linkInfo.id}.png`;
+		link.href = qrCodeDataUrl;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
 	};
 
-	const handleShareQR = () => {
-		// Implementar compartilhamento do QR Code
-		console.log('Share QR Code');
+	const handleShareQR = async () => {
+		if (!linkInfo) return;
+
+		await shareOrCopy({
+			title: `QR Code - ${linkInfo.title || linkInfo.original_url}`,
+			text: `Confira este QR Code para: ${linkInfo.title || linkInfo.original_url}`,
+			url: linkInfo.short_url
+		});
 	};
 
 	if (!id) {
@@ -69,8 +135,11 @@ function LinkQRPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<Box sx={{ p: 3 }}>
-						<Typography>Carregando...</Typography>
+					<Box sx={{ p: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+						<Box sx={{ textAlign: 'center' }}>
+							<CircularProgress size={40} sx={{ mb: 2 }} />
+							<Typography variant="body1">Carregando informações do link...</Typography>
+						</Box>
 					</Box>
 				</MainLayout>
 			</AuthGuardRedirect>
@@ -92,7 +161,7 @@ function LinkQRPage() {
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
-				<Box sx={{ p: 3 }}>
+				<Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 800, mx: 'auto' }}>
 					{/* Breadcrumb */}
 					<Box sx={{ mb: 2 }}>
 						<PageBreadcrumb skipHome />
@@ -100,10 +169,18 @@ function LinkQRPage() {
 
 					{/* Header */}
 					<Box sx={{ mb: 4 }}>
-						<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+						<Box sx={{
+							display: 'flex',
+							alignItems: { xs: 'flex-start', sm: 'center' },
+							justifyContent: 'space-between',
+							mb: 2,
+							flexDirection: { xs: 'column', sm: 'row' },
+							gap: { xs: 2, sm: 0 }
+						}}>
 							<Typography
 								variant="h4"
 								component="h1"
+								sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
 							>
 								📱 QR Code do Link
 							</Typography>
@@ -111,6 +188,7 @@ function LinkQRPage() {
 								variant="outlined"
 								startIcon={<ArrowBack />}
 								onClick={handleBack}
+								sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
 							>
 								Voltar para Lista
 							</Button>
@@ -119,13 +197,17 @@ function LinkQRPage() {
 						<Typography
 							variant="subtitle1"
 							color="text.secondary"
+							sx={{
+								wordBreak: 'break-word',
+								fontSize: { xs: '0.9rem', md: '1rem' }
+							}}
 						>
 							{linkInfo.title || linkInfo.original_url}
 						</Typography>
 					</Box>
 
 					{/* QR Code */}
-					<Card sx={{ mb: 4, maxWidth: 400, mx: 'auto' }}>
+					<Card sx={{ mb: 4, maxWidth: { xs: '100%', sm: 400 }, mx: 'auto' }}>
 						<CardContent sx={{ textAlign: 'center', py: 4 }}>
 							<Typography
 								variant="h6"
@@ -134,42 +216,76 @@ function LinkQRPage() {
 								QR Code
 							</Typography>
 
-							{/* Placeholder para o QR Code */}
-							<Box
-								sx={{
-									width: 200,
-									height: 200,
-									bgcolor: 'grey.100',
-									mx: 'auto',
-									mb: 2,
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									borderRadius: 1
-								}}
-							>
-								<Typography
-									variant="body2"
-									color="text.secondary"
+							{/* QR Code Real */}
+							{qrCodeDataUrl ? (
+								<Box
+									sx={{
+										mx: 'auto',
+										mb: 2,
+										display: 'flex',
+										justifyContent: 'center'
+									}}
 								>
-									QR Code será gerado aqui
-								</Typography>
-							</Box>
+									<img
+										src={qrCodeDataUrl}
+										alt="QR Code"
+										style={{
+											width: '100%',
+											maxWidth: 200,
+											height: 'auto',
+											aspectRatio: '1/1',
+											borderRadius: 8,
+											border: '1px solid #e0e0e0'
+										}}
+									/>
+								</Box>
+							) : (
+								<Box
+									sx={{
+										width: 200,
+										height: 200,
+										bgcolor: 'grey.100',
+										mx: 'auto',
+										mb: 2,
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										borderRadius: 1
+									}}
+								>
+									<CircularProgress size={30} />
+								</Box>
+							)}
 
 							<Typography
 								variant="body2"
 								color="text.secondary"
-								sx={{ mb: 3 }}
+								sx={{
+									mb: 3,
+									wordBreak: 'break-all',
+									fontSize: { xs: '0.8rem', md: '0.875rem' }
+								}}
 							>
-								{linkInfo.shorted_url}
+								{linkInfo.short_url}
 							</Typography>
 
 							{/* Ações */}
-							<Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+							<Box sx={{
+								display: 'flex',
+								gap: { xs: 1, sm: 2 },
+								justifyContent: 'center',
+								flexWrap: 'wrap',
+								flexDirection: { xs: 'column', sm: 'row' }
+							}}>
 								<Button
 									variant="contained"
 									startIcon={<Download />}
 									onClick={handleDownloadQR}
+									disabled={!qrCodeDataUrl}
+									sx={{
+										minWidth: { xs: '100%', sm: 140 },
+										fontSize: { xs: '0.875rem', md: '0.875rem' }
+									}}
 								>
 									Baixar QR
 								</Button>
@@ -177,6 +293,11 @@ function LinkQRPage() {
 									variant="outlined"
 									startIcon={<Share />}
 									onClick={handleShareQR}
+									disabled={!linkInfo}
+									sx={{
+										minWidth: { xs: '100%', sm: 140 },
+										fontSize: { xs: '0.875rem', md: '0.875rem' }
+									}}
 								>
 									Compartilhar
 								</Button>
@@ -190,22 +311,68 @@ function LinkQRPage() {
 							<Typography
 								variant="h6"
 								gutterBottom
+								sx={{ fontSize: { xs: '1.1rem', md: '1.25rem' } }}
 							>
 								Informações do Link
 							</Typography>
-							<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-								<Typography variant="body2">
-									<strong>URL Original:</strong> {linkInfo.original_url}
+							<Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, md: 1 } }}>
+								<Typography
+									variant="body2"
+									sx={{ fontSize: { xs: '0.875rem', md: '0.875rem' } }}
+								>
+									<strong>URL Original:</strong>{' '}
+									<Box
+										component="span"
+										sx={{
+											wordBreak: 'break-all',
+											color: 'text.secondary'
+										}}
+									>
+										{linkInfo.original_url}
+									</Box>
 								</Typography>
-								<Typography variant="body2">
-									<strong>URL Encurtada:</strong> {linkInfo.shorted_url}
+								<Typography
+									variant="body2"
+									sx={{ fontSize: { xs: '0.875rem', md: '0.875rem' } }}
+								>
+									<strong>URL Encurtada:</strong>{' '}
+									<Box
+										component="span"
+										sx={{
+											wordBreak: 'break-all',
+											color: 'primary.main',
+											fontFamily: 'monospace'
+										}}
+									>
+										{linkInfo.short_url}
+									</Box>
 								</Typography>
-								<Typography variant="body2">
-									<strong>Status:</strong> {linkInfo.is_active ? 'Ativo' : 'Inativo'}
+								<Typography
+									variant="body2"
+									sx={{ fontSize: { xs: '0.875rem', md: '0.875rem' } }}
+								>
+									<strong>Status:</strong>{' '}
+									<Box
+										component="span"
+										sx={{
+											color: linkInfo.is_active ? 'success.main' : 'error.main',
+											fontWeight: 600
+										}}
+									>
+										{linkInfo.is_active ? 'Ativo' : 'Inativo'}
+									</Box>
 								</Typography>
-								<Typography variant="body2">
+								<Typography
+									variant="body2"
+									sx={{ fontSize: { xs: '0.875rem', md: '0.875rem' } }}
+								>
 									<strong>Criado em:</strong>{' '}
-									{new Date(linkInfo.created_at).toLocaleDateString('pt-BR')}
+									<Box
+										component="span"
+										sx={{ color: 'text.secondary' }}
+									>
+										{new Date(linkInfo.created_at).toLocaleDateString('pt-BR')}
+									</Box>
 								</Typography>
 							</Box>
 						</CardContent>

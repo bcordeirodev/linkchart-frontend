@@ -117,7 +117,7 @@ export const createGlassCard = (theme: Theme, variant: 'primary' | 'secondary' |
 
 	return {
 		...createGlassEffect(theme, config),
-		borderRadius: 3,
+		borderRadius: 1,
 		transition: theme.transitions.create(['all'], {
 			duration: theme.transitions.duration.short
 		}),

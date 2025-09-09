@@ -3,10 +3,7 @@ import { type MRT_ColumnDef } from 'material-react-table';
 import { Box, Chip, Avatar, Typography } from '@mui/material';
 import { LinkTableActions } from '@/shared/ui/patterns';
 import { LinkResponse } from '@/types';
-import {
-	CheckCircleOutlined,
-	CancelOutlined
-} from '@mui/icons-material';
+import { CheckCircleOutlined, CancelOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
@@ -32,7 +29,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 			if (width < 640) {
 				return {
 					title: 350, // 45%
-					shorted_url: 280, // 35%
+					short_url: 280, // 35%
 					actions: 150 // 20%
 				};
 			}
@@ -41,7 +38,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 			if (width < 960) {
 				return {
 					title: 280, // 35%
-					shorted_url: 240, // 30%
+					short_url: 240, // 30%
 					clicks: 120, // 15%
 					actions: 160 // 20%
 				};
@@ -51,7 +48,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 			if (width < 1280) {
 				return {
 					title: 180, // 22%
-					shorted_url: 180, // 22%
+					short_url: 180, // 22%
 					clicks: 90, // 11%
 					is_active: 90, // 11%
 					created_at: 110, // 14%
@@ -62,7 +59,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 			// Desktop: todas as colunas (7 colunas)
 			return {
 				title: 220, // ~18%
-				shorted_url: 250, // ~21%
+				short_url: 250, // ~21%
 				original_url: 280, // ~23%
 				clicks: 90, // ~7%
 				is_active: 90, // ~7%
@@ -74,7 +71,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 		// Fallback para SSR - Desktop
 		return {
 			title: 220,
-			shorted_url: 250,
+			short_url: 250,
 			original_url: 280,
 			clicks: 90,
 			is_active: 90,
@@ -152,9 +149,9 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				)
 			},
 			{
-				accessorKey: 'shorted_url',
+				accessorKey: 'short_url',
 				header: 'URL Encurtada',
-				size: columnSizes.shorted_url,
+				size: columnSizes.short_url,
 				minSize: 200,
 				grow: true,
 				Cell: ({ cell }) => (

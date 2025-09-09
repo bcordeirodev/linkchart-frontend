@@ -29,7 +29,7 @@ interface RegisterRequest {
 /**
  * Classe de serviço para autenticação usando BaseService
  */
-export default class AuthService extends BaseService {
+class AuthService extends BaseService {
 	constructor() {
 		super('AuthService');
 	}
@@ -87,6 +87,21 @@ export default class AuthService extends BaseService {
 			context: 'update_profile'
 		});
 	}
+
+	/**
+	 * Altera senha do usuário
+	 */
+	async changePassword(data: {
+		current_password: string;
+		new_password: string;
+		new_password_confirmation: string;
+	}): Promise<{ message: string }> {
+		this.validateRequired(data, ['current_password', 'new_password', 'new_password_confirmation']);
+
+		return this.put<{ message: string }>(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, data, {
+			context: 'change_password'
+		});
+	}
 }
 
 // Instância singleton do serviço
@@ -97,9 +112,12 @@ export const signIn = authService.signIn.bind(authService);
 export const signUp = authService.signUp.bind(authService);
 export const getMe = authService.getMe.bind(authService);
 export const signOut = authService.signOut.bind(authService);
+export const updateProfile = authService.updateProfile.bind(authService);
+export const changePassword = authService.changePassword.bind(authService);
 
 // Export da instância do serviço
 export { authService };
+export default authService;
 
 // export function update(id: string, body: IWordUpdate) {
 // 	return apiService.patch<IWordResponse>(`word/${id}`, body);

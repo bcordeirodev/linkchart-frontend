@@ -7,6 +7,7 @@
 export * from './components/ProfileForm';
 export * from './components/ProfileHeader';
 export * from './components/ProfileSidebar';
+export * from './components/PasswordChangeForm';
 
 // Services
 export { profileService } from '@/services/profile.service';

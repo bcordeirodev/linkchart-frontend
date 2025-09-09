@@ -43,7 +43,7 @@ export function useLinkPerformance() {
 		}, 60000);
 
 		return () => clearInterval(interval);
-	}, [fetchDashboard, error]);
+	}, [error]); // Removido fetchDashboard das dependências
 
 	return {
 		data,

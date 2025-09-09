@@ -1,16 +1,7 @@
-export { default as DashboardAnalytics } from './DashboardAnalytics';
-export { DashboardAnalytics as DashboardAnalysisEnhanced } from './DashboardAnalytics';
-export { default as DashboardMetrics } from './DashboardMetrics';
-export { default as TopLinks } from './TopLinks';
-export { Charts } from './charts/Charts';
+// Componentes principais
+export { GlobalDashboard } from './GlobalDashboard';
 
-// Hook específico
-export { useDashboardData } from '../../hooks/useDashboardData';
-
-// Tipos
-export type {
-    DashboardData,
-    DashboardStats,
-    UseDashboardDataOptions,
-    UseDashboardDataReturn
-} from '../../hooks/useDashboardData';
+// Componentes compartilhados
+export { DashboardMetrics } from './shared/DashboardMetrics';
+export { TopLinks } from './shared/TopLinks';
+export { Charts } from './shared/charts/Charts';

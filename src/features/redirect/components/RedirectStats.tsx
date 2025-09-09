@@ -15,6 +15,8 @@ import SpeedIcon from '@mui/icons-material/Speed';
 import SecurityIcon from '@mui/icons-material/Security';
 import DevicesIcon from '@mui/icons-material/Devices';
 import { api } from '@/lib/api/client';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 
 interface RedirectStatsData {
 	totalClicks: number;
@@ -56,6 +58,7 @@ export default function RedirectStats({
 	error,
 	shortCode
 }: RedirectStatsProps) {
+	const dispatch = useAppDispatch();
 	const [stats, setStats] = useState<RedirectStatsData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [fetchError, setFetchError] = useState<string | null>(null);
@@ -68,7 +71,9 @@ export default function RedirectStats({
 			setStats(response);
 			setLastUpdate(new Date());
 		} catch (err: unknown) {
-			setFetchError((err as Error).message || 'Erro ao carregar estatísticas');
+			const errorMessage = (err as Error).message || 'Erro ao carregar estatísticas';
+			setFetchError(errorMessage);
+			dispatch(showErrorMessage(errorMessage));
 		} finally {
 			setLoading(false);
 		}

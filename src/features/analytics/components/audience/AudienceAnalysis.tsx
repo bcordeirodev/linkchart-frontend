@@ -18,22 +18,22 @@ interface LegacyAudienceAnalysisProps {
 
 /**
  * Componente de análise de audiência unificado
- * 
+ *
  * @description
  * Este componente fornece uma interface completa para visualização de audiência:
  * - Métricas agregadas (dispositivos, navegadores, sistemas operacionais)
  * - Gráficos interativos de distribuição
  * - Insights estratégicos baseados nos dados
  * - Suporte para modo global e específico por link
- * 
+ *
  * @example
  * ```tsx
  * // Modo global (todos os links)
  * <AudienceAnalysis globalMode={true} />
- * 
+ *
  * // Link específico
  * <AudienceAnalysis linkId="123" />
- * 
+ *
  * // Modo legado (compatibilidade)
  * <AudienceAnalysis data={legacyData} />
  * ```
@@ -45,7 +45,6 @@ export function AudienceAnalysis({
 	showTitle = true,
 	title = '👥 Análise de Audiência'
 }: LegacyAudienceAnalysisProps & Partial<AudienceAnalysisProps>) {
-
 	// Determinar modo de operação
 	const isGlobalMode = globalMode || !linkId;
 	const shouldUseHook = !legacyData && (Boolean(linkId) || globalMode);
@@ -67,7 +66,8 @@ export function AudienceAnalysis({
 
 	// Usar dados do hook ou dados legados
 	const audienceData = shouldUseHook ? hookData : legacyData;
-	const deviceBreakdown = (audienceData as any)?.audience?.device_breakdown || (audienceData as any)?.device_breakdown || [];
+	const deviceBreakdown =
+		(audienceData as any)?.audience?.device_breakdown || (audienceData as any)?.device_breakdown || [];
 	const totalClicks = (audienceData as any)?.overview?.total_clicks || stats?.totalClicks || 0;
 
 	// Estado de loading (apenas para modo hook)
@@ -83,11 +83,21 @@ export function AudienceAnalysis({
 					minHeight: 300
 				}}
 			>
-				<CircularProgress size={48} sx={{ mb: 2 }} />
-				<Typography variant="h6" color="text.secondary">
+				<CircularProgress
+					size={48}
+					sx={{ mb: 2 }}
+				/>
+				<Typography
+					variant="h6"
+					color="text.secondary"
+				>
 					Carregando dados de audiência...
 				</Typography>
-				<Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+				<Typography
+					variant="body2"
+					color="text.secondary"
+					sx={{ mt: 1 }}
+				>
 					{isGlobalMode ? 'Agregando dados de todos os links' : `Buscando dados do link ${linkId}`}
 				</Typography>
 			</Box>
@@ -101,17 +111,21 @@ export function AudienceAnalysis({
 				<Alert
 					severity="error"
 					action={
-						<button onClick={refresh} style={{ marginLeft: 8 }}>
+						<button
+							onClick={refresh}
+							style={{ marginLeft: 8 }}
+						>
 							Tentar Novamente
 						</button>
 					}
 				>
-					<Typography variant="subtitle1" gutterBottom>
+					<Typography
+						variant="subtitle1"
+						gutterBottom
+					>
 						Erro ao carregar dados de audiência
 					</Typography>
-					<Typography variant="body2">
-						{error}
-					</Typography>
+					<Typography variant="body2">{error}</Typography>
 				</Alert>
 			</Box>
 		);
@@ -130,16 +144,27 @@ export function AudienceAnalysis({
 					minHeight: 300
 				}}
 			>
-				<Typography variant="h6" color="text.secondary" gutterBottom>
+				<Typography
+					variant="h6"
+					color="text.secondary"
+					gutterBottom
+				>
 					👥 Nenhum dado de audiência disponível
 				</Typography>
-				<Typography variant="body2" color="text.secondary" align="center">
+				<Typography
+					variant="body2"
+					color="text.secondary"
+					align="center"
+				>
 					{isGlobalMode
 						? 'Não há dados de dispositivos registrados em nenhum dos seus links ativos ainda.'
-						: 'Este link ainda não recebeu cliques com dados de dispositivos.'
-					}
+						: 'Este link ainda não recebeu cliques com dados de dispositivos.'}
 				</Typography>
-				<Typography variant="caption" color="text.secondary" sx={{ mt: 2 }}>
+				<Typography
+					variant="caption"
+					color="text.secondary"
+					sx={{ mt: 2 }}
+				>
 					Os dados aparecerão aqui conforme os cliques forem registrados.
 				</Typography>
 			</Box>
@@ -149,15 +174,25 @@ export function AudienceAnalysis({
 	return (
 		<Box>
 			{showTitle && (
-				<Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
+				<Typography
+					variant="h6"
+					gutterBottom
+					sx={{ mb: 3, fontWeight: 600 }}
+				>
 					{title}
 				</Typography>
 			)}
 
-			<Grid container spacing={3}>
+			<Grid
+				container
+				spacing={3}
+			>
 				{/* Métricas de Audiência */}
 				{shouldUseHook && stats && (
-					<Grid item xs={12}>
+					<Grid
+						item
+						xs={12}
+					>
 						<AudienceMetrics
 							data={{ audience: audienceData, stats }}
 							showTitle={false}
@@ -166,7 +201,10 @@ export function AudienceAnalysis({
 				)}
 
 				{/* Gráficos de Audiência */}
-				<Grid item xs={12}>
+				<Grid
+					item
+					xs={12}
+				>
 					<AudienceChart
 						deviceBreakdown={deviceBreakdown}
 						browserBreakdown={(audienceData as any)?.browser_breakdown}
@@ -176,7 +214,10 @@ export function AudienceAnalysis({
 				</Grid>
 
 				{/* Insights de Audiência */}
-				<Grid item xs={12}>
+				<Grid
+					item
+					xs={12}
+				>
 					<AudienceInsights
 						deviceBreakdown={deviceBreakdown}
 						browserBreakdown={(audienceData as any)?.browser_breakdown}

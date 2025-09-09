@@ -124,10 +124,10 @@ export function AudienceInsights({
 						</Grid>
 					</Grid>
 
-					<Divider sx={{ my: 2 }} />
+					<Divider />
 
 					{/* Recomendações */}
-					<Box>
+					<Box sx={{ mb: 1, mt: 1 }}>
 						<Typography
 							variant="subtitle2"
 							gutterBottom
@@ -183,10 +183,10 @@ export function AudienceInsights({
 						</Stack>
 					</Box>
 
-					<Divider sx={{ my: 2 }} />
+					<Divider sx={{ my: 3 }} />
 
 					{/* Detalhes técnicos */}
-					<Box>
+					<Box sx={{ mb: 1, mt: 1 }}>
 						<Typography
 							variant="subtitle2"
 							gutterBottom

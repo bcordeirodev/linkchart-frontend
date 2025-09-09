@@ -119,6 +119,10 @@ export default class AnalyticsService extends BaseService {
 				avg_response_time: number;
 				success_rate: number;
 				total_links: number;
+				performance_score: number;
+				uptime_percentage: number;
+				clicks_per_hour: number;
+				visitor_retention: number;
 			};
 		}>('/api/analytics/global/performance', {
 			context: 'get_link_performance'
@@ -141,6 +145,16 @@ export default class AnalyticsService extends BaseService {
 			topReferrers: [],
 			topCountries: [],
 			clicksOverTime: [],
+			// ✅ Incluir todos os dados do backend
+			total_redirects_24h: metrics.total_redirects_24h || 0,
+			unique_visitors: metrics.unique_visitors || 0,
+			avg_response_time: metrics.avg_response_time || 0,
+			success_rate: metrics.success_rate || 100,
+			performance_score: metrics.performance_score || 0,
+			uptime_percentage: metrics.uptime_percentage || 100,
+			clicks_per_hour: metrics.clicks_per_hour || 0,
+			visitor_retention: metrics.visitor_retention || 0,
+			total_links: metrics.total_links || 0,
 			summary: {
 				total_redirects_24h: metrics.total_redirects_24h || 0,
 				unique_visitors: metrics.unique_visitors || 0,

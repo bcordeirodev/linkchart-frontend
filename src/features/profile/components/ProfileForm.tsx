@@ -2,7 +2,7 @@ import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
 import { profileService, UserProfile } from '@/services';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
-import { Cancel, Edit, Email, Person, PhotoCamera, Save } from '@mui/icons-material';
+import { Cancel, Email, Person, PhotoCamera, Save } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -12,7 +12,6 @@ import {
 	AvatarContainer,
 	AvatarSection,
 	CancelButton,
-	EditButton,
 	FormFieldsContainer,
 	LoadingOverlay,
 	PhotoUploadButton,
@@ -42,7 +41,6 @@ interface ProfileFormProps {
  */
 export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 	const dispatch = useAppDispatch();
-	const [isEditing, setIsEditing] = useState(false);
 	const [formData, setFormData] = useState<ProfileFormData>({
 		name: user.name || '',
 		email: user.email || ''
@@ -72,7 +70,6 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 					variant: 'success'
 				})
 			);
-			setIsEditing(false);
 		} catch (error: unknown) {
 			dispatch(
 				showMessage({
@@ -85,12 +82,11 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 		}
 	}, [formData.name, formData.email, dispatch, onUserUpdate]);
 
-	const handleCancel = useCallback(() => {
+	const handleReset = useCallback(() => {
 		setFormData({
 			name: user.name || '',
 			email: user.email || ''
 		});
-		setIsEditing(false);
 	}, [user]);
 
 	const handlePhotoUpload = useCallback(() => {
@@ -126,26 +122,15 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 
 				<ProfileHeader>
 					<ProfileTitle>Informações Pessoais</ProfileTitle>
-					{!isEditing && (
-						<EditButton
-							variant="contained"
-							startIcon={<Edit />}
-							onClick={() => setIsEditing(true)}
-						>
-							Editar
-						</EditButton>
-					)}
 				</ProfileHeader>
 
 				<ProfileGrid>
 					<AvatarSection>
 						<AvatarContainer>
 							<StyledAvatar>{formData.name?.[0]?.toUpperCase()}</StyledAvatar>
-							{isEditing && (
-								<PhotoUploadButton onClick={handlePhotoUpload}>
-									<PhotoCamera />
-								</PhotoUploadButton>
-							)}
+							<PhotoUploadButton onClick={handlePhotoUpload}>
+								<PhotoCamera />
+							</PhotoUploadButton>
 						</AvatarContainer>
 					</AvatarSection>
 
@@ -154,9 +139,8 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 							label="Nome Completo"
 							value={formData.name}
 							onChange={(e) => handleInputChange('name', e.target.value)}
-							disabled={!isEditing}
 							fullWidth
-							isEditing={isEditing}
+							isEditing={true}
 							InputProps={{
 								startAdornment: <Person sx={{ mr: 1.5 }} />
 							}}
@@ -165,10 +149,9 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 							label="Email"
 							value={formData.email}
 							onChange={(e) => handleInputChange('email', e.target.value)}
-							disabled={!isEditing}
 							fullWidth
 							type="email"
-							isEditing={isEditing}
+							isEditing={true}
 							InputProps={{
 								startAdornment: <Email sx={{ mr: 1.5 }} />
 							}}
@@ -176,37 +159,35 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 					</FormFieldsContainer>
 				</ProfileGrid>
 
-				{isEditing && (
-					<ActionButtonsContainer>
-						<CancelButton
-							variant="outlined"
-							startIcon={<Cancel />}
-							onClick={handleCancel}
-							disabled={saving}
-						>
-							Cancelar
-						</CancelButton>
-						<SaveButton
-							variant="contained"
-							startIcon={
-								saving ? (
-									<CircularProgress
-										size={20}
-										color="inherit"
-									/>
-								) : (
-									<Save />
-								)
-							}
-							onClick={handleSave}
-							disabled={saving || !isFormValid || !hasChanges}
-							hasChanges={hasChanges}
-							isLoading={saving}
-						>
-							{saving ? 'Salvando...' : 'Salvar Alterações'}
-						</SaveButton>
-					</ActionButtonsContainer>
-				)}
+				<ActionButtonsContainer>
+					<CancelButton
+						variant="outlined"
+						startIcon={<Cancel />}
+						onClick={handleReset}
+						disabled={saving}
+					>
+						Resetar
+					</CancelButton>
+					<SaveButton
+						variant="contained"
+						startIcon={
+							saving ? (
+								<CircularProgress
+									size={20}
+									color="inherit"
+								/>
+							) : (
+								<Save />
+							)
+						}
+						onClick={handleSave}
+						disabled={saving || !isFormValid || !hasChanges}
+						hasChanges={hasChanges}
+						isLoading={saving}
+					>
+						{saving ? 'Salvando...' : 'Salvar Alterações'}
+					</SaveButton>
+				</ActionButtonsContainer>
 			</ProfileContainer>
 		</EnhancedPaper>
 	);

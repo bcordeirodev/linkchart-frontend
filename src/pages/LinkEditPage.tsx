@@ -1,11 +1,6 @@
 'use client';
 
-import {
-	Container,
-	Alert,
-	Stack,
-	Button
-} from '@mui/material';
+import { Container, Alert, Stack, Button } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppIcon } from '@/lib/icons';
 import { EditLinkForm } from '@/features/links/edit';
@@ -28,7 +23,10 @@ function LinkEditPage() {
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
 					<Container maxWidth="md">
-						<Stack spacing={3} sx={{ py: 4 }}>
+						<Stack
+							spacing={3}
+							sx={{ py: 4 }}
+						>
 							<PageBreadcrumb />
 
 							<Alert
@@ -36,7 +34,12 @@ function LinkEditPage() {
 								action={
 									<Button
 										size="small"
-										startIcon={<AppIcon intent="back" size={16} />}
+										startIcon={
+											<AppIcon
+												intent="back"
+												size={16}
+											/>
+										}
 										onClick={() => navigate(-1)}
 									>
 										Voltar
@@ -44,8 +47,7 @@ function LinkEditPage() {
 								}
 							>
 								<strong>ID do link não fornecido</strong>
-								<br />
-								O ID do link não foi fornecido na URL ou é inválido.
+								<br />O ID do link não foi fornecido na URL ou é inválido.
 							</Alert>
 						</Stack>
 					</Container>
@@ -58,7 +60,10 @@ function LinkEditPage() {
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
 				<Container maxWidth="md">
-					<Stack spacing={4} sx={{ py: 4 }}>
+					<Stack
+						spacing={4}
+						sx={{ py: 4 }}
+					>
 						<PageBreadcrumb />
 
 						{/* Form Section */}

@@ -29,9 +29,7 @@ export * from './hooks/useLinks';
 export * from './hooks/useURLShortener';
 export * from './hooks/useLinksTableColumns';
 export * from './hooks/useShareAPI';
-// export * from './hooks/useLinkAnalytics'; // Original mantido para compatibilidade
 export * from './hooks/useLinkAnalytics'; // Novo hook otimizado
-
 
 // Types
 export * from './types/link';

@@ -14,7 +14,7 @@ interface LinkAnalyticsMetricsProps {
  * 📈 Métricas específicas para analytics de link individual
  * Reutiliza MetricCard base seguindo padrões arquiteturais
  */
-export function LinkAnalyticsMetrics({ data, loading = false }: LinkAnalyticsMetricsProps) {
+export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAnalyticsMetricsProps) {
 	if (!data?.has_data) {
 		return (
 			<Box sx={{ mb: 4 }}>
@@ -193,7 +193,9 @@ export function LinkAnalyticsMetrics({ data, loading = false }: LinkAnalyticsMet
 				>
 					<MetricCard
 						title="Horário de Pico"
-						value={(overview as any)?.peak_hour || '--:--'}
+						value={
+							(overview as { peak_hour?: string })?.peak_hour || '--:--'
+						}
 						subtitle="maior atividade"
 						icon={<Schedule />}
 						color="secondary"

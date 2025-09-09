@@ -9,10 +9,10 @@
  * @returns Date válido ou null se inválido
  */
 export function parseValidDate(dateString: string | null | undefined): Date | null {
-    if (!dateString) return null;
+	if (!dateString) return null;
 
-    const date = new Date(dateString);
-    return isNaN(date.getTime()) ? null : date;
+	const date = new Date(dateString);
+	return isNaN(date.getTime()) ? null : date;
 }
 
 /**
@@ -21,11 +21,11 @@ export function parseValidDate(dateString: string | null | undefined): Date | nu
  * @returns String formatada ou null se data inválida
  */
 export function formatDateForLaravel(date: Date | null | undefined): string | null {
-    if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
-        return null;
-    }
+	if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+		return null;
+	}
 
-    return date.toISOString().replace('T', ' ').substring(0, 19);
+	return date.toISOString().replace('T', ' ').substring(0, 19);
 }
 
 /**
@@ -34,5 +34,5 @@ export function formatDateForLaravel(date: Date | null | undefined): string | nu
  * @returns true se válido, false caso contrário
  */
 export function isValidDate(date: any): date is Date {
-    return date instanceof Date && !isNaN(date.getTime());
+	return date instanceof Date && !isNaN(date.getTime());
 }

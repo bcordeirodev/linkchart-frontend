@@ -3,7 +3,6 @@
  * Componente base para painéis de tabs reutilizável
  */
 
-import React from 'react';
 import { Box } from '@mui/material';
 import { TabPanelProps } from '../components';
 
@@ -12,21 +11,17 @@ import { TabPanelProps } from '../components';
  * Reutilizável em todos os módulos que precisam de tabs
  */
 export function TabPanel({ children, value, index, sx, ...other }: TabPanelProps) {
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`tabpanel-${index}`}
-            aria-labelledby={`tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ py: 3, ...sx }}>
-                    {children}
-                </Box>
-            )}
-        </div>
-    );
+	return (
+		<div
+			role="tabpanel"
+			hidden={value !== index}
+			id={`tabpanel-${index}`}
+			aria-labelledby={`tab-${index}`}
+			{...other}
+		>
+			{value === index && <Box sx={{ py: 3, ...sx }}>{children}</Box>}
+		</div>
+	);
 }
 
 export default TabPanel;

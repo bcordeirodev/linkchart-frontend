@@ -48,10 +48,15 @@ export function LinksHeader({ onCreateNew }: LinksHeaderProps) {
 					<CreateLinkButton
 						variant="contained"
 						size="large"
-						startIcon={<AppIcon intent="create" size={20} />}
+						startIcon={
+							<AppIcon
+								intent="create"
+								size={20}
+							/>
+						}
 						onClick={handleCreateNew}
 					>
-						Criar Novo Link
+						Criar novo link
 					</CreateLinkButton>
 				</LinksHeaderActions>
 			</LinksHeaderContainer>
