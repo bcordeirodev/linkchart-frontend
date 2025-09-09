@@ -23,12 +23,12 @@
  * // Uso através do Redux store
  * import { useAppDispatch } from '@/lib/store/hooks';
  * import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
- * 
+ *
  * const dispatch = useAppDispatch();
- * 
+ *
  * // Mensagem de sucesso
  * dispatch(showSuccessMessage('Operação realizada com sucesso!'));
- * 
+ *
  * // Mensagem de erro
  * dispatch(showErrorMessage('Erro ao processar solicitação'));
  * ```

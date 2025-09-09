@@ -28,7 +28,6 @@ interface HotModule {
 	};
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const module: HotModule;
 
 declare module '*?raw' {

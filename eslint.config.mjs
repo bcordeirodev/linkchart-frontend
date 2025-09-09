@@ -100,7 +100,7 @@ export default tseslint.config({
             { "blankLine": "always", "prev": "if", "next": "*" },
             { "blankLine": "always", "prev": "*", "next": "function" }
         ],
-        "no-console": ["error", { "allow": ["warn"] }],
+        "no-console": "warn",
         "import/no-cycle": "off",
         "import/no-named-as-default": "off",
         "import/no-named-as-default-member": "off",
@@ -143,6 +143,9 @@ export default tseslint.config({
         "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/require-await": "off",
         "@typescript-eslint/no-empty-object-type": "off",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-namespace": "warn",
+        "no-useless-catch": "warn",
 
         // React
         "react/jsx-indent": "off",

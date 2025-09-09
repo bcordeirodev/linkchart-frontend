@@ -3,7 +3,7 @@
  * Formulário simplificado para edição de links
  */
 
-import { Typography, Stack, Button, Alert, Chip, CircularProgress } from '@mui/material';
+import { Typography, Stack, Button, Alert, CircularProgress } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
@@ -49,7 +49,6 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	});
 
 	// ✅ Simplificado - Botão sempre ativo quando não está carregando
-
 
 	// ✅ Função auxiliar para converter datas de forma segura
 	const convertDateToInputFormat = (dateString: string | null | undefined): string => {
@@ -176,18 +175,23 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 			// Resetar formulário com dados atualizados
 			reset(data);
 		} catch (error: unknown) {
-
 			// Tratar erros de validação do backend
-			if (error && typeof error === 'object' && 'response' in error &&
-				(error as { response?: { data?: { errors?: Record<string, string[]> } } }).response?.data?.errors) {
-				const backendErrors = (error as { response: { data: { errors: Record<string, string[]> } } }).response.data.errors;
+			if (
+				error &&
+				typeof error === 'object' &&
+				'response' in error &&
+				(error as { response?: { data?: { errors?: Record<string, string[]> } } }).response?.data?.errors
+			) {
+				const backendErrors = (error as { response: { data: { errors: Record<string, string[]> } } }).response
+					.data.errors;
 				Object.keys(backendErrors).forEach((field) => {
 					setError(field as keyof LinkFormData, {
 						message: backendErrors[field][0]
 					});
 				});
 			} else {
-				const errorMessage = (error && typeof error === 'object' && 'message' in error ? error.message as string : null) ||
+				const errorMessage =
+					(error && typeof error === 'object' && 'message' in error ? (error.message as string) : null) ||
 					'Erro inesperado ao atualizar link';
 				setApiError(errorMessage);
 
@@ -228,12 +232,18 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 				<Alert
 					severity="error"
 					action={
-						<Button size="small" onClick={handleCancel}>
+						<Button
+							size="small"
+							onClick={handleCancel}
+						>
 							Voltar
 						</Button>
 					}
 				>
-					<Typography variant="h6" component="div">
+					<Typography
+						variant="h6"
+						component="div"
+					>
 						{apiError ? 'Erro ao carregar' : 'Link não encontrado'}
 					</Typography>
 					<Typography variant="body2">
@@ -255,27 +265,40 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 						alignItems="flex-start"
 					>
 						<div>
-							<Typography variant="h5" fontWeight={600} gutterBottom>
+							<Typography
+								variant="h5"
+								fontWeight={600}
+								gutterBottom
+							>
 								✏️ Editar Link
 							</Typography>
-							<Typography variant="body2" color="text.secondary">
+							<Typography
+								variant="body2"
+								color="text.secondary"
+							>
 								Modifique as configurações do seu link
 							</Typography>
 						</div>
-
 					</Stack>
 				</FormHeader>
 
 				{/* API Error */}
 				{apiError && (
-					<Alert severity="error" sx={{ mb: 3 }}>
+					<Alert
+						severity="error"
+						sx={{ mb: 3 }}
+					>
 						{apiError}
 					</Alert>
 				)}
 
 				{/* Form Fields */}
 				<FormFieldsContainer>
-					<LinkFormFields control={control} errors={errors} isEdit={true} />
+					<LinkFormFields
+						control={control}
+						errors={errors}
+						isEdit={true}
+					/>
 				</FormFieldsContainer>
 
 				{/* Actions */}
@@ -285,7 +308,7 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 						spacing={2}
 						justifyContent="space-between"
 						sx={{ width: '100%' }}
-						className='mt-4'
+						className="mt-4"
 					>
 						{/* Botão Cancelar */}
 						<Button
@@ -305,7 +328,10 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 							disabled={loading}
 							startIcon={
 								loading ? (
-									<CircularProgress size={16} color="inherit" />
+									<CircularProgress
+										size={16}
+										color="inherit"
+									/>
 								) : (
 									<AppIcon intent="save" />
 								)
@@ -315,8 +341,8 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 						</Button>
 					</Stack>
 				</FormActionsContainer>
-			</form >
-		</FormPaper >
+			</form>
+		</FormPaper>
 	);
 }
 

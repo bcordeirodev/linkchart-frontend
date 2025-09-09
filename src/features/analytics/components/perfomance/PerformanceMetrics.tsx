@@ -50,7 +50,11 @@ export function PerformanceMetrics({
 			value: `${performanceScore}`,
 			icon: <CheckCircle />,
 			color:
-				performanceScore >= 90 ? ('success' as const) : performanceScore >= 70 ? ('info' as const) : ('warning' as const),
+				performanceScore >= 90
+					? ('success' as const)
+					: performanceScore >= 70
+						? ('info' as const)
+						: ('warning' as const),
 			subtitle: 'pontuação geral'
 		},
 		{
@@ -59,7 +63,11 @@ export function PerformanceMetrics({
 			value: `${uptimePercentage}%`,
 			icon: <CheckCircle />,
 			color:
-				uptimePercentage >= 99 ? ('success' as const) : uptimePercentage >= 95 ? ('info' as const) : ('warning' as const),
+				uptimePercentage >= 99
+					? ('success' as const)
+					: uptimePercentage >= 95
+						? ('info' as const)
+						: ('warning' as const),
 			subtitle: 'disponibilidade'
 		},
 		{
@@ -76,7 +84,11 @@ export function PerformanceMetrics({
 			value: `${visitorRetention}%`,
 			icon: <Public />,
 			color:
-				visitorRetention >= 80 ? ('success' as const) : visitorRetention >= 60 ? ('info' as const) : ('warning' as const),
+				visitorRetention >= 80
+					? ('success' as const)
+					: visitorRetention >= 60
+						? ('info' as const)
+						: ('warning' as const),
 			subtitle: 'visitantes únicos'
 		},
 		{

@@ -1,4 +1,4 @@
-import { Grid, Box, Typography } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import { ChartCard } from '@/shared/ui/base/ChartCard';
 import { EmptyState } from '@/shared/ui/base/EmptyState';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';

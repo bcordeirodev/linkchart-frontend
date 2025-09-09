@@ -1,11 +1,22 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState, useCallback } from 'react';
-import { Box, useTheme, Typography, CircularProgress, Button, Paper, Stack, GlobalStyles, Fade, Grow } from '@mui/material';
+import {
+	Box,
+	useTheme,
+	Typography,
+	CircularProgress,
+	Button,
+	Paper,
+	Stack,
+	GlobalStyles,
+	Fade,
+	Grow
+} from '@mui/material';
 import { Launch as LaunchIcon, Error as ErrorIcon, Security as SecurityIcon } from '@mui/icons-material';
 
 /**
  * 🚀 PÁGINA DE REDIRECIONAMENTO - CORAÇÃO DO SISTEMA
- * 
+ *
  * FLUXO OTIMIZADO:
  * 1. Busca dados do link via API (sem autenticação)
  * 2. Exibe countdown para UX
@@ -53,34 +64,41 @@ function RedirectPage() {
 	}, []);
 
 	// Função para redirecionar com segurança
-	const performRedirect = useCallback((url: string) => {
-		if (!isExternalUrl(url)) {
-			setError('URL inválida ou insegura');
-			return;
-		}
+	const performRedirect = useCallback(
+		(url: string) => {
+			if (!isExternalUrl(url)) {
+				setError('URL inválida ou insegura');
+				return;
+			}
 
-		// Redireciona para URL externa
-		window.location.href = url;
-	}, [isExternalUrl]);
+			// Redireciona para URL externa
+			window.location.href = url;
+		},
+		[isExternalUrl]
+	);
 
 	// Sistema de countdown personalizado
-	const startCountdown = useCallback((initialCount = 3) => {
-		setCountdown(initialCount);
-		setIsRedirecting(true);
+	const startCountdown = useCallback(
+		(initialCount = 3) => {
+			setCountdown(initialCount);
+			setIsRedirecting(true);
 
-		const interval = setInterval(() => {
-			setCountdown((prev) => {
-				if (prev <= 1) {
-					clearInterval(interval);
-					performRedirect(targetUrl);
-					return 0;
-				}
-				return prev - 1;
-			});
-		}, 1000);
+			const interval = setInterval(() => {
+				setCountdown((prev) => {
+					if (prev <= 1) {
+						clearInterval(interval);
+						performRedirect(targetUrl);
+						return 0;
+					}
 
-		return () => clearInterval(interval);
-	}, [targetUrl, performRedirect]);
+					return prev - 1;
+				});
+			}, 1000);
+
+			return () => clearInterval(interval);
+		},
+		[targetUrl, performRedirect]
+	);
 
 	useEffect(() => {
 		const fetchRedirectData = async () => {
@@ -95,7 +113,7 @@ function RedirectPage() {
 				const response = await fetch(`${backendUrl}/api/r/${shortCode}`, {
 					method: 'GET',
 					headers: {
-						'Accept': 'application/json'
+						Accept: 'application/json'
 					}
 				});
 
@@ -142,13 +160,17 @@ function RedirectPage() {
 						display: 'flex',
 						alignItems: 'center',
 						justifyContent: 'center',
-						background: theme.palette.mode === 'dark'
-							? `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`
-							: `linear-gradient(135deg, ${theme.palette.error.dark} 0%, ${theme.palette.error.main} 100%)`,
+						background:
+							theme.palette.mode === 'dark'
+								? `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`
+								: `linear-gradient(135deg, ${theme.palette.error.dark} 0%, ${theme.palette.error.main} 100%)`,
 						p: 3
 					}}
 				>
-					<Fade in timeout={800}>
+					<Fade
+						in
+						timeout={800}
+					>
 						<Paper
 							elevation={12}
 							sx={{
@@ -160,7 +182,10 @@ function RedirectPage() {
 								animation: 'fadeInUp 0.6s ease-out'
 							}}
 						>
-							<Stack spacing={3} alignItems="center">
+							<Stack
+								spacing={3}
+								alignItems="center"
+							>
 								<ErrorIcon
 									sx={{
 										fontSize: 72,
@@ -168,10 +193,18 @@ function RedirectPage() {
 										animation: 'pulse 2s infinite'
 									}}
 								/>
-								<Typography variant="h4" fontWeight="bold" color="error">
+								<Typography
+									variant="h4"
+									fontWeight="bold"
+									color="error"
+								>
 									Oops! Link não encontrado
 								</Typography>
-								<Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center' }}>
+								<Typography
+									variant="body1"
+									color="text.secondary"
+									sx={{ textAlign: 'center' }}
+								>
 									{error}
 								</Typography>
 								<Button
@@ -204,13 +237,17 @@ function RedirectPage() {
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',
-					background: theme.palette.mode === 'dark'
-						? `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`
-						: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+					background:
+						theme.palette.mode === 'dark'
+							? `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`
+							: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
 					p: 3
 				}}
 			>
-				<Fade in={showContent || !isValidLink} timeout={600}>
+				<Fade
+					in={showContent || !isValidLink}
+					timeout={600}
+				>
 					<Paper
 						elevation={16}
 						sx={{
@@ -221,14 +258,21 @@ function RedirectPage() {
 							width: '100%',
 							animation: 'fadeInUp 0.8s ease-out',
 							backdropFilter: 'blur(10px)',
-							background: theme.palette.mode === 'dark'
-								? 'rgba(255, 255, 255, 0.05)'
-								: 'rgba(255, 255, 255, 0.95)'
+							background:
+								theme.palette.mode === 'dark'
+									? 'rgba(255, 255, 255, 0.05)'
+									: 'rgba(255, 255, 255, 0.95)'
 						}}
 					>
 						{isValidLink && targetUrl ? (
-							<Stack spacing={4} alignItems="center">
-								<Grow in timeout={800}>
+							<Stack
+								spacing={4}
+								alignItems="center"
+							>
+								<Grow
+									in
+									timeout={800}
+								>
 									<Box>
 										<SecurityIcon
 											sx={{
@@ -241,11 +285,19 @@ function RedirectPage() {
 									</Box>
 								</Grow>
 
-								<Typography variant="h3" fontWeight="bold" color="primary">
+								<Typography
+									variant="h3"
+									fontWeight="bold"
+									color="primary"
+								>
 									Redirecionamento Seguro
 								</Typography>
 
-								<Typography variant="h6" color="text.secondary" sx={{ maxWidth: 400 }}>
+								<Typography
+									variant="h6"
+									color="text.secondary"
+									sx={{ maxWidth: 400 }}
+								>
 									Você será redirecionado com segurança para:
 								</Typography>
 
@@ -290,7 +342,10 @@ function RedirectPage() {
 								</Paper>
 
 								{countdown > 0 && (
-									<Grow in timeout={500}>
+									<Grow
+										in
+										timeout={500}
+									>
 										<Box sx={{ position: 'relative', display: 'inline-flex', mt: 3 }}>
 											<CircularProgress
 												variant="determinate"
@@ -300,7 +355,7 @@ function RedirectPage() {
 												sx={{
 													color: theme.palette.primary.main,
 													'& .MuiCircularProgress-circle': {
-														strokeLinecap: 'round',
+														strokeLinecap: 'round'
 													}
 												}}
 											/>
@@ -313,10 +368,15 @@ function RedirectPage() {
 													position: 'absolute',
 													display: 'flex',
 													alignItems: 'center',
-													justifyContent: 'center',
+													justifyContent: 'center'
 												}}
 											>
-												<Typography variant="h4" component="div" color="primary" fontWeight="bold">
+												<Typography
+													variant="h4"
+													component="div"
+													color="primary"
+													fontWeight="bold"
+												>
 													{countdown}
 												</Typography>
 											</Box>
@@ -324,7 +384,11 @@ function RedirectPage() {
 									</Grow>
 								)}
 
-								<Stack direction="row" spacing={2} sx={{ mt: 3 }}>
+								<Stack
+									direction="row"
+									spacing={2}
+									sx={{ mt: 3 }}
+								>
 									<Button
 										variant="contained"
 										size="large"
@@ -342,7 +406,10 @@ function RedirectPage() {
 								</Stack>
 							</Stack>
 						) : (
-							<Stack spacing={4} alignItems="center">
+							<Stack
+								spacing={4}
+								alignItems="center"
+							>
 								<CircularProgress
 									size={80}
 									thickness={4}
@@ -351,10 +418,16 @@ function RedirectPage() {
 										animation: 'spin 1s linear infinite'
 									}}
 								/>
-								<Typography variant="h4" fontWeight="bold">
+								<Typography
+									variant="h4"
+									fontWeight="bold"
+								>
 									Verificando Link...
 								</Typography>
-								<Typography variant="body1" color="text.secondary">
+								<Typography
+									variant="body1"
+									color="text.secondary"
+								>
 									Aguarde enquanto validamos o redirecionamento
 								</Typography>
 							</Stack>

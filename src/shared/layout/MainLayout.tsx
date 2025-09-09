@@ -23,7 +23,6 @@ import { Box, useTheme } from '@mui/material';
 import { useMainTheme, useResponsive } from '@/lib/theme';
 import { Layout, MainLayoutProps as CoreMainLayoutProps } from './core';
 import { Navbar, Footer } from './components';
-import { Message } from '@/shared/components';
 
 /**
  * Props do MainLayout

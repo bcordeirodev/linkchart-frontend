@@ -193,9 +193,7 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 				>
 					<MetricCard
 						title="Horário de Pico"
-						value={
-							(overview as { peak_hour?: string })?.peak_hour || '--:--'
-						}
+						value={(overview as { peak_hour?: string })?.peak_hour || '--:--'}
 						subtitle="maior atividade"
 						icon={<Schedule />}
 						color="secondary"

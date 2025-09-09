@@ -102,18 +102,23 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 				navigate('/links');
 			}, 2000);
 		} catch (error: unknown) {
-
 			// Tratar erros de validação do backend
-			if (error && typeof error === 'object' && 'response' in error &&
-				(error as { response?: { data?: { errors?: Record<string, string[]> } } }).response?.data?.errors) {
-				const backendErrors = (error as { response: { data: { errors: Record<string, string[]> } } }).response.data.errors;
+			if (
+				error &&
+				typeof error === 'object' &&
+				'response' in error &&
+				(error as { response?: { data?: { errors?: Record<string, string[]> } } }).response?.data?.errors
+			) {
+				const backendErrors = (error as { response: { data: { errors: Record<string, string[]> } } }).response
+					.data.errors;
 				Object.keys(backendErrors).forEach((field) => {
 					setError(field as keyof LinkFormData, {
 						message: backendErrors[field][0]
 					});
 				});
 			} else {
-				const errorMessage = (error && typeof error === 'object' && 'message' in error ? error.message as string : null) ||
+				const errorMessage =
+					(error && typeof error === 'object' && 'message' in error ? (error.message as string) : null) ||
 					'Erro inesperado ao criar link';
 				setApiError(errorMessage);
 
@@ -144,10 +149,17 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 	if (success) {
 		return (
 			<SuccessPaper elevation={2}>
-				<Typography variant="h5" color="success.main" gutterBottom>
+				<Typography
+					variant="h5"
+					color="success.main"
+					gutterBottom
+				>
 					✅ Link criado com sucesso!
 				</Typography>
-				<Typography variant="body1" color="text.secondary">
+				<Typography
+					variant="body1"
+					color="text.secondary"
+				>
 					Redirecionando para a lista de links...
 				</Typography>
 			</SuccessPaper>
@@ -159,24 +171,38 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 			<form onSubmit={handleSubmit(onSubmit)}>
 				{/* Header */}
 				<FormHeader>
-					<Typography variant="h5" fontWeight={600} gutterBottom>
+					<Typography
+						variant="h5"
+						fontWeight={600}
+						gutterBottom
+					>
 						🔗 Criar Novo Link
 					</Typography>
-					<Typography variant="body2" color="text.secondary">
+					<Typography
+						variant="body2"
+						color="text.secondary"
+					>
 						Transforme URLs longas em links curtos e rastreáveis
 					</Typography>
 				</FormHeader>
 
 				{/* API Error */}
 				{apiError && (
-					<Alert severity="error" sx={{ mb: 3 }}>
+					<Alert
+						severity="error"
+						sx={{ mb: 3 }}
+					>
 						{apiError}
 					</Alert>
 				)}
 
 				{/* Form Fields */}
 				<FormFieldsContainer>
-					<LinkFormFields control={control} errors={errors} isEdit={false} />
+					<LinkFormFields
+						control={control}
+						errors={errors}
+						isEdit={false}
+					/>
 				</FormFieldsContainer>
 
 				{/* Actions */}
@@ -198,7 +224,10 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 						</Button>
 
 						{/* Ações do lado direito */}
-						<Stack direction="row" spacing={2}>
+						<Stack
+							direction="row"
+							spacing={2}
+						>
 							{/* Botão Reset (apenas se há mudanças) */}
 							{isDirty && (
 								<Button
@@ -220,7 +249,10 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 								disabled={!isValid || loading}
 								startIcon={
 									loading ? (
-										<CircularProgress size={16} color="inherit" />
+										<CircularProgress
+											size={16}
+											color="inherit"
+										/>
 									) : (
 										<AppIcon intent="save" />
 									)
@@ -232,8 +264,8 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 						</Stack>
 					</Stack>
 				</FormActionsContainer>
-			</form >
-		</FormPaper >
+			</form>
+		</FormPaper>
 	);
 }
 

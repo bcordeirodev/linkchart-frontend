@@ -3,7 +3,7 @@
  * Componente padronizado para ações de formulário
  */
 
-import { Stack, Button, CircularProgress, useTheme, alpha } from '@mui/material';
+import { Stack, Button, CircularProgress, alpha } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AppIcon } from '@/lib/icons';
 
@@ -250,7 +250,7 @@ export function FormActions({
 					isLoading={loading}
 					onClick={onSubmit}
 					disabled={!canSubmit || loading}
-					className='mt-4'
+					className="mt-4"
 					startIcon={
 						loading ? (
 							<CircularProgress

@@ -3,19 +3,13 @@
  * Re-exporta tipos centrais e adiciona tipos específicos do módulo
  */
 
-import type { LinkCreateRequest, LinkUpdateRequest, LinkResponse, LinkStats, LinkFilters } from '@/types';
+import type { LinkResponse, LinkStats } from '@/types';
 
 // ========================================
 // 🔗 RE-EXPORTS DOS TIPOS CENTRAIS
 // ========================================
 
-export type {
-	LinkCreateRequest,
-	LinkUpdateRequest,
-	LinkResponse,
-	LinkStats,
-	LinkFilters
-} from '@/types';
+export type { LinkCreateRequest, LinkUpdateRequest, LinkResponse, LinkStats, LinkFilters } from '@/types';
 
 // ========================================
 // 🎯 TIPOS ESPECÍFICOS DO MÓDULO DE LINKS

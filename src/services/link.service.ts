@@ -3,8 +3,8 @@ import { API_CONFIG } from '../lib/api/endpoints';
 import { BaseService } from './base.service';
 
 // Extend types to match Record<string, unknown>
-interface LinkCreateRequestExtended extends LinkCreateRequest, Record<string, unknown> { }
-interface LinkUpdateRequestExtended extends LinkUpdateRequest, Record<string, unknown> { }
+interface LinkCreateRequestExtended extends LinkCreateRequest, Record<string, unknown> {}
+interface LinkUpdateRequestExtended extends LinkUpdateRequest, Record<string, unknown> {}
 
 /**
  * Serviço para gerenciamento de links
@@ -146,7 +146,7 @@ export default class LinkService extends BaseService {
 	/**
 	 * Cria uma URL encurtada (legacy)
 	 */
-	async createShortUrl(data: { original_url: string;[key: string]: unknown }): Promise<{ data: unknown }> {
+	async createShortUrl(data: { original_url: string; [key: string]: unknown }): Promise<{ data: unknown }> {
 		this.validateRequired(data, ['original_url']);
 
 		// Normalizar URL - adicionar https:// se não tiver protocolo

@@ -44,8 +44,8 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 	const globalFilterProps = {
 		sx: !isTablet
 			? {
-				zIndex: 2
-			}
+					zIndex: 2
+				}
 			: undefined,
 		table
 	};
@@ -72,18 +72,18 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 					}),
 					isFullScreen
 						? {
-							position: 'sticky'
-						}
+								position: 'sticky'
+							}
 						: {
-							position: 'relative'
-						},
+								position: 'relative'
+							},
 					isFullScreen
 						? {
-							top: '0'
-						}
+								top: '0'
+							}
 						: {
-							top: null
-						}
+								top: null
+							}
 				]}
 			>
 				{['both', 'top'].includes(positionToolbarDropZone ?? '') && <MRT_ToolbarDropZone table={table} />}

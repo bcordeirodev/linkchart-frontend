@@ -220,7 +220,7 @@ export function useInsightsData({
 							avg_confidence:
 								filteredInsights.length > 0
 									? filteredInsights.reduce((sum, i) => sum + (i.confidence || 0.5), 0) /
-									filteredInsights.length
+										filteredInsights.length
 									: 0
 						},
 						categories: {},

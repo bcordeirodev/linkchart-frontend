@@ -2,7 +2,6 @@ import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
 import { useLinkPerformance } from '@/features/analytics/hooks/useLinkPerformance';
 import { CheckCircle, Assessment } from '@mui/icons-material';
 import { PerformanceMetrics } from './PerformanceMetrics';
-import TabDescription from '@/shared/ui/base/TabDescription';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 
 interface PerformanceAnalysisProps {
@@ -64,8 +63,6 @@ export function PerformanceAnalysis({
 			minHeight={300}
 		>
 			<Box>
-
-
 				{/* Métricas de Performance */}
 				<PerformanceMetrics
 					performanceData={performanceData || undefined}
@@ -262,8 +259,10 @@ export function PerformanceAnalysis({
 										? 'Bom'
 										: 'Crítico'}
 								)
-								<br />• <strong>Taxa de Cliques:</strong> {performanceMetrics.clicksPerHour} cliques/hora em média
-								<br />• <strong>Retenção de Visitantes:</strong> {performanceMetrics.visitorRetention}% dos cliques são de visitantes únicos
+								<br />• <strong>Taxa de Cliques:</strong> {performanceMetrics.clicksPerHour}{' '}
+								cliques/hora em média
+								<br />• <strong>Retenção de Visitantes:</strong> {performanceMetrics.visitorRetention}%
+								dos cliques são de visitantes únicos
 								<br />• <strong>Tempo de Resposta:</strong> {performanceMetrics.avgResponseTime}ms (
 								{performanceMetrics.avgResponseTime < 200
 									? 'Excelente'

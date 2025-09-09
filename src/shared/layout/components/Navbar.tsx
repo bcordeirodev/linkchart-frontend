@@ -318,16 +318,16 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 											},
 											'&::after': isActive
 												? {
-													content: '""',
-													position: 'absolute',
-													bottom: 4,
-													left: '50%',
-													transform: 'translateX(-50%)',
-													width: '60%',
-													height: 2,
-													background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-													borderRadius: 1
-												}
+														content: '""',
+														position: 'absolute',
+														bottom: 4,
+														left: '50%',
+														transform: 'translateX(-50%)',
+														width: '60%',
+														height: 2,
+														background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+														borderRadius: 1
+													}
 												: {}
 										}}
 									>

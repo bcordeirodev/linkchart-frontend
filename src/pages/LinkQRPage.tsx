@@ -51,7 +51,6 @@ function LinkQRPage() {
 
 				// Gerar QR Code
 				if (link?.short_url) {
-
 					// Validar se a URL é válida
 					try {
 						new URL(link.short_url);
@@ -76,7 +75,9 @@ function LinkQRPage() {
 						setQrCodeDataUrl(qrDataUrl);
 					} catch (qrError) {
 						console.error('❌ Erro ao gerar QR Code:', qrError);
-						setError(`Erro ao gerar QR Code: ${qrError instanceof Error ? qrError.message : 'Erro desconhecido'}`);
+						setError(
+							`Erro ao gerar QR Code: ${qrError instanceof Error ? qrError.message : 'Erro desconhecido'}`
+						);
 					}
 				} else {
 					console.warn('⚠️ Link não possui short_url:', link);
@@ -135,9 +136,20 @@ function LinkQRPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<Box sx={{ p: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+					<Box
+						sx={{
+							p: 3,
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+							minHeight: '50vh'
+						}}
+					>
 						<Box sx={{ textAlign: 'center' }}>
-							<CircularProgress size={40} sx={{ mb: 2 }} />
+							<CircularProgress
+								size={40}
+								sx={{ mb: 2 }}
+							/>
 							<Typography variant="body1">Carregando informações do link...</Typography>
 						</Box>
 					</Box>
@@ -169,14 +181,16 @@ function LinkQRPage() {
 
 					{/* Header */}
 					<Box sx={{ mb: 4 }}>
-						<Box sx={{
-							display: 'flex',
-							alignItems: { xs: 'flex-start', sm: 'center' },
-							justifyContent: 'space-between',
-							mb: 2,
-							flexDirection: { xs: 'column', sm: 'row' },
-							gap: { xs: 2, sm: 0 }
-						}}>
+						<Box
+							sx={{
+								display: 'flex',
+								alignItems: { xs: 'flex-start', sm: 'center' },
+								justifyContent: 'space-between',
+								mb: 2,
+								flexDirection: { xs: 'column', sm: 'row' },
+								gap: { xs: 2, sm: 0 }
+							}}
+						>
 							<Typography
 								variant="h4"
 								component="h1"
@@ -270,13 +284,15 @@ function LinkQRPage() {
 							</Typography>
 
 							{/* Ações */}
-							<Box sx={{
-								display: 'flex',
-								gap: { xs: 1, sm: 2 },
-								justifyContent: 'center',
-								flexWrap: 'wrap',
-								flexDirection: { xs: 'column', sm: 'row' }
-							}}>
+							<Box
+								sx={{
+									display: 'flex',
+									gap: { xs: 1, sm: 2 },
+									justifyContent: 'center',
+									flexWrap: 'wrap',
+									flexDirection: { xs: 'column', sm: 'row' }
+								}}
+							>
 								<Button
 									variant="contained"
 									startIcon={<Download />}

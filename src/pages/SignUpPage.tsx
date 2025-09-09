@@ -10,7 +10,6 @@ import {
 	TextField,
 	Button,
 	Stack,
-	Alert,
 	CircularProgress,
 	InputAdornment,
 	IconButton
@@ -25,29 +24,32 @@ import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
 
 // Schema de validação com Zod
-const signUpSchema = z.object({
-	name: z
-		.string()
-		.min(2, 'Nome deve ter pelo menos 2 caracteres')
-		.max(255, 'Nome deve ter no máximo 255 caracteres')
-		.regex(/^[a-zA-ZÀ-ÿ\s]+$/, 'Nome deve conter apenas letras e espaços'),
-	email: z
-		.string()
-		.min(1, 'Email é obrigatório')
-		.email('Email deve ser válido')
-		.max(255, 'Email deve ter no máximo 255 caracteres'),
-	password: z
-		.string()
-		.min(6, 'Senha deve ter pelo menos 6 caracteres')
-		.max(100, 'Senha deve ter no máximo 100 caracteres')
-		.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula e 1 número'),
-	password_confirmation: z
-		.string()
-		.min(6, 'Confirmação de senha é obrigatória')
-}).refine((data) => data.password === data.password_confirmation, {
-	message: 'Senhas não coincidem',
-	path: ['password_confirmation']
-});
+const signUpSchema = z
+	.object({
+		name: z
+			.string()
+			.min(2, 'Nome deve ter pelo menos 2 caracteres')
+			.max(255, 'Nome deve ter no máximo 255 caracteres')
+			.regex(/^[a-zA-ZÀ-ÿ\s]+$/, 'Nome deve conter apenas letras e espaços'),
+		email: z
+			.string()
+			.min(1, 'Email é obrigatório')
+			.email('Email deve ser válido')
+			.max(255, 'Email deve ter no máximo 255 caracteres'),
+		password: z
+			.string()
+			.min(6, 'Senha deve ter pelo menos 6 caracteres')
+			.max(100, 'Senha deve ter no máximo 100 caracteres')
+			.regex(
+				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+				'Senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula e 1 número'
+			),
+		password_confirmation: z.string().min(6, 'Confirmação de senha é obrigatória')
+	})
+	.refine((data) => data.password === data.password_confirmation, {
+		message: 'Senhas não coincidem',
+		path: ['password_confirmation']
+	});
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
@@ -88,7 +90,6 @@ function SignUpPage() {
 			setTimeout(() => {
 				navigate('/analytics');
 			}, 1500);
-
 		} catch (error: unknown) {
 			if (error && typeof error === 'object' && 'response' in error) {
 				const apiError = error as { response?: { data?: { errors?: Record<string, string[]> } } };
@@ -242,7 +243,11 @@ function SignUpPage() {
 						</Box>
 
 						{/* Registration Form */}
-						<Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+						<Box
+							component="form"
+							onSubmit={handleSubmit(onSubmit)}
+							noValidate
+						>
 							<Stack spacing={3}>
 								{/* Nome */}
 								<TextField
@@ -366,7 +371,10 @@ function SignUpPage() {
 									type={showPassword ? 'text' : 'password'}
 									label="Senha"
 									error={!!errors.password}
-									helperText={errors.password?.message || 'Mínimo 6 caracteres com letras maiúsculas, minúsculas e números'}
+									helperText={
+										errors.password?.message ||
+										'Mínimo 6 caracteres com letras maiúsculas, minúsculas e números'
+									}
 									disabled={loading}
 									InputProps={{
 										startAdornment: (
@@ -506,7 +514,14 @@ function SignUpPage() {
 									variant="contained"
 									size="large"
 									disabled={loading || !isValid}
-									startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
+									startIcon={
+										loading ? (
+											<CircularProgress
+												size={20}
+												color="inherit"
+											/>
+										) : null
+									}
 									sx={{
 										mt: 2,
 										py: 1.5,
@@ -625,11 +640,15 @@ function SignUpPage() {
 								mx: 'auto'
 							}}
 						>
-							Transforme seus links em ferramentas poderosas de marketing e análise. Comece gratuitamente hoje mesmo.
+							Transforme seus links em ferramentas poderosas de marketing e análise. Comece gratuitamente
+							hoje mesmo.
 						</Typography>
 
 						{/* Feature List */}
-						<Stack spacing={2} sx={{ textAlign: 'left', maxWidth: 400, mx: 'auto' }}>
+						<Stack
+							spacing={2}
+							sx={{ textAlign: 'left', maxWidth: 400, mx: 'auto' }}
+						>
 							{[
 								'✅ Links encurtados ilimitados',
 								'✅ Analytics detalhados em tempo real',

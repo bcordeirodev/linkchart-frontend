@@ -170,7 +170,7 @@ rootReducer.inject(messageSlice);
 const injectedSlice = messageSlice.injectInto(rootReducer);
 
 declare module './rootReducer' {
-	export interface LazyLoadedSlices extends WithSlice<typeof messageSlice> { }
+	export interface LazyLoadedSlices extends WithSlice<typeof messageSlice> {}
 }
 
 // Export actions
