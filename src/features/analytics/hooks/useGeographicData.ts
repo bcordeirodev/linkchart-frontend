@@ -1,9 +1,6 @@
 /**
- * @fileoverview Hook para dados geográficos
- * @author Link Chart Team
- * @version 1.0.0
+ * Hook para dados geográficos
  */
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { api } from '@/lib/api/client';
 import type { GeographicData } from '@/types/analytics';
@@ -37,28 +34,6 @@ export interface UseGeographicDataReturn {
 
 /**
  * Hook personalizado para dados geográficos
- *
- * @description
- * Gerencia dados de distribuição geográfica:
- * - Top países, estados e cidades
- * - Dados para heatmap (opcional)
- * - Estatísticas de cobertura
- * - Insights regionais
- *
- * @example
- * ```tsx
- * // Dados globais com heatmap
- * const { data, stats, loading } = useGeographicData({
- *   globalMode: true,
- *   includeHeatmap: true
- * });
- *
- * // Link específico
- * const { data, loading } = useGeographicData({
- *   linkId: '123',
- *   minClicks: 5
- * });
- * ```
  */
 export function useGeographicData({
 	linkId,
@@ -148,9 +123,7 @@ export function useGeographicData({
 			const errorMessage = err.message || 'Erro ao carregar dados geográficos';
 			setError(errorMessage);
 
-			if (import.meta.env.DEV) {
-				console.error('useGeographicData error:', err);
-			}
+			console.error('useGeographicData error:', err);
 		}
 	}, [linkId, globalMode, minClicks, calculateStats]);
 

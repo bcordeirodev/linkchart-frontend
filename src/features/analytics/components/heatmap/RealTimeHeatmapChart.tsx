@@ -1,20 +1,5 @@
 /**
- * @fileoverview Componente de mapa de calor interativo em tempo real
- * @author Link Chart Team
- * @version 2.0.0
- *
- * @description
- * Componente principal para renderização de mapas de calor interativos.
- * Suporta carregamento dinâmico do Leaflet, múltiplos estilos de mapa,
- * controles interativos e atualizações em tempo real.
- *
- * @features
- * - Carregamento dinâmico do Leaflet (SSR safe)
- * - Múltiplos estilos de mapa (street, satellite, dark)
- * - Controles de filtro e visualização
- * - Popups informativos com dados detalhados
- * - Suporte a modo fullscreen
- * - Clustering de pontos próximos
+ * Componente de mapa de calor interativo
  */
 
 import React, { useEffect, useState, useCallback } from 'react';
@@ -81,33 +66,15 @@ interface SafeMapComponents {
 	LayerGroup: React.ComponentType<any> | null; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-// ========================================
-// 🗺️ COMPONENTE PRINCIPAL
-// ========================================
-
 /**
  * Componente de mapa de calor interativo com suporte a tempo real
- *
- * @description
+
  * Renderiza um mapa interativo com:
  * - Pontos de calor baseados em cliques geográficos
  * - Controles para filtros e visualização
  * - Atualizações em tempo real
  * - Suporte para modo global e específico por link
  *
- * @example
- * ```tsx
- * // Modo global
- * <RealTimeHeatmapChart data={heatmapData} />
- *
- * // Com controles personalizados
- * <RealTimeHeatmapChart
- *   data={heatmapData}
- *   height={500}
- *   showControls={true}
- *   onRefresh={handleRefresh}
- * />
- * ```
  */
 export function RealTimeHeatmapChart({
 	data,
@@ -120,9 +87,6 @@ export function RealTimeHeatmapChart({
 	showControls = true,
 	showStats = true
 }: HeatmapChartProps) {
-	// ========================================
-	// 🎛️ HOOKS E ESTADO
-	// ========================================
 
 	const theme = useTheme();
 
@@ -145,15 +109,10 @@ export function RealTimeHeatmapChart({
 	const [showClusters, setShowClusters] = useState(true);
 	const [isFullscreen, setIsFullscreen] = useState(false);
 
-	// Dados recebidos como props - não precisa mais do hook
-
-	// Debug removido para produção
-
 	useEffect(() => {
 		setIsClient(true);
 	}, []);
 
-	// Carregar componentes do Leaflet dinamicamente
 	useEffect(() => {
 		const loadLeaflet = async () => {
 			try {
@@ -183,9 +142,7 @@ export function RealTimeHeatmapChart({
 
 				setMapReady(true);
 			} catch (_error) {
-				if (process.env.NODE_ENV === 'development') {
-					// console.error('Erro ao carregar Leaflet:', error);
-				}
+				// Erro ao carregar Leaflet tratado
 
 				setMapError(true);
 			}
@@ -195,10 +152,6 @@ export function RealTimeHeatmapChart({
 			loadLeaflet();
 		}
 	}, [isClient]);
-
-	// ========================================
-	// 🧮 FUNÇÕES UTILITÁRIAS
-	// ========================================
 
 	/**
 	 * Calcular centro do mapa baseado nos dados
@@ -252,10 +205,6 @@ export function RealTimeHeatmapChart({
 				return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 		}
 	}, []);
-
-	// ========================================
-	// 🎨 RENDERIZAÇÃO
-	// ========================================
 
 	// Estado de loading
 	if (!isClient || !mapReady) {
@@ -523,7 +472,6 @@ export function RealTimeHeatmapChart({
 								<Slider
 									value={minClicksFilter}
 									onChange={(_, value) => {
-										// console.log('🎚️ Mudando filtro de cliques para:', value);
 										setMinClicksFilter(value as number);
 									}}
 									min={1}

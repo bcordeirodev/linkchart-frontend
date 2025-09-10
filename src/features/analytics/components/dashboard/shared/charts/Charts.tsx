@@ -27,16 +27,7 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 		const horizontalBarStyles = createHorizontalBarStyles(theme);
 
 		// Debug dos dados recebidos (apenas em desenvolvimento)
-		if (import.meta.env.DEV) {
-			// eslint-disable-next-line no-console
-			console.log('📊 Charts - Dados recebidos:', {
-				data,
-				hasData: !!data,
-				temporal: data?.temporal,
-				geographic: data?.geographic,
-				audience: data?.audience
-			});
-		}
+		// Validação silenciosa dos dados recebidos
 
 		// Verificação de segurança para dados
 		if (!data) {
@@ -87,28 +78,6 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 			);
 
 			// Debug detalhado (apenas em desenvolvimento)
-			if (import.meta.env.DEV) {
-				// eslint-disable-next-line no-console
-				console.log('📊 Charts - Verificação de dados:', {
-					hasTemporalData,
-					hasGeographicData,
-					hasDeviceData,
-					temporal: {
-						exists: !!data.temporal,
-						clicks_by_hour: data.temporal?.clicks_by_hour?.length || 0,
-						clicks_by_day_of_week: data.temporal?.clicks_by_day_of_week?.length || 0
-					},
-					geographic: {
-						exists: !!data.geographic,
-						top_countries: data.geographic?.top_countries?.length || 0,
-						top_cities: data.geographic?.top_cities?.length || 0
-					},
-					audience: {
-						exists: !!data.audience,
-						device_breakdown: data.audience?.device_breakdown?.length || 0
-					}
-				});
-			}
 
 			return { hasTemporalData, hasGeographicData, hasDeviceData };
 		};
@@ -118,15 +87,7 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 		// Usar dados diretamente
 		const chartData = data;
 
-		// Debug apenas se houver problemas
-		if (import.meta.env.DEV && !hasTemporalData && !hasGeographicData && !hasDeviceData) {
-			console.warn('📊 Charts: Nenhum dado disponível para gráficos', {
-				data,
-				temporal: data?.temporal,
-				geographic: data?.geographic,
-				audience: data?.audience
-			});
-		}
+		// Validação silenciosa de disponibilidade de dados
 
 		return (
 			<Grid

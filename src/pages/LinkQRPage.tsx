@@ -11,19 +11,11 @@ import { useLinks } from '@/features/links/hooks/useLinks';
 import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
 import { useShareAPI } from '@/features/links/hooks/useShareAPI';
 
-/**
- * Constrói a URL encurtada baseada no slug
- */
 const buildShortUrl = (slug: string): string => {
-	// URL encurtada deve apontar para o frontend (redirect page)
 	const frontendUrl = window.location.origin || 'http://localhost:3000';
 	return `${frontendUrl}/r/${slug}`;
 };
 
-/**
- * 📱 Página de QR Code para Link Individual
- * Gera e exibe QR Code do link encurtado
- */
 function LinkQRPage() {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
@@ -71,7 +63,6 @@ function LinkQRPage() {
 							},
 							errorCorrectionLevel: 'M'
 						});
-						console.log('✅ QR Code gerado com sucesso');
 						setQrCodeDataUrl(qrDataUrl);
 					} catch (qrError) {
 						console.error('❌ Erro ao gerar QR Code:', qrError);
@@ -80,7 +71,6 @@ function LinkQRPage() {
 						);
 					}
 				} else {
-					console.warn('⚠️ Link não possui short_url:', link);
 					setError('Link não possui URL encurtada válida');
 				}
 			} catch (err) {

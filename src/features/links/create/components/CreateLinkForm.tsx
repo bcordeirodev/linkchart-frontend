@@ -1,7 +1,3 @@
-/**
- * 🎯 CREATE LINK FORM - REFATORADO COM REACT HOOK FORM + ZOD
- * Formulário simplificado para criação de links
- */
 
 import { Typography, Button, CircularProgress, Stack, Alert } from '@mui/material';
 import { useForm } from 'react-hook-form';
@@ -34,7 +30,6 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 	const [success, setSuccess] = useState(false);
 	const [apiError, setApiError] = useState<string | null>(null);
 
-	// ✅ React Hook Form com Zod
 	const {
 		control,
 		handleSubmit,
@@ -47,38 +42,32 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 		mode: 'onChange'
 	});
 
-	// ✅ Função auxiliar para converter datas para envio
 	const convertDateForSubmit = (dateString: string | null | undefined): string | undefined => {
 		if (!dateString) return undefined;
 
 		try {
 			const date = new Date(dateString);
 
-			// Verificar se a data é válida
 			if (isNaN(date.getTime())) {
-				console.warn('Data inválida para envio:', dateString);
 				return undefined;
 			}
 
 			return date.toISOString();
 		} catch (error) {
-			console.warn('Erro ao converter data para envio:', dateString, error);
 			return undefined;
 		}
 	};
 
-	// ✅ Submit Handler
 	const onSubmit = async (data: LinkFormData) => {
 		try {
 			setLoading(true);
 			setApiError(null);
 
-			// Preparar dados para envio
 			const payload = {
 				...data,
-				// Converter datas para formato ISO se preenchidas
 				expires_at: convertDateForSubmit(data.expires_at),
 				starts_in: convertDateForSubmit(data.starts_in),
+
 				// Remover campos UTM vazios
 				utm_source: data.utm_source || undefined,
 				utm_medium: data.utm_medium || undefined,
@@ -130,13 +119,11 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 		}
 	};
 
-	// ✅ Reset Handler
 	const handleReset = () => {
 		reset(defaultLinkFormValues);
 		setApiError(null);
 	};
 
-	// ✅ Cancel Handler
 	const handleCancel = () => {
 		if (showBackButton) {
 			navigate(-1);
@@ -145,7 +132,6 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 		}
 	};
 
-	// ✅ Success State
 	if (success) {
 		return (
 			<SuccessPaper elevation={2}>

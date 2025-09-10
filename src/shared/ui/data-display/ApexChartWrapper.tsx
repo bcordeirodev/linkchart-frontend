@@ -24,7 +24,7 @@ import {
 	NoDataDescription
 } from './ApexChartWrapper.styled';
 
-// Chart importado diretamente para melhor debug
+// Chart importado diretamente
 
 interface ApexChartWrapperProps {
 	type: 'line' | 'area' | 'bar' | 'pie' | 'donut' | 'radialBar' | 'scatter' | 'bubble' | 'heatmap' | 'treemap';
@@ -69,38 +69,8 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 			return false;
 		});
 
-	// Debug reduzido - apenas se houver problema
-	if (import.meta.env.DEV && (!hasValidData || !hasDataPoints)) {
-		console.warn(`⚠️ ApexChart ${type} sem dados:`, {
-			hasValidData,
-			hasDataPoints,
-			seriesLength: series?.length || 0,
-			series,
-			options
-		});
-	}
+	// Validação silenciosa de dados
 
-	// Debug específico para gráficos de barras
-	if (import.meta.env.DEV && type === 'bar') {
-		console.log(`📊 ApexChart ${type} - Debug detalhado:`, {
-			type,
-			hasValidData,
-			hasDataPoints,
-			series,
-			seriesData: (series[0] as any)?.data,
-			seriesValidation: series?.map((s) => ({
-				isObject: typeof s === 'object' && s !== null,
-				hasData: 'data' in (s as object),
-				dataIsArray: Array.isArray((s as any).data),
-				dataLength: (s as any).data?.length || 0
-			})),
-			options: {
-				chart: options.chart,
-				plotOptions: options.plotOptions,
-				dataLabels: options.dataLabels
-			}
-		});
-	}
 
 	useEffect(() => {
 		// Em React puro, inicializar imediatamente
@@ -116,8 +86,9 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 
 	const handleChartError = useCallback(
 		(error?: any) => {
-			if (import.meta.env.DEV) {
-				console.error('📊 ApexChart Error:', { type, error, series, options });
+			// Log apenas erros críticos
+			if (error) {
+				console.error('ApexChart Error:', error);
 			}
 
 			setHasError(true);

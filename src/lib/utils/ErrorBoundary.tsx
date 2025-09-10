@@ -1,33 +1,13 @@
 /**
- * 🛡️ ERROR BOUNDARY - LINK CHART
- * Componente de captura de erros melhorado
- *
- * @description
- * Error boundary melhorado com logging detalhado, interface de erro
- * amigável e integração com sistemas de monitoramento.
- *
- * @features
- * - ✅ Captura de erros React
- * - ✅ Logging detalhado no console
- * - ✅ Interface de erro amigável
- * - ✅ Botão de recuperação
- * - ✅ Informações de debug
- * - ✅ TypeScript completo
- *
- * @since 2.0.0
+ * Error Boundary para captura de erros React
  */
 
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Box, Typography, Button, Paper, Alert, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { ErrorOutline, Refresh, ExpandMore, BugReport } from '@mui/icons-material';
 
-/**
- * Props do ErrorBoundary
- */
 interface ErrorBoundaryProps {
-	/** Componentes filhos */
 	children?: ReactNode;
-	/** Callback quando erro ocorre */
 	onError?: (error: Error, errorInfo: ErrorInfo) => void;
 	/** Se deve mostrar interface de erro ou apenas logar */
 	showErrorUI?: boolean;

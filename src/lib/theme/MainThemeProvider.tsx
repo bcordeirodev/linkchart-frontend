@@ -74,7 +74,7 @@ function MainThemeProvider({ children }: MainThemeProviderProps) {
 	// Criar tema Material-UI a partir do tema Fuse
 	const muiTheme = useMemo(() => {
 		if (!mainTheme) {
-			console.warn('MainTheme não encontrado, usando tema padrão');
+			// MainTheme não encontrado, usando tema padrão
 			return createTheme();
 		}
 

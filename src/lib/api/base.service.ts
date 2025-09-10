@@ -100,17 +100,10 @@ export abstract class BaseService {
 	private handleError<T>(method: string, endpoint: string, error: unknown, fallback?: T, context?: string): T {
 		const errorMessage = error instanceof FetchApiError ? error.message : String(error);
 
-		// Log do erro em desenvolvimento
-		if (import.meta.env.DEV) {
-			console.error(`❌ ${this.serviceName} ${method} ${endpoint}:`, error);
-		}
+		// Erro registrado
 
-		// Se há fallback, usar e logar
+		// Se há fallback, usar
 		if (fallback !== undefined) {
-			if (import.meta.env.DEV) {
-				console.warn(`🔄 ${this.serviceName} usando fallback para ${endpoint}`);
-			}
-
 			return fallback;
 		}
 
@@ -119,13 +112,10 @@ export abstract class BaseService {
 	}
 
 	/**
-	 * Log de sucesso (apenas em desenvolvimento)
+	 * Log de sucesso (removido)
 	 */
 	private logSuccess(method: string, endpoint: string): void {
-		if (import.meta.env.DEV) {
-			// eslint-disable-next-line no-console
-			console.log(`✅ ${this.serviceName} ${method} ${endpoint} - Success`);
-		}
+		// Success registrado silenciosamente
 	}
 
 	/**

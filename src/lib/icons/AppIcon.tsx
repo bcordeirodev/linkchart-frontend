@@ -62,7 +62,7 @@ export const AppIcon = forwardRef<SVGSVGElement, AppIconProps>(
 
 		// Fallback se ícone não encontrado
 		if (!IconComponent) {
-			console.warn(`AppIcon: Ícone não encontrado`, { name, intent, category, iconName });
+			// Ícone não encontrado
 			IconComponent = AppIcons.status.error; // Ícone de erro como fallback
 		}
 

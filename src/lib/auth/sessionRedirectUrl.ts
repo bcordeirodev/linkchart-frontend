@@ -58,7 +58,7 @@ const isSessionStorageAvailable = (): boolean => {
 		window.sessionStorage.removeItem(testKey);
 		return true;
 	} catch (error) {
-		console.warn(`${CONFIG.logPrefix} SessionStorage não disponível:`, error);
+		// SessionStorage não disponível
 		return false;
 	}
 };
@@ -80,11 +80,6 @@ const isValidRedirectUrl = (url: string): boolean => {
 
 		// Permite apenas URLs do mesmo domínio
 		if (urlObj.origin !== currentOrigin) {
-			console.warn(`${CONFIG.logPrefix} URL de origem diferente rejeitada:`, {
-				url,
-				urlOrigin: urlObj.origin,
-				currentOrigin
-			});
 			return false;
 		}
 
@@ -92,13 +87,13 @@ const isValidRedirectUrl = (url: string): boolean => {
 		const dangerousProtocols = ['javascript:', 'data:', 'vbscript:'];
 
 		if (dangerousProtocols.some((protocol) => url.toLowerCase().startsWith(protocol))) {
-			console.warn(`${CONFIG.logPrefix} Protocolo perigoso detectado:`, url);
+			// Protocolo perigoso detectado
 			return false;
 		}
 
 		return true;
 	} catch (error) {
-		console.warn(`${CONFIG.logPrefix} Erro na validação da URL:`, { url, error });
+		// Erro na validação da URL
 		return false;
 	}
 };
@@ -113,7 +108,6 @@ export const getSessionRedirectUrl = (): string | null => {
 		const storedData = window.sessionStorage.getItem(CONFIG.storageKey);
 
 		if (!storedData) {
-			console.debug(`${CONFIG.logPrefix} Nenhuma URL de redirect armazenada`);
 			return null;
 		}
 
@@ -123,27 +117,18 @@ export const getSessionRedirectUrl = (): string | null => {
 
 		// Verifica se expirou
 		if (age > CONFIG.maxAge) {
-			console.debug(`${CONFIG.logPrefix} URL de redirect expirada:`, {
-				age: Math.round(age / 1000),
-				maxAge: Math.round(CONFIG.maxAge / 1000),
-				url: data.url
-			});
+			// URL de redirect expirada
 			resetSessionRedirectUrl();
 			return null;
 		}
 
 		// Valida a URL antes de retornar
 		if (!isValidRedirectUrl(data.url)) {
-			console.warn(`${CONFIG.logPrefix} URL de redirect inválida removida:`, data.url);
 			resetSessionRedirectUrl();
 			return null;
 		}
 
-		console.debug(`${CONFIG.logPrefix} URL de redirect recuperada:`, {
-			url: data.url,
-			age: Math.round(age / 1000),
-			reason: data.reason
-		});
+		// URL de redirect recuperada
 
 		return data.url;
 	} catch (error) {
@@ -161,7 +146,6 @@ export const setSessionRedirectUrl = (url: string, reason: StoredRedirectData['r
 
 	// Valida a URL antes de armazenar
 	if (!isValidRedirectUrl(url)) {
-		console.warn(`${CONFIG.logPrefix} Tentativa de armazenar URL inválida:`, url);
 		return false;
 	}
 
@@ -175,11 +159,7 @@ export const setSessionRedirectUrl = (url: string, reason: StoredRedirectData['r
 
 		window.sessionStorage.setItem(CONFIG.storageKey, JSON.stringify(data));
 
-		console.debug(`${CONFIG.logPrefix} URL de redirect armazenada:`, {
-			url,
-			reason,
-			timestamp: new Date(data.timestamp).toISOString()
-		});
+		// URL de redirect armazenada
 
 		return true;
 	} catch (error) {
@@ -198,9 +178,7 @@ export const resetSessionRedirectUrl = (): void => {
 		const hadUrl = window.sessionStorage.getItem(CONFIG.storageKey) !== null;
 		window.sessionStorage.removeItem(CONFIG.storageKey);
 
-		if (hadUrl) {
-			console.debug(`${CONFIG.logPrefix} URL de redirect removida`);
-		}
+		// URL de redirect removida se existia
 	} catch (error) {
 		console.error(`${CONFIG.logPrefix} Erro ao remover URL de redirect:`, error);
 	}
@@ -255,7 +233,7 @@ export const cleanupExpiredRedirects = (): void => {
 
 		if (now - info.timestamp > CONFIG.maxAge) {
 			resetSessionRedirectUrl();
-			console.debug(`${CONFIG.logPrefix} URL de redirect expirada removida durante limpeza`);
+			// URL de redirect expirada removida durante limpeza
 		}
 	} catch (error) {
 		console.error(`${CONFIG.logPrefix} Erro na limpeza de redirects:`, error);

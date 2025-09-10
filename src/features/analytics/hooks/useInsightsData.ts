@@ -1,7 +1,5 @@
 /**
- * @fileoverview Hook para dados de insights de negócio
- * @author Link Chart Team
- * @version 1.0.0
+ * Hook para dados de insights
  */
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
@@ -61,35 +59,12 @@ export interface UseInsightsDataReturn {
 
 /**
  * Hook personalizado para dados de insights de negócio
- *
- * @description
- * Gerencia insights automáticos gerados pela análise dos dados:
+
+ *  Gerencia insights automáticos gerados pela análise dos dados:
  * - Insights de performance e otimização
  * - Recomendações estratégicas
  * - Identificação de oportunidades
  * - Alertas e tendências importantes
- *
- * @note
- * CORREÇÃO DE LOOP INFINITO:
- * - Usa useMemo para estabilizar arrays de categorias
- * - Memoiza parâmetros de fetch para evitar recriações desnecessárias
- * - Dependências dos useCallback são cuidadosamente controladas
- *
- * @example
- * ```tsx
- * // Insights globais de alta confiança
- * const { data, stats, loading } = useInsightsData({
- *   globalMode: true,
- *   minConfidence: 0.8,
- *   categories: ['performance', 'geographic']
- * });
- *
- * // Insights de link específico
- * const { data, loading } = useInsightsData({
- *   linkId: '123',
- *   enableRealtime: false
- * });
- * ```
  */
 export function useInsightsData({
 	linkId,
@@ -220,7 +195,7 @@ export function useInsightsData({
 							avg_confidence:
 								filteredInsights.length > 0
 									? filteredInsights.reduce((sum, i) => sum + (i.confidence || 0.5), 0) /
-										filteredInsights.length
+									filteredInsights.length
 									: 0
 						},
 						categories: {},
@@ -247,9 +222,7 @@ export function useInsightsData({
 			const errorMessage = err.message || 'Erro ao carregar insights';
 			setError(errorMessage);
 
-			if (import.meta.env.DEV) {
-				console.error('useInsightsData error:', err);
-			}
+			console.error('useInsightsData error:', err);
 		}
 	}, [fetchParams, filterInsights, calculateStats]);
 

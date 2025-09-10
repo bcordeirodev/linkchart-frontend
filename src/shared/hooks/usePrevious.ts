@@ -1,18 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Hook personalizado que retorna o valor anterior de uma variável
- * Útil para comparações e detecção de mudanças
- *
- * @example
- * ```tsx
- * const prevCount = usePrevious(count);
- * useEffect(() => {
- *   if (prevCount !== count) {
- *     console.log('Count mudou de', prevCount, 'para', count);
- *   }
- * }, [count, prevCount]);
- * ```
+ * Hook que retorna o valor anterior de uma variável
  */
 function usePrevious<T>(value: T): T | undefined {
 	const ref = useRef<T | undefined>(undefined);

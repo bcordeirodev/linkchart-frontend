@@ -56,9 +56,7 @@ export function SimpleChart({ type, height = 300, series, options }: SimpleChart
 					setChartInstance(chart);
 					setLoading(false);
 
-					if (import.meta.env.DEV) {
-						console.log(`✅ SimpleChart ${type} renderizado com sucesso!`, { series, options });
-					}
+					// Chart renderizado com sucesso
 				}
 			} catch (err) {
 				console.error(`❌ Erro ao renderizar SimpleChart ${type}:`, err);

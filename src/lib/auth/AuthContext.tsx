@@ -44,7 +44,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			const token = localStorage.getItem('token');
 
 			if (!token) {
-				console.warn('⚠️ Nenhum token encontrado para refresh');
 				setUser(null);
 				return;
 			}
@@ -54,20 +53,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			const user = convertUserDBToUser(userDB);
 			setUser(user);
 			localStorage.setItem('user', JSON.stringify(user));
-			// console.log('✅ Usuário atualizado via refreshUser');
+			// Usuário atualizado
 		} catch (error) {
-			// console.error('❌ Erro ao buscar usuário no refreshUser:', error);
+			// Erro no refresh tratado
 
 			// Verificar se é erro de autenticação (401) ou erro de rede
 			const isAuthError = error && typeof error === 'object' && 'status' in error && error.status === 401;
 
 			if (isAuthError) {
-				// console.log('🔑 Token inválido detectado, limpando sessão');
+				// Token inválido detectado, limpando sessão
 				setUser(null);
 				localStorage.removeItem('token');
 				localStorage.removeItem('user');
 			} else {
-				console.warn('🌐 Erro de rede no refreshUser, mantendo sessão local');
+				// Erro de rede no refreshUser, mantendo sessão local
 				// Não limpar dados se for erro de rede
 			}
 		}
@@ -88,13 +87,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 						// Verificar se o token ainda é válido (sem limpar se falhar)
 						try {
 							await authService.getMe();
-							// console.log('✅ Token válido, usuário mantido');
+							// Token válido
 						} catch (error) {
-							// console.warn('⚠️ Token pode estar expirado, mas mantendo sessão local:', error);
+							// Token pode estar expirado
 							// Não limpar o token aqui - deixar que seja tratado nas próximas requisições
 						}
 					} catch (error) {
-						// console.error('Erro ao parsear usuário armazenado:', error);
+						// Erro ao parsear usuário
 						localStorage.removeItem('user');
 						localStorage.removeItem('token');
 						setUser(null);
@@ -115,43 +114,42 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 	const login = async (email: string, password: string): Promise<void> => {
 		try {
-			// console.log('🔐 Iniciando login para:', email);
+			// Iniciando login
 
 			// Chamada real à API
 			const response: LoginResponse = await authService.signIn({ email, password });
-			// console.log('✅ Login bem-sucedido, resposta recebida');
+			// Login bem-sucedido
 
 			// Armazenar token
 			localStorage.setItem('token', response.token);
-			// console.log('💾 Token armazenado no localStorage');
+			// Token armazenado
 
 			// Converter e armazenar usuário
 			const user = convertUserDBToUser(response.user);
 			setUser(user);
 			localStorage.setItem('user', JSON.stringify(user));
-			// console.log('👤 Usuário convertido e armazenado:', { id: user.id, email: user.email, role: user.role });
+			// Usuário armazenado
 		} catch (error) {
-			// console.error('❌ Erro no login:', error);
+			// Erro no login tratado
 			throw new Error('Login falhou. Verifique suas credenciais.');
 		}
 	};
 
 	const logout = async () => {
 		try {
-			console.log('🚪 Iniciando logout...');
+			// Iniciando logout
 
 			// Chamar logout na API
 			await authService.signOut();
-			console.log('✅ Logout na API bem-sucedido');
+			// Logout na API bem-sucedido
 		} catch (error) {
-			console.error('⚠️ Erro no logout da API (continuando com logout local):', error);
+			// Erro no logout da API (continuando com logout local)
 		} finally {
 			// Limpar dados locais sempre
-			console.log('🧹 Limpando dados locais...');
 			setUser(null);
 			localStorage.removeItem('token');
 			localStorage.removeItem('user');
-			console.log('✅ Logout concluído');
+			// Logout concluído
 		}
 	};
 

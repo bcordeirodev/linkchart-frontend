@@ -11,9 +11,6 @@ export interface ApiError extends Error {
 	response?: unknown;
 }
 
-/**
- * Classe de erro personalizada para requisições da API
- */
 export class FetchApiError extends Error {
 	status: number;
 	data: unknown;
@@ -27,7 +24,7 @@ export class FetchApiError extends Error {
 }
 
 /**
- * Cliente API consolidado e centralizado
+ * Cliente API
  *
  * Funcionalidades:
  * - Autenticação automática via localStorage
@@ -44,7 +41,6 @@ class ApiClient {
 	constructor(baseURL: string = API_BASE_URL, timeout: number = REQUEST_TIMEOUT) {
 		this.baseURL = baseURL;
 		this.timeout = timeout;
-		console.log('🔧 API Client configurado com:', { baseURL, timeout });
 	}
 
 	/**
@@ -182,13 +178,7 @@ class ApiClient {
 		const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
 		const headers = await this.createHeaders(customHeaders);
 
-		if (import.meta.env.DEV) {
-			console.log(`🌐 API ${method} request:`, {
-				url,
-				headers: { ...headers, Authorization: headers.Authorization ? '[HIDDEN]' : undefined },
-				data
-			});
-		}
+		// Request preparado
 
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), this.timeout);
@@ -201,13 +191,7 @@ class ApiClient {
 				signal: controller.signal
 			});
 
-			if (import.meta.env.DEV) {
-				console.log(`📡 API ${method} response:`, {
-					status: response.status,
-					statusText: response.statusText,
-					url
-				});
-			}
+			// Response recebido
 
 			clearTimeout(timeoutId);
 

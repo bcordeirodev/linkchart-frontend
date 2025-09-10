@@ -1,15 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Hook personalizado para timeout
- * Útil para delays e timeouts controlados
- *
- * @example
- * ```tsx
- * useTimeout(() => {
- *   console.log('Executado após 1 segundo');
- * }, 1000);
- * ```
+ * Hook para timeout controlado
  */
 function useTimeout(callback: () => void, delay: number) {
 	const callbackRef = useRef(callback);

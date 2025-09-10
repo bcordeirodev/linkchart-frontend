@@ -1,29 +1,19 @@
 /**
- * Constantes relacionadas à API
- *
- * Centraliza todas as URLs e configurações da API,
- * seguindo o princípio DRY (Don't Repeat Yourself)
+ * Configurações e endpoints da API
  */
-
-// Configurações da API
 export const API_CONFIG = {
-	// URLs base por ambiente
 	BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost',
 	TEST_URL: import.meta.env.VITE_TEST_API_URL || 'http://localhost',
 
-	// Timeouts
-	TIMEOUT: 10000, // 10 segundos
+	TIMEOUT: 10000,
 	RETRY_ATTEMPTS: 3,
 
-	// Headers padrão
 	DEFAULT_HEADERS: {
 		'Content-Type': 'application/json',
 		Accept: 'application/json'
 	},
 
-	// Endpoints
 	ENDPOINTS: {
-		// Analytics
 		ANALYTICS: '/api/analytics',
 		TEST_ANALYTICS: '/api/test-analytics/1',
 		LINK_ANALYTICS: (id: string) => `/api/links/${id}/analytics`,
@@ -36,7 +26,6 @@ export const API_CONFIG = {
 		UPDATE_LINK: (id: string) => `/api/links/${id}`,
 		DELETE_LINK: (id: string) => `/api/links/${id}`,
 
-		// Auth
 		AUTH: {
 			LOGIN: '/api/auth/login',
 			LOGOUT: '/api/logout',
@@ -47,18 +36,15 @@ export const API_CONFIG = {
 			CHANGE_PASSWORD: '/api/change-password'
 		},
 
-		// Logs
 		LOGS: '/api/logs',
 		LOGS_DIAGNOSTIC: '/api/logs/diagnostic',
 		LOGS_RECENT_ERRORS: '/api/logs/recent-errors',
 		LOGS_TEST: '/api/logs/test',
 		LOGS_FILE: (filename: string) => `/api/logs/${filename}`,
 
-		// Reports
 		REPORTS_DASHBOARD: (linkId: string) => `/api/reports/link/${linkId}/dashboard`,
 		REPORTS_EXECUTIVE: (linkId: string) => `/api/reports/link/${linkId}/executive`,
 
-		// Enhanced Analytics
 		ANALYTICS_COMPREHENSIVE: (linkId: string) => `/api/analytics/link/${linkId}/comprehensive`,
 		ANALYTICS_GEOGRAPHIC: (linkId: string) => `/api/analytics/link/${linkId}/geographic`,
 		ANALYTICS_TEMPORAL: (linkId: string) => `/api/analytics/link/${linkId}/temporal`,
@@ -70,17 +56,15 @@ export const API_CONFIG = {
 		REDIRECT: (slug: string) => `/api/r/${slug}`
 	},
 
-	// Configurações de cache
 	CACHE: {
 		ANALYTICS_TTL: 5 * 60 * 1000, // 5 minutos
 		LINKS_TTL: 2 * 60 * 1000, // 2 minutos
 		USER_TTL: 10 * 60 * 1000 // 10 minutos
 	},
 
-	// Configurações de fallback
 	FALLBACK: {
 		ENABLED: true,
-		RETRY_DELAY: 1000, // 1 segundo
+		RETRY_DELAY: 1000,
 		MAX_RETRIES: 2
 	}
 };
@@ -112,7 +96,7 @@ export const getTimeout = (): number => {
 
 // Exports para compatibilidade com código antigo
 export const API_BASE_URL = API_CONFIG.BASE_URL;
-console.log('🔧 API_BASE_URL configurada como:', API_BASE_URL);
+
 export const API_ENDPOINTS = {
 	AUTH: {
 		LOGIN: API_CONFIG.ENDPOINTS.AUTH.LOGIN,

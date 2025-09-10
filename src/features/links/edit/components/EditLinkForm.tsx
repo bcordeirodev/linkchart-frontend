@@ -35,7 +35,6 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	const [fetchingData, setFetchingData] = useState(true);
 	const [apiError, setApiError] = useState<string | null>(null);
 
-	// ✅ React Hook Form com Zod
 	const {
 		control,
 		handleSubmit,
@@ -48,7 +47,6 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 		mode: 'onBlur'
 	});
 
-	// ✅ Simplificado - Botão sempre ativo quando não está carregando
 
 	// ✅ Função auxiliar para converter datas de forma segura
 	const convertDateToInputFormat = (dateString: string | null | undefined): string => {
@@ -70,13 +68,12 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 
 			// Verificar se a data é válida
 			if (isNaN(date.getTime())) {
-				console.warn('Data inválida recebida:', dateString);
 				return '';
 			}
 
 			return date.toISOString().slice(0, 16);
 		} catch (error) {
-			console.warn('Erro ao converter data:', dateString, error);
+			// Erro ao converter data
 			return '';
 		}
 	};
@@ -133,13 +130,13 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 
 			// Verificar se a data é válida
 			if (isNaN(date.getTime())) {
-				console.warn('Data inválida para envio:', dateString);
+				// Data inválida para envio
 				return undefined;
 			}
 
 			return date.toISOString();
 		} catch (error) {
-			console.warn('Erro ao converter data para envio:', dateString, error);
+			// Erro ao converter data para envio
 			return undefined;
 		}
 	};

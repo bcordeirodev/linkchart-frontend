@@ -1,9 +1,6 @@
 /**
- * @fileoverview Hook para dados temporais
- * @author Link Chart Team
- * @version 1.0.0
+ * Hook para dados temporais
  */
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { api } from '@/lib/api/client';
 import type { TemporalData } from '@/types/analytics';
@@ -37,29 +34,6 @@ export interface UseTemporalDataReturn {
 
 /**
  * Hook personalizado para dados temporais
- *
- * @description
- * Gerencia dados de padrões temporais:
- * - Cliques por hora do dia
- * - Cliques por dia da semana
- * - Análise de picos e tendências
- * - Dados avançados (timezone, sazonalidade)
- *
- * @example
- * ```tsx
- * // Análise temporal global
- * const { data, stats, loading } = useTemporalData({
- *   globalMode: true,
- *   includeAdvanced: true,
- *   timeRange: '30d'
- * });
- *
- * // Link específico com realtime
- * const { data, loading } = useTemporalData({
- *   linkId: '123',
- *   enableRealtime: true
- * });
- * ```
  */
 export function useTemporalData({
 	linkId,
@@ -176,9 +150,7 @@ export function useTemporalData({
 			const errorMessage = err.message || 'Erro ao carregar dados temporais';
 			setError(errorMessage);
 
-			if (import.meta.env.DEV) {
-				console.error('useTemporalData error:', err);
-			}
+			console.error('useTemporalData error:', err);
 		}
 	}, [linkId, globalMode, includeAdvanced, timeRange, calculateStats]);
 

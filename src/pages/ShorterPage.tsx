@@ -20,15 +20,10 @@ function ShorterPage() {
 
 	const handleSuccess = (shortUrl: unknown) => {
 		// URL encurtada com sucesso - pode mostrar resultado
-		if (import.meta.env.DEV) {
-			console.log('URL encurtada:', shortUrl);
-		}
 	};
 
 	const handleError = (error: string) => {
-		if (import.meta.env.DEV) {
-			console.error('Erro ao encurtar URL:', error);
-		}
+		// Erro tratado pelo componente
 	};
 
 	return (

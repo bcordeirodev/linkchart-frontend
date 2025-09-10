@@ -209,17 +209,7 @@ export function useDashboardData({
 				throw new Error('Dados do dashboard não encontrados');
 			}
 
-			// Debug da resposta do backend
-			if (import.meta.env.DEV) {
-				// console.log('🔧 useDashboardData - Resposta do backend:', {
-				//	success: response.success,
-				//	hasData: !!response.data,
-				//	hasSummary: !!response.summary,
-				//	hasMetrics: !!response.metrics,
-				//	hasCharts: !!response.charts,
-				//	response
-				// });
-			}
+			// Resposta do backend processada
 
 			// Processar dados do dashboard
 			let dashboardData: DashboardData;
@@ -272,15 +262,7 @@ export function useDashboardData({
 				};
 			}
 
-			// Debug dos dados processados (apenas em desenvolvimento)
-			if (import.meta.env.DEV) {
-				console.log('🔧 useDashboardData - Dados processados:', {
-					dashboardData,
-					temporal_data: dashboardData.temporal_data,
-					geographic_data: dashboardData.geographic_data,
-					audience_data: dashboardData.audience_data
-				});
-			}
+			// Dados processados com sucesso
 
 			setData(dashboardData);
 
@@ -306,9 +288,7 @@ export function useDashboardData({
 			const errorMessage = err.message || 'Erro ao carregar dados do dashboard';
 			setError(errorMessage);
 
-			if (import.meta.env.DEV) {
-				console.error('useDashboardData error:', err);
-			}
+			console.error('useDashboardData error:', err);
 		} finally {
 			// Reset do flag de requisição
 			isRequestingRef.current = false;

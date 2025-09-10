@@ -6,18 +6,7 @@
  * Este componente serve como o layout base da aplicação, fornecendo
  * estrutura consistente e aplicando temas de forma inteligente em
  * todas as seções (navbar, toolbar, footer, main).
- *
- * @features
- * - ✅ Suporte completo a temas dinâmicos
- * - ✅ Layout responsivo otimizado
- * - ✅ Configurações flexíveis de seções
- * - ✅ Performance otimizada com useMemo
- * - ✅ Integração com FuseLayout
- *
- * @since 1.0.0
- * @version 2.0.0
  */
-
 import { useMemo } from 'react';
 import { Box, useTheme } from '@mui/material';
 import { useMainTheme, useResponsive } from '@/lib/theme';
@@ -133,7 +122,6 @@ function MainLayout(props: MainLayoutProps) {
 							<Navbar
 								isMobile={isMobile}
 								onMobileMenuToggle={() => {
-									// TODO: Implementar toggle do menu mobile
 									// Placeholder para funcionalidade futura
 								}}
 							/>

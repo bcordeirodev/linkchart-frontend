@@ -4,13 +4,12 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 
 // Import styles - ORDEM CORRETA para evitar conflitos
-import './styles/index.css'; // ✅ Tailwind primeiro (base, components, utilities)
-import './styles/app-base.css'; // ✅ CSS base da aplicação
-import './styles/animations.css'; // ✅ Animações customizadas
-import './styles/splash-screen.css'; // ✅ Splash screen específico
-import 'leaflet/dist/leaflet.css'; // ✅ CSS de bibliotecas externas por último
+import './styles/index.css';
+import './styles/app-base.css';
+import './styles/animations.css';
+import './styles/splash-screen.css';
+import 'leaflet/dist/leaflet.css';
 
-// Configuração de captura de erros globais (React puro - sempre no browser)
 // Captura erros não tratados
 window.addEventListener('error', (event) => {
 	console.group('🚨 Erro Global Não Tratado');
@@ -32,7 +31,6 @@ window.addEventListener('unhandledrejection', (event) => {
 	console.groupEnd();
 });
 
-console.log('🔧 Sistema de captura de erros configurado');
 
 // Get the root element
 const rootElement = document.getElementById('app');
