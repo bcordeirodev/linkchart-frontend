@@ -71,7 +71,6 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 
 	// Validação silenciosa de dados
 
-
 	useEffect(() => {
 		// Em React puro, inicializar imediatamente
 		if (hasDataPoints) {

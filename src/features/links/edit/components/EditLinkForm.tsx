@@ -47,7 +47,6 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 		mode: 'onBlur'
 	});
 
-
 	// ✅ Função auxiliar para converter datas de forma segura
 	const convertDateToInputFormat = (dateString: string | null | undefined): string => {
 		if (!dateString) return '';

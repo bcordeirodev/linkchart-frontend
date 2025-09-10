@@ -31,7 +31,6 @@ window.addEventListener('unhandledrejection', (event) => {
 	console.groupEnd();
 });
 
-
 // Get the root element
 const rootElement = document.getElementById('app');
 

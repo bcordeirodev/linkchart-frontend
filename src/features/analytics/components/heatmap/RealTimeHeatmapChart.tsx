@@ -87,7 +87,6 @@ export function RealTimeHeatmapChart({
 	showControls = true,
 	showStats = true
 }: HeatmapChartProps) {
-
 	const theme = useTheme();
 
 	// Estados do mapa
