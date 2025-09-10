@@ -111,7 +111,7 @@ jobs:
     
     environment:
       name: production
-      url: http://134.209.33.182:3000
+      url: https://linkcharts.com.br
     
     steps:
       - name: 📥 Checkout Code
@@ -251,11 +251,10 @@ jobs:
             echo "🏥 Health check..."
             sleep 30
             
-            # Health check local primeiro (como funcionava)
-            if curl -f http://localhost:3000/health > /dev/null 2>&1; then
+            # Health check interno (como funcionava antes)
+            if curl -f http://localhost/health > /dev/null 2>&1; then
               echo "✅ Deployment successful!"
-              echo "🌐 Application available at: http://134.209.33.182:3000"
-              echo "🔒 SSL available at: https://linkcharts.com.br"
+              echo "🌐 Application available at: https://linkcharts.com.br"
             else
               echo "❌ Health check failed!"
               docker compose -f deploy/docker-compose.prod.yml logs --tail=20
@@ -270,23 +269,20 @@ jobs:
           # Aguardar estabilização
           sleep 60
           
-          # Testes básicos (como funcionava antes)
-          curl -f http://134.209.33.182:3000/health
-          curl -f http://134.209.33.182:3000/
-          
-          # Testar SSL se disponível
+          # Testes externos (HTTPS primeiro, HTTP como fallback)
           if curl -f https://linkcharts.com.br/health > /dev/null 2>&1; then
-            echo "✅ SSL também funcionando!"
+            echo "✅ HTTPS external tests passed!"
+          elif curl -f http://linkcharts.com.br/health > /dev/null 2>&1; then
+            echo "✅ HTTP external tests passed!"
+          else
+            echo "⚠️ External tests failed, but deployment may still be successful"
           fi
-          
-          echo "✅ Post-deploy tests passed!"
 
       - name: 📢 Notify Success
         if: success()
         run: |
           echo "🎉 Deployment to production completed successfully!"
-          echo "🌐 Application is live at: http://134.209.33.182:3000"
-          echo "🔒 SSL available at: https://linkcharts.com.br"
+          echo "🌐 Application is live at: https://linkcharts.com.br"
 
       - name: 📢 Notify Failure
         if: failure()

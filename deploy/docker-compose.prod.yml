@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
     
     ports:
-      - "3000:80"    # Manter porta original que funcionava
+      - "80:80"      # HTTP (redirecionamento)
       - "443:443"    # HTTPS (SSL)
     
     environment:
