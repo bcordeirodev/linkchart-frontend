@@ -11,7 +11,7 @@ import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
 /**
  * 📝 Página de Edição de Link - REFATORADA
  * Segue padrões arquiteturais: < 100 linhas, carrega dados iniciais
- * Estrutura: PageBreadcrumb → Loading/Error States → LinkForm
+ * Estrutura: PageBreadcrumb → Loading/Error States → LinkForm.
  */
 function LinkEditPage() {
 	const { id } = useParams<{ id: string }>();
