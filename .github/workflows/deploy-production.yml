@@ -15,7 +15,6 @@ on:
       - 'deploy/scripts/**'
       - 'scripts/**'
       - '.github/workflows/**'
-      - 'deploy/workflows/**'
   
   pull_request:
     branches: [main]
@@ -252,7 +251,7 @@ jobs:
             echo "🏥 Health check..."
             sleep 30
             
-            # Verificar saúde (mantendo lógica original + SSL)
+            # Testar HTTPS primeiro, depois HTTP como fallback
             if curl -f https://linkcharts.com.br/health > /dev/null 2>&1; then
               echo "✅ HTTPS deployment successful!"
               echo "🌐 Application available at: https://linkcharts.com.br"
@@ -273,14 +272,12 @@ jobs:
           # Aguardar estabilização
           sleep 60
           
-          # Testes básicos (HTTPS primeiro, depois HTTP como fallback)
+          # Testes básicos (HTTPS primeiro, HTTP como fallback)
           if curl -f https://linkcharts.com.br/health > /dev/null 2>&1; then
-            echo "🔒 Testing HTTPS endpoints..."
             curl -f https://linkcharts.com.br/health
             curl -f https://linkcharts.com.br/
             echo "✅ HTTPS tests passed!"
           else
-            echo "ℹ️ Testing HTTP endpoints..."
             curl -f http://linkcharts.com.br/health
             curl -f http://linkcharts.com.br/
             echo "✅ HTTP tests passed!"
