@@ -9,8 +9,8 @@ interface LoginRequest {
 
 interface RegisterRequest {
 	name: string;
-	email: string;
 	password: string;
+	email: string;
 	password_confirmation: string;
 }
 

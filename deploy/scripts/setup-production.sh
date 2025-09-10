@@ -132,8 +132,8 @@ else
 VITE_BASE_URL=http://134.209.33.182:3000
 
 # Endpoint URL - Backend API (quando disponível)
-VITE_API_URL=http://134.209.33.182:8000
-VITE_API_BASE_URL=http://134.209.33.182:8000
+VITE_API_URL=https://api.linkcharts.com.br
+VITE_API_BASE_URL=https://api.linkcharts.com.br
 
 # Auth BASE URL
 VITE_AUTH_URL=http://134.209.33.182:3000

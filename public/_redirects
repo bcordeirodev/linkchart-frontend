@@ -2,7 +2,7 @@
 # /r/*  http://localhost:8000/api/r/:splat  200
 
 # API routes to backend
-/api/*  http://localhost:8000/api/:splat  200
+/api/*  https://api.linkcharts.com.br/api/:splat  200
 
 # Authentication routes
 /auth/*  /auth/:splat  200
