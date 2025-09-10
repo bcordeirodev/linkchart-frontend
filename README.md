@@ -138,3 +138,4 @@ git push origin main  # Deploy automático via GitHub Actions
 ## 📄 Licença
 
 Este projeto está sob a licença MIT.
+# Deploy trigger - qua 10 set 2025 11:18:32 -03

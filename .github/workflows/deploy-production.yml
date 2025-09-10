@@ -12,6 +12,8 @@ on:
       - 'package*.json'
       - 'deploy/Dockerfile.prod'
       - 'deploy/docker-compose.prod.yml'
+      - 'deploy/scripts/**'
+      - 'scripts/**'
       - '.github/workflows/**'
       - 'deploy/workflows/**'
   
