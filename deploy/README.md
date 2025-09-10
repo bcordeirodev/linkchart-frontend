@@ -152,7 +152,9 @@ docker compose -f deploy/docker-compose.local.yml logs -f
 - **Final**: Nginx servindo arquivos estáticos
 
 ### 🔧 **Configuração**
-- **Porta**: 3000 (host) → 80 (container)
+- **Portas**: 80 (HTTP) e 443 (HTTPS)
+- **SSL**: Let's Encrypt com renovação automática
+- **Domínio**: linkcharts.com.br
 - **Volumes**: Logs, SSL certificates
 - **Network**: `linkcharts-network`
 - **Health Check**: Automático a cada 30s
@@ -161,6 +163,39 @@ docker compose -f deploy/docker-compose.local.yml logs -f
 - **CPU**: 0.5-1.0 cores
 - **RAM**: 256-512MB
 - **Storage**: ~100MB (imagem final)
+
+---
+
+## 🔐 CONFIGURAÇÃO SSL
+
+### 📋 **Status SSL**
+- ✅ **Certificado**: Let's Encrypt (gratuito)
+- ✅ **Domínio**: linkcharts.com.br + www.linkcharts.com.br
+- ✅ **Renovação**: Automática a cada 90 dias
+- ✅ **Segurança**: TLS 1.2/1.3, HSTS, Headers modernos
+
+### 🚀 **Configuração Inicial**
+```bash
+# No servidor (apenas na primeira vez):
+sudo ./scripts/setup-ssl.sh
+```
+
+### 🔍 **Verificação**
+```bash
+# Verificar status SSL
+./scripts/quick-ssl-check.sh
+
+# Verificar certificados
+sudo certbot certificates
+
+# Testar renovação
+sudo certbot renew --dry-run
+```
+
+### 🔄 **Renovação Automática**
+- **Cron job**: Diário às 2h da manhã
+- **Script**: `scripts/renew-ssl.sh`
+- **Log**: `/var/log/ssl-renewal.log`
 
 ---
 
@@ -281,7 +316,7 @@ docker compose -f deploy/docker-compose.prod.yml up -d --build
 ## 🎯 PRÓXIMOS PASSOS
 
 ### 🚀 **Melhorias Planejadas**
-- [ ] HTTPS com Let's Encrypt
+- [x] HTTPS com Let's Encrypt ✅
 - [ ] CDN para assets estáticos
 - [ ] Monitoramento com Prometheus
 - [ ] Logs centralizados
@@ -300,9 +335,10 @@ docker compose -f deploy/docker-compose.prod.yml up -d --build
 
 ### 🆘 **Em caso de problemas**
 1. Verificar logs: `docker compose logs -f`
-2. Testar health check: `curl http://localhost:3000/health`
-3. Verificar GitHub Actions
-4. Consultar esta documentação
+2. Testar health check: `curl https://linkcharts.com.br/health`
+3. Verificar SSL: `./scripts/quick-ssl-check.sh`
+4. Verificar GitHub Actions
+5. Consultar esta documentação
 
 ### 📧 **Contato**
 - **GitHub**: Issues no repositório

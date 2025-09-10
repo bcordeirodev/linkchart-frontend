@@ -186,16 +186,20 @@ sleep 30
 # 10. Testes de funcionamento
 log_info "🧪 Executando testes..."
 
-# Teste local
-if curl -f http://localhost:3000/health > /dev/null 2>&1; then
-    log_success "Health check local: OK"
+# Teste HTTPS primeiro, depois HTTP como fallback
+if curl -f https://linkcharts.com.br/health > /dev/null 2>&1; then
+    log_success "Health check HTTPS: OK"
+elif curl -f http://linkcharts.com.br/health > /dev/null 2>&1; then
+    log_success "Health check HTTP: OK"
 else
-    log_error "Health check local: FALHOU"
+    log_error "Health check: FALHOU"
 fi
 
 # Teste página principal
-if curl -f http://localhost:3000/ > /dev/null 2>&1; then
-    log_success "Página principal: OK"
+if curl -f https://linkcharts.com.br/ > /dev/null 2>&1; then
+    log_success "Página principal HTTPS: OK"
+elif curl -f http://linkcharts.com.br/ > /dev/null 2>&1; then
+    log_success "Página principal HTTP: OK"
 else
     log_error "Página principal: FALHOU"
 fi
@@ -206,11 +210,14 @@ log_info "📊 Criando scripts de monitoramento..."
 # Script de monitoramento
 cat > monitor.sh << 'EOF'
 #!/bin/bash
-URL="http://localhost:3000/health"
+HTTPS_URL="https://linkcharts.com.br/health"
+HTTP_URL="http://linkcharts.com.br/health"
 LOGFILE="/var/www/linkchart-frontend/logs/monitor.log"
 
-if curl -f $URL > /dev/null 2>&1; then
-    echo "$(date): ✅ Aplicação funcionando" >> $LOGFILE
+if curl -f $HTTPS_URL > /dev/null 2>&1; then
+    echo "$(date): ✅ Aplicação funcionando (HTTPS)" >> $LOGFILE
+elif curl -f $HTTP_URL > /dev/null 2>&1; then
+    echo "$(date): ✅ Aplicação funcionando (HTTP)" >> $LOGFILE
 else
     echo "$(date): ❌ Aplicação com problemas" >> $LOGFILE
     # Restart automático

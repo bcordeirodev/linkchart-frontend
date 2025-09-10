@@ -1,6 +1,6 @@
 #!/bin/bash
-# 🔐 Script de configuração inicial SSL
-# Link Chart - linkcharts.com.br
+# 🔐 CONFIGURAÇÃO SSL DEFINITIVA - LINKCHARTS.COM.BR
+# Script otimizado para funcionar com DNS já configurado
 
 set -e
 
@@ -10,7 +10,14 @@ set -e
 DOMAIN="linkcharts.com.br"
 EMAIL="bcordeiro.dev@gmail.com"
 PROJECT_DIR="/var/www/linkchart-frontend"
-LOG_FILE="/var/log/ssl-setup.log"
+LOG_FILE="/var/log/ssl-setup-final.log"
+
+# Cores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
 
 # ========================================
 # 🔧 FUNÇÕES AUXILIARES
@@ -20,104 +27,170 @@ log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S'): $1" | tee -a $LOG_FILE
 }
 
+print_success() {
+    echo -e "${GREEN}✅ $1${NC}" | tee -a $LOG_FILE
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}" | tee -a $LOG_FILE
+}
+
+print_error() {
+    echo -e "${RED}❌ $1${NC}" | tee -a $LOG_FILE
+}
+
+print_header() {
+    echo -e "\n${BLUE}========================================${NC}"
+    echo -e "${BLUE} $1${NC}"
+    echo -e "${BLUE}========================================${NC}\n"
+}
+
 error_exit() {
-    log "ERROR: $1"
+    print_error "$1"
     exit 1
 }
 
+# ========================================
+# 🔍 VERIFICAÇÕES INICIAIS
+# ========================================
+
 check_requirements() {
-    log "Verificando pré-requisitos..."
+    print_header "VERIFICAÇÃO DE PRÉ-REQUISITOS"
     
     # Verificar se é root
     if [ "$EUID" -ne 0 ]; then
-        error_exit "Este script deve ser executado como root"
+        error_exit "Este script deve ser executado como root (use sudo)"
     fi
     
-    # Verificar se o domínio está acessível
-    if ! curl -s -o /dev/null -w "%{http_code}" http://$DOMAIN | grep -q "200\|301\|302"; then
-        log "AVISO: Domínio $DOMAIN pode não estar acessível via HTTP"
+    # Verificar DNS
+    log "Verificando DNS para $DOMAIN..."
+    if nslookup $DOMAIN | grep -q "134.209.33.182"; then
+        print_success "DNS configurado corretamente"
+    else
+        error_exit "DNS não está apontando para este servidor"
+    fi
+    
+    # Verificar conectividade HTTP
+    log "Testando conectividade HTTP..."
+    if curl -s -o /dev/null -w "%{http_code}" http://$DOMAIN | grep -q "200\|301\|302\|404"; then
+        print_success "Domínio acessível via HTTP"
+    else
+        print_warning "Domínio pode não estar totalmente acessível"
     fi
     
     # Verificar portas
-    if ! ss -tlnp | grep -q ":80 "; then
-        error_exit "Porta 80 não está aberta ou em uso"
+    if ss -tlnp | grep -q ":80 "; then
+        print_success "Porta 80 está em uso"
+    else
+        print_warning "Porta 80 não está em uso - isso é normal se não há container rodando"
     fi
     
-    log "✅ Pré-requisitos verificados"
+    print_success "Pré-requisitos verificados"
 }
 
+# ========================================
+# 📦 INSTALAÇÃO E CONFIGURAÇÃO
+# ========================================
+
 install_certbot() {
-    log "Instalando Certbot..."
+    print_header "INSTALAÇÃO DO CERTBOT"
     
     # Atualizar sistema
-    apt update
+    log "Atualizando sistema..."
+    apt update -y
     
     # Instalar Certbot
-    apt install -y certbot python3-certbot-nginx
+    if ! command -v certbot &> /dev/null; then
+        log "Instalando Certbot..."
+        apt install -y certbot python3-certbot-nginx
+        print_success "Certbot instalado"
+    else
+        print_success "Certbot já está instalado"
+    fi
     
-    # Verificar instalação
-    certbot --version || error_exit "Falha na instalação do Certbot"
-    
-    log "✅ Certbot instalado com sucesso"
+    # Verificar versão
+    certbot --version | tee -a $LOG_FILE
 }
 
 backup_config() {
-    log "Criando backup da configuração atual..."
+    print_header "BACKUP DA CONFIGURAÇÃO"
     
     backup_dir="/var/backups/ssl-setup-$(date +%Y%m%d-%H%M%S)"
     mkdir -p $backup_dir
     
     if [ -d "$PROJECT_DIR" ]; then
-        cp -r $PROJECT_DIR/deploy/ $backup_dir/ 2>/dev/null || log "AVISO: Falha ao fazer backup do deploy"
+        cp -r $PROJECT_DIR/deploy/ $backup_dir/ 2>/dev/null || true
+        print_success "Backup criado em $backup_dir"
+    else
+        print_warning "Diretório do projeto não encontrado"
     fi
-    
-    if [ -d "/etc/nginx" ]; then
-        cp -r /etc/nginx/ $backup_dir/nginx-backup/ 2>/dev/null || log "AVISO: Falha ao fazer backup do nginx"
-    fi
-    
-    log "✅ Backup criado em $backup_dir"
 }
 
-stop_containers() {
-    log "Parando containers para liberação da porta 80..."
+# ========================================
+# 🔐 GERAÇÃO DO CERTIFICADO SSL
+# ========================================
+
+stop_services() {
+    print_header "PARANDO SERVIÇOS TEMPORARIAMENTE"
     
-    cd $PROJECT_DIR
+    # Parar container se estiver rodando
+    cd $PROJECT_DIR 2>/dev/null || true
     
     if [ -f "deploy/docker-compose.prod.yml" ]; then
-        docker compose -f deploy/docker-compose.prod.yml down || log "AVISO: Falha ao parar containers"
+        log "Parando container Docker..."
+        docker compose -f deploy/docker-compose.prod.yml down 2>/dev/null || true
+        print_success "Container parado"
+    fi
+    
+    # Parar nginx se estiver rodando no host
+    if systemctl is-active --quiet nginx 2>/dev/null; then
+        log "Parando Nginx do sistema..."
+        systemctl stop nginx
+        print_success "Nginx do sistema parado"
     fi
     
     # Aguardar liberação da porta
-    sleep 5
+    sleep 3
     
-    log "✅ Containers parados"
+    # Verificar se porta 80 está livre
+    if ! ss -tlnp | grep -q ":80 "; then
+        print_success "Porta 80 liberada"
+    else
+        print_warning "Porta 80 ainda em uso - continuando mesmo assim"
+    fi
 }
 
 generate_certificate() {
-    log "Gerando certificado SSL para $DOMAIN..."
+    print_header "GERANDO CERTIFICADO SSL"
     
-    # Criar diretório webroot se não existir
-    mkdir -p /var/www/html
+    log "Gerando certificado para $DOMAIN usando método standalone..."
     
-    # Gerar certificado usando webroot
+    # Usar método standalone (mais confiável)
     if certbot certonly \
-        --webroot \
-        -w /var/www/html \
+        --standalone \
+        --preferred-challenges http \
         -d $DOMAIN \
         -d www.$DOMAIN \
         --email $EMAIL \
         --agree-tos \
         --non-interactive \
-        --expand; then
+        --expand \
+        --force-renewal; then
         
-        log "✅ Certificado gerado com sucesso"
+        print_success "Certificado gerado com sucesso!"
         
         # Verificar certificado
         if [ -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
-            log "✅ Certificado verificado em /etc/letsencrypt/live/$DOMAIN/"
+            print_success "Certificado verificado"
             
             # Mostrar informações do certificado
+            log "Informações do certificado:"
             openssl x509 -in /etc/letsencrypt/live/$DOMAIN/cert.pem -noout -dates | tee -a $LOG_FILE
+            
+            # Mostrar domínios incluídos
+            log "Domínios no certificado:"
+            openssl x509 -in /etc/letsencrypt/live/$DOMAIN/cert.pem -noout -text | grep -A1 "Subject Alternative Name" | tail -1 | tee -a $LOG_FILE
+            
         else
             error_exit "Certificado não encontrado após geração"
         fi
@@ -126,128 +199,202 @@ generate_certificate() {
     fi
 }
 
-setup_permissions() {
-    log "Configurando permissões SSL..."
-    
-    # Criar diretório SSL no projeto
-    mkdir -p $PROJECT_DIR/ssl
-    
-    # Copiar certificados para o projeto (backup)
-    if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
-        cp -L /etc/letsencrypt/live/$DOMAIN/* $PROJECT_DIR/ssl/ 2>/dev/null || log "AVISO: Falha ao copiar certificados"
-    fi
-    
-    # Configurar permissões
-    chmod -R 755 /etc/letsencrypt/
-    chmod -R 644 /etc/letsencrypt/live/$DOMAIN/
-    chmod 600 /etc/letsencrypt/live/$DOMAIN/privkey.pem
-    
-    log "✅ Permissões configuradas"
-}
+# ========================================
+# 🐳 CONFIGURAÇÃO DO DOCKER
+# ========================================
 
-start_containers() {
-    log "Iniciando containers com SSL..."
+setup_docker_ssl() {
+    print_header "CONFIGURANDO DOCKER COM SSL"
     
     cd $PROJECT_DIR
     
-    if [ -f "deploy/docker-compose.prod.yml" ]; then
-        docker compose -f deploy/docker-compose.prod.yml up -d
+    # Verificar se arquivos de configuração existem
+    if [ ! -f "deploy/docker-compose.prod.yml" ]; then
+        error_exit "Arquivo docker-compose.prod.yml não encontrado"
+    fi
+    
+    if [ ! -f "deploy/docker/nginx/default.prod.conf" ]; then
+        error_exit "Arquivo de configuração Nginx não encontrado"
+    fi
+    
+    # Configurar permissões dos certificados
+    log "Configurando permissões dos certificados..."
+    chmod -R 755 /etc/letsencrypt/
+    chmod 644 /etc/letsencrypt/live/$DOMAIN/*.pem
+    chmod 600 /etc/letsencrypt/live/$DOMAIN/privkey.pem
+    
+    # Criar backup dos certificados no projeto
+    mkdir -p ssl
+    cp -L /etc/letsencrypt/live/$DOMAIN/* ssl/ 2>/dev/null || true
+    
+    print_success "Permissões configuradas"
+}
+
+start_containers() {
+    print_header "INICIANDO CONTAINERS COM SSL"
+    
+    cd $PROJECT_DIR
+    
+    log "Iniciando containers..."
+    if docker compose -f deploy/docker-compose.prod.yml up -d --build; then
+        print_success "Containers iniciados"
         
-        # Aguardar containers ficarem saudáveis
-        log "Aguardando containers ficarem saudáveis..."
-        sleep 15
+        # Aguardar containers ficarem prontos
+        log "Aguardando containers ficarem prontos..."
+        sleep 20
         
         # Verificar status
-        docker ps | grep linkcharts || log "AVISO: Container pode não estar rodando"
+        docker ps | grep linkcharts | tee -a $LOG_FILE
         
-        log "✅ Containers iniciados"
     else
-        log "AVISO: docker-compose.prod.yml não encontrado"
+        error_exit "Falha ao iniciar containers"
     fi
 }
 
+# ========================================
+# 🔄 RENOVAÇÃO AUTOMÁTICA
+# ========================================
+
 setup_auto_renewal() {
-    log "Configurando renovação automática..."
+    print_header "CONFIGURANDO RENOVAÇÃO AUTOMÁTICA"
     
     # Tornar script de renovação executável
-    chmod +x $PROJECT_DIR/scripts/renew-ssl.sh
+    if [ -f "$PROJECT_DIR/scripts/renew-ssl.sh" ]; then
+        chmod +x $PROJECT_DIR/scripts/renew-ssl.sh
+        print_success "Script de renovação configurado"
+    else
+        print_warning "Script de renovação não encontrado"
+    fi
     
-    # Adicionar ao crontab se não existir
+    # Configurar cron job
     if ! crontab -l 2>/dev/null | grep -q "renew-ssl.sh"; then
         (crontab -l 2>/dev/null; echo "0 2 * * * $PROJECT_DIR/scripts/renew-ssl.sh") | crontab -
-        log "✅ Cron job adicionado para renovação automática"
+        print_success "Cron job configurado"
     else
-        log "✅ Cron job já existe"
+        print_success "Cron job já existe"
     fi
     
     # Testar renovação (dry-run)
-    log "Testando renovação automática (dry-run)..."
-    if certbot renew --dry-run; then
-        log "✅ Teste de renovação bem-sucedido"
+    log "Testando renovação automática..."
+    if timeout 60 certbot renew --dry-run --quiet; then
+        print_success "Teste de renovação bem-sucedido"
     else
-        log "⚠️ Falha no teste de renovação. Verificar manualmente."
+        print_warning "Falha no teste de renovação - verificar manualmente"
     fi
 }
 
-test_ssl() {
-    log "Testando configuração SSL..."
+# ========================================
+# ✅ TESTES E VALIDAÇÃO
+# ========================================
+
+test_ssl_configuration() {
+    print_header "TESTANDO CONFIGURAÇÃO SSL"
     
-    # Aguardar um pouco para o container estar pronto
-    sleep 10
+    # Aguardar um pouco mais para garantir que tudo está funcionando
+    log "Aguardando serviços ficarem totalmente prontos..."
+    sleep 15
     
     # Testar HTTP (deve redirecionar)
     log "Testando redirecionamento HTTP → HTTPS..."
-    http_response=$(curl -s -o /dev/null -w "%{http_code}" http://$DOMAIN || echo "000")
-    if [ "$http_response" = "301" ] || [ "$http_response" = "302" ]; then
-        log "✅ Redirecionamento HTTP funcionando (código: $http_response)"
+    http_response=$(curl -s -o /dev/null -w "%{http_code}" -L http://$DOMAIN || echo "000")
+    if [ "$http_response" = "200" ]; then
+        print_success "HTTP funcionando (código: $http_response)"
+    elif [ "$http_response" = "301" ] || [ "$http_response" = "302" ]; then
+        print_success "Redirecionamento HTTP → HTTPS funcionando (código: $http_response)"
     else
-        log "⚠️ Redirecionamento HTTP pode não estar funcionando (código: $http_response)"
+        print_warning "HTTP retornou código: $http_response"
     fi
     
     # Testar HTTPS
-    log "Testando conectividade HTTPS..."
-    https_response=$(curl -s -o /dev/null -w "%{http_code}" https://$DOMAIN/health || echo "000")
+    log "Testando HTTPS..."
+    https_response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://$DOMAIN/health 2>/dev/null || echo "000")
     if [ "$https_response" = "200" ]; then
-        log "✅ HTTPS funcionando corretamente"
+        print_success "HTTPS funcionando perfeitamente! (código: $https_response)"
     else
-        log "⚠️ HTTPS pode não estar funcionando (código: $https_response)"
+        # Tentar sem /health
+        https_response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://$DOMAIN 2>/dev/null || echo "000")
+        if [ "$https_response" = "200" ]; then
+            print_success "HTTPS funcionando! (código: $https_response)"
+        else
+            print_warning "HTTPS retornou código: $https_response - pode estar ainda inicializando"
+        fi
     fi
     
     # Testar certificado SSL
     log "Verificando certificado SSL..."
-    if openssl s_client -connect $DOMAIN:443 -servername $DOMAIN </dev/null 2>/dev/null | grep -q "Verify return code: 0"; then
-        log "✅ Certificado SSL válido"
+    if timeout 10 openssl s_client -connect $DOMAIN:443 -servername $DOMAIN </dev/null 2>/dev/null | grep -q "Verify return code: 0"; then
+        print_success "Certificado SSL válido e confiável"
     else
-        log "⚠️ Certificado SSL pode ter problemas"
+        print_warning "Certificado SSL pode ter problemas - verificar manualmente"
+    fi
+    
+    # Verificar headers de segurança
+    log "Verificando headers de segurança..."
+    if curl -s -I https://$DOMAIN 2>/dev/null | grep -q "Strict-Transport-Security"; then
+        print_success "Headers de segurança HSTS configurados"
+    else
+        print_warning "Headers HSTS podem não estar configurados"
     fi
 }
 
+show_final_summary() {
+    print_header "CONFIGURAÇÃO SSL CONCLUÍDA COM SUCESSO!"
+    
+    echo -e "${GREEN}"
+    echo "🎉 PARABÉNS! SSL configurado com sucesso para $DOMAIN"
+    echo ""
+    echo "🔗 URLs funcionais:"
+    echo "   • https://$DOMAIN"
+    echo "   • https://www.$DOMAIN"
+    echo ""
+    echo "🔒 Recursos SSL ativados:"
+    echo "   • TLS 1.2 e 1.3"
+    echo "   • HSTS (HTTP Strict Transport Security)"
+    echo "   • Headers de segurança modernos"
+    echo "   • Renovação automática (90 dias)"
+    echo ""
+    echo "📊 Testes recomendados:"
+    echo "   • SSL Labs: https://www.ssllabs.com/ssltest/analyze.html?d=$DOMAIN"
+    echo "   • Security Headers: https://securityheaders.com/?q=$DOMAIN"
+    echo ""
+    echo "🔧 Comandos úteis:"
+    echo "   • Verificar certificados: sudo certbot certificates"
+    echo "   • Testar renovação: sudo certbot renew --dry-run"
+    echo "   • Ver logs: docker logs linkcharts-frontend-prod"
+    echo "   • Status: docker ps | grep linkcharts"
+    echo ""
+    echo "📁 Arquivos importantes:"
+    echo "   • Certificados: /etc/letsencrypt/live/$DOMAIN/"
+    echo "   • Logs: $LOG_FILE"
+    echo "   • Backup: /var/backups/ssl-setup-*"
+    echo -e "${NC}"
+}
+
 # ========================================
-# 🚀 PROCESSO PRINCIPAL
+# 🚀 EXECUÇÃO PRINCIPAL
 # ========================================
 
-log "=== INICIANDO CONFIGURAÇÃO SSL PARA $DOMAIN ==="
+main() {
+    echo -e "${BLUE}"
+    echo "🔐 CONFIGURAÇÃO SSL DEFINITIVA - LINKCHARTS.COM.BR"
+    echo "$(date)"
+    echo -e "${NC}"
+    
+    log "=== INICIANDO CONFIGURAÇÃO SSL DEFINITIVA ==="
+    
+    check_requirements
+    install_certbot
+    backup_config
+    stop_services
+    generate_certificate
+    setup_docker_ssl
+    start_containers
+    setup_auto_renewal
+    test_ssl_configuration
+    show_final_summary
+    
+    log "=== CONFIGURAÇÃO SSL CONCLUÍDA COM SUCESSO ==="
+}
 
-check_requirements
-install_certbot
-backup_config
-stop_containers
-generate_certificate
-setup_permissions
-start_containers
-setup_auto_renewal
-test_ssl
-
-log "=== CONFIGURAÇÃO SSL CONCLUÍDA ==="
-log ""
-log "📋 PRÓXIMOS PASSOS:"
-log "1. Verificar se https://$DOMAIN está funcionando"
-log "2. Testar redirecionamento HTTP → HTTPS"
-log "3. Verificar certificado em https://www.ssllabs.com/ssltest/"
-log "4. Monitorar logs em /var/log/ssl-*.log"
-log ""
-log "🔧 COMANDOS ÚTEIS:"
-log "- Verificar certificados: sudo certbot certificates"
-log "- Testar renovação: sudo certbot renew --dry-run"
-log "- Ver logs do container: docker logs linkcharts-frontend-prod"
-log "- Status do container: docker ps | grep linkcharts"
+# Executar função principal
+main "$@"

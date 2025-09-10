@@ -1,6 +1,6 @@
 #!/bin/bash
-# 🔍 VERIFICAÇÃO RÁPIDA DE SSL
-# Script para verificar status do SSL rapidamente
+# 🔍 VERIFICAÇÃO RÁPIDA DE SSL - LINKCHARTS.COM.BR
+# Script otimizado para verificar status do SSL
 
 DOMAIN="linkcharts.com.br"
 
