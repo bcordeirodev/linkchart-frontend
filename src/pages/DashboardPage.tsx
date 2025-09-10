@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 
 /**
- * Dashboard page that redirects to analytics
+ * Dashboard page that redirects to analytics.
  */
 function DashboardPage() {
 	return (
