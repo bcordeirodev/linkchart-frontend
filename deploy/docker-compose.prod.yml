@@ -17,7 +17,8 @@ services:
     restart: unless-stopped
     
     ports:
-      - "3000:80"
+      - "80:80"      # HTTP (redirecionamento)
+      - "443:443"    # HTTPS (SSL)
     
     environment:
       - NODE_ENV=production
@@ -26,14 +27,16 @@ services:
     volumes:
       # Logs persistentes
       - ../logs/nginx:/var/log/nginx
-      # SSL certificates (se usar HTTPS)
-      - ../ssl:/etc/nginx/ssl:ro
+      # SSL certificates
+      - /etc/letsencrypt:/etc/nginx/ssl:ro
+      # Certificados específicos (backup)
+      - ../ssl:/etc/nginx/ssl-backup:ro
     
     networks:
       - linkcharts-network
     
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      test: ["CMD", "curl", "-f", "https://localhost:443/health"]
       interval: 30s
       timeout: 10s
       retries: 3
