@@ -17,8 +17,7 @@ services:
     restart: unless-stopped
     
     ports:
-      - "80:80"      # HTTP (redirecionamento)
-      - "443:443"    # HTTPS (SSL)
+      - "3000:80"    # HTTP interno do container
     
     environment:
       - NODE_ENV=production
@@ -27,10 +26,6 @@ services:
     volumes:
       # Logs persistentes
       - ../logs/nginx:/var/log/nginx
-      # SSL certificates
-      - /etc/letsencrypt:/etc/nginx/ssl:ro
-      # Certificados específicos (backup)
-      - ../ssl:/etc/nginx/ssl-backup:ro
     
     networks:
       - linkcharts-network
