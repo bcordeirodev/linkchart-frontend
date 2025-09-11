@@ -53,32 +53,37 @@ export function AudienceChart({
 	}));
 
 	// NEW: Preparar dados para gráficos enhanced
-	const browserChartData = browsers?.map(browser => ({
-		name: `${browser.browser} ${browser.version || ''}`.trim(),
-		value: browser.clicks,
-		percentage: browser.percentage || 0
-	})) || [];
+	const browserChartData =
+		browsers?.map((browser) => ({
+			name: `${browser.browser} ${browser.version || ''}`.trim(),
+			value: browser.clicks,
+			percentage: browser.percentage || 0
+		})) || [];
 
-	const osChartData = operatingSystems?.map(os => ({
-		name: `${os.os} ${os.version || ''}`.trim(),
-		value: os.clicks,
-		percentage: os.percentage || 0
-	})) || [];
+	const osChartData =
+		operatingSystems?.map((os) => ({
+			name: `${os.os} ${os.version || ''}`.trim(),
+			value: os.clicks,
+			percentage: os.percentage || 0
+		})) || [];
 
-	const performanceChartData = devicePerformance?.map(perf => ({
-		name: perf.device,
-		value: perf.avg_response_time,
-		clicks: perf.total_clicks
-	})) || [];
+	const performanceChartData =
+		devicePerformance?.map((perf) => ({
+			name: perf.device,
+			value: perf.avg_response_time,
+			clicks: perf.total_clicks
+		})) || [];
 
-	const languageChartData = languages?.map(lang => ({
-		name: lang.language,
-		value: lang.clicks,
-		percentage: lang.percentage
-	})) || [];
+	const languageChartData =
+		languages?.map((lang) => ({
+			name: lang.language,
+			value: lang.clicks,
+			percentage: lang.percentage
+		})) || [];
 
 	// Verificar se há dados enhanced disponíveis
-	const hasEnhancedData = browsers?.length || operatingSystems?.length || devicePerformance?.length || languages?.length;
+	const hasEnhancedData =
+		browsers?.length || operatingSystems?.length || devicePerformance?.length || languages?.length;
 
 	const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
 		setActiveTab(newValue);
@@ -110,12 +115,27 @@ export function AudienceChart({
 			{/* NEW: Tabs para análises enhanced (se dados disponíveis) */}
 			{hasEnhancedData && (
 				<Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-					<Tabs value={activeTab} onChange={handleTabChange}>
+					<Tabs
+						value={activeTab}
+						onChange={handleTabChange}
+					>
 						<Tab label="📱 Dispositivos" />
-						<Tab label="🌐 Navegadores" disabled={!browsers?.length} />
-						<Tab label="💻 Sistemas" disabled={!operatingSystems?.length} />
-						<Tab label="⚡ Performance" disabled={!devicePerformance?.length} />
-						<Tab label="🌍 Idiomas" disabled={!languages?.length} />
+						<Tab
+							label="🌐 Navegadores"
+							disabled={!browsers?.length}
+						/>
+						<Tab
+							label="💻 Sistemas"
+							disabled={!operatingSystems?.length}
+						/>
+						<Tab
+							label="⚡ Performance"
+							disabled={!devicePerformance?.length}
+						/>
+						<Tab
+							label="🌍 Idiomas"
+							disabled={!languages?.length}
+						/>
 					</Tabs>
 				</Box>
 			)}
@@ -371,11 +391,26 @@ export function AudienceChart({
 
 			{/* NEW: Tab 1 - Navegadores */}
 			{hasEnhancedData && activeTab === 1 && browsers && (
-				<Grid container spacing={3}>
-					<Grid item xs={12} md={8}>
-						<Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
+				<Grid
+					container
+					spacing={3}
+				>
+					<Grid
+						item
+						xs={12}
+						md={8}
+					>
+						<Card
+							elevation={0}
+							sx={{ border: '1px solid', borderColor: 'divider' }}
+						>
 							<CardContent>
-								<Typography variant="h6" gutterBottom>🌐 Market Share de Navegadores</Typography>
+								<Typography
+									variant="h6"
+									gutterBottom
+								>
+									🌐 Market Share de Navegadores
+								</Typography>
 								<ApexChartWrapper
 									type="pie"
 									{...formatPieChart(browserChartData, 'name', 'value', isDark)}
@@ -384,29 +419,59 @@ export function AudienceChart({
 							</CardContent>
 						</Card>
 					</Grid>
-					<Grid item xs={12} md={4}>
-						<Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}>
+					<Grid
+						item
+						xs={12}
+						md={4}
+					>
+						<Card
+							elevation={0}
+							sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}
+						>
 							<CardContent>
-								<Typography variant="h6" gutterBottom>Top Navegadores</Typography>
+								<Typography
+									variant="h6"
+									gutterBottom
+								>
+									Top Navegadores
+								</Typography>
 								<Stack spacing={2}>
 									{browsers.slice(0, 5).map((browser) => (
-										<Box key={`${browser.browser}-${browser.version}`} sx={{
-											display: 'flex',
-											justifyContent: 'space-between',
-											alignItems: 'center',
-											p: 1,
-											bgcolor: 'background.paper',
-											borderRadius: 1,
-											border: '1px solid',
-											borderColor: 'divider'
-										}}>
+										<Box
+											key={`${browser.browser}-${browser.version}`}
+											sx={{
+												display: 'flex',
+												justifyContent: 'space-between',
+												alignItems: 'center',
+												p: 1,
+												bgcolor: 'background.paper',
+												borderRadius: 1,
+												border: '1px solid',
+												borderColor: 'divider'
+											}}
+										>
 											<Box>
 												<Typography variant="subtitle2">{browser.browser}</Typography>
-												<Typography variant="caption" color="text.secondary">{browser.version}</Typography>
+												<Typography
+													variant="caption"
+													color="text.secondary"
+												>
+													{browser.version}
+												</Typography>
 											</Box>
 											<Box sx={{ textAlign: 'right' }}>
-												<Typography variant="body2" fontWeight="bold">{browser.clicks}</Typography>
-												<Typography variant="caption" color="text.secondary">{browser.percentage?.toFixed(1)}%</Typography>
+												<Typography
+													variant="body2"
+													fontWeight="bold"
+												>
+													{browser.clicks}
+												</Typography>
+												<Typography
+													variant="caption"
+													color="text.secondary"
+												>
+													{browser.percentage?.toFixed(1)}%
+												</Typography>
 											</Box>
 										</Box>
 									))}
@@ -419,11 +484,26 @@ export function AudienceChart({
 
 			{/* NEW: Tab 2 - Sistemas Operacionais */}
 			{hasEnhancedData && activeTab === 2 && operatingSystems && (
-				<Grid container spacing={3}>
-					<Grid item xs={12} md={8}>
-						<Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
+				<Grid
+					container
+					spacing={3}
+				>
+					<Grid
+						item
+						xs={12}
+						md={8}
+					>
+						<Card
+							elevation={0}
+							sx={{ border: '1px solid', borderColor: 'divider' }}
+						>
 							<CardContent>
-								<Typography variant="h6" gutterBottom>💻 Distribuição de Sistemas Operacionais</Typography>
+								<Typography
+									variant="h6"
+									gutterBottom
+								>
+									💻 Distribuição de Sistemas Operacionais
+								</Typography>
 								<ApexChartWrapper
 									type="donut"
 									{...formatPieChart(osChartData, 'name', 'value', isDark)}
@@ -432,29 +512,59 @@ export function AudienceChart({
 							</CardContent>
 						</Card>
 					</Grid>
-					<Grid item xs={12} md={4}>
-						<Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}>
+					<Grid
+						item
+						xs={12}
+						md={4}
+					>
+						<Card
+							elevation={0}
+							sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}
+						>
 							<CardContent>
-								<Typography variant="h6" gutterBottom>Top Sistemas</Typography>
+								<Typography
+									variant="h6"
+									gutterBottom
+								>
+									Top Sistemas
+								</Typography>
 								<Stack spacing={2}>
 									{operatingSystems.slice(0, 5).map((os) => (
-										<Box key={`${os.os}-${os.version}`} sx={{
-											display: 'flex',
-											justifyContent: 'space-between',
-											alignItems: 'center',
-											p: 1,
-											bgcolor: 'background.paper',
-											borderRadius: 1,
-											border: '1px solid',
-											borderColor: 'divider'
-										}}>
+										<Box
+											key={`${os.os}-${os.version}`}
+											sx={{
+												display: 'flex',
+												justifyContent: 'space-between',
+												alignItems: 'center',
+												p: 1,
+												bgcolor: 'background.paper',
+												borderRadius: 1,
+												border: '1px solid',
+												borderColor: 'divider'
+											}}
+										>
 											<Box>
 												<Typography variant="subtitle2">{os.os}</Typography>
-												<Typography variant="caption" color="text.secondary">{os.version}</Typography>
+												<Typography
+													variant="caption"
+													color="text.secondary"
+												>
+													{os.version}
+												</Typography>
 											</Box>
 											<Box sx={{ textAlign: 'right' }}>
-												<Typography variant="body2" fontWeight="bold">{os.clicks}</Typography>
-												<Typography variant="caption" color="text.secondary">{os.percentage?.toFixed(1)}%</Typography>
+												<Typography
+													variant="body2"
+													fontWeight="bold"
+												>
+													{os.clicks}
+												</Typography>
+												<Typography
+													variant="caption"
+													color="text.secondary"
+												>
+													{os.percentage?.toFixed(1)}%
+												</Typography>
 											</Box>
 										</Box>
 									))}
@@ -467,36 +577,64 @@ export function AudienceChart({
 
 			{/* NEW: Tab 3 - Performance por Dispositivo */}
 			{hasEnhancedData && activeTab === 3 && devicePerformance && (
-				<Grid container spacing={3}>
-					<Grid item xs={12}>
-						<Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
+				<Grid
+					container
+					spacing={3}
+				>
+					<Grid
+						item
+						xs={12}
+					>
+						<Card
+							elevation={0}
+							sx={{ border: '1px solid', borderColor: 'divider' }}
+						>
 							<CardContent>
-								<Typography variant="h6" gutterBottom>⚡ Performance por Dispositivo</Typography>
+								<Typography
+									variant="h6"
+									gutterBottom
+								>
+									⚡ Performance por Dispositivo
+								</Typography>
 								<ApexChartWrapper
 									type="bar"
-									{...formatBarChart(performanceChartData, 'name', 'value', theme.palette.warning.main, false, isDark)}
+									{...formatBarChart(
+										performanceChartData,
+										'name',
+										'value',
+										theme.palette.warning.main,
+										false,
+										isDark
+									)}
 									height={300}
 								/>
 
 								<Box sx={{ mt: 3 }}>
-									<Typography variant="subtitle1" gutterBottom>Detalhes de Performance</Typography>
+									<Typography
+										variant="subtitle1"
+										gutterBottom
+									>
+										Detalhes de Performance
+									</Typography>
 									<Stack spacing={1}>
-										{devicePerformance.map(perf => (
-											<Box key={perf.device} sx={{
-												display: 'flex',
-												justifyContent: 'space-between',
-												p: 1,
-												bgcolor: 'background.paper',
-												borderRadius: 1,
-												border: '1px solid',
-												borderColor: 'divider'
-											}}>
+										{devicePerformance.map((perf) => (
+											<Box
+												key={perf.device}
+												sx={{
+													display: 'flex',
+													justifyContent: 'space-between',
+													p: 1,
+													bgcolor: 'background.paper',
+													borderRadius: 1,
+													border: '1px solid',
+													borderColor: 'divider'
+												}}
+											>
 												<Typography variant="body2">{perf.device}</Typography>
 												<Box sx={{ textAlign: 'right' }}>
 													<Typography variant="caption">
-														Média: {perf.avg_response_time}ms |
-														Min: {perf.min_response_time}ms |
-														Max: {perf.max_response_time}ms
+														Média: {perf.avg_response_time}ms | Min:{' '}
+														{perf.min_response_time}ms | Max: {perf.max_response_time}ms
 													</Typography>
 												</Box>
 											</Box>
@@ -511,11 +649,26 @@ export function AudienceChart({
 
 			{/* NEW: Tab 4 - Distribuição de Idiomas */}
 			{hasEnhancedData && activeTab === 4 && languages && (
-				<Grid container spacing={3}>
-					<Grid item xs={12} md={8}>
-						<Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
+				<Grid
+					container
+					spacing={3}
+				>
+					<Grid
+						item
+						xs={12}
+						md={8}
+					>
+						<Card
+							elevation={0}
+							sx={{ border: '1px solid', borderColor: 'divider' }}
+						>
 							<CardContent>
-								<Typography variant="h6" gutterBottom>🌍 Distribuição de Idiomas</Typography>
+								<Typography
+									variant="h6"
+									gutterBottom
+								>
+									🌍 Distribuição de Idiomas
+								</Typography>
 								<ApexChartWrapper
 									type="pie"
 									{...formatPieChart(languageChartData, 'name', 'value', isDark)}
@@ -524,28 +677,53 @@ export function AudienceChart({
 							</CardContent>
 						</Card>
 					</Grid>
-					<Grid item xs={12} md={4}>
-						<Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}>
+					<Grid
+						item
+						xs={12}
+						md={4}
+					>
+						<Card
+							elevation={0}
+							sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}
+						>
 							<CardContent>
-								<Typography variant="h6" gutterBottom>Top Idiomas</Typography>
+								<Typography
+									variant="h6"
+									gutterBottom
+								>
+									Top Idiomas
+								</Typography>
 								<Stack spacing={2}>
 									{languages.slice(0, 5).map((language) => (
-										<Box key={language.language} sx={{
-											display: 'flex',
-											justifyContent: 'space-between',
-											alignItems: 'center',
-											p: 1,
-											bgcolor: 'background.paper',
-											borderRadius: 1,
-											border: '1px solid',
-											borderColor: 'divider'
-										}}>
+										<Box
+											key={language.language}
+											sx={{
+												display: 'flex',
+												justifyContent: 'space-between',
+												alignItems: 'center',
+												p: 1,
+												bgcolor: 'background.paper',
+												borderRadius: 1,
+												border: '1px solid',
+												borderColor: 'divider'
+											}}
+										>
 											<Box>
 												<Typography variant="subtitle2">{language.language}</Typography>
 											</Box>
 											<Box sx={{ textAlign: 'right' }}>
-												<Typography variant="body2" fontWeight="bold">{language.clicks}</Typography>
-												<Typography variant="caption" color="text.secondary">{language.percentage.toFixed(1)}%</Typography>
+												<Typography
+													variant="body2"
+													fontWeight="bold"
+												>
+													{language.clicks}
+												</Typography>
+												<Typography
+													variant="caption"
+													color="text.secondary"
+												>
+													{language.percentage.toFixed(1)}%
+												</Typography>
 											</Box>
 										</Box>
 									))}

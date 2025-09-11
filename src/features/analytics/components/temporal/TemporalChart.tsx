@@ -65,13 +65,13 @@ export function TemporalChart({
 	const isWeekendActive =
 		weeklyData.length >= 7
 			? weeklyData[0].clicks + weeklyData[6].clicks >
-			weeklyData.slice(1, 6).reduce((sum, day) => sum + day.clicks, 0)
+				weeklyData.slice(1, 6).reduce((sum, day) => sum + day.clicks, 0)
 			: false;
 	const isBusinessHoursActive =
 		hourlyData.length >= 24
 			? hourlyData.slice(9, 18).reduce((sum, hour) => sum + hour.clicks, 0) >
-			hourlyData.slice(0, 9).reduce((sum, hour) => sum + hour.clicks, 0) +
-			hourlyData.slice(18, 24).reduce((sum, hour) => sum + hour.clicks, 0)
+				hourlyData.slice(0, 9).reduce((sum, hour) => sum + hour.clicks, 0) +
+					hourlyData.slice(18, 24).reduce((sum, hour) => sum + hour.clicks, 0)
 			: false;
 
 	return (
@@ -79,11 +79,23 @@ export function TemporalChart({
 			{/* NEW: Tabs para análises enhanced (se dados disponíveis) */}
 			{hasEnhancedData && (
 				<Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-					<Tabs value={activeTab} onChange={handleTabChange}>
+					<Tabs
+						value={activeTab}
+						onChange={handleTabChange}
+					>
 						<Tab label="📊 Padrões Gerais" />
-						<Tab label="⏰ Hora Local" disabled={!hourlyPatternsLocal?.length} />
-						<Tab label="📅 Fim de Semana" disabled={!weekendVsWeekday} />
-						<Tab label="🕘 Horário Comercial" disabled={!businessHoursAnalysis} />
+						<Tab
+							label="⏰ Hora Local"
+							disabled={!hourlyPatternsLocal?.length}
+						/>
+						<Tab
+							label="📅 Fim de Semana"
+							disabled={!weekendVsWeekday}
+						/>
+						<Tab
+							label="🕘 Horário Comercial"
+							disabled={!businessHoursAnalysis}
+						/>
 					</Tabs>
 				</Box>
 			)}
@@ -112,8 +124,9 @@ export function TemporalChart({
 								<strong>💡 Insights:</strong>{' '}
 								{hourlyTotal > 0 ? (
 									<>
-										Horário de pico: <strong>{peakHour.label}</strong> ({peakHour.clicks} clicks). Dia com
-										mais engajamento: <strong>{peakDay.day_name}</strong> ({peakDay.clicks} clicks).
+										Horário de pico: <strong>{peakHour.label}</strong> ({peakHour.clicks} clicks).
+										Dia com mais engajamento: <strong>{peakDay.day_name}</strong> ({peakDay.clicks}{' '}
+										clicks).
 									</>
 								) : (
 									'Compartilhe seu link para descobrir os melhores horários para engajamento!'
@@ -190,14 +203,18 @@ export function TemporalChart({
 												title: {
 													text: 'Hora do Dia',
 													style: {
-														color: isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.75)',
+														color: isDark
+															? 'rgba(255, 255, 255, 0.85)'
+															: 'rgba(0, 0, 0, 0.75)',
 														fontSize: '14px',
 														fontFamily: 'Inter, system-ui, sans-serif'
 													}
 												},
 												labels: {
 													style: {
-														colors: isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.75)',
+														colors: isDark
+															? 'rgba(255, 255, 255, 0.85)'
+															: 'rgba(0, 0, 0, 0.75)',
 														fontSize: '12px',
 														fontFamily: 'Inter, system-ui, sans-serif'
 													}
@@ -207,14 +224,18 @@ export function TemporalChart({
 												title: {
 													text: 'Número de Cliques',
 													style: {
-														color: isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.75)',
+														color: isDark
+															? 'rgba(255, 255, 255, 0.85)'
+															: 'rgba(0, 0, 0, 0.75)',
 														fontSize: '14px',
 														fontFamily: 'Inter, system-ui, sans-serif'
 													}
 												},
 												labels: {
 													style: {
-														colors: isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.75)',
+														colors: isDark
+															? 'rgba(255, 255, 255, 0.85)'
+															: 'rgba(0, 0, 0, 0.75)',
 														fontSize: '12px',
 														fontFamily: 'Inter, system-ui, sans-serif'
 													},
@@ -273,7 +294,8 @@ export function TemporalChart({
 													variant="body2"
 													fontWeight="medium"
 												>
-													{hourlyData.slice(6, 12).reduce((sum, h) => sum + h.clicks, 0)} clicks
+													{hourlyData.slice(6, 12).reduce((sum, h) => sum + h.clicks, 0)}{' '}
+													clicks
 												</Typography>
 											</Grid>
 											<Grid
@@ -290,7 +312,8 @@ export function TemporalChart({
 													variant="body2"
 													fontWeight="medium"
 												>
-													{hourlyData.slice(12, 18).reduce((sum, h) => sum + h.clicks, 0)} clicks
+													{hourlyData.slice(12, 18).reduce((sum, h) => sum + h.clicks, 0)}{' '}
+													clicks
 												</Typography>
 											</Grid>
 											<Grid
@@ -307,7 +330,8 @@ export function TemporalChart({
 													variant="body2"
 													fontWeight="medium"
 												>
-													{hourlyData.slice(18, 24).reduce((sum, h) => sum + h.clicks, 0)} clicks
+													{hourlyData.slice(18, 24).reduce((sum, h) => sum + h.clicks, 0)}{' '}
+													clicks
 												</Typography>
 											</Grid>
 										</Grid>
@@ -396,7 +420,9 @@ export function TemporalChart({
 												categories: weeklyData.map((day) => day.day_name),
 												labels: {
 													style: {
-														colors: isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.75)',
+														colors: isDark
+															? 'rgba(255, 255, 255, 0.85)'
+															: 'rgba(0, 0, 0, 0.75)',
 														fontSize: '11px',
 														fontFamily: 'Inter, system-ui, sans-serif'
 													},
@@ -406,7 +432,9 @@ export function TemporalChart({
 											yaxis: {
 												labels: {
 													style: {
-														colors: isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.75)',
+														colors: isDark
+															? 'rgba(255, 255, 255, 0.85)'
+															: 'rgba(0, 0, 0, 0.75)',
 														fontSize: '12px',
 														fontFamily: 'Inter, system-ui, sans-serif'
 													},
@@ -459,7 +487,8 @@ export function TemporalChart({
 														alignItems: 'center',
 														justifyContent: 'space-between',
 														py: 0.5,
-														borderBottom: index < weeklyData.length - 1 ? '1px solid' : 'none',
+														borderBottom:
+															index < weeklyData.length - 1 ? '1px solid' : 'none',
 														borderBottomColor: 'divider'
 													}}
 												>
@@ -538,7 +567,11 @@ export function TemporalChart({
 											>
 												<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 													<Chip
-														label={isBusinessHoursActive ? 'Horário Comercial' : 'Fora do Horário'}
+														label={
+															isBusinessHoursActive
+																? 'Horário Comercial'
+																: 'Fora do Horário'
+														}
 														color={isBusinessHoursActive ? 'success' : 'warning'}
 														size="small"
 													/>
@@ -629,7 +662,8 @@ export function TemporalChart({
 													color="text.secondary"
 												>
 													• <strong>{peakHour.label}</strong> é o horário de pico com{' '}
-													{peakHour.clicks} cliques. Programe campanhas importantes neste horário.
+													{peakHour.clicks} cliques. Programe campanhas importantes neste
+													horário.
 												</Typography>
 											)}
 											{peakDay && peakDay.clicks > 0 && (
@@ -646,8 +680,8 @@ export function TemporalChart({
 													variant="body2"
 													color="text.secondary"
 												>
-													• Seu público é ativo durante horário comercial. Foque em conteúdo B2B e
-													profissional.
+													• Seu público é ativo durante horário comercial. Foque em conteúdo
+													B2B e profissional.
 												</Typography>
 											)}
 											{!isBusinessHoursActive && hourlyTotal > 0 && (
@@ -655,8 +689,8 @@ export function TemporalChart({
 													variant="body2"
 													color="text.secondary"
 												>
-													• Seu público é ativo fora do horário comercial. Foque em conteúdo de
-													entretenimento e lifestyle.
+													• Seu público é ativo fora do horário comercial. Foque em conteúdo
+													de entretenimento e lifestyle.
 												</Typography>
 											)}
 										</Stack>
@@ -670,13 +704,19 @@ export function TemporalChart({
 
 			{/* NEW: Tab 1 - Padrões de Hora Local */}
 			{hasEnhancedData && activeTab === 1 && hourlyPatternsLocal && (
-				<Grid container spacing={3}>
-					<Grid item xs={12}>
+				<Grid
+					container
+					spacing={3}
+				>
+					<Grid
+						item
+						xs={12}
+					>
 						<ChartCard title="⏰ Padrões de Hora Local (com Timezone)">
 							<ApexChartWrapper
 								type="area"
 								{...formatAreaChart(
-									hourlyPatternsLocal.map(item => ({
+									hourlyPatternsLocal.map((item) => ({
 										hour: `${item.hour.toString().padStart(2, '0')}:00`,
 										clicks: item.clicks,
 										avg_response_time: item.avg_response_time,
@@ -690,13 +730,28 @@ export function TemporalChart({
 								height={350}
 							/>
 							<Box sx={{ mt: 2 }}>
-								<Typography variant="subtitle2" gutterBottom>Performance por Hora</Typography>
+								<Typography
+									variant="subtitle2"
+									gutterBottom
+								>
+									Performance por Hora
+								</Typography>
 								<Stack spacing={1}>
-									{hourlyPatternsLocal.slice(0, 5).map(item => (
-										<Box key={item.hour} sx={{ display: 'flex', justifyContent: 'space-between', p: 1, bgcolor: 'background.paper', borderRadius: 1 }}>
+									{hourlyPatternsLocal.slice(0, 5).map((item) => (
+										<Box
+											key={item.hour}
+											sx={{
+												display: 'flex',
+												justifyContent: 'space-between',
+												p: 1,
+												bgcolor: 'background.paper',
+												borderRadius: 1
+											}}
+										>
 											<Typography variant="body2">{item.hour}h</Typography>
 											<Typography variant="caption">
-												{item.clicks} cliques | {item.avg_response_time}ms | {item.unique_visitors} visitantes
+												{item.clicks} cliques | {item.avg_response_time}ms |{' '}
+												{item.unique_visitors} visitantes
 											</Typography>
 										</Box>
 									))}
@@ -709,36 +764,80 @@ export function TemporalChart({
 
 			{/* NEW: Tab 2 - Fim de Semana vs Dias Úteis */}
 			{hasEnhancedData && activeTab === 2 && weekendVsWeekday && (
-				<Grid container spacing={3}>
-					<Grid item xs={12} md={8}>
+				<Grid
+					container
+					spacing={3}
+				>
+					<Grid
+						item
+						xs={12}
+						md={8}
+					>
 						<ChartCard title="📅 Fim de Semana vs Dias Úteis">
 							<ApexChartWrapper
 								type="pie"
-								{...formatPieChart([
-									{ name: 'Dias Úteis', value: weekendVsWeekday.weekday.clicks },
-									{ name: 'Fim de Semana', value: weekendVsWeekday.weekend.clicks }
-								], 'name', 'value', isDark)}
+								{...formatPieChart(
+									[
+										{ name: 'Dias Úteis', value: weekendVsWeekday.weekday.clicks },
+										{ name: 'Fim de Semana', value: weekendVsWeekday.weekend.clicks }
+									],
+									'name',
+									'value',
+									isDark
+								)}
 								height={300}
 							/>
 						</ChartCard>
 					</Grid>
-					<Grid item xs={12} md={4}>
-						<Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}>
+					<Grid
+						item
+						xs={12}
+						md={4}
+					>
+						<Card
+							elevation={0}
+							sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}
+						>
 							<CardContent>
-								<Typography variant="h6" gutterBottom>Comparativo</Typography>
+								<Typography
+									variant="h6"
+									gutterBottom
+								>
+									Comparativo
+								</Typography>
 								<Stack spacing={2}>
 									<Box>
-										<Typography variant="subtitle2" color="primary">Dias Úteis</Typography>
-										<Typography variant="body2">{weekendVsWeekday.weekday.clicks} cliques</Typography>
-										<Typography variant="caption" color="text.secondary">
+										<Typography
+											variant="subtitle2"
+											color="primary"
+										>
+											Dias Úteis
+										</Typography>
+										<Typography variant="body2">
+											{weekendVsWeekday.weekday.clicks} cliques
+										</Typography>
+										<Typography
+											variant="caption"
+											color="text.secondary"
+										>
 											{weekendVsWeekday.weekday.unique_visitors} visitantes únicos
 										</Typography>
 									</Box>
 									<Divider />
 									<Box>
-										<Typography variant="subtitle2" color="secondary">Fim de Semana</Typography>
-										<Typography variant="body2">{weekendVsWeekday.weekend.clicks} cliques</Typography>
-										<Typography variant="caption" color="text.secondary">
+										<Typography
+											variant="subtitle2"
+											color="secondary"
+										>
+											Fim de Semana
+										</Typography>
+										<Typography variant="body2">
+											{weekendVsWeekday.weekend.clicks} cliques
+										</Typography>
+										<Typography
+											variant="caption"
+											color="text.secondary"
+										>
 											{weekendVsWeekday.weekend.unique_visitors} visitantes únicos
 										</Typography>
 									</Box>
@@ -751,44 +850,90 @@ export function TemporalChart({
 
 			{/* NEW: Tab 3 - Horário Comercial */}
 			{hasEnhancedData && activeTab === 3 && businessHoursAnalysis && (
-				<Grid container spacing={3}>
-					<Grid item xs={12} md={8}>
+				<Grid
+					container
+					spacing={3}
+				>
+					<Grid
+						item
+						xs={12}
+						md={8}
+					>
 						<ChartCard title="🕘 Análise de Horário Comercial">
 							<ApexChartWrapper
 								type="bar"
-								{...formatBarChart([
-									{
-										name: 'Horário Comercial',
-										value: businessHoursAnalysis.business_hours.clicks,
-										range: businessHoursAnalysis.business_hours.time_range
-									},
-									{
-										name: 'Fora do Horário',
-										value: businessHoursAnalysis.non_business_hours.clicks,
-										range: businessHoursAnalysis.non_business_hours.time_range
-									}
-								], 'name', 'value', theme.palette.primary.main, false, isDark)}
+								{...formatBarChart(
+									[
+										{
+											name: 'Horário Comercial',
+											value: businessHoursAnalysis.business_hours.clicks,
+											range: businessHoursAnalysis.business_hours.time_range
+										},
+										{
+											name: 'Fora do Horário',
+											value: businessHoursAnalysis.non_business_hours.clicks,
+											range: businessHoursAnalysis.non_business_hours.time_range
+										}
+									],
+									'name',
+									'value',
+									theme.palette.primary.main,
+									false,
+									isDark
+								)}
 								height={300}
 							/>
 						</ChartCard>
 					</Grid>
-					<Grid item xs={12} md={4}>
-						<Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}>
+					<Grid
+						item
+						xs={12}
+						md={4}
+					>
+						<Card
+							elevation={0}
+							sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}
+						>
 							<CardContent>
-								<Typography variant="h6" gutterBottom>Métricas de Engajamento</Typography>
+								<Typography
+									variant="h6"
+									gutterBottom
+								>
+									Métricas de Engajamento
+								</Typography>
 								<Stack spacing={2}>
 									<Box>
-										<Typography variant="subtitle2" color="primary">Horário Comercial</Typography>
-										<Typography variant="body2">{businessHoursAnalysis.business_hours.clicks} cliques</Typography>
-										<Typography variant="caption" color="text.secondary">
+										<Typography
+											variant="subtitle2"
+											color="primary"
+										>
+											Horário Comercial
+										</Typography>
+										<Typography variant="body2">
+											{businessHoursAnalysis.business_hours.clicks} cliques
+										</Typography>
+										<Typography
+											variant="caption"
+											color="text.secondary"
+										>
 											{businessHoursAnalysis.business_hours.avg_session_depth} cliques/sessão
 										</Typography>
 									</Box>
 									<Divider />
 									<Box>
-										<Typography variant="subtitle2" color="secondary">Fora do Horário</Typography>
-										<Typography variant="body2">{businessHoursAnalysis.non_business_hours.clicks} cliques</Typography>
-										<Typography variant="caption" color="text.secondary">
+										<Typography
+											variant="subtitle2"
+											color="secondary"
+										>
+											Fora do Horário
+										</Typography>
+										<Typography variant="body2">
+											{businessHoursAnalysis.non_business_hours.clicks} cliques
+										</Typography>
+										<Typography
+											variant="caption"
+											color="text.secondary"
+										>
 											{businessHoursAnalysis.non_business_hours.avg_session_depth} cliques/sessão
 										</Typography>
 									</Box>
