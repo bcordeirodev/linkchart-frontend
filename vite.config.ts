@@ -58,6 +58,25 @@ export default defineConfig({
     server: {
         port: 3000,
         host: true,
+        proxy: {
+            // Proxy para API - evita CORS completamente em desenvolvimento
+            '/api': {
+                target: 'http://localhost:8000',
+                changeOrigin: true,
+                secure: false,
+                configure: (proxy, _options) => {
+                    proxy.on('proxyReq', (proxyReq, req, _res) => {
+                        console.log(`🔄 Proxy: ${req.method} ${req.url} -> http://localhost:8000${req.url}`);
+                    });
+                    proxy.on('proxyRes', (proxyRes, req, _res) => {
+                        console.log(`✅ Response: ${proxyRes.statusCode} ${req.url}`);
+                    });
+                    proxy.on('error', (err, _req, _res) => {
+                        console.error('❌ Proxy error:', err);
+                    });
+                },
+            }
+        }
     },
     build: {
         outDir: 'dist',

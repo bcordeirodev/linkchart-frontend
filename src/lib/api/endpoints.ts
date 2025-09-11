@@ -2,7 +2,7 @@
  * Configurações e endpoints da API
  */
 export const API_CONFIG = {
-	BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost',
+	BASE_URL: import.meta.env.DEV ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:8000'),
 	TEST_URL: import.meta.env.VITE_TEST_API_URL || 'http://localhost',
 
 	TIMEOUT: 10000,
