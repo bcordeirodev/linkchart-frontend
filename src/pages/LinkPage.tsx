@@ -19,8 +19,8 @@ import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 function LinkPage() {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 	const isLaptop = useMediaQuery(theme.breakpoints.down('lg'));
+	const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
 	const { links, loading, deleteLink } = useLinks();
 	const [searchTerm, setSearchTerm] = useState('');
