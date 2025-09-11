@@ -42,7 +42,11 @@ export type {
 	TemporalPeriodConfig,
 	UseTemporalDataOptions,
 	UseTemporalDataReturn,
-	TemporalPattern
+	TemporalPattern,
+	// NEW: Enhanced temporal types
+	HourlyPatternData,
+	WeekendVsWeekdayData,
+	BusinessHoursData
 } from './temporal';
 
 // Re-exports de tipos de audiência
@@ -59,7 +63,10 @@ export type {
 	UseAudienceDataOptions,
 	UseAudienceDataReturn,
 	AudienceApiResponse,
-	AudienceSegment
+	AudienceSegment,
+	// NEW: Enhanced audience types
+	DevicePerformanceData,
+	LanguageData
 } from './audience';
 
 // Re-exports de tipos core (para compatibilidade)

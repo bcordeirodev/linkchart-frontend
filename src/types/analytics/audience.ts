@@ -49,19 +49,57 @@ export interface ReferrerData {
 }
 
 /**
- * Dados completos de análise de audiência
+ * Dados de performance por dispositivo
+ */
+export interface DevicePerformanceData {
+	/** Tipo de dispositivo */
+	device: string;
+	/** Tempo médio de resposta em ms */
+	avg_response_time: number;
+	/** Tempo mínimo de resposta em ms */
+	min_response_time: number;
+	/** Tempo máximo de resposta em ms */
+	max_response_time: number;
+	/** Total de cliques */
+	total_clicks: number;
+}
+
+/**
+ * Dados de distribuição de idiomas
+ */
+export interface LanguageData {
+	/** Idioma (pt-BR, en, es, etc.) */
+	language: string;
+	/** Número total de cliques */
+	clicks: number;
+	/** Percentual em relação ao total */
+	percentage: number;
+}
+
+/**
+ * Dados completos de análise de audiência - ENHANCED
  */
 export interface AudienceData {
-	/** Breakdown por dispositivos */
+	/** Breakdown por dispositivos (legacy) */
 	device_breakdown: DeviceData[];
-	/** Breakdown por navegadores (opcional) */
+	/** Breakdown por navegadores (legacy) */
 	browser_breakdown?: BrowserData[];
-	/** Breakdown por sistemas operacionais (opcional) */
+	/** Breakdown por sistemas operacionais (legacy) */
 	os_breakdown?: OSData[];
 	/** Breakdown por referrers (opcional) */
 	referrer_breakdown?: ReferrerData[];
 	/** Estatísticas agregadas (opcional) */
 	stats?: AudienceStats;
+
+	// NEW: Enhanced analytics data
+	/** Distribuição detalhada de browsers com versões */
+	browsers?: BrowserData[];
+	/** Distribuição detalhada de sistemas operacionais com versões */
+	operating_systems?: OSData[];
+	/** Performance por tipo de dispositivo */
+	device_performance?: DevicePerformanceData[];
+	/** Distribuição de idiomas */
+	languages?: LanguageData[];
 }
 
 /**

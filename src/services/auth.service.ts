@@ -1,6 +1,7 @@
 import { LoginResponse, UserResponse } from '@/types';
 import { API_ENDPOINTS } from '../lib/api/endpoints';
 import { BaseService } from './base.service';
+import { api } from '../lib/api/client';
 
 interface LoginRequest extends Record<string, unknown> {
 	email: string;
@@ -40,8 +41,10 @@ export default class AuthService extends BaseService {
 	async signIn(body: LoginRequest): Promise<LoginResponse> {
 		this.validateRequired(body, ['email', 'password']);
 
-		return this.post<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, body, {
-			context: 'sign_in'
+		// Enviar como x-www-form-urlencoded para evitar preflight OPTIONS
+		return api.postForm<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, {
+			email: String(body.email),
+			password: String(body.password)
 		});
 	}
 

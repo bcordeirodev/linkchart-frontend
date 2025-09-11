@@ -210,6 +210,11 @@ export function AudienceAnalysis({
 						browserBreakdown={(audienceData as any)?.browser_breakdown}
 						osBreakdown={(audienceData as any)?.os_breakdown}
 						totalClicks={totalClicks}
+						// NEW: Pass enhanced data to existing component
+						browsers={(audienceData as any)?.browsers}
+						operatingSystems={(audienceData as any)?.operating_systems}
+						devicePerformance={(audienceData as any)?.device_performance}
+						languages={(audienceData as any)?.languages}
 					/>
 				</Grid>
 

@@ -105,6 +105,10 @@ export type {
 	UseTemporalDataOptions,
 	UseTemporalDataReturn,
 	TemporalPattern,
+	// NEW: Enhanced temporal types
+	HourlyPatternData,
+	WeekendVsWeekdayData,
+	BusinessHoursData,
 
 	// Audience
 	BrowserData,
@@ -119,7 +123,10 @@ export type {
 	UseAudienceDataOptions,
 	UseAudienceDataReturn,
 	AudienceApiResponse,
-	AudienceSegment
+	AudienceSegment,
+	// NEW: Enhanced audience types
+	DevicePerformanceData,
+	LanguageData
 } from './analytics';
 
 // ========================================

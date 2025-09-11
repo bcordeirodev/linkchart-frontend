@@ -183,6 +183,10 @@ export function TemporalAnalysis({
 						<TemporalChart
 							hourlyData={data?.clicks_by_hour || []}
 							weeklyData={data?.clicks_by_day_of_week || []}
+							// NEW: Pass enhanced temporal data
+							hourlyPatternsLocal={(data as any)?.hourly_patterns_local}
+							weekendVsWeekday={(data as any)?.weekend_vs_weekday}
+							businessHoursAnalysis={(data as any)?.business_hours_analysis}
 						/>
 					</Grid>
 				</Grid>

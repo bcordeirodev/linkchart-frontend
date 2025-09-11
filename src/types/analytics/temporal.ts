@@ -7,17 +7,77 @@
 import type { HourlyData, DayOfWeekData, ISODateString, BaseDataProps, BaseTitleProps, BaseConfigProps } from '../core';
 
 /**
- * Dados completos de análise temporal
+ * Dados de padrões de hora local
+ */
+export interface HourlyPatternData {
+	/** Hora do dia (0-23) */
+	hour: number;
+	/** Número de cliques */
+	clicks: number;
+	/** Tempo médio de resposta */
+	avg_response_time: number;
+	/** Visitantes únicos */
+	unique_visitors: number;
+}
+
+/**
+ * Dados de comparação fim de semana vs dias úteis
+ */
+export interface WeekendVsWeekdayData {
+	weekend: {
+		clicks: number;
+		unique_visitors: number;
+		avg_response_time: number;
+		percentage?: number;
+	};
+	weekday: {
+		clicks: number;
+		unique_visitors: number;
+		avg_response_time: number;
+		percentage?: number;
+	};
+}
+
+/**
+ * Dados de análise de horário comercial
+ */
+export interface BusinessHoursData {
+	business_hours: {
+		clicks: number;
+		unique_visitors: number;
+		avg_response_time: number;
+		avg_session_depth: number;
+		time_range: string;
+	};
+	non_business_hours: {
+		clicks: number;
+		unique_visitors: number;
+		avg_response_time: number;
+		avg_session_depth: number;
+		time_range: string;
+	};
+}
+
+/**
+ * Dados completos de análise temporal - ENHANCED
  */
 export interface TemporalData {
-	/** Cliques por hora do dia */
+	/** Cliques por hora do dia (legacy) */
 	clicks_by_hour: HourlyData[];
-	/** Cliques por dia da semana */
+	/** Cliques por dia da semana (legacy) */
 	clicks_by_day_of_week: DayOfWeekData[];
 	/** Cliques por data (opcional) */
 	clicks_by_date?: DailyData[];
 	/** Cliques por mês (opcional) */
 	clicks_by_month?: MonthlyData[];
+
+	// NEW: Enhanced temporal analytics
+	/** Padrões de hora local com timezone */
+	hourly_patterns_local?: HourlyPatternData[];
+	/** Comparação fim de semana vs dias úteis */
+	weekend_vs_weekday?: WeekendVsWeekdayData;
+	/** Análise de horário comercial */
+	business_hours_analysis?: BusinessHoursData;
 }
 
 /**

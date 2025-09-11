@@ -107,6 +107,11 @@ class ApiClient {
 			...(customHeaders as Record<string, string>)
 		};
 
+		// Garantir que o header Origin seja sempre enviado para CORS
+		if (typeof window !== 'undefined' && window.location) {
+			headers['Origin'] = window.location.origin;
+		}
+
 		const token = await this.getAuthToken();
 
 		if (token) {
@@ -114,6 +119,17 @@ class ApiClient {
 		}
 
 		return headers;
+	}
+
+	/** Helper: monta URLSearchParams a partir de um objeto simples */
+	private buildFormUrlEncoded(params: Record<string, string>): URLSearchParams {
+		const usp = new URLSearchParams();
+		Object.entries(params).forEach(([key, value]) => {
+			if (value !== undefined && value !== null) {
+				usp.append(key, String(value));
+			}
+		});
+		return usp;
 	}
 
 	/**
@@ -216,10 +232,6 @@ class ApiClient {
 		} catch (error) {
 			clearTimeout(timeoutId);
 
-			if (error instanceof Error && error.name === 'AbortError') {
-				throw new Error('Tempo limite da requisição excedido');
-			}
-
 			throw error;
 		}
 	}
@@ -236,6 +248,50 @@ class ApiClient {
 	 */
 	async post<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit): Promise<T> {
 		return this.request<T>('POST', endpoint, data, customHeaders);
+	}
+
+	/**
+	 * Requisição POST via application/x-www-form-urlencoded (evita preflight)
+	 */
+	async postForm<T>(endpoint: string, form: Record<string, string>): Promise<T> {
+		const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
+
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+		const body = this.buildFormUrlEncoded(form);
+
+		// Usar somente headers simples para evitar preflight
+		const headers: HeadersInit = {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		};
+
+		try {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers,
+				body,
+				signal: controller.signal,
+				credentials: 'include'
+			});
+
+			clearTimeout(timeoutId);
+
+			if (!response.ok) {
+				await this.handleError(response);
+			}
+
+			const contentType = response.headers.get('content-type');
+			if (contentType?.includes('application/json')) {
+				return await response.json();
+			}
+
+			return (await response.text()) as unknown as T;
+		} catch (error) {
+			clearTimeout(timeoutId);
+
+			throw error;
+		}
 	}
 
 	/**
@@ -269,6 +325,11 @@ class ApiClient {
 		const headers = await this.createHeaders({});
 		delete (headers as Record<string, string>)['Content-Type'];
 
+		// Garantir Origin para uploads também
+		if (typeof window !== 'undefined' && window.location) {
+			(headers as Record<string, string>)['Origin'] = window.location.origin;
+		}
+
 		// Adiciona headers customizados (exceto Content-Type)
 		if (customHeaders) {
 			Object.entries(customHeaders).forEach(([key, value]) => {
@@ -296,7 +357,6 @@ class ApiClient {
 			}
 
 			const contentType = response.headers.get('content-type');
-
 			if (contentType?.includes('application/json')) {
 				return await response.json();
 			}
