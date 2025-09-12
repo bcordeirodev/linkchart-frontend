@@ -73,7 +73,6 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 			<Grid
 				container
 				spacing={3}
-
 			>
 				{metrics.map((metric) => (
 					<Grid
@@ -83,7 +82,6 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 						md={3}
 						key={metric.id}
 					>
-
 						<MetricCard
 							title={metric.title}
 							value={metric.value}
@@ -91,7 +89,6 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 							color={metric.color}
 							subtitle={metric.subtitle}
 						/>
-
 					</Grid>
 				))}
 			</Grid>

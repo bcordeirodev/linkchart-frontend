@@ -36,7 +36,6 @@ export function TemporalAnalysis({
 	enableRealtime = false,
 	timeRange = '7d'
 }: TemporalAnalysisProps) {
-
 	// Usar hook específico para dados temporais - SEMPRE incluir dados avançados
 	const { data, stats, loading, error, refresh, isRealtime } = useTemporalData({
 		linkId,
@@ -75,7 +74,6 @@ export function TemporalAnalysis({
 				minHeight={300}
 			>
 				<Box>
-
 					{/* MÉTRICAS */}
 					<Box sx={{ mb: 3 }}>
 						<Grid

@@ -22,7 +22,7 @@ interface ResponsiveContainerProps extends Omit<ContainerProps, 'children'> {
 /**
  * Container responsivo unificado que aplica espaçamentos consistentes
  * baseados no design system otimizado para mobile-first
- * 
+ *
  * @features
  * - Estilos sx têm prioridade total sobre estilos padrão
  * - Detecta automaticamente se sx contém propriedades de spacing
@@ -45,39 +45,38 @@ export function ResponsiveContainer({
 	// Espaçamento customizado se fornecido
 	const customSpacing = spacing
 		? {
-			xs: spacing === 'xs' ? 1 : spacing === 'sm' ? 1.5 : spacing === 'md' ? 2 : 3,
-			sm: spacing === 'xs' ? 1.5 : spacing === 'sm' ? 2 : spacing === 'md' ? 2.5 : 3.5,
-			md: spacing === 'xs' ? 2 : spacing === 'sm' ? 2.5 : spacing === 'md' ? 3 : 4
-		}
+				xs: spacing === 'xs' ? 1 : spacing === 'sm' ? 1.5 : spacing === 'md' ? 2 : 3,
+				sm: spacing === 'xs' ? 1.5 : spacing === 'sm' ? 2 : spacing === 'md' ? 2.5 : 3.5,
+				md: spacing === 'xs' ? 2 : spacing === 'sm' ? 2.5 : spacing === 'md' ? 3 : 4
+			}
 		: null;
 
 	// Verificar se sx contém propriedades de padding (verificação segura)
-	const hasPaddingInSx = sx && typeof sx === 'object' && !Array.isArray(sx) && (
-		'p' in sx ||
-		'padding' in sx ||
-		'px' in sx ||
-		'paddingX' in sx ||
-		'py' in sx ||
-		'paddingY' in sx ||
-		'pt' in sx ||
-		'paddingTop' in sx ||
-		'pr' in sx ||
-		'paddingRight' in sx ||
-		'pb' in sx ||
-		'paddingBottom' in sx ||
-		'pl' in sx ||
-		'paddingLeft' in sx
-	);
+	const hasPaddingInSx =
+		sx &&
+		typeof sx === 'object' &&
+		!Array.isArray(sx) &&
+		('p' in sx ||
+			'padding' in sx ||
+			'px' in sx ||
+			'paddingX' in sx ||
+			'py' in sx ||
+			'paddingY' in sx ||
+			'pt' in sx ||
+			'paddingTop' in sx ||
+			'pr' in sx ||
+			'paddingRight' in sx ||
+			'pb' in sx ||
+			'paddingBottom' in sx ||
+			'pl' in sx ||
+			'paddingLeft' in sx);
 
 	// Verificar se sx contém propriedades de margin bottom (verificação segura)
-	const hasMarginBottomInSx = sx && typeof sx === 'object' && !Array.isArray(sx) && (
-		'mb' in sx ||
-		'marginBottom' in sx ||
-		'm' in sx ||
-		'margin' in sx ||
-		'my' in sx ||
-		'marginY' in sx
-	);
+	const hasMarginBottomInSx =
+		sx &&
+		typeof sx === 'object' &&
+		!Array.isArray(sx) &&
+		('mb' in sx || 'marginBottom' in sx || 'm' in sx || 'margin' in sx || 'my' in sx || 'marginY' in sx);
 
 	// Construir estilos base
 	const baseStyles = {

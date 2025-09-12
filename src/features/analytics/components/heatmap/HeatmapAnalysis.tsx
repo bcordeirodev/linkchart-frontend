@@ -91,7 +91,9 @@ export function HeatmapAnalysis({
 				error={error}
 				hasData={!!heatmapData?.length}
 				onRetry={refresh}
-				loadingMessage={isGlobalMode ? 'Agregando dados de todos os links...' : 'Carregando dados do heatmap...'}
+				loadingMessage={
+					isGlobalMode ? 'Agregando dados de todos os links...' : 'Carregando dados do heatmap...'
+				}
 				emptyMessage={
 					isGlobalMode
 						? 'Não há cliques registrados em nenhum dos seus links ativos ainda.'
@@ -100,7 +102,6 @@ export function HeatmapAnalysis({
 				minHeight={400}
 			>
 				<Box>
-
 					{/* MÉTRICAS */}
 					<Box sx={{ mb: 3 }}>
 						<HeatmapMetrics

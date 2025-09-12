@@ -49,7 +49,12 @@ class AuthService extends BaseService {
 	 * Registra um novo usuário
 	 */
 	async signUp(body: RegisterRequest): Promise<LoginResponse> {
-		this.validateRequired(body as unknown as Record<string, unknown>, ['name', 'email', 'password', 'password_confirmation']);
+		this.validateRequired(body as unknown as Record<string, unknown>, [
+			'name',
+			'email',
+			'password',
+			'password_confirmation'
+		]);
 
 		return this.post<LoginResponse>(API_ENDPOINTS.AUTH.REGISTER, body, {
 			context: 'sign_up'

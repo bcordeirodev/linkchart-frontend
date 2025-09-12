@@ -129,8 +129,15 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 
 	if (success) {
 		return (
-			<ResponsiveContainer variant="form" maxWidth="md">
-				<EnhancedPaper variant="glass" animated sx={{ p: 4, textAlign: 'center' }}>
+			<ResponsiveContainer
+				variant="form"
+				maxWidth="md"
+			>
+				<EnhancedPaper
+					variant="glass"
+					animated
+					sx={{ p: 4, textAlign: 'center' }}
+				>
 					<Typography
 						variant="h5"
 						color="success.main"
@@ -150,8 +157,14 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 	}
 
 	return (
-		<ResponsiveContainer variant="form" maxWidth="md">
-			<EnhancedPaper variant="glass" animated>
+		<ResponsiveContainer
+			variant="form"
+			maxWidth="md"
+		>
+			<EnhancedPaper
+				variant="glass"
+				animated
+			>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					{/* Header */}
 					<Box sx={{ p: 3, pb: 2, borderBottom: 1, borderColor: 'divider' }}>

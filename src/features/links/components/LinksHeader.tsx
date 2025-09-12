@@ -18,9 +18,7 @@ export function LinksHeader({ onCreateNew }: LinksHeaderProps) {
 			icon={<Link />}
 			variant="default"
 			showDecorative={true}
-			actions={
-				<LinksHeaderActions onCreateNew={onCreateNew} />
-			}
+			actions={<LinksHeaderActions onCreateNew={onCreateNew} />}
 		/>
 	);
 }

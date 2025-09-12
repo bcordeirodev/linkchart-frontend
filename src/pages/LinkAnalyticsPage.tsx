@@ -49,7 +49,12 @@ function LinkAnalyticsPage() {
 					<PageHeader
 						title={linkInfo?.title || `Analytics do Link`}
 						subtitle={`Análise detalhada do desempenho do link ${linkInfo?.short_url || id}`}
-						icon={<AppIcon intent="analytics" size={32} />}
+						icon={
+							<AppIcon
+								intent="analytics"
+								size={32}
+							/>
+						}
 						variant="analytics"
 					/>
 					<LinkAnalyticsTabsOptimized {...tabsProps} />

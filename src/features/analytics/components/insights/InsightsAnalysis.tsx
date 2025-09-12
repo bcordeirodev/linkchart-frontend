@@ -90,7 +90,6 @@ export function InsightsAnalysis({
 				minHeight={300}
 			>
 				<Box>
-
 					{/* MÉTRICAS */}
 					<Box sx={{ mb: 3 }}>
 						<Grid

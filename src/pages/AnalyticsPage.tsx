@@ -50,7 +50,12 @@ function AnalyticsPage() {
 					<PageHeader
 						title="Analytics Global"
 						subtitle="Visão completa do desempenho de todos os seus links"
-						icon={<AppIcon intent="analytics" size={32} />}
+						icon={
+							<AppIcon
+								intent="analytics"
+								size={32}
+							/>
+						}
 						variant="analytics"
 					/>
 					<Analytics {...analyticsProps} />

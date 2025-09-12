@@ -264,7 +264,8 @@ export function PerformanceAnalysis({
 											? 'Bom'
 											: 'Precisa melhorar'}
 									)
-									<br />• <strong>Uptime Real:</strong> {performanceMetrics.uptime}% de disponibilidade (
+									<br />• <strong>Uptime Real:</strong> {performanceMetrics.uptime}% de
+									disponibilidade (
 									{performanceMetrics.uptime >= 99
 										? 'Excelente'
 										: performanceMetrics.uptime >= 95
@@ -273,8 +274,8 @@ export function PerformanceAnalysis({
 									)
 									<br />• <strong>Taxa de Cliques:</strong> {performanceMetrics.clicksPerHour}{' '}
 									cliques/hora em média
-									<br />• <strong>Retenção de Visitantes:</strong> {performanceMetrics.visitorRetention}%
-									dos cliques são de visitantes únicos
+									<br />• <strong>Retenção de Visitantes:</strong>{' '}
+									{performanceMetrics.visitorRetention}% dos cliques são de visitantes únicos
 									<br />• <strong>Tempo de Resposta:</strong> {performanceMetrics.avgResponseTime}ms (
 									{performanceMetrics.avgResponseTime < 200
 										? 'Excelente'

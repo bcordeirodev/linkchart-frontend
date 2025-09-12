@@ -23,6 +23,5 @@ export { default as GradientButton } from './GradientButton';
 // Typography & Content
 export { default as SafeTypography } from './SafeTypography';
 
-
 // Re-export types
 export type { TabPanelProps, MetricCardProps, BaseComponentProps } from '../components';

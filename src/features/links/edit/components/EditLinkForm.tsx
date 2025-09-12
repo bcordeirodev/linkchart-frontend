@@ -207,8 +207,15 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	// ✅ Loading State
 	if (fetchingData) {
 		return (
-			<ResponsiveContainer variant="form" maxWidth="md">
-				<EnhancedPaper variant="glass" animated sx={{ p: 4, textAlign: 'center' }}>
+			<ResponsiveContainer
+				variant="form"
+				maxWidth="md"
+			>
+				<EnhancedPaper
+					variant="glass"
+					animated
+					sx={{ p: 4, textAlign: 'center' }}
+				>
 					<Loading
 						size="medium"
 						text="Carregando dados do link..."
@@ -222,8 +229,15 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	// ✅ Error State
 	if (apiError) {
 		return (
-			<ResponsiveContainer variant="form" maxWidth="md">
-				<EnhancedPaper variant="glass" animated sx={{ p: 4 }}>
+			<ResponsiveContainer
+				variant="form"
+				maxWidth="md"
+			>
+				<EnhancedPaper
+					variant="glass"
+					animated
+					sx={{ p: 4 }}
+				>
 					<Alert
 						severity="error"
 						action={
@@ -242,7 +256,8 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 							{apiError ? 'Erro ao carregar' : 'Link não encontrado'}
 						</Typography>
 						<Typography variant="body2">
-							{apiError || 'O link solicitado não foi encontrado ou você não tem permissão para editá-lo.'}
+							{apiError ||
+								'O link solicitado não foi encontrado ou você não tem permissão para editá-lo.'}
 						</Typography>
 					</Alert>
 				</EnhancedPaper>
@@ -251,8 +266,14 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	}
 
 	return (
-		<ResponsiveContainer variant="form" maxWidth="md">
-			<EnhancedPaper variant="glass" animated>
+		<ResponsiveContainer
+			variant="form"
+			maxWidth="md"
+		>
+			<EnhancedPaper
+				variant="glass"
+				animated
+			>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					{/* Header */}
 					<Box sx={{ p: 3, pb: 2, borderBottom: 1, borderColor: 'divider' }}>

@@ -50,7 +50,11 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 	const glassCardStyles = createGlassCard(theme);
 
 	return (
-		<EnhancedPaper variant="glass" animated sx={{ p: 3, mb: 4 }}>
+		<EnhancedPaper
+			variant="glass"
+			animated
+			sx={{ p: 3, mb: 4 }}
+		>
 			{/* Header dos filtros */}
 			<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
 				<FilterList sx={{ color: 'primary.main', mr: 1 }} />

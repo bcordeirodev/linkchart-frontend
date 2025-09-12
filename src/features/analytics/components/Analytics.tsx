@@ -48,7 +48,10 @@ export function Analytics({
 	// Cada tab agora gerencia seu próprio estado
 	if (loading || error) {
 		return (
-			<ResponsiveContainer variant="page" maxWidth="xl">
+			<ResponsiveContainer
+				variant="page"
+				maxWidth="xl"
+			>
 				<AnalyticsStates
 					loading={loading}
 					error={error}

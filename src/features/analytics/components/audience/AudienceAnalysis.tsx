@@ -118,10 +118,19 @@ export function AudienceAnalysis({
 					)}
 
 					{/* RESTANTE DO CONTEÚDO */}
-					<Grid container spacing={2}>
+					<Grid
+						container
+						spacing={2}
+					>
 						{/* Gráficos de Audiência */}
-						<Grid item xs={12}>
-							<EnhancedPaper variant="glass" animated>
+						<Grid
+							item
+							xs={12}
+						>
+							<EnhancedPaper
+								variant="glass"
+								animated
+							>
 								<AudienceChart
 									deviceBreakdown={deviceBreakdown}
 									browserBreakdown={(audienceData as any)?.browser_breakdown}
@@ -137,8 +146,14 @@ export function AudienceAnalysis({
 						</Grid>
 
 						{/* Insights de Audiência */}
-						<Grid item xs={12}>
-							<EnhancedPaper variant="glass" animated>
+						<Grid
+							item
+							xs={12}
+						>
+							<EnhancedPaper
+								variant="glass"
+								animated
+							>
 								<AudienceInsights
 									deviceBreakdown={deviceBreakdown}
 									browserBreakdown={(audienceData as any)?.browser_breakdown}
