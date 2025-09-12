@@ -58,16 +58,8 @@ export interface ChartsProps extends DataComponentProps<AnalyticsData> {
 // 📈 CHART COMPONENT TYPES
 // ========================================
 
-export interface ChartDataPoint {
-	x: string | number;
-	y: number;
-	[key: string]: unknown;
-}
-
-// ChartSeries agora importado de @/types
-
-// ChartOptions movido para @/types/core/charts
-// @deprecated Use ChartOptions from @/types instead
+// ChartDataPoint, ChartSeries e ChartOptions movidos para @/types/core/charts
+// @deprecated Use types from @/types instead
 
 export interface ChartProps extends BaseComponentProps {
 	series: ChartSeries[];

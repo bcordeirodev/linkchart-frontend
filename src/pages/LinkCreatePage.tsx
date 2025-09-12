@@ -3,9 +3,10 @@
  * Página especializada para criação de links usando módulo DDD
  */
 
-import { Container, Stack, Fade, Box } from '@mui/material';
+import { Stack, Fade, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { CreateLinkForm, CreateLinkHero } from '@/features/links/create';
+import { ResponsiveContainer } from '@/shared/ui/base';
 import MainLayout from '@/shared/layout/MainLayout';
 import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
@@ -33,11 +34,11 @@ function LinkCreatePage() {
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
-				<Container maxWidth="md">
-					<Stack
-						spacing={4}
-						sx={{ py: 4 }}
-					>
+				<ResponsiveContainer
+					variant="form"
+					maxWidth="md"
+				>
+					<Stack spacing={4}>
 						<PageBreadcrumb />
 
 						{/* Hero Section */}
@@ -57,7 +58,7 @@ function LinkCreatePage() {
 							</Fade>
 						</Box>
 					</Stack>
-				</Container>
+				</ResponsiveContainer>
 			</MainLayout>
 		</AuthGuardRedirect>
 	);

@@ -3,7 +3,7 @@
  * Formulário simplificado para edição de links
  */
 
-import { Typography, Stack, Button, Alert, CircularProgress } from '@mui/material';
+import { Typography, Stack, Button, Alert, CircularProgress, Box } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
@@ -14,13 +14,9 @@ import { linkFormSchema, LinkFormData, defaultLinkFormValues } from '../../compo
 import { EditLinkFormProps } from '../types';
 import { linkService } from '@/services';
 import { AppIcon } from '@/lib/icons';
-import {
-	FormPaper,
-	FormHeader,
-	FormFieldsContainer,
-	FormActionsContainer,
-	StatePaper
-} from '../../components/styles/FormSections.styled';
+import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
+import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
+import { FormActions } from '@/shared/ui/patterns/FormActions';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
 
@@ -211,134 +207,140 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	// ✅ Loading State
 	if (fetchingData) {
 		return (
-			<StatePaper elevation={2}>
-				<Loading
-					size="medium"
-					text="Carregando dados do link..."
-					fullHeight={false}
-				/>
-			</StatePaper>
+			<ResponsiveContainer variant="form" maxWidth="md">
+				<EnhancedPaper variant="glass" animated sx={{ p: 4, textAlign: 'center' }}>
+					<Loading
+						size="medium"
+						text="Carregando dados do link..."
+						fullHeight={false}
+					/>
+				</EnhancedPaper>
+			</ResponsiveContainer>
 		);
 	}
 
 	// ✅ Error State
 	if (apiError) {
 		return (
-			<StatePaper elevation={2}>
-				<Alert
-					severity="error"
-					action={
-						<Button
-							size="small"
-							onClick={handleCancel}
-						>
-							Voltar
-						</Button>
-					}
-				>
-					<Typography
-						variant="h6"
-						component="div"
+			<ResponsiveContainer variant="form" maxWidth="md">
+				<EnhancedPaper variant="glass" animated sx={{ p: 4 }}>
+					<Alert
+						severity="error"
+						action={
+							<Button
+								size="small"
+								onClick={handleCancel}
+							>
+								Voltar
+							</Button>
+						}
 					>
-						{apiError ? 'Erro ao carregar' : 'Link não encontrado'}
-					</Typography>
-					<Typography variant="body2">
-						{apiError || 'O link solicitado não foi encontrado ou você não tem permissão para editá-lo.'}
-					</Typography>
-				</Alert>
-			</StatePaper>
+						<Typography
+							variant="h6"
+							component="div"
+						>
+							{apiError ? 'Erro ao carregar' : 'Link não encontrado'}
+						</Typography>
+						<Typography variant="body2">
+							{apiError || 'O link solicitado não foi encontrado ou você não tem permissão para editá-lo.'}
+						</Typography>
+					</Alert>
+				</EnhancedPaper>
+			</ResponsiveContainer>
 		);
 	}
 
 	return (
-		<FormPaper elevation={2}>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				{/* Header */}
-				<FormHeader>
-					<Stack
-						direction="row"
-						justifyContent="space-between"
-						alignItems="flex-start"
-					>
-						<div>
-							<Typography
-								variant="h5"
-								fontWeight={600}
-								gutterBottom
-							>
-								✏️ Editar Link
-							</Typography>
-							<Typography
-								variant="body2"
-								color="text.secondary"
-							>
-								Modifique as configurações do seu link
-							</Typography>
-						</div>
-					</Stack>
-				</FormHeader>
-
-				{/* API Error */}
-				{apiError && (
-					<Alert
-						severity="error"
-						sx={{ mb: 3 }}
-					>
-						{apiError}
-					</Alert>
-				)}
-
-				{/* Form Fields */}
-				<FormFieldsContainer>
-					<LinkFormFields
-						control={control}
-						errors={errors}
-						isEdit={true}
-					/>
-				</FormFieldsContainer>
-
-				{/* Actions */}
-				<FormActionsContainer>
-					<Stack
-						direction="row"
-						spacing={2}
-						justifyContent="space-between"
-						sx={{ width: '100%' }}
-						className="mt-4"
-					>
-						{/* Botão Cancelar */}
-						<Button
-							variant="outlined"
-							onClick={handleCancel}
-							disabled={loading}
-							startIcon={<AppIcon intent="cancel" />}
+		<ResponsiveContainer variant="form" maxWidth="md">
+			<EnhancedPaper variant="glass" animated>
+				<form onSubmit={handleSubmit(onSubmit)}>
+					{/* Header */}
+					<Box sx={{ p: 3, pb: 2, borderBottom: 1, borderColor: 'divider' }}>
+						<Stack
+							direction="row"
+							justifyContent="space-between"
+							alignItems="flex-start"
 						>
-							Cancelar
-						</Button>
+							<div>
+								<Typography
+									variant="h5"
+									fontWeight={600}
+									gutterBottom
+								>
+									✏️ Editar Link
+								</Typography>
+								<Typography
+									variant="body2"
+									color="text.secondary"
+								>
+									Modifique as configurações do seu link
+								</Typography>
+							</div>
+						</Stack>
+					</Box>
 
-						{/* Botão Salvar */}
-						<Button
-							type="submit"
-							variant="contained"
-							color="primary"
-							disabled={loading}
-							startIcon={
-								loading ? (
-									<CircularProgress
-										size={16}
-										color="inherit"
-									/>
-								) : (
-									<AppIcon intent="save" />
-								)
-							}
+					{/* API Error */}
+					{apiError && (
+						<Alert
+							severity="error"
+							sx={{ mb: 3 }}
 						>
-							{loading ? 'Salvando...' : 'Salvar Alterações'}
-						</Button>
-					</Stack>
-				</FormActionsContainer>
-			</form>
-		</FormPaper>
+							{apiError}
+						</Alert>
+					)}
+
+					{/* Form Fields */}
+					<Box sx={{ p: 3 }}>
+						<LinkFormFields
+							control={control}
+							errors={errors}
+							isEdit={true}
+						/>
+					</Box>
+
+					{/* Actions */}
+					<Box sx={{ p: 3, pt: 1, borderTop: 1, borderColor: 'divider' }}>
+						<Stack
+							direction="row"
+							spacing={2}
+							justifyContent="space-between"
+							sx={{ width: '100%' }}
+							className="mt-4"
+						>
+							{/* Botão Cancelar */}
+							<Button
+								variant="outlined"
+								onClick={handleCancel}
+								disabled={loading}
+								startIcon={<AppIcon intent="cancel" />}
+							>
+								Cancelar
+							</Button>
+
+							{/* Botão Salvar */}
+							<Button
+								type="submit"
+								variant="contained"
+								color="primary"
+								disabled={loading}
+								startIcon={
+									loading ? (
+										<CircularProgress
+											size={16}
+											color="inherit"
+										/>
+									) : (
+										<AppIcon intent="save" />
+									)
+								}
+							>
+								{loading ? 'Salvando...' : 'Salvar Alterações'}
+							</Button>
+						</Stack>
+					</Box>
+				</form>
+			</EnhancedPaper>
+		</ResponsiveContainer>
 	);
 }
 

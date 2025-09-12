@@ -12,7 +12,6 @@ import { Lightbulb, TrendingUp, Flag, Assessment } from '@mui/icons-material';
 interface InsightsAnalysisProps {
 	linkId?: string;
 	globalMode?: boolean;
-	showTitle?: boolean;
 	title?: string;
 	enableRealtime?: boolean;
 	maxInsights?: number;
@@ -51,8 +50,7 @@ interface InsightsAnalysisProps {
 export function InsightsAnalysis({
 	linkId,
 	globalMode = false,
-	showTitle = true,
-	title = '💡 Insights de Negócio',
+	title = 'Insights de Negócio',
 	enableRealtime = false,
 	maxInsights = 50
 }: InsightsAnalysisProps) {
@@ -65,165 +63,185 @@ export function InsightsAnalysis({
 	});
 
 	return (
-		<AnalyticsStateManager
-			loading={loading}
-			error={error}
-			hasData={!!data?.insights?.length}
-			onRetry={refresh}
-			loadingMessage="Gerando insights inteligentes..."
-			emptyMessage={
-				globalMode
-					? 'Não há insights suficientes para seus links ativos. Mais dados são necessários para gerar análises.'
-					: 'Este link ainda não possui dados suficientes para gerar insights.'
-			}
-			minHeight={300}
-		>
-			<Box>
-				{/* Título e descrição */}
-				{showTitle && (
-					<Box sx={{ mb: 2 }}>
-						<TabDescription
-							icon="💡"
-							title={title}
-							description="Insights automáticos gerados pela análise dos seus dados com recomendações acionáveis."
-							highlight={`${data?.insights?.length || 0} insights disponíveis`}
-							metadata={isRealtime ? 'Tempo Real' : 'Análise Inteligente'}
-						/>
-					</Box>
-				)}
+		<Box>
+			{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
+			<Box sx={{ mb: 3 }}>
+				<TabDescription
+					icon="💡"
+					title={title}
+					description="Insights automáticos gerados pela análise dos seus dados com recomendações acionáveis."
+					highlight={`${data?.insights?.length || 0} insights disponíveis`}
+					metadata={isRealtime ? 'Tempo Real' : 'Análise Inteligente'}
+				/>
+			</Box>
 
-				{/* Métricas de Insights */}
-				<Grid
-					container
-					spacing={3}
-					sx={{ mb: 3 }}
-				>
-					<Grid
-						item
-						xs={12}
-						sm={6}
-						md={3}
-					>
-						<MetricCard
-							title="Total de Insights"
-							value={stats?.totalInsights?.toString() || '0'}
-							icon={<Lightbulb />}
-							color="primary"
-							subtitle="insights gerados"
-						/>
-					</Grid>
-					<Grid
-						item
-						xs={12}
-						sm={6}
-						md={3}
-					>
-						<MetricCard
-							title="Alta Prioridade"
-							value={stats?.highPriorityCount?.toString() || '0'}
-							icon={<Flag />}
-							color="error"
-							subtitle="requerem atenção"
-						/>
-					</Grid>
-					<Grid
-						item
-						xs={12}
-						sm={6}
-						md={3}
-					>
-						<MetricCard
-							title="Acionáveis"
-							value={stats?.actionableCount?.toString() || '0'}
-							icon={<TrendingUp />}
-							color="success"
-							subtitle="podem ser implementados"
-						/>
-					</Grid>
-					<Grid
-						item
-						xs={12}
-						sm={6}
-						md={3}
-					>
-						<MetricCard
-							title="Confiança Média"
-							value={`${Math.round((stats?.avgConfidence || 0) * 100)}%`}
-							icon={<Assessment />}
-							color="info"
-							subtitle="precisão dos insights"
-						/>
-					</Grid>
-				</Grid>
+			{/* 2. CONTEÚDO COM LOADER */}
+			<AnalyticsStateManager
+				loading={loading}
+				error={error}
+				hasData={!!data?.insights?.length}
+				onRetry={refresh}
+				loadingMessage="Gerando insights inteligentes..."
+				emptyMessage={
+					globalMode
+						? 'Não há insights suficientes para seus links ativos. Mais dados são necessários para gerar análises.'
+						: 'Este link ainda não possui dados suficientes para gerar insights.'
+				}
+				minHeight={300}
+			>
+				<Box>
 
-				{/* ETAPA 3: NOVOS COMPONENTES DE INSIGHTS AVANÇADOS */}
-				{data?.analytics_data && (
-					<Box sx={{ mb: 4 }}>
-						<Grid container spacing={3}>
-							{/* Análise de Retenção */}
-							{data.analytics_data.retention && (
-								<Grid item xs={12}>
-									<RetentionAnalysisChart
-										data={data.analytics_data.retention}
-										loading={loading}
-										showTitle={true}
-									/>
-								</Grid>
-							)}
-
-							{/* Análise de Profundidade de Sessão */}
-							{data.analytics_data.session_depth && (
-								<Grid item xs={12}>
-									<SessionDepthChart
-										data={data.analytics_data.session_depth}
-										loading={loading}
-										showTitle={true}
-									/>
-								</Grid>
-							)}
-
-							{/* Análise de Fontes de Tráfego */}
-							{data.analytics_data.traffic_sources && (
-								<Grid item xs={12}>
-									<TrafficSourceChart
-										data={data.analytics_data.traffic_sources}
-										loading={loading}
-										showTitle={true}
-									/>
-								</Grid>
-							)}
+					{/* MÉTRICAS */}
+					<Box sx={{ mb: 3 }}>
+						<Grid
+							container
+							spacing={3}
+						>
+							<Grid
+								item
+								xs={12}
+								sm={6}
+								md={3}
+							>
+								<MetricCard
+									title="Total de Insights"
+									value={stats?.totalInsights?.toString() || '0'}
+									icon={<Lightbulb />}
+									color="primary"
+									subtitle="insights gerados"
+								/>
+							</Grid>
+							<Grid
+								item
+								xs={12}
+								sm={6}
+								md={3}
+							>
+								<MetricCard
+									title="Alta Prioridade"
+									value={stats?.highPriorityCount?.toString() || '0'}
+									icon={<Flag />}
+									color="error"
+									subtitle="requerem atenção"
+								/>
+							</Grid>
+							<Grid
+								item
+								xs={12}
+								sm={6}
+								md={3}
+							>
+								<MetricCard
+									title="Acionáveis"
+									value={stats?.actionableCount?.toString() || '0'}
+									icon={<TrendingUp />}
+									color="success"
+									subtitle="podem ser implementados"
+								/>
+							</Grid>
+							<Grid
+								item
+								xs={12}
+								sm={6}
+								md={3}
+							>
+								<MetricCard
+									title="Confiança Média"
+									value={`${Math.round((stats?.avgConfidence || 0) * 100)}%`}
+									icon={<Assessment />}
+									color="info"
+									subtitle="precisão dos insights"
+								/>
+							</Grid>
 						</Grid>
 					</Box>
-				)}
 
-				{/* Lista de Insights Tradicionais */}
-				<Box sx={{ mb: 3 }}>
-					<Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						💡 Insights Automáticos
-					</Typography>
-					<BusinessInsights
-						insights={data?.insights || []}
-						showTitle={false}
-						maxItems={maxInsights}
-					/>
-				</Box>
+					{/* RESTANTE DO CONTEÚDO */}
+					{/* ETAPA 3: NOVOS COMPONENTES DE INSIGHTS AVANÇADOS */}
+					{data?.analytics_data && (
+						<Box sx={{ mb: 4 }}>
+							<Grid
+								container
+								spacing={3}
+							>
+								{/* Análise de Retenção */}
+								{data.analytics_data.retention && (
+									<Grid
+										item
+										xs={12}
+									>
+										<RetentionAnalysisChart
+											data={data.analytics_data.retention}
+											loading={loading}
+											showTitle={true}
+										/>
+									</Grid>
+								)}
 
-				{/* Informações adicionais */}
-				{stats && (
-					<Box sx={{ mt: 3, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
+								{/* Análise de Profundidade de Sessão */}
+								{data.analytics_data.session_depth && (
+									<Grid
+										item
+										xs={12}
+									>
+										<SessionDepthChart
+											data={data.analytics_data.session_depth}
+											loading={loading}
+											showTitle={true}
+										/>
+									</Grid>
+								)}
+
+								{/* Análise de Fontes de Tráfego */}
+								{data.analytics_data.traffic_sources && (
+									<Grid
+										item
+										xs={12}
+									>
+										<TrafficSourceChart
+											data={data.analytics_data.traffic_sources}
+											loading={loading}
+											showTitle={true}
+										/>
+									</Grid>
+								)}
+							</Grid>
+						</Box>
+					)}
+
+					{/* Lista de Insights Tradicionais */}
+					<Box sx={{ mb: 3 }}>
 						<Typography
-							variant="caption"
-							color="text.secondary"
+							variant="h6"
+							gutterBottom
+							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							Categoria principal: {stats.topCategory} • Última geração:{' '}
-							{new Date(stats.lastGenerated).toLocaleString()} •{data?.insights?.length || 0} de{' '}
-							{stats.totalInsights} insights exibidos
-							{isRealtime && ' • Atualizações automáticas ativas'}
+							💡 Insights Automáticos
 						</Typography>
+						<BusinessInsights
+							insights={data?.insights || []}
+							showTitle={false}
+							maxItems={maxInsights}
+						/>
 					</Box>
-				)}
-			</Box>
-		</AnalyticsStateManager>
+
+					{/* Informações adicionais */}
+					{stats && (
+						<Box sx={{ mt: 3, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
+							<Typography
+								variant="caption"
+								color="text.secondary"
+							>
+								Categoria principal: {stats.topCategory} • Última geração:{' '}
+								{new Date(stats.lastGenerated).toLocaleString()} •{data?.insights?.length || 0} de{' '}
+								{stats.totalInsights} insights exibidos
+								{isRealtime && ' • Atualizações automáticas ativas'}
+							</Typography>
+						</Box>
+					)}
+				</Box>
+			</AnalyticsStateManager>
+		</Box>
 	);
 }
 

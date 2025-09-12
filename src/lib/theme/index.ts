@@ -22,7 +22,11 @@ export {
 	layoutSpacing,
 	animationDurations,
 	animationEasings,
-	layoutDimensions
+	layoutDimensions,
+	// Novos utilitários responsivos
+	createResponsiveSpacing,
+	responsiveSpacing,
+	createCustomSpacing
 } from './designSystem';
 
 export type { ColorVariant, ColorIntensity } from './designSystem';
@@ -91,7 +95,6 @@ export {
 	createMargin,
 	createGap,
 	createSpacingUtils,
-	createResponsiveSpacing,
 
 	// Shadows - usado no design system
 	createShadow,

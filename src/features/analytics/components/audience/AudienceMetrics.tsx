@@ -60,7 +60,7 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 	];
 
 	return (
-		<Box sx={{ mb: 3 }}>
+		<>
 			{showTitle && (
 				<Typography
 					variant="h6"
@@ -73,7 +73,7 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 			<Grid
 				container
 				spacing={3}
-				sx={{ ...animations.fadeIn }}
+
 			>
 				{metrics.map((metric) => (
 					<Grid
@@ -83,19 +83,19 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 						md={3}
 						key={metric.id}
 					>
-						<Box sx={{ height: '100%', ...animations.cardHover }}>
-							<MetricCard
-								title={metric.title}
-								value={metric.value}
-								icon={metric.icon}
-								color={metric.color}
-								subtitle={metric.subtitle}
-							/>
-						</Box>
+
+						<MetricCard
+							title={metric.title}
+							value={metric.value}
+							icon={metric.icon}
+							color={metric.color}
+							subtitle={metric.subtitle}
+						/>
+
 					</Grid>
 				))}
 			</Grid>
-		</Box>
+		</>
 	);
 }
 

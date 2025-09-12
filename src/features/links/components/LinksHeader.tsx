@@ -1,66 +1,27 @@
-import { AppIcon } from '@/lib/icons';
-import { useNavigate } from 'react-router-dom';
-
-// Styled Components
-import {
-	LinkPageContainer,
-	LinksHeaderContainer,
-	LinksHeaderDecoration,
-	LinksHeaderContent,
-	LinksHeaderTitle,
-	LinksHeaderSubtitle,
-	LinksHeaderActions,
-	CreateLinkButton
-} from './styles/Link.styled';
+import { Link } from '@mui/icons-material';
+import { PageHeader } from '@/shared/ui/base/PageHeader';
+import { LinksHeaderActions } from './LinksHeaderActions';
 
 interface LinksHeaderProps {
 	onCreateNew?: () => void;
 }
 
 /**
- * Cabeçalho da página de links
- * Inclui título e botão de criação
+ * Header Links otimizado usando PageHeader unificado
+ * Mantém todas as funcionalidades do LinksHeader original
  */
 export function LinksHeader({ onCreateNew }: LinksHeaderProps) {
-	const navigate = useNavigate();
-
-	const handleCreateNew = () => {
-		if (onCreateNew) {
-			onCreateNew();
-		} else {
-			navigate('/link/create');
-		}
-	};
-
 	return (
-		<LinkPageContainer>
-			{/* <PageBreadcrumb /> */}
-			<LinksHeaderContainer>
-				{/* Elemento decorativo */}
-				<LinksHeaderDecoration />
-
-				<LinksHeaderContent>
-					<LinksHeaderTitle variant="h3">Gerenciar Links</LinksHeaderTitle>
-					<LinksHeaderSubtitle>Crie, edite e monitore seus links encurtados</LinksHeaderSubtitle>
-				</LinksHeaderContent>
-
-				<LinksHeaderActions>
-					<CreateLinkButton
-						variant="contained"
-						size="large"
-						startIcon={
-							<AppIcon
-								intent="create"
-								size={20}
-							/>
-						}
-						onClick={handleCreateNew}
-					>
-						Criar novo link
-					</CreateLinkButton>
-				</LinksHeaderActions>
-			</LinksHeaderContainer>
-		</LinkPageContainer>
+		<PageHeader
+			title="Gerenciar Links"
+			subtitle="Crie, edite e monitore seus links encurtados"
+			icon={<Link />}
+			variant="default"
+			showDecorative={true}
+			actions={
+				<LinksHeaderActions onCreateNew={onCreateNew} />
+			}
+		/>
 	);
 }
 

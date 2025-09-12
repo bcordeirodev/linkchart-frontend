@@ -1,9 +1,11 @@
 import { Analytics } from '@/features/analytics/components/Analytics';
 import { useLinks } from '@/features/links/hooks/useLinks';
+import { ResponsiveContainer } from '@/shared/ui/base';
+import { PageHeader } from '@/shared/ui/base/PageHeader';
 import MainLayout from '@/shared/layout/MainLayout';
 import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
-import AnalyticsLayout from '@/shared/ui/layout/AnalyticsLayout';
 import { memo, useMemo } from 'react';
+import { AppIcon } from '@/lib/icons';
 
 /**
  * 📊 Página de Analytics Global - OTIMIZADA
@@ -33,7 +35,7 @@ function AnalyticsPage() {
 			loading: false, // Cada tab gerencia seu próprio loading
 			error: null, // Cada tab gerencia seu próprio erro
 			linkId: undefined, // Modo global - cada hook detecta automaticamente
-			showHeader: true,
+			showHeader: false, // Header já mostrado pela página
 			showTabs: true,
 			linksData: links as never, // Compatibilidade de tipos
 			showDashboardTab: true
@@ -44,9 +46,15 @@ function AnalyticsPage() {
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
-				<AnalyticsLayout>
+				<ResponsiveContainer variant="page">
+					<PageHeader
+						title="Analytics Global"
+						subtitle="Visão completa do desempenho de todos os seus links"
+						icon={<AppIcon intent="analytics" size={32} />}
+						variant="analytics"
+					/>
 					<Analytics {...analyticsProps} />
-				</AnalyticsLayout>
+				</ResponsiveContainer>
 			</MainLayout>
 		</AuthGuardRedirect>
 	);

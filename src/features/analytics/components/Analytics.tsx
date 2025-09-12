@@ -1,8 +1,9 @@
-import { Container } from '@mui/material';
 import { AnalyticsProps } from '@/types/analytics';
+import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
 import { AnalyticsHeader } from './shared/AnalyticsHeader';
 import { AnalyticsContent } from './shared/AnalyticsContent';
 import { AnalyticsStates } from './shared/AnalyticsStates';
+import { Box } from '@mui/material';
 
 /**
  * 🎯 ANALYTICS - COMPONENTE PRINCIPAL UNIFICADO
@@ -47,26 +48,20 @@ export function Analytics({
 	// Cada tab agora gerencia seu próprio estado
 	if (loading || error) {
 		return (
-			<Container
-				maxWidth="xl"
-				sx={{ py: 3 }}
-			>
+			<ResponsiveContainer variant="page" maxWidth="xl">
 				<AnalyticsStates
 					loading={loading}
 					error={error}
 					hasData={true} // Sempre true, cada tab verifica individualmente
 					showHeader={showHeader}
 				/>
-			</Container>
+			</ResponsiveContainer>
 		);
 	}
 
 	// Renderização normal com dados
 	return (
-		<Container
-			maxWidth="xl"
-			sx={{ py: 3 }}
-		>
+		<Box>
 			{/* Header opcional */}
 			{showHeader && (
 				<AnalyticsHeader
@@ -84,7 +79,7 @@ export function Analytics({
 				showTabs={showTabs}
 				showDashboardTab={showDashboardTab}
 			/>
-		</Container>
+		</Box>
 	);
 }
 

@@ -1,7 +1,6 @@
-import { Box } from '@mui/material';
-import { createPresetAnimations } from '@/lib/theme';
-import { useTheme } from '@mui/material/styles';
-import { Header } from '../Header';
+import { Dashboard, Analytics } from '@mui/icons-material';
+import { PageHeader } from '@/shared/ui/base/PageHeader';
+import { AnalyticsHeaderActions } from './AnalyticsHeaderActions';
 
 interface AnalyticsHeaderProps {
 	variant?: 'dashboard' | 'analytics';
@@ -13,6 +12,10 @@ interface AnalyticsHeaderProps {
 	loading?: boolean;
 }
 
+/**
+ * Header Analytics otimizado usando PageHeader unificado
+ * Mantém todas as funcionalidades do Header customizado original
+ */
 export function AnalyticsHeader({
 	variant = 'analytics',
 	title = 'Analytics Dashboard',
@@ -22,21 +25,29 @@ export function AnalyticsHeader({
 	onShare,
 	loading = false
 }: AnalyticsHeaderProps) {
-	const theme = useTheme();
-	const animations = createPresetAnimations(theme);
+	// Ícones baseados na variante (mantendo lógica original)
+	const icons = {
+		dashboard: <Dashboard />,
+		analytics: <Analytics />
+	};
 
 	return (
-		<Box sx={{ ...animations.fadeIn }}>
-			<Header
-				variant={variant}
-				title={title}
-				subtitle={subtitle}
-				onRefresh={onRefresh}
-				onDownload={onDownload}
-				onShare={onShare}
-				loading={loading}
-			/>
-		</Box>
+		<PageHeader
+			title={title}
+			subtitle={subtitle}
+			icon={icons[variant]}
+			variant={variant}
+			showDecorative={true}
+			actions={
+				<AnalyticsHeaderActions
+					variant={variant}
+					onRefresh={onRefresh}
+					onDownload={onDownload}
+					onShare={onShare}
+					loading={loading}
+				/>
+			}
+		/>
 	);
 }
 

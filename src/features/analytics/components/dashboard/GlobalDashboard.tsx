@@ -70,9 +70,9 @@ export function GlobalDashboard({
 			compact={compact}
 		>
 			<Box>
-				{/* Título e controles */}
+				{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO */}
 				{showTitle && (
-					<Box sx={{ mb: 2 }}>
+					<Box sx={{ mb: 3 }}>
 						<TabDescription
 							icon="🌍"
 							title={title}
@@ -115,56 +115,51 @@ export function GlobalDashboard({
 					</Box>
 				)}
 
-				{/* Conteúdo principal */}
-				<Grid
-					container
-					spacing={3}
-				>
-					{/* Métricas principais */}
+				{/* 2. MÉTRICAS */}
+				<Box sx={{ mb: 3 }}>
+					<DashboardMetrics
+						summary={data?.summary}
+						linksData={data?.top_links}
+						showTitle={!compact}
+						title="📊 Métricas Globais"
+						variant={compact ? 'compact' : 'detailed'}
+					/>
+				</Box>
+
+				{/* 3. RESTANTE DO CONTEÚDO */}
+				{!compact && (
 					<Grid
-						item
-						xs={12}
+						container
+						spacing={3}
 					>
-						<DashboardMetrics
-							summary={data?.summary}
-							linksData={data?.top_links}
-							showTitle={!compact}
-							title="📊 Métricas Globais"
-							variant={compact ? 'compact' : 'detailed'}
-						/>
+						{/* Charts */}
+						<Grid
+							item
+							xs={12}
+							lg={8}
+						>
+							<Charts
+								data={data ? mapDashboardDataToCharts(data) : null}
+								variant="dashboard"
+								height={400}
+								showAllCharts={true}
+							/>
+						</Grid>
+
+						{/* Top Links - SEMPRE EXIBIDO NO GLOBAL */}
+						<Grid
+							item
+							xs={12}
+							lg={4}
+						>
+							<TopLinks
+								links={mapLinksDataToTopLinks(data?.top_links || [])}
+								maxItems={5}
+								title="🏆 Top Links"
+							/>
+						</Grid>
 					</Grid>
-
-					{!compact && (
-						<>
-							{/* Charts */}
-							<Grid
-								item
-								xs={12}
-								lg={8}
-							>
-								<Charts
-									data={data ? mapDashboardDataToCharts(data) : null}
-									variant="dashboard"
-									height={400}
-									showAllCharts={true}
-								/>
-							</Grid>
-
-							{/* Top Links - SEMPRE EXIBIDO NO GLOBAL */}
-							<Grid
-								item
-								xs={12}
-								lg={4}
-							>
-								<TopLinks
-									links={mapLinksDataToTopLinks(data?.top_links || [])}
-									maxItems={5}
-									title="🏆 Top Links"
-								/>
-							</Grid>
-						</>
-					)}
-				</Grid>
+				)}
 
 				{/* Informações de qualidade dos dados */}
 				{stats && (

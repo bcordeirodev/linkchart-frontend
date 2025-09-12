@@ -5,14 +5,16 @@ import TabDescription from '@/shared/ui/base/TabDescription';
 import { createGlassCard, createPresetAnimations } from '@/lib/theme';
 import { useTheme } from '@mui/material/styles';
 
-// Componentes integrados com hooks
+// Componentes integrados com lazy loading robusto
 import { GlobalDashboard } from '../dashboard/GlobalDashboard';
-import { GeographicAnalysis } from '../geographic/GeographicAnalysis';
-import { TemporalAnalysis } from '../temporal';
 import { InsightsAnalysis } from '../insights/InsightsAnalysis';
-import { AudienceAnalysis } from '../audience/AudienceAnalysis';
-import { HeatmapAnalysis } from '../heatmap/HeatmapAnalysis';
-import { PerformanceAnalysis } from '../perfomance/PerformanceAnalysis';
+import {
+	LazyPerformanceAnalysisWrapper as LazyPerformanceAnalysis,
+	LazyGeographicAnalysisWrapper as LazyGeographicAnalysis,
+	LazyTemporalAnalysisWrapper as LazyTemporalAnalysis,
+	LazyAudienceAnalysisWrapper as LazyAudienceAnalysis,
+	LazyHeatmapAnalysisWrapper as LazyHeatmapAnalysis
+} from '../lazy/LazyAnalyticsComponents';
 
 interface AnalyticsContentProps {
 	data: any;
@@ -83,7 +85,7 @@ export function AnalyticsContent({
 		<Box>
 			{/* Tabs Navigation */}
 			{showTabs && (
-				<Box sx={{ ...createGlassCard(theme, 'neutral'), mb: 3 }}>
+				<Box sx={{ ...createGlassCard(theme, 'neutral') }}>
 					<Tabs
 						value={tabValue}
 						onChange={handleTabChange}
@@ -120,7 +122,7 @@ export function AnalyticsContent({
 						index={0}
 					>
 						<GlobalDashboard
-							showTitle={false} // Título já mostrado no container
+							showTitle={true}
 							enableRealtime={true}
 							showTimeframeSelector={true}
 						/>
@@ -132,15 +134,7 @@ export function AnalyticsContent({
 					value={tabValue}
 					index={getTabIndex(1)}
 				>
-					<Box sx={{ mb: 2 }}>
-						<TabDescription
-							icon="⚡"
-							title="Análise de Performance"
-							description="Velocidade de resposta, disponibilidade e performance por região dos seus links."
-							highlight="Otimize a experiência do usuário"
-						/>
-					</Box>
-					<PerformanceAnalysis
+					<LazyPerformanceAnalysis
 						linkId={linkId}
 						globalMode={globalMode}
 					/>
@@ -151,10 +145,10 @@ export function AnalyticsContent({
 					value={tabValue}
 					index={getTabIndex(2)}
 				>
-					<GeographicAnalysis
+					<LazyGeographicAnalysis
 						linkId={linkId}
 						globalMode={globalMode}
-						showTitle={false} // Título já mostrado na tab
+						showTitle={true}
 						enableRealtime={true}
 						minClicks={1}
 					/>
@@ -165,13 +159,11 @@ export function AnalyticsContent({
 					value={tabValue}
 					index={getTabIndex(3)}
 				>
-					<TemporalAnalysis
+					<LazyTemporalAnalysis
 						linkId={linkId}
 						globalMode={globalMode}
-						showTitle={false}
 						enableRealtime={true}
 						timeRange="7d"
-						showAdvancedControls={true}
 					/>
 				</TabPanel>
 
@@ -180,18 +172,9 @@ export function AnalyticsContent({
 					value={tabValue}
 					index={getTabIndex(4)}
 				>
-					<Box sx={{ mb: 2 }}>
-						<TabDescription
-							icon="👥"
-							title="Análise de Audiência"
-							description="Perfil detalhado da sua audiência com dispositivos, navegadores e comportamento."
-							highlight="Conheça melhor seus usuários"
-						/>
-					</Box>
-					<AudienceAnalysis
+					<LazyAudienceAnalysis
 						linkId={linkId}
 						globalMode={globalMode}
-						showTitle={false}
 					/>
 				</TabPanel>
 
@@ -200,7 +183,7 @@ export function AnalyticsContent({
 					value={tabValue}
 					index={getTabIndex(5)}
 				>
-					<HeatmapAnalysis
+					<LazyHeatmapAnalysis
 						linkId={linkId}
 						globalMode={!linkId}
 					/>
@@ -214,7 +197,6 @@ export function AnalyticsContent({
 					<InsightsAnalysis
 						linkId={linkId}
 						globalMode={globalMode}
-						showTitle={false}
 						enableRealtime={false} // Insights não precisam de tempo real
 						maxInsights={15}
 					/>

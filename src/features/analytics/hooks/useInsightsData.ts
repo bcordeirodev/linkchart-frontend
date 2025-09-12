@@ -7,7 +7,17 @@ import { api } from '@/lib/api/client';
 
 // Tipos para insights
 export interface BusinessInsight {
-	type: 'geographic' | 'temporal' | 'audience' | 'performance' | 'conversion' | 'engagement';
+	type:
+		| 'geographic'
+		| 'temporal'
+		| 'audience'
+		| 'performance'
+		| 'conversion'
+		| 'engagement'
+		| 'optimization'
+		| 'security'
+		| 'retention'
+		| 'traffic_source';
 	title: string;
 	description: string;
 	priority: 'high' | 'medium' | 'low';
@@ -200,7 +210,7 @@ export function useInsightsData({
 							avg_confidence:
 								filteredInsights.length > 0
 									? filteredInsights.reduce((sum, i) => sum + (i.confidence || 0.5), 0) /
-									filteredInsights.length
+										filteredInsights.length
 									: 0
 						},
 						categories: {},

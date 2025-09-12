@@ -45,30 +45,46 @@ export const spacingTokens = {
  * Espaçamentos específicos para layouts
  */
 export const layoutSpacing = {
-	// Container padrão
+	// Container padrão - OTIMIZADO MOBILE-FIRST
 	container: {
-		xs: spacingTokens.lg, // 16px
-		sm: spacingTokens.xxl, // 24px
-		md: spacingTokens.xxxl // 32px
+		xs: spacingTokens.md, // 12px (era 16px) - Reduzido para mobile
+		sm: spacingTokens.lg, // 16px (era 24px)
+		md: spacingTokens.xxl // 24px (era 32px)
 	},
 
-	// Seção padrão
+	// Seção padrão - REDUZIDO significativamente
 	section: {
-		xs: spacingTokens.xxxl, // 32px
-		sm: spacingTokens.xxxxl, // 40px
-		md: spacingTokens.xxxxxl // 48px
+		xs: spacingTokens.lg, // 16px (era 32px) - 50% redução mobile
+		sm: spacingTokens.xxl, // 24px (era 40px)
+		md: spacingTokens.xxxl // 32px (era 48px)
 	},
 
-	// Card interno
+	// Card interno - OTIMIZADO
 	card: {
-		xs: spacingTokens.lg, // 16px
-		sm: spacingTokens.xxl // 24px
+		xs: spacingTokens.md, // 12px (era 16px)
+		sm: spacingTokens.lg, // 16px
+		md: spacingTokens.xxl // 24px (novo breakpoint)
 	},
 
-	// Grid spacing
-	grid: {
+	// Form spacing - NOVO para formulários
+	form: {
 		xs: spacingTokens.lg, // 16px
-		sm: spacingTokens.xxl // 24px
+		sm: spacingTokens.xl, // 20px
+		md: spacingTokens.xxl // 24px
+	},
+
+	// Page spacing - NOVO para páginas
+	page: {
+		xs: spacingTokens.md, // 12px - Compacto em mobile
+		sm: spacingTokens.lg, // 16px
+		md: spacingTokens.xxl // 24px
+	},
+
+	// Grid spacing - REDUZIDO
+	grid: {
+		xs: spacingTokens.md, // 12px (era 16px)
+		sm: spacingTokens.lg, // 16px (era 24px)
+		md: spacingTokens.xxl // 24px (novo)
 	}
 } as const;
 
@@ -364,6 +380,50 @@ export const createColorVariation = (theme: Theme, variant: ColorVariant, intens
 		text: baseColor
 	};
 };
+
+// ========================================
+// 📐 RESPONSIVE SPACING UTILITIES
+// ========================================
+
+/**
+ * Cria espaçamento responsivo baseado nos tokens otimizados
+ */
+export const createResponsiveSpacing = (spacingType: keyof typeof layoutSpacing) => {
+	const spacing = layoutSpacing[spacingType];
+	return {
+		xs: spacing.xs,
+		sm: spacing.sm,
+		md: spacing.md
+	};
+};
+
+/**
+ * Utilitários de espaçamento pré-configurados
+ */
+export const responsiveSpacing = {
+	// Padding responsivo
+	container: { p: createResponsiveSpacing('container') },
+	section: { p: createResponsiveSpacing('section') },
+	card: { p: createResponsiveSpacing('card') },
+	form: { p: createResponsiveSpacing('form') },
+	page: { p: createResponsiveSpacing('page') },
+
+	// Gap responsivo para grids/flex
+	grid: { gap: createResponsiveSpacing('grid') },
+
+	// Margin bottom para seções
+	sectionBottom: { mb: createResponsiveSpacing('section') },
+	cardBottom: { mb: createResponsiveSpacing('card') }
+};
+
+/**
+ * Helper para criar espaçamento customizado responsivo
+ */
+export const createCustomSpacing = (xs: number, sm?: number, md?: number) => ({
+	xs: spacingTokens.xs * xs,
+	sm: spacingTokens.sm * (sm || xs),
+	md: spacingTokens.md * (md || sm || xs)
+});
 
 // ========================================
 // 📤 EXPORTS

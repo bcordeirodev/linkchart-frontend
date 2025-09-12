@@ -13,6 +13,7 @@ import {
 import { Search, FilterList } from '@mui/icons-material';
 import { alpha } from '@mui/material/styles';
 import { createGlassCard } from '@/lib/theme';
+import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 
 interface LinksFiltersProps {
 	searchTerm: string;
@@ -49,17 +50,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 	const glassCardStyles = createGlassCard(theme);
 
 	return (
-		<Box
-			sx={{
-				...glassCardStyles,
-				p: 3,
-				mb: 4,
-				'&:hover': {
-					boxShadow: theme.shadows[8],
-					transform: 'translateY(-4px)'
-				}
-			}}
-		>
+		<EnhancedPaper variant="glass" animated sx={{ p: 3, mb: 4 }}>
 			{/* Header dos filtros */}
 			<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
 				<FilterList sx={{ color: 'primary.main', mr: 1 }} />
@@ -204,7 +195,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 					</Select>
 				</FormControl>
 			</Box>
-		</Box>
+		</EnhancedPaper>
 	);
 }
 

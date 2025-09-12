@@ -79,8 +79,8 @@ export function PasswordChangeForm() {
 
 	return (
 		<EnhancedPaper>
-			<Box sx={{ p: 4 }}>
-				<Stack spacing={3}>
+			<Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+				<Stack spacing={{ xs: 2, sm: 3 }}>
 					<Box>
 						<Typography
 							variant="h6"

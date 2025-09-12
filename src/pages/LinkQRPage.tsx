@@ -5,6 +5,7 @@ import { Box, Typography, Button, Card, CardContent, Alert, CircularProgress } f
 import { ArrowBack, Download, Share } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 // import QRCode from 'qrcode'; // Removido import estático
+import { ResponsiveContainer } from '@/shared/ui/base';
 import MainLayout from '@/shared/layout/MainLayout';
 import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 import { useLinks } from '@/features/links/hooks/useLinks';
@@ -114,9 +115,9 @@ function LinkQRPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<Box sx={{ p: 3 }}>
+					<ResponsiveContainer variant="page">
 						<Alert severity="error">ID do link não fornecido na URL</Alert>
-					</Box>
+					</ResponsiveContainer>
 				</MainLayout>
 			</AuthGuardRedirect>
 		);
@@ -126,23 +127,24 @@ function LinkQRPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<Box
-						sx={{
-							p: 3,
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-							minHeight: '50vh'
-						}}
-					>
-						<Box sx={{ textAlign: 'center' }}>
-							<CircularProgress
-								size={40}
-								sx={{ mb: 2 }}
-							/>
-							<Typography variant="body1">Carregando informações do link...</Typography>
+					<ResponsiveContainer variant="page">
+						<Box
+							sx={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+								minHeight: '50vh'
+							}}
+						>
+							<Box sx={{ textAlign: 'center' }}>
+								<CircularProgress
+									size={40}
+									sx={{ mb: 2 }}
+								/>
+								<Typography variant="body1">Carregando informações do link...</Typography>
+							</Box>
 						</Box>
-					</Box>
+					</ResponsiveContainer>
 				</MainLayout>
 			</AuthGuardRedirect>
 		);
@@ -152,9 +154,9 @@ function LinkQRPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<Box sx={{ p: 3 }}>
+					<ResponsiveContainer variant="page">
 						<Alert severity="error">{error || 'Link não encontrado'}</Alert>
-					</Box>
+					</ResponsiveContainer>
 				</MainLayout>
 			</AuthGuardRedirect>
 		);
@@ -163,7 +165,10 @@ function LinkQRPage() {
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
-				<Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 800, mx: 'auto' }}>
+				<ResponsiveContainer
+					variant="page"
+					maxWidth="md"
+				>
 					{/* Breadcrumb */}
 					<Box sx={{ mb: 2 }}>
 						<PageBreadcrumb skipHome />
@@ -383,7 +388,7 @@ function LinkQRPage() {
 							</Box>
 						</CardContent>
 					</Card>
-				</Box>
+				</ResponsiveContainer>
 			</MainLayout>
 		</AuthGuardRedirect>
 	);

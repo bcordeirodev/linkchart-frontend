@@ -3,13 +3,13 @@
 import { Alert } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { memo, useMemo } from 'react';
+import { ResponsiveContainer } from '@/shared/ui/base';
+import { PageHeader } from '@/shared/ui/base/PageHeader';
 import MainLayout from '@/shared/layout/MainLayout';
 import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 import { useLinkAnalyticsOptimized } from '@/features/links/hooks/useLinkAnalytics';
-import { LinkAnalyticsHeader, LinkAnalyticsMetrics } from '@/features/links/components/analytics';
 import { LinkAnalyticsTabsOptimized } from '@/features/links/components/analytics/LinkAnalyticsTabs';
-import AnalyticsLayout from '@/shared/ui/layout/AnalyticsLayout';
-import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
+import { AppIcon } from '@/lib/icons';
 
 /**
  * 📊 Página de Analytics Individual de Link - REFATORADA
@@ -18,45 +18,15 @@ import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
  */
 function LinkAnalyticsPage() {
 	const { id } = useParams<{ id: string }>();
-	const { data, linkInfo, loading, error, refetch } = useLinkAnalyticsOptimized(id || '');
+	const { linkInfo } = useLinkAnalyticsOptimized(id || '');
 
-	// Memoizar props estáveis para evitar re-renders desnecessários
-	const stateManagerProps = useMemo(
-		() => ({
-			loading,
-			error,
-			hasData: !!data,
-			onRetry: refetch,
-			loadingMessage: 'Preparando dados detalhados do link...',
-			errorMessage: error || undefined
-		}),
-		[loading, error, data, refetch]
-	);
-
-	const headerProps = useMemo(
-		() => ({
-			linkId: id!,
-			linkInfo,
-			loading
-		}),
-		[id, linkInfo, loading]
-	);
-
-	const metricsProps = useMemo(
-		() => ({
-			data,
-			loading
-		}),
-		[data, loading]
-	);
-
+	// Memoizar props das tabs para evitar re-renders desnecessários
 	const tabsProps = useMemo(
 		() => ({
-			data,
 			linkId: id!,
-			loading
+			showHeader: false // Header será mostrado pela página
 		}),
-		[data, id, loading]
+		[id]
 	);
 
 	// Early return para casos de erro
@@ -64,9 +34,9 @@ function LinkAnalyticsPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<AnalyticsLayout>
+					<ResponsiveContainer variant="page">
 						<Alert severity="error">ID do link não fornecido na URL</Alert>
-					</AnalyticsLayout>
+					</ResponsiveContainer>
 				</MainLayout>
 			</AuthGuardRedirect>
 		);
@@ -75,13 +45,15 @@ function LinkAnalyticsPage() {
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
-				<AnalyticsLayout>
-					<AnalyticsStateManager {...stateManagerProps}>
-						<LinkAnalyticsHeader {...headerProps} />
-						<LinkAnalyticsMetrics {...metricsProps} />
-						<LinkAnalyticsTabsOptimized {...tabsProps} />
-					</AnalyticsStateManager>
-				</AnalyticsLayout>
+				<ResponsiveContainer variant="page">
+					<PageHeader
+						title={linkInfo?.title || `Analytics do Link`}
+						subtitle={`Análise detalhada do desempenho do link ${linkInfo?.short_url || id}`}
+						icon={<AppIcon intent="analytics" size={32} />}
+						variant="analytics"
+					/>
+					<LinkAnalyticsTabsOptimized {...tabsProps} />
+				</ResponsiveContainer>
 			</MainLayout>
 		</AuthGuardRedirect>
 	);

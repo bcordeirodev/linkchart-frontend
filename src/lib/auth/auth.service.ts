@@ -1,5 +1,5 @@
 import { LoginResponse, UserResponse } from '@/types';
-import { BaseService } from '../api/base.service';
+import { BaseService } from '@/services/base.service';
 import { API_ENDPOINTS } from '../api/endpoints';
 
 interface LoginRequest {
@@ -38,7 +38,7 @@ class AuthService extends BaseService {
 	 * Realiza login do usuário
 	 */
 	async signIn(body: LoginRequest): Promise<LoginResponse> {
-		this.validateRequired(body, ['email', 'password']);
+		this.validateRequired(body as unknown as Record<string, unknown>, ['email', 'password']);
 
 		return this.post<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, body, {
 			context: 'sign_in'
@@ -49,7 +49,7 @@ class AuthService extends BaseService {
 	 * Registra um novo usuário
 	 */
 	async signUp(body: RegisterRequest): Promise<LoginResponse> {
-		this.validateRequired(body, ['name', 'email', 'password', 'password_confirmation']);
+		this.validateRequired(body as unknown as Record<string, unknown>, ['name', 'email', 'password', 'password_confirmation']);
 
 		return this.post<LoginResponse>(API_ENDPOINTS.AUTH.REGISTER, body, {
 			context: 'sign_up'

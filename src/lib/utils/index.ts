@@ -4,8 +4,7 @@
  *
  * @description
  * Exporta todos os utilitários disponíveis no projeto,
- * incluindo funções de busca, manipulação de dados,
- * validação e helpers diversos.
+ * incluindo componentes essenciais e funções de autenticação.
  *
  * @since 2.0.0
  */
@@ -13,5 +12,5 @@
 // Components
 export { default as ErrorBoundary } from './ErrorBoundary';
 
-// Legacy compatibility
+// Auth utilities
 export { default as FuseUtils } from './authUtils';

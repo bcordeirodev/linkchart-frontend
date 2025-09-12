@@ -6,7 +6,6 @@
 
 // === COMPONENTES PRINCIPAIS ===
 export { Analytics, AnalyticsContainer } from './Analytics';
-export { Header } from './Header';
 
 // === MÉTRICAS E VISÃO GERAL ===
 export { DashboardMetrics } from './dashboard';

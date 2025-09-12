@@ -1,6 +1,6 @@
 import { Box, Button, CircularProgress, Typography, useTheme } from '@mui/material';
 import { createGlassCard, createPresetAnimations } from '@/lib/theme';
-import { Header } from '../Header';
+import { AnalyticsHeader } from './AnalyticsHeader';
 
 interface AnalyticsStatesProps {
 	loading: boolean;
@@ -42,7 +42,7 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 		return (
 			<Box>
 				{showHeader && (
-					<Header
+					<AnalyticsHeader
 						variant="analytics"
 						title="Analytics"
 						subtitle="Preparando seus dados..."
@@ -86,7 +86,7 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 		return (
 			<Box>
 				{showHeader && (
-					<Header
+					<AnalyticsHeader
 						variant="analytics"
 						title="Analytics"
 						subtitle="Erro ao carregar dados"
@@ -137,7 +137,7 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 		return (
 			<Box>
 				{showHeader && (
-					<Header
+					<AnalyticsHeader
 						variant="analytics"
 						title="Analytics"
 						subtitle="Aguardando dados para análise"

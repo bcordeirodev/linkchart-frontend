@@ -1,15 +1,17 @@
 import { ProfileForm } from '@/features/profile/components/ProfileForm';
-import { ProfileHeader } from '@/features/profile/components/ProfileHeader';
 import { ProfileSidebar } from '@/features/profile/components/ProfileSidebar';
 import { PasswordChangeForm } from '@/features/profile/components/PasswordChangeForm';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
 import { profileService, UserProfile } from '@/services';
+import { ResponsiveContainer } from '@/shared/ui/base';
+import { PageHeader } from '@/shared/ui/base/PageHeader';
 import MainLayout from '@/shared/layout/MainLayout';
 import { Alert, Box, CircularProgress, Grid, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 import useUser from '../lib/auth/useUser';
+import { AppIcon } from '@/lib/icons';
 
 /**
  * Página de perfil do usuário refatorada
@@ -92,19 +94,36 @@ function ProfilePage() {
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
-				<Box sx={{ p: 3, maxWidth: 1200, mx: 'auto' }}>
-					<ProfileHeader />
+				<ResponsiveContainer
+					variant="page"
+					maxWidth="xl"
+				>
+					<PageHeader
+						title="Meu Perfil"
+						subtitle="Gerencie suas informações pessoais e configurações de conta"
+						icon={
+							<AppIcon
+								intent="profile"
+								size={32}
+							/>
+						}
+						variant="profile"
+						breadcrumbs={[
+							{ label: 'Dashboard', href: '/' },
+							{ label: 'Perfil', current: true }
+						]}
+					/>
 
 					<Grid
 						container
-						spacing={4}
+						spacing={{ xs: 2, sm: 3, md: 4 }}
 					>
 						<Grid
 							item
 							xs={12}
 							md={8}
 						>
-							<Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+							<Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3, md: 4 } }}>
 								<ProfileForm
 									user={user}
 									onUserUpdate={handleUserUpdate}
@@ -121,7 +140,7 @@ function ProfilePage() {
 							<ProfileSidebar user={user} />
 						</Grid>
 					</Grid>
-				</Box>
+				</ResponsiveContainer>
 			</MainLayout>
 		</AuthGuardRedirect>
 	);

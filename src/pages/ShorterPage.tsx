@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 // Components
 import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
 import { UpgradeCTA, ShorterHero, ShorterStats } from '@/features/shorter/components';
-import { HeroSection } from '@/shared/layout/HeroSection';
-import { BenefitsSection } from '@/shared/layout/BenefitsSection';
+import { HeroSection, BenefitsSection, PublicLayout } from '@/shared/layout';
 
 // Hooks
 import useUser from '../lib/auth/useUser';
@@ -27,7 +26,11 @@ function ShorterPage() {
 	};
 
 	return (
-		<Box sx={{ minHeight: '100vh' }}>
+		<PublicLayout
+			variant="shorter"
+			showHeader={true}
+			showFooter={true}
+		>
 			{/* Hero Section */}
 			<ShorterHero />
 
@@ -55,7 +58,7 @@ function ShorterPage() {
 
 			{/* Hero Section (bottom) */}
 			<HeroSection />
-		</Box>
+		</PublicLayout>
 	);
 }
 

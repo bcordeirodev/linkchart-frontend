@@ -13,6 +13,9 @@
 // 🏗️ LAYOUT COMPONENTS
 // ========================================
 export { default as MainLayout } from './MainLayout';
+export { default as PublicLayout } from './PublicLayout';
+export { default as AuthLayout } from './AuthLayout';
+export { default as ErrorLayout } from './ErrorLayout';
 export { default as HeroSection } from './HeroSection';
 export { default as BenefitsSection } from './BenefitsSection';
 export { default as LoadingWithRedirect } from './LoadingWithRedirect';

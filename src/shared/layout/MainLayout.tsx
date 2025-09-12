@@ -138,6 +138,7 @@ function MainLayout(props: MainLayoutProps) {
 								overflow: 'auto', // Permite scroll interno se necessário
 								pt: showNavbar ? { xs: 7, sm: 8 } : 0, // Espaço para navbar fixa
 								pb: showFooter && footerStyle === 'fixed' ? 8 : 0, // Espaço para footer fixo
+								px: 0,
 								minHeight: showNavbar ? 'calc(100vh - 64px)' : '100vh',
 								// Garante que filhos ocupem toda a área disponível
 								'& > *': {

@@ -8,13 +8,6 @@ import { useEffect, useState } from 'react';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { createThemeGradient } from '@/lib/theme';
 import { AppIcon } from '@/lib/icons';
-import {
-	HeroContainer,
-	HeroIconTitleContainer,
-	HeroIconBox,
-	HeroFeaturesContainer,
-	HeroFeatureItem
-} from '../../components/styles/FormSections.styled';
 
 /**
  * Componente hero otimizado para criação de links
@@ -40,11 +33,18 @@ export function CreateLinkHero() {
 			>
 				<Box>
 					<EnhancedPaper variant="elevated">
-						<HeroContainer>
+						<Box sx={{ p: 4, textAlign: 'center' }}>
 							{/* Icon + Title */}
-							<HeroIconTitleContainer>
-								<HeroIconBox
+							<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
+								<Box
 									sx={{
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										width: 80,
+										height: 80,
+										borderRadius: 3,
+										mb: 2,
 										background: createThemeGradient(theme, {
 											variant: 'success',
 											direction: 'to-bottom-right'
@@ -56,7 +56,7 @@ export function CreateLinkHero() {
 										size={32}
 										color="white"
 									/>
-								</HeroIconBox>
+								</Box>
 
 								<Typography
 									variant="h3"
@@ -73,7 +73,7 @@ export function CreateLinkHero() {
 								>
 									Criar Novo Link
 								</Typography>
-							</HeroIconTitleContainer>
+							</Box>
 
 							{/* Subtitle */}
 							<Typography
@@ -85,8 +85,8 @@ export function CreateLinkHero() {
 							</Typography>
 
 							{/* Features */}
-							<HeroFeaturesContainer>
-								<HeroFeatureItem>
+							<Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, flexWrap: 'wrap' }}>
+								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 									<AppIcon
 										intent="info"
 										size={20}
@@ -98,8 +98,8 @@ export function CreateLinkHero() {
 									>
 										Analytics detalhados
 									</Typography>
-								</HeroFeatureItem>
-								<HeroFeatureItem>
+								</Box>
+								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 									<AppIcon
 										intent="trending"
 										size={20}
@@ -111,9 +111,9 @@ export function CreateLinkHero() {
 									>
 										Acompanhe performance
 									</Typography>
-								</HeroFeatureItem>
-							</HeroFeaturesContainer>
-						</HeroContainer>
+								</Box>
+							</Box>
+						</Box>
 					</EnhancedPaper>
 				</Box>
 			</Fade>

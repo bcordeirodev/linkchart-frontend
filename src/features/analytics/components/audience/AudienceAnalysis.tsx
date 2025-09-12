@@ -4,9 +4,13 @@
  * @version 2.0.0
  */
 
-import { Box, Alert, CircularProgress, Typography, Grid } from '@mui/material';
+import { Box, Typography, Grid } from '@mui/material';
 import { useAudienceData } from '@/features/analytics/hooks/useAudienceData';
 import { AudienceChart, AudienceInsights, AudienceMetrics } from '.';
+import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
+import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
+import TabDescription from '@/shared/ui/base/TabDescription';
+import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import type { AudienceAnalysisProps } from '@/types/analytics';
 
 // Manter compatibilidade com props antigas
@@ -17,14 +21,19 @@ interface LegacyAudienceAnalysisProps {
 }
 
 /**
- * Componente de análise de audiência unificado
+ * 👥 ANÁLISE DE AUDIÊNCIA OTIMIZADA
  *
  * @description
- * Este componente fornece uma interface completa para visualização de audiência:
- * - Métricas agregadas (dispositivos, navegadores, sistemas operacionais)
- * - Gráficos interativos de distribuição
- * - Insights estratégicos baseados nos dados
- * - Suporte para modo global e específico por link
+ * Componente integrado para análise de audiência dos cliques.
+ * Refatorado para seguir padrões do projeto e usar AnalyticsStateManager.
+ *
+ * @features
+ * - Análise de dispositivos, navegadores e sistemas operacionais
+ * - Métricas agregadas e insights estratégicos
+ * - Interface consistente com outros módulos
+ * - Dados reais do backend
+ * - TabDescription sempre visível (independente do carregamento)
+ * - Estados de loading/error/empty gerenciados pelo AnalyticsStateManager
  *
  * @example
  * ```tsx
@@ -42,9 +51,8 @@ export function AudienceAnalysis({
 	data: legacyData,
 	linkId,
 	globalMode = false,
-	showTitle = true,
-	title = '👥 Análise de Audiência'
-}: LegacyAudienceAnalysisProps & Partial<AudienceAnalysisProps>) {
+	title = 'Análise de Audiência'
+}: LegacyAudienceAnalysisProps & Partial<Pick<AudienceAnalysisProps, 'title'>>) {
 	// Determinar modo de operação
 	const isGlobalMode = globalMode || !linkId;
 	const shouldUseHook = !legacyData && (Boolean(linkId) || globalMode);
@@ -70,167 +78,78 @@ export function AudienceAnalysis({
 		(audienceData as any)?.audience?.device_breakdown || (audienceData as any)?.device_breakdown || [];
 	const totalClicks = (audienceData as any)?.overview?.total_clicks || stats?.totalClicks || 0;
 
-	// Estado de loading (apenas para modo hook)
-	if (shouldUseHook && loading) {
-		return (
-			<Box
-				sx={{
-					display: 'flex',
-					flexDirection: 'column',
-					alignItems: 'center',
-					justifyContent: 'center',
-					p: 4,
-					minHeight: 300
-				}}
-			>
-				<CircularProgress
-					size={48}
-					sx={{ mb: 2 }}
-				/>
-				<Typography
-					variant="h6"
-					color="text.secondary"
-				>
-					Carregando dados de audiência...
-				</Typography>
-				<Typography
-					variant="body2"
-					color="text.secondary"
-					sx={{ mt: 1 }}
-				>
-					{isGlobalMode ? 'Agregando dados de todos os links' : `Buscando dados do link ${linkId}`}
-				</Typography>
-			</Box>
-		);
-	}
-
-	// Estado de erro (apenas para modo hook)
-	if (shouldUseHook && error) {
-		return (
-			<Box sx={{ p: 4 }}>
-				<Alert
-					severity="error"
-					action={
-						<button
-							onClick={refresh}
-							style={{ marginLeft: 8 }}
-						>
-							Tentar Novamente
-						</button>
-					}
-				>
-					<Typography
-						variant="subtitle1"
-						gutterBottom
-					>
-						Erro ao carregar dados de audiência
-					</Typography>
-					<Typography variant="body2">{error}</Typography>
-				</Alert>
-			</Box>
-		);
-	}
-
-	// Estado vazio
-	if (!deviceBreakdown?.length) {
-		return (
-			<Box
-				sx={{
-					display: 'flex',
-					flexDirection: 'column',
-					alignItems: 'center',
-					justifyContent: 'center',
-					p: 4,
-					minHeight: 300
-				}}
-			>
-				<Typography
-					variant="h6"
-					color="text.secondary"
-					gutterBottom
-				>
-					👥 Nenhum dado de audiência disponível
-				</Typography>
-				<Typography
-					variant="body2"
-					color="text.secondary"
-					align="center"
-				>
-					{isGlobalMode
-						? 'Não há dados de dispositivos registrados em nenhum dos seus links ativos ainda.'
-						: 'Este link ainda não recebeu cliques com dados de dispositivos.'}
-				</Typography>
-				<Typography
-					variant="caption"
-					color="text.secondary"
-					sx={{ mt: 2 }}
-				>
-					Os dados aparecerão aqui conforme os cliques forem registrados.
-				</Typography>
-			</Box>
-		);
-	}
-
 	return (
 		<Box>
-			{showTitle && (
-				<Typography
-					variant="h6"
-					gutterBottom
-					sx={{ mb: 3, fontWeight: 600 }}
-				>
-					{title}
-				</Typography>
-			)}
+			{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
+			<Box sx={{ mb: 3 }}>
+				<TabDescription
+					icon="👥"
+					title={title}
+					description="Análise detalhada da sua audiência com dados de dispositivos, navegadores e sistemas operacionais."
+					highlight={`${deviceBreakdown?.length || 0} tipos de dispositivos detectados`}
+					metadata={isGlobalMode ? 'Dados Globais' : 'Link Específico'}
+				/>
+			</Box>
 
-			<Grid
-				container
-				spacing={3}
+			{/* 2. CONTEÚDO COM LOADER */}
+			<AnalyticsStateManager
+				loading={shouldUseHook && loading}
+				error={shouldUseHook && error ? error : null}
+				hasData={!!deviceBreakdown?.length}
+				onRetry={refresh}
+				loadingMessage="Carregando dados de audiência..."
+				emptyMessage={
+					isGlobalMode
+						? 'Não há dados de dispositivos registrados em nenhum dos seus links ativos ainda.'
+						: 'Este link ainda não recebeu cliques com dados de dispositivos.'
+				}
+				minHeight={300}
 			>
-				{/* Métricas de Audiência */}
-				{shouldUseHook && stats && (
-					<Grid
-						item
-						xs={12}
-					>
-						<AudienceMetrics
-							data={{ audience: audienceData, stats }}
-							showTitle={false}
-						/>
+				<ResponsiveContainer style={{ padding: 0 }}>
+					{/* MÉTRICAS */}
+					{shouldUseHook && stats && (
+						<Box sx={{ mb: 3 }}>
+							<AudienceMetrics
+								data={{ audience: audienceData, stats }}
+								showTitle={true}
+								title="👥 Métricas de Audiência"
+							/>
+						</Box>
+					)}
+
+					{/* RESTANTE DO CONTEÚDO */}
+					<Grid container spacing={2}>
+						{/* Gráficos de Audiência */}
+						<Grid item xs={12}>
+							<EnhancedPaper variant="glass" animated>
+								<AudienceChart
+									deviceBreakdown={deviceBreakdown}
+									browserBreakdown={(audienceData as any)?.browser_breakdown}
+									osBreakdown={(audienceData as any)?.os_breakdown}
+									totalClicks={totalClicks}
+									// NEW: Pass enhanced data to existing component
+									browsers={(audienceData as any)?.browsers}
+									operatingSystems={(audienceData as any)?.operating_systems}
+									devicePerformance={(audienceData as any)?.device_performance}
+									languages={(audienceData as any)?.languages}
+								/>
+							</EnhancedPaper>
+						</Grid>
+
+						{/* Insights de Audiência */}
+						<Grid item xs={12}>
+							<EnhancedPaper variant="glass" animated>
+								<AudienceInsights
+									deviceBreakdown={deviceBreakdown}
+									browserBreakdown={(audienceData as any)?.browser_breakdown}
+									totalClicks={totalClicks}
+									showAdvancedInsights={shouldUseHook}
+								/>
+							</EnhancedPaper>
+						</Grid>
 					</Grid>
-				)}
-
-				{/* Gráficos de Audiência */}
-				<Grid
-					item
-					xs={12}
-				>
-					<AudienceChart
-						deviceBreakdown={deviceBreakdown}
-						browserBreakdown={(audienceData as any)?.browser_breakdown}
-						osBreakdown={(audienceData as any)?.os_breakdown}
-						totalClicks={totalClicks}
-						// NEW: Pass enhanced data to existing component
-						browsers={(audienceData as any)?.browsers}
-						operatingSystems={(audienceData as any)?.operating_systems}
-						devicePerformance={(audienceData as any)?.device_performance}
-						languages={(audienceData as any)?.languages}
-					/>
-				</Grid>
-
-				{/* Insights de Audiência */}
-				<Grid
-					item
-					xs={12}
-				>
-					<AudienceInsights
-						deviceBreakdown={deviceBreakdown}
-						browserBreakdown={(audienceData as any)?.browser_breakdown}
-						totalClicks={totalClicks}
-						showAdvancedInsights={shouldUseHook}
-					/>
-				</Grid>
-			</Grid>
+				</ResponsiveContainer>
+			</AnalyticsStateManager>
 		</Box>
 	);
 }

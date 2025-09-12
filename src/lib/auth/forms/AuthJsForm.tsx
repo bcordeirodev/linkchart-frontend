@@ -3,7 +3,9 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { useState } from 'react';
 import { getSessionRedirectUrl, resetSessionRedirectUrl } from '@/lib/auth/sessionRedirectUrl';
-import { alpha, useTheme } from '@mui/material/styles';
+import { alpha } from '@mui/material/styles';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
 
 type AuthJsFormProps = { formType: 'signin' | 'signup' };
 
@@ -31,14 +33,15 @@ function AuthJsForm(props: AuthJsFormProps) {
 			{error && (
 				<Alert
 					severity="error"
-					sx={(theme) => ({
-						backgroundColor: theme.palette.error.light,
-						color: theme.palette.error.dark,
-						borderRadius: '12px',
+					sx={{
+						backgroundColor: alpha('#f44336', 0.1),
+						color: '#d32f2f',
+						borderRadius: 2,
+						border: `1px solid ${alpha('#f44336', 0.2)}`,
 						'& .MuiAlert-icon': {
-							color: theme.palette.error.main
+							color: '#d32f2f'
 						}
-					})}
+					}}
 				>
 					{error}
 				</Alert>
@@ -55,22 +58,45 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
-	const theme = useTheme();
+	const dispatch = useAppDispatch();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		// Validação básica
+		if (!email || !password) {
+			dispatch(showErrorMessage('Por favor, preencha todos os campos'));
+			return;
+		}
+
 		setLoading(true);
 		try {
 			await onLogin(email, password);
+
+			// Sucesso no login
+			dispatch(showSuccessMessage('Login realizado com sucesso! Redirecionando...'));
 
 			// Navegação após login bem-sucedido
 			const redirectUrl = getSessionRedirectUrl();
 			const targetUrl = redirectUrl || '/analytics';
 
 			resetSessionRedirectUrl();
-			navigate(targetUrl);
-		} catch (error) {
-			// Error handling
+
+			// Pequeno delay para mostrar a mensagem de sucesso
+			setTimeout(() => {
+				navigate(targetUrl);
+			}, 1000);
+		} catch (error: unknown) {
+			// Tratamento de erro melhorado
+			let errorMessage = 'Erro ao fazer login. Tente novamente.';
+
+			if (error && typeof error === 'object' && 'message' in error) {
+				errorMessage = (error as { message: string }).message;
+			} else if (typeof error === 'string') {
+				errorMessage = error;
+			}
+
+			dispatch(showErrorMessage(errorMessage));
 		} finally {
 			setLoading(false);
 		}
@@ -80,7 +106,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 		<Box
 			component="form"
 			onSubmit={handleSubmit}
-			sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}
+			sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
 		>
 			<TextField
 				type="email"
@@ -165,7 +191,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				variant="contained"
 				size="large"
 				sx={{
-					mt: 1,
+					mt: 2,
 					py: 1.5,
 					borderRadius: 2,
 					fontSize: '1.1rem',
@@ -176,8 +202,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 						background: 'linear-gradient(135deg, #0D47A1 0%, #002171 100%)'
 					},
 					'&:disabled': {
-						background: '#E0E0E0',
-						color: '#9E9E9E'
+						background: '#E0E0E0'
 					}
 				}}
 			>
@@ -193,17 +218,6 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 					'Entrar'
 				)}
 			</Button>
-
-			<Typography
-				variant="body2"
-				sx={{
-					textAlign: 'center',
-					color: '#5F6368',
-					mt: 1
-				}}
-			>
-				Acesse sua conta para gerenciar seus links
-			</Typography>
 		</Box>
 	);
 }
@@ -211,7 +225,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 // Componente simplificado de cadastro
 function SimpleSignUpForm() {
 	return (
-		<Box sx={{ textAlign: 'center', p: 4 }}>
+		<Box sx={{ textAlign: 'center', p: { xs: 2, sm: 3, md: 4 } }}>
 			<Typography
 				variant="body2"
 				sx={{ color: alpha('#ffffff', 0.7) }}

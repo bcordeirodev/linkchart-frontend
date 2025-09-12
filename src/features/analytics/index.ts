@@ -6,7 +6,7 @@
 // Components
 export { Analytics, AnalyticsContainer } from './components/Analytics';
 export * from './components/dashboard/shared/charts/Charts';
-export * from './components/Header';
+// Header removido - agora usa PageHeader unificado
 
 // Enhanced Components (with dedicated hooks)
 export * from './components/dashboard';

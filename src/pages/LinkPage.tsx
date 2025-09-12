@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Box, Alert, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Alert } from '@mui/material';
 import { type MRT_RowSelectionState } from 'material-react-table';
 import { Loading } from '@/shared/components';
 import DataTable from '../shared/ui/data-display/DataTable';
@@ -9,6 +9,9 @@ import { LinksHeader } from '@/features/links/components/LinksHeader';
 import { DashboardMetrics } from '@/features/analytics/components/dashboard/shared/DashboardMetrics';
 import { LinksFilters } from '@/features/links/components/LinksFilters';
 import { useLinksTableColumns } from '@/features/links/hooks/useLinksTableColumns';
+import { LinksMobileCards } from '@/features/links/components/mobile/LinksMobileCards';
+import { ResponsiveContainer } from '@/shared/ui/base';
+import { useResponsive } from '@/lib/theme';
 import MainLayout from '@/shared/layout/MainLayout';
 import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
 
@@ -17,11 +20,7 @@ import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
  * Componentizada para melhor organização
  */
 function LinkPage() {
-	const theme = useTheme();
-	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	const isLaptop = useMediaQuery(theme.breakpoints.down('lg'));
-	const isTablet = useMediaQuery(theme.breakpoints.down('md'));
-
+	const { isMobile, isTablet, isLargeScreen } = useResponsive();
 	const { links, loading, deleteLink } = useLinks();
 	const [searchTerm, setSearchTerm] = useState('');
 	const [statusFilter, setStatusFilter] = useState('all');
@@ -60,7 +59,7 @@ function LinkPage() {
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
-				<Box sx={{ p: 3, maxWidth: '100%', overflow: 'hidden' }}>
+				<ResponsiveContainer variant="page">
 					<LinksHeader />
 
 					<DashboardMetrics
@@ -85,56 +84,65 @@ function LinkPage() {
 								: 'Nenhum link criado ainda. Clique em "Criar Novo Link" para começar.'}
 						</Alert>
 					) : (
-						<Box sx={{ width: '100%', overflowX: 'auto' }}>
-							<DataTable
-								data={filteredLinks}
-								columns={columns}
-								enableRowSelection
-								state={{
-									rowSelection
-								}}
-								onRowSelectionChange={setRowSelection}
-								enableColumnFilters={false}
-								enableGlobalFilter={false}
-								enableColumnResizing={true}
-								columnResizeMode="onChange"
-								enableColumnOrdering={false}
-								enableHiding={true}
-								initialState={{
-									pagination: {
-										pageIndex: 0,
-										pageSize: 10
-									},
-									columnVisibility: {
-										// Responsividade baseada em breakpoints do Material-UI
-										original_url: !isLaptop, // Ocultar em laptops pequenos e menores
-										created_at: !isTablet, // Ocultar em tablets e menores
-										is_active: !isMobile // Ocultar apenas em mobile
-									},
-									density: 'comfortable'
-								}}
-								muiTableContainerProps={{
-									sx: {
-										maxWidth: '100%',
-										overflowX: 'auto',
-										'& .MuiTable-root': {
-											minWidth: isMobile ? '800px' : '100%'
-										}
-									}
-								}}
-								muiTableProps={{
-									sx: {
-										tableLayout: 'auto',
-										width: '100%',
-										'& .MuiTableCell-root': {
-											padding: '12px 8px'
-										}
-									}
-								}}
-							/>
-						</Box>
+						<>
+							{/* Mobile: Cards otimizados */}
+							{isMobile ? (
+								<LinksMobileCards
+									data={filteredLinks}
+									loading={loading}
+									onDelete={deleteLink}
+								/>
+							) : (
+								/* Desktop/Tablet: Tabela responsiva */
+								<Box sx={{ width: '100%', overflowX: 'auto' }}>
+									<DataTable
+										data={filteredLinks}
+										columns={columns}
+										enableRowSelection
+										state={{
+											rowSelection
+										}}
+										onRowSelectionChange={setRowSelection}
+										enableColumnFilters={false}
+										enableGlobalFilter={false}
+										enableColumnResizing={true}
+										columnResizeMode="onChange"
+										enableColumnOrdering={false}
+										enableHiding={true}
+										initialState={{
+											pagination: {
+												pageIndex: 0,
+												pageSize: 10
+											},
+											columnVisibility: {
+												// Responsividade baseada em breakpoints
+												original_url: isLargeScreen,
+												created_at: !isTablet,
+												is_active: true // Sempre mostrar em desktop/tablet
+											},
+											density: 'comfortable'
+										}}
+										muiTableContainerProps={{
+											sx: {
+												maxWidth: '100%',
+												overflowX: 'auto'
+											}
+										}}
+										muiTableProps={{
+											sx: {
+												tableLayout: 'auto',
+												width: '100%',
+												'& .MuiTableCell-root': {
+													padding: { xs: '8px 4px', sm: '12px 8px' }
+												}
+											}
+										}}
+									/>
+								</Box>
+							)}
+						</>
 					)}
-				</Box>
+				</ResponsiveContainer>
 			</MainLayout>
 		</AuthGuardRedirect>
 	);

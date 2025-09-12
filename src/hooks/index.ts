@@ -6,8 +6,7 @@
 // Shared hooks
 export * from '../shared/hooks/useDebounce';
 export * from '../shared/hooks/useClipboard';
-export * from '../shared/hooks/useTimeout';
-export * from '../shared/hooks/usePrevious';
+// Hooks removidos - useTimeout e usePrevious não estão mais disponíveis
 export * from '../shared/hooks/useThemeMediaQuery';
 export * from '../shared/hooks/useNavigate';
 export * from '../shared/hooks/usePathname';

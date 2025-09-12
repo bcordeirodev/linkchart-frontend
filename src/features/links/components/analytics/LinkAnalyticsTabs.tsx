@@ -17,9 +17,10 @@ import { HeatmapAnalysis } from '@/features/analytics/components/heatmap/Heatmap
 import { InsightsAnalysis } from '@/features/analytics/components/insights/InsightsAnalysis';
 
 interface LinkAnalyticsTabsOptimizedProps {
-	data: LinkAnalyticsData | null;
+	data?: LinkAnalyticsData | null;
 	linkId: string;
 	loading?: boolean;
+	showHeader?: boolean;
 }
 
 /**
@@ -38,7 +39,8 @@ interface LinkAnalyticsTabsOptimizedProps {
 export function LinkAnalyticsTabsOptimized({
 	data,
 	linkId,
-	loading: _loading = false
+	loading: _loading = false,
+	showHeader = true
 }: LinkAnalyticsTabsOptimizedProps) {
 	const [tabValue, setTabValue] = useState(0);
 	const theme = useTheme();
@@ -95,14 +97,16 @@ export function LinkAnalyticsTabsOptimized({
 				value={tabValue}
 				index={0}
 			>
-				<Box sx={{ mb: 2 }}>
-					<TabDescription
-						icon="🎯"
-						title="Dashboard do Link"
-						description="Visão geral consolidada do link com métricas essenciais e performance."
-						highlight={`${data?.overview?.total_clicks || 0} cliques totais`}
-					/>
-				</Box>
+				{showHeader && (
+					<Box sx={{ mb: 2 }}>
+						<TabDescription
+							icon="🎯"
+							title="Dashboard do Link"
+							description="Visão geral consolidada do link com métricas essenciais e performance."
+							highlight={`${data?.overview?.total_clicks || 0} cliques totais`}
+						/>
+					</Box>
+				)}
 				{/* Renderizar apenas se a tab está ativa */}
 				{tabValue === 0 && (
 					<LinkDashboard
@@ -139,7 +143,6 @@ export function LinkAnalyticsTabsOptimized({
 					<GeographicAnalysis
 						linkId={linkId}
 						globalMode={false}
-						showTitle={false}
 						enableRealtime={false}
 						minClicks={1}
 					/>
@@ -156,10 +159,8 @@ export function LinkAnalyticsTabsOptimized({
 					<TemporalAnalysis
 						linkId={linkId}
 						globalMode={false}
-						showTitle={false}
 						enableRealtime={false}
 						timeRange="7d"
-						showAdvancedControls={true}
 					/>
 				)}
 			</TabPanel>
@@ -174,7 +175,6 @@ export function LinkAnalyticsTabsOptimized({
 					<AudienceAnalysis
 						linkId={linkId}
 						globalMode={false}
-						showTitle={false}
 					/>
 				)}
 			</TabPanel>
@@ -203,7 +203,6 @@ export function LinkAnalyticsTabsOptimized({
 					<InsightsAnalysis
 						linkId={linkId}
 						globalMode={false}
-						showTitle={false}
 						enableRealtime={false}
 						maxInsights={10}
 					/>
