@@ -28,6 +28,11 @@ export interface InsightsData {
 	};
 	categories: Record<string, number>;
 	generated_at: string;
+	analytics_data?: {
+		retention?: any;
+		session_depth?: any;
+		traffic_sources?: any;
+	};
 }
 
 export interface InsightsStats {

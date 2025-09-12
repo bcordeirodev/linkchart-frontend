@@ -1,6 +1,11 @@
 export { BusinessInsights } from './BusinessInsights';
 export { InsightsAnalysis } from './InsightsAnalysis';
 
+// ETAPA 3: INSIGHTS ENHANCEMENTS - Novos componentes
+export { RetentionAnalysisChart } from './RetentionAnalysisChart';
+export { SessionDepthChart } from './SessionDepthChart';
+export { TrafficSourceChart } from './TrafficSourceChart';
+
 // Hook específico
 export { useInsightsData } from '../../hooks/useInsightsData';
 

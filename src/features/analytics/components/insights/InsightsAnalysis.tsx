@@ -1,6 +1,9 @@
 import { Box, Grid, Typography } from '@mui/material';
 import { useInsightsData } from '../../hooks/useInsightsData';
 import { BusinessInsights } from './BusinessInsights';
+import { RetentionAnalysisChart } from './RetentionAnalysisChart';
+import { SessionDepthChart } from './SessionDepthChart';
+import { TrafficSourceChart } from './TrafficSourceChart';
 import TabDescription from '@/shared/ui/base/TabDescription';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
@@ -153,12 +156,57 @@ export function InsightsAnalysis({
 					</Grid>
 				</Grid>
 
-				{/* Lista de Insights */}
-				<BusinessInsights
-					insights={data?.insights || []}
-					showTitle={false}
-					maxItems={maxInsights}
-				/>
+				{/* ETAPA 3: NOVOS COMPONENTES DE INSIGHTS AVANÇADOS */}
+				{data?.analytics_data && (
+					<Box sx={{ mb: 4 }}>
+						<Grid container spacing={3}>
+							{/* Análise de Retenção */}
+							{data.analytics_data.retention && (
+								<Grid item xs={12}>
+									<RetentionAnalysisChart
+										data={data.analytics_data.retention}
+										loading={loading}
+										showTitle={true}
+									/>
+								</Grid>
+							)}
+
+							{/* Análise de Profundidade de Sessão */}
+							{data.analytics_data.session_depth && (
+								<Grid item xs={12}>
+									<SessionDepthChart
+										data={data.analytics_data.session_depth}
+										loading={loading}
+										showTitle={true}
+									/>
+								</Grid>
+							)}
+
+							{/* Análise de Fontes de Tráfego */}
+							{data.analytics_data.traffic_sources && (
+								<Grid item xs={12}>
+									<TrafficSourceChart
+										data={data.analytics_data.traffic_sources}
+										loading={loading}
+										showTitle={true}
+									/>
+								</Grid>
+							)}
+						</Grid>
+					</Box>
+				)}
+
+				{/* Lista de Insights Tradicionais */}
+				<Box sx={{ mb: 3 }}>
+					<Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+						💡 Insights Automáticos
+					</Typography>
+					<BusinessInsights
+						insights={data?.insights || []}
+						showTitle={false}
+						maxItems={maxInsights}
+					/>
+				</Box>
 
 				{/* Informações adicionais */}
 				{stats && (
