@@ -2,25 +2,29 @@ import { Box, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { URLInput } from './URLInput';
 import { GradientButton } from '@/shared/ui/base/GradientButton';
-import { useURLShortener } from '@/features/links/hooks/useURLShortener';
+import { usePublicURLShortener } from '@/features/links/hooks/usePublicURLShortener';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import useUser from '@/lib/auth/useUser';
+import { PublicLinkResponse } from '@/services/publicLink.service';
 
 interface IFormData {
 	originalUrl: string;
 }
 
 interface URLShortenerFormProps {
-	onSuccess?: (shortUrl: any) => void;
+	onSuccess?: (result: PublicLinkResponse) => void;
 	onError?: (error: string) => void;
+	loading?: boolean;
 }
 
 /**
  * Formulário de encurtamento de URL componentizado
  * Gerencia validação, submissão e estados
  */
-export function URLShortenerForm({ onSuccess, onError }: URLShortenerFormProps) {
+export function URLShortenerForm({ onSuccess, onError, loading: externalLoading }: URLShortenerFormProps) {
 	const dispatch = useAppDispatch();
+	const { data: user } = useUser();
 	const {
 		handleSubmit,
 		register,
@@ -28,13 +32,15 @@ export function URLShortenerForm({ onSuccess, onError }: URLShortenerFormProps) 
 		formState: { errors }
 	} = useForm<IFormData>();
 
-	const { createShortUrl, loading } = useURLShortener();
+	const { createPublicShortUrl, loading } = usePublicURLShortener();
+	const isLoading = loading || externalLoading;
 
 	const onSubmit = async (formData: IFormData) => {
 		try {
-			const result = await createShortUrl({
+			// Usar serviço público para encurtamento
+			const result = await createPublicShortUrl({
 				original_url: formData.originalUrl,
-				isActive: true
+				title: user ? `Link de ${user.name}` : undefined
 			});
 
 			// Mostrar mensagem de sucesso
@@ -118,7 +124,7 @@ export function URLShortenerForm({ onSuccess, onError }: URLShortenerFormProps) 
 				<GradientButton
 					type="submit"
 					size="large"
-					loading={loading}
+					loading={isLoading}
 					shimmerEffect={true}
 					sx={{
 						minWidth: { xs: '100%', sm: 160 },

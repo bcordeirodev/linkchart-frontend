@@ -16,6 +16,7 @@ const RedirectPage = lazy(() => import('./pages/RedirectPage'));
 const SignInPage = lazy(() => import('./pages/SignInPage'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
 const SignOutPage = lazy(() => import('./pages/SignOutPage'));
+const BasicAnalyticsPage = lazy(() => import('./pages/BasicAnalyticsPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const UnauthorizedPage = lazy(() => import('./pages/UnauthorizedPage'));
 
@@ -75,6 +76,14 @@ function AppRouter() {
 				element={
 					<LoadingWrapper>
 						<RedirectPage />
+					</LoadingWrapper>
+				}
+			/>
+			<Route
+				path="/basic-analytics/:slug"
+				element={
+					<LoadingWrapper>
+						<BasicAnalyticsPage />
 					</LoadingWrapper>
 				}
 			/>
