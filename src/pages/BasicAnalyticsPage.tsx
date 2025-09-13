@@ -4,7 +4,6 @@ import {
     Container,
     Box,
     Typography,
-    Card,
     CardContent,
     Grid,
     Button,
@@ -86,8 +85,8 @@ function BasicAnalyticsPage() {
 
                 // Buscar informações do link
                 const [linkResponse, analyticsResponse] = await Promise.all([
-                    api.get(`/public/link/${slug}`),
-                    api.get(`/public/analytics/${slug}`)
+                    api.get(`/api/public/link/${slug}`),
+                    api.get(`/api/public/analytics/${slug}`)
                 ]);
 
                 setLinkData((linkResponse as any).data.data);

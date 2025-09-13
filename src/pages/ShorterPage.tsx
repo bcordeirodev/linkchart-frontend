@@ -5,8 +5,7 @@ import { Analytics as AnalyticsIcon, ContentCopy as CopyIcon } from '@mui/icons-
 
 // Components
 import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
-import { UpgradeCTA, ShorterHero, ShorterStats } from '@/features/shorter/components';
-import { HeroSection, BenefitsSection, PublicLayout } from '@/shared/layout';
+import { PublicLayout } from '@/shared/layout';
 import { EnhancedPaper } from '@/shared/ui/base';
 
 // Hooks
@@ -27,6 +26,11 @@ function ShorterPage() {
 	const handleSuccess = (result: PublicLinkResponse) => {
 		// O resultado já vem no formato correto do publicLinkService
 		setShortenedLink(result);
+
+		// Redirecionar automaticamente para analytics básicos após 2 segundos
+		setTimeout(() => {
+			navigate(`/basic-analytics/${result.slug}`);
+		}, 2000);
 	};
 
 	const handleError = (error: string) => {
@@ -60,14 +64,18 @@ function ShorterPage() {
 			showHeader={true}
 			showFooter={true}
 		>
-			{/* Hero Section */}
-			<ShorterHero />
+			{/* Hero Section - Simplificado */}
+			<Container maxWidth="md" sx={{ py: 6, textAlign: 'center' }}>
+				<Typography variant="h2" component="h1" gutterBottom>
+					🔗 Encurtador de URLs
+				</Typography>
+				<Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
+					Transforme links longos em URLs curtas e rastreáveis
+				</Typography>
+			</Container>
 
 			{/* Main Content */}
-			<Container
-				maxWidth="md"
-				sx={{ py: 4 }}
-			>
+			<Container maxWidth="md" sx={{ py: 2 }}>
 				{!shortenedLink ? (
 					<>
 						<URLShortenerForm
@@ -75,8 +83,44 @@ function ShorterPage() {
 							onError={handleError}
 						/>
 
-						{/* Upgrade CTA for non-logged users */}
-						{!user && <UpgradeCTA onSignUp={() => navigate('/sign-up')} />}
+						{/* Google Ads Space - Horizontal Banner */}
+						<Box 
+							sx={{ 
+								my: 4, 
+								p: 2, 
+								border: '2px dashed #ccc', 
+								borderRadius: 2, 
+								textAlign: 'center',
+								minHeight: '120px',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								bgcolor: 'grey.50'
+							}}
+						>
+							<Typography variant="body2" color="text.secondary">
+								[ Espaço para Google Ads - Banner 728x90 ]
+							</Typography>
+						</Box>
+
+						{/* CTA Simples */}
+						{!user && (
+							<EnhancedPaper variant="glass" sx={{ mt: 4, p: 3, textAlign: 'center' }}>
+								<Typography variant="h6" gutterBottom>
+									📊 Quer analytics avançados?
+								</Typography>
+								<Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+									Crie uma conta gratuita para relatórios detalhados
+								</Typography>
+								<Button 
+									variant="contained" 
+									onClick={() => navigate('/sign-up')}
+									size="large"
+								>
+									Criar Conta Gratuita
+								</Button>
+							</EnhancedPaper>
+						)}
 					</>
 				) : (
 					/* Success Result */
@@ -128,27 +172,37 @@ function ShorterPage() {
 								</Button>
 							</Stack>
 
-							<Alert severity="info" sx={{ mt: 3, textAlign: 'left' }}>
+							<Alert severity="success" sx={{ mt: 3, textAlign: 'left' }}>
 								<Typography variant="body2">
-									<strong>💡 Dica:</strong> Seus analytics básicos estarão disponíveis em tempo real.
-									Para relatórios avançados, crie uma conta gratuita!
+									<strong>🚀 Redirecionando...</strong> Você será levado para a página de analytics em alguns segundos.
 								</Typography>
 							</Alert>
 						</Box>
 					</EnhancedPaper>
 				)}
+
+				{/* Google Ads Space - Vertical Sidebar (apenas quando não há resultado) */}
+				{!shortenedLink && (
+					<Box 
+						sx={{ 
+							mt: 4, 
+							p: 2, 
+							border: '2px dashed #ccc', 
+							borderRadius: 2, 
+							textAlign: 'center',
+							minHeight: '250px',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							bgcolor: 'grey.50'
+						}}
+					>
+						<Typography variant="body2" color="text.secondary">
+							[ Espaço para Google Ads - Rectangle 300x250 ]
+						</Typography>
+					</Box>
+				)}
 			</Container>
-
-			{/* Stats Section */}
-			<Container maxWidth="lg">
-				<ShorterStats />
-			</Container>
-
-			{/* Benefits Section */}
-			<BenefitsSection />
-
-			{/* Hero Section (bottom) */}
-			<HeroSection />
 		</PublicLayout>
 	);
 }
