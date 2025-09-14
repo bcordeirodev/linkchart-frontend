@@ -97,7 +97,7 @@ function BasicAnalyticsPage() {
                 console.log('🔍 BasicAnalytics: analyticsResponse.data:', (analyticsResponse as any).data);
 
                 const linkDataResult = (linkResponse as any).data;
-                const analyticsDataResult = (analyticsResponse as any).data;
+                const analyticsDataResult = (analyticsResponse as any); // Analytics vem direto, sem wrapper .data
 
                 console.log('🔍 BasicAnalytics: Definindo linkData:', linkDataResult);
                 console.log('🔍 BasicAnalytics: Definindo analyticsData:', analyticsDataResult);
