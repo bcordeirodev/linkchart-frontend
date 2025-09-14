@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
 import { PublicLayout } from '@/shared/layout';
 import { EnhancedPaper } from '@/shared/ui/base';
+import { GoogleAd } from '@/features/basic-analytics/components/ads/GoogleAd';
 
 // Hooks
 import useUser from '../lib/auth/useUser';
@@ -120,28 +121,11 @@ function ShorterPage() {
 							onError={handleError}
 						/>
 
-						{/* Google Ads Space - Horizontal Banner */}
-						<Box
-							sx={{
-								my: 4,
-								p: 2,
-								border: '2px dashed #ccc',
-								borderRadius: 2,
-								textAlign: 'center',
-								minHeight: '120px',
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-								bgcolor: 'grey.50'
-							}}
-						>
-							<Typography
-								variant="body2"
-								color="text.secondary"
-							>
-								[ Espaço para Google Ads - Banner 728x90 ]
-							</Typography>
-						</Box>
+						{/* Google Ads - Banner Horizontal */}
+						<GoogleAd
+							variant="banner"
+							sx={{ my: 4 }}
+						/>
 
 						{/* CTA Simples */}
 						{!user && (
@@ -176,29 +160,12 @@ function ShorterPage() {
 					</>
 				)}
 
-				{/* Google Ads Space - Vertical Sidebar (apenas quando não está redirecionando) */}
+				{/* Google Ads - Rectangle (apenas quando não está redirecionando) */}
 				{!isRedirecting && (
-					<Box
-						sx={{
-							mt: 4,
-							p: 2,
-							border: '2px dashed #ccc',
-							borderRadius: 2,
-							textAlign: 'center',
-							minHeight: '250px',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							bgcolor: 'grey.50'
-						}}
-					>
-						<Typography
-							variant="body2"
-							color="text.secondary"
-						>
-							[ Espaço para Google Ads - Rectangle 300x250 ]
-						</Typography>
-					</Box>
+					<GoogleAd
+						variant="rectangle"
+						sx={{ mt: 4 }}
+					/>
 				)}
 			</Container>
 		</PublicLayout>

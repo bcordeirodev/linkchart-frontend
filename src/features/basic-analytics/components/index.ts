@@ -22,3 +22,4 @@ export { ErrorState } from './states/ErrorState';
 
 // Ads
 export { GoogleAdsSpace } from './ads/GoogleAdsSpace';
+export { GoogleAd } from './ads/GoogleAd';
