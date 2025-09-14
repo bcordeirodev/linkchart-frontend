@@ -89,7 +89,7 @@ function BasicAnalyticsPage() {
                     api.get(`/api/public/analytics/${slug}`)
                 ]);
 
-                setLinkData((linkResponse as any).data.data);
+                setLinkData((linkResponse as any).data);
                 setAnalyticsData((analyticsResponse as any).data);
             } catch (err: any) {
                 console.error('Erro ao buscar dados:', err);
