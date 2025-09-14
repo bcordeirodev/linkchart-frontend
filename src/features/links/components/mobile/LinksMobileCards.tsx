@@ -84,6 +84,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 		} else {
 			navigator.clipboard.writeText(shortUrl);
 		}
+
 		setDrawerOpen(false);
 	}, [shortUrl, onCopy]);
 
@@ -93,6 +94,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 		} else {
 			navigate(`/links/${link.id}/edit`);
 		}
+
 		setDrawerOpen(false);
 	}, [link, onEdit, navigate]);
 
@@ -100,6 +102,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 		if (onDelete) {
 			onDelete(link.id.toString());
 		}
+
 		setDrawerOpen(false);
 	}, [link.id, onDelete]);
 
@@ -117,12 +120,14 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 		} else {
 			handleCopy();
 		}
+
 		setDrawerOpen(false);
 	}, [link.title, shortUrl, handleCopy]);
 
 	// Truncar URL longa
-	const truncateUrl = (url: string, maxLength: number = 40) => {
+	const truncateUrl = (url: string, maxLength = 40) => {
 		if (url.length <= maxLength) return url;
+
 		return `${url.substring(0, maxLength)}...`;
 	};
 

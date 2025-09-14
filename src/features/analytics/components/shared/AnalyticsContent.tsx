@@ -1,7 +1,6 @@
 import { Box, Tabs, Tab } from '@mui/material';
 import { useState } from 'react';
 import { TabPanel } from '@/shared/ui/base/TabPanel';
-import TabDescription from '@/shared/ui/base/TabDescription';
 import { createGlassCard, createPresetAnimations } from '@/lib/theme';
 import { useTheme } from '@mui/material/styles';
 

@@ -4,7 +4,7 @@ import { URLInput } from './URLInput';
 import { GradientButton } from '@/shared/ui/base/GradientButton';
 import { usePublicURLShortener } from '@/features/links/hooks/usePublicURLShortener';
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 import useUser from '@/lib/auth/useUser';
 import { PublicLinkResponse } from '@/services/publicLink.service';
 
@@ -43,9 +43,7 @@ export function URLShortenerForm({ onSuccess, onError, loading: externalLoading 
 				title: user ? `Link de ${user.name}` : undefined
 			});
 
-			// Mostrar mensagem de sucesso
-			dispatch(showSuccessMessage('URL encurtada com sucesso!'));
-
+			// Callback de sucesso (sem mensagem para evitar duplicação)
 			onSuccess?.(result);
 		} catch (_err) {
 			const errorMessage = 'Erro ao encurtar a URL. Tente novamente.';

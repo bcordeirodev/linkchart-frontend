@@ -1,4 +1,4 @@
-import { Grid, Box, Typography, useTheme } from '@mui/material';
+import { Grid, Typography, useTheme } from '@mui/material';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 import { createPresetAnimations } from '@/lib/theme';
 import { DevicesOther, Language, Schedule, TrendingUp } from '@mui/icons-material';

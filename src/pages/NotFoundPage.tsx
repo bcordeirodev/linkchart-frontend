@@ -11,12 +11,12 @@ function NotFoundPage() {
 	const { data: user } = useUser();
 	const location = useLocation();
 	const isAuthenticated = !!user;
-	const [suggestions, setSuggestions] = useState<Array<{ label: string; href: string }>>([]);
+	const [suggestions, setSuggestions] = useState<{ label: string; href: string }[]>([]);
 
 	// Generate navigation suggestions based on current path
 	useEffect(() => {
 		const pathSegments = location.pathname.split('/').filter(Boolean);
-		const suggestionList: Array<{ label: string; href: string }> = [];
+		const suggestionList: { label: string; href: string }[] = [];
 
 		if (isAuthenticated) {
 			suggestionList.push({ label: 'Analytics', href: '/analytics' }, { label: 'Meus Links', href: '/link' });

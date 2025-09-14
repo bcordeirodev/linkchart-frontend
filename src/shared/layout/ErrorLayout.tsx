@@ -32,7 +32,7 @@ interface ErrorLayoutProps {
 	/** Mostrar link para home */
 	showHomeLink?: boolean;
 	/** Sugestões de navegação */
-	suggestions?: Array<{ label: string; href: string }>;
+	suggestions?: { label: string; href: string }[];
 	/** Classe CSS adicional */
 	className?: string;
 }

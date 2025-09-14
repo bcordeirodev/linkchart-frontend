@@ -282,6 +282,7 @@ class ApiClient {
 			}
 
 			const contentType = response.headers.get('content-type');
+
 			if (contentType?.includes('application/json')) {
 				return await response.json();
 			}
@@ -357,6 +358,7 @@ class ApiClient {
 			}
 
 			const contentType = response.headers.get('content-type');
+
 			if (contentType?.includes('application/json')) {
 				return await response.json();
 			}

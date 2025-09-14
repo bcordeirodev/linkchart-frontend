@@ -4,7 +4,7 @@
  * @version 2.0.0
  */
 
-import { Box, Typography, Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { useAudienceData } from '@/features/analytics/hooks/useAudienceData';
 import { AudienceChart, AudienceInsights, AudienceMetrics } from '.';
 import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';

@@ -3,7 +3,6 @@ import { useGeographicData } from '../../hooks/useGeographicData';
 import { GeographicChart } from './GeographicChart';
 import { GeographicInsights } from './GeographicInsights';
 import { GeographicMetrics } from './GeographicMetrics';
-import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import TabDescription from '@/shared/ui/base/TabDescription';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 
