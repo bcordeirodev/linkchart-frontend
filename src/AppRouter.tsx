@@ -72,7 +72,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/r/:shortCode"
+				path="/r/:slug"
 				element={
 					<LoadingWrapper>
 						<RedirectPage />

@@ -25,7 +25,7 @@ import { Launch as LaunchIcon, Error as ErrorIcon, Security as SecurityIcon } fr
  */
 function RedirectPage() {
 	const theme = useTheme();
-	const { shortCode } = useParams<{ shortCode: string }>();
+	const { slug } = useParams<{ slug: string }>();
 
 	// Estados
 	const [targetUrl, setTargetUrl] = useState<string>('');
@@ -102,7 +102,7 @@ function RedirectPage() {
 
 	useEffect(() => {
 		const fetchRedirectData = async () => {
-			if (!shortCode) {
+			if (!slug) {
 				setError('Código de redirecionamento não fornecido');
 				return;
 			}
@@ -110,7 +110,7 @@ function RedirectPage() {
 			try {
 				// ÚNICA REQUISIÇÃO NECESSÁRIA - Backend coleta métricas e retorna URL
 				const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-				const response = await fetch(`${backendUrl}/api/r/${shortCode}`, {
+				const response = await fetch(`${backendUrl}/api/r/${slug}`, {
 					method: 'GET',
 					headers: {
 						Accept: 'application/json'
@@ -137,7 +137,7 @@ function RedirectPage() {
 		};
 
 		fetchRedirectData();
-	}, [shortCode]);
+	}, [slug]);
 
 	// Inicia o countdown quando targetUrl é definido
 	useEffect(() => {

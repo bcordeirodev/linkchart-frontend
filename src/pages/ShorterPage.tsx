@@ -29,25 +29,24 @@ function ShorterPage() {
 	const handleSuccess = (result: PublicLinkResponse) => {
 		// O resultado já vem no formato correto do publicLinkService
 		console.log('🎯 Link criado com sucesso:', result);
-		console.log('🔍 Result slug:', result?.slug);
-		
+
 		// Verificar se o resultado tem slug válido
 		if (!result || !result.slug) {
 			console.error('❌ Resultado inválido:', result);
 			setError('Erro: Link criado mas sem slug válido');
 			return;
 		}
-		
+
 		setShortenedLink(result);
-		
+
 		// Limpar timer anterior se existir
 		if (redirectTimer) {
 			clearTimeout(redirectTimer);
 		}
-		
+
 		// Iniciar countdown
 		setCountdown(3);
-		
+
 		// Countdown visual
 		const countdownInterval = setInterval(() => {
 			setCountdown(prev => {
@@ -58,14 +57,14 @@ function ShorterPage() {
 				return prev - 1;
 			});
 		}, 1000);
-		
+
 		// Redirecionar automaticamente para analytics básicos após 3 segundos
 		const timer = setTimeout(() => {
 			const analyticsUrl = publicLinkService.getBasicAnalyticsUrl(result.slug);
 			console.log('🔄 Redirecionando para:', analyticsUrl);
 			navigate(analyticsUrl);
 		}, 3000);
-		
+
 		setRedirectTimer(timer);
 	};
 
