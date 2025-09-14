@@ -43,6 +43,9 @@ class PublicLinkService extends BaseService {
      */
     async createPublicLink(data: CreatePublicLinkRequest): Promise<PublicLinkResponse> {
         const response = await this.post<any>('/api/public/shorten', data);
+        console.log('🔍 Resposta completa da API:', response);
+        console.log('🔍 response.data:', response.data);
+        console.log('🔍 response.data.data:', response.data.data);
         return response.data.data;
     }
 

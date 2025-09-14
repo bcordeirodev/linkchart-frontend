@@ -24,10 +24,20 @@ function ShorterPage() {
 	const [shortenedLink, setShortenedLink] = useState<PublicLinkResponse | null>(null);
 	const [redirectTimer, setRedirectTimer] = useState<NodeJS.Timeout | null>(null);
 	const [countdown, setCountdown] = useState<number>(0);
+	const [error, setError] = useState<string | null>(null);
 
 	const handleSuccess = (result: PublicLinkResponse) => {
 		// O resultado já vem no formato correto do publicLinkService
 		console.log('🎯 Link criado com sucesso:', result);
+		console.log('🔍 Result slug:', result?.slug);
+		
+		// Verificar se o resultado tem slug válido
+		if (!result || !result.slug) {
+			console.error('❌ Resultado inválido:', result);
+			setError('Erro: Link criado mas sem slug válido');
+			return;
+		}
+		
 		setShortenedLink(result);
 		
 		// Limpar timer anterior se existir
@@ -59,9 +69,10 @@ function ShorterPage() {
 		setRedirectTimer(timer);
 	};
 
-	const handleError = (error: string) => {
+	const handleError = (errorMessage: string) => {
 		// Log do erro para debug
-		console.warn('Erro no encurtamento:', error);
+		console.warn('Erro no encurtamento:', errorMessage);
+		setError(errorMessage);
 		setShortenedLink(null);
 	};
 
@@ -117,6 +128,13 @@ function ShorterPage() {
 
 			{/* Main Content */}
 			<Container maxWidth="md" sx={{ py: 2 }}>
+				{/* Error Alert */}
+				{error && (
+					<Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
+						{error}
+					</Alert>
+				)}
+
 				{!shortenedLink ? (
 					<>
 						<URLShortenerForm
