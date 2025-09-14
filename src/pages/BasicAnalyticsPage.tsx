@@ -40,7 +40,7 @@ interface BasicAnalyticsData {
 }
 
 interface LinkData {
-    id: string;
+    id: number;
     slug: string;
     title: string | null;
     original_url: string;
@@ -82,6 +82,7 @@ function BasicAnalyticsPage() {
         const fetchData = async () => {
             try {
                 setLoading(true);
+                console.log('🔍 BasicAnalytics: Iniciando busca de dados para slug:', slug);
 
                 // Buscar informações do link
                 const [linkResponse, analyticsResponse] = await Promise.all([
@@ -89,10 +90,39 @@ function BasicAnalyticsPage() {
                     api.get(`/api/public/analytics/${slug}`)
                 ]);
 
-                setLinkData((linkResponse as any).data);
-                setAnalyticsData((analyticsResponse as any).data);
+                console.log('🔍 BasicAnalytics: Resposta do link:', linkResponse);
+                console.log('🔍 BasicAnalytics: Resposta do analytics:', analyticsResponse);
+                console.log('🔍 BasicAnalytics: linkResponse.data:', (linkResponse as any).data);
+                console.log('🔍 BasicAnalytics: analyticsResponse.data:', (analyticsResponse as any).data);
+
+                const linkDataResult = (linkResponse as any).data;
+                const analyticsDataResult = (analyticsResponse as any).data;
+
+                console.log('🔍 BasicAnalytics: Definindo linkData:', linkDataResult);
+                console.log('🔍 BasicAnalytics: Definindo analyticsData:', analyticsDataResult);
+
+                // Validação adicional
+                if (!linkDataResult || !linkDataResult.slug) {
+                    console.error('❌ BasicAnalytics: linkDataResult inválido:', linkDataResult);
+                    setError('Dados do link inválidos');
+                    return;
+                }
+
+                if (!analyticsDataResult) {
+                    console.error('❌ BasicAnalytics: analyticsDataResult inválido:', analyticsDataResult);
+                    setError('Dados de analytics inválidos');
+                    return;
+                }
+
+                setLinkData(linkDataResult);
+                setAnalyticsData(analyticsDataResult);
+
+                console.log('✅ BasicAnalytics: Dados definidos com sucesso');
+                console.log('✅ BasicAnalytics: linkData final:', linkDataResult);
+                console.log('✅ BasicAnalytics: analyticsData final:', analyticsDataResult);
             } catch (err: any) {
-                console.error('Erro ao buscar dados:', err);
+                console.error('❌ BasicAnalytics: Erro ao buscar dados:', err);
+                console.error('❌ BasicAnalytics: Erro response:', err.response);
                 setError(err.response?.data?.message || 'Erro ao carregar dados do link');
             } finally {
                 setLoading(false);
@@ -125,7 +155,21 @@ function BasicAnalyticsPage() {
         );
     }
 
+    // Debug da condição de renderização
+    console.log('🔍 BasicAnalytics: Verificando condições de renderização:');
+    console.log('🔍 BasicAnalytics: error:', error);
+    console.log('🔍 BasicAnalytics: linkData:', linkData);
+    console.log('🔍 BasicAnalytics: analyticsData:', analyticsData);
+    console.log('🔍 BasicAnalytics: !linkData:', !linkData);
+    console.log('🔍 BasicAnalytics: !analyticsData:', !analyticsData);
+
     if (error || !linkData || !analyticsData) {
+        console.log('❌ BasicAnalytics: Mostrando erro - condições:', {
+            hasError: !!error,
+            noLinkData: !linkData,
+            noAnalyticsData: !analyticsData
+        });
+        
         return (
             <PublicLayout>
                 <Container maxWidth="md" sx={{ py: 8 }}>
