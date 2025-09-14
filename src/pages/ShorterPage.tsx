@@ -1,6 +1,6 @@
 import { Container, Box, Alert, Button, Typography, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Analytics as AnalyticsIcon, ContentCopy as CopyIcon } from '@mui/icons-material';
 
 // Components
@@ -22,15 +22,41 @@ function ShorterPage() {
 	const navigate = useNavigate();
 	const { data: user } = useUser();
 	const [shortenedLink, setShortenedLink] = useState<PublicLinkResponse | null>(null);
+	const [redirectTimer, setRedirectTimer] = useState<NodeJS.Timeout | null>(null);
+	const [countdown, setCountdown] = useState<number>(0);
 
 	const handleSuccess = (result: PublicLinkResponse) => {
 		// O resultado já vem no formato correto do publicLinkService
+		console.log('🎯 Link criado com sucesso:', result);
 		setShortenedLink(result);
-
-		// Redirecionar automaticamente para analytics básicos após 2 segundos
-		setTimeout(() => {
-			navigate(`/basic-analytics/${result.slug}`);
-		}, 2000);
+		
+		// Limpar timer anterior se existir
+		if (redirectTimer) {
+			clearTimeout(redirectTimer);
+		}
+		
+		// Iniciar countdown
+		setCountdown(3);
+		
+		// Countdown visual
+		const countdownInterval = setInterval(() => {
+			setCountdown(prev => {
+				if (prev <= 1) {
+					clearInterval(countdownInterval);
+					return 0;
+				}
+				return prev - 1;
+			});
+		}, 1000);
+		
+		// Redirecionar automaticamente para analytics básicos após 3 segundos
+		const timer = setTimeout(() => {
+			const analyticsUrl = publicLinkService.getBasicAnalyticsUrl(result.slug);
+			console.log('🔄 Redirecionando para:', analyticsUrl);
+			navigate(analyticsUrl);
+		}, 3000);
+		
+		setRedirectTimer(timer);
 	};
 
 	const handleError = (error: string) => {
@@ -55,8 +81,23 @@ function ShorterPage() {
 	};
 
 	const handleCreateAnother = () => {
+		// Cancelar redirecionamento se estiver ativo
+		if (redirectTimer) {
+			clearTimeout(redirectTimer);
+			setRedirectTimer(null);
+		}
+		setCountdown(0);
 		setShortenedLink(null);
 	};
+
+	// Cleanup do timer quando o componente for desmontado
+	useEffect(() => {
+		return () => {
+			if (redirectTimer) {
+				clearTimeout(redirectTimer);
+			}
+		};
+	}, [redirectTimer]);
 
 	return (
 		<PublicLayout
@@ -84,12 +125,12 @@ function ShorterPage() {
 						/>
 
 						{/* Google Ads Space - Horizontal Banner */}
-						<Box 
-							sx={{ 
-								my: 4, 
-								p: 2, 
-								border: '2px dashed #ccc', 
-								borderRadius: 2, 
+						<Box
+							sx={{
+								my: 4,
+								p: 2,
+								border: '2px dashed #ccc',
+								borderRadius: 2,
 								textAlign: 'center',
 								minHeight: '120px',
 								display: 'flex',
@@ -112,8 +153,8 @@ function ShorterPage() {
 								<Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
 									Crie uma conta gratuita para relatórios detalhados
 								</Typography>
-								<Button 
-									variant="contained" 
+								<Button
+									variant="contained"
 									onClick={() => navigate('/sign-up')}
 									size="large"
 								>
@@ -174,7 +215,7 @@ function ShorterPage() {
 
 							<Alert severity="success" sx={{ mt: 3, textAlign: 'left' }}>
 								<Typography variant="body2">
-									<strong>🚀 Redirecionando...</strong> Você será levado para a página de analytics em alguns segundos.
+									<strong>🚀 Redirecionando...</strong> Você será levado para a página de analytics em {countdown > 0 ? `${countdown} segundos` : 'instantes'}.
 								</Typography>
 							</Alert>
 						</Box>
@@ -183,12 +224,12 @@ function ShorterPage() {
 
 				{/* Google Ads Space - Vertical Sidebar (apenas quando não há resultado) */}
 				{!shortenedLink && (
-					<Box 
-						sx={{ 
-							mt: 4, 
-							p: 2, 
-							border: '2px dashed #ccc', 
-							borderRadius: 2, 
+					<Box
+						sx={{
+							mt: 4,
+							p: 2,
+							border: '2px dashed #ccc',
+							borderRadius: 2,
 							textAlign: 'center',
 							minHeight: '250px',
 							display: 'flex',
