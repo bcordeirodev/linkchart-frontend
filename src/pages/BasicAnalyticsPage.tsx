@@ -71,6 +71,7 @@ function BasicAnalyticsPage() {
     const [analyticsData, setAnalyticsData] = useState<BasicAnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [debugInfo, setDebugInfo] = useState<string>('');
 
     useEffect(() => {
         if (!slug) {
@@ -116,6 +117,7 @@ function BasicAnalyticsPage() {
 
                 setLinkData(linkDataResult);
                 setAnalyticsData(analyticsDataResult);
+                setDebugInfo(`Dados carregados: Link ID ${linkDataResult.id}, Slug ${linkDataResult.slug}, Clicks ${analyticsDataResult.total_clicks}`);
 
                 console.log('✅ BasicAnalytics: Dados definidos com sucesso');
                 console.log('✅ BasicAnalytics: linkData final:', linkDataResult);
@@ -169,7 +171,7 @@ function BasicAnalyticsPage() {
             noLinkData: !linkData,
             noAnalyticsData: !analyticsData
         });
-        
+
         return (
             <PublicLayout>
                 <Container maxWidth="md" sx={{ py: 8 }}>
@@ -183,6 +185,11 @@ function BasicAnalyticsPage() {
                         }
                     >
                         {error || 'Link não encontrado'}
+                        {debugInfo && (
+                            <div style={{ marginTop: '10px', fontSize: '12px', opacity: 0.7 }}>
+                                Debug: {debugInfo}
+                            </div>
+                        )}
                     </Alert>
 
                     <Box textAlign="center">
