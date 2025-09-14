@@ -46,7 +46,8 @@ class PublicLinkService extends BaseService {
         console.log('🔍 Resposta completa da API:', response);
         console.log('🔍 response.data:', response.data);
         console.log('🔍 response.data.data:', response.data.data);
-        return response.data.data;
+        // A resposta da API já vem com os dados diretamente em response.data
+        return response.data;
     }
 
     /**
