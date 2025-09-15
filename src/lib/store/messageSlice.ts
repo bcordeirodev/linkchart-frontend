@@ -1,10 +1,11 @@
 /**
  * 📢 MESSAGE SLICE - LINK CHART
- * Sistema de mensagens global melhorado
+ * Sistema de mensagens global melhorado com Mobile-First Design
  *
  * @description
  * Slice Redux para gerenciamento de mensagens/notificações globais
  * com suporte a múltiplas variantes e configurações avançadas.
+ * Otimizado para dispositivos móveis com abordagem mobile-first.
  *
  * @features
  * - ✅ Múltiplas variantes (success, error, warning, info)
@@ -13,8 +14,20 @@
  * - ✅ Ações personalizadas
  * - ✅ TypeScript completo
  * - ✅ Integração com Redux Toolkit
+ * - 🆕 Mobile-first design otimizado
+ * - 🆕 Detecção automática de dispositivo
+ * - 🆕 Configurações responsivas
+ * - 🆕 Helpers específicos para mobile
+ *
+ * @mobile-first-improvements
+ * - Posicionamento top por padrão (melhor UX em mobile)
+ * - Duração aumentada para leitura em mobile (6s vs 4s)
+ * - Largura total em dispositivos móveis
+ * - Helpers específicos para mobile (showMobileMessage, etc.)
+ * - Detecção automática de dispositivo (showResponsiveMessage)
  *
  * @since 2.0.0
+ * @updated 2.1.0 - Mobile-first improvements
  */
 
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
@@ -28,6 +41,7 @@ export type MessageVariant = 'success' | 'error' | 'warning' | 'info';
 
 /**
  * Posições de ancoragem para o Snackbar
+ * Mobile-first: Prioriza posições otimizadas para mobile
  */
 export interface AnchorOrigin {
 	vertical: 'top' | 'bottom';
@@ -36,6 +50,7 @@ export interface AnchorOrigin {
 
 /**
  * Opções de configuração da mensagem
+ * Mobile-first: Configurações otimizadas para dispositivos móveis
  */
 export interface MessageOptions {
 	/** Variante da mensagem */
@@ -50,6 +65,12 @@ export interface MessageOptions {
 	action?: ReactElement;
 	/** ID único da mensagem */
 	id?: string;
+	/** Se deve usar configuração mobile-first */
+	isMobile?: boolean;
+	/** Largura máxima da mensagem (mobile-first) */
+	maxWidth?: string;
+	/** Se deve ocupar toda a largura em mobile */
+	fullWidth?: boolean;
 }
 
 /**
@@ -66,17 +87,21 @@ export interface MessageState {
 
 /**
  * Estado inicial
+ * Mobile-first: Configurações padrão otimizadas para mobile
  */
 const initialState: MessageState = {
 	open: false,
 	options: {
 		variant: 'info',
 		anchorOrigin: {
-			vertical: 'bottom',
+			vertical: 'top', // Mobile-first: top é melhor para acessibilidade em mobile
 			horizontal: 'center'
 		},
-		autoHideDuration: 4000,
-		message: ''
+		autoHideDuration: 5000, // Mobile-first: mais tempo para leitura em mobile
+		message: '',
+		isMobile: false,
+		maxWidth: '100%', // Mobile-first: largura total por padrão
+		fullWidth: true // Mobile-first: ocupar toda largura em mobile
 	},
 	queue: []
 };
@@ -90,6 +115,7 @@ export const messageSlice = createSlice({
 	reducers: {
 		/**
 		 * Mostra uma mensagem
+		 * Mobile-first: Aplica configurações responsivas automaticamente
 		 */
 		showMessage(state, action: PayloadAction<Partial<MessageOptions>>) {
 			const messageOptions: MessageOptions = {
@@ -97,6 +123,17 @@ export const messageSlice = createSlice({
 				...action.payload,
 				id: action.payload.id || Date.now().toString()
 			};
+
+			// Mobile-first: Ajustar configurações baseado no dispositivo
+			if (messageOptions.isMobile) {
+				messageOptions.anchorOrigin = {
+					vertical: 'top',
+					horizontal: 'center'
+				};
+				messageOptions.fullWidth = true;
+				messageOptions.maxWidth = '100%';
+				messageOptions.autoHideDuration = 6000; // Mais tempo em mobile
+			}
 
 			// Se já há uma mensagem sendo exibida, adiciona à fila
 			if (state.open) {
@@ -188,6 +225,44 @@ export const showErrorMessage = (message: string | ReactNode) => showMessage({ v
 export const showWarningMessage = (message: string | ReactNode) => showMessage({ variant: 'warning', message });
 
 export const showInfoMessage = (message: string | ReactNode) => showMessage({ variant: 'info', message });
+
+// Mobile-first helper functions
+export const showMobileMessage = (message: string | ReactNode, variant: MessageVariant = 'info') =>
+	showMessage({
+		variant,
+		message,
+		isMobile: true,
+		anchorOrigin: { vertical: 'top', horizontal: 'center' },
+		fullWidth: true,
+		maxWidth: '100%',
+		autoHideDuration: 6000
+	});
+
+export const showMobileSuccessMessage = (message: string | ReactNode) => showMobileMessage(message, 'success');
+
+export const showMobileErrorMessage = (message: string | ReactNode) => showMobileMessage(message, 'error');
+
+export const showMobileWarningMessage = (message: string | ReactNode) => showMobileMessage(message, 'warning');
+
+export const showMobileInfoMessage = (message: string | ReactNode) => showMobileMessage(message, 'info');
+
+// Responsive helper that detects device type
+export const showResponsiveMessage = (
+	message: string | ReactNode,
+	variant: MessageVariant = 'info',
+	isMobile: boolean = window.innerWidth <= 768
+) =>
+	showMessage({
+		variant,
+		message,
+		isMobile,
+		anchorOrigin: isMobile
+			? { vertical: 'top', horizontal: 'center' }
+			: { vertical: 'bottom', horizontal: 'center' },
+		fullWidth: isMobile,
+		maxWidth: isMobile ? '100%' : '600px',
+		autoHideDuration: isMobile ? 6000 : 4000
+	});
 
 // Compatibility exports
 export const fuseMessageSlice = messageSlice;
