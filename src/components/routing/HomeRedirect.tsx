@@ -16,30 +16,30 @@ import useUser from '@/lib/auth/useUser';
  * - Mantém UX fluida com loading states apropriados
  */
 export function HomeRedirect() {
-    const { data: user, isGuest } = useUser();
+	const { data: user, isGuest } = useUser();
 
-    // Se ainda está carregando dados do usuário, mostra loading
-    if (user === undefined) {
-        return <Loading />;
-    }
+	// Se ainda está carregando dados do usuário, mostra loading
+	if (user === undefined) {
+		return <Loading />;
+	}
 
-    // Se usuário está logado (não é guest), redireciona para analytics
-    if (user && !isGuest) {
-        return (
-            <Navigate
-                to="/analytics"
-                replace
-            />
-        );
-    }
+	// Se usuário está logado (não é guest), redireciona para analytics
+	if (user && !isGuest) {
+		return (
+			<Navigate
+				to="/analytics"
+				replace
+			/>
+		);
+	}
 
-    // Se usuário não está logado (é guest ou null), redireciona para shorter
-    return (
-        <Navigate
-            to="/shorter"
-            replace
-        />
-    );
+	// Se usuário não está logado (é guest ou null), redireciona para shorter
+	return (
+		<Navigate
+			to="/shorter"
+			replace
+		/>
+	);
 }
 
 export default HomeRedirect;
