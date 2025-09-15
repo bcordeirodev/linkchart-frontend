@@ -289,6 +289,13 @@ function RedirectPage() {
 									variant="h3"
 									fontWeight="bold"
 									color="primary"
+									sx={{
+										fontSize: {
+											xs: '1.8rem', // Mobile
+											sm: '2.5rem', // Tablet
+											md: '3rem' // Desktop (h3 padrão)
+										}
+									}}
 								>
 									Redirecionamento Seguro
 								</Typography>

@@ -1,10 +1,10 @@
 import { Box, Fade } from '@mui/material';
 import { memo } from 'react';
 import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
-import { GoogleAdsSpace } from '@/lib/ads';
+import { PublicLinkResponse } from '@/services/publicLink.service';
 
 interface ShorterFormProps {
-	onSuccess: (result: any) => void;
+	onSuccess: (result: PublicLinkResponse) => void;
 	onError: (error: string) => void;
 	disabled?: boolean;
 }
@@ -15,7 +15,7 @@ interface ShorterFormProps {
  * Encapsula o formulário de encurtamento com ads integrados
  * Seguindo padrões arquiteturais do projeto
  */
-export function ShorterForm({ onSuccess, onError, disabled = false }: ShorterFormProps) {
+export function ShorterForm({ onSuccess, onError, disabled: _disabled = false }: ShorterFormProps) {
 	return (
 		<Box sx={{ width: '100%' }}>
 			{/* Formulário Principal */}
@@ -28,16 +28,6 @@ export function ShorterForm({ onSuccess, onError, disabled = false }: ShorterFor
 						onSuccess={onSuccess}
 						onError={onError}
 					/>
-				</Box>
-			</Fade>
-
-			{/* Google Ads - Banner Horizontal */}
-			<Fade
-				in
-				timeout={1200}
-			>
-				<Box sx={{ mt: 4 }}>
-					<GoogleAdsSpace variant="banner" />
 				</Box>
 			</Fade>
 		</Box>

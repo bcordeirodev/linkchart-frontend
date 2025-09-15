@@ -37,7 +37,6 @@ export function URLInput({
 				},
 				'& .MuiFormHelperText-root': {
 					minHeight: 20,
-					margin: '4px 0 0 0',
 					fontSize: '0.875rem',
 					fontWeight: 500
 				}
@@ -48,8 +47,7 @@ export function URLInput({
 						sx={{
 							display: 'flex',
 							alignItems: 'center',
-							mr: 1.2,
-							p: 1.2,
+
 							borderRadius: 2,
 							background: primaryColors.background,
 							border: `1px solid ${primaryColors.border}`

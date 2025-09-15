@@ -47,7 +47,7 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 			}
 
 			return date.toISOString();
-		} catch (error) {
+		} catch (_error) {
 			return undefined;
 		}
 	};
@@ -128,30 +128,25 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 
 	if (success) {
 		return (
-			<ResponsiveContainer
-				variant="form"
-				maxWidth="md"
+			<EnhancedPaper
+				variant="glass"
+				animated
+				sx={{ p: 4, textAlign: 'center', width: '100%' }}
 			>
-				<EnhancedPaper
-					variant="glass"
-					animated
-					sx={{ p: 4, textAlign: 'center' }}
+				<Typography
+					variant="h5"
+					color="success.main"
+					gutterBottom
 				>
-					<Typography
-						variant="h5"
-						color="success.main"
-						gutterBottom
-					>
-						✅ Link criado com sucesso!
-					</Typography>
-					<Typography
-						variant="body1"
-						color="text.secondary"
-					>
-						Redirecionando para a lista de links...
-					</Typography>
-				</EnhancedPaper>
-			</ResponsiveContainer>
+					✅ Link criado com sucesso!
+				</Typography>
+				<Typography
+					variant="body1"
+					color="text.secondary"
+				>
+					Redirecionando para a lista de links...
+				</Typography>
+			</EnhancedPaper>
 		);
 	}
 

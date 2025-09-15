@@ -29,34 +29,30 @@ export function RedirectingState({ isVisible }: RedirectingStateProps) {
 						textAlign: 'center',
 						// Padding responsivo - mobile first
 						p: {
-							xs: 2, // 16px - mobile
-							sm: 2.5, // 20px - tablet pequeno
-							md: 3, // 24px - tablet
-							lg: 4 // 32px - desktop
+							xs: 2,
+							sm: 2.5,
+							md: 3,
+							lg: 4
 						},
-						// Margin bottom responsivo
 						mb: {
-							xs: 2, // 16px - mobile
-							sm: 2.5, // 20px - tablet pequeno
-							md: 3, // 24px - tablet
-							lg: 4 // 32px - desktop
+							xs: 2,
+							sm: 2.5,
+							md: 3,
+							lg: 4
 						},
-						// Background otimizado para mobile
 						background: isMobile
 							? 'linear-gradient(135deg, rgba(25, 118, 210, 0.08) 0%, rgba(76, 175, 80, 0.04) 100%)'
 							: 'linear-gradient(135deg, rgba(25, 118, 210, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%)',
 						border: {
-							xs: '1px solid', // Borda mais fina em mobile
-							md: '2px solid' // Borda normal em desktop
+							xs: '1px solid',
+							md: '2px solid'
 						},
 						borderColor: 'success.light',
-						// Border radius responsivo
 						borderRadius: {
-							xs: 2, // 8px - mobile
-							sm: 2.5, // 10px - tablet pequeno
-							md: 3 // 12px - desktop
+							xs: 2,
+							sm: 2.5,
+							md: 3
 						},
-						// Largura total para ocupar mesmo espaço que o formulário
 						width: '100%'
 					}}
 				>
