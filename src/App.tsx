@@ -9,7 +9,6 @@ import AppContext from './lib/AppContext';
 import { applyGlobalStyles, MainThemeProvider } from './lib/theme';
 
 import { LayoutProvider } from '@/shared/layout/core';
-import { I18nProvider } from './lib/i18n/I18nProvider';
 import { AuthProvider } from './lib/auth/AuthContext';
 import store from './lib/store/store';
 import AppRouter from './AppRouter';
@@ -39,26 +38,24 @@ function App() {
 						{/* Auth Provider */}
 						<AuthProvider>
 							<LayoutProvider>
-								<I18nProvider>
-									{/* Theme Provider */}
-									<MainThemeProvider>
-										{/* Notistack Notification Provider */}
-										<SnackbarProvider
-											maxSnack={5}
-											anchorOrigin={{
-												vertical: 'bottom',
-												horizontal: 'right'
-											}}
-											classes={{
-												containerRoot: 'bottom-0 right-0 mb-13 md:mb-17 mr-2 lg:mr-20 z-99'
-											}}
-										>
-											<AppRouter />
-											{/* Global Message Component - Renderizado fora do layout */}
-											<Message />
-										</SnackbarProvider>
-									</MainThemeProvider>
-								</I18nProvider>
+								{/* Theme Provider */}
+								<MainThemeProvider>
+									{/* Notistack Notification Provider */}
+									<SnackbarProvider
+										maxSnack={5}
+										anchorOrigin={{
+											vertical: 'bottom',
+											horizontal: 'right'
+										}}
+										classes={{
+											containerRoot: 'bottom-0 right-0 mb-13 md:mb-17 mr-2 lg:mr-20 z-99'
+										}}
+									>
+										<AppRouter />
+										{/* Global Message Component - Renderizado fora do layout */}
+										<Message />
+									</SnackbarProvider>
+								</MainThemeProvider>
 							</LayoutProvider>
 						</AuthProvider>
 					</Provider>

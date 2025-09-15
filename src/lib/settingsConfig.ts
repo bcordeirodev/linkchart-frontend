@@ -1,5 +1,4 @@
 import { LayoutSettingsConfigType } from '@/shared/layout/core';
-import i18n from './i18n/i18n';
 
 /**
  * Configurações simplificadas da aplicação Link Chart
@@ -30,7 +29,7 @@ const settingsConfig: LayoutSettingsConfigType = {
 	/**
 	 * Direção do texto
 	 */
-	direction: i18n.dir(i18n.options.lng) || 'ltr',
+	direction: 'ltr',
 
 	/**
 	 * Configuração de tema
