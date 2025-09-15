@@ -1,8 +1,7 @@
-import { Typography, CardContent, Alert, Stack, Button, Divider } from '@mui/material';
-import { Link as LinkIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { EnhancedPaper } from '@/shared/ui/base';
 import type { BasicAnalyticsData, BasicAnalyticsActions } from '../../types';
+import { UpgradeCTA } from '@/features/shorter';
 
 interface AnalyticsInfoProps {
 	analyticsData: BasicAnalyticsData;
@@ -15,13 +14,16 @@ interface AnalyticsInfoProps {
  * Componente que explica os recursos de analytics e oferece CTAs
  * Segue padrões de design e UX do projeto
  */
-export function AnalyticsInfo({ analyticsData, actions }: AnalyticsInfoProps) {
+export function AnalyticsInfo({ actions }: AnalyticsInfoProps) {
 	const navigate = useNavigate();
 	const { handleCreateLink } = actions;
 
 	return (
-		<EnhancedPaper variant="glass">
-			<CardContent>
+		<EnhancedPaper
+			variant="glass"
+			sx={{ mt: 0 }}
+		>
+			{/* <CardContent>
 				<Typography
 					variant="h6"
 					gutterBottom
@@ -90,7 +92,11 @@ export function AnalyticsInfo({ analyticsData, actions }: AnalyticsInfoProps) {
 						Criar Conta Gratuita
 					</Button>
 				</Stack>
-			</CardContent>
+			</CardContent> */}
+			<UpgradeCTA
+				onSignUp={() => navigate('/sign-up')}
+				onCreateLink={handleCreateLink}
+			/>
 		</EnhancedPaper>
 	);
 }

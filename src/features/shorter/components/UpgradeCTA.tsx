@@ -1,8 +1,10 @@
 import { Paper, Typography, Chip, Button, Box, alpha, useTheme } from '@mui/material';
-import { Star, ArrowForward } from '@mui/icons-material';
+import { ArrowForward } from '@mui/icons-material';
+import { AppIcon } from '@/lib/icons';
 
 interface UpgradeCTAProps {
 	onSignUp: () => void;
+	onCreateLink?: () => void;
 }
 
 /**
@@ -16,7 +18,6 @@ export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
 		<Paper
 			sx={{
 				p: 3,
-				mt: 3,
 				background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.success.main, 0.05)} 100%)`,
 				border: `2px solid ${alpha(theme.palette.primary.main, 0.2)}`,
 				borderRadius: 2,
@@ -24,7 +25,15 @@ export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
 			}}
 		>
 			<Chip
-				label="🔥 OPORTUNIDADE"
+				label={
+					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+						<AppIcon
+							intent="trending"
+							size={16}
+						/>
+						OPORTUNIDADE
+					</Box>
+				}
 				size="small"
 				sx={{
 					position: 'absolute',
@@ -39,9 +48,21 @@ export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
 			/>
 			<Typography
 				variant="h6"
-				sx={{ mb: 1, fontWeight: 700, textAlign: 'center' }}
+				sx={{
+					mb: 1,
+					fontWeight: 700,
+					textAlign: 'center',
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					gap: 1
+				}}
 			>
-				🚀 Desbloqueie Todo o Potencial!
+				<AppIcon
+					intent="trending"
+					size={24}
+				/>
+				Desbloqueie Todo o Potencial!
 			</Typography>
 			<Typography
 				variant="body2"
@@ -53,11 +74,11 @@ export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
 
 			<Box sx={{ mb: 3 }}>
 				{[
-					'📊 Analytics detalhados dos seus links',
-					'🔗 Histórico completo de links criados',
-					'🎯 Personalização de URLs',
-					'📈 Métricas de performance em tempo real',
-					'🌍 Análise geográfica dos cliques'
+					{ icon: 'analytics', text: 'Analytics detalhados dos seus links' },
+					{ icon: 'link', text: 'Histórico completo de links criados' },
+					{ icon: 'settings', text: 'Personalização de URLs' },
+					{ icon: 'trending', text: 'Métricas de performance em tempo real' },
+					{ icon: 'url', text: 'Análise geográfica dos cliques' }
 				].map((feature, index) => (
 					<Box
 						key={index}
@@ -69,8 +90,13 @@ export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
 							animation: `fadeInUp 0.6s ease forwards ${index * 0.1}s`
 						}}
 					>
-						<Star sx={{ fontSize: 16, color: 'primary.main', mr: 1 }} />
-						<Typography variant="body2">{feature}</Typography>
+						<AppIcon
+							intent={feature.icon as any}
+							size={16}
+							color={theme.palette.primary.main}
+							style={{ marginRight: 8 }}
+						/>
+						<Typography variant="body2">{feature.text}</Typography>
 					</Box>
 				))}
 			</Box>

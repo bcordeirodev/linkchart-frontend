@@ -1,9 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { Loading } from '@/shared/components';
+import { HomeRedirect } from '@/components/routing/HomeRedirect';
 
 // Lazy load components for better performance
-const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 const LinkPage = lazy(() => import('./pages/LinkPage'));
 const LinkCreatePage = lazy(() => import('./pages/LinkCreatePage'));
@@ -27,15 +27,10 @@ const LoadingWrapper = ({ children }: { children: React.ReactNode }) => (
 function AppRouter() {
 	return (
 		<Routes>
-			{/* Redirect root to dashboard */}
+			{/* Smart redirect based on authentication status */}
 			<Route
 				path="/"
-				element={
-					<Navigate
-						to="/analytics"
-						replace
-					/>
-				}
+				element={<HomeRedirect />}
 			/>
 
 			{/* Public routes */}

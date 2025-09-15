@@ -1,5 +1,5 @@
 import { Grid, Paper, Typography, Box, useTheme } from '@mui/material';
-import { TrendingUp, Link as LinkIcon, Speed, Security } from '@mui/icons-material';
+import { AppIcon } from '@/lib/icons';
 import {
 	createGlassCard,
 	createComponentColorSet,
@@ -21,26 +21,46 @@ export function ShorterStats() {
 
 	const stats = [
 		{
-			icon: <LinkIcon />,
-			title: '1M+',
+			icon: (
+				<AppIcon
+					intent="link"
+					size={24}
+				/>
+			),
+			title: '1000+',
 			subtitle: 'Links Encurtados',
 			color: 'primary'
 		},
 		{
-			icon: <TrendingUp />,
-			title: '50M+',
+			icon: (
+				<AppIcon
+					intent="trending"
+					size={24}
+				/>
+			),
+			title: '10.000+',
 			subtitle: 'Cliques Processados',
 			color: 'success'
 		},
 		{
-			icon: <Speed />,
+			icon: (
+				<AppIcon
+					name="advanced.performance"
+					size={24}
+				/>
+			),
 			title: '<100ms',
 			subtitle: 'Tempo de Resposta',
 			color: 'info'
 		},
 		{
-			icon: <Security />,
-			title: '99.9%',
+			icon: (
+				<AppIcon
+					name="user.security"
+					size={24}
+				/>
+			),
+			title: '99.8%',
 			subtitle: 'Uptime Garantido',
 			color: 'warning'
 		}
@@ -64,7 +84,7 @@ export function ShorterStats() {
 					...createTextGradient(theme, 'primary')
 				}}
 			>
-				📈 Números que Impressionam
+				Números que Impressionam
 			</Typography>
 
 			<Grid
@@ -73,7 +93,10 @@ export function ShorterStats() {
 				justifyContent="center"
 			>
 				{stats.map((stat, index) => {
-					const colors = createComponentColorSet(theme, stat.color as any);
+					const colors = createComponentColorSet(
+						theme,
+						stat.color as 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'error'
+					);
 
 					return (
 						<Grid
@@ -89,7 +112,7 @@ export function ShorterStats() {
 									textAlign: 'center',
 									height: '100%',
 									// Usa glassmorphism padronizado
-									...(createGlassCard(theme, 'neutral') as any),
+									...createGlassCard(theme, 'neutral'),
 									boxShadow: shadows.card,
 									// Usa animações padronizadas
 									...animations.cardHover,

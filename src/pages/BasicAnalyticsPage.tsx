@@ -1,8 +1,10 @@
 import { useParams } from 'react-router-dom';
-import { Container } from '@mui/material';
+import { Box, Fade, Stack } from '@mui/material';
+import { memo, useMemo } from 'react';
 
 // Components
 import { PublicLayout } from '@/shared/layout';
+import { ResponsiveContainer } from '@/shared/ui/base';
 import {
 	BasicAnalyticsHeader,
 	LinkInfoCard,
@@ -10,15 +12,15 @@ import {
 	BasicCharts,
 	AnalyticsInfo,
 	LoadingState,
-	ErrorState,
-	GoogleAdsSpace
+	ErrorState
 } from '@/features/basic-analytics';
 
 // Hooks
 import { useBasicAnalytics } from '@/features/basic-analytics';
+// import { GoogleAdsSpace } from '@/lib/ads';
 
 /**
- * 📊 PÁGINA DE ANALYTICS BÁSICOS PÚBLICOS - REFATORADA
+ * 📊 PÁGINA DE ANALYTICS BÁSICOS PÚBLICOS - OTIMIZADA
  *
  * FUNCIONALIDADE:
  * - Exibe analytics básicos de um link público
@@ -30,6 +32,9 @@ import { useBasicAnalytics } from '@/features/basic-analytics';
  * - Hook customizado para gerenciamento de estado
  * - Componentes modulares e reutilizáveis
  * - Estados de loading e error dedicados
+ * - Performance otimizada com memo e useMemo
+ * - Layout responsivo com ResponsiveContainer
+ * - Animações suaves com Fade
  * - Seguindo regra de < 100 linhas por página
  */
 function BasicAnalyticsPage() {
@@ -38,6 +43,33 @@ function BasicAnalyticsPage() {
 	// Hook customizado que gerencia todo o estado e lógica
 	const { linkData, analyticsData, loading, error, debugInfo, handleCopyLink, handleCreateLink, handleVisitLink } =
 		useBasicAnalytics({ slug });
+
+	// Memoizar ações para evitar re-renders desnecessários
+	const actions = useMemo(
+		() => ({
+			handleCopyLink,
+			handleCreateLink,
+			handleVisitLink
+		}),
+		[handleCopyLink, handleCreateLink, handleVisitLink]
+	);
+
+	// Memoizar props dos componentes para otimização (com type assertion para garantir que não são null)
+	const linkInfoProps = useMemo(
+		() => ({
+			linkData: linkData!,
+			actions
+		}),
+		[linkData, actions]
+	);
+
+	const analyticsInfoProps = useMemo(
+		() => ({
+			analyticsData: analyticsData!,
+			actions
+		}),
+		[analyticsData, actions]
+	);
 
 	// Estados de loading e error
 	if (loading) {
@@ -54,81 +86,80 @@ function BasicAnalyticsPage() {
 		);
 	}
 
-	// Ações agrupadas para passar aos componentes
-	const actions = {
-		handleCopyLink,
-		handleCreateLink,
-		handleVisitLink
-	};
-
 	return (
-		<PublicLayout>
-			<Container
+		<PublicLayout
+			variant="shorter"
+			showHeader={true}
+			showFooter={true}
+		>
+			<ResponsiveContainer
+				variant="page"
 				maxWidth="lg"
 				sx={{
-					py: 4,
 					minHeight: '100vh',
 					display: 'flex',
 					flexDirection: 'column'
 				}}
 			>
-				{/* Header */}
-				<BasicAnalyticsHeader />
+				<Stack
+					spacing={{ xs: 2, sm: 3 }}
+					sx={{ width: '100%' }}
+				>
+					{/* Header com animação */}
+					<Fade
+						in
+						timeout={600}
+					>
+						<Box>
+							<BasicAnalyticsHeader />
+						</Box>
+					</Fade>
 
-				{/* Google Ads - Leaderboard Superior */}
-				<GoogleAdsSpace
-					variant="leaderboard"
-					sx={{ mb: 4 }}
-				/>
+					{/* Link Info Card com animação */}
+					<Fade
+						in
+						timeout={1000}
+					>
+						<Box>
+							<LinkInfoCard {...linkInfoProps} />
+						</Box>
+					</Fade>
 
-				{/* Link Info Card */}
-				<LinkInfoCard
-					linkData={linkData}
-					actions={actions}
-				/>
+					{/* Metrics com animação */}
+					<Fade
+						in
+						timeout={1200}
+					>
+						<Box>
+							<BasicMetrics analyticsData={analyticsData} />
+						</Box>
+					</Fade>
 
-				{/* Metrics */}
-				<BasicMetrics analyticsData={analyticsData} />
+					{/* Basic Charts com animação */}
+					{analyticsData && (
+						<Fade
+							in
+							timeout={1600}
+						>
+							<Box>
+								<BasicCharts analyticsData={analyticsData} />
+							</Box>
+						</Fade>
+					)}
 
-				{/* Google Ads - Banner Horizontal */}
-				<GoogleAdsSpace
-					variant="banner"
-					sx={{ my: 4 }}
-				/>
-
-				{/* Basic Charts */}
-				<BasicCharts analyticsData={analyticsData} />
-
-				{/* Google Ads - Rectangle Premium (só exibe se há dados de analytics) */}
-				{analyticsData.has_analytics && (
-					<GoogleAdsSpace
-						variant="rectangle"
-						sx={{
-							my: 5,
-							display: { xs: 'none', sm: 'flex' } // Ocultar em mobile
-						}}
-					/>
-				)}
-
-				{/* Analytics Info */}
-				<AnalyticsInfo
-					analyticsData={analyticsData}
-					actions={actions}
-				/>
-
-				{/* Google Ads - Mobile Banner (só em mobile e se há analytics) */}
-				{analyticsData.has_analytics && (
-					<GoogleAdsSpace
-						variant="banner"
-						sx={{
-							mt: 4,
-							display: { xs: 'flex', sm: 'none' } // Só em mobile
-						}}
-					/>
-				)}
-			</Container>
+					{/* Analytics Info com animação*/}
+					<Fade
+						in
+						timeout={2000}
+					>
+						<Box sx={{ mt: 0, mb: 0 }}>
+							<AnalyticsInfo {...analyticsInfoProps} />
+						</Box>
+					</Fade>
+				</Stack>
+			</ResponsiveContainer>
 		</PublicLayout>
 	);
 }
 
-export default BasicAnalyticsPage;
+export default memo(BasicAnalyticsPage);

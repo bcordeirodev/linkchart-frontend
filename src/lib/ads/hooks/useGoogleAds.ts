@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { GOOGLE_ADS_CONFIG, getAdsConfig } from '../config/adsConfig';
+import { GOOGLE_ADS_CONFIG } from '../config/adsConfig';
 
 declare global {
 	interface Window {

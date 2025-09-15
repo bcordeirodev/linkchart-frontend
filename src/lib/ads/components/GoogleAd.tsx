@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
-import { useGoogleAds, AD_SLOTS, AdSlotType } from '../../hooks/useGoogleAds';
-import { getAdsConfig } from '../../config/adsConfig';
+import { useGoogleAds, AD_SLOTS, AdSlotType } from '../hooks/useGoogleAds';
+import { getAdsConfig } from '../config/adsConfig';
 
 interface GoogleAdProps {
 	variant: AdSlotType;

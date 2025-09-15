@@ -3,6 +3,13 @@
  * Componentes da feature shorter
  */
 
-export { UpgradeCTA } from './UpgradeCTA';
-export { ShorterHero } from './ShorterHero';
+// Stats
 export { ShorterStats } from './ShorterStats';
+
+// Form e Estados
+export { ShorterForm } from './ShorterForm';
+export { RedirectingState } from './RedirectingState';
+export { ErrorAlert } from './ErrorAlert';
+
+// CTA
+export { UpgradeCTA } from './UpgradeCTA';

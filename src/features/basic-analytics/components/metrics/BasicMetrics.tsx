@@ -1,10 +1,6 @@
 import { Grid } from '@mui/material';
-import {
-	Analytics as AnalyticsIcon,
-	Schedule as ScheduleIcon,
-	Visibility as VisibilityIcon
-} from '@mui/icons-material';
 import { MetricCardOptimized } from '@/shared/ui/base';
+import { AppIcon } from '@/lib/icons';
 import type { BasicAnalyticsData } from '../../types';
 
 interface BasicMetricsProps {
@@ -28,11 +24,22 @@ export function BasicMetrics({ analyticsData }: BasicMetricsProps) {
 		});
 	};
 
+	// Estilo comum para cards compactos
+	const compactCardStyle = {
+		'& .MuiCardContent-root': {
+			p: 2,
+			'&:last-child': { pb: 2 }
+		},
+		'& .MuiTypography-h4': {
+			fontSize: '1.5rem',
+			fontWeight: 600
+		}
+	};
+
 	return (
 		<Grid
 			container
-			spacing={3}
-			sx={{ mb: 4 }}
+			spacing={2}
 		>
 			<Grid
 				item
@@ -43,8 +50,14 @@ export function BasicMetrics({ analyticsData }: BasicMetricsProps) {
 				<MetricCardOptimized
 					title="Total de Cliques"
 					value={analyticsData.total_clicks.toLocaleString()}
-					icon={<VisibilityIcon />}
+					icon={
+						<AppIcon
+							intent="analytics"
+							size={20}
+						/>
+					}
 					color="primary"
+					sx={compactCardStyle}
 				/>
 			</Grid>
 
@@ -57,8 +70,14 @@ export function BasicMetrics({ analyticsData }: BasicMetricsProps) {
 				<MetricCardOptimized
 					title="Status"
 					value={analyticsData.is_active ? 'Ativo' : 'Inativo'}
-					icon={<AnalyticsIcon />}
+					icon={
+						<AppIcon
+							intent="info"
+							size={20}
+						/>
+					}
 					color={analyticsData.is_active ? 'success' : 'error'}
+					sx={compactCardStyle}
 				/>
 			</Grid>
 
@@ -72,8 +91,14 @@ export function BasicMetrics({ analyticsData }: BasicMetricsProps) {
 					title="Criado em"
 					value={formatDate(analyticsData.created_at).split(' às ')[0]}
 					subtitle={formatDate(analyticsData.created_at).split(' às ')[1]}
-					icon={<ScheduleIcon />}
+					icon={
+						<AppIcon
+							name="time.calendar"
+							size={20}
+						/>
+					}
 					color="info"
+					sx={compactCardStyle}
 				/>
 			</Grid>
 
@@ -86,8 +111,14 @@ export function BasicMetrics({ analyticsData }: BasicMetricsProps) {
 				<MetricCardOptimized
 					title="Analytics"
 					value={analyticsData.has_analytics ? 'Disponível' : 'Sem dados'}
-					icon={<AnalyticsIcon />}
+					icon={
+						<AppIcon
+							intent="chart"
+							size={20}
+						/>
+					}
 					color={analyticsData.has_analytics ? 'success' : 'warning'}
+					sx={compactCardStyle}
 				/>
 			</Grid>
 		</Grid>

@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material';
+import { AppIcon } from '@/lib/icons';
 
 interface BasicAnalyticsHeaderProps {
 	title?: string;
@@ -12,7 +13,7 @@ interface BasicAnalyticsHeaderProps {
  * Reutiliza padrões visuais do projeto
  */
 export function BasicAnalyticsHeader({
-	title = ' Analytics Básicos',
+	title = 'Analytics Básicos',
 	subtitle = 'Estatísticas públicas do seu link encurtado'
 }: BasicAnalyticsHeaderProps) {
 	return (
@@ -27,9 +28,20 @@ export function BasicAnalyticsHeader({
 					WebkitBackgroundClip: 'text',
 					WebkitTextFillColor: 'transparent',
 					fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-					marginBottom: 1
+					marginBottom: 1,
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					gap: 2
 				}}
 			>
+				<AppIcon
+					intent="analytics"
+					size={48}
+					style={{
+						color: '#1976d2'
+					}}
+				/>
 				{title}
 			</Typography>
 			<Typography

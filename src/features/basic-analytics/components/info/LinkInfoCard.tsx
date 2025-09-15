@@ -1,6 +1,21 @@
-import { Box, Typography, CardContent, Grid, Button, Chip, Divider, Stack, IconButton, Tooltip } from '@mui/material';
-import { Link as LinkIcon, Launch as LaunchIcon, ContentCopy as CopyIcon, Add as AddIcon } from '@mui/icons-material';
+import {
+	Box,
+	Typography,
+	CardContent,
+	Grid,
+	Button,
+	Chip,
+	Divider,
+	Stack,
+	IconButton,
+	Tooltip,
+	useTheme,
+	alpha
+} from '@mui/material';
+import { Launch as LaunchIcon, ContentCopy as CopyIcon, Add as AddIcon } from '@mui/icons-material';
 import { EnhancedPaper } from '@/shared/ui/base';
+import { AppIcon } from '@/lib/icons';
+import { createPresetShadows, createPresetAnimations } from '@/lib/theme';
 import type { BasicLinkData, BasicAnalyticsActions } from '../../types';
 
 interface LinkInfoCardProps {
@@ -16,24 +31,48 @@ interface LinkInfoCardProps {
  */
 export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 	const { handleCopyLink, handleCreateLink, handleVisitLink } = actions;
+	const theme = useTheme();
+
+	// Usa utilitários de tema seguindo padrão do shorter
+	const shadows = createPresetShadows(theme);
+	const animations = createPresetAnimations(theme);
 
 	return (
 		<EnhancedPaper
 			variant="glass"
-			sx={{ mb: 4 }}
+			sx={{
+				mb: 1,
+				// Aplicando padrão de cores do UpgradeCTA
+				background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.success.main, 0.05)} 100%)`,
+				border: `2px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+				borderRadius: 2,
+				position: 'relative',
+				// Adiciona animações e efeitos seguindo padrão do shorter
+				...animations.cardHover,
+				'&:hover': {
+					transform: 'translateY(-2px)',
+					boxShadow: shadows.cardHover,
+					borderColor: alpha(theme.palette.primary.main, 0.4)
+				}
+			}}
 		>
-			<CardContent>
+			<CardContent sx={{ p: 2 }}>
 				{/* Header com ações */}
 				<Box
 					sx={{
 						display: 'flex',
 						alignItems: 'center',
 						justifyContent: 'space-between',
-						mb: 3
+						mb: 2
 					}}
 				>
 					<Box sx={{ display: 'flex', alignItems: 'center' }}>
-						<LinkIcon sx={{ mr: 1, color: 'primary.main' }} />
+						<AppIcon
+							intent="link"
+							size={24}
+							color={theme.palette.primary.main}
+							style={{ marginRight: 8 }}
+						/>
 						<Typography variant="h6">Informações do Link</Typography>
 						{linkData.is_public && (
 							<Chip
@@ -74,20 +113,25 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 				{/* URL Curta - Destaque Principal */}
 				<Box
 					sx={{
-						mb: 3,
-						p: 2,
-						bgcolor: 'primary.50',
+						mb: 2,
+						p: 1.5,
+						background: `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.1)} 0%, ${alpha(theme.palette.primary.main, 0.05)} 100%)`,
 						borderRadius: 2,
-						border: '1px solid',
-						borderColor: 'primary.200'
+						border: `2px solid ${alpha(theme.palette.success.main, 0.3)}`,
+						position: 'relative'
 					}}
 				>
 					<Typography
 						variant="body2"
 						color="text.secondary"
 						gutterBottom
+						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						🔗 Seu link encurtado:
+						<AppIcon
+							intent="link"
+							size={16}
+						/>
+						Seu link encurtado:
 					</Typography>
 					<Box
 						sx={{
@@ -120,6 +164,16 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 								size="small"
 								startIcon={<CopyIcon />}
 								onClick={handleCopyLink}
+								sx={{
+									background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
+									'&:hover': {
+										background: 'linear-gradient(135deg, #1565c0 0%, #1976d2 100%)',
+										transform: 'translateY(-1px)',
+										boxShadow: 2
+									},
+									transition: 'all 0.3s ease',
+									fontWeight: 600
+								}}
 							>
 								Copiar
 							</Button>
@@ -128,6 +182,18 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 								size="small"
 								startIcon={<LaunchIcon />}
 								onClick={handleVisitLink}
+								sx={{
+									borderColor: theme.palette.success.main,
+									color: theme.palette.success.main,
+									'&:hover': {
+										borderColor: theme.palette.success.dark,
+										backgroundColor: alpha(theme.palette.success.main, 0.1),
+										transform: 'translateY(-1px)',
+										boxShadow: 1
+									},
+									transition: 'all 0.3s ease',
+									fontWeight: 600
+								}}
 							>
 								Visitar
 							</Button>
@@ -138,7 +204,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 				{/* Informações Detalhadas */}
 				<Grid
 					container
-					spacing={3}
+					spacing={2}
 				>
 					<Grid
 						item
@@ -149,8 +215,13 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 							variant="body2"
 							color="text.secondary"
 							gutterBottom
+							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							📝 Título:
+							<AppIcon
+								name="content.text"
+								size={16}
+							/>
+							Título:
 						</Typography>
 						<Typography
 							variant="body1"
@@ -169,8 +240,13 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 							variant="body2"
 							color="text.secondary"
 							gutterBottom
+							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							🌐 Domínio de destino:
+							<AppIcon
+								intent="url"
+								size={16}
+							/>
+							Domínio de destino:
 						</Typography>
 						<Typography
 							variant="body1"
@@ -189,8 +265,13 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 							variant="body2"
 							color="text.secondary"
 							gutterBottom
+							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							📅 Criado em:
+							<AppIcon
+								name="time.calendar"
+								size={16}
+							/>
+							Criado em:
 						</Typography>
 						<Typography
 							variant="body1"
@@ -215,8 +296,13 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 							variant="body2"
 							color="text.secondary"
 							gutterBottom
+							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							⚡ Status:
+							<AppIcon
+								intent="info"
+								size={16}
+							/>
+							Status:
 						</Typography>
 						<Chip
 							label={linkData.is_active ? 'Ativo' : 'Inativo'}
@@ -235,8 +321,13 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 							variant="body2"
 							color="text.secondary"
 							gutterBottom
+							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							🎯 URL original:
+							<AppIcon
+								name="navigation.back"
+								size={16}
+							/>
+							URL original:
 						</Typography>
 						<Box
 							sx={{
@@ -266,7 +357,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 				</Grid>
 
 				{/* Ações Principais */}
-				<Divider sx={{ my: 3 }} />
+				<Divider sx={{ my: 2 }} />
 				<Stack
 					direction={{ xs: 'column', sm: 'row' }}
 					spacing={2}
@@ -277,6 +368,17 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						startIcon={<CopyIcon />}
 						onClick={handleCopyLink}
 						size="large"
+						sx={{
+							background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
+							'&:hover': {
+								background: 'linear-gradient(135deg, #1565c0 0%, #1976d2 100%)',
+								transform: 'translateY(-2px)',
+								boxShadow: 4
+							},
+							transition: 'all 0.3s ease',
+							fontWeight: 600,
+							py: 1.5
+						}}
 					>
 						Copiar Link
 					</Button>
@@ -285,6 +387,19 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						startIcon={<AddIcon />}
 						onClick={handleCreateLink}
 						size="large"
+						sx={{
+							borderColor: theme.palette.success.main,
+							color: theme.palette.success.main,
+							'&:hover': {
+								borderColor: theme.palette.success.dark,
+								backgroundColor: alpha(theme.palette.success.main, 0.1),
+								transform: 'translateY(-2px)',
+								boxShadow: 2
+							},
+							transition: 'all 0.3s ease',
+							fontWeight: 600,
+							py: 1.5
+						}}
 					>
 						Criar Outro Link
 					</Button>
@@ -293,6 +408,17 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						startIcon={<LaunchIcon />}
 						onClick={handleVisitLink}
 						size="large"
+						sx={{
+							color: theme.palette.text.secondary,
+							'&:hover': {
+								backgroundColor: alpha(theme.palette.primary.main, 0.1),
+								color: theme.palette.primary.main,
+								transform: 'translateY(-1px)'
+							},
+							transition: 'all 0.3s ease',
+							fontWeight: 600,
+							py: 1.5
+						}}
 					>
 						Visitar Destino
 					</Button>
