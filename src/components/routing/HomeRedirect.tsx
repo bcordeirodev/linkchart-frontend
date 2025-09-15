@@ -41,5 +41,3 @@ export function HomeRedirect() {
 		/>
 	);
 }
-
-export default HomeRedirect;

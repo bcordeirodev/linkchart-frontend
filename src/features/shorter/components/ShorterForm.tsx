@@ -1,5 +1,4 @@
 import { Box, Fade } from '@mui/material';
-import { memo } from 'react';
 import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
 import { PublicLinkResponse } from '@/services/publicLink.service';
 
@@ -33,5 +32,3 @@ export function ShorterForm({ onSuccess, onError, disabled: _disabled = false }:
 		</Box>
 	);
 }
-
-export default memo(ShorterForm);

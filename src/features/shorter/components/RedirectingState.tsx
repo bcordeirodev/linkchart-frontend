@@ -1,5 +1,4 @@
 import { CircularProgress, Typography, Box, Fade } from '@mui/material';
-import { memo } from 'react';
 import { EnhancedPaper } from '@/shared/ui/base';
 import { useResponsive } from '@/lib/theme/hooks/useResponsive';
 
@@ -180,5 +179,3 @@ export function RedirectingState({ isVisible }: RedirectingStateProps) {
 		</Fade>
 	);
 }
-
-export default memo(RedirectingState);

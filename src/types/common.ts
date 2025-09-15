@@ -66,10 +66,6 @@ export type Orientation = 'horizontal' | 'vertical';
 
 export type Direction = 'ltr' | 'rtl';
 
-export type Alignment = 'left' | 'center' | 'right' | 'justify';
-
-export type VerticalAlignment = 'top' | 'middle' | 'bottom';
-
 // ========================================
 // 📱 RESPONSIVE TYPES
 // ========================================
@@ -83,15 +79,6 @@ export type ResponsiveValue<T> = T | Partial<Record<Breakpoint, T>>;
 // ========================================
 
 export type Status = 'idle' | 'loading' | 'success' | 'error';
-
-export type LoadingState = 'idle' | 'pending' | 'fulfilled' | 'rejected';
-
-export interface AsyncState<T = unknown> {
-	data: T | null;
-	loading: boolean;
-	error: string | null;
-	status: Status;
-}
 
 export interface PaginationState {
 	page: number;
@@ -111,41 +98,11 @@ export type FilterState = Record<string, unknown>;
 // 🎭 EVENT TYPES
 // ========================================
 
-export type EventHandler<T = unknown> = (event: T) => void;
-
-export type ChangeHandler<T = unknown> = (value: T) => void;
-
-export type SubmitHandler<T = unknown> = (data: T) => void | Promise<void>;
-
-export type ErrorHandler = (error: Error | string) => void;
-
-export type SuccessHandler<T = unknown> = (data: T) => void;
-
 // ========================================
 // 🌐 API TYPES
 // ========================================
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-
-export type ContentType =
-	| 'application/json'
-	| 'application/x-www-form-urlencoded'
-	| 'multipart/form-data'
-	| 'text/plain';
-
-export interface RequestConfig {
-	method?: HttpMethod;
-	headers?: Record<string, string>;
-	timeout?: number;
-	signal?: AbortSignal;
-}
-
-export interface ApiError {
-	message: string;
-	status: number;
-	code?: string;
-	details?: Record<string, unknown>;
-}
 
 // ========================================
 // 📝 FORM TYPES
@@ -155,40 +112,9 @@ export type FieldValue = string | number | boolean | Date | null | undefined;
 
 export type FieldError = string | null;
 
-export interface FieldState {
-	value: FieldValue;
-	error: FieldError;
-	touched: boolean;
-	dirty: boolean;
-}
-
-export interface FormState<T = Record<string, FieldValue>> {
-	values: T;
-	errors: Partial<Record<keyof T, FieldError>>;
-	touched: Partial<Record<keyof T, boolean>>;
-	dirty: boolean;
-	valid: boolean;
-	submitting: boolean;
-}
-
 // ========================================
 // 🔍 SEARCH TYPES
 // ========================================
-
-export interface SearchState {
-	query: string;
-	filters: FilterState;
-	sort: SortState;
-	pagination: PaginationState;
-}
-
-export interface SearchResult<T = unknown> {
-	data: T[];
-	total: number;
-	page: number;
-	pageSize: number;
-	totalPages: number;
-}
 
 // ========================================
 // 📊 CHART TYPES
@@ -213,13 +139,6 @@ export interface ChartPoint {
 	color?: string;
 }
 
-export interface ChartSeries {
-	name: string;
-	data: ChartPoint[];
-	color?: string;
-	type?: ChartType;
-}
-
 // ========================================
 // 🗂️ MENU TYPES
 // ========================================
@@ -235,39 +154,11 @@ export interface MenuItem {
 	children?: MenuItem[];
 }
 
-export interface MenuSection {
-	title?: string;
-	items: MenuItem[];
-}
-
 // ========================================
 // 🎨 THEME TYPES
 // ========================================
 
 export type ThemeMode = 'light' | 'dark' | 'auto';
-
-export interface ThemeConfig {
-	mode: ThemeMode;
-	primaryColor: string;
-	secondaryColor: string;
-	fontFamily: string;
-	fontSize: number;
-	borderRadius: number;
-}
-
-// ========================================
-// 🔔 NOTIFICATION TYPES
-// ========================================
-
-export interface Notification {
-	id: string;
-	title: string;
-	message: string;
-	type: Severity;
-	duration?: number;
-	actions?: NotificationAction[];
-	timestamp: Date;
-}
 
 export interface NotificationAction {
 	label: string;
@@ -278,23 +169,6 @@ export interface NotificationAction {
 // ========================================
 // 🎯 ANALYTICS TYPES
 // ========================================
-
-export interface AnalyticsEvent {
-	name: string;
-	properties?: Record<string, unknown>;
-	timestamp?: Date;
-	userId?: string;
-	sessionId?: string;
-}
-
-export interface AnalyticsPageView {
-	page: string;
-	title?: string;
-	referrer?: string;
-	timestamp?: Date;
-	userId?: string;
-	sessionId?: string;
-}
 
 // ========================================
 // 🔐 PERMISSION TYPES
