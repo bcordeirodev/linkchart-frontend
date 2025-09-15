@@ -1,11 +1,11 @@
-import { Stack, Box, Typography, Container, Grid, CircularProgress, Alert } from '@mui/material';
+import { Stack, Box, Typography, Container, Grid, Alert } from '@mui/material';
 import { memo, useMemo, useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 
 // Components
 import { PublicLayout } from '@/shared/layout';
 import { EnhancedPaper } from '@/shared/ui/base';
-import { ShorterStats, UpgradeCTA } from '@/features/shorter/components';
+import { ShorterStats, UpgradeCTA, RedirectingState } from '@/features/shorter/components';
 import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
 import { useShorter } from '@/features/shorter/hooks';
 import { AppIcon } from '@/lib/icons';
@@ -61,90 +61,6 @@ function ShorterPage() {
 			onSignUp: handleSignUp
 		}),
 		[handleSignUp]
-	);
-
-	// Componente de estado de redirecionamento - Mobile First
-	const RedirectingState = () => (
-		<EnhancedPaper
-			variant="glass"
-			sx={{
-				textAlign: 'center',
-				p: { xs: 3, sm: 4 }, // Padding responsivo
-				mb: { xs: 3, sm: 4 }, // Margin responsivo
-				background: 'linear-gradient(135deg, rgba(25, 118, 210, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%)',
-				border: '2px solid',
-				borderColor: 'success.light',
-				borderRadius: { xs: 2, sm: 3 } // Border radius responsivo
-			}}
-		>
-			<CircularProgress
-				size={isMobile ? 48 : 56} // Tamanho menor em mobile
-				thickness={4}
-				sx={{
-					mb: { xs: 2, sm: 3 },
-					color: 'success.main'
-				}}
-			/>
-
-			<Typography
-				variant={isMobile ? 'h6' : 'h5'} // Variante menor em mobile
-				color="success.main"
-				sx={{
-					fontWeight: 700,
-					mb: 1,
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					flexDirection: { xs: 'column', sm: 'row' }, // Stack em mobile
-					gap: { xs: 0.5, sm: 1 },
-					fontSize: { xs: '1.1rem', sm: '1.25rem' } // Font size responsivo
-				}}
-			>
-				<AppIcon
-					intent="success"
-					size={isMobile ? 20 : 24} // Ícone menor em mobile
-					color="currentColor"
-				/>
-				{isMobile ? 'Sucesso!' : 'Link criado com sucesso!'}
-			</Typography>
-
-			<Typography
-				variant="body2"
-				color="text.secondary"
-				sx={{
-					fontWeight: 500,
-					opacity: 0.8,
-					fontSize: { xs: '0.875rem', sm: '1rem' } // Texto menor em mobile
-				}}
-			>
-				{isMobile ? 'Redirecionando...' : 'Redirecionando para analytics...'}
-			</Typography>
-
-			{/* Indicador de progresso visual - Mobile Optimized */}
-			<Box
-				sx={{
-					mt: { xs: 2, sm: 3 },
-					height: { xs: 3, sm: 4 }, // Altura menor em mobile
-					bgcolor: 'grey.200',
-					borderRadius: 2,
-					overflow: 'hidden',
-					position: 'relative'
-				}}
-			>
-				<Box
-					sx={{
-						height: '100%',
-						bgcolor: 'success.main',
-						borderRadius: 2,
-						animation: isMobile ? 'progressBar 1s ease-in-out' : 'progressBar 1.2s ease-in-out', // Mais rápido em mobile
-						'@keyframes progressBar': {
-							'0%': { width: '0%' },
-							'100%': { width: '100%' }
-						}
-					}}
-				/>
-			</Box>
-		</EnhancedPaper>
 	);
 
 	return (
@@ -265,7 +181,7 @@ function ShorterPage() {
 									</Alert>
 								)}
 								{/* Estado de Redirecionamento - Mobile Optimized */}
-								{isRedirecting && <RedirectingState />}
+								{isRedirecting && <RedirectingState isVisible={isRedirecting} />}
 								{/* Formulário Principal - Mobile First */}
 								{!isRedirecting && (
 									<Box
