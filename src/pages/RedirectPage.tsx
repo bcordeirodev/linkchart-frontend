@@ -280,7 +280,7 @@ function RedirectPage() {
 		};
 
 		fetchRedirectData();
-	}, [slug]); // Removido capturedIP das dependências para evitar requisições duplicadas
+	}, [slug, getUserRealIP, isValidIPv4, isValidIPv6]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	// Inicia o countdown quando targetUrl é definido
 	useEffect(() => {
