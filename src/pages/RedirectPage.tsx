@@ -67,11 +67,11 @@ function RedirectPage() {
 	// Função para capturar IP real do usuário
 	const getUserRealIP = useCallback(async (): Promise<string | null> => {
 		try {
-			// Tentar múltiplos serviços para maior confiabilidade
+			// Tentar múltiplos serviços para maior confiabilidade (ordem otimizada para produção)
 			const ipServices = [
-				'https://api.ipify.org?format=json',
-				'https://ipapi.co/json/',
-				'https://api64.ipify.org?format=json' // Backup do ipify (IPv4/IPv6)
+				'https://ipapi.co/json/', // Prioridade 1: Funciona em produção
+				'https://api.ipify.org?format=json', // Prioridade 2: Pode ter timeout
+				'https://api64.ipify.org?format=json' // Prioridade 3: Backup do ipify
 			];
 
 			for (const service of ipServices) {
