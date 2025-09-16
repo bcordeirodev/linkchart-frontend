@@ -35,6 +35,9 @@
 		"react-router-dom": "^6.28.0",
 		"stylis": "4.3.4",
 		"stylis-plugin-rtl": "2.1.1",
+		"tailwindcss": "^4.1.13",
+		"@tailwindcss/postcss": "^4.1.13",
+		"autoprefixer": "^10.4.21",
 		"type-fest": "4.30.0",
 		"zod": "^3.23.8"
 	},
