@@ -35,6 +35,7 @@ function RedirectPage() {
 	const [countdown, setCountdown] = useState<number>(0);
 	const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
 	const [showContent, setShowContent] = useState<boolean>(false);
+	const [capturedIP, setCapturedIP] = useState<string | null>(null); // ✅ Estado para IP capturado
 
 	// CSS para animações
 	const animations = `
@@ -67,6 +68,19 @@ function RedirectPage() {
 	// Função para capturar IP real do usuário
 	const getUserRealIP = useCallback(async (): Promise<string | null> => {
 		try {
+			// ✅ OTIMIZAÇÃO: Verificar cache do sessionStorage primeiro
+			const cachedIP = sessionStorage.getItem('user_real_ip');
+			const cacheTime = sessionStorage.getItem('user_real_ip_time');
+
+			// Cache válido por 5 minutos
+			if (cachedIP && cacheTime && Date.now() - parseInt(cacheTime) < 300000) {
+				if (isValidIPv4(cachedIP) || isValidIPv6(cachedIP)) {
+					// eslint-disable-next-line no-console
+					console.log('🚀 IP recuperado do cache:', cachedIP);
+					return cachedIP;
+				}
+			}
+
 			// Tentar múltiplos serviços para maior confiabilidade (ordem otimizada para produção)
 			const ipServices = [
 				'https://ipapi.co/json/', // Prioridade 1: Funciona em produção
@@ -76,9 +90,9 @@ function RedirectPage() {
 
 			for (const service of ipServices) {
 				try {
-					// Criar AbortController para timeout manual
+					// Criar AbortController para timeout manual (otimizado)
 					const controller = new AbortController();
-					const timeoutId = setTimeout(() => controller.abort(), 3000);
+					const timeoutId = setTimeout(() => controller.abort(), 2000); // ✅ Reduzido para 2s por serviço
 
 					const response = await fetch(service, {
 						method: 'GET',
@@ -93,6 +107,10 @@ function RedirectPage() {
 
 						// Validação mais robusta de IP (IPv4 e IPv6)
 						if (ip && (isValidIPv4(ip) || isValidIPv6(ip))) {
+							// ✅ CACHE DO IP para próximas requisições
+							sessionStorage.setItem('user_real_ip', ip);
+							sessionStorage.setItem('user_real_ip_time', Date.now().toString());
+
 							// eslint-disable-next-line no-console
 							console.log(`✅ IP capturado via ${service}:`, ip);
 							return ip;
@@ -165,6 +183,26 @@ function RedirectPage() {
 		[targetUrl, performRedirect]
 	);
 
+	// ✅ OTIMIZAÇÃO: Capturar IP imediatamente quando página carrega (em paralelo)
+	useEffect(() => {
+		const captureIPInBackground = async () => {
+			try {
+				const ip = await getUserRealIP();
+
+				if (ip && (isValidIPv4(ip) || isValidIPv6(ip))) {
+					setCapturedIP(ip);
+					// eslint-disable-next-line no-console
+					console.log('🌐 IP capturado em background:', ip);
+				}
+			} catch (error) {
+				// eslint-disable-next-line no-console
+				console.warn('⚠️ Falha na captura de IP em background:', error);
+			}
+		};
+
+		captureIPInBackground();
+	}, [getUserRealIP, isValidIPv4, isValidIPv6]);
+
 	useEffect(() => {
 		const fetchRedirectData = async () => {
 			if (!slug) {
@@ -173,23 +211,28 @@ function RedirectPage() {
 			}
 
 			try {
-				// 🌐 CAPTURAR IP REAL DO USUÁRIO (em paralelo com a requisição)
-				const userIPPromise = getUserRealIP();
-
 				// ÚNICA REQUISIÇÃO NECESSÁRIA - Backend coleta métricas e retorna URL
 				const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-				// Aguardar IP real (com timeout melhorado)
-				const userIP = await Promise.race([
-					userIPPromise,
-					new Promise<null>((resolve) => {
-						setTimeout(() => {
-							// eslint-disable-next-line no-console
-							console.warn('⏰ Timeout na captura de IP (2s), prosseguindo sem IP real');
-							resolve(null);
-						}, 2000);
-					})
-				]);
+				// ✅ USAR IP JÁ CAPTURADO OU AGUARDAR BREVEMENTE
+				let userIP = capturedIP;
+
+				// Se ainda não temos IP, aguardar um pouco mais (mas não muito)
+				if (!userIP) {
+					// eslint-disable-next-line no-console
+					console.log('⏳ IP ainda não capturado, aguardando mais 1s...');
+
+					userIP = await Promise.race([
+						getUserRealIP(),
+						new Promise<null>((resolve) => {
+							setTimeout(() => {
+								// eslint-disable-next-line no-console
+								console.warn('⏰ Timeout final na captura de IP (1s), prosseguindo com fallback');
+								resolve(null);
+							}, 1000); // ✅ Timeout curto para não atrasar UX
+						})
+					]);
+				}
 
 				// 🎯 ESTRATÉGIA ANTI-PREFLIGHT: Usar query params em vez de headers customizados
 				let requestUrl = `${backendUrl}/api/r/${slug}`;
@@ -237,7 +280,7 @@ function RedirectPage() {
 		};
 
 		fetchRedirectData();
-	}, [slug, getUserRealIP, isValidIPv4, isValidIPv6]);
+	}, [slug, getUserRealIP, isValidIPv4, isValidIPv6, capturedIP]);
 
 	// Inicia o countdown quando targetUrl é definido
 	useEffect(() => {
