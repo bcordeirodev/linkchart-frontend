@@ -53,6 +53,17 @@ function RedirectPage() {
 		}
 	`;
 
+	// Funções de validação de IP
+	const isValidIPv4 = useCallback((ip: string): boolean => {
+		const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+		return ipv4Regex.test(ip);
+	}, []);
+
+	const isValidIPv6 = useCallback((ip: string): boolean => {
+		const ipv6Regex = /^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::1$|^::$/;
+		return ipv6Regex.test(ip);
+	}, []);
+
 	// Função para capturar IP real do usuário
 	const getUserRealIP = useCallback(async (): Promise<string | null> => {
 		try {
@@ -60,7 +71,7 @@ function RedirectPage() {
 			const ipServices = [
 				'https://api.ipify.org?format=json',
 				'https://ipapi.co/json/',
-				'https://api.ip.sb/jsonip'
+				'https://api64.ipify.org?format=json' // Backup do ipify (IPv4/IPv6)
 			];
 
 			for (const service of ipServices) {
@@ -80,10 +91,14 @@ function RedirectPage() {
 						const data = await response.json();
 						const ip = data.ip || data.query || null;
 
-						if (ip && /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip)) {
+						// Validação mais robusta de IP (IPv4 e IPv6)
+						if (ip && (isValidIPv4(ip) || isValidIPv6(ip))) {
 							// eslint-disable-next-line no-console
 							console.log(`✅ IP capturado via ${service}:`, ip);
 							return ip;
+						} else if (ip) {
+							// eslint-disable-next-line no-console
+							console.warn(`⚠️ IP inválido recebido de ${service}:`, ip);
 						}
 					}
 				} catch (serviceError) {
@@ -101,7 +116,7 @@ function RedirectPage() {
 			console.error('❌ Erro ao capturar IP do usuário:', error);
 			return null;
 		}
-	}, []);
+	}, [isValidIPv4, isValidIPv6]);
 
 	// Função para validar URL externa
 	const isExternalUrl = useCallback((url: string): boolean => {
@@ -164,10 +179,16 @@ function RedirectPage() {
 				// ÚNICA REQUISIÇÃO NECESSÁRIA - Backend coleta métricas e retorna URL
 				const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-				// Aguardar IP real (com timeout)
+				// Aguardar IP real (com timeout melhorado)
 				const userIP = await Promise.race([
 					userIPPromise,
-					new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000)) // 2s timeout
+					new Promise<null>((resolve) => {
+						setTimeout(() => {
+							// eslint-disable-next-line no-console
+							console.warn('⏰ Timeout na captura de IP (2s), prosseguindo sem IP real');
+							resolve(null);
+						}, 2000);
+					})
 				]);
 
 				// 🎯 ESTRATÉGIA ANTI-PREFLIGHT: Usar query params em vez de headers customizados
@@ -179,13 +200,16 @@ function RedirectPage() {
 				};
 
 				// 🌐 ENVIAR IP REAL VIA QUERY PARAM (evita preflight CORS)
-				if (userIP) {
+				if (userIP && (isValidIPv4(userIP) || isValidIPv6(userIP))) {
 					requestUrl += `?real_ip=${encodeURIComponent(userIP)}`;
 					// eslint-disable-next-line no-console
 					console.log('🌐 Enviando IP real via query param:', userIP);
 				} else {
 					// eslint-disable-next-line no-console
-					console.warn('⚠️ Não foi possível capturar IP real, backend usará fallback');
+					console.warn('⚠️ Não foi possível capturar IP real válido, backend usará fallback', {
+						capturedIP: userIP,
+						isValid: userIP ? isValidIPv4(userIP) || isValidIPv6(userIP) : false
+					});
 				}
 
 				const response = await fetch(requestUrl, {
@@ -213,7 +237,7 @@ function RedirectPage() {
 		};
 
 		fetchRedirectData();
-	}, [slug, getUserRealIP]);
+	}, [slug, getUserRealIP, isValidIPv4, isValidIPv6]);
 
 	// Inicia o countdown quando targetUrl é definido
 	useEffect(() => {
