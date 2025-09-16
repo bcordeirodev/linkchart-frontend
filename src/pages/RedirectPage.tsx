@@ -53,6 +53,56 @@ function RedirectPage() {
 		}
 	`;
 
+	// Função para capturar IP real do usuário
+	const getUserRealIP = useCallback(async (): Promise<string | null> => {
+		try {
+			// Tentar múltiplos serviços para maior confiabilidade
+			const ipServices = [
+				'https://api.ipify.org?format=json',
+				'https://ipapi.co/json/',
+				'https://api.ip.sb/jsonip'
+			];
+
+			for (const service of ipServices) {
+				try {
+					// Criar AbortController para timeout manual
+					const controller = new AbortController();
+					const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+					const response = await fetch(service, {
+						method: 'GET',
+						signal: controller.signal
+					});
+
+					clearTimeout(timeoutId);
+
+					if (response.ok) {
+						const data = await response.json();
+						const ip = data.ip || data.query || null;
+
+						if (ip && /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip)) {
+							// eslint-disable-next-line no-console
+							console.log(`✅ IP capturado via ${service}:`, ip);
+							return ip;
+						}
+					}
+				} catch (serviceError) {
+					// eslint-disable-next-line no-console
+					console.warn(`⚠️ Falha no serviço ${service}:`, serviceError);
+					continue; // Tenta próximo serviço
+				}
+			}
+
+			// eslint-disable-next-line no-console
+			console.warn('⚠️ Todos os serviços de IP falharam, usando fallback');
+			return null;
+		} catch (error) {
+			// eslint-disable-next-line no-console
+			console.error('❌ Erro ao capturar IP do usuário:', error);
+			return null;
+		}
+	}, []);
+
 	// Função para validar URL externa
 	const isExternalUrl = useCallback((url: string): boolean => {
 		try {
@@ -108,13 +158,39 @@ function RedirectPage() {
 			}
 
 			try {
+				// 🌐 CAPTURAR IP REAL DO USUÁRIO (em paralelo com a requisição)
+				const userIPPromise = getUserRealIP();
+
 				// ÚNICA REQUISIÇÃO NECESSÁRIA - Backend coleta métricas e retorna URL
 				const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-				const response = await fetch(`${backendUrl}/api/r/${slug}`, {
+
+				// Aguardar IP real (com timeout)
+				const userIP = await Promise.race([
+					userIPPromise,
+					new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000)) // 2s timeout
+				]);
+
+				// 🎯 ESTRATÉGIA ANTI-PREFLIGHT: Usar query params em vez de headers customizados
+				let requestUrl = `${backendUrl}/api/r/${slug}`;
+
+				// Preparar headers simples (sem trigger preflight)
+				const headers: Record<string, string> = {
+					Accept: 'application/json'
+				};
+
+				// 🌐 ENVIAR IP REAL VIA QUERY PARAM (evita preflight CORS)
+				if (userIP) {
+					requestUrl += `?real_ip=${encodeURIComponent(userIP)}`;
+					// eslint-disable-next-line no-console
+					console.log('🌐 Enviando IP real via query param:', userIP);
+				} else {
+					// eslint-disable-next-line no-console
+					console.warn('⚠️ Não foi possível capturar IP real, backend usará fallback');
+				}
+
+				const response = await fetch(requestUrl, {
 					method: 'GET',
-					headers: {
-						Accept: 'application/json'
-					}
+					headers
 				});
 
 				if (!response.ok) {
@@ -137,7 +213,7 @@ function RedirectPage() {
 		};
 
 		fetchRedirectData();
-	}, [slug]);
+	}, [slug, getUserRealIP]);
 
 	// Inicia o countdown quando targetUrl é definido
 	useEffect(() => {
