@@ -25,6 +25,7 @@ export function BasicAnalyticsHeader({
 				sx={{
 					fontWeight: 700,
 					background: 'linear-gradient(135deg, #1976d2 0%, #2e7d32 100%)',
+					color: 'primary.light',
 					WebkitBackgroundClip: 'text',
 					WebkitTextFillColor: 'transparent',
 					fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
@@ -38,9 +39,6 @@ export function BasicAnalyticsHeader({
 				<AppIcon
 					intent="analytics"
 					size={48}
-					style={{
-						color: '#1976d2'
-					}}
 				/>
 				{title}
 			</Typography>

@@ -78,7 +78,7 @@ export function ShorterStats() {
 				component="h2"
 				sx={{
 					textAlign: 'center',
-					mb: 4,
+					mb: 2,
 					fontWeight: 700,
 					// Usa gradiente de texto padronizado
 					...createTextGradient(theme, 'primary')

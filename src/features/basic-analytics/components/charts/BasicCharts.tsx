@@ -3,7 +3,13 @@ import { useTheme } from '@mui/material/styles';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { AppIcon } from '@/lib/icons';
-import { createGlassCard, createPresetShadows, createPresetAnimations, createTextGradient } from '@/lib/theme';
+import {
+	createGlassCard,
+	createPresetShadows,
+	createPresetAnimations,
+	createTextGradient,
+	createThemeGradient
+} from '@/lib/theme';
 import type { BasicAnalyticsData } from '../../types';
 
 interface BasicChartsProps {
@@ -199,27 +205,56 @@ function EmptyChartsState() {
 				...animations.fadeIn
 			}}
 		>
-			<Typography
-				variant="h5"
-				component="h2"
+			<Box
 				sx={{
 					textAlign: 'center',
 					mb: 3,
-					fontWeight: 700,
-					...createTextGradient(theme, 'primary'),
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',
 					gap: 1.5
 				}}
 			>
-				<AppIcon
-					intent="chart"
-					size={28}
-					color="currentColor"
-				/>
-				Gráficos de Analytics
-			</Typography>
+				{/* Ícone com gradiente aplicado diretamente */}
+				<Box
+					component="span"
+					sx={{
+						display: 'inline-flex',
+						background: createThemeGradient(theme, {
+							variant: 'primary',
+							direction: 'to-right'
+						}),
+						color: 'primary.main',
+						backgroundClip: 'text',
+						WebkitBackgroundClip: 'text',
+						WebkitTextFillColor: 'transparent',
+						// Fallback para navegadores sem suporte
+						'@supports not (background-clip: text)': {
+							color: theme.palette.primary.main,
+							WebkitTextFillColor: 'unset'
+						}
+					}}
+				>
+					<AppIcon
+						intent="chart"
+						size={28}
+						color="currentColor"
+					/>
+				</Box>
+
+				{/* Texto com gradiente */}
+				<Typography
+					variant="h5"
+					component="h2"
+					sx={{
+						fontWeight: 700,
+						...createTextGradient(theme, 'primary'),
+						margin: 0
+					}}
+				>
+					Gráficos de Analytics
+				</Typography>
+			</Box>
 
 			<Paper
 				elevation={0}

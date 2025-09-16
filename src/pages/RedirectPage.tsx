@@ -280,7 +280,7 @@ function RedirectPage() {
 		};
 
 		fetchRedirectData();
-	}, [slug, getUserRealIP, isValidIPv4, isValidIPv6, capturedIP]);
+	}, [slug]); // Removido capturedIP das dependências para evitar requisições duplicadas
 
 	// Inicia o countdown quando targetUrl é definido
 	useEffect(() => {

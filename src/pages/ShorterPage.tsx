@@ -71,9 +71,8 @@ function ShorterPage() {
 		>
 			<Box
 				sx={{
-					// Mobile-first: padding menor em mobile, aumenta progressivamente
-					py: { xs: 2, sm: 3, md: 4, lg: 6 },
-					px: { xs: 1, sm: 2 }, // Padding horizontal para mobile
+					py: 2,
+					px: 2,
 					background: `linear-gradient(135deg, ${theme.palette.primary.main}08 0%, ${theme.palette.secondary.main}05 100%)`,
 					borderBottom: `1px solid ${theme.palette.divider}`,
 					minHeight: { xs: 'auto', md: '100vh' } // Full height apenas em desktop
@@ -91,7 +90,8 @@ function ShorterPage() {
 							textAlign: 'center',
 							opacity: mounted ? 1 : 0,
 							transition: isMobile ? 'opacity 0.4s ease-in-out' : 'opacity 0.6s ease-in-out',
-							mb: { xs: 2, sm: 3, md: 4 } // Margin bottom responsivo
+							mb: 1,
+							mt: 1
 						}}
 					>
 						<Typography
@@ -237,8 +237,6 @@ function ShorterPage() {
 					{/* Seção de Estatísticas - Mobile First */}
 					<Box
 						sx={{
-							mt: { xs: 3, sm: 4, md: 6 }, // Margin top responsivo
-							pt: { xs: 2, sm: 3, md: 4 }, // Padding top para separação visual
 							borderTop: { xs: `1px solid ${theme.palette.divider}`, md: 'none' } // Divisor apenas em mobile
 						}}
 					>
