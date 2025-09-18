@@ -1,6 +1,6 @@
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
-import authService from '@/lib/auth/auth.service';
+import { authService } from '@/services/auth.service';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Lock, Save, Visibility, VisibilityOff } from '@mui/icons-material';

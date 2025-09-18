@@ -170,6 +170,21 @@ export default class AuthService extends BaseService {
 			context: 'resend_verification_email'
 		});
 	}
+
+	/**
+	 * Altera senha do usuário
+	 */
+	async changePassword(data: {
+		current_password: string;
+		new_password: string;
+		new_password_confirmation: string;
+	}): Promise<{ message: string }> {
+		this.validateRequired(data, ['current_password', 'new_password', 'new_password_confirmation']);
+
+		return this.put<{ message: string }>(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, data, {
+			context: 'change_password'
+		});
+	}
 }
 
 // Instância singleton do serviço
@@ -180,6 +195,8 @@ export const signIn = authService.signIn.bind(authService);
 export const signUp = authService.signUp.bind(authService);
 export const getMe = authService.getMe.bind(authService);
 export const signOut = authService.signOut.bind(authService);
+export const updateProfile = authService.updateProfile.bind(authService);
+export const changePassword = authService.changePassword.bind(authService);
 
 // Export da instância do serviço
 export { authService };
