@@ -102,9 +102,13 @@ export default class AuthService extends BaseService {
 	}> {
 		this.validateRequired({ token }, ['token']);
 
-		return this.post(API_ENDPOINTS.AUTH.VERIFY_EMAIL, { token }, {
-			context: 'verify_email'
-		});
+		return this.post(
+			API_ENDPOINTS.AUTH.VERIFY_EMAIL,
+			{ token },
+			{
+				context: 'verify_email'
+			}
+		);
 	}
 
 	/**
@@ -117,19 +121,19 @@ export default class AuthService extends BaseService {
 	}> {
 		this.validateRequired({ email }, ['email']);
 
-		return this.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, { email }, {
-			context: 'forgot_password'
-		});
+		return this.post(
+			API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
+			{ email },
+			{
+				context: 'forgot_password'
+			}
+		);
 	}
 
 	/**
 	 * Redefinir senha usando token
 	 */
-	async resetPassword(data: {
-		token: string;
-		password: string;
-		password_confirmation: string;
-	}): Promise<{
+	async resetPassword(data: { token: string; password: string; password_confirmation: string }): Promise<{
 		success: boolean;
 		message: string;
 		type?: string;
@@ -166,9 +170,13 @@ export default class AuthService extends BaseService {
 		email?: string;
 		expires_at?: string;
 	}> {
-		return this.post(API_ENDPOINTS.AUTH.RESEND_VERIFICATION_EMAIL, {}, {
-			context: 'resend_verification_email'
-		});
+		return this.post(
+			API_ENDPOINTS.AUTH.RESEND_VERIFICATION_EMAIL,
+			{},
+			{
+				context: 'resend_verification_email'
+			}
+		);
 	}
 
 	/**
