@@ -67,7 +67,7 @@ function SignUpPage() {
 		try {
 			setLoading(true);
 
-			const response = await authService.signUp({
+			await authService.signUp({
 				name: data.name,
 				email: data.email,
 				password: data.password,
