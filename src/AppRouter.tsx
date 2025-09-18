@@ -16,6 +16,9 @@ const RedirectPage = lazy(() => import('./pages/RedirectPage'));
 const SignInPage = lazy(() => import('./pages/SignInPage'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
 const SignOutPage = lazy(() => import('./pages/SignOutPage'));
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const BasicAnalyticsPage = lazy(() => import('./pages/BasicAnalyticsPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const UnauthorizedPage = lazy(() => import('./pages/UnauthorizedPage'));
@@ -63,6 +66,30 @@ function AppRouter() {
 				element={
 					<LoadingWrapper>
 						<SignOutPage />
+					</LoadingWrapper>
+				}
+			/>
+			<Route
+				path="/verify-email"
+				element={
+					<LoadingWrapper>
+						<VerifyEmailPage />
+					</LoadingWrapper>
+				}
+			/>
+			<Route
+				path="/forgot-password"
+				element={
+					<LoadingWrapper>
+						<ForgotPasswordPage />
+					</LoadingWrapper>
+				}
+			/>
+			<Route
+				path="/reset-password"
+				element={
+					<LoadingWrapper>
+						<ResetPasswordPage />
 					</LoadingWrapper>
 				}
 			/>

@@ -30,7 +30,7 @@ interface AuthLayoutProps {
 	/** Subtítulo da página */
 	subtitle?: string;
 	/** Variante visual */
-	variant?: 'signin' | 'signup' | 'forgot' | 'reset';
+	variant?: 'signin' | 'signup' | 'forgot' | 'reset' | 'verify';
 	/** Mostrar seção lateral */
 	showSideSection?: boolean;
 	/** Links de navegação adicionais */
@@ -84,6 +84,12 @@ function AuthLayout({
 				sideSubtitle: 'Defina uma nova senha segura para sua conta.',
 				gradientColors: ['#7B1FA2', '#9C27B0', '#4A148C'],
 				icon: 'shield'
+			},
+			verify: {
+				sideTitle: 'Verificação de Email',
+				sideSubtitle: 'Estamos verificando seu email para ativar sua conta.',
+				gradientColors: ['#2E7D32', '#388E3C', '#1B5E20'],
+				icon: 'check-circle'
 			}
 		};
 		return configs[variant];

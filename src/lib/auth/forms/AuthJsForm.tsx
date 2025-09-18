@@ -1,4 +1,4 @@
-import { Alert, TextField, Button, Box, Typography, CircularProgress } from '@mui/material';
+import { Alert, TextField, Button, Box, Typography, CircularProgress, Link } from '@mui/material';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { useState } from 'react';
@@ -218,6 +218,23 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 					'Entrar'
 				)}
 			</Button>
+
+			{/* Link para recuperação de senha */}
+			<Box sx={{ textAlign: 'center', mt: 2 }}>
+				<Link
+					href="/forgot-password"
+					sx={{
+						color: '#0A74DA',
+						textDecoration: 'none',
+						fontSize: '0.9rem',
+						'&:hover': {
+							textDecoration: 'underline'
+						}
+					}}
+				>
+					Esqueci minha senha
+				</Link>
+			</Box>
 		</Box>
 	);
 }

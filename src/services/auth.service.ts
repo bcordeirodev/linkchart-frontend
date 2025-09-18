@@ -90,6 +90,86 @@ export default class AuthService extends BaseService {
 			context: 'update_profile'
 		});
 	}
+
+	/**
+	 * Verificar email usando token
+	 */
+	async verifyEmail(token: string): Promise<{
+		success: boolean;
+		message: string;
+		type?: string;
+		user?: UserResponse;
+	}> {
+		this.validateRequired({ token }, ['token']);
+
+		return this.post(API_ENDPOINTS.AUTH.VERIFY_EMAIL, { token }, {
+			context: 'verify_email'
+		});
+	}
+
+	/**
+	 * Solicitar recuperação de senha
+	 */
+	async forgotPassword(email: string): Promise<{
+		success: boolean;
+		message: string;
+		type?: string;
+	}> {
+		this.validateRequired({ email }, ['email']);
+
+		return this.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, { email }, {
+			context: 'forgot_password'
+		});
+	}
+
+	/**
+	 * Redefinir senha usando token
+	 */
+	async resetPassword(data: {
+		token: string;
+		password: string;
+		password_confirmation: string;
+	}): Promise<{
+		success: boolean;
+		message: string;
+		type?: string;
+		user?: UserResponse;
+	}> {
+		this.validateRequired(data, ['token', 'password', 'password_confirmation']);
+
+		return this.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, data, {
+			context: 'reset_password'
+		});
+	}
+
+	/**
+	 * Verificar status de verificação do email
+	 */
+	async getEmailVerificationStatus(): Promise<{
+		success: boolean;
+		email_verified: boolean;
+		email: string;
+		can_resend: boolean;
+		last_sent?: string;
+	}> {
+		return this.get(API_ENDPOINTS.AUTH.EMAIL_VERIFICATION_STATUS, {
+			context: 'email_verification_status'
+		});
+	}
+
+	/**
+	 * Reenviar email de verificação
+	 */
+	async resendVerificationEmail(): Promise<{
+		success: boolean;
+		message: string;
+		email?: string;
+		expires_at?: string;
+	}> {
+		return this.post(API_ENDPOINTS.AUTH.RESEND_VERIFICATION_EMAIL, {}, {
+			context: 'resend_verification_email'
+		});
+	}
 }
 
 // Instância singleton do serviço
