@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { Loading } from '@/shared/components';
 import { HomeRedirect } from '@/components/routing/HomeRedirect';
+import { EmailVerificationGuard } from '@/components/auth/EmailVerificationGuard';
 
 // Lazy load components for better performance
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
@@ -17,6 +18,7 @@ const SignInPage = lazy(() => import('./pages/SignInPage'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
 const SignOutPage = lazy(() => import('./pages/SignOutPage'));
 const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
+const EmailVerificationPendingPage = lazy(() => import('./pages/EmailVerificationPendingPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const BasicAnalyticsPage = lazy(() => import('./pages/BasicAnalyticsPage'));
@@ -78,6 +80,14 @@ function AppRouter() {
 				}
 			/>
 			<Route
+				path="/email-verification-pending"
+				element={
+					<LoadingWrapper>
+						<EmailVerificationPendingPage />
+					</LoadingWrapper>
+				}
+			/>
+			<Route
 				path="/forgot-password"
 				element={
 					<LoadingWrapper>
@@ -115,7 +125,9 @@ function AppRouter() {
 				path="/analytics"
 				element={
 					<LoadingWrapper>
-						<AnalyticsPage />
+						<EmailVerificationGuard>
+							<AnalyticsPage />
+						</EmailVerificationGuard>
 					</LoadingWrapper>
 				}
 			/>
@@ -123,7 +135,9 @@ function AppRouter() {
 				path="/link"
 				element={
 					<LoadingWrapper>
-						<LinkPage />
+						<EmailVerificationGuard>
+							<LinkPage />
+						</EmailVerificationGuard>
 					</LoadingWrapper>
 				}
 			/>
@@ -131,7 +145,9 @@ function AppRouter() {
 				path="/link/create"
 				element={
 					<LoadingWrapper>
-						<LinkCreatePage />
+						<EmailVerificationGuard>
+							<LinkCreatePage />
+						</EmailVerificationGuard>
 					</LoadingWrapper>
 				}
 			/>
@@ -139,7 +155,9 @@ function AppRouter() {
 				path="/link/edit/:id"
 				element={
 					<LoadingWrapper>
-						<LinkEditPage />
+						<EmailVerificationGuard>
+							<LinkEditPage />
+						</EmailVerificationGuard>
 					</LoadingWrapper>
 				}
 			/>
@@ -147,7 +165,9 @@ function AppRouter() {
 				path="/link/analytic/:id"
 				element={
 					<LoadingWrapper>
-						<LinkAnalyticsPage />
+						<EmailVerificationGuard>
+							<LinkAnalyticsPage />
+						</EmailVerificationGuard>
 					</LoadingWrapper>
 				}
 			/>
@@ -155,7 +175,9 @@ function AppRouter() {
 				path="/link/qr/:id"
 				element={
 					<LoadingWrapper>
-						<LinkQRPage />
+						<EmailVerificationGuard>
+							<LinkQRPage />
+						</EmailVerificationGuard>
 					</LoadingWrapper>
 				}
 			/>
@@ -172,7 +194,9 @@ function AppRouter() {
 				path="/profile"
 				element={
 					<LoadingWrapper>
-						<ProfilePage />
+						<EmailVerificationGuard>
+							<ProfilePage />
+						</EmailVerificationGuard>
 					</LoadingWrapper>
 				}
 			/>

@@ -67,18 +67,23 @@ function SignUpPage() {
 		try {
 			setLoading(true);
 
-			await authService.signUp({
+			const response = await authService.signUp({
 				name: data.name,
 				email: data.email,
 				password: data.password,
 				password_confirmation: data.password_confirmation
 			});
 
-			dispatch(showSuccessMessage('Conta criada com sucesso! Redirecionando...'));
+			dispatch(showSuccessMessage('Conta criada com sucesso! Verifique seu email para ativar sua conta.'));
 
-			// Redirecionar após sucesso
+			// Redirecionar para página de instruções de verificação
 			setTimeout(() => {
-				navigate('/analytics');
+				navigate('/email-verification-pending', {
+					state: {
+						email: data.email,
+						message: 'Verifique seu email para ativar sua conta.'
+					}
+				});
 			}, 1500);
 		} catch (error: unknown) {
 			if (error && typeof error === 'object' && 'response' in error) {
