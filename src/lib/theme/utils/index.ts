@@ -12,6 +12,9 @@
 // Utilitários de cores - usado em MetricCardOptimized
 export * from './colorUtils';
 
+// Utilitários específicos para cores de gráficos
+export * from './chartColorUtils';
+
 // Utilitários de glass effect - usado em vários componentes
 export * from './glassUtils';
 

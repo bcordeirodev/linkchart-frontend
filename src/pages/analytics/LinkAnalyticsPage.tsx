@@ -6,7 +6,7 @@ import { memo, useMemo } from 'react';
 import { ResponsiveContainer } from '@/shared/ui/base';
 import { PageHeader } from '@/shared/ui/base/PageHeader';
 import MainLayout from '@/shared/layout/MainLayout';
-import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import { useLinkAnalyticsOptimized } from '@/features/links/hooks/useLinkAnalytics';
 import { LinkAnalyticsTabsOptimized } from '@/features/links/components/analytics/LinkAnalyticsTabs';
 import { AppIcon } from '@/lib/icons';

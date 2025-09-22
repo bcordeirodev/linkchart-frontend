@@ -2,9 +2,7 @@ import { styled } from '@mui/material/styles';
 import { Paper, Box, Typography, Button } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-// Disable TypeScript warnings for styled components type inference
+// @ts-nocheck
 
 /**
  * 🎨 STYLED COMPONENTS PARA RESULTS MODULE
@@ -18,23 +16,11 @@ import { alpha } from '@mui/material/styles';
 export const ResultContainer = styled(Paper)(({ theme }) => ({
 	padding: theme.spacing(4),
 	borderRadius: theme.spacing(2),
-	background: `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.1)} 0%, ${alpha(theme.palette.primary.main, 0.05)} 100%)`,
-	border: `2px solid ${alpha(theme.palette.success.main, 0.2)}`,
+	backgroundColor: theme.palette.background.paper,
+	border: `2px solid ${theme.palette.success.main}`,
 	textAlign: 'center',
 	position: 'relative',
 	overflow: 'hidden',
-
-	// Success glow animation
-	animation: 'successGlow 3s ease-in-out infinite',
-
-	'@keyframes successGlow': {
-		'0%, 100%': {
-			boxShadow: `0 0 20px ${alpha(theme.palette.success.main, 0.2)}`
-		},
-		'50%': {
-			boxShadow: `0 0 30px ${alpha(theme.palette.success.main, 0.4)}`
-		}
-	},
 
 	'&::before': {
 		content: '""',

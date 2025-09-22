@@ -6,7 +6,7 @@ import { AppIcon } from '@/lib/icons';
 import { EditLinkForm } from '@/features/links/edit';
 import { ResponsiveContainer } from '@/shared/ui/base';
 import MainLayout from '@/shared/layout/MainLayout';
-import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
 
 /**
@@ -65,8 +65,6 @@ function LinkEditPage() {
 					maxWidth="md"
 				>
 					<Stack spacing={4}>
-						<PageBreadcrumb />
-
 						{/* Form Section */}
 						<EditLinkForm
 							linkId={id}

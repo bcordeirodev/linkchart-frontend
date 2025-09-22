@@ -68,9 +68,7 @@ export function URLShortenerForm({ onSuccess, onError, loading: externalLoading 
 					sx={{
 						mb: 2,
 						fontWeight: 900,
-						background: 'linear-gradient(135deg, #0A74DA 0%, #00A4EF 50%, #6366F1 100%)',
-						WebkitBackgroundClip: 'text',
-						WebkitTextFillColor: 'transparent',
+						color: 'primary.main',
 						fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
 						letterSpacing: '-0.02em',
 						lineHeight: 1.2

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Box, Alert } from '@mui/material';
 import { type MRT_RowSelectionState } from 'material-react-table';
 import { Loading } from '@/shared/components';
-import DataTable from '../shared/ui/data-display/DataTable';
+import DataTable from '../../shared/ui/data-display/DataTable';
 
 import { useLinks } from '@/features/links/hooks/useLinks';
 import { LinksHeader } from '@/features/links/components/LinksHeader';
@@ -13,7 +13,7 @@ import { LinksMobileCards } from '@/features/links/components/mobile/LinksMobile
 import { ResponsiveContainer } from '@/shared/ui/base';
 import { useResponsive } from '@/lib/theme';
 import MainLayout from '@/shared/layout/MainLayout';
-import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 
 /**
  * Página de listagem de links refatorada

@@ -3,6 +3,7 @@ import type { HeatmapPoint } from '@/types';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { useTheme } from '@mui/material/styles';
+import { getChartColorsByType } from '@/lib/theme';
 
 interface GeographicInsightsProps {
 	data: HeatmapPoint[];
@@ -14,6 +15,9 @@ interface GeographicInsightsProps {
 export function GeographicInsights({ data, countries, states, cities }: GeographicInsightsProps) {
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
+
+	// Cores padronizadas usando novo sistema
+	const geographicColors = getChartColorsByType('geographic');
 
 	// Calcular estatísticas
 	const totalClicks = data.reduce((sum, point) => sum + point.clicks, 0);
@@ -252,7 +256,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 									cityChartData,
 									'name',
 									'value',
-									theme.palette.warning.main,
+									geographicColors.cities,
 									true,
 									isDark
 								)}
@@ -282,7 +286,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 									stateChartData,
 									'name',
 									'value',
-									theme.palette.success.main,
+									geographicColors.states,
 									false,
 									isDark
 								)}

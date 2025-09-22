@@ -1,7 +1,7 @@
 import { Box, Typography, CircularProgress, Card, CardContent, Chip, useTheme } from '@mui/material';
 import { Launch as LaunchIcon, Speed as SpeedIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
-import { createGlassCard, createComponentColorSet, createPresetShadows } from '@/lib/theme';
+import { createComponentColorSet, createPresetShadows } from '@/lib/theme';
 
 interface RedirectLoaderProps {
 	targetUrl: string;
@@ -32,8 +32,9 @@ export function RedirectLoader({ targetUrl, countdown, isRedirecting }: Redirect
 				sx={{
 					maxWidth: 500,
 					mx: 'auto',
-					// Usa glassmorphism padronizado
-					...(createGlassCard(theme, 'primary') as any),
+					// Background sólido consistente
+					backgroundColor: theme.palette.background.paper,
+					borderRadius: 2,
 					boxShadow: shadows.primaryGlow
 				}}
 			>

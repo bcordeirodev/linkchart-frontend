@@ -26,8 +26,7 @@ import {
 	ListItemIcon,
 	ListItemText,
 	Divider,
-	useTheme,
-	alpha
+	useTheme
 } from '@mui/material';
 import {
 	ContentCopy,
@@ -137,7 +136,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 				sx={{
 					mb: 2,
 					borderRadius: 3,
-					border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+					border: `1px solid ${theme.palette.divider}`,
 					boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
 					transition: 'all 0.2s ease',
 					'&:hover': {
@@ -208,9 +207,9 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 					<Box
 						sx={{
 							p: 2,
-							bgcolor: alpha(theme.palette.primary.main, 0.04),
+							bgcolor: theme.palette.background.paper,
 							borderRadius: 2,
-							border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+							border: `1px solid ${theme.palette.divider}`,
 							mb: 2
 						}}
 					>

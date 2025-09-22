@@ -11,7 +11,7 @@ import { useShorter } from '@/features/shorter/hooks';
 import { AppIcon } from '@/lib/icons';
 
 // Hooks
-import useUser from '../lib/auth/useUser';
+import useUser from '../../lib/auth/useUser';
 import { useResponsive } from '@/lib/theme/hooks/useResponsive';
 
 /**

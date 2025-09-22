@@ -6,7 +6,6 @@
 import { Box, Typography, Card, CardContent } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { MetricCardProps } from '../components';
-import { createGlassCard } from '@/lib/theme';
 
 /**
  * Componente MetricCard otimizado seguindo padrões arquiteturais
@@ -37,18 +36,18 @@ export function MetricCardOptimized({
 
 	return (
 		<Card
-			sx={
-				{
-					...createGlassCard(theme, 'neutral'),
-					height: '100%',
-					transition: theme.transitions.create(['transform', 'box-shadow']),
-					'&:hover': {
-						transform: 'translateY(-2px)',
-						boxShadow: theme.shadows[8]
-					},
-					...sx
-				} as any
-			}
+			className="metric-container"
+			sx={{
+				height: '100%',
+				backgroundColor: theme.palette.background.paper, // Background sólido consistente
+				borderRadius: 2,
+				transition: theme.transitions.create(['transform', 'box-shadow']),
+				'&:hover': {
+					transform: 'translateY(-2px)',
+					boxShadow: theme.shadows[8]
+				},
+				...sx
+			}}
 			{...other}
 		>
 			<CardContent sx={{ p: 3 }}>

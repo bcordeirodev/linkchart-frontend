@@ -1,7 +1,7 @@
 import { AuthLayout } from '@/shared/layout';
-import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
-import authRoles from '../lib/auth/authRoles';
-import AuthJsForm from '../lib/auth/forms/AuthJsForm';
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
+import authRoles from '../../lib/auth/authRoles';
+import AuthJsForm from '../../lib/auth/forms/AuthJsForm';
 
 /**
  * The sign in page - Enhanced modern design using AuthLayout

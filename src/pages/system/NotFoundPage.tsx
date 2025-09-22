@@ -2,7 +2,7 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ErrorLayout } from '@/shared/layout';
-import useUser from '../lib/auth/useUser';
+import useUser from '../../lib/auth/useUser';
 
 /**
  * Enhanced Error404Page component with smart navigation suggestions.

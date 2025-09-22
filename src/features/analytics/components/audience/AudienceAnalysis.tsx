@@ -150,17 +150,12 @@ export function AudienceAnalysis({
 							item
 							xs={12}
 						>
-							<EnhancedPaper
-								variant="glass"
-								animated
-							>
-								<AudienceInsights
-									deviceBreakdown={deviceBreakdown}
-									browserBreakdown={(audienceData as any)?.browser_breakdown}
-									totalClicks={totalClicks}
-									showAdvancedInsights={shouldUseHook}
-								/>
-							</EnhancedPaper>
+							<AudienceInsights
+								deviceBreakdown={deviceBreakdown}
+								browserBreakdown={(audienceData as any)?.browser_breakdown}
+								totalClicks={totalClicks}
+								showAdvancedInsights={shouldUseHook}
+							/>
 						</Grid>
 					</Grid>
 				</ResponsiveContainer>

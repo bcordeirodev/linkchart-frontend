@@ -1,12 +1,10 @@
-import { Grid, Box } from '@mui/material';
-import { ChartCard } from '@/shared/ui/base/ChartCard';
+import { Grid, Box, Card, CardContent, Typography } from '@mui/material';
 import { EmptyState } from '@/shared/ui/base/EmptyState';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { formatAreaChart, formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { useTheme } from '@mui/material/styles';
 import { ChartsProps } from '@/features/analytics/components/types';
 import { createPresetAnimations, createComponentColorSet } from '@/lib/theme';
-import { createChartContainerStyles, createHorizontalBarStyles } from '@/features/analytics/utils/chartStyles';
 
 /**
  * 📊 CHARTS COM STYLED COMPONENTS
@@ -22,11 +20,9 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 		const successColors = createComponentColorSet(theme, 'success');
 		const infoColors = createComponentColorSet(theme, 'info');
 
-		// Estilos padronizados para gráficos
-		const chartContainerStyles = createChartContainerStyles(theme, height);
-		const horizontalBarStyles = createHorizontalBarStyles(theme);
+		// Estilos padronizados para gráficos (removidos pois não são mais utilizados com Card)
 
-		// Debug dos dados recebidos (apenas em desenvolvimento)
+		// Debug dos dados rcebidos (apenas em desenvolvimento)
 		// Validação silenciosa dos dados recebidos
 
 		// Verificação de segurança para dados
@@ -114,21 +110,34 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 									...animations.cardHover
 								}}
 							>
-								<ChartCard title="📈 Cliques por Hora do Dia">
-									<Box sx={{ p: 2 }}>
-										<ApexChartWrapper
-											type="area"
-											height={height}
-											{...formatAreaChart(
-												chartData.temporal?.clicks_by_hour || [],
-												'hour',
-												'clicks',
-												'#1976d2',
-												isDark
-											)}
-										/>
-									</Box>
-								</ChartCard>
+								<Card>
+									<CardContent>
+										<Typography
+											variant="h6"
+											gutterBottom
+											sx={{
+												position: 'relative',
+												zIndex: 1,
+												mt: 1
+											}}
+										>
+											📈 Cliques por Hora do Dia
+										</Typography>
+										<Box sx={{ mb: 2 }}>
+											<ApexChartWrapper
+												type="area"
+												height={height}
+												{...formatAreaChart(
+													chartData.temporal?.clicks_by_hour || [],
+													'hour',
+													'clicks',
+													'#1976d2',
+													isDark
+												)}
+											/>
+										</Box>
+									</CardContent>
+								</Card>
 							</Box>
 						</Grid>
 
@@ -145,22 +154,35 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 									...animations.cardHover
 								}}
 							>
-								<ChartCard title="📅 Cliques por Dia da Semana">
-									<Box sx={{ p: 2 }}>
-										<ApexChartWrapper
-											type="bar"
-											height={height}
-											{...formatBarChart(
-												chartData.temporal?.clicks_by_day_of_week || [],
-												'day_name',
-												'clicks',
-												'#1976d2',
-												false, // vertical bars
-												isDark
-											)}
-										/>
-									</Box>
-								</ChartCard>
+								<Card>
+									<CardContent>
+										<Typography
+											variant="h6"
+											gutterBottom
+											sx={{
+												position: 'relative',
+												zIndex: 1,
+												mt: 1
+											}}
+										>
+											📅 Cliques por Dia da Semana
+										</Typography>
+										<Box sx={{ mb: 2 }}>
+											<ApexChartWrapper
+												type="bar"
+												height={height}
+												{...formatBarChart(
+													chartData.temporal?.clicks_by_day_of_week || [],
+													'day_name',
+													'clicks',
+													'#1976d2',
+													false, // vertical bars
+													isDark
+												)}
+											/>
+										</Box>
+									</CardContent>
+								</Card>
 							</Box>
 						</Grid>
 					</>
@@ -185,23 +207,38 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 											...animations.cardHover
 										}}
 									>
-										<ChartCard title="📱 Dispositivos">
-											<Box sx={{ p: 2 }}>
-												<ApexChartWrapper
-													type="donut"
-													height={height}
-													{...formatPieChart(
-														(chartData.audience?.device_breakdown || []).map((item) => ({
-															device: item.device,
-															clicks: item.clicks
-														})),
-														'device',
-														'clicks',
-														isDark
-													)}
-												/>
-											</Box>
-										</ChartCard>
+										<Card>
+											<CardContent>
+												<Typography
+													variant="h6"
+													gutterBottom
+													sx={{
+														position: 'relative',
+														zIndex: 1,
+														mt: 1
+													}}
+												>
+													📱 Dispositivos
+												</Typography>
+												<Box sx={{ mb: 2 }}>
+													<ApexChartWrapper
+														type="donut"
+														height={height}
+														{...formatPieChart(
+															(chartData.audience?.device_breakdown || []).map(
+																(item) => ({
+																	device: item.device,
+																	clicks: item.clicks
+																})
+															),
+															'device',
+															'clicks',
+															isDark
+														)}
+													/>
+												</Box>
+											</CardContent>
+										</Card>
 									</Box>
 								</Grid>
 							)}
@@ -220,22 +257,35 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 											...animations.cardHover
 										}}
 									>
-										<ChartCard title="🌍 Top Países">
-											<Box sx={{ p: 2 }}>
-												<ApexChartWrapper
-													type="bar"
-													height={height}
-													{...formatBarChart(
-														(chartData.geographic?.top_countries || []).slice(0, 10),
-														'country',
-														'clicks',
-														successColors.main,
-														true, // horizontal bars
-														isDark
-													)}
-												/>
-											</Box>
-										</ChartCard>
+										<Card>
+											<CardContent>
+												<Typography
+													variant="h6"
+													gutterBottom
+													sx={{
+														position: 'relative',
+														zIndex: 1,
+														mt: 1
+													}}
+												>
+													🌍 Top Países
+												</Typography>
+												<Box sx={{ mb: 2 }}>
+													<ApexChartWrapper
+														type="bar"
+														height={height}
+														{...formatBarChart(
+															(chartData.geographic?.top_countries || []).slice(0, 10),
+															'country',
+															'clicks',
+															successColors.main,
+															true, // horizontal bars
+															isDark
+														)}
+													/>
+												</Box>
+											</CardContent>
+										</Card>
 									</Box>
 								</Grid>
 							)}
@@ -261,25 +311,38 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 											...animations.cardHover
 										}}
 									>
-										<ChartCard title="🏛️ Top Estados/Regiões">
-											<Box sx={{ p: 2 }}>
-												<ApexChartWrapper
-													type="bar"
-													height={height}
-													{...formatBarChart(
-														chartData.geographic.top_states.slice(0, 8) as Record<
-															string,
-															unknown
-														>[],
-														'state',
-														'clicks',
-														infoColors.main,
-														true,
-														isDark
-													)}
-												/>
-											</Box>
-										</ChartCard>
+										<Card>
+											<CardContent>
+												<Typography
+													variant="h6"
+													gutterBottom
+													sx={{
+														position: 'relative',
+														zIndex: 1,
+														mt: 1
+													}}
+												>
+													🏛️ Top Estados/Regiões
+												</Typography>
+												<Box sx={{ mb: 2 }}>
+													<ApexChartWrapper
+														type="bar"
+														height={height}
+														{...formatBarChart(
+															chartData.geographic.top_states.slice(0, 8) as Record<
+																string,
+																unknown
+															>[],
+															'state',
+															'clicks',
+															infoColors.main,
+															true,
+															isDark
+														)}
+													/>
+												</Box>
+											</CardContent>
+										</Card>
 									</Box>
 								</Grid>
 							)}
@@ -300,23 +363,36 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 											...animations.cardHover
 										}}
 									>
-										<ChartCard title="🏙️ Top Cidades">
-											<Box sx={{ p: 2 }}>
-												<ApexChartWrapper
-													type="donut"
-													height={height}
-													{...formatPieChart(
-														chartData.geographic.top_cities.slice(0, 8) as Record<
-															string,
-															unknown
-														>[],
-														'city',
-														'clicks',
-														isDark
-													)}
-												/>
-											</Box>
-										</ChartCard>
+										<Card>
+											<CardContent>
+												<Typography
+													variant="h6"
+													gutterBottom
+													sx={{
+														position: 'relative',
+														zIndex: 1,
+														mt: 1
+													}}
+												>
+													🏙️ Top Cidades
+												</Typography>
+												<Box sx={{ mb: 2 }}>
+													<ApexChartWrapper
+														type="donut"
+														height={height}
+														{...formatPieChart(
+															chartData.geographic.top_cities.slice(0, 8) as Record<
+																string,
+																unknown
+															>[],
+															'city',
+															'clicks',
+															isDark
+														)}
+													/>
+												</Box>
+											</CardContent>
+										</Card>
 									</Box>
 								</Grid>
 							)}

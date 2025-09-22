@@ -45,7 +45,16 @@ export { allThemes, allThemes as themesConfig, simplifiedThemes, extendedThemes 
 // ========================================
 // 🎨 COLORS
 // ========================================
-export { fuseDark, skyBlue, lightPaletteText, darkPaletteText, brandColors } from './colors';
+export {
+	fuseDark,
+	skyBlue,
+	chartColors,
+	getChartColor,
+	getGradientColors,
+	lightPaletteText,
+	darkPaletteText,
+	brandColors
+} from './colors';
 
 // ========================================
 // ⚙️ CONFIGURATIONS ESSENCIAIS
@@ -75,6 +84,12 @@ export {
 	getTextColors,
 	getBorderColors,
 	createComponentColorSet,
+
+	// Chart color utilities
+	getStandardChartColors,
+	getChartColorsByType,
+	getContextColor,
+	getMultiSeriesColors,
 
 	// Glass effects - usado em vários componentes
 	createGlassEffect,

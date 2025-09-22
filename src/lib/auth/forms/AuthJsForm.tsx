@@ -78,7 +78,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 
 			// Navegação após login bem-sucedido
 			const redirectUrl = getSessionRedirectUrl();
-			const targetUrl = redirectUrl || '/analytics';
+			const targetUrl = redirectUrl || '/links';
 
 			resetSessionRedirectUrl();
 

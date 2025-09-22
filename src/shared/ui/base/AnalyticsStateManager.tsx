@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Typography, useTheme } from '@mui/material';
-import { createGlassCard, createPresetAnimations } from '@/lib/theme';
+import { createPresetAnimations } from '@/lib/theme';
 import { ReactNode } from 'react';
 
 interface AnalyticsStateManagerProps {
@@ -49,7 +49,8 @@ export function AnalyticsStateManager({
 		return (
 			<Box
 				sx={{
-					...createGlassCard(theme, 'neutral'),
+					backgroundColor: theme.palette.background.paper,
+					borderRadius: 2,
 					display: 'flex',
 					flexDirection: 'column',
 					alignItems: 'center',
@@ -80,7 +81,8 @@ export function AnalyticsStateManager({
 		return (
 			<Box
 				sx={{
-					...createGlassCard(theme, 'neutral'),
+					backgroundColor: theme.palette.background.paper,
+					borderRadius: 2,
 					display: 'flex',
 					flexDirection: 'column',
 					alignItems: 'center',
@@ -139,7 +141,8 @@ export function AnalyticsStateManager({
 		return (
 			<Box
 				sx={{
-					...createGlassCard(theme, 'neutral'),
+					backgroundColor: theme.palette.background.paper,
+					borderRadius: 2,
 					display: 'flex',
 					flexDirection: 'column',
 					alignItems: 'center',

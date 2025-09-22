@@ -3,6 +3,7 @@ import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import type { DeviceData, BrowserData, OSData, DevicePerformanceData, LanguageData } from '@/types';
 import { Box, Card, CardContent, Chip, Grid, Stack, Typography, Tabs, Tab } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { getStandardChartColors } from '@/lib/theme';
 import { useState } from 'react';
 
 interface AudienceChartProps {
@@ -37,6 +38,9 @@ export function AudienceChart({
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
 	const [activeTab, setActiveTab] = useState(0);
+
+	// Cores padronizadas usando novo sistema
+	const chartColors = getStandardChartColors(theme);
 
 	// Calcular estatísticas
 	const totalDevices = deviceBreakdown.reduce((sum, device) => sum + device.clicks, 0);
@@ -90,7 +94,7 @@ export function AudienceChart({
 	};
 
 	return (
-		<Box p={2}>
+		<Box sx={{ p: 2, backgroundColor: theme.palette.background.paper, borderRadius: 2 }}>
 			<Typography
 				variant="h6"
 				gutterBottom
@@ -306,7 +310,7 @@ export function AudienceChart({
 											deviceChartData,
 											'name',
 											'value',
-											theme.palette.warning.main,
+											chartColors.primary.main,
 											true,
 											isDark
 										)}
@@ -602,7 +606,7 @@ export function AudienceChart({
 										performanceChartData,
 										'name',
 										'value',
-										theme.palette.warning.main,
+										chartColors.warning.main,
 										false,
 										isDark
 									)}

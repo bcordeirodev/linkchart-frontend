@@ -1,5 +1,5 @@
 import { Box, Typography, useTheme } from '@mui/material';
-import { createGlassCard, createTextGradient, createThemeGradient, createPresetAnimations } from '@/lib/theme';
+import { createTextGradient, createThemeGradient, createPresetAnimations } from '@/lib/theme';
 
 /**
  * Cabeçalho da página de perfil
@@ -15,9 +15,9 @@ export function ProfileHeader() {
 			{/* <PageBreadcrumb /> */}
 			<Box
 				sx={{
-					// Usa glassmorphism padronizado
-					...(createGlassCard(theme, 'secondary') as any),
-					borderRadius: 3,
+					// Background sólido consistente
+					backgroundColor: theme.palette.background.paper,
+					borderRadius: 2,
 					p: 4,
 					position: 'relative',
 					overflow: 'hidden',

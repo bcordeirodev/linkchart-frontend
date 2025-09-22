@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { TabPanel } from '@/shared/ui/base/TabPanel';
 import TabDescription from '@/shared/ui/base/TabDescription';
 import { LinkAnalyticsData } from '../../types/analytics';
-import { createGlassCard } from '@/lib/theme/utils/glassUtils';
 
 // Importar componentes especializados que usam hooks próprios
 import { LinkDashboard } from './LinkDashboard';
@@ -63,7 +62,14 @@ export function LinkAnalyticsTabsOptimized({
 	return (
 		<Box>
 			{/* Tabs Navigation */}
-			<Box sx={{ ...createGlassCard(theme, 'neutral'), mb: 3 }}>
+			<Box
+				className="link-analytics-tabs-container"
+				sx={{
+					backgroundColor: theme.palette.background.paper,
+					borderRadius: 2,
+					mb: 3
+				}}
+			>
 				<Tabs
 					value={tabValue}
 					onChange={handleTabChange}

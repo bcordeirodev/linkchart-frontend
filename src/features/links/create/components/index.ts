@@ -4,4 +4,3 @@
  */
 
 export * from './CreateLinkForm';
-export * from './CreateLinkHero';

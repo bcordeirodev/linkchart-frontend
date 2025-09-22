@@ -11,9 +11,6 @@ import {
 	Chip
 } from '@mui/material';
 import { Search, FilterList } from '@mui/icons-material';
-import { alpha } from '@mui/material/styles';
-import { createGlassCard } from '@/lib/theme';
-import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 
 interface LinksFiltersProps {
 	searchTerm: string;
@@ -29,31 +26,20 @@ interface LinksFiltersProps {
 export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatusChange }: LinksFiltersProps) {
 	const theme = useTheme();
 
-	const getStatusLabel = (status: string) => {
-		const labels = {
-			all: 'Todos os Links',
-			active: 'Links Ativos',
-			inactive: 'Links Inativos'
-		};
-		return labels[status as keyof typeof labels] || status;
-	};
-
-	const getStatusColor = (status: string) => {
-		const colors = {
-			all: 'default',
-			active: 'success',
-			inactive: 'warning'
-		};
-		return colors[status as keyof typeof colors] || 'default';
-	};
-
-	const glassCardStyles = createGlassCard(theme);
-
 	return (
-		<EnhancedPaper
-			variant="glass"
-			animated
-			sx={{ p: 3, mb: 4 }}
+		<Box
+			className="filter-container"
+			sx={{
+				backgroundColor: theme.palette.background.paper,
+				borderRadius: 2,
+				p: 3,
+				mb: 4,
+				transition: theme.transitions.create(['transform', 'box-shadow']),
+				'&:hover': {
+					transform: 'translateY(-1px)',
+					boxShadow: theme.shadows[8]
+				}
+			}}
 		>
 			{/* Header dos filtros */}
 			<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -115,55 +101,14 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 					}}
 				/>
 
-				<FormControl
-					sx={{
-						minWidth: 180,
-						'& .MuiFilledInput-root': {
-							borderRadius: '12px',
-							backgroundColor:
-								theme.palette.mode === 'dark'
-									? alpha(theme.palette.background.default, 0.6)
-									: alpha('#ffffff', 0.8),
-							border: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
-							transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-							'&:hover': {
-								backgroundColor:
-									theme.palette.mode === 'dark'
-										? alpha(theme.palette.background.default, 0.8)
-										: alpha('#ffffff', 0.95),
-								borderColor: alpha(theme.palette.primary.main, 0.5),
-								boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`
-							},
-							'&.Mui-focused': {
-								backgroundColor:
-									theme.palette.mode === 'dark' ? theme.palette.background.default : '#ffffff',
-								borderColor: theme.palette.primary.main,
-								boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
-							},
-							'& fieldset': {
-								border: 'none'
-							}
-						},
-						'& .MuiInputLabel-root': {
-							fontFamily: 'Inter, system-ui, sans-serif',
-							fontWeight: 500
-						},
-						'& .MuiSelect-select': {
-							fontFamily: 'Inter, system-ui, sans-serif',
-							fontWeight: 500
-						}
-					}}
-				>
+				<FormControl sx={{ minWidth: 180 }}>
 					<InputLabel>Status do Link</InputLabel>
 					<Select
 						value={statusFilter}
 						label="Status do Link"
 						onChange={(e) => onStatusChange(e.target.value)}
 					>
-						<MenuItem
-							value="all"
-							sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-						>
+						<MenuItem value="all">
 							<Chip
 								label="Todos"
 								size="small"
@@ -172,10 +117,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 							/>
 							Todos os Links
 						</MenuItem>
-						<MenuItem
-							value="active"
-							sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-						>
+						<MenuItem value="active">
 							<Chip
 								label="Ativo"
 								size="small"
@@ -184,10 +126,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 							/>
 							Links Ativos
 						</MenuItem>
-						<MenuItem
-							value="inactive"
-							sx={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-						>
+						<MenuItem value="inactive">
 							<Chip
 								label="Inativo"
 								size="small"
@@ -199,7 +138,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 					</Select>
 				</FormControl>
 			</Box>
-		</EnhancedPaper>
+		</Box>
 	);
 }
 

@@ -4,26 +4,37 @@ import { Loading } from '@/shared/components';
 import { HomeRedirect } from '@/components/routing/HomeRedirect';
 import { EmailVerificationGuard } from '@/components/auth/EmailVerificationGuard';
 
-// Lazy load components for better performance
-const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
-const LinkPage = lazy(() => import('./pages/LinkPage'));
-const LinkCreatePage = lazy(() => import('./pages/LinkCreatePage'));
-const LinkEditPage = lazy(() => import('./pages/LinkEditPage'));
-const LinkAnalyticsPage = lazy(() => import('./pages/LinkAnalyticsPage'));
-const LinkQRPage = lazy(() => import('./pages/LinkQRPage'));
-const ProfilePage = lazy(() => import('./pages/ProfilePage'));
-const ShorterPage = lazy(() => import('./pages/ShorterPage'));
-const RedirectPage = lazy(() => import('./pages/RedirectPage'));
-const SignInPage = lazy(() => import('./pages/SignInPage'));
-const SignUpPage = lazy(() => import('./pages/SignUpPage'));
-const SignOutPage = lazy(() => import('./pages/SignOutPage'));
-const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
-const EmailVerificationPendingPage = lazy(() => import('./pages/EmailVerificationPendingPage'));
-const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
-const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
-const BasicAnalyticsPage = lazy(() => import('./pages/BasicAnalyticsPage'));
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
-const UnauthorizedPage = lazy(() => import('./pages/UnauthorizedPage'));
+// Lazy load components for better performance - Organized by category
+// 📊 Analytics Pages
+const AnalyticsPage = lazy(() => import('./pages/analytics/AnalyticsPage'));
+const LinkAnalyticsPage = lazy(() => import('./pages/analytics/LinkAnalyticsPage'));
+const BasicAnalyticsPage = lazy(() => import('./pages/analytics/BasicAnalyticsPage'));
+
+// 🔗 Links Management Pages
+const LinkPage = lazy(() => import('./pages/links/LinkPage'));
+const LinkCreatePage = lazy(() => import('./pages/links/LinkCreatePage'));
+const LinkEditPage = lazy(() => import('./pages/links/LinkEditPage'));
+const LinkQRPage = lazy(() => import('./pages/links/LinkQRPage'));
+
+// 🔐 Authentication Pages
+const SignInPage = lazy(() => import('./pages/auth/SignInPage'));
+const SignUpPage = lazy(() => import('./pages/auth/SignUpPage'));
+const SignOutPage = lazy(() => import('./pages/auth/SignOutPage'));
+const VerifyEmailPage = lazy(() => import('./pages/auth/VerifyEmailPage'));
+const EmailVerificationPendingPage = lazy(() => import('./pages/auth/EmailVerificationPendingPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
+
+// 🌐 Public Pages
+const ShorterPage = lazy(() => import('./pages/public/ShorterPage'));
+const RedirectPage = lazy(() => import('./pages/public/RedirectPage'));
+
+// 👤 User Pages
+const ProfilePage = lazy(() => import('./pages/user/ProfilePage'));
+
+// ⚠️ System Pages
+const NotFoundPage = lazy(() => import('./pages/system/NotFoundPage'));
+const UnauthorizedPage = lazy(() => import('./pages/system/UnauthorizedPage'));
 
 const LoadingWrapper = ({ children }: { children: React.ReactNode }) => (
 	<Suspense fallback={<Loading />}>{children}</Suspense>

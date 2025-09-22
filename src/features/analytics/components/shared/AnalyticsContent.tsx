@@ -1,7 +1,7 @@
 import { Box, Tabs, Tab } from '@mui/material';
 import { useState } from 'react';
 import { TabPanel } from '@/shared/ui/base/TabPanel';
-import { createGlassCard, createPresetAnimations } from '@/lib/theme';
+import { createPresetAnimations } from '@/lib/theme';
 import { useTheme } from '@mui/material/styles';
 
 // Componentes integrados com lazy loading robusto
@@ -84,7 +84,14 @@ export function AnalyticsContent({
 		<Box>
 			{/* Tabs Navigation */}
 			{showTabs && (
-				<Box sx={{ ...createGlassCard(theme, 'neutral') }}>
+				<Box
+					className="analytics-tabs-container"
+					sx={{
+						backgroundColor: theme.palette.background.paper,
+						borderRadius: 2,
+						mb: 3
+					}}
+				>
 					<Tabs
 						value={tabValue}
 						onChange={handleTabChange}

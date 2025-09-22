@@ -5,7 +5,7 @@
 
 import { Paper, PaperProps } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { createGlassCard, createPresetAnimations } from '@/lib/theme';
+import { createPresetAnimations } from '@/lib/theme';
 
 interface EnhancedPaperProps extends Omit<PaperProps, 'variant'> {
 	variant?: 'glass' | 'elevated' | 'outlined';
@@ -21,7 +21,11 @@ function EnhancedPaper({ variant = 'glass', animated = true, children, sx, ...ot
 	const animations = createPresetAnimations(theme);
 
 	const variantStyles = {
-		glass: createGlassCard(theme, 'neutral'),
+		glass: {
+			backgroundColor: theme.palette.background.paper, // Background sólido consistente
+			borderRadius: 2,
+			boxShadow: theme.shadows[2]
+		},
 		elevated: {
 			backgroundColor: theme.palette.background.paper,
 			boxShadow: theme.shadows[4],

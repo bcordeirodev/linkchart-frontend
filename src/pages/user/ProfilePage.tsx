@@ -9,8 +9,8 @@ import { PageHeader } from '@/shared/ui/base/PageHeader';
 import MainLayout from '@/shared/layout/MainLayout';
 import { Alert, Box, CircularProgress, Grid, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
-import useUser from '../lib/auth/useUser';
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
+import useUser from '../../lib/auth/useUser';
 import { AppIcon } from '@/lib/icons';
 
 /**

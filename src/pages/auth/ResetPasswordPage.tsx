@@ -93,6 +93,7 @@ function ResetPasswordPage() {
 				if (result.type === 'invalid_token') {
 					setTokenValid(false);
 				}
+
 				dispatch(showErrorMessage(result.message));
 			}
 		} catch (error: unknown) {

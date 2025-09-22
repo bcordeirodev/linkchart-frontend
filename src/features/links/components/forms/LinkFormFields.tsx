@@ -30,7 +30,7 @@ interface LinkFormFieldsProps {
  * Campos do formulário usando TextField nativo do MUI
  * Integrado com React Hook Form e validação Zod
  */
-export function LinkFormFields({ control, errors, isEdit = false }: LinkFormFieldsProps) {
+export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: LinkFormFieldsProps) {
 	const [showAdvanced, setShowAdvanced] = useState(false);
 	const [showUTM, setShowUTM] = useState(false);
 
@@ -131,10 +131,25 @@ export function LinkFormFields({ control, errors, isEdit = false }: LinkFormFiel
 				</Box>
 
 				<Collapse in={showAdvanced}>
-					<Stack
-						spacing={2}
-						sx={{ mt: 2 }}
+					<Box
+						sx={{
+							p: 3,
+							pt: 2,
+							mt: 2,
+							backgroundColor: 'background.paper',
+							borderRadius: 2,
+							border: 1,
+							borderColor: 'divider'
+						}}
 					>
+						<Typography
+							variant="body2"
+							color="text.secondary"
+							sx={{ mb: 3 }}
+						>
+							⚙️ Configure opções avançadas como slug personalizado, limites de acesso e datas de ativação
+						</Typography>
+
 						<Grid
 							container
 							spacing={3}
@@ -156,7 +171,8 @@ export function LinkFormFields({ control, errors, isEdit = false }: LinkFormFiel
 											placeholder="meu-link-personalizado"
 											error={!!errors.custom_slug}
 											helperText={
-												errors.custom_slug?.message || 'Opcional - Personalize a URL curta'
+												errors.custom_slug?.message ||
+												'Crie uma URL personalizada e memorável (ex: /r/meu-link)'
 											}
 											InputProps={{
 												startAdornment: (
@@ -195,7 +211,8 @@ export function LinkFormFields({ control, errors, isEdit = false }: LinkFormFiel
 											onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
 											error={!!errors.click_limit}
 											helperText={
-												errors.click_limit?.message || 'Opcional - Máximo de cliques permitidos'
+												errors.click_limit?.message ||
+												'Defina quantos cliques o link pode receber antes de ser desativado'
 											}
 											InputProps={{
 												inputProps: { min: 1, max: 1000000 }
@@ -222,7 +239,10 @@ export function LinkFormFields({ control, errors, isEdit = false }: LinkFormFiel
 											label="⏰ Data de Início"
 											value={value || ''}
 											error={!!errors.starts_in}
-											helperText={errors.starts_in?.message || 'Quando o link ficará ativo'}
+											helperText={
+												errors.starts_in?.message ||
+												'Data e hora em que o link ficará disponível para acesso'
+											}
 											InputLabelProps={{ shrink: true }}
 										/>
 									)}
@@ -246,7 +266,10 @@ export function LinkFormFields({ control, errors, isEdit = false }: LinkFormFiel
 											label="⏳ Data de Expiração"
 											value={value || ''}
 											error={!!errors.expires_at}
-											helperText={errors.expires_at?.message || 'Quando o link expirará'}
+											helperText={
+												errors.expires_at?.message ||
+												'Data e hora em que o link será automaticamente desativado'
+											}
 											InputLabelProps={{ shrink: true }}
 										/>
 									)}
@@ -267,11 +290,11 @@ export function LinkFormFields({ control, errors, isEdit = false }: LinkFormFiel
 											color="primary"
 										/>
 									}
-									label="✅ Link Ativo"
+									label="Link Ativo"
 								/>
 							)}
 						/>
-					</Stack>
+					</Box>
 				</Collapse>
 			</Box>
 
@@ -300,16 +323,23 @@ export function LinkFormFields({ control, errors, isEdit = false }: LinkFormFiel
 				</Box>
 
 				<Collapse in={showUTM}>
-					<Stack
-						spacing={2}
-						sx={{ mt: 2 }}
+					<Box
+						sx={{
+							p: 3,
+							pt: 2,
+							mt: 2,
+							backgroundColor: 'background.paper',
+							borderRadius: 2,
+							border: 1,
+							borderColor: 'divider'
+						}}
 					>
 						<Typography
 							variant="body2"
 							color="text.secondary"
-							sx={{ mb: 2 }}
+							sx={{ mb: 3 }}
 						>
-							Parâmetros para rastreamento no Google Analytics
+							📊 Parâmetros para rastreamento no Google Analytics
 						</Typography>
 
 						<Grid
@@ -425,7 +455,7 @@ export function LinkFormFields({ control, errors, isEdit = false }: LinkFormFiel
 								/>
 							</Grid>
 						</Grid>
-					</Stack>
+					</Box>
 				</Collapse>
 			</Box>
 		</Stack>

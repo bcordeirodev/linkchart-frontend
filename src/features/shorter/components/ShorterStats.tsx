@@ -1,12 +1,6 @@
 import { Grid, Paper, Typography, Box, useTheme } from '@mui/material';
 import { AppIcon } from '@/lib/icons';
-import {
-	createGlassCard,
-	createComponentColorSet,
-	createPresetShadows,
-	createPresetAnimations,
-	createTextGradient
-} from '@/lib/theme';
+import { createComponentColorSet, createPresetShadows, createPresetAnimations, createTextGradient } from '@/lib/theme';
 
 /**
  * Estatísticas da página shorter
@@ -111,8 +105,9 @@ export function ShorterStats() {
 									p: 3,
 									textAlign: 'center',
 									height: '100%',
-									// Usa glassmorphism padronizado
-									...createGlassCard(theme, 'neutral'),
+									// Background sólido consistente
+									backgroundColor: theme.palette.background.paper,
+									borderRadius: 2,
 									boxShadow: shadows.card,
 									// Usa animações padronizadas
 									...animations.cardHover,

@@ -6,7 +6,7 @@ import useUser from '@/lib/auth/useUser';
  * 🏠 COMPONENTE DE REDIRECIONAMENTO DA HOME
  *
  * FUNCIONALIDADE:
- * - Redireciona usuários logados para /analytics (dashboard global)
+ * - Redireciona usuários logados para /links (página de links)
  * - Redireciona usuários não logados para ShorterPage (página pública)
  * - Gerencia estados de loading durante verificação de autenticação
  *
@@ -23,11 +23,11 @@ export function HomeRedirect() {
 		return <Loading />;
 	}
 
-	// Se usuário está logado (não é guest), redireciona para analytics
+	// Se usuário está logado (não é guest), redireciona para links
 	if (user && !isGuest) {
 		return (
 			<Navigate
-				to="/analytics"
+				to="/links"
 				replace
 			/>
 		);

@@ -5,7 +5,6 @@
 
 import { Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { createGlassCard } from '@/lib/theme';
 
 interface TabDescriptionProps {
 	icon: string;
@@ -23,7 +22,15 @@ function TabDescription({ icon, title, description, highlight, metadata }: TabDe
 	const theme = useTheme();
 
 	return (
-		<Box sx={{ ...createGlassCard(theme, 'neutral'), p: 3, mb: 3 }}>
+		<Box
+			className="tab-description-container"
+			sx={{
+				backgroundColor: theme.palette.background.paper, // Background sólido consistente
+				borderRadius: 2,
+				p: 3,
+				mb: 3
+			}}
+		>
 			<Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
 				<Typography
 					component="span"

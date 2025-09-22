@@ -204,7 +204,7 @@ const inputComponents = {
 };
 
 /**
- * Configurações de superfícies (Paper, Card, Dialog)
+ * Configurações de superfícies (Paper, Card, Dialog, Box)
  */
 const surfaceComponents = {
 	MuiPaper: {
@@ -219,9 +219,21 @@ const surfaceComponents = {
 		styleOverrides: {
 			root: ({ theme }: { theme: Theme }) => ({
 				borderRadius: theme.spacing(2), // 16px
+				backgroundColor: theme.palette.background.paper, // Garantir background consistente
 				transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
 				'&:hover': {
 					transform: 'translateY(-2px)'
+				}
+			})
+		}
+	},
+	MuiBox: {
+		styleOverrides: {
+			root: ({ theme }: { theme: Theme }) => ({
+				// Background padrão para Box quando usado como container de métricas
+				'&.metric-container, &.tab-description-container': {
+					backgroundColor: theme.palette.background.paper,
+					borderRadius: theme.spacing(2)
 				}
 			})
 		}

@@ -3,7 +3,7 @@ import { useLinks } from '@/features/links/hooks/useLinks';
 import { ResponsiveContainer } from '@/shared/ui/base';
 import { PageHeader } from '@/shared/ui/base/PageHeader';
 import MainLayout from '@/shared/layout/MainLayout';
-import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import { memo, useMemo } from 'react';
 import { AppIcon } from '@/lib/icons';
 

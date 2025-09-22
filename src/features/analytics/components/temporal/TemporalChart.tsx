@@ -4,6 +4,7 @@ import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { useTheme } from '@mui/material/styles';
 import { ChartCard } from '@/shared/ui/base/ChartCard';
 import { formatAreaChart, formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
+import { getStandardChartColors, getChartColorsByType } from '@/lib/theme';
 import { useState } from 'react';
 
 interface TemporalChartProps {
@@ -28,6 +29,10 @@ export function TemporalChart({
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
 	const [activeTab, setActiveTab] = useState(0);
+
+	// Cores padronizadas usando novo sistema
+	const chartColors = getStandardChartColors(theme);
+	const temporalColors = getChartColorsByType('temporal');
 
 	// Verificar se há dados enhanced disponíveis
 	const hasEnhancedData = hourlyPatternsLocal?.length || weekendVsWeekday || businessHoursAnalysis;
@@ -169,14 +174,14 @@ export function TemporalChart({
 													speed: 800
 												}
 											},
-											colors: ['#ff9800'],
+											colors: [temporalColors.hourly],
 											fill: {
 												type: 'gradient',
 												gradient: {
 													shade: 'light',
 													type: 'vertical',
 													shadeIntensity: 0.25,
-													gradientToColors: ['#ff9800'],
+													gradientToColors: [temporalColors.hourly],
 													inverseColors: false,
 													opacityFrom: 0.6,
 													opacityTo: 0.1,
@@ -394,7 +399,7 @@ export function TemporalChart({
 													speed: 800
 												}
 											},
-											colors: ['#1976d2'],
+											colors: [temporalColors.daily],
 											plotOptions: {
 												bar: {
 													borderRadius: 4,
@@ -724,10 +729,10 @@ export function TemporalChart({
 									})),
 									'hour',
 									'clicks',
-									theme.palette.primary.main,
+									chartColors.primary.main,
 									isDark
 								)}
-								height={350}
+								height={300}
 							/>
 							<Box sx={{ mt: 2 }}>
 								<Typography
@@ -877,7 +882,7 @@ export function TemporalChart({
 									],
 									'name',
 									'value',
-									theme.palette.primary.main,
+									chartColors.primary.main,
 									false,
 									isDark
 								)}

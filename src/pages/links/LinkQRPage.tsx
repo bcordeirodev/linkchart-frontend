@@ -7,9 +7,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 // import QRCode from 'qrcode'; // Removido import estático
 import { ResponsiveContainer } from '@/shared/ui/base';
 import MainLayout from '@/shared/layout/MainLayout';
-import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import { useLinks } from '@/features/links/hooks/useLinks';
-import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
 import { useShareAPI } from '@/features/links/hooks/useShareAPI';
 
 const buildShortUrl = (slug: string): string => {
@@ -169,11 +168,6 @@ function LinkQRPage() {
 					variant="page"
 					maxWidth="md"
 				>
-					{/* Breadcrumb */}
-					<Box sx={{ mb: 2 }}>
-						<PageBreadcrumb skipHome />
-					</Box>
-
 					{/* Header */}
 					<Box sx={{ mb: 4 }}>
 						<Box

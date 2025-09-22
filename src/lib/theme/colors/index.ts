@@ -5,6 +5,7 @@
 
 export { default as fuseDark } from './fuseDark';
 export { default as skyBlue } from './skyBlue';
+export { default as chartColors, getChartColor, getGradientColors } from './chartColors';
 
 // Cores de texto padronizadas
 export const lightPaletteText = {
@@ -19,35 +20,35 @@ export const darkPaletteText = {
 	disabled: 'rgb(156, 163, 175)'
 };
 
-// Cores brand padronizadas
+// Cores brand padronizadas - Atualizadas para consistência com gráficos
 export const brandColors = {
 	primary: {
 		light: '#64B5F6',
-		main: '#0A74DA',
+		main: '#1976d2', // Azul principal dos gráficos
 		dark: '#0D47A1',
 		contrastText: '#FFFFFF'
 	},
 	secondary: {
 		light: '#81D4FA',
-		main: '#00A4EF',
-		dark: '#0288D1',
+		main: '#dc004e', // Rosa dos gráficos
+		dark: '#9c27b0', // Roxo dos gráficos
 		contrastText: '#FFFFFF'
 	},
 	error: {
 		light: '#E57373',
-		main: '#F44336',
-		dark: '#D32F2F',
+		main: '#d32f2f', // Vermelho dos gráficos
+		dark: '#B71C1C',
 		contrastText: '#FFFFFF'
 	},
 	success: {
 		light: '#81C784',
-		main: '#4CAF50',
-		dark: '#388E3C',
+		main: '#2e7d32', // Verde dos gráficos
+		dark: '#1B5E20',
 		contrastText: '#FFFFFF'
 	},
 	warning: {
 		light: '#FFB74D',
-		main: '#FF9800',
+		main: '#ff9800', // Laranja dos gráficos
 		dark: '#F57C00',
 		contrastText: '#000000'
 	},

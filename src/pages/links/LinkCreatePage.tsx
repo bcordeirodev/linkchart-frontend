@@ -5,11 +5,10 @@
 
 import { Stack, Fade, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { CreateLinkForm, CreateLinkHero } from '@/features/links/create';
+import { CreateLinkForm } from '@/features/links/create';
 import { ResponsiveContainer } from '@/shared/ui/base';
 import MainLayout from '@/shared/layout/MainLayout';
-import AuthGuardRedirect from '../lib/auth/AuthGuardRedirect';
-import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 
 /**
  * Página de criação de links simplificada e otimizada
@@ -39,11 +38,6 @@ function LinkCreatePage() {
 					maxWidth="md"
 				>
 					<Stack spacing={4}>
-						<PageBreadcrumb />
-
-						{/* Hero Section */}
-						<CreateLinkHero />
-
 						{/* Form Section */}
 						<Box>
 							<Fade

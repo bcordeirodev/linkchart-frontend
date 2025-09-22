@@ -34,7 +34,7 @@ interface GlobalDashboardProps {
  */
 export function GlobalDashboard({
 	showTitle = true,
-	title = '🎯 Dashboard Global',
+	title = 'Dashboard Global',
 	enableRealtime = false,
 	showTimeframeSelector = true,
 	compact = false

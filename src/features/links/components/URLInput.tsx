@@ -1,7 +1,6 @@
 import { TextField, Box, useTheme } from '@mui/material';
 import { Public } from '@mui/icons-material';
 import { UseFormRegisterReturn } from 'react-hook-form';
-import { createComponentColorSet } from '@/lib/theme';
 
 interface URLInputProps {
 	register?: UseFormRegisterReturn;
@@ -21,7 +20,6 @@ export function URLInput({
 	fullWidth = true
 }: URLInputProps) {
 	const theme = useTheme();
-	const primaryColors = createComponentColorSet(theme, 'primary');
 
 	return (
 		<TextField
@@ -43,21 +41,11 @@ export function URLInput({
 			}}
 			InputProps={{
 				startAdornment: (
-					<Box
-						sx={{
-							display: 'flex',
-							alignItems: 'center',
-
-							borderRadius: 2,
-							background: primaryColors.background,
-							border: `1px solid ${primaryColors.border}`
-						}}
-					>
+					<Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
 						<Public
 							sx={{
 								color: 'primary.main',
-								fontSize: 20,
-								filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))'
+								fontSize: 20
 							}}
 						/>
 					</Box>

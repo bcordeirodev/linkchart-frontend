@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Typography, useTheme } from '@mui/material';
-import { createGlassCard, createPresetAnimations } from '@/lib/theme';
+import { createPresetAnimations } from '@/lib/theme';
 import { AnalyticsHeader } from './AnalyticsHeader';
 
 interface AnalyticsStatesProps {
@@ -51,7 +51,8 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 				)}
 				<Box
 					sx={{
-						...createGlassCard(theme, 'neutral'),
+						backgroundColor: theme.palette.background.paper,
+						borderRadius: 2,
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
@@ -94,7 +95,8 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 				)}
 				<Box
 					sx={{
-						...createGlassCard(theme, 'neutral'),
+						backgroundColor: theme.palette.background.paper,
+						borderRadius: 2,
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
@@ -145,7 +147,8 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 				)}
 				<Box
 					sx={{
-						...createGlassCard(theme, 'neutral'),
+						backgroundColor: theme.palette.background.paper,
+						borderRadius: 2,
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',

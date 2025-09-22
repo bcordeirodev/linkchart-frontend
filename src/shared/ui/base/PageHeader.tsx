@@ -5,7 +5,7 @@
 
 import { Box, Typography, Breadcrumbs, Link, useTheme } from '@mui/material';
 import { ReactNode } from 'react';
-import { createGlassCard, createTextGradient, createPresetAnimations } from '@/lib/theme';
+import { createTextGradient, createPresetAnimations } from '@/lib/theme';
 import { responsiveSpacing } from '@/lib/theme';
 
 interface BreadcrumbItem {
@@ -78,8 +78,9 @@ export function PageHeader({
 	return (
 		<Box
 			sx={{
-				// Usar glassmorphism padronizado
-				...createGlassCard(theme, 'neutral'),
+				// Background sólido consistente
+				backgroundColor: theme.palette.background.paper,
+				borderRadius: 2,
 				// Usar espaçamento responsivo
 				...responsiveSpacing.section,
 				// Altura mínima responsiva

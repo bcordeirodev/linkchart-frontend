@@ -3,13 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { AppIcon } from '@/lib/icons';
-import {
-	createGlassCard,
-	createPresetShadows,
-	createPresetAnimations,
-	createTextGradient,
-	createThemeGradient
-} from '@/lib/theme';
+import { createPresetShadows, createPresetAnimations, createTextGradient, createThemeGradient } from '@/lib/theme';
 import type { BasicAnalyticsData } from '../../types';
 
 interface BasicChartsProps {
@@ -85,8 +79,9 @@ export function BasicCharts({ analyticsData }: BasicChartsProps) {
 							sx={{
 								p: 2,
 								height: '100%',
-								// Usa glassmorphism padronizado seguindo padrão do shorter
-								...createGlassCard(theme, 'neutral'),
+								// Background sólido consistente
+								backgroundColor: theme.palette.background.paper,
+								borderRadius: 2,
 								boxShadow: shadows.card,
 								// Usa animações padronizadas
 								...animations.cardHover,
@@ -137,8 +132,9 @@ export function BasicCharts({ analyticsData }: BasicChartsProps) {
 							sx={{
 								p: 2,
 								height: '100%',
-								// Usa glassmorphism padronizado seguindo padrão do shorter
-								...createGlassCard(theme, 'neutral'),
+								// Background sólido consistente
+								backgroundColor: theme.palette.background.paper,
+								borderRadius: 2,
 								boxShadow: shadows.card,
 								// Usa animações padronizadas
 								...animations.cardHover,
@@ -261,10 +257,10 @@ function EmptyChartsState() {
 				sx={{
 					p: 4,
 					textAlign: 'center',
-					// Usa glassmorphism padronizado
-					...createGlassCard(theme, 'neutral'),
+					// Background sólido consistente
+					backgroundColor: theme.palette.background.paper,
+					borderRadius: 2,
 					boxShadow: shadows.card,
-					borderRadius: 3,
 					background: `linear-gradient(135deg, ${theme.palette.primary.main}08 0%, ${theme.palette.secondary.main}05 100%)`,
 					border: `2px dashed ${theme.palette.divider}`
 				}}
