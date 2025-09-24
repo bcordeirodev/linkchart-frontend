@@ -1,10 +1,6 @@
 import { Box, Avatar, TextField, Button, IconButton } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
 
- 
-// @ts-nocheck
-// Disable all TypeScript checks for styled components type inference issues
-
 /**
  * 🎨 STYLED COMPONENTS PARA PROFILE MODULE
  * Componentes estilizados para perfil do usuário
@@ -291,7 +287,7 @@ interface SaveButtonProps {
 }
 
 export const SaveButton = styled(Button, {
-	shouldForwardProp: (prop) => !['hasChanges', 'isLoading'].includes(prop as string)
+	shouldForwardProp: (prop) => !['hasChanges', 'isLoading'].includes(String(prop))
 })<SaveButtonProps>(({ theme, hasChanges = false, isLoading = false }) => ({
 	borderRadius: theme.spacing(1.5),
 	textTransform: 'none',
