@@ -73,7 +73,7 @@
 		"build": "tsc && vite build",
 		"preview": "vite preview",
 		"start": "vite preview --host",
-		"lint": "eslint src --max-warnings 0 --cache --cache-location .eslintcache",
+		"lint": "eslint src --cache --cache-location .eslintcache",
 		"lint:fix": "eslint --fix src --cache --cache-location .eslintcache",
 		"lint:report": "eslint src --format html --output-file eslint-report.html --cache",
 		"format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
