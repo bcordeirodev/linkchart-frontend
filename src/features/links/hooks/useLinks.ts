@@ -6,8 +6,8 @@ import { linkService } from '@/services';
 
 import type { LinkCreateRequest, LinkResponse, LinkUpdateRequest } from '@/types';
 
-interface LinkCreateRequestExtended extends LinkCreateRequest, Record<string, unknown> { }
-interface LinkUpdateRequestExtended extends LinkUpdateRequest, Record<string, unknown> { }
+interface LinkCreateRequestExtended extends LinkCreateRequest, Record<string, unknown> {}
+interface LinkUpdateRequestExtended extends LinkUpdateRequest, Record<string, unknown> {}
 
 let linksCache: LinkResponse[] | null = null;
 let cacheTimestamp = 0;

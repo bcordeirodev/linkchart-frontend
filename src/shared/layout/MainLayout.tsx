@@ -57,9 +57,7 @@ function MainLayout({ children, navbar = true, footer = true, className }: MainL
 				}
 			}}
 		>
-			{showNavbar ? (
-				<Navbar isMobile={isMobile} />
-			) : null}
+			{showNavbar ? <Navbar isMobile={isMobile} /> : null}
 
 			<Box
 				component='main'
@@ -86,7 +84,7 @@ function MainLayout({ children, navbar = true, footer = true, className }: MainL
 				{children}
 			</Box>
 
-			{showFooter ? <Footer style="static" /> : null}
+			{showFooter ? <Footer style='static' /> : null}
 		</Box>
 	);
 }

@@ -14,7 +14,6 @@ interface AudienceMetricsProps {
  * Focado em dispositivos, browsers e comportamento
  */
 export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de Audiência' }: AudienceMetricsProps) {
-
 	// Cálculos das métricas
 	const deviceTypes = data?.audience?.device_breakdown?.length || 0;
 	const browserTypes = data?.audience?.browser_breakdown?.length || 0;

@@ -280,7 +280,7 @@ function RedirectPage() {
 		};
 
 		fetchRedirectData();
-	}, [slug, getUserRealIP, isValidIPv4, isValidIPv6]);  
+	}, [slug, getUserRealIP, isValidIPv4, isValidIPv6]);
 
 	// Inicia o countdown quando targetUrl é definido
 	useEffect(() => {

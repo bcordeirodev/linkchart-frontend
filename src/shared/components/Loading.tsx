@@ -53,11 +53,12 @@ function DotsLoader({ color, theme }: { color: LoadingProps['color']; theme: any
 						width: 8,
 						height: 8,
 						borderRadius: '50%',
-						backgroundColor: color === 'inherit'
-							? 'currentColor'
-							: color && (color === 'primary' || color === 'secondary')
-								? theme.palette[color].main
-								: theme.palette.primary.main
+						backgroundColor:
+							color === 'inherit'
+								? 'currentColor'
+								: color && (color === 'primary' || color === 'secondary')
+									? theme.palette[color].main
+									: theme.palette.primary.main
 					}}
 				/>
 			))}
@@ -158,13 +159,22 @@ export function Loading({
 		...(className && { className })
 	};
 
-
 	const renderLoader = () => {
 		switch (variant) {
 			case 'dots':
-				return <DotsLoader color={color} theme={theme} />;
+				return (
+					<DotsLoader
+						color={color}
+						theme={theme}
+					/>
+				);
 			case 'linear':
-				return <LinearLoader color={color} theme={theme} />;
+				return (
+					<LinearLoader
+						color={color}
+						theme={theme}
+					/>
+				);
 			case 'circular':
 			default:
 				return (
