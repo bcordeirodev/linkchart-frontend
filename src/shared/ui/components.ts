@@ -3,9 +3,9 @@
  * Props e tipos para todos os componentes da aplicação
  */
 
-import { ReactNode } from 'react';
-import { SxProps, Theme } from '@mui/material';
 import type { AnalyticsData, LinkResponse, ChartOptions, ChartSeries } from '@/types';
+import type { SxProps, Theme } from '@mui/material';
+import type { ReactNode } from 'react';
 
 // ========================================
 // 🎨 COMMON COMPONENT TYPES

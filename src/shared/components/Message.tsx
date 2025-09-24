@@ -37,12 +37,15 @@
  * @version 2.1.0
  */
 
-import { memo } from 'react';
-import { Snackbar, Alert, IconButton, Slide, SlideProps, useTheme, alpha } from '@mui/material';
 import { CheckCircle, Error, Warning, Info, Close } from '@mui/icons-material';
+import { Snackbar, Alert, IconButton, Slide, useTheme, alpha } from '@mui/material';
+import { memo } from 'react';
+
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { hideMessage, selectMessageState, selectMessageOptions } from '@/lib/store/messageSlice';
 import { createPresetAnimations } from '@/lib/theme';
+
+import type { SlideProps } from '@mui/material';
 
 /**
  * Transição personalizada para o Snackbar com animação suave
@@ -51,7 +54,7 @@ function SlideTransition(props: SlideProps) {
 	return (
 		<Slide
 			{...props}
-			direction="up"
+			direction='up'
 			timeout={{
 				enter: 400,
 				exit: 250
@@ -166,9 +169,9 @@ export function Message() {
 				action={
 					options.action || (
 						<IconButton
-							size="small"
-							aria-label="Fechar mensagem"
-							color="inherit"
+							size='small'
+							aria-label='Fechar mensagem'
+							color='inherit'
 							onClick={handleClose}
 							sx={{
 								'&:hover': {
@@ -180,7 +183,7 @@ export function Message() {
 								})
 							}}
 						>
-							<Close fontSize="small" />
+							<Close fontSize='small' />
 						</IconButton>
 					)
 				}

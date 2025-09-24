@@ -1,24 +1,7 @@
 /**
- * 🧭 ENHANCED NAVBAR COMPONENT - LINK CHART
- * Componente de navegação principal com design moderno e animações
- *
- * @description
- * Navbar premium com glassmorphism avançado, micro-interações e UX otimizada.
- * Design inspirado em aplicações modernas com foco na usabilidade.
- *
- * @features
- * - ✅ Design glassmorphism premium
- * - ✅ Micro-animações e transições suaves
- * - ✅ Indicadores visuais de estado ativo
- * - ✅ Logo com ícone personalizado
- * - ✅ Menu de usuário aprimorado
- * - ✅ Responsividade otimizada
- * - ✅ Acessibilidade completa
- *
- * @since 2.1.0
+ * Componente de navegação principal com design moderno
  */
 
-import { useState, useEffect } from 'react';
 import {
 	AppBar,
 	Toolbar,
@@ -37,25 +20,19 @@ import {
 	ListItemText,
 	Tooltip
 } from '@mui/material';
-import { AppIcon } from '@/lib/icons';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/lib/auth/AuthContext';
 import { alpha } from '@mui/material/styles';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-/**
- * Props do componente Navbar
- */
+import { useAuth } from '@/lib/auth/AuthContext';
+import { AppIcon } from '@/lib/icons';
+
 interface NavbarProps {
-	/** Se deve exibir o menu mobile */
 	onMobileMenuToggle?: () => void;
-	/** Se está em modo mobile */
 	isMobile?: boolean;
 }
 
-/**
- * Componente de navegação principal aprimorado
- */
-export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
+export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -67,7 +44,6 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 	const [scrolled, setScrolled] = useState(false);
 	const isMenuOpen = Boolean(anchorEl);
 
-	// Detectar scroll para efeito de glassmorphism
 	useEffect(() => {
 		const handleScroll = () => {
 			setScrolled(window.scrollY > 20);
@@ -101,7 +77,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 	};
 
 	const isActiveRoute = (path: string) => {
-		return location.pathname === path || location.pathname.startsWith(path + '/');
+		return location.pathname === path || location.pathname.startsWith(`${path}/`);
 	};
 
 	const menuItems = [
@@ -110,7 +86,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 			path: '/analytics',
 			icon: (
 				<AppIcon
-					intent="analytics"
+					intent='analytics'
 					size={20}
 				/>
 			),
@@ -121,7 +97,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 			path: '/link',
 			icon: (
 				<AppIcon
-					intent="link"
+					intent='link'
 					size={20}
 				/>
 			),
@@ -132,11 +108,11 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 	// Estilos dinâmicos da AppBar
 	const appBarSx = {
 		background: scrolled
-			? `linear-gradient(135deg, 
-                ${alpha(theme.palette.background.paper, 0.95)} 0%, 
+			? `linear-gradient(135deg,
+                ${alpha(theme.palette.background.paper, 0.95)} 0%,
                 ${alpha(theme.palette.background.default, 0.9)} 100%)`
-			: `linear-gradient(135deg, 
-                ${alpha(theme.palette.background.paper, 0.8)} 0%, 
+			: `linear-gradient(135deg,
+                ${alpha(theme.palette.background.paper, 0.8)} 0%,
                 ${alpha(theme.palette.background.default, 0.7)} 100%)`,
 		backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'blur(10px) saturate(150%)',
 		borderBottom: `1px solid ${alpha(theme.palette.divider, scrolled ? 0.2 : 0.1)}`,
@@ -155,7 +131,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 			left: 0,
 			right: 0,
 			height: '1px',
-			background: `linear-gradient(90deg, 
+			background: `linear-gradient(90deg,
                 transparent 0%,
                 ${alpha(theme.palette.primary.main, 0.3)} 20%,
                 ${alpha(theme.palette.primary.main, 0.6)} 50%,
@@ -171,7 +147,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 
 	return (
 		<AppBar
-			position="fixed"
+			position='fixed'
 			elevation={0}
 			sx={appBarSx}
 		>
@@ -232,17 +208,17 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 						}}
 					>
 						<AppIcon
-							intent="analytics"
+							intent='analytics'
 							size={20}
-							color="white"
+							color='white'
 						/>
 					</Box>
 
 					{/* Logo Text */}
 					<Box sx={{ display: { xs: 'none', sm: 'block' } }}>
 						<Typography
-							variant="h6"
-							component="div"
+							variant='h6'
+							component='div'
 							sx={{
 								fontWeight: 800,
 								background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
@@ -256,7 +232,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 							Link Chart
 						</Typography>
 						<Typography
-							variant="caption"
+							variant='caption'
 							sx={{
 								color: theme.palette.text.secondary,
 								fontSize: '0.75rem',
@@ -291,7 +267,7 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 									arrow
 								>
 									<Button
-										color="inherit"
+										color='inherit'
 										startIcon={item.icon}
 										onClick={() => handleNavigation(item.path)}
 										sx={{
@@ -318,16 +294,16 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 											},
 											'&::after': isActive
 												? {
-														content: '""',
-														position: 'absolute',
-														bottom: 4,
-														left: '50%',
-														transform: 'translateX(-50%)',
-														width: '60%',
-														height: 2,
-														background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-														borderRadius: 1
-													}
+													content: '""',
+													position: 'absolute',
+													bottom: 4,
+													left: '50%',
+													transform: 'translateX(-50%)',
+													width: '60%',
+													height: 2,
+													background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+													borderRadius: 1
+												}
 												: {}
 										}}
 									>
@@ -342,10 +318,10 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 				{/* Right Section */}
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 					{/* Mobile Menu Button */}
-					{isSmallScreen && (
+					{isSmallScreen ? (
 						<IconButton
-							color="inherit"
-							aria-label="menu"
+							color='inherit'
+							aria-label='menu'
 							onClick={handleMobileMenuToggle}
 							sx={{
 								mr: 1,
@@ -360,28 +336,28 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 						>
 							{mobileMenuOpen ? (
 								<AppIcon
-									intent="cancel"
+									intent='cancel'
 									size={24}
 								/>
 							) : (
 								<AppIcon
-									intent="menu"
+									intent='menu'
 									size={24}
 								/>
 							)}
 						</IconButton>
-					)}
+					) : null}
 
 					{/* User Menu */}
-					{user && (
+					{user ? (
 						<Tooltip
 							title={`${user.displayName} - Click for menu`}
 							arrow
 						>
 							<IconButton
-								size="large"
-								edge="end"
-								aria-label="account menu"
+								size='large'
+								edge='end'
+								aria-label='account menu'
 								onClick={handleProfileMenuOpen}
 								sx={{
 									background: alpha(theme.palette.background.paper, 0.8),
@@ -403,11 +379,11 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 										boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`
 									}}
 								>
-									{user.displayName?.charAt(0).toUpperCase() || 'U'}
+									{user.displayName?.charAt(0).toUpperCase() ?? 'U'}
 								</Avatar>
 							</IconButton>
 						</Tooltip>
-					)}
+					) : null}
 				</Box>
 
 				{/* Enhanced User Menu Dropdown */}
@@ -429,8 +405,8 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 							mt: 1.5,
 							minWidth: 280,
 							borderRadius: 3,
-							background: `linear-gradient(135deg, 
-                                ${alpha(theme.palette.background.paper, 0.95)} 0%, 
+							background: `linear-gradient(135deg,
+                                ${alpha(theme.palette.background.paper, 0.95)} 0%,
                                 ${alpha(theme.palette.background.default, 0.9)} 100%)`,
 							backdropFilter: 'blur(20px)',
 							border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
@@ -461,25 +437,25 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 									background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
 								}}
 							>
-								{user?.displayName?.charAt(0).toUpperCase() || 'U'}
+								{user?.displayName?.charAt(0).toUpperCase() ?? 'U'}
 							</Avatar>
 							<Box>
 								<Typography
-									variant="subtitle1"
+									variant='subtitle1'
 									fontWeight={600}
 								>
-									{user?.displayName || 'User'}
+									{user?.displayName ?? 'User'}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									{user?.email}
 								</Typography>
 								<Chip
-									label="Pro User"
-									size="small"
-									color="primary"
+									label='Pro User'
+									size='small'
+									color='primary'
 									sx={{ mt: 0.5, fontSize: '0.7rem' }}
 								/>
 							</Box>
@@ -502,13 +478,13 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 					>
 						<ListItemIcon>
 							<AppIcon
-								intent="profile"
+								intent='profile'
 								size={20}
 							/>
 						</ListItemIcon>
 						<ListItemText
-							primary="Profile Settings"
-							secondary="Manage your account"
+							primary='Profile Settings'
+							secondary='Manage your account'
 						/>
 					</MenuItem>
 
@@ -527,82 +503,82 @@ export function Navbar({ onMobileMenuToggle, isMobile }: NavbarProps) {
 					>
 						<ListItemIcon>
 							<AppIcon
-								intent="logout"
+								intent='logout'
 								size={20}
 								color={theme.palette.error.main}
 							/>
 						</ListItemIcon>
 						<ListItemText
-							primary="Sign Out"
-							secondary="See you later!"
+							primary='Sign Out'
+							secondary='See you later!'
 						/>
 					</MenuItem>
 				</Menu>
-
-				{/* Mobile Menu Overlay */}
-				{isSmallScreen && mobileMenuOpen && (
-					<Box
-						sx={{
-							position: 'fixed',
-							top: 64,
-							left: 0,
-							right: 0,
-							bottom: 0,
-							background: `linear-gradient(135deg, 
-                                ${alpha(theme.palette.background.paper, 0.95)} 0%, 
-                                ${alpha(theme.palette.background.default, 0.9)} 100%)`,
-							backdropFilter: 'blur(20px)',
-							zIndex: theme.zIndex.drawer,
-							p: 3
-						}}
-					>
-						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-							{menuItems.map((item) => {
-								const isActive = isActiveRoute(item.path);
-								return (
-									<Button
-										key={item.path}
-										fullWidth
-										size="large"
-										startIcon={item.icon}
-										onClick={() => handleNavigation(item.path)}
-										sx={{
-											justifyContent: 'flex-start',
-											py: 2.5,
-											px: 3,
-											borderRadius: 2,
-											textTransform: 'none',
-											fontWeight: isActive ? 700 : 500,
-											color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
-											background: isActive
-												? alpha(theme.palette.primary.main, 0.1)
-												: alpha(theme.palette.background.paper, 0.5),
-											border: isActive
-												? `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
-												: `1px solid ${alpha(theme.palette.divider, 0.1)}`
-										}}
-									>
-										<Box>
-											<Typography
-												variant="body1"
-												fontWeight="inherit"
-											>
-												{item.label}
-											</Typography>
-											<Typography
-												variant="caption"
-												color="text.secondary"
-											>
-												{item.description}
-											</Typography>
-										</Box>
-									</Button>
-								);
-							})}
-						</Box>
-					</Box>
-				)}
 			</Toolbar>
+
+			{/* Mobile Menu Overlay - Moved outside Toolbar */}
+			{isSmallScreen && mobileMenuOpen ? (
+				<Box
+					sx={{
+						position: 'fixed',
+						top: 64,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						background: `linear-gradient(135deg,
+                            ${alpha(theme.palette.background.paper, 0.95)} 0%,
+                            ${alpha(theme.palette.background.default, 0.9)} 100%)`,
+						backdropFilter: 'blur(20px)',
+						zIndex: theme.zIndex.drawer,
+						p: 3
+					}}
+				>
+					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+						{menuItems.map((item) => {
+							const isActive = isActiveRoute(item.path);
+							return (
+								<Button
+									key={item.path}
+									fullWidth
+									size='large'
+									startIcon={item.icon}
+									onClick={() => handleNavigation(item.path)}
+									sx={{
+										justifyContent: 'flex-start',
+										py: 2.5,
+										px: 3,
+										borderRadius: 2,
+										textTransform: 'none',
+										fontWeight: isActive ? 700 : 500,
+										color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
+										background: isActive
+											? alpha(theme.palette.primary.main, 0.1)
+											: alpha(theme.palette.background.paper, 0.5),
+										border: isActive
+											? `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
+											: `1px solid ${alpha(theme.palette.divider, 0.1)}`
+									}}
+								>
+									<Box>
+										<Typography
+											variant='body1'
+											fontWeight='inherit'
+										>
+											{item.label}
+										</Typography>
+										<Typography
+											variant='caption'
+											color='text.secondary'
+										>
+											{item.description}
+										</Typography>
+									</Box>
+								</Button>
+							);
+						})}
+					</Box>
+				</Box>
+			) : null}
 		</AppBar>
 	);
 }

@@ -37,7 +37,10 @@
  */
 
 import { useContext } from 'react';
-import { LayoutSettingsContext, LayoutSettingsContextType } from './LayoutSettingsContext';
+
+import { LayoutSettingsContext } from './LayoutSettingsContext';
+
+import type { LayoutSettingsContextType } from './LayoutSettingsContext';
 
 /**
  * Hook para acessar configurações de layout

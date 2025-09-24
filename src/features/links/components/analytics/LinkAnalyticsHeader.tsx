@@ -1,13 +1,14 @@
 'use client';
 
-import { Box, Typography, Chip, useTheme } from '@mui/material';
-import { AppIcon } from '@/lib/icons';
+import { Box, Typography, Chip, useTheme, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
-import { LinkResponse } from '@/types';
+
+import { AppIcon } from '@/lib/icons';
 import { createTextGradient, useDesignTokens } from '@/lib/theme';
-import { Button } from '@mui/material';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
+import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
+
+import type { LinkResponse } from '@/types';
 
 interface LinkAnalyticsHeaderProps {
 	linkId: string;
@@ -48,7 +49,7 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 
 			{/* Header Principal com Glass Effect */}
 			<EnhancedPaper
-				variant="glass"
+				variant='glass'
 				sx={{ p: 4, mb: 2 }}
 			>
 				<Box
@@ -77,14 +78,14 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 								}}
 							>
 								<AppIcon
-									intent="analytics"
+									intent='analytics'
 									size={24}
 									color={theme.palette.primary.main}
 								/>
 							</Box>
 							<Typography
-								variant="h4"
-								component="h1"
+								variant='h4'
+								component='h1'
 								sx={{
 									fontWeight: 700,
 									...titleGradient,
@@ -95,11 +96,11 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 							</Typography>
 						</Box>
 
-						{linkInfo && (
+						{linkInfo ? (
 							<Box sx={{ mb: 3 }}>
 								<Typography
-									variant="h6"
-									color="text.primary"
+									variant='h6'
+									color='text.primary'
 									sx={{
 										mb: 2,
 										fontWeight: 600,
@@ -125,8 +126,8 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 											}}
 										/>
 										<Typography
-											variant="body2"
-											color="text.secondary"
+											variant='body2'
+											color='text.secondary'
 											sx={{
 												overflow: 'hidden',
 												textOverflow: 'ellipsis',
@@ -149,8 +150,8 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 											}}
 										/>
 										<Typography
-											variant="body2"
-											color="text.secondary"
+											variant='body2'
+											color='text.secondary'
 											sx={{
 												overflow: 'hidden',
 												textOverflow: 'ellipsis',
@@ -163,16 +164,16 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 									</Box>
 								</Box>
 							</Box>
-						)}
+						) : null}
 
 						{/* Status Chips Melhorados */}
 						<Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
 							{linkInfo?.is_active ? (
 								<Chip
-									label="✅ Ativo"
-									color="success"
-									size="medium"
-									variant="filled"
+									label='✅ Ativo'
+									color='success'
+									size='medium'
+									variant='filled'
 									sx={{
 										fontWeight: 600,
 										borderRadius: 2,
@@ -181,10 +182,10 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 								/>
 							) : (
 								<Chip
-									label="❌ Inativo"
-									color="error"
-									size="medium"
-									variant="filled"
+									label='❌ Inativo'
+									color='error'
+									size='medium'
+									variant='filled'
 									sx={{
 										fontWeight: 600,
 										borderRadius: 2,
@@ -195,9 +196,9 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 
 							<Chip
 								label={`📊 ${linkInfo?.clicks || 0} cliques`}
-								color="primary"
-								size="medium"
-								variant="filled"
+								color='primary'
+								size='medium'
+								variant='filled'
 								sx={{
 									fontWeight: 600,
 									borderRadius: 2,
@@ -205,39 +206,39 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 								}}
 							/>
 
-							{linkInfo?.expires_at && (
+							{linkInfo?.expires_at ? (
 								<Chip
-									label="⏰ Com expiração"
-									color="warning"
-									size="medium"
-									variant="filled"
+									label='⏰ Com expiração'
+									color='warning'
+									size='medium'
+									variant='filled'
 									sx={{
 										fontWeight: 600,
 										borderRadius: 2,
 										'& .MuiChip-label': { px: 1.5 }
 									}}
 								/>
-							)}
+							) : null}
 						</Box>
 					</Box>
 
 					{/* Ações Melhoradas */}
 					<Box sx={{ display: 'flex', gap: tokens.spacing.md, flexWrap: 'wrap', alignItems: 'flex-start' }}>
 						<Button
-							variant="outlined"
-							startIcon={<AppIcon intent="back" />}
+							variant='outlined'
+							startIcon={<AppIcon intent='back' />}
 							onClick={handleBack}
 							sx={{ textTransform: 'none' }}
 						>
 							Voltar
 						</Button>
 
-						{linkInfo && (
+						{linkInfo ? (
 							<>
 								<Button
-									variant="outlined"
-									color="warning"
-									startIcon={<AppIcon intent="edit" />}
+									variant='outlined'
+									color='warning'
+									startIcon={<AppIcon intent='edit' />}
 									onClick={handleEdit}
 									sx={{ textTransform: 'none' }}
 								>
@@ -245,16 +246,16 @@ export function LinkAnalyticsHeader({ linkId, linkInfo, loading: _loading = fals
 								</Button>
 
 								<Button
-									variant="contained"
-									color="primary"
-									startIcon={<AppIcon intent="share" />}
+									variant='contained'
+									color='primary'
+									startIcon={<AppIcon intent='share' />}
 									onClick={handleShare}
 									sx={{ textTransform: 'none' }}
 								>
 									Compartilhar
 								</Button>
 							</>
-						)}
+						) : null}
 					</Box>
 				</Box>
 			</EnhancedPaper>

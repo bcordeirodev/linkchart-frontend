@@ -1,11 +1,12 @@
+import { CheckCircle, Error, Email, Refresh } from '@mui/icons-material';
+import { Box, Typography, CircularProgress, Button, Alert, Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Box, Typography, CircularProgress, Button, Alert, Stack } from '@mui/material';
-import { CheckCircle, Error, Email, Refresh } from '@mui/icons-material';
-import { AuthLayout } from '@/shared/layout';
-import { authService } from '@/services';
+
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { authService } from '@/services';
+import { AuthLayout } from '@/shared/layout';
 
 type VerificationStatus = 'loading' | 'success' | 'error' | 'already_verified' | 'invalid_token';
 
@@ -83,7 +84,7 @@ function VerifyEmailPage() {
 				return (
 					<CircularProgress
 						size={60}
-						color="primary"
+						color='primary'
 					/>
 				);
 			case 'success':
@@ -146,7 +147,7 @@ function VerifyEmailPage() {
 		<AuthLayout
 			title={getTitle()}
 			subtitle={getSubtitle()}
-			variant="verify"
+			variant='verify'
 			footerLinks={[
 				{
 					text: 'Voltar para',
@@ -158,26 +159,26 @@ function VerifyEmailPage() {
 			<Box sx={{ textAlign: 'center', py: 4 }}>
 				<Stack
 					spacing={4}
-					alignItems="center"
+					alignItems='center'
 				>
 					{/* Ícone de status */}
 					<Box>{getStatusIcon()}</Box>
 
 					{/* Mensagem */}
-					{message && (
+					{message ? (
 						<Alert
 							severity={getStatusColor()}
 							sx={{ width: '100%', textAlign: 'left' }}
 						>
 							{message}
 						</Alert>
-					)}
+					) : null}
 
 					{/* Ações baseadas no status */}
 					{status === 'success' && (
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 						>
 							Redirecionando para o painel em alguns segundos...
 						</Typography>
@@ -185,7 +186,7 @@ function VerifyEmailPage() {
 
 					{status === 'already_verified' && (
 						<Button
-							variant="contained"
+							variant='contained'
 							onClick={() => navigate('/analytics')}
 							sx={{ mt: 2 }}
 						>
@@ -199,12 +200,12 @@ function VerifyEmailPage() {
 							sx={{ width: '100%' }}
 						>
 							<Button
-								variant="contained"
+								variant='contained'
 								startIcon={
 									isResending ? (
 										<CircularProgress
 											size={20}
-											color="inherit"
+											color='inherit'
 										/>
 									) : (
 										<Refresh />
@@ -218,7 +219,7 @@ function VerifyEmailPage() {
 							</Button>
 
 							<Button
-								variant="outlined"
+								variant='outlined'
 								onClick={() => navigate('/sign-in')}
 								fullWidth
 							>
@@ -229,8 +230,8 @@ function VerifyEmailPage() {
 
 					{status === 'loading' && (
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 						>
 							Por favor, aguarde...
 						</Typography>

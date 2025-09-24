@@ -6,7 +6,7 @@
  * esperado pelos componentes do frontend, evitando duplicação.
  */
 
-import { DashboardData } from '../hooks/useDashboardData';
+import type { DashboardData } from '../hooks/useDashboardData';
 
 /**
  * Mapeia dados do dashboard para o formato esperado pelos Charts

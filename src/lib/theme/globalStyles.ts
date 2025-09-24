@@ -14,7 +14,9 @@ export const applyGlobalStyles = () => {
 	// Remove estilos existentes
 	const existing = document.getElementById('global-theme-styles');
 
-	if (existing) existing.remove();
+	if (existing) {
+		existing.remove();
+	}
 
 	// Aplica estilos globais padronizados
 	const style = document.createElement('style');

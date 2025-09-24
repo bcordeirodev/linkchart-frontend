@@ -17,12 +17,15 @@
  * @since 2.0.0
  */
 
-import { useEffect, useMemo } from 'react';
 import _ from 'lodash';
+import { useEffect, useMemo } from 'react';
+
 import { usePathname } from '@/shared/hooks';
-import { useLayoutSettings } from './useLayoutSettings';
+
 import { LayoutSettingsContext } from './LayoutSettingsContext';
-import { MainLayoutProps } from './types';
+import { useLayoutSettings } from './useLayoutSettings';
+
+import type { MainLayoutProps } from './types';
 
 /**
  * Componente de layout principal
@@ -77,7 +80,9 @@ export function Layout(props: MainLayoutProps) {
 			value={{
 				data: { ...current, layout: layoutSetting },
 				setSettings: () => current,
-				changeTheme: () => {}
+				changeTheme: () => {
+					// TODO: Implementar mudança de tema
+				}
 			}}
 		>
 			{layoutContent}

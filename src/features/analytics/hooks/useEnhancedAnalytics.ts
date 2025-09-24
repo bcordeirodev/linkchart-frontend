@@ -14,7 +14,9 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+
 import { api } from '@/lib/api/client';
+
 import type { HeatmapPoint, CountryData, StateData, CityData, HourlyData, DayOfWeekData, DeviceData } from '@/types';
 
 // Tipos movidos para @/types/core/api
@@ -72,7 +74,9 @@ export function useEnhancedAnalytics(linkId: string) {
 	const [error, setError] = useState<string | null>(null);
 
 	const fetchAnalytics = useCallback(async () => {
-		if (!linkId) return;
+		if (!linkId) {
+			return;
+		}
 
 		try {
 			setLoading(true);

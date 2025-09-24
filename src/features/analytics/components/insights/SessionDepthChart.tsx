@@ -1,9 +1,10 @@
+import { TouchApp, TrendingUp, Star, Assessment } from '@mui/icons-material';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, LinearProgress } from '@mui/material';
 import { useTheme, alpha } from '@mui/material/styles';
-import { TouchApp, TrendingUp, Star, Assessment } from '@mui/icons-material';
-import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
-import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
+
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
+import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
+import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
 interface SessionDistribution {
 	session_clicks: number;
@@ -208,7 +209,7 @@ export function SessionDepthChart({
 		return (
 			<EnhancedPaper>
 				<Box sx={{ p: 3, textAlign: 'center' }}>
-					<Typography color="text.secondary">Dados insuficientes para análise de sessão</Typography>
+					<Typography color='text.secondary'>Dados insuficientes para análise de sessão</Typography>
 				</Box>
 			</EnhancedPaper>
 		);
@@ -216,17 +217,17 @@ export function SessionDepthChart({
 
 	return (
 		<EnhancedPaper>
-			{showTitle && (
+			{showTitle ? (
 				<Box sx={{ p: 3, pb: 0 }}>
 					<Typography
-						variant="h6"
+						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<TouchApp color="primary" />
+						<TouchApp color='primary' />
 						{title}
 					</Typography>
 				</Box>
-			)}
+			) : null}
 
 			<Box sx={{ p: 3 }}>
 				{/* Métricas Principais */}
@@ -242,11 +243,11 @@ export function SessionDepthChart({
 						md={3}
 					>
 						<MetricCard
-							title="Profundidade Média"
+							title='Profundidade Média'
 							value={data.avg_session_depth}
 							icon={<TouchApp />}
-							color="primary"
-							subtitle="clicks por sessão"
+							color='primary'
+							subtitle='clicks por sessão'
 						/>
 					</Grid>
 					<Grid
@@ -256,11 +257,11 @@ export function SessionDepthChart({
 						md={3}
 					>
 						<MetricCard
-							title="Score de Engajamento"
+							title='Score de Engajamento'
 							value={data.engagement_score}
 							icon={<Assessment />}
-							color="success"
-							subtitle="pontuação (0-100)"
+							color='success'
+							subtitle='pontuação (0-100)'
 						/>
 					</Grid>
 					<Grid
@@ -270,10 +271,10 @@ export function SessionDepthChart({
 						md={3}
 					>
 						<MetricCard
-							title="Power Users"
+							title='Power Users'
 							value={`${data.power_users_percentage}%`}
 							icon={<Star />}
-							color="warning"
+							color='warning'
 							subtitle={`${data.power_users_count} usuários`}
 						/>
 					</Grid>
@@ -284,11 +285,11 @@ export function SessionDepthChart({
 						md={3}
 					>
 						<MetricCard
-							title="Máximo de Clicks"
+							title='Máximo de Clicks'
 							value={data.max_session_depth}
 							icon={<TrendingUp />}
-							color="info"
-							subtitle="em uma sessão"
+							color='info'
+							subtitle='em uma sessão'
 						/>
 					</Grid>
 				</Grid>
@@ -313,7 +314,7 @@ export function SessionDepthChart({
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								Nível de Engajamento
@@ -321,7 +322,7 @@ export function SessionDepthChart({
 							<Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
 								<Box sx={{ flex: 1 }}>
 									<LinearProgress
-										variant="determinate"
+										variant='determinate'
 										value={data.engagement_score}
 										sx={{
 											height: 12,
@@ -335,15 +336,15 @@ export function SessionDepthChart({
 									/>
 								</Box>
 								<Typography
-									variant="h6"
+									variant='h6'
 									sx={{ minWidth: 60, textAlign: 'right' }}
 								>
 									{data.engagement_score}/100
 								</Typography>
 							</Box>
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 								sx={{ mt: 1 }}
 							>
 								Baseado na profundidade média de sessão e distribuição de usuários
@@ -366,7 +367,7 @@ export function SessionDepthChart({
 						<Card sx={{ height: '100%' }}>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									Distribuição de Clicks por Sessão
@@ -374,7 +375,7 @@ export function SessionDepthChart({
 								<ApexChartWrapper
 									options={distributionBarOptions}
 									series={distributionBarData}
-									type="bar"
+									type='bar'
 									height={350}
 								/>
 							</CardContent>
@@ -390,7 +391,7 @@ export function SessionDepthChart({
 						<Card sx={{ height: '100%' }}>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									Curva de Engajamento
@@ -398,13 +399,13 @@ export function SessionDepthChart({
 								<ApexChartWrapper
 									options={engagementAreaOptions}
 									series={engagementAreaData}
-									type="area"
+									type='area'
 									height={250}
 								/>
 								<Box sx={{ mt: 2 }}>
 									<Typography
-										variant="body2"
-										color="text.secondary"
+										variant='body2'
+										color='text.secondary'
 										sx={{ textAlign: 'center' }}
 									>
 										Usuários por nível de clicks
@@ -420,7 +421,7 @@ export function SessionDepthChart({
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								📊 Detalhes da Distribuição
@@ -447,21 +448,21 @@ export function SessionDepthChart({
 											}}
 										>
 											<Typography
-												variant="subtitle2"
+												variant='subtitle2'
 												sx={{ fontWeight: 'bold' }}
 											>
 												{item.session_clicks} Click{item.session_clicks > 1 ? 's' : ''}
 											</Typography>
 											<Typography
-												variant="body2"
-												color="text.secondary"
+												variant='body2'
+												color='text.secondary'
 											>
 												{item.users} usuários ({item.percentage}%)
 											</Typography>
 											{item.avg_response_time > 0 && (
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													Tempo médio: {item.avg_response_time.toFixed(2)}s
 												</Typography>
@@ -480,13 +481,13 @@ export function SessionDepthChart({
 						<CardContent>
 							<Stack spacing={2}>
 								<Typography
-									variant="h6"
+									variant='h6'
 									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
 									💡 Insights de Engajamento
 								</Typography>
 
-								<Typography variant="body1">
+								<Typography variant='body1'>
 									<strong>Análise:</strong> Seus usuários clicam em média {data.avg_session_depth}{' '}
 									vezes por sessão, com {data.power_users_percentage}% sendo power users (5+ clicks).
 									A qualidade da sessão está classificada como{' '}
@@ -494,8 +495,8 @@ export function SessionDepthChart({
 								</Typography>
 
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									<strong>Recomendação:</strong>{' '}
 									{data.avg_session_depth >= 2.5
@@ -505,7 +506,7 @@ export function SessionDepthChart({
 
 								{data.power_users_percentage > 20 && (
 									<Typography
-										variant="body2"
+										variant='body2'
 										sx={{
 											color: theme.palette.success.main,
 											fontWeight: 'medium'

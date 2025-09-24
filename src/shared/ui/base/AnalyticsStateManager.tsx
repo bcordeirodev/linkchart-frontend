@@ -1,6 +1,8 @@
 import { Box, Button, CircularProgress, Typography, useTheme } from '@mui/material';
+
 import { createPresetAnimations } from '@/lib/theme';
-import { ReactNode } from 'react';
+
+import type { ReactNode } from 'react';
 
 interface AnalyticsStateManagerProps {
 	loading: boolean;
@@ -105,8 +107,8 @@ export function AnalyticsStateManager({
 					⚠️ Erro ao carregar
 				</Typography>
 				<Typography
-					variant="body2"
-					color="text.secondary"
+					variant='body2'
+					color='text.secondary'
 					sx={{
 						mb: onRetry ? 1 : 0,
 						maxWidth: 400
@@ -114,9 +116,9 @@ export function AnalyticsStateManager({
 				>
 					{errorMessage || error}
 				</Typography>
-				{onRetry && (
+				{onRetry ? (
 					<Button
-						variant="outlined"
+						variant='outlined'
 						size={compact ? 'small' : 'medium'}
 						onClick={onRetry}
 						sx={{
@@ -131,7 +133,7 @@ export function AnalyticsStateManager({
 					>
 						Tentar Novamente
 					</Button>
-				)}
+				) : null}
 			</Box>
 		);
 	}
@@ -164,8 +166,8 @@ export function AnalyticsStateManager({
 					📊 {emptyMessage}
 				</Typography>
 				<Typography
-					variant="body2"
-					color="text.secondary"
+					variant='body2'
+					color='text.secondary'
 					sx={{ maxWidth: 400 }}
 				>
 					Compartilhe seus links para ver dados aqui!

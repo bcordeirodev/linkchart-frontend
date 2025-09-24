@@ -1,9 +1,11 @@
 'use client';
 
-import { Grid, Box } from '@mui/material';
 import { TrendingUp, Public, Schedule, Analytics, Visibility, Speed, Flag } from '@mui/icons-material';
+import { Grid, Box } from '@mui/material';
+
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
-import { LinkAnalyticsData } from '../../types/analytics';
+
+import type { LinkAnalyticsData } from '../../types/analytics';
 
 interface LinkAnalyticsMetricsProps {
 	data: LinkAnalyticsData | null;
@@ -29,10 +31,10 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 						md={3}
 					>
 						<MetricCard
-							title="Total de Cliques"
-							value="0"
+							title='Total de Cliques'
+							value='0'
 							icon={<TrendingUp />}
-							color="primary"
+							color='primary'
 						/>
 					</Grid>
 					<Grid
@@ -42,10 +44,10 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 						md={3}
 					>
 						<MetricCard
-							title="Visitantes Únicos"
-							value="0"
+							title='Visitantes Únicos'
+							value='0'
 							icon={<Public />}
-							color="secondary"
+							color='secondary'
 						/>
 					</Grid>
 					<Grid
@@ -55,10 +57,10 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 						md={3}
 					>
 						<MetricCard
-							title="Países Alcançados"
-							value="0"
+							title='Países Alcançados'
+							value='0'
 							icon={<Flag />}
-							color="success"
+							color='success'
 						/>
 					</Grid>
 					<Grid
@@ -68,11 +70,11 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 						md={3}
 					>
 						<MetricCard
-							title="Média Diária"
-							value="0"
-							subtitle="cliques/dia"
+							title='Média Diária'
+							value='0'
+							subtitle='cliques/dia'
 							icon={<Analytics />}
-							color="warning"
+							color='warning'
 						/>
 					</Grid>
 				</Grid>
@@ -104,10 +106,10 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 					md={3}
 				>
 					<MetricCard
-						title="Total de Cliques"
+						title='Total de Cliques'
 						value={String(overview.total_clicks || 0)}
 						icon={<TrendingUp />}
-						color="primary"
+						color='primary'
 					/>
 				</Grid>
 
@@ -118,10 +120,10 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 					md={3}
 				>
 					<MetricCard
-						title="Visitantes Únicos"
+						title='Visitantes Únicos'
 						value={String(overview.unique_visitors || 0)}
 						icon={<Visibility />}
-						color="secondary"
+						color='secondary'
 					/>
 				</Grid>
 
@@ -132,10 +134,10 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 					md={3}
 				>
 					<MetricCard
-						title="Países Alcançados"
+						title='Países Alcançados'
 						value={String(overview.countries_reached || 0)}
 						icon={<Flag />}
-						color="success"
+						color='success'
 					/>
 				</Grid>
 
@@ -146,11 +148,11 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 					md={3}
 				>
 					<MetricCard
-						title="Média Diária"
+						title='Média Diária'
 						value={String(overview.avg_daily_clicks || 0)}
-						subtitle="cliques/dia"
+						subtitle='cliques/dia'
 						icon={<Analytics />}
-						color="warning"
+						color='warning'
 					/>
 				</Grid>
 
@@ -162,11 +164,11 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 					md={4}
 				>
 					<MetricCard
-						title="Taxa de Conversão"
+						title='Taxa de Conversão'
 						value={`${(overview.conversion_rate || 0).toFixed(1)}%`}
-						subtitle="cliques/visitante"
+						subtitle='cliques/visitante'
 						icon={<Speed />}
-						color="info"
+						color='info'
 					/>
 				</Grid>
 
@@ -177,11 +179,11 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 					md={4}
 				>
 					<MetricCard
-						title="Taxa de Rejeição"
+						title='Taxa de Rejeição'
 						value={`${(overview.bounce_rate || 0).toFixed(1)}%`}
-						subtitle="visitas únicas"
+						subtitle='visitas únicas'
 						icon={<Public />}
-						color="error"
+						color='error'
 					/>
 				</Grid>
 
@@ -192,11 +194,11 @@ export function LinkAnalyticsMetrics({ data, loading: _loading = false }: LinkAn
 					md={4}
 				>
 					<MetricCard
-						title="Horário de Pico"
+						title='Horário de Pico'
 						value={(overview as { peak_hour?: string })?.peak_hour || '--:--'}
-						subtitle="maior atividade"
+						subtitle='maior atividade'
 						icon={<Schedule />}
-						color="secondary"
+						color='secondary'
 					/>
 				</Grid>
 			</Grid>

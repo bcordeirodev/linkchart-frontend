@@ -1,10 +1,13 @@
 import { Box } from '@mui/material';
+
+import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
+import TabDescription from '@/shared/ui/base/TabDescription';
+
 import { useGeographicData } from '../../hooks/useGeographicData';
+
 import { GeographicChart } from './GeographicChart';
 import { GeographicInsights } from './GeographicInsights';
 import { GeographicMetrics } from './GeographicMetrics';
-import TabDescription from '@/shared/ui/base/TabDescription';
-import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 
 interface GeographicAnalysisProps {
 	linkId?: string;
@@ -65,9 +68,9 @@ export function GeographicAnalysis({
 			{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon="🌍"
+					icon='🌍'
 					title={title}
-					description="Distribuição global dos seus cliques com insights detalhados por países, estados e cidades."
+					description='Distribuição global dos seus cliques com insights detalhados por países, estados e cidades.'
 					highlight={`${stats?.totalCountries || 0} países alcançados`}
 					metadata={isRealtime ? 'Tempo Real' : undefined}
 				/>
@@ -79,8 +82,8 @@ export function GeographicAnalysis({
 				error={error}
 				hasData={!!data}
 				onRetry={refresh}
-				loadingMessage="Carregando dados geográficos..."
-				emptyMessage="Dados geográficos indisponíveis"
+				loadingMessage='Carregando dados geográficos...'
+				emptyMessage='Dados geográficos indisponíveis'
 				minHeight={300}
 			>
 				<Box>
@@ -89,8 +92,8 @@ export function GeographicAnalysis({
 						<GeographicMetrics
 							data={data}
 							stats={stats}
-							showTitle={true}
-							title="🌍 Métricas Geográficas"
+							showTitle
+							title='🌍 Métricas Geográficas'
 						/>
 					</Box>
 

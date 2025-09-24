@@ -3,8 +3,10 @@
  * Botão com gradiente padronizado
  */
 
-import { Button, ButtonProps } from '@mui/material';
+import { Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+
+import type { ButtonProps } from '@mui/material';
 
 interface GradientButtonProps extends Omit<ButtonProps, 'variant'> {
 	variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
@@ -38,7 +40,7 @@ export function GradientButton({
 
 	return (
 		<Button
-			variant="contained"
+			variant='contained'
 			disabled={loading}
 			sx={{
 				...(gradient && {

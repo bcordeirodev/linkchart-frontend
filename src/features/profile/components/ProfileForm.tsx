@@ -1,10 +1,11 @@
-import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@/lib/store/messageSlice';
-import { profileService, UserProfile } from '@/services';
-import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { Cancel, Email, Person, PhotoCamera, Save } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
+
+import { useAppDispatch } from '@/lib/store/hooks';
+import { showMessage } from '@/lib/store/messageSlice';
+import { profileService } from '@/services';
+import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 
 // Styled Components
 import {
@@ -24,6 +25,8 @@ import {
 	StyledAvatar,
 	StyledTextField
 } from './styles/Profile.styled';
+
+import type { UserProfile } from '@/services';
 
 interface ProfileFormData {
 	name: string;
@@ -112,11 +115,11 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 	return (
 		<EnhancedPaper>
 			<ProfileContainer>
-				{saving && (
+				{saving ? (
 					<LoadingOverlay>
 						<CircularProgress size={40} />
 					</LoadingOverlay>
-				)}
+				) : null}
 
 				<ProfileBadge>Ativo</ProfileBadge>
 
@@ -136,22 +139,22 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 
 					<FormFieldsContainer>
 						<StyledTextField
-							label="Nome Completo"
+							label='Nome Completo'
 							value={formData.name}
 							onChange={(e) => handleInputChange('name', e.target.value)}
 							fullWidth
-							isEditing={true}
+							isEditing
 							InputProps={{
 								startAdornment: <Person sx={{ mr: 1.5 }} />
 							}}
 						/>
 						<StyledTextField
-							label="Email"
+							label='Email'
 							value={formData.email}
 							onChange={(e) => handleInputChange('email', e.target.value)}
 							fullWidth
-							type="email"
-							isEditing={true}
+							type='email'
+							isEditing
 							InputProps={{
 								startAdornment: <Email sx={{ mr: 1.5 }} />
 							}}
@@ -161,7 +164,7 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 
 				<ActionButtonsContainer>
 					<CancelButton
-						variant="outlined"
+						variant='outlined'
 						startIcon={<Cancel />}
 						onClick={handleReset}
 						disabled={saving}
@@ -169,12 +172,12 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 						Resetar
 					</CancelButton>
 					<SaveButton
-						variant="contained"
+						variant='contained'
 						startIcon={
 							saving ? (
 								<CircularProgress
 									size={20}
-									color="inherit"
+									color='inherit'
 								/>
 							) : (
 								<Save />

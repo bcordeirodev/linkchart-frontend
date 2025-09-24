@@ -1,19 +1,20 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import DevicesIcon from '@mui/icons-material/Devices';
+import LinkIcon from '@mui/icons-material/Link';
+import ClickIcon from '@mui/icons-material/Mouse';
+import SecurityIcon from '@mui/icons-material/Security';
+import SpeedIcon from '@mui/icons-material/Speed';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import { useState, useEffect } from 'react';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import LinearProgress from '@mui/material/LinearProgress';
 import Stack from '@mui/material/Stack';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import LinkIcon from '@mui/icons-material/Link';
-import ClickIcon from '@mui/icons-material/Mouse';
-import SpeedIcon from '@mui/icons-material/Speed';
-import SecurityIcon from '@mui/icons-material/Security';
-import DevicesIcon from '@mui/icons-material/Devices';
+import { motion } from 'framer-motion';
+
 import { api } from '@/lib/api/client';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showErrorMessage } from '@/lib/store/messageSlice';
@@ -91,7 +92,7 @@ export default function RedirectStats({
 
 	if (loading) {
 		return (
-			<Box className="space-y-4">
+			<Box className='space-y-4'>
 				{[1, 2, 3].map((i) => (
 					<Card
 						key={i}
@@ -109,10 +110,10 @@ export default function RedirectStats({
 	if (error || !stats) {
 		return (
 			<Card elevation={1}>
-				<CardContent className="text-center py-8">
+				<CardContent className='text-center py-8'>
 					<Typography
-						color="error"
-						variant="h6"
+						color='error'
+						variant='h6'
 					>
 						{error || 'Não foi possível carregar as estatísticas'}
 					</Typography>
@@ -127,21 +128,21 @@ export default function RedirectStats({
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
-			className="space-y-4"
+			className='space-y-4'
 		>
 			{/* Header */}
-			<Box className="flex items-center justify-between">
-				<Box className="flex items-center gap-2">
-					<TrendingUpIcon color="primary" />
-					<Typography variant="h5">Estatísticas de Redirecionamento</Typography>
+			<Box className='flex items-center justify-between'>
+				<Box className='flex items-center gap-2'>
+					<TrendingUpIcon color='primary' />
+					<Typography variant='h5'>Estatísticas de Redirecionamento</Typography>
 				</Box>
-				{lastUpdate && (
+				{lastUpdate ? (
 					<Chip
 						label={`Atualizado ${lastUpdate.toLocaleTimeString()}`}
-						size="small"
-						variant="outlined"
+						size='small'
+						variant='outlined'
 					/>
-				)}
+				) : null}
 			</Box>
 
 			{/* Overview Cards */}
@@ -160,20 +161,20 @@ export default function RedirectStats({
 						transition={{ type: 'spring', stiffness: 300 }}
 					>
 						<Card elevation={2}>
-							<CardContent className="text-center">
+							<CardContent className='text-center'>
 								<ClickIcon
-									color="primary"
+									color='primary'
 									sx={{ fontSize: 40, mb: 1 }}
 								/>
 								<Typography
-									variant="h4"
-									color="primary"
+									variant='h4'
+									color='primary'
 								>
 									{stats.totalClicks.toLocaleString()}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Total de Cliques
 								</Typography>
@@ -193,20 +194,20 @@ export default function RedirectStats({
 						transition={{ type: 'spring', stiffness: 300 }}
 					>
 						<Card elevation={2}>
-							<CardContent className="text-center">
+							<CardContent className='text-center'>
 								<LinkIcon
-									color="secondary"
+									color='secondary'
 									sx={{ fontSize: 40, mb: 1 }}
 								/>
 								<Typography
-									variant="h4"
-									color="secondary"
+									variant='h4'
+									color='secondary'
 								>
 									{stats.totalLinks.toLocaleString()}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Links Ativos
 								</Typography>
@@ -226,20 +227,20 @@ export default function RedirectStats({
 						transition={{ type: 'spring', stiffness: 300 }}
 					>
 						<Card elevation={2}>
-							<CardContent className="text-center">
+							<CardContent className='text-center'>
 								<SpeedIcon
-									color="success"
+									color='success'
 									sx={{ fontSize: 40, mb: 1 }}
 								/>
 								<Typography
-									variant="h4"
-									color="success.main"
+									variant='h4'
+									color='success.main'
 								>
 									{stats.avgClicksPerLink.toFixed(1)}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Média por Link
 								</Typography>
@@ -259,20 +260,20 @@ export default function RedirectStats({
 						transition={{ type: 'spring', stiffness: 300 }}
 					>
 						<Card elevation={2}>
-							<CardContent className="text-center">
+							<CardContent className='text-center'>
 								<SecurityIcon
-									color="info"
+									color='info'
 									sx={{ fontSize: 40, mb: 1 }}
 								/>
 								<Typography
-									variant="h4"
-									color="info.main"
+									variant='h4'
+									color='info.main'
 								>
 									100%
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Links Seguros
 								</Typography>
@@ -286,10 +287,10 @@ export default function RedirectStats({
 			<Card elevation={2}>
 				<CardContent>
 					<Typography
-						variant="h6"
-						className="mb-3 flex items-center gap-2"
+						variant='h6'
+						className='mb-3 flex items-center gap-2'
 					>
-						<TrendingUpIcon color="primary" />
+						<TrendingUpIcon color='primary' />
 						Top {maxTopLinks} Links Mais Clicados
 					</Typography>
 					<Stack spacing={2}>
@@ -300,26 +301,26 @@ export default function RedirectStats({
 								animate={{ opacity: 1, x: 0 }}
 								transition={{ delay: index * 0.1 }}
 							>
-								<Box className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded">
-									<Box className="flex-1 min-w-0">
+								<Box className='flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded'>
+									<Box className='flex-1 min-w-0'>
 										<Typography
-											variant="subtitle2"
-											className="truncate"
+											variant='subtitle2'
+											className='truncate'
 										>
 											{link.title || link.slug}
 										</Typography>
 										<Typography
-											variant="caption"
-											color="text.secondary"
-											className="truncate"
+											variant='caption'
+											color='text.secondary'
+											className='truncate'
 										>
 											{link.url}
 										</Typography>
 									</Box>
 									<Chip
 										label={`${link.clicks} cliques`}
-										color="primary"
-										size="small"
+										color='primary'
+										size='small'
 									/>
 								</Box>
 							</motion.div>
@@ -332,10 +333,10 @@ export default function RedirectStats({
 			<Card elevation={2}>
 				<CardContent>
 					<Typography
-						variant="h6"
-						className="mb-3 flex items-center gap-2"
+						variant='h6'
+						className='mb-3 flex items-center gap-2'
 					>
-						<DevicesIcon color="primary" />
+						<DevicesIcon color='primary' />
 						Dispositivos
 					</Typography>
 					<Grid
@@ -347,23 +348,23 @@ export default function RedirectStats({
 							xs={12}
 							sm={4}
 						>
-							<Box className="text-center">
+							<Box className='text-center'>
 								<Typography
-									variant="h4"
-									color="primary"
+									variant='h4'
+									color='primary'
 								>
 									{stats.deviceStats.desktop}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Desktop
 								</Typography>
 								<LinearProgress
-									variant="determinate"
+									variant='determinate'
 									value={deviceTotal > 0 ? (stats.deviceStats.desktop / deviceTotal) * 100 : 0}
-									className="mt-2"
+									className='mt-2'
 								/>
 							</Box>
 						</Grid>
@@ -372,24 +373,24 @@ export default function RedirectStats({
 							xs={12}
 							sm={4}
 						>
-							<Box className="text-center">
+							<Box className='text-center'>
 								<Typography
-									variant="h4"
-									color="secondary"
+									variant='h4'
+									color='secondary'
 								>
 									{stats.deviceStats.mobile}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Mobile
 								</Typography>
 								<LinearProgress
-									variant="determinate"
+									variant='determinate'
 									value={deviceTotal > 0 ? (stats.deviceStats.mobile / deviceTotal) * 100 : 0}
-									color="secondary"
-									className="mt-2"
+									color='secondary'
+									className='mt-2'
 								/>
 							</Box>
 						</Grid>
@@ -398,24 +399,24 @@ export default function RedirectStats({
 							xs={12}
 							sm={4}
 						>
-							<Box className="text-center">
+							<Box className='text-center'>
 								<Typography
-									variant="h4"
-									color="success.main"
+									variant='h4'
+									color='success.main'
 								>
 									{stats.deviceStats.tablet}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Tablet
 								</Typography>
 								<LinearProgress
-									variant="determinate"
+									variant='determinate'
 									value={deviceTotal > 0 ? (stats.deviceStats.tablet / deviceTotal) * 100 : 0}
-									color="success"
-									className="mt-2"
+									color='success'
+									className='mt-2'
 								/>
 							</Box>
 						</Grid>
@@ -424,12 +425,12 @@ export default function RedirectStats({
 			</Card>
 
 			{/* Recent Activity */}
-			{showRecentActivity && stats.recentActivity.length > 0 && (
+			{showRecentActivity && stats.recentActivity.length > 0 ? (
 				<Card elevation={2}>
 					<CardContent>
 						<Typography
-							variant="h6"
-							className="mb-3"
+							variant='h6'
+							className='mb-3'
 						>
 							Atividade Recente
 						</Typography>
@@ -441,26 +442,26 @@ export default function RedirectStats({
 									animate={{ opacity: 1, x: 0 }}
 									transition={{ delay: index * 0.05 }}
 								>
-									<Box className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">
-										<Box className="flex items-center gap-2">
+									<Box className='flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded'>
+										<Box className='flex items-center gap-2'>
 											<ClickIcon
-												fontSize="small"
-												color="action"
+												fontSize='small'
+												color='action'
 											/>
-											<Typography variant="body2">
+											<Typography variant='body2'>
 												Click em <strong>/{activity.slug}</strong>
 											</Typography>
-											{activity.country && (
+											{activity.country ? (
 												<Chip
 													label={activity.country}
-													size="small"
-													variant="outlined"
+													size='small'
+													variant='outlined'
 												/>
-											)}
+											) : null}
 										</Box>
 										<Typography
-											variant="caption"
-											color="text.secondary"
+											variant='caption'
+											color='text.secondary'
 										>
 											{new Date(activity.timestamp).toLocaleTimeString()}
 										</Typography>
@@ -470,9 +471,9 @@ export default function RedirectStats({
 						</Stack>
 					</CardContent>
 				</Card>
-			)}
+			) : null}
 		</motion.div>
 	);
 }
 
-// Export já definido na função
+export { RedirectStats };

@@ -1,17 +1,21 @@
-import { ProfileForm } from '@/features/profile/components/ProfileForm';
-import { ProfileSidebar } from '@/features/profile/components/ProfileSidebar';
-import { PasswordChangeForm } from '@/features/profile/components/PasswordChangeForm';
-import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@/lib/store/messageSlice';
-import { profileService, UserProfile } from '@/services';
-import { ResponsiveContainer } from '@/shared/ui/base';
-import { PageHeader } from '@/shared/ui/base/PageHeader';
-import MainLayout from '@/shared/layout/MainLayout';
 import { Alert, Box, CircularProgress, Grid, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
+
+import { PasswordChangeForm } from '@/features/profile/components/PasswordChangeForm';
+import { ProfileForm } from '@/features/profile/components/ProfileForm';
+import { ProfileSidebar } from '@/features/profile/components/ProfileSidebar';
+import { AppIcon } from '@/lib/icons';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { showMessage } from '@/lib/store/messageSlice';
+import { profileService } from '@/services';
+import MainLayout from '@/shared/layout/MainLayout';
+import { ResponsiveContainer } from '@/shared/ui/base';
+import { PageHeader } from '@/shared/ui/base/PageHeader';
+
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import useUser from '../../lib/auth/useUser';
-import { AppIcon } from '@/lib/icons';
+
+import type { UserProfile } from '@/services';
 
 /**
  * Página de perfil do usuário refatorada
@@ -70,7 +74,7 @@ function ProfilePage() {
 					>
 						<CircularProgress size={60} />
 						<Typography
-							variant="h6"
+							variant='h6'
 							sx={{ mt: 2 }}
 						>
 							Carregando perfil...
@@ -85,7 +89,7 @@ function ProfilePage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<Alert severity="error">Erro ao carregar dados do usuário. Tente fazer login novamente.</Alert>
+					<Alert severity='error'>Erro ao carregar dados do usuário. Tente fazer login novamente.</Alert>
 				</MainLayout>
 			</AuthGuardRedirect>
 		);
@@ -95,19 +99,19 @@ function ProfilePage() {
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
 				<ResponsiveContainer
-					variant="page"
-					maxWidth="xl"
+					variant='page'
+					maxWidth='xl'
 				>
 					<PageHeader
-						title="Meu Perfil"
-						subtitle="Gerencie suas informações pessoais e configurações de conta"
+						title='Meu Perfil'
+						subtitle='Gerencie suas informações pessoais e configurações de conta'
 						icon={
 							<AppIcon
-								intent="profile"
+								intent='profile'
 								size={32}
 							/>
 						}
-						variant="profile"
+						variant='profile'
 						breadcrumbs={[
 							{ label: 'Dashboard', href: '/' },
 							{ label: 'Perfil', current: true }

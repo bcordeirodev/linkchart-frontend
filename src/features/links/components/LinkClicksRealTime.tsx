@@ -1,3 +1,4 @@
+import { Refresh, Computer, Smartphone, Tablet, Public, Schedule, TrendingUp } from '@mui/icons-material';
 import {
 	Card,
 	CardContent,
@@ -15,8 +16,8 @@ import {
 	IconButton,
 	Tooltip
 } from '@mui/material';
-import { Refresh, Computer, Smartphone, Tablet, Public, Schedule, TrendingUp } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
+
 import { api } from '@/lib/api/client';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showErrorMessage } from '@/lib/store/messageSlice';
@@ -103,13 +104,13 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 	const getDeviceIcon = (device: string) => {
 		switch (device.toLowerCase()) {
 			case 'mobile':
-				return <Smartphone color="primary" />;
+				return <Smartphone color='primary' />;
 			case 'tablet':
-				return <Tablet color="secondary" />;
+				return <Tablet color='secondary' />;
 			case 'desktop':
-				return <Computer color="success" />;
+				return <Computer color='success' />;
 			default:
-				return <Computer color="disabled" />;
+				return <Computer color='disabled' />;
 		}
 	};
 
@@ -120,11 +121,17 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 		const diffMins = Math.floor(diffMs / 60000);
 		const diffHours = Math.floor(diffMs / 3600000);
 
-		if (diffMins < 1) return 'Agora mesmo';
+		if (diffMins < 1) {
+			return 'Agora mesmo';
+		}
 
-		if (diffMins < 60) return `${diffMins}min atrás`;
+		if (diffMins < 60) {
+			return `${diffMins}min atrás`;
+		}
 
-		if (diffHours < 24) return `${diffHours}h atrás`;
+		if (diffHours < 24) {
+			return `${diffHours}h atrás`;
+		}
 
 		return date.toLocaleDateString('pt-BR');
 	};
@@ -143,7 +150,7 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 						}}
 					>
 						<Typography
-							variant="h6"
+							variant='h6'
 							fontWeight={600}
 						>
 							📊 Dados em Tempo Real
@@ -151,14 +158,14 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 						<Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
 							<Chip
 								label={`Atualizado: ${lastUpdate.toLocaleTimeString()}`}
-								size="small"
-								variant="outlined"
+								size='small'
+								variant='outlined'
 							/>
-							<Tooltip title="Atualizar agora">
+							<Tooltip title='Atualizar agora'>
 								<IconButton
 									onClick={fetchClicksData}
 									disabled={loading}
-									size="small"
+									size='small'
 								>
 									<Refresh
 										sx={{
@@ -185,15 +192,15 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 						>
 							<Box sx={{ textAlign: 'center' }}>
 								<Typography
-									variant="h4"
-									color="primary"
-									fontWeight="bold"
+									variant='h4'
+									color='primary'
+									fontWeight='bold'
 								>
 									{data.stats.total_clicks}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Total de Cliques
 								</Typography>
@@ -206,15 +213,15 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 						>
 							<Box sx={{ textAlign: 'center' }}>
 								<Typography
-									variant="h4"
-									color="secondary"
-									fontWeight="bold"
+									variant='h4'
+									color='secondary'
+									fontWeight='bold'
 								>
 									{data.stats.unique_ips}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									IPs Únicos
 								</Typography>
@@ -227,15 +234,15 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 						>
 							<Box sx={{ textAlign: 'center' }}>
 								<Typography
-									variant="h4"
-									color="success.main"
-									fontWeight="bold"
+									variant='h4'
+									color='success.main'
+									fontWeight='bold'
 								>
 									{data.stats.last_click ? formatTimeAgo(data.stats.last_click) : 'Nunca'}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Último Clique
 								</Typography>
@@ -248,15 +255,15 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 						>
 							<Box sx={{ textAlign: 'center' }}>
 								<Typography
-									variant="h4"
-									color="info.main"
-									fontWeight="bold"
+									variant='h4'
+									color='info.main'
+									fontWeight='bold'
 								>
 									{Object.keys(data.stats.clicks_by_hour).length}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Horas Ativas (24h)
 								</Typography>
@@ -281,7 +288,7 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								🌍 Países
@@ -298,15 +305,15 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 								>
 									<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 										<Public
-											fontSize="small"
-											color="primary"
+											fontSize='small'
+											color='primary'
 										/>
-										<Typography variant="body2">{country}</Typography>
+										<Typography variant='body2'>{country}</Typography>
 									</Box>
 									<Chip
 										label={clicks}
-										size="small"
-										color="primary"
+										size='small'
+										color='primary'
 									/>
 								</Box>
 							))}
@@ -323,7 +330,7 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								📱 Dispositivos
@@ -340,14 +347,14 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 								>
 									<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 										{getDeviceIcon(device)}
-										<Typography variant="body2">
+										<Typography variant='body2'>
 											{device.charAt(0).toUpperCase() + device.slice(1)}
 										</Typography>
 									</Box>
 									<Chip
 										label={clicks}
-										size="small"
-										color="secondary"
+										size='small'
+										color='secondary'
 									/>
 								</Box>
 							))}
@@ -364,7 +371,7 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								🔗 Fontes
@@ -383,11 +390,11 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 									>
 										<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 											<TrendingUp
-												fontSize="small"
-												color="success"
+												fontSize='small'
+												color='success'
 											/>
 											<Typography
-												variant="body2"
+												variant='body2'
 												sx={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis' }}
 											>
 												{referer}
@@ -395,8 +402,8 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 										</Box>
 										<Chip
 											label={clicks}
-											size="small"
-											color="success"
+											size='small'
+											color='success'
 										/>
 									</Box>
 								))}
@@ -409,16 +416,16 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 			<Card>
 				<CardContent>
 					<Typography
-						variant="h6"
+						variant='h6'
 						gutterBottom
 					>
 						🕒 Cliques Recentes
 					</Typography>
 					<TableContainer
 						component={Paper}
-						variant="outlined"
+						variant='outlined'
 					>
-						<Table size="small">
+						<Table size='small'>
 							<TableHead>
 								<TableRow>
 									<TableCell>Horário</TableCell>
@@ -434,8 +441,8 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 										<TableCell>
 											<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 												<Schedule
-													fontSize="small"
-													color="info"
+													fontSize='small'
+													color='info'
 												/>
 												{formatTimeAgo(click.created_at)}
 											</Box>
@@ -443,32 +450,32 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 										<TableCell>
 											<Box>
 												<Typography
-													variant="body2"
+													variant='body2'
 													fontWeight={600}
 												>
 													{click.country || 'Desconhecido'}
 												</Typography>
-												{click.city && (
+												{click.city ? (
 													<Typography
-														variant="caption"
-														color="text.secondary"
+														variant='caption'
+														color='text.secondary'
 													>
 														{click.city}
 													</Typography>
-												)}
+												) : null}
 											</Box>
 										</TableCell>
 										<TableCell>
 											<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 												{getDeviceIcon(click.device)}
-												<Typography variant="body2">
+												<Typography variant='body2'>
 													{click.device.charAt(0).toUpperCase() + click.device.slice(1)}
 												</Typography>
 											</Box>
 										</TableCell>
 										<TableCell>
 											<Typography
-												variant="body2"
+												variant='body2'
 												sx={{
 													maxWidth: 100,
 													overflow: 'hidden',
@@ -481,8 +488,8 @@ export function LinkClicksRealTime({ linkId }: ClicksRealTimeProps) {
 										</TableCell>
 										<TableCell>
 											<Typography
-												variant="body2"
-												fontFamily="monospace"
+												variant='body2'
+												fontFamily='monospace'
 											>
 												{click.ip}
 											</Typography>

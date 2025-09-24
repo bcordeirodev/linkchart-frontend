@@ -5,8 +5,6 @@
 
 // Components
 export { Analytics, AnalyticsContainer } from './components/Analytics';
-export * from './components/dashboard/shared/charts/Charts';
-// Header removido - agora usa PageHeader unificado
 
 // Enhanced Components (with dedicated hooks)
 export * from './components/dashboard';
@@ -17,14 +15,9 @@ export * from './components/audience';
 export * from './components/heatmap';
 export * from './components/perfomance';
 
-// Hooks
+// Hooks - apenas os que não são exportados pelos componentes
 export * from './hooks/useLinkPerformance';
-export * from './hooks/useHeatmapData';
-export * from './hooks/useAudienceData';
 export * from './hooks/useDashboardData';
-export * from './hooks/useGeographicData';
-export * from './hooks/useTemporalData';
-export * from './hooks/useInsightsData';
 
 // Services
 export * from '@/services/analytics.service';

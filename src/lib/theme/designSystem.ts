@@ -17,9 +17,12 @@
  * @since 2.0.0
  */
 
-import { Theme, useTheme, alpha } from '@mui/material/styles';
-import { SxProps } from '@mui/material';
+import { useTheme, alpha } from '@mui/material/styles';
+
 import { createSpacingUtils, createComponentColorSet, createPresetShadows, createPresetAnimations } from './utils';
+
+import type { SxProps } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 // ========================================
 // 📐 SPACING SYSTEM
@@ -338,7 +341,9 @@ export const applySpacing = (
 	const value = theme.spacing(spacingTokens[size]);
 	const prop = type === 'padding' ? 'p' : 'm';
 
-	if (!direction) return { [prop]: value };
+	if (!direction) {
+		return { [prop]: value };
+	}
 
 	const directionMap = {
 		x: `${prop}x`,

@@ -1,6 +1,8 @@
 import { Box, Fade } from '@mui/material';
+
 import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
-import { PublicLinkResponse } from '@/services/publicLink.service';
+
+import type { PublicLinkResponse } from '@/services/publicLink.service';
 
 interface ShorterFormProps {
 	onSuccess: (result: PublicLinkResponse) => void;

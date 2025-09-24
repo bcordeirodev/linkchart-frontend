@@ -4,8 +4,9 @@
  */
 
 import { Button } from '@mui/material';
-import { AppIcon } from '@/lib/icons';
 import { useNavigate } from 'react-router-dom';
+
+import { AppIcon } from '@/lib/icons';
 
 interface LinksHeaderActionsProps {
 	onCreateNew?: () => void;
@@ -28,11 +29,11 @@ export function LinksHeaderActions({ onCreateNew }: LinksHeaderActionsProps) {
 
 	return (
 		<Button
-			variant="contained"
-			size="large"
+			variant='contained'
+			size='large'
 			startIcon={
 				<AppIcon
-					intent="create"
+					intent='create'
 					size={20}
 				/>
 			}

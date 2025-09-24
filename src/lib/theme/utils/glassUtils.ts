@@ -9,8 +9,10 @@
  * @since 2.0.0
  */
 
-import { Theme, alpha } from '@mui/material/styles';
-import { SxProps } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+
+import type { SxProps } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 /**
  * Intensidades de glassmorphism disponíveis

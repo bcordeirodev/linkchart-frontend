@@ -1,5 +1,5 @@
-import { styled } from '@mui/material/styles';
 import { Box, Paper, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 /**
  * 📊 STYLED COMPONENTS PARA CHARTS

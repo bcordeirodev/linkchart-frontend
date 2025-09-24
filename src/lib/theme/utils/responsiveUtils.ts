@@ -9,8 +9,8 @@
  * @since 2.0.0
  */
 
-import { Theme } from '@mui/material/styles';
-import { SxProps } from '@mui/material';
+import type { SxProps } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 /**
  * Breakpoints disponíveis
@@ -20,13 +20,13 @@ export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 /**
  * Configuração responsiva para valores
  */
-export type ResponsiveValue<T> = {
+export interface ResponsiveValue<T> {
 	xs?: T;
 	sm?: T;
 	md?: T;
 	lg?: T;
 	xl?: T;
-};
+}
 
 /**
  * Cria valores responsivos para qualquer propriedade

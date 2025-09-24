@@ -1,5 +1,6 @@
-import { Box, Typography, Card, CardContent, Grid, Chip, Stack } from '@mui/material';
 import { Public, LocationOn } from '@mui/icons-material';
+import { Box, Typography, Card, CardContent, Grid, Chip, Stack } from '@mui/material';
+
 import type { HeatmapPoint } from '@/types';
 
 interface HeatmapStatsProps {
@@ -88,14 +89,14 @@ export function HeatmapStats({
 	return (
 		<Card>
 			<CardContent>
-				{showTitle && (
+				{showTitle ? (
 					<Typography
-						variant="h6"
+						variant='h6'
 						gutterBottom
 					>
 						{title}
 					</Typography>
-				)}
+				) : null}
 
 				{/* Métricas principais */}
 				<Grid
@@ -110,14 +111,14 @@ export function HeatmapStats({
 					>
 						<Box sx={{ textAlign: 'center' }}>
 							<Typography
-								variant="h6"
-								color="primary.main"
+								variant='h6'
+								color='primary.main'
 							>
 								{calculatedStats.totalPoints}
 							</Typography>
 							<Typography
-								variant="caption"
-								color="text.secondary"
+								variant='caption'
+								color='text.secondary'
 							>
 								Localizações
 							</Typography>
@@ -130,14 +131,14 @@ export function HeatmapStats({
 					>
 						<Box sx={{ textAlign: 'center' }}>
 							<Typography
-								variant="h6"
-								color="success.main"
+								variant='h6'
+								color='success.main'
 							>
 								{calculatedStats.totalClicks}
 							</Typography>
 							<Typography
-								variant="caption"
-								color="text.secondary"
+								variant='caption'
+								color='text.secondary'
 							>
 								Total Cliques
 							</Typography>
@@ -150,14 +151,14 @@ export function HeatmapStats({
 					>
 						<Box sx={{ textAlign: 'center' }}>
 							<Typography
-								variant="h6"
-								color="warning.main"
+								variant='h6'
+								color='warning.main'
 							>
 								{calculatedStats.maxClicks}
 							</Typography>
 							<Typography
-								variant="caption"
-								color="text.secondary"
+								variant='caption'
+								color='text.secondary'
 							>
 								Máximo
 							</Typography>
@@ -170,14 +171,14 @@ export function HeatmapStats({
 					>
 						<Box sx={{ textAlign: 'center' }}>
 							<Typography
-								variant="h6"
-								color="info.main"
+								variant='h6'
+								color='info.main'
 							>
 								{calculatedStats.avgClicksPerPoint}
 							</Typography>
 							<Typography
-								variant="caption"
-								color="text.secondary"
+								variant='caption'
+								color='text.secondary'
 							>
 								Média/Local
 							</Typography>
@@ -188,9 +189,9 @@ export function HeatmapStats({
 				{/* Estatísticas específicas do heatmap */}
 				<Box sx={{ mt: 3, mb: 2 }}>
 					<Typography
-						variant="subtitle2"
+						variant='subtitle2'
 						gutterBottom
-						color="text.secondary"
+						color='text.secondary'
 					>
 						🌍 Análise Geográfica Avançada
 					</Typography>
@@ -205,15 +206,15 @@ export function HeatmapStats({
 						>
 							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
 								<Typography
-									variant="body2"
-									fontWeight="bold"
-									color="primary.main"
+									variant='body2'
+									fontWeight='bold'
+									color='primary.main'
 								>
 									{uniqueVisitors.toLocaleString()}
 								</Typography>
 								<Typography
-									variant="caption"
-									color="text.secondary"
+									variant='caption'
+									color='text.secondary'
 								>
 									Visitantes Únicos
 								</Typography>
@@ -226,15 +227,15 @@ export function HeatmapStats({
 						>
 							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
 								<Typography
-									variant="body2"
-									fontWeight="bold"
-									color="success.main"
+									variant='body2'
+									fontWeight='bold'
+									color='success.main'
 								>
 									{totalActiveDays}
 								</Typography>
 								<Typography
-									variant="caption"
-									color="text.secondary"
+									variant='caption'
+									color='text.secondary'
 								>
 									Dias Ativos
 								</Typography>
@@ -247,15 +248,15 @@ export function HeatmapStats({
 						>
 							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
 								<Typography
-									variant="body2"
-									fontWeight="bold"
-									color="info.main"
+									variant='body2'
+									fontWeight='bold'
+									color='info.main'
 								>
 									{Math.round(avgPeakHour)}:00
 								</Typography>
 								<Typography
-									variant="caption"
-									color="text.secondary"
+									variant='caption'
+									color='text.secondary'
 								>
 									Horário de Pico
 								</Typography>
@@ -268,15 +269,15 @@ export function HeatmapStats({
 						>
 							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
 								<Typography
-									variant="body2"
-									fontWeight="bold"
-									color="warning.main"
+									variant='body2'
+									fontWeight='bold'
+									color='warning.main'
 								>
 									{weekendPercentage.toFixed(1)}%
 								</Typography>
 								<Typography
-									variant="caption"
-									color="text.secondary"
+									variant='caption'
+									color='text.secondary'
 								>
 									Fins de Semana
 								</Typography>
@@ -289,15 +290,15 @@ export function HeatmapStats({
 						>
 							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
 								<Typography
-									variant="body2"
-									fontWeight="bold"
-									color="secondary.main"
+									variant='body2'
+									fontWeight='bold'
+									color='secondary.main'
 								>
 									{totalTimezones}
 								</Typography>
 								<Typography
-									variant="caption"
-									color="text.secondary"
+									variant='caption'
+									color='text.secondary'
 								>
 									Fusos Horários
 								</Typography>
@@ -310,15 +311,15 @@ export function HeatmapStats({
 						>
 							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
 								<Typography
-									variant="body2"
-									fontWeight="bold"
-									color="error.main"
+									variant='body2'
+									fontWeight='bold'
+									color='error.main'
 								>
 									{totalContinents}
 								</Typography>
 								<Typography
-									variant="caption"
-									color="text.secondary"
+									variant='caption'
+									color='text.secondary'
 								>
 									Continentes
 								</Typography>
@@ -327,29 +328,29 @@ export function HeatmapStats({
 					</Grid>
 				</Box>
 
-				{showDetailed && (
+				{showDetailed ? (
 					<>
 						{/* Top países */}
 						<Box sx={{ mb: 2 }}>
 							<Typography
-								variant="subtitle2"
+								variant='subtitle2'
 								gutterBottom
 							>
 								🏆 Top Países
 							</Typography>
 							<Stack
-								direction="row"
+								direction='row'
 								spacing={1}
-								flexWrap="wrap"
+								flexWrap='wrap'
 								useFlexGap
 							>
 								{topCountriesArray.map(({ country, clicks }) => (
 									<Chip
 										key={country}
 										label={`${country}: ${clicks}`}
-										size="small"
-										variant="outlined"
-										icon={<Public fontSize="small" />}
+										size='small'
+										variant='outlined'
+										icon={<Public fontSize='small' />}
 									/>
 								))}
 							</Stack>
@@ -358,30 +359,30 @@ export function HeatmapStats({
 						{/* Top cidades */}
 						<Box>
 							<Typography
-								variant="subtitle2"
+								variant='subtitle2'
 								gutterBottom
 							>
 								🏙️ Top Cidades
 							</Typography>
 							<Stack
-								direction="row"
+								direction='row'
 								spacing={1}
-								flexWrap="wrap"
+								flexWrap='wrap'
 								useFlexGap
 							>
 								{topCitiesArray.map(({ cityCountry, clicks }) => (
 									<Chip
 										key={cityCountry}
 										label={`${cityCountry}: ${clicks}`}
-										size="small"
-										variant="outlined"
-										icon={<LocationOn fontSize="small" />}
+										size='small'
+										variant='outlined'
+										icon={<LocationOn fontSize='small' />}
 									/>
 								))}
 							</Stack>
 						</Box>
 					</>
-				)}
+				) : null}
 			</CardContent>
 		</Card>
 	);

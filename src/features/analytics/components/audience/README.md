@@ -32,7 +32,7 @@ function GlobalAnalytics() {
 	return (
 		<AudienceAnalysis
 			globalMode={true}
-			title="📊 Audiência Global"
+			title='📊 Audiência Global'
 		/>
 	);
 }
@@ -151,8 +151,8 @@ import { AudienceMetrics } from '@/features/analytics/components/audience';
 <AudienceMetrics
 	data={audienceData}
 	showTitle={true}
-	title="📊 Métricas de Audiência"
-	variant="detailed"
+	title='📊 Métricas de Audiência'
+	variant='detailed'
 />;
 ```
 

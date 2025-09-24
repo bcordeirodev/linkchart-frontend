@@ -1,9 +1,11 @@
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, Divider } from '@mui/material';
-import type { HeatmapPoint } from '@/types';
-import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
-import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { useTheme } from '@mui/material/styles';
+
+import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { getChartColorsByType } from '@/lib/theme';
+import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
+
+import type { HeatmapPoint } from '@/types';
 
 interface GeographicInsightsProps {
 	data: HeatmapPoint[];
@@ -74,7 +76,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 	return (
 		<Box sx={{ mt: 3 }}>
 			<Typography
-				variant="h6"
+				variant='h6'
 				gutterBottom
 			>
 				📊 Insights Geográficos Detalhados
@@ -95,15 +97,15 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					<Card>
 						<CardContent sx={{ textAlign: 'center' }}>
 							<Typography
-								variant="h4"
-								color="primary"
+								variant='h4'
+								color='primary'
 								gutterBottom
 							>
 								{totalClicks}
 							</Typography>
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 							>
 								Total de Cliques
 							</Typography>
@@ -119,15 +121,15 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					<Card>
 						<CardContent sx={{ textAlign: 'center' }}>
 							<Typography
-								variant="h4"
-								color="secondary"
+								variant='h4'
+								color='secondary'
 								gutterBottom
 							>
 								{uniqueCountries}
 							</Typography>
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 							>
 								Países Alcançados
 							</Typography>
@@ -143,15 +145,15 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					<Card>
 						<CardContent sx={{ textAlign: 'center' }}>
 							<Typography
-								variant="h4"
-								color="info"
+								variant='h4'
+								color='info'
 								gutterBottom
 							>
 								{uniqueCities}
 							</Typography>
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 							>
 								Cidades Únicas
 							</Typography>
@@ -167,15 +169,15 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					<Card>
 						<CardContent sx={{ textAlign: 'center' }}>
 							<Typography
-								variant="h4"
-								color="success"
+								variant='h4'
+								color='success'
 								gutterBottom
 							>
 								{data.length}
 							</Typography>
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 							>
 								Localizações
 							</Typography>
@@ -198,13 +200,13 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								🌍 Distribuição por País
 							</Typography>
 							<ApexChartWrapper
-								type="pie"
+								type='pie'
 								height={300}
 								{...formatPieChart(countryChartData, 'name', 'value', isDark)}
 							/>
@@ -221,13 +223,13 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								🌎 Distribuição por Continente
 							</Typography>
 							<ApexChartWrapper
-								type="donut"
+								type='donut'
 								height={300}
 								{...formatPieChart(continentData, 'name', 'value', isDark)}
 							/>
@@ -244,13 +246,13 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								🏙️ Top Cidades
 							</Typography>
 							<ApexChartWrapper
-								type="bar"
+								type='bar'
 								height={300}
 								{...formatBarChart(
 									cityChartData,
@@ -274,13 +276,13 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								🗺️ Top Estados/Regiões
 							</Typography>
 							<ApexChartWrapper
-								type="bar"
+								type='bar'
 								height={300}
 								{...formatBarChart(
 									stateChartData,
@@ -300,7 +302,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 			<Card sx={{ mt: 3 }}>
 				<CardContent>
 					<Typography
-						variant="h6"
+						variant='h6'
 						gutterBottom
 					>
 						💡 Insights de Mercado
@@ -316,22 +318,22 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 							md={6}
 						>
 							<Typography
-								variant="subtitle2"
+								variant='subtitle2'
 								gutterBottom
 							>
 								🎯 Mercados Principais
 							</Typography>
 							<Stack
-								direction="row"
+								direction='row'
 								spacing={1}
-								flexWrap="wrap"
+								flexWrap='wrap'
 								sx={{ mb: 2 }}
 							>
 								{countries.slice(0, 5).map((country, index) => (
 									<Chip
-										key={index}
+										key={country.country}
 										label={`${country.country} (${country.clicks})`}
-										size="small"
+										size='small'
 										color={index === 0 ? 'primary' : 'default'}
 										variant={index === 0 ? 'filled' : 'outlined'}
 									/>
@@ -345,21 +347,21 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 							md={6}
 						>
 							<Typography
-								variant="subtitle2"
+								variant='subtitle2'
 								gutterBottom
 							>
 								🏆 Cidades com Mais Engajamento
 							</Typography>
 							<Stack
-								direction="row"
+								direction='row'
 								spacing={1}
-								flexWrap="wrap"
+								flexWrap='wrap'
 							>
 								{cities.slice(0, 5).map((city, index) => (
 									<Chip
 										key={index}
 										label={`${city.city} (${city.clicks})`}
-										size="small"
+										size='small'
 										color={index === 0 ? 'secondary' : 'default'}
 										variant={index === 0 ? 'filled' : 'outlined'}
 									/>
@@ -373,7 +375,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					{/* Recomendações */}
 					<Box>
 						<Typography
-							variant="subtitle2"
+							variant='subtitle2'
 							gutterBottom
 						>
 							📈 Recomendações Estratégicas
@@ -381,8 +383,8 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 						<Stack spacing={1}>
 							{countries.length > 0 && (
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									• <strong>{countries[0].country}</strong> é seu mercado principal com{' '}
 									{countries[0].clicks} cliques. Considere criar conteúdo específico para este
@@ -391,8 +393,8 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 							)}
 							{cities.length > 0 && (
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									• <strong>{cities[0].city}</strong> é a cidade com mais engajamento. Explore
 									oportunidades de marketing local nesta região.
@@ -400,8 +402,8 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 							)}
 							{uniqueCountries > 3 && (
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									• Seu conteúdo está alcançando {uniqueCountries} países diferentes. Considere
 									estratégias de internacionalização.

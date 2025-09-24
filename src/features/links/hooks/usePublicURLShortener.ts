@@ -1,5 +1,8 @@
-import { publicLinkService, PublicLinkResponse } from '@/services/publicLink.service';
 import { useCallback, useState } from 'react';
+
+import { publicLinkService } from '@/services/publicLink.service';
+
+import type { PublicLinkResponse } from '@/services/publicLink.service';
 
 interface CreatePublicUrlData {
 	original_url: string;

@@ -1,11 +1,13 @@
 import { Box, Typography, Card, CardContent, Grid, Alert, Chip, Stack, Divider, Tabs, Tab } from '@mui/material';
-import type { HourlyData, DayOfWeekData, HourlyPatternData, WeekendVsWeekdayData, BusinessHoursData } from '@/types';
-import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { useTheme } from '@mui/material/styles';
-import { ChartCard } from '@/shared/ui/base/ChartCard';
+import { useState } from 'react';
+
 import { formatAreaChart, formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { getStandardChartColors, getChartColorsByType } from '@/lib/theme';
-import { useState } from 'react';
+import { ChartCard } from '@/shared/ui/base/ChartCard';
+import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
+
+import type { HourlyData, DayOfWeekData, HourlyPatternData, WeekendVsWeekdayData, BusinessHoursData } from '@/types';
 
 interface TemporalChartProps {
 	hourlyData: HourlyData[];
@@ -82,28 +84,28 @@ export function TemporalChart({
 	return (
 		<Box>
 			{/* NEW: Tabs para análises enhanced (se dados disponíveis) */}
-			{hasEnhancedData && (
+			{hasEnhancedData ? (
 				<Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
 					<Tabs
 						value={activeTab}
 						onChange={handleTabChange}
 					>
-						<Tab label="📊 Padrões Gerais" />
+						<Tab label='📊 Padrões Gerais' />
 						<Tab
-							label="⏰ Hora Local"
+							label='⏰ Hora Local'
 							disabled={!hourlyPatternsLocal?.length}
 						/>
 						<Tab
-							label="📅 Fim de Semana"
+							label='📅 Fim de Semana'
 							disabled={!weekendVsWeekday}
 						/>
 						<Tab
-							label="🕘 Horário Comercial"
+							label='🕘 Horário Comercial'
 							disabled={!businessHoursAnalysis}
 						/>
 					</Tabs>
 				</Box>
-			)}
+			) : null}
 
 			{/* Tab 0: Padrões Gerais (Conteúdo original) */}
 			{(!hasEnhancedData || activeTab === 0) && (
@@ -117,7 +119,7 @@ export function TemporalChart({
 						xs={12}
 					>
 						<Alert
-							severity="info"
+							severity='info'
 							sx={{
 								mb: 3, // Aumentar margem inferior
 								mt: 1, // Adicionar margem superior
@@ -125,7 +127,7 @@ export function TemporalChart({
 								zIndex: 1 // Garantir que fique abaixo das tabs
 							}}
 						>
-							<Typography variant="body2">
+							<Typography variant='body2'>
 								<strong>💡 Insights:</strong>{' '}
 								{hourlyTotal > 0 ? (
 									<>
@@ -147,13 +149,13 @@ export function TemporalChart({
 						lg={6}
 					>
 						<ChartCard
-							title="⏰ Cliques por Hora do Dia"
+							title='⏰ Cliques por Hora do Dia'
 							subtitle={`Pico: ${peakHour.label} (${peakHour.clicks} cliques)`}
 						>
 							{hourlyTotal > 0 ? (
 								<>
 									<ApexChartWrapper
-										type="area"
+										type='area'
 										height={300}
 										series={[
 											{
@@ -244,7 +246,7 @@ export function TemporalChart({
 														fontSize: '12px',
 														fontFamily: 'Inter, system-ui, sans-serif'
 													},
-													formatter: function (val: number) {
+													formatter(val: number) {
 														return val.toLocaleString();
 													}
 												}
@@ -265,7 +267,7 @@ export function TemporalChart({
 													fontFamily: 'Inter, system-ui, sans-serif'
 												},
 												y: {
-													formatter: function (val: number) {
+													formatter(val: number) {
 														return `${val.toLocaleString()} cliques`;
 													}
 												}
@@ -276,7 +278,7 @@ export function TemporalChart({
 									{/* Resumo dos horários */}
 									<Box sx={{ mt: 2, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
 										<Typography
-											variant="body2"
+											variant='body2'
 											gutterBottom
 										>
 											<strong>📊 Resumo por Período:</strong>
@@ -290,14 +292,14 @@ export function TemporalChart({
 												xs={4}
 											>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													Manhã (6h-12h)
 												</Typography>
 												<Typography
-													variant="body2"
-													fontWeight="medium"
+													variant='body2'
+													fontWeight='medium'
 												>
 													{hourlyData.slice(6, 12).reduce((sum, h) => sum + h.clicks, 0)}{' '}
 													clicks
@@ -308,14 +310,14 @@ export function TemporalChart({
 												xs={4}
 											>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													Tarde (12h-18h)
 												</Typography>
 												<Typography
-													variant="body2"
-													fontWeight="medium"
+													variant='body2'
+													fontWeight='medium'
 												>
 													{hourlyData.slice(12, 18).reduce((sum, h) => sum + h.clicks, 0)}{' '}
 													clicks
@@ -326,14 +328,14 @@ export function TemporalChart({
 												xs={4}
 											>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													Noite (18h-24h)
 												</Typography>
 												<Typography
-													variant="body2"
-													fontWeight="medium"
+													variant='body2'
+													fontWeight='medium'
 												>
 													{hourlyData.slice(18, 24).reduce((sum, h) => sum + h.clicks, 0)}{' '}
 													clicks
@@ -351,14 +353,14 @@ export function TemporalChart({
 									}}
 								>
 									<Typography
-										variant="h6"
+										variant='h6'
 										gutterBottom
 									>
 										⏰
 									</Typography>
 									<Typography>Padrões horários aparecerão aqui após os primeiros cliques</Typography>
 									<Typography
-										variant="body2"
+										variant='body2'
 										sx={{ mt: 1 }}
 									>
 										Descubra os melhores horários para compartilhar!
@@ -375,13 +377,13 @@ export function TemporalChart({
 						lg={6}
 					>
 						<ChartCard
-							title="📅 Cliques por Dia da Semana"
+							title='📅 Cliques por Dia da Semana'
 							subtitle={`Melhor dia: ${peakDay.day_name} (${peakDay.clicks} cliques)`}
 						>
 							{weeklyTotal > 0 ? (
 								<>
 									<ApexChartWrapper
-										type="bar"
+										type='bar'
 										height={300}
 										series={[
 											{
@@ -411,7 +413,7 @@ export function TemporalChart({
 											},
 											dataLabels: {
 												enabled: true,
-												formatter: function (val: number) {
+												formatter(val: number) {
 													return val.toLocaleString();
 												},
 												offsetY: -20,
@@ -443,7 +445,7 @@ export function TemporalChart({
 														fontSize: '12px',
 														fontFamily: 'Inter, system-ui, sans-serif'
 													},
-													formatter: function (val: number) {
+													formatter(val: number) {
 														return val.toLocaleString();
 													}
 												}
@@ -455,7 +457,7 @@ export function TemporalChart({
 											tooltip: {
 												theme: isDark ? 'dark' : 'light',
 												y: {
-													formatter: function (val: number) {
+													formatter(val: number) {
 														return `${val.toLocaleString()} cliques`;
 													}
 												}
@@ -497,10 +499,10 @@ export function TemporalChart({
 														borderBottomColor: 'divider'
 													}}
 												>
-													<Typography variant="body2">{day.day_name}</Typography>
+													<Typography variant='body2'>{day.day_name}</Typography>
 													<Typography
-														variant="body2"
-														fontWeight="medium"
+														variant='body2'
+														fontWeight='medium'
 													>
 														{day.clicks} clicks
 													</Typography>
@@ -517,14 +519,14 @@ export function TemporalChart({
 									}}
 								>
 									<Typography
-										variant="h6"
+										variant='h6'
 										gutterBottom
 									>
 										📅
 									</Typography>
 									<Typography>Padrões semanais aparecerão aqui após os primeiros cliques</Typography>
 									<Typography
-										variant="body2"
+										variant='body2'
 										sx={{ mt: 1 }}
 									>
 										Descubra os melhores dias para engajamento!
@@ -535,7 +537,7 @@ export function TemporalChart({
 					</Grid>
 
 					{/* Insights Temporais Integrados */}
-					{showInsights && (hourlyTotal > 0 || weeklyTotal > 0) && (
+					{showInsights && (hourlyTotal > 0 || weeklyTotal > 0) ? (
 						<Grid
 							item
 							xs={12}
@@ -543,7 +545,7 @@ export function TemporalChart({
 							<Card sx={{ mt: 2 }}>
 								<CardContent>
 									<Typography
-										variant="h6"
+										variant='h6'
 										gutterBottom
 										sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 									>
@@ -561,7 +563,7 @@ export function TemporalChart({
 											md={6}
 										>
 											<Typography
-												variant="subtitle2"
+												variant='subtitle2'
 												gutterBottom
 											>
 												⏰ Padrões por Hora
@@ -578,11 +580,11 @@ export function TemporalChart({
 																: 'Fora do Horário'
 														}
 														color={isBusinessHoursActive ? 'success' : 'warning'}
-														size="small"
+														size='small'
 													/>
 													<Typography
-														variant="body2"
-														color="text.secondary"
+														variant='body2'
+														color='text.secondary'
 													>
 														{isBusinessHoursActive
 															? 'Ativo durante 9h-18h'
@@ -592,12 +594,12 @@ export function TemporalChart({
 												<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 													<Chip
 														label={`${activeHours}/24 horas ativas`}
-														color="info"
-														size="small"
+														color='info'
+														size='small'
 													/>
 													<Typography
-														variant="body2"
-														color="text.secondary"
+														variant='body2'
+														color='text.secondary'
 													>
 														{((activeHours / 24) * 100).toFixed(0)}% do dia com atividade
 													</Typography>
@@ -612,7 +614,7 @@ export function TemporalChart({
 											md={6}
 										>
 											<Typography
-												variant="subtitle2"
+												variant='subtitle2'
 												gutterBottom
 											>
 												📅 Padrões por Dia
@@ -622,11 +624,11 @@ export function TemporalChart({
 													<Chip
 														label={isWeekendActive ? 'Fim de Semana' : 'Dias Úteis'}
 														color={isWeekendActive ? 'secondary' : 'primary'}
-														size="small"
+														size='small'
 													/>
 													<Typography
-														variant="body2"
-														color="text.secondary"
+														variant='body2'
+														color='text.secondary'
 													>
 														{isWeekendActive
 															? 'Mais ativo nos fins de semana'
@@ -636,12 +638,12 @@ export function TemporalChart({
 												<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 													<Chip
 														label={`${activeDays}/7 dias ativos`}
-														color="info"
-														size="small"
+														color='info'
+														size='small'
 													/>
 													<Typography
-														variant="body2"
-														color="text.secondary"
+														variant='body2'
+														color='text.secondary'
 													>
 														{((activeDays / 7) * 100).toFixed(0)}% da semana com atividade
 													</Typography>
@@ -655,44 +657,44 @@ export function TemporalChart({
 									{/* Recomendações */}
 									<Box>
 										<Typography
-											variant="subtitle2"
+											variant='subtitle2'
 											gutterBottom
 										>
 											📈 Recomendações de Timing
 										</Typography>
 										<Stack spacing={1}>
-											{peakHour && peakHour.clicks > 0 && (
+											{peakHour && peakHour.clicks > 0 ? (
 												<Typography
-													variant="body2"
-													color="text.secondary"
+													variant='body2'
+													color='text.secondary'
 												>
 													• <strong>{peakHour.label}</strong> é o horário de pico com{' '}
 													{peakHour.clicks} cliques. Programe campanhas importantes neste
 													horário.
 												</Typography>
-											)}
-											{peakDay && peakDay.clicks > 0 && (
+											) : null}
+											{peakDay && peakDay.clicks > 0 ? (
 												<Typography
-													variant="body2"
-													color="text.secondary"
+													variant='body2'
+													color='text.secondary'
 												>
 													• <strong>{peakDay.day_name}</strong> é o dia mais ativo. Concentre
 													lançamentos e promoções neste dia.
 												</Typography>
-											)}
-											{isBusinessHoursActive && (
+											) : null}
+											{isBusinessHoursActive ? (
 												<Typography
-													variant="body2"
-													color="text.secondary"
+													variant='body2'
+													color='text.secondary'
 												>
 													• Seu público é ativo durante horário comercial. Foque em conteúdo
 													B2B e profissional.
 												</Typography>
-											)}
+											) : null}
 											{!isBusinessHoursActive && hourlyTotal > 0 && (
 												<Typography
-													variant="body2"
-													color="text.secondary"
+													variant='body2'
+													color='text.secondary'
 												>
 													• Seu público é ativo fora do horário comercial. Foque em conteúdo
 													de entretenimento e lifestyle.
@@ -703,12 +705,12 @@ export function TemporalChart({
 								</CardContent>
 							</Card>
 						</Grid>
-					)}
+					) : null}
 				</Grid>
 			)}
 
 			{/* NEW: Tab 1 - Padrões de Hora Local */}
-			{hasEnhancedData && activeTab === 1 && hourlyPatternsLocal && (
+			{hasEnhancedData && activeTab === 1 && hourlyPatternsLocal ? (
 				<Grid
 					container
 					spacing={3}
@@ -717,9 +719,9 @@ export function TemporalChart({
 						item
 						xs={12}
 					>
-						<ChartCard title="⏰ Padrões de Hora Local (com Timezone)">
+						<ChartCard title='⏰ Padrões de Hora Local (com Timezone)'>
 							<ApexChartWrapper
-								type="area"
+								type='area'
 								{...formatAreaChart(
 									hourlyPatternsLocal.map((item) => ({
 										hour: `${item.hour.toString().padStart(2, '0')}:00`,
@@ -736,7 +738,7 @@ export function TemporalChart({
 							/>
 							<Box sx={{ mt: 2 }}>
 								<Typography
-									variant="subtitle2"
+									variant='subtitle2'
 									gutterBottom
 								>
 									Performance por Hora
@@ -753,8 +755,8 @@ export function TemporalChart({
 												borderRadius: 1
 											}}
 										>
-											<Typography variant="body2">{item.hour}h</Typography>
-											<Typography variant="caption">
+											<Typography variant='body2'>{item.hour}h</Typography>
+											<Typography variant='caption'>
 												{item.clicks} cliques | {item.avg_response_time}ms |{' '}
 												{item.unique_visitors} visitantes
 											</Typography>
@@ -765,10 +767,10 @@ export function TemporalChart({
 						</ChartCard>
 					</Grid>
 				</Grid>
-			)}
+			) : null}
 
 			{/* NEW: Tab 2 - Fim de Semana vs Dias Úteis */}
-			{hasEnhancedData && activeTab === 2 && weekendVsWeekday && (
+			{hasEnhancedData && activeTab === 2 && weekendVsWeekday ? (
 				<Grid
 					container
 					spacing={3}
@@ -778,9 +780,9 @@ export function TemporalChart({
 						xs={12}
 						md={8}
 					>
-						<ChartCard title="📅 Fim de Semana vs Dias Úteis">
+						<ChartCard title='📅 Fim de Semana vs Dias Úteis'>
 							<ApexChartWrapper
-								type="pie"
+								type='pie'
 								{...formatPieChart(
 									[
 										{ name: 'Dias Úteis', value: weekendVsWeekday.weekday.clicks },
@@ -805,7 +807,7 @@ export function TemporalChart({
 						>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									Comparativo
@@ -813,17 +815,17 @@ export function TemporalChart({
 								<Stack spacing={2}>
 									<Box>
 										<Typography
-											variant="subtitle2"
-											color="primary"
+											variant='subtitle2'
+											color='primary'
 										>
 											Dias Úteis
 										</Typography>
-										<Typography variant="body2">
+										<Typography variant='body2'>
 											{weekendVsWeekday.weekday.clicks} cliques
 										</Typography>
 										<Typography
-											variant="caption"
-											color="text.secondary"
+											variant='caption'
+											color='text.secondary'
 										>
 											{weekendVsWeekday.weekday.unique_visitors} visitantes únicos
 										</Typography>
@@ -831,17 +833,17 @@ export function TemporalChart({
 									<Divider />
 									<Box>
 										<Typography
-											variant="subtitle2"
-											color="secondary"
+											variant='subtitle2'
+											color='secondary'
 										>
 											Fim de Semana
 										</Typography>
-										<Typography variant="body2">
+										<Typography variant='body2'>
 											{weekendVsWeekday.weekend.clicks} cliques
 										</Typography>
 										<Typography
-											variant="caption"
-											color="text.secondary"
+											variant='caption'
+											color='text.secondary'
 										>
 											{weekendVsWeekday.weekend.unique_visitors} visitantes únicos
 										</Typography>
@@ -851,10 +853,10 @@ export function TemporalChart({
 						</Card>
 					</Grid>
 				</Grid>
-			)}
+			) : null}
 
 			{/* NEW: Tab 3 - Horário Comercial */}
-			{hasEnhancedData && activeTab === 3 && businessHoursAnalysis && (
+			{hasEnhancedData && activeTab === 3 && businessHoursAnalysis ? (
 				<Grid
 					container
 					spacing={3}
@@ -864,9 +866,9 @@ export function TemporalChart({
 						xs={12}
 						md={8}
 					>
-						<ChartCard title="🕘 Análise de Horário Comercial">
+						<ChartCard title='🕘 Análise de Horário Comercial'>
 							<ApexChartWrapper
-								type="bar"
+								type='bar'
 								{...formatBarChart(
 									[
 										{
@@ -901,7 +903,7 @@ export function TemporalChart({
 						>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									Métricas de Engajamento
@@ -909,17 +911,17 @@ export function TemporalChart({
 								<Stack spacing={2}>
 									<Box>
 										<Typography
-											variant="subtitle2"
-											color="primary"
+											variant='subtitle2'
+											color='primary'
 										>
 											Horário Comercial
 										</Typography>
-										<Typography variant="body2">
+										<Typography variant='body2'>
 											{businessHoursAnalysis.business_hours.clicks} cliques
 										</Typography>
 										<Typography
-											variant="caption"
-											color="text.secondary"
+											variant='caption'
+											color='text.secondary'
 										>
 											{businessHoursAnalysis.business_hours.avg_session_depth} cliques/sessão
 										</Typography>
@@ -927,17 +929,17 @@ export function TemporalChart({
 									<Divider />
 									<Box>
 										<Typography
-											variant="subtitle2"
-											color="secondary"
+											variant='subtitle2'
+											color='secondary'
 										>
 											Fora do Horário
 										</Typography>
-										<Typography variant="body2">
+										<Typography variant='body2'>
 											{businessHoursAnalysis.non_business_hours.clicks} cliques
 										</Typography>
 										<Typography
-											variant="caption"
-											color="text.secondary"
+											variant='caption'
+											color='text.secondary'
 										>
 											{businessHoursAnalysis.non_business_hours.avg_session_depth} cliques/sessão
 										</Typography>
@@ -947,7 +949,7 @@ export function TemporalChart({
 						</Card>
 					</Grid>
 				</Grid>
-			)}
+			) : null}
 		</Box>
 	);
 }

@@ -1,18 +1,13 @@
-/**
- * @fileoverview Componente principal de análise de heatmap
- * @author Link Chart Team
- * @version 2.0.0
- */
-
 import { Box } from '@mui/material';
-import { RealTimeHeatmapChart } from './RealTimeHeatmapChart';
-import { HeatmapMetrics } from './HeatmapMetrics';
-import { HeatmapStats } from './HeatmapStats';
+
 import { useHeatmapData } from '@/features/analytics/hooks/useHeatmapData';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import TabDescription from '@/shared/ui/base/TabDescription';
 
-// Props locais do componente
+import { HeatmapMetrics } from './HeatmapMetrics';
+import { HeatmapStats } from './HeatmapStats';
+import { RealTimeHeatmapChart } from './RealTimeHeatmapChart';
+
 interface HeatmapAnalysisProps {
 	linkId?: string;
 	globalMode?: boolean;
@@ -22,23 +17,7 @@ interface HeatmapAnalysisProps {
 }
 
 /**
- * Componente de análise de heatmap unificado
- *
- * @description
- * Este componente fornece uma interface completa para visualização de heatmap:
- * - Métricas agregadas (total de cliques, países, cidades)
- * - Mapa interativo em tempo real
- * - Suporte para modo global e específico por link
- * - Estados de loading e erro
- *
- * @example
- * ```tsx
- * // Modo global (todos os links)
- * <HeatmapAnalysis globalMode={true} />
- *
- * // Link específico
- * <HeatmapAnalysis linkId="123" />
- * ```
+ * Componente de análise de heatmap com visualização geográfica interativa
  */
 export function HeatmapAnalysis({
 	linkId,
@@ -47,10 +26,8 @@ export function HeatmapAnalysis({
 	enableRealtime = true,
 	minClicks = 1
 }: HeatmapAnalysisProps) {
-	// Determinar modo de operação
 	const isGlobalMode = globalMode || !linkId;
 
-	// Hook para gerenciar dados do heatmap
 	const {
 		stats,
 		data: heatmapData,
@@ -68,12 +45,11 @@ export function HeatmapAnalysis({
 
 	return (
 		<Box>
-			{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon="🗺️"
+					icon='🗺️'
 					title={title}
-					description="Visualização geográfica interativa dos cliques com densidade de calor, coordenadas precisas e informações detalhadas por localização."
+					description='Visualização geográfica interativa dos cliques com densidade de calor, coordenadas precisas e informações detalhadas por localização.'
 					highlight={`${stats?.totalPoints || 0} localizações mapeadas`}
 					metadata={
 						enableRealtime
@@ -85,7 +61,6 @@ export function HeatmapAnalysis({
 				/>
 			</Box>
 
-			{/* 2. CONTEÚDO COM LOADER */}
 			<AnalyticsStateManager
 				loading={loading}
 				error={error}
@@ -102,27 +77,24 @@ export function HeatmapAnalysis({
 				minHeight={400}
 			>
 				<Box>
-					{/* MÉTRICAS */}
 					<Box sx={{ mb: 3 }}>
 						<HeatmapMetrics
 							stats={stats}
-							showTitle={true}
-							title={isGlobalMode ? '🌍 Métricas Globais do Heatmap' : '📍 Métricas do Heatmap'}
+							showTitle
+							title={isGlobalMode ? 'Métricas Globais do Heatmap' : 'Métricas do Heatmap'}
 						/>
 
-						{/* Estatísticas Avançadas */}
 						<Box sx={{ mt: 3 }}>
 							<HeatmapStats
 								data={heatmapData || []}
 								stats={stats || undefined}
 								globalMode={isGlobalMode}
-								showTitle={true}
-								title="📊 Estatísticas Detalhadas"
+								showTitle
+								title='Estatísticas Detalhadas'
 							/>
 						</Box>
 					</Box>
 
-					{/* RESTANTE DO CONTEÚDO */}
 					<Box>
 						<RealTimeHeatmapChart
 							data={heatmapData || []}
@@ -136,8 +108,8 @@ export function HeatmapAnalysis({
 									? 'Mapa de Calor Global - Todos os Links Ativos'
 									: 'Mapa de Calor - Link Específico'
 							}
-							showControls={true}
-							showStats={false} // Métricas já são mostradas acima
+							showControls
+							showStats={false}
 						/>
 					</Box>
 				</Box>

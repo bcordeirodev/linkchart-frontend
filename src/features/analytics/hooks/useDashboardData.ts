@@ -1,13 +1,6 @@
-/**
- * @fileoverview Hook para dados do dashboard
- * @author Link Chart Team
- * @version 1.0.0
- */
-
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { api } from '@/lib/api/client';
 
-// Tipos para o dashboard
+import { api } from '@/lib/api/client';
 export interface DashboardData {
 	summary: {
 		total_links: number;
@@ -109,29 +102,7 @@ export interface UseDashboardDataReturn {
 }
 
 /**
- * Hook personalizado para dados do dashboard
- *
- * @description
- * Gerencia dados agregados para o dashboard principal:
- * - Métricas resumidas de todos os links
- * - Top links por performance
- * - Atividade recente
- * - Resumos geográficos e de dispositivos
- *
- * @example
- * ```tsx
- * // Dashboard global
- * const { data, stats, loading } = useDashboardData({
- *   globalMode: true,
- *   timeframe: '24h'
- * });
- *
- * // Dashboard de link específico
- * const { data, loading } = useDashboardData({
- *   linkId: '123',
- *   enableRealtime: true
- * });
- * ```
+ * Hook para gerenciar dados do dashboard com métricas agregadas e top links
  */
 export function useDashboardData({
 	linkId,
@@ -150,22 +121,15 @@ export function useDashboardData({
 	const abortControllerRef = useRef<AbortController | null>(null);
 	const isRequestingRef = useRef<boolean>(false);
 	const lastRequestParamsRef = useRef<string>('');
-
-	/**
-	 * Busca dados do dashboard em uma única requisição otimizada
-	 */
 	const fetchDashboardData = useCallback(async () => {
 		try {
-			// Parâmetros da requisição
 			const params = {
 				hours: timeframe === '1h' ? '1' : timeframe === '24h' ? '24' : timeframe === '7d' ? '168' : '720',
-				include_charts: 'true' // Incluir dados para gráficos
+				include_charts: 'true'
 			};
 
-			// Criar chave única para esta requisição
 			const requestKey = `${linkId}-${globalMode}-${timeframe}-${JSON.stringify(params)}`;
 
-			// Evitar requisições duplicadas
 			if (isRequestingRef.current && lastRequestParamsRef.current === requestKey) {
 				return;
 			}
@@ -173,7 +137,6 @@ export function useDashboardData({
 			isRequestingRef.current = true;
 			lastRequestParamsRef.current = requestKey;
 
-			// Cancelar requisição anterior se existir
 			if (abortControllerRef.current) {
 				abortControllerRef.current.abort();
 			}
@@ -181,7 +144,6 @@ export function useDashboardData({
 			abortControllerRef.current = new AbortController();
 			setError(null);
 
-			// Endpoint único do dashboard
 			const dashboardEndpoint =
 				linkId && !globalMode ? `/api/analytics/link/${linkId}/dashboard` : '/api/analytics/global/dashboard';
 
@@ -195,7 +157,6 @@ export function useDashboardData({
 				? `${dashboardEndpoint}?${urlParams.toString()}`
 				: dashboardEndpoint;
 
-			// Fazer apenas UMA requisição
 			const response = await api.get<{
 				success: boolean;
 				data?: DashboardData;
@@ -209,22 +170,17 @@ export function useDashboardData({
 				throw new Error('Dados do dashboard não encontrados');
 			}
 
-			// Resposta do backend processada
-
-			// Processar dados do dashboard
 			let dashboardData: DashboardData;
 
-			// Estrutura do novo endpoint (tanto global quanto individual)
 			if (response.data) {
-				// Novo endpoint: /api/analytics/global/dashboard ou /api/analytics/link/{id}/dashboard
 				const data = response.data;
 				dashboardData = {
 					summary: data.summary || {},
 					top_links: data.top_links || [],
-					recent_activity: [], // Será implementado depois se necessário
+					recent_activity: [],
 					geographic_summary: {
 						countries_reached: data.summary?.countries_reached || 0,
-						cities_reached: 0, // Será implementado depois se necessário
+						cities_reached: 0,
 						top_country: data.geographic_data?.top_countries?.[0]?.country
 					},
 					device_summary: {
@@ -232,13 +188,11 @@ export function useDashboardData({
 						mobile: data.audience_data?.device_breakdown?.find((d) => d.device === 'Mobile')?.clicks || 0,
 						tablet: data.audience_data?.device_breakdown?.find((d) => d.device === 'Tablet')?.clicks || 0
 					},
-					// Dados de gráficos vindos do back-end
 					temporal_data: data.temporal_data,
 					geographic_data: data.geographic_data,
 					audience_data: data.audience_data
 				};
 			} else {
-				// Endpoint antigo: /api/metrics/dashboard
 				const metrics = response.metrics || {};
 				const charts = response.charts || {};
 
@@ -255,18 +209,14 @@ export function useDashboardData({
 						mobile: 0,
 						tablet: 0
 					},
-					// Dados de gráficos vindos do back-end
 					temporal_data: charts.temporal,
 					geographic_data: charts.geographic,
 					audience_data: charts.audience
 				};
 			}
 
-			// Dados processados com sucesso
-
 			setData(dashboardData);
 
-			// Calcular estatísticas
 			const calculatedStats: DashboardStats = {
 				totalMetrics: Object.keys(dashboardData.summary).length,
 				lastUpdate: new Date().toISOString(),
@@ -282,7 +232,7 @@ export function useDashboardData({
 			setStats(calculatedStats);
 		} catch (err: any) {
 			if (err.name === 'AbortError') {
-				return; // Requisição cancelada, não é erro
+				return;
 			}
 
 			const errorMessage = err.message || 'Erro ao carregar dados do dashboard';
@@ -290,23 +240,15 @@ export function useDashboardData({
 
 			console.error('useDashboardData error:', err);
 		} finally {
-			// Reset do flag de requisição
 			isRequestingRef.current = false;
 		}
 	}, [linkId, globalMode, timeframe]);
-
-	/**
-	 * Refresh manual dos dados
-	 */
 	const refresh = useCallback(async () => {
 		setLoading(true);
 		await fetchDashboardData();
 		setLoading(false);
 	}, [fetchDashboardData]);
 
-	/**
-	 * Configurar polling se realtime estiver habilitado
-	 */
 	useEffect(() => {
 		if (enableRealtime && refreshInterval > 0) {
 			intervalRef.current = setInterval(() => {
@@ -324,11 +266,8 @@ export function useDashboardData({
 				intervalRef.current = null;
 			}
 		};
-	}, [enableRealtime, refreshInterval]); // Removido fetchDashboardData das dependências
+	}, [enableRealtime, refreshInterval]);
 
-	/**
-	 * Buscar dados na montagem
-	 */
 	useEffect(() => {
 		setLoading(true);
 		fetchDashboardData().finally(() => {
@@ -336,7 +275,6 @@ export function useDashboardData({
 		});
 
 		return () => {
-			// Cleanup na desmontagem
 			if (abortControllerRef.current) {
 				abortControllerRef.current.abort();
 			}
@@ -345,7 +283,7 @@ export function useDashboardData({
 				clearInterval(intervalRef.current);
 			}
 		};
-	}, [linkId, globalMode, timeframe]); // Usar apenas as dependências primitivas
+	}, [linkId, globalMode, timeframe]);
 
 	return {
 		data,

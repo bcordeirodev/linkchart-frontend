@@ -12,9 +12,9 @@ import type {
 	BaseTitleProps,
 	BaseConfigProps
 } from '../core';
+import type { AudienceData } from './audience';
 import type { GeographicData } from './geographic';
 import type { TemporalData } from './temporal';
-import type { AudienceData } from './audience';
 
 /**
  * Dados completos de analytics (estrutura principal)

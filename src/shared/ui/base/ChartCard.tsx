@@ -3,11 +3,13 @@
  * Container padronizado para gráficos seguindo padrão do GeographicChart e Charts
  */
 
-import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+
 import { createPresetAnimations } from '@/lib/theme';
-import { BaseComponentProps } from '../components';
+
+import type { BaseComponentProps } from '../components';
+import type React from 'react';
 
 interface ChartCardProps extends BaseComponentProps {
 	title?: string;
@@ -46,9 +48,9 @@ export function ChartCard({
 		>
 			<Card>
 				<CardContent>
-					{title && (
+					{title ? (
 						<Typography
-							variant="h6"
+							variant='h6'
 							gutterBottom
 							sx={{
 								position: 'relative',
@@ -58,22 +60,22 @@ export function ChartCard({
 						>
 							{title}
 						</Typography>
-					)}
+					) : null}
 
-					{subtitle && (
+					{subtitle ? (
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 							sx={{ mb: 1 }}
 						>
 							{subtitle}
 						</Typography>
-					)}
+					) : null}
 
-					{action && <Box sx={{ mb: 1 }}>{action}</Box>}
+					{action ? <Box sx={{ mb: 1 }}>{action}</Box> : null}
 
 					<Box sx={{ mb: 2 }}>
-						{loading ? <Typography color="text.secondary">Carregando gráfico...</Typography> : children}
+						{loading ? <Typography color='text.secondary'>Carregando gráfico...</Typography> : children}
 					</Box>
 				</CardContent>
 			</Card>

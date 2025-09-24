@@ -9,8 +9,8 @@
  * @since 2.0.0
  */
 
-import { Theme } from '@mui/material/styles';
-import { SxProps } from '@mui/material';
+import type { SxProps } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 /**
  * Tipos de animação disponíveis

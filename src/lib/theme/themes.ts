@@ -32,8 +32,9 @@
  * @version 2.0.0
  */
 
-import { FuseThemesType } from './types/theme';
 import { brandColors, fuseDark, skyBlue } from './colors';
+
+import type { FuseThemesType } from './types/theme';
 
 // ========================================
 // 🎨 PALETAS BASE OTIMIZADAS
@@ -117,10 +118,10 @@ export const allThemes: FuseThemesType = {
 				contrastText: '#FFFFFF'
 			},
 			secondary: {
-				light: skyBlue[200],
-				main: skyBlue[400],
-				dark: skyBlue[600],
-				contrastText: '#000000'
+				light: '#E8E9EA',
+				main: '#9E9E9E',
+				dark: '#616161',
+				contrastText: '#FFFFFF'
 			},
 			error: brandColors.error,
 			success: brandColors.success,
@@ -143,10 +144,10 @@ export const allThemes: FuseThemesType = {
 				contrastText: '#FFFFFF'
 			},
 			secondary: {
-				light: skyBlue[200],
-				main: skyBlue[400],
-				dark: skyBlue[600],
-				contrastText: '#000000'
+				light: '#E8E9EA',
+				main: '#9E9E9E',
+				dark: '#616161',
+				contrastText: '#FFFFFF'
 			},
 			error: brandColors.error,
 			success: brandColors.success,
@@ -168,9 +169,9 @@ export const allThemes: FuseThemesType = {
 				contrastText: '#FFFFFF'
 			},
 			secondary: {
-				light: fuseDark[200],
-				main: fuseDark[400],
-				dark: fuseDark[600],
+				light: '#E8E9EA',
+				main: '#9E9E9E',
+				dark: '#616161',
 				contrastText: '#FFFFFF'
 			},
 			error: brandColors.error,
@@ -190,9 +191,9 @@ export const allThemes: FuseThemesType = {
 				contrastText: '#FFFFFF'
 			},
 			secondary: {
-				light: fuseDark[200],
-				main: fuseDark[400],
-				dark: fuseDark[600],
+				light: '#E8E9EA',
+				main: '#9E9E9E',
+				dark: '#616161',
 				contrastText: '#FFFFFF'
 			},
 			error: brandColors.error,

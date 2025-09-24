@@ -3,10 +3,11 @@
  * Componente para estados vazios padronizado
  */
 
-import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { BaseComponentProps } from '../components';
+
+import type { BaseComponentProps } from '../components';
+import type React from 'react';
 
 interface EmptyStateProps extends BaseComponentProps {
 	variant?: 'default' | 'charts' | 'data' | 'search';
@@ -72,8 +73,8 @@ export function EmptyState({
 			</Box>
 
 			<Typography
-				variant="h6"
-				component="h3"
+				variant='h6'
+				component='h3'
 				sx={{
 					mb: 1,
 					color: config.color,
@@ -83,25 +84,25 @@ export function EmptyState({
 				{title}
 			</Typography>
 
-			{description && (
+			{description ? (
 				<Typography
-					variant="body2"
-					color="text.secondary"
+					variant='body2'
+					color='text.secondary'
 					sx={{ mb: 3, maxWidth: 400 }}
 				>
 					{description}
 				</Typography>
-			)}
+			) : null}
 
-			{action && (
+			{action ? (
 				<Button
-					variant="outlined"
+					variant='outlined'
 					onClick={action.onClick}
 					sx={{ mt: 1 }}
 				>
 					{action.label}
 				</Button>
-			)}
+			) : null}
 		</Box>
 	);
 }

@@ -1,6 +1,7 @@
-import { Box, Typography, CircularProgress, Card, CardContent, Chip, useTheme } from '@mui/material';
 import { Launch as LaunchIcon, Speed as SpeedIcon } from '@mui/icons-material';
+import { Box, Typography, CircularProgress, Card, CardContent, Chip, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
+
 import { createComponentColorSet, createPresetShadows } from '@/lib/theme';
 
 interface RedirectLoaderProps {
@@ -54,7 +55,7 @@ export function RedirectLoader({ targetUrl, countdown, isRedirecting }: Redirect
 					</Box>
 
 					<Typography
-						variant="h5"
+						variant='h5'
 						sx={{
 							color: 'white',
 							fontWeight: 600,
@@ -65,7 +66,7 @@ export function RedirectLoader({ targetUrl, countdown, isRedirecting }: Redirect
 					</Typography>
 
 					<Typography
-						variant="body1"
+						variant='body1'
 						sx={{
 							color: 'rgba(255, 255, 255, 0.7)',
 							mb: 3
@@ -98,7 +99,7 @@ export function RedirectLoader({ targetUrl, countdown, isRedirecting }: Redirect
 						>
 							<SpeedIcon sx={{ color: '#10b981', fontSize: 20 }} />
 							<Typography
-								variant="body2"
+								variant='body2'
 								sx={{
 									color: '#10b981',
 									fontWeight: 500

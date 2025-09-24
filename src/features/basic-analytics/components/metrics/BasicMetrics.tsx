@@ -1,6 +1,8 @@
 import { Grid } from '@mui/material';
-import { MetricCardOptimized } from '@/shared/ui/base';
+
 import { AppIcon } from '@/lib/icons';
+import { MetricCardOptimized } from '@/shared/ui/base';
+
 import type { BasicAnalyticsData } from '../../types';
 
 interface BasicMetricsProps {
@@ -48,15 +50,15 @@ export function BasicMetrics({ analyticsData }: BasicMetricsProps) {
 				md={3}
 			>
 				<MetricCardOptimized
-					title="Total de Cliques"
+					title='Total de Cliques'
 					value={analyticsData.total_clicks.toLocaleString()}
 					icon={
 						<AppIcon
-							intent="analytics"
+							intent='analytics'
 							size={20}
 						/>
 					}
-					color="primary"
+					color='primary'
 					sx={compactCardStyle}
 				/>
 			</Grid>
@@ -68,11 +70,11 @@ export function BasicMetrics({ analyticsData }: BasicMetricsProps) {
 				md={3}
 			>
 				<MetricCardOptimized
-					title="Status"
+					title='Status'
 					value={analyticsData.is_active ? 'Ativo' : 'Inativo'}
 					icon={
 						<AppIcon
-							intent="info"
+							intent='info'
 							size={20}
 						/>
 					}
@@ -88,16 +90,16 @@ export function BasicMetrics({ analyticsData }: BasicMetricsProps) {
 				md={3}
 			>
 				<MetricCardOptimized
-					title="Criado em"
+					title='Criado em'
 					value={formatDate(analyticsData.created_at).split(' às ')[0]}
 					subtitle={formatDate(analyticsData.created_at).split(' às ')[1]}
 					icon={
 						<AppIcon
-							name="time.calendar"
+							name='time.calendar'
 							size={20}
 						/>
 					}
-					color="info"
+					color='info'
 					sx={compactCardStyle}
 				/>
 			</Grid>
@@ -109,11 +111,11 @@ export function BasicMetrics({ analyticsData }: BasicMetricsProps) {
 				md={3}
 			>
 				<MetricCardOptimized
-					title="Analytics"
+					title='Analytics'
 					value={analyticsData.has_analytics ? 'Disponível' : 'Sem dados'}
 					icon={
 						<AppIcon
-							intent="chart"
+							intent='chart'
 							size={20}
 						/>
 					}

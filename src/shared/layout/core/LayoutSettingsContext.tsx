@@ -11,7 +11,8 @@
  */
 
 import { createContext } from 'react';
-import { LayoutSettingsConfigType, LayoutThemesType } from './types';
+
+import type { LayoutSettingsConfigType, LayoutThemesType } from './types';
 
 /**
  * Tipo do contexto de configurações de layout

@@ -1,7 +1,9 @@
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+
 import { ErrorLayout } from '@/shared/layout';
+
 import useUser from '../../lib/auth/useUser';
 
 /**
@@ -34,11 +36,11 @@ function NotFoundPage() {
 
 	return (
 		<ErrorLayout
-			errorType="404"
+			errorType='404'
 			suggestions={suggestions}
 		>
 			<Typography
-				variant="h1"
+				variant='h1'
 				sx={{
 					fontSize: { xs: '4rem', sm: '6rem', md: '8rem' },
 					fontWeight: 'bold',
@@ -52,7 +54,7 @@ function NotFoundPage() {
 				404
 			</Typography>
 			<Typography
-				variant="h4"
+				variant='h4'
 				sx={{
 					mb: 2,
 					fontWeight: 600,
@@ -62,7 +64,7 @@ function NotFoundPage() {
 				Página não encontrada
 			</Typography>
 			<Typography
-				variant="body1"
+				variant='body1'
 				sx={{
 					mb: 4,
 					color: 'text.secondary',

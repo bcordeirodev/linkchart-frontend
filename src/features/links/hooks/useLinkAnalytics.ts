@@ -1,7 +1,9 @@
-import { linkService } from '@/services';
-import { LinkResponse } from '@/types';
 import { useCallback, useEffect, useState } from 'react';
-import { LinkAnalyticsData } from '../types/analytics';
+
+import { linkService } from '@/services';
+
+import type { LinkAnalyticsData } from '../types/analytics';
+import type { LinkResponse } from '@/types';
 
 interface UseLinkAnalyticsReturn {
 	data: LinkAnalyticsData | null; // Tipos específicos para analytics
@@ -97,7 +99,7 @@ export function useLinkAnalyticsOptimized(linkId: string): UseLinkAnalyticsRetur
 	}, [linkInfo]);
 
 	return {
-		data: analyticsData as LinkAnalyticsData | null,
+		data: analyticsData,
 		linkInfo,
 		loading: linkLoading, // Apenas loading do link
 		error: linkError, // Apenas erro do link

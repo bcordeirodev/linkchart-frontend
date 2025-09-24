@@ -1,10 +1,8 @@
-import { useParams } from 'react-router-dom';
 import { Box, Fade, Stack } from '@mui/material';
 import { memo, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 
 // Components
-import { PublicLayout } from '@/shared/layout';
-import { ResponsiveContainer } from '@/shared/ui/base';
 import {
 	BasicAnalyticsHeader,
 	LinkInfoCard,
@@ -12,11 +10,11 @@ import {
 	BasicCharts,
 	AnalyticsInfo,
 	LoadingState,
-	ErrorState
+	ErrorState,
+	useBasicAnalytics
 } from '@/features/basic-analytics';
-
-// Hooks
-import { useBasicAnalytics } from '@/features/basic-analytics';
+import { PublicLayout } from '@/shared/layout';
+import { ResponsiveContainer } from '@/shared/ui/base';
 // import { GoogleAdsSpace } from '@/lib/ads';
 
 /**
@@ -88,13 +86,13 @@ function BasicAnalyticsPage() {
 
 	return (
 		<PublicLayout
-			variant="shorter"
-			showHeader={true}
-			showFooter={true}
+			variant='shorter'
+			showHeader
+			showFooter
 		>
 			<ResponsiveContainer
-				variant="page"
-				maxWidth="lg"
+				variant='page'
+				maxWidth='lg'
 				sx={{
 					minHeight: '100vh',
 					display: 'flex',
@@ -136,7 +134,7 @@ function BasicAnalyticsPage() {
 					</Fade>
 
 					{/* Basic Charts com animação */}
-					{analyticsData && (
+					{analyticsData ? (
 						<Fade
 							in
 							timeout={1600}
@@ -145,7 +143,7 @@ function BasicAnalyticsPage() {
 								<BasicCharts analyticsData={analyticsData} />
 							</Box>
 						</Fade>
-					)}
+					) : null}
 
 					{/* Analytics Info com animação*/}
 					<Fade

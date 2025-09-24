@@ -1,4 +1,5 @@
 import { Grid, Paper, Typography, Box, useTheme } from '@mui/material';
+
 import { AppIcon } from '@/lib/icons';
 import { createComponentColorSet, createPresetShadows, createPresetAnimations, createTextGradient } from '@/lib/theme';
 
@@ -17,7 +18,7 @@ export function ShorterStats() {
 		{
 			icon: (
 				<AppIcon
-					intent="link"
+					intent='link'
 					size={24}
 				/>
 			),
@@ -28,7 +29,7 @@ export function ShorterStats() {
 		{
 			icon: (
 				<AppIcon
-					intent="trending"
+					intent='trending'
 					size={24}
 				/>
 			),
@@ -39,7 +40,7 @@ export function ShorterStats() {
 		{
 			icon: (
 				<AppIcon
-					name="advanced.performance"
+					name='advanced.performance'
 					size={24}
 				/>
 			),
@@ -50,7 +51,7 @@ export function ShorterStats() {
 		{
 			icon: (
 				<AppIcon
-					name="user.security"
+					name='user.security'
 					size={24}
 				/>
 			),
@@ -68,8 +69,8 @@ export function ShorterStats() {
 			}}
 		>
 			<Typography
-				variant="h4"
-				component="h2"
+				variant='h4'
+				component='h2'
 				sx={{
 					textAlign: 'center',
 					mb: 2,
@@ -84,7 +85,7 @@ export function ShorterStats() {
 			<Grid
 				container
 				spacing={3}
-				justifyContent="center"
+				justifyContent='center'
 			>
 				{stats.map((stat, index) => {
 					const colors = createComponentColorSet(
@@ -132,8 +133,8 @@ export function ShorterStats() {
 								</Box>
 
 								<Typography
-									variant="h4"
-									component="div"
+									variant='h4'
+									component='div'
 									sx={{
 										fontWeight: 800,
 										color: `${stat.color}.main`,
@@ -144,8 +145,8 @@ export function ShorterStats() {
 								</Typography>
 
 								<Typography
-									variant="body1"
-									color="text.secondary"
+									variant='body1'
+									color='text.secondary'
 									sx={{ fontWeight: 500 }}
 								>
 									{stat.subtitle}

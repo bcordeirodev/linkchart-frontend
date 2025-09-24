@@ -1,5 +1,7 @@
 import { Dashboard, Analytics } from '@mui/icons-material';
+
 import { PageHeader } from '@/shared/ui/base/PageHeader';
+
 import { AnalyticsHeaderActions } from './AnalyticsHeaderActions';
 
 interface AnalyticsHeaderProps {
@@ -37,7 +39,7 @@ export function AnalyticsHeader({
 			subtitle={subtitle}
 			icon={icons[variant]}
 			variant={variant}
-			showDecorative={true}
+			showDecorative
 			actions={
 				<AnalyticsHeaderActions
 					variant={variant}

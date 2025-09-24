@@ -1,5 +1,5 @@
-import { Box, IconButton, Tooltip, Slider, FormControlLabel, Switch, Stack, Typography } from '@mui/material';
 import { Refresh, Fullscreen } from '@mui/icons-material';
+import { Box, IconButton, Tooltip, Slider, FormControlLabel, Switch, Stack, Typography } from '@mui/material';
 
 interface HeatmapControlsProps {
 	minClicks: number;
@@ -53,12 +53,12 @@ export function HeatmapControls({
 			<Stack
 				direction={{ xs: 'column', sm: 'row' }}
 				spacing={2}
-				alignItems="center"
+				alignItems='center'
 			>
 				{/* Filtro de cliques mínimos */}
 				<Box sx={{ minWidth: 200 }}>
 					<Typography
-						variant="caption"
+						variant='caption'
 						gutterBottom
 					>
 						Cliques Mínimos: {minClicks}
@@ -69,8 +69,8 @@ export function HeatmapControls({
 						min={1}
 						max={Math.max(10, maxClicks)}
 						step={1}
-						size="small"
-						valueLabelDisplay="auto"
+						size='small'
+						valueLabelDisplay='auto'
 					/>
 				</Box>
 
@@ -80,17 +80,17 @@ export function HeatmapControls({
 						<Switch
 							checked={autoRefresh}
 							onChange={(e) => onAutoRefreshChange(e.target.checked)}
-							size="small"
+							size='small'
 						/>
 					}
-					label="Auto-refresh"
+					label='Auto-refresh'
 				/>
 
 				{/* Estatísticas */}
 				<Box sx={{ flexGrow: 1, textAlign: 'center' }}>
 					<Typography
-						variant="caption"
-						color="text.secondary"
+						variant='caption'
+						color='text.secondary'
 					>
 						{totalPoints} localizações • Máx: {maxClicks} cliques
 					</Typography>
@@ -98,29 +98,29 @@ export function HeatmapControls({
 
 				{/* Botões de ação */}
 				<Stack
-					direction="row"
+					direction='row'
 					spacing={1}
 				>
-					<Tooltip title="Atualizar dados">
+					<Tooltip title='Atualizar dados'>
 						<IconButton
 							onClick={onRefresh}
 							disabled={loading}
-							size="small"
+							size='small'
 						>
 							{loading ? <Refresh sx={{ animation: 'spin 1s linear infinite' }} /> : <Refresh />}
 						</IconButton>
 					</Tooltip>
 
-					{onFullscreen && (
-						<Tooltip title="Tela cheia">
+					{onFullscreen ? (
+						<Tooltip title='Tela cheia'>
 							<IconButton
 								onClick={onFullscreen}
-								size="small"
+								size='small'
 							>
 								<Fullscreen />
 							</IconButton>
 						</Tooltip>
-					)}
+					) : null}
 				</Stack>
 			</Stack>
 		</Box>

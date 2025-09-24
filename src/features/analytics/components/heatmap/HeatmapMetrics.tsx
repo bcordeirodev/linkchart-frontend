@@ -1,7 +1,8 @@
-import { Grid, Box, Typography, useTheme } from '@mui/material';
-import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
-import { createPresetAnimations } from '@/lib/theme';
 import { LocationOn, Public, TrendingUp, Language } from '@mui/icons-material';
+import { Grid, Box, Typography, useTheme } from '@mui/material';
+
+import { createPresetAnimations } from '@/lib/theme';
+import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 
 // Interface local para estatísticas
 interface HeatmapStats {
@@ -68,14 +69,14 @@ export function HeatmapMetrics({ stats, showTitle = false, title = 'Métricas do
 
 	return (
 		<Box sx={{ mb: 3 }}>
-			{showTitle && (
+			{showTitle ? (
 				<Typography
-					variant="h6"
+					variant='h6'
 					sx={{ mb: 2, fontWeight: 600 }}
 				>
 					{title}
 				</Typography>
-			)}
+			) : null}
 
 			<Grid
 				container

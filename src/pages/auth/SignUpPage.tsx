@@ -1,17 +1,19 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { Visibility, VisibilityOff, Person, Email, Lock, CheckCircle } from '@mui/icons-material';
 import { Box, TextField, Button, Stack, CircularProgress, InputAdornment, IconButton } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { Visibility, VisibilityOff, Person, Email, Lock, CheckCircle } from '@mui/icons-material';
-import authRoles from '../../lib/auth/authRoles';
-import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
-import { authService } from '@/services';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { authService } from '@/services';
 import { AuthLayout } from '@/shared/layout';
+
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
+import authRoles from '../../lib/auth/authRoles';
 
 // Schema de validação com Zod
 const signUpSchema = z
@@ -111,9 +113,9 @@ function SignUpPage() {
 	return (
 		<AuthGuardRedirect auth={authRoles.onlyGuest}>
 			<AuthLayout
-				title="Criar nova conta"
-				subtitle="Junte-se ao Link Chart e comece a otimizar seus links hoje mesmo"
-				variant="signup"
+				title='Criar nova conta'
+				subtitle='Junte-se ao Link Chart e comece a otimizar seus links hoje mesmo'
+				variant='signup'
 				footerLinks={[
 					{
 						text: 'Já possui uma conta?',
@@ -123,7 +125,7 @@ function SignUpPage() {
 				]}
 			>
 				<Box
-					component="form"
+					component='form'
 					onSubmit={handleSubmit(onSubmit)}
 					noValidate
 				>
@@ -132,13 +134,13 @@ function SignUpPage() {
 						<TextField
 							{...register('name')}
 							fullWidth
-							label="Nome completo"
+							label='Nome completo'
 							error={!!errors.name}
 							helperText={errors.name?.message}
 							disabled={loading}
 							InputProps={{
 								startAdornment: (
-									<InputAdornment position="start">
+									<InputAdornment position='start'>
 										<Person sx={{ color: '#5F6368' }} />
 									</InputAdornment>
 								)
@@ -189,14 +191,14 @@ function SignUpPage() {
 						<TextField
 							{...register('email')}
 							fullWidth
-							type="email"
-							label="Email"
+							type='email'
+							label='Email'
 							error={!!errors.email}
 							helperText={errors.email?.message}
 							disabled={loading}
 							InputProps={{
 								startAdornment: (
-									<InputAdornment position="start">
+									<InputAdornment position='start'>
 										<Email sx={{ color: '#5F6368' }} />
 									</InputAdornment>
 								)
@@ -248,7 +250,7 @@ function SignUpPage() {
 							{...register('password')}
 							fullWidth
 							type={showPassword ? 'text' : 'password'}
-							label="Senha"
+							label='Senha'
 							error={!!errors.password}
 							helperText={
 								errors.password?.message ||
@@ -257,15 +259,15 @@ function SignUpPage() {
 							disabled={loading}
 							InputProps={{
 								startAdornment: (
-									<InputAdornment position="start">
+									<InputAdornment position='start'>
 										<Lock sx={{ color: '#5F6368' }} />
 									</InputAdornment>
 								),
 								endAdornment: (
-									<InputAdornment position="end">
+									<InputAdornment position='end'>
 										<IconButton
 											onClick={() => setShowPassword(!showPassword)}
-											edge="end"
+											edge='end'
 											disabled={loading}
 											sx={{ color: '#5F6368' }}
 										>
@@ -321,21 +323,21 @@ function SignUpPage() {
 							{...register('password_confirmation')}
 							fullWidth
 							type={showConfirmPassword ? 'text' : 'password'}
-							label="Confirmar senha"
+							label='Confirmar senha'
 							error={!!errors.password_confirmation}
 							helperText={errors.password_confirmation?.message}
 							disabled={loading}
 							InputProps={{
 								startAdornment: (
-									<InputAdornment position="start">
+									<InputAdornment position='start'>
 										<CheckCircle sx={{ color: '#5F6368' }} />
 									</InputAdornment>
 								),
 								endAdornment: (
-									<InputAdornment position="end">
+									<InputAdornment position='end'>
 										<IconButton
 											onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-											edge="end"
+											edge='end'
 											disabled={loading}
 											sx={{ color: '#5F6368' }}
 										>
@@ -388,16 +390,16 @@ function SignUpPage() {
 
 						{/* Submit Button */}
 						<Button
-							type="submit"
+							type='submit'
 							fullWidth
-							variant="contained"
-							size="large"
+							variant='contained'
+							size='large'
 							disabled={loading || !isValid}
 							startIcon={
 								loading ? (
 									<CircularProgress
 										size={20}
-										color="inherit"
+										color='inherit'
 									/>
 								) : null
 							}

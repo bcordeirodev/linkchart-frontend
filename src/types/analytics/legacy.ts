@@ -192,7 +192,7 @@ export interface LinksCreatedByDay extends Record<string, unknown> {
  * Mapeamento de tipos legados para novos tipos
  * @deprecated Guia de migração - remover após migração completa
  */
-export type LegacyTypeMigrationMap = {
+export interface LegacyTypeMigrationMap {
 	ClicksByDay: 'DailyData from @/types/analytics/temporal';
 	ClicksByCountry: 'CountryData from @/types/core/api';
 	ClicksByCity: 'CityData from @/types/core/api';
@@ -200,7 +200,7 @@ export type LegacyTypeMigrationMap = {
 	ClicksByUserAgent: 'BrowserData from @/types/analytics/audience';
 	ClicksByReferer: 'ReferrerData from @/types/analytics/audience';
 	TopLink: 'LinkStats from @/types/core/links';
-};
+}
 
 /**
  * Utilitário para converter tipos legados

@@ -1,7 +1,8 @@
-import { Grid, Box, Typography, useTheme } from '@mui/material';
-import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
-import { createPresetAnimations } from '@/lib/theme';
 import { TrendingUp, Link as LinkIcon, CheckCircle, Assessment } from '@mui/icons-material';
+import { Grid, Box, Typography, useTheme } from '@mui/material';
+
+import { createPresetAnimations } from '@/lib/theme';
+import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 
 interface DashboardMetricsProps {
 	summary?: any;
@@ -19,8 +20,7 @@ export function DashboardMetrics({
 	summary,
 	linksData = [],
 	showTitle = false,
-	title = 'Métricas do Dashboard',
-	variant = 'detailed'
+	title = 'Métricas do Dashboard'
 }: DashboardMetricsProps) {
 	const theme = useTheme();
 	const animations = createPresetAnimations(theme);
@@ -69,14 +69,14 @@ export function DashboardMetrics({
 
 	return (
 		<Box sx={{ mb: 3 }}>
-			{showTitle && (
+			{showTitle ? (
 				<Typography
-					variant="h6"
+					variant='h6'
 					sx={{ mb: 3, fontWeight: 600 }}
 				>
 					{title}
 				</Typography>
-			)}
+			) : null}
 
 			<Grid
 				container

@@ -1,6 +1,7 @@
 import { CircularProgress, Typography, Box, Fade } from '@mui/material';
-import { EnhancedPaper } from '@/shared/ui/base';
+
 import { useResponsive } from '@/lib/theme/hooks/useResponsive';
+import { EnhancedPaper } from '@/shared/ui/base';
 
 interface RedirectingStateProps {
 	isVisible: boolean;
@@ -23,7 +24,7 @@ export function RedirectingState({ isVisible }: RedirectingStateProps) {
 		>
 			<Box>
 				<EnhancedPaper
-					variant="glass"
+					variant='glass'
 					sx={{
 						textAlign: 'center',
 						// Padding responsivo - mobile first
@@ -70,7 +71,7 @@ export function RedirectingState({ isVisible }: RedirectingStateProps) {
 
 					<Typography
 						variant={isMobile ? 'h6' : 'h5'} // Variante menor em mobile
-						color="success.main"
+						color='success.main'
 						sx={{
 							fontWeight: { xs: 600, md: 700 }, // Peso menor em mobile
 							mb: {
@@ -95,7 +96,7 @@ export function RedirectingState({ isVisible }: RedirectingStateProps) {
 						}}
 					>
 						<Box
-							component="span"
+							component='span'
 							sx={{
 								fontSize: {
 									xs: '1.2rem', // 19.2px - mobile
@@ -111,7 +112,7 @@ export function RedirectingState({ isVisible }: RedirectingStateProps) {
 
 					<Typography
 						variant={isMobile ? 'body2' : 'body1'} // Variante menor em mobile
-						color="text.secondary"
+						color='text.secondary'
 						sx={{
 							fontWeight: { xs: 400, md: 500 }, // Peso menor em mobile
 							opacity: { xs: 0.9, md: 0.8 }, // Opacidade maior em mobile para melhor legibilidade

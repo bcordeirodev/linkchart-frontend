@@ -1,10 +1,12 @@
 import { Grid, Box, Card, CardContent, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+
+import { formatAreaChart, formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
+import { createPresetAnimations, createComponentColorSet } from '@/lib/theme';
 import { EmptyState } from '@/shared/ui/base/EmptyState';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
-import { formatAreaChart, formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
-import { useTheme } from '@mui/material/styles';
-import { ChartsProps } from '@/features/analytics/components/types';
-import { createPresetAnimations, createComponentColorSet } from '@/lib/theme';
+
+import type { ChartsProps } from '@/features/analytics/components/types';
 
 /**
  * 📊 CHARTS COM STYLED COMPONENTS
@@ -37,11 +39,11 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 						xs={12}
 					>
 						<EmptyState
-							variant="charts"
+							variant='charts'
 							height={400}
-							title="Carregando Gráficos..."
-							description="Aguarde enquanto carregamos os dados dos seus gráficos."
-							icon="⏳"
+							title='Carregando Gráficos...'
+							description='Aguarde enquanto carregamos os dados dos seus gráficos.'
+							icon='⏳'
 						/>
 					</Grid>
 				</Grid>
@@ -50,7 +52,9 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 
 		// Função utilitária para verificar dados
 		const checkDataAvailability = () => {
-			if (!data) return { hasTemporalData: false, hasGeographicData: false, hasDeviceData: false };
+			if (!data) {
+				return { hasTemporalData: false, hasGeographicData: false, hasDeviceData: false };
+			}
 
 			// Verificar se há dados temporais com cliques reais
 			const hasTemporalData = !!(
@@ -95,7 +99,7 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 				}}
 			>
 				{/* Gráficos principais - sempre mostrados se há dados */}
-				{hasTemporalData && chartData && (
+				{hasTemporalData && chartData ? (
 					<>
 						{/* Gráfico Principal - Cliques por Hora */}
 						<Grid
@@ -113,7 +117,7 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 								<Card>
 									<CardContent>
 										<Typography
-											variant="h6"
+											variant='h6'
 											gutterBottom
 											sx={{
 												position: 'relative',
@@ -125,7 +129,7 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 										</Typography>
 										<Box sx={{ mb: 2 }}>
 											<ApexChartWrapper
-												type="area"
+												type='area'
 												height={height}
 												{...formatAreaChart(
 													chartData.temporal?.clicks_by_hour || [],
@@ -157,7 +161,7 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 								<Card>
 									<CardContent>
 										<Typography
-											variant="h6"
+											variant='h6'
 											gutterBottom
 											sx={{
 												position: 'relative',
@@ -169,7 +173,7 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 										</Typography>
 										<Box sx={{ mb: 2 }}>
 											<ApexChartWrapper
-												type="bar"
+												type='bar'
 												height={height}
 												{...formatBarChart(
 													chartData.temporal?.clicks_by_day_of_week || [],
@@ -186,218 +190,212 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 							</Box>
 						</Grid>
 					</>
-				)}
+				) : null}
 
 				{/* Gráficos de dispositivos e países - dashboard e full */}
 				{(variant === 'dashboard' || variant === 'full') &&
 					(hasDeviceData || hasGeographicData) &&
-					chartData && (
-						<>
-							{/* Dispositivos */}
-							{hasDeviceData && (
-								<Grid
-									item
-									xs={12}
-									md={6}
-									lg={6}
+					chartData ? (
+					<>
+						{/* Dispositivos */}
+						{hasDeviceData ? (
+							<Grid
+								item
+								xs={12}
+								md={6}
+								lg={6}
+							>
+								<Box
+									sx={{
+										height: '100%',
+										...animations.cardHover
+									}}
 								>
-									<Box
-										sx={{
-											height: '100%',
-											...animations.cardHover
-										}}
-									>
-										<Card>
-											<CardContent>
-												<Typography
-													variant="h6"
-													gutterBottom
-													sx={{
-														position: 'relative',
-														zIndex: 1,
-														mt: 1
-													}}
-												>
-													📱 Dispositivos
-												</Typography>
-												<Box sx={{ mb: 2 }}>
-													<ApexChartWrapper
-														type="donut"
-														height={height}
-														{...formatPieChart(
-															(chartData.audience?.device_breakdown || []).map(
-																(item) => ({
-																	device: item.device,
-																	clicks: item.clicks
-																})
-															),
-															'device',
-															'clicks',
-															isDark
-														)}
-													/>
-												</Box>
-											</CardContent>
-										</Card>
-									</Box>
-								</Grid>
-							)}
+									<Card>
+										<CardContent>
+											<Typography
+												variant='h6'
+												gutterBottom
+												sx={{
+													position: 'relative',
+													zIndex: 1,
+													mt: 1
+												}}
+											>
+												📱 Dispositivos
+											</Typography>
+											<Box sx={{ mb: 2 }}>
+												<ApexChartWrapper
+													type='donut'
+													height={height}
+													{...formatPieChart(
+														(chartData.audience?.device_breakdown || []).map((item) => ({
+															device: item.device,
+															clicks: item.clicks
+														})),
+														'device',
+														'clicks',
+														isDark
+													)}
+												/>
+											</Box>
+										</CardContent>
+									</Card>
+								</Box>
+							</Grid>
+						) : null}
 
-							{/* Países */}
-							{hasGeographicData && (
-								<Grid
-									item
-									xs={12}
-									md={6}
-									lg={6}
+						{/* Países */}
+						{hasGeographicData ? (
+							<Grid
+								item
+								xs={12}
+								md={6}
+								lg={6}
+							>
+								<Box
+									sx={{
+										height: '100%',
+										...animations.cardHover
+									}}
 								>
-									<Box
-										sx={{
-											height: '100%',
-											...animations.cardHover
-										}}
-									>
-										<Card>
-											<CardContent>
-												<Typography
-													variant="h6"
-													gutterBottom
-													sx={{
-														position: 'relative',
-														zIndex: 1,
-														mt: 1
-													}}
-												>
-													🌍 Top Países
-												</Typography>
-												<Box sx={{ mb: 2 }}>
-													<ApexChartWrapper
-														type="bar"
-														height={height}
-														{...formatBarChart(
-															(chartData.geographic?.top_countries || []).slice(0, 10),
-															'country',
-															'clicks',
-															successColors.main,
-															true, // horizontal bars
-															isDark
-														)}
-													/>
-												</Box>
-											</CardContent>
-										</Card>
-									</Box>
-								</Grid>
-							)}
-						</>
-					)}
+									<Card>
+										<CardContent>
+											<Typography
+												variant='h6'
+												gutterBottom
+												sx={{
+													position: 'relative',
+													zIndex: 1,
+													mt: 1
+												}}
+											>
+												🌍 Top Países
+											</Typography>
+											<Box sx={{ mb: 2 }}>
+												<ApexChartWrapper
+													type='bar'
+													height={height}
+													{...formatBarChart(
+														(chartData.geographic?.top_countries || []).slice(0, 10),
+														'country',
+														'clicks',
+														successColors.main,
+														true, // horizontal bars
+														isDark
+													)}
+												/>
+											</Box>
+										</CardContent>
+									</Card>
+								</Box>
+							</Grid>
+						) : null}
+					</>
+				) : null}
 
 				{/* Gráficos avançados - apenas analytics e full */}
-				{(variant === 'analytics' || variant === 'full') && showAllCharts && hasGeographicData && chartData && (
+				{(variant === 'analytics' || variant === 'full') && showAllCharts && hasGeographicData && chartData ? (
 					<>
 						{/* Estados/Regiões */}
-						{chartData &&
-							chartData.geographic?.top_states &&
-							chartData.geographic.top_states.length > 0 && (
-								<Grid
-									item
-									xs={12}
-									md={6}
-									lg={6}
+						{chartData?.geographic?.top_states?.length > 0 ? (
+							<Grid
+								item
+								xs={12}
+								md={6}
+								lg={6}
+							>
+								<Box
+									sx={{
+										height: '100%',
+										...animations.cardHover
+									}}
 								>
-									<Box
-										sx={{
-											height: '100%',
-											...animations.cardHover
-										}}
-									>
-										<Card>
-											<CardContent>
-												<Typography
-													variant="h6"
-													gutterBottom
-													sx={{
-														position: 'relative',
-														zIndex: 1,
-														mt: 1
-													}}
-												>
-													🏛️ Top Estados/Regiões
-												</Typography>
-												<Box sx={{ mb: 2 }}>
-													<ApexChartWrapper
-														type="bar"
-														height={height}
-														{...formatBarChart(
-															chartData.geographic.top_states.slice(0, 8) as Record<
-																string,
-																unknown
-															>[],
-															'state',
-															'clicks',
-															infoColors.main,
-															true,
-															isDark
-														)}
-													/>
-												</Box>
-											</CardContent>
-										</Card>
-									</Box>
-								</Grid>
-							)}
+									<Card>
+										<CardContent>
+											<Typography
+												variant='h6'
+												gutterBottom
+												sx={{
+													position: 'relative',
+													zIndex: 1,
+													mt: 1
+												}}
+											>
+												🏛️ Top Estados/Regiões
+											</Typography>
+											<Box sx={{ mb: 2 }}>
+												<ApexChartWrapper
+													type='bar'
+													height={height}
+													{...formatBarChart(
+														chartData.geographic.top_states.slice(0, 8) as Record<
+															string,
+															unknown
+														>[],
+														'state',
+														'clicks',
+														infoColors.main,
+														true,
+														isDark
+													)}
+												/>
+											</Box>
+										</CardContent>
+									</Card>
+								</Box>
+							</Grid>
+						) : null}
 
 						{/* Cidades */}
-						{chartData &&
-							chartData.geographic?.top_cities &&
-							chartData.geographic.top_cities.length > 0 && (
-								<Grid
-									item
-									xs={12}
-									md={6}
-									lg={6}
+						{chartData?.geographic?.top_cities?.length > 0 ? (
+							<Grid
+								item
+								xs={12}
+								md={6}
+								lg={6}
+							>
+								<Box
+									sx={{
+										height: '100%',
+										...animations.cardHover
+									}}
 								>
-									<Box
-										sx={{
-											height: '100%',
-											...animations.cardHover
-										}}
-									>
-										<Card>
-											<CardContent>
-												<Typography
-													variant="h6"
-													gutterBottom
-													sx={{
-														position: 'relative',
-														zIndex: 1,
-														mt: 1
-													}}
-												>
-													🏙️ Top Cidades
-												</Typography>
-												<Box sx={{ mb: 2 }}>
-													<ApexChartWrapper
-														type="donut"
-														height={height}
-														{...formatPieChart(
-															chartData.geographic.top_cities.slice(0, 8) as Record<
-																string,
-																unknown
-															>[],
-															'city',
-															'clicks',
-															isDark
-														)}
-													/>
-												</Box>
-											</CardContent>
-										</Card>
-									</Box>
-								</Grid>
-							)}
+									<Card>
+										<CardContent>
+											<Typography
+												variant='h6'
+												gutterBottom
+												sx={{
+													position: 'relative',
+													zIndex: 1,
+													mt: 1
+												}}
+											>
+												🏙️ Top Cidades
+											</Typography>
+											<Box sx={{ mb: 2 }}>
+												<ApexChartWrapper
+													type='donut'
+													height={height}
+													{...formatPieChart(
+														chartData.geographic.top_cities.slice(0, 8) as Record<
+															string,
+															unknown
+														>[],
+														'city',
+														'clicks',
+														isDark
+													)}
+												/>
+											</Box>
+										</CardContent>
+									</Card>
+								</Box>
+							</Grid>
+						) : null}
 					</>
-				)}
+				) : null}
 
 				{/* Estado vazio */}
 				{!hasTemporalData && !hasGeographicData && !hasDeviceData && (
@@ -406,10 +404,10 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 						xs={12}
 					>
 						<EmptyState
-							variant="charts"
+							variant='charts'
 							height={400}
-							title="📊 Nenhum Dado Disponível"
-							description="Compartilhe seus links para ver gráficos detalhados de cliques por dia da semana e países."
+							title='📊 Nenhum Dado Disponível'
+							description='Compartilhe seus links para ver gráficos detalhados de cliques por dia da semana e países.'
 						/>
 					</Grid>
 				)}
@@ -428,10 +426,10 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 					xs={12}
 				>
 					<EmptyState
-						variant="charts"
+						variant='charts'
 						height={400}
-						title="❌ Erro nos Gráficos"
-						description="Ocorreu um erro ao carregar os gráficos. Tente recarregar a página."
+						title='❌ Erro nos Gráficos'
+						description='Ocorreu um erro ao carregar os gráficos. Tente recarregar a página.'
 					/>
 				</Grid>
 			</Grid>

@@ -2,12 +2,14 @@
 
 import { Alert, Stack, Button } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-import { AppIcon } from '@/lib/icons';
+
 import { EditLinkForm } from '@/features/links/edit';
-import { ResponsiveContainer } from '@/shared/ui/base';
+import { AppIcon } from '@/lib/icons';
 import MainLayout from '@/shared/layout/MainLayout';
-import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
+import { ResponsiveContainer } from '@/shared/ui/base';
 import PageBreadcrumb from '@/shared/ui/navigation/PageBreadcrumb';
+
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 
 /**
  * 📝 Página de Edição de Link - REFATORADA
@@ -24,20 +26,20 @@ function LinkEditPage() {
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
 					<ResponsiveContainer
-						variant="form"
-						maxWidth="md"
+						variant='form'
+						maxWidth='md'
 					>
 						<Stack spacing={3}>
 							<PageBreadcrumb />
 
 							<Alert
-								severity="error"
+								severity='error'
 								action={
 									<Button
-										size="small"
+										size='small'
 										startIcon={
 											<AppIcon
-												intent="back"
+												intent='back'
 												size={16}
 											/>
 										}
@@ -61,14 +63,14 @@ function LinkEditPage() {
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
 				<ResponsiveContainer
-					variant="form"
-					maxWidth="md"
+					variant='form'
+					maxWidth='md'
 				>
 					<Stack spacing={4}>
 						{/* Form Section */}
 						<EditLinkForm
 							linkId={id}
-							showBackButton={true}
+							showBackButton
 						/>
 					</Stack>
 				</ResponsiveContainer>

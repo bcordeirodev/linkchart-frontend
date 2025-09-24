@@ -1,4 +1,5 @@
 import { Card, CardContent, Typography, Stack, useTheme } from '@mui/material';
+
 import type { TemporalInsightsProps } from '@/types/analytics';
 
 /**
@@ -75,7 +76,7 @@ export function TemporalInsights({
 		>
 			<CardContent>
 				<Typography
-					variant="h6"
+					variant='h6'
 					gutterBottom
 					sx={{
 						fontWeight: 600,
@@ -89,14 +90,14 @@ export function TemporalInsights({
 
 				<Stack spacing={1.5}>
 					{/* Insights básicos */}
-					<Typography variant="body2">
+					<Typography variant='body2'>
 						<strong>📊 Resumo:</strong> {hourlyTotal.toLocaleString()} cliques totais, média de{' '}
 						{avgClicksPerHour.toFixed(1)} por hora e {avgClicksPerDay.toFixed(1)} por dia.
 					</Typography>
 
 					{/* Pico de horário */}
 					{peakHour.clicks > 0 && (
-						<Typography variant="body2">
+						<Typography variant='body2'>
 							• <strong>{peakHour.label}</strong> é seu horário de pico com {peakHour.clicks} cliques.
 							Programe posts importantes neste horário.
 						</Typography>
@@ -104,38 +105,38 @@ export function TemporalInsights({
 
 					{/* Pico de dia */}
 					{peakDay.clicks > 0 && (
-						<Typography variant="body2">
+						<Typography variant='body2'>
 							• <strong>{peakDay.day_name}</strong> é o dia mais ativo com {peakDay.clicks} cliques.
 							Concentre lançamentos e promoções neste dia.
 						</Typography>
 					)}
 
 					{/* Análise de horário comercial */}
-					{isBusinessHoursActive && (
-						<Typography variant="body2">
+					{isBusinessHoursActive ? (
+						<Typography variant='body2'>
 							• Seu público é ativo durante horário comercial (
 							{((businessHoursClicks / hourlyTotal) * 100).toFixed(1)}% dos cliques). Foque em conteúdo
 							B2B e profissional.
 						</Typography>
-					)}
+					) : null}
 
 					{!isBusinessHoursActive && hourlyTotal > 0 && (
-						<Typography variant="body2">
+						<Typography variant='body2'>
 							• Seu público é ativo fora do horário comercial. Foque em conteúdo de entretenimento e
 							lifestyle.
 						</Typography>
 					)}
 
 					{/* Análise de fim de semana */}
-					{isWeekendActive && (
-						<Typography variant="body2">
+					{isWeekendActive ? (
+						<Typography variant='body2'>
 							• Boa atividade nos fins de semana ({((weekendClicks / weeklyTotal) * 100).toFixed(1)}% dos
 							cliques). Mantenha conteúdo ativo nos sábados e domingos.
 						</Typography>
-					)}
+					) : null}
 
 					{!isWeekendActive && weeklyTotal > 0 && (
-						<Typography variant="body2">
+						<Typography variant='body2'>
 							• Baixa atividade nos fins de semana. Foque seus esforços nos dias úteis para melhor
 							engajamento.
 						</Typography>
@@ -143,7 +144,7 @@ export function TemporalInsights({
 
 					{/* Recomendação de consistência */}
 					{hourlyTotal > 0 && weeklyTotal > 0 && (
-						<Typography variant="body2">
+						<Typography variant='body2'>
 							• <strong>💡 Dica:</strong> Mantenha consistência nos horários de maior atividade para
 							maximizar o alcance e engajamento.
 						</Typography>

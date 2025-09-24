@@ -1,4 +1,3 @@
-import { Box, Typography, Card, CardContent, Chip, Alert, Stack, Divider, Avatar } from '@mui/material';
 import {
 	TrendingUp,
 	Devices,
@@ -10,6 +9,7 @@ import {
 	LocationOn,
 	Business
 } from '@mui/icons-material';
+import { Box, Typography, Card, CardContent, Chip, Alert, Stack, Divider, Avatar } from '@mui/material';
 import { useTheme, alpha } from '@mui/material/styles';
 
 interface BusinessInsight {
@@ -44,7 +44,7 @@ export function BusinessInsights({
 	if (!insights || insights.length === 0) {
 		return (
 			<Alert
-				severity="info"
+				severity='info'
 				sx={{
 					m: 2,
 					borderRadius: '16px',
@@ -54,14 +54,14 @@ export function BusinessInsights({
 				}}
 			>
 				<Typography
-					variant="h6"
+					variant='h6'
 					gutterBottom
 					sx={{ fontWeight: 600 }}
 				>
 					📊 Insights não disponíveis
 				</Typography>
 				<Typography
-					variant="body2"
+					variant='body2'
 					sx={{ color: 'text.secondary' }}
 				>
 					Não há insights suficientes para exibir. Mais dados são necessários para gerar análises.
@@ -122,7 +122,9 @@ export function BusinessInsights({
 			const priorityOrder = { high: 3, medium: 2, low: 1 };
 			const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
 
-			if (priorityDiff !== 0) return priorityDiff;
+			if (priorityDiff !== 0) {
+				return priorityDiff;
+			}
 
 			// Depois por categoria
 			const categoryOrder = {
@@ -146,9 +148,9 @@ export function BusinessInsights({
 
 	return (
 		<Box sx={{ mt: 2 }}>
-			{showTitle && (
+			{showTitle ? (
 				<Typography
-					variant="h6"
+					variant='h6'
 					gutterBottom
 					sx={{
 						mb: 3,
@@ -159,7 +161,7 @@ export function BusinessInsights({
 				>
 					💡 Insights de Negócio
 				</Typography>
-			)}
+			) : null}
 
 			{/* Insights organizados por categoria */}
 			<Stack spacing={3}>
@@ -171,7 +173,7 @@ export function BusinessInsights({
 					return (
 						<Box key={index}>
 							{/* Divisor de categoria */}
-							{showCategoryDivider && (
+							{showCategoryDivider ? (
 								<Box sx={{ mb: 2, mt: 1 }}>
 									<Divider
 										sx={{
@@ -182,7 +184,7 @@ export function BusinessInsights({
 										}}
 									>
 										<Typography
-											variant="caption"
+											variant='caption'
 											sx={{
 												px: 2,
 												color: 'text.secondary',
@@ -195,7 +197,7 @@ export function BusinessInsights({
 										</Typography>
 									</Divider>
 								</Box>
-							)}
+							) : null}
 
 							<Card
 								elevation={3}
@@ -214,8 +216,8 @@ export function BusinessInsights({
 							>
 								<CardContent sx={{ p: 3 }}>
 									<Stack
-										direction="row"
-										alignItems="flex-start"
+										direction='row'
+										alignItems='flex-start'
 										spacing={2}
 									>
 										{/* Ícone representativo */}
@@ -234,13 +236,13 @@ export function BusinessInsights({
 										{/* Conteúdo principal */}
 										<Box sx={{ flex: 1, minWidth: 0 }}>
 											<Stack
-												direction="row"
-												alignItems="center"
+												direction='row'
+												alignItems='center'
 												spacing={1}
 												sx={{ mb: 1 }}
 											>
 												<Typography
-													variant="h6"
+													variant='h6'
 													sx={{
 														fontWeight: 600,
 														color: 'text.primary',
@@ -254,7 +256,7 @@ export function BusinessInsights({
 												<Chip
 													icon={getPriorityIcon(insight.priority)}
 													label={insight.priority.toUpperCase()}
-													size="small"
+													size='small'
 													sx={{
 														backgroundColor: colors.main,
 														color: 'white',
@@ -269,7 +271,7 @@ export function BusinessInsights({
 											</Stack>
 
 											<Typography
-												variant="body2"
+												variant='body2'
 												sx={{
 													lineHeight: 1.6,
 													color: 'text.secondary',
@@ -284,7 +286,7 @@ export function BusinessInsights({
 											<Divider sx={{ my: 1, borderColor: colors.border }} />
 
 											<Typography
-												variant="caption"
+												variant='caption'
 												sx={{
 													color: colors.main,
 													fontWeight: 600,
@@ -307,7 +309,7 @@ export function BusinessInsights({
 			{/* Resumo dos insights */}
 			{organizedInsights.length > 0 && (
 				<Alert
-					severity="success"
+					severity='success'
 					sx={{
 						mt: 3,
 						borderRadius: '16px',
@@ -319,7 +321,7 @@ export function BusinessInsights({
 					}}
 				>
 					<Typography
-						variant="body2"
+						variant='body2'
 						sx={{
 							fontFamily: 'Inter, system-ui, sans-serif',
 							fontWeight: 500

@@ -1,4 +1,5 @@
 import { Container, CircularProgress, Typography, Box } from '@mui/material';
+
 import { PublicLayout } from '@/shared/layout';
 
 /**
@@ -12,7 +13,7 @@ export function LoadingState() {
 	return (
 		<PublicLayout>
 			<Container
-				maxWidth="md"
+				maxWidth='md'
 				sx={{ py: 8 }}
 			>
 				<Box
@@ -30,8 +31,8 @@ export function LoadingState() {
 						sx={{ mb: 2 }}
 					/>
 					<Typography
-						variant="h6"
-						color="text.secondary"
+						variant='h6'
+						color='text.secondary'
 					>
 						Carregando analytics do link...
 					</Typography>

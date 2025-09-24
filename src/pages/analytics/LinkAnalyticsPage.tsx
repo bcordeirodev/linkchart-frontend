@@ -1,15 +1,17 @@
 'use client';
 
 import { Alert } from '@mui/material';
-import { useParams } from 'react-router-dom';
 import { memo, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+
+import { LinkAnalyticsTabsOptimized } from '@/features/links/components/analytics/LinkAnalyticsTabs';
+import { useLinkAnalyticsOptimized } from '@/features/links/hooks/useLinkAnalytics';
+import { AppIcon } from '@/lib/icons';
+import MainLayout from '@/shared/layout/MainLayout';
 import { ResponsiveContainer } from '@/shared/ui/base';
 import { PageHeader } from '@/shared/ui/base/PageHeader';
-import MainLayout from '@/shared/layout/MainLayout';
+
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
-import { useLinkAnalyticsOptimized } from '@/features/links/hooks/useLinkAnalytics';
-import { LinkAnalyticsTabsOptimized } from '@/features/links/components/analytics/LinkAnalyticsTabs';
-import { AppIcon } from '@/lib/icons';
 
 /**
  * 📊 Página de Analytics Individual de Link - REFATORADA
@@ -34,8 +36,8 @@ function LinkAnalyticsPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<ResponsiveContainer variant="page">
-						<Alert severity="error">ID do link não fornecido na URL</Alert>
+					<ResponsiveContainer variant='page'>
+						<Alert severity='error'>ID do link não fornecido na URL</Alert>
 					</ResponsiveContainer>
 				</MainLayout>
 			</AuthGuardRedirect>
@@ -45,17 +47,17 @@ function LinkAnalyticsPage() {
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
-				<ResponsiveContainer variant="page">
+				<ResponsiveContainer variant='page'>
 					<PageHeader
 						title={linkInfo?.title || `Analytics do Link`}
 						subtitle={`Análise detalhada do desempenho do link ${linkInfo?.short_url || id}`}
 						icon={
 							<AppIcon
-								intent="analytics"
+								intent='analytics'
 								size={32}
 							/>
 						}
-						variant="analytics"
+						variant='analytics'
 					/>
 					<LinkAnalyticsTabsOptimized {...tabsProps} />
 				</ResponsiveContainer>

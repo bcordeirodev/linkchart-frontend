@@ -1,8 +1,11 @@
-import { Action, Middleware, ThunkAction, configureStore, createSelector } from '@reduxjs/toolkit';
+import { configureStore, createSelector } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
+
 import apiService from './apiService';
-import rootReducer from './rootReducer';
 import { dynamicMiddleware } from './middleware';
+import rootReducer from './rootReducer';
+
+import type { Action, Middleware, ThunkAction } from '@reduxjs/toolkit';
 
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>;

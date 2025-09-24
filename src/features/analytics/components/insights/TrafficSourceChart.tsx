@@ -1,9 +1,10 @@
+import { Traffic, TrendingUp, Diversity3, Assessment, Warning } from '@mui/icons-material';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, Alert } from '@mui/material';
 import { useTheme, alpha } from '@mui/material/styles';
-import { Traffic, TrendingUp, Diversity3, Assessment, Warning } from '@mui/icons-material';
-import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
-import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
+
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
+import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
+import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
 interface TrafficSource {
 	source: string;
@@ -261,7 +262,7 @@ export function TrafficSourceChart({
 		return (
 			<EnhancedPaper>
 				<Box sx={{ p: 3, textAlign: 'center' }}>
-					<Typography color="text.secondary">
+					<Typography color='text.secondary'>
 						Dados insuficientes para análise de fontes de tráfego
 					</Typography>
 				</Box>
@@ -271,17 +272,17 @@ export function TrafficSourceChart({
 
 	return (
 		<EnhancedPaper>
-			{showTitle && (
+			{showTitle ? (
 				<Box sx={{ p: 3, pb: 0 }}>
 					<Typography
-						variant="h6"
+						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<Traffic color="primary" />
+						<Traffic color='primary' />
 						{title}
 					</Typography>
 				</Box>
-			)}
+			) : null}
 
 			<Box sx={{ p: 3 }}>
 				{/* Métricas Principais */}
@@ -297,10 +298,10 @@ export function TrafficSourceChart({
 						md={3}
 					>
 						<MetricCard
-							title="Fonte Principal"
+							title='Fonte Principal'
 							value={data.top_source?.source || 'N/A'}
 							icon={<TrendingUp />}
-							color="primary"
+							color='primary'
 							subtitle={`${data.top_source?.percentage || 0}% do tráfego`}
 						/>
 					</Grid>
@@ -311,11 +312,11 @@ export function TrafficSourceChart({
 						md={3}
 					>
 						<MetricCard
-							title="Diversidade"
+							title='Diversidade'
 							value={data.source_diversity}
 							icon={<Diversity3 />}
-							color="info"
-							subtitle="fontes diferentes"
+							color='info'
+							subtitle='fontes diferentes'
 						/>
 					</Grid>
 					<Grid
@@ -325,11 +326,11 @@ export function TrafficSourceChart({
 						md={3}
 					>
 						<MetricCard
-							title="Total de Clicks"
+							title='Total de Clicks'
 							value={data.total_clicks}
 							icon={<Assessment />}
-							color="success"
-							subtitle="todos os canais"
+							color='success'
+							subtitle='todos os canais'
 						/>
 					</Grid>
 					<Grid
@@ -339,11 +340,11 @@ export function TrafficSourceChart({
 						md={3}
 					>
 						<MetricCard
-							title="Canais Ativos"
+							title='Canais Ativos'
 							value={data.channels.length}
 							icon={<Traffic />}
-							color="secondary"
-							subtitle="categorias"
+							color='secondary'
+							subtitle='categorias'
 						/>
 					</Grid>
 				</Grid>
@@ -352,11 +353,11 @@ export function TrafficSourceChart({
 				{data.source_diversity < 3 && (
 					<Box sx={{ mb: 3 }}>
 						<Alert
-							severity="warning"
+							severity='warning'
 							icon={<Warning />}
 							sx={{ borderRadius: 2 }}
 						>
-							<Typography variant="body2">
+							<Typography variant='body2'>
 								<strong>Baixa diversidade de fontes!</strong> Você tem apenas {data.source_diversity}{' '}
 								fonte
 								{data.source_diversity > 1 ? 's' : ''} de tráfego. Considere diversificar para reduzir
@@ -381,7 +382,7 @@ export function TrafficSourceChart({
 						<Card sx={{ height: '100%' }}>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 									sx={{ textAlign: 'center' }}
 								>
@@ -390,7 +391,7 @@ export function TrafficSourceChart({
 								<ApexChartWrapper
 									options={channelsPieOptions}
 									series={channelsPieData}
-									type="donut"
+									type='donut'
 									height={350}
 								/>
 							</CardContent>
@@ -406,7 +407,7 @@ export function TrafficSourceChart({
 						<Card sx={{ height: '100%' }}>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 									sx={{ textAlign: 'center' }}
 								>
@@ -415,12 +416,12 @@ export function TrafficSourceChart({
 								<ApexChartWrapper
 									options={performanceBarOptions}
 									series={performanceBarData}
-									type="bar"
+									type='bar'
 									height={300}
 								/>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 									sx={{ textAlign: 'center', mt: 1 }}
 								>
 									Profundidade média da sessão por canal
@@ -435,7 +436,7 @@ export function TrafficSourceChart({
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								📊 Performance Detalhada por Canal
@@ -475,34 +476,34 @@ export function TrafficSourceChart({
 													}}
 												/>
 												<Typography
-													variant="subtitle2"
+													variant='subtitle2'
 													sx={{ fontWeight: 'bold', textTransform: 'capitalize' }}
 												>
 													{channel.channel}
 												</Typography>
 											</Box>
 											<Typography
-												variant="body2"
-												color="text.secondary"
+												variant='body2'
+												color='text.secondary'
 											>
 												{channel.clicks} clicks ({channel.percentage.toFixed(1)}%)
 											</Typography>
 											<Typography
-												variant="body2"
-												color="text.secondary"
+												variant='body2'
+												color='text.secondary'
 											>
 												{channel.unique_visitors} visitantes únicos
 											</Typography>
 											<Typography
-												variant="caption"
-												color="text.secondary"
+												variant='caption'
+												color='text.secondary'
 											>
 												Sessão: {channel.avg_session_depth.toFixed(2)} clicks
 											</Typography>
 											{channel.avg_response_time > 0 && (
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 													sx={{ display: 'block' }}
 												>
 													Tempo: {channel.avg_response_time.toFixed(2)}s
@@ -521,7 +522,7 @@ export function TrafficSourceChart({
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								🏆 Top 5 Fontes Individuais
@@ -551,28 +552,28 @@ export function TrafficSourceChart({
 										>
 											<Box>
 												<Typography
-													variant="body2"
+													variant='body2'
 													sx={{ fontWeight: index === 0 ? 'bold' : 'normal' }}
 												>
 													{index + 1}. {source.source}
 												</Typography>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													Sessão: {source.avg_session_depth.toFixed(2)} clicks
 												</Typography>
 											</Box>
 											<Box sx={{ textAlign: 'right' }}>
 												<Typography
-													variant="body2"
+													variant='body2'
 													sx={{ fontWeight: 'bold' }}
 												>
 													{source.clicks} clicks
 												</Typography>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													{source.percentage.toFixed(1)}%
 												</Typography>
@@ -591,7 +592,7 @@ export function TrafficSourceChart({
 						<Card>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
@@ -619,7 +620,7 @@ export function TrafficSourceChart({
 													>
 														<Chip
 															label={rec.priority.toUpperCase()}
-															size="small"
+															size='small'
 															sx={{
 																backgroundColor: getPriorityColor(rec.priority),
 																color: 'white',
@@ -628,13 +629,13 @@ export function TrafficSourceChart({
 															}}
 														/>
 														<Typography
-															variant="caption"
+															variant='caption'
 															sx={{ textTransform: 'capitalize' }}
 														>
 															{rec.type}
 														</Typography>
 													</Box>
-													<Typography variant="body2">{rec.message}</Typography>
+													<Typography variant='body2'>{rec.message}</Typography>
 												</Box>
 											</Box>
 										</Box>

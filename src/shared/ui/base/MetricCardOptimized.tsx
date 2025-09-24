@@ -1,15 +1,10 @@
-/**
- * 📊 METRIC CARD OPTIMIZED - COMPONENTE BASE
- * Card de métricas otimizado e reutilizável
- */
-
 import { Box, Typography, Card, CardContent } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { MetricCardProps } from '../components';
+
+import type { MetricCardProps } from '../components';
 
 /**
- * Componente MetricCard otimizado seguindo padrões arquiteturais
- * Reutilizável em todos os módulos que precisam exibir métricas
+ * Card de métricas otimizado e reutilizável
  */
 export function MetricCardOptimized({
 	title,
@@ -36,7 +31,7 @@ export function MetricCardOptimized({
 
 	return (
 		<Card
-			className="metric-container"
+			className='metric-container'
 			sx={{
 				height: '100%',
 				backgroundColor: theme.palette.background.paper, // Background sólido consistente
@@ -54,16 +49,16 @@ export function MetricCardOptimized({
 				<Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
 					<Box sx={{ flex: 1 }}>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 							sx={{ mb: 1, fontWeight: 500 }}
 						>
 							{title}
 						</Typography>
 
 						<Typography
-							variant="h4"
-							component="div"
+							variant='h4'
+							component='div'
 							sx={{
 								fontWeight: 700,
 								color: selectedColor,
@@ -73,14 +68,14 @@ export function MetricCardOptimized({
 							{value}
 						</Typography>
 
-						{subtitle && (
+						{subtitle ? (
 							<Typography
-								variant="caption"
-								color="text.secondary"
+								variant='caption'
+								color='text.secondary'
 							>
 								{subtitle}
 							</Typography>
-						)}
+						) : null}
 					</Box>
 
 					<Box
@@ -94,10 +89,10 @@ export function MetricCardOptimized({
 					</Box>
 				</Box>
 
-				{trend && (
+				{trend ? (
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 						<Typography
-							variant="body2"
+							variant='body2'
 							sx={{
 								color: trend.isPositive ? 'success.main' : 'error.main',
 								fontWeight: 600
@@ -106,13 +101,13 @@ export function MetricCardOptimized({
 							{trend.isPositive ? '↗' : '↘'} {Math.abs(trend.value)}%
 						</Typography>
 						<Typography
-							variant="caption"
-							color="text.secondary"
+							variant='caption'
+							color='text.secondary'
 						>
 							vs período anterior
 						</Typography>
 					</Box>
-				)}
+				) : null}
 			</CardContent>
 		</Card>
 	);

@@ -1,8 +1,9 @@
 import { Box, Tabs, Tab } from '@mui/material';
-import { useState } from 'react';
-import { TabPanel } from '@/shared/ui/base/TabPanel';
-import { createPresetAnimations } from '@/lib/theme';
 import { useTheme } from '@mui/material/styles';
+import { useState } from 'react';
+
+import { createPresetAnimations } from '@/lib/theme';
+import { TabPanel } from '@/shared/ui/base/TabPanel';
 
 // Componentes integrados com lazy loading robusto
 import { GlobalDashboard } from '../dashboard/GlobalDashboard';
@@ -83,9 +84,9 @@ export function AnalyticsContent({
 	return (
 		<Box>
 			{/* Tabs Navigation */}
-			{showTabs && (
+			{showTabs ? (
 				<Box
-					className="analytics-tabs-container"
+					className='analytics-tabs-container'
 					sx={{
 						backgroundColor: theme.palette.background.paper,
 						borderRadius: 2,
@@ -95,8 +96,8 @@ export function AnalyticsContent({
 					<Tabs
 						value={tabValue}
 						onChange={handleTabChange}
-						variant="scrollable"
-						scrollButtons="auto"
+						variant='scrollable'
+						scrollButtons='auto'
 						sx={{
 							'& .MuiTab-root': {
 								textTransform: 'none',
@@ -112,28 +113,28 @@ export function AnalyticsContent({
 								key={index}
 								label={tab.label}
 								icon={<span style={{ fontSize: '1.2rem' }}>{tab.icon}</span>}
-								iconPosition="start"
+								iconPosition='start'
 							/>
 						))}
 					</Tabs>
 				</Box>
-			)}
+			) : null}
 
 			{/* Content Panels */}
 			<Box sx={{ ...animations.fadeIn }}>
 				{/* Dashboard Tab */}
-				{showDashboardTab && (
+				{showDashboardTab ? (
 					<TabPanel
 						value={tabValue}
 						index={0}
 					>
 						<GlobalDashboard
-							showTitle={true}
-							enableRealtime={true}
-							showTimeframeSelector={true}
+							showTitle
+							enableRealtime
+							showTimeframeSelector
 						/>
 					</TabPanel>
-				)}
+				) : null}
 
 				{/* Performance Tab */}
 				<TabPanel
@@ -154,8 +155,8 @@ export function AnalyticsContent({
 					<LazyGeographicAnalysis
 						linkId={linkId}
 						globalMode={globalMode}
-						showTitle={true}
-						enableRealtime={true}
+						showTitle
+						enableRealtime
 						minClicks={1}
 					/>
 				</TabPanel>
@@ -168,8 +169,8 @@ export function AnalyticsContent({
 					<LazyTemporalAnalysis
 						linkId={linkId}
 						globalMode={globalMode}
-						enableRealtime={true}
-						timeRange="7d"
+						enableRealtime
+						timeRange='7d'
 					/>
 				</TabPanel>
 

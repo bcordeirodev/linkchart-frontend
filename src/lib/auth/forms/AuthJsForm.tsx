@@ -1,13 +1,17 @@
 import { Alert, TextField, Button, Box, Typography, CircularProgress, Link } from '@mui/material';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
-import { useState } from 'react';
-import { getSessionRedirectUrl, resetSessionRedirectUrl } from '@/lib/auth/sessionRedirectUrl';
 import { alpha } from '@mui/material/styles';
+import { useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+
+import { getSessionRedirectUrl, resetSessionRedirectUrl } from '@/lib/auth/sessionRedirectUrl';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
 
-type AuthJsFormProps = { formType: 'signin' | 'signup' };
+import { useAuth } from '../AuthContext';
+
+interface AuthJsFormProps {
+	formType: 'signin' | 'signup';
+}
 
 function AuthJsForm(props: AuthJsFormProps) {
 	const { formType = 'signin' } = props;
@@ -30,9 +34,9 @@ function AuthJsForm(props: AuthJsFormProps) {
 
 	return (
 		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-			{error && (
+			{error ? (
 				<Alert
-					severity="error"
+					severity='error'
 					sx={{
 						backgroundColor: alpha('#f44336', 0.1),
 						color: '#d32f2f',
@@ -45,7 +49,7 @@ function AuthJsForm(props: AuthJsFormProps) {
 				>
 					{error}
 				</Alert>
-			)}
+			) : null}
 			{formType === 'signin' && <SimpleSignInForm onLogin={login} />}
 			{formType === 'signup' && <SimpleSignUpForm />}
 		</Box>
@@ -104,19 +108,19 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 
 	return (
 		<Box
-			component="form"
+			component='form'
 			onSubmit={handleSubmit}
 			sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
 		>
 			<TextField
-				type="email"
-				label="Email"
-				placeholder="Digite seu email"
+				type='email'
+				label='Email'
+				placeholder='Digite seu email'
 				value={email}
 				onChange={(e) => setEmail(e.target.value)}
 				required
 				fullWidth
-				variant="outlined"
+				variant='outlined'
 				sx={{
 					'& .MuiOutlinedInput-root': {
 						borderRadius: 2,
@@ -147,14 +151,14 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				}}
 			/>
 			<TextField
-				type="password"
-				label="Senha"
-				placeholder="Digite sua senha"
+				type='password'
+				label='Senha'
+				placeholder='Digite sua senha'
 				value={password}
 				onChange={(e) => setPassword(e.target.value)}
 				required
 				fullWidth
-				variant="outlined"
+				variant='outlined'
 				sx={{
 					'& .MuiOutlinedInput-root': {
 						borderRadius: 2,
@@ -185,11 +189,11 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				}}
 			/>
 			<Button
-				type="submit"
+				type='submit'
 				disabled={loading}
 				fullWidth
-				variant="contained"
-				size="large"
+				variant='contained'
+				size='large'
 				sx={{
 					mt: 2,
 					py: 1.5,
@@ -212,7 +216,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 							size={20}
 							sx={{ color: 'white' }}
 						/>
-						<Typography variant="body2">Entrando...</Typography>
+						<Typography variant='body2'>Entrando...</Typography>
 					</Box>
 				) : (
 					'Entrar'
@@ -222,7 +226,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 			{/* Link para recuperação de senha */}
 			<Box sx={{ textAlign: 'center', mt: 2 }}>
 				<Link
-					href="/forgot-password"
+					href='/forgot-password'
 					sx={{
 						color: '#0A74DA',
 						textDecoration: 'none',
@@ -244,7 +248,7 @@ function SimpleSignUpForm() {
 	return (
 		<Box sx={{ textAlign: 'center', p: { xs: 2, sm: 3, md: 4 } }}>
 			<Typography
-				variant="body2"
+				variant='body2'
 				sx={{ color: alpha('#ffffff', 0.7) }}
 			>
 				Funcionalidade de cadastro será implementada em breve.

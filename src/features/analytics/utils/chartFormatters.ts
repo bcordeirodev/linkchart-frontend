@@ -1,4 +1,4 @@
-import { ChartOptions, ChartSeries } from '@/types';
+import type { ChartOptions, ChartSeries } from '@/types';
 
 /**
  * Utilitários para formatação de dados de gráficos
@@ -91,7 +91,9 @@ const getTextConfig = (isDark = false) => {
 				formatter: (value: number | string) => {
 					// Para gráficos horizontais, o yaxis mostra os labels (países)
 					// Para gráficos verticais, o yaxis mostra os valores numéricos
-					if (typeof value === 'string') return value;
+					if (typeof value === 'string') {
+						return value;
+					}
 
 					return value.toLocaleString();
 				}
@@ -278,7 +280,7 @@ export const formatBarChart = (
 						fontSize: '11px',
 						fontWeight: 'bold'
 					},
-					formatter: function (val: number) {
+					formatter(val: number) {
 						return val.toString();
 					}
 				},
@@ -367,7 +369,7 @@ export const formatBarChart = (
 					fontSize: '11px',
 					fontWeight: 'bold'
 				},
-				formatter: function (val: number) {
+				formatter(val: number) {
 					return val.toString();
 				},
 				offsetY: -20
@@ -536,7 +538,9 @@ export const formatUrlForDisplay = (url: string): string => {
  * Capitaliza primeira letra de uma string
  */
 export const capitalizeFirst = (str: string): string => {
-	if (!str) return '';
+	if (!str) {
+		return '';
+	}
 
 	return str.charAt(0).toUpperCase() + str.slice(1);
 };

@@ -48,9 +48,13 @@ interface StoredRedirectData {
  */
 const isSessionStorageAvailable = (): boolean => {
 	try {
-		if (typeof window === 'undefined') return false;
+		if (typeof window === 'undefined') {
+			return false;
+		}
 
-		if (!('sessionStorage' in window)) return false;
+		if (!('sessionStorage' in window)) {
+			return false;
+		}
 
 		// Teste de escrita/leitura
 		const testKey = '__test_storage__';
@@ -69,10 +73,14 @@ const isSessionStorageAvailable = (): boolean => {
 const isValidRedirectUrl = (url: string): boolean => {
 	try {
 		// URLs vazias não são válidas
-		if (!url || typeof url !== 'string') return false;
+		if (!url || typeof url !== 'string') {
+			return false;
+		}
 
 		// URLs relativas são sempre válidas
-		if (url.startsWith('/')) return true;
+		if (url.startsWith('/')) {
+			return true;
+		}
 
 		// Verifica se é uma URL absoluta do mesmo domínio
 		const urlObj = new URL(url, window.location.origin);
@@ -102,7 +110,9 @@ const isValidRedirectUrl = (url: string): boolean => {
  * Obtém a URL de redirecionamento armazenada
  */
 export const getSessionRedirectUrl = (): string | null => {
-	if (!isSessionStorageAvailable()) return null;
+	if (!isSessionStorageAvailable()) {
+		return null;
+	}
 
 	try {
 		const storedData = window.sessionStorage.getItem(CONFIG.storageKey);
@@ -142,7 +152,9 @@ export const getSessionRedirectUrl = (): string | null => {
  * Define a URL de redirecionamento
  */
 export const setSessionRedirectUrl = (url: string, reason: StoredRedirectData['reason'] = 'custom'): boolean => {
-	if (!isSessionStorageAvailable()) return false;
+	if (!isSessionStorageAvailable()) {
+		return false;
+	}
 
 	// Valida a URL antes de armazenar
 	if (!isValidRedirectUrl(url)) {
@@ -172,7 +184,9 @@ export const setSessionRedirectUrl = (url: string, reason: StoredRedirectData['r
  * Remove a URL de redirecionamento
  */
 export const resetSessionRedirectUrl = (): void => {
-	if (!isSessionStorageAvailable()) return;
+	if (!isSessionStorageAvailable()) {
+		return;
+	}
 
 	try {
 		const hadUrl = window.sessionStorage.getItem(CONFIG.storageKey) !== null;
@@ -195,12 +209,16 @@ export const hasValidRedirectUrl = (): boolean => {
  * Obtém informações detalhadas sobre o redirecionamento
  */
 export const getRedirectInfo = (): StoredRedirectData | null => {
-	if (!isSessionStorageAvailable()) return null;
+	if (!isSessionStorageAvailable()) {
+		return null;
+	}
 
 	try {
 		const storedData = window.sessionStorage.getItem(CONFIG.storageKey);
 
-		if (!storedData) return null;
+		if (!storedData) {
+			return null;
+		}
 
 		const data: StoredRedirectData = JSON.parse(storedData);
 		const now = Date.now();
@@ -222,12 +240,16 @@ export const getRedirectInfo = (): StoredRedirectData | null => {
  * Limpa URLs de redirecionamento expiradas
  */
 export const cleanupExpiredRedirects = (): void => {
-	if (!isSessionStorageAvailable()) return;
+	if (!isSessionStorageAvailable()) {
+		return;
+	}
 
 	try {
 		const info = getRedirectInfo();
 
-		if (!info) return; // Já foi limpo ou não existe
+		if (!info) {
+			return;
+		} // Já foi limpo ou não existe
 
 		const now = Date.now();
 

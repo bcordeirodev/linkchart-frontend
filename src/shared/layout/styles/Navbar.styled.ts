@@ -1,6 +1,5 @@
-import { styled } from '@mui/material/styles';
 import { AppBar, Toolbar, Button, IconButton } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore

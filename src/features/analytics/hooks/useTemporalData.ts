@@ -2,7 +2,9 @@
  * Hook para dados temporais
  */
 import { useState, useEffect, useCallback, useRef } from 'react';
+
 import { api } from '@/lib/api/client';
+
 import type { TemporalData } from '@/types/analytics';
 
 export interface TemporalStats {

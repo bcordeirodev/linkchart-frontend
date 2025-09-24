@@ -1,5 +1,6 @@
-import { Paper, Typography, Chip, Button, Box, alpha, useTheme } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
+import { Paper, Typography, Chip, Button, Box, alpha, useTheme } from '@mui/material';
+
 import { AppIcon } from '@/lib/icons';
 
 interface UpgradeCTAProps {
@@ -28,13 +29,13 @@ export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
 				label={
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
 						<AppIcon
-							intent="trending"
+							intent='trending'
 							size={16}
 						/>
 						OPORTUNIDADE
 					</Box>
 				}
-				size="small"
+				size='small'
 				sx={{
 					position: 'absolute',
 					top: -8,
@@ -47,7 +48,7 @@ export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
 				}}
 			/>
 			<Typography
-				variant="h6"
+				variant='h6'
 				sx={{
 					mb: 1,
 					fontWeight: 700,
@@ -59,14 +60,14 @@ export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
 				}}
 			>
 				<AppIcon
-					intent="trending"
+					intent='trending'
 					size={24}
 				/>
 				Desbloqueie Todo o Potencial!
 			</Typography>
 			<Typography
-				variant="body2"
-				color="text.secondary"
+				variant='body2'
+				color='text.secondary'
 				sx={{ mb: 2, textAlign: 'center' }}
 			>
 				Crie uma conta gratuita e tenha acesso a:
@@ -96,15 +97,15 @@ export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
 							color={theme.palette.primary.main}
 							style={{ marginRight: 8 }}
 						/>
-						<Typography variant="body2">{feature.text}</Typography>
+						<Typography variant='body2'>{feature.text}</Typography>
 					</Box>
 				))}
 			</Box>
 
 			<Button
-				variant="contained"
+				variant='contained'
 				fullWidth
-				size="large"
+				size='large'
 				endIcon={<ArrowForward />}
 				onClick={onSignUp}
 				sx={{

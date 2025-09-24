@@ -9,7 +9,17 @@
  * - Acessibilidade completa
  */
 
-import { memo, useCallback, useState } from 'react';
+import {
+	ContentCopy,
+	Edit,
+	Delete,
+	MoreVert,
+	Link as LinkIcon,
+	Visibility,
+	Schedule,
+	TrendingUp,
+	Share
+} from '@mui/icons-material';
 import {
 	Box,
 	Card,
@@ -28,20 +38,10 @@ import {
 	Divider,
 	useTheme
 } from '@mui/material';
-import {
-	ContentCopy,
-	Edit,
-	Delete,
-	MoreVert,
-	Link as LinkIcon,
-	Visibility,
-	Schedule,
-	TrendingUp,
-	Share
-} from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { memo, useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Types
 import type { LinkResponse as Link } from '@/types/core/links';
@@ -125,7 +125,9 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 
 	// Truncar URL longa
 	const truncateUrl = (url: string, maxLength = 40) => {
-		if (url.length <= maxLength) return url;
+		if (url.length <= maxLength) {
+			return url;
+		}
 
 		return `${url.substring(0, maxLength)}...`;
 	};
@@ -161,12 +163,12 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 								fontSize: '1rem'
 							}}
 						>
-							<LinkIcon fontSize="small" />
+							<LinkIcon fontSize='small' />
 						</Avatar>
 
 						<Box sx={{ flex: 1, minWidth: 0 }}>
 							<Typography
-								variant="h6"
+								variant='h6'
 								sx={{
 									fontSize: '1.1rem',
 									fontWeight: 600,
@@ -181,7 +183,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 							</Typography>
 
 							<Typography
-								variant="body2"
+								variant='body2'
 								sx={{
 									color: 'text.secondary',
 									fontSize: '0.875rem',
@@ -195,7 +197,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 						</Box>
 
 						<IconButton
-							size="small"
+							size='small'
 							onClick={() => setDrawerOpen(true)}
 							sx={{ ml: 1, color: 'text.secondary' }}
 						>
@@ -214,7 +216,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 						}}
 					>
 						<Typography
-							variant="body2"
+							variant='body2'
 							sx={{
 								color: 'primary.main',
 								fontWeight: 500,
@@ -231,14 +233,14 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 
 					{/* Métricas e status */}
 					<Stack
-						direction="row"
+						direction='row'
 						spacing={2}
 						sx={{ mb: 2 }}
 					>
 						<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
 							<Visibility sx={{ fontSize: 16, color: 'text.secondary' }} />
 							<Typography
-								variant="body2"
+								variant='body2'
 								sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
 							>
 								{link.clicks || 0} cliques
@@ -248,7 +250,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 						<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
 							<Schedule sx={{ fontSize: 16, color: 'text.secondary' }} />
 							<Typography
-								variant="body2"
+								variant='body2'
 								sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
 							>
 								{createdAt}
@@ -260,32 +262,32 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 						<Chip
 							label={link.is_active ? 'Ativo' : 'Inativo'}
-							size="small"
+							size='small'
 							color={link.is_active ? 'success' : 'default'}
 							sx={{ fontSize: '0.75rem' }}
 						/>
 
 						<Stack
-							direction="row"
+							direction='row'
 							spacing={1}
 						>
-							<Tooltip title="Copiar link">
+							<Tooltip title='Copiar link'>
 								<IconButton
-									size="small"
+									size='small'
 									onClick={handleCopy}
 									sx={{ color: 'text.secondary' }}
 								>
-									<ContentCopy fontSize="small" />
+									<ContentCopy fontSize='small' />
 								</IconButton>
 							</Tooltip>
 
-							<Tooltip title="Ver analytics">
+							<Tooltip title='Ver analytics'>
 								<IconButton
-									size="small"
+									size='small'
 									onClick={handleViewAnalytics}
 									sx={{ color: 'text.secondary' }}
 								>
-									<TrendingUp fontSize="small" />
+									<TrendingUp fontSize='small' />
 								</IconButton>
 							</Tooltip>
 						</Stack>
@@ -295,7 +297,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 
 			{/* Drawer de ações */}
 			<SwipeableDrawer
-				anchor="bottom"
+				anchor='bottom'
 				open={drawerOpen}
 				onClose={() => setDrawerOpen(false)}
 				onOpen={() => setDrawerOpen(true)}
@@ -323,7 +325,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 
 					{/* Título do link */}
 					<Typography
-						variant="h6"
+						variant='h6'
 						sx={{
 							textAlign: 'center',
 							mb: 2,
@@ -342,60 +344,60 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 					{/* Lista de ações */}
 					<List sx={{ py: 0 }}>
 						<ListItem
-							component="div"
+							component='div'
 							onClick={handleCopy}
 							sx={{ borderRadius: 2, cursor: 'pointer' }}
 						>
 							<ListItemIcon>
-								<ContentCopy color="primary" />
+								<ContentCopy color='primary' />
 							</ListItemIcon>
-							<ListItemText primary="Copiar link" />
+							<ListItemText primary='Copiar link' />
 						</ListItem>
 
 						<ListItem
-							component="div"
+							component='div'
 							onClick={handleShare}
 							sx={{ borderRadius: 2, cursor: 'pointer' }}
 						>
 							<ListItemIcon>
-								<Share color="primary" />
+								<Share color='primary' />
 							</ListItemIcon>
-							<ListItemText primary="Compartilhar" />
+							<ListItemText primary='Compartilhar' />
 						</ListItem>
 
 						<ListItem
-							component="div"
+							component='div'
 							onClick={handleViewAnalytics}
 							sx={{ borderRadius: 2, cursor: 'pointer' }}
 						>
 							<ListItemIcon>
-								<TrendingUp color="primary" />
+								<TrendingUp color='primary' />
 							</ListItemIcon>
-							<ListItemText primary="Ver analytics" />
+							<ListItemText primary='Ver analytics' />
 						</ListItem>
 
 						<Divider sx={{ my: 1 }} />
 
 						<ListItem
-							component="div"
+							component='div'
 							onClick={handleEdit}
 							sx={{ borderRadius: 2, cursor: 'pointer' }}
 						>
 							<ListItemIcon>
-								<Edit color="warning" />
+								<Edit color='warning' />
 							</ListItemIcon>
-							<ListItemText primary="Editar link" />
+							<ListItemText primary='Editar link' />
 						</ListItem>
 
 						<ListItem
-							component="div"
+							component='div'
 							onClick={handleDelete}
 							sx={{ borderRadius: 2, cursor: 'pointer' }}
 						>
 							<ListItemIcon>
-								<Delete color="error" />
+								<Delete color='error' />
 							</ListItemIcon>
-							<ListItemText primary="Excluir link" />
+							<ListItemText primary='Excluir link' />
 						</ListItem>
 					</List>
 				</Box>
@@ -460,13 +462,13 @@ export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit, onCopy 
 			>
 				<LinkIcon sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
 				<Typography
-					variant="h6"
+					variant='h6'
 					sx={{ color: 'text.secondary', mb: 1 }}
 				>
 					Nenhum link encontrado
 				</Typography>
 				<Typography
-					variant="body2"
+					variant='body2'
 					sx={{ color: 'text.disabled' }}
 				>
 					Crie seu primeiro link para começar

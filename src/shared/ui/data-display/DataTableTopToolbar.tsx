@@ -3,14 +3,15 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import {
 	MRT_GlobalFilterTextField,
 	MRT_LinearProgressBar,
-	MRT_RowData,
-	MRT_TableInstance,
 	MRT_TablePagination,
 	MRT_ToolbarAlertBanner,
 	MRT_ToolbarDropZone,
 	MRT_ToolbarInternalButtons
 } from 'material-react-table';
+
 import parseFromValuesOrFunc from '@/shared/ui/data-display/utils/parseFromValuesOrFunc';
+
+import type { MRT_RowData, MRT_TableInstance } from 'material-react-table';
 
 export interface MRT_TopToolbarProps<TData extends MRT_RowData> {
 	table: MRT_TableInstance<TData>;
@@ -50,9 +51,9 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 		table
 	};
 	return (
-		<div className="flex flex-col w-full py-1 px-3 border-b-1">
+		<div className='flex flex-col w-full py-1 px-3 border-b-1'>
 			<Box
-				className="flex flex-col w-full items-center"
+				className='flex flex-col w-full items-center'
 				{...toolbarProps}
 				ref={(ref: HTMLDivElement) => {
 					topToolbarRef.current = ref;
@@ -88,23 +89,23 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 			>
 				{['both', 'top'].includes(positionToolbarDropZone ?? '') && <MRT_ToolbarDropZone table={table} />}
 
-				<div className="flex w-full items-center">
-					{enableGlobalFilter && positionGlobalFilter === 'left' && (
+				<div className='flex w-full items-center'>
+					{enableGlobalFilter && positionGlobalFilter === 'left' ? (
 						<MRT_GlobalFilterTextField {...globalFilterProps} />
-					)}
+					) : null}
 
-					<div className="flex flex-1">{renderTopToolbarCustomActions?.({ table }) ?? null}</div>
+					<div className='flex flex-1'>{renderTopToolbarCustomActions?.({ table }) ?? null}</div>
 
 					{enableToolbarInternalActions ? (
-						<Box className="flex items-center space-x-2">
-							{enableGlobalFilter && positionGlobalFilter === 'right' && (
+						<Box className='flex items-center space-x-2'>
+							{enableGlobalFilter && positionGlobalFilter === 'right' ? (
 								<MRT_GlobalFilterTextField
 									{...globalFilterProps}
 									sx={{
 										'& .MuiOutlinedInput-root': { height: 32, minHeight: 32, paddingX: 1 }
 									}}
 								/>
-							)}
+							) : null}
 							<MRT_ToolbarInternalButtons table={table} />
 						</Box>
 					) : (
@@ -112,19 +113,19 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 						positionGlobalFilter === 'right' && <MRT_GlobalFilterTextField {...globalFilterProps} />
 					)}
 				</div>
-				{enablePagination && ['both', 'top'].includes(positionPagination ?? '') && (
+				{enablePagination && ['both', 'top'].includes(positionPagination ?? '') ? (
 					<MRT_TablePagination
-						position="top"
+						position='top'
 						table={table}
 					/>
-				)}
+				) : null}
 				<MRT_LinearProgressBar
 					isTopToolbar
 					table={table}
 				/>
 			</Box>
 			<MRT_ToolbarAlertBanner
-				className="mt-1 rounded-md flex justify-center"
+				className='mt-1 rounded-md flex justify-center'
 				stackAlertBanner={stackAlertBanner}
 				table={table}
 				sx={{

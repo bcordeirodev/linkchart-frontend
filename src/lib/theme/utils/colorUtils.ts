@@ -9,7 +9,9 @@
  * @since 2.0.0
  */
 
-import { Theme, alpha } from '@mui/material/styles';
+import { alpha } from '@mui/material/styles';
+
+import type { Theme } from '@mui/material/styles';
 
 /**
  * Variantes de cores disponíveis

@@ -1,13 +1,16 @@
+import { Lightbulb, TrendingUp, Flag, Assessment } from '@mui/icons-material';
 import { Box, Grid, Typography } from '@mui/material';
+
+import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
+import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
+import TabDescription from '@/shared/ui/base/TabDescription';
+
 import { useInsightsData } from '../../hooks/useInsightsData';
+
 import { BusinessInsights } from './BusinessInsights';
 import { RetentionAnalysisChart } from './RetentionAnalysisChart';
 import { SessionDepthChart } from './SessionDepthChart';
 import { TrafficSourceChart } from './TrafficSourceChart';
-import TabDescription from '@/shared/ui/base/TabDescription';
-import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
-import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
-import { Lightbulb, TrendingUp, Flag, Assessment } from '@mui/icons-material';
 
 interface InsightsAnalysisProps {
 	linkId?: string;
@@ -67,9 +70,9 @@ export function InsightsAnalysis({
 			{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon="💡"
+					icon='💡'
 					title={title}
-					description="Insights automáticos gerados pela análise dos seus dados com recomendações acionáveis."
+					description='Insights automáticos gerados pela análise dos seus dados com recomendações acionáveis.'
 					highlight={`${data?.insights?.length || 0} insights disponíveis`}
 					metadata={isRealtime ? 'Tempo Real' : 'Análise Inteligente'}
 				/>
@@ -81,7 +84,7 @@ export function InsightsAnalysis({
 				error={error}
 				hasData={!!data?.insights?.length}
 				onRetry={refresh}
-				loadingMessage="Gerando insights inteligentes..."
+				loadingMessage='Gerando insights inteligentes...'
 				emptyMessage={
 					globalMode
 						? 'Não há insights suficientes para seus links ativos. Mais dados são necessários para gerar análises.'
@@ -103,11 +106,11 @@ export function InsightsAnalysis({
 								md={3}
 							>
 								<MetricCard
-									title="Total de Insights"
+									title='Total de Insights'
 									value={stats?.totalInsights?.toString() || '0'}
 									icon={<Lightbulb />}
-									color="primary"
-									subtitle="insights gerados"
+									color='primary'
+									subtitle='insights gerados'
 								/>
 							</Grid>
 							<Grid
@@ -117,11 +120,11 @@ export function InsightsAnalysis({
 								md={3}
 							>
 								<MetricCard
-									title="Alta Prioridade"
+									title='Alta Prioridade'
 									value={stats?.highPriorityCount?.toString() || '0'}
 									icon={<Flag />}
-									color="error"
-									subtitle="requerem atenção"
+									color='error'
+									subtitle='requerem atenção'
 								/>
 							</Grid>
 							<Grid
@@ -131,11 +134,11 @@ export function InsightsAnalysis({
 								md={3}
 							>
 								<MetricCard
-									title="Acionáveis"
+									title='Acionáveis'
 									value={stats?.actionableCount?.toString() || '0'}
 									icon={<TrendingUp />}
-									color="success"
-									subtitle="podem ser implementados"
+									color='success'
+									subtitle='podem ser implementados'
 								/>
 							</Grid>
 							<Grid
@@ -145,11 +148,11 @@ export function InsightsAnalysis({
 								md={3}
 							>
 								<MetricCard
-									title="Confiança Média"
+									title='Confiança Média'
 									value={`${Math.round((stats?.avgConfidence || 0) * 100)}%`}
 									icon={<Assessment />}
-									color="info"
-									subtitle="precisão dos insights"
+									color='info'
+									subtitle='precisão dos insights'
 								/>
 							</Grid>
 						</Grid>
@@ -157,14 +160,14 @@ export function InsightsAnalysis({
 
 					{/* RESTANTE DO CONTEÚDO */}
 					{/* ETAPA 3: NOVOS COMPONENTES DE INSIGHTS AVANÇADOS */}
-					{data?.analytics_data && (
+					{data?.analytics_data ? (
 						<Box sx={{ mb: 4 }}>
 							<Grid
 								container
 								spacing={3}
 							>
 								{/* Análise de Retenção */}
-								{data.analytics_data.retention && (
+								{data.analytics_data.retention ? (
 									<Grid
 										item
 										xs={12}
@@ -172,13 +175,13 @@ export function InsightsAnalysis({
 										<RetentionAnalysisChart
 											data={data.analytics_data.retention}
 											loading={loading}
-											showTitle={true}
+											showTitle
 										/>
 									</Grid>
-								)}
+								) : null}
 
 								{/* Análise de Profundidade de Sessão */}
-								{data.analytics_data.session_depth && (
+								{data.analytics_data.session_depth ? (
 									<Grid
 										item
 										xs={12}
@@ -186,13 +189,13 @@ export function InsightsAnalysis({
 										<SessionDepthChart
 											data={data.analytics_data.session_depth}
 											loading={loading}
-											showTitle={true}
+											showTitle
 										/>
 									</Grid>
-								)}
+								) : null}
 
 								{/* Análise de Fontes de Tráfego */}
-								{data.analytics_data.traffic_sources && (
+								{data.analytics_data.traffic_sources ? (
 									<Grid
 										item
 										xs={12}
@@ -200,18 +203,18 @@ export function InsightsAnalysis({
 										<TrafficSourceChart
 											data={data.analytics_data.traffic_sources}
 											loading={loading}
-											showTitle={true}
+											showTitle
 										/>
 									</Grid>
-								)}
+								) : null}
 							</Grid>
 						</Box>
-					)}
+					) : null}
 
 					{/* Lista de Insights Tradicionais */}
 					<Box sx={{ mb: 3 }}>
 						<Typography
-							variant="h6"
+							variant='h6'
 							gutterBottom
 							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
@@ -225,19 +228,19 @@ export function InsightsAnalysis({
 					</Box>
 
 					{/* Informações adicionais */}
-					{stats && (
+					{stats ? (
 						<Box sx={{ mt: 3, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
 							<Typography
-								variant="caption"
-								color="text.secondary"
+								variant='caption'
+								color='text.secondary'
 							>
 								Categoria principal: {stats.topCategory} • Última geração:{' '}
 								{new Date(stats.lastGenerated).toLocaleString()} •{data?.insights?.length || 0} de{' '}
 								{stats.totalInsights} insights exibidos
-								{isRealtime && ' • Atualizações automáticas ativas'}
+								{isRealtime ? ' • Atualizações automáticas ativas' : null}
 							</Typography>
 						</Box>
-					)}
+					) : null}
 				</Box>
 			</AnalyticsStateManager>
 		</Box>

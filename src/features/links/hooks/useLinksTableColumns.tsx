@@ -1,12 +1,14 @@
-import { useMemo, useCallback } from 'react';
-import { type MRT_ColumnDef } from 'material-react-table';
-import { Box, Chip, Avatar, Typography } from '@mui/material';
-import { LinkTableActions } from '@/shared/ui/patterns';
-import { LinkResponse } from '@/types';
 import { CheckCircleOutlined, CancelOutlined } from '@mui/icons-material';
+import { Box, Chip, Avatar, Typography } from '@mui/material';
+import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
+import { LinkTableActions } from '@/shared/ui/patterns';
+
+import type { LinkResponse } from '@/types';
+import type { MRT_ColumnDef } from 'material-react-table';
 
 interface UseLinksTableColumnsProps {
 	onDelete: (id: string) => Promise<void>;
@@ -133,14 +135,14 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 						</Avatar>
 						<Box>
 							<Typography
-								variant="body2"
+								variant='body2'
 								sx={{ fontWeight: 600 }}
 							>
 								{row.original.title || 'Sem título'}
 							</Typography>
 							<Typography
-								variant="caption"
-								color="text.secondary"
+								variant='caption'
+								color='text.secondary'
 							>
 								{row.original.slug || row.original.custom_slug}
 							</Typography>
@@ -157,7 +159,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				Cell: ({ cell }) => (
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 						<Typography
-							variant="body2"
+							variant='body2'
 							sx={{
 								fontFamily: 'monospace',
 								color: 'primary.main',
@@ -178,7 +180,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				grow: true,
 				Cell: ({ cell }) => (
 					<Typography
-						variant="body2"
+						variant='body2'
 						sx={{
 							maxWidth: 280,
 							overflow: 'hidden',
@@ -199,9 +201,9 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				Cell: ({ cell }) => (
 					<Chip
 						label={cell.getValue<number>() || 0}
-						color="primary"
-						size="small"
-						variant="outlined"
+						color='primary'
+						size='small'
+						variant='outlined'
 					/>
 				)
 			},
@@ -214,7 +216,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 					<Chip
 						label={cell.getValue<boolean>() ? 'Ativo' : 'Inativo'}
 						color={cell.getValue<boolean>() ? 'success' : 'error'}
-						size="small"
+						size='small'
 					/>
 				)
 			},
@@ -224,7 +226,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				size: columnSizes.created_at || 140,
 				minSize: 120,
 				Cell: ({ cell }) => (
-					<Typography variant="body2">
+					<Typography variant='body2'>
 						{new Date(cell.getValue<string>()).toLocaleDateString('pt-BR')}
 					</Typography>
 				)

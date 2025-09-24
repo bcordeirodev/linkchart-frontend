@@ -324,18 +324,18 @@ class ApiClient {
 
 		// Para upload, não definimos Content-Type para permitir boundary automático
 		const headers = await this.createHeaders({});
-		delete (headers as Record<string, string>)['Content-Type'];
+		delete headers['Content-Type'];
 
 		// Garantir Origin para uploads também
 		if (typeof window !== 'undefined' && window.location) {
-			(headers as Record<string, string>)['Origin'] = window.location.origin;
+			headers['Origin'] = window.location.origin;
 		}
 
 		// Adiciona headers customizados (exceto Content-Type)
 		if (customHeaders) {
 			Object.entries(customHeaders).forEach(([key, value]) => {
 				if (key.toLowerCase() !== 'content-type') {
-					(headers as Record<string, string>)[key] = value as string;
+					headers[key] = value as string;
 				}
 			});
 		}

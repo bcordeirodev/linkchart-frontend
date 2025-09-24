@@ -3,9 +3,12 @@
  * Container responsivo que unifica todos os padrões de espaçamento da aplicação
  */
 
-import { Container, Box, ContainerProps } from '@mui/material';
-import { ReactNode } from 'react';
+import { Container, Box } from '@mui/material';
+
 import { responsiveSpacing } from '@/lib/theme';
+
+import type { ContainerProps } from '@mui/material';
+import type { ReactNode } from 'react';
 
 interface ResponsiveContainerProps extends Omit<ContainerProps, 'children'> {
 	children: ReactNode;
@@ -108,7 +111,7 @@ export function ResponsiveContainer({
 export function PageContainer({ children, ...props }: Omit<ResponsiveContainerProps, 'variant'>) {
 	return (
 		<ResponsiveContainer
-			variant="page"
+			variant='page'
 			{...props}
 		>
 			{children}
@@ -122,7 +125,7 @@ export function PageContainer({ children, ...props }: Omit<ResponsiveContainerPr
 export function SectionContainer({ children, ...props }: Omit<ResponsiveContainerProps, 'variant'>) {
 	return (
 		<ResponsiveContainer
-			variant="section"
+			variant='section'
 			withMarginBottom
 			{...props}
 		>
@@ -137,8 +140,8 @@ export function SectionContainer({ children, ...props }: Omit<ResponsiveContaine
 export function FormContainer({ children, ...props }: Omit<ResponsiveContainerProps, 'variant'>) {
 	return (
 		<ResponsiveContainer
-			variant="form"
-			maxWidth="md"
+			variant='form'
+			maxWidth='md'
 			{...props}
 		>
 			{children}

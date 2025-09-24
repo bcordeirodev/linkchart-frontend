@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { Visibility, VisibilityOff, Lock, CheckCircle } from '@mui/icons-material';
 import { Box, TextField, Button, Stack, CircularProgress, InputAdornment, IconButton, Alert } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { Visibility, VisibilityOff, Lock, CheckCircle } from '@mui/icons-material';
-import { AuthLayout } from '@/shared/layout';
-import { authService } from '@/services';
+import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { z } from 'zod';
+
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { authService } from '@/services';
+import { AuthLayout } from '@/shared/layout';
 
 // Schema de validação
 const resetPasswordSchema = z
@@ -123,9 +124,9 @@ function ResetPasswordPage() {
 	if (tokenValid === false) {
 		return (
 			<AuthLayout
-				title="Link inválido"
-				subtitle="O link de recuperação de senha é inválido ou expirou"
-				variant="reset"
+				title='Link inválido'
+				subtitle='O link de recuperação de senha é inválido ou expirou'
+				variant='reset'
 				footerLinks={[
 					{
 						text: 'Precisa de ajuda?',
@@ -137,10 +138,10 @@ function ResetPasswordPage() {
 				<Box sx={{ textAlign: 'center', py: 4 }}>
 					<Stack
 						spacing={3}
-						alignItems="center"
+						alignItems='center'
 					>
 						<Alert
-							severity="error"
+							severity='error'
 							sx={{ width: '100%' }}
 						>
 							O link de recuperação de senha é inválido ou expirou. Solicite um novo link de recuperação.
@@ -151,16 +152,16 @@ function ResetPasswordPage() {
 							sx={{ width: '100%' }}
 						>
 							<Button
-								variant="contained"
-								href="/forgot-password"
+								variant='contained'
+								href='/forgot-password'
 								fullWidth
 							>
 								Solicitar nova recuperação
 							</Button>
 
 							<Button
-								variant="outlined"
-								href="/sign-in"
+								variant='outlined'
+								href='/sign-in'
 								fullWidth
 							>
 								Voltar ao Login
@@ -174,9 +175,9 @@ function ResetPasswordPage() {
 
 	return (
 		<AuthLayout
-			title="Redefinir senha"
-			subtitle="Digite sua nova senha para completar a recuperação"
-			variant="reset"
+			title='Redefinir senha'
+			subtitle='Digite sua nova senha para completar a recuperação'
+			variant='reset'
 			footerLinks={[
 				{
 					text: 'Lembrou da senha?',
@@ -186,7 +187,7 @@ function ResetPasswordPage() {
 			]}
 		>
 			<Box
-				component="form"
+				component='form'
 				onSubmit={handleSubmit(onSubmit)}
 				noValidate
 			>
@@ -196,7 +197,7 @@ function ResetPasswordPage() {
 						{...register('password')}
 						fullWidth
 						type={showPassword ? 'text' : 'password'}
-						label="Nova senha"
+						label='Nova senha'
 						error={!!errors.password}
 						helperText={
 							errors.password?.message ||
@@ -205,15 +206,15 @@ function ResetPasswordPage() {
 						disabled={loading}
 						InputProps={{
 							startAdornment: (
-								<InputAdornment position="start">
+								<InputAdornment position='start'>
 									<Lock sx={{ color: '#5F6368' }} />
 								</InputAdornment>
 							),
 							endAdornment: (
-								<InputAdornment position="end">
+								<InputAdornment position='end'>
 									<IconButton
 										onClick={() => setShowPassword(!showPassword)}
-										edge="end"
+										edge='end'
 										disabled={loading}
 										sx={{ color: '#5F6368' }}
 									>
@@ -269,21 +270,21 @@ function ResetPasswordPage() {
 						{...register('password_confirmation')}
 						fullWidth
 						type={showConfirmPassword ? 'text' : 'password'}
-						label="Confirmar nova senha"
+						label='Confirmar nova senha'
 						error={!!errors.password_confirmation}
 						helperText={errors.password_confirmation?.message}
 						disabled={loading}
 						InputProps={{
 							startAdornment: (
-								<InputAdornment position="start">
+								<InputAdornment position='start'>
 									<CheckCircle sx={{ color: '#5F6368' }} />
 								</InputAdornment>
 							),
 							endAdornment: (
-								<InputAdornment position="end">
+								<InputAdornment position='end'>
 									<IconButton
 										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-										edge="end"
+										edge='end'
 										disabled={loading}
 										sx={{ color: '#5F6368' }}
 									>
@@ -336,16 +337,16 @@ function ResetPasswordPage() {
 
 					{/* Submit Button */}
 					<Button
-						type="submit"
+						type='submit'
 						fullWidth
-						variant="contained"
-						size="large"
+						variant='contained'
+						size='large'
 						disabled={loading || !isValid}
 						startIcon={
 							loading ? (
 								<CircularProgress
 									size={20}
-									color="inherit"
+									color='inherit'
 								/>
 							) : null
 						}

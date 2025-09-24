@@ -15,10 +15,13 @@ import {
 	InputAdornment,
 	Stack
 } from '@mui/material';
-import { Controller, Control, FieldErrors } from 'react-hook-form';
-import { LinkFormData } from './LinkFormSchema';
 import { useState } from 'react';
+import { Controller } from 'react-hook-form';
+
 import { AppIcon } from '@/lib/icons';
+
+import type { LinkFormData } from './LinkFormSchema';
+import type { Control, FieldErrors } from 'react-hook-form';
 
 interface LinkFormFieldsProps {
 	control: Control<LinkFormData>;
@@ -38,21 +41,21 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 		<Stack spacing={3}>
 			{/* 🔗 URL Original */}
 			<Controller
-				name="original_url"
+				name='original_url'
 				control={control}
 				render={({ field }) => (
 					<TextField
 						{...field}
 						fullWidth
-						label="🔗 URL Original"
-						placeholder="https://exemplo.com/url-muito-longa"
+						label='🔗 URL Original'
+						placeholder='https://exemplo.com/url-muito-longa'
 						error={!!errors.original_url}
 						helperText={errors.original_url?.message || 'Cole aqui a URL que deseja encurtar'}
 						InputProps={{
 							startAdornment: (
-								<InputAdornment position="start">
+								<InputAdornment position='start'>
 									<AppIcon
-										intent="link"
+										intent='link'
 										size={20}
 									/>
 								</InputAdornment>
@@ -64,21 +67,21 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 
 			{/* 📝 Título */}
 			<Controller
-				name="title"
+				name='title'
 				control={control}
 				render={({ field }) => (
 					<TextField
 						{...field}
 						fullWidth
-						label="📝 Título do Link"
-						placeholder="Dê um nome para seu link"
+						label='📝 Título do Link'
+						placeholder='Dê um nome para seu link'
 						error={!!errors.title}
 						helperText={errors.title?.message || 'Opcional - Ajuda a identificar o link'}
 						InputProps={{
 							startAdornment: (
-								<InputAdornment position="start">
+								<InputAdornment position='start'>
 									<AppIcon
-										intent="edit"
+										intent='edit'
 										size={20}
 									/>
 								</InputAdornment>
@@ -90,7 +93,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 
 			{/* 📄 Descrição */}
 			<Controller
-				name="description"
+				name='description'
 				control={control}
 				render={({ field }) => (
 					<TextField
@@ -98,8 +101,8 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 						fullWidth
 						multiline
 						rows={3}
-						label="📄 Descrição"
-						placeholder="Descreva o conteúdo do link (opcional)"
+						label='📄 Descrição'
+						placeholder='Descreva o conteúdo do link (opcional)'
 						error={!!errors.description}
 						helperText={errors.description?.message || 'Opcional - Adicione mais contexto ao seu link'}
 					/>
@@ -110,7 +113,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 			<Box>
 				<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
 					<Typography
-						variant="h6"
+						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
 						⚙️ Configurações Avançadas
@@ -120,7 +123,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 						onClick={() => setShowAdvanced(!showAdvanced)}
 						color={showAdvanced ? 'primary' : 'default'}
 						variant={showAdvanced ? 'filled' : 'outlined'}
-						size="small"
+						size='small'
 						icon={
 							<AppIcon
 								intent={showAdvanced ? 'collapse' : 'expand'}
@@ -143,8 +146,8 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 						}}
 					>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 							sx={{ mb: 3 }}
 						>
 							⚙️ Configure opções avançadas como slug personalizado, limites de acesso e datas de ativação
@@ -161,14 +164,14 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								md={6}
 							>
 								<Controller
-									name="custom_slug"
+									name='custom_slug'
 									control={control}
 									render={({ field }) => (
 										<TextField
 											{...field}
 											fullWidth
-											label="🏷️ Slug Personalizado"
-											placeholder="meu-link-personalizado"
+											label='🏷️ Slug Personalizado'
+											placeholder='meu-link-personalizado'
 											error={!!errors.custom_slug}
 											helperText={
 												errors.custom_slug?.message ||
@@ -176,10 +179,10 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											}
 											InputProps={{
 												startAdornment: (
-													<InputAdornment position="start">
+													<InputAdornment position='start'>
 														<Typography
-															variant="body2"
-															color="text.secondary"
+															variant='body2'
+															color='text.secondary'
 														>
 															/r/
 														</Typography>
@@ -198,15 +201,15 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								md={6}
 							>
 								<Controller
-									name="click_limit"
+									name='click_limit'
 									control={control}
 									render={({ field: { onChange, value, ...field } }) => (
 										<TextField
 											{...field}
 											fullWidth
-											type="number"
-											label="🔢 Limite de Cliques"
-											placeholder="1000"
+											type='number'
+											label='🔢 Limite de Cliques'
+											placeholder='1000'
 											value={value || ''}
 											onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
 											error={!!errors.click_limit}
@@ -229,14 +232,14 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								md={6}
 							>
 								<Controller
-									name="starts_in"
+									name='starts_in'
 									control={control}
 									render={({ field: { value, ...field } }) => (
 										<TextField
 											{...field}
 											fullWidth
-											type="datetime-local"
-											label="⏰ Data de Início"
+											type='datetime-local'
+											label='⏰ Data de Início'
 											value={value || ''}
 											error={!!errors.starts_in}
 											helperText={
@@ -256,14 +259,14 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								md={6}
 							>
 								<Controller
-									name="expires_at"
+									name='expires_at'
 									control={control}
 									render={({ field: { value, ...field } }) => (
 										<TextField
 											{...field}
 											fullWidth
-											type="datetime-local"
-											label="⏳ Data de Expiração"
+											type='datetime-local'
+											label='⏳ Data de Expiração'
 											value={value || ''}
 											error={!!errors.expires_at}
 											helperText={
@@ -279,7 +282,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 
 						{/* ✅ Status Ativo */}
 						<Controller
-							name="is_active"
+							name='is_active'
 							control={control}
 							render={({ field: { onChange, value } }) => (
 								<FormControlLabel
@@ -287,10 +290,10 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 										<Switch
 											checked={value}
 											onChange={(e) => onChange(e.target.checked)}
-											color="primary"
+											color='primary'
 										/>
 									}
-									label="Link Ativo"
+									label='Link Ativo'
 								/>
 							)}
 						/>
@@ -302,7 +305,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 			<Box>
 				<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
 					<Typography
-						variant="h6"
+						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
 						📊 Parâmetros UTM
@@ -312,7 +315,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 						onClick={() => setShowUTM(!showUTM)}
 						color={showUTM ? 'secondary' : 'default'}
 						variant={showUTM ? 'filled' : 'outlined'}
-						size="small"
+						size='small'
 						icon={
 							<AppIcon
 								intent={showUTM ? 'collapse' : 'expand'}
@@ -335,8 +338,8 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 						}}
 					>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 							sx={{ mb: 3 }}
 						>
 							📊 Parâmetros para rastreamento no Google Analytics
@@ -353,14 +356,14 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								md={6}
 							>
 								<Controller
-									name="utm_source"
+									name='utm_source'
 									control={control}
 									render={({ field }) => (
 										<TextField
 											{...field}
 											fullWidth
-											label="UTM Source"
-											placeholder="google, facebook, newsletter"
+											label='UTM Source'
+											placeholder='google, facebook, newsletter'
 											error={!!errors.utm_source}
 											helperText={errors.utm_source?.message || 'Origem do tráfego'}
 										/>
@@ -375,14 +378,14 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								md={6}
 							>
 								<Controller
-									name="utm_medium"
+									name='utm_medium'
 									control={control}
 									render={({ field }) => (
 										<TextField
 											{...field}
 											fullWidth
-											label="UTM Medium"
-											placeholder="cpc, email, social"
+											label='UTM Medium'
+											placeholder='cpc, email, social'
 											error={!!errors.utm_medium}
 											helperText={errors.utm_medium?.message || 'Meio de marketing'}
 										/>
@@ -397,14 +400,14 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								md={6}
 							>
 								<Controller
-									name="utm_campaign"
+									name='utm_campaign'
 									control={control}
 									render={({ field }) => (
 										<TextField
 											{...field}
 											fullWidth
-											label="UTM Campaign"
-											placeholder="promocao-verao-2024"
+											label='UTM Campaign'
+											placeholder='promocao-verao-2024'
 											error={!!errors.utm_campaign}
 											helperText={errors.utm_campaign?.message || 'Nome da campanha'}
 										/>
@@ -419,14 +422,14 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								md={6}
 							>
 								<Controller
-									name="utm_term"
+									name='utm_term'
 									control={control}
 									render={({ field }) => (
 										<TextField
 											{...field}
 											fullWidth
-											label="UTM Term"
-											placeholder="palavra-chave"
+											label='UTM Term'
+											placeholder='palavra-chave'
 											error={!!errors.utm_term}
 											helperText={errors.utm_term?.message || 'Termo de pesquisa'}
 										/>
@@ -440,14 +443,14 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								xs={12}
 							>
 								<Controller
-									name="utm_content"
+									name='utm_content'
 									control={control}
 									render={({ field }) => (
 										<TextField
 											{...field}
 											fullWidth
-											label="UTM Content"
-											placeholder="banner-topo, link-rodape"
+											label='UTM Content'
+											placeholder='banner-topo, link-rodape'
 											error={!!errors.utm_content}
 											helperText={errors.utm_content?.message || 'Conteúdo do anúncio'}
 										/>

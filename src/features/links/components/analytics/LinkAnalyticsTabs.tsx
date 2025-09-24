@@ -2,18 +2,21 @@
 
 import { Tabs, Tab, Box, useTheme } from '@mui/material';
 import { useState } from 'react';
-import { TabPanel } from '@/shared/ui/base/TabPanel';
-import TabDescription from '@/shared/ui/base/TabDescription';
-import { LinkAnalyticsData } from '../../types/analytics';
 
-// Importar componentes especializados que usam hooks próprios
-import { LinkDashboard } from './LinkDashboard';
-import { PerformanceAnalysis } from '@/features/analytics/components/perfomance/PerformanceAnalysis';
-import { GeographicAnalysis } from '@/features/analytics/components/geographic/GeographicAnalysis';
-import { TemporalAnalysis } from '@/features/analytics/components/temporal';
 import { AudienceAnalysis } from '@/features/analytics/components/audience/AudienceAnalysis';
+import { GeographicAnalysis } from '@/features/analytics/components/geographic/GeographicAnalysis';
 import { HeatmapAnalysis } from '@/features/analytics/components/heatmap/HeatmapAnalysis';
 import { InsightsAnalysis } from '@/features/analytics/components/insights/InsightsAnalysis';
+import { PerformanceAnalysis } from '@/features/analytics/components/perfomance/PerformanceAnalysis';
+import { TemporalAnalysis } from '@/features/analytics/components/temporal';
+import TabDescription from '@/shared/ui/base/TabDescription';
+import { TabPanel } from '@/shared/ui/base/TabPanel';
+
+import { LinkDashboard } from './LinkDashboard';
+
+import type { LinkAnalyticsData } from '../../types/analytics';
+
+// Importar componentes especializados que usam hooks próprios
 
 interface LinkAnalyticsTabsOptimizedProps {
 	data?: LinkAnalyticsData | null;
@@ -63,7 +66,7 @@ export function LinkAnalyticsTabsOptimized({
 		<Box>
 			{/* Tabs Navigation */}
 			<Box
-				className="link-analytics-tabs-container"
+				className='link-analytics-tabs-container'
 				sx={{
 					backgroundColor: theme.palette.background.paper,
 					borderRadius: 2,
@@ -73,8 +76,8 @@ export function LinkAnalyticsTabsOptimized({
 				<Tabs
 					value={tabValue}
 					onChange={handleTabChange}
-					variant="scrollable"
-					scrollButtons="auto"
+					variant='scrollable'
+					scrollButtons='auto'
 					sx={{
 						'& .MuiTab-root': {
 							textTransform: 'none',
@@ -90,7 +93,7 @@ export function LinkAnalyticsTabsOptimized({
 							key={index}
 							label={tab.label}
 							icon={<span style={{ fontSize: '1.2rem' }}>{tab.icon}</span>}
-							iconPosition="start"
+							iconPosition='start'
 						/>
 					))}
 				</Tabs>
@@ -103,23 +106,23 @@ export function LinkAnalyticsTabsOptimized({
 				value={tabValue}
 				index={0}
 			>
-				{showHeader && (
+				{showHeader ? (
 					<Box sx={{ mb: 2 }}>
 						<TabDescription
-							icon="🎯"
-							title="Dashboard do Link"
-							description="Visão geral consolidada do link com métricas essenciais e performance."
+							icon='🎯'
+							title='Dashboard do Link'
+							description='Visão geral consolidada do link com métricas essenciais e performance.'
 							highlight={`${data?.overview?.total_clicks || 0} cliques totais`}
 						/>
 					</Box>
-				)}
+				) : null}
 				{/* Renderizar apenas se a tab está ativa */}
 				{tabValue === 0 && (
 					<LinkDashboard
 						linkId={linkId}
 						showTitle={false}
 						enableRealtime={false}
-						showTimeframeSelector={true}
+						showTimeframeSelector
 						compact={false}
 					/>
 				)}
@@ -166,7 +169,7 @@ export function LinkAnalyticsTabsOptimized({
 						linkId={linkId}
 						globalMode={false}
 						enableRealtime={false}
-						timeRange="7d"
+						timeRange='7d'
 					/>
 				)}
 			</TabPanel>

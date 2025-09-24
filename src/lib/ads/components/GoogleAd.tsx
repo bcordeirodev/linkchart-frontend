@@ -1,6 +1,9 @@
 import { Box, Typography } from '@mui/material';
-import { useGoogleAds, AD_SLOTS, AdSlotType } from '../hooks/useGoogleAds';
+
 import { getAdsConfig } from '../config/adsConfig';
+import { useGoogleAds, AD_SLOTS } from '../hooks/useGoogleAds';
+
+import type { AdSlotType } from '../hooks/useGoogleAds';
 
 interface GoogleAdProps {
 	variant: AdSlotType;
@@ -68,15 +71,15 @@ export function GoogleAd({ variant, sx, showFallback = false }: GoogleAdProps) {
 				}}
 			>
 				<Typography
-					variant="body2"
-					color="text.secondary"
+					variant='body2'
+					color='text.secondary'
 					sx={{ fontWeight: 500 }}
 				>
 					{config.text}
 				</Typography>
 				<Typography
-					variant="caption"
-					color="text.disabled"
+					variant='caption'
+					color='text.disabled'
 					sx={{ mt: 0.5 }}
 				>
 					{config.description}
@@ -104,7 +107,7 @@ export function GoogleAd({ variant, sx, showFallback = false }: GoogleAdProps) {
 		>
 			<ins
 				ref={adRef}
-				className="adsbygoogle"
+				className='adsbygoogle'
 				style={adConfig.style}
 				data-ad-client={adsConfig.clientId}
 				data-ad-slot={adConfig.slot}

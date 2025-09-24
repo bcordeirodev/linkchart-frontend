@@ -1,16 +1,13 @@
 /**
- * 🎨 UTILITÁRIOS DE CORES PARA GRÁFICOS - LINK CHART
- * Funções helper para facilitar o uso consistente de cores em gráficos
+ * Utilitários de cores para gráficos
  */
 
-import { Theme } from '@mui/material/styles';
-import { createComponentColorSet } from './colorUtils';
 import { chartColors } from '../colors/chartColors';
 
-/**
- * Hook/função para obter cores padronizadas para gráficos
- * Substitui o uso manual de createComponentColorSet em cada componente
- */
+import { createComponentColorSet } from './colorUtils';
+
+import type { Theme } from '@mui/material/styles';
+
 export function getStandardChartColors(theme: Theme) {
 	return {
 		primary: createComponentColorSet(theme, 'primary'),
@@ -22,9 +19,6 @@ export function getStandardChartColors(theme: Theme) {
 	};
 }
 
-/**
- * Função para obter cores específicas por tipo de gráfico
- */
 export function getChartColorsByType(type: 'temporal'): {
 	hourly: string;
 	daily: string;

@@ -1,19 +1,17 @@
 /**
- * ⚙️ CONFIGURAÇÕES OTIMIZADAS - LINK CHART
- * Versão simplificada e otimizada das configurações de tema
+ * Configurações otimizadas de tema
  */
 
-import { fuseDark } from '../colors';
-import { lightBlue, red } from '@mui/material/colors';
+import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 import qs from 'qs';
-import { ThemeOptions } from '@mui/material/styles/createTheme';
-import { FuseSettingsConfigType } from '../types/theme';
+
+import { fuseDark } from '../colors';
+
 import { optimizedThemeOptions } from './muiComponents';
 
-// ========================================
-// 🎨 TEMA PADRÃO SIMPLIFICADO
-// ========================================
+import type { FuseSettingsConfigType } from '../types/theme';
+import type { ThemeOptions } from '@mui/material/styles/createTheme';
 
 /**
  * Tema padrão otimizado da aplicação
@@ -37,9 +35,9 @@ const optimizedDefaultTheme = {
 			contrastDefaultColor: 'light'
 		},
 		secondary: {
-			light: '#bdf2fa',
-			main: '#22d3ee',
-			dark: '#0cb7e2'
+			light: '#E8E9EA',
+			main: '#9E9E9E',
+			dark: '#616161'
 		},
 		background: {
 			paper: '#FFFFFF',
@@ -103,9 +101,9 @@ export const optimizedDefaultThemes = {
 			mode: 'light',
 			primary: fuseDark,
 			secondary: {
-				light: lightBlue[400],
-				main: lightBlue[600],
-				dark: lightBlue[700]
+				light: '#E8E9EA',
+				main: '#9E9E9E',
+				dark: '#616161'
 			},
 			error: red
 		},
@@ -118,9 +116,9 @@ export const optimizedDefaultThemes = {
 			mode: 'dark',
 			primary: fuseDark,
 			secondary: {
-				light: lightBlue[400],
-				main: lightBlue[600],
-				dark: lightBlue[700]
+				light: '#E8E9EA',
+				main: '#9E9E9E',
+				dark: '#616161'
 			},
 			error: red
 		},

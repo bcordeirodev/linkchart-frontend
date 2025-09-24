@@ -1,3 +1,4 @@
+import { Launch as LaunchIcon, ContentCopy as CopyIcon, Add as AddIcon } from '@mui/icons-material';
 import {
 	Box,
 	Typography,
@@ -12,10 +13,11 @@ import {
 	useTheme,
 	alpha
 } from '@mui/material';
-import { Launch as LaunchIcon, ContentCopy as CopyIcon, Add as AddIcon } from '@mui/icons-material';
-import { EnhancedPaper } from '@/shared/ui/base';
+
 import { AppIcon } from '@/lib/icons';
 import { createPresetShadows, createPresetAnimations } from '@/lib/theme';
+import { EnhancedPaper } from '@/shared/ui/base';
+
 import type { BasicLinkData, BasicAnalyticsActions } from '../../types';
 
 interface LinkInfoCardProps {
@@ -39,7 +41,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 
 	return (
 		<EnhancedPaper
-			variant="glass"
+			variant='glass'
 			sx={{
 				mb: 1,
 				// Aplicando padrão de cores do UpgradeCTA
@@ -68,41 +70,41 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 				>
 					<Box sx={{ display: 'flex', alignItems: 'center' }}>
 						<AppIcon
-							intent="link"
+							intent='link'
 							size={24}
 							color={theme.palette.primary.main}
 							style={{ marginRight: 8 }}
 						/>
-						<Typography variant="h6">Informações do Link</Typography>
-						{linkData.is_public && (
+						<Typography variant='h6'>Informações do Link</Typography>
+						{linkData.is_public ? (
 							<Chip
-								label="Público"
-								color="primary"
-								size="small"
+								label='Público'
+								color='primary'
+								size='small'
 								sx={{ ml: 2 }}
 							/>
-						)}
+						) : null}
 					</Box>
 
 					{/* Ações rápidas */}
 					<Stack
-						direction="row"
+						direction='row'
 						spacing={1}
 					>
-						<Tooltip title="Copiar Link">
+						<Tooltip title='Copiar Link'>
 							<IconButton
 								onClick={handleCopyLink}
-								color="primary"
-								size="small"
+								color='primary'
+								size='small'
 							>
 								<CopyIcon />
 							</IconButton>
 						</Tooltip>
-						<Tooltip title="Criar Outro Link">
+						<Tooltip title='Criar Outro Link'>
 							<IconButton
 								onClick={handleCreateLink}
-								color="secondary"
-								size="small"
+								color='secondary'
+								size='small'
 							>
 								<AddIcon />
 							</IconButton>
@@ -122,13 +124,13 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 					}}
 				>
 					<Typography
-						variant="body2"
-						color="text.secondary"
+						variant='body2'
+						color='text.secondary'
 						gutterBottom
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
 						<AppIcon
-							intent="link"
+							intent='link'
 							size={16}
 						/>
 						Seu link encurtado:
@@ -142,7 +144,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						}}
 					>
 						<Typography
-							variant="h6"
+							variant='h6'
 							sx={{
 								fontFamily: 'monospace',
 								color: 'primary.main',
@@ -155,13 +157,13 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 							{linkData.short_url}
 						</Typography>
 						<Stack
-							direction="row"
+							direction='row'
 							spacing={1}
 							sx={{ flexShrink: 0 }}
 						>
 							<Button
-								variant="contained"
-								size="small"
+								variant='contained'
+								size='small'
 								startIcon={<CopyIcon />}
 								onClick={handleCopyLink}
 								sx={{
@@ -178,8 +180,8 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 								Copiar
 							</Button>
 							<Button
-								variant="outlined"
-								size="small"
+								variant='outlined'
+								size='small'
 								startIcon={<LaunchIcon />}
 								onClick={handleVisitLink}
 								sx={{
@@ -212,19 +214,19 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						md={6}
 					>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 							gutterBottom
 							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
 							<AppIcon
-								name="content.text"
+								name='content.text'
 								size={16}
 							/>
 							Título:
 						</Typography>
 						<Typography
-							variant="body1"
+							variant='body1'
 							sx={{ fontWeight: 500 }}
 						>
 							{linkData.title || 'Sem título definido'}
@@ -237,19 +239,19 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						md={6}
 					>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 							gutterBottom
 							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
 							<AppIcon
-								intent="url"
+								intent='url'
 								size={16}
 							/>
 							Domínio de destino:
 						</Typography>
 						<Typography
-							variant="body1"
+							variant='body1'
 							sx={{ fontWeight: 500 }}
 						>
 							{linkData.domain}
@@ -262,19 +264,19 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						md={6}
 					>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 							gutterBottom
 							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
 							<AppIcon
-								name="time.calendar"
+								name='time.calendar'
 								size={16}
 							/>
 							Criado em:
 						</Typography>
 						<Typography
-							variant="body1"
+							variant='body1'
 							sx={{ fontWeight: 500 }}
 						>
 							{new Date(linkData.created_at).toLocaleDateString('pt-BR', {
@@ -293,13 +295,13 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						md={6}
 					>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 							gutterBottom
 							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
 							<AppIcon
-								intent="info"
+								intent='info'
 								size={16}
 							/>
 							Status:
@@ -307,8 +309,8 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						<Chip
 							label={linkData.is_active ? 'Ativo' : 'Inativo'}
 							color={linkData.is_active ? 'success' : 'error'}
-							size="small"
-							variant="outlined"
+							size='small'
+							variant='outlined'
 						/>
 					</Grid>
 
@@ -318,13 +320,13 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						xs={12}
 					>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 							gutterBottom
 							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
 							<AppIcon
-								name="navigation.back"
+								name='navigation.back'
 								size={16}
 							/>
 							URL original:
@@ -343,7 +345,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 							}}
 						>
 							<Typography
-								variant="body2"
+								variant='body2'
 								sx={{
 									fontFamily: 'monospace',
 									color: 'text.primary',
@@ -361,13 +363,13 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 				<Stack
 					direction={{ xs: 'column', sm: 'row' }}
 					spacing={2}
-					justifyContent="center"
+					justifyContent='center'
 				>
 					<Button
-						variant="contained"
+						variant='contained'
 						startIcon={<CopyIcon />}
 						onClick={handleCopyLink}
-						size="large"
+						size='large'
 						sx={{
 							background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
 							'&:hover': {
@@ -383,10 +385,10 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						Copiar Link
 					</Button>
 					<Button
-						variant="outlined"
+						variant='outlined'
 						startIcon={<AddIcon />}
 						onClick={handleCreateLink}
-						size="large"
+						size='large'
 						sx={{
 							borderColor: theme.palette.success.main,
 							color: theme.palette.success.main,
@@ -404,10 +406,10 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 						Criar Outro Link
 					</Button>
 					<Button
-						variant="text"
+						variant='text'
 						startIcon={<LaunchIcon />}
 						onClick={handleVisitLink}
-						size="large"
+						size='large'
 						sx={{
 							color: theme.palette.text.secondary,
 							'&:hover': {

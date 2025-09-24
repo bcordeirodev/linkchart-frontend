@@ -1,15 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Box, Typography, Button, Card, CardContent, Alert, CircularProgress } from '@mui/material';
 import { ArrowBack, Download, Share } from '@mui/icons-material';
+import { Box, Typography, Button, Card, CardContent, Alert, CircularProgress } from '@mui/material';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+
 // import QRCode from 'qrcode'; // Removido import estático
-import { ResponsiveContainer } from '@/shared/ui/base';
-import MainLayout from '@/shared/layout/MainLayout';
-import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import { useLinks } from '@/features/links/hooks/useLinks';
 import { useShareAPI } from '@/features/links/hooks/useShareAPI';
+import MainLayout from '@/shared/layout/MainLayout';
+import { ResponsiveContainer } from '@/shared/ui/base';
+
+import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 
 const buildShortUrl = (slug: string): string => {
 	const frontendUrl = window.location.origin || 'http://localhost:3000';
@@ -28,7 +30,9 @@ function LinkQRPage() {
 
 	useEffect(() => {
 		const fetchLink = async () => {
-			if (!id) return;
+			if (!id) {
+				return;
+			}
 
 			try {
 				setLoading(true);
@@ -89,7 +93,9 @@ function LinkQRPage() {
 	};
 
 	const handleDownloadQR = () => {
-		if (!qrCodeDataUrl || !linkInfo) return;
+		if (!qrCodeDataUrl || !linkInfo) {
+			return;
+		}
 
 		// Criar link de download
 		const link = document.createElement('a');
@@ -101,7 +107,9 @@ function LinkQRPage() {
 	};
 
 	const handleShareQR = async () => {
-		if (!linkInfo) return;
+		if (!linkInfo) {
+			return;
+		}
 
 		await shareOrCopy({
 			title: `QR Code - ${linkInfo.title || linkInfo.original_url}`,
@@ -114,8 +122,8 @@ function LinkQRPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<ResponsiveContainer variant="page">
-						<Alert severity="error">ID do link não fornecido na URL</Alert>
+					<ResponsiveContainer variant='page'>
+						<Alert severity='error'>ID do link não fornecido na URL</Alert>
 					</ResponsiveContainer>
 				</MainLayout>
 			</AuthGuardRedirect>
@@ -126,7 +134,7 @@ function LinkQRPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<ResponsiveContainer variant="page">
+					<ResponsiveContainer variant='page'>
 						<Box
 							sx={{
 								display: 'flex',
@@ -140,7 +148,7 @@ function LinkQRPage() {
 									size={40}
 									sx={{ mb: 2 }}
 								/>
-								<Typography variant="body1">Carregando informações do link...</Typography>
+								<Typography variant='body1'>Carregando informações do link...</Typography>
 							</Box>
 						</Box>
 					</ResponsiveContainer>
@@ -153,8 +161,8 @@ function LinkQRPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<ResponsiveContainer variant="page">
-						<Alert severity="error">{error || 'Link não encontrado'}</Alert>
+					<ResponsiveContainer variant='page'>
+						<Alert severity='error'>{error || 'Link não encontrado'}</Alert>
 					</ResponsiveContainer>
 				</MainLayout>
 			</AuthGuardRedirect>
@@ -165,8 +173,8 @@ function LinkQRPage() {
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
 				<ResponsiveContainer
-					variant="page"
-					maxWidth="md"
+					variant='page'
+					maxWidth='md'
 				>
 					{/* Header */}
 					<Box sx={{ mb: 4 }}>
@@ -181,14 +189,14 @@ function LinkQRPage() {
 							}}
 						>
 							<Typography
-								variant="h4"
-								component="h1"
+								variant='h4'
+								component='h1'
 								sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
 							>
 								📱 QR Code do Link
 							</Typography>
 							<Button
-								variant="outlined"
+								variant='outlined'
 								startIcon={<ArrowBack />}
 								onClick={handleBack}
 								sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
@@ -198,8 +206,8 @@ function LinkQRPage() {
 						</Box>
 
 						<Typography
-							variant="subtitle1"
-							color="text.secondary"
+							variant='subtitle1'
+							color='text.secondary'
 							sx={{
 								wordBreak: 'break-word',
 								fontSize: { xs: '0.9rem', md: '1rem' }
@@ -213,7 +221,7 @@ function LinkQRPage() {
 					<Card sx={{ mb: 4, maxWidth: { xs: '100%', sm: 400 }, mx: 'auto' }}>
 						<CardContent sx={{ textAlign: 'center', py: 4 }}>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								QR Code
@@ -231,7 +239,7 @@ function LinkQRPage() {
 								>
 									<img
 										src={qrCodeDataUrl}
-										alt="QR Code"
+										alt='QR Code'
 										style={{
 											width: '100%',
 											maxWidth: 200,
@@ -261,8 +269,8 @@ function LinkQRPage() {
 							)}
 
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 								sx={{
 									mb: 3,
 									wordBreak: 'break-all',
@@ -283,7 +291,7 @@ function LinkQRPage() {
 								}}
 							>
 								<Button
-									variant="contained"
+									variant='contained'
 									startIcon={<Download />}
 									onClick={handleDownloadQR}
 									disabled={!qrCodeDataUrl}
@@ -295,7 +303,7 @@ function LinkQRPage() {
 									Baixar QR
 								</Button>
 								<Button
-									variant="outlined"
+									variant='outlined'
 									startIcon={<Share />}
 									onClick={handleShareQR}
 									disabled={!linkInfo}
@@ -314,7 +322,7 @@ function LinkQRPage() {
 					<Card>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 								sx={{ fontSize: { xs: '1.1rem', md: '1.25rem' } }}
 							>
@@ -322,12 +330,12 @@ function LinkQRPage() {
 							</Typography>
 							<Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, md: 1 } }}>
 								<Typography
-									variant="body2"
+									variant='body2'
 									sx={{ fontSize: { xs: '0.875rem', md: '0.875rem' } }}
 								>
 									<strong>URL Original:</strong>{' '}
 									<Box
-										component="span"
+										component='span'
 										sx={{
 											wordBreak: 'break-all',
 											color: 'text.secondary'
@@ -337,12 +345,12 @@ function LinkQRPage() {
 									</Box>
 								</Typography>
 								<Typography
-									variant="body2"
+									variant='body2'
 									sx={{ fontSize: { xs: '0.875rem', md: '0.875rem' } }}
 								>
 									<strong>URL Encurtada:</strong>{' '}
 									<Box
-										component="span"
+										component='span'
 										sx={{
 											wordBreak: 'break-all',
 											color: 'primary.main',
@@ -353,12 +361,12 @@ function LinkQRPage() {
 									</Box>
 								</Typography>
 								<Typography
-									variant="body2"
+									variant='body2'
 									sx={{ fontSize: { xs: '0.875rem', md: '0.875rem' } }}
 								>
 									<strong>Status:</strong>{' '}
 									<Box
-										component="span"
+										component='span'
 										sx={{
 											color: linkInfo.is_active ? 'success.main' : 'error.main',
 											fontWeight: 600
@@ -368,12 +376,12 @@ function LinkQRPage() {
 									</Box>
 								</Typography>
 								<Typography
-									variant="body2"
+									variant='body2'
 									sx={{ fontSize: { xs: '0.875rem', md: '0.875rem' } }}
 								>
 									<strong>Criado em:</strong>{' '}
 									<Box
-										component="span"
+										component='span'
 										sx={{ color: 'text.secondary' }}
 									>
 										{new Date(linkInfo.created_at).toLocaleDateString('pt-BR')}

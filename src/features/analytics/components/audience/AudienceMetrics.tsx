@@ -1,7 +1,7 @@
-import { Grid, Typography, useTheme } from '@mui/material';
-import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
-import { createPresetAnimations } from '@/lib/theme';
 import { DevicesOther, Language, Schedule, TrendingUp } from '@mui/icons-material';
+import { Grid, Typography } from '@mui/material';
+
+import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 
 interface AudienceMetricsProps {
 	data?: any;
@@ -14,8 +14,6 @@ interface AudienceMetricsProps {
  * Focado em dispositivos, browsers e comportamento
  */
 export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de Audiência' }: AudienceMetricsProps) {
-	const theme = useTheme();
-	const animations = createPresetAnimations(theme);
 
 	// Cálculos das métricas
 	const deviceTypes = data?.audience?.device_breakdown?.length || 0;
@@ -61,14 +59,14 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 
 	return (
 		<>
-			{showTitle && (
+			{showTitle ? (
 				<Typography
-					variant="h6"
+					variant='h6'
 					sx={{ mb: 2, fontWeight: 600 }}
 				>
 					{title}
 				</Typography>
-			)}
+			) : null}
 
 			<Grid
 				container

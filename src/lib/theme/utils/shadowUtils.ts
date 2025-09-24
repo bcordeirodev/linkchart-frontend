@@ -9,8 +9,10 @@
  * @since 2.0.0
  */
 
-import { Theme, alpha } from '@mui/material/styles';
-import { ColorVariant } from './colorUtils';
+import { alpha } from '@mui/material/styles';
+
+import type { ColorVariant } from './colorUtils';
+import type { Theme } from '@mui/material/styles';
 
 /**
  * Níveis de intensidade de sombra

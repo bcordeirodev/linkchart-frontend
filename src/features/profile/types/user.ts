@@ -3,7 +3,7 @@
  * Tipos para autenticação e gerenciamento de usuários
  * Re-exporta tipos de API e adiciona tipos específicos do frontend
  */
-import { UserResponse } from './api';
+import type { UserResponse } from './api';
 
 // ========================================
 // 👤 USER TYPES (Re-exports from API)
@@ -40,8 +40,10 @@ export interface UserPreferences {
 	};
 }
 
+import type { User } from '@/types';
+
 export interface UserSession {
-	user: import('@/types').User;
+	user: User;
 	token: string;
 	expires_at: string;
 	last_activity: string;

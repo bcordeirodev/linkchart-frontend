@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { CircularProgress } from '@mui/material';
+import React, { useEffect, useState, useCallback, Suspense } from 'react';
 
 // Import dinâmico para compatibilidade com Vite
 const Chart = React.lazy(() =>
@@ -38,6 +38,7 @@ interface ApexChartWrapperProps {
  * 📊 APEX CHART WRAPPER COM STYLED COMPONENTS
  * Wrapper melhorado com tratamento de erro e loading states
  */
+
 const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350, width = '100%', options, series }) => {
 	const [hasError, setHasError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
@@ -48,10 +49,14 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 		hasValidData &&
 		series.some((s) => {
 			// Para gráficos donut/pie: series é array de números [3599, 2113, 236]
-			if (typeof s === 'number' && s > 0) return true;
+			if (typeof s === 'number' && s > 0) {
+				return true;
+			}
 
 			// Para gráficos line/area/bar: series é objeto {name: "Total", data: [...]}
-			if (Array.isArray(s) && s.length > 0) return true;
+			if (Array.isArray(s) && s.length > 0) {
+				return true;
+			}
 
 			if (typeof s === 'object' && s !== null && 'data' in s) {
 				const data = (s as any).data;
@@ -103,7 +108,7 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 		return (
 			<NoDataContainer style={{ height }}>
 				<NoDataIcon>📈</NoDataIcon>
-				<NoDataTitle variant="h6">Sem Dados Disponíveis</NoDataTitle>
+				<NoDataTitle variant='h6'>Sem Dados Disponíveis</NoDataTitle>
 				<NoDataDescription>
 					Este gráfico será exibido quando houver dados suficientes para análise.
 				</NoDataDescription>
@@ -117,7 +122,9 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 		const getDataStats = () => {
 			try {
 				const allData = series.flatMap((s) => {
-					if (Array.isArray(s)) return s.filter((v) => typeof v === 'number') as number[];
+					if (Array.isArray(s)) {
+						return s.filter((v) => typeof v === 'number') as number[];
+					}
 
 					if (typeof s === 'object' && s !== null && 'data' in s) {
 						return Array.isArray(s.data) ? (s.data.filter((v) => typeof v === 'number') as number[]) : [];
@@ -126,7 +133,9 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 					return [];
 				});
 
-				if (allData.length === 0) return null;
+				if (allData.length === 0) {
+					return null;
+				}
 
 				const sum = allData.reduce((acc: number, val: number) => acc + val, 0);
 				const avg = sum / allData.length;
@@ -144,31 +153,31 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 		return (
 			<ErrorContainer style={{ height }}>
 				<ErrorIcon>📊</ErrorIcon>
-				<ErrorTitle variant="h6">Gráfico {type}</ErrorTitle>
+				<ErrorTitle variant='h6'>Gráfico {type}</ErrorTitle>
 				<ErrorDescription>
 					Houve um problema ao carregar o gráfico. Visualização temporariamente indisponível.
 				</ErrorDescription>
 
-				{stats && (
+				{stats ? (
 					<ErrorStats>
-						<div className="stat-row">
-							<span className="stat-label">Total:</span>
-							<span className="stat-value">{stats.sum.toLocaleString()} pontos</span>
+						<div className='stat-row'>
+							<span className='stat-label'>Total:</span>
+							<span className='stat-value'>{stats.sum.toLocaleString()} pontos</span>
 						</div>
-						<div className="stat-row">
-							<span className="stat-label">Média:</span>
-							<span className="stat-value">{stats.avg.toFixed(1)}</span>
+						<div className='stat-row'>
+							<span className='stat-label'>Média:</span>
+							<span className='stat-value'>{stats.avg.toFixed(1)}</span>
 						</div>
-						<div className="stat-row">
-							<span className="stat-label">Máximo:</span>
-							<span className="stat-value">{stats.max}</span>
+						<div className='stat-row'>
+							<span className='stat-label'>Máximo:</span>
+							<span className='stat-value'>{stats.max}</span>
 						</div>
-						<div className="stat-row">
-							<span className="stat-label">Mínimo:</span>
-							<span className="stat-value">{stats.min}</span>
+						<div className='stat-row'>
+							<span className='stat-label'>Mínimo:</span>
+							<span className='stat-value'>{stats.min}</span>
 						</div>
 					</ErrorStats>
-				)}
+				) : null}
 			</ErrorContainer>
 		);
 	}
@@ -205,7 +214,7 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 						...options,
 						chart: {
 							...((options.chart as object) || {}),
-							type: type,
+							type,
 							background: 'transparent',
 							fontFamily: 'Inter, system-ui, sans-serif',
 							toolbar: {

@@ -1,18 +1,19 @@
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { enUS } from 'date-fns/locale/en-US';
 import { SnackbarProvider } from 'notistack';
 import { useMemo, useEffect } from 'react';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import { enUS } from 'date-fns/locale/en-US';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Provider } from 'react-redux';
-import { ErrorBoundary } from '@/lib/utils';
-import AppContext from './lib/AppContext';
-import { applyGlobalStyles, MainThemeProvider } from './lib/theme';
 
+import { ErrorBoundary } from '@/lib/utils';
+import { Message } from '@/shared/components/Message';
 import { LayoutProvider } from '@/shared/layout/core';
+
+import AppRouter from './AppRouter';
+import AppContext from './lib/AppContext';
 import { AuthProvider } from './lib/auth/AuthContext';
 import store from './lib/store/store';
-import AppRouter from './AppRouter';
-import { Message } from '@/shared/components/Message';
+import { applyGlobalStyles, MainThemeProvider } from './lib/theme';
 
 /**
  * The main App component.

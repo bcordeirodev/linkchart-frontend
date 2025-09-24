@@ -1,9 +1,11 @@
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
+
 import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { AppIcon } from '@/lib/icons';
 import { createPresetShadows, createPresetAnimations, createTextGradient, createThemeGradient } from '@/lib/theme';
+import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
+
 import type { BasicAnalyticsData } from '../../types';
 
 interface BasicChartsProps {
@@ -46,8 +48,8 @@ export function BasicCharts({ analyticsData }: BasicChartsProps) {
 			}}
 		>
 			<Typography
-				variant="h5"
-				component="h2"
+				variant='h5'
+				component='h2'
 				sx={{
 					textAlign: 'center',
 					mb: 3,
@@ -68,7 +70,7 @@ export function BasicCharts({ analyticsData }: BasicChartsProps) {
 				spacing={3}
 			>
 				{/* Gráfico de Dispositivos */}
-				{hasDeviceData && (
+				{hasDeviceData ? (
 					<Grid
 						item
 						xs={12}
@@ -93,7 +95,7 @@ export function BasicCharts({ analyticsData }: BasicChartsProps) {
 							}}
 						>
 							<Typography
-								variant="h6"
+								variant='h6'
 								sx={{
 									mb: 2,
 									fontWeight: 600,
@@ -104,24 +106,24 @@ export function BasicCharts({ analyticsData }: BasicChartsProps) {
 								}}
 							>
 								<AppIcon
-									name="content.mobile"
+									name='content.mobile'
 									size={20}
 								/>
 								Dispositivos
 							</Typography>
 							<Box sx={{ p: 0.5 }}>
 								<ApexChartWrapper
-									type="donut"
+									type='donut'
 									height={300}
 									{...formatPieChart(charts.audience!.device_breakdown!, 'device', 'clicks', isDark)}
 								/>
 							</Box>
 						</Paper>
 					</Grid>
-				)}
+				) : null}
 
 				{/* Gráfico de Países */}
-				{hasCountryData && (
+				{hasCountryData ? (
 					<Grid
 						item
 						xs={12}
@@ -146,7 +148,7 @@ export function BasicCharts({ analyticsData }: BasicChartsProps) {
 							}}
 						>
 							<Typography
-								variant="h6"
+								variant='h6'
 								sx={{
 									mb: 2,
 									fontWeight: 600,
@@ -157,14 +159,14 @@ export function BasicCharts({ analyticsData }: BasicChartsProps) {
 								}}
 							>
 								<AppIcon
-									name="location.map"
+									name='location.map'
 									size={20}
 								/>
 								Top Países
 							</Typography>
 							<Box sx={{ p: 0.5 }}>
 								<ApexChartWrapper
-									type="bar"
+									type='bar'
 									height={300}
 									{...formatBarChart(
 										charts.geographic!.top_countries!,
@@ -178,7 +180,7 @@ export function BasicCharts({ analyticsData }: BasicChartsProps) {
 							</Box>
 						</Paper>
 					</Grid>
-				)}
+				) : null}
 			</Grid>
 		</Box>
 	);
@@ -213,7 +215,7 @@ function EmptyChartsState() {
 			>
 				{/* Ícone com gradiente aplicado diretamente */}
 				<Box
-					component="span"
+					component='span'
 					sx={{
 						display: 'inline-flex',
 						background: createThemeGradient(theme, {
@@ -232,16 +234,16 @@ function EmptyChartsState() {
 					}}
 				>
 					<AppIcon
-						intent="chart"
+						intent='chart'
 						size={28}
-						color="currentColor"
+						color='currentColor'
 					/>
 				</Box>
 
 				{/* Texto com gradiente */}
 				<Typography
-					variant="h5"
-					component="h2"
+					variant='h5'
+					component='h2'
 					sx={{
 						fontWeight: 700,
 						...createTextGradient(theme, 'primary'),
@@ -276,13 +278,13 @@ function EmptyChartsState() {
 					}}
 				>
 					<AppIcon
-						intent="analytics"
+						intent='analytics'
 						size={48}
 					/>
 				</Box>
 
 				<Typography
-					variant="h5"
+					variant='h5'
 					sx={{
 						mb: 2,
 						fontWeight: 600,
@@ -293,8 +295,8 @@ function EmptyChartsState() {
 				</Typography>
 
 				<Typography
-					variant="body1"
-					color="text.secondary"
+					variant='body1'
+					color='text.secondary'
 					sx={{
 						maxWidth: 400,
 						mx: 'auto',
@@ -316,26 +318,26 @@ function EmptyChartsState() {
 				>
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 						<AppIcon
-							intent="url"
+							intent='url'
 							size={16}
 							color={theme.palette.info.main}
 						/>
 						<Typography
-							variant="body2"
-							color="info.main"
+							variant='body2'
+							color='info.main'
 						>
 							Dispositivos
 						</Typography>
 					</Box>
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 						<AppIcon
-							name="location.map"
+							name='location.map'
 							size={16}
 							color={theme.palette.success.main}
 						/>
 						<Typography
-							variant="body2"
-							color="success.main"
+							variant='body2'
+							color='success.main'
 						>
 							Localização
 						</Typography>

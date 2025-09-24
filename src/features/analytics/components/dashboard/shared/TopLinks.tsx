@@ -1,5 +1,5 @@
-import { Box, Typography, Paper, useTheme, Stack, Chip } from '@mui/material';
 import { TrendingUp, Link as LinkIcon, Visibility } from '@mui/icons-material';
+import { Box, Typography, Paper, useTheme, Stack, Chip } from '@mui/material';
 
 interface LinkData {
 	id: number;
@@ -48,13 +48,13 @@ export function TopLinks({ links = [], maxItems = 5, title = '🏆 Top Links' }:
 				<Box sx={{ textAlign: 'center' }}>
 					<LinkIcon sx={{ fontSize: 48, color: 'rgba(255,255,255,0.5)', mb: 2 }} />
 					<Typography
-						variant="h6"
+						variant='h6'
 						sx={{ color: 'rgba(255,255,255,0.8)' }}
 					>
 						Nenhum link ativo encontrado
 					</Typography>
 					<Typography
-						variant="body2"
+						variant='body2'
 						sx={{ color: 'rgba(255,255,255,0.6)' }}
 					>
 						Crie seus primeiros links para vê-los aqui!
@@ -93,7 +93,7 @@ export function TopLinks({ links = [], maxItems = 5, title = '🏆 Top Links' }:
 			{/* Header */}
 			<Box sx={{ p: 3, pb: 2, pt: 4 }}>
 				<Typography
-					variant="h6"
+					variant='h6'
 					fontWeight={700}
 					sx={{
 						display: 'flex',
@@ -121,7 +121,7 @@ export function TopLinks({ links = [], maxItems = 5, title = '🏆 Top Links' }:
 					{title}
 				</Typography>
 				<Typography
-					variant="body2"
+					variant='body2'
 					sx={{
 						color: 'rgba(255,255,255,0.7)',
 						fontWeight: 400,
@@ -178,7 +178,7 @@ export function TopLinks({ links = [], maxItems = 5, title = '🏆 Top Links' }:
 								{/* Chip de Ranking */}
 								<Chip
 									label={`#${index + 1}`}
-									size="small"
+									size='small'
 									sx={{
 										minWidth: 32,
 										height: 24,
@@ -206,7 +206,7 @@ export function TopLinks({ links = [], maxItems = 5, title = '🏆 Top Links' }:
 								{/* Info do Link */}
 								<Box sx={{ minWidth: 0, flex: 1 }}>
 									<Typography
-										variant="body2"
+										variant='body2'
 										fontWeight={600}
 										sx={{
 											color: 'white',
@@ -219,7 +219,7 @@ export function TopLinks({ links = [], maxItems = 5, title = '🏆 Top Links' }:
 										{link.title || link.slug}
 									</Typography>
 									<Typography
-										variant="caption"
+										variant='caption'
 										sx={{
 											color: 'rgba(255,255,255,0.5)',
 											fontSize: '0.75rem',
@@ -251,7 +251,7 @@ export function TopLinks({ links = [], maxItems = 5, title = '🏆 Top Links' }:
 									}}
 								/>
 								<Typography
-									variant="body2"
+									variant='body2'
 									fontWeight={700}
 									sx={{
 										color: '#3b82f6',
@@ -262,7 +262,7 @@ export function TopLinks({ links = [], maxItems = 5, title = '🏆 Top Links' }:
 									{(link.clicks || 0).toLocaleString()}
 								</Typography>
 								<Typography
-									variant="caption"
+									variant='caption'
 									sx={{
 										color: 'rgba(255,255,255,0.5)',
 										fontSize: '0.7rem',
@@ -294,7 +294,7 @@ export function TopLinks({ links = [], maxItems = 5, title = '🏆 Top Links' }:
 						}}
 					>
 						<Typography
-							variant="caption"
+							variant='caption'
 							sx={{
 								color: 'rgba(255,255,255,0.6)',
 								fontSize: '0.75rem'
@@ -303,7 +303,7 @@ export function TopLinks({ links = [], maxItems = 5, title = '🏆 Top Links' }:
 							Total de cliques nos top {topLinks.length}:
 						</Typography>
 						<Typography
-							variant="body2"
+							variant='body2'
 							fontWeight={700}
 							sx={{
 								color: '#3b82f6',

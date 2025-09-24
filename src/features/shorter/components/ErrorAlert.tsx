@@ -13,7 +13,9 @@ interface ErrorAlertProps {
  * Seguindo padrões arquiteturais do projeto
  */
 export function ErrorAlert({ error, onClose }: ErrorAlertProps) {
-	if (!error) return null;
+	if (!error) {
+		return null;
+	}
 
 	return (
 		<Fade
@@ -22,7 +24,7 @@ export function ErrorAlert({ error, onClose }: ErrorAlertProps) {
 		>
 			<Box sx={{ mb: 3 }}>
 				<Alert
-					severity="error"
+					severity='error'
 					onClose={onClose}
 					sx={{
 						borderRadius: 2,

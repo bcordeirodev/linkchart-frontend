@@ -1,18 +1,19 @@
 import { Stack, Box, Typography, Container, Grid, Alert } from '@mui/material';
-import { memo, useMemo, useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
+import { memo, useMemo, useState, useEffect } from 'react';
 
 // Components
-import { PublicLayout } from '@/shared/layout';
-import { EnhancedPaper } from '@/shared/ui/base';
-import { ShorterStats, UpgradeCTA, RedirectingState } from '@/features/shorter/components';
 import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
+import { ShorterStats, UpgradeCTA, RedirectingState } from '@/features/shorter/components';
 import { useShorter } from '@/features/shorter/hooks';
 import { AppIcon } from '@/lib/icons';
 
 // Hooks
-import useUser from '../../lib/auth/useUser';
 import { useResponsive } from '@/lib/theme/hooks/useResponsive';
+import { PublicLayout } from '@/shared/layout';
+import { EnhancedPaper } from '@/shared/ui/base';
+
+import useUser from '../../lib/auth/useUser';
 
 /**
  * 🔗 PÁGINA DE ENCURTAMENTO DE URLs - REDESENHADA
@@ -65,9 +66,9 @@ function ShorterPage() {
 
 	return (
 		<PublicLayout
-			variant="shorter"
-			showHeader={true}
-			showFooter={true}
+			variant='shorter'
+			showHeader
+			showFooter
 		>
 			<Box
 				sx={{
@@ -79,7 +80,7 @@ function ShorterPage() {
 				}}
 			>
 				<Container
-					maxWidth="lg"
+					maxWidth='lg'
 					sx={{
 						px: { xs: 2, sm: 3, md: 4 } // Container padding responsivo
 					}}
@@ -95,8 +96,8 @@ function ShorterPage() {
 						}}
 					>
 						<Typography
-							variant="h3"
-							component="h1" // h1 para SEO
+							variant='h3'
+							component='h1' // h1 para SEO
 							sx={{
 								fontWeight: { xs: 700, md: 800 }, // Peso menor em mobile
 								mb: { xs: 1, sm: 1.5 },
@@ -119,15 +120,15 @@ function ShorterPage() {
 							}}
 						>
 							<AppIcon
-								intent="link"
+								intent='link'
 								size={isMobile ? 32 : 48} // Ícone menor em mobile
-								color="currentColor"
+								color='currentColor'
 							/>
 							{isMobile ? 'Encurtador' : 'Encurtador de URLs'}
 						</Typography>
 						<Typography
-							variant="body1"
-							color="text.secondary"
+							variant='body1'
+							color='text.secondary'
 							sx={{
 								fontWeight: 400,
 								maxWidth: { xs: '100%', sm: 500, md: 600 },
@@ -147,7 +148,7 @@ function ShorterPage() {
 					<Grid
 						container
 						spacing={{ xs: 2, sm: 3, md: 4 }} // Spacing menor em mobile
-						alignItems="flex-start"
+						alignItems='flex-start'
 						direction={{ xs: 'column', lg: 'row' }} // Stack em mobile, row em desktop
 					>
 						{/* Coluna Principal - Formulário (prioridade em mobile) */}
@@ -162,9 +163,9 @@ function ShorterPage() {
 							<Stack spacing={{ xs: 2, sm: 3, md: 4 }}>
 								{/* Spacing responsivo */}
 								{/* Error Alert - Mobile Optimized */}
-								{error && (
+								{error ? (
 									<Alert
-										severity="error"
+										severity='error'
 										onClose={clearError}
 										sx={{
 											borderRadius: { xs: 1, sm: 2 },
@@ -179,9 +180,9 @@ function ShorterPage() {
 									>
 										{error}
 									</Alert>
-								)}
+								) : null}
 								{/* Estado de Redirecionamento - Mobile Optimized */}
-								{isRedirecting && <RedirectingState isVisible={isRedirecting} />}
+								{isRedirecting ? <RedirectingState isVisible={isRedirecting} /> : null}
 								{/* Formulário Principal - Mobile First */}
 								{!isRedirecting && (
 									<Box
@@ -194,7 +195,7 @@ function ShorterPage() {
 										}}
 									>
 										<EnhancedPaper
-											variant="glass"
+											variant='glass'
 											sx={{
 												p: { xs: 2, sm: 3, md: 4 }, // Padding responsivo
 												borderRadius: { xs: 2, sm: 3 } // Border radius menor em mobile

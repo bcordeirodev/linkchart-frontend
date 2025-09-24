@@ -1,17 +1,21 @@
-import { Typography, Button, CircularProgress, Stack, Alert, Box } from '@mui/material';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Typography, Button, CircularProgress, Stack, Alert, Box } from '@mui/material';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { LinkFormFields } from '../../components/forms/LinkFormFields';
-import { linkFormSchema, LinkFormData, defaultLinkFormValues } from '../../components/forms/LinkFormSchema';
-import { CreateLinkFormProps } from '../types';
-import { linkService } from '@/services';
+
 import { AppIcon } from '@/lib/icons';
-import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
-import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { linkService } from '@/services';
+import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
+import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
+
+import { LinkFormFields } from '../../components/forms/LinkFormFields';
+import { linkFormSchema, defaultLinkFormValues } from '../../components/forms/LinkFormSchema';
+
+import type { LinkFormData } from '../../components/forms/LinkFormSchema';
+import type { CreateLinkFormProps } from '../types';
 
 /**
  * Formulário de criação de links com React Hook Form + Zod
@@ -37,7 +41,9 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 	});
 
 	const convertDateForSubmit = (dateString: string | null | undefined): string | undefined => {
-		if (!dateString) return undefined;
+		if (!dateString) {
+			return undefined;
+		}
 
 		try {
 			const date = new Date(dateString);
@@ -129,20 +135,20 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 	if (success) {
 		return (
 			<EnhancedPaper
-				variant="glass"
+				variant='glass'
 				animated
 				sx={{ p: 4, textAlign: 'center', width: '100%' }}
 			>
 				<Typography
-					variant="h5"
-					color="success.main"
+					variant='h5'
+					color='success.main'
 					gutterBottom
 				>
 					✅ Link criado com sucesso!
 				</Typography>
 				<Typography
-					variant="body1"
-					color="text.secondary"
+					variant='body1'
+					color='text.secondary'
 				>
 					Redirecionando para a lista de links...
 				</Typography>
@@ -152,40 +158,40 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 
 	return (
 		<ResponsiveContainer
-			variant="form"
-			maxWidth="md"
+			variant='form'
+			maxWidth='md'
 		>
 			<EnhancedPaper
-				variant="glass"
+				variant='glass'
 				animated
 			>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					{/* Header */}
 					<Box sx={{ p: 3, pb: 2, borderBottom: 1, borderColor: 'divider' }}>
 						<Typography
-							variant="h5"
+							variant='h5'
 							fontWeight={600}
 							gutterBottom
 						>
 							🔗 Criar Novo Link
 						</Typography>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 						>
 							Transforme URLs longas em links curtos e rastreáveis
 						</Typography>
 					</Box>
 
 					{/* API Error */}
-					{apiError && (
+					{apiError ? (
 						<Alert
-							severity="error"
+							severity='error'
 							sx={{ mb: 3 }}
 						>
 							{apiError}
 						</Alert>
-					)}
+					) : null}
 
 					{/* Form Fields */}
 					<Box sx={{ p: 3 }}>
@@ -199,53 +205,53 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 					{/* Actions */}
 					<Box sx={{ p: 3, pt: 1, borderTop: 1, borderColor: 'divider' }}>
 						<Stack
-							direction="row"
+							direction='row'
 							spacing={2}
-							justifyContent="space-between"
+							justifyContent='space-between'
 							sx={{ width: '100%' }}
 						>
 							{/* Botão Cancelar */}
 							<Button
-								variant="outlined"
+								variant='outlined'
 								onClick={handleCancel}
 								disabled={loading}
-								startIcon={<AppIcon intent="cancel" />}
+								startIcon={<AppIcon intent='cancel' />}
 							>
 								Cancelar
 							</Button>
 
 							{/* Ações do lado direito */}
 							<Stack
-								direction="row"
+								direction='row'
 								spacing={2}
 							>
 								{/* Botão Reset (apenas se há mudanças) */}
-								{isDirty && (
+								{isDirty ? (
 									<Button
-										variant="outlined"
-										color="warning"
+										variant='outlined'
+										color='warning'
 										onClick={handleReset}
 										disabled={loading}
-										startIcon={<AppIcon intent="reset" />}
+										startIcon={<AppIcon intent='reset' />}
 									>
 										Resetar
 									</Button>
-								)}
+								) : null}
 
 								{/* Botão Criar */}
 								<Button
-									type="submit"
-									variant="contained"
-									color="success"
+									type='submit'
+									variant='contained'
+									color='success'
 									disabled={!isValid || loading}
 									startIcon={
 										loading ? (
 											<CircularProgress
 												size={16}
-												color="inherit"
+												color='inherit'
 											/>
 										) : (
-											<AppIcon intent="save" />
+											<AppIcon intent='save' />
 										)
 									}
 									sx={{ ml: 2 }}

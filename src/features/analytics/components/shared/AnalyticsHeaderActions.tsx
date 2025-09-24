@@ -3,8 +3,9 @@
  * Componente de ações para headers Analytics mantendo todas as funcionalidades
  */
 
-import { Box, IconButton, Tooltip, CircularProgress, useTheme } from '@mui/material';
 import { Refresh, Download, Share } from '@mui/icons-material';
+import { Box, IconButton, Tooltip, CircularProgress, useTheme } from '@mui/material';
+
 import { createComponentColorSet, createPresetAnimations } from '@/lib/theme';
 
 interface AnalyticsHeaderActionsProps {
@@ -41,8 +42,8 @@ export function AnalyticsHeaderActions({
 
 	return (
 		<Box sx={{ display: 'flex', gap: 1, position: 'relative' }}>
-			{onRefresh && (
-				<Tooltip title="Atualizar dados">
+			{onRefresh ? (
+				<Tooltip title='Atualizar dados'>
 					<IconButton
 						onClick={onRefresh}
 						disabled={loading}
@@ -57,10 +58,10 @@ export function AnalyticsHeaderActions({
 						{loading ? <CircularProgress size={20} /> : <Refresh />}
 					</IconButton>
 				</Tooltip>
-			)}
+			) : null}
 
-			{onDownload && (
-				<Tooltip title="Baixar relatório">
+			{onDownload ? (
+				<Tooltip title='Baixar relatório'>
 					<IconButton
 						onClick={onDownload}
 						sx={{
@@ -74,10 +75,10 @@ export function AnalyticsHeaderActions({
 						<Download />
 					</IconButton>
 				</Tooltip>
-			)}
+			) : null}
 
-			{onShare && (
-				<Tooltip title="Compartilhar">
+			{onShare ? (
+				<Tooltip title='Compartilhar'>
 					<IconButton
 						onClick={onShare}
 						sx={{
@@ -91,10 +92,10 @@ export function AnalyticsHeaderActions({
 						<Share />
 					</IconButton>
 				</Tooltip>
-			)}
+			) : null}
 
 			{/* Loading overlay quando necessário (mantendo funcionalidade original) */}
-			{loading && (
+			{loading ? (
 				<Box
 					sx={{
 						position: 'absolute',
@@ -112,7 +113,7 @@ export function AnalyticsHeaderActions({
 				>
 					<CircularProgress size={24} />
 				</Box>
-			)}
+			) : null}
 		</Box>
 	);
 }

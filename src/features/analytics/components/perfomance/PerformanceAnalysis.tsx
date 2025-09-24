@@ -1,9 +1,11 @@
-import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
-import { useLinkPerformance } from '@/features/analytics/hooks/useLinkPerformance';
 import { CheckCircle, Assessment } from '@mui/icons-material';
-import { PerformanceMetrics } from './PerformanceMetrics';
+import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
+
+import { useLinkPerformance } from '@/features/analytics/hooks/useLinkPerformance';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import TabDescription from '@/shared/ui/base/TabDescription';
+
+import { PerformanceMetrics } from './PerformanceMetrics';
 
 interface PerformanceAnalysisProps {
 	linkId?: string;
@@ -52,9 +54,9 @@ export function PerformanceAnalysis({
 			{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon="🚀"
+					icon='🚀'
 					title={title}
-					description="Análise completa de performance dos seus links com métricas de velocidade, disponibilidade e otimização."
+					description='Análise completa de performance dos seus links com métricas de velocidade, disponibilidade e otimização.'
 					highlight={`Score: ${performanceMetrics.performanceScore}/100 - ${performanceMetrics.uptime}% uptime`}
 					metadata={enableRealtime ? 'Tempo Real' : 'Dados Atualizados'}
 				/>
@@ -66,7 +68,7 @@ export function PerformanceAnalysis({
 				error={error}
 				hasData={!!performanceData}
 				onRetry={refetch}
-				loadingMessage="Carregando métricas de performance..."
+				loadingMessage='Carregando métricas de performance...'
 				emptyMessage={
 					globalMode
 						? 'Não há dados de performance disponíveis para seus links ativos.'
@@ -78,8 +80,8 @@ export function PerformanceAnalysis({
 					{/* MÉTRICAS DE PERFORMANCE */}
 					<PerformanceMetrics
 						performanceData={performanceData || undefined}
-						showTitle={true}
-						title="📊 Métricas de Performance"
+						showTitle
+						title='📊 Métricas de Performance'
 					/>
 
 					{/* RESTANTE DO CONTEÚDO */}
@@ -107,7 +109,7 @@ export function PerformanceAnalysis({
 									<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
 										<CheckCircle sx={{ color: 'success.main', mr: 2 }} />
 										<Typography
-											variant="h6"
+											variant='h6'
 											fontWeight={600}
 										>
 											✅ Status Atual
@@ -116,8 +118,8 @@ export function PerformanceAnalysis({
 
 									<Box sx={{ mb: 3 }}>
 										<Typography
-											variant="body1"
-											color="text.secondary"
+											variant='body1'
+											color='text.secondary'
 											sx={{ mb: 2 }}
 										>
 											{performanceMetrics.successRate >= 99
@@ -140,7 +142,7 @@ export function PerformanceAnalysis({
 													mr: 1
 												}}
 											/>
-											<Typography variant="body2">
+											<Typography variant='body2'>
 												<strong>Uptime:</strong> {performanceMetrics.uptime}%
 											</Typography>
 										</Box>
@@ -155,7 +157,7 @@ export function PerformanceAnalysis({
 													mr: 1
 												}}
 											/>
-											<Typography variant="body2">
+											<Typography variant='body2'>
 												<strong>Links ativos:</strong> {performanceMetrics.totalLinks}
 											</Typography>
 										</Box>
@@ -183,7 +185,7 @@ export function PerformanceAnalysis({
 									<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
 										<Assessment sx={{ color: 'info.main', mr: 2 }} />
 										<Typography
-											variant="h6"
+											variant='h6'
 											fontWeight={600}
 										>
 											⚙️ Sistema
@@ -192,8 +194,8 @@ export function PerformanceAnalysis({
 
 									<Box sx={{ mb: 3 }}>
 										<Typography
-											variant="body1"
-											color="text.secondary"
+											variant='body1'
+											color='text.secondary'
 											sx={{ mb: 2 }}
 										>
 											Informações técnicas do sistema de redirecionamento
@@ -209,7 +211,7 @@ export function PerformanceAnalysis({
 													mr: 1
 												}}
 											/>
-											<Typography variant="body2">
+											<Typography variant='body2'>
 												<strong>Resposta média:</strong> {performanceMetrics.avgResponseTime}ms
 											</Typography>
 										</Box>
@@ -224,7 +226,7 @@ export function PerformanceAnalysis({
 													mr: 1
 												}}
 											/>
-											<Typography variant="body2">
+											<Typography variant='body2'>
 												<strong>Total redirecionamentos:</strong>{' '}
 												{performanceMetrics.totalRedirects.toLocaleString()}
 											</Typography>
@@ -247,14 +249,14 @@ export function PerformanceAnalysis({
 						>
 							<CardContent sx={{ p: 3 }}>
 								<Typography
-									variant="h6"
+									variant='h6'
 									sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center' }}
 								>
 									<Assessment sx={{ mr: 1, color: 'info.main' }} />
 									💡 Insights de Performance
 								</Typography>
 								<Typography
-									variant="body2"
+									variant='body2'
 									sx={{ lineHeight: 1.6 }}
 								>
 									• <strong>Score de Performance:</strong> {performanceMetrics.performanceScore}/100 (

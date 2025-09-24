@@ -1,9 +1,9 @@
 import { Navigate } from 'react-router-dom';
 
-type RedirectProps = {
+interface RedirectProps {
 	to: string;
 	children?: React.ReactNode;
-};
+}
 
 function Redirect(props: RedirectProps) {
 	const { to, children = null } = props;
@@ -17,3 +17,4 @@ function Redirect(props: RedirectProps) {
 }
 
 export default Redirect;
+export { Redirect };

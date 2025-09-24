@@ -5,6 +5,7 @@
 
 import { Stack, Button, CircularProgress, alpha } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
 import { AppIcon } from '@/lib/icons';
 
 // ========================================
@@ -201,7 +202,7 @@ export function FormActions({
 
 	return (
 		<Stack
-			direction="row"
+			direction='row'
 			spacing={2}
 			{...layoutProps[layout]}
 			sx={{ width: '100%' }}
@@ -211,7 +212,7 @@ export function FormActions({
 				<StyledSecondaryButton
 					onClick={onCancel}
 					disabled={loading}
-					startIcon={<AppIcon intent="cancel" />}
+					startIcon={<AppIcon intent='cancel' />}
 				>
 					{cancelText || 'Cancelar'}
 				</StyledSecondaryButton>
@@ -219,26 +220,26 @@ export function FormActions({
 
 			{/* Ações do lado direito */}
 			<Stack
-				direction="row"
+				direction='row'
 				spacing={2}
 			>
 				{/* Botão Reset (apenas para edit com mudanças) */}
-				{mode === 'edit' && hasChanges && onReset && (
+				{mode === 'edit' && hasChanges && onReset ? (
 					<StyledWarningButton
 						onClick={onReset}
 						disabled={loading}
-						startIcon={<AppIcon intent="reset" />}
+						startIcon={<AppIcon intent='reset' />}
 					>
 						Resetar
 					</StyledWarningButton>
-				)}
+				) : null}
 
 				{/* Botão Cancelar (para layout end/center) */}
 				{layout !== 'between' && (
 					<StyledSecondaryButton
 						onClick={onCancel}
 						disabled={loading}
-						startIcon={<AppIcon intent="cancel" />}
+						startIcon={<AppIcon intent='cancel' />}
 					>
 						{cancelText || 'Cancelar'}
 					</StyledSecondaryButton>
@@ -250,12 +251,12 @@ export function FormActions({
 					isLoading={loading}
 					onClick={onSubmit}
 					disabled={!canSubmit || loading}
-					className="mt-4"
+					className='mt-4'
 					startIcon={
 						loading ? (
 							<CircularProgress
 								size={16}
-								color="inherit"
+								color='inherit'
 							/>
 						) : (
 							<AppIcon intent={mode === 'create' ? 'create' : 'save'} />
@@ -292,7 +293,7 @@ export function CreateFormActions({
 }: Omit<FormActionsProps, 'mode' | 'hasChanges'>) {
 	return (
 		<FormActions
-			mode="create"
+			mode='create'
 			loading={loading}
 			canSubmit={canSubmit}
 			onSubmit={onSubmit}
@@ -315,7 +316,7 @@ export function EditFormActions({
 }: Omit<FormActionsProps, 'mode'>) {
 	return (
 		<FormActions
-			mode="edit"
+			mode='edit'
 			loading={loading}
 			canSubmit={canSubmit}
 			hasChanges={hasChanges}

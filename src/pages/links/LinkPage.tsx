@@ -1,19 +1,21 @@
-import { useMemo, useState } from 'react';
 import { Box, Alert } from '@mui/material';
-import { type MRT_RowSelectionState } from 'material-react-table';
-import { Loading } from '@/shared/components';
-import DataTable from '../../shared/ui/data-display/DataTable';
+import { useMemo, useState } from 'react';
 
-import { useLinks } from '@/features/links/hooks/useLinks';
-import { LinksHeader } from '@/features/links/components/LinksHeader';
 import { DashboardMetrics } from '@/features/analytics/components/dashboard/shared/DashboardMetrics';
 import { LinksFilters } from '@/features/links/components/LinksFilters';
-import { useLinksTableColumns } from '@/features/links/hooks/useLinksTableColumns';
+import { LinksHeader } from '@/features/links/components/LinksHeader';
 import { LinksMobileCards } from '@/features/links/components/mobile/LinksMobileCards';
-import { ResponsiveContainer } from '@/shared/ui/base';
+import { useLinks } from '@/features/links/hooks/useLinks';
+import { useLinksTableColumns } from '@/features/links/hooks/useLinksTableColumns';
 import { useResponsive } from '@/lib/theme';
+import { Loading } from '@/shared/components';
 import MainLayout from '@/shared/layout/MainLayout';
+import { ResponsiveContainer } from '@/shared/ui/base';
+
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
+import DataTable from '../../shared/ui/data-display/DataTable';
+
+import type { MRT_RowSelectionState } from 'material-react-table';
 
 /**
  * Página de listagem de links refatorada
@@ -59,7 +61,7 @@ function LinkPage() {
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
-				<ResponsiveContainer variant="page">
+				<ResponsiveContainer variant='page'>
 					<LinksHeader />
 
 					<DashboardMetrics
@@ -76,7 +78,7 @@ function LinkPage() {
 
 					{filteredLinks.length === 0 && !loading ? (
 						<Alert
-							severity="info"
+							severity='info'
 							sx={{ mt: 2 }}
 						>
 							{searchTerm || statusFilter !== 'all'
@@ -105,10 +107,10 @@ function LinkPage() {
 										onRowSelectionChange={setRowSelection}
 										enableColumnFilters={false}
 										enableGlobalFilter={false}
-										enableColumnResizing={true}
-										columnResizeMode="onChange"
+										enableColumnResizing
+										columnResizeMode='onChange'
 										enableColumnOrdering={false}
-										enableHiding={true}
+										enableHiding
 										initialState={{
 											pagination: {
 												pageIndex: 0,

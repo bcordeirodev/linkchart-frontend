@@ -29,9 +29,9 @@ export const brandColors = {
 		contrastText: '#FFFFFF'
 	},
 	secondary: {
-		light: '#81D4FA',
-		main: '#dc004e', // Rosa dos gráficos
-		dark: '#9c27b0', // Roxo dos gráficos
+		light: '#E8E9EA', // Cinza claro metálico
+		main: '#9E9E9E', // Cinza metálico principal
+		dark: '#616161', // Cinza metálico escuro
 		contrastText: '#FFFFFF'
 	},
 	error: {

@@ -1,5 +1,6 @@
-import type { DeviceData } from '@/types';
 import { Box, Card, CardContent, Chip, Divider, Grid, Stack, Typography } from '@mui/material';
+
+import type { DeviceData } from '@/types';
 
 interface AudienceInsightsProps {
 	deviceBreakdown: DeviceData[];
@@ -45,7 +46,7 @@ export function AudienceInsights({
 		<Card>
 			<CardContent>
 				<Typography
-					variant="h6"
+					variant='h6'
 					gutterBottom
 				>
 					💡 Insights de Audiência
@@ -62,26 +63,26 @@ export function AudienceInsights({
 						md={6}
 					>
 						<Typography
-							variant="subtitle2"
+							variant='subtitle2'
 							gutterBottom
 						>
 							🎯 Dispositivo Principal
 						</Typography>
 						<Stack
-							direction="row"
+							direction='row'
 							spacing={1}
-							flexWrap="wrap"
+							flexWrap='wrap'
 							sx={{ mb: 2 }}
 						>
 							<Chip
 								label={primaryDevice?.device || 'N/A'}
-								color="primary"
-								variant="filled"
+								color='primary'
+								variant='filled'
 							/>
 							<Chip
 								label={`${(((primaryDevice?.clicks || 0) / totalClicks) * 100).toFixed(1)}%`}
-								color="secondary"
-								variant="outlined"
+								color='secondary'
+								variant='outlined'
 							/>
 						</Stack>
 					</Grid>
@@ -92,15 +93,15 @@ export function AudienceInsights({
 						md={6}
 					>
 						<Typography
-							variant="subtitle2"
+							variant='subtitle2'
 							gutterBottom
 						>
 							📊 Distribuição Mobile vs Desktop
 						</Typography>
 						<Stack
-							direction="row"
+							direction='row'
 							spacing={1}
-							flexWrap="wrap"
+							flexWrap='wrap'
 						>
 							<Chip
 								label={`Mobile: ${mobilePercentage.toFixed(1)}%`}
@@ -121,52 +122,52 @@ export function AudienceInsights({
 				{/* Recomendações */}
 				<Box sx={{ mb: 1, mt: 1 }}>
 					<Typography
-						variant="subtitle2"
+						variant='subtitle2'
 						gutterBottom
 					>
 						📈 Recomendações Estratégicas
 					</Typography>
 					<Stack spacing={1}>
-						{isMobileDominant && (
+						{isMobileDominant ? (
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 							>
 								• <strong>Mobile-first:</strong> Sua audiência é predominantemente mobile (
 								{mobilePercentage.toFixed(1)}%). Otimize a experiência para dispositivos móveis.
 							</Typography>
-						)}
-						{isDesktopDominant && (
+						) : null}
+						{isDesktopDominant ? (
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 							>
 								• <strong>Desktop-focused:</strong> Sua audiência é predominantemente desktop (
 								{desktopPercentage.toFixed(1)}%). Foque em conteúdo mais detalhado e interativo.
 							</Typography>
-						)}
-						{isBalanced && (
+						) : null}
+						{isBalanced ? (
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 							>
 								• <strong>Audiência equilibrada:</strong> Sua audiência está bem distribuída entre
 								mobile e desktop. Mantenha uma experiência consistente em todas as plataformas.
 							</Typography>
-						)}
-						{primaryDevice && (
+						) : null}
+						{primaryDevice ? (
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 							>
 								• <strong>{primaryDevice.device}</strong> é o dispositivo mais usado. Considere
 								otimizações específicas para esta plataforma.
 							</Typography>
-						)}
+						) : null}
 						{deviceBreakdown.length > 3 && (
 							<Typography
-								variant="body2"
-								color="text.secondary"
+								variant='body2'
+								color='text.secondary'
 							>
 								• Sua audiência usa {deviceBreakdown.length} tipos diferentes de dispositivos. Garanta
 								compatibilidade cross-platform.
@@ -180,28 +181,28 @@ export function AudienceInsights({
 				{/* Detalhes técnicos */}
 				<Box sx={{ mb: 1, mt: 1 }}>
 					<Typography
-						variant="subtitle2"
+						variant='subtitle2'
 						gutterBottom
 					>
 						🔧 Detalhes Técnicos
 					</Typography>
 					<Stack spacing={1}>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 						>
 							• <strong>Total de dispositivos:</strong> {deviceBreakdown.length} tipos diferentes
 						</Typography>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 						>
 							• <strong>Dispositivo mais popular:</strong> {primaryDevice?.device} com{' '}
 							{primaryDevice?.clicks} cliques
 						</Typography>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 						>
 							• <strong>Diversidade de plataformas:</strong>{' '}
 							{deviceBreakdown.length > 2 ? 'Alta' : 'Baixa'}

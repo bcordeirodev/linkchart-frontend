@@ -1,7 +1,9 @@
-import { LoginResponse, UserResponse } from '@/types';
-import { API_ENDPOINTS } from '../lib/api/endpoints';
-import { BaseService } from './base.service';
 import { api } from '../lib/api/client';
+import { API_ENDPOINTS } from '../lib/api/endpoints';
+
+import { BaseService } from './base.service';
+
+import type { LoginResponse, UserResponse } from '@/types';
 
 interface LoginRequest extends Record<string, unknown> {
 	email: string;

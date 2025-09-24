@@ -9,7 +9,9 @@
  * @returns Date válido ou null se inválido
  */
 export function parseValidDate(dateString: string | null | undefined): Date | null {
-	if (!dateString) return null;
+	if (!dateString) {
+		return null;
+	}
 
 	const date = new Date(dateString);
 	return isNaN(date.getTime()) ? null : date;

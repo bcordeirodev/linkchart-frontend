@@ -67,7 +67,7 @@ export function BenefitsSection({
 
 	return (
 		<Box
-			component="section"
+			component='section'
 			sx={{
 				py: { xs: 8, md: 12 },
 				px: { xs: 2, sm: 3, md: 4 },
@@ -90,7 +90,7 @@ export function BenefitsSection({
 					<Box>
 						<Box sx={{ textAlign: 'center', mb: 8, maxWidth: 800, mx: 'auto' }}>
 							<Typography
-								variant="h2"
+								variant='h2'
 								sx={{
 									fontWeight: 700,
 									mb: 3,
@@ -102,8 +102,8 @@ export function BenefitsSection({
 								{title}
 							</Typography>
 							<Typography
-								variant="h5"
-								color="text.secondary"
+								variant='h5'
+								color='text.secondary'
 								sx={{
 									lineHeight: 1.6,
 									fontWeight: 400,
@@ -167,7 +167,7 @@ export function BenefitsSection({
 								}}
 							>
 								<Typography
-									variant="h6"
+									variant='h6'
 									sx={{
 										fontWeight: 600,
 										mb: 2,
@@ -179,8 +179,8 @@ export function BenefitsSection({
 									{benefit.title}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 									sx={{
 										lineHeight: 1.6,
 										fontSize: '0.95rem',

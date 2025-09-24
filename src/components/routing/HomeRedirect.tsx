@@ -1,42 +1,30 @@
 import { Navigate } from 'react-router-dom';
-import { Loading } from '@/shared/components';
+
 import useUser from '@/lib/auth/useUser';
+import { Loading } from '@/shared/components';
 
 /**
- * 🏠 COMPONENTE DE REDIRECIONAMENTO DA HOME
- *
- * FUNCIONALIDADE:
- * - Redireciona usuários logados para /links (página de links)
- * - Redireciona usuários não logados para ShorterPage (página pública)
- * - Gerencia estados de loading durante verificação de autenticação
- *
- * LÓGICA:
- * - Verifica status de autenticação via useUser hook
- * - Aplica redirecionamento condicional baseado no status do usuário
- * - Mantém UX fluida com loading states apropriados
+ * Componente de redirecionamento baseado no status de autenticação do usuário
  */
 export function HomeRedirect() {
 	const { data: user, isGuest } = useUser();
 
-	// Se ainda está carregando dados do usuário, mostra loading
 	if (user === undefined) {
 		return <Loading />;
 	}
 
-	// Se usuário está logado (não é guest), redireciona para links
 	if (user && !isGuest) {
 		return (
 			<Navigate
-				to="/links"
+				to='/links'
 				replace
 			/>
 		);
 	}
 
-	// Se usuário não está logado (é guest ou null), redireciona para shorter
 	return (
 		<Navigate
-			to="/shorter"
+			to='/shorter'
 			replace
 		/>
 	);

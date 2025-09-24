@@ -1,5 +1,7 @@
 import { Box, Button, CircularProgress, Typography, useTheme } from '@mui/material';
+
 import { createPresetAnimations } from '@/lib/theme';
+
 import { AnalyticsHeader } from './AnalyticsHeader';
 
 interface AnalyticsStatesProps {
@@ -41,14 +43,14 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 	if (loading) {
 		return (
 			<Box>
-				{showHeader && (
+				{showHeader ? (
 					<AnalyticsHeader
-						variant="analytics"
-						title="Analytics"
-						subtitle="Preparando seus dados..."
-						loading={true}
+						variant='analytics'
+						title='Analytics'
+						subtitle='Preparando seus dados...'
+						loading
 					/>
-				)}
+				) : null}
 				<Box
 					sx={{
 						backgroundColor: theme.palette.background.paper,
@@ -66,14 +68,14 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 				>
 					<CircularProgress size={40} />
 					<Typography
-						variant="h6"
+						variant='h6'
 						sx={{ mt: 2 }}
 					>
 						Carregando Analytics
 					</Typography>
 					<Typography
-						variant="body2"
-						color="text.secondary"
+						variant='body2'
+						color='text.secondary'
 					>
 						Preparando seus dados...
 					</Typography>
@@ -86,13 +88,13 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 	if (error) {
 		return (
 			<Box>
-				{showHeader && (
+				{showHeader ? (
 					<AnalyticsHeader
-						variant="analytics"
-						title="Analytics"
-						subtitle="Erro ao carregar dados"
+						variant='analytics'
+						title='Analytics'
+						subtitle='Erro ao carregar dados'
 					/>
-				)}
+				) : null}
 				<Box
 					sx={{
 						backgroundColor: theme.palette.background.paper,
@@ -110,20 +112,20 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 					}}
 				>
 					<Typography
-						variant="h6"
+						variant='h6'
 						sx={{ mb: 1 }}
 					>
 						⚠️ Erro ao carregar dados
 					</Typography>
 					<Typography
-						variant="body2"
-						color="text.secondary"
+						variant='body2'
+						color='text.secondary'
 						sx={{ mb: 2 }}
 					>
 						{error || 'Não foi possível carregar os analytics'}
 					</Typography>
 					<Button
-						variant="outlined"
+						variant='outlined'
 						onClick={() => window.location.reload()}
 						sx={{ ...animations.buttonHover }}
 					>
@@ -138,13 +140,13 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 	if (!hasData) {
 		return (
 			<Box>
-				{showHeader && (
+				{showHeader ? (
 					<AnalyticsHeader
-						variant="analytics"
-						title="Analytics"
-						subtitle="Aguardando dados para análise"
+						variant='analytics'
+						title='Analytics'
+						subtitle='Aguardando dados para análise'
 					/>
-				)}
+				) : null}
 				<Box
 					sx={{
 						backgroundColor: theme.palette.background.paper,
@@ -161,14 +163,14 @@ export function AnalyticsStates({ loading, error, hasData, showHeader = true }: 
 					}}
 				>
 					<Typography
-						variant="h6"
+						variant='h6'
 						sx={{ mb: 1 }}
 					>
 						📈 Analytics em Preparação
 					</Typography>
 					<Typography
-						variant="body2"
-						color="text.secondary"
+						variant='body2'
+						color='text.secondary'
 					>
 						Compartilhe seus links para desbloquear insights detalhados!
 					</Typography>

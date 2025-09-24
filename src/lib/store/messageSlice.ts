@@ -30,9 +30,12 @@
  * @updated 2.1.0 - Mobile-first improvements
  */
 
-import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
-import { ReactElement, ReactNode } from 'react';
+import { createSlice } from '@reduxjs/toolkit';
+
 import rootReducer from './rootReducer';
+
+import type { PayloadAction, WithSlice } from '@reduxjs/toolkit';
+import type { ReactElement, ReactNode } from 'react';
 
 /**
  * Variantes de mensagem disponíveis

@@ -1,11 +1,12 @@
+import { Email, Refresh } from '@mui/icons-material';
+import { Box, CircularProgress, Alert, Typography, Button, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, CircularProgress, Alert, Typography, Button, Stack } from '@mui/material';
-import { Email, Refresh } from '@mui/icons-material';
-import { authService } from '@/services';
+
+import { useAuth } from '@/lib/auth/AuthContext';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
-import { useAuth } from '@/lib/auth/AuthContext';
+import { authService } from '@/services';
 
 interface EmailVerificationGuardProps {
 	children: React.ReactNode;
@@ -45,7 +46,6 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 			setVerificationStatus(status);
 			setEmailVerified(status.email_verified);
 		} catch (error: unknown) {
-			// Se der erro 403 (email não verificado), capturar a resposta
 			if (error && typeof error === 'object' && 'response' in error) {
 				const apiError = error as {
 					response?: {
@@ -68,11 +68,9 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 						last_sent: apiError.response.data.last_sent
 					});
 				} else {
-					// Outros erros, assumir que está verificado para não bloquear
 					setEmailVerified(true);
 				}
 			} else {
-				// Erro inesperado, assumir que está verificado
 				setEmailVerified(true);
 			}
 		} finally {
@@ -88,7 +86,6 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 
 			if (result.success) {
 				dispatch(showSuccessMessage('Email de verificação reenviado com sucesso!'));
-				// Atualizar status
 				await checkEmailVerification();
 			} else {
 				dispatch(showErrorMessage(result.message || 'Erro ao reenviar email'));
@@ -114,12 +111,10 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 		});
 	};
 
-	// Se não está autenticado, renderizar children normalmente
 	if (!isAuthenticated || !user) {
-		return <>{children}</>;
+		return children;
 	}
 
-	// Se ainda está carregando
 	if (loading) {
 		return (
 			<Box
@@ -135,37 +130,36 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 		);
 	}
 
-	// Se email não está verificado, mostrar tela de bloqueio
 	if (!emailVerified) {
 		return (
 			<Box sx={{ maxWidth: 600, mx: 'auto', p: 3, mt: 8 }}>
 				<Stack
 					spacing={4}
-					alignItems="center"
-					textAlign="center"
+					alignItems='center'
+					textAlign='center'
 				>
 					<Email sx={{ fontSize: 64, color: 'warning.main' }} />
 
 					<Typography
-						variant="h4"
+						variant='h4'
 						fontWeight={600}
-						color="text.primary"
+						color='text.primary'
 					>
 						Verificação de Email Necessária
 					</Typography>
 
 					<Alert
-						severity="warning"
+						severity='warning'
 						sx={{ width: '100%' }}
 					>
-						<Typography variant="body1">
+						<Typography variant='body1'>
 							Para continuar usando o sistema, você precisa verificar seu endereço de email.
-							{verificationStatus?.email && (
+							{verificationStatus?.email ? (
 								<>
 									<br />
 									Email: <strong>{verificationStatus.email}</strong>
 								</>
-							)}
+							) : null}
 						</Typography>
 					</Alert>
 
@@ -173,17 +167,17 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 						spacing={2}
 						sx={{ width: '100%', maxWidth: 400 }}
 					>
-						{verificationStatus?.can_resend && (
+						{verificationStatus?.can_resend ? (
 							<Button
-								variant="contained"
-								size="large"
+								variant='contained'
+								size='large'
 								onClick={handleResendEmail}
 								disabled={resendLoading}
 								startIcon={
 									resendLoading ? (
 										<CircularProgress
 											size={20}
-											color="inherit"
+											color='inherit'
 										/>
 									) : (
 										<Refresh />
@@ -193,11 +187,11 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 							>
 								{resendLoading ? 'Reenviando...' : 'Reenviar Email de Verificação'}
 							</Button>
-						)}
+						) : null}
 
 						<Button
-							variant="outlined"
-							size="large"
+							variant='outlined'
+							size='large'
 							onClick={handleGoToInstructions}
 							sx={{ py: 1.5 }}
 						>
@@ -205,8 +199,8 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 						</Button>
 
 						{!verificationStatus?.can_resend && (
-							<Alert severity="info">
-								<Typography variant="body2">
+							<Alert severity='info'>
+								<Typography variant='body2'>
 									Aguarde alguns minutos antes de solicitar um novo email de verificação.
 								</Typography>
 							</Alert>
@@ -217,6 +211,5 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 		);
 	}
 
-	// Email verificado, renderizar children
-	return <>{children}</>;
+	return children;
 }

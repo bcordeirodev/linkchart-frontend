@@ -3,21 +3,25 @@
  * Formulário simplificado para edição de links
  */
 
-import { Typography, Stack, Button, Alert, CircularProgress, Box } from '@mui/material';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Typography, Stack, Button, Alert, CircularProgress, Box } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Loading } from '@/shared/components';
-import { LinkFormFields } from '../../components/forms/LinkFormFields';
-import { linkFormSchema, LinkFormData, defaultLinkFormValues } from '../../components/forms/LinkFormSchema';
-import { EditLinkFormProps } from '../types';
-import { linkService } from '@/services';
+
 import { AppIcon } from '@/lib/icons';
-import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
-import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { linkService } from '@/services';
+import { Loading } from '@/shared/components';
+import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
+import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
+
+import { LinkFormFields } from '../../components/forms/LinkFormFields';
+import { linkFormSchema, defaultLinkFormValues } from '../../components/forms/LinkFormSchema';
+
+import type { LinkFormData } from '../../components/forms/LinkFormSchema';
+import type { EditLinkFormProps } from '../types';
 
 /**
  * Formulário de edição de links com React Hook Form + Zod
@@ -44,7 +48,9 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 
 	// ✅ Função auxiliar para converter datas de forma segura
 	const convertDateToInputFormat = (dateString: string | null | undefined): string => {
-		if (!dateString) return '';
+		if (!dateString) {
+			return '';
+		}
 
 		try {
 			// Tentar diferentes formatos de data
@@ -79,7 +85,7 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 				setFetchingData(true);
 				const response = await linkService.findOne(linkId);
 
-				if (response && response.data) {
+				if (response?.data) {
 					const linkData = response.data;
 
 					// Converter dados para o formato do formulário
@@ -117,7 +123,9 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 
 	// ✅ Função auxiliar para converter datas para envio
 	const convertDateForSubmit = (dateString: string | null | undefined): string | undefined => {
-		if (!dateString) return undefined;
+		if (!dateString) {
+			return undefined;
+		}
 
 		try {
 			const date = new Date(dateString);
@@ -207,17 +215,17 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	if (fetchingData) {
 		return (
 			<ResponsiveContainer
-				variant="form"
-				maxWidth="md"
+				variant='form'
+				maxWidth='md'
 			>
 				<EnhancedPaper
-					variant="glass"
+					variant='glass'
 					animated
 					sx={{ p: 4, textAlign: 'center' }}
 				>
 					<Loading
-						size="medium"
-						text="Carregando dados do link..."
+						size='medium'
+						text='Carregando dados do link...'
 						fullHeight={false}
 					/>
 				</EnhancedPaper>
@@ -229,19 +237,19 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	if (apiError) {
 		return (
 			<ResponsiveContainer
-				variant="form"
-				maxWidth="md"
+				variant='form'
+				maxWidth='md'
 			>
 				<EnhancedPaper
-					variant="glass"
+					variant='glass'
 					animated
 					sx={{ p: 4 }}
 				>
 					<Alert
-						severity="error"
+						severity='error'
 						action={
 							<Button
-								size="small"
+								size='small'
 								onClick={handleCancel}
 							>
 								Voltar
@@ -249,12 +257,12 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 						}
 					>
 						<Typography
-							variant="h6"
-							component="div"
+							variant='h6'
+							component='div'
 						>
 							{apiError ? 'Erro ao carregar' : 'Link não encontrado'}
 						</Typography>
-						<Typography variant="body2">
+						<Typography variant='body2'>
 							{apiError ||
 								'O link solicitado não foi encontrado ou você não tem permissão para editá-lo.'}
 						</Typography>
@@ -266,32 +274,32 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 
 	return (
 		<ResponsiveContainer
-			variant="form"
-			maxWidth="md"
+			variant='form'
+			maxWidth='md'
 		>
 			<EnhancedPaper
-				variant="glass"
+				variant='glass'
 				animated
 			>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					{/* Header */}
 					<Box sx={{ p: 3, pb: 2, borderBottom: 1, borderColor: 'divider' }}>
 						<Stack
-							direction="row"
-							justifyContent="space-between"
-							alignItems="flex-start"
+							direction='row'
+							justifyContent='space-between'
+							alignItems='flex-start'
 						>
 							<div>
 								<Typography
-									variant="h5"
+									variant='h5'
 									fontWeight={600}
 									gutterBottom
 								>
 									✏️ Editar Link
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									Modifique as configurações do seu link
 								</Typography>
@@ -300,57 +308,57 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 					</Box>
 
 					{/* API Error */}
-					{apiError && (
+					{apiError ? (
 						<Alert
-							severity="error"
+							severity='error'
 							sx={{ mb: 3 }}
 						>
 							{apiError}
 						</Alert>
-					)}
+					) : null}
 
 					{/* Form Fields */}
 					<Box sx={{ p: 3 }}>
 						<LinkFormFields
 							control={control}
 							errors={errors}
-							isEdit={true}
+							isEdit
 						/>
 					</Box>
 
 					{/* Actions */}
 					<Box sx={{ p: 3, pt: 1, borderTop: 1, borderColor: 'divider' }}>
 						<Stack
-							direction="row"
+							direction='row'
 							spacing={2}
-							justifyContent="space-between"
+							justifyContent='space-between'
 							sx={{ width: '100%' }}
-							className="mt-4"
+							className='mt-4'
 						>
 							{/* Botão Cancelar */}
 							<Button
-								variant="outlined"
+								variant='outlined'
 								onClick={handleCancel}
 								disabled={loading}
-								startIcon={<AppIcon intent="cancel" />}
+								startIcon={<AppIcon intent='cancel' />}
 							>
 								Cancelar
 							</Button>
 
 							{/* Botão Salvar */}
 							<Button
-								type="submit"
-								variant="contained"
-								color="primary"
+								type='submit'
+								variant='contained'
+								color='primary'
 								disabled={loading}
 								startIcon={
 									loading ? (
 										<CircularProgress
 											size={16}
-											color="inherit"
+											color='inherit'
 										/>
 									) : (
-										<AppIcon intent="save" />
+										<AppIcon intent='save' />
 									)
 								}
 							>

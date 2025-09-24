@@ -1,9 +1,10 @@
+import { Repeat, TrendingUp, People, Assessment } from '@mui/icons-material';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack } from '@mui/material';
 import { useTheme, alpha } from '@mui/material/styles';
-import { Repeat, TrendingUp, People, Assessment } from '@mui/icons-material';
-import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
-import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
+
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
+import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
+import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
 interface RetentionData {
 	return_visitor_rate: number;
@@ -206,7 +207,7 @@ export function RetentionAnalysisChart({
 		return (
 			<EnhancedPaper>
 				<Box sx={{ p: 3, textAlign: 'center' }}>
-					<Typography color="text.secondary">Dados insuficientes para análise de retenção</Typography>
+					<Typography color='text.secondary'>Dados insuficientes para análise de retenção</Typography>
 				</Box>
 			</EnhancedPaper>
 		);
@@ -214,17 +215,17 @@ export function RetentionAnalysisChart({
 
 	return (
 		<EnhancedPaper>
-			{showTitle && (
+			{showTitle ? (
 				<Box sx={{ p: 3, pb: 0 }}>
 					<Typography
-						variant="h6"
+						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<Repeat color="primary" />
+						<Repeat color='primary' />
 						{title}
 					</Typography>
 				</Box>
-			)}
+			) : null}
 
 			<Box sx={{ p: 3 }}>
 				{/* Métricas Principais */}
@@ -240,11 +241,11 @@ export function RetentionAnalysisChart({
 						md={3}
 					>
 						<MetricCard
-							title="Taxa de Retenção"
+							title='Taxa de Retenção'
 							value={`${data.return_visitor_rate}%`}
 							icon={<Repeat />}
-							color="success"
-							subtitle="visitantes recorrentes"
+							color='success'
+							subtitle='visitantes recorrentes'
 						/>
 					</Grid>
 					<Grid
@@ -254,11 +255,11 @@ export function RetentionAnalysisChart({
 						md={3}
 					>
 						<MetricCard
-							title="Score de Retenção"
+							title='Score de Retenção'
 							value={data.retention_score}
 							icon={<Assessment />}
-							color="info"
-							subtitle="pontuação (0-100)"
+							color='info'
+							subtitle='pontuação (0-100)'
 						/>
 					</Grid>
 					<Grid
@@ -268,11 +269,11 @@ export function RetentionAnalysisChart({
 						md={3}
 					>
 						<MetricCard
-							title="Visitantes Recorrentes"
+							title='Visitantes Recorrentes'
 							value={data.return_visitors}
 							icon={<People />}
-							color="primary"
-							subtitle="usuários fiéis"
+							color='primary'
+							subtitle='usuários fiéis'
 						/>
 					</Grid>
 					<Grid
@@ -282,11 +283,11 @@ export function RetentionAnalysisChart({
 						md={3}
 					>
 						<MetricCard
-							title="Total de Visitantes"
+							title='Total de Visitantes'
 							value={data.total_visitors}
 							icon={<TrendingUp />}
-							color="secondary"
-							subtitle="visitantes únicos"
+							color='secondary'
+							subtitle='visitantes únicos'
 						/>
 					</Grid>
 				</Grid>
@@ -320,7 +321,7 @@ export function RetentionAnalysisChart({
 						<Card sx={{ height: '100%' }}>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 									sx={{ textAlign: 'center' }}
 								>
@@ -329,7 +330,7 @@ export function RetentionAnalysisChart({
 								<ApexChartWrapper
 									options={visitorsPieOptions}
 									series={visitorsPieData}
-									type="donut"
+									type='donut'
 									height={300}
 								/>
 							</CardContent>
@@ -345,7 +346,7 @@ export function RetentionAnalysisChart({
 						<Card sx={{ height: '100%' }}>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 									sx={{ textAlign: 'center' }}
 								>
@@ -354,13 +355,13 @@ export function RetentionAnalysisChart({
 								<ApexChartWrapper
 									options={benchmarkBarOptions}
 									series={benchmarkBarData}
-									type="bar"
+									type='bar'
 									height={200}
 								/>
 								<Box sx={{ mt: 2, textAlign: 'center' }}>
 									<Typography
-										variant="body2"
-										color="text.secondary"
+										variant='body2'
+										color='text.secondary'
 									>
 										Benchmark da indústria: {industryBenchmark}%
 									</Typography>
@@ -376,13 +377,13 @@ export function RetentionAnalysisChart({
 						<CardContent>
 							<Stack spacing={2}>
 								<Typography
-									variant="h6"
+									variant='h6'
 									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
 									💡 Insights de Retenção
 								</Typography>
 
-								<Typography variant="body1">
+								<Typography variant='body1'>
 									<strong>Análise:</strong> Sua taxa de retenção de {data.return_visitor_rate}% está{' '}
 									{data.benchmark_comparison === 'excellent' &&
 										'muito acima da média da indústria. Excelente trabalho!'}
@@ -394,8 +395,8 @@ export function RetentionAnalysisChart({
 								</Typography>
 
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 								>
 									<strong>Recomendação:</strong>{' '}
 									{data.return_visitor_rate >= 25

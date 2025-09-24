@@ -1,7 +1,8 @@
 import { IconButton, Tooltip } from '@mui/material';
+
 import { AppIcon } from '@/lib/icons';
-import useClipboard from '@/shared/hooks/useClipboard';
 import { showSuccessMessage } from '@/lib/store/messageSlice';
+import useClipboard from '@/shared/hooks/useClipboard';
 
 interface CopyButtonProps {
 	text: string;
@@ -36,7 +37,7 @@ export function CopyButton({ text, tooltip = 'Copiar', size = 'medium' }: CopyBu
 					}
 				}}
 			>
-				<AppIcon intent="copy" />
+				<AppIcon intent='copy' />
 			</IconButton>
 		</Tooltip>
 	);

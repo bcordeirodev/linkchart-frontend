@@ -1,7 +1,9 @@
-import { UserProfile } from '@/services';
-import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { CalendarToday, Shield, Verified } from '@mui/icons-material';
 import { Box, Chip, Stack, Typography } from '@mui/material';
+
+import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
+
+import type { UserProfile } from '@/services';
 
 interface ProfileSidebarProps {
 	user: UserProfile;
@@ -18,11 +20,11 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
 			<EnhancedPaper>
 				<Box sx={{ p: 3 }}>
 					<Typography
-						variant="h6"
+						variant='h6'
 						gutterBottom
 						sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}
 					>
-						<Shield color="success" />
+						<Shield color='success' />
 						Status da Conta
 					</Typography>
 					<Stack spacing={2}>
@@ -36,17 +38,17 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
 								bgcolor: 'success.50'
 							}}
 						>
-							<Verified color="success" />
+							<Verified color='success' />
 							<Box>
 								<Typography
-									variant="body2"
+									variant='body2'
 									sx={{ fontWeight: 600 }}
 								>
 									Conta Verificada
 								</Typography>
 								<Typography
-									variant="caption"
-									color="text.secondary"
+									variant='caption'
+									color='text.secondary'
 								>
 									Acesso completo liberado
 								</Typography>
@@ -62,17 +64,17 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
 								bgcolor: 'info.50'
 							}}
 						>
-							<CalendarToday color="info" />
+							<CalendarToday color='info' />
 							<Box>
 								<Typography
-									variant="body2"
+									variant='body2'
 									sx={{ fontWeight: 600 }}
 								>
 									Membro desde
 								</Typography>
 								<Typography
-									variant="caption"
-									color="text.secondary"
+									variant='caption'
+									color='text.secondary'
 								>
 									{user.created_at
 										? new Date(user.created_at).toLocaleDateString('pt-BR')
@@ -88,19 +90,19 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
 			<EnhancedPaper>
 				<Box sx={{ p: 3, textAlign: 'center' }}>
 					<Typography
-						variant="h6"
+						variant='h6'
 						gutterBottom
 					>
 						Sistema Ativo
 					</Typography>
 					<Chip
-						label="✅ Online"
-						color="success"
+						label='✅ Online'
+						color='success'
 						sx={{ mb: 2, fontWeight: 600 }}
 					/>
 					<Typography
-						variant="body2"
-						color="text.secondary"
+						variant='body2'
+						color='text.secondary'
 					>
 						Acesso completo a todas as funcionalidades do sistema!
 					</Typography>

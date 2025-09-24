@@ -1,4 +1,5 @@
 import { Box, Typography, useTheme } from '@mui/material';
+
 import { createTextGradient, createThemeGradient, createPresetAnimations } from '@/lib/theme';
 
 /**
@@ -46,8 +47,8 @@ export function ProfileHeader() {
 
 				<Box sx={{ position: 'relative', zIndex: 1 }}>
 					<Typography
-						variant="h3"
-						component="h1"
+						variant='h3'
+						component='h1'
 						sx={{
 							fontWeight: 700,
 							// Usa gradiente de texto padronizado
@@ -58,8 +59,8 @@ export function ProfileHeader() {
 						👤 Meu Perfil
 					</Typography>
 					<Typography
-						variant="h6"
-						color="text.secondary"
+						variant='h6'
+						color='text.secondary'
 						sx={{
 							fontWeight: 400,
 							opacity: 0.8

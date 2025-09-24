@@ -5,7 +5,9 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+
 import { api } from '@/lib/api/client';
+
 import type { AudienceData, AudienceStats, UseAudienceDataOptions, UseAudienceDataReturn } from '@/types/analytics';
 
 // Interface local para resposta da API

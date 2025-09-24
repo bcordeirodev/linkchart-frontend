@@ -1,4 +1,4 @@
-import { DropdownOption } from 'material-react-table';
+import type { DropdownOption } from 'material-react-table';
 
 const parseFromValuesOrFunc = <T, U>(fn: ((arg: U) => T) | T | undefined, arg: U): T | undefined =>
 	fn instanceof Function ? fn(arg) : fn;

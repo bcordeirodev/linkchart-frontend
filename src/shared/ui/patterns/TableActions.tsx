@@ -4,6 +4,7 @@
  */
 
 import { Stack, IconButton, Tooltip } from '@mui/material';
+
 import { AppIcon } from '@/lib/icons';
 
 // Mapear tamanhos customizados para tamanhos MUI
@@ -50,123 +51,123 @@ export function TableActions({
 }: TableActionsProps) {
 	return (
 		<Stack
-			direction="row"
+			direction='row'
 			spacing={spacing}
-			alignItems="center"
+			alignItems='center'
 		>
-			{onAnalytics && (
-				<Tooltip title="Ver Analytics">
+			{onAnalytics ? (
+				<Tooltip title='Ver Analytics'>
 					<IconButton
 						onClick={onAnalytics}
 						disabled={loading}
-						color="success"
+						color='success'
 						size={mapSize(size)}
 					>
 						<AppIcon
-							intent="analytics"
+							intent='analytics'
 							size={20}
 						/>
 					</IconButton>
 				</Tooltip>
-			)}
+			) : null}
 
-			{onEdit && (
-				<Tooltip title="Editar">
+			{onEdit ? (
+				<Tooltip title='Editar'>
 					<IconButton
 						onClick={onEdit}
 						disabled={loading}
-						color="warning"
+						color='warning'
 						size={mapSize(size)}
 					>
 						<AppIcon
-							intent="edit"
+							intent='edit'
 							size={20}
 						/>
 					</IconButton>
 				</Tooltip>
-			)}
+			) : null}
 
-			{onCopy && (
-				<Tooltip title="Copiar">
+			{onCopy ? (
+				<Tooltip title='Copiar'>
 					<IconButton
 						onClick={onCopy}
 						disabled={loading}
-						color="info"
+						color='info'
 						size={mapSize(size)}
 					>
 						<AppIcon
-							intent="copy"
+							intent='copy'
 							size={20}
 						/>
 					</IconButton>
 				</Tooltip>
-			)}
+			) : null}
 
-			{onShare && (
-				<Tooltip title="Compartilhar">
+			{onShare ? (
+				<Tooltip title='Compartilhar'>
 					<IconButton
 						onClick={onShare}
 						disabled={loading}
-						color="secondary"
+						color='secondary'
 						size={mapSize(size)}
 					>
 						<AppIcon
-							intent="share"
+							intent='share'
 							size={20}
 						/>
 					</IconButton>
 				</Tooltip>
-			)}
+			) : null}
 
-			{onQR && (
-				<Tooltip title="Gerar QR Code">
+			{onQR ? (
+				<Tooltip title='Gerar QR Code'>
 					<IconButton
 						onClick={onQR}
 						disabled={loading}
-						color="secondary"
+						color='secondary'
 						size={mapSize(size)}
 					>
 						<AppIcon
-							intent="qr"
+							intent='qr'
 							size={20}
 						/>
 					</IconButton>
 				</Tooltip>
-			)}
+			) : null}
 
-			{onDownload && (
-				<Tooltip title="Download">
+			{onDownload ? (
+				<Tooltip title='Download'>
 					<IconButton
 						onClick={onDownload}
 						disabled={loading}
-						color="info"
+						color='info'
 						size={mapSize(size)}
 					>
 						<AppIcon
-							intent="download"
+							intent='download'
 							size={20}
 						/>
 					</IconButton>
 				</Tooltip>
-			)}
+			) : null}
 
 			{customActions}
 
-			{onDelete && (
-				<Tooltip title="Excluir">
+			{onDelete ? (
+				<Tooltip title='Excluir'>
 					<IconButton
 						onClick={onDelete}
 						disabled={loading}
-						color="error"
+						color='error'
 						size={mapSize(size)}
 					>
 						<AppIcon
-							intent="delete"
+							intent='delete'
 							size={20}
 						/>
 					</IconButton>
 				</Tooltip>
-			)}
+			) : null}
 		</Stack>
 	);
 }
@@ -187,7 +188,7 @@ export function LinkTableActions({
 			onQR={onQR}
 			onDelete={onDelete}
 			loading={loading}
-			size="sm"
+			size='sm'
 		/>
 	);
 }
@@ -204,7 +205,7 @@ export function AnalyticsTableActions({
 			onDownload={onDownload}
 			onShare={onShare}
 			loading={loading}
-			size="sm"
+			size='sm'
 		/>
 	);
 }

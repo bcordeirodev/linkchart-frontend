@@ -1,6 +1,8 @@
-import { LinkCreateRequest, LinkResponse, LinkUpdateRequest } from '@/types';
 import { API_CONFIG } from '../lib/api/endpoints';
+
 import { BaseService } from './base.service';
+
+import type { LinkCreateRequest, LinkResponse, LinkUpdateRequest } from '@/types';
 
 // Extend types to match Record<string, unknown>
 interface LinkCreateRequestExtended extends LinkCreateRequest, Record<string, unknown> {}
@@ -97,7 +99,7 @@ export default class LinkService extends BaseService {
 
 		const fallbackData = {
 			data: {
-				id: id,
+				id,
 				user_id: '1',
 				title: 'Link de Exemplo',
 				slug: `exemplo-${id}`,

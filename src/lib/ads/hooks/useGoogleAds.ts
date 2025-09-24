@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+
 import { GOOGLE_ADS_CONFIG } from '../config/adsConfig';
 
 declare global {

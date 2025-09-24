@@ -1,6 +1,7 @@
-import { TextField, Box, useTheme } from '@mui/material';
 import { Public } from '@mui/icons-material';
-import { UseFormRegisterReturn } from 'react-hook-form';
+import { TextField, Box, useTheme } from '@mui/material';
+
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface URLInputProps {
 	register?: UseFormRegisterReturn;
@@ -24,7 +25,7 @@ export function URLInput({
 	return (
 		<TextField
 			{...register}
-			variant="filled"
+			variant='filled'
 			placeholder={placeholder}
 			fullWidth={fullWidth}
 			error={!!error}

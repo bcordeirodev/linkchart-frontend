@@ -1,11 +1,12 @@
 import { Box, Grid, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useDashboardData } from '@/features/analytics/hooks/useDashboardData';
-import { DashboardMetrics } from '@/features/analytics/components/dashboard/shared/DashboardMetrics';
+
 import { Charts } from '@/features/analytics/components/dashboard/shared/charts/Charts';
-import TabDescription from '@/shared/ui/base/TabDescription';
-import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
+import { DashboardMetrics } from '@/features/analytics/components/dashboard/shared/DashboardMetrics';
+import { useDashboardData } from '@/features/analytics/hooks/useDashboardData';
 import { mapDashboardDataToCharts } from '@/features/analytics/utils/dataMappers';
+import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
+import TabDescription from '@/shared/ui/base/TabDescription';
 
 interface LinkDashboardProps {
 	linkId: string;
@@ -66,42 +67,42 @@ export function LinkDashboard({
 			error={error}
 			hasData={!!data}
 			onRetry={refresh}
-			loadingMessage="Carregando dashboard do link..."
-			emptyMessage="Dashboard do link indisponível"
+			loadingMessage='Carregando dashboard do link...'
+			emptyMessage='Dashboard do link indisponível'
 			minHeight={compact ? 200 : 400}
 			compact={compact}
 		>
 			<Box>
 				{/* Título e controles */}
-				{showTitle && (
+				{showTitle ? (
 					<Box sx={{ mb: 2 }}>
 						<TabDescription
-							icon="🔗"
+							icon='🔗'
 							title={title}
-							description="Visão geral consolidada do link com métricas essenciais e performance detalhada."
+							description='Visão geral consolidada do link com métricas essenciais e performance detalhada.'
 							highlight={`${data?.summary?.total_clicks || 0} cliques totais`}
 							metadata={isRealtime ? 'Tempo Real' : timeframe}
 						/>
 
 						{/* Informações do link */}
-						{data?.link_info && (
+						{data?.link_info ? (
 							<Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
 								<Typography
-									variant="h6"
+									variant='h6'
 									sx={{ mb: 1 }}
 								>
 									{data.link_info.title || 'Link sem título'}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 									sx={{ mb: 1 }}
 								>
 									{data.link_info.original_url}
 								</Typography>
 								<Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
 									<Typography
-										variant="caption"
+										variant='caption'
 										sx={{
 											px: 1,
 											py: 0.5,
@@ -113,23 +114,23 @@ export function LinkDashboard({
 										{data.link_info.is_active ? '✅ Ativo' : '❌ Inativo'}
 									</Typography>
 									<Typography
-										variant="caption"
-										color="text.secondary"
+										variant='caption'
+										color='text.secondary'
 									>
 										📊 {data.link_info.clicks} cliques
 									</Typography>
 								</Box>
 							</Box>
-						)}
+						) : null}
 
 						{/* Seletor de timeframe */}
-						{showTimeframeSelector && (
+						{showTimeframeSelector ? (
 							<Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
 								<ToggleButtonGroup
 									value={timeframe}
 									exclusive
 									onChange={handleTimeframeChange}
-									size="small"
+									size='small'
 									sx={{
 										'& .MuiToggleButton-root': {
 											px: 2,
@@ -146,15 +147,15 @@ export function LinkDashboard({
 										}
 									}}
 								>
-									<ToggleButton value="1h">1h</ToggleButton>
-									<ToggleButton value="24h">24h</ToggleButton>
-									<ToggleButton value="7d">7d</ToggleButton>
-									<ToggleButton value="30d">30d</ToggleButton>
+									<ToggleButton value='1h'>1h</ToggleButton>
+									<ToggleButton value='24h'>24h</ToggleButton>
+									<ToggleButton value='7d'>7d</ToggleButton>
+									<ToggleButton value='30d'>30d</ToggleButton>
 								</ToggleButtonGroup>
 							</Box>
-						)}
+						) : null}
 					</Box>
-				)}
+				) : null}
 
 				{/* Conteúdo principal */}
 				<Grid
@@ -170,7 +171,7 @@ export function LinkDashboard({
 							summary={data?.summary}
 							linksData={[]} // Link individual não precisa de linksData
 							showTitle={!compact}
-							title="📊 Métricas do Link"
+							title='📊 Métricas do Link'
 							variant={compact ? 'compact' : 'detailed'}
 						/>
 					</Grid>
@@ -183,27 +184,27 @@ export function LinkDashboard({
 						>
 							<Charts
 								data={data ? mapDashboardDataToCharts(data) : null}
-								variant="dashboard"
+								variant='dashboard'
 								height={400}
-								showAllCharts={true}
+								showAllCharts
 							/>
 						</Grid>
 					)}
 				</Grid>
 
 				{/* Informações de qualidade dos dados */}
-				{stats && (
+				{stats ? (
 					<Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
 						<Typography
-							variant="caption"
-							color="text.secondary"
+							variant='caption'
+							color='text.secondary'
 						>
 							Qualidade dos dados: {stats.dataQuality} • Última atualização:{' '}
 							{new Date(stats.lastUpdate).toLocaleTimeString()}
-							{isRealtime && ' • 🔴 Tempo Real'}
+							{isRealtime ? ' • 🔴 Tempo Real' : null}
 						</Typography>
 					</Box>
-				)}
+				) : null}
 			</Box>
 		</AnalyticsStateManager>
 	);

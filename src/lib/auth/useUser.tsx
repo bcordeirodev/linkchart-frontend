@@ -1,17 +1,19 @@
-import { useMemo } from 'react';
-import type { User } from '@/types';
-import { useAuth } from './AuthContext';
 import _ from 'lodash';
+import { useMemo } from 'react';
+
+import { useAuth } from './AuthContext';
+
+import type { User } from '@/types';
 // Removed: setIn não utilizado
 
-type useUser = {
+interface useUser {
 	data: User | null;
 	isGuest: boolean;
 	updateUser: (updates: Partial<User>) => Promise<User | undefined>;
 	updateUserSettings: (newSettings: User['settings']) => Promise<User['settings'] | undefined>;
 	signOut: () => void;
 	refreshUser: () => Promise<void>;
-};
+}
 
 function useUser(): useUser {
 	const { user, logout, updateUser: authUpdateUser, refreshUser: authRefreshUser } = useAuth();
@@ -30,12 +32,10 @@ function useUser(): useUser {
 		}
 	}
 
-	/**
-	 * Update user settings
-	 * Uses current auth provider's updateUser method
-	 */
 	async function handleUpdateUserSettings(newSettings: User['settings']) {
-		if (!user) return undefined;
+		if (!user) {
+			return undefined;
+		}
 
 		const newUser = {
 			...user,
@@ -51,16 +51,10 @@ function useUser(): useUser {
 		return updatedUser?.settings;
 	}
 
-	/**
-	 * Sign out
-	 */
 	function handleSignOut() {
 		logout();
 	}
 
-	/**
-	 * Refresh user data from API
-	 */
 	async function handleRefreshUser() {
 		await authRefreshUser();
 	}

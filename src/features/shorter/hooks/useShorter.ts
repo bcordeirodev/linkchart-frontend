@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { publicLinkService, PublicLinkResponse } from '@/services/publicLink.service';
+
+import { publicLinkService } from '@/services/publicLink.service';
+
+import type { PublicLinkResponse } from '@/services/publicLink.service';
 
 /**
  * 🔗 HOOK CUSTOMIZADO PARA SHORTER PAGE
@@ -17,7 +20,7 @@ export function useShorter() {
 	const handleSuccess = useCallback(
 		(result: PublicLinkResponse) => {
 			// Verificar se o resultado tem slug válido
-			if (!result || !result.slug) {
+			if (!result?.slug) {
 				setError('Erro: Link criado mas sem slug válido');
 				return;
 			}

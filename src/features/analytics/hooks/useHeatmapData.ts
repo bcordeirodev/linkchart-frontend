@@ -5,7 +5,9 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+
 import { api } from '@/lib/api/client';
+
 import type { HeatmapPoint } from '@/types';
 
 // Interfaces locais para o hook
@@ -310,7 +312,7 @@ export function useHeatmapData({
 		stats,
 		loading,
 		error,
-		lastUpdate: lastUpdate,
+		lastUpdate,
 		refresh
 	};
 }

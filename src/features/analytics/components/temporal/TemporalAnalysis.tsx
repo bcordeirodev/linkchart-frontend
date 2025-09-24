@@ -1,10 +1,13 @@
+import { Schedule, TrendingUp, AccessTime, CalendarToday } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
-import { useTemporalData } from '../../hooks/useTemporalData';
-import { TemporalChart } from './TemporalChart';
-import TabDescription from '@/shared/ui/base/TabDescription';
+
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
-import { Schedule, TrendingUp, AccessTime, CalendarToday } from '@mui/icons-material';
+import TabDescription from '@/shared/ui/base/TabDescription';
+
+import { useTemporalData } from '../../hooks/useTemporalData';
+
+import { TemporalChart } from './TemporalChart';
 
 interface TemporalAnalysisProps {
 	linkId?: string;
@@ -15,19 +18,7 @@ interface TemporalAnalysisProps {
 }
 
 /**
- * ⏰ ANÁLISE TEMPORAL OTIMIZADA
- *
- * @description
- * Componente integrado para análise de padrões temporais dos cliques.
- * Refatorado para seguir padrões do projeto e usar AnalyticsStateManager.
- *
- * @features
- * - Análise de cliques por hora e dia da semana
- * - Métricas de picos e tendências
- * - Interface consistente com outros módulos
- * - Dados reais do backend
- * - Dados avançados carregados automaticamente (quando disponíveis)
- * - Tabs avançadas aparecem automaticamente se houver dados suficientes
+ * Componente de análise temporal com padrões de cliques por hora e dia da semana
  */
 export function TemporalAnalysis({
 	linkId,
@@ -36,36 +27,33 @@ export function TemporalAnalysis({
 	enableRealtime = false,
 	timeRange = '7d'
 }: TemporalAnalysisProps) {
-	// Usar hook específico para dados temporais - SEMPRE incluir dados avançados
 	const { data, stats, loading, error, refresh, isRealtime } = useTemporalData({
 		linkId,
 		globalMode,
 		enableRealtime,
-		includeAdvanced: true, // ✅ Sempre buscar dados avançados
+		includeAdvanced: true,
 		timeRange,
 		refreshInterval: 30000
 	});
 
 	return (
 		<Box>
-			{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon="⏰"
+					icon='⏰'
 					title={title}
-					description="Análise de padrões temporais dos seus cliques com identificação de picos e tendências."
+					description='Análise de padrões temporais dos seus cliques com identificação de picos e tendências.'
 					highlight={`Pico: ${stats?.peakHour || '--'}h - ${stats?.peakDay || 'N/A'}`}
 					metadata={isRealtime ? 'Tempo Real' : timeRange}
 				/>
 			</Box>
 
-			{/* 2. CONTEÚDO COM LOADER */}
 			<AnalyticsStateManager
 				loading={loading}
 				error={error}
 				hasData={!!data}
 				onRetry={refresh}
-				loadingMessage="Analisando padrões temporais..."
+				loadingMessage='Analisando padrões temporais...'
 				emptyMessage={
 					globalMode
 						? 'Não há dados temporais disponíveis para seus links ativos.'
@@ -74,7 +62,6 @@ export function TemporalAnalysis({
 				minHeight={300}
 			>
 				<Box>
-					{/* MÉTRICAS */}
 					<Box sx={{ mb: 3 }}>
 						<Grid
 							container
@@ -87,11 +74,11 @@ export function TemporalAnalysis({
 								md={3}
 							>
 								<MetricCard
-									title="Pico de Hora"
+									title='Pico de Hora'
 									value={`${stats?.peakHour}h`}
 									icon={<AccessTime />}
-									color="primary"
-									subtitle="maior atividade"
+									color='primary'
+									subtitle='maior atividade'
 								/>
 							</Grid>
 							<Grid
@@ -101,11 +88,11 @@ export function TemporalAnalysis({
 								md={3}
 							>
 								<MetricCard
-									title="Pico de Dia"
+									title='Pico de Dia'
 									value={stats?.peakDay || 'N/A'}
 									icon={<CalendarToday />}
-									color="secondary"
-									subtitle="dia mais ativo"
+									color='secondary'
+									subtitle='dia mais ativo'
 								/>
 							</Grid>
 							<Grid
@@ -115,11 +102,11 @@ export function TemporalAnalysis({
 								md={3}
 							>
 								<MetricCard
-									title="Média/Hora"
+									title='Média/Hora'
 									value={stats?.averageHourlyClicks?.toString() || '0'}
 									icon={<Schedule />}
-									color="info"
-									subtitle="cliques por hora"
+									color='info'
+									subtitle='cliques por hora'
 								/>
 							</Grid>
 							<Grid
@@ -129,13 +116,13 @@ export function TemporalAnalysis({
 								md={3}
 							>
 								<MetricCard
-									title="Tendência"
+									title='Tendência'
 									value={
 										stats?.trendDirection === 'up'
-											? '📈 Crescendo'
+											? 'Crescendo'
 											: stats?.trendDirection === 'down'
-												? '📉 Declinando'
-												: '📊 Estável'
+												? 'Declinando'
+												: 'Estável'
 									}
 									icon={<TrendingUp />}
 									color={
@@ -145,13 +132,12 @@ export function TemporalAnalysis({
 												? 'error'
 												: 'warning'
 									}
-									subtitle="direção atual"
+									subtitle='direção atual'
 								/>
 							</Grid>
 						</Grid>
 					</Box>
 
-					{/* RESTANTE DO CONTEÚDO */}
 					<Grid
 						container
 						spacing={3}
@@ -163,7 +149,6 @@ export function TemporalAnalysis({
 							<TemporalChart
 								hourlyData={data?.clicks_by_hour || []}
 								weeklyData={data?.clicks_by_day_of_week || []}
-								// NEW: Pass enhanced temporal data
 								hourlyPatternsLocal={(data as any)?.hourly_patterns_local}
 								weekendVsWeekday={(data as any)?.weekend_vs_weekday}
 								businessHoursAnalysis={(data as any)?.business_hours_analysis}

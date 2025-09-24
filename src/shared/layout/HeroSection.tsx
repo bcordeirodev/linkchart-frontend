@@ -1,6 +1,6 @@
+import { Rocket } from '@mui/icons-material';
 import { Fade, Slide, Grow, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Rocket } from '@mui/icons-material';
 
 // Styled Components
 import { HeroContainer, HeroTitle, HeroSubtitle, HeroChip } from '../ui/base/styles/UI.styled';
@@ -39,19 +39,19 @@ export function HeroSection({
 				<Box>
 					<HeroContainer>
 						<Slide
-							direction="down"
+							direction='down'
 							in
 							timeout={1000}
 						>
-							<HeroTitle variant="h1">{title}</HeroTitle>
+							<HeroTitle variant='h1'>{title}</HeroTitle>
 						</Slide>
 
 						<Slide
-							direction="up"
+							direction='up'
 							in
 							timeout={1200}
 						>
-							<HeroSubtitle variant="h6">{subtitle}</HeroSubtitle>
+							<HeroSubtitle variant='h6'>{subtitle}</HeroSubtitle>
 						</Slide>
 
 						<Grow
@@ -61,8 +61,8 @@ export function HeroSection({
 							<HeroChip
 								icon={<Rocket />}
 								label={chipText}
-								color="primary"
-								variant="filled"
+								color='primary'
+								variant='filled'
 							/>
 						</Grow>
 					</HeroContainer>

@@ -1,5 +1,4 @@
-import { useParams } from 'react-router-dom';
-import { useEffect, useState, useCallback } from 'react';
+import { Launch as LaunchIcon, Error as ErrorIcon, Security as SecurityIcon } from '@mui/icons-material';
 import {
 	Box,
 	useTheme,
@@ -12,7 +11,8 @@ import {
 	Fade,
 	Grow
 } from '@mui/material';
-import { Launch as LaunchIcon, Error as ErrorIcon, Security as SecurityIcon } from '@mui/icons-material';
+import { useEffect, useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 
 /**
  * 🚀 PÁGINA DE REDIRECIONAMENTO - CORAÇÃO DO SISTEMA
@@ -280,7 +280,7 @@ function RedirectPage() {
 		};
 
 		fetchRedirectData();
-	}, [slug, getUserRealIP, isValidIPv4, isValidIPv6]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [slug, getUserRealIP, isValidIPv4, isValidIPv6]);  
 
 	// Inicia o countdown quando targetUrl é definido
 	useEffect(() => {
@@ -327,7 +327,7 @@ function RedirectPage() {
 						>
 							<Stack
 								spacing={3}
-								alignItems="center"
+								alignItems='center'
 							>
 								<ErrorIcon
 									sx={{
@@ -337,22 +337,22 @@ function RedirectPage() {
 									}}
 								/>
 								<Typography
-									variant="h4"
-									fontWeight="bold"
-									color="error"
+									variant='h4'
+									fontWeight='bold'
+									color='error'
 								>
 									Oops! Link não encontrado
 								</Typography>
 								<Typography
-									variant="body1"
-									color="text.secondary"
+									variant='body1'
+									color='text.secondary'
 									sx={{ textAlign: 'center' }}
 								>
 									{error}
 								</Typography>
 								<Button
-									variant="contained"
-									size="large"
+									variant='contained'
+									size='large'
 									onClick={() => (window.location.href = '/')}
 									sx={{
 										mt: 2,
@@ -410,7 +410,7 @@ function RedirectPage() {
 						{isValidLink && targetUrl ? (
 							<Stack
 								spacing={4}
-								alignItems="center"
+								alignItems='center'
 							>
 								<Grow
 									in
@@ -429,9 +429,9 @@ function RedirectPage() {
 								</Grow>
 
 								<Typography
-									variant="h3"
-									fontWeight="bold"
-									color="primary"
+									variant='h3'
+									fontWeight='bold'
+									color='primary'
 									sx={{
 										fontSize: {
 											xs: '1.8rem', // Mobile
@@ -444,15 +444,15 @@ function RedirectPage() {
 								</Typography>
 
 								<Typography
-									variant="h6"
-									color="text.secondary"
+									variant='h6'
+									color='text.secondary'
 									sx={{ maxWidth: 400 }}
 								>
 									Você será redirecionado com segurança para:
 								</Typography>
 
 								<Paper
-									variant="outlined"
+									variant='outlined'
 									sx={{
 										p: 3,
 										backgroundColor: theme.palette.action.hover,
@@ -464,7 +464,7 @@ function RedirectPage() {
 									}}
 								>
 									<Typography
-										variant="h6"
+										variant='h6'
 										sx={{
 											color: theme.palette.primary.main,
 											fontWeight: 'bold',
@@ -477,7 +477,7 @@ function RedirectPage() {
 									</Typography>
 									{linkTitle !== targetUrl && (
 										<Typography
-											variant="body2"
+											variant='body2'
 											sx={{
 												color: theme.palette.text.secondary,
 												fontSize: '0.9rem',
@@ -498,7 +498,7 @@ function RedirectPage() {
 									>
 										<Box sx={{ position: 'relative', display: 'inline-flex', mt: 3 }}>
 											<CircularProgress
-												variant="determinate"
+												variant='determinate'
 												value={((3 - countdown) / 3) * 100}
 												size={80}
 												thickness={6}
@@ -522,10 +522,10 @@ function RedirectPage() {
 												}}
 											>
 												<Typography
-													variant="h4"
-													component="div"
-													color="primary"
-													fontWeight="bold"
+													variant='h4'
+													component='div'
+													color='primary'
+													fontWeight='bold'
 												>
 													{countdown}
 												</Typography>
@@ -535,13 +535,13 @@ function RedirectPage() {
 								)}
 
 								<Stack
-									direction="row"
+									direction='row'
 									spacing={2}
 									sx={{ mt: 3 }}
 								>
 									<Button
-										variant="contained"
-										size="large"
+										variant='contained'
+										size='large'
 										onClick={() => performRedirect(targetUrl)}
 										startIcon={<LaunchIcon />}
 										sx={{
@@ -558,7 +558,7 @@ function RedirectPage() {
 						) : (
 							<Stack
 								spacing={4}
-								alignItems="center"
+								alignItems='center'
 							>
 								<CircularProgress
 									size={80}
@@ -569,14 +569,14 @@ function RedirectPage() {
 									}}
 								/>
 								<Typography
-									variant="h4"
-									fontWeight="bold"
+									variant='h4'
+									fontWeight='bold'
 								>
 									Verificando Link...
 								</Typography>
 								<Typography
-									variant="body1"
-									color="text.secondary"
+									variant='body1'
+									color='text.secondary'
 								>
 									Aguarde enquanto validamos o redirecionamento
 								</Typography>

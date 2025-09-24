@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { EnhancedPaper } from '@/shared/ui/base';
-import type { BasicAnalyticsData, BasicAnalyticsActions } from '../../types';
+
 import { UpgradeCTA } from '@/features/shorter';
+import { EnhancedPaper } from '@/shared/ui/base';
+
+import type { BasicAnalyticsData, BasicAnalyticsActions } from '../../types';
 
 interface AnalyticsInfoProps {
 	analyticsData: BasicAnalyticsData;
@@ -20,7 +22,7 @@ export function AnalyticsInfo({ actions }: AnalyticsInfoProps) {
 
 	return (
 		<EnhancedPaper
-			variant="glass"
+			variant='glass'
 			sx={{ mt: 0 }}
 		>
 			{/* <CardContent>

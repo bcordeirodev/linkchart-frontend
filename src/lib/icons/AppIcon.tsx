@@ -4,8 +4,11 @@
  */
 
 import { forwardRef } from 'react';
-import { LucideProps } from 'lucide-react';
-import { AppIcons, IconCategory, AnyIconName, FlatAppIcons, IconIntents, IconIntent } from './AppIcons';
+
+import { AppIcons, FlatAppIcons, IconIntents } from './AppIcons';
+
+import type { IconCategory, AnyIconName, IconIntent } from './AppIcons';
+import type { LucideProps } from 'lucide-react';
 
 // ========================================
 // 🎯 COMPONENT PROPS

@@ -1,17 +1,20 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { FuseUtils } from '@/lib/utils';
+import { useCallback, useEffect, useState, useMemo } from 'react';
+
 import { getSessionRedirectUrl, resetSessionRedirectUrl, setSessionRedirectUrl } from '@/lib/auth/sessionRedirectUrl';
+import { FuseUtils } from '@/lib/utils';
 // Tipo removido - usando tipo genérico
-import { usePathname } from '@/shared/hooks';
 import { Loading } from '@/shared/components';
-import { useNavigate } from '@/shared/hooks';
+import { usePathname, useNavigate } from '@/shared/hooks';
+
 import useUser from './useUser';
 
-type AuthGuardProps = {
+import type React from 'react';
+
+interface AuthGuardProps {
 	auth: string[] | [] | null | undefined;
 	children: React.ReactNode;
 	loginRedirectUrl?: string;
-};
+}
 
 function AuthGuardRedirect({ auth, children, loginRedirectUrl = '/' }: AuthGuardProps) {
 	const { data: user, isGuest } = useUser();
@@ -55,7 +58,7 @@ function AuthGuardRedirect({ auth, children, loginRedirectUrl = '/' }: AuthGuard
 		const userHasPermission = FuseUtils.hasPermission(
 			auth === null ? undefined : auth,
 			userRoleForPermission as never
-		) as boolean;
+		);
 		const isIgnoredPath = ignoredPaths.includes(pathname);
 
 		// Grant access immediately for allowed scenarios
@@ -95,10 +98,10 @@ function AuthGuardRedirect({ auth, children, loginRedirectUrl = '/' }: AuthGuard
 	// Enhanced loading state with context information
 	if (!accessGranted) {
 		return (
-			<div className="flex flex-1 flex-col items-center justify-center p-4">
+			<div className='flex flex-1 flex-col items-center justify-center p-4'>
 				<Loading />
-				<div className="mt-4 text-center">
-					<p className="text-sm text-gray-600 dark:text-gray-400">
+				<div className='mt-4 text-center'>
+					<p className='text-sm text-gray-600 dark:text-gray-400'>
 						{isGuest ? 'Redirecting to sign in...' : 'Checking permissions...'}
 					</p>
 				</div>

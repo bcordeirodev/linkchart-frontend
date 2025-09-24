@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Alert, Button, Box, CircularProgress } from '@mui/material';
 import { Email, Refresh } from '@mui/icons-material';
-import { authService } from '@/services';
+import { Alert, Button, Box, CircularProgress } from '@mui/material';
+import { useState, useEffect } from 'react';
+
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { authService } from '@/services';
 
 interface EmailVerificationBannerProps {
 	onVerificationStatusChange?: (isVerified: boolean) => void;
@@ -81,7 +82,7 @@ export function EmailVerificationBanner({ onVerificationStatusChange }: EmailVer
 
 	return (
 		<Alert
-			severity="warning"
+			severity='warning'
 			icon={<Email />}
 			sx={{
 				mb: 2,
@@ -92,15 +93,15 @@ export function EmailVerificationBanner({ onVerificationStatusChange }: EmailVer
 			action={
 				<Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
 					<Button
-						color="inherit"
-						size="small"
+						color='inherit'
+						size='small'
 						onClick={handleResendVerification}
 						disabled={!canResend || isResending}
 						startIcon={
 							isResending ? (
 								<CircularProgress
 									size={16}
-									color="inherit"
+									color='inherit'
 								/>
 							) : (
 								<Refresh />
@@ -111,8 +112,8 @@ export function EmailVerificationBanner({ onVerificationStatusChange }: EmailVer
 						{isResending ? 'Enviando...' : 'Reenviar'}
 					</Button>
 					<Button
-						color="inherit"
-						size="small"
+						color='inherit'
+						size='small'
 						onClick={handleDismiss}
 						sx={{ minWidth: 'auto', px: 1 }}
 					>

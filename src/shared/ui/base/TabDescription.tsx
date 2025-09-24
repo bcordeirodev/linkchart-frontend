@@ -23,7 +23,7 @@ function TabDescription({ icon, title, description, highlight, metadata }: TabDe
 
 	return (
 		<Box
-			className="tab-description-container"
+			className='tab-description-container'
 			sx={{
 				backgroundColor: theme.palette.background.paper, // Background sólido consistente
 				borderRadius: 2,
@@ -33,30 +33,30 @@ function TabDescription({ icon, title, description, highlight, metadata }: TabDe
 		>
 			<Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
 				<Typography
-					component="span"
+					component='span'
 					sx={{ fontSize: '1.5rem' }}
 				>
 					{icon}
 				</Typography>
 				<Typography
-					variant="h6"
-					component="h2"
+					variant='h6'
+					component='h2'
 				>
 					{title}
 				</Typography>
 			</Box>
 
 			<Typography
-				variant="body2"
-				color="text.secondary"
+				variant='body2'
+				color='text.secondary'
 				sx={{ mb: 1 }}
 			>
 				{description}
 			</Typography>
 
-			{highlight && (
+			{highlight ? (
 				<Typography
-					variant="caption"
+					variant='caption'
 					sx={{
 						color: 'primary.main',
 						fontWeight: 500,
@@ -65,17 +65,17 @@ function TabDescription({ icon, title, description, highlight, metadata }: TabDe
 				>
 					💡 {highlight}
 				</Typography>
-			)}
+			) : null}
 
-			{metadata && (
+			{metadata ? (
 				<Typography
-					variant="caption"
-					color="text.secondary"
+					variant='caption'
+					color='text.secondary'
 					sx={{ display: 'block', mt: 0.5, fontStyle: 'italic' }}
 				>
 					📊 {metadata}
 				</Typography>
-			)}
+			) : null}
 		</Box>
 	);
 }

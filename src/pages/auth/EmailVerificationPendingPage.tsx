@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Email, CheckCircle, Refresh, ArrowBack } from '@mui/icons-material';
 import { Typography, Button, Stack, CircularProgress, Alert, Paper, Divider } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { Email, CheckCircle, Refresh, ArrowBack } from '@mui/icons-material';
-import { authService } from '@/services';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { authService } from '@/services';
 import { AuthLayout } from '@/shared/layout';
 
 interface LocationState {
@@ -86,9 +87,9 @@ function EmailVerificationPendingPage() {
 
 	return (
 		<AuthLayout
-			title="Verifique seu email"
-			subtitle="Enviamos um link de verificação para o seu email"
-			variant="verify"
+			title='Verifique seu email'
+			subtitle='Enviamos um link de verificação para o seu email'
+			variant='verify'
 			footerLinks={[
 				{
 					text: 'Já possui uma conta verificada?',
@@ -110,43 +111,43 @@ function EmailVerificationPendingPage() {
 				>
 					<Stack
 						spacing={2}
-						alignItems="center"
-						textAlign="center"
+						alignItems='center'
+						textAlign='center'
 					>
 						<Email sx={{ fontSize: 48, color: '#0A74DA' }} />
 
 						<Typography
-							variant="h6"
-							color="#0A74DA"
+							variant='h6'
+							color='#0A74DA'
 							fontWeight={600}
 						>
 							Verificação de Email Necessária
 						</Typography>
 
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 						>
 							{message}
 						</Typography>
 
-						{email && (
+						{email ? (
 							<Typography
-								variant="body2"
+								variant='body2'
 								fontWeight={500}
 							>
 								Email enviado para: <strong>{email}</strong>
 							</Typography>
-						)}
+						) : null}
 					</Stack>
 				</Paper>
 
 				{/* Instruções */}
 				<Alert
-					severity="info"
+					severity='info'
 					sx={{ borderRadius: 2 }}
 				>
-					<Typography variant="body2">
+					<Typography variant='body2'>
 						<strong>Próximos passos:</strong>
 						<br />
 						1. Verifique sua caixa de entrada (e spam)
@@ -162,17 +163,17 @@ function EmailVerificationPendingPage() {
 				{/* Ações */}
 				<Stack spacing={2}>
 					{/* Reenviar email */}
-					{verificationStatus && !verificationStatus.email_verified && (
+					{verificationStatus && !verificationStatus.email_verified ? (
 						<Button
-							variant="contained"
-							size="large"
+							variant='contained'
+							size='large'
 							onClick={handleResendEmail}
 							disabled={resendLoading || !verificationStatus.can_resend}
 							startIcon={
 								resendLoading ? (
 									<CircularProgress
 										size={20}
-										color="inherit"
+										color='inherit'
 									/>
 								) : (
 									<Refresh />
@@ -195,24 +196,24 @@ function EmailVerificationPendingPage() {
 						>
 							{resendLoading ? 'Reenviando...' : 'Reenviar email de verificação'}
 						</Button>
-					)}
+					) : null}
 
 					{/* Informação sobre rate limiting */}
-					{verificationStatus && !verificationStatus.can_resend && (
+					{verificationStatus && !verificationStatus.can_resend ? (
 						<Alert
-							severity="warning"
+							severity='warning'
 							sx={{ borderRadius: 2 }}
 						>
-							<Typography variant="body2">
+							<Typography variant='body2'>
 								Aguarde alguns minutos antes de solicitar um novo email de verificação.
 							</Typography>
 						</Alert>
-					)}
+					) : null}
 
 					{/* Voltar para login */}
 					<Button
-						variant="outlined"
-						size="large"
+						variant='outlined'
+						size='large'
 						onClick={handleBackToLogin}
 						startIcon={<ArrowBack />}
 						sx={{
@@ -234,17 +235,17 @@ function EmailVerificationPendingPage() {
 				</Stack>
 
 				{/* Email já verificado */}
-				{verificationStatus?.email_verified && (
+				{verificationStatus?.email_verified ? (
 					<Alert
-						severity="success"
+						severity='success'
 						sx={{ borderRadius: 2 }}
 						icon={<CheckCircle />}
 					>
-						<Typography variant="body2">
+						<Typography variant='body2'>
 							<strong>Email já verificado!</strong> Você pode fazer login normalmente.
 						</Typography>
 					</Alert>
-				)}
+				) : null}
 			</Stack>
 		</AuthLayout>
 	);

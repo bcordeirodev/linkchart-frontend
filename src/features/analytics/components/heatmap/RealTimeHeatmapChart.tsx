@@ -2,7 +2,7 @@
  * Componente de mapa de calor interativo
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import { Refresh, Fullscreen, Public, Speed, LocationOn, Timeline } from '@mui/icons-material';
 import {
 	Box,
 	Typography,
@@ -21,8 +21,10 @@ import {
 	alpha,
 	useTheme
 } from '@mui/material';
-import { Refresh, Fullscreen, Public, Speed, LocationOn, Timeline } from '@mui/icons-material';
+import { useEffect, useState, useCallback } from 'react';
+
 import type { HeatmapPoint } from '@/types';
+import type React from 'react';
 
 // ========================================
 // 🏗️ INTERFACES E TIPOS
@@ -156,7 +158,9 @@ export function RealTimeHeatmapChart({
 	 * Calcular centro do mapa baseado nos dados
 	 */
 	const getMapCenter = useCallback((): [number, number] => {
-		if (data.length === 0) return [0, 0];
+		if (data.length === 0) {
+			return [0, 0];
+		}
 
 		const totalLat = data.reduce((sum: number, point: HeatmapPoint) => sum + point.lat, 0);
 		const totalLng = data.reduce((sum: number, point: HeatmapPoint) => sum + point.lng, 0);
@@ -180,13 +184,21 @@ export function RealTimeHeatmapChart({
 	const getMarkerColor = useCallback((clicks: number, maxClicks: number) => {
 		const normalizedClicks = clicks / maxClicks;
 
-		if (normalizedClicks > 0.8) return '#d32f2f'; // Vermelho intenso
+		if (normalizedClicks > 0.8) {
+			return '#d32f2f';
+		} // Vermelho intenso
 
-		if (normalizedClicks > 0.6) return '#f57c00'; // Laranja escuro
+		if (normalizedClicks > 0.6) {
+			return '#f57c00';
+		} // Laranja escuro
 
-		if (normalizedClicks > 0.4) return '#ff9800'; // Laranja
+		if (normalizedClicks > 0.4) {
+			return '#ff9800';
+		} // Laranja
 
-		if (normalizedClicks > 0.2) return '#ffc107'; // Amarelo
+		if (normalizedClicks > 0.2) {
+			return '#ffc107';
+		} // Amarelo
 
 		return '#4caf50'; // Verde
 	}, []);
@@ -208,7 +220,7 @@ export function RealTimeHeatmapChart({
 	// Estado de loading
 	if (!isClient || !mapReady) {
 		return (
-			<Card sx={{ height: height, borderRadius: '16px' }}>
+			<Card sx={{ height, borderRadius: '16px' }}>
 				<CardContent
 					sx={{
 						height: '100%',
@@ -223,8 +235,8 @@ export function RealTimeHeatmapChart({
 						sx={{ mb: 2 }}
 					/>
 					<Typography
-						variant="body2"
-						color="text.secondary"
+						variant='body2'
+						color='text.secondary'
 					>
 						Carregando mapa interativo...
 					</Typography>
@@ -236,7 +248,7 @@ export function RealTimeHeatmapChart({
 	// Renderizar estado de erro
 	if (mapError) {
 		return (
-			<Card sx={{ height: height, borderRadius: '16px' }}>
+			<Card sx={{ height, borderRadius: '16px' }}>
 				<CardContent
 					sx={{
 						height: '100%',
@@ -247,22 +259,22 @@ export function RealTimeHeatmapChart({
 					}}
 				>
 					<Alert
-						severity="error"
+						severity='error'
 						sx={{ mb: 2 }}
 					>
 						Erro ao carregar o mapa
 					</Alert>
 					<Typography
-						variant="body2"
-						color="text.secondary"
-						textAlign="center"
+						variant='body2'
+						color='text.secondary'
+						textAlign='center'
 					>
 						Não foi possível carregar os componentes do mapa.
 						<br />
 						Verifique sua conexão com a internet.
 					</Typography>
 					<Button
-						variant="outlined"
+						variant='outlined'
 						onClick={() => window.location.reload()}
 						sx={{ mt: 2 }}
 					>
@@ -276,7 +288,7 @@ export function RealTimeHeatmapChart({
 	// Renderizar estado vazio
 	if (!loading && (!data || data.length === 0)) {
 		return (
-			<Card sx={{ height: height, borderRadius: '16px' }}>
+			<Card sx={{ height, borderRadius: '16px' }}>
 				<CardContent
 					sx={{
 						height: '100%',
@@ -289,8 +301,8 @@ export function RealTimeHeatmapChart({
 				>
 					<LocationOn sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
 					<Typography
-						variant="h6"
-						color="text.primary"
+						variant='h6'
+						color='text.primary'
 						gutterBottom
 						sx={{
 							position: 'relative',
@@ -301,27 +313,27 @@ export function RealTimeHeatmapChart({
 						{title}
 					</Typography>
 					<Typography
-						variant="body2"
-						color="text.secondary"
+						variant='body2'
+						color='text.secondary'
 						sx={{ mb: 2 }}
 					>
 						Nenhum dado geográfico disponível ainda.
 					</Typography>
 					<Typography
-						variant="caption"
-						color="text.secondary"
+						variant='caption'
+						color='text.secondary'
 					>
 						Os dados aparecerão aqui conforme os cliques forem registrados.
 					</Typography>
-					{onRefresh && (
+					{onRefresh ? (
 						<Chip
-							label="Tempo Real Ativo"
-							color="success"
-							size="small"
+							label='Tempo Real Ativo'
+							color='success'
+							size='small'
 							sx={{ mt: 2 }}
 							icon={<Speed />}
 						/>
-					)}
+					) : null}
 				</CardContent>
 			</Card>
 		);
@@ -331,7 +343,7 @@ export function RealTimeHeatmapChart({
 
 	if (!MapContainer || !TileLayer || !CircleMarker || !Popup) {
 		return (
-			<Card sx={{ height: height, borderRadius: '16px' }}>
+			<Card sx={{ height, borderRadius: '16px' }}>
 				<CardContent
 					sx={{
 						height: '100%',
@@ -363,7 +375,7 @@ export function RealTimeHeatmapChart({
 		>
 			<CardContent sx={{ height: '100%', p: 0 }}>
 				{/* Header com controles */}
-				{showControls && (
+				{showControls ? (
 					<Box
 						sx={{
 							p: 2,
@@ -375,10 +387,10 @@ export function RealTimeHeatmapChart({
 					>
 						<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
 							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-								<Public color="primary" />
+								<Public color='primary' />
 								<Typography
-									variant="h6"
-									fontWeight="600"
+									variant='h6'
+									fontWeight='600'
 									sx={{
 										fontFamily: 'Inter, system-ui, sans-serif',
 										position: 'relative',
@@ -388,22 +400,22 @@ export function RealTimeHeatmapChart({
 								>
 									{title}
 								</Typography>
-								{onRefresh && (
+								{onRefresh ? (
 									<Chip
-										label="Tempo Real"
-										color="success"
-										size="small"
+										label='Tempo Real'
+										color='success'
+										size='small'
 										icon={<Speed />}
 										sx={{ ml: 1 }}
 									/>
-								)}
+								) : null}
 							</Box>
 
 							<Stack
-								direction="row"
+								direction='row'
 								spacing={1}
 							>
-								<Tooltip title="Atualizar dados">
+								<Tooltip title='Atualizar dados'>
 									<IconButton
 										onClick={onRefresh}
 										disabled={loading || !onRefresh}
@@ -420,50 +432,50 @@ export function RealTimeHeatmapChart({
 						</Box>
 
 						{/* Estatísticas */}
-						{showStats && stats && (
+						{showStats && stats ? (
 							<Stack
-								direction="row"
+								direction='row'
 								spacing={1}
-								flexWrap="wrap"
+								flexWrap='wrap'
 								sx={{ mb: 2 }}
 							>
 								<Chip
 									label={`${stats.totalClicks.toLocaleString()} cliques`}
-									color="primary"
-									size="small"
+									color='primary'
+									size='small'
 								/>
 								<Chip
 									label={`${stats.uniqueCountries} países`}
-									color="secondary"
-									size="small"
+									color='secondary'
+									size='small'
 								/>
 								<Chip
 									label={`${stats.uniqueCities} cidades`}
-									color="info"
-									size="small"
+									color='info'
+									size='small'
 								/>
 								<Chip
 									label={`Média: ${Math.round(stats.avgClicksPerLocation)} cliques/local`}
-									color="success"
-									size="small"
+									color='success'
+									size='small'
 								/>
-								{stats?.lastUpdate && (
+								{stats?.lastUpdate ? (
 									<Chip
 										label={`Atualizado: ${new Date(stats.lastUpdate).toLocaleTimeString()}`}
-										variant="outlined"
-										size="small"
+										variant='outlined'
+										size='small'
 										icon={<Timeline />}
 									/>
-								)}
+								) : null}
 							</Stack>
-						)}
+						) : null}
 
 						{/* Controles de filtro */}
 						<Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
 							<Box sx={{ minWidth: 200 }}>
 								<Typography
-									variant="caption"
-									color="text.secondary"
+									variant='caption'
+									color='text.secondary'
 									gutterBottom
 								>
 									Cliques mínimos: {minClicksFilter}
@@ -475,8 +487,8 @@ export function RealTimeHeatmapChart({
 									}}
 									min={1}
 									max={stats?.maxClicks || 100}
-									size="small"
-									valueLabelDisplay="auto"
+									size='small'
+									valueLabelDisplay='auto'
 								/>
 							</Box>
 
@@ -485,33 +497,33 @@ export function RealTimeHeatmapChart({
 									<Switch
 										checked={showClusters}
 										onChange={(e) => setShowClusters(e.target.checked)}
-										size="small"
+										size='small'
 									/>
 								}
-								label="Agrupar"
+								label='Agrupar'
 								sx={{ ml: 2 }}
 							/>
 
 							<Stack
-								direction="row"
+								direction='row'
 								spacing={1}
 							>
 								<Button
-									size="small"
+									size='small'
 									variant={mapStyle === 'street' ? 'contained' : 'outlined'}
 									onClick={() => setMapStyle('street')}
 								>
 									Ruas
 								</Button>
 								<Button
-									size="small"
+									size='small'
 									variant={mapStyle === 'satellite' ? 'contained' : 'outlined'}
 									onClick={() => setMapStyle('satellite')}
 								>
 									Satélite
 								</Button>
 								<Button
-									size="small"
+									size='small'
 									variant={mapStyle === 'dark' ? 'contained' : 'outlined'}
 									onClick={() => setMapStyle('dark')}
 								>
@@ -520,16 +532,16 @@ export function RealTimeHeatmapChart({
 							</Stack>
 						</Box>
 
-						{error && (
+						{error ? (
 							<Alert
-								severity="warning"
+								severity='warning'
 								sx={{ mt: 2 }}
 							>
 								{error} (Exibindo dados de exemplo)
 							</Alert>
-						)}
+						) : null}
 					</Box>
-				)}
+				) : null}
 
 				{/* Mapa */}
 				<Box
@@ -542,7 +554,7 @@ export function RealTimeHeatmapChart({
 						center={getMapCenter()}
 						zoom={4}
 						style={{ height: '100%', width: '100%' }}
-						scrollWheelZoom={true}
+						scrollWheelZoom
 					>
 						<TileLayer
 							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -564,15 +576,15 @@ export function RealTimeHeatmapChart({
 									<Popup>
 										<Box sx={{ p: 1, minWidth: 200 }}>
 											<Typography
-												variant="subtitle2"
-												fontWeight="bold"
+												variant='subtitle2'
+												fontWeight='bold'
 												gutterBottom
 											>
 												📍 {point.city}, {point.country}
 											</Typography>
 											<Typography
-												variant="h6"
-												color="primary"
+												variant='h6'
+												color='primary'
 												gutterBottom
 												sx={{
 													position: 'relative',
@@ -582,48 +594,48 @@ export function RealTimeHeatmapChart({
 												{point.clicks.toLocaleString()} cliques
 											</Typography>
 											<Typography
-												variant="caption"
-												color="text.secondary"
+												variant='caption'
+												color='text.secondary'
 											>
 												Coordenadas: {point.lat.toFixed(4)}, {point.lng.toFixed(4)}
 											</Typography>
-											{point.state_name && (
+											{point.state_name ? (
 												<Typography
-													variant="caption"
-													color="text.secondary"
-													display="block"
+													variant='caption'
+													color='text.secondary'
+													display='block'
 												>
 													Estado/Região: {point.state_name}
 												</Typography>
-											)}
-											{point.iso_code && (
+											) : null}
+											{point.iso_code ? (
 												<Typography
-													variant="caption"
-													color="text.secondary"
-													display="block"
+													variant='caption'
+													color='text.secondary'
+													display='block'
 												>
 													Código: {point.iso_code} | Moeda: {point.currency}
 												</Typography>
-											)}
-											{point.continent && (
+											) : null}
+											{point.continent ? (
 												<Typography
-													variant="caption"
-													color="text.secondary"
-													display="block"
+													variant='caption'
+													color='text.secondary'
+													display='block'
 												>
 													Continente: {point.continent}
 												</Typography>
-											)}
-											{point.last_click && (
+											) : null}
+											{point.last_click ? (
 												<Typography
-													variant="caption"
-													color="primary"
-													display="block"
+													variant='caption'
+													color='primary'
+													display='block'
 													sx={{ mt: 1 }}
 												>
 													Último clique: {new Date(point.last_click).toLocaleString('pt-BR')}
 												</Typography>
-											)}
+											) : null}
 										</Box>
 									</Popup>
 								</CircleMarker>

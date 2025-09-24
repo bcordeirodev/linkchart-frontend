@@ -1,6 +1,8 @@
-import { analyticsService } from '@/services';
 import { useCallback, useEffect, useState } from 'react';
-import { LinkPerformanceDashboard } from '@/types/analytics/performance';
+
+import { analyticsService } from '@/services';
+
+import type { LinkPerformanceDashboard } from '@/types/analytics/performance';
 
 /**
  * Hook para gerenciar dados de performance dos links

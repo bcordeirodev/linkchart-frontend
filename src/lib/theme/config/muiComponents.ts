@@ -3,7 +3,7 @@
  * Configurações essenciais do Material-UI organizadas por categoria
  */
 
-import { Theme } from '@mui/material/styles/createTheme';
+import type { Theme } from '@mui/material/styles/createTheme';
 
 // ========================================
 // 🎯 CONFIGURAÇÕES ESSENCIAIS

@@ -1,9 +1,13 @@
-import { MaterialReactTable, useMaterialReactTable, MaterialReactTableProps, MRT_Icons } from 'material-react-table';
 import _ from 'lodash';
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { useMemo } from 'react';
+
 import { SvgIcon } from '@/shared/components';
-import { Theme } from '@mui/material/styles/createTheme';
+
 import DataTableTopToolbar from './DataTableTopToolbar';
+
+import type { Theme } from '@mui/material/styles/createTheme';
+import type { MaterialReactTableProps, MRT_Icons } from 'material-react-table';
 
 const tableIcons: Partial<MRT_Icons> = {
 	ArrowDownwardIcon: (props: any) => (
@@ -20,7 +24,7 @@ const tableIcons: Partial<MRT_Icons> = {
 	DensitySmallIcon: () => <SvgIcon size={20}>heroicons-outline:bars-2</SvgIcon>,
 	DragHandleIcon: () => (
 		<SvgIcon
-			className="rotate-45"
+			className='rotate-45'
 			size={14}
 		>
 			heroicons-outline:arrows-pointing-out
@@ -39,7 +43,7 @@ const tableIcons: Partial<MRT_Icons> = {
 	FullscreenIcon: () => <SvgIcon size={20}>heroicons-outline:arrows-pointing-out</SvgIcon>,
 	SearchIcon: (props: any) => (
 		<SvgIcon
-			color="action"
+			color='action'
 			size={20}
 			{...props}
 		>

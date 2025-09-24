@@ -17,7 +17,7 @@ export * from './analytics';
 export * from './forms';
 
 // Mobile (já otimizado)
-export * from './mobile';
+export { LinksMobileCards } from './mobile';
 
 // Outros componentes
 export { CopyButton } from './CopyButton';

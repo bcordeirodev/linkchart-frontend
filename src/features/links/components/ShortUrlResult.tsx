@@ -1,4 +1,5 @@
 import { CheckCircle } from '@mui/icons-material';
+
 import { CopyButton } from './CopyButton';
 import { ShareActions } from './ShareActions';
 
@@ -65,16 +66,16 @@ export function ShortUrlResult({ shortUrl, onCreateAnother }: ShortUrlResultProp
 			</UrlDisplayContainer>
 
 			{/* Additional Actions */}
-			{onCreateAnother && (
+			{onCreateAnother ? (
 				<AdditionalActionsContainer>
 					<CreateAnotherButton
-						variant="outlined"
+						variant='outlined'
 						onClick={onCreateAnother}
 					>
 						Criar Outro Link
 					</CreateAnotherButton>
 				</AdditionalActionsContainer>
-			)}
+			) : null}
 		</ResultContainer>
 	);
 }

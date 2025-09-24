@@ -3,9 +3,12 @@
  * Paper aprimorado com glass effect e animações
  */
 
-import { Paper, PaperProps } from '@mui/material';
+import { Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+
 import { createPresetAnimations } from '@/lib/theme';
+
+import type { PaperProps } from '@mui/material';
 
 interface EnhancedPaperProps extends Omit<PaperProps, 'variant'> {
 	variant?: 'glass' | 'elevated' | 'outlined';

@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { api } from '@/lib/api/client';
 import { publicLinkService } from '@/services/publicLink.service';
+
 import type { BasicAnalyticsData, BasicLinkData, BasicAnalyticsState, BasicAnalyticsActions } from '../types';
 
 interface UseBasicAnalyticsProps {
@@ -53,7 +55,7 @@ export function useBasicAnalytics({ slug }: UseBasicAnalyticsProps): UseBasicAna
 				const analyticsDataResult = analyticsResponse as any;
 
 				// Validação dos dados
-				if (!linkDataResult || !linkDataResult.slug) {
+				if (!linkDataResult?.slug) {
 					setError('Dados do link inválidos');
 					return;
 				}

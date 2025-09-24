@@ -1,4 +1,4 @@
-import { LayoutSettingsConfigType } from '@/shared/layout/core';
+import type { LayoutSettingsConfigType } from '@/shared/layout/core';
 
 /**
  * Configurações simplificadas da aplicação Link Chart

@@ -1,6 +1,7 @@
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { AppIcon } from '@/lib/icons';
+
 import { useShareAPI } from '@/features/links/hooks/useShareAPI';
+import { AppIcon } from '@/lib/icons';
 
 interface ShareActionsProps {
 	url: string;
@@ -29,9 +30,9 @@ export function ShareActions({
 
 	return (
 		<Box sx={{ display: 'flex', gap: 1 }}>
-			<Tooltip title="Abrir link">
+			<Tooltip title='Abrir link'>
 				<IconButton
-					color="primary"
+					color='primary'
 					onClick={handleOpenLink}
 					sx={{
 						bgcolor: 'primary.main',
@@ -39,13 +40,13 @@ export function ShareActions({
 						'&:hover': { bgcolor: 'primary.dark' }
 					}}
 				>
-					<AppIcon intent="url" />
+					<AppIcon intent='url' />
 				</IconButton>
 			</Tooltip>
 
-			<Tooltip title="Compartilhar">
+			<Tooltip title='Compartilhar'>
 				<IconButton
-					color="secondary"
+					color='secondary'
 					onClick={handleShare}
 					sx={{
 						bgcolor: 'secondary.main',
@@ -53,7 +54,7 @@ export function ShareActions({
 						'&:hover': { bgcolor: 'secondary.dark' }
 					}}
 				>
-					<AppIcon intent="share" />
+					<AppIcon intent='share' />
 				</IconButton>
 			</Tooltip>
 		</Box>

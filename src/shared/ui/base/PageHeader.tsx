@@ -4,9 +4,10 @@
  */
 
 import { Box, Typography, Breadcrumbs, Link, useTheme } from '@mui/material';
-import { ReactNode } from 'react';
-import { createTextGradient, createPresetAnimations } from '@/lib/theme';
-import { responsiveSpacing } from '@/lib/theme';
+
+import { createTextGradient, createPresetAnimations, responsiveSpacing } from '@/lib/theme';
+
+import type { ReactNode } from 'react';
 
 interface BreadcrumbItem {
 	label: string;
@@ -95,7 +96,7 @@ export function PageHeader({
 			}}
 		>
 			{/* Elemento decorativo de fundo */}
-			{showDecorative && (
+			{showDecorative ? (
 				<Box
 					sx={{
 						position: 'absolute',
@@ -109,10 +110,10 @@ export function PageHeader({
 						transform: 'translate(30%, -30%)'
 					}}
 				/>
-			)}
+			) : null}
 
 			{/* Breadcrumbs */}
-			{breadcrumbs && breadcrumbs.length > 0 && (
+			{breadcrumbs && breadcrumbs.length > 0 ? (
 				<Breadcrumbs
 					sx={{
 						mb: 2,
@@ -136,7 +137,7 @@ export function PageHeader({
 						</Link>
 					))}
 				</Breadcrumbs>
-			)}
+			) : null}
 
 			{/* Conteúdo principal */}
 			<Box
@@ -153,7 +154,7 @@ export function PageHeader({
 				{/* Lado esquerdo - Título e ícone */}
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minWidth: 0, flex: 1 }}>
 					{/* Ícone */}
-					{icon && (
+					{icon ? (
 						<Box
 							sx={{
 								display: 'flex',
@@ -171,13 +172,13 @@ export function PageHeader({
 						>
 							{icon}
 						</Box>
-					)}
+					) : null}
 
 					{/* Textos */}
 					<Box sx={{ minWidth: 0, flex: 1 }}>
 						<Typography
 							variant={compact ? 'h5' : 'h4'}
-							component="h1"
+							component='h1'
 							sx={{
 								// Usar gradiente de texto padronizado
 								...createTextGradient(theme, config.gradient),
@@ -196,9 +197,9 @@ export function PageHeader({
 							{title}
 						</Typography>
 
-						{subtitle && (
+						{subtitle ? (
 							<Typography
-								variant="body1"
+								variant='body1'
 								sx={{
 									color: 'text.secondary',
 									fontSize: { xs: '0.875rem', sm: '1rem' },
@@ -212,12 +213,12 @@ export function PageHeader({
 							>
 								{subtitle}
 							</Typography>
-						)}
+						) : null}
 					</Box>
 				</Box>
 
 				{/* Lado direito - Ações */}
-				{actions && (
+				{actions ? (
 					<Box
 						sx={{
 							display: 'flex',
@@ -229,7 +230,7 @@ export function PageHeader({
 					>
 						{actions}
 					</Box>
-				)}
+				) : null}
 			</Box>
 		</Box>
 	);

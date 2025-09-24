@@ -17,10 +17,13 @@
  * @since 2.0.0
  */
 
-import { forwardRef, ReactNode } from 'react';
+import { Box, Icon } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Box, BoxProps, Icon } from '@mui/material';
 import clsx from 'clsx';
+import { forwardRef } from 'react';
+
+import type { BoxProps } from '@mui/material';
+import type { ReactNode } from 'react';
 
 /**
  * Props do componente SvgIcon
@@ -135,7 +138,7 @@ export const SvgIcon = forwardRef<SVGSVGElement, SvgIconProps>((props, ref) => {
 	return (
 		<StyledIconContainer
 			{...other}
-			component="svg"
+			component='svg'
 			size={size}
 			color={color}
 			fill={fill}

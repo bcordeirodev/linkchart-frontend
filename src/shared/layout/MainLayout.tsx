@@ -1,177 +1,93 @@
 /**
- * 🏗️ MAIN LAYOUT - LINK CHART
- * Layout principal da aplicação com suporte completo a temas
- *
- * @description
- * Este componente serve como o layout base da aplicação, fornecendo
- * estrutura consistente e aplicando temas de forma inteligente em
- * todas as seções (navbar, toolbar, footer, main).
+ * Layout principal da aplicação com suporte a temas
  */
-import { useMemo } from 'react';
 import { Box, useTheme } from '@mui/material';
+
 import { useMainTheme, useResponsive } from '@/lib/theme';
-import { Layout, MainLayoutProps as CoreMainLayoutProps } from './core';
+
 import { Navbar, Footer } from './components';
 
-/**
- * Props do MainLayout
- * @interface MainLayoutProps
- */
-type MainLayoutProps = Omit<CoreMainLayoutProps, 'layouts'> & {
-	/** Exibir navbar */
+interface MainLayoutProps {
+	children: React.ReactNode;
 	navbar?: boolean;
-	/** Exibir toolbar */
-	toolbar?: boolean;
-	/** Exibir footer */
 	footer?: boolean;
-	/** Classe CSS adicional */
 	className?: string;
-};
+}
 
-/**
- * Layout principal da aplicação com suporte a temas
- * @param {MainLayoutProps} props - Props do componente
- * @returns {JSX.Element} Layout configurado
- */
-function MainLayout(props: MainLayoutProps) {
-	const { children, navbar, toolbar, footer, settings: _settings = {}, className, ...rest } = props;
-
-	// Hooks de tema
+function MainLayout({ children, navbar = true, footer = true, className }: MainLayoutProps) {
 	const theme = useTheme();
 	const mainTheme = useMainTheme();
 	const { isMobile } = useResponsive();
 
-	/**
-	 * Configurações mescladas com tema e responsividade
-	 */
-	const mergedSettings = useMemo(() => {
-		// Configurações responsivas baseadas no tema
-		const responsiveSettings = {
-			layout: {
-				style: 'layout1' as const,
-				config: {
-					navbar: {
-						display: navbar !== undefined ? navbar : true,
-						folded: isMobile ? true : false,
-						position: 'left' as const
-					},
-					toolbar: {
-						display: toolbar !== undefined ? toolbar : true,
-						style: isMobile ? ('fixed' as const) : ('static' as const)
-					},
-					footer: {
-						display: footer !== undefined ? footer : true,
-						style: 'static' as const
-					}
-				}
-			}
-		};
-
-		return responsiveSettings.layout;
-	}, [navbar, toolbar, footer, isMobile]);
-
-	/**
-	 * Layouts com tema aplicado
-	 */
-	const themedLayouts = useMemo(
-		() => ({
-			layout1: ({ children }: { children: React.ReactNode }) => {
-				const showNavbar = mergedSettings.config?.navbar?.display !== false;
-				const showFooter = mergedSettings.config?.footer?.display !== false;
-				const footerStyle = (mergedSettings.config?.footer?.style || 'static') as 'fixed' | 'static' | 'sticky';
-
-				return (
-					<Box
-						className={className}
-						sx={{
-							minHeight: '100vh',
-							width: '100vw',
-							margin: 0,
-							padding: 0,
-							backgroundColor: theme.palette.background.default,
-							color: theme.palette.text.primary,
-							display: 'flex',
-							flexDirection: 'column',
-							overflow: 'hidden', // Evita scroll desnecessário
-							transition: theme.transitions.create(['background-color', 'color'], {
-								duration: theme.transitions.duration.standard
-							}),
-							// Suporte para temas escuros
-							'& .MuiAppBar-root': {
-								backgroundColor: mainTheme?.palette?.primary?.main || theme.palette.primary.main,
-								color: mainTheme?.palette?.primary?.contrastText || theme.palette.primary.contrastText
-							},
-							// Estilização de scrollbars para tema escuro
-							'&::-webkit-scrollbar': {
-								width: '8px'
-							},
-							'&::-webkit-scrollbar-track': {
-								backgroundColor: theme.palette.background.paper
-							},
-							'&::-webkit-scrollbar-thumb': {
-								backgroundColor: theme.palette.divider,
-								borderRadius: '4px',
-								'&:hover': {
-									backgroundColor: theme.palette.action.hover
-								}
-							}
-						}}
-					>
-						{/* Navbar */}
-						{showNavbar && (
-							<Navbar
-								isMobile={isMobile}
-								onMobileMenuToggle={() => {
-									// Placeholder para funcionalidade futura
-								}}
-							/>
-						)}
-
-						{/* Main Content - Full Screen */}
-						<Box
-							component="main"
-							sx={{
-								flexGrow: 1,
-								width: '100%',
-								height: '100%',
-								position: 'relative',
-								overflow: 'auto', // Permite scroll interno se necessário
-								pt: showNavbar ? { xs: 7, sm: 8 } : 0, // Espaço para navbar fixa
-								pb: showFooter && footerStyle === 'fixed' ? 8 : 0, // Espaço para footer fixo
-								px: 0,
-								minHeight: showNavbar ? 'calc(100vh - 64px)' : '100vh',
-								// Garante que filhos ocupem toda a área disponível
-								'& > *': {
-									width: '100%',
-									minHeight: 'inherit',
-									boxSizing: 'border-box'
-								},
-								// Remove margens padrão de elementos filhos
-								'& > * > *': {
-									margin: 0
-								}
-							}}
-						>
-							{children}
-						</Box>
-
-						{/* Footer */}
-						{showFooter && <Footer style={footerStyle as 'fixed' | 'static' | 'sticky'} />}
-					</Box>
-				);
-			}
-		}),
-		[theme, mainTheme, className, mergedSettings, isMobile]
-	);
+	const showNavbar = navbar;
+	const showFooter = footer;
 
 	return (
-		<Layout
-			{...rest}
-			layouts={themedLayouts}
-			settings={mergedSettings}
+		<Box
+			className={className}
+			sx={{
+				minHeight: '100vh',
+				width: '100vw',
+				margin: 0,
+				padding: 0,
+				backgroundColor: theme.palette.background.default,
+				color: theme.palette.text.primary,
+				display: 'flex',
+				flexDirection: 'column',
+				overflow: 'hidden',
+				transition: theme.transitions.create(['background-color', 'color'], {
+					duration: theme.transitions.duration.standard
+				}),
+				'& .MuiAppBar-root': {
+					backgroundColor: mainTheme?.palette?.primary?.main || theme.palette.primary.main,
+					color: mainTheme?.palette?.primary?.contrastText || theme.palette.primary.contrastText
+				},
+				'&::-webkit-scrollbar': {
+					width: '8px'
+				},
+				'&::-webkit-scrollbar-track': {
+					backgroundColor: theme.palette.background.paper
+				},
+				'&::-webkit-scrollbar-thumb': {
+					backgroundColor: theme.palette.divider,
+					borderRadius: '4px',
+					'&:hover': {
+						backgroundColor: theme.palette.action.hover
+					}
+				}
+			}}
 		>
-			{children}
-		</Layout>
+			{showNavbar ? (
+				<Navbar isMobile={isMobile} />
+			) : null}
+
+			<Box
+				component='main'
+				sx={{
+					flexGrow: 1,
+					width: '100%',
+					height: '100%',
+					position: 'relative',
+					overflow: 'auto',
+					pt: showNavbar ? { xs: 7, sm: 8 } : 0,
+					pb: 0,
+					px: 0,
+					minHeight: showNavbar ? 'calc(100vh - 64px)' : '100vh',
+					'& > *': {
+						width: '100%',
+						minHeight: 'inherit',
+						boxSizing: 'border-box'
+					},
+					'& > * > *': {
+						margin: 0
+					}
+				}}
+			>
+				{children}
+			</Box>
+
+			{showFooter ? <Footer style="static" /> : null}
+		</Box>
 	);
 }
 

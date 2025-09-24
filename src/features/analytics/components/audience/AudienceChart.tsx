@@ -1,10 +1,12 @@
-import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
-import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
-import type { DeviceData, BrowserData, OSData, DevicePerformanceData, LanguageData } from '@/types';
 import { Box, Card, CardContent, Chip, Grid, Stack, Typography, Tabs, Tab } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { getStandardChartColors } from '@/lib/theme';
 import { useState } from 'react';
+
+import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
+import { getStandardChartColors } from '@/lib/theme';
+import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
+
+import type { DeviceData, BrowserData, OSData, DevicePerformanceData, LanguageData } from '@/types';
 
 interface AudienceChartProps {
 	deviceBreakdown: DeviceData[];
@@ -96,7 +98,7 @@ export function AudienceChart({
 	return (
 		<Box sx={{ p: 2, backgroundColor: theme.palette.background.paper, borderRadius: 2 }}>
 			<Typography
-				variant="h6"
+				variant='h6'
 				gutterBottom
 				sx={{
 					position: 'relative',
@@ -110,39 +112,39 @@ export function AudienceChart({
 				👥 Análise de Audiência
 				<Chip
 					label={`${totalClicks} cliques`}
-					size="small"
-					color="primary"
-					variant="outlined"
+					size='small'
+					color='primary'
+					variant='outlined'
 				/>
 			</Typography>
 
 			{/* NEW: Tabs para análises enhanced (se dados disponíveis) */}
-			{hasEnhancedData && (
+			{hasEnhancedData ? (
 				<Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
 					<Tabs
 						value={activeTab}
 						onChange={handleTabChange}
 					>
-						<Tab label="📱 Dispositivos" />
+						<Tab label='📱 Dispositivos' />
 						<Tab
-							label="🌐 Navegadores"
+							label='🌐 Navegadores'
 							disabled={!browsers?.length}
 						/>
 						<Tab
-							label="💻 Sistemas"
+							label='💻 Sistemas'
 							disabled={!operatingSystems?.length}
 						/>
 						<Tab
-							label="⚡ Performance"
+							label='⚡ Performance'
 							disabled={!devicePerformance?.length}
 						/>
 						<Tab
-							label="🌍 Idiomas"
+							label='🌍 Idiomas'
 							disabled={!languages?.length}
 						/>
 					</Tabs>
 				</Box>
-			)}
+			) : null}
 
 			{/* Tab 0: Dispositivos (Conteúdo original) */}
 			{(!hasEnhancedData || activeTab === 0) && (
@@ -162,15 +164,15 @@ export function AudienceChart({
 							<Card>
 								<CardContent sx={{ textAlign: 'center' }}>
 									<Typography
-										variant="h4"
-										color="primary"
+										variant='h4'
+										color='primary'
 										gutterBottom
 									>
 										{totalDevices}
 									</Typography>
 									<Typography
-										variant="body2"
-										color="text.secondary"
+										variant='body2'
+										color='text.secondary'
 									>
 										Dispositivos Detectados
 									</Typography>
@@ -186,15 +188,15 @@ export function AudienceChart({
 							<Card>
 								<CardContent sx={{ textAlign: 'center' }}>
 									<Typography
-										variant="h4"
-										color="secondary"
+										variant='h4'
+										color='secondary'
 										gutterBottom
 									>
 										{primaryDevice?.device || 'N/A'}
 									</Typography>
 									<Typography
-										variant="body2"
-										color="text.secondary"
+										variant='body2'
+										color='text.secondary'
 									>
 										Dispositivo Principal
 									</Typography>
@@ -210,15 +212,15 @@ export function AudienceChart({
 							<Card>
 								<CardContent sx={{ textAlign: 'center' }}>
 									<Typography
-										variant="h4"
-										color="info"
+										variant='h4'
+										color='info'
 										gutterBottom
 									>
 										{deviceBreakdown.length}
 									</Typography>
 									<Typography
-										variant="body2"
-										color="text.secondary"
+										variant='body2'
+										color='text.secondary'
 									>
 										Tipos de Dispositivo
 									</Typography>
@@ -234,15 +236,15 @@ export function AudienceChart({
 							<Card>
 								<CardContent sx={{ textAlign: 'center' }}>
 									<Typography
-										variant="h4"
-										color="success"
+										variant='h4'
+										color='success'
 										gutterBottom
 									>
 										{primaryDevice ? ((primaryDevice.clicks / totalClicks) * 100).toFixed(1) : '0'}%
 									</Typography>
 									<Typography
-										variant="body2"
-										color="text.secondary"
+										variant='body2'
+										color='text.secondary'
 									>
 										Dominância Principal
 									</Typography>
@@ -265,7 +267,7 @@ export function AudienceChart({
 							<Card>
 								<CardContent>
 									<Typography
-										variant="h6"
+										variant='h6'
 										gutterBottom
 										sx={{
 											position: 'relative',
@@ -276,7 +278,7 @@ export function AudienceChart({
 										📱 Distribuição por Dispositivo
 									</Typography>
 									<ApexChartWrapper
-										type="pie"
+										type='pie'
 										height={300}
 										{...formatPieChart(deviceChartData, 'name', 'value', isDark)}
 									/>
@@ -293,7 +295,7 @@ export function AudienceChart({
 							<Card>
 								<CardContent>
 									<Typography
-										variant="h6"
+										variant='h6'
 										gutterBottom
 										sx={{
 											position: 'relative',
@@ -304,7 +306,7 @@ export function AudienceChart({
 										🏆 Ranking de Dispositivos
 									</Typography>
 									<ApexChartWrapper
-										type="bar"
+										type='bar'
 										height={300}
 										{...formatBarChart(
 											deviceChartData,
@@ -324,7 +326,7 @@ export function AudienceChart({
 					<Card sx={{ mt: 3 }}>
 						<CardContent>
 							<Typography
-								variant="h6"
+								variant='h6'
 								gutterBottom
 								sx={{
 									position: 'relative',
@@ -354,18 +356,18 @@ export function AudienceChart({
 											<Chip
 												label={index + 1}
 												color={index === 0 ? 'primary' : 'default'}
-												size="small"
+												size='small'
 											/>
 											<Box>
 												<Typography
-													variant="subtitle2"
-													fontWeight="bold"
+													variant='subtitle2'
+													fontWeight='bold'
 												>
 													{device.device}
 												</Typography>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													{((device.clicks / totalClicks) * 100).toFixed(1)}% do total
 												</Typography>
@@ -373,14 +375,14 @@ export function AudienceChart({
 										</Box>
 										<Box sx={{ textAlign: 'right' }}>
 											<Typography
-												variant="h6"
-												color="primary"
+												variant='h6'
+												color='primary'
 											>
 												{device.clicks}
 											</Typography>
 											<Typography
-												variant="caption"
-												color="text.secondary"
+												variant='caption'
+												color='text.secondary'
 											>
 												cliques
 											</Typography>
@@ -394,7 +396,7 @@ export function AudienceChart({
 			)}
 
 			{/* NEW: Tab 1 - Navegadores */}
-			{hasEnhancedData && activeTab === 1 && browsers && (
+			{hasEnhancedData && activeTab === 1 && browsers ? (
 				<Grid
 					container
 					spacing={3}
@@ -410,13 +412,13 @@ export function AudienceChart({
 						>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									🌐 Market Share de Navegadores
 								</Typography>
 								<ApexChartWrapper
-									type="pie"
+									type='pie'
 									{...formatPieChart(browserChartData, 'name', 'value', isDark)}
 									height={350}
 								/>
@@ -434,7 +436,7 @@ export function AudienceChart({
 						>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									Top Navegadores
@@ -455,24 +457,24 @@ export function AudienceChart({
 											}}
 										>
 											<Box>
-												<Typography variant="subtitle2">{browser.browser}</Typography>
+												<Typography variant='subtitle2'>{browser.browser}</Typography>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													{browser.version}
 												</Typography>
 											</Box>
 											<Box sx={{ textAlign: 'right' }}>
 												<Typography
-													variant="body2"
-													fontWeight="bold"
+													variant='body2'
+													fontWeight='bold'
 												>
 													{browser.clicks}
 												</Typography>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													{browser.percentage?.toFixed(1)}%
 												</Typography>
@@ -484,10 +486,10 @@ export function AudienceChart({
 						</Card>
 					</Grid>
 				</Grid>
-			)}
+			) : null}
 
 			{/* NEW: Tab 2 - Sistemas Operacionais */}
-			{hasEnhancedData && activeTab === 2 && operatingSystems && (
+			{hasEnhancedData && activeTab === 2 && operatingSystems ? (
 				<Grid
 					container
 					spacing={3}
@@ -503,13 +505,13 @@ export function AudienceChart({
 						>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									💻 Distribuição de Sistemas Operacionais
 								</Typography>
 								<ApexChartWrapper
-									type="donut"
+									type='donut'
 									{...formatPieChart(osChartData, 'name', 'value', isDark)}
 									height={350}
 								/>
@@ -527,7 +529,7 @@ export function AudienceChart({
 						>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									Top Sistemas
@@ -548,24 +550,24 @@ export function AudienceChart({
 											}}
 										>
 											<Box>
-												<Typography variant="subtitle2">{os.os}</Typography>
+												<Typography variant='subtitle2'>{os.os}</Typography>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													{os.version}
 												</Typography>
 											</Box>
 											<Box sx={{ textAlign: 'right' }}>
 												<Typography
-													variant="body2"
-													fontWeight="bold"
+													variant='body2'
+													fontWeight='bold'
 												>
 													{os.clicks}
 												</Typography>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													{os.percentage?.toFixed(1)}%
 												</Typography>
@@ -577,10 +579,10 @@ export function AudienceChart({
 						</Card>
 					</Grid>
 				</Grid>
-			)}
+			) : null}
 
 			{/* NEW: Tab 3 - Performance por Dispositivo */}
-			{hasEnhancedData && activeTab === 3 && devicePerformance && (
+			{hasEnhancedData && activeTab === 3 && devicePerformance ? (
 				<Grid
 					container
 					spacing={3}
@@ -595,13 +597,13 @@ export function AudienceChart({
 						>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									⚡ Performance por Dispositivo
 								</Typography>
 								<ApexChartWrapper
-									type="bar"
+									type='bar'
 									{...formatBarChart(
 										performanceChartData,
 										'name',
@@ -615,7 +617,7 @@ export function AudienceChart({
 
 								<Box sx={{ mt: 3 }}>
 									<Typography
-										variant="subtitle1"
+										variant='subtitle1'
 										gutterBottom
 									>
 										Detalhes de Performance
@@ -634,9 +636,9 @@ export function AudienceChart({
 													borderColor: 'divider'
 												}}
 											>
-												<Typography variant="body2">{perf.device}</Typography>
+												<Typography variant='body2'>{perf.device}</Typography>
 												<Box sx={{ textAlign: 'right' }}>
-													<Typography variant="caption">
+													<Typography variant='caption'>
 														Média: {perf.avg_response_time}ms | Min:{' '}
 														{perf.min_response_time}ms | Max: {perf.max_response_time}ms
 													</Typography>
@@ -649,10 +651,10 @@ export function AudienceChart({
 						</Card>
 					</Grid>
 				</Grid>
-			)}
+			) : null}
 
 			{/* NEW: Tab 4 - Distribuição de Idiomas */}
-			{hasEnhancedData && activeTab === 4 && languages && (
+			{hasEnhancedData && activeTab === 4 && languages ? (
 				<Grid
 					container
 					spacing={3}
@@ -668,13 +670,13 @@ export function AudienceChart({
 						>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									🌍 Distribuição de Idiomas
 								</Typography>
 								<ApexChartWrapper
-									type="pie"
+									type='pie'
 									{...formatPieChart(languageChartData, 'name', 'value', isDark)}
 									height={350}
 								/>
@@ -692,7 +694,7 @@ export function AudienceChart({
 						>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									Top Idiomas
@@ -713,18 +715,18 @@ export function AudienceChart({
 											}}
 										>
 											<Box>
-												<Typography variant="subtitle2">{language.language}</Typography>
+												<Typography variant='subtitle2'>{language.language}</Typography>
 											</Box>
 											<Box sx={{ textAlign: 'right' }}>
 												<Typography
-													variant="body2"
-													fontWeight="bold"
+													variant='body2'
+													fontWeight='bold'
 												>
 													{language.clicks}
 												</Typography>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													{language.percentage.toFixed(1)}%
 												</Typography>
@@ -736,7 +738,7 @@ export function AudienceChart({
 						</Card>
 					</Grid>
 				</Grid>
-			)}
+			) : null}
 		</Box>
 	);
 }

@@ -79,14 +79,16 @@ class PublicLinkService extends BaseService {
 	 * Formata uma URL adicionando protocolo se necessário
 	 */
 	formatUrl(url: string): string {
-		if (!url) return '';
+		if (!url) {
+			return '';
+		}
 
 		// Remove espaços
 		url = url.trim();
 
 		// Adiciona https:// se não tiver protocolo
 		if (!/^https?:\/\//i.test(url)) {
-			url = 'https://' + url;
+			url = `https://${url}`;
 		}
 
 		return url;

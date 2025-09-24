@@ -3,13 +3,17 @@
  * Hooks essenciais de tema simplificados
  */
 
-import { FuseThemeType } from '../types/theme';
-import { createTheme, Theme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import _ from 'lodash';
-import { defaultThemeOptions, extendThemeWithMixins, mustHaveThemeOptions } from '../config/optimizedSettings';
-import { ThemeOptions } from '@mui/material/styles/createTheme';
+
 import { useLayoutSettings } from '@/shared/layout/core';
+
+import { defaultThemeOptions, extendThemeWithMixins, mustHaveThemeOptions } from '../config/optimizedSettings';
 import { allThemes } from '../themes';
+
+import type { FuseThemeType } from '../types/theme';
+import type { Theme } from '@mui/material/styles';
+import type { ThemeOptions } from '@mui/material/styles/createTheme';
 
 type Direction = 'ltr' | 'rtl';
 
@@ -25,7 +29,7 @@ const resolveTheme = (themeKey: string | FuseThemeType): FuseThemeType => {
 		return themeKey;
 	}
 
-	const theme = allThemes[themeKey as keyof typeof allThemes];
+	const theme = allThemes[themeKey];
 
 	if (!theme) {
 		// Tema não encontrado, usando tema padrão

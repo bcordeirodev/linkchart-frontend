@@ -1,13 +1,14 @@
-import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@/lib/store/messageSlice';
-import { authService } from '@/services/auth.service';
-import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Lock, Save, Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box, Button, CircularProgress, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+import { useAppDispatch } from '@/lib/store/hooks';
+import { showMessage } from '@/lib/store/messageSlice';
+import { authService } from '@/services/auth.service';
+import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 
 // Schema de validação com Zod
 const passwordChangeSchema = z
@@ -83,28 +84,28 @@ export function PasswordChangeForm() {
 				<Stack spacing={{ xs: 2, sm: 3 }}>
 					<Box>
 						<Typography
-							variant="h6"
+							variant='h6'
 							sx={{ fontWeight: 700, mb: 1 }}
 						>
 							🔒 Alterar Senha
 						</Typography>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 						>
 							Mantenha sua conta segura alterando sua senha regularmente
 						</Typography>
 					</Box>
 
 					<Box
-						component="form"
+						component='form'
 						onSubmit={handleSubmit(onSubmit)}
 						sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
 					>
 						{/* Senha Atual */}
 						<TextField
 							{...register('current_password')}
-							label="Senha Atual"
+							label='Senha Atual'
 							type={showPasswords.current ? 'text' : 'password'}
 							error={!!errors.current_password}
 							helperText={errors.current_password?.message}
@@ -112,16 +113,16 @@ export function PasswordChangeForm() {
 							disabled={isSubmitting}
 							InputProps={{
 								startAdornment: (
-									<InputAdornment position="start">
+									<InputAdornment position='start'>
 										<Lock sx={{ color: 'text.secondary' }} />
 									</InputAdornment>
 								),
 								endAdornment: (
-									<InputAdornment position="end">
+									<InputAdornment position='end'>
 										<IconButton
 											onClick={() => togglePasswordVisibility('current')}
-											edge="end"
-											size="small"
+											edge='end'
+											size='small'
 											sx={{ color: 'text.secondary' }}
 										>
 											{showPasswords.current ? <VisibilityOff /> : <Visibility />}
@@ -134,7 +135,7 @@ export function PasswordChangeForm() {
 						{/* Nova Senha */}
 						<TextField
 							{...register('new_password')}
-							label="Nova Senha"
+							label='Nova Senha'
 							type={showPasswords.new ? 'text' : 'password'}
 							error={!!errors.new_password}
 							helperText={errors.new_password?.message}
@@ -142,16 +143,16 @@ export function PasswordChangeForm() {
 							disabled={isSubmitting}
 							InputProps={{
 								startAdornment: (
-									<InputAdornment position="start">
+									<InputAdornment position='start'>
 										<Lock sx={{ color: 'text.secondary' }} />
 									</InputAdornment>
 								),
 								endAdornment: (
-									<InputAdornment position="end">
+									<InputAdornment position='end'>
 										<IconButton
 											onClick={() => togglePasswordVisibility('new')}
-											edge="end"
-											size="small"
+											edge='end'
+											size='small'
 											sx={{ color: 'text.secondary' }}
 										>
 											{showPasswords.new ? <VisibilityOff /> : <Visibility />}
@@ -164,7 +165,7 @@ export function PasswordChangeForm() {
 						{/* Confirmação da Nova Senha */}
 						<TextField
 							{...register('new_password_confirmation')}
-							label="Confirmar Nova Senha"
+							label='Confirmar Nova Senha'
 							type={showPasswords.confirm ? 'text' : 'password'}
 							error={!!errors.new_password_confirmation}
 							helperText={errors.new_password_confirmation?.message}
@@ -172,16 +173,16 @@ export function PasswordChangeForm() {
 							disabled={isSubmitting}
 							InputProps={{
 								startAdornment: (
-									<InputAdornment position="start">
+									<InputAdornment position='start'>
 										<Lock sx={{ color: 'text.secondary' }} />
 									</InputAdornment>
 								),
 								endAdornment: (
-									<InputAdornment position="end">
+									<InputAdornment position='end'>
 										<IconButton
 											onClick={() => togglePasswordVisibility('confirm')}
-											edge="end"
-											size="small"
+											edge='end'
+											size='small'
 											sx={{ color: 'text.secondary' }}
 										>
 											{showPasswords.confirm ? <VisibilityOff /> : <Visibility />}
@@ -193,15 +194,15 @@ export function PasswordChangeForm() {
 
 						{/* Botão de Submissão */}
 						<Button
-							type="submit"
-							variant="contained"
-							size="large"
+							type='submit'
+							variant='contained'
+							size='large'
 							disabled={!isValid || isSubmitting}
 							startIcon={
 								isSubmitting ? (
 									<CircularProgress
 										size={20}
-										color="inherit"
+										color='inherit'
 									/>
 								) : (
 									<Save />
@@ -231,7 +232,7 @@ export function PasswordChangeForm() {
 						}}
 					>
 						<Typography
-							variant="subtitle2"
+							variant='subtitle2'
 							sx={{
 								fontWeight: 600,
 								mb: 1,
@@ -241,8 +242,8 @@ export function PasswordChangeForm() {
 							💡 Dicas de Segurança
 						</Typography>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 						>
 							• Use pelo menos 8 caracteres com letras, números e símbolos
 							<br />

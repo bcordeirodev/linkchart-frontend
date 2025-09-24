@@ -52,7 +52,9 @@ export const linkFormSchema = z
 			.optional()
 			.nullable()
 			.refine((date) => {
-				if (!date) return true;
+				if (!date) {
+					return true;
+				}
 
 				const expireDate = new Date(date);
 				const maxDate = new Date();
@@ -67,7 +69,9 @@ export const linkFormSchema = z
 			.optional()
 			.nullable()
 			.refine((date) => {
-				if (!date) return true;
+				if (!date) {
+					return true;
+				}
 
 				// Permite qualquer data válida para edição
 				const startDate = new Date(date);
@@ -96,7 +100,9 @@ export const linkFormSchema = z
 	// ✅ Validação cruzada de datas
 	.refine(
 		(data) => {
-			if (!data.starts_in || !data.expires_at) return true;
+			if (!data.starts_in || !data.expires_at) {
+				return true;
+			}
 
 			const startDate = new Date(data.starts_in);
 			const expireDate = new Date(data.expires_at);

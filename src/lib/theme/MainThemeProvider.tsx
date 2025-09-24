@@ -1,19 +1,22 @@
-import * as React from 'react';
-import { useMemo } from 'react';
-import rtlPlugin from 'stylis-plugin-rtl';
-import { useMainTheme } from './hooks/fuseThemeHooks';
-import createCache, { Options, StylisPlugin } from '@emotion/cache';
+import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { useMemo } from 'react';
+import rtlPlugin from 'stylis-plugin-rtl';
+
+import { useMainTheme } from './hooks/fuseThemeHooks';
+
+import type { Options, StylisPlugin } from '@emotion/cache';
+import type * as React from 'react';
 
 /**
  * Props do MainThemeProvider
  * @interface MainThemeProviderProps
  */
-type MainThemeProviderProps = {
+interface MainThemeProviderProps {
 	/** Elementos filhos que receberão o tema */
 	children: React.ReactNode;
-};
+}
 
 /**
  * Plugin Stylis para envolver estilos em CSS layers

@@ -1,5 +1,6 @@
-import { Container, Alert, Button, Box } from '@mui/material';
 import { Home as HomeIcon } from '@mui/icons-material';
+import { Container, Alert, Button, Box } from '@mui/material';
+
 import { PublicLayout } from '@/shared/layout';
 
 interface ErrorStateProps {
@@ -18,15 +19,15 @@ export function ErrorState({ error, debugInfo, onCreateLink }: ErrorStateProps) 
 	return (
 		<PublicLayout>
 			<Container
-				maxWidth="md"
+				maxWidth='md'
 				sx={{ py: 8 }}
 			>
 				<Alert
-					severity="error"
+					severity='error'
 					sx={{ mb: 4 }}
 					action={
 						<Button
-							color="inherit"
+							color='inherit'
 							onClick={onCreateLink}
 						>
 							Criar Link
@@ -34,17 +35,17 @@ export function ErrorState({ error, debugInfo, onCreateLink }: ErrorStateProps) 
 					}
 				>
 					{error}
-					{debugInfo && (
+					{debugInfo ? (
 						<div style={{ marginTop: '10px', fontSize: '12px', opacity: 0.7 }}>Debug: {debugInfo}</div>
-					)}
+					) : null}
 				</Alert>
 
-				<Box textAlign="center">
+				<Box textAlign='center'>
 					<Button
-						variant="contained"
+						variant='contained'
 						startIcon={<HomeIcon />}
 						onClick={onCreateLink}
-						size="large"
+						size='large'
 					>
 						Voltar ao Encurtador
 					</Button>

@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { CircularProgress } from '@mui/material';
+import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+
 import useRedirectWithDelay from '@/features/redirect/hooks/useRedirectWithDelay';
 import LoadingWithRedirect from '@/shared/layout/LoadingWithRedirect';
 
@@ -78,16 +79,16 @@ function SmartRedirect({
 						<RedirectDecoration />
 						<RedirectContent>
 							<RedirectTitle
-								variant="h6"
+								variant='h6'
 								gutterBottom
 							>
 								{title}
 							</RedirectTitle>
-							<RedirectMessage variant="body2">{message}</RedirectMessage>
+							<RedirectMessage variant='body2'>{message}</RedirectMessage>
 						</RedirectContent>
 						<RedirectActions>
 							<ContinueButton
-								variant="contained"
+								variant='contained'
 								onClick={startRedirect}
 							>
 								Continue
@@ -116,7 +117,7 @@ function SmartRedirect({
 								<LoadingText>{title}</LoadingText>
 							</LoadingContainer>
 
-							{showCountdown && countdown > 0 && (
+							{showCountdown && countdown > 0 ? (
 								<motion.div
 									initial={{ opacity: 0 }}
 									animate={{ opacity: 1 }}
@@ -126,29 +127,29 @@ function SmartRedirect({
 										<CountdownLabel>segundos restantes</CountdownLabel>
 									</CountdownDisplay>
 								</motion.div>
-							)}
+							) : null}
 
 							<RedirectMessage sx={{ mt: 2 }}>{message}</RedirectMessage>
 						</RedirectContent>
 
 						<RedirectActions>
 							<GoNowButton
-								variant="contained"
+								variant='contained'
 								onClick={redirectImmediately}
-								size="small"
+								size='small'
 							>
 								Ir Agora
 							</GoNowButton>
 
-							{allowCancel && (
+							{allowCancel ? (
 								<CancelRedirectButton
-									variant="outlined"
+									variant='outlined'
 									onClick={handleCancel}
-									size="small"
+									size='small'
 								>
 									Cancelar
 								</CancelRedirectButton>
-							)}
+							) : null}
 						</RedirectActions>
 					</RedirectCard>
 				</RedirectContainer>
@@ -161,3 +162,4 @@ function SmartRedirect({
 }
 
 export default SmartRedirect;
+export { SmartRedirect };

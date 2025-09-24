@@ -1,14 +1,15 @@
 import { createDynamicMiddleware } from '@reduxjs/toolkit/react';
+
 import type { AppDispatch, RootState } from './store';
 
 const dynamicInstance = createDynamicMiddleware();
 
 export const { middleware: dynamicMiddleware } = dynamicInstance;
 
-type Config = {
+interface Config {
 	state: RootState;
 	dispatch: AppDispatch;
-};
+}
 
 export const addAppMiddleware = dynamicInstance.addMiddleware.withTypes<Config>();
 

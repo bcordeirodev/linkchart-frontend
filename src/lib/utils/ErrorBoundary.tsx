@@ -2,9 +2,11 @@
  * Error Boundary para captura de erros React
  */
 
-import { Component, ErrorInfo, ReactNode } from 'react';
-import { Box, Typography, Button, Paper, Alert, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { ErrorOutline, Refresh, ExpandMore, BugReport } from '@mui/icons-material';
+import { Box, Typography, Button, Paper, Alert, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Component } from 'react';
+
+import type { ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
 	children?: ReactNode;
@@ -72,16 +74,16 @@ function ErrorFallback({
 				/>
 
 				<Typography
-					variant="h5"
+					variant='h5'
 					gutterBottom
-					color="error"
+					color='error'
 				>
 					Oops! Algo deu errado
 				</Typography>
 
 				<Typography
-					variant="body1"
-					color="text.secondary"
+					variant='body1'
+					color='text.secondary'
 					paragraph
 				>
 					{fallbackMessage ||
@@ -89,10 +91,10 @@ function ErrorFallback({
 				</Typography>
 
 				<Alert
-					severity="info"
+					severity='info'
 					sx={{ mb: 3, textAlign: 'left' }}
 				>
-					<Typography variant="body2">
+					<Typography variant='body2'>
 						<strong>ID do Erro:</strong> {errorId}
 						<br />
 						<strong>Horário:</strong> {new Date().toLocaleString()}
@@ -101,35 +103,35 @@ function ErrorFallback({
 
 				<Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mb: 3 }}>
 					<Button
-						variant="contained"
+						variant='contained'
 						startIcon={<Refresh />}
 						onClick={onRetry}
-						color="primary"
+						color='primary'
 					>
 						Tentar Novamente
 					</Button>
 
 					<Button
-						variant="outlined"
+						variant='outlined'
 						onClick={() => window.location.reload()}
-						color="secondary"
+						color='secondary'
 					>
 						Recarregar Página
 					</Button>
 				</Box>
 
-				{isDevelopment && (
+				{isDevelopment ? (
 					<Accordion sx={{ textAlign: 'left' }}>
 						<AccordionSummary expandIcon={<ExpandMore />}>
 							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-								<BugReport fontSize="small" />
-								<Typography variant="subtitle2">Detalhes do Erro (Desenvolvimento)</Typography>
+								<BugReport fontSize='small' />
+								<Typography variant='subtitle2'>Detalhes do Erro (Desenvolvimento)</Typography>
 							</Box>
 						</AccordionSummary>
 						<AccordionDetails>
 							<Typography
-								variant="body2"
-								component="pre"
+								variant='body2'
+								component='pre'
 								sx={{
 									whiteSpace: 'pre-wrap',
 									fontSize: '0.75rem',
@@ -152,7 +154,7 @@ function ErrorFallback({
 							</Typography>
 						</AccordionDetails>
 					</Accordion>
-				)}
+				) : null}
 			</Paper>
 		</Box>
 	);

@@ -1,12 +1,15 @@
 import { Box, Grid, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useState } from 'react';
+
+import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
+import TabDescription from '@/shared/ui/base/TabDescription';
+
 import { useDashboardData } from '../../hooks/useDashboardData';
+import { mapDashboardDataToCharts, mapLinksDataToTopLinks } from '../../utils/dataMappers';
+
+import { Charts } from './shared/charts/Charts';
 import { DashboardMetrics } from './shared/DashboardMetrics';
 import { TopLinks } from './shared/TopLinks';
-import { Charts } from './shared/charts/Charts';
-import TabDescription from '@/shared/ui/base/TabDescription';
-import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
-import { mapDashboardDataToCharts, mapLinksDataToTopLinks } from '../../utils/dataMappers';
 
 interface GlobalDashboardProps {
 	showTitle?: boolean;
@@ -64,31 +67,29 @@ export function GlobalDashboard({
 			error={error}
 			hasData={!!data}
 			onRetry={refresh}
-			loadingMessage="Carregando dashboard global..."
-			emptyMessage="Dashboard global indisponível"
+			loadingMessage='Carregando dashboard global...'
+			emptyMessage='Dashboard global indisponível'
 			minHeight={compact ? 200 : 400}
 			compact={compact}
 		>
 			<Box>
-				{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO */}
-				{showTitle && (
+				{showTitle ? (
 					<Box sx={{ mb: 3 }}>
 						<TabDescription
-							icon="🌍"
+							icon='🌍'
 							title={title}
-							description="Visão geral consolidada de todos os seus links com métricas essenciais e performance em tempo real."
+							description='Visão geral consolidada de todos os seus links com métricas essenciais e performance em tempo real.'
 							highlight={`${data?.summary?.total_links || 0} links ativos`}
 							metadata={isRealtime ? 'Tempo Real' : timeframe}
 						/>
 
-						{/* Seletor de timeframe */}
-						{showTimeframeSelector && (
+						{showTimeframeSelector ? (
 							<Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
 								<ToggleButtonGroup
 									value={timeframe}
 									exclusive
 									onChange={handleTimeframeChange}
-									size="small"
+									size='small'
 									sx={{
 										'& .MuiToggleButton-root': {
 											px: 2,
@@ -105,34 +106,31 @@ export function GlobalDashboard({
 										}
 									}}
 								>
-									<ToggleButton value="1h">1h</ToggleButton>
-									<ToggleButton value="24h">24h</ToggleButton>
-									<ToggleButton value="7d">7d</ToggleButton>
-									<ToggleButton value="30d">30d</ToggleButton>
+									<ToggleButton value='1h'>1h</ToggleButton>
+									<ToggleButton value='24h'>24h</ToggleButton>
+									<ToggleButton value='7d'>7d</ToggleButton>
+									<ToggleButton value='30d'>30d</ToggleButton>
 								</ToggleButtonGroup>
 							</Box>
-						)}
+						) : null}
 					</Box>
-				)}
+				) : null}
 
-				{/* 2. MÉTRICAS */}
 				<Box sx={{ mb: 3 }}>
 					<DashboardMetrics
 						summary={data?.summary}
 						linksData={data?.top_links}
 						showTitle={!compact}
-						title="📊 Métricas Globais"
+						title='Métricas Globais'
 						variant={compact ? 'compact' : 'detailed'}
 					/>
 				</Box>
 
-				{/* 3. RESTANTE DO CONTEÚDO */}
 				{!compact && (
 					<Grid
 						container
 						spacing={3}
 					>
-						{/* Charts */}
 						<Grid
 							item
 							xs={12}
@@ -140,13 +138,12 @@ export function GlobalDashboard({
 						>
 							<Charts
 								data={data ? mapDashboardDataToCharts(data) : null}
-								variant="dashboard"
+								variant='dashboard'
 								height={400}
-								showAllCharts={true}
+								showAllCharts
 							/>
 						</Grid>
 
-						{/* Top Links - SEMPRE EXIBIDO NO GLOBAL */}
 						<Grid
 							item
 							xs={12}
@@ -155,25 +152,24 @@ export function GlobalDashboard({
 							<TopLinks
 								links={mapLinksDataToTopLinks(data?.top_links || [])}
 								maxItems={5}
-								title="🏆 Top Links"
+								title='Top Links'
 							/>
 						</Grid>
 					</Grid>
 				)}
 
-				{/* Informações de qualidade dos dados */}
-				{stats && (
+				{stats ? (
 					<Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
 						<Typography
-							variant="caption"
-							color="text.secondary"
+							variant='caption'
+							color='text.secondary'
 						>
 							Qualidade dos dados: {stats.dataQuality} • Última atualização:{' '}
 							{new Date(stats.lastUpdate).toLocaleTimeString()}
-							{isRealtime && ' • 🔴 Tempo Real'}
+							{isRealtime ? ' • Tempo Real' : null}
 						</Typography>
 					</Box>
-				)}
+				) : null}
 			</Box>
 		</AnalyticsStateManager>
 	);

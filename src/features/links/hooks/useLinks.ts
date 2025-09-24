@@ -1,24 +1,20 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
 import { linkService } from '@/services';
-import { LinkCreateRequest, LinkResponse, LinkUpdateRequest } from '@/types';
-import { useCallback, useEffect, useRef, useState } from 'react';
 
-// Extend types to match Record<string, unknown>
-interface LinkCreateRequestExtended extends LinkCreateRequest, Record<string, unknown> {}
-interface LinkUpdateRequestExtended extends LinkUpdateRequest, Record<string, unknown> {}
+import type { LinkCreateRequest, LinkResponse, LinkUpdateRequest } from '@/types';
 
-// Cache simples para evitar chamadas duplicadas
+interface LinkCreateRequestExtended extends LinkCreateRequest, Record<string, unknown> { }
+interface LinkUpdateRequestExtended extends LinkUpdateRequest, Record<string, unknown> { }
+
 let linksCache: LinkResponse[] | null = null;
 let cacheTimestamp = 0;
-const CACHE_DURATION = 5000; // 5 segundos
+const CACHE_DURATION = 5000;
 
 /**
- * Hook personalizado para gerenciar links
- *
- * Segue os princípios SOLID:
- * - SRP: Responsável apenas pela lógica de links
- * - DRY: Centraliza a lógica de gerenciamento de links
+ * Hook para gerenciar operações CRUD de links com cache
  */
 export function useLinks() {
 	const [links, setLinks] = useState<LinkResponse[]>([]);
@@ -27,15 +23,12 @@ export function useLinks() {
 	const dispatch = useAppDispatch();
 	const loadingRef = useRef(false);
 
-	/**
-	 * Carrega todos os links do usuário com cache
-	 */
 	const loadLinks = useCallback(
 		async (forceRefresh = false) => {
-			// Evita chamadas duplicadas
-			if (loadingRef.current) return;
+			if (loadingRef.current) {
+				return;
+			}
 
-			// Verifica cache
 			const now = Date.now();
 
 			if (!forceRefresh && linksCache && now - cacheTimestamp < CACHE_DURATION) {
@@ -51,7 +44,6 @@ export function useLinks() {
 				const response = await linkService.all();
 				setLinks(response);
 
-				// Atualiza cache
 				linksCache = response;
 				cacheTimestamp = now;
 			} catch (_err) {
@@ -71,9 +63,6 @@ export function useLinks() {
 		[dispatch]
 	);
 
-	/**
-	 * Cria um novo link
-	 */
 	const createLink = useCallback(
 		async (data: LinkCreateRequestExtended) => {
 			setLoading(true);
@@ -81,7 +70,6 @@ export function useLinks() {
 
 			try {
 				const response = await linkService.save(data);
-				// Invalidar cache e recarregar a lista de links após criar um novo
 				linksCache = null;
 				await loadLinks(true);
 				dispatch(
@@ -108,9 +96,6 @@ export function useLinks() {
 		[dispatch, loadLinks]
 	);
 
-	/**
-	 * Atualiza um link existente
-	 */
 	const updateLink = useCallback(
 		async (id: string, data: LinkUpdateRequestExtended) => {
 			setLoading(true);
@@ -143,9 +128,6 @@ export function useLinks() {
 		[dispatch]
 	);
 
-	/**
-	 * Remove um link
-	 */
 	const deleteLink = useCallback(
 		async (id: string) => {
 			setLoading(true);
@@ -177,9 +159,6 @@ export function useLinks() {
 		[dispatch]
 	);
 
-	/**
-	 * Busca um link específico
-	 */
 	const getLink = useCallback(
 		async (id: string) => {
 			setLoading(true);
@@ -204,8 +183,6 @@ export function useLinks() {
 		},
 		[dispatch]
 	);
-
-	// Carrega os links na inicialização
 	useEffect(() => {
 		loadLinks();
 	}, [loadLinks]);

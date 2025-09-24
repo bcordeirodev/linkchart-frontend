@@ -3,6 +3,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+
 import { api } from '@/lib/api/client';
 
 // Tipos para insights

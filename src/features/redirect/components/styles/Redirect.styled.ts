@@ -1,6 +1,5 @@
-import { styled } from '@mui/material/styles';
 import { Card, CardContent, CardActions, Box, Typography, Button } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore

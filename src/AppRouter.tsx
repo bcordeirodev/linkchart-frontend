@@ -1,8 +1,9 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import { Loading } from '@/shared/components';
-import { HomeRedirect } from '@/components/routing/HomeRedirect';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
 import { EmailVerificationGuard } from '@/components/auth/EmailVerificationGuard';
+import { HomeRedirect } from '@/components/routing/HomeRedirect';
+import { Loading } from '@/shared/components';
 
 // Lazy load components for better performance - Organized by category
 // 📊 Analytics Pages
@@ -36,22 +37,22 @@ const ProfilePage = lazy(() => import('./pages/user/ProfilePage'));
 const NotFoundPage = lazy(() => import('./pages/system/NotFoundPage'));
 const UnauthorizedPage = lazy(() => import('./pages/system/UnauthorizedPage'));
 
-const LoadingWrapper = ({ children }: { children: React.ReactNode }) => (
-	<Suspense fallback={<Loading />}>{children}</Suspense>
-);
+function LoadingWrapper({ children }: { children: React.ReactNode }) {
+	return <Suspense fallback={<Loading />}>{children}</Suspense>;
+}
 
 function AppRouter() {
 	return (
 		<Routes>
 			{/* Smart redirect based on authentication status */}
 			<Route
-				path="/"
+				path='/'
 				element={<HomeRedirect />}
 			/>
 
 			{/* Public routes */}
 			<Route
-				path="/shorter"
+				path='/shorter'
 				element={
 					<LoadingWrapper>
 						<ShorterPage />
@@ -59,7 +60,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/sign-in"
+				path='/sign-in'
 				element={
 					<LoadingWrapper>
 						<SignInPage />
@@ -67,7 +68,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/sign-up"
+				path='/sign-up'
 				element={
 					<LoadingWrapper>
 						<SignUpPage />
@@ -75,7 +76,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/sign-out"
+				path='/sign-out'
 				element={
 					<LoadingWrapper>
 						<SignOutPage />
@@ -83,7 +84,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/verify-email"
+				path='/verify-email'
 				element={
 					<LoadingWrapper>
 						<VerifyEmailPage />
@@ -91,7 +92,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/email-verification-pending"
+				path='/email-verification-pending'
 				element={
 					<LoadingWrapper>
 						<EmailVerificationPendingPage />
@@ -99,7 +100,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/forgot-password"
+				path='/forgot-password'
 				element={
 					<LoadingWrapper>
 						<ForgotPasswordPage />
@@ -107,7 +108,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/reset-password"
+				path='/reset-password'
 				element={
 					<LoadingWrapper>
 						<ResetPasswordPage />
@@ -115,7 +116,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/r/:slug"
+				path='/r/:slug'
 				element={
 					<LoadingWrapper>
 						<RedirectPage />
@@ -123,7 +124,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/basic-analytics/:slug"
+				path='/basic-analytics/:slug'
 				element={
 					<LoadingWrapper>
 						<BasicAnalyticsPage />
@@ -133,7 +134,7 @@ function AppRouter() {
 
 			{/* Protected routes */}
 			<Route
-				path="/analytics"
+				path='/analytics'
 				element={
 					<LoadingWrapper>
 						<EmailVerificationGuard>
@@ -143,7 +144,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/link"
+				path='/link'
 				element={
 					<LoadingWrapper>
 						<EmailVerificationGuard>
@@ -153,7 +154,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/link/create"
+				path='/link/create'
 				element={
 					<LoadingWrapper>
 						<EmailVerificationGuard>
@@ -163,7 +164,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/link/edit/:id"
+				path='/link/edit/:id'
 				element={
 					<LoadingWrapper>
 						<EmailVerificationGuard>
@@ -173,7 +174,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/link/analytic/:id"
+				path='/link/analytic/:id'
 				element={
 					<LoadingWrapper>
 						<EmailVerificationGuard>
@@ -183,7 +184,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/link/qr/:id"
+				path='/link/qr/:id'
 				element={
 					<LoadingWrapper>
 						<EmailVerificationGuard>
@@ -193,16 +194,16 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="/links"
+				path='/links'
 				element={
 					<Navigate
-						to="/link"
+						to='/link'
 						replace
 					/>
 				}
 			/>
 			<Route
-				path="/profile"
+				path='/profile'
 				element={
 					<LoadingWrapper>
 						<EmailVerificationGuard>
@@ -214,7 +215,7 @@ function AppRouter() {
 
 			{/* Error pages */}
 			<Route
-				path="/401"
+				path='/401'
 				element={
 					<LoadingWrapper>
 						<UnauthorizedPage />
@@ -222,7 +223,7 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path="*"
+				path='*'
 				element={
 					<LoadingWrapper>
 						<NotFoundPage />

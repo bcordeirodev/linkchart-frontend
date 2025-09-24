@@ -3,7 +3,9 @@
  * Typography com sanitização e segurança
  */
 
-import { Typography, TypographyProps } from '@mui/material';
+import { Typography } from '@mui/material';
+
+import type { TypographyProps } from '@mui/material';
 
 interface SafeTypographyProps extends TypographyProps {
 	sanitize?: boolean;

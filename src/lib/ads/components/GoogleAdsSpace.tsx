@@ -1,5 +1,6 @@
 import { GoogleAd } from './GoogleAd';
-import { AdSlotType } from '../hooks/useGoogleAds';
+
+import type { AdSlotType } from '../hooks/useGoogleAds';
 
 interface GoogleAdsSpaceProps {
 	variant: AdSlotType;

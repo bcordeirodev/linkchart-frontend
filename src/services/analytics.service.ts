@@ -1,9 +1,10 @@
-// EnhancedAnalyticsData removido - agora usamos hooks individuais
-import { AnalyticsData } from '@/types';
-import { MetricsDashboardResponse } from '@/types/core/metrics';
-import { LinkPerformanceDashboard } from '@/types/analytics/performance';
 import { API_CONFIG } from '../lib/api/endpoints';
+
 import { BaseService } from './base.service';
+
+import type { AnalyticsData } from '@/types';
+import type { LinkPerformanceDashboard } from '@/types/analytics/performance';
+import type { MetricsDashboardResponse } from '@/types/core/metrics';
 
 /**
  * Serviço para operações de Analytics
@@ -19,9 +20,6 @@ export default class AnalyticsService extends BaseService {
 		super('AnalyticsService');
 	}
 
-	/**
-	 * Busca dados gerais de analytics do usuário
-	 */
 	async getAnalytics(): Promise<AnalyticsData> {
 		const fallbackData: AnalyticsData = {
 			overview: {
@@ -136,7 +134,7 @@ export default class AnalyticsService extends BaseService {
 
 		// Adaptar resposta para formato esperado pelo frontend
 		const adaptedData: LinkPerformanceDashboard = {
-			linkId: linkId,
+			linkId,
 			totalClicks: metrics.total_redirects_24h || 0,
 			uniqueClicks: metrics.unique_visitors || 0,
 			clicksToday: metrics.total_redirects_24h || 0,

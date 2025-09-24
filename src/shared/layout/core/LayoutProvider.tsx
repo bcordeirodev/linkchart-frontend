@@ -17,13 +17,17 @@
  * @since 2.0.0
  */
 
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { PartialDeep } from 'type-fest';
 import _ from 'lodash';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import useUser from '@/lib/auth/useUser';
 import settingsConfig from '@/lib/settingsConfig';
+
 import { LayoutSettingsContext } from './LayoutSettingsContext';
-import { LayoutSettingsConfigType, LayoutThemesType } from './types';
+
+import type { LayoutSettingsConfigType, LayoutThemesType } from './types';
+import type { ReactNode } from 'react';
+import type { PartialDeep } from 'type-fest';
 
 /**
  * Configurações padrão do layout

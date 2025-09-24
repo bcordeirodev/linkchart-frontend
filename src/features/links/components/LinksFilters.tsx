@@ -1,3 +1,4 @@
+import { Search, FilterList } from '@mui/icons-material';
 import {
 	Box,
 	TextField,
@@ -10,7 +11,6 @@ import {
 	Typography,
 	Chip
 } from '@mui/material';
-import { Search, FilterList } from '@mui/icons-material';
 
 interface LinksFiltersProps {
 	searchTerm: string;
@@ -28,7 +28,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 
 	return (
 		<Box
-			className="filter-container"
+			className='filter-container'
 			sx={{
 				backgroundColor: theme.palette.background.paper,
 				borderRadius: 2,
@@ -45,7 +45,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 			<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
 				<FilterList sx={{ color: 'primary.main', mr: 1 }} />
 				<Typography
-					variant="h6"
+					variant='h6'
 					sx={{
 						fontWeight: 600,
 						color: 'text.primary',
@@ -54,14 +54,14 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 				>
 					Filtros
 				</Typography>
-				{(searchTerm || statusFilter !== 'all') && (
+				{searchTerm || statusFilter !== 'all' ? (
 					<Chip
 						label={`${searchTerm ? '1' : '0'} filtro${searchTerm ? '' : 's'} ativo${searchTerm ? '' : 's'}`}
-						size="small"
-						color="primary"
+						size='small'
+						color='primary'
 						sx={{ ml: 'auto', fontWeight: 500 }}
 					/>
-				)}
+				) : null}
 			</Box>
 
 			{/* Controles de filtro */}
@@ -74,8 +74,8 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 				}}
 			>
 				<TextField
-					variant="filled"
-					placeholder="Buscar por título, URL ou slug..."
+					variant='filled'
+					placeholder='Buscar por título, URL ou slug...'
 					value={searchTerm}
 					onChange={(e) => onSearchChange(e.target.value)}
 					fullWidth
@@ -88,7 +88,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 					}}
 					InputProps={{
 						startAdornment: (
-							<InputAdornment position="start">
+							<InputAdornment position='start'>
 								<Search
 									sx={{
 										color: 'primary.main',
@@ -105,32 +105,32 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 					<InputLabel>Status do Link</InputLabel>
 					<Select
 						value={statusFilter}
-						label="Status do Link"
+						label='Status do Link'
 						onChange={(e) => onStatusChange(e.target.value)}
 					>
-						<MenuItem value="all">
+						<MenuItem value='all'>
 							<Chip
-								label="Todos"
-								size="small"
-								color="default"
+								label='Todos'
+								size='small'
+								color='default'
 								sx={{ mr: 1, fontWeight: 500 }}
 							/>
 							Todos os Links
 						</MenuItem>
-						<MenuItem value="active">
+						<MenuItem value='active'>
 							<Chip
-								label="Ativo"
-								size="small"
-								color="success"
+								label='Ativo'
+								size='small'
+								color='success'
 								sx={{ mr: 1, fontWeight: 500 }}
 							/>
 							Links Ativos
 						</MenuItem>
-						<MenuItem value="inactive">
+						<MenuItem value='inactive'>
 							<Chip
-								label="Inativo"
-								size="small"
-								color="warning"
+								label='Inativo'
+								size='small'
+								color='warning'
 								sx={{ mr: 1, fontWeight: 500 }}
 							/>
 							Links Inativos

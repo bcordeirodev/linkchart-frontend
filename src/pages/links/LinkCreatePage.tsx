@@ -5,9 +5,11 @@
 
 import { Stack, Fade, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
+
 import { CreateLinkForm } from '@/features/links/create';
-import { ResponsiveContainer } from '@/shared/ui/base';
 import MainLayout from '@/shared/layout/MainLayout';
+import { ResponsiveContainer } from '@/shared/ui/base';
+
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 
 /**
@@ -34,8 +36,8 @@ function LinkCreatePage() {
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
 				<ResponsiveContainer
-					variant="form"
-					maxWidth="md"
+					variant='form'
+					maxWidth='md'
 				>
 					<Stack spacing={4}>
 						{/* Form Section */}
@@ -47,7 +49,7 @@ function LinkCreatePage() {
 								unmountOnExit
 							>
 								<Box>
-									<CreateLinkForm showBackButton={true} />
+									<CreateLinkForm showBackButton />
 								</Box>
 							</Fade>
 						</Box>

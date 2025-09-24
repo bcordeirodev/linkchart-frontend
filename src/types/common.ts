@@ -3,7 +3,7 @@
  * Tipos utilitários e comuns usados em toda a aplicação
  */
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 // ========================================
 // 🎯 UTILITY TYPES
@@ -220,10 +220,10 @@ export interface Location {
 
 export type TimeUnit = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
 
-export type TimeRange = {
+export interface TimeRange {
 	start: Date;
 	end: Date;
-};
+}
 
 export type RelativeTimeRange =
 	| 'last_hour'

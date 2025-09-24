@@ -1,6 +1,9 @@
+import { createContext, useContext, useEffect, useState } from 'react';
+
 import { authService } from '@/services';
-import { LoginResponse, User, UserResponse } from '@/types';
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+
+import type { LoginResponse, User, UserResponse } from '@/types';
+import type { ReactNode } from 'react';
 
 interface AuthContextType {
 	user: User | null;
@@ -154,7 +157,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 	};
 
 	const updateUser = async (updates: Partial<User>): Promise<User | undefined> => {
-		if (!user) return undefined;
+		if (!user) {
+			return undefined;
+		}
 
 		try {
 			// Atualizar usuário na API

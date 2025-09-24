@@ -1,8 +1,11 @@
-import Breadcrumbs, { BreadcrumbsProps } from '@mui/material/Breadcrumbs';
-import { usePathname } from '@/shared/hooks';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
+
 import { Link } from '@/shared/components';
+import { usePathname } from '@/shared/hooks';
+
+import type { BreadcrumbsProps } from '@mui/material/Breadcrumbs';
 
 type PageBreadcrumbProps = BreadcrumbsProps & {
 	className?: string;
@@ -32,8 +35,8 @@ function PageBreadcrumb(props: PageBreadcrumbProps) {
 		<Breadcrumbs
 			classes={{ ol: 'list-none m-0 p-0' }}
 			className={clsx('flex w-full', className)}
-			aria-label="breadcrumb"
-			color="primary"
+			aria-label='breadcrumb'
+			color='primary'
 			{...rest}
 		>
 			{crumbs.map((item, index) => (
@@ -41,8 +44,8 @@ function PageBreadcrumb(props: PageBreadcrumbProps) {
 					component={item.url ? Link : 'span'}
 					to={item.url}
 					key={index}
-					className="block font-medium tracking-tight capitalize max-w-32 truncate"
-					role="button"
+					className='block font-medium tracking-tight capitalize max-w-32 truncate'
+					role='button'
 				>
 					{item.title}
 				</Typography>

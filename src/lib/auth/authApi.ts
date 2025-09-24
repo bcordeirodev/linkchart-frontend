@@ -1,7 +1,8 @@
-import type { User } from '@/types';
 import UserModel from '@/features/profile/types/UserModel';
-import { PartialDeep } from 'type-fest';
 import { api } from '@/lib/api/client';
+
+import type { User } from '@/types';
+import type { PartialDeep } from 'type-fest';
 
 /**
  * Get current authenticated user

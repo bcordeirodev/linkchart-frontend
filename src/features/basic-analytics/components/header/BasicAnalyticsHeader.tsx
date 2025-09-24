@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material';
+
 import { AppIcon } from '@/lib/icons';
 
 interface BasicAnalyticsHeaderProps {
@@ -19,8 +20,8 @@ export function BasicAnalyticsHeader({
 	return (
 		<Box sx={{ mb: 4, textAlign: 'center' }}>
 			<Typography
-				variant="h3"
-				component="h1"
+				variant='h3'
+				component='h1'
 				gutterBottom
 				sx={{
 					fontWeight: 700,
@@ -37,14 +38,14 @@ export function BasicAnalyticsHeader({
 				}}
 			>
 				<AppIcon
-					intent="analytics"
+					intent='analytics'
 					size={48}
 				/>
 				{title}
 			</Typography>
 			<Typography
-				variant="h6"
-				color="text.secondary"
+				variant='h6'
+				color='text.secondary'
 				gutterBottom
 				sx={{
 					fontWeight: 500,

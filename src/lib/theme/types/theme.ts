@@ -3,8 +3,8 @@
  * Todos os tipos relacionados ao tema em um local
  */
 
-import { Palette } from '@mui/material/styles/createPalette';
-import { PartialDeep } from 'type-fest';
+import type { Palette } from '@mui/material/styles/createPalette';
+import type { PartialDeep } from 'type-fest';
 
 // ========================================
 // 🎨 TIPOS BÁSICOS DE TEMA
@@ -13,9 +13,9 @@ import { PartialDeep } from 'type-fest';
 /**
  * Tipo para tema Fuse
  */
-export type FuseThemeType = {
+export interface FuseThemeType {
 	palette: PartialDeep<Palette>;
-};
+}
 
 /**
  * Tipo para coleção de temas Fuse
@@ -57,7 +57,7 @@ export interface ThemeLayoutDefaultsProps {
 /**
  * Configuração completa de configurações Fuse
  */
-export type FuseSettingsConfigType = {
+export interface FuseSettingsConfigType {
 	layout: {
 		style?: string;
 		config?: PartialDeep<ThemeLayoutDefaultsProps>;
@@ -72,7 +72,7 @@ export type FuseSettingsConfigType = {
 	};
 	defaultAuth?: string[];
 	loginRedirectUrl: string;
-};
+}
 
 // ========================================
 // 📋 TIPOS DE FORMULÁRIO
@@ -81,17 +81,17 @@ export type FuseSettingsConfigType = {
 /**
  * Tipo para opção de radio
  */
-export type RadioOptionType = {
+export interface RadioOptionType {
 	name: string;
 	value: string;
-};
+}
 
 /**
  * Tipo base para campos de formulário
  */
-export type FormFieldBaseType = {
+export interface FormFieldBaseType {
 	title: string;
-};
+}
 
 /**
  * Tipo para campo de radio

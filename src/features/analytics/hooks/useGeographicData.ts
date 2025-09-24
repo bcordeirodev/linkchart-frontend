@@ -2,7 +2,9 @@
  * Hook para dados geográficos
  */
 import { useState, useEffect, useCallback, useRef } from 'react';
+
 import { api } from '@/lib/api/client';
+
 import type { GeographicData } from '@/types/analytics';
 
 export interface GeographicStats {

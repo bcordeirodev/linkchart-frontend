@@ -1,14 +1,15 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { Email, Send } from '@mui/icons-material';
 import { Box, TextField, Button, Stack, CircularProgress, InputAdornment, Alert } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { Email, Send } from '@mui/icons-material';
-import { AuthLayout } from '@/shared/layout';
-import { authService } from '@/services';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { authService } from '@/services';
+import { AuthLayout } from '@/shared/layout';
 
 // Schema de validação
 const forgotPasswordSchema = z.object({
@@ -62,9 +63,9 @@ function ForgotPasswordPage() {
 	if (emailSent) {
 		return (
 			<AuthLayout
-				title="Email enviado!"
-				subtitle="Verifique sua caixa de entrada e siga as instruções para redefinir sua senha"
-				variant="forgot"
+				title='Email enviado!'
+				subtitle='Verifique sua caixa de entrada e siga as instruções para redefinir sua senha'
+				variant='forgot'
 				footerLinks={[
 					{
 						text: 'Lembrou da senha?',
@@ -76,12 +77,12 @@ function ForgotPasswordPage() {
 				<Box sx={{ textAlign: 'center', py: 4 }}>
 					<Stack
 						spacing={3}
-						alignItems="center"
+						alignItems='center'
 					>
 						<Email sx={{ fontSize: 60, color: 'primary.main' }} />
 
 						<Alert
-							severity="success"
+							severity='success'
 							sx={{ width: '100%' }}
 						>
 							Se o email <strong>{sentEmail}</strong> existir em nossa base de dados, você receberá
@@ -93,7 +94,7 @@ function ForgotPasswordPage() {
 							sx={{ width: '100%' }}
 						>
 							<Button
-								variant="contained"
+								variant='contained'
 								onClick={() => {
 									setEmailSent(false);
 									setSentEmail('');
@@ -104,8 +105,8 @@ function ForgotPasswordPage() {
 							</Button>
 
 							<Button
-								variant="outlined"
-								href="/sign-in"
+								variant='outlined'
+								href='/sign-in'
 								fullWidth
 							>
 								Voltar ao Login
@@ -119,9 +120,9 @@ function ForgotPasswordPage() {
 
 	return (
 		<AuthLayout
-			title="Recuperar senha"
-			subtitle="Digite seu email para receber instruções de recuperação de senha"
-			variant="forgot"
+			title='Recuperar senha'
+			subtitle='Digite seu email para receber instruções de recuperação de senha'
+			variant='forgot'
 			footerLinks={[
 				{
 					text: 'Lembrou da senha?',
@@ -131,7 +132,7 @@ function ForgotPasswordPage() {
 			]}
 		>
 			<Box
-				component="form"
+				component='form'
 				onSubmit={handleSubmit(onSubmit)}
 				noValidate
 			>
@@ -140,15 +141,15 @@ function ForgotPasswordPage() {
 					<TextField
 						{...register('email')}
 						fullWidth
-						type="email"
-						label="Email"
-						placeholder="Digite seu email"
+						type='email'
+						label='Email'
+						placeholder='Digite seu email'
 						error={!!errors.email}
 						helperText={errors.email?.message}
 						disabled={loading}
 						InputProps={{
 							startAdornment: (
-								<InputAdornment position="start">
+								<InputAdornment position='start'>
 									<Email sx={{ color: '#5F6368' }} />
 								</InputAdornment>
 							)
@@ -197,16 +198,16 @@ function ForgotPasswordPage() {
 
 					{/* Submit Button */}
 					<Button
-						type="submit"
+						type='submit'
 						fullWidth
-						variant="contained"
-						size="large"
+						variant='contained'
+						size='large'
 						disabled={loading || !isValid}
 						startIcon={
 							loading ? (
 								<CircularProgress
 									size={20}
-									color="inherit"
+									color='inherit'
 								/>
 							) : (
 								<Send />

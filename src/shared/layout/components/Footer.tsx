@@ -16,8 +16,8 @@
  * @since 2.0.0
  */
 
-import { Box, Container, Typography, Link, useTheme, alpha } from '@mui/material';
 import { GitHub, LinkedIn, Twitter } from '@mui/icons-material';
+import { Box, Container, Typography, Link, useTheme, alpha } from '@mui/material';
 
 /**
  * Props do componente Footer
@@ -55,10 +55,10 @@ export function Footer({ style = 'static' }: FooterProps) {
 
 	return (
 		<Box
-			component="footer"
+			component='footer'
 			sx={footerSx}
 		>
-			<Container maxWidth="lg">
+			<Container maxWidth='lg'>
 				<Box
 					sx={{
 						display: 'flex',
@@ -70,8 +70,8 @@ export function Footer({ style = 'static' }: FooterProps) {
 				>
 					{/* Copyright */}
 					<Typography
-						variant="body2"
-						color="text.secondary"
+						variant='body2'
+						color='text.secondary'
 						sx={{ textAlign: { xs: 'center', md: 'left' } }}
 					>
 						© {currentYear} Link Chart. Todos os direitos reservados.
@@ -86,26 +86,26 @@ export function Footer({ style = 'static' }: FooterProps) {
 						}}
 					>
 						<Link
-							href="/privacy"
-							color="text.secondary"
-							underline="hover"
-							variant="body2"
+							href='/privacy'
+							color='text.secondary'
+							underline='hover'
+							variant='body2'
 						>
 							Privacidade
 						</Link>
 						<Link
-							href="/terms"
-							color="text.secondary"
-							underline="hover"
-							variant="body2"
+							href='/terms'
+							color='text.secondary'
+							underline='hover'
+							variant='body2'
 						>
 							Termos
 						</Link>
 						<Link
-							href="/support"
-							color="text.secondary"
-							underline="hover"
-							variant="body2"
+							href='/support'
+							color='text.secondary'
+							underline='hover'
+							variant='body2'
 						>
 							Suporte
 						</Link>
@@ -114,10 +114,10 @@ export function Footer({ style = 'static' }: FooterProps) {
 					{/* Social Links */}
 					<Box sx={{ display: 'flex', gap: 1 }}>
 						<Link
-							href="https://github.com"
-							target="_blank"
-							rel="noopener noreferrer"
-							color="text.secondary"
+							href='https://github.com'
+							target='_blank'
+							rel='noopener noreferrer'
+							color='text.secondary'
 							sx={{
 								display: 'flex',
 								alignItems: 'center',
@@ -129,13 +129,13 @@ export function Footer({ style = 'static' }: FooterProps) {
 								}
 							}}
 						>
-							<GitHub fontSize="small" />
+							<GitHub fontSize='small' />
 						</Link>
 						<Link
-							href="https://linkedin.com"
-							target="_blank"
-							rel="noopener noreferrer"
-							color="text.secondary"
+							href='https://linkedin.com'
+							target='_blank'
+							rel='noopener noreferrer'
+							color='text.secondary'
 							sx={{
 								display: 'flex',
 								alignItems: 'center',
@@ -147,13 +147,13 @@ export function Footer({ style = 'static' }: FooterProps) {
 								}
 							}}
 						>
-							<LinkedIn fontSize="small" />
+							<LinkedIn fontSize='small' />
 						</Link>
 						<Link
-							href="https://twitter.com"
-							target="_blank"
-							rel="noopener noreferrer"
-							color="text.secondary"
+							href='https://twitter.com'
+							target='_blank'
+							rel='noopener noreferrer'
+							color='text.secondary'
 							sx={{
 								display: 'flex',
 								alignItems: 'center',
@@ -165,7 +165,7 @@ export function Footer({ style = 'static' }: FooterProps) {
 								}
 							}}
 						>
-							<Twitter fontSize="small" />
+							<Twitter fontSize='small' />
 						</Link>
 					</Box>
 				</Box>

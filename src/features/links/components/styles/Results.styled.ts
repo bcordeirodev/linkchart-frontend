@@ -1,6 +1,5 @@
-import { styled } from '@mui/material/styles';
 import { Paper, Box, Typography, Button } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 
 // @ts-nocheck
 

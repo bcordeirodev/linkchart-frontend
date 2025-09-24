@@ -1,8 +1,10 @@
 import { Box, Typography, Card, CardContent, Grid, Chip } from '@mui/material';
-import type { CountryData, StateData, CityData } from '@/types';
-import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
-import { formatBarChart } from '@/features/analytics/utils/chartFormatters';
 import { useTheme } from '@mui/material/styles';
+
+import { formatBarChart } from '@/features/analytics/utils/chartFormatters';
+import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
+
+import type { CountryData, StateData, CityData } from '@/types';
 
 interface GeographicChartProps {
 	countries: CountryData[];
@@ -21,7 +23,9 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 
 	const getFlagEmoji = (countryCode: string) => {
 		// Função simples para converter código do país em emoji da bandeira
-		if (!countryCode || countryCode.length !== 2) return '🌍';
+		if (!countryCode || countryCode.length !== 2) {
+			return '🌍';
+		}
 
 		const codePoints = countryCode
 			.toUpperCase()
@@ -45,7 +49,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 				<Card>
 					<CardContent>
 						<Typography
-							variant="h6"
+							variant='h6'
 							gutterBottom
 							sx={{
 								position: 'relative',
@@ -61,7 +65,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								{/* Gráfico de barras */}
 								<Box sx={{ mb: 3 }}>
 									<ApexChartWrapper
-										type="bar"
+										type='bar'
 										height={300}
 										{...formatBarChart(
 											countries.slice(0, 8) as Record<string, unknown>[],
@@ -89,34 +93,34 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 											}}
 										>
 											<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-												<Typography variant="h6">{getFlagEmoji(country.iso_code)}</Typography>
+												<Typography variant='h6'>{getFlagEmoji(country.iso_code)}</Typography>
 												<Box>
 													<Typography
-														variant="body2"
-														fontWeight="medium"
+														variant='body2'
+														fontWeight='medium'
 													>
 														{country.country}
 													</Typography>
-													{country.currency && (
+													{country.currency ? (
 														<Typography
-															variant="caption"
-															color="text.secondary"
+															variant='caption'
+															color='text.secondary'
 														>
 															{country.currency}
 														</Typography>
-													)}
+													) : null}
 												</Box>
 											</Box>
 											<Box sx={{ textAlign: 'right' }}>
 												<Typography
-													variant="body2"
-													fontWeight="medium"
+													variant='body2'
+													fontWeight='medium'
 												>
 													{country.clicks} clicks
 												</Typography>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													{getPercentage(country.clicks)}%
 												</Typography>
@@ -134,7 +138,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								}}
 							>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									🗺️
@@ -155,7 +159,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 				<Card>
 					<CardContent>
 						<Typography
-							variant="h6"
+							variant='h6'
 							gutterBottom
 							sx={{
 								position: 'relative',
@@ -171,7 +175,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								{/* Gráfico de barras */}
 								<Box sx={{ mb: 3 }}>
 									<ApexChartWrapper
-										type="bar"
+										type='bar'
 										height={300}
 										{...formatBarChart(
 											states.slice(0, 8).map((state) => ({
@@ -203,21 +207,21 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 										>
 											<Box>
 												<Typography
-													variant="body2"
-													fontWeight="medium"
+													variant='body2'
+													fontWeight='medium'
 												>
 													{state.state_name || state.state}
 												</Typography>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													{state.country}
 												</Typography>
 											</Box>
 											<Typography
-												variant="body2"
-												fontWeight="medium"
+												variant='body2'
+												fontWeight='medium'
 											>
 												{state.clicks} clicks
 											</Typography>
@@ -234,7 +238,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								}}
 							>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									🏛️
@@ -254,7 +258,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 				<Card>
 					<CardContent>
 						<Typography
-							variant="h6"
+							variant='h6'
 							gutterBottom
 							sx={{
 								position: 'relative',
@@ -267,12 +271,12 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 
 						{cities.length > 0 ? (
 							<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-								{cities.slice(0, 20).map((city, index) => (
+								{cities.slice(0, 20).map((city) => (
 									<Chip
 										key={`${city.country}-${city.state}-${city.city}`}
 										label={`${city.city} (${city.clicks})`}
-										variant="outlined"
-										size="small"
+										variant='outlined'
+										size='small'
 										sx={{
 											fontSize: '0.75rem',
 											height: 28
@@ -289,7 +293,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								}}
 							>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									🏙️

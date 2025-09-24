@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * 🔄 LOADING COMPONENT - LINK CHART
  * Componente de loading moderno com animações suaves
@@ -17,9 +18,9 @@
  * @since 2.0.0
  */
 
-import { useState, useEffect } from 'react';
 import { Box, CircularProgress, Typography, useTheme, alpha, Fade } from '@mui/material';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 /**
  * Props do componente Loading
@@ -39,6 +40,81 @@ export interface LoadingProps {
 	fullHeight?: boolean;
 	/** Cor personalizada */
 	color?: 'primary' | 'secondary' | 'inherit';
+}
+
+/**
+ * Componente de loading com pontos animados
+ */
+function DotsLoader({ color, theme }: { color: LoadingProps['color']; theme: any }) {
+	return (
+		<Box sx={{ display: 'flex', gap: 0.5 }}>
+			{[0, 1, 2].map((index) => (
+				<motion.div
+					key={index}
+					animate={{
+						scale: [1, 1.2, 1],
+						opacity: [0.5, 1, 0.5]
+					}}
+					transition={{
+						duration: 1,
+						repeat: Infinity,
+						delay: index * 0.2
+					}}
+					style={{
+						width: 8,
+						height: 8,
+						borderRadius: '50%',
+						backgroundColor: color === 'inherit' ? 'currentColor' : theme.palette[color].main
+					}}
+				/>
+			))}
+		</Box>
+	);
+}
+
+/**
+ * Componente de loading linear animado
+ */
+function LinearLoader({ color, theme }: { color: LoadingProps['color']; theme: any }) {
+	const getBackgroundColor = () => {
+		if (color === 'inherit') {
+			return theme.palette.text.primary;
+		}
+		return theme.palette[color as 'primary' | 'secondary'].main;
+	};
+
+	return (
+		<Box
+			sx={{
+				width: 200,
+				height: 4,
+				backgroundColor: alpha(getBackgroundColor(), 0.2),
+				borderRadius: 2,
+				overflow: 'hidden',
+				position: 'relative'
+			}}
+		>
+			<motion.div
+				animate={{
+					x: [-200, 200]
+				}}
+				transition={{
+					duration: 1.5,
+					repeat: Infinity,
+					ease: 'easeInOut'
+				}}
+				style={{
+					position: 'absolute',
+					top: 0,
+					left: 0,
+					width: '50%',
+					height: '100%',
+					backgroundColor: getBackgroundColor(),
+					borderRadius: 2
+				}}
+			/>
+		</Box>
+	);
 }
 
 /**
@@ -86,79 +162,13 @@ export function Loading({
 		...(className && { className })
 	};
 
-	const DotsLoader = () => (
-		<Box sx={{ display: 'flex', gap: 0.5 }}>
-			{[0, 1, 2].map((index) => (
-				<motion.div
-					key={index}
-					animate={{
-						scale: [1, 1.2, 1],
-						opacity: [0.5, 1, 0.5]
-					}}
-					transition={{
-						duration: 1,
-						repeat: Infinity,
-						delay: index * 0.2
-					}}
-					style={{
-						width: 8,
-						height: 8,
-						borderRadius: '50%',
-						backgroundColor:
-							color === 'inherit' ? 'currentColor' : theme.palette[color as 'primary' | 'secondary'].main
-					}}
-				/>
-			))}
-		</Box>
-	);
-
-	const LinearLoader = () => (
-		<Box
-			sx={{
-				width: 200,
-				height: 4,
-				backgroundColor: alpha(
-					color === 'inherit'
-						? theme.palette.text.primary
-						: theme.palette[color as 'primary' | 'secondary'].main,
-					0.2
-				),
-				borderRadius: 2,
-				overflow: 'hidden',
-				position: 'relative'
-			}}
-		>
-			<motion.div
-				animate={{
-					x: [-200, 200]
-				}}
-				transition={{
-					duration: 1.5,
-					repeat: Infinity,
-					ease: 'easeInOut'
-				}}
-				style={{
-					position: 'absolute',
-					top: 0,
-					left: 0,
-					width: '50%',
-					height: '100%',
-					backgroundColor:
-						color === 'inherit'
-							? theme.palette.text.primary
-							: theme.palette[color as 'primary' | 'secondary'].main,
-					borderRadius: 2
-				}}
-			/>
-		</Box>
-	);
 
 	const renderLoader = () => {
 		switch (variant) {
 			case 'dots':
-				return <DotsLoader />;
+				return <DotsLoader color={color} theme={theme} />;
 			case 'linear':
-				return <LinearLoader />;
+				return <LinearLoader color={color} theme={theme} />;
 			case 'circular':
 			default:
 				return (
@@ -194,15 +204,15 @@ export function Loading({
 					{renderLoader()}
 				</motion.div>
 
-				{text && (
+				{text ? (
 					<motion.div
 						initial={{ opacity: 0, y: 10 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.3, delay: 0.1 }}
 					>
 						<Typography
-							variant="body2"
-							color="text.secondary"
+							variant='body2'
+							color='text.secondary'
 							sx={{
 								fontWeight: 500,
 								textAlign: 'center'
@@ -211,13 +221,10 @@ export function Loading({
 							{text}
 						</Typography>
 					</motion.div>
-				)}
+				) : null}
 			</Box>
 		</Fade>
 	);
 }
-
-// Compatibility export
-export const FuseLoading = Loading;
 
 export default Loading;

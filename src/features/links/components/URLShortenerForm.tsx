@@ -1,12 +1,15 @@
 import { Box, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { URLInput } from './URLInput';
-import { GradientButton } from '@/shared/ui/base/GradientButton';
+
 import { usePublicURLShortener } from '@/features/links/hooks/usePublicURLShortener';
+import useUser from '@/lib/auth/useUser';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showErrorMessage } from '@/lib/store/messageSlice';
-import useUser from '@/lib/auth/useUser';
-import { PublicLinkResponse } from '@/services/publicLink.service';
+import { GradientButton } from '@/shared/ui/base/GradientButton';
+
+import { URLInput } from './URLInput';
+
+import type { PublicLinkResponse } from '@/services/publicLink.service';
 
 interface IFormData {
 	originalUrl: string;
@@ -37,34 +40,28 @@ export function URLShortenerForm({ onSuccess, onError, loading: externalLoading 
 
 	const onSubmit = async (formData: IFormData) => {
 		try {
-			// Usar serviço público para encurtamento
 			const result = await createPublicShortUrl({
 				original_url: formData.originalUrl,
 				title: user ? `Link de ${user.name}` : undefined
 			});
 
-			// Callback de sucesso (sem mensagem para evitar duplicação)
 			onSuccess?.(result);
 		} catch (_err) {
 			const errorMessage = 'Erro ao encurtar a URL. Tente novamente.';
 			setError('originalUrl', { type: 'manual', message: errorMessage });
-
-			// Mostrar mensagem de erro
 			dispatch(showErrorMessage(errorMessage));
-
 			onError?.(errorMessage);
 		}
 	};
 
 	return (
 		<Box
-			component="form"
+			component='form'
 			onSubmit={handleSubmit(onSubmit)}
 		>
-			{/* Cabeçalho da seção */}
 			<Box sx={{ textAlign: 'center', mb: 4 }}>
 				<Typography
-					variant="h3"
+					variant='h3'
 					sx={{
 						mb: 2,
 						fontWeight: 900,
@@ -74,11 +71,11 @@ export function URLShortenerForm({ onSuccess, onError, loading: externalLoading 
 						lineHeight: 1.2
 					}}
 				>
-					🚀 Encurte sua URL
+					Encurte sua URL
 				</Typography>
 				<Typography
-					variant="h6"
-					color="text.secondary"
+					variant='h6'
+					color='text.secondary'
 					sx={{
 						fontWeight: 500,
 						fontSize: { xs: '1rem', sm: '1.1rem' },
@@ -91,7 +88,6 @@ export function URLShortenerForm({ onSuccess, onError, loading: externalLoading 
 				</Typography>
 			</Box>
 
-			{/* Campo de input e botão */}
 			<Box
 				sx={{
 					display: 'flex',
@@ -118,16 +114,16 @@ export function URLShortenerForm({ onSuccess, onError, loading: externalLoading 
 				</Box>
 
 				<GradientButton
-					type="submit"
-					size="large"
+					type='submit'
+					size='large'
 					loading={isLoading}
-					shimmerEffect={true}
+					shimmerEffect
 					sx={{
 						minWidth: { xs: '100%', sm: 160 },
 						minHeight: 52
 					}}
 				>
-					⚡ Encurtar Agora
+					Encurtar Agora
 				</GradientButton>
 			</Box>
 		</Box>

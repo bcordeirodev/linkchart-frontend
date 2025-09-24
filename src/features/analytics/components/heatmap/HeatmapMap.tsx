@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress, Alert, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+
 import type { HeatmapPoint } from '@/types';
+import type React from 'react';
 
 interface HeatmapMapProps {
 	data: HeatmapPoint[];
@@ -96,13 +98,21 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 		const maxClicks = Math.max(...filteredData.map((p) => p.clicks));
 		const intensity = clicks / maxClicks;
 
-		if (intensity > 0.8) return '#d32f2f'; // Vermelho forte
+		if (intensity > 0.8) {
+			return '#d32f2f';
+		} // Vermelho forte
 
-		if (intensity > 0.6) return '#ff9800'; // Laranja
+		if (intensity > 0.6) {
+			return '#ff9800';
+		} // Laranja
 
-		if (intensity > 0.4) return '#ffc107'; // Amarelo
+		if (intensity > 0.4) {
+			return '#ffc107';
+		} // Amarelo
 
-		if (intensity > 0.2) return '#4caf50'; // Verde
+		if (intensity > 0.2) {
+			return '#4caf50';
+		} // Verde
 
 		return '#2196f3'; // Azul
 	};
@@ -125,8 +135,8 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 				<Box sx={{ textAlign: 'center' }}>
 					<CircularProgress sx={{ mb: 2 }} />
 					<Typography
-						variant="body2"
-						color="text.secondary"
+						variant='body2'
+						color='text.secondary'
 					>
 						Carregando mapa interativo...
 					</Typography>
@@ -139,7 +149,7 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 	if (mapError) {
 		return (
 			<Alert
-				severity="error"
+				severity='error'
 				sx={{ height }}
 			>
 				{mapError}
@@ -164,15 +174,15 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 			>
 				<Box sx={{ textAlign: 'center' }}>
 					<Typography
-						variant="h6"
-						color="text.secondary"
+						variant='h6'
+						color='text.secondary'
 						gutterBottom
 					>
 						🗺️ Nenhum Ponto no Mapa
 					</Typography>
 					<Typography
-						variant="body2"
-						color="text.secondary"
+						variant='body2'
+						color='text.secondary'
 					>
 						Ajuste o filtro de cliques mínimos ou aguarde mais dados.
 					</Typography>
@@ -197,11 +207,11 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 				center={center}
 				zoom={2}
 				style={{ height: '100%', width: '100%' }}
-				zoomControl={true}
-				scrollWheelZoom={true}
+				zoomControl
+				scrollWheelZoom
 			>
 				<TileLayer
-					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 				/>
 
@@ -222,32 +232,32 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 						<Popup>
 							<Box sx={{ minWidth: 200 }}>
 								<Typography
-									variant="subtitle2"
+									variant='subtitle2'
 									gutterBottom
 								>
 									📍 {point.city}
 								</Typography>
 								<Typography
-									variant="body2"
-									color="text.secondary"
+									variant='body2'
+									color='text.secondary'
 									gutterBottom
 								>
 									{point.country}
 								</Typography>
 								<Typography
-									variant="h6"
-									color="primary.main"
+									variant='h6'
+									color='primary.main'
 								>
 									{point.clicks} cliques
 								</Typography>
-								{point.last_click && (
+								{point.last_click ? (
 									<Typography
-										variant="caption"
-										color="text.secondary"
+										variant='caption'
+										color='text.secondary'
 									>
 										Último: {new Date(point.last_click).toLocaleString()}
 									</Typography>
-								)}
+								) : null}
 							</Box>
 						</Popup>
 					</CircleMarker>

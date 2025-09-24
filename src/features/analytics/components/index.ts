@@ -10,8 +10,6 @@ export { Analytics, AnalyticsContainer } from './Analytics';
 // === MÉTRICAS E VISÃO GERAL ===
 export { DashboardMetrics } from './dashboard';
 export { default as AnalyticsMetrics } from './dashboard/shared/DashboardMetrics';
-export { GeographicMetrics } from './geographic';
-export { AudienceMetrics } from './audience';
 
 // === GRÁFICOS E VISUALIZAÇÕES ===
 export { Charts } from './dashboard/shared/charts/Charts';

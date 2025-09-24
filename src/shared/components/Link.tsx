@@ -17,10 +17,13 @@
  * @since 2.0.0
  */
 
-import { forwardRef, ReactNode, AnchorHTMLAttributes } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Link as MuiLink, LinkProps as MuiLinkProps } from '@mui/material';
+import { Link as MuiLink } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { forwardRef } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+
+import type { LinkProps as MuiLinkProps } from '@mui/material';
+import type { ReactNode, AnchorHTMLAttributes } from 'react';
 
 /**
  * Props do componente Link

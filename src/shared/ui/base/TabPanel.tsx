@@ -4,7 +4,8 @@
  */
 
 import { Box } from '@mui/material';
-import { TabPanelProps } from '../components';
+
+import type { TabPanelProps } from '../components';
 
 /**
  * Componente TabPanel base seguindo padrões arquiteturais
@@ -13,7 +14,7 @@ import { TabPanelProps } from '../components';
 export function TabPanel({ children, value, index, sx, ...other }: TabPanelProps) {
 	return (
 		<div
-			role="tabpanel"
+			role='tabpanel'
 			hidden={value !== index}
 			id={`tabpanel-${index}`}
 			aria-labelledby={`tab-${index}`}
