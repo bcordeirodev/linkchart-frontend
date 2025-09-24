@@ -291,7 +291,7 @@ interface SaveButtonProps {
 }
 
 export const SaveButton = styled(Button, {
-	shouldForwardProp: (prop) => !['hasChanges', 'isLoading'].includes(prop)
+	shouldForwardProp: (prop) => !['hasChanges', 'isLoading'].includes(prop as string)
 })<SaveButtonProps>(({ theme, hasChanges = false, isLoading = false }) => ({
 	borderRadius: theme.spacing(1.5),
 	textTransform: 'none',

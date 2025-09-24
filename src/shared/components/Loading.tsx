@@ -1,21 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * 🔄 LOADING COMPONENT - LINK CHART
  * Componente de loading moderno com animações suaves
  *
  * @description
  * Loading component melhorado com design moderno usando Material-UI.
  * Substitui o FuseLoading com melhor UX e integração com temas.
- *
- * @features
- * - ✅ Design moderno com Material-UI
- * - ✅ Integração completa com temas
- * - ✅ Animações suaves
- * - ✅ Delay configurável
- * - ✅ Múltiplos tamanhos e variantes
- * - ✅ Acessibilidade completa
- *
- * @since 2.0.0
  */
 
 import { Box, CircularProgress, Typography, useTheme, alpha, Fade } from '@mui/material';
@@ -64,7 +53,11 @@ function DotsLoader({ color, theme }: { color: LoadingProps['color']; theme: any
 						width: 8,
 						height: 8,
 						borderRadius: '50%',
-						backgroundColor: color === 'inherit' ? 'currentColor' : theme.palette[color].main
+						backgroundColor: color === 'inherit' 
+							? 'currentColor' 
+							: color && (color === 'primary' || color === 'secondary')
+								? theme.palette[color].main
+								: theme.palette.primary.main
 					}}
 				/>
 			))}
@@ -80,7 +73,10 @@ function LinearLoader({ color, theme }: { color: LoadingProps['color']; theme: a
 		if (color === 'inherit') {
 			return theme.palette.text.primary;
 		}
-		return theme.palette[color as 'primary' | 'secondary'].main;
+		if (color && (color === 'primary' || color === 'secondary')) {
+			return theme.palette[color].main;
+		}
+		return theme.palette.primary.main; // fallback
 	};
 
 	return (
