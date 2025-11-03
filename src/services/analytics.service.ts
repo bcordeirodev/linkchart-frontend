@@ -50,59 +50,6 @@ export default class AnalyticsService extends BaseService {
 		});
 	}
 
-	/**
-	 * Busca métricas unificadas do dashboard
-	 */
-	async getDashboardMetrics(hours = 24): Promise<MetricsDashboardResponse> {
-		const endpoint = `/api/metrics/dashboard?hours=${hours}`;
-
-		const fallbackData: MetricsDashboardResponse = {
-			success: true,
-			timeframe: `${hours}h`,
-			metrics: {
-				dashboard: {
-					total_links: 0,
-					active_links: 0,
-					total_clicks: 0,
-					avg_clicks_per_link: 0
-				},
-				analytics: {
-					total_clicks: 0,
-					unique_visitors: 0,
-					conversion_rate: 0,
-					avg_daily_clicks: 0
-				},
-				performance: {
-					total_redirects_24h: 0,
-					unique_visitors: 0,
-					avg_response_time: 0,
-					success_rate: 100
-				},
-				geographic: {
-					countries_reached: 0,
-					cities_reached: 0
-				},
-				audience: {
-					device_types: 0
-				}
-			},
-			summary: {
-				total_clicks: 0,
-				total_links: 0,
-				active_links: 0,
-				unique_visitors: 0,
-				success_rate: 100,
-				avg_response_time: 0,
-				countries_reached: 0,
-				links_with_traffic: 0
-			}
-		};
-
-		return this.get<MetricsDashboardResponse>(endpoint, {
-			fallback: fallbackData,
-			context: 'get_dashboard_metrics'
-		});
-	}
 
 	/**
 	 * Busca dados de performance para links específicos
@@ -304,53 +251,6 @@ export default class AnalyticsService extends BaseService {
 		});
 	}
 
-	/**
-	 * Busca métricas por categoria
-	 */
-	async getMetricsByCategory(category: string, hours = 24): Promise<unknown> {
-		const endpoint = `/api/metrics/category/${category}?hours=${hours}`;
-
-		return this.get<unknown>(endpoint, {
-			fallback: { metrics: {} },
-			context: 'get_metrics_by_category'
-		});
-	}
-
-	/**
-	 * Busca métricas de um link específico
-	 */
-	async getLinkMetrics(linkId: string): Promise<unknown> {
-		this.validateId(linkId, 'Link ID');
-
-		const endpoint = `/api/metrics/link/${linkId}`;
-
-		return this.get<unknown>(endpoint, {
-			fallback: { metrics: {} },
-			context: 'get_link_metrics'
-		});
-	}
-
-	/**
-	 * Compara métricas entre períodos
-	 */
-	async compareMetrics(currentPeriod = 24, previousPeriod = 48): Promise<unknown> {
-		const endpoint = `/api/metrics/compare?current=${currentPeriod}&previous=${previousPeriod}`;
-
-		return this.get<unknown>(endpoint, {
-			fallback: { comparison: {} },
-			context: 'compare_metrics'
-		});
-	}
-
-	/**
-	 * Limpa cache de métricas
-	 */
-	async clearMetricsCache(): Promise<{ message: string }> {
-		return this.delete<{ message: string }>('/api/metrics/cache', {
-			fallback: { message: 'Cache limpo' },
-			context: 'clear_metrics_cache'
-		});
-	}
 }
 
 // Instância singleton do serviço
