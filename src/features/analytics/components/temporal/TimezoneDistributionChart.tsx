@@ -110,9 +110,6 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 									labels: {
 										style: {
 											colors: isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.75)'
-										},
-										formatter(val: string) {
-											return Number(val).toLocaleString();
 										}
 									}
 								},
@@ -130,10 +127,12 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 								tooltip: {
 									theme: isDark ? 'dark' : 'light',
 									y: {
-										formatter(val: number) {
-											const percentage =
-												topTimezones.find((tz) => tz.clicks === val)?.percentage || 0;
-											return `${val.toLocaleString()} cliques (${percentage}%)`;
+										formatter(val: number, opts?: any) {
+											const dataPointIndex = opts?.dataPointIndex;
+											const percentage = dataPointIndex !== undefined
+												? topTimezones[dataPointIndex]?.percentage || 0
+												: 0;
+											return `${val.toLocaleString()} cliques (${percentage.toFixed(1)}%)`;
 										}
 									}
 								}

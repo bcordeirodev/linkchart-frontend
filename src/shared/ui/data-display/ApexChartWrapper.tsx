@@ -63,11 +63,18 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 
 				// Verificar se data é array e tem elementos válidos
 				if (Array.isArray(data) && data.length > 0) {
-					// Para gráficos de barras, verificar se os objetos têm x e y
-					return data.some(
-						(item) =>
-							item && typeof item === 'object' && ('x' in item || 'y' in item || typeof item === 'number')
-					);
+					// Para gráficos de barras, aceitar tanto números simples quanto objetos com x/y
+					return data.some((item) => {
+						// Número simples (ex: [289, 450, 180])
+						if (typeof item === 'number' && item >= 0) {
+							return true;
+						}
+						// Objeto com propriedades x ou y (ex: [{x: 'Jan', y: 100}])
+						if (item && typeof item === 'object' && ('x' in item || 'y' in item)) {
+							return true;
+						}
+						return false;
+					});
 				}
 			}
 

@@ -166,7 +166,6 @@ export function LinkAnalyticsTabsOptimized({
 					<TemporalAnalysis
 						linkId={linkId}
 						enableRealtime={false}
-						timeRange='7d'
 					/>
 				)}
 			</TabPanel>

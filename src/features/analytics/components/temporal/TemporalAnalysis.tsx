@@ -13,24 +13,21 @@ interface TemporalAnalysisProps {
 	linkId: string;
 	title?: string;
 	enableRealtime?: boolean;
-	timeRange?: '24h' | '7d' | '30d' | '90d';
 }
 
 /**
  * Componente de análise temporal com padrões de cliques por hora e dia da semana
+ * ✨ Sempre exibe TODOS os dados desde o início do link (sem filtro de período)
  */
 export function TemporalAnalysis({
 	linkId,
-
 	title = 'Análise Temporal',
-	enableRealtime = false,
-	timeRange = '7d'
+	enableRealtime = false
 }: TemporalAnalysisProps) {
 	const { data, stats, loading, error, refresh, isRealtime } = useTemporalData({
 		linkId,
 		enableRealtime,
 		includeAdvanced: false, // Deprecated - endpoint sempre inclui dados advanced
-		timeRange,
 		refreshInterval: 30000
 	});
 
@@ -47,9 +44,9 @@ export function TemporalAnalysis({
 				<TabDescription
 					icon='⏰'
 					title={title}
-					description='Análise de padrões temporais dos seus cliques com identificação de picos e tendências.'
+					description='Análise de padrões temporais dos seus cliques com identificação de picos e tendências. Todos os dados desde o início.'
 					highlight={`Pico: ${peakHour} - ${peakDay}`}
-					metadata={isRealtime ? 'Tempo Real' : timeRange}
+					metadata={isRealtime ? 'Tempo Real' : 'Todos os dados'}
 				/>
 			</Box>
 

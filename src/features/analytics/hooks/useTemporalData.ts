@@ -25,7 +25,6 @@ export interface UseTemporalDataOptions {
 	 * Este parâmetro é mantido por compatibilidade mas não tem efeito
 	 */
 	includeAdvanced?: boolean;
-	timeRange?: '24h' | '7d' | '30d' | '90d';
 }
 
 export interface UseTemporalDataReturn {
@@ -44,8 +43,7 @@ export function useTemporalData({
 	linkId,
 	refreshInterval = 30000,
 	enableRealtime = false,
-	includeAdvanced = false,
-	timeRange = '7d'
+	includeAdvanced = false
 }: UseTemporalDataOptions): UseTemporalDataReturn {
 	const [data, setData] = useState<TemporalData | null>(null);
 	const [stats, setStats] = useState<TemporalStats | null>(null);
@@ -125,17 +123,13 @@ export function useTemporalData({
 			}
 
 			// ✨ Sempre usar endpoint unificado (includeAdvanced é ignorado)
+			// ✨ Endpoint sempre retorna TODOS os dados desde o início (sem filtro de data)
 			const endpoint = `/api/analytics/link/${linkId}/temporal`;
-
-			// Construir URL com parâmetros
-			const urlParams = new URLSearchParams();
-			urlParams.append('timeRange', timeRange);
-			const fullEndpoint = `${endpoint}?${urlParams.toString()}`;
 
 			const response = await api.get<{
 				success: boolean;
 				data: TemporalData;
-			}>(fullEndpoint);
+			}>(endpoint);
 
 			if (response.success && response.data) {
 				setData(response.data);
@@ -153,7 +147,7 @@ export function useTemporalData({
 
 			console.error('useTemporalData error:', err);
 		}
-	}, [linkId, timeRange, calculateStats]); // includeAdvanced removido das dependências
+	}, [linkId, calculateStats]); // includeAdvanced e timeRange removidos das dependências
 
 	/**
 	 * Refresh manual

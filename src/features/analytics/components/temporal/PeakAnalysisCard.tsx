@@ -102,16 +102,11 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 					xs={12}
 				>
 					<Card
-						sx={{
-							background:
-								theme.palette.mode === 'dark'
-									? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-									: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-							color: 'white'
-						}}
+						elevation={0}
+						sx={{ border: '1px solid', borderColor: 'divider' }}
 					>
 						<CardContent>
-							<Stack spacing={2}>
+							<Stack >
 								<Box>
 									<Typography
 										variant="h6"
@@ -134,13 +129,15 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 										<Box
 											sx={{
 												p: 2,
-												bgcolor: 'rgba(255, 255, 255, 0.1)',
+												bgcolor: 'background.paper',
 												borderRadius: 1,
-												backdropFilter: 'blur(10px)'
+												border: '1px solid',
+												borderColor: 'divider'
 											}}
 										>
 											<Typography
 												variant="subtitle2"
+												color="primary"
 												sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}
 											>
 												<AccessTime fontSize="small" />
@@ -164,19 +161,12 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 												<Chip
 													label={period.label}
 													size="small"
-													sx={{
-														bgcolor: 'rgba(255, 255, 255, 0.2)',
-														color: 'white',
-														fontWeight: 600
-													}}
+													color={period.color}
 												/>
 												<Chip
 													label={period.emoji}
 													size="small"
-													sx={{
-														bgcolor: 'rgba(255, 255, 255, 0.2)',
-														color: 'white'
-													}}
+													variant="outlined"
 												/>
 											</Stack>
 										</Box>
@@ -190,13 +180,15 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 										<Box
 											sx={{
 												p: 2,
-												bgcolor: 'rgba(255, 255, 255, 0.1)',
+												bgcolor: 'background.paper',
 												borderRadius: 1,
-												backdropFilter: 'blur(10px)'
+												border: '1px solid',
+												borderColor: 'divider'
 											}}
 										>
 											<Typography
 												variant="subtitle2"
+												color="secondary"
 												sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}
 											>
 												<CalendarToday fontSize="small" />
@@ -215,7 +207,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 											<Box sx={{ mt: 1.5 }}>
 												<Typography
 													variant="caption"
-													sx={{ opacity: 0.9 }}
+													color="text.secondary"
 												>
 													Este é o melhor dia para lançamentos e campanhas importantes
 												</Typography>
@@ -228,9 +220,11 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 								<Box
 									sx={{
 										p: 2,
-										bgcolor: 'rgba(255, 255, 255, 0.08)',
+										mt: 2,
+										bgcolor: 'background.paper',
 										borderRadius: 1,
-										border: '1px solid rgba(255, 255, 255, 0.1)'
+										border: '1px solid',
+										borderColor: 'divider'
 									}}
 								>
 									<Typography

@@ -125,7 +125,7 @@ export function TemporalChart({
 						<Tab label='📊 Padrões Gerais' />
 						<Tab
 							label='⏰ Hora Local'
-							disabled={!hourlyPatternsLocal?.length}
+							disabled={!hourlyPatternsLocal?.length || hourlyPatternsLocal.length < 3}
 						/>
 						<Tab
 							label='📅 Fim de Semana'
@@ -135,7 +135,6 @@ export function TemporalChart({
 							label='🕘 Horário Comercial'
 							disabled={!businessHoursAnalysis}
 						/>
-						{/* NEW: Advanced tabs */}
 						<Tab
 							label='⚡ Picos'
 							disabled={!hasPeakAnalysis}
