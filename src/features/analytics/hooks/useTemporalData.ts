@@ -17,10 +17,13 @@ export interface TemporalStats {
 }
 
 export interface UseTemporalDataOptions {
-	linkId?: string;
-	globalMode?: boolean;
+	linkId: string;
 	refreshInterval?: number;
 	enableRealtime?: boolean;
+	/**
+	 * @deprecated Endpoint /temporal agora sempre inclui dados advanced
+	 * Este parâmetro é mantido por compatibilidade mas não tem efeito
+	 */
 	includeAdvanced?: boolean;
 	timeRange?: '24h' | '7d' | '30d' | '90d';
 }
@@ -39,12 +42,11 @@ export interface UseTemporalDataReturn {
  */
 export function useTemporalData({
 	linkId,
-	globalMode = false,
 	refreshInterval = 30000,
 	enableRealtime = false,
 	includeAdvanced = false,
 	timeRange = '7d'
-}: UseTemporalDataOptions = {}): UseTemporalDataReturn {
+}: UseTemporalDataOptions): UseTemporalDataReturn {
 	const [data, setData] = useState<TemporalData | null>(null);
 	const [stats, setStats] = useState<TemporalStats | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -106,6 +108,7 @@ export function useTemporalData({
 
 	/**
 	 * Buscar dados temporais
+	 * ✨ UNIFICADO: Sempre usa endpoint /temporal que agora inclui dados advanced
 	 */
 	const fetchTemporalData = useCallback(async () => {
 		try {
@@ -116,17 +119,13 @@ export function useTemporalData({
 			abortControllerRef.current = new AbortController();
 			setError(null);
 
-			let endpoint: string;
-
-			if (linkId && !globalMode) {
-				// Usar endpoint avançado se solicitado
-				endpoint = includeAdvanced
-					? `/api/analytics/link/${linkId}/temporal-advanced`
-					: `/api/analytics/link/${linkId}/temporal`;
-			} else {
-				// Para modo global, usar endpoint específico de analytics globais
-				endpoint = '/api/analytics/global/temporal';
+			// Analytics global removido - apenas link específico
+			if (!linkId) {
+				return; // Não buscar dados se não há linkId
 			}
+
+			// ✨ Sempre usar endpoint unificado (includeAdvanced é ignorado)
+			const endpoint = `/api/analytics/link/${linkId}/temporal`;
 
 			// Construir URL com parâmetros
 			const urlParams = new URLSearchParams();
@@ -154,7 +153,7 @@ export function useTemporalData({
 
 			console.error('useTemporalData error:', err);
 		}
-	}, [linkId, globalMode, includeAdvanced, timeRange, calculateStats]);
+	}, [linkId, timeRange, calculateStats]); // includeAdvanced removido das dependências
 
 	/**
 	 * Refresh manual

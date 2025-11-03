@@ -10,8 +10,7 @@ import { GeographicInsights } from './GeographicInsights';
 import { GeographicMetrics } from './GeographicMetrics';
 
 interface GeographicAnalysisProps {
-	linkId?: string;
-	globalMode?: boolean;
+	linkId: string;
 	title?: string;
 	enableRealtime?: boolean;
 	minClicks?: number;
@@ -35,7 +34,6 @@ interface GeographicAnalysisProps {
  * ```tsx
  * // Modo global
  * <GeographicAnalysis
- *   globalMode={true}
  *   enableRealtime={true}
  * />
  *
@@ -48,7 +46,7 @@ interface GeographicAnalysisProps {
  */
 export function GeographicAnalysis({
 	linkId,
-	globalMode = false,
+
 	title = 'Análise Geográfica',
 	enableRealtime = false,
 	minClicks = 1
@@ -56,7 +54,6 @@ export function GeographicAnalysis({
 	// Usar hook específico para dados geográficos
 	const { data, stats, loading, error, refresh, isRealtime } = useGeographicData({
 		linkId,
-		globalMode,
 		enableRealtime,
 		minClicks,
 		includeHeatmap: true,

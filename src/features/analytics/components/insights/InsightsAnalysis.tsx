@@ -13,8 +13,7 @@ import { SessionDepthChart } from './SessionDepthChart';
 import { TrafficSourceChart } from './TrafficSourceChart';
 
 interface InsightsAnalysisProps {
-	linkId?: string;
-	globalMode?: boolean;
+	linkId: string;
 	title?: string;
 	enableRealtime?: boolean;
 	maxInsights?: number;
@@ -38,7 +37,6 @@ interface InsightsAnalysisProps {
  * ```tsx
  * // Insights globais com filtros
  * <InsightsAnalysis
- *   globalMode={true}
  *   showFilters={true}
  *   maxInsights={10}
  * />
@@ -52,7 +50,7 @@ interface InsightsAnalysisProps {
  */
 export function InsightsAnalysis({
 	linkId,
-	globalMode = false,
+
 	title = 'Insights de Negócio',
 	enableRealtime = false,
 	maxInsights = 50
@@ -60,7 +58,6 @@ export function InsightsAnalysis({
 	// Usar hook específico para dados de insights
 	const { data, stats, loading, error, refresh, isRealtime } = useInsightsData({
 		linkId,
-		globalMode,
 		enableRealtime,
 		refreshInterval: 300000 // 5 minutos (insights não mudam frequentemente)
 	});
@@ -85,11 +82,7 @@ export function InsightsAnalysis({
 				hasData={!!data?.insights?.length}
 				onRetry={refresh}
 				loadingMessage='Gerando insights inteligentes...'
-				emptyMessage={
-					globalMode
-						? 'Não há insights suficientes para seus links ativos. Mais dados são necessários para gerar análises.'
-						: 'Este link ainda não possui dados suficientes para gerar insights.'
-				}
+				emptyMessage='Este link ainda não possui dados suficientes para gerar insights.'
 				minHeight={300}
 			>
 				<Box>

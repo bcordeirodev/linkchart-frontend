@@ -2,21 +2,21 @@ import { Box, Typography } from '@mui/material';
 
 import { AppIcon } from '@/lib/icons';
 
-interface BasicAnalyticsHeaderProps {
+interface PublicAnalyticsHeaderProps {
 	title?: string;
 	subtitle?: string;
 }
 
 /**
- * 📊 HEADER DO BASIC ANALYTICS
+ * 📊 HEADER DO PUBLIC ANALYTICS
  *
  * Componente de cabeçalho padronizado seguindo design system
  * Reutiliza padrões visuais do projeto
  */
-export function BasicAnalyticsHeader({
-	title = 'Analytics Básicos',
+export function PublicAnalyticsHeader({
+	title = 'Analytics Públicos',
 	subtitle = 'Estatísticas públicas do seu link encurtado'
-}: BasicAnalyticsHeaderProps) {
+}: PublicAnalyticsHeaderProps) {
 	return (
 		<Box sx={{ mb: 4, textAlign: 'center' }}>
 			<Typography

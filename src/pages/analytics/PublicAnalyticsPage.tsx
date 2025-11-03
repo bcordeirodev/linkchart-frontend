@@ -4,43 +4,28 @@ import { useParams } from 'react-router-dom';
 
 // Components
 import {
-	BasicAnalyticsHeader,
+	PublicAnalyticsHeader,
 	LinkInfoCard,
-	BasicMetrics,
-	BasicCharts,
+	PublicMetrics,
+	PublicCharts,
 	AnalyticsInfo,
 	LoadingState,
 	ErrorState,
-	useBasicAnalytics
-} from '@/features/basic-analytics';
+	usePublicAnalytics
+} from '@/features/public-analytics';
 import { PublicLayout } from '@/shared/layout';
 import { ResponsiveContainer } from '@/shared/ui/base';
 // import { GoogleAdsSpace } from '@/lib/ads';
 
 /**
- * 📊 PÁGINA DE ANALYTICS BÁSICOS PÚBLICOS - OTIMIZADA
- *
- * FUNCIONALIDADE:
- * - Exibe analytics básicos de um link público
- * - Não requer autenticação
- * - Layout público com informações limitadas
- * - Componentizada seguindo padrões do projeto
- *
- * ARQUITETURA:
- * - Hook customizado para gerenciamento de estado
- * - Componentes modulares e reutilizáveis
- * - Estados de loading e error dedicados
- * - Performance otimizada com memo e useMemo
- * - Layout responsivo com ResponsiveContainer
- * - Animações suaves com Fade
- * - Seguindo regra de < 100 linhas por página
+ * 📊 PÁGINA DE ANALYTICS PÚBLICOS
  */
-function BasicAnalyticsPage() {
+function PublicAnalyticsPage() {
 	const { slug } = useParams<{ slug: string }>();
 
 	// Hook customizado que gerencia todo o estado e lógica
 	const { linkData, analyticsData, loading, error, debugInfo, handleCopyLink, handleCreateLink, handleVisitLink } =
-		useBasicAnalytics({ slug });
+		usePublicAnalytics({ slug });
 
 	// Memoizar ações para evitar re-renders desnecessários
 	const actions = useMemo(
@@ -109,7 +94,7 @@ function BasicAnalyticsPage() {
 						timeout={600}
 					>
 						<Box>
-							<BasicAnalyticsHeader />
+							<PublicAnalyticsHeader />
 						</Box>
 					</Fade>
 
@@ -129,18 +114,18 @@ function BasicAnalyticsPage() {
 						timeout={1200}
 					>
 						<Box>
-							<BasicMetrics analyticsData={analyticsData} />
+							<PublicMetrics analyticsData={analyticsData} />
 						</Box>
 					</Fade>
 
-					{/* Basic Charts com animação */}
+					{/* Public Charts com animação */}
 					{analyticsData ? (
 						<Fade
 							in
 							timeout={1600}
 						>
 							<Box>
-								<BasicCharts analyticsData={analyticsData} />
+								<PublicCharts analyticsData={analyticsData} />
 							</Box>
 						</Fade>
 					) : null}
@@ -160,4 +145,4 @@ function BasicAnalyticsPage() {
 	);
 }
 
-export default memo(BasicAnalyticsPage);
+export default memo(PublicAnalyticsPage);

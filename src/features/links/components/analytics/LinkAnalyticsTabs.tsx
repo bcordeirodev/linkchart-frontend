@@ -137,7 +137,6 @@ export function LinkAnalyticsTabsOptimized({
 				{tabValue === 1 && (
 					<PerformanceAnalysis
 						linkId={linkId}
-						globalMode={false}
 					/>
 				)}
 			</TabPanel>
@@ -151,7 +150,6 @@ export function LinkAnalyticsTabsOptimized({
 				{tabValue === 2 && (
 					<GeographicAnalysis
 						linkId={linkId}
-						globalMode={false}
 						enableRealtime={false}
 						minClicks={1}
 					/>
@@ -167,7 +165,6 @@ export function LinkAnalyticsTabsOptimized({
 				{tabValue === 3 && (
 					<TemporalAnalysis
 						linkId={linkId}
-						globalMode={false}
 						enableRealtime={false}
 						timeRange='7d'
 					/>
@@ -183,7 +180,6 @@ export function LinkAnalyticsTabsOptimized({
 				{tabValue === 4 && (
 					<AudienceAnalysis
 						linkId={linkId}
-						globalMode={false}
 					/>
 				)}
 			</TabPanel>
@@ -197,7 +193,6 @@ export function LinkAnalyticsTabsOptimized({
 				{tabValue === 5 && (
 					<HeatmapAnalysis
 						linkId={linkId}
-						globalMode={false}
 					/>
 				)}
 			</TabPanel>
@@ -211,7 +206,6 @@ export function LinkAnalyticsTabsOptimized({
 				{tabValue === 6 && (
 					<InsightsAnalysis
 						linkId={linkId}
-						globalMode={false}
 						enableRealtime={false}
 						maxInsights={10}
 					/>

@@ -105,10 +105,14 @@ export type {
 	UseTemporalDataOptions,
 	UseTemporalDataReturn,
 	TemporalPattern,
-	// NEW: Enhanced temporal types
+	// Enhanced temporal types
 	HourlyPatternData,
 	WeekendVsWeekdayData,
 	BusinessHoursData,
+	// Advanced temporal types (from unified endpoint)
+	PeakAnalysis,
+	TimezoneAnalysis,
+	AdvancedTemporalData,
 
 	// Audience
 	BrowserData,

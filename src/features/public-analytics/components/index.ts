@@ -1,20 +1,20 @@
 /**
- * 📊 BASIC ANALYTICS COMPONENTS
+ * 📊 PUBLIC ANALYTICS COMPONENTS
  * Exportações centralizadas dos componentes do módulo
  */
 
 // Header
-export { BasicAnalyticsHeader } from './header/BasicAnalyticsHeader';
+export { PublicAnalyticsHeader } from './header/PublicAnalyticsHeader';
 
 // Info
 export { LinkInfoCard } from './info/LinkInfoCard';
 export { AnalyticsInfo } from './info/AnalyticsInfo';
 
 // Metrics
-export { BasicMetrics } from './metrics/BasicMetrics';
+export { PublicMetrics } from './metrics/PublicMetrics';
 
 // Charts
-export { BasicCharts } from './charts/BasicCharts';
+export { PublicCharts } from './charts/PublicCharts';
 
 // States
 export { LoadingState } from './states/LoadingState';

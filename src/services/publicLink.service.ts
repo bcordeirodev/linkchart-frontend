@@ -29,7 +29,7 @@ export interface PublicLinkResponse {
 	domain: string;
 }
 
-export interface BasicAnalyticsResponse {
+export interface PublicAnalyticsResponse {
 	total_clicks: number;
 	created_at: string;
 	is_active: boolean;
@@ -56,9 +56,9 @@ class PublicLinkService extends BaseService {
 	}
 
 	/**
-	 * Obtém analytics básicos de um link público
+	 * Obtém analytics públicos de um link
 	 */
-	async getBasicAnalytics(slug: string): Promise<BasicAnalyticsResponse> {
+	async getPublicAnalytics(slug: string): Promise<PublicAnalyticsResponse> {
 		const response = await this.get<any>(`/api/public/analytics/${slug}`);
 		return response.data;
 	}
@@ -95,10 +95,10 @@ class PublicLinkService extends BaseService {
 	}
 
 	/**
-	 * Gera URL de analytics básicos
+	 * Gera URL de analytics públicos
 	 */
-	getBasicAnalyticsUrl(slug: string): string {
-		return `/basic-analytics/${slug}`;
+	getPublicAnalyticsUrl(slug: string): string {
+		return `/public-analytics/${slug}`;
 	}
 
 	/**

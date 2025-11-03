@@ -31,7 +31,6 @@ import { AudienceAnalysis } from '@/features/analytics/components/audience';
 function GlobalAnalytics() {
 	return (
 		<AudienceAnalysis
-			globalMode={true}
 			title='📊 Audiência Global'
 		/>
 	);
@@ -163,7 +162,6 @@ import { AudienceMetrics } from '@/features/analytics/components/audience';
 ```typescript
 interface UseAudienceDataOptions {
 	linkId?: string; // ID do link específico
-	globalMode?: boolean; // Modo global (todos os links)
 	enableRealtime?: boolean; // Habilitar tempo real
 	refreshInterval?: number; // Intervalo de atualização (ms)
 	includeDetails?: boolean; // Incluir dados detalhados

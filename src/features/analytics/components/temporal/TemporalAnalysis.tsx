@@ -10,8 +10,7 @@ import { useTemporalData } from '../../hooks/useTemporalData';
 import { TemporalChart } from './TemporalChart';
 
 interface TemporalAnalysisProps {
-	linkId?: string;
-	globalMode?: boolean;
+	linkId: string;
 	title?: string;
 	enableRealtime?: boolean;
 	timeRange?: '24h' | '7d' | '30d' | '90d';
@@ -22,19 +21,25 @@ interface TemporalAnalysisProps {
  */
 export function TemporalAnalysis({
 	linkId,
-	globalMode = false,
+
 	title = 'Análise Temporal',
 	enableRealtime = false,
 	timeRange = '7d'
 }: TemporalAnalysisProps) {
 	const { data, stats, loading, error, refresh, isRealtime } = useTemporalData({
 		linkId,
-		globalMode,
 		enableRealtime,
-		includeAdvanced: true,
+		includeAdvanced: false, // Deprecated - endpoint sempre inclui dados advanced
 		timeRange,
 		refreshInterval: 30000
 	});
+
+	// Priorizar dados de peak_analysis do back-end quando disponíveis
+	const peakHour = data?.advanced?.peak_analysis?.peak_hour !== undefined
+		? `${data.advanced.peak_analysis.peak_hour.toString().padStart(2, '0')}h`
+		: stats?.peakHour ? `${stats.peakHour}h` : '--';
+
+	const peakDay = data?.advanced?.peak_analysis?.peak_day || stats?.peakDay || 'N/A';
 
 	return (
 		<Box>
@@ -43,7 +48,7 @@ export function TemporalAnalysis({
 					icon='⏰'
 					title={title}
 					description='Análise de padrões temporais dos seus cliques com identificação de picos e tendências.'
-					highlight={`Pico: ${stats?.peakHour || '--'}h - ${stats?.peakDay || 'N/A'}`}
+					highlight={`Pico: ${peakHour} - ${peakDay}`}
 					metadata={isRealtime ? 'Tempo Real' : timeRange}
 				/>
 			</Box>
@@ -54,11 +59,7 @@ export function TemporalAnalysis({
 				hasData={!!data}
 				onRetry={refresh}
 				loadingMessage='Analisando padrões temporais...'
-				emptyMessage={
-					globalMode
-						? 'Não há dados temporais disponíveis para seus links ativos.'
-						: 'Este link ainda não possui dados temporais suficientes para análise.'
-				}
+				emptyMessage='Este link ainda não possui dados temporais suficientes para análise.'
 				minHeight={300}
 			>
 				<Box>
@@ -75,7 +76,7 @@ export function TemporalAnalysis({
 							>
 								<MetricCard
 									title='Pico de Hora'
-									value={`${stats?.peakHour}h`}
+									value={peakHour}
 									icon={<AccessTime />}
 									color='primary'
 									subtitle='maior atividade'
@@ -89,7 +90,7 @@ export function TemporalAnalysis({
 							>
 								<MetricCard
 									title='Pico de Dia'
-									value={stats?.peakDay || 'N/A'}
+									value={peakDay}
 									icon={<CalendarToday />}
 									color='secondary'
 									subtitle='dia mais ativo'
@@ -152,6 +153,7 @@ export function TemporalAnalysis({
 								hourlyPatternsLocal={(data as any)?.hourly_patterns_local}
 								weekendVsWeekday={(data as any)?.weekend_vs_weekday}
 								businessHoursAnalysis={(data as any)?.business_hours_analysis}
+								advancedData={data?.advanced}
 							/>
 						</Grid>
 					</Grid>

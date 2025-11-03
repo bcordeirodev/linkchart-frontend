@@ -6,19 +6,19 @@ import { AppIcon } from '@/lib/icons';
 import { createPresetShadows, createPresetAnimations, createTextGradient, createThemeGradient } from '@/lib/theme';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
-import type { BasicAnalyticsData } from '../../types';
+import type { PublicAnalyticsData } from '../../types';
 
-interface BasicChartsProps {
-	analyticsData: BasicAnalyticsData;
+interface PublicChartsProps {
+	analyticsData: PublicAnalyticsData;
 }
 
 /**
- * 📊 GRÁFICOS BÁSICOS
+ * 📊 GRÁFICOS PÚBLICOS
  *
- * Componente que renderiza gráficos básicos de dispositivos e países
+ * Componente que renderiza gráficos públicos de dispositivos e países
  * Reutiliza componentes e formatadores do dashboard
  */
-export function BasicCharts({ analyticsData }: BasicChartsProps) {
+export function PublicCharts({ analyticsData }: PublicChartsProps) {
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
 

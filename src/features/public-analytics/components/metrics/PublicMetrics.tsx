@@ -3,19 +3,19 @@ import { Grid } from '@mui/material';
 import { AppIcon } from '@/lib/icons';
 import { MetricCardOptimized } from '@/shared/ui/base';
 
-import type { BasicAnalyticsData } from '../../types';
+import type { PublicAnalyticsData } from '../../types';
 
-interface BasicMetricsProps {
-	analyticsData: BasicAnalyticsData;
+interface PublicMetricsProps {
+	analyticsData: PublicAnalyticsData;
 }
 
 /**
- * 📊 MÉTRICAS BÁSICAS
+ * 📊 MÉTRICAS PÚBLICAS
  *
  * Componente que exibe as métricas principais usando MetricCardOptimized
  * Segue padrões de design system do projeto
  */
-export function BasicMetrics({ analyticsData }: BasicMetricsProps) {
+export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleDateString('pt-BR', {
 			year: 'numeric',

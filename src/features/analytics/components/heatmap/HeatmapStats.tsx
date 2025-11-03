@@ -14,7 +14,6 @@ interface HeatmapStatsProps {
 		avgClicksPerPoint: number;
 		coveragePercentage: number;
 	};
-	globalMode?: boolean;
 	showTitle?: boolean;
 	title?: string;
 	showDetailed?: boolean;
@@ -38,7 +37,7 @@ interface HeatmapStatsProps {
 export function HeatmapStats({
 	data,
 	stats,
-	globalMode: _globalMode = false,
+	
 	showTitle = false,
 	title = '📊 Estatísticas do Heatmap',
 	showDetailed = true

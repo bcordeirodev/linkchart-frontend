@@ -133,7 +133,7 @@ export interface AudienceAnalysisProps extends BaseDataProps, BaseTitleProps {
 	/** ID do link específico (opcional) */
 	linkId?: string;
 	/** Modo global - todos os links ativos (padrão: false) */
-	globalMode?: boolean;
+
 }
 
 /**
@@ -182,10 +182,8 @@ export interface AudienceMetricsProps extends BaseDataProps, BaseTitleProps {
  * Opções para hook de dados de audiência
  */
 export interface UseAudienceDataOptions {
-	/** ID do link específico (opcional - se não fornecido, busca dados globais) */
-	linkId?: string;
-	/** Modo global - todos os links ativos (padrão: false) */
-	globalMode?: boolean;
+	/** ID do link específico */
+	linkId: string;
 	/** Habilitar atualizações em tempo real (padrão: true) */
 	enableRealtime?: boolean;
 	/** Intervalo de atualização em milissegundos (padrão: 60000) */

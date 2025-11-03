@@ -137,12 +137,6 @@ function ErrorFallback({ componentName }: { componentName: string }) {
 }
 
 // Lazy loaded components
-const LazyPerformanceAnalysis = lazy(() =>
-	import('../perfomance/PerformanceAnalysis').catch(() => ({
-		default: () => <ErrorFallback componentName='Performance Analysis' />
-	}))
-);
-
 const LazyGeographicAnalysis = lazy(() =>
 	import('../geographic/GeographicAnalysis').catch(() => ({
 		default: () => <ErrorFallback componentName='Geographic Analysis' />
@@ -168,13 +162,6 @@ const LazyHeatmapAnalysis = lazy(() =>
 );
 
 // Wrapper components with Suspense
-export function LazyPerformanceAnalysisWrapper(props: any) {
-	return (
-		<Suspense fallback={<PerformanceSkeleton />}>
-			<LazyPerformanceAnalysis {...props} />
-		</Suspense>
-	);
-}
 
 export function LazyGeographicAnalysisWrapper(props: any) {
 	return (

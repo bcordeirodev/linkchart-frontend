@@ -46,7 +46,6 @@ export function LinkDashboard({
 	// Hook para dashboard de link específico
 	const { data, stats, loading, error, refresh, isRealtime } = useDashboardData({
 		linkId,
-		globalMode: false, // Sempre individual
 		enableRealtime,
 		timeframe,
 		refreshInterval: 60000

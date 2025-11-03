@@ -4,28 +4,28 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '@/lib/api/client';
 import { publicLinkService } from '@/services/publicLink.service';
 
-import type { BasicAnalyticsData, BasicLinkData, BasicAnalyticsState, BasicAnalyticsActions } from '../types';
+import type { PublicAnalyticsData, PublicLinkData, PublicAnalyticsState, PublicAnalyticsActions } from '../types';
 
-interface UseBasicAnalyticsProps {
+interface UsePublicAnalyticsProps {
 	slug: string | undefined;
 }
 
-interface UseBasicAnalyticsReturn extends BasicAnalyticsState, BasicAnalyticsActions {
+interface UsePublicAnalyticsReturn extends PublicAnalyticsState, PublicAnalyticsActions {
 	debugInfo: string;
 }
 
 /**
- * 📊 HOOK PARA BASIC ANALYTICS
+ * 📊 HOOK PARA PUBLIC ANALYTICS
  *
- * Gerencia estado e ações para analytics básicos públicos
+ * Gerencia estado e ações para analytics públicos
  * Segue padrões do projeto para hooks customizados
  */
-export function useBasicAnalytics({ slug }: UseBasicAnalyticsProps): UseBasicAnalyticsReturn {
+export function usePublicAnalytics({ slug }: UsePublicAnalyticsProps): UsePublicAnalyticsReturn {
 	const navigate = useNavigate();
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-	const [linkData, setLinkData] = useState<BasicLinkData | null>(null);
-	const [analyticsData, setAnalyticsData] = useState<BasicAnalyticsData | null>(null);
+	const [linkData, setLinkData] = useState<PublicLinkData | null>(null);
+	const [analyticsData, setAnalyticsData] = useState<PublicAnalyticsData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [debugInfo, setDebugInfo] = useState<string>('');

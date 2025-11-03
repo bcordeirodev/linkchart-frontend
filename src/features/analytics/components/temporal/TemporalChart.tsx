@@ -7,26 +7,41 @@ import { getStandardChartColors, getChartColorsByType } from '@/lib/theme';
 import { ChartCard } from '@/shared/ui/base/ChartCard';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
-import type { HourlyData, DayOfWeekData, HourlyPatternData, WeekendVsWeekdayData, BusinessHoursData } from '@/types';
+import type {
+	HourlyData,
+	DayOfWeekData,
+	HourlyPatternData,
+	WeekendVsWeekdayData,
+	BusinessHoursData,
+	AdvancedTemporalData
+} from '@/types';
+
+import { TemporalTrendsChart } from './TemporalTrendsChart';
+import { TimezoneDistributionChart } from './TimezoneDistributionChart';
+import { PeakAnalysisCard } from './PeakAnalysisCard';
 
 interface TemporalChartProps {
 	hourlyData: HourlyData[];
 	weeklyData: DayOfWeekData[];
 	showInsights?: boolean;
-	// NEW: Enhanced temporal data
+	// Enhanced temporal data
 	hourlyPatternsLocal?: HourlyPatternData[];
 	weekendVsWeekday?: WeekendVsWeekdayData;
 	businessHoursAnalysis?: BusinessHoursData;
+	// NEW: Advanced temporal data from unified endpoint
+	advancedData?: AdvancedTemporalData;
 }
 
 export function TemporalChart({
 	hourlyData,
 	weeklyData,
 	showInsights = true,
-	// NEW: Enhanced props
+	// Enhanced props
 	hourlyPatternsLocal,
 	weekendVsWeekday,
-	businessHoursAnalysis
+	businessHoursAnalysis,
+	// NEW: Advanced data
+	advancedData
 }: TemporalChartProps) {
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
@@ -38,6 +53,21 @@ export function TemporalChart({
 
 	// Verificar se há dados enhanced disponíveis
 	const hasEnhancedData = hourlyPatternsLocal?.length || weekendVsWeekday || businessHoursAnalysis;
+
+	// Verificar se há dados advanced disponíveis
+	const hasAdvancedData = advancedData && (
+		Object.keys(advancedData.weekly_trends || {}).length > 0 ||
+		Object.keys(advancedData.monthly_trends || {}).length > 0 ||
+		advancedData.peak_analysis ||
+		(advancedData.timezone_analysis && advancedData.timezone_analysis.length > 0)
+	);
+
+	const hasPeakAnalysis = advancedData?.peak_analysis;
+	const hasTrends = advancedData && (
+		Object.keys(advancedData.weekly_trends || {}).length > 0 ||
+		Object.keys(advancedData.monthly_trends || {}).length > 0
+	);
+	const hasTimezones = advancedData?.timezone_analysis && advancedData.timezone_analysis.length > 0;
 
 	const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
 		setActiveTab(newValue);
@@ -72,23 +102,25 @@ export function TemporalChart({
 	const isWeekendActive =
 		weeklyData.length >= 7
 			? weeklyData[0].clicks + weeklyData[6].clicks >
-				weeklyData.slice(1, 6).reduce((sum, day) => sum + day.clicks, 0)
+			weeklyData.slice(1, 6).reduce((sum, day) => sum + day.clicks, 0)
 			: false;
 	const isBusinessHoursActive =
 		hourlyData.length >= 24
 			? hourlyData.slice(9, 18).reduce((sum, hour) => sum + hour.clicks, 0) >
-				hourlyData.slice(0, 9).reduce((sum, hour) => sum + hour.clicks, 0) +
-					hourlyData.slice(18, 24).reduce((sum, hour) => sum + hour.clicks, 0)
+			hourlyData.slice(0, 9).reduce((sum, hour) => sum + hour.clicks, 0) +
+			hourlyData.slice(18, 24).reduce((sum, hour) => sum + hour.clicks, 0)
 			: false;
 
 	return (
 		<Box>
-			{/* NEW: Tabs para análises enhanced (se dados disponíveis) */}
-			{hasEnhancedData ? (
+			{/* Tabs para análises enhanced e advanced */}
+			{(hasEnhancedData || hasAdvancedData) ? (
 				<Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
 					<Tabs
 						value={activeTab}
 						onChange={handleTabChange}
+						variant="scrollable"
+						scrollButtons="auto"
 					>
 						<Tab label='📊 Padrões Gerais' />
 						<Tab
@@ -103,12 +135,25 @@ export function TemporalChart({
 							label='🕘 Horário Comercial'
 							disabled={!businessHoursAnalysis}
 						/>
+						{/* NEW: Advanced tabs */}
+						<Tab
+							label='⚡ Picos'
+							disabled={!hasPeakAnalysis}
+						/>
+						<Tab
+							label='📈 Tendências'
+							disabled={!hasTrends}
+						/>
+						<Tab
+							label='🌍 Fusos Horários'
+							disabled={!hasTimezones}
+						/>
 					</Tabs>
 				</Box>
 			) : null}
 
 			{/* Tab 0: Padrões Gerais (Conteúdo original) */}
-			{(!hasEnhancedData || activeTab === 0) && (
+			{(!(hasEnhancedData || hasAdvancedData) || activeTab === 0) && (
 				<Grid
 					container
 					spacing={3}
@@ -949,6 +994,24 @@ export function TemporalChart({
 						</Card>
 					</Grid>
 				</Grid>
+			) : null}
+
+			{/* NEW: Tab 4 - Análise de Picos */}
+			{hasAdvancedData && activeTab === 4 && hasPeakAnalysis && advancedData?.peak_analysis ? (
+				<PeakAnalysisCard peakAnalysis={advancedData.peak_analysis} />
+			) : null}
+
+			{/* NEW: Tab 5 - Tendências */}
+			{hasAdvancedData && activeTab === 5 && hasTrends && advancedData ? (
+				<TemporalTrendsChart
+					weeklyTrends={advancedData.weekly_trends || {}}
+					monthlyTrends={advancedData.monthly_trends || {}}
+				/>
+			) : null}
+
+			{/* NEW: Tab 6 - Fusos Horários */}
+			{hasAdvancedData && activeTab === 6 && hasTimezones && advancedData?.timezone_analysis ? (
+				<TimezoneDistributionChart timezoneAnalysis={advancedData.timezone_analysis} />
 			) : null}
 		</Box>
 	);

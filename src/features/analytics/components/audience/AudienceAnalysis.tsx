@@ -13,8 +13,7 @@ import type { AudienceAnalysisProps } from '@/types/analytics';
 
 interface LegacyAudienceAnalysisProps {
 	data?: unknown;
-	linkId?: string;
-	globalMode?: boolean;
+	linkId: string;
 }
 
 /**
@@ -23,11 +22,9 @@ interface LegacyAudienceAnalysisProps {
 export function AudienceAnalysis({
 	data: legacyData,
 	linkId,
-	globalMode = false,
 	title = 'Análise de Audiência'
 }: LegacyAudienceAnalysisProps & Partial<Pick<AudienceAnalysisProps, 'title'>>) {
-	const isGlobalMode = globalMode || !linkId;
-	const shouldUseHook = !legacyData && (Boolean(linkId) || globalMode);
+	const shouldUseHook = !legacyData;
 
 	const {
 		data: hookData,
@@ -36,8 +33,7 @@ export function AudienceAnalysis({
 		error,
 		refresh
 	} = useAudienceData({
-		linkId: shouldUseHook && !isGlobalMode ? linkId : undefined,
-		globalMode: shouldUseHook && isGlobalMode,
+		linkId,
 		enableRealtime: shouldUseHook,
 		refreshInterval: 60000,
 		includeDetails: true
@@ -58,7 +54,7 @@ export function AudienceAnalysis({
 					title={title}
 					description='Análise detalhada da sua audiência com dados de dispositivos, navegadores e sistemas operacionais.'
 					highlight={`${deviceBreakdown?.length || 0} tipos de dispositivos detectados`}
-					metadata={isGlobalMode ? 'Dados Globais' : 'Link Específico'}
+					metadata='Link Específico'
 				/>
 			</Box>
 
@@ -68,11 +64,7 @@ export function AudienceAnalysis({
 				hasData={!!deviceBreakdown?.length}
 				onRetry={refresh}
 				loadingMessage='Carregando dados de audiência...'
-				emptyMessage={
-					isGlobalMode
-						? 'Não há dados de dispositivos registrados em nenhum dos seus links ativos ainda.'
-						: 'Este link ainda não recebeu cliques com dados de dispositivos.'
-				}
+				emptyMessage='Este link ainda não recebeu cliques com dados de dispositivos.'
 				minHeight={300}
 			>
 				<ResponsiveContainer style={{ padding: 0 }}>

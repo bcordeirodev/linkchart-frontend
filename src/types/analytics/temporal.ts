@@ -59,9 +59,52 @@ export interface BusinessHoursData {
 }
 
 /**
- * Dados completos de análise temporal - ENHANCED
+ * Análise de picos temporais
+ */
+export interface PeakAnalysis {
+	/** Hora de pico (0-23) */
+	peak_hour: number;
+	/** Dia de pico */
+	peak_day: string;
+	/** Cliques na hora de pico */
+	peak_hour_clicks: number;
+	/** Cliques no dia de pico */
+	peak_day_clicks: number;
+}
+
+/**
+ * Análise por timezone
+ */
+export interface TimezoneAnalysis {
+	/** Nome do timezone */
+	name: string;
+	/** Número de cliques */
+	clicks: number;
+	/** Percentual do total */
+	percentage?: number;
+}
+
+/**
+ * Dados avançados de análise temporal
+ * ✨ NOVO: Unificação com endpoint /temporal
+ */
+export interface AdvancedTemporalData {
+	/** Tendências semanais (formato: "YYYY-WW": clicks) */
+	weekly_trends: Record<string, number>;
+	/** Tendências mensais (formato: "YYYY-MM": clicks) */
+	monthly_trends: Record<string, number>;
+	/** Análise de picos */
+	peak_analysis: PeakAnalysis;
+	/** Análise por timezone */
+	timezone_analysis: TimezoneAnalysis[];
+}
+
+/**
+ * Dados completos de análise temporal - UNIFICADO
+ * ✨ Agora inclui campo 'advanced' opcional com dados enriquecidos
  */
 export interface TemporalData {
+	// Dados base (compatibilidade)
 	/** Cliques por hora do dia (legacy) */
 	clicks_by_hour: HourlyData[];
 	/** Cliques por dia da semana (legacy) */
@@ -71,13 +114,17 @@ export interface TemporalData {
 	/** Cliques por mês (opcional) */
 	clicks_by_month?: MonthlyData[];
 
-	// NEW: Enhanced temporal analytics
+	// Análises contextuais
 	/** Padrões de hora local com timezone */
 	hourly_patterns_local?: HourlyPatternData[];
 	/** Comparação fim de semana vs dias úteis */
 	weekend_vs_weekday?: WeekendVsWeekdayData;
 	/** Análise de horário comercial */
 	business_hours_analysis?: BusinessHoursData;
+
+	// Dados avançados (NOVO) ✨
+	/** Dados avançados de análise temporal (trends, peaks, timezones) */
+	advanced?: AdvancedTemporalData;
 }
 
 /**
@@ -197,7 +244,7 @@ export interface UseTemporalDataOptions {
 	/** ID do link específico */
 	linkId?: string;
 	/** Modo global */
-	globalMode?: boolean;
+
 	/** Configuração do período */
 	period?: TemporalPeriodConfig;
 	/** Incluir dados diários */

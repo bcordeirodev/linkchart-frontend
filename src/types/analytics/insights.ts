@@ -109,7 +109,7 @@ export interface InsightsStats {
  */
 export interface UseInsightsDataOptions {
 	linkId?: string;
-	globalMode?: boolean;
+	
 	refreshInterval?: number;
 	enableRealtime?: boolean;
 	minConfidence?: number;

@@ -7,7 +7,7 @@
  * Dashboard de performance de um link específico
  */
 export interface LinkPerformanceDashboard {
-	linkId?: string;
+	linkId: string;
 	totalClicks?: number;
 	uniqueClicks?: number;
 	clicksToday?: number;

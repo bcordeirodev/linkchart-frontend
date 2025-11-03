@@ -23,33 +23,27 @@ interface AudienceApiResponse {
  *
  * @description
  * Este hook fornece uma interface unificada para:
- * - Buscar dados de audiência (global ou por link específico)
+ * - Buscar dados de audiência de link específico
  * - Gerenciar atualizações em tempo real
  * - Calcular estatísticas agregadas
  * - Tratar erros e estados de carregamento
  *
  * @example
  * ```tsx
- * // Modo global (todos os links)
- * const { data, stats, loading } = useAudienceData({
- *   globalMode: true,
- *   includeDetails: true
- * });
- *
  * // Link específico
  * const { data, stats, loading } = useAudienceData({
  *   linkId: '123',
- *   enableRealtime: true
+ *   enableRealtime: true,
+ *   includeDetails: true
  * });
  * ```
  */
 export function useAudienceData({
 	linkId,
-	globalMode = false,
 	enableRealtime = true,
 	refreshInterval = 60000, // 1 minuto para audiência
 	includeDetails = false
-}: UseAudienceDataOptions = {}): UseAudienceDataReturn {
+}: UseAudienceDataOptions): UseAudienceDataReturn {
 	// Estados principais
 	const [data, setData] = useState<AudienceData | null>(null);
 	const [stats, setStats] = useState<AudienceStats | null>(null);
@@ -102,15 +96,15 @@ export function useAudienceData({
 	}, []);
 
 	/**
-	 * Determina o endpoint correto baseado no modo (global ou específico)
+	 * Determina o endpoint correto (apenas link específico)
 	 */
 	const getEndpoint = useCallback((): string => {
-		if (globalMode) {
-			return '/api/analytics/global/audience';
+		// Analytics global removido - apenas link específico
+		if (!linkId) {
+			return ''; // Endpoint vazio se não há linkId
 		}
-
 		return `/api/analytics/link/${linkId}/audience`;
-	}, [globalMode, linkId]);
+	}, [linkId]);
 
 	/**
 	 * Busca dados de audiência da API
@@ -118,7 +112,7 @@ export function useAudienceData({
 	const fetchAudienceData = useCallback(
 		async (showLoading = false): Promise<AudienceData | null> => {
 			// Validação inicial
-			if (!linkId && !globalMode) {
+			if (!linkId) {
 				return null;
 			}
 
@@ -138,9 +132,15 @@ export function useAudienceData({
 				}
 
 				const endpoint = getEndpoint();
+
+				// Analytics global removido - retornar null se não há endpoint
+				if (!endpoint) {
+					return null;
+				}
+
 				let audienceData: AudienceData | null = null;
 
-				// Usar endpoint unificado para ambos os modos
+				// Buscar dados apenas para link específico
 				const response = await api.get<AudienceApiResponse>(endpoint);
 
 				// Verificar se a requisição foi cancelada
@@ -186,7 +186,7 @@ export function useAudienceData({
 				}
 			}
 		},
-		[linkId, globalMode, calculateStats, getEndpoint]
+		[linkId, calculateStats, getEndpoint]
 	);
 
 	/**
@@ -201,7 +201,7 @@ export function useAudienceData({
 	 */
 	useEffect(() => {
 		// Validar se deve executar
-		if (!enableRealtime || (!linkId && !globalMode)) {
+		if (!enableRealtime || !linkId) {
 			return;
 		}
 
@@ -222,7 +222,7 @@ export function useAudienceData({
 				intervalRef.current = null;
 			}
 		};
-	}, [linkId, globalMode, enableRealtime, refreshInterval]); // Removido fetchAudienceData das dependências
+	}, [linkId, enableRealtime, refreshInterval]); // Removido fetchAudienceData das dependências
 
 	/**
 	 * Cleanup no unmount do componente

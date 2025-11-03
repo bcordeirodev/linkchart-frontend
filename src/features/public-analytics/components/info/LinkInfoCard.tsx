@@ -18,11 +18,11 @@ import { AppIcon } from '@/lib/icons';
 import { createPresetShadows, createPresetAnimations } from '@/lib/theme';
 import { EnhancedPaper } from '@/shared/ui/base';
 
-import type { BasicLinkData, BasicAnalyticsActions } from '../../types';
+import type { PublicLinkData, PublicAnalyticsActions } from '../../types';
 
 interface LinkInfoCardProps {
-	linkData: BasicLinkData;
-	actions: BasicAnalyticsActions;
+	linkData: PublicLinkData;
+	actions: PublicAnalyticsActions;
 }
 
 /**

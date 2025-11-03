@@ -4,11 +4,19 @@ import { analyticsService } from '@/services';
 
 import type { LinkPerformanceDashboard } from '@/types/analytics/performance';
 
+interface UseLinkPerformanceOptions {
+	linkId: string;
+	enableRealtime?: boolean;
+	refreshInterval?: number;
+}
+
 /**
  * Hook para gerenciar dados de performance dos links
  * Centraliza a lógica de fetch e estado para métricas de performance
  */
-export function useLinkPerformance() {
+export function useLinkPerformance(options: UseLinkPerformanceOptions) {
+	const { linkId, enableRealtime = false, refreshInterval = 60000 } = options;
+
 	const [data, setData] = useState<LinkPerformanceDashboard | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -18,41 +26,40 @@ export function useLinkPerformance() {
 			setLoading(true);
 			setError(null);
 
-			// Usar o service centralizado que já tem adaptação e fallback
-			const adaptedData = await analyticsService.getLinkPerformance();
+			const adaptedData = await analyticsService.getLinkPerformance(linkId);
 			setData(adaptedData);
 		} catch (err: unknown) {
 			setError(err instanceof Error ? err.message : 'Erro ao carregar dados de performance');
 		} finally {
 			setLoading(false);
 		}
-	}, []);
-
-	const fetchLinkAnalytics = useCallback(async () => {
-		// Buscar analytics gerais usando o service centralizado
-		const response = await analyticsService.getAnalytics();
-		return response;
-	}, []);
+	}, [linkId]);
 
 	useEffect(() => {
 		fetchDashboard();
 
-		// Atualizar dados a cada 60 segundos (apenas se não houver erro)
-		const interval = setInterval(() => {
-			if (!error) {
-				fetchDashboard();
-			}
-		}, 60000);
+		// Atualizar dados periodicamente se realtime estiver habilitado
+		let interval: NodeJS.Timeout | null = null;
+		if (enableRealtime && refreshInterval > 0 && !error) {
+			interval = setInterval(() => {
+				if (!error) {
+					fetchDashboard();
+				}
+			}, refreshInterval);
+		}
 
-		return () => clearInterval(interval);
-	}, [error]); // Removido fetchDashboard das dependências
+		return () => {
+			if (interval) {
+				clearInterval(interval);
+			}
+		};
+	}, [linkId, enableRealtime, refreshInterval, error, fetchDashboard]);
 
 	return {
 		data,
 		loading,
 		error,
-		refetch: fetchDashboard,
-		fetchLinkAnalytics
+		refetch: fetchDashboard
 	};
 }
 

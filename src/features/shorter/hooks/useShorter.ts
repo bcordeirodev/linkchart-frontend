@@ -31,7 +31,7 @@ export function useShorter() {
 			// Redirecionar para analytics básicos com delay adequado
 			setTimeout(() => {
 				try {
-					const analyticsUrl = publicLinkService.getBasicAnalyticsUrl(result.slug);
+					const analyticsUrl = publicLinkService.getPublicAnalyticsUrl(result.slug);
 					navigate(analyticsUrl, {
 						replace: true,
 						state: {

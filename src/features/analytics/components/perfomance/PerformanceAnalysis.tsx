@@ -8,8 +8,7 @@ import TabDescription from '@/shared/ui/base/TabDescription';
 import { PerformanceMetrics } from './PerformanceMetrics';
 
 interface PerformanceAnalysisProps {
-	linkId?: string;
-	globalMode?: boolean;
+	linkId: string;
 	title?: string;
 	enableRealtime?: boolean;
 }
@@ -29,11 +28,14 @@ interface PerformanceAnalysisProps {
  */
 export function PerformanceAnalysis({
 	linkId,
-	globalMode = false,
 	title = 'Análise de Performance',
 	enableRealtime = false
 }: PerformanceAnalysisProps) {
-	const { data: performanceData, loading, error, refetch } = useLinkPerformance();
+	const { data: performanceData, loading, error, refetch } = useLinkPerformance({
+		linkId,
+		enableRealtime,
+		refreshInterval: 60000
+	});
 
 	// Calcular métricas de performance
 	const performanceMetrics = {
@@ -69,11 +71,7 @@ export function PerformanceAnalysis({
 				hasData={!!performanceData}
 				onRetry={refetch}
 				loadingMessage='Carregando métricas de performance...'
-				emptyMessage={
-					globalMode
-						? 'Não há dados de performance disponíveis para seus links ativos.'
-						: 'Este link ainda não possui dados de performance suficientes.'
-				}
+				emptyMessage='Este link ainda não possui dados de performance suficientes.'
 				minHeight={300}
 			>
 				<Box>

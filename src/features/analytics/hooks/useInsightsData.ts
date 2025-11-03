@@ -9,16 +9,16 @@ import { api } from '@/lib/api/client';
 // Tipos para insights
 export interface BusinessInsight {
 	type:
-		| 'geographic'
-		| 'temporal'
-		| 'audience'
-		| 'performance'
-		| 'conversion'
-		| 'engagement'
-		| 'optimization'
-		| 'security'
-		| 'retention'
-		| 'traffic_source';
+	| 'geographic'
+	| 'temporal'
+	| 'audience'
+	| 'performance'
+	| 'conversion'
+	| 'engagement'
+	| 'optimization'
+	| 'security'
+	| 'retention'
+	| 'traffic_source';
 	title: string;
 	description: string;
 	priority: 'high' | 'medium' | 'low';
@@ -56,8 +56,7 @@ export interface InsightsStats {
 }
 
 export interface UseInsightsDataOptions {
-	linkId?: string;
-	globalMode?: boolean;
+	linkId: string;
 	refreshInterval?: number;
 	enableRealtime?: boolean;
 	minConfidence?: number;
@@ -84,12 +83,11 @@ export interface UseInsightsDataReturn {
  */
 export function useInsightsData({
 	linkId,
-	globalMode = false,
 	refreshInterval = 300000, // 5 minutos (insights não mudam frequentemente)
 	enableRealtime = false,
 	minConfidence = 0.5,
 	categories = []
-}: UseInsightsDataOptions = {}): UseInsightsDataReturn {
+}: UseInsightsDataOptions): UseInsightsDataReturn {
 	const [data, setData] = useState<InsightsData | null>(null);
 	const [stats, setStats] = useState<InsightsStats | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -161,11 +159,10 @@ export function useInsightsData({
 	const fetchParams = useMemo(
 		() => ({
 			linkId,
-			globalMode,
 			minConfidence,
 			categories: stableCategories
 		}),
-		[linkId, globalMode, minConfidence, stableCategories]
+		[linkId, minConfidence, stableCategories]
 	);
 
 	/**
@@ -180,14 +177,12 @@ export function useInsightsData({
 			abortControllerRef.current = new AbortController();
 			setError(null);
 
-			let endpoint: string;
-
-			if (fetchParams.linkId && !fetchParams.globalMode) {
-				endpoint = `/api/analytics/link/${fetchParams.linkId}/insights`;
-			} else {
-				// Para modo global, usar endpoint específico de analytics globais
-				endpoint = '/api/analytics/global/insights';
+			// Analytics global removido - apenas link específico
+			if (!fetchParams.linkId) {
+				return; // Não buscar dados se não há linkId
 			}
+
+			const endpoint = `/api/analytics/link/${fetchParams.linkId}/insights`;
 
 			const response = await api.get<{
 				success: boolean;
@@ -211,7 +206,7 @@ export function useInsightsData({
 							avg_confidence:
 								filteredInsights.length > 0
 									? filteredInsights.reduce((sum, i) => sum + (i.confidence || 0.5), 0) /
-										filteredInsights.length
+									filteredInsights.length
 									: 0
 						},
 						categories: {},

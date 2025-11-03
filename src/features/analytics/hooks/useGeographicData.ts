@@ -17,8 +17,7 @@ export interface GeographicStats {
 }
 
 export interface UseGeographicDataOptions {
-	linkId?: string;
-	globalMode?: boolean;
+	linkId: string;
 	refreshInterval?: number;
 	enableRealtime?: boolean;
 	includeHeatmap?: boolean;
@@ -39,12 +38,11 @@ export interface UseGeographicDataReturn {
  */
 export function useGeographicData({
 	linkId,
-	globalMode = false,
 	refreshInterval = 30000,
 	enableRealtime = false,
 	includeHeatmap = false,
 	minClicks = 1
-}: UseGeographicDataOptions = {}): UseGeographicDataReturn {
+}: UseGeographicDataOptions): UseGeographicDataReturn {
 	const [data, setData] = useState<GeographicData | null>(null);
 	const [stats, setStats] = useState<GeographicStats | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -84,14 +82,12 @@ export function useGeographicData({
 			abortControllerRef.current = new AbortController();
 			setError(null);
 
-			let endpoint: string;
-
-			if (linkId && !globalMode) {
-				endpoint = `/api/analytics/link/${linkId}/geographic`;
-			} else {
-				// Para modo global, usar endpoint específico de analytics globais
-				endpoint = '/api/analytics/global/geographic';
+			// Analytics global removido - apenas link específico
+			if (!linkId) {
+				return; // Não buscar dados se não há linkId
 			}
+
+			const endpoint = `/api/analytics/link/${linkId}/geographic`;
 
 			const response = await api.get<{
 				success: boolean;
@@ -127,7 +123,7 @@ export function useGeographicData({
 
 			console.error('useGeographicData error:', err);
 		}
-	}, [linkId, globalMode, minClicks, calculateStats]);
+	}, [linkId, minClicks, calculateStats]);
 
 	/**
 	 * Refresh manual

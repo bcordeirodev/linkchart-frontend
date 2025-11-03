@@ -22,8 +22,7 @@ interface HeatmapStats {
 }
 
 interface UseHeatmapDataOptions {
-	linkId?: string;
-	globalMode?: boolean;
+	linkId: string;
 	enableRealtime?: boolean;
 	refreshInterval?: number;
 	minClicks?: number;
@@ -54,23 +53,18 @@ interface HeatmapApiResponse {
  *
  * @description
  * Este hook fornece uma interface unificada para:
- * - Buscar dados de heatmap (global ou por link específico)
+ * - Buscar dados de heatmap de link específico
  * - Gerenciar atualizações em tempo real
  * - Calcular estatísticas agregadas
  * - Tratar erros e estados de carregamento
  *
  * @example
  * ```tsx
- * // Modo global (todos os links)
- * const { data, stats, loading } = useHeatmapData({
- *   globalMode: true,
- *   enableRealtime: true
- * });
- *
  * // Link específico
  * const { data, stats, loading } = useHeatmapData({
  *   linkId: '123',
- *   minClicks: 5
+ *   minClicks: 5,
+ *   enableRealtime: true
  * });
  * ```
  */
@@ -78,9 +72,8 @@ export function useHeatmapData({
 	linkId,
 	refreshInterval = 30000,
 	enableRealtime = true,
-	minClicks = 1,
-	globalMode = false
-}: UseHeatmapDataOptions = {}): UseHeatmapDataReturn {
+	minClicks = 1
+}: UseHeatmapDataOptions): UseHeatmapDataReturn {
 	// Estados principais
 	const [data, setData] = useState<HeatmapPoint[]>([]);
 	const [stats, setStats] = useState<HeatmapStats | null>(null);
@@ -126,14 +119,18 @@ export function useHeatmapData({
 	}, []);
 
 	/**
-	 * Determina o endpoint correto baseado no modo (global ou específico)
+	 * Determina o endpoint correto (apenas link específico)
 	 */
 	const getEndpoint = useCallback(
 		(isRealtime = false): string => {
-			const baseUrl = globalMode ? '/api/analytics/global/heatmap' : `/api/analytics/link/${linkId}/heatmap`;
+			// Analytics global removido - apenas link específico
+			if (!linkId) {
+				return ''; // Endpoint vazio se não há linkId
+			}
+			const baseUrl = `/api/analytics/link/${linkId}/heatmap`;
 			return isRealtime ? `${baseUrl}/realtime` : baseUrl;
 		},
-		[globalMode, linkId]
+		[linkId]
 	);
 
 	/**
@@ -142,7 +139,7 @@ export function useHeatmapData({
 	const fetchHeatmapData = useCallback(
 		async (showLoading = false): Promise<HeatmapPoint[]> => {
 			// Validação inicial
-			if (!linkId && !globalMode) {
+			if (!linkId) {
 				return [];
 			}
 
@@ -166,6 +163,12 @@ export function useHeatmapData({
 				try {
 					// Tentar endpoint protegido primeiro
 					const endpoint = getEndpoint(false);
+
+					// Analytics global removido - retornar vazio se não há endpoint
+					if (!endpoint) {
+						return [];
+					}
+
 					const response = await api.get<HeatmapApiResponse>(endpoint);
 
 					// Verificar se a requisição foi cancelada
@@ -252,7 +255,7 @@ export function useHeatmapData({
 				}
 			}
 		},
-		[linkId, globalMode, minClicks, calculateStats, getEndpoint]
+		[linkId, minClicks, calculateStats, getEndpoint]
 	);
 
 	/**
@@ -267,7 +270,7 @@ export function useHeatmapData({
 	 */
 	useEffect(() => {
 		// Validar se deve executar
-		if (!enableRealtime || (!linkId && !globalMode)) {
+		if (!enableRealtime || !linkId) {
 			return;
 		}
 
@@ -288,7 +291,7 @@ export function useHeatmapData({
 				intervalRef.current = null;
 			}
 		};
-	}, [linkId, globalMode, enableRealtime, refreshInterval]); // Removido fetchHeatmapData das dependências
+	}, [linkId, enableRealtime, refreshInterval]); // Removido fetchHeatmapData das dependências
 
 	/**
 	 * Cleanup no unmount do componente

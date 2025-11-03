@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { UpgradeCTA } from '@/features/shorter';
 import { EnhancedPaper } from '@/shared/ui/base';
 
-import type { BasicAnalyticsData, BasicAnalyticsActions } from '../../types';
+import type { PublicAnalyticsData, PublicAnalyticsActions } from '../../types';
 
 interface AnalyticsInfoProps {
-	analyticsData: BasicAnalyticsData;
-	actions: BasicAnalyticsActions;
+	analyticsData: PublicAnalyticsData;
+	actions: PublicAnalyticsActions;
 }
 
 /**

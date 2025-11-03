@@ -4,9 +4,6 @@
 // Combina funcionalidades de dashboard e analytics
 // Mantém toda funcionalidade existente com melhor organização
 
-// === COMPONENTES PRINCIPAIS ===
-export { Analytics, AnalyticsContainer } from './Analytics';
-
 // === MÉTRICAS E VISÃO GERAL ===
 export { DashboardMetrics } from './dashboard';
 export { default as AnalyticsMetrics } from './dashboard/shared/DashboardMetrics';
@@ -31,4 +28,4 @@ export { BusinessInsights } from './insights/BusinessInsights';
 // Agora incluídos via export * from './specialized/common'
 
 // === TIPOS ===
-export type { AnalyticsProps, ChartsProps, MetricsProps } from './types';
+export type { ChartsProps, MetricsProps } from './types';

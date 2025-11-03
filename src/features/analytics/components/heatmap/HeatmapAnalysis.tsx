@@ -9,8 +9,7 @@ import { HeatmapStats } from './HeatmapStats';
 import { RealTimeHeatmapChart } from './RealTimeHeatmapChart';
 
 interface HeatmapAnalysisProps {
-	linkId?: string;
-	globalMode?: boolean;
+	linkId: string;
 	title?: string;
 	enableRealtime?: boolean;
 	minClicks?: number;
@@ -21,13 +20,10 @@ interface HeatmapAnalysisProps {
  */
 export function HeatmapAnalysis({
 	linkId,
-	globalMode = false,
 	title = 'Análise de Heatmap',
 	enableRealtime = true,
 	minClicks = 1
 }: HeatmapAnalysisProps) {
-	const isGlobalMode = globalMode || !linkId;
-
 	const {
 		stats,
 		data: heatmapData,
@@ -36,8 +32,7 @@ export function HeatmapAnalysis({
 		refresh,
 		lastUpdate
 	} = useHeatmapData({
-		linkId: isGlobalMode ? undefined : linkId,
-		globalMode: isGlobalMode,
+		linkId,
 		enableRealtime,
 		refreshInterval: 30000,
 		minClicks
@@ -66,14 +61,8 @@ export function HeatmapAnalysis({
 				error={error}
 				hasData={!!heatmapData?.length}
 				onRetry={refresh}
-				loadingMessage={
-					isGlobalMode ? 'Agregando dados de todos os links...' : 'Carregando dados do heatmap...'
-				}
-				emptyMessage={
-					isGlobalMode
-						? 'Não há cliques registrados em nenhum dos seus links ativos ainda.'
-						: 'Este link ainda não recebeu cliques com dados geográficos.'
-				}
+				loadingMessage='Carregando dados do heatmap...'
+				emptyMessage='Este link ainda não recebeu cliques com dados geográficos.'
 				minHeight={400}
 			>
 				<Box>
@@ -81,14 +70,14 @@ export function HeatmapAnalysis({
 						<HeatmapMetrics
 							stats={stats}
 							showTitle
-							title={isGlobalMode ? 'Métricas Globais do Heatmap' : 'Métricas do Heatmap'}
+							title='Métricas do Heatmap'
 						/>
 
 						<Box sx={{ mt: 3 }}>
 							<HeatmapStats
 								data={heatmapData || []}
 								stats={stats || undefined}
-								globalMode={isGlobalMode}
+
 								showTitle
 								title='Estatísticas Detalhadas'
 							/>
@@ -103,11 +92,7 @@ export function HeatmapAnalysis({
 							error={error}
 							onRefresh={refresh}
 							height={700}
-							title={
-								isGlobalMode
-									? 'Mapa de Calor Global - Todos os Links Ativos'
-									: 'Mapa de Calor - Link Específico'
-							}
+							title='Mapa de Calor - Link Específico'
 							showControls
 							showStats={false}
 						/>

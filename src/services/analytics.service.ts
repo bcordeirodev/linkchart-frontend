@@ -105,60 +105,106 @@ export default class AnalyticsService extends BaseService {
 	}
 
 	/**
-	 * Busca dados de performance para links
+	 * Busca dados de performance para links específicos
 	 */
-	async getLinkPerformance(linkId = '2'): Promise<LinkPerformanceDashboard> {
-		// Usar endpoint específico de performance global
-		const performanceResponse = await this.get<{
-			success: boolean;
-			data: {
-				total_redirects_24h: number;
-				unique_visitors: number;
-				avg_response_time: number;
-				success_rate: number;
-				total_links: number;
-				performance_score: number;
-				uptime_percentage: number;
-				clicks_per_hour: number;
-				visitor_retention: number;
+	async getLinkPerformance(linkId: string): Promise<LinkPerformanceDashboard> {
+		this.validateId(linkId, 'Link ID');
+
+		// Usar endpoint de métricas do dashboard do link específico
+		const endpoint = `/api/analytics/link/${linkId}/dashboard`;
+
+		try {
+			const performanceResponse = await this.get<{
+				success: boolean;
+				data: {
+					summary: {
+						total_clicks: number;
+						unique_visitors: number;
+						success_rate: number;
+						avg_response_time: number;
+					};
+				};
+			}>(endpoint, {
+				context: 'get_link_performance'
+			});
+
+			if (!performanceResponse.success || !performanceResponse.data) {
+				return this.getEmptyPerformanceData(linkId);
+			}
+
+			const metrics = performanceResponse.data.summary;
+
+			// Adaptar resposta para formato esperado pelo frontend
+			const adaptedData: LinkPerformanceDashboard = {
+				linkId,
+				totalClicks: metrics.total_clicks || 0,
+				uniqueClicks: metrics.unique_visitors || 0,
+				clicksToday: metrics.total_clicks || 0,
+				clicksThisWeek: 0,
+				clicksThisMonth: 0,
+				topReferrers: [],
+				topCountries: [],
+				clicksOverTime: [],
+				total_redirects_24h: metrics.total_clicks || 0,
+				unique_visitors: metrics.unique_visitors || 0,
+				avg_response_time: metrics.avg_response_time || 0,
+				success_rate: metrics.success_rate || 100,
+				performance_score: metrics.success_rate || 0,
+				uptime_percentage: 100,
+				clicks_per_hour: 0,
+				visitor_retention: 0,
+				total_links: 1,
+				summary: {
+					total_redirects_24h: metrics.total_clicks || 0,
+					unique_visitors: metrics.unique_visitors || 0,
+					avg_response_time: metrics.avg_response_time || 0,
+					success_rate: metrics.success_rate || 100,
+					total_links_with_traffic: 1,
+					most_accessed_link: ''
+				},
+				hourly_data: [],
+				link_performance: [],
+				traffic_sources: [],
+				geographic_data: [],
+				device_data: []
 			};
-		}>('/api/analytics/global/performance', {
-			context: 'get_link_performance'
-		});
 
-		if (!performanceResponse.success) {
-			throw new Error('Erro ao buscar dados de performance');
+			return adaptedData;
+		} catch (error) {
+			console.error('Error fetching link performance:', error);
+			return this.getEmptyPerformanceData(linkId);
 		}
+	}
 
-		const metrics = performanceResponse.data;
-
-		// Adaptar resposta para formato esperado pelo frontend
-		const adaptedData: LinkPerformanceDashboard = {
-			linkId,
-			totalClicks: metrics.total_redirects_24h || 0,
-			uniqueClicks: metrics.unique_visitors || 0,
-			clicksToday: metrics.total_redirects_24h || 0,
+	/**
+	 * Retorna dados de performance vazios
+	 */
+	private getEmptyPerformanceData(linkId?: string): LinkPerformanceDashboard {
+		return {
+			linkId: linkId || '',
+			totalClicks: 0,
+			uniqueClicks: 0,
+			clicksToday: 0,
 			clicksThisWeek: 0,
 			clicksThisMonth: 0,
 			topReferrers: [],
 			topCountries: [],
 			clicksOverTime: [],
-			// ✅ Incluir todos os dados do backend
-			total_redirects_24h: metrics.total_redirects_24h || 0,
-			unique_visitors: metrics.unique_visitors || 0,
-			avg_response_time: metrics.avg_response_time || 0,
-			success_rate: metrics.success_rate || 100,
-			performance_score: metrics.performance_score || 0,
-			uptime_percentage: metrics.uptime_percentage || 100,
-			clicks_per_hour: metrics.clicks_per_hour || 0,
-			visitor_retention: metrics.visitor_retention || 0,
-			total_links: metrics.total_links || 0,
+			total_redirects_24h: 0,
+			unique_visitors: 0,
+			avg_response_time: 0,
+			success_rate: 100,
+			performance_score: 0,
+			uptime_percentage: 100,
+			clicks_per_hour: 0,
+			visitor_retention: 0,
+			total_links: 0,
 			summary: {
-				total_redirects_24h: metrics.total_redirects_24h || 0,
-				unique_visitors: metrics.unique_visitors || 0,
-				avg_response_time: metrics.avg_response_time || 0,
-				success_rate: metrics.success_rate || 100,
-				total_links_with_traffic: metrics.total_links || 0,
+				total_redirects_24h: 0,
+				unique_visitors: 0,
+				avg_response_time: 0,
+				success_rate: 100,
+				total_links_with_traffic: 0,
 				most_accessed_link: ''
 			},
 			hourly_data: [],
@@ -167,8 +213,6 @@ export default class AnalyticsService extends BaseService {
 			geographic_data: [],
 			device_data: []
 		};
-
-		return adaptedData;
 	}
 
 	/**

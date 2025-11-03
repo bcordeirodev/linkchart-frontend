@@ -86,7 +86,6 @@ export interface DashboardStats {
 
 export interface UseDashboardDataOptions {
 	linkId?: string;
-	globalMode?: boolean;
 	refreshInterval?: number;
 	enableRealtime?: boolean;
 	timeframe?: '1h' | '24h' | '7d' | '30d';
@@ -106,7 +105,6 @@ export interface UseDashboardDataReturn {
  */
 export function useDashboardData({
 	linkId,
-	globalMode = true,
 	refreshInterval = 60000, // 1 minuto
 	enableRealtime = false,
 	timeframe = '24h'
@@ -128,7 +126,7 @@ export function useDashboardData({
 				include_charts: 'true'
 			};
 
-			const requestKey = `${linkId}-${globalMode}-${timeframe}-${JSON.stringify(params)}`;
+			const requestKey = `${linkId}-${timeframe}-${JSON.stringify(params)}`;
 
 			if (isRequestingRef.current && lastRequestParamsRef.current === requestKey) {
 				return;
@@ -144,8 +142,12 @@ export function useDashboardData({
 			abortControllerRef.current = new AbortController();
 			setError(null);
 
-			const dashboardEndpoint =
-				linkId && !globalMode ? `/api/analytics/link/${linkId}/dashboard` : '/api/analytics/global/dashboard';
+			// Analytics global removido - apenas link específico
+			if (!linkId) {
+				return; // Não buscar dados se não há linkId
+			}
+
+			const dashboardEndpoint = `/api/analytics/link/${linkId}/dashboard`;
 
 			const urlParams = new URLSearchParams();
 			Object.entries(params).forEach(([key, value]) => {
@@ -242,7 +244,7 @@ export function useDashboardData({
 		} finally {
 			isRequestingRef.current = false;
 		}
-	}, [linkId, globalMode, timeframe]);
+	}, [linkId, timeframe]);
 	const refresh = useCallback(async () => {
 		setLoading(true);
 		await fetchDashboardData();
@@ -283,7 +285,7 @@ export function useDashboardData({
 				clearInterval(intervalRef.current);
 			}
 		};
-	}, [linkId, globalMode, timeframe]);
+	}, [linkId, timeframe]);
 
 	return {
 		data,

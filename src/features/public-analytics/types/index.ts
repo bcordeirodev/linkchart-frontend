@@ -1,9 +1,9 @@
 /**
- * 📊 BASIC ANALYTICS TYPES
- * Tipos centralizados para o módulo de analytics básicos públicos
+ * 📊 PUBLIC ANALYTICS TYPES
+ * Tipos centralizados para o módulo de analytics públicos
  */
 
-export interface BasicAnalyticsData {
+export interface PublicAnalyticsData {
 	total_clicks: number;
 	created_at: string;
 	is_active: boolean;
@@ -22,7 +22,7 @@ export interface BasicAnalyticsData {
 	};
 }
 
-export interface BasicLinkData {
+export interface PublicLinkData {
 	id: number;
 	slug: string;
 	title: string | null;
@@ -37,14 +37,14 @@ export interface BasicLinkData {
 	domain: string;
 }
 
-export interface BasicAnalyticsState {
-	linkData: BasicLinkData | null;
-	analyticsData: BasicAnalyticsData | null;
+export interface PublicAnalyticsState {
+	linkData: PublicLinkData | null;
+	analyticsData: PublicAnalyticsData | null;
 	loading: boolean;
 	error: string | null;
 }
 
-export interface BasicAnalyticsActions {
+export interface PublicAnalyticsActions {
 	handleCopyLink: () => Promise<void>;
 	handleCreateLink: () => void;
 	handleVisitLink: () => void;

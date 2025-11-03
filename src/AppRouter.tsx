@@ -7,9 +7,8 @@ import { Loading } from '@/shared/components';
 
 // Lazy load components for better performance - Organized by category
 // 📊 Analytics Pages
-const AnalyticsPage = lazy(() => import('./pages/analytics/AnalyticsPage'));
 const LinkAnalyticsPage = lazy(() => import('./pages/analytics/LinkAnalyticsPage'));
-const BasicAnalyticsPage = lazy(() => import('./pages/analytics/BasicAnalyticsPage'));
+const PublicAnalyticsPage = lazy(() => import('./pages/analytics/PublicAnalyticsPage'));
 
 // 🔗 Links Management Pages
 const LinkPage = lazy(() => import('./pages/links/LinkPage'));
@@ -124,25 +123,15 @@ function AppRouter() {
 				}
 			/>
 			<Route
-				path='/basic-analytics/:slug'
+				path='/public-analytics/:slug'
 				element={
 					<LoadingWrapper>
-						<BasicAnalyticsPage />
+						<PublicAnalyticsPage />
 					</LoadingWrapper>
 				}
 			/>
 
 			{/* Protected routes */}
-			<Route
-				path='/analytics'
-				element={
-					<LoadingWrapper>
-						<EmailVerificationGuard>
-							<AnalyticsPage />
-						</EmailVerificationGuard>
-					</LoadingWrapper>
-				}
-			/>
 			<Route
 				path='/link'
 				element={
