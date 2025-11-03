@@ -6,14 +6,12 @@ import {
 	AppBar,
 	Toolbar,
 	Typography,
-	Button,
 	IconButton,
 	Menu,
 	MenuItem,
 	Avatar,
 	Box,
 	useTheme,
-	useMediaQuery,
 	Chip,
 	Divider,
 	ListItemIcon,
@@ -22,7 +20,7 @@ import {
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppIcon } from '@/lib/icons';
@@ -35,12 +33,9 @@ interface NavbarProps {
 export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 	const theme = useTheme();
 	const navigate = useNavigate();
-	const location = useLocation();
 	const { user, logout } = useAuth();
-	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
 	const isMenuOpen = Boolean(anchorEl);
 
@@ -60,50 +55,11 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 		setAnchorEl(null);
 	};
 
-	const handleMobileMenuToggle = () => {
-		setMobileMenuOpen(!mobileMenuOpen);
-		onMobileMenuToggle?.();
-	};
-
 	const handleLogout = async () => {
 		handleMenuClose();
 		await logout();
 		navigate('/sign-in');
 	};
-
-	const handleNavigation = (path: string) => {
-		navigate(path);
-		setMobileMenuOpen(false);
-	};
-
-	const isActiveRoute = (path: string) => {
-		return location.pathname === path || location.pathname.startsWith(`${path}/`);
-	};
-
-	const menuItems = [
-		{
-			label: 'Analytics',
-			path: '/analytics',
-			icon: (
-				<AppIcon
-					intent='analytics'
-					size={20}
-				/>
-			),
-			description: 'Global analytics & insights'
-		},
-		{
-			label: 'Links',
-			path: '/link',
-			icon: (
-				<AppIcon
-					intent='link'
-					size={20}
-				/>
-			),
-			description: 'Manage your links'
-		}
-	];
 
 	// Estilos dinâmicos da AppBar
 	const appBarSx = {
@@ -161,7 +117,7 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 			>
 				{/* Logo Section */}
 				<Box
-					onClick={() => handleNavigation('/analytics')}
+					onClick={() => navigate('/links')}
 					sx={{
 						display: 'flex',
 						alignItems: 'center',
@@ -246,108 +202,8 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 					</Box>
 				</Box>
 
-				{/* Desktop Navigation */}
-				{!isSmallScreen && (
-					<Box
-						sx={{
-							display: 'flex',
-							gap: 2,
-							background: alpha(theme.palette.background.paper, 0.6),
-							borderRadius: 2,
-							p: 1,
-							backdropFilter: 'blur(10px)'
-						}}
-					>
-						{menuItems.map((item) => {
-							const isActive = isActiveRoute(item.path);
-							return (
-								<Tooltip
-									key={item.path}
-									title={item.description}
-									arrow
-								>
-									<Button
-										color='inherit'
-										startIcon={item.icon}
-										onClick={() => handleNavigation(item.path)}
-										sx={{
-											borderRadius: 2,
-											px: 4,
-											py: 2,
-											textTransform: 'none',
-											fontWeight: isActive ? 700 : 500,
-											fontSize: '0.95rem',
-											position: 'relative',
-											minWidth: 120,
-											color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
-											background: isActive
-												? `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.secondary.main, 0.05)})`
-												: 'transparent',
-											transition: theme.transitions.create(['all'], {
-												duration: theme.transitions.duration.short
-											}),
-											'&:hover': {
-												background: isActive
-													? `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.15)}, ${alpha(theme.palette.secondary.main, 0.1)})`
-													: alpha(theme.palette.action.hover, 0.8),
-												transform: 'translateY(-1px)'
-											},
-											'&::after': isActive
-												? {
-														content: '""',
-														position: 'absolute',
-														bottom: 4,
-														left: '50%',
-														transform: 'translateX(-50%)',
-														width: '60%',
-														height: 2,
-														background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-														borderRadius: 1
-													}
-												: {}
-										}}
-									>
-										{item.label}
-									</Button>
-								</Tooltip>
-							);
-						})}
-					</Box>
-				)}
-
 				{/* Right Section */}
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					{/* Mobile Menu Button */}
-					{isSmallScreen ? (
-						<IconButton
-							color='inherit'
-							aria-label='menu'
-							onClick={handleMobileMenuToggle}
-							sx={{
-								mr: 1,
-								background: alpha(theme.palette.background.paper, 0.8),
-								backdropFilter: 'blur(10px)',
-								borderRadius: 2,
-								'&:hover': {
-									background: alpha(theme.palette.background.paper, 0.9),
-									transform: 'scale(1.05)'
-								}
-							}}
-						>
-							{mobileMenuOpen ? (
-								<AppIcon
-									intent='cancel'
-									size={24}
-								/>
-							) : (
-								<AppIcon
-									intent='menu'
-									size={24}
-								/>
-							)}
-						</IconButton>
-					) : null}
-
 					{/* User Menu */}
 					{user ? (
 						<Tooltip
@@ -466,7 +322,7 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 					<MenuItem
 						onClick={() => {
 							handleMenuClose();
-							handleNavigation('/profile');
+							navigate('/profile');
 						}}
 						sx={{
 							py: 1.5,
@@ -515,70 +371,6 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 					</MenuItem>
 				</Menu>
 			</Toolbar>
-
-			{/* Mobile Menu Overlay - Moved outside Toolbar */}
-			{isSmallScreen && mobileMenuOpen ? (
-				<Box
-					sx={{
-						position: 'fixed',
-						top: 64,
-						left: 0,
-						right: 0,
-						bottom: 0,
-						background: `linear-gradient(135deg,
-                            ${alpha(theme.palette.background.paper, 0.95)} 0%,
-                            ${alpha(theme.palette.background.default, 0.9)} 100%)`,
-						backdropFilter: 'blur(20px)',
-						zIndex: theme.zIndex.drawer,
-						p: 3
-					}}
-				>
-					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-						{menuItems.map((item) => {
-							const isActive = isActiveRoute(item.path);
-							return (
-								<Button
-									key={item.path}
-									fullWidth
-									size='large'
-									startIcon={item.icon}
-									onClick={() => handleNavigation(item.path)}
-									sx={{
-										justifyContent: 'flex-start',
-										py: 2.5,
-										px: 3,
-										borderRadius: 2,
-										textTransform: 'none',
-										fontWeight: isActive ? 700 : 500,
-										color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
-										background: isActive
-											? alpha(theme.palette.primary.main, 0.1)
-											: alpha(theme.palette.background.paper, 0.5),
-										border: isActive
-											? `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
-											: `1px solid ${alpha(theme.palette.divider, 0.1)}`
-									}}
-								>
-									<Box>
-										<Typography
-											variant='body1'
-											fontWeight='inherit'
-										>
-											{item.label}
-										</Typography>
-										<Typography
-											variant='caption'
-											color='text.secondary'
-										>
-											{item.description}
-										</Typography>
-									</Box>
-								</Button>
-							);
-						})}
-					</Box>
-				</Box>
-			) : null}
 		</AppBar>
 	);
 }
