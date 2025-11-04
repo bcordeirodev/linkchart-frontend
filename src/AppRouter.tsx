@@ -1,8 +1,8 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-import { EmailVerificationGuard } from '@/components/auth/EmailVerificationGuard';
-import { HomeRedirect } from '@/components/routing/HomeRedirect';
+import { EmailVerificationGuard } from '@/lib/auth/components/EmailVerificationGuard';
+import { HomeRedirect } from '@/shared/components/routing/HomeRedirect';
 import { Loading } from '@/shared/components';
 
 // Lazy load components for better performance - Organized by category

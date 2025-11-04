@@ -1,6 +1,6 @@
 import { IconButton, Tooltip } from '@mui/material';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 import { showSuccessMessage } from '@/lib/store/messageSlice';
 import useClipboard from '@/shared/hooks/useClipboard';
 

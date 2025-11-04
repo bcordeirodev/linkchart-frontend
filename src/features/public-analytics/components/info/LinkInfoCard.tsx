@@ -14,7 +14,7 @@ import {
 	alpha
 } from '@mui/material';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 import { createPresetShadows, createPresetAnimations } from '@/lib/theme';
 import { EnhancedPaper } from '@/shared/ui/base';
 

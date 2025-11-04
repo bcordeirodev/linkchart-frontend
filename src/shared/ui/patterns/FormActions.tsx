@@ -6,7 +6,7 @@
 import { Stack, Button, CircularProgress, alpha } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 
 // ========================================
 // 🎨 STYLED COMPONENTS

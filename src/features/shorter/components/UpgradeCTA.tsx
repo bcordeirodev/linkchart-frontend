@@ -1,7 +1,7 @@
 import { ArrowForward } from '@mui/icons-material';
 import { Paper, Typography, Chip, Button, Box, alpha, useTheme } from '@mui/material';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 
 interface UpgradeCTAProps {
 	onSignUp: () => void;

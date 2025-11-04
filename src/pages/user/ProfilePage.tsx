@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { PasswordChangeForm } from '@/features/profile/components/PasswordChangeForm';
 import { ProfileForm } from '@/features/profile/components/ProfileForm';
 import { ProfileSidebar } from '@/features/profile/components/ProfileSidebar';
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
 import { profileService } from '@/services';

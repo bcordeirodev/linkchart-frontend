@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 import { MetricCardOptimized } from '@/shared/ui/base';
 
 import type { PublicAnalyticsData } from '../../types';

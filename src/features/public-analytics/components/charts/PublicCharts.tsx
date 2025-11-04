@@ -2,7 +2,7 @@ import { Box, Typography, Grid, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 import { createPresetShadows, createPresetAnimations, createTextGradient, createThemeGradient } from '@/lib/theme';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 

@@ -18,7 +18,7 @@ import {
 import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 
 import type { LinkFormData } from './LinkFormSchema';
 import type { Control, FieldErrors } from 'react-hook-form';

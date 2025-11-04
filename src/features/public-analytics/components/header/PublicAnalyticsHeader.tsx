@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 
 interface PublicAnalyticsHeaderProps {
 	title?: string;

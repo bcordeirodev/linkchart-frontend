@@ -5,7 +5,7 @@
 
 import { Stack, IconButton, Tooltip } from '@mui/material';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 
 // Mapear tamanhos customizados para tamanhos MUI
 const mapSize = (size: 'xs' | 'sm' | 'md' | 'lg'): 'small' | 'medium' | 'large' => {

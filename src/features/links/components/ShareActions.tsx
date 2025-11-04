@@ -1,7 +1,7 @@
 import { Box, IconButton, Tooltip } from '@mui/material';
 
 import { useShareAPI } from '@/features/links/hooks/useShareAPI';
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 
 interface ShareActionsProps {
 	url: string;

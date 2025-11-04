@@ -23,7 +23,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/lib/auth/AuthContext';
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 
 interface NavbarProps {
 	onMobileMenuToggle?: () => void;

@@ -6,7 +6,7 @@
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 
 interface LinksHeaderActionsProps {
 	onCreateNew?: () => void;

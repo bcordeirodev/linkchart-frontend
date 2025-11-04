@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import { LinkAnalyticsTabsOptimized } from '@/features/links/components/analytics/LinkAnalyticsTabs';
 import { useLinkAnalyticsOptimized } from '@/features/links/hooks/useLinkAnalytics';
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 import MainLayout from '@/shared/layout/MainLayout';
 import { ResponsiveContainer } from '@/shared/ui/base';
 import { PageHeader } from '@/shared/ui/base/PageHeader';

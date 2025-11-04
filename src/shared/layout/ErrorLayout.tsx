@@ -18,7 +18,7 @@ import { Box, useTheme, Container, Typography, Button, Stack } from '@mui/materi
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 import { useResponsive, createPresetAnimations } from '@/lib/theme';
 import { Link } from '@/shared/components';
 

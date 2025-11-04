@@ -6,7 +6,7 @@ import { memo, useMemo, useState, useEffect } from 'react';
 import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
 import { ShorterStats, UpgradeCTA, RedirectingState } from '@/features/shorter/components';
 import { useShorter } from '@/features/shorter/hooks';
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 
 // Hooks
 import { useResponsive } from '@/lib/theme/hooks/useResponsive';

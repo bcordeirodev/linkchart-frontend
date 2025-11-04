@@ -17,7 +17,7 @@
 import { Box, Typography, alpha, Paper } from '@mui/material';
 import { useMemo } from 'react';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 import { useResponsive } from '@/lib/theme';
 import { Link } from '@/shared/components';
 import { ResponsiveContainer } from '@/shared/ui/base';

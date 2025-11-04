@@ -1,6 +1,6 @@
 import { Grid, Paper, Typography, Box, useTheme } from '@mui/material';
 
-import { AppIcon } from '@/lib/icons';
+import { AppIcon } from '@/shared/ui/icons';
 import { createComponentColorSet, createPresetShadows, createPresetAnimations, createTextGradient } from '@/lib/theme';
 
 /**
