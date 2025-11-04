@@ -31,7 +31,12 @@ export function PerformanceAnalysis({
 	title = 'Análise de Performance',
 	enableRealtime = false
 }: PerformanceAnalysisProps) {
-	const { data: performanceData, loading, error, refetch } = useLinkPerformance({
+	const {
+		data: performanceData,
+		loading,
+		error,
+		refetch
+	} = useLinkPerformance({
 		linkId,
 		enableRealtime,
 		refreshInterval: 60000

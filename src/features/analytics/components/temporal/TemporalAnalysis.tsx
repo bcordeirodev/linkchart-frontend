@@ -31,9 +31,12 @@ export function TemporalAnalysis({
 	});
 
 	// Priorizar dados de peak_analysis do back-end quando disponíveis
-	const peakHour = data?.advanced?.peak_analysis?.peak_hour !== undefined
-		? `${data.advanced.peak_analysis.peak_hour.toString().padStart(2, '0')}h`
-		: stats?.peakHour ? `${stats.peakHour}h` : '--';
+	const peakHour =
+		data?.advanced?.peak_analysis?.peak_hour !== undefined
+			? `${data.advanced.peak_analysis.peak_hour.toString().padStart(2, '0')}h`
+			: stats?.peakHour
+				? `${stats.peakHour}h`
+				: '--';
 
 	const peakDay = data?.advanced?.peak_analysis?.peak_day || stats?.peakDay || 'N/A';
 

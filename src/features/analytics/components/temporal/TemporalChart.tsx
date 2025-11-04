@@ -55,18 +55,18 @@ export function TemporalChart({
 	const hasEnhancedData = hourlyPatternsLocal?.length || weekendVsWeekday || businessHoursAnalysis;
 
 	// Verificar se há dados advanced disponíveis
-	const hasAdvancedData = advancedData && (
-		Object.keys(advancedData.weekly_trends || {}).length > 0 ||
-		Object.keys(advancedData.monthly_trends || {}).length > 0 ||
-		advancedData.peak_analysis ||
-		(advancedData.timezone_analysis && advancedData.timezone_analysis.length > 0)
-	);
+	const hasAdvancedData =
+		advancedData &&
+		(Object.keys(advancedData.weekly_trends || {}).length > 0 ||
+			Object.keys(advancedData.monthly_trends || {}).length > 0 ||
+			advancedData.peak_analysis ||
+			(advancedData.timezone_analysis && advancedData.timezone_analysis.length > 0));
 
 	const hasPeakAnalysis = advancedData?.peak_analysis;
-	const hasTrends = advancedData && (
-		Object.keys(advancedData.weekly_trends || {}).length > 0 ||
-		Object.keys(advancedData.monthly_trends || {}).length > 0
-	);
+	const hasTrends =
+		advancedData &&
+		(Object.keys(advancedData.weekly_trends || {}).length > 0 ||
+			Object.keys(advancedData.monthly_trends || {}).length > 0);
 	const hasTimezones = advancedData?.timezone_analysis && advancedData.timezone_analysis.length > 0;
 
 	const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -102,25 +102,25 @@ export function TemporalChart({
 	const isWeekendActive =
 		weeklyData.length >= 7
 			? weeklyData[0].clicks + weeklyData[6].clicks >
-			weeklyData.slice(1, 6).reduce((sum, day) => sum + day.clicks, 0)
+				weeklyData.slice(1, 6).reduce((sum, day) => sum + day.clicks, 0)
 			: false;
 	const isBusinessHoursActive =
 		hourlyData.length >= 24
 			? hourlyData.slice(9, 18).reduce((sum, hour) => sum + hour.clicks, 0) >
-			hourlyData.slice(0, 9).reduce((sum, hour) => sum + hour.clicks, 0) +
-			hourlyData.slice(18, 24).reduce((sum, hour) => sum + hour.clicks, 0)
+				hourlyData.slice(0, 9).reduce((sum, hour) => sum + hour.clicks, 0) +
+					hourlyData.slice(18, 24).reduce((sum, hour) => sum + hour.clicks, 0)
 			: false;
 
 	return (
 		<Box>
 			{/* Tabs para análises enhanced e advanced */}
-			{(hasEnhancedData || hasAdvancedData) ? (
+			{hasEnhancedData || hasAdvancedData ? (
 				<Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
 					<Tabs
 						value={activeTab}
 						onChange={handleTabChange}
-						variant="scrollable"
-						scrollButtons="auto"
+						variant='scrollable'
+						scrollButtons='auto'
 					>
 						<Tab label='📊 Padrões Gerais' />
 						<Tab

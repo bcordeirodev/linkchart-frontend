@@ -46,10 +46,10 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 					md={3}
 				>
 					<MetricCard
-						title="Hora de Pico"
+						title='Hora de Pico'
 						value={formatHour(peak_hour)}
 						icon={<AccessTime />}
-						color="primary"
+						color='primary'
 						subtitle={`${peak_hour_clicks.toLocaleString()} cliques`}
 					/>
 				</Grid>
@@ -60,10 +60,10 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 					md={3}
 				>
 					<MetricCard
-						title="Dia de Pico"
+						title='Dia de Pico'
 						value={peak_day}
 						icon={<CalendarToday />}
-						color="secondary"
+						color='secondary'
 						subtitle={`${peak_day_clicks.toLocaleString()} cliques`}
 					/>
 				</Grid>
@@ -74,7 +74,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 					md={3}
 				>
 					<MetricCard
-						title="Período do Dia"
+						title='Período do Dia'
 						value={period.label}
 						icon={<TrendingUp />}
 						color={period.color}
@@ -88,11 +88,11 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 					md={3}
 				>
 					<MetricCard
-						title="Performance"
+						title='Performance'
 						value={`${((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1)}%`}
 						icon={<Star />}
-						color="success"
-						subtitle="da atividade diária"
+						color='success'
+						subtitle='da atividade diária'
 					/>
 				</Grid>
 
@@ -106,10 +106,10 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 						sx={{ border: '1px solid', borderColor: 'divider' }}
 					>
 						<CardContent>
-							<Stack >
+							<Stack>
 								<Box>
 									<Typography
-										variant="h6"
+										variant='h6'
 										gutterBottom
 										sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 									>
@@ -136,37 +136,37 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 											}}
 										>
 											<Typography
-												variant="subtitle2"
-												color="primary"
+												variant='subtitle2'
+												color='primary'
 												sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}
 											>
-												<AccessTime fontSize="small" />
+												<AccessTime fontSize='small' />
 												Horário de Maior Impacto
 											</Typography>
 											<Typography
-												variant="h4"
+												variant='h4'
 												sx={{ mb: 0.5, fontWeight: 700 }}
 											>
 												{formatHour(peak_hour)}
 											</Typography>
-											<Typography variant="body2">
-												<strong>{peak_hour_clicks.toLocaleString()}</strong> cliques concentrados
-												neste horário
+											<Typography variant='body2'>
+												<strong>{peak_hour_clicks.toLocaleString()}</strong> cliques
+												concentrados neste horário
 											</Typography>
 											<Stack
-												direction="row"
+												direction='row'
 												spacing={1}
 												sx={{ mt: 1.5 }}
 											>
 												<Chip
 													label={period.label}
-													size="small"
+													size='small'
 													color={period.color}
 												/>
 												<Chip
 													label={period.emoji}
-													size="small"
-													variant="outlined"
+													size='small'
+													variant='outlined'
 												/>
 											</Stack>
 										</Box>
@@ -187,27 +187,27 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 											}}
 										>
 											<Typography
-												variant="subtitle2"
-												color="secondary"
+												variant='subtitle2'
+												color='secondary'
 												sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}
 											>
-												<CalendarToday fontSize="small" />
+												<CalendarToday fontSize='small' />
 												Dia de Maior Engajamento
 											</Typography>
 											<Typography
-												variant="h4"
+												variant='h4'
 												sx={{ mb: 0.5, fontWeight: 700 }}
 											>
 												{peak_day}
 											</Typography>
-											<Typography variant="body2">
+											<Typography variant='body2'>
 												<strong>{peak_day_clicks.toLocaleString()}</strong> cliques totais neste
 												dia da semana
 											</Typography>
 											<Box sx={{ mt: 1.5 }}>
 												<Typography
-													variant="caption"
-													color="text.secondary"
+													variant='caption'
+													color='text.secondary'
 												>
 													Este é o melhor dia para lançamentos e campanhas importantes
 												</Typography>
@@ -228,22 +228,23 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 									}}
 								>
 									<Typography
-										variant="subtitle2"
+										variant='subtitle2'
 										gutterBottom
 										sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 									>
 										💡 Recomendações Estratégicas
 									</Typography>
 									<Stack spacing={0.5}>
-										<Typography variant="body2">
+										<Typography variant='body2'>
 											• Programe posts e campanhas para <strong>{peak_day}</strong> às{' '}
 											<strong>{formatHour(peak_hour)}</strong>
 										</Typography>
-										<Typography variant="body2">
+										<Typography variant='body2'>
 											• {peak_hour_clicks} cliques na hora de pico representam{' '}
-											{((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1)}% da atividade do dia
+											{((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1)}% da atividade do
+											dia
 										</Typography>
-										<Typography variant="body2">
+										<Typography variant='body2'>
 											• Foco em conteúdo de <strong>{period.label.toLowerCase()}</strong> pode
 											maximizar o engajamento
 										</Typography>

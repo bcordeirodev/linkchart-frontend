@@ -77,7 +77,6 @@ export function HeatmapAnalysis({
 							<HeatmapStats
 								data={heatmapData || []}
 								stats={stats || undefined}
-
 								showTitle
 								title='Estatísticas Detalhadas'
 							/>

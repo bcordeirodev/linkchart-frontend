@@ -134,11 +134,7 @@ export function LinkAnalyticsTabsOptimized({
 				index={1}
 			>
 				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 1 && (
-					<PerformanceAnalysis
-						linkId={linkId}
-					/>
-				)}
+				{tabValue === 1 && <PerformanceAnalysis linkId={linkId} />}
 			</TabPanel>
 
 			{/* Geografia Tab */}
@@ -176,11 +172,7 @@ export function LinkAnalyticsTabsOptimized({
 				index={4}
 			>
 				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 4 && (
-					<AudienceAnalysis
-						linkId={linkId}
-					/>
-				)}
+				{tabValue === 4 && <AudienceAnalysis linkId={linkId} />}
 			</TabPanel>
 
 			{/* Heatmap Tab */}
@@ -189,11 +181,7 @@ export function LinkAnalyticsTabsOptimized({
 				index={5}
 			>
 				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 5 && (
-					<HeatmapAnalysis
-						linkId={linkId}
-					/>
-				)}
+				{tabValue === 5 && <HeatmapAnalysis linkId={linkId} />}
 			</TabPanel>
 
 			{/* Insights Tab */}

@@ -133,7 +133,6 @@ export interface AudienceAnalysisProps extends BaseDataProps, BaseTitleProps {
 	/** ID do link específico (opcional) */
 	linkId?: string;
 	/** Modo global - todos os links ativos (padrão: false) */
-
 }
 
 /**

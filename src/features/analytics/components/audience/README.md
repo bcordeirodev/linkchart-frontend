@@ -29,11 +29,7 @@ audience/
 import { AudienceAnalysis } from '@/features/analytics/components/audience';
 
 function GlobalAnalytics() {
-	return (
-		<AudienceAnalysis
-			title='📊 Audiência Global'
-		/>
-	);
+	return <AudienceAnalysis title='📊 Audiência Global' />;
 }
 ```
 

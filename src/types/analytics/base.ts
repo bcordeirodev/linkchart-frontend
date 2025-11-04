@@ -101,7 +101,7 @@ export interface UseAnalyticsOptions {
 	/** ID do link específico */
 	linkId?: string;
 	/** Modo global (todos os links) */
-	
+
 	/** Habilitar atualizações em tempo real */
 	enableRealtime?: boolean;
 	/** Intervalo de atualização (ms) */

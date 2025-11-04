@@ -29,9 +29,9 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 				}}
 			>
 				<Public sx={{ fontSize: 64, opacity: 0.3, mb: 2 }} />
-				<Typography variant="h6">Dados de timezone ainda não disponíveis</Typography>
+				<Typography variant='h6'>Dados de timezone ainda não disponíveis</Typography>
 				<Typography
-					variant="body2"
+					variant='body2'
 					sx={{ mt: 1 }}
 				>
 					Continue compartilhando seu link para coletar dados de diferentes fusos horários
@@ -67,11 +67,11 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 					lg={8}
 				>
 					<ChartCard
-						title="🌍 Distribuição por Fuso Horário"
+						title='🌍 Distribuição por Fuso Horário'
 						subtitle={`${timezoneAnalysis.length} fusos horários detectados`}
 					>
 						<ApexChartWrapper
-							type="bar"
+							type='bar'
 							height={350}
 							series={[
 								{
@@ -129,9 +129,10 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 									y: {
 										formatter(val: number, opts?: any) {
 											const dataPointIndex = opts?.dataPointIndex;
-											const percentage = dataPointIndex !== undefined
-												? topTimezones[dataPointIndex]?.percentage || 0
-												: 0;
+											const percentage =
+												dataPointIndex !== undefined
+													? topTimezones[dataPointIndex]?.percentage || 0
+													: 0;
 											return `${val.toLocaleString()} cliques (${percentage.toFixed(1)}%)`;
 										}
 									}
@@ -148,33 +149,33 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 					lg={4}
 				>
 					<ChartCard
-						title="📊 Top Timezones"
+						title='📊 Top Timezones'
 						subtitle={`Total: ${totalClicks.toLocaleString()} cliques`}
 					>
 						<Stack spacing={2}>
 							{topTimezones.map((tz, index) => (
 								<Box key={tz.name}>
 									<Stack
-										direction="row"
-										justifyContent="space-between"
-										alignItems="center"
+										direction='row'
+										justifyContent='space-between'
+										alignItems='center'
 										sx={{ mb: 0.5 }}
 									>
 										<Typography
-											variant="body2"
-											fontWeight="medium"
+											variant='body2'
+											fontWeight='medium'
 										>
 											{index + 1}. {tz.name.split('/').pop()}
 										</Typography>
 										<Typography
-											variant="body2"
-											color="text.secondary"
+											variant='body2'
+											color='text.secondary'
 										>
 											{tz.clicks.toLocaleString()} ({tz.percentage?.toFixed(1)}%)
 										</Typography>
 									</Stack>
 									<LinearProgress
-										variant="determinate"
+										variant='determinate'
 										value={tz.percentage || 0}
 										sx={{
 											height: 6,
@@ -194,8 +195,8 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 										}}
 									/>
 									<Typography
-										variant="caption"
-										color="text.secondary"
+										variant='caption'
+										color='text.secondary'
 										sx={{ display: 'block', mt: 0.5 }}
 									>
 										{tz.name}
@@ -207,8 +208,8 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 						{timezoneAnalysis.length > 10 && (
 							<Box sx={{ mt: 2, p: 1.5, bgcolor: 'action.hover', borderRadius: 1 }}>
 								<Typography
-									variant="caption"
-									color="text.secondary"
+									variant='caption'
+									color='text.secondary'
 								>
 									+{timezoneAnalysis.length - 10} outros fusos horários
 								</Typography>
@@ -231,12 +232,12 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 						}}
 					>
 						<Typography
-							variant="subtitle2"
+							variant='subtitle2'
 							gutterBottom
 						>
 							💡 Insight de Timezone
 						</Typography>
-						<Typography variant="body2">
+						<Typography variant='body2'>
 							{sortedTimezones[0] && (
 								<>
 									Seu público está concentrado em <strong>{sortedTimezones[0].name}</strong> com{' '}

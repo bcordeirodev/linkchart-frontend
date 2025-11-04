@@ -149,7 +149,7 @@ export interface UseGeographicDataOptions {
 	/** ID do link específico */
 	linkId?: string;
 	/** Modo global */
-	
+
 	/** Incluir dados de heatmap */
 	includeHeatmap?: boolean;
 	/** Incluir dados de continentes */

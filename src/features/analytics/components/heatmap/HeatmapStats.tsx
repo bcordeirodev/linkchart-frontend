@@ -37,7 +37,7 @@ interface HeatmapStatsProps {
 export function HeatmapStats({
 	data,
 	stats,
-	
+
 	showTitle = false,
 	title = '📊 Estatísticas do Heatmap',
 	showDetailed = true

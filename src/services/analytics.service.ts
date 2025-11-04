@@ -50,7 +50,6 @@ export default class AnalyticsService extends BaseService {
 		});
 	}
 
-
 	/**
 	 * Busca dados de performance para links específicos
 	 */
@@ -250,7 +249,6 @@ export default class AnalyticsService extends BaseService {
 			context: 'get_link_insights'
 		});
 	}
-
 }
 
 // Instância singleton do serviço

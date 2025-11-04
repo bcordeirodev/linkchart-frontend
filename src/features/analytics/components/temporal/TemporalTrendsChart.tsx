@@ -48,9 +48,7 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 
 	// Calcular tendência semanal
 	const weeklyTrend =
-		weeklyValues.length >= 2
-			? weeklyValues[weeklyValues.length - 1] - weeklyValues[weeklyValues.length - 2]
-			: 0;
+		weeklyValues.length >= 2 ? weeklyValues[weeklyValues.length - 1] - weeklyValues[weeklyValues.length - 2] : 0;
 
 	// Calcular tendência mensal
 	const monthlyTrend =
@@ -71,9 +69,9 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 				}}
 			>
 				<ShowChart sx={{ fontSize: 64, opacity: 0.3, mb: 2 }} />
-				<Typography variant="h6">Dados de tendências ainda não disponíveis</Typography>
+				<Typography variant='h6'>Dados de tendências ainda não disponíveis</Typography>
 				<Typography
-					variant="body2"
+					variant='body2'
 					sx={{ mt: 1 }}
 				>
 					Continue compartilhando seu link para gerar dados de tendências ao longo do tempo
@@ -96,11 +94,11 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 						lg={6}
 					>
 						<ChartCard
-							title="📊 Tendências Semanais"
+							title='📊 Tendências Semanais'
 							subtitle={`Média: ${Math.round(weeklyAvg)} cliques/semana`}
 						>
 							<ApexChartWrapper
-								type="area"
+								type='area'
 								height={300}
 								series={[
 									{
@@ -166,19 +164,19 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 							<Box sx={{ mt: 2, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
 								<Stack
 									spacing={1}
-									direction="row"
-									alignItems="center"
-									flexWrap="wrap"
+									direction='row'
+									alignItems='center'
+									flexWrap='wrap'
 								>
 									<Chip
 										icon={weeklyTrend >= 0 ? <TrendingUp /> : <TrendingDown />}
 										label={`${weeklyTrend >= 0 ? '+' : ''}${weeklyTrend} última semana`}
 										color={weeklyTrend >= 0 ? 'success' : 'error'}
-										size="small"
+										size='small'
 									/>
 									<Typography
-										variant="body2"
-										color="text.secondary"
+										variant='body2'
+										color='text.secondary'
 									>
 										Total: {weeklyTotal.toLocaleString()} cliques em {weeklyValues.length} semanas
 									</Typography>
@@ -196,11 +194,11 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 						lg={6}
 					>
 						<ChartCard
-							title="📅 Tendências Mensais"
+							title='📅 Tendências Mensais'
 							subtitle={`Média: ${Math.round(monthlyAvg)} cliques/mês`}
 						>
 							<ApexChartWrapper
-								type="area"
+								type='area'
 								height={300}
 								series={[
 									{
@@ -266,19 +264,19 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 							<Box sx={{ mt: 2, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
 								<Stack
 									spacing={1}
-									direction="row"
-									alignItems="center"
-									flexWrap="wrap"
+									direction='row'
+									alignItems='center'
+									flexWrap='wrap'
 								>
 									<Chip
 										icon={monthlyTrend >= 0 ? <TrendingUp /> : <TrendingDown />}
 										label={`${monthlyTrend >= 0 ? '+' : ''}${monthlyTrend} último mês`}
 										color={monthlyTrend >= 0 ? 'success' : 'error'}
-										size="small"
+										size='small'
 									/>
 									<Typography
-										variant="body2"
-										color="text.secondary"
+										variant='body2'
+										color='text.secondary'
 									>
 										Total: {monthlyTotal.toLocaleString()} cliques em {monthlyValues.length} meses
 									</Typography>
@@ -297,7 +295,7 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 						<Card>
 							<CardContent>
 								<Typography
-									variant="h6"
+									variant='h6'
 									gutterBottom
 								>
 									📈 Análise de Crescimento
@@ -313,12 +311,12 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 											md={6}
 										>
 											<Typography
-												variant="subtitle2"
-												color="text.secondary"
+												variant='subtitle2'
+												color='text.secondary'
 											>
 												Desempenho Semanal
 											</Typography>
-											<Typography variant="body2">
+											<Typography variant='body2'>
 												{weeklyTrend > 0
 													? `✅ Crescimento de ${weeklyTrend} cliques na última semana`
 													: weeklyTrend < 0
@@ -334,12 +332,12 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 											md={6}
 										>
 											<Typography
-												variant="subtitle2"
-												color="text.secondary"
+												variant='subtitle2'
+												color='text.secondary'
 											>
 												Desempenho Mensal
 											</Typography>
-											<Typography variant="body2">
+											<Typography variant='body2'>
 												{monthlyTrend > 0
 													? `✅ Crescimento de ${monthlyTrend} cliques no último mês`
 													: monthlyTrend < 0

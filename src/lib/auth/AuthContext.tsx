@@ -93,7 +93,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 							// Token válido
 						} catch (error) {
 							// Token expirado ou inválido - limpar dados locais
-							console.warn('Token expirado ou inválido detectado durante inicialização, limpando dados locais');
+							console.warn(
+								'Token expirado ou inválido detectado durante inicialização, limpando dados locais'
+							);
 							localStorage.removeItem('token');
 							localStorage.removeItem('user');
 							setUser(null);

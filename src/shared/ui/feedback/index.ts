@@ -10,4 +10,3 @@ export { default as EmailVerificationBanner } from './EmailVerificationBanner';
 // Legacy aliases for compatibility
 export { default as FuseLoading } from './Loading';
 export { default as FuseMessage } from './Message';
-
