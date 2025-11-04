@@ -86,7 +86,8 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 				spacing={3}
 			>
 				{/* Weekly Trends */}
-				{hasWeeklyData ? <Grid
+				{hasWeeklyData ? (
+					<Grid
 						item
 						xs={12}
 						lg={6}
@@ -181,10 +182,12 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 								</Stack>
 							</Box>
 						</ChartCard>
-					</Grid> : null}
+					</Grid>
+				) : null}
 
 				{/* Monthly Trends */}
-				{hasMonthlyData ? <Grid
+				{hasMonthlyData ? (
+					<Grid
 						item
 						xs={12}
 						lg={6}
@@ -279,10 +282,12 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 								</Stack>
 							</Box>
 						</ChartCard>
-					</Grid> : null}
+					</Grid>
+				) : null}
 
 				{/* Resumo Geral */}
-				{(hasWeeklyData || hasMonthlyData) ? <Grid
+				{hasWeeklyData || hasMonthlyData ? (
+					<Grid
 						item
 						xs={12}
 					>
@@ -298,7 +303,8 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 									container
 									spacing={2}
 								>
-									{hasWeeklyData ? <Grid
+									{hasWeeklyData ? (
+										<Grid
 											item
 											xs={12}
 											md={6}
@@ -316,8 +322,10 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 														? `⚠️ Queda de ${Math.abs(weeklyTrend)} cliques na última semana`
 														: '➖ Estável na última semana'}
 											</Typography>
-										</Grid> : null}
-									{hasMonthlyData ? <Grid
+										</Grid>
+									) : null}
+									{hasMonthlyData ? (
+										<Grid
 											item
 											xs={12}
 											md={6}
@@ -335,11 +343,13 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 														? `⚠️ Queda de ${Math.abs(monthlyTrend)} cliques no último mês`
 														: '➖ Estável no último mês'}
 											</Typography>
-										</Grid> : null}
+										</Grid>
+									) : null}
 								</Grid>
 							</CardContent>
 						</Card>
-					</Grid> : null}
+					</Grid>
+				) : null}
 			</Grid>
 		</Box>
 	);

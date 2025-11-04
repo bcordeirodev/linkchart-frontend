@@ -238,7 +238,8 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 							💡 Insight de Timezone
 						</Typography>
 						<Typography variant='body2'>
-							{sortedTimezones[0] ? <>
+							{sortedTimezones[0] ? (
+								<>
 									Seu público está concentrado em <strong>{sortedTimezones[0].name}</strong> com{' '}
 									<strong>{sortedTimezones[0].percentage?.toFixed(1)}%</strong> dos cliques.
 									{sortedTimezones.length > 1 && (
@@ -248,7 +249,8 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 											região.
 										</>
 									)}
-								</> : null}
+								</>
+							) : null}
 						</Typography>
 					</Box>
 				</Grid>
