@@ -194,8 +194,8 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 
 				{/* Gráficos de dispositivos e países - dashboard e full */}
 				{(variant === 'dashboard' || variant === 'full') &&
-				(hasDeviceData || hasGeographicData) &&
-				chartData ? (
+					(hasDeviceData || hasGeographicData) &&
+					chartData ? (
 					<>
 						{/* Dispositivos */}
 						{hasDeviceData ? (

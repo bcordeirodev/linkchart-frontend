@@ -22,7 +22,5 @@ export { LinksMobileCards } from './mobile';
 // Outros componentes
 export { CopyButton } from './CopyButton';
 export { ShareActions } from './ShareActions';
-export { ShortUrlResult } from './ShortUrlResult';
 export { URLInput } from './URLInput';
 export { URLShortenerForm } from './URLShortenerForm';
-export { LinkClicksRealTime } from './LinkClicksRealTime';
