@@ -123,7 +123,6 @@ export function useTemporalData({
 			}
 
 			// ✨ Sempre usar endpoint unificado (includeAdvanced é ignorado)
-			// ✨ Endpoint sempre retorna TODOS os dados desde o início (sem filtro de data)
 			const endpoint = `/api/analytics/link/${linkId}/temporal`;
 
 			const response = await api.get<{

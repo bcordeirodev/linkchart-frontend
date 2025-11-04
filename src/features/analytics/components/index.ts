@@ -11,9 +11,6 @@ export { default as AnalyticsMetrics } from './dashboard/shared/DashboardMetrics
 // === GRÁFICOS E VISUALIZAÇÕES ===
 export { Charts } from './dashboard/shared/charts/Charts';
 
-// === COMPONENTES DE DASHBOARD ===
-export { TopLinks } from './dashboard/shared/TopLinks';
-
 // === COMPONENTES ESPECIALIZADOS ORIGINAIS ===
 export * from './audience';
 export * from './geographic';

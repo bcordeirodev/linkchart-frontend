@@ -17,7 +17,6 @@ interface TemporalAnalysisProps {
 
 /**
  * Componente de análise temporal com padrões de cliques por hora e dia da semana
- * ✨ Sempre exibe TODOS os dados desde o início do link (sem filtro de período)
  */
 export function TemporalAnalysis({
 	linkId,
