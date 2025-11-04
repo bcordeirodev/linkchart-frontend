@@ -21,7 +21,7 @@ import { LinkFormFields } from '../../components/forms/LinkFormFields';
 import { linkFormSchema, defaultLinkFormValues } from '../../components/forms/LinkFormSchema';
 
 import type { LinkFormData } from '../../components/forms/LinkFormSchema';
-import type { EditLinkFormProps } from '../types';
+import type { EditLinkFormProps } from '../../types/forms';
 
 /**
  * Formulário de edição de links com React Hook Form + Zod

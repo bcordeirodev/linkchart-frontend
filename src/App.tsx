@@ -6,7 +6,7 @@ import { useMemo, useEffect } from 'react';
 import { Provider } from 'react-redux';
 
 import { ErrorBoundary } from '@/lib/utils';
-import { Message } from '@/shared/components/Message';
+import { Message } from '@/shared/components';
 import { LayoutProvider } from '@/shared/layout/core';
 
 import AppRouter from './AppRouter';

@@ -25,4 +25,4 @@ export { BusinessInsights } from './insights/BusinessInsights';
 // Agora incluídos via export * from './specialized/common'
 
 // === TIPOS ===
-export type { ChartsProps, MetricsProps } from './types';
+// Tipos disponíveis em @/types/analytics

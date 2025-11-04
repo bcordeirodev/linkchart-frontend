@@ -6,7 +6,7 @@
 import { Stack, Fade, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import { CreateLinkForm } from '@/features/links/create';
+import { CreateLinkForm } from '@/features/links';
 import MainLayout from '@/shared/layout/MainLayout';
 import { ResponsiveContainer } from '@/shared/ui/base';
 

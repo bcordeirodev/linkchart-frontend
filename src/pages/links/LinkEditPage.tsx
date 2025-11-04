@@ -3,7 +3,7 @@
 import { Alert, Stack, Button } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { EditLinkForm } from '@/features/links/edit';
+import { EditLinkForm } from '@/features/links';
 import { AppIcon } from '@/shared/ui/icons';
 import MainLayout from '@/shared/layout/MainLayout';
 import { ResponsiveContainer } from '@/shared/ui/base';
