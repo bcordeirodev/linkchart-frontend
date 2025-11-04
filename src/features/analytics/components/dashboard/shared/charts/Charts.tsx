@@ -6,7 +6,7 @@ import { createPresetAnimations, createComponentColorSet } from '@/lib/theme';
 import { EmptyState } from '@/shared/ui/base/EmptyState';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
-import type { ChartsProps } from '@/features/analytics/components/types';
+import type { ChartsProps } from '@/types';
 
 /**
  * 📊 CHARTS COM STYLED COMPONENTS

@@ -9,7 +9,7 @@ import { GradientButton } from '@/shared/ui/base/GradientButton';
 
 import { URLInput } from './URLInput';
 
-import type { PublicLinkResponse } from '@/services/publicLink.service';
+import type { PublicLinkResponse } from '@/services/link-public.service';
 
 interface IFormData {
 	originalUrl: string;

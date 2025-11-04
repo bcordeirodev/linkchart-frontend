@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { publicLinkService } from '@/services/publicLink.service';
+import { publicLinkService } from '@/services/link-public.service';
 
-import type { PublicLinkResponse } from '@/services/publicLink.service';
+import type { PublicLinkResponse } from '@/services/link-public.service';
 
 /**
  * 🔗 HOOK CUSTOMIZADO PARA SHORTER PAGE

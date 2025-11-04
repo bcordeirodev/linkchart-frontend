@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { api } from '@/lib/api/client';
-import { publicLinkService } from '@/services/publicLink.service';
+import { publicLinkService } from '@/services/link-public.service';
 
 import type { PublicAnalyticsData, PublicLinkData, PublicAnalyticsState, PublicAnalyticsActions } from '../types';
 
