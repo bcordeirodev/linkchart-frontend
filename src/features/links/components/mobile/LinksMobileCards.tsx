@@ -71,10 +71,32 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 
 	// Formatação de dados
 	const shortUrl = `${window.location.origin}/${link.slug || link.custom_slug}`;
-	const createdAt = formatDistanceToNow(new Date(link.created_at), {
-		addSuffix: true,
-		locale: ptBR
-	});
+
+	// Validação e formatação segura da data
+	const getFormattedDate = () => {
+		try {
+			if (!link.created_at) {
+				return 'Data não disponível';
+			}
+
+			const date = new Date(link.created_at);
+
+			// Verifica se a data é válida
+			if (isNaN(date.getTime())) {
+				return 'Data inválida';
+			}
+
+			return formatDistanceToNow(date, {
+				addSuffix: true,
+				locale: ptBR
+			});
+		} catch (error) {
+			console.error('Erro ao formatar data:', error);
+			return 'Data não disponível';
+		}
+	};
+
+	const createdAt = getFormattedDate();
 
 	// Handlers
 	const handleCopy = useCallback(() => {
