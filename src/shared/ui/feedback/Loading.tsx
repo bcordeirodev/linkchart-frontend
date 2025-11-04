@@ -74,9 +74,11 @@ function LinearLoader({ color, theme }: { color: LoadingProps['color']; theme: a
 		if (color === 'inherit') {
 			return theme.palette.text.primary;
 		}
+
 		if (color && (color === 'primary' || color === 'secondary')) {
 			return theme.palette[color].main;
 		}
+
 		return theme.palette.primary.main; // fallback
 	};
 

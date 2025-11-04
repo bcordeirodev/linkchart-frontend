@@ -2,11 +2,8 @@ import { Box, Alert } from '@mui/material';
 import { useMemo, useState } from 'react';
 
 import { DashboardMetrics } from '@/features/analytics/components/dashboard/shared/DashboardMetrics';
-import { LinksFilters } from '@/features/links/components/LinksFilters';
-import { LinksHeader } from '@/features/links/components/LinksHeader';
-import { LinksMobileCards } from '@/features/links/components/mobile/LinksMobileCards';
+import { LinksFilters, LinksHeader, LinksMobileCards, useLinksTableColumns } from '@/features/links/components/list';
 import { useLinks } from '@/features/links/hooks/useLinks';
-import { useLinksTableColumns } from '@/features/links/hooks/useLinksTableColumns';
 import { useResponsive } from '@/lib/theme';
 import { Loading } from '@/shared/components';
 import MainLayout from '@/shared/layout/MainLayout';

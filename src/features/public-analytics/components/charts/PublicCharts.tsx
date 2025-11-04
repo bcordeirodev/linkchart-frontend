@@ -14,9 +14,6 @@ interface PublicChartsProps {
 
 /**
  * 📊 GRÁFICOS PÚBLICOS
- *
- * Componente que renderiza gráficos públicos de dispositivos e países
- * Reutiliza componentes e formatadores do dashboard
  */
 export function PublicCharts({ analyticsData }: PublicChartsProps) {
 	const theme = useTheme();

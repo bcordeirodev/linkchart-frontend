@@ -40,6 +40,7 @@ export function useLinkPerformance(options: UseLinkPerformanceOptions) {
 
 		// Atualizar dados periodicamente se realtime estiver habilitado
 		let interval: NodeJS.Timeout | null = null;
+
 		if (enableRealtime && refreshInterval > 0 && !error) {
 			interval = setInterval(() => {
 				if (!error) {

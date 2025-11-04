@@ -115,7 +115,7 @@ export function PerformanceAnalysis({
 											variant='h6'
 											fontWeight={600}
 										>
-											✅ Status Atual
+											Status Atual
 										</Typography>
 									</Box>
 
@@ -191,7 +191,7 @@ export function PerformanceAnalysis({
 											variant='h6'
 											fontWeight={600}
 										>
-											⚙️ Sistema
+											Sistema
 										</Typography>
 									</Box>
 
@@ -256,7 +256,7 @@ export function PerformanceAnalysis({
 									sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center' }}
 								>
 									<Assessment sx={{ mr: 1, color: 'info.main' }} />
-									💡 Insights de Performance
+									Insights de Performance
 								</Typography>
 								<Typography
 									variant='body2'

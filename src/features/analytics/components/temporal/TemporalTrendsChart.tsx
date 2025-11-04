@@ -4,7 +4,6 @@ import { useTheme } from '@mui/material/styles';
 
 import { ChartCard } from '@/shared/ui/base/ChartCard';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
-import { formatAreaChart } from '@/features/analytics/utils/chartFormatters';
 import { getStandardChartColors } from '@/lib/theme';
 
 interface TemporalTrendsChartProps {
@@ -87,8 +86,7 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 				spacing={3}
 			>
 				{/* Weekly Trends */}
-				{hasWeeklyData && (
-					<Grid
+				{hasWeeklyData ? <Grid
 						item
 						xs={12}
 						lg={6}
@@ -183,12 +181,10 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 								</Stack>
 							</Box>
 						</ChartCard>
-					</Grid>
-				)}
+					</Grid> : null}
 
 				{/* Monthly Trends */}
-				{hasMonthlyData && (
-					<Grid
+				{hasMonthlyData ? <Grid
 						item
 						xs={12}
 						lg={6}
@@ -283,12 +279,10 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 								</Stack>
 							</Box>
 						</ChartCard>
-					</Grid>
-				)}
+					</Grid> : null}
 
 				{/* Resumo Geral */}
-				{(hasWeeklyData || hasMonthlyData) && (
-					<Grid
+				{(hasWeeklyData || hasMonthlyData) ? <Grid
 						item
 						xs={12}
 					>
@@ -304,8 +298,7 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 									container
 									spacing={2}
 								>
-									{hasWeeklyData && (
-										<Grid
+									{hasWeeklyData ? <Grid
 											item
 											xs={12}
 											md={6}
@@ -323,10 +316,8 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 														? `⚠️ Queda de ${Math.abs(weeklyTrend)} cliques na última semana`
 														: '➖ Estável na última semana'}
 											</Typography>
-										</Grid>
-									)}
-									{hasMonthlyData && (
-										<Grid
+										</Grid> : null}
+									{hasMonthlyData ? <Grid
 											item
 											xs={12}
 											md={6}
@@ -344,13 +335,11 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 														? `⚠️ Queda de ${Math.abs(monthlyTrend)} cliques no último mês`
 														: '➖ Estável no último mês'}
 											</Typography>
-										</Grid>
-									)}
+										</Grid> : null}
 								</Grid>
 							</CardContent>
 						</Card>
-					</Grid>
-				)}
+					</Grid> : null}
 			</Grid>
 		</Box>
 	);

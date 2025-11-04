@@ -1,4 +1,14 @@
 import { Box, Card, CardContent, Chip, Grid, Stack, Typography, Tabs, Tab } from '@mui/material';
+import {
+	MdPeople,
+	MdPhoneAndroid,
+	MdLanguage,
+	MdComputer,
+	MdBolt,
+	MdPublic,
+	MdBarChart,
+	MdEmojiEvents
+} from 'react-icons/md';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 
@@ -109,7 +119,7 @@ export function AudienceChart({
 					gap: 1
 				}}
 			>
-				👥 Análise de Audiência
+				<MdPeople /> Análise de Audiência
 				<Chip
 					label={`${totalClicks} cliques`}
 					size='small'
@@ -125,21 +135,43 @@ export function AudienceChart({
 						value={activeTab}
 						onChange={handleTabChange}
 					>
-						<Tab label='📱 Dispositivos' />
 						<Tab
-							label='🌐 Navegadores'
+							label={
+								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+									<MdPhoneAndroid /> Dispositivos
+								</Box>
+							}
+						/>
+						<Tab
+							label={
+								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+									<MdLanguage /> Navegadores
+								</Box>
+							}
 							disabled={!browsers?.length}
 						/>
 						<Tab
-							label='💻 Sistemas'
+							label={
+								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+									<MdComputer /> Sistemas
+								</Box>
+							}
 							disabled={!operatingSystems?.length}
 						/>
 						<Tab
-							label='⚡ Performance'
+							label={
+								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+									<MdBolt /> Performance
+								</Box>
+							}
 							disabled={!devicePerformance?.length}
 						/>
 						<Tab
-							label='🌍 Idiomas'
+							label={
+								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+									<MdPublic /> Idiomas
+								</Box>
+							}
 							disabled={!languages?.length}
 						/>
 					</Tabs>
@@ -272,10 +304,13 @@ export function AudienceChart({
 										sx={{
 											position: 'relative',
 											zIndex: 1,
-											mt: 1
+											mt: 1,
+											display: 'flex',
+											alignItems: 'center',
+											gap: 1
 										}}
 									>
-										📱 Distribuição por Dispositivo
+										<MdPhoneAndroid /> Distribuição por Dispositivo
 									</Typography>
 									<ApexChartWrapper
 										type='pie'
@@ -300,10 +335,13 @@ export function AudienceChart({
 										sx={{
 											position: 'relative',
 											zIndex: 1,
-											mt: 1
+											mt: 1,
+											display: 'flex',
+											alignItems: 'center',
+											gap: 1
 										}}
 									>
-										🏆 Ranking de Dispositivos
+										<MdEmojiEvents /> Ranking de Dispositivos
 									</Typography>
 									<ApexChartWrapper
 										type='bar'
@@ -331,10 +369,13 @@ export function AudienceChart({
 								sx={{
 									position: 'relative',
 									zIndex: 1,
-									mt: 1
+									mt: 1,
+									display: 'flex',
+									alignItems: 'center',
+									gap: 1
 								}}
 							>
-								📊 Detalhes por Dispositivo
+								<MdBarChart /> Detalhes por Dispositivo
 							</Typography>
 
 							<Stack spacing={2}>
@@ -507,8 +548,9 @@ export function AudienceChart({
 								<Typography
 									variant='h6'
 									gutterBottom
+									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
-									💻 Distribuição de Sistemas Operacionais
+									<MdComputer /> Distribuição de Sistemas Operacionais
 								</Typography>
 								<ApexChartWrapper
 									type='donut'
@@ -599,8 +641,9 @@ export function AudienceChart({
 								<Typography
 									variant='h6'
 									gutterBottom
+									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
-									⚡ Performance por Dispositivo
+									<MdBolt /> Performance por Dispositivo
 								</Typography>
 								<ApexChartWrapper
 									type='bar'
@@ -672,8 +715,9 @@ export function AudienceChart({
 								<Typography
 									variant='h6'
 									gutterBottom
+									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
-									🌍 Distribuição de Idiomas
+									<MdPublic /> Distribuição de Idiomas
 								</Typography>
 								<ApexChartWrapper
 									type='pie'

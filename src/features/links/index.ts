@@ -3,9 +3,10 @@
  * Barrel exports para o módulo de links
  */
 
-// Components
-export * from './components/LinksHeader';
-export * from './components/LinksFilters';
+// List Components (listagem)
+export * from './components/list';
+
+// Other Components
 export * from './components/URLInput';
 export * from './components/URLShortenerForm';
 export * from './components/ShareActions';
@@ -22,7 +23,6 @@ export * from './components/analytics';
 
 // Hooks
 export * from './hooks/useLinks';
-export * from './hooks/useLinksTableColumns';
 export * from './hooks/useShareAPI';
 export * from './hooks/useLinkAnalytics';
 
@@ -30,4 +30,3 @@ export * from './hooks/useLinkAnalytics';
 export * from './types/link';
 export * from './types/shorter';
 export * from './types/analytics';
-export * from './types/forms';

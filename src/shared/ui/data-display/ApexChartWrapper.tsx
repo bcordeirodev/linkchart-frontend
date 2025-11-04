@@ -69,10 +69,12 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 						if (typeof item === 'number' && item >= 0) {
 							return true;
 						}
+
 						// Objeto com propriedades x ou y (ex: [{x: 'Jan', y: 100}])
 						if (item && typeof item === 'object' && ('x' in item || 'y' in item)) {
 							return true;
 						}
+
 						return false;
 					});
 				}

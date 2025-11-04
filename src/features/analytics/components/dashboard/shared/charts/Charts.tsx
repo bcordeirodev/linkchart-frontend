@@ -11,6 +11,16 @@ import type { ChartsProps } from '@/types';
 /**
  * 📊 CHARTS COM STYLED COMPONENTS
  * Gráficos unificados com melhor tratamento de dados e erro
+ *
+ * ⚠️ NOTA: Estados e Cidades foram REMOVIDOS do Dashboard (consolidação)
+ * - Estados/Regiões → Disponível apenas em GeographicAnalysis
+ * - Cidades → Disponível apenas em GeographicAnalysis
+ *
+ * Variants suportados:
+ * - 'full': Todos os gráficos (temporal, devices, countries)
+ * - 'dashboard': Gráficos principais (temporal, devices, countries)
+ * - 'public': Gráficos públicos simplificados (devices, countries)
+ * - 'analytics': Gráficos avançados (temporais detalhados)
  */
 export function Charts({ data, variant = 'full', height = 300, showAllCharts = true }: ChartsProps) {
 	try {
@@ -20,7 +30,6 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 		// Usa utilitários de tema
 		const animations = createPresetAnimations(theme);
 		const successColors = createComponentColorSet(theme, 'success');
-		const infoColors = createComponentColorSet(theme, 'info');
 
 		// Estilos padronizados para gráficos (removidos pois não são mais utilizados com Card)
 
@@ -74,7 +83,9 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 
 			// Verificar se há dados de dispositivos com cliques reais
 			const hasDeviceData = !!(
-				data.audience?.device_breakdown?.length > 0 && data.audience.device_breakdown.some((d) => d.clicks > 0)
+				data.audience?.device_breakdown &&
+				data.audience.device_breakdown.length > 0 &&
+				data.audience.device_breakdown.some((d) => d.clicks > 0)
 			);
 
 			// Debug detalhado (apenas em desenvolvimento)
@@ -192,8 +203,8 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 					</>
 				) : null}
 
-				{/* Gráficos de dispositivos e países - dashboard e full */}
-				{(variant === 'dashboard' || variant === 'full') &&
+				{/* Gráficos de dispositivos e países - dashboard, full e public */}
+				{(variant === 'dashboard' || variant === 'full' || variant === 'public') &&
 				(hasDeviceData || hasGeographicData) &&
 				chartData ? (
 					<>
@@ -282,109 +293,6 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 														'clicks',
 														successColors.main,
 														true, // horizontal bars
-														isDark
-													)}
-												/>
-											</Box>
-										</CardContent>
-									</Card>
-								</Box>
-							</Grid>
-						) : null}
-					</>
-				) : null}
-
-				{/* Gráficos avançados - apenas analytics e full */}
-				{(variant === 'analytics' || variant === 'full') && showAllCharts && hasGeographicData && chartData ? (
-					<>
-						{/* Estados/Regiões */}
-						{chartData?.geographic?.top_states?.length > 0 ? (
-							<Grid
-								item
-								xs={12}
-								md={6}
-								lg={6}
-							>
-								<Box
-									sx={{
-										height: '100%',
-										...animations.cardHover
-									}}
-								>
-									<Card>
-										<CardContent>
-											<Typography
-												variant='h6'
-												gutterBottom
-												sx={{
-													position: 'relative',
-													zIndex: 1,
-													mt: 1
-												}}
-											>
-												🏛️ Top Estados/Regiões
-											</Typography>
-											<Box sx={{ mb: 2 }}>
-												<ApexChartWrapper
-													type='bar'
-													height={height}
-													{...formatBarChart(
-														chartData.geographic.top_states.slice(0, 8) as Record<
-															string,
-															unknown
-														>[],
-														'state',
-														'clicks',
-														infoColors.main,
-														true,
-														isDark
-													)}
-												/>
-											</Box>
-										</CardContent>
-									</Card>
-								</Box>
-							</Grid>
-						) : null}
-
-						{/* Cidades */}
-						{chartData?.geographic?.top_cities?.length > 0 ? (
-							<Grid
-								item
-								xs={12}
-								md={6}
-								lg={6}
-							>
-								<Box
-									sx={{
-										height: '100%',
-										...animations.cardHover
-									}}
-								>
-									<Card>
-										<CardContent>
-											<Typography
-												variant='h6'
-												gutterBottom
-												sx={{
-													position: 'relative',
-													zIndex: 1,
-													mt: 1
-												}}
-											>
-												🏙️ Top Cidades
-											</Typography>
-											<Box sx={{ mb: 2 }}>
-												<ApexChartWrapper
-													type='donut'
-													height={height}
-													{...formatPieChart(
-														chartData.geographic.top_cities.slice(0, 8) as Record<
-															string,
-															unknown
-														>[],
-														'city',
-														'clicks',
 														isDark
 													)}
 												/>

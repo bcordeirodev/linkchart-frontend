@@ -103,6 +103,7 @@ export function useAudienceData({
 		if (!linkId) {
 			return ''; // Endpoint vazio se não há linkId
 		}
+
 		return `/api/analytics/link/${linkId}/audience`;
 	}, [linkId]);
 

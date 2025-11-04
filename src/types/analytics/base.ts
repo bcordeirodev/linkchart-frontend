@@ -67,9 +67,11 @@ export interface MetricsProps extends BaseDataProps<AnalyticsData>, BaseTitlePro
 /**
  * Props para componentes de gráficos
  */
-export interface ChartsProps extends BaseDataProps<AnalyticsData>, BaseConfigProps {
+export interface ChartsProps extends Omit<BaseDataProps<AnalyticsData>, 'data'>, BaseConfigProps {
+	/** Dados de analytics (pode ser parcial para public analytics) */
+	data?: Partial<AnalyticsData> | null;
 	/** Variante do gráfico */
-	variant?: 'analytics' | 'dashboard' | 'full' | 'compact';
+	variant?: 'analytics' | 'dashboard' | 'full' | 'compact' | 'public';
 	/** Mostrar todos os gráficos disponíveis */
 	showAllCharts?: boolean;
 	/** Configurações específicas de cores */

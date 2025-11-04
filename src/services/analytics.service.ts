@@ -4,7 +4,6 @@ import { BaseService } from './base.service';
 
 import type { AnalyticsData } from '@/types';
 import type { LinkPerformanceDashboard } from '@/types/analytics/performance';
-import type { MetricsDashboardResponse } from '@/types/core/metrics';
 
 /**
  * Serviço para operações de Analytics

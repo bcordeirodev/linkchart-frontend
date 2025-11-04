@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 
 import useUser from '@/lib/auth/useUser';
-import { Loading } from '@/shared/components';
+import Loading from '@/shared/ui/feedback/Loading';
 
 /**
  * Componente de redirecionamento baseado no status de autenticação do usuário

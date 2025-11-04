@@ -3,21 +3,14 @@
  * Componentes do módulo Links usando recursos shared
  */
 
-// Header otimizado com PageHeader
-export { LinksHeader } from './LinksHeader';
-export { LinksHeaderActions } from './LinksHeaderActions';
-
-// Filtros otimizados com EnhancedPaper
-export { LinksFilters } from './LinksFilters';
+// List components (listagem de links)
+export * from './list';
 
 // Analytics (já otimizados)
 export * from './analytics';
 
 // Formulários (já otimizados com ResponsiveContainer)
 export * from './forms';
-
-// Mobile (já otimizado)
-export { LinksMobileCards } from './mobile';
 
 // Outros componentes
 export { CopyButton } from './CopyButton';

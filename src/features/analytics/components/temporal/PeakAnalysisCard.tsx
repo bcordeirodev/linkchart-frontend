@@ -24,9 +24,12 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 
 	// Determinar período do dia
 	const getPeriodOfDay = (hour: number) => {
-		if (hour >= 6 && hour < 12) return { label: 'Manhã', emoji: '🌅', color: 'warning' as const };
-		if (hour >= 12 && hour < 18) return { label: 'Tarde', emoji: '☀️', color: 'info' as const };
-		if (hour >= 18 && hour < 22) return { label: 'Noite', emoji: '🌆', color: 'primary' as const };
+		if (hour >= 6 && hour < 12) {return { label: 'Manhã', emoji: '🌅', color: 'warning' as const };}
+
+		if (hour >= 12 && hour < 18) {return { label: 'Tarde', emoji: '☀️', color: 'info' as const };}
+
+		if (hour >= 18 && hour < 22) {return { label: 'Noite', emoji: '🌆', color: 'primary' as const };}
+
 		return { label: 'Madrugada', emoji: '🌙', color: 'secondary' as const };
 	};
 

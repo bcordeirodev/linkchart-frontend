@@ -127,6 +127,7 @@ export function useHeatmapData({
 			if (!linkId) {
 				return ''; // Endpoint vazio se não há linkId
 			}
+
 			const baseUrl = `/api/analytics/link/${linkId}/heatmap`;
 			return isRealtime ? `${baseUrl}/realtime` : baseUrl;
 		},

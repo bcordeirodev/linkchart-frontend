@@ -1,9 +1,3 @@
-// ========================================
-// 📊 MÓDULO UNIFICADO DE ANALYTICS E DASHBOARD
-// ========================================
-// Combina funcionalidades de dashboard e analytics
-// Mantém toda funcionalidade existente com melhor organização
-
 // === MÉTRICAS E VISÃO GERAL ===
 export { DashboardMetrics } from './dashboard';
 export { default as AnalyticsMetrics } from './dashboard/shared/DashboardMetrics';
@@ -21,8 +15,3 @@ export * from './temporal';
 // GeographicAnalysis removido - usar GeographicChart e GeographicInsights diretamente
 export { PerformanceAnalysis } from './perfomance/PerformanceAnalysis';
 export { BusinessInsights } from './insights/BusinessInsights';
-// === UTILITÁRIOS E COMMON ===
-// Agora incluídos via export * from './specialized/common'
-
-// === TIPOS ===
-// Tipos disponíveis em @/types/analytics
