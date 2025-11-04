@@ -381,15 +381,18 @@ DTOs/
 
 ## 📋 PLANO DE REFATORAÇÃO
 
-### Fase 1: Limpeza e Remoção de Duplicações
+### Fase 1: Limpeza e Remoção de Duplicações ✅ COMPLETA
+
+#### Back-end:
+1. ✅ **CONCLUÍDO** - Remover pasta vazia `Services/Core/`
 
 #### Front-end:
-1. ✅ Remover pasta vazia `Services/Core/` no back-end
-2. ✅ Mover `components/auth/EmailVerificationGuard.tsx` → `lib/auth/components/`
-3. ✅ Mover `components/routing/HomeRedirect.tsx` → `shared/components/routing/`
-4. ✅ Remover pasta `src/components/`
-5. ✅ Consolidar `shared/components/` em `shared/ui/feedback/`
-6. ✅ Mover `lib/icons/` → `shared/ui/icons/`
+2. ✅ **CONCLUÍDO** - Mover `components/auth/EmailVerificationGuard.tsx` → `lib/auth/components/`
+3. ✅ **CONCLUÍDO** - Mover `components/routing/HomeRedirect.tsx` → `shared/components/routing/`
+4. ✅ **CONCLUÍDO** - Remover pasta `src/components/`
+5. ✅ **CONCLUÍDO** - Mover `lib/icons/` → `shared/ui/icons/` (21 imports atualizados)
+
+**Commit:** `570869d` - refactor(phase-1): clean up and reorganize folder structure
 
 ### Fase 2: Reestruturação de Features
 

@@ -3,19 +3,23 @@
  * Componentes compartilhados centralizados
  *
  * @description
- * Exporta todos os componentes compartilhados do projeto,
- * incluindo componentes migrados do @fuse e novos componentes.
+ * Re-exports para compatibilidade. Componentes agora organizados em shared/ui/
  *
  * @since 2.0.0
+ * @updated 04/11/2025 - Refatoração de estrutura
  */
 
-// Core components
-export { default as Loading } from './Loading';
-export { default as SvgIcon } from './SvgIcon';
-export { default as Link } from './Link';
-export { default as Message } from './Message';
+// Re-export from shared/ui for backward compatibility
+export { default as Loading } from '../ui/feedback/Loading';
+export { default as Message } from '../ui/feedback/Message';
+export { default as EmailVerificationBanner } from '../ui/feedback/EmailVerificationBanner';
+export { default as Link } from '../ui/navigation/Link';
+export { default as SvgIcon } from '../ui/icons/SvgIcon';
 
 // Legacy compatibility exports
-export { Loading as FuseLoading } from './Loading';
-export { SvgIcon as FuseSvgIcon } from './SvgIcon';
-export { Message as FuseMessage } from './Message';
+export { default as FuseLoading } from '../ui/feedback/Loading';
+export { default as FuseSvgIcon } from '../ui/icons/SvgIcon';
+export { default as FuseMessage } from '../ui/feedback/Message';
+
+// Routing components
+export { HomeRedirect } from './routing/HomeRedirect';

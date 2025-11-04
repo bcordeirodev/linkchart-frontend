@@ -15,11 +15,9 @@ export * from './components/ShareActions';
 // Forms Components (Shared)
 export * from './components/forms';
 
-// Create Module
-export * from './create';
-
-// Edit Module
-export * from './edit';
+// Create & Edit Components
+export * from './components/create';
+export * from './components/edit';
 
 // Analytics Components
 export * from './components/analytics';
@@ -35,6 +33,7 @@ export * from './hooks/useLinkAnalytics'; // Novo hook otimizado
 export * from './types/link';
 export * from './types/shorter';
 export * from './types/analytics';
+export * from './types/forms';
 
 // Utils
 export * from './utils/dateUtils';
