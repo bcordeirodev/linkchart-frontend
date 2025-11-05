@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { EmailVerificationGuard } from '@/lib/auth/components/EmailVerificationGuard';
 import { HomeRedirect } from '@/shared/components/routing/HomeRedirect';
-import { Loading } from '@/shared/components';
+import { PageLoadingSkeleton } from '@/shared/ui/feedback/skeletons';
 
 // Lazy load components for better performance - Organized by category
 // 📊 Analytics Pages
@@ -37,7 +37,7 @@ const NotFoundPage = lazy(() => import('./pages/system/NotFoundPage'));
 const UnauthorizedPage = lazy(() => import('./pages/system/UnauthorizedPage'));
 
 function LoadingWrapper({ children }: { children: React.ReactNode }) {
-	return <Suspense fallback={<Loading />}>{children}</Suspense>;
+	return <Suspense fallback={<PageLoadingSkeleton />}>{children}</Suspense>;
 }
 
 function AppRouter() {

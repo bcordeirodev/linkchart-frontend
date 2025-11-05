@@ -87,21 +87,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
 						const user = JSON.parse(storedUser);
 						setUser(user);
 
-						// Verificar se o token ainda é válido
 						try {
 							await authService.getMe();
-							// Token válido
 						} catch (error) {
-							// Token expirado ou inválido - limpar dados locais
-							console.warn(
-								'Token expirado ou inválido detectado durante inicialização, limpando dados locais'
-							);
-							localStorage.removeItem('token');
-							localStorage.removeItem('user');
-							setUser(null);
+							// Verificar se é erro de autenticação (401) ou erro de rede
+							const isAuthError = error && typeof error === 'object' && 'status' in error && error.status === 401;
+
+							if (isAuthError) {
+								// Token expirado ou inválido - limpar dados locais
+								console.warn(
+									'Token expirado ou inválido detectado durante inicialização, limpando dados locais'
+								);
+								localStorage.removeItem('token');
+								localStorage.removeItem('user');
+								setUser(null);
+							} else {
+								console.warn('Erro ao verificar token (mantendo sessão local):', error);
+							}
 						}
 					} catch (error) {
-						// Erro ao parsear usuário
 						localStorage.removeItem('user');
 						localStorage.removeItem('token');
 						setUser(null);

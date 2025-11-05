@@ -1,8 +1,8 @@
 import { Box, Grid, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useState } from 'react';
 
-import { Charts } from '@/features/analytics/components/dashboard/shared/charts/Charts';
-import { DashboardMetrics } from '@/features/analytics/components/dashboard/shared/DashboardMetrics';
+import { Charts } from '@/features/analytics/components/dashboard/Charts';
+import { DashboardMetrics } from '@/features/analytics/components/dashboard/DashboardMetrics';
 import { useDashboardData } from '@/features/analytics/hooks/useDashboardData';
 import { mapDashboardDataToCharts } from '@/features/analytics/utils/dataMappers';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
@@ -26,12 +26,6 @@ interface LinkDashboardProps {
  * - Gráficos detalhados do link
  * - Informações do link
  * - SEM TopLinks (não faz sentido para link individual)
- *
- * @features
- * - Hook dedicado useDashboardData para link específico
- * - Métricas focadas no link
- * - Gráficos detalhados
- * - Informações do link
  */
 export function LinkDashboard({
 	linkId,

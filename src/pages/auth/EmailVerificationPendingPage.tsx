@@ -45,7 +45,7 @@ function EmailVerificationPendingPage() {
 				// Se já está verificado, redirecionar
 				if (status.email_verified) {
 					dispatch(showSuccessMessage('Email já verificado! Redirecionando...'));
-					setTimeout(() => navigate('/analytics'), 1500);
+					setTimeout(() => navigate('/link'), 1500);
 				}
 			} catch (_error) {
 				// Usuário não autenticado, pode continuar na página

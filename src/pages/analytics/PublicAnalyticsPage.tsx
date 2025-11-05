@@ -2,20 +2,18 @@ import { Box, Fade, Stack } from '@mui/material';
 import { memo, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-// Components
 import {
 	PublicAnalyticsHeader,
 	LinkInfoCard,
 	PublicMetrics,
 	PublicCharts,
 	AnalyticsInfo,
-	LoadingState,
 	ErrorState,
 	usePublicAnalytics
 } from '@/features/public-analytics';
 import { PublicLayout } from '@/shared/layout';
 import { ResponsiveContainer } from '@/shared/ui/base';
-// import { GoogleAdsSpace } from '@/lib/ads';
+import { PublicAnalyticsSkeleton } from '@/shared/ui/feedback/skeletons';
 
 /**
  * 📊 PÁGINA DE ANALYTICS PÚBLICOS
@@ -54,9 +52,8 @@ function PublicAnalyticsPage() {
 		[analyticsData, actions]
 	);
 
-	// Estados de loading e error
 	if (loading) {
-		return <LoadingState />;
+		return <PublicAnalyticsSkeleton />;
 	}
 
 	if (error || !linkData || !analyticsData) {

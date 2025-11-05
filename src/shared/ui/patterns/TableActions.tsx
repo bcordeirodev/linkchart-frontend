@@ -4,8 +4,15 @@
  */
 
 import { Stack, IconButton, Tooltip } from '@mui/material';
-
-import { AppIcon } from '@/shared/ui/icons';
+import {
+	HiChartBar,
+	HiPencilSquare,
+	HiClipboardDocument,
+	HiShare,
+	HiQrCode,
+	HiArrowDownTray,
+	HiTrash
+} from 'react-icons/hi2';
 
 // Mapear tamanhos customizados para tamanhos MUI
 const mapSize = (size: 'xs' | 'sm' | 'md' | 'lg'): 'small' | 'medium' | 'large' => {
@@ -62,11 +69,15 @@ export function TableActions({
 						disabled={loading}
 						color='success'
 						size={mapSize(size)}
+						sx={{
+							'&:hover': {
+								backgroundColor: 'rgba(46, 125, 50, 0.08)',
+								transform: 'scale(1.05)',
+								transition: 'all 0.2s ease'
+							}
+						}}
 					>
-						<AppIcon
-							intent='analytics'
-							size={20}
-						/>
+						<HiChartBar size={20} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -78,11 +89,15 @@ export function TableActions({
 						disabled={loading}
 						color='warning'
 						size={mapSize(size)}
+						sx={{
+							'&:hover': {
+								backgroundColor: 'rgba(237, 108, 2, 0.08)',
+								transform: 'scale(1.05)',
+								transition: 'all 0.2s ease'
+							}
+						}}
 					>
-						<AppIcon
-							intent='edit'
-							size={20}
-						/>
+						<HiPencilSquare size={20} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -94,11 +109,15 @@ export function TableActions({
 						disabled={loading}
 						color='info'
 						size={mapSize(size)}
+						sx={{
+							'&:hover': {
+								backgroundColor: 'rgba(2, 136, 209, 0.08)',
+								transform: 'scale(1.05)',
+								transition: 'all 0.2s ease'
+							}
+						}}
 					>
-						<AppIcon
-							intent='copy'
-							size={20}
-						/>
+						<HiClipboardDocument size={20} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -110,11 +129,15 @@ export function TableActions({
 						disabled={loading}
 						color='secondary'
 						size={mapSize(size)}
+						sx={{
+							'&:hover': {
+								backgroundColor: 'rgba(156, 39, 176, 0.08)',
+								transform: 'scale(1.05)',
+								transition: 'all 0.2s ease'
+							}
+						}}
 					>
-						<AppIcon
-							intent='share'
-							size={20}
-						/>
+						<HiShare size={20} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -126,11 +149,15 @@ export function TableActions({
 						disabled={loading}
 						color='secondary'
 						size={mapSize(size)}
+						sx={{
+							'&:hover': {
+								backgroundColor: 'rgba(156, 39, 176, 0.08)',
+								transform: 'scale(1.05)',
+								transition: 'all 0.2s ease'
+							}
+						}}
 					>
-						<AppIcon
-							intent='qr'
-							size={20}
-						/>
+						<HiQrCode size={20} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -142,11 +169,15 @@ export function TableActions({
 						disabled={loading}
 						color='info'
 						size={mapSize(size)}
+						sx={{
+							'&:hover': {
+								backgroundColor: 'rgba(2, 136, 209, 0.08)',
+								transform: 'scale(1.05)',
+								transition: 'all 0.2s ease'
+							}
+						}}
 					>
-						<AppIcon
-							intent='download'
-							size={20}
-						/>
+						<HiArrowDownTray size={20} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -160,11 +191,15 @@ export function TableActions({
 						disabled={loading}
 						color='error'
 						size={mapSize(size)}
+						sx={{
+							'&:hover': {
+								backgroundColor: 'rgba(211, 47, 47, 0.08)',
+								transform: 'scale(1.05)',
+								transition: 'all 0.2s ease'
+							}
+						}}
 					>
-						<AppIcon
-							intent='delete'
-							size={20}
-						/>
+						<HiTrash size={20} />
 					</IconButton>
 				</Tooltip>
 			) : null}

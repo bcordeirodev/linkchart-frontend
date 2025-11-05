@@ -1,4 +1,4 @@
-import { Alert, Box, CircularProgress, Grid, Typography } from '@mui/material';
+import { Alert, Grid, Box } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import { PasswordChangeForm } from '@/features/profile/components/PasswordChangeForm';
@@ -11,6 +11,7 @@ import { profileService } from '@/services';
 import MainLayout from '@/shared/layout/MainLayout';
 import { ResponsiveContainer } from '@/shared/ui/base';
 import { PageHeader } from '@/shared/ui/base/PageHeader';
+import { ProfileSkeleton } from '@/shared/ui/feedback/skeletons';
 
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import useUser from '../../lib/auth/useUser';
@@ -58,28 +59,11 @@ function ProfilePage() {
 		setUser(updatedUser);
 	}, []);
 
-	// Estados de loading
 	if (isLoading) {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<Box
-						sx={{
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'center',
-							justifyContent: 'center',
-							minHeight: 400
-						}}
-					>
-						<CircularProgress size={60} />
-						<Typography
-							variant='h6'
-							sx={{ mt: 2 }}
-						>
-							Carregando perfil...
-						</Typography>
-					</Box>
+					<ProfileSkeleton />
 				</MainLayout>
 			</AuthGuardRedirect>
 		);

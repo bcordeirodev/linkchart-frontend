@@ -6,8 +6,6 @@ import { publicLinkService } from '@/services/link-public.service';
 import type { PublicLinkResponse } from '@/services/link-public.service';
 
 /**
- * 🔗 HOOK CUSTOMIZADO PARA SHORTER PAGE
- *
  * Gerencia todo o estado e lógica da página de encurtamento
  * Seguindo padrões arquiteturais do projeto
  */
@@ -66,6 +64,11 @@ export function useShorter() {
 		navigate('/sign-up');
 	}, [navigate]);
 
+	// Handler para navegação para login
+	const handleLogin = useCallback(() => {
+		navigate('/sign-in');
+	}, [navigate]);
+
 	return {
 		// Estados
 		isRedirecting,
@@ -75,6 +78,7 @@ export function useShorter() {
 		handleSuccess,
 		handleError,
 		clearError,
-		handleSignUp
+		handleSignUp,
+		handleLogin
 	};
 }

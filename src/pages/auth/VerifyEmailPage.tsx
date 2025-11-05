@@ -45,10 +45,9 @@ function VerifyEmailPage() {
 
 				dispatch(showSuccessMessage(result.message));
 
-				// Redirecionar após 3 segundos
 				setTimeout(() => {
-					navigate('/analytics');
-				}, 3000);
+					navigate('/link');
+				}, 1000);
 			} else {
 				setStatus('error');
 				setMessage(result.message);
@@ -187,10 +186,10 @@ function VerifyEmailPage() {
 					{status === 'already_verified' && (
 						<Button
 							variant='contained'
-							onClick={() => navigate('/analytics')}
+							onClick={() => navigate('/link')}
 							sx={{ mt: 2 }}
 						>
-							Ir para o Painel
+							Ir para Meus Links
 						</Button>
 					)}
 

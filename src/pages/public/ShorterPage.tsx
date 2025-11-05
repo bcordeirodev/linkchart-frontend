@@ -16,26 +16,12 @@ import { EnhancedPaper } from '@/shared/ui/base';
 import useUser from '../../lib/auth/useUser';
 
 /**
- * 🔗 PÁGINA DE ENCURTAMENTO DE URLs - REDESENHADA
- *
- * FUNCIONALIDADE:u
- * - Interface limpa e organizada para encurtamento
- * - Formulário centralizado como foco principal
- * - Seções bem definidas e hierarquizadas
- * - Estados visuais claros e informativos
- * - Layout responsivo e moderno
- *
- * ARQUITETURA:
- * - Hook customizado para gerenciamento de estado
- * - Componentes modulares e reutilizáveis
- * - Layout em grid responsivo
- * - Performance otimizada com memo e useMemo
- * - Design centrado no usuário
+ * 🔗 PÁGINA DE ENCURTAMENTO DE URLs
  */
 function ShorterPage() {
 	const theme = useTheme();
 	const { data: _user } = useUser();
-	const { isRedirecting, error, handleSuccess, handleError, clearError, handleSignUp } = useShorter();
+	const { isRedirecting, error, handleSuccess, handleError, clearError, handleSignUp, handleLogin } = useShorter();
 	const { isMobile } = useResponsive();
 
 	// Estado para controlar animações de forma segura
@@ -59,9 +45,10 @@ function ShorterPage() {
 
 	const ctaProps = useMemo(
 		() => ({
-			onSignUp: handleSignUp
+			onSignUp: handleSignUp,
+			onLogin: handleLogin
 		}),
-		[handleSignUp]
+		[handleSignUp, handleLogin]
 	);
 
 	return (

@@ -1,8 +1,3 @@
-/**
- * ✏️ EDIT LINK FORM - REFATORADO COM REACT HOOK FORM + ZOD
- * Formulário simplificado para edição de links
- */
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Typography, Stack, Button, Alert, CircularProgress, Box } from '@mui/material';
 import { useState, useEffect } from 'react';
@@ -13,7 +8,7 @@ import { AppIcon } from '@/shared/ui/icons';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
 import { linkService } from '@/services';
-import { Loading } from '@/shared/components';
+import { LinkFormSkeleton } from '@/shared/ui/feedback/skeletons';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
 
@@ -23,10 +18,6 @@ import { linkFormSchema, defaultLinkFormValues } from '../../components/forms/Li
 import type { LinkFormData } from '../../components/forms/LinkFormSchema';
 import type { EditLinkFormProps } from '../../types/forms';
 
-/**
- * Formulário de edição de links com React Hook Form + Zod
- * Detecta mudanças e oferece reset para valores originais
- */
 export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: EditLinkFormProps) {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
@@ -46,17 +37,14 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 		mode: 'onBlur'
 	});
 
-	// ✅ Função auxiliar para converter datas de forma segura
 	const convertDateToInputFormat = (dateString: string | null | undefined): string => {
 		if (!dateString) {
 			return '';
 		}
 
 		try {
-			// Tentar diferentes formatos de data
 			let date: Date;
 
-			// Se a data está no formato brasileiro (dd/mm/yyyy hh:mm:ss)
 			if (dateString.includes('/')) {
 				const [datePart, timePart] = dateString.split(' ');
 				const [day, month, year] = datePart.split('/');
@@ -66,19 +54,16 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 				date = new Date(dateString);
 			}
 
-			// Verificar se a data é válida
 			if (isNaN(date.getTime())) {
 				return '';
 			}
 
 			return date.toISOString().slice(0, 16);
-		} catch (error) {
-			// Erro ao converter data
+		} catch {
 			return '';
 		}
 	};
 
-	// ✅ Carregar dados do link
 	useEffect(() => {
 		const fetchLinkData = async () => {
 			try {
@@ -88,7 +73,6 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 				if (response?.data) {
 					const linkData = response.data;
 
-					// Converter dados para o formato do formulário
 					const formValues: LinkFormData = {
 						original_url: linkData.original_url || '',
 						title: linkData.title || '',
@@ -121,7 +105,6 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 		}
 	}, [linkId, reset]);
 
-	// ✅ Função auxiliar para converter datas para envio
 	const convertDateForSubmit = (dateString: string | null | undefined): string | undefined => {
 		if (!dateString) {
 			return undefined;
@@ -130,32 +113,25 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 		try {
 			const date = new Date(dateString);
 
-			// Verificar se a data é válida
 			if (isNaN(date.getTime())) {
-				// Data inválida para envio
 				return undefined;
 			}
 
 			return date.toISOString();
-		} catch (error) {
-			// Erro ao converter data para envio
+		} catch {
 			return undefined;
 		}
 	};
 
-	// ✅ Submit Handler
 	const onSubmit = async (data: LinkFormData) => {
 		try {
 			setLoading(true);
 			setApiError(null);
 
-			// Preparar dados para envio
 			const payload = {
 				...data,
-				// Converter datas para formato ISO se preenchidas
 				expires_at: convertDateForSubmit(data.expires_at),
 				starts_in: convertDateForSubmit(data.starts_in),
-				// Remover campos UTM vazios
 				utm_source: data.utm_source || undefined,
 				utm_medium: data.utm_medium || undefined,
 				utm_campaign: data.utm_campaign || undefined,
@@ -165,16 +141,12 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 
 			const response = await linkService.update(linkId, payload);
 
-			// Mostrar mensagem de sucesso
 			dispatch(showSuccessMessage(`Link "${response.title || payload.title}" atualizado com sucesso!`));
 
-			// O linkService retorna LinkResponse diretamente
 			onSuccess?.(response);
 
-			// Resetar formulário com dados atualizados
 			reset(data);
 		} catch (error: unknown) {
-			// Tratar erros de validação do backend
 			if (
 				error &&
 				typeof error === 'object' &&
@@ -194,7 +166,6 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 					'Erro inesperado ao atualizar link';
 				setApiError(errorMessage);
 
-				// Mostrar mensagem de erro
 				dispatch(showErrorMessage(errorMessage));
 			}
 		} finally {
@@ -202,7 +173,6 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 		}
 	};
 
-	// ✅ Cancel Handler
 	const handleCancel = () => {
 		if (showBackButton) {
 			navigate(-1);
@@ -211,60 +181,27 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 		}
 	};
 
-	// ✅ Loading State
 	if (fetchingData) {
-		return (
-			<ResponsiveContainer
-				variant='form'
-				maxWidth='md'
-			>
-				<EnhancedPaper
-					variant='glass'
-					animated
-					sx={{ p: 4, textAlign: 'center' }}
-				>
-					<Loading
-						size='medium'
-						text='Carregando dados do link...'
-						fullHeight={false}
-					/>
-				</EnhancedPaper>
-			</ResponsiveContainer>
-		);
+		return <LinkFormSkeleton isEdit />;
 	}
 
-	// ✅ Error State
 	if (apiError) {
 		return (
-			<ResponsiveContainer
-				variant='form'
-				maxWidth='md'
-			>
-				<EnhancedPaper
-					variant='glass'
-					animated
-					sx={{ p: 4 }}
-				>
+			<ResponsiveContainer variant='form' maxWidth='md'>
+				<EnhancedPaper variant='glass' animated sx={{ p: 4 }}>
 					<Alert
 						severity='error'
 						action={
-							<Button
-								size='small'
-								onClick={handleCancel}
-							>
+							<Button size='small' onClick={handleCancel}>
 								Voltar
 							</Button>
 						}
 					>
-						<Typography
-							variant='h6'
-							component='div'
-						>
+						<Typography variant='h6' component='div'>
 							{apiError ? 'Erro ao carregar' : 'Link não encontrado'}
 						</Typography>
 						<Typography variant='body2'>
-							{apiError ||
-								'O link solicitado não foi encontrado ou você não tem permissão para editá-lo.'}
+							{apiError || 'O link solicitado não foi encontrado ou você não tem permissão para editá-lo.'}
 						</Typography>
 					</Alert>
 				</EnhancedPaper>
@@ -273,93 +210,54 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	}
 
 	return (
-		<ResponsiveContainer
-			variant='form'
-			maxWidth='md'
-		>
-			<EnhancedPaper
-				variant='glass'
-				animated
-			>
+		<ResponsiveContainer variant='form' maxWidth='md'>
+			<EnhancedPaper variant='glass' animated>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					{/* Header */}
-					<Box sx={{ p: 3, pb: 2, borderBottom: 1, borderColor: 'divider' }}>
-						<Stack
-							direction='row'
-							justifyContent='space-between'
-							alignItems='flex-start'
-						>
-							<div>
-								<Typography
-									variant='h5'
-									fontWeight={600}
-									gutterBottom
-								>
-									✏️ Editar Link
-								</Typography>
-								<Typography
-									variant='body2'
-									color='text.secondary'
-								>
-									Modifique as configurações do seu link
-								</Typography>
-							</div>
-						</Stack>
+					<Box sx={{ p: 3, pb: 2 }}>
+						<Typography variant='h5' fontWeight={600} gutterBottom>
+							Editar Link
+						</Typography>
+						<Typography variant='body2' color='text.secondary'>
+							Modifique as configurações do seu link
+						</Typography>
 					</Box>
 
-					{/* API Error */}
 					{apiError ? (
-						<Alert
-							severity='error'
-							sx={{ mb: 3 }}
-						>
-							{apiError}
-						</Alert>
+						<Box sx={{ px: 3, pb: 2 }}>
+							<Alert severity='error'>{apiError}</Alert>
+						</Box>
 					) : null}
 
-					{/* Form Fields */}
-					<Box sx={{ p: 3 }}>
-						<LinkFormFields
-							control={control}
-							errors={errors}
-							isEdit
-						/>
+					<Box sx={{ px: 3, pb: 3 }}>
+						<LinkFormFields control={control} errors={errors} isEdit />
 					</Box>
 
-					{/* Actions */}
-					<Box sx={{ p: 3, pt: 1, borderTop: 1, borderColor: 'divider' }}>
+					<Box
+						sx={{
+							px: 3,
+							py: 2.5,
+							borderTop: 1,
+							borderColor: 'divider',
+							backgroundColor: 'action.hover'
+						}}
+					>
 						<Stack
-							direction='row'
+							direction={{ xs: 'column', sm: 'row' }}
 							spacing={2}
 							justifyContent='space-between'
 							sx={{ width: '100%' }}
-							className='mt-4'
 						>
-							{/* Botão Cancelar */}
-							<Button
-								variant='outlined'
-								onClick={handleCancel}
-								disabled={loading}
-								startIcon={<AppIcon intent='cancel' />}
-							>
+							<Button variant='outlined' onClick={handleCancel} disabled={loading}>
 								Cancelar
 							</Button>
 
-							{/* Botão Salvar */}
 							<Button
 								type='submit'
 								variant='contained'
 								color='primary'
 								disabled={loading}
 								startIcon={
-									loading ? (
-										<CircularProgress
-											size={16}
-											color='inherit'
-										/>
-									) : (
-										<AppIcon intent='save' />
-									)
+									loading ? <CircularProgress size={16} color='inherit' /> : <AppIcon intent='save' />
 								}
 							>
 								{loading ? 'Salvando...' : 'Salvar Alterações'}

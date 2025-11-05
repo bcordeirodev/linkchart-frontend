@@ -97,6 +97,7 @@ export function AnalyticsInfo({ actions }: AnalyticsInfoProps) {
 			</CardContent> */}
 			<UpgradeCTA
 				onSignUp={() => navigate('/sign-up')}
+				onLogin={() => navigate('/sign-in')}
 				onCreateLink={handleCreateLink}
 			/>
 		</EnhancedPaper>

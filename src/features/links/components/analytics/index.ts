@@ -5,3 +5,4 @@
 
 export { default as LinkAnalyticsTabsOptimized } from './LinkAnalyticsTabs';
 export { LinkDashboard } from './LinkDashboard';
+export { LinkAnalyticsActions } from './LinkAnalyticsActions';

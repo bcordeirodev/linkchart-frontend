@@ -1,18 +1,17 @@
 import { Box, Alert } from '@mui/material';
 import { useMemo, useState } from 'react';
 
-import { DashboardMetrics } from '@/features/analytics/components/dashboard/shared/DashboardMetrics';
+import { DashboardMetrics } from '@/features/analytics/components/dashboard/DashboardMetrics';
 import { LinksFilters, LinksHeader, LinksMobileCards, useLinksTableColumns } from '@/features/links/components/list';
 import { useLinks } from '@/features/links/hooks/useLinks';
 import { useResponsive } from '@/lib/theme';
-import { Loading } from '@/shared/components';
+import { LinkListSkeleton } from '@/shared/ui/feedback/skeletons';
 import MainLayout from '@/shared/layout/MainLayout';
 import { ResponsiveContainer } from '@/shared/ui/base';
 
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import DataTable from '../../shared/ui/data-display/DataTable';
 
-import type { MRT_RowSelectionState } from 'material-react-table';
 
 /**
  * Página de listagem de links refatorada
@@ -23,7 +22,6 @@ function LinkPage() {
 	const { links, loading, deleteLink } = useLinks();
 	const [searchTerm, setSearchTerm] = useState('');
 	const [statusFilter, setStatusFilter] = useState('all');
-	const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
 	// Filtrar links
 	const filteredLinks = useMemo(() => {
@@ -49,7 +47,7 @@ function LinkPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<Loading />
+					<LinkListSkeleton isMobile={isMobile} count={5} />
 				</MainLayout>
 			</AuthGuardRedirect>
 		);
@@ -97,27 +95,37 @@ function LinkPage() {
 									<DataTable
 										data={filteredLinks}
 										columns={columns}
-										enableRowSelection
-										state={{
-											rowSelection
-										}}
-										onRowSelectionChange={setRowSelection}
+										enableRowSelection={false}
+										enableRowActions={false}
+										enableSelectAll={false}
 										enableColumnFilters={false}
 										enableGlobalFilter={false}
-										enableColumnResizing
-										columnResizeMode='onChange'
+										enableColumnResizing={false}
 										enableColumnOrdering={false}
 										enableHiding
+										displayColumnDefOptions={{
+											'mrt-row-actions': {
+												size: 0
+											},
+											'mrt-row-select': {
+												size: 0
+											}
+										}}
 										initialState={{
 											pagination: {
 												pageIndex: 0,
 												pageSize: 10
 											},
 											columnVisibility: {
-												// Responsividade baseada em breakpoints
-												original_url: isLargeScreen,
-												created_at: !isTablet,
-												is_active: true // Sempre mostrar em desktop/tablet
+												// Esconder colunas de sistema do MRT
+												'mrt-row-actions': false,
+												'mrt-row-select': false,
+												'mrt-row-expand': false,
+												// Responsividade inteligente baseada em breakpoints
+												original_url: isLargeScreen, // Apenas em telas grandes (>1280px)
+												created_at: !isTablet, // Não mostrar em tablet (<960px)
+												is_active: !isMobile, // Apenas desktop/tablet
+												clicks: true // Sempre mostrar
 											},
 											density: 'comfortable'
 										}}
@@ -132,7 +140,14 @@ function LinkPage() {
 												tableLayout: 'auto',
 												width: '100%',
 												'& .MuiTableCell-root': {
-													padding: { xs: '8px 4px', sm: '12px 8px' }
+													padding: { xs: '8px 4px', sm: '10px 8px', md: '12px 12px' },
+													fontSize: { xs: '0.813rem', sm: '0.875rem' }
+												},
+												'& .MuiTableHead-root': {
+													'& .MuiTableCell-root': {
+														fontWeight: 700,
+														fontSize: { xs: '0.75rem', sm: '0.813rem', md: '0.875rem' }
+													}
 												}
 											}
 										}}

@@ -134,22 +134,11 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 
 	if (success) {
 		return (
-			<EnhancedPaper
-				variant='glass'
-				animated
-				sx={{ p: 4, textAlign: 'center', width: '100%' }}
-			>
-				<Typography
-					variant='h5'
-					color='success.main'
-					gutterBottom
-				>
-					✅ Link criado com sucesso!
+			<EnhancedPaper variant='glass' animated sx={{ p: 4, textAlign: 'center', width: '100%' }}>
+				<Typography variant='h5' color='success.main' gutterBottom>
+					Link criado com sucesso!
 				</Typography>
-				<Typography
-					variant='body1'
-					color='text.secondary'
-				>
+				<Typography variant='body1' color='text.secondary'>
 					Redirecionando para a lista de links...
 				</Typography>
 			</EnhancedPaper>
@@ -166,95 +155,59 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 				animated
 			>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					{/* Header */}
-					<Box sx={{ p: 3, pb: 2, borderBottom: 1, borderColor: 'divider' }}>
-						<Typography
-							variant='h5'
-							fontWeight={600}
-							gutterBottom
-						>
-							🔗 Criar Novo Link
+					<Box sx={{ p: 3, pb: 2 }}>
+						<Typography variant='h5' fontWeight={600} gutterBottom>
+							Criar Novo Link
 						</Typography>
-						<Typography
-							variant='body2'
-							color='text.secondary'
-						>
+						<Typography variant='body2' color='text.secondary'>
 							Transforme URLs longas em links curtos e rastreáveis
 						</Typography>
 					</Box>
 
-					{/* API Error */}
 					{apiError ? (
-						<Alert
-							severity='error'
-							sx={{ mb: 3 }}
-						>
-							{apiError}
-						</Alert>
+						<Box sx={{ px: 3, pb: 2 }}>
+							<Alert severity='error'>{apiError}</Alert>
+						</Box>
 					) : null}
 
-					{/* Form Fields */}
-					<Box sx={{ p: 3 }}>
-						<LinkFormFields
-							control={control}
-							errors={errors}
-							isEdit={false}
-						/>
+					<Box sx={{ px: 3, pb: 3 }}>
+						<LinkFormFields control={control} errors={errors} isEdit={false} />
 					</Box>
 
-					{/* Actions */}
-					<Box sx={{ p: 3, pt: 1, borderTop: 1, borderColor: 'divider' }}>
+					<Box
+						sx={{
+							px: 3,
+							py: 2.5,
+							borderTop: 1,
+							borderColor: 'divider',
+							backgroundColor: 'action.hover'
+						}}
+					>
 						<Stack
-							direction='row'
+							direction={{ xs: 'column', sm: 'row' }}
 							spacing={2}
 							justifyContent='space-between'
 							sx={{ width: '100%' }}
 						>
-							{/* Botão Cancelar */}
-							<Button
-								variant='outlined'
-								onClick={handleCancel}
-								disabled={loading}
-								startIcon={<AppIcon intent='cancel' />}
-							>
+							<Button variant='outlined' onClick={handleCancel} disabled={loading}>
 								Cancelar
 							</Button>
 
-							{/* Ações do lado direito */}
-							<Stack
-								direction='row'
-								spacing={2}
-							>
-								{/* Botão Reset (apenas se há mudanças) */}
+							<Stack direction='row' spacing={2}>
 								{isDirty ? (
-									<Button
-										variant='outlined'
-										color='warning'
-										onClick={handleReset}
-										disabled={loading}
-										startIcon={<AppIcon intent='reset' />}
-									>
+									<Button variant='outlined' color='warning' onClick={handleReset} disabled={loading}>
 										Resetar
 									</Button>
 								) : null}
 
-								{/* Botão Criar */}
 								<Button
 									type='submit'
 									variant='contained'
 									color='success'
 									disabled={!isValid || loading}
 									startIcon={
-										loading ? (
-											<CircularProgress
-												size={16}
-												color='inherit'
-											/>
-										) : (
-											<AppIcon intent='save' />
-										)
+										loading ? <CircularProgress size={16} color='inherit' /> : <AppIcon intent='save' />
 									}
-									sx={{ ml: 2 }}
 								>
 									{loading ? 'Criando...' : 'Criar Link'}
 								</Button>

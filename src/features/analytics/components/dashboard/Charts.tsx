@@ -11,16 +11,6 @@ import type { ChartsProps } from '@/types';
 /**
  * 📊 CHARTS COM STYLED COMPONENTS
  * Gráficos unificados com melhor tratamento de dados e erro
- *
- * ⚠️ NOTA: Estados e Cidades foram REMOVIDOS do Dashboard (consolidação)
- * - Estados/Regiões → Disponível apenas em GeographicAnalysis
- * - Cidades → Disponível apenas em GeographicAnalysis
- *
- * Variants suportados:
- * - 'full': Todos os gráficos (temporal, devices, countries)
- * - 'dashboard': Gráficos principais (temporal, devices, countries)
- * - 'public': Gráficos públicos simplificados (devices, countries)
- * - 'analytics': Gráficos avançados (temporais detalhados)
  */
 export function Charts({ data, variant = 'full', height = 300, showAllCharts = true }: ChartsProps) {
 	try {
@@ -30,11 +20,6 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 		// Usa utilitários de tema
 		const animations = createPresetAnimations(theme);
 		const successColors = createComponentColorSet(theme, 'success');
-
-		// Estilos padronizados para gráficos (removidos pois não são mais utilizados com Card)
-
-		// Debug dos dados rcebidos (apenas em desenvolvimento)
-		// Validação silenciosa dos dados recebidos
 
 		// Verificação de segurança para dados
 		if (!data) {
@@ -205,8 +190,8 @@ export function Charts({ data, variant = 'full', height = 300, showAllCharts = t
 
 				{/* Gráficos de dispositivos e países - dashboard, full e public */}
 				{(variant === 'dashboard' || variant === 'full' || variant === 'public') &&
-				(hasDeviceData || hasGeographicData) &&
-				chartData ? (
+					(hasDeviceData || hasGeographicData) &&
+					chartData ? (
 					<>
 						{/* Dispositivos */}
 						{hasDeviceData ? (

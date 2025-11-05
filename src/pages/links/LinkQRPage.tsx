@@ -1,17 +1,19 @@
 'use client';
 
-import { ArrowBack, Download, Share } from '@mui/icons-material';
+import { Download, Share } from '@mui/icons-material';
 import { Box, Typography, Button, Card, CardContent, Alert, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-// import QRCode from 'qrcode'; // Removido import estático
-import { useLinks } from '@/features/links/hooks/useLinks';
+import { useLinks, LinkAnalyticsActions } from '@/features/links';
 import { useShareAPI } from '@/features/links/hooks/useShareAPI';
+import { QRCodeSkeleton } from '@/shared/ui/feedback/skeletons';
 import MainLayout from '@/shared/layout/MainLayout';
 import { ResponsiveContainer } from '@/shared/ui/base';
 
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
+
+import type { LinkResponse } from '@/types';
 
 const buildShortUrl = (slug: string): string => {
 	const frontendUrl = window.location.origin || 'http://localhost:3000';
@@ -23,7 +25,7 @@ function LinkQRPage() {
 	const navigate = useNavigate();
 	const { getLink } = useLinks();
 	const { shareOrCopy } = useShareAPI();
-	const [linkInfo, setLinkInfo] = useState<any>(null);
+	const [linkInfo, setLinkInfo] = useState<LinkResponse | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('');
@@ -50,7 +52,7 @@ function LinkQRPage() {
 					// Validar se a URL é válida
 					try {
 						new URL(link.short_url);
-					} catch (urlError) {
+					} catch (_urlError) {
 						setError('URL encurtada inválida');
 						return;
 					}
@@ -88,7 +90,8 @@ function LinkQRPage() {
 		fetchLink();
 	}, [id]); // Removido getLink das dependências para evitar re-renders
 
-	const handleBack = () => {
+	// Handler para quando o link for excluído com sucesso
+	const handleDeleteSuccess = () => {
 		navigate('/link');
 	};
 
@@ -134,24 +137,7 @@ function LinkQRPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<ResponsiveContainer variant='page'>
-						<Box
-							sx={{
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-								minHeight: '50vh'
-							}}
-						>
-							<Box sx={{ textAlign: 'center' }}>
-								<CircularProgress
-									size={40}
-									sx={{ mb: 2 }}
-								/>
-								<Typography variant='body1'>Carregando informações do link...</Typography>
-							</Box>
-						</Box>
-					</ResponsiveContainer>
+					<QRCodeSkeleton />
 				</MainLayout>
 			</AuthGuardRedirect>
 		);
@@ -176,34 +162,26 @@ function LinkQRPage() {
 					variant='page'
 					maxWidth='md'
 				>
+					{/* Ações do Link */}
+					<LinkAnalyticsActions
+						linkId={id}
+						shortUrl={linkInfo.slug || linkInfo.custom_slug}
+						onDeleteSuccess={handleDeleteSuccess}
+						currentPage='qr'
+						actions={{
+							showQR: false // Ocultar QR na página de QR Code
+						}}
+					/>
+
 					{/* Header */}
-					<Box sx={{ mb: 4 }}>
-						<Box
-							sx={{
-								display: 'flex',
-								alignItems: { xs: 'flex-start', sm: 'center' },
-								justifyContent: 'space-between',
-								mb: 2,
-								flexDirection: { xs: 'column', sm: 'row' },
-								gap: { xs: 2, sm: 0 }
-							}}
+					<Box sx={{ mb: 4, mt: 3 }}>
+						<Typography
+							variant='h4'
+							component='h1'
+							sx={{ fontSize: { xs: '1.5rem', md: '2rem' }, mb: 2 }}
 						>
-							<Typography
-								variant='h4'
-								component='h1'
-								sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
-							>
-								📱 QR Code do Link
-							</Typography>
-							<Button
-								variant='outlined'
-								startIcon={<ArrowBack />}
-								onClick={handleBack}
-								sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
-							>
-								Voltar para Lista
-							</Button>
-						</Box>
+							📱 QR Code do Link
+						</Typography>
 
 						<Typography
 							variant='subtitle1'

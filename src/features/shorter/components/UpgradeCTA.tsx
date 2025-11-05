@@ -5,6 +5,7 @@ import { AppIcon } from '@/shared/ui/icons';
 
 interface UpgradeCTAProps {
 	onSignUp: () => void;
+	onLogin: () => void;
 	onCreateLink?: () => void;
 }
 
@@ -12,7 +13,7 @@ interface UpgradeCTAProps {
  * CTA para upgrade/cadastro na página shorter
  * Componentizado seguindo padrão do projeto
  */
-export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
+export function UpgradeCTA({ onSignUp, onLogin }: UpgradeCTAProps) {
 	const theme = useTheme();
 
 	return (
@@ -102,26 +103,49 @@ export function UpgradeCTA({ onSignUp }: UpgradeCTAProps) {
 				))}
 			</Box>
 
-			<Button
-				variant='contained'
-				fullWidth
-				size='large'
-				endIcon={<ArrowForward />}
-				onClick={onSignUp}
-				sx={{
-					background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
-					'&:hover': {
-						background: 'linear-gradient(135deg, #1565c0 0%, #1976d2 100%)',
-						transform: 'translateY(-2px)',
-						boxShadow: 4
-					},
-					transition: 'all 0.3s ease',
-					fontWeight: 600,
-					py: 1.5
-				}}
-			>
-				Criar Conta Gratuita
-			</Button>
+			<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+				<Button
+					variant='contained'
+					fullWidth
+					size='large'
+					endIcon={<ArrowForward />}
+					onClick={onSignUp}
+					sx={{
+						background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
+						'&:hover': {
+							background: 'linear-gradient(135deg, #1565c0 0%, #1976d2 100%)',
+							transform: 'translateY(-2px)',
+							boxShadow: 4
+						},
+						transition: 'all 0.3s ease',
+						fontWeight: 600,
+						py: 1.5
+					}}
+				>
+					Criar Conta Gratuita
+				</Button>
+
+				<Button
+					variant='outlined'
+					fullWidth
+					size='large'
+					onClick={onLogin}
+					sx={{
+						borderColor: theme.palette.primary.main,
+						color: theme.palette.primary.main,
+						'&:hover': {
+							borderColor: theme.palette.primary.dark,
+							backgroundColor: alpha(theme.palette.primary.main, 0.08),
+							transform: 'translateY(-2px)'
+						},
+						transition: 'all 0.3s ease',
+						fontWeight: 600,
+						py: 1.5
+					}}
+				>
+					Já tenho conta - Fazer Login
+				</Button>
+			</Box>
 		</Paper>
 	);
 }
