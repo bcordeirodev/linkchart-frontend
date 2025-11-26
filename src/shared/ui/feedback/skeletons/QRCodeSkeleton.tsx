@@ -1,5 +1,4 @@
 import { Box, Stack, Skeleton } from '@mui/material';
-
 import { ResponsiveContainer, EnhancedPaper } from '@/shared/ui/base';
 
 export function QRCodeSkeleton() {

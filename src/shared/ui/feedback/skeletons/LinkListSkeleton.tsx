@@ -16,18 +16,20 @@ export function LinkListSkeleton({ isMobile = false, count = 5 }: LinkListSkelet
 					<Skeleton variant='text' width={300} height={24} />
 				</Box>
 
-				<Grid container>
-					{[1, 2, 3, 4].map((i) => (
-						<Grid item xs={12} sm={6} md={3} key={i}>
-							<EnhancedPaper variant='outlined'>
-								<Stack spacing={1} sx={{ p: 2 }}>
-									<Skeleton variant='text' width='60%' height={24} />
-									<Skeleton variant='text' width='90%' height={32} />
-								</Stack>
-							</EnhancedPaper>
-						</Grid>
-					))}
-				</Grid>
+				<Box sx={{ width: '100%' }}>
+					<Grid container spacing={2}>
+						{[1, 2, 3, 4].map((i) => (
+							<Grid item xs={12} sm={6} md={3} key={i}>
+								<EnhancedPaper variant='outlined'>
+									<Stack spacing={1} sx={{ p: 2 }}>
+										<Skeleton variant='text' width='60%' height={24} />
+										<Skeleton variant='text' width='90%' height={32} />
+									</Stack>
+								</EnhancedPaper>
+							</Grid>
+						))}
+					</Grid>
+				</Box>
 
 				<Box>
 					<Stack direction='row' spacing={2} sx={{ mb: 2 }}>

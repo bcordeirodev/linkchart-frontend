@@ -10,7 +10,6 @@ import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
 import { linkService } from '@/services';
 import { LinkFormSkeleton } from '@/shared/ui/feedback/skeletons';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
-import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
 
 import { LinkFormFields } from '../../components/forms/LinkFormFields';
 import { linkFormSchema, defaultLinkFormValues } from '../../components/forms/LinkFormSchema';
@@ -187,86 +186,82 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 
 	if (apiError) {
 		return (
-			<ResponsiveContainer variant='form' maxWidth='md'>
-				<EnhancedPaper variant='glass' animated sx={{ p: 4 }}>
-					<Alert
-						severity='error'
-						action={
-							<Button size='small' onClick={handleCancel}>
-								Voltar
-							</Button>
-						}
-					>
-						<Typography variant='h6' component='div'>
-							{apiError ? 'Erro ao carregar' : 'Link não encontrado'}
-						</Typography>
-						<Typography variant='body2'>
-							{apiError || 'O link solicitado não foi encontrado ou você não tem permissão para editá-lo.'}
-						</Typography>
-					</Alert>
-				</EnhancedPaper>
-			</ResponsiveContainer>
+			<EnhancedPaper variant='glass' animated sx={{ p: 4 }}>
+				<Alert
+					severity='error'
+					action={
+						<Button size='small' onClick={handleCancel}>
+							Voltar
+						</Button>
+					}
+				>
+					<Typography variant='h6' component='div'>
+						{apiError ? 'Erro ao carregar' : 'Link não encontrado'}
+					</Typography>
+					<Typography variant='body2'>
+						{apiError || 'O link solicitado não foi encontrado ou você não tem permissão para editá-lo.'}
+					</Typography>
+				</Alert>
+			</EnhancedPaper>
 		);
 	}
 
 	return (
-		<ResponsiveContainer variant='form' maxWidth='md'>
-			<EnhancedPaper variant='glass' animated>
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<Box sx={{ p: 3, pb: 2 }}>
-						<Typography variant='h5' fontWeight={600} gutterBottom>
-							Editar Link
-						</Typography>
-						<Typography variant='body2' color='text.secondary'>
-							Modifique as configurações do seu link
-						</Typography>
+		<EnhancedPaper variant='glass' animated>
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<Box sx={{ p: 3, pb: 2 }}>
+					<Typography variant='h5' fontWeight={600} gutterBottom>
+						Editar Link
+					</Typography>
+					<Typography variant='body2' color='text.secondary'>
+						Modifique as configurações do seu link
+					</Typography>
+				</Box>
+
+				{apiError ? (
+					<Box sx={{ px: 3, pb: 2 }}>
+						<Alert severity='error'>{apiError}</Alert>
 					</Box>
+				) : null}
 
-					{apiError ? (
-						<Box sx={{ px: 3, pb: 2 }}>
-							<Alert severity='error'>{apiError}</Alert>
-						</Box>
-					) : null}
+				<Box sx={{ px: 3, pb: 3 }}>
+					<LinkFormFields control={control} errors={errors} isEdit />
+				</Box>
 
-					<Box sx={{ px: 3, pb: 3 }}>
-						<LinkFormFields control={control} errors={errors} isEdit />
-					</Box>
-
-					<Box
-						sx={{
-							px: 3,
-							py: 2.5,
-							borderTop: 1,
-							borderColor: 'divider',
-							backgroundColor: 'action.hover'
-						}}
+				<Box
+					sx={{
+						px: 3,
+						py: 2.5,
+						borderTop: 1,
+						borderColor: 'divider',
+						backgroundColor: 'action.hover'
+					}}
+				>
+					<Stack
+						direction={{ xs: 'column', sm: 'row' }}
+						spacing={2}
+						justifyContent='space-between'
+						sx={{ width: '100%' }}
 					>
-						<Stack
-							direction={{ xs: 'column', sm: 'row' }}
-							spacing={2}
-							justifyContent='space-between'
-							sx={{ width: '100%' }}
-						>
-							<Button variant='outlined' onClick={handleCancel} disabled={loading}>
-								Cancelar
-							</Button>
+						<Button variant='outlined' onClick={handleCancel} disabled={loading}>
+							Cancelar
+						</Button>
 
-							<Button
-								type='submit'
-								variant='contained'
-								color='primary'
-								disabled={loading}
-								startIcon={
-									loading ? <CircularProgress size={16} color='inherit' /> : <AppIcon intent='save' />
-								}
-							>
-								{loading ? 'Salvando...' : 'Salvar Alterações'}
-							</Button>
-						</Stack>
-					</Box>
-				</form>
-			</EnhancedPaper>
-		</ResponsiveContainer>
+						<Button
+							type='submit'
+							variant='contained'
+							color='primary'
+							disabled={loading}
+							startIcon={
+								loading ? <CircularProgress size={16} color='inherit' /> : <AppIcon intent='save' />
+							}
+						>
+							{loading ? 'Salvando...' : 'Salvar Alterações'}
+						</Button>
+					</Stack>
+				</Box>
+			</form>
+		</EnhancedPaper>
 	);
 }
 

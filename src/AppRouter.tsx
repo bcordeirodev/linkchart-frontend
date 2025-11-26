@@ -7,8 +7,8 @@ import { PageLoadingSkeleton } from '@/shared/ui/feedback/skeletons';
 
 // Lazy load components for better performance - Organized by category
 // 📊 Analytics Pages
-const LinkAnalyticsPage = lazy(() => import('./pages/analytics/LinkAnalyticsPage'));
-const PublicAnalyticsPage = lazy(() => import('./pages/analytics/PublicAnalyticsPage'));
+const LinkAnalyticsPage = lazy(() => import('./pages/links/LinkAnalyticsPage'));
+const PublicAnalyticsPage = lazy(() => import('./pages/public/PublicAnalyticsPage'));
 
 // 🔗 Links Management Pages
 const LinkPage = lazy(() => import('./pages/links/LinkPage'));

@@ -105,7 +105,7 @@ function LinkEditPage() {
 								onDeleteSuccess={handleDeleteSuccess}
 								currentPage='edit'
 								actions={{
-									showEdit: false // Ocultar editar na página de edição
+									showEdit: false
 								}}
 							/>
 						) : null}

@@ -1,6 +1,6 @@
 import { Box, Stack, Skeleton } from '@mui/material';
 
-import { ResponsiveContainer, EnhancedPaper } from '@/shared/ui/base';
+import { EnhancedPaper } from '@/shared/ui/base';
 
 interface LinkFormSkeletonProps {
 	isEdit?: boolean;
@@ -8,8 +8,7 @@ interface LinkFormSkeletonProps {
 
 export function LinkFormSkeleton({ isEdit = false }: LinkFormSkeletonProps) {
 	return (
-		<ResponsiveContainer variant='form' maxWidth='md'>
-			<EnhancedPaper variant='glass' animated>
+		<EnhancedPaper variant='glass' animated>
 				<Box sx={{ p: 3, pb: 2 }}>
 					<Skeleton variant='text' width={isEdit ? 150 : 180} height={40} sx={{ mb: 1 }} />
 					<Skeleton variant='text' width={280} height={24} />
@@ -55,8 +54,7 @@ export function LinkFormSkeleton({ isEdit = false }: LinkFormSkeletonProps) {
 						<Skeleton variant='rounded' width={isEdit ? 150 : 120} height={40} />
 					</Stack>
 				</Box>
-			</EnhancedPaper>
-		</ResponsiveContainer>
+		</EnhancedPaper>
 	);
 }
 

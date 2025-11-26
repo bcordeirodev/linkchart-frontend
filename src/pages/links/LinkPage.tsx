@@ -47,7 +47,7 @@ function LinkPage() {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<LinkListSkeleton isMobile={isMobile} count={5} />
+					<LinkListSkeleton isMobile={isMobile} count={6} />
 				</MainLayout>
 			</AuthGuardRedirect>
 		);

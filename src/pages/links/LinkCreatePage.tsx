@@ -1,8 +1,3 @@
-/**
- * 🎯 LINK CREATE PAGE - REFATORADA
- * Página especializada para criação de links usando módulo DDD
- */
-
 import { Stack, Fade, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 
