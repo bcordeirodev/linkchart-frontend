@@ -3,6 +3,7 @@ import { Typography, Stack, Button, Alert, CircularProgress, Box } from '@mui/ma
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import dayjs, {Dayjs} from 'dayjs';
 
 import { AppIcon } from '@/shared/ui/icons';
 import { useAppDispatch } from '@/lib/store/hooks';
@@ -34,12 +35,12 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	} = useForm<LinkFormData>({
 		resolver: zodResolver(linkFormSchema),
 		defaultValues: defaultLinkFormValues,
-		mode: 'onBlur'
+		mode: 'onChange'
 	});
 
-	const convertDateToInputFormat = (dateString: string | null | undefined): string => {
+	const convertApiDateToDayjs = (dateString: string | null | undefined): Dayjs | null => {
 		if (!dateString) {
-			return '';
+			return null;
 		}
 
 		try {
@@ -55,12 +56,12 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 			}
 
 			if (isNaN(date.getTime())) {
-				return '';
+				return null;
 			}
 
-			return date.toISOString().slice(0, 16);
+			return dayjs(date);
 		} catch {
-			return '';
+			return null;
 		}
 	};
 
@@ -79,8 +80,8 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 						custom_slug: linkData.custom_slug || linkData.slug || '',
 						description: linkData.description || '',
 						is_active: linkData.is_active ?? true,
-						expires_at: convertDateToInputFormat(linkData.expires_at),
-						starts_in: convertDateToInputFormat(linkData.starts_in),
+						expires_at: convertApiDateToDayjs(linkData.expires_at),
+						starts_in: convertApiDateToDayjs(linkData.starts_in),
 						click_limit: linkData.click_limit || null,
 						utm_source: linkData.utm_source || '',
 						utm_medium: linkData.utm_medium || '',
@@ -105,20 +106,20 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 		}
 	}, [linkId, reset]);
 
-	const convertDateForSubmit = (dateString: string | null | undefined): string | undefined => {
-		if (!dateString) {
+	const convertDateForSubmit = (dateValue: Dayjs | null | undefined): string | undefined => {
+		if (!dateValue) {
 			return undefined;
 		}
 
 		try {
-			const date = new Date(dateString);
-
-			if (isNaN(date.getTime())) {
-				return undefined;
+			if (dayjs.isDayjs(dateValue)) {
+				return dateValue.toISOString();
 			}
-
-			return date.toISOString();
-		} catch {
+			// Fallback para string ISO se por algum motivo não for DayJS
+			if (typeof dateValue === 'string') {
+				return dateValue;
+			}
+		} catch (_error) {
 			return undefined;
 		}
 	};
