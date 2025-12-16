@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {
 	TextField,
 	Switch,
@@ -16,6 +17,9 @@ import { AppIcon } from '@/shared/ui/icons';
 
 import type { LinkFormData } from './LinkFormSchema';
 import type { Control, FieldErrors } from 'react-hook-form';
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import 'dayjs/locale/en-gb';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 interface LinkFormFieldsProps {
 	control: Control<LinkFormData>;
@@ -148,18 +152,28 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 									name='starts_in'
 									control={control}
 									render={({ field: { value, ...field } }) => (
-										<TextField
-											{...field}
-											fullWidth
-											type='datetime-local'
-											label='Data de Início'
-											value={value || ''}
-											error={!!errors.starts_in}
-											helperText={
-												errors.starts_in?.message || 'Quando o link ficará disponível'
-											}
-											InputLabelProps={{ shrink: true }}
+										 <>
+
+										 <LocalizationProvider
+										 dateAdapter={AdapterDayjs}
+     									 adapterLocale={'en-gb'}
+										  >
+										<DateTimePicker
+										{...field}
+										label='Data de Início'
+										slotProps={{
+											textField: {
+												helperText: 'Quando o Link será Iniciado ',
+												error: !!errors.starts_in,
+											},
+										}}
+										value={value ?? null}
 										/>
+										 </LocalizationProvider>
+										
+										{console.log(value)}
+										
+										</>
 									)}
 								/>
 							</Grid>
@@ -169,18 +183,26 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 									name='expires_at'
 									control={control}
 									render={({ field: { value, ...field } }) => (
-										<TextField
-											{...field}
-											fullWidth
-											type='datetime-local'
-											label='Data de Expiração'
-											value={value || ''}
-											error={!!errors.expires_at}
-											helperText={
-												errors.expires_at?.message || 'Quando o link será desativado'
-											}
-											InputLabelProps={{ shrink: true }}
+										<>
+										 <LocalizationProvider
+										 dateAdapter={AdapterDayjs}
+										 adapterLocale={'en-gb'}
+										 >
+										<DateTimePicker
+										{...field}
+										label='Data de Expiração'
+										slotProps={{
+											textField: {
+												helperText: 'Quando o Link será Desativado ',
+												error: !!errors.expires_at,
+											},
+										}}
+										value={value}
 										/>
+										
+										 </LocalizationProvider>
+										{console.log(value)}
+										</>
 									)}
 								/>
 							</Grid>
