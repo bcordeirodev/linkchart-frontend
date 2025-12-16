@@ -152,28 +152,25 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 									name='starts_in'
 									control={control}
 									render={({ field: { value, ...field } }) => (
-										 <>
-
-										 <LocalizationProvider
-										 dateAdapter={AdapterDayjs}
-     									 adapterLocale={'en-gb'}
-										  >
-										<DateTimePicker
-										{...field}
-										label='Data de Início'
-										slotProps={{
-											textField: {
-												helperText: 'Quando o Link será Iniciado ',
-												error: !!errors.starts_in,
-											},
-										}}
-										value={value ?? null}
-										/>
-										 </LocalizationProvider>
-										
-										{console.log(value)}
-										
-										</>
+										<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
+											<DateTimePicker
+												{...field}
+												label='Data de Início'
+												value={value ?? null}
+												slotProps={{
+													textField: {
+														fullWidth: true,
+														error: !!errors.starts_in,
+														helperText: errors.starts_in?.message || 'Quando o Link será Iniciado',
+														sx: {
+															'& .MuiOutlinedInput-root': {
+																borderRadius: 1.5,
+															},
+														},
+													},
+												}}
+											/>
+										</LocalizationProvider>
 									)}
 								/>
 							</Grid>
@@ -183,26 +180,25 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 									name='expires_at'
 									control={control}
 									render={({ field: { value, ...field } }) => (
-										<>
-										 <LocalizationProvider
-										 dateAdapter={AdapterDayjs}
-										 adapterLocale={'en-gb'}
-										 >
-										<DateTimePicker
-										{...field}
-										label='Data de Expiração'
-										slotProps={{
-											textField: {
-												helperText: 'Quando o Link será Desativado ',
-												error: !!errors.expires_at,
-											},
-										}}
-										value={value}
-										/>
-										
-										 </LocalizationProvider>
-										{console.log(value)}
-										</>
+										<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
+											<DateTimePicker
+												{...field}
+												label='Data de Expiração'
+												value={value}
+												slotProps={{
+													textField: {
+														fullWidth: true,
+														error: !!errors.expires_at,
+														helperText: errors.expires_at?.message || 'Quando o Link será Desativado',
+														sx: {
+															'& .MuiOutlinedInput-root': {
+																borderRadius: 1.5,
+															},
+														},
+													},
+												}}
+											/>
+										</LocalizationProvider>
 									)}
 								/>
 							</Grid>
