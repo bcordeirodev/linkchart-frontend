@@ -231,6 +231,28 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 					</Typography>
 				)
 			},
+						{
+				accessorKey: 'starts_in',
+				header: 'Início',
+				size: columnSizes.created_at || 140,
+				minSize: 120,
+				Cell: ({ cell }) => (
+					<Typography variant='body2'>
+						{new Date(cell.getValue<string>()).toLocaleDateString('pt-BR')}
+					</Typography>
+				)
+			},
+						{
+				accessorKey: 'expires_at',
+				header: 'Término',
+				size: columnSizes.created_at || 140,
+				minSize: 120,
+				Cell: ({ cell }) => (
+					<Typography variant='body2'>
+						{new Date(cell.getValue<string>()).toLocaleDateString('pt-BR')}
+					</Typography>
+				)
+			},
 			{
 				id: 'actions',
 				header: 'Ações',
