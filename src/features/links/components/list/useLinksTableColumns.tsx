@@ -84,6 +84,44 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 
 	const columnSizes = getColumnSizes();
 
+	// Função helper para formatar datas de diferentes tipos
+	const formatDate = useCallback((dateValue: unknown): string | null => {
+		if (!dateValue) return null;
+
+		// Se já é uma string, tenta criar Date
+		if (typeof dateValue === 'string') {
+			try {
+				const date = new Date(dateValue);
+				return isNaN(date.getTime()) ? null : date.toLocaleDateString('pt-BR');
+			} catch {
+				return null;
+			}
+		}
+
+		// Se é um objeto Date
+		if (dateValue instanceof Date) {
+			return dateValue.toLocaleDateString('pt-BR');
+		}
+
+		// Se tem método toDate (DayJS, Moment, etc)
+		if (typeof dateValue === 'object' && dateValue !== null && 'toDate' in dateValue) {
+			try {
+				const date = (dateValue as { toDate(): Date }).toDate();
+				return date.toLocaleDateString('pt-BR');
+			} catch {
+				return null;
+			}
+		}
+
+		// Fallback: tenta converter para string
+		try {
+			const date = new Date(String(dateValue));
+			return isNaN(date.getTime()) ? null : date.toLocaleDateString('pt-BR');
+		} catch {
+			return null;
+		}
+	}, []);
+
 	const copyToClipboard = useCallback(
 		(text: string, label: string) => {
 			navigator.clipboard.writeText(text);
@@ -208,6 +246,24 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				)
 			},
 			{
+				accessorKey: 'click_limit',
+				header: 'Limite de clicks',
+				size: columnSizes.clicks || 100,
+				minSize: 80,
+				Cell: ({ cell }) => {
+					const value = cell.getValue<number | null | undefined>();
+					const displayValue = value !== null && value !== undefined ? value.toString() : '---';
+					return (
+						<Chip
+							label={displayValue}
+							color='primary'
+							size='small'
+							variant='outlined'
+						/>
+					);
+				}
+			},
+			{
 				accessorKey: 'is_active',
 				header: 'Status',
 				size: columnSizes.is_active || 100,
@@ -225,33 +281,73 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				header: 'Criado em',
 				size: columnSizes.created_at || 140,
 				minSize: 120,
-				Cell: ({ cell }) => (
+				Cell: ({ cell }) => {
+					const value = cell.getValue<string>();
+					const data = value.split(' ')[0];
+					console.log(value + ' OLHA A DATA AQUI ')
+					console.log(data + ' OLHA O VALOR AQUI AQUI ')
+					if(!data){
+						return(
 					<Typography variant='body2'>
-						{new Date(cell.getValue<string>()).toLocaleDateString('pt-BR')}
+						---
 					</Typography>
-				)
+							
+						);
+
+					}
+					{
+					return(
+						<Typography variant='body2'>
+							{data}
+						</Typography>
+					)
+
+					}
+				}
 			},
-						{
+			{
 				accessorKey: 'starts_in',
 				header: 'Início',
 				size: columnSizes.created_at || 140,
 				minSize: 120,
-				Cell: ({ cell }) => (
-					<Typography variant='body2'>
-						{new Date(cell.getValue<string>()).toLocaleDateString('pt-BR')}
-					</Typography>
-				)
+				Cell: ({ cell }) => {
+					const value = cell.getValue<unknown>();
+					const formattedDate = formatDate(value);
+					if (!formattedDate) {
+						return (
+							<Typography variant='body2' color='text.secondary'>
+								---
+							</Typography>
+						);
+					}
+					return (
+						<Typography variant='body2'>
+							{formattedDate}
+						</Typography>
+					);
+				}
 			},
-						{
+			{
 				accessorKey: 'expires_at',
 				header: 'Término',
 				size: columnSizes.created_at || 140,
 				minSize: 120,
-				Cell: ({ cell }) => (
-					<Typography variant='body2'>
-						{new Date(cell.getValue<string>()).toLocaleDateString('pt-BR')}
-					</Typography>
-				)
+				Cell: ({ cell }) => {
+					const value = cell.getValue<unknown>();
+					const formattedDate = formatDate(value);
+					if (!formattedDate) {
+						return (
+							<Typography variant='body2' color='text.secondary'>
+								---
+							</Typography>
+						);
+					}
+					return (
+						<Typography variant='body2'>
+							{formattedDate}
+						</Typography>
+					);
+				}
 			},
 			{
 				id: 'actions',
@@ -270,7 +366,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				)
 			}
 		],
-		[copyToClipboard, handleDeleteLink, columnSizes, navigate]
+		[copyToClipboard, handleDeleteLink, columnSizes, navigate, formatDate]
 	);
 
 	return columns;
