@@ -1,3 +1,5 @@
+import { debounce } from 'lodash';
+import { useMemo } from 'react';
 import { Search, FilterList } from '@mui/icons-material';
 import {
 	Box,
@@ -26,6 +28,13 @@ interface LinksFiltersProps {
 export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatusChange }: LinksFiltersProps) {
 	const theme = useTheme();
 
+	const debouncedSearch = useMemo(
+	()=> debounce(onSearchChange,300),
+	[onSearchChange]
+	)
+	
+	
+	
 	return (
 		<Box
 			className='filter-container'
@@ -77,7 +86,7 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 					variant='filled'
 					placeholder='Buscar por título, URL ou slug...'
 					value={searchTerm}
-					onChange={(e) => onSearchChange(e.target.value)}
+					onChange={(e) => debouncedSearch(e.target.value)}
 					fullWidth
 					sx={{
 						flex: 1,
