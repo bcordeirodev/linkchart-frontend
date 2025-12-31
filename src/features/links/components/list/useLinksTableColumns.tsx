@@ -86,7 +86,9 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 
 	// Função helper para formatar datas de diferentes tipos
 	const formatDate = useCallback((dateValue: unknown): string | null => {
-		if (!dateValue) return null;
+		if (!dateValue) {
+			return null;
+		}
 
 		// Se já é uma string, tenta criar Date
 		if (typeof dateValue === 'string') {
@@ -268,13 +270,96 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				header: 'Status',
 				size: columnSizes.is_active || 100,
 				minSize: 80,
-				Cell: ({ cell }) => (
-					<Chip
-						label={cell.getValue<boolean>() ? 'Ativo' : 'Inativo'}
-						color={cell.getValue<boolean>() ? 'success' : 'error'}
-						size='small'
-					/>
-				)
+				Cell: ({ row }) => {
+					const isActive = row.original.is_active;
+					const startsIn = row.original.starts_in;
+					const expiresAt = row.original.expires_at;
+					const now = new Date();
+
+					// Se não há datas definidas, usa o status manual
+					if (!startsIn && !expiresAt) {
+						return (
+							<Chip
+								label={isActive ? 'Ativo' : 'Inativo'}
+								color={isActive ? 'success' : 'error'}
+								size='small'
+							/>
+						);
+					}
+
+					// Converte datas para objetos Date
+					let startDate: Date | null = null;
+					let endDate: Date | null = null;
+
+					try {
+						if (startsIn) {
+							if (typeof startsIn === 'string') {
+								startDate = new Date(startsIn);
+							} else if (startsIn && typeof startsIn === 'object' && startsIn.constructor === Date) {
+								startDate = startsIn as Date;
+							}
+							if (startDate && isNaN(startDate.getTime())) {
+								startDate = null;
+							}
+						}
+						if (expiresAt) {
+							if (typeof expiresAt === 'string') {
+								endDate = new Date(expiresAt);
+							} else if (expiresAt && typeof expiresAt === 'object' && expiresAt.constructor === Date) {
+								endDate = expiresAt as Date;
+							}
+							if (endDate && isNaN(endDate.getTime())) {
+								endDate = null;
+							}
+						}
+					} catch {
+						// Se erro na conversão, usa status manual
+						return (
+							<Chip
+								label={isActive ? 'Ativo' : 'Inativo'}
+								color={isActive ? 'success' : 'error'}
+								size='small'
+							/>
+						);
+					}
+
+					// Lógica de validação por data
+					let isValidByDate = true;
+					let statusLabel = 'Ativo';
+					let statusColor: 'success' | 'error' = 'success';
+
+					// Se tem data de início e ainda não começou
+					if (startDate && now < startDate) {
+						isValidByDate = false;
+						statusLabel = 'Não iniciado';
+						statusColor = 'error';
+					}
+					// Se tem data de término e já expirou
+					else if (endDate && now > endDate) {
+						isValidByDate = false;
+						statusLabel = 'Expirado';
+						statusColor = 'error';
+					}
+
+					// Se válido por data, verifica se está ativo manualmente
+					if (isValidByDate && !isActive) {
+						statusLabel = 'Inativo';
+						statusColor = 'error';
+					}
+					// Se inválido por data, sempre inativo independente do status manual
+					else if (!isValidByDate) {
+						statusLabel = startDate && now < startDate ? 'Não iniciado' : 'Expirado';
+						statusColor = 'error';
+					}
+
+					return (
+						<Chip
+							label={statusLabel}
+							color={statusColor}
+							size='small'
+						/>
+					);
+				}
 			},
 			{
 				accessorKey: 'created_at',
@@ -284,9 +369,8 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				Cell: ({ cell }) => {
 					const value = cell.getValue<string>();
 					const data = value.split(' ')[0];
-					console.log(value + ' OLHA A DATA AQUI ')
-					console.log(data + ' OLHA O VALOR AQUI AQUI ')
-					if(!data){
+
+					if (!data) {
 						return(
 					<Typography variant='body2'>
 						---
