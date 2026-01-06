@@ -9,7 +9,7 @@ export * from './components/list';
 // Other Components
 export * from './components/URLInput';
 export * from './components/URLShortenerForm';
-export * from './components/ShareActions';
+export { default as LinkActions } from './components/LinkActions';
 
 // Forms Components (Shared)
 export * from './components/forms';

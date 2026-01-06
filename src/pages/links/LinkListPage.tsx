@@ -1,7 +1,7 @@
 import { Box, Alert } from '@mui/material';
 import { useMemo, useState } from 'react';
 
-import { DashboardMetrics } from '@/features/analytics/components/dashboard/DashboardMetrics';
+import { LinkMetrics } from '@/features/links/components/LinkMetrics';
 import { LinksFilters, LinksHeader, LinksMobileCards, useLinksTableColumns } from '@/features/links/components/list';
 import { useLinks } from '@/features/links/hooks/useLinks';
 import { useResponsive } from '@/lib/theme';
@@ -17,7 +17,7 @@ import DataTable from '../../shared/ui/data-display/DataTable';
  * Página de listagem de links refatorada
  * Componentizada para melhor organização
  */
-function LinkPage() {
+function LinkListPage() {
 	const { isMobile, isTablet, isLargeScreen } = useResponsive();
 	const { links, loading, deleteLink } = useLinks();
 	const [searchTerm, setSearchTerm] = useState('');
@@ -43,6 +43,7 @@ function LinkPage() {
 	// Colunas da tabela (hook customizado)
 	const columns = useLinksTableColumns({ onDelete: deleteLink });
 
+
 	if (loading) {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
@@ -59,7 +60,7 @@ function LinkPage() {
 				<ResponsiveContainer variant='page'>
 					<LinksHeader />
 
-					<DashboardMetrics
+					<LinkMetrics
 						linksData={links}
 						showTitle={false}
 					/>
@@ -162,4 +163,4 @@ function LinkPage() {
 	);
 }
 
-export default LinkPage;
+export default LinkListPage;

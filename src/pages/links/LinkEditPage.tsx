@@ -4,7 +4,7 @@ import { Alert, Stack, Button } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-import { EditLinkForm, LinkAnalyticsActions } from '@/features/links';
+import { EditLinkForm, LinkActions } from '@/features/links';
 import { AppIcon } from '@/shared/ui/icons';
 import MainLayout from '@/shared/layout/MainLayout';
 import { ResponsiveContainer } from '@/shared/ui/base';
@@ -99,7 +99,7 @@ function LinkEditPage() {
 					<Stack spacing={3}>
 						{/* Ações do Link */}
 						{linkData ? (
-							<LinkAnalyticsActions
+							<LinkActions
 								linkId={id}
 								shortUrl={linkData.short_url}
 								onDeleteSuccess={handleDeleteSuccess}

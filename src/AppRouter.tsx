@@ -11,7 +11,7 @@ const LinkAnalyticsPage = lazy(() => import('./pages/links/LinkAnalyticsPage'));
 const PublicAnalyticsPage = lazy(() => import('./pages/public/PublicAnalyticsPage'));
 
 // 🔗 Links Management Pages
-const LinkPage = lazy(() => import('./pages/links/LinkPage'));
+const LinkPage = lazy(() => import('./pages/links/LinkListPage'));
 const LinkCreatePage = lazy(() => import('./pages/links/LinkCreatePage'));
 const LinkEditPage = lazy(() => import('./pages/links/LinkEditPage'));
 const LinkQRPage = lazy(() => import('./pages/links/LinkQRPage'));

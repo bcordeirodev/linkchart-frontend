@@ -16,7 +16,7 @@ interface DashboardMetricsProps {
  * 📊 Métricas específicas do Dashboard
  * Focado em estatísticas gerais dos links
  */
-export function DashboardMetrics({
+export function LinkMetrics({
 	summary,
 	linksData = [],
 	showTitle = false,
@@ -107,4 +107,4 @@ export function DashboardMetrics({
 	);
 }
 
-export default DashboardMetrics;
+export default LinkMetrics;

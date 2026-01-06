@@ -1,3 +1,7 @@
-// Componentes compartilhados
-export { DashboardMetrics } from './DashboardMetrics';
-export { Charts } from './Charts';
+/**
+ * Dashboard Components - Exports
+ */
+
+export { LinkDashboard } from './LinkDashboard';
+export * from './charts';
+export * from './cards';

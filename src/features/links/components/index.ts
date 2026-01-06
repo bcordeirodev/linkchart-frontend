@@ -13,7 +13,5 @@ export * from './analytics';
 export * from './forms';
 
 // Outros componentes
-export { CopyButton } from './CopyButton';
-export { ShareActions } from './ShareActions';
 export { URLInput } from './URLInput';
 export { URLShortenerForm } from './URLShortenerForm';

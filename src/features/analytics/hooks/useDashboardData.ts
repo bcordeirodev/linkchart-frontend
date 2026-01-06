@@ -1,111 +1,33 @@
+/**
+ * 📊 USE DASHBOARD DATA - Hook para Dados do Dashboard
+ *
+ * @description
+ * Hook customizado para gerenciar dados do dashboard com métricas agregadas,
+ * suporte a tempo real e validação de dados.
+ */
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { api } from '@/lib/api/client';
-export interface DashboardData {
-	summary: {
-		total_links: number;
-		active_links: number;
-		total_clicks: number;
-		unique_visitors: number;
-		avg_clicks_per_link: number;
-		success_rate: number;
-		avg_response_time: number;
-		countries_reached: number;
-		links_with_traffic: number;
-	};
-	top_links: {
-		id: number;
-		title: string;
-		short_url: string;
-		original_url: string;
-		clicks: number;
-		is_active: boolean;
-		created_at?: string;
-	}[];
-	recent_activity?: {
-		date: string;
-		clicks: number;
-	}[];
-	geographic_summary: {
-		countries_reached: number;
-		cities_reached: number;
-		top_country?: string;
-	};
-	device_summary: {
-		desktop: number;
-		mobile: number;
-		tablet: number;
-	};
-	// Informações do link (apenas para dashboard individual)
-	link_info?: {
-		id: number;
-		title: string;
-		short_url?: string;
-		original_url: string;
-		clicks: number;
-		is_active: boolean;
-		created_at: string;
-	};
-	// Dados de gráficos opcionais
-	temporal_data?: {
-		clicks_by_hour: {
-			hour: number;
-			clicks: number;
-			label: string;
-		}[];
-		clicks_by_day_of_week: {
-			day: number;
-			day_name: string;
-			clicks: number;
-		}[];
-	} | null;
-	geographic_data?: {
-		top_countries: {
-			country: string;
-			clicks: number;
-		}[];
-		top_cities: {
-			city: string;
-			clicks: number;
-		}[];
-	} | null;
-	audience_data?: {
-		device_breakdown: {
-			device: string;
-			clicks: number;
-		}[];
-	} | null;
-}
 
-export interface DashboardStats {
-	totalMetrics: number;
-	lastUpdate: string;
-	dataQuality: 'excellent' | 'good' | 'fair' | 'poor';
-	trendsAvailable: boolean;
-}
-
-export interface UseDashboardDataOptions {
-	linkId?: string;
-	refreshInterval?: number;
-	enableRealtime?: boolean;
-	timeframe?: '1h' | '24h' | '7d' | '30d';
-}
-
-export interface UseDashboardDataReturn {
-	data: DashboardData | null;
-	stats: DashboardStats | null;
-	loading: boolean;
-	error: string | null;
-	refresh: () => Promise<void>;
-	isRealtime: boolean;
-}
+import type {
+	ActivityData,
+	DashboardData,
+	DashboardLink,
+	DashboardStats,
+	DashboardSummary,
+	DeviceSummary,
+	GeographicSummary,
+	UseDashboardDataOptions,
+	UseDashboardDataReturn
+} from '@/types/analytics/dashboard';
 
 /**
- * Hook para gerenciar dados do dashboard com métricas agregadas e top links
+ * Hook para gerenciar dados do dashboard
  */
 export function useDashboardData({
 	linkId,
-	refreshInterval = 60000, // 1 minuto
+	refreshInterval = 60000,
 	enableRealtime = false,
 	timeframe = '24h'
 }: UseDashboardDataOptions = {}): UseDashboardDataReturn {
@@ -119,15 +41,20 @@ export function useDashboardData({
 	const abortControllerRef = useRef<AbortController | null>(null);
 	const isRequestingRef = useRef<boolean>(false);
 	const lastRequestParamsRef = useRef<string>('');
+
+	/**
+	 * Busca dados do dashboard da API
+	 */
 	const fetchDashboardData = useCallback(async () => {
 		try {
 			const params = {
-				hours: timeframe === '1h' ? '1' : timeframe === '24h' ? '24' : timeframe === '7d' ? '168' : '720',
+				hours: getHoursFromTimeframe(timeframe),
 				include_charts: 'true'
 			};
 
 			const requestKey = `${linkId}-${timeframe}-${JSON.stringify(params)}`;
 
+			// Evita requisições duplicadas
 			if (isRequestingRef.current && lastRequestParamsRef.current === requestKey) {
 				return;
 			}
@@ -135,6 +62,7 @@ export function useDashboardData({
 			isRequestingRef.current = true;
 			lastRequestParamsRef.current = requestKey;
 
+			// Cancela requisição anterior se existir
 			if (abortControllerRef.current) {
 				abortControllerRef.current.abort();
 			}
@@ -142,121 +70,51 @@ export function useDashboardData({
 			abortControllerRef.current = new AbortController();
 			setError(null);
 
-			// Analytics global removido - apenas link específico
 			if (!linkId) {
-				return; // Não buscar dados se não há linkId
+				return;
 			}
 
-			const dashboardEndpoint = `/api/analytics/link/${linkId}/dashboard`;
+			const endpoint = `/api/analytics/link/${linkId}/dashboard`;
+			const fullEndpoint = buildEndpointWithParams(endpoint, params);
 
-			const urlParams = new URLSearchParams();
-			Object.entries(params).forEach(([key, value]) => {
-				if (value !== undefined && value !== null) {
-					urlParams.append(key, String(value));
-				}
-			});
-			const fullEndpoint = urlParams.toString()
-				? `${dashboardEndpoint}?${urlParams.toString()}`
-				: dashboardEndpoint;
-
-			const response = await api.get<{
-				success: boolean;
-				data?: DashboardData;
-				summary?: DashboardData['summary'];
-				metrics?: any;
-				charts?: any;
-				timeframe?: string;
-			}>(fullEndpoint);
+			const response = await api.get<ApiResponse>(fullEndpoint);
 
 			if (!response.success) {
 				throw new Error('Dados do dashboard não encontrados');
 			}
 
-			let dashboardData: DashboardData;
-
-			if (response.data) {
-				const data = response.data;
-				dashboardData = {
-					summary: data.summary || {},
-					top_links: data.top_links || [],
-					recent_activity: [],
-					geographic_summary: {
-						countries_reached: data.summary?.countries_reached || 0,
-						cities_reached: 0,
-						top_country: data.geographic_data?.top_countries?.[0]?.country
-					},
-					device_summary: {
-						desktop: data.audience_data?.device_breakdown?.find((d) => d.device === 'Desktop')?.clicks || 0,
-						mobile: data.audience_data?.device_breakdown?.find((d) => d.device === 'Mobile')?.clicks || 0,
-						tablet: data.audience_data?.device_breakdown?.find((d) => d.device === 'Tablet')?.clicks || 0
-					},
-					temporal_data: data.temporal_data,
-					geographic_data: data.geographic_data,
-					audience_data: data.audience_data
-				};
-			} else {
-				const metrics = response.metrics || {};
-				const charts = response.charts || {};
-
-				dashboardData = {
-					summary: response.summary || metrics.dashboard || {},
-					top_links: (response as any).top_links || [],
-					recent_activity: (response as any).recent_activity || [],
-					geographic_summary: metrics.geographic || {
-						countries_reached: 0,
-						cities_reached: 0
-					},
-					device_summary: metrics.audience?.device_types || {
-						desktop: 0,
-						mobile: 0,
-						tablet: 0
-					},
-					temporal_data: charts.temporal,
-					geographic_data: charts.geographic,
-					audience_data: charts.audience
-				};
-			}
-
+			const dashboardData = mapResponseToDashboardData(response);
 			setData(dashboardData);
 
-			const calculatedStats: DashboardStats = {
-				totalMetrics: Object.keys(dashboardData.summary).length,
-				lastUpdate: new Date().toISOString(),
-				dataQuality:
-					dashboardData.summary.total_clicks > 100
-						? 'excellent'
-						: dashboardData.summary.total_clicks > 10
-							? 'good'
-							: 'fair',
-				trendsAvailable: (dashboardData.recent_activity?.length || 0) > 0
-			};
-
+			const calculatedStats = calculateStats(dashboardData);
 			setStats(calculatedStats);
-		} catch (err: any) {
-			if (err.name === 'AbortError') {
+		} catch (err) {
+			if (err instanceof Error && err.name === 'AbortError') {
 				return;
 			}
 
-			const errorMessage = err.message || 'Erro ao carregar dados do dashboard';
+			const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar dados do dashboard';
 			setError(errorMessage);
-
-			console.error('useDashboardData error:', err);
 		} finally {
 			isRequestingRef.current = false;
 		}
 	}, [linkId, timeframe]);
+
+	/**
+	 * Atualiza dados manualmente
+	 */
 	const refresh = useCallback(async () => {
 		setLoading(true);
 		await fetchDashboardData();
 		setLoading(false);
 	}, [fetchDashboardData]);
 
+	// Setup realtime updates
 	useEffect(() => {
 		if (enableRealtime && refreshInterval > 0) {
 			intervalRef.current = setInterval(() => {
 				fetchDashboardData();
 			}, refreshInterval);
-
 			setIsRealtime(true);
 		} else {
 			setIsRealtime(false);
@@ -268,8 +126,9 @@ export function useDashboardData({
 				intervalRef.current = null;
 			}
 		};
-	}, [enableRealtime, refreshInterval]);
+	}, [enableRealtime, refreshInterval, fetchDashboardData]);
 
+	// Initial fetch
 	useEffect(() => {
 		setLoading(true);
 		fetchDashboardData().finally(() => {
@@ -297,4 +156,180 @@ export function useDashboardData({
 	};
 }
 
+// ============================================
+// Utilitários Internos
+// ============================================
+
+/**
+ * Tipo da resposta da API
+ */
+interface ApiResponseData {
+	summary?: DashboardSummary;
+	top_links?: DashboardLink[];
+	recent_activity?: ActivityData[];
+	temporal_data?: DashboardData['temporal_data'];
+	geographic_data?: DashboardData['geographic_data'];
+	audience_data?: DashboardData['audience_data'];
+	link_info?: DashboardData['link_info'];
+}
+
+interface ApiMetrics {
+	dashboard?: DashboardSummary;
+	geographic?: GeographicSummary;
+	audience?: {
+		device_types?: Partial<DeviceSummary>;
+	};
+}
+
+interface ApiCharts {
+	temporal?: DashboardData['temporal_data'];
+	geographic?: DashboardData['geographic_data'];
+	audience?: DashboardData['audience_data'];
+}
+
+interface ApiResponse {
+	success: boolean;
+	data?: ApiResponseData;
+	summary?: DashboardSummary;
+	metrics?: ApiMetrics;
+	charts?: ApiCharts;
+	timeframe?: string;
+	top_links?: DashboardLink[];
+	recent_activity?: ActivityData[];
+}
+
+/**
+ * Converte timeframe para horas
+ */
+function getHoursFromTimeframe(timeframe: '1h' | '24h' | '7d' | '30d'): string {
+	const map = { '1h': '1', '24h': '24', '7d': '168', '30d': '720' };
+	return map[timeframe];
+}
+
+/**
+ * Constrói endpoint com parâmetros
+ */
+function buildEndpointWithParams(endpoint: string, params: Record<string, string>): string {
+	const urlParams = new URLSearchParams();
+	Object.entries(params).forEach(([key, value]) => {
+		if (value !== undefined && value !== null) {
+			urlParams.append(key, String(value));
+		}
+	});
+	return urlParams.toString() ? `${endpoint}?${urlParams.toString()}` : endpoint;
+}
+
+/**
+ * Mapeia resposta da API para DashboardData
+ */
+function mapResponseToDashboardData(response: ApiResponse): DashboardData {
+	if (response.data) {
+		const data = response.data;
+		const defaultSummary: DashboardSummary = {
+			total_links: 0,
+			active_links: 0,
+			total_clicks: 0,
+			unique_visitors: 0,
+			avg_clicks_per_link: 0,
+			success_rate: 0,
+			avg_response_time: 0,
+			countries_reached: 0,
+			links_with_traffic: 0
+		};
+
+		return {
+			summary: data.summary || defaultSummary,
+			top_links: data.top_links || [],
+			recent_activity: data.recent_activity || [],
+			geographic_summary: {
+				countries_reached: data.summary?.countries_reached || 0,
+				cities_reached: 0,
+				top_country: data.geographic_data?.top_countries?.[0]?.country,
+				top_country_clicks: data.geographic_data?.top_countries?.[0]?.clicks || 0,
+				coverage_percentage: 0
+			},
+			device_summary: {
+				desktop: data.audience_data?.device_breakdown?.find((d) => d.device === 'Desktop')?.clicks || 0,
+				mobile: data.audience_data?.device_breakdown?.find((d) => d.device === 'Mobile')?.clicks || 0,
+				tablet: data.audience_data?.device_breakdown?.find((d) => d.device === 'Tablet')?.clicks || 0,
+				total: data.summary?.total_clicks || 0,
+				mobile_percentage: 0
+			},
+			performance_indicators: [],
+			temporal_data: data.temporal_data,
+			geographic_data: data.geographic_data,
+			audience_data: data.audience_data,
+			link_info: data.link_info
+		};
+	}
+
+	// Fallback para formato antigo
+	const metrics = response.metrics || {};
+	const charts = response.charts || {};
+	const defaultSummary: DashboardSummary = {
+		total_links: 0,
+		active_links: 0,
+		total_clicks: 0,
+		unique_visitors: 0,
+		avg_clicks_per_link: 0,
+		success_rate: 0,
+		avg_response_time: 0,
+		countries_reached: 0,
+		links_with_traffic: 0
+	};
+
+	return {
+		summary: response.summary || metrics.dashboard || defaultSummary,
+		top_links: response.top_links || [],
+		recent_activity: response.recent_activity || [],
+		geographic_summary: metrics.geographic || {
+			countries_reached: 0,
+			cities_reached: 0,
+			top_country: undefined,
+			top_country_clicks: 0,
+			coverage_percentage: 0
+		},
+		device_summary: {
+			desktop: metrics.audience?.device_types?.desktop || 0,
+			mobile: metrics.audience?.device_types?.mobile || 0,
+			tablet: metrics.audience?.device_types?.tablet || 0,
+			total: metrics.audience?.device_types?.total || 0,
+			mobile_percentage: metrics.audience?.device_types?.mobile_percentage || 0
+		},
+		performance_indicators: [],
+		temporal_data: charts.temporal,
+		geographic_data: charts.geographic,
+		audience_data: charts.audience
+	};
+}
+
+/**
+ * Calcula estatísticas do dashboard
+ */
+function calculateStats(data: DashboardData): DashboardStats {
+	const totalClicks = data.summary.total_clicks || 0;
+
+	let dataQuality: 'excellent' | 'good' | 'fair' | 'poor';
+
+	if (totalClicks > 100) {
+		dataQuality = 'excellent';
+	} else if (totalClicks > 10) {
+		dataQuality = 'good';
+	} else if (totalClicks > 0) {
+		dataQuality = 'fair';
+	} else {
+		dataQuality = 'poor';
+	}
+
+	return {
+		totalMetrics: Object.keys(data.summary).length,
+		lastUpdate: new Date().toISOString(),
+		dataQuality,
+		trendsAvailable: (data.recent_activity?.length || 0) > 0,
+		alertsCount: 0,
+		recommendationsCount: 0
+	};
+}
+
 export default useDashboardData;
+

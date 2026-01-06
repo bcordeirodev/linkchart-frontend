@@ -1,9 +1,5 @@
 // === MÉTRICAS E VISÃO GERAL ===
-export { DashboardMetrics } from './dashboard';
-export { default as AnalyticsMetrics } from './dashboard/DashboardMetrics';
-
-// === GRÁFICOS E VISUALIZAÇÕES ===
-export { Charts } from './dashboard/Charts';
+export { default as AnalyticsMetrics } from '../../links/components/LinkMetrics';
 
 // === COMPONENTES ESPECIALIZADOS ORIGINAIS ===
 export * from './audience';

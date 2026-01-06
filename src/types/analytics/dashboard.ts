@@ -13,6 +13,30 @@ export interface DashboardData {
 	geographic_summary: GeographicSummary;
 	device_summary: DeviceSummary;
 	performance_indicators: PerformanceIndicator[];
+	/** Informações do link (para dashboard individual) */
+	link_info?: {
+		id: number;
+		title: string;
+		short_url?: string;
+		original_url: string;
+		clicks: number;
+		is_active: boolean;
+		created_at: string;
+	};
+	/** Dados temporais para gráficos */
+	temporal_data?: {
+		clicks_by_hour: Array<{ hour: number; clicks: number; label: string }>;
+		clicks_by_day_of_week: Array<{ day: number; day_name: string; clicks: number }>;
+	} | null;
+	/** Dados geográficos para gráficos */
+	geographic_data?: {
+		top_countries: Array<{ country: string; clicks: number }>;
+		top_cities: Array<{ city: string; clicks: number }>;
+	} | null;
+	/** Dados de audiência para gráficos */
+	audience_data?: {
+		device_breakdown: Array<{ device: string; clicks: number }>;
+	} | null;
 }
 
 /**

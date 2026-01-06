@@ -5,7 +5,7 @@ import { memo, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { LinkAnalyticsTabsOptimized } from '@/features/links/components/analytics/LinkAnalyticsTabs';
-import { LinkAnalyticsActions } from '@/features/links/components/analytics/LinkAnalyticsActions';
+import { LinkActions } from '@/features/links/components/LinkActions';
 import { useLinkAnalyticsOptimized } from '@/features/links/hooks/useLinkAnalytics';
 import { AppIcon } from '@/shared/ui/icons';
 import MainLayout from '@/shared/layout/MainLayout';
@@ -33,11 +33,6 @@ function LinkAnalyticsPage() {
 		[id]
 	);
 
-	// Handler para quando o link for excluído com sucesso
-	const handleDeleteSuccess = () => {
-		navigate('/link');
-	};
-
 	// Early return para casos de erro
 	if (!id) {
 		return (
@@ -55,6 +50,12 @@ function LinkAnalyticsPage() {
 		<AuthGuardRedirect auth={['user', 'admin']}>
 			<MainLayout>
 				<ResponsiveContainer variant='page'>
+					<LinkActions
+						linkId={id}
+						shortUrl={linkInfo?.short_url}
+						currentPage='analytics'
+					/>
+
 					<PageHeader
 						title={linkInfo?.title || `Analytics do Link`}
 						subtitle={`Análise detalhada do desempenho do link ${linkInfo?.short_url || id}`}
@@ -65,13 +66,6 @@ function LinkAnalyticsPage() {
 							/>
 						}
 						variant='analytics'
-					/>
-
-					{/* Ações do Link */}
-					<LinkAnalyticsActions
-						linkId={id}
-						shortUrl={linkInfo?.short_url}
-						currentPage='analytics'
 					/>
 
 					<LinkAnalyticsTabsOptimized {...tabsProps} />

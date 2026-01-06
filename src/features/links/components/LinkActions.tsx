@@ -26,7 +26,7 @@ interface LinkAnalyticsActionsProps {
 	currentPage?: 'analytics' | 'edit' | 'qr' | 'other';
 }
 
-export function LinkAnalyticsActions({
+export function LinkActions({
 	linkId,
 	shortUrl,
 	onDeleteSuccess,
@@ -199,25 +199,25 @@ export function LinkAnalyticsActions({
 				<Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
 					{showDelete ? (
 						<Button
-								variant="outlined"
-								size="small"
-								color="error"
-								startIcon={<HiTrash size={18} />}
-								onClick={handleDelete}
-								disabled={loading}
-								sx={{
-									...buttonStyles,
-									borderColor: theme.palette.error.main,
-									color: theme.palette.error.main,
-									'&:hover': {
-										borderColor: theme.palette.error.dark,
-										backgroundColor: 'rgba(211, 47, 47, 0.08)',
-										color: theme.palette.error.dark
-									}
-								}}
-							>
-								Excluir
-							</Button>
+							variant="outlined"
+							size="small"
+							color="error"
+							startIcon={<HiTrash size={18} />}
+							onClick={handleDelete}
+							disabled={loading}
+							sx={{
+								...buttonStyles,
+								borderColor: theme.palette.error.main,
+								color: theme.palette.error.main,
+								'&:hover': {
+									borderColor: theme.palette.error.dark,
+									backgroundColor: 'rgba(211, 47, 47, 0.08)',
+									color: theme.palette.error.dark
+								}
+							}}
+						>
+							Excluir
+						</Button>
 					) : null}
 				</Box>
 			</Box>
@@ -225,5 +225,5 @@ export function LinkAnalyticsActions({
 	);
 }
 
-export default LinkAnalyticsActions;
+export default LinkActions;
 

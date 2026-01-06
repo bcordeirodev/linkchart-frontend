@@ -5,7 +5,7 @@ import { Box, Typography, Button, Card, CardContent, Alert, CircularProgress } f
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useLinks, LinkAnalyticsActions } from '@/features/links';
+import { useLinks, LinkActions } from '@/features/links';
 import { useShareAPI } from '@/features/links/hooks/useShareAPI';
 import { QRCodeSkeleton } from '@/shared/ui/feedback/skeletons';
 import MainLayout from '@/shared/layout/MainLayout';
@@ -163,7 +163,7 @@ function LinkQRPage() {
 					maxWidth='md'
 				>
 					{/* Ações do Link */}
-					<LinkAnalyticsActions
+					<LinkActions
 						linkId={id}
 						shortUrl={linkInfo.slug || linkInfo.custom_slug}
 						onDeleteSuccess={handleDeleteSuccess}

@@ -12,7 +12,7 @@ import { TemporalAnalysis } from '@/features/analytics/components/temporal';
 import TabDescription from '@/shared/ui/base/TabDescription';
 import { TabPanel } from '@/shared/ui/base/TabPanel';
 
-import { LinkDashboard } from './LinkDashboard';
+import { LinkDashboard } from '../../../analytics/components/dashboard/LinkDashboard';
 
 import type { LinkAnalyticsData } from '../../types/analytics';
 
