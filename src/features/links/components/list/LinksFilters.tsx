@@ -1,5 +1,5 @@
 import { debounce } from 'lodash';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Search, FilterList } from '@mui/icons-material';
 import {
 	Box,
@@ -29,9 +29,18 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 	const theme = useTheme();
 
 	const debouncedSearch = useMemo(
-	()=> debounce(onSearchChange,300),
+	()=> debounce((value)=>{
+		console.log('debounce tá funcionando na teoria')
+		onSearchChange(value);
+	}),
 	[onSearchChange]
 	)
+
+	useEffect(()=>{
+		return () =>{
+			debouncedSearch.cancel();
+		}
+	},[debouncedSearch])
 	
 	
 	
