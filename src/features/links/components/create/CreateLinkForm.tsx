@@ -3,6 +3,7 @@ import { Typography, Button, CircularProgress, Stack, Alert, Box } from '@mui/ma
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import dayjs, { Dayjs } from 'dayjs';
 
 import { AppIcon } from '@/shared/ui/icons';
 import { useAppDispatch } from '@/lib/store/hooks';
@@ -16,6 +17,7 @@ import { linkFormSchema, defaultLinkFormValues } from '../../components/forms/Li
 
 import type { LinkFormData } from '../../components/forms/LinkFormSchema';
 import type { CreateLinkFormProps } from '../../types/forms';
+import { date } from 'zod';
 
 /**
  * Formulário de criação de links com React Hook Form + Zod
@@ -40,19 +42,19 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 		mode: 'onChange'
 	});
 
-	const convertDateForSubmit = (dateString: string | null | undefined): string | undefined => {
-		if (!dateString) {
+	const convertDateForSubmit = (dateValue: Dayjs | null | undefined): string | undefined => {
+		if (!dateValue) {
 			return undefined;
 		}
 
 		try {
-			const date = new Date(dateString);
-
-			if (isNaN(date.getTime())) {
-				return undefined;
+			if (dayjs.isDayjs(dateValue)) {
+				return dateValue.toISOString();
 			}
-
-			return date.toISOString();
+			// Fallback para string ISO se por algum motivo não for DayJS
+			if (typeof dateValue === 'string') {
+				return dateValue;
+			}
 		} catch (_error) {
 			return undefined;
 		}

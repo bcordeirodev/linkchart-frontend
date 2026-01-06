@@ -1,3 +1,5 @@
+import dayjs, { Dayjs } from 'dayjs';
+import { isDayjs } from 'dayjs';
 import { z } from 'zod';
 
 /**
@@ -48,35 +50,29 @@ export const linkFormSchema = z
 
 		// ✅ Data de Expiração - Validação temporal (permite datas passadas para edição)
 		expires_at: z
-			.string()
-			.optional()
-			.nullable()
-			.refine((date) => {
-				if (!date) {
-					return true;
-				}
-
-				const expireDate = new Date(date);
-				const maxDate = new Date();
-				maxDate.setFullYear(maxDate.getFullYear() + 5);
-				// Permite datas no passado para edição, mas limita o futuro
+			.custom<Dayjs | null>((val) => {
+			return	val === null || dayjs.isDayjs(val)}, "Data inválida"
+			)
+				
+  			.refine((val) => {
+    			if (!val) return true;
+				const expireDate = val.toDate();	
+				const maxDate = dayjs().add(5, "year").toDate();
 				return expireDate <= maxDate;
-			}, 'Data de expiração deve ser no máximo 5 anos no futuro'),
+			},
+			 {
+    		message: "Data de expiração deve ser no máximo 5 anos no futuro"
+  			})
+			.optional()
+			.nullable(),
 
 		// ✅ Data de Início - Validação temporal (permite datas passadas para edição)
 		starts_in: z
-			.string()
+			.custom<Dayjs | null>((val)=>{
+				return val === null || dayjs.isDayjs(val);
+			}, "Data inválida")
 			.optional()
-			.nullable()
-			.refine((date) => {
-				if (!date) {
-					return true;
-				}
-
-				// Permite qualquer data válida para edição
-				const startDate = new Date(date);
-				return !isNaN(startDate.getTime());
-			}, 'Data de início deve ser uma data válida'),
+			.nullable(),
 
 		// ✅ Limite de Cliques - Validação numérica
 		click_limit: z
@@ -104,8 +100,8 @@ export const linkFormSchema = z
 				return true;
 			}
 
-			const startDate = new Date(data.starts_in);
-			const expireDate = new Date(data.expires_at);
+			const startDate = data.starts_in.toDate();
+			const expireDate = data.expires_at.toDate();
 			return startDate < expireDate;
 		},
 		{
