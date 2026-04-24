@@ -1,0 +1,85 @@
+/**
+ * Paleta dedicada a charts — 8 cores harmônicas, dark-first, alto contraste.
+ * Substitui colors/chartColors.ts.
+ */
+
+/**
+ * Cores canônicas em ordem de prioridade visual para séries múltiplas.
+ */
+export const chartPalette = [
+	'#5B8DEF', // business blue
+	'#34D399', // emerald
+	'#F59E0B', // amber
+	'#A78BFA', // violet
+	'#22D3EE', // cyan
+	'#F472B6', // muted pink
+	'#FB923C', // orange
+	'#FDE047' // yellow
+] as const;
+
+/**
+ * Mapeamento por tipo de dado.
+ */
+export const chartByType = {
+	devices: {
+		mobile: '#5B8DEF',
+		desktop: '#34D399',
+		tablet: '#F59E0B'
+	},
+	geographic: {
+		countries: '#34D399',
+		states: '#F59E0B',
+		cities: '#A78BFA'
+	},
+	temporal: {
+		hourly: '#F59E0B',
+		daily: '#5B8DEF',
+		weekly: '#34D399'
+	},
+	heatmap: {
+		low: '#1E3A5F',
+		medium: '#2C5AA0',
+		high: '#5B8DEF',
+		intense: '#8AB0F5'
+	}
+} as const;
+
+/**
+ * Gradientes leves (ápice + claro) por cor base.
+ */
+const gradients: Record<string, readonly [string, string]> = {
+	'#5B8DEF': ['#5B8DEF', '#8AB0F5'],
+	'#34D399': ['#34D399', '#6EE7B7'],
+	'#F59E0B': ['#F59E0B', '#FBBF24'],
+	'#A78BFA': ['#A78BFA', '#C4B5FD'],
+	'#22D3EE': ['#22D3EE', '#67E8F9'],
+	'#F472B6': ['#F472B6', '#F9A8D4'],
+	'#FB923C': ['#FB923C', '#FDBA74'],
+	'#FDE047': ['#FDE047', '#FEF08A']
+};
+
+export function getChartColor(index: number): string {
+	return chartPalette[index % chartPalette.length];
+}
+
+export function getGradientColors(baseColor: string): readonly [string, string] {
+	return gradients[baseColor] ?? [baseColor, baseColor];
+}
+
+/**
+ * Alias para compatibilidade com consumidores antigos de chartColors.
+ * @deprecated Usar chartPalette e getChartColor diretamente.
+ */
+export const chartColors = {
+	primary: chartPalette[0],
+	success: chartPalette[1],
+	warning: chartPalette[2],
+	error: '#F87171',
+	info: chartPalette[4],
+	secondary: chartPalette[5],
+	extended: [...chartPalette],
+	devices: chartByType.devices,
+	geographic: chartByType.geographic,
+	temporal: chartByType.temporal,
+	heatmap: chartByType.heatmap
+} as const;
