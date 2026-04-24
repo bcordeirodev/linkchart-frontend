@@ -2,7 +2,7 @@
  * Temas centralizados — re-export da estrutura consolidada.
  */
 
-export { allThemes, themesConfig } from '../themes';
+export { allThemes, themesConfig, defaultDarkTheme, defaultLightTheme } from '../themes';
 
 import { allThemes } from '../themes';
 export default allThemes;

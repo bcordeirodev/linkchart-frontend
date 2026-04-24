@@ -26,7 +26,14 @@ export {
 	// Novos utilitários responsivos
 	createResponsiveSpacing,
 	responsiveSpacing,
-	createCustomSpacing
+	createCustomSpacing,
+	// Tokens SP2
+	typographyScale,
+	radiusTokens,
+	elevationTokens,
+	elevationLightTokens,
+	motionTokens,
+	zIndexTokens
 } from './designSystem';
 
 export type { ColorVariant, ColorIntensity } from './designSystem';
@@ -40,20 +47,25 @@ export { useMainTheme, useResponsive, useThemeMediaQuery } from './hooks';
 // 🎨 THEME CONFIGURATION
 // ========================================
 export { applyGlobalStyles } from './globalStyles';
-export { allThemes, allThemes as themesConfig, simplifiedThemes, extendedThemes } from './themes';
+export { allThemes, themesConfig, defaultDarkTheme, defaultLightTheme } from './themes';
 
 // ========================================
 // 🎨 COLORS
 // ========================================
 export {
-	fuseDark,
-	skyBlue,
-	chartColors,
+	darkPalette,
+	darkNeutral,
+	darkPrimary,
+	lightPalette,
+	lightNeutral,
+	lightPrimary,
+	semanticDark,
+	semanticLight,
+	chartPalette,
+	chartByType,
 	getChartColor,
 	getGradientColors,
-	lightPaletteText,
-	darkPaletteText,
-	brandColors
+	chartColors
 } from './colors';
 
 // ========================================
