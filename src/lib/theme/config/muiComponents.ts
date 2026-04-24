@@ -4,6 +4,7 @@
  */
 
 import type { Theme } from '@mui/material/styles/createTheme';
+import { typographyScale, radiusTokens, motionTokens, zIndexTokens } from '../designSystem';
 
 // ========================================
 // 🎯 CONFIGURAÇÕES ESSENCIAIS
@@ -13,14 +14,24 @@ import type { Theme } from '@mui/material/styles/createTheme';
  * Configurações de tipografia otimizadas
  */
 export const typography = {
-	fontFamily: ['Inter var', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
-	fontWeightLight: 300,
+	fontFamily: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'].join(','),
 	fontWeightRegular: 400,
 	fontWeightMedium: 500,
-	fontSize: 13,
-	body1: { fontSize: '0.8125rem' },
-	body2: { fontSize: '0.8125rem' }
-};
+	fontWeightBold: 600,
+	fontSize: 14,
+	display: typographyScale.display,
+	h1: typographyScale.h1,
+	h2: typographyScale.h2,
+	h3: typographyScale.h3,
+	h4: typographyScale.h4,
+	h5: typographyScale.h5,
+	h6: typographyScale.h6,
+	body1: typographyScale.body,
+	body2: typographyScale.bodySm,
+	caption: typographyScale.caption,
+	overline: typographyScale.caption,
+	button: { fontSize: typographyScale.body.fontSize, fontWeight: 500, textTransform: 'none' }
+} as const;
 
 /**
  * Breakpoints responsivos padronizados
@@ -51,12 +62,9 @@ const buttonComponents = {
 		styleOverrides: {
 			root: ({ theme }: { theme: Theme }) => ({
 				textTransform: 'none',
-				borderRadius: theme.spacing(1.5), // 12px
+				borderRadius: radiusTokens.md,
 				fontWeight: 600,
-				transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-				'&:hover': {
-					transform: 'translateY(-1px)'
-				}
+				transition: `all ${motionTokens.duration.slow} ${motionTokens.easing.default}`
 			}),
 			sizeMedium: {
 				height: 36,
@@ -90,7 +98,7 @@ const buttonComponents = {
 	MuiIconButton: {
 		styleOverrides: {
 			root: ({ theme }: { theme: Theme }) => ({
-				borderRadius: theme.spacing(1.5) // 12px PADRÃO
+				borderRadius: radiusTokens.md
 			}),
 			sizeMedium: { width: 36, height: 36, maxHeight: 36 },
 			sizeSmall: { width: 32, height: 32, maxHeight: 32 },
@@ -101,7 +109,7 @@ const buttonComponents = {
 		defaultProps: { color: 'secondary' as const },
 		styleOverrides: {
 			root: ({ theme }: { theme: Theme }) => ({
-				borderRadius: theme.spacing(1.5) // 12px PADRÃO
+				borderRadius: radiusTokens.md
 			})
 		}
 	}
@@ -133,7 +141,7 @@ const inputComponents = {
 		styleOverrides: {
 			root: ({ theme }: { theme: Theme }) => ({
 				minHeight: 36,
-				borderRadius: theme.spacing(1.5), // 12px PADRÃO
+				borderRadius: radiusTokens.md,
 				lineHeight: 1
 			}),
 			legend: { fontSize: '0.75em' },
@@ -142,17 +150,17 @@ const inputComponents = {
 			sizeSmall: ({ theme }: { theme: Theme }) => ({
 				height: 32,
 				minHeight: 32,
-				borderRadius: theme.spacing(1.5)
+				borderRadius: radiusTokens.md
 			}),
 			sizeMedium: ({ theme }: { theme: Theme }) => ({
 				height: 36,
 				minHeight: 36,
-				borderRadius: theme.spacing(1.5)
+				borderRadius: radiusTokens.md
 			}),
 			sizeLarge: ({ theme }: { theme: Theme }) => ({
 				height: 40,
 				minHeight: 40,
-				borderRadius: theme.spacing(1.5)
+				borderRadius: radiusTokens.md
 			})
 		}
 	},
@@ -167,9 +175,9 @@ const inputComponents = {
 		styleOverrides: {
 			root: ({ theme }: { theme: Theme }) => ({
 				paddingLeft: `10px`,
-				borderRadius: theme.spacing(1),
+				borderRadius: radiusTokens.md,
 				backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)',
-				transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+				transition: `all ${motionTokens.duration.slow} ${motionTokens.easing.default}`,
 				'&:hover:not(.Mui-disabled)': {
 					backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)'
 				},
@@ -211,19 +219,16 @@ const surfaceComponents = {
 		styleOverrides: {
 			root: ({ theme }: { theme: Theme }) => ({
 				backgroundImage: 'none',
-				borderRadius: theme.spacing(2) // 16px
+				borderRadius: radiusTokens.md
 			})
 		}
 	},
 	MuiCard: {
 		styleOverrides: {
 			root: ({ theme }: { theme: Theme }) => ({
-				borderRadius: theme.spacing(2), // 16px
-				backgroundColor: theme.palette.background.paper, // Garantir background consistente
-				transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-				'&:hover': {
-					transform: 'translateY(-2px)'
-				}
+				borderRadius: radiusTokens.lg,
+				backgroundColor: theme.palette.background.paper,
+				transition: `all ${motionTokens.duration.slow} ${motionTokens.easing.default}`
 			})
 		}
 	},
@@ -233,7 +238,7 @@ const surfaceComponents = {
 				// Background padrão para Box quando usado como container de métricas
 				'&.metric-container, &.tab-description-container': {
 					backgroundColor: theme.palette.background.paper,
-					borderRadius: theme.spacing(2)
+					borderRadius: radiusTokens.lg
 				}
 			})
 		}
@@ -241,14 +246,14 @@ const surfaceComponents = {
 	MuiDialog: {
 		styleOverrides: {
 			paper: ({ theme }: { theme: Theme }) => ({
-				borderRadius: theme.spacing(1.5) // 12px PADRÃO
+				borderRadius: radiusTokens.lg
 			})
 		}
 	},
 	MuiPopover: {
 		styleOverrides: {
 			paper: ({ theme }: { theme: Theme }) => ({
-				borderRadius: theme.spacing(1.5) // 12px PADRÃO
+				borderRadius: radiusTokens.md
 			})
 		}
 	}
@@ -260,17 +265,23 @@ const surfaceComponents = {
 const navigationComponents = {
 	MuiTab: {
 		styleOverrides: {
-			root: {
+			root: ({ theme }: { theme: Theme }) => ({
 				textTransform: 'none',
-				transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+				transition: `all ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 				'&.Mui-selected': {
-					backgroundColor: 'rgba(25, 118, 210, 0.06)',
-					color: 'primary.main',
+					color: theme.palette.primary.main,
+					backgroundColor:
+						theme.palette.mode === 'dark'
+							? 'rgba(91, 141, 239, 0.10)'
+							: 'rgba(44, 90, 160, 0.06)',
 					'&:hover': {
-						backgroundColor: 'rgba(25, 118, 210, 0.08)'
+						backgroundColor:
+							theme.palette.mode === 'dark'
+								? 'rgba(91, 141, 239, 0.14)'
+								: 'rgba(44, 90, 160, 0.08)'
 					}
 				}
-			}
+			})
 		}
 	},
 	MuiAppBar: {
@@ -335,10 +346,10 @@ const utilityComponents = {
  */
 const highPriorityComponents = {
 	MuiPickersPopper: {
-		styleOverrides: { root: { zIndex: 99999 } }
+		styleOverrides: { root: { zIndex: zIndexTokens.popover } }
 	},
 	MuiAutocomplete: {
-		styleOverrides: { popper: { zIndex: 99999 } }
+		styleOverrides: { popper: { zIndex: zIndexTokens.popover } }
 	}
 };
 
