@@ -435,3 +435,98 @@ export const createCustomSpacing = (xs: number, sm?: number, md?: number) => ({
 // ========================================
 
 export default createDesignTokens;
+
+// ========================================
+// 🔤 TYPOGRAPHY SCALE (SP2)
+// ========================================
+
+export const typographyScale = {
+	display: { fontSize: '3rem', lineHeight: 1.17, fontWeight: 600 },
+	h1: { fontSize: '2rem', lineHeight: 1.25, fontWeight: 600 },
+	h2: { fontSize: '1.5rem', lineHeight: 1.33, fontWeight: 600 },
+	h3: { fontSize: '1.25rem', lineHeight: 1.4, fontWeight: 600 },
+	h4: { fontSize: '1.125rem', lineHeight: 1.55, fontWeight: 600 },
+	h5: { fontSize: '1rem', lineHeight: 1.5, fontWeight: 500 },
+	h6: { fontSize: '0.875rem', lineHeight: 1.43, fontWeight: 500 },
+	bodyLg: { fontSize: '1rem', lineHeight: 1.5, fontWeight: 400 },
+	body: { fontSize: '0.875rem', lineHeight: 1.43, fontWeight: 400 },
+	bodySm: { fontSize: '0.8125rem', lineHeight: 1.54, fontWeight: 400 },
+	caption: { fontSize: '0.75rem', lineHeight: 1.33, fontWeight: 400 },
+	code: { fontSize: '0.8125rem', lineHeight: 1.54, fontWeight: 400, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }
+} as const;
+
+// ========================================
+// 📐 RADIUS SCALE (SP2)
+// ========================================
+
+export const radiusTokens = {
+	none: 0,
+	sm: 4,
+	md: 8, // default da app
+	lg: 12,
+	xl: 16,
+	full: 9999
+} as const;
+
+// ========================================
+// 🌓 ELEVATION (SP2)
+// ========================================
+
+/**
+ * Em dark mode, elevação é primariamente diferença de bg (neutral.surface → elevated).
+ * Shadows são sutis e servem como reforço, não como principal sinal de profundidade.
+ */
+export const elevationTokens = {
+	none: 'none',
+	xs: '0 1px 2px 0 rgba(0, 0, 0, 0.24)',
+	sm: '0 2px 4px 0 rgba(0, 0, 0, 0.28)',
+	md: '0 4px 12px 0 rgba(0, 0, 0, 0.32)',
+	lg: '0 12px 24px -4px rgba(0, 0, 0, 0.40)'
+} as const;
+
+/**
+ * Em light mode, shadows carregam mais peso visual.
+ */
+export const elevationLightTokens = {
+	none: 'none',
+	xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+	sm: '0 2px 4px 0 rgba(0, 0, 0, 0.08)',
+	md: '0 4px 12px 0 rgba(0, 0, 0, 0.10)',
+	lg: '0 12px 24px -4px rgba(0, 0, 0, 0.14)'
+} as const;
+
+// ========================================
+// 🎬 MOTION (SP2)
+// ========================================
+
+export const motionTokens = {
+	duration: {
+		instant: '0ms',
+		fast: '120ms',
+		base: '180ms',
+		slow: '260ms',
+		slower: '400ms'
+	},
+	easing: {
+		default: 'cubic-bezier(0.4, 0, 0.2, 1)',
+		in: 'cubic-bezier(0.4, 0, 1, 1)',
+		out: 'cubic-bezier(0, 0, 0.2, 1)',
+		linear: 'linear'
+	}
+} as const;
+
+// ========================================
+// 🎚️ Z-INDEX (SP2)
+// ========================================
+
+export const zIndexTokens = {
+	hide: -1,
+	base: 0,
+	elevated: 10,
+	sticky: 100,
+	overlay: 1000,
+	modal: 1300,
+	popover: 1400,
+	tooltip: 1500,
+	toast: 1600
+} as const;
