@@ -2,7 +2,7 @@
  * Utilitários de cores para gráficos
  */
 
-import { chartColors } from '../colors/chartColors';
+import { chartColors } from '../colors';
 
 import { createComponentColorSet } from './colorUtils';
 

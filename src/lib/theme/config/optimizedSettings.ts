@@ -6,7 +6,7 @@ import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 import qs from 'qs';
 
-import { fuseDark } from '../colors';
+import { darkPrimary } from '../colors';
 
 import { optimizedThemeOptions } from './muiComponents';
 
@@ -99,7 +99,7 @@ export const optimizedDefaultThemes = {
 	default: {
 		palette: {
 			mode: 'light',
-			primary: fuseDark,
+			primary: darkPrimary,
 			secondary: {
 				light: '#E8E9EA',
 				main: '#9E9E9E',
@@ -114,7 +114,7 @@ export const optimizedDefaultThemes = {
 	defaultDark: {
 		palette: {
 			mode: 'dark',
-			primary: fuseDark,
+			primary: darkPrimary,
 			secondary: {
 				light: '#E8E9EA',
 				main: '#9E9E9E',
