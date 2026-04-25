@@ -19,28 +19,40 @@ export function getStandardChartColors(theme: Theme) {
 	};
 }
 
-export function getChartColorsByType(type: 'temporal'): {
+interface TemporalChartColors {
 	hourly: string;
 	daily: string;
 	weekly: string;
-};
-export function getChartColorsByType(type: 'geographic'): {
+}
+interface GeographicChartColors {
 	countries: string;
 	states: string;
 	cities: string;
-};
-export function getChartColorsByType(type: 'audience'): {
+}
+interface AudienceChartColors {
 	primary: string;
 	secondary: string;
 	accent: string;
-};
-export function getChartColorsByType(type: 'device'): {
+}
+interface DeviceChartColors {
 	mobile: string;
 	desktop: string;
 	tablet: string;
-};
-export function getChartColorsByType(type: 'temporal' | 'geographic' | 'audience' | 'device') {
-	const colorMap = {
+}
+
+export function getChartColorsByType(type: 'temporal'): TemporalChartColors;
+export function getChartColorsByType(type: 'geographic'): GeographicChartColors;
+export function getChartColorsByType(type: 'audience'): AudienceChartColors;
+export function getChartColorsByType(type: 'device'): DeviceChartColors;
+export function getChartColorsByType(
+	type: 'temporal' | 'geographic' | 'audience' | 'device'
+): TemporalChartColors | GeographicChartColors | AudienceChartColors | DeviceChartColors {
+	const colorMap: {
+		temporal: TemporalChartColors;
+		geographic: GeographicChartColors;
+		audience: AudienceChartColors;
+		device: DeviceChartColors;
+	} = {
 		temporal: {
 			hourly: chartColors.temporal.hourly,
 			daily: chartColors.temporal.daily,
