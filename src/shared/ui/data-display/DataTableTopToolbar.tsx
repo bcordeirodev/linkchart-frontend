@@ -51,9 +51,17 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 		table
 	};
 	return (
-		<div className='flex flex-col w-full py-1 px-3 border-b-1'>
+		<Box
+			sx={(theme) => ({
+				display: 'flex',
+				flexDirection: 'column',
+				width: '100%',
+				py: 0.5,
+				px: 1.5,
+				borderBottom: `1px solid ${theme.palette.divider}`
+			})}
+		>
 			<Box
-				className='flex flex-col w-full items-center'
 				{...toolbarProps}
 				ref={(ref: HTMLDivElement) => {
 					topToolbarRef.current = ref;
@@ -65,6 +73,12 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 					}
 				}}
 				sx={[
+					{
+						display: 'flex',
+						flexDirection: 'column',
+						width: '100%',
+						alignItems: 'center'
+					},
 					(theme) => ({
 						backgroundColor: table.options.mrtTheme.baseBackgroundColor,
 						transition: 'all 150ms ease-in-out',
@@ -89,15 +103,17 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 			>
 				{['both', 'top'].includes(positionToolbarDropZone ?? '') && <MRT_ToolbarDropZone table={table} />}
 
-				<div className='flex w-full items-center'>
+				<Box sx={{ display: 'flex', width: '100%', alignItems: 'center' }}>
 					{enableGlobalFilter && positionGlobalFilter === 'left' ? (
 						<MRT_GlobalFilterTextField {...globalFilterProps} />
 					) : null}
 
-					<div className='flex flex-1'>{renderTopToolbarCustomActions?.({ table }) ?? null}</div>
+					<Box sx={{ display: 'flex', flex: 1 }}>
+						{renderTopToolbarCustomActions?.({ table }) ?? null}
+					</Box>
 
 					{enableToolbarInternalActions ? (
-						<Box className='flex items-center space-x-2'>
+						<Box sx={{ display: 'flex', alignItems: 'center', '& > * + *': { ml: 1 } }}>
 							{enableGlobalFilter && positionGlobalFilter === 'right' ? (
 								<MRT_GlobalFilterTextField
 									{...globalFilterProps}
@@ -112,7 +128,7 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 						enableGlobalFilter &&
 						positionGlobalFilter === 'right' && <MRT_GlobalFilterTextField {...globalFilterProps} />
 					)}
-				</div>
+				</Box>
 				{enablePagination && ['both', 'top'].includes(positionPagination ?? '') ? (
 					<MRT_TablePagination
 						position='top'
@@ -140,7 +156,7 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 					}
 				}}
 			/>
-		</div>
+		</Box>
 	);
 }
 
