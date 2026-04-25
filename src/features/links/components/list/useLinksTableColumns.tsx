@@ -293,22 +293,14 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 
 					try {
 						if (startsIn) {
-							if (typeof startsIn === 'string') {
-								startDate = new Date(startsIn);
-							} else if (startsIn && typeof startsIn === 'object' && startsIn.constructor === Date) {
-								startDate = startsIn as Date;
-							}
-							if (startDate && isNaN(startDate.getTime())) {
+							startDate = new Date(startsIn);
+							if (isNaN(startDate.getTime())) {
 								startDate = null;
 							}
 						}
 						if (expiresAt) {
-							if (typeof expiresAt === 'string') {
-								endDate = new Date(expiresAt);
-							} else if (expiresAt && typeof expiresAt === 'object' && expiresAt.constructor === Date) {
-								endDate = expiresAt as Date;
-							}
-							if (endDate && isNaN(endDate.getTime())) {
+							endDate = new Date(expiresAt);
+							if (isNaN(endDate.getTime())) {
 								endDate = null;
 							}
 						}
