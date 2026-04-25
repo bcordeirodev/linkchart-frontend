@@ -39,14 +39,12 @@ interface LinksMobileCardsProps {
 	loading?: boolean;
 	onDelete?: (id: string) => void;
 	onEdit?: (link: Link) => void;
-	onCopy?: (url: string) => void;
 }
 
 interface LinkMobileCardProps {
 	link: Link;
 	onDelete?: (id: string) => void;
 	onEdit?: (link: Link) => void;
-	onCopy?: (url: string) => void;
 }
 
 /**
@@ -248,7 +246,7 @@ LinkMobileCard.displayName = 'LinkMobileCard';
 /**
  * Container principal dos cards mobile
  */
-export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit, onCopy }: LinksMobileCardsProps) => {
+export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit }: LinksMobileCardsProps) => {
 	if (loading) {
 		return (
 			<Box sx={{ p: 2 }}>
@@ -322,7 +320,6 @@ export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit, onCopy 
 					link={link}
 					onDelete={onDelete}
 					onEdit={onEdit}
-					onCopy={onCopy}
 				/>
 			))}
 		</Box>
