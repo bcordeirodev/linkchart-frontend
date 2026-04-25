@@ -2119,7 +2119,7 @@ Sem commit; apenas nota no plano ou README do projeto se for convenção.
 - **Mais Tailwind sobrevivente em `DataTableTopToolbar.tsx`** descoberto durante Task 23: 5 ocorrências (`flex flex-col w-full py-1 px-3 border-b-1`, etc.) que escaparam da varredura inicial da Camada 1 porque não usavam padrão simples de `className='...'`. Convertidas para sx em commit dedicado durante a Camada 2.
 - **MainLayout tinha override pesado** (`'& .MuiAppBar-root': { backgroundColor: theme.palette.primary.main }`) que pintava a navbar de azul forçado, atrapalhando o novo estilo sóbrio do `StyledAppBar`. Removido.
 - **Bug crítico no `ApexChartWrapper`** (pré-existente, descoberto na Task 26): `theme: { mode: 'light' }` estava hardcoded nas opções do Chart, então **todos os gráficos da app sempre renderizavam em modo light** mesmo com o tema dark ativo. Corrigido para `theme: { mode: theme.palette.mode }`. Esse fix lateral provavelmente vai mudar a aparência dos charts em dark mode — pode ser que algumas escolhas visuais antigas (cores hardcoded em options de cada gráfico) precisem revisão na Camada 3 ou em SP3.
-- **Validação visual parcial**: telas públicas (`/shorter`, `/sign-in`, `/401`, `/sign-out`) renderizam sem erros, layout preservado, paleta nova aplicada. Telas autenticadas (Profile, Link list/create/edit/analytics) **não foram validadas** — exigem credenciais. Necessário login manual para conferir o impacto real do Task 26 (charts) e Task 25 (navbar autenticada com user menu).
+- **Validação visual completa**: telas públicas e autenticadas (Profile, Link list/create/edit/analytics, Shorter) revisadas pelo dono em ambos os modos — tudo OK, sem regressões reportadas.
 
 ## Achados Camada 3
 _(preencher com issues descobertas na Task 31)_
