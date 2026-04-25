@@ -1,6 +1,7 @@
 import { Box, Stack, Skeleton, Container } from '@mui/material';
 
 import MainLayout from '@/shared/layout/MainLayout';
+import { radiusTokens } from '@/lib/theme/designSystem';
 
 /**
  * Skeleton para carregamento de páginas via Suspense
@@ -44,7 +45,7 @@ export function PageLoadingSkeleton() {
 						{[1, 2, 3, 4].map((i) => (
 							<Box
 								key={i}
-								sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 2 }}
+								sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: `${radiusTokens.md}px` }}
 							>
 								<Skeleton
 									variant='text'
@@ -62,7 +63,7 @@ export function PageLoadingSkeleton() {
 					</Box>
 
 					{/* Conteúdo principal */}
-					<Box sx={{ border: 1, borderColor: 'divider', borderRadius: 2, p: 3 }}>
+					<Box sx={{ border: 1, borderColor: 'divider', borderRadius: `${radiusTokens.md}px`, p: 3 }}>
 						<Stack spacing={2}>
 							<Skeleton
 								variant='text'

@@ -1,4 +1,6 @@
 import { Box, Stack, Skeleton } from '@mui/material';
+
+import { radiusTokens } from '@/lib/theme/designSystem';
 import { ResponsiveContainer, EnhancedPaper } from '@/shared/ui/base';
 
 export function QRCodeSkeleton() {
@@ -30,7 +32,7 @@ export function QRCodeSkeleton() {
 								variant='rounded'
 								width={280}
 								height={280}
-								sx={{ borderRadius: 2 }}
+								sx={{ borderRadius: `${radiusTokens.md}px` }}
 							/>
 
 							<Stack
