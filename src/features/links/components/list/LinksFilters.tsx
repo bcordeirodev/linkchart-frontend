@@ -1,5 +1,3 @@
-import { debounce } from 'lodash';
-import { useEffect, useMemo } from 'react';
 import { Search, FilterList } from '@mui/icons-material';
 import {
 	Box,
@@ -13,6 +11,15 @@ import {
 	Typography,
 	Chip
 } from '@mui/material';
+import { debounce } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
+
+import {
+	elevationLightTokens,
+	elevationTokens,
+	motionTokens,
+	radiusTokens
+} from '@/lib/theme/designSystem';
 
 interface LinksFiltersProps {
 	searchTerm: string;
@@ -22,20 +29,16 @@ interface LinksFiltersProps {
 }
 
 /**
- * Filtros para a listagem de links - melhorados
- * Busca por texto e filtro por status com design padronizado
+ * Filtros para a listagem de links.
+ * Busca por texto (debounced) e filtro por status.
  */
 export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatusChange }: LinksFiltersProps) {
 	const theme = useTheme();
+	const isDark = theme.palette.mode === 'dark';
 
-	const debouncedSearch = useMemo(
-		() =>
-			debounce((value) => {
-				console.log('debounce tá funcionando na teoria');
-				onSearchChange(value);
-			}),
-		[onSearchChange]
-	);
+	const [localSearch, setLocalSearch] = useState(searchTerm);
+
+	const debouncedSearch = useMemo(() => debounce((value: string) => onSearchChange(value), 200), [onSearchChange]);
 
 	useEffect(() => {
 		return () => {
@@ -43,17 +46,25 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 		};
 	}, [debouncedSearch]);
 
+	// Sincroniza estado local quando o pai limpa/altera externamente.
+	useEffect(() => {
+		setLocalSearch(searchTerm);
+	}, [searchTerm]);
+
+	const activeFiltersCount = (searchTerm ? 1 : 0) + (statusFilter !== 'all' ? 1 : 0);
+
 	return (
 		<Box
 			sx={{
 				backgroundColor: theme.palette.background.paper,
-				borderRadius: 2,
+				borderRadius: `${radiusTokens.lg}px`,
+				border: `1px solid ${theme.palette.divider}`,
 				p: 3,
 				mb: 4,
-				transition: theme.transitions.create(['transform', 'box-shadow']),
+				boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+				transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 				'&:hover': {
-					transform: 'translateY(-1px)',
-					boxShadow: theme.shadows[8]
+					boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm
 				}
 			}}
 		>
@@ -62,17 +73,13 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 				<FilterList sx={{ color: 'primary.main', mr: 1 }} />
 				<Typography
 					variant='h6'
-					sx={{
-						fontWeight: 600,
-						color: 'text.primary',
-						fontFamily: 'Inter, system-ui, sans-serif'
-					}}
+					sx={{ fontWeight: 600, color: 'text.primary' }}
 				>
 					Filtros
 				</Typography>
-				{searchTerm || statusFilter !== 'all' ? (
+				{activeFiltersCount > 0 ? (
 					<Chip
-						label={`${searchTerm ? '1' : '0'} filtro${searchTerm ? '' : 's'} ativo${searchTerm ? '' : 's'}`}
+						label={`${activeFiltersCount} ${activeFiltersCount === 1 ? 'filtro ativo' : 'filtros ativos'}`}
 						size='small'
 						color='primary'
 						sx={{ ml: 'auto', fontWeight: 500 }}
@@ -92,26 +99,21 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 				<TextField
 					variant='filled'
 					placeholder='Buscar por título, URL ou slug...'
-					value={searchTerm}
-					onChange={(e) => debouncedSearch(e.target.value)}
+					value={localSearch}
+					onChange={(e) => {
+						setLocalSearch(e.target.value);
+						debouncedSearch(e.target.value);
+					}}
 					fullWidth
 					sx={{
 						flex: 1,
 						minWidth: 300,
-						'& .MuiFilledInput-root': {
-							minHeight: 52
-						}
+						'& .MuiFilledInput-root': { minHeight: 52 }
 					}}
 					InputProps={{
 						startAdornment: (
 							<InputAdornment position='start'>
-								<Search
-									sx={{
-										color: 'primary.main',
-										fontSize: 22,
-										opacity: 0.7
-									}}
-								/>
+								<Search sx={{ color: 'text.secondary', fontSize: 22 }} />
 							</InputAdornment>
 						)
 					}}
@@ -124,33 +126,9 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 						label='Status do Link'
 						onChange={(e) => onStatusChange(e.target.value)}
 					>
-						<MenuItem value='all'>
-							<Chip
-								label='Todos'
-								size='small'
-								color='default'
-								sx={{ mr: 1, fontWeight: 500 }}
-							/>
-							Todos os Links
-						</MenuItem>
-						<MenuItem value='active'>
-							<Chip
-								label='Ativo'
-								size='small'
-								color='success'
-								sx={{ mr: 1, fontWeight: 500 }}
-							/>
-							Links Ativos
-						</MenuItem>
-						<MenuItem value='inactive'>
-							<Chip
-								label='Inativo'
-								size='small'
-								color='warning'
-								sx={{ mr: 1, fontWeight: 500 }}
-							/>
-							Links Inativos
-						</MenuItem>
+						<MenuItem value='all'>Todos os Links</MenuItem>
+						<MenuItem value='active'>Links Ativos</MenuItem>
+						<MenuItem value='inactive'>Links Inativos</MenuItem>
 					</Select>
 				</FormControl>
 			</Box>
