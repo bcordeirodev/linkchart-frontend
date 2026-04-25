@@ -1,11 +1,14 @@
-import { CheckCircleOutlined, CancelOutlined } from '@mui/icons-material';
-import { Box, Chip, Avatar, Typography } from '@mui/material';
+// src/features/links/components/list/useLinksTableColumns.tsx
+import { Box, Stack, Typography } from '@mui/material';
 import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { getLinkStatus, STATUS_MAP } from '@/features/links/utils/linkStatus';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
-import { LinkTableActions } from '@/shared/ui/patterns';
+
+import { LinkActionsInline } from './LinkActionsInline';
+import { LinkActionsMenu } from './LinkActionsMenu';
 
 import type { LinkResponse } from '@/types';
 import type { MRT_ColumnDef } from 'material-react-table';
@@ -14,140 +17,21 @@ interface UseLinksTableColumnsProps {
 	onDelete: (id: string) => Promise<void>;
 }
 
-/**
- * Hook para colunas da tabela de links
- * Centraliza a definição das colunas e suas ações
- */
 export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
-	// Função para calcular larguras proporcionais que ocupam 100% da tela
-	const getColumnSizes = () => {
-		if (typeof window !== 'undefined') {
-			const width = window.innerWidth;
-
-			// Mobile: apenas colunas essenciais (3 colunas)
-			if (width < 640) {
-				return {
-					title: 350, // 45%
-					short_url: 280, // 35%
-					actions: 150 // 20%
-				};
-			}
-
-			// Tablet: adiciona cliques (4 colunas)
-			if (width < 960) {
-				return {
-					title: 280, // 35%
-					short_url: 240, // 30%
-					clicks: 120, // 15%
-					actions: 160 // 20%
-				};
-			}
-
-			// Laptop: adiciona status e created_at (6 colunas)
-			if (width < 1280) {
-				return {
-					title: 180, // 22%
-					short_url: 180, // 22%
-					clicks: 90, // 11%
-					is_active: 90, // 11%
-					created_at: 110, // 14%
-					actions: 150 // 20% (aumentado para acomodar 5 botões)
-				};
-			}
-
-			// Desktop: todas as colunas (7 colunas)
-			return {
-				title: 220, // ~18%
-				short_url: 250, // ~21%
-				original_url: 280, // ~23%
-				clicks: 90, // ~7%
-				is_active: 90, // ~7%
-				created_at: 130, // ~11%
-				actions: 140 // ~13% (aumentado para 5 botões)
-			};
-		}
-
-		// Fallback para SSR - Desktop
-		return {
-			title: 220,
-			short_url: 250,
-			original_url: 280,
-			clicks: 90,
-			is_active: 90,
-			created_at: 130,
-			actions: 140
-		};
-	};
-
-	const columnSizes = getColumnSizes();
-
-	// Função helper para formatar datas de diferentes tipos
-	const formatDate = useCallback((dateValue: unknown): string | null => {
-		if (!dateValue) {
-			return null;
-		}
-
-		// Se já é uma string, tenta criar Date
-		if (typeof dateValue === 'string') {
-			try {
-				const date = new Date(dateValue);
-				return isNaN(date.getTime()) ? null : date.toLocaleDateString('pt-BR');
-			} catch {
-				return null;
-			}
-		}
-
-		// Se é um objeto Date
-		if (dateValue instanceof Date) {
-			return dateValue.toLocaleDateString('pt-BR');
-		}
-
-		// Se tem método toDate (DayJS, Moment, etc)
-		if (typeof dateValue === 'object' && dateValue !== null && 'toDate' in dateValue) {
-			try {
-				const date = (dateValue as { toDate(): Date }).toDate();
-				return date.toLocaleDateString('pt-BR');
-			} catch {
-				return null;
-			}
-		}
-
-		// Fallback: tenta converter para string
-		try {
-			const date = new Date(String(dateValue));
-			return isNaN(date.getTime()) ? null : date.toLocaleDateString('pt-BR');
-		} catch {
-			return null;
-		}
-	}, []);
-
-	const copyToClipboard = useCallback(
-		(text: string, label: string) => {
-			navigator.clipboard.writeText(text);
-			dispatch(
-				showMessage({
-					message: `${label} copiado para a área de transferência!`,
-					variant: 'success'
-				})
-			);
-		},
-		[dispatch]
-	);
-
-	const handleDeleteLink = useCallback(
+	const handleDelete = useCallback(
 		async (id: string) => {
 			if (window.confirm('Tem certeza que deseja remover este link? Esta ação não pode ser desfeita.')) {
 				try {
 					await onDelete(id);
-				} catch (_error) {
-					// Erro já tratado no hook
+				} catch {
+					dispatch(showMessage({ message: 'Erro ao excluir o link.', variant: 'error' }));
 				}
 			}
 		},
-		[onDelete]
+		[onDelete, dispatch]
 	);
 
 	const columns = useMemo<MRT_ColumnDef<LinkResponse>[]>(
@@ -155,289 +39,129 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 			{
 				accessorKey: 'title',
 				header: 'Link',
-				size: columnSizes.title,
-				minSize: 180,
+				size: 220,
+				minSize: 160,
 				grow: true,
 				Cell: ({ row }) => (
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						<Avatar
-							sx={{
-								width: 32,
-								height: 32,
-								bgcolor: row.original.is_active ? 'success.light' : 'error.light'
-							}}
+					<Box>
+						<Typography
+							variant='body2'
+							sx={{ fontWeight: 600 }}
 						>
-							{row.original.is_active ? (
-								<CheckCircleOutlined sx={{ fontSize: 18, color: 'success.main' }} />
-							) : (
-								<CancelOutlined sx={{ fontSize: 18, color: 'error.main' }} />
-							)}
-						</Avatar>
-						<Box>
-							<Typography
-								variant='body2'
-								sx={{ fontWeight: 600 }}
-							>
-								{row.original.title || 'Sem título'}
-							</Typography>
-							<Typography
-								variant='caption'
-								color='text.secondary'
-							>
-								{row.original.slug || row.original.custom_slug}
-							</Typography>
-						</Box>
+							{row.original.title || 'Sem título'}
+						</Typography>
+						<Typography
+							variant='caption'
+							color='text.secondary'
+							sx={{ fontFamily: 'monospace' }}
+						>
+							{row.original.slug || row.original.custom_slug}
+						</Typography>
 					</Box>
-				)
+				),
 			},
 			{
 				accessorKey: 'short_url',
 				header: 'URL Encurtada',
-				size: columnSizes.short_url,
-				minSize: 200,
+				size: 220,
+				minSize: 160,
 				grow: true,
 				Cell: ({ cell }) => (
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						<Typography
-							variant='body2'
-							sx={{
-								fontFamily: 'monospace',
-								color: 'primary.main',
-								fontWeight: 600
-							}}
-						>
-							{cell.getValue<string>()}
-						</Typography>
-						{/* Botão removido - usar TableActions na coluna de ações */}
-					</Box>
-				)
-			},
-			{
-				accessorKey: 'original_url',
-				header: 'URL Original',
-				size: columnSizes.original_url || 300,
-				minSize: 220,
-				grow: true,
-				Cell: ({ cell }) => (
-					<Typography
-						variant='body2'
+					<Box
 						sx={{
-							maxWidth: 280,
+							display: 'inline-block',
+							px: 1,
+							py: 0.5,
+							bgcolor: 'rgba(25, 118, 210, 0.08)',
+							borderRadius: 1,
+							fontFamily: 'monospace',
+							fontSize: '0.8125rem',
+							color: 'primary.main',
+							fontWeight: 600,
+							maxWidth: 200,
 							overflow: 'hidden',
 							textOverflow: 'ellipsis',
-							whiteSpace: 'nowrap'
+							whiteSpace: 'nowrap',
 						}}
 						title={cell.getValue<string>()}
 					>
 						{cell.getValue<string>()}
-					</Typography>
-				)
+					</Box>
+				),
 			},
 			{
 				accessorKey: 'clicks',
-				header: 'Cliques',
-				size: columnSizes.clicks || 100,
-				minSize: 80,
+				header: 'Clicks',
+				size: 90,
+				minSize: 70,
 				Cell: ({ cell }) => (
-					<Chip
-						label={cell.getValue<number>() || 0}
-						color='primary'
-						size='small'
-						variant='outlined'
-					/>
-				)
-			},
-			{
-				accessorKey: 'click_limit',
-				header: 'Limite de clicks',
-				size: columnSizes.clicks || 100,
-				minSize: 80,
-				Cell: ({ cell }) => {
-					const value = cell.getValue<number | null | undefined>();
-					const displayValue = value !== null && value !== undefined ? value.toString() : '---';
-					return (
-						<Chip
-							label={displayValue}
-							color='primary'
-							size='small'
-							variant='outlined'
-						/>
-					);
-				}
+					<Typography
+						variant='subtitle2'
+						sx={{ fontWeight: 700 }}
+					>
+						{cell.getValue<number>() ?? 0}
+					</Typography>
+				),
 			},
 			{
 				accessorKey: 'is_active',
 				header: 'Status',
-				size: columnSizes.is_active || 100,
-				minSize: 80,
+				size: 120,
+				minSize: 100,
 				Cell: ({ row }) => {
-					const isActive = row.original.is_active;
-					const startsIn = row.original.starts_in;
-					const expiresAt = row.original.expires_at;
-					const now = new Date();
-
-					// Se não há datas definidas, usa o status manual
-					if (!startsIn && !expiresAt) {
-						return (
-							<Chip
-								label={isActive ? 'Ativo' : 'Inativo'}
-								color={isActive ? 'success' : 'error'}
-								size='small'
-							/>
-						);
-					}
-
-					// Converte datas para objetos Date
-					let startDate: Date | null = null;
-					let endDate: Date | null = null;
-
-					try {
-						if (startsIn) {
-							startDate = new Date(startsIn);
-
-							if (isNaN(startDate.getTime())) {
-								startDate = null;
-							}
-						}
-
-						if (expiresAt) {
-							endDate = new Date(expiresAt);
-
-							if (isNaN(endDate.getTime())) {
-								endDate = null;
-							}
-						}
-					} catch {
-						// Se erro na conversão, usa status manual
-						return (
-							<Chip
-								label={isActive ? 'Ativo' : 'Inativo'}
-								color={isActive ? 'success' : 'error'}
-								size='small'
-							/>
-						);
-					}
-
-					// Lógica de validação por data
-					let isValidByDate = true;
-					let statusLabel = 'Ativo';
-					let statusColor: 'success' | 'error' = 'success';
-
-					// Se tem data de início e ainda não começou
-					if (startDate && now < startDate) {
-						isValidByDate = false;
-						statusLabel = 'Não iniciado';
-						statusColor = 'error';
-					}
-					// Se tem data de término e já expirou
-					else if (endDate && now > endDate) {
-						isValidByDate = false;
-						statusLabel = 'Expirado';
-						statusColor = 'error';
-					}
-
-					// Se válido por data, verifica se está ativo manualmente
-					if (isValidByDate && !isActive) {
-						statusLabel = 'Inativo';
-						statusColor = 'error';
-					}
-					// Se inválido por data, sempre inativo independente do status manual
-					else if (!isValidByDate) {
-						statusLabel = startDate && now < startDate ? 'Não iniciado' : 'Expirado';
-						statusColor = 'error';
-					}
-
+					const status = getLinkStatus(row.original);
+					const { color, label } = STATUS_MAP[status];
 					return (
-						<Chip
-							label={statusLabel}
-							color={statusColor}
-							size='small'
-						/>
+						<Stack
+							direction='row'
+							spacing={0.75}
+							alignItems='center'
+						>
+							<Box
+								sx={{
+									width: 8,
+									height: 8,
+									borderRadius: '50%',
+									bgcolor: color,
+									flexShrink: 0,
+								}}
+							/>
+							<Typography variant='caption'>{label}</Typography>
+						</Stack>
 					);
-				}
-			},
-			{
-				accessorKey: 'created_at',
-				header: 'Criado em',
-				size: columnSizes.created_at || 140,
-				minSize: 120,
-				Cell: ({ cell }) => {
-					const value = cell.getValue<string>();
-					const data = value.split(' ')[0];
-
-					if (!data) {
-						return <Typography variant='body2'>---</Typography>;
-					}
-
-					{
-						return <Typography variant='body2'>{data}</Typography>;
-					}
-				}
-			},
-			{
-				accessorKey: 'starts_in',
-				header: 'Início',
-				size: columnSizes.created_at || 140,
-				minSize: 120,
-				Cell: ({ cell }) => {
-					const value = cell.getValue<unknown>();
-					const formattedDate = formatDate(value);
-
-					if (!formattedDate) {
-						return (
-							<Typography
-								variant='body2'
-								color='text.secondary'
-							>
-								---
-							</Typography>
-						);
-					}
-
-					return <Typography variant='body2'>{formattedDate}</Typography>;
-				}
-			},
-			{
-				accessorKey: 'expires_at',
-				header: 'Término',
-				size: columnSizes.created_at || 140,
-				minSize: 120,
-				Cell: ({ cell }) => {
-					const value = cell.getValue<unknown>();
-					const formattedDate = formatDate(value);
-
-					if (!formattedDate) {
-						return (
-							<Typography
-								variant='body2'
-								color='text.secondary'
-							>
-								---
-							</Typography>
-						);
-					}
-
-					return <Typography variant='body2'>{formattedDate}</Typography>;
-				}
+				},
 			},
 			{
 				id: 'actions',
 				header: 'Ações',
-				size: columnSizes.actions || 160,
-				minSize: 180,
+				size: 130,
+				minSize: 110,
 				enableSorting: false,
-				Cell: ({ row }) => (
-					<LinkTableActions
-						onAnalytics={() => navigate(`/link/analytic/${row.original.id}`)}
-						onEdit={() => navigate(`/link/edit/${row.original.id}`)}
-						onCopy={() => copyToClipboard(row.original.short_url, 'Link copiado!')}
-						onQR={() => navigate(`/link/qr/${row.original.id}`)}
-						onDelete={() => handleDeleteLink(String(row.original.id))}
-					/>
-				)
-			}
+				Cell: ({ row }) => {
+					const link = row.original;
+					const id = String(link.id);
+					return (
+						<Stack
+							direction='row'
+							spacing={0.25}
+							alignItems='center'
+							onClick={(e) => e.stopPropagation()}
+						>
+							<LinkActionsInline
+								shortUrl={link.short_url}
+								onAnalytics={() => navigate(`/link/analytic/${id}`)}
+							/>
+							<LinkActionsMenu
+								onEdit={() => navigate(`/link/edit/${id}`)}
+								onQR={() => navigate(`/link/qr/${id}`)}
+								onDelete={() => handleDelete(id)}
+							/>
+						</Stack>
+					);
+				},
+			},
 		],
-		[copyToClipboard, handleDeleteLink, columnSizes, navigate, formatDate]
+		[navigate, handleDelete]
 	);
 
 	return columns;
