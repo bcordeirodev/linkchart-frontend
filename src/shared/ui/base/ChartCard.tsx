@@ -7,6 +7,7 @@ import { Card, CardContent, Typography, Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { createPresetAnimations } from '@/lib/theme';
+import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
 
 import type { BaseComponentProps } from '../components';
 import type React from 'react';
@@ -46,16 +47,22 @@ export function ChartCard({
 			}}
 			{...other}
 		>
-			<Card>
+			<Card
+				sx={{
+					borderRadius: `${radiusTokens.lg}px`,
+					boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+				}}
+			>
 				<CardContent>
 					{title ? (
 						<Typography
-							variant='h6'
+							variant='h5'
 							gutterBottom
 							sx={{
 								position: 'relative',
 								zIndex: 1,
-								mt: 1
+								mt: 1,
+								fontWeight: 500
 							}}
 						>
 							{title}
