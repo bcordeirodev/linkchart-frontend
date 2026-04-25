@@ -108,9 +108,7 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 						<MRT_GlobalFilterTextField {...globalFilterProps} />
 					) : null}
 
-					<Box sx={{ display: 'flex', flex: 1 }}>
-						{renderTopToolbarCustomActions?.({ table }) ?? null}
-					</Box>
+					<Box sx={{ display: 'flex', flex: 1 }}>{renderTopToolbarCustomActions?.({ table }) ?? null}</Box>
 
 					{enableToolbarInternalActions ? (
 						<Box sx={{ display: 'flex', alignItems: 'center', '& > * + *': { ml: 1 } }}>
