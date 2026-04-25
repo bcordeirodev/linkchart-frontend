@@ -31,11 +31,11 @@ function LinkEditPage() {
 			}
 
 			try {
-				const response = await linkService.findOne(id);
+				const link = await linkService.findOne(id);
 
-				if (response?.data) {
+				if (link) {
 					setLinkData({
-						short_url: response.data.slug || response.data.custom_slug
+						short_url: link.slug || link.custom_slug
 					});
 				}
 			} catch (_error) {

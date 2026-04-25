@@ -42,8 +42,8 @@ export function useLinkAnalyticsOptimized(linkId: string): UseLinkAnalyticsRetur
 			setLinkLoading(true);
 			setLinkError(null);
 
-			const linkResponse = await linkService.findOne(linkId);
-			setLinkInfo(linkResponse.data);
+			const link = await linkService.findOne(linkId);
+			setLinkInfo(link);
 		} catch (err) {
 			setLinkError('Erro ao carregar informações do link');
 			console.error('Erro ao buscar link:', err);

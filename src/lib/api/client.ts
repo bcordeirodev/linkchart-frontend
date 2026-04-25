@@ -1,387 +1,332 @@
 import { API_BASE_URL, REQUEST_TIMEOUT } from '../api/endpoints';
 
-export interface ApiResponse<T = unknown> {
-	data?: T;
-	message?: string;
-	error?: string;
-}
+// NOTA: conversão camelCase <-> snake_case ficou planejada para Onda 0b,
+// quando os tipos em src/types/ e features/*/types/ forem migrados. Até lá
+// mantemos snake_case puro passando pela fronteira.
 
-export interface ApiError extends Error {
-	status: number;
-	response?: unknown;
-}
-
-export class FetchApiError extends Error {
-	status: number;
-	data: unknown;
-
-	constructor(status: number, data: unknown) {
-		super(`API Error: ${status}`);
-		this.status = status;
-		this.data = data;
-		this.name = 'FetchApiError';
-	}
+/**
+ * Estrutura canônica do erro que chega do backend (após Onda 0 do refactor).
+ * O middleware NormalizeApiResponse garante este formato para qualquer 4xx/5xx.
+ */
+export interface ApiErrorPayload {
+	code: string;
+	message: string;
+	details?: Record<string, unknown>;
 }
 
 /**
- * Cliente API
+ * Erro lançado pelo cliente HTTP. Traz o payload normalizado + status + mensagem
+ * pronta para exibição.
+ */
+export class ApiError extends Error {
+	readonly status: number;
+	readonly code: string;
+	readonly details?: Record<string, unknown>;
+
+	constructor(status: number, code: string, message: string, details?: Record<string, unknown>) {
+		super(message);
+		this.name = 'ApiError';
+		this.status = status;
+		this.code = code;
+		this.details = details;
+	}
+
+	static fromResponse(status: number, body: unknown): ApiError {
+		if (body && typeof body === 'object' && 'error' in body) {
+			const err = (body as { error: unknown }).error;
+
+			if (err && typeof err === 'object') {
+				const e = err as Partial<ApiErrorPayload>;
+				return new ApiError(status, e.code ?? 'UNKNOWN_ERROR', e.message ?? `HTTP ${status}`, e.details);
+			}
+		}
+
+		return new ApiError(status, 'UNKNOWN_ERROR', `HTTP ${status}`, body ? { body } : undefined);
+	}
+}
+
+// Alias legado — muitos arquivos ainda importam `FetchApiError`.
+export { ApiError as FetchApiError };
+
+interface RequestOptions {
+	/** Headers extras. */
+	headers?: HeadersInit;
+	/** Query-string em objeto. */
+	query?: Record<string, unknown>;
+	/** Se false, não envia o Authorization. Default: true. */
+	auth?: boolean;
+	/** Desabilita unwrap do envelope {data} (quando você precisa de {data, meta}). */
+	rawEnvelope?: boolean;
+}
+
+interface RequestBodyInit extends RequestOptions {
+	method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+	body?: unknown;
+}
+
+/**
+ * Cliente HTTP único — todo módulo fala com a API através dele.
  *
- * Funcionalidades:
- * - Autenticação automática via localStorage
- * - Tratamento de erros padronizado
+ * Responsabilidades:
+ * - Autenticação (Bearer via localStorage.token)
+ * - Conversão camelCase ⇄ snake_case na fronteira (request out, response in)
+ * - Unwrap automático do envelope `{ data }` introduzido na Onda 0
+ * - Tradução do envelope de erro `{ error: { code, message, details } }` em ApiError tipado
  * - Timeout configurável
- * - Headers globais
- * - Type safety completo
  */
 class ApiClient {
-	private baseURL: string;
-	private timeout: number;
-	private globalHeaders: Record<string, string> = {};
+	private readonly baseURL: string;
+	private readonly timeout: number;
+	private readonly globalHeaders: Record<string, string> = {};
 
 	constructor(baseURL: string = API_BASE_URL, timeout: number = REQUEST_TIMEOUT) {
 		this.baseURL = baseURL;
 		this.timeout = timeout;
 	}
 
-	/**
-	 * Define headers globais que serão incluídos em todas as requisições
-	 */
 	setGlobalHeaders(headers: Record<string, string>): void {
 		Object.assign(this.globalHeaders, headers);
 	}
 
-	/**
-	 * Remove headers globais específicos
-	 */
 	removeGlobalHeaders(headerKeys: string[]): void {
-		headerKeys.forEach((key) => {
-			delete this.globalHeaders[key];
-		});
+		headerKeys.forEach((key) => delete this.globalHeaders[key]);
 	}
 
-	/**
-	 * Limpa todos os headers globais
-	 */
 	clearGlobalHeaders(): void {
-		this.globalHeaders = {};
+		for (const key of Object.keys(this.globalHeaders)) {
+			delete this.globalHeaders[key];
+		}
+	}
+
+	async get<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+		return this.request<T>({ method: 'GET', ...options }, endpoint);
+	}
+
+	async post<T>(endpoint: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
+		return this.request<T>({ method: 'POST', body, ...options }, endpoint);
+	}
+
+	async put<T>(endpoint: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
+		return this.request<T>({ method: 'PUT', body, ...options }, endpoint);
+	}
+
+	async patch<T>(endpoint: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
+		return this.request<T>({ method: 'PATCH', body, ...options }, endpoint);
+	}
+
+	async delete<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+		return this.request<T>({ method: 'DELETE', ...options }, endpoint);
 	}
 
 	/**
-	 * Obtém o token de autenticação do localStorage
+	 * POST form-urlencoded (evita preflight CORS). Usado em fluxos de auth
+	 * legados. Aplica unwrap do envelope, mas sem Authorization header.
 	 */
-	private async getAuthToken(): Promise<string | null> {
-		try {
-			// Cliente (Browser)
-			if (typeof window !== 'undefined') {
-				// Primeiro tenta buscar o token diretamente
-				const token = localStorage.getItem('token');
-
-				if (token) {
-					return token;
-				}
-
-				// Fallback: busca no objeto user (para compatibilidade)
-				const user = localStorage.getItem('user');
-
-				if (user) {
-					const userData = JSON.parse(user);
-					return userData.token || userData.accessToken || null;
-				}
+	async postForm<T>(endpoint: string, form: Record<string, string>, options: RequestOptions = {}): Promise<T> {
+		const url = this.buildUrl(endpoint);
+		const body = new URLSearchParams();
+		for (const [k, v] of Object.entries(form)) {
+			if (v !== undefined && v !== null) {
+				body.append(k, String(v));
 			}
-
-			return null;
-		} catch (error) {
-			console.error('Erro ao obter token de autenticação:', error);
-			return null;
 		}
-	}
-
-	/**
-	 * Cria headers padrão para requisições
-	 */
-	private async createHeaders(customHeaders: HeadersInit = {}): Promise<Record<string, string>> {
-		const headers: Record<string, string> = {
-			'Content-Type': 'application/json',
-			Accept: 'application/json',
-			...this.globalHeaders,
-			...(customHeaders as Record<string, string>)
-		};
-
-		// Garantir que o header Origin seja sempre enviado para CORS
-		if (typeof window !== 'undefined' && window.location) {
-			headers['Origin'] = window.location.origin;
-		}
-
-		const token = await this.getAuthToken();
-
-		if (token) {
-			headers['Authorization'] = `Bearer ${token}`;
-		}
-
-		return headers;
-	}
-
-	/** Helper: monta URLSearchParams a partir de um objeto simples */
-	private buildFormUrlEncoded(params: Record<string, string>): URLSearchParams {
-		const usp = new URLSearchParams();
-		Object.entries(params).forEach(([key, value]) => {
-			if (value !== undefined && value !== null) {
-				usp.append(key, String(value));
-			}
-		});
-		return usp;
-	}
-
-	/**
-	 * Processa e padroniza erros de resposta
-	 */
-	private async handleError(response: Response): Promise<never> {
-		let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-		let errorData: unknown = null;
-
-		try {
-			const contentType = response.headers.get('content-type');
-
-			if (contentType?.includes('application/json')) {
-				errorData = await response.json();
-
-				if (typeof errorData === 'object' && errorData !== null) {
-					const data = errorData as {
-						message?: string;
-						error?: string;
-						errors?: Record<string, string[]>;
-					};
-
-					// Se há erros específicos de validação, formatá-los
-					if (data.errors && typeof data.errors === 'object') {
-						const validationErrors = Object.entries(data.errors)
-							.map(
-								([field, messages]) =>
-									`${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`
-							)
-							.join('; ');
-						errorMessage = `Erros de validação: ${validationErrors}`;
-					} else {
-						errorMessage = data.message || data.error || errorMessage;
-					}
-				}
-			} else {
-				const textError = await response.text();
-
-				if (textError) {
-					errorMessage = textError;
-				}
-			}
-		} catch {
-			// Ignora erros de parsing, mantém mensagem padrão
-		}
-
-		const error = new FetchApiError(response.status, errorData);
-		error.message = errorMessage;
-
-		throw error;
-	}
-
-	/**
-	 * Executa uma requisição HTTP com todas as funcionalidades
-	 */
-	private async request<T>(
-		method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
-		endpoint: string,
-		data: unknown = null,
-		customHeaders: HeadersInit = {}
-	): Promise<T> {
-		const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
-		const headers = await this.createHeaders(customHeaders);
-
-		// Request preparado
-
 		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
+		const timer = setTimeout(() => controller.abort(), this.timeout);
 		try {
-			const response = await fetch(url, {
-				method,
-				headers,
-				body: data ? JSON.stringify(data) : null,
+			const res = await fetch(url, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+				body,
+				credentials: 'include',
 				signal: controller.signal
 			});
-
-			// Response recebido
-
-			clearTimeout(timeoutId);
-
-			if (!response.ok) {
-				await this.handleError(response);
-			}
-
-			// Verifica se há conteúdo para parsear
-			const contentLength = response.headers.get('content-length');
-
-			if (contentLength === '0' || response.status === 204) {
-				return {} as T;
-			}
-
-			const contentType = response.headers.get('content-type');
-
-			if (contentType?.includes('application/json')) {
-				return await response.json();
-			}
-
-			return (await response.text()) as unknown as T;
-		} catch (error) {
-			clearTimeout(timeoutId);
-
-			throw error;
+			clearTimeout(timer);
+			return this.handleResponse<T>(res, options);
+		} finally {
+			clearTimeout(timer);
 		}
 	}
 
 	/**
-	 * Requisição GET
+	 * Upload multipart. Envia FormData cru (sem case conversion) e unwrap
+	 * padrão na resposta.
 	 */
-	async get<T>(endpoint: string, customHeaders?: HeadersInit): Promise<T> {
-		return this.request<T>('GET', endpoint, null, customHeaders);
-	}
-
-	/**
-	 * Requisição POST
-	 */
-	async post<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit): Promise<T> {
-		return this.request<T>('POST', endpoint, data, customHeaders);
-	}
-
-	/**
-	 * Requisição POST via application/x-www-form-urlencoded (evita preflight)
-	 */
-	async postForm<T>(endpoint: string, form: Record<string, string>): Promise<T> {
-		const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
-
+	async upload<T>(endpoint: string, formData: FormData, options: RequestOptions = {}): Promise<T> {
+		const url = this.buildUrl(endpoint);
+		const headers = await this.buildHeaders(options.headers, options.auth);
+		delete headers['Content-Type']; // boundary automático
 		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
-		const body = this.buildFormUrlEncoded(form);
-
-		// Usar somente headers simples para evitar preflight
-		const headers: HeadersInit = {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		};
-
+		const timer = setTimeout(() => controller.abort(), this.timeout);
 		try {
-			const response = await fetch(url, {
-				method: 'POST',
-				headers,
-				body,
-				signal: controller.signal,
-				credentials: 'include'
-			});
-
-			clearTimeout(timeoutId);
-
-			if (!response.ok) {
-				await this.handleError(response);
-			}
-
-			const contentType = response.headers.get('content-type');
-
-			if (contentType?.includes('application/json')) {
-				return await response.json();
-			}
-
-			return (await response.text()) as unknown as T;
-		} catch (error) {
-			clearTimeout(timeoutId);
-
-			throw error;
-		}
-	}
-
-	/**
-	 * Requisição PUT
-	 */
-	async put<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit): Promise<T> {
-		return this.request<T>('PUT', endpoint, data, customHeaders);
-	}
-
-	/**
-	 * Requisição PATCH
-	 */
-	async patch<T>(endpoint: string, data: unknown, customHeaders?: HeadersInit): Promise<T> {
-		return this.request<T>('PATCH', endpoint, data, customHeaders);
-	}
-
-	/**
-	 * Requisição DELETE
-	 */
-	async delete<T>(endpoint: string, customHeaders?: HeadersInit): Promise<T> {
-		return this.request<T>('DELETE', endpoint, null, customHeaders);
-	}
-
-	/**
-	 * Função utilitária para fazer upload de arquivos
-	 */
-	async upload<T>(endpoint: string, formData: FormData, customHeaders?: HeadersInit): Promise<T> {
-		const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
-
-		// Para upload, não definimos Content-Type para permitir boundary automático
-		const headers = await this.createHeaders({});
-		delete headers['Content-Type'];
-
-		// Garantir Origin para uploads também
-		if (typeof window !== 'undefined' && window.location) {
-			headers['Origin'] = window.location.origin;
-		}
-
-		// Adiciona headers customizados (exceto Content-Type)
-		if (customHeaders) {
-			Object.entries(customHeaders).forEach(([key, value]) => {
-				if (key.toLowerCase() !== 'content-type') {
-					headers[key] = value as string;
-				}
-			});
-		}
-
-		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
-		try {
-			const response = await fetch(url, {
+			const res = await fetch(url, {
 				method: 'POST',
 				headers,
 				body: formData,
 				signal: controller.signal
 			});
-
-			clearTimeout(timeoutId);
-
-			if (!response.ok) {
-				await this.handleError(response);
-			}
-
-			const contentType = response.headers.get('content-type');
-
-			if (contentType?.includes('application/json')) {
-				return await response.json();
-			}
-
-			return (await response.text()) as unknown as T;
-		} catch (error) {
-			clearTimeout(timeoutId);
-
-			if (error instanceof Error && error.name === 'AbortError') {
-				throw new Error('Tempo limite da requisição excedido');
-			}
-
-			throw error;
+			clearTimeout(timer);
+			return this.handleResponse<T>(res, options);
+		} finally {
+			clearTimeout(timer);
 		}
+	}
+
+	private async request<T>(init: RequestBodyInit, endpoint: string): Promise<T> {
+		const url = this.buildUrl(endpoint, init.query);
+		const headers = await this.buildHeaders(init.headers, init.auth);
+
+		let body: BodyInit | null = null;
+
+		if (init.body !== undefined && init.body !== null) {
+			body = JSON.stringify(init.body);
+		}
+
+		const controller = new AbortController();
+		const timer = setTimeout(() => controller.abort(), this.timeout);
+
+		try {
+			const res = await fetch(url, { method: init.method, headers, body, signal: controller.signal });
+			clearTimeout(timer);
+			return this.handleResponse<T>(res, init);
+		} catch (err) {
+			clearTimeout(timer);
+
+			if (err instanceof ApiError) {
+				throw err;
+			}
+
+			if (err instanceof Error && err.name === 'AbortError') {
+				throw new ApiError(0, 'TIMEOUT', 'Tempo limite da requisição excedido.');
+			}
+
+			throw err;
+		}
+	}
+
+	private async handleResponse<T>(res: Response, options: RequestOptions): Promise<T> {
+		const raw = await this.parseBody(res);
+
+		if (!res.ok) {
+			throw ApiError.fromResponse(res.status, raw);
+		}
+
+		if (raw === null || raw === undefined) {
+			return undefined as T;
+		}
+
+		// Unwrap do envelope { data } introduzido na Onda 0.
+		if (options.rawEnvelope) {
+			return raw as T;
+		}
+
+		if (raw && typeof raw === 'object' && 'data' in (raw as Record<string, unknown>)) {
+			return (raw as { data: T }).data;
+		}
+
+		return raw as T;
+	}
+
+	private async parseBody(res: Response): Promise<unknown> {
+		const len = res.headers.get('content-length');
+
+		if (len === '0' || res.status === 204) {
+			return null;
+		}
+
+		const type = res.headers.get('content-type') ?? '';
+
+		if (type.includes('application/json')) {
+			try {
+				return await res.json();
+			} catch {
+				return null;
+			}
+		}
+
+		const text = await res.text();
+		return text.length > 0 ? text : null;
+	}
+
+	private buildUrl(endpoint: string, query?: Record<string, unknown>): string {
+		const path = endpoint.startsWith('http') ? endpoint : `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
+
+		if (!query || Object.keys(query).length === 0) {
+			return path;
+		}
+
+		const params = new URLSearchParams();
+		for (const [k, v] of Object.entries(query)) {
+			if (v === undefined || v === null) {
+				continue;
+			}
+
+			if (Array.isArray(v)) {
+				v.forEach((item) => params.append(k, String(item)));
+			} else {
+				params.append(k, String(v));
+			}
+		}
+		const qs = params.toString();
+		return qs ? `${path}?${qs}` : path;
+	}
+
+	private async buildHeaders(custom?: HeadersInit, auth = true): Promise<Record<string, string>> {
+		const headers: Record<string, string> = {
+			'Content-Type': 'application/json',
+			Accept: 'application/json',
+			...this.globalHeaders,
+			...(custom as Record<string, string> | undefined)
+		};
+
+		if (typeof window !== 'undefined' && window.location) {
+			headers['Origin'] = window.location.origin;
+		}
+
+		if (auth) {
+			const token = await this.readToken();
+
+			if (token) {
+				headers['Authorization'] = `Bearer ${token}`;
+			}
+		}
+
+		return headers;
+	}
+
+	private async readToken(): Promise<string | null> {
+		if (typeof window === 'undefined') {
+			return null;
+		}
+
+		try {
+			const direct = localStorage.getItem('token');
+
+			if (direct) {
+				return direct;
+			}
+
+			const user = localStorage.getItem('user');
+
+			if (user) {
+				const parsed = JSON.parse(user) as { token?: string; accessToken?: string };
+				return parsed.token ?? parsed.accessToken ?? null;
+			}
+		} catch {
+			/* ignore */
+		}
+		return null;
 	}
 }
 
-// Instância singleton do cliente API
 export const api = new ApiClient();
-
-// Exportações para compatibilidade
 export const apiClient = api;
 export const apiService = api;
-
-// Export default para compatibilidade com imports existentes
 export default api;
+
+// Compat: tipo ApiResponse<T> antigo. Usado só por código legado; novos módulos
+// tipam o retorno diretamente (o cliente já fez o unwrap).
+export interface ApiResponse<T = unknown> {
+	data?: T;
+	message?: string;
+	error?: ApiErrorPayload | string;
+}

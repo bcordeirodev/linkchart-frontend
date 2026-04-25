@@ -125,17 +125,15 @@ export function useTemporalData({
 			// ✨ Sempre usar endpoint unificado (includeAdvanced é ignorado)
 			const endpoint = `/api/analytics/link/${linkId}/temporal`;
 
-			const response = await api.get<{
-				success: boolean;
-				data: TemporalData;
-			}>(endpoint);
+			// Client já desembrulha envelope { data } (Onda 0).
+			const response = await api.get<TemporalData>(endpoint);
 
-			if (response.success && response.data) {
-				setData(response.data);
-				setStats(calculateStats(response.data));
-			} else {
+			if (!response) {
 				throw new Error('Dados temporais não encontrados');
 			}
+
+			setData(response);
+			setStats(calculateStats(response));
 		} catch (err: any) {
 			if (err.name === 'AbortError') {
 				return;

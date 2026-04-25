@@ -48,24 +48,23 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 		} catch (error: unknown) {
 			if (error && typeof error === 'object' && 'response' in error) {
 				const apiError = error as {
-					response?: {
-						status?: number;
-						data?: {
-							type?: string;
-							email?: string;
-							can_resend?: boolean;
-							last_sent?: string;
-						};
+					status?: number;
+					code?: string;
+					details?: {
+						type?: string;
+						email?: string;
+						can_resend?: boolean;
+						last_sent?: string;
 					};
 				};
 
-				if (apiError.response?.status === 403 && apiError.response.data?.type === 'email_not_verified') {
+				if (apiError.status === 403 && apiError.details?.type === 'email_not_verified') {
 					setEmailVerified(false);
 					setVerificationStatus({
 						email_verified: false,
-						can_resend: apiError.response.data.can_resend || false,
-						email: apiError.response.data.email || user.email,
-						last_sent: apiError.response.data.last_sent
+						can_resend: apiError.details.can_resend || false,
+						email: apiError.details.email || user.email,
+						last_sent: apiError.details.last_sent
 					});
 				} else {
 					setEmailVerified(true);

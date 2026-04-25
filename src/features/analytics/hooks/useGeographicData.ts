@@ -89,30 +89,28 @@ export function useGeographicData({
 
 			const endpoint = `/api/analytics/link/${linkId}/geographic`;
 
-			const response = await api.get<{
-				success: boolean;
-				data: GeographicData;
-			}>(endpoint);
+			// Client já desembrulha o envelope { data } (Onda 0), então recebemos
+			// o payload diretamente.
+			const response = await api.get<GeographicData>(endpoint);
 
-			if (response.success && response.data) {
-				// Filtrar por cliques mínimos se especificado
-				let filteredData = response.data;
-
-				if (minClicks > 1) {
-					filteredData = {
-						...response.data,
-						top_countries: response.data.top_countries?.filter((c) => c.clicks >= minClicks) || [],
-						top_states: response.data.top_states?.filter((s) => s.clicks >= minClicks) || [],
-						top_cities: response.data.top_cities?.filter((c) => c.clicks >= minClicks) || [],
-						heatmap_data: response.data.heatmap_data?.filter((h) => h.clicks >= minClicks) || []
-					};
-				}
-
-				setData(filteredData);
-				setStats(calculateStats(filteredData));
-			} else {
+			if (!response) {
 				throw new Error('Dados geográficos não encontrados');
 			}
+
+			let filteredData = response;
+
+			if (minClicks > 1) {
+				filteredData = {
+					...response,
+					top_countries: response.top_countries?.filter((c) => c.clicks >= minClicks) || [],
+					top_states: response.top_states?.filter((s) => s.clicks >= minClicks) || [],
+					top_cities: response.top_cities?.filter((c) => c.clicks >= minClicks) || [],
+					heatmap_data: response.heatmap_data?.filter((h) => h.clicks >= minClicks) || []
+				};
+			}
+
+			setData(filteredData);
+			setStats(calculateStats(filteredData));
 		} catch (err: any) {
 			if (err.name === 'AbortError') {
 				return;

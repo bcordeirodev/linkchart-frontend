@@ -88,12 +88,11 @@ function SignUpPage() {
 				});
 			}, 1500);
 		} catch (error: unknown) {
-			if (error && typeof error === 'object' && 'response' in error) {
-				const apiError = error as { response?: { data?: { errors?: Record<string, string[]> } } };
+			if (error && typeof error === 'object' && 'code' in error) {
+				const apiError = error as { code?: string; details?: { fields?: Record<string, string[]> } };
 
-				if (apiError.response?.data?.errors) {
-					// Tratar erros de validação do backend
-					const backendErrors = apiError.response.data.errors;
+				if (apiError.code === 'VALIDATION_FAILED' && apiError.details?.fields) {
+					const backendErrors = apiError.details.fields;
 					Object.keys(backendErrors).forEach((field) => {
 						setError(field as keyof SignUpFormData, {
 							message: backendErrors[field][0]

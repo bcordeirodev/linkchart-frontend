@@ -165,8 +165,7 @@ export function useLinks() {
 			setError(null);
 
 			try {
-				const link = await linkService.findOne(id);
-				return link.data;
+				return await linkService.findOne(id);
 			} catch (err) {
 				const errorMessage = 'Erro ao buscar link';
 				setError(errorMessage);

@@ -121,18 +121,13 @@ export function useHeatmapData({
 	/**
 	 * Determina o endpoint correto (apenas link específico)
 	 */
-	const getEndpoint = useCallback(
-		(isRealtime = false): string => {
-			// Analytics global removido - apenas link específico
-			if (!linkId) {
-				return ''; // Endpoint vazio se não há linkId
-			}
+	const getEndpoint = useCallback((): string => {
+		if (!linkId) {
+			return '';
+		}
 
-			const baseUrl = `/api/analytics/link/${linkId}/heatmap`;
-			return isRealtime ? `${baseUrl}/realtime` : baseUrl;
-		},
-		[linkId]
-	);
+		return `/api/analytics/link/${linkId}/heatmap`;
+	}, [linkId]);
 
 	/**
 	 * Busca dados do heatmap da API
@@ -161,59 +156,22 @@ export function useHeatmapData({
 
 				let heatmapData: HeatmapPoint[] = [];
 
-				try {
-					// Tentar endpoint protegido primeiro
-					const endpoint = getEndpoint(false);
+				const endpoint = getEndpoint();
 
-					// Analytics global removido - retornar vazio se não há endpoint
-					if (!endpoint) {
-						return [];
-					}
+				if (!endpoint) {
+					return [];
+				}
 
-					const response = await api.get<HeatmapApiResponse>(endpoint);
+				// Client já desembrulha envelope { data } (Onda 0). Backend retorna
+				// array de HeatmapPoint diretamente.
+				const response = await api.get<HeatmapPoint[]>(endpoint);
 
-					// Verificar se a requisição foi cancelada
-					if (abortController.signal.aborted) {
-						return [];
-					}
+				if (abortController.signal.aborted) {
+					return [];
+				}
 
-					if (response.success && Array.isArray(response.data)) {
-						heatmapData = response.data;
-					} else {
-						throw new Error('Formato de resposta inválido');
-					}
-				} catch (authError) {
-					// Verificar se foi cancelamento
-					if (abortController.signal.aborted) {
-						return [];
-					}
-
-					// Fallback para endpoint público em tempo real
-					try {
-						const realtimeEndpoint = getEndpoint(true);
-						const realtimeUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${realtimeEndpoint}`;
-
-						const realtimeResponse = await fetch(realtimeUrl, {
-							method: 'GET',
-							headers: {
-								'Content-Type': 'application/json',
-								Accept: 'application/json'
-							}
-						});
-
-						if (!realtimeResponse.ok) {
-							throw new Error(`HTTP ${realtimeResponse.status}: ${realtimeResponse.statusText}`);
-						}
-
-						const realtimeData: HeatmapApiResponse = await realtimeResponse.json();
-
-						if (realtimeData.success && Array.isArray(realtimeData.data)) {
-							heatmapData = realtimeData.data;
-						}
-					} catch (realtimeError) {
-						// Se ambos falharem, usar dados vazios
-						heatmapData = [];
-					}
+				if (Array.isArray(response)) {
+					heatmapData = response;
 				}
 
 				// Verificar se a requisição foi cancelada antes de processar

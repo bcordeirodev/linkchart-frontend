@@ -141,16 +141,16 @@ export function useAudienceData({
 
 				let audienceData: AudienceData | null = null;
 
-				// Buscar dados apenas para link específico
-				const response = await api.get<AudienceApiResponse>(endpoint);
+				// Client já desembrulha envelope { data } (Onda 0) — recebemos AudienceData direto.
+				const response = await api.get<AudienceData>(endpoint);
 
 				// Verificar se a requisição foi cancelada
 				if (abortController.signal.aborted) {
 					return null;
 				}
 
-				if (response.success && response.data) {
-					audienceData = response.data;
+				if (response) {
+					audienceData = response;
 				}
 
 				// Verificar se a requisição foi cancelada antes de processar

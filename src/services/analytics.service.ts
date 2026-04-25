@@ -55,29 +55,27 @@ export default class AnalyticsService extends BaseService {
 	async getLinkPerformance(linkId: string): Promise<LinkPerformanceDashboard> {
 		this.validateId(linkId, 'Link ID');
 
-		// Usar endpoint de métricas do dashboard do link específico
 		const endpoint = `/api/analytics/link/${linkId}/dashboard`;
 
 		try {
-			const performanceResponse = await this.get<{
-				success: boolean;
-				data: {
-					summary: {
-						total_clicks: number;
-						unique_visitors: number;
-						success_rate: number;
-						avg_response_time: number;
-					};
+			// Após Onda 0 o cliente desembrulha { data } automaticamente: recebemos o
+			// payload direto da AnalyticsController, que já vem com a chave `summary`.
+			const response = await this.get<{
+				summary?: {
+					total_clicks?: number;
+					unique_visitors?: number;
+					success_rate?: number;
+					avg_response_time?: number;
 				};
 			}>(endpoint, {
 				context: 'get_link_performance'
 			});
 
-			if (!performanceResponse.success || !performanceResponse.data) {
+			if (!response?.summary) {
 				return this.getEmptyPerformanceData(linkId);
 			}
 
-			const metrics = performanceResponse.data.summary;
+			const metrics = response.summary;
 
 			// Adaptar resposta para formato esperado pelo frontend
 			const adaptedData: LinkPerformanceDashboard = {

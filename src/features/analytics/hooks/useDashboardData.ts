@@ -77,9 +77,10 @@ export function useDashboardData({
 			const endpoint = `/api/analytics/link/${linkId}/dashboard`;
 			const fullEndpoint = buildEndpointWithParams(endpoint, params);
 
+			// Client já desembrulha envelope { data } (Onda 0).
 			const response = await api.get<ApiResponse>(fullEndpoint);
 
-			if (!response.success) {
+			if (!response) {
 				throw new Error('Dados do dashboard não encontrados');
 			}
 
@@ -187,15 +188,13 @@ interface ApiCharts {
 	audience?: DashboardData['audience_data'];
 }
 
-interface ApiResponse {
-	success: boolean;
-	data?: ApiResponseData;
-	summary?: DashboardSummary;
+// Shape que chega ao hook pós-Onda-0: payload direto do AnalyticsController,
+// sem envelope {success, data}. Mantém campos legados (metrics/charts) apenas
+// por compatibilidade com respostas antigas de cache.
+interface ApiResponse extends ApiResponseData {
 	metrics?: ApiMetrics;
 	charts?: ApiCharts;
 	timeframe?: string;
-	top_links?: DashboardLink[];
-	recent_activity?: ActivityData[];
 }
 
 /**
@@ -220,52 +219,13 @@ function buildEndpointWithParams(endpoint: string, params: Record<string, string
 }
 
 /**
- * Mapeia resposta da API para DashboardData
+ * Mapeia resposta da API para DashboardData.
+ *
+ * Após Onda 0, o client já desembrulha o envelope { data }, então `response`
+ * aqui é o payload direto do AnalyticsController@getLinkDashboardAnalytics:
+ * { summary, link_info, temporal_data, geographic_data, audience_data, ... }.
  */
 function mapResponseToDashboardData(response: ApiResponse): DashboardData {
-	if (response.data) {
-		const data = response.data;
-		const defaultSummary: DashboardSummary = {
-			total_links: 0,
-			active_links: 0,
-			total_clicks: 0,
-			unique_visitors: 0,
-			avg_clicks_per_link: 0,
-			success_rate: 0,
-			avg_response_time: 0,
-			countries_reached: 0,
-			links_with_traffic: 0
-		};
-
-		return {
-			summary: data.summary || defaultSummary,
-			top_links: data.top_links || [],
-			recent_activity: data.recent_activity || [],
-			geographic_summary: {
-				countries_reached: data.summary?.countries_reached || 0,
-				cities_reached: 0,
-				top_country: data.geographic_data?.top_countries?.[0]?.country,
-				top_country_clicks: data.geographic_data?.top_countries?.[0]?.clicks || 0,
-				coverage_percentage: 0
-			},
-			device_summary: {
-				desktop: data.audience_data?.device_breakdown?.find((d) => d.device === 'Desktop')?.clicks || 0,
-				mobile: data.audience_data?.device_breakdown?.find((d) => d.device === 'Mobile')?.clicks || 0,
-				tablet: data.audience_data?.device_breakdown?.find((d) => d.device === 'Tablet')?.clicks || 0,
-				total: data.summary?.total_clicks || 0,
-				mobile_percentage: 0
-			},
-			performance_indicators: [],
-			temporal_data: data.temporal_data,
-			geographic_data: data.geographic_data,
-			audience_data: data.audience_data,
-			link_info: data.link_info
-		};
-	}
-
-	// Fallback para formato antigo
-	const metrics = response.metrics || {};
-	const charts = response.charts || {};
 	const defaultSummary: DashboardSummary = {
 		total_links: 0,
 		active_links: 0,
@@ -279,27 +239,28 @@ function mapResponseToDashboardData(response: ApiResponse): DashboardData {
 	};
 
 	return {
-		summary: response.summary || metrics.dashboard || defaultSummary,
+		summary: response.summary || defaultSummary,
 		top_links: response.top_links || [],
 		recent_activity: response.recent_activity || [],
-		geographic_summary: metrics.geographic || {
-			countries_reached: 0,
+		geographic_summary: {
+			countries_reached: response.summary?.countries_reached || 0,
 			cities_reached: 0,
-			top_country: undefined,
-			top_country_clicks: 0,
+			top_country: response.geographic_data?.top_countries?.[0]?.country,
+			top_country_clicks: response.geographic_data?.top_countries?.[0]?.clicks || 0,
 			coverage_percentage: 0
 		},
 		device_summary: {
-			desktop: metrics.audience?.device_types?.desktop || 0,
-			mobile: metrics.audience?.device_types?.mobile || 0,
-			tablet: metrics.audience?.device_types?.tablet || 0,
-			total: metrics.audience?.device_types?.total || 0,
-			mobile_percentage: metrics.audience?.device_types?.mobile_percentage || 0
+			desktop: response.audience_data?.device_breakdown?.find((d) => d.device === 'Desktop')?.clicks || 0,
+			mobile: response.audience_data?.device_breakdown?.find((d) => d.device === 'Mobile')?.clicks || 0,
+			tablet: response.audience_data?.device_breakdown?.find((d) => d.device === 'Tablet')?.clicks || 0,
+			total: response.summary?.total_clicks || 0,
+			mobile_percentage: 0
 		},
 		performance_indicators: [],
-		temporal_data: charts.temporal,
-		geographic_data: charts.geographic,
-		audience_data: charts.audience
+		temporal_data: response.temporal_data,
+		geographic_data: response.geographic_data,
+		audience_data: response.audience_data,
+		link_info: response.link_info
 	};
 }
 
@@ -332,4 +293,3 @@ function calculateStats(data: DashboardData): DashboardStats {
 }
 
 export default useDashboardData;
-

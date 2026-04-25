@@ -42,25 +42,21 @@ class PublicLinkService extends BaseService {
 	 * Cria um novo link encurtado público
 	 */
 	async createPublicLink(data: CreatePublicLinkRequest): Promise<PublicLinkResponse> {
-		const response = await this.post<any>('/api/public/shorten', data);
-		// A resposta da API já vem com os dados diretamente em response.data
-		return response.data;
+		return this.post<PublicLinkResponse>('/api/public/shorten', data);
 	}
 
 	/**
 	 * Obtém informações básicas de um link pelo slug
 	 */
 	async getLinkBySlug(slug: string): Promise<PublicLinkResponse> {
-		const response = await this.get<any>(`/api/public/link/${slug}`);
-		return response.data.data;
+		return this.get<PublicLinkResponse>(`/api/public/link/${slug}`);
 	}
 
 	/**
 	 * Obtém analytics públicos de um link
 	 */
 	async getPublicAnalytics(slug: string): Promise<PublicAnalyticsResponse> {
-		const response = await this.get<any>(`/api/public/analytics/${slug}`);
-		return response.data;
+		return this.get<PublicAnalyticsResponse>(`/api/public/analytics/${slug}`);
 	}
 
 	/**

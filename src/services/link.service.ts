@@ -94,28 +94,25 @@ export default class LinkService extends BaseService {
 	/**
 	 * Busca um link específico por ID
 	 */
-	async findOne(id: string): Promise<{ data: LinkResponse }> {
+	async findOne(id: string): Promise<LinkResponse> {
 		this.validateId(id, 'Link ID');
 
-		const fallbackData = {
-			data: {
-				id,
-				user_id: '1',
-				title: 'Link de Exemplo',
-				slug: `exemplo-${id}`,
-				original_url: 'https://example.com',
-				short_url: `http://localhost:3000/r/exemplo-${id}`,
-				shorted_url: `http://localhost:3000/r/exemplo-${id}`,
-				clicks: 23463,
-				is_active: true,
-				created_at: new Date().toISOString(),
-				updated_at: new Date().toISOString(),
-				expires_at: null,
-				starts_in: null
-			}
+		const fallbackData: LinkResponse = {
+			id,
+			user_id: '1',
+			title: 'Link de Exemplo',
+			slug: `exemplo-${id}`,
+			original_url: 'https://example.com',
+			short_url: `http://localhost:3000/r/exemplo-${id}`,
+			clicks: 23463,
+			is_active: true,
+			created_at: new Date().toISOString(),
+			updated_at: new Date().toISOString(),
+			expires_at: null,
+			starts_in: null
 		};
 
-		return this.get<{ data: LinkResponse }>(API_CONFIG.ENDPOINTS.LINK(id), {
+		return this.get<LinkResponse>(API_CONFIG.ENDPOINTS.LINK(id), {
 			fallback: fallbackData,
 			context: 'get_link_by_id'
 		});
@@ -143,31 +140,6 @@ export default class LinkService extends BaseService {
 			fallback: {},
 			context: 'get_link_analytics'
 		});
-	}
-
-	/**
-	 * Cria uma URL encurtada (legacy)
-	 */
-	async createShortUrl(data: { original_url: string; [key: string]: unknown }): Promise<{ data: unknown }> {
-		this.validateRequired(data, ['original_url']);
-
-		// Normalizar URL - adicionar https:// se não tiver protocolo
-		let url = data.original_url.trim();
-
-		if (!/^https?:\/\//i.test(url)) {
-			url = `https://${url}`;
-		}
-
-		return this.post<{ data: unknown }>(
-			'gerar-url',
-			{
-				...data,
-				original_url: url
-			},
-			{
-				context: 'create_short_url'
-			}
-		);
 	}
 }
 

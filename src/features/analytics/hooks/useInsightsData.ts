@@ -184,47 +184,43 @@ export function useInsightsData({
 
 			const endpoint = `/api/analytics/link/${fetchParams.linkId}/insights`;
 
-			const response = await api.get<{
-				success: boolean;
-				data: BusinessInsight[] | InsightsData;
-			}>(endpoint);
+			// Client já desembrulha envelope { data } (Onda 0). Backend ora retorna
+			// array de insights, ora objeto InsightsData.
+			const response = await api.get<BusinessInsight[] | InsightsData>(endpoint);
 
-			if (response.success && response.data) {
-				let insightsData: InsightsData;
-
-				// Adaptar resposta baseado no formato
-				if (Array.isArray(response.data)) {
-					// Resposta simples (array de insights)
-					const filteredInsights = filterInsights(response.data);
-
-					insightsData = {
-						insights: filteredInsights,
-						summary: {
-							total_insights: filteredInsights.length,
-							high_priority: filteredInsights.filter((i) => i.priority === 'high').length,
-							actionable_insights: filteredInsights.filter((i) => i.actionable).length,
-							avg_confidence:
-								filteredInsights.length > 0
-									? filteredInsights.reduce((sum, i) => sum + (i.confidence || 0.5), 0) /
-										filteredInsights.length
-									: 0
-						},
-						categories: {},
-						generated_at: new Date().toISOString()
-					};
-				} else {
-					// Resposta completa
-					insightsData = {
-						...response.data,
-						insights: filterInsights(response.data.insights || [])
-					};
-				}
-
-				setData(insightsData);
-				setStats(calculateStats(insightsData));
-			} else {
+			if (!response) {
 				throw new Error('Insights não encontrados');
 			}
+
+			let insightsData: InsightsData;
+
+			if (Array.isArray(response)) {
+				const filteredInsights = filterInsights(response);
+
+				insightsData = {
+					insights: filteredInsights,
+					summary: {
+						total_insights: filteredInsights.length,
+						high_priority: filteredInsights.filter((i) => i.priority === 'high').length,
+						actionable_insights: filteredInsights.filter((i) => i.actionable).length,
+						avg_confidence:
+							filteredInsights.length > 0
+								? filteredInsights.reduce((sum, i) => sum + (i.confidence || 0.5), 0) /
+									filteredInsights.length
+								: 0
+					},
+					categories: {},
+					generated_at: new Date().toISOString()
+				};
+			} else {
+				insightsData = {
+					...response,
+					insights: filterInsights(response.insights || [])
+				};
+			}
+
+			setData(insightsData);
+			setStats(calculateStats(insightsData));
 		} catch (err: any) {
 			if (err.name === 'AbortError') {
 				return;

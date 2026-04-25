@@ -3,7 +3,8 @@ import { Typography, Stack, Button, Alert, CircularProgress, Box } from '@mui/ma
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import dayjs, {Dayjs} from 'dayjs';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 import { AppIcon } from '@/shared/ui/icons';
 import { useAppDispatch } from '@/lib/store/hooks';
@@ -68,11 +69,9 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 		const fetchLinkData = async () => {
 			try {
 				setFetchingData(true);
-				const response = await linkService.findOne(linkId);
+				const linkData = await linkService.findOne(linkId);
 
-				if (response?.data) {
-					const linkData = response.data;
-
+				if (linkData) {
 					const formValues: LinkFormData = {
 						original_url: linkData.original_url || '',
 						title: linkData.title || '',
@@ -114,6 +113,7 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 			if (dayjs.isDayjs(dateValue)) {
 				return dateValue.toISOString();
 			}
+
 			// Fallback para string ISO se por algum motivo não for DayJS
 			if (typeof dateValue === 'string') {
 				return dateValue;
@@ -187,16 +187,26 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 
 	if (apiError) {
 		return (
-			<EnhancedPaper variant='glass' animated sx={{ p: 4 }}>
+			<EnhancedPaper
+				variant='glass'
+				animated
+				sx={{ p: 4 }}
+			>
 				<Alert
 					severity='error'
 					action={
-						<Button size='small' onClick={handleCancel}>
+						<Button
+							size='small'
+							onClick={handleCancel}
+						>
 							Voltar
 						</Button>
 					}
 				>
-					<Typography variant='h6' component='div'>
+					<Typography
+						variant='h6'
+						component='div'
+					>
 						{apiError ? 'Erro ao carregar' : 'Link não encontrado'}
 					</Typography>
 					<Typography variant='body2'>
@@ -208,13 +218,23 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 	}
 
 	return (
-		<EnhancedPaper variant='glass' animated>
+		<EnhancedPaper
+			variant='glass'
+			animated
+		>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Box sx={{ p: 3, pb: 2 }}>
-					<Typography variant='h5' fontWeight={600} gutterBottom>
+					<Typography
+						variant='h5'
+						fontWeight={600}
+						gutterBottom
+					>
 						Editar Link
 					</Typography>
-					<Typography variant='body2' color='text.secondary'>
+					<Typography
+						variant='body2'
+						color='text.secondary'
+					>
 						Modifique as configurações do seu link
 					</Typography>
 				</Box>
@@ -226,7 +246,11 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 				) : null}
 
 				<Box sx={{ px: 3, pb: 3 }}>
-					<LinkFormFields control={control} errors={errors} isEdit />
+					<LinkFormFields
+						control={control}
+						errors={errors}
+						isEdit
+					/>
 				</Box>
 
 				<Box
@@ -244,7 +268,11 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 						justifyContent='space-between'
 						sx={{ width: '100%' }}
 					>
-						<Button variant='outlined' onClick={handleCancel} disabled={loading}>
+						<Button
+							variant='outlined'
+							onClick={handleCancel}
+							disabled={loading}
+						>
 							Cancelar
 						</Button>
 
@@ -254,7 +282,14 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 							color='primary'
 							disabled={loading}
 							startIcon={
-								loading ? <CircularProgress size={16} color='inherit' /> : <AppIcon intent='save' />
+								loading ? (
+									<CircularProgress
+										size={16}
+										color='inherit'
+									/>
+								) : (
+									<AppIcon intent='save' />
+								)
 							}
 						>
 							{loading ? 'Salvando...' : 'Salvar Alterações'}
