@@ -1,14 +1,23 @@
 import { TrendingUp, Link as LinkIcon, CheckCircle, Assessment } from '@mui/icons-material';
-import { Grid, Box, Typography, useTheme } from '@mui/material';
+import { Grid, Box, Typography } from '@mui/material';
 
-import { createPresetAnimations } from '@/lib/theme';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 
+import type { LinkResponse } from '@/types';
+
+interface LinkMetricsSummary {
+	total_links?: number;
+	active_links?: number;
+	total_clicks?: number;
+	avg_clicks_per_link?: number;
+}
+
 interface DashboardMetricsProps {
-	summary?: any;
-	linksData?: any[];
+	summary?: LinkMetricsSummary;
+	linksData?: LinkResponse[];
 	showTitle?: boolean;
 	title?: string;
+	/** @deprecated mantido apenas para compatibilidade com consumidores legados */
 	variant?: 'compact' | 'detailed';
 }
 
@@ -22,15 +31,11 @@ export function LinkMetrics({
 	showTitle = false,
 	title = 'Métricas do Dashboard'
 }: DashboardMetricsProps) {
-	const theme = useTheme();
-	const animations = createPresetAnimations(theme);
-
-	// Cálculos das métricas - usar summary se disponível, senão calcular dos links
-	const totalLinks = summary?.total_links || linksData.length;
-	const activeLinks = summary?.active_links || linksData.filter((link) => link.is_active).length;
-	const totalClicks = summary?.total_clicks || linksData.reduce((sum, link) => sum + (link.clicks || 0), 0);
+	const totalLinks = summary?.total_links ?? linksData.length;
+	const activeLinks = summary?.active_links ?? linksData.filter((link) => link.is_active).length;
+	const totalClicks = summary?.total_clicks ?? linksData.reduce((sum, link) => sum + (link.clicks || 0), 0);
 	const avgClicksPerLink =
-		summary?.avg_clicks_per_link || (totalLinks > 0 ? Math.round(totalClicks / totalLinks) : 0);
+		summary?.avg_clicks_per_link ?? (totalLinks > 0 ? Math.round(totalClicks / totalLinks) : 0);
 
 	const metrics = [
 		{
@@ -81,7 +86,6 @@ export function LinkMetrics({
 			<Grid
 				container
 				spacing={3}
-				sx={{ ...animations.fadeIn }}
 			>
 				{metrics.map((metric) => (
 					<Grid
@@ -91,15 +95,13 @@ export function LinkMetrics({
 						md={3}
 						key={metric.id}
 					>
-						<Box sx={{ height: '100%', ...animations.cardHover }}>
-							<MetricCard
-								title={metric.title}
-								value={metric.value}
-								icon={metric.icon}
-								color={metric.color}
-								subtitle={metric.subtitle}
-							/>
-						</Box>
+						<MetricCard
+							title={metric.title}
+							value={metric.value}
+							icon={metric.icon}
+							color={metric.color}
+							subtitle={metric.subtitle}
+						/>
 					</Grid>
 				))}
 			</Grid>
