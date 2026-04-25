@@ -3,7 +3,7 @@
  * Container padronizado para gráficos seguindo padrão do GeographicChart e Charts
  */
 
-import { Card, CardContent, Typography, Box } from '@mui/material';
+import { Card, CardContent, Typography, Box, Fade } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { createPresetAnimations } from '@/lib/theme';
@@ -82,7 +82,16 @@ export function ChartCard({
 					{action ? <Box sx={{ mb: 1 }}>{action}</Box> : null}
 
 					<Box sx={{ mb: 2 }}>
-						{loading ? <Typography color='text.secondary'>Carregando gráfico...</Typography> : children}
+						{loading ? (
+							<Typography color='text.secondary'>Carregando gráfico...</Typography>
+						) : (
+							<Fade
+								in
+								timeout={260}
+							>
+								<Box>{children}</Box>
+							</Fade>
+						)}
 					</Box>
 				</CardContent>
 			</Card>

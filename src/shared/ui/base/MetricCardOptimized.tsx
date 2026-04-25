@@ -38,10 +38,9 @@ export function MetricCardOptimized({
 				backgroundColor: theme.palette.background.paper,
 				borderRadius: `${radiusTokens.lg}px`,
 				boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs,
-				transition: `transform ${motionTokens.duration.base} ${motionTokens.easing.default}, box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+				transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 				'&:hover': {
-					transform: 'translateY(-2px)',
-					boxShadow: theme.palette.mode === 'dark' ? elevationTokens.md : elevationLightTokens.md
+					boxShadow: theme.palette.mode === 'dark' ? elevationTokens.sm : elevationLightTokens.sm
 				},
 				...sx
 			}}

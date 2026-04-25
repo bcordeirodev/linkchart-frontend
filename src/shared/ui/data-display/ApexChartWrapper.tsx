@@ -246,6 +246,10 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 								enabled: true,
 								easing: 'easeinout',
 								speed: 800,
+								animateGradually: {
+									enabled: true,
+									delay: 150
+								},
 								...((options.chart as any)?.animations || {})
 							}
 						},
