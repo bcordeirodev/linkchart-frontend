@@ -294,12 +294,15 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 					try {
 						if (startsIn) {
 							startDate = new Date(startsIn);
+
 							if (isNaN(startDate.getTime())) {
 								startDate = null;
 							}
 						}
+
 						if (expiresAt) {
 							endDate = new Date(expiresAt);
+
 							if (isNaN(endDate.getTime())) {
 								endDate = null;
 							}
@@ -371,6 +374,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 						);
 
 					}
+
 					{
 					return(
 						<Typography variant='body2'>
@@ -389,6 +393,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				Cell: ({ cell }) => {
 					const value = cell.getValue<unknown>();
 					const formattedDate = formatDate(value);
+
 					if (!formattedDate) {
 						return (
 							<Typography variant='body2' color='text.secondary'>
@@ -396,6 +401,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 							</Typography>
 						);
 					}
+
 					return (
 						<Typography variant='body2'>
 							{formattedDate}
@@ -411,6 +417,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 				Cell: ({ cell }) => {
 					const value = cell.getValue<unknown>();
 					const formattedDate = formatDate(value);
+
 					if (!formattedDate) {
 						return (
 							<Typography variant='body2' color='text.secondary'>
@@ -418,6 +425,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 							</Typography>
 						);
 					}
+
 					return (
 						<Typography variant='body2'>
 							{formattedDate}

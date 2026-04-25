@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import {
 	TextField,
 	Switch,
@@ -152,7 +151,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 									name='starts_in'
 									control={control}
 									render={({ field: { value, ...field } }) => (
-										<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
+										<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
 											<DateTimePicker
 												{...field}
 												label='Data de Início'
@@ -180,7 +179,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 									name='expires_at'
 									control={control}
 									render={({ field: { value, ...field } }) => (
-										<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
+										<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
 											<DateTimePicker
 												{...field}
 												label='Data de Expiração'
