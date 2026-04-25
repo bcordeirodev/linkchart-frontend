@@ -7,6 +7,7 @@ import { Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { createPresetAnimations } from '@/lib/theme';
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 
 import type { PaperProps } from '@mui/material';
 
@@ -23,21 +24,24 @@ function EnhancedPaper({ variant = 'glass', animated = true, children, sx, ...ot
 	const theme = useTheme();
 	const animations = createPresetAnimations(theme);
 
+	const isDark = theme.palette.mode === 'dark';
+	const elevation = isDark ? elevationTokens : elevationLightTokens;
+
 	const variantStyles = {
 		glass: {
-			backgroundColor: theme.palette.background.paper, // Background sólido consistente
-			borderRadius: 2,
-			boxShadow: theme.shadows[2]
+			backgroundColor: theme.palette.background.paper,
+			borderRadius: `${radiusTokens.md}px`,
+			boxShadow: elevation.xs
 		},
 		elevated: {
 			backgroundColor: theme.palette.background.paper,
-			boxShadow: theme.shadows[4],
-			borderRadius: theme.spacing(1.5)
+			borderRadius: `${radiusTokens.lg}px`,
+			boxShadow: elevation.sm
 		},
 		outlined: {
 			backgroundColor: theme.palette.background.paper,
 			border: `1px solid ${theme.palette.divider}`,
-			borderRadius: theme.spacing(1.5)
+			borderRadius: `${radiusTokens.lg}px`
 		}
 	};
 
@@ -47,11 +51,11 @@ function EnhancedPaper({ variant = 'glass', animated = true, children, sx, ...ot
 				{
 					...variantStyles[variant],
 					...(animated && animations.fadeIn),
-					transition: theme.transitions.create(['transform', 'box-shadow']),
+					transition: `transform ${motionTokens.duration.base} ${motionTokens.easing.default}, box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 					'&:hover': animated
 						? {
 								transform: 'translateY(-1px)',
-								boxShadow: theme.shadows[8]
+								boxShadow: elevation.md
 							}
 						: {},
 					...sx
