@@ -10,38 +10,26 @@
  */
 
 import {
-	ContentCopy,
-	Edit,
-	Delete,
-	MoreVert,
 	Link as LinkIcon,
 	Visibility,
-	Schedule,
-	TrendingUp,
-	Share
+	Schedule
 } from '@mui/icons-material';
 import {
 	Box,
 	Card,
 	CardContent,
 	Typography,
-	IconButton,
 	Chip,
 	Stack,
 	Avatar,
-	Tooltip,
-	SwipeableDrawer,
-	List,
-	ListItem,
-	ListItemIcon,
-	ListItemText,
-	Divider,
 	useTheme
 } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { memo, useCallback, useState } from 'react';
+import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LinkActionsInline } from './LinkActionsInline';
+import { LinkActionsMenu } from './LinkActionsMenu';
 
 // Types
 import type { LinkResponse as Link } from '@/types/core/links';
@@ -64,10 +52,9 @@ interface LinkMobileCardProps {
 /**
  * Card individual para mobile
  */
-const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardProps) => {
+const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
-	const [drawerOpen, setDrawerOpen] = useState(false);
 
 	// Formatação de dados
 	const shortUrl = `${window.location.origin}/${link.slug || link.custom_slug}`;
@@ -98,53 +85,6 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 
 	const createdAt = getFormattedDate();
 
-	// Handlers
-	const handleCopy = useCallback(() => {
-		if (onCopy) {
-			onCopy(shortUrl);
-		} else {
-			navigator.clipboard.writeText(shortUrl);
-		}
-
-		setDrawerOpen(false);
-	}, [shortUrl, onCopy]);
-
-	const handleEdit = useCallback(() => {
-		if (onEdit) {
-			onEdit(link);
-		} else {
-			navigate(`/links/${link.id}/edit`);
-		}
-
-		setDrawerOpen(false);
-	}, [link, onEdit, navigate]);
-
-	const handleDelete = useCallback(() => {
-		if (onDelete) {
-			onDelete(link.id.toString());
-		}
-
-		setDrawerOpen(false);
-	}, [link.id, onDelete]);
-
-	const handleViewAnalytics = useCallback(() => {
-		navigate(`/links/${link.id}/analytics`);
-		setDrawerOpen(false);
-	}, [link.id, navigate]);
-
-	const handleShare = useCallback(() => {
-		if (navigator.share) {
-			navigator.share({
-				title: link.title || 'Link compartilhado',
-				url: shortUrl
-			});
-		} else {
-			handleCopy();
-		}
-
-		setDrawerOpen(false);
-	}, [link.title, shortUrl, handleCopy]);
-
 	// Truncar URL longa
 	const truncateUrl = (url: string, maxLength = 40) => {
 		if (url.length <= maxLength) {
@@ -155,8 +95,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 	};
 
 	return (
-		<>
-			<Card
+		<Card
 				sx={{
 					mb: 2,
 					borderRadius: 3,
@@ -218,13 +157,6 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 							</Typography>
 						</Box>
 
-						<IconButton
-							size='small'
-							onClick={() => setDrawerOpen(true)}
-							sx={{ ml: 1, color: 'text.secondary' }}
-						>
-							<MoreVert />
-						</IconButton>
 					</Box>
 
 					{/* URL encurtada */}
@@ -289,142 +221,25 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, onCopy }: LinkMobileCardP
 							sx={{ fontSize: '0.75rem' }}
 						/>
 
-						<Stack
-							direction='row'
-							spacing={1}
-						>
-							<Tooltip title='Copiar link'>
-								<IconButton
-									size='small'
-									onClick={handleCopy}
-									sx={{ color: 'text.secondary' }}
-								>
-									<ContentCopy fontSize='small' />
-								</IconButton>
-							</Tooltip>
-
-							<Tooltip title='Ver analytics'>
-								<IconButton
-									size='small'
-									onClick={handleViewAnalytics}
-									sx={{ color: 'text.secondary' }}
-								>
-									<TrendingUp fontSize='small' />
-								</IconButton>
-							</Tooltip>
+						<Stack direction='row' spacing={0.5} alignItems='center'>
+							<LinkActionsInline
+								shortUrl={link.short_url || shortUrl}
+								onAnalytics={() => navigate(`/link/analytic/${link.id}`)}
+							/>
+							<LinkActionsMenu
+								onEdit={() => {
+									if (onEdit) onEdit(link);
+									else navigate(`/link/edit/${link.id}`);
+								}}
+								onQR={() => navigate(`/link/qr/${link.id}`)}
+								onDelete={() => {
+									if (onDelete) onDelete(String(link.id));
+								}}
+							/>
 						</Stack>
 					</Box>
 				</CardContent>
-			</Card>
-
-			{/* Drawer de ações */}
-			<SwipeableDrawer
-				anchor='bottom'
-				open={drawerOpen}
-				onClose={() => setDrawerOpen(false)}
-				onOpen={() => setDrawerOpen(true)}
-				disableSwipeToOpen
-				PaperProps={{
-					sx: {
-						borderTopLeftRadius: 16,
-						borderTopRightRadius: 16,
-						maxHeight: '50vh'
-					}
-				}}
-			>
-				<Box sx={{ p: 2 }}>
-					{/* Handle */}
-					<Box
-						sx={{
-							width: 40,
-							height: 4,
-							bgcolor: 'divider',
-							borderRadius: 2,
-							mx: 'auto',
-							mb: 2
-						}}
-					/>
-
-					{/* Título do link */}
-					<Typography
-						variant='h6'
-						sx={{
-							textAlign: 'center',
-							mb: 2,
-							fontSize: '1rem',
-							fontWeight: 600,
-							overflow: 'hidden',
-							textOverflow: 'ellipsis',
-							whiteSpace: 'nowrap'
-						}}
-					>
-						{link.title || 'Link sem título'}
-					</Typography>
-
-					<Divider sx={{ mb: 1 }} />
-
-					{/* Lista de ações */}
-					<List sx={{ py: 0 }}>
-						<ListItem
-							component='div'
-							onClick={handleCopy}
-							sx={{ borderRadius: 2, cursor: 'pointer' }}
-						>
-							<ListItemIcon>
-								<ContentCopy color='primary' />
-							</ListItemIcon>
-							<ListItemText primary='Copiar link' />
-						</ListItem>
-
-						<ListItem
-							component='div'
-							onClick={handleShare}
-							sx={{ borderRadius: 2, cursor: 'pointer' }}
-						>
-							<ListItemIcon>
-								<Share color='primary' />
-							</ListItemIcon>
-							<ListItemText primary='Compartilhar' />
-						</ListItem>
-
-						<ListItem
-							component='div'
-							onClick={handleViewAnalytics}
-							sx={{ borderRadius: 2, cursor: 'pointer' }}
-						>
-							<ListItemIcon>
-								<TrendingUp color='primary' />
-							</ListItemIcon>
-							<ListItemText primary='Ver analytics' />
-						</ListItem>
-
-						<Divider sx={{ my: 1 }} />
-
-						<ListItem
-							component='div'
-							onClick={handleEdit}
-							sx={{ borderRadius: 2, cursor: 'pointer' }}
-						>
-							<ListItemIcon>
-								<Edit color='warning' />
-							</ListItemIcon>
-							<ListItemText primary='Editar link' />
-						</ListItem>
-
-						<ListItem
-							component='div'
-							onClick={handleDelete}
-							sx={{ borderRadius: 2, cursor: 'pointer' }}
-						>
-							<ListItemIcon>
-								<Delete color='error' />
-							</ListItemIcon>
-							<ListItemText primary='Excluir link' />
-						</ListItem>
-					</List>
-				</Box>
-			</SwipeableDrawer>
-		</>
+		</Card>
 	);
 });
 
