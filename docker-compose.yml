@@ -1,0 +1,23 @@
+# =========================================
+# DOCKER COMPOSE - FRONTEND DEV
+# Vite com HMR, proxy /api → backend dockerizado
+# =========================================
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: linkchart-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_PROXY_TARGET=http://host.docker.internal:8000
+      - CHOKIDAR_USEPOLLING=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

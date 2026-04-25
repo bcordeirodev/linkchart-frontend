@@ -1,0 +1,18 @@
+# ==========================================
+# DOCKERFILE PARA DESENVOLVIMENTO LOCAL
+# Vite com HMR, volume-mount do src no compose
+# ==========================================
+
+FROM node:20-alpine
+
+RUN apk add --no-cache git python3 make g++
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install --silent
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
