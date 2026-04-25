@@ -72,13 +72,13 @@ export default function RedirectSettings({ onSave, initialSettings = {} }: Redir
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
-			className='max-w-2xl mx-auto'
+			style={{ maxWidth: 672, marginLeft: 'auto', marginRight: 'auto' }}
 		>
 			<Card elevation={2}>
 				<CardContent>
 					<Stack spacing={3}>
 						{/* Header */}
-						<Box className='flex items-center gap-2'>
+						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 							<SettingsIcon color='primary' />
 							<SafeTypography variant='h6'>Configurações de Redirecionamento</SafeTypography>
 						</Box>
@@ -87,7 +87,7 @@ export default function RedirectSettings({ onSave, initialSettings = {} }: Redir
 
 						{/* Preview Settings */}
 						<Box>
-							<Box className='flex items-center gap-2 mb-3'>
+							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
 								<VisibilityIcon
 									fontSize='small'
 									color='action'
@@ -156,7 +156,7 @@ export default function RedirectSettings({ onSave, initialSettings = {} }: Redir
 
 						{/* Security Settings */}
 						<Box>
-							<Box className='flex items-center gap-2 mb-3'>
+							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
 								<SecurityIcon
 									fontSize='small'
 									color='action'
@@ -210,7 +210,7 @@ export default function RedirectSettings({ onSave, initialSettings = {} }: Redir
 
 						{/* Performance Settings */}
 						<Box>
-							<Box className='flex items-center gap-2 mb-3'>
+							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
 								<SpeedIcon
 									fontSize='small'
 									color='action'
@@ -236,10 +236,19 @@ export default function RedirectSettings({ onSave, initialSettings = {} }: Redir
 						</Box>
 
 						{/* Preview of Current Settings */}
-						<Box className='bg-gray-50 dark:bg-gray-800 p-3 rounded'>
+						<Box
+							sx={(theme) => ({
+								p: 1.5,
+								borderRadius: 1,
+								bgcolor:
+									theme.palette.mode === 'dark'
+										? theme.palette.background.paper
+										: theme.palette.grey[50]
+							})}
+						>
 							<SafeTypography
 								variant='subtitle2'
-								className='mb-2'
+								sx={{ mb: 1 }}
 							>
 								Configuração atual:
 							</SafeTypography>
@@ -293,7 +302,7 @@ export default function RedirectSettings({ onSave, initialSettings = {} }: Redir
 					</Stack>
 				</CardContent>
 
-				<CardActions className='justify-end gap-2'>
+				<CardActions sx={{ justifyContent: 'flex-end', gap: 1 }}>
 					<Button
 						variant='outlined'
 						onClick={handleReset}
