@@ -1,5 +1,8 @@
 import { CircularProgress } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import React, { useEffect, useState, useCallback, Suspense } from 'react';
+
+import { chartPalette } from '@/lib/theme/colors';
 
 // Import dinâmico para compatibilidade com Vite
 const Chart = React.lazy(() =>
@@ -40,6 +43,7 @@ interface ApexChartWrapperProps {
  */
 
 const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350, width = '100%', options, series }) => {
+	const theme = useTheme();
 	const [hasError, setHasError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -220,11 +224,13 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 					height={height}
 					width={width}
 					options={{
+						colors: [...chartPalette],
 						...options,
 						chart: {
 							...((options.chart as object) || {}),
 							type,
 							background: 'transparent',
+							foreColor: theme.palette.text.secondary,
 							fontFamily: 'Inter, system-ui, sans-serif',
 							toolbar: {
 								show: false,
@@ -243,8 +249,12 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 								...((options.chart as any)?.animations || {})
 							}
 						},
+						grid: {
+							borderColor: theme.palette.divider,
+							...((options.grid as object) || {})
+						},
 						theme: {
-							mode: 'light'
+							mode: theme.palette.mode
 						}
 					}}
 					series={series}

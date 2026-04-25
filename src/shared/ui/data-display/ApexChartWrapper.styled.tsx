@@ -1,6 +1,8 @@
 import { Box, Paper, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import { radiusTokens } from '@/lib/theme/designSystem';
+
 /**
  * 📊 STYLED COMPONENTS PARA CHARTS
  * Componentes estilizados para gráficos ApexCharts
@@ -14,9 +16,8 @@ export const ChartContainer = styled(Box)(({ theme }) => ({
 	width: '100%',
 	position: 'relative',
 
-	// Otimizações de performance
 	'& .apexcharts-canvas': {
-		borderRadius: theme.spacing(1),
+		borderRadius: `${radiusTokens.md}px`,
 		overflow: 'hidden'
 	},
 
@@ -25,13 +26,12 @@ export const ChartContainer = styled(Box)(({ theme }) => ({
 	},
 
 	'& .apexcharts-tooltip': {
-		borderRadius: theme.spacing(1),
-		boxShadow: theme.shadows[8],
+		borderRadius: `${radiusTokens.md}px`,
+		boxShadow: theme.shadows[4],
 		border: `1px solid ${theme.palette.divider}`,
 		background: theme.palette.background.paper
 	},
 
-	// Loading overlay
 	'&.loading': {
 		'&::before': {
 			content: '""',
@@ -40,12 +40,12 @@ export const ChartContainer = styled(Box)(({ theme }) => ({
 			left: 0,
 			right: 0,
 			bottom: 0,
-			background: 'rgba(0, 0, 0, 0.1)',
+			background: theme.palette.action.hover,
 			display: 'flex',
 			alignItems: 'center',
 			justifyContent: 'center',
 			zIndex: 10,
-			borderRadius: theme.spacing(1)
+			borderRadius: `${radiusTokens.md}px`
 		}
 	}
 }));
@@ -82,12 +82,9 @@ export const ErrorContainer = styled(Paper)(({ theme }) => ({
 	justifyContent: 'center',
 	padding: theme.spacing(3),
 	border: `2px dashed ${theme.palette.divider}`,
-	background:
-		theme.palette.mode === 'dark'
-			? 'linear-gradient(135deg, rgba(244, 67, 54, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%)'
-			: 'linear-gradient(135deg, rgba(244, 67, 54, 0.08) 0%, rgba(244, 67, 54, 0.04) 100%)',
+	backgroundColor: theme.palette.background.paper,
 	textAlign: 'center',
-	borderRadius: theme.spacing(2)
+	borderRadius: `${radiusTokens.lg}px`
 }));
 
 export const ErrorIcon = styled(Box)(({ theme }) => ({
@@ -109,8 +106,8 @@ export const ErrorDescription = styled(Typography)(({ theme }) => ({
 }));
 
 export const ErrorStats = styled(Box)(({ theme }) => ({
-	background: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-	borderRadius: theme.spacing(1),
+	backgroundColor: theme.palette.action.hover,
+	borderRadius: `${radiusTokens.md}px`,
 	padding: theme.spacing(2),
 	marginTop: theme.spacing(2),
 	border: `1px solid ${theme.palette.divider}`,
@@ -151,12 +148,9 @@ export const NoDataContainer = styled(Box)(({ theme }) => ({
 	justifyContent: 'center',
 	padding: theme.spacing(4),
 	textAlign: 'center',
-	background:
-		theme.palette.mode === 'dark'
-			? 'linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%)'
-			: 'linear-gradient(135deg, rgba(33, 150, 243, 0.08) 0%, rgba(33, 150, 243, 0.04) 100%)',
-	borderRadius: theme.spacing(2),
-	border: `1px solid ${theme.palette.info.main}30`
+	backgroundColor: theme.palette.background.paper,
+	borderRadius: `${radiusTokens.lg}px`,
+	border: `1px dashed ${theme.palette.divider}`
 }));
 
 export const NoDataIcon = styled(Box)(({ theme }) => ({
