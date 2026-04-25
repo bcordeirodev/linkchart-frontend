@@ -1,6 +1,8 @@
 import { Box, Typography, Card, CardContent } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
+
 import type { MetricCardProps } from '../components';
 
 /**
@@ -31,15 +33,15 @@ export function MetricCardOptimized({
 
 	return (
 		<Card
-			className='metric-container'
 			sx={{
 				height: '100%',
-				backgroundColor: theme.palette.background.paper, // Background sólido consistente
-				borderRadius: 2,
-				transition: theme.transitions.create(['transform', 'box-shadow']),
+				backgroundColor: theme.palette.background.paper,
+				borderRadius: `${radiusTokens.lg}px`,
+				boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs,
+				transition: `transform ${motionTokens.duration.base} ${motionTokens.easing.default}, box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 				'&:hover': {
 					transform: 'translateY(-2px)',
-					boxShadow: theme.shadows[8]
+					boxShadow: theme.palette.mode === 'dark' ? elevationTokens.md : elevationLightTokens.md
 				},
 				...sx
 			}}
@@ -60,7 +62,8 @@ export function MetricCardOptimized({
 							variant='h4'
 							component='div'
 							sx={{
-								fontWeight: 700,
+								fontWeight: 600,
+								fontVariantNumeric: 'tabular-nums',
 								color: selectedColor,
 								mb: subtitle ? 0.5 : 0
 							}}
