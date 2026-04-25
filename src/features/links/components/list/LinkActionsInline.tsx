@@ -3,7 +3,7 @@ import { HiChartBar, HiClipboardDocument } from 'react-icons/hi2';
 
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
-import useClipboard from '@/shared/hooks/useClipboard';
+import useClipboard from '@/hooks/useClipboard';
 
 interface LinkActionsInlineProps {
 	shortUrl: string;

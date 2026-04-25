@@ -1,28 +1,32 @@
-import { Box, Alert } from '@mui/material';
+// src/pages/links/LinkListPage.tsx
+import { Alert, Box } from '@mui/material';
 import { useMemo, useState } from 'react';
 
 import { LinkMetrics } from '@/features/links/components/LinkMetrics';
-import { LinksFilters, LinksHeader, LinksMobileCards, useLinksTableColumns } from '@/features/links/components/list';
+import {
+	LinkDetailDrawer,
+	LinksFilters,
+	LinksHeader,
+	LinksMobileCards,
+	useLinksTableColumns,
+} from '@/features/links/components/list';
 import { useLinks } from '@/features/links/hooks/useLinks';
 import { useResponsive } from '@/lib/theme';
 import { LinkListSkeleton } from '@/shared/ui/feedback/skeletons';
 import MainLayout from '@/shared/layout/MainLayout';
 import { ResponsiveContainer } from '@/shared/ui/base';
+import type { LinkResponse } from '@/types';
 
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import DataTable from '../../shared/ui/data-display/DataTable';
 
-/**
- * Página de listagem de links refatorada
- * Componentizada para melhor organização
- */
 function LinkListPage() {
-	const { isMobile, isTablet, isLargeScreen } = useResponsive();
+	const { isMobile } = useResponsive();
 	const { links, loading, deleteLink } = useLinks();
 	const [searchTerm, setSearchTerm] = useState('');
 	const [statusFilter, setStatusFilter] = useState('all');
+	const [drawerLink, setDrawerLink] = useState<LinkResponse | null>(null);
 
-	// Filtrar links
 	const filteredLinks = useMemo(() => {
 		return links.filter((link) => {
 			const matchesSearch =
@@ -39,7 +43,6 @@ function LinkListPage() {
 		});
 	}, [links, searchTerm, statusFilter]);
 
-	// Colunas da tabela (hook customizado)
 	const columns = useLinksTableColumns({ onDelete: deleteLink });
 
 	if (loading) {
@@ -73,7 +76,7 @@ function LinkListPage() {
 						onStatusChange={setStatusFilter}
 					/>
 
-					{filteredLinks.length === 0 && !loading ? (
+					{filteredLinks.length === 0 ? (
 						<Alert
 							severity='info'
 							sx={{ mt: 2 }}
@@ -84,7 +87,6 @@ function LinkListPage() {
 						</Alert>
 					) : (
 						<>
-							{/* Mobile: Cards otimizados */}
 							{isMobile ? (
 								<LinksMobileCards
 									data={filteredLinks}
@@ -92,7 +94,6 @@ function LinkListPage() {
 									onDelete={deleteLink}
 								/>
 							) : (
-								/* Desktop/Tablet: Tabela responsiva */
 								<Box sx={{ width: '100%', overflowX: 'auto' }}>
 									<DataTable
 										data={filteredLinks}
@@ -104,54 +105,26 @@ function LinkListPage() {
 										enableGlobalFilter={false}
 										enableColumnResizing={false}
 										enableColumnOrdering={false}
-										enableHiding
-										displayColumnDefOptions={{
-											'mrt-row-actions': {
-												size: 0
-											},
-											'mrt-row-select': {
-												size: 0
-											}
-										}}
 										initialState={{
-											pagination: {
-												pageIndex: 0,
-												pageSize: 10
-											},
-											columnVisibility: {
-												// Esconder colunas de sistema do MRT
-												'mrt-row-actions': false,
-												'mrt-row-select': false,
-												'mrt-row-expand': false,
-												// Responsividade inteligente baseada em breakpoints
-												original_url: isLargeScreen, // Apenas em telas grandes (>1280px)
-												created_at: !isTablet, // Não mostrar em tablet (<960px)
-												is_active: !isMobile, // Apenas desktop/tablet
-												clicks: true // Sempre mostrar
-											},
-											density: 'comfortable'
+											pagination: { pageIndex: 0, pageSize: 10 },
 										}}
+										muiTableBodyRowProps={({ row }) => ({
+											onClick: () => setDrawerLink(row.original),
+											sx: { cursor: 'pointer' },
+										})}
 										muiTableContainerProps={{
-											sx: {
-												maxWidth: '100%',
-												overflowX: 'auto'
-											}
+											sx: { maxWidth: '100%', overflowX: 'auto' },
 										}}
 										muiTableProps={{
 											sx: {
 												tableLayout: 'auto',
-												width: '100%',
 												'& .MuiTableCell-root': {
-													padding: { xs: '8px 4px', sm: '10px 8px', md: '12px 12px' },
-													fontSize: { xs: '0.813rem', sm: '0.875rem' }
+													padding: { xs: '10px 8px', md: '14px 16px' },
 												},
-												'& .MuiTableHead-root': {
-													'& .MuiTableCell-root': {
-														fontWeight: 700,
-														fontSize: { xs: '0.75rem', sm: '0.813rem', md: '0.875rem' }
-													}
-												}
-											}
+												'& .MuiTableRow-root': {
+													height: 56,
+												},
+											},
 										}}
 									/>
 								</Box>
@@ -159,6 +132,11 @@ function LinkListPage() {
 						</>
 					)}
 				</ResponsiveContainer>
+
+				<LinkDetailDrawer
+					link={drawerLink}
+					onClose={() => setDrawerLink(null)}
+				/>
 			</MainLayout>
 		</AuthGuardRedirect>
 	);
