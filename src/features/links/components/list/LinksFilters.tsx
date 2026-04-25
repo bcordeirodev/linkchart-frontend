@@ -46,7 +46,6 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 	
 	return (
 		<Box
-			className='filter-container'
 			sx={{
 				backgroundColor: theme.palette.background.paper,
 				borderRadius: 2,

@@ -66,7 +66,6 @@ export function LinkAnalyticsTabsOptimized({
 		<Box>
 			{/* Tabs Navigation */}
 			<Box
-				className='link-analytics-tabs-container'
 				sx={{
 					backgroundColor: theme.palette.background.paper,
 					borderRadius: 2,
