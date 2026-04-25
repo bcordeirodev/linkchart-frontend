@@ -92,7 +92,7 @@ export default function RedirectStats({
 
 	if (loading) {
 		return (
-			<Box className='space-y-4'>
+			<Stack spacing={2}>
 				{[1, 2, 3].map((i) => (
 					<Card
 						key={i}
@@ -103,14 +103,14 @@ export default function RedirectStats({
 						</CardContent>
 					</Card>
 				))}
-			</Box>
+			</Stack>
 		);
 	}
 
 	if (error || !stats) {
 		return (
 			<Card elevation={1}>
-				<CardContent className='text-center py-8'>
+				<CardContent sx={{ textAlign: 'center', py: 4 }}>
 					<Typography
 						color='error'
 						variant='h6'
@@ -128,11 +128,11 @@ export default function RedirectStats({
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
-			className='space-y-4'
+			style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
 		>
 			{/* Header */}
-			<Box className='flex items-center justify-between'>
-				<Box className='flex items-center gap-2'>
+			<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 					<TrendingUpIcon color='primary' />
 					<Typography variant='h5'>Estatísticas de Redirecionamento</Typography>
 				</Box>
@@ -161,7 +161,7 @@ export default function RedirectStats({
 						transition={{ type: 'spring', stiffness: 300 }}
 					>
 						<Card elevation={2}>
-							<CardContent className='text-center'>
+							<CardContent sx={{ textAlign: 'center' }}>
 								<ClickIcon
 									color='primary'
 									sx={{ fontSize: 40, mb: 1 }}
@@ -194,7 +194,7 @@ export default function RedirectStats({
 						transition={{ type: 'spring', stiffness: 300 }}
 					>
 						<Card elevation={2}>
-							<CardContent className='text-center'>
+							<CardContent sx={{ textAlign: 'center' }}>
 								<LinkIcon
 									color='secondary'
 									sx={{ fontSize: 40, mb: 1 }}
@@ -227,7 +227,7 @@ export default function RedirectStats({
 						transition={{ type: 'spring', stiffness: 300 }}
 					>
 						<Card elevation={2}>
-							<CardContent className='text-center'>
+							<CardContent sx={{ textAlign: 'center' }}>
 								<SpeedIcon
 									color='success'
 									sx={{ fontSize: 40, mb: 1 }}
@@ -260,7 +260,7 @@ export default function RedirectStats({
 						transition={{ type: 'spring', stiffness: 300 }}
 					>
 						<Card elevation={2}>
-							<CardContent className='text-center'>
+							<CardContent sx={{ textAlign: 'center' }}>
 								<SecurityIcon
 									color='info'
 									sx={{ fontSize: 40, mb: 1 }}
@@ -288,7 +288,7 @@ export default function RedirectStats({
 				<CardContent>
 					<Typography
 						variant='h6'
-						className='mb-3 flex items-center gap-2'
+						sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}
 					>
 						<TrendingUpIcon color='primary' />
 						Top {maxTopLinks} Links Mais Clicados
@@ -301,18 +301,31 @@ export default function RedirectStats({
 								animate={{ opacity: 1, x: 0 }}
 								transition={{ delay: index * 0.1 }}
 							>
-								<Box className='flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded'>
-									<Box className='flex-1 min-w-0'>
+								<Box
+									sx={(theme) => ({
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'space-between',
+										p: 1.5,
+										borderRadius: 1,
+										bgcolor:
+											theme.palette.mode === 'dark'
+												? theme.palette.background.paper
+												: theme.palette.grey[50]
+									})}
+								>
+									<Box sx={{ flex: 1, minWidth: 0 }}>
 										<Typography
 											variant='subtitle2'
-											className='truncate'
+											noWrap
 										>
 											{link.title || link.slug}
 										</Typography>
 										<Typography
 											variant='caption'
 											color='text.secondary'
-											className='truncate'
+											noWrap
+											component='div'
 										>
 											{link.url}
 										</Typography>
@@ -334,7 +347,7 @@ export default function RedirectStats({
 				<CardContent>
 					<Typography
 						variant='h6'
-						className='mb-3 flex items-center gap-2'
+						sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}
 					>
 						<DevicesIcon color='primary' />
 						Dispositivos
@@ -348,7 +361,7 @@ export default function RedirectStats({
 							xs={12}
 							sm={4}
 						>
-							<Box className='text-center'>
+							<Box sx={{ textAlign: 'center' }}>
 								<Typography
 									variant='h4'
 									color='primary'
@@ -364,7 +377,7 @@ export default function RedirectStats({
 								<LinearProgress
 									variant='determinate'
 									value={deviceTotal > 0 ? (stats.deviceStats.desktop / deviceTotal) * 100 : 0}
-									className='mt-2'
+									sx={{ mt: 1 }}
 								/>
 							</Box>
 						</Grid>
@@ -373,7 +386,7 @@ export default function RedirectStats({
 							xs={12}
 							sm={4}
 						>
-							<Box className='text-center'>
+							<Box sx={{ textAlign: 'center' }}>
 								<Typography
 									variant='h4'
 									color='secondary'
@@ -390,7 +403,7 @@ export default function RedirectStats({
 									variant='determinate'
 									value={deviceTotal > 0 ? (stats.deviceStats.mobile / deviceTotal) * 100 : 0}
 									color='secondary'
-									className='mt-2'
+									sx={{ mt: 1 }}
 								/>
 							</Box>
 						</Grid>
@@ -399,7 +412,7 @@ export default function RedirectStats({
 							xs={12}
 							sm={4}
 						>
-							<Box className='text-center'>
+							<Box sx={{ textAlign: 'center' }}>
 								<Typography
 									variant='h4'
 									color='success.main'
@@ -416,7 +429,7 @@ export default function RedirectStats({
 									variant='determinate'
 									value={deviceTotal > 0 ? (stats.deviceStats.tablet / deviceTotal) * 100 : 0}
 									color='success'
-									className='mt-2'
+									sx={{ mt: 1 }}
 								/>
 							</Box>
 						</Grid>
@@ -430,7 +443,7 @@ export default function RedirectStats({
 					<CardContent>
 						<Typography
 							variant='h6'
-							className='mb-3'
+							sx={{ mb: 1.5 }}
 						>
 							Atividade Recente
 						</Typography>
@@ -442,8 +455,22 @@ export default function RedirectStats({
 									animate={{ opacity: 1, x: 0 }}
 									transition={{ delay: index * 0.05 }}
 								>
-									<Box className='flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded'>
-										<Box className='flex items-center gap-2'>
+									<Box
+										sx={(theme) => ({
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'space-between',
+											p: 1,
+											borderRadius: 1,
+											'&:hover': {
+												bgcolor:
+													theme.palette.mode === 'dark'
+														? theme.palette.background.paper
+														: theme.palette.grey[50]
+											}
+										})}
+									>
+										<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 											<ClickIcon
 												fontSize='small'
 												color='action'
