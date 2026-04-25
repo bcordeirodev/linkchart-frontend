@@ -34,7 +34,10 @@ function UnauthorizedPage() {
 				flexDirection: 'column',
 				alignItems: 'center',
 				justifyContent: 'center',
-				p: 2
+				p: 2,
+				minHeight: '100vh',
+				bgcolor: 'background.default',
+				color: 'text.primary'
 			}}
 		>
 			<Box sx={{ width: '100%', maxWidth: 1024, textAlign: 'center' }}>
