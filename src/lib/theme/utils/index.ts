@@ -15,9 +15,6 @@ export * from './colorUtils';
 // Utilitários específicos para cores de gráficos
 export * from './chartColorUtils';
 
-// Utilitários de glass effect - usado em vários componentes
-export * from './glassUtils';
-
 // Utilitários de gradiente - usado em vários componentes
 export * from './gradientUtils';
 

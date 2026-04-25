@@ -103,13 +103,6 @@ export {
 	getContextColor,
 	getMultiSeriesColors,
 
-	// Glass effects - usado em vários componentes
-	createGlassEffect,
-	createGlassCard,
-	createGlassNavbar,
-	createGlassModal,
-	createGlassButton,
-
 	// Gradients - usado em vários componentes
 	createGradient,
 	createThemeGradient,
