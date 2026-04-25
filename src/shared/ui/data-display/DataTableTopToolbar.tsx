@@ -125,10 +125,13 @@ function DataTableTopToolbar<TData extends MRT_RowData>({ table }: MRT_TopToolba
 				/>
 			</Box>
 			<MRT_ToolbarAlertBanner
-				className='mt-1 rounded-md flex justify-center'
 				stackAlertBanner={stackAlertBanner}
 				table={table}
 				sx={{
+					mt: 0.5,
+					borderRadius: 1,
+					display: 'flex',
+					justifyContent: 'center',
 					'& .MuiStack-root': {
 						display: 'flex',
 						justifyContent: 'center',

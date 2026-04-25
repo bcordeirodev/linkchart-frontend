@@ -251,7 +251,7 @@ export function FormActions({
 					isLoading={loading}
 					onClick={onSubmit}
 					disabled={!canSubmit || loading}
-					className='mt-4'
+					sx={{ mt: 2 }}
 					startIcon={
 						loading ? (
 							<CircularProgress

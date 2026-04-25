@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
@@ -22,9 +23,17 @@ function LoadingWithRedirect({ message = 'Redirecting...', showProgress = true, 
 				scale: 1,
 				transition: { delay: delay / 1000 }
 			}}
-			className='flex flex-1 flex-col items-center justify-center p-8 min-h-[400px]'
+			style={{
+				display: 'flex',
+				flex: 1,
+				flexDirection: 'column',
+				alignItems: 'center',
+				justifyContent: 'center',
+				padding: 32,
+				minHeight: 400
+			}}
 		>
-			<div className='text-center max-w-md'>
+			<Box sx={{ textAlign: 'center', maxWidth: 448 }}>
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{
@@ -43,18 +52,24 @@ function LoadingWithRedirect({ message = 'Redirecting...', showProgress = true, 
 						y: 0,
 						transition: { delay: (delay + 400) / 1000 }
 					}}
-					className='mt-6'
+					style={{ marginTop: 24 }}
 				>
 					<Typography
 						variant='h6'
-						className='text-gray-700 dark:text-gray-300 mb-2'
+						sx={(theme) => ({
+							color:
+								theme.palette.mode === 'dark'
+									? theme.palette.grey[300]
+									: theme.palette.grey[700],
+							mb: 1
+						})}
 					>
 						{message}
 					</Typography>
 					<Typography
 						variant='body2'
 						color='text.secondary'
-						className='mb-4'
+						sx={{ mb: 2 }}
 					>
 						Please wait while we redirect you
 					</Typography>
@@ -67,12 +82,17 @@ function LoadingWithRedirect({ message = 'Redirecting...', showProgress = true, 
 								scaleX: 1,
 								transition: { delay: (delay + 600) / 1000, duration: 0.5 }
 							}}
-							className='w-full max-w-xs mx-auto'
+							style={{
+								width: '100%',
+								maxWidth: 320,
+								marginLeft: 'auto',
+								marginRight: 'auto'
+							}}
 						>
 							<LinearProgress
 								variant='indeterminate'
-								className='rounded-full'
 								sx={{
+									borderRadius: 9999,
 									'& .MuiLinearProgress-bar': {
 										borderRadius: '4px'
 									}
@@ -81,7 +101,7 @@ function LoadingWithRedirect({ message = 'Redirecting...', showProgress = true, 
 						</motion.div>
 					) : null}
 				</motion.div>
-			</div>
+			</Box>
 		</motion.div>
 	);
 }

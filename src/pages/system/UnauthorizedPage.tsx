@@ -27,8 +27,17 @@ function UnauthorizedPage() {
 	}, [isAuthenticated, navigate]);
 
 	return (
-		<div className='flex flex-1 flex-col items-center justify-center p-4'>
-			<div className='w-full max-w-5xl text-center'>
+		<Box
+			sx={{
+				display: 'flex',
+				flex: 1,
+				flexDirection: 'column',
+				alignItems: 'center',
+				justifyContent: 'center',
+				p: 2
+			}}
+		>
+			<Box sx={{ width: '100%', maxWidth: 1024, textAlign: 'center' }}>
 				<motion.div
 					initial={{ opacity: 0, scale: 0.6 }}
 					animate={{ opacity: 1, scale: 1, transition: { delay: 0.1 } }}
@@ -107,7 +116,14 @@ function UnauthorizedPage() {
 				>
 					<Typography
 						variant='h1'
-						className='mt-12 text-center text-4xl font-extrabold leading-[1.25] tracking-tight sm:mt-24 md:text-7xl md:leading-none'
+						sx={{
+							mt: { xs: 6, sm: 12 },
+							textAlign: 'center',
+							fontSize: { xs: '2.25rem', md: '4.5rem' },
+							fontWeight: 800,
+							lineHeight: { xs: 1.25, md: 1 },
+							letterSpacing: '-0.025em'
+						}}
 					>
 						401
 					</Typography>
@@ -126,7 +142,13 @@ function UnauthorizedPage() {
 					<Typography
 						variant='h5'
 						color='text.secondary'
-						className='mt-2 text-center text-lg font-medium tracking-tight md:text-xl'
+						sx={{
+							mt: 1,
+							textAlign: 'center',
+							fontSize: { xs: '1.125rem', md: '1.25rem' },
+							fontWeight: 500,
+							letterSpacing: '-0.025em'
+						}}
 					>
 						You do not have permission to view this page.
 					</Typography>
@@ -134,35 +156,41 @@ function UnauthorizedPage() {
 				<motion.div
 					initial={{ opacity: 0, y: 40 }}
 					animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
-					className='mt-8 flex flex-col items-center gap-4'
+					style={{
+						marginTop: 32,
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						gap: 16
+					}}
 				>
 					{isAuthenticated ? (
-						<div className='flex gap-4'>
+						<Box sx={{ display: 'flex', gap: 2 }}>
 							<Button
 								variant='contained'
 								onClick={handleGoBack}
-								className='min-w-[120px]'
+								sx={{ minWidth: 120 }}
 							>
 								Go Home
 							</Button>
 							<Link to='/'>
 								<Button variant='outlined'>Home</Button>
 							</Link>
-						</div>
+						</Box>
 					) : (
 						<>
 							<Typography
 								variant='body2'
 								color='text.secondary'
-								className='text-center'
+								sx={{ textAlign: 'center' }}
 							>
 								Please sign in to access this page
 							</Typography>
-							<div className='flex gap-4'>
+							<Box sx={{ display: 'flex', gap: 2 }}>
 								<Link to='/sign-in'>
 									<Button
 										variant='contained'
-										className='min-w-[120px]'
+										sx={{ minWidth: 120 }}
 									>
 										Sign In
 									</Button>
@@ -170,12 +198,12 @@ function UnauthorizedPage() {
 								<Link to='/'>
 									<Button variant='outlined'>Home</Button>
 								</Link>
-							</div>
+							</Box>
 						</>
 					)}
 				</motion.div>
-			</div>
-		</div>
+			</Box>
+		</Box>
 	);
 }
 

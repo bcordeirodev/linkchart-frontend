@@ -1,3 +1,5 @@
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 
 import { getSessionRedirectUrl, resetSessionRedirectUrl, setSessionRedirectUrl } from '@/lib/auth/sessionRedirectUrl';
@@ -98,14 +100,26 @@ function AuthGuardRedirect({ auth, children, loginRedirectUrl = '/' }: AuthGuard
 	// Enhanced loading state with context information
 	if (!accessGranted) {
 		return (
-			<div className='flex flex-1 flex-col items-center justify-center p-4'>
+			<Box
+				sx={{
+					display: 'flex',
+					flex: 1,
+					flexDirection: 'column',
+					alignItems: 'center',
+					justifyContent: 'center',
+					p: 2
+				}}
+			>
 				<Loading />
-				<div className='mt-4 text-center'>
-					<p className='text-sm text-gray-600 dark:text-gray-400'>
+				<Box sx={{ mt: 2, textAlign: 'center' }}>
+					<Typography
+						variant='body2'
+						color='text.secondary'
+					>
 						{isGuest ? 'Redirecting to sign in...' : 'Checking permissions...'}
-					</p>
-				</div>
-			</div>
+					</Typography>
+				</Box>
+			</Box>
 		);
 	}
 
