@@ -61,12 +61,13 @@ export default defineConfig({
         proxy: {
             // Proxy para API - evita CORS completamente em desenvolvimento
             '/api': {
-                target: 'http://localhost:8000',
+                target: process.env.VITE_API_PROXY_TARGET || 'http://localhost:8000',
                 changeOrigin: true,
                 secure: false,
                 configure: (proxy, _options) => {
+                    const target = process.env.VITE_API_PROXY_TARGET || 'http://localhost:8000';
                     proxy.on('proxyReq', (proxyReq, req, _res) => {
-                        console.log(`🔄 Proxy: ${req.method} ${req.url} -> http://localhost:8000${req.url}`);
+                        console.log(`🔄 Proxy: ${req.method} ${req.url} -> ${target}${req.url}`);
                     });
                     proxy.on('proxyRes', (proxyRes, req, _res) => {
                         console.log(`✅ Response: ${proxyRes.statusCode} ${req.url}`);
