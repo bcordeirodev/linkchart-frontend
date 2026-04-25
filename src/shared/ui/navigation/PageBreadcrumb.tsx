@@ -1,6 +1,5 @@
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
-import clsx from 'clsx';
 
 import { Link } from '@/shared/components';
 import { usePathname } from '@/shared/hooks';
@@ -13,7 +12,7 @@ type PageBreadcrumbProps = BreadcrumbsProps & {
 };
 
 function PageBreadcrumb(props: PageBreadcrumbProps) {
-	const { className, skipHome = false, ...rest } = props;
+	const { className, skipHome = false, sx, ...rest } = props;
 	const pathname = usePathname();
 
 	const crumbs = pathname
@@ -22,7 +21,6 @@ function PageBreadcrumb(props: PageBreadcrumbProps) {
 		.reduce(
 			(acc: { title: string; url: string }[], part, index, array) => {
 				const url = `/${array.slice(0, index + 1).join('/')}`;
-				// Título simples baseado no path
 				const title = part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' ');
 
 				acc.push({ title, url });
@@ -33,23 +31,43 @@ function PageBreadcrumb(props: PageBreadcrumbProps) {
 
 	return (
 		<Breadcrumbs
-			classes={{ ol: 'list-none m-0 p-0' }}
-			className={clsx('flex w-full', className)}
+			className={className}
 			aria-label='breadcrumb'
-			color='primary'
+			sx={{
+				display: 'flex',
+				width: '100%',
+				color: 'text.secondary',
+				'& .MuiBreadcrumbs-ol': { listStyle: 'none', m: 0, p: 0 },
+				'& .MuiBreadcrumbs-separator': { color: 'text.disabled' },
+				...sx
+			}}
 			{...rest}
 		>
-			{crumbs.map((item, index) => (
-				<Typography
-					component={item.url ? Link : 'span'}
-					to={item.url}
-					key={index}
-					className='block font-medium tracking-tight capitalize max-w-32 truncate'
-					role='button'
-				>
-					{item.title}
-				</Typography>
-			))}
+			{crumbs.map((item, index) => {
+				const isLast = index === crumbs.length - 1;
+				return (
+					<Typography
+						component={item.url ? Link : 'span'}
+						to={item.url}
+						key={index}
+						variant='body2'
+						role='button'
+						sx={{
+							display: 'block',
+							fontWeight: 500,
+							letterSpacing: '-0.025em',
+							textTransform: 'capitalize',
+							maxWidth: 128,
+							overflow: 'hidden',
+							textOverflow: 'ellipsis',
+							whiteSpace: 'nowrap',
+							color: isLast ? 'text.primary' : 'text.secondary'
+						}}
+					>
+						{item.title}
+					</Typography>
+				);
+			})}
 		</Breadcrumbs>
 	);
 }
