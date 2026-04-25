@@ -17,7 +17,9 @@
  */
 
 import { GitHub, LinkedIn, Twitter } from '@mui/icons-material';
-import { Box, Container, Typography, Link, useTheme, alpha } from '@mui/material';
+import { Box, Container, Typography, Link, useTheme } from '@mui/material';
+
+import { darkNeutral, lightNeutral } from '@/lib/theme/colors';
 
 /**
  * Props do componente Footer
@@ -35,9 +37,8 @@ export function Footer({ style = 'static' }: FooterProps) {
 	const currentYear = new Date().getFullYear();
 
 	const footerSx = {
-		backgroundColor: alpha(theme.palette.background.paper, 0.95),
-		backdropFilter: 'blur(10px)',
-		borderTop: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+		backgroundColor: theme.palette.mode === 'dark' ? darkNeutral.surface : lightNeutral.surface,
+		borderTop: `1px solid ${theme.palette.divider}`,
 		py: 3,
 		mt: 'auto',
 		...(style === 'fixed' && {
@@ -125,7 +126,7 @@ export function Footer({ style = 'static' }: FooterProps) {
 								borderRadius: 1,
 								'&:hover': {
 									color: 'primary.main',
-									backgroundColor: alpha(theme.palette.primary.main, 0.1)
+									backgroundColor: theme.palette.action.hover
 								}
 							}}
 						>
@@ -143,7 +144,7 @@ export function Footer({ style = 'static' }: FooterProps) {
 								borderRadius: 1,
 								'&:hover': {
 									color: 'primary.main',
-									backgroundColor: alpha(theme.palette.primary.main, 0.1)
+									backgroundColor: theme.palette.action.hover
 								}
 							}}
 						>
@@ -161,7 +162,7 @@ export function Footer({ style = 'static' }: FooterProps) {
 								borderRadius: 1,
 								'&:hover': {
 									color: 'primary.main',
-									backgroundColor: alpha(theme.palette.primary.main, 0.1)
+									backgroundColor: theme.palette.action.hover
 								}
 							}}
 						>

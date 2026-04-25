@@ -3,7 +3,8 @@
  */
 import { Box, useTheme } from '@mui/material';
 
-import { useMainTheme, useResponsive } from '@/lib/theme';
+import { useResponsive } from '@/lib/theme';
+import { motionTokens } from '@/lib/theme/designSystem';
 
 import { Navbar, Footer } from './components';
 
@@ -16,7 +17,6 @@ interface MainLayoutProps {
 
 function MainLayout({ children, navbar = true, footer = true, className }: MainLayoutProps) {
 	const theme = useTheme();
-	const mainTheme = useMainTheme();
 	const { isMobile } = useResponsive();
 
 	const showNavbar = navbar;
@@ -35,13 +35,7 @@ function MainLayout({ children, navbar = true, footer = true, className }: MainL
 				display: 'flex',
 				flexDirection: 'column',
 				overflow: 'hidden',
-				transition: theme.transitions.create(['background-color', 'color'], {
-					duration: theme.transitions.duration.standard
-				}),
-				'& .MuiAppBar-root': {
-					backgroundColor: mainTheme?.palette?.primary?.main || theme.palette.primary.main,
-					color: mainTheme?.palette?.primary?.contrastText || theme.palette.primary.contrastText
-				},
+				transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 				'&::-webkit-scrollbar': {
 					width: '8px'
 				},

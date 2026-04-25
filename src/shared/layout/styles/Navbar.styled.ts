@@ -1,13 +1,14 @@
 import { AppBar, Toolbar, Button, IconButton } from '@mui/material';
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
+
+import { darkNeutral, lightNeutral } from '@/lib/theme/colors';
+import { motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-// Disable TypeScript warnings for styled components type inference
 
 /**
- * 🎨 STYLED COMPONENTS PARA HORIZONTAL NAVBAR
- * Navbar horizontal padronizado com glassmorphism e animações
+ * STYLED COMPONENTS PARA HORIZONTAL NAVBAR
+ * POV sóbrio (SP2): superfícies sólidas, sem glassmorphism nem gradients.
  */
 
 // ========================================
@@ -15,46 +16,14 @@ import { styled, alpha } from '@mui/material/styles';
 // ========================================
 
 export const StyledAppBar = styled(AppBar)(({ theme }) => ({
-	backgroundColor: alpha(theme.palette.background.paper, 0.98),
-	backdropFilter: 'blur(24px)',
-	borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-	boxShadow: `
-        0 1px 3px ${alpha(theme.palette.common.black, 0.04)},
-        0 4px 12px ${alpha(theme.palette.common.black, 0.02)}
-    `,
+	backgroundColor: theme.palette.mode === 'dark' ? darkNeutral.surface : lightNeutral.surface,
+	backgroundImage: 'none',
+	borderBottom: `1px solid ${theme.palette.divider}`,
+	boxShadow: 'none',
 	color: theme.palette.text.primary,
-	transition: theme.transitions.create(['all'], {
-		duration: theme.transitions.duration.standard,
-		easing: theme.transitions.easing.easeInOut
-	}),
+	transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 	position: 'relative',
-	zIndex: theme.zIndex.appBar,
-
-	'&::before': {
-		content: '""',
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		right: 0,
-		height: '1px',
-		background: `linear-gradient(90deg, 
-            transparent 0%,
-            ${alpha(theme.palette.primary.main, 0.1)} 20%,
-            ${alpha(theme.palette.primary.main, 0.3)} 50%,
-            ${alpha(theme.palette.primary.main, 0.1)} 80%,
-            transparent 100%
-        )`,
-		opacity: 0.8
-	},
-
-	// Hover effect for the entire navbar
-	'&:hover::before': {
-		opacity: 1
-	},
-
-	[theme.breakpoints.down('md')]: {
-		backdropFilter: 'blur(20px)'
-	}
+	zIndex: theme.zIndex.appBar
 }));
 
 export const StyledToolbar = styled(Toolbar)(({ theme }) => ({
@@ -91,24 +60,18 @@ export const NavButton = styled(Button, {
 })<{
 	isActive?: boolean;
 }>(({ theme, isActive = false }) => ({
-	borderRadius: theme.spacing(1.5),
+	borderRadius: `${radiusTokens.md}px`,
 	textTransform: 'none',
 	fontWeight: 600,
 	fontSize: '0.875rem',
 	padding: theme.spacing(1.5, 3),
 	minWidth: 'auto',
 	position: 'relative',
-	transition: theme.transitions.create(['all'], {
-		duration: theme.transitions.duration.short,
-		easing: theme.transitions.easing.easeInOut
-	}),
-	color: theme.palette.text.primary,
+	transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+	color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
 
-	// Active state
 	...(isActive && {
-		backgroundColor: alpha(theme.palette.primary.main, 0.1),
-		color: theme.palette.primary.main,
-		boxShadow: `inset 0 1px 3px ${alpha(theme.palette.primary.main, 0.1)}`,
+		backgroundColor: theme.palette.action.selected,
 
 		'&::after': {
 			content: '""',
@@ -119,24 +82,12 @@ export const NavButton = styled(Button, {
 			width: '60%',
 			height: '2px',
 			backgroundColor: theme.palette.primary.main,
-			borderRadius: '1px',
-			boxShadow: `0 0 8px ${alpha(theme.palette.primary.main, 0.4)}`
-		},
-
-		'&:hover': {
-			backgroundColor: alpha(theme.palette.primary.main, 0.15)
+			borderRadius: '1px'
 		}
 	}),
 
-	// Hover state
 	'&:hover': {
-		backgroundColor: isActive ? alpha(theme.palette.primary.main, 0.15) : alpha(theme.palette.primary.main, 0.06),
-		transform: 'translateY(-1px)',
-		boxShadow: `0 2px 8px ${alpha(theme.palette.common.black, 0.1)}`
-	},
-
-	'&:active': {
-		transform: 'translateY(0)'
+		backgroundColor: theme.palette.action.hover
 	},
 
 	[theme.breakpoints.down('lg')]: {
@@ -153,19 +104,12 @@ export const NavButton = styled(Button, {
 export const MobileMenuButton = styled(IconButton)(({ theme }) => ({
 	padding: theme.spacing(1),
 	color: theme.palette.text.primary,
-	borderRadius: theme.spacing(1.5),
-	transition: theme.transitions.create(['all'], {
-		duration: theme.transitions.duration.short
-	}),
+	borderRadius: `${radiusTokens.md}px`,
+	transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 
 	'&:hover': {
-		backgroundColor: alpha(theme.palette.primary.main, 0.08),
-		color: theme.palette.primary.main,
-		transform: 'scale(1.05)'
-	},
-
-	'&:active': {
-		transform: 'scale(0.98)'
+		backgroundColor: theme.palette.action.hover,
+		color: theme.palette.primary.main
 	}
 }));
 
@@ -174,53 +118,19 @@ export const MobileMenuButton = styled(IconButton)(({ theme }) => ({
 // ========================================
 
 export const PrimaryActionButton = styled(Button)(({ theme }) => ({
-	borderRadius: theme.spacing(2.5),
+	borderRadius: `${radiusTokens.md}px`,
 	textTransform: 'none',
-	fontWeight: 700,
+	fontWeight: 600,
 	fontSize: '0.875rem',
 	padding: theme.spacing(1.25, 3),
-	background: `linear-gradient(135deg, 
-        ${theme.palette.primary.main} 0%, 
-        ${theme.palette.primary.dark} 100%
-    )`,
-	boxShadow: `
-        0 2px 8px ${alpha(theme.palette.primary.main, 0.3)},
-        0 1px 3px ${alpha(theme.palette.common.black, 0.1)}
-    `,
-	transition: theme.transitions.create(['all'], {
-		duration: theme.transitions.duration.short,
-		easing: theme.transitions.easing.easeInOut
-	}),
-	position: 'relative',
-	overflow: 'hidden',
-
-	'&::before': {
-		content: '""',
-		position: 'absolute',
-		top: 0,
-		left: '-100%',
-		width: '100%',
-		height: '100%',
-		background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-		transition: theme.transitions.create(['left'], {
-			duration: theme.transitions.duration.standard
-		})
-	},
+	backgroundColor: theme.palette.primary.main,
+	color: theme.palette.primary.contrastText,
+	boxShadow: 'none',
+	transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 
 	'&:hover': {
-		transform: 'translateY(-2px)',
-		boxShadow: `
-            0 4px 16px ${alpha(theme.palette.primary.main, 0.4)},
-            0 2px 8px ${alpha(theme.palette.common.black, 0.15)}
-        `,
-
-		'&::before': {
-			left: '100%'
-		}
-	},
-
-	'&:active': {
-		transform: 'translateY(-1px)'
+		backgroundColor: theme.palette.primary.dark,
+		boxShadow: 'none'
 	},
 
 	[theme.breakpoints.down('lg')]: {
@@ -236,23 +146,12 @@ export const PrimaryActionButton = styled(Button)(({ theme }) => ({
 export const MobileActionButton = styled(IconButton)(({ theme }) => ({
 	width: 44,
 	height: 44,
-	background: `linear-gradient(135deg, 
-        ${theme.palette.primary.main} 0%, 
-        ${theme.palette.primary.dark} 100%
-    )`,
+	backgroundColor: theme.palette.primary.main,
 	color: theme.palette.primary.contrastText,
-	boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.3)}`,
-	transition: theme.transitions.create(['all'], {
-		duration: theme.transitions.duration.short
-	}),
+	transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 
 	'&:hover': {
-		transform: 'translateY(-2px)',
-		boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.4)}`
-	},
-
-	'&:active': {
-		transform: 'translateY(-1px)'
+		backgroundColor: theme.palette.primary.dark
 	},
 
 	[theme.breakpoints.down('sm')]: {
@@ -307,13 +206,6 @@ export const LogoContainer = styled('div')(({ theme }) => ({
 	display: 'flex',
 	alignItems: 'center',
 	marginRight: theme.spacing(4),
-	transition: theme.transitions.create(['transform'], {
-		duration: theme.transitions.duration.short
-	}),
-
-	'&:hover': {
-		transform: 'scale(1.02)'
-	},
 
 	[theme.breakpoints.down('lg')]: {
 		marginRight: theme.spacing(3)
@@ -333,33 +225,30 @@ export const LogoContainer = styled('div')(({ theme }) => ({
 // ========================================
 
 export const StyledMenuPaper = {
+	// @ts-ignore
 	sx: (theme: any) => ({
 		marginTop: theme.spacing(1),
 		minWidth: 200,
-		boxShadow: theme.shadows[8],
-		borderRadius: theme.spacing(1.5),
-		border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-		backdropFilter: 'blur(20px)',
-		background: alpha(theme.palette.background.paper, 0.95),
+		boxShadow: theme.shadows[4],
+		borderRadius: `${radiusTokens.md}px`,
+		border: `1px solid ${theme.palette.divider}`,
+		backgroundColor: theme.palette.background.paper,
 
 		'& .MuiMenuItem-root': {
-			borderRadius: theme.spacing(1),
+			borderRadius: `${radiusTokens.sm}px`,
 			margin: theme.spacing(0.5),
-			transition: theme.transitions.create(['all'], {
-				duration: theme.transitions.duration.short
-			}),
+			transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 
 			'&:hover': {
-				backgroundColor: alpha(theme.palette.primary.main, 0.08),
-				transform: 'translateX(4px)'
+				backgroundColor: theme.palette.action.hover
 			},
 
 			'&.Mui-selected': {
-				backgroundColor: alpha(theme.palette.primary.main, 0.12),
+				backgroundColor: theme.palette.action.selected,
 				color: theme.palette.primary.main,
 
 				'&:hover': {
-					backgroundColor: alpha(theme.palette.primary.main, 0.16)
+					backgroundColor: theme.palette.action.selected
 				}
 			}
 		}

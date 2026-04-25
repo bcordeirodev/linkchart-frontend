@@ -1,5 +1,5 @@
 /**
- * Componente de navegação principal com design moderno
+ * Componente de navegação principal — POV sóbrio (SP2)
  */
 
 import {
@@ -18,11 +18,12 @@ import {
 	ListItemText,
 	Tooltip
 } from '@mui/material';
-import { alpha } from '@mui/material/styles';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/lib/auth/AuthContext';
+import { darkNeutral, lightNeutral } from '@/lib/theme/colors';
+import { motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 import { AppIcon } from '@/shared/ui/icons';
 
 interface NavbarProps {
@@ -30,22 +31,14 @@ interface NavbarProps {
 	isMobile?: boolean;
 }
 
-export function Navbar({ onMobileMenuToggle }: NavbarProps) {
+export function Navbar({ onMobileMenuToggle: _onMobileMenuToggle }: NavbarProps) {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const { user, logout } = useAuth();
 
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const [scrolled, setScrolled] = useState(false);
 	const isMenuOpen = Boolean(anchorEl);
-
-	useEffect(() => {
-		const handleScroll = () => {
-			setScrolled(window.scrollY > 20);
-		};
-		window.addEventListener('scroll', handleScroll);
-		return () => window.removeEventListener('scroll', handleScroll);
-	}, []);
+	const isDark = theme.palette.mode === 'dark';
 
 	const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -61,51 +54,18 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 		navigate('/sign-in');
 	};
 
-	// Estilos dinâmicos da AppBar
-	const appBarSx = {
-		background: scrolled
-			? `linear-gradient(135deg,
-                ${alpha(theme.palette.background.paper, 0.95)} 0%,
-                ${alpha(theme.palette.background.default, 0.9)} 100%)`
-			: `linear-gradient(135deg,
-                ${alpha(theme.palette.background.paper, 0.8)} 0%,
-                ${alpha(theme.palette.background.default, 0.7)} 100%)`,
-		backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'blur(10px) saturate(150%)',
-		borderBottom: `1px solid ${alpha(theme.palette.divider, scrolled ? 0.2 : 0.1)}`,
-		boxShadow: scrolled
-			? `0 8px 32px ${alpha(theme.palette.common.black, 0.12)}`
-			: `0 4px 16px ${alpha(theme.palette.common.black, 0.08)}`,
-		borderRadius: `0px !important`,
-		transition: theme.transitions.create(['all'], {
-			duration: theme.transitions.duration.standard,
-			easing: theme.transitions.easing.easeInOut
-		}),
-		'&::before': {
-			content: '""',
-			position: 'absolute',
-			top: 0,
-			left: 0,
-			right: 0,
-			height: '1px',
-			background: `linear-gradient(90deg,
-                transparent 0%,
-                ${alpha(theme.palette.primary.main, 0.3)} 20%,
-                ${alpha(theme.palette.primary.main, 0.6)} 50%,
-                ${alpha(theme.palette.primary.main, 0.3)} 80%,
-                transparent 100%
-            )`,
-			opacity: scrolled ? 1 : 0.7,
-			transition: theme.transitions.create(['opacity'], {
-				duration: theme.transitions.duration.standard
-			})
-		}
-	};
-
 	return (
 		<AppBar
 			position='fixed'
 			elevation={0}
-			sx={appBarSx}
+			sx={{
+				backgroundColor: isDark ? darkNeutral.surface : lightNeutral.surface,
+				backgroundImage: 'none',
+				borderBottom: `1px solid ${theme.palette.divider}`,
+				boxShadow: 'none',
+				color: theme.palette.text.primary,
+				transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`
+			}}
 		>
 			<Toolbar
 				sx={{
@@ -121,13 +81,7 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 					sx={{
 						display: 'flex',
 						alignItems: 'center',
-						cursor: 'pointer',
-						transition: theme.transitions.create(['transform'], {
-							duration: theme.transitions.duration.short
-						}),
-						'&:hover': {
-							transform: 'scale(1.05)'
-						}
+						cursor: 'pointer'
 					}}
 				>
 					{/* Logo Icon */}
@@ -135,38 +89,18 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 						sx={{
 							width: 40,
 							height: 40,
-							borderRadius: 2,
-							background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+							borderRadius: `${radiusTokens.md}px`,
+							backgroundColor: theme.palette.primary.main,
 							display: 'flex',
 							alignItems: 'center',
 							justifyContent: 'center',
-							mr: 2,
-							boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`,
-							position: 'relative',
-							overflow: 'hidden',
-							'&::before': {
-								content: '""',
-								position: 'absolute',
-								top: 0,
-								left: 0,
-								right: 0,
-								bottom: 0,
-								background:
-									'linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%)',
-								transform: 'translateX(-100%)',
-								transition: theme.transitions.create(['transform'], {
-									duration: theme.transitions.duration.standard
-								})
-							},
-							'&:hover::before': {
-								transform: 'translateX(100%)'
-							}
+							mr: 2
 						}}
 					>
 						<AppIcon
 							intent='analytics'
 							size={20}
-							color='white'
+							color={theme.palette.primary.contrastText}
 						/>
 					</Box>
 
@@ -176,11 +110,8 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 							variant='h6'
 							component='div'
 							sx={{
-								fontWeight: 800,
-								background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-								backgroundClip: 'text',
-								WebkitBackgroundClip: 'text',
-								WebkitTextFillColor: 'transparent',
+								fontWeight: 600,
+								color: theme.palette.text.primary,
 								fontSize: '1.25rem',
 								letterSpacing: '-0.025em'
 							}}
@@ -204,7 +135,6 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 
 				{/* Right Section */}
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					{/* User Menu */}
 					{user ? (
 						<Tooltip
 							title={`${user.displayName} - Click for menu`}
@@ -216,12 +146,10 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 								aria-label='account menu'
 								onClick={handleProfileMenuOpen}
 								sx={{
-									background: alpha(theme.palette.background.paper, 0.8),
-									backdropFilter: 'blur(10px)',
-									borderRadius: 2,
+									borderRadius: `${radiusTokens.md}px`,
+									transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 									'&:hover': {
-										background: alpha(theme.palette.background.paper, 0.9),
-										transform: 'scale(1.05)'
+										backgroundColor: theme.palette.action.hover
 									}
 								}}
 							>
@@ -229,10 +157,10 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 									sx={{
 										width: 36,
 										height: 36,
-										background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+										backgroundColor: theme.palette.primary.main,
+										color: theme.palette.primary.contrastText,
 										fontSize: '0.875rem',
-										fontWeight: 700,
-										boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`
+										fontWeight: 600
 									}}
 								>
 									{user.displayName?.charAt(0).toUpperCase() ?? 'U'}
@@ -242,7 +170,7 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 					) : null}
 				</Box>
 
-				{/* Enhanced User Menu Dropdown */}
+				{/* User Menu Dropdown */}
 				<Menu
 					anchorEl={anchorEl}
 					anchorOrigin={{
@@ -260,13 +188,10 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 						sx: {
 							mt: 1.5,
 							minWidth: 280,
-							borderRadius: 3,
-							background: `linear-gradient(135deg,
-                                ${alpha(theme.palette.background.paper, 0.95)} 0%,
-                                ${alpha(theme.palette.background.default, 0.9)} 100%)`,
-							backdropFilter: 'blur(20px)',
-							border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
-							boxShadow: `0 12px 32px ${alpha(theme.palette.common.black, 0.15)}`,
+							borderRadius: `${radiusTokens.md}px`,
+							backgroundColor: theme.palette.background.paper,
+							border: `1px solid ${theme.palette.divider}`,
+							boxShadow: theme.shadows[4],
 							overflow: 'visible',
 							'&::before': {
 								content: '""',
@@ -277,6 +202,8 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 								width: 10,
 								height: 10,
 								bgcolor: 'background.paper',
+								borderTop: `1px solid ${theme.palette.divider}`,
+								borderLeft: `1px solid ${theme.palette.divider}`,
 								transform: 'translateY(-50%) rotate(45deg)',
 								zIndex: 0
 							}
@@ -284,13 +211,14 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 					}}
 				>
 					{/* User Info Header */}
-					<Box sx={{ px: 3, py: 2, borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}` }}>
+					<Box sx={{ px: 3, py: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
 						<Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
 							<Avatar
 								sx={{
 									width: 48,
 									height: 48,
-									background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
+									backgroundColor: theme.palette.primary.main,
+									color: theme.palette.primary.contrastText
 								}}
 							>
 								{user?.displayName?.charAt(0).toUpperCase() ?? 'U'}
@@ -328,7 +256,7 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 							py: 1.5,
 							px: 3,
 							'&:hover': {
-								background: alpha(theme.palette.primary.main, 0.08)
+								backgroundColor: theme.palette.action.hover
 							}
 						}}
 					>
@@ -353,7 +281,7 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
 							px: 3,
 							color: theme.palette.error.main,
 							'&:hover': {
-								background: alpha(theme.palette.error.main, 0.08)
+								backgroundColor: theme.palette.action.hover
 							}
 						}}
 					>
