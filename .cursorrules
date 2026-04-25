@@ -83,14 +83,10 @@ error: 'error'         // Problemas
 ```
 
 ### Cores para Charts:
-```typescript
-'#1976d2'  // Azul principal
-'#2e7d32'  // Verde
-'#dc004e'  // Rosa
-'#9c27b0'  // Roxo
-'#ff9800'  // Laranja
-'#d32f2f'  // Vermelho
-```
+Usar `chartPalette` de `@/lib/theme/colors` — 8 cores harmônicas, dark-first.
+Consumir via `getChartColor(index)` para séries múltiplas, ou
+`chartByType.<grupo>.<chave>` (devices/geographic/temporal/heatmap) quando
+o dado tiver semântica conhecida.
 
 ### Espaçamentos Padrão:
 ```typescript
