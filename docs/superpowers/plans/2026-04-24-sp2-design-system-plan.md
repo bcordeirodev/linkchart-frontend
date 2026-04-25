@@ -2122,4 +2122,8 @@ Sem commit; apenas nota no plano ou README do projeto se for convenção.
 - **Validação visual completa**: telas públicas e autenticadas (Profile, Link list/create/edit/analytics, Shorter) revisadas pelo dono em ambos os modos — tudo OK, sem regressões reportadas.
 
 ## Achados Camada 3
-_(preencher com issues descobertas na Task 31)_
+
+- **Task 28 (Motion) ajuste vs plano**: plano sugeria fade-in no MetricCard quando "value muda" — pulado por falta de sinal externo de "value changed" no componente. Aplicado em vez disso: remoção do hover transform (alinhado ao princípio "motion serve à compreensão, nunca decorativo"). Hover agora é só shadow lift sutil.
+- **Task 29 (Limpeza)**: `glassUtils.ts` deletado (5 helpers órfãos), pasta `themes/` deletada (re-export órfão). `gradientUtils.ts` **mantido** por ter 4 consumidores em features fora do escopo SP2 (ProfileHeader, PublicCharts, ShorterStats, PageHeader) — backlog para SP3 ou refator quando essas features forem tocadas.
+- **Critérios de aceitação do spec verificados**: Tailwind ausente do `src/`, do `package.json`, e configs deletadas. `colors/` reduzido a `dark.ts | light.ts | semantic.ts | chart.ts | index.ts`. Build de produção passa, type-check verde, lint sem erros nos arquivos SP2. `npm run quality` cheio falha **apenas** por format:check em 3 arquivos do trabalho paralelo do dono (links-listing-upgrade) — fora do escopo SP2.
+- **Bug crítico colateral resolvido**: `ApexChartWrapper` tinha `theme.mode: 'light'` hardcoded; charts agora seguem o modo da app (registrado em "Achados Camada 2" mas vale destacar como ganho lateral do SP2).
