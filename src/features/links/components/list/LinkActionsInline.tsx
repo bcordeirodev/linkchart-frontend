@@ -14,8 +14,7 @@ export function LinkActionsInline({ shortUrl, onAnalytics }: LinkActionsInlinePr
 	const dispatch = useAppDispatch();
 	const { copied, copy } = useClipboard({
 		timeout: 1500,
-		onSuccess: () =>
-			dispatch(showMessage({ message: 'Link copiado!', variant: 'success' })),
+		onSuccess: () => dispatch(showMessage({ message: 'Link copiado!', variant: 'success' }))
 	});
 
 	return (
@@ -33,7 +32,7 @@ export function LinkActionsInline({ shortUrl, onAnalytics }: LinkActionsInlinePr
 					}}
 					sx={{
 						color: 'text.secondary',
-						'&:hover': { color: 'success.main', bgcolor: 'rgba(46, 125, 50, 0.08)' },
+						'&:hover': { color: 'success.main', bgcolor: 'rgba(46, 125, 50, 0.08)' }
 					}}
 				>
 					<HiChartBar size={18} />
@@ -49,7 +48,7 @@ export function LinkActionsInline({ shortUrl, onAnalytics }: LinkActionsInlinePr
 					}}
 					sx={{
 						color: 'text.secondary',
-						'&:hover': { color: 'primary.main', bgcolor: 'rgba(25, 118, 210, 0.08)' },
+						'&:hover': { color: 'primary.main', bgcolor: 'rgba(25, 118, 210, 0.08)' }
 					}}
 				>
 					{copied ? (

@@ -58,7 +58,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 							{row.original.slug || row.original.custom_slug}
 						</Typography>
 					</Box>
-				),
+				)
 			},
 			{
 				accessorKey: 'short_url',
@@ -81,13 +81,13 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 							maxWidth: 200,
 							overflow: 'hidden',
 							textOverflow: 'ellipsis',
-							whiteSpace: 'nowrap',
+							whiteSpace: 'nowrap'
 						}}
 						title={cell.getValue<string>()}
 					>
 						{cell.getValue<string>()}
 					</Box>
-				),
+				)
 			},
 			{
 				accessorKey: 'clicks',
@@ -101,7 +101,7 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 					>
 						{cell.getValue<number>() ?? 0}
 					</Typography>
-				),
+				)
 			},
 			{
 				accessorKey: 'is_active',
@@ -123,13 +123,13 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 									height: 8,
 									borderRadius: '50%',
 									bgcolor: color,
-									flexShrink: 0,
+									flexShrink: 0
 								}}
 							/>
 							<Typography variant='caption'>{label}</Typography>
 						</Stack>
 					);
-				},
+				}
 			},
 			{
 				id: 'actions',
@@ -158,8 +158,8 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 							/>
 						</Stack>
 					);
-				},
-			},
+				}
+			}
 		],
 		[navigate, handleDelete]
 	);
