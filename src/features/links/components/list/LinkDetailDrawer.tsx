@@ -21,7 +21,7 @@ import {
 import { getLinkStatus, STATUS_MAP } from '@/features/links/utils/linkStatus';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
-import useClipboard from '@/shared/hooks/useClipboard';
+import useClipboard from '@/hooks/useClipboard';
 import type { LinkResponse } from '@/types';
 
 interface LinkDetailDrawerProps {
