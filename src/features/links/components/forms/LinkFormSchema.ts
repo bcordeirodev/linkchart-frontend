@@ -51,25 +51,29 @@ export const linkFormSchema = z
 		// ✅ Data de Expiração - Validação temporal (permite datas passadas para edição)
 		expires_at: z
 			.custom<Dayjs | null>((val) => {
-			return	val === null || dayjs.isDayjs(val)}, 'Data inválida'
-			)
-				
-  			.refine((val) => {
-    			if (!val) {return true;}
+				return val === null || dayjs.isDayjs(val);
+			}, 'Data inválida')
 
-				const expireDate = val.toDate();	
-				const maxDate = dayjs().add(5, 'year').toDate();
-				return expireDate <= maxDate;
-			},
-			 {
-    		message: 'Data de expiração deve ser no máximo 5 anos no futuro'
-  			})
+			.refine(
+				(val) => {
+					if (!val) {
+						return true;
+					}
+
+					const expireDate = val.toDate();
+					const maxDate = dayjs().add(5, 'year').toDate();
+					return expireDate <= maxDate;
+				},
+				{
+					message: 'Data de expiração deve ser no máximo 5 anos no futuro'
+				}
+			)
 			.optional()
 			.nullable(),
 
 		// ✅ Data de Início - Validação temporal (permite datas passadas para edição)
 		starts_in: z
-			.custom<Dayjs | null>((val)=>{
+			.custom<Dayjs | null>((val) => {
 				return val === null || dayjs.isDayjs(val);
 			}, 'Data inválida')
 			.optional()

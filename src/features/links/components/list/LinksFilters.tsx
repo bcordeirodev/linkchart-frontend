@@ -29,21 +29,20 @@ export function LinksFilters({ searchTerm, onSearchChange, statusFilter, onStatu
 	const theme = useTheme();
 
 	const debouncedSearch = useMemo(
-	()=> debounce((value)=>{
-		console.log('debounce tá funcionando na teoria')
-		onSearchChange(value);
-	}),
-	[onSearchChange]
-	)
+		() =>
+			debounce((value) => {
+				console.log('debounce tá funcionando na teoria');
+				onSearchChange(value);
+			}),
+		[onSearchChange]
+	);
 
-	useEffect(()=>{
-		return () =>{
+	useEffect(() => {
+		return () => {
 			debouncedSearch.cancel();
-		}
-	},[debouncedSearch])
-	
-	
-	
+		};
+	}, [debouncedSearch]);
+
 	return (
 		<Box
 			sx={{

@@ -12,10 +12,7 @@ interface TimeframeSelectorProps {
 }
 
 export function TimeframeSelector({ value, onChange }: TimeframeSelectorProps) {
-	const handleChange = (
-		_event: React.MouseEvent<HTMLElement>,
-		newValue: Timeframe | null
-	) => {
+	const handleChange = (_event: React.MouseEvent<HTMLElement>, newValue: Timeframe | null) => {
 		if (newValue) {
 			onChange(newValue);
 		}
@@ -54,4 +51,3 @@ export function TimeframeSelector({ value, onChange }: TimeframeSelectorProps) {
 }
 
 export default TimeframeSelector;
-

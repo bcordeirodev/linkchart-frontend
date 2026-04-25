@@ -452,7 +452,12 @@ export const typographyScale = {
 	body: { fontSize: '0.875rem', lineHeight: 1.43, fontWeight: 400 },
 	bodySm: { fontSize: '0.8125rem', lineHeight: 1.54, fontWeight: 400 },
 	caption: { fontSize: '0.75rem', lineHeight: 1.33, fontWeight: 400 },
-	code: { fontSize: '0.8125rem', lineHeight: 1.54, fontWeight: 400, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }
+	code: {
+		fontSize: '0.8125rem',
+		lineHeight: 1.54,
+		fontWeight: 400,
+		fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace'
+	}
 } as const;
 
 // ========================================

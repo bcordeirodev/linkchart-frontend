@@ -91,7 +91,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 							await authService.getMe();
 						} catch (error) {
 							// Verificar se é erro de autenticação (401) ou erro de rede
-							const isAuthError = error && typeof error === 'object' && 'status' in error && error.status === 401;
+							const isAuthError =
+								error && typeof error === 'object' && 'status' in error && error.status === 401;
 
 							if (isAuthError) {
 								// Token expirado ou inválido - limpar dados locais

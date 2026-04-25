@@ -1,14 +1,7 @@
 import { Box, Button, Paper, useTheme, ButtonGroup, Divider } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-	HiChartBar,
-	HiListBullet,
-	HiPencilSquare,
-	HiClipboardDocument,
-	HiQrCode,
-	HiTrash
-} from 'react-icons/hi2';
+import { HiChartBar, HiListBullet, HiPencilSquare, HiClipboardDocument, HiQrCode, HiTrash } from 'react-icons/hi2';
 
 import useClipboard from '@/shared/hooks/useClipboard';
 
@@ -33,13 +26,7 @@ export function LinkActions({
 	actions = {},
 	currentPage = 'other'
 }: LinkAnalyticsActionsProps) {
-	const {
-		showEdit = true,
-		showCopy = true,
-		showQR = true,
-		showDelete = true,
-		showAnalytics = true
-	} = actions;
+	const { showEdit = true, showCopy = true, showQR = true, showDelete = true, showAnalytics = true } = actions;
 
 	const navigate = useNavigate();
 	const theme = useTheme();
@@ -69,9 +56,7 @@ export function LinkActions({
 	}, [navigate, linkId]);
 
 	const handleDelete = useCallback(async () => {
-		const confirmed = window.confirm(
-			'Tem certeza que deseja excluir este link? Esta ação não pode ser desfeita.'
-		);
+		const confirmed = window.confirm('Tem certeza que deseja excluir este link? Esta ação não pode ser desfeita.');
 
 		if (!confirmed) {
 			return;
@@ -79,7 +64,7 @@ export function LinkActions({
 
 		try {
 			setLoading(true);
-			await new Promise(resolve => setTimeout(resolve, 500));
+			await new Promise((resolve) => setTimeout(resolve, 500));
 
 			if (onDeleteSuccess) {
 				onDeleteSuccess();
@@ -119,26 +104,28 @@ export function LinkActions({
 				width: `100%`,
 				justifyContent: 'space-between',
 				gap: 2,
-				backgroundColor: theme.palette.mode === 'dark'
-					? 'rgba(255, 255, 255, 0.05)'
-					: 'rgba(0, 0, 0, 0.02)',
+				backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
 				borderRadius: 2,
-				border: `1px solid ${theme.palette.mode === 'dark'
-					? 'rgba(255, 255, 255, 0.1)'
-					: 'rgba(0, 0, 0, 0.1)'
-					}`,
+				border: `1px solid ${
+					theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+				}`,
 				flexWrap: 'wrap'
 			}}
 		>
-			<Box sx={{
-				display: 'flex',
-				width: '100%',
-				justifyContent: 'space-between',
-				alignItems: 'center',
-				flexWrap: 'wrap',
-				gap: 2
-			}}>
-				<ButtonGroup variant="outlined" size="small">
+			<Box
+				sx={{
+					display: 'flex',
+					width: '100%',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					flexWrap: 'wrap',
+					gap: 2
+				}}
+			>
+				<ButtonGroup
+					variant='outlined'
+					size='small'
+				>
 					<Button
 						startIcon={<HiListBullet size={18} />}
 						onClick={handleGoToList}
@@ -159,8 +146,15 @@ export function LinkActions({
 						</Button>
 					) : null}
 				</ButtonGroup>
-				<Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-				<ButtonGroup variant="outlined" size="small">
+				<Divider
+					orientation='vertical'
+					flexItem
+					sx={{ mx: 0.5 }}
+				/>
+				<ButtonGroup
+					variant='outlined'
+					size='small'
+				>
 					{showEdit ? (
 						<Button
 							startIcon={<HiPencilSquare size={18} />}
@@ -194,14 +188,18 @@ export function LinkActions({
 						</Button>
 					) : null}
 				</ButtonGroup>
-				<Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+				<Divider
+					orientation='vertical'
+					flexItem
+					sx={{ mx: 0.5 }}
+				/>
 
 				<Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
 					{showDelete ? (
 						<Button
-							variant="outlined"
-							size="small"
-							color="error"
+							variant='outlined'
+							size='small'
+							color='error'
 							startIcon={<HiTrash size={18} />}
 							onClick={handleDelete}
 							disabled={loading}
@@ -226,4 +224,3 @@ export function LinkActions({
 }
 
 export default LinkActions;
-

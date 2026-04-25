@@ -57,10 +57,7 @@ function LoadingWithRedirect({ message = 'Redirecting...', showProgress = true, 
 					<Typography
 						variant='h6'
 						sx={(theme) => ({
-							color:
-								theme.palette.mode === 'dark'
-									? theme.palette.grey[300]
-									: theme.palette.grey[700],
+							color: theme.palette.mode === 'dark' ? theme.palette.grey[300] : theme.palette.grey[700],
 							mb: 1
 						})}
 					>

@@ -36,13 +36,7 @@ export interface ChartCardProps {
  * </ChartCard>
  * ```
  */
-export function ChartCard({
-	title,
-	icon,
-	children,
-	height = '100%',
-	sx = {}
-}: ChartCardProps) {
+export function ChartCard({ title, icon, children, height = '100%', sx = {} }: ChartCardProps) {
 	const theme = useTheme();
 	const animations = createPresetAnimations(theme);
 
@@ -71,9 +65,7 @@ export function ChartCard({
 						{icon ? <span>{icon}</span> : null}
 						{title}
 					</Typography>
-					<Box sx={{ mb: 2 }}>
-						{children}
-					</Box>
+					<Box sx={{ mb: 2 }}>{children}</Box>
 				</CardContent>
 			</Card>
 		</Box>
@@ -81,4 +73,3 @@ export function ChartCard({
 }
 
 export default ChartCard;
-

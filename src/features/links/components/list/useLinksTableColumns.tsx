@@ -366,22 +366,11 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 					const data = value.split(' ')[0];
 
 					if (!data) {
-						return(
-					<Typography variant='body2'>
-						---
-					</Typography>
-							
-						);
-
+						return <Typography variant='body2'>---</Typography>;
 					}
 
 					{
-					return(
-						<Typography variant='body2'>
-							{data}
-						</Typography>
-					)
-
+						return <Typography variant='body2'>{data}</Typography>;
 					}
 				}
 			},
@@ -396,17 +385,16 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 
 					if (!formattedDate) {
 						return (
-							<Typography variant='body2' color='text.secondary'>
+							<Typography
+								variant='body2'
+								color='text.secondary'
+							>
 								---
 							</Typography>
 						);
 					}
 
-					return (
-						<Typography variant='body2'>
-							{formattedDate}
-						</Typography>
-					);
+					return <Typography variant='body2'>{formattedDate}</Typography>;
 				}
 			},
 			{
@@ -420,17 +408,16 @@ export function useLinksTableColumns({ onDelete }: UseLinksTableColumnsProps) {
 
 					if (!formattedDate) {
 						return (
-							<Typography variant='body2' color='text.secondary'>
+							<Typography
+								variant='body2'
+								color='text.secondary'
+							>
 								---
 							</Typography>
 						);
 					}
 
-					return (
-						<Typography variant='body2'>
-							{formattedDate}
-						</Typography>
-					);
+					return <Typography variant='body2'>{formattedDate}</Typography>;
 				}
 			},
 			{

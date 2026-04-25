@@ -137,11 +137,22 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 
 	if (success) {
 		return (
-			<EnhancedPaper variant='glass' animated sx={{ p: 4, textAlign: 'center', width: '100%' }}>
-				<Typography variant='h5' color='success.main' gutterBottom>
+			<EnhancedPaper
+				variant='glass'
+				animated
+				sx={{ p: 4, textAlign: 'center', width: '100%' }}
+			>
+				<Typography
+					variant='h5'
+					color='success.main'
+					gutterBottom
+				>
 					Link criado com sucesso!
 				</Typography>
-				<Typography variant='body1' color='text.secondary'>
+				<Typography
+					variant='body1'
+					color='text.secondary'
+				>
 					Redirecionando para a lista de links...
 				</Typography>
 			</EnhancedPaper>
@@ -159,10 +170,17 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 			>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Box sx={{ p: 3, pb: 2 }}>
-						<Typography variant='h5' fontWeight={600} gutterBottom>
+						<Typography
+							variant='h5'
+							fontWeight={600}
+							gutterBottom
+						>
 							Criar Novo Link
 						</Typography>
-						<Typography variant='body2' color='text.secondary'>
+						<Typography
+							variant='body2'
+							color='text.secondary'
+						>
 							Transforme URLs longas em links curtos e rastreáveis
 						</Typography>
 					</Box>
@@ -174,7 +192,11 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 					) : null}
 
 					<Box sx={{ px: 3, pb: 3 }}>
-						<LinkFormFields control={control} errors={errors} isEdit={false} />
+						<LinkFormFields
+							control={control}
+							errors={errors}
+							isEdit={false}
+						/>
 					</Box>
 
 					<Box
@@ -192,13 +214,25 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 							justifyContent='space-between'
 							sx={{ width: '100%' }}
 						>
-							<Button variant='outlined' onClick={handleCancel} disabled={loading}>
+							<Button
+								variant='outlined'
+								onClick={handleCancel}
+								disabled={loading}
+							>
 								Cancelar
 							</Button>
 
-							<Stack direction='row' spacing={2}>
+							<Stack
+								direction='row'
+								spacing={2}
+							>
 								{isDirty ? (
-									<Button variant='outlined' color='warning' onClick={handleReset} disabled={loading}>
+									<Button
+										variant='outlined'
+										color='warning'
+										onClick={handleReset}
+										disabled={loading}
+									>
 										Resetar
 									</Button>
 								) : null}
@@ -209,7 +243,14 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 									color='success'
 									disabled={!isValid || loading}
 									startIcon={
-										loading ? <CircularProgress size={16} color='inherit' /> : <AppIcon intent='save' />
+										loading ? (
+											<CircularProgress
+												size={16}
+												color='inherit'
+											/>
+										) : (
+											<AppIcon intent='save' />
+										)
 									}
 								>
 									{loading ? 'Criando...' : 'Criar Link'}

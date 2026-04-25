@@ -1,14 +1,4 @@
-import {
-	TextField,
-	Switch,
-	FormControlLabel,
-	Collapse,
-	Grid,
-	Typography,
-	Box,
-	Chip,
-	Stack
-} from '@mui/material';
+import { TextField, Switch, FormControlLabel, Collapse, Grid, Typography, Box, Chip, Stack } from '@mui/material';
 import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -88,7 +78,12 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 						color={showAdvanced ? 'primary' : 'default'}
 						variant={showAdvanced ? 'filled' : 'outlined'}
 						size='small'
-						icon={<AppIcon intent={showAdvanced ? 'collapse' : 'expand'} size={16} />}
+						icon={
+							<AppIcon
+								intent={showAdvanced ? 'collapse' : 'expand'}
+								size={16}
+							/>
+						}
 					/>
 				</Box>
 
@@ -100,8 +95,15 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 							borderRadius: 1.5
 						}}
 					>
-						<Grid container spacing={2}>
-							<Grid item xs={12} md={6}>
+						<Grid
+							container
+							spacing={2}
+						>
+							<Grid
+								item
+								xs={12}
+								md={6}
+							>
 								<Controller
 									name='custom_slug'
 									control={control}
@@ -120,7 +122,11 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								/>
 							</Grid>
 
-							<Grid item xs={12} md={6}>
+							<Grid
+								item
+								xs={12}
+								md={6}
+							>
 								<Controller
 									name='click_limit'
 									control={control}
@@ -135,8 +141,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
 											error={!!errors.click_limit}
 											helperText={
-												errors.click_limit?.message ||
-												'Quantos cliques antes de desativar'
+												errors.click_limit?.message || 'Quantos cliques antes de desativar'
 											}
 											InputProps={{
 												inputProps: { min: 1, max: 1000000 }
@@ -146,12 +151,19 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								/>
 							</Grid>
 
-							<Grid item xs={12} md={6}>
+							<Grid
+								item
+								xs={12}
+								md={6}
+							>
 								<Controller
 									name='starts_in'
 									control={control}
 									render={({ field: { value, ...field } }) => (
-										<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
+										<LocalizationProvider
+											dateAdapter={AdapterDayjs}
+											adapterLocale='en-gb'
+										>
 											<DateTimePicker
 												{...field}
 												label='Data de Início'
@@ -160,13 +172,14 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 													textField: {
 														fullWidth: true,
 														error: !!errors.starts_in,
-														helperText: errors.starts_in?.message || 'Quando o Link será Iniciado',
+														helperText:
+															errors.starts_in?.message || 'Quando o Link será Iniciado',
 														sx: {
 															'& .MuiOutlinedInput-root': {
-																borderRadius: 1.5,
-															},
-														},
-													},
+																borderRadius: 1.5
+															}
+														}
+													}
 												}}
 											/>
 										</LocalizationProvider>
@@ -174,12 +187,19 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								/>
 							</Grid>
 
-							<Grid item xs={12} md={6}>
+							<Grid
+								item
+								xs={12}
+								md={6}
+							>
 								<Controller
 									name='expires_at'
 									control={control}
 									render={({ field: { value, ...field } }) => (
-										<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
+										<LocalizationProvider
+											dateAdapter={AdapterDayjs}
+											adapterLocale='en-gb'
+										>
 											<DateTimePicker
 												{...field}
 												label='Data de Expiração'
@@ -188,13 +208,15 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 													textField: {
 														fullWidth: true,
 														error: !!errors.expires_at,
-														helperText: errors.expires_at?.message || 'Quando o Link será Desativado',
+														helperText:
+															errors.expires_at?.message ||
+															'Quando o Link será Desativado',
 														sx: {
 															'& .MuiOutlinedInput-root': {
-																borderRadius: 1.5,
-															},
-														},
-													},
+																borderRadius: 1.5
+															}
+														}
+													}
 												}}
 											/>
 										</LocalizationProvider>
@@ -202,7 +224,10 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								/>
 							</Grid>
 
-							<Grid item xs={12}>
+							<Grid
+								item
+								xs={12}
+							>
 								<Controller
 									name='is_active'
 									control={control}
@@ -234,7 +259,12 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 						color={showUTM ? 'secondary' : 'default'}
 						variant={showUTM ? 'filled' : 'outlined'}
 						size='small'
-						icon={<AppIcon intent={showUTM ? 'collapse' : 'expand'} size={16} />}
+						icon={
+							<AppIcon
+								intent={showUTM ? 'collapse' : 'expand'}
+								size={16}
+							/>
+						}
 					/>
 				</Box>
 
@@ -246,8 +276,15 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 							borderRadius: 1.5
 						}}
 					>
-						<Grid container spacing={2}>
-							<Grid item xs={12} md={6}>
+						<Grid
+							container
+							spacing={2}
+						>
+							<Grid
+								item
+								xs={12}
+								md={6}
+							>
 								<Controller
 									name='utm_source'
 									control={control}
@@ -264,7 +301,11 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								/>
 							</Grid>
 
-							<Grid item xs={12} md={6}>
+							<Grid
+								item
+								xs={12}
+								md={6}
+							>
 								<Controller
 									name='utm_medium'
 									control={control}
@@ -281,7 +322,11 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								/>
 							</Grid>
 
-							<Grid item xs={12} md={6}>
+							<Grid
+								item
+								xs={12}
+								md={6}
+							>
 								<Controller
 									name='utm_campaign'
 									control={control}
@@ -298,7 +343,11 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								/>
 							</Grid>
 
-							<Grid item xs={12} md={6}>
+							<Grid
+								item
+								xs={12}
+								md={6}
+							>
 								<Controller
 									name='utm_term'
 									control={control}
@@ -315,7 +364,10 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 								/>
 							</Grid>
 
-							<Grid item xs={12}>
+							<Grid
+								item
+								xs={12}
+							>
 								<Controller
 									name='utm_content'
 									control={control}

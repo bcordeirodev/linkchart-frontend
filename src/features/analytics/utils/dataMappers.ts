@@ -49,10 +49,5 @@ export function validateDashboardData(data: unknown): boolean {
 
 	const dashData = data as Partial<DashboardData>;
 
-	return !!(
-		dashData.summary ||
-		dashData.temporal_data ||
-		dashData.geographic_data ||
-		dashData.audience_data
-	);
+	return !!(dashData.summary || dashData.temporal_data || dashData.geographic_data || dashData.audience_data);
 }

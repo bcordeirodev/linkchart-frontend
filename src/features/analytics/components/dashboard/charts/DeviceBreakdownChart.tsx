@@ -20,7 +20,10 @@ export function DeviceBreakdownChart({ data, height = 300 }: DeviceBreakdownChar
 	const isDark = theme.palette.mode === 'dark';
 
 	return (
-		<ChartCard title="Dispositivos" icon="📱">
+		<ChartCard
+			title='Dispositivos'
+			icon='📱'
+		>
 			<ApexChartWrapper
 				type='donut'
 				height={height}
@@ -39,4 +42,3 @@ export function DeviceBreakdownChart({ data, height = 300 }: DeviceBreakdownChar
 }
 
 export default DeviceBreakdownChart;
-

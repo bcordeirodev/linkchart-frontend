@@ -20,7 +20,10 @@ export function DayOfWeekChart({ data, height = 300 }: DayOfWeekChartProps) {
 	const isDark = theme.palette.mode === 'dark';
 
 	return (
-		<ChartCard title="Cliques por Dia da Semana" icon="📅">
+		<ChartCard
+			title='Cliques por Dia da Semana'
+			icon='📅'
+		>
 			<ApexChartWrapper
 				type='bar'
 				height={height}
@@ -38,4 +41,3 @@ export function DayOfWeekChart({ data, height = 300 }: DayOfWeekChartProps) {
 }
 
 export default DayOfWeekChart;
-

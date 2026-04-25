@@ -17,8 +17,7 @@ export function hasTemporalData(data: Partial<AnalyticsData> | null): boolean {
 	}
 
 	const hasHourlyData =
-		data.temporal.clicks_by_hour?.length > 0 &&
-		data.temporal.clicks_by_hour.some((h) => h.clicks > 0);
+		data.temporal.clicks_by_hour?.length > 0 && data.temporal.clicks_by_hour.some((h) => h.clicks > 0);
 
 	const hasDayData =
 		data.temporal.clicks_by_day_of_week?.length > 0 &&
@@ -36,12 +35,9 @@ export function hasGeographicData(data: Partial<AnalyticsData> | null): boolean 
 	}
 
 	const hasCountryData =
-		data.geographic.top_countries?.length > 0 &&
-		data.geographic.top_countries.some((c) => c.clicks > 0);
+		data.geographic.top_countries?.length > 0 && data.geographic.top_countries.some((c) => c.clicks > 0);
 
-	const hasCityData =
-		data.geographic.top_cities?.length > 0 &&
-		data.geographic.top_cities.some((c) => c.clicks > 0);
+	const hasCityData = data.geographic.top_cities?.length > 0 && data.geographic.top_cities.some((c) => c.clicks > 0);
 
 	return hasCountryData || hasCityData;
 }
@@ -54,10 +50,7 @@ export function hasDeviceData(data: Partial<AnalyticsData> | null): boolean {
 		return false;
 	}
 
-	return (
-		data.audience.device_breakdown.length > 0 &&
-		data.audience.device_breakdown.some((d) => d.clicks > 0)
-	);
+	return data.audience.device_breakdown.length > 0 && data.audience.device_breakdown.some((d) => d.clicks > 0);
 }
 
 /**
@@ -122,5 +115,3 @@ export function validateDataQuality(data: Partial<AnalyticsData> | null): {
 
 	return { isValid: availability.hasAnyData, quality, warnings };
 }
-
-

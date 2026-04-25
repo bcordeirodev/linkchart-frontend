@@ -12,7 +12,6 @@ import { ResponsiveContainer } from '@/shared/ui/base';
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import DataTable from '../../shared/ui/data-display/DataTable';
 
-
 /**
  * Página de listagem de links refatorada
  * Componentizada para melhor organização
@@ -43,12 +42,14 @@ function LinkListPage() {
 	// Colunas da tabela (hook customizado)
 	const columns = useLinksTableColumns({ onDelete: deleteLink });
 
-
 	if (loading) {
 		return (
 			<AuthGuardRedirect auth={['user', 'admin']}>
 				<MainLayout>
-					<LinkListSkeleton isMobile={isMobile} count={6} />
+					<LinkListSkeleton
+						isMobile={isMobile}
+						count={6}
+					/>
 				</MainLayout>
 			</AuthGuardRedirect>
 		);

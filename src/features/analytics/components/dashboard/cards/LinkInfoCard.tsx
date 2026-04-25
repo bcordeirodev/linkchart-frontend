@@ -19,10 +19,17 @@ interface LinkInfoCardProps {
 export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
 	return (
 		<Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
-			<Typography variant='h6' sx={{ mb: 1 }}>
+			<Typography
+				variant='h6'
+				sx={{ mb: 1 }}
+			>
 				{linkInfo.title || 'Link sem título'}
 			</Typography>
-			<Typography variant='body2' color='text.secondary' sx={{ mb: 1 }}>
+			<Typography
+				variant='body2'
+				color='text.secondary'
+				sx={{ mb: 1 }}
+			>
 				{linkInfo.original_url}
 			</Typography>
 			<Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -38,7 +45,10 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
 				>
 					{linkInfo.is_active ? '✅ Ativo' : '❌ Inativo'}
 				</Typography>
-				<Typography variant='caption' color='text.secondary'>
+				<Typography
+					variant='caption'
+					color='text.secondary'
+				>
 					📊 {linkInfo.clicks} cliques
 				</Typography>
 			</Box>
@@ -47,4 +57,3 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
 }
 
 export default LinkInfoCard;
-

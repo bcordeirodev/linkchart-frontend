@@ -17,11 +17,7 @@ interface TopCountriesChartProps {
 	maxCountries?: number;
 }
 
-export function TopCountriesChart({
-	data,
-	height = 300,
-	maxCountries = 10
-}: TopCountriesChartProps) {
+export function TopCountriesChart({ data, height = 300, maxCountries = 10 }: TopCountriesChartProps) {
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
 	const successColors = createComponentColorSet(theme, 'success');
@@ -29,7 +25,10 @@ export function TopCountriesChart({
 	const topCountries = data.slice(0, maxCountries);
 
 	return (
-		<ChartCard title="Top Países" icon="🌍">
+		<ChartCard
+			title='Top Países'
+			icon='🌍'
+		>
 			<ApexChartWrapper
 				type='bar'
 				height={height}
@@ -47,4 +46,3 @@ export function TopCountriesChart({
 }
 
 export default TopCountriesChart;
-

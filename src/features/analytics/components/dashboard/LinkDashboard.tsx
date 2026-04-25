@@ -86,15 +86,24 @@ export function LinkDashboard({
 
 						{/* Seletor de Timeframe */}
 						{showTimeframeSelector ? (
-							<TimeframeSelector value={timeframe} onChange={setTimeframe} />
+							<TimeframeSelector
+								value={timeframe}
+								onChange={setTimeframe}
+							/>
 						) : null}
 					</Box>
 				) : null}
 
 				{/* Conteúdo Principal */}
-				<Grid container spacing={3}>
+				<Grid
+					container
+					spacing={3}
+				>
 					{/* Métricas */}
-					<Grid item xs={12}>
+					<Grid
+						item
+						xs={12}
+					>
 						<LinkMetrics
 							summary={data?.summary}
 							linksData={[]}
@@ -106,7 +115,10 @@ export function LinkDashboard({
 
 					{/* Gráficos - Renderização Direta */}
 					{!compact && showCharts && data ? (
-						<Grid item xs={12}>
+						<Grid
+							item
+							xs={12}
+						>
 							{renderCharts(data, chartsHeight, animations)}
 						</Grid>
 					) : null}
@@ -115,7 +127,10 @@ export function LinkDashboard({
 				{/* Footer - Informações de Qualidade */}
 				{stats ? (
 					<Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
-						<Typography variant='caption' color='text.secondary'>
+						<Typography
+							variant='caption'
+							color='text.secondary'
+						>
 							Qualidade dos dados: {stats.dataQuality} • Última atualização:{' '}
 							{new Date(stats.lastUpdate).toLocaleTimeString()}
 							{isRealtime ? ' • 🔴 Tempo Real' : ''}
@@ -133,28 +148,34 @@ export function LinkDashboard({
 function renderCharts(data: DashboardData, height: number, animations: ReturnType<typeof createPresetAnimations>) {
 	// Mapear dados para formato esperado pelos componentes de gráficos
 	const chartData = {
-		temporal: data.temporal_data ? {
-			clicks_by_hour: data.temporal_data.clicks_by_hour || [],
-			clicks_by_day_of_week: data.temporal_data.clicks_by_day_of_week || []
-		} : undefined,
-		geographic: data.geographic_data ? {
-			top_countries: (data.geographic_data.top_countries || []).map(c => ({
-				country: c.country,
-				clicks: c.clicks,
-				iso_code: c.country?.substring(0, 2).toUpperCase() || 'XX'
-			})),
-			top_cities: (data.geographic_data.top_cities || []).map(c => ({
-				city: c.city,
-				clicks: c.clicks,
-				state: 'Unknown',
-				country: 'Unknown'
-			})),
-			top_states: [],
-			heatmap_data: []
-		} : undefined,
-		audience: data.audience_data ? {
-			device_breakdown: data.audience_data.device_breakdown || []
-		} : undefined,
+		temporal: data.temporal_data
+			? {
+					clicks_by_hour: data.temporal_data.clicks_by_hour || [],
+					clicks_by_day_of_week: data.temporal_data.clicks_by_day_of_week || []
+				}
+			: undefined,
+		geographic: data.geographic_data
+			? {
+					top_countries: (data.geographic_data.top_countries || []).map((c) => ({
+						country: c.country,
+						clicks: c.clicks,
+						iso_code: c.country?.substring(0, 2).toUpperCase() || 'XX'
+					})),
+					top_cities: (data.geographic_data.top_cities || []).map((c) => ({
+						city: c.city,
+						clicks: c.clicks,
+						state: 'Unknown',
+						country: 'Unknown'
+					})),
+					top_states: [],
+					heatmap_data: []
+				}
+			: undefined,
+		audience: data.audience_data
+			? {
+					device_breakdown: data.audience_data.device_breakdown || []
+				}
+			: undefined,
 		overview: {
 			total_clicks: data.summary?.total_clicks || 0,
 			unique_visitors: data.summary?.unique_visitors || 0,
@@ -178,18 +199,36 @@ function renderCharts(data: DashboardData, height: number, animations: ReturnTyp
 	}
 
 	return (
-		<Grid container spacing={3} sx={{ ...animations.fadeIn }}>
+		<Grid
+			container
+			spacing={3}
+			sx={{ ...animations.fadeIn }}
+		>
 			{/* Gráficos Temporais */}
 			{availability.hasTemporalData && chartData.temporal ? (
 				<>
 					{chartData.temporal.clicks_by_hour?.length > 0 ? (
-						<Grid item xs={12} md={6}>
-							<HourlyClicksChart data={chartData.temporal.clicks_by_hour} height={height} />
+						<Grid
+							item
+							xs={12}
+							md={6}
+						>
+							<HourlyClicksChart
+								data={chartData.temporal.clicks_by_hour}
+								height={height}
+							/>
 						</Grid>
 					) : null}
 					{chartData.temporal.clicks_by_day_of_week?.length > 0 ? (
-						<Grid item xs={12} md={6}>
-							<DayOfWeekChart data={chartData.temporal.clicks_by_day_of_week} height={height} />
+						<Grid
+							item
+							xs={12}
+							md={6}
+						>
+							<DayOfWeekChart
+								data={chartData.temporal.clicks_by_day_of_week}
+								height={height}
+							/>
 						</Grid>
 					) : null}
 				</>
@@ -197,13 +236,27 @@ function renderCharts(data: DashboardData, height: number, animations: ReturnTyp
 
 			{/* Gráficos de Dispositivos e Países */}
 			{availability.hasDeviceData && chartData.audience?.device_breakdown ? (
-				<Grid item xs={12} md={6}>
-					<DeviceBreakdownChart data={chartData.audience.device_breakdown} height={height} />
+				<Grid
+					item
+					xs={12}
+					md={6}
+				>
+					<DeviceBreakdownChart
+						data={chartData.audience.device_breakdown}
+						height={height}
+					/>
 				</Grid>
 			) : null}
 			{availability.hasGeographicData && chartData.geographic?.top_countries ? (
-				<Grid item xs={12} md={6}>
-					<TopCountriesChart data={chartData.geographic.top_countries} height={height} />
+				<Grid
+					item
+					xs={12}
+					md={6}
+				>
+					<TopCountriesChart
+						data={chartData.geographic.top_countries}
+						height={height}
+					/>
 				</Grid>
 			) : null}
 		</Grid>

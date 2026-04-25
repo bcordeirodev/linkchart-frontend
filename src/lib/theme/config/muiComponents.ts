@@ -271,14 +271,10 @@ const navigationComponents = {
 				'&.Mui-selected': {
 					color: theme.palette.primary.main,
 					backgroundColor:
-						theme.palette.mode === 'dark'
-							? 'rgba(91, 141, 239, 0.10)'
-							: 'rgba(44, 90, 160, 0.06)',
+						theme.palette.mode === 'dark' ? 'rgba(91, 141, 239, 0.10)' : 'rgba(44, 90, 160, 0.06)',
 					'&:hover': {
 						backgroundColor:
-							theme.palette.mode === 'dark'
-								? 'rgba(91, 141, 239, 0.14)'
-								: 'rgba(44, 90, 160, 0.08)'
+							theme.palette.mode === 'dark' ? 'rgba(91, 141, 239, 0.14)' : 'rgba(44, 90, 160, 0.08)'
 					}
 				}
 			})

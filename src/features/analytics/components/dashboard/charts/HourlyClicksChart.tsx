@@ -20,21 +20,17 @@ export function HourlyClicksChart({ data, height = 300 }: HourlyClicksChartProps
 	const isDark = theme.palette.mode === 'dark';
 
 	return (
-		<ChartCard title="Cliques por Hora do Dia" icon="📈">
+		<ChartCard
+			title='Cliques por Hora do Dia'
+			icon='📈'
+		>
 			<ApexChartWrapper
 				type='area'
 				height={height}
-				{...formatAreaChart(
-					data,
-					'hour',
-					'clicks',
-					'#1976d2',
-					isDark
-				)}
+				{...formatAreaChart(data, 'hour', 'clicks', '#1976d2', isDark)}
 			/>
 		</ChartCard>
 	);
 }
 
 export default HourlyClicksChart;
-
