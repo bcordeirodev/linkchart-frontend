@@ -15,14 +15,10 @@ export default defineConfig({
         tsconfigPaths(),
     ],
     resolve: {
+        // IMPORTANTE: aliases mais específicos vêm ANTES do '@' genérico,
+        // senão '@' faz prefix-match em qualquer '@/...' antes do alias específico
+        // ser avaliado e resolve para './src/...' (que pode não existir).
         alias: {
-            // Main aliases
-            '@': path.resolve(__dirname, './src'),
-            '@/shared': path.resolve(__dirname, './src/shared'),
-            '@/features': path.resolve(__dirname, './src/features'),
-            '@/lib': path.resolve(__dirname, './src/lib'),
-            '@/app': path.resolve(__dirname, './src/app'),
-
             // Feature aliases
             '@/auth': path.resolve(__dirname, './src/features/auth'),
             '@/analytics': path.resolve(__dirname, './src/features/analytics'),
@@ -41,6 +37,15 @@ export default defineConfig({
             '@/store': path.resolve(__dirname, './src/lib/store'),
             '@/utils': path.resolve(__dirname, './src/lib/utils'),
             '@/i18n': path.resolve(__dirname, './src/lib/i18n'),
+
+            // Top-level aliases (depois dos específicos)
+            '@/shared': path.resolve(__dirname, './src/shared'),
+            '@/features': path.resolve(__dirname, './src/features'),
+            '@/lib': path.resolve(__dirname, './src/lib'),
+            '@/app': path.resolve(__dirname, './src/app'),
+
+            // Genérico — sempre por último
+            '@': path.resolve(__dirname, './src'),
 
 
             '@history': path.resolve(__dirname, './src/@history'),
