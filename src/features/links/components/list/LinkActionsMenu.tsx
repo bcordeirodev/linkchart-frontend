@@ -32,7 +32,7 @@ export function LinkActionsMenu({ onEdit, onQR, onDelete }: LinkActionsMenuProps
 					onClick={handleOpen}
 					sx={{
 						color: 'text.secondary',
-						'&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
+						'&:hover': { color: 'text.primary', bgcolor: 'action.hover' }
 					}}
 				>
 					<MoreVertical {...ICON_MD} />

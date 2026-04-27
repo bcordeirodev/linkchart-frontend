@@ -147,7 +147,12 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 							fullWidth
 							isEditing
 							InputProps={{
-								startAdornment: <User {...ICON_MD} style={{ marginRight: 12 }} />
+								startAdornment: (
+									<User
+										{...ICON_MD}
+										style={{ marginRight: 12 }}
+									/>
+								)
 							}}
 						/>
 						<StyledTextField
@@ -158,7 +163,12 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 							type='email'
 							isEditing
 							InputProps={{
-								startAdornment: <Mail {...ICON_MD} style={{ marginRight: 12 }} />
+								startAdornment: (
+									<Mail
+										{...ICON_MD}
+										style={{ marginRight: 12 }}
+									/>
+								)
 							}}
 						/>
 					</FormFieldsContainer>

@@ -14,11 +14,7 @@ export function LinkSparkline({ data, trend = 0, height = 32, width = 120 }: Lin
 	const theme = useTheme();
 
 	const color =
-		trend > 0
-			? theme.palette.success.main
-			: trend < 0
-				? theme.palette.error.main
-				: theme.palette.text.secondary;
+		trend > 0 ? theme.palette.success.main : trend < 0 ? theme.palette.error.main : theme.palette.text.secondary;
 
 	const series = useMemo(() => [{ data: data.map((d) => d.clicks) }], [data]);
 
@@ -31,7 +27,7 @@ export function LinkSparkline({ data, trend = 0, height = 32, width = 120 }: Lin
 			tooltip: { enabled: false },
 			xaxis: { labels: { show: false }, axisBorder: { show: false } },
 			yaxis: { labels: { show: false } },
-			grid: { show: false },
+			grid: { show: false }
 		}),
 		[color]
 	);

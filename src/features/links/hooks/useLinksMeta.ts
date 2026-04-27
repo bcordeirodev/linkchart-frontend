@@ -24,7 +24,7 @@ export function useLinksMeta(ids: string[]) {
 			.batchMeta(ids)
 			.then(setMeta)
 			.finally(() => setLoading(false));
-	}, [key]);  
+	}, [key]);
 
 	return { meta, loading };
 }

@@ -317,7 +317,11 @@ export function RealTimeHeatmapChart({
 						textAlign: 'center'
 					}}
 				>
-					<MapPin size={60} strokeWidth={1.5} style={{ opacity: 0.5, marginBottom: 16 }} />
+					<MapPin
+						size={60}
+						strokeWidth={1.5}
+						style={{ opacity: 0.5, marginBottom: 16 }}
+					/>
 					<Typography
 						variant='h6'
 						color='text.primary'
@@ -411,7 +415,10 @@ export function RealTimeHeatmapChart({
 					>
 						<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
 							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-								<Globe {...ICON_MD} style={{ color: 'var(--mui-palette-primary-main)' }} />
+								<Globe
+									{...ICON_MD}
+									style={{ color: 'var(--mui-palette-primary-main)' }}
+								/>
 								<Typography
 									variant='h6'
 									sx={{

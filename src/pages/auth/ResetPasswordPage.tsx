@@ -207,7 +207,10 @@ function ResetPasswordPage() {
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position='start'>
-									<Lock {...ICON_LG} style={{ color: '#5F6368' }} />
+									<Lock
+										{...ICON_LG}
+										style={{ color: '#5F6368' }}
+									/>
 								</InputAdornment>
 							),
 							endAdornment: (
@@ -277,7 +280,10 @@ function ResetPasswordPage() {
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position='start'>
-									<CheckCircle {...ICON_LG} style={{ color: '#5F6368' }} />
+									<CheckCircle
+										{...ICON_LG}
+										style={{ color: '#5F6368' }}
+									/>
 								</InputAdornment>
 							),
 							endAdornment: (

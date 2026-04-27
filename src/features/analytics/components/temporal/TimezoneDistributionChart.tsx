@@ -30,7 +30,11 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 					color: 'text.secondary'
 				}}
 			>
-				<Globe size={64} strokeWidth={1.5} style={{ opacity: 0.3, marginBottom: 16 }} />
+				<Globe
+					size={64}
+					strokeWidth={1.5}
+					style={{ opacity: 0.3, marginBottom: 16 }}
+				/>
 				<Typography variant='h6'>Dados de timezone ainda não disponíveis</Typography>
 				<Typography
 					variant='body2'

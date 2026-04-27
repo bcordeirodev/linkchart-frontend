@@ -4,7 +4,7 @@ import type { LinkHealth, LinkHealthStatus } from '@/types';
 const HEALTH_CONFIG: Record<LinkHealthStatus, { color: string; label: string }> = {
 	ok: { color: 'success.main', label: 'Saudável' },
 	error: { color: 'error.main', label: 'Erro' },
-	unknown: { color: 'text.disabled', label: 'Não verificado' },
+	unknown: { color: 'text.disabled', label: 'Não verificado' }
 };
 
 interface LinkHealthBadgeProps {

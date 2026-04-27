@@ -353,9 +353,9 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 									color='text.secondary'
 									sx={{ mb: 1 }}
 								>
-									São marcações adicionadas ao link que permitem saber exatamente de onde vieram
-									seus visitantes. Por exemplo: se você divulgar o mesmo link no Instagram e em um
-									e-mail, os UTMs deixam o relatório mostrar quantos cliques vieram de cada canal.
+									São marcações adicionadas ao link que permitem saber exatamente de onde vieram seus
+									visitantes. Por exemplo: se você divulgar o mesmo link no Instagram e em um e-mail,
+									os UTMs deixam o relatório mostrar quantos cliques vieram de cada canal.
 								</Typography>
 								<Typography
 									variant='caption'
@@ -376,8 +376,8 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 										<em>lancamento-produto</em>)
 									</li>
 									<li>
-										<strong>Term / Content</strong>: detalhes extras para campanhas pagas ou
-										testes A/B
+										<strong>Term / Content</strong>: detalhes extras para campanhas pagas ou testes
+										A/B
 									</li>
 								</Typography>
 							</Box>
@@ -401,7 +401,10 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											label='UTM Source'
 											placeholder='google, facebook, newsletter'
 											error={!!errors.utm_source}
-											helperText={errors.utm_source?.message || 'De onde veio o visitante — ex: instagram, google, newsletter'}
+											helperText={
+												errors.utm_source?.message ||
+												'De onde veio o visitante — ex: instagram, google, newsletter'
+											}
 										/>
 									)}
 								/>
@@ -422,7 +425,10 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											label='UTM Medium'
 											placeholder='cpc, email, social'
 											error={!!errors.utm_medium}
-											helperText={errors.utm_medium?.message || 'Tipo de canal — ex: post, anuncio, email, cpc'}
+											helperText={
+												errors.utm_medium?.message ||
+												'Tipo de canal — ex: post, anuncio, email, cpc'
+											}
 										/>
 									)}
 								/>
@@ -443,7 +449,10 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											label='UTM Campaign'
 											placeholder='promocao-verao-2024'
 											error={!!errors.utm_campaign}
-											helperText={errors.utm_campaign?.message || 'Nome da campanha ou ação — ex: lancamento-produto, black-friday'}
+											helperText={
+												errors.utm_campaign?.message ||
+												'Nome da campanha ou ação — ex: lancamento-produto, black-friday'
+											}
 										/>
 									)}
 								/>
@@ -464,7 +473,10 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											label='UTM Term'
 											placeholder='palavra-chave'
 											error={!!errors.utm_term}
-											helperText={errors.utm_term?.message || 'Palavra-chave do anúncio pago — ex: tenis-corrida, curso-online'}
+											helperText={
+												errors.utm_term?.message ||
+												'Palavra-chave do anúncio pago — ex: tenis-corrida, curso-online'
+											}
 										/>
 									)}
 								/>
@@ -484,7 +496,10 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											label='UTM Content'
 											placeholder='banner-topo, link-rodape'
 											error={!!errors.utm_content}
-											helperText={errors.utm_content?.message || 'Qual variação foi clicada — ex: banner-topo, link-rodape, botao-verde'}
+											helperText={
+												errors.utm_content?.message ||
+												'Qual variação foi clicada — ex: banner-topo, link-rodape, botao-verde'
+											}
 										/>
 									)}
 								/>

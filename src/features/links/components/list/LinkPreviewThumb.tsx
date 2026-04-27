@@ -14,7 +14,11 @@ export function LinkPreviewThumb({ preview, size = 24 }: LinkPreviewThumbProps) 
 	if (!preview?.favicon_url || error) {
 		return (
 			<Box sx={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-				<Globe size={size} strokeWidth={1.5} style={{ opacity: 0.3 }} />
+				<Globe
+					size={size}
+					strokeWidth={1.5}
+					style={{ opacity: 0.3 }}
+				/>
 			</Box>
 		);
 	}

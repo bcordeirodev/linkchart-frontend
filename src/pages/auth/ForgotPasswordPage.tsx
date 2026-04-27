@@ -80,7 +80,10 @@ function ForgotPasswordPage() {
 						spacing={3}
 						alignItems='center'
 					>
-						<Mail {...ICON_LG} style={{ color: 'var(--palette-primary-main, #1976d2)' }} />
+						<Mail
+							{...ICON_LG}
+							style={{ color: 'var(--palette-primary-main, #1976d2)' }}
+						/>
 
 						<Alert
 							severity='success'
@@ -151,7 +154,10 @@ function ForgotPasswordPage() {
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position='start'>
-									<Mail {...ICON_LG} style={{ color: '#5F6368' }} />
+									<Mail
+										{...ICON_LG}
+										style={{ color: '#5F6368' }}
+									/>
 								</InputAdornment>
 							)
 						}}

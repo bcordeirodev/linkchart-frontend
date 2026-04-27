@@ -10,7 +10,7 @@ import {
 	Select,
 	Stack,
 	TextField,
-	useTheme,
+	useTheme
 } from '@mui/material';
 import { debounce } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
@@ -22,14 +22,14 @@ const STATUS_CHIPS = [
 	{ value: 'active', label: 'Ativos' },
 	{ value: 'inactive', label: 'Inativos' },
 	{ value: 'scheduled', label: 'Não iniciados' },
-	{ value: 'expired', label: 'Expirados' },
+	{ value: 'expired', label: 'Expirados' }
 ];
 
 const SORT_OPTIONS = [
 	{ value: 'created_at', label: 'Mais recente' },
 	{ value: 'clicks', label: 'Mais clicks' },
 	{ value: 'trend', label: 'Maior tendência' },
-	{ value: 'last_activity', label: 'Última atividade' },
+	{ value: 'last_activity', label: 'Última atividade' }
 ];
 
 interface LinksFiltersProps {
@@ -47,15 +47,12 @@ export function LinksFilters({
 	statusFilter,
 	onStatusChange,
 	sortBy,
-	onSortChange,
+	onSortChange
 }: LinksFiltersProps) {
 	const theme = useTheme();
 	const [localSearch, setLocalSearch] = useState(searchTerm);
 
-	const debouncedSearch = useMemo(
-		() => debounce((value: string) => onSearchChange(value), 200),
-		[onSearchChange]
-	);
+	const debouncedSearch = useMemo(() => debounce((value: string) => onSearchChange(value), 200), [onSearchChange]);
 
 	useEffect(() => () => debouncedSearch.cancel(), [debouncedSearch]);
 	useEffect(() => setLocalSearch(searchTerm), [searchTerm]);
@@ -67,7 +64,7 @@ export function LinksFilters({
 				borderRadius: `${radiusTokens.lg}px`,
 				border: `1px solid ${theme.palette.divider}`,
 				mb: 3,
-				overflow: 'hidden',
+				overflow: 'hidden'
 			}}
 		>
 			{/* Linha 1: busca + ordenação */}
@@ -76,7 +73,7 @@ export function LinksFilters({
 					display: 'flex',
 					gap: 0,
 					flexDirection: { xs: 'column', sm: 'row' },
-					alignItems: 'stretch',
+					alignItems: 'stretch'
 				}}
 			>
 				<TextField
@@ -98,15 +95,18 @@ export function LinksFilters({
 							'&:hover fieldset': { border: 'none' },
 							'&.Mui-focused fieldset': { border: 'none' },
 							fontSize: '0.875rem',
-							minHeight: 48,
-						},
+							minHeight: 48
+						}
 					}}
 					InputProps={{
 						startAdornment: (
 							<InputAdornment position='start'>
-								<Search {...ICON_LG} style={{ opacity: 0.5 }} />
+								<Search
+									{...ICON_LG}
+									style={{ opacity: 0.5 }}
+								/>
 							</InputAdornment>
-						),
+						)
 					}}
 				/>
 
@@ -143,7 +143,7 @@ export function LinksFilters({
 							'&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
 							'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
 							fontSize: '0.875rem',
-							minHeight: 48,
+							minHeight: 48
 						}}
 					>
 						{SORT_OPTIONS.map((opt) => (
@@ -180,7 +180,7 @@ export function LinksFilters({
 						sx={{
 							borderRadius: '6px',
 							fontWeight: statusFilter === chip.value ? 600 : 400,
-							fontSize: '0.75rem',
+							fontSize: '0.75rem'
 						}}
 					/>
 				))}

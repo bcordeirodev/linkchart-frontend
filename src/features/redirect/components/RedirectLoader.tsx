@@ -99,7 +99,10 @@ export function RedirectLoader({ targetUrl, countdown, isRedirecting }: Redirect
 								mt: 2
 							}}
 						>
-							<Zap {...ICON_LG} style={{ color: '#10b981' }} />
+							<Zap
+								{...ICON_LG}
+								style={{ color: '#10b981' }}
+							/>
 							<Typography
 								variant='body2'
 								sx={{

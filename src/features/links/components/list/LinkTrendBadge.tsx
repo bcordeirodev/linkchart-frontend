@@ -42,7 +42,10 @@ export function LinkTrendBadge({ trend }: LinkTrendBadgeProps) {
 				alignItems='center'
 				sx={{ color }}
 			>
-				<Icon size={14} strokeWidth={1.5} />
+				<Icon
+					size={14}
+					strokeWidth={1.5}
+				/>
 				<Typography
 					variant='caption'
 					sx={{ color, fontWeight: 600 }}

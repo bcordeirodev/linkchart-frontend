@@ -1,4 +1,14 @@
-import { TrendingUp, MonitorSmartphone, AlertCircle, Info, CheckCircle, Clock, BarChart3, MapPin, Briefcase } from 'lucide-react';
+import {
+	TrendingUp,
+	MonitorSmartphone,
+	AlertCircle,
+	Info,
+	CheckCircle,
+	Clock,
+	BarChart3,
+	MapPin,
+	Briefcase
+} from 'lucide-react';
 import { Box, Typography, Card, CardContent, Chip, Alert, Stack, Divider, Avatar } from '@mui/material';
 
 import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';

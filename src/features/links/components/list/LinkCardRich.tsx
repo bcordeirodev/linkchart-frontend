@@ -31,7 +31,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 
 	const { copied, copy } = useClipboard({
 		timeout: 1500,
-		onSuccess: () => dispatch(showMessage({ message: 'Link copiado!', variant: 'success' })),
+		onSuccess: () => dispatch(showMessage({ message: 'Link copiado!', variant: 'success' }))
 	});
 
 	const handleDelete = useCallback(async () => {
@@ -53,9 +53,8 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 		: 'Nunca';
 
 	const createdDate = link.created_at ? new Date(link.created_at) : null;
-	const createdLabel = createdDate && !isNaN(createdDate.getTime())
-		? format(createdDate, 'dd/MM/yyyy', { locale: ptBR })
-		: null;
+	const createdLabel =
+		createdDate && !isNaN(createdDate.getTime()) ? format(createdDate, 'dd/MM/yyyy', { locale: ptBR }) : null;
 
 	return (
 		<EnhancedPaper
@@ -65,7 +64,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 				borderColor: 'divider',
 				overflow: 'hidden',
 				transition: 'box-shadow 0.2s',
-				'&:hover': { boxShadow: 4 },
+				'&:hover': { boxShadow: 4 }
 			}}
 		>
 			{/* Linha 1 — Header */}
@@ -76,7 +75,14 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 				/>
 				<Typography
 					variant='body1'
-					sx={{ fontWeight: 600, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+					sx={{
+						fontWeight: 600,
+						flex: 1,
+						minWidth: 0,
+						overflow: 'hidden',
+						textOverflow: 'ellipsis',
+						whiteSpace: 'nowrap'
+					}}
 				>
 					{link.title || 'Link sem título'}
 				</Typography>
@@ -101,7 +107,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 							textOverflow: 'ellipsis',
 							whiteSpace: 'nowrap',
 							flexShrink: 0,
-							'&:hover': { bgcolor: 'rgba(25, 118, 210, 0.15)' },
+							'&:hover': { bgcolor: 'rgba(25, 118, 210, 0.15)' }
 						}}
 					>
 						{link.short_url}
@@ -126,7 +132,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 						px: 1.5,
 						py: 0.5,
 						boxShadow: 'none',
-						'&:hover': { boxShadow: 'none' },
+						'&:hover': { boxShadow: 'none' }
 					}}
 				>
 					Analytics
@@ -155,7 +161,11 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 
 			{/* Linha 2 — URL original + thumb OG */}
 			<Box sx={{ px: 3, py: 1.5, display: 'flex', alignItems: 'center', gap: 2 }}>
-				<ExternalLink size={14} strokeWidth={1.5} style={{ flexShrink: 0, opacity: 0.5 }} />
+				<ExternalLink
+					size={14}
+					strokeWidth={1.5}
+					style={{ flexShrink: 0, opacity: 0.5 }}
+				/>
 				<Typography
 					variant='body2'
 					color='text.secondary'
@@ -164,7 +174,8 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 				>
 					{link.original_url}
 				</Typography>
-				{meta?.preview?.og_image_url ? <Box
+				{meta?.preview?.og_image_url ? (
+					<Box
 						component='img'
 						src={meta.preview.og_image_url}
 						alt={meta.preview.og_title ?? ''}
@@ -172,7 +183,8 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 						onError={(e) => {
 							(e.target as HTMLImageElement).style.display = 'none';
 						}}
-					/> : null}
+					/>
+				) : null}
 			</Box>
 
 			<Divider />
@@ -287,7 +299,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 									variant='caption'
 									sx={{
 										fontWeight: 600,
-										color: link.clicks >= link.click_limit ? 'error.main' : 'text.primary',
+										color: link.clicks >= link.click_limit ? 'error.main' : 'text.primary'
 									}}
 								>
 									{link.clicks.toLocaleString('pt-BR')} / {link.click_limit.toLocaleString('pt-BR')}

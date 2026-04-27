@@ -15,12 +15,7 @@ import { memo } from 'react';
 
 import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
-import {
-	hideMessage,
-	selectMessageState,
-	selectMessageOptions,
-	selectMessageQueue
-} from '@/lib/store/messageSlice';
+import { hideMessage, selectMessageState, selectMessageOptions, selectMessageQueue } from '@/lib/store/messageSlice';
 import {
 	darkNeutral,
 	elevationLightTokens,

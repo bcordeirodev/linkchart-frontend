@@ -69,7 +69,11 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 					color: 'text.secondary'
 				}}
 			>
-				<LineChart size={64} strokeWidth={1.5} style={{ opacity: 0.3, marginBottom: 16 }} />
+				<LineChart
+					size={64}
+					strokeWidth={1.5}
+					style={{ opacity: 0.3, marginBottom: 16 }}
+				/>
 				<Typography variant='h6'>Dados de tendências ainda não disponíveis</Typography>
 				<Typography
 					variant='body2'

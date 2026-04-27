@@ -77,7 +77,7 @@ export type {
 	LinkHealthStatus,
 	LinkHealth,
 	LinkMeta,
-	BatchMetaResponse,
+	BatchMetaResponse
 } from './core/link-meta';
 
 // ========================================

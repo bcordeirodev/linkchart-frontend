@@ -138,7 +138,10 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 					alignItems='center'
 					textAlign='center'
 				>
-					<Mail {...ICON_LG} style={{ color: 'var(--palette-warning-main, #ed6c02)' }} />
+					<Mail
+						{...ICON_LG}
+						style={{ color: 'var(--palette-warning-main, #ed6c02)' }}
+					/>
 
 					<Typography
 						variant='h4'

@@ -180,7 +180,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 				</Box>
 
 				{/* Sparkline mini */}
-				{!!(meta?.sparkline?.length) && (
+				{!!meta?.sparkline?.length && (
 					<Box sx={{ mb: 1.5 }}>
 						<LinkSparkline
 							data={meta.sparkline}
@@ -192,7 +192,8 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 				)}
 
 				{/* Tendência + health */}
-				{meta?.trend ? <Stack
+				{meta?.trend ? (
+					<Stack
 						direction='row'
 						spacing={1}
 						alignItems='center'
@@ -202,7 +203,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 							variant='caption'
 							sx={{
 								color: meta.trend.percent_change >= 0 ? 'success.main' : 'error.main',
-								fontWeight: 600,
+								fontWeight: 600
 							}}
 						>
 							{meta.trend.percent_change >= 0 ? '+' : ''}
@@ -221,7 +222,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 							{meta.trend.last_click_at
 								? formatDistanceToNow(new Date(meta.trend.last_click_at), {
 										addSuffix: true,
-										locale: ptBR,
+										locale: ptBR
 									})
 								: 'Nunca'}
 						</Typography>
@@ -232,7 +233,8 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 							•
 						</Typography>
 						<LinkHealthBadge health={meta.health} />
-					</Stack> : null}
+					</Stack>
+				) : null}
 
 				{/* Métricas e status */}
 				<Stack
@@ -241,7 +243,10 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 					sx={{ mb: 2 }}
 				>
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-						<Eye {...ICON_SM} style={{ opacity: 0.6 }} />
+						<Eye
+							{...ICON_SM}
+							style={{ opacity: 0.6 }}
+						/>
 						<Typography
 							variant='body2'
 							sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
@@ -251,7 +256,10 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 					</Box>
 
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-						<Clock {...ICON_SM} style={{ opacity: 0.6 }} />
+						<Clock
+							{...ICON_SM}
+							style={{ opacity: 0.6 }}
+						/>
 						<Typography
 							variant='body2'
 							sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
@@ -384,7 +392,11 @@ export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit, meta }:
 					px: 3
 				}}
 			>
-				<Link2 size={64} strokeWidth={1.5} style={{ opacity: 0.3, marginBottom: 16 }} />
+				<Link2
+					size={64}
+					strokeWidth={1.5}
+					style={{ opacity: 0.3, marginBottom: 16 }}
+				/>
 				<Typography
 					variant='h6'
 					sx={{ color: 'text.secondary', mb: 1 }}

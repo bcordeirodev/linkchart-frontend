@@ -59,7 +59,10 @@ export function LinksEmptyState({ hasActiveFilters, onClearFilters }: LinksEmpty
 					color: 'text.secondary'
 				}}
 			>
-				<Icon size={28} strokeWidth={1.5} />
+				<Icon
+					size={28}
+					strokeWidth={1.5}
+				/>
 			</Box>
 
 			<Typography
@@ -79,7 +82,12 @@ export function LinksEmptyState({ hasActiveFilters, onClearFilters }: LinksEmpty
 			{hasActiveFilters ? (
 				<Button
 					variant='outlined'
-					startIcon={<FilterX size={18} strokeWidth={1.5} />}
+					startIcon={
+						<FilterX
+							size={18}
+							strokeWidth={1.5}
+						/>
+					}
 					onClick={onClearFilters}
 				>
 					Limpar filtros
@@ -87,7 +95,12 @@ export function LinksEmptyState({ hasActiveFilters, onClearFilters }: LinksEmpty
 			) : (
 				<Button
 					variant='contained'
-					startIcon={<Link2 size={18} strokeWidth={1.5} />}
+					startIcon={
+						<Link2
+							size={18}
+							strokeWidth={1.5}
+						/>
+					}
 					onClick={() => navigate('/link/create')}
 				>
 					Criar primeiro link

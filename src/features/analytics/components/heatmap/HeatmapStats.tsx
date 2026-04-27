@@ -403,7 +403,12 @@ export function HeatmapStats({
 										label={`${country}: ${clicks}`}
 										size='small'
 										variant='outlined'
-										icon={<Globe size={14} strokeWidth={1.5} />}
+										icon={
+											<Globe
+												size={14}
+												strokeWidth={1.5}
+											/>
+										}
 									/>
 								))}
 							</Stack>
@@ -429,7 +434,12 @@ export function HeatmapStats({
 										label={`${cityCountry}: ${clicks}`}
 										size='small'
 										variant='outlined'
-										icon={<MapPin size={14} strokeWidth={1.5} />}
+										icon={
+											<MapPin
+												size={14}
+												strokeWidth={1.5}
+											/>
+										}
 									/>
 								))}
 							</Stack>

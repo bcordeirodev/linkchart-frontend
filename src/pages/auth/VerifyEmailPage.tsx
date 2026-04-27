@@ -89,12 +89,27 @@ function VerifyEmailPage() {
 				);
 			case 'success':
 			case 'already_verified':
-				return <CheckCircle {...ICON_XL} style={{ color: 'var(--palette-success-main, #2e7d32)' }} />;
+				return (
+					<CheckCircle
+						{...ICON_XL}
+						style={{ color: 'var(--palette-success-main, #2e7d32)' }}
+					/>
+				);
 			case 'error':
 			case 'invalid_token':
-				return <XCircle {...ICON_XL} style={{ color: 'var(--palette-error-main, #d32f2f)' }} />;
+				return (
+					<XCircle
+						{...ICON_XL}
+						style={{ color: 'var(--palette-error-main, #d32f2f)' }}
+					/>
+				);
 			default:
-				return <Mail {...ICON_XL} style={{ color: 'var(--palette-primary-main, #1976d2)' }} />;
+				return (
+					<Mail
+						{...ICON_XL}
+						style={{ color: 'var(--palette-primary-main, #1976d2)' }}
+					/>
+				);
 		}
 	};
 

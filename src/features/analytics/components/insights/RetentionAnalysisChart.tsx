@@ -225,7 +225,10 @@ export function RetentionAnalysisChart({
 						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<Repeat2 {...ICON_LG} style={{ color: 'var(--mui-palette-primary-main)' }} />
+						<Repeat2
+							{...ICON_LG}
+							style={{ color: 'var(--mui-palette-primary-main)' }}
+						/>
 						{title}
 					</Typography>
 				</Box>

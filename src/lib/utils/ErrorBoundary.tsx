@@ -66,7 +66,10 @@ function ErrorFallback({
 					width: '100%'
 				}}
 			>
-				<AlertCircle {...ICON_XL} style={{ color: 'var(--palette-error-main, #d32f2f)', marginBottom: 8 }} />
+				<AlertCircle
+					{...ICON_XL}
+					style={{ color: 'var(--palette-error-main, #d32f2f)', marginBottom: 8 }}
+				/>
 
 				<Typography
 					variant='h5'

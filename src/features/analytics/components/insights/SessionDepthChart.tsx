@@ -227,7 +227,10 @@ export function SessionDepthChart({
 						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<MousePointer2 {...ICON_LG} style={{ color: 'var(--mui-palette-primary-main)' }} />
+						<MousePointer2
+							{...ICON_LG}
+							style={{ color: 'var(--mui-palette-primary-main)' }}
+						/>
 						{title}
 					</Typography>
 				</Box>

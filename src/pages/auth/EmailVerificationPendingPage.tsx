@@ -115,7 +115,10 @@ function EmailVerificationPendingPage() {
 						alignItems='center'
 						textAlign='center'
 					>
-						<Mail {...ICON_XL} style={{ color: '#0A74DA' }} />
+						<Mail
+							{...ICON_XL}
+							style={{ color: '#0A74DA' }}
+						/>
 
 						<Typography
 							variant='h6'

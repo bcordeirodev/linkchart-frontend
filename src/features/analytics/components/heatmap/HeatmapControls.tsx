@@ -111,7 +111,14 @@ export function HeatmapControls({
 							disabled={loading}
 							size='small'
 						>
-							{loading ? <RefreshCw {...ICON_MD} style={{ animation: 'spin 1s linear infinite' }} /> : <RefreshCw {...ICON_MD} />}
+							{loading ? (
+								<RefreshCw
+									{...ICON_MD}
+									style={{ animation: 'spin 1s linear infinite' }}
+								/>
+							) : (
+								<RefreshCw {...ICON_MD} />
+							)}
 						</IconButton>
 					</Tooltip>
 

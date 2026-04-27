@@ -282,7 +282,10 @@ export function TrafficSourceChart({
 						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<Activity {...ICON_LG} style={{ color: 'var(--mui-palette-primary-main)' }} />
+						<Activity
+							{...ICON_LG}
+							style={{ color: 'var(--mui-palette-primary-main)' }}
+						/>
 						{title}
 					</Typography>
 				</Box>

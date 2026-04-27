@@ -7,7 +7,7 @@ import {
 	LinksEmptyState,
 	LinksFilters,
 	LinksHeader,
-	LinksMobileCards,
+	LinksMobileCards
 } from '@/features/links/components/list';
 import { useLinks } from '@/features/links/hooks/useLinks';
 import { useLinksMeta } from '@/features/links/hooks/useLinksMeta';
@@ -65,18 +65,22 @@ function LinkListPage() {
 					const aLast = meta[String(a.id)]?.trend?.last_click_at;
 					const bLast = meta[String(b.id)]?.trend?.last_click_at;
 
-					if (!aLast && !bLast) {return 0;}
+					if (!aLast && !bLast) {
+						return 0;
+					}
 
-					if (!aLast) {return 1;}
+					if (!aLast) {
+						return 1;
+					}
 
-					if (!bLast) {return -1;}
+					if (!bLast) {
+						return -1;
+					}
 
 					return new Date(bLast).getTime() - new Date(aLast).getTime();
 				});
 			default:
-				return sorted.sort(
-					(a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-				);
+				return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 		}
 	}, [filteredLinks, sortBy, meta]);
 

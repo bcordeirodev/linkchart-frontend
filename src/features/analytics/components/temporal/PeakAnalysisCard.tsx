@@ -151,7 +151,10 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 												color='primary'
 												sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}
 											>
-												<Clock size={16} strokeWidth={1.5} />
+												<Clock
+													size={16}
+													strokeWidth={1.5}
+												/>
 												Horário de Maior Impacto
 											</Typography>
 											<Typography
@@ -202,7 +205,10 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 												color='secondary'
 												sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}
 											>
-												<Calendar size={16} strokeWidth={1.5} />
+												<Calendar
+													size={16}
+													strokeWidth={1.5}
+												/>
 												Dia de Maior Engajamento
 											</Typography>
 											<Typography
