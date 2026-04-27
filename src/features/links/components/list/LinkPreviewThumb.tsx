@@ -1,4 +1,4 @@
-import { Language } from '@mui/icons-material';
+import { Globe } from 'lucide-react';
 import { Box } from '@mui/material';
 import { useState } from 'react';
 import type { LinkPreviewMeta } from '@/types';
@@ -14,7 +14,7 @@ export function LinkPreviewThumb({ preview, size = 24 }: LinkPreviewThumbProps) 
 	if (!preview?.favicon_url || error) {
 		return (
 			<Box sx={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-				<Language sx={{ fontSize: size, color: 'text.disabled' }} />
+				<Globe size={size} strokeWidth={1.5} style={{ opacity: 0.3 }} />
 			</Box>
 		);
 	}

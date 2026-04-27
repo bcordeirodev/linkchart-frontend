@@ -1,5 +1,6 @@
-import { BarChart, Launch } from '@mui/icons-material';
-import { Box, Divider, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { BarChart3, ExternalLink } from 'lucide-react';
+import { ICON_SM } from '@/lib/theme/iconDefaults';
+import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCallback } from 'react';
@@ -63,7 +64,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 			}}
 		>
 			{/* Linha 1 — Header */}
-			<Box sx={{ px: 3, py: 2, display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+			<Box sx={{ px: 3, py: 1.5, display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
 				<LinkPreviewThumb
 					preview={meta?.preview}
 					size={24}
@@ -102,23 +103,29 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 					</Box>
 				</Tooltip>
 
-				{/* Botão de analytics — visível e direto */}
-				<Tooltip title='Ver Analytics'>
-					<IconButton
-						size='small'
-						onClick={(e) => {
-							e.stopPropagation();
-							navigate(`/link/analytic/${link.id}`);
-						}}
-						sx={{
-							color: 'text.secondary',
-							flexShrink: 0,
-							'&:hover': { color: 'success.main', bgcolor: 'rgba(46,125,50,0.08)' },
-						}}
-					>
-						<BarChart sx={{ fontSize: 18 }} />
-					</IconButton>
-				</Tooltip>
+				<Button
+					size='small'
+					variant='contained'
+					color='primary'
+					startIcon={<BarChart3 {...ICON_SM} />}
+					onClick={(e) => {
+						e.stopPropagation();
+						navigate(`/link/analytic/${link.id}`);
+					}}
+					sx={{
+						flexShrink: 0,
+						borderRadius: '20px',
+						textTransform: 'none',
+						fontWeight: 600,
+						fontSize: '0.75rem',
+						px: 1.5,
+						py: 0.5,
+						boxShadow: 'none',
+						'&:hover': { boxShadow: 'none' },
+					}}
+				>
+					Analytics
+				</Button>
 
 				<Stack
 					direction='row'
@@ -143,7 +150,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 
 			{/* Linha 2 — URL original + thumb OG */}
 			<Box sx={{ px: 3, py: 1.5, display: 'flex', alignItems: 'center', gap: 2 }}>
-				<Launch sx={{ fontSize: 14, color: 'text.secondary', flexShrink: 0 }} />
+				<ExternalLink size={14} strokeWidth={1.5} style={{ flexShrink: 0, opacity: 0.5 }} />
 				<Typography
 					variant='body2'
 					color='text.secondary'

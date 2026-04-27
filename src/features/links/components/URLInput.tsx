@@ -1,4 +1,5 @@
-import { Public } from '@mui/icons-material';
+import { Globe } from 'lucide-react';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { TextField, Box, useTheme } from '@mui/material';
 
 import type { UseFormRegisterReturn } from 'react-hook-form';
@@ -43,12 +44,7 @@ export function URLInput({
 			InputProps={{
 				startAdornment: (
 					<Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
-						<Public
-							sx={{
-								color: 'primary.main',
-								fontSize: 20
-							}}
-						/>
+						<Globe {...ICON_LG} />
 					</Box>
 				)
 			}}

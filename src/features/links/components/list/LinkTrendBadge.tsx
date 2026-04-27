@@ -1,4 +1,4 @@
-import { TrendingDown, TrendingFlat, TrendingUp } from '@mui/icons-material';
+import { TrendingDown, Minus, TrendingUp } from 'lucide-react';
 import { Stack, Typography } from '@mui/material';
 import type { LinkTrend } from '@/types';
 
@@ -22,7 +22,7 @@ export function LinkTrendBadge({ trend }: LinkTrendBadgeProps) {
 	const isPositive = percent_change > 0;
 	const isNeutral = percent_change === 0;
 	const color = isPositive ? 'success.main' : isNeutral ? 'text.secondary' : 'error.main';
-	const Icon = isPositive ? TrendingUp : isNeutral ? TrendingFlat : TrendingDown;
+	const Icon = isPositive ? TrendingUp : isNeutral ? Minus : TrendingDown;
 	const sign = isPositive ? '+' : '';
 
 	return (
@@ -42,7 +42,7 @@ export function LinkTrendBadge({ trend }: LinkTrendBadgeProps) {
 				alignItems='center'
 				sx={{ color }}
 			>
-				<Icon sx={{ fontSize: 14 }} />
+				<Icon size={14} strokeWidth={1.5} />
 				<Typography
 					variant='caption'
 					sx={{ color, fontWeight: 600 }}

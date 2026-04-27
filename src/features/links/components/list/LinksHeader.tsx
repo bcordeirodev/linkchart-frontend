@@ -1,4 +1,5 @@
-import { Link } from '@mui/icons-material';
+import { Link2 } from 'lucide-react';
+import { ICON_XL } from '@/lib/theme/iconDefaults';
 
 import { PageHeader } from '@/shared/ui/base/PageHeader';
 
@@ -16,7 +17,7 @@ export function LinksHeader({ onCreateNew }: LinksHeaderProps) {
 		<PageHeader
 			title='Gerenciar Links'
 			subtitle='Crie, edite e monitore seus links encurtados'
-			icon={<Link />}
+			icon={<Link2 {...ICON_XL} />}
 			variant='default'
 			showDecorative
 			actions={<LinksHeaderActions onCreateNew={onCreateNew} />}

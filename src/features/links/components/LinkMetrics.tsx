@@ -1,4 +1,5 @@
-import { TrendingUp, Link as LinkIcon, CheckCircle, Assessment } from '@mui/icons-material';
+import { TrendingUp, Link2, CheckCircle, BarChart3 } from 'lucide-react';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { Grid, Box, Typography } from '@mui/material';
 
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
@@ -42,7 +43,7 @@ export function LinkMetrics({
 			id: 'total_links',
 			title: 'Total de Links',
 			value: totalLinks.toString(),
-			icon: <LinkIcon />,
+			icon: <Link2 {...ICON_LG} />,
 			color: 'primary' as const,
 			subtitle: 'links criados'
 		},
@@ -50,7 +51,7 @@ export function LinkMetrics({
 			id: 'active_links',
 			title: 'Links Ativos',
 			value: activeLinks.toString(),
-			icon: <CheckCircle />,
+			icon: <CheckCircle {...ICON_LG} />,
 			color: 'success' as const,
 			subtitle: 'links funcionando'
 		},
@@ -58,7 +59,7 @@ export function LinkMetrics({
 			id: 'total_clicks',
 			title: 'Total de Cliques',
 			value: totalClicks.toLocaleString(),
-			icon: <TrendingUp />,
+			icon: <TrendingUp {...ICON_LG} />,
 			color: 'info' as const,
 			subtitle: 'cliques acumulados'
 		},
@@ -66,7 +67,7 @@ export function LinkMetrics({
 			id: 'avg_clicks_per_link',
 			title: 'Média por Link',
 			value: avgClicksPerLink.toString(),
-			icon: <Assessment />,
+			icon: <BarChart3 {...ICON_LG} />,
 			color: 'warning' as const,
 			subtitle: 'cliques por link'
 		}

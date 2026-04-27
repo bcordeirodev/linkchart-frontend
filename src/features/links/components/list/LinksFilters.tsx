@@ -1,4 +1,5 @@
-import { Search, SwapVert } from '@mui/icons-material';
+import { Search, ArrowUpDown } from 'lucide-react';
+import { ICON_SM, ICON_LG } from '@/lib/theme/iconDefaults';
 import {
 	Box,
 	Chip,
@@ -103,7 +104,7 @@ export function LinksFilters({
 					InputProps={{
 						startAdornment: (
 							<InputAdornment position='start'>
-								<Search sx={{ color: 'text.disabled', fontSize: 20 }} />
+								<Search {...ICON_LG} style={{ opacity: 0.5 }} />
 							</InputAdornment>
 						),
 					}}
@@ -131,7 +132,7 @@ export function LinksFilters({
 							const opt = SORT_OPTIONS.find((o) => o.value === val);
 							return (
 								<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-									<SwapVert sx={{ fontSize: 16, color: 'text.secondary' }} />
+									<ArrowUpDown {...ICON_SM} />
 									<span>{opt?.label ?? 'Ordenar'}</span>
 								</Box>
 							);

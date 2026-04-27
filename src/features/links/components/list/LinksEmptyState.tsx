@@ -1,4 +1,4 @@
-import { AddLink, FilterListOff, SearchOff } from '@mui/icons-material';
+import { Link2, FilterX, SearchX } from 'lucide-react';
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ export function LinksEmptyState({ hasActiveFilters, onClearFilters }: LinksEmpty
 	const navigate = useNavigate();
 	const isDark = theme.palette.mode === 'dark';
 
-	const Icon = hasActiveFilters ? SearchOff : AddLink;
+	const Icon = hasActiveFilters ? SearchX : Link2;
 	const title = hasActiveFilters ? 'Nenhum link encontrado' : 'Você ainda não tem links encurtados';
 	const description = hasActiveFilters
 		? 'Tente ajustar a busca ou remover alguns filtros para ver mais resultados.'
@@ -59,7 +59,7 @@ export function LinksEmptyState({ hasActiveFilters, onClearFilters }: LinksEmpty
 					color: 'text.secondary'
 				}}
 			>
-				<Icon sx={{ fontSize: 28 }} />
+				<Icon size={28} strokeWidth={1.5} />
 			</Box>
 
 			<Typography
@@ -79,7 +79,7 @@ export function LinksEmptyState({ hasActiveFilters, onClearFilters }: LinksEmpty
 			{hasActiveFilters ? (
 				<Button
 					variant='outlined'
-					startIcon={<FilterListOff />}
+					startIcon={<FilterX size={18} strokeWidth={1.5} />}
 					onClick={onClearFilters}
 				>
 					Limpar filtros
@@ -87,7 +87,7 @@ export function LinksEmptyState({ hasActiveFilters, onClearFilters }: LinksEmpty
 			) : (
 				<Button
 					variant='contained'
-					startIcon={<AddLink />}
+					startIcon={<Link2 size={18} strokeWidth={1.5} />}
 					onClick={() => navigate('/link/create')}
 				>
 					Criar primeiro link

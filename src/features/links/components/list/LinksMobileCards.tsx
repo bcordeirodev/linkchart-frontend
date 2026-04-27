@@ -10,7 +10,8 @@
  * - Performance otimizada com memo
  */
 
-import { Link as LinkIcon, Visibility, Schedule } from '@mui/icons-material';
+import { Link2, Eye, Clock } from 'lucide-react';
+import { ICON_SM, ICON_MD } from '@/lib/theme/iconDefaults';
 import { Box, Card, CardContent, Typography, Chip, Stack, Avatar, useTheme } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -118,7 +119,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 							fontSize: '1rem'
 						}}
 					>
-						<LinkIcon fontSize='small' />
+						<Link2 {...ICON_MD} />
 					</Avatar>
 
 					<Box sx={{ flex: 1, minWidth: 0 }}>
@@ -240,7 +241,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 					sx={{ mb: 2 }}
 				>
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-						<Visibility sx={{ fontSize: 16, color: 'text.secondary' }} />
+						<Eye {...ICON_SM} style={{ opacity: 0.6 }} />
 						<Typography
 							variant='body2'
 							sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
@@ -250,7 +251,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 					</Box>
 
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-						<Schedule sx={{ fontSize: 16, color: 'text.secondary' }} />
+						<Clock {...ICON_SM} style={{ opacity: 0.6 }} />
 						<Typography
 							variant='body2'
 							sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
@@ -383,7 +384,7 @@ export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit, meta }:
 					px: 3
 				}}
 			>
-				<LinkIcon sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
+				<Link2 size={64} strokeWidth={1.5} style={{ opacity: 0.3, marginBottom: 16 }} />
 				<Typography
 					variant='h6'
 					sx={{ color: 'text.secondary', mb: 1 }}
