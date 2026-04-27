@@ -1,6 +1,9 @@
 import { Box, CircularProgress, Alert, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
+import { chartByType } from '@/lib/theme/colors/chart';
+import { radiusTokens } from '@/lib/theme/designSystem';
+
 import type { HeatmapPoint } from '@/types';
 import type React from 'react';
 
@@ -93,28 +96,24 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 		return Math.max(5, Math.min(30, (clicks / maxClicks) * 25));
 	};
 
-	// Calcular cor baseada na intensidade
+	// Calcular cor baseada na intensidade (paleta SP2 chartByType.heatmap)
 	const getPointColor = (clicks: number) => {
 		const maxClicks = Math.max(...filteredData.map((p) => p.clicks));
 		const intensity = clicks / maxClicks;
 
-		if (intensity > 0.8) {
-			return '#d32f2f';
-		} // Vermelho forte
-
 		if (intensity > 0.6) {
-			return '#ff9800';
-		} // Laranja
+			return chartByType.heatmap.intense;
+		}
 
 		if (intensity > 0.4) {
-			return '#ffc107';
-		} // Amarelo
+			return chartByType.heatmap.high;
+		}
 
 		if (intensity > 0.2) {
-			return '#4caf50';
-		} // Verde
+			return chartByType.heatmap.medium;
+		}
 
-		return '#2196f3'; // Azul
+		return chartByType.heatmap.low;
 	};
 
 	// Estado de carregamento do Leaflet
@@ -127,7 +126,7 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 					alignItems: 'center',
 					justifyContent: 'center',
 					bgcolor: 'background.paper',
-					borderRadius: 1,
+					borderRadius: `${radiusTokens.md}px`,
 					border: 1,
 					borderColor: 'divider'
 				}}
@@ -167,7 +166,7 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 					alignItems: 'center',
 					justifyContent: 'center',
 					bgcolor: 'background.paper',
-					borderRadius: 1,
+					borderRadius: `${radiusTokens.md}px`,
 					border: 1,
 					borderColor: 'divider'
 				}}
@@ -197,7 +196,7 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 		<Box
 			sx={{
 				height,
-				borderRadius: 1,
+				borderRadius: `${radiusTokens.md}px`,
 				overflow: 'hidden',
 				border: 1,
 				borderColor: 'divider'

@@ -18,10 +18,12 @@ import {
 	Slider,
 	FormControlLabel,
 	Switch,
-	alpha,
 	useTheme
 } from '@mui/material';
 import { useEffect, useState, useCallback } from 'react';
+
+import { chartByType } from '@/lib/theme/colors/chart';
+import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
 
 import type { HeatmapPoint } from '@/types';
 import type React from 'react';
@@ -179,28 +181,24 @@ export function RealTimeHeatmapChart({
 	}, []);
 
 	/**
-	 * Calcular cor do marcador baseado no número de cliques
+	 * Calcular cor do marcador baseado no número de cliques (paleta SP2 chartByType.heatmap)
 	 */
 	const getMarkerColor = useCallback((clicks: number, maxClicks: number) => {
 		const normalizedClicks = clicks / maxClicks;
 
-		if (normalizedClicks > 0.8) {
-			return '#d32f2f';
-		} // Vermelho intenso
-
 		if (normalizedClicks > 0.6) {
-			return '#f57c00';
-		} // Laranja escuro
+			return chartByType.heatmap.intense;
+		}
 
 		if (normalizedClicks > 0.4) {
-			return '#ff9800';
-		} // Laranja
+			return chartByType.heatmap.high;
+		}
 
 		if (normalizedClicks > 0.2) {
-			return '#ffc107';
-		} // Amarelo
+			return chartByType.heatmap.medium;
+		}
 
-		return '#4caf50'; // Verde
+		return chartByType.heatmap.low;
 	}, []);
 
 	/**
@@ -220,7 +218,13 @@ export function RealTimeHeatmapChart({
 	// Estado de loading
 	if (!isClient || !mapReady) {
 		return (
-			<Card sx={{ height, borderRadius: '16px' }}>
+			<Card
+				sx={{
+					height,
+					borderRadius: `${radiusTokens.lg}px`,
+					boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+				}}
+			>
 				<CardContent
 					sx={{
 						height: '100%',
@@ -248,7 +252,13 @@ export function RealTimeHeatmapChart({
 	// Renderizar estado de erro
 	if (mapError) {
 		return (
-			<Card sx={{ height, borderRadius: '16px' }}>
+			<Card
+				sx={{
+					height,
+					borderRadius: `${radiusTokens.lg}px`,
+					boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+				}}
+			>
 				<CardContent
 					sx={{
 						height: '100%',
@@ -288,7 +298,13 @@ export function RealTimeHeatmapChart({
 	// Renderizar estado vazio
 	if (!loading && (!data || data.length === 0)) {
 		return (
-			<Card sx={{ height, borderRadius: '16px' }}>
+			<Card
+				sx={{
+					height,
+					borderRadius: `${radiusTokens.lg}px`,
+					boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+				}}
+			>
 				<CardContent
 					sx={{
 						height: '100%',
@@ -343,7 +359,13 @@ export function RealTimeHeatmapChart({
 
 	if (!MapContainer || !TileLayer || !CircleMarker || !Popup) {
 		return (
-			<Card sx={{ height, borderRadius: '16px' }}>
+			<Card
+				sx={{
+					height,
+					borderRadius: `${radiusTokens.lg}px`,
+					boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+				}}
+			>
 				<CardContent
 					sx={{
 						height: '100%',
@@ -361,7 +383,8 @@ export function RealTimeHeatmapChart({
 	return (
 		<Card
 			sx={{
-				borderRadius: '16px',
+				borderRadius: `${radiusTokens.lg}px`,
+				boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs,
 				overflow: 'hidden',
 				position: isFullscreen ? 'fixed' : 'relative',
 				top: isFullscreen ? 0 : 'auto',
@@ -381,8 +404,7 @@ export function RealTimeHeatmapChart({
 							p: 2,
 							borderBottom: 1,
 							borderColor: 'divider',
-							background: alpha(theme.palette.background.paper, 0.95),
-							backdropFilter: 'blur(10px)'
+							bgcolor: 'background.paper'
 						}}
 					>
 						<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -390,9 +412,8 @@ export function RealTimeHeatmapChart({
 								<Public color='primary' />
 								<Typography
 									variant='h6'
-									fontWeight='600'
 									sx={{
-										fontFamily: 'Inter, system-ui, sans-serif',
+										fontWeight: 600,
 										position: 'relative',
 										zIndex: 1,
 										mt: 1
@@ -577,7 +598,7 @@ export function RealTimeHeatmapChart({
 										<Box sx={{ p: 1, minWidth: 200 }}>
 											<Typography
 												variant='subtitle2'
-												fontWeight='bold'
+												sx={{ fontWeight: 600 }}
 												gutterBottom
 											>
 												📍 {point.city}, {point.country}

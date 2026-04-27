@@ -1,7 +1,6 @@
 import { LocationOn, Public, TrendingUp, Language } from '@mui/icons-material';
-import { Grid, Box, Typography, useTheme } from '@mui/material';
+import { Grid, Box, Typography } from '@mui/material';
 
-import { createPresetAnimations } from '@/lib/theme';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 
 // Interface local para estatísticas
@@ -25,9 +24,6 @@ interface HeatmapMetricsProps {
  * Focado em dados geográficos e distribuição
  */
 export function HeatmapMetrics({ stats, showTitle = false, title = 'Métricas do Heatmap' }: HeatmapMetricsProps) {
-	const theme = useTheme();
-	const animations = createPresetAnimations(theme);
-
 	if (!stats) {
 		return null;
 	}
@@ -81,7 +77,6 @@ export function HeatmapMetrics({ stats, showTitle = false, title = 'Métricas do
 			<Grid
 				container
 				spacing={3}
-				sx={{ ...animations.fadeIn }}
 			>
 				{metrics.map((metric) => (
 					<Grid
@@ -91,7 +86,7 @@ export function HeatmapMetrics({ stats, showTitle = false, title = 'Métricas do
 						md={3}
 						key={metric.id}
 					>
-						<Box sx={{ height: '100%', ...animations.cardHover }}>
+						<Box sx={{ height: '100%' }}>
 							<MetricCard
 								title={metric.title}
 								value={metric.value}

@@ -1,5 +1,8 @@
 import { Public, LocationOn } from '@mui/icons-material';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+
+import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
 
 import type { HeatmapPoint } from '@/types';
 
@@ -42,6 +45,8 @@ export function HeatmapStats({
 	title = '📊 Estatísticas do Heatmap',
 	showDetailed = true
 }: HeatmapStatsProps) {
+	const theme = useTheme();
+
 	// Calcular estatísticas se não fornecidas
 	const calculatedStats = stats || {
 		totalPoints: data.length,
@@ -86,7 +91,12 @@ export function HeatmapStats({
 		.map(([cityCountry, clicks]) => ({ cityCountry, clicks }));
 
 	return (
-		<Card>
+		<Card
+			sx={{
+				borderRadius: `${radiusTokens.lg}px`,
+				boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+			}}
+		>
 			<CardContent>
 				{showTitle ? (
 					<Typography
@@ -203,10 +213,17 @@ export function HeatmapStats({
 							xs={6}
 							sm={4}
 						>
-							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
+							<Box
+								sx={{
+									textAlign: 'center',
+									p: 1,
+									bgcolor: 'background.default',
+									borderRadius: `${radiusTokens.md}px`
+								}}
+							>
 								<Typography
 									variant='body2'
-									fontWeight='bold'
+									sx={{ fontWeight: 600 }}
 									color='primary.main'
 								>
 									{uniqueVisitors.toLocaleString()}
@@ -224,10 +241,17 @@ export function HeatmapStats({
 							xs={6}
 							sm={4}
 						>
-							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
+							<Box
+								sx={{
+									textAlign: 'center',
+									p: 1,
+									bgcolor: 'background.default',
+									borderRadius: `${radiusTokens.md}px`
+								}}
+							>
 								<Typography
 									variant='body2'
-									fontWeight='bold'
+									sx={{ fontWeight: 600 }}
 									color='success.main'
 								>
 									{totalActiveDays}
@@ -245,10 +269,17 @@ export function HeatmapStats({
 							xs={6}
 							sm={4}
 						>
-							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
+							<Box
+								sx={{
+									textAlign: 'center',
+									p: 1,
+									bgcolor: 'background.default',
+									borderRadius: `${radiusTokens.md}px`
+								}}
+							>
 								<Typography
 									variant='body2'
-									fontWeight='bold'
+									sx={{ fontWeight: 600 }}
 									color='info.main'
 								>
 									{Math.round(avgPeakHour)}:00
@@ -266,10 +297,17 @@ export function HeatmapStats({
 							xs={6}
 							sm={4}
 						>
-							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
+							<Box
+								sx={{
+									textAlign: 'center',
+									p: 1,
+									bgcolor: 'background.default',
+									borderRadius: `${radiusTokens.md}px`
+								}}
+							>
 								<Typography
 									variant='body2'
-									fontWeight='bold'
+									sx={{ fontWeight: 600 }}
 									color='warning.main'
 								>
 									{weekendPercentage.toFixed(1)}%
@@ -287,10 +325,17 @@ export function HeatmapStats({
 							xs={6}
 							sm={4}
 						>
-							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
+							<Box
+								sx={{
+									textAlign: 'center',
+									p: 1,
+									bgcolor: 'background.default',
+									borderRadius: `${radiusTokens.md}px`
+								}}
+							>
 								<Typography
 									variant='body2'
-									fontWeight='bold'
+									sx={{ fontWeight: 600 }}
 									color='secondary.main'
 								>
 									{totalTimezones}
@@ -308,10 +353,17 @@ export function HeatmapStats({
 							xs={6}
 							sm={4}
 						>
-							<Box sx={{ textAlign: 'center', p: 1, bgcolor: 'background.default', borderRadius: 1 }}>
+							<Box
+								sx={{
+									textAlign: 'center',
+									p: 1,
+									bgcolor: 'background.default',
+									borderRadius: `${radiusTokens.md}px`
+								}}
+							>
 								<Typography
 									variant='body2'
-									fontWeight='bold'
+									sx={{ fontWeight: 600 }}
 									color='error.main'
 								>
 									{totalContinents}

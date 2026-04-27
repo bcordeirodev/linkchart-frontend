@@ -1,6 +1,8 @@
 import { Refresh, Fullscreen } from '@mui/icons-material';
 import { Box, IconButton, Tooltip, Slider, FormControlLabel, Switch, Stack, Typography } from '@mui/material';
 
+import { radiusTokens } from '@/lib/theme/designSystem';
+
 interface HeatmapControlsProps {
 	minClicks: number;
 	onMinClicksChange: (value: number) => void;
@@ -44,7 +46,7 @@ export function HeatmapControls({
 			sx={{
 				p: 2,
 				bgcolor: 'background.paper',
-				borderRadius: 1,
+				borderRadius: `${radiusTokens.md}px`,
 				mb: 2,
 				border: 1,
 				borderColor: 'divider'
