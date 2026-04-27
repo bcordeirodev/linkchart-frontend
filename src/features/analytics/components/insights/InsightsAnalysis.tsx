@@ -1,5 +1,7 @@
-import { Lightbulb, TrendingUp, Flag, Assessment } from '@mui/icons-material';
+import { Lightbulb, TrendingUp, Flag, BarChart3 } from 'lucide-react';
 import { Box, Grid, Typography } from '@mui/material';
+
+import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
 
 import { radiusTokens } from '@/lib/theme/designSystem';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
@@ -144,7 +146,7 @@ export function InsightsAnalysis({
 								<MetricCard
 									title='Confiança Média'
 									value={`${Math.round((stats?.avgConfidence || 0) * 100)}%`}
-									icon={<Assessment />}
+									icon={<BarChart3 {...ICON_LG} />}
 									color='info'
 									subtitle='precisão dos insights'
 								/>

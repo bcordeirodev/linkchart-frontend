@@ -1,5 +1,7 @@
-import { Schedule, TrendingUp, AccessTime, CalendarToday } from '@mui/icons-material';
+import { Clock, TrendingUp, Calendar } from 'lucide-react';
 import { Box, Grid } from '@mui/material';
+
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
@@ -76,7 +78,7 @@ export function TemporalAnalysis({
 								<MetricCard
 									title='Pico de Hora'
 									value={peakHour}
-									icon={<AccessTime />}
+									icon={<Clock {...ICON_LG} />}
 									color='primary'
 									subtitle='maior atividade'
 								/>
@@ -90,7 +92,7 @@ export function TemporalAnalysis({
 								<MetricCard
 									title='Pico de Dia'
 									value={peakDay}
-									icon={<CalendarToday />}
+									icon={<Calendar {...ICON_LG} />}
 									color='secondary'
 									subtitle='dia mais ativo'
 								/>
@@ -104,7 +106,7 @@ export function TemporalAnalysis({
 								<MetricCard
 									title='Média/Hora'
 									value={stats?.averageHourlyClicks?.toString() || '0'}
-									icon={<Schedule />}
+									icon={<Clock {...ICON_LG} />}
 									color='info'
 									subtitle='cliques por hora'
 								/>

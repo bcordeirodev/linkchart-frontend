@@ -1,15 +1,7 @@
-import {
-	TrendingUp,
-	Devices,
-	PriorityHigh,
-	Info,
-	CheckCircle,
-	Schedule,
-	Assessment,
-	LocationOn,
-	Business
-} from '@mui/icons-material';
+import { TrendingUp, MonitorSmartphone, AlertCircle, Info, CheckCircle, Clock, BarChart3, MapPin, Briefcase } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Chip, Alert, Stack, Divider, Avatar } from '@mui/material';
+
+import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
@@ -75,14 +67,14 @@ export function BusinessInsights({
 
 	const getInsightIcon = (type: string) => {
 		const iconMap = {
-			geographic: <LocationOn />,
-			audience: <Devices />,
-			temporal: <TrendingUp />,
-			performance: <Assessment />,
-			business: <Business />,
-			schedule: <Schedule />
+			geographic: <MapPin {...ICON_MD} />,
+			audience: <MonitorSmartphone {...ICON_MD} />,
+			temporal: <TrendingUp {...ICON_MD} />,
+			performance: <BarChart3 {...ICON_MD} />,
+			business: <Briefcase {...ICON_MD} />,
+			schedule: <Clock {...ICON_MD} />
 		};
-		return iconMap[type as keyof typeof iconMap] || <Info />;
+		return iconMap[type as keyof typeof iconMap] || <Info {...ICON_MD} />;
 	};
 
 	const getPriorityPalette = (priority: string) => {
@@ -96,11 +88,11 @@ export function BusinessInsights({
 
 	const getPriorityIcon = (priority: string) => {
 		const iconMap = {
-			high: <PriorityHigh />,
-			medium: <Info />,
-			low: <CheckCircle />
+			high: <AlertCircle {...ICON_MD} />,
+			medium: <Info {...ICON_MD} />,
+			low: <CheckCircle {...ICON_MD} />
 		};
-		return iconMap[priority as keyof typeof iconMap] || <Info />;
+		return iconMap[priority as keyof typeof iconMap] || <Info {...ICON_MD} />;
 	};
 
 	// Organizar insights por prioridade e categoria

@@ -1,5 +1,7 @@
-import { CheckCircle, Assessment } from '@mui/icons-material';
+import { CheckCircle, BarChart3 } from 'lucide-react';
 import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
+
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { useLinkPerformance } from '@/features/analytics/hooks/useLinkPerformance';
@@ -117,7 +119,7 @@ export function PerformanceAnalysis({
 							<Card sx={cardSx}>
 								<CardContent sx={{ p: 3 }}>
 									<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-										<CheckCircle sx={{ color: 'success.main', mr: 2 }} />
+										<CheckCircle {...ICON_LG} style={{ color: 'var(--mui-palette-success-main)', marginRight: 16 }} />
 										<Typography
 											variant='h6'
 											fontWeight={600}
@@ -185,7 +187,7 @@ export function PerformanceAnalysis({
 							<Card sx={cardSx}>
 								<CardContent sx={{ p: 3 }}>
 									<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-										<Assessment sx={{ color: 'info.main', mr: 2 }} />
+										<BarChart3 {...ICON_LG} style={{ color: 'var(--mui-palette-info-main)', marginRight: 16 }} />
 										<Typography
 											variant='h6'
 											fontWeight={600}
@@ -247,7 +249,7 @@ export function PerformanceAnalysis({
 									variant='h6'
 									sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center' }}
 								>
-									<Assessment sx={{ mr: 1, color: 'info.main' }} />
+									<BarChart3 {...ICON_LG} style={{ marginRight: 8, color: 'var(--mui-palette-info-main)' }} />
 									Insights de Performance
 								</Typography>
 								<Typography

@@ -1,5 +1,7 @@
 import { Box, Grid, Card, CardContent, Typography, Stack, Chip } from '@mui/material';
-import { AccessTime, CalendarToday, TrendingUp, Star } from '@mui/icons-material';
+import { Clock, Calendar, TrendingUp, Star } from 'lucide-react';
+
+import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
@@ -57,7 +59,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 					<MetricCard
 						title='Hora de Pico'
 						value={formatHour(peak_hour)}
-						icon={<AccessTime />}
+						icon={<Clock {...ICON_LG} />}
 						color='primary'
 						subtitle={`${peak_hour_clicks.toLocaleString()} cliques`}
 					/>
@@ -71,7 +73,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 					<MetricCard
 						title='Dia de Pico'
 						value={peak_day}
-						icon={<CalendarToday />}
+						icon={<Calendar {...ICON_LG} />}
 						color='secondary'
 						subtitle={`${peak_day_clicks.toLocaleString()} cliques`}
 					/>
@@ -149,7 +151,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 												color='primary'
 												sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}
 											>
-												<AccessTime fontSize='small' />
+												<Clock size={16} strokeWidth={1.5} />
 												Horário de Maior Impacto
 											</Typography>
 											<Typography
@@ -200,7 +202,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 												color='secondary'
 												sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}
 											>
-												<CalendarToday fontSize='small' />
+												<Calendar size={16} strokeWidth={1.5} />
 												Dia de Maior Engajamento
 											</Typography>
 											<Typography

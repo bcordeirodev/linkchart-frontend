@@ -1,5 +1,7 @@
-import { Traffic, TrendingUp, Diversity3, Assessment, Warning } from '@mui/icons-material';
+import { Activity, TrendingUp, Users2, BarChart3, AlertTriangle } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, Alert } from '@mui/material';
+
+import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { chartPalette, getChartColor } from '@/lib/theme/colors';
@@ -280,7 +282,7 @@ export function TrafficSourceChart({
 						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<Traffic color='primary' />
+						<Activity {...ICON_LG} style={{ color: 'var(--mui-palette-primary-main)' }} />
 						{title}
 					</Typography>
 				</Box>
@@ -316,7 +318,7 @@ export function TrafficSourceChart({
 						<MetricCard
 							title='Diversidade'
 							value={data.source_diversity}
-							icon={<Diversity3 />}
+							icon={<Users2 {...ICON_LG} />}
 							color='info'
 							subtitle='fontes diferentes'
 						/>
@@ -330,7 +332,7 @@ export function TrafficSourceChart({
 						<MetricCard
 							title='Total de Clicks'
 							value={data.total_clicks}
-							icon={<Assessment />}
+							icon={<BarChart3 {...ICON_LG} />}
 							color='success'
 							subtitle='todos os canais'
 						/>
@@ -344,7 +346,7 @@ export function TrafficSourceChart({
 						<MetricCard
 							title='Canais Ativos'
 							value={data.channels.length}
-							icon={<Traffic />}
+							icon={<Activity {...ICON_LG} />}
 							color='secondary'
 							subtitle='categorias'
 						/>
@@ -356,7 +358,7 @@ export function TrafficSourceChart({
 					<Box sx={{ mb: 3 }}>
 						<Alert
 							severity='warning'
-							icon={<Warning />}
+							icon={<AlertTriangle {...ICON_MD} />}
 							sx={{ borderRadius: `${radiusTokens.lg}px` }}
 						>
 							<Typography variant='body2'>

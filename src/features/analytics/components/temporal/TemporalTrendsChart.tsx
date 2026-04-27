@@ -1,5 +1,7 @@
 import { Box, Grid, Typography, Card, CardContent, Stack, Chip } from '@mui/material';
-import { TrendingUp, TrendingDown, ShowChart } from '@mui/icons-material';
+import { TrendingUp, TrendingDown, LineChart } from 'lucide-react';
+
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { ChartCard } from '@/shared/ui/base/ChartCard';
@@ -67,7 +69,7 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 					color: 'text.secondary'
 				}}
 			>
-				<ShowChart sx={{ fontSize: 64, opacity: 0.3, mb: 2 }} />
+				<LineChart size={64} strokeWidth={1.5} style={{ opacity: 0.3, marginBottom: 16 }} />
 				<Typography variant='h6'>Dados de tendências ainda não disponíveis</Typography>
 				<Typography
 					variant='body2'

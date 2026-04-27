@@ -1,5 +1,7 @@
-import { TrendingUp, Public, CheckCircle, Speed } from '@mui/icons-material';
+import { TrendingUp, Globe, CheckCircle, Zap } from 'lucide-react';
 import { Grid, Box, Typography } from '@mui/material';
+
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 
@@ -79,7 +81,7 @@ export function PerformanceMetrics({
 			id: 'visitor_retention',
 			title: 'Retenção',
 			value: `${visitorRetention}%`,
-			icon: <Public />,
+			icon: <Globe {...ICON_LG} />,
 			color:
 				visitorRetention >= 80
 					? ('success' as const)
@@ -92,7 +94,7 @@ export function PerformanceMetrics({
 			id: 'response_time',
 			title: 'Tempo Resposta',
 			value: `${responseTime}ms`,
-			icon: <Speed />,
+			icon: <Zap {...ICON_LG} />,
 			color:
 				responseTime < 200
 					? ('success' as const)

@@ -1,5 +1,7 @@
-import { TouchApp, TrendingUp, Star, Assessment } from '@mui/icons-material';
+import { MousePointer2, TrendingUp, Star, BarChart3 } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, LinearProgress } from '@mui/material';
+
+import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme, alpha } from '@mui/material/styles';
 
 import { getChartColor } from '@/lib/theme/colors';
@@ -225,7 +227,7 @@ export function SessionDepthChart({
 						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<TouchApp color='primary' />
+						<MousePointer2 {...ICON_LG} style={{ color: 'var(--mui-palette-primary-main)' }} />
 						{title}
 					</Typography>
 				</Box>
@@ -247,7 +249,7 @@ export function SessionDepthChart({
 						<MetricCard
 							title='Profundidade Média'
 							value={data.avg_session_depth}
-							icon={<TouchApp />}
+							icon={<MousePointer2 {...ICON_LG} />}
 							color='primary'
 							subtitle='clicks por sessão'
 						/>
@@ -261,7 +263,7 @@ export function SessionDepthChart({
 						<MetricCard
 							title='Score de Engajamento'
 							value={data.engagement_score}
-							icon={<Assessment />}
+							icon={<BarChart3 {...ICON_LG} />}
 							color='success'
 							subtitle='pontuação (0-100)'
 						/>

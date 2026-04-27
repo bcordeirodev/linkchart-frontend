@@ -1,5 +1,7 @@
-import { Repeat, TrendingUp, People, Assessment } from '@mui/icons-material';
+import { Repeat2, TrendingUp, Users, BarChart3 } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack } from '@mui/material';
+
+import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme, alpha } from '@mui/material/styles';
 
 import { getChartColor } from '@/lib/theme/colors';
@@ -223,7 +225,7 @@ export function RetentionAnalysisChart({
 						variant='h6'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<Repeat color='primary' />
+						<Repeat2 {...ICON_LG} style={{ color: 'var(--mui-palette-primary-main)' }} />
 						{title}
 					</Typography>
 				</Box>
@@ -245,7 +247,7 @@ export function RetentionAnalysisChart({
 						<MetricCard
 							title='Taxa de Retenção'
 							value={`${data.return_visitor_rate}%`}
-							icon={<Repeat />}
+							icon={<Repeat2 {...ICON_LG} />}
 							color='success'
 							subtitle='visitantes recorrentes'
 						/>
@@ -259,7 +261,7 @@ export function RetentionAnalysisChart({
 						<MetricCard
 							title='Score de Retenção'
 							value={data.retention_score}
-							icon={<Assessment />}
+							icon={<BarChart3 {...ICON_LG} />}
 							color='info'
 							subtitle='pontuação (0-100)'
 						/>
@@ -273,7 +275,7 @@ export function RetentionAnalysisChart({
 						<MetricCard
 							title='Visitantes Recorrentes'
 							value={data.return_visitors}
-							icon={<People />}
+							icon={<Users {...ICON_LG} />}
 							color='primary'
 							subtitle='usuários fiéis'
 						/>
