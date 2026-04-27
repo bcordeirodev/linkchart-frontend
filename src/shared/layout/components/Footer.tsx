@@ -16,8 +16,9 @@
  * @since 2.0.0
  */
 
-import { GitHub, LinkedIn, Twitter } from '@mui/icons-material';
+import { Github, Linkedin, Twitter } from 'lucide-react';
 import { Box, Container, Typography, Link, useTheme } from '@mui/material';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 
 import { darkNeutral, lightNeutral } from '@/lib/theme/colors';
 
@@ -130,7 +131,7 @@ export function Footer({ style = 'static' }: FooterProps) {
 								}
 							}}
 						>
-							<GitHub fontSize='small' />
+							<Github {...ICON_LG} />
 						</Link>
 						<Link
 							href='https://linkedin.com'
@@ -148,7 +149,7 @@ export function Footer({ style = 'static' }: FooterProps) {
 								}
 							}}
 						>
-							<LinkedIn fontSize='small' />
+							<Linkedin {...ICON_LG} />
 						</Link>
 						<Link
 							href='https://twitter.com'
@@ -166,7 +167,7 @@ export function Footer({ style = 'static' }: FooterProps) {
 								}
 							}}
 						>
-							<Twitter fontSize='small' />
+							<Twitter {...ICON_LG} />
 						</Link>
 					</Box>
 				</Box>

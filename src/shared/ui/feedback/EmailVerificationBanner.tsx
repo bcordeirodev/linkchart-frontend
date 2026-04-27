@@ -1,5 +1,6 @@
-import { Email, Refresh } from '@mui/icons-material';
+import { Mail, RefreshCw } from 'lucide-react';
 import { Alert, Button, Box, CircularProgress } from '@mui/material';
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { useState, useEffect } from 'react';
 
 import { useAppDispatch } from '@/lib/store/hooks';
@@ -83,7 +84,7 @@ export function EmailVerificationBanner({ onVerificationStatusChange }: EmailVer
 	return (
 		<Alert
 			severity='warning'
-			icon={<Email />}
+			icon={<Mail {...ICON_MD} />}
 			sx={{
 				mb: 2,
 				'& .MuiAlert-message': {
@@ -104,7 +105,7 @@ export function EmailVerificationBanner({ onVerificationStatusChange }: EmailVer
 									color='inherit'
 								/>
 							) : (
-								<Refresh />
+								<RefreshCw {...ICON_MD} />
 							)
 						}
 						sx={{ whiteSpace: 'nowrap' }}

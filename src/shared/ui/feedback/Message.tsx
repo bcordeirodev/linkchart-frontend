@@ -9,16 +9,11 @@
  * @since 3.0.0 — redesign alinhado ao design system Link Chart
  */
 
-import {
-	CheckCircleRounded,
-	ErrorRounded,
-	WarningAmberRounded,
-	InfoRounded,
-	CloseRounded
-} from '@mui/icons-material';
+import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 import { Snackbar, IconButton, Slide, Box, Typography, useTheme, alpha } from '@mui/material';
 import { memo } from 'react';
 
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import {
 	hideMessage,
@@ -37,14 +32,15 @@ import {
 	semanticLight
 } from '@/lib/theme';
 
+import type { LucideProps } from 'lucide-react';
 import type { MessageVariant } from '@/lib/store/messageSlice';
 import type { SlideProps } from '@mui/material';
 
-const variantIcons: Record<MessageVariant, typeof CheckCircleRounded> = {
-	success: CheckCircleRounded,
-	error: ErrorRounded,
-	warning: WarningAmberRounded,
-	info: InfoRounded
+const variantIcons: Record<MessageVariant, React.ComponentType<LucideProps>> = {
+	success: CheckCircle,
+	error: XCircle,
+	warning: AlertTriangle,
+	info: Info
 };
 
 /** Transições estáveis (módulo) com direção pré-resolvida — evita remount do subtree. */
@@ -150,7 +146,7 @@ export function Message() {
 						color: tone.main
 					}}
 				>
-					<IconComponent fontSize='small' />
+					<IconComponent {...ICON_MD} />
 				</Box>
 
 				<Box sx={{ flex: 1, minWidth: 0, pt: 0.25 }}>
@@ -207,7 +203,7 @@ export function Message() {
 								}
 							}}
 						>
-							<CloseRounded fontSize='small' />
+							<X {...ICON_MD} />
 						</IconButton>
 					)}
 				</Box>

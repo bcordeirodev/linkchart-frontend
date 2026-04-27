@@ -1,5 +1,6 @@
-import { Rocket } from '@mui/icons-material';
+import { Rocket } from 'lucide-react';
 import { Fade, Slide, Grow, Box } from '@mui/material';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useEffect, useState } from 'react';
 
 // Styled Components
@@ -59,7 +60,7 @@ export function HeroSection({
 							timeout={1500}
 						>
 							<HeroChip
-								icon={<Rocket />}
+								icon={<Rocket {...ICON_LG} />}
 								label={chipText}
 								color='primary'
 								variant='filled'
