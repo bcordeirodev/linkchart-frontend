@@ -2,7 +2,9 @@
  * ℹ️ LINK INFO CARD - Card de Informações do Link
  */
 
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
+
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 
 interface LinkInfo {
 	id: number;
@@ -17,11 +19,23 @@ interface LinkInfoCardProps {
 }
 
 export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
+	const theme = useTheme();
+	const isDark = theme.palette.mode === 'dark';
+
 	return (
-		<Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
+		<Box
+			sx={{
+				mt: 2,
+				p: 2,
+				bgcolor: 'background.paper',
+				borderRadius: `${radiusTokens.lg}px`,
+				boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+				transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`
+			}}
+		>
 			<Typography
 				variant='h6'
-				sx={{ mb: 1 }}
+				sx={{ mb: 1, fontWeight: 600 }}
 			>
 				{linkInfo.title || 'Link sem título'}
 			</Typography>
@@ -39,8 +53,9 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
 						px: 1,
 						py: 0.5,
 						bgcolor: linkInfo.is_active ? 'success.main' : 'error.main',
-						color: 'white',
-						borderRadius: 1
+						color: 'common.white',
+						borderRadius: `${radiusTokens.md}px`,
+						fontWeight: 600
 					}}
 				>
 					{linkInfo.is_active ? '✅ Ativo' : '❌ Inativo'}
