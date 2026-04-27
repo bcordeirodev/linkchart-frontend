@@ -230,7 +230,11 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) =>
 							}}
 							onQR={() => navigate(`/link/qr/${link.id}`)}
 							onDelete={() => {
-								if (window.confirm('Tem certeza que deseja remover este link? Esta ação não pode ser desfeita.')) {
+								if (
+									window.confirm(
+										'Tem certeza que deseja remover este link? Esta ação não pode ser desfeita.'
+									)
+								) {
 									if (onDelete) {
 										onDelete(String(link.id));
 									}
