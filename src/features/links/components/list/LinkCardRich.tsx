@@ -1,5 +1,5 @@
-import { Launch } from '@mui/icons-material';
-import { Box, Divider, Stack, Tooltip, Typography } from '@mui/material';
+import { BarChart, Launch } from '@mui/icons-material';
+import { Box, Divider, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCallback } from 'react';
@@ -100,6 +100,24 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 					>
 						{link.short_url}
 					</Box>
+				</Tooltip>
+
+				{/* Botão de analytics — visível e direto */}
+				<Tooltip title='Ver Analytics'>
+					<IconButton
+						size='small'
+						onClick={(e) => {
+							e.stopPropagation();
+							navigate(`/link/analytic/${link.id}`);
+						}}
+						sx={{
+							color: 'text.secondary',
+							flexShrink: 0,
+							'&:hover': { color: 'success.main', bgcolor: 'rgba(46,125,50,0.08)' },
+						}}
+					>
+						<BarChart sx={{ fontSize: 18 }} />
+					</IconButton>
 				</Tooltip>
 
 				<Stack

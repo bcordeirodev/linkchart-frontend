@@ -1,21 +1,20 @@
-import { FilterList, Search, Sort } from '@mui/icons-material';
+import { Search, SwapVert } from '@mui/icons-material';
 import {
 	Box,
 	Chip,
+	Divider,
 	FormControl,
 	InputAdornment,
-	InputLabel,
 	MenuItem,
 	Select,
 	Stack,
 	TextField,
-	Typography,
 	useTheme,
 } from '@mui/material';
 import { debounce } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 
-import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
+import { radiusTokens } from '@/lib/theme/designSystem';
 
 const STATUS_CHIPS = [
 	{ value: 'all', label: 'Todos' },
@@ -26,7 +25,7 @@ const STATUS_CHIPS = [
 ];
 
 const SORT_OPTIONS = [
-	{ value: 'created_at', label: 'Criado mais recente' },
+	{ value: 'created_at', label: 'Mais recente' },
 	{ value: 'clicks', label: 'Mais clicks' },
 	{ value: 'trend', label: 'Maior tendência' },
 	{ value: 'last_activity', label: 'Última atividade' },
@@ -50,7 +49,6 @@ export function LinksFilters({
 	onSortChange,
 }: LinksFiltersProps) {
 	const theme = useTheme();
-	const isDark = theme.palette.mode === 'dark';
 	const [localSearch, setLocalSearch] = useState(searchTerm);
 
 	const debouncedSearch = useMemo(
@@ -61,51 +59,27 @@ export function LinksFilters({
 	useEffect(() => () => debouncedSearch.cancel(), [debouncedSearch]);
 	useEffect(() => setLocalSearch(searchTerm), [searchTerm]);
 
-	const activeFiltersCount =
-		(searchTerm ? 1 : 0) + (statusFilter !== 'all' ? 1 : 0) + (sortBy !== 'created_at' ? 1 : 0);
-
 	return (
 		<Box
 			sx={{
 				backgroundColor: theme.palette.background.paper,
 				borderRadius: `${radiusTokens.lg}px`,
 				border: `1px solid ${theme.palette.divider}`,
-				p: 3,
-				mb: 4,
-				boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
-				transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-				'&:hover': { boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm },
+				mb: 3,
+				overflow: 'hidden',
 			}}
 		>
-			<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-				<FilterList sx={{ color: 'primary.main', mr: 1 }} />
-				<Typography
-					variant='h6'
-					sx={{ fontWeight: 600, color: 'text.primary' }}
-				>
-					Filtros
-				</Typography>
-				{activeFiltersCount > 0 && (
-					<Chip
-						label={`${activeFiltersCount} ${activeFiltersCount === 1 ? 'ativo' : 'ativos'}`}
-						size='small'
-						color='primary'
-						sx={{ ml: 'auto', fontWeight: 500 }}
-					/>
-				)}
-			</Box>
-
+			{/* Linha 1: busca + ordenação */}
 			<Box
 				sx={{
 					display: 'flex',
-					gap: 2,
+					gap: 0,
 					flexDirection: { xs: 'column', sm: 'row' },
-					alignItems: { xs: 'stretch', sm: 'center' },
-					mb: 2,
+					alignItems: 'stretch',
 				}}
 			>
 				<TextField
-					variant='filled'
+					variant='outlined'
 					placeholder='Buscar por título, URL ou slug...'
 					value={localSearch}
 					onChange={(e) => {
@@ -113,31 +87,63 @@ export function LinksFilters({
 						debouncedSearch(e.target.value);
 					}}
 					fullWidth
-					sx={{ flex: 1, minWidth: 260, '& .MuiFilledInput-root': { minHeight: 52 } }}
+					size='small'
+					sx={{
+						flex: 1,
+						'& .MuiOutlinedInput-root': {
+							borderRadius: 0,
+							border: 'none',
+							'& fieldset': { border: 'none' },
+							'&:hover fieldset': { border: 'none' },
+							'&.Mui-focused fieldset': { border: 'none' },
+							fontSize: '0.875rem',
+							minHeight: 48,
+						},
+					}}
 					InputProps={{
 						startAdornment: (
 							<InputAdornment position='start'>
-								<Search sx={{ color: 'text.secondary', fontSize: 22 }} />
+								<Search sx={{ color: 'text.disabled', fontSize: 20 }} />
 							</InputAdornment>
 						),
 					}}
 				/>
 
-				<FormControl sx={{ minWidth: 200, flexShrink: 0 }}>
-					<InputLabel>
-						<Stack
-							direction='row'
-							spacing={0.5}
-							alignItems='center'
-						>
-							<Sort sx={{ fontSize: 16 }} />
-							<span>Ordenar por</span>
-						</Stack>
-					</InputLabel>
+				<Divider
+					orientation='vertical'
+					flexItem
+					sx={{ display: { xs: 'none', sm: 'block' } }}
+				/>
+				<Divider
+					orientation='horizontal'
+					sx={{ display: { xs: 'block', sm: 'none' } }}
+				/>
+
+				<FormControl
+					size='small'
+					sx={{ minWidth: 180, flexShrink: 0 }}
+				>
 					<Select
 						value={sortBy}
-						label='Ordenar por'
 						onChange={(e) => onSortChange(e.target.value)}
+						displayEmpty
+						renderValue={(val) => {
+							const opt = SORT_OPTIONS.find((o) => o.value === val);
+							return (
+								<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+									<SwapVert sx={{ fontSize: 16, color: 'text.secondary' }} />
+									<span>{opt?.label ?? 'Ordenar'}</span>
+								</Box>
+							);
+						}}
+						sx={{
+							borderRadius: 0,
+							'& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+							'&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+							'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+							fontSize: '0.875rem',
+							minHeight: 48,
+						}}
 					>
 						{SORT_OPTIONS.map((opt) => (
 							<MenuItem
@@ -151,21 +157,30 @@ export function LinksFilters({
 				</FormControl>
 			</Box>
 
+			<Divider />
+
+			{/* Linha 2: chips de status */}
 			<Stack
 				direction='row'
-				spacing={1}
+				spacing={0.75}
 				flexWrap='wrap'
 				useFlexGap
+				sx={{ px: 2, py: 1.5 }}
 			>
 				{STATUS_CHIPS.map((chip) => (
 					<Chip
 						key={chip.value}
 						label={chip.label}
 						clickable
+						size='small'
 						color={statusFilter === chip.value ? 'primary' : 'default'}
 						variant={statusFilter === chip.value ? 'filled' : 'outlined'}
 						onClick={() => onStatusChange(chip.value)}
-						size='small'
+						sx={{
+							borderRadius: '6px',
+							fontWeight: statusFilter === chip.value ? 600 : 400,
+							fontSize: '0.75rem',
+						}}
 					/>
 				))}
 			</Stack>
