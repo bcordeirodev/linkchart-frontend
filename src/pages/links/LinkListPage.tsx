@@ -1,32 +1,31 @@
-// src/pages/links/LinkListPage.tsx
-import { Box } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useMemo, useState } from 'react';
 
 import { LinkMetrics } from '@/features/links/components/LinkMetrics';
 import {
-	LinkDetailDrawer,
+	LinkCardRich,
 	LinksEmptyState,
 	LinksFilters,
 	LinksHeader,
 	LinksMobileCards,
-	useLinksTableColumns
 } from '@/features/links/components/list';
 import { useLinks } from '@/features/links/hooks/useLinks';
+import { useLinksMeta } from '@/features/links/hooks/useLinksMeta';
+import { getLinkStatus } from '@/features/links/utils/linkStatus';
 import { useResponsive } from '@/lib/theme';
-import { LinkListSkeleton } from '@/shared/ui/feedback/skeletons';
 import MainLayout from '@/shared/layout/MainLayout';
 import { ResponsiveContainer } from '@/shared/ui/base';
+import { LinkListSkeleton } from '@/shared/ui/feedback/skeletons';
 import type { LinkResponse } from '@/types';
 
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
-import DataTable from '../../shared/ui/data-display/DataTable';
 
 function LinkListPage() {
 	const { isMobile } = useResponsive();
 	const { links, loading, deleteLink } = useLinks();
 	const [searchTerm, setSearchTerm] = useState('');
 	const [statusFilter, setStatusFilter] = useState('all');
-	const [drawerLink, setDrawerLink] = useState<LinkResponse | null>(null);
+	const [sortBy, setSortBy] = useState('created_at');
 
 	const filteredLinks = useMemo(() => {
 		return links.filter((link) => {
@@ -35,16 +34,47 @@ function LinkListPage() {
 				link.original_url.toLowerCase().includes(searchTerm.toLowerCase()) ||
 				(link.slug || link.custom_slug)?.toLowerCase().includes(searchTerm.toLowerCase());
 
+			const status = getLinkStatus(link);
 			const matchesStatus =
 				statusFilter === 'all' ||
-				(statusFilter === 'active' && link.is_active) ||
-				(statusFilter === 'inactive' && !link.is_active);
+				(statusFilter === 'active' && status === 'active') ||
+				(statusFilter === 'inactive' && status === 'inactive') ||
+				(statusFilter === 'scheduled' && status === 'scheduled') ||
+				(statusFilter === 'expired' && status === 'expired');
 
 			return matchesSearch && matchesStatus;
 		});
 	}, [links, searchTerm, statusFilter]);
 
-	const columns = useLinksTableColumns({ onDelete: deleteLink });
+	const linkIds = useMemo(() => filteredLinks.map((l) => String(l.id)), [filteredLinks]);
+	const { meta } = useLinksMeta(linkIds);
+
+	const sortedLinks = useMemo(() => {
+		const sorted = [...filteredLinks];
+		switch (sortBy) {
+			case 'clicks':
+				return sorted.sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
+			case 'trend':
+				return sorted.sort(
+					(a, b) =>
+						(meta[String(b.id)]?.trend?.percent_change ?? 0) -
+						(meta[String(a.id)]?.trend?.percent_change ?? 0)
+				);
+			case 'last_activity':
+				return sorted.sort((a, b) => {
+					const aLast = meta[String(a.id)]?.trend?.last_click_at;
+					const bLast = meta[String(b.id)]?.trend?.last_click_at;
+					if (!aLast && !bLast) return 0;
+					if (!aLast) return 1;
+					if (!bLast) return -1;
+					return new Date(bLast).getTime() - new Date(aLast).getTime();
+				});
+			default:
+				return sorted.sort(
+					(a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+				);
+		}
+	}, [filteredLinks, sortBy, meta]);
 
 	if (loading) {
 		return (
@@ -58,6 +88,12 @@ function LinkListPage() {
 			</AuthGuardRedirect>
 		);
 	}
+
+	const handleClearFilters = () => {
+		setSearchTerm('');
+		setStatusFilter('all');
+		setSortBy('created_at');
+	};
 
 	return (
 		<AuthGuardRedirect auth={['user', 'admin']}>
@@ -75,64 +111,35 @@ function LinkListPage() {
 						onSearchChange={setSearchTerm}
 						statusFilter={statusFilter}
 						onStatusChange={setStatusFilter}
+						sortBy={sortBy}
+						onSortChange={setSortBy}
 					/>
 
-					{filteredLinks.length === 0 ? (
+					{sortedLinks.length === 0 ? (
 						<LinksEmptyState
 							hasActiveFilters={Boolean(searchTerm) || statusFilter !== 'all'}
-							onClearFilters={() => {
-								setSearchTerm('');
-								setStatusFilter('all');
-							}}
+							onClearFilters={handleClearFilters}
 						/>
 					) : isMobile ? (
 						<LinksMobileCards
-							data={filteredLinks}
+							data={sortedLinks}
+							meta={meta}
 							loading={loading}
 							onDelete={deleteLink}
 						/>
 					) : (
-						<Box sx={{ width: '100%', overflowX: 'auto' }}>
-							<DataTable
-								data={filteredLinks}
-								columns={columns}
-								enableRowSelection={false}
-								enableRowActions={false}
-								enableSelectAll={false}
-								enableColumnFilters={false}
-								enableGlobalFilter={false}
-								enableColumnResizing={false}
-								enableColumnOrdering={false}
-								initialState={{
-									pagination: { pageIndex: 0, pageSize: 10 }
-								}}
-								muiTableBodyRowProps={({ row }) => ({
-									onClick: () => setDrawerLink(row.original),
-									sx: { cursor: 'pointer' }
-								})}
-								muiTableContainerProps={{
-									sx: { maxWidth: '100%', overflowX: 'auto' }
-								}}
-								muiTableProps={{
-									sx: {
-										tableLayout: 'auto',
-										'& .MuiTableCell-root': {
-											padding: { xs: '10px 8px', md: '14px 16px' }
-										},
-										'& .MuiTableRow-root': {
-											height: 56
-										}
-									}
-								}}
-							/>
-						</Box>
+						<Stack spacing={2}>
+							{sortedLinks.map((link: LinkResponse) => (
+								<LinkCardRich
+									key={link.id}
+									link={link}
+									meta={meta[String(link.id)]}
+									onDelete={deleteLink}
+								/>
+							))}
+						</Stack>
 					)}
 				</ResponsiveContainer>
-
-				<LinkDetailDrawer
-					link={drawerLink}
-					onClose={() => setDrawerLink(null)}
-				/>
 			</MainLayout>
 		</AuthGuardRedirect>
 	);

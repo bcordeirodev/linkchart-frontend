@@ -24,25 +24,30 @@ import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } fro
 import { getLinkStatus, STATUS_MAP } from '../../utils/linkStatus';
 
 // Types
-import type { LinkResponse as Link } from '@/types/core/links';
+import type { BatchMetaResponse, LinkMeta, LinkResponse as Link } from '@/types';
+
+import { LinkHealthBadge } from './LinkHealthBadge';
+import { LinkSparkline } from './LinkSparkline';
 
 interface LinksMobileCardsProps {
 	data: Link[];
 	loading?: boolean;
 	onDelete?: (id: string) => void;
 	onEdit?: (link: Link) => void;
+	meta?: BatchMetaResponse;
 }
 
 interface LinkMobileCardProps {
 	link: Link;
 	onDelete?: (id: string) => void;
 	onEdit?: (link: Link) => void;
+	meta?: LinkMeta;
 }
 
 /**
  * Card individual para mobile
  */
-const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) => {
+const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardProps) => {
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
 	const navigate = useNavigate();
@@ -173,6 +178,63 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) =>
 					</Typography>
 				</Box>
 
+				{/* Sparkline mini */}
+				{meta?.sparkline?.length ? (
+					<Box sx={{ mb: 1.5 }}>
+						<LinkSparkline
+							data={meta.sparkline}
+							trend={meta.trend?.percent_change}
+							height={24}
+							width='100%'
+						/>
+					</Box>
+				) : null}
+
+				{/* Tendência + health */}
+				{meta?.trend && (
+					<Stack
+						direction='row'
+						spacing={1}
+						alignItems='center'
+						sx={{ mb: 1.5 }}
+					>
+						<Typography
+							variant='caption'
+							sx={{
+								color: meta.trend.percent_change >= 0 ? 'success.main' : 'error.main',
+								fontWeight: 600,
+							}}
+						>
+							{meta.trend.percent_change >= 0 ? '+' : ''}
+							{meta.trend.percent_change.toFixed(1)}%
+						</Typography>
+						<Typography
+							variant='caption'
+							color='text.secondary'
+						>
+							•
+						</Typography>
+						<Typography
+							variant='caption'
+							color='text.secondary'
+						>
+							{meta.trend.last_click_at
+								? formatDistanceToNow(new Date(meta.trend.last_click_at), {
+										addSuffix: true,
+										locale: ptBR,
+									})
+								: 'Nunca'}
+						</Typography>
+						<Typography
+							variant='caption'
+							color='text.secondary'
+						>
+							•
+						</Typography>
+						<LinkHealthBadge health={meta.health} />
+					</Stack>
+				)}
+
 				{/* Métricas e status */}
 				<Stack
 					direction='row'
@@ -251,7 +313,7 @@ LinkMobileCard.displayName = 'LinkMobileCard';
 /**
  * Container principal dos cards mobile
  */
-export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit }: LinksMobileCardsProps) => {
+export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit, meta }: LinksMobileCardsProps) => {
 	if (loading) {
 		return (
 			<Box sx={{ p: 2 }}>
@@ -346,6 +408,7 @@ export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit }: Links
 				<LinkMobileCard
 					key={link.id}
 					link={link}
+					meta={meta?.[String(link.id)]}
 					onDelete={onDelete}
 					onEdit={onEdit}
 				/>
