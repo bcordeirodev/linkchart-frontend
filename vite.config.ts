@@ -63,6 +63,7 @@ export default defineConfig({
     server: {
         port: 3000,
         host: true,
+        allowedHosts: ['host.docker.internal'],
         proxy: {
             // Proxy para API - evita CORS completamente em desenvolvimento
             '/api': {
