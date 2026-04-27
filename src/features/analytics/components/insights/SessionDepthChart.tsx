@@ -2,6 +2,8 @@ import { TouchApp, TrendingUp, Star, Assessment } from '@mui/icons-material';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, LinearProgress } from '@mui/material';
 import { useTheme, alpha } from '@mui/material/styles';
 
+import { getChartColor } from '@/lib/theme/colors';
+import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
@@ -87,7 +89,7 @@ export function SessionDepthChart({
 				formatter: (val: number) => `${val}%`
 			}
 		},
-		colors: [theme.palette.primary.main],
+		colors: [getChartColor(0)],
 		tooltip: {
 			theme: theme.palette.mode,
 			y: {
@@ -145,7 +147,7 @@ export function SessionDepthChart({
 				}
 			}
 		},
-		colors: [theme.palette.success.main],
+		colors: [getChartColor(1)],
 		tooltip: {
 			theme: theme.palette.mode,
 			x: {
@@ -301,21 +303,28 @@ export function SessionDepthChart({
 						sx={{
 							backgroundColor: getQualityColor(data.session_quality),
 							color: 'white',
-							fontWeight: 'bold',
+							fontWeight: 600,
 							fontSize: '0.9rem',
 							px: 2,
-							py: 1
+							py: 1,
+							borderRadius: `${radiusTokens.md}px`
 						}}
 					/>
 				</Box>
 
 				{/* Indicador de Engajamento */}
 				<Box sx={{ mb: 3 }}>
-					<Card>
+					<Card
+						sx={{
+							borderRadius: `${radiusTokens.lg}px`,
+							boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+						}}
+					>
 						<CardContent>
 							<Typography
 								variant='h6'
 								gutterBottom
+								sx={{ fontWeight: 600 }}
 							>
 								Nível de Engajamento
 							</Typography>
@@ -364,11 +373,18 @@ export function SessionDepthChart({
 						xs={12}
 						md={7}
 					>
-						<Card sx={{ height: '100%' }}>
+						<Card
+							sx={{
+								height: '100%',
+								borderRadius: `${radiusTokens.lg}px`,
+								boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+							}}
+						>
 							<CardContent>
 								<Typography
 									variant='h6'
 									gutterBottom
+									sx={{ fontWeight: 600 }}
 								>
 									Distribuição de Clicks por Sessão
 								</Typography>
@@ -388,11 +404,18 @@ export function SessionDepthChart({
 						xs={12}
 						md={5}
 					>
-						<Card sx={{ height: '100%' }}>
+						<Card
+							sx={{
+								height: '100%',
+								borderRadius: `${radiusTokens.lg}px`,
+								boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+							}}
+						>
 							<CardContent>
 								<Typography
 									variant='h6'
 									gutterBottom
+									sx={{ fontWeight: 600 }}
 								>
 									Curva de Engajamento
 								</Typography>
@@ -418,11 +441,17 @@ export function SessionDepthChart({
 
 				{/* Detalhes da Distribuição */}
 				<Box sx={{ mt: 3 }}>
-					<Card>
+					<Card
+						sx={{
+							borderRadius: `${radiusTokens.lg}px`,
+							boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+						}}
+					>
 						<CardContent>
 							<Typography
 								variant='h6'
 								gutterBottom
+								sx={{ fontWeight: 600 }}
 							>
 								📊 Detalhes da Distribuição
 							</Typography>
@@ -443,13 +472,13 @@ export function SessionDepthChart({
 												p: 2,
 												border: 1,
 												borderColor: 'divider',
-												borderRadius: 2,
-												backgroundColor: alpha(theme.palette.primary.main, 0.05)
+												borderRadius: `${radiusTokens.md}px`,
+												backgroundColor: 'background.default'
 											}}
 										>
 											<Typography
 												variant='subtitle2'
-												sx={{ fontWeight: 'bold' }}
+												sx={{ fontWeight: 600 }}
 											>
 												{item.session_clicks} Click{item.session_clicks > 1 ? 's' : ''}
 											</Typography>
@@ -477,12 +506,18 @@ export function SessionDepthChart({
 
 				{/* Insights e Recomendações */}
 				<Box sx={{ mt: 3 }}>
-					<Card sx={{ backgroundColor: alpha(getQualityColor(data.session_quality), 0.1) }}>
+					<Card
+						sx={{
+							borderRadius: `${radiusTokens.lg}px`,
+							backgroundColor: 'background.paper',
+							boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+						}}
+					>
 						<CardContent>
 							<Stack spacing={2}>
 								<Typography
 									variant='h6'
-									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+									sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}
 								>
 									💡 Insights de Engajamento
 								</Typography>
@@ -509,7 +544,7 @@ export function SessionDepthChart({
 										variant='body2'
 										sx={{
 											color: theme.palette.success.main,
-											fontWeight: 'medium'
+											fontWeight: 500
 										}}
 									>
 										🌟 Destaque: Você tem uma base sólida de power users (

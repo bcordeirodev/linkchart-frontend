@@ -2,6 +2,8 @@ import { Repeat, TrendingUp, People, Assessment } from '@mui/icons-material';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack } from '@mui/material';
 import { useTheme, alpha } from '@mui/material/styles';
 
+import { getChartColor } from '@/lib/theme/colors';
+import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
@@ -45,7 +47,7 @@ export function RetentionAnalysisChart({
 			toolbar: { show: false }
 		},
 		labels: ['Visitantes Recorrentes', 'Novos Visitantes'],
-		colors: [theme.palette.success.main, theme.palette.info.main],
+		colors: [getChartColor(1), getChartColor(0)],
 		dataLabels: {
 			enabled: true,
 			formatter: (val: number) => `${val.toFixed(1)}%`
@@ -299,10 +301,11 @@ export function RetentionAnalysisChart({
 						sx={{
 							backgroundColor: getBenchmarkColor(data.benchmark_comparison),
 							color: 'white',
-							fontWeight: 'bold',
+							fontWeight: 600,
 							fontSize: '0.9rem',
 							px: 2,
-							py: 1
+							py: 1,
+							borderRadius: `${radiusTokens.md}px`
 						}}
 					/>
 				</Box>
@@ -318,12 +321,18 @@ export function RetentionAnalysisChart({
 						xs={12}
 						md={6}
 					>
-						<Card sx={{ height: '100%' }}>
+						<Card
+							sx={{
+								height: '100%',
+								borderRadius: `${radiusTokens.lg}px`,
+								boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+							}}
+						>
 							<CardContent>
 								<Typography
 									variant='h6'
 									gutterBottom
-									sx={{ textAlign: 'center' }}
+									sx={{ textAlign: 'center', fontWeight: 600 }}
 								>
 									Distribuição de Visitantes
 								</Typography>
@@ -343,12 +352,18 @@ export function RetentionAnalysisChart({
 						xs={12}
 						md={6}
 					>
-						<Card sx={{ height: '100%' }}>
+						<Card
+							sx={{
+								height: '100%',
+								borderRadius: `${radiusTokens.lg}px`,
+								boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+							}}
+						>
 							<CardContent>
 								<Typography
 									variant='h6'
 									gutterBottom
-									sx={{ textAlign: 'center' }}
+									sx={{ textAlign: 'center', fontWeight: 600 }}
 								>
 									Comparação com Benchmark
 								</Typography>
@@ -373,12 +388,18 @@ export function RetentionAnalysisChart({
 
 				{/* Insights e Recomendações */}
 				<Box sx={{ mt: 3 }}>
-					<Card sx={{ backgroundColor: alpha(getBenchmarkColor(data.benchmark_comparison), 0.1) }}>
+					<Card
+						sx={{
+							borderRadius: `${radiusTokens.lg}px`,
+							backgroundColor: 'background.paper',
+							boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+						}}
+					>
 						<CardContent>
 							<Stack spacing={2}>
 								<Typography
 									variant='h6'
-									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+									sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}
 								>
 									💡 Insights de Retenção
 								</Typography>

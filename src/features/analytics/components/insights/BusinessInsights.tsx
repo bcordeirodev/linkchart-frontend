@@ -10,7 +10,9 @@ import {
 	Business
 } from '@mui/icons-material';
 import { Box, Typography, Card, CardContent, Chip, Alert, Stack, Divider, Avatar } from '@mui/material';
-import { useTheme, alpha } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
+
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 
 interface BusinessInsight {
 	type: string;
@@ -40,6 +42,7 @@ export function BusinessInsights({
 	categoryFilter: _categoryFilter
 }: BusinessInsightsProps) {
 	const theme = useTheme();
+	const isDark = theme.palette.mode === 'dark';
 
 	if (!insights || insights.length === 0) {
 		return (
@@ -47,7 +50,7 @@ export function BusinessInsights({
 				severity='info'
 				sx={{
 					m: 2,
-					borderRadius: '16px',
+					borderRadius: `${radiusTokens.lg}px`,
 					'& .MuiAlert-icon': {
 						fontSize: '1.5rem'
 					}
@@ -82,28 +85,13 @@ export function BusinessInsights({
 		return iconMap[type as keyof typeof iconMap] || <Info />;
 	};
 
-	const getPriorityColors = (priority: string) => {
-		const colorMap = {
-			high: {
-				main: theme.palette.error.main,
-				light: theme.palette.error.light,
-				bg: alpha(theme.palette.error.main, 0.1),
-				border: alpha(theme.palette.error.main, 0.3)
-			},
-			medium: {
-				main: theme.palette.warning.main,
-				light: theme.palette.warning.light,
-				bg: alpha(theme.palette.warning.main, 0.1),
-				border: alpha(theme.palette.warning.main, 0.3)
-			},
-			low: {
-				main: theme.palette.success.main,
-				light: theme.palette.success.light,
-				bg: alpha(theme.palette.success.main, 0.1),
-				border: alpha(theme.palette.success.main, 0.3)
-			}
+	const getPriorityPalette = (priority: string) => {
+		const palette = {
+			high: theme.palette.error,
+			medium: theme.palette.warning,
+			low: theme.palette.success
 		};
-		return colorMap[priority as keyof typeof colorMap] || colorMap.low;
+		return palette[priority as keyof typeof palette] || palette.low;
 	};
 
 	const getPriorityIcon = (priority: string) => {
@@ -155,8 +143,7 @@ export function BusinessInsights({
 					sx={{
 						mb: 3,
 						fontWeight: 600,
-						color: 'text.primary',
-						fontFamily: 'Inter, system-ui, sans-serif'
+						color: 'text.primary'
 					}}
 				>
 					💡 Insights de Negócio
@@ -166,7 +153,7 @@ export function BusinessInsights({
 			{/* Insights organizados por categoria */}
 			<Stack spacing={3}>
 				{organizedInsights.map((insight, index) => {
-					const colors = getPriorityColors(insight.priority);
+					const palette = getPriorityPalette(insight.priority);
 					const prevInsight = organizedInsights[index - 1];
 					const showCategoryDivider = index > 0 && prevInsight && prevInsight.type !== insight.type;
 
@@ -200,17 +187,13 @@ export function BusinessInsights({
 							) : null}
 
 							<Card
-								elevation={3}
 								sx={{
-									borderRadius: '16px',
-									border: `1px solid ${colors.border}`,
-									backgroundColor: colors.bg,
-									backdropFilter: 'blur(10px)',
-									transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+									borderRadius: `${radiusTokens.lg}px`,
+									backgroundColor: 'background.paper',
+									boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+									transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 									'&:hover': {
-										boxShadow: theme.shadows[8],
-										transform: 'translateY(-4px)',
-										borderColor: colors.main
+										boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm
 									}
 								}}
 							>
@@ -225,9 +208,9 @@ export function BusinessInsights({
 											sx={{
 												width: 48,
 												height: 48,
-												backgroundColor: colors.main,
-												color: 'white',
-												borderRadius: '12px'
+												backgroundColor: palette.main,
+												color: palette.contrastText,
+												borderRadius: `${radiusTokens.md}px`
 											}}
 										>
 											{getInsightIcon(insight.type)}
@@ -245,8 +228,7 @@ export function BusinessInsights({
 													variant='h6'
 													sx={{
 														fontWeight: 600,
-														color: 'text.primary',
-														fontFamily: 'Inter, system-ui, sans-serif'
+														color: 'text.primary'
 													}}
 												>
 													{insight.title}
@@ -258,12 +240,12 @@ export function BusinessInsights({
 													label={insight.priority.toUpperCase()}
 													size='small'
 													sx={{
-														backgroundColor: colors.main,
-														color: 'white',
+														backgroundColor: palette.main,
+														color: palette.contrastText,
 														fontWeight: 600,
 														fontSize: '0.75rem',
 														'& .MuiChip-icon': {
-															color: 'white',
+															color: palette.contrastText,
 															fontSize: '1rem'
 														}
 													}}
@@ -275,7 +257,6 @@ export function BusinessInsights({
 												sx={{
 													lineHeight: 1.6,
 													color: 'text.secondary',
-													fontFamily: 'Inter, system-ui, sans-serif',
 													mb: 2
 												}}
 											>
@@ -283,16 +264,15 @@ export function BusinessInsights({
 											</Typography>
 
 											{/* Categoria com divisória sutil */}
-											<Divider sx={{ my: 1, borderColor: colors.border }} />
+											<Divider sx={{ my: 1 }} />
 
 											<Typography
 												variant='caption'
 												sx={{
-													color: colors.main,
+													color: palette.main,
 													fontWeight: 600,
 													textTransform: 'uppercase',
-													letterSpacing: 0.5,
-													fontFamily: 'Inter, system-ui, sans-serif'
+													letterSpacing: 0.5
 												}}
 											>
 												📈 {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
@@ -312,9 +292,7 @@ export function BusinessInsights({
 					severity='success'
 					sx={{
 						mt: 3,
-						borderRadius: '16px',
-						backgroundColor: alpha(theme.palette.success.main, 0.1),
-						border: `1px solid ${alpha(theme.palette.success.main, 0.3)}`,
+						borderRadius: `${radiusTokens.lg}px`,
 						'& .MuiAlert-icon': {
 							fontSize: '1.5rem'
 						}
@@ -323,7 +301,6 @@ export function BusinessInsights({
 					<Typography
 						variant='body2'
 						sx={{
-							fontFamily: 'Inter, system-ui, sans-serif',
 							fontWeight: 500
 						}}
 					>

@@ -1,6 +1,7 @@
 import { Lightbulb, TrendingUp, Flag, Assessment } from '@mui/icons-material';
 import { Box, Grid, Typography } from '@mui/material';
 
+import { radiusTokens } from '@/lib/theme/designSystem';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 import TabDescription from '@/shared/ui/base/TabDescription';
@@ -222,7 +223,7 @@ export function InsightsAnalysis({
 
 					{/* Informações adicionais */}
 					{stats ? (
-						<Box sx={{ mt: 3, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
+						<Box sx={{ mt: 3, p: 2, bgcolor: 'background.paper', borderRadius: `${radiusTokens.md}px` }}>
 							<Typography
 								variant='caption'
 								color='text.secondary'

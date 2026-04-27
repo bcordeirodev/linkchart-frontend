@@ -1,7 +1,9 @@
 import { Traffic, TrendingUp, Diversity3, Assessment, Warning } from '@mui/icons-material';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, Alert } from '@mui/material';
-import { useTheme, alpha } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 
+import { chartPalette, getChartColor } from '@/lib/theme/colors';
+import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
@@ -64,14 +66,14 @@ export function TrafficSourceChart({
 }: TrafficSourceChartProps) {
 	const theme = useTheme();
 
-	// Cores para diferentes canais
+	// Cores para diferentes canais — usando chartPalette para harmonia visual
 	const channelColors: Record<string, string> = {
-		social: theme.palette.info.main,
-		search: theme.palette.success.main,
-		direct: theme.palette.primary.main,
-		email: theme.palette.warning.main,
-		referral: theme.palette.secondary.main,
-		paid: theme.palette.error.main,
+		social: chartPalette[0],
+		search: chartPalette[1],
+		direct: chartPalette[3],
+		email: chartPalette[2],
+		referral: chartPalette[5],
+		paid: chartPalette[6],
 		other: theme.palette.text.secondary
 	};
 
@@ -206,7 +208,7 @@ export function TrafficSourceChart({
 			curve: 'smooth' as const,
 			width: 3
 		},
-		colors: [theme.palette.primary.main],
+		colors: [getChartColor(0)],
 		tooltip: {
 			theme: theme.palette.mode
 		}
@@ -355,7 +357,7 @@ export function TrafficSourceChart({
 						<Alert
 							severity='warning'
 							icon={<Warning />}
-							sx={{ borderRadius: 2 }}
+							sx={{ borderRadius: `${radiusTokens.lg}px` }}
 						>
 							<Typography variant='body2'>
 								<strong>Baixa diversidade de fontes!</strong> Você tem apenas {data.source_diversity}{' '}
@@ -379,12 +381,18 @@ export function TrafficSourceChart({
 						xs={12}
 						md={6}
 					>
-						<Card sx={{ height: '100%' }}>
+						<Card
+							sx={{
+								height: '100%',
+								borderRadius: `${radiusTokens.lg}px`,
+								boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+							}}
+						>
 							<CardContent>
 								<Typography
 									variant='h6'
 									gutterBottom
-									sx={{ textAlign: 'center' }}
+									sx={{ textAlign: 'center', fontWeight: 600 }}
 								>
 									Distribuição por Canais
 								</Typography>
@@ -404,12 +412,18 @@ export function TrafficSourceChart({
 						xs={12}
 						md={6}
 					>
-						<Card sx={{ height: '100%' }}>
+						<Card
+							sx={{
+								height: '100%',
+								borderRadius: `${radiusTokens.lg}px`,
+								boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+							}}
+						>
 							<CardContent>
 								<Typography
 									variant='h6'
 									gutterBottom
-									sx={{ textAlign: 'center' }}
+									sx={{ textAlign: 'center', fontWeight: 600 }}
 								>
 									Engajamento por Canal
 								</Typography>
@@ -433,11 +447,17 @@ export function TrafficSourceChart({
 
 				{/* Detalhes dos Canais */}
 				<Box sx={{ mb: 3 }}>
-					<Card>
+					<Card
+						sx={{
+							borderRadius: `${radiusTokens.lg}px`,
+							boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+						}}
+					>
 						<CardContent>
 							<Typography
 								variant='h6'
 								gutterBottom
+								sx={{ fontWeight: 600 }}
 							>
 								📊 Performance Detalhada por Canal
 							</Typography>
@@ -458,11 +478,8 @@ export function TrafficSourceChart({
 												p: 2,
 												border: 1,
 												borderColor: 'divider',
-												borderRadius: 2,
-												backgroundColor: alpha(
-													channelColors[channel.channel] || channelColors.other,
-													0.1
-												)
+												borderRadius: `${radiusTokens.md}px`,
+												backgroundColor: 'background.default'
 											}}
 										>
 											<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
@@ -477,7 +494,7 @@ export function TrafficSourceChart({
 												/>
 												<Typography
 													variant='subtitle2'
-													sx={{ fontWeight: 'bold', textTransform: 'capitalize' }}
+													sx={{ fontWeight: 600, textTransform: 'capitalize' }}
 												>
 													{channel.channel}
 												</Typography>
@@ -519,11 +536,17 @@ export function TrafficSourceChart({
 
 				{/* Top Sources */}
 				<Box sx={{ mb: 3 }}>
-					<Card>
+					<Card
+						sx={{
+							borderRadius: `${radiusTokens.lg}px`,
+							boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+						}}
+					>
 						<CardContent>
 							<Typography
 								variant='h6'
 								gutterBottom
+								sx={{ fontWeight: 600 }}
 							>
 								🏆 Top 5 Fontes Individuais
 							</Typography>
@@ -545,15 +568,14 @@ export function TrafficSourceChart({
 												p: 1.5,
 												border: 1,
 												borderColor: 'divider',
-												borderRadius: 1,
-												backgroundColor:
-													index === 0 ? alpha(theme.palette.primary.main, 0.1) : 'transparent'
+												borderRadius: `${radiusTokens.md}px`,
+												backgroundColor: index === 0 ? 'background.default' : 'transparent'
 											}}
 										>
 											<Box>
 												<Typography
 													variant='body2'
-													sx={{ fontWeight: index === 0 ? 'bold' : 'normal' }}
+													sx={{ fontWeight: index === 0 ? 600 : 400 }}
 												>
 													{index + 1}. {source.source}
 												</Typography>
@@ -567,7 +589,7 @@ export function TrafficSourceChart({
 											<Box sx={{ textAlign: 'right' }}>
 												<Typography
 													variant='body2'
-													sx={{ fontWeight: 'bold' }}
+													sx={{ fontWeight: 600 }}
 												>
 													{source.clicks} clicks
 												</Typography>
@@ -589,12 +611,17 @@ export function TrafficSourceChart({
 				{/* Recomendações */}
 				{data.recommendations.length > 0 && (
 					<Box sx={{ mt: 3 }}>
-						<Card>
+						<Card
+							sx={{
+								borderRadius: `${radiusTokens.lg}px`,
+								boxShadow: theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs
+							}}
+						>
 							<CardContent>
 								<Typography
 									variant='h6'
 									gutterBottom
-									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+									sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}
 								>
 									💡 Recomendações Estratégicas
 								</Typography>
@@ -605,9 +632,9 @@ export function TrafficSourceChart({
 											sx={{
 												p: 2,
 												border: 1,
-												borderColor: getPriorityColor(rec.priority),
-												borderRadius: 2,
-												backgroundColor: alpha(getPriorityColor(rec.priority), 0.1)
+												borderColor: 'divider',
+												borderRadius: `${radiusTokens.md}px`,
+												backgroundColor: 'background.default'
 											}}
 										>
 											<Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
@@ -625,6 +652,7 @@ export function TrafficSourceChart({
 																backgroundColor: getPriorityColor(rec.priority),
 																color: 'white',
 																fontSize: '0.7rem',
+																fontWeight: 600,
 																height: 20
 															}}
 														/>
