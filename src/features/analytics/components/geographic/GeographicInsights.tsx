@@ -2,7 +2,8 @@ import { Box, Typography, Card, CardContent, Grid, Chip, Stack, Divider } from '
 import { useTheme } from '@mui/material/styles';
 
 import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
-import { getChartColorsByType } from '@/lib/theme';
+import { chartByType } from '@/lib/theme/colors';
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
 import type { HeatmapPoint } from '@/types';
@@ -18,8 +19,17 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
 
-	// Cores padronizadas usando novo sistema
-	const geographicColors = getChartColorsByType('geographic');
+	// Cores padronizadas via paleta canônica do design system
+	const geographicColors = chartByType.geographic;
+
+	const cardSx = {
+		borderRadius: `${radiusTokens.lg}px`,
+		boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+		transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+		'&:hover': {
+			boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm
+		}
+	} as const;
 
 	// Calcular estatísticas
 	const totalClicks = data.reduce((sum, point) => sum + point.clicks, 0);
@@ -94,7 +104,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					sm={6}
 					md={3}
 				>
-					<Card>
+					<Card sx={cardSx}>
 						<CardContent sx={{ textAlign: 'center' }}>
 							<Typography
 								variant='h4'
@@ -118,7 +128,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					sm={6}
 					md={3}
 				>
-					<Card>
+					<Card sx={cardSx}>
 						<CardContent sx={{ textAlign: 'center' }}>
 							<Typography
 								variant='h4'
@@ -142,7 +152,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					sm={6}
 					md={3}
 				>
-					<Card>
+					<Card sx={cardSx}>
 						<CardContent sx={{ textAlign: 'center' }}>
 							<Typography
 								variant='h4'
@@ -166,7 +176,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					sm={6}
 					md={3}
 				>
-					<Card>
+					<Card sx={cardSx}>
 						<CardContent sx={{ textAlign: 'center' }}>
 							<Typography
 								variant='h4'
@@ -197,7 +207,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					xs={12}
 					md={6}
 				>
-					<Card>
+					<Card sx={cardSx}>
 						<CardContent>
 							<Typography
 								variant='h6'
@@ -220,7 +230,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					xs={12}
 					md={6}
 				>
-					<Card>
+					<Card sx={cardSx}>
 						<CardContent>
 							<Typography
 								variant='h6'
@@ -243,7 +253,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					xs={12}
 					md={6}
 				>
-					<Card>
+					<Card sx={cardSx}>
 						<CardContent>
 							<Typography
 								variant='h6'
@@ -273,7 +283,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					xs={12}
 					md={6}
 				>
-					<Card>
+					<Card sx={cardSx}>
 						<CardContent>
 							<Typography
 								variant='h6'
@@ -299,7 +309,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 			</Grid>
 
 			{/* Insights detalhados */}
-			<Card sx={{ mt: 3 }}>
+			<Card sx={{ ...cardSx, mt: 3 }}>
 				<CardContent>
 					<Typography
 						variant='h6'

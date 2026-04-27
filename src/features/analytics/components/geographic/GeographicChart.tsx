@@ -2,6 +2,8 @@ import { Box, Typography, Card, CardContent, Grid, Chip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { formatBarChart } from '@/features/analytics/utils/chartFormatters';
+import { chartByType } from '@/lib/theme/colors';
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
 import type { CountryData, StateData, CityData } from '@/types';
@@ -16,6 +18,15 @@ interface GeographicChartProps {
 export function GeographicChart({ countries, states, cities, totalClicks }: GeographicChartProps) {
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
+
+	const cardSx = {
+		borderRadius: `${radiusTokens.lg}px`,
+		boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+		transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+		'&:hover': {
+			boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm
+		}
+	} as const;
 
 	const getPercentage = (clicks: number) => {
 		return totalClicks > 0 ? ((clicks / totalClicks) * 100).toFixed(1) : '0.0';
@@ -46,7 +57,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 				xs={12}
 				lg={6}
 			>
-				<Card>
+				<Card sx={cardSx}>
 					<CardContent>
 						<Typography
 							variant='h6'
@@ -54,7 +65,8 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 							sx={{
 								position: 'relative',
 								zIndex: 1,
-								mt: 1
+								mt: 1,
+								fontWeight: 600
 							}}
 						>
 							🌍 Top Países
@@ -71,7 +83,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 											countries.slice(0, 8) as Record<string, unknown>[],
 											'country',
 											'clicks',
-											'#1976d2',
+											chartByType.geographic.countries,
 											true,
 											isDark
 										)}
@@ -88,8 +100,10 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 												alignItems: 'center',
 												justifyContent: 'space-between',
 												py: 1,
-												borderBottom: index < countries.length - 1 ? '1px solid' : 'none',
-												borderBottomColor: 'divider'
+												borderBottom:
+													index < countries.length - 1
+														? `1px solid ${theme.palette.divider}`
+														: 'none'
 											}}
 										>
 											<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -97,7 +111,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 												<Box>
 													<Typography
 														variant='body2'
-														fontWeight='medium'
+														sx={{ fontWeight: 500 }}
 													>
 														{country.country}
 													</Typography>
@@ -114,7 +128,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 											<Box sx={{ textAlign: 'right' }}>
 												<Typography
 													variant='body2'
-													fontWeight='medium'
+													sx={{ fontWeight: 500 }}
 												>
 													{country.clicks} clicks
 												</Typography>
@@ -156,7 +170,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 				xs={12}
 				lg={6}
 			>
-				<Card>
+				<Card sx={cardSx}>
 					<CardContent>
 						<Typography
 							variant='h6'
@@ -164,7 +178,8 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 							sx={{
 								position: 'relative',
 								zIndex: 1,
-								mt: 1
+								mt: 1,
+								fontWeight: 600
 							}}
 						>
 							🏛️ Top Estados/Regiões
@@ -184,7 +199,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 											})),
 											'label',
 											'clicks',
-											'#2e7d32',
+											chartByType.geographic.states,
 											true,
 											isDark
 										)}
@@ -201,14 +216,16 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 												alignItems: 'center',
 												justifyContent: 'space-between',
 												py: 1,
-												borderBottom: index < states.length - 1 ? '1px solid' : 'none',
-												borderBottomColor: 'divider'
+												borderBottom:
+													index < states.length - 1
+														? `1px solid ${theme.palette.divider}`
+														: 'none'
 											}}
 										>
 											<Box>
 												<Typography
 													variant='body2'
-													fontWeight='medium'
+													sx={{ fontWeight: 500 }}
 												>
 													{state.state_name || state.state}
 												</Typography>
@@ -221,7 +238,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 											</Box>
 											<Typography
 												variant='body2'
-												fontWeight='medium'
+												sx={{ fontWeight: 500 }}
 											>
 												{state.clicks} clicks
 											</Typography>
@@ -255,7 +272,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 				item
 				xs={12}
 			>
-				<Card>
+				<Card sx={cardSx}>
 					<CardContent>
 						<Typography
 							variant='h6'
@@ -263,7 +280,8 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 							sx={{
 								position: 'relative',
 								zIndex: 1,
-								mt: 1
+								mt: 1,
+								fontWeight: 600
 							}}
 						>
 							🏙️ Top Cidades
