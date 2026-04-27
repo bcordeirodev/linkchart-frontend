@@ -5,6 +5,7 @@
 import { useTheme } from '@mui/material/styles';
 
 import { formatBarChart } from '@/features/analytics/utils/chartFormatters';
+import { chartByType } from '@/lib/theme/colors';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { ChartCard } from '@/shared/ui/data-display/ChartCard';
 
@@ -31,7 +32,7 @@ export function DayOfWeekChart({ data, height = 300 }: DayOfWeekChartProps) {
 					data,
 					'day_name',
 					'clicks',
-					'#1976d2',
+					chartByType.temporal.weekly,
 					false, // vertical bars
 					isDark
 				)}

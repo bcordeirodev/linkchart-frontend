@@ -5,7 +5,7 @@
 import { useTheme } from '@mui/material/styles';
 
 import { formatBarChart } from '@/features/analytics/utils/chartFormatters';
-import { createComponentColorSet } from '@/lib/theme';
+import { chartByType } from '@/lib/theme/colors';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { ChartCard } from '@/shared/ui/data-display/ChartCard';
 
@@ -20,7 +20,6 @@ interface TopCountriesChartProps {
 export function TopCountriesChart({ data, height = 300, maxCountries = 10 }: TopCountriesChartProps) {
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
-	const successColors = createComponentColorSet(theme, 'success');
 
 	const topCountries = data.slice(0, maxCountries);
 
@@ -36,7 +35,7 @@ export function TopCountriesChart({ data, height = 300, maxCountries = 10 }: Top
 					topCountries,
 					'country',
 					'clicks',
-					successColors.main,
+					chartByType.geographic.countries,
 					true, // horizontal bars
 					isDark
 				)}

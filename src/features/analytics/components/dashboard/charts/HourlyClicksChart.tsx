@@ -5,6 +5,7 @@
 import { useTheme } from '@mui/material/styles';
 
 import { formatAreaChart } from '@/features/analytics/utils/chartFormatters';
+import { chartByType } from '@/lib/theme/colors';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { ChartCard } from '@/shared/ui/data-display/ChartCard';
 
@@ -27,7 +28,7 @@ export function HourlyClicksChart({ data, height = 300 }: HourlyClicksChartProps
 			<ApexChartWrapper
 				type='area'
 				height={height}
-				{...formatAreaChart(data, 'hour', 'clicks', '#1976d2', isDark)}
+				{...formatAreaChart(data, 'hour', 'clicks', chartByType.temporal.hourly, isDark)}
 			/>
 		</ChartCard>
 	);
