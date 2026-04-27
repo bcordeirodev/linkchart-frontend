@@ -1,7 +1,7 @@
-import { BarChart3, ExternalLink } from 'lucide-react';
+import { BarChart3, CalendarDays, ExternalLink, MousePointerClick } from 'lucide-react';
 import { ICON_SM } from '@/lib/theme/iconDefaults';
 import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';
-import { formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -51,6 +51,11 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 	const lastClickLabel = lastClickAt
 		? formatDistanceToNow(new Date(lastClickAt), { addSuffix: true, locale: ptBR })
 		: 'Nunca';
+
+	const createdDate = link.created_at ? new Date(link.created_at) : null;
+	const createdLabel = createdDate && !isNaN(createdDate.getTime())
+		? format(createdDate, 'dd/MM/yyyy', { locale: ptBR })
+		: null;
 
 	return (
 		<EnhancedPaper
@@ -209,6 +214,88 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 				<Box sx={{ height: 24, bgcolor: 'divider', width: '1px', flexShrink: 0 }} />
 
 				<LinkHealthBadge health={meta?.health} />
+
+				<Box sx={{ height: 24, bgcolor: 'divider', width: '1px', flexShrink: 0 }} />
+
+				<Stack
+					direction='row'
+					spacing={0.75}
+					alignItems='center'
+				>
+					<MousePointerClick
+						{...ICON_SM}
+						style={{ opacity: 0.5 }}
+					/>
+					<Stack spacing={0}>
+						<Typography
+							variant='caption'
+							color='text.secondary'
+						>
+							Total de cliques
+						</Typography>
+						<Typography
+							variant='caption'
+							sx={{ fontWeight: 700, color: 'text.primary' }}
+						>
+							{link.clicks.toLocaleString('pt-BR')}
+						</Typography>
+					</Stack>
+				</Stack>
+
+				{createdLabel ? (
+					<>
+						<Box sx={{ height: 24, bgcolor: 'divider', width: '1px', flexShrink: 0 }} />
+						<Stack
+							direction='row'
+							spacing={0.75}
+							alignItems='center'
+						>
+							<CalendarDays
+								{...ICON_SM}
+								style={{ opacity: 0.5 }}
+							/>
+							<Stack spacing={0}>
+								<Typography
+									variant='caption'
+									color='text.secondary'
+								>
+									Criado em
+								</Typography>
+								<Typography
+									variant='caption'
+									sx={{ fontWeight: 600, color: 'text.primary' }}
+								>
+									{createdLabel}
+								</Typography>
+							</Stack>
+						</Stack>
+					</>
+				) : null}
+
+				{link.click_limit ? (
+					<>
+						<Box sx={{ height: 24, bgcolor: 'divider', width: '1px', flexShrink: 0 }} />
+						<Tooltip title={`Limite de ${link.click_limit.toLocaleString('pt-BR')} cliques`}>
+							<Stack spacing={0}>
+								<Typography
+									variant='caption'
+									color='text.secondary'
+								>
+									Limite
+								</Typography>
+								<Typography
+									variant='caption'
+									sx={{
+										fontWeight: 600,
+										color: link.clicks >= link.click_limit ? 'error.main' : 'text.primary',
+									}}
+								>
+									{link.clicks.toLocaleString('pt-BR')} / {link.click_limit.toLocaleString('pt-BR')}
+								</Typography>
+							</Stack>
+						</Tooltip>
+					</>
+				) : null}
 			</Box>
 		</EnhancedPaper>
 	);

@@ -21,7 +21,7 @@ const STATUS_CHIPS = [
 	{ value: 'all', label: 'Todos' },
 	{ value: 'active', label: 'Ativos' },
 	{ value: 'inactive', label: 'Inativos' },
-	{ value: 'scheduled', label: 'Agendados' },
+	{ value: 'scheduled', label: 'Não iniciados' },
 	{ value: 'expired', label: 'Expirados' },
 ];
 
