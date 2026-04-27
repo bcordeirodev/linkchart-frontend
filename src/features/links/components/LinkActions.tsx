@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HiChartBar, HiListBullet, HiPencilSquare, HiClipboardDocument, HiQrCode, HiTrash } from 'react-icons/hi2';
 
+import { motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 import useClipboard from '@/shared/hooks/useClipboard';
 
 interface LinkAnalyticsActionsProps {
@@ -82,15 +83,16 @@ export function LinkActions({
 		borderColor: theme.palette.divider,
 		color: theme.palette.text.secondary,
 		textTransform: 'none' as const,
+		fontWeight: 600,
 		'&:hover': {
 			borderColor: theme.palette.primary.main,
-			backgroundColor: 'rgba(25, 118, 210, 0.08)',
+			backgroundColor: theme.palette.action.hover,
 			color: theme.palette.primary.main
 		},
 		'&.MuiButton-containedError:hover': {
 			backgroundColor: theme.palette.error.dark
 		},
-		transition: 'all 0.2s ease'
+		transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}, border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`
 	};
 
 	return (
@@ -104,11 +106,9 @@ export function LinkActions({
 				width: `100%`,
 				justifyContent: 'space-between',
 				gap: 2,
-				backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
-				borderRadius: 2,
-				border: `1px solid ${
-					theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-				}`,
+				backgroundColor: theme.palette.background.paper,
+				borderRadius: `${radiusTokens.lg}px`,
+				border: `1px solid ${theme.palette.divider}`,
 				flexWrap: 'wrap'
 			}}
 		>
@@ -209,7 +209,7 @@ export function LinkActions({
 								color: theme.palette.error.main,
 								'&:hover': {
 									borderColor: theme.palette.error.dark,
-									backgroundColor: 'rgba(211, 47, 47, 0.08)',
+									backgroundColor: theme.palette.action.hover,
 									color: theme.palette.error.dark
 								}
 							}}
