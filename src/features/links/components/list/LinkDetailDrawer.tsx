@@ -5,6 +5,7 @@ import { Box, Button, Divider, Drawer, IconButton, Stack, Tooltip, Typography } 
 import { HiChartBar, HiClipboardDocument, HiPencilSquare, HiXMark } from 'react-icons/hi2';
 
 import { getLinkStatus, STATUS_MAP } from '@/features/links/utils/linkStatus';
+import { radiusTokens } from '@/lib/theme/designSystem';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
 import useClipboard from '@/hooks/useClipboard';
@@ -31,7 +32,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 		<Typography
 			variant='caption'
 			color='text.secondary'
-			sx={{ textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 700, mb: 1, display: 'block' }}
+			sx={{ textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 600, mb: 1, display: 'block' }}
 		>
 			{children}
 		</Typography>
@@ -101,7 +102,7 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 						<Box>
 							<Typography
 								variant='h6'
-								sx={{ fontWeight: 700, lineHeight: 1.2 }}
+								sx={{ fontWeight: 600, lineHeight: 1.2 }}
 							>
 								{link.slug || link.custom_slug}
 							</Typography>
@@ -185,8 +186,8 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 										flex: 1,
 										px: 1.5,
 										py: 0.75,
-										bgcolor: 'rgba(25, 118, 210, 0.08)',
-										borderRadius: 1,
+										bgcolor: 'action.hover',
+										borderRadius: `${radiusTokens.md}px`,
 										fontFamily: 'monospace',
 										fontSize: '0.8125rem',
 										color: 'primary.main',
@@ -221,7 +222,7 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 								<Box>
 									<Typography
 										variant='h5'
-										sx={{ fontWeight: 700 }}
+										sx={{ fontWeight: 600 }}
 									>
 										{link.clicks ?? 0}
 									</Typography>
@@ -235,7 +236,7 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 								<Box>
 									<Typography
 										variant='h5'
-										sx={{ fontWeight: 700 }}
+										sx={{ fontWeight: 600 }}
 									>
 										{link.click_limit ?? '∞'}
 									</Typography>
