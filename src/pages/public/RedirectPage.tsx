@@ -1,4 +1,4 @@
-import { Launch as LaunchIcon, Error as ErrorIcon, Security as SecurityIcon } from '@mui/icons-material';
+import { ExternalLink, AlertCircle, ShieldCheck } from 'lucide-react';
 import {
 	Box,
 	useTheme,
@@ -11,6 +11,7 @@ import {
 	Fade,
 	Grow
 } from '@mui/material';
+import { ICON_LG, ICON_XL } from '@/lib/theme/iconDefaults';
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -327,9 +328,9 @@ function RedirectPage() {
 								spacing={3}
 								alignItems='center'
 							>
-								<ErrorIcon
-									sx={{
-										fontSize: 72,
+								<AlertCircle
+									{...ICON_XL}
+									style={{
 										color: theme.palette.error.main,
 										animation: 'pulse 2s infinite'
 									}}
@@ -415,12 +416,12 @@ function RedirectPage() {
 									timeout={800}
 								>
 									<Box>
-										<SecurityIcon
-											sx={{
-												fontSize: 80,
+										<ShieldCheck
+											{...ICON_XL}
+											style={{
 												color: theme.palette.success.main,
 												animation: 'pulse 2s infinite',
-												mb: 1
+												marginBottom: 4
 											}}
 										/>
 									</Box>
@@ -541,7 +542,7 @@ function RedirectPage() {
 										variant='contained'
 										size='large'
 										onClick={() => performRedirect(targetUrl)}
-										startIcon={<LaunchIcon />}
+										startIcon={<ExternalLink {...ICON_LG} />}
 										sx={{
 											borderRadius: 3,
 											px: 4,

@@ -1,5 +1,6 @@
-import { CheckCircle, Error, Email, Refresh } from '@mui/icons-material';
+import { CheckCircle, XCircle, Mail, RefreshCw } from 'lucide-react';
 import { Box, Typography, CircularProgress, Button, Alert, Stack } from '@mui/material';
+import { ICON_LG, ICON_XL } from '@/lib/theme/iconDefaults';
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -88,12 +89,12 @@ function VerifyEmailPage() {
 				);
 			case 'success':
 			case 'already_verified':
-				return <CheckCircle sx={{ fontSize: 60, color: 'success.main' }} />;
+				return <CheckCircle {...ICON_XL} style={{ color: 'var(--palette-success-main, #2e7d32)' }} />;
 			case 'error':
 			case 'invalid_token':
-				return <Error sx={{ fontSize: 60, color: 'error.main' }} />;
+				return <XCircle {...ICON_XL} style={{ color: 'var(--palette-error-main, #d32f2f)' }} />;
 			default:
-				return <Email sx={{ fontSize: 60, color: 'primary.main' }} />;
+				return <Mail {...ICON_XL} style={{ color: 'var(--palette-primary-main, #1976d2)' }} />;
 		}
 	};
 
@@ -207,7 +208,7 @@ function VerifyEmailPage() {
 											color='inherit'
 										/>
 									) : (
-										<Refresh />
+										<RefreshCw {...ICON_LG} />
 									)
 								}
 								onClick={handleResendVerification}

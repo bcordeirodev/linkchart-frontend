@@ -2,8 +2,9 @@
  * Error Boundary para captura de erros React
  */
 
-import { ErrorOutline, Refresh, ExpandMore, BugReport } from '@mui/icons-material';
+import { AlertCircle, RefreshCw, ChevronDown, Bug } from 'lucide-react';
 import { Box, Typography, Button, Paper, Alert, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { ICON_MD, ICON_LG, ICON_XL } from '@/lib/theme/iconDefaults';
 import { Component } from 'react';
 
 import type { ErrorInfo, ReactNode } from 'react';
@@ -65,13 +66,7 @@ function ErrorFallback({
 					width: '100%'
 				}}
 			>
-				<ErrorOutline
-					sx={{
-						fontSize: 64,
-						color: 'error.main',
-						mb: 2
-					}}
-				/>
+				<AlertCircle {...ICON_XL} style={{ color: 'var(--palette-error-main, #d32f2f)', marginBottom: 8 }} />
 
 				<Typography
 					variant='h5'
@@ -104,7 +99,7 @@ function ErrorFallback({
 				<Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mb: 3 }}>
 					<Button
 						variant='contained'
-						startIcon={<Refresh />}
+						startIcon={<RefreshCw {...ICON_MD} />}
 						onClick={onRetry}
 						color='primary'
 					>
@@ -122,9 +117,9 @@ function ErrorFallback({
 
 				{isDevelopment ? (
 					<Accordion sx={{ textAlign: 'left' }}>
-						<AccordionSummary expandIcon={<ExpandMore />}>
+						<AccordionSummary expandIcon={<ChevronDown {...ICON_MD} />}>
 							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-								<BugReport fontSize='small' />
+								<Bug {...ICON_MD} />
 								<Typography variant='subtitle2'>Detalhes do Erro (Desenvolvimento)</Typography>
 							</Box>
 						</AccordionSummary>

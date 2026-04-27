@@ -1,7 +1,8 @@
 'use client';
 
-import { Download, Share } from '@mui/icons-material';
+import { Download, Share2 } from 'lucide-react';
 import { Box, Typography, Button, Card, CardContent, Alert, CircularProgress } from '@mui/material';
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -270,7 +271,7 @@ function LinkQRPage() {
 							>
 								<Button
 									variant='contained'
-									startIcon={<Download />}
+									startIcon={<Download {...ICON_MD} />}
 									onClick={handleDownloadQR}
 									disabled={!qrCodeDataUrl}
 									sx={{
@@ -282,7 +283,7 @@ function LinkQRPage() {
 								</Button>
 								<Button
 									variant='outlined'
-									startIcon={<Share />}
+									startIcon={<Share2 {...ICON_MD} />}
 									onClick={handleShareQR}
 									disabled={!linkInfo}
 									sx={{

@@ -1,6 +1,7 @@
-import { Email, CheckCircle, Refresh, ArrowBack } from '@mui/icons-material';
+import { Mail, CheckCircle, RefreshCw, ArrowLeft } from 'lucide-react';
 import { Typography, Button, Stack, CircularProgress, Alert, Paper, Divider } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import { ICON_MD, ICON_LG, ICON_XL } from '@/lib/theme/iconDefaults';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -114,7 +115,7 @@ function EmailVerificationPendingPage() {
 						alignItems='center'
 						textAlign='center'
 					>
-						<Email sx={{ fontSize: 48, color: '#0A74DA' }} />
+						<Mail {...ICON_XL} style={{ color: '#0A74DA' }} />
 
 						<Typography
 							variant='h6'
@@ -176,7 +177,7 @@ function EmailVerificationPendingPage() {
 										color='inherit'
 									/>
 								) : (
-									<Refresh />
+									<RefreshCw {...ICON_MD} />
 								)
 							}
 							sx={{
@@ -215,7 +216,7 @@ function EmailVerificationPendingPage() {
 						variant='outlined'
 						size='large'
 						onClick={handleBackToLogin}
-						startIcon={<ArrowBack />}
+						startIcon={<ArrowLeft {...ICON_MD} />}
 						sx={{
 							py: 1.5,
 							borderRadius: 2,
@@ -239,7 +240,7 @@ function EmailVerificationPendingPage() {
 					<Alert
 						severity='success'
 						sx={{ borderRadius: 2 }}
-						icon={<CheckCircle />}
+						icon={<CheckCircle {...ICON_LG} />}
 					>
 						<Typography variant='body2'>
 							<strong>Email já verificado!</strong> Você pode fazer login normalmente.

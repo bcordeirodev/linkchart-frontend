@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Email, Send } from '@mui/icons-material';
+import { Mail, Send } from 'lucide-react';
 import { Box, TextField, Button, Stack, CircularProgress, InputAdornment, Alert } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -79,7 +80,7 @@ function ForgotPasswordPage() {
 						spacing={3}
 						alignItems='center'
 					>
-						<Email sx={{ fontSize: 60, color: 'primary.main' }} />
+						<Mail {...ICON_LG} style={{ color: 'var(--palette-primary-main, #1976d2)' }} />
 
 						<Alert
 							severity='success'
@@ -150,7 +151,7 @@ function ForgotPasswordPage() {
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position='start'>
-									<Email sx={{ color: '#5F6368' }} />
+									<Mail {...ICON_LG} style={{ color: '#5F6368' }} />
 								</InputAdornment>
 							)
 						}}
@@ -210,7 +211,7 @@ function ForgotPasswordPage() {
 									color='inherit'
 								/>
 							) : (
-								<Send />
+								<Send {...ICON_LG} />
 							)
 						}
 						sx={{

@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Visibility, VisibilityOff, Person, Email, Lock, CheckCircle } from '@mui/icons-material';
+import { Eye, EyeOff, User, Mail, Lock, CheckCircle } from 'lucide-react';
 import { Box, TextField, Button, Stack, CircularProgress, InputAdornment, IconButton } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -140,7 +141,7 @@ function SignUpPage() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<Person sx={{ color: '#5F6368' }} />
+										<User {...ICON_LG} style={{ color: '#5F6368' }} />
 									</InputAdornment>
 								)
 							}}
@@ -198,7 +199,7 @@ function SignUpPage() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<Email sx={{ color: '#5F6368' }} />
+										<Mail {...ICON_LG} style={{ color: '#5F6368' }} />
 									</InputAdornment>
 								)
 							}}
@@ -259,7 +260,7 @@ function SignUpPage() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<Lock sx={{ color: '#5F6368' }} />
+										<Lock {...ICON_LG} style={{ color: '#5F6368' }} />
 									</InputAdornment>
 								),
 								endAdornment: (
@@ -270,7 +271,7 @@ function SignUpPage() {
 											disabled={loading}
 											sx={{ color: '#5F6368' }}
 										>
-											{showPassword ? <VisibilityOff /> : <Visibility />}
+											{showPassword ? <EyeOff {...ICON_MD} /> : <Eye {...ICON_MD} />}
 										</IconButton>
 									</InputAdornment>
 								)
@@ -329,7 +330,7 @@ function SignUpPage() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<CheckCircle sx={{ color: '#5F6368' }} />
+										<CheckCircle {...ICON_LG} style={{ color: '#5F6368' }} />
 									</InputAdornment>
 								),
 								endAdornment: (
@@ -340,7 +341,7 @@ function SignUpPage() {
 											disabled={loading}
 											sx={{ color: '#5F6368' }}
 										>
-											{showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+											{showConfirmPassword ? <EyeOff {...ICON_MD} /> : <Eye {...ICON_MD} />}
 										</IconButton>
 									</InputAdornment>
 								)

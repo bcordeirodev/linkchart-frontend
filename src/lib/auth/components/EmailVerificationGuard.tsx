@@ -1,5 +1,6 @@
-import { Email, Refresh } from '@mui/icons-material';
+import { Mail, RefreshCw } from 'lucide-react';
 import { Box, CircularProgress, Alert, Typography, Button, Stack } from '@mui/material';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -137,7 +138,7 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 					alignItems='center'
 					textAlign='center'
 				>
-					<Email sx={{ fontSize: 64, color: 'warning.main' }} />
+					<Mail {...ICON_LG} style={{ color: 'var(--palette-warning-main, #ed6c02)' }} />
 
 					<Typography
 						variant='h4'
@@ -179,7 +180,7 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 											color='inherit'
 										/>
 									) : (
-										<Refresh />
+										<RefreshCw {...ICON_LG} />
 									)
 								}
 								sx={{ py: 1.5 }}
