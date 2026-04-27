@@ -1,5 +1,7 @@
-import { Refresh, Fullscreen } from '@mui/icons-material';
+import { RefreshCw, Maximize2 } from 'lucide-react';
 import { Box, IconButton, Tooltip, Slider, FormControlLabel, Switch, Stack, Typography } from '@mui/material';
+
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 
 import { radiusTokens } from '@/lib/theme/designSystem';
 
@@ -109,7 +111,7 @@ export function HeatmapControls({
 							disabled={loading}
 							size='small'
 						>
-							{loading ? <Refresh sx={{ animation: 'spin 1s linear infinite' }} /> : <Refresh />}
+							{loading ? <RefreshCw {...ICON_MD} style={{ animation: 'spin 1s linear infinite' }} /> : <RefreshCw {...ICON_MD} />}
 						</IconButton>
 					</Tooltip>
 
@@ -119,7 +121,7 @@ export function HeatmapControls({
 								onClick={onFullscreen}
 								size='small'
 							>
-								<Fullscreen />
+								<Maximize2 {...ICON_MD} />
 							</IconButton>
 						</Tooltip>
 					) : null}

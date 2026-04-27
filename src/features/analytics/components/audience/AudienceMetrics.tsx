@@ -1,5 +1,7 @@
-import { DevicesOther, Language, Schedule, TrendingUp } from '@mui/icons-material';
+import { MonitorSmartphone, Globe, Clock, TrendingUp } from 'lucide-react';
 import { Grid, Typography } from '@mui/material';
+
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 
@@ -26,7 +28,7 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 			id: 'device_types',
 			title: 'Tipos de Dispositivos',
 			value: deviceTypes.toString(),
-			icon: <DevicesOther />,
+			icon: <MonitorSmartphone {...ICON_LG} />,
 			color: 'primary' as const,
 			subtitle: 'dispositivos únicos'
 		},
@@ -34,7 +36,7 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 			id: 'browser_types',
 			title: 'Navegadores',
 			value: browserTypes.toString(),
-			icon: <Language />,
+			icon: <Globe {...ICON_LG} />,
 			color: 'success' as const,
 			subtitle: 'browsers diferentes'
 		},
@@ -42,7 +44,7 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 			id: 'os_types',
 			title: 'Sistemas Operacionais',
 			value: osTypes.toString(),
-			icon: <Schedule />,
+			icon: <Clock {...ICON_LG} />,
 			color: 'info' as const,
 			subtitle: 'OS diferentes'
 		},

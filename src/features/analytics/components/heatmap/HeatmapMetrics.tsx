@@ -1,5 +1,7 @@
-import { LocationOn, Public, TrendingUp, Language } from '@mui/icons-material';
+import { MapPin, Globe, TrendingUp } from 'lucide-react';
 import { Grid, Box, Typography } from '@mui/material';
+
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 
@@ -41,7 +43,7 @@ export function HeatmapMetrics({ stats, showTitle = false, title = 'Métricas do
 			id: 'unique_countries',
 			title: 'Países Únicos',
 			value: stats.totalPoints.toString(),
-			icon: <Language />,
+			icon: <Globe {...ICON_LG} />,
 			color: 'success' as const,
 			subtitle: 'alcance global'
 		},
@@ -49,7 +51,7 @@ export function HeatmapMetrics({ stats, showTitle = false, title = 'Métricas do
 			id: 'unique_cities',
 			title: 'Cidades Únicas',
 			value: stats.totalClicks.toString(),
-			icon: <LocationOn />,
+			icon: <MapPin {...ICON_LG} />,
 			color: 'info' as const,
 			subtitle: 'diversidade urbana'
 		},
@@ -57,7 +59,7 @@ export function HeatmapMetrics({ stats, showTitle = false, title = 'Métricas do
 			id: 'avg_clicks_per_location',
 			title: 'Média por Local',
 			value: stats.avgClicksPerPoint.toFixed(1),
-			icon: <Public />,
+			icon: <Globe {...ICON_LG} />,
 			color: 'warning' as const,
 			subtitle: 'cliques por localização'
 		}

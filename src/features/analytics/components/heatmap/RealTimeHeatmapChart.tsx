@@ -2,7 +2,9 @@
  * Componente de mapa de calor interativo
  */
 
-import { Refresh, Fullscreen, Public, Speed, LocationOn, Timeline } from '@mui/icons-material';
+import { RefreshCw, Maximize2, Globe, Zap, MapPin, LineChart } from 'lucide-react';
+
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import {
 	Box,
 	Typography,
@@ -315,7 +317,7 @@ export function RealTimeHeatmapChart({
 						textAlign: 'center'
 					}}
 				>
-					<LocationOn sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
+					<MapPin size={60} strokeWidth={1.5} style={{ opacity: 0.5, marginBottom: 16 }} />
 					<Typography
 						variant='h6'
 						color='text.primary'
@@ -347,7 +349,7 @@ export function RealTimeHeatmapChart({
 							color='success'
 							size='small'
 							sx={{ mt: 2 }}
-							icon={<Speed />}
+							icon={<Zap {...ICON_MD} />}
 						/>
 					) : null}
 				</CardContent>
@@ -409,7 +411,7 @@ export function RealTimeHeatmapChart({
 					>
 						<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
 							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-								<Public color='primary' />
+								<Globe {...ICON_MD} style={{ color: 'var(--mui-palette-primary-main)' }} />
 								<Typography
 									variant='h6'
 									sx={{
@@ -426,7 +428,7 @@ export function RealTimeHeatmapChart({
 										label='Tempo Real'
 										color='success'
 										size='small'
-										icon={<Speed />}
+										icon={<Zap {...ICON_MD} />}
 										sx={{ ml: 1 }}
 									/>
 								) : null}
@@ -441,12 +443,12 @@ export function RealTimeHeatmapChart({
 										onClick={onRefresh}
 										disabled={loading || !onRefresh}
 									>
-										<Refresh />
+										<RefreshCw {...ICON_MD} />
 									</IconButton>
 								</Tooltip>
 								<Tooltip title={isFullscreen ? 'Sair da tela cheia' : 'Tela cheia'}>
 									<IconButton onClick={() => setIsFullscreen(!isFullscreen)}>
-										<Fullscreen />
+										<Maximize2 {...ICON_MD} />
 									</IconButton>
 								</Tooltip>
 							</Stack>
@@ -485,7 +487,7 @@ export function RealTimeHeatmapChart({
 										label={`Atualizado: ${new Date(stats.lastUpdate).toLocaleTimeString()}`}
 										variant='outlined'
 										size='small'
-										icon={<Timeline />}
+										icon={<LineChart {...ICON_MD} />}
 									/>
 								) : null}
 							</Stack>

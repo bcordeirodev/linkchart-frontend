@@ -1,5 +1,7 @@
-import { Public, LocationOn } from '@mui/icons-material';
+import { Globe, MapPin } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack } from '@mui/material';
+
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
@@ -401,7 +403,7 @@ export function HeatmapStats({
 										label={`${country}: ${clicks}`}
 										size='small'
 										variant='outlined'
-										icon={<Public fontSize='small' />}
+										icon={<Globe size={14} strokeWidth={1.5} />}
 									/>
 								))}
 							</Stack>
@@ -427,7 +429,7 @@ export function HeatmapStats({
 										label={`${cityCountry}: ${clicks}`}
 										size='small'
 										variant='outlined'
-										icon={<LocationOn fontSize='small' />}
+										icon={<MapPin size={14} strokeWidth={1.5} />}
 									/>
 								))}
 							</Stack>

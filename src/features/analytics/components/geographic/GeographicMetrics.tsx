@@ -1,5 +1,7 @@
-import { Language, LocationCity, Public, TrendingUp } from '@mui/icons-material';
+import { Globe, Building2, TrendingUp } from 'lucide-react';
 import { Grid, Box, Typography, useTheme } from '@mui/material';
+
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 
 import { createPresetAnimations } from '@/lib/theme';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
@@ -44,7 +46,7 @@ export function GeographicMetrics({
 			id: 'countries_reached',
 			title: 'Países Alcançados',
 			value: countriesReached.toString(),
-			icon: <Language />,
+			icon: <Globe {...ICON_LG} />,
 			color: 'primary' as const,
 			subtitle: 'alcance global'
 		},
@@ -52,7 +54,7 @@ export function GeographicMetrics({
 			id: 'cities_reached',
 			title: 'Cidades Alcançadas',
 			value: citiesReached.toString(),
-			icon: <LocationCity />,
+			icon: <Building2 {...ICON_LG} />,
 			color: 'info' as const,
 			subtitle: 'diversidade urbana'
 		},
@@ -60,7 +62,7 @@ export function GeographicMetrics({
 			id: 'states_reached',
 			title: 'Estados/Regiões',
 			value: statesReached.toString(),
-			icon: <Public />,
+			icon: <Globe {...ICON_LG} />,
 			color: 'success' as const,
 			subtitle: 'cobertura regional'
 		},
