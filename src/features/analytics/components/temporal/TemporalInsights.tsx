@@ -1,5 +1,7 @@
 import { Card, CardContent, Typography, Stack, useTheme } from '@mui/material';
 
+import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
+
 import type { TemporalInsightsProps } from '@/types/analytics';
 
 /**
@@ -65,13 +67,9 @@ export function TemporalInsights({
 	return (
 		<Card
 			sx={{
-				background:
-					theme.palette.mode === 'dark'
-						? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
-						: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-				color: 'white',
-				border: 'none',
-				boxShadow: theme.shadows[8]
+				backgroundColor: theme.palette.background.paper,
+				borderRadius: `${radiusTokens.lg}px`,
+				boxShadow: theme.palette.mode === 'dark' ? elevationTokens.sm : elevationLightTokens.sm
 			}}
 		>
 			<CardContent>

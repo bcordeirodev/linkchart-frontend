@@ -154,7 +154,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 											</Typography>
 											<Typography
 												variant='h4'
-												sx={{ mb: 0.5, fontWeight: 700 }}
+												sx={{ mb: 0.5, fontWeight: 600 }}
 											>
 												{formatHour(peak_hour)}
 											</Typography>
@@ -205,7 +205,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 											</Typography>
 											<Typography
 												variant='h4'
-												sx={{ mb: 0.5, fontWeight: 700 }}
+												sx={{ mb: 0.5, fontWeight: 600 }}
 											>
 												{peak_day}
 											</Typography>
