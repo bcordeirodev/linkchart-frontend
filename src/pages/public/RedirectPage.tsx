@@ -15,8 +15,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
 /**
- * 🚀 PÁGINA DE REDIRECIONAMENTO - CORAÇÃO DO SISTEMA
- *
  * FLUXO OTIMIZADO:
  * 1. Busca dados do link via API (sem autenticação)
  * 2. Exibe countdown para UX

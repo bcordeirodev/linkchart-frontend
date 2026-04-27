@@ -64,9 +64,13 @@ function LinkListPage() {
 				return sorted.sort((a, b) => {
 					const aLast = meta[String(a.id)]?.trend?.last_click_at;
 					const bLast = meta[String(b.id)]?.trend?.last_click_at;
-					if (!aLast && !bLast) return 0;
-					if (!aLast) return 1;
-					if (!bLast) return -1;
+
+					if (!aLast && !bLast) {return 0;}
+
+					if (!aLast) {return 1;}
+
+					if (!bLast) {return -1;}
+
 					return new Date(bLast).getTime() - new Date(aLast).getTime();
 				});
 			default:

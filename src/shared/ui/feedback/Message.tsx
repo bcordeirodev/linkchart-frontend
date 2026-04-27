@@ -1,240 +1,249 @@
 /**
- * 📢 MESSAGE COMPONENT - LINK CHART
- * Sistema de mensagens/notificações global com design system integrado
+ * 📢 MESSAGE COMPONENT — LINK CHART
+ * Toast/notificação global no idioma visual do design system.
  *
- * @description
- * Componente de mensagem otimizado com design moderno, animações suaves
- * e integração completa com o sistema de temas. Segue os padrões visuais
- * estabelecidos no design system da aplicação.
+ * Surface-style com accent stripe lateral, ícone tonalizado (subtleBg+main),
+ * progress bar de auto-hide e badge de fila. Cores via `semanticDark`/`semanticLight`,
+ * radius/elevation/motion via tokens do designSystem.
  *
- * @features
- * - ✅ Design system integrado com cores temáticas
- * - ✅ Múltiplas variantes (success, error, warning, info)
- * - ✅ Animações suaves e transições fluidas
- * - ✅ Ícones contextuais Material Design
- * - ✅ Ações personalizáveis e acessíveis
- * - ✅ Sistema de fila para múltiplas mensagens
- * - ✅ Acessibilidade WCAG 2.1 AA completa
- * - ✅ Responsivo e mobile-friendly
- * - ✅ Suporte a temas claro/escuro
- *
- * @example
- * ```tsx
- * // Uso através do Redux store
- * import { useAppDispatch } from '@/lib/store/hooks';
- * import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
- *
- * const dispatch = useAppDispatch();
- *
- * // Mensagem de sucesso
- * dispatch(showSuccessMessage('Operação realizada com sucesso!'));
- *
- * // Mensagem de erro
- * dispatch(showErrorMessage('Erro ao processar solicitação'));
- * ```
- *
- * @since 2.0.0
- * @version 2.1.0
+ * @since 3.0.0 — redesign alinhado ao design system Link Chart
  */
 
-import { CheckCircle, Error, Warning, Info, Close } from '@mui/icons-material';
-import { Snackbar, Alert, IconButton, Slide, useTheme, alpha } from '@mui/material';
+import {
+	CheckCircleRounded,
+	ErrorRounded,
+	WarningAmberRounded,
+	InfoRounded,
+	CloseRounded
+} from '@mui/icons-material';
+import { Snackbar, IconButton, Slide, Box, Typography, useTheme, alpha } from '@mui/material';
 import { memo } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
-import { hideMessage, selectMessageState, selectMessageOptions } from '@/lib/store/messageSlice';
-import { createPresetAnimations } from '@/lib/theme';
+import {
+	hideMessage,
+	selectMessageState,
+	selectMessageOptions,
+	selectMessageQueue
+} from '@/lib/store/messageSlice';
+import {
+	darkNeutral,
+	elevationLightTokens,
+	elevationTokens,
+	lightNeutral,
+	motionTokens,
+	radiusTokens,
+	semanticDark,
+	semanticLight
+} from '@/lib/theme';
 
+import type { MessageVariant } from '@/lib/store/messageSlice';
 import type { SlideProps } from '@mui/material';
 
-/**
- * Transição personalizada para o Snackbar com animação suave
- */
-function SlideTransition(props: SlideProps) {
+const variantIcons: Record<MessageVariant, typeof CheckCircleRounded> = {
+	success: CheckCircleRounded,
+	error: ErrorRounded,
+	warning: WarningAmberRounded,
+	info: InfoRounded
+};
+
+/** Transições estáveis (módulo) com direção pré-resolvida — evita remount do subtree. */
+function SlideUp(props: SlideProps) {
 	return (
 		<Slide
 			{...props}
 			direction='up'
-			timeout={{
-				enter: 400,
-				exit: 250
-			}}
 		/>
 	);
 }
 
-/**
- * Mapeamento de ícones por variante
- */
-const variantIcons = {
-	success: CheckCircle,
-	error: Error,
-	warning: Warning,
-	info: Info
-} as const;
+SlideUp.displayName = 'SlideUp';
 
-/**
- * Componente de mensagem global com design system integrado
- */
+function SlideDown(props: SlideProps) {
+	return (
+		<Slide
+			{...props}
+			direction='down'
+		/>
+	);
+}
+
+SlideDown.displayName = 'SlideDown';
+
 export function Message() {
 	const theme = useTheme();
 	const dispatch = useAppDispatch();
 	const open = useAppSelector(selectMessageState);
 	const options = useAppSelector(selectMessageOptions);
-	const animations = createPresetAnimations(theme);
+	const queue = useAppSelector(selectMessageQueue);
 
-	const handleClose = () => {
-		dispatch(hideMessage());
-	};
+	const isDark = theme.palette.mode === 'dark';
+	const semantic = isDark ? semanticDark : semanticLight;
+	const neutral = isDark ? darkNeutral : lightNeutral;
+	const elevation = isDark ? elevationTokens : elevationLightTokens;
 
+	const tone = semantic[options.variant];
 	const IconComponent = variantIcons[options.variant];
 
-	// Cores aprimoradas seguindo o design system
-	const getVariantStyles = (variant: typeof options.variant) => {
-		let baseColor = theme.palette[variant];
+	const SlideTransition = options.anchorOrigin.vertical === 'top' ? SlideDown : SlideUp;
 
-		// Customizar cor de sucesso para azul mais escuro
-		if (variant === 'success') {
-			baseColor = {
-				...baseColor,
-				main: '#0D47A1',
-				light: '#1565C0',
-				dark: '#01579B',
-				contrastText: '#FFFFFF'
-			};
-		}
+	const handleClose = () => dispatch(hideMessage());
 
-		return {
-			backgroundColor: alpha(baseColor.main, 0.95),
-			color: baseColor.contrastText,
-			border: `1px solid ${alpha(baseColor.main, 0.3)}`,
-			backdropFilter: 'blur(8px)',
-			'& .MuiAlert-icon': {
-				color: baseColor.contrastText,
-				filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1))'
-			},
-			'&::before': {
-				content: '""',
-				position: 'absolute',
-				top: 0,
-				left: 0,
-				right: 0,
-				height: '3px',
-				background: `linear-gradient(90deg, ${baseColor.main} 0%, ${baseColor.light} 100%)`,
-				borderRadius: '12px 12px 0 0'
-			}
-		};
-	};
+	const hasAutoHide = typeof options.autoHideDuration === 'number' && options.autoHideDuration > 0;
+	const queueCount = queue.length;
 
 	return (
 		<Snackbar
 			open={open}
-			autoHideDuration={options.autoHideDuration}
+			autoHideDuration={options.autoHideDuration ?? null}
 			onClose={handleClose}
-			anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+			anchorOrigin={options.anchorOrigin}
 			TransitionComponent={SlideTransition}
 			sx={{
-				'& .MuiSnackbarContent-root': {
-					padding: 0
-				},
-				// Posicionamento fixo no bottom da viewport
-				position: 'fixed !important',
-				bottom: '24px !important',
-				left: '50% !important',
-				right: 'auto !important',
-				top: 'auto !important',
-				transform: 'translateX(-50%) !important',
-				zIndex: 9999,
-				// Remover qualquer centralização vertical
-				'&.MuiSnackbar-root': {
-					top: 'auto !important',
-					bottom: '24px !important',
-					transform: 'translateX(-50%) !important'
-				},
-				// Responsividade
-				[theme.breakpoints.down('sm')]: {
-					left: '24px !important',
-					right: '24px !important',
-					transform: 'none !important',
-					maxWidth: 'calc(100vw - 48px)',
-					bottom: '24px !important',
-					top: 'auto !important'
-				}
+				maxWidth: { xs: 'calc(100vw - 32px)', sm: 480 },
+				width: { xs: 'calc(100vw - 32px)', sm: 'auto' }
 			}}
 		>
-			<Alert
-				severity={options.variant}
-				onClose={handleClose}
-				icon={<IconComponent />}
-				action={
-					options.action || (
-						<IconButton
-							size='small'
-							aria-label='Fechar mensagem'
-							color='inherit'
-							onClick={handleClose}
-							sx={{
-								'&:hover': {
-									backgroundColor: alpha(theme.palette.common.white, 0.15),
-									transform: 'scale(1.1)'
-								},
-								transition: theme.transitions.create(['transform', 'background-color'], {
-									duration: theme.transitions.duration.short
-								})
-							}}
-						>
-							<Close fontSize='small' />
-						</IconButton>
-					)
-				}
+			<Box
+				key={options.id}
+				role='alert'
+				aria-live='polite'
 				sx={{
-					...animations.fadeIn,
-					// Tamanho fixo para desktop, responsivo para mobile
-					width: { xs: '100%', sm: '500px' },
-					minWidth: 'auto',
-					maxWidth: 'none',
-					borderRadius: theme.spacing(1.5), // 12px - padrão do design system
-					boxShadow: `0 8px 32px ${alpha(theme.palette.common.black, 0.12)}`,
 					position: 'relative',
+					display: 'flex',
+					alignItems: 'flex-start',
+					gap: 1.5,
+					p: 1.5,
+					pl: 2,
+					width: '100%',
+					minWidth: { sm: 360 },
+					backgroundColor: theme.palette.background.paper,
+					backgroundImage: `linear-gradient(${alpha(tone.main, isDark ? 0.06 : 0.04)}, ${alpha(tone.main, isDark ? 0.06 : 0.04)})`,
+					border: `1px solid ${tone.border}`,
+					borderRadius: `${radiusTokens.lg}px`,
+					boxShadow: elevation.lg,
+					backdropFilter: 'blur(12px)',
 					overflow: 'hidden',
-					fontFamily: theme.typography.fontFamily,
-
-					'& .MuiAlert-message': {
-						padding: theme.spacing(1, 0),
-						display: 'flex',
-						alignItems: 'center',
-						gap: theme.spacing(1),
-						fontSize: theme.typography.body2.fontSize,
-						fontWeight: theme.typography.fontWeightMedium,
-						lineHeight: 1.5,
-						flex: 1
-					},
-					'& .MuiAlert-action': {
-						padding: theme.spacing(0.5, 1, 0.5, 0),
-						marginRight: 0,
-						alignItems: 'flex-start'
-					},
-
-					// Aplicar estilos por variante usando design system
-					...getVariantStyles(options.variant),
-
-					// Responsividade para mobile
-					[theme.breakpoints.down('sm')]: {
-						borderRadius: theme.spacing(1),
-						'& .MuiAlert-message': {
-							fontSize: theme.typography.body2.fontSize,
-							padding: theme.spacing(0.75, 0)
-						}
+					transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+					'&::before': {
+						content: '""',
+						position: 'absolute',
+						top: 0,
+						bottom: 0,
+						left: 0,
+						width: 4,
+						backgroundColor: tone.main
 					}
 				}}
 			>
-				{options.message}
-			</Alert>
+				<Box
+					aria-hidden='true'
+					sx={{
+						flexShrink: 0,
+						width: 36,
+						height: 36,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						borderRadius: `${radiusTokens.md}px`,
+						backgroundColor: tone.subtleBg,
+						color: tone.main
+					}}
+				>
+					<IconComponent fontSize='small' />
+				</Box>
+
+				<Box sx={{ flex: 1, minWidth: 0, pt: 0.25 }}>
+					<Typography
+						component='div'
+						sx={{
+							color: theme.palette.text.primary,
+							fontSize: '0.875rem',
+							lineHeight: 1.43,
+							fontWeight: 500,
+							wordBreak: 'break-word'
+						}}
+					>
+						{options.message}
+					</Typography>
+				</Box>
+
+				<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+					{queueCount > 0 && (
+						<Box
+							aria-label={`${queueCount} mensagens na fila`}
+							sx={{
+								px: 0.75,
+								py: 0.25,
+								minWidth: 24,
+								height: 20,
+								display: 'inline-flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								borderRadius: 999,
+								backgroundColor: alpha(theme.palette.text.primary, isDark ? 0.08 : 0.06),
+								color: theme.palette.text.secondary,
+								fontSize: '0.6875rem',
+								fontWeight: 600,
+								lineHeight: 1
+							}}
+						>
+							+{queueCount}
+						</Box>
+					)}
+
+					{options.action ?? (
+						<IconButton
+							size='small'
+							aria-label='Fechar mensagem'
+							onClick={handleClose}
+							sx={{
+								color: neutral.text.tertiary,
+								borderRadius: `${radiusTokens.sm}px`,
+								transition: `background-color ${motionTokens.duration.fast} ${motionTokens.easing.default}, color ${motionTokens.duration.fast} ${motionTokens.easing.default}`,
+								'&:hover': {
+									backgroundColor: theme.palette.action.hover,
+									color: theme.palette.text.primary
+								}
+							}}
+						>
+							<CloseRounded fontSize='small' />
+						</IconButton>
+					)}
+				</Box>
+
+				{hasAutoHide ? (
+					<Box
+						aria-hidden='true'
+						sx={{
+							position: 'absolute',
+							left: 4,
+							right: 0,
+							bottom: 0,
+							height: 2,
+							overflow: 'hidden',
+							'@keyframes lcMessageProgress': {
+								from: { transform: 'scaleX(1)' },
+								to: { transform: 'scaleX(0)' }
+							},
+							'&::after': {
+								content: '""',
+								display: 'block',
+								height: '100%',
+								width: '100%',
+								backgroundColor: tone.main,
+								opacity: 0.6,
+								transformOrigin: 'left center',
+								animation: `lcMessageProgress ${options.autoHideDuration}ms linear forwards`
+							}
+						}}
+					/>
+				) : null}
+			</Box>
 		</Snackbar>
 	);
 }
 
-// Compatibility export
 export const FuseMessage = Message;
 
 export default memo(Message);

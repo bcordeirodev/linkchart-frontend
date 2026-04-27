@@ -179,7 +179,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 				</Box>
 
 				{/* Sparkline mini */}
-				{meta?.sparkline?.length ? (
+				{!!(meta?.sparkline?.length) && (
 					<Box sx={{ mb: 1.5 }}>
 						<LinkSparkline
 							data={meta.sparkline}
@@ -188,11 +188,10 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 							width='100%'
 						/>
 					</Box>
-				) : null}
+				)}
 
 				{/* Tendência + health */}
-				{meta?.trend && (
-					<Stack
+				{meta?.trend ? <Stack
 						direction='row'
 						spacing={1}
 						alignItems='center'
@@ -232,8 +231,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit, meta }: LinkMobileCardPro
 							•
 						</Typography>
 						<LinkHealthBadge health={meta.health} />
-					</Stack>
-				)}
+					</Stack> : null}
 
 				{/* Métricas e status */}
 				<Stack

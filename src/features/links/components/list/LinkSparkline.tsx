@@ -36,7 +36,9 @@ export function LinkSparkline({ data, trend = 0, height = 32, width = 120 }: Lin
 		[color]
 	);
 
-	if (!data.length) return null;
+	if (!data.length) {
+		return null;
+	}
 
 	return (
 		<ApexChartWrapper

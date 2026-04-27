@@ -14,15 +14,17 @@ export function useLinksMeta(ids: string[]) {
 	const prevKey = useRef('');
 
 	useEffect(() => {
-		if (!ids.length || key === prevKey.current) return;
-		prevKey.current = key;
+		if (!ids.length || key === prevKey.current) {
+			return;
+		}
 
+		prevKey.current = key;
 		setLoading(true);
 		linkMetaService
 			.batchMeta(ids)
 			.then(setMeta)
 			.finally(() => setLoading(false));
-	}, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [key]);  
 
 	return { meta, loading };
 }

@@ -134,8 +134,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 				>
 					{link.original_url}
 				</Typography>
-				{meta?.preview?.og_image_url && (
-					<Box
+				{meta?.preview?.og_image_url ? <Box
 						component='img'
 						src={meta.preview.og_image_url}
 						alt={meta.preview.og_title ?? ''}
@@ -143,8 +142,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 						onError={(e) => {
 							(e.target as HTMLImageElement).style.display = 'none';
 						}}
-					/>
-				)}
+					/> : null}
 			</Box>
 
 			<Divider />

@@ -1,4 +1,6 @@
 import { TextField, Switch, FormControlLabel, Collapse, Grid, Typography, Box, Chip, Stack } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import { Info } from 'lucide-react';
 import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -95,6 +97,52 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 							borderRadius: 1.5
 						}}
 					>
+						<Box
+							sx={{
+								display: 'flex',
+								alignItems: 'flex-start',
+								gap: 1.5,
+								p: 2,
+								mb: 2.5,
+								backgroundColor: (theme) => alpha(theme.palette.info.main, 0.08),
+								border: '1px solid',
+								borderColor: (theme) => alpha(theme.palette.info.main, 0.2),
+								borderRadius: 1.5
+							}}
+						>
+							<Box sx={{ color: 'info.main', mt: 0.15, flexShrink: 0 }}>
+								<Info size={16} />
+							</Box>
+							<Box>
+								<Typography
+									variant='body2'
+									color='text.secondary'
+									sx={{ mb: 0.5 }}
+								>
+									Use estas opções para ter mais controle sobre o comportamento do seu link. Não é
+									obrigatório preencher nenhum campo aqui — são recursos extras para quem precisa.
+								</Typography>
+								<Typography
+									variant='caption'
+									color='text.secondary'
+									component='ul'
+									sx={{ m: 0, pl: 2, lineHeight: 1.8 }}
+								>
+									<li>
+										<strong>Slug personalizado</strong>: define o final da URL curta (ex:{' '}
+										<em>seudominio.com/r/meu-link</em>)
+									</li>
+									<li>
+										<strong>Limite de cliques</strong>: desativa o link automaticamente quando
+										atingir esse número de acessos
+									</li>
+									<li>
+										<strong>Data de início / expiração</strong>: programa quando o link começa e
+										quando para de funcionar
+									</li>
+								</Typography>
+							</Box>
+						</Box>
 						<Grid
 							container
 							spacing={2}
@@ -276,6 +324,64 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 							borderRadius: 1.5
 						}}
 					>
+						<Box
+							sx={{
+								display: 'flex',
+								alignItems: 'flex-start',
+								gap: 1.5,
+								p: 2,
+								mb: 2.5,
+								backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.06),
+								border: '1px solid',
+								borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2),
+								borderRadius: 1.5
+							}}
+						>
+							<Box sx={{ color: 'secondary.main', mt: 0.15, flexShrink: 0 }}>
+								<Info size={16} />
+							</Box>
+							<Box>
+								<Typography
+									variant='body2'
+									fontWeight={500}
+									sx={{ mb: 0.5 }}
+								>
+									O que são parâmetros UTM?
+								</Typography>
+								<Typography
+									variant='body2'
+									color='text.secondary'
+									sx={{ mb: 1 }}
+								>
+									São marcações adicionadas ao link que permitem saber exatamente de onde vieram
+									seus visitantes. Por exemplo: se você divulgar o mesmo link no Instagram e em um
+									e-mail, os UTMs deixam o relatório mostrar quantos cliques vieram de cada canal.
+								</Typography>
+								<Typography
+									variant='caption'
+									color='text.secondary'
+									component='ul'
+									sx={{ m: 0, pl: 2, lineHeight: 1.8 }}
+								>
+									<li>
+										<strong>Source</strong>: de onde veio o visitante (ex: <em>instagram</em>,{' '}
+										<em>google</em>, <em>newsletter</em>)
+									</li>
+									<li>
+										<strong>Medium</strong>: o tipo de canal (ex: <em>post</em>, <em>anuncio</em>,{' '}
+										<em>email</em>)
+									</li>
+									<li>
+										<strong>Campaign</strong>: nome da campanha ou ação que gerou o link (ex:{' '}
+										<em>lancamento-produto</em>)
+									</li>
+									<li>
+										<strong>Term / Content</strong>: detalhes extras para campanhas pagas ou
+										testes A/B
+									</li>
+								</Typography>
+							</Box>
+						</Box>
 						<Grid
 							container
 							spacing={2}
@@ -295,7 +401,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											label='UTM Source'
 											placeholder='google, facebook, newsletter'
 											error={!!errors.utm_source}
-											helperText={errors.utm_source?.message || 'Origem do tráfego'}
+											helperText={errors.utm_source?.message || 'De onde veio o visitante — ex: instagram, google, newsletter'}
 										/>
 									)}
 								/>
@@ -316,7 +422,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											label='UTM Medium'
 											placeholder='cpc, email, social'
 											error={!!errors.utm_medium}
-											helperText={errors.utm_medium?.message || 'Meio de marketing'}
+											helperText={errors.utm_medium?.message || 'Tipo de canal — ex: post, anuncio, email, cpc'}
 										/>
 									)}
 								/>
@@ -337,7 +443,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											label='UTM Campaign'
 											placeholder='promocao-verao-2024'
 											error={!!errors.utm_campaign}
-											helperText={errors.utm_campaign?.message || 'Nome da campanha'}
+											helperText={errors.utm_campaign?.message || 'Nome da campanha ou ação — ex: lancamento-produto, black-friday'}
 										/>
 									)}
 								/>
@@ -358,7 +464,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											label='UTM Term'
 											placeholder='palavra-chave'
 											error={!!errors.utm_term}
-											helperText={errors.utm_term?.message || 'Termo de pesquisa'}
+											helperText={errors.utm_term?.message || 'Palavra-chave do anúncio pago — ex: tenis-corrida, curso-online'}
 										/>
 									)}
 								/>
@@ -378,7 +484,7 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 											label='UTM Content'
 											placeholder='banner-topo, link-rodape'
 											error={!!errors.utm_content}
-											helperText={errors.utm_content?.message || 'Conteúdo do anúncio'}
+											helperText={errors.utm_content?.message || 'Qual variação foi clicada — ex: banner-topo, link-rodape, botao-verde'}
 										/>
 									)}
 								/>
