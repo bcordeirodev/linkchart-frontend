@@ -1,7 +1,9 @@
 import { CheckCircle, Assessment } from '@mui/icons-material';
 import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import { useLinkPerformance } from '@/features/analytics/hooks/useLinkPerformance';
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import TabDescription from '@/shared/ui/base/TabDescription';
 
@@ -31,6 +33,19 @@ export function PerformanceAnalysis({
 	title = 'Análise de Performance',
 	enableRealtime = false
 }: PerformanceAnalysisProps) {
+	const theme = useTheme();
+	const cardShadow = theme.palette.mode === 'dark' ? elevationTokens.xs : elevationLightTokens.xs;
+	const cardShadowHover = theme.palette.mode === 'dark' ? elevationTokens.sm : elevationLightTokens.sm;
+	const cardSx = {
+		borderRadius: `${radiusTokens.lg}px`,
+		boxShadow: cardShadow,
+		transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+		'&:hover': {
+			boxShadow: cardShadowHover
+		},
+		height: '100%'
+	} as const;
+
 	const {
 		data: performanceData,
 		loading,
@@ -99,15 +114,7 @@ export function PerformanceAnalysis({
 							xs={12}
 							md={6}
 						>
-							<Card
-								sx={{
-									borderRadius: 3,
-									background:
-										'linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%)',
-									border: '1px solid rgba(76, 175, 80, 0.3)',
-									height: '100%'
-								}}
-							>
+							<Card sx={cardSx}>
 								<CardContent sx={{ p: 3 }}>
 									<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
 										<CheckCircle sx={{ color: 'success.main', mr: 2 }} />
@@ -175,15 +182,7 @@ export function PerformanceAnalysis({
 							xs={12}
 							md={6}
 						>
-							<Card
-								sx={{
-									borderRadius: 3,
-									background:
-										'linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%)',
-									border: '1px solid rgba(33, 150, 243, 0.3)',
-									height: '100%'
-								}}
-							>
+							<Card sx={cardSx}>
 								<CardContent sx={{ p: 3 }}>
 									<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
 										<Assessment sx={{ color: 'info.main', mr: 2 }} />
@@ -242,14 +241,7 @@ export function PerformanceAnalysis({
 
 					{/* Insights de performance */}
 					<Box sx={{ mt: 4 }}>
-						<Card
-							sx={{
-								borderRadius: 3,
-								background:
-									'linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%)',
-								border: '1px solid rgba(33, 150, 243, 0.3)'
-							}}
-						>
+						<Card sx={cardSx}>
 							<CardContent sx={{ p: 3 }}>
 								<Typography
 									variant='h6'

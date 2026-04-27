@@ -1,7 +1,6 @@
 import { TrendingUp, Public, CheckCircle, Speed } from '@mui/icons-material';
-import { Grid, Box, Typography, useTheme } from '@mui/material';
+import { Grid, Box, Typography } from '@mui/material';
 
-import { createPresetAnimations } from '@/lib/theme';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 
 interface PerformanceMetricsProps {
@@ -31,9 +30,6 @@ export function PerformanceMetrics({
 	showTitle = false,
 	title = 'Métricas de Performance'
 }: PerformanceMetricsProps) {
-	const theme = useTheme();
-	const animations = createPresetAnimations(theme);
-
 	// Cálculos das métricas usando dados reais do backend
 	const clicks24h = performanceData?.total_redirects_24h || 0;
 	const uniqueVisitors = performanceData?.unique_visitors || 0;
@@ -130,7 +126,6 @@ export function PerformanceMetrics({
 			<Grid
 				container
 				spacing={3}
-				sx={{ ...animations.fadeIn }}
 			>
 				{metrics.map((metric) => (
 					<Grid
@@ -141,7 +136,7 @@ export function PerformanceMetrics({
 						lg={2}
 						key={metric.id}
 					>
-						<Box sx={{ height: '100%', ...animations.cardHover }}>
+						<Box sx={{ height: '100%' }}>
 							<MetricCard
 								title={metric.title}
 								value={metric.value}
