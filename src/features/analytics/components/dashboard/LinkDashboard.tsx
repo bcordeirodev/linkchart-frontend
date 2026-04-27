@@ -14,6 +14,7 @@ import { useDashboardData } from '@/features/analytics/hooks/useDashboardData';
 import { checkDataAvailability } from '@/features/analytics/utils/dataValidation';
 import { LinkMetrics } from '@/features/links/components/LinkMetrics';
 import { createPresetAnimations } from '@/lib/theme';
+import { radiusTokens } from '@/lib/theme/designSystem';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import { EmptyState } from '@/shared/ui/base/EmptyState';
 import TabDescription from '@/shared/ui/base/TabDescription';
@@ -126,7 +127,7 @@ export function LinkDashboard({
 
 				{/* Footer - Informações de Qualidade */}
 				{stats ? (
-					<Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
+					<Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: `${radiusTokens.md}px` }}>
 						<Typography
 							variant='caption'
 							color='text.secondary'
