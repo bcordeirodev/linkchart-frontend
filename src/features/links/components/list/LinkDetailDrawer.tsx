@@ -1,22 +1,8 @@
 // src/features/links/components/list/LinkDetailDrawer.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-	Box,
-	Button,
-	Divider,
-	Drawer,
-	IconButton,
-	Stack,
-	Tooltip,
-	Typography,
-} from '@mui/material';
-import {
-	HiChartBar,
-	HiClipboardDocument,
-	HiPencilSquare,
-	HiXMark,
-} from 'react-icons/hi2';
+import { Box, Button, Divider, Drawer, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { HiChartBar, HiClipboardDocument, HiPencilSquare, HiXMark } from 'react-icons/hi2';
 
 import { getLinkStatus, STATUS_MAP } from '@/features/links/utils/linkStatus';
 import { useAppDispatch } from '@/lib/store/hooks';
@@ -30,7 +16,9 @@ interface LinkDetailDrawerProps {
 }
 
 function formatDate(value: string | null | undefined): string {
-	if (!value) { return '—'; }
+	if (!value) {
+		return '—';
+	}
 	try {
 		return new Date(value).toLocaleDateString('pt-BR');
 	} catch {
@@ -57,7 +45,7 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 
 	const { copied, copy } = useClipboard({
 		timeout: 1500,
-		onSuccess: () => dispatch(showMessage({ message: 'URL copiada!', variant: 'success' })),
+		onSuccess: () => dispatch(showMessage({ message: 'URL copiada!', variant: 'success' }))
 	});
 
 	const status = link ? getLinkStatus(link) : 'inactive';
@@ -85,8 +73,8 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 				sx: {
 					width: { xs: '100vw', sm: 400 },
 					display: 'flex',
-					flexDirection: 'column',
-				},
+					flexDirection: 'column'
+				}
 			}}
 		>
 			{!!link && (
@@ -103,7 +91,7 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 							display: 'flex',
 							alignItems: 'flex-start',
 							justifyContent: 'space-between',
-							flexShrink: 0,
+							flexShrink: 0
 						}}
 					>
 						<Box>
@@ -125,7 +113,7 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 										height: 8,
 										borderRadius: '50%',
 										bgcolor: statusColor,
-										flexShrink: 0,
+										flexShrink: 0
 									}}
 								/>
 								<Typography
@@ -162,8 +150,8 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 												display: '-webkit-box',
 												WebkitLineClamp: 2,
 												WebkitBoxOrient: 'vertical',
-												overflow: 'hidden',
-											}),
+												overflow: 'hidden'
+											})
 								}}
 							>
 								{link.original_url}
@@ -201,7 +189,7 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 										fontWeight: 600,
 										overflow: 'hidden',
 										textOverflow: 'ellipsis',
-										whiteSpace: 'nowrap',
+										whiteSpace: 'nowrap'
 									}}
 								>
 									{link.short_url}
@@ -222,20 +210,35 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 						{/* Estatísticas */}
 						<Box sx={{ mb: 2 }}>
 							<SectionLabel>Estatísticas</SectionLabel>
-							<Stack direction='row' spacing={4}>
+							<Stack
+								direction='row'
+								spacing={4}
+							>
 								<Box>
-									<Typography variant='h5' sx={{ fontWeight: 700 }}>
+									<Typography
+										variant='h5'
+										sx={{ fontWeight: 700 }}
+									>
 										{link.clicks ?? 0}
 									</Typography>
-									<Typography variant='caption' color='text.secondary'>
+									<Typography
+										variant='caption'
+										color='text.secondary'
+									>
 										Clicks totais
 									</Typography>
 								</Box>
 								<Box>
-									<Typography variant='h5' sx={{ fontWeight: 700 }}>
+									<Typography
+										variant='h5'
+										sx={{ fontWeight: 700 }}
+									>
 										{link.click_limit ?? '∞'}
 									</Typography>
-									<Typography variant='caption' color='text.secondary'>
+									<Typography
+										variant='caption'
+										color='text.secondary'
+									>
 										Limite
 									</Typography>
 								</Box>
@@ -248,20 +251,37 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 								<Divider sx={{ my: 1.5 }} />
 								<Box sx={{ mb: 2 }}>
 									<SectionLabel>Agendamento</SectionLabel>
-									<Stack direction='row' spacing={4}>
+									<Stack
+										direction='row'
+										spacing={4}
+									>
 										<Box>
-											<Typography variant='caption' color='text.secondary' display='block'>
+											<Typography
+												variant='caption'
+												color='text.secondary'
+												display='block'
+											>
 												Início
 											</Typography>
-											<Typography variant='body2' sx={{ fontWeight: 600 }}>
+											<Typography
+												variant='body2'
+												sx={{ fontWeight: 600 }}
+											>
 												{formatDate(link.starts_in)}
 											</Typography>
 										</Box>
 										<Box>
-											<Typography variant='caption' color='text.secondary' display='block'>
+											<Typography
+												variant='caption'
+												color='text.secondary'
+												display='block'
+											>
 												Término
 											</Typography>
-											<Typography variant='body2' sx={{ fontWeight: 600 }}>
+											<Typography
+												variant='body2'
+												sx={{ fontWeight: 600 }}
+											>
 												{formatDate(link.expires_at)}
 											</Typography>
 										</Box>
@@ -277,11 +297,31 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 								<Box sx={{ mb: 2 }}>
 									<SectionLabel>Parâmetros UTM</SectionLabel>
 									<Stack spacing={0.5}>
-										{!!link.utm_source && <Typography variant='body2'><b>Source:</b> {link.utm_source}</Typography>}
-										{!!link.utm_medium && <Typography variant='body2'><b>Medium:</b> {link.utm_medium}</Typography>}
-										{!!link.utm_campaign && <Typography variant='body2'><b>Campaign:</b> {link.utm_campaign}</Typography>}
-										{!!link.utm_term && <Typography variant='body2'><b>Term:</b> {link.utm_term}</Typography>}
-										{!!link.utm_content && <Typography variant='body2'><b>Content:</b> {link.utm_content}</Typography>}
+										{!!link.utm_source && (
+											<Typography variant='body2'>
+												<b>Source:</b> {link.utm_source}
+											</Typography>
+										)}
+										{!!link.utm_medium && (
+											<Typography variant='body2'>
+												<b>Medium:</b> {link.utm_medium}
+											</Typography>
+										)}
+										{!!link.utm_campaign && (
+											<Typography variant='body2'>
+												<b>Campaign:</b> {link.utm_campaign}
+											</Typography>
+										)}
+										{!!link.utm_term && (
+											<Typography variant='body2'>
+												<b>Term:</b> {link.utm_term}
+											</Typography>
+										)}
+										{!!link.utm_content && (
+											<Typography variant='body2'>
+												<b>Content:</b> {link.utm_content}
+											</Typography>
+										)}
 									</Stack>
 								</Box>
 							</>
@@ -291,10 +331,16 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 
 						{/* Datas */}
 						<Stack spacing={0.5}>
-							<Typography variant='caption' color='text.secondary'>
+							<Typography
+								variant='caption'
+								color='text.secondary'
+							>
 								Criado em: <b>{formatDate(link.created_at)}</b>
 							</Typography>
-							<Typography variant='caption' color='text.secondary'>
+							<Typography
+								variant='caption'
+								color='text.secondary'
+							>
 								Atualizado: <b>{formatDate(link.updated_at)}</b>
 							</Typography>
 						</Stack>
@@ -307,10 +353,13 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 							py: 2,
 							flexShrink: 0,
 							borderTop: 1,
-							borderColor: 'divider',
+							borderColor: 'divider'
 						}}
 					>
-						<Stack direction='row' spacing={1.5}>
+						<Stack
+							direction='row'
+							spacing={1.5}
+						>
 							<Button
 								variant='contained'
 								startIcon={<HiChartBar size={16} />}

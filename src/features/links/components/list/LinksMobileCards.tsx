@@ -9,21 +9,8 @@
  * - Acessibilidade completa
  */
 
-import {
-	Link as LinkIcon,
-	Visibility,
-	Schedule
-} from '@mui/icons-material';
-import {
-	Box,
-	Card,
-	CardContent,
-	Typography,
-	Chip,
-	Stack,
-	Avatar,
-	useTheme
-} from '@mui/material';
+import { Link as LinkIcon, Visibility, Schedule } from '@mui/icons-material';
+import { Box, Card, CardContent, Typography, Chip, Stack, Avatar, useTheme } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { memo } from 'react';
@@ -94,149 +81,157 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) =>
 
 	return (
 		<Card
-				sx={{
-					mb: 2,
-					borderRadius: 3,
-					border: `1px solid ${theme.palette.divider}`,
-					boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-					transition: 'all 0.2s ease',
-					'&:hover': {
-						boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-						transform: 'translateY(-1px)'
-					},
-					'&:active': {
-						transform: 'translateY(0)',
-						boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-					}
-				}}
-			>
-				<CardContent sx={{ p: 3, '&:last-child': { pb: 3 } }}>
-					{/* Header com título e ações */}
-					<Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-						<Avatar
-							sx={{
-								width: 40,
-								height: 40,
-								mr: 2,
-								bgcolor: link.is_active ? 'primary.main' : 'grey.400',
-								fontSize: '1rem'
-							}}
-						>
-							<LinkIcon fontSize='small' />
-						</Avatar>
-
-						<Box sx={{ flex: 1, minWidth: 0 }}>
-							<Typography
-								variant='h6'
-								sx={{
-									fontSize: '1.1rem',
-									fontWeight: 600,
-									color: 'text.primary',
-									mb: 0.5,
-									overflow: 'hidden',
-									textOverflow: 'ellipsis',
-									whiteSpace: 'nowrap'
-								}}
-							>
-								{link.title || 'Link sem título'}
-							</Typography>
-
-							<Typography
-								variant='body2'
-								sx={{
-									color: 'text.secondary',
-									fontSize: '0.875rem',
-									overflow: 'hidden',
-									textOverflow: 'ellipsis',
-									whiteSpace: 'nowrap'
-								}}
-							>
-								{truncateUrl(link.original_url)}
-							</Typography>
-						</Box>
-
-					</Box>
-
-					{/* URL encurtada */}
-					<Box
+			sx={{
+				mb: 2,
+				borderRadius: 3,
+				border: `1px solid ${theme.palette.divider}`,
+				boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+				transition: 'all 0.2s ease',
+				'&:hover': {
+					boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+					transform: 'translateY(-1px)'
+				},
+				'&:active': {
+					transform: 'translateY(0)',
+					boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+				}
+			}}
+		>
+			<CardContent sx={{ p: 3, '&:last-child': { pb: 3 } }}>
+				{/* Header com título e ações */}
+				<Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
+					<Avatar
 						sx={{
-							p: 2,
-							bgcolor: theme.palette.background.paper,
-							borderRadius: 2,
-							border: `1px solid ${theme.palette.divider}`,
-							mb: 2
+							width: 40,
+							height: 40,
+							mr: 2,
+							bgcolor: link.is_active ? 'primary.main' : 'grey.400',
+							fontSize: '1rem'
 						}}
 					>
+						<LinkIcon fontSize='small' />
+					</Avatar>
+
+					<Box sx={{ flex: 1, minWidth: 0 }}>
 						<Typography
-							variant='body2'
+							variant='h6'
 							sx={{
-								color: 'primary.main',
-								fontWeight: 500,
-								fontSize: '0.9rem',
-								fontFamily: 'monospace',
+								fontSize: '1.1rem',
+								fontWeight: 600,
+								color: 'text.primary',
+								mb: 0.5,
 								overflow: 'hidden',
 								textOverflow: 'ellipsis',
 								whiteSpace: 'nowrap'
 							}}
 						>
-							{shortUrl}
+							{link.title || 'Link sem título'}
+						</Typography>
+
+						<Typography
+							variant='body2'
+							sx={{
+								color: 'text.secondary',
+								fontSize: '0.875rem',
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								whiteSpace: 'nowrap'
+							}}
+						>
+							{truncateUrl(link.original_url)}
+						</Typography>
+					</Box>
+				</Box>
+
+				{/* URL encurtada */}
+				<Box
+					sx={{
+						p: 2,
+						bgcolor: theme.palette.background.paper,
+						borderRadius: 2,
+						border: `1px solid ${theme.palette.divider}`,
+						mb: 2
+					}}
+				>
+					<Typography
+						variant='body2'
+						sx={{
+							color: 'primary.main',
+							fontWeight: 500,
+							fontSize: '0.9rem',
+							fontFamily: 'monospace',
+							overflow: 'hidden',
+							textOverflow: 'ellipsis',
+							whiteSpace: 'nowrap'
+						}}
+					>
+						{shortUrl}
+					</Typography>
+				</Box>
+
+				{/* Métricas e status */}
+				<Stack
+					direction='row'
+					spacing={2}
+					sx={{ mb: 2 }}
+				>
+					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+						<Visibility sx={{ fontSize: 16, color: 'text.secondary' }} />
+						<Typography
+							variant='body2'
+							sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
+						>
+							{link.clicks || 0} cliques
 						</Typography>
 					</Box>
 
-					{/* Métricas e status */}
+					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+						<Schedule sx={{ fontSize: 16, color: 'text.secondary' }} />
+						<Typography
+							variant='body2'
+							sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
+						>
+							{createdAt}
+						</Typography>
+					</Box>
+				</Stack>
+
+				{/* Status e ações rápidas */}
+				<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+					<Chip
+						label={link.is_active ? 'Ativo' : 'Inativo'}
+						size='small'
+						color={link.is_active ? 'success' : 'default'}
+						sx={{ fontSize: '0.75rem' }}
+					/>
+
 					<Stack
 						direction='row'
-						spacing={2}
-						sx={{ mb: 2 }}
+						spacing={0.5}
+						alignItems='center'
 					>
-						<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-							<Visibility sx={{ fontSize: 16, color: 'text.secondary' }} />
-							<Typography
-								variant='body2'
-								sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
-							>
-								{link.clicks || 0} cliques
-							</Typography>
-						</Box>
-
-						<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-							<Schedule sx={{ fontSize: 16, color: 'text.secondary' }} />
-							<Typography
-								variant='body2'
-								sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
-							>
-								{createdAt}
-							</Typography>
-						</Box>
-					</Stack>
-
-					{/* Status e ações rápidas */}
-					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-						<Chip
-							label={link.is_active ? 'Ativo' : 'Inativo'}
-							size='small'
-							color={link.is_active ? 'success' : 'default'}
-							sx={{ fontSize: '0.75rem' }}
+						<LinkActionsInline
+							shortUrl={link.short_url || shortUrl}
+							onAnalytics={() => navigate(`/link/analytic/${link.id}`)}
 						/>
-
-						<Stack direction='row' spacing={0.5} alignItems='center'>
-							<LinkActionsInline
-								shortUrl={link.short_url || shortUrl}
-								onAnalytics={() => navigate(`/link/analytic/${link.id}`)}
-							/>
-							<LinkActionsMenu
-								onEdit={() => {
-									if (onEdit) { onEdit(link); }
-									else { navigate(`/link/edit/${link.id}`); }
-								}}
-								onQR={() => navigate(`/link/qr/${link.id}`)}
-								onDelete={() => {
-									if (onDelete) { onDelete(String(link.id)); }
-								}}
-							/>
-						</Stack>
-					</Box>
-				</CardContent>
+						<LinkActionsMenu
+							onEdit={() => {
+								if (onEdit) {
+									onEdit(link);
+								} else {
+									navigate(`/link/edit/${link.id}`);
+								}
+							}}
+							onQR={() => navigate(`/link/qr/${link.id}`)}
+							onDelete={() => {
+								if (onDelete) {
+									onDelete(String(link.id));
+								}
+							}}
+						/>
+					</Stack>
+				</Box>
+			</CardContent>
 		</Card>
 	);
 });

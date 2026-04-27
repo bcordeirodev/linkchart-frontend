@@ -8,7 +8,7 @@ import {
 	LinksFilters,
 	LinksHeader,
 	LinksMobileCards,
-	useLinksTableColumns,
+	useLinksTableColumns
 } from '@/features/links/components/list';
 import { useLinks } from '@/features/links/hooks/useLinks';
 import { useResponsive } from '@/lib/theme';
@@ -104,25 +104,25 @@ function LinkListPage() {
 								enableColumnResizing={false}
 								enableColumnOrdering={false}
 								initialState={{
-									pagination: { pageIndex: 0, pageSize: 10 },
+									pagination: { pageIndex: 0, pageSize: 10 }
 								}}
 								muiTableBodyRowProps={({ row }) => ({
 									onClick: () => setDrawerLink(row.original),
-									sx: { cursor: 'pointer' },
+									sx: { cursor: 'pointer' }
 								})}
 								muiTableContainerProps={{
-									sx: { maxWidth: '100%', overflowX: 'auto' },
+									sx: { maxWidth: '100%', overflowX: 'auto' }
 								}}
 								muiTableProps={{
 									sx: {
 										tableLayout: 'auto',
 										'& .MuiTableCell-root': {
-											padding: { xs: '10px 8px', md: '14px 16px' },
+											padding: { xs: '10px 8px', md: '14px 16px' }
 										},
 										'& .MuiTableRow-root': {
-											height: 56,
-										},
-									},
+											height: 56
+										}
+									}
 								}}
 							/>
 						</Box>

@@ -6,11 +6,7 @@
 import { Box, Typography, Breadcrumbs, Link, useTheme } from '@mui/material';
 
 import { createPresetAnimations, responsiveSpacing } from '@/lib/theme';
-import {
-	elevationLightTokens,
-	elevationTokens,
-	radiusTokens
-} from '@/lib/theme/designSystem';
+import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
 
 import type { ReactNode } from 'react';
 
