@@ -19,6 +19,8 @@ import { useNavigate } from 'react-router-dom';
 import { LinkActionsInline } from './LinkActionsInline';
 import { LinkActionsMenu } from './LinkActionsMenu';
 
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
+
 import { getLinkStatus, STATUS_MAP } from '../../utils/linkStatus';
 
 // Types
@@ -42,6 +44,7 @@ interface LinkMobileCardProps {
  */
 const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) => {
 	const theme = useTheme();
+	const isDark = theme.palette.mode === 'dark';
 	const navigate = useNavigate();
 
 	// Formatação de dados
@@ -89,17 +92,12 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) =>
 		<Card
 			sx={{
 				mb: 2,
-				borderRadius: 3,
+				borderRadius: `${radiusTokens.lg}px`,
 				border: `1px solid ${theme.palette.divider}`,
-				boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-				transition: 'all 0.2s ease',
+				boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+				transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 				'&:hover': {
-					boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-					transform: 'translateY(-1px)'
-				},
-				'&:active': {
-					transform: 'translateY(0)',
-					boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+					boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm
 				}
 			}}
 		>
@@ -154,7 +152,7 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) =>
 					sx={{
 						p: 2,
 						bgcolor: theme.palette.background.paper,
-						borderRadius: 2,
+						borderRadius: `${radiusTokens.md}px`,
 						border: `1px solid ${theme.palette.divider}`,
 						mb: 2
 					}}
@@ -260,7 +258,7 @@ export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit }: Links
 				{[...Array(3)].map((_, index) => (
 					<Card
 						key={index}
-						sx={{ mb: 2, borderRadius: 3 }}
+						sx={{ mb: 2, borderRadius: `${radiusTokens.lg}px` }}
 					>
 						<CardContent sx={{ p: 3 }}>
 							<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -274,13 +272,36 @@ export const LinksMobileCards = memo(({ data, loading, onDelete, onEdit }: Links
 									}}
 								/>
 								<Box sx={{ flex: 1 }}>
-									<Box sx={{ height: 20, bgcolor: 'grey.200', borderRadius: 1, mb: 1 }} />
-									<Box sx={{ height: 16, bgcolor: 'grey.100', borderRadius: 1, width: '70%' }} />
+									<Box
+										sx={{
+											height: 20,
+											bgcolor: 'grey.200',
+											borderRadius: `${radiusTokens.sm}px`,
+											mb: 1
+										}}
+									/>
+									<Box
+										sx={{
+											height: 16,
+											bgcolor: 'grey.100',
+											borderRadius: `${radiusTokens.sm}px`,
+											width: '70%'
+										}}
+									/>
 								</Box>
 							</Box>
-							<Box sx={{ height: 40, bgcolor: 'grey.100', borderRadius: 2, mb: 2 }} />
+							<Box
+								sx={{ height: 40, bgcolor: 'grey.100', borderRadius: `${radiusTokens.md}px`, mb: 2 }}
+							/>
 							<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-								<Box sx={{ height: 24, bgcolor: 'grey.200', borderRadius: 12, width: 60 }} />
+								<Box
+									sx={{
+										height: 24,
+										bgcolor: 'grey.200',
+										borderRadius: `${radiusTokens.full}px`,
+										width: 60
+									}}
+								/>
 								<Box sx={{ display: 'flex', gap: 1 }}>
 									<Box sx={{ width: 32, height: 32, bgcolor: 'grey.200', borderRadius: '50%' }} />
 									<Box sx={{ width: 32, height: 32, bgcolor: 'grey.200', borderRadius: '50%' }} />
