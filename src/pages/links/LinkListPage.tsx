@@ -1,10 +1,11 @@
 // src/pages/links/LinkListPage.tsx
-import { Alert, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import { useMemo, useState } from 'react';
 
 import { LinkMetrics } from '@/features/links/components/LinkMetrics';
 import {
 	LinkDetailDrawer,
+	LinksEmptyState,
 	LinksFilters,
 	LinksHeader,
 	LinksMobileCards,
@@ -77,14 +78,13 @@ function LinkListPage() {
 					/>
 
 					{filteredLinks.length === 0 ? (
-						<Alert
-							severity='info'
-							sx={{ mt: 2 }}
-						>
-							{searchTerm || statusFilter !== 'all'
-								? 'Nenhum link encontrado com os filtros aplicados.'
-								: 'Nenhum link criado ainda. Clique em "Criar Novo Link" para começar.'}
-						</Alert>
+						<LinksEmptyState
+							hasActiveFilters={Boolean(searchTerm) || statusFilter !== 'all'}
+							onClearFilters={() => {
+								setSearchTerm('');
+								setStatusFilter('all');
+							}}
+						/>
 					) : isMobile ? (
 						<LinksMobileCards
 							data={filteredLinks}
