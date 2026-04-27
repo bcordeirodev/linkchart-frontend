@@ -1,4 +1,6 @@
-import { Launch as LaunchIcon, Speed as SpeedIcon } from '@mui/icons-material';
+import { ExternalLink, Zap } from 'lucide-react';
+
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { Box, Typography, CircularProgress, Card, CardContent, Chip, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 
@@ -76,7 +78,7 @@ export function RedirectLoader({ targetUrl, countdown, isRedirecting }: Redirect
 					</Typography>
 
 					<Chip
-						icon={<LaunchIcon />}
+						icon={<ExternalLink {...ICON_LG} />}
 						label={targetUrl.length > 50 ? `${targetUrl.substring(0, 50)}...` : targetUrl}
 						sx={{
 							bgcolor: 'rgba(59, 130, 246, 0.2)',
@@ -97,7 +99,7 @@ export function RedirectLoader({ targetUrl, countdown, isRedirecting }: Redirect
 								mt: 2
 							}}
 						>
-							<SpeedIcon sx={{ color: '#10b981', fontSize: 20 }} />
+							<Zap {...ICON_LG} style={{ color: '#10b981' }} />
 							<Typography
 								variant='body2'
 								sx={{

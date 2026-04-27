@@ -1,5 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Lock, Save, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Lock, Save, Eye, EyeOff } from 'lucide-react';
+
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { Box, Button, CircularProgress, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -114,7 +116,7 @@ export function PasswordChangeForm() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<Lock sx={{ color: 'text.secondary' }} />
+										<Lock {...ICON_MD} />
 									</InputAdornment>
 								),
 								endAdornment: (
@@ -125,7 +127,7 @@ export function PasswordChangeForm() {
 											size='small'
 											sx={{ color: 'text.secondary' }}
 										>
-											{showPasswords.current ? <VisibilityOff /> : <Visibility />}
+											{showPasswords.current ? <EyeOff {...ICON_MD} /> : <Eye {...ICON_MD} />}
 										</IconButton>
 									</InputAdornment>
 								)
@@ -144,7 +146,7 @@ export function PasswordChangeForm() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<Lock sx={{ color: 'text.secondary' }} />
+										<Lock {...ICON_MD} />
 									</InputAdornment>
 								),
 								endAdornment: (
@@ -155,7 +157,7 @@ export function PasswordChangeForm() {
 											size='small'
 											sx={{ color: 'text.secondary' }}
 										>
-											{showPasswords.new ? <VisibilityOff /> : <Visibility />}
+											{showPasswords.new ? <EyeOff {...ICON_MD} /> : <Eye {...ICON_MD} />}
 										</IconButton>
 									</InputAdornment>
 								)
@@ -174,7 +176,7 @@ export function PasswordChangeForm() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<Lock sx={{ color: 'text.secondary' }} />
+										<Lock {...ICON_MD} />
 									</InputAdornment>
 								),
 								endAdornment: (
@@ -185,7 +187,7 @@ export function PasswordChangeForm() {
 											size='small'
 											sx={{ color: 'text.secondary' }}
 										>
-											{showPasswords.confirm ? <VisibilityOff /> : <Visibility />}
+											{showPasswords.confirm ? <EyeOff {...ICON_MD} /> : <Eye {...ICON_MD} />}
 										</IconButton>
 									</InputAdornment>
 								)
@@ -205,7 +207,7 @@ export function PasswordChangeForm() {
 										color='inherit'
 									/>
 								) : (
-									<Save />
+									<Save {...ICON_MD} />
 								)
 							}
 							sx={{

@@ -1,4 +1,6 @@
-import { ArrowForward } from '@mui/icons-material';
+import { ArrowRight } from 'lucide-react';
+
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { Paper, Typography, Chip, Button, Box, alpha, useTheme } from '@mui/material';
 
 import { AppIcon } from '@/shared/ui/icons';
@@ -108,7 +110,7 @@ export function UpgradeCTA({ onSignUp, onLogin }: UpgradeCTAProps) {
 					variant='contained'
 					fullWidth
 					size='large'
-					endIcon={<ArrowForward />}
+					endIcon={<ArrowRight {...ICON_MD} />}
 					onClick={onSignUp}
 					sx={{
 						background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',

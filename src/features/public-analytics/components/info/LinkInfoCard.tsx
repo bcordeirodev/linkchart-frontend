@@ -1,4 +1,6 @@
-import { Launch as LaunchIcon, ContentCopy as CopyIcon, Add as AddIcon } from '@mui/icons-material';
+import { ExternalLink, Copy, Plus } from 'lucide-react';
+
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import {
 	Box,
 	Typography,
@@ -97,7 +99,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 								color='primary'
 								size='small'
 							>
-								<CopyIcon />
+								<Copy {...ICON_MD} />
 							</IconButton>
 						</Tooltip>
 						<Tooltip title='Criar Outro Link'>
@@ -106,7 +108,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 								color='secondary'
 								size='small'
 							>
-								<AddIcon />
+								<Plus {...ICON_MD} />
 							</IconButton>
 						</Tooltip>
 					</Stack>
@@ -164,7 +166,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 							<Button
 								variant='contained'
 								size='small'
-								startIcon={<CopyIcon />}
+								startIcon={<Copy {...ICON_MD} />}
 								onClick={handleCopyLink}
 								sx={{
 									background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
@@ -182,7 +184,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 							<Button
 								variant='outlined'
 								size='small'
-								startIcon={<LaunchIcon />}
+								startIcon={<ExternalLink {...ICON_MD} />}
 								onClick={handleVisitLink}
 								sx={{
 									borderColor: theme.palette.success.main,
@@ -367,7 +369,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 				>
 					<Button
 						variant='contained'
-						startIcon={<CopyIcon />}
+						startIcon={<Copy {...ICON_MD} />}
 						onClick={handleCopyLink}
 						size='large'
 						sx={{
@@ -386,7 +388,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 					</Button>
 					<Button
 						variant='outlined'
-						startIcon={<AddIcon />}
+						startIcon={<Plus {...ICON_MD} />}
 						onClick={handleCreateLink}
 						size='large'
 						sx={{
@@ -407,7 +409,7 @@ export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 					</Button>
 					<Button
 						variant='text'
-						startIcon={<LaunchIcon />}
+						startIcon={<ExternalLink {...ICON_MD} />}
 						onClick={handleVisitLink}
 						size='large'
 						sx={{

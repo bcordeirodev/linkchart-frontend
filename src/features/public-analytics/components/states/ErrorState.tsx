@@ -1,4 +1,6 @@
-import { Home as HomeIcon } from '@mui/icons-material';
+import { Home } from 'lucide-react';
+
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { Container, Alert, Button, Box } from '@mui/material';
 
 import { PublicLayout } from '@/shared/layout';
@@ -43,7 +45,7 @@ export function ErrorState({ error, debugInfo, onCreateLink }: ErrorStateProps) 
 				<Box textAlign='center'>
 					<Button
 						variant='contained'
-						startIcon={<HomeIcon />}
+						startIcon={<Home {...ICON_MD} />}
 						onClick={onCreateLink}
 						size='large'
 					>

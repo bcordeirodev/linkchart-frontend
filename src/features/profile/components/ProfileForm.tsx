@@ -1,4 +1,6 @@
-import { Cancel, Email, Person, PhotoCamera, Save } from '@mui/icons-material';
+import { X, Mail, User, Camera, Save } from 'lucide-react';
+
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { CircularProgress } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -132,7 +134,7 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 						<AvatarContainer>
 							<StyledAvatar>{formData.name?.[0]?.toUpperCase()}</StyledAvatar>
 							<PhotoUploadButton onClick={handlePhotoUpload}>
-								<PhotoCamera />
+								<Camera {...ICON_MD} />
 							</PhotoUploadButton>
 						</AvatarContainer>
 					</AvatarSection>
@@ -145,7 +147,7 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 							fullWidth
 							isEditing
 							InputProps={{
-								startAdornment: <Person sx={{ mr: 1.5 }} />
+								startAdornment: <User {...ICON_MD} style={{ marginRight: 12 }} />
 							}}
 						/>
 						<StyledTextField
@@ -156,7 +158,7 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 							type='email'
 							isEditing
 							InputProps={{
-								startAdornment: <Email sx={{ mr: 1.5 }} />
+								startAdornment: <Mail {...ICON_MD} style={{ marginRight: 12 }} />
 							}}
 						/>
 					</FormFieldsContainer>
@@ -165,7 +167,7 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 				<ActionButtonsContainer>
 					<CancelButton
 						variant='outlined'
-						startIcon={<Cancel />}
+						startIcon={<X {...ICON_MD} />}
 						onClick={handleReset}
 						disabled={saving}
 					>
@@ -180,7 +182,7 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 									color='inherit'
 								/>
 							) : (
-								<Save />
+								<Save {...ICON_MD} />
 							)
 						}
 						onClick={handleSave}

@@ -1,4 +1,6 @@
-import { CalendarToday, Shield, Verified } from '@mui/icons-material';
+import { Calendar, Shield, BadgeCheck } from 'lucide-react';
+
+import { ICON_SM, ICON_MD } from '@/lib/theme/iconDefaults';
 import { Box, Chip, Stack, Typography } from '@mui/material';
 
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
@@ -24,7 +26,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
 						gutterBottom
 						sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}
 					>
-						<Shield color='success' />
+						<Shield {...ICON_MD} />
 						Status da Conta
 					</Typography>
 					<Stack spacing={2}>
@@ -38,7 +40,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
 								bgcolor: 'success.50'
 							}}
 						>
-							<Verified color='success' />
+							<BadgeCheck {...ICON_MD} />
 							<Box>
 								<Typography
 									variant='body2'
@@ -64,7 +66,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
 								bgcolor: 'info.50'
 							}}
 						>
-							<CalendarToday color='info' />
+							<Calendar {...ICON_SM} />
 							<Box>
 								<Typography
 									variant='body2'

@@ -1,7 +1,6 @@
-import SecurityIcon from '@mui/icons-material/Security';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SpeedIcon from '@mui/icons-material/Speed';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Shield, Settings, Zap, Eye } from 'lucide-react';
+
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -79,7 +78,7 @@ export default function RedirectSettings({ onSave, initialSettings = {} }: Redir
 					<Stack spacing={3}>
 						{/* Header */}
 						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-							<SettingsIcon color='primary' />
+							<Settings {...ICON_MD} />
 							<SafeTypography variant='h6'>Configurações de Redirecionamento</SafeTypography>
 						</Box>
 
@@ -88,10 +87,7 @@ export default function RedirectSettings({ onSave, initialSettings = {} }: Redir
 						{/* Preview Settings */}
 						<Box>
 							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-								<VisibilityIcon
-									fontSize='small'
-									color='action'
-								/>
+								<Eye {...ICON_MD} />
 								<SafeTypography
 									variant='subtitle1'
 									color='primary'
@@ -157,10 +153,7 @@ export default function RedirectSettings({ onSave, initialSettings = {} }: Redir
 						{/* Security Settings */}
 						<Box>
 							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-								<SecurityIcon
-									fontSize='small'
-									color='action'
-								/>
+								<Shield {...ICON_MD} />
 								<SafeTypography
 									variant='subtitle1'
 									color='primary'
@@ -211,10 +204,7 @@ export default function RedirectSettings({ onSave, initialSettings = {} }: Redir
 						{/* Performance Settings */}
 						<Box>
 							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-								<SpeedIcon
-									fontSize='small'
-									color='action'
-								/>
+								<Zap {...ICON_MD} />
 								<SafeTypography
 									variant='subtitle1'
 									color='primary'

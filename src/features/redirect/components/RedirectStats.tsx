@@ -1,9 +1,6 @@
-import DevicesIcon from '@mui/icons-material/Devices';
-import LinkIcon from '@mui/icons-material/Link';
-import ClickIcon from '@mui/icons-material/Mouse';
-import SecurityIcon from '@mui/icons-material/Security';
-import SpeedIcon from '@mui/icons-material/Speed';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import { Monitor, Link, MousePointer, Shield, Zap, TrendingUp } from 'lucide-react';
+
+import { ICON_MD, ICON_XL } from '@/lib/theme/iconDefaults';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import { useState, useEffect } from 'react';
@@ -133,7 +130,7 @@ export default function RedirectStats({
 			{/* Header */}
 			<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					<TrendingUpIcon color='primary' />
+					<TrendingUp {...ICON_MD} />
 					<Typography variant='h5'>Estatísticas de Redirecionamento</Typography>
 				</Box>
 				{lastUpdate ? (
@@ -162,10 +159,7 @@ export default function RedirectStats({
 					>
 						<Card elevation={2}>
 							<CardContent sx={{ textAlign: 'center' }}>
-								<ClickIcon
-									color='primary'
-									sx={{ fontSize: 40, mb: 1 }}
-								/>
+								<MousePointer {...ICON_XL} />
 								<Typography
 									variant='h4'
 									color='primary'
@@ -195,10 +189,7 @@ export default function RedirectStats({
 					>
 						<Card elevation={2}>
 							<CardContent sx={{ textAlign: 'center' }}>
-								<LinkIcon
-									color='secondary'
-									sx={{ fontSize: 40, mb: 1 }}
-								/>
+								<Link {...ICON_XL} />
 								<Typography
 									variant='h4'
 									color='secondary'
@@ -228,10 +219,7 @@ export default function RedirectStats({
 					>
 						<Card elevation={2}>
 							<CardContent sx={{ textAlign: 'center' }}>
-								<SpeedIcon
-									color='success'
-									sx={{ fontSize: 40, mb: 1 }}
-								/>
+								<Zap {...ICON_XL} />
 								<Typography
 									variant='h4'
 									color='success.main'
@@ -261,10 +249,7 @@ export default function RedirectStats({
 					>
 						<Card elevation={2}>
 							<CardContent sx={{ textAlign: 'center' }}>
-								<SecurityIcon
-									color='info'
-									sx={{ fontSize: 40, mb: 1 }}
-								/>
+								<Shield {...ICON_XL} />
 								<Typography
 									variant='h4'
 									color='info.main'
@@ -290,7 +275,7 @@ export default function RedirectStats({
 						variant='h6'
 						sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<TrendingUpIcon color='primary' />
+						<TrendingUp {...ICON_MD} />
 						Top {maxTopLinks} Links Mais Clicados
 					</Typography>
 					<Stack spacing={2}>
@@ -349,7 +334,7 @@ export default function RedirectStats({
 						variant='h6'
 						sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<DevicesIcon color='primary' />
+						<Monitor {...ICON_MD} />
 						Dispositivos
 					</Typography>
 					<Grid
@@ -471,10 +456,7 @@ export default function RedirectStats({
 										})}
 									>
 										<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-											<ClickIcon
-												fontSize='small'
-												color='action'
-											/>
+											<MousePointer {...ICON_MD} />
 											<Typography variant='body2'>
 												Click em <strong>/{activity.slug}</strong>
 											</Typography>
