@@ -68,6 +68,19 @@ export type {
 } from './core';
 
 // ========================================
+// 🔗 TIPOS DE META DE LINKS
+// ========================================
+export type {
+	SparklinePoint,
+	LinkTrend,
+	LinkPreviewMeta,
+	LinkHealthStatus,
+	LinkHealth,
+	LinkMeta,
+	BatchMetaResponse,
+} from './core/link-meta';
+
+// ========================================
 // 📊 TIPOS DE ANALYTICS (Módulo completo)
 // ========================================
 export type {
