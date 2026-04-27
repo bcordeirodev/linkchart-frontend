@@ -30,7 +30,7 @@ interface LinkDetailDrawerProps {
 }
 
 function formatDate(value: string | null | undefined): string {
-	if (!value) return '—';
+	if (!value) { return '—'; }
 	try {
 		return new Date(value).toLocaleDateString('pt-BR');
 	} catch {
@@ -89,7 +89,7 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 				},
 			}}
 		>
-			{link && (
+			{!!link && (
 				<Box
 					key={String(link.id)}
 					sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
@@ -243,7 +243,7 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 						</Box>
 
 						{/* Agendamento */}
-						{hasSchedule && (
+						{hasSchedule ? (
 							<>
 								<Divider sx={{ my: 1.5 }} />
 								<Box sx={{ mb: 2 }}>
@@ -268,24 +268,24 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 									</Stack>
 								</Box>
 							</>
-						)}
+						) : null}
 
 						{/* UTM */}
-						{hasUtm && (
+						{hasUtm ? (
 							<>
 								<Divider sx={{ my: 1.5 }} />
 								<Box sx={{ mb: 2 }}>
 									<SectionLabel>Parâmetros UTM</SectionLabel>
 									<Stack spacing={0.5}>
-										{link.utm_source && <Typography variant='body2'><b>Source:</b> {link.utm_source}</Typography>}
-										{link.utm_medium && <Typography variant='body2'><b>Medium:</b> {link.utm_medium}</Typography>}
-										{link.utm_campaign && <Typography variant='body2'><b>Campaign:</b> {link.utm_campaign}</Typography>}
-										{link.utm_term && <Typography variant='body2'><b>Term:</b> {link.utm_term}</Typography>}
-										{link.utm_content && <Typography variant='body2'><b>Content:</b> {link.utm_content}</Typography>}
+										{!!link.utm_source && <Typography variant='body2'><b>Source:</b> {link.utm_source}</Typography>}
+										{!!link.utm_medium && <Typography variant='body2'><b>Medium:</b> {link.utm_medium}</Typography>}
+										{!!link.utm_campaign && <Typography variant='body2'><b>Campaign:</b> {link.utm_campaign}</Typography>}
+										{!!link.utm_term && <Typography variant='body2'><b>Term:</b> {link.utm_term}</Typography>}
+										{!!link.utm_content && <Typography variant='body2'><b>Content:</b> {link.utm_content}</Typography>}
 									</Stack>
 								</Box>
 							</>
-						)}
+						) : null}
 
 						<Divider sx={{ my: 1.5 }} />
 

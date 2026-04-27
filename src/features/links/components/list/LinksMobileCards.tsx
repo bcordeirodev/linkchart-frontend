@@ -226,12 +226,12 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) =>
 							/>
 							<LinkActionsMenu
 								onEdit={() => {
-									if (onEdit) onEdit(link);
-									else navigate(`/link/edit/${link.id}`);
+									if (onEdit) { onEdit(link); }
+									else { navigate(`/link/edit/${link.id}`); }
 								}}
 								onQR={() => navigate(`/link/qr/${link.id}`)}
 								onDelete={() => {
-									if (onDelete) onDelete(String(link.id));
+									if (onDelete) { onDelete(String(link.id)); }
 								}}
 							/>
 						</Stack>

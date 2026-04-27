@@ -85,51 +85,47 @@ function LinkListPage() {
 								? 'Nenhum link encontrado com os filtros aplicados.'
 								: 'Nenhum link criado ainda. Clique em "Criar Novo Link" para começar.'}
 						</Alert>
+					) : isMobile ? (
+						<LinksMobileCards
+							data={filteredLinks}
+							loading={loading}
+							onDelete={deleteLink}
+						/>
 					) : (
-						<>
-							{isMobile ? (
-								<LinksMobileCards
-									data={filteredLinks}
-									loading={loading}
-									onDelete={deleteLink}
-								/>
-							) : (
-								<Box sx={{ width: '100%', overflowX: 'auto' }}>
-									<DataTable
-										data={filteredLinks}
-										columns={columns}
-										enableRowSelection={false}
-										enableRowActions={false}
-										enableSelectAll={false}
-										enableColumnFilters={false}
-										enableGlobalFilter={false}
-										enableColumnResizing={false}
-										enableColumnOrdering={false}
-										initialState={{
-											pagination: { pageIndex: 0, pageSize: 10 },
-										}}
-										muiTableBodyRowProps={({ row }) => ({
-											onClick: () => setDrawerLink(row.original),
-											sx: { cursor: 'pointer' },
-										})}
-										muiTableContainerProps={{
-											sx: { maxWidth: '100%', overflowX: 'auto' },
-										}}
-										muiTableProps={{
-											sx: {
-												tableLayout: 'auto',
-												'& .MuiTableCell-root': {
-													padding: { xs: '10px 8px', md: '14px 16px' },
-												},
-												'& .MuiTableRow-root': {
-													height: 56,
-												},
-											},
-										}}
-									/>
-								</Box>
-							)}
-						</>
+						<Box sx={{ width: '100%', overflowX: 'auto' }}>
+							<DataTable
+								data={filteredLinks}
+								columns={columns}
+								enableRowSelection={false}
+								enableRowActions={false}
+								enableSelectAll={false}
+								enableColumnFilters={false}
+								enableGlobalFilter={false}
+								enableColumnResizing={false}
+								enableColumnOrdering={false}
+								initialState={{
+									pagination: { pageIndex: 0, pageSize: 10 },
+								}}
+								muiTableBodyRowProps={({ row }) => ({
+									onClick: () => setDrawerLink(row.original),
+									sx: { cursor: 'pointer' },
+								})}
+								muiTableContainerProps={{
+									sx: { maxWidth: '100%', overflowX: 'auto' },
+								}}
+								muiTableProps={{
+									sx: {
+										tableLayout: 'auto',
+										'& .MuiTableCell-root': {
+											padding: { xs: '10px 8px', md: '14px 16px' },
+										},
+										'& .MuiTableRow-root': {
+											height: 56,
+										},
+									},
+								}}
+							/>
+						</Box>
 					)}
 				</ResponsiveContainer>
 
