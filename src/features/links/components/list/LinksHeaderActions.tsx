@@ -3,9 +3,10 @@
  * Componente de ações para header Links mantendo todas as funcionalidades
  */
 
-import { Button } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 import { AppIcon } from '@/shared/ui/icons';
 
 interface LinksHeaderActionsProps {
@@ -18,6 +19,8 @@ interface LinksHeaderActionsProps {
  */
 export function LinksHeaderActions({ onCreateNew }: LinksHeaderActionsProps) {
 	const navigate = useNavigate();
+	const theme = useTheme();
+	const isDark = theme.palette.mode === 'dark';
 
 	const handleCreateNew = () => {
 		if (onCreateNew) {
@@ -38,7 +41,18 @@ export function LinksHeaderActions({ onCreateNew }: LinksHeaderActionsProps) {
 				/>
 			}
 			onClick={handleCreateNew}
-			sx={{ textTransform: 'none' }}
+			sx={{
+				textTransform: 'none',
+				fontWeight: 600,
+				borderRadius: `${radiusTokens.md}px`,
+				backgroundColor: theme.palette.primary.main,
+				boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+				transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+				'&:hover': {
+					backgroundColor: theme.palette.primary.dark,
+					boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm
+				}
+			}}
 		>
 			Criar novo link
 		</Button>
