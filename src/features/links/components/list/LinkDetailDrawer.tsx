@@ -1,5 +1,5 @@
 // src/features/links/components/list/LinkDetailDrawer.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Divider, Drawer, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { HiChartBar, HiClipboardDocument, HiPencilSquare, HiXMark } from 'react-icons/hi2';
@@ -42,6 +42,10 @@ export function LinkDetailDrawer({ link, onClose }: LinkDetailDrawerProps) {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const [urlExpanded, setUrlExpanded] = useState(false);
+
+	useEffect(() => {
+		setUrlExpanded(false);
+	}, [link?.id]);
 
 	const { copied, copy } = useClipboard({
 		timeout: 1500,

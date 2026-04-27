@@ -1,12 +1,13 @@
 /**
- * 📱 LINKS MOBILE CARDS - FASE 3
+ * LINKS MOBILE CARDS
  * Componente otimizado para visualização de links em mobile
  *
  * @features
  * - Cards otimizados para mobile
- * - Swipe actions (copiar, editar, deletar)
- * - Performance otimizada
- * - Acessibilidade completa
+ * - Status correto (ativo, inativo, agendado, expirado)
+ * - Confirmação antes de deletar
+ * - Ações inline (copiar, analytics) e menu (editar, QR, deletar)
+ * - Performance otimizada com memo
  */
 
 import { Link as LinkIcon, Visibility, Schedule } from '@mui/icons-material';
@@ -17,6 +18,8 @@ import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LinkActionsInline } from './LinkActionsInline';
 import { LinkActionsMenu } from './LinkActionsMenu';
+
+import { getLinkStatus, STATUS_MAP } from '../../utils/linkStatus';
 
 // Types
 import type { LinkResponse as Link } from '@/types/core/links';
@@ -69,6 +72,9 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) =>
 	};
 
 	const createdAt = getFormattedDate();
+
+	const linkStatus = getLinkStatus(link);
+	const { label: statusLabel } = STATUS_MAP[linkStatus];
 
 	// Truncar URL longa
 	const truncateUrl = (url: string, maxLength = 40) => {
@@ -199,9 +205,9 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) =>
 				{/* Status e ações rápidas */}
 				<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 					<Chip
-						label={link.is_active ? 'Ativo' : 'Inativo'}
+						label={statusLabel}
 						size='small'
-						color={link.is_active ? 'success' : 'default'}
+						color={linkStatus === 'active' ? 'success' : 'default'}
 						sx={{ fontSize: '0.75rem' }}
 					/>
 
@@ -224,8 +230,10 @@ const LinkMobileCard = memo(({ link, onDelete, onEdit }: LinkMobileCardProps) =>
 							}}
 							onQR={() => navigate(`/link/qr/${link.id}`)}
 							onDelete={() => {
-								if (onDelete) {
-									onDelete(String(link.id));
+								if (window.confirm('Tem certeza que deseja remover este link? Esta ação não pode ser desfeita.')) {
+									if (onDelete) {
+										onDelete(String(link.id));
+									}
 								}
 							}}
 						/>
