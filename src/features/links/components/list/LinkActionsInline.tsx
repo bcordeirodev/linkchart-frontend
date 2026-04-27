@@ -1,5 +1,6 @@
 import { CircularProgress, IconButton, Stack, Tooltip } from '@mui/material';
-import { HiChartBar, HiClipboardDocument } from 'react-icons/hi2';
+import { BarChart3, ClipboardCopy } from 'lucide-react';
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showMessage } from '@/lib/store/messageSlice';
@@ -35,7 +36,7 @@ export function LinkActionsInline({ shortUrl, onAnalytics }: LinkActionsInlinePr
 						'&:hover': { color: 'success.main', bgcolor: 'rgba(46, 125, 50, 0.08)' }
 					}}
 				>
-					<HiChartBar size={18} />
+					<BarChart3 {...ICON_MD} />
 				</IconButton>
 			</Tooltip>
 
@@ -57,7 +58,7 @@ export function LinkActionsInline({ shortUrl, onAnalytics }: LinkActionsInlinePr
 							color='primary'
 						/>
 					) : (
-						<HiClipboardDocument size={18} />
+						<ClipboardCopy {...ICON_MD} />
 					)}
 				</IconButton>
 			</Tooltip>

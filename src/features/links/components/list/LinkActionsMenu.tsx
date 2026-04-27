@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from '@mui/material';
-import { HiEllipsisVertical, HiPencilSquare, HiQrCode, HiTrash } from 'react-icons/hi2';
+import { MoreVertical, Pencil, QrCode, Trash2 } from 'lucide-react';
+import { ICON_SM, ICON_MD } from '@/lib/theme/iconDefaults';
 
 interface LinkActionsMenuProps {
 	onEdit: () => void;
@@ -34,7 +35,7 @@ export function LinkActionsMenu({ onEdit, onQR, onDelete }: LinkActionsMenuProps
 						'&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
 					}}
 				>
-					<HiEllipsisVertical size={18} />
+					<MoreVertical {...ICON_MD} />
 				</IconButton>
 			</Tooltip>
 
@@ -46,14 +47,14 @@ export function LinkActionsMenu({ onEdit, onQR, onDelete }: LinkActionsMenuProps
 			>
 				<MenuItem onClick={() => run(onEdit)}>
 					<ListItemIcon>
-						<HiPencilSquare size={16} />
+						<Pencil {...ICON_SM} />
 					</ListItemIcon>
 					<ListItemText>Editar</ListItemText>
 				</MenuItem>
 
 				<MenuItem onClick={() => run(onQR)}>
 					<ListItemIcon>
-						<HiQrCode size={16} />
+						<QrCode {...ICON_SM} />
 					</ListItemIcon>
 					<ListItemText>QR Code</ListItemText>
 				</MenuItem>
@@ -65,7 +66,7 @@ export function LinkActionsMenu({ onEdit, onQR, onDelete }: LinkActionsMenuProps
 					sx={{ color: 'error.main' }}
 				>
 					<ListItemIcon sx={{ color: 'error.main' }}>
-						<HiTrash size={16} />
+						<Trash2 {...ICON_SM} />
 					</ListItemIcon>
 					<ListItemText>Excluir</ListItemText>
 				</MenuItem>

@@ -1,7 +1,8 @@
 import { Box, Button, Paper, useTheme, ButtonGroup, Divider } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HiChartBar, HiListBullet, HiPencilSquare, HiClipboardDocument, HiQrCode, HiTrash } from 'react-icons/hi2';
+import { BarChart3, List, Pencil, ClipboardCopy, QrCode, Trash2 } from 'lucide-react';
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 
 import { motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 import useClipboard from '@/shared/hooks/useClipboard';
@@ -127,7 +128,7 @@ export function LinkActions({
 					size='small'
 				>
 					<Button
-						startIcon={<HiListBullet size={18} />}
+						startIcon={<List {...ICON_MD} />}
 						onClick={handleGoToList}
 						disabled={currentPage === 'other'}
 						sx={buttonStyles}
@@ -137,7 +138,7 @@ export function LinkActions({
 
 					{showAnalytics ? (
 						<Button
-							startIcon={<HiChartBar size={18} />}
+							startIcon={<BarChart3 {...ICON_MD} />}
 							onClick={handleGoToAnalytics}
 							disabled={currentPage === 'analytics'}
 							sx={buttonStyles}
@@ -157,7 +158,7 @@ export function LinkActions({
 				>
 					{showEdit ? (
 						<Button
-							startIcon={<HiPencilSquare size={18} />}
+							startIcon={<Pencil {...ICON_MD} />}
 							onClick={handleEdit}
 							disabled={loading}
 							sx={buttonStyles}
@@ -168,7 +169,7 @@ export function LinkActions({
 
 					{showCopy ? (
 						<Button
-							startIcon={<HiClipboardDocument size={18} />}
+							startIcon={<ClipboardCopy {...ICON_MD} />}
 							onClick={handleCopy}
 							disabled={loading || !shortUrl}
 							sx={buttonStyles}
@@ -179,7 +180,7 @@ export function LinkActions({
 
 					{showQR ? (
 						<Button
-							startIcon={<HiQrCode size={18} />}
+							startIcon={<QrCode {...ICON_MD} />}
 							onClick={handleQR}
 							disabled={loading}
 							sx={buttonStyles}
@@ -200,7 +201,7 @@ export function LinkActions({
 							variant='outlined'
 							size='small'
 							color='error'
-							startIcon={<HiTrash size={18} />}
+							startIcon={<Trash2 {...ICON_MD} />}
 							onClick={handleDelete}
 							disabled={loading}
 							sx={{

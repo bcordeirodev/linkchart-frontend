@@ -4,15 +4,8 @@
  */
 
 import { Stack, IconButton, Tooltip } from '@mui/material';
-import {
-	HiChartBar,
-	HiPencilSquare,
-	HiClipboardDocument,
-	HiShare,
-	HiQrCode,
-	HiArrowDownTray,
-	HiTrash
-} from 'react-icons/hi2';
+import { BarChart3, Pencil, ClipboardCopy, Share2, QrCode, Download, Trash2 } from 'lucide-react';
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 
 // Mapear tamanhos customizados para tamanhos MUI
 const mapSize = (size: 'xs' | 'sm' | 'md' | 'lg'): 'small' | 'medium' | 'large' => {
@@ -77,7 +70,7 @@ export function TableActions({
 							}
 						}}
 					>
-						<HiChartBar size={20} />
+						<BarChart3 {...ICON_MD} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -97,7 +90,7 @@ export function TableActions({
 							}
 						}}
 					>
-						<HiPencilSquare size={20} />
+						<Pencil {...ICON_MD} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -117,7 +110,7 @@ export function TableActions({
 							}
 						}}
 					>
-						<HiClipboardDocument size={20} />
+						<ClipboardCopy {...ICON_MD} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -137,7 +130,7 @@ export function TableActions({
 							}
 						}}
 					>
-						<HiShare size={20} />
+						<Share2 {...ICON_MD} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -157,7 +150,7 @@ export function TableActions({
 							}
 						}}
 					>
-						<HiQrCode size={20} />
+						<QrCode {...ICON_MD} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -177,7 +170,7 @@ export function TableActions({
 							}
 						}}
 					>
-						<HiArrowDownTray size={20} />
+						<Download {...ICON_MD} />
 					</IconButton>
 				</Tooltip>
 			) : null}
@@ -199,7 +192,7 @@ export function TableActions({
 							}
 						}}
 					>
-						<HiTrash size={20} />
+						<Trash2 {...ICON_MD} />
 					</IconButton>
 				</Tooltip>
 			) : null}

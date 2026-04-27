@@ -1,14 +1,6 @@
 import { Box, Card, CardContent, Chip, Grid, Stack, Typography, Tabs, Tab } from '@mui/material';
-import {
-	MdPeople,
-	MdPhoneAndroid,
-	MdLanguage,
-	MdComputer,
-	MdBolt,
-	MdPublic,
-	MdBarChart,
-	MdEmojiEvents
-} from 'react-icons/md';
+import { Users, Smartphone, Globe, Monitor, Zap, BarChart3, Trophy } from 'lucide-react';
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 
@@ -138,7 +130,7 @@ export function AudienceChart({
 					gap: 1
 				}}
 			>
-				<MdPeople /> Análise de Audiência
+				<Users {...ICON_MD} /> Análise de Audiência
 				<Chip
 					label={`${totalClicks} cliques`}
 					size='small'
@@ -157,14 +149,14 @@ export function AudienceChart({
 						<Tab
 							label={
 								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-									<MdPhoneAndroid /> Dispositivos
+									<Smartphone {...ICON_MD} /> Dispositivos
 								</Box>
 							}
 						/>
 						<Tab
 							label={
 								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-									<MdLanguage /> Navegadores
+									<Globe {...ICON_MD} /> Navegadores
 								</Box>
 							}
 							disabled={!browsers?.length}
@@ -172,7 +164,7 @@ export function AudienceChart({
 						<Tab
 							label={
 								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-									<MdComputer /> Sistemas
+									<Monitor {...ICON_MD} /> Sistemas
 								</Box>
 							}
 							disabled={!operatingSystems?.length}
@@ -180,7 +172,7 @@ export function AudienceChart({
 						<Tab
 							label={
 								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-									<MdBolt /> Performance
+									<Zap {...ICON_MD} /> Performance
 								</Box>
 							}
 							disabled={!devicePerformance?.length}
@@ -188,7 +180,7 @@ export function AudienceChart({
 						<Tab
 							label={
 								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-									<MdPublic /> Idiomas
+									<Globe {...ICON_MD} /> Idiomas
 								</Box>
 							}
 							disabled={!languages?.length}
@@ -333,7 +325,7 @@ export function AudienceChart({
 											gap: 1
 										}}
 									>
-										<MdPhoneAndroid /> Distribuição por Dispositivo
+										<Smartphone {...ICON_MD} /> Distribuição por Dispositivo
 									</Typography>
 									<ApexChartWrapper
 										type='pie'
@@ -364,7 +356,7 @@ export function AudienceChart({
 											gap: 1
 										}}
 									>
-										<MdEmojiEvents /> Ranking de Dispositivos
+										<Trophy {...ICON_MD} /> Ranking de Dispositivos
 									</Typography>
 									<ApexChartWrapper
 										type='bar'
@@ -398,7 +390,7 @@ export function AudienceChart({
 									gap: 1
 								}}
 							>
-								<MdBarChart /> Detalhes por Dispositivo
+								<BarChart3 {...ICON_MD} /> Detalhes por Dispositivo
 							</Typography>
 
 							<Stack spacing={2}>
@@ -568,7 +560,7 @@ export function AudienceChart({
 									gutterBottom
 									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
-									<MdComputer /> Distribuição de Sistemas Operacionais
+									<Monitor {...ICON_MD} /> Distribuição de Sistemas Operacionais
 								</Typography>
 								<ApexChartWrapper
 									type='donut'
@@ -658,7 +650,7 @@ export function AudienceChart({
 									gutterBottom
 									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
-									<MdBolt /> Performance por Dispositivo
+									<Zap {...ICON_MD} /> Performance por Dispositivo
 								</Typography>
 								<ApexChartWrapper
 									type='bar'
@@ -729,7 +721,7 @@ export function AudienceChart({
 									gutterBottom
 									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
-									<MdPublic /> Distribuição de Idiomas
+									<Globe {...ICON_MD} /> Distribuição de Idiomas
 								</Typography>
 								<ApexChartWrapper
 									type='pie'
