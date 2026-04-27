@@ -3,6 +3,8 @@
 import { Tabs, Tab, Box, useTheme } from '@mui/material';
 import { useState } from 'react';
 
+import { motionTokens, radiusTokens } from '@/lib/theme/designSystem';
+
 import { AudienceAnalysis } from '@/features/analytics/components/audience/AudienceAnalysis';
 import { GeographicAnalysis } from '@/features/analytics/components/geographic/GeographicAnalysis';
 import { HeatmapAnalysis } from '@/features/analytics/components/heatmap/HeatmapAnalysis';
@@ -68,7 +70,8 @@ export function LinkAnalyticsTabsOptimized({
 			<Box
 				sx={{
 					backgroundColor: theme.palette.background.paper,
-					borderRadius: 2,
+					borderRadius: `${radiusTokens.lg}px`,
+					border: `1px solid ${theme.palette.divider}`,
 					mb: 3
 				}}
 			>
@@ -80,9 +83,10 @@ export function LinkAnalyticsTabsOptimized({
 					sx={{
 						'& .MuiTab-root': {
 							textTransform: 'none',
+							transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
 							'&.Mui-selected': {
-								backgroundColor: 'rgba(255, 255, 255, 0.1)',
-								borderRadius: 1
+								backgroundColor: theme.palette.action.selected,
+								borderRadius: `${radiusTokens.md}px`
 							}
 						}
 					}}
