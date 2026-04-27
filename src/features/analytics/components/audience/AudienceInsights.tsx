@@ -1,4 +1,7 @@
 import { Box, Card, CardContent, Chip, Divider, Grid, Stack, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 
 import type { DeviceData } from '@/types';
 
@@ -15,6 +18,10 @@ export function AudienceInsights({
 	totalClicks,
 	showAdvancedInsights: _showAdvancedInsights = true
 }: AudienceInsightsProps) {
+	const theme = useTheme();
+	const isDark = theme.palette.mode === 'dark';
+	const elevation = isDark ? elevationTokens : elevationLightTokens;
+
 	// Calcular insights
 	const primaryDevice =
 		deviceBreakdown.length > 0
@@ -43,7 +50,13 @@ export function AudienceInsights({
 	const isBalanced = Math.abs(mobilePercentage - desktopPercentage) < 10;
 
 	return (
-		<Card>
+		<Card
+			sx={{
+				borderRadius: `${radiusTokens.lg}px`,
+				boxShadow: elevation.xs,
+				transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`
+			}}
+		>
 			<CardContent>
 				<Typography
 					variant='h6'

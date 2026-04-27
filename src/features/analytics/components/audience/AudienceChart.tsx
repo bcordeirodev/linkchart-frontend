@@ -13,7 +13,8 @@ import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 
 import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
-import { getStandardChartColors } from '@/lib/theme';
+import { chartByType } from '@/lib/theme/colors';
+import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
 import type { DeviceData, BrowserData, OSData, DevicePerformanceData, LanguageData } from '@/types';
@@ -51,8 +52,26 @@ export function AudienceChart({
 	const isDark = theme.palette.mode === 'dark';
 	const [activeTab, setActiveTab] = useState(0);
 
-	// Cores padronizadas usando novo sistema
-	const chartColors = getStandardChartColors(theme);
+	// Cores padronizadas SP2 — paleta de devices/audience
+	const elevation = isDark ? elevationTokens : elevationLightTokens;
+	const cardSx = {
+		borderRadius: `${radiusTokens.lg}px`,
+		boxShadow: elevation.xs,
+		transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`
+	} as const;
+	const outlinedCardSx = {
+		borderRadius: `${radiusTokens.lg}px`,
+		border: `1px solid ${theme.palette.divider}`,
+		boxShadow: 'none'
+	} as const;
+	const itemRowSx = {
+		bgcolor: theme.palette.background.paper,
+		borderRadius: `${radiusTokens.md}px`,
+		border: `1px solid ${theme.palette.divider}`
+	} as const;
+	const devicesPalette = chartByType.devices;
+	const deviceBarColor = devicesPalette.mobile;
+	const performanceBarColor = devicesPalette.tablet;
 
 	// Calcular estatísticas
 	const totalDevices = deviceBreakdown.reduce((sum, device) => sum + device.clicks, 0);
@@ -106,7 +125,7 @@ export function AudienceChart({
 	};
 
 	return (
-		<Box sx={{ p: 2, backgroundColor: theme.palette.background.paper, borderRadius: 2 }}>
+		<Box sx={{ p: 2, backgroundColor: theme.palette.background.paper, borderRadius: `${radiusTokens.lg}px` }}>
 			<Typography
 				variant='h6'
 				gutterBottom
@@ -193,12 +212,13 @@ export function AudienceChart({
 							sm={6}
 							md={3}
 						>
-							<Card>
+							<Card sx={cardSx}>
 								<CardContent sx={{ textAlign: 'center' }}>
 									<Typography
 										variant='h4'
 										color='primary'
 										gutterBottom
+										sx={{ fontWeight: 600 }}
 									>
 										{totalDevices}
 									</Typography>
@@ -217,12 +237,13 @@ export function AudienceChart({
 							sm={6}
 							md={3}
 						>
-							<Card>
+							<Card sx={cardSx}>
 								<CardContent sx={{ textAlign: 'center' }}>
 									<Typography
 										variant='h4'
 										color='secondary'
 										gutterBottom
+										sx={{ fontWeight: 600 }}
 									>
 										{primaryDevice?.device || 'N/A'}
 									</Typography>
@@ -241,12 +262,13 @@ export function AudienceChart({
 							sm={6}
 							md={3}
 						>
-							<Card>
+							<Card sx={cardSx}>
 								<CardContent sx={{ textAlign: 'center' }}>
 									<Typography
 										variant='h4'
 										color='info'
 										gutterBottom
+										sx={{ fontWeight: 600 }}
 									>
 										{deviceBreakdown.length}
 									</Typography>
@@ -265,12 +287,13 @@ export function AudienceChart({
 							sm={6}
 							md={3}
 						>
-							<Card>
+							<Card sx={cardSx}>
 								<CardContent sx={{ textAlign: 'center' }}>
 									<Typography
 										variant='h4'
 										color='success'
 										gutterBottom
+										sx={{ fontWeight: 600 }}
 									>
 										{primaryDevice ? ((primaryDevice.clicks / totalClicks) * 100).toFixed(1) : '0'}%
 									</Typography>
@@ -296,7 +319,7 @@ export function AudienceChart({
 							xs={12}
 							md={6}
 						>
-							<Card>
+							<Card sx={cardSx}>
 								<CardContent>
 									<Typography
 										variant='h6'
@@ -327,7 +350,7 @@ export function AudienceChart({
 							xs={12}
 							md={6}
 						>
-							<Card>
+							<Card sx={cardSx}>
 								<CardContent>
 									<Typography
 										variant='h6'
@@ -350,7 +373,7 @@ export function AudienceChart({
 											deviceChartData,
 											'name',
 											'value',
-											chartColors.primary.main,
+											deviceBarColor,
 											true,
 											isDark
 										)}
@@ -361,7 +384,7 @@ export function AudienceChart({
 					</Grid>
 
 					{/* Detalhes dos Dispositivos */}
-					<Card sx={{ mt: 3 }}>
+					<Card sx={{ ...cardSx, mt: 3 }}>
 						<CardContent>
 							<Typography
 								variant='h6'
@@ -387,10 +410,7 @@ export function AudienceChart({
 											alignItems: 'center',
 											justifyContent: 'space-between',
 											p: 2,
-											bgcolor: 'background.paper',
-											borderRadius: 1,
-											border: '1px solid',
-											borderColor: 'divider'
+											...itemRowSx
 										}}
 									>
 										<Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -402,7 +422,7 @@ export function AudienceChart({
 											<Box>
 												<Typography
 													variant='subtitle2'
-													fontWeight='bold'
+													sx={{ fontWeight: 600 }}
 												>
 													{device.device}
 												</Typography>
@@ -418,6 +438,7 @@ export function AudienceChart({
 											<Typography
 												variant='h6'
 												color='primary'
+												sx={{ fontWeight: 600 }}
 											>
 												{device.clicks}
 											</Typography>
@@ -449,7 +470,7 @@ export function AudienceChart({
 					>
 						<Card
 							elevation={0}
-							sx={{ border: '1px solid', borderColor: 'divider' }}
+							sx={outlinedCardSx}
 						>
 							<CardContent>
 								<Typography
@@ -473,7 +494,7 @@ export function AudienceChart({
 					>
 						<Card
 							elevation={0}
-							sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}
+							sx={{ ...outlinedCardSx, height: '100%' }}
 						>
 							<CardContent>
 								<Typography
@@ -491,10 +512,7 @@ export function AudienceChart({
 												justifyContent: 'space-between',
 												alignItems: 'center',
 												p: 1,
-												bgcolor: 'background.paper',
-												borderRadius: 1,
-												border: '1px solid',
-												borderColor: 'divider'
+												...itemRowSx
 											}}
 										>
 											<Box>
@@ -509,7 +527,7 @@ export function AudienceChart({
 											<Box sx={{ textAlign: 'right' }}>
 												<Typography
 													variant='body2'
-													fontWeight='bold'
+													sx={{ fontWeight: 600 }}
 												>
 													{browser.clicks}
 												</Typography>
@@ -542,7 +560,7 @@ export function AudienceChart({
 					>
 						<Card
 							elevation={0}
-							sx={{ border: '1px solid', borderColor: 'divider' }}
+							sx={outlinedCardSx}
 						>
 							<CardContent>
 								<Typography
@@ -567,7 +585,7 @@ export function AudienceChart({
 					>
 						<Card
 							elevation={0}
-							sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}
+							sx={{ ...outlinedCardSx, height: '100%' }}
 						>
 							<CardContent>
 								<Typography
@@ -585,10 +603,7 @@ export function AudienceChart({
 												justifyContent: 'space-between',
 												alignItems: 'center',
 												p: 1,
-												bgcolor: 'background.paper',
-												borderRadius: 1,
-												border: '1px solid',
-												borderColor: 'divider'
+												...itemRowSx
 											}}
 										>
 											<Box>
@@ -603,7 +618,7 @@ export function AudienceChart({
 											<Box sx={{ textAlign: 'right' }}>
 												<Typography
 													variant='body2'
-													fontWeight='bold'
+													sx={{ fontWeight: 600 }}
 												>
 													{os.clicks}
 												</Typography>
@@ -635,7 +650,7 @@ export function AudienceChart({
 					>
 						<Card
 							elevation={0}
-							sx={{ border: '1px solid', borderColor: 'divider' }}
+							sx={outlinedCardSx}
 						>
 							<CardContent>
 								<Typography
@@ -651,7 +666,7 @@ export function AudienceChart({
 										performanceChartData,
 										'name',
 										'value',
-										chartColors.warning.main,
+										performanceBarColor,
 										false,
 										isDark
 									)}
@@ -673,10 +688,7 @@ export function AudienceChart({
 													display: 'flex',
 													justifyContent: 'space-between',
 													p: 1,
-													bgcolor: 'background.paper',
-													borderRadius: 1,
-													border: '1px solid',
-													borderColor: 'divider'
+													...itemRowSx
 												}}
 											>
 												<Typography variant='body2'>{perf.device}</Typography>
@@ -709,7 +721,7 @@ export function AudienceChart({
 					>
 						<Card
 							elevation={0}
-							sx={{ border: '1px solid', borderColor: 'divider' }}
+							sx={outlinedCardSx}
 						>
 							<CardContent>
 								<Typography
@@ -734,7 +746,7 @@ export function AudienceChart({
 					>
 						<Card
 							elevation={0}
-							sx={{ border: '1px solid', borderColor: 'divider', height: '100%' }}
+							sx={{ ...outlinedCardSx, height: '100%' }}
 						>
 							<CardContent>
 								<Typography
@@ -752,10 +764,7 @@ export function AudienceChart({
 												justifyContent: 'space-between',
 												alignItems: 'center',
 												p: 1,
-												bgcolor: 'background.paper',
-												borderRadius: 1,
-												border: '1px solid',
-												borderColor: 'divider'
+												...itemRowSx
 											}}
 										>
 											<Box>
@@ -764,7 +773,7 @@ export function AudienceChart({
 											<Box sx={{ textAlign: 'right' }}>
 												<Typography
 													variant='body2'
-													fontWeight='bold'
+													sx={{ fontWeight: 600 }}
 												>
 													{language.clicks}
 												</Typography>
