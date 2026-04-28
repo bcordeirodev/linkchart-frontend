@@ -12,6 +12,7 @@ export interface GeographicStats {
 	totalStates: number;
 	totalCities: number;
 	topCountryClicks: number;
+	totalClicks: number;
 	coveragePercentage: number;
 	lastUpdate: string;
 }
@@ -60,11 +61,14 @@ export function useGeographicData({
 		const states = geographicData.top_states || [];
 		const cities = geographicData.top_cities || [];
 
+		const totalClicks = countries.reduce((sum, country) => sum + (country.clicks || 0), 0);
+
 		return {
 			totalCountries: countries.length,
 			totalStates: states.length,
 			totalCities: cities.length,
 			topCountryClicks: countries[0]?.clicks || 0,
+			totalClicks,
 			coveragePercentage: countries.length > 0 ? Math.min((countries.length / 195) * 100, 100) : 0, // 195 países no mundo
 			lastUpdate: new Date().toISOString()
 		};

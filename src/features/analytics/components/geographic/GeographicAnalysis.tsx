@@ -101,7 +101,7 @@ export function GeographicAnalysis({
 							countries={data?.top_countries || []}
 							states={data?.top_states || []}
 							cities={data?.top_cities || []}
-							totalClicks={stats?.topCountryClicks || 0}
+							totalClicks={stats?.totalClicks || 0}
 						/>
 
 						{/* Insights Geográficos */}
