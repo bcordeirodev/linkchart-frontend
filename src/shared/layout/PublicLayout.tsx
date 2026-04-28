@@ -1,8 +1,9 @@
 /**
  * Layout para páginas públicas (não autenticadas)
  */
-import { Box, useTheme, Container } from '@mui/material';
+import { Box, useTheme, Container, Button } from '@mui/material';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useMainTheme } from '@/lib/theme';
 
@@ -14,6 +15,41 @@ interface PublicLayoutProps {
 	showFooter?: boolean;
 	variant?: 'landing' | 'shorter' | 'simple';
 	className?: string;
+}
+
+function ShorterHeaderActions() {
+	const navigate = useNavigate();
+	return (
+		<Box sx={{ display: 'flex', gap: 1 }}>
+			<Button
+				variant='outlined'
+				size='small'
+				onClick={() => navigate('/sign-in')}
+				sx={{
+					borderColor: 'rgba(255,255,255,0.2)',
+					color: 'rgba(255,255,255,0.7)',
+					fontSize: '0.75rem',
+					'&:hover': { borderColor: 'rgba(255,255,255,0.4)', color: 'white' }
+				}}
+			>
+				Entrar
+			</Button>
+			<Button
+				variant='contained'
+				size='small'
+				onClick={() => navigate('/sign-up')}
+				sx={{
+					background: 'linear-gradient(90deg,#6366f1,#8b5cf6)',
+					fontSize: '0.75rem',
+					fontWeight: 700,
+					boxShadow: 'none',
+					'&:hover': { boxShadow: 'none' }
+				}}
+			>
+				Criar conta grátis
+			</Button>
+		</Box>
+	);
 }
 
 function PublicLayout({
@@ -93,14 +129,9 @@ function PublicLayout({
 					}}
 				>
 					<Container maxWidth={layoutConfig.containerMaxWidth}>
-						<Box
-							sx={{
-								display: 'flex',
-								justifyContent: 'space-between',
-								alignItems: 'center'
-							}}
-						>
+						<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 							<Box sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>Link Chart</Box>
+							{variant === 'shorter' && <ShorterHeaderActions />}
 						</Box>
 					</Container>
 				</Box>
