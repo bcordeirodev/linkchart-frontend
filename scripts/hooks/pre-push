@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#
+# Link Charts — frontend pre-push hook (versionado)
+#
+# Roda os mesmos checks que o GitHub Actions executa em quality-checks
+# (.github/workflows/deploy-production.yml), dentro do container Docker.
+# Inclui `npm run lint` mesmo o CI tendo essa etapa comentada.
+#
+# Ativação: rode uma vez `bash scripts/setup-hooks.sh` no repo (configura
+# core.hooksPath para apontar pra scripts/hooks).
+#
+# Bypass de emergência: `git push --no-verify`.
+
+set -euo pipefail
+
+REPO_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
+SERVICE="frontend"
+
+cd "$REPO_DIR"
+
+echo ""
+echo "🔒 [pre-push] frontend — rodando checks da pipeline antes do push"
+echo ""
+
+if ! docker compose ps --services --filter "status=running" 2>/dev/null | grep -qx "$SERVICE"; then
+	echo "❌ Container '$SERVICE' não está rodando."
+	echo "   Suba o ambiente: docker compose up -d"
+	echo "   (ou pule com: git push --no-verify)"
+	exit 1
+fi
+
+echo "✅ Container '$SERVICE' está rodando"
+echo ""
+
+echo "🔍 type-check (tsc --noEmit)"
+docker compose exec -T "$SERVICE" npm run type-check
+
+echo ""
+echo "🎨 lint (eslint) — não roda no CI mas validamos local"
+docker compose exec -T "$SERVICE" npm run lint
+
+echo ""
+echo "💅 format:check (prettier)"
+docker compose exec -T "$SERVICE" npm run format:check
+
+echo ""
+echo "🏗️  build (tsc && vite build, NODE_ENV=production)"
+docker compose exec -T -e NODE_ENV=production "$SERVICE" npm run build
+
+echo ""
+echo "🔒 npm audit --audit-level moderate"
+docker compose exec -T "$SERVICE" npm audit --audit-level moderate
+
+echo ""
+echo "✅ [pre-push] frontend OK — push liberado"
+echo ""

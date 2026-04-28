@@ -104,6 +104,27 @@ npm run format:check
 -   **Secure Cookies**: Cookies seguros
 -   **CORS**: Cross-Origin configurado
 
+## 🪝 Git Hooks (pre-push)
+
+Hook `pre-push` versionado em `scripts/hooks/` que roda os mesmos checks do CI dentro do container Docker antes de cada push, evitando quebrar a pipeline. Etapas executadas (em ordem):
+
+1. `npm run type-check` (`tsc --noEmit`)
+2. `npm run lint` — não roda no CI mas validamos local
+3. `npm run format:check` (Prettier)
+4. `npm run build` (`tsc && vite build`, `NODE_ENV=production`)
+5. `npm audit --audit-level moderate`
+
+**Ativação (uma vez por clone):**
+
+```bash
+./scripts/setup-hooks.sh
+```
+
+O script aponta `core.hooksPath` para `scripts/hooks` e dá `chmod +x` nos hooks. Requer `docker compose` com o serviço `frontend` rodando.
+
+-   Bypass de emergência: `git push --no-verify`
+-   Desativar: `git config --unset core.hooksPath`
+
 ## 🤝 Contribuição
 
 1. Fork o projeto
