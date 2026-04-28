@@ -1,7 +1,6 @@
-import { Grid } from '@mui/material';
-
-import { AppIcon } from '@/shared/ui/icons';
-import { MetricCardOptimized } from '@/shared/ui/base';
+import { Box, Typography } from '@mui/material';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 import type { PublicAnalyticsData } from '../../types';
 
@@ -9,120 +8,119 @@ interface PublicMetricsProps {
 	analyticsData: PublicAnalyticsData;
 }
 
-/**
- * 📊 MÉTRICAS PÚBLICAS
- *
- * Componente que exibe as métricas principais usando MetricCardOptimized
- * Segue padrões de design system do projeto
- */
-export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
-	const formatDate = (dateString: string) => {
-		return new Date(dateString).toLocaleDateString('pt-BR', {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-	};
+const cardBase = {
+	background: 'rgba(255,255,255,0.04)',
+	border: '1px solid rgba(255,255,255,0.07)',
+	borderRadius: '12px',
+	p: '18px 16px'
+} as const;
 
-	// Estilo comum para cards compactos
-	const compactCardStyle = {
-		'& .MuiCardContent-root': {
-			p: 2,
-			'&:last-child': { pb: 2 }
-		},
-		'& .MuiTypography-h4': {
-			fontSize: '1.5rem',
-			fontWeight: 600
-		}
-	};
+const labelSx = {
+	fontSize: '0.625rem',
+	color: 'rgba(255,255,255,0.3)',
+	fontWeight: 500,
+	textTransform: 'uppercase' as const,
+	letterSpacing: '0.5px',
+	mb: 1
+};
+
+const subSx = {
+	fontSize: '0.625rem',
+	color: 'rgba(255,255,255,0.2)',
+	mt: 0.75
+};
+
+export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
+	const createdDate = analyticsData.created_at ? new Date(analyticsData.created_at) : null;
+	const validDate = createdDate && !isNaN(createdDate.getTime());
+	const dateLabel = validDate ? format(createdDate!, 'dd/MM/yyyy', { locale: ptBR }) : '—';
+	const timeLabel = validDate ? format(createdDate!, 'HH:mm', { locale: ptBR }) : '';
 
 	return (
-		<Grid
-			container
-			spacing={2}
+		<Box
+			sx={{
+				display: 'grid',
+				gridTemplateColumns: { xs: '1fr 1fr', md: '2fr 1fr 1fr 1fr' },
+				gap: '10px'
+			}}
 		>
-			<Grid
-				item
-				xs={12}
-				sm={6}
-				md={3}
-			>
-				<MetricCardOptimized
-					title='Total de Cliques'
-					value={analyticsData.total_clicks.toLocaleString()}
-					icon={
-						<AppIcon
-							intent='analytics'
-							size={20}
-						/>
-					}
-					color='primary'
-					sx={compactCardStyle}
-				/>
-			</Grid>
+			{/* Cliques — destaque */}
+			<Box sx={{ ...cardBase, borderColor: 'rgba(99,102,241,0.15)', gridColumn: { xs: 'span 2', md: 'span 1' } }}>
+				<Typography sx={labelSx}>Total de cliques</Typography>
+				<Typography
+					sx={{ fontSize: { xs: '2.5rem', md: '2.75rem' }, fontWeight: 900, color: '#818cf8', lineHeight: 1 }}
+				>
+					{analyticsData.total_clicks.toLocaleString('pt-BR')}
+				</Typography>
+				<Typography sx={subSx}>desde a criação</Typography>
+			</Box>
 
-			<Grid
-				item
-				xs={12}
-				sm={6}
-				md={3}
-			>
-				<MetricCardOptimized
-					title='Status'
-					value={analyticsData.is_active ? 'Ativo' : 'Inativo'}
-					icon={
-						<AppIcon
-							intent='info'
-							size={20}
-						/>
-					}
-					color={analyticsData.is_active ? 'success' : 'error'}
-					sx={compactCardStyle}
-				/>
-			</Grid>
+			{/* Status */}
+			<Box sx={cardBase}>
+				<Typography sx={labelSx}>Status</Typography>
+				<Box
+					sx={{
+						display: 'inline-flex',
+						alignItems: 'center',
+						background: analyticsData.is_active ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+						border: '1px solid',
+						borderColor: analyticsData.is_active ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)',
+						borderRadius: '6px',
+						px: 1.25,
+						py: 0.5,
+						mt: 0.5
+					}}
+				>
+					<Typography
+						sx={{
+							fontSize: '0.75rem',
+							fontWeight: 600,
+							color: analyticsData.is_active ? '#34d399' : '#f87171'
+						}}
+					>
+						{analyticsData.is_active ? 'Ativo' : 'Inativo'}
+					</Typography>
+				</Box>
+				<Typography sx={subSx}>link operacional</Typography>
+			</Box>
 
-			<Grid
-				item
-				xs={12}
-				sm={6}
-				md={3}
-			>
-				<MetricCardOptimized
-					title='Criado em'
-					value={formatDate(analyticsData.created_at).split(' às ')[0]}
-					subtitle={formatDate(analyticsData.created_at).split(' às ')[1]}
-					icon={
-						<AppIcon
-							name='time.calendar'
-							size={20}
-						/>
-					}
-					color='info'
-					sx={compactCardStyle}
-				/>
-			</Grid>
+			{/* Criado em */}
+			<Box sx={cardBase}>
+				<Typography sx={labelSx}>Criado em</Typography>
+				<Typography sx={{ fontSize: '0.9375rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)', mt: 0.5 }}>
+					{dateLabel}
+				</Typography>
+				{timeLabel ? <Typography sx={subSx}>às {timeLabel}</Typography> : null}
+			</Box>
 
-			<Grid
-				item
-				xs={12}
-				sm={6}
-				md={3}
-			>
-				<MetricCardOptimized
-					title='Analytics'
-					value={analyticsData.has_analytics ? 'Disponível' : 'Sem dados'}
-					icon={
-						<AppIcon
-							intent='chart'
-							size={20}
-						/>
-					}
-					color={analyticsData.has_analytics ? 'success' : 'warning'}
-					sx={compactCardStyle}
-				/>
-			</Grid>
-		</Grid>
+			{/* Analytics */}
+			<Box sx={cardBase}>
+				<Typography sx={labelSx}>Analytics</Typography>
+				<Box
+					sx={{
+						display: 'inline-flex',
+						alignItems: 'center',
+						background: analyticsData.has_analytics ? 'rgba(99,102,241,0.08)' : 'rgba(255,255,255,0.05)',
+						border: '1px solid',
+						borderColor: analyticsData.has_analytics ? 'rgba(99,102,241,0.18)' : 'rgba(255,255,255,0.08)',
+						borderRadius: '6px',
+						px: 1.25,
+						py: 0.5,
+						mt: 0.5
+					}}
+				>
+					<Typography
+						sx={{
+							fontSize: '0.75rem',
+							fontWeight: 600,
+							color: analyticsData.has_analytics ? '#a5b4fc' : 'rgba(255,255,255,0.3)'
+						}}
+					>
+						{analyticsData.has_analytics ? 'Disponível' : 'Sem dados'}
+					</Typography>
+				</Box>
+				<Typography sx={subSx}>dados coletados</Typography>
+			</Box>
+		</Box>
 	);
 }
