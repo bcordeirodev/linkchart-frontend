@@ -1,55 +1,33 @@
-import { Box, Fade, Stack } from '@mui/material';
+import { Box, Container, Fade, Stack, Typography } from '@mui/material';
 import { memo, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
-	PublicAnalyticsHeader,
 	LinkInfoCard,
 	PublicMetrics,
-	PublicCharts,
-	AnalyticsInfo,
+	PublicAnalyticsCtaStrip,
 	ErrorState,
 	usePublicAnalytics
 } from '@/features/public-analytics';
 import { PublicLayout } from '@/shared/layout';
-import { ResponsiveContainer } from '@/shared/ui/base';
 import { PublicAnalyticsSkeleton } from '@/shared/ui/feedback/skeletons';
 
-/**
- * 📊 PÁGINA DE ANALYTICS PÚBLICOS
- */
 function PublicAnalyticsPage() {
 	const { slug } = useParams<{ slug: string }>();
+	const {
+		linkData,
+		analyticsData,
+		loading,
+		error,
+		debugInfo,
+		handleCopyLink,
+		handleCreateLink,
+		handleVisitLink
+	} = usePublicAnalytics({ slug });
 
-	// Hook customizado que gerencia todo o estado e lógica
-	const { linkData, analyticsData, loading, error, debugInfo, handleCopyLink, handleCreateLink, handleVisitLink } =
-		usePublicAnalytics({ slug });
-
-	// Memoizar ações para evitar re-renders desnecessários
 	const actions = useMemo(
-		() => ({
-			handleCopyLink,
-			handleCreateLink,
-			handleVisitLink
-		}),
+		() => ({ handleCopyLink, handleCreateLink, handleVisitLink }),
 		[handleCopyLink, handleCreateLink, handleVisitLink]
-	);
-
-	// Memoizar props dos componentes para otimização (com type assertion para garantir que não são null)
-	const linkInfoProps = useMemo(
-		() => ({
-			linkData: linkData!,
-			actions
-		}),
-		[linkData, actions]
-	);
-
-	const analyticsInfoProps = useMemo(
-		() => ({
-			analyticsData: analyticsData!,
-			actions
-		}),
-		[analyticsData, actions]
 	);
 
 	if (loading) {
@@ -72,72 +50,78 @@ function PublicAnalyticsPage() {
 			showHeader
 			showFooter
 		>
-			<ResponsiveContainer
-				variant='page'
-				maxWidth='lg'
-				sx={{
-					minHeight: '100vh',
-					display: 'flex',
-					flexDirection: 'column'
-				}}
-			>
-				<Stack
-					spacing={{ xs: 2, sm: 3 }}
-					sx={{ width: '100%' }}
+			<Box sx={{ position: 'relative', minHeight: '100vh', background: '#060610' }}>
+				{/* Glow índigo — top right */}
+				<Box
+					sx={{
+						position: 'fixed',
+						top: '-20%',
+						right: '-10%',
+						width: 500,
+						height: 500,
+						borderRadius: '50%',
+						pointerEvents: 'none',
+						zIndex: 0,
+						background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 65%)'
+					}}
+				/>
+				{/* Glow esmeralda — bottom left */}
+				<Box
+					sx={{
+						position: 'fixed',
+						bottom: '-20%',
+						left: '-10%',
+						width: 400,
+						height: 400,
+						borderRadius: '50%',
+						pointerEvents: 'none',
+						zIndex: 0,
+						background: 'radial-gradient(circle, rgba(16,185,129,0.10) 0%, transparent 65%)'
+					}}
+				/>
+
+				<Container
+					maxWidth='md'
+					sx={{ position: 'relative', zIndex: 1, py: { xs: 4, md: 6 }, pb: 8 }}
 				>
-					{/* Header com animação */}
-					<Fade
-						in
-						timeout={600}
-					>
-						<Box>
-							<PublicAnalyticsHeader />
-						</Box>
-					</Fade>
+					<Stack spacing={2}>
+						<Fade in timeout={400}>
+							<Typography
+								sx={{
+									fontSize: '0.6875rem',
+									fontWeight: 600,
+									color: 'rgba(255,255,255,0.3)',
+									letterSpacing: '1px',
+									textTransform: 'uppercase'
+								}}
+							>
+								Analytics do link
+							</Typography>
+						</Fade>
 
-					{/* Link Info Card com animação */}
-					<Fade
-						in
-						timeout={1000}
-					>
-						<Box>
-							<LinkInfoCard {...linkInfoProps} />
-						</Box>
-					</Fade>
-
-					{/* Metrics com animação */}
-					<Fade
-						in
-						timeout={1200}
-					>
-						<Box>
-							<PublicMetrics analyticsData={analyticsData} />
-						</Box>
-					</Fade>
-
-					{/* Public Charts com animação */}
-					{analyticsData ? (
-						<Fade
-							in
-							timeout={1600}
-						>
+						<Fade in timeout={600}>
 							<Box>
-								<PublicCharts analyticsData={analyticsData} />
+								<LinkInfoCard
+									linkData={linkData}
+									actions={actions}
+								/>
 							</Box>
 						</Fade>
-					) : null}
 
-					{/* Analytics Info com animação*/}
-					<Fade
-						in
-						timeout={2000}
-					>
-						<Box sx={{ mt: 0, mb: 0 }}>
-							<AnalyticsInfo {...analyticsInfoProps} />
-						</Box>
-					</Fade>
-				</Stack>
-			</ResponsiveContainer>
+						<Fade in timeout={900}>
+							<Box>
+								<PublicMetrics analyticsData={analyticsData} />
+							</Box>
+						</Fade>
+
+						<Fade in timeout={1200}>
+							<Box>
+								<PublicAnalyticsCtaStrip />
+							</Box>
+						</Fade>
+					</Stack>
+				</Container>
+			</Box>
 		</PublicLayout>
 	);
 }
