@@ -186,399 +186,122 @@ export function TemporalChart({
 						</Alert>
 					</Grid>
 
-					{/* Cliques por Hora */}
-					<Grid
-						item
-						xs={12}
-						lg={6}
-					>
-						<ChartCard
-							title='⏰ Cliques por Hora do Dia'
-							subtitle={`Pico: ${peakHour.label} (${peakHour.clicks} cliques)`}
+					{/* Resumo por Período */}
+					{hourlyTotal > 0 ? (
+						<Grid
+							item
+							xs={12}
+							lg={6}
 						>
-							{hourlyTotal > 0 ? (
-								<>
-									<ApexChartWrapper
-										type='area'
-										height={300}
-										series={[
-											{
-												name: 'Cliques',
-												data: hourlyData.map((hour) => ({
-													x: hour.label,
-													y: hour.clicks
-												}))
-											}
-										]}
-										options={{
-											chart: {
-												type: 'area',
-												toolbar: { show: false },
-												animations: {
-													enabled: true,
-													easing: 'easeinout',
-													speed: 800
-												}
-											},
-											colors: [temporalColors.hourly],
-											fill: {
-												type: 'gradient',
-												gradient: {
-													shade: 'light',
-													type: 'vertical',
-													shadeIntensity: 0.25,
-													gradientToColors: [temporalColors.hourly],
-													inverseColors: false,
-													opacityFrom: 0.6,
-													opacityTo: 0.1,
-													stops: [0, 100]
-												}
-											},
-											stroke: {
-												curve: 'smooth',
-												width: 3,
-												lineCap: 'round'
-											},
-											markers: {
-												size: 0,
-												hover: {
-													size: 8,
-													sizeOffset: 2
-												}
-											},
-											dataLabels: {
-												enabled: false
-											},
-											xaxis: {
-												categories: hourlyData.map((hour) => hour.label),
-												title: {
-													text: 'Hora do Dia',
-													style: {
-														color: isDark
-															? 'rgba(255, 255, 255, 0.85)'
-															: 'rgba(0, 0, 0, 0.75)',
-														fontSize: '14px',
-														fontFamily: 'Inter, system-ui, sans-serif'
-													}
-												},
-												labels: {
-													style: {
-														colors: isDark
-															? 'rgba(255, 255, 255, 0.85)'
-															: 'rgba(0, 0, 0, 0.75)',
-														fontSize: '12px',
-														fontFamily: 'Inter, system-ui, sans-serif'
-													}
-												}
-											},
-											yaxis: {
-												title: {
-													text: 'Número de Cliques',
-													style: {
-														color: isDark
-															? 'rgba(255, 255, 255, 0.85)'
-															: 'rgba(0, 0, 0, 0.75)',
-														fontSize: '14px',
-														fontFamily: 'Inter, system-ui, sans-serif'
-													}
-												},
-												labels: {
-													style: {
-														colors: isDark
-															? 'rgba(255, 255, 255, 0.85)'
-															: 'rgba(0, 0, 0, 0.75)',
-														fontSize: '12px',
-														fontFamily: 'Inter, system-ui, sans-serif'
-													},
-													formatter(val: number) {
-														return val.toLocaleString();
-													}
-												}
-											},
-											grid: {
-												borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-												strokeDashArray: 2,
-												yaxis: {
-													lines: {
-														show: true
-													}
-												}
-											},
-											tooltip: {
-												theme: isDark ? 'dark' : 'light',
-												style: {
-													fontSize: '14px',
-													fontFamily: 'Inter, system-ui, sans-serif'
-												},
-												y: {
-													formatter(val: number) {
-														return `${val.toLocaleString()} cliques`;
-													}
-												}
-											}
-										}}
-									/>
-
-									{/* Resumo dos horários */}
-									<Box sx={{ mt: 2, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
+							<Box sx={{ p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
+								<Typography
+									variant='body2'
+									gutterBottom
+								>
+									<strong>📊 Resumo por Período:</strong>
+								</Typography>
+								<Grid
+									container
+									spacing={2}
+								>
+									<Grid
+										item
+										xs={4}
+									>
+										<Typography
+											variant='caption'
+											color='text.secondary'
+										>
+											Manhã (6h-12h)
+										</Typography>
 										<Typography
 											variant='body2'
-											gutterBottom
+											fontWeight='medium'
 										>
-											<strong>📊 Resumo por Período:</strong>
+											{hourlyData.slice(6, 12).reduce((sum, h) => sum + h.clicks, 0)} clicks
 										</Typography>
-										<Grid
-											container
-											spacing={2}
+									</Grid>
+									<Grid
+										item
+										xs={4}
+									>
+										<Typography
+											variant='caption'
+											color='text.secondary'
 										>
-											<Grid
-												item
-												xs={4}
-											>
-												<Typography
-													variant='caption'
-													color='text.secondary'
-												>
-													Manhã (6h-12h)
-												</Typography>
-												<Typography
-													variant='body2'
-													fontWeight='medium'
-												>
-													{hourlyData.slice(6, 12).reduce((sum, h) => sum + h.clicks, 0)}{' '}
-													clicks
-												</Typography>
-											</Grid>
-											<Grid
-												item
-												xs={4}
-											>
-												<Typography
-													variant='caption'
-													color='text.secondary'
-												>
-													Tarde (12h-18h)
-												</Typography>
-												<Typography
-													variant='body2'
-													fontWeight='medium'
-												>
-													{hourlyData.slice(12, 18).reduce((sum, h) => sum + h.clicks, 0)}{' '}
-													clicks
-												</Typography>
-											</Grid>
-											<Grid
-												item
-												xs={4}
-											>
-												<Typography
-													variant='caption'
-													color='text.secondary'
-												>
-													Noite (18h-24h)
-												</Typography>
-												<Typography
-													variant='body2'
-													fontWeight='medium'
-												>
-													{hourlyData.slice(18, 24).reduce((sum, h) => sum + h.clicks, 0)}{' '}
-													clicks
-												</Typography>
-											</Grid>
-										</Grid>
-									</Box>
-								</>
-							) : (
-								<Box
-									sx={{
-										textAlign: 'center',
-										py: 4,
-										color: 'text.secondary'
-									}}
-								>
-									<Typography
-										variant='h6'
-										gutterBottom
+											Tarde (12h-18h)
+										</Typography>
+										<Typography
+											variant='body2'
+											fontWeight='medium'
+										>
+											{hourlyData.slice(12, 18).reduce((sum, h) => sum + h.clicks, 0)} clicks
+										</Typography>
+									</Grid>
+									<Grid
+										item
+										xs={4}
 									>
-										⏰
-									</Typography>
-									<Typography>Padrões horários aparecerão aqui após os primeiros cliques</Typography>
-									<Typography
-										variant='body2'
-										sx={{ mt: 1 }}
-									>
-										Descubra os melhores horários para compartilhar!
-									</Typography>
-								</Box>
-							)}
-						</ChartCard>
-					</Grid>
+										<Typography
+											variant='caption'
+											color='text.secondary'
+										>
+											Noite (18h-24h)
+										</Typography>
+										<Typography
+											variant='body2'
+											fontWeight='medium'
+										>
+											{hourlyData.slice(18, 24).reduce((sum, h) => sum + h.clicks, 0)} clicks
+										</Typography>
+									</Grid>
+								</Grid>
+							</Box>
+						</Grid>
+					) : null}
 
-					{/* Cliques por Dia da Semana */}
-					<Grid
-						item
-						xs={12}
-						lg={6}
-					>
-						<ChartCard
-							title='📅 Cliques por Dia da Semana'
-							subtitle={`Melhor dia: ${peakDay.day_name} (${peakDay.clicks} cliques)`}
+					{/* Lista de dias ordenada por engajamento */}
+					{weeklyTotal > 0 ? (
+						<Grid
+							item
+							xs={12}
+							lg={6}
 						>
-							{weeklyTotal > 0 ? (
-								<>
-									<ApexChartWrapper
-										type='bar'
-										height={300}
-										series={[
-											{
-												name: 'Cliques',
-												data: weeklyData.map((day) => day.clicks)
-											}
-										]}
-										options={{
-											chart: {
-												type: 'bar',
-												toolbar: { show: false },
-												animations: {
-													enabled: true,
-													easing: 'easeinout',
-													speed: 800
-												}
-											},
-											colors: [temporalColors.daily],
-											plotOptions: {
-												bar: {
-													borderRadius: 4,
-													columnWidth: '60%',
-													dataLabels: {
-														position: 'top'
-													}
-												}
-											},
-											dataLabels: {
-												enabled: true,
-												formatter(val: number) {
-													return val.toLocaleString();
-												},
-												offsetY: -20,
-												style: {
-													fontSize: '12px',
-													fontWeight: 'bold',
-													colors: [isDark ? '#fff' : '#333']
-												}
-											},
-											xaxis: {
-												categories: weeklyData.map((day) => day.day_name),
-												labels: {
-													style: {
-														colors: isDark
-															? 'rgba(255, 255, 255, 0.85)'
-															: 'rgba(0, 0, 0, 0.75)',
-														fontSize: '11px',
-														fontFamily: 'Inter, system-ui, sans-serif'
-													},
-													rotate: -45
-												}
-											},
-											yaxis: {
-												labels: {
-													style: {
-														colors: isDark
-															? 'rgba(255, 255, 255, 0.85)'
-															: 'rgba(0, 0, 0, 0.75)',
-														fontSize: '12px',
-														fontFamily: 'Inter, system-ui, sans-serif'
-													},
-													formatter(val: number) {
-														return val.toLocaleString();
-													}
-												}
-											},
-											grid: {
-												borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-												strokeDashArray: 2
-											},
-											tooltip: {
-												theme: isDark ? 'dark' : 'light',
-												y: {
-													formatter(val: number) {
-														return `${val.toLocaleString()} cliques`;
-													}
-												}
-											},
-											responsive: [
-												{
-													breakpoint: 768,
-													options: {
-														plotOptions: {
-															bar: {
-																columnWidth: '80%'
-															}
-														},
-														dataLabels: {
-															style: {
-																fontSize: '10px'
-															}
-														}
-													}
-												}
-											]
-										}}
-									/>
-
-									{/* Lista dos dias */}
-									<Box sx={{ mt: 2 }}>
-										{weeklyData
-											.sort((a, b) => b.clicks - a.clicks)
-											.map((day, index) => (
-												<Box
-													key={day.day}
-													sx={{
-														display: 'flex',
-														alignItems: 'center',
-														justifyContent: 'space-between',
-														py: 0.5,
-														borderBottom:
-															index < weeklyData.length - 1 ? '1px solid' : 'none',
-														borderBottomColor: 'divider'
-													}}
-												>
-													<Typography variant='body2'>{day.day_name}</Typography>
-													<Typography
-														variant='body2'
-														fontWeight='medium'
-													>
-														{day.clicks} clicks
-													</Typography>
-												</Box>
-											))}
-									</Box>
-								</>
-							) : (
-								<Box
-									sx={{
-										textAlign: 'center',
-										py: 4,
-										color: 'text.secondary'
-									}}
+							<Box sx={{ p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
+								<Typography
+									variant='body2'
+									gutterBottom
 								>
-									<Typography
-										variant='h6'
-										gutterBottom
-									>
-										📅
-									</Typography>
-									<Typography>Padrões semanais aparecerão aqui após os primeiros cliques</Typography>
-									<Typography
-										variant='body2'
-										sx={{ mt: 1 }}
-									>
-										Descubra os melhores dias para engajamento!
-									</Typography>
-								</Box>
-							)}
-						</ChartCard>
-					</Grid>
+									<strong>📅 Dias por Engajamento:</strong>
+								</Typography>
+								{weeklyData
+									.slice()
+									.sort((a, b) => b.clicks - a.clicks)
+									.map((day, index) => (
+										<Box
+											key={day.day}
+											sx={{
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'space-between',
+												py: 0.5,
+												borderBottom:
+													index < weeklyData.length - 1 ? '1px solid' : 'none',
+												borderBottomColor: 'divider'
+											}}
+										>
+											<Typography variant='body2'>{day.day_name}</Typography>
+											<Typography
+												variant='body2'
+												fontWeight='medium'
+											>
+												{day.clicks} clicks
+											</Typography>
+										</Box>
+									))}
+							</Box>
+						</Grid>
+					) : null}
 
 					{/* Insights Temporais Integrados */}
 					{showInsights && (hourlyTotal > 0 || weeklyTotal > 0) ? (
@@ -911,6 +634,13 @@ export function TemporalChart({
 						md={8}
 					>
 						<ChartCard title='🕘 Análise de Horário Comercial'>
+							<Typography
+								variant='caption'
+								color='text.secondary'
+								sx={{ display: 'block', mb: 2 }}
+							>
+								Horário comercial considerado: segunda a sexta, das 9h às 18h (horário do servidor).
+							</Typography>
 							<ApexChartWrapper
 								type='bar'
 								{...formatBarChart(

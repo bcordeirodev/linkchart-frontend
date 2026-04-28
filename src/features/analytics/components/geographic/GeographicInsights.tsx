@@ -1,8 +1,7 @@
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
-import { chartByType } from '@/lib/theme/colors';
+import { formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
@@ -18,9 +17,6 @@ interface GeographicInsightsProps {
 export function GeographicInsights({ data, countries, states, cities }: GeographicInsightsProps) {
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
-
-	// Cores padronizadas via paleta canônica do design system
-	const geographicColors = chartByType.geographic;
 
 	const cardSx = {
 		borderRadius: `${radiusTokens.lg}px`,
@@ -42,46 +38,6 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 		value: country.clicks,
 		currency: country.currency || 'USD'
 	}));
-
-	const cityChartData = cities.slice(0, 6).map((city) => ({
-		name: `${city.city}, ${city.state}`,
-		value: city.clicks,
-		country: city.country
-	}));
-
-	const stateChartData = states.slice(0, 6).map((state) => ({
-		name: `${state.state_name}, ${state.country}`,
-		value: state.clicks
-	}));
-
-	// Calcular distribuição por continente (simulado)
-	const continentData = [
-		{
-			name: 'América do Norte',
-			value: countries
-				.filter((c) => c.country === 'United States' || c.country === 'Canada')
-				.reduce((sum, c) => sum + c.clicks, 0)
-		},
-		{
-			name: 'América do Sul',
-			value: countries
-				.filter((c) => c.country === 'Brazil' || c.country === 'Argentina')
-				.reduce((sum, c) => sum + c.clicks, 0)
-		},
-		{
-			name: 'Europa',
-			value: countries
-				.filter((c) => ['Germany', 'France', 'UK', 'Spain'].includes(c.country))
-				.reduce((sum, c) => sum + c.clicks, 0)
-		},
-		{
-			name: 'Ásia',
-			value: countries
-				.filter((c) => ['China', 'Japan', 'India'].includes(c.country))
-				.reduce((sum, c) => sum + c.clicks, 0)
-		},
-		{ name: 'Outros', value: totalClicks - countries.slice(0, 8).reduce((sum, c) => sum + c.clicks, 0) }
-	].filter((item) => item.value > 0);
 
 	return (
 		<Box sx={{ mt: 3 }}>
@@ -205,7 +161,7 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 				<Grid
 					item
 					xs={12}
-					md={6}
+					md={12}
 				>
 					<Card sx={cardSx}>
 						<CardContent>
@@ -224,88 +180,6 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 					</Card>
 				</Grid>
 
-				{/* Distribuição por Continente */}
-				<Grid
-					item
-					xs={12}
-					md={6}
-				>
-					<Card sx={cardSx}>
-						<CardContent>
-							<Typography
-								variant='h6'
-								gutterBottom
-							>
-								🌎 Distribuição por Continente
-							</Typography>
-							<ApexChartWrapper
-								type='donut'
-								height={300}
-								{...formatPieChart(continentData, 'name', 'value', isDark)}
-							/>
-						</CardContent>
-					</Card>
-				</Grid>
-
-				{/* Top Cidades */}
-				<Grid
-					item
-					xs={12}
-					md={6}
-				>
-					<Card sx={cardSx}>
-						<CardContent>
-							<Typography
-								variant='h6'
-								gutterBottom
-							>
-								🏙️ Top Cidades
-							</Typography>
-							<ApexChartWrapper
-								type='bar'
-								height={300}
-								{...formatBarChart(
-									cityChartData,
-									'name',
-									'value',
-									geographicColors.cities,
-									true,
-									isDark
-								)}
-							/>
-						</CardContent>
-					</Card>
-				</Grid>
-
-				{/* Top Estados/Regiões */}
-				<Grid
-					item
-					xs={12}
-					md={6}
-				>
-					<Card sx={cardSx}>
-						<CardContent>
-							<Typography
-								variant='h6'
-								gutterBottom
-							>
-								🗺️ Top Estados/Regiões
-							</Typography>
-							<ApexChartWrapper
-								type='bar'
-								height={300}
-								{...formatBarChart(
-									stateChartData,
-									'name',
-									'value',
-									geographicColors.states,
-									false,
-									isDark
-								)}
-							/>
-						</CardContent>
-					</Card>
-				</Grid>
 			</Grid>
 
 			{/* Insights detalhados */}

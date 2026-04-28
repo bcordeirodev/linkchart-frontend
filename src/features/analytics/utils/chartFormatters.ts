@@ -278,7 +278,8 @@ export const formatBarChart = (
 					style: {
 						colors: ['#fff'],
 						fontSize: '11px',
-						fontWeight: 'bold'
+						fontWeight: 'bold',
+						fontFamily: 'Inter, system-ui, sans-serif'
 					},
 					formatter(val: number) {
 						return val.toString();
@@ -289,7 +290,8 @@ export const formatBarChart = (
 					labels: {
 						style: {
 							colors: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-							fontSize: '12px'
+							fontSize: '12px',
+							fontFamily: 'Inter, system-ui, sans-serif'
 						}
 					}
 				},
@@ -297,7 +299,8 @@ export const formatBarChart = (
 					labels: {
 						style: {
 							colors: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-							fontSize: '12px'
+							fontSize: '12px',
+							fontFamily: 'Inter, system-ui, sans-serif'
 						}
 					}
 				},
@@ -367,7 +370,8 @@ export const formatBarChart = (
 				style: {
 					colors: [isDark ? '#fff' : '#333'],
 					fontSize: '11px',
-					fontWeight: 'bold'
+					fontWeight: 'bold',
+					fontFamily: 'Inter, system-ui, sans-serif'
 				},
 				formatter(val: number) {
 					return val.toString();
@@ -389,7 +393,8 @@ export const formatBarChart = (
 				labels: {
 					style: {
 						colors: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-						fontSize: '12px'
+						fontSize: '12px',
+						fontFamily: 'Inter, system-ui, sans-serif'
 					}
 				}
 			},
@@ -397,7 +402,8 @@ export const formatBarChart = (
 				labels: {
 					style: {
 						colors: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-						fontSize: '12px'
+						fontSize: '12px',
+						fontFamily: 'Inter, system-ui, sans-serif'
 					},
 					formatter: (value: number) => Math.round(value).toString()
 				}

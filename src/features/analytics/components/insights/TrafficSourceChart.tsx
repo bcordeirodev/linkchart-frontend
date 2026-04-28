@@ -4,7 +4,7 @@ import { Box, Typography, Card, CardContent, Grid, Chip, Stack, Alert } from '@m
 import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
-import { chartPalette, getChartColor } from '@/lib/theme/colors';
+import { chartPalette } from '@/lib/theme/colors';
 import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
@@ -195,32 +195,6 @@ export function TrafficSourceChart({
 		{
 			name: 'Profundidade Média da Sessão',
 			data: data.channels.map((channel) => channel.avg_session_depth)
-		}
-	];
-
-	// Configuração do gráfico de linha para diversidade
-	const diversityLineOptions = {
-		chart: {
-			type: 'line' as const,
-			height: 200,
-			toolbar: { show: false },
-			sparkline: { enabled: true }
-		},
-		stroke: {
-			curve: 'smooth' as const,
-			width: 3
-		},
-		colors: [getChartColor(0)],
-		tooltip: {
-			theme: theme.palette.mode
-		}
-	};
-
-	// Simular dados de diversidade ao longo do tempo (seria vindo da API)
-	const diversityLineData = [
-		{
-			name: 'Diversidade de Fontes',
-			data: [1, 2, 2, 3, data.source_diversity, data.source_diversity] // Simulação
 		}
 	];
 
