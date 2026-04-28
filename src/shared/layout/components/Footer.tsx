@@ -76,7 +76,7 @@ export function Footer({ style = 'static' }: FooterProps) {
 						color='text.secondary'
 						sx={{ textAlign: { xs: 'center', md: 'left' } }}
 					>
-						© {currentYear} Link Chart. Todos os direitos reservados.
+						© {currentYear} Link Charts. Todos os direitos reservados.
 					</Typography>
 
 					{/* Links */}

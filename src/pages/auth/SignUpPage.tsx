@@ -110,7 +110,7 @@ function SignUpPage() {
 		<AuthGuardRedirect auth={authRoles.onlyGuest}>
 			<AuthLayout
 				title='Criar nova conta'
-				subtitle='Junte-se ao Link Chart e comece a otimizar seus links hoje mesmo'
+				subtitle='Junte-se ao Link Charts e comece a otimizar seus links hoje mesmo'
 				variant='signup'
 				footerLinks={[
 					{

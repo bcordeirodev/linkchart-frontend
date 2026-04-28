@@ -195,7 +195,7 @@ function AuthLayout({
 									letterSpacing: '-0.02em'
 								}}
 							>
-								Link Chart
+								Link Charts
 							</Typography>
 						</Box>
 

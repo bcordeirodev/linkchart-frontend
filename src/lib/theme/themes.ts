@@ -1,5 +1,5 @@
 /**
- * Temas canônicos do Link Chart — dark (primário) e light (secundário).
+ * Temas canônicos do Link Charts — dark (primário) e light (secundário).
  */
 
 import { darkPalette, lightPalette, semanticDark, semanticLight } from './colors';

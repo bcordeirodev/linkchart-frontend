@@ -1,6 +1,6 @@
 /**
  * @fileoverview Tipos específicos para análise temporal
- * @author Link Chart Team
+ * @author Link Charts Team
  * @version 1.0.0
  */
 

@@ -1,6 +1,6 @@
 /**
  * @fileoverview Exportações do módulo Heatmap
- * @author Link Chart Team
+ * @author Link Charts Team
  * @version 2.0.0
  */
 

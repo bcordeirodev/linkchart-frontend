@@ -6,7 +6,7 @@
  * progress bar de auto-hide e badge de fila. Cores via `semanticDark`/`semanticLight`,
  * radius/elevation/motion via tokens do designSystem.
  *
- * @since 3.0.0 — redesign alinhado ao design system Link Chart
+ * @since 3.0.0 — redesign alinhado ao design system Link Charts
  */
 
 import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';

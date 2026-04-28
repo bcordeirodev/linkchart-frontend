@@ -1,6 +1,6 @@
 /**
  * @fileoverview Tipos comuns compartilhados em toda a aplicação
- * @author Link Chart Team
+ * @author Link Charts Team
  * @version 1.0.0
  */
 

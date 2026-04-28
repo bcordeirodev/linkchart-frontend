@@ -1,6 +1,6 @@
 /**
  * @fileoverview Entry point principal para todos os tipos da aplicação
- * @author Link Chart Team
+ * @author Link Charts Team
  * @version 1.0.0
  */
 

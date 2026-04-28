@@ -150,7 +150,7 @@ function ErrorLayout({
 							intent='link'
 							size={24}
 						/>
-						Link Chart
+						Link Charts
 					</Link>
 				</Container>
 			</Box>
@@ -324,7 +324,7 @@ function ErrorLayout({
 							color: 'text.secondary'
 						}}
 					>
-						© 2024 Link Chart. Todos os direitos reservados.
+						© 2024 Link Charts. Todos os direitos reservados.
 					</Typography>
 				</Container>
 			</Box>

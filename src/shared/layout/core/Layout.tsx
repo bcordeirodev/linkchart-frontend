@@ -5,7 +5,7 @@
  * @description
  * Este componente gerencia o layout da aplicação, renderizando diferentes
  * estilos de layout baseados nas configurações atuais. Adaptado do
- * FuseLayout para a arquitetura Link Chart.
+ * FuseLayout para a arquitetura Link Charts.
  *
  * @features
  * - ✅ Múltiplos estilos de layout

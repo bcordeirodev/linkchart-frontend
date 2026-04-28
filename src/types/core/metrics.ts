@@ -1,6 +1,6 @@
 /**
  * @fileoverview Tipos relacionados a métricas e comparações
- * @author Link Chart Team
+ * @author Link Charts Team
  * @version 1.0.0
  */
 

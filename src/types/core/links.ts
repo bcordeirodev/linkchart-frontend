@@ -1,6 +1,6 @@
 /**
  * @fileoverview Tipos relacionados aos links encurtados
- * @author Link Chart Team
+ * @author Link Charts Team
  * @version 1.0.0
  */
 

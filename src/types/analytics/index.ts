@@ -1,6 +1,6 @@
 /**
  * @fileoverview Exports centralizados dos tipos de Analytics
- * @author Link Chart Team
+ * @author Link Charts Team
  * @version 1.0.0
  */
 

@@ -4,7 +4,7 @@
  *
  * @description
  * Este arquivo centraliza todas as exportações do sistema de layout
- * da aplicação Link Chart, incluindo componentes, hooks e tipos.
+ * da aplicação Link Charts, incluindo componentes, hooks e tipos.
  *
  * @since 2.0.0
  */

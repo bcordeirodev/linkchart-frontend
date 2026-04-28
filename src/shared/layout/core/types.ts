@@ -3,7 +3,7 @@
  * Tipos TypeScript simplificados para o sistema de layout
  *
  * @description
- * Tipos essenciais para o sistema de layout da aplicação Link Chart.
+ * Tipos essenciais para o sistema de layout da aplicação Link Charts.
  * Simplificado para usar apenas layout1 e configurações necessárias.
  *
  * @since 2.0.0

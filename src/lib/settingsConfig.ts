@@ -1,7 +1,7 @@
 import type { LayoutSettingsConfigType } from '@/shared/layout/core';
 
 /**
- * Configurações simplificadas da aplicação Link Chart
+ * Configurações simplificadas da aplicação Link Charts
  */
 const settingsConfig: LayoutSettingsConfigType = {
 	/**

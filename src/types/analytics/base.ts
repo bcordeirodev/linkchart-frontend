@@ -1,6 +1,6 @@
 /**
  * @fileoverview Tipos base para o módulo de Analytics
- * @author Link Chart Team
+ * @author Link Charts Team
  * @version 1.0.0
  */
 

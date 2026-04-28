@@ -131,7 +131,7 @@ function PublicLayout({
 				>
 					<Container maxWidth={layoutConfig.containerMaxWidth}>
 						<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-							<Box sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>Link Chart</Box>
+							<Box sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>Link Charts</Box>
 							{variant === 'shorter' && <ShorterHeaderActions />}
 						</Box>
 					</Container>
@@ -166,7 +166,7 @@ function PublicLayout({
 				>
 					<Container maxWidth={layoutConfig.containerMaxWidth}>
 						<Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
-							© 2024 Link Chart. Todos os direitos reservados.
+							© 2024 Link Charts. Todos os direitos reservados.
 						</Box>
 					</Container>
 				</Box>

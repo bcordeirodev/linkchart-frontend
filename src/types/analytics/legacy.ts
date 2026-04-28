@@ -1,6 +1,6 @@
 /**
  * @fileoverview Tipos legados de Analytics para compatibilidade
- * @author Link Chart Team
+ * @author Link Charts Team
  * @version 1.0.0
  * @deprecated Estes tipos são mantidos apenas para compatibilidade com código legado
  */

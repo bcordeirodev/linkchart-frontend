@@ -1,5 +1,5 @@
 /**
- * 🎨 SISTEMA DE TEMAS CENTRALIZADO - Link Chart
+ * 🎨 SISTEMA DE TEMAS CENTRALIZADO - Link Charts
  * Exportação simplificada dos recursos essenciais de tema
  */
 

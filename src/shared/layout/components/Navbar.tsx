@@ -116,7 +116,7 @@ export function Navbar({ onMobileMenuToggle: _onMobileMenuToggle }: NavbarProps)
 								letterSpacing: '-0.025em'
 							}}
 						>
-							Link Chart
+							Link Charts
 						</Typography>
 						<Typography
 							variant='caption'

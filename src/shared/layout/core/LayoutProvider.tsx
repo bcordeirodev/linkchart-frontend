@@ -1,11 +1,11 @@
 /**
  * 🏗️ LAYOUT PROVIDER - LINK CHART
- * Provider de layout adaptado da estrutura Fuse para Link Chart
+ * Provider de layout adaptado da estrutura Fuse para Link Charts
  *
  * @description
  * Este provider gerencia as configurações de layout da aplicação,
  * integrando com o sistema de temas e configurações de usuário.
- * Adaptado do FuseSettingsProvider para a arquitetura Link Chart.
+ * Adaptado do FuseSettingsProvider para a arquitetura Link Charts.
  *
  * @features
  * - ✅ Gerenciamento de configurações de layout

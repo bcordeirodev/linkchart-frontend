@@ -1,5 +1,5 @@
 /**
- * Paleta dark-first canônica do Link Chart.
+ * Paleta dark-first canônica do Link Charts.
  * Tom: adulto/negócios, alto contraste informacional, zero neon.
  */
 
