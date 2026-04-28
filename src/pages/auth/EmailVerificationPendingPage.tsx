@@ -1,6 +1,6 @@
 import { Mail, CheckCircle, RefreshCw, ArrowLeft } from 'lucide-react';
 import { Typography, Button, Stack, CircularProgress, Alert, Paper, Divider } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import { ICON_MD, ICON_LG, ICON_XL } from '@/lib/theme/iconDefaults';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -23,6 +23,7 @@ function EmailVerificationPendingPage() {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const dispatch = useAppDispatch();
+	const theme = useTheme();
 
 	const [resendLoading, setResendLoading] = useState(false);
 	const [verificationStatus, setVerificationStatus] = useState<{
@@ -104,8 +105,8 @@ function EmailVerificationPendingPage() {
 					sx={{
 						p: 3,
 						borderRadius: 2,
-						backgroundColor: alpha('#0A74DA', 0.05),
-						border: `1px solid ${alpha('#0A74DA', 0.2)}`
+						backgroundColor: alpha(theme.palette.primary.main, 0.05),
+						border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`
 					}}
 				>
 					<Stack
@@ -115,12 +116,12 @@ function EmailVerificationPendingPage() {
 					>
 						<Mail
 							{...ICON_XL}
-							style={{ color: '#0A74DA' }}
+							style={{ color: theme.palette.primary.main }}
 						/>
 
 						<Typography
 							variant='h6'
-							color='#0A74DA'
+							color='primary'
 							fontWeight={600}
 						>
 							Verificação de Email Necessária
@@ -183,17 +184,8 @@ function EmailVerificationPendingPage() {
 							}
 							sx={{
 								py: 1.5,
-								borderRadius: 2,
 								fontSize: '1rem',
-								fontWeight: 600,
-								textTransform: 'none',
-								background: 'linear-gradient(135deg, #0A74DA 0%, #0D47A1 100%)',
-								'&:hover': {
-									background: 'linear-gradient(135deg, #0D47A1 0%, #002171 100%)'
-								},
-								'&:disabled': {
-									background: '#E0E0E0'
-								}
+								fontWeight: 600
 							}}
 						>
 							{resendLoading ? 'Reenviando...' : 'Reenviar email de verificação'}
@@ -220,15 +212,13 @@ function EmailVerificationPendingPage() {
 						startIcon={<ArrowLeft {...ICON_MD} />}
 						sx={{
 							py: 1.5,
-							borderRadius: 2,
 							fontSize: '1rem',
 							fontWeight: 600,
-							textTransform: 'none',
-							borderColor: '#0A74DA',
-							color: '#0A74DA',
+							borderColor: theme.palette.primary.main,
+							color: theme.palette.primary.main,
 							'&:hover': {
-								borderColor: '#0D47A1',
-								backgroundColor: alpha('#0A74DA', 0.05)
+								borderColor: theme.palette.primary.dark,
+								backgroundColor: alpha(theme.palette.primary.main, 0.08)
 							}
 						}}
 					>
