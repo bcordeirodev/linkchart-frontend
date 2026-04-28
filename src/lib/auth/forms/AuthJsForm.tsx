@@ -1,11 +1,12 @@
 import { Alert, TextField, Button, Box, Typography, CircularProgress, Link } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
 import { getSessionRedirectUrl, resetSessionRedirectUrl } from '@/lib/auth/sessionRedirectUrl';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showErrorMessage } from '@/lib/store/messageSlice';
+import { authTextFieldSx } from './authFieldStyles';
 
 import { useAuth } from '../AuthContext';
 
@@ -21,7 +22,6 @@ function AuthJsForm(props: AuthJsFormProps) {
 	const errorType = searchParams.get('error');
 	const error = errorType && getErrorMessage(errorType);
 
-	// Função para obter mensagens de erro
 	function getErrorMessage(errorType: string): string {
 		const errorMessages: Record<string, string> = {
 			CredentialsSignin: 'Credenciais inválidas',
@@ -37,15 +37,7 @@ function AuthJsForm(props: AuthJsFormProps) {
 			{error ? (
 				<Alert
 					severity='error'
-					sx={{
-						backgroundColor: alpha('#f44336', 0.1),
-						color: '#d32f2f',
-						borderRadius: 2,
-						border: `1px solid ${alpha('#f44336', 0.2)}`,
-						'& .MuiAlert-icon': {
-							color: '#d32f2f'
-						}
-					}}
+					sx={{ borderRadius: 2 }}
 				>
 					{error}
 				</Alert>
@@ -56,18 +48,17 @@ function AuthJsForm(props: AuthJsFormProps) {
 	);
 }
 
-// Componente simplificado de login
 function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: string) => Promise<void> }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
+	const theme = useTheme();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		// Validação básica
 		if (!email || !password) {
 			dispatch(showErrorMessage('Por favor, preencha todos os campos'));
 			return;
@@ -77,7 +68,6 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 		try {
 			await onLogin(email, password);
 
-			// Navegação após login bem-sucedido
 			const redirectUrl = getSessionRedirectUrl();
 			const targetUrl = redirectUrl || '/links';
 
@@ -85,7 +75,6 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 
 			navigate(targetUrl);
 		} catch (error: unknown) {
-			// Tratamento de erro melhorado
 			let errorMessage = 'Erro ao fazer login. Tente novamente.';
 
 			if (error && typeof error === 'object' && 'message' in error) {
@@ -115,34 +104,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				required
 				fullWidth
 				variant='outlined'
-				sx={{
-					'& .MuiOutlinedInput-root': {
-						borderRadius: 2,
-						backgroundColor: '#ffffff',
-						'& input': {
-							color: '#212121',
-							'&::placeholder': {
-								color: '#5F6368',
-								opacity: 1
-							}
-						},
-						'& fieldset': {
-							borderColor: alpha('#000000', 0.2)
-						},
-						'&:hover fieldset': {
-							borderColor: '#0A74DA'
-						},
-						'&.Mui-focused fieldset': {
-							borderColor: '#0A74DA'
-						}
-					},
-					'& .MuiInputLabel-root': {
-						color: '#5F6368',
-						'&.Mui-focused': {
-							color: '#0A74DA'
-						}
-					}
-				}}
+				sx={authTextFieldSx(theme)}
 			/>
 			<TextField
 				type='password'
@@ -153,34 +115,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				required
 				fullWidth
 				variant='outlined'
-				sx={{
-					'& .MuiOutlinedInput-root': {
-						borderRadius: 2,
-						backgroundColor: '#ffffff',
-						'& input': {
-							color: '#212121',
-							'&::placeholder': {
-								color: '#5F6368',
-								opacity: 1
-							}
-						},
-						'& fieldset': {
-							borderColor: alpha('#000000', 0.2)
-						},
-						'&:hover fieldset': {
-							borderColor: '#0A74DA'
-						},
-						'&.Mui-focused fieldset': {
-							borderColor: '#0A74DA'
-						}
-					},
-					'& .MuiInputLabel-root': {
-						color: '#5F6368',
-						'&.Mui-focused': {
-							color: '#0A74DA'
-						}
-					}
-				}}
+				sx={authTextFieldSx(theme)}
 			/>
 			<Button
 				type='submit'
@@ -191,17 +126,8 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				sx={{
 					mt: 2,
 					py: 1.5,
-					borderRadius: 2,
 					fontSize: '1.1rem',
-					fontWeight: 600,
-					textTransform: 'none',
-					background: 'linear-gradient(135deg, #0A74DA 0%, #0D47A1 100%)',
-					'&:hover': {
-						background: 'linear-gradient(135deg, #0D47A1 0%, #002171 100%)'
-					},
-					'&:disabled': {
-						background: '#E0E0E0'
-					}
+					fontWeight: 600
 				}}
 			>
 				{loading ? (
@@ -217,12 +143,11 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 				)}
 			</Button>
 
-			{/* Link para recuperação de senha */}
 			<Box sx={{ textAlign: 'center', mt: 2 }}>
 				<Link
 					href='/forgot-password'
 					sx={{
-						color: '#0A74DA',
+						color: theme.palette.primary.main,
 						textDecoration: 'none',
 						fontSize: '0.9rem',
 						'&:hover': {
@@ -237,13 +162,12 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 	);
 }
 
-// Componente simplificado de cadastro
 function SimpleSignUpForm() {
 	return (
 		<Box sx={{ textAlign: 'center', p: { xs: 2, sm: 3, md: 4 } }}>
 			<Typography
 				variant='body2'
-				sx={{ color: alpha('#ffffff', 0.7) }}
+				color='text.secondary'
 			>
 				Funcionalidade de cadastro será implementada em breve.
 			</Typography>
