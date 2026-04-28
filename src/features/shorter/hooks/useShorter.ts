@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { publicLinkService } from '@/services/link-public.service';
@@ -10,6 +10,13 @@ export function useShorter() {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [result, setResult] = useState<PublicLinkResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current);
+    };
+  }, []);
 
   const handleSuccess = useCallback(
     (res: PublicLinkResponse) => {
@@ -20,7 +27,7 @@ export function useShorter() {
       setResult(res);
       setIsRedirecting(true);
 
-      setTimeout(() => {
+      redirectTimerRef.current = setTimeout(() => {
         try {
           navigate(publicLinkService.getPublicAnalyticsUrl(res.slug), {
             replace: true,
@@ -44,6 +51,10 @@ export function useShorter() {
   const clearError = useCallback(() => setError(null), []);
 
   const handleReset = useCallback(() => {
+    if (redirectTimerRef.current) {
+      clearTimeout(redirectTimerRef.current);
+      redirectTimerRef.current = null;
+    }
     setIsRedirecting(false);
     setResult(null);
     setError(null);
