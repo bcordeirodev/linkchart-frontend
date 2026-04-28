@@ -9,6 +9,7 @@ export { PublicAnalyticsHeader } from './header/PublicAnalyticsHeader';
 // Info
 export { LinkInfoCard } from './info/LinkInfoCard';
 export { AnalyticsInfo } from './info/AnalyticsInfo';
+export { PublicAnalyticsCtaStrip } from './info/PublicAnalyticsCtaStrip';
 
 // Metrics
 export { PublicMetrics } from './metrics/PublicMetrics';
