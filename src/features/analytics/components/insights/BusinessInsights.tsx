@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Chip, Alert, Stack, Divider, Avatar } from '@mui/material';
 
-import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
+import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';

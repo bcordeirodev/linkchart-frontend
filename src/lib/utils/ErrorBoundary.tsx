@@ -4,7 +4,7 @@
 
 import { AlertCircle, RefreshCw, ChevronDown, Bug } from 'lucide-react';
 import { Box, Typography, Button, Paper, Alert, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
-import { ICON_MD, ICON_LG, ICON_XL } from '@/lib/theme/iconDefaults';
+import { ICON_MD, ICON_XL } from '@/lib/theme/iconDefaults';
 import { Component } from 'react';
 
 import type { ErrorInfo, ReactNode } from 'react';

@@ -1,7 +1,7 @@
 import { Box, Grid, Card, CardContent, Typography, Stack, Chip } from '@mui/material';
 import { Clock, Calendar, TrendingUp, Star } from 'lucide-react';
 
-import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';

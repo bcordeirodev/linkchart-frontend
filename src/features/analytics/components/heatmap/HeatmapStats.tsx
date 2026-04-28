@@ -1,7 +1,6 @@
 import { Globe, MapPin } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack } from '@mui/material';
 
-import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';

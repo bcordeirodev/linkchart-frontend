@@ -1,7 +1,6 @@
 import { Box, Grid, Typography, Card, CardContent, Stack, Chip } from '@mui/material';
 import { TrendingUp, TrendingDown, LineChart } from 'lucide-react';
 
-import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { ChartCard } from '@/shared/ui/base/ChartCard';

@@ -1,7 +1,6 @@
 import { Box, Grid, Typography, Stack, LinearProgress } from '@mui/material';
 import { Globe } from 'lucide-react';
 
-import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
 
 import { ChartCard } from '@/shared/ui/base/ChartCard';

@@ -1,7 +1,7 @@
 import { Lightbulb, TrendingUp, Flag, BarChart3 } from 'lucide-react';
 import { Box, Grid, Typography } from '@mui/material';
 
-import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 
 import { radiusTokens } from '@/lib/theme/designSystem';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';

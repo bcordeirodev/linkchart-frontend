@@ -1,7 +1,7 @@
 import { MousePointer2, TrendingUp, Star, BarChart3 } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, LinearProgress } from '@mui/material';
 
-import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme, alpha } from '@mui/material/styles';
 
 import { getChartColor } from '@/lib/theme/colors';
