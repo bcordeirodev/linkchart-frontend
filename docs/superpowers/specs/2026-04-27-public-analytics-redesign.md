@@ -1,3 +1,5 @@
+> **Status:** ✅ IMPLEMENTADO — 2026-04-27/28
+
 # Spec: Redesign da Página Pública de Analytics
 
 **Data:** 2026-04-27

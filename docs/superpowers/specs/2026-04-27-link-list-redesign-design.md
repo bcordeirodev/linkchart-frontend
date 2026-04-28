@@ -1,3 +1,5 @@
+> **Status:** ✅ IMPLEMENTADO — 2026-04-27/28
+
 # Redesign da listagem `/link` — Cards ricos estilo Dub.co
 
 **Data:** 2026-04-27
