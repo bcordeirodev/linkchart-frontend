@@ -64,12 +64,8 @@ export function useAudienceData({
 		if (!devices.length) {
 			return {
 				totalClicks: 0,
-				uniqueVisitors: 0,
 				primaryDevice: 'N/A',
 				primaryBrowser: 'N/A',
-				newVisitorRate: 0,
-				bounceRate: 0,
-				avgSessionDuration: 0,
 				lastUpdate: new Date().toISOString()
 			};
 		}
@@ -77,20 +73,10 @@ export function useAudienceData({
 		const totalClicks = devices.reduce((sum, device) => sum + device.clicks, 0);
 		const primaryDevice = devices.reduce((max, device) => (device.clicks > max.clicks ? device : max), devices[0]);
 
-		// Estimativas baseadas nos dados disponíveis
-		const uniqueVisitors = Math.round(totalClicks * 0.7); // Estimativa: 70% de visitantes únicos
-		const newVisitorRate = Math.round(Math.random() * 30 + 60); // 60-90%
-		const bounceRate = Math.round(Math.random() * 20 + 30); // 30-50%
-		const avgSessionDuration = Math.round(Math.random() * 120 + 60); // 1-3 minutos
-
 		return {
 			totalClicks,
-			uniqueVisitors,
 			primaryDevice: primaryDevice.device,
 			primaryBrowser: audienceData.browser_breakdown?.[0]?.browser || 'N/A',
-			newVisitorRate,
-			bounceRate,
-			avgSessionDuration,
 			lastUpdate: new Date().toISOString()
 		};
 	}, []);
