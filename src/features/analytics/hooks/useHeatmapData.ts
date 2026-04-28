@@ -19,6 +19,8 @@ interface HeatmapStats {
 	topCity: string;
 	coveragePercentage: number;
 	maxClicks: number;
+	uniqueCountries: number;
+	uniqueCities: number;
 }
 
 interface UseHeatmapDataOptions {
@@ -97,14 +99,18 @@ export function useHeatmapData({
 				topCountry: 'N/A',
 				topCity: 'N/A',
 				avgClicksPerPoint: 0,
-				coveragePercentage: 0
+				coveragePercentage: 0,
+				uniqueCountries: 0,
+				uniqueCities: 0
 			};
 		}
 
 		const totalClicks = heatmapData.reduce((sum, point) => sum + point.clicks, 0);
 		const maxClicks = Math.max(...heatmapData.map((point) => point.clicks));
-		const countries = Array.from(new Set(heatmapData.map((point) => point.country)));
-		const cities = Array.from(new Set(heatmapData.map((point) => point.city)));
+		const countries = Array.from(
+			new Set(heatmapData.map((point) => point.country).filter(Boolean))
+		);
+		const cities = Array.from(new Set(heatmapData.map((point) => point.city).filter(Boolean)));
 		const avgClicksPerPoint = totalClicks / heatmapData.length;
 
 		return {
@@ -114,7 +120,9 @@ export function useHeatmapData({
 			topCountry: countries[0] || 'N/A',
 			topCity: cities[0] || 'N/A',
 			avgClicksPerPoint,
-			coveragePercentage: Math.round((countries.length / 195) * 100) // 195 países no mundo
+			coveragePercentage: Math.round((countries.length / 195) * 100), // 195 países no mundo
+			uniqueCountries: countries.length,
+			uniqueCities: cities.length
 		};
 	}, []);
 

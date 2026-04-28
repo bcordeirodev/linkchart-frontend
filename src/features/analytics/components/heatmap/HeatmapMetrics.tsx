@@ -13,6 +13,8 @@ interface HeatmapStats {
 	topCountry: string;
 	topCity: string;
 	coveragePercentage: number;
+	uniqueCountries?: number;
+	uniqueCities?: number;
 }
 
 interface HeatmapMetricsProps {
@@ -42,7 +44,7 @@ export function HeatmapMetrics({ stats, showTitle = false, title = 'Métricas do
 		{
 			id: 'unique_countries',
 			title: 'Países Únicos',
-			value: stats.totalPoints.toString(),
+			value: (stats.uniqueCountries ?? 0).toString(),
 			icon: <Globe {...ICON_LG} />,
 			color: 'success' as const,
 			subtitle: 'alcance global'
@@ -50,7 +52,7 @@ export function HeatmapMetrics({ stats, showTitle = false, title = 'Métricas do
 		{
 			id: 'unique_cities',
 			title: 'Cidades Únicas',
-			value: stats.totalClicks.toString(),
+			value: (stats.uniqueCities ?? 0).toString(),
 			icon: <MapPin {...ICON_LG} />,
 			color: 'info' as const,
 			subtitle: 'diversidade urbana'
