@@ -104,22 +104,19 @@ export interface AudienceData {
 
 /**
  * Estatísticas agregadas de audiência
+ *
+ * Campos removidos em fix/audience-remove-math-random:
+ * - uniqueVisitors (era heurística clicks * 0.7)
+ * - newVisitorRate, bounceRate, avgSessionDuration (eram Math.random)
+ * Reintroduzir apenas quando o backend expor dados reais.
  */
 export interface AudienceStats {
 	/** Total de cliques únicos */
 	totalClicks: number;
-	/** Total de visitantes únicos */
-	uniqueVisitors: number;
 	/** Dispositivo mais usado */
 	primaryDevice: string;
 	/** Navegador mais usado */
 	primaryBrowser: string;
-	/** Taxa de novos vs. retornantes */
-	newVisitorRate: Percentage;
-	/** Taxa de rejeição */
-	bounceRate: Percentage;
-	/** Tempo médio na página (em segundos) */
-	avgSessionDuration: number;
 	/** Timestamp da última atualização */
 	lastUpdate: ISODateString;
 }
