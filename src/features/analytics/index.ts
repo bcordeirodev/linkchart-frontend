@@ -10,7 +10,7 @@ export * from './components/temporal';
 export * from './components/insights';
 export * from './components/audience';
 export * from './components/heatmap';
-export * from './components/perfomance';
+export * from './components/performance';
 
 // Hooks - apenas os que não são exportados pelos componentes
 export * from './hooks/useLinkPerformance';

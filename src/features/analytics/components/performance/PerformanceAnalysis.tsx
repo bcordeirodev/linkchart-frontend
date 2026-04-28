@@ -65,12 +65,8 @@ export function PerformanceAnalysis({
 		uniqueVisitors: performanceData?.unique_visitors || 0,
 		successRate: performanceData?.success_rate || 100,
 		avgResponseTime: performanceData?.avg_response_time || 0,
-		uptime: performanceData?.uptime_percentage || 100,
 		totalRedirects: performanceData?.total_redirects_24h || 0,
-		totalLinks: performanceData?.total_links || 0,
-		performanceScore: performanceData?.performance_score || 0,
-		clicksPerHour: performanceData?.clicks_per_hour || 0,
-		visitorRetention: performanceData?.visitor_retention || 0
+		totalLinks: performanceData?.total_links || 0
 	};
 
 	return (
@@ -81,7 +77,7 @@ export function PerformanceAnalysis({
 					icon='🚀'
 					title={title}
 					description='Análise completa de performance dos seus links com métricas de velocidade, disponibilidade e otimização.'
-					highlight={`Score: ${performanceMetrics.performanceScore}/100 - ${performanceMetrics.uptime}% uptime`}
+					highlight={`Sucesso: ${performanceMetrics.successRate}% • Resposta média: ${performanceMetrics.avgResponseTime}ms`}
 					metadata={enableRealtime ? 'Tempo Real' : 'Dados Atualizados'}
 				/>
 			</Box>
@@ -143,24 +139,6 @@ export function PerformanceAnalysis({
 													? 'Seus links estão funcionando bem'
 													: 'Alguns links podem ter problemas de performance'}
 										</Typography>
-
-										<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-											<Box
-												sx={{
-													width: 12,
-													height: 12,
-													borderRadius: '50%',
-													backgroundColor:
-														performanceMetrics.successRate >= 99
-															? 'success.main'
-															: 'warning.main',
-													mr: 1
-												}}
-											/>
-											<Typography variant='body2'>
-												<strong>Uptime:</strong> {performanceMetrics.uptime}%
-											</Typography>
-										</Box>
 
 										<Box sx={{ display: 'flex', alignItems: 'center' }}>
 											<Box
@@ -265,25 +243,8 @@ export function PerformanceAnalysis({
 									variant='body2'
 									sx={{ lineHeight: 1.6 }}
 								>
-									• <strong>Score de Performance:</strong> {performanceMetrics.performanceScore}/100 (
-									{performanceMetrics.performanceScore >= 90
-										? 'Excelente'
-										: performanceMetrics.performanceScore >= 70
-											? 'Bom'
-											: 'Precisa melhorar'}
-									)
-									<br />• <strong>Uptime Real:</strong> {performanceMetrics.uptime}% de
-									disponibilidade (
-									{performanceMetrics.uptime >= 99
-										? 'Excelente'
-										: performanceMetrics.uptime >= 95
-											? 'Bom'
-											: 'Crítico'}
-									)
-									<br />• <strong>Taxa de Cliques:</strong> {performanceMetrics.clicksPerHour}{' '}
-									cliques/hora em média
-									<br />• <strong>Retenção de Visitantes:</strong>{' '}
-									{performanceMetrics.visitorRetention}% dos cliques são de visitantes únicos
+									• <strong>Taxa de Sucesso:</strong> {performanceMetrics.successRate}% dos
+									redirecionamentos
 									<br />• <strong>Tempo de Resposta:</strong> {performanceMetrics.avgResponseTime}ms (
 									{performanceMetrics.avgResponseTime < 200
 										? 'Excelente'
@@ -291,6 +252,8 @@ export function PerformanceAnalysis({
 											? 'Bom'
 											: 'Lento'}
 									)
+									<br />• <strong>Total de Redirecionamentos (24h):</strong>{' '}
+									{performanceMetrics.totalRedirects.toLocaleString()}
 								</Typography>
 							</CardContent>
 						</Card>

@@ -8,5 +8,5 @@ export * from './heatmap';
 export * from './temporal';
 
 // === ANÁLISES ESPECIALIZADAS ===
-export { PerformanceAnalysis } from './perfomance/PerformanceAnalysis';
+export { PerformanceAnalysis } from './performance/PerformanceAnalysis';
 export { BusinessInsights } from './insights/BusinessInsights';
