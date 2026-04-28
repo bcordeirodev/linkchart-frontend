@@ -1,5 +1,6 @@
 import { CheckCircle, XCircle, Mail, RefreshCw } from 'lucide-react';
 import { Box, Typography, CircularProgress, Button, Alert, Stack } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { ICON_LG, ICON_XL } from '@/lib/theme/iconDefaults';
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -21,6 +22,7 @@ function VerifyEmailPage() {
 	const [status, setStatus] = useState<VerificationStatus>('loading');
 	const [message, setMessage] = useState('');
 	const [isResending, setIsResending] = useState(false);
+	const theme = useTheme();
 
 	const token = searchParams.get('token');
 
@@ -88,7 +90,7 @@ function VerifyEmailPage() {
 				return (
 					<CheckCircle
 						{...ICON_XL}
-						style={{ color: 'var(--palette-success-main, #2e7d32)' }}
+						style={{ color: theme.palette.success.main }}
 					/>
 				);
 			case 'error':
@@ -96,14 +98,14 @@ function VerifyEmailPage() {
 				return (
 					<XCircle
 						{...ICON_XL}
-						style={{ color: 'var(--palette-error-main, #d32f2f)' }}
+						style={{ color: theme.palette.error.main }}
 					/>
 				);
 			default:
 				return (
 					<Mail
 						{...ICON_XL}
-						style={{ color: 'var(--palette-primary-main, #1976d2)' }}
+						style={{ color: theme.palette.primary.main }}
 					/>
 				);
 		}
