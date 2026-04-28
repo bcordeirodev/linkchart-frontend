@@ -498,7 +498,7 @@ export function SessionDepthChart({
 													variant='caption'
 													color='text.secondary'
 												>
-													Tempo médio: {item.avg_response_time.toFixed(2)}s
+													Tempo médio: {Number(item.avg_response_time).toFixed(2)}s
 												</Typography>
 											)}
 										</Box>
