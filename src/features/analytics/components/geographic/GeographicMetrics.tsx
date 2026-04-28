@@ -36,7 +36,7 @@ export function GeographicMetrics({
 	const citiesReached = stats?.totalCities || data?.top_cities?.length || data?.geographic?.top_cities?.length || 0;
 	const statesReached = stats?.totalStates || data?.top_states?.length || data?.geographic?.top_states?.length || 0;
 	const totalGeographicClicks =
-		stats?.topCountryClicks ||
+		stats?.totalClicks ||
 		data?.top_countries?.reduce((sum: number, country: any) => sum + (country.clicks || 0), 0) ||
 		data?.geographic?.top_countries?.reduce((sum: number, country: any) => sum + (country.clicks || 0), 0) ||
 		0;
