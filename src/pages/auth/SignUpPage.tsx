@@ -15,7 +15,7 @@ import { AuthLayout } from '@/shared/layout';
 
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import authRoles from '../../lib/auth/authRoles';
-import { authTextFieldSx } from '../../lib/auth/forms/authFieldStyles';
+import { authTextFieldSx } from '@/lib/auth/forms/authFieldStyles';
 
 // Schema de validação com Zod
 const signUpSchema = z

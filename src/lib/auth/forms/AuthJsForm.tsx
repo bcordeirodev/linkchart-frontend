@@ -134,7 +134,7 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 						<CircularProgress
 							size={20}
-							sx={{ color: 'white' }}
+							color='inherit'
 						/>
 						<Typography variant='body2'>Entrando...</Typography>
 					</Box>

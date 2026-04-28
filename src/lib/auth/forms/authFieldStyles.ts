@@ -4,6 +4,9 @@ import { darkNeutral, lightNeutral } from '@/lib/theme/colors';
 
 export function authTextFieldSx(theme: Theme): SxProps<Theme> {
 	const isDark = theme.palette.mode === 'dark';
+	// neutral.input (#1C1C1F dark / #F4F4F5 light) is intentionally read from raw
+	// constants — it keeps input surfaces visually distinct from paper surfaces and
+	// is not exposed as a theme.palette token.
 	const neutral = isDark ? darkNeutral : lightNeutral;
 
 	return {
