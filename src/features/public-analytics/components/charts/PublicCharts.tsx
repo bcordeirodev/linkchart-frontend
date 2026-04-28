@@ -4,7 +4,9 @@ import { useTheme } from '@mui/material/styles';
 import { formatAreaChart, formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { AppIcon } from '@/shared/ui/icons';
 import { createPresetShadows, createPresetAnimations, createTextGradient } from '@/lib/theme';
+import { chartByType } from '@/lib/theme/colors';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
+import { ChartCard } from '@/shared/ui/data-display/ChartCard';
 
 import type { PublicAnalyticsData } from '../../types';
 
@@ -12,47 +14,6 @@ const DOW_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'] as const;
 
 interface PublicChartsProps {
 	analyticsData: PublicAnalyticsData;
-}
-
-interface ChartPanelProps {
-	title: string;
-	icon: React.ReactNode;
-	paletteColor: string;
-	children: React.ReactNode;
-}
-
-function ChartPanel({ title, icon, paletteColor, children }: ChartPanelProps) {
-	const theme = useTheme();
-	const shadows = createPresetShadows(theme);
-	const animations = createPresetAnimations(theme);
-
-	return (
-		<Paper
-			elevation={0}
-			sx={{
-				p: 2,
-				height: '100%',
-				backgroundColor: theme.palette.background.paper,
-				borderRadius: 2,
-				boxShadow: shadows.card,
-				...animations.cardHover,
-				'&:hover': {
-					transform: 'translateY(-4px)',
-					boxShadow: shadows.cardHover,
-					borderColor: paletteColor
-				}
-			}}
-		>
-			<Typography
-				variant='h6'
-				sx={{ mb: 2, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1, color: paletteColor }}
-			>
-				{icon}
-				{title}
-			</Typography>
-			<Box sx={{ p: 0.5 }}>{children}</Box>
-		</Paper>
-	);
 }
 
 export function PublicCharts({ analyticsData }: PublicChartsProps) {
@@ -115,15 +76,9 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 						item
 						xs={12}
 					>
-						<ChartPanel
+						<ChartCard
 							title='Cliques por Hora'
-							icon={
-								<AppIcon
-									intent='analytics'
-									size={20}
-								/>
-							}
-							paletteColor={theme.palette.primary.main}
+							icon='⏱️'
 						>
 							<ApexChartWrapper
 								type='area'
@@ -132,11 +87,11 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 									hourData as Record<string, unknown>[],
 									'hour',
 									'clicks',
-									theme.palette.primary.main,
+									chartByType.temporal.hourly,
 									isDark
 								)}
 							/>
-						</ChartPanel>
+						</ChartCard>
 					</Grid>
 				) : null}
 
@@ -147,15 +102,9 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 						xs={12}
 						md={hasCountryData ? 6 : 12}
 					>
-						<ChartPanel
+						<ChartCard
 							title='Cliques por Dia da Semana'
-							icon={
-								<AppIcon
-									intent='analytics'
-									size={20}
-								/>
-							}
-							paletteColor={theme.palette.warning.main}
+							icon='📅'
 						>
 							<ApexChartWrapper
 								type='bar'
@@ -164,12 +113,12 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 									dowData as Record<string, unknown>[],
 									'day',
 									'clicks',
-									theme.palette.warning.main,
+									chartByType.temporal.weekly,
 									false,
 									isDark
 								)}
 							/>
-						</ChartPanel>
+						</ChartCard>
 					</Grid>
 				) : null}
 
@@ -179,15 +128,9 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 						xs={12}
 						md={hasDowData ? 6 : 12}
 					>
-						<ChartPanel
+						<ChartCard
 							title='Top Países'
-							icon={
-								<AppIcon
-									name='location.map'
-									size={20}
-								/>
-							}
-							paletteColor={theme.palette.success.main}
+							icon='🌍'
 						>
 							<ApexChartWrapper
 								type='bar'
@@ -196,12 +139,12 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 									(charts.geographic?.top_countries ?? []) as Record<string, unknown>[],
 									'country',
 									'clicks',
-									theme.palette.success.main,
+									chartByType.geographic.countries,
 									true,
 									isDark
 								)}
 							/>
-						</ChartPanel>
+						</ChartCard>
 					</Grid>
 				) : null}
 
@@ -212,15 +155,9 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 						xs={12}
 						md={hasBrowserData ? 6 : 12}
 					>
-						<ChartPanel
+						<ChartCard
 							title='Dispositivos'
-							icon={
-								<AppIcon
-									name='content.mobile'
-									size={20}
-								/>
-							}
-							paletteColor={theme.palette.primary.main}
+							icon='📱'
 						>
 							<ApexChartWrapper
 								type='donut'
@@ -232,7 +169,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 									isDark
 								)}
 							/>
-						</ChartPanel>
+						</ChartCard>
 					</Grid>
 				) : null}
 
@@ -242,15 +179,9 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 						xs={12}
 						md={hasDeviceData ? 6 : 12}
 					>
-						<ChartPanel
+						<ChartCard
 							title='Browsers'
-							icon={
-								<AppIcon
-									intent='url'
-									size={20}
-								/>
-							}
-							paletteColor={theme.palette.info.main}
+							icon='🌐'
 						>
 							<ApexChartWrapper
 								type='donut'
@@ -262,7 +193,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 									isDark
 								)}
 							/>
-						</ChartPanel>
+						</ChartCard>
 					</Grid>
 				) : null}
 			</Grid>
