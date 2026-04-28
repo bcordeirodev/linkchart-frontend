@@ -378,8 +378,13 @@ export function RetentionAnalysisChart({
 									type='bar'
 									height={200}
 								/>
-								<Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-									Benchmark baseado na taxa média da indústria de links encurtados (20% de visitantes recorrentes).
+								<Typography
+									variant='caption'
+									color='text.secondary'
+									sx={{ display: 'block', mt: 1 }}
+								>
+									Benchmark baseado na taxa média da indústria de links encurtados (20% de visitantes
+									recorrentes).
 								</Typography>
 								<Box sx={{ mt: 2, textAlign: 'center' }}>
 									<Typography

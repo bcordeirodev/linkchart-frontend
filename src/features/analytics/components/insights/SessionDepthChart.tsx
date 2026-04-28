@@ -233,8 +233,13 @@ export function SessionDepthChart({
 						/>
 						{title}
 					</Typography>
-					<Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-						Profundidade de sessão indica quantas vezes o mesmo usuário clicou no link durante uma visita. Valores maiores indicam maior interesse.
+					<Typography
+						variant='body2'
+						color='text.secondary'
+						sx={{ mb: 2 }}
+					>
+						Profundidade de sessão indica quantas vezes o mesmo usuário clicou no link durante uma visita.
+						Valores maiores indicam maior interesse.
 					</Typography>
 				</Box>
 			) : null}
@@ -427,7 +432,11 @@ export function SessionDepthChart({
 								>
 									Curva de Engajamento
 								</Typography>
-								<Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+								<Typography
+									variant='caption'
+									color='text.secondary'
+									sx={{ display: 'block', mb: 1 }}
+								>
 									Distribuição dos usuários por número de cliques por sessão.
 								</Typography>
 								<ApexChartWrapper

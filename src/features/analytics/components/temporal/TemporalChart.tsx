@@ -285,8 +285,7 @@ export function TemporalChart({
 												alignItems: 'center',
 												justifyContent: 'space-between',
 												py: 0.5,
-												borderBottom:
-													index < weeklyData.length - 1 ? '1px solid' : 'none',
+												borderBottom: index < weeklyData.length - 1 ? '1px solid' : 'none',
 												borderBottomColor: 'divider'
 											}}
 										>

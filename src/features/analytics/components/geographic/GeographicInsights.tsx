@@ -14,7 +14,7 @@ interface GeographicInsightsProps {
 	cities: { city: string; state?: string; country?: string; clicks: number }[];
 }
 
-export function GeographicInsights({ data, countries, states, cities }: GeographicInsightsProps) {
+export function GeographicInsights({ data, countries, states: _states, cities }: GeographicInsightsProps) {
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
 
@@ -179,7 +179,6 @@ export function GeographicInsights({ data, countries, states, cities }: Geograph
 						</CardContent>
 					</Card>
 				</Grid>
-
 			</Grid>
 
 			{/* Insights detalhados */}
