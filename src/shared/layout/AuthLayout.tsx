@@ -44,28 +44,23 @@ function AuthLayout({
 		const configs = {
 			signin: {
 				sideTitle: 'Bem-vindo de volta!',
-				sideSubtitle: 'Acesse sua conta e continue gerenciando seus links de forma inteligente.',
-				icon: 'login'
+				sideSubtitle: 'Acesse sua conta e continue gerenciando seus links de forma inteligente.'
 			},
 			signup: {
 				sideTitle: 'Junte-se a nós!',
-				sideSubtitle: 'Crie sua conta e comece a encurtar e gerenciar seus links hoje mesmo.',
-				icon: 'user-plus'
+				sideSubtitle: 'Crie sua conta e comece a encurtar e gerenciar seus links hoje mesmo.'
 			},
 			forgot: {
 				sideTitle: 'Recuperar Senha',
-				sideSubtitle: 'Não se preocupe, vamos ajudá-lo a recuperar o acesso à sua conta.',
-				icon: 'key'
+				sideSubtitle: 'Não se preocupe, vamos ajudá-lo a recuperar o acesso à sua conta.'
 			},
 			reset: {
 				sideTitle: 'Nova Senha',
-				sideSubtitle: 'Defina uma nova senha segura para sua conta.',
-				icon: 'shield'
+				sideSubtitle: 'Defina uma nova senha segura para sua conta.'
 			},
 			verify: {
 				sideTitle: 'Verificação de Email',
-				sideSubtitle: 'Estamos verificando seu email para ativar sua conta.',
-				icon: 'check-circle'
+				sideSubtitle: 'Estamos verificando seu email para ativar sua conta.'
 			}
 		};
 		return configs[variant];
