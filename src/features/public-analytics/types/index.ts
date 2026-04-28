@@ -15,9 +15,11 @@ export interface PublicAnalyticsData {
 		};
 		audience?: {
 			device_breakdown?: { device: string; clicks: number }[];
+			browser_breakdown?: { browser: string; clicks: number }[];
 		};
 		temporal?: {
 			clicks_by_hour?: { hour: number; clicks: number }[];
+			clicks_by_day_of_week?: { day: number; clicks: number }[];
 		};
 	};
 }

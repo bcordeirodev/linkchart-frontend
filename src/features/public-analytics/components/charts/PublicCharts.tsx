@@ -1,49 +1,93 @@
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import { formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
+import { formatAreaChart, formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { AppIcon } from '@/shared/ui/icons';
-import { createPresetShadows, createPresetAnimations, createTextGradient, createThemeGradient } from '@/lib/theme';
+import { createPresetShadows, createPresetAnimations, createTextGradient } from '@/lib/theme';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 
 import type { PublicAnalyticsData } from '../../types';
+
+const DOW_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'] as const;
 
 interface PublicChartsProps {
 	analyticsData: PublicAnalyticsData;
 }
 
-/**
- * 📊 GRÁFICOS PÚBLICOS
- */
-export function PublicCharts({ analyticsData }: PublicChartsProps) {
-	const theme = useTheme();
-	const isDark = theme.palette.mode === 'dark';
+interface ChartPanelProps {
+	title: string;
+	icon: React.ReactNode;
+	paletteColor: string;
+	children: React.ReactNode;
+}
 
-	// Usa utilitários de tema seguindo padrão do shorter
+function ChartPanel({ title, icon, paletteColor, children }: ChartPanelProps) {
+	const theme = useTheme();
 	const shadows = createPresetShadows(theme);
 	const animations = createPresetAnimations(theme);
 
-	// Verificar se há dados de gráficos
+	return (
+		<Paper
+			elevation={0}
+			sx={{
+				p: 2,
+				height: '100%',
+				backgroundColor: theme.palette.background.paper,
+				borderRadius: 2,
+				boxShadow: shadows.card,
+				...animations.cardHover,
+				'&:hover': {
+					transform: 'translateY(-4px)',
+					boxShadow: shadows.cardHover,
+					borderColor: paletteColor
+				}
+			}}
+		>
+			<Typography
+				variant='h6'
+				sx={{ mb: 2, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1, color: paletteColor }}
+			>
+				{icon}
+				{title}
+			</Typography>
+			<Box sx={{ p: 0.5 }}>{children}</Box>
+		</Paper>
+	);
+}
+
+export function PublicCharts({ analyticsData }: PublicChartsProps) {
+	const theme = useTheme();
+	const isDark = theme.palette.mode === 'dark';
+	const animations = createPresetAnimations(theme);
+
 	if (!analyticsData.has_analytics || !analyticsData.charts) {
 		return <EmptyChartsState />;
 	}
 
 	const { charts } = analyticsData;
-	const hasDeviceData = charts.audience?.device_breakdown && charts.audience.device_breakdown.length > 0;
-	const hasCountryData = charts.geographic?.top_countries && charts.geographic.top_countries.length > 0;
 
-	// Se não há dados, renderizar fallback
-	if (!hasDeviceData && !hasCountryData) {
+	const hourData = (charts.temporal?.clicks_by_hour ?? []).map((d) => ({
+		hour: `${d.hour}h`,
+		clicks: d.clicks
+	}));
+
+	const dowData = (charts.temporal?.clicks_by_day_of_week ?? []).map((d) => ({
+		day: DOW_LABELS[d.day] ?? String(d.day),
+		clicks: d.clicks
+	}));
+
+	const hasHourData = hourData.some((d) => d.clicks > 0);
+	const hasDowData = dowData.some((d) => d.clicks > 0);
+	const hasDeviceData = (charts.audience?.device_breakdown?.length ?? 0) > 0;
+	const hasBrowserData = (charts.audience?.browser_breakdown?.length ?? 0) > 0;
+	const hasCountryData = (charts.geographic?.top_countries?.length ?? 0) > 0;
+
+	if (!hasHourData && !hasDowData && !hasDeviceData && !hasBrowserData && !hasCountryData) {
 		return <EmptyChartsState />;
 	}
 
 	return (
-		<Box
-			sx={{
-				py: { xs: 2, md: 3 },
-				...animations.fadeIn
-			}}
-		>
+		<Box sx={{ py: { xs: 2, md: 3 }, ...animations.fadeIn }}>
 			<Typography
 				variant='h5'
 				component='h2'
@@ -51,7 +95,6 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 					textAlign: 'center',
 					mb: 3,
 					fontWeight: 700,
-					// Usa gradiente de texto padronizado seguindo padrão do shorter
 					...createTextGradient(theme, 'primary'),
 					display: 'flex',
 					alignItems: 'center',
@@ -66,116 +109,160 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 				container
 				spacing={3}
 			>
-				{/* Gráfico de Dispositivos */}
-				{hasDeviceData ? (
+				{/* Linha 1: Cliques por Hora — largura total */}
+				{hasHourData ? (
 					<Grid
 						item
 						xs={12}
-						md={6}
 					>
-						<Paper
-							elevation={0}
-							sx={{
-								p: 2,
-								height: '100%',
-								// Background sólido consistente
-								backgroundColor: theme.palette.background.paper,
-								borderRadius: 2,
-								boxShadow: shadows.card,
-								// Usa animações padronizadas
-								...animations.cardHover,
-								'&:hover': {
-									transform: 'translateY(-4px)',
-									boxShadow: shadows.cardHover,
-									borderColor: theme.palette.primary.main
-								}
-							}}
-						>
-							<Typography
-								variant='h6'
-								sx={{
-									mb: 2,
-									fontWeight: 600,
-									display: 'flex',
-									alignItems: 'center',
-									gap: 1,
-									color: 'primary.main'
-								}}
-							>
+						<ChartPanel
+							title='Cliques por Hora'
+							icon={
 								<AppIcon
-									name='content.mobile'
+									intent='analytics'
 									size={20}
 								/>
-								Dispositivos
-							</Typography>
-							<Box sx={{ p: 0.5 }}>
-								<ApexChartWrapper
-									type='donut'
-									height={300}
-									{...formatPieChart(charts.audience!.device_breakdown!, 'device', 'clicks', isDark)}
-								/>
-							</Box>
-						</Paper>
+							}
+							paletteColor={theme.palette.primary.main}
+						>
+							<ApexChartWrapper
+								type='area'
+								height={250}
+								{...formatAreaChart(
+									hourData as Record<string, unknown>[],
+									'hour',
+									'clicks',
+									theme.palette.primary.main,
+									isDark
+								)}
+							/>
+						</ChartPanel>
 					</Grid>
 				) : null}
 
-				{/* Gráfico de Países */}
+				{/* Linha 2: Dia da Semana + Top Países */}
+				{hasDowData ? (
+					<Grid
+						item
+						xs={12}
+						md={hasCountryData ? 6 : 12}
+					>
+						<ChartPanel
+							title='Cliques por Dia da Semana'
+							icon={
+								<AppIcon
+									intent='analytics'
+									size={20}
+								/>
+							}
+							paletteColor={theme.palette.warning.main}
+						>
+							<ApexChartWrapper
+								type='bar'
+								height={300}
+								{...formatBarChart(
+									dowData as Record<string, unknown>[],
+									'day',
+									'clicks',
+									theme.palette.warning.main,
+									false,
+									isDark
+								)}
+							/>
+						</ChartPanel>
+					</Grid>
+				) : null}
+
 				{hasCountryData ? (
 					<Grid
 						item
 						xs={12}
-						md={6}
+						md={hasDowData ? 6 : 12}
 					>
-						<Paper
-							elevation={0}
-							sx={{
-								p: 2,
-								height: '100%',
-								// Background sólido consistente
-								backgroundColor: theme.palette.background.paper,
-								borderRadius: 2,
-								boxShadow: shadows.card,
-								// Usa animações padronizadas
-								...animations.cardHover,
-								'&:hover': {
-									transform: 'translateY(-4px)',
-									boxShadow: shadows.cardHover,
-									borderColor: theme.palette.success.main
-								}
-							}}
-						>
-							<Typography
-								variant='h6'
-								sx={{
-									mb: 2,
-									fontWeight: 600,
-									display: 'flex',
-									alignItems: 'center',
-									gap: 1,
-									color: 'success.main'
-								}}
-							>
+						<ChartPanel
+							title='Top Países'
+							icon={
 								<AppIcon
 									name='location.map'
 									size={20}
 								/>
-								Top Países
-							</Typography>
-							<Box sx={{ p: 0.5 }}>
-								<ApexChartWrapper
-									type='bar'
-									height={300}
-									{...formatBarChart(
-										charts.geographic!.top_countries!,
-										'country',
-										'clicks',
-										theme.palette.success.main,
-										true, // horizontal bars
-										isDark
-									)}
+							}
+							paletteColor={theme.palette.success.main}
+						>
+							<ApexChartWrapper
+								type='bar'
+								height={300}
+								{...formatBarChart(
+									(charts.geographic?.top_countries ?? []) as Record<string, unknown>[],
+									'country',
+									'clicks',
+									theme.palette.success.main,
+									true,
+									isDark
+								)}
+							/>
+						</ChartPanel>
+					</Grid>
+				) : null}
+
+				{/* Linha 3: Dispositivos + Browsers */}
+				{hasDeviceData ? (
+					<Grid
+						item
+						xs={12}
+						md={hasBrowserData ? 6 : 12}
+					>
+						<ChartPanel
+							title='Dispositivos'
+							icon={
+								<AppIcon
+									name='content.mobile'
+									size={20}
 								/>
-							</Box>
-						</Paper>
+							}
+							paletteColor={theme.palette.primary.main}
+						>
+							<ApexChartWrapper
+								type='donut'
+								height={300}
+								{...formatPieChart(
+									(charts.audience?.device_breakdown ?? []) as Record<string, unknown>[],
+									'device',
+									'clicks',
+									isDark
+								)}
+							/>
+						</ChartPanel>
+					</Grid>
+				) : null}
+
+				{hasBrowserData ? (
+					<Grid
+						item
+						xs={12}
+						md={hasDeviceData ? 6 : 12}
+					>
+						<ChartPanel
+							title='Browsers'
+							icon={
+								<AppIcon
+									intent='url'
+									size={20}
+								/>
+							}
+							paletteColor={theme.palette.info.main}
+						>
+							<ApexChartWrapper
+								type='donut'
+								height={300}
+								{...formatPieChart(
+									(charts.audience?.browser_breakdown ?? []) as Record<string, unknown>[],
+									'browser',
+									'clicks',
+									isDark
+								)}
+							/>
+						</ChartPanel>
 					</Grid>
 				) : null}
 			</Grid>
@@ -183,23 +270,13 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 	);
 }
 
-/**
- * 📊 FALLBACK PARA GRÁFICOS VAZIOS
- *
- * Componente de fallback consistente seguindo padrão visual do shorter
- */
 function EmptyChartsState() {
 	const theme = useTheme();
 	const shadows = createPresetShadows(theme);
 	const animations = createPresetAnimations(theme);
 
 	return (
-		<Box
-			sx={{
-				py: { xs: 2, md: 3 },
-				...animations.fadeIn
-			}}
-		>
+		<Box sx={{ py: { xs: 2, md: 3 }, ...animations.fadeIn }}>
 			<Box
 				sx={{
 					textAlign: 'center',
@@ -210,42 +287,15 @@ function EmptyChartsState() {
 					gap: 1.5
 				}}
 			>
-				{/* Ícone com gradiente aplicado diretamente */}
-				<Box
-					component='span'
-					sx={{
-						display: 'inline-flex',
-						background: createThemeGradient(theme, {
-							variant: 'primary',
-							direction: 'to-right'
-						}),
-						color: 'primary.main',
-						backgroundClip: 'text',
-						WebkitBackgroundClip: 'text',
-						WebkitTextFillColor: 'transparent',
-						// Fallback para navegadores sem suporte
-						'@supports not (background-clip: text)': {
-							color: theme.palette.primary.main,
-							WebkitTextFillColor: 'unset'
-						}
-					}}
-				>
-					<AppIcon
-						intent='chart'
-						size={28}
-						color='currentColor'
-					/>
-				</Box>
-
-				{/* Texto com gradiente */}
+				<AppIcon
+					intent='analytics'
+					size={28}
+					color={theme.palette.primary.main}
+				/>
 				<Typography
 					variant='h5'
 					component='h2'
-					sx={{
-						fontWeight: 700,
-						...createTextGradient(theme, 'primary'),
-						margin: 0
-					}}
+					sx={{ fontWeight: 700, ...createTextGradient(theme, 'primary'), margin: 0 }}
 				>
 					Gráficos de Analytics
 				</Typography>
@@ -256,7 +306,6 @@ function EmptyChartsState() {
 				sx={{
 					p: 4,
 					textAlign: 'center',
-					// Background sólido consistente
 					backgroundColor: theme.palette.background.paper,
 					borderRadius: 2,
 					boxShadow: shadows.card,
@@ -282,11 +331,7 @@ function EmptyChartsState() {
 
 				<Typography
 					variant='h5'
-					sx={{
-						mb: 2,
-						fontWeight: 600,
-						color: 'text.primary'
-					}}
+					sx={{ mb: 2, fontWeight: 600, color: 'text.primary' }}
 				>
 					Dados Insuficientes
 				</Typography>
@@ -294,52 +339,11 @@ function EmptyChartsState() {
 				<Typography
 					variant='body1'
 					color='text.secondary'
-					sx={{
-						maxWidth: 400,
-						mx: 'auto',
-						lineHeight: 1.6
-					}}
+					sx={{ maxWidth: 400, mx: 'auto', lineHeight: 1.6 }}
 				>
 					Este link ainda não possui dados suficientes para gerar gráficos. Os gráficos aparecerão após alguns
 					cliques serem registrados.
 				</Typography>
-
-				<Box
-					sx={{
-						mt: 4,
-						display: 'flex',
-						justifyContent: 'center',
-						gap: 2,
-						flexWrap: 'wrap'
-					}}
-				>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						<AppIcon
-							intent='url'
-							size={16}
-							color={theme.palette.info.main}
-						/>
-						<Typography
-							variant='body2'
-							color='info.main'
-						>
-							Dispositivos
-						</Typography>
-					</Box>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						<AppIcon
-							name='location.map'
-							size={16}
-							color={theme.palette.success.main}
-						/>
-						<Typography
-							variant='body2'
-							color='success.main'
-						>
-							Localização
-						</Typography>
-					</Box>
-				</Box>
 			</Paper>
 		</Box>
 	);
