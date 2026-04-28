@@ -508,7 +508,7 @@ export function TrafficSourceChart({
 												variant='body2'
 												color='text.secondary'
 											>
-												{channel.clicks} clicks ({channel.percentage.toFixed(1)}%)
+												{channel.clicks} clicks ({Number(channel.percentage).toFixed(1)}%)
 											</Typography>
 											<Typography
 												variant='body2'
@@ -520,7 +520,7 @@ export function TrafficSourceChart({
 												variant='caption'
 												color='text.secondary'
 											>
-												Sessão: {channel.avg_session_depth.toFixed(2)} clicks
+												Sessão: {Number(channel.avg_session_depth).toFixed(2)} clicks
 											</Typography>
 											{channel.avg_response_time > 0 && (
 												<Typography
@@ -528,7 +528,7 @@ export function TrafficSourceChart({
 													color='text.secondary'
 													sx={{ display: 'block' }}
 												>
-													Tempo: {channel.avg_response_time.toFixed(2)}s
+													Tempo: {Number(channel.avg_response_time).toFixed(2)}s
 												</Typography>
 											)}
 										</Box>
@@ -588,7 +588,7 @@ export function TrafficSourceChart({
 													variant='caption'
 													color='text.secondary'
 												>
-													Sessão: {source.avg_session_depth.toFixed(2)} clicks
+													Sessão: {Number(source.avg_session_depth).toFixed(2)} clicks
 												</Typography>
 											</Box>
 											<Box sx={{ textAlign: 'right' }}>
@@ -602,7 +602,7 @@ export function TrafficSourceChart({
 													variant='caption'
 													color='text.secondary'
 												>
-													{source.percentage.toFixed(1)}%
+													{Number(source.percentage).toFixed(1)}%
 												</Typography>
 											</Box>
 										</Box>
