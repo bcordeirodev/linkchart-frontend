@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail, Send } from 'lucide-react';
 import { Box, TextField, Button, Stack, CircularProgress, InputAdornment, Alert } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showErrorMessage } from '@/lib/store/messageSlice';
 import { authService } from '@/services';
+import { authTextFieldSx } from '@/lib/auth/forms/authFieldStyles';
 import { AuthLayout } from '@/shared/layout';
 
 // Schema de validação
@@ -28,6 +29,7 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
  */
 function ForgotPasswordPage() {
 	const dispatch = useAppDispatch();
+	const theme = useTheme();
 	const [loading, setLoading] = useState(false);
 	const [emailSent, setEmailSent] = useState(false);
 	const [sentEmail, setSentEmail] = useState('');
@@ -81,7 +83,7 @@ function ForgotPasswordPage() {
 					>
 						<Mail
 							{...ICON_LG}
-							style={{ color: 'var(--palette-primary-main, #1976d2)' }}
+							style={{ color: theme.palette.primary.main }}
 						/>
 
 						<Alert
@@ -155,51 +157,12 @@ function ForgotPasswordPage() {
 								<InputAdornment position='start'>
 									<Mail
 										{...ICON_LG}
-										style={{ color: '#5F6368' }}
+										style={{ color: theme.palette.text.secondary }}
 									/>
 								</InputAdornment>
 							)
 						}}
-						sx={{
-							'& .MuiOutlinedInput-root': {
-								borderRadius: 2,
-								backgroundColor: '#ffffff',
-								'& input': {
-									color: '#212121',
-									'&::placeholder': {
-										color: '#5F6368',
-										opacity: 1
-									}
-								},
-								'& fieldset': {
-									borderColor: alpha('#000000', 0.2)
-								},
-								'&:hover fieldset': {
-									borderColor: '#0A74DA'
-								},
-								'&.Mui-focused fieldset': {
-									borderColor: '#0A74DA'
-								},
-								'&.Mui-error fieldset': {
-									borderColor: '#d32f2f'
-								}
-							},
-							'& .MuiInputLabel-root': {
-								color: '#5F6368',
-								'&.Mui-focused': {
-									color: '#0A74DA'
-								},
-								'&.Mui-error': {
-									color: '#d32f2f'
-								}
-							},
-							'& .MuiFormHelperText-root': {
-								color: '#5F6368',
-								'&.Mui-error': {
-									color: '#d32f2f'
-								}
-							}
-						}}
+						sx={authTextFieldSx(theme)}
 					/>
 
 					{/* Submit Button */}
@@ -222,17 +185,8 @@ function ForgotPasswordPage() {
 						sx={{
 							mt: 2,
 							py: 1.5,
-							borderRadius: 2,
 							fontSize: '1.1rem',
-							fontWeight: 600,
-							textTransform: 'none',
-							background: 'linear-gradient(135deg, #0A74DA 0%, #0D47A1 100%)',
-							'&:hover': {
-								background: 'linear-gradient(135deg, #0D47A1 0%, #002171 100%)'
-							},
-							'&:disabled': {
-								background: '#E0E0E0'
-							}
+							fontWeight: 600
 						}}
 					>
 						{loading ? 'Enviando...' : 'Enviar instruções'}
