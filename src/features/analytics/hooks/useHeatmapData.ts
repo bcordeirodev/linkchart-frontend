@@ -107,9 +107,7 @@ export function useHeatmapData({
 
 		const totalClicks = heatmapData.reduce((sum, point) => sum + point.clicks, 0);
 		const maxClicks = Math.max(...heatmapData.map((point) => point.clicks));
-		const countries = Array.from(
-			new Set(heatmapData.map((point) => point.country).filter(Boolean))
-		);
+		const countries = Array.from(new Set(heatmapData.map((point) => point.country).filter(Boolean)));
 		const cities = Array.from(new Set(heatmapData.map((point) => point.city).filter(Boolean)));
 		const avgClicksPerPoint = totalClicks / heatmapData.length;
 

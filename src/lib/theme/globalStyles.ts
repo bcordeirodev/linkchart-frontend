@@ -29,7 +29,19 @@ export const applyGlobalStyles = () => {
 		html {
 			scroll-behavior: smooth;
 		}
-		
+
+		/* Evita scroll horizontal acidental causado por elementos
+		   que usam 100vw, larguras fixas ou overflow não tratado */
+		html, body {
+			max-width: 100%;
+			overflow-x: hidden;
+		}
+
+		#app {
+			max-width: 100%;
+			overflow-x: hidden;
+		}
+
 		/* Focus outline padronizado para acessibilidade */
 		:focus-visible {
 			outline: 2px solid var(--color-primary);

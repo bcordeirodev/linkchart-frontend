@@ -88,7 +88,8 @@ function PublicLayout({
 			className={className}
 			sx={{
 				minHeight: '100vh',
-				width: '100vw',
+				width: '100%',
+				maxWidth: '100%',
 				margin: 0,
 				padding: 0,
 				background: layoutConfig.background,

@@ -18,9 +18,7 @@ export function PublicAnalyticsCtaStrip() {
 			}}
 		>
 			<Box>
-				<Typography
-					sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', mb: 0.5 }}
-				>
+				<Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', mb: 0.5 }}>
 					Ver analytics completos.
 				</Typography>
 				<Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>

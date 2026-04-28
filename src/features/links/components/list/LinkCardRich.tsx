@@ -1,6 +1,7 @@
 import { BarChart3, CalendarDays, ExternalLink, MousePointerClick } from 'lucide-react';
 import { ICON_SM } from '@/lib/theme/iconDefaults';
 import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';
+import { keyframes } from '@mui/system';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCallback } from 'react';
@@ -18,6 +19,15 @@ import { LinkHealthBadge } from './LinkHealthBadge';
 import { LinkPreviewThumb } from './LinkPreviewThumb';
 import { LinkSparkline } from './LinkSparkline';
 import { LinkTrendBadge } from './LinkTrendBadge';
+
+const analyticsPulse = keyframes`
+	0%, 100% {
+		box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.35);
+	}
+	50% {
+		box-shadow: 0 0 0 6px rgba(25, 118, 210, 0);
+	}
+`;
 
 interface LinkCardRichProps {
 	link: LinkResponse;
@@ -68,7 +78,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 			}}
 		>
 			{/* Linha 1 — Header */}
-			<Box sx={{ px: 3, py: 1.5, display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+			<Box sx={{ px: 3, py: 1, display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
 				<LinkPreviewThumb
 					preview={meta?.preview}
 					size={24}
@@ -92,7 +102,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 						onClick={() => copy(link.short_url)}
 						sx={{
 							px: 1.5,
-							py: 0.5,
+							py: 0.25,
 							bgcolor: 'rgba(25, 118, 210, 0.08)',
 							borderRadius: '20px',
 							border: '1px solid',
@@ -102,7 +112,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 							color: 'primary.main',
 							fontWeight: 600,
 							cursor: 'pointer',
-							maxWidth: 220,
+							maxWidth: 360,
 							overflow: 'hidden',
 							textOverflow: 'ellipsis',
 							whiteSpace: 'nowrap',
@@ -114,29 +124,32 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 					</Box>
 				</Tooltip>
 
-				<Button
-					size='small'
-					variant='contained'
-					color='primary'
-					startIcon={<BarChart3 {...ICON_SM} />}
-					onClick={(e) => {
-						e.stopPropagation();
-						navigate(`/link/analytic/${link.id}`);
-					}}
-					sx={{
-						flexShrink: 0,
-						borderRadius: '20px',
-						textTransform: 'none',
-						fontWeight: 600,
-						fontSize: '0.75rem',
-						px: 1.5,
-						py: 0.5,
-						boxShadow: 'none',
-						'&:hover': { boxShadow: 'none' }
-					}}
-				>
-					Analytics
-				</Button>
+				<Tooltip title='Analytics'>
+					<Button
+						size='small'
+						variant='contained'
+						color='primary'
+						onClick={(e) => {
+							e.stopPropagation();
+							navigate(`/link/analytic/${link.id}`);
+						}}
+						sx={{
+							flexShrink: 0,
+							minWidth: 0,
+							borderRadius: '20px',
+							px: 1,
+							py: 0.25,
+							boxShadow: 'none',
+							animation: `${analyticsPulse} 2.4s ease-in-out infinite`,
+							'@media (prefers-reduced-motion: reduce)': {
+								animation: 'none'
+							},
+							'&:hover': { boxShadow: 'none', animation: 'none' }
+						}}
+					>
+						<BarChart3 {...ICON_SM} />
+					</Button>
+				</Tooltip>
 
 				<Stack
 					direction='row'
@@ -160,7 +173,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 			<Divider />
 
 			{/* Linha 2 — URL original + thumb OG */}
-			<Box sx={{ px: 3, py: 1.5, display: 'flex', alignItems: 'center', gap: 2 }}>
+			<Box sx={{ px: 3, py: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
 				<ExternalLink
 					size={14}
 					strokeWidth={1.5}
@@ -179,7 +192,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 						component='img'
 						src={meta.preview.og_image_url}
 						alt={meta.preview.og_title ?? ''}
-						sx={{ width: 80, height: 60, objectFit: 'cover', borderRadius: 1, flexShrink: 0 }}
+						sx={{ width: 64, height: 40, objectFit: 'cover', borderRadius: 1, flexShrink: 0 }}
 						onError={(e) => {
 							(e.target as HTMLImageElement).style.display = 'none';
 						}}
@@ -190,7 +203,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 			<Divider />
 
 			{/* Linha 3 — Métricas */}
-			<Box sx={{ px: 3, py: 1.5, display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
+			<Box sx={{ px: 3, py: 1, display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
 				{meta?.sparkline?.length ? (
 					<Box sx={{ flexShrink: 0 }}>
 						<LinkSparkline

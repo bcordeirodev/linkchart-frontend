@@ -14,16 +14,8 @@ import { PublicAnalyticsSkeleton } from '@/shared/ui/feedback/skeletons';
 
 function PublicAnalyticsPage() {
 	const { slug } = useParams<{ slug: string }>();
-	const {
-		linkData,
-		analyticsData,
-		loading,
-		error,
-		debugInfo,
-		handleCopyLink,
-		handleCreateLink,
-		handleVisitLink
-	} = usePublicAnalytics({ slug });
+	const { linkData, analyticsData, loading, error, debugInfo, handleCopyLink, handleCreateLink, handleVisitLink } =
+		usePublicAnalytics({ slug });
 
 	const actions = useMemo(
 		() => ({ handleCopyLink, handleCreateLink, handleVisitLink }),
@@ -85,7 +77,10 @@ function PublicAnalyticsPage() {
 					sx={{ position: 'relative', zIndex: 1, py: { xs: 4, md: 6 }, pb: 8 }}
 				>
 					<Stack spacing={2}>
-						<Fade in timeout={400}>
+						<Fade
+							in
+							timeout={400}
+						>
 							<Typography
 								sx={{
 									fontSize: '0.6875rem',
@@ -99,7 +94,10 @@ function PublicAnalyticsPage() {
 							</Typography>
 						</Fade>
 
-						<Fade in timeout={600}>
+						<Fade
+							in
+							timeout={600}
+						>
 							<Box>
 								<LinkInfoCard
 									linkData={linkData}
@@ -108,13 +106,19 @@ function PublicAnalyticsPage() {
 							</Box>
 						</Fade>
 
-						<Fade in timeout={900}>
+						<Fade
+							in
+							timeout={900}
+						>
 							<Box>
 								<PublicMetrics analyticsData={analyticsData} />
 							</Box>
 						</Fade>
 
-						<Fade in timeout={1200}>
+						<Fade
+							in
+							timeout={1200}
+						>
 							<Box>
 								<PublicAnalyticsCtaStrip />
 							</Box>
