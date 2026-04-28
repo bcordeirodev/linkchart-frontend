@@ -60,7 +60,7 @@ function PublicLayout({
 	className
 }: PublicLayoutProps) {
 	const theme = useTheme();
-	const mainTheme = useMainTheme();
+	useMainTheme();
 
 	const layoutConfig = useMemo(() => {
 		const configs = {

@@ -107,11 +107,11 @@ export function URLShortenerForm({ onSuccess, onError, loading: externalLoading 
             sx={inputSx}
           />
         </Box>
-        {errors.originalUrl && (
+        {errors.originalUrl ? (
           <Typography sx={{ fontSize: '0.75rem', color: '#f87171', mt: 0.5, pl: 0.5 }}>
             {errors.originalUrl.message}
           </Typography>
-        )}
+        ) : null}
       </Box>
 
       {/* Título + Slug — grid 2 colunas */}
@@ -160,11 +160,11 @@ export function URLShortenerForm({ onSuccess, onError, loading: externalLoading 
               sx={inputSx}
             />
           </Box>
-          {errors.customSlug && (
+          {errors.customSlug ? (
             <Typography sx={{ fontSize: '0.6875rem', color: '#f87171', mt: 0.5, pl: 0.5 }}>
               {errors.customSlug.message}
             </Typography>
-          )}
+          ) : null}
         </Box>
       </Box>
 

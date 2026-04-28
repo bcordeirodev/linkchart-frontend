@@ -14,7 +14,9 @@ export function useShorter() {
 
   useEffect(() => {
     return () => {
-      if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current);
+      if (redirectTimerRef.current) {
+        clearTimeout(redirectTimerRef.current);
+      }
     };
   }, []);
 
@@ -34,6 +36,7 @@ export function useShorter() {
             state: { fromShorter: true, newLink: true, linkData: res }
           });
         } catch (err) {
+          // eslint-disable-next-line no-console
           console.error('Erro ao redirecionar:', err);
           setError('Erro ao redirecionar para analytics');
           setIsRedirecting(false);
