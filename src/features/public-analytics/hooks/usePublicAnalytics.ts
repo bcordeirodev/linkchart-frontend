@@ -51,7 +51,8 @@ export function usePublicAnalytics({ slug }: UsePublicAnalyticsProps): UsePublic
 					api.get(`/api/public/analytics/${slug}`)
 				]);
 
-				const linkDataResult = (linkResponse as any).data;
+				// ApiClient já desempacota o envelope {data: ...} automaticamente
+				const linkDataResult = linkResponse as any;
 				const analyticsDataResult = analyticsResponse as any;
 
 				// Validação dos dados
