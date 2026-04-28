@@ -32,9 +32,9 @@ const subSx = {
 
 export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
 	const createdDate = analyticsData.created_at ? new Date(analyticsData.created_at) : null;
-	const validDate = createdDate && !isNaN(createdDate.getTime());
-	const dateLabel = validDate ? format(createdDate!, 'dd/MM/yyyy', { locale: ptBR }) : '—';
-	const timeLabel = validDate ? format(createdDate!, 'HH:mm', { locale: ptBR }) : '';
+	const isValid = createdDate !== null && !isNaN(createdDate.getTime());
+	const dateLabel = isValid ? format(createdDate, 'dd/MM/yyyy', { locale: ptBR }) : '—';
+	const timeLabel = isValid ? format(createdDate, 'HH:mm', { locale: ptBR }) : '';
 
 	return (
 		<Box
