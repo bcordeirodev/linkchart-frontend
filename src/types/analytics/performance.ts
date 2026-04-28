@@ -20,10 +20,6 @@ export interface LinkPerformanceDashboard {
 	avg_response_time?: number;
 	success_rate?: number;
 	total_links?: number;
-	performance_score?: number;
-	uptime_percentage?: number;
-	clicks_per_hour?: number;
-	visitor_retention?: number;
 
 	topReferrers?: {
 		referrer: string;

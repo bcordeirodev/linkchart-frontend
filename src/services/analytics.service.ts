@@ -92,10 +92,6 @@ export default class AnalyticsService extends BaseService {
 				unique_visitors: metrics.unique_visitors || 0,
 				avg_response_time: metrics.avg_response_time || 0,
 				success_rate: metrics.success_rate || 100,
-				performance_score: metrics.success_rate || 0,
-				uptime_percentage: 100,
-				clicks_per_hour: 0,
-				visitor_retention: 0,
 				total_links: 1,
 				summary: {
 					total_redirects_24h: metrics.total_clicks || 0,
@@ -137,10 +133,6 @@ export default class AnalyticsService extends BaseService {
 			unique_visitors: 0,
 			avg_response_time: 0,
 			success_rate: 100,
-			performance_score: 0,
-			uptime_percentage: 100,
-			clicks_per_hour: 0,
-			visitor_retention: 0,
 			total_links: 0,
 			summary: {
 				total_redirects_24h: 0,

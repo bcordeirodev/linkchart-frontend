@@ -1,4 +1,4 @@
-import { TrendingUp, Globe, CheckCircle, Zap } from 'lucide-react';
+import { CheckCircle, Zap } from 'lucide-react';
 import { Grid, Box, Typography } from '@mui/material';
 
 import { ICON_LG } from '@/lib/theme/iconDefaults';
@@ -12,10 +12,6 @@ interface PerformanceMetricsProps {
 		unique_visitors?: number;
 		success_rate?: number;
 		avg_response_time?: number;
-		performance_score?: number;
-		uptime_percentage?: number;
-		clicks_per_hour?: number;
-		visitor_retention?: number;
 		total_links?: number;
 	};
 	showTitle?: boolean;
@@ -33,63 +29,10 @@ export function PerformanceMetrics({
 	title = 'Métricas de Performance'
 }: PerformanceMetricsProps) {
 	// Cálculos das métricas usando dados reais do backend
-	const clicks24h = performanceData?.total_redirects_24h || 0;
-	const uniqueVisitors = performanceData?.unique_visitors || 0;
 	const successRate = Math.round(performanceData?.success_rate || 100);
 	const responseTime = Math.round(performanceData?.avg_response_time || 0);
-	const performanceScore = Math.round(performanceData?.performance_score || 0);
-	const uptimePercentage = Math.round(performanceData?.uptime_percentage || 100);
-	const clicksPerHour = Math.round(performanceData?.clicks_per_hour || 0);
-	const visitorRetention = Math.round(performanceData?.visitor_retention || 0);
 
 	const metrics = [
-		{
-			id: 'performance_score',
-			title: 'Score Performance',
-			value: `${performanceScore}`,
-			icon: <CheckCircle />,
-			color:
-				performanceScore >= 90
-					? ('success' as const)
-					: performanceScore >= 70
-						? ('info' as const)
-						: ('warning' as const),
-			subtitle: 'pontuação geral'
-		},
-		{
-			id: 'uptime_percentage',
-			title: 'Uptime Real',
-			value: `${uptimePercentage}%`,
-			icon: <CheckCircle />,
-			color:
-				uptimePercentage >= 99
-					? ('success' as const)
-					: uptimePercentage >= 95
-						? ('info' as const)
-						: ('warning' as const),
-			subtitle: 'disponibilidade'
-		},
-		{
-			id: 'clicks_per_hour',
-			title: 'Cliques/Hora',
-			value: clicksPerHour.toLocaleString(),
-			icon: <TrendingUp />,
-			color: 'primary' as const,
-			subtitle: 'taxa horária'
-		},
-		{
-			id: 'visitor_retention',
-			title: 'Retenção',
-			value: `${visitorRetention}%`,
-			icon: <Globe {...ICON_LG} />,
-			color:
-				visitorRetention >= 80
-					? ('success' as const)
-					: visitorRetention >= 60
-						? ('info' as const)
-						: ('warning' as const),
-			subtitle: 'visitantes únicos'
-		},
 		{
 			id: 'response_time',
 			title: 'Tempo Resposta',

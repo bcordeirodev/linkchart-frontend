@@ -9,7 +9,7 @@ import { AudienceAnalysis } from '@/features/analytics/components/audience/Audie
 import { GeographicAnalysis } from '@/features/analytics/components/geographic/GeographicAnalysis';
 import { HeatmapAnalysis } from '@/features/analytics/components/heatmap/HeatmapAnalysis';
 import { InsightsAnalysis } from '@/features/analytics/components/insights/InsightsAnalysis';
-import { PerformanceAnalysis } from '@/features/analytics/components/perfomance/PerformanceAnalysis';
+import { PerformanceAnalysis } from '@/features/analytics/components/performance/PerformanceAnalysis';
 import { TemporalAnalysis } from '@/features/analytics/components/temporal';
 import TabDescription from '@/shared/ui/base/TabDescription';
 import { TabPanel } from '@/shared/ui/base/TabPanel';
