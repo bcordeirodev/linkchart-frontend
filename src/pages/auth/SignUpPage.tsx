@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, User, Mail, Lock, CheckCircle } from 'lucide-react';
 import { Box, TextField, Button, Stack, CircularProgress, InputAdornment, IconButton } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -15,6 +15,7 @@ import { AuthLayout } from '@/shared/layout';
 
 import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
 import authRoles from '../../lib/auth/authRoles';
+import { authTextFieldSx } from '../../lib/auth/forms/authFieldStyles';
 
 // Schema de validação com Zod
 const signUpSchema = z
@@ -52,6 +53,7 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 function SignUpPage() {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
+	const theme = useTheme();
 	const [loading, setLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -139,51 +141,12 @@ function SignUpPage() {
 									<InputAdornment position='start'>
 										<User
 											{...ICON_LG}
-											style={{ color: '#5F6368' }}
+											style={{ color: theme.palette.text.secondary }}
 										/>
 									</InputAdornment>
 								)
 							}}
-							sx={{
-								'& .MuiOutlinedInput-root': {
-									borderRadius: 2,
-									backgroundColor: '#ffffff',
-									'& input': {
-										color: '#212121',
-										'&::placeholder': {
-											color: '#5F6368',
-											opacity: 1
-										}
-									},
-									'& fieldset': {
-										borderColor: alpha('#000000', 0.2)
-									},
-									'&:hover fieldset': {
-										borderColor: '#0A74DA'
-									},
-									'&.Mui-focused fieldset': {
-										borderColor: '#0A74DA'
-									},
-									'&.Mui-error fieldset': {
-										borderColor: '#d32f2f'
-									}
-								},
-								'& .MuiInputLabel-root': {
-									color: '#5F6368',
-									'&.Mui-focused': {
-										color: '#0A74DA'
-									},
-									'&.Mui-error': {
-										color: '#d32f2f'
-									}
-								},
-								'& .MuiFormHelperText-root': {
-									color: '#5F6368',
-									'&.Mui-error': {
-										color: '#d32f2f'
-									}
-								}
-							}}
+							sx={authTextFieldSx(theme)}
 						/>
 
 						{/* Email */}
@@ -200,51 +163,12 @@ function SignUpPage() {
 									<InputAdornment position='start'>
 										<Mail
 											{...ICON_LG}
-											style={{ color: '#5F6368' }}
+											style={{ color: theme.palette.text.secondary }}
 										/>
 									</InputAdornment>
 								)
 							}}
-							sx={{
-								'& .MuiOutlinedInput-root': {
-									borderRadius: 2,
-									backgroundColor: '#ffffff',
-									'& input': {
-										color: '#212121',
-										'&::placeholder': {
-											color: '#5F6368',
-											opacity: 1
-										}
-									},
-									'& fieldset': {
-										borderColor: alpha('#000000', 0.2)
-									},
-									'&:hover fieldset': {
-										borderColor: '#0A74DA'
-									},
-									'&.Mui-focused fieldset': {
-										borderColor: '#0A74DA'
-									},
-									'&.Mui-error fieldset': {
-										borderColor: '#d32f2f'
-									}
-								},
-								'& .MuiInputLabel-root': {
-									color: '#5F6368',
-									'&.Mui-focused': {
-										color: '#0A74DA'
-									},
-									'&.Mui-error': {
-										color: '#d32f2f'
-									}
-								},
-								'& .MuiFormHelperText-root': {
-									color: '#5F6368',
-									'&.Mui-error': {
-										color: '#d32f2f'
-									}
-								}
-							}}
+							sx={authTextFieldSx(theme)}
 						/>
 
 						{/* Senha */}
@@ -264,7 +188,7 @@ function SignUpPage() {
 									<InputAdornment position='start'>
 										<Lock
 											{...ICON_LG}
-											style={{ color: '#5F6368' }}
+											style={{ color: theme.palette.text.secondary }}
 										/>
 									</InputAdornment>
 								),
@@ -274,53 +198,14 @@ function SignUpPage() {
 											onClick={() => setShowPassword(!showPassword)}
 											edge='end'
 											disabled={loading}
-											sx={{ color: '#5F6368' }}
+											sx={{ color: theme.palette.text.secondary }}
 										>
 											{showPassword ? <EyeOff {...ICON_MD} /> : <Eye {...ICON_MD} />}
 										</IconButton>
 									</InputAdornment>
 								)
 							}}
-							sx={{
-								'& .MuiOutlinedInput-root': {
-									borderRadius: 2,
-									backgroundColor: '#ffffff',
-									'& input': {
-										color: '#212121',
-										'&::placeholder': {
-											color: '#5F6368',
-											opacity: 1
-										}
-									},
-									'& fieldset': {
-										borderColor: alpha('#000000', 0.2)
-									},
-									'&:hover fieldset': {
-										borderColor: '#0A74DA'
-									},
-									'&.Mui-focused fieldset': {
-										borderColor: '#0A74DA'
-									},
-									'&.Mui-error fieldset': {
-										borderColor: '#d32f2f'
-									}
-								},
-								'& .MuiInputLabel-root': {
-									color: '#5F6368',
-									'&.Mui-focused': {
-										color: '#0A74DA'
-									},
-									'&.Mui-error': {
-										color: '#d32f2f'
-									}
-								},
-								'& .MuiFormHelperText-root': {
-									color: '#5F6368',
-									'&.Mui-error': {
-										color: '#d32f2f'
-									}
-								}
-							}}
+							sx={authTextFieldSx(theme)}
 						/>
 
 						{/* Confirmar Senha */}
@@ -337,7 +222,7 @@ function SignUpPage() {
 									<InputAdornment position='start'>
 										<CheckCircle
 											{...ICON_LG}
-											style={{ color: '#5F6368' }}
+											style={{ color: theme.palette.text.secondary }}
 										/>
 									</InputAdornment>
 								),
@@ -347,53 +232,14 @@ function SignUpPage() {
 											onClick={() => setShowConfirmPassword(!showConfirmPassword)}
 											edge='end'
 											disabled={loading}
-											sx={{ color: '#5F6368' }}
+											sx={{ color: theme.palette.text.secondary }}
 										>
 											{showConfirmPassword ? <EyeOff {...ICON_MD} /> : <Eye {...ICON_MD} />}
 										</IconButton>
 									</InputAdornment>
 								)
 							}}
-							sx={{
-								'& .MuiOutlinedInput-root': {
-									borderRadius: 2,
-									backgroundColor: '#ffffff',
-									'& input': {
-										color: '#212121',
-										'&::placeholder': {
-											color: '#5F6368',
-											opacity: 1
-										}
-									},
-									'& fieldset': {
-										borderColor: alpha('#000000', 0.2)
-									},
-									'&:hover fieldset': {
-										borderColor: '#0A74DA'
-									},
-									'&.Mui-focused fieldset': {
-										borderColor: '#0A74DA'
-									},
-									'&.Mui-error fieldset': {
-										borderColor: '#d32f2f'
-									}
-								},
-								'& .MuiInputLabel-root': {
-									color: '#5F6368',
-									'&.Mui-focused': {
-										color: '#0A74DA'
-									},
-									'&.Mui-error': {
-										color: '#d32f2f'
-									}
-								},
-								'& .MuiFormHelperText-root': {
-									color: '#5F6368',
-									'&.Mui-error': {
-										color: '#d32f2f'
-									}
-								}
-							}}
+							sx={authTextFieldSx(theme)}
 						/>
 
 						{/* Submit Button */}
@@ -414,17 +260,8 @@ function SignUpPage() {
 							sx={{
 								mt: 2,
 								py: 1.5,
-								borderRadius: 2,
 								fontSize: '1.1rem',
-								fontWeight: 600,
-								textTransform: 'none',
-								background: 'linear-gradient(135deg, #0A74DA 0%, #0D47A1 100%)',
-								'&:hover': {
-									background: 'linear-gradient(135deg, #0D47A1 0%, #002171 100%)'
-								},
-								'&:disabled': {
-									background: '#E0E0E0'
-								}
+								fontWeight: 600
 							}}
 						>
 							{loading ? 'Criando conta...' : 'Criar conta gratuita'}
