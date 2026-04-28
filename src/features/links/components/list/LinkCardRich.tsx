@@ -39,10 +39,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
-	const { copied, copy } = useClipboard({
-		timeout: 1500,
-		onSuccess: () => dispatch(showMessage({ message: 'Link copiado!', variant: 'success' }))
-	});
+	const { copied, copy } = useClipboard({ timeout: 1500 });
 
 	const handleDelete = useCallback(async () => {
 		if (window.confirm('Tem certeza que deseja remover este link? Esta ação não pode ser desfeita.')) {

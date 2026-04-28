@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 import { authService } from '@/services';
 import { AuthLayout } from '@/shared/layout';
 
@@ -45,7 +45,6 @@ function EmailVerificationPendingPage() {
 
 				// Se já está verificado, redirecionar
 				if (status.email_verified) {
-					dispatch(showSuccessMessage('Email já verificado! Redirecionando...'));
 					setTimeout(() => navigate('/link'), 1500);
 				}
 			} catch (_error) {
@@ -54,7 +53,7 @@ function EmailVerificationPendingPage() {
 		};
 
 		checkVerificationStatus();
-	}, [dispatch, navigate]);
+	}, [navigate]);
 
 	const handleResendEmail = async () => {
 		try {
@@ -63,7 +62,6 @@ function EmailVerificationPendingPage() {
 			const result = await authService.resendVerificationEmail();
 
 			if (result.success) {
-				dispatch(showSuccessMessage('Email de verificação reenviado com sucesso!'));
 				// Atualizar status
 				const status = await authService.getEmailVerificationStatus();
 				setVerificationStatus(status);

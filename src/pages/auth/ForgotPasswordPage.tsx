@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 import { authService } from '@/services';
 import { AuthLayout } from '@/shared/layout';
 
@@ -50,7 +50,6 @@ function ForgotPasswordPage() {
 			if (result.success) {
 				setEmailSent(true);
 				setSentEmail(data.email);
-				dispatch(showSuccessMessage(result.message));
 			} else {
 				dispatch(showErrorMessage(result.message));
 			}

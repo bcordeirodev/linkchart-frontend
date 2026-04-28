@@ -4,7 +4,7 @@ import { ICON_MD } from '@/lib/theme/iconDefaults';
 import { useState, useEffect } from 'react';
 
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 import { authService } from '@/services';
 
 interface EmailVerificationBannerProps {
@@ -52,7 +52,6 @@ export function EmailVerificationBanner({ onVerificationStatusChange }: EmailVer
 			const result = await authService.resendVerificationEmail();
 
 			if (result.success) {
-				dispatch(showSuccessMessage(result.message));
 				setCanResend(false); // Desabilitar botão temporariamente
 
 				// Reabilitar após 2 minutos

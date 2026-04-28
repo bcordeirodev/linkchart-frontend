@@ -58,14 +58,7 @@ export function PasswordChangeForm() {
 	const onSubmit = useCallback(
 		async (data: PasswordChangeFormData) => {
 			try {
-				const response = await authService.changePassword(data);
-
-				dispatch(
-					showMessage({
-						message: response.message,
-						variant: 'success'
-					})
-				);
+				await authService.changePassword(data);
 
 				reset(); // Limpa o formulário após sucesso
 			} catch (error: unknown) {

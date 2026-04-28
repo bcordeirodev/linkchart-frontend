@@ -9,7 +9,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 import { authService } from '@/services';
 import { AuthLayout } from '@/shared/layout';
 
@@ -83,8 +83,6 @@ function ResetPasswordPage() {
 			});
 
 			if (result.success) {
-				dispatch(showSuccessMessage(result.message));
-
 				// Redirecionar para login após sucesso
 				setTimeout(() => {
 					navigate('/sign-in', {

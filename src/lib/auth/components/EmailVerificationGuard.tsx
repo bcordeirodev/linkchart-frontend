@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 import { authService } from '@/services';
 
 interface EmailVerificationGuardProps {
@@ -85,7 +85,6 @@ export function EmailVerificationGuard({ children }: EmailVerificationGuardProps
 			const result = await authService.resendVerificationEmail();
 
 			if (result.success) {
-				dispatch(showSuccessMessage('Email de verificação reenviado com sucesso!'));
 				await checkEmailVerification();
 			} else {
 				dispatch(showErrorMessage(result.message || 'Erro ao reenviar email'));

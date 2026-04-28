@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 import { authService } from '@/services';
 import { AuthLayout } from '@/shared/layout';
 
@@ -44,8 +44,6 @@ function VerifyEmailPage() {
 				setStatus(result.type === 'already_verified' ? 'already_verified' : 'success');
 				setMessage(result.message);
 
-				dispatch(showSuccessMessage(result.message));
-
 				setTimeout(() => {
 					navigate('/link');
 				}, 1000);
@@ -66,9 +64,7 @@ function VerifyEmailPage() {
 
 			const result = await authService.resendVerificationEmail();
 
-			if (result.success) {
-				dispatch(showSuccessMessage(result.message));
-			} else {
+			if (!result.success) {
 				dispatch(showErrorMessage(result.message));
 			}
 		} catch (error) {

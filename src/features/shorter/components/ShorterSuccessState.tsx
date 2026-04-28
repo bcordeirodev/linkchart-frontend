@@ -1,8 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { CheckCircle2 } from 'lucide-react';
 
-import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@/lib/store/messageSlice';
 import useClipboard from '@/hooks/useClipboard';
 import { ICON_LG } from '@/lib/theme/iconDefaults';
 
@@ -12,11 +10,7 @@ interface ShorterSuccessStateProps {
 }
 
 export function ShorterSuccessState({ shortUrl, onReset }: ShorterSuccessStateProps) {
-	const dispatch = useAppDispatch();
-	const { copy } = useClipboard({
-		timeout: 1500,
-		onSuccess: () => dispatch(showMessage({ message: 'Link copiado!', variant: 'success' }))
-	});
+	const { copy } = useClipboard({ timeout: 1500 });
 
 	return (
 		<Box

@@ -5,7 +5,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 
 import { getSessionRedirectUrl, resetSessionRedirectUrl } from '@/lib/auth/sessionRedirectUrl';
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 
 import { useAuth } from '../AuthContext';
 
@@ -77,19 +77,13 @@ function SimpleSignInForm({ onLogin }: { onLogin: (email: string, password: stri
 		try {
 			await onLogin(email, password);
 
-			// Sucesso no login
-			dispatch(showSuccessMessage('Login realizado com sucesso! Redirecionando...'));
-
 			// Navegação após login bem-sucedido
 			const redirectUrl = getSessionRedirectUrl();
 			const targetUrl = redirectUrl || '/links';
 
 			resetSessionRedirectUrl();
 
-			// Pequeno delay para mostrar a mensagem de sucesso
-			setTimeout(() => {
-				navigate(targetUrl);
-			}, 1000);
+			navigate(targetUrl);
 		} catch (error: unknown) {
 			// Tratamento de erro melhorado
 			let errorMessage = 'Erro ao fazer login. Tente novamente.';

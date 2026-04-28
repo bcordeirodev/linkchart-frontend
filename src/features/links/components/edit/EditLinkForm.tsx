@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 
 import { AppIcon } from '@/shared/ui/icons';
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 import { linkService } from '@/services';
 import { LinkFormSkeleton } from '@/shared/ui/feedback/skeletons';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
@@ -140,8 +140,6 @@ export function EditLinkForm({ linkId, onSuccess, showBackButton = false }: Edit
 			};
 
 			const response = await linkService.update(linkId, payload);
-
-			dispatch(showSuccessMessage(`Link "${response.title || payload.title}" atualizado com sucesso!`));
 
 			onSuccess?.(response);
 

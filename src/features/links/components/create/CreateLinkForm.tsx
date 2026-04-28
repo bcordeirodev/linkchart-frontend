@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 
 import { AppIcon } from '@/shared/ui/icons';
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 import { linkService } from '@/services';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
@@ -83,9 +83,6 @@ export function CreateLinkForm({ onSuccess, showBackButton = false }: CreateLink
 
 			// O linkService retorna LinkResponse diretamente
 			setSuccess(true);
-
-			// Mostrar mensagem de sucesso
-			dispatch(showSuccessMessage(`Link "${response.title || payload.title}" criado com sucesso!`));
 
 			onSuccess?.(response);
 

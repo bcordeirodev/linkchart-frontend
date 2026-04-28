@@ -2,8 +2,6 @@ import { CircularProgress, IconButton, Stack, Tooltip } from '@mui/material';
 import { BarChart3, ClipboardCopy } from 'lucide-react';
 import { ICON_MD } from '@/lib/theme/iconDefaults';
 
-import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@/lib/store/messageSlice';
 import useClipboard from '@/hooks/useClipboard';
 
 interface LinkActionsInlineProps {
@@ -12,11 +10,7 @@ interface LinkActionsInlineProps {
 }
 
 export function LinkActionsInline({ shortUrl, onAnalytics }: LinkActionsInlineProps) {
-	const dispatch = useAppDispatch();
-	const { copied, copy } = useClipboard({
-		timeout: 1500,
-		onSuccess: () => dispatch(showMessage({ message: 'Link copiado!', variant: 'success' }))
-	});
+	const { copied, copy } = useClipboard({ timeout: 1500 });
 
 	return (
 		<Stack

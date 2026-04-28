@@ -72,12 +72,6 @@ export function useLinks() {
 				const response = await linkService.save(data);
 				linksCache = null;
 				await loadLinks(true);
-				dispatch(
-					showMessage({
-						message: 'Link criado com sucesso!',
-						variant: 'success'
-					})
-				);
 				return response;
 			} catch (err) {
 				const errorMessage = 'Erro ao criar link';
@@ -104,12 +98,6 @@ export function useLinks() {
 			try {
 				const updatedLink = await linkService.update(id, data);
 				setLinks((prev) => prev.map((link) => (link.id === id ? updatedLink : link)));
-				dispatch(
-					showMessage({
-						message: 'Link atualizado com sucesso!',
-						variant: 'success'
-					})
-				);
 				return updatedLink;
 			} catch (err) {
 				const errorMessage = 'Erro ao atualizar link';
@@ -136,12 +124,6 @@ export function useLinks() {
 			try {
 				await linkService.remove(id);
 				setLinks((prev) => prev.filter((link) => link.id !== id));
-				dispatch(
-					showMessage({
-						message: 'Link removido com sucesso!',
-						variant: 'success'
-					})
-				);
 			} catch (err) {
 				const errorMessage = 'Erro ao remover link';
 				setError(errorMessage);

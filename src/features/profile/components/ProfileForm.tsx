@@ -69,12 +69,6 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
 			});
 
 			onUserUpdate(response.user);
-			dispatch(
-				showMessage({
-					message: response.message,
-					variant: 'success'
-				})
-			);
 		} catch (error: unknown) {
 			dispatch(
 				showMessage({

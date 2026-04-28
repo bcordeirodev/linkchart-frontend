@@ -1,7 +1,5 @@
 import { Box, Typography } from '@mui/material';
 
-import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@/lib/store/messageSlice';
 import useClipboard from '@/hooks/useClipboard';
 
 import type { PublicLinkData, PublicAnalyticsActions } from '../../types';
@@ -13,11 +11,7 @@ interface LinkInfoCardProps {
 
 export function LinkInfoCard({ linkData, actions }: LinkInfoCardProps) {
 	const { handleCreateLink, handleVisitLink } = actions;
-	const dispatch = useAppDispatch();
-	const { copy } = useClipboard({
-		timeout: 1500,
-		onSuccess: () => dispatch(showMessage({ message: 'Link copiado!', variant: 'success' }))
-	});
+	const { copy } = useClipboard({ timeout: 1500 });
 
 	return (
 		<Box

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import { useAppDispatch } from '@/lib/store/hooks';
-import { showSuccessMessage, showErrorMessage } from '@/lib/store/messageSlice';
+import { showErrorMessage } from '@/lib/store/messageSlice';
 import { authService } from '@/services';
 import { AuthLayout } from '@/shared/layout';
 
@@ -77,17 +77,13 @@ function SignUpPage() {
 				password_confirmation: data.password_confirmation
 			});
 
-			dispatch(showSuccessMessage('Conta criada com sucesso! Verifique seu email para ativar sua conta.'));
-
 			// Redirecionar para página de instruções de verificação
-			setTimeout(() => {
-				navigate('/email-verification-pending', {
-					state: {
-						email: data.email,
-						message: 'Verifique seu email para ativar sua conta.'
-					}
-				});
-			}, 1500);
+			navigate('/email-verification-pending', {
+				state: {
+					email: data.email,
+					message: 'Verifique seu email para ativar sua conta.'
+				}
+			});
 		} catch (error: unknown) {
 			if (error && typeof error === 'object' && 'code' in error) {
 				const apiError = error as { code?: string; details?: { fields?: Record<string, string[]> } };
