@@ -22,10 +22,10 @@ import { LinkTrendBadge } from './LinkTrendBadge';
 
 const analyticsPulse = keyframes`
 	0%, 100% {
-		box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.35);
+		box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.5);
 	}
 	50% {
-		box-shadow: 0 0 0 6px rgba(25, 118, 210, 0);
+		box-shadow: 0 0 0 9px rgba(25, 118, 210, 0);
 	}
 `;
 
