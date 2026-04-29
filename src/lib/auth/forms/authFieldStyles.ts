@@ -33,6 +33,9 @@ export function authTextFieldSx(theme: Theme): SxProps<Theme> {
 				borderColor: theme.palette.error.main
 			}
 		},
+		'& .MuiInputAdornment-root': {
+			color: theme.palette.text.secondary
+		},
 		'& .MuiInputLabel-root': {
 			color: theme.palette.text.secondary,
 			'&.Mui-focused': {

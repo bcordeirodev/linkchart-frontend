@@ -155,10 +155,7 @@ function ForgotPasswordPage() {
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position='start'>
-									<Mail
-										{...ICON_LG}
-										style={{ color: theme.palette.text.secondary }}
-									/>
+									<Mail {...ICON_LG} />
 								</InputAdornment>
 							)
 						}}

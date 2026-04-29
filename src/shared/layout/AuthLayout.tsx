@@ -6,7 +6,6 @@ import { AppIcon } from '@/shared/ui/icons';
 import { useResponsive } from '@/lib/theme';
 import { Link } from '@/shared/components';
 import { ResponsiveContainer } from '@/shared/ui/base';
-import { darkNeutral, lightNeutral } from '@/lib/theme/colors';
 import { elevationTokens, elevationLightTokens } from '@/lib/theme/designSystem';
 
 import type { ReactNode } from 'react';
@@ -37,7 +36,6 @@ function AuthLayout({
 	const { isMobile } = useResponsive();
 	const theme = useTheme();
 	const isDark = theme.palette.mode === 'dark';
-	const neutral = isDark ? darkNeutral : lightNeutral;
 	const elevation = isDark ? elevationTokens : elevationLightTokens;
 
 	const variantConfig = useMemo(() => {
@@ -249,7 +247,7 @@ function AuthLayout({
 						justifyContent: 'center',
 						p: 6,
 						position: 'relative',
-						background: neutral.elevated,
+						background: theme.palette.background.paper,
 						overflow: 'hidden',
 						'&::before': {
 							content: '""',

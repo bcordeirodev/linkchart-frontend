@@ -139,10 +139,7 @@ function SignUpPage() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<User
-											{...ICON_LG}
-											style={{ color: theme.palette.text.secondary }}
-										/>
+										<User {...ICON_LG} />
 									</InputAdornment>
 								)
 							}}
@@ -161,10 +158,7 @@ function SignUpPage() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<Mail
-											{...ICON_LG}
-											style={{ color: theme.palette.text.secondary }}
-										/>
+										<Mail {...ICON_LG} />
 									</InputAdornment>
 								)
 							}}
@@ -186,10 +180,7 @@ function SignUpPage() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<Lock
-											{...ICON_LG}
-											style={{ color: theme.palette.text.secondary }}
-										/>
+										<Lock {...ICON_LG} />
 									</InputAdornment>
 								),
 								endAdornment: (
@@ -220,10 +211,7 @@ function SignUpPage() {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
-										<CheckCircle
-											{...ICON_LG}
-											style={{ color: theme.palette.text.secondary }}
-										/>
+										<CheckCircle {...ICON_LG} />
 									</InputAdornment>
 								),
 								endAdornment: (
