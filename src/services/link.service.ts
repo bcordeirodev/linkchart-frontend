@@ -1,7 +1,9 @@
+import { api } from '../lib/api/client';
 import { API_CONFIG } from '../lib/api/endpoints';
 
 import { BaseService } from './base.service';
 
+import type { LinkClicksListParams, LinkClicksListResponse } from '@/features/links/types/click';
 import type { LinkCreateRequest, LinkResponse, LinkUpdateRequest } from '@/types';
 
 // Extend types to match Record<string, unknown>
@@ -141,6 +143,19 @@ export default class LinkService extends BaseService {
 			context: 'get_link_analytics'
 		});
 	}
+
+	/**
+	 * Lista paginada de cliques de um link, usada na tab "Cliques" do analytics.
+	 * Usa rawEnvelope para preservar `data` + `meta` (paginação) no payload.
+	 */
+	async getClicksList(id: string, params: LinkClicksListParams = {}): Promise<LinkClicksListResponse> {
+		this.validateId(id, 'Link ID');
+
+		return api.get<LinkClicksListResponse>(API_CONFIG.ENDPOINTS.LINK_CLICKS_LIST(id), {
+			rawEnvelope: true,
+			query: params as Record<string, unknown>
+		});
+	}
 }
 
 // Instância singleton do serviço
@@ -153,6 +168,7 @@ export const all = linkService.all.bind(linkService);
 export const findOne = linkService.findOne.bind(linkService);
 export const remove = linkService.remove.bind(linkService);
 export const getAnalytics = linkService.getAnalytics.bind(linkService);
+export const getClicksList = linkService.getClicksList.bind(linkService);
 
 // Export da instância do serviço
 export { linkService };

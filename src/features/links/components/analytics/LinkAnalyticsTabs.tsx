@@ -16,6 +16,8 @@ import { TabPanel } from '@/shared/ui/base/TabPanel';
 
 import { LinkDashboard } from '../../../analytics/components/dashboard/LinkDashboard';
 
+import { ClicksTable } from './ClicksTable';
+
 import type { LinkAnalyticsData } from '../../types/analytics';
 
 // Importar componentes especializados que usam hooks próprios
@@ -61,7 +63,8 @@ export function LinkAnalyticsTabsOptimized({
 		{ label: 'Temporal', icon: '⏰', description: 'Tendências temporais' },
 		{ label: 'Audiência', icon: '👥', description: 'Perfil da audiência' },
 		{ label: 'Heatmap', icon: '🔥', description: 'Mapa de calor' },
-		{ label: 'Insights', icon: '💡', description: 'Insights de negócio' }
+		{ label: 'Insights', icon: '💡', description: 'Insights de negócio' },
+		{ label: 'Cliques', icon: '🖱️', description: 'Lista detalhada de cliques' }
 	];
 
 	return (
@@ -200,6 +203,15 @@ export function LinkAnalyticsTabsOptimized({
 						maxInsights={10}
 					/>
 				)}
+			</TabPanel>
+
+			{/* Cliques Tab */}
+			<TabPanel
+				value={tabValue}
+				index={7}
+			>
+				{/* Renderizar apenas se a tab está ativa */}
+				{tabValue === 7 && <ClicksTable linkId={linkId} />}
 			</TabPanel>
 		</Box>
 	);

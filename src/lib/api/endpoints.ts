@@ -33,6 +33,9 @@ export const API_CONFIG = {
 		LINK_PREVIEW: (id: string) => `/api/links/${id}/preview`,
 		LINK_HEALTH: (id: string) => `/api/links/${id}/health`,
 
+		// Lista paginada de cliques de um link (tab Cliques no analytics individual)
+		LINK_CLICKS_LIST: (id: string) => `/api/link/${id}/clicks-list`,
+
 		AUTH: {
 			LOGIN: '/api/auth/login',
 			LOGOUT: '/api/logout',
