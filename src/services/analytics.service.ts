@@ -2,7 +2,9 @@ import { API_CONFIG } from '../lib/api/endpoints';
 
 import { BaseService } from './base.service';
 
-import type { AnalyticsData } from '@/types';
+import type { AnalyticsData, HeatmapPoint } from '@/types';
+import type { GeographicData } from '@/types/analytics/geographic';
+import type { BusinessInsight, InsightsData } from '@/types/analytics/insights';
 import type { LinkPerformanceDashboard } from '@/types/analytics/performance';
 
 /**
@@ -200,12 +202,12 @@ export default class AnalyticsService extends BaseService {
 	/**
 	 * Busca dados geográficos de um link
 	 */
-	async getLinkGeographicData(linkId: string): Promise<unknown> {
+	async getLinkGeographicData(linkId: string): Promise<GeographicData | null> {
 		this.validateId(linkId, 'Link ID');
 
 		const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_GEOGRAPHIC(linkId);
 
-		return this.get<unknown>(endpoint, {
+		return this.get<GeographicData | null>(endpoint, {
 			fallback: null,
 			context: 'get_link_geographic'
 		});
@@ -214,12 +216,12 @@ export default class AnalyticsService extends BaseService {
 	/**
 	 * Busca heatmap de um link
 	 */
-	async getLinkHeatmap(linkId: string): Promise<unknown> {
+	async getLinkHeatmap(linkId: string): Promise<HeatmapPoint[] | null> {
 		this.validateId(linkId, 'Link ID');
 
 		const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_HEATMAP(linkId);
 
-		return this.get<unknown>(endpoint, {
+		return this.get<HeatmapPoint[] | null>(endpoint, {
 			fallback: null,
 			context: 'get_link_heatmap'
 		});
@@ -228,13 +230,13 @@ export default class AnalyticsService extends BaseService {
 	/**
 	 * Busca insights de negócio de um link
 	 */
-	async getLinkInsights(linkId: string): Promise<unknown> {
+	async getLinkInsights(linkId: string): Promise<InsightsData | BusinessInsight[] | null> {
 		this.validateId(linkId, 'Link ID');
 
 		const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_INSIGHTS(linkId);
 
-		return this.get<unknown>(endpoint, {
-			fallback: [],
+		return this.get<InsightsData | BusinessInsight[] | null>(endpoint, {
+			fallback: null,
 			context: 'get_link_insights'
 		});
 	}
