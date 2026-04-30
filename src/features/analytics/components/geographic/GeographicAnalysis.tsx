@@ -1,5 +1,7 @@
+import { Globe } from 'lucide-react';
 import { Box } from '@mui/material';
 
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import TabDescription from '@/shared/ui/base/TabDescription';
 
@@ -65,7 +67,7 @@ export function GeographicAnalysis({
 			{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon='🌍'
+					icon={<Globe {...ICON_LG} />}
 					title={title}
 					description='Distribuição global dos seus cliques com insights detalhados por países, estados e cidades.'
 					highlight={`${stats?.totalCountries || 0} países alcançados`}

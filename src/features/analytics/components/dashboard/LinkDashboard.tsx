@@ -6,9 +6,12 @@
  * Unifica a lógica de dashboard e charts em um único componente coeso.
  */
 
+import { Link2 } from 'lucide-react';
 import { Box, Grid, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
+
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 
 import { useDashboardData } from '@/features/analytics/hooks/useDashboardData';
 import { checkDataAvailability } from '@/features/analytics/utils/dataValidation';
@@ -75,7 +78,7 @@ export function LinkDashboard({
 				{showTitle ? (
 					<Box sx={{ mb: 2 }}>
 						<TabDescription
-							icon='🔗'
+							icon={<Link2 {...ICON_LG} />}
 							title={title}
 							description='Visão geral consolidada do link com métricas essenciais e performance detalhada.'
 							highlight={`${data?.summary?.total_clicks || 0} cliques totais`}

@@ -70,7 +70,7 @@ export function InsightsAnalysis({
 			{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon='💡'
+					icon={<Lightbulb {...ICON_LG} />}
 					title={title}
 					description='Insights automáticos gerados pela análise dos seus dados com recomendações acionáveis.'
 					highlight={`${data?.insights?.length || 0} insights disponíveis`}

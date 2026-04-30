@@ -1,5 +1,7 @@
+import { Map } from 'lucide-react';
 import { Box } from '@mui/material';
 
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useHeatmapData } from '@/features/analytics/hooks/useHeatmapData';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import TabDescription from '@/shared/ui/base/TabDescription';
@@ -42,7 +44,7 @@ export function HeatmapAnalysis({
 		<Box>
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon='🗺️'
+					icon={<Map {...ICON_LG} />}
 					title={title}
 					description='Visualização geográfica interativa dos cliques com densidade de calor, coordenadas precisas e informações detalhadas por localização.'
 					highlight={`${stats?.totalPoints || 0} localizações mapeadas`}

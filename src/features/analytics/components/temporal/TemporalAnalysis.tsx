@@ -46,7 +46,7 @@ export function TemporalAnalysis({
 		<Box>
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon='⏰'
+					icon={<Clock {...ICON_LG} />}
 					title={title}
 					description='Análise de padrões temporais dos seus cliques com identificação de picos e tendências. Todos os dados desde o início.'
 					highlight={`Pico: ${peakHour} - ${peakDay}`}

@@ -1,4 +1,4 @@
-import { CheckCircle, BarChart3 } from 'lucide-react';
+import { CheckCircle, BarChart3, Zap } from 'lucide-react';
 import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
 
 import { ICON_LG } from '@/lib/theme/iconDefaults';
@@ -74,7 +74,7 @@ export function PerformanceAnalysis({
 			{/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon='🚀'
+					icon={<Zap {...ICON_LG} />}
 					title={title}
 					description='Análise completa de performance dos seus links com métricas de velocidade, disponibilidade e otimização.'
 					highlight={`Sucesso: ${performanceMetrics.successRate}% • Resposta média: ${performanceMetrics.avgResponseTime}ms`}

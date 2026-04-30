@@ -1,6 +1,8 @@
+import { Users } from 'lucide-react';
 import { Box, Grid } from '@mui/material';
 
 import { useAudienceData } from '@/features/analytics/hooks/useAudienceData';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import EnhancedPaper from '@/shared/ui/base/EnhancedPaper';
 import { ResponsiveContainer } from '@/shared/ui/base/ResponsiveContainer';
@@ -50,7 +52,7 @@ export function AudienceAnalysis({
 		<Box>
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon='👥'
+					icon={<Users {...ICON_LG} />}
 					title={title}
 					description='Análise detalhada da sua audiência com dados de dispositivos, navegadores e sistemas operacionais.'
 					highlight={`${deviceBreakdown?.length || 0} tipos de dispositivos detectados`}
