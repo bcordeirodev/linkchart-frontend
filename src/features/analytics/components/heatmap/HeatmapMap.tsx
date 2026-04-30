@@ -4,6 +4,7 @@ import { Box, CircularProgress, Alert, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import { useChartHeight } from '@/lib/theme/hooks/useChartHeight';
+import { useResponsive } from '@/lib/theme';
 
 import { chartByType } from '@/lib/theme/colors/chart';
 import { radiusTokens } from '@/lib/theme/designSystem';
@@ -46,6 +47,7 @@ interface LeafletComponents {
  */
 export function HeatmapMap({ data, height: heightProp, onPointClick, minClicks = 1, loading = false }: HeatmapMapProps) {
 	const mapHeight = useChartHeight('large', heightProp);
+	const { isMobile } = useResponsive();
 	const [leafletComponents, setLeafletComponents] = useState<LeafletComponents | null>(null);
 	const [mapError, setMapError] = useState<string | null>(null);
 
@@ -217,79 +219,88 @@ export function HeatmapMap({ data, height: heightProp, onPointClick, minClicks =
 	return (
 		<Box
 			sx={{
-				height: mapHeight,
-				borderRadius: `${radiusTokens.md}px`,
-				overflow: 'hidden',
-				border: 1,
-				borderColor: 'divider'
+				overflowX: isMobile ? 'auto' : 'visible',
+				overflowY: 'hidden',
+				WebkitOverflowScrolling: 'touch',
+				borderRadius: `${radiusTokens.sm}px`
 			}}
 		>
-			<MapContainer
-				center={center}
-				zoom={2}
-				style={{ height: '100%', width: '100%' }}
-				zoomControl
-				scrollWheelZoom
+			<Box
+				sx={{
+					height: mapHeight,
+					borderRadius: `${radiusTokens.md}px`,
+					overflow: 'hidden',
+					border: 1,
+					borderColor: 'divider'
+				}}
 			>
-				<MapResizeHandler />
-				<TileLayer
-					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-				/>
+				<MapContainer
+					center={center}
+					zoom={2}
+					style={{ height: '100%', width: '100%' }}
+					zoomControl
+					scrollWheelZoom
+				>
+					<MapResizeHandler />
+					<TileLayer
+						url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+						attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					/>
 
-				{filteredData.map((point, index) => (
-					<CircleMarker
-						key={`${point.lat}-${point.lng}-${index}`}
-						center={[point.lat, point.lng]}
-						radius={getPointRadius(point.clicks)}
-						fillColor={getPointColor(point.clicks)}
-						color={getPointColor(point.clicks)}
-						weight={2}
-						opacity={0.8}
-						fillOpacity={0.6}
-						eventHandlers={{
-							click: () => onPointClick?.(point)
-						}}
-					>
-						<Popup>
-							<Box sx={{ minWidth: 200 }}>
-								<Typography
-									variant='subtitle2'
-									gutterBottom
-									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-								>
-									<MapPin
-										size={16}
-										strokeWidth={1.5}
-									/>
-									{point.city}
-								</Typography>
-								<Typography
-									variant='body2'
-									color='text.secondary'
-									gutterBottom
-								>
-									{point.country}
-								</Typography>
-								<Typography
-									variant='h6'
-									color='primary.main'
-								>
-									{point.clicks} cliques
-								</Typography>
-								{point.last_click ? (
+					{filteredData.map((point, index) => (
+						<CircleMarker
+							key={`${point.lat}-${point.lng}-${index}`}
+							center={[point.lat, point.lng]}
+							radius={getPointRadius(point.clicks)}
+							fillColor={getPointColor(point.clicks)}
+							color={getPointColor(point.clicks)}
+							weight={2}
+							opacity={0.8}
+							fillOpacity={0.6}
+							eventHandlers={{
+								click: () => onPointClick?.(point)
+							}}
+						>
+							<Popup>
+								<Box sx={{ minWidth: 200 }}>
 									<Typography
-										variant='caption'
-										color='text.secondary'
+										variant='subtitle2'
+										gutterBottom
+										sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 									>
-										Último: {new Date(point.last_click).toLocaleString()}
+										<MapPin
+											size={16}
+											strokeWidth={1.5}
+										/>
+										{point.city}
 									</Typography>
-								) : null}
-							</Box>
-						</Popup>
-					</CircleMarker>
-				))}
-			</MapContainer>
+									<Typography
+										variant='body2'
+										color='text.secondary'
+										gutterBottom
+									>
+										{point.country}
+									</Typography>
+									<Typography
+										variant='h6'
+										color='primary.main'
+									>
+										{point.clicks} cliques
+									</Typography>
+									{point.last_click ? (
+										<Typography
+											variant='caption'
+											color='text.secondary'
+										>
+											Último: {new Date(point.last_click).toLocaleString()}
+										</Typography>
+									) : null}
+								</Box>
+							</Popup>
+						</CircleMarker>
+					))}
+				</MapContainer>
+			</Box>
 		</Box>
 	);
 }
