@@ -1,5 +1,6 @@
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { BarChart3, Globe, Lightbulb, Target, Trophy, TrendingUp } from 'lucide-react';
 
 import { formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
@@ -44,8 +45,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 			<Typography
 				variant='h6'
 				gutterBottom
+				sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 			>
-				📊 Insights Geográficos Detalhados
+				<BarChart3 size={16} strokeWidth={1.5} />
+				Insights Geográficos Detalhados
 			</Typography>
 
 			{/* Estatísticas rápidas */}
@@ -168,8 +171,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 							<Typography
 								variant='h6'
 								gutterBottom
+								sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								🌍 Distribuição por País
+								<Globe size={16} strokeWidth={1.5} />
+								Distribuição por País
 							</Typography>
 							<ApexChartWrapper
 								type='pie'
@@ -187,8 +192,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 					<Typography
 						variant='h6'
 						gutterBottom
+						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						💡 Insights de Mercado
+						<Lightbulb size={16} strokeWidth={1.5} />
+						Insights de Mercado
 					</Typography>
 
 					<Grid
@@ -203,8 +210,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 							<Typography
 								variant='subtitle2'
 								gutterBottom
+								sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								🎯 Mercados Principais
+								<Target size={16} strokeWidth={1.5} />
+								Mercados Principais
 							</Typography>
 							<Stack
 								direction='row'
@@ -232,8 +241,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 							<Typography
 								variant='subtitle2'
 								gutterBottom
+								sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								🏆 Cidades com Mais Engajamento
+								<Trophy size={16} strokeWidth={1.5} />
+								Cidades com Mais Engajamento
 							</Typography>
 							<Stack
 								direction='row'
@@ -260,8 +271,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 						<Typography
 							variant='subtitle2'
 							gutterBottom
+							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							📈 Recomendações Estratégicas
+							<TrendingUp size={16} strokeWidth={1.5} />
+							Recomendações Estratégicas
 						</Typography>
 						<Stack spacing={1}>
 							{countries.length > 0 && (

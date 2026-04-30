@@ -1,5 +1,6 @@
 import { Box, Typography, Card, CardContent, Grid, Chip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { Globe, Building2, Map } from 'lucide-react';
 
 import { formatBarChart } from '@/features/analytics/utils/chartFormatters';
 import { chartByType } from '@/lib/theme/colors';
@@ -35,7 +36,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 	const getFlagEmoji = (countryCode: string) => {
 		// Função simples para converter código do país em emoji da bandeira
 		if (!countryCode || countryCode.length !== 2) {
-			return '🌍';
+			return '';
 		}
 
 		const codePoints = countryCode
@@ -66,10 +67,14 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								position: 'relative',
 								zIndex: 1,
 								mt: 1,
-								fontWeight: 600
+								fontWeight: 600,
+								display: 'flex',
+								alignItems: 'center',
+								gap: 1
 							}}
 						>
-							🌍 Top Países
+							<Globe size={16} strokeWidth={1.5} />
+							Top Países
 						</Typography>
 
 						{countries.length > 0 ? (
@@ -155,7 +160,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 									variant='h6'
 									gutterBottom
 								>
-									🗺️
+									<Map size={24} strokeWidth={1.5} />
 								</Typography>
 								<Typography>Dados geográficos aparecerão aqui após os primeiros cliques</Typography>
 							</Box>
@@ -179,10 +184,14 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								position: 'relative',
 								zIndex: 1,
 								mt: 1,
-								fontWeight: 600
+								fontWeight: 600,
+								display: 'flex',
+								alignItems: 'center',
+								gap: 1
 							}}
 						>
-							🏛️ Top Estados/Regiões
+							<Building2 size={16} strokeWidth={1.5} />
+							Top Estados/Regiões
 						</Typography>
 
 						{states.length > 0 ? (
@@ -258,7 +267,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 									variant='h6'
 									gutterBottom
 								>
-									🏛️
+									<Building2 size={24} strokeWidth={1.5} />
 								</Typography>
 								<Typography>Dados de estados aparecerão aqui após os primeiros cliques</Typography>
 							</Box>
@@ -281,10 +290,14 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								position: 'relative',
 								zIndex: 1,
 								mt: 1,
-								fontWeight: 600
+								fontWeight: 600,
+								display: 'flex',
+								alignItems: 'center',
+								gap: 1
 							}}
 						>
-							🏙️ Top Cidades
+							<Building2 size={16} strokeWidth={1.5} />
+							Top Cidades
 						</Typography>
 
 						{cities.length > 0 ? (
@@ -314,7 +327,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 									variant='h6'
 									gutterBottom
 								>
-									🏙️
+									<Building2 size={24} strokeWidth={1.5} />
 								</Typography>
 								<Typography>Dados de cidades aparecerão aqui após os primeiros cliques</Typography>
 							</Box>
