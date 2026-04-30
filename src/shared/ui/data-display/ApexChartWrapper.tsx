@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import React, { useEffect, useState, useCallback, Suspense } from 'react';
 
 import { chartPalette } from '@/lib/theme/colors';
+import { useChartHeight, type ChartSize } from '@/lib/theme/hooks/useChartHeight';
 
 // Import dinâmico para compatibilidade com Vite
 const Chart = React.lazy(() =>
@@ -31,7 +32,8 @@ import {
 
 interface ApexChartWrapperProps {
 	type: 'line' | 'area' | 'bar' | 'pie' | 'donut' | 'radialBar' | 'scatter' | 'bubble' | 'heatmap' | 'treemap';
-	height?: number;
+	height?: number;       // explicit override — existing callers keep working unchanged
+	size?: ChartSize;      // NEW: responsive size hint
 	width?: string | number;
 	options: Record<string, unknown>;
 	series: unknown[];
@@ -42,8 +44,16 @@ interface ApexChartWrapperProps {
  * Wrapper melhorado com tratamento de erro e loading states
  */
 
-const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350, width = '100%', options, series }) => {
+const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
+	type,
+	height: heightProp,
+	size = 'standard',
+	width = '100%',
+	options,
+	series
+}) => {
 	const theme = useTheme();
+	const height = useChartHeight(size, heightProp);
 	const [hasError, setHasError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -259,7 +269,22 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({ type, height = 350,
 						},
 						theme: {
 							mode: theme.palette.mode
-						}
+						},
+						responsive: [
+							{
+								breakpoint: 600,
+								options: {
+									legend: {
+										position: 'bottom',
+										offsetY: 0
+									},
+									chart: {
+										toolbar: { show: false }
+									}
+								}
+							},
+							...(Array.isArray((options as any).responsive) ? (options as any).responsive : [])
+						]
 					}}
 					series={series}
 				/>
