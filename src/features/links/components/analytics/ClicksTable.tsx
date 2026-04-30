@@ -7,6 +7,7 @@ import { ptBR } from 'date-fns/locale';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useLinkClicks } from '@/features/links/hooks/useLinkClicks';
+import { useResponsive } from '@/lib/theme';
 import { ICON_LG } from '@/lib/theme/iconDefaults';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import TabDescription from '@/shared/ui/base/TabDescription';
@@ -206,22 +207,24 @@ function IpCell({ row }: CellProps) {
 }
 
 const COLUMNS: MRT_ColumnDef<LinkClickItem>[] = [
-	{ accessorKey: 'created_at', header: 'Quando', size: 200, Cell: WhenCell },
+	{ accessorKey: 'created_at', header: 'Quando', minSize: 160, size: 200, Cell: WhenCell },
 	{
 		id: 'location',
 		accessorFn: (row) => formatLocation(row),
 		header: 'Localização',
 		enableSorting: false,
+		minSize: 180,
 		size: 240,
 		Cell: LocationCell
 	},
-	{ accessorKey: 'device', header: 'Dispositivo', size: 140, Cell: DeviceCell },
-	{ accessorKey: 'browser', header: 'Navegador', size: 160, Cell: BrowserCell },
-	{ accessorKey: 'os', header: 'Sistema', size: 140, Cell: OsCell },
+	{ accessorKey: 'device', header: 'Dispositivo', minSize: 110, size: 140, Cell: DeviceCell },
+	{ accessorKey: 'browser', header: 'Navegador', minSize: 120, size: 160, Cell: BrowserCell },
+	{ accessorKey: 'os', header: 'Sistema', minSize: 110, size: 140, Cell: OsCell },
 	{
 		id: 'referer',
 		accessorFn: (row) => formatReferer(row),
 		header: 'Origem',
+		minSize: 150,
 		size: 200,
 		Cell: RefererCell
 	},
@@ -229,14 +232,16 @@ const COLUMNS: MRT_ColumnDef<LinkClickItem>[] = [
 		id: 'utm',
 		header: 'Campanha (UTM)',
 		enableSorting: false,
+		minSize: 160,
 		size: 220,
 		accessorFn: (row) => row.utm?.campaign || '',
 		Cell: UtmCell
 	},
-	{ accessorKey: 'ip', header: 'IP', size: 140, Cell: IpCell }
+	{ accessorKey: 'ip', header: 'IP', minSize: 100, size: 140, Cell: IpCell }
 ];
 
 export function ClicksTable({ linkId }: ClicksTableProps) {
+	const { isMobile } = useResponsive();
 	const { items, meta, loading, error, params, setPage, setPerPage, setSearch, setSort, refresh } = useLinkClicks({
 		linkId
 	});
@@ -292,41 +297,52 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
 				emptyMessage='Este link ainda não recebeu cliques.'
 				minHeight={300}
 			>
-				<DataTable<LinkClickItem>
-					columns={columns}
-					data={items}
-					manualPagination
-					manualSorting
-					manualFiltering
-					rowCount={total}
-					state={{
-						pagination,
-						sorting,
-						globalFilter,
-						isLoading: loading,
-						showProgressBars: loading
+				<Box
+					sx={{
+						width: '100%',
+						overflowX: isMobile ? 'auto' : 'visible',
+						WebkitOverflowScrolling: 'touch',
+						'& .MuiTableContainer-root': {
+							minWidth: isMobile ? 600 : 'unset'
+						}
 					}}
-					onPaginationChange={setPagination}
-					onSortingChange={setSorting}
-					onGlobalFilterChange={setGlobalFilter}
-					enableRowSelection={false}
-					enableRowActions={false}
-					enableGrouping={false}
-					enableColumnFilters={false}
-					muiPaginationProps={{
-						color: 'secondary',
-						rowsPerPageOptions: [10, 25, 50, 100],
-						shape: 'rounded',
-						variant: 'outlined',
-						showRowsPerPage: true
-					}}
-					muiSearchTextFieldProps={{
-						placeholder: 'Buscar por país, cidade, IP, navegador...',
-						sx: { minWidth: '320px' },
-						variant: 'outlined',
-						size: 'small'
-					}}
-				/>
+				>
+					<DataTable<LinkClickItem>
+						columns={columns}
+						data={items}
+						manualPagination
+						manualSorting
+						manualFiltering
+						rowCount={total}
+						state={{
+							pagination,
+							sorting,
+							globalFilter,
+							isLoading: loading,
+							showProgressBars: loading
+						}}
+						onPaginationChange={setPagination}
+						onSortingChange={setSorting}
+						onGlobalFilterChange={setGlobalFilter}
+						enableRowSelection={false}
+						enableRowActions={false}
+						enableGrouping={false}
+						enableColumnFilters={false}
+						muiPaginationProps={{
+							color: 'secondary',
+							rowsPerPageOptions: [10, 25, 50, 100],
+							shape: 'rounded',
+							variant: 'outlined',
+							showRowsPerPage: true
+						}}
+						muiSearchTextFieldProps={{
+							placeholder: 'Buscar por país, cidade, IP, navegador...',
+							sx: { minWidth: '320px' },
+							variant: 'outlined',
+							size: 'small'
+						}}
+					/>
+				</Box>
 			</AnalyticsStateManager>
 		</Box>
 	);
