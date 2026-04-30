@@ -414,7 +414,10 @@ export function RetentionAnalysisChart({
 									variant='h6'
 									sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}
 								>
-									<Lightbulb size={16} strokeWidth={1.5} />
+									<Lightbulb
+										size={16}
+										strokeWidth={1.5}
+									/>
 									Insights de Retenção
 								</Typography>
 

@@ -72,7 +72,7 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 					lg={8}
 				>
 					<ChartCard
-						title='🌍 Distribuição por Fuso Horário'
+						title='Distribuição por Fuso Horário'
 						subtitle={`${timezoneAnalysis.length} fusos horários detectados`}
 					>
 						<ApexChartWrapper
@@ -154,7 +154,7 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 					lg={4}
 				>
 					<ChartCard
-						title='📊 Top Timezones'
+						title='Top Timezones'
 						subtitle={`Total: ${totalClicks.toLocaleString()} cliques`}
 					>
 						<Stack spacing={2}>
@@ -240,7 +240,7 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 							variant='subtitle2'
 							gutterBottom
 						>
-							💡 Insight de Timezone
+							Insight de Timezone
 						</Typography>
 						<Typography variant='body2'>
 							{sortedTimezones[0] ? (

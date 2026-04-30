@@ -98,7 +98,7 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 						lg={6}
 					>
 						<ChartCard
-							title='📊 Tendências Semanais'
+							title='Tendências Semanais'
 							subtitle={`Média: ${Math.round(weeklyAvg)} cliques/semana`}
 						>
 							<ApexChartWrapper
@@ -204,7 +204,7 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 						lg={6}
 					>
 						<ChartCard
-							title='📅 Tendências Mensais'
+							title='Tendências Mensais'
 							subtitle={`Média: ${Math.round(monthlyAvg)} cliques/mês`}
 						>
 							<ApexChartWrapper
@@ -314,7 +314,7 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 									variant='h6'
 									gutterBottom
 								>
-									📈 Análise de Crescimento
+									Análise de Crescimento
 								</Typography>
 								<Grid
 									container
@@ -334,9 +334,9 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 											</Typography>
 											<Typography variant='body2'>
 												{weeklyTrend > 0
-													? `✅ Crescimento de ${weeklyTrend} cliques na última semana`
+													? `Crescimento de ${weeklyTrend} cliques na última semana`
 													: weeklyTrend < 0
-														? `⚠️ Queda de ${Math.abs(weeklyTrend)} cliques na última semana`
+														? `Queda de ${Math.abs(weeklyTrend)} cliques na última semana`
 														: '➖ Estável na última semana'}
 											</Typography>
 										</Grid>
@@ -355,9 +355,9 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 											</Typography>
 											<Typography variant='body2'>
 												{monthlyTrend > 0
-													? `✅ Crescimento de ${monthlyTrend} cliques no último mês`
+													? `Crescimento de ${monthlyTrend} cliques no último mês`
 													: monthlyTrend < 0
-														? `⚠️ Queda de ${Math.abs(monthlyTrend)} cliques no último mês`
+														? `Queda de ${Math.abs(monthlyTrend)} cliques no último mês`
 														: '➖ Estável no último mês'}
 											</Typography>
 										</Grid>

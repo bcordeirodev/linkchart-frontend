@@ -64,7 +64,10 @@ export function AudienceInsights({
 					gutterBottom
 					sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 				>
-					<Lightbulb size={16} strokeWidth={1.5} />
+					<Lightbulb
+						size={16}
+						strokeWidth={1.5}
+					/>
 					Insights de Audiência
 				</Typography>
 
@@ -83,7 +86,10 @@ export function AudienceInsights({
 							gutterBottom
 							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							<Target size={16} strokeWidth={1.5} />
+							<Target
+								size={16}
+								strokeWidth={1.5}
+							/>
 							Dispositivo Principal
 						</Typography>
 						<Stack
@@ -115,7 +121,10 @@ export function AudienceInsights({
 							gutterBottom
 							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							<BarChart3 size={16} strokeWidth={1.5} />
+							<BarChart3
+								size={16}
+								strokeWidth={1.5}
+							/>
 							Distribuição Mobile vs Desktop
 						</Typography>
 						<Stack
@@ -146,7 +155,10 @@ export function AudienceInsights({
 						gutterBottom
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<TrendingUp size={16} strokeWidth={1.5} />
+						<TrendingUp
+							size={16}
+							strokeWidth={1.5}
+						/>
 						Recomendações Estratégicas
 					</Typography>
 					<Stack spacing={1}>
@@ -207,7 +219,10 @@ export function AudienceInsights({
 						gutterBottom
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<Wrench size={16} strokeWidth={1.5} />
+						<Wrench
+							size={16}
+							strokeWidth={1.5}
+						/>
 						Detalhes Técnicos
 					</Typography>
 					<Stack spacing={1}>

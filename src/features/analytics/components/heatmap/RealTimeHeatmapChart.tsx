@@ -610,7 +610,10 @@ export function RealTimeHeatmapChart({
 												sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}
 												gutterBottom
 											>
-												<MapPin size={16} strokeWidth={1.5} />
+												<MapPin
+													size={16}
+													strokeWidth={1.5}
+												/>
 												{point.city}, {point.country}
 											</Typography>
 											<Typography

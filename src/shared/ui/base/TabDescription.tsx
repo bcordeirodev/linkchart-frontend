@@ -28,21 +28,29 @@ function TabDescription({ icon, title, description, highlight, metadata }: TabDe
 			}}
 		>
 			<Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-				<Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-					{icon}
-				</Box>
-				<Typography variant='h6' component='h2'>
+				<Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{icon}</Box>
+				<Typography
+					variant='h6'
+					component='h2'
+				>
 					{title}
 				</Typography>
 			</Box>
 
-			<Typography variant='body2' color='text.secondary' sx={{ mb: 1 }}>
+			<Typography
+				variant='body2'
+				color='text.secondary'
+				sx={{ mb: 1 }}
+			>
 				{description}
 			</Typography>
 
 			{highlight ? (
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-					<Info {...ICON_LG} color={theme.palette.primary.main} />
+					<Info
+						{...ICON_LG}
+						color={theme.palette.primary.main}
+					/>
 					<Typography
 						variant='caption'
 						sx={{ color: 'primary.main', fontWeight: 500 }}
@@ -54,8 +62,15 @@ function TabDescription({ icon, title, description, highlight, metadata }: TabDe
 
 			{metadata ? (
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-					<BarChart2 {...ICON_LG} color={theme.palette.text.secondary} />
-					<Typography variant='caption' color='text.secondary' sx={{ fontStyle: 'italic' }}>
+					<BarChart2
+						{...ICON_LG}
+						color={theme.palette.text.secondary}
+					/>
+					<Typography
+						variant='caption'
+						color='text.secondary'
+						sx={{ fontStyle: 'italic' }}
+					>
 						{metadata}
 					</Typography>
 				</Box>

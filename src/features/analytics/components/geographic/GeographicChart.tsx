@@ -73,7 +73,10 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								gap: 1
 							}}
 						>
-							<Globe size={16} strokeWidth={1.5} />
+							<Globe
+								size={16}
+								strokeWidth={1.5}
+							/>
 							Top Países
 						</Typography>
 
@@ -160,7 +163,10 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 									variant='h6'
 									gutterBottom
 								>
-									<Map size={24} strokeWidth={1.5} />
+									<Map
+										size={24}
+										strokeWidth={1.5}
+									/>
 								</Typography>
 								<Typography>Dados geográficos aparecerão aqui após os primeiros cliques</Typography>
 							</Box>
@@ -190,7 +196,10 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								gap: 1
 							}}
 						>
-							<Building2 size={16} strokeWidth={1.5} />
+							<Building2
+								size={16}
+								strokeWidth={1.5}
+							/>
 							Top Estados/Regiões
 						</Typography>
 
@@ -267,7 +276,10 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 									variant='h6'
 									gutterBottom
 								>
-									<Building2 size={24} strokeWidth={1.5} />
+									<Building2
+										size={24}
+										strokeWidth={1.5}
+									/>
 								</Typography>
 								<Typography>Dados de estados aparecerão aqui após os primeiros cliques</Typography>
 							</Box>
@@ -296,7 +308,10 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								gap: 1
 							}}
 						>
-							<Building2 size={16} strokeWidth={1.5} />
+							<Building2
+								size={16}
+								strokeWidth={1.5}
+							/>
 							Top Cidades
 						</Typography>
 
@@ -327,7 +342,10 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 									variant='h6'
 									gutterBottom
 								>
-									<Building2 size={24} strokeWidth={1.5} />
+									<Building2
+										size={24}
+										strokeWidth={1.5}
+									/>
 								</Typography>
 								<Typography>Dados de cidades aparecerão aqui após os primeiros cliques</Typography>
 							</Box>

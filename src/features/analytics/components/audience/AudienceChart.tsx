@@ -470,7 +470,10 @@ export function AudienceChart({
 									gutterBottom
 									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
-									<Globe size={16} strokeWidth={1.5} />
+									<Globe
+										size={16}
+										strokeWidth={1.5}
+									/>
 									Market Share de Navegadores
 								</Typography>
 								<ApexChartWrapper

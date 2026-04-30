@@ -47,7 +47,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 				gutterBottom
 				sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 			>
-				<BarChart3 size={16} strokeWidth={1.5} />
+				<BarChart3
+					size={16}
+					strokeWidth={1.5}
+				/>
 				Insights Geográficos Detalhados
 			</Typography>
 
@@ -173,7 +176,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 								gutterBottom
 								sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								<Globe size={16} strokeWidth={1.5} />
+								<Globe
+									size={16}
+									strokeWidth={1.5}
+								/>
 								Distribuição por País
 							</Typography>
 							<ApexChartWrapper
@@ -194,7 +200,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 						gutterBottom
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<Lightbulb size={16} strokeWidth={1.5} />
+						<Lightbulb
+							size={16}
+							strokeWidth={1.5}
+						/>
 						Insights de Mercado
 					</Typography>
 
@@ -212,7 +221,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 								gutterBottom
 								sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								<Target size={16} strokeWidth={1.5} />
+								<Target
+									size={16}
+									strokeWidth={1.5}
+								/>
 								Mercados Principais
 							</Typography>
 							<Stack
@@ -243,7 +255,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 								gutterBottom
 								sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								<Trophy size={16} strokeWidth={1.5} />
+								<Trophy
+									size={16}
+									strokeWidth={1.5}
+								/>
 								Cidades com Mais Engajamento
 							</Typography>
 							<Stack
@@ -273,7 +288,10 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 							gutterBottom
 							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							<TrendingUp size={16} strokeWidth={1.5} />
+							<TrendingUp
+								size={16}
+								strokeWidth={1.5}
+							/>
 							Recomendações Estratégicas
 						</Typography>
 						<Stack spacing={1}>

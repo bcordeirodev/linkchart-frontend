@@ -1,3 +1,4 @@
+import { Clock, Calendar, Globe, Smartphone, Monitor } from 'lucide-react';
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
@@ -5,6 +6,7 @@ import { formatAreaChart, formatBarChart, formatPieChart } from '@/features/anal
 import { AppIcon } from '@/shared/ui/icons';
 import { createPresetShadows, createPresetAnimations, createTextGradient } from '@/lib/theme';
 import { chartByType } from '@/lib/theme/colors';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { ChartCard } from '@/shared/ui/data-display/ChartCard';
 
@@ -78,7 +80,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 					>
 						<ChartCard
 							title='Cliques por Hora'
-							icon='⏱️'
+							icon={<Clock {...ICON_LG} />}
 						>
 							<ApexChartWrapper
 								type='area'
@@ -104,7 +106,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 					>
 						<ChartCard
 							title='Cliques por Dia da Semana'
-							icon='📅'
+							icon={<Calendar {...ICON_LG} />}
 						>
 							<ApexChartWrapper
 								type='bar'
@@ -130,7 +132,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 					>
 						<ChartCard
 							title='Top Países'
-							icon='🌍'
+							icon={<Globe {...ICON_LG} />}
 						>
 							<ApexChartWrapper
 								type='bar'
@@ -157,7 +159,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 					>
 						<ChartCard
 							title='Dispositivos'
-							icon='📱'
+							icon={<Smartphone {...ICON_LG} />}
 						>
 							<ApexChartWrapper
 								type='donut'
@@ -181,7 +183,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 					>
 						<ChartCard
 							title='Browsers'
-							icon='🌐'
+							icon={<Monitor {...ICON_LG} />}
 						>
 							<ApexChartWrapper
 								type='donut'

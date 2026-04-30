@@ -180,7 +180,10 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 						gutterBottom
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<Map size={16} strokeWidth={1.5} />
+						<Map
+							size={16}
+							strokeWidth={1.5}
+						/>
 						Nenhum Ponto no Mapa
 					</Typography>
 					<Typography
@@ -239,7 +242,10 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 									gutterBottom
 									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
-									<MapPin size={16} strokeWidth={1.5} />
+									<MapPin
+										size={16}
+										strokeWidth={1.5}
+									/>
 									{point.city}
 								</Typography>
 								<Typography

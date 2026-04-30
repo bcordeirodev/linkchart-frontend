@@ -63,9 +63,21 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
 					}}
 				>
 					{linkInfo.is_active ? (
-						<><CheckCircle size={12} strokeWidth={1.5} /> Ativo</>
+						<>
+							<CheckCircle
+								size={12}
+								strokeWidth={1.5}
+							/>{' '}
+							Ativo
+						</>
 					) : (
-						<><XCircle size={12} strokeWidth={1.5} /> Inativo</>
+						<>
+							<XCircle
+								size={12}
+								strokeWidth={1.5}
+							/>{' '}
+							Inativo
+						</>
 					)}
 				</Typography>
 				<Typography
@@ -73,7 +85,10 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
 					color='text.secondary'
 					sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}
 				>
-					<BarChart3 size={14} strokeWidth={1.5} />
+					<BarChart3
+						size={14}
+						strokeWidth={1.5}
+					/>
 					{linkInfo.clicks} cliques
 				</Typography>
 			</Box>

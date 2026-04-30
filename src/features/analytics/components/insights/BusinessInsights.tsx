@@ -64,7 +64,10 @@ export function BusinessInsights({
 					gutterBottom
 					sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}
 				>
-					<BarChart3 size={16} strokeWidth={1.5} />
+					<BarChart3
+						size={16}
+						strokeWidth={1.5}
+					/>
 					Insights não disponíveis
 				</Typography>
 				<Typography
@@ -153,7 +156,10 @@ export function BusinessInsights({
 						gap: 1
 					}}
 				>
-					<Lightbulb size={16} strokeWidth={1.5} />
+					<Lightbulb
+						size={16}
+						strokeWidth={1.5}
+					/>
 					Insights de Negócio
 				</Typography>
 			) : null}
@@ -286,7 +292,10 @@ export function BusinessInsights({
 													gap: 0.5
 												}}
 											>
-												<TrendingUp size={12} strokeWidth={1.5} />
+												<TrendingUp
+													size={12}
+													strokeWidth={1.5}
+												/>
 												{insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
 											</Typography>
 										</Box>
@@ -316,8 +325,8 @@ export function BusinessInsights({
 							fontWeight: 500
 						}}
 					>
-						<strong>{organizedInsights.length} insights</strong> gerados automaticamente baseados nos
-						seus dados reais. Organizados por prioridade e categoria para melhor análise.
+						<strong>{organizedInsights.length} insights</strong> gerados automaticamente baseados nos seus
+						dados reais. Organizados por prioridade e categoria para melhor análise.
 					</Typography>
 				</Alert>
 			)}

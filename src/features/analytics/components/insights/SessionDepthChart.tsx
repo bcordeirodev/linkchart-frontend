@@ -473,7 +473,10 @@ export function SessionDepthChart({
 								gutterBottom
 								sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								<BarChart3 size={16} strokeWidth={1.5} />
+								<BarChart3
+									size={16}
+									strokeWidth={1.5}
+								/>
 								Detalhes da Distribuição
 							</Typography>
 							<Grid
@@ -540,7 +543,10 @@ export function SessionDepthChart({
 									variant='h6'
 									sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}
 								>
-									<Lightbulb size={16} strokeWidth={1.5} />
+									<Lightbulb
+										size={16}
+										strokeWidth={1.5}
+									/>
 									Insights de Engajamento
 								</Typography>
 
@@ -569,9 +575,8 @@ export function SessionDepthChart({
 											fontWeight: 500
 										}}
 									>
-										Destaque: Você tem uma base sólida de power users (
-										{data.power_users_percentage}%)! Considere criar conteúdo premium ou programas
-										de fidelidade.
+										Destaque: Você tem uma base sólida de power users ({data.power_users_percentage}
+										%)! Considere criar conteúdo premium ou programas de fidelidade.
 									</Typography>
 								)}
 							</Stack>

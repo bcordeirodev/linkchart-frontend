@@ -3,7 +3,6 @@ import { Clock, Calendar, Star, Zap, Sunrise, Sun, Sunset, Moon } from 'lucide-r
 import type { ReactNode } from 'react';
 
 import { ICON_LG } from '@/lib/theme/iconDefaults';
-import { useTheme } from '@mui/material/styles';
 
 import { MetricCardOptimized as MetricCard } from '@/shared/ui/base/MetricCardOptimized';
 import type { PeakAnalysis } from '@/types';
@@ -16,8 +15,6 @@ interface PeakAnalysisCardProps {
  * Componente para exibir análise de picos temporais (do back-end)
  */
 export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
-	const theme = useTheme();
-
 	const { peak_hour, peak_day, peak_hour_clicks, peak_day_clicks } = peakAnalysis;
 
 	// Formatar hora para exibição
@@ -26,20 +23,58 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 	};
 
 	// Determinar período do dia
-	const getPeriodOfDay = (hour: number): { label: string; icon: ReactNode; color: 'warning' | 'info' | 'primary' | 'secondary' } => {
+	const getPeriodOfDay = (
+		hour: number
+	): { label: string; icon: ReactNode; color: 'warning' | 'info' | 'primary' | 'secondary' } => {
 		if (hour >= 6 && hour < 12) {
-			return { label: 'Manhã', icon: <Sunrise size={16} strokeWidth={1.5} />, color: 'warning' };
+			return {
+				label: 'Manhã',
+				icon: (
+					<Sunrise
+						size={16}
+						strokeWidth={1.5}
+					/>
+				),
+				color: 'warning'
+			};
 		}
 
 		if (hour >= 12 && hour < 18) {
-			return { label: 'Tarde', icon: <Sun size={16} strokeWidth={1.5} />, color: 'info' };
+			return {
+				label: 'Tarde',
+				icon: (
+					<Sun
+						size={16}
+						strokeWidth={1.5}
+					/>
+				),
+				color: 'info'
+			};
 		}
 
 		if (hour >= 18 && hour < 22) {
-			return { label: 'Noite', icon: <Sunset size={16} strokeWidth={1.5} />, color: 'primary' };
+			return {
+				label: 'Noite',
+				icon: (
+					<Sunset
+						size={16}
+						strokeWidth={1.5}
+					/>
+				),
+				color: 'primary'
+			};
 		}
 
-		return { label: 'Madrugada', icon: <Moon size={16} strokeWidth={1.5} />, color: 'secondary' };
+		return {
+			label: 'Madrugada',
+			icon: (
+				<Moon
+					size={16}
+					strokeWidth={1.5}
+				/>
+			),
+			color: 'secondary'
+		};
 	};
 
 	const period = getPeriodOfDay(peak_hour);
@@ -125,8 +160,11 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 										gutterBottom
 										sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 									>
-										<Zap size={16} strokeWidth={1.5} />
-											Análise de Picos de Engajamento
+										<Zap
+											size={16}
+											strokeWidth={1.5}
+										/>
+										Análise de Picos de Engajamento
 									</Typography>
 								</Box>
 

@@ -214,7 +214,10 @@ export function InsightsAnalysis({
 							gutterBottom
 							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							<Lightbulb size={16} strokeWidth={1.5} />
+							<Lightbulb
+								size={16}
+								strokeWidth={1.5}
+							/>
 							Insights Automáticos
 						</Typography>
 						<BusinessInsights

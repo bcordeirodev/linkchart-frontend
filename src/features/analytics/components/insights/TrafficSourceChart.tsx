@@ -1,4 +1,14 @@
-import { Activity, TrendingUp, Users2, BarChart3, AlertTriangle, Lightbulb, Trophy, Wrench, Target } from 'lucide-react';
+import {
+	Activity,
+	TrendingUp,
+	Users2,
+	BarChart3,
+	AlertTriangle,
+	Lightbulb,
+	Trophy,
+	Wrench,
+	Target
+} from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, Alert } from '@mui/material';
 
@@ -217,13 +227,33 @@ export function TrafficSourceChart({
 	const getRecommendationIcon = (type: string): ReactNode => {
 		switch (type) {
 			case 'optimization':
-				return <Wrench size={16} strokeWidth={1.5} />;
+				return (
+					<Wrench
+						size={16}
+						strokeWidth={1.5}
+					/>
+				);
 			case 'growth':
-				return <TrendingUp size={16} strokeWidth={1.5} />;
+				return (
+					<TrendingUp
+						size={16}
+						strokeWidth={1.5}
+					/>
+				);
 			case 'diversification':
-				return <Target size={16} strokeWidth={1.5} />;
+				return (
+					<Target
+						size={16}
+						strokeWidth={1.5}
+					/>
+				);
 			default:
-				return <Lightbulb size={16} strokeWidth={1.5} />;
+				return (
+					<Lightbulb
+						size={16}
+						strokeWidth={1.5}
+					/>
+				);
 		}
 	};
 
@@ -439,7 +469,10 @@ export function TrafficSourceChart({
 								gutterBottom
 								sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								<BarChart3 size={16} strokeWidth={1.5} />
+								<BarChart3
+									size={16}
+									strokeWidth={1.5}
+								/>
 								Performance Detalhada por Canal
 							</Typography>
 							<Grid
@@ -529,7 +562,10 @@ export function TrafficSourceChart({
 								gutterBottom
 								sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								<Trophy size={16} strokeWidth={1.5} />
+								<Trophy
+									size={16}
+									strokeWidth={1.5}
+								/>
 								Top 5 Fontes Individuais
 							</Typography>
 							<Grid
@@ -605,7 +641,10 @@ export function TrafficSourceChart({
 									gutterBottom
 									sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}
 								>
-									<Lightbulb size={16} strokeWidth={1.5} />
+									<Lightbulb
+										size={16}
+										strokeWidth={1.5}
+									/>
 									Recomendações Estratégicas
 								</Typography>
 								<Stack spacing={2}>
@@ -621,7 +660,14 @@ export function TrafficSourceChart({
 											}}
 										>
 											<Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-												<Box sx={{ display: 'flex', alignItems: 'center', color: 'primary.main', mt: 0.5 }}>
+												<Box
+													sx={{
+														display: 'flex',
+														alignItems: 'center',
+														color: 'primary.main',
+														mt: 0.5
+													}}
+												>
 													{getRecommendationIcon(rec.type)}
 												</Box>
 												<Box sx={{ flex: 1 }}>

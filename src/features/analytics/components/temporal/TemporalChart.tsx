@@ -322,8 +322,11 @@ export function TemporalChart({
 										gutterBottom
 										sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 									>
-										<Search size={16} strokeWidth={1.5} />
-											Análise de Padrões Temporais
+										<Search
+											size={16}
+											strokeWidth={1.5}
+										/>
+										Análise de Padrões Temporais
 									</Typography>
 
 									<Grid
@@ -341,7 +344,11 @@ export function TemporalChart({
 												gutterBottom
 												sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 											>
-												<Clock size={16} strokeWidth={1.5} /> Padrões por Hora
+												<Clock
+													size={16}
+													strokeWidth={1.5}
+												/>{' '}
+												Padrões por Hora
 											</Typography>
 											<Stack
 												spacing={1}
@@ -494,7 +501,10 @@ export function TemporalChart({
 						item
 						xs={12}
 					>
-						<ChartCard title='Padrões de Hora Local (com Timezone)' icon={<Clock {...ICON_LG} />}>
+						<ChartCard
+							title='Padrões de Hora Local (com Timezone)'
+							icon={<Clock {...ICON_LG} />}
+						>
 							<ApexChartWrapper
 								type='area'
 								{...formatAreaChart(

@@ -204,7 +204,10 @@ export function HeatmapStats({
 						color='text.secondary'
 						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						<Globe size={16} strokeWidth={1.5} />
+						<Globe
+							size={16}
+							strokeWidth={1.5}
+						/>
 						Análise Geográfica Avançada
 					</Typography>
 					<Grid
@@ -391,7 +394,10 @@ export function HeatmapStats({
 								gutterBottom
 								sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								<Trophy size={16} strokeWidth={1.5} />
+								<Trophy
+									size={16}
+									strokeWidth={1.5}
+								/>
 								Top Países
 							</Typography>
 							<Stack
@@ -424,7 +430,10 @@ export function HeatmapStats({
 								gutterBottom
 								sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								<Building2 size={16} strokeWidth={1.5} />
+								<Building2
+									size={16}
+									strokeWidth={1.5}
+								/>
 								Top Cidades
 							</Typography>
 							<Stack

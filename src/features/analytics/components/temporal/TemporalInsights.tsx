@@ -83,13 +83,13 @@ export function TemporalInsights({
 						gap: 1
 					}}
 				>
-					💡 Insights Temporais
+					Insights Temporais
 				</Typography>
 
 				<Stack spacing={1.5}>
 					{/* Insights básicos */}
 					<Typography variant='body2'>
-						<strong>📊 Resumo:</strong> {hourlyTotal.toLocaleString()} cliques totais, média de{' '}
+						<strong>Resumo:</strong> {hourlyTotal.toLocaleString()} cliques totais, média de{' '}
 						{avgClicksPerHour.toFixed(1)} por hora e {avgClicksPerDay.toFixed(1)} por dia.
 					</Typography>
 
@@ -143,7 +143,7 @@ export function TemporalInsights({
 					{/* Recomendação de consistência */}
 					{hourlyTotal > 0 && weeklyTotal > 0 && (
 						<Typography variant='body2'>
-							• <strong>💡 Dica:</strong> Mantenha consistência nos horários de maior atividade para
+							• <strong>Dica:</strong> Mantenha consistência nos horários de maior atividade para
 							maximizar o alcance e engajamento.
 						</Typography>
 					)}
