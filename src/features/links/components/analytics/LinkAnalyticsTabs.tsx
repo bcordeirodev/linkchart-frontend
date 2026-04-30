@@ -2,8 +2,10 @@
 
 import { Tabs, Tab, Box, useTheme } from '@mui/material';
 import { useState } from 'react';
+import { LayoutDashboard, Zap, Globe, Clock, Users, Flame, Lightbulb, MousePointer2 } from 'lucide-react';
 
 import { motionTokens, radiusTokens } from '@/lib/theme/designSystem';
+import { ICON_SM, ICON_LG } from '@/lib/theme/iconDefaults';
 
 import { AudienceAnalysis } from '@/features/analytics/components/audience/AudienceAnalysis';
 import { GeographicAnalysis } from '@/features/analytics/components/geographic/GeographicAnalysis';
@@ -57,14 +59,14 @@ export function LinkAnalyticsTabsOptimized({
 
 	// Configuração padronizada de tabs
 	const tabLabels = [
-		{ label: 'Dashboard', icon: '🎯', description: 'Visão geral consolidada' },
-		{ label: 'Performance', icon: '⚡', description: 'Velocidade e disponibilidade' },
-		{ label: 'Geografia', icon: '🌍', description: 'Análise geográfica' },
-		{ label: 'Temporal', icon: '⏰', description: 'Tendências temporais' },
-		{ label: 'Audiência', icon: '👥', description: 'Perfil da audiência' },
-		{ label: 'Heatmap', icon: '🔥', description: 'Mapa de calor' },
-		{ label: 'Insights', icon: '💡', description: 'Insights de negócio' },
-		{ label: 'Cliques', icon: '🖱️', description: 'Lista detalhada de cliques' }
+		{ label: 'Dashboard', Icon: LayoutDashboard, description: 'Visão geral consolidada' },
+		{ label: 'Performance', Icon: Zap, description: 'Velocidade e disponibilidade' },
+		{ label: 'Geografia', Icon: Globe, description: 'Análise geográfica' },
+		{ label: 'Temporal', Icon: Clock, description: 'Tendências temporais' },
+		{ label: 'Audiência', Icon: Users, description: 'Perfil da audiência' },
+		{ label: 'Heatmap', Icon: Flame, description: 'Mapa de calor' },
+		{ label: 'Insights', Icon: Lightbulb, description: 'Insights de negócio' },
+		{ label: 'Cliques', Icon: MousePointer2, description: 'Lista detalhada de cliques' }
 	];
 
 	return (
@@ -94,11 +96,11 @@ export function LinkAnalyticsTabsOptimized({
 						}
 					}}
 				>
-					{tabLabels.map((tab, index) => (
+					{tabLabels.map(({ label, Icon }, index) => (
 						<Tab
 							key={index}
-							label={tab.label}
-							icon={<span style={{ fontSize: '1.2rem' }}>{tab.icon}</span>}
+							label={label}
+							icon={<Icon {...ICON_SM} />}
 							iconPosition='start'
 						/>
 					))}
@@ -115,7 +117,7 @@ export function LinkAnalyticsTabsOptimized({
 				{showHeader ? (
 					<Box sx={{ mb: 2 }}>
 						<TabDescription
-							icon='🎯'
+							icon={<LayoutDashboard {...ICON_LG} />}
 							title='Dashboard do Link'
 							description='Visão geral consolidada do link com métricas essenciais e performance.'
 							highlight={`${data?.overview?.total_clicks || 0} cliques totais`}
