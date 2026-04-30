@@ -3,6 +3,7 @@
  */
 
 import { Box, Typography, useTheme } from '@mui/material';
+import { BarChart3, CheckCircle, XCircle } from 'lucide-react';
 
 import { elevationLightTokens, elevationTokens, motionTokens, radiusTokens } from '@/lib/theme/designSystem';
 
@@ -55,16 +56,25 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
 						bgcolor: linkInfo.is_active ? 'success.main' : 'error.main',
 						color: 'common.white',
 						borderRadius: `${radiusTokens.md}px`,
-						fontWeight: 600
+						fontWeight: 600,
+						display: 'inline-flex',
+						alignItems: 'center',
+						gap: 0.5
 					}}
 				>
-					{linkInfo.is_active ? '✅ Ativo' : '❌ Inativo'}
+					{linkInfo.is_active ? (
+						<><CheckCircle size={12} strokeWidth={1.5} /> Ativo</>
+					) : (
+						<><XCircle size={12} strokeWidth={1.5} /> Inativo</>
+					)}
 				</Typography>
 				<Typography
 					variant='caption'
 					color='text.secondary'
+					sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}
 				>
-					📊 {linkInfo.clicks} cliques
+					<BarChart3 size={14} strokeWidth={1.5} />
+					{linkInfo.clicks} cliques
 				</Typography>
 			</Box>
 		</Box>

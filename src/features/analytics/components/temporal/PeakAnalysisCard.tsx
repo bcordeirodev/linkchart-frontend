@@ -1,5 +1,5 @@
 import { Box, Grid, Card, CardContent, Typography, Stack, Chip } from '@mui/material';
-import { Clock, Calendar, TrendingUp, Star } from 'lucide-react';
+import { Clock, Calendar, TrendingUp, Star, Zap } from 'lucide-react';
 
 import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
@@ -124,7 +124,8 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 										gutterBottom
 										sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 									>
-										⚡ Análise de Picos de Engajamento
+										<Zap size={16} strokeWidth={1.5} />
+											Análise de Picos de Engajamento
 									</Typography>
 								</Box>
 
@@ -249,7 +250,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 										gutterBottom
 										sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 									>
-										💡 Recomendações Estratégicas
+										Recomendações Estratégicas
 									</Typography>
 									<Stack spacing={0.5}>
 										<Typography variant='body2'>

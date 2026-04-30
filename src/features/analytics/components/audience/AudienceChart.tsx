@@ -468,8 +468,10 @@ export function AudienceChart({
 								<Typography
 									variant='h6'
 									gutterBottom
+									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
-									🌐 Market Share de Navegadores
+									<Globe size={16} strokeWidth={1.5} />
+									Market Share de Navegadores
 								</Typography>
 								<ApexChartWrapper
 									type='pie'

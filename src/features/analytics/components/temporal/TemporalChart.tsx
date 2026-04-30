@@ -1,4 +1,4 @@
-import { Clock, Zap } from 'lucide-react';
+import { Clock, Zap, Search } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Alert, Chip, Stack, Divider, Tabs, Tab } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
@@ -322,7 +322,8 @@ export function TemporalChart({
 										gutterBottom
 										sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 									>
-										🔍 Análise de Padrões Temporais
+										<Search size={16} strokeWidth={1.5} />
+											Análise de Padrões Temporais
 									</Typography>
 
 									<Grid
@@ -338,8 +339,9 @@ export function TemporalChart({
 											<Typography
 												variant='subtitle2'
 												gutterBottom
+												sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 											>
-												⏰ Padrões por Hora
+												<Clock size={16} strokeWidth={1.5} /> Padrões por Hora
 											</Typography>
 											<Stack
 												spacing={1}
