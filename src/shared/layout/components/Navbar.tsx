@@ -16,14 +16,19 @@ import {
 	Divider,
 	ListItemIcon,
 	ListItemText,
-	Tooltip
+	Tooltip,
+	Drawer,
+	List,
+	ListItemButton
 } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Menu as MenuIcon } from 'lucide-react';
 
 import { useAuth } from '@/lib/auth/AuthContext';
 import { darkNeutral, lightNeutral } from '@/lib/theme/colors';
 import { motionTokens, radiusTokens } from '@/lib/theme/designSystem';
+import { useResponsive } from '@/lib/theme';
 import { AppIcon } from '@/shared/ui/icons';
 
 interface NavbarProps {
@@ -36,7 +41,9 @@ export function Navbar({ onMobileMenuToggle: _onMobileMenuToggle }: NavbarProps)
 	const navigate = useNavigate();
 	const { user, logout } = useAuth();
 
+	const { isMobile } = useResponsive();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [drawerOpen, setDrawerOpen] = useState(false);
 	const isMenuOpen = Boolean(anchorEl);
 	const isDark = theme.palette.mode === 'dark';
 
@@ -55,6 +62,7 @@ export function Navbar({ onMobileMenuToggle: _onMobileMenuToggle }: NavbarProps)
 	};
 
 	return (
+		<>
 		<AppBar
 			position='fixed'
 			elevation={0}
@@ -132,6 +140,16 @@ export function Navbar({ onMobileMenuToggle: _onMobileMenuToggle }: NavbarProps)
 						</Typography>
 					</Box>
 				</Box>
+
+				{isMobile ? (
+					<IconButton
+						aria-label='open navigation'
+						onClick={() => setDrawerOpen(true)}
+						sx={{ ml: 1 }}
+					>
+						<MenuIcon size={20} strokeWidth={1.5} />
+					</IconButton>
+				) : null}
 
 				{/* Right Section */}
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -300,6 +318,70 @@ export function Navbar({ onMobileMenuToggle: _onMobileMenuToggle }: NavbarProps)
 				</Menu>
 			</Toolbar>
 		</AppBar>
+
+		<Drawer
+			anchor='left'
+			open={drawerOpen}
+			onClose={() => setDrawerOpen(false)}
+			PaperProps={{
+				sx: {
+					width: 280,
+					backgroundColor: theme.palette.background.paper,
+					borderRight: `1px solid ${theme.palette.divider}`
+				}
+			}}
+		>
+			<Box
+				sx={{
+					px: 3,
+					py: 2,
+					borderBottom: `1px solid ${theme.palette.divider}`,
+					display: 'flex',
+					alignItems: 'center',
+					gap: 2
+				}}
+			>
+				<Box
+					sx={{
+						width: 32,
+						height: 32,
+						borderRadius: `${radiusTokens.md}px`,
+						backgroundColor: theme.palette.primary.main,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}
+				>
+					<AppIcon intent='analytics' size={16} color={theme.palette.primary.contrastText} />
+				</Box>
+				<Typography variant='h6' fontWeight={600} fontSize='1rem'>
+					Link Charts
+				</Typography>
+			</Box>
+
+			<List sx={{ py: 1 }}>
+				<ListItemButton
+					onClick={() => { navigate('/link'); setDrawerOpen(false); }}
+					sx={{ px: 3, py: 1.5, borderRadius: `${radiusTokens.sm}px`, mx: 1 }}
+				>
+					<ListItemIcon sx={{ minWidth: 36 }}>
+						<AppIcon intent='link' size={20} />
+					</ListItemIcon>
+					<ListItemText primary='My Links' />
+				</ListItemButton>
+
+				<ListItemButton
+					onClick={() => { navigate('/profile'); setDrawerOpen(false); }}
+					sx={{ px: 3, py: 1.5, borderRadius: `${radiusTokens.sm}px`, mx: 1 }}
+				>
+					<ListItemIcon sx={{ minWidth: 36 }}>
+						<AppIcon intent='profile' size={20} />
+					</ListItemIcon>
+					<ListItemText primary='Profile' />
+				</ListItemButton>
+			</List>
+		</Drawer>
+		</>
 	);
 }
 
