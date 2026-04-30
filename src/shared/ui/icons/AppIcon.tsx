@@ -47,7 +47,7 @@ interface AppIconProps extends Omit<LucideProps, 'ref'> {
  * ```
  */
 export const AppIcon = forwardRef<SVGSVGElement, AppIconProps>(
-	({ name, intent, category, iconName, size = 20, color = 'currentColor', ...props }, ref) => {
+	({ name, intent, category, iconName, size = 20, color = 'currentColor', strokeWidth = 1.5, ...props }, ref) => {
 		// Determinar qual ícone usar baseado nas props
 		let IconComponent;
 
@@ -74,6 +74,7 @@ export const AppIcon = forwardRef<SVGSVGElement, AppIconProps>(
 				ref={ref}
 				size={size}
 				color={color}
+				strokeWidth={strokeWidth}
 				{...props}
 			/>
 		);
@@ -90,12 +91,13 @@ AppIcon.displayName = 'AppIcon';
  * Ícone de ação - otimizado para botões de ação
  */
 export const ActionIcon = forwardRef<SVGSVGElement, { intent: IconIntent } & Omit<LucideProps, 'ref'>>(
-	({ intent, size = 18, ...props }, ref) => {
+	({ intent, size = 18, strokeWidth = 1.5, ...props }, ref) => {
 		const IconComponent = IconIntents[intent];
 		return (
 			<IconComponent
 				ref={ref}
 				size={size}
+				strokeWidth={strokeWidth}
 				{...props}
 			/>
 		);
@@ -108,12 +110,13 @@ ActionIcon.displayName = 'ActionIcon';
  * Ícone de navegação - otimizado para elementos de navegação
  */
 export const NavIcon = forwardRef<SVGSVGElement, { intent: IconIntent } & Omit<LucideProps, 'ref'>>(
-	({ intent, size = 20, ...props }, ref) => {
+	({ intent, size = 20, strokeWidth = 1.5, ...props }, ref) => {
 		const IconComponent = IconIntents[intent];
 		return (
 			<IconComponent
 				ref={ref}
 				size={size}
+				strokeWidth={strokeWidth}
 				{...props}
 			/>
 		);
@@ -126,12 +129,13 @@ NavIcon.displayName = 'NavIcon';
  * Ícone de status - otimizado para indicadores de status
  */
 export const StatusIcon = forwardRef<SVGSVGElement, { intent: IconIntent } & Omit<LucideProps, 'ref'>>(
-	({ intent, size = 16, ...props }, ref) => {
+	({ intent, size = 16, strokeWidth = 1.5, ...props }, ref) => {
 		const IconComponent = IconIntents[intent];
 		return (
 			<IconComponent
 				ref={ref}
 				size={size}
+				strokeWidth={strokeWidth}
 				{...props}
 			/>
 		);
