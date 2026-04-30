@@ -3,6 +3,8 @@ import { Map, MapPin } from 'lucide-react';
 import { Box, CircularProgress, Alert, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
+import { useChartHeight } from '@/lib/theme/hooks/useChartHeight';
+
 import { chartByType } from '@/lib/theme/colors/chart';
 import { radiusTokens } from '@/lib/theme/designSystem';
 
@@ -23,6 +25,7 @@ interface LeafletComponents {
 	TileLayer: React.ComponentType<any>;
 	CircleMarker: React.ComponentType<any>;
 	Popup: React.ComponentType<any>;
+	MapResizeHandler: React.ComponentType<Record<string, never>>;
 }
 
 /**
@@ -41,7 +44,8 @@ interface LeafletComponents {
  * - Gerenciar interações
  * - Mostrar popups com informações
  */
-export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, loading = false }: HeatmapMapProps) {
+export function HeatmapMap({ data, height: heightProp, onPointClick, minClicks = 1, loading = false }: HeatmapMapProps) {
+	const mapHeight = useChartHeight('large', heightProp);
 	const [leafletComponents, setLeafletComponents] = useState<LeafletComponents | null>(null);
 	const [mapError, setMapError] = useState<string | null>(null);
 
@@ -58,18 +62,29 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 				}
 
 				// Carregar componentes React Leaflet
-				const [{ MapContainer }, { TileLayer }, { CircleMarker }, { Popup }] = await Promise.all([
+				const [{ MapContainer }, { TileLayer }, { CircleMarker }, { Popup }, { useMap }] = await Promise.all([
 					import('react-leaflet/MapContainer'),
 					import('react-leaflet/TileLayer'),
 					import('react-leaflet/CircleMarker'),
-					import('react-leaflet/Popup')
+					import('react-leaflet/Popup'),
+					import('react-leaflet')
 				]);
+
+				function MapResizeHandler() {
+					const map = useMap();
+					useEffect(() => {
+						const timeout = setTimeout(() => map.invalidateSize(), 100);
+						return () => clearTimeout(timeout);
+					}, [map]);
+					return null;
+				}
 
 				setLeafletComponents({
 					MapContainer,
 					TileLayer,
 					CircleMarker,
-					Popup
+					Popup,
+					MapResizeHandler
 				});
 			} catch (error) {
 				setMapError('Erro ao carregar componentes do mapa');
@@ -123,7 +138,7 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 		return (
 			<Box
 				sx={{
-					height,
+					height: mapHeight,
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',
@@ -151,7 +166,7 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 		return (
 			<Alert
 				severity='error'
-				sx={{ height }}
+				sx={{ height: mapHeight }}
 			>
 				{mapError}
 			</Alert>
@@ -163,7 +178,7 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 		return (
 			<Box
 				sx={{
-					height,
+					height: mapHeight,
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',
@@ -197,12 +212,12 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 		);
 	}
 
-	const { MapContainer, TileLayer, CircleMarker, Popup } = leafletComponents;
+	const { MapContainer, TileLayer, CircleMarker, Popup, MapResizeHandler } = leafletComponents;
 
 	return (
 		<Box
 			sx={{
-				height,
+				height: mapHeight,
 				borderRadius: `${radiusTokens.md}px`,
 				overflow: 'hidden',
 				border: 1,
@@ -216,6 +231,7 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 				zoomControl
 				scrollWheelZoom
 			>
+				<MapResizeHandler />
 				<TileLayer
 					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
