@@ -1,5 +1,6 @@
 import { Box, Grid, Card, CardContent, Typography, Stack, Chip } from '@mui/material';
-import { Clock, Calendar, TrendingUp, Star, Zap } from 'lucide-react';
+import { Clock, Calendar, Star, Zap, Sunrise, Sun, Sunset, Moon } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { useTheme } from '@mui/material/styles';
@@ -25,20 +26,20 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 	};
 
 	// Determinar período do dia
-	const getPeriodOfDay = (hour: number) => {
+	const getPeriodOfDay = (hour: number): { label: string; icon: ReactNode; color: 'warning' | 'info' | 'primary' | 'secondary' } => {
 		if (hour >= 6 && hour < 12) {
-			return { label: 'Manhã', emoji: '🌅', color: 'warning' as const };
+			return { label: 'Manhã', icon: <Sunrise size={16} strokeWidth={1.5} />, color: 'warning' };
 		}
 
 		if (hour >= 12 && hour < 18) {
-			return { label: 'Tarde', emoji: '☀️', color: 'info' as const };
+			return { label: 'Tarde', icon: <Sun size={16} strokeWidth={1.5} />, color: 'info' };
 		}
 
 		if (hour >= 18 && hour < 22) {
-			return { label: 'Noite', emoji: '🌆', color: 'primary' as const };
+			return { label: 'Noite', icon: <Sunset size={16} strokeWidth={1.5} />, color: 'primary' };
 		}
 
-		return { label: 'Madrugada', emoji: '🌙', color: 'secondary' as const };
+		return { label: 'Madrugada', icon: <Moon size={16} strokeWidth={1.5} />, color: 'secondary' };
 	};
 
 	const period = getPeriodOfDay(peak_hour);
@@ -87,9 +88,9 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 					<MetricCard
 						title='Período do Dia'
 						value={period.label}
-						icon={<TrendingUp {...ICON_LG} />}
+						icon={period.icon}
 						color={period.color}
-						subtitle={period.emoji}
+						subtitle='Período de maior atividade'
 					/>
 				</Grid>
 				<Grid
@@ -177,11 +178,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 													label={period.label}
 													size='small'
 													color={period.color}
-												/>
-												<Chip
-													label={period.emoji}
-													size='small'
-													variant='outlined'
+													icon={<Box sx={{ display: 'flex', ml: 0.5 }}>{period.icon}</Box>}
 												/>
 											</Stack>
 										</Box>
