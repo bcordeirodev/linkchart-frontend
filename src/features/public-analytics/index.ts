@@ -11,3 +11,6 @@ export { usePublicAnalytics } from './hooks/usePublicAnalytics';
 
 // Components
 export * from './components';
+
+// Next.js App Router adapter (accepts slug as prop instead of useParams)
+export { PublicAnalyticsPageContent } from './PublicAnalyticsPageContent';
