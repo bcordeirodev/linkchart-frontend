@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2020",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -13,13 +13,23 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/auth/*": ["./src/lib/auth/*"],
+      "@/analytics/*": ["./src/features/analytics/*"],
+      "@/links/*": ["./src/features/links/*"],
+      "@/ui/*": ["./src/shared/ui/*"],
+      "@/layout/*": ["./src/shared/layout/*"],
+      "@/hooks/*": ["./src/shared/hooks/*"],
+      "@/api/*": ["./src/lib/api/*"],
+      "@/theme/*": ["./src/lib/theme/*"],
+      "@/store/*": ["./src/lib/store/*"],
+      "@/utils/*": ["./src/lib/utils/*"],
+      "@/i18n/*": ["./src/lib/i18n/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
