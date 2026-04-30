@@ -607,10 +607,11 @@ export function RealTimeHeatmapChart({
 										<Box sx={{ p: 1, minWidth: 200 }}>
 											<Typography
 												variant='subtitle2'
-												sx={{ fontWeight: 600 }}
+												sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}
 												gutterBottom
 											>
-												📍 {point.city}, {point.country}
+												<MapPin size={16} strokeWidth={1.5} />
+												{point.city}, {point.country}
 											</Typography>
 											<Typography
 												variant='h6'

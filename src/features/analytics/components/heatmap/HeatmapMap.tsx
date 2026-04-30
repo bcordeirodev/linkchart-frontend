@@ -1,3 +1,5 @@
+import { Map, MapPin } from 'lucide-react';
+
 import { Box, CircularProgress, Alert, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
@@ -176,8 +178,10 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 						variant='h6'
 						color='text.secondary'
 						gutterBottom
+						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						🗺️ Nenhum Ponto no Mapa
+						<Map size={16} strokeWidth={1.5} />
+						Nenhum Ponto no Mapa
 					</Typography>
 					<Typography
 						variant='body2'
@@ -233,8 +237,10 @@ export function HeatmapMap({ data, height = 600, onPointClick, minClicks = 1, lo
 								<Typography
 									variant='subtitle2'
 									gutterBottom
+									sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 								>
-									📍 {point.city}
+									<MapPin size={16} strokeWidth={1.5} />
+									{point.city}
 								</Typography>
 								<Typography
 									variant='body2'

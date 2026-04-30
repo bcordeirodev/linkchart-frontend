@@ -1,4 +1,4 @@
-import { Globe, MapPin } from 'lucide-react';
+import { Globe, MapPin, Trophy, Building2 } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack } from '@mui/material';
 
 import { useTheme } from '@mui/material/styles';
@@ -202,8 +202,10 @@ export function HeatmapStats({
 						variant='subtitle2'
 						gutterBottom
 						color='text.secondary'
+						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						🌍 Análise Geográfica Avançada
+						<Globe size={16} strokeWidth={1.5} />
+						Análise Geográfica Avançada
 					</Typography>
 					<Grid
 						container
@@ -387,8 +389,10 @@ export function HeatmapStats({
 							<Typography
 								variant='subtitle2'
 								gutterBottom
+								sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								🏆 Top Países
+								<Trophy size={16} strokeWidth={1.5} />
+								Top Países
 							</Typography>
 							<Stack
 								direction='row'
@@ -418,8 +422,10 @@ export function HeatmapStats({
 							<Typography
 								variant='subtitle2'
 								gutterBottom
+								sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								🏙️ Top Cidades
+								<Building2 size={16} strokeWidth={1.5} />
+								Top Cidades
 							</Typography>
 							<Stack
 								direction='row'
