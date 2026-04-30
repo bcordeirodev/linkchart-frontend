@@ -1,0 +1,138 @@
+{
+	"dashboard": {
+		"title": "Link Dashboard",
+		"description": "Consolidated overview with essential metrics and detailed performance.",
+		"loading": "Loading link dashboard...",
+		"empty": "Link dashboard unavailable",
+		"totalClicksLabel": "total clicks",
+		"realtime": "Real Time",
+		"dataQuality": "Data quality",
+		"lastUpdate": "Last update",
+		"metrics": {
+			"title": "Link Metrics"
+		},
+		"charts": {
+			"noData": "No Data Available",
+			"noDataDesc": "Share your links to see detailed click charts."
+		}
+	},
+	"timeframe": {
+		"label": "Timeframe",
+		"1h": "Last hour",
+		"24h": "Last 24h",
+		"7d": "Last 7 days",
+		"30d": "Last 30 days"
+	},
+	"charts": {
+		"hourlyClicks": "Clicks by Hour",
+		"dayOfWeek": "Clicks by Day of Week",
+		"deviceBreakdown": "Device Breakdown",
+		"topCountries": "Top Countries",
+		"retentionAnalysis": "Retention Analysis",
+		"trafficSource": "Traffic Source",
+		"sessionDepth": "Session Depth",
+		"timezoneDistribution": "Timezone Distribution",
+		"temporalTrends": "Temporal Trends",
+		"peakAnalysis": "Peak Hours",
+		"browserBreakdown": "Browser Breakdown",
+		"osBreakdown": "OS Breakdown",
+		"heatmap": "Click Heatmap"
+	},
+	"tabs": {
+		"overview": "Overview",
+		"temporal": "Temporal",
+		"geographic": "Geographic",
+		"audience": "Audience",
+		"performance": "Performance",
+		"insights": "Insights",
+		"heatmap": "Heatmap"
+	},
+	"temporal": {
+		"title": "Temporal Analysis",
+		"description": "Analysis of temporal click patterns with peak identification and trends. All data since the beginning.",
+		"loading": "Loading temporal data...",
+		"noData": "No temporal data yet",
+		"period": {
+			"morning": "Morning",
+			"afternoon": "Afternoon",
+			"evening": "Evening",
+			"dawn": "Dawn"
+		},
+		"chart": {
+			"generalPatterns": "General Patterns",
+			"localTime": "Local Time",
+			"weekend": "Weekend",
+			"businessHours": "Business Hours",
+			"peaks": "Peaks",
+			"trends": "Trends",
+			"timezones": "Time Zones",
+			"peakHour": "Peak hour:",
+			"activeHours": "active hours",
+			"weekendDays": "Weekend",
+			"weekdays": "Weekdays",
+			"activeDays": "active days",
+			"peakHourLabel": "peak hour"
+		}
+	},
+	"geographic": {
+		"title": "Geographic Analysis",
+		"description": "See where your audience is located around the world.",
+		"loading": "Loading geographic data...",
+		"noData": "No geographic data yet"
+	},
+	"audience": {
+		"title": "Audience Analysis",
+		"description": "Detailed audience analysis with device, browser and OS data.",
+		"loading": "Loading audience data...",
+		"noData": "No audience data yet"
+	},
+	"performance": {
+		"title": "Performance Analysis",
+		"description": "Detailed performance metrics for this link.",
+		"loading": "Loading performance data...",
+		"noData": "No performance data yet"
+	},
+	"insights": {
+		"title": "Business Insights",
+		"description": "Data-driven insights to optimize your link strategy.",
+		"loading": "Loading insights...",
+		"noData": "No insights available yet"
+	},
+	"heatmap": {
+		"title": "Click Heatmap",
+		"description": "Visualize click intensity over time.",
+		"loading": "Loading heatmap data...",
+		"noData": "No heatmap data yet",
+		"controls": {
+			"radius": "Radius",
+			"intensity": "Intensity",
+			"reset": "Reset view"
+		},
+		"autoRefresh": "Auto-refresh",
+		"realtimeActive": "Real-time Active",
+		"realtime": "Real-time",
+		"clicks": "clicks",
+		"countries": "countries",
+		"cities": "cities",
+		"avgClicks": "Avg: {{count}} clicks/location",
+		"updated": "Updated:",
+		"group": "Group"
+	},
+	"linkInfo": {
+		"title": "Link Information",
+		"originalUrl": "Original URL",
+		"shortUrl": "Short URL",
+		"createdAt": "Created",
+		"status": "Status"
+	},
+	"metrics": {
+		"totalClicks": "Total Clicks",
+		"uniqueVisitors": "Unique Visitors",
+		"countriesReached": "Countries",
+		"avgDailyClicks": "Avg. Daily Clicks",
+		"bounceRate": "Bounce Rate",
+		"avgSessionDuration": "Avg. Session",
+		"peakHour": "Peak Hour",
+		"topDevice": "Top Device"
+	}
+}

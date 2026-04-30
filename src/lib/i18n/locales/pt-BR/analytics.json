@@ -1,0 +1,138 @@
+{
+	"dashboard": {
+		"title": "Dashboard do Link",
+		"description": "Visão geral consolidada com métricas essenciais e performance detalhada.",
+		"loading": "Carregando dashboard do link...",
+		"empty": "Dashboard do link indisponível",
+		"totalClicksLabel": "cliques totais",
+		"realtime": "Tempo Real",
+		"dataQuality": "Qualidade dos dados",
+		"lastUpdate": "Última atualização",
+		"metrics": {
+			"title": "Métricas do Link"
+		},
+		"charts": {
+			"noData": "Nenhum Dado Disponível",
+			"noDataDesc": "Compartilhe seus links para ver gráficos detalhados de cliques."
+		}
+	},
+	"timeframe": {
+		"label": "Período",
+		"1h": "Última hora",
+		"24h": "Últimas 24h",
+		"7d": "Últimos 7 dias",
+		"30d": "Últimos 30 dias"
+	},
+	"charts": {
+		"hourlyClicks": "Cliques por Hora",
+		"dayOfWeek": "Cliques por Dia da Semana",
+		"deviceBreakdown": "Distribuição de Dispositivos",
+		"topCountries": "Principais Países",
+		"retentionAnalysis": "Análise de Retenção",
+		"trafficSource": "Fonte de Tráfego",
+		"sessionDepth": "Profundidade de Sessão",
+		"timezoneDistribution": "Distribuição por Fuso Horário",
+		"temporalTrends": "Tendências Temporais",
+		"peakAnalysis": "Horários de Pico",
+		"browserBreakdown": "Distribuição de Navegadores",
+		"osBreakdown": "Distribuição de Sistemas Operacionais",
+		"heatmap": "Mapa de Calor de Cliques"
+	},
+	"tabs": {
+		"overview": "Visão Geral",
+		"temporal": "Temporal",
+		"geographic": "Geográfico",
+		"audience": "Audiência",
+		"performance": "Performance",
+		"insights": "Insights",
+		"heatmap": "Mapa de Calor"
+	},
+	"temporal": {
+		"title": "Análise Temporal",
+		"description": "Análise de padrões temporais dos seus cliques com identificação de picos e tendências. Todos os dados desde o início.",
+		"loading": "Carregando dados temporais...",
+		"noData": "Nenhum dado temporal ainda",
+		"period": {
+			"morning": "Manhã",
+			"afternoon": "Tarde",
+			"evening": "Noite",
+			"dawn": "Madrugada"
+		},
+		"chart": {
+			"generalPatterns": "Padrões Gerais",
+			"localTime": "Hora Local",
+			"weekend": "Fim de Semana",
+			"businessHours": "Horário Comercial",
+			"peaks": "Picos",
+			"trends": "Tendências",
+			"timezones": "Fusos Horários",
+			"peakHour": "Horário de pico:",
+			"activeHours": "horas ativas",
+			"weekendDays": "Fim de Semana",
+			"weekdays": "Dias Úteis",
+			"activeDays": "dias ativos",
+			"peakHourLabel": "horário de pico"
+		}
+	},
+	"geographic": {
+		"title": "Análise Geográfica",
+		"description": "Veja onde sua audiência está localizada ao redor do mundo.",
+		"loading": "Carregando dados geográficos...",
+		"noData": "Nenhum dado geográfico ainda"
+	},
+	"audience": {
+		"title": "Análise de Audiência",
+		"description": "Análise detalhada da sua audiência com dados de dispositivos, navegadores e sistemas operacionais.",
+		"loading": "Carregando dados de audiência...",
+		"noData": "Nenhum dado de audiência ainda"
+	},
+	"performance": {
+		"title": "Análise de Performance",
+		"description": "Métricas detalhadas de performance para este link.",
+		"loading": "Carregando dados de performance...",
+		"noData": "Nenhum dado de performance ainda"
+	},
+	"insights": {
+		"title": "Business Insights",
+		"description": "Insights baseados em dados para otimizar sua estratégia de links.",
+		"loading": "Carregando insights...",
+		"noData": "Nenhum insight disponível ainda"
+	},
+	"heatmap": {
+		"title": "Mapa de Calor de Cliques",
+		"description": "Visualize a intensidade de cliques ao longo do tempo.",
+		"loading": "Carregando dados do mapa de calor...",
+		"noData": "Nenhum dado de mapa de calor ainda",
+		"controls": {
+			"radius": "Raio",
+			"intensity": "Intensidade",
+			"reset": "Redefinir visualização"
+		},
+		"autoRefresh": "Auto-refresh",
+		"realtimeActive": "Tempo Real Ativo",
+		"realtime": "Tempo Real",
+		"clicks": "cliques",
+		"countries": "países",
+		"cities": "cidades",
+		"avgClicks": "Média: {{count}} cliques/local",
+		"updated": "Atualizado:",
+		"group": "Agrupar"
+	},
+	"linkInfo": {
+		"title": "Informações do Link",
+		"originalUrl": "URL Original",
+		"shortUrl": "URL Curta",
+		"createdAt": "Criado em",
+		"status": "Status"
+	},
+	"metrics": {
+		"totalClicks": "Total de Cliques",
+		"uniqueVisitors": "Visitantes Únicos",
+		"countriesReached": "Países",
+		"avgDailyClicks": "Média Diária",
+		"bounceRate": "Taxa de Rejeição",
+		"avgSessionDuration": "Sessão Média",
+		"peakHour": "Hora de Pico",
+		"topDevice": "Dispositivo Principal"
+	}
+}

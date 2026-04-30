@@ -1,0 +1,54 @@
+{
+	"title": "Profile Settings",
+	"subtitle": "Manage your account information and security.",
+	"sections": {
+		"personalInfo": "Personal Information",
+		"security": "Security",
+		"preferences": "Preferences",
+		"dangerZone": "Danger Zone"
+	},
+	"form": {
+		"displayName": "Display name",
+		"email": "Email address",
+		"emailHelper": "Email cannot be changed.",
+		"saveButton": "Save changes",
+		"saveSuccess": "Profile updated successfully.",
+		"saveFailed": "Could not save changes. Please try again.",
+		"verifiedBadge": "Verified",
+		"pendingBadge": "Pending",
+		"resetButton": "Reset"
+	},
+	"password": {
+		"title": "Change Password",
+		"subtitle": "Keep your account secure by changing your password regularly.",
+		"current": "Current password",
+		"currentHelper": "Enter your current password to confirm the change.",
+		"new": "New password",
+		"confirm": "Confirm new password",
+		"saveButton": "Update password",
+		"saveSuccess": "Password updated successfully.",
+		"successMessage": "Password changed successfully",
+		"errors": {
+			"wrongCurrent": "Current password is incorrect.",
+			"tooShort": "Password must be at least 8 characters.",
+			"mismatch": "Passwords do not match."
+		},
+		"securityTip": {
+			"title": "Security Tips",
+			"tip1": "Use at least 8 characters with letters, numbers and symbols",
+			"tip2": "Avoid personal information like your name or date of birth",
+			"tip3": "Do not reuse passwords from other accounts"
+		}
+	},
+	"sidebar": {
+		"memberSince": "Member since",
+		"totalLinks": "Total links",
+		"totalClicks": "Total clicks",
+		"accountStatus": "Account Status",
+		"verified": "Verified Account",
+		"verifiedDesc": "Full access granted",
+		"pendingVerification": "Pending Verification",
+		"pendingVerificationDesc": "Verify your email for full access",
+		"dateUnavailable": "Date not available"
+	}
+}

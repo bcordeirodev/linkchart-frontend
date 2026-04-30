@@ -1,0 +1,54 @@
+{
+	"title": "Configurações de Perfil",
+	"subtitle": "Gerencie as informações da sua conta e segurança.",
+	"sections": {
+		"personalInfo": "Informações Pessoais",
+		"security": "Segurança",
+		"preferences": "Preferências",
+		"dangerZone": "Zona de Perigo"
+	},
+	"form": {
+		"displayName": "Nome de exibição",
+		"email": "Endereço de e-mail",
+		"emailHelper": "O e-mail não pode ser alterado.",
+		"saveButton": "Salvar alterações",
+		"saveSuccess": "Perfil atualizado com sucesso.",
+		"saveFailed": "Não foi possível salvar as alterações. Tente novamente.",
+		"verifiedBadge": "Verificado",
+		"pendingBadge": "Pendente",
+		"resetButton": "Resetar"
+	},
+	"password": {
+		"title": "Alterar Senha",
+		"subtitle": "Mantenha sua conta segura alterando sua senha regularmente.",
+		"current": "Senha atual",
+		"currentHelper": "Insira sua senha atual para confirmar a alteração.",
+		"new": "Nova senha",
+		"confirm": "Confirmar nova senha",
+		"saveButton": "Atualizar senha",
+		"saveSuccess": "Senha atualizada com sucesso.",
+		"successMessage": "Senha alterada com sucesso",
+		"errors": {
+			"wrongCurrent": "A senha atual está incorreta.",
+			"tooShort": "A senha deve ter pelo menos 8 caracteres.",
+			"mismatch": "As senhas não coincidem."
+		},
+		"securityTip": {
+			"title": "Dicas de Segurança",
+			"tip1": "Use pelo menos 8 caracteres com letras, números e símbolos",
+			"tip2": "Evite informações pessoais como nome ou data de nascimento",
+			"tip3": "Não reutilize senhas de outras contas"
+		}
+	},
+	"sidebar": {
+		"memberSince": "Membro desde",
+		"totalLinks": "Total de links",
+		"totalClicks": "Total de cliques",
+		"accountStatus": "Status da Conta",
+		"verified": "Conta Verificada",
+		"verifiedDesc": "Acesso completo liberado",
+		"pendingVerification": "Verificação Pendente",
+		"pendingVerificationDesc": "Verifique seu e-mail para acesso completo",
+		"dateUnavailable": "Data não disponível"
+	}
+}

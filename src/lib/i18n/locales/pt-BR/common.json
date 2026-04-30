@@ -1,0 +1,83 @@
+{
+	"appName": "Link Charts",
+	"appTagline": "Plataforma de Analytics",
+	"nav": {
+		"myLinks": "Meus Links",
+		"signIn": "Entrar",
+		"signUp": "Criar conta",
+		"profile": "Configurações de Perfil",
+		"profileDesc": "Gerenciar sua conta",
+		"proUser": "Usuário Pro",
+		"signOut": "Sair",
+		"signOutDesc": "Até logo!",
+		"menuTooltip": "{{name}} - Clique para abrir o menu",
+		"accountMenuAriaLabel": "menu da conta"
+	},
+	"actions": {
+		"save": "Salvar",
+		"cancel": "Cancelar",
+		"delete": "Excluir",
+		"edit": "Editar",
+		"create": "Criar",
+		"copy": "Copiar",
+		"share": "Compartilhar",
+		"view": "Ver",
+		"back": "Voltar",
+		"close": "Fechar",
+		"confirm": "Confirmar",
+		"retry": "Tentar novamente",
+		"refresh": "Atualizar",
+		"viewAnalytics": "Ver analytics",
+		"qrCode": "Código QR"
+	},
+	"chart": {
+		"noData": "Sem Dados Disponíveis",
+		"noDataDesc": "Este gráfico será exibido quando houver dados suficientes para análise.",
+		"errorTitle": "Gráfico {{type}}",
+		"errorDesc": "Houve um problema ao carregar o gráfico. Visualização temporariamente indisponível.",
+		"loading": "Carregando gráfico {{type}}...",
+		"loadingShort": "Carregando...",
+		"statsTotal": "Total:",
+		"statsAvg": "Média:",
+		"statsMax": "Máximo:",
+		"statsMin": "Mínimo:",
+		"statsPoints": "pontos"
+	},
+	"status": {
+		"active": "Ativo",
+		"inactive": "Inativo",
+		"expired": "Expirado",
+		"scheduled": "Agendado",
+		"loading": "Carregando...",
+		"error": "Ocorreu um erro",
+		"noData": "Nenhum dado disponível",
+		"success": "Operação realizada com sucesso"
+	},
+	"table": {
+		"rowsPerPage": "Linhas por página",
+		"of": "de",
+		"noResults": "Nenhum resultado encontrado",
+		"search": "Pesquisar..."
+	},
+	"feedback": {
+		"copied": "Copiado!",
+		"copyFailed": "Não foi possível copiar",
+		"saved": "Salvo com sucesso",
+		"deleted": "Excluído com sucesso",
+		"error": "Algo deu errado. Tente novamente."
+	},
+	"loading": {
+		"default": "Carregando...",
+		"data": "Carregando dados...",
+		"saving": "Salvando...",
+		"deleting": "Excluindo..."
+	},
+	"empty": {
+		"noData": "Nenhum dado disponível",
+		"noResults": "Nenhum resultado encontrado",
+		"tryAdjusting": "Tente ajustar seus filtros ou termos de pesquisa."
+	},
+	"footer": {
+		"copyright": "© 2024 Link Charts. Todos os direitos reservados."
+	}
+}

@@ -1,0 +1,127 @@
+{
+	"shorter": {
+		"heroTitle": "Shorten any link.",
+		"heroSubtitle": "Free URL shortener with powerful analytics.",
+		"linkCreated": "Link created successfully",
+		"freeNoSignup": "100% free · no signup required",
+		"readyToShare": "Ready to share!",
+		"readyToSharePrefix": "Ready to",
+		"readyToShareSuffix": "share!",
+		"autoRedirect": "Your link is active. Opening analytics automatically.",
+		"formPlaceholder": "Paste your long URL here...",
+		"shortenButton": "Shorten",
+		"shortening": "Shortening...",
+		"successTitle": "Link created!",
+		"copyButton": "Copy link",
+		"copySuccess": "Copied!",
+		"shareButton": "Share",
+		"createAnother": "Shorten another link",
+		"signUpCta": "Sign up for free to track your links",
+		"stats": {
+			"linksCreated": "Links created",
+			"clicksTracked": "Clicks tracked",
+			"countries": "Countries reached",
+			"responseTime": "Response Time",
+			"uptime": "Uptime Guaranteed",
+			"sectionTitle": "Numbers That Impress"
+		},
+		"form": {
+			"urlLabel": "Original URL",
+			"urlPlaceholder": "Paste the URL here... (e.g. https://example.com/long-page)",
+			"urlRequired": "URL is required",
+			"urlInvalid": "Enter a valid URL",
+			"titleLabel": "Title",
+			"optional": "optional",
+			"titlePlaceholder": "Name to identify the link",
+			"slugLabel": "Slug",
+			"slugPlaceholder": "my-link",
+			"slugInvalid": "3–50 characters: lowercase letters, numbers and hyphens",
+			"submitButton": "⚡ Shorten Now",
+			"errorMessage": "Error shortening URL. Please try again."
+		},
+		"upgrade": {
+			"title": "Get more with a free account",
+			"description": "Track clicks, see analytics and manage all your links in one place.",
+			"button": "Create free account"
+		},
+		"error": {
+			"invalidUrl": "Please enter a valid URL.",
+			"generic": "Could not shorten the link. Please try again."
+		}
+	},
+	"publicAnalytics": {
+		"title": "Link Analytics",
+		"subtitle": "Public analytics for",
+		"noData": "No analytics data available yet.",
+		"signUpCta": "Want this for your links?",
+		"signUpButton": "Create free account",
+		"createLink": "Create Link",
+		"backToShortener": "Back to Shortener",
+		"error": {
+			"slugMissing": "Link slug not provided",
+			"invalidLinkData": "Invalid link data",
+			"invalidAnalyticsData": "Invalid analytics data",
+			"loadFailed": "Failed to load link data"
+		},
+		"metrics": {
+			"totalClicks": "Total clicks",
+			"sinceCreation": "since creation",
+			"status": "Status",
+			"active": "Active",
+			"inactive": "Inactive",
+			"operational": "link operational",
+			"createdAt": "Created at",
+			"analyticsLabel": "Analytics",
+			"available": "Available",
+			"noData": "No data",
+			"dataCollected": "data collected"
+		},
+		"saveUrlBanner": {
+			"title": "Save this page to track your analytics",
+			"desc": "This is the only URL to access the public data for this link. Bookmark it or copy below.",
+			"copied": "Copied!",
+			"copy": "Copy",
+			"upgradeTitle": "Want full history, alerts and detailed charts?",
+			"upgradeButton": "Create a free account →"
+		}
+	},
+	"redirect": {
+		"redirecting": "Redirecting...",
+		"pleaseWait": "Please wait while we redirect you.",
+		"notFound": "Link not found or has expired.",
+		"inactive": "This link is currently inactive."
+	},
+	"notFound": {
+		"title": "Page not found",
+		"description": "The page you're looking for doesn't exist or has been moved.",
+		"homeButton": "Go to homepage"
+	},
+	"unauthorized": {
+		"title": "Access denied",
+		"description": "You don't have permission to view this page.",
+		"signInButton": "Sign in"
+	},
+	"benefits": {
+		"title": "Why use Link Charts?",
+		"analytics": "Real-time analytics",
+		"analyticsDesc": "Track clicks, locations, devices and more.",
+		"custom": "Custom short links",
+		"customDesc": "Use your own slugs for branded links.",
+		"qr": "QR Codes included",
+		"qrDesc": "Every link gets a QR code automatically.",
+		"active": "Link active and working",
+		"shortenAnother": "🔗 Shorten another link",
+		"realtimeAnalytics": "Real-time analytics",
+		"freeQr": "Free QR Code",
+		"noExpiration": "No expiration",
+		"customSlug": "Custom slug"
+	},
+	"qr": {
+		"errors": {
+			"invalidUrl": "Invalid shortened URL",
+			"noShortUrl": "Link has no valid shortened URL",
+			"noId": "Link ID not provided in URL",
+			"notFound": "Link not found"
+		}
+	}
+}

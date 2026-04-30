@@ -1,0 +1,127 @@
+{
+	"shorter": {
+		"heroTitle": "Encurte qualquer link.",
+		"heroSubtitle": "Encurtador de URL gratuito com analytics avançado.",
+		"linkCreated": "Link criado com sucesso",
+		"freeNoSignup": "100% gratuito · sem cadastro",
+		"readyToShare": "Pronto para compartilhar!",
+		"readyToSharePrefix": "Pronto para",
+		"readyToShareSuffix": "compartilhar!",
+		"autoRedirect": "Seu link já está ativo. Abrindo analytics automaticamente.",
+		"formPlaceholder": "Cole sua URL longa aqui...",
+		"shortenButton": "Encurtar",
+		"shortening": "Encurtando...",
+		"successTitle": "Link criado!",
+		"copyButton": "Copiar link",
+		"copySuccess": "Copiado!",
+		"shareButton": "Compartilhar",
+		"createAnother": "Encurtar outro link",
+		"signUpCta": "Cadastre-se gratuitamente para rastrear seus links",
+		"stats": {
+			"linksCreated": "Links criados",
+			"clicksTracked": "Cliques rastreados",
+			"countries": "Países alcançados",
+			"responseTime": "Tempo de Resposta",
+			"uptime": "Uptime Garantido",
+			"sectionTitle": "Números que Impressionam"
+		},
+		"form": {
+			"urlLabel": "URL Original",
+			"urlPlaceholder": "Cole a URL aqui... (ex: https://exemplo.com/pagina-longa)",
+			"urlRequired": "A URL é obrigatória",
+			"urlInvalid": "Insira uma URL válida",
+			"titleLabel": "Título",
+			"optional": "opcional",
+			"titlePlaceholder": "Nome para identificar o link",
+			"slugLabel": "Slug",
+			"slugPlaceholder": "meu-link",
+			"slugInvalid": "3–50 caracteres: letras minúsculas, números e hífens",
+			"submitButton": "⚡ Encurtar Agora",
+			"errorMessage": "Erro ao encurtar a URL. Tente novamente."
+		},
+		"upgrade": {
+			"title": "Obtenha mais com uma conta gratuita",
+			"description": "Rastreie cliques, veja analytics e gerencie todos seus links em um só lugar.",
+			"button": "Criar conta gratuita"
+		},
+		"error": {
+			"invalidUrl": "Insira uma URL válida.",
+			"generic": "Não foi possível encurtar o link. Tente novamente."
+		}
+	},
+	"publicAnalytics": {
+		"title": "Analytics do Link",
+		"subtitle": "Analytics público de",
+		"noData": "Nenhum dado de analytics disponível ainda.",
+		"signUpCta": "Quer isso para seus links?",
+		"signUpButton": "Criar conta gratuita",
+		"createLink": "Criar Link",
+		"backToShortener": "Voltar ao Encurtador",
+		"error": {
+			"slugMissing": "Slug do link não fornecido",
+			"invalidLinkData": "Dados do link inválidos",
+			"invalidAnalyticsData": "Dados de analytics inválidos",
+			"loadFailed": "Erro ao carregar dados do link"
+		},
+		"metrics": {
+			"totalClicks": "Total de cliques",
+			"sinceCreation": "desde a criação",
+			"status": "Status",
+			"active": "Ativo",
+			"inactive": "Inativo",
+			"operational": "link operacional",
+			"createdAt": "Criado em",
+			"analyticsLabel": "Analytics",
+			"available": "Disponível",
+			"noData": "Sem dados",
+			"dataCollected": "dados coletados"
+		},
+		"saveUrlBanner": {
+			"title": "Salve esta página para acompanhar seus analytics",
+			"desc": "Esta é a única URL de acesso aos dados públicos deste link. Adicione-a aos favoritos ou copie abaixo.",
+			"copied": "Copiado!",
+			"copy": "Copiar",
+			"upgradeTitle": "Quer histórico completo, alertas e gráficos detalhados?",
+			"upgradeButton": "Crie uma conta grátis →"
+		}
+	},
+	"redirect": {
+		"redirecting": "Redirecionando...",
+		"pleaseWait": "Aguarde enquanto redirecionamos você.",
+		"notFound": "Link não encontrado ou expirado.",
+		"inactive": "Este link está temporariamente inativo."
+	},
+	"notFound": {
+		"title": "Página não encontrada",
+		"description": "A página que você está procurando não existe ou foi movida.",
+		"homeButton": "Ir para a página inicial"
+	},
+	"unauthorized": {
+		"title": "Acesso negado",
+		"description": "Você não tem permissão para visualizar esta página.",
+		"signInButton": "Entrar"
+	},
+	"benefits": {
+		"title": "Por que usar o Link Charts?",
+		"analytics": "Analytics em tempo real",
+		"analyticsDesc": "Rastreie cliques, localizações, dispositivos e mais.",
+		"custom": "Links curtos personalizados",
+		"customDesc": "Use seus próprios slugs para links com sua marca.",
+		"qr": "Códigos QR incluídos",
+		"qrDesc": "Cada link recebe um código QR automaticamente.",
+		"active": "Link ativo e funcionando",
+		"shortenAnother": "🔗 Encurtar outro link",
+		"realtimeAnalytics": "Analytics em tempo real",
+		"freeQr": "QR Code grátis",
+		"noExpiration": "Sem expiração",
+		"customSlug": "Slug personalizado"
+	},
+	"qr": {
+		"errors": {
+			"invalidUrl": "URL encurtada inválida",
+			"noShortUrl": "Link não possui URL encurtada válida",
+			"noId": "ID do link não fornecido na URL",
+			"notFound": "Link não encontrado"
+		}
+	}
+}
