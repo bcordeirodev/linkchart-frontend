@@ -38,7 +38,7 @@ export function HeroSection({
 				unmountOnExit
 			>
 				<Box>
-					<HeroContainer>
+					<HeroContainer sx={{ py: { xs: 3, sm: 4, md: 6 }, px: { xs: 2, sm: 3, md: 4 } }}>
 						<Slide
 							direction='down'
 							in
