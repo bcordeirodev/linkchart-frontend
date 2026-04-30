@@ -405,7 +405,7 @@ export function SessionDepthChart({
 									options={distributionBarOptions}
 									series={distributionBarData}
 									type='bar'
-									height={350}
+									size='standard'
 								/>
 							</CardContent>
 						</Card>
@@ -443,7 +443,7 @@ export function SessionDepthChart({
 									options={engagementAreaOptions}
 									series={engagementAreaData}
 									type='area'
-									height={250}
+									size='compact'
 								/>
 								<Box sx={{ mt: 2 }}>
 									<Typography

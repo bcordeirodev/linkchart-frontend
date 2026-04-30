@@ -410,7 +410,7 @@ export function TrafficSourceChart({
 									options={channelsPieOptions}
 									series={channelsPieData}
 									type='donut'
-									height={350}
+									size='standard'
 								/>
 							</CardContent>
 						</Card>
@@ -441,7 +441,7 @@ export function TrafficSourceChart({
 									options={performanceBarOptions}
 									series={performanceBarData}
 									type='bar'
-									height={300}
+									size='standard'
 								/>
 								<Typography
 									variant='body2'

@@ -519,7 +519,7 @@ export function TemporalChart({
 									chartColors.primary.main,
 									isDark
 								)}
-								height={300}
+								size='standard'
 							/>
 							<Box sx={{ mt: 2 }}>
 								<Typography
@@ -577,7 +577,7 @@ export function TemporalChart({
 									'value',
 									isDark
 								)}
-								height={300}
+								size='standard'
 							/>
 						</ChartCard>
 					</Grid>
@@ -680,7 +680,7 @@ export function TemporalChart({
 									false,
 									isDark
 								)}
-								height={300}
+								size='standard'
 							/>
 						</ChartCard>
 					</Grid>

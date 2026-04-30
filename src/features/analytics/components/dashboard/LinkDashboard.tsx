@@ -48,7 +48,7 @@ export function LinkDashboard({
 	enableRealtime = false,
 	showTimeframeSelector = true,
 	compact = false,
-	chartsHeight = 400,
+	chartsHeight,
 	showCharts = true
 }: LinkDashboardProps) {
 	const theme = useTheme();
@@ -149,7 +149,7 @@ export function LinkDashboard({
 /**
  * Função auxiliar para renderizar gráficos
  */
-function renderCharts(data: DashboardData, height: number, animations: ReturnType<typeof createPresetAnimations>) {
+function renderCharts(data: DashboardData, height: number | undefined, animations: ReturnType<typeof createPresetAnimations>) {
 	// Mapear dados para formato esperado pelos componentes de gráficos
 	const chartData = {
 		temporal: data.temporal_data

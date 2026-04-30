@@ -345,7 +345,7 @@ export function RetentionAnalysisChart({
 									options={visitorsPieOptions}
 									series={visitorsPieData}
 									type='donut'
-									height={300}
+									size='standard'
 								/>
 							</CardContent>
 						</Card>
@@ -376,7 +376,7 @@ export function RetentionAnalysisChart({
 									options={benchmarkBarOptions}
 									series={benchmarkBarData}
 									type='bar'
-									height={200}
+									size='compact'
 								/>
 								<Typography
 									variant='caption'

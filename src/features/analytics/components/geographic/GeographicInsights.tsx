@@ -184,7 +184,7 @@ export function GeographicInsights({ data, countries, states: _states, cities }:
 							</Typography>
 							<ApexChartWrapper
 								type='pie'
-								height={300}
+								size='standard'
 								{...formatPieChart(countryChartData, 'name', 'value', isDark)}
 							/>
 						</CardContent>

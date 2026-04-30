@@ -86,7 +86,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								<Box sx={{ mb: 3 }}>
 									<ApexChartWrapper
 										type='bar'
-										height={300}
+										size='standard'
 										{...formatBarChart(
 											countries.slice(0, 8) as Record<string, unknown>[],
 											'country',
@@ -209,7 +209,7 @@ export function GeographicChart({ countries, states, cities, totalClicks }: Geog
 								<Box sx={{ mb: 3 }}>
 									<ApexChartWrapper
 										type='bar'
-										height={300}
+										size='standard'
 										{...formatBarChart(
 											states.slice(0, 8).map((state) => ({
 												...state,

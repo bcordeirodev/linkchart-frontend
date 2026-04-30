@@ -329,7 +329,7 @@ export function AudienceChart({
 									</Typography>
 									<ApexChartWrapper
 										type='pie'
-										height={300}
+										size='standard'
 										{...formatPieChart(deviceChartData, 'name', 'value', isDark)}
 									/>
 								</CardContent>
@@ -360,7 +360,7 @@ export function AudienceChart({
 									</Typography>
 									<ApexChartWrapper
 										type='bar'
-										height={300}
+										size='standard'
 										{...formatBarChart(
 											deviceChartData,
 											'name',
@@ -479,7 +479,7 @@ export function AudienceChart({
 								<ApexChartWrapper
 									type='pie'
 									{...formatPieChart(browserChartData, 'name', 'value', isDark)}
-									height={350}
+									size='standard'
 								/>
 							</CardContent>
 						</Card>
@@ -570,7 +570,7 @@ export function AudienceChart({
 								<ApexChartWrapper
 									type='donut'
 									{...formatPieChart(osChartData, 'name', 'value', isDark)}
-									height={350}
+									size='standard'
 								/>
 							</CardContent>
 						</Card>
@@ -667,7 +667,7 @@ export function AudienceChart({
 										false,
 										isDark
 									)}
-									height={300}
+									size='standard'
 								/>
 
 								<Box sx={{ mt: 3 }}>
@@ -731,7 +731,7 @@ export function AudienceChart({
 								<ApexChartWrapper
 									type='pie'
 									{...formatPieChart(languageChartData, 'name', 'value', isDark)}
-									height={350}
+									size='standard'
 								/>
 							</CardContent>
 						</Card>

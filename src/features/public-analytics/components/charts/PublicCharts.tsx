@@ -84,7 +84,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 						>
 							<ApexChartWrapper
 								type='area'
-								height={250}
+								size='compact'
 								{...formatAreaChart(
 									hourData as Record<string, unknown>[],
 									'hour',
@@ -110,7 +110,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 						>
 							<ApexChartWrapper
 								type='bar'
-								height={300}
+								size='standard'
 								{...formatBarChart(
 									dowData as Record<string, unknown>[],
 									'day',
@@ -136,7 +136,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 						>
 							<ApexChartWrapper
 								type='bar'
-								height={300}
+								size='standard'
 								{...formatBarChart(
 									(charts.geographic?.top_countries ?? []) as Record<string, unknown>[],
 									'country',
@@ -163,7 +163,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 						>
 							<ApexChartWrapper
 								type='donut'
-								height={300}
+								size='standard'
 								{...formatPieChart(
 									(charts.audience?.device_breakdown ?? []) as Record<string, unknown>[],
 									'device',
@@ -187,7 +187,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 						>
 							<ApexChartWrapper
 								type='donut'
-								height={300}
+								size='standard'
 								{...formatPieChart(
 									(charts.audience?.browser_breakdown ?? []) as Record<string, unknown>[],
 									'browser',

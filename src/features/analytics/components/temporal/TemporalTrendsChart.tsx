@@ -103,7 +103,7 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 						>
 							<ApexChartWrapper
 								type='area'
-								height={300}
+								size='standard'
 								series={[
 									{
 										name: 'Cliques',
@@ -209,7 +209,7 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 						>
 							<ApexChartWrapper
 								type='area'
-								height={300}
+								size='standard'
 								series={[
 									{
 										name: 'Cliques',

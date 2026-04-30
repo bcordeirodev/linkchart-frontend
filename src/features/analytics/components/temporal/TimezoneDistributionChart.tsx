@@ -77,7 +77,7 @@ export function TimezoneDistributionChart({ timezoneAnalysis }: TimezoneDistribu
 					>
 						<ApexChartWrapper
 							type='bar'
-							height={350}
+							size='standard'
 							series={[
 								{
 									name: 'Cliques',
