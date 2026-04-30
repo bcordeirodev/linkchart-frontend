@@ -1,4 +1,4 @@
-import { Repeat2, TrendingUp, Users, BarChart3 } from 'lucide-react';
+import { Repeat2, TrendingUp, Users, BarChart3, Lightbulb } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack } from '@mui/material';
 
 import { ICON_LG } from '@/lib/theme/iconDefaults';
@@ -414,7 +414,8 @@ export function RetentionAnalysisChart({
 									variant='h6'
 									sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}
 								>
-									💡 Insights de Retenção
+									<Lightbulb size={16} strokeWidth={1.5} />
+									Insights de Retenção
 								</Typography>
 
 								<Typography variant='body1'>

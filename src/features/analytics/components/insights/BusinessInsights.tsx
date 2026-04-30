@@ -7,7 +7,8 @@ import {
 	Clock,
 	BarChart3,
 	MapPin,
-	Briefcase
+	Briefcase,
+	Lightbulb
 } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Chip, Alert, Stack, Divider, Avatar } from '@mui/material';
 
@@ -61,9 +62,10 @@ export function BusinessInsights({
 				<Typography
 					variant='h6'
 					gutterBottom
-					sx={{ fontWeight: 600 }}
+					sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}
 				>
-					📊 Insights não disponíveis
+					<BarChart3 size={16} strokeWidth={1.5} />
+					Insights não disponíveis
 				</Typography>
 				<Typography
 					variant='body2'
@@ -145,10 +147,14 @@ export function BusinessInsights({
 					sx={{
 						mb: 3,
 						fontWeight: 600,
-						color: 'text.primary'
+						color: 'text.primary',
+						display: 'flex',
+						alignItems: 'center',
+						gap: 1
 					}}
 				>
-					💡 Insights de Negócio
+					<Lightbulb size={16} strokeWidth={1.5} />
+					Insights de Negócio
 				</Typography>
 			) : null}
 
@@ -274,10 +280,14 @@ export function BusinessInsights({
 													color: palette.main,
 													fontWeight: 600,
 													textTransform: 'uppercase',
-													letterSpacing: 0.5
+													letterSpacing: 0.5,
+													display: 'flex',
+													alignItems: 'center',
+													gap: 0.5
 												}}
 											>
-												📈 {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
+												<TrendingUp size={12} strokeWidth={1.5} />
+												{insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
 											</Typography>
 										</Box>
 									</Stack>
@@ -306,7 +316,7 @@ export function BusinessInsights({
 							fontWeight: 500
 						}}
 					>
-						<strong>💡 {organizedInsights.length} insights</strong> gerados automaticamente baseados nos
+						<strong>{organizedInsights.length} insights</strong> gerados automaticamente baseados nos
 						seus dados reais. Organizados por prioridade e categoria para melhor análise.
 					</Typography>
 				</Alert>

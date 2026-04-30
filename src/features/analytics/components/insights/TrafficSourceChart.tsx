@@ -1,4 +1,5 @@
-import { Activity, TrendingUp, Users2, BarChart3, AlertTriangle } from 'lucide-react';
+import { Activity, TrendingUp, Users2, BarChart3, AlertTriangle, Lightbulb, Trophy, Wrench, Target } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, Alert } from '@mui/material';
 
 import { ICON_MD, ICON_LG } from '@/lib/theme/iconDefaults';
@@ -213,16 +214,16 @@ export function TrafficSourceChart({
 	};
 
 	// Função para obter ícone da recomendação
-	const getRecommendationIcon = (type: string) => {
+	const getRecommendationIcon = (type: string): ReactNode => {
 		switch (type) {
 			case 'optimization':
-				return '⚡';
+				return <Wrench size={16} strokeWidth={1.5} />;
 			case 'growth':
-				return '📈';
+				return <TrendingUp size={16} strokeWidth={1.5} />;
 			case 'diversification':
-				return '🎯';
+				return <Target size={16} strokeWidth={1.5} />;
 			default:
-				return '💡';
+				return <Lightbulb size={16} strokeWidth={1.5} />;
 		}
 	};
 
@@ -436,9 +437,10 @@ export function TrafficSourceChart({
 							<Typography
 								variant='h6'
 								gutterBottom
-								sx={{ fontWeight: 600 }}
+								sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								📊 Performance Detalhada por Canal
+								<BarChart3 size={16} strokeWidth={1.5} />
+								Performance Detalhada por Canal
 							</Typography>
 							<Grid
 								container
@@ -525,9 +527,10 @@ export function TrafficSourceChart({
 							<Typography
 								variant='h6'
 								gutterBottom
-								sx={{ fontWeight: 600 }}
+								sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								🏆 Top 5 Fontes Individuais
+								<Trophy size={16} strokeWidth={1.5} />
+								Top 5 Fontes Individuais
 							</Typography>
 							<Grid
 								container
@@ -602,7 +605,8 @@ export function TrafficSourceChart({
 									gutterBottom
 									sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}
 								>
-									💡 Recomendações Estratégicas
+									<Lightbulb size={16} strokeWidth={1.5} />
+									Recomendações Estratégicas
 								</Typography>
 								<Stack spacing={2}>
 									{data.recommendations.map((rec, index) => (
@@ -617,9 +621,9 @@ export function TrafficSourceChart({
 											}}
 										>
 											<Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-												<Typography sx={{ fontSize: '1.2rem' }}>
+												<Box sx={{ display: 'flex', alignItems: 'center', color: 'primary.main', mt: 0.5 }}>
 													{getRecommendationIcon(rec.type)}
-												</Typography>
+												</Box>
 												<Box sx={{ flex: 1 }}>
 													<Box
 														sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}

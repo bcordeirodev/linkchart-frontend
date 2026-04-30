@@ -1,4 +1,4 @@
-import { MousePointer2, TrendingUp, Star, BarChart3 } from 'lucide-react';
+import { MousePointer2, TrendingUp, Star, BarChart3, Lightbulb } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Chip, Stack, LinearProgress } from '@mui/material';
 
 import { ICON_LG } from '@/lib/theme/iconDefaults';
@@ -471,9 +471,10 @@ export function SessionDepthChart({
 							<Typography
 								variant='h6'
 								gutterBottom
-								sx={{ fontWeight: 600 }}
+								sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}
 							>
-								📊 Detalhes da Distribuição
+								<BarChart3 size={16} strokeWidth={1.5} />
+								Detalhes da Distribuição
 							</Typography>
 							<Grid
 								container
@@ -539,7 +540,8 @@ export function SessionDepthChart({
 									variant='h6'
 									sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}
 								>
-									💡 Insights de Engajamento
+									<Lightbulb size={16} strokeWidth={1.5} />
+									Insights de Engajamento
 								</Typography>
 
 								<Typography variant='body1'>
@@ -567,7 +569,7 @@ export function SessionDepthChart({
 											fontWeight: 500
 										}}
 									>
-										🌟 Destaque: Você tem uma base sólida de power users (
+										Destaque: Você tem uma base sólida de power users (
 										{data.power_users_percentage}%)! Considere criar conteúdo premium ou programas
 										de fidelidade.
 									</Typography>

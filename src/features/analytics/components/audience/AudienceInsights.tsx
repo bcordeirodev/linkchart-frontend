@@ -1,3 +1,4 @@
+import { Lightbulb, Target, BarChart3, TrendingUp, Wrench } from 'lucide-react';
 import { Box, Card, CardContent, Chip, Divider, Grid, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
@@ -61,8 +62,10 @@ export function AudienceInsights({
 				<Typography
 					variant='h6'
 					gutterBottom
+					sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 				>
-					💡 Insights de Audiência
+					<Lightbulb size={16} strokeWidth={1.5} />
+					Insights de Audiência
 				</Typography>
 
 				<Grid
@@ -78,8 +81,10 @@ export function AudienceInsights({
 						<Typography
 							variant='subtitle2'
 							gutterBottom
+							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							🎯 Dispositivo Principal
+							<Target size={16} strokeWidth={1.5} />
+							Dispositivo Principal
 						</Typography>
 						<Stack
 							direction='row'
@@ -108,8 +113,10 @@ export function AudienceInsights({
 						<Typography
 							variant='subtitle2'
 							gutterBottom
+							sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 						>
-							📊 Distribuição Mobile vs Desktop
+							<BarChart3 size={16} strokeWidth={1.5} />
+							Distribuição Mobile vs Desktop
 						</Typography>
 						<Stack
 							direction='row'
@@ -137,8 +144,10 @@ export function AudienceInsights({
 					<Typography
 						variant='subtitle2'
 						gutterBottom
+						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						📈 Recomendações Estratégicas
+						<TrendingUp size={16} strokeWidth={1.5} />
+						Recomendações Estratégicas
 					</Typography>
 					<Stack spacing={1}>
 						{isMobileDominant ? (
@@ -196,8 +205,10 @@ export function AudienceInsights({
 					<Typography
 						variant='subtitle2'
 						gutterBottom
+						sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
 					>
-						🔧 Detalhes Técnicos
+						<Wrench size={16} strokeWidth={1.5} />
+						Detalhes Técnicos
 					</Typography>
 					<Stack spacing={1}>
 						<Typography
