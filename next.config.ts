@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+	output: 'standalone',
 	experimental: {
 		// Required for MUI with Next.js App Router
 		optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lucide-react']
