@@ -4,15 +4,25 @@
  * @version 2.0.0
  */
 
+import dynamic from 'next/dynamic';
+
 // Componentes principais
 export { HeatmapAnalysis } from './HeatmapAnalysis';
-export { RealTimeHeatmapChart } from './RealTimeHeatmapChart';
 export { HeatmapMetrics } from './HeatmapMetrics';
+
+export const RealTimeHeatmapChart = dynamic(
+	() => import('./RealTimeHeatmapChart').then((m) => ({ default: m.RealTimeHeatmapChart })),
+	{ ssr: false, loading: () => null }
+);
 
 // Componentes modulares
 export { HeatmapControls } from './HeatmapControls';
 export { HeatmapStats } from './HeatmapStats';
-export { HeatmapMap } from './HeatmapMap';
+
+export const HeatmapMap = dynamic(
+	() => import('./HeatmapMap').then((m) => ({ default: m.HeatmapMap })),
+	{ ssr: false, loading: () => null }
+);
 
 // Tipos
 export type { HeatmapPoint } from '@/types';

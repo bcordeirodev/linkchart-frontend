@@ -1,17 +1,13 @@
 import { CircularProgress } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import React, { useEffect, useState, useCallback, Suspense } from 'react';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { chartPalette } from '@/lib/theme/colors';
 import { useChartHeight, type ChartSize } from '@/lib/theme/hooks/useChartHeight';
 
-// Import dinâmico para compatibilidade com Vite
-const Chart = React.lazy(() =>
-	import('react-apexcharts').then((module) => ({
-		default: module.default
-	}))
-);
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 // Styled Components
 import {
@@ -218,77 +214,68 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 		);
 	}
 
-	// Renderizar o gráfico diretamente (React puro - sem SSR)
+	// Renderizar o gráfico diretamente (Next.js - sem SSR)
 	return (
 		<ChartContainer>
-			<Suspense
-				fallback={
-					<LoadingContainer style={{ height }}>
-						<CircularProgress size={40} />
-						<LoadingText>{t('chart.loadingShort')}</LoadingText>
-					</LoadingContainer>
-				}
-			>
-				<Chart
-					type={type}
-					height={height}
-					width={width}
-					options={{
-						colors: [...chartPalette],
-						...options,
-						chart: {
-							...((options.chart as object) || {}),
-							type,
-							background: 'transparent',
-							foreColor: theme.palette.text.secondary,
-							fontFamily: 'Inter, system-ui, sans-serif',
-							toolbar: {
-								show: false,
-								...((options.chart as any)?.toolbar || {})
+			<Chart
+				type={type}
+				height={height}
+				width={width}
+				options={{
+					colors: [...chartPalette],
+					...options,
+					chart: {
+						...((options.chart as object) || {}),
+						type,
+						background: 'transparent',
+						foreColor: theme.palette.text.secondary,
+						fontFamily: 'Inter, system-ui, sans-serif',
+						toolbar: {
+							show: false,
+							...((options.chart as any)?.toolbar || {})
+						},
+						events: {
+							mounted: () => {
+								handleChartLoad();
 							},
-							events: {
-								mounted: () => {
-									handleChartLoad();
-								},
-								...((options.chart as any)?.events || {})
-							},
-							animations: {
+							...((options.chart as any)?.events || {})
+						},
+						animations: {
+							enabled: true,
+							easing: 'easeinout',
+							speed: 800,
+							animateGradually: {
 								enabled: true,
-								easing: 'easeinout',
-								speed: 800,
-								animateGradually: {
-									enabled: true,
-									delay: 150
+								delay: 150
+							},
+							...((options.chart as any)?.animations || {})
+						}
+					},
+					grid: {
+						borderColor: theme.palette.divider,
+						...((options.grid as object) || {})
+					},
+					theme: {
+						mode: theme.palette.mode
+					},
+					responsive: [
+						{
+							breakpoint: 600,
+							options: {
+								legend: {
+									position: 'bottom',
+									offsetY: 0
 								},
-								...((options.chart as any)?.animations || {})
+								chart: {
+									toolbar: { show: false }
+								}
 							}
 						},
-						grid: {
-							borderColor: theme.palette.divider,
-							...((options.grid as object) || {})
-						},
-						theme: {
-							mode: theme.palette.mode
-						},
-						responsive: [
-							{
-								breakpoint: 600,
-								options: {
-									legend: {
-										position: 'bottom',
-										offsetY: 0
-									},
-									chart: {
-										toolbar: { show: false }
-									}
-								}
-							},
-							...(Array.isArray((options as any).responsive) ? (options as any).responsive : [])
-						]
-					}}
-					series={series}
-				/>
-			</Suspense>
+						...(Array.isArray((options as any).responsive) ? (options as any).responsive : [])
+					]
+				}}
+				series={series}
+			/>
 		</ChartContainer>
 	);
 };
