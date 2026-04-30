@@ -1,11 +1,13 @@
 'use client';
 
+import { MousePointer2 } from 'lucide-react';
 import { Box, Chip, Stack, Tooltip, Typography } from '@mui/material';
 import { format, isValid } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useLinkClicks } from '@/features/links/hooks/useLinkClicks';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import AnalyticsStateManager from '@/shared/ui/base/AnalyticsStateManager';
 import TabDescription from '@/shared/ui/base/TabDescription';
 import DataTable from '@/shared/ui/data-display/DataTable';
@@ -274,7 +276,7 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
 		<Box>
 			<Box sx={{ mb: 3 }}>
 				<TabDescription
-					icon='🖱️'
+					icon={<MousePointer2 {...ICON_LG} />}
 					title='Cliques do Link'
 					description='Lista detalhada de cada acesso registrado: origem, localização, dispositivo, navegador e UTM.'
 					highlight={`${total} clique${total === 1 ? '' : 's'} registrado${total === 1 ? '' : 's'}`}
