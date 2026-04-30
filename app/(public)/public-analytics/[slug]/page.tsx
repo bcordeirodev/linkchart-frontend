@@ -7,13 +7,13 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { slug } = await params;
 	const res = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'}/api/public/link/${slug}`,
+		`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'}/api/public/analytics/${slug}`,
 		{ next: { revalidate: 300 } }
 	).catch(() => null);
 
 	const data = res?.ok ? await res.json() : null;
-	const title = data?.data?.title ?? data?.title ?? slug;
-	const clicks = data?.data?.clicks ?? data?.total_clicks ?? 0;
+	const title = slug;
+	const clicks = data?.data?.total_clicks ?? 0;
 
 	return {
 		title: `${title} — Link Analytics`,
