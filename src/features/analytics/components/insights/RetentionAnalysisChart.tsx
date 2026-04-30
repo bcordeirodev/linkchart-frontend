@@ -37,7 +37,7 @@ export function RetentionAnalysisChart({
 	data,
 	loading = false,
 	showTitle = true,
-	title = '🔄 Análise de Retenção'
+	title = 'Análise de Retenção'
 }: RetentionAnalysisChartProps) {
 	const theme = useTheme();
 

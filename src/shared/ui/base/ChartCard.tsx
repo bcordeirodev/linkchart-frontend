@@ -14,6 +14,7 @@ import type React from 'react';
 
 interface ChartCardProps extends BaseComponentProps {
 	title?: string;
+	icon?: React.ReactNode;
 	subtitle?: string;
 	action?: React.ReactNode;
 	height?: number | string;
@@ -27,6 +28,7 @@ interface ChartCardProps extends BaseComponentProps {
  */
 export function ChartCard({
 	title,
+	icon,
 	subtitle,
 	action,
 	height: _height = 300,
@@ -62,9 +64,13 @@ export function ChartCard({
 								position: 'relative',
 								zIndex: 1,
 								mt: 1,
-								fontWeight: 500
+								fontWeight: 500,
+								display: 'flex',
+								alignItems: 'center',
+								gap: 1
 							}}
 						>
+							{icon}
 							{title}
 						</Typography>
 					) : null}

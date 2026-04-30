@@ -64,7 +64,7 @@ export function TrafficSourceChart({
 	data,
 	loading = false,
 	showTitle = true,
-	title = '🎯 Análise de Fontes de Tráfego'
+	title = 'Análise de Fontes de Tráfego'
 }: TrafficSourceChartProps) {
 	const theme = useTheme();
 

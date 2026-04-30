@@ -92,7 +92,7 @@ export function GeographicAnalysis({
 							data={data}
 							stats={stats}
 							showTitle
-							title='🌍 Métricas Geográficas'
+							title='Métricas Geográficas'
 						/>
 					</Box>
 

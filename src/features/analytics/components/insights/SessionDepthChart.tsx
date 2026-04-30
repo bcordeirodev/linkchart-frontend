@@ -45,7 +45,7 @@ export function SessionDepthChart({
 	data,
 	loading = false,
 	showTitle = true,
-	title = '📈 Análise de Profundidade de Sessão'
+	title = 'Análise de Profundidade de Sessão'
 }: SessionDepthChartProps) {
 	const theme = useTheme();
 

@@ -44,7 +44,7 @@ interface LinkDashboardProps {
 export function LinkDashboard({
 	linkId,
 	showTitle = true,
-	title = '🔗 Dashboard do Link',
+	title = 'Dashboard do Link',
 	enableRealtime = false,
 	showTimeframeSelector = true,
 	compact = false,
@@ -112,7 +112,7 @@ export function LinkDashboard({
 							summary={data?.summary}
 							linksData={[]}
 							showTitle={!compact}
-							title='📊 Métricas do Link'
+							title='Métricas do Link'
 							variant={compact ? 'compact' : 'detailed'}
 						/>
 					</Grid>
@@ -196,7 +196,7 @@ function renderCharts(data: DashboardData, height: number, animations: ReturnTyp
 			<EmptyState
 				variant='charts'
 				height={400}
-				title='📊 Nenhum Dado Disponível'
+				title='Nenhum Dado Disponível'
 				description='Compartilhe seus links para ver gráficos detalhados de cliques.'
 			/>
 		);

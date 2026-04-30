@@ -43,7 +43,7 @@ export function HeatmapStats({
 	stats,
 
 	showTitle = false,
-	title = '📊 Estatísticas do Heatmap',
+	title = 'Estatísticas do Heatmap',
 	showDetailed = true
 }: HeatmapStatsProps) {
 	const theme = useTheme();

@@ -1,6 +1,9 @@
+import { Clock, Zap } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Alert, Chip, Stack, Divider, Tabs, Tab } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
+
+import { ICON_LG, ICON_SM } from '@/lib/theme/iconDefaults';
 
 import { formatAreaChart, formatBarChart, formatPieChart } from '@/features/analytics/utils/chartFormatters';
 import { getStandardChartColors, getChartColorsByType } from '@/lib/theme';
@@ -122,29 +125,33 @@ export function TemporalChart({
 						variant='scrollable'
 						scrollButtons='auto'
 					>
-						<Tab label='📊 Padrões Gerais' />
+						<Tab label='Padrões Gerais' />
 						<Tab
-							label='⏰ Hora Local'
+							label='Hora Local'
+							icon={<Clock {...ICON_SM} />}
+							iconPosition='start'
 							disabled={!hourlyPatternsLocal?.length || hourlyPatternsLocal.length < 3}
 						/>
 						<Tab
-							label='📅 Fim de Semana'
+							label='Fim de Semana'
 							disabled={!weekendVsWeekday}
 						/>
 						<Tab
-							label='🕘 Horário Comercial'
+							label='Horário Comercial'
 							disabled={!businessHoursAnalysis}
 						/>
 						<Tab
-							label='⚡ Picos'
+							label='Picos'
+							icon={<Zap {...ICON_SM} />}
+							iconPosition='start'
 							disabled={!hasPeakAnalysis}
 						/>
 						<Tab
-							label='📈 Tendências'
+							label='Tendências'
 							disabled={!hasTrends}
 						/>
 						<Tab
-							label='🌍 Fusos Horários'
+							label='Fusos Horários'
 							disabled={!hasTimezones}
 						/>
 					</Tabs>
@@ -172,7 +179,7 @@ export function TemporalChart({
 							}}
 						>
 							<Typography variant='body2'>
-								<strong>💡 Insights:</strong>{' '}
+								<strong>Insights:</strong>{' '}
 								{hourlyTotal > 0 ? (
 									<>
 										Horário de pico: <strong>{peakHour.label}</strong> ({peakHour.clicks} clicks).
@@ -198,7 +205,7 @@ export function TemporalChart({
 									variant='body2'
 									gutterBottom
 								>
-									<strong>📊 Resumo por Período:</strong>
+									<strong>Resumo por Período:</strong>
 								</Typography>
 								<Grid
 									container
@@ -272,7 +279,7 @@ export function TemporalChart({
 									variant='body2'
 									gutterBottom
 								>
-									<strong>📅 Dias por Engajamento:</strong>
+									<strong>Dias por Engajamento:</strong>
 								</Typography>
 								{weeklyData
 									.slice()
@@ -383,7 +390,7 @@ export function TemporalChart({
 												variant='subtitle2'
 												gutterBottom
 											>
-												📅 Padrões por Dia
+												Padrões por Dia
 											</Typography>
 											<Stack spacing={1}>
 												<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -426,7 +433,7 @@ export function TemporalChart({
 											variant='subtitle2'
 											gutterBottom
 										>
-											📈 Recomendações de Timing
+											Recomendações de Timing
 										</Typography>
 										<Stack spacing={1}>
 											{peakHour && peakHour.clicks > 0 ? (
@@ -485,7 +492,7 @@ export function TemporalChart({
 						item
 						xs={12}
 					>
-						<ChartCard title='⏰ Padrões de Hora Local (com Timezone)'>
+						<ChartCard title='Padrões de Hora Local (com Timezone)' icon={<Clock {...ICON_LG} />}>
 							<ApexChartWrapper
 								type='area'
 								{...formatAreaChart(
@@ -546,7 +553,7 @@ export function TemporalChart({
 						xs={12}
 						md={8}
 					>
-						<ChartCard title='📅 Fim de Semana vs Dias Úteis'>
+						<ChartCard title='Fim de Semana vs Dias Úteis'>
 							<ApexChartWrapper
 								type='pie'
 								{...formatPieChart(
@@ -632,7 +639,7 @@ export function TemporalChart({
 						xs={12}
 						md={8}
 					>
-						<ChartCard title='🕘 Análise de Horário Comercial'>
+						<ChartCard title='Análise de Horário Comercial'>
 							<Typography
 								variant='caption'
 								color='text.secondary'

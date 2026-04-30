@@ -97,7 +97,7 @@ export function PerformanceAnalysis({
 					<PerformanceMetrics
 						performanceData={performanceData || undefined}
 						showTitle
-						title='📊 Métricas de Performance'
+						title='Métricas de Performance'
 					/>
 
 					{/* RESTANTE DO CONTEÚDO */}
