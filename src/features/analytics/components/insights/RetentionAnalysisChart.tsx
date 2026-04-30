@@ -292,7 +292,7 @@ export function RetentionAnalysisChart({
 						<MetricCard
 							title='Total de Visitantes'
 							value={data.total_visitors}
-							icon={<TrendingUp />}
+							icon={<TrendingUp {...ICON_LG} />}
 							color='secondary'
 							subtitle='visitantes únicos'
 						/>

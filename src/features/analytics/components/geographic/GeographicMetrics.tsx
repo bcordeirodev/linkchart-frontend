@@ -70,7 +70,7 @@ export function GeographicMetrics({
 			id: 'geographic_clicks',
 			title: 'Cliques Geográficos',
 			value: totalGeographicClicks.toLocaleString(),
-			icon: <TrendingUp />,
+			icon: <TrendingUp {...ICON_LG} />,
 			color: 'warning' as const,
 			subtitle: 'cliques mapeados'
 		}

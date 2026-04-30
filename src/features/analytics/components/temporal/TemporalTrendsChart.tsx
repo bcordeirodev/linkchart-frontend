@@ -173,7 +173,13 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 									flexWrap='wrap'
 								>
 									<Chip
-										icon={weeklyTrend >= 0 ? <TrendingUp /> : <TrendingDown />}
+										icon={
+											weeklyTrend >= 0 ? (
+												<TrendingUp strokeWidth={1.5} />
+											) : (
+												<TrendingDown strokeWidth={1.5} />
+											)
+										}
 										label={`${weeklyTrend >= 0 ? '+' : ''}${weeklyTrend} última semana`}
 										color={weeklyTrend >= 0 ? 'success' : 'error'}
 										size='small'
@@ -273,7 +279,13 @@ export function TemporalTrendsChart({ weeklyTrends, monthlyTrends }: TemporalTre
 									flexWrap='wrap'
 								>
 									<Chip
-										icon={monthlyTrend >= 0 ? <TrendingUp /> : <TrendingDown />}
+										icon={
+											monthlyTrend >= 0 ? (
+												<TrendingUp strokeWidth={1.5} />
+											) : (
+												<TrendingDown strokeWidth={1.5} />
+											)
+										}
 										label={`${monthlyTrend >= 0 ? '+' : ''}${monthlyTrend} último mês`}
 										color={monthlyTrend >= 0 ? 'success' : 'error'}
 										size='small'

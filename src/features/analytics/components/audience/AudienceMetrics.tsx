@@ -52,7 +52,7 @@ export function AudienceMetrics({ data, showTitle = false, title = 'Métricas de
 			id: 'audience_clicks',
 			title: 'Cliques da Audiência',
 			value: totalAudienceClicks.toLocaleString(),
-			icon: <TrendingUp />,
+			icon: <TrendingUp {...ICON_LG} />,
 			color: 'warning' as const,
 			subtitle: 'engajamento total'
 		}

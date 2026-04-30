@@ -281,7 +281,7 @@ export function TrafficSourceChart({
 						<MetricCard
 							title='Fonte Principal'
 							value={data.top_source?.source || 'N/A'}
-							icon={<TrendingUp />}
+							icon={<TrendingUp {...ICON_LG} />}
 							color='primary'
 							subtitle={`${data.top_source?.percentage || 0}% do tráfego`}
 						/>

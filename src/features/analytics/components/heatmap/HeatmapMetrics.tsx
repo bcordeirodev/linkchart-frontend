@@ -37,7 +37,7 @@ export function HeatmapMetrics({ stats, showTitle = false, title = 'Métricas do
 			id: 'total_clicks',
 			title: 'Total de Cliques',
 			value: stats.totalClicks.toLocaleString(),
-			icon: <TrendingUp />,
+			icon: <TrendingUp {...ICON_LG} />,
 			color: 'primary' as const,
 			subtitle: 'cliques mapeados'
 		},

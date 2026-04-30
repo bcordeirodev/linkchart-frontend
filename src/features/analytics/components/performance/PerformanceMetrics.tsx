@@ -50,7 +50,7 @@ export function PerformanceMetrics({
 			id: 'success_rate',
 			title: 'Taxa de Sucesso',
 			value: `${successRate}%`,
-			icon: <CheckCircle />,
+			icon: <CheckCircle {...ICON_LG} />,
 			color:
 				successRate >= 99 ? ('success' as const) : successRate >= 95 ? ('info' as const) : ('warning' as const),
 			subtitle: 'redirecionamentos'

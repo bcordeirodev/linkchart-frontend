@@ -126,7 +126,7 @@ export function TemporalAnalysis({
 												? 'Declinando'
 												: 'Estável'
 									}
-									icon={<TrendingUp />}
+									icon={<TrendingUp {...ICON_LG} />}
 									color={
 										stats?.trendDirection === 'up'
 											? 'success'

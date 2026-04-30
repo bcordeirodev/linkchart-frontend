@@ -87,7 +87,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 					<MetricCard
 						title='Período do Dia'
 						value={period.label}
-						icon={<TrendingUp />}
+						icon={<TrendingUp {...ICON_LG} />}
 						color={period.color}
 						subtitle={period.emoji}
 					/>
@@ -101,7 +101,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
 					<MetricCard
 						title='Performance'
 						value={`${((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1)}%`}
-						icon={<Star />}
+						icon={<Star {...ICON_LG} />}
 						color='success'
 						subtitle='da atividade diária'
 					/>

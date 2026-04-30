@@ -288,7 +288,7 @@ export function SessionDepthChart({
 						<MetricCard
 							title='Power Users'
 							value={`${data.power_users_percentage}%`}
-							icon={<Star />}
+							icon={<Star {...ICON_LG} />}
 							color='warning'
 							subtitle={`${data.power_users_count} usuários`}
 						/>
@@ -302,7 +302,7 @@ export function SessionDepthChart({
 						<MetricCard
 							title='Máximo de Clicks'
 							value={data.max_session_depth}
-							icon={<TrendingUp />}
+							icon={<TrendingUp {...ICON_LG} />}
 							color='info'
 							subtitle='em uma sessão'
 						/>

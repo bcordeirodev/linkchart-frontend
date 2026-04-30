@@ -104,7 +104,7 @@ export function InsightsAnalysis({
 								<MetricCard
 									title='Total de Insights'
 									value={stats?.totalInsights?.toString() || '0'}
-									icon={<Lightbulb />}
+									icon={<Lightbulb {...ICON_LG} />}
 									color='primary'
 									subtitle='insights gerados'
 								/>
@@ -118,7 +118,7 @@ export function InsightsAnalysis({
 								<MetricCard
 									title='Alta Prioridade'
 									value={stats?.highPriorityCount?.toString() || '0'}
-									icon={<Flag />}
+									icon={<Flag {...ICON_LG} />}
 									color='error'
 									subtitle='requerem atenção'
 								/>
@@ -132,7 +132,7 @@ export function InsightsAnalysis({
 								<MetricCard
 									title='Acionáveis'
 									value={stats?.actionableCount?.toString() || '0'}
-									icon={<TrendingUp />}
+									icon={<TrendingUp {...ICON_LG} />}
 									color='success'
 									subtitle='podem ser implementados'
 								/>
