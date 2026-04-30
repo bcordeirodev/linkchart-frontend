@@ -3,8 +3,10 @@
  */
 
 import { useTheme } from '@mui/material/styles';
+import { Calendar } from 'lucide-react';
 
 import { formatBarChart } from '@/features/analytics/utils/chartFormatters';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { chartByType } from '@/lib/theme/colors';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { ChartCard } from '@/shared/ui/data-display/ChartCard';
@@ -23,7 +25,7 @@ export function DayOfWeekChart({ data, height = 300 }: DayOfWeekChartProps) {
 	return (
 		<ChartCard
 			title='Cliques por Dia da Semana'
-			icon='📅'
+			icon={<Calendar {...ICON_LG} />}
 		>
 			<ApexChartWrapper
 				type='bar'

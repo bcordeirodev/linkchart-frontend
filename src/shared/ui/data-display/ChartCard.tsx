@@ -17,8 +17,8 @@ import type { ReactNode } from 'react';
 export interface ChartCardProps {
 	/** Título do gráfico */
 	title: string;
-	/** Ícone emoji para o título */
-	icon?: string;
+	/** Ícone para o título */
+	icon?: ReactNode;
 	/** Conteúdo do gráfico */
 	children: ReactNode;
 	/** Altura do card */
@@ -70,7 +70,14 @@ export function ChartCard({ title, icon, children, height = '100%', sx = {} }: C
 							fontWeight: 500
 						}}
 					>
-						{icon ? <span>{icon}</span> : null}
+						{icon ? (
+							<Box
+								component='span'
+								sx={{ display: 'inline-flex', alignItems: 'center', mr: 0.5 }}
+							>
+								{icon}
+							</Box>
+						) : null}
 						{title}
 					</Typography>
 					<Box sx={{ mb: 2 }}>{children}</Box>

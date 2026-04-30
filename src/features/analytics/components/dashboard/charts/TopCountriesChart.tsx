@@ -3,8 +3,10 @@
  */
 
 import { useTheme } from '@mui/material/styles';
+import { Globe } from 'lucide-react';
 
 import { formatBarChart } from '@/features/analytics/utils/chartFormatters';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { chartByType } from '@/lib/theme/colors';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { ChartCard } from '@/shared/ui/data-display/ChartCard';
@@ -26,7 +28,7 @@ export function TopCountriesChart({ data, height = 300, maxCountries = 10 }: Top
 	return (
 		<ChartCard
 			title='Top Países'
-			icon='🌍'
+			icon={<Globe {...ICON_LG} />}
 		>
 			<ApexChartWrapper
 				type='bar'

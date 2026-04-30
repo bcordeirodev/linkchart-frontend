@@ -3,8 +3,10 @@
  */
 
 import { useTheme } from '@mui/material/styles';
+import { TrendingUp } from 'lucide-react';
 
 import { formatAreaChart } from '@/features/analytics/utils/chartFormatters';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { chartByType } from '@/lib/theme/colors';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { ChartCard } from '@/shared/ui/data-display/ChartCard';
@@ -23,7 +25,7 @@ export function HourlyClicksChart({ data, height = 300 }: HourlyClicksChartProps
 	return (
 		<ChartCard
 			title='Cliques por Hora do Dia'
-			icon='📈'
+			icon={<TrendingUp {...ICON_LG} />}
 		>
 			<ApexChartWrapper
 				type='area'

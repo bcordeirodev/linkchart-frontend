@@ -3,8 +3,10 @@
  */
 
 import { useTheme } from '@mui/material/styles';
+import { Smartphone } from 'lucide-react';
 
 import { formatPieChart } from '@/features/analytics/utils/chartFormatters';
+import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { chartByType, getChartColor } from '@/lib/theme/colors';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';
 import { ChartCard } from '@/shared/ui/data-display/ChartCard';
@@ -44,7 +46,7 @@ export function DeviceBreakdownChart({ data, height = 300 }: DeviceBreakdownChar
 	return (
 		<ChartCard
 			title='Dispositivos'
-			icon='📱'
+			icon={<Smartphone {...ICON_LG} />}
 		>
 			<ApexChartWrapper
 				type='donut'
