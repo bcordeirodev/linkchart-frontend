@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import ShorterClientPage from './ShorterClientPage';
+import { buildWebApplicationSchema } from '@/lib/seo/structuredData';
 
 export const metadata: Metadata = {
 	title: 'Free URL Shortener',
@@ -14,5 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default function ShorterPage() {
-	return <ShorterClientPage />;
+	const schema = buildWebApplicationSchema();
+	return (
+		<>
+			<script
+				type='application/ld+json'
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+			/>
+			<ShorterClientPage />
+		</>
+	);
 }

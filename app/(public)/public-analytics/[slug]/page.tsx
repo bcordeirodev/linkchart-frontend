@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { buildAnalyticsPageSchema } from '@/lib/seo/structuredData';
 
 interface Props {
 	params: Promise<{ slug: string }>;
@@ -33,6 +34,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PublicAnalyticsPage({ params }: Props) {
 	const { slug } = await params;
+
+	const res = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'}/api/public/analytics/${slug}`,
+		{ next: { revalidate: 300 } }
+	).catch(() => null);
+	const data = res?.ok ? await res.json() : null;
+	const clicks = data?.data?.total_clicks ?? 0;
+	const schema = buildAnalyticsPageSchema(slug, slug, clicks);
+
 	const { PublicAnalyticsPageContent } = await import('@/features/public-analytics');
-	return <PublicAnalyticsPageContent slug={slug} />;
+
+	return (
+		<>
+			<script
+				type='application/ld+json'
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+			/>
+			<PublicAnalyticsPageContent slug={slug} />
+		</>
+	);
 }
