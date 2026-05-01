@@ -19,7 +19,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 
 import { getLinkStatus, STATUS_MAP } from "@/features/links/utils/linkStatus";
 import { useAppDispatch } from "@/lib/store/hooks";

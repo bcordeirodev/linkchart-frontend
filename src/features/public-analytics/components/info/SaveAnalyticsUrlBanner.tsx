@@ -1,7 +1,7 @@
 "use client";
 import { Box, Typography } from "@mui/material";
 import { Copy, Check } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 import { useTranslation } from "react-i18next";
 
 import useClipboard from "@/hooks/useClipboard";

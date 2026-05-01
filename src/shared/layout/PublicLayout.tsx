@@ -4,7 +4,7 @@
  */
 import { Box, useTheme, Container, Button } from "@mui/material";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 import { useTranslation } from "react-i18next";
 
 import { useMainTheme } from "@/lib/theme";

@@ -14,7 +14,7 @@ import { useTheme } from "@mui/material/styles";
 import { ICON_MD, ICON_LG } from "@/lib/theme/iconDefaults";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 import { z } from "zod";
 
 import { useTranslation } from "react-i18next";

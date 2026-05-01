@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useAppDispatch } from "@/lib/store/hooks";

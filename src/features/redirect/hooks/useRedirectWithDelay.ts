@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 
 import { resetSessionRedirectUrl } from "@/lib/auth/sessionRedirectUrl";
 

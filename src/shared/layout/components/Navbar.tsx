@@ -23,7 +23,7 @@ import {
   ListItemButton,
 } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 import { Menu as MenuIcon } from "lucide-react";
 
 import { useTranslation } from "react-i18next";

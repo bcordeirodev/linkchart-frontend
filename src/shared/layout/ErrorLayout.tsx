@@ -24,7 +24,7 @@ import {
   Stack,
 } from "@mui/material";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 
 import { AppIcon } from "@/shared/ui/icons";
 import { useResponsive, createPresetAnimations } from "@/lib/theme";

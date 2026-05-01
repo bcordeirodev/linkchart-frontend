@@ -1,5 +1,5 @@
 "use client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 
 import { UpgradeCTA } from "@/features/shorter";
 import { EnhancedPaper } from "@/shared/ui/base";

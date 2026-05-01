@@ -27,7 +27,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 import { LinkActionsInline } from "./LinkActionsInline";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 

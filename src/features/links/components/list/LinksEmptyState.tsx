@@ -2,7 +2,7 @@
 import { Link2, FilterX, SearchX } from "lucide-react";
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
