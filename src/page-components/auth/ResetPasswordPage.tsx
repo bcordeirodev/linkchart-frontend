@@ -15,7 +15,7 @@ import { alpha } from "@mui/material/styles";
 import { ICON_MD, ICON_LG } from "@/lib/theme/iconDefaults";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "@/shared/hooks";
 import { z } from "zod";
 
 import { useTranslation } from "react-i18next";

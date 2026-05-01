@@ -11,7 +11,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { ICON_LG, ICON_XL } from "@/lib/theme/iconDefaults";
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "@/shared/hooks";
 
 import { useTranslation } from "react-i18next";
 
