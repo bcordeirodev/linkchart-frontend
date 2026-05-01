@@ -1,3 +1,4 @@
+'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Lock, CheckCircle } from 'lucide-react';
 import { Box, TextField, Button, Stack, CircularProgress, InputAdornment, IconButton, Alert } from '@mui/material';

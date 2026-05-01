@@ -1,3 +1,4 @@
+'use client';
 import { useCallback, useRef } from 'react';
 
 /**
@@ -5,7 +6,7 @@ import { useCallback, useRef } from 'react';
  * Versão simplificada para evitar conflitos de ESLint
  */
 function useDebounce<T extends (...args: never[]) => void>(callback: T, delay: number): T {
-	const timeoutRef = useRef<NodeJS.Timeout>();
+	const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
 	const debouncedFn = useCallback(
 		(...args: never[]) => {

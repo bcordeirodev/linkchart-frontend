@@ -1,3 +1,4 @@
+'use client';
 import { Search, ArrowUpDown } from 'lucide-react';
 import { ICON_SM, ICON_LG } from '@/lib/theme/iconDefaults';
 import {

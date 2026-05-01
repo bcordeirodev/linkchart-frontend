@@ -1,3 +1,4 @@
+'use client';
 import { Alert, TextField, Button, Box, Typography, CircularProgress, Link } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';

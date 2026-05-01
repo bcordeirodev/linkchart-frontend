@@ -1,3 +1,4 @@
+'use client';
 /**
  * 📊 PUBLIC ANALYTICS MODULE
  * Módulo completo para analytics públicos

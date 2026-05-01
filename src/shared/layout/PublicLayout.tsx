@@ -1,3 +1,4 @@
+'use client';
 /**
  * Layout para páginas públicas (não autenticadas)
  */

@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import { Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from '@mui/material';
 import { MoreVertical, Pencil, QrCode, Trash2 } from 'lucide-react';

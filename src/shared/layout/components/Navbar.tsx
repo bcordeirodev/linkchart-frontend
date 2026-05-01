@@ -1,3 +1,4 @@
+'use client';
 /**
  * Componente de navegação principal — POV sóbrio (SP2)
  */

@@ -1,3 +1,4 @@
+'use client';
 import { Box, Button, Paper, useTheme, ButtonGroup, Divider } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';

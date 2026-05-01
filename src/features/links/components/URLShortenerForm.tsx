@@ -1,15 +1,19 @@
+'use client';
+import type React from 'react';
 import { Box, Typography } from '@mui/material';
-import { Globe, Pencil, Link2 } from 'lucide-react';
+import { Globe, Pencil, Link2, ShieldCheck, ShieldAlert, ShieldOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { usePublicURLShortener } from '@/features/links/hooks/usePublicURLShortener';
+import { useUrlSafetyCheck } from '@/features/links/hooks/useUrlSafetyCheck';
 import { ApiError } from '@/lib/api/client';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { showErrorMessage } from '@/lib/store/messageSlice';
 import { GradientButton } from '@/shared/ui/base/GradientButton';
 import { ICON_SM } from '@/lib/theme/iconDefaults';
 
+import type { UrlSafetyStatus } from '@/features/links/hooks/useUrlSafetyCheck';
 import type { PublicLinkResponse } from '@/services/link-public.service';
 
 interface IFormData {
@@ -48,18 +52,46 @@ const inputSx = {
 	'&::placeholder': { color: 'rgba(255,255,255,0.25)' }
 };
 
+const safetyColors: Record<UrlSafetyStatus, string> = {
+	idle: 'transparent',
+	checking: 'rgba(255,255,255,0.3)',
+	safe: '#34d399',
+	unsafe: '#f87171',
+	error: 'rgba(255,255,255,0.2)',
+};
+
+const safetyIcons: Record<UrlSafetyStatus, React.ReactNode> = {
+	idle: null,
+	checking: null,
+	safe: <ShieldCheck {...ICON_SM} color='#34d399' />,
+	unsafe: <ShieldAlert {...ICON_SM} color='#f87171' />,
+	error: <ShieldOff {...ICON_SM} color='rgba(255,255,255,0.2)' />,
+};
+
+const safetyLabels: Record<UrlSafetyStatus, string> = {
+	idle: '',
+	checking: 'Verificando segurança...',
+	safe: 'URL segura',
+	unsafe: '',
+	error: 'Verificação indisponível',
+};
+
 export function URLShortenerForm({ onSuccess, onError, loading: externalLoading }: URLShortenerFormProps) {
 	const dispatch = useAppDispatch();
 	const { t } = useTranslation('public');
 	const {
 		handleSubmit,
 		register,
+		watch,
 		setError,
 		formState: { errors }
 	} = useForm<IFormData>({ defaultValues: { originalUrl: '', title: '', customSlug: '' } });
 
 	const { createPublicShortUrl, loading } = usePublicURLShortener();
 	const isLoading = loading || externalLoading;
+
+	const urlValue = watch('originalUrl');
+	const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? '');
 
 	const onSubmit = async (formData: IFormData) => {
 		try {
@@ -142,6 +174,21 @@ export function URLShortenerForm({ onSuccess, onError, loading: externalLoading 
 					<Typography sx={{ fontSize: '0.75rem', color: '#f87171', mt: 0.5, pl: 0.5 }}>
 						{errors.originalUrl.message}
 					</Typography>
+				) : safetyStatus !== 'idle' ? (
+					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 0.5, pl: 0.5 }}>
+						{safetyIcons[safetyStatus]}
+						<Typography
+							sx={{
+								fontSize: '0.75rem',
+								color: safetyColors[safetyStatus],
+								fontWeight: safetyStatus === 'unsafe' ? 600 : 400
+							}}
+						>
+							{safetyStatus === 'unsafe'
+								? `URL bloqueada: ${threats.join(', ')}`
+								: safetyLabels[safetyStatus]}
+						</Typography>
+					</Box>
 				) : null}
 			</Box>
 

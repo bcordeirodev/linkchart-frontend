@@ -1,3 +1,4 @@
+'use client';
 import { Shield, Settings, Zap, Eye } from 'lucide-react';
 
 import { ICON_MD } from '@/lib/theme/iconDefaults';

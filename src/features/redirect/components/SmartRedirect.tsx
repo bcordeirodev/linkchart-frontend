@@ -1,3 +1,4 @@
+'use client';
 import { CircularProgress } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';

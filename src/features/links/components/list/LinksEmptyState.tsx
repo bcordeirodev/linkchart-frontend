@@ -1,3 +1,4 @@
+'use client';
 import { Link2, FilterX, SearchX } from 'lucide-react';
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';

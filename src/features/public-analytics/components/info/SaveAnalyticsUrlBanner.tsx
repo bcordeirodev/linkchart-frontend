@@ -1,3 +1,4 @@
+'use client';
 import { Box, Typography } from '@mui/material';
 import { Copy, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';

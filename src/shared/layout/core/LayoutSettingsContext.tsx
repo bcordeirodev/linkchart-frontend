@@ -1,3 +1,4 @@
+'use client';
 /**
  * 🏗️ LAYOUT SETTINGS CONTEXT - LINK CHART
  * Contexto para gerenciamento de configurações de layout

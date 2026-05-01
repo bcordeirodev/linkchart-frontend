@@ -1,3 +1,4 @@
+'use client';
 import { useCallback, useState } from 'react';
 
 import { publicLinkService } from '@/services/link-public.service';

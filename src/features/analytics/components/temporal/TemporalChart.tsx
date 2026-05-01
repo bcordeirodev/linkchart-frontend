@@ -1,3 +1,4 @@
+'use client';
 import { Clock, Zap, Search } from 'lucide-react';
 import { Box, Typography, Card, CardContent, Grid, Alert, Chip, Stack, Divider, Tabs, Tab } from '@mui/material';
 import { useTheme } from '@mui/material/styles';

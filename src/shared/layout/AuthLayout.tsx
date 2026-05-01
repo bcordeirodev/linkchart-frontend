@@ -1,3 +1,4 @@
+'use client';
 import { Box, Typography, alpha, Paper } from '@mui/material';
 import { useMemo } from 'react';
 import { useTheme } from '@mui/material/styles';

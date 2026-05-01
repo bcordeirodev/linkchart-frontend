@@ -1,3 +1,4 @@
+'use client';
 import { useEffect, useRef, useState } from 'react';
 import { linkMetaService } from '@/services/link-meta.service';
 import type { BatchMetaResponse } from '@/types';

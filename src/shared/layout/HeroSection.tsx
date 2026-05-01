@@ -1,3 +1,4 @@
+'use client';
 import { Rocket } from 'lucide-react';
 import { Fade, Slide, Grow, Box } from '@mui/material';
 import { ICON_LG } from '@/lib/theme/iconDefaults';

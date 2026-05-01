@@ -1,3 +1,4 @@
+'use client';
 import { Monitor, Link, MousePointer, Shield, Zap, TrendingUp } from 'lucide-react';
 
 import { ICON_MD, ICON_XL } from '@/lib/theme/iconDefaults';

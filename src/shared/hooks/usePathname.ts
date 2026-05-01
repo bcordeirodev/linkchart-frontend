@@ -1,10 +1,10 @@
-import { useLocation } from 'react-router-dom';
+'use client';
+import { usePathname as useNextPathname } from 'next/navigation';
 
 /**
  * Hook para obter o pathname atual
- * Compatível com React.js usePathname
+ * Compatível com Next.js App Router
  */
 export default function usePathname(): string {
-	const location = useLocation();
-	return location.pathname;
+	return useNextPathname();
 }

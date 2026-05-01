@@ -1,3 +1,4 @@
+'use client';
 import _ from 'lodash';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { useMemo } from 'react';

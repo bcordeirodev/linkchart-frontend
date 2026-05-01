@@ -1,3 +1,4 @@
+'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Lock, Save, Eye, EyeOff, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

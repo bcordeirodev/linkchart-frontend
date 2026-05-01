@@ -1,3 +1,4 @@
+'use client';
 /**
  * 🏗️ LAYOUT PROVIDER - LINK CHART
  * Provider de layout adaptado da estrutura Fuse para Link Charts

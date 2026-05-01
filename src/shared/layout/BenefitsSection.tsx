@@ -1,3 +1,4 @@
+'use client';
 import { Box, Typography, Grid, Paper, Fade, Grow, alpha, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 

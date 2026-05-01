@@ -1,3 +1,4 @@
+'use client';
 import { TrendingUp, Link2, CheckCircle, BarChart3 } from 'lucide-react';
 import { ICON_LG } from '@/lib/theme/iconDefaults';
 import { Grid, Box, Typography } from '@mui/material';

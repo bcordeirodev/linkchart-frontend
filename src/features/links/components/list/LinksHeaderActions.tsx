@@ -1,3 +1,4 @@
+'use client';
 /**
  * 🎯 LINKS HEADER ACTIONS
  * Componente de ações para header Links mantendo todas as funcionalidades

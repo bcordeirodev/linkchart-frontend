@@ -1,3 +1,4 @@
+'use client';
 import { CircularProgress, Typography, Box, Fade } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

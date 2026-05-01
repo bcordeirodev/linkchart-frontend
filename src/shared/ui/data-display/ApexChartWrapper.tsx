@@ -1,3 +1,4 @@
+'use client';
 import { CircularProgress } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
@@ -274,7 +275,8 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 						...(Array.isArray((options as any).responsive) ? (options as any).responsive : [])
 					]
 				}}
-				series={series}
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				series={series as any}
 			/>
 		</ChartContainer>
 	);

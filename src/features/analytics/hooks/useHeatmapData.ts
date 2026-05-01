@@ -1,3 +1,4 @@
+'use client';
 /**
  * @fileoverview Hook personalizado para gerenciar dados de heatmap
  * @author Link Charts Team

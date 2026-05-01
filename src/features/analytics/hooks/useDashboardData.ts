@@ -1,3 +1,4 @@
+'use client';
 /**
  * 📊 USE DASHBOARD DATA - Hook para Dados do Dashboard
  *

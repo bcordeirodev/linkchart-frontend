@@ -1,3 +1,4 @@
+'use client';
 import { Map, MapPin } from 'lucide-react';
 
 import { Box, CircularProgress, Alert, Typography } from '@mui/material';

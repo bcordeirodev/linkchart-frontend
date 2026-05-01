@@ -1,3 +1,4 @@
+'use client';
 import { Box, Grid, Card, CardContent, Typography, Stack, Chip } from '@mui/material';
 import { Clock, Calendar, Star, Zap, Sunrise, Sun, Sunset, Moon } from 'lucide-react';
 import type { ReactNode } from 'react';

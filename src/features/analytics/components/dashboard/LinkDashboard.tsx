@@ -1,3 +1,4 @@
+'use client';
 /**
  * 🔗 LINK DASHBOARD - Dashboard Unificado para Link Individual
  *

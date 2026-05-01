@@ -1,3 +1,4 @@
+'use client';
 /**
  * Hook para dados temporais
  */

@@ -1,3 +1,4 @@
+'use client';
 import { CheckCircle, XCircle, Mail, RefreshCw } from 'lucide-react';
 import { Box, Typography, CircularProgress, Button, Alert, Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';

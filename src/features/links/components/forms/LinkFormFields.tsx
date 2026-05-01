@@ -1,11 +1,14 @@
+'use client';
 import { TextField, Switch, FormControlLabel, Collapse, Grid, Typography, Box, Chip, Stack } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { Info } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Controller } from 'react-hook-form';
+import { Controller, useWatch } from 'react-hook-form';
 
 import { AppIcon } from '@/shared/ui/icons';
+import { useUrlSafetyCheck } from '../../hooks/useUrlSafetyCheck';
+import { UrlSafetyIndicator } from './UrlSafetyIndicator';
 
 import type { LinkFormData } from './LinkFormSchema';
 import type { Control, FieldErrors } from 'react-hook-form';
@@ -24,22 +27,31 @@ export function LinkFormFields({ control, errors, isEdit: _isEdit = false }: Lin
 	const [showUTM, setShowUTM] = useState(false);
 	const { t } = useTranslation('links');
 
+	const urlValue = useWatch({ control, name: 'original_url' });
+	const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? '');
+
 	return (
 		<Stack spacing={2.5}>
-			<Controller
-				name='original_url'
-				control={control}
-				render={({ field }) => (
-					<TextField
-						{...field}
-						fullWidth
-						label={t('form.originalUrl')}
-						placeholder={t('form.originalUrlPlaceholder')}
-						error={!!errors.original_url}
-						helperText={errors.original_url?.message || t('form.originalUrlHelper')}
-					/>
-				)}
-			/>
+			<Box>
+				<Controller
+					name='original_url'
+					control={control}
+					render={({ field }) => (
+						<TextField
+							{...field}
+							fullWidth
+							label={t('form.originalUrl')}
+							placeholder={t('form.originalUrlPlaceholder')}
+							error={!!errors.original_url}
+							helperText={errors.original_url?.message || t('form.originalUrlHelper')}
+						/>
+					)}
+				/>
+				<UrlSafetyIndicator
+					status={safetyStatus}
+					threats={threats}
+				/>
+			</Box>
 
 			<Controller
 				name='title'

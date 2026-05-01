@@ -1,3 +1,4 @@
+'use client';
 import { useTheme } from '@mui/material/styles';
 import { useMemo } from 'react';
 import ApexChartWrapper from '@/shared/ui/data-display/ApexChartWrapper';

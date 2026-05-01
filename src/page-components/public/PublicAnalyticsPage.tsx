@@ -1,3 +1,4 @@
+'use client';
 import { Box, Container, Fade, Stack, Typography } from '@mui/material';
 import { memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

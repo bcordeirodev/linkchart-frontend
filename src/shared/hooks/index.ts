@@ -1,3 +1,4 @@
+'use client';
 /**
  * 🎣 SHARED HOOKS EXPORTS
  * Barrel exports para hooks compartilhados

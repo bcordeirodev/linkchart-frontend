@@ -1,3 +1,4 @@
+'use client';
 import { CheckCircle, BarChart3, Zap } from 'lucide-react';
 import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';

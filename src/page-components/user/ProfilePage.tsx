@@ -1,3 +1,4 @@
+'use client';
 import { Alert, Grid, Box } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

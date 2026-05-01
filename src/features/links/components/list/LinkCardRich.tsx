@@ -1,3 +1,4 @@
+'use client';
 import { BarChart3, CalendarDays, ExternalLink, MousePointerClick } from 'lucide-react';
 import { ICON_SM } from '@/lib/theme/iconDefaults';
 import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';

@@ -1,3 +1,4 @@
+'use client';
 import { ExternalLink, AlertCircle, ShieldCheck } from 'lucide-react';
 import {
 	Box,
@@ -211,7 +212,7 @@ function RedirectPage() {
 
 			try {
 				// ÚNICA REQUISIÇÃO NECESSÁRIA - Backend coleta métricas e retorna URL
-				const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+				const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 				// ✅ USAR IP JÁ CAPTURADO OU AGUARDAR BREVEMENTE
 				let userIP = capturedIP;

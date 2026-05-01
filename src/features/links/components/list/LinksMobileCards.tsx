@@ -1,3 +1,4 @@
+'use client';
 /**
  * LINKS MOBILE CARDS
  * Componente otimizado para visualização de links em mobile

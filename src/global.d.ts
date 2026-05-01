@@ -22,13 +22,9 @@ declare let process: ProcessType;
 /**
  * The type definition for the Hot Module object.
  */
-interface HotModule {
-	hot?: {
-		status: () => string;
-	};
-}
-
-declare const module: HotModule;
+// Note: Vite HMR module declaration removed — not applicable in Next.js
+// interface HotModule { hot?: { status: () => string }; }
+// declare const module: HotModule;
 
 declare module '*?raw' {
 	const content: string;

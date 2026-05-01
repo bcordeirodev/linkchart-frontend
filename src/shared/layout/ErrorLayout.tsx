@@ -1,3 +1,4 @@
+'use client';
 /**
  * ❌ ERROR LAYOUT - LINK CHART
  * Layout especializado para páginas de erro

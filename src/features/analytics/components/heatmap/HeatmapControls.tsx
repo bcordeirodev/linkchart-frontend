@@ -1,3 +1,4 @@
+'use client';
 import { RefreshCw, Maximize2 } from 'lucide-react';
 import { Box, IconButton, Tooltip, Slider, FormControlLabel, Switch, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';

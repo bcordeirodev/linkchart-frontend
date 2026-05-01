@@ -2,8 +2,8 @@
  * Configurações e endpoints da API
  */
 export const API_CONFIG = {
-	BASE_URL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'http://localhost:8000'), // Use proxy em dev, API direta em prod
-	TEST_URL: import.meta.env.VITE_TEST_API_URL || 'http://localhost',
+	BASE_URL: process.env.NEXT_PUBLIC_API_URL || '', // Empty string uses Next.js rewrites proxy
+	TEST_URL: process.env.NEXT_PUBLIC_TEST_API_URL || 'http://localhost',
 
 	TIMEOUT: 10000,
 	RETRY_ATTEMPTS: 3,
@@ -96,12 +96,12 @@ export const buildTestUrl = (endpoint: string): string => {
 
 // Função para verificar se estamos em desenvolvimento
 export const isDevelopment = (): boolean => {
-	return import.meta.env.DEV;
+	return process.env.NODE_ENV === 'development';
 };
 
 // Função para verificar se estamos em produção
 export const isProduction = (): boolean => {
-	return import.meta.env.PROD;
+	return process.env.NODE_ENV === 'production';
 };
 
 // Função para obter timeout baseado no ambiente

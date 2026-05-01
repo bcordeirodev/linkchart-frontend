@@ -1,3 +1,4 @@
+'use client';
 import { Box, Typography } from '@mui/material';
 import { CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

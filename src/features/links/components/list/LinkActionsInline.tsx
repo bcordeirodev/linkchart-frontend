@@ -1,3 +1,4 @@
+'use client';
 import { CircularProgress, IconButton, Stack, Tooltip } from '@mui/material';
 import { BarChart3, ClipboardCopy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

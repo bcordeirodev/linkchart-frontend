@@ -1,3 +1,4 @@
+'use client';
 /**
  * 🏗️ LAYOUT COMPONENT - LINK CHART
  * Componente de layout principal adaptado da estrutura Fuse

@@ -1,3 +1,4 @@
+'use client';
 /**
  * Componente de mapa de calor interativo
  */

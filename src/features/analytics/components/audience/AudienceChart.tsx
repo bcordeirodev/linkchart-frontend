@@ -1,3 +1,4 @@
+'use client';
 import { Box, Card, CardContent, Chip, Grid, Stack, Typography, Tabs, Tab } from '@mui/material';
 import { Users, Smartphone, Globe, Monitor, Zap, BarChart3, Trophy } from 'lucide-react';
 import { ICON_MD } from '@/lib/theme/iconDefaults';

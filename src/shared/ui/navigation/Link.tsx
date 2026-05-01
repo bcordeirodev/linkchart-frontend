@@ -1,3 +1,4 @@
+'use client';
 /**
  * 🔗 LINK COMPONENT - LINK CHART
  * Componente de link inteligente e flexível

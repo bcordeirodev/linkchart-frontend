@@ -1,3 +1,4 @@
+'use client';
 /**
  * ⏱️ TIMEFRAME SELECTOR - Seletor de Período de Tempo
  */

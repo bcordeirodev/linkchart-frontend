@@ -1,7 +1,16 @@
-import { useNavigate as useReactRouterNavigate } from 'react-router-dom';
+'use client';
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
 
 export function useNavigate() {
-	return useReactRouterNavigate();
+	const router = useRouter();
+	const navigate = useCallback(
+		(to: string) => {
+			router.push(to);
+		},
+		[router]
+	);
+	return navigate;
 }
 
 export default useNavigate;

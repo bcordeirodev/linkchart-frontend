@@ -1,5 +1,5 @@
+'use client';
 import i18n from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
 import enAnalytics from './locales/en/analytics.json';
@@ -15,9 +15,8 @@ import ptBRLinks from './locales/pt-BR/links.json';
 import ptBRProfile from './locales/pt-BR/profile.json';
 import ptBRPublic from './locales/pt-BR/public.json';
 
-i18n.use(LanguageDetector)
-	.use(initReactI18next)
-	.init({
+if (!i18n.isInitialized) {
+	i18n.use(initReactI18next).init({
 		resources: {
 			en: {
 				common: enCommon,
@@ -39,14 +38,11 @@ i18n.use(LanguageDetector)
 		fallbackLng: 'en',
 		defaultNS: 'common',
 		ns: ['common', 'auth', 'links', 'analytics', 'profile', 'public'],
-		detection: {
-			order: ['localStorage', 'navigator'],
-			caches: ['localStorage'],
-			lookupLocalStorage: 'i18nextLng'
-		},
+		lng: typeof window !== 'undefined' ? (localStorage.getItem('i18nextLng') ?? 'en') : 'en',
 		interpolation: {
 			escapeValue: false
 		}
 	});
+}
 
 export default i18n;

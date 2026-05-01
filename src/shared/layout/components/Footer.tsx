@@ -1,3 +1,4 @@
+'use client';
 /**
  * 🦶 FOOTER COMPONENT - LINK CHART
  * Componente de rodapé da aplicação

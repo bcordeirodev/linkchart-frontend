@@ -1,3 +1,4 @@
+'use client';
 /**
  * 🏗️ USE LAYOUT SETTINGS HOOK - LINK CHART
  * Hook para acessar configurações de layout

@@ -1,3 +1,4 @@
+'use client';
 import { Stack, Fade, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 

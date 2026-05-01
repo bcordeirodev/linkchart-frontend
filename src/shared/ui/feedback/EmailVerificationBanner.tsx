@@ -1,3 +1,4 @@
+'use client';
 import { Mail, RefreshCw } from 'lucide-react';
 import { Alert, Button, Box, CircularProgress } from '@mui/material';
 import { ICON_MD } from '@/lib/theme/iconDefaults';

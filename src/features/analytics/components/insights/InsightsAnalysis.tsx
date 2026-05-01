@@ -1,3 +1,4 @@
+'use client';
 import { Lightbulb, TrendingUp, Flag, BarChart3 } from 'lucide-react';
 import { Box, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
