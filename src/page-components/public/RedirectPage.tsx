@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { ICON_LG, ICON_XL } from "@/lib/theme/iconDefaults";
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 
 /**
  * FLUXO OTIMIZADO:

@@ -3,8 +3,6 @@
 import { Alert } from "@mui/material";
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams, useNavigate } from "react-router-dom";
-
 import { LinkAnalyticsTabsOptimized } from "@/features/links/components/analytics/LinkAnalyticsTabs";
 import { LinkActions } from "@/features/links/components/LinkActions";
 import { useLinkAnalyticsOptimized } from "@/features/links/hooks/useLinkAnalytics";
@@ -20,10 +18,12 @@ import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
  * Segue padrões arquiteturais: < 100 linhas, reutiliza componentes base
  * Estrutura: Header → Actions → Metrics → Tabs (seguindo template obrigatório)
  */
-function LinkAnalyticsPage() {
+interface Props {
+  id: string;
+}
+
+function LinkAnalyticsPage({ id }: Props) {
   const { t } = useTranslation("analytics");
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const { linkInfo } = useLinkAnalyticsOptimized(id || "");
 
   // Memoizar props das tabs para evitar re-renders desnecessários

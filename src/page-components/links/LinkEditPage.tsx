@@ -1,7 +1,7 @@
 "use client";
 
 import { Alert, Stack, Button } from "@mui/material";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 import { useState, useEffect } from "react";
 
 import { EditLinkForm, LinkActions } from "@/features/links";
@@ -18,8 +18,11 @@ import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
  * Segue padrões arquiteturais: < 100 linhas, carrega dados iniciais
  * Estrutura: PageBreadcrumb → Actions → LinkForm.
  */
-function LinkEditPage() {
-  const { id } = useParams<{ id: string }>();
+interface Props {
+  id: string;
+}
+
+function LinkEditPage({ id }: Props) {
   const navigate = useNavigate();
   const [linkData, setLinkData] = useState<{ short_url?: string } | null>(null);
 

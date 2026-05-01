@@ -13,7 +13,7 @@ import {
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "@/shared/hooks";
 
 import { useLinks, LinkActions } from "@/features/links";
 import { useShareAPI } from "@/features/links/hooks/useShareAPI";
@@ -30,8 +30,11 @@ const buildShortUrl = (slug: string): string => {
   return `${frontendUrl}/r/${slug}`;
 };
 
-function LinkQRPage() {
-  const { id } = useParams<{ id: string }>();
+interface Props {
+  id: string;
+}
+
+function LinkQRPage({ id }: Props) {
   const navigate = useNavigate();
   const { t } = useTranslation("links");
   const { t: tPublic } = useTranslation("public");

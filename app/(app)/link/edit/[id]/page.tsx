@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import LinkEditPageContent from "@/pages/links/LinkEditPage";
+
 export const metadata: Metadata = { title: "Edit Link" };
-export default function LinkEditPage() {
-  return <LinkEditPageContent />;
+
+interface Props {
+  params: Promise<{ id: string }>;
+}
+
+export default async function LinkEditPage({ params }: Props) {
+  const { id } = await params;
+  return <LinkEditPageContent id={id} />;
 }

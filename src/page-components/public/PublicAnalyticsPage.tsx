@@ -2,7 +2,7 @@
 import { Box, Container, Fade, Stack, Typography } from "@mui/material";
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 
 import {
   LinkInfoCard,
