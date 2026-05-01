@@ -172,9 +172,11 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
   }
 
   // Para links internos, usa Next.js Link com Material-UI
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const InternalLinkComponent = StyledInternalLink as any;
   return (
-    <StyledInternalLink
-      component={NextLink as React.ElementType}
+    <InternalLinkComponent
+      component={NextLink}
       href={linkUrl}
       className={className}
       role={role}
@@ -187,7 +189,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
       {...rest}
     >
       {children}
-    </StyledInternalLink>
+    </InternalLinkComponent>
   );
 });
 
