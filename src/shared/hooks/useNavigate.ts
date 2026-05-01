@@ -27,6 +27,8 @@ export function useNavigate() {
         }
         return;
       }
+      // state is intentionally not passed — Next.js App Router has no history.state.
+      // Callers depending on location.state must be migrated to URL search params.
       if (options?.replace) {
         router.replace(to);
       } else {
