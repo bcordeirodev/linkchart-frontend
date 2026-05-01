@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { ICON_LG, ICON_XL } from "@/lib/theme/iconDefaults";
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "next/navigation";
 
 /**
  * FLUXO OTIMIZADO:
@@ -23,9 +22,13 @@ import { useParams } from "next/navigation";
  * 3. Redireciona para URL original
  * 4. Backend registra clique automaticamente
  */
-function RedirectPage() {
+// Dead code: not imported by any app/(public) page
+interface Props {
+  slug?: string;
+}
+
+function RedirectPage({ slug = "" }: Props) {
   const theme = useTheme();
-  const { slug } = useParams<{ slug: string }>();
 
   // Estados
   const [targetUrl, setTargetUrl] = useState<string>("");

@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 
 interface RedirectProps {
   to: string;
-  children?: React.ReactNode;
 }
 
 function Redirect({ to }: RedirectProps) {

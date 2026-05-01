@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useUser from "@/lib/auth/useUser";
+import { useAuth } from "@/lib/auth/AuthContext";
 import Loading from "@/shared/ui/feedback/Loading";
 
 /**
@@ -9,16 +10,17 @@ import Loading from "@/shared/ui/feedback/Loading";
  */
 export function HomeRedirect() {
   const { data: user, isGuest } = useUser();
+  const { isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (user === undefined) return;
+    if (isLoading) return;
     if (user && !isGuest) {
       router.replace("/links");
     } else {
       router.replace("/shorter");
     }
-  }, [user, isGuest, router]);
+  }, [user, isGuest, isLoading, router]);
 
   return <Loading />;
 }

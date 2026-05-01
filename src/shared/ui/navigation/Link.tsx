@@ -5,11 +5,11 @@
  *
  * @description
  * Componente de link melhorado que detecta automaticamente se deve usar
- * React Router Link ou anchor tag, com integração completa ao Material-UI.
+ * Next.js App Router Link ou anchor tag, com integração completa ao Material-UI.
  *
  * @features
  * - ✅ Detecção automática de links externos
- * - ✅ Integração com React Router
+ * - ✅ Integração com Next.js App Router
  * - ✅ Suporte completo ao Material-UI
  * - ✅ Acessibilidade aprimorada
  * - ✅ TypeScript completo

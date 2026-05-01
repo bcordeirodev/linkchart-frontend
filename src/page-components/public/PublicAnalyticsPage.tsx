@@ -2,8 +2,6 @@
 import { Box, Container, Fade, Stack, Typography } from "@mui/material";
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "next/navigation";
-
 import {
   LinkInfoCard,
   PublicMetrics,
@@ -16,9 +14,13 @@ import {
 import { PublicLayout } from "@/shared/layout";
 import { PublicAnalyticsSkeleton } from "@/shared/ui/feedback/skeletons";
 
-function PublicAnalyticsPage() {
+// Dead code: not imported by any app/(public) page
+interface Props {
+  slug?: string;
+}
+
+function PublicAnalyticsPage({ slug = "" }: Props) {
   const { t } = useTranslation("public");
-  const { slug } = useParams<{ slug: string }>();
   const {
     linkData,
     analyticsData,
