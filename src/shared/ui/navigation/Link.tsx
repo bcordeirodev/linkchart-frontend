@@ -21,7 +21,7 @@
 import { Link as MuiLink } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { forwardRef } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import NextLink from "next/link";
 
 import type { LinkProps as MuiLinkProps } from "@mui/material";
 import type { ReactNode, AnchorHTMLAttributes } from "react";
@@ -171,22 +171,24 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
     );
   }
 
-  // Para links internos, usa React Router Link com Material-UI
-  const internalProps = {
-    component: RouterLink,
-    to: linkUrl,
-    className,
-    role,
-    sx,
-    color,
-    variant,
-    underline,
-    disabled,
-    ref,
-    ...rest,
-  };
-
-  return <StyledInternalLink {...internalProps}>{children}</StyledInternalLink>;
+  // Para links internos, usa Next.js Link com Material-UI
+  return (
+    <StyledInternalLink
+      component={NextLink as React.ElementType}
+      href={linkUrl}
+      className={className}
+      role={role}
+      sx={sx}
+      color={color}
+      variant={variant}
+      underline={underline}
+      disabled={disabled}
+      ref={ref}
+      {...rest}
+    >
+      {children}
+    </StyledInternalLink>
+  );
 });
 
 Link.displayName = "Link";
