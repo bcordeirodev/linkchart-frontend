@@ -1,15 +1,20 @@
 "use client";
-import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface RedirectProps {
   to: string;
   children?: React.ReactNode;
 }
 
-function Redirect(props: RedirectProps) {
-  const { to, children = null } = props;
+function Redirect({ to }: RedirectProps) {
+  const router = useRouter();
 
-  return <Navigate to={to} replace />;
+  useEffect(() => {
+    router.replace(to);
+  }, [to, router]);
+
+  return null;
 }
 
 export default Redirect;

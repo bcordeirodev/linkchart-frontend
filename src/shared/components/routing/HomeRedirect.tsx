@@ -1,6 +1,6 @@
 "use client";
-import { Navigate } from "react-router-dom";
-
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import useUser from "@/lib/auth/useUser";
 import Loading from "@/shared/ui/feedback/Loading";
 
@@ -9,14 +9,16 @@ import Loading from "@/shared/ui/feedback/Loading";
  */
 export function HomeRedirect() {
   const { data: user, isGuest } = useUser();
+  const router = useRouter();
 
-  if (user === undefined) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    if (user === undefined) return;
+    if (user && !isGuest) {
+      router.replace("/links");
+    } else {
+      router.replace("/shorter");
+    }
+  }, [user, isGuest, router]);
 
-  if (user && !isGuest) {
-    return <Navigate to="/links" replace />;
-  }
-
-  return <Navigate to="/shorter" replace />;
+  return <Loading />;
 }
