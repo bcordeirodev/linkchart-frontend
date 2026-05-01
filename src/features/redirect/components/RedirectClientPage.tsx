@@ -171,7 +171,7 @@ export default function RedirectClientPage({ slug }: { slug: string }) {
           ]);
         }
 
-        let requestUrl = `${backendUrl}/api/r/${slug}`;
+        let requestUrl = `${backendUrl}/api/public/link/${slug}`;
         if (userIP && (isValidIPv4(userIP) || isValidIPv6(userIP))) {
           requestUrl += `?real_ip=${encodeURIComponent(userIP)}`;
         }
@@ -185,10 +185,11 @@ export default function RedirectClientPage({ slug }: { slug: string }) {
           throw new Error(`Link não encontrado: ${response.status}`);
 
         const data = await response.json();
+        const link = data.data;
 
-        if (data.success && data.redirect_url) {
-          setTargetUrl(data.redirect_url);
-          setLinkTitle(data.title || data.redirect_url);
+        if (link?.original_url) {
+          setTargetUrl(link.original_url);
+          setLinkTitle(link.title || link.original_url);
           setIsValidLink(true);
           setShowContent(true);
         } else {

@@ -12,6 +12,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  // TODO: migrate to API_URL (server-only env var) if backend URL may differ between build and runtime.
+  // NEXT_PUBLIC_* vars are baked in at build time by Next.js.
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
   const res = await fetch(`${apiUrl}/api/public/analytics/${slug}`, {
     next: { revalidate: 60 },
@@ -30,9 +32,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: "website",
       url: `${appUrl}/r/${slug}`,
+      images: [{ url: `${appUrl}/og-default.png`, width: 1200, height: 630, alt: "Link Charts" }],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: `${slug} — Link Charts`,
       description: `${clicks} cliques registrados.`,
     },

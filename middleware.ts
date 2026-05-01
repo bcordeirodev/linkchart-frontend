@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match all routes except static files
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+    // Match all routes except static files and public assets used in OG metadata
+    "/((?!_next/static|_next/image|favicon\\.ico|og-default\\.png).*)",
   ],
 };
