@@ -1,143 +1,143 @@
 {
-	"list": {
-		"pageTitle": "Gerenciar Links",
-		"pageSubtitle": "Crie, edite e monitore seus links encurtados",
-		"createNew": "Novo Link",
-		"empty": {
-			"title": "Nenhum link ainda",
-			"description": "Crie seu primeiro link encurtado e comece a rastrear os cliques.",
-			"createButton": "Criar seu primeiro link"
-		}
-	},
-	"table": {
-		"destination": "Destino",
-		"shortLink": "Link Curto",
-		"clicks": "Cliques",
-		"status": "Status",
-		"created": "Criado em",
-		"actions": "Ações",
-		"noResults": "Nenhum link corresponde à sua pesquisa.",
-		"directSource": "Direto"
-	},
-	"filters": {
-		"search": "Buscar por título, URL ou slug...",
-		"status": "Status",
-		"all": "Todos",
-		"sortBy": "Ordenar por",
-		"sortNewest": "Mais recentes",
-		"sortOldest": "Mais antigos",
-		"sortMostClicks": "Mais cliques",
-		"clearFilters": "Limpar filtros",
-		"mostTrend": "Maior tendência",
-		"lastActivity": "Última atividade"
-	},
-	"actions": {
-		"copyLink": "Copiar link",
-		"copySuccess": "Link copiado!",
-		"deleteConfirm": "Excluir este link?",
-		"deleteConfirmDesc": "Esta ação não pode ser desfeita. Todos os dados de cliques serão perdidos.",
-		"activate": "Ativar",
-		"deactivate": "Desativar"
-	},
-	"form": {
-		"createTitle": "Criar Novo Link",
-		"editTitle": "Editar Link",
-		"originalUrl": "URL de destino",
-		"originalUrlPlaceholder": "https://exemplo.com/sua-url-longa",
-		"originalUrlHelper": "A URL para a qual seu link curto vai redirecionar.",
-		"customSlug": "Slug personalizado (opcional)",
-		"customSlugPlaceholder": "meu-slug",
-		"customSlugHelper": "Apenas letras, números e hífens. Deixe em branco para gerar automaticamente.",
-		"title": "Título (opcional)",
-		"titlePlaceholder": "Meu link incrível",
-		"expiresAt": "Data de expiração",
-		"expiresAtHelper": "Deixe em branco para sem expiração.",
-		"clickLimit": "Limite de cliques",
-		"clickLimitHelper": "Deixe em branco para ilimitado.",
-		"titleHelper": "Opcional — ajuda a identificar o link",
-		"descriptionLabel": "Descrição",
-		"descriptionPlaceholder": "Descreva o conteúdo do link (opcional)",
-		"descriptionHelper": "Opcional — adicione mais contexto ao seu link",
-		"advancedSettings": "Configurações Avançadas",
-		"slugPlaceholder": "meu-slug",
-		"clickLimitPlaceholder": "1000",
-		"startDate": "Data de Início",
-		"startDateHelper": "Quando o Link será Iniciado",
-		"activeLabel": "Link Ativo",
-		"utmTitle": "Parâmetros UTM",
-		"utmInfo": "São marcações adicionadas ao link que permitem saber exatamente de onde vieram seus visitantes.",
-		"utmSourceLabel": "UTM Source",
-		"utmSourcePlaceholder": "google, facebook, newsletter",
-		"utmSourceHelper": "De onde veio o visitante — ex: instagram, google, newsletter",
-		"utmMediumLabel": "UTM Medium",
-		"utmMediumPlaceholder": "cpc, email, social",
-		"utmMediumHelper": "Tipo de canal — ex: post, anuncio, email, cpc",
-		"utmCampaignLabel": "UTM Campaign",
-		"utmCampaignPlaceholder": "promocao-verao-2024",
-		"utmCampaignHelper": "Nome da campanha ou ação — ex: lancamento-produto, black-friday",
-		"utmTermLabel": "UTM Term",
-		"utmTermPlaceholder": "palavra-chave",
-		"utmTermHelper": "Palavra-chave do anúncio pago — ex: tenis-corrida, curso-online",
-		"utmContentLabel": "UTM Content",
-		"utmContentPlaceholder": "banner-topo, link-rodape",
-		"utmContentHelper": "Qual variação foi clicada — ex: banner-topo, link-rodape, botao-verde",
-		"submit": "Criar link",
-		"submitEdit": "Salvar alterações",
-		"successCreate": "Link criado com sucesso!",
-		"successEdit": "Link atualizado com sucesso!",
-		"errors": {
-			"urlRequired": "A URL de destino é obrigatória.",
-			"urlInvalid": "Insira uma URL válida (deve começar com http:// ou https://).",
-			"slugTaken": "Este slug já está em uso.",
-			"slugInvalid": "O slug só pode conter letras, números e hífens."
-		}
-	},
-	"metrics": {
-		"title": "Métricas do Link",
-		"totalClicks": "Total de Cliques",
-		"uniqueVisitors": "Visitantes Únicos",
-		"avgClicksDay": "Média de Cliques / Dia",
-		"lastClick": "Último Clique",
-		"neverClicked": "Nunca clicado",
-		"countriesReached": "Países Alcançados",
-		"clicksToday": "Cliques Hoje",
-		"linksCreated": "links criados",
-		"linksActive": "links funcionando",
-		"totalClicksSubtitle": "cliques acumulados",
-		"clicksPerLink": "cliques por link"
-	},
-	"status": {
-		"active": "Ativo",
-		"inactive": "Inativo",
-		"expired": "Expirado",
-		"scheduled": "Agendado"
-	},
-	"analytics": {
-		"tabs": {
-			"overview": "Visão Geral",
-			"temporal": "Temporal",
-			"geographic": "Geográfico",
-			"audience": "Audiência",
-			"performance": "Performance",
-			"insights": "Insights",
-			"heatmap": "Mapa de Calor"
-		},
-		"clicksTable": {
-			"title": "Cliques Recentes",
-			"date": "Data / Hora",
-			"location": "Localização",
-			"device": "Dispositivo",
-			"browser": "Navegador",
-			"os": "Sistema Operacional",
-			"referer": "Referer",
-			"utm": "UTM",
-			"ip": "IP"
-		}
-	},
-	"qr": {
-		"title": "Código QR",
-		"download": "Baixar Código QR",
-		"copy": "Copiar imagem",
-		"description": "Escaneie para abrir o link curto"
-	}
+  "list": {
+    "pageTitle": "Gerenciar Links",
+    "pageSubtitle": "Crie, edite e monitore seus links encurtados",
+    "createNew": "Novo Link",
+    "empty": {
+      "title": "Nenhum link ainda",
+      "description": "Crie seu primeiro link encurtado e comece a rastrear os cliques.",
+      "createButton": "Criar seu primeiro link"
+    }
+  },
+  "table": {
+    "destination": "Destino",
+    "shortLink": "Link Curto",
+    "clicks": "Cliques",
+    "status": "Status",
+    "created": "Criado em",
+    "actions": "Ações",
+    "noResults": "Nenhum link corresponde à sua pesquisa.",
+    "directSource": "Direto"
+  },
+  "filters": {
+    "search": "Buscar por título, URL ou slug...",
+    "status": "Status",
+    "all": "Todos",
+    "sortBy": "Ordenar por",
+    "sortNewest": "Mais recentes",
+    "sortOldest": "Mais antigos",
+    "sortMostClicks": "Mais cliques",
+    "clearFilters": "Limpar filtros",
+    "mostTrend": "Maior tendência",
+    "lastActivity": "Última atividade"
+  },
+  "actions": {
+    "copyLink": "Copiar link",
+    "copySuccess": "Link copiado!",
+    "deleteConfirm": "Excluir este link?",
+    "deleteConfirmDesc": "Esta ação não pode ser desfeita. Todos os dados de cliques serão perdidos.",
+    "activate": "Ativar",
+    "deactivate": "Desativar"
+  },
+  "form": {
+    "createTitle": "Criar Novo Link",
+    "editTitle": "Editar Link",
+    "originalUrl": "URL de destino",
+    "originalUrlPlaceholder": "https://exemplo.com/sua-url-longa",
+    "originalUrlHelper": "A URL para a qual seu link curto vai redirecionar.",
+    "customSlug": "Slug personalizado (opcional)",
+    "customSlugPlaceholder": "meu-slug",
+    "customSlugHelper": "Apenas letras, números e hífens. Deixe em branco para gerar automaticamente.",
+    "title": "Título (opcional)",
+    "titlePlaceholder": "Meu link incrível",
+    "expiresAt": "Data de expiração",
+    "expiresAtHelper": "Deixe em branco para sem expiração.",
+    "clickLimit": "Limite de cliques",
+    "clickLimitHelper": "Deixe em branco para ilimitado.",
+    "titleHelper": "Opcional — ajuda a identificar o link",
+    "descriptionLabel": "Descrição",
+    "descriptionPlaceholder": "Descreva o conteúdo do link (opcional)",
+    "descriptionHelper": "Opcional — adicione mais contexto ao seu link",
+    "advancedSettings": "Configurações Avançadas",
+    "slugPlaceholder": "meu-slug",
+    "clickLimitPlaceholder": "1000",
+    "startDate": "Data de Início",
+    "startDateHelper": "Quando o Link será Iniciado",
+    "activeLabel": "Link Ativo",
+    "utmTitle": "Parâmetros UTM",
+    "utmInfo": "São marcações adicionadas ao link que permitem saber exatamente de onde vieram seus visitantes.",
+    "utmSourceLabel": "UTM Source",
+    "utmSourcePlaceholder": "google, facebook, newsletter",
+    "utmSourceHelper": "De onde veio o visitante — ex: instagram, google, newsletter",
+    "utmMediumLabel": "UTM Medium",
+    "utmMediumPlaceholder": "cpc, email, social",
+    "utmMediumHelper": "Tipo de canal — ex: post, anuncio, email, cpc",
+    "utmCampaignLabel": "UTM Campaign",
+    "utmCampaignPlaceholder": "promocao-verao-2024",
+    "utmCampaignHelper": "Nome da campanha ou ação — ex: lancamento-produto, black-friday",
+    "utmTermLabel": "UTM Term",
+    "utmTermPlaceholder": "palavra-chave",
+    "utmTermHelper": "Palavra-chave do anúncio pago — ex: tenis-corrida, curso-online",
+    "utmContentLabel": "UTM Content",
+    "utmContentPlaceholder": "banner-topo, link-rodape",
+    "utmContentHelper": "Qual variação foi clicada — ex: banner-topo, link-rodape, botao-verde",
+    "submit": "Criar link",
+    "submitEdit": "Salvar alterações",
+    "successCreate": "Link criado com sucesso!",
+    "successEdit": "Link atualizado com sucesso!",
+    "errors": {
+      "urlRequired": "A URL de destino é obrigatória.",
+      "urlInvalid": "Insira uma URL válida (deve começar com http:// ou https://).",
+      "slugTaken": "Este slug já está em uso.",
+      "slugInvalid": "O slug só pode conter letras, números e hífens."
+    }
+  },
+  "metrics": {
+    "title": "Métricas do Link",
+    "totalClicks": "Total de Cliques",
+    "uniqueVisitors": "Visitantes Únicos",
+    "avgClicksDay": "Média de Cliques / Dia",
+    "lastClick": "Último Clique",
+    "neverClicked": "Nunca clicado",
+    "countriesReached": "Países Alcançados",
+    "clicksToday": "Cliques Hoje",
+    "linksCreated": "links criados",
+    "linksActive": "links funcionando",
+    "totalClicksSubtitle": "cliques acumulados",
+    "clicksPerLink": "cliques por link"
+  },
+  "status": {
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "expired": "Expirado",
+    "scheduled": "Agendado"
+  },
+  "analytics": {
+    "tabs": {
+      "overview": "Visão Geral",
+      "temporal": "Temporal",
+      "geographic": "Geográfico",
+      "audience": "Audiência",
+      "performance": "Performance",
+      "insights": "Insights",
+      "heatmap": "Mapa de Calor"
+    },
+    "clicksTable": {
+      "title": "Cliques Recentes",
+      "date": "Data / Hora",
+      "location": "Localização",
+      "device": "Dispositivo",
+      "browser": "Navegador",
+      "os": "Sistema Operacional",
+      "referer": "Referer",
+      "utm": "UTM",
+      "ip": "IP"
+    }
+  },
+  "qr": {
+    "title": "Código QR",
+    "download": "Baixar Código QR",
+    "copy": "Copiar imagem",
+    "description": "Escaneie para abrir o link curto"
+  }
 }

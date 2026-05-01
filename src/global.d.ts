@@ -1,17 +1,17 @@
 /**
  * The module for importing CSS files.
  */
-declare module '*.css' {
-	const content: Record<string, string>;
-	export default content;
+declare module "*.css" {
+  const content: Record<string, string>;
+  export default content;
 }
 
 /**
  * The type definition for the Node.js process object with additional properties.
  */
 type ProcessType = NodeJS.Process & {
-	browser: boolean;
-	env: Record<string, string | undefined>;
+  browser: boolean;
+  env: Record<string, string | undefined>;
 };
 
 /**
@@ -26,7 +26,7 @@ declare let process: ProcessType;
 // interface HotModule { hot?: { status: () => string }; }
 // declare const module: HotModule;
 
-declare module '*?raw' {
-	const content: string;
-	export default content;
+declare module "*?raw" {
+  const content: string;
+  export default content;
 }

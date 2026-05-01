@@ -1,35 +1,44 @@
-'use client';
+"use client";
 
-import { Tabs, Tab, Box, useTheme } from '@mui/material';
-import { useState } from 'react';
-import { LayoutDashboard, Zap, Globe, Clock, Users, Flame, Lightbulb, MousePointer2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { Tabs, Tab, Box, useTheme } from "@mui/material";
+import { useState } from "react";
+import {
+  LayoutDashboard,
+  Zap,
+  Globe,
+  Clock,
+  Users,
+  Flame,
+  Lightbulb,
+  MousePointer2,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-import { motionTokens, radiusTokens } from '@/lib/theme/designSystem';
-import { ICON_SM, ICON_LG } from '@/lib/theme/iconDefaults';
+import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
+import { ICON_SM, ICON_LG } from "@/lib/theme/iconDefaults";
 
-import { AudienceAnalysis } from '@/features/analytics/components/audience/AudienceAnalysis';
-import { GeographicAnalysis } from '@/features/analytics/components/geographic/GeographicAnalysis';
-import { HeatmapAnalysis } from '@/features/analytics/components/heatmap/HeatmapAnalysis';
-import { InsightsAnalysis } from '@/features/analytics/components/insights/InsightsAnalysis';
-import { PerformanceAnalysis } from '@/features/analytics/components/performance/PerformanceAnalysis';
-import { TemporalAnalysis } from '@/features/analytics/components/temporal';
-import TabDescription from '@/shared/ui/base/TabDescription';
-import { TabPanel } from '@/shared/ui/base/TabPanel';
+import { AudienceAnalysis } from "@/features/analytics/components/audience/AudienceAnalysis";
+import { GeographicAnalysis } from "@/features/analytics/components/geographic/GeographicAnalysis";
+import { HeatmapAnalysis } from "@/features/analytics/components/heatmap/HeatmapAnalysis";
+import { InsightsAnalysis } from "@/features/analytics/components/insights/InsightsAnalysis";
+import { PerformanceAnalysis } from "@/features/analytics/components/performance/PerformanceAnalysis";
+import { TemporalAnalysis } from "@/features/analytics/components/temporal";
+import TabDescription from "@/shared/ui/base/TabDescription";
+import { TabPanel } from "@/shared/ui/base/TabPanel";
 
-import { LinkDashboard } from '../../../analytics/components/dashboard/LinkDashboard';
+import { LinkDashboard } from "../../../analytics/components/dashboard/LinkDashboard";
 
-import { ClicksTable } from './ClicksTable';
+import { ClicksTable } from "./ClicksTable";
 
-import type { LinkAnalyticsData } from '../../types/analytics';
+import type { LinkAnalyticsData } from "../../types/analytics";
 
 // Importar componentes especializados que usam hooks próprios
 
 interface LinkAnalyticsTabsOptimizedProps {
-	data?: LinkAnalyticsData | null;
-	linkId: string;
-	loading?: boolean;
-	showHeader?: boolean;
+  data?: LinkAnalyticsData | null;
+  linkId: string;
+  loading?: boolean;
+  showHeader?: boolean;
 }
 
 /**
@@ -46,179 +55,184 @@ interface LinkAnalyticsTabsOptimizedProps {
  * - Menos de 150 linhas
  */
 export function LinkAnalyticsTabsOptimized({
-	data,
-	linkId,
-	loading: _loading = false,
-	showHeader = true
+  data,
+  linkId,
+  loading: _loading = false,
+  showHeader = true,
 }: LinkAnalyticsTabsOptimizedProps) {
-	const [tabValue, setTabValue] = useState(0);
-	const theme = useTheme();
-	const { t } = useTranslation('links');
+  const [tabValue, setTabValue] = useState(0);
+  const theme = useTheme();
+  const { t } = useTranslation("links");
 
-	const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-		setTabValue(newValue);
-	};
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
 
-	// Configuração padronizada de tabs
-	const tabLabels = [
-		{ label: t('analytics.tabs.overview'), Icon: LayoutDashboard, description: 'Visão geral consolidada' },
-		{ label: t('analytics.tabs.performance'), Icon: Zap, description: 'Velocidade e disponibilidade' },
-		{ label: t('analytics.tabs.geographic'), Icon: Globe, description: 'Análise geográfica' },
-		{ label: t('analytics.tabs.temporal'), Icon: Clock, description: 'Tendências temporais' },
-		{ label: t('analytics.tabs.audience'), Icon: Users, description: 'Perfil da audiência' },
-		{ label: t('analytics.tabs.heatmap'), Icon: Flame, description: 'Mapa de calor' },
-		{ label: t('analytics.tabs.insights'), Icon: Lightbulb, description: 'Insights de negócio' },
-		{ label: t('analytics.clicksTable.title'), Icon: MousePointer2, description: 'Lista detalhada de cliques' }
-	];
+  // Configuração padronizada de tabs
+  const tabLabels = [
+    {
+      label: t("analytics.tabs.overview"),
+      Icon: LayoutDashboard,
+      description: "Visão geral consolidada",
+    },
+    {
+      label: t("analytics.tabs.performance"),
+      Icon: Zap,
+      description: "Velocidade e disponibilidade",
+    },
+    {
+      label: t("analytics.tabs.geographic"),
+      Icon: Globe,
+      description: "Análise geográfica",
+    },
+    {
+      label: t("analytics.tabs.temporal"),
+      Icon: Clock,
+      description: "Tendências temporais",
+    },
+    {
+      label: t("analytics.tabs.audience"),
+      Icon: Users,
+      description: "Perfil da audiência",
+    },
+    {
+      label: t("analytics.tabs.heatmap"),
+      Icon: Flame,
+      description: "Mapa de calor",
+    },
+    {
+      label: t("analytics.tabs.insights"),
+      Icon: Lightbulb,
+      description: "Insights de negócio",
+    },
+    {
+      label: t("analytics.clicksTable.title"),
+      Icon: MousePointer2,
+      description: "Lista detalhada de cliques",
+    },
+  ];
 
-	return (
-		<Box>
-			{/* Tabs Navigation */}
-			<Box
-				sx={{
-					backgroundColor: theme.palette.background.paper,
-					borderRadius: `${radiusTokens.lg}px`,
-					border: `1px solid ${theme.palette.divider}`,
-					mb: 3
-				}}
-			>
-				<Tabs
-					value={tabValue}
-					onChange={handleTabChange}
-					variant='scrollable'
-					scrollButtons='auto'
-					sx={{
-						'& .MuiTab-root': {
-							textTransform: 'none',
-							transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-							'&.Mui-selected': {
-								backgroundColor: theme.palette.action.selected,
-								borderRadius: `${radiusTokens.md}px`
-							}
-						}
-					}}
-				>
-					{tabLabels.map(({ label, Icon }, index) => (
-						<Tab
-							key={index}
-							label={label}
-							icon={<Icon {...ICON_SM} />}
-							iconPosition='start'
-						/>
-					))}
-				</Tabs>
-			</Box>
+  return (
+    <Box>
+      {/* Tabs Navigation */}
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: `${radiusTokens.lg}px`,
+          border: `1px solid ${theme.palette.divider}`,
+          mb: 3,
+        }}
+      >
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{
+            "& .MuiTab-root": {
+              textTransform: "none",
+              transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+              "&.Mui-selected": {
+                backgroundColor: theme.palette.action.selected,
+                borderRadius: `${radiusTokens.md}px`,
+              },
+            },
+          }}
+        >
+          {tabLabels.map(({ label, Icon }, index) => (
+            <Tab
+              key={index}
+              label={label}
+              icon={<Icon {...ICON_SM} />}
+              iconPosition="start"
+            />
+          ))}
+        </Tabs>
+      </Box>
 
-			{/* Tab Panels - LAZY LOADING: Apenas a tab ativa é renderizada */}
+      {/* Tab Panels - LAZY LOADING: Apenas a tab ativa é renderizada */}
 
-			{/* Dashboard Tab */}
-			<TabPanel
-				value={tabValue}
-				index={0}
-			>
-				{showHeader ? (
-					<Box sx={{ mb: 2 }}>
-						<TabDescription
-							icon={<LayoutDashboard {...ICON_LG} />}
-							title='Dashboard do Link'
-							description='Visão geral consolidada do link com métricas essenciais e performance.'
-							highlight={`${data?.overview?.total_clicks || 0} cliques totais`}
-						/>
-					</Box>
-				) : null}
-				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 0 && (
-					<LinkDashboard
-						linkId={linkId}
-						showTitle={false}
-						enableRealtime={false}
-						showTimeframeSelector
-						compact={false}
-					/>
-				)}
-			</TabPanel>
+      {/* Dashboard Tab */}
+      <TabPanel value={tabValue} index={0}>
+        {showHeader ? (
+          <Box sx={{ mb: 2 }}>
+            <TabDescription
+              icon={<LayoutDashboard {...ICON_LG} />}
+              title="Dashboard do Link"
+              description="Visão geral consolidada do link com métricas essenciais e performance."
+              highlight={`${data?.overview?.total_clicks || 0} cliques totais`}
+            />
+          </Box>
+        ) : null}
+        {/* Renderizar apenas se a tab está ativa */}
+        {tabValue === 0 && (
+          <LinkDashboard
+            linkId={linkId}
+            showTitle={false}
+            enableRealtime={false}
+            showTimeframeSelector
+            compact={false}
+          />
+        )}
+      </TabPanel>
 
-			{/* Performance Tab */}
-			<TabPanel
-				value={tabValue}
-				index={1}
-			>
-				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 1 && <PerformanceAnalysis linkId={linkId} />}
-			</TabPanel>
+      {/* Performance Tab */}
+      <TabPanel value={tabValue} index={1}>
+        {/* Renderizar apenas se a tab está ativa */}
+        {tabValue === 1 && <PerformanceAnalysis linkId={linkId} />}
+      </TabPanel>
 
-			{/* Geografia Tab */}
-			<TabPanel
-				value={tabValue}
-				index={2}
-			>
-				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 2 && (
-					<GeographicAnalysis
-						linkId={linkId}
-						enableRealtime={false}
-						minClicks={1}
-					/>
-				)}
-			</TabPanel>
+      {/* Geografia Tab */}
+      <TabPanel value={tabValue} index={2}>
+        {/* Renderizar apenas se a tab está ativa */}
+        {tabValue === 2 && (
+          <GeographicAnalysis
+            linkId={linkId}
+            enableRealtime={false}
+            minClicks={1}
+          />
+        )}
+      </TabPanel>
 
-			{/* Temporal Tab */}
-			<TabPanel
-				value={tabValue}
-				index={3}
-			>
-				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 3 && (
-					<TemporalAnalysis
-						linkId={linkId}
-						enableRealtime={false}
-					/>
-				)}
-			</TabPanel>
+      {/* Temporal Tab */}
+      <TabPanel value={tabValue} index={3}>
+        {/* Renderizar apenas se a tab está ativa */}
+        {tabValue === 3 && (
+          <TemporalAnalysis linkId={linkId} enableRealtime={false} />
+        )}
+      </TabPanel>
 
-			{/* Audiência Tab */}
-			<TabPanel
-				value={tabValue}
-				index={4}
-			>
-				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 4 && <AudienceAnalysis linkId={linkId} />}
-			</TabPanel>
+      {/* Audiência Tab */}
+      <TabPanel value={tabValue} index={4}>
+        {/* Renderizar apenas se a tab está ativa */}
+        {tabValue === 4 && <AudienceAnalysis linkId={linkId} />}
+      </TabPanel>
 
-			{/* Heatmap Tab */}
-			<TabPanel
-				value={tabValue}
-				index={5}
-			>
-				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 5 && <HeatmapAnalysis linkId={linkId} />}
-			</TabPanel>
+      {/* Heatmap Tab */}
+      <TabPanel value={tabValue} index={5}>
+        {/* Renderizar apenas se a tab está ativa */}
+        {tabValue === 5 && <HeatmapAnalysis linkId={linkId} />}
+      </TabPanel>
 
-			{/* Insights Tab */}
-			<TabPanel
-				value={tabValue}
-				index={6}
-			>
-				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 6 && (
-					<InsightsAnalysis
-						linkId={linkId}
-						enableRealtime={false}
-						maxInsights={10}
-					/>
-				)}
-			</TabPanel>
+      {/* Insights Tab */}
+      <TabPanel value={tabValue} index={6}>
+        {/* Renderizar apenas se a tab está ativa */}
+        {tabValue === 6 && (
+          <InsightsAnalysis
+            linkId={linkId}
+            enableRealtime={false}
+            maxInsights={10}
+          />
+        )}
+      </TabPanel>
 
-			{/* Cliques Tab */}
-			<TabPanel
-				value={tabValue}
-				index={7}
-			>
-				{/* Renderizar apenas se a tab está ativa */}
-				{tabValue === 7 && <ClicksTable linkId={linkId} />}
-			</TabPanel>
-		</Box>
-	);
+      {/* Cliques Tab */}
+      <TabPanel value={tabValue} index={7}>
+        {/* Renderizar apenas se a tab está ativa */}
+        {tabValue === 7 && <ClicksTable linkId={linkId} />}
+      </TabPanel>
+    </Box>
+  );
 }
 
 export default LinkAnalyticsTabsOptimized;

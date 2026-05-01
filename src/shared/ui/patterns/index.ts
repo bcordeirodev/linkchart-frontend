@@ -3,5 +3,5 @@
  * Componentes padronizados reutilizáveis
  */
 
-export * from './FormActions';
-export * from './TableActions';
+export * from "./FormActions";
+export * from "./TableActions";

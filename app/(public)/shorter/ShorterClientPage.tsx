@@ -1,6 +1,6 @@
-'use client';
-import ShorterPageFeature from '@/pages/public/ShorterPage';
+"use client";
+import ShorterPageFeature from "@/pages/public/ShorterPage";
 
 export default function ShorterClientPage() {
-	return <ShorterPageFeature />;
+  return <ShorterPageFeature />;
 }

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 /**
  * 🏗️ USE LAYOUT SETTINGS HOOK - LINK CHART
  * Hook para acessar configurações de layout
@@ -37,11 +37,11 @@
  * @since 2.0.0
  */
 
-import { useContext } from 'react';
+import { useContext } from "react";
 
-import { LayoutSettingsContext } from './LayoutSettingsContext';
+import { LayoutSettingsContext } from "./LayoutSettingsContext";
 
-import type { LayoutSettingsContextType } from './LayoutSettingsContext';
+import type { LayoutSettingsContextType } from "./LayoutSettingsContext";
 
 /**
  * Hook para acessar configurações de layout
@@ -49,13 +49,13 @@ import type { LayoutSettingsContextType } from './LayoutSettingsContext';
  * @throws {Error} Se usado fora do LayoutProvider
  */
 export const useLayoutSettings = (): LayoutSettingsContextType => {
-	const context = useContext(LayoutSettingsContext);
+  const context = useContext(LayoutSettingsContext);
 
-	if (!context) {
-		throw new Error('useLayoutSettings must be used within a LayoutProvider');
-	}
+  if (!context) {
+    throw new Error("useLayoutSettings must be used within a LayoutProvider");
+  }
 
-	return context;
+  return context;
 };
 
 export default useLayoutSettings;

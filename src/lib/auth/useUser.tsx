@@ -1,73 +1,83 @@
-'use client';
-import _ from 'lodash';
-import { useMemo } from 'react';
+"use client";
+import _ from "lodash";
+import { useMemo } from "react";
 
-import { useAuth } from './AuthContext';
+import { useAuth } from "./AuthContext";
 
-import type { User } from '@/types';
+import type { User } from "@/types";
 // Removed: setIn não utilizado
 
 interface useUser {
-	data: User | null;
-	isGuest: boolean;
-	updateUser: (updates: Partial<User>) => Promise<User | undefined>;
-	updateUserSettings: (newSettings: User['settings']) => Promise<User['settings'] | undefined>;
-	signOut: () => void;
-	refreshUser: () => Promise<void>;
+  data: User | null;
+  isGuest: boolean;
+  updateUser: (updates: Partial<User>) => Promise<User | undefined>;
+  updateUserSettings: (
+    newSettings: User["settings"],
+  ) => Promise<User["settings"] | undefined>;
+  signOut: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 function useUser(): useUser {
-	const { user, logout, updateUser: authUpdateUser, refreshUser: authRefreshUser } = useAuth();
-	const isGuest = useMemo(() => !user?.role || user?.role?.length === 0, [user]);
+  const {
+    user,
+    logout,
+    updateUser: authUpdateUser,
+    refreshUser: authRefreshUser,
+  } = useAuth();
+  const isGuest = useMemo(
+    () => !user?.role || user?.role?.length === 0,
+    [user],
+  );
 
-	/**
-	 * Update user
-	 * Uses current auth provider's updateUser method
-	 */
-	async function handleUpdateUser(_data: Partial<User>) {
-		try {
-			const updatedUser = await authUpdateUser(_data);
-			return updatedUser;
-		} catch (error) {
-			throw new Error('Failed to update user');
-		}
-	}
+  /**
+   * Update user
+   * Uses current auth provider's updateUser method
+   */
+  async function handleUpdateUser(_data: Partial<User>) {
+    try {
+      const updatedUser = await authUpdateUser(_data);
+      return updatedUser;
+    } catch (error) {
+      throw new Error("Failed to update user");
+    }
+  }
 
-	async function handleUpdateUserSettings(newSettings: User['settings']) {
-		if (!user) {
-			return undefined;
-		}
+  async function handleUpdateUserSettings(newSettings: User["settings"]) {
+    if (!user) {
+      return undefined;
+    }
 
-		const newUser = {
-			...user,
-			settings: newSettings
-		};
+    const newUser = {
+      ...user,
+      settings: newSettings,
+    };
 
-		if (_.isEqual(user, newUser)) {
-			return undefined;
-		}
+    if (_.isEqual(user, newUser)) {
+      return undefined;
+    }
 
-		const updatedUser = await handleUpdateUser(newUser);
+    const updatedUser = await handleUpdateUser(newUser);
 
-		return updatedUser?.settings;
-	}
+    return updatedUser?.settings;
+  }
 
-	function handleSignOut() {
-		logout();
-	}
+  function handleSignOut() {
+    logout();
+  }
 
-	async function handleRefreshUser() {
-		await authRefreshUser();
-	}
+  async function handleRefreshUser() {
+    await authRefreshUser();
+  }
 
-	return {
-		data: user,
-		isGuest,
-		signOut: handleSignOut,
-		updateUser: handleUpdateUser,
-		updateUserSettings: handleUpdateUserSettings,
-		refreshUser: handleRefreshUser
-	};
+  return {
+    data: user,
+    isGuest,
+    signOut: handleSignOut,
+    updateUser: handleUpdateUser,
+    updateUserSettings: handleUpdateUserSettings,
+    refreshUser: handleRefreshUser,
+  };
 }
 
 export default useUser;

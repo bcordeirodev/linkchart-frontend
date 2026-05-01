@@ -3,4 +3,4 @@
  * Hooks da feature shorter
  */
 
-export { useShorter } from './useShorter';
+export { useShorter } from "./useShorter";

@@ -10,22 +10,22 @@
  */
 
 // Utilitários de cores - usado em MetricCardOptimized
-export * from './colorUtils';
+export * from "./colorUtils";
 
 // Utilitários específicos para cores de gráficos
-export * from './chartColorUtils';
+export * from "./chartColorUtils";
 
 // Utilitários de gradiente - usado em vários componentes
-export * from './gradientUtils';
+export * from "./gradientUtils";
 
 // Utilitários de animação - usado em vários componentes
-export * from './animationUtils';
+export * from "./animationUtils";
 
 // Utilitários de spacing - usado no design system
-export * from './spacingUtils';
+export * from "./spacingUtils";
 
 // Utilitários de shadow - usado no design system
-export * from './shadowUtils';
+export * from "./shadowUtils";
 
 // Utilitários responsivos - usado no design system
-export * from './responsiveUtils';
+export * from "./responsiveUtils";

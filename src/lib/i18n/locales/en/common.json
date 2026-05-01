@@ -1,83 +1,83 @@
 {
-	"appName": "Link Charts",
-	"appTagline": "Analytics Platform",
-	"nav": {
-		"myLinks": "My Links",
-		"signIn": "Sign In",
-		"signUp": "Create account",
-		"profile": "Profile Settings",
-		"profileDesc": "Manage your account",
-		"proUser": "Pro User",
-		"signOut": "Sign Out",
-		"signOutDesc": "See you later!",
-		"menuTooltip": "{{name}} - Click for menu",
-		"accountMenuAriaLabel": "account menu"
-	},
-	"actions": {
-		"save": "Save",
-		"cancel": "Cancel",
-		"delete": "Delete",
-		"edit": "Edit",
-		"create": "Create",
-		"copy": "Copy",
-		"share": "Share",
-		"view": "View",
-		"back": "Back",
-		"close": "Close",
-		"confirm": "Confirm",
-		"retry": "Try again",
-		"refresh": "Refresh",
-		"viewAnalytics": "View analytics",
-		"qrCode": "QR Code"
-	},
-	"chart": {
-		"noData": "No Data Available",
-		"noDataDesc": "This chart will display when there is enough data for analysis.",
-		"errorTitle": "Chart {{type}}",
-		"errorDesc": "There was a problem loading the chart. Visualization temporarily unavailable.",
-		"loading": "Loading chart {{type}}...",
-		"loadingShort": "Loading...",
-		"statsTotal": "Total:",
-		"statsAvg": "Average:",
-		"statsMax": "Maximum:",
-		"statsMin": "Minimum:",
-		"statsPoints": "points"
-	},
-	"status": {
-		"active": "Active",
-		"inactive": "Inactive",
-		"expired": "Expired",
-		"scheduled": "Scheduled",
-		"loading": "Loading...",
-		"error": "An error occurred",
-		"noData": "No data available",
-		"success": "Operation completed successfully"
-	},
-	"table": {
-		"rowsPerPage": "Rows per page",
-		"of": "of",
-		"noResults": "No results found",
-		"search": "Search..."
-	},
-	"feedback": {
-		"copied": "Copied!",
-		"copyFailed": "Could not copy",
-		"saved": "Saved successfully",
-		"deleted": "Deleted successfully",
-		"error": "Something went wrong. Please try again."
-	},
-	"loading": {
-		"default": "Loading...",
-		"data": "Loading data...",
-		"saving": "Saving...",
-		"deleting": "Deleting..."
-	},
-	"empty": {
-		"noData": "No data available",
-		"noResults": "No results found",
-		"tryAdjusting": "Try adjusting your filters or search terms."
-	},
-	"footer": {
-		"copyright": "© 2024 Link Charts. All rights reserved."
-	}
+  "appName": "Link Charts",
+  "appTagline": "Analytics Platform",
+  "nav": {
+    "myLinks": "My Links",
+    "signIn": "Sign In",
+    "signUp": "Create account",
+    "profile": "Profile Settings",
+    "profileDesc": "Manage your account",
+    "proUser": "Pro User",
+    "signOut": "Sign Out",
+    "signOutDesc": "See you later!",
+    "menuTooltip": "{{name}} - Click for menu",
+    "accountMenuAriaLabel": "account menu"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "copy": "Copy",
+    "share": "Share",
+    "view": "View",
+    "back": "Back",
+    "close": "Close",
+    "confirm": "Confirm",
+    "retry": "Try again",
+    "refresh": "Refresh",
+    "viewAnalytics": "View analytics",
+    "qrCode": "QR Code"
+  },
+  "chart": {
+    "noData": "No Data Available",
+    "noDataDesc": "This chart will display when there is enough data for analysis.",
+    "errorTitle": "Chart {{type}}",
+    "errorDesc": "There was a problem loading the chart. Visualization temporarily unavailable.",
+    "loading": "Loading chart {{type}}...",
+    "loadingShort": "Loading...",
+    "statsTotal": "Total:",
+    "statsAvg": "Average:",
+    "statsMax": "Maximum:",
+    "statsMin": "Minimum:",
+    "statsPoints": "points"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "expired": "Expired",
+    "scheduled": "Scheduled",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "noData": "No data available",
+    "success": "Operation completed successfully"
+  },
+  "table": {
+    "rowsPerPage": "Rows per page",
+    "of": "of",
+    "noResults": "No results found",
+    "search": "Search..."
+  },
+  "feedback": {
+    "copied": "Copied!",
+    "copyFailed": "Could not copy",
+    "saved": "Saved successfully",
+    "deleted": "Deleted successfully",
+    "error": "Something went wrong. Please try again."
+  },
+  "loading": {
+    "default": "Loading...",
+    "data": "Loading data...",
+    "saving": "Saving...",
+    "deleting": "Deleting..."
+  },
+  "empty": {
+    "noData": "No data available",
+    "noResults": "No results found",
+    "tryAdjusting": "Try adjusting your filters or search terms."
+  },
+  "footer": {
+    "copyright": "© 2024 Link Charts. All rights reserved."
+  }
 }

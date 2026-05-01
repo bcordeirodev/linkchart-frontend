@@ -4,13 +4,13 @@
  */
 
 // Hook de tema principal
-export { useMainTheme } from './fuseThemeHooks';
+export { useMainTheme } from "./fuseThemeHooks";
 
 // Hook responsivo
-export { useResponsive } from './useResponsive';
+export { useResponsive } from "./useResponsive";
 
 // Hook de altura responsiva para charts
-export { useChartHeight, type ChartSize } from './useChartHeight';
+export { useChartHeight, type ChartSize } from "./useChartHeight";
 
 // Re-export de hooks compartilhados
-export { default as useThemeMediaQuery } from '@/shared/hooks/useThemeMediaQuery';
+export { default as useThemeMediaQuery } from "@/shared/hooks/useThemeMediaQuery";

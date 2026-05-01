@@ -10,7 +10,7 @@
  */
 
 // Components
-export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as ErrorBoundary } from "./ErrorBoundary";
 
 // Auth utilities
-export { default as FuseUtils } from './authUtils';
+export { default as FuseUtils } from "./authUtils";

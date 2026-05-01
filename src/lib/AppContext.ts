@@ -1,5 +1,5 @@
-'use client';
-import { createContext } from 'react';
+"use client";
+import { createContext } from "react";
 
 /**
  * The type of the AppContext value.

@@ -1,7 +1,7 @@
-import _ from 'lodash';
+import _ from "lodash";
 
-import type { User } from '@/types';
-import type { PartialDeep } from 'type-fest';
+import type { User } from "@/types";
+import type { PartialDeep } from "type-fest";
 
 /**
  * Creates a new user object with the specified data.
@@ -10,20 +10,20 @@ import type { PartialDeep } from 'type-fest';
  * @returns A complete User object populated with defaults.
  */
 function UserModel(data?: PartialDeep<User>): User {
-	// Ensure data is an object
-	data = data || {};
+  // Ensure data is an object
+  data = data || {};
 
-	// Populate missing fields with defaults
-	return _.defaults(data, {
-		id: null,
-		role: null,
-		displayName: null,
-		photoURL: '',
-		email: '',
-		shortcuts: [],
-		settings: {},
-		loginRedirectUrl: '/'
-	}) as User;
+  // Populate missing fields with defaults
+  return _.defaults(data, {
+    id: null,
+    role: null,
+    displayName: null,
+    photoURL: "",
+    email: "",
+    shortcuts: [],
+    settings: {},
+    loginRedirectUrl: "/",
+  }) as User;
 }
 
 export default UserModel;

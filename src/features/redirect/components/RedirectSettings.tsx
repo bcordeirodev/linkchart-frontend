@@ -1,313 +1,326 @@
-'use client';
-import { Shield, Settings, Zap, Eye } from 'lucide-react';
+"use client";
+import { Shield, Settings, Zap, Eye } from "lucide-react";
 
-import { ICON_MD } from '@/lib/theme/iconDefaults';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
-import Chip from '@mui/material/Chip';
-import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { ICON_MD } from "@/lib/theme/iconDefaults";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import Chip from "@mui/material/Chip";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
-import SafeTypography from '@/shared/ui/base/SafeTypography';
+import SafeTypography from "@/shared/ui/base/SafeTypography";
 
 interface RedirectSettingsProps {
-	onSave?: (settings: RedirectSettings) => void;
-	initialSettings?: Partial<RedirectSettings>;
+  onSave?: (settings: RedirectSettings) => void;
+  initialSettings?: Partial<RedirectSettings>;
 }
 
 export interface RedirectSettings {
-	enablePreview: boolean;
-	previewDelay: number;
-	showClickCount: boolean;
-	showDestination: boolean;
-	requireConfirmation: boolean;
-	enableSafetyCheck: boolean;
-	customMessage?: string;
-	allowDirectRedirect: boolean;
+  enablePreview: boolean;
+  previewDelay: number;
+  showClickCount: boolean;
+  showDestination: boolean;
+  requireConfirmation: boolean;
+  enableSafetyCheck: boolean;
+  customMessage?: string;
+  allowDirectRedirect: boolean;
 }
 
 const defaultSettings: RedirectSettings = {
-	enablePreview: true,
-	previewDelay: 3,
-	showClickCount: true,
-	showDestination: true,
-	requireConfirmation: false,
-	enableSafetyCheck: true,
-	allowDirectRedirect: true
+  enablePreview: true,
+  previewDelay: 3,
+  showClickCount: true,
+  showDestination: true,
+  requireConfirmation: false,
+  enableSafetyCheck: true,
+  allowDirectRedirect: true,
 };
 
 /**
  * Componente para configurar opções avançadas de redirecionamento
  */
-export default function RedirectSettings({ onSave, initialSettings = {} }: RedirectSettingsProps) {
-	const [settings, setSettings] = useState<RedirectSettings>({
-		...defaultSettings,
-		...initialSettings
-	});
+export default function RedirectSettings({
+  onSave,
+  initialSettings = {},
+}: RedirectSettingsProps) {
+  const [settings, setSettings] = useState<RedirectSettings>({
+    ...defaultSettings,
+    ...initialSettings,
+  });
 
-	const handleSettingChange = (key: keyof RedirectSettings, value: boolean | number | string) => {
-		setSettings((prev) => ({
-			...prev,
-			[key]: value
-		}));
-	};
+  const handleSettingChange = (
+    key: keyof RedirectSettings,
+    value: boolean | number | string,
+  ) => {
+    setSettings((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
-	const handleSave = () => {
-		onSave?.(settings);
-	};
+  const handleSave = () => {
+    onSave?.(settings);
+  };
 
-	const handleReset = () => {
-		setSettings({ ...defaultSettings, ...initialSettings });
-	};
+  const handleReset = () => {
+    setSettings({ ...defaultSettings, ...initialSettings });
+  };
 
-	return (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			style={{ maxWidth: 672, marginLeft: 'auto', marginRight: 'auto' }}
-		>
-			<Card elevation={2}>
-				<CardContent>
-					<Stack spacing={3}>
-						{/* Header */}
-						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-							<Settings {...ICON_MD} />
-							<SafeTypography variant='h6'>Configurações de Redirecionamento</SafeTypography>
-						</Box>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      style={{ maxWidth: 672, marginLeft: "auto", marginRight: "auto" }}
+    >
+      <Card elevation={2}>
+        <CardContent>
+          <Stack spacing={3}>
+            {/* Header */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Settings {...ICON_MD} />
+              <SafeTypography variant="h6">
+                Configurações de Redirecionamento
+              </SafeTypography>
+            </Box>
 
-						<Divider />
+            <Divider />
 
-						{/* Preview Settings */}
-						<Box>
-							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-								<Eye {...ICON_MD} />
-								<SafeTypography
-									variant='subtitle1'
-									color='primary'
-								>
-									Visualização
-								</SafeTypography>
-							</Box>
+            {/* Preview Settings */}
+            <Box>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}
+              >
+                <Eye {...ICON_MD} />
+                <SafeTypography variant="subtitle1" color="primary">
+                  Visualização
+                </SafeTypography>
+              </Box>
 
-							<Stack spacing={2}>
-								<FormControlLabel
-									control={
-										<Switch
-											checked={settings.enablePreview}
-											onChange={(e) => handleSettingChange('enablePreview', e.target.checked)}
-										/>
-									}
-									label='Mostrar página de preview antes do redirecionamento'
-								/>
+              <Stack spacing={2}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={settings.enablePreview}
+                      onChange={(e) =>
+                        handleSettingChange("enablePreview", e.target.checked)
+                      }
+                    />
+                  }
+                  label="Mostrar página de preview antes do redirecionamento"
+                />
 
-								{settings.enablePreview ? (
-									<motion.div
-										initial={{ opacity: 0, height: 0 }}
-										animate={{ opacity: 1, height: 'auto' }}
-									>
-										<TextField
-											label='Delay do redirecionamento (segundos)'
-											type='number'
-											size='small'
-											value={settings.previewDelay}
-											onChange={(e) =>
-												handleSettingChange('previewDelay', parseInt(e.target.value) || 0)
-											}
-											inputProps={{ min: 0, max: 30 }}
-											helperText='0 = redirecionamento imediato'
-										/>
-									</motion.div>
-								) : null}
+                {settings.enablePreview ? (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                  >
+                    <TextField
+                      label="Delay do redirecionamento (segundos)"
+                      type="number"
+                      size="small"
+                      value={settings.previewDelay}
+                      onChange={(e) =>
+                        handleSettingChange(
+                          "previewDelay",
+                          parseInt(e.target.value) || 0,
+                        )
+                      }
+                      inputProps={{ min: 0, max: 30 }}
+                      helperText="0 = redirecionamento imediato"
+                    />
+                  </motion.div>
+                ) : null}
 
-								<FormControlLabel
-									control={
-										<Switch
-											checked={settings.showClickCount}
-											onChange={(e) => handleSettingChange('showClickCount', e.target.checked)}
-										/>
-									}
-									label='Mostrar número de cliques no preview'
-								/>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={settings.showClickCount}
+                      onChange={(e) =>
+                        handleSettingChange("showClickCount", e.target.checked)
+                      }
+                    />
+                  }
+                  label="Mostrar número de cliques no preview"
+                />
 
-								<FormControlLabel
-									control={
-										<Switch
-											checked={settings.showDestination}
-											onChange={(e) => handleSettingChange('showDestination', e.target.checked)}
-										/>
-									}
-									label='Mostrar URL de destino no preview'
-								/>
-							</Stack>
-						</Box>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={settings.showDestination}
+                      onChange={(e) =>
+                        handleSettingChange("showDestination", e.target.checked)
+                      }
+                    />
+                  }
+                  label="Mostrar URL de destino no preview"
+                />
+              </Stack>
+            </Box>
 
-						<Divider />
+            <Divider />
 
-						{/* Security Settings */}
-						<Box>
-							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-								<Shield {...ICON_MD} />
-								<SafeTypography
-									variant='subtitle1'
-									color='primary'
-								>
-									Segurança
-								</SafeTypography>
-							</Box>
+            {/* Security Settings */}
+            <Box>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}
+              >
+                <Shield {...ICON_MD} />
+                <SafeTypography variant="subtitle1" color="primary">
+                  Segurança
+                </SafeTypography>
+              </Box>
 
-							<Stack spacing={2}>
-								<FormControlLabel
-									control={
-										<Switch
-											checked={settings.enableSafetyCheck}
-											onChange={(e) => handleSettingChange('enableSafetyCheck', e.target.checked)}
-										/>
-									}
-									label='Verificar segurança do link antes do redirecionamento'
-								/>
+              <Stack spacing={2}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={settings.enableSafetyCheck}
+                      onChange={(e) =>
+                        handleSettingChange(
+                          "enableSafetyCheck",
+                          e.target.checked,
+                        )
+                      }
+                    />
+                  }
+                  label="Verificar segurança do link antes do redirecionamento"
+                />
 
-								<FormControlLabel
-									control={
-										<Switch
-											checked={settings.requireConfirmation}
-											onChange={(e) =>
-												handleSettingChange('requireConfirmation', e.target.checked)
-											}
-										/>
-									}
-									label='Sempre exigir confirmação do usuário'
-								/>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={settings.requireConfirmation}
+                      onChange={(e) =>
+                        handleSettingChange(
+                          "requireConfirmation",
+                          e.target.checked,
+                        )
+                      }
+                    />
+                  }
+                  label="Sempre exigir confirmação do usuário"
+                />
 
-								<FormControlLabel
-									control={
-										<Switch
-											checked={settings.allowDirectRedirect}
-											onChange={(e) =>
-												handleSettingChange('allowDirectRedirect', e.target.checked)
-											}
-										/>
-									}
-									label='Permitir redirecionamento direto via /api/r/'
-								/>
-							</Stack>
-						</Box>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={settings.allowDirectRedirect}
+                      onChange={(e) =>
+                        handleSettingChange(
+                          "allowDirectRedirect",
+                          e.target.checked,
+                        )
+                      }
+                    />
+                  }
+                  label="Permitir redirecionamento direto via /api/r/"
+                />
+              </Stack>
+            </Box>
 
-						<Divider />
+            <Divider />
 
-						{/* Performance Settings */}
-						<Box>
-							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-								<Zap {...ICON_MD} />
-								<SafeTypography
-									variant='subtitle1'
-									color='primary'
-								>
-									Personalização
-								</SafeTypography>
-							</Box>
+            {/* Performance Settings */}
+            <Box>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}
+              >
+                <Zap {...ICON_MD} />
+                <SafeTypography variant="subtitle1" color="primary">
+                  Personalização
+                </SafeTypography>
+              </Box>
 
-							<TextField
-								label='Mensagem personalizada (opcional)'
-								multiline
-								rows={2}
-								fullWidth
-								value={settings.customMessage || ''}
-								onChange={(e) => handleSettingChange('customMessage', e.target.value)}
-								placeholder='Ex: Você está sendo redirecionado para um site externo...'
-								helperText='Esta mensagem será exibida na página de preview'
-							/>
-						</Box>
+              <TextField
+                label="Mensagem personalizada (opcional)"
+                multiline
+                rows={2}
+                fullWidth
+                value={settings.customMessage || ""}
+                onChange={(e) =>
+                  handleSettingChange("customMessage", e.target.value)
+                }
+                placeholder="Ex: Você está sendo redirecionado para um site externo..."
+                helperText="Esta mensagem será exibida na página de preview"
+              />
+            </Box>
 
-						{/* Preview of Current Settings */}
-						<Box
-							sx={(theme) => ({
-								p: 1.5,
-								borderRadius: 1,
-								bgcolor:
-									theme.palette.mode === 'dark'
-										? theme.palette.background.paper
-										: theme.palette.grey[50]
-							})}
-						>
-							<SafeTypography
-								variant='subtitle2'
-								sx={{ mb: 1 }}
-							>
-								Configuração atual:
-							</SafeTypography>
-							<Stack
-								direction='row'
-								spacing={1}
-								flexWrap='wrap'
-								gap={1}
-							>
-								{settings.enablePreview ? (
-									<Chip
-										label={`Preview: ${settings.previewDelay}s`}
-										size='small'
-										color='primary'
-										variant='outlined'
-									/>
-								) : null}
-								{settings.showClickCount ? (
-									<Chip
-										label='Mostrar cliques'
-										size='small'
-										variant='outlined'
-									/>
-								) : null}
-								{settings.enableSafetyCheck ? (
-									<Chip
-										label='Verificação de segurança'
-										size='small'
-										color='success'
-										variant='outlined'
-									/>
-								) : null}
-								{settings.requireConfirmation ? (
-									<Chip
-										label='Confirmação obrigatória'
-										size='small'
-										color='warning'
-										variant='outlined'
-									/>
-								) : null}
-								{!settings.allowDirectRedirect && (
-									<Chip
-										label='Sem redirect direto'
-										size='small'
-										color='error'
-										variant='outlined'
-									/>
-								)}
-							</Stack>
-						</Box>
-					</Stack>
-				</CardContent>
+            {/* Preview of Current Settings */}
+            <Box
+              sx={(theme) => ({
+                p: 1.5,
+                borderRadius: 1,
+                bgcolor:
+                  theme.palette.mode === "dark"
+                    ? theme.palette.background.paper
+                    : theme.palette.grey[50],
+              })}
+            >
+              <SafeTypography variant="subtitle2" sx={{ mb: 1 }}>
+                Configuração atual:
+              </SafeTypography>
+              <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
+                {settings.enablePreview ? (
+                  <Chip
+                    label={`Preview: ${settings.previewDelay}s`}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                  />
+                ) : null}
+                {settings.showClickCount ? (
+                  <Chip
+                    label="Mostrar cliques"
+                    size="small"
+                    variant="outlined"
+                  />
+                ) : null}
+                {settings.enableSafetyCheck ? (
+                  <Chip
+                    label="Verificação de segurança"
+                    size="small"
+                    color="success"
+                    variant="outlined"
+                  />
+                ) : null}
+                {settings.requireConfirmation ? (
+                  <Chip
+                    label="Confirmação obrigatória"
+                    size="small"
+                    color="warning"
+                    variant="outlined"
+                  />
+                ) : null}
+                {!settings.allowDirectRedirect && (
+                  <Chip
+                    label="Sem redirect direto"
+                    size="small"
+                    color="error"
+                    variant="outlined"
+                  />
+                )}
+              </Stack>
+            </Box>
+          </Stack>
+        </CardContent>
 
-				<CardActions sx={{ justifyContent: 'flex-end', gap: 1 }}>
-					<Button
-						variant='outlined'
-						onClick={handleReset}
-					>
-						Resetar
-					</Button>
-					<Button
-						variant='contained'
-						onClick={handleSave}
-					>
-						Salvar Configurações
-					</Button>
-				</CardActions>
-			</Card>
-		</motion.div>
-	);
+        <CardActions sx={{ justifyContent: "flex-end", gap: 1 }}>
+          <Button variant="outlined" onClick={handleReset}>
+            Resetar
+          </Button>
+          <Button variant="contained" onClick={handleSave}>
+            Salvar Configurações
+          </Button>
+        </CardActions>
+      </Card>
+    </motion.div>
+  );
 }

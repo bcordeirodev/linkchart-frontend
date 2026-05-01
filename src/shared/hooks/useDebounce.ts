@@ -1,27 +1,30 @@
-'use client';
-import { useCallback, useRef } from 'react';
+"use client";
+import { useCallback, useRef } from "react";
 
 /**
  * Hook personalizado para debounce de funções
  * Versão simplificada para evitar conflitos de ESLint
  */
-function useDebounce<T extends (...args: never[]) => void>(callback: T, delay: number): T {
-	const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+function useDebounce<T extends (...args: never[]) => void>(
+  callback: T,
+  delay: number,
+): T {
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-	const debouncedFn = useCallback(
-		(...args: never[]) => {
-			if (timeoutRef.current) {
-				clearTimeout(timeoutRef.current);
-			}
+  const debouncedFn = useCallback(
+    (...args: never[]) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
 
-			timeoutRef.current = setTimeout(() => {
-				callback(...args);
-			}, delay);
-		},
-		[callback, delay]
-	) as T;
+      timeoutRef.current = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    },
+    [callback, delay],
+  ) as T;
 
-	return debouncedFn;
+  return debouncedFn;
 }
 
 export default useDebounce;

@@ -1,6 +1,6 @@
-import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
-import { z } from 'zod';
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import { z } from "zod";
 
 /**
  * 🔍 SCHEMA ZOD UNIFICADO PARA LINKS
@@ -9,126 +9,160 @@ import { z } from 'zod';
  */
 
 // Lista de domínios bloqueados (sincronizada com backend)
-const BLOCKED_DOMAINS = ['malware.com', 'phishing.net', 'spam.org'];
+const BLOCKED_DOMAINS = ["malware.com", "phishing.net", "spam.org"];
 
 // Slugs reservados (sincronizada com backend)
-const RESERVED_SLUGS = ['api', 'admin', 'www', 'mail', 'ftp', 'r', 'redirect'];
+const RESERVED_SLUGS = ["api", "admin", "www", "mail", "ftp", "r", "redirect"];
 
 export const linkFormSchema = z
-	.object({
-		// ✅ URL Original - Validação robusta
-		original_url: z
-			.string()
-			.min(1, 'URL é obrigatória')
-			.max(2048, 'URL não pode ter mais de 2048 caracteres')
-			.url('URL deve ser válida (ex: https://exemplo.com)')
-			.regex(/^https?:\/\//, 'URL deve começar com http:// ou https://')
-			.refine((url) => {
-				try {
-					const domain = new URL(url).hostname;
-					return !BLOCKED_DOMAINS.includes(domain);
-				} catch {
-					return false;
-				}
-			}, 'Esta URL não é permitida por questões de segurança'),
+  .object({
+    // ✅ URL Original - Validação robusta
+    original_url: z
+      .string()
+      .min(1, "URL é obrigatória")
+      .max(2048, "URL não pode ter mais de 2048 caracteres")
+      .url("URL deve ser válida (ex: https://exemplo.com)")
+      .regex(/^https?:\/\//, "URL deve começar com http:// ou https://")
+      .refine((url) => {
+        try {
+          const domain = new URL(url).hostname;
+          return !BLOCKED_DOMAINS.includes(domain);
+        } catch {
+          return false;
+        }
+      }, "Esta URL não é permitida por questões de segurança"),
 
-		// ✅ Título - Opcional, máximo 255 caracteres
-		title: z.string().max(255, 'Título deve ter no máximo 255 caracteres').optional().or(z.literal('')),
+    // ✅ Título - Opcional, máximo 255 caracteres
+    title: z
+      .string()
+      .max(255, "Título deve ter no máximo 255 caracteres")
+      .optional()
+      .or(z.literal("")),
 
-		// ✅ Slug Personalizado - Validação completa
-		custom_slug: z
-			.string()
-			.min(3, 'Slug deve ter pelo menos 3 caracteres')
-			.max(50, 'Slug não pode ter mais de 50 caracteres')
-			.regex(/^[a-zA-Z0-9\-_]+$/, 'Slug pode conter apenas letras, números, hífens e underscores')
-			.refine((slug) => !RESERVED_SLUGS.includes(slug?.toLowerCase()), 'Este slug é reservado pelo sistema')
-			.optional()
-			.or(z.literal('')),
+    // ✅ Slug Personalizado - Validação completa
+    custom_slug: z
+      .string()
+      .min(3, "Slug deve ter pelo menos 3 caracteres")
+      .max(50, "Slug não pode ter mais de 50 caracteres")
+      .regex(
+        /^[a-zA-Z0-9\-_]+$/,
+        "Slug pode conter apenas letras, números, hífens e underscores",
+      )
+      .refine(
+        (slug) => !RESERVED_SLUGS.includes(slug?.toLowerCase()),
+        "Este slug é reservado pelo sistema",
+      )
+      .optional()
+      .or(z.literal("")),
 
-		// ✅ Descrição - Opcional, máximo 1000 caracteres
-		description: z.string().max(1000, 'Descrição deve ter no máximo 1000 caracteres').optional().or(z.literal('')),
+    // ✅ Descrição - Opcional, máximo 1000 caracteres
+    description: z
+      .string()
+      .max(1000, "Descrição deve ter no máximo 1000 caracteres")
+      .optional()
+      .or(z.literal("")),
 
-		// ✅ Data de Expiração - Validação temporal (permite datas passadas para edição)
-		expires_at: z
-			.custom<Dayjs | null>((val) => {
-				return val === null || dayjs.isDayjs(val);
-			}, 'Data inválida')
+    // ✅ Data de Expiração - Validação temporal (permite datas passadas para edição)
+    expires_at: z
+      .custom<Dayjs | null>((val) => {
+        return val === null || dayjs.isDayjs(val);
+      }, "Data inválida")
 
-			.refine(
-				(val) => {
-					if (!val) {
-						return true;
-					}
+      .refine(
+        (val) => {
+          if (!val) {
+            return true;
+          }
 
-					const expireDate = val.toDate();
-					const maxDate = dayjs().add(5, 'year').toDate();
-					return expireDate <= maxDate;
-				},
-				{
-					message: 'Data de expiração deve ser no máximo 5 anos no futuro'
-				}
-			)
-			.optional()
-			.nullable(),
+          const expireDate = val.toDate();
+          const maxDate = dayjs().add(5, "year").toDate();
+          return expireDate <= maxDate;
+        },
+        {
+          message: "Data de expiração deve ser no máximo 5 anos no futuro",
+        },
+      )
+      .optional()
+      .nullable(),
 
-		// ✅ Data de Início - Validação temporal (permite datas passadas para edição)
-		starts_in: z
-			.custom<Dayjs | null>((val) => {
-				return val === null || dayjs.isDayjs(val);
-			}, 'Data inválida')
-			.optional()
-			.nullable(),
+    // ✅ Data de Início - Validação temporal (permite datas passadas para edição)
+    starts_in: z
+      .custom<Dayjs | null>((val) => {
+        return val === null || dayjs.isDayjs(val);
+      }, "Data inválida")
+      .optional()
+      .nullable(),
 
-		// ✅ Limite de Cliques - Validação numérica
-		click_limit: z
-			.number()
-			.int('Limite deve ser um número inteiro')
-			.min(1, 'Limite deve ser pelo menos 1')
-			.max(1000000, 'Limite máximo é 1.000.000')
-			.optional()
-			.nullable(),
+    // ✅ Limite de Cliques - Validação numérica
+    click_limit: z
+      .number()
+      .int("Limite deve ser um número inteiro")
+      .min(1, "Limite deve ser pelo menos 1")
+      .max(1000000, "Limite máximo é 1.000.000")
+      .optional()
+      .nullable(),
 
-		// ✅ Status Ativo
-		is_active: z.boolean().default(true),
+    // ✅ Status Ativo
+    is_active: z.boolean().default(true),
 
-		// ✅ UTM Parameters - Opcionais
-		utm_source: z.string().max(100, 'UTM Source muito longo').optional().or(z.literal('')),
-		utm_medium: z.string().max(100, 'UTM Medium muito longo').optional().or(z.literal('')),
-		utm_campaign: z.string().max(100, 'UTM Campaign muito longo').optional().or(z.literal('')),
-		utm_term: z.string().max(100, 'UTM Term muito longo').optional().or(z.literal('')),
-		utm_content: z.string().max(100, 'UTM Content muito longo').optional().or(z.literal(''))
-	})
-	// ✅ Validação cruzada de datas
-	.refine(
-		(data) => {
-			if (!data.starts_in || !data.expires_at) {
-				return true;
-			}
+    // ✅ UTM Parameters - Opcionais
+    utm_source: z
+      .string()
+      .max(100, "UTM Source muito longo")
+      .optional()
+      .or(z.literal("")),
+    utm_medium: z
+      .string()
+      .max(100, "UTM Medium muito longo")
+      .optional()
+      .or(z.literal("")),
+    utm_campaign: z
+      .string()
+      .max(100, "UTM Campaign muito longo")
+      .optional()
+      .or(z.literal("")),
+    utm_term: z
+      .string()
+      .max(100, "UTM Term muito longo")
+      .optional()
+      .or(z.literal("")),
+    utm_content: z
+      .string()
+      .max(100, "UTM Content muito longo")
+      .optional()
+      .or(z.literal("")),
+  })
+  // ✅ Validação cruzada de datas
+  .refine(
+    (data) => {
+      if (!data.starts_in || !data.expires_at) {
+        return true;
+      }
 
-			const startDate = data.starts_in.toDate();
-			const expireDate = data.expires_at.toDate();
-			return startDate < expireDate;
-		},
-		{
-			message: 'Data de início deve ser anterior à data de expiração',
-			path: ['starts_in']
-		}
-	);
+      const startDate = data.starts_in.toDate();
+      const expireDate = data.expires_at.toDate();
+      return startDate < expireDate;
+    },
+    {
+      message: "Data de início deve ser anterior à data de expiração",
+      path: ["starts_in"],
+    },
+  );
 
 export type LinkFormData = z.infer<typeof linkFormSchema>;
 
 export const defaultLinkFormValues: Partial<LinkFormData> = {
-	original_url: '',
-	title: '',
-	custom_slug: '',
-	description: '',
-	is_active: true,
-	expires_at: null,
-	starts_in: null,
-	click_limit: null,
-	utm_source: '',
-	utm_medium: '',
-	utm_campaign: '',
-	utm_term: '',
-	utm_content: ''
+  original_url: "",
+  title: "",
+  custom_slug: "",
+  description: "",
+  is_active: true,
+  expires_at: null,
+  starts_in: null,
+  click_limit: null,
+  utm_source: "",
+  utm_medium: "",
+  utm_campaign: "",
+  utm_term: "",
+  utm_content: "",
 };

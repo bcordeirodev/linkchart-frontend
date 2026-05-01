@@ -1,20 +1,15 @@
-'use client';
-import { Navigate } from 'react-router-dom';
+"use client";
+import { Navigate } from "react-router-dom";
 
 interface RedirectProps {
-	to: string;
-	children?: React.ReactNode;
+  to: string;
+  children?: React.ReactNode;
 }
 
 function Redirect(props: RedirectProps) {
-	const { to, children = null } = props;
+  const { to, children = null } = props;
 
-	return (
-		<Navigate
-			to={to}
-			replace
-		/>
-	);
+  return <Navigate to={to} replace />;
 }
 
 export default Redirect;

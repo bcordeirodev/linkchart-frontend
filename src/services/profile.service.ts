@@ -1,6 +1,6 @@
-import { API_ENDPOINTS } from '../lib/api/endpoints';
+import { API_ENDPOINTS } from "../lib/api/endpoints";
 
-import { BaseService } from './base.service';
+import { BaseService } from "./base.service";
 
 /**
  * Serviço para gerenciamento de perfil de usuário
@@ -13,58 +13,65 @@ import { BaseService } from './base.service';
  */
 
 export interface UserProfile {
-	id: string;
-	name: string;
-	email: string;
-	email_verified_at?: string;
-	created_at: string;
-	updated_at: string;
+  id: string;
+  name: string;
+  email: string;
+  email_verified_at?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface UpdateProfileRequest extends Record<string, unknown> {
-	name?: string;
-	email?: string;
+  name?: string;
+  email?: string;
 }
 
 export interface UpdateProfileResponse {
-	message: string;
-	user: UserProfile;
+  message: string;
+  user: UserProfile;
 }
 
 /**
  * Classe de serviço para perfil usando BaseService
  */
 export default class ProfileService extends BaseService {
-	constructor() {
-		super('ProfileService');
-	}
+  constructor() {
+    super("ProfileService");
+  }
 
-	/**
-	 * Busca informações do usuário atual
-	 */
-	async getCurrentUser(): Promise<{ user: UserProfile }> {
-		return this.get<{ user: UserProfile }>(API_ENDPOINTS.AUTH.ME, {
-			context: 'get_current_user'
-		});
-	}
+  /**
+   * Busca informações do usuário atual
+   */
+  async getCurrentUser(): Promise<{ user: UserProfile }> {
+    return this.get<{ user: UserProfile }>(API_ENDPOINTS.AUTH.ME, {
+      context: "get_current_user",
+    });
+  }
 
-	/**
-	 * Atualiza informações do perfil do usuário
-	 */
-	async updateProfile(data: UpdateProfileRequest): Promise<UpdateProfileResponse> {
-		this.validateRequired(data, []); // No required fields, but validate object
+  /**
+   * Atualiza informações do perfil do usuário
+   */
+  async updateProfile(
+    data: UpdateProfileRequest,
+  ): Promise<UpdateProfileResponse> {
+    this.validateRequired(data, []); // No required fields, but validate object
 
-		return this.put<UpdateProfileResponse>(API_ENDPOINTS.AUTH.UPDATE_PROFILE, data, {
-			context: 'update_profile'
-		});
-	}
+    return this.put<UpdateProfileResponse>(
+      API_ENDPOINTS.AUTH.UPDATE_PROFILE,
+      data,
+      {
+        context: "update_profile",
+      },
+    );
+  }
 }
 
 // Instância singleton do serviço
 const profileService = new ProfileService();
 
 // Exports das funções para compatibilidade com código existente
-export const getCurrentUser = profileService.getCurrentUser.bind(profileService);
+export const getCurrentUser =
+  profileService.getCurrentUser.bind(profileService);
 export const updateProfile = profileService.updateProfile.bind(profileService);
 
 // Export da instância do serviço

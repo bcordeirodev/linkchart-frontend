@@ -1,2 +1,2 @@
 // 📊 Analytics Pages Exports
-export { default as LinkAnalyticsPage } from '../links/LinkAnalyticsPage';
+export { default as LinkAnalyticsPage } from "../links/LinkAnalyticsPage";

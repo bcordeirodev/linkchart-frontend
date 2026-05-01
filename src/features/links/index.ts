@@ -4,29 +4,29 @@
  */
 
 // List Components (listagem)
-export * from './components/list';
+export * from "./components/list";
 
 // Other Components
-export * from './components/URLInput';
-export * from './components/URLShortenerForm';
-export { default as LinkActions } from './components/LinkActions';
+export * from "./components/URLInput";
+export * from "./components/URLShortenerForm";
+export { default as LinkActions } from "./components/LinkActions";
 
 // Forms Components (Shared)
-export * from './components/forms';
+export * from "./components/forms";
 
 // Create & Edit Components
-export * from './components/create';
-export * from './components/edit';
+export * from "./components/create";
+export * from "./components/edit";
 
 // Analytics Components
-export * from './components/analytics';
+export * from "./components/analytics";
 
 // Hooks
-export * from './hooks/useLinks';
-export * from './hooks/useShareAPI';
-export * from './hooks/useLinkAnalytics';
+export * from "./hooks/useLinks";
+export * from "./hooks/useShareAPI";
+export * from "./hooks/useLinkAnalytics";
 
 // Types
-export * from './types/link';
-export * from './types/shorter';
-export * from './types/analytics';
+export * from "./types/link";
+export * from "./types/shorter";
+export * from "./types/analytics";

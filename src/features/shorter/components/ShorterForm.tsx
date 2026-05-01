@@ -1,13 +1,13 @@
-import { Box, Fade } from '@mui/material';
+import { Box, Fade } from "@mui/material";
 
-import { URLShortenerForm } from '@/features/links/components/URLShortenerForm';
+import { URLShortenerForm } from "@/features/links/components/URLShortenerForm";
 
-import type { PublicLinkResponse } from '@/services/link-public.service';
+import type { PublicLinkResponse } from "@/services/link-public.service";
 
 interface ShorterFormProps {
-	onSuccess: (result: PublicLinkResponse) => void;
-	onError: (error: string) => void;
-	disabled?: boolean;
+  onSuccess: (result: PublicLinkResponse) => void;
+  onError: (error: string) => void;
+  disabled?: boolean;
 }
 
 /**
@@ -16,21 +16,19 @@ interface ShorterFormProps {
  * Encapsula o formulário de encurtamento com ads integrados
  * Seguindo padrões arquiteturais do projeto
  */
-export function ShorterForm({ onSuccess, onError, disabled: _disabled = false }: ShorterFormProps) {
-	return (
-		<Box sx={{ width: '100%' }}>
-			{/* Formulário Principal */}
-			<Fade
-				in
-				timeout={800}
-			>
-				<Box>
-					<URLShortenerForm
-						onSuccess={onSuccess}
-						onError={onError}
-					/>
-				</Box>
-			</Fade>
-		</Box>
-	);
+export function ShorterForm({
+  onSuccess,
+  onError,
+  disabled: _disabled = false,
+}: ShorterFormProps) {
+  return (
+    <Box sx={{ width: "100%" }}>
+      {/* Formulário Principal */}
+      <Fade in timeout={800}>
+        <Box>
+          <URLShortenerForm onSuccess={onSuccess} onError={onError} />
+        </Box>
+      </Fade>
+    </Box>
+  );
 }

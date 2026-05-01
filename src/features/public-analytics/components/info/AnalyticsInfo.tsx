@@ -1,14 +1,14 @@
-'use client';
-import { useNavigate } from 'react-router-dom';
+"use client";
+import { useNavigate } from "react-router-dom";
 
-import { UpgradeCTA } from '@/features/shorter';
-import { EnhancedPaper } from '@/shared/ui/base';
+import { UpgradeCTA } from "@/features/shorter";
+import { EnhancedPaper } from "@/shared/ui/base";
 
-import type { PublicAnalyticsData, PublicAnalyticsActions } from '../../types';
+import type { PublicAnalyticsData, PublicAnalyticsActions } from "../../types";
 
 interface AnalyticsInfoProps {
-	analyticsData: PublicAnalyticsData;
-	actions: PublicAnalyticsActions;
+  analyticsData: PublicAnalyticsData;
+  actions: PublicAnalyticsActions;
 }
 
 /**
@@ -18,15 +18,12 @@ interface AnalyticsInfoProps {
  * Segue padrões de design e UX do projeto
  */
 export function AnalyticsInfo({ actions }: AnalyticsInfoProps) {
-	const navigate = useNavigate();
-	const { handleCreateLink } = actions;
+  const navigate = useNavigate();
+  const { handleCreateLink } = actions;
 
-	return (
-		<EnhancedPaper
-			variant='glass'
-			sx={{ mt: 0 }}
-		>
-			{/* <CardContent>
+  return (
+    <EnhancedPaper variant="glass" sx={{ mt: 0 }}>
+      {/* <CardContent>
 				<Typography
 					variant="h6"
 					gutterBottom
@@ -96,11 +93,11 @@ export function AnalyticsInfo({ actions }: AnalyticsInfoProps) {
 					</Button>
 				</Stack>
 			</CardContent> */}
-			<UpgradeCTA
-				onSignUp={() => navigate('/sign-up')}
-				onLogin={() => navigate('/sign-in')}
-				onCreateLink={handleCreateLink}
-			/>
-		</EnhancedPaper>
-	);
+      <UpgradeCTA
+        onSignUp={() => navigate("/sign-up")}
+        onLogin={() => navigate("/sign-in")}
+        onCreateLink={handleCreateLink}
+      />
+    </EnhancedPaper>
+  );
 }

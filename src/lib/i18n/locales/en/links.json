@@ -1,143 +1,143 @@
 {
-	"list": {
-		"pageTitle": "Manage Links",
-		"pageSubtitle": "Create, edit and monitor your shortened links",
-		"createNew": "New Link",
-		"empty": {
-			"title": "No links yet",
-			"description": "Create your first shortened link and start tracking clicks.",
-			"createButton": "Create your first link"
-		}
-	},
-	"table": {
-		"destination": "Destination",
-		"shortLink": "Short Link",
-		"clicks": "Clicks",
-		"status": "Status",
-		"created": "Created",
-		"actions": "Actions",
-		"noResults": "No links match your search.",
-		"directSource": "Direct"
-	},
-	"filters": {
-		"search": "Search by title, URL or slug...",
-		"status": "Status",
-		"all": "All",
-		"sortBy": "Sort by",
-		"sortNewest": "Newest first",
-		"sortOldest": "Oldest first",
-		"sortMostClicks": "Most clicks",
-		"clearFilters": "Clear filters",
-		"mostTrend": "Most trending",
-		"lastActivity": "Last activity"
-	},
-	"actions": {
-		"copyLink": "Copy link",
-		"copySuccess": "Link copied!",
-		"deleteConfirm": "Delete this link?",
-		"deleteConfirmDesc": "This action cannot be undone. All click data will be lost.",
-		"activate": "Activate",
-		"deactivate": "Deactivate"
-	},
-	"form": {
-		"createTitle": "Create New Link",
-		"editTitle": "Edit Link",
-		"originalUrl": "Destination URL",
-		"originalUrlPlaceholder": "https://example.com/your-long-url",
-		"originalUrlHelper": "The URL your short link will redirect to.",
-		"customSlug": "Custom slug (optional)",
-		"customSlugPlaceholder": "my-slug",
-		"customSlugHelper": "Only letters, numbers and hyphens. Leave blank to auto-generate.",
-		"title": "Title (optional)",
-		"titlePlaceholder": "My awesome link",
-		"expiresAt": "Expiration date",
-		"expiresAtHelper": "Leave blank for no expiration.",
-		"clickLimit": "Click limit",
-		"clickLimitHelper": "Leave blank for unlimited.",
-		"titleHelper": "Optional — helps identify the link",
-		"descriptionLabel": "Description",
-		"descriptionPlaceholder": "Describe the link content (optional)",
-		"descriptionHelper": "Optional — add more context to your link",
-		"advancedSettings": "Advanced Settings",
-		"slugPlaceholder": "my-slug",
-		"clickLimitPlaceholder": "1000",
-		"startDate": "Start date",
-		"startDateHelper": "When the link will become active",
-		"activeLabel": "Active link",
-		"utmTitle": "UTM Parameters",
-		"utmInfo": "UTM parameters are tags added to your URL that let you track exactly where your visitors came from.",
-		"utmSourceLabel": "UTM Source",
-		"utmSourcePlaceholder": "google, facebook, newsletter",
-		"utmSourceHelper": "Where the visitor came from — e.g. instagram, google, newsletter",
-		"utmMediumLabel": "UTM Medium",
-		"utmMediumPlaceholder": "cpc, email, social",
-		"utmMediumHelper": "Channel type — e.g. post, ad, email, cpc",
-		"utmCampaignLabel": "UTM Campaign",
-		"utmCampaignPlaceholder": "summer-promo-2024",
-		"utmCampaignHelper": "Campaign or action name — e.g. product-launch, black-friday",
-		"utmTermLabel": "UTM Term",
-		"utmTermPlaceholder": "keyword",
-		"utmTermHelper": "Paid ad keyword — e.g. running-shoes, online-course",
-		"utmContentLabel": "UTM Content",
-		"utmContentPlaceholder": "top-banner, footer-link",
-		"utmContentHelper": "Which variation was clicked — e.g. top-banner, footer-link, green-button",
-		"submit": "Create link",
-		"submitEdit": "Save changes",
-		"successCreate": "Link created successfully!",
-		"successEdit": "Link updated successfully!",
-		"errors": {
-			"urlRequired": "Destination URL is required.",
-			"urlInvalid": "Enter a valid URL (must start with http:// or https://).",
-			"slugTaken": "This slug is already in use.",
-			"slugInvalid": "Slug can only contain letters, numbers and hyphens."
-		}
-	},
-	"metrics": {
-		"title": "Link Metrics",
-		"totalClicks": "Total Clicks",
-		"uniqueVisitors": "Unique Visitors",
-		"avgClicksDay": "Avg. Clicks / Day",
-		"lastClick": "Last Click",
-		"neverClicked": "Never clicked",
-		"countriesReached": "Countries Reached",
-		"clicksToday": "Clicks Today",
-		"linksCreated": "links created",
-		"linksActive": "links working",
-		"totalClicksSubtitle": "accumulated clicks",
-		"clicksPerLink": "clicks per link"
-	},
-	"status": {
-		"active": "Active",
-		"inactive": "Inactive",
-		"expired": "Expired",
-		"scheduled": "Scheduled"
-	},
-	"analytics": {
-		"tabs": {
-			"overview": "Overview",
-			"temporal": "Temporal",
-			"geographic": "Geographic",
-			"audience": "Audience",
-			"performance": "Performance",
-			"insights": "Insights",
-			"heatmap": "Heatmap"
-		},
-		"clicksTable": {
-			"title": "Recent Clicks",
-			"date": "Date / Time",
-			"location": "Location",
-			"device": "Device",
-			"browser": "Browser",
-			"os": "Operating System",
-			"referer": "Referrer",
-			"utm": "UTM",
-			"ip": "IP"
-		}
-	},
-	"qr": {
-		"title": "QR Code",
-		"download": "Download QR Code",
-		"copy": "Copy image",
-		"description": "Scan to open the short link"
-	}
+  "list": {
+    "pageTitle": "Manage Links",
+    "pageSubtitle": "Create, edit and monitor your shortened links",
+    "createNew": "New Link",
+    "empty": {
+      "title": "No links yet",
+      "description": "Create your first shortened link and start tracking clicks.",
+      "createButton": "Create your first link"
+    }
+  },
+  "table": {
+    "destination": "Destination",
+    "shortLink": "Short Link",
+    "clicks": "Clicks",
+    "status": "Status",
+    "created": "Created",
+    "actions": "Actions",
+    "noResults": "No links match your search.",
+    "directSource": "Direct"
+  },
+  "filters": {
+    "search": "Search by title, URL or slug...",
+    "status": "Status",
+    "all": "All",
+    "sortBy": "Sort by",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "sortMostClicks": "Most clicks",
+    "clearFilters": "Clear filters",
+    "mostTrend": "Most trending",
+    "lastActivity": "Last activity"
+  },
+  "actions": {
+    "copyLink": "Copy link",
+    "copySuccess": "Link copied!",
+    "deleteConfirm": "Delete this link?",
+    "deleteConfirmDesc": "This action cannot be undone. All click data will be lost.",
+    "activate": "Activate",
+    "deactivate": "Deactivate"
+  },
+  "form": {
+    "createTitle": "Create New Link",
+    "editTitle": "Edit Link",
+    "originalUrl": "Destination URL",
+    "originalUrlPlaceholder": "https://example.com/your-long-url",
+    "originalUrlHelper": "The URL your short link will redirect to.",
+    "customSlug": "Custom slug (optional)",
+    "customSlugPlaceholder": "my-slug",
+    "customSlugHelper": "Only letters, numbers and hyphens. Leave blank to auto-generate.",
+    "title": "Title (optional)",
+    "titlePlaceholder": "My awesome link",
+    "expiresAt": "Expiration date",
+    "expiresAtHelper": "Leave blank for no expiration.",
+    "clickLimit": "Click limit",
+    "clickLimitHelper": "Leave blank for unlimited.",
+    "titleHelper": "Optional — helps identify the link",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Describe the link content (optional)",
+    "descriptionHelper": "Optional — add more context to your link",
+    "advancedSettings": "Advanced Settings",
+    "slugPlaceholder": "my-slug",
+    "clickLimitPlaceholder": "1000",
+    "startDate": "Start date",
+    "startDateHelper": "When the link will become active",
+    "activeLabel": "Active link",
+    "utmTitle": "UTM Parameters",
+    "utmInfo": "UTM parameters are tags added to your URL that let you track exactly where your visitors came from.",
+    "utmSourceLabel": "UTM Source",
+    "utmSourcePlaceholder": "google, facebook, newsletter",
+    "utmSourceHelper": "Where the visitor came from — e.g. instagram, google, newsletter",
+    "utmMediumLabel": "UTM Medium",
+    "utmMediumPlaceholder": "cpc, email, social",
+    "utmMediumHelper": "Channel type — e.g. post, ad, email, cpc",
+    "utmCampaignLabel": "UTM Campaign",
+    "utmCampaignPlaceholder": "summer-promo-2024",
+    "utmCampaignHelper": "Campaign or action name — e.g. product-launch, black-friday",
+    "utmTermLabel": "UTM Term",
+    "utmTermPlaceholder": "keyword",
+    "utmTermHelper": "Paid ad keyword — e.g. running-shoes, online-course",
+    "utmContentLabel": "UTM Content",
+    "utmContentPlaceholder": "top-banner, footer-link",
+    "utmContentHelper": "Which variation was clicked — e.g. top-banner, footer-link, green-button",
+    "submit": "Create link",
+    "submitEdit": "Save changes",
+    "successCreate": "Link created successfully!",
+    "successEdit": "Link updated successfully!",
+    "errors": {
+      "urlRequired": "Destination URL is required.",
+      "urlInvalid": "Enter a valid URL (must start with http:// or https://).",
+      "slugTaken": "This slug is already in use.",
+      "slugInvalid": "Slug can only contain letters, numbers and hyphens."
+    }
+  },
+  "metrics": {
+    "title": "Link Metrics",
+    "totalClicks": "Total Clicks",
+    "uniqueVisitors": "Unique Visitors",
+    "avgClicksDay": "Avg. Clicks / Day",
+    "lastClick": "Last Click",
+    "neverClicked": "Never clicked",
+    "countriesReached": "Countries Reached",
+    "clicksToday": "Clicks Today",
+    "linksCreated": "links created",
+    "linksActive": "links working",
+    "totalClicksSubtitle": "accumulated clicks",
+    "clicksPerLink": "clicks per link"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "expired": "Expired",
+    "scheduled": "Scheduled"
+  },
+  "analytics": {
+    "tabs": {
+      "overview": "Overview",
+      "temporal": "Temporal",
+      "geographic": "Geographic",
+      "audience": "Audience",
+      "performance": "Performance",
+      "insights": "Insights",
+      "heatmap": "Heatmap"
+    },
+    "clicksTable": {
+      "title": "Recent Clicks",
+      "date": "Date / Time",
+      "location": "Location",
+      "device": "Device",
+      "browser": "Browser",
+      "os": "Operating System",
+      "referer": "Referrer",
+      "utm": "UTM",
+      "ip": "IP"
+    }
+  },
+  "qr": {
+    "title": "QR Code",
+    "download": "Download QR Code",
+    "copy": "Copy image",
+    "description": "Scan to open the short link"
+  }
 }

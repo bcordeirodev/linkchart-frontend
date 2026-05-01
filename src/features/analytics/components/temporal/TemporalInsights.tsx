@@ -1,8 +1,12 @@
-import { Card, CardContent, Typography, Stack, useTheme } from '@mui/material';
+import { Card, CardContent, Typography, Stack, useTheme } from "@mui/material";
 
-import { elevationLightTokens, elevationTokens, radiusTokens } from '@/lib/theme/designSystem';
+import {
+  elevationLightTokens,
+  elevationTokens,
+  radiusTokens,
+} from "@/lib/theme/designSystem";
 
-import type { TemporalInsightsProps } from '@/types/analytics';
+import type { TemporalInsightsProps } from "@/types/analytics";
 
 /**
  * 💡 Componente de Insights Temporais
@@ -18,139 +22,147 @@ import type { TemporalInsightsProps } from '@/types/analytics';
  * - Recomendações baseadas em dados
  */
 export function TemporalInsights({
-	hourlyData,
-	weeklyData,
-	showAdvancedInsights: _showAdvancedInsights = true,
-	showRecommendations: _showRecommendations = true
+  hourlyData,
+  weeklyData,
+  showAdvancedInsights: _showAdvancedInsights = true,
+  showRecommendations: _showRecommendations = true,
 }: TemporalInsightsProps) {
-	const theme = useTheme();
+  const theme = useTheme();
 
-	// Função auxiliar para obter total de cliques
-	const getTotalClicks = (data: { clicks: number }[]) => data.reduce((sum, item) => sum + item.clicks, 0);
+  // Função auxiliar para obter total de cliques
+  const getTotalClicks = (data: { clicks: number }[]) =>
+    data.reduce((sum, item) => sum + item.clicks, 0);
 
-	const hourlyTotal = getTotalClicks(hourlyData);
-	const weeklyTotal = getTotalClicks(weeklyData);
+  const hourlyTotal = getTotalClicks(hourlyData);
+  const weeklyTotal = getTotalClicks(weeklyData);
 
-	// Calcular insights temporais
-	const avgClicksPerHour = hourlyTotal / 24;
-	const avgClicksPerDay = weeklyTotal / 7;
+  // Calcular insights temporais
+  const avgClicksPerHour = hourlyTotal / 24;
+  const avgClicksPerDay = weeklyTotal / 7;
 
-	// Encontrar pico de hora
-	const peakHour = hourlyData.reduce(
-		(prev, current) => (current.clicks > prev.clicks ? current : prev),
-		hourlyData[0] || { hour: 0, clicks: 0, label: '00:00' }
-	);
+  // Encontrar pico de hora
+  const peakHour = hourlyData.reduce(
+    (prev, current) => (current.clicks > prev.clicks ? current : prev),
+    hourlyData[0] || { hour: 0, clicks: 0, label: "00:00" },
+  );
 
-	// Encontrar pico de dia
-	const peakDay = weeklyData.reduce(
-		(prev, current) => (current.clicks > prev.clicks ? current : prev),
-		weeklyData[0] || { day: 0, clicks: 0, day_name: 'Segunda-feira' }
-	);
+  // Encontrar pico de dia
+  const peakDay = weeklyData.reduce(
+    (prev, current) => (current.clicks > prev.clicks ? current : prev),
+    weeklyData[0] || { day: 0, clicks: 0, day_name: "Segunda-feira" },
+  );
 
-	// Análise de horário comercial (9h às 17h)
-	const businessHoursClicks = hourlyData
-		.filter((item) => item.hour >= 9 && item.hour <= 17)
-		.reduce((sum, item) => sum + item.clicks, 0);
-	const isBusinessHoursActive = businessHoursClicks > hourlyTotal * 0.4;
+  // Análise de horário comercial (9h às 17h)
+  const businessHoursClicks = hourlyData
+    .filter((item) => item.hour >= 9 && item.hour <= 17)
+    .reduce((sum, item) => sum + item.clicks, 0);
+  const isBusinessHoursActive = businessHoursClicks > hourlyTotal * 0.4;
 
-	// Análise de fim de semana (sábado e domingo)
-	const weekendClicks = weeklyData
-		.filter((item) => item.day === 5 || item.day === 6) // Sábado e Domingo
-		.reduce((sum, item) => sum + item.clicks, 0);
-	const isWeekendActive = weekendClicks > weeklyTotal * 0.3;
+  // Análise de fim de semana (sábado e domingo)
+  const weekendClicks = weeklyData
+    .filter((item) => item.day === 5 || item.day === 6) // Sábado e Domingo
+    .reduce((sum, item) => sum + item.clicks, 0);
+  const isWeekendActive = weekendClicks > weeklyTotal * 0.3;
 
-	// Se não há dados suficientes, não mostrar insights
-	if (hourlyTotal === 0 && weeklyTotal === 0) {
-		return null;
-	}
+  // Se não há dados suficientes, não mostrar insights
+  if (hourlyTotal === 0 && weeklyTotal === 0) {
+    return null;
+  }
 
-	return (
-		<Card
-			sx={{
-				backgroundColor: theme.palette.background.paper,
-				borderRadius: `${radiusTokens.lg}px`,
-				boxShadow: theme.palette.mode === 'dark' ? elevationTokens.sm : elevationLightTokens.sm
-			}}
-		>
-			<CardContent>
-				<Typography
-					variant='h6'
-					gutterBottom
-					sx={{
-						fontWeight: 600,
-						display: 'flex',
-						alignItems: 'center',
-						gap: 1
-					}}
-				>
-					Insights Temporais
-				</Typography>
+  return (
+    <Card
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: `${radiusTokens.lg}px`,
+        boxShadow:
+          theme.palette.mode === "dark"
+            ? elevationTokens.sm
+            : elevationLightTokens.sm,
+      }}
+    >
+      <CardContent>
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{
+            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          Insights Temporais
+        </Typography>
 
-				<Stack spacing={1.5}>
-					{/* Insights básicos */}
-					<Typography variant='body2'>
-						<strong>Resumo:</strong> {hourlyTotal.toLocaleString()} cliques totais, média de{' '}
-						{avgClicksPerHour.toFixed(1)} por hora e {avgClicksPerDay.toFixed(1)} por dia.
-					</Typography>
+        <Stack spacing={1.5}>
+          {/* Insights básicos */}
+          <Typography variant="body2">
+            <strong>Resumo:</strong> {hourlyTotal.toLocaleString()} cliques
+            totais, média de {avgClicksPerHour.toFixed(1)} por hora e{" "}
+            {avgClicksPerDay.toFixed(1)} por dia.
+          </Typography>
 
-					{/* Pico de horário */}
-					{peakHour.clicks > 0 && (
-						<Typography variant='body2'>
-							• <strong>{peakHour.label}</strong> é seu horário de pico com {peakHour.clicks} cliques.
-							Programe posts importantes neste horário.
-						</Typography>
-					)}
+          {/* Pico de horário */}
+          {peakHour.clicks > 0 && (
+            <Typography variant="body2">
+              • <strong>{peakHour.label}</strong> é seu horário de pico com{" "}
+              {peakHour.clicks} cliques. Programe posts importantes neste
+              horário.
+            </Typography>
+          )}
 
-					{/* Pico de dia */}
-					{peakDay.clicks > 0 && (
-						<Typography variant='body2'>
-							• <strong>{peakDay.day_name}</strong> é o dia mais ativo com {peakDay.clicks} cliques.
-							Concentre lançamentos e promoções neste dia.
-						</Typography>
-					)}
+          {/* Pico de dia */}
+          {peakDay.clicks > 0 && (
+            <Typography variant="body2">
+              • <strong>{peakDay.day_name}</strong> é o dia mais ativo com{" "}
+              {peakDay.clicks} cliques. Concentre lançamentos e promoções neste
+              dia.
+            </Typography>
+          )}
 
-					{/* Análise de horário comercial */}
-					{isBusinessHoursActive ? (
-						<Typography variant='body2'>
-							• Seu público é ativo durante horário comercial (
-							{((businessHoursClicks / hourlyTotal) * 100).toFixed(1)}% dos cliques). Foque em conteúdo
-							B2B e profissional.
-						</Typography>
-					) : null}
+          {/* Análise de horário comercial */}
+          {isBusinessHoursActive ? (
+            <Typography variant="body2">
+              • Seu público é ativo durante horário comercial (
+              {((businessHoursClicks / hourlyTotal) * 100).toFixed(1)}% dos
+              cliques). Foque em conteúdo B2B e profissional.
+            </Typography>
+          ) : null}
 
-					{!isBusinessHoursActive && hourlyTotal > 0 && (
-						<Typography variant='body2'>
-							• Seu público é ativo fora do horário comercial. Foque em conteúdo de entretenimento e
-							lifestyle.
-						</Typography>
-					)}
+          {!isBusinessHoursActive && hourlyTotal > 0 && (
+            <Typography variant="body2">
+              • Seu público é ativo fora do horário comercial. Foque em conteúdo
+              de entretenimento e lifestyle.
+            </Typography>
+          )}
 
-					{/* Análise de fim de semana */}
-					{isWeekendActive ? (
-						<Typography variant='body2'>
-							• Boa atividade nos fins de semana ({((weekendClicks / weeklyTotal) * 100).toFixed(1)}% dos
-							cliques). Mantenha conteúdo ativo nos sábados e domingos.
-						</Typography>
-					) : null}
+          {/* Análise de fim de semana */}
+          {isWeekendActive ? (
+            <Typography variant="body2">
+              • Boa atividade nos fins de semana (
+              {((weekendClicks / weeklyTotal) * 100).toFixed(1)}% dos cliques).
+              Mantenha conteúdo ativo nos sábados e domingos.
+            </Typography>
+          ) : null}
 
-					{!isWeekendActive && weeklyTotal > 0 && (
-						<Typography variant='body2'>
-							• Baixa atividade nos fins de semana. Foque seus esforços nos dias úteis para melhor
-							engajamento.
-						</Typography>
-					)}
+          {!isWeekendActive && weeklyTotal > 0 && (
+            <Typography variant="body2">
+              • Baixa atividade nos fins de semana. Foque seus esforços nos dias
+              úteis para melhor engajamento.
+            </Typography>
+          )}
 
-					{/* Recomendação de consistência */}
-					{hourlyTotal > 0 && weeklyTotal > 0 && (
-						<Typography variant='body2'>
-							• <strong>Dica:</strong> Mantenha consistência nos horários de maior atividade para
-							maximizar o alcance e engajamento.
-						</Typography>
-					)}
-				</Stack>
-			</CardContent>
-		</Card>
-	);
+          {/* Recomendação de consistência */}
+          {hourlyTotal > 0 && weeklyTotal > 0 && (
+            <Typography variant="body2">
+              • <strong>Dica:</strong> Mantenha consistência nos horários de
+              maior atividade para maximizar o alcance e engajamento.
+            </Typography>
+          )}
+        </Stack>
+      </CardContent>
+    </Card>
+  );
 }
 
 export default TemporalInsights;

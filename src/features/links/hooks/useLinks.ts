@@ -1,14 +1,22 @@
-'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+"use client";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { useAppDispatch } from '@/lib/store/hooks';
-import { showMessage } from '@/lib/store/messageSlice';
-import { linkService } from '@/services';
+import { useAppDispatch } from "@/lib/store/hooks";
+import { showMessage } from "@/lib/store/messageSlice";
+import { linkService } from "@/services";
 
-import type { LinkCreateRequest, LinkResponse, LinkUpdateRequest } from '@/types';
+import type {
+  LinkCreateRequest,
+  LinkResponse,
+  LinkUpdateRequest,
+} from "@/types";
 
-interface LinkCreateRequestExtended extends LinkCreateRequest, Record<string, unknown> {}
-interface LinkUpdateRequestExtended extends LinkUpdateRequest, Record<string, unknown> {}
+interface LinkCreateRequestExtended
+  extends LinkCreateRequest,
+    Record<string, unknown> {}
+interface LinkUpdateRequestExtended
+  extends LinkUpdateRequest,
+    Record<string, unknown> {}
 
 let linksCache: LinkResponse[] | null = null;
 let cacheTimestamp = 0;
@@ -18,165 +26,171 @@ const CACHE_DURATION = 5000;
  * Hook para gerenciar operações CRUD de links com cache
  */
 export function useLinks() {
-	const [links, setLinks] = useState<LinkResponse[]>([]);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-	const dispatch = useAppDispatch();
-	const loadingRef = useRef(false);
+  const [links, setLinks] = useState<LinkResponse[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const loadingRef = useRef(false);
 
-	const loadLinks = useCallback(
-		async (forceRefresh = false) => {
-			if (loadingRef.current) {
-				return;
-			}
+  const loadLinks = useCallback(
+    async (forceRefresh = false) => {
+      if (loadingRef.current) {
+        return;
+      }
 
-			const now = Date.now();
+      const now = Date.now();
 
-			if (!forceRefresh && linksCache && now - cacheTimestamp < CACHE_DURATION) {
-				setLinks(linksCache);
-				return;
-			}
+      if (
+        !forceRefresh &&
+        linksCache &&
+        now - cacheTimestamp < CACHE_DURATION
+      ) {
+        setLinks(linksCache);
+        return;
+      }
 
-			loadingRef.current = true;
-			setLoading(true);
-			setError(null);
+      loadingRef.current = true;
+      setLoading(true);
+      setError(null);
 
-			try {
-				const response = await linkService.all();
-				setLinks(response);
+      try {
+        const response = await linkService.all();
+        setLinks(response);
 
-				linksCache = response;
-				cacheTimestamp = now;
-			} catch (_err) {
-				const errorMessage = 'Erro ao carregar links';
-				setError(errorMessage);
-				dispatch(
-					showMessage({
-						message: errorMessage,
-						variant: 'error'
-					})
-				);
-			} finally {
-				setLoading(false);
-				loadingRef.current = false;
-			}
-		},
-		[dispatch]
-	);
+        linksCache = response;
+        cacheTimestamp = now;
+      } catch (_err) {
+        const errorMessage = "Erro ao carregar links";
+        setError(errorMessage);
+        dispatch(
+          showMessage({
+            message: errorMessage,
+            variant: "error",
+          }),
+        );
+      } finally {
+        setLoading(false);
+        loadingRef.current = false;
+      }
+    },
+    [dispatch],
+  );
 
-	const createLink = useCallback(
-		async (data: LinkCreateRequestExtended) => {
-			setLoading(true);
-			setError(null);
+  const createLink = useCallback(
+    async (data: LinkCreateRequestExtended) => {
+      setLoading(true);
+      setError(null);
 
-			try {
-				const response = await linkService.save(data);
-				linksCache = null;
-				await loadLinks(true);
-				return response;
-			} catch (err) {
-				const errorMessage = 'Erro ao criar link';
-				setError(errorMessage);
-				dispatch(
-					showMessage({
-						message: errorMessage,
-						variant: 'error'
-					})
-				);
-				throw err;
-			} finally {
-				setLoading(false);
-			}
-		},
-		[dispatch, loadLinks]
-	);
+      try {
+        const response = await linkService.save(data);
+        linksCache = null;
+        await loadLinks(true);
+        return response;
+      } catch (err) {
+        const errorMessage = "Erro ao criar link";
+        setError(errorMessage);
+        dispatch(
+          showMessage({
+            message: errorMessage,
+            variant: "error",
+          }),
+        );
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [dispatch, loadLinks],
+  );
 
-	const updateLink = useCallback(
-		async (id: string, data: LinkUpdateRequestExtended) => {
-			setLoading(true);
-			setError(null);
+  const updateLink = useCallback(
+    async (id: string, data: LinkUpdateRequestExtended) => {
+      setLoading(true);
+      setError(null);
 
-			try {
-				const updatedLink = await linkService.update(id, data);
-				setLinks((prev) => prev.map((link) => (link.id === id ? updatedLink : link)));
-				return updatedLink;
-			} catch (err) {
-				const errorMessage = 'Erro ao atualizar link';
-				setError(errorMessage);
-				dispatch(
-					showMessage({
-						message: errorMessage,
-						variant: 'error'
-					})
-				);
-				throw err;
-			} finally {
-				setLoading(false);
-			}
-		},
-		[dispatch]
-	);
+      try {
+        const updatedLink = await linkService.update(id, data);
+        setLinks((prev) =>
+          prev.map((link) => (link.id === id ? updatedLink : link)),
+        );
+        return updatedLink;
+      } catch (err) {
+        const errorMessage = "Erro ao atualizar link";
+        setError(errorMessage);
+        dispatch(
+          showMessage({
+            message: errorMessage,
+            variant: "error",
+          }),
+        );
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [dispatch],
+  );
 
-	const deleteLink = useCallback(
-		async (id: string) => {
-			setLoading(true);
-			setError(null);
+  const deleteLink = useCallback(
+    async (id: string) => {
+      setLoading(true);
+      setError(null);
 
-			try {
-				await linkService.remove(id);
-				setLinks((prev) => prev.filter((link) => link.id !== id));
-			} catch (err) {
-				const errorMessage = 'Erro ao remover link';
-				setError(errorMessage);
-				dispatch(
-					showMessage({
-						message: errorMessage,
-						variant: 'error'
-					})
-				);
-				throw err;
-			} finally {
-				setLoading(false);
-			}
-		},
-		[dispatch]
-	);
+      try {
+        await linkService.remove(id);
+        setLinks((prev) => prev.filter((link) => link.id !== id));
+      } catch (err) {
+        const errorMessage = "Erro ao remover link";
+        setError(errorMessage);
+        dispatch(
+          showMessage({
+            message: errorMessage,
+            variant: "error",
+          }),
+        );
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [dispatch],
+  );
 
-	const getLink = useCallback(
-		async (id: string) => {
-			setLoading(true);
-			setError(null);
+  const getLink = useCallback(
+    async (id: string) => {
+      setLoading(true);
+      setError(null);
 
-			try {
-				return await linkService.findOne(id);
-			} catch (err) {
-				const errorMessage = 'Erro ao buscar link';
-				setError(errorMessage);
-				dispatch(
-					showMessage({
-						message: errorMessage,
-						variant: 'error'
-					})
-				);
-				throw err;
-			} finally {
-				setLoading(false);
-			}
-		},
-		[dispatch]
-	);
-	useEffect(() => {
-		loadLinks();
-	}, [loadLinks]);
+      try {
+        return await linkService.findOne(id);
+      } catch (err) {
+        const errorMessage = "Erro ao buscar link";
+        setError(errorMessage);
+        dispatch(
+          showMessage({
+            message: errorMessage,
+            variant: "error",
+          }),
+        );
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [dispatch],
+  );
+  useEffect(() => {
+    loadLinks();
+  }, [loadLinks]);
 
-	return {
-		links,
-		loading,
-		error,
-		loadLinks,
-		createLink,
-		updateLink,
-		deleteLink,
-		getLink
-	};
+  return {
+    links,
+    loading,
+    error,
+    loadLinks,
+    createLink,
+    updateLink,
+    deleteLink,
+    getLink,
+  };
 }

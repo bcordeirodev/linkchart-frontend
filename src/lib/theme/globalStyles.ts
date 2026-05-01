@@ -11,17 +11,17 @@
  * Aplica estilos globais padronizados na aplicação
  */
 export const applyGlobalStyles = () => {
-	// Remove estilos existentes
-	const existing = document.getElementById('global-theme-styles');
+  // Remove estilos existentes
+  const existing = document.getElementById("global-theme-styles");
 
-	if (existing) {
-		existing.remove();
-	}
+  if (existing) {
+    existing.remove();
+  }
 
-	// Aplica estilos globais padronizados
-	const style = document.createElement('style');
-	style.id = 'global-theme-styles';
-	style.textContent = `		
+  // Aplica estilos globais padronizados
+  const style = document.createElement("style");
+  style.id = "global-theme-styles";
+  style.textContent = `		
 		/* ========================================
 		   🎯 ESTILOS ESPECÍFICOS NÃO COBERTOS POR OVERRIDES
 		   ======================================== */
@@ -50,7 +50,7 @@ export const applyGlobalStyles = () => {
 		}
 	`;
 
-	document.head.appendChild(style);
+  document.head.appendChild(style);
 };
 
 export default applyGlobalStyles;

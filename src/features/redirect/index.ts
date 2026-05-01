@@ -4,10 +4,10 @@
  */
 
 // Components
-export { Redirect } from './components/Redirect';
-export { SmartRedirect } from './components/SmartRedirect';
-export * from './components/RedirectSettings';
-export { RedirectStats } from './components/RedirectStats';
+export { Redirect } from "./components/Redirect";
+export { SmartRedirect } from "./components/SmartRedirect";
+export * from "./components/RedirectSettings";
+export { RedirectStats } from "./components/RedirectStats";
 
 // Hooks
-export * from './hooks/useRedirectWithDelay';
+export * from "./hooks/useRedirectWithDelay";

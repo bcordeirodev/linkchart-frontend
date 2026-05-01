@@ -8,143 +8,143 @@
 // 🏗️ TIPOS CORE (Base da aplicação)
 // ========================================
 export type {
-	// Tipos comuns
-	ID,
-	ISODateString,
-	Percentage,
-	ApiResponse,
-	PaginationMeta,
-	PaginatedResponse,
-	LoadingState,
-	Priority,
-	Trend,
-	TimePeriod,
-	FilterConfig,
-	SortConfig,
+  // Tipos comuns
+  ID,
+  ISODateString,
+  Percentage,
+  ApiResponse,
+  PaginationMeta,
+  PaginatedResponse,
+  LoadingState,
+  Priority,
+  Trend,
+  TimePeriod,
+  FilterConfig,
+  SortConfig,
 
-	// Props base para componentes
-	BaseDataProps,
-	BaseTitleProps,
-	BaseConfigProps,
+  // Props base para componentes
+  BaseDataProps,
+  BaseTitleProps,
+  BaseConfigProps,
 
-	// Tipos básicos da API
-	DeviceData,
-	CountryData,
-	StateData,
-	CityData,
-	HourlyData,
-	DayOfWeekData,
-	BusinessInsight,
-	HeatmapPoint,
-	LinkInfo,
-	OverviewMetrics,
-	MetricsDashboardResponse,
-	MetricsCategoryResponse,
+  // Tipos básicos da API
+  DeviceData,
+  CountryData,
+  StateData,
+  CityData,
+  HourlyData,
+  DayOfWeekData,
+  BusinessInsight,
+  HeatmapPoint,
+  LinkInfo,
+  OverviewMetrics,
+  MetricsDashboardResponse,
+  MetricsCategoryResponse,
 
-	// Tipos de autenticação
-	User,
-	UserResponse,
-	LoginResponse,
-	LoginRequest,
-	RegisterRequest,
-	UpdateProfileRequest,
+  // Tipos de autenticação
+  User,
+  UserResponse,
+  LoginResponse,
+  LoginRequest,
+  RegisterRequest,
+  UpdateProfileRequest,
 
-	// Tipos de links
-	LinkCreateRequest,
-	LinkUpdateRequest,
-	LinkResponse,
-	LinkStats,
-	LinkFilters,
-	LinksListResponse,
+  // Tipos de links
+  LinkCreateRequest,
+  LinkUpdateRequest,
+  LinkResponse,
+  LinkStats,
+  LinkFilters,
+  LinksListResponse,
 
-	// Tipos de gráficos
-	ChartType,
-	ChartPoint,
-	ChartSeries,
-	ChartOptions,
-	AxisConfig,
-	ChartData,
-	BaseChartProps
-} from './core';
+  // Tipos de gráficos
+  ChartType,
+  ChartPoint,
+  ChartSeries,
+  ChartOptions,
+  AxisConfig,
+  ChartData,
+  BaseChartProps,
+} from "./core";
 
 // ========================================
 // 🔗 TIPOS DE META DE LINKS
 // ========================================
 export type {
-	SparklinePoint,
-	LinkTrend,
-	LinkPreviewMeta,
-	LinkHealthStatus,
-	LinkHealth,
-	LinkMeta,
-	BatchMetaResponse
-} from './core/link-meta';
+  SparklinePoint,
+  LinkTrend,
+  LinkPreviewMeta,
+  LinkHealthStatus,
+  LinkHealth,
+  LinkMeta,
+  BatchMetaResponse,
+} from "./core/link-meta";
 
 // ========================================
 // 📊 TIPOS DE ANALYTICS (Módulo completo)
 // ========================================
 export type {
-	// Analytics base
-	AnalyticsData,
-	AnalyticsProps,
-	MetricsProps,
-	ChartsProps,
-	AnalyticsTab,
-	UseAnalyticsOptions,
-	UseAnalyticsReturn,
-	AnalyticsApiResponse,
+  // Analytics base
+  AnalyticsData,
+  AnalyticsProps,
+  MetricsProps,
+  ChartsProps,
+  AnalyticsTab,
+  UseAnalyticsOptions,
+  UseAnalyticsReturn,
+  AnalyticsApiResponse,
 
-	// Geographic
-	GeographicData,
-	ContinentData,
-	GeographicStats,
-	GeographicAnalysisProps,
-	GeographicChartProps,
-	GeographicInsightsProps,
-	GeographicMetricsProps,
-	HeatmapConfig,
-	UseGeographicDataOptions,
-	UseGeographicDataReturn,
+  // Geographic
+  GeographicData,
+  ContinentData,
+  GeographicStats,
+  GeographicAnalysisProps,
+  GeographicChartProps,
+  GeographicInsightsProps,
+  GeographicMetricsProps,
+  HeatmapConfig,
+  UseGeographicDataOptions,
+  UseGeographicDataReturn,
 
-	// Temporal
-	TemporalData,
-	DailyData,
-	MonthlyData,
-	TemporalStats,
-	TemporalAnalysisProps,
-	TemporalChartProps,
-	TemporalInsightsProps,
-	TemporalPeriodConfig,
-	UseTemporalDataOptions,
-	UseTemporalDataReturn,
-	TemporalPattern,
-	// Enhanced temporal types
-	HourlyPatternData,
-	WeekendVsWeekdayData,
-	BusinessHoursData,
-	// Advanced temporal types (from unified endpoint)
-	PeakAnalysis,
-	TimezoneAnalysis,
-	AdvancedTemporalData,
+  // Temporal
+  TemporalData,
+  DailyData,
+  MonthlyData,
+  TemporalStats,
+  TemporalAnalysisProps,
+  TemporalChartProps,
+  TemporalInsightsProps,
+  TemporalPeriodConfig,
+  UseTemporalDataOptions,
+  UseTemporalDataReturn,
+  TemporalPattern,
+  // Enhanced temporal types
+  HourlyPatternData,
+  WeekendVsWeekdayData,
+  BusinessHoursData,
+  // Advanced temporal types (from unified endpoint)
+  PeakAnalysis,
+  TimezoneAnalysis,
+  AdvancedTemporalData,
 
-	// Audience
-	BrowserData,
-	OSData,
-	ReferrerData,
-	AudienceData,
-	AudienceStats,
-	AudienceAnalysisProps,
-	AudienceChartProps,
-	AudienceInsightsProps,
-	AudienceMetricsProps,
-	UseAudienceDataOptions,
-	UseAudienceDataReturn,
-	AudienceApiResponse,
-	AudienceSegment,
-	// NEW: Enhanced audience types
-	DevicePerformanceData,
-	LanguageData
-} from './analytics';
+  // Audience
+  BrowserData,
+  OSData,
+  ReferrerData,
+  AudienceData,
+  AudienceStats,
+  AudienceAnalysisProps,
+  AudienceChartProps,
+  AudienceInsightsProps,
+  AudienceMetricsProps,
+  UseAudienceDataOptions,
+  UseAudienceDataReturn,
+  AudienceApiResponse,
+  AudienceSegment,
+  // NEW: Enhanced audience types
+  DevicePerformanceData,
+  LanguageData,
+} from "./analytics";
 
 // ========================================
 // 📝 NOTA PARA DESENVOLVEDORES

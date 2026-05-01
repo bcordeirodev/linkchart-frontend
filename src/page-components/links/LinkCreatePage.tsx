@@ -1,12 +1,12 @@
-'use client';
-import { Stack, Fade, Box } from '@mui/material';
-import { useEffect, useState } from 'react';
+"use client";
+import { Stack, Fade, Box } from "@mui/material";
+import { useEffect, useState } from "react";
 
-import { CreateLinkForm } from '@/features/links';
-import MainLayout from '@/shared/layout/MainLayout';
-import { ResponsiveContainer } from '@/shared/ui/base';
+import { CreateLinkForm } from "@/features/links";
+import MainLayout from "@/shared/layout/MainLayout";
+import { ResponsiveContainer } from "@/shared/ui/base";
 
-import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
+import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
 
 /**
  * Página de criação de links simplificada e otimizada
@@ -20,40 +20,32 @@ import AuthGuardRedirect from '../../lib/auth/AuthGuardRedirect';
  * - Mensagens de sucesso/erro
  */
 function LinkCreatePage() {
-	const [formMounted, setFormMounted] = useState(false);
+  const [formMounted, setFormMounted] = useState(false);
 
-	useEffect(() => {
-		// Garante que o formulário está montado antes de iniciar a animação
-		const timer = setTimeout(() => setFormMounted(true), 200);
-		return () => clearTimeout(timer);
-	}, []);
+  useEffect(() => {
+    // Garante que o formulário está montado antes de iniciar a animação
+    const timer = setTimeout(() => setFormMounted(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
 
-	return (
-		<AuthGuardRedirect auth={['user', 'admin']}>
-			<MainLayout>
-				<ResponsiveContainer
-					variant='form'
-					maxWidth='md'
-				>
-					<Stack spacing={4}>
-						{/* Form Section */}
-						<Box>
-							<Fade
-								in={formMounted}
-								timeout={800}
-								mountOnEnter
-								unmountOnExit
-							>
-								<Box>
-									<CreateLinkForm showBackButton />
-								</Box>
-							</Fade>
-						</Box>
-					</Stack>
-				</ResponsiveContainer>
-			</MainLayout>
-		</AuthGuardRedirect>
-	);
+  return (
+    <AuthGuardRedirect auth={["user", "admin"]}>
+      <MainLayout>
+        <ResponsiveContainer variant="form" maxWidth="md">
+          <Stack spacing={4}>
+            {/* Form Section */}
+            <Box>
+              <Fade in={formMounted} timeout={800} mountOnEnter unmountOnExit>
+                <Box>
+                  <CreateLinkForm showBackButton />
+                </Box>
+              </Fade>
+            </Box>
+          </Stack>
+        </ResponsiveContainer>
+      </MainLayout>
+    </AuthGuardRedirect>
+  );
 }
 
 export default LinkCreatePage;
