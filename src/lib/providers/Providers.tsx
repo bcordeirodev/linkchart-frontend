@@ -5,10 +5,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { enUS } from "date-fns/locale/en-US";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { SnackbarProvider } from "notistack";
-import { useMemo, useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Provider } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
 
 import "@/i18n/config";
 import { AuthProvider } from "@/lib/auth/AuthContext";
@@ -21,11 +20,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation();
   const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
   const val = useMemo(() => ({}), []);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   if (typeof window !== "undefined") {
     applyGlobalStyles();
@@ -46,12 +40,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   style={{ zIndex: 99 }}
                 >
-                  {/* Router: BrowserRouter after hydration, MemoryRouter during SSR */}
-                  {isMounted ? (
-                    <BrowserRouter>{children}</BrowserRouter>
-                  ) : (
-                    <MemoryRouter>{children}</MemoryRouter>
-                  )}
+                  {children}
                 </SnackbarProvider>
               </MainThemeProvider>
             </LayoutProvider>
