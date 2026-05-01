@@ -2,7 +2,7 @@
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "@/shared/hooks";
 
 import { ErrorLayout } from "@/shared/layout";
 

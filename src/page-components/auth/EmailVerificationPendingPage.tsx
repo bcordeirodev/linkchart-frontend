@@ -12,7 +12,7 @@ import {
 import { alpha, useTheme } from "@mui/material/styles";
 import { ICON_MD, ICON_LG, ICON_XL } from "@/lib/theme/iconDefaults";
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "@/shared/hooks";
 
 import { useTranslation } from "react-i18next";
 
