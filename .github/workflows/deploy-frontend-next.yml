@@ -5,10 +5,9 @@ on:
     branches: [main]
     paths:
       - 'app/**'
-      - 'components/**'
-      - 'lib/**'
+      - 'src/**'
       - 'public/**'
-      - 'styles/**'
+      - 'middleware.ts'
       - 'package*.json'
       - 'next.config.ts'
       - 'tsconfig.json'
@@ -30,11 +29,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -49,7 +46,7 @@ jobs:
         run: npm run lint
 
   # ============================================================
-  # Deploy — copy files and rebuild on server
+  # Deploy — rsync source + build on server
   # ============================================================
   deploy:
     name: Deploy to Production
@@ -62,45 +59,24 @@ jobs:
       url: https://linkchart.app
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Write .env.production for build
-        run: |
-          cat > .env.production << EOF
-          NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-          NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}
-          NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}
-          NEXT_PUBLIC_ADSENSE_CLIENT=${{ secrets.NEXT_PUBLIC_ADSENSE_CLIENT }}
-          EOF
-
-      - name: Setup SSH key
+      - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.PRODUCTION_SSH_KEY }}
 
-      - name: Add production host to known_hosts
-        run: |
-          ssh-keyscan -H ${{ secrets.PRODUCTION_HOST }} >> ~/.ssh/known_hosts
+      - name: Add server to known_hosts
+        run: ssh-keyscan -H ${{ secrets.PRODUCTION_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Create deployment directory on server
+      - name: Sync source files to server
         run: |
-          ssh root@${{ secrets.PRODUCTION_HOST }} "mkdir -p /var/www/linkchart-frontend-next"
-
-      - name: Copy deployment files to server
-        run: |
-          scp docker-compose.prod.yml root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/docker-compose.prod.yml
-          scp Dockerfile root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/Dockerfile
-          scp .env.production root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/.env.production
-          scp -r app root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/app
-          scp -r public root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/public
-          scp package.json package-lock.json next.config.ts tsconfig.json root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/
-
-      - name: Copy optional config files if present
-        run: |
-          for f in tailwind.config.ts postcss.config.mjs .eslintrc.json; do
-            [ -f "$f" ] && scp "$f" root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/ || true
-          done
+          rsync -az --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.next' \
+            --exclude='.env*' \
+            . root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/
 
       - name: Build and start container on server
         uses: appleboy/ssh-action@v1.0.3
@@ -108,51 +84,44 @@ jobs:
           host: ${{ secrets.PRODUCTION_HOST }}
           username: root
           key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          envs: NEXT_PUBLIC_API_URL,NEXT_PUBLIC_APP_URL,NEXT_PUBLIC_GA_ID,NEXT_PUBLIC_ADSENSE_CLIENT
           script: |
             set -e
             cd /var/www/linkchart-frontend-next
-
-            echo "Loading environment variables..."
-            set -a
-            source .env.production
-            set +a
 
             echo "Stopping existing container..."
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
 
             echo "Building and starting container..."
+            NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
+            NEXT_PUBLIC_APP_URL="$NEXT_PUBLIC_APP_URL" \
+            NEXT_PUBLIC_GA_ID="$NEXT_PUBLIC_GA_ID" \
+            NEXT_PUBLIC_ADSENSE_CLIENT="$NEXT_PUBLIC_ADSENSE_CLIENT" \
             docker compose -f docker-compose.prod.yml up --build -d
 
-            echo "Waiting for container to be healthy..."
-            sleep 20
+            echo "Waiting for container startup..."
+            sleep 15
 
             echo "Running health check..."
-            for i in 1 2 3 4 5; do
-              if curl -sf http://localhost:3001/api/health; then
-                echo "Health check passed on attempt $i"
-                break
-              fi
-              if [ "$i" -eq 5 ]; then
-                echo "Health check failed after 5 attempts"
+            attempt=1
+            until curl -sf http://localhost:3000/api/health; do
+              if [ $attempt -ge 5 ]; then
+                echo "Health check failed after $attempt attempts"
                 docker compose -f docker-compose.prod.yml logs --tail=50
                 exit 1
               fi
-              echo "Attempt $i failed, retrying in 10s..."
+              echo "Attempt $attempt failed, retrying in 10s..."
+              attempt=$((attempt + 1))
               sleep 10
             done
+            echo "Health check passed on attempt $attempt"
 
             echo "Cleaning up unused Docker images..."
             docker image prune -f
 
-            echo "Deployment complete."
-
-      - name: Notify success
-        if: success()
-        run: |
-          echo "Deployment to production succeeded."
-          echo "App available at: https://linkchart.app (proxied through Nginx from port 3001)"
-
-      - name: Notify failure
-        if: failure()
-        run: |
-          echo "Deployment failed. Check the logs above for details."
+            echo "Deploy complete."
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          NEXT_PUBLIC_GA_ID: ${{ secrets.NEXT_PUBLIC_GA_ID }}
+          NEXT_PUBLIC_ADSENSE_CLIENT: ${{ secrets.NEXT_PUBLIC_ADSENSE_CLIENT }}
