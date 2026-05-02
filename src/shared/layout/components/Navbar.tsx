@@ -373,7 +373,7 @@ export function Navbar({
         <List sx={{ py: 1 }}>
           <ListItemButton
             onClick={() => {
-              navigate("/link");
+              navigate("/links");
               setDrawerOpen(false);
             }}
             sx={{ px: 3, py: 1.5, borderRadius: `${radiusTokens.sm}px`, mx: 1 }}

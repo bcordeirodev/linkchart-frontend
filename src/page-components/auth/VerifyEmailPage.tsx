@@ -65,7 +65,7 @@ function VerifyEmailPage() {
         setMessage(result.message);
 
         setTimeout(() => {
-          navigate("/link");
+          navigate("/links");
         }, 1000);
       } else {
         setStatus("error");
@@ -201,7 +201,7 @@ function VerifyEmailPage() {
           {status === "already_verified" && (
             <Button
               variant="contained"
-              onClick={() => navigate("/link")}
+              onClick={() => navigate("/links")}
               sx={{ mt: 2 }}
             >
               Ir para Meus Links

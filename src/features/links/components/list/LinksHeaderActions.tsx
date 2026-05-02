@@ -34,7 +34,7 @@ export function LinksHeaderActions({ onCreateNew }: LinksHeaderActionsProps) {
     if (onCreateNew) {
       onCreateNew();
     } else {
-      navigate("/link/create");
+      navigate("/links/create");
     }
   };
 

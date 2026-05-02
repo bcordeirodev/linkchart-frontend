@@ -94,7 +94,7 @@ export function LinksEmptyState({
         <Button
           variant="contained"
           startIcon={<Link2 size={18} strokeWidth={1.5} />}
-          onClick={() => navigate("/link/create")}
+          onClick={() => navigate("/links/create")}
         >
           {t("list.empty.createButton")}
         </Button>

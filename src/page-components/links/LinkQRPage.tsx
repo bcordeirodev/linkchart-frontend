@@ -107,7 +107,7 @@ function LinkQRPage({ id }: Props) {
 
   // Handler para quando o link for excluído com sucesso
   const handleDeleteSuccess = () => {
-    navigate("/link");
+    navigate("/links");
   };
 
   const handleDownloadQR = () => {

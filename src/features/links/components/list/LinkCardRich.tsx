@@ -162,7 +162,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
             color="primary"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/link/analytic/${link.id}`);
+              navigate(`/links/analytics/${link.id}`);
             }}
             sx={{
               flexShrink: 0,
@@ -201,8 +201,8 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 
         <Box onClick={(e) => e.stopPropagation()}>
           <LinkActionsMenu
-            onEdit={() => navigate(`/link/edit/${link.id}`)}
-            onQR={() => navigate(`/link/qr/${link.id}`)}
+            onEdit={() => navigate(`/links/edit/${link.id}`)}
+            onQR={() => navigate(`/links/qr/${link.id}`)}
             onDelete={handleDelete}
           />
         </Box>

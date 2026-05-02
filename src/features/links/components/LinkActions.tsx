@@ -57,15 +57,15 @@ export function LinkActions({
   const [loading, setLoading] = useState(false);
 
   const handleGoToList = useCallback(() => {
-    navigate("/link");
+    navigate("/links");
   }, [navigate]);
 
   const handleGoToAnalytics = useCallback(() => {
-    navigate(`/link/analytic/${linkId}`);
+    navigate(`/links/analytics/${linkId}`);
   }, [navigate, linkId]);
 
   const handleEdit = useCallback(() => {
-    navigate(`/link/edit/${linkId}`);
+    navigate(`/links/edit/${linkId}`);
   }, [navigate, linkId]);
 
   const handleCopy = useCallback(() => {
@@ -75,7 +75,7 @@ export function LinkActions({
   }, [shortUrl, copy]);
 
   const handleQR = useCallback(() => {
-    navigate(`/link/qr/${linkId}`);
+    navigate(`/links/qr/${linkId}`);
   }, [navigate, linkId]);
 
   const handleDelete = useCallback(async () => {
@@ -94,7 +94,7 @@ export function LinkActions({
       if (onDeleteSuccess) {
         onDeleteSuccess();
       } else {
-        navigate("/link");
+        navigate("/links");
       }
     } catch (_error) {
       alert("Erro ao excluir link. Tente novamente.");

@@ -7,9 +7,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  // TODO: migrate to API_URL (server-only env var) if backend URL may differ between build and runtime.
-  // NEXT_PUBLIC_* vars are baked in at build time by Next.js.
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  // API_URL is a server-only runtime env var — safe to use in Server Components.
+  const apiUrl = process.env.API_URL ?? "http://localhost:8000";
   const res = await fetch(`${apiUrl}/api/public/analytics/${slug}`, {
     next: { revalidate: 60 },
   }).catch(() => null);

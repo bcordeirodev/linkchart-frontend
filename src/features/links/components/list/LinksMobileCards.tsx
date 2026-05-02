@@ -293,17 +293,17 @@ const LinkMobileCard = memo(
             <Stack direction="row" spacing={0.5} alignItems="center">
               <LinkActionsInline
                 shortUrl={link.short_url || shortUrl}
-                onAnalytics={() => navigate(`/link/analytic/${link.id}`)}
+                onAnalytics={() => navigate(`/links/analytics/${link.id}`)}
               />
               <LinkActionsMenu
                 onEdit={() => {
                   if (onEdit) {
                     onEdit(link);
                   } else {
-                    navigate(`/link/edit/${link.id}`);
+                    navigate(`/links/edit/${link.id}`);
                   }
                 }}
-                onQR={() => navigate(`/link/qr/${link.id}`)}
+                onQR={() => navigate(`/links/qr/${link.id}`)}
                 onDelete={() => {
                   if (
                     window.confirm(

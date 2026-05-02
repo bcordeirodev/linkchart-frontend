@@ -51,7 +51,7 @@ function EmailVerificationPendingPage() {
 
         // Se já está verificado, redirecionar
         if (status.email_verified) {
-          setTimeout(() => navigate("/link"), 1500);
+          setTimeout(() => navigate("/links"), 1500);
         }
       } catch (_error) {
         // Usuário não autenticado, pode continuar na página

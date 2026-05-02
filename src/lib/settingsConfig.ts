@@ -49,7 +49,7 @@ const settingsConfig: LayoutSettingsConfigType = {
   /**
    * URL de redirecionamento após login
    */
-  loginRedirectUrl: "/link",
+  loginRedirectUrl: "/links",
 };
 
 export default settingsConfig;

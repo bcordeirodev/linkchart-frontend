@@ -50,7 +50,7 @@ function LinkEditPage({ id }: Props) {
   }, [id]);
 
   const handleDeleteSuccess = () => {
-    navigate("/link");
+    navigate("/links");
   };
 
   // Validação de ID

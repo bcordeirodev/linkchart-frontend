@@ -1,15 +1,26 @@
-version: "3.9"
+# =========================================
+# DOCKER COMPOSE - FRONTEND DEV
+# Next.js com Turbopack HMR, proxy /api → backend dockerizado
+# =========================================
+
 services:
   frontend-next:
     build:
       context: .
-      dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8000}
-        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
-        NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID}
+      dockerfile: Dockerfile.dev
+    container_name: linkchart-frontend-next-dev
+    restart: unless-stopped
     ports:
       - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
     environment:
-      - NODE_ENV=production
-    restart: unless-stopped
+      - NODE_ENV=development
+      # API_URL: server-only — used by Next.js for /api/* proxy rewrites and SSR fetches.
+      # Client code uses relative /api/* paths, so NEXT_PUBLIC_API_URL stays empty.
+      - API_URL=http://host.docker.internal:8000
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+      - CHOKIDAR_USEPOLLING=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

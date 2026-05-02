@@ -4,7 +4,10 @@ services:
     build:
       context: .
       args:
-        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+        # NEXT_PUBLIC_* vars are baked into the client bundle at build time.
+        # API_URL is intentionally NOT a build arg — it's a runtime env var used
+        # only by the Next.js server (proxy rewrites, SSR fetches). Client code
+        # uses relative /api/* paths, so no CORS and no URL hardcoded in the bundle.
         - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
         - NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID}
         - NEXT_PUBLIC_ADSENSE_CLIENT=${NEXT_PUBLIC_ADSENSE_CLIENT}
@@ -14,6 +17,9 @@ services:
       - '3000:3000'
     environment:
       - NODE_ENV=production
+      # API_URL: backend URL for Next.js server-side proxy and SSR fetches.
+      # In production this points to the internal/proxy backend URL.
+      - API_URL=${API_URL}
     healthcheck:
       test: ['CMD', 'wget', '-qO-', 'http://localhost:3000/api/health']
       interval: 30s

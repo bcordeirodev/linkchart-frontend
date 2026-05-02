@@ -27,8 +27,7 @@ function NotFoundPage() {
 
     if (isAuthenticated) {
       suggestionList.push(
-        { label: "Analytics", href: "/analytics" },
-        { label: "Meus Links", href: "/link" },
+        { label: "Meus Links", href: "/links" },
       );
 
       // Suggest parent paths
