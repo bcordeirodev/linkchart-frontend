@@ -19,7 +19,7 @@ export default function AppError({ error, reset }: ErrorProps) {
       <AlertCircle {...ICON_LG} />
       <Typography variant="h6">Ocorreu um erro</Typography>
       <Typography variant="body2" color="text.secondary">
-        {error.message}
+        {error.message || "Ocorreu um erro inesperado."}
       </Typography>
       <Button variant="outlined" onClick={reset}>
         Tentar novamente
