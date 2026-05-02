@@ -1,5 +1,6 @@
 "use client";
 import i18n from "i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
 import enAnalytics from "./locales/en/analytics.json";
@@ -16,36 +17,41 @@ import ptBRProfile from "./locales/pt-BR/profile.json";
 import ptBRPublic from "./locales/pt-BR/public.json";
 
 if (!i18n.isInitialized) {
-  i18n.use(initReactI18next).init({
-    resources: {
-      en: {
-        common: enCommon,
-        auth: enAuth,
-        links: enLinks,
-        analytics: enAnalytics,
-        profile: enProfile,
-        public: enPublic,
+  i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      resources: {
+        en: {
+          common: enCommon,
+          auth: enAuth,
+          links: enLinks,
+          analytics: enAnalytics,
+          profile: enProfile,
+          public: enPublic,
+        },
+        "pt-BR": {
+          common: ptBRCommon,
+          auth: ptBRAuth,
+          links: ptBRLinks,
+          analytics: ptBRAnalytics,
+          profile: ptBRProfile,
+          public: ptBRPublic,
+        },
       },
-      "pt-BR": {
-        common: ptBRCommon,
-        auth: ptBRAuth,
-        links: ptBRLinks,
-        analytics: ptBRAnalytics,
-        profile: ptBRProfile,
-        public: ptBRPublic,
+      fallbackLng: "en",
+      defaultNS: "common",
+      ns: ["common", "auth", "links", "analytics", "profile", "public"],
+      supportedLngs: ["en", "pt-BR"],
+      detection: {
+        order: ["localStorage", "navigator"],
+        caches: ["localStorage"],
+        lookupLocalStorage: "i18nextLng",
       },
-    },
-    fallbackLng: "en",
-    defaultNS: "common",
-    ns: ["common", "auth", "links", "analytics", "profile", "public"],
-    lng:
-      typeof window !== "undefined"
-        ? localStorage.getItem("i18nextLng") ?? "en"
-        : "en",
-    interpolation: {
-      escapeValue: false,
-    },
-  });
+      interpolation: {
+        escapeValue: false,
+      },
+    });
 }
 
 export default i18n;

@@ -94,12 +94,7 @@ function SignUpPage() {
       });
 
       // Redirecionar para página de instruções de verificação
-      navigate("/email-verification-pending", {
-        state: {
-          email: data.email,
-          message: "Verifique seu email para ativar sua conta.",
-        },
-      });
+      navigate(`/email-verification-pending?email=${encodeURIComponent(data.email)}`);
     } catch (error: unknown) {
       if (error && typeof error === "object" && "code" in error) {
         const apiError = error as {

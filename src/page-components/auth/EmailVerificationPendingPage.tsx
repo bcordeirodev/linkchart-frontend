@@ -12,7 +12,7 @@ import {
 import { alpha, useTheme } from "@mui/material/styles";
 import { ICON_MD, ICON_LG, ICON_XL } from "@/lib/theme/iconDefaults";
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "@/shared/hooks";
+import { useNavigate, useSearchParams } from "@/shared/hooks";
 
 import { useTranslation } from "react-i18next";
 
@@ -21,11 +21,6 @@ import { showErrorMessage } from "@/lib/store/messageSlice";
 import { authService } from "@/services";
 import { AuthLayout } from "@/shared/layout";
 
-interface LocationState {
-  email?: string;
-  message?: string;
-}
-
 /**
  * Página de verificação de email pendente
  * Exibida após o registro para instruir o usuário sobre a verificação
@@ -33,7 +28,7 @@ interface LocationState {
 function EmailVerificationPendingPage() {
   const { t } = useTranslation("auth");
   const navigate = useNavigate();
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
@@ -44,11 +39,8 @@ function EmailVerificationPendingPage() {
     last_sent?: string;
   } | null>(null);
 
-  // Obter dados do estado da navegação
-  const state = location.state as LocationState;
-  const email = state?.email || "";
-  const message =
-    state?.message || "Verifique seu email para ativar sua conta.";
+  const email = searchParams.get("email") ?? "";
+  const message = "Verifique seu email para ativar sua conta.";
 
   // Verificar status de verificação ao carregar a página
   useEffect(() => {

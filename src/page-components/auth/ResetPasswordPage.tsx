@@ -100,12 +100,7 @@ function ResetPasswordPage() {
       if (result.success) {
         // Redirecionar para login após sucesso
         setTimeout(() => {
-          navigate("/sign-in", {
-            state: {
-              message:
-                "Senha redefinida com sucesso! Faça login com sua nova senha.",
-            },
-          });
+          navigate("/sign-in");
         }, 2000);
       } else {
         if (result.type === "invalid_token") {
