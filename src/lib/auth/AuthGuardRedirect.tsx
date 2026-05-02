@@ -14,6 +14,7 @@ import { Loading } from "@/shared/components";
 import { usePathname, useNavigate } from "@/shared/hooks";
 
 import useUser from "./useUser";
+import { useAuth } from "./AuthContext";
 
 import type React from "react";
 
@@ -29,6 +30,7 @@ function AuthGuardRedirect({
   loginRedirectUrl = "/",
 }: AuthGuardProps) {
   const { data: user, isGuest } = useUser();
+  const { isLoading } = useAuth();
   const userRole = user?.role;
   const userRoleForPermission = userRole === null ? undefined : userRole;
   const navigate = useNavigate();
@@ -74,6 +76,11 @@ function AuthGuardRedirect({
 
   // Enhanced permission checking and access control
   useEffect(() => {
+    // Wait for auth to finish loading before making any redirect decisions.
+    // Without this guard, the component acts on isGuest=true during the initial
+    // render before the JWT is verified, causing spurious redirects to /sign-in.
+    if (isLoading) return;
+
     const isOnlyGuestAllowed = Array.isArray(auth) && auth.length === 0;
     const userHasPermission = FuseUtils.hasPermission(
       auth === null ? undefined : auth,
@@ -117,7 +124,7 @@ function AuthGuardRedirect({
       // Trigger redirection after setting up redirect URL
       handleRedirection();
     }
-  }, [auth, userRole, isGuest, pathname, handleRedirection, ignoredPaths]);
+  }, [auth, userRole, isGuest, isLoading, pathname, handleRedirection, ignoredPaths]);
 
   // Enhanced loading state with context information
   if (!accessGranted) {
