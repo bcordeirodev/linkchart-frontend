@@ -1,0 +1,158 @@
+name: Deploy frontend-next to Production
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'public/**'
+      - 'styles/**'
+      - 'package*.json'
+      - 'next.config.ts'
+      - 'tsconfig.json'
+      - 'Dockerfile'
+      - 'docker-compose.prod.yml'
+      - '.github/workflows/deploy-frontend-next.yml'
+
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # ============================================================
+  # Quality checks — type-check + lint
+  # ============================================================
+  quality:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+  # ============================================================
+  # Deploy — copy files and rebuild on server
+  # ============================================================
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: quality
+    if: github.ref == 'refs/heads/main'
+
+    environment:
+      name: production
+      url: https://linkchart.app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Write .env.production for build
+        run: |
+          cat > .env.production << EOF
+          NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}
+          NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}
+          NEXT_PUBLIC_ADSENSE_CLIENT=${{ secrets.NEXT_PUBLIC_ADSENSE_CLIENT }}
+          EOF
+
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.PRODUCTION_SSH_KEY }}
+
+      - name: Add production host to known_hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.PRODUCTION_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create deployment directory on server
+        run: |
+          ssh root@${{ secrets.PRODUCTION_HOST }} "mkdir -p /var/www/linkchart-frontend-next"
+
+      - name: Copy deployment files to server
+        run: |
+          scp docker-compose.prod.yml root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/docker-compose.prod.yml
+          scp Dockerfile root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/Dockerfile
+          scp .env.production root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/.env.production
+          scp -r app root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/app
+          scp -r public root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/public
+          scp package.json package-lock.json next.config.ts tsconfig.json root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/
+
+      - name: Copy optional config files if present
+        run: |
+          for f in tailwind.config.ts postcss.config.mjs .eslintrc.json; do
+            [ -f "$f" ] && scp "$f" root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/ || true
+          done
+
+      - name: Build and start container on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: root
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            set -e
+            cd /var/www/linkchart-frontend-next
+
+            echo "Loading environment variables..."
+            set -a
+            source .env.production
+            set +a
+
+            echo "Stopping existing container..."
+            docker compose -f docker-compose.prod.yml down --remove-orphans || true
+
+            echo "Building and starting container..."
+            docker compose -f docker-compose.prod.yml up --build -d
+
+            echo "Waiting for container to be healthy..."
+            sleep 20
+
+            echo "Running health check..."
+            for i in 1 2 3 4 5; do
+              if curl -sf http://localhost:3001/api/health; then
+                echo "Health check passed on attempt $i"
+                break
+              fi
+              if [ "$i" -eq 5 ]; then
+                echo "Health check failed after 5 attempts"
+                docker compose -f docker-compose.prod.yml logs --tail=50
+                exit 1
+              fi
+              echo "Attempt $i failed, retrying in 10s..."
+              sleep 10
+            done
+
+            echo "Cleaning up unused Docker images..."
+            docker image prune -f
+
+            echo "Deployment complete."
+
+      - name: Notify success
+        if: success()
+        run: |
+          echo "Deployment to production succeeded."
+          echo "App available at: https://linkchart.app (proxied through Nginx from port 3001)"
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          echo "Deployment failed. Check the logs above for details."
