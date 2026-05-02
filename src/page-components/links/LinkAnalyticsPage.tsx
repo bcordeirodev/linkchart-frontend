@@ -7,7 +7,6 @@ import { LinkAnalyticsTabsOptimized } from "@/features/links/components/analytic
 import { LinkActions } from "@/features/links/components/LinkActions";
 import { useLinkAnalyticsOptimized } from "@/features/links/hooks/useLinkAnalytics";
 import { AppIcon } from "@/shared/ui/icons";
-import MainLayout from "@/shared/layout/MainLayout";
 import { ResponsiveContainer } from "@/shared/ui/base";
 import { PageHeader } from "@/shared/ui/base/PageHeader";
 
@@ -39,19 +38,16 @@ function LinkAnalyticsPage({ id }: Props) {
   if (!id) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]}>
-        <MainLayout>
-          <ResponsiveContainer variant="page">
-            <Alert severity="error">ID do link não fornecido na URL</Alert>
-          </ResponsiveContainer>
-        </MainLayout>
+        <ResponsiveContainer variant="page">
+          <Alert severity="error">ID do link não fornecido na URL</Alert>
+        </ResponsiveContainer>
       </AuthGuardRedirect>
     );
   }
 
   return (
     <AuthGuardRedirect auth={["user", "admin"]}>
-      <MainLayout>
-        <ResponsiveContainer variant="page">
+      <ResponsiveContainer variant="page">
           <LinkActions
             linkId={id}
             shortUrl={linkInfo?.short_url}
@@ -66,8 +62,7 @@ function LinkAnalyticsPage({ id }: Props) {
           />
 
           <LinkAnalyticsTabsOptimized {...tabsProps} />
-        </ResponsiveContainer>
-      </MainLayout>
+      </ResponsiveContainer>
     </AuthGuardRedirect>
   );
 }

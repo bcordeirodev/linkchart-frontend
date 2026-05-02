@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 
 import { EditLinkForm, LinkActions } from "@/features/links";
 import { AppIcon } from "@/shared/ui/icons";
-import MainLayout from "@/shared/layout/MainLayout";
 import { ResponsiveContainer } from "@/shared/ui/base";
 import PageBreadcrumb from "@/shared/ui/navigation/PageBreadcrumb";
 import { linkService } from "@/services";
@@ -57,56 +56,52 @@ function LinkEditPage({ id }: Props) {
   if (!id) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]}>
-        <MainLayout>
-          <ResponsiveContainer variant="form" maxWidth="md">
-            <Stack spacing={3}>
-              <PageBreadcrumb />
+        <ResponsiveContainer variant="form" maxWidth="md">
+          <Stack spacing={3}>
+            <PageBreadcrumb />
 
-              <Alert
-                severity="error"
-                action={
-                  <Button
-                    size="small"
-                    startIcon={<AppIcon intent="back" size={16} />}
-                    onClick={() => navigate(-1)}
-                  >
-                    Voltar
-                  </Button>
-                }
-              >
-                <strong>ID do link não fornecido</strong>
-                <br />O ID do link não foi fornecido na URL ou é inválido.
-              </Alert>
-            </Stack>
-          </ResponsiveContainer>
-        </MainLayout>
+            <Alert
+              severity="error"
+              action={
+                <Button
+                  size="small"
+                  startIcon={<AppIcon intent="back" size={16} />}
+                  onClick={() => navigate(-1)}
+                >
+                  Voltar
+                </Button>
+              }
+            >
+              <strong>ID do link não fornecido</strong>
+              <br />O ID do link não foi fornecido na URL ou é inválido.
+            </Alert>
+          </Stack>
+        </ResponsiveContainer>
       </AuthGuardRedirect>
     );
   }
 
   return (
     <AuthGuardRedirect auth={["user", "admin"]}>
-      <MainLayout>
-        <ResponsiveContainer variant="form" maxWidth="md">
-          <Stack spacing={3}>
-            {/* Ações do Link */}
-            {linkData ? (
-              <LinkActions
-                linkId={id}
-                shortUrl={linkData.short_url}
-                onDeleteSuccess={handleDeleteSuccess}
-                currentPage="edit"
-                actions={{
-                  showEdit: false,
-                }}
-              />
-            ) : null}
+      <ResponsiveContainer variant="form" maxWidth="md">
+        <Stack spacing={3}>
+          {/* Ações do Link */}
+          {linkData ? (
+            <LinkActions
+              linkId={id}
+              shortUrl={linkData.short_url}
+              onDeleteSuccess={handleDeleteSuccess}
+              currentPage="edit"
+              actions={{
+                showEdit: false,
+              }}
+            />
+          ) : null}
 
-            {/* Form Section */}
-            <EditLinkForm linkId={id} showBackButton />
-          </Stack>
-        </ResponsiveContainer>
-      </MainLayout>
+          {/* Form Section */}
+          <EditLinkForm linkId={id} showBackButton />
+        </Stack>
+      </ResponsiveContainer>
     </AuthGuardRedirect>
   );
 }

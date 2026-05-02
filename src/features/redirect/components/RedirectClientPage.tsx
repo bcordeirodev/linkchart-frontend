@@ -158,8 +158,6 @@ export default function RedirectClientPage({ slug }: { slug: string }) {
       }
 
       try {
-        const backendUrl =
-          process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
         let userIP = capturedIP;
 
         if (!userIP) {
@@ -171,7 +169,7 @@ export default function RedirectClientPage({ slug }: { slug: string }) {
           ]);
         }
 
-        let requestUrl = `${backendUrl}/api/public/link/${slug}`;
+        let requestUrl = `/api/public/link/${slug}`;
         if (userIP && (isValidIPv4(userIP) || isValidIPv6(userIP))) {
           requestUrl += `?real_ip=${encodeURIComponent(userIP)}`;
         }

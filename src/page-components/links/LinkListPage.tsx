@@ -14,7 +14,6 @@ import { useLinks } from "@/features/links/hooks/useLinks";
 import { useLinksMeta } from "@/features/links/hooks/useLinksMeta";
 import { getLinkStatus } from "@/features/links/utils/linkStatus";
 import { useResponsive } from "@/lib/theme";
-import MainLayout from "@/shared/layout/MainLayout";
 import { ResponsiveContainer } from "@/shared/ui/base";
 import { LinkListSkeleton } from "@/shared/ui/feedback/skeletons";
 import type { LinkResponse } from "@/types";
@@ -96,9 +95,7 @@ function LinkListPage() {
   if (loading) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]}>
-        <MainLayout>
-          <LinkListSkeleton isMobile={isMobile} count={6} />
-        </MainLayout>
+        <LinkListSkeleton isMobile={isMobile} count={6} />
       </AuthGuardRedirect>
     );
   }
@@ -111,9 +108,8 @@ function LinkListPage() {
 
   return (
     <AuthGuardRedirect auth={["user", "admin"]}>
-      <MainLayout>
-        <ResponsiveContainer variant="page">
-          <LinksHeader />
+      <ResponsiveContainer variant="page">
+        <LinksHeader />
 
           <LinkMetrics linksData={links} showTitle={false} />
 
@@ -150,8 +146,7 @@ function LinkListPage() {
               ))}
             </Stack>
           )}
-        </ResponsiveContainer>
-      </MainLayout>
+      </ResponsiveContainer>
     </AuthGuardRedirect>
   );
 }

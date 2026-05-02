@@ -18,7 +18,6 @@ import { useNavigate } from "@/shared/hooks";
 import { useLinks, LinkActions } from "@/features/links";
 import { useShareAPI } from "@/features/links/hooks/useShareAPI";
 import { QRCodeSkeleton } from "@/shared/ui/feedback/skeletons";
-import MainLayout from "@/shared/layout/MainLayout";
 import { ResponsiveContainer } from "@/shared/ui/base";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
@@ -139,11 +138,9 @@ function LinkQRPage({ id }: Props) {
   if (!id) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]}>
-        <MainLayout>
-          <ResponsiveContainer variant="page">
-            <Alert severity="error">{tPublic("qr.errors.noId")}</Alert>
-          </ResponsiveContainer>
-        </MainLayout>
+        <ResponsiveContainer variant="page">
+          <Alert severity="error">{tPublic("qr.errors.noId")}</Alert>
+        </ResponsiveContainer>
       </AuthGuardRedirect>
     );
   }
@@ -151,9 +148,7 @@ function LinkQRPage({ id }: Props) {
   if (loading) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]}>
-        <MainLayout>
-          <QRCodeSkeleton />
-        </MainLayout>
+        <QRCodeSkeleton />
       </AuthGuardRedirect>
     );
   }
@@ -161,21 +156,18 @@ function LinkQRPage({ id }: Props) {
   if (error || !linkInfo) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]}>
-        <MainLayout>
-          <ResponsiveContainer variant="page">
-            <Alert severity="error">
-              {error || tPublic("qr.errors.notFound")}
-            </Alert>
-          </ResponsiveContainer>
-        </MainLayout>
+        <ResponsiveContainer variant="page">
+          <Alert severity="error">
+            {error || tPublic("qr.errors.notFound")}
+          </Alert>
+        </ResponsiveContainer>
       </AuthGuardRedirect>
     );
   }
 
   return (
     <AuthGuardRedirect auth={["user", "admin"]}>
-      <MainLayout>
-        <ResponsiveContainer variant="page" maxWidth="md">
+      <ResponsiveContainer variant="page" maxWidth="md">
           {/* Ações do Link */}
           <LinkActions
             linkId={id}
@@ -382,8 +374,7 @@ function LinkQRPage({ id }: Props) {
               </Box>
             </CardContent>
           </Card>
-        </ResponsiveContainer>
-      </MainLayout>
+      </ResponsiveContainer>
     </AuthGuardRedirect>
   );
 }

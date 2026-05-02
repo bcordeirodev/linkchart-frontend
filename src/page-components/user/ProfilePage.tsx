@@ -10,7 +10,6 @@ import { AppIcon } from "@/shared/ui/icons";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showMessage } from "@/lib/store/messageSlice";
 import { profileService } from "@/services";
-import MainLayout from "@/shared/layout/MainLayout";
 import { ResponsiveContainer } from "@/shared/ui/base";
 import { PageHeader } from "@/shared/ui/base/PageHeader";
 import { ProfileSkeleton } from "@/shared/ui/feedback/skeletons";
@@ -65,9 +64,7 @@ function ProfilePage() {
   if (isLoading) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]}>
-        <MainLayout>
-          <ProfileSkeleton />
-        </MainLayout>
+        <ProfileSkeleton />
       </AuthGuardRedirect>
     );
   }
@@ -75,50 +72,46 @@ function ProfilePage() {
   if (!user) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]}>
-        <MainLayout>
-          <Alert severity="error">
-            Erro ao carregar dados do usuário. Tente fazer login novamente.
-          </Alert>
-        </MainLayout>
+        <Alert severity="error">
+          Erro ao carregar dados do usuário. Tente fazer login novamente.
+        </Alert>
       </AuthGuardRedirect>
     );
   }
 
   return (
     <AuthGuardRedirect auth={["user", "admin"]}>
-      <MainLayout>
-        <ResponsiveContainer variant="page" maxWidth="xl">
-          <PageHeader
-            title={t("title")}
-            subtitle={t("subtitle")}
-            icon={<AppIcon intent="profile" size={32} />}
-            variant="profile"
-            breadcrumbs={[
-              { label: "Dashboard", href: "/" },
-              { label: "Perfil", current: true },
-            ]}
-          />
+      <ResponsiveContainer variant="page" maxWidth="xl">
+        <PageHeader
+          title={t("title")}
+          subtitle={t("subtitle")}
+          icon={<AppIcon intent="profile" size={32} />}
+          variant="profile"
+          breadcrumbs={[
+            { label: "Dashboard", href: "/" },
+            { label: "Perfil", current: true },
+          ]}
+        />
 
-          <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
-            <Grid item xs={12} md={8}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: { xs: 2, sm: 3, md: 4 },
-                }}
-              >
-                <ProfileForm user={user} onUserUpdate={handleUserUpdate} />
-                <PasswordChangeForm />
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <ProfileSidebar user={user} />
-            </Grid>
+        <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
+          <Grid item xs={12} md={8}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: { xs: 2, sm: 3, md: 4 },
+              }}
+            >
+              <ProfileForm user={user} onUserUpdate={handleUserUpdate} />
+              <PasswordChangeForm />
+            </Box>
           </Grid>
-        </ResponsiveContainer>
-      </MainLayout>
+
+          <Grid item xs={12} md={4}>
+            <ProfileSidebar user={user} />
+          </Grid>
+        </Grid>
+      </ResponsiveContainer>
     </AuthGuardRedirect>
   );
 }

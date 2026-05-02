@@ -3,7 +3,6 @@ import { Stack, Fade, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import { CreateLinkForm } from "@/features/links";
-import MainLayout from "@/shared/layout/MainLayout";
 import { ResponsiveContainer } from "@/shared/ui/base";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
@@ -30,8 +29,7 @@ function LinkCreatePage() {
 
   return (
     <AuthGuardRedirect auth={["user", "admin"]}>
-      <MainLayout>
-        <ResponsiveContainer variant="form" maxWidth="md">
+      <ResponsiveContainer variant="form" maxWidth="md">
           <Stack spacing={4}>
             {/* Form Section */}
             <Box>
@@ -42,8 +40,7 @@ function LinkCreatePage() {
               </Fade>
             </Box>
           </Stack>
-        </ResponsiveContainer>
-      </MainLayout>
+      </ResponsiveContainer>
     </AuthGuardRedirect>
   );
 }

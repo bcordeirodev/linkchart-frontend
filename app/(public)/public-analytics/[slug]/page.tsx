@@ -7,8 +7,9 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const apiUrl = process.env.API_URL ?? "http://localhost:8000";
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/api/public/analytics/${slug}`,
+    `${apiUrl}/api/public/analytics/${slug}`,
     { next: { revalidate: 300 } },
   ).catch(() => null);
 
@@ -34,9 +35,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PublicAnalyticsPage({ params }: Props) {
   const { slug } = await params;
+  const apiUrl = process.env.API_URL ?? "http://localhost:8000";
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/api/public/analytics/${slug}`,
+    `${apiUrl}/api/public/analytics/${slug}`,
     { next: { revalidate: 300 } },
   ).catch(() => null);
   const data = res?.ok ? await res.json() : null;
