@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
-
-const RedirectClientPage = dynamic(
-  () => import("@/features/redirect/components/RedirectClientPage"),
-  { ssr: false }
-);
+import RedirectDynamic from "@/features/redirect/components/RedirectDynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -45,5 +40,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RedirectPage({ params }: Props) {
   const { slug } = await params;
-  return <RedirectClientPage slug={slug} />;
+  return <RedirectDynamic slug={slug} />;
 }
