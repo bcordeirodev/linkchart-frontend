@@ -10,7 +10,7 @@ import {
   LinksHeader,
   LinksMobileCards,
 } from "@/features/links/components/list";
-import { useLinks } from "@/features/links/hooks/useLinks";
+import { useLinks, useDeleteLink } from "@/features/links/hooks/useLinks";
 import { useLinksMeta } from "@/features/links/hooks/useLinksMeta";
 import { getLinkStatus } from "@/features/links/utils/linkStatus";
 import { useResponsive } from "@/lib/theme";
@@ -22,7 +22,10 @@ import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
 
 function LinkListPage() {
   const { isMobile } = useResponsive();
-  const { links, loading, deleteLink } = useLinks();
+  const { links, loading } = useLinks();
+  const { mutateAsync: deleteLinkMutation } = useDeleteLink();
+  const deleteLink = (id: string): Promise<void> =>
+    deleteLinkMutation(id).then(() => undefined);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("created_at");
@@ -111,41 +114,41 @@ function LinkListPage() {
       <ResponsiveContainer variant="page">
         <LinksHeader />
 
-          <LinkMetrics linksData={links} showTitle={false} />
+        <LinkMetrics linksData={links} showTitle={false} />
 
-          <LinksFilters
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            statusFilter={statusFilter}
-            onStatusChange={setStatusFilter}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
+        <LinksFilters
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          statusFilter={statusFilter}
+          onStatusChange={setStatusFilter}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+        />
+
+        {sortedLinks.length === 0 ? (
+          <LinksEmptyState
+            hasActiveFilters={Boolean(searchTerm) || statusFilter !== "all"}
+            onClearFilters={handleClearFilters}
           />
-
-          {sortedLinks.length === 0 ? (
-            <LinksEmptyState
-              hasActiveFilters={Boolean(searchTerm) || statusFilter !== "all"}
-              onClearFilters={handleClearFilters}
-            />
-          ) : isMobile ? (
-            <LinksMobileCards
-              data={sortedLinks}
-              meta={meta}
-              loading={loading}
-              onDelete={deleteLink}
-            />
-          ) : (
-            <Stack spacing={2}>
-              {sortedLinks.map((link: LinkResponse) => (
-                <LinkCardRich
-                  key={link.id}
-                  link={link}
-                  meta={meta[String(link.id)]}
-                  onDelete={deleteLink}
-                />
-              ))}
-            </Stack>
-          )}
+        ) : isMobile ? (
+          <LinksMobileCards
+            data={sortedLinks}
+            meta={meta}
+            loading={loading}
+            onDelete={deleteLink}
+          />
+        ) : (
+          <Stack spacing={2}>
+            {sortedLinks.map((link: LinkResponse) => (
+              <LinkCardRich
+                key={link.id}
+                link={link}
+                meta={meta[String(link.id)]}
+                onDelete={deleteLink}
+              />
+            ))}
+          </Stack>
+        )}
       </ResponsiveContainer>
     </AuthGuardRedirect>
   );

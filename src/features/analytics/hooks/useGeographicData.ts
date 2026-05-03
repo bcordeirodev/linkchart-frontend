@@ -1,10 +1,11 @@
 "use client";
-/**
- * Hook para dados geográficos
- */
-import { useState, useEffect, useCallback, useRef } from "react";
+
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { api } from "@/lib/api/client";
+import { queryKeys } from "@/lib/query/keys";
+import { API_CONFIG } from "@/lib/api/endpoints";
 
 import type { GeographicData } from "@/types/analytics";
 
@@ -31,170 +32,75 @@ export interface UseGeographicDataReturn {
   stats: GeographicStats | null;
   loading: boolean;
   error: string | null;
-  refresh: () => Promise<void>;
+  refresh: () => void;
   isRealtime: boolean;
 }
 
-/**
- * Hook personalizado para dados geográficos
- */
+function calculateStats(geographicData: GeographicData): GeographicStats {
+  const countries = geographicData.top_countries || [];
+  const states = geographicData.top_states || [];
+  const cities = geographicData.top_cities || [];
+
+  const totalClicks = countries.reduce(
+    (sum, country) => sum + (country.clicks || 0),
+    0,
+  );
+
+  return {
+    totalCountries: countries.length,
+    totalStates: states.length,
+    totalCities: cities.length,
+    topCountryClicks: countries[0]?.clicks || 0,
+    totalClicks,
+    coveragePercentage:
+      countries.length > 0 ? Math.min((countries.length / 195) * 100, 100) : 0,
+    lastUpdate: new Date().toISOString(),
+  };
+}
+
 export function useGeographicData({
   linkId,
   refreshInterval = 30000,
   enableRealtime = false,
-  includeHeatmap = false,
   minClicks = 1,
 }: UseGeographicDataOptions): UseGeographicDataReturn {
-  const [data, setData] = useState<GeographicData | null>(null);
-  const [stats, setStats] = useState<GeographicStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isRealtime, setIsRealtime] = useState(false);
+  const {
+    data: raw,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.analytics.geographic(linkId),
+    queryFn: () =>
+      api.get<GeographicData>(`/api/analytics/link/${linkId}/geographic`),
+    staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
+    refetchInterval: enableRealtime ? refreshInterval : false,
+    enabled: !!linkId,
+  });
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  /**
-   * Calcular estatísticas dos dados geográficos
-   */
-  const calculateStats = useCallback(
-    (geographicData: GeographicData): GeographicStats => {
-      const countries = geographicData.top_countries || [];
-      const states = geographicData.top_states || [];
-      const cities = geographicData.top_cities || [];
-
-      const totalClicks = countries.reduce(
-        (sum, country) => sum + (country.clicks || 0),
-        0,
-      );
-
-      return {
-        totalCountries: countries.length,
-        totalStates: states.length,
-        totalCities: cities.length,
-        topCountryClicks: countries[0]?.clicks || 0,
-        totalClicks,
-        coveragePercentage:
-          countries.length > 0
-            ? Math.min((countries.length / 195) * 100, 100)
-            : 0, // 195 países no mundo
-        lastUpdate: new Date().toISOString(),
-      };
-    },
-    [],
-  );
-
-  /**
-   * Buscar dados geográficos
-   */
-  const fetchGeographicData = useCallback(async () => {
-    try {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      abortControllerRef.current = new AbortController();
-      setError(null);
-
-      // Analytics global removido - apenas link específico
-      if (!linkId) {
-        return; // Não buscar dados se não há linkId
-      }
-
-      const endpoint = `/api/analytics/link/${linkId}/geographic`;
-
-      // Client já desembrulha o envelope { data } (Onda 0), então recebemos
-      // o payload diretamente.
-      const response = await api.get<GeographicData>(endpoint);
-
-      if (!response) {
-        throw new Error("Dados geográficos não encontrados");
-      }
-
-      let filteredData = response;
-
-      if (minClicks > 1) {
-        filteredData = {
-          ...response,
-          top_countries:
-            response.top_countries?.filter((c) => c.clicks >= minClicks) || [],
-          top_states:
-            response.top_states?.filter((s) => s.clicks >= minClicks) || [],
-          top_cities:
-            response.top_cities?.filter((c) => c.clicks >= minClicks) || [],
-          heatmap_data:
-            response.heatmap_data?.filter((h) => h.clicks >= minClicks) || [],
-        };
-      }
-
-      setData(filteredData);
-      setStats(calculateStats(filteredData));
-    } catch (err: any) {
-      if (err.name === "AbortError") {
-        return;
-      }
-
-      const errorMessage = err.message || "Erro ao carregar dados geográficos";
-      setError(errorMessage);
-
-      console.error("useGeographicData error:", err);
-    }
-  }, [linkId, minClicks, calculateStats]);
-
-  /**
-   * Refresh manual
-   */
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    await fetchGeographicData();
-    setLoading(false);
-  }, []); // Removido fetchGeographicData das dependências
-
-  /**
-   * Configurar realtime
-   */
-  useEffect(() => {
-    if (enableRealtime && refreshInterval > 0) {
-      intervalRef.current = setInterval(fetchGeographicData, refreshInterval);
-      setIsRealtime(true);
-    } else {
-      setIsRealtime(false);
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+  const data = useMemo(() => {
+    if (!raw) return null;
+    if (minClicks <= 1) return raw;
+    return {
+      ...raw,
+      top_countries:
+        raw.top_countries?.filter((c) => c.clicks >= minClicks) || [],
+      top_states: raw.top_states?.filter((s) => s.clicks >= minClicks) || [],
+      top_cities: raw.top_cities?.filter((c) => c.clicks >= minClicks) || [],
+      heatmap_data:
+        raw.heatmap_data?.filter((h) => h.clicks >= minClicks) || [],
     };
-  }, [enableRealtime, refreshInterval]); // Removido fetchGeographicData das dependências
+  }, [raw, minClicks]);
 
-  /**
-   * Buscar dados na montagem
-   */
-  useEffect(() => {
-    setLoading(true);
-    fetchGeographicData().finally(() => {
-      setLoading(false);
-    });
-
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []); // Removido fetchGeographicData das dependências
+  const stats = useMemo(() => (data ? calculateStats(data) : null), [data]);
 
   return {
     data,
     stats,
-    loading,
-    error,
-    refresh,
-    isRealtime,
+    loading: isLoading,
+    error: error ? (error as Error).message : null,
+    refresh: refetch,
+    isRealtime: enableRealtime,
   };
 }
 

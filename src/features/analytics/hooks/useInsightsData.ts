@@ -1,13 +1,12 @@
 "use client";
-/**
- * Hook para dados de insights
- */
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { api } from "@/lib/api/client";
+import { queryKeys } from "@/lib/query/keys";
+import { API_CONFIG } from "@/lib/api/endpoints";
 
-// Tipos para insights
 export interface BusinessInsight {
   type:
     | "geographic"
@@ -69,248 +68,112 @@ export interface UseInsightsDataReturn {
   stats: InsightsStats | null;
   loading: boolean;
   error: string | null;
-  refresh: () => Promise<void>;
+  refresh: () => void;
   isRealtime: boolean;
 }
 
-/**
- * Hook personalizado para dados de insights de negócio
+function calculateStats(insightsData: InsightsData): InsightsStats {
+  const insights = insightsData.insights || [];
 
- *  Gerencia insights automáticos gerados pela análise dos dados:
- * - Insights de performance e otimização
- * - Recomendações estratégicas
- * - Identificação de oportunidades
- * - Alertas e tendências importantes
- */
+  const highPriorityCount = insights.filter(
+    (i) => i.priority === "high",
+  ).length;
+  const actionableCount = insights.filter((i) => i.actionable).length;
+  const avgConfidence =
+    insights.length > 0
+      ? insights.reduce((sum, i) => sum + (i.confidence || 0.5), 0) /
+        insights.length
+      : 0;
+
+  const categoryCount: Record<string, number> = {};
+  insights.forEach((insight) => {
+    categoryCount[insight.type] = (categoryCount[insight.type] || 0) + 1;
+  });
+
+  const topCategory =
+    Object.entries(categoryCount).sort(([, a], [, b]) => b - a)[0]?.[0] ||
+    "performance";
+
+  return {
+    totalInsights: insights.length,
+    highPriorityCount,
+    actionableCount,
+    avgConfidence: Math.round(avgConfidence * 100) / 100,
+    topCategory,
+    lastGenerated: insightsData.generated_at || new Date().toISOString(),
+  };
+}
+
+function normaliseResponse(
+  response: BusinessInsight[] | InsightsData,
+  minConfidence: number,
+  categories: string[],
+): InsightsData {
+  const filter = (list: BusinessInsight[]) =>
+    list
+      .filter((i) => (i.confidence ?? 0.5) >= minConfidence)
+      .filter((i) => categories.length === 0 || categories.includes(i.type));
+
+  if (Array.isArray(response)) {
+    const filtered = filter(response);
+    return {
+      insights: filtered,
+      summary: {
+        total_insights: filtered.length,
+        high_priority: filtered.filter((i) => i.priority === "high").length,
+        actionable_insights: filtered.filter((i) => i.actionable).length,
+        avg_confidence:
+          filtered.length > 0
+            ? filtered.reduce((sum, i) => sum + (i.confidence || 0.5), 0) /
+              filtered.length
+            : 0,
+      },
+      categories: {},
+      generated_at: new Date().toISOString(),
+    };
+  }
+
+  return { ...response, insights: filter(response.insights || []) };
+}
+
 export function useInsightsData({
   linkId,
-  refreshInterval = 300000, // 5 minutos (insights não mudam frequentemente)
+  refreshInterval = 300000,
   enableRealtime = false,
   minConfidence = 0.5,
   categories = [],
 }: UseInsightsDataOptions): UseInsightsDataReturn {
-  const [data, setData] = useState<InsightsData | null>(null);
-  const [stats, setStats] = useState<InsightsStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isRealtime, setIsRealtime] = useState(false);
+  const {
+    data: raw,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.analytics.insights(linkId),
+    queryFn: () =>
+      api.get<BusinessInsight[] | InsightsData>(
+        `/api/analytics/link/${linkId}/insights`,
+      ),
+    staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
+    refetchInterval: enableRealtime ? refreshInterval : false,
+    enabled: !!linkId,
+  });
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  /**
-   * Calcular estatísticas dos insights
-   */
-  const calculateStats = useCallback(
-    (insightsData: InsightsData): InsightsStats => {
-      const insights = insightsData.insights || [];
-
-      const highPriorityCount = insights.filter(
-        (i) => i.priority === "high",
-      ).length;
-      const actionableCount = insights.filter((i) => i.actionable).length;
-      const avgConfidence =
-        insights.length > 0
-          ? insights.reduce((sum, i) => sum + (i.confidence || 0.5), 0) /
-            insights.length
-          : 0;
-
-      // Encontrar categoria mais comum
-      const categoryCount: Record<string, number> = {};
-      insights.forEach((insight) => {
-        categoryCount[insight.type] = (categoryCount[insight.type] || 0) + 1;
-      });
-
-      const topCategory =
-        Object.entries(categoryCount).sort(([, a], [, b]) => b - a)[0]?.[0] ||
-        "performance";
-
-      return {
-        totalInsights: insights.length,
-        highPriorityCount,
-        actionableCount,
-        avgConfidence: Math.round(avgConfidence * 100) / 100,
-        topCategory,
-        lastGenerated: insightsData.generated_at || new Date().toISOString(),
-      };
-    },
-    [],
+  const data = useMemo(
+    () => (raw ? normaliseResponse(raw, minConfidence, categories) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [raw, minConfidence, JSON.stringify(categories)],
   );
 
-  /**
-   * Memoizar categorias para evitar recriação
-   */
-  const stableCategories = useMemo(
-    () => categories,
-    [JSON.stringify(categories)],
-  );
-
-  /**
-   * Filtrar insights baseado nas opções
-   */
-  const filterInsights = useCallback(
-    (insights: BusinessInsight[]): BusinessInsight[] => {
-      let filtered = insights;
-
-      // Filtrar por confiança mínima
-      if (minConfidence > 0) {
-        filtered = filtered.filter(
-          (insight) => (insight.confidence || 0.5) >= minConfidence,
-        );
-      }
-
-      // Filtrar por categorias se especificado
-      if (stableCategories.length > 0) {
-        filtered = filtered.filter((insight) =>
-          stableCategories.includes(insight.type),
-        );
-      }
-
-      return filtered;
-    },
-    [minConfidence, stableCategories],
-  );
-
-  /**
-   * Parâmetros estáveis para fetchInsightsData
-   */
-  const fetchParams = useMemo(
-    () => ({
-      linkId,
-      minConfidence,
-      categories: stableCategories,
-    }),
-    [linkId, minConfidence, stableCategories],
-  );
-
-  /**
-   * Buscar dados de insights
-   */
-  const fetchInsightsData = useCallback(async () => {
-    try {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      abortControllerRef.current = new AbortController();
-      setError(null);
-
-      // Analytics global removido - apenas link específico
-      if (!fetchParams.linkId) {
-        return; // Não buscar dados se não há linkId
-      }
-
-      const endpoint = `/api/analytics/link/${fetchParams.linkId}/insights`;
-
-      // Client já desembrulha envelope { data } (Onda 0). Backend ora retorna
-      // array de insights, ora objeto InsightsData.
-      const response = await api.get<BusinessInsight[] | InsightsData>(
-        endpoint,
-      );
-
-      if (!response) {
-        throw new Error("Insights não encontrados");
-      }
-
-      let insightsData: InsightsData;
-
-      if (Array.isArray(response)) {
-        const filteredInsights = filterInsights(response);
-
-        insightsData = {
-          insights: filteredInsights,
-          summary: {
-            total_insights: filteredInsights.length,
-            high_priority: filteredInsights.filter((i) => i.priority === "high")
-              .length,
-            actionable_insights: filteredInsights.filter((i) => i.actionable)
-              .length,
-            avg_confidence:
-              filteredInsights.length > 0
-                ? filteredInsights.reduce(
-                    (sum, i) => sum + (i.confidence || 0.5),
-                    0,
-                  ) / filteredInsights.length
-                : 0,
-          },
-          categories: {},
-          generated_at: new Date().toISOString(),
-        };
-      } else {
-        insightsData = {
-          ...response,
-          insights: filterInsights(response.insights || []),
-        };
-      }
-
-      setData(insightsData);
-      setStats(calculateStats(insightsData));
-    } catch (err: any) {
-      if (err.name === "AbortError") {
-        return;
-      }
-
-      const errorMessage = err.message || "Erro ao carregar insights";
-      setError(errorMessage);
-
-      console.error("useInsightsData error:", err);
-    }
-  }, [fetchParams, filterInsights, calculateStats]);
-
-  /**
-   * Refresh manual
-   */
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    await fetchInsightsData();
-    setLoading(false);
-  }, []); // Removido fetchInsightsData das dependências
-
-  /**
-   * Configurar realtime (menos frequente para insights)
-   */
-  useEffect(() => {
-    if (enableRealtime && refreshInterval > 0) {
-      intervalRef.current = setInterval(fetchInsightsData, refreshInterval);
-      setIsRealtime(true);
-    } else {
-      setIsRealtime(false);
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [enableRealtime, refreshInterval]); // Removido fetchInsightsData das dependências
-
-  /**
-   * Buscar dados na montagem
-   */
-  useEffect(() => {
-    setLoading(true);
-    fetchInsightsData().finally(() => {
-      setLoading(false);
-    });
-
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []); // Removido fetchInsightsData das dependências
+  const stats = useMemo(() => (data ? calculateStats(data) : null), [data]);
 
   return {
     data,
     stats,
-    loading,
-    error,
-    refresh,
-    isRealtime,
+    loading: isLoading,
+    error: error ? (error as Error).message : null,
+    refresh: refetch,
+    isRealtime: enableRealtime,
   };
 }
 

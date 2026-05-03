@@ -70,39 +70,7 @@ export default class LinkService extends BaseService {
    * Busca todos os links do usuário
    */
   async all(): Promise<LinkResponse[]> {
-    const fallbackData: LinkResponse[] = [
-      {
-        id: "1",
-        user_id: "1",
-        title: "Link Principal",
-        slug: "principal",
-        original_url: "https://escolaplanejamento.sit.spgg.rs.gov.br/",
-        short_url: `${API_CONFIG.BASE_URL}/api/r/principal`,
-        clicks: 23463,
-        is_active: true,
-        created_at: "2025-08-18T19:56:20.000000Z",
-        updated_at: "2025-08-18T19:56:20.000000Z",
-        expires_at: null,
-        starts_in: null,
-      },
-      {
-        id: `2`,
-        user_id: `1`,
-        title: "Link Secundário",
-        slug: "secundario",
-        original_url: "https://example.com",
-        short_url: `${API_CONFIG.BASE_URL}/api/r/secundario`,
-        clicks: 1234,
-        is_active: true,
-        created_at: "2025-08-19T10:30:00.000000Z",
-        updated_at: "2025-08-19T10:30:00.000000Z",
-        expires_at: null,
-        starts_in: null,
-      },
-    ];
-
     return this.get<LinkResponse[]>(API_CONFIG.ENDPOINTS.LINKS, {
-      fallback: fallbackData,
       context: "get_all_links",
     });
   }
@@ -113,23 +81,7 @@ export default class LinkService extends BaseService {
   async findOne(id: string): Promise<LinkResponse> {
     this.validateId(id, "Link ID");
 
-    const fallbackData: LinkResponse = {
-      id,
-      user_id: "1",
-      title: "Link de Exemplo",
-      slug: `exemplo-${id}`,
-      original_url: "https://example.com",
-      short_url: `http://localhost:3000/r/exemplo-${id}`,
-      clicks: 23463,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      expires_at: null,
-      starts_in: null,
-    };
-
     return this.get<LinkResponse>(API_CONFIG.ENDPOINTS.LINK(id), {
-      fallback: fallbackData,
       context: "get_link_by_id",
     });
   }
@@ -142,10 +94,7 @@ export default class LinkService extends BaseService {
 
     return this.delete<{ message: string }>(
       API_CONFIG.ENDPOINTS.DELETE_LINK(id),
-      {
-        fallback: { message: "Link removido com sucesso" },
-        context: "delete_link",
-      },
+      { context: "delete_link" },
     );
   }
 

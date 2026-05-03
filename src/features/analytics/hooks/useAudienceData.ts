@@ -1,13 +1,11 @@
 "use client";
-/**
- * @fileoverview Hook personalizado para gerenciar dados de audiência
- * @author Link Charts Team
- * @version 1.0.0
- */
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { api } from "@/lib/api/client";
+import { queryKeys } from "@/lib/query/keys";
+import { API_CONFIG } from "@/lib/api/endpoints";
 
 import type {
   AudienceData,
@@ -16,242 +14,55 @@ import type {
   UseAudienceDataReturn,
 } from "@/types/analytics";
 
-// Interface local para resposta da API
-interface AudienceApiResponse {
-  success: boolean;
-  data: AudienceData;
-  metadata?: Record<string, unknown>;
-  timestamp?: string;
+function calculateStats(audienceData: AudienceData): AudienceStats {
+  const devices = audienceData.device_breakdown || [];
+
+  if (!devices.length) {
+    return {
+      totalClicks: 0,
+      primaryDevice: "N/A",
+      primaryBrowser: "N/A",
+      lastUpdate: new Date().toISOString(),
+    };
+  }
+
+  const totalClicks = devices.reduce((sum, device) => sum + device.clicks, 0);
+  const primaryDevice = devices.reduce(
+    (max, device) => (device.clicks > max.clicks ? device : max),
+    devices[0],
+  );
+
+  return {
+    totalClicks,
+    primaryDevice: primaryDevice.device,
+    primaryBrowser: audienceData.browser_breakdown?.[0]?.browser || "N/A",
+    lastUpdate: new Date().toISOString(),
+  };
 }
 
-/**
- * Hook personalizado para buscar e gerenciar dados de audiência
- *
- * @description
- * Este hook fornece uma interface unificada para:
- * - Buscar dados de audiência de link específico
- * - Gerenciar atualizações em tempo real
- * - Calcular estatísticas agregadas
- * - Tratar erros e estados de carregamento
- *
- * @example
- * ```tsx
- * // Link específico
- * const { data, stats, loading } = useAudienceData({
- *   linkId: '123',
- *   enableRealtime: true,
- *   includeDetails: true
- * });
- * ```
- */
 export function useAudienceData({
   linkId,
   enableRealtime = true,
-  refreshInterval = 60000, // 1 minuto para audiência
-  includeDetails = false,
+  refreshInterval = 60000,
 }: UseAudienceDataOptions): UseAudienceDataReturn {
-  // Estados principais
-  const [data, setData] = useState<AudienceData | null>(null);
-  const [stats, setStats] = useState<AudienceStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: queryKeys.analytics.audience(linkId),
+    queryFn: () =>
+      api.get<AudienceData>(`/api/analytics/link/${linkId}/audience`),
+    staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
+    refetchInterval: enableRealtime ? refreshInterval : false,
+    enabled: !!linkId,
+  });
 
-  // Refs para controle de ciclo de vida
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  /**
-   * Calcula estatísticas agregadas dos dados de audiência
-   */
-  const calculateStats = useCallback(
-    (audienceData: AudienceData): AudienceStats => {
-      const devices = audienceData.device_breakdown || [];
-
-      if (!devices.length) {
-        return {
-          totalClicks: 0,
-          primaryDevice: "N/A",
-          primaryBrowser: "N/A",
-          lastUpdate: new Date().toISOString(),
-        };
-      }
-
-      const totalClicks = devices.reduce(
-        (sum, device) => sum + device.clicks,
-        0,
-      );
-      const primaryDevice = devices.reduce(
-        (max, device) => (device.clicks > max.clicks ? device : max),
-        devices[0],
-      );
-
-      return {
-        totalClicks,
-        primaryDevice: primaryDevice.device,
-        primaryBrowser: audienceData.browser_breakdown?.[0]?.browser || "N/A",
-        lastUpdate: new Date().toISOString(),
-      };
-    },
-    [],
-  );
-
-  /**
-   * Determina o endpoint correto (apenas link específico)
-   */
-  const getEndpoint = useCallback((): string => {
-    // Analytics global removido - apenas link específico
-    if (!linkId) {
-      return ""; // Endpoint vazio se não há linkId
-    }
-
-    return `/api/analytics/link/${linkId}/audience`;
-  }, [linkId]);
-
-  /**
-   * Busca dados de audiência da API
-   */
-  const fetchAudienceData = useCallback(
-    async (showLoading = false): Promise<AudienceData | null> => {
-      // Validação inicial
-      if (!linkId) {
-        return null;
-      }
-
-      // Cancelar requisição anterior se existir
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      // Criar novo AbortController para esta requisição
-      const abortController = new AbortController();
-      abortControllerRef.current = abortController;
-
-      try {
-        if (showLoading) {
-          setLoading(true);
-          setError(null);
-        }
-
-        const endpoint = getEndpoint();
-
-        // Analytics global removido - retornar null se não há endpoint
-        if (!endpoint) {
-          return null;
-        }
-
-        let audienceData: AudienceData | null = null;
-
-        // Client já desembrulha envelope { data } (Onda 0) — recebemos AudienceData direto.
-        const response = await api.get<AudienceData>(endpoint);
-
-        // Verificar se a requisição foi cancelada
-        if (abortController.signal.aborted) {
-          return null;
-        }
-
-        if (response) {
-          audienceData = response;
-        }
-
-        // Verificar se a requisição foi cancelada antes de processar
-        if (abortController.signal.aborted) {
-          return null;
-        }
-
-        // Atualizar estado se há dados
-        if (audienceData) {
-          setData(audienceData);
-          setStats(calculateStats(audienceData));
-          setLastUpdate(new Date());
-        }
-
-        return audienceData;
-      } catch (err) {
-        // Verificar se foi cancelamento (não é erro real)
-        if (abortController.signal.aborted) {
-          return null;
-        }
-
-        const errorMessage =
-          err instanceof Error
-            ? err.message
-            : "Erro desconhecido ao buscar dados de audiência";
-
-        setError(errorMessage);
-        setData(null);
-        setStats(null);
-
-        return null;
-      } finally {
-        // Sempre definir loading como false no final (se não foi cancelado)
-        if (!abortController.signal.aborted && showLoading) {
-          setLoading(false);
-        }
-      }
-    },
-    [linkId, calculateStats, getEndpoint],
-  );
-
-  /**
-   * Função para atualização manual dos dados
-   */
-  const refresh = useCallback(() => {
-    fetchAudienceData(true);
-  }, []); // Removido fetchAudienceData das dependências
-
-  /**
-   * Configurar busca inicial e polling para tempo real
-   */
-  useEffect(() => {
-    // Validar se deve executar
-    if (!enableRealtime || !linkId) {
-      return;
-    }
-
-    // Buscar dados iniciais
-    fetchAudienceData(true);
-
-    // Configurar polling se habilitado
-    if (refreshInterval > 0) {
-      intervalRef.current = setInterval(() => {
-        fetchAudienceData(false); // Não mostrar loading nas atualizações automáticas
-      }, refreshInterval);
-    }
-
-    // Cleanup do interval
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [linkId, enableRealtime, refreshInterval]); // Removido fetchAudienceData das dependências
-
-  /**
-   * Cleanup no unmount do componente
-   */
-  useEffect(() => {
-    return () => {
-      // Cancelar requisições pendentes
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      // Limpar interval
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
+  const stats = useMemo(() => (data ? calculateStats(data) : null), [data]);
 
   return {
-    data,
+    data: data ?? null,
     stats,
-    loading,
-    error,
-    lastUpdate,
-    refresh,
+    loading: isLoading,
+    error: error ? (error as Error).message : null,
+    lastUpdate: data ? new Date() : null,
+    refresh: refetch,
     isRealtime: enableRealtime,
   };
 }
