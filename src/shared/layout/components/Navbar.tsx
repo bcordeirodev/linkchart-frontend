@@ -135,6 +135,7 @@ export function Navbar({
               </Typography>
               <Typography
                 variant="caption"
+                suppressHydrationWarning
                 sx={{
                   color: theme.palette.text.secondary,
                   fontSize: "0.75rem",
