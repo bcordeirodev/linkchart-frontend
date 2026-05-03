@@ -8,20 +8,27 @@ services:
         - NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID:-}
         - NEXT_PUBLIC_ADSENSE_CLIENT=${NEXT_PUBLIC_ADSENSE_CLIENT:-}
         # API_URL é build arg porque next.config.ts rewrites() é avaliado em build time
-        - API_URL=http://host.docker.internal:8000
+        - API_URL=http://linkchartapi:80
     container_name: linkcharts-frontend-next-prod
     restart: always
     ports:
       - '3000:3000'
+    networks:
+      - frontend-net
+      - linkcharts-network
     environment:
       - NODE_ENV=production
-      - API_URL=http://host.docker.internal:8000
+      - API_URL=http://linkchartapi:80
       - GOOGLE_SAFE_BROWSING_KEY=${GOOGLE_SAFE_BROWSING_KEY:-}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     healthcheck:
       test: ['CMD', 'wget', '-qO-', 'http://localhost:3000/api/health']
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 20s
+
+networks:
+  frontend-net:
+    driver: bridge
+  linkcharts-network:
+    external: true
