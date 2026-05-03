@@ -11,8 +11,9 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { ICON_MD, ICON_LG } from "@/lib/theme/iconDefaults";
+import { authTextFieldSx } from "@/lib/auth/forms/authFieldStyles";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "@/shared/hooks";
@@ -55,6 +56,7 @@ function ResetPasswordPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
+  const theme = useTheme();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -202,7 +204,7 @@ function ResetPasswordPage() {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Lock {...ICON_LG} style={{ color: "#5F6368" }} />
+                  <Lock {...ICON_LG} />
                 </InputAdornment>
               ),
               endAdornment: (
@@ -211,7 +213,7 @@ function ResetPasswordPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     edge="end"
                     disabled={loading}
-                    sx={{ color: "#5F6368" }}
+                    sx={{ color: theme.palette.text.secondary }}
                   >
                     {showPassword ? (
                       <EyeOff {...ICON_MD} />
@@ -222,46 +224,7 @@ function ResetPasswordPage() {
                 </InputAdornment>
               ),
             }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                backgroundColor: "#ffffff",
-                "& input": {
-                  color: "#212121",
-                  "&::placeholder": {
-                    color: "#5F6368",
-                    opacity: 1,
-                  },
-                },
-                "& fieldset": {
-                  borderColor: alpha("#000000", 0.2),
-                },
-                "&:hover fieldset": {
-                  borderColor: "#0A74DA",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#0A74DA",
-                },
-                "&.Mui-error fieldset": {
-                  borderColor: "#d32f2f",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "#5F6368",
-                "&.Mui-focused": {
-                  color: "#0A74DA",
-                },
-                "&.Mui-error": {
-                  color: "#d32f2f",
-                },
-              },
-              "& .MuiFormHelperText-root": {
-                color: "#5F6368",
-                "&.Mui-error": {
-                  color: "#d32f2f",
-                },
-              },
-            }}
+            sx={authTextFieldSx(theme)}
           />
 
           {/* Confirmar Nova Senha */}
@@ -276,7 +239,7 @@ function ResetPasswordPage() {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <CheckCircle {...ICON_LG} style={{ color: "#5F6368" }} />
+                  <CheckCircle {...ICON_LG} />
                 </InputAdornment>
               ),
               endAdornment: (
@@ -285,7 +248,7 @@ function ResetPasswordPage() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     edge="end"
                     disabled={loading}
-                    sx={{ color: "#5F6368" }}
+                    sx={{ color: theme.palette.text.secondary }}
                   >
                     {showConfirmPassword ? (
                       <EyeOff {...ICON_MD} />
@@ -296,46 +259,7 @@ function ResetPasswordPage() {
                 </InputAdornment>
               ),
             }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                backgroundColor: "#ffffff",
-                "& input": {
-                  color: "#212121",
-                  "&::placeholder": {
-                    color: "#5F6368",
-                    opacity: 1,
-                  },
-                },
-                "& fieldset": {
-                  borderColor: alpha("#000000", 0.2),
-                },
-                "&:hover fieldset": {
-                  borderColor: "#0A74DA",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#0A74DA",
-                },
-                "&.Mui-error fieldset": {
-                  borderColor: "#d32f2f",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "#5F6368",
-                "&.Mui-focused": {
-                  color: "#0A74DA",
-                },
-                "&.Mui-error": {
-                  color: "#d32f2f",
-                },
-              },
-              "& .MuiFormHelperText-root": {
-                color: "#5F6368",
-                "&.Mui-error": {
-                  color: "#d32f2f",
-                },
-              },
-            }}
+            sx={authTextFieldSx(theme)}
           />
 
           {/* Submit Button */}
@@ -351,17 +275,8 @@ function ResetPasswordPage() {
             sx={{
               mt: 2,
               py: 1.5,
-              borderRadius: 2,
               fontSize: "1.1rem",
               fontWeight: 600,
-              textTransform: "none",
-              background: "linear-gradient(135deg, #0A74DA 0%, #0D47A1 100%)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #0D47A1 0%, #002171 100%)",
-              },
-              "&:disabled": {
-                background: "#E0E0E0",
-              },
             }}
           >
             {t("resetPassword.submitButton")}
