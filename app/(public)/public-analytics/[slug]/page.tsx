@@ -8,27 +8,31 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const apiUrl = process.env.API_URL ?? "http://localhost:8000";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
   const res = await fetch(
     `${apiUrl}/api/public/analytics/${slug}`,
     { next: { revalidate: 300 } },
   ).catch(() => null);
 
   const data = res?.ok ? await res.json() : null;
-  const title = slug;
   const clicks = data?.data?.total_clicks ?? 0;
+  const ogImage = { url: `${appUrl}/og-default.png`, width: 1200, height: 630, alt: "Link Charts Analytics" };
 
   return {
-    title: `${title} — Link Analytics`,
-    description: `Public analytics for the link "${title}". ${clicks} total clicks tracked.`,
+    title: `${slug} — Link Analytics`,
+    description: `Public analytics for the link "${slug}". ${clicks} total clicks tracked.`,
     openGraph: {
-      title: `${title} — Link Analytics | Link Charts`,
-      description: `Public analytics for the link "${title}". ${clicks} total clicks tracked.`,
+      title: `${slug} — Link Analytics | Link Charts`,
+      description: `Public analytics for the link "${slug}". ${clicks} total clicks tracked.`,
       type: "website",
+      url: `${appUrl}/public-analytics/${slug}`,
+      images: [ogImage],
     },
     twitter: {
-      card: "summary",
-      title: `${title} — Link Analytics`,
-      description: `${clicks} clicks tracked.`,
+      card: "summary_large_image",
+      title: `${slug} — Link Analytics`,
+      description: `${clicks} clicks tracked for this link.`,
+      images: [`${appUrl}/og-default.png`],
     },
   };
 }
