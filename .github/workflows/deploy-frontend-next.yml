@@ -22,7 +22,7 @@ env:
 
 jobs:
   # ============================================================
-  # Quality checks — type-check + lint
+  # Quality checks — type-check + lint + build
   # ============================================================
   quality:
     name: Quality Checks
@@ -44,6 +44,12 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Build (catch build-time errors before deploy)
+        env:
+          NEXT_PUBLIC_APP_URL: https://linkcharts.com.br
+          API_URL: http://localhost:8000
+        run: npm run build
 
   # ============================================================
   # Deploy — rsync source + build on server
@@ -89,6 +95,9 @@ jobs:
             set -e
             cd /var/www/linkchart-frontend-next
 
+            echo "Trimming Docker build cache to 2 GB..."
+            docker builder prune --keep-storage 2g -f
+
             echo "Stopping existing container..."
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
 
@@ -96,7 +105,7 @@ jobs:
             docker compose -f docker-compose.prod.yml up --build -d
 
             echo "Waiting for container startup..."
-            sleep 15
+            sleep 25
 
             echo "Running health check..."
             attempt=1
