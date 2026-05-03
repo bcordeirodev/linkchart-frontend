@@ -1,3 +1,4 @@
+"use client";
 /**
  * 🎨 SVG ICON COMPONENT - LINK CHART
  * Componente de ícone SVG moderno e flexível

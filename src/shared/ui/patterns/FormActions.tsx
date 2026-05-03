@@ -1,3 +1,4 @@
+"use client";
 /**
  * 📋 FORM ACTIONS - STANDARDIZED PATTERNS
  * Componente padronizado para ações de formulário

@@ -1,3 +1,4 @@
+"use client";
 /**
  * 📱 DEVICE BREAKDOWN CHART - Gráfico de Dispositivos
  */

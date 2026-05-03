@@ -1,3 +1,4 @@
+"use client";
 /**
  * 🎣 HOOKS DE TEMA CENTRALIZADOS - LINK CHART
  * Hooks essenciais de tema simplificados

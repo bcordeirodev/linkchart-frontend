@@ -1,3 +1,4 @@
+"use client";
 /**
  * 📅 DAY OF WEEK CHART - Gráfico de Cliques por Dia da Semana
  */

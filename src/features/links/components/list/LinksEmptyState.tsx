@@ -32,7 +32,7 @@ export function LinksEmptyState({
   const Icon = hasActiveFilters ? SearchX : Link2;
   const title = hasActiveFilters ? t("table.noResults") : t("list.empty.title");
   const description = hasActiveFilters
-    ? t("filters.clearFilters")
+    ? t("table.noFilterResultsDesc")
     : t("list.empty.description");
 
   return (

@@ -1,3 +1,4 @@
+"use client";
 /**
  * 🚫 EMPTY STATE - COMPONENTE BASE
  * Componente para estados vazios padronizado

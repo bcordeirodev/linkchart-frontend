@@ -1,3 +1,4 @@
+"use client";
 /**
  * Layout principal da aplicação com suporte a temas
  */

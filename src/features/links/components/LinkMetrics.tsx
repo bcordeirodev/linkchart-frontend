@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
+import { getLinkStatus } from "@/features/links/utils/linkStatus";
 import type { LinkResponse } from "@/types";
 
 interface LinkMetricsSummary {
@@ -38,7 +39,8 @@ export function LinkMetrics({
   const titleText = title ?? t("metrics.title");
   const totalLinks = summary?.total_links ?? linksData.length;
   const activeLinks =
-    summary?.active_links ?? linksData.filter((link) => link.is_active).length;
+    summary?.active_links ??
+    linksData.filter((link) => getLinkStatus(link) === "active").length;
   const totalClicks =
     summary?.total_clicks ??
     linksData.reduce((sum, link) => sum + (link.clicks || 0), 0);
@@ -73,7 +75,7 @@ export function LinkMetrics({
     },
     {
       id: "avg_clicks_per_link",
-      title: t("metrics.avgClicksDay"),
+      title: t("metrics.avgClicksPerLink"),
       value: avgClicksPerLink.toString(),
       icon: <BarChart3 {...ICON_LG} />,
       color: "warning" as const,

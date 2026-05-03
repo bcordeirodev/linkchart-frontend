@@ -3,6 +3,7 @@
     "pageTitle": "Manage Links",
     "pageSubtitle": "Create, edit and monitor your shortened links",
     "createNew": "New Link",
+    "noTitle": "Untitled link",
     "empty": {
       "title": "No links yet",
       "description": "Create your first shortened link and start tracking clicks.",
@@ -17,7 +18,11 @@
     "created": "Created",
     "actions": "Actions",
     "noResults": "No links match your search.",
-    "directSource": "Direct"
+    "noFilterResultsDesc": "Try removing or adjusting the applied filters.",
+    "directSource": "Direct",
+    "clickLimit": "Limit",
+    "dateUnavailable": "Date unavailable",
+    "dateInvalid": "Invalid date"
   },
   "filters": {
     "search": "Search by title, URL or slug...",
@@ -25,7 +30,6 @@
     "all": "All",
     "sortBy": "Sort by",
     "sortNewest": "Newest first",
-    "sortOldest": "Oldest first",
     "sortMostClicks": "Most clicks",
     "clearFilters": "Clear filters",
     "mostTrend": "Most trending",
@@ -97,6 +101,7 @@
     "totalClicks": "Total Clicks",
     "uniqueVisitors": "Unique Visitors",
     "avgClicksDay": "Avg. Clicks / Day",
+    "avgClicksPerLink": "Avg. Clicks / Link",
     "lastClick": "Last Click",
     "neverClicked": "Never clicked",
     "countriesReached": "Countries Reached",
@@ -111,6 +116,11 @@
     "inactive": "Inactive",
     "expired": "Expired",
     "scheduled": "Scheduled"
+  },
+  "health": {
+    "ok": "Healthy",
+    "error": "Error",
+    "unknown": "Not verified"
   },
   "analytics": {
     "tabs": {

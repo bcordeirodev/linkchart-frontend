@@ -1,3 +1,4 @@
+"use client";
 import { Card, CardContent, Typography, Stack, useTheme } from "@mui/material";
 
 import {

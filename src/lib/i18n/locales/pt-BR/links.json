@@ -3,6 +3,7 @@
     "pageTitle": "Gerenciar Links",
     "pageSubtitle": "Crie, edite e monitore seus links encurtados",
     "createNew": "Novo Link",
+    "noTitle": "Link sem título",
     "empty": {
       "title": "Nenhum link ainda",
       "description": "Crie seu primeiro link encurtado e comece a rastrear os cliques.",
@@ -17,7 +18,11 @@
     "created": "Criado em",
     "actions": "Ações",
     "noResults": "Nenhum link corresponde à sua pesquisa.",
-    "directSource": "Direto"
+    "noFilterResultsDesc": "Tente remover ou ajustar os filtros aplicados.",
+    "directSource": "Direto",
+    "clickLimit": "Limite",
+    "dateUnavailable": "Data não disponível",
+    "dateInvalid": "Data inválida"
   },
   "filters": {
     "search": "Buscar por título, URL ou slug...",
@@ -25,7 +30,6 @@
     "all": "Todos",
     "sortBy": "Ordenar por",
     "sortNewest": "Mais recentes",
-    "sortOldest": "Mais antigos",
     "sortMostClicks": "Mais cliques",
     "clearFilters": "Limpar filtros",
     "mostTrend": "Maior tendência",
@@ -97,6 +101,7 @@
     "totalClicks": "Total de Cliques",
     "uniqueVisitors": "Visitantes Únicos",
     "avgClicksDay": "Média de Cliques / Dia",
+    "avgClicksPerLink": "Média de Cliques / Link",
     "lastClick": "Último Clique",
     "neverClicked": "Nunca clicado",
     "countriesReached": "Países Alcançados",
@@ -111,6 +116,11 @@
     "inactive": "Inativo",
     "expired": "Expirado",
     "scheduled": "Agendado"
+  },
+  "health": {
+    "ok": "Saudável",
+    "error": "Erro",
+    "unknown": "Não verificado"
   },
   "analytics": {
     "tabs": {

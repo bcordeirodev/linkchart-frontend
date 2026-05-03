@@ -1,3 +1,4 @@
+"use client";
 /**
  * 📈 CHART CARD - COMPONENTE BASE
  * Container padronizado para gráficos seguindo padrão do GeographicChart e Charts

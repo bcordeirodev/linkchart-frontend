@@ -1,3 +1,4 @@
+"use client";
 /**
  * 🎨 GRADIENT BUTTON - COMPONENTE BASE
  * Botão com gradiente padronizado

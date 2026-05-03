@@ -1,3 +1,4 @@
+"use client";
 import { Globe, Building2, TrendingUp } from "lucide-react";
 import { Grid, Box, Typography, useTheme } from "@mui/material";
 
