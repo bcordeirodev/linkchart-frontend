@@ -84,7 +84,6 @@ jobs:
           host: ${{ secrets.PRODUCTION_HOST }}
           username: root
           key: ${{ secrets.PRODUCTION_SSH_KEY }}
-          envs: NEXT_PUBLIC_GA_ID,NEXT_PUBLIC_ADSENSE_CLIENT,GOOGLE_SAFE_BROWSING_KEY
           script: |
             set -e
             cd /var/www/linkchart-frontend-next
@@ -93,9 +92,6 @@ jobs:
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
 
             echo "Building and starting container..."
-            NEXT_PUBLIC_GA_ID="$NEXT_PUBLIC_GA_ID" \
-            NEXT_PUBLIC_ADSENSE_CLIENT="$NEXT_PUBLIC_ADSENSE_CLIENT" \
-            GOOGLE_SAFE_BROWSING_KEY="$GOOGLE_SAFE_BROWSING_KEY" \
             docker compose -f docker-compose.prod.yml up --build -d
 
             echo "Waiting for container startup..."
@@ -119,7 +115,3 @@ jobs:
             docker image prune -f
 
             echo "Deploy complete."
-        env:
-          NEXT_PUBLIC_GA_ID: ${{ secrets.NEXT_PUBLIC_GA_ID }}
-          NEXT_PUBLIC_ADSENSE_CLIENT: ${{ secrets.NEXT_PUBLIC_ADSENSE_CLIENT }}
-          GOOGLE_SAFE_BROWSING_KEY: ${{ secrets.GOOGLE_SAFE_BROWSING_KEY }}
