@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const clicks = data?.data?.total_clicks ?? 0;
   const title = `Redirecionando para ${slug}`;
   const description = `Link encurtado com ${clicks} cliques. Clique para acessar o destino com segurança.`;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://linkchart.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://linkcharts.com.br";
 
   return {
     title,

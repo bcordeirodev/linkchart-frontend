@@ -20,6 +20,8 @@ services:
       # API_URL: backend URL for Next.js server-side proxy and SSR fetches.
       # In production this points to the internal/proxy backend URL.
       - API_URL=${API_URL}
+      # Server-only runtime secrets (not baked into client bundle)
+      - GOOGLE_SAFE_BROWSING_KEY=${GOOGLE_SAFE_BROWSING_KEY}
     healthcheck:
       test: ['CMD', 'wget', '-qO-', 'http://localhost:3000/api/health']
       interval: 30s
