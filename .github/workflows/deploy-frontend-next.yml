@@ -75,7 +75,8 @@ jobs:
             --exclude='.git' \
             --exclude='node_modules' \
             --exclude='.next' \
-            --exclude='.env*' \
+            --exclude='.env.local' \
+            --exclude='.env' \
             . root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/
 
       - name: Build and start container on server
