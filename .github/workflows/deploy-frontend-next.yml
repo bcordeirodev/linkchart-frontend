@@ -84,10 +84,7 @@ jobs:
           host: ${{ secrets.PRODUCTION_HOST }}
           username: root
           key: ${{ secrets.PRODUCTION_SSH_KEY }}
-          # API_URL is a server-only runtime env var (not a build arg).
-          # NEXT_PUBLIC_API_URL secret is reused as the source value — rename the
-          # GitHub Secret to API_URL when convenient.
-          envs: API_URL,NEXT_PUBLIC_APP_URL,NEXT_PUBLIC_GA_ID,NEXT_PUBLIC_ADSENSE_CLIENT
+          envs: NEXT_PUBLIC_GA_ID,NEXT_PUBLIC_ADSENSE_CLIENT,GOOGLE_SAFE_BROWSING_KEY
           script: |
             set -e
             cd /var/www/linkchart-frontend-next
@@ -96,10 +93,9 @@ jobs:
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
 
             echo "Building and starting container..."
-            NEXT_PUBLIC_APP_URL="$NEXT_PUBLIC_APP_URL" \
             NEXT_PUBLIC_GA_ID="$NEXT_PUBLIC_GA_ID" \
             NEXT_PUBLIC_ADSENSE_CLIENT="$NEXT_PUBLIC_ADSENSE_CLIENT" \
-            API_URL="$API_URL" \
+            GOOGLE_SAFE_BROWSING_KEY="$GOOGLE_SAFE_BROWSING_KEY" \
             docker compose -f docker-compose.prod.yml up --build -d
 
             echo "Waiting for container startup..."
@@ -124,9 +120,6 @@ jobs:
 
             echo "Deploy complete."
         env:
-          # API_URL: server-only backend URL for Next.js proxy rewrites and SSR fetches.
-          # Maps to the existing NEXT_PUBLIC_API_URL secret value until secret is renamed.
-          API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
           NEXT_PUBLIC_GA_ID: ${{ secrets.NEXT_PUBLIC_GA_ID }}
           NEXT_PUBLIC_ADSENSE_CLIENT: ${{ secrets.NEXT_PUBLIC_ADSENSE_CLIENT }}
+          GOOGLE_SAFE_BROWSING_KEY: ${{ secrets.GOOGLE_SAFE_BROWSING_KEY }}

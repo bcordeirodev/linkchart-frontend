@@ -4,24 +4,19 @@ services:
     build:
       context: .
       args:
-        # NEXT_PUBLIC_* vars are baked into the client bundle at build time.
-        # API_URL is intentionally NOT a build arg — it's a runtime env var used
-        # only by the Next.js server (proxy rewrites, SSR fetches). Client code
-        # uses relative /api/* paths, so no CORS and no URL hardcoded in the bundle.
-        - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
-        - NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID}
-        - NEXT_PUBLIC_ADSENSE_CLIENT=${NEXT_PUBLIC_ADSENSE_CLIENT}
+        - NEXT_PUBLIC_APP_URL=https://www.linkcharts.com.br
+        - NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID:-}
+        - NEXT_PUBLIC_ADSENSE_CLIENT=${NEXT_PUBLIC_ADSENSE_CLIENT:-}
+        # API_URL é build arg porque next.config.ts rewrites() é avaliado em build time
+        - API_URL=http://host.docker.internal:8000
     container_name: linkcharts-frontend-next-prod
     restart: always
     ports:
       - '3000:3000'
     environment:
       - NODE_ENV=production
-      # API_URL: backend URL for Next.js server-side proxy and SSR fetches.
-      # In production this points to the internal/proxy backend URL.
-      - API_URL=${API_URL}
-      # Server-only runtime secrets (not baked into client bundle)
-      - GOOGLE_SAFE_BROWSING_KEY=${GOOGLE_SAFE_BROWSING_KEY}
+      - API_URL=http://host.docker.internal:8000
+      - GOOGLE_SAFE_BROWSING_KEY=${GOOGLE_SAFE_BROWSING_KEY:-}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
