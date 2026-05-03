@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description:
     "Free URL shortener with powerful real-time analytics, click tracking, and geographic insights.",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://linkcharts.io",
+    process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.io",
   ),
   openGraph: {
     type: "website",
