@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import LinkAnalyticsPageContent from "@/pages/links/LinkAnalyticsPage";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "Link Analytics" };
 
 interface Props {
