@@ -21,6 +21,7 @@ import { ICON_MD } from "@/lib/theme/iconDefaults";
 
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import useClipboard from "@/shared/hooks/useClipboard";
+import { getShortUrl } from "@/lib/utils/shortUrl";
 
 interface LinkAnalyticsActionsProps {
   linkId: string;
@@ -70,7 +71,7 @@ export function LinkActions({
 
   const handleCopy = useCallback(() => {
     if (shortUrl) {
-      copy(`${window.location.origin}/${shortUrl}`);
+      copy(getShortUrl(shortUrl));
     }
   }, [shortUrl, copy]);
 

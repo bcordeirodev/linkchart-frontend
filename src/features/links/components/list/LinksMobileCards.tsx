@@ -50,6 +50,7 @@ import type {
 
 import { LinkHealthBadge } from "./LinkHealthBadge";
 import { LinkSparkline } from "./LinkSparkline";
+import { getShortUrl } from "@/lib/utils/shortUrl";
 
 const STATUS_LABEL_KEYS = {
   active: "status.active",
@@ -85,7 +86,7 @@ const LinkMobileCard = memo(
     const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
 
     // Formatação de dados
-    const shortUrl = `${window.location.origin}/r/${link.slug || link.custom_slug}`;
+    const shortUrl = getShortUrl(link.slug || link.custom_slug || "");
 
     // Validação e formatação segura da data
     const getFormattedDate = () => {

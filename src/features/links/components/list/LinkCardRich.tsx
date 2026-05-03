@@ -34,6 +34,7 @@ import { LinkHealthBadge } from "./LinkHealthBadge";
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { LinkSparkline } from "./LinkSparkline";
 import { LinkTrendBadge } from "./LinkTrendBadge";
+import { getShortUrl } from "@/lib/utils/shortUrl";
 
 const analyticsPulse = keyframes`
 	0%, 100% {
@@ -65,7 +66,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 
   const { copied, copy } = useClipboard({ timeout: 1500 });
 
-  const shortUrl = `${window.location.origin}/r/${link.slug}`;
+  const shortUrl = getShortUrl(link.slug);
 
   const handleDelete = useCallback(async () => {
     if (
