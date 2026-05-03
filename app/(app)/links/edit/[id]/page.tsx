@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import LinkEditPageContent from "@/pages/links/LinkEditPage";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "Edit Link" };
 
 interface Props {
