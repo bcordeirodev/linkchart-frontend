@@ -80,8 +80,8 @@ export function TemporalChart({
   // Verificar se há dados advanced disponíveis
   const hasAdvancedData =
     advancedData &&
-    (Object.keys(advancedData.weekly_trends || {}).length > 0 ||
-      Object.keys(advancedData.monthly_trends || {}).length > 0 ||
+    ((advancedData.weekly_trends?.length ?? 0) > 0 ||
+      (advancedData.monthly_trends?.length ?? 0) > 0 ||
       advancedData.peak_analysis ||
       (advancedData.timezone_analysis &&
         advancedData.timezone_analysis.length > 0));
@@ -89,8 +89,8 @@ export function TemporalChart({
   const hasPeakAnalysis = advancedData?.peak_analysis;
   const hasTrends =
     advancedData &&
-    (Object.keys(advancedData.weekly_trends || {}).length > 0 ||
-      Object.keys(advancedData.monthly_trends || {}).length > 0);
+    ((advancedData.weekly_trends?.length ?? 0) > 0 ||
+      (advancedData.monthly_trends?.length ?? 0) > 0);
   const hasTimezones =
     advancedData?.timezone_analysis &&
     advancedData.timezone_analysis.length > 0;
@@ -589,13 +589,10 @@ export function TemporalChart({
                     {
                       name: "Horário Comercial",
                       value: businessHoursAnalysis.business_hours.clicks,
-                      range: businessHoursAnalysis.business_hours.time_range,
                     },
                     {
                       name: "Fora do Horário",
-                      value: businessHoursAnalysis.non_business_hours.clicks,
-                      range:
-                        businessHoursAnalysis.non_business_hours.time_range,
+                      value: businessHoursAnalysis.after_hours.clicks,
                     },
                   ],
                   "name",
@@ -630,8 +627,7 @@ export function TemporalChart({
                       {businessHoursAnalysis.business_hours.clicks} cliques
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {businessHoursAnalysis.business_hours.avg_session_depth}{" "}
-                      cliques/sessão
+                      {businessHoursAnalysis.business_hours.percentage.toFixed(1)}% do total
                     </Typography>
                   </Box>
                   <Divider />
@@ -640,14 +636,10 @@ export function TemporalChart({
                       Fora do Horário
                     </Typography>
                     <Typography variant="body2">
-                      {businessHoursAnalysis.non_business_hours.clicks} cliques
+                      {businessHoursAnalysis.after_hours.clicks} cliques
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {
-                        businessHoursAnalysis.non_business_hours
-                          .avg_session_depth
-                      }{" "}
-                      cliques/sessão
+                      {businessHoursAnalysis.after_hours.percentage.toFixed(1)}% do total
                     </Typography>
                   </Box>
                 </Stack>

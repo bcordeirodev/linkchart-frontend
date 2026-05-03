@@ -6,7 +6,6 @@ import { useTheme } from "@mui/material/styles";
 import { AppIcon } from "@/shared/ui/icons";
 import { useResponsive } from "@/lib/theme";
 import { Link } from "@/shared/components";
-import { ResponsiveContainer } from "@/shared/ui/base";
 import {
   elevationTokens,
   elevationLightTokens,
@@ -83,14 +82,13 @@ function AuthLayout({
       }}
     >
       {/* Seção do Formulário */}
-      <ResponsiveContainer
-        variant="form"
-        maxWidth="sm"
+      <Box
         sx={{
           flex: { xs: 1, md: showSideSection ? "0 0 45%" : 1 },
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          p: { xs: 2, sm: 3 },
           position: "relative",
           "&::before": {
             content: '""',
@@ -239,7 +237,7 @@ function AuthLayout({
             )}
           </Box>
         </Paper>
-      </ResponsiveContainer>
+      </Box>
 
       {/* Seção Lateral (apenas desktop) */}
       {showSideSection && !isMobile ? (

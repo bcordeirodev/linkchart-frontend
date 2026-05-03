@@ -51,17 +51,11 @@ export interface WeekendVsWeekdayData {
 export interface BusinessHoursData {
   business_hours: {
     clicks: number;
-    unique_visitors: number;
-    avg_response_time: number;
-    avg_session_depth: number;
-    time_range: string;
+    percentage: number;
   };
-  non_business_hours: {
+  after_hours: {
     clicks: number;
-    unique_visitors: number;
-    avg_response_time: number;
-    avg_session_depth: number;
-    time_range: string;
+    percentage: number;
   };
 }
 
@@ -95,11 +89,19 @@ export interface TimezoneAnalysis {
  * Dados avançados de análise temporal
  * ✨ NOVO: Unificação com endpoint /temporal
  */
+export interface WeeklyTrendEntry {
+  week: string;
+  clicks: number;
+}
+
+export interface MonthlyTrendEntry {
+  month: string;
+  clicks: number;
+}
+
 export interface AdvancedTemporalData {
-  /** Tendências semanais (formato: "YYYY-WW": clicks) */
-  weekly_trends: Record<string, number>;
-  /** Tendências mensais (formato: "YYYY-MM": clicks) */
-  monthly_trends: Record<string, number>;
+  weekly_trends: WeeklyTrendEntry[];
+  monthly_trends: MonthlyTrendEntry[];
   /** Análise de picos */
   peak_analysis: PeakAnalysis;
   /** Análise por timezone */
