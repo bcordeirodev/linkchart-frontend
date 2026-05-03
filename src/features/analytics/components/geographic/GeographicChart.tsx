@@ -1,3 +1,4 @@
+"use client";
 import { Box, Typography, Card, CardContent, Grid, Chip } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Globe, Building2, Map } from "lucide-react";

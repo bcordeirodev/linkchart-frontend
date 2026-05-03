@@ -2,13 +2,12 @@ import type { LinkResponse } from "@/types";
 
 export type LinkStatus = "active" | "inactive" | "scheduled" | "expired";
 
-export const STATUS_MAP: Record<LinkStatus, { color: string; label: string }> =
-  {
-    active: { color: "success.main", label: "Ativo" },
-    inactive: { color: "error.main", label: "Inativo" },
-    scheduled: { color: "warning.main", label: "Não iniciado" },
-    expired: { color: "error.main", label: "Expirado" },
-  };
+export const STATUS_MAP: Record<LinkStatus, { color: string }> = {
+  active: { color: "success.main" },
+  inactive: { color: "error.main" },
+  scheduled: { color: "warning.main" },
+  expired: { color: "error.main" },
+};
 
 export function getLinkStatus(link: LinkResponse): LinkStatus {
   const now = new Date();

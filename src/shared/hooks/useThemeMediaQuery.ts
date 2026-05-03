@@ -1,3 +1,4 @@
+"use client";
 import { useMediaQuery, useTheme } from "@mui/material";
 
 export default function useThemeMediaQuery(query: (theme: any) => string) {

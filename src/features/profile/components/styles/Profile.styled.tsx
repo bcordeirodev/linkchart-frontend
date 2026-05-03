@@ -1,3 +1,4 @@
+"use client";
 import { Box, Avatar, TextField, Button } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 

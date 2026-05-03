@@ -16,12 +16,13 @@ import {
 } from "@mui/material";
 import { keyframes } from "@mui/system";
 import { format, formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { enUS, ptBR } from "date-fns/locale";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 
 import { getLinkStatus, STATUS_MAP } from "@/features/links/utils/linkStatus";
+import type { LinkStatus } from "@/features/links/utils/linkStatus";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showMessage } from "@/lib/store/messageSlice";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
@@ -43,6 +44,13 @@ const analyticsPulse = keyframes`
 	}
 `;
 
+const STATUS_LABEL_KEYS = {
+  active: "status.active",
+  inactive: "status.inactive",
+  scheduled: "status.scheduled",
+  expired: "status.expired",
+} as const satisfies Record<LinkStatus, string>;
+
 interface LinkCardRichProps {
   link: LinkResponse;
   meta?: LinkMeta;
@@ -52,9 +60,12 @@ interface LinkCardRichProps {
 export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { t } = useTranslation("links");
+  const { t, i18n } = useTranslation("links");
+  const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
 
   const { copied, copy } = useClipboard({ timeout: 1500 });
+
+  const shortUrl = `${window.location.origin}/r/${link.slug}`;
 
   const handleDelete = useCallback(async () => {
     if (
@@ -73,20 +84,21 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
   }, [link.id, onDelete, dispatch, t]);
 
   const status = getLinkStatus(link);
-  const { label: statusLabel, color: statusColor } = STATUS_MAP[status];
+  const { color: statusColor } = STATUS_MAP[status];
+  const statusLabel = t(STATUS_LABEL_KEYS[status]);
 
   const lastClickAt = meta?.trend?.last_click_at;
   const lastClickLabel = lastClickAt
     ? formatDistanceToNow(new Date(lastClickAt), {
         addSuffix: true,
-        locale: ptBR,
+        locale: dateLocale,
       })
     : t("metrics.neverClicked");
 
   const createdDate = link.created_at ? new Date(link.created_at) : null;
   const createdLabel =
     createdDate && !isNaN(createdDate.getTime())
-      ? format(createdDate, "dd/MM/yyyy", { locale: ptBR })
+      ? format(createdDate, "dd/MM/yyyy", { locale: dateLocale })
       : null;
 
   return (
@@ -123,14 +135,14 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
             whiteSpace: "nowrap",
           }}
         >
-          {link.title || "Link sem título"}
+          {link.title || t("list.noTitle")}
         </Typography>
 
         <Tooltip
           title={copied ? t("actions.copySuccess") : t("actions.copyLink")}
         >
           <Box
-            onClick={() => copy(link.short_url)}
+            onClick={() => copy(shortUrl)}
             sx={{
               px: 1.5,
               py: 0.25,
@@ -151,7 +163,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
               "&:hover": { bgcolor: "rgba(25, 118, 210, 0.15)" },
             }}
           >
-            {link.short_url}
+            {shortUrl}
           </Box>
         </Tooltip>
 
@@ -319,7 +331,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
               variant="caption"
               sx={{ fontWeight: 700, color: "text.primary" }}
             >
-              {link.clicks.toLocaleString("pt-BR")}
+              {link.clicks.toLocaleString()}
             </Typography>
           </Stack>
         </Stack>
@@ -362,11 +374,11 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
               }}
             />
             <Tooltip
-              title={`Limite de ${link.click_limit.toLocaleString("pt-BR")} cliques`}
+              title={`${t("table.clickLimit")}: ${link.click_limit.toLocaleString()}`}
             >
               <Stack spacing={0}>
                 <Typography variant="caption" color="text.secondary">
-                  Limite
+                  {t("table.clickLimit")}
                 </Typography>
                 <Typography
                   variant="caption"
@@ -378,8 +390,8 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
                         : "text.primary",
                   }}
                 >
-                  {link.clicks.toLocaleString("pt-BR")} /{" "}
-                  {link.click_limit.toLocaleString("pt-BR")}
+                  {link.clicks.toLocaleString()} /{" "}
+                  {link.click_limit.toLocaleString()}
                 </Typography>
               </Stack>
             </Tooltip>

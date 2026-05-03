@@ -1,3 +1,4 @@
+"use client";
 import { Globe } from "lucide-react";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { TextField, Box, useTheme } from "@mui/material";

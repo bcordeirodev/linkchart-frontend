@@ -1,3 +1,4 @@
+"use client";
 /**
  * 📊 CHART CARD - Componente Base para Gráficos
  *

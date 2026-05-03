@@ -1,3 +1,4 @@
+"use client";
 import { Lightbulb, Target, BarChart3, TrendingUp, Wrench } from "lucide-react";
 import {
   Box,

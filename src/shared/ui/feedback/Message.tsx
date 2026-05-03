@@ -1,3 +1,4 @@
+"use client";
 /**
  * 📢 MESSAGE COMPONENT — LINK CHART
  * Toast/notificação global no idioma visual do design system.

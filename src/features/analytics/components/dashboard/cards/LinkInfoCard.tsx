@@ -1,3 +1,4 @@
+"use client";
 /**
  * ℹ️ LINK INFO CARD - Card de Informações do Link
  */

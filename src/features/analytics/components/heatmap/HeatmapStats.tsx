@@ -1,3 +1,4 @@
+"use client";
 import { Globe, MapPin, Trophy, Building2 } from "lucide-react";
 import {
   Box,

@@ -1,3 +1,4 @@
+"use client";
 /**
  * 📈 HOURLY CLICKS CHART - Gráfico de Cliques por Hora
  */

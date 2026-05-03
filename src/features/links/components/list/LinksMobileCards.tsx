@@ -24,7 +24,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { enUS, ptBR } from "date-fns/locale";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
@@ -38,7 +38,8 @@ import {
   radiusTokens,
 } from "@/lib/theme/designSystem";
 
-import { getLinkStatus, STATUS_MAP } from "../../utils/linkStatus";
+import { getLinkStatus } from "../../utils/linkStatus";
+import type { LinkStatus } from "../../utils/linkStatus";
 
 // Types
 import type {
@@ -49,6 +50,13 @@ import type {
 
 import { LinkHealthBadge } from "./LinkHealthBadge";
 import { LinkSparkline } from "./LinkSparkline";
+
+const STATUS_LABEL_KEYS = {
+  active: "status.active",
+  inactive: "status.inactive",
+  scheduled: "status.scheduled",
+  expired: "status.expired",
+} as const satisfies Record<LinkStatus, string>;
 
 interface LinksMobileCardsProps {
   data: Link[];
@@ -73,39 +81,39 @@ const LinkMobileCard = memo(
     const theme = useTheme();
     const isDark = theme.palette.mode === "dark";
     const navigate = useNavigate();
-    const { t } = useTranslation("links");
+    const { t, i18n } = useTranslation("links");
+    const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
 
     // Formatação de dados
-    const shortUrl = `${window.location.origin}/${link.slug || link.custom_slug}`;
+    const shortUrl = `${window.location.origin}/r/${link.slug || link.custom_slug}`;
 
     // Validação e formatação segura da data
     const getFormattedDate = () => {
       try {
         if (!link.created_at) {
-          return "Data não disponível";
+          return t("table.dateUnavailable");
         }
 
         const date = new Date(link.created_at);
 
-        // Verifica se a data é válida
         if (isNaN(date.getTime())) {
-          return "Data inválida";
+          return t("table.dateInvalid");
         }
 
         return formatDistanceToNow(date, {
           addSuffix: true,
-          locale: ptBR,
+          locale: dateLocale,
         });
       } catch (error) {
         console.error("Erro ao formatar data:", error);
-        return "Data não disponível";
+        return t("table.dateUnavailable");
       }
     };
 
     const createdAt = getFormattedDate();
 
     const linkStatus = getLinkStatus(link);
-    const { label: statusLabel } = STATUS_MAP[linkStatus];
+    const statusLabel = t(STATUS_LABEL_KEYS[linkStatus]);
 
     // Truncar URL longa
     const truncateUrl = (url: string, maxLength = 40) => {
@@ -157,7 +165,7 @@ const LinkMobileCard = memo(
                   whiteSpace: "nowrap",
                 }}
               >
-                {link.title || "Link sem título"}
+                {link.title || t("list.noTitle")}
               </Typography>
 
               <Typography
@@ -241,7 +249,7 @@ const LinkMobileCard = memo(
                 {meta.trend.last_click_at
                   ? formatDistanceToNow(new Date(meta.trend.last_click_at), {
                       addSuffix: true,
-                      locale: ptBR,
+                      locale: dateLocale,
                     })
                   : t("metrics.neverClicked")}
               </Typography>
@@ -260,7 +268,7 @@ const LinkMobileCard = memo(
                 variant="body2"
                 sx={{ color: "text.secondary", fontSize: "0.8rem" }}
               >
-                {link.clicks || 0} cliques
+                {link.clicks || 0} {t("table.clicks").toLowerCase()}
               </Typography>
             </Box>
 
@@ -292,7 +300,7 @@ const LinkMobileCard = memo(
 
             <Stack direction="row" spacing={0.5} alignItems="center">
               <LinkActionsInline
-                shortUrl={link.short_url || shortUrl}
+                shortUrl={shortUrl}
                 onAnalytics={() => navigate(`/links/analytics/${link.id}`)}
               />
               <LinkActionsMenu

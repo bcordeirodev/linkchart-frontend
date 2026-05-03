@@ -1,3 +1,4 @@
+"use client";
 /**
  * 📄 ENHANCED PAPER - COMPONENTE BASE
  * Paper aprimorado com glass effect e animações

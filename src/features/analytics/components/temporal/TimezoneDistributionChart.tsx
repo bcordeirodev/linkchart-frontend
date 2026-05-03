@@ -1,3 +1,4 @@
+"use client";
 import { Box, Grid, Typography, Stack, LinearProgress } from "@mui/material";
 import { Globe } from "lucide-react";
 

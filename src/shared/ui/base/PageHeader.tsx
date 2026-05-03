@@ -1,3 +1,4 @@
+"use client";
 /**
  * 📋 PAGE HEADER - COMPONENTE UNIFICADO
  * Header padronizado para todas as páginas da aplicação

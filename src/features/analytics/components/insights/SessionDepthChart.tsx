@@ -1,3 +1,4 @@
+"use client";
 import {
   MousePointer2,
   TrendingUp,

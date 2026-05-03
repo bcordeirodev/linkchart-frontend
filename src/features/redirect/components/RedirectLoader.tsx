@@ -1,3 +1,4 @@
+"use client";
 import { ExternalLink, Zap } from "lucide-react";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";

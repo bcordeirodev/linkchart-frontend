@@ -1,3 +1,4 @@
+"use client";
 import { Repeat2, TrendingUp, Users, BarChart3, Lightbulb } from "lucide-react";
 import {
   Box,
