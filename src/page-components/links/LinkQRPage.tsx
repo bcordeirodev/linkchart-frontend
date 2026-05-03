@@ -22,11 +22,7 @@ import { QRCodeSkeleton } from "@/shared/ui/feedback/skeletons";
 import { ResponsiveContainer } from "@/shared/ui/base";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
-
-const buildShortUrl = (slug: string): string => {
-  const frontendUrl = window.location.origin || "http://localhost:3000";
-  return `${frontendUrl}/r/${slug}`;
-};
+import { getShortUrl } from "@/lib/utils/shortUrl";
 
 interface Props {
   id: string;
@@ -47,8 +43,9 @@ function LinkQRPage({ id }: Props) {
 
   const linkInfo = useMemo(() => {
     if (!rawLink) return null;
-    if (!rawLink.short_url && rawLink.slug) {
-      return { ...rawLink, short_url: buildShortUrl(rawLink.slug) };
+    const slug = rawLink.slug || rawLink.custom_slug;
+    if (slug) {
+      return { ...rawLink, short_url: getShortUrl(slug) };
     }
     return rawLink;
   }, [rawLink]);

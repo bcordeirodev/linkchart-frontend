@@ -5,6 +5,7 @@ services:
       context: .
       args:
         - NEXT_PUBLIC_APP_URL=https://linkcharts.com.br
+        - NEXT_PUBLIC_REDIRECT_URL=https://redirect.linkcharts.com.br
         - NEXT_PUBLIC_GA_ID
         - NEXT_PUBLIC_ADSENSE_CLIENT
         # API_URL é build arg porque next.config.ts rewrites() é avaliado em build time
