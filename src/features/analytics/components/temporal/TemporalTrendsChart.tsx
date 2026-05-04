@@ -11,6 +11,7 @@ import {
 import { TrendingUp, TrendingDown, LineChart } from "lucide-react";
 
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import { ChartCard } from "@/shared/ui/base/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -30,6 +31,7 @@ export function TemporalTrendsChart({
   monthlyTrends,
 }: TemporalTrendsChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
   const chartColors = getStandardChartColors(theme);
 
@@ -78,11 +80,10 @@ export function TemporalTrendsChart({
           style={{ opacity: 0.3, marginBottom: 16 }}
         />
         <Typography variant="h6">
-          Dados de tendências ainda não disponíveis
+          {t("temporal.trends.noData")}
         </Typography>
         <Typography variant="body2" sx={{ mt: 1 }}>
-          Continue compartilhando seu link para gerar dados de tendências ao
-          longo do tempo
+          {t("temporal.trends.noDataSub")}
         </Typography>
       </Box>
     );
@@ -95,15 +96,15 @@ export function TemporalTrendsChart({
         {hasWeeklyData ? (
           <Grid item xs={12} lg={6}>
             <ChartCard
-              title="Tendências Semanais"
-              subtitle={`Média: ${Math.round(weeklyAvg)} cliques/semana`}
+              title={t("temporal.trends.weeklyTitle")}
+              subtitle={t("temporal.trends.weeklyAvg", { avg: Math.round(weeklyAvg) })}
             >
               <ApexChartWrapper
                 type="area"
                 size="standard"
                 series={[
                   {
-                    name: "Cliques",
+                    name: t("temporal.trends.seriesName"),
                     data: weeklyData,
                   },
                 ]}
@@ -160,7 +161,7 @@ export function TemporalTrendsChart({
                     theme: isDark ? "dark" : "light",
                     y: {
                       formatter(val: number) {
-                        return `${val.toLocaleString()} cliques`;
+                        return `${val.toLocaleString()} ${t("temporal.trends.seriesName").toLowerCase()}`;
                       },
                     },
                   },
@@ -185,13 +186,15 @@ export function TemporalTrendsChart({
                         <TrendingDown strokeWidth={1.5} />
                       )
                     }
-                    label={`${weeklyTrend >= 0 ? "+" : ""}${weeklyTrend} última semana`}
+                    label={`${weeklyTrend >= 0 ? "+" : ""}${t("temporal.trends.weeklyDelta", { delta: weeklyTrend })}`}
                     color={weeklyTrend >= 0 ? "success" : "error"}
                     size="small"
                   />
                   <Typography variant="body2" color="text.secondary">
-                    Total: {weeklyTotal.toLocaleString()} cliques em{" "}
-                    {weeklyValues.length} semanas
+                    {t("temporal.trends.weeklyTotal", {
+                      total: weeklyTotal.toLocaleString(),
+                      count: weeklyValues.length,
+                    })}
                   </Typography>
                 </Stack>
               </Box>
@@ -203,15 +206,15 @@ export function TemporalTrendsChart({
         {hasMonthlyData ? (
           <Grid item xs={12} lg={6}>
             <ChartCard
-              title="Tendências Mensais"
-              subtitle={`Média: ${Math.round(monthlyAvg)} cliques/mês`}
+              title={t("temporal.trends.monthlyTitle")}
+              subtitle={t("temporal.trends.monthlyAvg", { avg: Math.round(monthlyAvg) })}
             >
               <ApexChartWrapper
                 type="area"
                 size="standard"
                 series={[
                   {
-                    name: "Cliques",
+                    name: t("temporal.trends.seriesName"),
                     data: monthlyData,
                   },
                 ]}
@@ -268,7 +271,7 @@ export function TemporalTrendsChart({
                     theme: isDark ? "dark" : "light",
                     y: {
                       formatter(val: number) {
-                        return `${val.toLocaleString()} cliques`;
+                        return `${val.toLocaleString()} ${t("temporal.trends.seriesName").toLowerCase()}`;
                       },
                     },
                   },
@@ -293,13 +296,15 @@ export function TemporalTrendsChart({
                         <TrendingDown strokeWidth={1.5} />
                       )
                     }
-                    label={`${monthlyTrend >= 0 ? "+" : ""}${monthlyTrend} último mês`}
+                    label={`${monthlyTrend >= 0 ? "+" : ""}${t("temporal.trends.monthlyDelta", { delta: monthlyTrend })}`}
                     color={monthlyTrend >= 0 ? "success" : "error"}
                     size="small"
                   />
                   <Typography variant="body2" color="text.secondary">
-                    Total: {monthlyTotal.toLocaleString()} cliques em{" "}
-                    {monthlyValues.length} meses
+                    {t("temporal.trends.monthlyTotal", {
+                      total: monthlyTotal.toLocaleString(),
+                      count: monthlyValues.length,
+                    })}
                   </Typography>
                 </Stack>
               </Box>
@@ -313,34 +318,34 @@ export function TemporalTrendsChart({
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Análise de Crescimento
+                  {t("temporal.trends.growthAnalysis")}
                 </Typography>
                 <Grid container spacing={2}>
                   {hasWeeklyData ? (
                     <Grid item xs={12} md={6}>
                       <Typography variant="subtitle2" color="text.secondary">
-                        Desempenho Semanal
+                        {t("temporal.trends.weeklyPerformance")}
                       </Typography>
                       <Typography variant="body2">
                         {weeklyTrend > 0
-                          ? `Crescimento de ${weeklyTrend} cliques na última semana`
+                          ? t("temporal.trends.weeklyGrowth", { n: weeklyTrend })
                           : weeklyTrend < 0
-                            ? `Queda de ${Math.abs(weeklyTrend)} cliques na última semana`
-                            : "➖ Estável na última semana"}
+                            ? t("temporal.trends.weeklyDrop", { n: Math.abs(weeklyTrend) })
+                            : t("temporal.trends.weeklyStable")}
                       </Typography>
                     </Grid>
                   ) : null}
                   {hasMonthlyData ? (
                     <Grid item xs={12} md={6}>
                       <Typography variant="subtitle2" color="text.secondary">
-                        Desempenho Mensal
+                        {t("temporal.trends.monthlyPerformance")}
                       </Typography>
                       <Typography variant="body2">
                         {monthlyTrend > 0
-                          ? `Crescimento de ${monthlyTrend} cliques no último mês`
+                          ? t("temporal.trends.monthlyGrowth", { n: monthlyTrend })
                           : monthlyTrend < 0
-                            ? `Queda de ${Math.abs(monthlyTrend)} cliques no último mês`
-                            : "➖ Estável no último mês"}
+                            ? t("temporal.trends.monthlyDrop", { n: Math.abs(monthlyTrend) })
+                            : t("temporal.trends.monthlyStable")}
                       </Typography>
                     </Grid>
                   ) : null}

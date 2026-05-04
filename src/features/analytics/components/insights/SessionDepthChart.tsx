@@ -19,6 +19,7 @@ import {
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { useTheme, alpha } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import { getChartColor } from "@/lib/theme/colors";
 import {
@@ -65,9 +66,11 @@ export function SessionDepthChart({
   data,
   loading = false,
   showTitle = true,
-  title = "Análise de Profundidade de Sessão",
+  title,
 }: SessionDepthChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
+  const displayTitle = title ?? t("insights.session.title");
 
   // Configuração do gráfico de barras para distribuição de sessões
   const distributionBarOptions = {
@@ -126,7 +129,7 @@ export function SessionDepthChart({
 
   const distributionBarData = [
     {
-      name: "Porcentagem de Usuários",
+      name: t("insights.session.usersByClicks"),
       data: data.session_distribution.map((item) => item.percentage),
     },
   ];
@@ -186,7 +189,7 @@ export function SessionDepthChart({
 
   const engagementAreaData = [
     {
-      name: "Usuários",
+      name: t("insights.session.usersByClicks"),
       data: data.session_distribution.map((item) => item.users),
     },
   ];
@@ -208,25 +211,15 @@ export function SessionDepthChart({
   };
 
   const getQualityLabel = (quality: string) => {
-    switch (quality) {
-      case "excellent":
-        return "Excelente";
-      case "good":
-        return "Bom";
-      case "average":
-        return "Médio";
-      case "low":
-        return "Baixo";
-      default:
-        return "Sem Dados";
-    }
+    const key = `insights.session.qualityLabel.${quality}` as const;
+    return t(key as any) || quality;
   };
 
   if (loading) {
     return (
       <EnhancedPaper>
         <Box sx={{ p: 3, textAlign: "center" }}>
-          <Typography>Carregando análise de sessão...</Typography>
+          <Typography>{t("insights.session.loading")}</Typography>
         </Box>
       </EnhancedPaper>
     );
@@ -237,7 +230,7 @@ export function SessionDepthChart({
       <EnhancedPaper>
         <Box sx={{ p: 3, textAlign: "center" }}>
           <Typography color="text.secondary">
-            Dados insuficientes para análise de sessão
+            {t("insights.session.noData")}
           </Typography>
         </Box>
       </EnhancedPaper>
@@ -256,11 +249,10 @@ export function SessionDepthChart({
               {...ICON_LG}
               style={{ color: "var(--mui-palette-primary-main)" }}
             />
-            {title}
+            {displayTitle}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Profundidade de sessão indica quantas vezes o mesmo usuário clicou
-            no link durante uma visita. Valores maiores indicam maior interesse.
+            {t("insights.session.description")}
           </Typography>
         </Box>
       ) : null}
@@ -270,38 +262,38 @@ export function SessionDepthChart({
         <Grid container spacing={2} sx={{ mb: 3 }}>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Profundidade Média"
+              title={t("insights.session.avgDepth")}
               value={data.avg_session_depth}
               icon={<MousePointer2 {...ICON_LG} />}
               color="primary"
-              subtitle="clicks por sessão"
+              subtitle={t("insights.session.clicksPerSession")}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Score de Engajamento"
+              title={t("insights.session.engagementScore")}
               value={data.engagement_score}
               icon={<BarChart3 {...ICON_LG} />}
               color="success"
-              subtitle="pontuação (0-100)"
+              subtitle={t("insights.session.scoreSub")}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Power Users"
+              title={t("insights.session.powerUsers")}
               value={`${data.power_users_percentage}%`}
               icon={<Star {...ICON_LG} />}
               color="warning"
-              subtitle={`${data.power_users_count} usuários`}
+              subtitle={t("insights.session.powerUsersSub", { n: data.power_users_count })}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Máximo de Clicks"
+              title={t("insights.session.maxClicks")}
               value={data.max_session_depth}
               icon={<TrendingUp {...ICON_LG} />}
               color="info"
-              subtitle="em uma sessão"
+              subtitle={t("insights.session.inSession")}
             />
           </Grid>
         </Grid>
@@ -309,7 +301,7 @@ export function SessionDepthChart({
         {/* Status da Qualidade */}
         <Box sx={{ mb: 3, textAlign: "center" }}>
           <Chip
-            label={`Qualidade da Sessão: ${getQualityLabel(data.session_quality)}`}
+            label={t("insights.session.sessionQuality", { label: getQualityLabel(data.session_quality) })}
             sx={{
               backgroundColor: getQualityColor(data.session_quality),
               color: "white",
@@ -335,7 +327,7 @@ export function SessionDepthChart({
           >
             <CardContent>
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                Nível de Engajamento
+                {t("insights.session.engagementLevel")}
               </Typography>
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Box sx={{ flex: 1 }}>
@@ -361,8 +353,7 @@ export function SessionDepthChart({
                 </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Baseado na profundidade média de sessão e distribuição de
-                usuários
+                {t("insights.session.engagementBasis")}
               </Typography>
             </CardContent>
           </Card>
@@ -384,7 +375,7 @@ export function SessionDepthChart({
             >
               <CardContent>
                 <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                  Distribuição de Clicks por Sessão
+                  {t("insights.session.clickDistribution")}
                 </Typography>
                 <ApexChartWrapper
                   options={distributionBarOptions}
@@ -410,14 +401,14 @@ export function SessionDepthChart({
             >
               <CardContent>
                 <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                  Curva de Engajamento
+                  {t("insights.session.engagementCurve")}
                 </Typography>
                 <Typography
                   variant="caption"
                   color="text.secondary"
                   sx={{ display: "block", mb: 1 }}
                 >
-                  Distribuição dos usuários por número de cliques por sessão.
+                  {t("insights.session.curveDesc")}
                 </Typography>
                 <ApexChartWrapper
                   options={engagementAreaOptions}
@@ -431,7 +422,7 @@ export function SessionDepthChart({
                     color="text.secondary"
                     sx={{ textAlign: "center" }}
                   >
-                    Usuários por nível de clicks
+                    {t("insights.session.usersByClicks")}
                   </Typography>
                 </Box>
               </CardContent>
@@ -462,7 +453,7 @@ export function SessionDepthChart({
                 }}
               >
                 <BarChart3 size={16} strokeWidth={1.5} />
-                Detalhes da Distribuição
+                {t("insights.session.distributionDetails")}
               </Typography>
               <Grid container spacing={2}>
                 {data.session_distribution.slice(0, 6).map((item, index) => (
@@ -481,12 +472,11 @@ export function SessionDepthChart({
                         {item.session_clicks > 1 ? "s" : ""}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {item.users} usuários ({item.percentage}%)
+                        {t("insights.session.usersCount", { n: item.users, percent: item.percentage })}
                       </Typography>
                       {item.avg_response_time > 0 && (
                         <Typography variant="caption" color="text.secondary">
-                          Tempo médio:{" "}
-                          {Number(item.avg_response_time).toFixed(2)}s
+                          {t("insights.session.avgTime", { n: Number(item.avg_response_time).toFixed(2) })}
                         </Typography>
                       )}
                     </Box>
@@ -521,25 +511,21 @@ export function SessionDepthChart({
                   }}
                 >
                   <Lightbulb size={16} strokeWidth={1.5} />
-                  Insights de Engajamento
+                  {t("insights.session.sessionInsights")}
                 </Typography>
 
                 <Typography variant="body1">
-                  <strong>Análise:</strong> Seus usuários clicam em média{" "}
-                  {data.avg_session_depth} vezes por sessão, com{" "}
-                  {data.power_users_percentage}% sendo power users (5+ clicks).
-                  A qualidade da sessão está classificada como{" "}
-                  <strong>
-                    {getQualityLabel(data.session_quality).toLowerCase()}
-                  </strong>
-                  .
+                  {t("insights.session.analysisText", {
+                    avg: data.avg_session_depth,
+                    power: data.power_users_percentage,
+                    quality: getQualityLabel(data.session_quality).toLowerCase(),
+                  })}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary">
-                  <strong>Recomendação:</strong>{" "}
                   {data.avg_session_depth >= 2.5
-                    ? "Excelente engajamento! Continue criando conteúdo de qualidade para manter os usuários interessados."
-                    : "Considere adicionar call-to-actions, links relacionados ou conteúdo interativo para aumentar o engajamento."}
+                    ? t("insights.session.recHigh")
+                    : t("insights.session.recLow")}
                 </Typography>
 
                 {data.power_users_percentage > 20 && (
@@ -550,10 +536,9 @@ export function SessionDepthChart({
                       fontWeight: 500,
                     }}
                   >
-                    Destaque: Você tem uma base sólida de power users (
-                    {data.power_users_percentage}
-                    %)! Considere criar conteúdo premium ou programas de
-                    fidelidade.
+                    {t("insights.session.powerUserHighlight", {
+                      percent: data.power_users_percentage,
+                    })}
                   </Typography>
                 )}
               </Stack>

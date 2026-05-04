@@ -1,6 +1,7 @@
 "use client";
 import { Globe, Building2, TrendingUp } from "lucide-react";
 import { Grid, Box, Typography, useTheme } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 
@@ -14,20 +15,16 @@ interface GeographicMetricsProps {
   title?: string;
 }
 
-/**
- * 🌍 Métricas específicas de Geografia
- * Focado em alcance geográfico e distribuição
- */
 export function GeographicMetrics({
   data,
   stats,
   showTitle = false,
-  title = "Métricas Geográficas",
+  title,
 }: GeographicMetricsProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const animations = createPresetAnimations(theme);
 
-  // Cálculos das métricas - usar stats quando disponível
   const countriesReached =
     stats?.totalCountries ||
     data?.top_countries?.length ||
@@ -56,38 +53,40 @@ export function GeographicMetrics({
     ) ||
     0;
 
+  const displayTitle = title ?? t("geographic.metrics.title");
+
   const metrics = [
     {
       id: "countries_reached",
-      title: "Países Alcançados",
+      title: t("geographic.metrics.countriesReached"),
       value: countriesReached.toString(),
       icon: <Globe {...ICON_LG} />,
       color: "primary" as const,
-      subtitle: "alcance global",
+      subtitle: t("geographic.metrics.globalReach"),
     },
     {
       id: "cities_reached",
-      title: "Cidades Alcançadas",
+      title: t("geographic.metrics.citiesReached"),
       value: citiesReached.toString(),
       icon: <Building2 {...ICON_LG} />,
       color: "info" as const,
-      subtitle: "diversidade urbana",
+      subtitle: t("geographic.metrics.urbanDiversity"),
     },
     {
       id: "states_reached",
-      title: "Estados/Regiões",
+      title: t("geographic.metrics.statesRegions"),
       value: statesReached.toString(),
       icon: <Globe {...ICON_LG} />,
       color: "success" as const,
-      subtitle: "cobertura regional",
+      subtitle: t("geographic.metrics.regionalCoverage"),
     },
     {
       id: "geographic_clicks",
-      title: "Cliques Geográficos",
+      title: t("geographic.metrics.geographicClicks"),
       value: totalGeographicClicks.toLocaleString(),
       icon: <TrendingUp {...ICON_LG} />,
       color: "warning" as const,
-      subtitle: "cliques mapeados",
+      subtitle: t("geographic.metrics.mappedClicks"),
     },
   ];
 
@@ -95,7 +94,7 @@ export function GeographicMetrics({
     <Box sx={{ mb: 3 }}>
       {showTitle ? (
         <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-          {title}
+          {displayTitle}
         </Typography>
       ) : null}
 

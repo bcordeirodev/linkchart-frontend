@@ -5,6 +5,7 @@
 
 import { useTheme } from "@mui/material/styles";
 import { Smartphone } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
@@ -33,6 +34,7 @@ export function DeviceBreakdownChart({
   height = 300,
 }: DeviceBreakdownChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
 
   const pieProps = formatPieChart(
@@ -50,7 +52,7 @@ export function DeviceBreakdownChart({
   );
 
   return (
-    <ChartCard title="Dispositivos" icon={<Smartphone {...ICON_LG} />}>
+    <ChartCard title={t("charts.deviceBreakdown")} icon={<Smartphone {...ICON_LG} />}>
       <ApexChartWrapper
         type="donut"
         height={height}

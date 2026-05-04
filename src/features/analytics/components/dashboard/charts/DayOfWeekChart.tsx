@@ -5,6 +5,7 @@
 
 import { useTheme } from "@mui/material/styles";
 import { Calendar } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
@@ -21,11 +22,12 @@ interface DayOfWeekChartProps {
 
 export function DayOfWeekChart({ data, height = 300 }: DayOfWeekChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
 
   return (
     <ChartCard
-      title="Cliques por Dia da Semana"
+      title={t("charts.dayOfWeek")}
       icon={<Calendar {...ICON_LG} />}
     >
       <ApexChartWrapper

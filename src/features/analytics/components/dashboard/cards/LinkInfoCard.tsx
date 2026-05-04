@@ -1,10 +1,7 @@
 "use client";
-/**
- * ℹ️ LINK INFO CARD - Card de Informações do Link
- */
-
 import { Box, Typography, useTheme } from "@mui/material";
 import { BarChart3, CheckCircle, XCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import {
   elevationLightTokens,
@@ -27,6 +24,7 @@ interface LinkInfoCardProps {
 
 export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation("links");
   const isDark = theme.palette.mode === "dark";
 
   return (
@@ -41,7 +39,7 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
       }}
     >
       <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
-        {linkInfo.title || "Link sem título"}
+        {linkInfo.title || t("list.noTitle")}
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
         {linkInfo.original_url}
@@ -63,11 +61,11 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
         >
           {linkInfo.is_active ? (
             <>
-              <CheckCircle size={12} strokeWidth={1.5} /> Ativo
+              <CheckCircle size={12} strokeWidth={1.5} /> {t("status.active")}
             </>
           ) : (
             <>
-              <XCircle size={12} strokeWidth={1.5} /> Inativo
+              <XCircle size={12} strokeWidth={1.5} /> {t("status.inactive")}
             </>
           )}
         </Typography>
@@ -77,7 +75,7 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
           sx={{ display: "inline-flex", alignItems: "center", gap: 0.5 }}
         >
           <BarChart3 size={14} strokeWidth={1.5} />
-          {linkInfo.clicks} cliques
+          {t("metrics.clicksCount", { count: linkInfo.clicks })}
         </Typography>
       </Box>
     </Box>

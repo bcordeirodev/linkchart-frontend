@@ -98,6 +98,8 @@
   },
   "metrics": {
     "title": "Métricas do Link",
+    "clicksCount_one": "{{count}} clique",
+    "clicksCount_other": "{{count}} cliques",
     "totalClicks": "Total de Cliques",
     "uniqueVisitors": "Visitantes Únicos",
     "avgClicksDay": "Média de Cliques / Dia",
@@ -134,6 +136,13 @@
     },
     "clicksTable": {
       "title": "Cliques Recentes",
+      "description": "Lista detalhada de cada acesso registrado: origem, localização, dispositivo, navegador e UTM.",
+      "clicksRegistered_one": "{{count}} clique registrado",
+      "clicksRegistered_other": "{{count}} cliques registrados",
+      "loadingMessage": "Carregando cliques...",
+      "emptyMessage": "Este link ainda não recebeu cliques.",
+      "searchPlaceholder": "Buscar por país, cidade, IP, navegador...",
+      "dateFormat": "dd/MM/yyyy 'às' HH:mm:ss",
       "date": "Data / Hora",
       "location": "Localização",
       "device": "Dispositivo",

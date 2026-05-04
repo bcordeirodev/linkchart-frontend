@@ -3,6 +3,7 @@ import { Map, MapPin } from "lucide-react";
 
 import { Box, CircularProgress, Alert, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useChartHeight } from "@/lib/theme/hooks/useChartHeight";
 import { useResponsive } from "@/lib/theme";
@@ -55,6 +56,7 @@ export function HeatmapMap({
 }: HeatmapMapProps) {
   const mapHeight = useChartHeight("large", heightProp);
   const { isMobile } = useResponsive();
+  const { t } = useTranslation("analytics");
   const [leafletComponents, setLeafletComponents] =
     useState<LeafletComponents | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
@@ -103,8 +105,8 @@ export function HeatmapMap({
           MapResizeHandler,
         });
       } catch (error) {
-        setMapError("Erro ao carregar componentes do mapa");
-        console.error("Erro ao carregar Leaflet:", error);
+        setMapError(t("heatmap.mapErrorComponents"));
+        console.error("Error loading Leaflet:", error);
       }
     };
 
@@ -169,7 +171,7 @@ export function HeatmapMap({
         <Box sx={{ textAlign: "center" }}>
           <CircularProgress sx={{ mb: 2 }} />
           <Typography variant="body2" color="text.secondary">
-            Carregando mapa interativo...
+            {t("heatmap.mapLoading")}
           </Typography>
         </Box>
       </Box>
@@ -208,10 +210,10 @@ export function HeatmapMap({
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
             <Map size={16} strokeWidth={1.5} />
-            Nenhum Ponto no Mapa
+            {t("heatmap.noPoints")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Ajuste o filtro de cliques mínimos ou aguarde mais dados.
+            {t("heatmap.noPointsSub")}
           </Typography>
         </Box>
       </Box>
@@ -284,11 +286,11 @@ export function HeatmapMap({
                     {point.country}
                   </Typography>
                   <Typography variant="h6" color="primary.main">
-                    {point.clicks} cliques
+                    {t("heatmap.popupClicks", { n: point.clicks })}
                   </Typography>
                   {point.last_click ? (
                     <Typography variant="caption" color="text.secondary">
-                      Último: {new Date(point.last_click).toLocaleString()}
+                      {t("heatmap.popupLastClickShort", { time: new Date(point.last_click).toLocaleString() })}
                     </Typography>
                   ) : null}
                 </Box>

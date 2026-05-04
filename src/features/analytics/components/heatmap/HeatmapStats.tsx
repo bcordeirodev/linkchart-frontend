@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import {
   elevationLightTokens,
@@ -54,12 +55,13 @@ interface HeatmapStatsProps {
 export function HeatmapStats({
   data,
   stats,
-
   showTitle = false,
-  title = "Estatísticas do Heatmap",
+  title,
   showDetailed = true,
 }: HeatmapStatsProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
+  const displayTitle = title ?? t("heatmap.stats.title");
 
   // Calcular estatísticas se não fornecidas
   const calculatedStats = stats || {
@@ -137,11 +139,10 @@ export function HeatmapStats({
       <CardContent>
         {showTitle ? (
           <Typography variant="h6" gutterBottom>
-            {title}
+            {displayTitle}
           </Typography>
         ) : null}
 
-        {/* Métricas principais */}
         <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid item xs={6} sm={3}>
             <Box sx={{ textAlign: "center" }}>
@@ -149,7 +150,7 @@ export function HeatmapStats({
                 {calculatedStats.totalPoints}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                Localizações
+                {t("heatmap.stats.locations")}
               </Typography>
             </Box>
           </Grid>
@@ -159,7 +160,7 @@ export function HeatmapStats({
                 {calculatedStats.totalClicks}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                Total Cliques
+                {t("heatmap.stats.totalClicks")}
               </Typography>
             </Box>
           </Grid>
@@ -169,7 +170,7 @@ export function HeatmapStats({
                 {calculatedStats.maxClicks}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                Máximo
+                {t("heatmap.stats.maximum")}
               </Typography>
             </Box>
           </Grid>
@@ -179,13 +180,12 @@ export function HeatmapStats({
                 {calculatedStats.avgClicksPerPoint}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                Média/Local
+                {t("heatmap.stats.avgPerLocation")}
               </Typography>
             </Box>
           </Grid>
         </Grid>
 
-        {/* Estatísticas específicas do heatmap */}
         <Box sx={{ mt: 3, mb: 2 }}>
           <Typography
             variant="subtitle2"
@@ -194,7 +194,7 @@ export function HeatmapStats({
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
             <Globe size={16} strokeWidth={1.5} />
-            Análise Geográfica Avançada
+            {t("heatmap.stats.advancedGeoAnalysis")}
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={6} sm={4}>
@@ -214,7 +214,7 @@ export function HeatmapStats({
                   {uniqueVisitors.toLocaleString()}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Visitantes Únicos
+                  {t("heatmap.stats.uniqueVisitors")}
                 </Typography>
               </Box>
             </Grid>
@@ -235,7 +235,7 @@ export function HeatmapStats({
                   {totalActiveDays}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Dias Ativos
+                  {t("heatmap.stats.activeDays")}
                 </Typography>
               </Box>
             </Grid>
@@ -256,7 +256,7 @@ export function HeatmapStats({
                   {Math.round(avgPeakHour)}:00
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Horário de Pico
+                  {t("heatmap.stats.peakHour")}
                 </Typography>
               </Box>
             </Grid>
@@ -277,7 +277,7 @@ export function HeatmapStats({
                   {weekendPercentage.toFixed(1)}%
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Fins de Semana
+                  {t("heatmap.stats.weekends")}
                 </Typography>
               </Box>
             </Grid>
@@ -298,7 +298,7 @@ export function HeatmapStats({
                   {totalTimezones}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Fusos Horários
+                  {t("heatmap.stats.timezones")}
                 </Typography>
               </Box>
             </Grid>
@@ -319,7 +319,7 @@ export function HeatmapStats({
                   {totalContinents}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Continentes
+                  {t("heatmap.stats.continents")}
                 </Typography>
               </Box>
             </Grid>
@@ -328,7 +328,6 @@ export function HeatmapStats({
 
         {showDetailed ? (
           <>
-            {/* Top países */}
             <Box sx={{ mb: 2 }}>
               <Typography
                 variant="subtitle2"
@@ -336,7 +335,7 @@ export function HeatmapStats({
                 sx={{ display: "flex", alignItems: "center", gap: 1 }}
               >
                 <Trophy size={16} strokeWidth={1.5} />
-                Top Países
+                {t("heatmap.stats.topCountries")}
               </Typography>
               <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                 {topCountriesArray.map(({ country, clicks }) => (
@@ -351,7 +350,6 @@ export function HeatmapStats({
               </Stack>
             </Box>
 
-            {/* Top cidades */}
             <Box>
               <Typography
                 variant="subtitle2"
@@ -359,7 +357,7 @@ export function HeatmapStats({
                 sx={{ display: "flex", alignItems: "center", gap: 1 }}
               >
                 <Building2 size={16} strokeWidth={1.5} />
-                Top Cidades
+                {t("heatmap.stats.topCities")}
               </Typography>
               <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                 {topCitiesArray.map(({ cityCountry, clicks }) => (

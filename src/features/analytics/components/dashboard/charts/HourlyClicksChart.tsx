@@ -5,6 +5,7 @@
 
 import { useTheme } from "@mui/material/styles";
 import { TrendingUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { formatAreaChart } from "@/features/analytics/utils/chartFormatters";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
@@ -24,11 +25,12 @@ export function HourlyClicksChart({
   height = 300,
 }: HourlyClicksChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
 
   return (
     <ChartCard
-      title="Cliques por Hora do Dia"
+      title={t("charts.hourlyClicks")}
       icon={<TrendingUp {...ICON_LG} />}
     >
       <ApexChartWrapper

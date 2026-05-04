@@ -10,6 +10,7 @@ import {
   Divider,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import {
   BarChart3,
   Globe,
@@ -54,6 +55,7 @@ export function GeographicInsights({
   cities,
 }: GeographicInsightsProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
 
   const cardSx = {
@@ -85,7 +87,7 @@ export function GeographicInsights({
         sx={{ display: "flex", alignItems: "center", gap: 1 }}
       >
         <BarChart3 size={16} strokeWidth={1.5} />
-        Insights Geográficos Detalhados
+        {t("geographic.insights.title")}
       </Typography>
 
       {/* Estatísticas rápidas */}
@@ -97,7 +99,7 @@ export function GeographicInsights({
                 {totalClicks}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Total de Cliques
+                {t("geographic.insights.totalClicks")}
               </Typography>
             </CardContent>
           </Card>
@@ -109,7 +111,7 @@ export function GeographicInsights({
                 {uniqueCountries}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Países Alcançados
+                {t("geographic.insights.countriesReached")}
               </Typography>
             </CardContent>
           </Card>
@@ -121,7 +123,7 @@ export function GeographicInsights({
                 {uniqueCities}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Cidades Únicas
+                {t("geographic.insights.uniqueCities")}
               </Typography>
             </CardContent>
           </Card>
@@ -133,7 +135,7 @@ export function GeographicInsights({
                 {data.length}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Localizações
+                {t("geographic.insights.locations")}
               </Typography>
             </CardContent>
           </Card>
@@ -152,7 +154,7 @@ export function GeographicInsights({
                 sx={{ display: "flex", alignItems: "center", gap: 1 }}
               >
                 <Globe size={16} strokeWidth={1.5} />
-                Distribuição por País
+                {t("geographic.insights.countryDistribution")}
               </Typography>
               <ApexChartWrapper
                 type="pie"
@@ -173,7 +175,7 @@ export function GeographicInsights({
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
             <Lightbulb size={16} strokeWidth={1.5} />
-            Insights de Mercado
+            {t("geographic.insights.marketInsights")}
           </Typography>
 
           <Grid container spacing={2}>
@@ -184,7 +186,7 @@ export function GeographicInsights({
                 sx={{ display: "flex", alignItems: "center", gap: 1 }}
               >
                 <Target size={16} strokeWidth={1.5} />
-                Mercados Principais
+                {t("geographic.insights.mainMarkets")}
               </Typography>
               <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
                 {countries.slice(0, 5).map((country, index) => (
@@ -206,7 +208,7 @@ export function GeographicInsights({
                 sx={{ display: "flex", alignItems: "center", gap: 1 }}
               >
                 <Trophy size={16} strokeWidth={1.5} />
-                Cidades com Mais Engajamento
+                {t("geographic.insights.topCities")}
               </Typography>
               <Stack direction="row" spacing={1} flexWrap="wrap">
                 {cities.slice(0, 5).map((city, index) => (
@@ -232,27 +234,29 @@ export function GeographicInsights({
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
               <TrendingUp size={16} strokeWidth={1.5} />
-              Recomendações Estratégicas
+              {t("geographic.insights.strategicRecs")}
             </Typography>
             <Stack spacing={1}>
               {countries.length > 0 && (
                 <Typography variant="body2" color="text.secondary">
-                  • <strong>{countries[0].country}</strong> é seu mercado
-                  principal com {countries[0].clicks} cliques. Considere criar
-                  conteúdo específico para este mercado.
+                  {t("geographic.insights.mainMarketRec", {
+                    country: countries[0].country,
+                    clicks: countries[0].clicks,
+                  })}
                 </Typography>
               )}
               {cities.length > 0 && (
                 <Typography variant="body2" color="text.secondary">
-                  • <strong>{cities[0].city}</strong> é a cidade com mais
-                  engajamento. Explore oportunidades de marketing local nesta
-                  região.
+                  {t("geographic.insights.topCityRec", {
+                    city: cities[0].city,
+                  })}
                 </Typography>
               )}
               {uniqueCountries > 3 && (
                 <Typography variant="body2" color="text.secondary">
-                  • Seu conteúdo está alcançando {uniqueCountries} países
-                  diferentes. Considere estratégias de internacionalização.
+                  {t("geographic.insights.internationalRec", {
+                    count: uniqueCountries,
+                  })}
                 </Typography>
               )}
             </Stack>

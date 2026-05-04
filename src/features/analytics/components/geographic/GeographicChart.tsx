@@ -2,6 +2,7 @@
 import { Box, Typography, Card, CardContent, Grid, Chip } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Globe, Building2, Map } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
 import { chartByType } from "@/lib/theme/colors";
@@ -29,6 +30,7 @@ export function GeographicChart({
   totalClicks,
 }: GeographicChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
 
   const cardSx = {
@@ -78,7 +80,7 @@ export function GeographicChart({
               }}
             >
               <Globe size={16} strokeWidth={1.5} />
-              Top Países
+              {t("geographic.chart.topCountries")}
             </Typography>
 
             {countries.length > 0 ? (
@@ -159,7 +161,7 @@ export function GeographicChart({
                   <Map size={24} strokeWidth={1.5} />
                 </Typography>
                 <Typography>
-                  Dados geográficos aparecerão aqui após os primeiros cliques
+                  {t("geographic.chart.noCountriesData")}
                 </Typography>
               </Box>
             )}
@@ -185,7 +187,7 @@ export function GeographicChart({
               }}
             >
               <Building2 size={16} strokeWidth={1.5} />
-              Top Estados/Regiões
+              {t("geographic.chart.topStates")}
             </Typography>
 
             {states.length > 0 ? (
@@ -252,7 +254,7 @@ export function GeographicChart({
                   <Building2 size={24} strokeWidth={1.5} />
                 </Typography>
                 <Typography>
-                  Dados de estados aparecerão aqui após os primeiros cliques
+                  {t("geographic.chart.noStatesData")}
                 </Typography>
               </Box>
             )}
@@ -278,7 +280,7 @@ export function GeographicChart({
               }}
             >
               <Building2 size={16} strokeWidth={1.5} />
-              Top Cidades
+              {t("geographic.chart.topCities")}
             </Typography>
 
             {cities.length > 0 ? (
@@ -308,7 +310,7 @@ export function GeographicChart({
                   <Building2 size={24} strokeWidth={1.5} />
                 </Typography>
                 <Typography>
-                  Dados de cidades aparecerão aqui após os primeiros cliques
+                  {t("geographic.chart.noCitiesData")}
                 </Typography>
               </Box>
             )}

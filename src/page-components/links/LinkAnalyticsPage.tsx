@@ -39,7 +39,7 @@ function LinkAnalyticsPage({ id }: Props) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]}>
         <ResponsiveContainer variant="page">
-          <Alert severity="error">ID do link não fornecido na URL</Alert>
+          <Alert severity="error">{t("dashboard.missingId")}</Alert>
         </ResponsiveContainer>
       </AuthGuardRedirect>
     );
@@ -56,7 +56,7 @@ function LinkAnalyticsPage({ id }: Props) {
 
           <PageHeader
             title={linkInfo?.title || t("dashboard.title")}
-            subtitle={`Análise detalhada do desempenho do link ${linkInfo?.short_url || id}`}
+            subtitle={t("dashboard.subtitle", { url: linkInfo?.short_url || id })}
             icon={<AppIcon intent="analytics" size={32} />}
             variant="analytics"
           />

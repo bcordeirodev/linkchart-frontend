@@ -12,6 +12,7 @@ import {
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { useTheme, alpha } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import { getChartColor } from "@/lib/theme/colors";
 import {
@@ -55,9 +56,11 @@ export function RetentionAnalysisChart({
   data,
   loading = false,
   showTitle = true,
-  title = "Análise de Retenção",
+  title,
 }: RetentionAnalysisChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
+  const displayTitle = title ?? t("insights.retention.title");
 
   // Configuração do gráfico de pizza para visitantes
   const visitorsPieOptions = {
@@ -66,7 +69,7 @@ export function RetentionAnalysisChart({
       height: 300,
       toolbar: { show: false },
     },
-    labels: ["Visitantes Recorrentes", "Novos Visitantes"],
+    labels: [t("insights.retention.returningLabel"), t("insights.retention.newLabel")],
     colors: [getChartColor(1), getChartColor(0)],
     dataLabels: {
       enabled: true,
@@ -98,7 +101,7 @@ export function RetentionAnalysisChart({
             },
             total: {
               show: true,
-              label: "Retenção",
+              label: t("insights.retention.retentionLabel"),
               fontSize: "14px",
               color: theme.palette.text.secondary,
               formatter: () => `${data.return_visitor_rate}%`,
@@ -110,7 +113,7 @@ export function RetentionAnalysisChart({
     tooltip: {
       theme: theme.palette.mode,
       y: {
-        formatter: (val: number) => `${val} visitantes`,
+        formatter: (val: number) => t("insights.retention.visitorsTooltip", { n: val }),
       },
     },
   };
@@ -143,7 +146,7 @@ export function RetentionAnalysisChart({
       },
     },
     xaxis: {
-      categories: ["Sua Taxa", "Benchmark Médio"],
+      categories: [t("insights.retention.yourRate"), t("insights.retention.avgBenchmark")],
       labels: {
         style: {
           colors: theme.palette.text.primary,
@@ -170,7 +173,7 @@ export function RetentionAnalysisChart({
     tooltip: {
       theme: theme.palette.mode,
       y: {
-        formatter: (val: number) => `${val}% de retenção`,
+        formatter: (val: number) => t("insights.retention.retentionTooltip", { n: val }),
       },
     },
   };
@@ -179,7 +182,7 @@ export function RetentionAnalysisChart({
   const industryBenchmark = 20; // 20% é considerado médio
   const benchmarkBarData = [
     {
-      name: "Taxa de Retenção",
+      name: t("insights.retention.seriesName"),
       data: [data.return_visitor_rate, industryBenchmark],
     },
   ];
@@ -201,25 +204,15 @@ export function RetentionAnalysisChart({
   };
 
   const getBenchmarkLabel = (comparison: string) => {
-    switch (comparison) {
-      case "excellent":
-        return "Excelente";
-      case "good":
-        return "Bom";
-      case "average":
-        return "Médio";
-      case "needs_improvement":
-        return "Precisa Melhorar";
-      default:
-        return "Dados Insuficientes";
-    }
+    const key = `insights.retention.quality.${comparison}` as const;
+    return t(key as any) || comparison;
   };
 
   if (loading) {
     return (
       <EnhancedPaper>
         <Box sx={{ p: 3, textAlign: "center" }}>
-          <Typography>Carregando análise de retenção...</Typography>
+          <Typography>{t("insights.retention.loading")}</Typography>
         </Box>
       </EnhancedPaper>
     );
@@ -230,7 +223,7 @@ export function RetentionAnalysisChart({
       <EnhancedPaper>
         <Box sx={{ p: 3, textAlign: "center" }}>
           <Typography color="text.secondary">
-            Dados insuficientes para análise de retenção
+            {t("insights.retention.noData")}
           </Typography>
         </Box>
       </EnhancedPaper>
@@ -249,7 +242,7 @@ export function RetentionAnalysisChart({
               {...ICON_LG}
               style={{ color: "var(--mui-palette-primary-main)" }}
             />
-            {title}
+            {displayTitle}
           </Typography>
         </Box>
       ) : null}
@@ -259,38 +252,38 @@ export function RetentionAnalysisChart({
         <Grid container spacing={2} sx={{ mb: 3 }}>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Taxa de Retenção"
+              title={t("insights.retention.retentionRate")}
               value={`${data.return_visitor_rate}%`}
               icon={<Repeat2 {...ICON_LG} />}
               color="success"
-              subtitle="visitantes recorrentes"
+              subtitle={t("insights.retention.returningVisitorsSub")}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Score de Retenção"
+              title={t("insights.retention.retentionScore")}
               value={data.retention_score}
               icon={<BarChart3 {...ICON_LG} />}
               color="info"
-              subtitle="pontuação (0-100)"
+              subtitle={t("insights.retention.scoreSub")}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Visitantes Recorrentes"
+              title={t("insights.retention.returningVisitors")}
               value={data.return_visitors}
               icon={<Users {...ICON_LG} />}
               color="primary"
-              subtitle="usuários fiéis"
+              subtitle={t("insights.retention.loyalUsers")}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Total de Visitantes"
+              title={t("insights.retention.totalVisitors")}
               value={data.total_visitors}
               icon={<TrendingUp {...ICON_LG} />}
               color="secondary"
-              subtitle="visitantes únicos"
+              subtitle={t("insights.retention.uniqueVisitors")}
             />
           </Grid>
         </Grid>
@@ -298,7 +291,7 @@ export function RetentionAnalysisChart({
         {/* Benchmark Status */}
         <Box sx={{ mb: 3, textAlign: "center" }}>
           <Chip
-            label={`Performance: ${getBenchmarkLabel(data.benchmark_comparison)}`}
+            label={t("insights.retention.performanceChip", { label: getBenchmarkLabel(data.benchmark_comparison) })}
             sx={{
               backgroundColor: getBenchmarkColor(data.benchmark_comparison),
               color: "white",
@@ -331,7 +324,7 @@ export function RetentionAnalysisChart({
                   gutterBottom
                   sx={{ textAlign: "center", fontWeight: 600 }}
                 >
-                  Distribuição de Visitantes
+                  {t("insights.retention.visitorDistribution")}
                 </Typography>
                 <ApexChartWrapper
                   options={visitorsPieOptions}
@@ -361,7 +354,7 @@ export function RetentionAnalysisChart({
                   gutterBottom
                   sx={{ textAlign: "center", fontWeight: 600 }}
                 >
-                  Comparação com Benchmark
+                  {t("insights.retention.benchmarkComparison")}
                 </Typography>
                 <ApexChartWrapper
                   options={benchmarkBarOptions}
@@ -374,12 +367,11 @@ export function RetentionAnalysisChart({
                   color="text.secondary"
                   sx={{ display: "block", mt: 1 }}
                 >
-                  Benchmark baseado na taxa média da indústria de links
-                  encurtados (20% de visitantes recorrentes).
+                  {t("insights.retention.benchmarkNote")}
                 </Typography>
                 <Box sx={{ mt: 2, textAlign: "center" }}>
                   <Typography variant="body2" color="text.secondary">
-                    Benchmark da indústria: {industryBenchmark}%
+                    {t("insights.retention.industryBenchmark", { n: industryBenchmark })}
                   </Typography>
                 </Box>
               </CardContent>
@@ -411,27 +403,21 @@ export function RetentionAnalysisChart({
                   }}
                 >
                   <Lightbulb size={16} strokeWidth={1.5} />
-                  Insights de Retenção
+                  {t("insights.retention.insightsTitle")}
                 </Typography>
 
                 <Typography variant="body1">
-                  <strong>Análise:</strong> Sua taxa de retenção de{" "}
-                  {data.return_visitor_rate}% está{" "}
-                  {data.benchmark_comparison === "excellent" &&
-                    "muito acima da média da indústria. Excelente trabalho!"}
-                  {data.benchmark_comparison === "good" &&
-                    "acima da média da indústria. Bom desempenho!"}
-                  {data.benchmark_comparison === "average" &&
-                    "na média da indústria."}
-                  {data.benchmark_comparison === "needs_improvement" &&
-                    "abaixo da média da indústria."}
+                  {t("insights.retention.analysisPrefix", { rate: data.return_visitor_rate })}{" "}
+                  {data.benchmark_comparison === "excellent" && t("insights.retention.analysisExcellent")}
+                  {data.benchmark_comparison === "good" && t("insights.retention.analysisGood")}
+                  {data.benchmark_comparison === "average" && t("insights.retention.analysisAverage")}
+                  {data.benchmark_comparison === "needs_improvement" && t("insights.retention.analysisNeedsImprovement")}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary">
-                  <strong>Recomendação:</strong>{" "}
                   {data.return_visitor_rate >= 25
-                    ? "Continue criando conteúdo de qualidade para manter a alta lealdade dos usuários."
-                    : "Considere implementar estratégias como newsletters, notificações push ou conteúdo serializado para aumentar o retorno de visitantes."}
+                    ? t("insights.retention.recHigh")
+                    : t("insights.retention.recLow")}
                 </Typography>
               </Stack>
             </CardContent>

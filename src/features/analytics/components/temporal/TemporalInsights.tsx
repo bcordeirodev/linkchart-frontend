@@ -1,5 +1,6 @@
 "use client";
 import { Card, CardContent, Typography, Stack, useTheme } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import {
   elevationLightTokens,
@@ -29,6 +30,7 @@ export function TemporalInsights({
   showRecommendations: _showRecommendations = true,
 }: TemporalInsightsProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
 
   // Função auxiliar para obter total de cliques
   const getTotalClicks = (data: { clicks: number }[]) =>
@@ -92,72 +94,63 @@ export function TemporalInsights({
             gap: 1,
           }}
         >
-          Insights Temporais
+          {t("temporal.insights.title")}
         </Typography>
 
         <Stack spacing={1.5}>
-          {/* Insights básicos */}
           <Typography variant="body2">
-            <strong>Resumo:</strong> {hourlyTotal.toLocaleString()} cliques
-            totais, média de {avgClicksPerHour.toFixed(1)} por hora e{" "}
-            {avgClicksPerDay.toFixed(1)} por dia.
+            {t("temporal.insights.summary", {
+              total: hourlyTotal.toLocaleString(),
+              perHour: avgClicksPerHour.toFixed(1),
+              perDay: avgClicksPerDay.toFixed(1),
+            })}
           </Typography>
 
-          {/* Pico de horário */}
           {peakHour.clicks > 0 && (
             <Typography variant="body2">
-              • <strong>{peakHour.label}</strong> é seu horário de pico com{" "}
-              {peakHour.clicks} cliques. Programe posts importantes neste
-              horário.
+              • <strong>{peakHour.label}</strong>{" "}
+              {t("temporal.insights.peakHourTip", { clicks: peakHour.clicks })}
             </Typography>
           )}
 
-          {/* Pico de dia */}
           {peakDay.clicks > 0 && (
             <Typography variant="body2">
-              • <strong>{peakDay.day_name}</strong> é o dia mais ativo com{" "}
-              {peakDay.clicks} cliques. Concentre lançamentos e promoções neste
-              dia.
+              • <strong>{peakDay.day_name}</strong>{" "}
+              {t("temporal.insights.peakDayTip", { clicks: peakDay.clicks })}
             </Typography>
           )}
 
-          {/* Análise de horário comercial */}
           {isBusinessHoursActive ? (
             <Typography variant="body2">
-              • Seu público é ativo durante horário comercial (
-              {((businessHoursClicks / hourlyTotal) * 100).toFixed(1)}% dos
-              cliques). Foque em conteúdo B2B e profissional.
+              {t("temporal.insights.businessHoursActive", {
+                percent: ((businessHoursClicks / hourlyTotal) * 100).toFixed(1),
+              })}
             </Typography>
           ) : null}
 
           {!isBusinessHoursActive && hourlyTotal > 0 && (
             <Typography variant="body2">
-              • Seu público é ativo fora do horário comercial. Foque em conteúdo
-              de entretenimento e lifestyle.
+              {t("temporal.insights.afterHoursActive")}
             </Typography>
           )}
 
-          {/* Análise de fim de semana */}
           {isWeekendActive ? (
             <Typography variant="body2">
-              • Boa atividade nos fins de semana (
-              {((weekendClicks / weeklyTotal) * 100).toFixed(1)}% dos cliques).
-              Mantenha conteúdo ativo nos sábados e domingos.
+              {t("temporal.insights.weekendActive", {
+                percent: ((weekendClicks / weeklyTotal) * 100).toFixed(1),
+              })}
             </Typography>
           ) : null}
 
           {!isWeekendActive && weeklyTotal > 0 && (
             <Typography variant="body2">
-              • Baixa atividade nos fins de semana. Foque seus esforços nos dias
-              úteis para melhor engajamento.
+              {t("temporal.insights.weekdaysActive")}
             </Typography>
           )}
 
-          {/* Recomendação de consistência */}
           {hourlyTotal > 0 && weeklyTotal > 0 && (
             <Typography variant="body2">
-              • <strong>Dica:</strong> Mantenha consistência nos horários de
-              maior atividade para maximizar o alcance e engajamento.
+              <strong>•</strong> {t("temporal.insights.consistencyTip")}
             </Typography>
           )}
         </Stack>

@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import {
   elevationLightTokens,
@@ -35,10 +36,10 @@ export function AudienceInsights({
   showAdvancedInsights: _showAdvancedInsights = true,
 }: AudienceInsightsProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
   const elevation = isDark ? elevationTokens : elevationLightTokens;
 
-  // Calcular insights
   const primaryDevice =
     deviceBreakdown.length > 0
       ? deviceBreakdown.reduce(
@@ -89,7 +90,7 @@ export function AudienceInsights({
           sx={{ display: "flex", alignItems: "center", gap: 1 }}
         >
           <Lightbulb size={16} strokeWidth={1.5} />
-          Insights de Audiência
+          {t("audience.insights.title")}
         </Typography>
 
         <Grid container spacing={2} sx={{ mb: 3 }}>
@@ -100,7 +101,7 @@ export function AudienceInsights({
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
               <Target size={16} strokeWidth={1.5} />
-              Dispositivo Principal
+              {t("audience.insights.primaryDevice")}
             </Typography>
             <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
               <Chip
@@ -123,7 +124,7 @@ export function AudienceInsights({
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
               <BarChart3 size={16} strokeWidth={1.5} />
-              Distribuição Mobile vs Desktop
+              {t("audience.insights.mobileVsDesktop")}
             </Typography>
             <Stack direction="row" spacing={1} flexWrap="wrap">
               <Chip
@@ -142,7 +143,6 @@ export function AudienceInsights({
 
         <Divider />
 
-        {/* Recomendações */}
         <Box sx={{ mb: 1, mt: 1 }}>
           <Typography
             variant="subtitle2"
@@ -150,40 +150,43 @@ export function AudienceInsights({
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
             <TrendingUp size={16} strokeWidth={1.5} />
-            Recomendações Estratégicas
+            {t("audience.insights.strategicRecs")}
           </Typography>
           <Stack spacing={1}>
             {isMobileDominant ? (
               <Typography variant="body2" color="text.secondary">
-                • <strong>Mobile-first:</strong> Sua audiência é
-                predominantemente mobile ({mobilePercentage.toFixed(1)}%).
-                Otimize a experiência para dispositivos móveis.
+                • <strong>{t("audience.insights.mobileDominantLabel")}</strong>{" "}
+                {t("audience.insights.mobileDominantText", {
+                  percent: mobilePercentage.toFixed(1),
+                })}
               </Typography>
             ) : null}
             {isDesktopDominant ? (
               <Typography variant="body2" color="text.secondary">
-                • <strong>Desktop-focused:</strong> Sua audiência é
-                predominantemente desktop ({desktopPercentage.toFixed(1)}%).
-                Foque em conteúdo mais detalhado e interativo.
+                • <strong>{t("audience.insights.desktopDominantLabel")}</strong>{" "}
+                {t("audience.insights.desktopDominantText", {
+                  percent: desktopPercentage.toFixed(1),
+                })}
               </Typography>
             ) : null}
             {isBalanced ? (
               <Typography variant="body2" color="text.secondary">
-                • <strong>Audiência equilibrada:</strong> Sua audiência está bem
-                distribuída entre mobile e desktop. Mantenha uma experiência
-                consistente em todas as plataformas.
+                • <strong>{t("audience.insights.balancedLabel")}</strong>{" "}
+                {t("audience.insights.balancedText")}
               </Typography>
             ) : null}
             {primaryDevice ? (
               <Typography variant="body2" color="text.secondary">
-                • <strong>{primaryDevice.device}</strong> é o dispositivo mais
-                usado. Considere otimizações específicas para esta plataforma.
+                • <strong>{primaryDevice.device}</strong>{" "}
+                {t("audience.insights.primaryDeviceRec")}
               </Typography>
             ) : null}
             {deviceBreakdown.length > 3 && (
               <Typography variant="body2" color="text.secondary">
-                • Sua audiência usa {deviceBreakdown.length} tipos diferentes de
-                dispositivos. Garanta compatibilidade cross-platform.
+                •{" "}
+                {t("audience.insights.crossPlatform", {
+                  count: deviceBreakdown.length,
+                })}
               </Typography>
             )}
           </Stack>
@@ -191,7 +194,6 @@ export function AudienceInsights({
 
         <Divider sx={{ my: 3 }} />
 
-        {/* Detalhes técnicos */}
         <Box sx={{ mb: 1, mt: 1 }}>
           <Typography
             variant="subtitle2"
@@ -199,20 +201,36 @@ export function AudienceInsights({
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
             <Wrench size={16} strokeWidth={1.5} />
-            Detalhes Técnicos
+            {t("audience.insights.technicalDetails")}
           </Typography>
           <Stack spacing={1}>
             <Typography variant="body2" color="text.secondary">
-              • <strong>Total de dispositivos:</strong> {deviceBreakdown.length}{" "}
-              tipos diferentes
+              •{" "}
+              <strong>
+                {t("audience.insights.totalDevices", {
+                  count: deviceBreakdown.length,
+                })}
+              </strong>
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              • <strong>Dispositivo mais popular:</strong>{" "}
-              {primaryDevice?.device} com {primaryDevice?.clicks} cliques
+              •{" "}
+              <strong>
+                {t("audience.insights.mostPopularDevice", {
+                  device: primaryDevice?.device,
+                  clicks: primaryDevice?.clicks,
+                })}
+              </strong>
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              • <strong>Diversidade de plataformas:</strong>{" "}
-              {deviceBreakdown.length > 2 ? "Alta" : "Baixa"}
+              •{" "}
+              <strong>
+                {t("audience.insights.platformDiversity", {
+                  level:
+                    deviceBreakdown.length > 2
+                      ? t("audience.insights.diversityHigh")
+                      : t("audience.insights.diversityLow"),
+                })}
+              </strong>
             </Typography>
           </Stack>
         </Box>

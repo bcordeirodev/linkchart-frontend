@@ -1,11 +1,12 @@
+"use client";
 import { MapPin, Globe, TrendingUp } from "lucide-react";
 import { Grid, Box, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
-// Interface local para estatísticas
 interface HeatmapStats {
   totalPoints: number;
   totalClicks: number;
@@ -23,51 +24,51 @@ interface HeatmapMetricsProps {
   title?: string;
 }
 
-/**
- * 🔥 Métricas específicas do Heatmap
- * Focado em dados geográficos e distribuição
- */
 export function HeatmapMetrics({
   stats,
   showTitle = false,
-  title = "Métricas do Heatmap",
+  title,
 }: HeatmapMetricsProps) {
+  const { t } = useTranslation("analytics");
+
   if (!stats) {
     return null;
   }
 
+  const displayTitle = title ?? t("heatmap.metrics.title");
+
   const metrics = [
     {
       id: "total_clicks",
-      title: "Total de Cliques",
+      title: t("heatmap.metrics.totalClicks"),
       value: stats.totalClicks.toLocaleString(),
       icon: <TrendingUp {...ICON_LG} />,
       color: "primary" as const,
-      subtitle: "cliques mapeados",
+      subtitle: t("heatmap.metrics.mappedClicks"),
     },
     {
       id: "unique_countries",
-      title: "Países Únicos",
+      title: t("heatmap.metrics.uniqueCountries"),
       value: (stats.uniqueCountries ?? 0).toString(),
       icon: <Globe {...ICON_LG} />,
       color: "success" as const,
-      subtitle: "alcance global",
+      subtitle: t("heatmap.metrics.globalReach"),
     },
     {
       id: "unique_cities",
-      title: "Cidades Únicas",
+      title: t("heatmap.metrics.uniqueCities"),
       value: (stats.uniqueCities ?? 0).toString(),
       icon: <MapPin {...ICON_LG} />,
       color: "info" as const,
-      subtitle: "diversidade urbana",
+      subtitle: t("heatmap.metrics.urbanDiversity"),
     },
     {
       id: "avg_clicks_per_location",
-      title: "Média por Local",
+      title: t("heatmap.metrics.avgPerLocation"),
       value: stats.avgClicksPerPoint.toFixed(1),
       icon: <Globe {...ICON_LG} />,
       color: "warning" as const,
-      subtitle: "cliques por localização",
+      subtitle: t("heatmap.metrics.clicksPerLocation"),
     },
   ];
 
@@ -75,7 +76,7 @@ export function HeatmapMetrics({
     <Box sx={{ mb: 3 }}>
       {showTitle ? (
         <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-          {title}
+          {displayTitle}
         </Typography>
       ) : null}
 

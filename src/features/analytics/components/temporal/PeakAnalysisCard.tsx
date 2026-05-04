@@ -90,38 +90,38 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
         {/* Cards de Métricas */}
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard
-            title="Hora de Pico"
+            title={t("temporal.peak.peakHour")}
             value={formatHour(peak_hour)}
             icon={<Clock {...ICON_LG} />}
             color="primary"
-            subtitle={`${peak_hour_clicks.toLocaleString()} cliques`}
+            subtitle={`${peak_hour_clicks.toLocaleString()} ${t("temporal.peak.clicks")}`}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard
-            title="Dia de Pico"
+            title={t("temporal.peak.peakDay")}
             value={peak_day}
             icon={<Calendar {...ICON_LG} />}
             color="secondary"
-            subtitle={`${peak_day_clicks.toLocaleString()} cliques`}
+            subtitle={`${peak_day_clicks.toLocaleString()} ${t("temporal.peak.clicks")}`}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard
-            title="Período do Dia"
+            title={t("temporal.peak.periodOfDay")}
             value={period.label}
             icon={period.icon}
             color={period.color}
-            subtitle="Período de maior atividade"
+            subtitle={t("temporal.peak.highestActivityPeriod")}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard
-            title="Performance"
+            title={t("temporal.peak.performance")}
             value={`${((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1)}%`}
             icon={<Star {...ICON_LG} />}
             color="success"
-            subtitle="da atividade diária"
+            subtitle={t("temporal.peak.ofDailyActivity")}
           />
         </Grid>
 
@@ -140,7 +140,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                     sx={{ display: "flex", alignItems: "center", gap: 1 }}
                   >
                     <Zap size={16} strokeWidth={1.5} />
-                    Análise de Picos de Engajamento
+                    {t("temporal.peak.engagementPeakAnalysis")}
                   </Typography>
                 </Box>
 
@@ -166,7 +166,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                         }}
                       >
                         <Clock size={16} strokeWidth={1.5} />
-                        Horário de Maior Impacto
+                        {t("temporal.peak.highestImpactHour")}
                       </Typography>
                       <Typography
                         variant="h4"
@@ -175,8 +175,9 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                         {formatHour(peak_hour)}
                       </Typography>
                       <Typography variant="body2">
-                        <strong>{peak_hour_clicks.toLocaleString()}</strong>{" "}
-                        cliques concentrados neste horário
+                        {t("temporal.peak.clicksConcentrated", {
+                          total: peak_hour_clicks.toLocaleString(),
+                        })}
                       </Typography>
                       <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
                         <Chip
@@ -214,7 +215,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                         }}
                       >
                         <Calendar size={16} strokeWidth={1.5} />
-                        Dia de Maior Engajamento
+                        {t("temporal.peak.highestEngagementDay")}
                       </Typography>
                       <Typography
                         variant="h4"
@@ -223,13 +224,13 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                         {peak_day}
                       </Typography>
                       <Typography variant="body2">
-                        <strong>{peak_day_clicks.toLocaleString()}</strong>{" "}
-                        cliques totais neste dia da semana
+                        {t("temporal.peak.clicksThisDay", {
+                          total: peak_day_clicks.toLocaleString(),
+                        })}
                       </Typography>
                       <Box sx={{ mt: 1.5 }}>
                         <Typography variant="caption" color="text.secondary">
-                          Este é o melhor dia para lançamentos e campanhas
-                          importantes
+                          {t("temporal.peak.bestDayForLaunches")}
                         </Typography>
                       </Box>
                     </Box>
@@ -252,23 +253,25 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                     gutterBottom
                     sx={{ display: "flex", alignItems: "center", gap: 1 }}
                   >
-                    Recomendações Estratégicas
+                    {t("temporal.peak.strategicRecommendations")}
                   </Typography>
                   <Stack spacing={0.5}>
                     <Typography variant="body2">
-                      • Programe posts e campanhas para{" "}
-                      <strong>{peak_day}</strong> às{" "}
-                      <strong>{formatHour(peak_hour)}</strong>
+                      {t("temporal.peak.schedulePostsFor", {
+                        day: peak_day,
+                        hour: formatHour(peak_hour),
+                      })}
                     </Typography>
                     <Typography variant="body2">
-                      • {peak_hour_clicks} cliques na hora de pico representam{" "}
-                      {((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1)}%
-                      da atividade do dia
+                      {t("temporal.peak.peakHourRepresents", {
+                        total: peak_hour_clicks,
+                        percent: ((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1),
+                      })}
                     </Typography>
                     <Typography variant="body2">
-                      • Foco em conteúdo de{" "}
-                      <strong>{period.label.toLowerCase()}</strong> pode
-                      maximizar o engajamento
+                      {t("temporal.peak.focusOnContent", {
+                        period: period.label.toLowerCase(),
+                      })}
                     </Typography>
                   </Stack>
                 </Box>
