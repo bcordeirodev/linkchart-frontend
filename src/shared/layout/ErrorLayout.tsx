@@ -1,20 +1,5 @@
 "use client";
-/**
- * ❌ ERROR LAYOUT - LINK CHART
- * Layout especializado para páginas de erro
- *
- * @description
- * Layout otimizado para páginas 404, 500, não autorizado, etc.
- * Design amigável que ajuda o usuário a navegar de volta.
- *
- * @features
- * - Design centrado e limpo
- * - Sugestões de navegação inteligentes
- * - Animações suaves
- * - Responsivo mobile-first
- * - Suporte a temas
- */
-
+import { alpha } from "@mui/material/styles";
 import {
   Box,
   useTheme,
@@ -22,34 +7,27 @@ import {
   Typography,
   Button,
   Stack,
+  Chip,
 } from "@mui/material";
 import { useMemo } from "react";
+import type { ReactNode } from "react";
 import { useNavigate } from "@/shared/hooks";
-
 import { AppIcon } from "@/shared/ui/icons";
+import type { IconIntent } from "@/shared/ui/icons";
 import { useResponsive, createPresetAnimations } from "@/lib/theme";
 import { Link } from "@/shared/components";
 
-import type { ReactNode } from "react";
-
 interface ErrorLayoutProps {
-  /** Conteúdo da página de erro */
   children: ReactNode;
-  /** Tipo de erro */
   errorType?: "404" | "500" | "403" | "network" | "generic";
-  /** Mostrar botão de voltar */
   showBackButton?: boolean;
-  /** Mostrar link para home */
   showHomeLink?: boolean;
-  /** Sugestões de navegação */
   suggestions?: { label: string; href: string }[];
-  /** Classe CSS adicional */
   className?: string;
+  iconNode?: ReactNode;
+  backgroundText?: string;
 }
 
-/**
- * Layout de erro com design amigável e navegação útil
- */
 function ErrorLayout({
   children,
   errorType = "generic",
@@ -57,45 +35,46 @@ function ErrorLayout({
   showHomeLink = true,
   suggestions = [],
   className,
+  iconNode,
+  backgroundText,
 }: ErrorLayoutProps) {
   const theme = useTheme();
   const { isMobile } = useResponsive();
   const animations = createPresetAnimations(theme);
   const navigate = useNavigate();
 
-  // Configurações por tipo de erro
   const errorConfig = useMemo(() => {
-    const configs = {
+    const configs: Record<
+      string,
+      { bgGradient: [string, string]; defaultIntent: IconIntent }
+    > = {
       "404": {
-        icon: "search",
-        color: theme.palette.warning.main,
-        bgGradient: [theme.palette.warning.light, theme.palette.warning.main],
+        bgGradient: [theme.palette.primary.light, theme.palette.primary.main],
+        defaultIntent: "info",
       },
       "500": {
-        icon: "alert-triangle",
-        color: theme.palette.error.main,
         bgGradient: [theme.palette.error.light, theme.palette.error.main],
+        defaultIntent: "error",
       },
       "403": {
-        icon: "shield-off",
-        color: theme.palette.error.main,
         bgGradient: [theme.palette.error.light, theme.palette.error.main],
+        defaultIntent: "error",
       },
       network: {
-        icon: "wifi-off",
-        color: theme.palette.info.main,
         bgGradient: [theme.palette.info.light, theme.palette.info.main],
+        defaultIntent: "warning",
       },
       generic: {
-        icon: "alert-circle",
-        color: theme.palette.grey[600],
-        bgGradient: [theme.palette.grey[300], theme.palette.grey[500]],
+        bgGradient: [
+          theme.palette.grey[300],
+          theme.palette.grey[500],
+        ],
+        defaultIntent: "warning",
       },
     };
-    return configs[errorType];
+    return configs[errorType] ?? configs.generic;
   }, [errorType, theme]);
 
-  // Handlers de navegação
   const handleGoBack = () => {
     if (window.history.length > 1) {
       navigate(-1);
@@ -116,29 +95,27 @@ function ErrorLayout({
         overflow: "hidden",
       }}
     >
-      {/* Elementos decorativos de fundo */}
+      {/* Dot pattern overlay */}
       <Box
+        aria-hidden
         sx={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.03,
-          backgroundImage: `radial-gradient(circle at 20% 80%, ${errorConfig.color} 0%, transparent 50%),
-					                 radial-gradient(circle at 80% 20%, ${errorConfig.color} 0%, transparent 50%),
-					                 radial-gradient(circle at 40% 40%, ${errorConfig.color} 0%, transparent 50%)`,
+          inset: 0,
+          backgroundImage: `radial-gradient(${alpha(theme.palette.primary.main, 0.08)} 1px, transparent 1px)`,
+          backgroundSize: "24px 24px",
           pointerEvents: "none",
         }}
       />
 
-      {/* Header simples */}
+      {/* Header */}
       <Box
         component="header"
         sx={{
           py: 2,
           borderBottom: `1px solid ${theme.palette.divider}`,
           backgroundColor: theme.palette.background.paper,
+          position: "relative",
+          zIndex: 1,
         }}
       >
         <Container maxWidth="lg">
@@ -160,7 +137,7 @@ function ErrorLayout({
         </Container>
       </Box>
 
-      {/* Conteúdo principal */}
+      {/* Main content */}
       <Box
         component="main"
         sx={{
@@ -173,43 +150,65 @@ function ErrorLayout({
           zIndex: 1,
         }}
       >
-        <Container maxWidth="md">
+        {backgroundText && (
           <Box
+            aria-hidden
             sx={{
-              textAlign: "center",
-              ...animations.fadeIn,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              fontSize: { xs: "8rem", sm: "12rem", md: "18rem" },
+              fontWeight: 900,
+              color: alpha(theme.palette.primary.main, 0.06),
+              userSelect: "none",
+              pointerEvents: "none",
+              lineHeight: 1,
+              whiteSpace: "nowrap",
             }}
           >
-            {/* Ícone de erro */}
+            {backgroundText}
+          </Box>
+        )}
+
+        <Container maxWidth="md">
+          <Box sx={{ textAlign: "center", ...animations.fadeIn }}>
+            {/* Icon circle */}
             <Box
               sx={{
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                width: { xs: 80, sm: 100, md: 120 },
-                height: { xs: 80, sm: 100, md: 120 },
+                width: { xs: 80, sm: 100 },
+                height: { xs: 80, sm: 100 },
                 borderRadius: "50%",
                 background: `linear-gradient(135deg, ${errorConfig.bgGradient[0]}, ${errorConfig.bgGradient[1]})`,
+                color: "#fff",
                 mb: 4,
                 boxShadow: theme.shadows[8],
-                animation: "bounce 2s infinite",
-                "@keyframes bounce": {
-                  "0%, 20%, 50%, 80%, 100%": { transform: "translateY(0)" },
-                  "40%": { transform: "translateY(-10px)" },
-                  "60%": { transform: "translateY(-5px)" },
+                willChange: "transform",
+                animation: "float 3s ease-in-out infinite",
+                "@keyframes float": {
+                  "0%, 100%": { transform: "translateY(0)" },
+                  "50%": { transform: "translateY(-12px)" },
                 },
               }}
             >
-              <AppIcon intent="error" size={isMobile ? 40 : 60} />
+              {iconNode ?? (
+                <AppIcon
+                  intent={errorConfig.defaultIntent}
+                  size={isMobile ? 40 : 48}
+                />
+              )}
             </Box>
 
-            {/* Conteúdo do erro */}
+            {/* Children */}
             <Box
               sx={{
                 mb: 4,
-                animation: "slideInUp 0.6s ease-out",
+                animation: "slideInUp 0.5s ease-out",
                 "@keyframes slideInUp": {
-                  from: { opacity: 0, transform: "translateY(30px)" },
+                  from: { opacity: 0, transform: "translateY(20px)" },
                   to: { opacity: 1, transform: "translateY(0)" },
                 },
               }}
@@ -217,15 +216,15 @@ function ErrorLayout({
               {children}
             </Box>
 
-            {/* Ações de navegação */}
+            {/* Action buttons */}
             <Stack
               direction={{ xs: "column", sm: "row" }}
               spacing={2}
               justifyContent="center"
               alignItems="center"
-              sx={{ mb: 4 }}
+              sx={{ mb: suggestions.length > 0 ? 4 : 0 }}
             >
-              {showBackButton ? (
+              {showBackButton && (
                 <Button
                   variant="contained"
                   size="large"
@@ -235,9 +234,8 @@ function ErrorLayout({
                 >
                   Voltar
                 </Button>
-              ) : null}
-
-              {showHomeLink ? (
+              )}
+              {showHomeLink && (
                 <Button
                   variant="outlined"
                   size="large"
@@ -246,78 +244,44 @@ function ErrorLayout({
                   startIcon={<AppIcon intent="link" size={20} />}
                   sx={{ minWidth: { xs: "100%", sm: 160 } }}
                 >
-                  Ir para Home
+                  Início
                 </Button>
-              ) : null}
+              )}
             </Stack>
 
-            {/* Sugestões de navegação */}
+            {/* Navigation suggestions as chips */}
             {suggestions.length > 0 && (
               <Box
                 sx={{
-                  animation: "slideInUp 0.6s ease-out",
-                  animationDelay: "0.3s",
-                  "@keyframes slideInUp": {
-                    from: { opacity: 0, transform: "translateY(30px)" },
-                    to: { opacity: 1, transform: "translateY(0)" },
-                  },
+                  animation: "slideInUp 0.5s ease-out 0.3s both",
                 }}
               >
                 <Typography
-                  variant="h6"
-                  sx={{ mb: 2, color: "text.secondary" }}
+                  variant="body2"
+                  sx={{ mb: 1.5, color: "text.secondary" }}
                 >
                   Talvez você esteja procurando:
                 </Typography>
                 <Stack
-                  direction={{ xs: "column", sm: "row" }}
-                  spacing={1}
+                  direction="row"
                   justifyContent="center"
                   flexWrap="wrap"
+                  sx={{ gap: 1 }}
                 >
                   {suggestions.map((suggestion) => (
-                    <Button
+                    <Chip
                       key={suggestion.href}
-                      variant="text"
-                      component={Link}
-                      href={suggestion.href}
-                      sx={{
-                        color: "text.secondary",
-                        "&:hover": {
-                          color: "primary.main",
-                          backgroundColor: "action.hover",
-                        },
-                      }}
-                    >
-                      {suggestion.label}
-                    </Button>
+                      label={suggestion.label}
+                      variant="outlined"
+                      size="small"
+                      clickable
+                      onClick={() => { window.location.href = suggestion.href; }}
+                    />
                   ))}
                 </Stack>
               </Box>
             )}
           </Box>
-        </Container>
-      </Box>
-
-      {/* Footer simples */}
-      <Box
-        component="footer"
-        sx={{
-          py: 2,
-          borderTop: `1px solid ${theme.palette.divider}`,
-          backgroundColor: theme.palette.background.paper,
-        }}
-      >
-        <Container maxWidth="lg">
-          <Typography
-            variant="body2"
-            sx={{
-              textAlign: "center",
-              color: "text.secondary",
-            }}
-          >
-            © 2024 Link Charts. Todos os direitos reservados.
-          </Typography>
         </Container>
       </Box>
     </Box>
