@@ -1,7 +1,5 @@
 import { configureStore, createSelector } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
 
-import apiService from "./apiService";
 import { dynamicMiddleware } from "./middleware";
 import rootReducer from "./rootReducer";
 
@@ -10,7 +8,7 @@ import type { Action, Middleware, ThunkAction } from "@reduxjs/toolkit";
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>;
 
-const middlewares: Middleware[] = [apiService.middleware, dynamicMiddleware];
+const middlewares: Middleware[] = [dynamicMiddleware];
 
 export const makeStore = (preloadedState?: Partial<RootState>) => {
   const store = configureStore({
@@ -19,9 +17,6 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
       getDefaultMiddleware().concat(middlewares),
     preloadedState,
   });
-  // configure listeners using the provided defaults
-  // optional, but required for `refetchOnFocus`/`refetchOnReconnect` behaviors
-  setupListeners(store.dispatch);
   return store;
 };
 
