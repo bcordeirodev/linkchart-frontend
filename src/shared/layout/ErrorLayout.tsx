@@ -65,10 +65,7 @@ function ErrorLayout({
         defaultIntent: "warning",
       },
       generic: {
-        bgGradient: [
-          theme.palette.grey[300],
-          theme.palette.grey[500],
-        ],
+        bgGradient: [theme.palette.grey[300], theme.palette.grey[500]],
         defaultIntent: "warning",
       },
     };
@@ -275,7 +272,9 @@ function ErrorLayout({
                       variant="outlined"
                       size="small"
                       clickable
-                      onClick={() => { window.location.href = suggestion.href; }}
+                      onClick={() => {
+                        window.location.href = suggestion.href;
+                      }}
                     />
                   ))}
                 </Stack>
