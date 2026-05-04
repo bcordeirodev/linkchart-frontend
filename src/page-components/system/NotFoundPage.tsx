@@ -1,36 +1,29 @@
 "use client";
-import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
+import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { LinkOff } from "lucide-react";
 import { useLocation } from "@/shared/hooks";
-
 import { ErrorLayout } from "@/shared/layout";
-
+import { useResponsive } from "@/lib/theme";
 import useUser from "../../lib/auth/useUser";
 
-/**
- * Enhanced Error404Page component with smart navigation suggestions.
- */
 function NotFoundPage() {
   const { t } = useTranslation("public");
   const { data: user } = useUser();
   const location = useLocation();
+  const { isMobile } = useResponsive();
   const isAuthenticated = !!user;
   const [suggestions, setSuggestions] = useState<
     { label: string; href: string }[]
   >([]);
 
-  // Generate navigation suggestions based on current path
   useEffect(() => {
     const pathSegments = location.pathname.split("/").filter(Boolean);
     const suggestionList: { label: string; href: string }[] = [];
 
     if (isAuthenticated) {
-      suggestionList.push(
-        { label: "Meus Links", href: "/links" },
-      );
-
-      // Suggest parent paths
+      suggestionList.push({ label: "Meus Links", href: "/links" });
       if (pathSegments.length > 1) {
         suggestionList.push({
           label: "Seção Principal",
@@ -45,39 +38,21 @@ function NotFoundPage() {
   }, [location.pathname, isAuthenticated]);
 
   return (
-    <ErrorLayout errorType="404" suggestions={suggestions}>
-      <Typography
-        variant="h1"
-        sx={{
-          fontSize: { xs: "4rem", sm: "6rem", md: "8rem" },
-          fontWeight: "bold",
-          mb: 2,
-          background: "linear-gradient(45deg, #FF6B6B, #4ECDC4)",
-          backgroundClip: "text",
-          WebkitBackgroundClip: "text",
-          color: "transparent",
-        }}
-      >
-        404
-      </Typography>
+    <ErrorLayout
+      errorType="404"
+      suggestions={suggestions}
+      backgroundText="404"
+      iconNode={<LinkOff size={isMobile ? 36 : 48} />}
+    >
       <Typography
         variant="h4"
-        sx={{
-          mb: 2,
-          fontWeight: 600,
-          color: "text.primary",
-        }}
+        sx={{ mb: 2, fontWeight: 700, color: "text.primary" }}
       >
         {t("notFound.title")}
       </Typography>
       <Typography
         variant="body1"
-        sx={{
-          mb: 4,
-          color: "text.secondary",
-          maxWidth: 500,
-          mx: "auto",
-        }}
+        sx={{ mb: 4, color: "text.secondary", maxWidth: 480, mx: "auto" }}
       >
         {t("notFound.description")}
       </Typography>
