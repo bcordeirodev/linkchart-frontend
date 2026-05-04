@@ -77,8 +77,8 @@ export function InsightsAnalysis({
           icon={<Lightbulb {...ICON_LG} />}
           title={displayTitle}
           description={t("insights.description")}
-          highlight={`${data?.insights?.length || 0} insights disponíveis`}
-          metadata={isRealtime ? "Tempo Real" : "Análise Inteligente"}
+          highlight={t("insights.available", { count: data?.insights?.length || 0 })}
+          metadata={isRealtime ? t("dashboard.realtime") : t("insights.intelligentAnalysis")}
         />
       </Box>
 
@@ -89,7 +89,7 @@ export function InsightsAnalysis({
         hasData={!!data?.insights?.length}
         onRetry={refresh}
         loadingMessage={t("insights.loading")}
-        emptyMessage="Este link ainda não possui dados suficientes para gerar insights."
+        emptyMessage={t("insights.empty")}
         minHeight={300}
       >
         <Box>
@@ -98,38 +98,38 @@ export function InsightsAnalysis({
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
-                  title="Total de Insights"
+                  title={t("insights.metrics.total")}
                   value={stats?.totalInsights?.toString() || "0"}
                   icon={<Lightbulb {...ICON_LG} />}
                   color="primary"
-                  subtitle="insights gerados"
+                  subtitle={t("insights.metrics.totalSub")}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
-                  title="Alta Prioridade"
+                  title={t("insights.metrics.highPriority")}
                   value={stats?.highPriorityCount?.toString() || "0"}
                   icon={<Flag {...ICON_LG} />}
                   color="error"
-                  subtitle="requerem atenção"
+                  subtitle={t("insights.metrics.highPrioritySub")}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
-                  title="Acionáveis"
+                  title={t("insights.metrics.actionable")}
                   value={stats?.actionableCount?.toString() || "0"}
                   icon={<TrendingUp {...ICON_LG} />}
                   color="success"
-                  subtitle="podem ser implementados"
+                  subtitle={t("insights.metrics.actionableSub")}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
-                  title="Confiança Média"
+                  title={t("insights.metrics.avgConfidence")}
                   value={`${Math.round((stats?.avgConfidence || 0) * 100)}%`}
                   icon={<BarChart3 {...ICON_LG} />}
                   color="info"
-                  subtitle="precisão dos insights"
+                  subtitle={t("insights.metrics.confidenceSub")}
                 />
               </Grid>
             </Grid>
@@ -184,7 +184,7 @@ export function InsightsAnalysis({
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
               <Lightbulb size={16} strokeWidth={1.5} />
-              Insights Automáticos
+              {t("insights.autoInsights")}
             </Typography>
             <BusinessInsights
               insights={data?.insights || []}
@@ -204,11 +204,11 @@ export function InsightsAnalysis({
               }}
             >
               <Typography variant="caption" color="text.secondary">
-                Categoria principal: {stats.topCategory} • Última geração:{" "}
-                {new Date(stats.lastGenerated).toLocaleString()} •
-                {data?.insights?.length || 0} de {stats.totalInsights} insights
-                exibidos
-                {isRealtime ? " • Atualizações automáticas ativas" : null}
+                {t("insights.footer.topCategory", { category: stats.topCategory })} •{" "}
+                {t("insights.footer.lastGenerated")}{" "}
+                {new Date(stats.lastGenerated).toLocaleString()} •{" "}
+                {t("insights.footer.showing", { shown: data?.insights?.length || 0, total: stats.totalInsights })}
+                {isRealtime ? ` • ${t("insights.footer.autoUpdate")}` : null}
               </Typography>
             </Box>
           ) : null}

@@ -75,8 +75,8 @@ export function GeographicAnalysis({
           icon={<Globe {...ICON_LG} />}
           title={displayTitle}
           description={t("geographic.description")}
-          highlight={`${stats?.totalCountries || 0} países alcançados`}
-          metadata={isRealtime ? "Tempo Real" : undefined}
+          highlight={t("geographic.countriesReached", { count: stats?.totalCountries || 0 })}
+          metadata={isRealtime ? t("dashboard.realtime") : undefined}
         />
       </Box>
 
@@ -87,7 +87,7 @@ export function GeographicAnalysis({
         hasData={!!data}
         onRetry={refresh}
         loadingMessage={t("geographic.loading")}
-        emptyMessage="Dados geográficos indisponíveis"
+        emptyMessage={t("geographic.empty")}
         minHeight={300}
       >
         <Box>
@@ -97,7 +97,7 @@ export function GeographicAnalysis({
               data={data}
               stats={stats}
               showTitle
-              title="Métricas Geográficas"
+              title={t("geographic.metrics.title")}
             />
           </Box>
 

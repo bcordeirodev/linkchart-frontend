@@ -98,6 +98,10 @@ export interface LinkResponse {
   clicks: number;
   /** Status ativo/inativo */
   is_active: boolean;
+  /** Link expirado (computado pelo backend) */
+  is_expired: boolean;
+  /** Link ativo e não expirado (computado pelo backend) */
+  is_active_valid: boolean;
   /** Data de criação */
   created_at: ISODateString;
   /** Data da última atualização */

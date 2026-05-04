@@ -37,8 +37,9 @@ export function TemporalAnalysis({
   });
 
   // Priorizar dados de peak_analysis do back-end quando disponíveis
+  // Usar != null para rejeitar tanto null quanto undefined
   const peakHour =
-    data?.advanced?.peak_analysis?.peak_hour !== undefined
+    data?.advanced?.peak_analysis?.peak_hour != null
       ? `${data.advanced.peak_analysis.peak_hour.toString().padStart(2, "0")}h`
       : stats?.peakHour
         ? `${stats.peakHour}h`
@@ -47,6 +48,13 @@ export function TemporalAnalysis({
   const peakDay =
     data?.advanced?.peak_analysis?.peak_day || stats?.peakDay || "N/A";
 
+  const trendValue =
+    stats?.trendDirection === "up"
+      ? t("temporal.metrics.trending")
+      : stats?.trendDirection === "down"
+        ? t("temporal.metrics.declining")
+        : t("temporal.metrics.stable");
+
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
@@ -54,8 +62,8 @@ export function TemporalAnalysis({
           icon={<Clock {...ICON_LG} />}
           title={displayTitle}
           description={t("temporal.description")}
-          highlight={`Pico: ${peakHour} - ${peakDay}`}
-          metadata={isRealtime ? "Tempo Real" : "Todos os dados"}
+          highlight={`${t("temporal.chart.peakHour")} ${peakHour} - ${peakDay}`}
+          metadata={isRealtime ? t("dashboard.realtime") : t("temporal.allData")}
         />
       </Box>
 
@@ -65,7 +73,7 @@ export function TemporalAnalysis({
         hasData={!!data}
         onRetry={refresh}
         loadingMessage={t("temporal.loading")}
-        emptyMessage="Este link ainda não possui dados temporais suficientes para análise."
+        emptyMessage={t("temporal.empty")}
         minHeight={300}
       >
         <Box>
@@ -73,41 +81,35 @@ export function TemporalAnalysis({
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
-                  title="Pico de Hora"
+                  title={t("temporal.metrics.peakHour")}
                   value={peakHour}
                   icon={<Clock {...ICON_LG} />}
                   color="primary"
-                  subtitle="maior atividade"
+                  subtitle={t("temporal.metrics.peakHourSub")}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
-                  title="Pico de Dia"
+                  title={t("temporal.metrics.peakDay")}
                   value={peakDay}
                   icon={<Calendar {...ICON_LG} />}
                   color="secondary"
-                  subtitle="dia mais ativo"
+                  subtitle={t("temporal.metrics.peakDaySub")}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
-                  title="Média/Hora"
+                  title={t("temporal.metrics.avgPerHour")}
                   value={stats?.averageHourlyClicks?.toString() || "0"}
                   icon={<Clock {...ICON_LG} />}
                   color="info"
-                  subtitle="cliques por hora"
+                  subtitle={t("temporal.metrics.clicksPerHour")}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
-                  title="Tendência"
-                  value={
-                    stats?.trendDirection === "up"
-                      ? "Crescendo"
-                      : stats?.trendDirection === "down"
-                        ? "Declinando"
-                        : "Estável"
-                  }
+                  title={t("temporal.metrics.trend")}
+                  value={trendValue}
                   icon={<TrendingUp {...ICON_LG} />}
                   color={
                     stats?.trendDirection === "up"
@@ -116,7 +118,7 @@ export function TemporalAnalysis({
                         ? "error"
                         : "warning"
                   }
-                  subtitle="direção atual"
+                  subtitle={t("temporal.metrics.currentTrend")}
                 />
               </Grid>
             </Grid>

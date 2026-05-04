@@ -63,6 +63,7 @@ export function LinkAnalyticsTabsOptimized({
   const [tabValue, setTabValue] = useState(0);
   const theme = useTheme();
   const { t } = useTranslation("links");
+  const { t: tAnalytics } = useTranslation("analytics");
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -158,9 +159,9 @@ export function LinkAnalyticsTabsOptimized({
           <Box sx={{ mb: 2 }}>
             <TabDescription
               icon={<LayoutDashboard {...ICON_LG} />}
-              title="Dashboard do Link"
-              description="Visão geral consolidada do link com métricas essenciais e performance."
-              highlight={`${data?.overview?.total_clicks || 0} cliques totais`}
+              title={tAnalytics("dashboard.title")}
+              description={tAnalytics("dashboard.description")}
+              highlight={`${data?.overview?.total_clicks || 0} ${tAnalytics("dashboard.totalClicksLabel")}`}
             />
           </Box>
         ) : null}
