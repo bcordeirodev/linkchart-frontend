@@ -63,8 +63,8 @@ export function AudienceAnalysis({
           icon={<Users {...ICON_LG} />}
           title={displayTitle}
           description={t("audience.description")}
-          highlight={`${deviceBreakdown?.length || 0} tipos de dispositivos detectados`}
-          metadata="Link Específico"
+          highlight={t("audience.deviceTypes", { count: deviceBreakdown?.length || 0 })}
+          metadata={t("audience.linkSpecific")}
         />
       </Box>
 
@@ -74,7 +74,7 @@ export function AudienceAnalysis({
         hasData={!!deviceBreakdown?.length}
         onRetry={refresh}
         loadingMessage={t("audience.loading")}
-        emptyMessage="Este link ainda não recebeu cliques com dados de dispositivos."
+        emptyMessage={t("audience.empty")}
         minHeight={300}
       >
         <ResponsiveContainer style={{ padding: 0 }}>
@@ -83,7 +83,7 @@ export function AudienceAnalysis({
               <AudienceMetrics
                 data={{ audience: audienceData, stats }}
                 showTitle
-                title="Métricas de Audiência"
+                title={t("audience.metrics.title")}
               />
             </Box>
           ) : null}

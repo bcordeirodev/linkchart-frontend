@@ -52,6 +52,21 @@
     "description": "Analysis of temporal click patterns with peak identification and trends. All data since the beginning.",
     "loading": "Loading temporal data...",
     "noData": "No temporal data yet",
+    "empty": "This link doesn't have enough temporal data for analysis yet.",
+    "allData": "All data",
+    "metrics": {
+      "peakHour": "Peak Hour",
+      "peakDay": "Peak Day",
+      "avgPerHour": "Avg/Hour",
+      "trend": "Trend",
+      "peakHourSub": "highest activity",
+      "peakDaySub": "most active day",
+      "clicksPerHour": "clicks per hour",
+      "currentTrend": "current direction",
+      "trending": "Growing",
+      "declining": "Declining",
+      "stable": "Stable"
+    },
     "period": {
       "morning": "Morning",
       "afternoon": "Afternoon",
@@ -78,31 +93,106 @@
     "title": "Geographic Analysis",
     "description": "See where your audience is located around the world.",
     "loading": "Loading geographic data...",
-    "noData": "No geographic data yet"
+    "noData": "No geographic data yet",
+    "empty": "Geographic data unavailable",
+    "countriesReached": "{{count}} countries reached",
+    "metrics": {
+      "title": "Geographic Metrics"
+    }
   },
   "audience": {
     "title": "Audience Analysis",
     "description": "Detailed audience analysis with device, browser and OS data.",
     "loading": "Loading audience data...",
-    "noData": "No audience data yet"
+    "noData": "No audience data yet",
+    "empty": "This link hasn't received clicks with device data yet.",
+    "deviceTypes": "{{count}} device types detected",
+    "linkSpecific": "Link Specific",
+    "metrics": {
+      "title": "Audience Metrics"
+    }
   },
   "performance": {
     "title": "Performance Analysis",
     "description": "Detailed performance metrics for this link.",
     "loading": "Loading performance data...",
-    "noData": "No performance data yet"
+    "noData": "No performance data yet",
+    "empty": "This link doesn't have enough performance data yet.",
+    "highlight": "Success: {{rate}}% • Avg. response: {{time}}ms",
+    "metadata": {
+      "realtime": "Real Time",
+      "updated": "Updated Data"
+    },
+    "metrics": {
+      "title": "Performance Metrics"
+    },
+    "status": {
+      "title": "Current Status",
+      "allGood": "All your links are working perfectly",
+      "good": "Your links are working well",
+      "issues": "Some links may have performance issues",
+      "activeLinks": "Active links:"
+    },
+    "system": {
+      "title": "System",
+      "description": "Technical information of the redirect system",
+      "avgResponse": "Avg. response:",
+      "totalRedirects": "Total redirects:"
+    },
+    "insights": {
+      "title": "Performance Insights",
+      "successRate": "Success Rate:",
+      "responseTime": "Response Time:",
+      "redirects24h": "Total Redirects (24h):"
+    },
+    "quality": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "slow": "Slow"
+    }
   },
   "insights": {
     "title": "Business Insights",
     "description": "Data-driven insights to optimize your link strategy.",
     "loading": "Loading insights...",
-    "noData": "No insights available yet"
+    "noData": "No insights available yet",
+    "empty": "This link doesn't have enough data to generate insights yet.",
+    "available": "{{count}} insights available",
+    "intelligentAnalysis": "Intelligent Analysis",
+    "autoInsights": "Automatic Insights",
+    "metrics": {
+      "total": "Total Insights",
+      "highPriority": "High Priority",
+      "actionable": "Actionable",
+      "avgConfidence": "Avg. Confidence",
+      "totalSub": "insights generated",
+      "highPrioritySub": "require attention",
+      "actionableSub": "can be implemented",
+      "confidenceSub": "insight accuracy"
+    },
+    "footer": {
+      "topCategory": "Top category: {{category}}",
+      "lastGenerated": "Last generated:",
+      "showing": "{{shown}} of {{total}} insights shown",
+      "autoUpdate": "Automatic updates active"
+    }
   },
   "heatmap": {
     "title": "Click Heatmap",
     "description": "Visualize click intensity over time.",
     "loading": "Loading heatmap data...",
     "noData": "No heatmap data yet",
+    "empty": "This link hasn't received clicks with geographic data yet.",
+    "metrics": {
+      "title": "Heatmap Metrics"
+    },
+    "stats": {
+      "title": "Detailed Statistics"
+    },
+    "chart": {
+      "title": "Click Heatmap"
+    },
+    "locationsCount": "{{count}} locations mapped",
     "controls": {
       "radius": "Radius",
       "intensity": "Intensity",

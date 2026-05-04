@@ -52,6 +52,21 @@
     "description": "Análise de padrões temporais dos seus cliques com identificação de picos e tendências. Todos os dados desde o início.",
     "loading": "Carregando dados temporais...",
     "noData": "Nenhum dado temporal ainda",
+    "empty": "Este link ainda não possui dados temporais suficientes para análise.",
+    "allData": "Todos os dados",
+    "metrics": {
+      "peakHour": "Pico de Hora",
+      "peakDay": "Pico de Dia",
+      "avgPerHour": "Média/Hora",
+      "trend": "Tendência",
+      "peakHourSub": "maior atividade",
+      "peakDaySub": "dia mais ativo",
+      "clicksPerHour": "cliques por hora",
+      "currentTrend": "direção atual",
+      "trending": "Crescendo",
+      "declining": "Declinando",
+      "stable": "Estável"
+    },
     "period": {
       "morning": "Manhã",
       "afternoon": "Tarde",
@@ -78,31 +93,106 @@
     "title": "Análise Geográfica",
     "description": "Veja onde sua audiência está localizada ao redor do mundo.",
     "loading": "Carregando dados geográficos...",
-    "noData": "Nenhum dado geográfico ainda"
+    "noData": "Nenhum dado geográfico ainda",
+    "empty": "Dados geográficos indisponíveis",
+    "countriesReached": "{{count}} países alcançados",
+    "metrics": {
+      "title": "Métricas Geográficas"
+    }
   },
   "audience": {
     "title": "Análise de Audiência",
     "description": "Análise detalhada da sua audiência com dados de dispositivos, navegadores e sistemas operacionais.",
     "loading": "Carregando dados de audiência...",
-    "noData": "Nenhum dado de audiência ainda"
+    "noData": "Nenhum dado de audiência ainda",
+    "empty": "Este link ainda não recebeu cliques com dados de dispositivos.",
+    "deviceTypes": "{{count}} tipos de dispositivos detectados",
+    "linkSpecific": "Link Específico",
+    "metrics": {
+      "title": "Métricas de Audiência"
+    }
   },
   "performance": {
     "title": "Análise de Performance",
     "description": "Métricas detalhadas de performance para este link.",
     "loading": "Carregando dados de performance...",
-    "noData": "Nenhum dado de performance ainda"
+    "noData": "Nenhum dado de performance ainda",
+    "empty": "Este link ainda não possui dados de performance suficientes.",
+    "highlight": "Sucesso: {{rate}}% • Resposta média: {{time}}ms",
+    "metadata": {
+      "realtime": "Tempo Real",
+      "updated": "Dados Atualizados"
+    },
+    "metrics": {
+      "title": "Métricas de Performance"
+    },
+    "status": {
+      "title": "Status Atual",
+      "allGood": "Todos os seus links estão funcionando perfeitamente",
+      "good": "Seus links estão funcionando bem",
+      "issues": "Alguns links podem ter problemas de performance",
+      "activeLinks": "Links ativos:"
+    },
+    "system": {
+      "title": "Sistema",
+      "description": "Informações técnicas do sistema de redirecionamento",
+      "avgResponse": "Resposta média:",
+      "totalRedirects": "Total redirecionamentos:"
+    },
+    "insights": {
+      "title": "Insights de Performance",
+      "successRate": "Taxa de Sucesso:",
+      "responseTime": "Tempo de Resposta:",
+      "redirects24h": "Total de Redirecionamentos (24h):"
+    },
+    "quality": {
+      "excellent": "Excelente",
+      "good": "Bom",
+      "slow": "Lento"
+    }
   },
   "insights": {
     "title": "Business Insights",
     "description": "Insights baseados em dados para otimizar sua estratégia de links.",
     "loading": "Carregando insights...",
-    "noData": "Nenhum insight disponível ainda"
+    "noData": "Nenhum insight disponível ainda",
+    "empty": "Este link ainda não possui dados suficientes para gerar insights.",
+    "available": "{{count}} insights disponíveis",
+    "intelligentAnalysis": "Análise Inteligente",
+    "autoInsights": "Insights Automáticos",
+    "metrics": {
+      "total": "Total de Insights",
+      "highPriority": "Alta Prioridade",
+      "actionable": "Acionáveis",
+      "avgConfidence": "Confiança Média",
+      "totalSub": "insights gerados",
+      "highPrioritySub": "requerem atenção",
+      "actionableSub": "podem ser implementados",
+      "confidenceSub": "precisão dos insights"
+    },
+    "footer": {
+      "topCategory": "Categoria principal: {{category}}",
+      "lastGenerated": "Última geração:",
+      "showing": "{{shown}} de {{total}} insights exibidos",
+      "autoUpdate": "Atualizações automáticas ativas"
+    }
   },
   "heatmap": {
     "title": "Mapa de Calor de Cliques",
     "description": "Visualize a intensidade de cliques ao longo do tempo.",
     "loading": "Carregando dados do mapa de calor...",
     "noData": "Nenhum dado de mapa de calor ainda",
+    "empty": "Este link ainda não recebeu cliques com dados geográficos.",
+    "metrics": {
+      "title": "Métricas do Heatmap"
+    },
+    "stats": {
+      "title": "Estatísticas Detalhadas"
+    },
+    "chart": {
+      "title": "Mapa de Calor"
+    },
+    "locationsCount": "{{count}} localizações mapeadas",
     "controls": {
       "radius": "Raio",
       "intensity": "Intensidade",

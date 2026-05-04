@@ -92,8 +92,8 @@ export function PerformanceAnalysis({
           icon={<Zap {...ICON_LG} />}
           title={displayTitle}
           description={t("performance.description")}
-          highlight={`Sucesso: ${performanceMetrics.successRate}% • Resposta média: ${performanceMetrics.avgResponseTime}ms`}
-          metadata={enableRealtime ? "Tempo Real" : "Dados Atualizados"}
+          highlight={t("performance.highlight", { rate: performanceMetrics.successRate, time: performanceMetrics.avgResponseTime })}
+          metadata={enableRealtime ? t("performance.metadata.realtime") : t("performance.metadata.updated")}
         />
       </Box>
 
@@ -104,7 +104,7 @@ export function PerformanceAnalysis({
         hasData={!!performanceData}
         onRetry={refetch}
         loadingMessage={t("performance.loading")}
-        emptyMessage="Este link ainda não possui dados de performance suficientes."
+        emptyMessage={t("performance.empty")}
         minHeight={300}
       >
         <Box>
@@ -112,7 +112,7 @@ export function PerformanceAnalysis({
           <PerformanceMetrics
             performanceData={performanceData || undefined}
             showTitle
-            title="Métricas de Performance"
+            title={t("performance.metrics.title")}
           />
 
           {/* RESTANTE DO CONTEÚDO */}
@@ -130,7 +130,7 @@ export function PerformanceAnalysis({
                       }}
                     />
                     <Typography variant="h6" fontWeight={600}>
-                      Status Atual
+                      {t("performance.status.title")}
                     </Typography>
                   </Box>
 
@@ -141,10 +141,10 @@ export function PerformanceAnalysis({
                       sx={{ mb: 2 }}
                     >
                       {performanceMetrics.successRate >= 99
-                        ? "Todos os seus links estão funcionando perfeitamente"
+                        ? t("performance.status.allGood")
                         : performanceMetrics.successRate >= 95
-                          ? "Seus links estão funcionando bem"
-                          : "Alguns links podem ter problemas de performance"}
+                          ? t("performance.status.good")
+                          : t("performance.status.issues")}
                     </Typography>
 
                     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -158,7 +158,7 @@ export function PerformanceAnalysis({
                         }}
                       />
                       <Typography variant="body2">
-                        <strong>Links ativos:</strong>{" "}
+                        <strong>{t("performance.status.activeLinks")}</strong>{" "}
                         {performanceMetrics.totalLinks}
                       </Typography>
                     </Box>
@@ -180,7 +180,7 @@ export function PerformanceAnalysis({
                       }}
                     />
                     <Typography variant="h6" fontWeight={600}>
-                      Sistema
+                      {t("performance.system.title")}
                     </Typography>
                   </Box>
 
@@ -190,7 +190,7 @@ export function PerformanceAnalysis({
                       color="text.secondary"
                       sx={{ mb: 2 }}
                     >
-                      Informações técnicas do sistema de redirecionamento
+                      {t("performance.system.description")}
                     </Typography>
 
                     <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
@@ -204,7 +204,7 @@ export function PerformanceAnalysis({
                         }}
                       />
                       <Typography variant="body2">
-                        <strong>Resposta média:</strong>{" "}
+                        <strong>{t("performance.system.avgResponse")}</strong>{" "}
                         {performanceMetrics.avgResponseTime}ms
                       </Typography>
                     </Box>
@@ -220,7 +220,7 @@ export function PerformanceAnalysis({
                         }}
                       />
                       <Typography variant="body2">
-                        <strong>Total redirecionamentos:</strong>{" "}
+                        <strong>{t("performance.system.totalRedirects")}</strong>{" "}
                         {performanceMetrics.totalRedirects.toLocaleString()}
                       </Typography>
                     </Box>
@@ -250,22 +250,20 @@ export function PerformanceAnalysis({
                       color: "var(--mui-palette-info-main)",
                     }}
                   />
-                  Insights de Performance
+                  {t("performance.insights.title")}
                 </Typography>
                 <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-                  • <strong>Taxa de Sucesso:</strong>{" "}
+                  • <strong>{t("performance.insights.successRate")}</strong>{" "}
                   {performanceMetrics.successRate}% dos redirecionamentos
-                  <br />• <strong>Tempo de Resposta:</strong>{" "}
+                  <br />• <strong>{t("performance.insights.responseTime")}</strong>{" "}
                   {performanceMetrics.avgResponseTime}ms (
                   {performanceMetrics.avgResponseTime < 200
-                    ? "Excelente"
+                    ? t("performance.quality.excellent")
                     : performanceMetrics.avgResponseTime < 500
-                      ? "Bom"
-                      : "Lento"}
+                      ? t("performance.quality.good")
+                      : t("performance.quality.slow")}
                   )
-                  <br />• <strong>
-                    Total de Redirecionamentos (24h):
-                  </strong>{" "}
+                  <br />• <strong>{t("performance.insights.redirects24h")}</strong>{" "}
                   {performanceMetrics.totalRedirects.toLocaleString()}
                 </Typography>
               </CardContent>

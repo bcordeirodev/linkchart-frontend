@@ -51,12 +51,12 @@ export function HeatmapAnalysis({
           icon={<Map {...ICON_LG} />}
           title={displayTitle}
           description={t("heatmap.description")}
-          highlight={`${stats?.totalPoints || 0} localizações mapeadas`}
+          highlight={t("heatmap.locationsCount", { count: stats?.totalPoints || 0 })}
           metadata={
             enableRealtime
-              ? "Tempo Real"
+              ? t("heatmap.realtime")
               : lastUpdate
-                ? `Atualizado: ${lastUpdate.toLocaleTimeString()}`
+                ? `${t("heatmap.updated")} ${lastUpdate.toLocaleTimeString()}`
                 : undefined
           }
         />
@@ -68,7 +68,7 @@ export function HeatmapAnalysis({
         hasData={!!heatmapData?.length}
         onRetry={refresh}
         loadingMessage={t("heatmap.loading")}
-        emptyMessage="Este link ainda não recebeu cliques com dados geográficos."
+        emptyMessage={t("heatmap.empty")}
         minHeight={400}
       >
         <Box>
@@ -76,7 +76,7 @@ export function HeatmapAnalysis({
             <HeatmapMetrics
               stats={stats}
               showTitle
-              title="Métricas do Heatmap"
+              title={t("heatmap.metrics.title")}
             />
 
             <Box sx={{ mt: 3 }}>
@@ -84,7 +84,7 @@ export function HeatmapAnalysis({
                 data={heatmapData || []}
                 stats={stats || undefined}
                 showTitle
-                title="Estatísticas Detalhadas"
+                title={t("heatmap.stats.title")}
               />
             </Box>
           </Box>
@@ -97,7 +97,7 @@ export function HeatmapAnalysis({
               error={error}
               onRefresh={refresh}
               height={700}
-              title="Mapa de Calor - Link Específico"
+              title={t("heatmap.chart.title")}
               showControls
               showStats={false}
             />
