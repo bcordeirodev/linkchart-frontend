@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { LinkOff } from "lucide-react";
+import { Link2Off } from "lucide-react";
 import { useLocation } from "@/shared/hooks";
 import { ErrorLayout } from "@/shared/layout";
 import { useResponsive } from "@/lib/theme";
@@ -42,7 +42,7 @@ function NotFoundPage() {
       errorType="404"
       suggestions={suggestions}
       backgroundText="404"
-      iconNode={<LinkOff size={isMobile ? 36 : 48} />}
+      iconNode={<Link2Off size={isMobile ? 36 : 48} />}
     >
       <Typography
         variant="h4"
