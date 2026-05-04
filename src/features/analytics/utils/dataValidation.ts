@@ -90,25 +90,43 @@ export function checkDataAvailability(
 /**
  * Verifica se os dados têm qualidade suficiente para exibição
  */
-export function validateDataQuality(data: Partial<AnalyticsData> | null): {
+export interface DataQualityMessages {
+  noData?: string;
+  noDataForDisplay?: string;
+  fewData?: string;
+  insufficientData?: string;
+}
+
+export function validateDataQuality(
+  data: Partial<AnalyticsData> | null,
+  messages?: DataQualityMessages,
+): {
   isValid: boolean;
   quality: "excellent" | "good" | "fair" | "poor";
   warnings: string[];
 } {
+  const msg = {
+    noData: messages?.noData ?? "Nenhum dado disponível",
+    noDataForDisplay:
+      messages?.noDataForDisplay ?? "Nenhum dado disponível para exibição",
+    fewData: messages?.fewData ?? "Poucos dados para análise detalhada",
+    insufficientData: messages?.insufficientData ?? "Dados insuficientes",
+  };
+
   const warnings: string[] = [];
 
   if (!data) {
     return {
       isValid: false,
       quality: "poor",
-      warnings: ["Nenhum dado disponível"],
+      warnings: [msg.noData],
     };
   }
 
   const availability = checkDataAvailability(data);
 
   if (!availability.hasAnyData) {
-    warnings.push("Nenhum dado disponível para exibição");
+    warnings.push(msg.noDataForDisplay);
     return { isValid: false, quality: "poor", warnings };
   }
 
@@ -122,10 +140,10 @@ export function validateDataQuality(data: Partial<AnalyticsData> | null): {
     quality = "good";
   } else if (totalClicks > 0) {
     quality = "fair";
-    warnings.push("Poucos dados para análise detalhada");
+    warnings.push(msg.fewData);
   } else {
     quality = "poor";
-    warnings.push("Dados insuficientes");
+    warnings.push(msg.insufficientData);
   }
 
   return { isValid: availability.hasAnyData, quality, warnings };

@@ -1,6 +1,7 @@
 "use client";
 import { Box, Typography, Card, CardContent } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import {
   elevationLightTokens,
@@ -25,6 +26,7 @@ export function MetricCardOptimized({
   ...other
 }: MetricCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
 
   const colorConfig = {
     primary: theme.palette.primary.main,
@@ -119,7 +121,7 @@ export function MetricCardOptimized({
               {trend.isPositive ? "↗" : "↘"} {Math.abs(trend.value)}%
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              vs período anterior
+              {t("metrics.vsPreviousPeriod")}
             </Typography>
           </Box>
         ) : null}

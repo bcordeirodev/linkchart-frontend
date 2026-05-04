@@ -22,6 +22,7 @@ import {
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   formatBarChart,
@@ -52,7 +53,6 @@ interface AudienceChartProps {
   height?: number;
   showPieChart?: boolean;
   showBarChart?: boolean;
-  // NEW: Enhanced data props
   browsers?: BrowserData[];
   operatingSystems?: OSData[];
   devicePerformance?: DevicePerformanceData[];
@@ -67,17 +67,16 @@ export function AudienceChart({
   height: _height = 400,
   showPieChart: _showPieChart = true,
   showBarChart: _showBarChart = true,
-  // NEW: Enhanced props
   browsers,
   operatingSystems,
   devicePerformance,
   languages,
 }: AudienceChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
   const [activeTab, setActiveTab] = useState(0);
 
-  // Cores padronizadas SP2 — paleta de devices/audience
   const elevation = isDark ? elevationTokens : elevationLightTokens;
   const cardSx = {
     borderRadius: `${radiusTokens.lg}px`,
@@ -98,7 +97,6 @@ export function AudienceChart({
   const deviceBarColor = devicesPalette.mobile;
   const performanceBarColor = devicesPalette.tablet;
 
-  // Calcular estatísticas
   const totalDevices = deviceBreakdown.reduce(
     (sum, device) => sum + device.clicks,
     0,
@@ -111,14 +109,12 @@ export function AudienceChart({
         )
       : { device: "--", clicks: 0 };
 
-  // Preparar dados para gráficos existentes
   const deviceChartData = deviceBreakdown.map((device) => ({
     name: device.device,
     value: device.clicks,
     percentage: ((device.clicks / totalClicks) * 100).toFixed(1),
   }));
 
-  // NEW: Preparar dados para gráficos enhanced
   const browserChartData =
     browsers?.map((browser) => ({
       name: `${browser.browser} ${browser.version || ""}`.trim(),
@@ -147,7 +143,6 @@ export function AudienceChart({
       percentage: lang.percentage,
     })) || [];
 
-  // Verificar se há dados enhanced disponíveis
   const hasEnhancedData =
     browsers?.length ||
     operatingSystems?.length ||
@@ -178,30 +173,29 @@ export function AudienceChart({
           gap: 1,
         }}
       >
-        <Users {...ICON_MD} /> Análise de Audiência
+        <Users {...ICON_MD} /> {t("audience.chart.title")}
         <Chip
-          label={`${totalClicks} cliques`}
+          label={t("audience.chart.clicksChip", { n: totalClicks })}
           size="small"
           color="primary"
           variant="outlined"
         />
       </Typography>
 
-      {/* NEW: Tabs para análises enhanced (se dados disponíveis) */}
       {hasEnhancedData ? (
         <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
           <Tabs value={activeTab} onChange={handleTabChange}>
             <Tab
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Smartphone {...ICON_MD} /> Dispositivos
+                  <Smartphone {...ICON_MD} /> {t("audience.chart.tabs.devices")}
                 </Box>
               }
             />
             <Tab
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Globe {...ICON_MD} /> Navegadores
+                  <Globe {...ICON_MD} /> {t("audience.chart.tabs.browsers")}
                 </Box>
               }
               disabled={!browsers?.length}
@@ -209,7 +203,7 @@ export function AudienceChart({
             <Tab
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Monitor {...ICON_MD} /> Sistemas
+                  <Monitor {...ICON_MD} /> {t("audience.chart.tabs.systems")}
                 </Box>
               }
               disabled={!operatingSystems?.length}
@@ -217,7 +211,7 @@ export function AudienceChart({
             <Tab
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Zap {...ICON_MD} /> Performance
+                  <Zap {...ICON_MD} /> {t("audience.chart.tabs.performance")}
                 </Box>
               }
               disabled={!devicePerformance?.length}
@@ -225,7 +219,7 @@ export function AudienceChart({
             <Tab
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Globe {...ICON_MD} /> Idiomas
+                  <Globe {...ICON_MD} /> {t("audience.chart.tabs.languages")}
                 </Box>
               }
               disabled={!languages?.length}
@@ -234,10 +228,9 @@ export function AudienceChart({
         </Box>
       ) : null}
 
-      {/* Tab 0: Dispositivos (Conteúdo original) */}
+      {/* Tab 0: Devices */}
       {(!hasEnhancedData || activeTab === 0) && (
         <>
-          {/* Estatísticas rápidas */}
           <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid item xs={12} sm={6} md={3}>
               <Card sx={cardSx}>
@@ -251,7 +244,7 @@ export function AudienceChart({
                     {totalDevices}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Dispositivos Detectados
+                    {t("audience.chart.stats.detected")}
                   </Typography>
                 </CardContent>
               </Card>
@@ -268,7 +261,7 @@ export function AudienceChart({
                     {primaryDevice?.device || "N/A"}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Dispositivo Principal
+                    {t("audience.chart.stats.primary")}
                   </Typography>
                 </CardContent>
               </Card>
@@ -285,7 +278,7 @@ export function AudienceChart({
                     {deviceBreakdown.length}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Tipos de Dispositivo
+                    {t("audience.chart.stats.types")}
                   </Typography>
                 </CardContent>
               </Card>
@@ -305,16 +298,14 @@ export function AudienceChart({
                     %
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Dominância Principal
+                    {t("audience.chart.stats.dominance")}
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
 
-          {/* Gráficos */}
           <Grid container spacing={3}>
-            {/* Distribuição por Dispositivo */}
             <Grid item xs={12} md={6}>
               <Card sx={cardSx}>
                 <CardContent>
@@ -330,7 +321,8 @@ export function AudienceChart({
                       gap: 1,
                     }}
                   >
-                    <Smartphone {...ICON_MD} /> Distribuição por Dispositivo
+                    <Smartphone {...ICON_MD} />{" "}
+                    {t("audience.chart.deviceDistribution")}
                   </Typography>
                   <ApexChartWrapper
                     type="pie"
@@ -346,7 +338,6 @@ export function AudienceChart({
               </Card>
             </Grid>
 
-            {/* Ranking de Dispositivos */}
             <Grid item xs={12} md={6}>
               <Card sx={cardSx}>
                 <CardContent>
@@ -362,7 +353,7 @@ export function AudienceChart({
                       gap: 1,
                     }}
                   >
-                    <Trophy {...ICON_MD} /> Ranking de Dispositivos
+                    <Trophy {...ICON_MD} /> {t("audience.chart.deviceRanking")}
                   </Typography>
                   <ApexChartWrapper
                     type="bar"
@@ -381,7 +372,6 @@ export function AudienceChart({
             </Grid>
           </Grid>
 
-          {/* Detalhes dos Dispositivos */}
           <Card sx={{ ...cardSx, mt: 3 }}>
             <CardContent>
               <Typography
@@ -396,7 +386,7 @@ export function AudienceChart({
                   gap: 1,
                 }}
               >
-                <BarChart3 {...ICON_MD} /> Detalhes por Dispositivo
+                <BarChart3 {...ICON_MD} /> {t("audience.chart.deviceDetails")}
               </Typography>
 
               <Stack spacing={2}>
@@ -425,8 +415,8 @@ export function AudienceChart({
                           {device.device}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          {((device.clicks / totalClicks) * 100).toFixed(1)}% do
-                          total
+                          {((device.clicks / totalClicks) * 100).toFixed(1)}%{" "}
+                          {t("audience.chart.ofTotal")}
                         </Typography>
                       </Box>
                     </Box>
@@ -439,7 +429,7 @@ export function AudienceChart({
                         {device.clicks}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        cliques
+                        {t("audience.chart.clicks")}
                       </Typography>
                     </Box>
                   </Box>
@@ -450,7 +440,7 @@ export function AudienceChart({
         </>
       )}
 
-      {/* NEW: Tab 1 - Navegadores */}
+      {/* Tab 1: Browsers */}
       {hasEnhancedData && activeTab === 1 && browsers ? (
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
@@ -462,7 +452,7 @@ export function AudienceChart({
                   sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
                   <Globe size={16} strokeWidth={1.5} />
-                  Market Share de Navegadores
+                  {t("audience.chart.browserMarketShare")}
                 </Typography>
                 <ApexChartWrapper
                   type="pie"
@@ -476,7 +466,7 @@ export function AudienceChart({
             <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Top Navegadores
+                  {t("audience.chart.topBrowsers")}
                 </Typography>
                 <Stack spacing={2}>
                   {browsers.slice(0, 5).map((browser) => (
@@ -515,7 +505,7 @@ export function AudienceChart({
         </Grid>
       ) : null}
 
-      {/* NEW: Tab 2 - Sistemas Operacionais */}
+      {/* Tab 2: Operating Systems */}
       {hasEnhancedData && activeTab === 2 && operatingSystems ? (
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
@@ -526,7 +516,7 @@ export function AudienceChart({
                   gutterBottom
                   sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
-                  <Monitor {...ICON_MD} /> Distribuição de Sistemas Operacionais
+                  <Monitor {...ICON_MD} /> {t("audience.chart.osDistribution")}
                 </Typography>
                 <ApexChartWrapper
                   type="donut"
@@ -540,7 +530,7 @@ export function AudienceChart({
             <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Top Sistemas
+                  {t("audience.chart.topOS")}
                 </Typography>
                 <Stack spacing={2}>
                   {operatingSystems.slice(0, 5).map((os) => (
@@ -577,7 +567,7 @@ export function AudienceChart({
         </Grid>
       ) : null}
 
-      {/* NEW: Tab 3 - Performance por Dispositivo */}
+      {/* Tab 3: Device Performance */}
       {hasEnhancedData && activeTab === 3 && devicePerformance ? (
         <Grid container spacing={3}>
           <Grid item xs={12}>
@@ -588,7 +578,7 @@ export function AudienceChart({
                   gutterBottom
                   sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
-                  <Zap {...ICON_MD} /> Performance por Dispositivo
+                  <Zap {...ICON_MD} /> {t("audience.chart.devicePerformance")}
                 </Typography>
                 <ApexChartWrapper
                   type="bar"
@@ -605,7 +595,7 @@ export function AudienceChart({
 
                 <Box sx={{ mt: 3 }}>
                   <Typography variant="subtitle1" gutterBottom>
-                    Detalhes de Performance
+                    {t("audience.chart.performanceDetails")}
                   </Typography>
                   <Stack spacing={1}>
                     {devicePerformance.map((perf) => (
@@ -621,8 +611,11 @@ export function AudienceChart({
                         <Typography variant="body2">{perf.device}</Typography>
                         <Box sx={{ textAlign: "right" }}>
                           <Typography variant="caption">
-                            Média: {perf.avg_response_time}ms | Min:{" "}
-                            {perf.min_response_time}ms | Max:{" "}
+                            {t("audience.chart.performanceAvg")}{" "}
+                            {perf.avg_response_time}ms |{" "}
+                            {t("audience.chart.performanceMin")}{" "}
+                            {perf.min_response_time}ms |{" "}
+                            {t("audience.chart.performanceMax")}{" "}
                             {perf.max_response_time}ms
                           </Typography>
                         </Box>
@@ -636,7 +629,7 @@ export function AudienceChart({
         </Grid>
       ) : null}
 
-      {/* NEW: Tab 4 - Distribuição de Idiomas */}
+      {/* Tab 4: Languages */}
       {hasEnhancedData && activeTab === 4 && languages ? (
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
@@ -647,7 +640,8 @@ export function AudienceChart({
                   gutterBottom
                   sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
-                  <Globe {...ICON_MD} /> Distribuição de Idiomas
+                  <Globe {...ICON_MD} />{" "}
+                  {t("audience.chart.languageDistribution")}
                 </Typography>
                 <ApexChartWrapper
                   type="pie"
@@ -666,7 +660,7 @@ export function AudienceChart({
             <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Top Idiomas
+                  {t("audience.chart.topLanguages")}
                 </Typography>
                 <Stack spacing={2}>
                   {languages.slice(0, 5).map((language) => (

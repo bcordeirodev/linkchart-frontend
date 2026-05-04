@@ -8,7 +8,7 @@ import type { ChartOptions, ChartSeries } from "@/types";
 /**
  * Configuração de tooltip adaptável ao tema - melhorada
  */
-const getTooltipConfig = (isDark = false) => ({
+const getTooltipConfig = (isDark = false, clicksLabel = "cliques") => ({
   theme: isDark ? "dark" : "light",
   style: {
     fontSize: "14px",
@@ -25,7 +25,7 @@ const getTooltipConfig = (isDark = false) => ({
   },
   y: {
     formatter: (value: number) =>
-      `<span style="color: #1976d2; font-weight: 600;">${value.toLocaleString()}</span> cliques`,
+      `<span style="color: #1976d2; font-weight: 600;">${value.toLocaleString()}</span> ${clicksLabel}`,
   },
   marker: {
     show: true,
@@ -140,16 +140,20 @@ export const formatAreaChart = (
   yKey: string,
   color = "#1976d2",
   isDark = false,
+  labels?: { series?: string; noData?: string; clicksLabel?: string },
 ): { series: ChartSeries[]; options: any } => {
-  // Validação de segurança
+  const seriesName = labels?.series ?? "Total";
+  const noDataText = labels?.noData ?? "Nenhum dado disponível";
+  const clicksLabel = labels?.clicksLabel ?? "cliques";
+
   if (!data || !Array.isArray(data) || data.length === 0) {
     return {
-      series: [{ name: "Total", data: [] }],
+      series: [{ name: seriesName, data: [] }],
       options: {
         chart: { type: "area" },
         colors: [color],
-        noData: { text: "Nenhum dado disponível" },
-        tooltip: getTooltipConfig(isDark),
+        noData: { text: noDataText },
+        tooltip: getTooltipConfig(isDark, clicksLabel),
         ...getTextConfig(isDark),
       },
     };
@@ -158,7 +162,7 @@ export const formatAreaChart = (
   return {
     series: [
       {
-        name: "Total",
+        name: seriesName,
         data: data
           .filter((item) => item && typeof item === "object")
           .map((item) => ({
@@ -211,7 +215,7 @@ export const formatAreaChart = (
       dataLabels: {
         enabled: false,
       },
-      tooltip: getTooltipConfig(isDark),
+      tooltip: getTooltipConfig(isDark, clicksLabel),
       ...getTextConfig(isDark),
     },
   };
@@ -227,15 +231,19 @@ export const formatBarChart = (
   color = "#1976d2",
   horizontal = false,
   isDark = false,
+  labels?: { series?: string; noData?: string; clicksLabel?: string },
 ): { series: ChartSeries[]; options: any } => {
-  // Validação de segurança
+  const seriesName = labels?.series ?? "Cliques";
+  const noDataText = labels?.noData ?? "Nenhum dado disponível";
+  const clicksLabel = labels?.clicksLabel ?? "cliques";
+
   if (!data || !Array.isArray(data) || data.length === 0) {
     return {
-      series: [{ name: "Cliques", data: [] }],
+      series: [{ name: seriesName, data: [] }],
       options: {
         chart: { type: "bar" },
         colors: [color],
-        noData: { text: "Nenhum dado disponível" },
+        noData: { text: noDataText },
       },
     };
   }
@@ -261,7 +269,7 @@ export const formatBarChart = (
     return {
       series: [
         {
-          name: "Cliques",
+          name: seriesName,
           data: processedData,
         },
       ],
@@ -361,7 +369,7 @@ export const formatBarChart = (
   return {
     series: [
       {
-        name: "Cliques",
+        name: seriesName,
         data: processedDataVertical,
       },
     ],
@@ -454,15 +462,17 @@ export const formatPieChart = (
   labelKey: string,
   valueKey: string,
   isDark = false,
+  labels?: { noData?: string },
 ): { series: number[]; options: ChartOptions } => {
-  // Validação de segurança
+  const noDataText = labels?.noData ?? "Nenhum dado disponível";
+
   if (!data || !Array.isArray(data) || data.length === 0) {
     return {
       series: [],
       options: {
         chart: { type: "donut" },
         labels: [],
-        noData: { text: "Nenhum dado disponível" },
+        noData: { text: noDataText },
         tooltip: getTooltipConfig(isDark),
       },
     };

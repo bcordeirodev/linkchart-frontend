@@ -3,6 +3,7 @@ import { Box, Grid, Typography, Stack, LinearProgress } from "@mui/material";
 import { Globe } from "lucide-react";
 
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import { ChartCard } from "@/shared/ui/base/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -20,6 +21,7 @@ export function TimezoneDistributionChart({
   timezoneAnalysis,
 }: TimezoneDistributionChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
   const chartColors = getStandardChartColors(theme);
 
@@ -38,11 +40,10 @@ export function TimezoneDistributionChart({
           style={{ opacity: 0.3, marginBottom: 16 }}
         />
         <Typography variant="h6">
-          Dados de timezone ainda não disponíveis
+          {t("temporal.timezone.noData")}
         </Typography>
         <Typography variant="body2" sx={{ mt: 1 }}>
-          Continue compartilhando seu link para coletar dados de diferentes
-          fusos horários
+          {t("temporal.timezone.noDataSub")}
         </Typography>
       </Box>
     );
@@ -70,15 +71,15 @@ export function TimezoneDistributionChart({
         {/* Gráfico de Barras */}
         <Grid item xs={12} lg={8}>
           <ChartCard
-            title="Distribuição por Fuso Horário"
-            subtitle={`${timezoneAnalysis.length} fusos horários detectados`}
+            title={t("temporal.timezone.chartTitle")}
+            subtitle={t("temporal.timezone.detected", { count: timezoneAnalysis.length })}
           >
             <ApexChartWrapper
               type="bar"
               size="standard"
               series={[
                 {
-                  name: "Cliques",
+                  name: t("temporal.timezone.seriesName"),
                   data: chartData.map((d) => d.y),
                 },
               ]}
@@ -142,7 +143,7 @@ export function TimezoneDistributionChart({
                         dataPointIndex !== undefined
                           ? topTimezones[dataPointIndex]?.percentage || 0
                           : 0;
-                      return `${val.toLocaleString()} cliques (${percentage.toFixed(1)}%)`;
+                      return `${val.toLocaleString()} ${t("temporal.timezone.seriesName").toLowerCase()} (${percentage.toFixed(1)}%)`;
                     },
                   },
                 },
@@ -154,8 +155,8 @@ export function TimezoneDistributionChart({
         {/* Lista Detalhada */}
         <Grid item xs={12} lg={4}>
           <ChartCard
-            title="Top Timezones"
-            subtitle={`Total: ${totalClicks.toLocaleString()} cliques`}
+            title={t("temporal.timezone.topTimezones")}
+            subtitle={t("temporal.timezone.total", { total: totalClicks.toLocaleString() })}
           >
             <Stack spacing={2}>
               {topTimezones.map((tz, index) => (
@@ -210,7 +211,7 @@ export function TimezoneDistributionChart({
                 sx={{ mt: 2, p: 1.5, bgcolor: "action.hover", borderRadius: 1 }}
               >
                 <Typography variant="caption" color="text.secondary">
-                  +{timezoneAnalysis.length - 10} outros fusos horários
+                  {t("temporal.timezone.others", { count: timezoneAnalysis.length - 10 })}
                 </Typography>
               </Box>
             )}
@@ -228,21 +229,17 @@ export function TimezoneDistributionChart({
             }}
           >
             <Typography variant="subtitle2" gutterBottom>
-              Insight de Timezone
+              {t("temporal.timezone.insightTitle")}
             </Typography>
             <Typography variant="body2">
               {sortedTimezones[0] ? (
                 <>
-                  Seu público está concentrado em{" "}
-                  <strong>{sortedTimezones[0].name}</strong> com{" "}
-                  <strong>{sortedTimezones[0].percentage?.toFixed(1)}%</strong>{" "}
-                  dos cliques.
+                  {t("temporal.timezone.insightConcentrated", {
+                    name: sortedTimezones[0].name,
+                    percent: sortedTimezones[0].percentage?.toFixed(1),
+                  })}
                   {sortedTimezones.length > 1 && (
-                    <>
-                      {" "}
-                      Considere adaptar horários de publicação para otimizar o
-                      engajamento nesta região.
-                    </>
+                    <> {t("temporal.timezone.insightOptimize")}</>
                   )}
                 </>
               ) : null}

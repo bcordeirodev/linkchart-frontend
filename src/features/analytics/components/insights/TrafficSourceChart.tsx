@@ -24,6 +24,7 @@ import {
 
 import { ICON_MD, ICON_LG } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import { chartPalette } from "@/lib/theme/colors";
 import {
@@ -89,9 +90,11 @@ export function TrafficSourceChart({
   data,
   loading = false,
   showTitle = true,
-  title = "Análise de Fontes de Tráfego",
+  title,
 }: TrafficSourceChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
+  const displayTitle = title ?? t("insights.traffic.title");
 
   // Cores para diferentes canais — usando chartPalette para harmonia visual
   const channelColors: Record<string, string> = {
@@ -148,7 +151,7 @@ export function TrafficSourceChart({
             },
             total: {
               show: true,
-              label: "Total",
+              label: t("insights.traffic.totalLabel"),
               fontSize: "14px",
               color: theme.palette.text.secondary,
               formatter: () => `${data.total_clicks} clicks`,
@@ -226,7 +229,7 @@ export function TrafficSourceChart({
 
   const performanceBarData = [
     {
-      name: "Profundidade Média da Sessão",
+      name: t("insights.traffic.seriesName"),
       data: data.channels.map((channel) => channel.avg_session_depth),
     },
   ];
@@ -263,7 +266,7 @@ export function TrafficSourceChart({
     return (
       <EnhancedPaper>
         <Box sx={{ p: 3, textAlign: "center" }}>
-          <Typography>Carregando análise de fontes...</Typography>
+          <Typography>{t("insights.traffic.loading")}</Typography>
         </Box>
       </EnhancedPaper>
     );
@@ -274,7 +277,7 @@ export function TrafficSourceChart({
       <EnhancedPaper>
         <Box sx={{ p: 3, textAlign: "center" }}>
           <Typography color="text.secondary">
-            Dados insuficientes para análise de fontes de tráfego
+            {t("insights.traffic.noData")}
           </Typography>
         </Box>
       </EnhancedPaper>
@@ -293,7 +296,7 @@ export function TrafficSourceChart({
               {...ICON_LG}
               style={{ color: "var(--mui-palette-primary-main)" }}
             />
-            {title}
+            {displayTitle}
           </Typography>
         </Box>
       ) : null}
@@ -303,38 +306,38 @@ export function TrafficSourceChart({
         <Grid container spacing={2} sx={{ mb: 3 }}>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Fonte Principal"
+              title={t("insights.traffic.topSource")}
               value={data.top_source?.source || "N/A"}
               icon={<TrendingUp {...ICON_LG} />}
               color="primary"
-              subtitle={`${data.top_source?.percentage || 0}% do tráfego`}
+              subtitle={t("insights.traffic.trafficPercent", { n: data.top_source?.percentage || 0 })}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Diversidade"
+              title={t("insights.traffic.diversity")}
               value={data.source_diversity}
               icon={<Users2 {...ICON_LG} />}
               color="info"
-              subtitle="fontes diferentes"
+              subtitle={t("insights.traffic.differentSources")}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Total de Clicks"
+              title={t("insights.traffic.totalClicks")}
               value={data.total_clicks}
               icon={<BarChart3 {...ICON_LG} />}
               color="success"
-              subtitle="todos os canais"
+              subtitle={t("insights.traffic.allChannels")}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <MetricCard
-              title="Canais Ativos"
+              title={t("insights.traffic.activeChannels")}
               value={data.channels.length}
               icon={<Activity {...ICON_LG} />}
               color="secondary"
-              subtitle="categorias"
+              subtitle={t("insights.traffic.categories")}
             />
           </Grid>
         </Grid>
@@ -348,10 +351,7 @@ export function TrafficSourceChart({
               sx={{ borderRadius: `${radiusTokens.lg}px` }}
             >
               <Typography variant="body2">
-                <strong>Baixa diversidade de fontes!</strong> Você tem apenas{" "}
-                {data.source_diversity} fonte
-                {data.source_diversity > 1 ? "s" : ""} de tráfego. Considere
-                diversificar para reduzir riscos de dependência.
+                {t("insights.traffic.lowDiversityAlert", { n: data.source_diversity })}
               </Typography>
             </Alert>
           </Box>
@@ -377,7 +377,7 @@ export function TrafficSourceChart({
                   gutterBottom
                   sx={{ textAlign: "center", fontWeight: 600 }}
                 >
-                  Distribuição por Canais
+                  {t("insights.traffic.channelDistribution")}
                 </Typography>
                 <ApexChartWrapper
                   options={channelsPieOptions}
@@ -407,7 +407,7 @@ export function TrafficSourceChart({
                   gutterBottom
                   sx={{ textAlign: "center", fontWeight: 600 }}
                 >
-                  Engajamento por Canal
+                  {t("insights.traffic.engagementByChannel")}
                 </Typography>
                 <ApexChartWrapper
                   options={performanceBarOptions}
@@ -420,7 +420,7 @@ export function TrafficSourceChart({
                   color="text.secondary"
                   sx={{ textAlign: "center", mt: 1 }}
                 >
-                  Profundidade média da sessão por canal
+                  {t("insights.traffic.avgSessionByChannel")}
                 </Typography>
               </CardContent>
             </Card>
@@ -450,7 +450,7 @@ export function TrafficSourceChart({
                 }}
               >
                 <BarChart3 size={16} strokeWidth={1.5} />
-                Performance Detalhada por Canal
+                {t("insights.traffic.channelDetails")}
               </Typography>
               <Grid container spacing={2}>
                 {data.channels.map((channel, index) => (
@@ -490,15 +490,13 @@ export function TrafficSourceChart({
                         </Typography>
                       </Box>
                       <Typography variant="body2" color="text.secondary">
-                        {channel.clicks} clicks (
-                        {Number(channel.percentage).toFixed(1)}%)
+                        {channel.clicks} clicks ({Number(channel.percentage).toFixed(1)}%)
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {channel.unique_visitors} visitantes únicos
+                        {t("insights.traffic.uniqueVisitors", { n: channel.unique_visitors })}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        Sessão: {Number(channel.avg_session_depth).toFixed(2)}{" "}
-                        clicks
+                        {t("insights.traffic.session", { n: Number(channel.avg_session_depth).toFixed(2) })}
                       </Typography>
                       {channel.avg_response_time > 0 && (
                         <Typography
@@ -506,7 +504,7 @@ export function TrafficSourceChart({
                           color="text.secondary"
                           sx={{ display: "block" }}
                         >
-                          Tempo: {Number(channel.avg_response_time).toFixed(2)}s
+                          {t("insights.traffic.time", { n: Number(channel.avg_response_time).toFixed(2) })}
                         </Typography>
                       )}
                     </Box>
@@ -540,7 +538,7 @@ export function TrafficSourceChart({
                 }}
               >
                 <Trophy size={16} strokeWidth={1.5} />
-                Top 5 Fontes Individuais
+                {t("insights.traffic.topSources")}
               </Typography>
               <Grid container spacing={1}>
                 {data.sources.slice(0, 5).map((source, index) => (
@@ -566,8 +564,7 @@ export function TrafficSourceChart({
                           {index + 1}. {source.source}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          Sessão: {Number(source.avg_session_depth).toFixed(2)}{" "}
-                          clicks
+                          {t("insights.traffic.session", { n: Number(source.avg_session_depth).toFixed(2) })}
                         </Typography>
                       </Box>
                       <Box sx={{ textAlign: "right" }}>
@@ -610,7 +607,7 @@ export function TrafficSourceChart({
                   }}
                 >
                   <Lightbulb size={16} strokeWidth={1.5} />
-                  Recomendações Estratégicas
+                  {t("insights.traffic.strategicRecs")}
                 </Typography>
                 <Stack spacing={2}>
                   {data.recommendations.map((rec, index) => (

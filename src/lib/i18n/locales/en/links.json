@@ -98,6 +98,8 @@
   },
   "metrics": {
     "title": "Link Metrics",
+    "clicksCount_one": "{{count}} click",
+    "clicksCount_other": "{{count}} clicks",
     "totalClicks": "Total Clicks",
     "uniqueVisitors": "Unique Visitors",
     "avgClicksDay": "Avg. Clicks / Day",
@@ -134,6 +136,13 @@
     },
     "clicksTable": {
       "title": "Recent Clicks",
+      "description": "Detailed list of each recorded access: origin, location, device, browser and UTM.",
+      "clicksRegistered_one": "{{count}} click recorded",
+      "clicksRegistered_other": "{{count}} clicks recorded",
+      "loadingMessage": "Loading clicks...",
+      "emptyMessage": "This link has not received any clicks yet.",
+      "searchPlaceholder": "Search by country, city, IP, browser...",
+      "dateFormat": "MM/dd/yyyy 'at' HH:mm:ss",
       "date": "Date / Time",
       "location": "Location",
       "device": "Device",

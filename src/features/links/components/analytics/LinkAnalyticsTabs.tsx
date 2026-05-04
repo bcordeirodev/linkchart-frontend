@@ -71,46 +71,14 @@ export function LinkAnalyticsTabsOptimized({
 
   // Configuração padronizada de tabs
   const tabLabels = [
-    {
-      label: t("analytics.tabs.overview"),
-      Icon: LayoutDashboard,
-      description: "Visão geral consolidada",
-    },
-    {
-      label: t("analytics.tabs.performance"),
-      Icon: Zap,
-      description: "Velocidade e disponibilidade",
-    },
-    {
-      label: t("analytics.tabs.geographic"),
-      Icon: Globe,
-      description: "Análise geográfica",
-    },
-    {
-      label: t("analytics.tabs.temporal"),
-      Icon: Clock,
-      description: "Tendências temporais",
-    },
-    {
-      label: t("analytics.tabs.audience"),
-      Icon: Users,
-      description: "Perfil da audiência",
-    },
-    {
-      label: t("analytics.tabs.heatmap"),
-      Icon: Flame,
-      description: "Mapa de calor",
-    },
-    {
-      label: t("analytics.tabs.insights"),
-      Icon: Lightbulb,
-      description: "Insights de negócio",
-    },
-    {
-      label: t("analytics.clicksTable.title"),
-      Icon: MousePointer2,
-      description: "Lista detalhada de cliques",
-    },
+    { label: t("analytics.tabs.overview"), Icon: LayoutDashboard },
+    { label: t("analytics.tabs.performance"), Icon: Zap },
+    { label: t("analytics.tabs.geographic"), Icon: Globe },
+    { label: t("analytics.tabs.temporal"), Icon: Clock },
+    { label: t("analytics.tabs.audience"), Icon: Users },
+    { label: t("analytics.tabs.heatmap"), Icon: Flame },
+    { label: t("analytics.tabs.insights"), Icon: Lightbulb },
+    { label: t("analytics.clicksTable.title"), Icon: MousePointer2 },
   ];
 
   return (

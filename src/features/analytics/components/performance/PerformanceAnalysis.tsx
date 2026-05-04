@@ -254,7 +254,7 @@ export function PerformanceAnalysis({
                 </Typography>
                 <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
                   • <strong>{t("performance.insights.successRate")}</strong>{" "}
-                  {performanceMetrics.successRate}% dos redirecionamentos
+                  {performanceMetrics.successRate}% {t("performance.insights.ofRedirects")}
                   <br />• <strong>{t("performance.insights.responseTime")}</strong>{" "}
                   {performanceMetrics.avgResponseTime}ms (
                   {performanceMetrics.avgResponseTime < 200

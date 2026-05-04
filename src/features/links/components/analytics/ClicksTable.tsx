@@ -3,7 +3,6 @@
 import { MousePointer2 } from "lucide-react";
 import { Box, Chip, Stack, Tooltip, Typography } from "@mui/material";
 import { format, isValid } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -44,7 +43,7 @@ const SORTABLE_COLUMNS = new Set([
   "referer",
 ]);
 
-function formatDate(value: string | null): string {
+function formatDate(value: string | null, fmt: string): string {
   if (!value) {
     return "—";
   }
@@ -55,7 +54,7 @@ function formatDate(value: string | null): string {
     return "—";
   }
 
-  return format(d, "dd/MM/yyyy 'às' HH:mm:ss", { locale: ptBR });
+  return format(d, fmt);
 }
 
 function formatLocation(click: LinkClickItem): string {
@@ -78,10 +77,11 @@ function formatReferer(click: LinkClickItem): string {
 }
 
 function WhenCell({ row }: CellProps) {
+  const { t } = useTranslation("links");
   return (
     <Stack spacing={0.25}>
       <Typography variant="body2">
-        {formatDate(row.original.created_at)}
+        {formatDate(row.original.created_at, t("analytics.clicksTable.dateFormat"))}
       </Typography>
       {row.original.timezone ? (
         <Typography variant="caption" color="text.secondary">
@@ -326,8 +326,8 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
         <TabDescription
           icon={<MousePointer2 {...ICON_LG} />}
           title={t("analytics.clicksTable.title")}
-          description="Lista detalhada de cada acesso registrado: origem, localização, dispositivo, navegador e UTM."
-          highlight={`${total} clique${total === 1 ? "" : "s"} registrado${total === 1 ? "" : "s"}`}
+          description={t("analytics.clicksTable.description")}
+          highlight={t("analytics.clicksTable.clicksRegistered", { count: total })}
         />
       </Box>
 
@@ -336,8 +336,8 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
         error={error}
         hasData={items.length > 0 || loading}
         onRetry={refresh}
-        loadingMessage="Carregando cliques..."
-        emptyMessage="Este link ainda não recebeu cliques."
+        loadingMessage={t("analytics.clicksTable.loadingMessage")}
+        emptyMessage={t("analytics.clicksTable.emptyMessage")}
         minHeight={300}
       >
         <Box
@@ -379,7 +379,7 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
               showRowsPerPage: true,
             }}
             muiSearchTextFieldProps={{
-              placeholder: "Buscar por país, cidade, IP, navegador...",
+              placeholder: t("analytics.clicksTable.searchPlaceholder"),
               sx: { minWidth: "320px" },
               variant: "outlined",
               size: "small",

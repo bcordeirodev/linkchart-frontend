@@ -1,5 +1,7 @@
+"use client";
 import { CheckCircle, Zap } from "lucide-react";
 import { Grid, Box, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 
@@ -18,24 +20,23 @@ interface PerformanceMetricsProps {
   title?: string;
 }
 
-/**
- * ⚡ Métricas específicas de Performance
- * Focado em velocidade, disponibilidade e qualidade
- */
 export function PerformanceMetrics({
   data: _data,
   performanceData,
   showTitle = false,
-  title = "Métricas de Performance",
+  title,
 }: PerformanceMetricsProps) {
-  // Cálculos das métricas usando dados reais do backend
+  const { t } = useTranslation("analytics");
+
   const successRate = Math.round(performanceData?.success_rate || 100);
   const responseTime = Math.round(performanceData?.avg_response_time || 0);
+
+  const displayTitle = title ?? t("performance.metrics.title");
 
   const metrics = [
     {
       id: "response_time",
-      title: "Tempo Resposta",
+      title: t("performance.metrics.responseTime"),
       value: `${responseTime}ms`,
       icon: <Zap {...ICON_LG} />,
       color:
@@ -44,11 +45,11 @@ export function PerformanceMetrics({
           : responseTime < 400
             ? ("warning" as const)
             : ("error" as const),
-      subtitle: "tempo médio",
+      subtitle: t("performance.metrics.avgTime"),
     },
     {
       id: "success_rate",
-      title: "Taxa de Sucesso",
+      title: t("performance.metrics.successRate"),
       value: `${successRate}%`,
       icon: <CheckCircle {...ICON_LG} />,
       color:
@@ -57,7 +58,7 @@ export function PerformanceMetrics({
           : successRate >= 95
             ? ("info" as const)
             : ("warning" as const),
-      subtitle: "redirecionamentos",
+      subtitle: t("performance.metrics.redirects"),
     },
   ];
 
@@ -65,7 +66,7 @@ export function PerformanceMetrics({
     <Box sx={{ mb: 3 }}>
       {showTitle ? (
         <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-          {title}
+          {displayTitle}
         </Typography>
       ) : null}
 

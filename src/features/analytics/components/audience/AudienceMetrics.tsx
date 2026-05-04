@@ -1,5 +1,7 @@
+"use client";
 import { MonitorSmartphone, Globe, Clock, TrendingUp } from "lucide-react";
 import { Grid, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 
@@ -11,16 +13,13 @@ interface AudienceMetricsProps {
   title?: string;
 }
 
-/**
- * 👥 Métricas específicas de Audiência
- * Focado em dispositivos, browsers e comportamento
- */
 export function AudienceMetrics({
   data,
   showTitle = false,
-  title = "Métricas de Audiência",
+  title,
 }: AudienceMetricsProps) {
-  // Cálculos das métricas
+  const { t } = useTranslation("analytics");
+
   const deviceTypes = data?.audience?.device_breakdown?.length || 0;
   const browserTypes = data?.audience?.browser_breakdown?.length || 0;
   const osTypes = data?.audience?.os_breakdown?.length || 0;
@@ -30,38 +29,40 @@ export function AudienceMetrics({
       0,
     ) || 0;
 
+  const displayTitle = title ?? t("audience.metrics.title");
+
   const metrics = [
     {
       id: "device_types",
-      title: "Tipos de Dispositivos",
+      title: t("audience.metrics.deviceTypes"),
       value: deviceTypes.toString(),
       icon: <MonitorSmartphone {...ICON_LG} />,
       color: "primary" as const,
-      subtitle: "dispositivos únicos",
+      subtitle: t("audience.metrics.uniqueDevices"),
     },
     {
       id: "browser_types",
-      title: "Navegadores",
+      title: t("audience.metrics.browsers"),
       value: browserTypes.toString(),
       icon: <Globe {...ICON_LG} />,
       color: "success" as const,
-      subtitle: "browsers diferentes",
+      subtitle: t("audience.metrics.differentBrowsers"),
     },
     {
       id: "os_types",
-      title: "Sistemas Operacionais",
+      title: t("audience.metrics.operatingSystems"),
       value: osTypes.toString(),
       icon: <Clock {...ICON_LG} />,
       color: "info" as const,
-      subtitle: "OS diferentes",
+      subtitle: t("audience.metrics.differentOS"),
     },
     {
       id: "audience_clicks",
-      title: "Cliques da Audiência",
+      title: t("audience.metrics.audienceClicks"),
       value: totalAudienceClicks.toLocaleString(),
       icon: <TrendingUp {...ICON_LG} />,
       color: "warning" as const,
-      subtitle: "engajamento total",
+      subtitle: t("audience.metrics.totalEngagement"),
     },
   ];
 
@@ -69,7 +70,7 @@ export function AudienceMetrics({
     <>
       {showTitle ? (
         <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-          {title}
+          {displayTitle}
         </Typography>
       ) : null}
 

@@ -5,6 +5,7 @@
 
 import { useTheme } from "@mui/material/styles";
 import { Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
@@ -26,12 +27,13 @@ export function TopCountriesChart({
   maxCountries = 10,
 }: TopCountriesChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
 
   const topCountries = data.slice(0, maxCountries);
 
   return (
-    <ChartCard title="Top Países" icon={<Globe {...ICON_LG} />}>
+    <ChartCard title={t("charts.topCountries")} icon={<Globe {...ICON_LG} />}>
       <ApexChartWrapper
         type="bar"
         height={height}
