@@ -24,6 +24,15 @@ export const metadata: Metadata = {
   description:
     "Free URL shortener with powerful real-time analytics, click tracking, and geographic insights.",
   metadataBase: new URL(appUrl),
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: { url: "/apple-icon.png", sizes: "180x180" },
+  },
   openGraph: {
     type: "website",
     siteName: "Link Charts",
