@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { Box, Divider, Typography } from "@mui/material";
 import { ExternalLink, Copy, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -21,8 +22,10 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
     timeout: 2000,
   });
   const { t } = useTranslation("public");
-  const analyticsUrl =
-    typeof window !== "undefined" ? window.location.href : "";
+  const [analyticsUrl, setAnalyticsUrl] = useState("");
+  useEffect(() => {
+    setAnalyticsUrl(window.location.href);
+  }, []);
 
   return (
     <Box>
