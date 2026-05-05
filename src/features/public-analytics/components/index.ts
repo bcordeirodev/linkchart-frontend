@@ -1,16 +1,10 @@
-/**
- * 📊 PUBLIC ANALYTICS COMPONENTS
- * Exportações centralizadas dos componentes do módulo
- */
-
 // Header
 export { PublicAnalyticsHeader } from "./header/PublicAnalyticsHeader";
 
 // Info
-export { LinkInfoCard } from "./info/LinkInfoCard";
+export { LinkHeroCard } from "./info/LinkHeroCard";
 export { AnalyticsInfo } from "./info/AnalyticsInfo";
-export { PublicAnalyticsCtaStrip } from "./info/PublicAnalyticsCtaStrip";
-export { SaveAnalyticsUrlBanner } from "./info/SaveAnalyticsUrlBanner";
+export { PublicCtaBlock } from "./info/PublicCtaBlock";
 
 // Metrics
 export { PublicMetrics } from "./metrics/PublicMetrics";

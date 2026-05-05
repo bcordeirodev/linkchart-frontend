@@ -1,21 +1,14 @@
 "use client";
-/**
- * PublicAnalyticsPageContent
- *
- * Prop-based variant of PublicAnalyticsPage for use in Next.js App Router,
- * where the slug comes from route params rather than React Router's useParams.
- */
 
-import { Box, Container, Fade, Stack, Typography } from "@mui/material";
-import { memo, useMemo } from "react";
+import { Box, Container, Fade, Stack } from "@mui/material";
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
-  LinkInfoCard,
+  LinkHeroCard,
   PublicMetrics,
   PublicCharts,
-  PublicAnalyticsCtaStrip,
-  SaveAnalyticsUrlBanner,
+  PublicCtaBlock,
   ErrorState,
   usePublicAnalytics,
 } from "@/features/public-analytics";
@@ -34,15 +27,8 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
     loading,
     error,
     debugInfo,
-    handleCopyLink,
     handleCreateLink,
-    handleVisitLink,
   } = usePublicAnalytics({ slug });
-
-  const actions = useMemo(
-    () => ({ handleCopyLink, handleCreateLink, handleVisitLink }),
-    [handleCopyLink, handleCreateLink, handleVisitLink],
-  );
 
   if (loading) {
     return <PublicAnalyticsSkeleton />;
@@ -51,7 +37,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
   if (error || !linkData || !analyticsData) {
     return (
       <ErrorState
-        error={error || "Link nao encontrado"}
+        error={error || t("publicAnalytics.error.loadFailed")}
         debugInfo={debugInfo}
         onCreateLink={handleCreateLink}
       />
@@ -84,46 +70,29 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
         >
           <Stack spacing={2.5}>
             <Fade in timeout={400}>
-              <Typography
-                sx={{
-                  fontSize: "0.6875rem",
-                  fontWeight: 600,
-                  color: "rgba(255,255,255,0.3)",
-                  letterSpacing: "1px",
-                  textTransform: "uppercase",
-                }}
-              >
-                {t("publicAnalytics.title")}
-              </Typography>
+              <Box>
+                <LinkHeroCard
+                  linkData={linkData}
+                  onCreateLink={handleCreateLink}
+                />
+              </Box>
             </Fade>
 
             <Fade in timeout={600}>
-              <Box>
-                <LinkInfoCard linkData={linkData} actions={actions} />
-              </Box>
-            </Fade>
-
-            <Fade in timeout={800}>
-              <Box>
-                <SaveAnalyticsUrlBanner />
-              </Box>
-            </Fade>
-
-            <Fade in timeout={900}>
               <Box>
                 <PublicMetrics analyticsData={analyticsData} />
               </Box>
             </Fade>
 
-            <Fade in timeout={1100}>
+            <Fade in timeout={800}>
               <Box>
                 <PublicCharts analyticsData={analyticsData} />
               </Box>
             </Fade>
 
-            <Fade in timeout={1300}>
+            <Fade in timeout={1000}>
               <Box>
-                <PublicAnalyticsCtaStrip />
+                <PublicCtaBlock />
               </Box>
             </Fade>
           </Stack>
