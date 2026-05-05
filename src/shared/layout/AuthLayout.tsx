@@ -3,7 +3,7 @@ import { Box, Typography, alpha, Paper } from "@mui/material";
 import { useMemo } from "react";
 import { useTheme } from "@mui/material/styles";
 
-import { AppIcon } from "@/shared/ui/icons";
+import { AppLogo } from "@/shared/ui/base";
 import { useResponsive } from "@/lib/theme";
 import { Link } from "@/shared/components";
 import {
@@ -131,40 +131,17 @@ function AuthLayout({
               sx={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 2,
+                justifyContent: "center",
                 mb: 2,
               }}
             >
-              <Box
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 64,
-                  height: 64,
-                  borderRadius: 2,
-                  background: theme.palette.primary.main,
-                  boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.3)}`,
-                  transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
-                  "&:hover": {
-                    transform: "scale(1.05)",
-                  },
-                }}
-              >
-                <AppIcon intent="link" size={24} />
-              </Box>
-
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: 700,
-                  color: theme.palette.text.primary,
+              <AppLogo
+                size={48}
+                textSx={{
                   fontSize: "1.5rem",
-                  letterSpacing: "-0.02em",
+                  color: theme.palette.text.primary,
                 }}
-              >
-                Link Charts
-              </Typography>
+              />
             </Box>
 
             {title ? (

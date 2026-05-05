@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 
 import { useMainTheme } from "@/lib/theme";
 import { LanguageSelector } from "@/i18n/components/LanguageSelector";
+import { AppLogo } from "@/shared/ui/base";
 
 import type { ReactNode } from "react";
 
@@ -147,16 +148,13 @@ function PublicLayout({
                 alignItems: "center",
               }}
             >
-              <Box
-                sx={{
-                  fontWeight: 700,
+              <AppLogo
+                size={28}
+                textSx={{
                   fontSize: "1.0625rem",
-                  letterSpacing: "-0.01em",
-                  color: "rgba(255,255,255,0.85)",
+                  color: "rgba(255,255,255,0.9)",
                 }}
-              >
-                Link Charts
-              </Box>
+              />
               {variant === "shorter" && <ShorterHeaderActions />}
             </Box>
           </Container>
