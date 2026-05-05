@@ -94,16 +94,40 @@ export function Navbar({
           {/* Logo Section */}
           <Box
             onClick={() => navigate("/links")}
-            sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+            sx={{ display: "flex", alignItems: "center", cursor: "pointer", gap: 1.5 }}
           >
             <AppLogo
               size={36}
-              showText={!isMobile}
-              textSx={{
-                fontSize: "1.125rem",
-                color: theme.palette.text.primary,
-              }}
+              showText={false}
             />
+            <Box sx={{ display: { xs: "none", sm: "block" } }}>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  fontWeight: 600,
+                  color: theme.palette.text.primary,
+                  fontSize: "1.125rem",
+                  letterSpacing: "-0.025em",
+                  lineHeight: 1.2,
+                }}
+              >
+                Link Charts
+              </Typography>
+              <Typography
+                variant="caption"
+                suppressHydrationWarning
+                sx={{
+                  color: theme.palette.text.secondary,
+                  fontSize: "0.6875rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {t("appTagline")}
+              </Typography>
+            </Box>
           </Box>
 
           {isMobile ? (
