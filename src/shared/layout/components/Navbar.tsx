@@ -33,6 +33,7 @@ import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import { useResponsive } from "@/lib/theme";
 import { AppIcon } from "@/shared/ui/icons";
+import { AppLogo } from "@/shared/ui/base";
 import { LanguageSelector } from "@/i18n/components/LanguageSelector";
 
 interface NavbarProps {
@@ -93,60 +94,16 @@ export function Navbar({
           {/* Logo Section */}
           <Box
             onClick={() => navigate("/links")}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
+            sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
           >
-            {/* Logo Icon */}
-            <Box
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: `${radiusTokens.md}px`,
-                backgroundColor: theme.palette.primary.main,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                mr: 2,
+            <AppLogo
+              size={36}
+              showText={!isMobile}
+              textSx={{
+                fontSize: "1.125rem",
+                color: theme.palette.text.primary,
               }}
-            >
-              <AppIcon
-                intent="analytics"
-                size={20}
-                color={theme.palette.primary.contrastText}
-              />
-            </Box>
-
-            {/* Logo Text */}
-            <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{
-                  fontWeight: 600,
-                  color: theme.palette.text.primary,
-                  fontSize: "1.25rem",
-                  letterSpacing: "-0.025em",
-                }}
-              >
-                Link Charts
-              </Typography>
-              <Typography
-                variant="caption"
-                suppressHydrationWarning
-                sx={{
-                  color: theme.palette.text.secondary,
-                  fontSize: "0.75rem",
-                  fontWeight: 500,
-                  letterSpacing: "0.05em",
-                  textTransform: "uppercase",
-                }}
-              >
-                {t("appTagline")}
-              </Typography>
-            </Box>
+            />
           </Box>
 
           {isMobile ? (
@@ -344,31 +301,9 @@ export function Navbar({
             px: 3,
             py: 2,
             borderBottom: `1px solid ${theme.palette.divider}`,
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
           }}
         >
-          <Box
-            sx={{
-              width: 32,
-              height: 32,
-              borderRadius: `${radiusTokens.md}px`,
-              backgroundColor: theme.palette.primary.main,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <AppIcon
-              intent="analytics"
-              size={16}
-              color={theme.palette.primary.contrastText}
-            />
-          </Box>
-          <Typography variant="h6" fontWeight={600} fontSize="1rem">
-            Link Charts
-          </Typography>
+          <AppLogo size={28} textSx={{ fontSize: "1rem", color: theme.palette.text.primary }} />
         </Box>
 
         <List sx={{ py: 1 }}>

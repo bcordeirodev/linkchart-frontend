@@ -3,6 +3,9 @@
  * Exportações centralizadas dos componentes base
  */
 
+// Brand
+export { AppLogo } from "./AppLogo";
+
 // Layout & Structure
 export { default as TabPanel } from "./TabPanel";
 export { default as TabDescription } from "./TabDescription";
