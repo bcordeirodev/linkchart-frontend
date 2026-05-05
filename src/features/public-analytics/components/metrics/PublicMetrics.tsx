@@ -48,7 +48,7 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
     <Box
       sx={{
         display: "grid",
-        gridTemplateColumns: { xs: "1fr 1fr", md: "2fr 1fr 1fr 1fr" },
+        gridTemplateColumns: { xs: "1fr 1fr", md: "2fr 1fr 1fr" },
         gap: "12px",
       }}
     >
@@ -130,45 +130,6 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
           {dateLabel}
         </Typography>
         {timeLabel ? <Typography sx={subSx}>{timeLabel}</Typography> : null}
-      </Box>
-
-      <Box sx={cardBase}>
-        <Typography sx={labelSx}>
-          {t("publicAnalytics.metrics.analyticsLabel")}
-        </Typography>
-        <Box
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            background: analyticsData.has_analytics
-              ? "rgba(99,102,241,0.08)"
-              : "rgba(255,255,255,0.04)",
-            border: "1px solid",
-            borderColor: analyticsData.has_analytics
-              ? "rgba(99,102,241,0.22)"
-              : "rgba(255,255,255,0.1)",
-            borderRadius: "5px",
-            px: 1.25,
-            py: 0.5,
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              color: analyticsData.has_analytics
-                ? "#a5b4fc"
-                : "rgba(255,255,255,0.3)",
-            }}
-          >
-            {analyticsData.has_analytics
-              ? t("publicAnalytics.metrics.available")
-              : t("publicAnalytics.metrics.noData")}
-          </Typography>
-        </Box>
-        <Typography sx={subSx}>
-          {t("publicAnalytics.metrics.dataCollected")}
-        </Typography>
       </Box>
     </Box>
   );
