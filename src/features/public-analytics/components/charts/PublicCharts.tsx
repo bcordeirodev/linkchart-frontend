@@ -6,16 +6,18 @@ import {
   Smartphone,
   Monitor,
   BarChart2,
+  TrendingUp,
 } from "lucide-react";
 import { Box, Typography, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import {
   formatAreaChart,
   formatBarChart,
   formatPieChart,
 } from "@/features/analytics/utils/chartFormatters";
-import { createPresetAnimations, createTextGradient } from "@/lib/theme";
+import { createPresetAnimations } from "@/lib/theme";
 import { chartByType } from "@/lib/theme/colors";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -23,14 +25,13 @@ import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import type { PublicAnalyticsData } from "../../types";
 
-const DOW_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"] as const;
-
 interface PublicChartsProps {
   analyticsData: PublicAnalyticsData;
 }
 
 export function PublicCharts({ analyticsData }: PublicChartsProps) {
   const theme = useTheme();
+  const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
   const animations = createPresetAnimations(theme);
   const { charts } = analyticsData;
@@ -40,7 +41,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
     clicks: d.clicks,
   }));
   const dowData = (charts?.temporal?.clicks_by_day_of_week ?? []).map((d) => ({
-    day: DOW_LABELS[d.day] ?? String(d.day),
+    day: t(`publicAnalytics.charts.dow.${d.day}`, { defaultValue: String(d.day) }),
     clicks: d.clicks,
   }));
 
@@ -64,26 +65,31 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
   }
 
   return (
-    <Box sx={{ py: { xs: 2, md: 3 }, ...animations.fadeIn }}>
-      <Typography
-        variant="h5"
-        component="h2"
+    <Box sx={{ ...animations.fadeIn }}>
+      <Box
         sx={{
-          textAlign: "center",
-          mb: 3,
-          fontWeight: 700,
-          ...createTextGradient(theme, "primary"),
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          gap: 1.5,
+          gap: 1,
+          mb: 2,
         }}
       >
-        Gráficos de Analytics
-      </Typography>
+        <TrendingUp size={15} strokeWidth={1.75} color="rgba(129,140,248,0.6)" />
+        <Typography
+          sx={{
+            fontSize: "0.8125rem",
+            fontWeight: 600,
+            color: "rgba(255,255,255,0.5)",
+            letterSpacing: "0.3px",
+          }}
+        >
+          {t("publicAnalytics.charts.title")}
+        </Typography>
+      </Box>
 
       <ChartsGrid
         isDark={isDark}
+        t={t as (key: string) => string}
         hourData={hasHourData ? hourData : undefined}
         dowData={hasDowData ? dowData : undefined}
         deviceData={
@@ -117,6 +123,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 
 interface ChartsGridProps {
   isDark: boolean;
+  t: (key: string) => string;
   hourData?: { hour: string; clicks: number }[];
   dowData?: { day: string; clicks: number }[];
   deviceData?: { device: string; clicks: number }[];
@@ -124,8 +131,22 @@ interface ChartsGridProps {
   countryData?: { country: string; clicks: number }[];
 }
 
+const darkCardSx = {
+  "& .MuiCard-root": {
+    background: "rgba(255,255,255,0.03)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    boxShadow: "none",
+  },
+  "& .MuiCardContent-root .MuiTypography-h5": {
+    fontSize: "0.8125rem",
+    fontWeight: 600,
+    color: "rgba(255,255,255,0.5)",
+  },
+};
+
 function ChartsGrid({
   isDark,
+  t,
   hourData,
   dowData,
   deviceData,
@@ -133,10 +154,14 @@ function ChartsGrid({
   countryData,
 }: ChartsGridProps) {
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={2}>
       {hourData ? (
         <Grid item xs={12}>
-          <ChartCard title="Cliques por Hora" icon={<Clock {...ICON_LG} />}>
+          <ChartCard
+            title={t("publicAnalytics.charts.hourlyClicks")}
+            icon={<Clock {...ICON_LG} />}
+            sx={darkCardSx}
+          >
             <ApexChartWrapper
               type="area"
               size="compact"
@@ -155,8 +180,9 @@ function ChartsGrid({
       {dowData ? (
         <Grid item xs={12} md={countryData ? 6 : 12}>
           <ChartCard
-            title="Cliques por Dia da Semana"
+            title={t("publicAnalytics.charts.dayOfWeek")}
             icon={<Calendar {...ICON_LG} />}
+            sx={darkCardSx}
           >
             <ApexChartWrapper
               type="bar"
@@ -176,7 +202,11 @@ function ChartsGrid({
 
       {countryData ? (
         <Grid item xs={12} md={dowData ? 6 : 12}>
-          <ChartCard title="Top Países" icon={<Globe {...ICON_LG} />}>
+          <ChartCard
+            title={t("publicAnalytics.charts.topCountries")}
+            icon={<Globe {...ICON_LG} />}
+            sx={darkCardSx}
+          >
             <ApexChartWrapper
               type="bar"
               size="standard"
@@ -195,7 +225,11 @@ function ChartsGrid({
 
       {deviceData ? (
         <Grid item xs={12} md={browserData ? 6 : 12}>
-          <ChartCard title="Dispositivos" icon={<Smartphone {...ICON_LG} />}>
+          <ChartCard
+            title={t("publicAnalytics.charts.devices")}
+            icon={<Smartphone {...ICON_LG} />}
+            sx={darkCardSx}
+          >
             <ApexChartWrapper
               type="donut"
               size="standard"
@@ -212,7 +246,11 @@ function ChartsGrid({
 
       {browserData ? (
         <Grid item xs={12} md={deviceData ? 6 : 12}>
-          <ChartCard title="Browsers" icon={<Monitor {...ICON_LG} />}>
+          <ChartCard
+            title={t("publicAnalytics.charts.browsers")}
+            icon={<Monitor {...ICON_LG} />}
+            sx={darkCardSx}
+          >
             <ApexChartWrapper
               type="donut"
               size="standard"
@@ -231,6 +269,7 @@ function ChartsGrid({
 }
 
 function EmptyChartsState() {
+  const { t } = useTranslation("public");
   return (
     <Box
       sx={{
@@ -253,7 +292,7 @@ function EmptyChartsState() {
           textAlign: "center",
         }}
       >
-        Os gráficos aparecerão após os primeiros cliques
+        {t("publicAnalytics.charts.emptyText")}
       </Typography>
       <Typography
         sx={{
@@ -264,7 +303,7 @@ function EmptyChartsState() {
           lineHeight: 1.6,
         }}
       >
-        Horários de pico, dispositivos, países e muito mais.
+        {t("publicAnalytics.charts.emptySub")}
       </Typography>
     </Box>
   );
