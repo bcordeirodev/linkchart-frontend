@@ -217,6 +217,16 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
 
       {/* Footer — save + action */}
       <Box sx={{ p: { xs: "14px 20px", md: "14px 24px" } }}>
+        <Typography
+          sx={{
+            fontSize: "0.6875rem",
+            color: "rgba(255,255,255,0.3)",
+            mb: 1.25,
+            lineHeight: 1.4,
+          }}
+        >
+          {t("publicAnalytics.saveUrlBanner.title")}
+        </Typography>
         <Box
           sx={{
             display: "flex",
