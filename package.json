@@ -55,10 +55,12 @@
     "react-redux": "^9.2.0",
     "stylis": "^4.4.0",
     "stylis-plugin-rtl": "^2.1.1",
+    "vanilla-cookieconsent": "^3.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.52.0",
     "@types/humps": "^2.0.6",
     "@types/node": "^20",
     "@types/qs": "^6.9.17",
@@ -69,7 +71,6 @@
     "eslint-config-next": "15.5.15",
     "prettier": "^3.2.5",
     "type-fest": "^4.30.0",
-    "typescript": "^5",
-    "@playwright/test": "^1.52.0"
+    "typescript": "^5"
   }
 }
