@@ -4,6 +4,7 @@ import { Box, Container, Fade, Stack, Typography } from "@mui/material";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { AdSlot } from "@/shared/components/ads/AdSlot";
 import {
   LinkHeroCard,
   PublicMetrics,
@@ -107,6 +108,11 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
                 <PublicMetrics analyticsData={analyticsData} />
               </Box>
             </Fade>
+
+            <AdSlot
+              slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_ABOVE_CHARTS ?? ''}
+              format="leaderboard"
+            />
 
             <Fade in timeout={800}>
               <Box>
