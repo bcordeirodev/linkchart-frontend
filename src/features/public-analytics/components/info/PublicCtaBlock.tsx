@@ -1,17 +1,16 @@
 "use client";
 import { Box, Button, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { useNavigate } from "@/shared/hooks";
 
-const features = [
-  "Grátis para sempre",
-  "QR Code incluso",
-  "Sem cartão",
-  "Slug personalizado",
-];
-
 export function PublicCtaBlock() {
   const navigate = useNavigate();
+  const { t } = useTranslation("public");
+  const features = t("publicAnalytics.cta.features", {
+    returnObjects: true,
+  }) as string[];
+
   return (
     <Box
       sx={{
@@ -40,7 +39,7 @@ export function PublicCtaBlock() {
               mb: 0.5,
             }}
           >
-            Crie sua conta gratuita
+            {t("publicAnalytics.cta.title")}
           </Typography>
           <Typography
             sx={{
@@ -50,9 +49,7 @@ export function PublicCtaBlock() {
               maxWidth: 480,
             }}
           >
-            Acesse analytics completos com histórico de cliques, mapa de países,
-            dispositivos e horários de pico. Gerencie todos os seus links em um
-            painel próprio — com QR Code e slug personalizado em cada um.
+            {t("publicAnalytics.cta.description")}
           </Typography>
         </Box>
         <Button
@@ -71,7 +68,7 @@ export function PublicCtaBlock() {
             "&:hover": { boxShadow: "none", opacity: 0.88 },
           }}
         >
-          Criar conta gratis
+          {t("publicAnalytics.cta.button")}
         </Button>
       </Box>
 

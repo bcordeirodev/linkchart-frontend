@@ -12,6 +12,10 @@
     "shortenButton": "Shorten",
     "shortening": "Shortening...",
     "successTitle": "Link created!",
+    "successSubtitle": "Copy and share wherever you want",
+    "redirectingAnalytics": "Redirecting to detailed analytics in 3s...",
+    "copiedToClipboard": "Copied",
+    "copyAgain": "Copy again",
     "copyButton": "Copy link",
     "copySuccess": "Copied!",
     "shareButton": "Share",
@@ -37,7 +41,14 @@
       "slugPlaceholder": "my-link",
       "slugInvalid": "3–50 characters: lowercase letters, numbers and hyphens",
       "submitButton": "⚡ Shorten Now",
-      "errorMessage": "Error shortening URL. Please try again."
+      "errorMessage": "Error shortening URL. Please try again.",
+      "slugChecking": "Checking...",
+      "slugAvailable": "Available",
+      "slugTaken": "Already taken",
+      "safetyChecking": "Checking URL safety...",
+      "safetySafe": "URL is safe",
+      "safetyBlocked": "Blocked URL: {{threats}}",
+      "safetyError": "Safety check unavailable"
     },
     "upgrade": {
       "title": "Get more with a free account",
@@ -83,6 +94,36 @@
       "copy": "Copy",
       "upgradeTitle": "Want full history, alerts and detailed charts?",
       "upgradeButton": "Create a free account →"
+    },
+    "charts": {
+      "title": "Analytics Charts",
+      "hourlyClicks": "Clicks by Hour",
+      "dayOfWeek": "Clicks by Day of Week",
+      "topCountries": "Top Countries",
+      "devices": "Devices",
+      "browsers": "Browsers",
+      "emptyText": "Charts will appear after the first clicks",
+      "emptySub": "Peak times, devices, countries and much more.",
+      "dow": {
+        "0": "Sun",
+        "1": "Mon",
+        "2": "Tue",
+        "3": "Wed",
+        "4": "Thu",
+        "5": "Fri",
+        "6": "Sat"
+      }
+    },
+    "linkInfo": {
+      "copy": "Copy",
+      "shortenAnother": "Shorten another link",
+      "visitDestination": "Visit destination"
+    },
+    "cta": {
+      "title": "Create your free account",
+      "description": "Access full analytics with click history, country map, devices and peak hours. Manage all your links in your own dashboard — with QR Code and custom slug on each one.",
+      "button": "Create free account",
+      "features": ["Free forever", "QR Code included", "No credit card", "Custom slug"]
     }
   },
   "redirect": {
