@@ -45,7 +45,7 @@ export function PublicCtaBlock() {
         variant="contained"
         onClick={() => navigate("/sign-up")}
         sx={{
-          background: "linear-gradient(90deg,#6366f1,#8b5cf6)",
+          background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
           fontWeight: 600,
           fontSize: "0.8125rem",
           px: 3,
