@@ -32,7 +32,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
       <Box
         sx={{
           background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.12)",
+          border: "1px solid rgba(255,255,255,0.1)",
           borderRadius: "12px",
           p: { xs: "20px", md: "24px" },
         }}
