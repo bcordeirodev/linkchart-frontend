@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Inter } from "next/font/google";
+import { cookies } from "next/headers";
 
 import { Providers } from "@/lib/providers/Providers";
 import { buildOrganizationSchema } from "@/lib/seo/structuredData";
@@ -50,13 +51,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const initialLang = cookieStore.get("i18nextLng")?.value ?? "en";
+
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang={initialLang} suppressHydrationWarning>
       <head>
         {process.env.NEXT_PUBLIC_GA_ID ? (
           <>
@@ -78,7 +82,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(buildOrganizationSchema()) }}
         />
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-          <Providers>{children}</Providers>
+          <Providers initialLang={initialLang}>{children}</Providers>
         </AppRouterCacheProvider>
       </body>
     </html>
