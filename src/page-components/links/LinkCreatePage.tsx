@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { CreateLinkForm } from "@/features/links";
 import { ResponsiveContainer } from "@/shared/ui/base";
+import { LinkFormSkeleton } from "@/shared/ui/feedback/skeletons";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
 
@@ -28,7 +29,7 @@ function LinkCreatePage() {
   }, []);
 
   return (
-    <AuthGuardRedirect auth={["user", "admin"]}>
+    <AuthGuardRedirect auth={["user", "admin"]} fallback={<LinkFormSkeleton />}>
       <ResponsiveContainer variant="form" maxWidth="md">
           <Stack spacing={4}>
             {/* Form Section */}

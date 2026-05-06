@@ -17,6 +17,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Chip from "@mui/material/Chip";
 import LinearProgress from "@mui/material/LinearProgress";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import { motion } from "framer-motion";
 
@@ -101,13 +102,41 @@ export default function RedirectStats({
   if (loading) {
     return (
       <Stack spacing={2}>
-        {[1, 2, 3].map((i) => (
-          <Card key={i} elevation={1}>
-            <CardContent>
-              <LinearProgress />
-            </CardContent>
-          </Card>
-        ))}
+        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} elevation={1}>
+              <CardContent sx={{ textAlign: "center" }}>
+                <Skeleton variant="circular" width={32} height={32} sx={{ mx: "auto", mb: 1 }} />
+                <Skeleton variant="text" width="60%" height={40} sx={{ mx: "auto" }} />
+                <Skeleton variant="text" width="80%" height={20} sx={{ mx: "auto" }} />
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+        <Card elevation={1}>
+          <CardContent>
+            <Skeleton variant="text" width={200} height={32} sx={{ mb: 2 }} />
+            <Stack spacing={1.5}>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} variant="rounded" height={52} />
+              ))}
+            </Stack>
+          </CardContent>
+        </Card>
+        <Card elevation={1}>
+          <CardContent>
+            <Skeleton variant="text" width={140} height={32} sx={{ mb: 2 }} />
+            <Box sx={{ display: "flex", gap: 3 }}>
+              {[1, 2, 3].map((i) => (
+                <Box key={i} sx={{ flex: 1, textAlign: "center" }}>
+                  <Skeleton variant="text" width="60%" height={40} sx={{ mx: "auto" }} />
+                  <Skeleton variant="text" width="80%" height={20} sx={{ mx: "auto", mb: 1 }} />
+                  <Skeleton variant="rounded" height={8} />
+                </Box>
+              ))}
+            </Box>
+          </CardContent>
+        </Card>
       </Stack>
     );
   }

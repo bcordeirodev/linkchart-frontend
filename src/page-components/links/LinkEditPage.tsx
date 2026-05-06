@@ -8,6 +8,7 @@ import { EditLinkForm, LinkActions } from "@/features/links";
 import { AppIcon } from "@/shared/ui/icons";
 import { ResponsiveContainer } from "@/shared/ui/base";
 import PageBreadcrumb from "@/shared/ui/navigation/PageBreadcrumb";
+import { LinkFormSkeleton } from "@/shared/ui/feedback/skeletons";
 import { linkService } from "@/services";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
@@ -55,7 +56,7 @@ function LinkEditPage({ id }: Props) {
   // Validação de ID
   if (!id) {
     return (
-      <AuthGuardRedirect auth={["user", "admin"]}>
+      <AuthGuardRedirect auth={["user", "admin"]} fallback={<LinkFormSkeleton isEdit />}>
         <ResponsiveContainer variant="form" maxWidth="md">
           <Stack spacing={3}>
             <PageBreadcrumb />
@@ -82,7 +83,7 @@ function LinkEditPage({ id }: Props) {
   }
 
   return (
-    <AuthGuardRedirect auth={["user", "admin"]}>
+    <AuthGuardRedirect auth={["user", "admin"]} fallback={<LinkFormSkeleton isEdit />}>
       <ResponsiveContainer variant="form" maxWidth="md">
         <Stack spacing={3}>
           {/* Ações do Link */}
