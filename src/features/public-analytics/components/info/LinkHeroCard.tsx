@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Box, Divider, Typography } from "@mui/material";
-import { ExternalLink, Copy, Check } from "lucide-react";
+import { ExternalLink, Copy, Check, Link2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import useClipboard from "@/hooks/useClipboard";
@@ -36,8 +36,97 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
         overflow: "hidden",
       }}
     >
-      {/* Zone 1 — link identity */}
-      <Box sx={{ p: { xs: "20px", md: "24px" }, pb: { xs: "16px", md: "20px" } }}>
+      {/* Header — identity + description */}
+      <Box sx={{ p: { xs: "20px", md: "24px" }, pb: { xs: "18px", md: "20px" } }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: 2,
+            mb: 2,
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 30,
+                height: 30,
+                borderRadius: "8px",
+                background: "rgba(99,102,241,0.12)",
+                border: "1px solid rgba(99,102,241,0.22)",
+                flexShrink: 0,
+              }}
+            >
+              <Link2 size={14} strokeWidth={2} color="#a5b4fc" />
+            </Box>
+            <Box>
+              <Typography
+                sx={{
+                  fontSize: "0.8125rem",
+                  fontWeight: 600,
+                  color: "rgba(255,255,255,0.75)",
+                  lineHeight: 1.2,
+                }}
+              >
+                Link encurtado
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "0.6875rem",
+                  color: "rgba(255,255,255,0.35)",
+                  lineHeight: 1.3,
+                  mt: 0.25,
+                }}
+              >
+                Analytics públicos disponíveis
+              </Typography>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.5,
+              background: linkData.is_active
+                ? "rgba(16,185,129,0.08)"
+                : "rgba(239,68,68,0.08)",
+              border: "1px solid",
+              borderColor: linkData.is_active
+                ? "rgba(16,185,129,0.22)"
+                : "rgba(239,68,68,0.22)",
+              borderRadius: "5px",
+              px: 1,
+              py: 0.375,
+              flexShrink: 0,
+            }}
+          >
+            <Box
+              sx={{
+                width: 5,
+                height: 5,
+                borderRadius: "50%",
+                background: linkData.is_active ? "#34d399" : "#f87171",
+                flexShrink: 0,
+              }}
+            />
+            <Typography
+              sx={{
+                fontSize: "0.6875rem",
+                fontWeight: 600,
+                color: linkData.is_active ? "#34d399" : "#f87171",
+              }}
+            >
+              {linkData.is_active
+                ? t("publicAnalytics.metrics.active")
+                : t("publicAnalytics.metrics.inactive")}
+            </Typography>
+          </Box>
+        </Box>
+
         {/* Short URL */}
         <Box
           sx={{
@@ -92,7 +181,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           </Box>
         </Box>
 
-        {/* Destination URL — directly below, no divider */}
+        {/* Destination URL */}
         <Box
           component="a"
           href={linkData.original_url}
@@ -126,85 +215,90 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
 
       <Divider sx={{ borderColor: "rgba(255,255,255,0.06)" }} />
 
-      {/* Zone 2 — utilities */}
-      <Box sx={{ p: { xs: "16px 20px", md: "16px 24px" } }}>
-        {/* Analytics URL — single compact row */}
+      {/* Footer — save + action */}
+      <Box sx={{ p: { xs: "14px 20px", md: "14px 24px" } }}>
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            gap: 1.5,
-            mb: 2,
+            justifyContent: "space-between",
+            gap: 2,
           }}
         >
-          <Typography
-            sx={{
-              fontSize: "0.6875rem",
-              fontWeight: 500,
-              color: "rgba(255,255,255,0.3)",
-              flexShrink: 0,
-            }}
-          >
-            Analytics:
-          </Typography>
-          <Typography
-            sx={{
-              fontFamily: "monospace",
-              fontSize: "0.6875rem",
-              color: "rgba(255,255,255,0.22)",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              flex: 1,
-            }}
-          >
-            {analyticsUrl}
-          </Typography>
+          {/* Analytics URL */}
           <Box
-            component="button"
-            onClick={() => copyAnalytics(analyticsUrl)}
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: 0.5,
-              background: "transparent",
-              border: "none",
-              color: copiedAnalytics ? "#34d399" : "rgba(255,255,255,0.28)",
-              fontSize: "0.6875rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              flexShrink: 0,
-              p: 0,
-              transition: "color 0.2s",
-              "&:hover": {
-                color: copiedAnalytics ? "#34d399" : "rgba(255,255,255,0.55)",
-              },
+              gap: 1,
+              minWidth: 0,
+              flex: 1,
             }}
           >
-            {copiedAnalytics ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
+            <Typography
+              sx={{
+                fontSize: "0.6875rem",
+                fontWeight: 500,
+                color: "rgba(255,255,255,0.28)",
+                flexShrink: 0,
+              }}
+            >
+              Analytics:
+            </Typography>
+            <Typography
+              sx={{
+                fontFamily: "monospace",
+                fontSize: "0.6875rem",
+                color: "rgba(255,255,255,0.18)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                flex: 1,
+              }}
+            >
+              {analyticsUrl}
+            </Typography>
+            <Box
+              component="button"
+              onClick={() => copyAnalytics(analyticsUrl)}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                background: "transparent",
+                border: "none",
+                color: copiedAnalytics ? "#34d399" : "rgba(255,255,255,0.25)",
+                cursor: "pointer",
+                flexShrink: 0,
+                p: 0,
+                transition: "color 0.2s",
+                "&:hover": {
+                  color: copiedAnalytics ? "#34d399" : "rgba(255,255,255,0.5)",
+                },
+              }}
+            >
+              {copiedAnalytics ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
+            </Box>
           </Box>
-        </Box>
 
-        {/* Shorten another link */}
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          {/* Shorten another link */}
           <Box
             component="button"
             onClick={onCreateLink}
             sx={{
-              background: "transparent",
-              border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: "8px",
-              color: "rgba(255,255,255,0.5)",
+              background: "rgba(99,102,241,0.08)",
+              border: "1px solid rgba(99,102,241,0.2)",
+              borderRadius: "7px",
+              color: "#a5b4fc",
               fontSize: "0.8125rem",
-              fontWeight: 500,
+              fontWeight: 600,
               cursor: "pointer",
-              px: 2.5,
-              py: 0.75,
+              px: 2,
+              py: 0.625,
+              flexShrink: 0,
               transition: "all 0.2s",
               "&:hover": {
-                background: "rgba(255,255,255,0.05)",
-                borderColor: "rgba(255,255,255,0.2)",
-                color: "rgba(255,255,255,0.8)",
+                background: "rgba(99,102,241,0.16)",
+                borderColor: "rgba(99,102,241,0.35)",
               },
             }}
           >
