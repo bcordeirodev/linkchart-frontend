@@ -18,6 +18,8 @@ export function useLanguage(): UseLanguageReturn {
   const switchLanguage = useCallback(
     (lang: SupportedLanguage) => {
       void i18n.changeLanguage(lang);
+      localStorage.setItem("i18nextLng", lang);
+      document.cookie = `i18nextLng=${lang};path=/;max-age=${365 * 24 * 60 * 60};SameSite=Lax`;
     },
     [i18n],
   );
