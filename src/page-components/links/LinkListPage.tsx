@@ -95,22 +95,28 @@ function LinkListPage() {
     }
   }, [filteredLinks, sortBy, meta]);
 
-  if (loading) {
-    return (
-      <AuthGuardRedirect auth={["user", "admin"]}>
-        <LinkListSkeleton isMobile={isMobile} count={6} />
-      </AuthGuardRedirect>
-    );
-  }
-
   const handleClearFilters = () => {
     setSearchTerm("");
     setStatusFilter("all");
     setSortBy("created_at");
   };
 
+  if (loading) {
+    return (
+      <AuthGuardRedirect
+        auth={["user", "admin"]}
+        fallback={<LinkListSkeleton isMobile={isMobile} count={6} />}
+      >
+        <LinkListSkeleton isMobile={isMobile} count={6} />
+      </AuthGuardRedirect>
+    );
+  }
+
   return (
-    <AuthGuardRedirect auth={["user", "admin"]}>
+    <AuthGuardRedirect
+      auth={["user", "admin"]}
+      fallback={<LinkListSkeleton isMobile={isMobile} count={6} />}
+    >
       <ResponsiveContainer variant="page">
         <LinksHeader />
 

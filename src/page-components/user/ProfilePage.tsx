@@ -63,7 +63,7 @@ function ProfilePage() {
 
   if (isLoading) {
     return (
-      <AuthGuardRedirect auth={["user", "admin"]}>
+      <AuthGuardRedirect auth={["user", "admin"]} fallback={<ProfileSkeleton />}>
         <ProfileSkeleton />
       </AuthGuardRedirect>
     );
@@ -71,7 +71,7 @@ function ProfilePage() {
 
   if (!user) {
     return (
-      <AuthGuardRedirect auth={["user", "admin"]}>
+      <AuthGuardRedirect auth={["user", "admin"]} fallback={<ProfileSkeleton />}>
         <Alert severity="error">
           Erro ao carregar dados do usuário. Tente fazer login novamente.
         </Alert>
@@ -80,7 +80,7 @@ function ProfilePage() {
   }
 
   return (
-    <AuthGuardRedirect auth={["user", "admin"]}>
+    <AuthGuardRedirect auth={["user", "admin"]} fallback={<ProfileSkeleton />}>
       <ResponsiveContainer variant="page" maxWidth="xl">
         <PageHeader
           title={t("title")}

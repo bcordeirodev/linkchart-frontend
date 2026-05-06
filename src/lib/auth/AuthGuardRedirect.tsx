@@ -22,12 +22,14 @@ interface AuthGuardProps {
   auth: string[] | [] | null | undefined;
   children: React.ReactNode;
   loginRedirectUrl?: string;
+  fallback?: React.ReactNode;
 }
 
 function AuthGuardRedirect({
   auth,
   children,
   loginRedirectUrl = "/",
+  fallback,
 }: AuthGuardProps) {
   const { data: user, isGuest } = useUser();
   const { isLoading } = useAuth();
@@ -126,8 +128,8 @@ function AuthGuardRedirect({
     }
   }, [auth, userRole, isGuest, isLoading, pathname, handleRedirection, ignoredPaths]);
 
-  // Enhanced loading state with context information
   if (!accessGranted) {
+    if (fallback) return fallback;
     return (
       <Box
         sx={{
