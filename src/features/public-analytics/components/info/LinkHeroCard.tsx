@@ -28,16 +28,17 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   }, []);
 
   return (
-    <Box>
-      <Box
-        sx={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: "12px",
-          p: { xs: "20px", md: "24px" },
-        }}
-      >
-        {/* Short URL row */}
+    <Box
+      sx={{
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: "12px",
+        overflow: "hidden",
+      }}
+    >
+      {/* Zone 1 — link identity */}
+      <Box sx={{ p: { xs: "20px", md: "24px" }, pb: { xs: "16px", md: "20px" } }}>
+        {/* Short URL */}
         <Box
           sx={{
             background: "rgba(99,102,241,0.07)",
@@ -48,13 +49,13 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             alignItems: "center",
             justifyContent: "space-between",
             gap: 2,
-            mb: 2,
+            mb: 1.5,
           }}
         >
           <Typography
             sx={{
               fontFamily: "monospace",
-              fontSize: { xs: "1rem", md: "1.25rem" },
+              fontSize: { xs: "1rem", md: "1.125rem" },
               fontWeight: 700,
               color: "#a5b4fc",
               overflow: "hidden",
@@ -68,16 +69,12 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             component="button"
             onClick={() => copyShort(linkData.short_url)}
             sx={{
-              background: copiedShort
-                ? "rgba(52,211,153,0.12)"
-                : "rgba(99,102,241,0.15)",
+              background: copiedShort ? "rgba(52,211,153,0.12)" : "rgba(99,102,241,0.15)",
               border: "1px solid",
-              borderColor: copiedShort
-                ? "rgba(52,211,153,0.32)"
-                : "rgba(99,102,241,0.32)",
+              borderColor: copiedShort ? "rgba(52,211,153,0.32)" : "rgba(99,102,241,0.32)",
               borderRadius: "6px",
               px: 2,
-              py: 0.875,
+              py: 0.75,
               fontSize: "0.8125rem",
               fontWeight: 600,
               color: copiedShort ? "#34d399" : "#a5b4fc",
@@ -85,9 +82,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
               flexShrink: 0,
               transition: "all 0.2s",
               "&:hover": {
-                background: copiedShort
-                  ? "rgba(52,211,153,0.2)"
-                  : "rgba(99,102,241,0.28)",
+                background: copiedShort ? "rgba(52,211,153,0.2)" : "rgba(99,102,241,0.28)",
               },
             }}
           >
@@ -97,9 +92,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           </Box>
         </Box>
 
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.06)", mb: 2 }} />
-
-        {/* Destination URL */}
+        {/* Destination URL — directly below, no divider */}
         <Box
           component="a"
           href={linkData.original_url}
@@ -109,14 +102,13 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             display: "flex",
             alignItems: "center",
             gap: 1,
-            color: "rgba(255,255,255,0.55)",
+            color: "rgba(255,255,255,0.4)",
             textDecoration: "none",
-            mb: 2.5,
             transition: "color 0.2s",
-            "&:hover": { color: "rgba(255,255,255,0.8)" },
+            "&:hover": { color: "rgba(255,255,255,0.7)" },
           }}
         >
-          <ExternalLink size={14} strokeWidth={1.5} style={{ flexShrink: 0 }} />
+          <ExternalLink size={13} strokeWidth={1.5} style={{ flexShrink: 0 }} />
           <Typography
             sx={{
               fontFamily: "monospace",
@@ -130,78 +122,70 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             {linkData.original_url}
           </Typography>
         </Box>
+      </Box>
 
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.06)", mb: 2 }} />
+      <Divider sx={{ borderColor: "rgba(255,255,255,0.06)" }} />
 
-        {/* Analytics URL save section */}
-        <Box>
+      {/* Zone 2 — utilities */}
+      <Box sx={{ p: { xs: "16px 20px", md: "16px 24px" } }}>
+        {/* Analytics URL — single compact row */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5,
+            mb: 2,
+          }}
+        >
           <Typography
             sx={{
-              fontSize: "0.75rem",
+              fontSize: "0.6875rem",
               fontWeight: 500,
-              color: "rgba(255,255,255,0.35)",
-              mb: 1,
+              color: "rgba(255,255,255,0.3)",
+              flexShrink: 0,
             }}
           >
-            {t("publicAnalytics.saveUrlBanner.title")}
+            Analytics:
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: "monospace",
+              fontSize: "0.6875rem",
+              color: "rgba(255,255,255,0.22)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              flex: 1,
+            }}
+          >
+            {analyticsUrl}
           </Typography>
           <Box
+            component="button"
+            onClick={() => copyAnalytics(analyticsUrl)}
             sx={{
-              background: "rgba(0,0,0,0.2)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: "6px",
-              px: 1.5,
-              py: 0.875,
               display: "flex",
               alignItems: "center",
-              gap: 1,
+              gap: 0.5,
+              background: "transparent",
+              border: "none",
+              color: copiedAnalytics ? "#34d399" : "rgba(255,255,255,0.28)",
+              fontSize: "0.6875rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              flexShrink: 0,
+              p: 0,
+              transition: "color 0.2s",
+              "&:hover": {
+                color: copiedAnalytics ? "#34d399" : "rgba(255,255,255,0.55)",
+              },
             }}
           >
-            <Typography
-              sx={{
-                fontFamily: "monospace",
-                fontSize: "0.6875rem",
-                color: "rgba(255,255,255,0.3)",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                flex: 1,
-              }}
-            >
-              {analyticsUrl}
-            </Typography>
-            <Box
-              component="button"
-              onClick={() => copyAnalytics(analyticsUrl)}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.5,
-                background: "transparent",
-                border: "none",
-                color: copiedAnalytics ? "#34d399" : "rgba(255,255,255,0.3)",
-                fontSize: "0.6875rem",
-                fontWeight: 600,
-                cursor: "pointer",
-                flexShrink: 0,
-                p: 0,
-                transition: "color 0.2s",
-                "&:hover": {
-                  color: copiedAnalytics ? "#34d399" : "rgba(255,255,255,0.55)",
-                },
-              }}
-            >
-              {copiedAnalytics ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
-              {copiedAnalytics
-                ? t("publicAnalytics.saveUrlBanner.copied")
-                : t("publicAnalytics.saveUrlBanner.copy")}
-            </Box>
+            {copiedAnalytics ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
           </Box>
         </Box>
 
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.06)", mt: 2.5, mb: 2 }} />
-
-        {/* Shorten another link — inside card, bottom action */}
+        {/* Shorten another link */}
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Box
             component="button"
