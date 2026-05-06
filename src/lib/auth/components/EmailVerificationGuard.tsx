@@ -16,6 +16,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showErrorMessage } from "@/lib/store/messageSlice";
 import { authService } from "@/services";
+import { PageLoadingSkeleton } from "@/shared/ui/feedback/skeletons";
 
 interface EmailVerificationGuardProps {
   children: React.ReactNode;
@@ -135,40 +136,15 @@ export function EmailVerificationGuard({
     });
   };
 
-  // While auth context is still initialising, show nothing (avoids flash)
-  if (authLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "50vh",
-        }}
-      >
-        <CircularProgress size={48} />
-      </Box>
-    );
+  // While auth context is still initialising, or email check hasn't resolved yet,
+  // show the full-page skeleton so the layout structure is visible immediately
+  // and there's no visual jump when real content loads.
+  if (authLoading || (isAuthenticated && user && (checking || emailVerified === null))) {
+    return <PageLoadingSkeleton />;
   }
 
   if (!isAuthenticated || !user) {
     return children;
-  }
-
-  // Auth is ready but email check hasn't completed yet — keep spinner
-  if (checking || emailVerified === null) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "50vh",
-        }}
-      >
-        <CircularProgress size={48} />
-      </Box>
-    );
   }
 
   if (!emailVerified) {
