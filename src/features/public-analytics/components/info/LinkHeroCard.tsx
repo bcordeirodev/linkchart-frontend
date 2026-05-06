@@ -206,14 +206,21 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           component="button"
           onClick={onCreateLink}
           sx={{
-            background: "transparent",
-            border: "none",
-            color: "rgba(255,255,255,0.3)",
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "8px",
+            color: "rgba(255,255,255,0.55)",
             fontSize: "0.8125rem",
+            fontWeight: 500,
             cursor: "pointer",
-            py: 0.5,
-            transition: "color 0.2s",
-            "&:hover": { color: "rgba(255,255,255,0.6)" },
+            px: 2.5,
+            py: 0.875,
+            transition: "all 0.2s",
+            "&:hover": {
+              background: "rgba(255,255,255,0.07)",
+              borderColor: "rgba(255,255,255,0.2)",
+              color: "rgba(255,255,255,0.85)",
+            },
           }}
         >
           {t("publicAnalytics.linkInfo.shortenAnother")}
