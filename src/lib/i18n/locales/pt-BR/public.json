@@ -12,6 +12,10 @@
     "shortenButton": "Encurtar",
     "shortening": "Encurtando...",
     "successTitle": "Link criado!",
+    "successSubtitle": "Copie e compartilhe onde quiser",
+    "redirectingAnalytics": "Redirecionando para analytics detalhados em 3s...",
+    "copiedToClipboard": "Copiado",
+    "copyAgain": "Copiar novamente",
     "copyButton": "Copiar link",
     "copySuccess": "Copiado!",
     "shareButton": "Compartilhar",
@@ -37,7 +41,14 @@
       "slugPlaceholder": "meu-link",
       "slugInvalid": "3–50 caracteres: letras minúsculas, números e hífens",
       "submitButton": "⚡ Encurtar Agora",
-      "errorMessage": "Erro ao encurtar a URL. Tente novamente."
+      "errorMessage": "Erro ao encurtar a URL. Tente novamente.",
+      "slugChecking": "Verificando...",
+      "slugAvailable": "Disponível",
+      "slugTaken": "Já está em uso",
+      "safetyChecking": "Verificando segurança...",
+      "safetySafe": "URL segura",
+      "safetyBlocked": "URL bloqueada: {{threats}}",
+      "safetyError": "Verificação indisponível"
     },
     "upgrade": {
       "title": "Obtenha mais com uma conta gratuita",
@@ -83,6 +94,36 @@
       "copy": "Copiar",
       "upgradeTitle": "Quer histórico completo, alertas e gráficos detalhados?",
       "upgradeButton": "Crie uma conta grátis →"
+    },
+    "charts": {
+      "title": "Gráficos de Analytics",
+      "hourlyClicks": "Cliques por Hora",
+      "dayOfWeek": "Cliques por Dia da Semana",
+      "topCountries": "Top Países",
+      "devices": "Dispositivos",
+      "browsers": "Browsers",
+      "emptyText": "Os gráficos aparecerão após os primeiros cliques",
+      "emptySub": "Horários de pico, dispositivos, países e muito mais.",
+      "dow": {
+        "0": "Dom",
+        "1": "Seg",
+        "2": "Ter",
+        "3": "Qua",
+        "4": "Qui",
+        "5": "Sex",
+        "6": "Sáb"
+      }
+    },
+    "linkInfo": {
+      "copy": "Copiar",
+      "shortenAnother": "Encurtar outro link",
+      "visitDestination": "Visitar destino"
+    },
+    "cta": {
+      "title": "Crie sua conta gratuita",
+      "description": "Acesse analytics completos com histórico de cliques, mapa de países, dispositivos e horários de pico. Gerencie todos os seus links em um painel próprio — com QR Code e slug personalizado em cada um.",
+      "button": "Criar conta grátis",
+      "features": ["Grátis para sempre", "QR Code incluso", "Sem cartão", "Slug personalizado"]
     }
   },
   "redirect": {
