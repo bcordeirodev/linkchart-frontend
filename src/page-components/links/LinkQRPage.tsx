@@ -112,7 +112,7 @@ function LinkQRPage({ id }: Props) {
 
   if (!id) {
     return (
-      <AuthGuardRedirect auth={["user", "admin"]}>
+      <AuthGuardRedirect auth={["user", "admin"]} fallback={<QRCodeSkeleton />}>
         <ResponsiveContainer variant="page">
           <Alert severity="error">{tPublic("qr.errors.noId")}</Alert>
         </ResponsiveContainer>
@@ -122,7 +122,7 @@ function LinkQRPage({ id }: Props) {
 
   if (loading) {
     return (
-      <AuthGuardRedirect auth={["user", "admin"]}>
+      <AuthGuardRedirect auth={["user", "admin"]} fallback={<QRCodeSkeleton />}>
         <QRCodeSkeleton />
       </AuthGuardRedirect>
     );
@@ -130,7 +130,7 @@ function LinkQRPage({ id }: Props) {
 
   if (error || !linkInfo) {
     return (
-      <AuthGuardRedirect auth={["user", "admin"]}>
+      <AuthGuardRedirect auth={["user", "admin"]} fallback={<QRCodeSkeleton />}>
         <ResponsiveContainer variant="page">
           <Alert severity="error">
             {error || tPublic("qr.errors.notFound")}
@@ -141,7 +141,7 @@ function LinkQRPage({ id }: Props) {
   }
 
   return (
-    <AuthGuardRedirect auth={["user", "admin"]}>
+    <AuthGuardRedirect auth={["user", "admin"]} fallback={<QRCodeSkeleton />}>
       <ResponsiveContainer variant="page" maxWidth="md">
         {/* Ações do Link */}
         <LinkActions
