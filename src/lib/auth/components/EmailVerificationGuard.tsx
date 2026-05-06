@@ -30,10 +30,11 @@ export function EmailVerificationGuard({
 }: EmailVerificationGuardProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
-  const [loading, setLoading] = useState(true);
-  const [emailVerified, setEmailVerified] = useState(false);
+  // null = not yet checked; true/false = result of the check
+  const [emailVerified, setEmailVerified] = useState<boolean | null>(null);
+  const [checking, setChecking] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState<{
     email_verified: boolean;
@@ -43,15 +44,20 @@ export function EmailVerificationGuard({
   } | null>(null);
 
   useEffect(() => {
+    if (!isAuthenticated || !user) {
+      setEmailVerified(null);
+      return;
+    }
     checkEmailVerification();
   }, [isAuthenticated, user]);
 
   const checkEmailVerification = async () => {
     if (!isAuthenticated || !user) {
-      setLoading(false);
+      setEmailVerified(null);
       return;
     }
 
+    setChecking(true);
     try {
       const status = await authService.getEmailVerificationStatus();
       setVerificationStatus(status);
@@ -87,7 +93,7 @@ export function EmailVerificationGuard({
         setEmailVerified(true);
       }
     } finally {
-      setLoading(false);
+      setChecking(false);
     }
   };
 
@@ -129,11 +135,28 @@ export function EmailVerificationGuard({
     });
   };
 
+  // While auth context is still initialising, show nothing (avoids flash)
+  if (authLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "50vh",
+        }}
+      >
+        <CircularProgress size={48} />
+      </Box>
+    );
+  }
+
   if (!isAuthenticated || !user) {
     return children;
   }
 
-  if (loading) {
+  // Auth is ready but email check hasn't completed yet — keep spinner
+  if (checking || emailVerified === null) {
     return (
       <Box
         sx={{
