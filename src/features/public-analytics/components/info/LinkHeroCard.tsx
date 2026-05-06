@@ -198,32 +198,34 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             </Box>
           </Box>
         </Box>
-      </Box>
 
-      {/* Shorten another link — outside card */}
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 1.5 }}>
-        <Box
-          component="button"
-          onClick={onCreateLink}
-          sx={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            borderRadius: "8px",
-            color: "rgba(255,255,255,0.55)",
-            fontSize: "0.8125rem",
-            fontWeight: 500,
-            cursor: "pointer",
-            px: 2.5,
-            py: 0.875,
-            transition: "all 0.2s",
-            "&:hover": {
-              background: "rgba(255,255,255,0.07)",
-              borderColor: "rgba(255,255,255,0.2)",
-              color: "rgba(255,255,255,0.85)",
-            },
-          }}
-        >
-          {t("publicAnalytics.linkInfo.shortenAnother")}
+        <Divider sx={{ borderColor: "rgba(255,255,255,0.06)", mt: 2.5, mb: 2 }} />
+
+        {/* Shorten another link — inside card, bottom action */}
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            component="button"
+            onClick={onCreateLink}
+            sx={{
+              background: "transparent",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "8px",
+              color: "rgba(255,255,255,0.5)",
+              fontSize: "0.8125rem",
+              fontWeight: 500,
+              cursor: "pointer",
+              px: 2.5,
+              py: 0.75,
+              transition: "all 0.2s",
+              "&:hover": {
+                background: "rgba(255,255,255,0.05)",
+                borderColor: "rgba(255,255,255,0.2)",
+                color: "rgba(255,255,255,0.8)",
+              },
+            }}
+          >
+            {t("publicAnalytics.linkInfo.shortenAnother")}
+          </Box>
         </Box>
       </Box>
     </Box>
