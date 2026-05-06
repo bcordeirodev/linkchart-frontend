@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Container, Fade, Stack } from "@mui/material";
+import { Box, Container, Fade, Stack, Typography } from "@mui/material";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -69,6 +69,30 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
           sx={{ position: "relative", zIndex: 1, py: { xs: 4, md: 6 }, pb: 8 }}
         >
           <Stack spacing={2.5}>
+            <Fade in timeout={200}>
+              <Box>
+                <Typography
+                  sx={{
+                    fontSize: { xs: "1.25rem", md: "1.5rem" },
+                    fontWeight: 700,
+                    color: "rgba(255,255,255,0.85)",
+                    mb: 0.5,
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  Analytics Públicos
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: "0.8125rem",
+                    color: "rgba(255,255,255,0.35)",
+                  }}
+                >
+                  Desempenho e estatísticas deste link em tempo real
+                </Typography>
+              </Box>
+            </Fade>
+
             <Fade in timeout={400}>
               <Box>
                 <LinkHeroCard
