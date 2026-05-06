@@ -40,6 +40,10 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
         {/* Short URL row */}
         <Box
           sx={{
+            background: "rgba(99,102,241,0.07)",
+            border: "1px solid rgba(99,102,241,0.18)",
+            borderRadius: "10px",
+            p: "12px 16px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
