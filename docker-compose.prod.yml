@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   frontend-next:
     build:
@@ -8,12 +8,13 @@ services:
         - NEXT_PUBLIC_REDIRECT_URL=https://redirect.linkcharts.com.br
         - NEXT_PUBLIC_GA_ID
         - NEXT_PUBLIC_ADSENSE_CLIENT
+        - NEXT_PUBLIC_ADSENSE_PUBLISHER_ID=ca-pub-1396026257166470
         # API_URL é build arg porque next.config.ts rewrites() é avaliado em build time
         - API_URL=http://linkchartapi:80
     container_name: linkcharts-frontend-next-prod
     restart: always
     ports:
-      - '3000:3000'
+      - "3000:3000"
     networks:
       - frontend-net
       - linkcharts-network
@@ -24,9 +25,9 @@ services:
       - HOSTNAME=0.0.0.0
     healthcheck:
       test:
-        - 'CMD'
-        - 'node'
-        - '-e'
+        - "CMD"
+        - "node"
+        - "-e"
         - "require('http').get('http://127.0.0.1:3000/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
       interval: 30s
       timeout: 10s
