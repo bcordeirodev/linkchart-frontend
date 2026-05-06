@@ -6,7 +6,14 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/shorter", "/public-analytics/"],
+        allow: [
+          "/",
+          "/shorter",
+          "/public-analytics/",
+          "/privacy",
+          "/terms",
+          "/support",
+        ],
         disallow: ["/links/", "/link/", "/profile/", "/api/"],
       },
     ],
