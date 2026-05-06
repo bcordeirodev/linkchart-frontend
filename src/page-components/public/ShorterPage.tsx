@@ -1,4 +1,5 @@
-import { Alert, Box, Container } from "@mui/material";
+import { Alert, Box, Container, Typography } from "@mui/material";
+import { Link2, SlidersHorizontal, BarChart2 } from "lucide-react";
 import { memo } from "react";
 
 import { AdSlot } from "@/shared/components/ads/AdSlot";
@@ -94,7 +95,7 @@ function ShorterPage() {
           />
 
           <AdSlot
-            slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BELOW_FORM ?? ''}
+            slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BELOW_FORM ?? ""}
             format="rectangle"
           />
 
@@ -105,6 +106,96 @@ function ShorterPage() {
 
           <Box sx={{ mt: 6 }}>
             <ShorterStats />
+          </Box>
+
+          <Box sx={{ mt: 6, mb: 2 }}>
+            <Typography
+              variant="overline"
+              sx={{
+                color: "rgba(255,255,255,0.3)",
+                letterSpacing: 3,
+                display: "block",
+                textAlign: "center",
+                mb: 3,
+              }}
+            >
+              COMO FUNCIONA
+            </Typography>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
+                gap: 3,
+              }}
+            >
+              {(
+                [
+                  {
+                    icon: <Link2 size={22} />,
+                    step: "01",
+                    title: "Cole o URL",
+                    desc: "Insira qualquer link longo no campo acima.",
+                  },
+                  {
+                    icon: <SlidersHorizontal size={22} />,
+                    step: "02",
+                    title: "Personalize",
+                    desc: "Defina um slug personalizado ou deixe gerar automaticamente.",
+                  },
+                  {
+                    icon: <BarChart2 size={22} />,
+                    step: "03",
+                    title: "Compartilhe",
+                    desc: "Copie o link curto e acompanhe os cliques em tempo real.",
+                  },
+                ] as const
+              ).map(({ icon, step, title, desc }) => (
+                <Box
+                  key={step}
+                  sx={{
+                    textAlign: "center",
+                    p: 3,
+                    borderRadius: 2,
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    background: "rgba(255,255,255,0.02)",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      color: "#6366f1",
+                      mb: 1,
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {icon}
+                  </Box>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "rgba(255,255,255,0.25)" }}
+                  >
+                    {step}
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      color: "rgba(255,255,255,0.8)",
+                      fontWeight: 600,
+                      display: "block",
+                      mt: 0.5,
+                    }}
+                  >
+                    {title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "rgba(255,255,255,0.4)", mt: 0.5 }}
+                  >
+                    {desc}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
           </Box>
         </Container>
       </Box>
