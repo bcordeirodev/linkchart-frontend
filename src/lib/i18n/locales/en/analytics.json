@@ -267,7 +267,8 @@
       "AS": "Asia",
       "AF": "Africa",
       "OC": "Oceania",
-      "AN": "Antarctica"
+      "AN": "Antarctica",
+      "clicks": "clicks"
     },
     "choropleth": {
       "title": "Global Click Distribution",
