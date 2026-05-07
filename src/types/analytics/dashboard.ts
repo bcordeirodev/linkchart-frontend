@@ -59,6 +59,14 @@ export interface DashboardSummary {
     current_rank: string;
     distribution: Array<{ rank: string; clicks: number }>;
   };
+  /** Quality tier summary from Phase 3 scoring */
+  quality?: {
+    organic: number;
+    suspicious: number;
+    likely_fraud: number;
+    unscored: number;
+    organic_percentage: number;
+  };
 }
 
 /**
