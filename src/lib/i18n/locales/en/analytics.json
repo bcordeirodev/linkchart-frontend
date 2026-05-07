@@ -243,7 +243,9 @@
       "globalReach": "Global Reach",
       "urbanDiversity": "Urban Diversity",
       "regionalCoverage": "Regional Coverage",
-      "mappedClicks": "Mapped Clicks"
+      "mappedClicks": "Mapped Clicks",
+      "continentsReached": "Continents",
+      "continentsCoverage": "Global coverage"
     },
     "chart": {
       "topCountries": "Top Countries",
@@ -252,6 +254,26 @@
       "noCountriesData": "Geographic data will appear here after the first clicks",
       "noStatesData": "State data will appear here after the first clicks",
       "noCitiesData": "City data will appear here after the first clicks"
+    },
+    "continents": {
+      "title": "By Continent",
+      "empty": "No continent data available",
+      "total": "Total",
+      "less": "less",
+      "more": "more",
+      "NA": "North America",
+      "SA": "South America",
+      "EU": "Europe",
+      "AS": "Asia",
+      "AF": "Africa",
+      "OC": "Oceania",
+      "AN": "Antarctica"
+    },
+    "choropleth": {
+      "title": "Global Click Distribution",
+      "less": "less",
+      "more": "more",
+      "clickAgainToClear": "Click the same country to clear filter"
     },
     "insights": {
       "title": "Detailed Geographic Insights",
