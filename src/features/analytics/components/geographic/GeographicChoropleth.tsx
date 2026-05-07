@@ -263,13 +263,16 @@ export function GeographicChoropleth({
           variant="h6"
           sx={{
             fontWeight: 600,
-            mb: 2,
+            mb: 0.5,
             display: "flex",
             alignItems: "center",
             gap: 1,
           }}
         >
           {t("geographic.choropleth.title")}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          {t("geographic.choropleth.subtitle")}
         </Typography>
 
         <Box

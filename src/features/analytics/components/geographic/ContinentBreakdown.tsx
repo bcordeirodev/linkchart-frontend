@@ -116,8 +116,11 @@ export function ContinentBreakdown({ continents }: ContinentBreakdownProps) {
   return (
     <Card sx={cardSx}>
       <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
           🌐 {t("geographic.continents.title")}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+          {t("geographic.continents.subtitle")}
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
