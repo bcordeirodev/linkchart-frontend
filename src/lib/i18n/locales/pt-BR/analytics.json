@@ -248,6 +248,12 @@
       "continentsCoverage": "Cobertura global",
       "coverage": "Cobertura"
     },
+    "subtabs": {
+      "overview": "Visão geral",
+      "heatmap": "Mapa de calor",
+      "rankings": "Rankings",
+      "insights": "Insights"
+    },
     "chart": {
       "topCountries": "Top Países",
       "topStates": "Top Estados/Regiões",

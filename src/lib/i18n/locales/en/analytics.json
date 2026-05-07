@@ -248,6 +248,12 @@
       "continentsCoverage": "Global coverage",
       "coverage": "Coverage"
     },
+    "subtabs": {
+      "overview": "Overview",
+      "heatmap": "Heatmap",
+      "rankings": "Rankings",
+      "insights": "Insights"
+    },
     "chart": {
       "topCountries": "Top Countries",
       "topStates": "Top States/Regions",
