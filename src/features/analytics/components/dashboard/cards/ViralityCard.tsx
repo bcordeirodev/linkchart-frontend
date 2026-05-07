@@ -28,19 +28,33 @@ export function ViralityCard({ data }: Props) {
 
   if (!data) return null;
 
+  const rankLabels = {
+    cold: t("virality.rank.cold"),
+    warming: t("virality.rank.warming"),
+    trending: t("virality.rank.trending"),
+    viral: t("virality.rank.viral"),
+  };
+
   const color =
     RANK_COLORS[data.current_rank as keyof typeof RANK_COLORS] ?? "secondary";
 
+  const rankLabel =
+    rankLabels[data.current_rank as keyof typeof rankLabels] ??
+    data.current_rank;
+
   const subtitle = data.distribution?.length
     ? data.distribution
-        .map((d) => `${t(`virality.rank.${d.rank}`)}: ${d.clicks}`)
+        .map(
+          (d) =>
+            `${rankLabels[d.rank as keyof typeof rankLabels] ?? d.rank}: ${d.clicks}`,
+        )
         .join(" · ")
     : undefined;
 
   return (
     <MetricCardOptimized
       title={t("virality.title")}
-      value={t(`virality.rank.${data.current_rank}`)}
+      value={rankLabel}
       icon={<WhatshotIcon />}
       color={color}
       subtitle={subtitle}
