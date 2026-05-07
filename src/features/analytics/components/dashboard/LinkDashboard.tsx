@@ -117,12 +117,12 @@ export function LinkDashboard({
             {data?.link_info ? (
               <LinkInfoCard linkInfo={data.link_info} />
             ) : null}
-
-            {/* Seletor de Timeframe */}
-            {showTimeframeSelector ? (
-              <TimeframeSelector value={timeframe} onChange={setTimeframe} />
-            ) : null}
           </Box>
+        ) : null}
+
+        {/* Seletor de Timeframe — independente do showTitle */}
+        {showTimeframeSelector ? (
+          <TimeframeSelector value={timeframe} onChange={setTimeframe} />
         ) : null}
 
         {/* Conteúdo Principal */}
