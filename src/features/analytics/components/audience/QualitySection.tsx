@@ -104,9 +104,7 @@ export function QualitySection({ quality }: QualitySectionProps) {
                       alignItems: "center",
                     }}
                   >
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                    >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Box
                         sx={{
                           width: 10,

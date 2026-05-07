@@ -70,7 +70,10 @@ export function LinkMetrics({
   const avgClicksPerLink =
     summary?.avg_clicks_per_link ??
     (totalLinks > 0 ? Math.round(totalClicks / totalLinks) : 0);
-  const avgDaily = Math.round(totalClicks / Math.max(0.001, timeframeDays));
+  const avgDaily =
+    timeframeDays > 0
+      ? Math.round(totalClicks / Math.max(0.001, timeframeDays)).toString()
+      : "—";
 
   const singleLinkMetrics = [
     {
@@ -100,7 +103,7 @@ export function LinkMetrics({
     {
       id: "avg_daily_clicks",
       title: tA("metrics.avgDailyClicks"),
-      value: avgDaily.toString(),
+      value: avgDaily,
       icon: <BarChart3 {...ICON_LG} />,
       color: "warning" as const,
       subtitle: undefined,
@@ -155,7 +158,7 @@ export function LinkMetrics({
           </Grid>
         ) : null}
         {metrics.map((metric) => (
-          <Grid item xs={12} sm={6} md={3} key={metric.id}>
+          <Grid item xs={12} sm={6} md={4} key={metric.id}>
             <MetricCard
               title={metric.title}
               value={metric.value}

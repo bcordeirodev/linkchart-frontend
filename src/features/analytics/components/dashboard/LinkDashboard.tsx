@@ -66,12 +66,15 @@ export function LinkDashboard({
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const animations = createPresetAnimations(theme);
-  const [timeframe, setTimeframe] = useState<"1h" | "24h" | "7d" | "30d">("7d");
-  const TIMEFRAME_DAYS: Record<"1h" | "24h" | "7d" | "30d", number> = {
+  const [timeframe, setTimeframe] = useState<
+    "1h" | "24h" | "7d" | "30d" | "all"
+  >("7d");
+  const TIMEFRAME_DAYS: Record<"1h" | "24h" | "7d" | "30d" | "all", number> = {
     "1h": 0.04,
     "24h": 1,
     "7d": 7,
     "30d": 30,
+    all: 0,
   };
 
   // If title prop is not passed, use translated default
@@ -139,13 +142,13 @@ export function LinkDashboard({
           />
 
           {data?.summary?.viral_rank && (
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={4}>
               <ViralityCard data={data.summary.viral_rank} />
             </Grid>
           )}
 
           {data?.summary?.quality && (
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={4}>
               <TrafficQualityCard data={data.summary.quality} />
             </Grid>
           )}
