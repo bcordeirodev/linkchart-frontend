@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Globe } from "lucide-react";
 import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -57,6 +58,7 @@ export function GeographicAnalysis({
 }: GeographicAnalysisProps) {
   const { t } = useTranslation("analytics");
   const displayTitle = title ?? t("geographic.title");
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   // Usar hook específico para dados geográficos
   const { data, stats, loading, error, refresh, isRealtime } =
     useGeographicData({
@@ -111,6 +113,8 @@ export function GeographicAnalysis({
               states={data?.top_states || []}
               cities={data?.top_cities || []}
               totalClicks={stats?.totalClicks || 0}
+              selectedCountry={selectedCountry}
+              onCountrySelect={setSelectedCountry}
             />
 
             {/* Insights Geográficos */}
