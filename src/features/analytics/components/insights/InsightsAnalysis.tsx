@@ -16,6 +16,7 @@ import { BusinessInsights } from "./BusinessInsights";
 import { RetentionAnalysisChart } from "./RetentionAnalysisChart";
 import { SessionDepthChart } from "./SessionDepthChart";
 import { TrafficSourceChart } from "./TrafficSourceChart";
+import { TrafficQualityChart } from "./TrafficQualityChart";
 
 interface InsightsAnalysisProps {
   linkId: string;
@@ -176,6 +177,13 @@ export function InsightsAnalysis({
                       loading={loading}
                       showTitle
                     />
+                  </Grid>
+                ) : null}
+
+                {/* Qualidade do Tráfego (Phase 3) */}
+                {data.analytics_data.quality ? (
+                  <Grid item xs={12}>
+                    <TrafficQualityChart data={data.analytics_data.quality} />
                   </Grid>
                 ) : null}
               </Grid>

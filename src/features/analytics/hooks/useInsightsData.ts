@@ -46,6 +46,17 @@ export interface InsightsData {
     session_depth?: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     traffic_sources?: any;
+    /** Quality tier breakdown from Phase 3 scoring */
+    quality?: {
+      avg_quality_score: number | null;
+      tier_breakdown: Array<{
+        tier: string;
+        clicks: number;
+        percentage: number;
+        avg_score: number;
+      }>;
+      organic_percentage: number;
+    };
   };
 }
 

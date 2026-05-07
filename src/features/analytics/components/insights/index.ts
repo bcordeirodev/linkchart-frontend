@@ -5,6 +5,7 @@ export { InsightsAnalysis } from "./InsightsAnalysis";
 export { RetentionAnalysisChart } from "./RetentionAnalysisChart";
 export { SessionDepthChart } from "./SessionDepthChart";
 export { TrafficSourceChart } from "./TrafficSourceChart";
+export { TrafficQualityChart } from "./TrafficQualityChart";
 
 // Hook específico
 export { useInsightsData } from "../../hooks/useInsightsData";

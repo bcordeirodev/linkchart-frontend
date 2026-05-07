@@ -26,7 +26,12 @@ import TabDescription from "@/shared/ui/base/TabDescription";
 
 import type { DashboardData } from "@/types/analytics/dashboard";
 
-import { LinkInfoCard, TimeframeSelector, ViralityCard } from "./cards";
+import {
+  LinkInfoCard,
+  TimeframeSelector,
+  ViralityCard,
+  TrafficQualityCard,
+} from "./cards";
 import {
   DayOfWeekChart,
   DeviceBreakdownChart,
@@ -131,6 +136,13 @@ export function LinkDashboard({
           {data?.summary?.viral_rank && (
             <Grid item xs={12} sm={6} md={4}>
               <ViralityCard data={data.summary.viral_rank} />
+            </Grid>
+          )}
+
+          {/* Qualidade do Tráfego (Phase 3) */}
+          {data?.summary?.quality && (
+            <Grid item xs={12} sm={6} md={4}>
+              <TrafficQualityCard data={data.summary.quality} />
             </Grid>
           )}
 
