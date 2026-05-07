@@ -14,21 +14,21 @@
 
 Files created in this plan:
 
-| Path | Responsibility |
-|---|---|
-| `src/shared/hooks/useSearchParams.ts` | Wraps `next/navigation` useSearchParams — re-exports tuple `[URLSearchParams]` for drop-in RR6 compat |
-| `src/shared/hooks/useLocation.ts` | Shim returning `{ pathname, state }` — bridges RR6 callers to `usePathname()` |
-| `app/(public)/r/[slug]/page.tsx` | Rewritten as Server Component with `generateMetadata` for OG/Twitter |
-| `app/sitemap.ts` | Dynamic XML sitemap fetching public links from API |
-| `app/robots.ts` | robots.txt generation |
-| `middleware.ts` | Auth redirects + security headers (CSP, HSTS, X-Frame-Options) |
-| `app/(app)/error.tsx` | Error boundary for authenticated area |
-| `app/(app)/loading.tsx` | Skeleton loading for authenticated area |
-| `app/(auth)/error.tsx` | Error boundary for auth area |
-| `app/error.tsx` | Global root error boundary |
-| `app/loading.tsx` | Global root loading |
-| `app/api/health/route.ts` | Health check endpoint used by nginx upstream check |
-| `.github/workflows/deploy-frontend-next.yml` | CI/CD pipeline for `frontend-next/` |
+| Path                                         | Responsibility                                                                                        |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `src/shared/hooks/useSearchParams.ts`        | Wraps `next/navigation` useSearchParams — re-exports tuple `[URLSearchParams]` for drop-in RR6 compat |
+| `src/shared/hooks/useLocation.ts`            | Shim returning `{ pathname, state }` — bridges RR6 callers to `usePathname()`                         |
+| `app/(public)/r/[slug]/page.tsx`             | Rewritten as Server Component with `generateMetadata` for OG/Twitter                                  |
+| `app/sitemap.ts`                             | Dynamic XML sitemap fetching public links from API                                                    |
+| `app/robots.ts`                              | robots.txt generation                                                                                 |
+| `middleware.ts`                              | Auth redirects + security headers (CSP, HSTS, X-Frame-Options)                                        |
+| `app/(app)/error.tsx`                        | Error boundary for authenticated area                                                                 |
+| `app/(app)/loading.tsx`                      | Skeleton loading for authenticated area                                                               |
+| `app/(auth)/error.tsx`                       | Error boundary for auth area                                                                          |
+| `app/error.tsx`                              | Global root error boundary                                                                            |
+| `app/loading.tsx`                            | Global root loading                                                                                   |
+| `app/api/health/route.ts`                    | Health check endpoint used by nginx upstream check                                                    |
+| `.github/workflows/deploy-frontend-next.yml` | CI/CD pipeline for `frontend-next/`                                                                   |
 
 Files modified (react-router-dom removal — 33 files):
 
@@ -49,6 +49,7 @@ Files modified (react-router-dom removal — 33 files):
 These two hooks have callers that need Next.js equivalents. We create thin wrappers that preserve the React Router call signature.
 
 **Files:**
+
 - Create: `src/shared/hooks/useSearchParams.ts`
 - Create: `src/shared/hooks/useLocation.ts`
 - Modify: `src/shared/hooks/index.ts`
@@ -151,6 +152,7 @@ git commit -m "feat: add useSearchParams + useLocation shims over next/navigatio
 The existing `src/shared/hooks/useNavigate.ts` wraps `useRouter().push()`. All 18 callers only need their import line changed from `react-router-dom` to `@/shared/hooks`.
 
 **Files:**
+
 - Modify (all): change 1 import line in each
 
 The 18 files and the exact change for each:
@@ -244,6 +246,7 @@ git commit -m "refactor: replace react-router-dom useNavigate with @/shared/hook
 These 3 files use `const [searchParams] = useSearchParams()` — matches the shim signature exactly. Also swap `useNavigate` at the same time if present.
 
 **Files:**
+
 - Modify: `src/lib/auth/forms/AuthJsForm.tsx`
 - Modify: `src/page-components/auth/VerifyEmailPage.tsx`
 - Modify: `src/page-components/auth/ResetPasswordPage.tsx`
@@ -251,10 +254,13 @@ These 3 files use `const [searchParams] = useSearchParams()` — matches the shi
 - [ ] **Step 1: Fix AuthJsForm.tsx — change import**
 
 In `src/lib/auth/forms/AuthJsForm.tsx`, find:
+
 ```typescript
 import { useSearchParams, useNavigate } from "react-router-dom";
 ```
+
 Replace with:
+
 ```typescript
 import { useSearchParams, useNavigate } from "@/shared/hooks";
 ```
@@ -262,10 +268,13 @@ import { useSearchParams, useNavigate } from "@/shared/hooks";
 - [ ] **Step 2: Fix VerifyEmailPage.tsx — change import**
 
 In `src/page-components/auth/VerifyEmailPage.tsx`, find:
+
 ```typescript
 import { useNavigate, useSearchParams } from "react-router-dom";
 ```
+
 Replace with:
+
 ```typescript
 import { useNavigate, useSearchParams } from "@/shared/hooks";
 ```
@@ -273,10 +282,13 @@ import { useNavigate, useSearchParams } from "@/shared/hooks";
 - [ ] **Step 3: Fix ResetPasswordPage.tsx — change import**
 
 In `src/page-components/auth/ResetPasswordPage.tsx`, find:
+
 ```typescript
 import { useNavigate, useSearchParams } from "react-router-dom";
 ```
+
 Replace with:
+
 ```typescript
 import { useNavigate, useSearchParams } from "@/shared/hooks";
 ```
@@ -284,6 +296,7 @@ import { useNavigate, useSearchParams } from "@/shared/hooks";
 - [ ] **Step 4: Wrap auth page components that call useSearchParams in Suspense**
 
 Next.js requires components using `useSearchParams()` to be wrapped in `<Suspense>`. The wrappers are in:
+
 - `app/(auth)/sign-in/page.tsx` → renders `AuthJsForm` indirectly (through a page-component)
 - `app/(auth)/verify-email/page.tsx` → renders `VerifyEmailPage`
 - `app/(auth)/reset-password/page.tsx` → renders `ResetPasswordPage`
@@ -291,6 +304,7 @@ Next.js requires components using `useSearchParams()` to be wrapped in `<Suspens
 Open each of these three page files and wrap the content in Suspense:
 
 `app/(auth)/verify-email/page.tsx`:
+
 ```typescript
 import { Suspense } from "react";
 import VerifyEmailPageContent from "@/pages/auth/VerifyEmailPage";
@@ -306,6 +320,7 @@ export default function VerifyEmailPage() {
 ```
 
 `app/(auth)/reset-password/page.tsx`:
+
 ```typescript
 import { Suspense } from "react";
 import ResetPasswordPageContent from "@/pages/auth/ResetPasswordPage";
@@ -347,16 +362,20 @@ git commit -m "refactor: replace react-router-dom useSearchParams with @/shared/
 `EmailVerificationPendingPage` uses `location.state?.email` — history state. In Next.js there's no history.state; instead, pass the email via URL search param or accept that state is null (the page already has a fallback). `NotFoundPage` uses `location.pathname` — maps to `usePathname()`.
 
 **Files:**
+
 - Modify: `src/page-components/auth/EmailVerificationPendingPage.tsx`
 - Modify: `src/page-components/system/NotFoundPage.tsx`
 
 - [ ] **Step 1: Fix EmailVerificationPendingPage.tsx**
 
 Find:
+
 ```typescript
 import { useNavigate, useLocation } from "react-router-dom";
 ```
+
 Replace with:
+
 ```typescript
 import { useNavigate, useLocation } from "@/shared/hooks";
 ```
@@ -366,10 +385,13 @@ The `useLocation` shim returns `state: null`, so `location.state as LocationStat
 - [ ] **Step 2: Fix NotFoundPage.tsx**
 
 Find:
+
 ```typescript
 import { useLocation } from "react-router-dom";
 ```
+
 Replace with:
+
 ```typescript
 import { useLocation } from "@/shared/hooks";
 ```
@@ -398,6 +420,7 @@ git commit -m "refactor: replace react-router-dom useLocation with @/shared/hook
 These 5 page-components currently call `useParams()` from react-router-dom to get `id` or `slug`. In Next.js, params come from the page file's `params` prop. The fix: accept `id`/`slug` as a prop in each page-component, and update the 4 Next.js page wrapper files to extract and pass the param.
 
 **Files:**
+
 - Modify: `src/page-components/links/LinkQRPage.tsx`
 - Modify: `src/page-components/links/LinkAnalyticsPage.tsx`
 - Modify: `src/page-components/links/LinkEditPage.tsx`
@@ -411,21 +434,26 @@ These 5 page-components currently call `useParams()` from react-router-dom to ge
 - [ ] **Step 1: Update LinkQRPage.tsx to accept id as prop**
 
 In `src/page-components/links/LinkQRPage.tsx`, find:
+
 ```typescript
 import { useParams, useNavigate } from "react-router-dom";
 ```
+
 Replace with:
+
 ```typescript
 import { useNavigate } from "@/shared/hooks";
 ```
 
 Find the component function signature (it likely starts `function LinkQRPage()` or `const LinkQRPage`). Add an `id` prop:
+
 ```typescript
 // Before
 export default function LinkQRPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 ```
+
 ```typescript
 // After
 interface Props { id: string; }
@@ -454,20 +482,25 @@ export default async function LinkQRPage({ params }: Props) {
 - [ ] **Step 3: Update LinkAnalyticsPage.tsx to accept id as prop**
 
 In `src/page-components/links/LinkAnalyticsPage.tsx`, find:
+
 ```typescript
 import { useParams, useNavigate } from "react-router-dom";
 ```
+
 Replace with:
+
 ```typescript
 import { useNavigate } from "@/shared/hooks";
 ```
 
 Change the component:
+
 ```typescript
 // Before
 export default function LinkAnalyticsPage() {
   const { id } = useParams<{ id: string }>();
 ```
+
 ```typescript
 // After
 interface Props { id: string; }
@@ -495,20 +528,25 @@ export default async function LinkAnalyticsPage({ params }: Props) {
 - [ ] **Step 5: Update LinkEditPage.tsx to accept id as prop**
 
 In `src/page-components/links/LinkEditPage.tsx`, find:
+
 ```typescript
 import { useParams, useNavigate } from "react-router-dom";
 ```
+
 Replace with:
+
 ```typescript
 import { useNavigate } from "@/shared/hooks";
 ```
 
 Change the component:
+
 ```typescript
 // Before
 export default function LinkEditPage() {
   const { id } = useParams<{ id: string }>();
 ```
+
 ```typescript
 // After
 interface Props { id: string; }
@@ -566,6 +604,7 @@ git commit -m "refactor: replace useParams with id/slug props in page-components
 ## Task 6: Replace Navigate component with useRouter
 
 **Files:**
+
 - Modify: `src/shared/components/routing/HomeRedirect.tsx`
 - Modify: `src/features/redirect/components/Redirect.tsx`
 
@@ -644,20 +683,25 @@ git commit -m "refactor: replace react-router-dom Navigate with useRouter().repl
 ## Task 7: Replace RouterLink in Link.tsx with next/link
 
 **Files:**
+
 - Modify: `src/shared/ui/navigation/Link.tsx`
 
 - [ ] **Step 1: Replace import and usage**
 
 In `src/shared/ui/navigation/Link.tsx`, find:
+
 ```typescript
 import { Link as RouterLink } from "react-router-dom";
 ```
+
 Replace with:
+
 ```typescript
 import NextLink from "next/link";
 ```
 
 In the internal link rendering block, find:
+
 ```typescript
 const internalProps = {
   component: RouterLink,
@@ -666,7 +710,9 @@ const internalProps = {
 };
 return <StyledInternalLink {...internalProps}>{children}</StyledInternalLink>;
 ```
+
 Replace with:
+
 ```typescript
 return (
   <StyledInternalLink
@@ -702,6 +748,7 @@ docker-compose run --rm frontend-next npm run type-check 2>&1 | tail -20
 ```
 
 Fix any type errors from MUI + next/link interaction. If `component={NextLink}` causes type issues, use a cast:
+
 ```typescript
 component={NextLink as React.ElementType}
 ```
@@ -720,6 +767,7 @@ git commit -m "refactor: replace RouterLink with next/link in shared Link compon
 This is the final step to eliminate the SSR crutch. After this commit, the app renders without a client-side Router wrapper — all navigation is handled by the Next.js App Router.
 
 **Files:**
+
 - Modify: `src/lib/providers/Providers.tsx`
 
 - [ ] **Step 1: Rewrite Providers.tsx without BrowserRouter**
@@ -823,6 +871,7 @@ Currently `app/(public)/r/[slug]/page.tsx` is `'use client'`, so bots (WhatsApp,
 Note: The backend already handles the redirect for humans at `GET /r/{slug}` (web.php route, not API). The Next.js `/r/[slug]` page currently calls `GET /api/r/{slug}` — this is the AJAX endpoint that was disabled. Verify with the backend team before using that endpoint; alternatively, fetch from `/api/public/link/{slug}` or `/api/public/analytics/{slug}` for OG data only.
 
 **Files:**
+
 - Modify: `app/(public)/r/[slug]/page.tsx`
 
 - [ ] **Step 1: Check which API endpoint provides link metadata for OG**
@@ -839,6 +888,7 @@ Use whichever returns `original_url`, `title`, and similar fields. Based on the 
 The page file becomes a Server Component responsible ONLY for `generateMetadata`. The heavy client logic (countdown, IP capture, `window.location.href`) stays in the existing `RedirectPageWithSlug` client component defined in the same file — but move it to its own file.
 
 Create `src/features/redirect/components/RedirectClientPage.tsx`:
+
 ```typescript
 // src/features/redirect/components/RedirectClientPage.tsx
 // Copy the ENTIRE content of RedirectPageWithSlug from the current page.tsx
@@ -848,6 +898,7 @@ Create `src/features/redirect/components/RedirectClientPage.tsx`:
 ```
 
 Rewrite `app/(public)/r/[slug]/page.tsx`:
+
 ```typescript
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
@@ -926,6 +977,7 @@ git commit -m "feat: make /r/[slug] a Server Component with OG/Twitter metadata 
 ## Task 10: Add app/sitemap.ts + app/robots.ts
 
 **Files:**
+
 - Create: `app/sitemap.ts`
 - Create: `app/robots.ts`
 
@@ -982,6 +1034,7 @@ Note: Public analytics pages are intentionally excluded from the sitemap — the
 - [ ] **Step 3: Verify sitemap and robots are served**
 
 Start the dev server and check:
+
 ```bash
 curl -s "http://localhost:3000/sitemap.xml" | head -20
 curl -s "http://localhost:3000/robots.txt"
@@ -1003,6 +1056,7 @@ git commit -m "feat: add sitemap.ts and robots.ts for SEO infrastructure"
 Next.js middleware replaces the BrowserRouter-based auth guard. It also adds security headers on every response.
 
 **Files:**
+
 - Create: `middleware.ts` (at repo root, next to `next.config.ts`)
 
 - [ ] **Step 1: Create middleware.ts**
@@ -1080,6 +1134,7 @@ export const config = {
 ```
 
 **Important caveat:** The existing auth uses `localStorage.token`, not a cookie. Middleware cannot access localStorage. Two options:
+
 1. (Short-term) Disable the auth redirect in middleware (only apply security headers) — let `AuthGuardRedirect` handle client-side redirects as before.
 2. (Long-term) Set a `token` cookie on login in addition to localStorage.
 
@@ -1117,6 +1172,7 @@ git commit -m "feat: add middleware.ts with security headers (X-Frame-Options, H
 ## Task 12: Add error.tsx + loading.tsx for route groups
 
 **Files:**
+
 - Create: `app/error.tsx`
 - Create: `app/loading.tsx`
 - Create: `app/(app)/error.tsx`
@@ -1287,6 +1343,7 @@ git commit -m "feat: add error.tsx and loading.tsx for route groups"
 Nginx upstream health checks and container orchestration tools need a health endpoint.
 
 **Files:**
+
 - Create: `app/api/health/route.ts`
 
 - [ ] **Step 1: Create the health route**
@@ -1304,7 +1361,7 @@ export function GET() {
       timestamp: new Date().toISOString(),
       service: "link-charts-frontend",
     },
-    { status: 200 }
+    { status: 200 },
   );
 }
 ```
@@ -1316,6 +1373,7 @@ curl -s "http://localhost:3000/api/health" | python3 -m json.tool
 ```
 
 Expected:
+
 ```json
 {
   "status": "ok",
@@ -1338,6 +1396,7 @@ git commit -m "feat: add /api/health route for container health checks"
 The existing Vite pipeline is at `frontend/.github/workflows/deploy-production.yml`. We create a parallel pipeline for `frontend-next/` that triggers only when files under `frontend-next/` change.
 
 Production server details (from memory):
+
 - SSH: `root@134.209.33.182`
 - App path: `/var/www/linkchart-frontend`
 - Current frontend container: `linkcharts-frontend-prod` (Vite, maps `3000:80`)
@@ -1345,6 +1404,7 @@ Production server details (from memory):
 - Required secrets (already in GitHub): `PRODUCTION_HOST`, `PRODUCTION_SSH_KEY`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_GA_ID`, `NEXT_PUBLIC_ADSENSE_CLIENT`
 
 **Files:**
+
 - Create: `.github/workflows/deploy-frontend-next.yml`
 
 - [ ] **Step 1: Create the workflows directory**
@@ -1363,19 +1423,19 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/**'
-      - 'app/**'
-      - 'public/**'
-      - 'middleware.ts'
-      - 'next.config.ts'
-      - 'package*.json'
-      - 'Dockerfile'
-      - 'docker-compose.yml'
-      - '.github/workflows/deploy-frontend-next.yml'
+      - "src/**"
+      - "app/**"
+      - "public/**"
+      - "middleware.ts"
+      - "next.config.ts"
+      - "package*.json"
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - ".github/workflows/deploy-frontend-next.yml"
   workflow_dispatch:
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: "20"
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}/frontend-next
 
@@ -1484,14 +1544,14 @@ jobs:
 
 ```yaml
 # docker-compose.prod.yml
-version: '3.8'
+version: "3.8"
 services:
   frontend-next:
     image: ghcr.io/${GITHUB_REPOSITORY}/frontend-next:latest
     container_name: linkcharts-frontend-next-prod
     restart: always
     ports:
-      - "3001:3000"   # 3001 during parallel run; change to 3000 at cutover
+      - "3001:3000" # 3001 during parallel run; change to 3000 at cutover
     env_file:
       - .env.production
     environment:
@@ -1521,6 +1581,7 @@ git push origin feat/nextjs-migration
 - [ ] **Step 6: Verify CI passes on GitHub**
 
 Go to the repository's Actions tab and confirm:
+
 1. `quality` job passes (type-check + lint)
 2. `build` job passes (Docker image built and pushed to GHCR)
 3. `deploy` job is gated on `production` environment approval
@@ -1530,11 +1591,13 @@ Go to the repository's Actions tab and confirm:
 ## Task 15: Production cutover (Vite → Next.js)
 
 **Pre-conditions before executing this task:**
+
 - [ ] Task 14 CI pipeline is green
 - [ ] The Next.js container has been running on port 3001 for at least 30 minutes with no errors
 - [ ] Manual smoke test completed: login, create link, view analytics, redirect, public analytics page
 
 **Files:**
+
 - Modify: `/etc/nginx/sites-available/linkchart-frontend` (on production server)
 - Modify: `docker-compose.prod.yml`
 
@@ -1549,6 +1612,7 @@ Expected output shows current upstream — likely `proxy_pass http://127.0.0.1:3
 - [ ] **Step 2: Deploy Next.js container on port 3001 first (shadow mode)**
 
 From the previous task, the container is already running on 3001. Confirm:
+
 ```bash
 ssh root@134.209.33.182 "docker ps | grep frontend"
 ```
@@ -1588,6 +1652,7 @@ ssh root@134.209.33.182 "docker logs linkcharts-frontend-next-prod --tail 50 -f"
 ```
 
 Watch for any 500 errors. If critical errors appear, rollback immediately:
+
 ```bash
 ssh root@134.209.33.182 "sed -i 's|proxy_pass http://127.0.0.1:3001|proxy_pass http://127.0.0.1:3000|g' /etc/nginx/sites-available/linkchart-frontend && systemctl reload nginx"
 ```
@@ -1595,6 +1660,7 @@ ssh root@134.209.33.182 "sed -i 's|proxy_pass http://127.0.0.1:3001|proxy_pass h
 - [ ] **Step 7: Update docker-compose.prod.yml to port 3000 (final)**
 
 Once Next.js is stable, update `docker-compose.prod.yml`: change `"3001:3000"` to `"3000:3000"`. Also stop the Vite container:
+
 ```bash
 ssh root@134.209.33.182 "docker stop linkcharts-frontend-prod"
 ```

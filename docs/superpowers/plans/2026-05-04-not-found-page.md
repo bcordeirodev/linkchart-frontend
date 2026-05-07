@@ -12,16 +12,17 @@
 
 ## File Map
 
-| Arquivo | Operação | Responsabilidade |
-|---|---|---|
-| `src/shared/layout/ErrorLayout.tsx` | Modify | Shell de layout: header, background decorativo, círculo de ícone configurável, botões, chips de sugestão. Remove footer. |
-| `src/page-components/system/NotFoundPage.tsx` | Modify | Conteúdo 404: passa `iconNode` e `backgroundText` para `ErrorLayout`, renderiza título e descrição. |
+| Arquivo                                       | Operação | Responsabilidade                                                                                                         |
+| --------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `src/shared/layout/ErrorLayout.tsx`           | Modify   | Shell de layout: header, background decorativo, círculo de ícone configurável, botões, chips de sugestão. Remove footer. |
+| `src/page-components/system/NotFoundPage.tsx` | Modify   | Conteúdo 404: passa `iconNode` e `backgroundText` para `ErrorLayout`, renderiza título e descrição.                      |
 
 ---
 
 ## Task 1: Atualizar ErrorLayout
 
 **Files:**
+
 - Modify: `src/shared/layout/ErrorLayout.tsx`
 
 - [ ] **Step 1: Substituir o conteúdo de `ErrorLayout.tsx` pelo código abaixo**
@@ -94,10 +95,7 @@ function ErrorLayout({
         defaultIntent: "warning",
       },
       generic: {
-        bgGradient: [
-          theme.palette.grey[300],
-          theme.palette.grey[500],
-        ],
+        bgGradient: [theme.palette.grey[300], theme.palette.grey[500]],
         defaultIntent: "warning",
       },
     };
@@ -341,6 +339,7 @@ git commit -m "refactor(layout): update ErrorLayout with iconNode/backgroundText
 ## Task 2: Atualizar NotFoundPage
 
 **Files:**
+
 - Modify: `src/page-components/system/NotFoundPage.tsx`
 
 - [ ] **Step 1: Substituir o conteúdo de `NotFoundPage.tsx` pelo código abaixo**
@@ -448,7 +447,9 @@ Esperado: saída sem erros de TypeScript, ESLint ou Prettier. Se houver erro de 
   variant="outlined"
   size="small"
   clickable
-  onClick={() => { window.location.href = suggestion.href; }}
+  onClick={() => {
+    window.location.href = suggestion.href;
+  }}
 />
 ```
 
@@ -457,6 +458,7 @@ Esperado: saída sem erros de TypeScript, ESLint ou Prettier. Se houver erro de 
 Navegar para `http://localhost:3000/pagina-que-nao-existe`.
 
 Verificar:
+
 - Texto "404" aparece grande e translúcido no fundo
 - Círculo com ícone `LinkOff` flutua suavemente (loop de 3s)
 - Título "Página não encontrada" renderiza abaixo do círculo
@@ -469,6 +471,7 @@ Verificar:
 No DevTools, ativar device emulation iPhone SE (375px).
 
 Verificar:
+
 - "404" de fundo com `font-size: 8rem` (não quebra layout)
 - Círculo 80×80px com ícone 36px
 - Botões ocupam 100% da largura, empilhados
