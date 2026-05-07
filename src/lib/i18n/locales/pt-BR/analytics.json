@@ -245,7 +245,8 @@
       "regionalCoverage": "Cobertura Regional",
       "mappedClicks": "Cliques Mapeados",
       "continentsReached": "Continentes",
-      "continentsCoverage": "Cobertura global"
+      "continentsCoverage": "Cobertura global",
+      "coverage": "Cobertura"
     },
     "chart": {
       "topCountries": "Top Países",
