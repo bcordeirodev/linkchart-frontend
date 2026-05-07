@@ -45,6 +45,34 @@ export interface ContinentData {
 }
 
 /**
+ * Metadados retornados junto com /api/analytics/link/{id}/geographic
+ */
+export interface GeographicMeta {
+  total_clicks: number;
+  unique_countries: number;
+  unique_states: number;
+  unique_cities: number;
+  max_clicks: number;
+  total_locations: number;
+  last_updated: string;
+  link_info: {
+    id: number;
+    title: string;
+    short_url: string;
+    is_active: boolean;
+  };
+}
+
+/**
+ * Envelope completo da resposta /geographic.
+ * Espelha exatamente { data, meta } retornado pelo backend.
+ */
+export interface GeographicResponse {
+  data: GeographicData;
+  meta: GeographicMeta;
+}
+
+/**
  * Estatísticas agregadas geográficas
  */
 export interface GeographicStats {
