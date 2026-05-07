@@ -273,6 +273,7 @@
       "title": "Global Click Distribution",
       "less": "less",
       "more": "more",
+      "clicks": "clicks",
       "clickAgainToClear": "Click the same country to clear filter"
     },
     "insights": {
