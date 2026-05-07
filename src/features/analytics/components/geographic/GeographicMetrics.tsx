@@ -1,5 +1,5 @@
 "use client";
-import { Globe, Building2, TrendingUp } from "lucide-react";
+import { Globe, Building2, TrendingUp, Languages } from "lucide-react";
 import { Grid, Box, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
@@ -56,6 +56,9 @@ export function GeographicMetrics({
     ) ||
     0;
 
+  const continentsReached =
+    (data as { continents?: unknown[] } | null)?.continents?.length ?? 0;
+
   const displayTitle = title ?? t("geographic.metrics.title");
 
   const metrics = [
@@ -91,6 +94,14 @@ export function GeographicMetrics({
       color: "warning" as const,
       subtitle: t("geographic.metrics.mappedClicks"),
     },
+    {
+      id: "continents_reached",
+      title: t("geographic.metrics.continentsReached"),
+      value: continentsReached.toString(),
+      icon: <Languages {...ICON_LG} />,
+      color: "secondary" as const,
+      subtitle: t("geographic.metrics.continentsCoverage"),
+    },
   ];
 
   return (
@@ -103,7 +114,7 @@ export function GeographicMetrics({
 
       <Grid container spacing={3} sx={{ ...animations.fadeIn }}>
         {metrics.map((metric) => (
-          <Grid item xs={12} sm={6} md={3} key={metric.id}>
+          <Grid item xs={12} sm={6} md={2.4} key={metric.id}>
             <Box sx={{ height: "100%", ...animations.cardHover }}>
               <MetricCard
                 title={metric.title}
