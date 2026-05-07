@@ -342,7 +342,15 @@
       "popupLastClick": "Último clique: {{time}}",
       "popupLastClickShort": "Último: {{time}}",
       "noPoints": "Nenhum Ponto no Mapa",
-      "noPointsSub": "Ajuste o filtro de cliques mínimos ou aguarde mais dados."
+      "noPointsSub": "Ajuste o filtro de cliques mínimos ou aguarde mais dados.",
+      "banner": "Cada círculo representa uma cidade. A cor e o tamanho indicam o volume de cliques — quanto maior e mais intenso, mais acessos naquela localização.",
+      "legendIntensity": "Intensidade:",
+      "legendIntense": "Muito alto (>60%)",
+      "legendHigh": "Alto (>40%)",
+      "legendMedium": "Médio (>20%)",
+      "legendLow": "Baixo",
+      "legendSizeNote": "· Tamanho proporcional ao volume",
+      "showingLocations": "{{shown}} de {{total}} localiz. visíveis"
     }
   },
   "audience": {

@@ -342,7 +342,15 @@
       "popupLastClick": "Last click: {{time}}",
       "popupLastClickShort": "Last: {{time}}",
       "noPoints": "No Points on Map",
-      "noPointsSub": "Adjust the minimum clicks filter or wait for more data."
+      "noPointsSub": "Adjust the minimum clicks filter or wait for more data.",
+      "banner": "Each circle represents a city. Color and size indicate click volume — the larger and more intense, the more traffic in that location.",
+      "legendIntensity": "Intensity:",
+      "legendIntense": "Very high (>60%)",
+      "legendHigh": "High (>40%)",
+      "legendMedium": "Medium (>20%)",
+      "legendLow": "Low",
+      "legendSizeNote": "· Size proportional to volume",
+      "showingLocations": "{{shown}} of {{total}} locations visible"
     }
   },
   "audience": {

@@ -7,6 +7,7 @@ import {
   RefreshCw,
   Maximize2,
   Globe,
+  Info,
   Zap,
   MapPin,
   LineChart,
@@ -487,6 +488,28 @@ export function RealTimeHeatmapChart({
               </Stack>
             </Box>
 
+            {/* Banner explicativo */}
+            <Box
+              sx={{
+                mb: 2,
+                p: 1.5,
+                bgcolor: "action.hover",
+                borderRadius: `${radiusTokens.sm}px`,
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 1,
+              }}
+            >
+              <Info
+                size={14}
+                strokeWidth={1.5}
+                style={{ marginTop: 2, flexShrink: 0, opacity: 0.6 }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                {t("geographic.heatmap.banner")}
+              </Typography>
+            </Box>
+
             {/* Estatísticas */}
             {showStats && stats ? (
               <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
@@ -577,6 +600,70 @@ export function RealTimeHeatmapChart({
                   {t("geographic.heatmap.styleDark")}
                 </Button>
               </Stack>
+            </Box>
+
+            {/* Legenda de intensidade + contagem de localizações */}
+            <Box
+              sx={{
+                mt: 1.5,
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                gap: 1.5,
+              }}
+            >
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ fontWeight: 600 }}
+              >
+                {t("geographic.heatmap.legendIntensity")}
+              </Typography>
+              {(
+                [
+                  {
+                    key: "legendIntense",
+                    color: chartByType.heatmap.intense,
+                  },
+                  { key: "legendHigh", color: chartByType.heatmap.high },
+                  {
+                    key: "legendMedium",
+                    color: chartByType.heatmap.medium,
+                  },
+                  { key: "legendLow", color: chartByType.heatmap.low },
+                ] as const
+              ).map(({ key, color }) => (
+                <Box
+                  key={key}
+                  sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                >
+                  <Box
+                    sx={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: "50%",
+                      bgcolor: color,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Typography variant="caption" color="text.secondary">
+                    {t(`geographic.heatmap.${key}`)}
+                  </Typography>
+                </Box>
+              ))}
+              <Typography variant="caption" color="text.secondary">
+                {t("geographic.heatmap.legendSizeNote")}
+              </Typography>
+              <Typography
+                variant="caption"
+                color="text.disabled"
+                sx={{ ml: "auto" }}
+              >
+                {t("geographic.heatmap.showingLocations", {
+                  shown: filteredData.length,
+                  total: data.length,
+                })}
+              </Typography>
             </Box>
 
             {error ? (
