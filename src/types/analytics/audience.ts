@@ -95,7 +95,7 @@ export interface ReturnVisitorStats {
   avg_session_clicks: number;
 }
 
-export type QualityTier = 'organic' | 'suspicious' | 'likely_fraud';
+export type QualityTier = "organic" | "suspicious" | "likely_fraud";
 
 export interface QualityTierEntry {
   tier: QualityTier;

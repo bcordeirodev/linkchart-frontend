@@ -68,6 +68,29 @@ export function AudienceMetrics({
       color: "warning" as const,
       subtitle: t("audience.metrics.totalEngagement"),
     },
+    {
+      id: "return_visitors",
+      title: t("audience.metrics.returnVisitors"),
+      value:
+        data?.audience?.return_visitor_stats != null
+          ? data.audience.return_visitor_stats.return_rate.toFixed(1) + "%"
+          : "--",
+      icon: <TrendingUp {...ICON_LG} />,
+      color: "success" as const,
+      subtitle: t("audience.metrics.returnVisitorsSubtitle"),
+    },
+    {
+      id: "avg_session",
+      title: t("audience.metrics.avgSession"),
+      value:
+        data?.audience?.return_visitor_stats != null
+          ? data.audience.return_visitor_stats.avg_session_clicks.toFixed(1) +
+            "x"
+          : "--",
+      icon: <Clock {...ICON_LG} />,
+      color: "info" as const,
+      subtitle: t("audience.metrics.avgSessionSubtitle"),
+    },
   ];
 
   const languageBreakdown: Array<{
