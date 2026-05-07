@@ -34,6 +34,8 @@ interface DashboardMetricsProps {
   mode?: "list" | "single-link";
   /** Days covered by the current timeframe — used to compute avg daily clicks */
   timeframeDays?: number;
+  /** When true, renders Grid items without the Box+Grid container wrapper (caller owns the container) */
+  noContainer?: boolean;
   /** @deprecated mantido apenas para compatibilidade com consumidores legados */
   variant?: "compact" | "detailed";
 }
@@ -51,6 +53,7 @@ export function LinkMetrics({
   title,
   mode = "list",
   timeframeDays = 7,
+  noContainer = false,
 }: DashboardMetricsProps) {
   const { t } = useTranslation("links");
   const { t: tA } = useTranslation("analytics");
@@ -67,7 +70,7 @@ export function LinkMetrics({
   const avgClicksPerLink =
     summary?.avg_clicks_per_link ??
     (totalLinks > 0 ? Math.round(totalClicks / totalLinks) : 0);
-  const avgDaily = Math.round(totalClicks / Math.max(1, timeframeDays));
+  const avgDaily = Math.round(totalClicks / Math.max(0.001, timeframeDays));
 
   const singleLinkMetrics = [
     {
@@ -140,6 +143,31 @@ export function LinkMetrics({
   ];
 
   const metrics = mode === "single-link" ? singleLinkMetrics : listMetrics;
+
+  if (noContainer) {
+    return (
+      <>
+        {showTitle ? (
+          <Grid item xs={12}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+              {titleText}
+            </Typography>
+          </Grid>
+        ) : null}
+        {metrics.map((metric) => (
+          <Grid item xs={12} sm={6} md={3} key={metric.id}>
+            <MetricCard
+              title={metric.title}
+              value={metric.value}
+              icon={metric.icon}
+              color={metric.color}
+              subtitle={metric.subtitle}
+            />
+          </Grid>
+        ))}
+      </>
+    );
+  }
 
   return (
     <Box sx={{ mb: 3 }}>

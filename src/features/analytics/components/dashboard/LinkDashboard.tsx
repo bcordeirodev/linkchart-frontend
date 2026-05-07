@@ -68,7 +68,7 @@ export function LinkDashboard({
   const animations = createPresetAnimations(theme);
   const [timeframe, setTimeframe] = useState<"1h" | "24h" | "7d" | "30d">("7d");
   const TIMEFRAME_DAYS: Record<"1h" | "24h" | "7d" | "30d", number> = {
-    "1h": 1,
+    "1h": 0.04,
     "24h": 1,
     "7d": 7,
     "30d": 30,
@@ -127,26 +127,23 @@ export function LinkDashboard({
 
         {/* Conteúdo Principal */}
         <Grid container spacing={3}>
-          {/* Métricas */}
-          <Grid item xs={12}>
-            <LinkMetrics
-              summary={data?.summary}
-              linksData={[]}
-              showTitle={!compact}
-              title={t("dashboard.metrics.title")}
-              mode="single-link"
-              timeframeDays={TIMEFRAME_DAYS[timeframe]}
-            />
-          </Grid>
+          {/* Métricas + Viralidade + Qualidade — mesma linha visual */}
+          <LinkMetrics
+            summary={data?.summary}
+            linksData={[]}
+            showTitle={!compact}
+            title={t("dashboard.metrics.title")}
+            mode="single-link"
+            timeframeDays={TIMEFRAME_DAYS[timeframe]}
+            noContainer
+          />
 
-          {/* Viralidade */}
           {data?.summary?.viral_rank && (
             <Grid item xs={12} sm={6} md={3}>
               <ViralityCard data={data.summary.viral_rank} />
             </Grid>
           )}
 
-          {/* Qualidade do Tráfego */}
           {data?.summary?.quality && (
             <Grid item xs={12} sm={6} md={3}>
               <TrafficQualityCard data={data.summary.quality} />
