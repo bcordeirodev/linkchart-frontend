@@ -7,7 +7,6 @@ import {
   Globe,
   Clock,
   Users,
-  Flame,
   Lightbulb,
   MousePointer2,
 } from "lucide-react";
@@ -18,7 +17,6 @@ import { ICON_SM, ICON_LG } from "@/lib/theme/iconDefaults";
 
 import { AudienceAnalysis } from "@/features/analytics/components/audience/AudienceAnalysis";
 import { GeographicAnalysis } from "@/features/analytics/components/geographic/GeographicAnalysis";
-import { HeatmapAnalysis } from "@/features/analytics/components/heatmap/HeatmapAnalysis";
 import { InsightsAnalysis } from "@/features/analytics/components/insights/InsightsAnalysis";
 import { TemporalAnalysis } from "@/features/analytics/components/temporal";
 import TabDescription from "@/shared/ui/base/TabDescription";
@@ -73,7 +71,6 @@ export function LinkAnalyticsTabsOptimized({
     { label: t("analytics.tabs.geographic"), Icon: Globe },
     { label: t("analytics.tabs.temporal"), Icon: Clock },
     { label: t("analytics.tabs.audience"), Icon: Users },
-    { label: t("analytics.tabs.heatmap"), Icon: Flame },
     { label: t("analytics.tabs.insights"), Icon: Lightbulb },
     { label: t("analytics.clicksTable.title"), Icon: MousePointer2 },
   ];
@@ -168,16 +165,10 @@ export function LinkAnalyticsTabsOptimized({
         {tabValue === 3 && <AudienceAnalysis linkId={linkId} />}
       </TabPanel>
 
-      {/* Heatmap Tab */}
+      {/* Insights Tab */}
       <TabPanel value={tabValue} index={4}>
         {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 4 && <HeatmapAnalysis linkId={linkId} />}
-      </TabPanel>
-
-      {/* Insights Tab */}
-      <TabPanel value={tabValue} index={5}>
-        {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 5 && (
+        {tabValue === 4 && (
           <InsightsAnalysis
             linkId={linkId}
             enableRealtime={false}
@@ -187,9 +178,9 @@ export function LinkAnalyticsTabsOptimized({
       </TabPanel>
 
       {/* Cliques Tab */}
-      <TabPanel value={tabValue} index={6}>
+      <TabPanel value={tabValue} index={5}>
         {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 6 && <ClicksTable linkId={linkId} />}
+        {tabValue === 5 && <ClicksTable linkId={linkId} />}
       </TabPanel>
     </Box>
   );

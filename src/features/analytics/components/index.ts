@@ -4,7 +4,6 @@ export { default as AnalyticsMetrics } from "../../links/components/LinkMetrics"
 // === COMPONENTES ESPECIALIZADOS ORIGINAIS ===
 export * from "./audience";
 export * from "./geographic";
-export * from "./heatmap";
 export * from "./temporal";
 
 // === ANÁLISES ESPECIALIZADAS ===
