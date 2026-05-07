@@ -7,14 +7,19 @@ import { api } from "@/lib/api/client";
 import { queryKeys } from "@/lib/query/keys";
 import { API_CONFIG } from "@/lib/api/endpoints";
 
-import type { GeographicData } from "@/types/analytics";
+import type {
+  GeographicData,
+  GeographicMeta,
+  GeographicResponse,
+} from "@/types/analytics/geographic";
 
 export interface GeographicStats {
   totalCountries: number;
   totalStates: number;
   totalCities: number;
-  topCountryClicks: number;
   totalClicks: number;
+  maxClicks: number;
+  totalLocations: number;
   coveragePercentage: number;
   lastUpdate: string;
 }
@@ -29,6 +34,7 @@ export interface UseGeographicDataOptions {
 
 export interface UseGeographicDataReturn {
   data: GeographicData | null;
+  meta: GeographicMeta | null;
   stats: GeographicStats | null;
   loading: boolean;
   error: string | null;
@@ -36,25 +42,19 @@ export interface UseGeographicDataReturn {
   isRealtime: boolean;
 }
 
-function calculateStats(geographicData: GeographicData): GeographicStats {
-  const countries = geographicData.top_countries || [];
-  const states = geographicData.top_states || [];
-  const cities = geographicData.top_cities || [];
-
-  const totalClicks = countries.reduce(
-    (sum, country) => sum + (country.clicks || 0),
-    0,
-  );
-
+function calculateStats(meta: GeographicMeta): GeographicStats {
   return {
-    totalCountries: countries.length,
-    totalStates: states.length,
-    totalCities: cities.length,
-    topCountryClicks: countries[0]?.clicks || 0,
-    totalClicks,
+    totalCountries: meta.unique_countries,
+    totalStates: meta.unique_states,
+    totalCities: meta.unique_cities,
+    totalClicks: meta.total_clicks,
+    maxClicks: meta.max_clicks,
+    totalLocations: meta.total_locations,
     coveragePercentage:
-      countries.length > 0 ? Math.min((countries.length / 195) * 100, 100) : 0,
-    lastUpdate: new Date().toISOString(),
+      meta.unique_countries > 0
+        ? Math.min((meta.unique_countries / 195) * 100, 100)
+        : 0,
+    lastUpdate: meta.last_updated,
   };
 }
 
@@ -72,30 +72,37 @@ export function useGeographicData({
   } = useQuery({
     queryKey: queryKeys.analytics.geographic(linkId),
     queryFn: () =>
-      api.get<GeographicData>(`/api/analytics/link/${linkId}/geographic`),
+      api.get<GeographicResponse>(`/api/analytics/link/${linkId}/geographic`),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,
   });
 
-  const data = useMemo(() => {
-    if (!raw) return null;
-    if (minClicks <= 1) return raw;
+  const data = useMemo<GeographicData | null>(() => {
+    if (!raw?.data) return null;
+    if (minClicks <= 1) return raw.data;
     return {
-      ...raw,
+      ...raw.data,
       top_countries:
-        raw.top_countries?.filter((c) => c.clicks >= minClicks) || [],
-      top_states: raw.top_states?.filter((s) => s.clicks >= minClicks) || [],
-      top_cities: raw.top_cities?.filter((c) => c.clicks >= minClicks) || [],
+        raw.data.top_countries?.filter((c) => c.clicks >= minClicks) || [],
+      top_states:
+        raw.data.top_states?.filter((s) => s.clicks >= minClicks) || [],
+      top_cities:
+        raw.data.top_cities?.filter((c) => c.clicks >= minClicks) || [],
       heatmap_data:
-        raw.heatmap_data?.filter((h) => h.clicks >= minClicks) || [],
+        raw.data.heatmap_data?.filter((h) => h.clicks >= minClicks) || [],
     };
   }, [raw, minClicks]);
 
-  const stats = useMemo(() => (data ? calculateStats(data) : null), [data]);
+  const meta = raw?.meta ?? null;
+  const stats = useMemo(
+    () => (meta ? calculateStats(meta) : null),
+    [meta],
+  );
 
   return {
     data,
+    meta,
     stats,
     loading: isLoading,
     error: error ? (error as Error).message : null,
