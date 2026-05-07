@@ -191,7 +191,11 @@ export function GeographicChoropleth({
   }, [countries]);
 
   const maxClicks = useMemo(
-    () => Math.max(1, countries.length > 0 ? Math.max(...countries.map((c) => c.clicks)) : 1),
+    () =>
+      Math.max(
+        1,
+        countries.length > 0 ? Math.max(...countries.map((c) => c.clicks)) : 1,
+      ),
     [countries],
   );
 
@@ -278,43 +282,44 @@ export function GeographicChoropleth({
                 geographies.length === 0
                   ? null
                   : geographies.map((geo) => {
-                  const geoId = geo.id != null ? String(geo.id).padStart(3, "0") : "";
-                  if (!geoId) return null;
-                  const isSelected = selectedNumericId === geoId;
-                  const hasData = !!countryMap[geoId];
+                      const geoId =
+                        geo.id != null ? String(geo.id).padStart(3, "0") : "";
+                      if (!geoId) return null;
+                      const isSelected = selectedNumericId === geoId;
+                      const hasData = !!countryMap[geoId];
 
-                  return (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      fill={getCountryColor(geoId)}
-                      stroke={
-                        isSelected
-                          ? theme.palette.primary.main
-                          : isDark
-                            ? "#2a3045"
-                            : "#c8d0e0"
-                      }
-                      strokeWidth={isSelected ? 2 : 0.5}
-                      style={{
-                        default: {
-                          outline: "none",
-                          cursor: hasData ? "pointer" : "default",
-                        },
-                        hover: {
-                          outline: "none",
-                          fill: hasData
-                            ? alpha(theme.palette.primary.main, 0.9)
-                            : undefined,
-                        },
-                        pressed: { outline: "none" },
-                      }}
-                      onMouseEnter={(evt) => handleMouseEnter(evt, geoId)}
-                      onMouseLeave={handleMouseLeave}
-                      onClick={() => handleClick(geoId)}
-                    />
-                  );
-                })
+                      return (
+                        <Geography
+                          key={geo.rsmKey}
+                          geography={geo}
+                          fill={getCountryColor(geoId)}
+                          stroke={
+                            isSelected
+                              ? theme.palette.primary.main
+                              : isDark
+                                ? "#2a3045"
+                                : "#c8d0e0"
+                          }
+                          strokeWidth={isSelected ? 2 : 0.5}
+                          style={{
+                            default: {
+                              outline: "none",
+                              cursor: hasData ? "pointer" : "default",
+                            },
+                            hover: {
+                              outline: "none",
+                              fill: hasData
+                                ? alpha(theme.palette.primary.main, 0.9)
+                                : undefined,
+                            },
+                            pressed: { outline: "none" },
+                          }}
+                          onMouseEnter={(evt) => handleMouseEnter(evt, geoId)}
+                          onMouseLeave={handleMouseLeave}
+                          onClick={() => handleClick(geoId)}
+                        />
+                      );
+                    })
               }
             </Geographies>
           </ComposableMap>
