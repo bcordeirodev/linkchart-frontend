@@ -275,26 +275,29 @@ export function GeographicChoropleth({
           {t("geographic.choropleth.subtitle")}
         </Typography>
 
+        {/* paddingTop 54% = 432/800 — container keeps the SVG aspect ratio so the full world is visible */}
         <Box
           sx={{
             position: "relative",
             width: "100%",
-            height: { xs: 160, md: 200 },
+            paddingTop: "54%",
             overflow: "hidden",
           }}
         >
           <Box
             sx={{
               position: "absolute",
+              top: 0,
               left: 0,
               right: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
+              bottom: 0,
             }}
           >
             <ComposableMap
-              projectionConfig={{ scale: 140 }}
-              style={{ width: "100%", height: "auto", display: "block" }}
+              width={800}
+              height={432}
+              projectionConfig={{ scale: 112 }}
+              style={{ width: "100%", height: "100%", display: "block" }}
             >
               <Geographies geography={GEO_URL}>
                 {({ geographies }) =>
