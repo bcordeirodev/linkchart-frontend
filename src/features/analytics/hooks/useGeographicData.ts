@@ -71,7 +71,9 @@ export function useGeographicData({
   } = useQuery({
     queryKey: queryKeys.analytics.geographic(linkId),
     queryFn: () =>
-      api.get<GeographicResponse>(`/api/analytics/link/${linkId}/geographic`),
+      api.get<GeographicResponse>(`/api/analytics/link/${linkId}/geographic`, {
+        rawEnvelope: true,
+      }),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,
@@ -94,10 +96,7 @@ export function useGeographicData({
   }, [raw, minClicks]);
 
   const meta = raw?.meta ?? null;
-  const stats = useMemo(
-    () => (meta ? calculateStats(meta) : null),
-    [meta],
-  );
+  const stats = useMemo(() => (meta ? calculateStats(meta) : null), [meta]);
 
   return {
     data,
