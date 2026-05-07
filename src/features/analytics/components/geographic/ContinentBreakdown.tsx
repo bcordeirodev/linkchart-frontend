@@ -13,11 +13,19 @@ import {
 
 import type { ContinentData } from "@/types/analytics/geographic";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false }) as any;
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}) as any;
 
 const CONTINENT_COLORS = [
-  "#1565C0", "#0288D1", "#00897B", "#558B2F", "#F57F17", "#6A1B9A", "#AD1457",
+  "#1565C0",
+  "#0288D1",
+  "#00897B",
+  "#558B2F",
+  "#F57F17",
+  "#6A1B9A",
+  "#AD1457",
 ];
 
 interface ContinentBreakdownProps {
@@ -64,7 +72,9 @@ export function ContinentBreakdown({ continents }: ContinentBreakdownProps) {
       animations: { enabled: true, speed: 400 },
     },
     labels: continents.map((c) =>
-      t(`geographic.continents.${c.continent}`, { defaultValue: c.continent_name })
+      t(`geographic.continents.${c.continent}`, {
+        defaultValue: c.continent_name,
+      }),
     ),
     colors: CONTINENT_COLORS.slice(0, continents.length),
     legend: { show: false },
@@ -87,7 +97,9 @@ export function ContinentBreakdown({ continents }: ContinentBreakdownProps) {
               show: true,
               label: t("geographic.continents.total"),
               formatter: (w: { globals: { seriesTotals: number[] } }) =>
-                w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString(),
+                w.globals.seriesTotals
+                  .reduce((a, b) => a + b, 0)
+                  .toLocaleString(),
               color: theme.palette.text.primary,
               fontSize: "13px",
               fontFamily: theme.typography.fontFamily,
@@ -118,7 +130,9 @@ export function ContinentBreakdown({ continents }: ContinentBreakdownProps) {
             />
           </Box>
 
-          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.5 }}>
+          <Box
+            sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.5 }}
+          >
             {continents.map((c, i) => (
               <Box
                 key={c.continent}
@@ -140,7 +154,9 @@ export function ContinentBreakdown({ continents }: ContinentBreakdownProps) {
                     }}
                   />
                   <Typography variant="caption" noWrap sx={{ maxWidth: 120 }}>
-                    {t(`geographic.continents.${c.continent}`, { defaultValue: c.continent_name })}
+                    {t(`geographic.continents.${c.continent}`, {
+                      defaultValue: c.continent_name,
+                    })}
                   </Typography>
                 </Box>
                 <Typography

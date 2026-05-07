@@ -33,13 +33,14 @@ export function GeographicAnalysis({
   const displayTitle = title ?? t("geographic.title");
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
-  const { data, stats, loading, error, refresh, isRealtime } = useGeographicData({
-    linkId,
-    enableRealtime,
-    minClicks,
-    includeHeatmap: true,
-    refreshInterval: 30000,
-  });
+  const { data, stats, loading, error, refresh, isRealtime } =
+    useGeographicData({
+      linkId,
+      enableRealtime,
+      minClicks,
+      includeHeatmap: true,
+      refreshInterval: 30000,
+    });
 
   return (
     <Box>
