@@ -67,6 +67,12 @@ export function LinkDashboard({
   const { t } = useTranslation("analytics");
   const animations = createPresetAnimations(theme);
   const [timeframe, setTimeframe] = useState<"1h" | "24h" | "7d" | "30d">("7d");
+  const TIMEFRAME_DAYS: Record<"1h" | "24h" | "7d" | "30d", number> = {
+    "1h": 1,
+    "24h": 1,
+    "7d": 7,
+    "30d": 30,
+  };
 
   // If title prop is not passed, use translated default
   const displayTitle = title ?? t("dashboard.title");
@@ -128,20 +134,21 @@ export function LinkDashboard({
               linksData={[]}
               showTitle={!compact}
               title={t("dashboard.metrics.title")}
-              variant={compact ? "compact" : "detailed"}
+              mode="single-link"
+              timeframeDays={TIMEFRAME_DAYS[timeframe]}
             />
           </Grid>
 
           {/* Viralidade */}
           {data?.summary?.viral_rank && (
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={3}>
               <ViralityCard data={data.summary.viral_rank} />
             </Grid>
           )}
 
-          {/* Qualidade do Tráfego (Phase 3) */}
+          {/* Qualidade do Tráfego */}
           {data?.summary?.quality && (
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={3}>
               <TrafficQualityCard data={data.summary.quality} />
             </Grid>
           )}
