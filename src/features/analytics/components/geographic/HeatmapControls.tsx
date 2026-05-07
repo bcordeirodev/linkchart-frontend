@@ -75,7 +75,7 @@ export function HeatmapControls({
         {/* Filtro de cliques mínimos */}
         <Box sx={{ minWidth: 200 }}>
           <Typography variant="caption" gutterBottom>
-            {t("heatmap.minClicks", { count: minClicks })}
+            {t("geographic.heatmap.minClicks", { count: minClicks })}
           </Typography>
           <Slider
             value={minClicks}
@@ -97,13 +97,13 @@ export function HeatmapControls({
               size="small"
             />
           }
-          label={t("heatmap.autoRefresh")}
+          label={t("geographic.heatmap.autoRefresh")}
         />
 
         {/* Estatísticas */}
         <Box sx={{ flexGrow: 1, textAlign: "center" }}>
           <Typography variant="caption" color="text.secondary">
-            {t("heatmap.locationsStatus", {
+            {t("geographic.heatmap.locationsStatus", {
               count: totalPoints,
               max: maxClicks,
             })}
@@ -112,7 +112,7 @@ export function HeatmapControls({
 
         {/* Botões de ação */}
         <Stack direction="row" spacing={1}>
-          <Tooltip title={t("heatmap.refresh")}>
+          <Tooltip title={t("geographic.heatmap.refresh")}>
             <IconButton onClick={onRefresh} disabled={loading} size="small">
               {loading ? (
                 <RefreshCw
@@ -126,7 +126,7 @@ export function HeatmapControls({
           </Tooltip>
 
           {onFullscreen ? (
-            <Tooltip title={t("heatmap.fullscreen")}>
+            <Tooltip title={t("geographic.heatmap.fullscreen")}>
               <IconButton onClick={onFullscreen} size="small">
                 <Maximize2 {...ICON_MD} />
               </IconButton>

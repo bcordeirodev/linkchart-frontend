@@ -108,7 +108,7 @@ export function RealTimeHeatmapChart({
 }: HeatmapChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const displayTitle = title ?? t("heatmap.titleDefault");
+  const displayTitle = title ?? t("geographic.heatmap.titleDefault");
 
   // Estados do mapa
   const [mapComponents, setMapComponents] = useState<SafeMapComponents>({
@@ -265,7 +265,7 @@ export function RealTimeHeatmapChart({
         >
           <CircularProgress size={40} sx={{ mb: 2 }} />
           <Typography variant="body2" color="text.secondary">
-            {t("heatmap.mapLoading")}
+            {t("geographic.heatmap.mapLoading")}
           </Typography>
         </CardContent>
       </Card>
@@ -295,19 +295,19 @@ export function RealTimeHeatmapChart({
           }}
         >
           <Alert severity="error" sx={{ mb: 2 }}>
-            {t("heatmap.mapError")}
+            {t("geographic.heatmap.mapError")}
           </Alert>
           <Typography variant="body2" color="text.secondary" textAlign="center">
-            {t("heatmap.mapErrorText")}
+            {t("geographic.heatmap.mapErrorText")}
             <br />
-            {t("heatmap.mapErrorInternet")}
+            {t("geographic.heatmap.mapErrorInternet")}
           </Typography>
           <Button
             variant="outlined"
             onClick={() => window.location.reload()}
             sx={{ mt: 2 }}
           >
-            {t("heatmap.reload")}
+            {t("geographic.heatmap.reload")}
           </Button>
         </CardContent>
       </Card>
@@ -355,14 +355,14 @@ export function RealTimeHeatmapChart({
             {title}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {t("heatmap.noGeoData")}
+            {t("geographic.heatmap.noGeoData")}
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            {t("heatmap.noGeoDataSub")}
+            {t("geographic.heatmap.noGeoDataSub")}
           </Typography>
           {onRefresh ? (
             <Chip
-              label={t("heatmap.realtimeActive")}
+              label={t("geographic.heatmap.realtimeActive")}
               color="success"
               size="small"
               sx={{ mt: 2 }}
@@ -458,7 +458,7 @@ export function RealTimeHeatmapChart({
                 </Typography>
                 {onRefresh ? (
                   <Chip
-                    label={t("heatmap.realtime")}
+                    label={t("geographic.heatmap.realtime")}
                     color="success"
                     size="small"
                     icon={<Zap {...ICON_MD} />}
@@ -468,7 +468,7 @@ export function RealTimeHeatmapChart({
               </Box>
 
               <Stack direction="row" spacing={1}>
-                <Tooltip title={t("heatmap.refresh")}>
+                <Tooltip title={t("geographic.heatmap.refresh")}>
                   <IconButton
                     onClick={onRefresh}
                     disabled={loading || !onRefresh}
@@ -479,8 +479,8 @@ export function RealTimeHeatmapChart({
                 <Tooltip
                   title={
                     isFullscreen
-                      ? t("heatmap.exitFullscreen")
-                      : t("heatmap.fullscreen")
+                      ? t("geographic.heatmap.exitFullscreen")
+                      : t("geographic.heatmap.fullscreen")
                   }
                 >
                   <IconButton onClick={() => setIsFullscreen(!isFullscreen)}>
@@ -494,22 +494,22 @@ export function RealTimeHeatmapChart({
             {showStats && stats ? (
               <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
                 <Chip
-                  label={`${stats.totalClicks.toLocaleString()} ${t("heatmap.clicks")}`}
+                  label={`${stats.totalClicks.toLocaleString()} ${t("geographic.heatmap.clicks")}`}
                   color="primary"
                   size="small"
                 />
                 <Chip
-                  label={`${stats.uniqueCountries} ${t("heatmap.countries")}`}
+                  label={`${stats.uniqueCountries} ${t("geographic.heatmap.countries")}`}
                   color="secondary"
                   size="small"
                 />
                 <Chip
-                  label={`${stats.uniqueCities} ${t("heatmap.cities")}`}
+                  label={`${stats.uniqueCities} ${t("geographic.heatmap.cities")}`}
                   color="info"
                   size="small"
                 />
                 <Chip
-                  label={t("heatmap.avgClicks", {
+                  label={t("geographic.heatmap.avgClicks", {
                     count: Math.round(stats.avgClicksPerLocation),
                   })}
                   color="success"
@@ -517,7 +517,7 @@ export function RealTimeHeatmapChart({
                 />
                 {stats?.lastUpdate ? (
                   <Chip
-                    label={`${t("heatmap.updated")} ${new Date(stats.lastUpdate).toLocaleTimeString()}`}
+                    label={`${t("geographic.heatmap.updated")} ${new Date(stats.lastUpdate).toLocaleTimeString()}`}
                     variant="outlined"
                     size="small"
                     icon={<LineChart {...ICON_MD} />}
@@ -541,7 +541,7 @@ export function RealTimeHeatmapChart({
                   color="text.secondary"
                   gutterBottom
                 >
-                  {t("heatmap.minClicksFilter", { count: minClicksFilter })}
+                  {t("geographic.heatmap.minClicksFilter", { count: minClicksFilter })}
                 </Typography>
                 <Slider
                   value={minClicksFilter}
@@ -563,7 +563,7 @@ export function RealTimeHeatmapChart({
                     size="small"
                   />
                 }
-                label={t("heatmap.group")}
+                label={t("geographic.heatmap.group")}
                 sx={{ ml: 2 }}
               />
 
@@ -573,28 +573,28 @@ export function RealTimeHeatmapChart({
                   variant={mapStyle === "street" ? "contained" : "outlined"}
                   onClick={() => setMapStyle("street")}
                 >
-                  {t("heatmap.styleStreet")}
+                  {t("geographic.heatmap.styleStreet")}
                 </Button>
                 <Button
                   size="small"
                   variant={mapStyle === "satellite" ? "contained" : "outlined"}
                   onClick={() => setMapStyle("satellite")}
                 >
-                  {t("heatmap.styleSatellite")}
+                  {t("geographic.heatmap.styleSatellite")}
                 </Button>
                 <Button
                   size="small"
                   variant={mapStyle === "dark" ? "contained" : "outlined"}
                   onClick={() => setMapStyle("dark")}
                 >
-                  {t("heatmap.styleDark")}
+                  {t("geographic.heatmap.styleDark")}
                 </Button>
               </Stack>
             </Box>
 
             {error ? (
               <Alert severity="warning" sx={{ mt: 2 }}>
-                {t("heatmap.errorSample", { error })}
+                {t("geographic.heatmap.errorSample", { error })}
               </Alert>
             ) : null}
           </Box>
@@ -657,12 +657,12 @@ export function RealTimeHeatmapChart({
                           zIndex: 1,
                         }}
                       >
-                        {t("heatmap.popupClicks", {
+                        {t("geographic.heatmap.popupClicks", {
                           n: point.clicks.toLocaleString(),
                         })}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {t("heatmap.popupCoords", {
+                        {t("geographic.heatmap.popupCoords", {
                           lat: point.lat.toFixed(4),
                           lng: point.lng.toFixed(4),
                         })}
@@ -673,7 +673,7 @@ export function RealTimeHeatmapChart({
                           color="text.secondary"
                           display="block"
                         >
-                          {t("heatmap.popupStateRegion", {
+                          {t("geographic.heatmap.popupStateRegion", {
                             name: point.state_name,
                           })}
                         </Typography>
@@ -684,7 +684,7 @@ export function RealTimeHeatmapChart({
                           color="text.secondary"
                           display="block"
                         >
-                          {t("heatmap.popupCode", {
+                          {t("geographic.heatmap.popupCode", {
                             code: point.iso_code,
                             currency: point.currency,
                           })}
@@ -696,7 +696,7 @@ export function RealTimeHeatmapChart({
                           color="text.secondary"
                           display="block"
                         >
-                          {t("heatmap.popupContinent", {
+                          {t("geographic.heatmap.popupContinent", {
                             name: point.continent,
                           })}
                         </Typography>
@@ -708,7 +708,7 @@ export function RealTimeHeatmapChart({
                           display="block"
                           sx={{ mt: 1 }}
                         >
-                          {t("heatmap.popupLastClick", {
+                          {t("geographic.heatmap.popupLastClick", {
                             time: new Date(point.last_click).toLocaleString(),
                           })}
                         </Typography>
