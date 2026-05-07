@@ -9,6 +9,7 @@ export { AudienceAnalysis } from "./AudienceAnalysis";
 export { AudienceChart } from "./AudienceChart";
 export { AudienceInsights } from "./AudienceInsights";
 export { AudienceMetrics } from "./AudienceMetrics";
+export { LanguageBreakdownChart } from "./LanguageBreakdownChart";
 
 // Hook personalizado
 export { useAudienceData } from "../../hooks/useAudienceData";

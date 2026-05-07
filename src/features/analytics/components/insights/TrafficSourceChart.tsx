@@ -20,6 +20,7 @@ import {
   Chip,
   Stack,
   Alert,
+  LinearProgress,
 } from "@mui/material";
 
 import { ICON_MD, ICON_LG } from "@/lib/theme/iconDefaults";
@@ -60,6 +61,12 @@ interface TrafficRecommendation {
   priority: "high" | "medium" | "low";
 }
 
+interface NavigationContextEntry {
+  context: string;
+  clicks: number;
+  percentage: number;
+}
+
 interface TrafficSourceData {
   sources: TrafficSource[];
   channels: TrafficChannel[];
@@ -71,6 +78,7 @@ interface TrafficSourceData {
   source_diversity: number;
   total_clicks: number;
   recommendations: TrafficRecommendation[];
+  navigation_context?: NavigationContextEntry[];
 }
 
 interface TrafficSourceChartProps {
@@ -595,6 +603,86 @@ export function TrafficSourceChart({
             </CardContent>
           </Card>
         </Box>
+
+        {/* Contexto de Navegação */}
+        {data.navigation_context && data.navigation_context.length > 0 ? (
+          <Box sx={{ mb: 3 }}>
+            <Card
+              sx={{
+                borderRadius: `${radiusTokens.lg}px`,
+                boxShadow:
+                  theme.palette.mode === "dark"
+                    ? elevationTokens.xs
+                    : elevationLightTokens.xs,
+              }}
+            >
+              <CardContent>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    fontWeight: 600,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <Activity size={16} strokeWidth={1.5} />
+                  Contexto de Navegação
+                </Typography>
+                {(() => {
+                  const contextLabels: Record<string, string> = {
+                    browser_direct: "Direto (navegador)",
+                    browser_referral: "Referral (navegador)",
+                    in_app_webview: "App (WebView)",
+                    api_programmatic: "Programático/API",
+                    preload: "Pré-carregado",
+                  };
+                  return (
+                    <Stack spacing={1.5}>
+                      {data.navigation_context!.map((entry) => (
+                        <Box key={entry.context}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              mb: 0.5,
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                              }}
+                            >
+                              <Chip
+                                label={
+                                  contextLabels[entry.context] ?? entry.context
+                                }
+                                size="small"
+                                variant="outlined"
+                              />
+                            </Box>
+                            <Typography variant="body2" color="text.secondary">
+                              {entry.clicks} (
+                              {Number(entry.percentage).toFixed(1)}%)
+                            </Typography>
+                          </Box>
+                          <LinearProgress
+                            variant="determinate"
+                            value={Number(entry.percentage)}
+                            sx={{ height: 6, borderRadius: 3 }}
+                          />
+                        </Box>
+                      ))}
+                    </Stack>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          </Box>
+        ) : null}
 
         {/* Recomendações */}
         {data.recommendations.length > 0 && (

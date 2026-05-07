@@ -22,11 +22,18 @@ import {
 
 import type { DeviceData } from "@/types";
 
+interface DataSaverStats {
+  clicks: number;
+  total: number;
+  percentage: number;
+}
+
 interface AudienceInsightsProps {
   deviceBreakdown: DeviceData[];
   browserBreakdown?: unknown[];
   totalClicks: number;
   showAdvancedInsights?: boolean;
+  dataSaver?: DataSaverStats;
 }
 
 export function AudienceInsights({
@@ -34,6 +41,7 @@ export function AudienceInsights({
   browserBreakdown: _browserBreakdown,
   totalClicks,
   showAdvancedInsights: _showAdvancedInsights = true,
+  dataSaver,
 }: AudienceInsightsProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
@@ -191,6 +199,35 @@ export function AudienceInsights({
             )}
           </Stack>
         </Box>
+
+        {dataSaver && dataSaver.percentage > 0 ? (
+          <>
+            <Divider sx={{ my: 2 }} />
+            <Box sx={{ mt: 1, mb: 1 }}>
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              >
+                <Wrench size={16} strokeWidth={1.5} />
+                Conexão Limitada
+              </Typography>
+              <Stack direction="row" spacing={1} flexWrap="wrap">
+                <Chip
+                  label={`${dataSaver.percentage}% em conexão limitada`}
+                  color="warning"
+                  variant="outlined"
+                  size="small"
+                />
+                <Chip
+                  label={`${dataSaver.clicks} de ${dataSaver.total} cliques`}
+                  variant="outlined"
+                  size="small"
+                />
+              </Stack>
+            </Box>
+          </>
+        ) : null}
 
         <Divider sx={{ my: 3 }} />
 

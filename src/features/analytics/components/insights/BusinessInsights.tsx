@@ -21,6 +21,7 @@ import {
   Stack,
   Divider,
   Avatar,
+  LinearProgress,
 } from "@mui/material";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
@@ -40,12 +41,19 @@ interface BusinessInsight {
   priority: "high" | "medium" | "low";
 }
 
+interface HttpProtocolEntry {
+  protocol: string;
+  clicks: number;
+  percentage: number;
+}
+
 interface BusinessInsightsProps {
   insights: BusinessInsight[];
   showTitle?: boolean;
   maxItems?: number;
   priorityFilter?: ("high" | "medium" | "low")[];
   categoryFilter?: string[];
+  httpProtocol?: HttpProtocolEntry[];
 }
 
 /**
@@ -59,6 +67,7 @@ export function BusinessInsights({
   maxItems = 20,
   priorityFilter: _priorityFilter,
   categoryFilter: _categoryFilter,
+  httpProtocol,
 }: BusinessInsightsProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
@@ -345,6 +354,80 @@ export function BusinessInsights({
           </Typography>
         </Alert>
       )}
+
+      {/* Protocolo HTTP */}
+      {httpProtocol && httpProtocol.length > 0 ? (
+        <Card
+          sx={{
+            mt: 3,
+            borderRadius: `${radiusTokens.lg}px`,
+            backgroundColor: "background.paper",
+            boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+          }}
+        >
+          <CardContent>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <BarChart3 size={16} strokeWidth={1.5} />
+              Protocolo HTTP
+            </Typography>
+
+            {/* Destaque HTTP/2 */}
+            {(() => {
+              const http2 = httpProtocol.find(
+                (e) =>
+                  e.protocol === "HTTP/2" ||
+                  e.protocol === "h2" ||
+                  e.protocol === "http2",
+              );
+              return http2 ? (
+                <Box sx={{ mb: 2 }}>
+                  <Chip
+                    label={`HTTP/2: ${Number(http2.percentage).toFixed(1)}% das conexões`}
+                    color="success"
+                    variant="filled"
+                    size="small"
+                  />
+                </Box>
+              ) : null;
+            })()}
+
+            <Stack spacing={1.5}>
+              {httpProtocol.map((entry) => (
+                <Box key={entry.protocol}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mb: 0.5,
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      {entry.protocol}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {entry.clicks} ({Number(entry.percentage).toFixed(1)}%)
+                    </Typography>
+                  </Box>
+                  <LinearProgress
+                    variant="determinate"
+                    value={Number(entry.percentage)}
+                    sx={{ height: 6, borderRadius: 3 }}
+                  />
+                </Box>
+              ))}
+            </Stack>
+          </CardContent>
+        </Card>
+      ) : null}
     </Box>
   );
 }
