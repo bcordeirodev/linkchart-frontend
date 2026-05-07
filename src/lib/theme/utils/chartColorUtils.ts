@@ -120,9 +120,11 @@ export function getMultiSeriesColors(count: number): string[] {
   return colors;
 }
 
-export default {
+const chartColorUtils = {
   getStandardChartColors,
   getChartColorsByType,
   getContextColor,
   getMultiSeriesColors,
 };
+
+export default chartColorUtils;

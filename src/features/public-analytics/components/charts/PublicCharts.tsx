@@ -41,7 +41,9 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
     clicks: d.clicks,
   }));
   const dowData = (charts?.temporal?.clicks_by_day_of_week ?? []).map((d) => ({
-    day: t(`publicAnalytics.charts.dow.${d.day}`, { defaultValue: String(d.day) }),
+    day: t(`publicAnalytics.charts.dow.${d.day}`, {
+      defaultValue: String(d.day),
+    }),
     clicks: d.clicks,
   }));
 
@@ -74,7 +76,11 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
           mb: 2,
         }}
       >
-        <TrendingUp size={15} strokeWidth={1.75} color="rgba(129,140,248,0.6)" />
+        <TrendingUp
+          size={15}
+          strokeWidth={1.75}
+          color="rgba(129,140,248,0.6)"
+        />
         <Typography
           sx={{
             fontSize: "0.8125rem",

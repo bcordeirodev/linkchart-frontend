@@ -1,5 +1,6 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { ShieldAlert, ShieldCheck, ShieldOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 
@@ -10,38 +11,42 @@ interface UrlSafetyIndicatorProps {
   threats?: string[];
 }
 
-const configs = {
-  checking: {
-    color: "text.disabled" as const,
-    label: "Verificando segurança...",
-    icon: <CircularProgress size={13} color="inherit" />,
-  },
-  safe: {
-    color: "success.main" as const,
-    label: "URL verificada — nenhuma ameaça detectada",
-    icon: <ShieldCheck {...ICON_SM} />,
-  },
-  unsafe: {
-    color: "error.main" as const,
-    label: "",
-    icon: <ShieldAlert {...ICON_SM} />,
-  },
-  error: {
-    color: "text.disabled" as const,
-    label: "Verificação de segurança indisponível",
-    icon: <ShieldOff {...ICON_SM} />,
-  },
-};
-
 export function UrlSafetyIndicator({
   status,
   threats = [],
 }: UrlSafetyIndicatorProps) {
+  const { t } = useTranslation("links");
+
   if (status === "idle") return null;
+
+  const configs = {
+    checking: {
+      color: "text.disabled" as const,
+      label: t("form.safety.checking"),
+      icon: <CircularProgress size={13} color="inherit" />,
+    },
+    safe: {
+      color: "success.main" as const,
+      label: t("form.safety.safe"),
+      icon: <ShieldCheck {...ICON_SM} />,
+    },
+    unsafe: {
+      color: "error.main" as const,
+      label: "",
+      icon: <ShieldAlert {...ICON_SM} />,
+    },
+    error: {
+      color: "text.disabled" as const,
+      label: t("form.safety.error"),
+      icon: <ShieldOff {...ICON_SM} />,
+    },
+  };
 
   const cfg = configs[status];
   const label =
-    status === "unsafe" ? `URL bloqueada: ${threats.join(", ")}` : cfg.label;
+    status === "unsafe"
+      ? t("form.safety.unsafe", { threats: threats.join(", ") })
+      : cfg.label;
 
   return (
     <Box

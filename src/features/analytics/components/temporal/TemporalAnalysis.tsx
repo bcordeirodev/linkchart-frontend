@@ -63,7 +63,9 @@ export function TemporalAnalysis({
           title={displayTitle}
           description={t("temporal.description")}
           highlight={`${t("temporal.chart.peakHour")} ${peakHour} - ${peakDay}`}
-          metadata={isRealtime ? t("dashboard.realtime") : t("temporal.allData")}
+          metadata={
+            isRealtime ? t("dashboard.realtime") : t("temporal.allData")
+          }
         />
       </Box>
 
@@ -129,9 +131,9 @@ export function TemporalAnalysis({
               <TemporalChart
                 hourlyData={data?.clicks_by_hour || []}
                 weeklyData={data?.clicks_by_day_of_week || []}
-                hourlyPatternsLocal={(data as any)?.hourly_patterns_local}
-                weekendVsWeekday={(data as any)?.weekend_vs_weekday}
-                businessHoursAnalysis={(data as any)?.business_hours_analysis}
+                hourlyPatternsLocal={data?.hourly_patterns_local}
+                weekendVsWeekday={data?.weekend_vs_weekday}
+                businessHoursAnalysis={data?.business_hours_analysis}
                 advancedData={data?.advanced}
               />
             </Grid>

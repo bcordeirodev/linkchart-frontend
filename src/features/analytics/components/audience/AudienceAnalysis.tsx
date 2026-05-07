@@ -15,6 +15,9 @@ import { AudienceMetrics } from "./AudienceMetrics";
 
 import type { AudienceAnalysisProps } from "@/types/analytics";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyData = Record<string, any>;
+
 interface LegacyAudienceAnalysisProps {
   data?: unknown;
   linkId: string;
@@ -48,11 +51,11 @@ export function AudienceAnalysis({
 
   const audienceData = shouldUseHook ? hookData : legacyData;
   const deviceBreakdown =
-    (audienceData as Record<string, any>)?.audience?.device_breakdown ||
-    (audienceData as Record<string, any>)?.device_breakdown ||
+    (audienceData as AnyData)?.audience?.device_breakdown ||
+    (audienceData as AnyData)?.device_breakdown ||
     [];
   const totalClicks =
-    (audienceData as Record<string, any>)?.overview?.total_clicks ||
+    (audienceData as AnyData)?.overview?.total_clicks ||
     stats?.totalClicks ||
     0;
 
@@ -63,7 +66,9 @@ export function AudienceAnalysis({
           icon={<Users {...ICON_LG} />}
           title={displayTitle}
           description={t("audience.description")}
-          highlight={t("audience.deviceTypes", { count: deviceBreakdown?.length || 0 })}
+          highlight={t("audience.deviceTypes", {
+            count: deviceBreakdown?.length || 0,
+          })}
           metadata={t("audience.linkSpecific")}
         />
       </Box>
@@ -94,20 +99,18 @@ export function AudienceAnalysis({
                 <AudienceChart
                   deviceBreakdown={deviceBreakdown}
                   browserBreakdown={
-                    (audienceData as Record<string, any>)?.browser_breakdown
+                    (audienceData as AnyData)?.browser_breakdown
                   }
-                  osBreakdown={
-                    (audienceData as Record<string, any>)?.os_breakdown
-                  }
+                  osBreakdown={(audienceData as AnyData)?.os_breakdown}
                   totalClicks={totalClicks}
-                  browsers={(audienceData as Record<string, any>)?.browsers}
+                  browsers={(audienceData as AnyData)?.browsers}
                   operatingSystems={
-                    (audienceData as Record<string, any>)?.operating_systems
+                    (audienceData as AnyData)?.operating_systems
                   }
                   devicePerformance={
-                    (audienceData as Record<string, any>)?.device_performance
+                    (audienceData as AnyData)?.device_performance
                   }
-                  languages={(audienceData as Record<string, any>)?.languages}
+                  languages={(audienceData as AnyData)?.languages}
                 />
               </EnhancedPaper>
             </Grid>
@@ -115,9 +118,7 @@ export function AudienceAnalysis({
             <Grid item xs={12}>
               <AudienceInsights
                 deviceBreakdown={deviceBreakdown}
-                browserBreakdown={
-                  (audienceData as Record<string, any>)?.browser_breakdown
-                }
+                browserBreakdown={(audienceData as AnyData)?.browser_breakdown}
                 totalClicks={totalClicks}
                 showAdvancedInsights={shouldUseHook}
               />

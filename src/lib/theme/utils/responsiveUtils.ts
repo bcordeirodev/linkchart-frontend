@@ -36,7 +36,7 @@ export const createResponsiveValue = <T>(
   property: string,
   values: ResponsiveValue<T>,
 ): SxProps => {
-  const result: any = {};
+  const result: Record<string, unknown> = {};
 
   // Valor base (xs)
   if (values.xs !== undefined) {
@@ -93,7 +93,7 @@ export const createResponsiveDimensions = (
   width?: ResponsiveValue<number | string>,
   height?: ResponsiveValue<number | string>,
 ): SxProps => {
-  let result: any = {};
+  let result: Record<string, unknown> = {};
 
   if (width) {
     result = { ...result, ...createResponsiveValue(theme, "width", width) };
@@ -195,7 +195,7 @@ export const createResponsiveFlex = (
 
   if (gap) {
     const gapStyles = createResponsiveValue(theme, "gap", gap);
-    result = { ...result, ...(gapStyles as any) };
+    result = { ...result, ...(gapStyles as Record<string, unknown>) };
   }
 
   return result;

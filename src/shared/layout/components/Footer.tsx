@@ -20,7 +20,7 @@
 import { Github, Linkedin, Twitter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Box, Container, Typography, Link, useTheme } from "@mui/material";
-import CookieConsent from "vanilla-cookieconsent";
+import * as CookieConsent from "@/lib/consent/cookieconsent.esm.js";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
@@ -123,7 +123,12 @@ export function Footer({ style = "static" }: FooterProps) {
               color="text.secondary"
               underline="hover"
               variant="body2"
-              sx={{ background: "none", border: "none", cursor: "pointer", p: 0 }}
+              sx={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                p: 0,
+              }}
             >
               Não vender meus dados
             </Link>

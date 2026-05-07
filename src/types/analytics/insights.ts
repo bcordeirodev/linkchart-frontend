@@ -15,7 +15,7 @@ export interface BusinessInsight {
   recommendation?: string;
   impact_score?: number;
   confidence?: number;
-  data_points?: Record<string, any>;
+  data_points?: Record<string, unknown>;
   created_at: string;
   expires_at?: string;
 }

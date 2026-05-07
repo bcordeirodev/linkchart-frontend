@@ -25,7 +25,7 @@ import { ResponsiveContainer } from "@/shared/ui/base/ResponsiveContainer";
 
 import { LinkFormFields } from "../../components/forms/LinkFormFields";
 import {
-  linkFormSchema,
+  createLinkFormSchema,
   defaultLinkFormValues,
 } from "../../components/forms/LinkFormSchema";
 
@@ -54,7 +54,11 @@ export function CreateLinkForm({
     reset,
     setError,
   } = useForm<LinkFormData>({
-    resolver: zodResolver(linkFormSchema),
+    resolver: zodResolver(
+      createLinkFormSchema(
+        t as (key: string, options?: Record<string, unknown>) => string,
+      ),
+    ),
     defaultValues: defaultLinkFormValues,
     mode: "onChange",
   });

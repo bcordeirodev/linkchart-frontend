@@ -44,7 +44,7 @@ function ForgotPasswordPage() {
   const theme = useTheme();
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  const [sentEmail, setSentEmail] = useState("");
+  const [_sentEmail, setSentEmail] = useState("");
 
   const {
     register,
@@ -67,7 +67,7 @@ function ForgotPasswordPage() {
       } else {
         dispatch(showErrorMessage(result.message));
       }
-    } catch (error: unknown) {
+    } catch {
       dispatch(showErrorMessage("Erro inesperado. Tente novamente."));
     } finally {
       setLoading(false);

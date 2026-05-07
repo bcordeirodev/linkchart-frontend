@@ -337,6 +337,7 @@ export const FlatAppIcons = Object.entries(AppIcons).reduce(
     });
     return acc;
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   {} as Record<AnyIconName, any>,
 );
 

@@ -48,20 +48,20 @@ function LinkAnalyticsPage({ id }: Props) {
   return (
     <AuthGuardRedirect auth={["user", "admin"]}>
       <ResponsiveContainer variant="page">
-          <LinkActions
-            linkId={id}
-            shortUrl={linkInfo?.short_url}
-            currentPage="analytics"
-          />
+        <LinkActions
+          linkId={id}
+          shortUrl={linkInfo?.short_url}
+          currentPage="analytics"
+        />
 
-          <PageHeader
-            title={linkInfo?.title || t("dashboard.title")}
-            subtitle={t("dashboard.subtitle", { url: linkInfo?.short_url || id })}
-            icon={<AppIcon intent="analytics" size={32} />}
-            variant="analytics"
-          />
+        <PageHeader
+          title={linkInfo?.title || t("dashboard.title")}
+          subtitle={t("dashboard.subtitle", { url: linkInfo?.short_url || id })}
+          icon={<AppIcon intent="analytics" size={32} />}
+          variant="analytics"
+        />
 
-          <LinkAnalyticsTabsOptimized {...tabsProps} />
+        <LinkAnalyticsTabsOptimized {...tabsProps} />
       </ResponsiveContainer>
     </AuthGuardRedirect>
   );

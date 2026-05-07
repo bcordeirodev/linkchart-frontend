@@ -100,7 +100,9 @@ export function UpgradeCTA({ onSignUp, onLogin }: UpgradeCTAProps) {
             }}
           >
             <AppIcon
-              intent={feature.icon as any}
+              intent={
+                feature.icon as import("@/shared/ui/icons/AppIcons").IconIntent
+              }
               size={16}
               color={theme.palette.primary.main}
               style={{ marginRight: 8 }}

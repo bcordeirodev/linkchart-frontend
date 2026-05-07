@@ -77,7 +77,7 @@ function LinkQRPage({ id }: Props) {
           ),
         ),
     );
-  }, [linkInfo?.short_url]);
+  }, [linkInfo?.short_url, tPublic]);
 
   // Handler para quando o link for excluído com sucesso
   const handleDeleteSuccess = () => {
@@ -193,6 +193,7 @@ function LinkQRPage({ id }: Props) {
                   justifyContent: "center",
                 }}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={qrCodeDataUrl}
                   alt="QR Code"

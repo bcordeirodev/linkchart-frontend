@@ -22,7 +22,9 @@ interface HeatmapMapProps {
   loading?: boolean;
 }
 
-// Componentes Leaflet carregados dinamicamente
+// Componentes Leaflet carregados dinamicamente — ComponentType<any> necessário para
+// compatibilidade com os tipos internos do Leaflet (TileLayerProps, CircleMarkerProps…)
+/* eslint-disable @typescript-eslint/no-explicit-any */
 interface LeafletComponents {
   MapContainer: React.ComponentType<any>;
   TileLayer: React.ComponentType<any>;
@@ -30,6 +32,7 @@ interface LeafletComponents {
   Popup: React.ComponentType<any>;
   MapResizeHandler: React.ComponentType<Record<string, never>>;
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 /**
  * 🗺️ HEATMAP MAP - MAPA INTERATIVO
@@ -52,7 +55,7 @@ export function HeatmapMap({
   height: heightProp,
   onPointClick,
   minClicks = 1,
-  loading = false,
+  loading: _loading = false,
 }: HeatmapMapProps) {
   const mapHeight = useChartHeight("large", heightProp);
   const { isMobile } = useResponsive();
@@ -111,7 +114,7 @@ export function HeatmapMap({
     };
 
     loadLeaflet();
-  }, []);
+  }, [t]);
 
   // Filtrar dados por cliques mínimos
   const filteredData = data.filter((point) => point.clicks >= minClicks);
@@ -290,7 +293,9 @@ export function HeatmapMap({
                   </Typography>
                   {point.last_click ? (
                     <Typography variant="caption" color="text.secondary">
-                      {t("heatmap.popupLastClickShort", { time: new Date(point.last_click).toLocaleString() })}
+                      {t("heatmap.popupLastClickShort", {
+                        time: new Date(point.last_click).toLocaleString(),
+                      })}
                     </Typography>
                   ) : null}
                 </Box>

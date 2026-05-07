@@ -28,6 +28,7 @@ export function EmailVerificationBanner({
 
   useEffect(() => {
     checkVerificationStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkVerificationStatus = async () => {
@@ -67,7 +68,7 @@ export function EmailVerificationBanner({
       } else {
         dispatch(showErrorMessage(result.message));
       }
-    } catch (error) {
+    } catch {
       dispatch(showErrorMessage("Erro ao reenviar email de verificação"));
     } finally {
       setIsResending(false);

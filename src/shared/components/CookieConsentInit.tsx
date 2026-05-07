@@ -1,15 +1,14 @@
 // src/shared/components/CookieConsentInit.tsx
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import CookieConsent from 'vanilla-cookieconsent'
-import { cookieConsentConfig } from '@/lib/consent/cookie-consent'
-import 'vanilla-cookieconsent/dist/cookieconsent.css'
+import { useEffect } from "react";
+import * as CookieConsent from "@/lib/consent/cookieconsent.esm.js";
+import { cookieConsentConfig } from "@/lib/consent/cookie-consent";
 
 export function CookieConsentInit() {
   useEffect(() => {
-    CookieConsent.run(cookieConsentConfig)
-  }, [])
+    CookieConsent.run(cookieConsentConfig);
+  }, []);
 
-  return null
+  return null;
 }

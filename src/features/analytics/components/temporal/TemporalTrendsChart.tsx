@@ -16,7 +16,10 @@ import { useTranslation } from "react-i18next";
 import { ChartCard } from "@/shared/ui/base/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { getStandardChartColors } from "@/lib/theme";
-import type { WeeklyTrendEntry, MonthlyTrendEntry } from "@/types/analytics/temporal";
+import type {
+  WeeklyTrendEntry,
+  MonthlyTrendEntry,
+} from "@/types/analytics/temporal";
 
 interface TemporalTrendsChartProps {
   weeklyTrends: WeeklyTrendEntry[];
@@ -47,19 +50,23 @@ export function TemporalTrendsChart({
   const monthlyValues = monthlyData.map((d) => d.y);
 
   const weeklyTotal = weeklyValues.reduce((sum, val) => sum + val, 0);
-  const weeklyAvg = weeklyValues.length > 0 ? weeklyTotal / weeklyValues.length : 0;
+  const weeklyAvg =
+    weeklyValues.length > 0 ? weeklyTotal / weeklyValues.length : 0;
 
   const monthlyTotal = monthlyValues.reduce((sum, val) => sum + val, 0);
-  const monthlyAvg = monthlyValues.length > 0 ? monthlyTotal / monthlyValues.length : 0;
+  const monthlyAvg =
+    monthlyValues.length > 0 ? monthlyTotal / monthlyValues.length : 0;
 
   const weeklyTrend =
     weeklyValues.length >= 2
-      ? weeklyValues[weeklyValues.length - 1] - weeklyValues[weeklyValues.length - 2]
+      ? weeklyValues[weeklyValues.length - 1] -
+        weeklyValues[weeklyValues.length - 2]
       : 0;
 
   const monthlyTrend =
     monthlyValues.length >= 2
-      ? monthlyValues[monthlyValues.length - 1] - monthlyValues[monthlyValues.length - 2]
+      ? monthlyValues[monthlyValues.length - 1] -
+        monthlyValues[monthlyValues.length - 2]
       : 0;
 
   const hasWeeklyData = weeklyData.length > 0;
@@ -79,9 +86,7 @@ export function TemporalTrendsChart({
           strokeWidth={1.5}
           style={{ opacity: 0.3, marginBottom: 16 }}
         />
-        <Typography variant="h6">
-          {t("temporal.trends.noData")}
-        </Typography>
+        <Typography variant="h6">{t("temporal.trends.noData")}</Typography>
         <Typography variant="body2" sx={{ mt: 1 }}>
           {t("temporal.trends.noDataSub")}
         </Typography>
@@ -97,7 +102,9 @@ export function TemporalTrendsChart({
           <Grid item xs={12} lg={6}>
             <ChartCard
               title={t("temporal.trends.weeklyTitle")}
-              subtitle={t("temporal.trends.weeklyAvg", { avg: Math.round(weeklyAvg) })}
+              subtitle={t("temporal.trends.weeklyAvg", {
+                avg: Math.round(weeklyAvg),
+              })}
             >
               <ApexChartWrapper
                 type="area"
@@ -207,7 +214,9 @@ export function TemporalTrendsChart({
           <Grid item xs={12} lg={6}>
             <ChartCard
               title={t("temporal.trends.monthlyTitle")}
-              subtitle={t("temporal.trends.monthlyAvg", { avg: Math.round(monthlyAvg) })}
+              subtitle={t("temporal.trends.monthlyAvg", {
+                avg: Math.round(monthlyAvg),
+              })}
             >
               <ApexChartWrapper
                 type="area"
@@ -328,9 +337,13 @@ export function TemporalTrendsChart({
                       </Typography>
                       <Typography variant="body2">
                         {weeklyTrend > 0
-                          ? t("temporal.trends.weeklyGrowth", { n: weeklyTrend })
+                          ? t("temporal.trends.weeklyGrowth", {
+                              n: weeklyTrend,
+                            })
                           : weeklyTrend < 0
-                            ? t("temporal.trends.weeklyDrop", { n: Math.abs(weeklyTrend) })
+                            ? t("temporal.trends.weeklyDrop", {
+                                n: Math.abs(weeklyTrend),
+                              })
                             : t("temporal.trends.weeklyStable")}
                       </Typography>
                     </Grid>
@@ -342,9 +355,13 @@ export function TemporalTrendsChart({
                       </Typography>
                       <Typography variant="body2">
                         {monthlyTrend > 0
-                          ? t("temporal.trends.monthlyGrowth", { n: monthlyTrend })
+                          ? t("temporal.trends.monthlyGrowth", {
+                              n: monthlyTrend,
+                            })
                           : monthlyTrend < 0
-                            ? t("temporal.trends.monthlyDrop", { n: Math.abs(monthlyTrend) })
+                            ? t("temporal.trends.monthlyDrop", {
+                                n: Math.abs(monthlyTrend),
+                              })
                             : t("temporal.trends.monthlyStable")}
                       </Typography>
                     </Grid>

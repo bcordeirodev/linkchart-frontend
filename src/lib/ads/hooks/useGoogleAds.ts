@@ -5,6 +5,7 @@ import { GOOGLE_ADS_CONFIG } from "../config/adsConfig";
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     adsbygoogle: any[];
   }
 }

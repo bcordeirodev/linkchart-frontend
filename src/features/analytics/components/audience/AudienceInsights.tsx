@@ -24,7 +24,7 @@ import type { DeviceData } from "@/types";
 
 interface AudienceInsightsProps {
   deviceBreakdown: DeviceData[];
-  browserBreakdown?: any[];
+  browserBreakdown?: unknown[];
   totalClicks: number;
   showAdvancedInsights?: boolean;
 }

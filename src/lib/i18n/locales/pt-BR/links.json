@@ -41,7 +41,13 @@
     "deleteConfirm": "Excluir este link?",
     "deleteConfirmDesc": "Esta ação não pode ser desfeita. Todos os dados de cliques serão perdidos.",
     "activate": "Ativar",
-    "deactivate": "Desativar"
+    "deactivate": "Desativar",
+    "list": "Listagem",
+    "edit": "Editar",
+    "copy": "Copiar",
+    "delete": "Excluir",
+    "qrCode": "QR Code",
+    "deleteError": "Erro ao excluir link. Tente novamente."
   },
   "form": {
     "createTitle": "Criar Novo Link",
@@ -94,6 +100,32 @@
       "urlInvalid": "Insira uma URL válida (deve começar com http:// ou https://).",
       "slugTaken": "Este slug já está em uso.",
       "slugInvalid": "O slug só pode conter letras, números e hífens."
+    },
+    "safety": {
+      "checking": "Verificando segurança...",
+      "safe": "URL verificada — nenhuma ameaça detectada",
+      "unsafe": "URL bloqueada: {{threats}}",
+      "error": "Verificação de segurança indisponível"
+    },
+    "validation": {
+      "urlRequired": "URL é obrigatória",
+      "urlMaxLength": "URL não pode ter mais de 2048 caracteres",
+      "urlInvalid": "URL deve ser válida (ex: https://exemplo.com)",
+      "urlScheme": "URL deve começar com http:// ou https://",
+      "urlBlocked": "Esta URL não é permitida por questões de segurança",
+      "titleMax": "Título deve ter no máximo 255 caracteres",
+      "slugMin": "Slug deve ter pelo menos 3 caracteres",
+      "slugMax": "Slug não pode ter mais de 50 caracteres",
+      "slugPattern": "Slug pode conter apenas letras, números, hífens e underscores",
+      "slugReserved": "Este slug é reservado pelo sistema",
+      "descriptionMax": "Descrição deve ter no máximo 1000 caracteres",
+      "dateInvalid": "Data inválida",
+      "expiresMax": "Data de expiração deve ser no máximo 5 anos no futuro",
+      "clickLimitInt": "Limite deve ser um número inteiro",
+      "clickLimitMin": "Limite deve ser pelo menos 1",
+      "clickLimitMax": "Limite máximo é 1.000.000",
+      "utmMax": "{{field}} muito longo",
+      "startsBeforeExpires": "Data de início deve ser anterior à data de expiração"
     }
   },
   "metrics": {
@@ -108,10 +140,10 @@
     "neverClicked": "Nunca clicado",
     "countriesReached": "Países Alcançados",
     "clicksToday": "Cliques Hoje",
-    "linksCreated": "links criados",
-    "linksActive": "links funcionando",
-    "totalClicksSubtitle": "cliques acumulados",
-    "clicksPerLink": "cliques por link"
+    "linksCreated": "Links Criados",
+    "linksActive": "Links Funcionando",
+    "totalClicksSubtitle": "Cliques Acumulados",
+    "clicksPerLink": "Cliques por Link"
   },
   "status": {
     "active": "Ativo",

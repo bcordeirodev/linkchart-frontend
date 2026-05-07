@@ -56,7 +56,10 @@ function LinkEditPage({ id }: Props) {
   // Validação de ID
   if (!id) {
     return (
-      <AuthGuardRedirect auth={["user", "admin"]} fallback={<LinkFormSkeleton isEdit />}>
+      <AuthGuardRedirect
+        auth={["user", "admin"]}
+        fallback={<LinkFormSkeleton isEdit />}
+      >
         <ResponsiveContainer variant="form" maxWidth="md">
           <Stack spacing={3}>
             <PageBreadcrumb />
@@ -83,7 +86,10 @@ function LinkEditPage({ id }: Props) {
   }
 
   return (
-    <AuthGuardRedirect auth={["user", "admin"]} fallback={<LinkFormSkeleton isEdit />}>
+    <AuthGuardRedirect
+      auth={["user", "admin"]}
+      fallback={<LinkFormSkeleton isEdit />}
+    >
       <ResponsiveContainer variant="form" maxWidth="md">
         <Stack spacing={3}>
           {/* Ações do Link */}

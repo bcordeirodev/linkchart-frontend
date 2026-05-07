@@ -69,7 +69,7 @@ const buttonComponents = {
       color: "inherit" as const,
     },
     styleOverrides: {
-      root: ({ theme }: { theme: Theme }) => ({
+      root: (_: { theme: Theme }) => ({
         textTransform: "none",
         borderRadius: radiusTokens.md,
         fontWeight: 600,
@@ -106,7 +106,7 @@ const buttonComponents = {
   },
   MuiIconButton: {
     styleOverrides: {
-      root: ({ theme }: { theme: Theme }) => ({
+      root: (_: { theme: Theme }) => ({
         borderRadius: radiusTokens.md,
       }),
       sizeMedium: { width: 36, height: 36, maxHeight: 36 },
@@ -117,7 +117,7 @@ const buttonComponents = {
   MuiButtonGroup: {
     defaultProps: { color: "secondary" as const },
     styleOverrides: {
-      root: ({ theme }: { theme: Theme }) => ({
+      root: (_: { theme: Theme }) => ({
         borderRadius: radiusTokens.md,
       }),
     },
@@ -148,7 +148,7 @@ const inputComponents = {
   },
   MuiInputBase: {
     styleOverrides: {
-      root: ({ theme }: { theme: Theme }) => ({
+      root: (_: { theme: Theme }) => ({
         minHeight: 36,
         borderRadius: radiusTokens.md,
         lineHeight: 1,
@@ -156,17 +156,17 @@ const inputComponents = {
       legend: { fontSize: "0.75em" },
       input: { padding: "5px 11px" },
       adornedStart: { paddingLeft: "11px!important" },
-      sizeSmall: ({ theme }: { theme: Theme }) => ({
+      sizeSmall: (_: { theme: Theme }) => ({
         height: 32,
         minHeight: 32,
         borderRadius: radiusTokens.md,
       }),
-      sizeMedium: ({ theme }: { theme: Theme }) => ({
+      sizeMedium: (_: { theme: Theme }) => ({
         height: 36,
         minHeight: 36,
         borderRadius: radiusTokens.md,
       }),
-      sizeLarge: ({ theme }: { theme: Theme }) => ({
+      sizeLarge: (_: { theme: Theme }) => ({
         height: 40,
         minHeight: 40,
         borderRadius: radiusTokens.md,
@@ -210,7 +210,7 @@ const inputComponents = {
           display: "none",
         },
       }),
-      input: ({ theme }: { theme: Theme }) => ({
+      input: (_: { theme: Theme }) => ({
         padding: "16px 20px 12px 20px",
         fontSize: "1rem",
         "&::placeholder": {
@@ -235,7 +235,7 @@ const inputComponents = {
 const surfaceComponents = {
   MuiPaper: {
     styleOverrides: {
-      root: ({ theme }: { theme: Theme }) => ({
+      root: (_: { theme: Theme }) => ({
         backgroundImage: "none",
         borderRadius: radiusTokens.md,
       }),
@@ -263,14 +263,14 @@ const surfaceComponents = {
   },
   MuiDialog: {
     styleOverrides: {
-      paper: ({ theme }: { theme: Theme }) => ({
+      paper: (_: { theme: Theme }) => ({
         borderRadius: radiusTokens.lg,
       }),
     },
   },
   MuiPopover: {
     styleOverrides: {
-      paper: ({ theme }: { theme: Theme }) => ({
+      paper: (_: { theme: Theme }) => ({
         borderRadius: radiusTokens.md,
       }),
     },

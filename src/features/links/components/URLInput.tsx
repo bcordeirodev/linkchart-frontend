@@ -22,7 +22,7 @@ export function URLInput({
   placeholder = "Cole sua URL aqui... (ex: https://exemplo.com/pagina-muito-longa)",
   fullWidth = true,
 }: URLInputProps) {
-  const theme = useTheme();
+  const _theme = useTheme();
 
   return (
     <TextField

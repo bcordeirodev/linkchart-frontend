@@ -85,7 +85,7 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
     } finally {
       setSaving(false);
     }
-  }, [formData.name, formData.email, dispatch, onUserUpdate]);
+  }, [formData.name, formData.email, dispatch, onUserUpdate, t]);
 
   const handleReset = useCallback(() => {
     setFormData({

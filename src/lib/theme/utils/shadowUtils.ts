@@ -177,7 +177,7 @@ export const createShadow = (
   const {
     intensity = "medium",
     type = "default",
-    color,
+    color: _color,
     variant = "primary",
   } = config;
 

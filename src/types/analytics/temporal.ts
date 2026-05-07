@@ -33,14 +33,14 @@ export interface HourlyPatternData {
 export interface WeekendVsWeekdayData {
   weekend: {
     clicks: number;
-    unique_visitors: number;
-    avg_response_time: number;
+    unique_visitors?: number;
+    avg_response_time?: number;
     percentage?: number;
   };
   weekday: {
     clicks: number;
-    unique_visitors: number;
-    avg_response_time: number;
+    unique_visitors?: number;
+    avg_response_time?: number;
     percentage?: number;
   };
 }
@@ -64,9 +64,11 @@ export interface BusinessHoursData {
  */
 export interface PeakAnalysis {
   /** Hora de pico (0-23) */
-  peak_hour: number;
-  /** Dia de pico */
-  peak_day: string;
+  peak_hour: number | null;
+  /** Dia de pico (1-7, numérico) */
+  peak_day: number | null;
+  /** Nome do dia de pico */
+  peak_day_name?: string | null;
   /** Cliques na hora de pico */
   peak_hour_clicks: number;
   /** Cliques no dia de pico */
@@ -99,13 +101,33 @@ export interface MonthlyTrendEntry {
   clicks: number;
 }
 
+export interface HeatmapSeriesEntry {
+  name: string;
+  data: { x: string; y: number }[];
+}
+
+export interface DailyTimelineEntry {
+  date: string;
+  clicks: number;
+  unique_visitors: number;
+}
+
+export interface DeviceByPeriodEntry {
+  period: string;
+  label: string;
+  desktop: number;
+  mobile: number;
+  tablet: number;
+}
+
 export interface AdvancedTemporalData {
   weekly_trends: WeeklyTrendEntry[];
   monthly_trends: MonthlyTrendEntry[];
-  /** Análise de picos */
   peak_analysis: PeakAnalysis;
-  /** Análise por timezone */
   timezone_analysis: TimezoneAnalysis[];
+  heatmap_data?: HeatmapSeriesEntry[];
+  daily_timeline?: DailyTimelineEntry[];
+  device_by_period?: DeviceByPeriodEntry[];
 }
 
 /**

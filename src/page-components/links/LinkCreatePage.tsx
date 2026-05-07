@@ -31,16 +31,16 @@ function LinkCreatePage() {
   return (
     <AuthGuardRedirect auth={["user", "admin"]} fallback={<LinkFormSkeleton />}>
       <ResponsiveContainer variant="form" maxWidth="md">
-          <Stack spacing={4}>
-            {/* Form Section */}
-            <Box>
-              <Fade in={formMounted} timeout={800} mountOnEnter unmountOnExit>
-                <Box>
-                  <CreateLinkForm showBackButton />
-                </Box>
-              </Fade>
-            </Box>
-          </Stack>
+        <Stack spacing={4}>
+          {/* Form Section */}
+          <Box>
+            <Fade in={formMounted} timeout={800} mountOnEnter unmountOnExit>
+              <Box>
+                <CreateLinkForm showBackButton />
+              </Box>
+            </Fade>
+          </Box>
+        </Stack>
       </ResponsiveContainer>
     </AuthGuardRedirect>
   );

@@ -24,7 +24,7 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 import { LinkFormFields } from "../../components/forms/LinkFormFields";
 import {
-  linkFormSchema,
+  createLinkFormSchema,
   defaultLinkFormValues,
 } from "../../components/forms/LinkFormSchema";
 
@@ -50,7 +50,11 @@ export function EditLinkForm({
     reset,
     setError,
   } = useForm<LinkFormData>({
-    resolver: zodResolver(linkFormSchema),
+    resolver: zodResolver(
+      createLinkFormSchema(
+        t as (key: string, options?: Record<string, unknown>) => string,
+      ),
+    ),
     defaultValues: defaultLinkFormValues,
     mode: "onChange",
   });

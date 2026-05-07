@@ -84,16 +84,6 @@ export type {
   HeatmapPoint,
 } from "../core/api";
 
-// Re-exports de tipos de performance
-export type {
-  LinkPerformanceDashboard,
-  LinkPerformanceData,
-  PerformanceSummary,
-  LinkPerformanceMetric,
-  PerformanceFilters,
-  PerformanceApiResponse,
-} from "./performance";
-
 // Re-exports de tipos de dashboard
 export type {
   DashboardData,

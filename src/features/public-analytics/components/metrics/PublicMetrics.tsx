@@ -59,9 +59,17 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
           gridColumn: { xs: "span 2", md: "span 1" },
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1.25 }}>
-          <MousePointerClick size={12} strokeWidth={1.75} color="rgba(129,140,248,0.5)" />
-          <Typography sx={labelSx}>{t("publicAnalytics.metrics.totalClicks")}</Typography>
+        <Box
+          sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1.25 }}
+        >
+          <MousePointerClick
+            size={12}
+            strokeWidth={1.75}
+            color="rgba(129,140,248,0.5)"
+          />
+          <Typography sx={labelSx}>
+            {t("publicAnalytics.metrics.totalClicks")}
+          </Typography>
         </Box>
         <Typography
           sx={{
@@ -80,9 +88,21 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
       </Box>
 
       <Box sx={cardBase}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1.25 }}>
-          <Activity size={12} strokeWidth={1.75} color={analyticsData.is_active ? "rgba(52,211,153,0.5)" : "rgba(248,113,113,0.5)"} />
-          <Typography sx={labelSx}>{t("publicAnalytics.metrics.status")}</Typography>
+        <Box
+          sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1.25 }}
+        >
+          <Activity
+            size={12}
+            strokeWidth={1.75}
+            color={
+              analyticsData.is_active
+                ? "rgba(52,211,153,0.5)"
+                : "rgba(248,113,113,0.5)"
+            }
+          />
+          <Typography sx={labelSx}>
+            {t("publicAnalytics.metrics.status")}
+          </Typography>
         </Box>
         <Box
           sx={{
@@ -118,9 +138,17 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
       </Box>
 
       <Box sx={cardBase}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1.25 }}>
-          <CalendarDays size={12} strokeWidth={1.75} color="rgba(255,255,255,0.25)" />
-          <Typography sx={labelSx}>{t("publicAnalytics.metrics.createdAt")}</Typography>
+        <Box
+          sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1.25 }}
+        >
+          <CalendarDays
+            size={12}
+            strokeWidth={1.75}
+            color="rgba(255,255,255,0.25)"
+          />
+          <Typography sx={labelSx}>
+            {t("publicAnalytics.metrics.createdAt")}
+          </Typography>
         </Box>
         <Typography
           sx={{

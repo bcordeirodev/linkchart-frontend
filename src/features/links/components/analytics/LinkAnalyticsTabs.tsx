@@ -4,7 +4,6 @@ import { Tabs, Tab, Box, useTheme } from "@mui/material";
 import { useState } from "react";
 import {
   LayoutDashboard,
-  Zap,
   Globe,
   Clock,
   Users,
@@ -21,12 +20,11 @@ import { AudienceAnalysis } from "@/features/analytics/components/audience/Audie
 import { GeographicAnalysis } from "@/features/analytics/components/geographic/GeographicAnalysis";
 import { HeatmapAnalysis } from "@/features/analytics/components/heatmap/HeatmapAnalysis";
 import { InsightsAnalysis } from "@/features/analytics/components/insights/InsightsAnalysis";
-import { PerformanceAnalysis } from "@/features/analytics/components/performance/PerformanceAnalysis";
 import { TemporalAnalysis } from "@/features/analytics/components/temporal";
 import TabDescription from "@/shared/ui/base/TabDescription";
 import { TabPanel } from "@/shared/ui/base/TabPanel";
 
-import { LinkDashboard } from "../../../analytics/components/dashboard/LinkDashboard";
+import { LinkDashboard } from "@/features/analytics/components/dashboard/LinkDashboard";
 
 import { ClicksTable } from "./ClicksTable";
 
@@ -72,7 +70,6 @@ export function LinkAnalyticsTabsOptimized({
   // Configuração padronizada de tabs
   const tabLabels = [
     { label: t("analytics.tabs.overview"), Icon: LayoutDashboard },
-    { label: t("analytics.tabs.performance"), Icon: Zap },
     { label: t("analytics.tabs.geographic"), Icon: Globe },
     { label: t("analytics.tabs.temporal"), Icon: Clock },
     { label: t("analytics.tabs.audience"), Icon: Users },
@@ -145,16 +142,10 @@ export function LinkAnalyticsTabsOptimized({
         )}
       </TabPanel>
 
-      {/* Performance Tab */}
+      {/* Geografia Tab */}
       <TabPanel value={tabValue} index={1}>
         {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 1 && <PerformanceAnalysis linkId={linkId} />}
-      </TabPanel>
-
-      {/* Geografia Tab */}
-      <TabPanel value={tabValue} index={2}>
-        {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 2 && (
+        {tabValue === 1 && (
           <GeographicAnalysis
             linkId={linkId}
             enableRealtime={false}
@@ -164,29 +155,29 @@ export function LinkAnalyticsTabsOptimized({
       </TabPanel>
 
       {/* Temporal Tab */}
-      <TabPanel value={tabValue} index={3}>
+      <TabPanel value={tabValue} index={2}>
         {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 3 && (
+        {tabValue === 2 && (
           <TemporalAnalysis linkId={linkId} enableRealtime={false} />
         )}
       </TabPanel>
 
       {/* Audiência Tab */}
-      <TabPanel value={tabValue} index={4}>
+      <TabPanel value={tabValue} index={3}>
         {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 4 && <AudienceAnalysis linkId={linkId} />}
+        {tabValue === 3 && <AudienceAnalysis linkId={linkId} />}
       </TabPanel>
 
       {/* Heatmap Tab */}
-      <TabPanel value={tabValue} index={5}>
+      <TabPanel value={tabValue} index={4}>
         {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 5 && <HeatmapAnalysis linkId={linkId} />}
+        {tabValue === 4 && <HeatmapAnalysis linkId={linkId} />}
       </TabPanel>
 
       {/* Insights Tab */}
-      <TabPanel value={tabValue} index={6}>
+      <TabPanel value={tabValue} index={5}>
         {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 6 && (
+        {tabValue === 5 && (
           <InsightsAnalysis
             linkId={linkId}
             enableRealtime={false}
@@ -196,9 +187,9 @@ export function LinkAnalyticsTabsOptimized({
       </TabPanel>
 
       {/* Cliques Tab */}
-      <TabPanel value={tabValue} index={7}>
+      <TabPanel value={tabValue} index={6}>
         {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 7 && <ClicksTable linkId={linkId} />}
+        {tabValue === 6 && <ClicksTable linkId={linkId} />}
       </TabPanel>
     </Box>
   );

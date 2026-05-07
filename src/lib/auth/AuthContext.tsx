@@ -117,7 +117,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 );
               }
             }
-          } catch (error) {
+          } catch {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
             setUser(null);
@@ -156,7 +156,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(user);
       localStorage.setItem("user", JSON.stringify(user));
       // Usuário armazenado
-    } catch (error) {
+    } catch {
       // Erro no login tratado
       throw new Error("Login falhou. Verifique suas credenciais.");
     }
@@ -169,7 +169,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Chamar logout na API
       await authService.signOut();
       // Logout na API bem-sucedido
-    } catch (error) {
+    } catch {
       // Erro no logout da API (continuando com logout local)
     } finally {
       // Limpar dados locais sempre

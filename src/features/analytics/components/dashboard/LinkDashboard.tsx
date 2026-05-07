@@ -17,7 +17,6 @@ import type { TFunction } from "i18next";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import { useDashboardData } from "@/features/analytics/hooks/useDashboardData";
-import { checkDataAvailability } from "@/features/analytics/utils/dataValidation";
 import { LinkMetrics } from "@/features/links/components/LinkMetrics";
 import { createPresetAnimations } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
@@ -62,9 +61,7 @@ export function LinkDashboard({
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const animations = createPresetAnimations(theme);
-  const [timeframe, setTimeframe] = useState<"1h" | "24h" | "7d" | "30d">(
-    "24h",
-  );
+  const [timeframe, setTimeframe] = useState<"1h" | "24h" | "7d" | "30d">("7d");
 
   // If title prop is not passed, use translated default
   const displayTitle = title ?? t("dashboard.title");
@@ -210,10 +207,14 @@ function renderCharts(
     },
   };
 
-  const availability = checkDataAvailability(chartData);
+  const hasTemporal = !!(
+    chartData.temporal?.clicks_by_hour?.length ||
+    chartData.temporal?.clicks_by_day_of_week?.length
+  );
+  const hasGeographic = !!chartData.geographic?.top_countries?.length;
+  const hasDevice = !!chartData.audience?.device_breakdown?.length;
 
-  // Estado vazio
-  if (!availability.hasAnyData) {
+  if (!hasTemporal && !hasGeographic && !hasDevice) {
     return (
       <EmptyState
         variant="charts"
@@ -227,7 +228,7 @@ function renderCharts(
   return (
     <Grid container spacing={3} sx={{ ...animations.fadeIn }}>
       {/* Gráficos Temporais */}
-      {availability.hasTemporalData && chartData.temporal ? (
+      {hasTemporal && chartData.temporal ? (
         <>
           {chartData.temporal.clicks_by_hour?.length > 0 ? (
             <Grid item xs={12} md={6}>
@@ -249,7 +250,7 @@ function renderCharts(
       ) : null}
 
       {/* Gráficos de Dispositivos e Países */}
-      {availability.hasDeviceData && chartData.audience?.device_breakdown ? (
+      {hasDevice && chartData.audience?.device_breakdown ? (
         <Grid item xs={12} md={6}>
           <DeviceBreakdownChart
             data={chartData.audience.device_breakdown}
@@ -257,7 +258,7 @@ function renderCharts(
           />
         </Grid>
       ) : null}
-      {availability.hasGeographicData && chartData.geographic?.top_countries ? (
+      {hasGeographic && chartData.geographic?.top_countries ? (
         <Grid item xs={12} md={6}>
           <TopCountriesChart
             data={chartData.geographic.top_countries}

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Box, Divider, Typography } from "@mui/material";
-import { ExternalLink, Copy, Check, Link2 } from "lucide-react";
+import { Box, Divider, Typography, useTheme, alpha } from "@mui/material";
+import { ExternalLink, Copy, Check, Link2, BarChart3 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import useClipboard from "@/hooks/useClipboard";
@@ -15,6 +15,7 @@ interface LinkHeroCardProps {
 }
 
 export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
+  const theme = useTheme();
   const { copy: copyShort, copied: copiedShort } = useClipboard({
     timeout: 1500,
   });
@@ -23,6 +24,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   });
   const { t } = useTranslation("public");
   const [analyticsUrl, setAnalyticsUrl] = useState("");
+
   useEffect(() => {
     setAnalyticsUrl(window.location.href);
   }, []);
@@ -30,115 +32,83 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   return (
     <Box
       sx={{
-        background: "rgba(255,255,255,0.03)",
-        border: "1px solid rgba(255,255,255,0.1)",
-        borderRadius: "12px",
+        background: theme.palette.background.paper,
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: "16px",
         overflow: "hidden",
+        position: "relative",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "1px",
+          background: `linear-gradient(90deg, transparent 0%, ${alpha(theme.palette.primary.main, 0.6)} 50%, transparent 100%)`,
+        },
       }}
     >
-      {/* Header — identity + description */}
-      <Box sx={{ p: { xs: "20px", md: "24px" }, pb: { xs: "18px", md: "20px" } }}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: 2,
-            mb: 2,
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 30,
-                height: 30,
-                borderRadius: "8px",
-                background: "rgba(99,102,241,0.12)",
-                border: "1px solid rgba(99,102,241,0.22)",
-                flexShrink: 0,
-              }}
-            >
-              <Link2 size={14} strokeWidth={2} color="#a5b4fc" />
-            </Box>
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "0.8125rem",
-                  fontWeight: 600,
-                  color: "rgba(255,255,255,0.75)",
-                  lineHeight: 1.2,
-                }}
-              >
-                Link encurtado
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: "0.6875rem",
-                  color: "rgba(255,255,255,0.35)",
-                  lineHeight: 1.3,
-                  mt: 0.25,
-                }}
-              >
-                Analytics públicos disponíveis
-              </Typography>
-            </Box>
-          </Box>
+      {/* Header — identity */}
+      <Box
+        sx={{ p: { xs: "24px", md: "28px" }, pb: { xs: "20px", md: "24px" } }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
           <Box
             sx={{
-              display: "inline-flex",
+              display: "flex",
               alignItems: "center",
-              gap: 0.5,
-              background: linkData.is_active
-                ? "rgba(16,185,129,0.08)"
-                : "rgba(239,68,68,0.08)",
-              border: "1px solid",
-              borderColor: linkData.is_active
-                ? "rgba(16,185,129,0.22)"
-                : "rgba(239,68,68,0.22)",
-              borderRadius: "5px",
-              px: 1,
-              py: 0.375,
+              justifyContent: "center",
+              width: 36,
+              height: 36,
+              borderRadius: "10px",
+              background: alpha(theme.palette.primary.main, 0.12),
+              border: `1px solid ${alpha(theme.palette.primary.main, 0.22)}`,
               flexShrink: 0,
             }}
           >
-            <Box
-              sx={{
-                width: 5,
-                height: 5,
-                borderRadius: "50%",
-                background: linkData.is_active ? "#34d399" : "#f87171",
-                flexShrink: 0,
-              }}
+            <Link2
+              size={16}
+              strokeWidth={2}
+              color={theme.palette.primary.light}
             />
+          </Box>
+          <Box>
             <Typography
               sx={{
-                fontSize: "0.6875rem",
+                fontSize: "0.875rem",
                 fontWeight: 600,
-                color: linkData.is_active ? "#34d399" : "#f87171",
+                color: theme.palette.text.primary,
+                lineHeight: 1.2,
               }}
             >
-              {linkData.is_active
-                ? t("publicAnalytics.metrics.active")
-                : t("publicAnalytics.metrics.inactive")}
+              {t("publicAnalytics.linkInfo.shortenedLink")}
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: "0.75rem",
+                color: theme.palette.text.secondary,
+                lineHeight: 1.3,
+                mt: 0.25,
+              }}
+            >
+              {t("publicAnalytics.linkInfo.publicAnalyticsAvailable")}
             </Typography>
           </Box>
         </Box>
 
-        {/* Short URL */}
+        {/* Short URL — hero element */}
         <Box
           sx={{
-            background: "rgba(99,102,241,0.07)",
-            border: "1px solid rgba(99,102,241,0.18)",
-            borderRadius: "10px",
-            p: "12px 16px",
+            background: alpha(theme.palette.primary.main, 0.08),
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.28)}`,
+            borderRadius: "12px",
+            p: "14px 16px 14px 20px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             gap: 2,
-            mb: 1.5,
+            mb: 2,
+            boxShadow: `0 2px 20px ${alpha(theme.palette.primary.main, 0.08)}`,
           }}
         >
           <Typography
@@ -146,7 +116,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
               fontFamily: "monospace",
               fontSize: { xs: "1rem", md: "1.125rem" },
               fontWeight: 700,
-              color: "#a5b4fc",
+              color: theme.palette.primary.light,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -158,23 +128,36 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             component="button"
             onClick={() => copyShort(linkData.short_url)}
             sx={{
-              background: copiedShort ? "rgba(52,211,153,0.12)" : "rgba(99,102,241,0.15)",
-              border: "1px solid",
-              borderColor: copiedShort ? "rgba(52,211,153,0.32)" : "rgba(99,102,241,0.32)",
-              borderRadius: "6px",
+              display: "flex",
+              alignItems: "center",
+              gap: 0.75,
+              background: copiedShort
+                ? theme.palette.success.main
+                : theme.palette.primary.main,
+              border: "none",
+              borderRadius: "8px",
               px: 2,
-              py: 0.75,
+              py: 0.875,
               fontSize: "0.8125rem",
               fontWeight: 600,
-              color: copiedShort ? "#34d399" : "#a5b4fc",
+              color: "#fff",
               cursor: "pointer",
               flexShrink: 0,
-              transition: "all 0.2s",
+              transition: "all 0.18s",
+              boxShadow: copiedShort
+                ? `0 2px 10px ${alpha(theme.palette.success.main, 0.35)}`
+                : `0 2px 10px ${alpha(theme.palette.primary.main, 0.35)}`,
               "&:hover": {
-                background: copiedShort ? "rgba(52,211,153,0.2)" : "rgba(99,102,241,0.28)",
+                opacity: 0.88,
+                transform: "translateY(-1px)",
+                boxShadow: copiedShort
+                  ? `0 4px 16px ${alpha(theme.palette.success.main, 0.45)}`
+                  : `0 4px 16px ${alpha(theme.palette.primary.main, 0.45)}`,
               },
+              "&:active": { transform: "translateY(0)" },
             }}
           >
+            {copiedShort ? <Check size={14} /> : <Copy size={14} />}
             {copiedShort
               ? t("publicAnalytics.saveUrlBanner.copied")
               : t("publicAnalytics.linkInfo.copy")}
@@ -191,10 +174,10 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             display: "flex",
             alignItems: "center",
             gap: 1,
-            color: "rgba(255,255,255,0.4)",
+            color: theme.palette.text.secondary,
             textDecoration: "none",
             transition: "color 0.2s",
-            "&:hover": { color: "rgba(255,255,255,0.7)" },
+            "&:hover": { color: theme.palette.text.primary },
           }}
         >
           <ExternalLink size={13} strokeWidth={1.5} style={{ flexShrink: 0 }} />
@@ -213,107 +196,113 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
         </Box>
       </Box>
 
-      <Divider sx={{ borderColor: "rgba(255,255,255,0.06)" }} />
+      <Divider sx={{ borderColor: theme.palette.divider }} />
 
-      {/* Footer — save + action */}
-      <Box sx={{ p: { xs: "14px 20px", md: "14px 24px" } }}>
-        <Typography
-          sx={{
-            fontSize: "0.6875rem",
-            color: "rgba(255,255,255,0.3)",
-            mb: 1.25,
-            lineHeight: 1.4,
-          }}
-        >
-          {t("publicAnalytics.saveUrlBanner.title")}
-        </Typography>
+      {/* Footer — save + CTA */}
+      <Box sx={{ p: { xs: "20px 24px", md: "22px 28px" } }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+          <BarChart3 size={15} color={theme.palette.primary.main} />
+          <Typography
+            sx={{
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              color: theme.palette.text.primary,
+            }}
+          >
+            {t("publicAnalytics.saveUrlBanner.title")}
+          </Typography>
+        </Box>
+
+        {/* Analytics URL */}
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            gap: 2,
+            gap: 1.5,
+            background: alpha(theme.palette.text.primary, 0.04),
+            border: `1px solid ${theme.palette.divider}`,
+            borderRadius: "4px",
+            p: "10px 14px",
+            mb: 2,
           }}
         >
-          {/* Analytics URL */}
-          <Box
+          <Typography
             sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              minWidth: 0,
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              color: theme.palette.text.secondary,
+              flexShrink: 0,
+            }}
+          >
+            Analytics:
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: "monospace",
+              fontSize: "0.8125rem",
+              color: theme.palette.text.primary,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
               flex: 1,
             }}
           >
-            <Typography
-              sx={{
-                fontSize: "0.6875rem",
-                fontWeight: 500,
-                color: "rgba(255,255,255,0.28)",
-                flexShrink: 0,
-              }}
-            >
-              Analytics:
-            </Typography>
-            <Typography
-              sx={{
-                fontFamily: "monospace",
-                fontSize: "0.6875rem",
-                color: "rgba(255,255,255,0.18)",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                flex: 1,
-              }}
-            >
-              {analyticsUrl}
-            </Typography>
-            <Box
-              component="button"
-              onClick={() => copyAnalytics(analyticsUrl)}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                background: "transparent",
-                border: "none",
-                color: copiedAnalytics ? "#34d399" : "rgba(255,255,255,0.25)",
-                cursor: "pointer",
-                flexShrink: 0,
-                p: 0,
-                transition: "color 0.2s",
-                "&:hover": {
-                  color: copiedAnalytics ? "#34d399" : "rgba(255,255,255,0.5)",
-                },
-              }}
-            >
-              {copiedAnalytics ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
-            </Box>
-          </Box>
-
-          {/* Shorten another link */}
+            {analyticsUrl}
+          </Typography>
           <Box
             component="button"
-            onClick={onCreateLink}
+            onClick={() => copyAnalytics(analyticsUrl)}
             sx={{
-              background: "rgba(99,102,241,0.08)",
-              border: "1px solid rgba(99,102,241,0.2)",
-              borderRadius: "7px",
-              color: "#a5b4fc",
-              fontSize: "0.8125rem",
-              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              background: "transparent",
+              border: "none",
+              color: copiedAnalytics
+                ? theme.palette.success.main
+                : theme.palette.text.secondary,
               cursor: "pointer",
-              px: 2,
-              py: 0.625,
               flexShrink: 0,
-              transition: "all 0.2s",
+              p: 0.5,
+              borderRadius: "4px",
+              transition: "color 0.2s",
               "&:hover": {
-                background: "rgba(99,102,241,0.16)",
-                borderColor: "rgba(99,102,241,0.35)",
+                color: copiedAnalytics
+                  ? theme.palette.success.main
+                  : theme.palette.text.primary,
               },
             }}
           >
-            {t("publicAnalytics.linkInfo.shortenAnother")}
+            {copiedAnalytics ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
           </Box>
+        </Box>
+
+        {/* CTA */}
+        <Box
+          component="button"
+          onClick={onCreateLink}
+          sx={{
+            width: "100%",
+            background: theme.palette.primary.main,
+            border: "none",
+            borderRadius: "10px",
+            color: theme.palette.primary.contrastText,
+            fontSize: "0.9375rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            px: 2,
+            py: 1.25,
+            letterSpacing: "0.01em",
+            transition: "all 0.18s",
+            boxShadow: `0 2px 14px ${alpha(theme.palette.primary.main, 0.3)}`,
+            "&:hover": {
+              opacity: 0.88,
+              transform: "translateY(-1px)",
+              boxShadow: `0 4px 20px ${alpha(theme.palette.primary.main, 0.45)}`,
+            },
+            "&:active": { transform: "translateY(0)" },
+          }}
+        >
+          {t("publicAnalytics.linkInfo.shortenAnother")}
         </Box>
       </Box>
     </Box>

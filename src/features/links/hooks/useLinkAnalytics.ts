@@ -38,8 +38,8 @@ export function useLinkAnalyticsOptimized(
   const [analyticsData, setAnalyticsData] = useState<LinkAnalyticsData | null>(
     null,
   );
-  const [analyticsLoading, setAnalyticsLoading] = useState(false);
-  const [analyticsError, setAnalyticsError] = useState<string | null>(null);
+  const [_analyticsLoading, _setAnalyticsLoading] = useState(false);
+  const [_analyticsError, _setAnalyticsError] = useState<string | null>(null);
 
   // Busca dados específicos do link
   const fetchLinkInfo = useCallback(async () => {

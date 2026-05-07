@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import type { SxProps } from "@mui/material";
 
 import { getAdsConfig } from "../config/adsConfig";
 import { useGoogleAds, AD_SLOTS } from "../hooks/useGoogleAds";
@@ -7,7 +8,7 @@ import type { AdSlotType } from "../hooks/useGoogleAds";
 
 interface GoogleAdProps {
   variant: AdSlotType;
-  sx?: any;
+  sx?: SxProps;
   showFallback?: boolean;
 }
 

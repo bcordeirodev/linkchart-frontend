@@ -14,7 +14,7 @@ import type { Theme } from "@mui/material/styles/createTheme";
 import type { MaterialReactTableProps, MRT_Icons } from "material-react-table";
 
 const tableIcons: Partial<MRT_Icons> = {
-  ArrowDownwardIcon: (props: any) => (
+  ArrowDownwardIcon: (props: Record<string, unknown>) => (
     <SvgIcon size={20} {...props}>
       heroicons-outline:arrow-down-circle
     </SvgIcon>
@@ -34,7 +34,7 @@ const tableIcons: Partial<MRT_Icons> = {
       heroicons-outline:arrows-pointing-out
     </SvgIcon>
   ),
-  FilterListIcon: (props: any) => (
+  FilterListIcon: (props: Record<string, unknown>) => (
     <SvgIcon size={16} {...props}>
       heroicons-outline:funnel
     </SvgIcon>
@@ -48,7 +48,7 @@ const tableIcons: Partial<MRT_Icons> = {
   FullscreenIcon: () => (
     <SvgIcon size={20}>heroicons-outline:arrows-pointing-out</SvgIcon>
   ),
-  SearchIcon: (props: any) => (
+  SearchIcon: (props: Record<string, unknown>) => (
     <SvgIcon color="action" size={20} {...props}>
       heroicons-outline:magnifying-glass
     </SvgIcon>
@@ -65,12 +65,12 @@ const tableIcons: Partial<MRT_Icons> = {
   MoreHorizIcon: () => (
     <SvgIcon size={20}>heroicons-outline:ellipsis-horizontal</SvgIcon>
   ),
-  SortIcon: (props: any) => (
+  SortIcon: (props: Record<string, unknown>) => (
     <SvgIcon size={20} {...props}>
       heroicons-outline:arrows-up-down
     </SvgIcon>
   ),
-  PushPinIcon: (props: any) => (
+  PushPinIcon: (props: Record<string, unknown>) => (
     <SvgIcon size={20} {...props}>
       heroicons-outline:bookmark
     </SvgIcon>
@@ -80,6 +80,7 @@ const tableIcons: Partial<MRT_Icons> = {
   ),
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function DataTable<TData extends Record<string, any>>(
   props: MaterialReactTableProps<TData>,
 ) {
@@ -212,7 +213,7 @@ function DataTable<TData extends Record<string, any>>(
         renderTopToolbar: (_props) => <DataTableTopToolbar {..._props} />,
         icons: tableIcons,
       } as Partial<MaterialReactTableProps<TData>>),
-    [rest],
+    [columns, rest],
   );
 
   const tableOptions = useMemo(

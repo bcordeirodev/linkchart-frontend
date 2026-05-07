@@ -50,6 +50,7 @@ export function EmailVerificationGuard({
       return;
     }
     checkEmailVerification();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, user]);
 
   const checkEmailVerification = async () => {
@@ -139,7 +140,10 @@ export function EmailVerificationGuard({
   // While auth context is still initialising, or email check hasn't resolved yet,
   // show the full-page skeleton so the layout structure is visible immediately
   // and there's no visual jump when real content loads.
-  if (authLoading || (isAuthenticated && user && (checking || emailVerified === null))) {
+  if (
+    authLoading ||
+    (isAuthenticated && user && (checking || emailVerified === null))
+  ) {
     return <PageLoadingSkeleton />;
   }
 

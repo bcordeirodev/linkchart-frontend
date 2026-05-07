@@ -206,6 +206,7 @@ export interface LegacyTypeMigrationMap {
  * Utilitário para converter tipos legados
  * @deprecated Usar apenas durante período de migração
  */
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace LegacyConverters {
   /**
    * Converte ClicksByDay para DailyData

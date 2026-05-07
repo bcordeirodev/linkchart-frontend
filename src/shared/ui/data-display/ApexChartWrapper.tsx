@@ -85,7 +85,7 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
       }
 
       if (typeof s === "object" && s !== null && "data" in s) {
-        const data = (s as any).data;
+        const data = (s as Record<string, unknown>).data;
 
         // Verificar se data é array e tem elementos válidos
         if (Array.isArray(data) && data.length > 0) {
@@ -127,18 +127,15 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
     setHasError(false);
   }, []);
 
-  const handleChartError = useCallback(
-    (error?: any) => {
-      // Log apenas erros críticos
-      if (error) {
-        console.error("ApexChart Error:", error);
-      }
+  const _handleChartError = useCallback((error?: unknown) => {
+    // Log apenas erros críticos
+    if (error) {
+      console.error("ApexChart Error:", error);
+    }
 
-      setHasError(true);
-      setIsLoading(false);
-    },
-    [type, series, options],
-  );
+    setHasError(true);
+    setIsLoading(false);
+  }, []);
 
   // Removido: Loading state durante hidratação (não necessário em React puro)
 
@@ -249,13 +246,13 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
             fontFamily: "Inter, system-ui, sans-serif",
             toolbar: {
               show: false,
-              ...((options.chart as any)?.toolbar || {}),
+              ...((options.chart as Record<string, unknown>)?.toolbar || {}),
             },
             events: {
               mounted: () => {
                 handleChartLoad();
               },
-              ...((options.chart as any)?.events || {}),
+              ...((options.chart as Record<string, unknown>)?.events || {}),
             },
             animations: {
               enabled: true,
@@ -265,8 +262,9 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
                 enabled: true,
                 delay: 150,
               },
-              ...((options.chart as any)?.animations || {}),
-            },
+              ...((options.chart as Record<string, unknown>)?.animations || {}),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } as any,
           },
           grid: {
             borderColor: theme.palette.divider,
@@ -288,8 +286,8 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
                 },
               },
             },
-            ...(Array.isArray((options as any).responsive)
-              ? (options as any).responsive
+            ...(Array.isArray((options as Record<string, unknown>).responsive)
+              ? ((options as Record<string, unknown>).responsive as object[])
               : []),
           ],
         }}

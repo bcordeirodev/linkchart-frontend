@@ -75,7 +75,9 @@ export function GeographicAnalysis({
           icon={<Globe {...ICON_LG} />}
           title={displayTitle}
           description={t("geographic.description")}
-          highlight={t("geographic.countriesReached", { count: stats?.totalCountries || 0 })}
+          highlight={t("geographic.countriesReached", {
+            count: stats?.totalCountries || 0,
+          })}
           metadata={isRealtime ? t("dashboard.realtime") : undefined}
         />
       </Box>

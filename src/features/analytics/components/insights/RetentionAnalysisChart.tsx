@@ -69,7 +69,10 @@ export function RetentionAnalysisChart({
       height: 300,
       toolbar: { show: false },
     },
-    labels: [t("insights.retention.returningLabel"), t("insights.retention.newLabel")],
+    labels: [
+      t("insights.retention.returningLabel"),
+      t("insights.retention.newLabel"),
+    ],
     colors: [getChartColor(1), getChartColor(0)],
     dataLabels: {
       enabled: true,
@@ -113,7 +116,8 @@ export function RetentionAnalysisChart({
     tooltip: {
       theme: theme.palette.mode,
       y: {
-        formatter: (val: number) => t("insights.retention.visitorsTooltip", { n: val }),
+        formatter: (val: number) =>
+          t("insights.retention.visitorsTooltip", { n: val }),
       },
     },
   };
@@ -146,7 +150,10 @@ export function RetentionAnalysisChart({
       },
     },
     xaxis: {
-      categories: [t("insights.retention.yourRate"), t("insights.retention.avgBenchmark")],
+      categories: [
+        t("insights.retention.yourRate"),
+        t("insights.retention.avgBenchmark"),
+      ],
       labels: {
         style: {
           colors: theme.palette.text.primary,
@@ -173,7 +180,8 @@ export function RetentionAnalysisChart({
     tooltip: {
       theme: theme.palette.mode,
       y: {
-        formatter: (val: number) => t("insights.retention.retentionTooltip", { n: val }),
+        formatter: (val: number) =>
+          t("insights.retention.retentionTooltip", { n: val }),
       },
     },
   };
@@ -205,6 +213,7 @@ export function RetentionAnalysisChart({
 
   const getBenchmarkLabel = (comparison: string) => {
     const key = `insights.retention.quality.${comparison}` as const;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return t(key as any) || comparison;
   };
 
@@ -291,7 +300,9 @@ export function RetentionAnalysisChart({
         {/* Benchmark Status */}
         <Box sx={{ mb: 3, textAlign: "center" }}>
           <Chip
-            label={t("insights.retention.performanceChip", { label: getBenchmarkLabel(data.benchmark_comparison) })}
+            label={t("insights.retention.performanceChip", {
+              label: getBenchmarkLabel(data.benchmark_comparison),
+            })}
             sx={{
               backgroundColor: getBenchmarkColor(data.benchmark_comparison),
               color: "white",
@@ -371,7 +382,9 @@ export function RetentionAnalysisChart({
                 </Typography>
                 <Box sx={{ mt: 2, textAlign: "center" }}>
                   <Typography variant="body2" color="text.secondary">
-                    {t("insights.retention.industryBenchmark", { n: industryBenchmark })}
+                    {t("insights.retention.industryBenchmark", {
+                      n: industryBenchmark,
+                    })}
                   </Typography>
                 </Box>
               </CardContent>
@@ -407,11 +420,17 @@ export function RetentionAnalysisChart({
                 </Typography>
 
                 <Typography variant="body1">
-                  {t("insights.retention.analysisPrefix", { rate: data.return_visitor_rate })}{" "}
-                  {data.benchmark_comparison === "excellent" && t("insights.retention.analysisExcellent")}
-                  {data.benchmark_comparison === "good" && t("insights.retention.analysisGood")}
-                  {data.benchmark_comparison === "average" && t("insights.retention.analysisAverage")}
-                  {data.benchmark_comparison === "needs_improvement" && t("insights.retention.analysisNeedsImprovement")}
+                  {t("insights.retention.analysisPrefix", {
+                    rate: data.return_visitor_rate,
+                  })}{" "}
+                  {data.benchmark_comparison === "excellent" &&
+                    t("insights.retention.analysisExcellent")}
+                  {data.benchmark_comparison === "good" &&
+                    t("insights.retention.analysisGood")}
+                  {data.benchmark_comparison === "average" &&
+                    t("insights.retention.analysisAverage")}
+                  {data.benchmark_comparison === "needs_improvement" &&
+                    t("insights.retention.analysisNeedsImprovement")}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary">

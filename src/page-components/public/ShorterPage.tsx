@@ -1,6 +1,8 @@
-import { Alert, Box, Container, Typography } from "@mui/material";
+"use client";
+import { Alert, Box, Container, Typography, useTheme } from "@mui/material";
 import { Link2, SlidersHorizontal, BarChart2 } from "lucide-react";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import { URLShortenerForm } from "@/features/links/components/URLShortenerForm";
@@ -24,6 +26,8 @@ const blobKeyframes = `
 `;
 
 function ShorterPage() {
+  const theme = useTheme();
+  const { t } = useTranslation("public");
   const {
     isRedirecting,
     error,
@@ -36,9 +40,7 @@ function ShorterPage() {
   return (
     <PublicLayout variant="shorter" showHeader showFooter>
       <style>{blobKeyframes}</style>
-      <Box
-        sx={{ position: "relative", minHeight: "100vh", background: "#080812" }}
-      >
+      <Box sx={{ position: "relative", minHeight: "100vh" }}>
         {/* top-right blob */}
         <Box
           sx={{
@@ -82,7 +84,7 @@ function ShorterPage() {
             <Alert
               severity="error"
               onClose={clearError}
-              sx={{ mb: 2, maxWidth: 640, mx: "auto", borderRadius: 2 }}
+              sx={{ mb: 2, maxWidth: 800, mx: "auto", borderRadius: 2 }}
             >
               {error}
             </Alert>
@@ -104,22 +106,24 @@ function ShorterPage() {
             onReset={handleReset}
           />
 
-          <Box sx={{ mt: 6 }}>
+          <Box sx={{ mt: 6, maxWidth: 800, mx: "auto" }}>
             <ShorterStats />
           </Box>
 
-          <Box sx={{ mt: 6, mb: 2 }}>
+          <Box sx={{ mt: 6, mb: 2, maxWidth: 800, mx: "auto" }}>
             <Typography
-              variant="overline"
               sx={{
-                color: "rgba(255,255,255,0.3)",
-                letterSpacing: 3,
-                display: "block",
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
                 textAlign: "center",
+                display: "block",
+                color: theme.palette.text.secondary,
                 mb: 3,
               }}
             >
-              COMO FUNCIONA
+              {t("shorter.howItWorks")}
             </Typography>
             <Box
               sx={{
@@ -172,7 +176,7 @@ function ShorterPage() {
                   </Box>
                   <Typography
                     variant="caption"
-                    sx={{ color: "rgba(255,255,255,0.25)" }}
+                    sx={{ color: "rgba(255,255,255,0.5)" }}
                   >
                     {step}
                   </Typography>
@@ -189,7 +193,7 @@ function ShorterPage() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ color: "rgba(255,255,255,0.4)", mt: 0.5 }}
+                    sx={{ color: "rgba(255,255,255,0.65)", mt: 0.5 }}
                   >
                     {desc}
                   </Typography>

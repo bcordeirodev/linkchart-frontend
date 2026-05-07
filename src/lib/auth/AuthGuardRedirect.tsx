@@ -126,7 +126,16 @@ function AuthGuardRedirect({
       // Trigger redirection after setting up redirect URL
       handleRedirection();
     }
-  }, [auth, userRole, isGuest, isLoading, pathname, handleRedirection, ignoredPaths]);
+  }, [
+    auth,
+    userRole,
+    isGuest,
+    isLoading,
+    pathname,
+    handleRedirection,
+    ignoredPaths,
+    userRoleForPermission,
+  ]);
 
   if (!accessGranted) {
     if (fallback) return fallback;

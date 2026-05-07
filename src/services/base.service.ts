@@ -122,8 +122,8 @@ export abstract class BaseService {
    * Trata erros de forma padronizada
    */
   private handleError<T>(
-    method: string,
-    endpoint: string,
+    _method: string,
+    _endpoint: string,
     error: unknown,
     fallback?: T,
     _context?: string,
@@ -142,7 +142,7 @@ export abstract class BaseService {
   /**
    * Log de sucesso (removido)
    */
-  private logSuccess(method: string, endpoint: string): void {
+  private logSuccess(_method: string, _endpoint: string): void {
     // Success registrado silenciosamente
   }
 

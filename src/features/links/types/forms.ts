@@ -4,12 +4,12 @@
  */
 
 export interface CreateLinkFormProps {
-  onSuccess?: (link: any) => void;
+  onSuccess?: (link: unknown) => void;
   showBackButton?: boolean;
 }
 
 export interface EditLinkFormProps {
   linkId: string;
-  onSuccess?: (link: any) => void;
+  onSuccess?: (link: unknown) => void;
   showBackButton?: boolean;
 }

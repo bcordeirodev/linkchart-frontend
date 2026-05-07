@@ -9,6 +9,6 @@ export function GET() {
       timestamp: new Date().toISOString(),
       service: "link-charts-frontend",
     },
-    { status: 200 }
+    { status: 200 },
   );
 }

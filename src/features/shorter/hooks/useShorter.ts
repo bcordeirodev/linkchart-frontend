@@ -11,13 +11,11 @@ export function useShorter() {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [result, setResult] = useState<PublicLinkResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
-      if (redirectTimerRef.current) {
-        clearTimeout(redirectTimerRef.current);
-      }
+      if (navTimerRef.current) clearTimeout(navTimerRef.current);
     };
   }, []);
 
@@ -30,19 +28,21 @@ export function useShorter() {
       setResult(res);
       setIsRedirecting(true);
 
-      redirectTimerRef.current = setTimeout(() => {
+      void navigator.clipboard?.writeText(res.short_url).catch(() => undefined);
+
+      // Short delay so the exit animation plays before navigation
+      navTimerRef.current = setTimeout(() => {
         try {
           navigate(publicLinkService.getPublicAnalyticsUrl(res.slug), {
             replace: true,
             state: { fromShorter: true, newLink: true, linkData: res },
           });
         } catch (err) {
-          // eslint-disable-next-line no-console
           console.error("Erro ao redirecionar:", err);
           setError("Erro ao redirecionar para analytics");
           setIsRedirecting(false);
         }
-      }, 3000);
+      }, 150);
     },
     [navigate],
   );
@@ -55,9 +55,9 @@ export function useShorter() {
   const clearError = useCallback(() => setError(null), []);
 
   const handleReset = useCallback(() => {
-    if (redirectTimerRef.current) {
-      clearTimeout(redirectTimerRef.current);
-      redirectTimerRef.current = null;
+    if (navTimerRef.current) {
+      clearTimeout(navTimerRef.current);
+      navTimerRef.current = null;
     }
     setIsRedirecting(false);
     setResult(null);

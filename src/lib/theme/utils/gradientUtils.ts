@@ -266,7 +266,7 @@ export const createStateGradients = (theme: Theme, variant: ColorVariant) => {
 export const createTextGradient = (
   theme: Theme,
   variant: ColorVariant = "primary",
-): Record<string, any> => {
+): Record<string, unknown> => {
   const gradient = createThemeGradient(theme, {
     variant,
     direction: "to-right",

@@ -477,7 +477,11 @@ export function RealTimeHeatmapChart({
                   </IconButton>
                 </Tooltip>
                 <Tooltip
-                  title={isFullscreen ? t("heatmap.exitFullscreen") : t("heatmap.fullscreen")}
+                  title={
+                    isFullscreen
+                      ? t("heatmap.exitFullscreen")
+                      : t("heatmap.fullscreen")
+                  }
                 >
                   <IconButton onClick={() => setIsFullscreen(!isFullscreen)}>
                     <Maximize2 {...ICON_MD} />
@@ -653,10 +657,15 @@ export function RealTimeHeatmapChart({
                           zIndex: 1,
                         }}
                       >
-                        {t("heatmap.popupClicks", { n: point.clicks.toLocaleString() })}
+                        {t("heatmap.popupClicks", {
+                          n: point.clicks.toLocaleString(),
+                        })}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {t("heatmap.popupCoords", { lat: point.lat.toFixed(4), lng: point.lng.toFixed(4) })}
+                        {t("heatmap.popupCoords", {
+                          lat: point.lat.toFixed(4),
+                          lng: point.lng.toFixed(4),
+                        })}
                       </Typography>
                       {point.state_name ? (
                         <Typography
@@ -664,7 +673,9 @@ export function RealTimeHeatmapChart({
                           color="text.secondary"
                           display="block"
                         >
-                          {t("heatmap.popupStateRegion", { name: point.state_name })}
+                          {t("heatmap.popupStateRegion", {
+                            name: point.state_name,
+                          })}
                         </Typography>
                       ) : null}
                       {point.iso_code ? (
@@ -673,7 +684,10 @@ export function RealTimeHeatmapChart({
                           color="text.secondary"
                           display="block"
                         >
-                          {t("heatmap.popupCode", { code: point.iso_code, currency: point.currency })}
+                          {t("heatmap.popupCode", {
+                            code: point.iso_code,
+                            currency: point.currency,
+                          })}
                         </Typography>
                       ) : null}
                       {point.continent ? (
@@ -682,7 +696,9 @@ export function RealTimeHeatmapChart({
                           color="text.secondary"
                           display="block"
                         >
-                          {t("heatmap.popupContinent", { name: point.continent })}
+                          {t("heatmap.popupContinent", {
+                            name: point.continent,
+                          })}
                         </Typography>
                       ) : null}
                       {point.last_click ? (
@@ -692,7 +708,9 @@ export function RealTimeHeatmapChart({
                           display="block"
                           sx={{ mt: 1 }}
                         >
-                          {t("heatmap.popupLastClick", { time: new Date(point.last_click).toLocaleString() })}
+                          {t("heatmap.popupLastClick", {
+                            time: new Date(point.last_click).toLocaleString(),
+                          })}
                         </Typography>
                       ) : null}
                     </Box>

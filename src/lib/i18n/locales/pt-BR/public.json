@@ -29,6 +29,7 @@
       "uptime": "Uptime Garantido",
       "sectionTitle": "Números que Impressionam"
     },
+    "howItWorks": "Como Funciona",
     "form": {
       "urlLabel": "URL Original",
       "urlPlaceholder": "Cole a URL aqui... (ex: https://exemplo.com/pagina-longa)",
@@ -63,6 +64,7 @@
   "publicAnalytics": {
     "title": "Analytics do Link",
     "subtitle": "Analytics público de",
+    "pageSubtitle": "Desempenho e estatísticas deste link em tempo real",
     "noData": "Nenhum dado de analytics disponível ainda.",
     "signUpCta": "Quer isso para seus links?",
     "signUpButton": "Criar conta gratuita",
@@ -117,13 +119,20 @@
     "linkInfo": {
       "copy": "Copiar",
       "shortenAnother": "Encurtar outro link",
-      "visitDestination": "Visitar destino"
+      "visitDestination": "Visitar destino",
+      "shortenedLink": "Link encurtado",
+      "publicAnalyticsAvailable": "Analytics públicos disponíveis"
     },
     "cta": {
       "title": "Crie sua conta gratuita",
       "description": "Acesse analytics completos com histórico de cliques, mapa de países, dispositivos e horários de pico. Gerencie todos os seus links em um painel próprio — com QR Code e slug personalizado em cada um.",
       "button": "Criar conta grátis",
-      "features": ["Grátis para sempre", "QR Code incluso", "Sem cartão", "Slug personalizado"]
+      "features": [
+        "Grátis para sempre",
+        "QR Code incluso",
+        "Sem cartão",
+        "Slug personalizado"
+      ]
     }
   },
   "redirect": {
@@ -155,7 +164,10 @@
     "realtimeAnalytics": "Analytics em tempo real",
     "freeQr": "QR Code grátis",
     "noExpiration": "Sem expiração",
-    "customSlug": "Slug personalizado"
+    "customSlug": "Slug personalizado",
+    "geoLocation": "Geolocalização de cliques",
+    "utmCampaigns": "Campanhas UTM",
+    "fullDashboard": "Dashboard completo"
   },
   "qr": {
     "errors": {

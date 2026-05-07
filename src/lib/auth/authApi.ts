@@ -7,14 +7,14 @@ import type { PartialDeep } from "type-fest";
 /**
  * Get current authenticated user
  */
-export async function authGetDbUser(userId: string): Promise<User> {
+export async function authGetDbUser(_userId: string): Promise<User> {
   return api.get<User>("/me");
 }
 
 /**
  * Get user by email (not implemented in real API)
  */
-export async function authGetDbUserByEmail(email: string): Promise<User> {
+export async function authGetDbUserByEmail(_email: string): Promise<User> {
   // Esta funcionalidade não está disponível na API real por questões de segurança
   throw new Error("Busca por email não disponível na API real");
 }

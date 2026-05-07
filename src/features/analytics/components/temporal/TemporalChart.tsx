@@ -40,6 +40,9 @@ import type {
 import { TemporalTrendsChart } from "./TemporalTrendsChart";
 import { TimezoneDistributionChart } from "./TimezoneDistributionChart";
 import { PeakAnalysisCard } from "./PeakAnalysisCard";
+import { HourDayHeatmapChart } from "./HourDayHeatmapChart";
+import { DailyTimelineChart } from "./DailyTimelineChart";
+import { DeviceByPeriodChart } from "./DeviceByPeriodChart";
 
 interface TemporalChartProps {
   hourlyData: HourlyData[];
@@ -71,7 +74,7 @@ export function TemporalChart({
 
   // Cores padronizadas usando novo sistema
   const chartColors = getStandardChartColors(theme);
-  const temporalColors = getChartColorsByType("temporal");
+  const _temporalColors = getChartColorsByType("temporal");
 
   // Verificar se há dados enhanced disponíveis
   const hasEnhancedData =
@@ -82,11 +85,15 @@ export function TemporalChart({
     advancedData &&
     ((advancedData.weekly_trends?.length ?? 0) > 0 ||
       (advancedData.monthly_trends?.length ?? 0) > 0 ||
-      advancedData.peak_analysis ||
+      advancedData.peak_analysis?.peak_hour != null ||
       (advancedData.timezone_analysis &&
         advancedData.timezone_analysis.length > 0));
 
-  const hasPeakAnalysis = advancedData?.peak_analysis;
+  const hasHeatmap = (advancedData?.heatmap_data?.length ?? 0) > 0;
+  const hasDailyTimeline = (advancedData?.daily_timeline?.length ?? 0) > 0;
+  const hasDeviceByPeriod = (advancedData?.device_by_period?.length ?? 0) > 0;
+
+  const hasPeakAnalysis = advancedData?.peak_analysis?.peak_hour != null;
   const hasTrends =
     advancedData &&
     ((advancedData.weekly_trends?.length ?? 0) > 0 ||
@@ -184,6 +191,18 @@ export function TemporalChart({
               label={t("temporal.chart.timezones")}
               disabled={!hasTimezones}
             />
+            <Tab
+              label={t("temporal.chart.dailyTimeline")}
+              disabled={!hasDailyTimeline}
+            />
+            <Tab
+              label={t("temporal.chart.heatmapHourDay")}
+              disabled={!hasHeatmap}
+            />
+            <Tab
+              label={t("temporal.chart.deviceByPeriod")}
+              disabled={!hasDeviceByPeriod}
+            />
           </Tabs>
         </Box>
       ) : null}
@@ -208,7 +227,8 @@ export function TemporalChart({
                   <>
                     {t("temporal.chart.peakHour")}{" "}
                     <strong>{peakHour.label}</strong> ({peakHour.clicks}{" "}
-                    {t("temporal.chart.clicks")}). {t("temporal.chart.dayPatterns")}:{" "}
+                    {t("temporal.chart.clicks")}).{" "}
+                    {t("temporal.chart.dayPatterns")}:{" "}
                     <strong>{peakDay.day_name}</strong> ({peakDay.clicks}{" "}
                     {t("temporal.chart.clicks")}).
                   </>
@@ -320,7 +340,8 @@ export function TemporalChart({
                         gutterBottom
                         sx={{ display: "flex", alignItems: "center", gap: 1 }}
                       >
-                        <Clock size={16} strokeWidth={1.5} /> {t("temporal.chart.hourPatterns")}
+                        <Clock size={16} strokeWidth={1.5} />{" "}
+                        {t("temporal.chart.hourPatterns")}
                       </Typography>
                       <Stack spacing={1} my={2}>
                         <Box
@@ -352,7 +373,9 @@ export function TemporalChart({
                             size="small"
                           />
                           <Typography variant="body2" color="text.secondary">
-                            {t("temporal.chart.activityPercent", { percent: ((activeHours / 24) * 100).toFixed(0) })}
+                            {t("temporal.chart.activityPercent", {
+                              percent: ((activeHours / 24) * 100).toFixed(0),
+                            })}
                           </Typography>
                         </Box>
                       </Stack>
@@ -391,7 +414,9 @@ export function TemporalChart({
                             size="small"
                           />
                           <Typography variant="body2" color="text.secondary">
-                            {t("temporal.chart.weekActivityPercent", { percent: ((activeDays / 7) * 100).toFixed(0) })}
+                            {t("temporal.chart.weekActivityPercent", {
+                              percent: ((activeDays / 7) * 100).toFixed(0),
+                            })}
                           </Typography>
                         </Box>
                       </Stack>
@@ -416,7 +441,9 @@ export function TemporalChart({
                       ) : null}
                       {peakDay && peakDay.clicks > 0 ? (
                         <Typography variant="body2" color="text.secondary">
-                          {t("temporal.chart.mostActiveDay", { day: peakDay.day_name })}
+                          {t("temporal.chart.mostActiveDay", {
+                            day: peakDay.day_name,
+                          })}
                         </Typography>
                       ) : null}
                       {isBusinessHoursActive ? (
@@ -480,8 +507,9 @@ export function TemporalChart({
                     >
                       <Typography variant="body2">{item.hour}h</Typography>
                       <Typography variant="caption">
-                        {item.clicks} {t("temporal.chart.clicks")} | {item.avg_response_time}ms |{" "}
-                        {item.unique_visitors} {t("temporal.chart.uniqueVisitors")}
+                        {item.clicks} {t("temporal.chart.clicks")} |{" "}
+                        {item.avg_response_time}ms | {item.unique_visitors}{" "}
+                        {t("temporal.chart.uniqueVisitors")}
                       </Typography>
                     </Box>
                   ))}
@@ -537,10 +565,12 @@ export function TemporalChart({
                       {t("temporal.chart.weekdays")}
                     </Typography>
                     <Typography variant="body2">
-                      {weekendVsWeekday.weekday.clicks} {t("temporal.chart.clicks")}
+                      {weekendVsWeekday.weekday.clicks}{" "}
+                      {t("temporal.chart.clicks")}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {weekendVsWeekday.weekday.unique_visitors} {t("temporal.chart.uniqueVisitors")}
+                      {weekendVsWeekday.weekday.unique_visitors}{" "}
+                      {t("temporal.chart.uniqueVisitors")}
                     </Typography>
                   </Box>
                   <Divider />
@@ -549,10 +579,12 @@ export function TemporalChart({
                       {t("temporal.chart.weekend")}
                     </Typography>
                     <Typography variant="body2">
-                      {weekendVsWeekday.weekend.clicks} {t("temporal.chart.clicks")}
+                      {weekendVsWeekday.weekend.clicks}{" "}
+                      {t("temporal.chart.clicks")}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {weekendVsWeekday.weekend.unique_visitors} {t("temporal.chart.uniqueVisitors")}
+                      {weekendVsWeekday.weekend.unique_visitors}{" "}
+                      {t("temporal.chart.uniqueVisitors")}
                     </Typography>
                   </Box>
                 </Stack>
@@ -616,10 +648,14 @@ export function TemporalChart({
                       {t("temporal.chart.businessHoursLabel")}
                     </Typography>
                     <Typography variant="body2">
-                      {businessHoursAnalysis.business_hours.clicks} {t("temporal.chart.clicks")}
+                      {businessHoursAnalysis.business_hours.clicks}{" "}
+                      {t("temporal.chart.clicks")}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {businessHoursAnalysis.business_hours.percentage.toFixed(1)}{t("temporal.chart.ofTotal")}
+                      {businessHoursAnalysis.business_hours.percentage.toFixed(
+                        1,
+                      )}
+                      {t("temporal.chart.ofTotal")}
                     </Typography>
                   </Box>
                   <Divider />
@@ -628,10 +664,12 @@ export function TemporalChart({
                       {t("temporal.chart.afterHoursLabel")}
                     </Typography>
                     <Typography variant="body2">
-                      {businessHoursAnalysis.after_hours.clicks} {t("temporal.chart.clicks")}
+                      {businessHoursAnalysis.after_hours.clicks}{" "}
+                      {t("temporal.chart.clicks")}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {businessHoursAnalysis.after_hours.percentage.toFixed(1)}{t("temporal.chart.ofTotal")}
+                      {businessHoursAnalysis.after_hours.percentage.toFixed(1)}
+                      {t("temporal.chart.ofTotal")}
                     </Typography>
                   </Box>
                 </Stack>
@@ -652,8 +690,8 @@ export function TemporalChart({
       {/* NEW: Tab 5 - Tendências */}
       {hasAdvancedData && activeTab === 5 && hasTrends && advancedData ? (
         <TemporalTrendsChart
-          weeklyTrends={advancedData.weekly_trends || {}}
-          monthlyTrends={advancedData.monthly_trends || {}}
+          weeklyTrends={advancedData.weekly_trends || []}
+          monthlyTrends={advancedData.monthly_trends || []}
         />
       ) : null}
 
@@ -665,6 +703,23 @@ export function TemporalChart({
         <TimezoneDistributionChart
           timezoneAnalysis={advancedData.timezone_analysis}
         />
+      ) : null}
+
+      {/* NEW: Tab 7 - Timeline Diária */}
+      {activeTab === 7 && hasDailyTimeline && advancedData?.daily_timeline ? (
+        <DailyTimelineChart data={advancedData.daily_timeline} />
+      ) : null}
+
+      {/* NEW: Tab 8 - Heatmap Hora × Dia */}
+      {activeTab === 8 && hasHeatmap && advancedData?.heatmap_data ? (
+        <HourDayHeatmapChart data={advancedData.heatmap_data} />
+      ) : null}
+
+      {/* NEW: Tab 9 - Dispositivos por Período */}
+      {activeTab === 9 &&
+      hasDeviceByPeriod &&
+      advancedData?.device_by_period ? (
+        <DeviceByPeriodChart data={advancedData.device_by_period} />
       ) : null}
     </Box>
   );
