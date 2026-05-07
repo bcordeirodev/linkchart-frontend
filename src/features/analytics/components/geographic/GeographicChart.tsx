@@ -21,6 +21,10 @@ interface GeographicChartProps {
   states: StateData[];
   cities: CityData[];
   totalClicks: number;
+  selectedCountry: string | null;
+  onCountrySelect: (isoCode: string | null) => void;
+  hideCountries?: boolean;
+  hideStates?: boolean;
 }
 
 export function GeographicChart({
@@ -28,10 +32,24 @@ export function GeographicChart({
   states,
   cities,
   totalClicks,
+  selectedCountry,
+  onCountrySelect,
+  hideCountries = false,
+  hideStates = false,
 }: GeographicChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
+
+  const filteredStates = selectedCountry
+    ? states.filter(
+        (s) =>
+          s.country?.toLowerCase() ===
+          (
+            countries.find((c) => c.iso_code === selectedCountry)?.country ?? ""
+          ).toLowerCase(),
+      )
+    : states;
 
   const cardSx = {
     borderRadius: `${radiusTokens.lg}px`,
@@ -63,6 +81,7 @@ export function GeographicChart({
   return (
     <Grid container spacing={3}>
       {/* Top Países */}
+      {!hideCountries && (
       <Grid item xs={12} lg={6}>
         <Card sx={cardSx}>
           <CardContent>
@@ -103,50 +122,71 @@ export function GeographicChart({
 
                 {/* Lista detalhada */}
                 <Box>
-                  {countries.slice(0, 10).map((country, index) => (
-                    <Box
-                      key={country.country}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        py: 1,
-                        borderBottom:
-                          index < countries.length - 1
-                            ? `1px solid ${theme.palette.divider}`
-                            : "none",
-                      }}
-                    >
+                  {countries.slice(0, 10).map((country, index) => {
+                    const isSelected = selectedCountry === country.iso_code;
+                    return (
                       <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        key={country.country}
+                        onClick={() =>
+                          onCountrySelect(isSelected ? null : country.iso_code)
+                        }
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          py: 1,
+                          px: 0.5,
+                          borderRadius: 1,
+                          cursor: "pointer",
+                          bgcolor: isSelected
+                            ? "action.selected"
+                            : "transparent",
+                          borderBottom:
+                            index < countries.length - 1
+                              ? `1px solid ${theme.palette.divider}`
+                              : "none",
+                          "&:hover": {
+                            bgcolor: isSelected
+                              ? "action.selected"
+                              : "action.hover",
+                          },
+                          transition: "background-color 0.15s",
+                        }}
                       >
-                        <Typography variant="h6">
-                          {getFlagEmoji(country.iso_code)}
-                        </Typography>
-                        <Box>
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            {country.country}
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        >
+                          <Typography variant="h6">
+                            {getFlagEmoji(country.iso_code)}
                           </Typography>
-                          {country.currency ? (
+                          <Box>
                             <Typography
-                              variant="caption"
-                              color="text.secondary"
+                              variant="body2"
+                              sx={{ fontWeight: isSelected ? 700 : 500 }}
                             >
-                              {country.currency}
+                              {country.country}
                             </Typography>
-                          ) : null}
+                            {country.currency ? (
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                {country.currency}
+                              </Typography>
+                            ) : null}
+                          </Box>
+                        </Box>
+                        <Box sx={{ textAlign: "right" }}>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {country.clicks} clicks
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {getPercentage(country.clicks)}%
+                          </Typography>
                         </Box>
                       </Box>
-                      <Box sx={{ textAlign: "right" }}>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {country.clicks} clicks
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {getPercentage(country.clicks)}%
-                        </Typography>
-                      </Box>
-                    </Box>
-                  ))}
+                    );
+                  })}
                 </Box>
               </>
             ) : (
@@ -166,8 +206,10 @@ export function GeographicChart({
           </CardContent>
         </Card>
       </Grid>
+      )}
 
       {/* Top Estados */}
+      {!hideStates && (
       <Grid item xs={12} lg={6}>
         <Card sx={cardSx}>
           <CardContent>
@@ -188,7 +230,22 @@ export function GeographicChart({
               {t("geographic.chart.topStates")}
             </Typography>
 
-            {states.length > 0 ? (
+            {selectedCountry && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                <Chip
+                  size="small"
+                  label={`${getFlagEmoji(selectedCountry)} ${
+                    countries.find((c) => c.iso_code === selectedCountry)
+                      ?.country ?? selectedCountry
+                  }`}
+                  onDelete={() => onCountrySelect(null)}
+                  color="primary"
+                  variant="outlined"
+                />
+              </Box>
+            )}
+
+            {filteredStates.length > 0 ? (
               <>
                 {/* Gráfico de barras */}
                 <Box sx={{ mb: 3 }}>
@@ -196,7 +253,7 @@ export function GeographicChart({
                     type="bar"
                     size="standard"
                     {...formatBarChart(
-                      states.slice(0, 8).map((state) => ({
+                      filteredStates.slice(0, 8).map((state) => ({
                         ...state,
                         label: `${state.state_name || state.state}, ${state.country}`,
                       })),
@@ -211,7 +268,7 @@ export function GeographicChart({
 
                 {/* Lista detalhada */}
                 <Box>
-                  {states.slice(0, 10).map((state, index) => (
+                  {filteredStates.slice(0, 10).map((state, index) => (
                     <Box
                       key={`${state.country}-${state.state}`}
                       sx={{
@@ -220,7 +277,7 @@ export function GeographicChart({
                         justifyContent: "space-between",
                         py: 1,
                         borderBottom:
-                          index < states.length - 1
+                          index < filteredStates.length - 1
                             ? `1px solid ${theme.palette.divider}`
                             : "none",
                       }}
@@ -257,6 +314,7 @@ export function GeographicChart({
           </CardContent>
         </Card>
       </Grid>
+      )}
 
       {/* Top Cidades */}
       <Grid item xs={12}>
