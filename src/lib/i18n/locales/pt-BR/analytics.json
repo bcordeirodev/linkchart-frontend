@@ -267,7 +267,8 @@
       "AS": "Ásia",
       "AF": "África",
       "OC": "Oceania",
-      "AN": "Antártica"
+      "AN": "Antártica",
+      "clicks": "cliques"
     },
     "choropleth": {
       "title": "Distribuição Mundial de Cliques",
