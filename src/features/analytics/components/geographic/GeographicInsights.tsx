@@ -36,12 +36,14 @@ interface GeographicInsightsProps {
     clicks: number;
   }[];
   cities: { city: string; state?: string; country?: string; clicks: number }[];
+  totalCountries?: number;
 }
 
 export function GeographicInsights({
   countries,
   states: _states,
   cities,
+  totalCountries,
 }: GeographicInsightsProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
@@ -196,10 +198,10 @@ export function GeographicInsights({
                     })}
                   </Typography>
                 )}
-                {countries.length > 3 && (
+                {(totalCountries ?? countries.length) > 3 && (
                   <Typography variant="body2" color="text.secondary">
                     {t("geographic.insights.internationalRec", {
-                      count: countries.length,
+                      count: totalCountries ?? countries.length,
                     })}
                   </Typography>
                 )}

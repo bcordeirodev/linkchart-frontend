@@ -87,7 +87,6 @@ export function GeographicChart({
             <CardContent>
               <Typography
                 variant="h6"
-                gutterBottom
                 sx={{
                   position: "relative",
                   zIndex: 1,
@@ -100,6 +99,9 @@ export function GeographicChart({
               >
                 <Globe size={16} strokeWidth={1.5} />
                 {t("geographic.chart.topCountries")}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                {t("geographic.chart.countriesSubtitle")}
               </Typography>
 
               {countries.length > 0 ? (
@@ -229,7 +231,6 @@ export function GeographicChart({
             <CardContent>
               <Typography
                 variant="h6"
-                gutterBottom
                 sx={{
                   position: "relative",
                   zIndex: 1,
@@ -242,6 +243,9 @@ export function GeographicChart({
               >
                 <Building2 size={16} strokeWidth={1.5} />
                 {t("geographic.chart.topStates")}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                {t("geographic.chart.statesSubtitle")}
               </Typography>
 
               {selectedCountry && (
@@ -338,7 +342,6 @@ export function GeographicChart({
           <CardContent>
             <Typography
               variant="h6"
-              gutterBottom
               sx={{
                 position: "relative",
                 zIndex: 1,
@@ -351,6 +354,9 @@ export function GeographicChart({
             >
               <Building2 size={16} strokeWidth={1.5} />
               {t("geographic.chart.topCities")}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              {t("geographic.chart.citiesSubtitle")}
             </Typography>
 
             {cities.length > 0 ? (
