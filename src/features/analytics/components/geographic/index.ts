@@ -6,6 +6,7 @@ export { GeographicChoropleth } from "./GeographicChoropleth";
 export { GeographicInsights } from "./GeographicInsights";
 export { GeographicMetrics } from "./GeographicMetrics";
 export { ContinentBreakdown } from "./ContinentBreakdown";
+export { CountryDistributionChart } from "./CountryDistributionChart";
 
 export const RealTimeHeatmapChart = dynamic(
   () =>
