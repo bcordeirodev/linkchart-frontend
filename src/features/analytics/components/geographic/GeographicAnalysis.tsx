@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Globe, Map, BarChart3, Lightbulb, Layers } from "lucide-react";
+import { Globe, Map, BarChart3, Layers } from "lucide-react";
 import { Box, Grid, Tab, Tabs } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
@@ -13,7 +13,6 @@ import { useGeographicData } from "../../hooks/useGeographicData";
 import { ContinentBreakdown } from "./ContinentBreakdown";
 import { GeographicChart } from "./GeographicChart";
 import { GeographicChoropleth } from "./GeographicChoropleth";
-import { GeographicInsights } from "./GeographicInsights";
 import { GeographicMetrics } from "./GeographicMetrics";
 import { RealTimeHeatmapChart } from "./index";
 
@@ -56,7 +55,6 @@ export function GeographicAnalysis({
     (data?.top_states?.length ?? 0) > 0 ||
     (data?.top_cities?.length ?? 0) > 0;
   const hasContinents = (data?.continents?.length ?? 0) > 0;
-  const hasInsightInputs = hasHeatmapData || hasRankings;
 
   return (
     <Box>
@@ -116,12 +114,6 @@ export function GeographicAnalysis({
                 iconPosition="start"
                 disabled={!hasRankings}
               />
-              <Tab
-                label={t("geographic.subtabs.insights")}
-                icon={<Lightbulb {...ICON_SM} />}
-                iconPosition="start"
-                disabled={!hasInsightInputs}
-              />
             </Tabs>
           </Box>
 
@@ -164,16 +156,6 @@ export function GeographicAnalysis({
               totalClicks={stats?.totalClicks || 0}
               selectedCountry={selectedCountry}
               onCountrySelect={setSelectedCountry}
-            />
-          )}
-
-          {/* Sub-tab 3: Insights */}
-          {activeSubTab === 3 && (
-            <GeographicInsights
-              data={data?.heatmap_data || []}
-              countries={data?.top_countries || []}
-              states={data?.top_states || []}
-              cities={data?.top_cities || []}
             />
           )}
         </Box>
