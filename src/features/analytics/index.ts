@@ -9,7 +9,6 @@ export * from "./components/geographic";
 export * from "./components/temporal";
 export * from "./components/insights";
 export * from "./components/audience";
-export * from "./components/heatmap";
 // Hooks - apenas os que não são exportados pelos componentes
 export * from "./hooks/useDashboardData";
 
