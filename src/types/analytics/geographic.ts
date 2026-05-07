@@ -34,16 +34,14 @@ export interface GeographicData {
  * Dados de cliques por continente
  */
 export interface ContinentData {
-  /** Nome do continente */
+  /** Código do continente (ex: "SA", "NA") */
   continent: string;
-  /** Código do continente */
-  continent_code: string;
+  /** Nome completo do continente */
+  continent_name: string;
   /** Número total de cliques */
   clicks: number;
   /** Percentual em relação ao total */
   percentage?: number;
-  /** Países inclusos */
-  countries_count: number;
 }
 
 /**
