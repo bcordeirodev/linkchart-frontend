@@ -2,6 +2,7 @@
 
 **Data:** 2026-05-04  
 **Arquivos afetados:**
+
 - `src/page-components/system/NotFoundPage.tsx`
 - `src/shared/layout/ErrorLayout.tsx`
 
@@ -28,6 +29,7 @@ Redesenhar a página 404 para ter personalidade visual alinhada ao produto Link 
 ### Layout geral
 
 `ErrorLayout`:
+
 - Mantém header com logo (link para `/`).
 - Remove o `<footer>` completamente.
 - Background: gradiente `background.default → background.paper`, 135°.
@@ -36,6 +38,7 @@ Redesenhar a página 404 para ter personalidade visual alinhada ao produto Link 
 ### Elemento "404" de fundo
 
 Em `NotFoundPage`, todo o conteúdo fica dentro de um `Box` wrapper com `position: relative, overflow: hidden`. O "404" é posicionado `absolute` dentro desse wrapper:
+
 - Font-size: `{ xs: "8rem", sm: "12rem", md: "18rem" }`
 - Font-weight: `900`
 - Color: `primary.main` a 6% opacidade
@@ -47,6 +50,7 @@ O conteúdo textual e botões ficam em um Box com `position: relative, zIndex: 1
 ### Ícone central
 
 Círculo `100×100px` (mobile: `80×80px`):
+
 - Gradiente: `primary.light → primary.main`, 135°
 - Sombra: `theme.shadows[8]`
 - Ícone: `LinkOff` (Lucide, tamanho 48px / mobile 36px), cor `primary.contrastText`
@@ -70,6 +74,7 @@ Espaçamento entre eles: `mb: 2` no h4, `mb: 4` no body1.
 ### Botões de ação
 
 `Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="center"`:
+
 - `Button variant="contained" size="large"` com `ArrowLeft` (Lucide) — "Voltar"
 - `Button variant="outlined" size="large"` com `Home` (Lucide) — "Início"
 
@@ -78,6 +83,7 @@ Largura mínima: `{ xs: "100%", sm: 160 }`.
 ### Sugestões de navegação
 
 Se `suggestions.length > 0`:
+
 ```
 [body2, color text.secondary, mb 1] "Talvez você esteja procurando:"
 [Stack direction row flexWrap wrap gap 1 justifyContent center]
@@ -91,31 +97,33 @@ Chips usam apenas `component={Link} href={suggestion.href}` — sem `onClick` re
 
 ## Animações
 
-| Elemento | Animação | Duração | Easing |
-|---|---|---|---|
-| Ícone circular | float (`translateY 0 → -12px → 0`) | 3s | ease-in-out, infinite |
-| Conteúdo principal | fadeInUp (opacity 0→1, translateY 20px→0) | 0.5s | ease-out, once |
-| Sugestões | fadeInUp com delay 0.3s | 0.5s | ease-out, once |
+| Elemento           | Animação                                  | Duração | Easing                |
+| ------------------ | ----------------------------------------- | ------- | --------------------- |
+| Ícone circular     | float (`translateY 0 → -12px → 0`)        | 3s      | ease-in-out, infinite |
+| Conteúdo principal | fadeInUp (opacity 0→1, translateY 20px→0) | 0.5s    | ease-out, once        |
+| Sugestões          | fadeInUp com delay 0.3s                   | 0.5s    | ease-out, once        |
 
 ---
 
 ## Responsividade
 
-| Elemento | xs | sm+ |
-|---|---|---|
-| "404" de fundo | `8rem` | `12rem` / `18rem` |
-| Ícone círculo | 80×80px, ícone 36px | 100×100px, ícone 48px |
-| Botões | `width: 100%` stacked | `160px min` lado a lado |
+| Elemento       | xs                    | sm+                     |
+| -------------- | --------------------- | ----------------------- |
+| "404" de fundo | `8rem`                | `12rem` / `18rem`       |
+| Ícone círculo  | 80×80px, ícone 36px   | 100×100px, ícone 48px   |
+| Botões         | `width: 100%` stacked | `160px min` lado a lado |
 
 ---
 
 ## Escopo
 
 **Incluído:**
+
 - `NotFoundPage.tsx` — redesign completo
 - `ErrorLayout.tsx` — remover footer, corrigir bug de ícone, adicionar padrão de pontos no background
 
 **Excluído:**
+
 - Outras páginas de erro (`error.tsx`, `(app)/error.tsx`, `(auth)/error.tsx`) — fora de escopo
 - i18n strings — usar as existentes sem alteração
 - Testes automatizados — não há suite de testes frontend
