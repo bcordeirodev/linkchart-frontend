@@ -20,14 +20,10 @@ export type {
 export type {
   GeographicData,
   ContinentData,
-  GeographicStats,
   GeographicAnalysisProps,
   GeographicChartProps,
   GeographicInsightsProps,
   GeographicMetricsProps,
-  HeatmapConfig,
-  UseGeographicDataOptions,
-  UseGeographicDataReturn,
 } from "./geographic";
 
 // Re-exports de tipos temporais

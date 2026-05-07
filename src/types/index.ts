@@ -97,14 +97,10 @@ export type {
   // Geographic
   GeographicData,
   ContinentData,
-  GeographicStats,
   GeographicAnalysisProps,
   GeographicChartProps,
   GeographicInsightsProps,
   GeographicMetricsProps,
-  HeatmapConfig,
-  UseGeographicDataOptions,
-  UseGeographicDataReturn,
 
   // Temporal
   TemporalData,
