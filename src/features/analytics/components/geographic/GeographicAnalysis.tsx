@@ -11,6 +11,7 @@ import TabDescription from "@/shared/ui/base/TabDescription";
 import { useGeographicData } from "../../hooks/useGeographicData";
 
 import { ContinentBreakdown } from "./ContinentBreakdown";
+import { CountryDistributionChart } from "./CountryDistributionChart";
 import { GeographicChart } from "./GeographicChart";
 import { GeographicChoropleth } from "./GeographicChoropleth";
 import { GeographicInsights } from "./GeographicInsights";
@@ -129,7 +130,12 @@ export function GeographicAnalysis({
                 />
               </Grid>
               <Grid item xs={12} md={4}>
-                <ContinentBreakdown continents={data?.continents || []} />
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                  <ContinentBreakdown continents={data?.continents || []} />
+                  <CountryDistributionChart
+                    countries={data?.top_countries || []}
+                  />
+                </Box>
               </Grid>
               <Grid item xs={12}>
                 <GeographicInsights
