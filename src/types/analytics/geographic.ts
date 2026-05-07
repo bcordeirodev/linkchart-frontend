@@ -131,4 +131,3 @@ export interface GeographicMetricsProps extends BaseDataProps, BaseTitleProps {
   /** Variante do layout */
   variant?: "default" | "compact" | "detailed";
 }
-
