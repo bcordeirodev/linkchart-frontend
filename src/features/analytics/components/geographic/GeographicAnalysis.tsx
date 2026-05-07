@@ -13,6 +13,7 @@ import { useGeographicData } from "../../hooks/useGeographicData";
 import { ContinentBreakdown } from "./ContinentBreakdown";
 import { GeographicChart } from "./GeographicChart";
 import { GeographicChoropleth } from "./GeographicChoropleth";
+import { GeographicInsights } from "./GeographicInsights";
 import { GeographicMetrics } from "./GeographicMetrics";
 import { RealTimeHeatmapChart } from "./index";
 
@@ -129,6 +130,13 @@ export function GeographicAnalysis({
               </Grid>
               <Grid item xs={12} md={4}>
                 <ContinentBreakdown continents={data?.continents || []} />
+              </Grid>
+              <Grid item xs={12}>
+                <GeographicInsights
+                  countries={data?.top_countries || []}
+                  states={data?.top_states || []}
+                  cities={data?.top_cities || []}
+                />
               </Grid>
             </Grid>
           )}

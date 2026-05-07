@@ -273,14 +273,16 @@
       "AF": "África",
       "OC": "Oceania",
       "AN": "Antártica",
-      "clicks": "cliques"
+      "clicks": "cliques",
+      "subtitle": "Percentual dos cliques totais por continente."
     },
     "choropleth": {
       "title": "Distribuição Mundial de Cliques",
       "less": "menos",
       "more": "mais",
       "clicks": "cliques",
-      "clickAgainToClear": "Clique no mesmo país para remover filtro"
+      "clickAgainToClear": "Clique no mesmo país para remover filtro",
+      "subtitle": "A intensidade de cor mostra o volume relativo de cliques. Passe o mouse para ver detalhes ou clique para filtrar os rankings."
     },
     "insights": {
       "title": "Insights Geográficos Detalhados",
@@ -295,7 +297,9 @@
       "strategicRecs": "Recomendações Estratégicas",
       "mainMarketRec": "• {{country}} é seu mercado principal com {{clicks}} cliques. Considere criar conteúdo específico para este mercado.",
       "topCityRec": "• {{city}} é a cidade com mais engajamento. Explore oportunidades de marketing local nesta região.",
-      "internationalRec": "• Seu conteúdo está alcançando {{count}} países diferentes. Considere estratégias de internacionalização."
+      "internationalRec": "• Seu conteúdo está alcançando {{count}} países diferentes. Considere estratégias de internacionalização.",
+      "pieSubtitle": "Os 8 principais países por participação nos cliques totais.",
+      "marketSubtitle": "Principais mercados e recomendações estratégicas com base nos seus dados."
     },
     "heatmap": {
       "titleDefault": "Mapa de Calor em Tempo Real",

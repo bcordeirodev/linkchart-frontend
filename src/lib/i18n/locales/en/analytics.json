@@ -273,14 +273,16 @@
       "AF": "Africa",
       "OC": "Oceania",
       "AN": "Antarctica",
-      "clicks": "clicks"
+      "clicks": "clicks",
+      "subtitle": "Percentage of total clicks per continent."
     },
     "choropleth": {
       "title": "Global Click Distribution",
       "less": "less",
       "more": "more",
       "clicks": "clicks",
-      "clickAgainToClear": "Click the same country to clear filter"
+      "clickAgainToClear": "Click the same country to clear filter",
+      "subtitle": "Color intensity shows relative click volume. Hover to see details, click to filter rankings."
     },
     "insights": {
       "title": "Detailed Geographic Insights",
@@ -295,7 +297,9 @@
       "strategicRecs": "Strategic Recommendations",
       "mainMarketRec": "• {{country}} is your main market with {{clicks}} clicks. Consider creating content specific to this market.",
       "topCityRec": "• {{city}} is the city with the most engagement. Explore local marketing opportunities in this region.",
-      "internationalRec": "• Your content is reaching {{count}} different countries. Consider internationalization strategies."
+      "internationalRec": "• Your content is reaching {{count}} different countries. Consider internationalization strategies.",
+      "pieSubtitle": "Top 8 countries by share of total clicks.",
+      "marketSubtitle": "Main markets and strategic recommendations based on your data."
     },
     "heatmap": {
       "titleDefault": "Real-Time Heat Map",
