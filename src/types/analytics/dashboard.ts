@@ -149,7 +149,7 @@ export interface UseDashboardDataOptions {
 
   refreshInterval?: number;
   enableRealtime?: boolean;
-  timeframe?: "1h" | "24h" | "7d" | "30d";
+  timeframe?: "1h" | "24h" | "7d" | "30d" | "all";
   includeInactive?: boolean;
 }
 
@@ -216,7 +216,7 @@ export interface DashboardViewConfig {
  * Filtros para dados do dashboard
  */
 export interface DashboardFilters {
-  timeframe: "1h" | "24h" | "7d" | "30d";
+  timeframe: "1h" | "24h" | "7d" | "30d" | "all";
   includeInactive: boolean;
   minClicks: number;
   linkIds?: number[];

@@ -32,7 +32,13 @@ declare module "*?raw" {
 }
 
 declare module "react-simple-maps" {
-  import type { CSSProperties, ReactNode, MouseEvent, SVGProps, Ref } from "react";
+  import type {
+    CSSProperties,
+    ReactNode,
+    MouseEvent,
+    SVGProps,
+    Ref,
+  } from "react";
 
   export interface ProjectionConfig {
     scale?: number;
@@ -100,7 +106,15 @@ declare module "react-simple-maps" {
     ref?: Ref<SVGPathElement>;
   }
 
-  export const ComposableMap: React.ForwardRefExoticComponent<ComposableMapProps & React.RefAttributes<SVGSVGElement>>;
-  export const Geographies: React.ForwardRefExoticComponent<GeographiesProps & React.RefAttributes<SVGGElement>>;
-  export const Geography: React.MemoExoticComponent<React.ForwardRefExoticComponent<GeographyProps & React.RefAttributes<SVGPathElement>>>;
+  export const ComposableMap: React.ForwardRefExoticComponent<
+    ComposableMapProps & React.RefAttributes<SVGSVGElement>
+  >;
+  export const Geographies: React.ForwardRefExoticComponent<
+    GeographiesProps & React.RefAttributes<SVGGElement>
+  >;
+  export const Geography: React.MemoExoticComponent<
+    React.ForwardRefExoticComponent<
+      GeographyProps & React.RefAttributes<SVGPathElement>
+    >
+  >;
 }

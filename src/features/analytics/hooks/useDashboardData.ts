@@ -208,8 +208,10 @@ interface ApiResponse extends ApiResponseData {
 /**
  * Converte timeframe para horas
  */
-function getHoursFromTimeframe(timeframe: "1h" | "24h" | "7d" | "30d"): string {
-  const map = { "1h": "1", "24h": "24", "7d": "168", "30d": "720" };
+function getHoursFromTimeframe(
+  timeframe: "1h" | "24h" | "7d" | "30d" | "all",
+): string {
+  const map = { "1h": "1", "24h": "24", "7d": "168", "30d": "720", all: "0" };
   return map[timeframe];
 }
 

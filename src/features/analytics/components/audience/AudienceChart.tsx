@@ -57,7 +57,11 @@ interface AudienceChartProps {
   operatingSystems?: OSData[];
   devicePerformance?: DevicePerformanceData[];
   languages?: LanguageData[];
-  renderingEngine?: Array<{ engine: string; clicks: number; percentage: number }>;
+  renderingEngine?: Array<{
+    engine: string;
+    clicks: number;
+    percentage: number;
+  }>;
 }
 
 export function AudienceChart({
@@ -237,7 +241,8 @@ export function AudienceChart({
             <Tab
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Monitor {...ICON_MD} /> {t("audience.chart.tabs.renderingEngine")}
+                  <Monitor {...ICON_MD} />{" "}
+                  {t("audience.chart.tabs.renderingEngine")}
                 </Box>
               }
               disabled={!renderingEngine?.length}
