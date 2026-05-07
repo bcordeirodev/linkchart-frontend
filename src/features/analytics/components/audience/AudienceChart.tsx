@@ -57,6 +57,7 @@ interface AudienceChartProps {
   operatingSystems?: OSData[];
   devicePerformance?: DevicePerformanceData[];
   languages?: LanguageData[];
+  renderingEngine?: Array<{ engine: string; clicks: number; percentage: number }>;
 }
 
 export function AudienceChart({
@@ -71,6 +72,7 @@ export function AudienceChart({
   operatingSystems,
   devicePerformance,
   languages,
+  renderingEngine,
 }: AudienceChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
@@ -143,11 +145,19 @@ export function AudienceChart({
       percentage: lang.percentage,
     })) || [];
 
+  const renderingEngineChartData =
+    renderingEngine?.map((r) => ({
+      name: r.engine,
+      value: r.clicks,
+      percentage: r.percentage,
+    })) ?? [];
+
   const hasEnhancedData =
     browsers?.length ||
     operatingSystems?.length ||
     devicePerformance?.length ||
-    languages?.length;
+    languages?.length ||
+    renderingEngine?.length;
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
@@ -223,6 +233,14 @@ export function AudienceChart({
                 </Box>
               }
               disabled={!languages?.length}
+            />
+            <Tab
+              label={
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Monitor {...ICON_MD} /> {t("audience.chart.tabs.renderingEngine")}
+                </Box>
+              }
+              disabled={!renderingEngine?.length}
             />
           </Tabs>
         </Box>
@@ -685,6 +703,73 @@ export function AudienceChart({
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
                           {language.percentage.toFixed(1)}%
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      ) : null}
+
+      {/* Tab 5: Rendering Engine */}
+      {hasEnhancedData && activeTab === 5 && renderingEngine ? (
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={8}>
+            <Card elevation={0} sx={outlinedCardSx}>
+              <CardContent>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  <Monitor {...ICON_MD} />{" "}
+                  {t("audience.chart.renderingEngineDistribution")}
+                </Typography>
+                <ApexChartWrapper
+                  type="donut"
+                  {...formatPieChart(
+                    renderingEngineChartData,
+                    "name",
+                    "value",
+                    isDark,
+                  )}
+                  size="standard"
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  {t("audience.chart.topEngines")}
+                </Typography>
+                <Stack spacing={2}>
+                  {renderingEngine.slice(0, 5).map((engine) => (
+                    <Box
+                      key={engine.engine}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        p: 1,
+                        ...itemRowSx,
+                      }}
+                    >
+                      <Box>
+                        <Typography variant="subtitle2">
+                          {engine.engine}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ textAlign: "right" }}>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                          {engine.clicks}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {engine.percentage.toFixed(1)}%
                         </Typography>
                       </Box>
                     </Box>
