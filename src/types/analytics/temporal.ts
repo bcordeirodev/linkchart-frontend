@@ -156,6 +156,24 @@ export interface TemporalData {
   // Dados avançados (NOVO) ✨
   /** Dados avançados de análise temporal (trends, peaks, timezones) */
   advanced?: AdvancedTemporalData;
+
+  /** Holiday impact analysis (Phase 2) */
+  holiday_impact?: {
+    holiday_clicks: number;
+    non_holiday_clicks: number;
+    holiday_percentage: number;
+    top_holidays: Array<{
+      holiday: string;
+      clicks: number;
+      percentage: number;
+    }>;
+  };
+  /** Seasonal distribution by hemisphere (Phase 2) */
+  seasonal_distribution?: Array<{
+    season: string;
+    clicks: number;
+    percentage: number;
+  }>;
 }
 
 /**

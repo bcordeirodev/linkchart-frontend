@@ -9,6 +9,8 @@ export { PeakAnalysisCard } from "./PeakAnalysisCard";
 export { HourDayHeatmapChart } from "./HourDayHeatmapChart";
 export { DailyTimelineChart } from "./DailyTimelineChart";
 export { DeviceByPeriodChart } from "./DeviceByPeriodChart";
+export { HolidayImpactCard } from "./HolidayImpactCard";
+export { SeasonalDistributionChart } from "./SeasonalDistributionChart";
 
 // Hook específico
 export { useTemporalData } from "../../hooks/useTemporalData";

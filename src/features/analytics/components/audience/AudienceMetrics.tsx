@@ -83,6 +83,20 @@ export function AudienceMetrics({
     percentage: number;
   }> = data?.audience?.platform_breakdown ?? [];
 
+  const connectionBreakdown: Array<{
+    type: string;
+    clicks: number;
+    percentage: number;
+  }> = data?.audience?.connection_type_breakdown ?? [];
+
+  const CONNECTION_LABELS: Record<string, string> = {
+    residential: "Residencial",
+    mobile: "Móvel",
+    datacenter: "Datacenter",
+    education: "Educação",
+    unknown: "Desconhecido",
+  };
+
   return (
     <>
       {showTitle ? (
@@ -139,6 +153,39 @@ export function AudienceMetrics({
                 variant="determinate"
                 value={entry.percentage}
                 color="secondary"
+                sx={{ height: 6, borderRadius: 3 }}
+              />
+            </Box>
+          ))}
+        </Box>
+      ) : null}
+
+      {connectionBreakdown.length > 0 ? (
+        <Box sx={{ mt: 3 }}>
+          <Divider sx={{ mb: 2 }} />
+          <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+            Tipo de Conexão
+          </Typography>
+          {connectionBreakdown.map((entry) => (
+            <Box key={entry.type} sx={{ mb: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mb: 0.5,
+                }}
+              >
+                <Typography variant="body2">
+                  {CONNECTION_LABELS[entry.type] ?? entry.type}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {entry.clicks} ({entry.percentage}%)
+                </Typography>
+              </Box>
+              <LinearProgress
+                variant="determinate"
+                value={entry.percentage}
+                color="info"
                 sx={{ height: 6, borderRadius: 3 }}
               />
             </Box>

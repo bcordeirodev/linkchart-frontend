@@ -54,6 +54,11 @@ export interface DashboardSummary {
   links_with_traffic: number;
   conversion_rate?: number;
   growth_rate?: number;
+  /** Viral rank from Redis velocity tracking (Phase 2) */
+  viral_rank?: {
+    current_rank: string;
+    distribution: Array<{ rank: string; clicks: number }>;
+  };
 }
 
 /**
