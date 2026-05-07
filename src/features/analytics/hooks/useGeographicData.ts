@@ -28,7 +28,6 @@ export interface UseGeographicDataOptions {
   linkId: string;
   refreshInterval?: number;
   enableRealtime?: boolean;
-  includeHeatmap?: boolean;
   minClicks?: number;
 }
 

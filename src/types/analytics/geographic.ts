@@ -73,26 +73,6 @@ export interface GeographicResponse {
 }
 
 /**
- * Estatísticas agregadas geográficas
- */
-export interface GeographicStats {
-  /** Total de países alcançados */
-  total_countries: number;
-  /** Total de estados alcançados */
-  total_states: number;
-  /** Total de cidades alcançadas */
-  total_cities: number;
-  /** Total de continentes alcançados */
-  total_continents: number;
-  /** País com mais cliques */
-  top_country: string;
-  /** Concentração geográfica (0-100) */
-  geographic_concentration: number;
-  /** Diversidade geográfica (0-100) */
-  geographic_diversity: number;
-}
-
-/**
  * Props para componente de análise geográfica
  */
 export interface GeographicAnalysisProps
@@ -152,52 +132,3 @@ export interface GeographicMetricsProps extends BaseDataProps, BaseTitleProps {
   variant?: "default" | "compact" | "detailed";
 }
 
-/**
- * Configurações do mapa de calor
- */
-export interface HeatmapConfig {
-  /** Zoom inicial do mapa */
-  initialZoom?: number;
-  /** Centro inicial do mapa */
-  initialCenter?: [number, number];
-  /** Raio dos pontos de calor */
-  radius?: number;
-  /** Intensidade máxima */
-  maxIntensity?: number;
-  /** Gradiente de cores */
-  gradient?: Record<string, string>;
-  /** Mostrar controles do mapa */
-  showControls?: boolean;
-}
-
-/**
- * Opções para análise geográfica
- */
-export interface UseGeographicDataOptions {
-  /** ID do link específico */
-  linkId?: string;
-  /** Modo global */
-
-  /** Incluir dados de heatmap */
-  includeHeatmap?: boolean;
-  /** Incluir dados de continentes */
-  includeContinents?: boolean;
-  /** Limite de resultados por categoria */
-  limit?: number;
-}
-
-/**
- * Retorno do hook de dados geográficos
- */
-export interface UseGeographicDataReturn {
-  /** Dados geográficos */
-  data: GeographicData | null;
-  /** Estatísticas agregadas */
-  stats: GeographicStats | null;
-  /** Estado de carregamento */
-  loading: boolean;
-  /** Mensagem de erro */
-  error: string | null;
-  /** Função para recarregar */
-  refresh: () => void;
-}

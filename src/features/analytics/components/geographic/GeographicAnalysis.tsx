@@ -38,7 +38,6 @@ export function GeographicAnalysis({
       linkId,
       enableRealtime,
       minClicks,
-      includeHeatmap: true,
       refreshInterval: 30000,
     });
 
