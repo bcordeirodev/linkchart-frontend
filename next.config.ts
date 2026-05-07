@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  transpilePackages: ["react-simple-maps"],
   experimental: {
     // Required for MUI with Next.js App Router
     optimizePackageImports: [
