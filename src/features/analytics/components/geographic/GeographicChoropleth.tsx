@@ -272,57 +272,74 @@ export function GeographicChoropleth({
           {t("geographic.choropleth.title")}
         </Typography>
 
-        <Box sx={{ position: "relative", width: "100%" }}>
-          <ComposableMap
-            projectionConfig={{ scale: 140 }}
-            style={{ width: "100%", height: "auto" }}
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: { xs: 160, md: 200 },
+            overflow: "hidden",
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+            }}
           >
-            <Geographies geography={GEO_URL}>
-              {({ geographies }) =>
-                geographies.length === 0
-                  ? null
-                  : geographies.map((geo) => {
-                      const geoId =
-                        geo.id != null ? String(geo.id).padStart(3, "0") : "";
-                      if (!geoId) return null;
-                      const isSelected = selectedNumericId === geoId;
-                      const hasData = !!countryMap[geoId];
+            <ComposableMap
+              projectionConfig={{ scale: 140 }}
+              style={{ width: "100%", height: "auto", display: "block" }}
+            >
+              <Geographies geography={GEO_URL}>
+                {({ geographies }) =>
+                  geographies.length === 0
+                    ? null
+                    : geographies.map((geo) => {
+                        const geoId =
+                          geo.id != null ? String(geo.id).padStart(3, "0") : "";
+                        if (!geoId) return null;
+                        const isSelected = selectedNumericId === geoId;
+                        const hasData = !!countryMap[geoId];
 
-                      return (
-                        <Geography
-                          key={geo.rsmKey}
-                          geography={geo}
-                          fill={getCountryColor(geoId)}
-                          stroke={
-                            isSelected
-                              ? theme.palette.primary.main
-                              : isDark
-                                ? "#2a3045"
-                                : "#c8d0e0"
-                          }
-                          strokeWidth={isSelected ? 2 : 0.5}
-                          style={{
-                            default: {
-                              outline: "none",
-                              cursor: hasData ? "pointer" : "default",
-                            },
-                            hover: {
-                              outline: "none",
-                              fill: hasData
-                                ? alpha(theme.palette.primary.main, 0.9)
-                                : undefined,
-                            },
-                            pressed: { outline: "none" },
-                          }}
-                          onMouseEnter={(evt) => handleMouseEnter(evt, geoId)}
-                          onMouseLeave={handleMouseLeave}
-                          onClick={() => handleClick(geoId)}
-                        />
-                      );
-                    })
-              }
-            </Geographies>
-          </ComposableMap>
+                        return (
+                          <Geography
+                            key={geo.rsmKey}
+                            geography={geo}
+                            fill={getCountryColor(geoId)}
+                            stroke={
+                              isSelected
+                                ? theme.palette.primary.main
+                                : isDark
+                                  ? "#2a3045"
+                                  : "#c8d0e0"
+                            }
+                            strokeWidth={isSelected ? 2 : 0.5}
+                            style={{
+                              default: {
+                                outline: "none",
+                                cursor: hasData ? "pointer" : "default",
+                              },
+                              hover: {
+                                outline: "none",
+                                fill: hasData
+                                  ? alpha(theme.palette.primary.main, 0.9)
+                                  : undefined,
+                              },
+                              pressed: { outline: "none" },
+                            }}
+                            onMouseEnter={(evt) => handleMouseEnter(evt, geoId)}
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => handleClick(geoId)}
+                          />
+                        );
+                      })
+                }
+              </Geographies>
+            </ComposableMap>
+          </Box>
 
           {/* Tooltip */}
           {tooltip.visible && (
