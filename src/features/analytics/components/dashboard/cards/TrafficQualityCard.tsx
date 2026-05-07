@@ -1,6 +1,8 @@
 "use client";
-import { Card, CardContent, Typography, Box, Chip } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+
+import { MetricCardOptimized } from "@/shared/ui/base/MetricCardOptimized";
 
 interface QualitySummary {
   organic: number;
@@ -15,13 +17,12 @@ interface Props {
 }
 
 /**
- * TrafficQualityCard - Card resumido de qualidade de tráfego para dashboard
- *
- * @description
- * Exibe o percentual de tráfego orgânico e contagens de suspeitos/fraude
- * calculados pelo scoring de Phase 3. Cor do chip reflete saúde geral.
+ * Exibe a qualidade de tráfego do link usando o padrão MetricCardOptimized.
+ * Cor dinâmica: verde ≥80% orgânico, amarelo ≥50%, vermelho <50%.
  */
 export function TrafficQualityCard({ data }: Props) {
+  const { t } = useTranslation("analytics");
+
   if (!data) return null;
 
   const color: "success" | "warning" | "error" =
@@ -32,22 +33,15 @@ export function TrafficQualityCard({ data }: Props) {
         : "error";
 
   return (
-    <Card variant="outlined">
-      <CardContent>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-          <VerifiedUserIcon color="action" />
-          <Typography variant="subtitle2">Qualidade</Typography>
-        </Box>
-        <Chip
-          label={`${data.organic_percentage}% orgânico`}
-          color={color}
-          size="medium"
-          sx={{ fontWeight: 700, mb: 1 }}
-        />
-        <Typography variant="caption" display="block" color="text.secondary">
-          {data.suspicious} suspeitos · {data.likely_fraud} fraude
-        </Typography>
-      </CardContent>
-    </Card>
+    <MetricCardOptimized
+      title={t("quality.title")}
+      value={`${data.organic_percentage}%`}
+      icon={<VerifiedUserIcon />}
+      color={color}
+      subtitle={t("quality.subtitle", {
+        suspicious: data.suspicious,
+        fraud: data.likely_fraud,
+      })}
+    />
   );
 }
