@@ -1,16 +1,15 @@
 "use client";
-import { Card, CardContent, Typography, Box, Chip } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
 
-const RANK_CONFIG: Record<
-  string,
-  { label: string; color: "default" | "primary" | "warning" | "error" }
-> = {
-  cold: { label: "Frio", color: "default" },
-  warming: { label: "Aquecendo", color: "primary" },
-  trending: { label: "Trending", color: "warning" },
-  viral: { label: "Viral! 🔥", color: "error" },
-};
+import { MetricCardOptimized } from "@/shared/ui/base/MetricCardOptimized";
+
+const RANK_COLORS = {
+  cold: "secondary",
+  warming: "primary",
+  trending: "warning",
+  viral: "error",
+} as const;
 
 interface ViralityData {
   current_rank: string;
@@ -22,38 +21,29 @@ interface Props {
 }
 
 /**
- * Exibe o rank de viralidade do link baseado em velocidade de cliques.
+ * Exibe o rank de viralidade do link usando o padrão MetricCardOptimized.
  */
 export function ViralityCard({ data }: Props) {
+  const { t } = useTranslation("analytics");
+
   if (!data) return null;
-  const cfg = RANK_CONFIG[data.current_rank] ?? RANK_CONFIG.cold;
+
+  const color =
+    RANK_COLORS[data.current_rank as keyof typeof RANK_COLORS] ?? "secondary";
+
+  const subtitle = data.distribution?.length
+    ? data.distribution
+        .map((d) => `${t(`virality.rank.${d.rank}`)}: ${d.clicks}`)
+        .join(" · ")
+    : undefined;
 
   return (
-    <Card variant="outlined">
-      <CardContent>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-          <WhatshotIcon color="action" />
-          <Typography variant="subtitle2">Viralidade</Typography>
-        </Box>
-        <Chip
-          label={cfg.label}
-          color={cfg.color}
-          size="medium"
-          sx={{ fontWeight: 700 }}
-        />
-        <Box sx={{ mt: 1 }}>
-          {data.distribution?.map((d) => (
-            <Typography
-              key={d.rank}
-              variant="caption"
-              display="block"
-              color="text.secondary"
-            >
-              {RANK_CONFIG[d.rank]?.label ?? d.rank}: {d.clicks}
-            </Typography>
-          ))}
-        </Box>
-      </CardContent>
-    </Card>
+    <MetricCardOptimized
+      title={t("virality.title")}
+      value={t(`virality.rank.${data.current_rank}`)}
+      icon={<WhatshotIcon />}
+      color={color}
+      subtitle={subtitle}
+    />
   );
 }
