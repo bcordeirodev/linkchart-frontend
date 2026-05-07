@@ -163,8 +163,7 @@
       "geographic": "Geographic",
       "audience": "Audience",
       "performance": "Performance",
-      "insights": "Insights",
-      "heatmap": "Heatmap"
+      "insights": "Insights"
     },
     "clicksTable": {
       "title": "Recent Clicks",

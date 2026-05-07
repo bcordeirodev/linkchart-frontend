@@ -70,8 +70,6 @@ export const API_CONFIG = {
       `/api/analytics/link/${linkId}/temporal`,
     ANALYTICS_AUDIENCE: (linkId: string) =>
       `/api/analytics/link/${linkId}/audience`,
-    ANALYTICS_HEATMAP: (linkId: string) =>
-      `/api/analytics/link/${linkId}/heatmap`,
     ANALYTICS_INSIGHTS: (linkId: string) =>
       `/api/analytics/link/${linkId}/insights`,
   },

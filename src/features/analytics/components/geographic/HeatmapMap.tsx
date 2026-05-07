@@ -108,7 +108,7 @@ export function HeatmapMap({
           MapResizeHandler,
         });
       } catch (error) {
-        setMapError(t("heatmap.mapErrorComponents"));
+        setMapError(t("geographic.heatmap.mapErrorComponents"));
         console.error("Error loading Leaflet:", error);
       }
     };
@@ -174,7 +174,7 @@ export function HeatmapMap({
         <Box sx={{ textAlign: "center" }}>
           <CircularProgress sx={{ mb: 2 }} />
           <Typography variant="body2" color="text.secondary">
-            {t("heatmap.mapLoading")}
+            {t("geographic.heatmap.mapLoading")}
           </Typography>
         </Box>
       </Box>
@@ -213,10 +213,10 @@ export function HeatmapMap({
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
             <Map size={16} strokeWidth={1.5} />
-            {t("heatmap.noPoints")}
+            {t("geographic.heatmap.noPoints")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t("heatmap.noPointsSub")}
+            {t("geographic.heatmap.noPointsSub")}
           </Typography>
         </Box>
       </Box>
@@ -289,11 +289,11 @@ export function HeatmapMap({
                     {point.country}
                   </Typography>
                   <Typography variant="h6" color="primary.main">
-                    {t("heatmap.popupClicks", { n: point.clicks })}
+                    {t("geographic.heatmap.popupClicks", { n: point.clicks })}
                   </Typography>
                   {point.last_click ? (
                     <Typography variant="caption" color="text.secondary">
-                      {t("heatmap.popupLastClickShort", {
+                      {t("geographic.heatmap.popupLastClickShort", {
                         time: new Date(point.last_click).toLocaleString(),
                       })}
                     </Typography>

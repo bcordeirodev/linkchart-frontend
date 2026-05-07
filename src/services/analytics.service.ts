@@ -2,7 +2,7 @@ import { API_CONFIG } from "../lib/api/endpoints";
 
 import { BaseService } from "./base.service";
 
-import type { AnalyticsData, HeatmapPoint } from "@/types";
+import type { AnalyticsData } from "@/types";
 import type { GeographicData } from "@/types/analytics/geographic";
 import type { BusinessInsight, InsightsData } from "@/types/analytics/insights";
 
@@ -98,20 +98,6 @@ export default class AnalyticsService extends BaseService {
     return this.get<GeographicData | null>(endpoint, {
       fallback: null,
       context: "get_link_geographic",
-    });
-  }
-
-  /**
-   * Busca heatmap de um link
-   */
-  async getLinkHeatmap(linkId: string): Promise<HeatmapPoint[] | null> {
-    this.validateId(linkId, "Link ID");
-
-    const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_HEATMAP(linkId);
-
-    return this.get<HeatmapPoint[] | null>(endpoint, {
-      fallback: null,
-      context: "get_link_heatmap",
     });
   }
 
