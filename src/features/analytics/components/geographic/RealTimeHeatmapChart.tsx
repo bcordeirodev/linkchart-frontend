@@ -541,7 +541,9 @@ export function RealTimeHeatmapChart({
                   color="text.secondary"
                   gutterBottom
                 >
-                  {t("geographic.heatmap.minClicksFilter", { count: minClicksFilter })}
+                  {t("geographic.heatmap.minClicksFilter", {
+                    count: minClicksFilter,
+                  })}
                 </Typography>
                 <Slider
                   value={minClicksFilter}
