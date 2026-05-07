@@ -83,6 +83,33 @@ export interface LanguageData {
   percentage: number;
 }
 
+export interface NavigationContextEntry {
+  context: string;
+  clicks: number;
+  percentage: number;
+}
+
+export interface ReturnVisitorStats {
+  return_rate: number;
+  new_rate: number;
+  avg_session_clicks: number;
+}
+
+export type QualityTier = 'organic' | 'suspicious' | 'likely_fraud';
+
+export interface QualityTierEntry {
+  tier: QualityTier;
+  clicks: number;
+  percentage: number;
+}
+
+export interface QualityBreakdown {
+  tiers: QualityTierEntry[];
+  bot_clicks: number;
+  bot_percentage: number;
+  avg_fingerprint_score: number;
+}
+
 /**
  * Dados completos de análise de audiência - ENHANCED
  */
@@ -126,6 +153,12 @@ export interface AudienceData {
     total: number;
     percentage: number;
   };
+  /** Breakdown por contexto de navegação (Phase 1: Sec-Fetch headers) */
+  navigation_context_breakdown?: NavigationContextEntry[];
+  /** Estatísticas de visitantes recorrentes e profundidade de sessão */
+  return_visitor_stats?: ReturnVisitorStats;
+  /** Distribuição de qualidade de tráfego (Phase 3: quality scoring) */
+  quality_breakdown?: QualityBreakdown;
 }
 
 /**
