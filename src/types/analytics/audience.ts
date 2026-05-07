@@ -107,6 +107,25 @@ export interface AudienceData {
   device_performance?: DevicePerformanceData[];
   /** Distribuição de idiomas */
   languages?: LanguageData[];
+  /** Distribuição de idiomas parseada com região (Client Hints / Accept-Language) */
+  language_breakdown?: Array<{
+    language: string;
+    region: string | null;
+    clicks: number;
+    percentage: number;
+  }>;
+  /** Distribuição de plataforma via Client Hints */
+  platform_breakdown?: Array<{
+    platform: string;
+    clicks: number;
+    percentage: number;
+  }>;
+  /** Estatísticas de Data Saver / conexão limitada */
+  data_saver?: {
+    clicks: number;
+    total: number;
+    percentage: number;
+  };
 }
 
 /**

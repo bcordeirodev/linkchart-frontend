@@ -1,11 +1,12 @@
 "use client";
 import { MonitorSmartphone, Globe, Clock, TrendingUp } from "lucide-react";
-import { Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, LinearProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
+import { LanguageBreakdownChart } from "./LanguageBreakdownChart";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AudienceData = Record<string, any>;
@@ -69,6 +70,19 @@ export function AudienceMetrics({
     },
   ];
 
+  const languageBreakdown: Array<{
+    language: string;
+    region: string | null;
+    clicks: number;
+    percentage: number;
+  }> = data?.audience?.language_breakdown ?? [];
+
+  const platformBreakdown: Array<{
+    platform: string;
+    clicks: number;
+    percentage: number;
+  }> = data?.audience?.platform_breakdown ?? [];
+
   return (
     <>
       {showTitle ? (
@@ -90,6 +104,47 @@ export function AudienceMetrics({
           </Grid>
         ))}
       </Grid>
+
+      {languageBreakdown.length > 0 ? (
+        <Box sx={{ mt: 3 }}>
+          <Divider sx={{ mb: 2 }} />
+          <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+            Idioma (Parsed)
+          </Typography>
+          <LanguageBreakdownChart data={languageBreakdown} />
+        </Box>
+      ) : null}
+
+      {platformBreakdown.length > 0 ? (
+        <Box sx={{ mt: 3 }}>
+          <Divider sx={{ mb: 2 }} />
+          <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+            Plataforma (Client Hints)
+          </Typography>
+          {platformBreakdown.map((entry) => (
+            <Box key={entry.platform} sx={{ mb: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mb: 0.5,
+                }}
+              >
+                <Typography variant="body2">{entry.platform}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {entry.clicks} ({entry.percentage}%)
+                </Typography>
+              </Box>
+              <LinearProgress
+                variant="determinate"
+                value={entry.percentage}
+                color="secondary"
+                sx={{ height: 6, borderRadius: 3 }}
+              />
+            </Box>
+          ))}
+        </Box>
+      ) : null}
     </>
   );
 }
