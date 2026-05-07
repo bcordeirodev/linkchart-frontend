@@ -635,5 +635,18 @@
     "peakHour": "Peak Hour",
     "topDevice": "Top Device",
     "vsPreviousPeriod": "Vs. Previous Period"
+  },
+  "virality": {
+    "title": "Virality",
+    "rank": {
+      "cold": "Cold",
+      "warming": "Warming",
+      "trending": "Trending",
+      "viral": "Viral"
+    }
+  },
+  "quality": {
+    "title": "Quality",
+    "subtitle": "{{suspicious}} suspicious · {{fraud}} fraud"
   }
 }
