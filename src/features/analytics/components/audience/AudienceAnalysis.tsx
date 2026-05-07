@@ -12,6 +12,8 @@ import TabDescription from "@/shared/ui/base/TabDescription";
 import { AudienceChart } from "./AudienceChart";
 import { AudienceInsights } from "./AudienceInsights";
 import { AudienceMetrics } from "./AudienceMetrics";
+import { BehaviorSection } from "./BehaviorSection";
+import { QualitySection } from "./QualitySection";
 
 import type { AudienceAnalysisProps } from "@/types/analytics";
 
@@ -93,6 +95,16 @@ export function AudienceAnalysis({
             </Box>
           ) : null}
 
+          {(audienceData as AnyData)?.quality_breakdown &&
+            (audienceData as AnyData)?.quality_breakdown?.tiers !==
+              undefined && (
+              <Box sx={{ mb: 3 }}>
+                <QualitySection
+                  quality={(audienceData as AnyData).quality_breakdown}
+                />
+              </Box>
+            )}
+
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <EnhancedPaper variant="glass" animated>
@@ -111,9 +123,22 @@ export function AudienceAnalysis({
                     (audienceData as AnyData)?.device_performance
                   }
                   languages={(audienceData as AnyData)?.languages}
+                  renderingEngine={(audienceData as AnyData)?.rendering_engine}
                 />
               </EnhancedPaper>
             </Grid>
+
+            {(audienceData as AnyData)?.navigation_context_breakdown &&
+              (audienceData as AnyData)?.navigation_context_breakdown?.length >
+                0 && (
+                <Grid item xs={12}>
+                  <BehaviorSection
+                    navigationContext={
+                      (audienceData as AnyData).navigation_context_breakdown
+                    }
+                  />
+                </Grid>
+              )}
 
             <Grid item xs={12}>
               <AudienceInsights
