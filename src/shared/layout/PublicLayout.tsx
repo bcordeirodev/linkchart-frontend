@@ -2,14 +2,17 @@
 /**
  * Layout para páginas públicas (não autenticadas)
  */
-import { Box, useTheme, Container, Button } from "@mui/material";
+import { Box, useTheme, Container, Button, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useNavigate } from "@/shared/hooks";
 import { useTranslation } from "react-i18next";
 
 import { useMainTheme } from "@/lib/theme";
+import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { LanguageSelector } from "@/i18n/components/LanguageSelector";
 import { AppLogo } from "@/shared/ui/base";
+import { Footer } from "./components";
 
 import type { ReactNode } from "react";
 
@@ -24,40 +27,55 @@ interface PublicLayoutProps {
 function ShorterHeaderActions() {
   const navigate = useNavigate();
   const { t } = useTranslation("common");
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Avoid flicker while auth state is being resolved
+  if (isLoading) {
+    return <LanguageSelector />;
+  }
+
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
       <LanguageSelector />
-      <Button
-        variant="outlined"
-        size="small"
-        onClick={() => navigate("/sign-in")}
-        sx={{
-          borderColor: "rgba(255,255,255,0.15)",
-          color: "rgba(255,255,255,0.55)",
-          fontSize: "0.75rem",
-          fontWeight: 500,
-          "&:hover": {
-            borderColor: "rgba(255,255,255,0.3)",
-            color: "rgba(255,255,255,0.85)",
-          },
-        }}
-      >
-        {t("nav.signIn")}
-      </Button>
-      <Button
-        variant="contained"
-        size="small"
-        onClick={() => navigate("/sign-up")}
-        sx={{
-          background: "linear-gradient(90deg,#6366f1,#8b5cf6)",
-          fontSize: "0.75rem",
-          fontWeight: 600,
-          boxShadow: "none",
-          "&:hover": { boxShadow: "none", opacity: 0.9 },
-        }}
-      >
-        {t("nav.signUp")}
-      </Button>
+      {isAuthenticated ? (
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => navigate("/links")}
+          sx={{
+            fontSize: "0.75rem",
+            fontWeight: 600,
+            boxShadow: "none",
+            "&:hover": { boxShadow: "none" },
+          }}
+        >
+          {t("nav.myLinks")}
+        </Button>
+      ) : (
+        <>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => navigate("/sign-in")}
+            sx={{ fontSize: "0.75rem", fontWeight: 500 }}
+          >
+            {t("nav.signIn")}
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => navigate("/sign-up")}
+            sx={{
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              boxShadow: "none",
+              "&:hover": { boxShadow: "none" },
+            }}
+          >
+            {t("nav.signUp")}
+          </Button>
+        </>
+      )}
     </Box>
   );
 }
@@ -71,6 +89,7 @@ function PublicLayout({
 }: PublicLayoutProps) {
   const theme = useTheme();
   const { t } = useTranslation("common");
+  const isDark = theme.palette.mode === "dark";
   useMainTheme();
 
   const layoutConfig = useMemo(() => {
@@ -81,7 +100,7 @@ function PublicLayout({
         containerMaxWidth: "xl" as const,
       },
       shorter: {
-        background: `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
+        background: theme.palette.background.default,
         showPattern: false,
         containerMaxWidth: "lg" as const,
       },
@@ -137,6 +156,9 @@ function PublicLayout({
             position: "relative",
             zIndex: 10,
             py: 2,
+            backgroundColor: isDark
+              ? darkNeutral.surface
+              : lightNeutral.surface,
             borderBottom: `1px solid ${theme.palette.divider}`,
           }}
         >
@@ -148,13 +170,33 @@ function PublicLayout({
                 alignItems: "center",
               }}
             >
-              <AppLogo
-                size={28}
-                textSx={{
-                  fontSize: "1.0625rem",
-                  color: "rgba(255,255,255,0.9)",
-                }}
-              />
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <AppLogo size={36} showText={false} />
+                <Box>
+                  <Typography
+                    sx={{
+                      fontWeight: 600,
+                      color: theme.palette.text.primary,
+                      fontSize: "1.125rem",
+                      letterSpacing: "-0.025em",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    Link Charts
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      fontSize: "0.6875rem",
+                      fontWeight: 500,
+                      letterSpacing: "0.05em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {t("appTagline")}
+                  </Typography>
+                </Box>
+              </Box>
               {variant === "shorter" && <ShorterHeaderActions />}
             </Box>
           </Container>
@@ -176,24 +218,7 @@ function PublicLayout({
         {children}
       </Box>
 
-      {showFooter ? (
-        <Box
-          component="footer"
-          sx={{
-            position: "relative",
-            zIndex: 10,
-            py: 3,
-            borderTop: `1px solid ${theme.palette.divider}`,
-            backgroundColor: theme.palette.background.paper,
-          }}
-        >
-          <Container maxWidth={layoutConfig.containerMaxWidth}>
-            <Box sx={{ textAlign: "center", color: "text.secondary" }}>
-              {t("footer.copyright")}
-            </Box>
-          </Container>
-        </Box>
-      ) : null}
+      {showFooter ? <Footer /> : null}
     </Box>
   );
 }

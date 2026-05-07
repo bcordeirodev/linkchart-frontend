@@ -119,7 +119,10 @@ export function SessionDepthChart({
     tooltip: {
       theme: theme.palette.mode,
       y: {
-        formatter: (val: number, { dataPointIndex }: any) => {
+        formatter: (
+          val: number,
+          { dataPointIndex }: { dataPointIndex: number },
+        ) => {
           const item = data.session_distribution[dataPointIndex];
           return `${item.users} usuários (${val}%)`;
         },
@@ -212,6 +215,7 @@ export function SessionDepthChart({
 
   const getQualityLabel = (quality: string) => {
     const key = `insights.session.qualityLabel.${quality}` as const;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return t(key as any) || quality;
   };
 
@@ -284,7 +288,9 @@ export function SessionDepthChart({
               value={`${data.power_users_percentage}%`}
               icon={<Star {...ICON_LG} />}
               color="warning"
-              subtitle={t("insights.session.powerUsersSub", { n: data.power_users_count })}
+              subtitle={t("insights.session.powerUsersSub", {
+                n: data.power_users_count,
+              })}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -301,7 +307,9 @@ export function SessionDepthChart({
         {/* Status da Qualidade */}
         <Box sx={{ mb: 3, textAlign: "center" }}>
           <Chip
-            label={t("insights.session.sessionQuality", { label: getQualityLabel(data.session_quality) })}
+            label={t("insights.session.sessionQuality", {
+              label: getQualityLabel(data.session_quality),
+            })}
             sx={{
               backgroundColor: getQualityColor(data.session_quality),
               color: "white",
@@ -472,11 +480,16 @@ export function SessionDepthChart({
                         {item.session_clicks > 1 ? "s" : ""}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {t("insights.session.usersCount", { n: item.users, percent: item.percentage })}
+                        {t("insights.session.usersCount", {
+                          n: item.users,
+                          percent: item.percentage,
+                        })}
                       </Typography>
                       {item.avg_response_time > 0 && (
                         <Typography variant="caption" color="text.secondary">
-                          {t("insights.session.avgTime", { n: Number(item.avg_response_time).toFixed(2) })}
+                          {t("insights.session.avgTime", {
+                            n: Number(item.avg_response_time).toFixed(2),
+                          })}
                         </Typography>
                       )}
                     </Box>
@@ -518,7 +531,9 @@ export function SessionDepthChart({
                   {t("insights.session.analysisText", {
                     avg: data.avg_session_depth,
                     power: data.power_users_percentage,
-                    quality: getQualityLabel(data.session_quality).toLowerCase(),
+                    quality: getQualityLabel(
+                      data.session_quality,
+                    ).toLowerCase(),
                   })}
                 </Typography>
 

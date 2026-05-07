@@ -26,7 +26,7 @@ export interface BusinessInsight {
   recommendation?: string;
   impact_score?: number;
   confidence?: number;
-  data_points?: Record<string, any>;
+  data_points?: Record<string, unknown>;
 }
 
 export interface InsightsData {
@@ -40,8 +40,11 @@ export interface InsightsData {
   categories: Record<string, number>;
   generated_at: string;
   analytics_data?: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     retention?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     session_depth?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     traffic_sources?: any;
   };
 }

@@ -6,6 +6,9 @@ export { TemporalInsights } from "./TemporalInsights";
 export { TemporalTrendsChart } from "./TemporalTrendsChart";
 export { TimezoneDistributionChart } from "./TimezoneDistributionChart";
 export { PeakAnalysisCard } from "./PeakAnalysisCard";
+export { HourDayHeatmapChart } from "./HourDayHeatmapChart";
+export { DailyTimelineChart } from "./DailyTimelineChart";
+export { DeviceByPeriodChart } from "./DeviceByPeriodChart";
 
 // Hook específico
 export { useTemporalData } from "../../hooks/useTemporalData";

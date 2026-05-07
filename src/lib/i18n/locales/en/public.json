@@ -29,6 +29,7 @@
       "uptime": "Uptime Guaranteed",
       "sectionTitle": "Numbers That Impress"
     },
+    "howItWorks": "How It Works",
     "form": {
       "urlLabel": "Original URL",
       "urlPlaceholder": "Paste the URL here... (e.g. https://example.com/long-page)",
@@ -63,6 +64,7 @@
   "publicAnalytics": {
     "title": "Link Analytics",
     "subtitle": "Public analytics for",
+    "pageSubtitle": "Performance and statistics for this link in real time",
     "noData": "No analytics data available yet.",
     "signUpCta": "Want this for your links?",
     "signUpButton": "Create free account",
@@ -117,13 +119,20 @@
     "linkInfo": {
       "copy": "Copy",
       "shortenAnother": "Shorten another link",
-      "visitDestination": "Visit destination"
+      "visitDestination": "Visit destination",
+      "shortenedLink": "Shortened link",
+      "publicAnalyticsAvailable": "Public analytics available"
     },
     "cta": {
       "title": "Create your free account",
       "description": "Access full analytics with click history, country map, devices and peak hours. Manage all your links in your own dashboard — with QR Code and custom slug on each one.",
       "button": "Create free account",
-      "features": ["Free forever", "QR Code included", "No credit card", "Custom slug"]
+      "features": [
+        "Free forever",
+        "QR Code included",
+        "No credit card",
+        "Custom slug"
+      ]
     }
   },
   "redirect": {
@@ -155,7 +164,10 @@
     "realtimeAnalytics": "Real-time analytics",
     "freeQr": "Free QR Code",
     "noExpiration": "No expiration",
-    "customSlug": "Custom slug"
+    "customSlug": "Custom slug",
+    "geoLocation": "Click geolocation",
+    "utmCampaigns": "UTM campaigns",
+    "fullDashboard": "Full analytics dashboard"
   },
   "qr": {
     "errors": {

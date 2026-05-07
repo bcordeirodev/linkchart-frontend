@@ -77,8 +77,14 @@ export function InsightsAnalysis({
           icon={<Lightbulb {...ICON_LG} />}
           title={displayTitle}
           description={t("insights.description")}
-          highlight={t("insights.available", { count: data?.insights?.length || 0 })}
-          metadata={isRealtime ? t("dashboard.realtime") : t("insights.intelligentAnalysis")}
+          highlight={t("insights.available", {
+            count: data?.insights?.length || 0,
+          })}
+          metadata={
+            isRealtime
+              ? t("dashboard.realtime")
+              : t("insights.intelligentAnalysis")
+          }
         />
       </Box>
 
@@ -204,10 +210,15 @@ export function InsightsAnalysis({
               }}
             >
               <Typography variant="caption" color="text.secondary">
-                {t("insights.footer.topCategory", { category: stats.topCategory })} •{" "}
-                {t("insights.footer.lastGenerated")}{" "}
+                {t("insights.footer.topCategory", {
+                  category: stats.topCategory,
+                })}{" "}
+                • {t("insights.footer.lastGenerated")}{" "}
                 {new Date(stats.lastGenerated).toLocaleString()} •{" "}
-                {t("insights.footer.showing", { shown: data?.insights?.length || 0, total: stats.totalInsights })}
+                {t("insights.footer.showing", {
+                  shown: data?.insights?.length || 0,
+                  total: stats.totalInsights,
+                })}
                 {isRealtime ? ` • ${t("insights.footer.autoUpdate")}` : null}
               </Typography>
             </Box>

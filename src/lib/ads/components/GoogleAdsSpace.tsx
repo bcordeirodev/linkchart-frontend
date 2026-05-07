@@ -1,10 +1,11 @@
 import { GoogleAd } from "./GoogleAd";
 
+import type { SxProps } from "@mui/material";
 import type { AdSlotType } from "../hooks/useGoogleAds";
 
 interface GoogleAdsSpaceProps {
   variant: AdSlotType;
-  sx?: any;
+  sx?: SxProps;
   showFallback?: boolean;
 }
 

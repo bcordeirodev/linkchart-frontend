@@ -29,6 +29,7 @@ export interface LayoutSettingsContextType {
   /** Função para alterar tema */
   changeTheme: (theme: LayoutThemesType) => void;
   /** Configurações (compatibilidade com FuseSettings) */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   settings?: any;
 }
 

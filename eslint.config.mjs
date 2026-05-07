@@ -18,16 +18,25 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      "src/lib/consent/cookieconsent.esm.js", // vendor minified file
     ],
   },
   // Migrated Vite src/ code — relax strict TS rules that were not enforced in the original project
   {
-    files: ["src/**/*.ts", "src/**/*.tsx"],
+    files: ["**/*.ts", "**/*.tsx"],
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-namespace": "warn",
       "@typescript-eslint/no-empty-object-type": "warn",
       "@typescript-eslint/no-empty-interface": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 ];

@@ -35,8 +35,12 @@ interface PeakAnalysisCardProps {
  */
 export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
   const { t } = useTranslation("analytics");
-  const { peak_hour, peak_day, peak_hour_clicks, peak_day_clicks } =
+  const { peak_hour, peak_day_name, peak_hour_clicks, peak_day_clicks } =
     peakAnalysis;
+
+  if (peak_hour == null) {
+    return null;
+  }
 
   // Formatar hora para exibição
   const formatHour = (hour: number) => {
@@ -83,6 +87,10 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
   };
 
   const period = getPeriodOfDay(peak_hour);
+  const performancePct =
+    peak_day_clicks > 0
+      ? `${((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1)}%`
+      : "--";
 
   return (
     <Box>
@@ -100,7 +108,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard
             title={t("temporal.peak.peakDay")}
-            value={peak_day}
+            value={peak_day_name ?? "--"}
             icon={<Calendar {...ICON_LG} />}
             color="secondary"
             subtitle={`${peak_day_clicks.toLocaleString()} ${t("temporal.peak.clicks")}`}
@@ -118,7 +126,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard
             title={t("temporal.peak.performance")}
-            value={`${((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1)}%`}
+            value={performancePct}
             icon={<Star {...ICON_LG} />}
             color="success"
             subtitle={t("temporal.peak.ofDailyActivity")}
@@ -221,7 +229,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                         variant="h4"
                         sx={{ mb: 0.5, fontWeight: 600 }}
                       >
-                        {peak_day}
+                        {peak_day_name ?? "--"}
                       </Typography>
                       <Typography variant="body2">
                         {t("temporal.peak.clicksThisDay", {
@@ -258,14 +266,20 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                   <Stack spacing={0.5}>
                     <Typography variant="body2">
                       {t("temporal.peak.schedulePostsFor", {
-                        day: peak_day,
+                        day: peak_day_name ?? "--",
                         hour: formatHour(peak_hour),
                       })}
                     </Typography>
                     <Typography variant="body2">
                       {t("temporal.peak.peakHourRepresents", {
                         total: peak_hour_clicks,
-                        percent: ((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1),
+                        percent:
+                          peak_day_clicks > 0
+                            ? (
+                                (peak_hour_clicks / peak_day_clicks) *
+                                100
+                              ).toFixed(1)
+                            : "0",
                       })}
                     </Typography>
                     <Typography variant="body2">

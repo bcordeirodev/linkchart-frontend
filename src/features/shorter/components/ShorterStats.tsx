@@ -1,8 +1,9 @@
 "use client";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 export function ShorterStats() {
+  const theme = useTheme();
   const { t } = useTranslation("public");
 
   const stats = [
@@ -13,16 +14,16 @@ export function ShorterStats() {
   ];
 
   return (
-    <Box sx={{ py: { xs: 3, md: 5 } }}>
+    <Box>
       <Typography
         sx={{
           textAlign: "center",
           mb: 4,
-          fontSize: "0.6875rem",
-          fontWeight: 600,
-          letterSpacing: "1.5px",
+          fontSize: "0.75rem",
+          fontWeight: 700,
+          letterSpacing: "0.1em",
           textTransform: "uppercase",
-          color: "rgba(255,255,255,0.25)",
+          color: theme.palette.text.secondary,
         }}
       >
         {t("shorter.stats.sectionTitle")}
@@ -57,7 +58,7 @@ export function ShorterStats() {
               <Typography
                 sx={{
                   fontSize: "0.6875rem",
-                  color: "rgba(255,255,255,0.35)",
+                  color: "rgba(255,255,255,0.6)",
                   fontWeight: 500,
                   letterSpacing: "0.3px",
                 }}

@@ -61,7 +61,7 @@ const isSessionStorageAvailable = (): boolean => {
     window.sessionStorage.setItem(testKey, "test");
     window.sessionStorage.removeItem(testKey);
     return true;
-  } catch (error) {
+  } catch {
     // SessionStorage não disponível
     return false;
   }
@@ -104,7 +104,7 @@ const isValidRedirectUrl = (url: string): boolean => {
     }
 
     return true;
-  } catch (error) {
+  } catch {
     // Erro na validação da URL
     return false;
   }
@@ -202,7 +202,7 @@ export const resetSessionRedirectUrl = (): void => {
   }
 
   try {
-    const hadUrl = window.sessionStorage.getItem(CONFIG.storageKey) !== null;
+    const _hadUrl = window.sessionStorage.getItem(CONFIG.storageKey) !== null;
     window.sessionStorage.removeItem(CONFIG.storageKey);
 
     // URL de redirect removida se existia

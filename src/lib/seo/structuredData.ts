@@ -31,8 +31,18 @@ export function buildAnalyticsPageSchema(
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Link Charts", item: APP_URL },
-        { "@type": "ListItem", position: 2, name: "Analytics", item: `${APP_URL}/public-analytics/${slug}` },
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Link Charts",
+          item: APP_URL,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Analytics",
+          item: `${APP_URL}/public-analytics/${slug}`,
+        },
       ],
     },
   };
@@ -45,7 +55,8 @@ export function buildOrganizationSchema() {
     name: "Link Charts",
     url: APP_URL,
     logo: `${APP_URL}/og-default.png`,
-    description: "Free URL shortener with powerful real-time analytics, click tracking, and geographic insights.",
+    description:
+      "Free URL shortener with powerful real-time analytics, click tracking, and geographic insights.",
     sameAs: [],
   };
 }

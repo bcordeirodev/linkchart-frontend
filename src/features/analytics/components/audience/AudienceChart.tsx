@@ -47,8 +47,8 @@ import type {
 
 interface AudienceChartProps {
   deviceBreakdown: DeviceData[];
-  browserBreakdown?: any[];
-  osBreakdown?: any[];
+  browserBreakdown?: unknown[];
+  osBreakdown?: unknown[];
   totalClicks: number;
   height?: number;
   showPieChart?: boolean;

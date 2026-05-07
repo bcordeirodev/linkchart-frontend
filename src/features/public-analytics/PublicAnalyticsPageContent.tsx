@@ -1,6 +1,13 @@
 "use client";
 
-import { Box, Container, Fade, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Fade,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -21,6 +28,7 @@ interface PublicAnalyticsPageContentProps {
 }
 
 function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
+  const theme = useTheme();
   const { t } = useTranslation("public");
   const {
     linkData,
@@ -47,9 +55,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
 
   return (
     <PublicLayout variant="shorter" showHeader showFooter>
-      <Box
-        sx={{ position: "relative", minHeight: "100vh", background: "#080812" }}
-      >
+      <Box sx={{ position: "relative", minHeight: "100vh" }}>
         <Box
           sx={{
             position: "fixed",
@@ -67,29 +73,35 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
 
         <Container
           maxWidth="md"
-          sx={{ position: "relative", zIndex: 1, py: { xs: 4, md: 6 }, pb: 8 }}
+          sx={{ position: "relative", zIndex: 1, pb: 8 }}
         >
           <Stack spacing={2.5}>
             <Fade in timeout={200}>
-              <Box>
+              <Box sx={{ textAlign: "center", mt: { xs: 5, md: 7 }, mb: 1 }}>
                 <Typography
+                  component="h1"
                   sx={{
-                    fontSize: { xs: "1.25rem", md: "1.5rem" },
-                    fontWeight: 700,
-                    color: "rgba(255,255,255,0.85)",
+                    fontSize: { xs: "2rem", md: "2.75rem" },
+                    fontWeight: 800,
+                    letterSpacing: "-0.03em",
+                    lineHeight: 1.15,
+                    color: theme.palette.text.primary,
                     mb: 0.5,
-                    letterSpacing: "-0.01em",
+                    mt: { xs: 3, md: 5 },
                   }}
                 >
-                  Analytics Públicos
+                  {t("publicAnalytics.title")}
                 </Typography>
                 <Typography
                   sx={{
-                    fontSize: "0.8125rem",
-                    color: "rgba(255,255,255,0.35)",
+                    fontSize: "0.9375rem",
+                    color: theme.palette.text.secondary,
+                    lineHeight: 1.65,
+                    maxWidth: 480,
+                    mx: "auto",
                   }}
                 >
-                  Desempenho e estatísticas deste link em tempo real
+                  {t("publicAnalytics.pageSubtitle")}
                 </Typography>
               </Box>
             </Fade>
@@ -110,7 +122,10 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
             </Fade>
 
             <AdSlot
-              slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_ABOVE_CHARTS ?? ''}
+              slot={
+                process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_ABOVE_CHARTS ??
+                ""
+              }
               format="leaderboard"
             />
 

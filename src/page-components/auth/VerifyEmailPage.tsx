@@ -50,6 +50,7 @@ function VerifyEmailPage() {
     }
 
     verifyEmailToken(token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const verifyEmailToken = async (verificationToken: string) => {
@@ -87,7 +88,7 @@ function VerifyEmailPage() {
       if (!result.success) {
         dispatch(showErrorMessage(result.message));
       }
-    } catch (error) {
+    } catch {
       dispatch(showErrorMessage("Erro ao reenviar email de verificação"));
     } finally {
       setIsResending(false);

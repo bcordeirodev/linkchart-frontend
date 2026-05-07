@@ -49,7 +49,7 @@ function ProfilePage() {
     } else if (!authUser) {
       setIsLoading(false);
     }
-  }, [authUser, user, dispatch]);
+  }, [authUser, user, dispatch, t]);
 
   // Carregar dados do perfil
   useEffect(() => {
@@ -63,7 +63,10 @@ function ProfilePage() {
 
   if (isLoading) {
     return (
-      <AuthGuardRedirect auth={["user", "admin"]} fallback={<ProfileSkeleton />}>
+      <AuthGuardRedirect
+        auth={["user", "admin"]}
+        fallback={<ProfileSkeleton />}
+      >
         <ProfileSkeleton />
       </AuthGuardRedirect>
     );
@@ -71,7 +74,10 @@ function ProfilePage() {
 
   if (!user) {
     return (
-      <AuthGuardRedirect auth={["user", "admin"]} fallback={<ProfileSkeleton />}>
+      <AuthGuardRedirect
+        auth={["user", "admin"]}
+        fallback={<ProfileSkeleton />}
+      >
         <Alert severity="error">
           Erro ao carregar dados do usuário. Tente fazer login novamente.
         </Alert>

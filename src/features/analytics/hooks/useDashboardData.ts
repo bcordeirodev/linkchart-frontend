@@ -152,6 +152,7 @@ export function useDashboardData({
         clearInterval(intervalRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [linkId, timeframe]);
 
   return {

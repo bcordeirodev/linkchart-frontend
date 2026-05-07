@@ -8,9 +8,12 @@ import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { createPresetAnimations } from "@/lib/theme";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type GeoData = Record<string, any>;
+
 interface GeographicMetricsProps {
-  data?: any;
-  stats?: any;
+  data?: GeoData | null;
+  stats?: GeoData | null;
   showTitle?: boolean;
   title?: string;
 }
@@ -44,11 +47,11 @@ export function GeographicMetrics({
   const totalGeographicClicks =
     stats?.totalClicks ||
     data?.top_countries?.reduce(
-      (sum: number, country: any) => sum + (country.clicks || 0),
+      (sum: number, country: GeoData) => sum + (country.clicks || 0),
       0,
     ) ||
     data?.geographic?.top_countries?.reduce(
-      (sum: number, country: any) => sum + (country.clicks || 0),
+      (sum: number, country: GeoData) => sum + (country.clicks || 0),
       0,
     ) ||
     0;

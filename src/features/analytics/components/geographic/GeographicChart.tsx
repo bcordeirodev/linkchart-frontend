@@ -160,9 +160,7 @@ export function GeographicChart({
                 <Typography variant="h6" gutterBottom>
                   <Map size={24} strokeWidth={1.5} />
                 </Typography>
-                <Typography>
-                  {t("geographic.chart.noCountriesData")}
-                </Typography>
+                <Typography>{t("geographic.chart.noCountriesData")}</Typography>
               </Box>
             )}
           </CardContent>
@@ -253,9 +251,7 @@ export function GeographicChart({
                 <Typography variant="h6" gutterBottom>
                   <Building2 size={24} strokeWidth={1.5} />
                 </Typography>
-                <Typography>
-                  {t("geographic.chart.noStatesData")}
-                </Typography>
+                <Typography>{t("geographic.chart.noStatesData")}</Typography>
               </Box>
             )}
           </CardContent>
@@ -309,9 +305,7 @@ export function GeographicChart({
                 <Typography variant="h6" gutterBottom>
                   <Building2 size={24} strokeWidth={1.5} />
                 </Typography>
-                <Typography>
-                  {t("geographic.chart.noCitiesData")}
-                </Typography>
+                <Typography>{t("geographic.chart.noCitiesData")}</Typography>
               </Box>
             )}
           </CardContent>

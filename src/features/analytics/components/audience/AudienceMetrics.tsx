@@ -7,8 +7,11 @@ import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AudienceData = Record<string, any>;
+
 interface AudienceMetricsProps {
-  data?: any;
+  data?: AudienceData;
   showTitle?: boolean;
   title?: string;
 }
@@ -25,7 +28,7 @@ export function AudienceMetrics({
   const osTypes = data?.audience?.os_breakdown?.length || 0;
   const totalAudienceClicks =
     data?.audience?.device_breakdown?.reduce(
-      (sum: number, device: any) => sum + (device.clicks || 0),
+      (sum: number, device: AudienceData) => sum + (device.clicks || 0),
       0,
     ) || 0;
 

@@ -74,9 +74,6 @@ export const API_CONFIG = {
       `/api/analytics/link/${linkId}/heatmap`,
     ANALYTICS_INSIGHTS: (linkId: string) =>
       `/api/analytics/link/${linkId}/insights`,
-
-    // Redirects
-    REDIRECT: (slug: string) => `/api/r/${slug}`,
   },
 
   CACHE: {

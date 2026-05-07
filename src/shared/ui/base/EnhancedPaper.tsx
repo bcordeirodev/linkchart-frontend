@@ -71,7 +71,7 @@ function EnhancedPaper({
               }
             : {},
           ...sx,
-        } as any
+        } as Record<string, unknown>
       }
       {...other}
     >

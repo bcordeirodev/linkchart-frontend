@@ -63,12 +63,12 @@ export default function RedirectStats({
   showRecentActivity = true,
   maxTopLinks = 5,
   error,
-  shortCode,
+  shortCode: _shortCode,
 }: RedirectStatsProps) {
   const dispatch = useAppDispatch();
   const [stats, setStats] = useState<RedirectStatsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [_fetchError, setFetchError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   const fetchStats = async () => {
@@ -97,18 +97,40 @@ export default function RedirectStats({
       const interval = setInterval(fetchStats, refreshInterval);
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshInterval]);
 
   if (loading) {
     return (
       <Stack spacing={2}>
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 2,
+          }}
+        >
           {[1, 2, 3, 4].map((i) => (
             <Card key={i} elevation={1}>
               <CardContent sx={{ textAlign: "center" }}>
-                <Skeleton variant="circular" width={32} height={32} sx={{ mx: "auto", mb: 1 }} />
-                <Skeleton variant="text" width="60%" height={40} sx={{ mx: "auto" }} />
-                <Skeleton variant="text" width="80%" height={20} sx={{ mx: "auto" }} />
+                <Skeleton
+                  variant="circular"
+                  width={32}
+                  height={32}
+                  sx={{ mx: "auto", mb: 1 }}
+                />
+                <Skeleton
+                  variant="text"
+                  width="60%"
+                  height={40}
+                  sx={{ mx: "auto" }}
+                />
+                <Skeleton
+                  variant="text"
+                  width="80%"
+                  height={20}
+                  sx={{ mx: "auto" }}
+                />
               </CardContent>
             </Card>
           ))}
@@ -129,8 +151,18 @@ export default function RedirectStats({
             <Box sx={{ display: "flex", gap: 3 }}>
               {[1, 2, 3].map((i) => (
                 <Box key={i} sx={{ flex: 1, textAlign: "center" }}>
-                  <Skeleton variant="text" width="60%" height={40} sx={{ mx: "auto" }} />
-                  <Skeleton variant="text" width="80%" height={20} sx={{ mx: "auto", mb: 1 }} />
+                  <Skeleton
+                    variant="text"
+                    width="60%"
+                    height={40}
+                    sx={{ mx: "auto" }}
+                  />
+                  <Skeleton
+                    variant="text"
+                    width="80%"
+                    height={20}
+                    sx={{ mx: "auto", mb: 1 }}
+                  />
                   <Skeleton variant="rounded" height={8} />
                 </Box>
               ))}

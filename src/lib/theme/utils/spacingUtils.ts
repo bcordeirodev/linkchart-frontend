@@ -229,7 +229,7 @@ export const createGridSpacing = (
 /**
  * Utilitários de espaçamento para layout
  */
-export const createLayoutSpacing = (theme: Theme) => {
+export const createLayoutSpacing = (_theme: Theme) => {
   return {
     // Container padrão
     container: {

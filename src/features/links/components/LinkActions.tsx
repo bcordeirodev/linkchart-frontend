@@ -8,6 +8,7 @@ import {
   Divider,
 } from "@mui/material";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 import {
   BarChart3,
@@ -54,6 +55,7 @@ export function LinkActions({
 
   const navigate = useNavigate();
   const theme = useTheme();
+  const { t } = useTranslation("links");
   const { copy } = useClipboard();
   const [loading, setLoading] = useState(false);
 
@@ -81,7 +83,7 @@ export function LinkActions({
 
   const handleDelete = useCallback(async () => {
     const confirmed = window.confirm(
-      "Tem certeza que deseja excluir este link? Esta ação não pode ser desfeita.",
+      `${t("actions.deleteConfirm")}\n${t("actions.deleteConfirmDesc")}`,
     );
 
     if (!confirmed) {
@@ -98,11 +100,11 @@ export function LinkActions({
         navigate("/links");
       }
     } catch (_error) {
-      alert("Erro ao excluir link. Tente novamente.");
+      alert(t("actions.deleteError"));
     } finally {
       setLoading(false);
     }
-  }, [linkId, navigate, onDeleteSuccess]);
+  }, [navigate, onDeleteSuccess, t]);
 
   const buttonStyles = {
     borderColor: theme.palette.divider,
@@ -154,7 +156,7 @@ export function LinkActions({
             disabled={currentPage === "other"}
             sx={buttonStyles}
           >
-            Listagem
+            {t("actions.list")}
           </Button>
 
           {showAnalytics ? (
@@ -177,7 +179,7 @@ export function LinkActions({
               disabled={loading}
               sx={buttonStyles}
             >
-              Editar
+              {t("actions.edit")}
             </Button>
           ) : null}
 
@@ -188,7 +190,7 @@ export function LinkActions({
               disabled={loading || !shortUrl}
               sx={buttonStyles}
             >
-              Copiar
+              {t("actions.copy")}
             </Button>
           ) : null}
 
@@ -199,7 +201,7 @@ export function LinkActions({
               disabled={loading}
               sx={buttonStyles}
             >
-              QR Code
+              {t("actions.qrCode")}
             </Button>
           ) : null}
         </ButtonGroup>
@@ -225,7 +227,7 @@ export function LinkActions({
                 },
               }}
             >
-              Excluir
+              {t("actions.delete")}
             </Button>
           ) : null}
         </Box>

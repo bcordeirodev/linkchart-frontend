@@ -71,7 +71,8 @@ export const AppIcon = forwardRef<SVGSVGElement, AppIconProps>(
       IconComponent = FlatAppIcons[name];
     } else if (category && iconName) {
       // Usar categoria + nome separados
-      const categoryIcons = AppIcons[category] as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const categoryIcons = AppIcons[category] as Record<string, any>;
       IconComponent = categoryIcons?.[iconName];
     }
 

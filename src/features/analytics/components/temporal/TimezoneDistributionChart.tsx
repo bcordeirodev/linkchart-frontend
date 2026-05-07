@@ -39,9 +39,7 @@ export function TimezoneDistributionChart({
           strokeWidth={1.5}
           style={{ opacity: 0.3, marginBottom: 16 }}
         />
-        <Typography variant="h6">
-          {t("temporal.timezone.noData")}
-        </Typography>
+        <Typography variant="h6">{t("temporal.timezone.noData")}</Typography>
         <Typography variant="body2" sx={{ mt: 1 }}>
           {t("temporal.timezone.noDataSub")}
         </Typography>
@@ -72,7 +70,9 @@ export function TimezoneDistributionChart({
         <Grid item xs={12} lg={8}>
           <ChartCard
             title={t("temporal.timezone.chartTitle")}
-            subtitle={t("temporal.timezone.detected", { count: timezoneAnalysis.length })}
+            subtitle={t("temporal.timezone.detected", {
+              count: timezoneAnalysis.length,
+            })}
           >
             <ApexChartWrapper
               type="bar"
@@ -137,7 +137,7 @@ export function TimezoneDistributionChart({
                 tooltip: {
                   theme: isDark ? "dark" : "light",
                   y: {
-                    formatter(val: number, opts?: any) {
+                    formatter(val: number, opts?: { dataPointIndex?: number }) {
                       const dataPointIndex = opts?.dataPointIndex;
                       const percentage =
                         dataPointIndex !== undefined
@@ -156,7 +156,9 @@ export function TimezoneDistributionChart({
         <Grid item xs={12} lg={4}>
           <ChartCard
             title={t("temporal.timezone.topTimezones")}
-            subtitle={t("temporal.timezone.total", { total: totalClicks.toLocaleString() })}
+            subtitle={t("temporal.timezone.total", {
+              total: totalClicks.toLocaleString(),
+            })}
           >
             <Stack spacing={2}>
               {topTimezones.map((tz, index) => (
@@ -211,7 +213,9 @@ export function TimezoneDistributionChart({
                 sx={{ mt: 2, p: 1.5, bgcolor: "action.hover", borderRadius: 1 }}
               >
                 <Typography variant="caption" color="text.secondary">
-                  {t("temporal.timezone.others", { count: timezoneAnalysis.length - 10 })}
+                  {t("temporal.timezone.others", {
+                    count: timezoneAnalysis.length - 10,
+                  })}
                 </Typography>
               </Box>
             )}

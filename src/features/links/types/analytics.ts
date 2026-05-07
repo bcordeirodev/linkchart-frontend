@@ -6,10 +6,7 @@
 
 import type { AnalyticsData } from "@/types/analytics/base";
 
-export interface LinkAnalyticsData extends AnalyticsData {
-  // Herda toda a estrutura de AnalyticsData
-  // Pode adicionar campos específicos se necessário
-}
+export type LinkAnalyticsData = AnalyticsData;
 
 export interface LinkAnalyticsMetricsData {
   total_clicks: number;

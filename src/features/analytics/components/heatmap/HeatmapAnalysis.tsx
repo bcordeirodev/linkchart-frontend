@@ -51,7 +51,9 @@ export function HeatmapAnalysis({
           icon={<Map {...ICON_LG} />}
           title={displayTitle}
           description={t("heatmap.description")}
-          highlight={t("heatmap.locationsCount", { count: stats?.totalPoints || 0 })}
+          highlight={t("heatmap.locationsCount", {
+            count: stats?.totalPoints || 0,
+          })}
           metadata={
             enableRealtime
               ? t("heatmap.realtime")

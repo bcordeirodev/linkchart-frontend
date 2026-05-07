@@ -19,7 +19,6 @@ import type {
   MRT_ColumnDef,
   MRT_PaginationState,
   MRT_Row,
-  MRT_SortingState,
 } from "material-react-table";
 
 interface ClicksTableProps {
@@ -38,8 +37,6 @@ const SORTABLE_COLUMNS = new Set([
   "state",
   "device",
   "browser",
-  "os",
-  "ip",
   "referer",
 ]);
 
@@ -81,7 +78,10 @@ function WhenCell({ row }: CellProps) {
   return (
     <Stack spacing={0.25}>
       <Typography variant="body2">
-        {formatDate(row.original.created_at, t("analytics.clicksTable.dateFormat"))}
+        {formatDate(
+          row.original.created_at,
+          t("analytics.clicksTable.dateFormat"),
+        )}
       </Typography>
       {row.original.timezone ? (
         <Typography variant="caption" color="text.secondary">
@@ -148,16 +148,6 @@ function BrowserCell({ row }: CellProps) {
   return <span>{ver ? `${browser} ${ver}` : browser}</span>;
 }
 
-function OsCell({ row }: CellProps) {
-  const { os, os_version: ver } = row.original;
-
-  if (!os) {
-    return <span>—</span>;
-  }
-
-  return <span>{ver ? `${os} ${ver}` : os}</span>;
-}
-
 function RefererCell({ row }: CellProps) {
   const { t } = useTranslation("links");
   const label = formatReferer(row.original);
@@ -200,14 +190,6 @@ function UtmCell({ row }: CellProps) {
   );
 }
 
-function IpCell({ row }: CellProps) {
-  return (
-    <Typography variant="body2" fontFamily="monospace">
-      {row.original.ip || "—"}
-    </Typography>
-  );
-}
-
 export function ClicksTable({ linkId }: ClicksTableProps) {
   const { isMobile } = useResponsive();
   const { t } = useTranslation("links");
@@ -222,31 +204,19 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
     setSearch,
     setSort,
     refresh,
-  } = useLinkClicks({
-    linkId,
-  });
+  } = useLinkClicks({ linkId });
 
-  const [pagination, setPagination] = useState<MRT_PaginationState>({
+  // Single source of truth: MRT state derived directly from hook params.
+  // Avoids dual-state sync issues that prevented pagination from working.
+  const pagination: MRT_PaginationState = {
     pageIndex: params.page - 1,
     pageSize: params.per_page,
-  });
-  const [sorting, setSorting] = useState<MRT_SortingState>([
-    { id: params.sort_by, desc: params.sort_dir === "desc" },
-  ]);
+  };
+
+  const sorting = [{ id: params.sort_by, desc: params.sort_dir === "desc" }];
+
+  // Local state only for search — keeps the input responsive while debouncing the API call
   const [globalFilter, setGlobalFilter] = useState("");
-
-  useEffect(() => {
-    setPage(pagination.pageIndex + 1);
-    setPerPage(pagination.pageSize);
-  }, [pagination, setPage, setPerPage]);
-
-  useEffect(() => {
-    const sort = sorting[0];
-
-    if (sort && SORTABLE_COLUMNS.has(sort.id)) {
-      setSort(sort.id, sort.desc ? "desc" : "asc");
-    }
-  }, [sorting, setSort]);
 
   useEffect(() => {
     const handle = setTimeout(() => setSearch(globalFilter ?? ""), 350);
@@ -286,13 +256,6 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
       Cell: BrowserCell,
     },
     {
-      accessorKey: "os",
-      header: t("analytics.clicksTable.os"),
-      minSize: 110,
-      size: 140,
-      Cell: OsCell,
-    },
-    {
       id: "referer",
       accessorFn: (row) => formatReferer(row),
       header: t("analytics.clicksTable.referer"),
@@ -309,14 +272,8 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
       accessorFn: (row) => row.utm?.campaign || "",
       Cell: UtmCell,
     },
-    {
-      accessorKey: "ip",
-      header: t("analytics.clicksTable.ip"),
-      minSize: 100,
-      size: 140,
-      Cell: IpCell,
-    },
   ];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const columns = useMemo(() => COLUMNS, [t]);
   const isInitialLoading = loading && items.length === 0;
 
@@ -327,7 +284,9 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
           icon={<MousePointer2 {...ICON_LG} />}
           title={t("analytics.clicksTable.title")}
           description={t("analytics.clicksTable.description")}
-          highlight={t("analytics.clicksTable.clicksRegistered", { count: total })}
+          highlight={t("analytics.clicksTable.clicksRegistered", {
+            count: total,
+          })}
         />
       </Box>
 
@@ -364,8 +323,23 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
               isLoading: loading,
               showProgressBars: loading,
             }}
-            onPaginationChange={setPagination}
-            onSortingChange={setSorting}
+            onPaginationChange={(updater) => {
+              const next =
+                typeof updater === "function" ? updater(pagination) : updater;
+              if (next.pageSize !== pagination.pageSize) {
+                setPerPage(next.pageSize);
+              } else {
+                setPage(next.pageIndex + 1);
+              }
+            }}
+            onSortingChange={(updater) => {
+              const next =
+                typeof updater === "function" ? updater(sorting) : updater;
+              const sort = next[0];
+              if (sort && SORTABLE_COLUMNS.has(sort.id)) {
+                setSort(sort.id, sort.desc ? "desc" : "asc");
+              }
+            }}
             onGlobalFilterChange={setGlobalFilter}
             enableRowSelection={false}
             enableRowActions={false}

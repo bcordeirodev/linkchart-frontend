@@ -38,7 +38,7 @@ function useUser(): useUser {
     try {
       const updatedUser = await authUpdateUser(_data);
       return updatedUser;
-    } catch (error) {
+    } catch {
       throw new Error("Failed to update user");
     }
   }

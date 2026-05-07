@@ -103,7 +103,10 @@ export function HeatmapControls({
         {/* Estatísticas */}
         <Box sx={{ flexGrow: 1, textAlign: "center" }}>
           <Typography variant="caption" color="text.secondary">
-            {t("heatmap.locationsStatus", { count: totalPoints, max: maxClicks })}
+            {t("heatmap.locationsStatus", {
+              count: totalPoints,
+              max: maxClicks,
+            })}
           </Typography>
         </Box>
 

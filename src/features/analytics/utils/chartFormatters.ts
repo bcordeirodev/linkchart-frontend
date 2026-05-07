@@ -141,7 +141,7 @@ export const formatAreaChart = (
   color = "#1976d2",
   isDark = false,
   labels?: { series?: string; noData?: string; clicksLabel?: string },
-): { series: ChartSeries[]; options: any } => {
+): { series: ChartSeries[]; options: Record<string, unknown> } => {
   const seriesName = labels?.series ?? "Total";
   const noDataText = labels?.noData ?? "Nenhum dado disponível";
   const clicksLabel = labels?.clicksLabel ?? "cliques";
@@ -232,10 +232,10 @@ export const formatBarChart = (
   horizontal = false,
   isDark = false,
   labels?: { series?: string; noData?: string; clicksLabel?: string },
-): { series: ChartSeries[]; options: any } => {
+): { series: ChartSeries[]; options: Record<string, unknown> } => {
   const seriesName = labels?.series ?? "Cliques";
   const noDataText = labels?.noData ?? "Nenhum dado disponível";
-  const clicksLabel = labels?.clicksLabel ?? "cliques";
+  const _clicksLabel = labels?.clicksLabel ?? "cliques";
 
   if (!data || !Array.isArray(data) || data.length === 0) {
     return {
@@ -251,18 +251,12 @@ export const formatBarChart = (
   // Processar dados de forma mais simples para ApexCharts
   const processedData = data
     .filter((item) => item && typeof item === "object")
-    .map((item, index) => ({
+    .map((item) => ({
       x: String(
         item[xKey] !== undefined && item[xKey] !== null ? item[xKey] : "",
       ),
       y: Number(item[yKey] || 0),
     }));
-
-  const categories = data
-    .filter((item) => item && typeof item === "object")
-    .map((item) =>
-      String(item[xKey] !== undefined && item[xKey] !== null ? item[xKey] : ""),
-    );
 
   // Configuração simplificada para barras horizontais
   if (horizontal) {

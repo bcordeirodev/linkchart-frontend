@@ -24,13 +24,13 @@ import { authService } from "@/services/auth.service";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 // Base schema type (without translations)
-const basePasswordSchema = z.object({
+const _basePasswordSchema = z.object({
   current_password: z.string().min(1),
   new_password: z.string().min(8),
   new_password_confirmation: z.string().min(1),
 });
 
-type PasswordChangeFormData = z.infer<typeof basePasswordSchema>;
+type PasswordChangeFormData = z.infer<typeof _basePasswordSchema>;
 
 /**
  * Formulário de alteração de senha

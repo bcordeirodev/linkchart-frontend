@@ -15,7 +15,13 @@ export default function AppError({ error, reset }: ErrorProps) {
   }, [error]);
 
   return (
-    <Box p={4} display="flex" flexDirection="column" alignItems="center" gap={2}>
+    <Box
+      p={4}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      gap={2}
+    >
       <AlertCircle {...ICON_LG} />
       <Typography variant="h6">Ocorreu um erro</Typography>
       <Typography variant="body2" color="text.secondary">

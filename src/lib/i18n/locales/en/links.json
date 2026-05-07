@@ -41,7 +41,13 @@
     "deleteConfirm": "Delete this link?",
     "deleteConfirmDesc": "This action cannot be undone. All click data will be lost.",
     "activate": "Activate",
-    "deactivate": "Deactivate"
+    "deactivate": "Deactivate",
+    "list": "List",
+    "edit": "Edit",
+    "copy": "Copy",
+    "delete": "Delete",
+    "qrCode": "QR Code",
+    "deleteError": "Error deleting link. Please try again."
   },
   "form": {
     "createTitle": "Create New Link",
@@ -94,6 +100,32 @@
       "urlInvalid": "Enter a valid URL (must start with http:// or https://).",
       "slugTaken": "This slug is already in use.",
       "slugInvalid": "Slug can only contain letters, numbers and hyphens."
+    },
+    "safety": {
+      "checking": "Checking security...",
+      "safe": "URL verified — no threats detected",
+      "unsafe": "Blocked URL: {{threats}}",
+      "error": "Security check unavailable"
+    },
+    "validation": {
+      "urlRequired": "URL is required",
+      "urlMaxLength": "URL cannot exceed 2048 characters",
+      "urlInvalid": "URL must be valid (e.g. https://example.com)",
+      "urlScheme": "URL must start with http:// or https://",
+      "urlBlocked": "This URL is not allowed for security reasons",
+      "titleMax": "Title must be at most 255 characters",
+      "slugMin": "Slug must be at least 3 characters",
+      "slugMax": "Slug cannot be more than 50 characters",
+      "slugPattern": "Slug can only contain letters, numbers, hyphens and underscores",
+      "slugReserved": "This slug is reserved by the system",
+      "descriptionMax": "Description must be at most 1000 characters",
+      "dateInvalid": "Invalid date",
+      "expiresMax": "Expiry date must be at most 5 years in the future",
+      "clickLimitInt": "Limit must be an integer",
+      "clickLimitMin": "Limit must be at least 1",
+      "clickLimitMax": "Maximum limit is 1,000,000",
+      "utmMax": "{{field}} too long",
+      "startsBeforeExpires": "Start date must be before expiry date"
     }
   },
   "metrics": {
@@ -108,10 +140,10 @@
     "neverClicked": "Never clicked",
     "countriesReached": "Countries Reached",
     "clicksToday": "Clicks Today",
-    "linksCreated": "links created",
-    "linksActive": "links working",
-    "totalClicksSubtitle": "accumulated clicks",
-    "clicksPerLink": "clicks per link"
+    "linksCreated": "Links Created",
+    "linksActive": "Links Working",
+    "totalClicksSubtitle": "Accumulated Clicks",
+    "clicksPerLink": "Clicks Per Link"
   },
   "status": {
     "active": "Active",

@@ -6,7 +6,7 @@
     "missingId": "Link ID not provided in URL",
     "loading": "Loading link dashboard...",
     "empty": "Link dashboard unavailable",
-    "totalClicksLabel": "total clicks",
+    "totalClicksLabel": "Total Clicks",
     "realtime": "Real Time",
     "dataQuality": "Data quality",
     "lastUpdate": "Last update",
@@ -61,10 +61,10 @@
       "peakDay": "Peak Day",
       "avgPerHour": "Avg/Hour",
       "trend": "Trend",
-      "peakHourSub": "highest activity",
-      "peakDaySub": "most active day",
-      "clicksPerHour": "clicks per hour",
-      "currentTrend": "current direction",
+      "peakHourSub": "Highest Activity",
+      "peakDaySub": "Most Active Day",
+      "clicksPerHour": "Clicks Per Hour",
+      "currentTrend": "Current Direction",
       "trending": "Growing",
       "declining": "Declining",
       "stable": "Stable"
@@ -122,7 +122,10 @@
       "clicks": "clicks",
       "uniqueVisitors": "unique visitors",
       "ofTotal": "% of total",
-      "insightsLabel": "Insights"
+      "insightsLabel": "Insights",
+      "dailyTimeline": "Daily Timeline",
+      "heatmapHourDay": "Hour×Day Heatmap",
+      "deviceByPeriod": "Devices by Period"
     },
     "peak": {
       "peakHour": "Peak Hour",
@@ -167,6 +170,40 @@
       "insightOptimize": "Consider adjusting publishing times to optimize engagement in this region.",
       "others": "+{{count}} other time zones"
     },
+    "heatmap": {
+      "title": "Heatmap: Hour × Day of Week",
+      "subtitle": "Click intensity combining hour of day and day of week — identify your best engagement windows",
+      "hint": "Each cell represents total clicks at that hour/day combination. Darker cells mean higher engagement. Use this map to find the best times to publish.",
+      "colorScaleNone": "None",
+      "colorScaleLow": "Low",
+      "colorScaleMedium": "Medium",
+      "colorScaleHigh": "High",
+      "colorScaleVeryHigh": "Very high",
+      "clickSingular": "click",
+      "clickPlural": "clicks"
+    },
+    "timeline": {
+      "clicksTitle": "Daily Click Timeline",
+      "clicksSubtitle": "Last {{days}} days — drag to zoom",
+      "uniqueTitle": "Unique Visitors per Day",
+      "uniqueSubtitle": "Last 90 days — distinct visitors by IP",
+      "clicks": "Clicks",
+      "unique": "Unique Visitors",
+      "totalChip": "{{total}} clicks over {{days}} days",
+      "avgPerDay": "Avg: {{avg}}/day",
+      "peakOn": "Peak: {{clicks}} on {{date}}",
+      "vsLastWeek": "{{trend}}% vs last week",
+      "hint": "Drag to select a range and zoom in. Click Reset to return to the full view."
+    },
+    "devicePeriod": {
+      "title": "Devices by Time of Day",
+      "subtitle": "How Desktop, Mobile and Tablet split across periods — adapt your content format accordingly",
+      "summary": "Device Summary",
+      "desktop": "Desktop",
+      "mobile": "Mobile",
+      "tablet": "Tablet",
+      "hint": "If mobile dominates at night, prioritize responsive layouts and short-form content for that window."
+    },
     "trends": {
       "noData": "Trend data not available yet",
       "noDataSub": "Keep sharing your link to generate trend data over time",
@@ -203,10 +240,10 @@
       "citiesReached": "Cities Reached",
       "statesRegions": "States / Regions",
       "geographicClicks": "Geographic Clicks",
-      "globalReach": "global reach",
-      "urbanDiversity": "urban diversity",
-      "regionalCoverage": "regional coverage",
-      "mappedClicks": "mapped clicks"
+      "globalReach": "Global Reach",
+      "urbanDiversity": "Urban Diversity",
+      "regionalCoverage": "Regional Coverage",
+      "mappedClicks": "Mapped Clicks"
     },
     "chart": {
       "topCountries": "Top Countries",
@@ -246,10 +283,10 @@
       "browsers": "Browsers",
       "operatingSystems": "Operating Systems",
       "audienceClicks": "Audience Clicks",
-      "uniqueDevices": "unique devices",
-      "differentBrowsers": "different browsers",
-      "differentOS": "different OS",
-      "totalEngagement": "total engagement"
+      "uniqueDevices": "Unique Devices",
+      "differentBrowsers": "Different Browsers",
+      "differentOS": "Different OS",
+      "totalEngagement": "Total Engagement"
     },
     "insights": {
       "title": "Audience Insights",
@@ -320,8 +357,8 @@
       "title": "Performance Metrics",
       "responseTime": "Response Time",
       "successRate": "Success Rate",
-      "avgTime": "average time",
-      "redirects": "redirects"
+      "avgTime": "Average Time",
+      "redirects": "Redirects"
     },
     "status": {
       "title": "Current Status",
@@ -363,10 +400,10 @@
       "highPriority": "High Priority",
       "actionable": "Actionable",
       "avgConfidence": "Avg. Confidence",
-      "totalSub": "insights generated",
-      "highPrioritySub": "require attention",
-      "actionableSub": "can be implemented",
-      "confidenceSub": "insight accuracy"
+      "totalSub": "Insights Generated",
+      "highPrioritySub": "Require Attention",
+      "actionableSub": "Can Be Implemented",
+      "confidenceSub": "Insight Accuracy"
     },
     "footer": {
       "topCategory": "Top category: {{category}}",
@@ -489,10 +526,10 @@
       "uniqueCountries": "Unique Countries",
       "uniqueCities": "Unique Cities",
       "avgPerLocation": "Avg per Location",
-      "mappedClicks": "mapped clicks",
-      "globalReach": "global reach",
-      "urbanDiversity": "urban diversity",
-      "clicksPerLocation": "clicks per location"
+      "mappedClicks": "Mapped Clicks",
+      "globalReach": "Global Reach",
+      "urbanDiversity": "Urban Diversity",
+      "clicksPerLocation": "Clicks Per Location"
     },
     "stats": {
       "title": "Detailed Statistics",
@@ -573,6 +610,6 @@
     "avgSessionDuration": "Avg. Session",
     "peakHour": "Peak Hour",
     "topDevice": "Top Device",
-    "vsPreviousPeriod": "vs. previous period"
+    "vsPreviousPeriod": "Vs. Previous Period"
   }
 }

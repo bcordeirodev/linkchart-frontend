@@ -52,7 +52,10 @@ export function DeviceBreakdownChart({
   );
 
   return (
-    <ChartCard title={t("charts.deviceBreakdown")} icon={<Smartphone {...ICON_LG} />}>
+    <ChartCard
+      title={t("charts.deviceBreakdown")}
+      icon={<Smartphone {...ICON_LG} />}
+    >
       <ApexChartWrapper
         type="donut"
         height={height}

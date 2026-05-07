@@ -94,12 +94,14 @@ export function Navbar({
           {/* Logo Section */}
           <Box
             onClick={() => navigate("/links")}
-            sx={{ display: "flex", alignItems: "center", cursor: "pointer", gap: 1.5 }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              cursor: "pointer",
+              gap: 1.5,
+            }}
           >
-            <AppLogo
-              size={36}
-              showText={false}
-            />
+            <AppLogo size={36} showText={false} />
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
               <Typography
                 variant="h6"
@@ -327,7 +329,10 @@ export function Navbar({
             borderBottom: `1px solid ${theme.palette.divider}`,
           }}
         >
-          <AppLogo size={28} textSx={{ fontSize: "1rem", color: theme.palette.text.primary }} />
+          <AppLogo
+            size={28}
+            textSx={{ fontSize: "1rem", color: theme.palette.text.primary }}
+          />
         </Box>
 
         <List sx={{ py: 1 }}>

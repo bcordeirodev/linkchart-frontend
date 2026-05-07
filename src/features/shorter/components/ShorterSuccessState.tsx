@@ -1,10 +1,11 @@
 "use client";
+import { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Copy, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import useClipboard from "@/hooks/useClipboard";
-import { ICON_LG } from "@/lib/theme/iconDefaults";
+import { ICON_LG, ICON_SM } from "@/lib/theme/iconDefaults";
 
 interface ShorterSuccessStateProps {
   shortUrl: string;
@@ -16,7 +17,12 @@ export function ShorterSuccessState({
   onReset,
 }: ShorterSuccessStateProps) {
   const { t } = useTranslation("public");
-  const { copy } = useClipboard({ timeout: 1500 });
+  const { copy, copied } = useClipboard({ timeout: 3000 });
+
+  useEffect(() => {
+    void copy(shortUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box
@@ -26,38 +32,50 @@ export function ShorterSuccessState({
         borderRadius: "12px",
         p: { xs: "24px", md: "28px 32px" },
         textAlign: "center",
-        maxWidth: 640,
+        maxWidth: 800,
         mx: "auto",
       }}
     >
+      {/* Icon + title */}
       <Box
         sx={{
-          width: 52,
-          height: 52,
-          borderRadius: "50%",
-          background: "rgba(16,185,129,0.1)",
-          border: "1px solid rgba(16,185,129,0.3)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          mx: "auto",
+          gap: 1.5,
           mb: 2.5,
         }}
       >
         <CheckCircle2 {...ICON_LG} color="#10b981" />
+        <Typography
+          sx={{ fontSize: "1.125rem", fontWeight: 700, color: "white" }}
+        >
+          {t("shorter.successTitle")}
+        </Typography>
+        {copied ? (
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.5,
+              background: "rgba(16,185,129,0.12)",
+              border: "1px solid rgba(16,185,129,0.3)",
+              borderRadius: "6px",
+              px: 1,
+              py: 0.375,
+            }}
+          >
+            <Check size={11} color="#10b981" />
+            <Typography
+              sx={{ fontSize: "0.6875rem", color: "#6ee7b7", fontWeight: 600 }}
+            >
+              {t("shorter.copiedToClipboard")}
+            </Typography>
+          </Box>
+        ) : null}
       </Box>
 
-      <Typography
-        sx={{ fontSize: "1.125rem", fontWeight: 700, color: "white", mb: 0.5 }}
-      >
-        {t("shorter.successTitle")}
-      </Typography>
-      <Typography
-        sx={{ fontSize: "0.8125rem", color: "rgba(255,255,255,0.35)", mb: 3 }}
-      >
-        Copie e compartilhe onde quiser
-      </Typography>
-
+      {/* URL row */}
       <Box
         sx={{
           background: "rgba(255,255,255,0.04)",
@@ -87,57 +105,26 @@ export function ShorterSuccessState({
         <Box
           component="button"
           onClick={() => copy(shortUrl)}
+          title={t("shorter.copyAgain")}
           sx={{
-            background: "rgba(99,102,241,0.15)",
-            border: "1px solid rgba(99,102,241,0.35)",
-            borderRadius: "6px",
-            px: 2,
-            py: 0.875,
-            fontSize: "0.75rem",
-            fontWeight: 600,
-            color: "#a5b4fc",
+            background: "transparent",
+            border: "none",
             cursor: "pointer",
+            color: copied ? "#10b981" : "rgba(255,255,255,0.3)",
+            display: "flex",
+            alignItems: "center",
             flexShrink: 0,
-            "&:hover": { background: "rgba(99,102,241,0.28)" },
+            p: 0.5,
+            borderRadius: "4px",
+            transition: "color 0.15s",
+            "&:hover": { color: "rgba(255,255,255,0.65)" },
           }}
         >
-          {t("shorter.copyButton")}
+          {copied ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
         </Box>
       </Box>
 
-      <Box
-        sx={{
-          height: 2,
-          background: "rgba(255,255,255,0.06)",
-          borderRadius: 1,
-          overflow: "hidden",
-          mb: 2,
-        }}
-      >
-        <Box
-          sx={{
-            height: "100%",
-            background: "linear-gradient(90deg,#6366f1,#10b981)",
-            borderRadius: 1,
-            "@keyframes progress": {
-              from: { width: "0%" },
-              to: { width: "100%" },
-            },
-            animation: "progress 3s linear forwards",
-          }}
-        />
-      </Box>
-
-      <Typography
-        sx={{ fontSize: "0.6875rem", color: "rgba(255,255,255,0.22)", mb: 3 }}
-      >
-        Redirecionando para{" "}
-        <Box component="span" sx={{ color: "rgba(99,102,241,0.65)" }}>
-          analytics detalhados
-        </Box>{" "}
-        em 3s...
-      </Typography>
-
+      {/* Reset */}
       <Box
         component="button"
         onClick={onReset}

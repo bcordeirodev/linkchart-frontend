@@ -163,7 +163,7 @@ export function TrafficSourceChart({
     tooltip: {
       theme: theme.palette.mode,
       y: {
-        formatter: (val: number, { seriesIndex }: any) => {
+        formatter: (val: number, { seriesIndex }: { seriesIndex: number }) => {
           const channel = data.channels[seriesIndex];
           return `${channel.clicks} clicks (${val.toFixed(1)}%)`;
         },
@@ -310,7 +310,9 @@ export function TrafficSourceChart({
               value={data.top_source?.source || "N/A"}
               icon={<TrendingUp {...ICON_LG} />}
               color="primary"
-              subtitle={t("insights.traffic.trafficPercent", { n: data.top_source?.percentage || 0 })}
+              subtitle={t("insights.traffic.trafficPercent", {
+                n: data.top_source?.percentage || 0,
+              })}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -351,7 +353,9 @@ export function TrafficSourceChart({
               sx={{ borderRadius: `${radiusTokens.lg}px` }}
             >
               <Typography variant="body2">
-                {t("insights.traffic.lowDiversityAlert", { n: data.source_diversity })}
+                {t("insights.traffic.lowDiversityAlert", {
+                  n: data.source_diversity,
+                })}
               </Typography>
             </Alert>
           </Box>
@@ -490,13 +494,18 @@ export function TrafficSourceChart({
                         </Typography>
                       </Box>
                       <Typography variant="body2" color="text.secondary">
-                        {channel.clicks} clicks ({Number(channel.percentage).toFixed(1)}%)
+                        {channel.clicks} clicks (
+                        {Number(channel.percentage).toFixed(1)}%)
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {t("insights.traffic.uniqueVisitors", { n: channel.unique_visitors })}
+                        {t("insights.traffic.uniqueVisitors", {
+                          n: channel.unique_visitors,
+                        })}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {t("insights.traffic.session", { n: Number(channel.avg_session_depth).toFixed(2) })}
+                        {t("insights.traffic.session", {
+                          n: Number(channel.avg_session_depth).toFixed(2),
+                        })}
                       </Typography>
                       {channel.avg_response_time > 0 && (
                         <Typography
@@ -504,7 +513,9 @@ export function TrafficSourceChart({
                           color="text.secondary"
                           sx={{ display: "block" }}
                         >
-                          {t("insights.traffic.time", { n: Number(channel.avg_response_time).toFixed(2) })}
+                          {t("insights.traffic.time", {
+                            n: Number(channel.avg_response_time).toFixed(2),
+                          })}
                         </Typography>
                       )}
                     </Box>
@@ -564,7 +575,9 @@ export function TrafficSourceChart({
                           {index + 1}. {source.source}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          {t("insights.traffic.session", { n: Number(source.avg_session_depth).toFixed(2) })}
+                          {t("insights.traffic.session", {
+                            n: Number(source.avg_session_depth).toFixed(2),
+                          })}
                         </Typography>
                       </Box>
                       <Box sx={{ textAlign: "right" }}>

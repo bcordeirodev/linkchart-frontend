@@ -25,7 +25,10 @@ function SignOutPage() {
         {t("signOut.signingOut")}
       </Typography>
 
-      <Typography sx={{ mt: 3, fontWeight: 500, textAlign: "center" }} color="text.secondary">
+      <Typography
+        sx={{ mt: 3, fontWeight: 500, textAlign: "center" }}
+        color="text.secondary"
+      >
         <span>{t("signOut.redirecting")}</span>
         <Link
           to="/sign-in"

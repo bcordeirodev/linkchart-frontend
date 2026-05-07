@@ -1,5 +1,6 @@
 import { AppBar, Toolbar, Button, IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import type { Theme } from "@mui/material/styles/createTheme";
 
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
@@ -227,7 +228,7 @@ export const LogoContainer = styled("div")(({ theme }) => ({
 
 export const StyledMenuPaper = {
   // @ts-ignore
-  sx: (theme: any) => ({
+  sx: (theme: Theme) => ({
     marginTop: theme.spacing(1),
     minWidth: 200,
     boxShadow: theme.shadows[4],

@@ -199,6 +199,8 @@ export default function RedirectClientPage({ slug }: { slug: string }) {
     };
 
     fetchRedirectData();
+    // capturedIP intentionally omitted — fetch runs once; IP is opportunistically used
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, getUserRealIP, isValidIPv4, isValidIPv6]);
 
   useEffect(() => {
