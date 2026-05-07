@@ -1,5 +1,12 @@
 "use client";
-import { TrendingUp, Link2, CheckCircle, BarChart3, Users, Globe } from "lucide-react";
+import {
+  TrendingUp,
+  Link2,
+  CheckCircle,
+  BarChart3,
+  Users,
+  Globe,
+} from "lucide-react";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { Grid, Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
