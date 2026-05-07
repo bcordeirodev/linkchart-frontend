@@ -362,7 +362,11 @@
       "uniqueDevices": "Unique Devices",
       "differentBrowsers": "Different Browsers",
       "differentOS": "Different OS",
-      "totalEngagement": "Total Engagement"
+      "totalEngagement": "Total Engagement",
+      "returnVisitors": "Return Visitors",
+      "returnVisitorsSubtitle": "return to the link",
+      "avgSession": "Avg per Session",
+      "avgSessionSubtitle": "clicks per session"
     },
     "insights": {
       "title": "Audience Insights",
@@ -392,7 +396,8 @@
         "browsers": "Browsers",
         "systems": "Systems",
         "performance": "Performance",
-        "languages": "Languages"
+        "languages": "Languages",
+        "renderingEngine": "Rendering Engine"
       },
       "stats": {
         "detected": "Devices Detected",
@@ -415,7 +420,35 @@
       "performanceMin": "Min:",
       "performanceMax": "Max:",
       "languageDistribution": "Language Distribution",
-      "topLanguages": "Top Languages"
+      "topLanguages": "Top Languages",
+      "renderingEngineDistribution": "Rendering Engine Distribution",
+      "topEngines": "Top Engines"
+    },
+    "quality": {
+      "title": "Traffic Quality",
+      "distribution": "Quality Distribution",
+      "botRate": "Bot Rate",
+      "botRateSubtitle": "of clicks are bots",
+      "botAlert": "{{count}} bots detected",
+      "fingerprint": "Header Consistency",
+      "fingerprintSubtitle": "inconsistencies per click",
+      "fingerprintScale": "0 = perfect · 3 = maximum suspicious",
+      "tiers": {
+        "organic": "Organic",
+        "suspicious": "Suspicious",
+        "likely_fraud": "Fraud"
+      }
+    },
+    "behavior": {
+      "title": "How They Arrived",
+      "navigationContext": "Navigation Context",
+      "contexts": {
+        "browser_direct": "Direct / Bookmark",
+        "browser_referral": "Via external link",
+        "in_app_webview": "In-app (Instagram, WhatsApp…)",
+        "api_programmatic": "Programmatic",
+        "unknown": "Unknown"
+      }
     }
   },
   "performance": {

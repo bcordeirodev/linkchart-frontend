@@ -362,7 +362,11 @@
       "uniqueDevices": "Dispositivos Únicos",
       "differentBrowsers": "Browsers Diferentes",
       "differentOS": "OS Diferentes",
-      "totalEngagement": "Engajamento Total"
+      "totalEngagement": "Engajamento Total",
+      "returnVisitors": "Visitantes Recorrentes",
+      "returnVisitorsSubtitle": "retornam ao link",
+      "avgSession": "Média por Sessão",
+      "avgSessionSubtitle": "cliques por sessão"
     },
     "insights": {
       "title": "Insights de Audiência",
@@ -392,7 +396,8 @@
         "browsers": "Navegadores",
         "systems": "Sistemas",
         "performance": "Performance",
-        "languages": "Idiomas"
+        "languages": "Idiomas",
+        "renderingEngine": "Rendering Engine"
       },
       "stats": {
         "detected": "Dispositivos Detectados",
@@ -415,7 +420,35 @@
       "performanceMin": "Mín:",
       "performanceMax": "Máx:",
       "languageDistribution": "Distribuição de Idiomas",
-      "topLanguages": "Top Idiomas"
+      "topLanguages": "Top Idiomas",
+      "renderingEngineDistribution": "Distribuição de Rendering Engine",
+      "topEngines": "Top Engines"
+    },
+    "quality": {
+      "title": "Qualidade do Público",
+      "distribution": "Distribuição de Qualidade",
+      "botRate": "Taxa de Bots",
+      "botRateSubtitle": "dos cliques são bots",
+      "botAlert": "{{count}} bots detectados",
+      "fingerprint": "Consistência de Headers",
+      "fingerprintSubtitle": "inconsistências por clique",
+      "fingerprintScale": "0 = perfeito · 3 = máximo suspeito",
+      "tiers": {
+        "organic": "Orgânico",
+        "suspicious": "Suspeito",
+        "likely_fraud": "Fraude"
+      }
+    },
+    "behavior": {
+      "title": "Como Chegaram",
+      "navigationContext": "Contexto de Navegação",
+      "contexts": {
+        "browser_direct": "Digitado / Favorito",
+        "browser_referral": "Via link externo",
+        "in_app_webview": "App (Instagram, WhatsApp…)",
+        "api_programmatic": "Programático",
+        "unknown": "Desconhecido"
+      }
     }
   },
   "performance": {
