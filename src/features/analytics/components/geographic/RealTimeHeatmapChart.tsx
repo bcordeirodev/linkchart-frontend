@@ -26,11 +26,9 @@ import {
   Tooltip,
   Alert,
   Slider,
-  FormControlLabel,
-  Switch,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { chartByType } from "@/lib/theme/colors/chart";
@@ -128,8 +126,13 @@ export function RealTimeHeatmapChart({
   const [mapStyle, setMapStyle] = useState<"street" | "satellite" | "dark">(
     "street",
   );
-  const [showClusters, setShowClusters] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Aplica filtro local de cliques mínimos nos pontos do mapa
+  const filteredData = useMemo(
+    () => data.filter((p) => p.clicks >= minClicksFilter),
+    [data, minClicksFilter],
+  );
 
   useEffect(() => {
     setIsClient(true);
@@ -180,21 +183,12 @@ export function RealTimeHeatmapChart({
    * Calcular centro do mapa baseado nos dados
    */
   const getMapCenter = useCallback((): [number, number] => {
-    if (data.length === 0) {
-      return [0, 0];
-    }
-
-    const totalLat = data.reduce(
-      (sum: number, point: HeatmapPoint) => sum + point.lat,
-      0,
-    );
-    const totalLng = data.reduce(
-      (sum: number, point: HeatmapPoint) => sum + point.lng,
-      0,
-    );
-
-    return [totalLat / data.length, totalLng / data.length];
-  }, [data]);
+    const points = filteredData.length > 0 ? filteredData : data;
+    if (points.length === 0) return [0, 0];
+    const totalLat = points.reduce((sum, p) => sum + p.lat, 0);
+    const totalLng = points.reduce((sum, p) => sum + p.lng, 0);
+    return [totalLat / points.length, totalLng / points.length];
+  }, [data, filteredData]);
 
   /**
    * Calcular raio do marcador baseado no número de cliques
@@ -421,7 +415,9 @@ export function RealTimeHeatmapChart({
         height: isFullscreen ? "100vh" : height,
       }}
     >
-      <CardContent sx={{ height: "100%", p: 0 }}>
+      <CardContent
+        sx={{ height: "100%", p: 0, display: "flex", flexDirection: "column" }}
+      >
         {/* Header com controles */}
         {showControls ? (
           <Box
@@ -430,6 +426,7 @@ export function RealTimeHeatmapChart({
               borderBottom: 1,
               borderColor: "divider",
               bgcolor: "background.paper",
+              flexShrink: 0,
             }}
           >
             <Box
@@ -551,23 +548,11 @@ export function RealTimeHeatmapChart({
                     setMinClicksFilter(value as number);
                   }}
                   min={1}
-                  max={stats?.maxClicks || 100}
+                  max={Math.max(2, stats?.maxClicks || 2)}
                   size="small"
                   valueLabelDisplay="auto"
                 />
               </Box>
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={showClusters}
-                    onChange={(e) => setShowClusters(e.target.checked)}
-                    size="small"
-                  />
-                }
-                label={t("geographic.heatmap.group")}
-                sx={{ ml: 2 }}
-              />
 
               <Stack direction="row" spacing={1}>
                 <Button
@@ -602,13 +587,8 @@ export function RealTimeHeatmapChart({
           </Box>
         ) : null}
 
-        {/* Mapa */}
-        <Box
-          sx={{
-            height: showControls ? `calc(100% - 200px)` : "100%",
-            position: "relative",
-          }}
-        >
+        {/* Mapa — ocupa todo o espaço restante após o header */}
+        <Box sx={{ flex: 1, minHeight: 0, position: "relative" }}>
           <MapContainer
             center={getMapCenter()}
             zoom={4}
@@ -620,7 +600,7 @@ export function RealTimeHeatmapChart({
               url={getTileUrl(mapStyle)}
             />
 
-            {data.map((point: HeatmapPoint, index: number) => {
+            {filteredData.map((point: HeatmapPoint, index: number) => {
               return (
                 <CircleMarker
                   key={`${point.lat}-${point.lng}-${index}-${point.clicks}`}

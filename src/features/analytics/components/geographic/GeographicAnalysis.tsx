@@ -152,6 +152,7 @@ export function GeographicAnalysis({
               title={t("geographic.subtabs.heatmap")}
               showControls
               showStats={false}
+              stats={stats}
             />
           )}
 
