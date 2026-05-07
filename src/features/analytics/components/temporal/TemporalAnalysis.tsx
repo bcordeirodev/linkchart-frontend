@@ -12,6 +12,8 @@ import TabDescription from "@/shared/ui/base/TabDescription";
 import { useTemporalData } from "../../hooks/useTemporalData";
 
 import { TemporalChart } from "./TemporalChart";
+import { HolidayImpactCard } from "./HolidayImpactCard";
+import { SeasonalDistributionChart } from "./SeasonalDistributionChart";
 
 interface TemporalAnalysisProps {
   linkId: string;
@@ -138,6 +140,24 @@ export function TemporalAnalysis({
               />
             </Grid>
           </Grid>
+
+          {data?.holiday_impact?.top_holidays?.length ||
+          data?.seasonal_distribution?.length ? (
+            <Grid container spacing={3} sx={{ mt: 1 }}>
+              {data?.holiday_impact?.top_holidays?.length ? (
+                <Grid item xs={12} md={6}>
+                  <HolidayImpactCard data={data.holiday_impact} />
+                </Grid>
+              ) : null}
+              {data?.seasonal_distribution?.length ? (
+                <Grid item xs={12} md={6}>
+                  <SeasonalDistributionChart
+                    data={data.seasonal_distribution}
+                  />
+                </Grid>
+              ) : null}
+            </Grid>
+          ) : null}
         </Box>
       </AnalyticsStateManager>
     </Box>

@@ -26,7 +26,7 @@ import TabDescription from "@/shared/ui/base/TabDescription";
 
 import type { DashboardData } from "@/types/analytics/dashboard";
 
-import { LinkInfoCard, TimeframeSelector } from "./cards";
+import { LinkInfoCard, TimeframeSelector, ViralityCard } from "./cards";
 import {
   DayOfWeekChart,
   DeviceBreakdownChart,
@@ -126,6 +126,13 @@ export function LinkDashboard({
               variant={compact ? "compact" : "detailed"}
             />
           </Grid>
+
+          {/* Viralidade */}
+          {data?.summary?.viral_rank && (
+            <Grid item xs={12} sm={6} md={4}>
+              <ViralityCard data={data.summary.viral_rank} />
+            </Grid>
+          )}
 
           {/* Gráficos - Renderização Direta */}
           {!compact && showCharts && data ? (
