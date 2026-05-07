@@ -136,6 +136,7 @@ export function GeographicAnalysis({
                   countries={data?.top_countries || []}
                   states={data?.top_states || []}
                   cities={data?.top_cities || []}
+                  totalCountries={stats?.totalCountries}
                 />
               </Grid>
             </Grid>

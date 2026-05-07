@@ -23,7 +23,8 @@
     "1h": "Last hour",
     "24h": "Last 24h",
     "7d": "Last 7 days",
-    "30d": "Last 30 days"
+    "30d": "Last 30 days",
+    "all": "All time"
   },
   "charts": {
     "hourlyClicks": "Clicks by Hour",
@@ -256,6 +257,9 @@
       "topCountries": "Top Countries",
       "topStates": "Top States/Regions",
       "topCities": "Top Cities",
+      "countriesSubtitle": "Top 10 countries by click volume. Click a country to filter states.",
+      "statesSubtitle": "Top 10 states or regions. Select a country above to filter by origin.",
+      "citiesSubtitle": "Top cities driving traffic to this link.",
       "noCountriesData": "Geographic data will appear here after the first clicks",
       "noStatesData": "State data will appear here after the first clicks",
       "noCitiesData": "City data will appear here after the first clicks"

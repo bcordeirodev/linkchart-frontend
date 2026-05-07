@@ -23,7 +23,8 @@
     "1h": "Última hora",
     "24h": "Últimas 24h",
     "7d": "Últimos 7 dias",
-    "30d": "Últimos 30 dias"
+    "30d": "Últimos 30 dias",
+    "all": "Todo período"
   },
   "charts": {
     "hourlyClicks": "Cliques por Hora",
@@ -256,6 +257,9 @@
       "topCountries": "Top Países",
       "topStates": "Top Estados/Regiões",
       "topCities": "Top Cidades",
+      "countriesSubtitle": "Top 10 países por volume de cliques. Clique em um país para filtrar os estados.",
+      "statesSubtitle": "Top 10 estados ou regiões. Selecione um país acima para filtrar por origem.",
+      "citiesSubtitle": "Principais cidades que direcionam tráfego para este link.",
       "noCountriesData": "Dados geográficos aparecerão aqui após os primeiros cliques",
       "noStatesData": "Dados de estados aparecerão aqui após os primeiros cliques",
       "noCitiesData": "Dados de cidades aparecerão aqui após os primeiros cliques"
