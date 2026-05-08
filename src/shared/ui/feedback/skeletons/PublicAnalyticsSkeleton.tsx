@@ -5,9 +5,12 @@ import { EnhancedPaper } from "@/shared/ui/base";
 
 export function PublicAnalyticsSkeleton() {
   return (
-    <PublicLayout>
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Stack spacing={4}>
+    <PublicLayout variant="shorter" chrome="minimal">
+      <Container
+        maxWidth="md"
+        sx={{ pt: { xs: 7, md: 8 }, pb: { xs: 6, md: 8 } }}
+      >
+        <Stack spacing={3}>
           <Box sx={{ textAlign: "center" }}>
             <Skeleton
               variant="text"

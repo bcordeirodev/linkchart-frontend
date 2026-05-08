@@ -25,6 +25,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${slug} — Link Analytics`,
     description: `Public analytics for the link "${slug}". ${clicks} total clicks tracked.`,
+    alternates: {
+      canonical: `${appUrl}/public-analytics/${slug}`,
+    },
+    // Per-slug analytics pages can multiply quickly and offer thin content
+    // for users that didn't create the link. We allow link equity to flow
+    // (follow) but keep them out of the index to protect SEO of the home
+    // and /shorter pages.
+    robots: {
+      index: false,
+      follow: true,
+      googleBot: { index: false, follow: true },
+    },
     openGraph: {
       title: `${slug} — Link Analytics | Link Charts`,
       description: `Public analytics for the link "${slug}". ${clicks} total clicks tracked.`,

@@ -221,7 +221,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             gap: 1.5,
             background: alpha(theme.palette.text.primary, 0.04),
             border: `1px solid ${theme.palette.divider}`,
-            borderRadius: "4px",
+            borderRadius: "8px",
             p: "10px 14px",
             mb: 2,
           }}
@@ -282,7 +282,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           onClick={onCreateLink}
           sx={{
             width: "100%",
-            background: theme.palette.primary.main,
+            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
             border: "none",
             borderRadius: "10px",
             color: theme.palette.primary.contrastText,
@@ -295,7 +295,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             transition: "all 0.18s",
             boxShadow: `0 2px 14px ${alpha(theme.palette.primary.main, 0.3)}`,
             "&:hover": {
-              opacity: 0.88,
+              opacity: 0.92,
               transform: "translateY(-1px)",
               boxShadow: `0 4px 20px ${alpha(theme.palette.primary.main, 0.45)}`,
             },

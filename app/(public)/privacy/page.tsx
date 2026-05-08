@@ -19,8 +19,11 @@ const bodySx = { color: "text.secondary", lineHeight: 1.8 };
 
 export default function PrivacyPage() {
   return (
-    <PublicLayout showHeader showFooter variant="simple">
-      <Container maxWidth="md" sx={{ py: { xs: 6, md: 8 } }}>
+    <PublicLayout chrome="minimal" variant="simple">
+      <Container
+        maxWidth="md"
+        sx={{ pt: { xs: 7, md: 8 }, pb: { xs: 6, md: 8 } }}
+      >
         <Typography variant="h4" fontWeight={800} gutterBottom>
           Política de Privacidade
         </Typography>

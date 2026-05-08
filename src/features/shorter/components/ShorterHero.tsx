@@ -19,7 +19,9 @@ export function ShorterHero({ state }: ShorterHeroProps) {
   const isSuccess = state === "success";
 
   return (
-    <Box sx={{ textAlign: "center", mb: 5, mt: { xs: 5, md: 7 } }}>
+    <Box
+      sx={{ textAlign: "center", mb: { xs: 4, md: 5 }, mt: { xs: 1, md: 2 } }}
+    >
       <motion.div {...fadeUp(0.1)}>
         <Typography
           component="h1"

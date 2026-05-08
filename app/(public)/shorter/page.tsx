@@ -11,6 +11,16 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${appUrl}/shorter`,
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     title: "Link Charts — Free URL Shortener with Analytics",
     description:

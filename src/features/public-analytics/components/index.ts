@@ -1,6 +1,3 @@
-// Header
-export { PublicAnalyticsHeader } from "./header/PublicAnalyticsHeader";
-
 // Info
 export { LinkHeroCard } from "./info/LinkHeroCard";
 export { AnalyticsInfo } from "./info/AnalyticsInfo";

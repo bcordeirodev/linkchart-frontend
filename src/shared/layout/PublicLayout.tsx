@@ -2,7 +2,15 @@
 /**
  * Layout para páginas públicas (não autenticadas)
  */
-import { Box, useTheme, Container, Button, Typography } from "@mui/material";
+import {
+  Box,
+  useTheme,
+  Container,
+  Button,
+  Link,
+  Typography,
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useMemo } from "react";
 import { useNavigate } from "@/shared/hooks";
 import { useTranslation } from "react-i18next";
@@ -16,11 +24,20 @@ import { Footer } from "./components";
 
 import type { ReactNode } from "react";
 
+type PublicChrome = "full" | "minimal";
+
 interface PublicLayoutProps {
   children: ReactNode;
   showHeader?: boolean;
   showFooter?: boolean;
   variant?: "landing" | "shorter" | "simple";
+  /**
+   * Estilo de header/footer.
+   * - "full": header sólido com logo+tagline e footer completo (default).
+   * - "minimal": utility bar flutuante (logo + idioma + auth) e footer enxuto de 1 linha.
+   *   Indicado para páginas focadas em uma única ação (shorter, public-analytics).
+   */
+  chrome?: PublicChrome;
   className?: string;
 }
 
@@ -80,17 +97,218 @@ function ShorterHeaderActions() {
   );
 }
 
+function MinimalUtilityBar() {
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const { t } = useTranslation("common");
+  const { isAuthenticated, isLoading } = useAuth();
+  const isDark = theme.palette.mode === "dark";
+
+  return (
+    <Box
+      component="header"
+      sx={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 5,
+        pointerEvents: "none",
+        px: { xs: 2, sm: 3, md: 4 },
+        pt: { xs: 1.75, md: 2.25 },
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 2,
+      }}
+    >
+      <Box
+        component="a"
+        href="/"
+        aria-label="Link Charts"
+        sx={{
+          pointerEvents: "auto",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 1,
+          textDecoration: "none",
+          color: theme.palette.text.primary,
+          opacity: 0.85,
+          transition: "opacity 160ms ease",
+          "&:hover": { opacity: 1 },
+        }}
+      >
+        <AppLogo size={26} showText={false} />
+        <Typography
+          component="span"
+          sx={{
+            display: { xs: "none", sm: "inline" },
+            fontWeight: 600,
+            fontSize: "0.875rem",
+            letterSpacing: "-0.01em",
+            lineHeight: 1,
+            color: theme.palette.text.primary,
+          }}
+        >
+          Link Charts
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          pointerEvents: "auto",
+          display: "flex",
+          alignItems: "center",
+          gap: { xs: 0.75, sm: 1 },
+        }}
+      >
+        <LanguageSelector compact />
+
+        {!isLoading && isAuthenticated ? (
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => navigate("/links")}
+            sx={{
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              px: 1.5,
+              py: 0.5,
+              boxShadow: "none",
+              "&:hover": { boxShadow: "none", opacity: 0.9 },
+            }}
+          >
+            {t("nav.myLinks")}
+          </Button>
+        ) : null}
+
+        {!isLoading && !isAuthenticated ? (
+          <>
+            <Link
+              component="button"
+              onClick={() => navigate("/sign-in")}
+              underline="none"
+              sx={{
+                display: { xs: "none", sm: "inline-flex" },
+                fontSize: "0.8125rem",
+                fontWeight: 500,
+                color: alpha(theme.palette.text.primary, isDark ? 0.7 : 0.78),
+                px: 1,
+                py: 0.5,
+                borderRadius: "6px",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                transition: "color 160ms ease",
+                "&:hover": { color: theme.palette.text.primary },
+              }}
+            >
+              {t("nav.signIn")}
+            </Link>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => navigate("/sign-up")}
+              sx={{
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                px: 1.75,
+                py: 0.5,
+                boxShadow: "none",
+                "&:hover": { boxShadow: "none", opacity: 0.9 },
+              }}
+            >
+              {t("nav.signUp")}
+            </Button>
+          </>
+        ) : null}
+      </Box>
+    </Box>
+  );
+}
+
+function MinimalFooter() {
+  const theme = useTheme();
+  const { t } = useTranslation("common");
+  const isDark = theme.palette.mode === "dark";
+  const linkColor = alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6);
+  const linkHover = alpha(theme.palette.text.primary, isDark ? 0.85 : 0.92);
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <Box
+      component="footer"
+      sx={{
+        position: "relative",
+        zIndex: 2,
+        mt: "auto",
+        px: { xs: 2, sm: 3, md: 4 },
+        py: { xs: 2, sm: 2.25 },
+        borderTop: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+      }}
+    >
+      <Box
+        sx={{
+          maxWidth: 1100,
+          mx: "auto",
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: { xs: 1, sm: 2 },
+          textAlign: "center",
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: "0.75rem",
+            color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6),
+            letterSpacing: "0.01em",
+          }}
+        >
+          © {currentYear} {t("appName")}
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: { xs: 1.5, sm: 2.25 },
+            "& a": {
+              fontSize: "0.75rem",
+              color: linkColor,
+              textDecoration: "none",
+              transition: "color 160ms ease",
+            },
+            "& a:hover": { color: linkHover },
+          }}
+        >
+          <a href="/privacy">Privacidade</a>
+          <a href="/terms">Termos</a>
+          <a href="/support">Suporte</a>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
 function PublicLayout({
   children,
   showHeader = false,
   showFooter = false,
   variant = "simple",
+  chrome = "full",
   className,
 }: PublicLayoutProps) {
   const theme = useTheme();
   const { t } = useTranslation("common");
   const isDark = theme.palette.mode === "dark";
   useMainTheme();
+  const isMinimal = chrome === "minimal";
+  const renderHeader = isMinimal ? false : showHeader;
+  const renderFooter = isMinimal ? false : showFooter;
 
   const layoutConfig = useMemo(() => {
     const configs = {
@@ -149,7 +367,9 @@ function PublicLayout({
         />
       ) : null}
 
-      {showHeader ? (
+      {isMinimal ? <MinimalUtilityBar /> : null}
+
+      {renderHeader ? (
         <Box
           component="header"
           sx={{
@@ -212,13 +432,15 @@ function PublicLayout({
           display: "flex",
           flexDirection: "column",
           width: "100%",
-          minHeight: showHeader || showFooter ? "calc(100vh - 120px)" : "100vh",
+          minHeight:
+            renderHeader || renderFooter ? "calc(100vh - 120px)" : "100vh",
         }}
       >
         {children}
       </Box>
 
-      {showFooter ? <Footer /> : null}
+      {renderFooter ? <Footer /> : null}
+      {isMinimal ? <MinimalFooter /> : null}
     </Box>
   );
 }
