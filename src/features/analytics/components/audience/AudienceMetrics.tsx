@@ -115,7 +115,10 @@ export function AudienceMetrics({
   const CONNECTION_LABELS: Record<string, string> = {
     residential: "Residencial",
     mobile: "Móvel",
+    cellular: "Celular",
     datacenter: "Datacenter",
+    broadband: "Banda larga",
+    wifi: "Wi-Fi",
     education: "Educação",
     unknown: "Desconhecido",
   };
@@ -130,7 +133,7 @@ export function AudienceMetrics({
 
       <Grid container spacing={3}>
         {metrics.map((metric) => (
-          <Grid item xs={12} sm={6} md={3} key={metric.id}>
+          <Grid item xs={12} sm={6} md={4} key={metric.id}>
             <MetricCard
               title={metric.title}
               value={metric.value}

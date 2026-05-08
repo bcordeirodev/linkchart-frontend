@@ -24,12 +24,12 @@ export function LanguageBreakdownChart({ data }: Props) {
     );
   }
 
+  const visible = data.slice(0, 8);
+
   return (
     <Box>
-      {data.map((entry) => {
-        const label = entry.region
-          ? `${entry.language.toUpperCase()}-${entry.region}`
-          : entry.language.toUpperCase();
+      {visible.map((entry) => {
+        const label = entry.region ?? entry.language.toUpperCase();
         return (
           <Box key={label} sx={{ mb: 2 }}>
             <Box
