@@ -45,8 +45,11 @@ const FAQ = [
 
 export default function SupportPage() {
   return (
-    <PublicLayout showHeader showFooter variant="simple">
-      <Container maxWidth="md" sx={{ py: { xs: 6, md: 8 } }}>
+    <PublicLayout chrome="minimal" variant="simple">
+      <Container
+        maxWidth="md"
+        sx={{ pt: { xs: 7, md: 8 }, pb: { xs: 6, md: 8 } }}
+      >
         <Typography variant="h4" fontWeight={800} gutterBottom>
           Suporte
         </Typography>

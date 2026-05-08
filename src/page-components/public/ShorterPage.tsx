@@ -38,7 +38,7 @@ function ShorterPage() {
   } = useShorter();
 
   return (
-    <PublicLayout variant="shorter" showHeader showFooter>
+    <PublicLayout variant="shorter" chrome="minimal">
       <style>{blobKeyframes}</style>
       <Box sx={{ position: "relative", minHeight: "100vh" }}>
         {/* top-right blob */}
@@ -76,7 +76,12 @@ function ShorterPage() {
 
         <Container
           maxWidth="md"
-          sx={{ position: "relative", zIndex: 1, pb: 8 }}
+          sx={{
+            position: "relative",
+            zIndex: 1,
+            pt: { xs: 7, md: 8 },
+            pb: { xs: 6, md: 8 },
+          }}
         >
           <ShorterHero state={isRedirecting ? "success" : "idle"} />
 
@@ -106,11 +111,11 @@ function ShorterPage() {
             onReset={handleReset}
           />
 
-          <Box sx={{ mt: 6, maxWidth: 800, mx: "auto" }}>
+          <Box sx={{ mt: { xs: 6, md: 7 }, maxWidth: 800, mx: "auto" }}>
             <ShorterStats />
           </Box>
 
-          <Box sx={{ mt: 6, mb: 2, maxWidth: 800, mx: "auto" }}>
+          <Box sx={{ mt: { xs: 6, md: 8 }, mb: 2, maxWidth: 800, mx: "auto" }}>
             <Typography
               sx={{
                 fontSize: "0.75rem",
@@ -129,7 +134,7 @@ function ShorterPage() {
               sx={{
                 display: "grid",
                 gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
-                gap: 3,
+                gap: { xs: 2, sm: 2.5 },
               }}
             >
               {(
@@ -158,16 +163,23 @@ function ShorterPage() {
                   key={step}
                   sx={{
                     textAlign: "center",
-                    p: 3,
-                    borderRadius: 2,
-                    border: "1px solid rgba(255,255,255,0.06)",
-                    background: "rgba(255,255,255,0.02)",
+                    px: 2.5,
+                    py: 3,
+                    borderRadius: "12px",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    background: "rgba(255,255,255,0.025)",
+                    transition:
+                      "border-color 200ms ease, background 200ms ease",
+                    "&:hover": {
+                      borderColor: "rgba(99,102,241,0.28)",
+                      background: "rgba(255,255,255,0.04)",
+                    },
                   }}
                 >
                   <Box
                     sx={{
-                      color: "#6366f1",
-                      mb: 1,
+                      color: theme.palette.primary.main,
+                      mb: 1.25,
                       display: "flex",
                       justifyContent: "center",
                     }}
@@ -175,25 +187,36 @@ function ShorterPage() {
                     {icon}
                   </Box>
                   <Typography
-                    variant="caption"
-                    sx={{ color: "rgba(255,255,255,0.5)" }}
+                    sx={{
+                      fontSize: "0.6875rem",
+                      fontWeight: 600,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      color: "rgba(255,255,255,0.45)",
+                      display: "block",
+                    }}
                   >
                     {step}
                   </Typography>
                   <Typography
-                    variant="subtitle2"
                     sx={{
-                      color: "rgba(255,255,255,0.8)",
+                      color: "rgba(255,255,255,0.92)",
                       fontWeight: 600,
+                      fontSize: "0.9375rem",
                       display: "block",
                       mt: 0.5,
+                      letterSpacing: "-0.01em",
                     }}
                   >
                     {title}
                   </Typography>
                   <Typography
-                    variant="body2"
-                    sx={{ color: "rgba(255,255,255,0.65)", mt: 0.5 }}
+                    sx={{
+                      color: "rgba(255,255,255,0.6)",
+                      mt: 0.75,
+                      fontSize: "0.8125rem",
+                      lineHeight: 1.55,
+                    }}
                   >
                     {desc}
                   </Typography>

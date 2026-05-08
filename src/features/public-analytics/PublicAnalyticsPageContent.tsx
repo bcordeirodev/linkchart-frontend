@@ -54,7 +54,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
   }
 
   return (
-    <PublicLayout variant="shorter" showHeader showFooter>
+    <PublicLayout variant="shorter" chrome="minimal">
       <Box sx={{ position: "relative", minHeight: "100vh" }}>
         <Box
           sx={{
@@ -73,31 +73,35 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
 
         <Container
           maxWidth="md"
-          sx={{ position: "relative", zIndex: 1, pb: 8 }}
+          sx={{
+            position: "relative",
+            zIndex: 1,
+            pt: { xs: 7, md: 8 },
+            pb: { xs: 6, md: 8 },
+          }}
         >
-          <Stack spacing={2.5}>
+          <Stack spacing={{ xs: 2.5, md: 3 }}>
             <Fade in timeout={200}>
-              <Box sx={{ textAlign: "center", mt: { xs: 5, md: 7 }, mb: 1 }}>
+              <Box sx={{ textAlign: "center", mt: { xs: 1, md: 2 }, mb: 0.5 }}>
                 <Typography
                   component="h1"
                   sx={{
-                    fontSize: { xs: "2rem", md: "2.75rem" },
+                    fontSize: { xs: "1.875rem", md: "2.5rem" },
                     fontWeight: 800,
                     letterSpacing: "-0.03em",
                     lineHeight: 1.15,
                     color: theme.palette.text.primary,
-                    mb: 0.5,
-                    mt: { xs: 3, md: 5 },
+                    mb: 0.75,
                   }}
                 >
                   {t("publicAnalytics.title")}
                 </Typography>
                 <Typography
                   sx={{
-                    fontSize: "0.9375rem",
+                    fontSize: "0.875rem",
                     color: theme.palette.text.secondary,
-                    lineHeight: 1.65,
-                    maxWidth: 480,
+                    lineHeight: 1.6,
+                    maxWidth: 460,
                     mx: "auto",
                   }}
                 >

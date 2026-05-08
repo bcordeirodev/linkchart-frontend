@@ -9,7 +9,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Box, Typography, Grid } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -35,6 +35,8 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
   const isDark = theme.palette.mode === "dark";
   const animations = createPresetAnimations(theme);
   const { charts } = analyticsData;
+  const titleColor = alpha(theme.palette.text.primary, isDark ? 0.55 : 0.7);
+  const titleAccent = alpha(theme.palette.primary.main, 0.6);
 
   const hourData = (charts?.temporal?.clicks_by_hour ?? []).map((d) => ({
     hour: `${d.hour}h`,
@@ -76,17 +78,14 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
           mb: 2,
         }}
       >
-        <TrendingUp
-          size={15}
-          strokeWidth={1.75}
-          color="rgba(129,140,248,0.6)"
-        />
+        <TrendingUp size={15} strokeWidth={1.75} color={titleAccent} />
         <Typography
           sx={{
             fontSize: "0.8125rem",
             fontWeight: 600,
-            color: "rgba(255,255,255,0.5)",
-            letterSpacing: "0.3px",
+            color: titleColor,
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
           }}
         >
           {t("publicAnalytics.charts.title")}
@@ -146,7 +145,16 @@ const darkCardSx = {
   "& .MuiCardContent-root .MuiTypography-h5": {
     fontSize: "0.8125rem",
     fontWeight: 600,
-    color: "rgba(255,255,255,0.5)",
+    color: "rgba(255,255,255,0.6)",
+    letterSpacing: "0.02em",
+  },
+};
+
+const lightCardSx = {
+  "& .MuiCardContent-root .MuiTypography-h5": {
+    fontSize: "0.8125rem",
+    fontWeight: 600,
+    letterSpacing: "0.02em",
   },
 };
 
@@ -159,14 +167,15 @@ function ChartsGrid({
   browserData,
   countryData,
 }: ChartsGridProps) {
+  const cardSx = isDark ? darkCardSx : lightCardSx;
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={{ xs: 1.5, md: 2 }}>
       {hourData ? (
         <Grid item xs={12}>
           <ChartCard
             title={t("publicAnalytics.charts.hourlyClicks")}
             icon={<Clock {...ICON_LG} />}
-            sx={darkCardSx}
+            sx={cardSx}
           >
             <ApexChartWrapper
               type="area"
@@ -188,7 +197,7 @@ function ChartsGrid({
           <ChartCard
             title={t("publicAnalytics.charts.dayOfWeek")}
             icon={<Calendar {...ICON_LG} />}
-            sx={darkCardSx}
+            sx={cardSx}
           >
             <ApexChartWrapper
               type="bar"
@@ -211,7 +220,7 @@ function ChartsGrid({
           <ChartCard
             title={t("publicAnalytics.charts.topCountries")}
             icon={<Globe {...ICON_LG} />}
-            sx={darkCardSx}
+            sx={cardSx}
           >
             <ApexChartWrapper
               type="bar"
@@ -234,7 +243,7 @@ function ChartsGrid({
           <ChartCard
             title={t("publicAnalytics.charts.devices")}
             icon={<Smartphone {...ICON_LG} />}
-            sx={darkCardSx}
+            sx={cardSx}
           >
             <ApexChartWrapper
               type="donut"
@@ -255,7 +264,7 @@ function ChartsGrid({
           <ChartCard
             title={t("publicAnalytics.charts.browsers")}
             icon={<Monitor {...ICON_LG} />}
-            sx={darkCardSx}
+            sx={cardSx}
           >
             <ApexChartWrapper
               type="donut"
@@ -275,26 +284,33 @@ function ChartsGrid({
 }
 
 function EmptyChartsState() {
+  const theme = useTheme();
   const { t } = useTranslation("public");
+  const isDark = theme.palette.mode === "dark";
+  const iconColor = alpha(theme.palette.text.primary, isDark ? 0.18 : 0.22);
+  const titleColor = alpha(theme.palette.text.primary, isDark ? 0.45 : 0.55);
+  const subColor = alpha(theme.palette.text.primary, isDark ? 0.3 : 0.4);
+
   return (
     <Box
       sx={{
-        py: { xs: 3, md: 4 },
+        py: { xs: 4, md: 5 },
+        px: 3,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: 1.5,
-        border: "1px solid rgba(255,255,255,0.05)",
+        gap: 1.25,
+        border: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
         borderRadius: "12px",
-        background: "rgba(255,255,255,0.02)",
+        background: alpha(theme.palette.text.primary, isDark ? 0.02 : 0.03),
       }}
     >
-      <BarChart2 size={28} color="rgba(255,255,255,0.12)" strokeWidth={1.5} />
+      <BarChart2 size={28} color={iconColor} strokeWidth={1.5} />
       <Typography
         sx={{
           fontSize: "0.875rem",
           fontWeight: 500,
-          color: "rgba(255,255,255,0.25)",
+          color: titleColor,
           textAlign: "center",
         }}
       >
@@ -303,7 +319,7 @@ function EmptyChartsState() {
       <Typography
         sx={{
           fontSize: "0.75rem",
-          color: "rgba(255,255,255,0.13)",
+          color: subColor,
           textAlign: "center",
           maxWidth: 340,
           lineHeight: 1.6,

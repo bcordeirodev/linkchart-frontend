@@ -1,5 +1,6 @@
 "use client";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { MousePointerClick, Activity, CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -9,53 +10,74 @@ interface PublicMetricsProps {
   analyticsData: PublicAnalyticsData;
 }
 
-const cardBase = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: "10px",
-  p: "20px",
-} as const;
-
-const labelSx = {
-  fontSize: "0.6875rem",
-  color: "rgba(255,255,255,0.3)",
-  fontWeight: 500,
-  textTransform: "uppercase" as const,
-  letterSpacing: "0.8px",
-};
-
-const subSx = {
-  fontSize: "0.6875rem",
-  color: "rgba(255,255,255,0.2)",
-  mt: 1,
-};
-
 export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
-  const { t } = useTranslation("public");
+  const theme = useTheme();
+  const { t, i18n } = useTranslation("public");
+  const isDark = theme.palette.mode === "dark";
+
+  const cardBase = {
+    background: alpha(theme.palette.text.primary, isDark ? 0.03 : 0.04),
+    border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.7 : 1)}`,
+    borderRadius: "12px",
+    p: { xs: "18px", md: "20px" },
+  } as const;
+
+  const labelColor = alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6);
+  const subColor = alpha(theme.palette.text.primary, isDark ? 0.4 : 0.5);
+  const dateColor = alpha(theme.palette.text.primary, isDark ? 0.78 : 0.85);
+
+  const labelSx = {
+    fontSize: "0.6875rem",
+    color: labelColor,
+    fontWeight: 600,
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.08em",
+  };
+
+  const subSx = {
+    fontSize: "0.6875rem",
+    color: subColor,
+    mt: 1,
+  };
+
   const createdDate = analyticsData.created_at
     ? new Date(analyticsData.created_at)
     : null;
   const isValid = createdDate !== null && !isNaN(createdDate.getTime());
-  const dateLabel = isValid ? createdDate.toLocaleDateString() : "-";
+  const dateLabel = isValid
+    ? createdDate.toLocaleDateString(i18n.language)
+    : "-";
   const timeLabel = isValid
-    ? createdDate.toLocaleTimeString(undefined, {
+    ? createdDate.toLocaleTimeString(i18n.language, {
         hour: "2-digit",
         minute: "2-digit",
       })
     : "";
+
+  const isActive = analyticsData.is_active;
+  const statusBg = isActive
+    ? alpha(theme.palette.success.main, 0.1)
+    : alpha(theme.palette.error.main, 0.1);
+  const statusBorder = isActive
+    ? alpha(theme.palette.success.main, 0.28)
+    : alpha(theme.palette.error.main, 0.28);
+  const statusColor = isActive
+    ? theme.palette.success.light
+    : theme.palette.error.light;
 
   return (
     <Box
       sx={{
         display: "grid",
         gridTemplateColumns: { xs: "1fr 1fr", md: "2fr 1fr 1fr" },
-        gap: "12px",
+        gap: { xs: "10px", md: "12px" },
       }}
     >
       <Box
         sx={{
           ...cardBase,
-          borderColor: "rgba(99,102,241,0.2)",
+          borderColor: alpha(theme.palette.primary.main, 0.24),
+          background: alpha(theme.palette.primary.main, isDark ? 0.06 : 0.05),
           gridColumn: { xs: "span 2", md: "span 1" },
         }}
       >
@@ -65,7 +87,7 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
           <MousePointerClick
             size={12}
             strokeWidth={1.75}
-            color="rgba(129,140,248,0.5)"
+            color={alpha(theme.palette.primary.main, 0.65)}
           />
           <Typography sx={labelSx}>
             {t("publicAnalytics.metrics.totalClicks")}
@@ -75,12 +97,13 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
           sx={{
             fontSize: { xs: "2.25rem", md: "2.5rem" },
             fontWeight: 800,
-            color: "#818cf8",
+            color: theme.palette.primary.light,
             lineHeight: 1,
-            letterSpacing: "-0.02em",
+            letterSpacing: "-0.025em",
+            fontFeatureSettings: '"tnum" 1, "lnum" 1',
           }}
         >
-          {analyticsData.total_clicks.toLocaleString()}
+          {analyticsData.total_clicks.toLocaleString(i18n.language)}
         </Typography>
         <Typography sx={subSx}>
           {t("publicAnalytics.metrics.sinceCreation")}
@@ -95,9 +118,9 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
             size={12}
             strokeWidth={1.75}
             color={
-              analyticsData.is_active
-                ? "rgba(52,211,153,0.5)"
-                : "rgba(248,113,113,0.5)"
+              isActive
+                ? alpha(theme.palette.success.main, 0.65)
+                : alpha(theme.palette.error.main, 0.65)
             }
           />
           <Typography sx={labelSx}>
@@ -108,26 +131,23 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
           sx={{
             display: "inline-flex",
             alignItems: "center",
-            background: analyticsData.is_active
-              ? "rgba(16,185,129,0.08)"
-              : "rgba(239,68,68,0.08)",
-            border: "1px solid",
-            borderColor: analyticsData.is_active
-              ? "rgba(16,185,129,0.22)"
-              : "rgba(239,68,68,0.22)",
-            borderRadius: "5px",
+            background: statusBg,
+            border: `1px solid ${statusBorder}`,
+            borderRadius: "999px",
             px: 1.25,
-            py: 0.5,
+            py: 0.4,
+            mt: 0.5,
           }}
         >
           <Typography
             sx={{
               fontSize: "0.75rem",
               fontWeight: 600,
-              color: analyticsData.is_active ? "#34d399" : "#f87171",
+              color: statusColor,
+              letterSpacing: "0.01em",
             }}
           >
-            {analyticsData.is_active
+            {isActive
               ? t("publicAnalytics.metrics.active")
               : t("publicAnalytics.metrics.inactive")}
           </Typography>
@@ -144,7 +164,7 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
           <CalendarDays
             size={12}
             strokeWidth={1.75}
-            color="rgba(255,255,255,0.25)"
+            color={alpha(theme.palette.text.primary, 0.4)}
           />
           <Typography sx={labelSx}>
             {t("publicAnalytics.metrics.createdAt")}
@@ -154,8 +174,9 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
           sx={{
             fontSize: "0.9375rem",
             fontWeight: 700,
-            color: "rgba(255,255,255,0.65)",
+            color: dateColor,
             mt: 0.25,
+            letterSpacing: "-0.01em",
           }}
         >
           {dateLabel}

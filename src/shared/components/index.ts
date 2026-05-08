@@ -23,3 +23,6 @@ export { default as FuseMessage } from "../ui/feedback/Message";
 
 // Routing components
 export { HomeRedirect } from "./routing/HomeRedirect";
+
+// CTA components
+export { SignUpCtaCard } from "./cta/SignUpCtaCard";

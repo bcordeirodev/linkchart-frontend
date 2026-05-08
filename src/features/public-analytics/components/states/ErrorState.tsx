@@ -26,8 +26,11 @@ export function ErrorState({
 }: ErrorStateProps) {
   const { t } = useTranslation("public");
   return (
-    <PublicLayout>
-      <Container maxWidth="md" sx={{ py: 8 }}>
+    <PublicLayout variant="shorter" chrome="minimal">
+      <Container
+        maxWidth="md"
+        sx={{ pt: { xs: 7, md: 8 }, pb: { xs: 6, md: 8 } }}
+      >
         <Alert
           severity="error"
           sx={{ mb: 4 }}

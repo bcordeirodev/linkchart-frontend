@@ -1,18 +1,22 @@
+"use client";
 import { Container, CircularProgress, Typography, Box } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { PublicLayout } from "@/shared/layout";
 
 /**
- * ⏳ LOADING STATE
- *
- * Estado de carregamento para Basic Analytics
- * Segue padrões visuais do projeto
- * Corrigido para evitar erros de scroll
+ * Estado de carregamento para Basic Analytics.
+ * Usa o mesmo chrome ("minimal") da página em estado normal para manter
+ * coerência visual entre carregamento, erro e conteúdo.
  */
 export function LoadingState() {
+  const { t } = useTranslation("public");
   return (
-    <PublicLayout>
-      <Container maxWidth="md" sx={{ py: 8 }}>
+    <PublicLayout variant="shorter" chrome="minimal">
+      <Container
+        maxWidth="md"
+        sx={{ pt: { xs: 7, md: 8 }, pb: { xs: 6, md: 8 } }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -23,9 +27,9 @@ export function LoadingState() {
             textAlign: "center",
           }}
         >
-          <CircularProgress size={60} sx={{ mb: 2 }} />
-          <Typography variant="h6" color="text.secondary">
-            Carregando analytics do link...
+          <CircularProgress size={48} thickness={4} sx={{ mb: 2 }} />
+          <Typography sx={{ fontSize: "0.9375rem", color: "text.secondary" }}>
+            {t("publicAnalytics.title")}…
           </Typography>
         </Box>
       </Container>

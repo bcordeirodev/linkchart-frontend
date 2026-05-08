@@ -17,7 +17,7 @@
  * @since 2.0.0
  */
 
-import { Github, Linkedin, Twitter } from "lucide-react";
+import { Github } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Box, Container, Typography, Link, useTheme } from "@mui/material";
 import * as CookieConsent from "@/lib/consent/cookieconsent.esm.js";
@@ -137,10 +137,11 @@ export function Footer({ style = "static" }: FooterProps) {
           {/* Social Links */}
           <Box sx={{ display: "flex", gap: 1 }}>
             <Link
-              href="https://github.com"
+              href="https://github.com/bcordeirodev"
               target="_blank"
               rel="noopener noreferrer"
               color="text.secondary"
+              aria-label="GitHub"
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -153,42 +154,6 @@ export function Footer({ style = "static" }: FooterProps) {
               }}
             >
               <Github {...ICON_LG} />
-            </Link>
-            <Link
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              color="text.secondary"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                p: 0.5,
-                borderRadius: 1,
-                "&:hover": {
-                  color: "primary.main",
-                  backgroundColor: theme.palette.action.hover,
-                },
-              }}
-            >
-              <Linkedin {...ICON_LG} />
-            </Link>
-            <Link
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              color="text.secondary"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                p: 0.5,
-                borderRadius: 1,
-                "&:hover": {
-                  color: "primary.main",
-                  backgroundColor: theme.palette.action.hover,
-                },
-              }}
-            >
-              <Twitter {...ICON_LG} />
             </Link>
           </Box>
         </Box>
