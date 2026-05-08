@@ -1,11 +1,11 @@
 FROM node:20-alpine AS base
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json .npmrc ./
 RUN npm ci --only=production && npm cache clean --force
 
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json .npmrc ./
 RUN npm ci
 COPY . .
 ARG NEXT_PUBLIC_APP_URL
