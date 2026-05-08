@@ -83,8 +83,8 @@ export function BehaviorSection({ navigationContext }: BehaviorSectionProps) {
                     variant="determinate"
                     value={entry.percentage}
                     sx={{
-                      height: 6,
-                      borderRadius: 3,
+                      height: 8,
+                      borderRadius: 4,
                       "& .MuiLinearProgress-bar": { backgroundColor: color },
                     }}
                   />

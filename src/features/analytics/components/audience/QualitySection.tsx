@@ -82,7 +82,7 @@ export function QualitySection({ quality }: QualitySectionProps) {
               {quality.tiers.length > 0 ? (
                 <ApexChartWrapper
                   type="donut"
-                  size="standard"
+                  size="compact"
                   {...formatPieChart(tierChartData, "name", "value", isDark)}
                 />
               ) : (
@@ -127,90 +127,108 @@ export function QualitySection({ quality }: QualitySectionProps) {
           </Card>
         </Grid>
 
-        {/* Bot rate */}
-        <Grid item xs={12} sm={6} md={3.5}>
-          <Card sx={cardSx}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Typography
-                variant="subtitle2"
+        {/* Bot rate + Fingerprint — stacked in right column */}
+        <Grid item xs={12} md={7}>
+          <Stack spacing={2} sx={{ height: "100%" }}>
+            {/* Bot rate */}
+            <Card sx={{ ...cardSx, height: "50%", minHeight: 120 }}>
+              <CardContent
                 sx={{
-                  mb: 1,
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  gap: 1,
+                  gap: 3,
+                  height: "100%",
                 }}
               >
-                <Bot {...ICON_MD} />
-                {t("audience.quality.botRate")}
-              </Typography>
-              <Typography variant="h3" color="error" sx={{ fontWeight: 700 }}>
-                {quality.bot_percentage.toFixed(1)}%
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t("audience.quality.botRateSubtitle")}
-              </Typography>
-              {quality.bot_percentage > 5 && (
-                <Chip
-                  label={tStr("audience.quality.botAlert", {
-                    count: quality.bot_clicks,
-                  })}
-                  color="error"
-                  size="small"
-                  sx={{ mt: 1 }}
-                />
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
+                <Box sx={{ textAlign: "center", minWidth: 80 }}>
+                  <Bot {...ICON_MD} style={{ marginBottom: 4 }} />
+                  <Typography
+                    variant="h4"
+                    color={
+                      quality.bot_percentage > 5 ? "error" : "text.primary"
+                    }
+                    sx={{ fontWeight: 700, lineHeight: 1 }}
+                  >
+                    {quality.bot_percentage.toFixed(1)}%
+                  </Typography>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                    {t("audience.quality.botRate")}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {t("audience.quality.botRateSubtitle")}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    color="text.disabled"
+                    sx={{ mt: 0.5, display: "block" }}
+                  >
+                    {quality.bot_clicks} cliques de bots detectados
+                  </Typography>
+                  {quality.bot_percentage > 5 && (
+                    <Chip
+                      label={tStr("audience.quality.botAlert", {
+                        count: quality.bot_clicks,
+                      })}
+                      color="error"
+                      size="small"
+                      sx={{ mt: 1 }}
+                    />
+                  )}
+                </Box>
+              </CardContent>
+            </Card>
 
-        {/* Fingerprint score */}
-        <Grid item xs={12} sm={6} md={3.5}>
-          <Card sx={cardSx}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Typography
-                variant="subtitle2"
+            {/* Fingerprint score */}
+            <Card sx={{ ...cardSx, height: "50%", minHeight: 120 }}>
+              <CardContent
                 sx={{
-                  mb: 1,
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  gap: 1,
+                  gap: 3,
+                  height: "100%",
                 }}
               >
-                <ShieldAlert {...ICON_MD} />
-                <Tooltip title={t("audience.quality.fingerprintScale")} arrow>
-                  <span>{t("audience.quality.fingerprint")}</span>
-                </Tooltip>
-              </Typography>
-              <Typography
-                variant="h3"
-                color={`${fingerprintColor}.main`}
-                sx={{ fontWeight: 700 }}
-              >
-                {quality.avg_fingerprint_score.toFixed(1)}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t("audience.quality.fingerprintSubtitle")}
-              </Typography>
-              <Stack
-                direction="row"
-                spacing={0.5}
-                justifyContent="center"
-                sx={{ mt: 1 }}
-              >
-                {[0, 1, 2].map((i) => (
-                  <LinearProgress
-                    key={i}
-                    variant="determinate"
-                    value={quality.avg_fingerprint_score > i ? 100 : 0}
-                    color={i === 0 ? "success" : i === 1 ? "warning" : "error"}
-                    sx={{ width: 24, height: 6, borderRadius: 3 }}
-                  />
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
+                <Box sx={{ textAlign: "center", minWidth: 80 }}>
+                  <ShieldAlert {...ICON_MD} style={{ marginBottom: 4 }} />
+                  <Typography
+                    variant="h4"
+                    color={`${fingerprintColor}.main`}
+                    sx={{ fontWeight: 700, lineHeight: 1 }}
+                  >
+                    {quality.avg_fingerprint_score.toFixed(1)}
+                  </Typography>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                    <Tooltip
+                      title={t("audience.quality.fingerprintScale")}
+                      arrow
+                    >
+                      <span>{t("audience.quality.fingerprint")}</span>
+                    </Tooltip>
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {t("audience.quality.fingerprintSubtitle")}
+                  </Typography>
+                  <Stack direction="row" spacing={0.5} sx={{ mt: 1 }}>
+                    {[0, 1, 2].map((i) => (
+                      <LinearProgress
+                        key={i}
+                        variant="determinate"
+                        value={quality.avg_fingerprint_score > i ? 100 : 0}
+                        color={
+                          i === 0 ? "success" : i === 1 ? "warning" : "error"
+                        }
+                        sx={{ flex: 1, height: 6, borderRadius: 3 }}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              </CardContent>
+            </Card>
+          </Stack>
         </Grid>
       </Grid>
     </Box>
