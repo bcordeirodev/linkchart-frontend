@@ -327,6 +327,7 @@ export function SessionDepthChart({
           <Card
             sx={{
               borderRadius: `${radiusTokens.lg}px`,
+              border: `1px solid ${theme.palette.divider}`,
               boxShadow:
                 theme.palette.mode === "dark"
                   ? elevationTokens.xs
@@ -375,6 +376,7 @@ export function SessionDepthChart({
               sx={{
                 height: "100%",
                 borderRadius: `${radiusTokens.lg}px`,
+                border: `1px solid ${theme.palette.divider}`,
                 boxShadow:
                   theme.palette.mode === "dark"
                     ? elevationTokens.xs
@@ -401,6 +403,7 @@ export function SessionDepthChart({
               sx={{
                 height: "100%",
                 borderRadius: `${radiusTokens.lg}px`,
+                border: `1px solid ${theme.palette.divider}`,
                 boxShadow:
                   theme.palette.mode === "dark"
                     ? elevationTokens.xs
@@ -443,6 +446,7 @@ export function SessionDepthChart({
           <Card
             sx={{
               borderRadius: `${radiusTokens.lg}px`,
+              border: `1px solid ${theme.palette.divider}`,
               boxShadow:
                 theme.palette.mode === "dark"
                   ? elevationTokens.xs
@@ -472,7 +476,7 @@ export function SessionDepthChart({
                         border: 1,
                         borderColor: "divider",
                         borderRadius: `${radiusTokens.md}px`,
-                        backgroundColor: "background.default",
+                        backgroundColor: "background.paper",
                       }}
                     >
                       <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
@@ -506,6 +510,7 @@ export function SessionDepthChart({
             sx={{
               borderRadius: `${radiusTokens.lg}px`,
               backgroundColor: "background.paper",
+              border: `1px solid ${theme.palette.divider}`,
               boxShadow:
                 theme.palette.mode === "dark"
                   ? elevationTokens.xs

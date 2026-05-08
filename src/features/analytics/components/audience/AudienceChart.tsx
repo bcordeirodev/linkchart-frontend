@@ -86,6 +86,7 @@ export function AudienceChart({
   const elevation = isDark ? elevationTokens : elevationLightTokens;
   const cardSx = {
     borderRadius: `${radiusTokens.lg}px`,
+    border: `1px solid ${theme.palette.divider}`,
     boxShadow: elevation.xs,
     transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
   } as const;

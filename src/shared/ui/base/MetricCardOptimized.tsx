@@ -45,6 +45,7 @@ export function MetricCardOptimized({
         height: "100%",
         backgroundColor: theme.palette.background.paper,
         borderRadius: `${radiusTokens.lg}px`,
+        border: `1px solid ${theme.palette.divider}`,
         boxShadow:
           theme.palette.mode === "dark"
             ? elevationTokens.xs
