@@ -377,6 +377,7 @@ export function TrafficSourceChart({
               sx={{
                 height: "100%",
                 borderRadius: `${radiusTokens.lg}px`,
+                border: `1px solid ${theme.palette.divider}`,
                 boxShadow:
                   theme.palette.mode === "dark"
                     ? elevationTokens.xs
@@ -407,6 +408,7 @@ export function TrafficSourceChart({
               sx={{
                 height: "100%",
                 borderRadius: `${radiusTokens.lg}px`,
+                border: `1px solid ${theme.palette.divider}`,
                 boxShadow:
                   theme.palette.mode === "dark"
                     ? elevationTokens.xs
@@ -444,6 +446,7 @@ export function TrafficSourceChart({
           <Card
             sx={{
               borderRadius: `${radiusTokens.lg}px`,
+              border: `1px solid ${theme.palette.divider}`,
               boxShadow:
                 theme.palette.mode === "dark"
                   ? elevationTokens.xs
@@ -473,7 +476,7 @@ export function TrafficSourceChart({
                         border: 1,
                         borderColor: "divider",
                         borderRadius: `${radiusTokens.md}px`,
-                        backgroundColor: "background.default",
+                        backgroundColor: "background.paper",
                       }}
                     >
                       <Box
@@ -539,6 +542,7 @@ export function TrafficSourceChart({
           <Card
             sx={{
               borderRadius: `${radiusTokens.lg}px`,
+              border: `1px solid ${theme.palette.divider}`,
               boxShadow:
                 theme.palette.mode === "dark"
                   ? elevationTokens.xs
@@ -571,8 +575,7 @@ export function TrafficSourceChart({
                         border: 1,
                         borderColor: "divider",
                         borderRadius: `${radiusTokens.md}px`,
-                        backgroundColor:
-                          index === 0 ? "background.default" : "transparent",
+                        backgroundColor: "background.paper",
                       }}
                     >
                       <Box>
@@ -610,6 +613,7 @@ export function TrafficSourceChart({
             <Card
               sx={{
                 borderRadius: `${radiusTokens.lg}px`,
+                border: `1px solid ${theme.palette.divider}`,
                 boxShadow:
                   theme.palette.mode === "dark"
                     ? elevationTokens.xs
@@ -690,6 +694,7 @@ export function TrafficSourceChart({
             <Card
               sx={{
                 borderRadius: `${radiusTokens.lg}px`,
+                border: `1px solid ${theme.palette.divider}`,
                 boxShadow:
                   theme.palette.mode === "dark"
                     ? elevationTokens.xs
@@ -719,7 +724,7 @@ export function TrafficSourceChart({
                         border: 1,
                         borderColor: "divider",
                         borderRadius: `${radiusTokens.md}px`,
-                        backgroundColor: "background.default",
+                        backgroundColor: "background.paper",
                       }}
                     >
                       <Box

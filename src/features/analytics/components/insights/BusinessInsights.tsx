@@ -229,6 +229,8 @@ export function BusinessInsights({
                 sx={{
                   borderRadius: `${radiusTokens.lg}px`,
                   backgroundColor: "background.paper",
+                  border: `1px solid`,
+                  borderColor: "divider",
                   boxShadow: isDark
                     ? elevationTokens.xs
                     : elevationLightTokens.xs,
@@ -362,6 +364,8 @@ export function BusinessInsights({
             mt: 3,
             borderRadius: `${radiusTokens.lg}px`,
             backgroundColor: "background.paper",
+            border: `1px solid`,
+            borderColor: "divider",
             boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
           }}
         >

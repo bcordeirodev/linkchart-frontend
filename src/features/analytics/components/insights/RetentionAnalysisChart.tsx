@@ -323,6 +323,7 @@ export function RetentionAnalysisChart({
               sx={{
                 height: "100%",
                 borderRadius: `${radiusTokens.lg}px`,
+                border: `1px solid ${theme.palette.divider}`,
                 boxShadow:
                   theme.palette.mode === "dark"
                     ? elevationTokens.xs
@@ -353,6 +354,7 @@ export function RetentionAnalysisChart({
               sx={{
                 height: "100%",
                 borderRadius: `${radiusTokens.lg}px`,
+                border: `1px solid ${theme.palette.divider}`,
                 boxShadow:
                   theme.palette.mode === "dark"
                     ? elevationTokens.xs
@@ -398,6 +400,7 @@ export function RetentionAnalysisChart({
             sx={{
               borderRadius: `${radiusTokens.lg}px`,
               backgroundColor: "background.paper",
+              border: `1px solid ${theme.palette.divider}`,
               boxShadow:
                 theme.palette.mode === "dark"
                   ? elevationTokens.xs

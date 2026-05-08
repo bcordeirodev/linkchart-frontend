@@ -214,6 +214,8 @@ export function InsightsAnalysis({
                 mt: 3,
                 p: 2,
                 bgcolor: "background.paper",
+                border: 1,
+                borderColor: "divider",
                 borderRadius: `${radiusTokens.md}px`,
               }}
             >

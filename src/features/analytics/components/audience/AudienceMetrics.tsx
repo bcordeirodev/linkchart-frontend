@@ -1,12 +1,25 @@
 "use client";
 import { MonitorSmartphone, Globe, Clock, TrendingUp } from "lucide-react";
-import { Box, Divider, Grid, LinearProgress, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  Typography,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
-
+import {
+  elevationLightTokens,
+  elevationTokens,
+  radiusTokens,
+} from "@/lib/theme/designSystem";
+import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
+import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
-import { LanguageBreakdownChart } from "./LanguageBreakdownChart";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AudienceData = Record<string, any>;
@@ -23,6 +36,8 @@ export function AudienceMetrics({
   title,
 }: AudienceMetricsProps) {
   const { t } = useTranslation("analytics");
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
   const deviceTypes = data?.audience?.device_breakdown?.length || 0;
   const browserTypes = data?.audience?.browser_breakdown?.length || 0;
@@ -123,6 +138,38 @@ export function AudienceMetrics({
     unknown: "Desconhecido",
   };
 
+  const cardSx = {
+    borderRadius: `${radiusTokens.lg}px`,
+    border: `1px solid ${theme.palette.divider}`,
+    boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+    height: "100%",
+  };
+
+  const top7Lang = languageBreakdown.slice(0, 7);
+  const restLang = languageBreakdown.slice(7);
+  const othersLangClicks = restLang.reduce((s, l) => s + l.clicks, 0);
+  const langChartData = [
+    ...top7Lang.map((l) => ({ name: l.region ?? l.language, value: l.clicks })),
+    ...(othersLangClicks > 0
+      ? [{ name: "Outros", value: othersLangClicks }]
+      : []),
+  ];
+
+  const platformChartData = platformBreakdown.map((p) => ({
+    name: p.platform,
+    value: p.clicks,
+  }));
+
+  const connChartData = connectionBreakdown.map((c) => ({
+    name: CONNECTION_LABELS[c.type] ?? c.type,
+    value: c.clicks,
+  }));
+
+  const hasExtraCharts =
+    languageBreakdown.length > 0 ||
+    platformBreakdown.length > 0 ||
+    connectionBreakdown.length > 0;
+
   return (
     <>
       {showTitle ? (
@@ -145,77 +192,85 @@ export function AudienceMetrics({
         ))}
       </Grid>
 
-      {languageBreakdown.length > 0 ? (
+      {hasExtraCharts ? (
         <Box sx={{ mt: 3 }}>
-          <Divider sx={{ mb: 2 }} />
-          <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
-            Idioma (Parsed)
-          </Typography>
-          <LanguageBreakdownChart data={languageBreakdown} />
-        </Box>
-      ) : null}
+          <Divider sx={{ mb: 3 }} />
+          <Grid container spacing={3}>
+            {languageBreakdown.length > 0 ? (
+              <Grid item xs={12} md={6}>
+                <Card sx={cardSx}>
+                  <CardContent>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 600, mb: 1 }}
+                    >
+                      Idioma
+                    </Typography>
+                    <ApexChartWrapper
+                      type="donut"
+                      size="compact"
+                      {...formatPieChart(
+                        langChartData,
+                        "name",
+                        "value",
+                        isDark,
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ) : null}
 
-      {platformBreakdown.length > 0 ? (
-        <Box sx={{ mt: 3 }}>
-          <Divider sx={{ mb: 2 }} />
-          <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
-            Plataforma (Client Hints)
-          </Typography>
-          {platformBreakdown.map((entry) => (
-            <Box key={entry.platform} sx={{ mb: 2 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mb: 0.5,
-                }}
-              >
-                <Typography variant="body2">{entry.platform}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {entry.clicks} ({entry.percentage}%)
-                </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={entry.percentage}
-                color="secondary"
-                sx={{ height: 6, borderRadius: 3 }}
-              />
-            </Box>
-          ))}
-        </Box>
-      ) : null}
+            {platformBreakdown.length > 0 ? (
+              <Grid item xs={12} md={6}>
+                <Card sx={cardSx}>
+                  <CardContent>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 600, mb: 1 }}
+                    >
+                      Plataforma
+                    </Typography>
+                    <ApexChartWrapper
+                      type="donut"
+                      size="compact"
+                      {...formatPieChart(
+                        platformChartData,
+                        "name",
+                        "value",
+                        isDark,
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ) : null}
 
-      {connectionBreakdown.length > 0 ? (
-        <Box sx={{ mt: 3 }}>
-          <Divider sx={{ mb: 2 }} />
-          <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
-            Tipo de Conexão
-          </Typography>
-          {connectionBreakdown.map((entry) => (
-            <Box key={entry.type} sx={{ mb: 2 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mb: 0.5,
-                }}
-              >
-                <Typography variant="body2">
-                  {CONNECTION_LABELS[entry.type] ?? entry.type}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {entry.clicks} ({entry.percentage}%)
-                </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={entry.percentage}
-                color="info"
-                sx={{ height: 6, borderRadius: 3 }}
-              />
-            </Box>
-          ))}
+            {connectionBreakdown.length > 0 ? (
+              <Grid item xs={12} md={6}>
+                <Card sx={cardSx}>
+                  <CardContent>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 600, mb: 1 }}
+                    >
+                      Tipo de Conexão
+                    </Typography>
+                    <ApexChartWrapper
+                      type="donut"
+                      size="compact"
+                      {...formatPieChart(
+                        connChartData,
+                        "name",
+                        "value",
+                        isDark,
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ) : null}
+          </Grid>
         </Box>
       ) : null}
     </>
