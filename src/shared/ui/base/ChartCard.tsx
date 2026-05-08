@@ -57,6 +57,7 @@ export function ChartCard({
       <Card
         sx={{
           borderRadius: `${radiusTokens.lg}px`,
+          border: `1px solid ${theme.palette.divider}`,
           boxShadow:
             theme.palette.mode === "dark"
               ? elevationTokens.xs

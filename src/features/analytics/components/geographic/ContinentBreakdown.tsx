@@ -39,6 +39,7 @@ export function ContinentBreakdown({ continents }: ContinentBreakdownProps) {
 
   const cardSx = {
     borderRadius: `${radiusTokens.lg}px`,
+    border: `1px solid ${theme.palette.divider}`,
     boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
     transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {

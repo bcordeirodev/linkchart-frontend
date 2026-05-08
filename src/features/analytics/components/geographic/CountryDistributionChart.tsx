@@ -40,6 +40,7 @@ export function CountryDistributionChart({
     <Card
       sx={{
         borderRadius: `${radiusTokens.lg}px`,
+        border: `1px solid ${theme.palette.divider}`,
         boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
         transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
         "&:hover": {

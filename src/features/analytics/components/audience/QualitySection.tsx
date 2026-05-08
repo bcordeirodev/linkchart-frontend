@@ -42,6 +42,7 @@ export function QualitySection({ quality }: QualitySectionProps) {
 
   const cardSx = {
     borderRadius: `${radiusTokens.lg}px`,
+    border: `1px solid ${theme.palette.divider}`,
     boxShadow: elevation.xs,
     height: "100%",
   };
