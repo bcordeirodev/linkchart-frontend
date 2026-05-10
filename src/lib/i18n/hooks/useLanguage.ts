@@ -11,6 +11,16 @@ export interface UseLanguageReturn {
   isPortuguese: boolean;
 }
 
+/**
+ * Reads the active language and exposes a setter that persists the choice.
+ *
+ * @returns `{currentLanguage, switchLanguage, isEnglish, isPortuguese}`.
+ *
+ * @remarks
+ * `switchLanguage` writes to both `localStorage.i18nextLng` and the same-named
+ * cookie (1 year, `SameSite=Lax`) so SSR can pick up the preference on the
+ * next request without a flash of the wrong locale.
+ */
 export function useLanguage(): UseLanguageReturn {
   const { i18n } = useTranslation();
   const currentLanguage = (i18n.language as SupportedLanguage) ?? "en";

@@ -162,7 +162,17 @@ function ErrorFallback({
 }
 
 /**
- * Error Boundary melhorado
+ * React error boundary with a built-in MUI fallback UI.
+ *
+ * Catches render-time errors below it in the tree, generates a stable `errorId`,
+ * logs a structured group to the console, and either renders a friendly recovery
+ * panel or — when `showErrorUI={false}` — returns `null` so the parent can
+ * decide how to handle the failure.
+ *
+ * @remarks
+ * In development the fallback shows the full stack and component stack inside an
+ * accordion; in production it stays generic. The `onError` callback is the
+ * integration seam for monitoring providers (Sentry, LogRocket, etc.).
  */
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
