@@ -1,3 +1,17 @@
+/**
+ * Canonical TanStack Query key factories.
+ *
+ * Convention: keys are `as const` arrays so TanStack Query infers a stable
+ * structural identity. Always import from this file — never inline a string.
+ *
+ * Invalidation patterns:
+ * - `queryClient.invalidateQueries({ queryKey: queryKeys.links.all() })` invalidates every `links.*` cache.
+ * - `queryClient.invalidateQueries({ queryKey: queryKeys.analytics.geographic(linkId) })` invalidates only that link's geographic chart.
+ *
+ * Sections:
+ * - `links` — link CRUD + batch metadata.
+ * - `analytics` — per-link analytics tabs and the public analytics page.
+ */
 export const queryKeys = {
   links: {
     all: () => ["links"] as const,
