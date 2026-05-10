@@ -1,13 +1,17 @@
 import { api } from "../lib/api/client";
 
 /**
- * Serviço base para todos os services
+ * Abstract base class for every concrete service in `src/services/`.
  *
- * Fornece:
- * - Padronização de chamadas API
- * - Tratamento de erro unificado
- * - Logging centralizado
- * - Type safety
+ * Wraps the singleton `ApiClient` (`api`) with typed `get/post/put/delete` helpers
+ * that share a uniform error-handling surface. Subclasses receive:
+ *
+ * - Envelope unwrap (`{data, meta?, message?}` -> `T`) inherited from `ApiClient`.
+ * - Optional `fallback` value returned when a request throws (graceful degradation).
+ * - Lightweight ID/required-field validation helpers (`validateId`, `validateRequired`).
+ *
+ * Subclasses pass a `serviceName` to `super(...)` for identification only — it is
+ * not currently surfaced in logs but kept for forward compatibility.
  */
 export abstract class BaseService {
   protected readonly serviceName: string;
@@ -17,7 +21,15 @@ export abstract class BaseService {
   }
 
   /**
-   * Executa uma requisição GET com tratamento de erro padronizado
+   * Performs a `GET` request via the shared `ApiClient`.
+   *
+   * @param endpoint - relative path (e.g. `/api/links`); resolved against the Next.js rewrite proxy.
+   * @param options - optional `fallback` returned on error and `context` tag for debugging.
+   * @returns the unwrapped response body of type `T`.
+   *
+   * @remarks
+   * If `options.fallback` is provided, errors are swallowed and the fallback is returned;
+   * otherwise the original error propagates so callers can react.
    */
   protected async get<T>(
     endpoint: string,
@@ -42,7 +54,12 @@ export abstract class BaseService {
   }
 
   /**
-   * Executa uma requisição POST com tratamento de erro padronizado
+   * Performs a `POST` request with a JSON body via the shared `ApiClient`.
+   *
+   * @param endpoint - relative path (e.g. `/api/links`).
+   * @param data - JSON-serializable payload sent as the request body.
+   * @param options - optional `fallback` returned on error and `context` tag for debugging.
+   * @returns the unwrapped response body of type `T`.
    */
   protected async post<T>(
     endpoint: string,
@@ -68,7 +85,12 @@ export abstract class BaseService {
   }
 
   /**
-   * Executa uma requisição PUT com tratamento de erro padronizado
+   * Performs a `PUT` request with a JSON body via the shared `ApiClient`.
+   *
+   * @param endpoint - relative path (e.g. `/api/links/{id}`).
+   * @param data - JSON-serializable payload sent as the request body.
+   * @param options - optional `fallback` returned on error and `context` tag for debugging.
+   * @returns the unwrapped response body of type `T`.
    */
   protected async put<T>(
     endpoint: string,
@@ -94,7 +116,11 @@ export abstract class BaseService {
   }
 
   /**
-   * Executa uma requisição DELETE com tratamento de erro padronizado
+   * Performs a `DELETE` request via the shared `ApiClient`.
+   *
+   * @param endpoint - relative path (e.g. `/api/links/{id}`).
+   * @param options - optional `fallback` returned on error and `context` tag for debugging.
+   * @returns the unwrapped response body of type `T`.
    */
   protected async delete<T>(
     endpoint: string,
@@ -119,7 +145,11 @@ export abstract class BaseService {
   }
 
   /**
-   * Trata erros de forma padronizada
+   * Centralised error handler used by `get/post/put/delete`.
+   *
+   * If `fallback` is defined, returns it instead of throwing — used by services
+   * that prefer empty/default data over a hard failure (e.g. analytics widgets).
+   * Otherwise rethrows the original error for the caller to handle.
    */
   private handleError<T>(
     _method: string,
@@ -140,21 +170,30 @@ export abstract class BaseService {
   }
 
   /**
-   * Log de sucesso (removido)
+   * Hook reserved for success-path logging.
+   *
+   * Currently a no-op; kept so subclasses or middleware can route success metrics
+   * through a single seam in the future without touching every service.
    */
   private logSuccess(_method: string, _endpoint: string): void {
     // Success registrado silenciosamente
   }
 
   /**
-   * Cria uma mensagem de erro padronizada
+   * Builds a localized, user-facing error message for an operation label.
+   *
+   * @param operation - short description of the action that failed (e.g. `"salvar link"`).
+   * @returns a Portuguese sentence suitable for toast notifications.
    */
   protected createErrorMessage(operation: string): string {
     return `Erro ao ${operation}. Tente novamente.`;
   }
 
   /**
-   * Valida se um ID é válido
+   * Throws if `id` is missing or an empty string.
+   *
+   * @param id - identifier to validate (string or number).
+   * @param fieldName - human-readable label used in the error message.
    */
   protected validateId(id: string | number, fieldName = "ID"): void {
     if (!id || (typeof id === "string" && id.trim() === "")) {
@@ -163,7 +202,10 @@ export abstract class BaseService {
   }
 
   /**
-   * Valida se dados obrigatórios estão presentes
+   * Throws if any field in `fields` is missing, `null`, or an empty string in `data`.
+   *
+   * @param data - object whose keys will be checked.
+   * @param fields - list of required field names.
    */
   protected validateRequired(
     data: Record<string, unknown>,
@@ -186,7 +228,7 @@ export abstract class BaseService {
 }
 
 /**
- * Tipos base para responses de services
+ * Generic envelope for a single-resource service response.
  */
 export interface ServiceResponse<T = unknown> {
   success?: boolean;
@@ -195,6 +237,9 @@ export interface ServiceResponse<T = unknown> {
   error?: string;
 }
 
+/**
+ * Standard pagination envelope returned by Laravel paginators.
+ */
 export interface PaginatedResponse<T = unknown> {
   data: T[];
   total: number;
@@ -203,6 +248,9 @@ export interface PaginatedResponse<T = unknown> {
   last_page: number;
 }
 
+/**
+ * Standard error envelope surfaced by `ApiClient` after normalization.
+ */
 export interface ErrorResponse {
   error: string;
   message?: string;

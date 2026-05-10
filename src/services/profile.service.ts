@@ -3,15 +3,10 @@ import { API_ENDPOINTS } from "../lib/api/endpoints";
 import { BaseService } from "./base.service";
 
 /**
- * Serviço para gerenciamento de perfil de usuário
+ * Profile-shaped view of the authenticated user.
  *
- * Herda do BaseService para:
- * - Tratamento de erro padronizado
- * - Logging centralizado
- * - Type safety
- * - Fallbacks automáticos
+ * Mirrors `auth/me` minus auth-specific fields; consumed by `/profile` UI.
  */
-
 export interface UserProfile {
   id: string;
   name: string;
@@ -21,18 +16,27 @@ export interface UserProfile {
   updated_at: string;
 }
 
+/**
+ * Editable subset of profile fields accepted by the update endpoint.
+ */
 export interface UpdateProfileRequest extends Record<string, unknown> {
   name?: string;
   email?: string;
 }
 
+/**
+ * Successful response from the profile update endpoint.
+ */
 export interface UpdateProfileResponse {
   message: string;
   user: UserProfile;
 }
 
 /**
- * Classe de serviço para perfil usando BaseService
+ * REST client for `/api/me` and `/api/profile` (profile read/update).
+ *
+ * Wraps `BaseService` and inherits envelope unwrap + JWT injection from `ApiClient`.
+ * Distinct from `AuthService` to keep the profile UI decoupled from sign-in flows.
  */
 export default class ProfileService extends BaseService {
   constructor() {
@@ -40,7 +44,10 @@ export default class ProfileService extends BaseService {
   }
 
   /**
-   * Busca informações do usuário atual
+   * Returns the profile payload for the authenticated user.
+   *
+   * @returns `{user}` envelope wrapping a `UserProfile`.
+   * @endpoint `GET /api/me`
    */
   async getCurrentUser(): Promise<{ user: UserProfile }> {
     return this.get<{ user: UserProfile }>(API_ENDPOINTS.AUTH.ME, {
@@ -49,7 +56,11 @@ export default class ProfileService extends BaseService {
   }
 
   /**
-   * Atualiza informações do perfil do usuário
+   * Patches the profile fields of the authenticated user.
+   *
+   * @param data - partial profile fields to overwrite.
+   * @returns `{message, user}` envelope.
+   * @endpoint `PUT /api/profile`
    */
   async updateProfile(
     data: UpdateProfileRequest,
