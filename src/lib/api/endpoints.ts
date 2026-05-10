@@ -1,5 +1,18 @@
 /**
- * Configurações e endpoints da API
+ * Single source of truth for API paths, base URLs, and HTTP-level config.
+ *
+ * Every service in `src/services/` and every TanStack Query hook should reach
+ * for `API_CONFIG.ENDPOINTS.*` (or the legacy `API_ENDPOINTS` / per-feature
+ * re-exports) instead of inlining strings — that way the proxy rewrites,
+ * cache TTLs, and timeouts stay centralised.
+ *
+ * Sections under `ENDPOINTS`:
+ * - Top-level: global analytics + link CRUD + link-meta batch.
+ * - `ENDPOINTS.AUTH`: identity (login, register, profile, password, email verification).
+ * - `ENDPOINTS.PUBLIC`: unauthenticated `/api/public/*` endpoints used by `/shorter`.
+ *
+ * Paths are relative (`/api/...`) — Next.js rewrites in `next.config.ts` proxy
+ * them to `process.env.API_URL`, so CORS never fires in development.
  */
 export const API_CONFIG = {
   BASE_URL: process.env.NEXT_PUBLIC_API_URL || "", // Empty string uses Next.js rewrites proxy
@@ -14,28 +27,30 @@ export const API_CONFIG = {
   },
 
   ENDPOINTS: {
+    // --- Analytics (global + per-link) ---
     ANALYTICS: "/api/analytics",
     TEST_ANALYTICS: "/api/test-analytics/1",
     LINK_ANALYTICS: (id: string) => `/api/links/${id}/analytics`,
     TEST_LINK_ANALYTICS: (id: string) => `/api/test-link-analytics/${id}`,
 
-    // Links
+    // --- Links (authenticated CRUD) ---
     LINKS: "/api/links",
     LINK: (id: string) => `/api/links/${id}`,
     CREATE_LINK: "/api/links",
     UPDATE_LINK: (id: string) => `/api/links/${id}`,
     DELETE_LINK: (id: string) => `/api/links/${id}`,
 
-    // Link meta (sparkline, trend, preview, health)
+    // --- Link meta (sparkline, trend, preview, health) ---
     LINKS_BATCH_META: "/api/links/batch-meta",
     LINK_SPARKLINE: (id: string) => `/api/links/${id}/sparkline`,
     LINK_TREND: (id: string) => `/api/links/${id}/trend`,
     LINK_PREVIEW: (id: string) => `/api/links/${id}/preview`,
     LINK_HEALTH: (id: string) => `/api/links/${id}/health`,
 
-    // Lista paginada de cliques de um link (tab Cliques no analytics individual)
+    // --- Per-link clicks list (paginated; powers the "Cliques" tab) ---
     LINK_CLICKS_LIST: (id: string) => `/api/link/${id}/clicks-list`,
 
+    // --- AUTH: identity, profile, password, email verification ---
     AUTH: {
       LOGIN: "/api/auth/login",
       LOGOUT: "/api/logout",
@@ -51,17 +66,20 @@ export const API_CONFIG = {
       RESEND_VERIFICATION_EMAIL: "/api/resend-verification-email",
     },
 
+    // --- Logs (admin-only diagnostics) ---
     LOGS: "/api/logs",
     LOGS_DIAGNOSTIC: "/api/logs/diagnostic",
     LOGS_RECENT_ERRORS: "/api/logs/recent-errors",
     LOGS_TEST: "/api/logs/test",
     LOGS_FILE: (filename: string) => `/api/logs/${filename}`,
 
+    // --- Reports (PDF/exportable bundles built on top of analytics) ---
     REPORTS_DASHBOARD: (linkId: string) =>
       `/api/reports/link/${linkId}/dashboard`,
     REPORTS_EXECUTIVE: (linkId: string) =>
       `/api/reports/link/${linkId}/executive`,
 
+    // --- Per-link analytics dashboards (one endpoint per tab) ---
     ANALYTICS_COMPREHENSIVE: (linkId: string) =>
       `/api/analytics/link/${linkId}/comprehensive`,
     ANALYTICS_DASHBOARD: (linkId: string) =>
@@ -75,7 +93,7 @@ export const API_CONFIG = {
     ANALYTICS_INSIGHTS: (linkId: string) =>
       `/api/analytics/link/${linkId}/insights`,
 
-    // Public (no auth) endpoints
+    // --- PUBLIC: unauthenticated `/api/public/*` (used by `/shorter`) ---
     PUBLIC: {
       SHORTEN: "/api/public/shorten",
       LINK_BY_SLUG: (slug: string) => `/api/public/link/${slug}`,
