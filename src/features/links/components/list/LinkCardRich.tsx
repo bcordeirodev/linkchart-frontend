@@ -17,7 +17,7 @@ import {
 import { keyframes } from "@mui/system";
 import { format, formatDistanceToNow } from "date-fns";
 import { enUS, ptBR } from "date-fns/locale";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 
@@ -29,6 +29,7 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import useClipboard from "@/hooks/useClipboard";
 import type { LinkMeta, LinkResponse } from "@/types";
 
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 import { LinkHealthBadge } from "./LinkHealthBadge";
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
@@ -68,21 +69,22 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
 
   const shortUrl = getShortUrl(link.slug);
 
-  const handleDelete = useCallback(async () => {
-    if (
-      window.confirm(
-        `${t("actions.deleteConfirm")}\n${t("actions.deleteConfirmDesc")}`,
-      )
-    ) {
-      try {
-        await onDelete(String(link.id));
-      } catch {
-        dispatch(
-          showMessage({ message: "Erro ao excluir o link.", variant: "error" }),
-        );
-      }
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleConfirmDelete = useCallback(async () => {
+    setDeleteDialogOpen(false);
+    try {
+      await onDelete(String(link.id));
+    } catch {
+      dispatch(
+        showMessage({ message: "Erro ao excluir o link.", variant: "error" }),
+      );
     }
-  }, [link.id, onDelete, dispatch, t]);
+  }, [link.id, onDelete, dispatch]);
+
+  const handleDelete = useCallback(() => {
+    setDeleteDialogOpen(true);
+  }, []);
 
   const status = getLinkStatus(link);
   const { color: statusColor } = STATUS_MAP[status];
@@ -399,6 +401,12 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
           </>
         ) : null}
       </Box>
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        shortUrl={shortUrl}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteDialogOpen(false)}
+      />
     </EnhancedPaper>
   );
 }

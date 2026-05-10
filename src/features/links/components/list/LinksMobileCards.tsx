@@ -26,10 +26,11 @@ import {
 } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 import { enUS, ptBR } from "date-fns/locale";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 import useClipboard from "@/hooks/useClipboard";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkActionsInline } from "./LinkActionsInline";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 
@@ -87,6 +88,7 @@ const LinkMobileCard = memo(
     const { copied: urlCopied, copy: copyUrl } = useClipboard({
       timeout: 1500,
     });
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { t, i18n } = useTranslation("links");
     const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
 
@@ -345,21 +347,22 @@ const LinkMobileCard = memo(
                   }
                 }}
                 onQR={() => navigate(`/links/qr/${link.id}`)}
-                onDelete={() => {
-                  if (
-                    window.confirm(
-                      `${t("actions.deleteConfirm")}\n${t("actions.deleteConfirmDesc")}`,
-                    )
-                  ) {
-                    if (onDelete) {
-                      onDelete(String(link.id));
-                    }
-                  }
-                }}
+                onDelete={() => setDeleteDialogOpen(true)}
               />
             </Stack>
           </Box>
         </CardContent>
+        <DeleteConfirmDialog
+          open={deleteDialogOpen}
+          shortUrl={shortUrl}
+          onConfirm={() => {
+            setDeleteDialogOpen(false);
+            if (onDelete) {
+              onDelete(String(link.id));
+            }
+          }}
+          onCancel={() => setDeleteDialogOpen(false)}
+        />
       </Card>
     );
   },
