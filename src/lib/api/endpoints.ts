@@ -74,6 +74,13 @@ export const API_CONFIG = {
       `/api/analytics/link/${linkId}/audience`,
     ANALYTICS_INSIGHTS: (linkId: string) =>
       `/api/analytics/link/${linkId}/insights`,
+
+    // Public (no auth) endpoints
+    PUBLIC: {
+      SHORTEN: "/api/public/shorten",
+      LINK_BY_SLUG: (slug: string) => `/api/public/link/${slug}`,
+      ANALYTICS: (slug: string) => `/api/public/analytics/${slug}`,
+    },
   },
 
   CACHE: {

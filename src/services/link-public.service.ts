@@ -1,3 +1,5 @@
+import { API_CONFIG } from "@/lib/api/endpoints";
+
 import { BaseService } from "./base.service";
 
 /**
@@ -44,21 +46,28 @@ class PublicLinkService extends BaseService {
   async createPublicLink(
     data: CreatePublicLinkRequest,
   ): Promise<PublicLinkResponse> {
-    return this.post<PublicLinkResponse>("/api/public/shorten", data);
+    return this.post<PublicLinkResponse>(
+      API_CONFIG.ENDPOINTS.PUBLIC.SHORTEN,
+      data,
+    );
   }
 
   /**
    * Obtém informações básicas de um link pelo slug
    */
   async getLinkBySlug(slug: string): Promise<PublicLinkResponse> {
-    return this.get<PublicLinkResponse>(`/api/public/link/${slug}`);
+    return this.get<PublicLinkResponse>(
+      API_CONFIG.ENDPOINTS.PUBLIC.LINK_BY_SLUG(slug),
+    );
   }
 
   /**
    * Obtém analytics públicos de um link
    */
   async getPublicAnalytics(slug: string): Promise<PublicAnalyticsResponse> {
-    return this.get<PublicAnalyticsResponse>(`/api/public/analytics/${slug}`);
+    return this.get<PublicAnalyticsResponse>(
+      API_CONFIG.ENDPOINTS.PUBLIC.ANALYTICS(slug),
+    );
   }
 
   /**

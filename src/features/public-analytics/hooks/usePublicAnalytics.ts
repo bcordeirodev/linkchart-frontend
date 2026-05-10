@@ -34,7 +34,10 @@ export function usePublicAnalytics({
 
   const linkQuery = useQuery<PublicLinkData>({
     queryKey: queryKeys.analytics.publicLink(slug ?? ""),
-    queryFn: () => api.get<PublicLinkData>(`/api/public/link/${slug}`),
+    queryFn: () =>
+      api.get<PublicLinkData>(
+        API_CONFIG.ENDPOINTS.PUBLIC.LINK_BY_SLUG(slug ?? ""),
+      ),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     enabled: !!slug,
   });
@@ -42,7 +45,9 @@ export function usePublicAnalytics({
   const analyticsQuery = useQuery<PublicAnalyticsData>({
     queryKey: queryKeys.analytics.public(slug ?? ""),
     queryFn: () =>
-      api.get<PublicAnalyticsData>(`/api/public/analytics/${slug}`),
+      api.get<PublicAnalyticsData>(
+        API_CONFIG.ENDPOINTS.PUBLIC.ANALYTICS(slug ?? ""),
+      ),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     enabled: !!slug,
   });
