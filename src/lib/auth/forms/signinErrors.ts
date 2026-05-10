@@ -1,3 +1,9 @@
+/**
+ * Maps NextAuth-style sign-in error codes to user-facing English messages.
+ *
+ * Lookup pattern: `signinErrors[code] ?? signinErrors.default`. Values are
+ * intentionally generic to avoid leaking which step of the auth flow failed.
+ */
 const signinErrors: Record<string, string> = {
   default: "Unable to sign in.",
   Signin: "Try signing in with a different account.",

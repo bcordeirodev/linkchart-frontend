@@ -26,6 +26,13 @@ interface AuthJsFormProps {
   formType: "signin" | "signup";
 }
 
+/**
+ * Renders either the sign-in or the (placeholder) sign-up form.
+ *
+ * Reads `?error=...` from the URL to surface upstream provider errors as an
+ * MUI `<Alert>`, then delegates to the inner form variant. After a successful
+ * sign-in, the user is sent to `getSessionRedirectUrl()` (or `/links` by default).
+ */
 function AuthJsForm(props: AuthJsFormProps) {
   const { formType = "signin" } = props;
   const { login } = useAuth();

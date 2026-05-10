@@ -111,7 +111,10 @@ const isValidRedirectUrl = (url: string): boolean => {
 };
 
 /**
- * Obtém a URL de redirecionamento armazenada
+ * Reads the stored post-login redirect URL.
+ *
+ * @returns the saved URL, or `null` when missing, expired (>30min), invalid,
+ *          or running on the server.
  */
 export const getSessionRedirectUrl = (): string | null => {
   if (!isSessionStorageAvailable()) {
@@ -156,7 +159,11 @@ export const getSessionRedirectUrl = (): string | null => {
 };
 
 /**
- * Define a URL de redirecionamento
+ * Persists a post-login redirect URL in `sessionStorage`.
+ *
+ * @param url - same-origin path or absolute URL.
+ * @param reason - why the redirect was set (defaults to `"custom"`).
+ * @returns `true` when the URL was accepted and written.
  */
 export const setSessionRedirectUrl = (
   url: string,
@@ -194,7 +201,9 @@ export const setSessionRedirectUrl = (
 };
 
 /**
- * Remove a URL de redirecionamento
+ * Clears the stored post-login redirect URL.
+ *
+ * Safe to call on the server (no-ops outside the browser).
  */
 export const resetSessionRedirectUrl = (): void => {
   if (!isSessionStorageAvailable()) {
@@ -215,14 +224,18 @@ export const resetSessionRedirectUrl = (): void => {
 };
 
 /**
- * Verifica se existe uma URL de redirecionamento válida
+ * Convenience predicate.
+ *
+ * @returns `true` when `getSessionRedirectUrl()` would resolve to a valid URL.
  */
 export const hasValidRedirectUrl = (): boolean => {
   return getSessionRedirectUrl() !== null;
 };
 
 /**
- * Obtém informações detalhadas sobre o redirecionamento
+ * Reads the full stored payload (`url`, `timestamp`, `origin`, `reason`).
+ *
+ * @returns the stored object or `null` when missing/expired.
  */
 export const getRedirectInfo = (): StoredRedirectData | null => {
   if (!isSessionStorageAvailable()) {
@@ -256,7 +269,10 @@ export const getRedirectInfo = (): StoredRedirectData | null => {
 };
 
 /**
- * Limpa URLs de redirecionamento expiradas
+ * Drops any stored redirect URL whose `timestamp` is older than `CONFIG.maxAge`.
+ *
+ * Called once on module load with a small `setTimeout` delay to avoid blocking
+ * boot — keeps `sessionStorage` from accumulating stale entries.
  */
 export const cleanupExpiredRedirects = (): void => {
   if (!isSessionStorageAvailable()) {
