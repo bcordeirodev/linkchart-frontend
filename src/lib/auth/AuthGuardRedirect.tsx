@@ -25,6 +25,18 @@ interface AuthGuardProps {
   fallback?: React.ReactNode;
 }
 
+/**
+ * Client-side route guard that gates a subtree behind an auth/role check.
+ *
+ * Behaviour:
+ * - Waits for `useAuth().isLoading` to settle before deciding (prevents the
+ *   "flash of redirect to /sign-in" during JWT verification on first paint).
+ * - When the user lacks permission, persists the intended path via
+ *   `sessionRedirectUrl` and navigates to `/sign-in` (or `/` for guest-only routes).
+ * - Renders `<Loading />` (or the provided `fallback`) until access is resolved.
+ *
+ * Wrap protected pages or layouts with `<AuthGuardRedirect auth={[...]}>...`.
+ */
 function AuthGuardRedirect({
   auth,
   children,
