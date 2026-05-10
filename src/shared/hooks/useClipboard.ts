@@ -14,8 +14,16 @@ interface UseClipboardReturn {
 }
 
 /**
- * Hook personalizado para operações de clipboard
- * Gerencia estado de copiado e callbacks de sucesso/erro
+ * Hook wrapper around `navigator.clipboard.writeText` with a self-resetting flag.
+ *
+ * @param options - `{timeout?, onSuccess?, onError?}`. `timeout` controls how long
+ *                  `copied` stays `true` after a successful copy (default 2000 ms).
+ * @returns `{copied, copy, reset}` — `copy` writes to the clipboard, `copied`
+ *          flips to `true` for `timeout` ms, and `reset` clears it manually.
+ *
+ * @remarks
+ * Used by `LinkActionsInline` and similar UI to swap the icon between
+ * "copy" and "copied" without managing local timers in each component.
  */
 export default function useClipboard(
   options: UseClipboardOptions = {},
