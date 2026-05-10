@@ -8,6 +8,18 @@ export interface UrlSafetyCheckResult {
   threats: string[];
 }
 
+/**
+ * Debounced safety check against the Next.js-internal Safe Browsing proxy.
+ *
+ * @param url - candidate destination URL (must match `^https?://.+`)
+ * @param debounceMs - debounce delay before firing the request (default `700`)
+ * @returns `{ status, threats }` where status is `"idle" | "checking" | "safe" | "unsafe" | "error"`
+ *
+ * @remarks
+ * Endpoint: `POST /api/check-url` — a Next.js route handler (NOT the Laravel API), so the rewrite in `next.config.ts` is bypassed for this exact path.
+ * Aborts in-flight requests when `url` or `debounceMs` changes; ignores `AbortError`.
+ * Invalid/empty `url` resets to `"idle"` without firing a request.
+ */
 export function useUrlSafetyCheck(
   url: string,
   debounceMs = 700,
