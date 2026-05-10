@@ -7,4 +7,4 @@
 export * from "./components";
 
 // Hooks
-export * from "./hooks";
+export { useShorter } from "./hooks/useShorter";
