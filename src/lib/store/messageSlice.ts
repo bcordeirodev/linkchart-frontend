@@ -110,7 +110,13 @@ const initialState: MessageState = {
 };
 
 /**
- * Slice de mensagens
+ * Global UI message slice.
+ *
+ * Used by `Message.tsx` and the Notistack bridge to surface success/error/info toasts
+ * from anywhere in the app via `dispatch(showMessage({...}))`.
+ *
+ * Mobile-first: messages render with reduced length on viewports <= 768px,
+ * defaulting to top-center anchoring and a longer auto-hide window.
  */
 export const messageSlice = createSlice({
   name: "message",
@@ -227,20 +233,36 @@ export const {
   selectMessageCount,
 } = injectedSlice.selectors;
 
-// Helper functions for common message types
+/**
+ * Action creator: enqueues a `success`-variant toast.
+ *
+ * @param message - text or rich `ReactNode` to display.
+ */
 export const showSuccessMessage = (message: string | ReactNode) =>
   showMessage({ variant: "success", message });
 
+/**
+ * Action creator: enqueues an `error`-variant toast.
+ */
 export const showErrorMessage = (message: string | ReactNode) =>
   showMessage({ variant: "error", message });
 
+/**
+ * Action creator: enqueues a `warning`-variant toast.
+ */
 export const showWarningMessage = (message: string | ReactNode) =>
   showMessage({ variant: "warning", message });
 
+/**
+ * Action creator: enqueues an `info`-variant toast.
+ */
 export const showInfoMessage = (message: string | ReactNode) =>
   showMessage({ variant: "info", message });
 
-// Mobile-first helper functions
+/**
+ * Action creator: enqueues a toast with the mobile-tuned defaults
+ * (top-center anchor, full-width, 6s auto-hide).
+ */
 export const showMobileMessage = (
   message: string | ReactNode,
   variant: MessageVariant = "info",
@@ -267,7 +289,14 @@ export const showMobileWarningMessage = (message: string | ReactNode) =>
 export const showMobileInfoMessage = (message: string | ReactNode) =>
   showMobileMessage(message, "info");
 
-// Responsive helper that detects device type
+/**
+ * Action creator: enqueues a toast with mobile or desktop defaults based on
+ * the current viewport width (defaults to `window.innerWidth <= 768`).
+ *
+ * @param message - text or rich `ReactNode` to display.
+ * @param variant - severity level (defaults to `"info"`).
+ * @param isMobile - override for the responsive detection (testable seam).
+ */
 export const showResponsiveMessage = (
   message: string | ReactNode,
   variant: MessageVariant = "info",
