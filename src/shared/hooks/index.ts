@@ -16,4 +16,4 @@ export { useSearchParams } from "./useSearchParams";
 export { useLocation } from "./useLocation";
 
 // Types
-export * from "./hooks";
+export * from "./types";
