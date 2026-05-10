@@ -18,13 +18,16 @@ import {
 import type { PaperProps } from "@mui/material";
 
 interface EnhancedPaperProps extends Omit<PaperProps, "variant"> {
+  /** Visual preset: `"glass"` (subtle xs elevation, md radius), `"elevated"` (sm elevation, lg radius), `"outlined"` (1px divider, lg radius). Default `"glass"`. */
   variant?: "glass" | "elevated" | "outlined";
+  /** When true (default), applies the `fadeIn` mount animation and a `translateY(-1px)` hover lift. */
   animated?: boolean;
 }
 
 /**
- * Componente EnhancedPaper seguindo padrões arquiteturais
- * Paper aprimorado com efeitos visuais consistentes
+ * MUI `<Paper>` wrapper that applies design-system elevation/radius tokens and an optional hover-lift animation.
+ *
+ * Elevation tokens swap between `elevationTokens` (dark) and `elevationLightTokens` (light) based on `theme.palette.mode`.
  */
 function EnhancedPaper({
   variant = "glass",

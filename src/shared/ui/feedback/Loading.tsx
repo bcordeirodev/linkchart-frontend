@@ -137,7 +137,9 @@ function LinearLoader({
 }
 
 /**
- * Componente de loading moderno
+ * Animated loading indicator with three variants (`circular`, `linear`, `dots`).
+ *
+ * Renders nothing for the first `delay` ms (useful to avoid flicker on fast requests), then fades the loader in over 300 ms via `framer-motion` + MUI `<Fade>`. With `fullHeight` (default true) the container takes `100vh` so it can serve as a full-page splash.
  */
 export function Loading({
   delay = 0,

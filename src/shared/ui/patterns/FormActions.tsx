@@ -183,8 +183,9 @@ interface FormActionsProps {
 // ========================================
 
 /**
- * Ações padronizadas para formulários
- * Adapta automaticamente baseado no modo (create/edit)
+ * Standardised submit/cancel/reset button row for forms.
+ *
+ * Primary button is a green gradient in `mode="create"`, blue gradient in `mode="edit"`; loading state shows an inline `<CircularProgress>` and swaps the label to `"Criando..."`/`"Salvando..."`. Reset is rendered only when `mode==="edit" && hasChanges && onReset`. Layout `"between"` splits cancel/primary across the row; `"end"`/`"center"` group them on the right/centre.
  */
 export function FormActions({
   mode,
@@ -280,7 +281,7 @@ export function FormActions({
 // ========================================
 
 /**
- * Ações para formulário de criação
+ * Convenience wrapper: `FormActions` pre-configured with `mode="create"`.
  */
 export function CreateFormActions({
   loading,
@@ -302,7 +303,7 @@ export function CreateFormActions({
 }
 
 /**
- * Ações para formulário de edição
+ * Convenience wrapper: `FormActions` pre-configured with `mode="edit"`.
  */
 export function EditFormActions({
   loading,
