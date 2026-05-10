@@ -33,7 +33,9 @@ export interface ChartCardProps {
 }
 
 /**
- * ChartCard - Container padronizado para gráficos
+ * Card container for charts — title row (optional icon + heading) + slot for the chart body.
+ *
+ * Uses `radiusTokens.lg`, a 1 px divider border and the `xs` elevation token (mode-aware). The outer `<Box>` adds `animations.cardHover` so the whole card lifts on hover. Note: there is a near-duplicate `src/shared/ui/base/ChartCard.tsx` flagged in audit § 7 — prefer this `data-display` version.
  *
  * @example
  * ```tsx

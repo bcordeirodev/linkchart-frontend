@@ -41,7 +41,11 @@ interface PageHeaderProps {
 }
 
 /**
- * Header unificado que consolida todos os padrões de header da aplicação
+ * Standard top-of-page header — breadcrumbs + icon + title + subtitle + right-aligned actions.
+ *
+ * Variant only changes the 3 px accent stripe colour and icon background:
+ * `"default"` → `primary.main`, `"analytics"` → `warning.main`, `"dashboard"` → `primary.main`, `"profile"` → `secondary.main`.
+ * Subtitle is line-clamped (2 lines on xs, 3 on sm+). Layout collapses to a column on `xs`.
  */
 export function PageHeader({
   title,

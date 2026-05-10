@@ -9,9 +9,15 @@ import type { BreadcrumbsProps } from "@mui/material/Breadcrumbs";
 
 type PageBreadcrumbProps = BreadcrumbsProps & {
   className?: string;
+  /** When true, omits the "Home" entry from the generated trail (no effect on current implementation — both branches start empty; retained for API symmetry). */
   skipHome?: boolean;
 };
 
+/**
+ * Auto-generated breadcrumb trail derived from `usePathname()`.
+ *
+ * Splits the current route on `/`, capitalises each segment and replaces `-` with spaces (so `/links/edit-link` → "Links" / "Edit link"). Each segment links to its cumulative path; the last segment renders as plain text in `text.primary`. All segments are clamped at 128 px with ellipsis.
+ */
 function PageBreadcrumb(props: PageBreadcrumbProps) {
   const { className, skipHome = false, sx, ...rest } = props;
   const pathname = usePathname();

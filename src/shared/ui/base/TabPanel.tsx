@@ -8,8 +8,9 @@ import { Box, Fade } from "@mui/material";
 import type { TabPanelProps } from "../components";
 
 /**
- * Componente TabPanel base seguindo padrões arquiteturais
- * Reutilizável em todos os módulos que precisam de tabs
+ * Accessible MUI-style tab panel — renders children only when `value === index`.
+ *
+ * Inactive panels short-circuit to `hidden` with no DOM body. Active panels mount inside `<Fade timeout={180}>` for a soft cross-fade. `TabPanelProps` (`value`, `index`, `children`, `sx`) lives in `../components`.
  */
 export function TabPanel({
   children,

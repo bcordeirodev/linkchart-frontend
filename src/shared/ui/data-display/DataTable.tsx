@@ -80,6 +80,13 @@ const tableIcons: Partial<MRT_Icons> = {
   ),
 };
 
+/**
+ * Project-default wrapper around `material-react-table` (MRT).
+ *
+ * Accepts the full `MaterialReactTableProps<TData>` surface and merges in linkcharts defaults via `_.defaults`:
+ * spacious density, sticky header, paged pagination (15 rows), row actions + selection enabled, column ordering/grouping/pinning enabled, full-screen toggle disabled, Heroicons-outline icon set, and a custom `<DataTableTopToolbar>` slot.
+ * Anything passed in `props` overrides these defaults — never the other way around.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function DataTable<TData extends Record<string, any>>(
   props: MaterialReactTableProps<TData>,
