@@ -1,4 +1,4 @@
-import UserModel from "@/features/profile/types/UserModel";
+import UserModel from "@/features/profile/types";
 import { api } from "@/lib/api/client";
 
 import type { User } from "@/types";
