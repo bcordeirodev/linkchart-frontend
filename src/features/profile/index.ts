@@ -7,5 +7,5 @@ export * from "./components/PasswordChangeForm";
 export { profileService } from "@/services/profile.service";
 
 // Types (avoiding conflicts)
-export type { UserProfile } from "./types/user";
+export type { UserProfile } from "./types";
 export type { User } from "@/types";
