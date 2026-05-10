@@ -64,6 +64,8 @@ export const API_CONFIG = {
 
     ANALYTICS_COMPREHENSIVE: (linkId: string) =>
       `/api/analytics/link/${linkId}/comprehensive`,
+    ANALYTICS_DASHBOARD: (linkId: string) =>
+      `/api/analytics/link/${linkId}/dashboard`,
     ANALYTICS_GEOGRAPHIC: (linkId: string) =>
       `/api/analytics/link/${linkId}/geographic`,
     ANALYTICS_TEMPORAL: (linkId: string) =>

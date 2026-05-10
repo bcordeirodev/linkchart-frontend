@@ -166,7 +166,7 @@ export function useInsightsData({
     queryKey: queryKeys.analytics.insights(linkId),
     queryFn: () =>
       api.get<BusinessInsight[] | InsightsData>(
-        `/api/analytics/link/${linkId}/insights`,
+        API_CONFIG.ENDPOINTS.ANALYTICS_INSIGHTS(linkId),
       ),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,

@@ -48,7 +48,7 @@ export function useAudienceData({
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: queryKeys.analytics.audience(linkId),
     queryFn: () =>
-      api.get<AudienceData>(`/api/analytics/link/${linkId}/audience`),
+      api.get<AudienceData>(API_CONFIG.ENDPOINTS.ANALYTICS_AUDIENCE(linkId)),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,

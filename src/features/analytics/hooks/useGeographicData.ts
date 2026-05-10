@@ -71,9 +71,12 @@ export function useGeographicData({
   } = useQuery({
     queryKey: queryKeys.analytics.geographic(linkId),
     queryFn: () =>
-      api.get<GeographicResponse>(`/api/analytics/link/${linkId}/geographic`, {
-        rawEnvelope: true,
-      }),
+      api.get<GeographicResponse>(
+        API_CONFIG.ENDPOINTS.ANALYTICS_GEOGRAPHIC(linkId),
+        {
+          rawEnvelope: true,
+        },
+      ),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,

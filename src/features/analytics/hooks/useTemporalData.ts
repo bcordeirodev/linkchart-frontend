@@ -88,7 +88,7 @@ export function useTemporalData({
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: queryKeys.analytics.temporal(linkId),
     queryFn: () =>
-      api.get<TemporalData>(`/api/analytics/link/${linkId}/temporal`),
+      api.get<TemporalData>(API_CONFIG.ENDPOINTS.ANALYTICS_TEMPORAL(linkId)),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,
