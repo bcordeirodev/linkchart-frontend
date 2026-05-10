@@ -11,7 +11,17 @@ interface UseRedirectWithDelayOptions {
 }
 
 /**
- * Custom hook for handling delayed redirects with better UX
+ * Schedules an in-app navigation after a configurable delay, with optional countdown.
+ *
+ * @param targetUrl - destination passed to `useNavigate()` (does not hit `/r/{slug}` — that's a backend route)
+ * @param options.delay - milliseconds before navigating (default `1000`); delays `> 1000` expose a per-second countdown
+ * @param options.clearSession - when true, calls `resetSessionRedirectUrl()` immediately before navigating (default `false`)
+ * @param options.onRedirect - optional callback fired right before navigation
+ * @returns `{ isRedirecting, countdown, startRedirect, cancelRedirect, redirectImmediately }`
+ *
+ * @remarks
+ * This hook is a UX wrapper around `useNavigate()` — it does NOT interact with the Laravel `/r/{slug}` redirect or its tracking pipeline.
+ * The actual public redirect flow lives in `app/(public)/r/[slug]/page.tsx` and `RedirectDynamic.tsx`, which are forbidden zones.
  */
 export function useRedirectWithDelay(
   targetUrl: string,
