@@ -16,7 +16,7 @@ import { LayoutProvider } from "@/shared/layout/core";
 import { MainThemeProvider, applyGlobalStyles } from "@/lib/theme";
 import { queryClient } from "@/lib/query/client";
 import store from "@/lib/store/store";
-import AppContext from "@/lib/AppContext";
+import AppContext from "@/lib/providers/AppContext";
 
 interface ProvidersProps {
   children: React.ReactNode;
