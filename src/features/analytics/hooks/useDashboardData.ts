@@ -10,6 +10,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
 import { api } from "@/lib/api/client";
+import { API_CONFIG } from "@/lib/api/endpoints";
 
 import type {
   ActivityData,
@@ -78,7 +79,7 @@ export function useDashboardData({
         return;
       }
 
-      const endpoint = `/api/analytics/link/${linkId}/dashboard`;
+      const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD(linkId);
       const fullEndpoint = buildEndpointWithParams(endpoint, params);
 
       // Client já desembrulha envelope { data } (Onda 0).
