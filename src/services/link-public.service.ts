@@ -3,12 +3,7 @@ import { API_CONFIG } from "@/lib/api/endpoints";
 import { BaseService } from "./base.service";
 
 /**
- * Serviço para operações públicas de links
- *
- * FUNCIONALIDADE:
- * - Encurtamento de URLs sem autenticação
- * - Analytics básicos públicos
- * - Informações básicas de links públicos
+ * Request payload for the public shorten endpoint.
  */
 export interface CreatePublicLinkRequest {
   original_url: string;
@@ -16,6 +11,9 @@ export interface CreatePublicLinkRequest {
   custom_slug?: string;
 }
 
+/**
+ * Public-facing representation of a link returned by the unauthenticated endpoints.
+ */
 export interface PublicLinkResponse {
   id: string;
   slug: string;
@@ -31,6 +29,9 @@ export interface PublicLinkResponse {
   domain: string;
 }
 
+/**
+ * Lightweight analytics payload exposed for public links.
+ */
 export interface PublicAnalyticsResponse {
   total_clicks: number;
   created_at: string;
@@ -39,9 +40,19 @@ export interface PublicAnalyticsResponse {
   has_analytics: boolean;
 }
 
+/**
+ * REST client for the public (unauthenticated) `/api/public/*` endpoints
+ * plus a few client-side URL helpers used by the `/shorter` page.
+ *
+ * Wraps `BaseService` and inherits envelope unwrap from `ApiClient`.
+ */
 class PublicLinkService extends BaseService {
   /**
-   * Cria um novo link encurtado público
+   * Shortens a URL without authentication (rate-limited per IP on the backend).
+   *
+   * @param data - `{original_url, title?, custom_slug?}`.
+   * @returns the created `PublicLinkResponse`.
+   * @endpoint `POST /api/public/shorten`
    */
   async createPublicLink(
     data: CreatePublicLinkRequest,
@@ -53,7 +64,11 @@ class PublicLinkService extends BaseService {
   }
 
   /**
-   * Obtém informações básicas de um link pelo slug
+   * Resolves a public-facing link by its short slug.
+   *
+   * @param slug - short slug (without leading `/r/`).
+   * @returns the matching `PublicLinkResponse`.
+   * @endpoint `GET /api/public/link/{slug}`
    */
   async getLinkBySlug(slug: string): Promise<PublicLinkResponse> {
     return this.get<PublicLinkResponse>(
@@ -62,7 +77,11 @@ class PublicLinkService extends BaseService {
   }
 
   /**
-   * Obtém analytics públicos de um link
+   * Returns the public analytics payload for a link.
+   *
+   * @param slug - short slug.
+   * @returns aggregated counters suitable for the public analytics page.
+   * @endpoint `GET /api/public/analytics/{slug}`
    */
   async getPublicAnalytics(slug: string): Promise<PublicAnalyticsResponse> {
     return this.get<PublicAnalyticsResponse>(
@@ -71,7 +90,10 @@ class PublicLinkService extends BaseService {
   }
 
   /**
-   * Valida uma URL antes de encurtar
+   * Cheap client-side validator that checks for an `http(s)` URL.
+   *
+   * @param url - candidate URL string.
+   * @returns `true` if it parses and uses `http:` or `https:`.
    */
   validateUrl(url: string): boolean {
     try {
@@ -83,7 +105,10 @@ class PublicLinkService extends BaseService {
   }
 
   /**
-   * Formata uma URL adicionando protocolo se necessário
+   * Trims whitespace and prefixes `https://` if no scheme is present.
+   *
+   * @param url - raw URL input from the user.
+   * @returns a normalized URL string (empty string preserved as empty).
    */
   formatUrl(url: string): string {
     if (!url) {
@@ -102,14 +127,24 @@ class PublicLinkService extends BaseService {
   }
 
   /**
-   * Gera URL de analytics públicos
+   * Builds the relative URL for the public analytics page (`/public-analytics/{slug}`).
+   *
+   * @param slug - short slug.
+   * @returns the relative path used by `next/link`.
    */
   getPublicAnalyticsUrl(slug: string): string {
     return `/public-analytics/${slug}`;
   }
 
   /**
-   * Copia texto para área de transferência
+   * Copies text to the clipboard with a `document.execCommand` fallback.
+   *
+   * @param text - text to copy.
+   * @returns `true` when the copy succeeded.
+   *
+   * @remarks
+   * Prefer `useClipboard` from `src/shared/hooks/` in React components.
+   * This method exists for non-React code paths.
    */
   async copyToClipboard(text: string): Promise<boolean> {
     try {

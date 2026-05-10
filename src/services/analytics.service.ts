@@ -7,19 +7,23 @@ import type { GeographicData } from "@/types/analytics/geographic";
 import type { BusinessInsight, InsightsData } from "@/types/analytics/insights";
 
 /**
- * Serviço para operações de Analytics
+ * REST client for `/api/analytics` and the per-link analytics endpoints.
  *
- * Centraliza todas as chamadas relacionadas a:
- * - Analytics gerais
- * - Métricas de performance
- * - Analytics de links específicos
- * - Dados de dashboard
+ * Wraps `BaseService` and inherits envelope unwrap + JWT injection from `ApiClient`.
+ * Most methods provide a fully shaped fallback so analytics widgets render placeholder
+ * skeletons instead of throwing on partial backend outages.
  */
 export default class AnalyticsService extends BaseService {
   constructor() {
     super("AnalyticsService");
   }
 
+  /**
+   * Returns the global analytics dashboard for the authenticated user.
+   *
+   * @returns aggregated `AnalyticsData`; falls back to an empty shell on error.
+   * @endpoint `GET /api/analytics`
+   */
   async getAnalytics(): Promise<AnalyticsData> {
     const fallbackData: AnalyticsData = {
       overview: {
@@ -51,7 +55,11 @@ export default class AnalyticsService extends BaseService {
   }
 
   /**
-   * Busca analytics de um link específico
+   * Returns the analytics payload for a single link.
+   *
+   * @param linkId - canonical link id.
+   * @returns aggregated `AnalyticsData`; falls back to an empty shell on error.
+   * @endpoint `GET /api/links/{id}/analytics`
    */
   async getLinkAnalytics(linkId: string): Promise<AnalyticsData> {
     this.validateId(linkId, "Link ID");
@@ -88,7 +96,11 @@ export default class AnalyticsService extends BaseService {
   }
 
   /**
-   * Busca dados geográficos de um link
+   * Returns geographic breakdown (countries / states / cities / heatmap) for a link.
+   *
+   * @param linkId - canonical link id.
+   * @returns `GeographicData` or `null` when the backend has no data yet.
+   * @endpoint `GET /api/analytics/link/{id}/geographic`
    */
   async getLinkGeographicData(linkId: string): Promise<GeographicData | null> {
     this.validateId(linkId, "Link ID");
@@ -102,7 +114,11 @@ export default class AnalyticsService extends BaseService {
   }
 
   /**
-   * Busca insights de negócio de um link
+   * Returns the AI/business insights payload for a link.
+   *
+   * @param linkId - canonical link id.
+   * @returns `InsightsData`, an array of `BusinessInsight`, or `null` if unavailable.
+   * @endpoint `GET /api/analytics/link/{id}/insights`
    */
   async getLinkInsights(
     linkId: string,
