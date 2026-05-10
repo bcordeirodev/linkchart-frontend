@@ -40,6 +40,20 @@ function calculateStats(audienceData: AudienceData): AudienceStats {
   };
 }
 
+/**
+ * Fetches audience analytics (device/browser/OS breakdowns) for a link.
+ *
+ * @param options.linkId - canonical link id; the query stays disabled when falsy
+ * @param options.enableRealtime - when true, refetches every `refreshInterval` ms (default `true`)
+ * @param options.refreshInterval - polling interval in ms when realtime is on (default `60000`)
+ * @returns `{ data: AudienceData | null, stats, loading, error, lastUpdate, refresh, isRealtime }`
+ *
+ * @remarks
+ * Cache key: `queryKeys.analytics.audience(linkId)` → `["analytics", linkId, "audience"]`.
+ * Endpoint: `GET /api/analytics/link/{id}/audience` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_AUDIENCE`).
+ * Returned `AudienceData` shape is defined in `src/types/analytics`.
+ * `stats` (primary device/browser, total clicks) is derived client-side from `device_breakdown`/`browser_breakdown`.
+ */
 export function useAudienceData({
   linkId,
   enableRealtime = true,

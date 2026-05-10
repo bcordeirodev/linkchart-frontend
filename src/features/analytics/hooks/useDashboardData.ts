@@ -25,7 +25,18 @@ import type {
 } from "@/types/analytics/dashboard";
 
 /**
- * Hook para gerenciar dados do dashboard
+ * Fetches the dashboard payload for a given link, with optional polling.
+ *
+ * @param options.linkId - canonical link id; the hook stays idle when undefined/empty
+ * @param options.timeframe - one of `"1h" | "24h" | "7d" | "30d" | "all"` (default `"24h"`)
+ * @param options.refreshInterval - polling interval in ms when `enableRealtime` is true (default `60000`)
+ * @param options.enableRealtime - when true, polls every `refreshInterval` ms (default `false`)
+ * @returns `{ data: DashboardData | null, stats, loading, error, refresh, isRealtime }`
+ *
+ * @remarks
+ * Endpoint: `GET /api/analytics/link/{id}/dashboard?hours={n}&include_charts=true` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD`).
+ * Unlike the other analytics hooks, this one uses `useState`/`useEffect` directly (not TanStack Query) — it predates the migration and keeps its own AbortController-based request deduplication.
+ * Cache key is therefore not part of the shared `queryKeys.analytics.*` namespace.
  */
 export function useDashboardData({
   linkId,

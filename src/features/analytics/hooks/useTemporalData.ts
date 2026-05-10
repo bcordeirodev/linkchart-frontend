@@ -80,6 +80,20 @@ function calculateStats(temporalData: TemporalData): TemporalStats {
   };
 }
 
+/**
+ * Fetches temporal analytics (hourly, daily, weekday breakdowns) for a link.
+ *
+ * @param options.linkId - canonical link id; the query stays disabled when falsy
+ * @param options.refreshInterval - polling interval in ms when realtime is on (default `30000`)
+ * @param options.enableRealtime - when true, refetches every `refreshInterval` ms (default `false`)
+ * @returns `{ data: TemporalData | null, stats, loading, error, refresh, isRealtime }`
+ *
+ * @remarks
+ * Cache key: `queryKeys.analytics.temporal(linkId)` → `["analytics", linkId, "temporal"]`.
+ * Endpoint: `GET /api/analytics/link/{id}/temporal` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_TEMPORAL`).
+ * Returned `TemporalData` shape is defined in `src/types/analytics`.
+ * `stats` (peak hour/day, trend direction) is derived client-side from `clicks_by_hour` and `clicks_by_day_of_week`.
+ */
 export function useTemporalData({
   linkId,
   refreshInterval = 30000,
