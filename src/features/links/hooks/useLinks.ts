@@ -21,6 +21,16 @@ interface LinkUpdateRequestExtended
   extends LinkUpdateRequest,
     Record<string, unknown> {}
 
+/**
+ * Lists all links owned by the authenticated user.
+ *
+ * @returns `{ links: LinkResponse[], loading, error }`
+ *
+ * @remarks
+ * Cache key: `queryKeys.links.list()` → `["links", "list"]`.
+ * Endpoint: `GET /api/links` (via `linkService.all()`).
+ * Stale time: `API_CONFIG.CACHE.LINKS_TTL`.
+ */
 export function useLinks() {
   const {
     data: links = [],
@@ -39,6 +49,15 @@ export function useLinks() {
   };
 }
 
+/**
+ * Mutation: create a link for the authenticated user.
+ *
+ * @endpoint `POST /api/links` (via `linkService.save()`)
+ * @invalidates `queryKeys.links.all()`
+ *
+ * @remarks
+ * On error, dispatches a generic toast via `messageSlice`.
+ */
 export function useCreateLink() {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -56,6 +75,16 @@ export function useCreateLink() {
   });
 }
 
+/**
+ * Mutation: update an existing link by id.
+ *
+ * @endpoint `PUT /api/links/{id}` (via `linkService.update()`)
+ * @invalidates `queryKeys.links.all()`
+ *
+ * @remarks
+ * Variables shape: `{ id: string; data: LinkUpdateRequest }`.
+ * On error, dispatches a generic toast via `messageSlice`.
+ */
 export function useUpdateLink() {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -79,6 +108,15 @@ export function useUpdateLink() {
   });
 }
 
+/**
+ * Mutation: soft-delete a link by id.
+ *
+ * @endpoint `DELETE /api/links/{id}` (via `linkService.remove()`)
+ * @invalidates `queryKeys.links.all()`
+ *
+ * @remarks
+ * On error, dispatches a generic toast via `messageSlice`.
+ */
 export function useDeleteLink() {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -96,6 +134,17 @@ export function useDeleteLink() {
   });
 }
 
+/**
+ * Fetches a single link by id.
+ *
+ * @param id - canonical link id; the query stays disabled when falsy
+ * @returns TanStack Query result with `data: LinkResponse | undefined`
+ *
+ * @remarks
+ * Cache key: `queryKeys.links.detail(id)` → `["links", "detail", id]`.
+ * Endpoint: `GET /api/links/{id}` (via `linkService.findOne()`).
+ * `throwOnError: false` — error surfaces through `meta.onError` as a toast.
+ */
 export function useLinkById(id: string) {
   const dispatch = useAppDispatch();
 
