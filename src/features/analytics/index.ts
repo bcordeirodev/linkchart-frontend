@@ -12,9 +12,6 @@ export * from "./components/audience";
 // Hooks - apenas os que não são exportados pelos componentes
 export * from "./hooks/useDashboardData";
 
-// Services
-export * from "@/services/analytics.service";
-
 // Types - Usar tipos centralizados de @/types/analytics
 export type { ChartsProps, MetricsProps } from "@/types/analytics";
 
