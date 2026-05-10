@@ -57,6 +57,21 @@ function calculateStats(meta: GeographicMeta): GeographicStats {
   };
 }
 
+/**
+ * Fetches geographic analytics (top countries/states/cities + heatmap) for a link.
+ *
+ * @param options.linkId - canonical link id; the query stays disabled when falsy
+ * @param options.refreshInterval - polling interval in ms when realtime is on (default `30000`)
+ * @param options.enableRealtime - when true, refetches every `refreshInterval` ms (default `false`)
+ * @param options.minClicks - in-memory threshold to drop low-volume rows from `top_countries`/`top_states`/`top_cities`/`heatmap_data` (default `1`)
+ * @returns `{ data: GeographicData | null, meta, stats, loading, error, refresh, isRealtime }`
+ *
+ * @remarks
+ * Cache key: `queryKeys.analytics.geographic(linkId)` → `["analytics", linkId, "geographic"]`.
+ * Endpoint: `GET /api/analytics/link/{id}/geographic` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_GEOGRAPHIC`).
+ * Uses `rawEnvelope: true` because this endpoint returns `{ data, meta }` and the consumer needs both halves.
+ * Returned `GeographicData` shape is defined in `src/types/analytics/geographic.ts`.
+ */
 export function useGeographicData({
   linkId,
   refreshInterval = 30000,
