@@ -1,3 +1,4 @@
+export { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 export { LinkActionsInline } from "./LinkActionsInline";
 export { LinkActionsMenu } from "./LinkActionsMenu";
 export { LinkCardRich } from "./LinkCardRich";
