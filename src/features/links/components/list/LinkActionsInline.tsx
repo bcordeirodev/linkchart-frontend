@@ -1,8 +1,8 @@
 "use client";
-import { IconButton, Stack, Tooltip } from "@mui/material";
+import { Button, IconButton, Stack, Tooltip } from "@mui/material";
 import { BarChart3, Check, ClipboardCopy } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { ICON_SM, ICON_MD } from "@/lib/theme/iconDefaults";
 
 import useClipboard from "@/hooks/useClipboard";
 
@@ -11,6 +11,16 @@ interface LinkActionsInlineProps {
   onAnalytics: () => void;
 }
 
+/**
+ * Inline quick-action row attached to mobile link cards (Analytics + Copy).
+ *
+ * Analytics is rendered as a contained labeled button to maximize discoverability of
+ * the per-link analytics page. Copy stays an icon-only IconButton because the
+ * prominent short-URL chip above already provides the primary copy affordance.
+ *
+ * @param shortUrl - The fully qualified short URL to copy.
+ * @param onAnalytics - Callback fired when the user taps the Analytics button.
+ */
 export function LinkActionsInline({
   shortUrl,
   onAnalytics,
@@ -21,22 +31,28 @@ export function LinkActionsInline({
   return (
     <Stack direction="row" spacing={0.5} alignItems="center">
       <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
-        <IconButton
+        <Button
           size="small"
+          variant="contained"
+          color="primary"
+          startIcon={<BarChart3 {...ICON_SM} />}
           onClick={(e) => {
             e.stopPropagation();
             onAnalytics();
           }}
           sx={{
-            color: "text.secondary",
-            "&:hover": {
-              color: "success.main",
-              bgcolor: "rgba(46, 125, 50, 0.08)",
-            },
+            flexShrink: 0,
+            borderRadius: "20px",
+            px: 1.25,
+            py: 0.25,
+            fontSize: "0.75rem",
+            textTransform: "none",
+            boxShadow: "none",
+            "&:hover": { boxShadow: "none" },
           }}
         >
-          <BarChart3 {...ICON_MD} />
-        </IconButton>
+          {t("actions.analytics")}
+        </Button>
       </Tooltip>
 
       <Tooltip

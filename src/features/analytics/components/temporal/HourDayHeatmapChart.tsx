@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { ChartCard } from "@/shared/ui/base/ChartCard";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type { HeatmapSeriesEntry } from "@/types/analytics/temporal";
 
