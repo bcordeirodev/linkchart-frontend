@@ -19,6 +19,14 @@ interface LanguageSelectorProps {
   compact?: boolean;
 }
 
+/**
+ * Renders the language switcher (currently `en` and `pt-BR`). Reads the active
+ * locale from `useLanguage()` and calls `switchLanguage(code)` on click.
+ *
+ * Two visual modes: the default outlined `ButtonGroup`, and a `compact` pill
+ * (flag-only chips with subtle hover/active treatment) used by floating
+ * utility bars where the heavier chrome is too loud.
+ */
 export function LanguageSelector({ compact = false }: LanguageSelectorProps) {
   const { currentLanguage, switchLanguage } = useLanguage();
   const theme = useTheme();

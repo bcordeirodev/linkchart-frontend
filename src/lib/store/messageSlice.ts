@@ -277,15 +277,31 @@ export const showMobileMessage = (
     autoHideDuration: 6000,
   });
 
+/**
+ * Action creator: enqueues a `success`-variant toast using the mobile-tuned
+ * defaults from `showMobileMessage` (top-center, full-width, 6s auto-hide).
+ */
 export const showMobileSuccessMessage = (message: string | ReactNode) =>
   showMobileMessage(message, "success");
 
+/**
+ * Action creator: enqueues an `error`-variant toast using the mobile-tuned
+ * defaults from `showMobileMessage` (top-center, full-width, 6s auto-hide).
+ */
 export const showMobileErrorMessage = (message: string | ReactNode) =>
   showMobileMessage(message, "error");
 
+/**
+ * Action creator: enqueues a `warning`-variant toast using the mobile-tuned
+ * defaults from `showMobileMessage` (top-center, full-width, 6s auto-hide).
+ */
 export const showMobileWarningMessage = (message: string | ReactNode) =>
   showMobileMessage(message, "warning");
 
+/**
+ * Action creator: enqueues an `info`-variant toast using the mobile-tuned
+ * defaults from `showMobileMessage` (top-center, full-width, 6s auto-hide).
+ */
 export const showMobileInfoMessage = (message: string | ReactNode) =>
   showMobileMessage(message, "info");
 

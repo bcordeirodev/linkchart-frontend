@@ -114,27 +114,40 @@ export const API_CONFIG = {
   },
 };
 
-// Função para construir URLs completas
+/**
+ * Prefixes an API endpoint path with the configured base URL.
+ * Returns the path unchanged when `API_CONFIG.BASE_URL` is empty (dev with Next.js rewrites).
+ */
 export const buildApiUrl = (endpoint: string): string => {
   return `${API_CONFIG.BASE_URL}${endpoint}`;
 };
 
-// Função para construir URLs de teste
+/**
+ * Prefixes an endpoint path with the configured test base URL (`NEXT_PUBLIC_TEST_API_URL`).
+ * Used by ad-hoc test/diagnostic helpers that point at a non-default backend.
+ */
 export const buildTestUrl = (endpoint: string): string => {
   return `${API_CONFIG.TEST_URL}${endpoint}`;
 };
 
-// Função para verificar se estamos em desenvolvimento
+/**
+ * Returns `true` when `process.env.NODE_ENV === "development"`.
+ */
 export const isDevelopment = (): boolean => {
   return process.env.NODE_ENV === "development";
 };
 
-// Função para verificar se estamos em produção
+/**
+ * Returns `true` when `process.env.NODE_ENV === "production"`.
+ */
 export const isProduction = (): boolean => {
   return process.env.NODE_ENV === "production";
 };
 
-// Função para obter timeout baseado no ambiente
+/**
+ * Returns the HTTP timeout in ms, doubling the default in production
+ * to absorb cold-start / network variance.
+ */
 export const getTimeout = (): number => {
   return isProduction() ? API_CONFIG.TIMEOUT * 2 : API_CONFIG.TIMEOUT;
 };
