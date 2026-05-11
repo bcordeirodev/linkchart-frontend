@@ -14,6 +14,12 @@ import type {
   UseAudienceDataReturn,
 } from "@/types/analytics";
 
+/**
+ * Derives summary stats (primary device/browser, total clicks) from the raw
+ * `AudienceData` returned by the API. Returns sentinel values (`"N/A"`, `0`)
+ * when the device breakdown is empty so callers can render an empty state
+ * without null checks.
+ */
 function calculateStats(audienceData: AudienceData): AudienceStats {
   const devices = audienceData.device_breakdown || [];
 

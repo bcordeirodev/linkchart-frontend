@@ -9,15 +9,18 @@ import { API_CONFIG } from "@/lib/api/endpoints";
 
 import type { TemporalData } from "@/types/analytics";
 
+/** Summary stats derived from `TemporalData` (peak hour/day, hourly average, coarse trend direction). */
 export interface TemporalStats {
   totalDataPoints: number;
   peakHour: string;
   peakDay: string;
   averageHourlyClicks: number;
+  /** Coarse trend over the hourly series, comparing the second half against the first. */
   trendDirection: "up" | "down" | "stable";
   lastUpdate: string;
 }
 
+/** Input options accepted by `useTemporalData`. */
 export interface UseTemporalDataOptions {
   linkId: string;
   refreshInterval?: number;
@@ -26,6 +29,7 @@ export interface UseTemporalDataOptions {
   includeAdvanced?: boolean;
 }
 
+/** Return shape of `useTemporalData`. */
 export interface UseTemporalDataReturn {
   data: TemporalData | null;
   stats: TemporalStats | null;
@@ -35,6 +39,12 @@ export interface UseTemporalDataReturn {
   isRealtime: boolean;
 }
 
+/**
+ * Derives `TemporalStats` from `TemporalData`: peak hour/weekday by clicks,
+ * the hourly average, and a coarse `up`/`down`/`stable` trend obtained by
+ * comparing the average of the first vs. second half of `clicks_by_hour`
+ * with a ±10% deadband.
+ */
 function calculateStats(temporalData: TemporalData): TemporalStats {
   const hourlyData = temporalData.clicks_by_hour || [];
   const dailyData = temporalData.clicks_by_day_of_week || [];
