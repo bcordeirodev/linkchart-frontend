@@ -22,7 +22,6 @@ export { default as PageHeader } from "./PageHeader";
 
 // Data Display
 export { default as MetricCardOptimized } from "./MetricCardOptimized";
-export { default as ChartCard } from "./ChartCard";
 export { default as EmptyState } from "./EmptyState";
 
 // Form & Interaction
