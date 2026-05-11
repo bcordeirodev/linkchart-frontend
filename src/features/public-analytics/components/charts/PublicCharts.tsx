@@ -201,7 +201,7 @@ function ChartsGrid({
           >
             <ApexChartWrapper
               type="bar"
-              size="standard"
+              size="compact"
               {...formatBarChart(
                 dowData as Record<string, unknown>[],
                 "day",
@@ -224,7 +224,7 @@ function ChartsGrid({
           >
             <ApexChartWrapper
               type="bar"
-              size="standard"
+              size="compact"
               {...formatBarChart(
                 countryData as Record<string, unknown>[],
                 "country",
@@ -247,7 +247,7 @@ function ChartsGrid({
           >
             <ApexChartWrapper
               type="donut"
-              size="standard"
+              size="compact"
               {...formatPieChart(
                 deviceData as Record<string, unknown>[],
                 "device",
@@ -268,7 +268,7 @@ function ChartsGrid({
           >
             <ApexChartWrapper
               type="donut"
-              size="standard"
+              size="compact"
               {...formatPieChart(
                 browserData as Record<string, unknown>[],
                 "browser",
