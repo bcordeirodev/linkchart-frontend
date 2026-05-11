@@ -19,7 +19,8 @@ import useThemeMediaQuery from "@/shared/hooks/useThemeMediaQuery";
 import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
 
 import { useUrlSafetyCheck } from "../../hooks/useUrlSafetyCheck";
-import { UrlSafetyIndicator } from "./UrlSafetyIndicator";
+// UrlSafetyIndicator will be integrated into helperText in Task 2
+// import { UrlSafetyIndicator } from "./UrlSafetyIndicator";
 import { FormSection } from "./FormSection";
 
 import type { LinkFormData } from "./LinkFormSchema";
@@ -48,7 +49,9 @@ export function LinkFormFields({
   const shortUrlPrefix = getShortUrlPrefix();
 
   const urlValue = useWatch({ control, name: "original_url" });
-  const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
+  const { status: _safetyStatus, threats: _threats } = useUrlSafetyCheck(
+    urlValue ?? "",
+  );
 
   return (
     <Stack spacing={2}>
@@ -71,7 +74,7 @@ export function LinkFormFields({
                 />
               )}
             />
-            <UrlSafetyIndicator status={safetyStatus} threats={threats} />
+            {/* UrlSafetyIndicator will be merged into helperText in Task 2 */}
           </Box>
 
           <Box>
