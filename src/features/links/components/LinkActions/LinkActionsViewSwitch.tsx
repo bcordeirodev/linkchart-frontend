@@ -66,21 +66,37 @@ export function LinkActionsViewSwitch({
       aria-label={t("actions.viewSwitch")}
       sx={{
         backgroundColor: theme.palette.action.hover,
-        borderRadius: 1,
+        borderRadius: 1.5,
         p: 0.5,
         "& .MuiToggleButton-root": {
           border: 0,
+          borderRadius: 1,
           textTransform: "none",
           fontWeight: 600,
-          color: theme.palette.text.secondary,
+          fontSize: { xs: "0.875rem", sm: "0.9375rem" },
+          py: 0.875,
+          px: 1.75,
+          color: theme.palette.text.primary,
+          opacity: 0.6,
           gap: 0.75,
+          transition: theme.transitions.create(
+            ["opacity", "background-color", "box-shadow"],
+            { duration: theme.transitions.duration.shortest },
+          ),
+          "&:hover": {
+            opacity: 0.9,
+            backgroundColor: "transparent",
+          },
           "&.Mui-selected": {
             backgroundColor: theme.palette.background.paper,
-            color: theme.palette.text.primary,
-            boxShadow: theme.shadows[1],
+            color: theme.palette.primary.main,
+            fontWeight: 700,
+            opacity: 1,
+            boxShadow: theme.shadows[2],
           },
           "&.Mui-selected:hover": {
             backgroundColor: theme.palette.background.paper,
+            opacity: 1,
           },
         },
       }}
