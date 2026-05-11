@@ -337,98 +337,134 @@ export function LinkFormFields({
       >
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Controller
-              name="utm_source"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label={t("form.utmSourceLabel")}
-                  placeholder={t("form.utmSourcePlaceholder")}
-                  error={!!errors.utm_source}
-                  helperText={
-                    errors.utm_source?.message || t("form.utmSourceHelper")
-                  }
-                />
-              )}
-            />
+            <Box>
+              <FormLabel
+                error={!!errors.utm_source}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("form.utmSourceLabel")}
+              </FormLabel>
+              <Controller
+                name="utm_source"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    placeholder={t("form.utmSourcePlaceholder")}
+                    error={!!errors.utm_source}
+                    helperText={
+                      errors.utm_source?.message || t("form.utmSourceHelper")
+                    }
+                  />
+                )}
+              />
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Controller
-              name="utm_medium"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label={t("form.utmMediumLabel")}
-                  placeholder={t("form.utmMediumPlaceholder")}
-                  error={!!errors.utm_medium}
-                  helperText={
-                    errors.utm_medium?.message || t("form.utmMediumHelper")
-                  }
-                />
-              )}
-            />
+            <Box>
+              <FormLabel
+                error={!!errors.utm_medium}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("form.utmMediumLabel")}
+              </FormLabel>
+              <Controller
+                name="utm_medium"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    placeholder={t("form.utmMediumPlaceholder")}
+                    error={!!errors.utm_medium}
+                    helperText={
+                      errors.utm_medium?.message || t("form.utmMediumHelper")
+                    }
+                  />
+                )}
+              />
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Controller
-              name="utm_campaign"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label={t("form.utmCampaignLabel")}
-                  placeholder={t("form.utmCampaignPlaceholder")}
-                  error={!!errors.utm_campaign}
-                  helperText={
-                    errors.utm_campaign?.message || t("form.utmCampaignHelper")
-                  }
-                />
-              )}
-            />
+            <Box>
+              <FormLabel
+                error={!!errors.utm_campaign}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("form.utmCampaignLabel")}
+              </FormLabel>
+              <Controller
+                name="utm_campaign"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    placeholder={t("form.utmCampaignPlaceholder")}
+                    error={!!errors.utm_campaign}
+                    helperText={
+                      errors.utm_campaign?.message ||
+                      t("form.utmCampaignHelper")
+                    }
+                  />
+                )}
+              />
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Controller
-              name="utm_term"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label={t("form.utmTermLabel")}
-                  placeholder={t("form.utmTermPlaceholder")}
-                  error={!!errors.utm_term}
-                  helperText={
-                    errors.utm_term?.message || t("form.utmTermHelper")
-                  }
-                />
-              )}
-            />
+            <Box>
+              <FormLabel
+                error={!!errors.utm_term}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("form.utmTermLabel")}
+              </FormLabel>
+              <Controller
+                name="utm_term"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    placeholder={t("form.utmTermPlaceholder")}
+                    error={!!errors.utm_term}
+                    helperText={
+                      errors.utm_term?.message || t("form.utmTermHelper")
+                    }
+                  />
+                )}
+              />
+            </Box>
           </Grid>
 
           <Grid item xs={12}>
-            <Controller
-              name="utm_content"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label={t("form.utmContentLabel")}
-                  placeholder={t("form.utmContentPlaceholder")}
-                  error={!!errors.utm_content}
-                  helperText={
-                    errors.utm_content?.message || t("form.utmContentHelper")
-                  }
-                />
-              )}
-            />
+            <Box>
+              <FormLabel
+                error={!!errors.utm_content}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("form.utmContentLabel")}
+              </FormLabel>
+              <Controller
+                name="utm_content"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    placeholder={t("form.utmContentPlaceholder")}
+                    error={!!errors.utm_content}
+                    helperText={
+                      errors.utm_content?.message || t("form.utmContentHelper")
+                    }
+                  />
+                )}
+              />
+            </Box>
           </Grid>
         </Grid>
       </FormSection>
