@@ -216,19 +216,20 @@ const LinkMobileCard = memo(
               <Typography
                 variant="body2"
                 sx={{
-                  color: "primary.main",
+                  color: urlCopied ? "success.main" : "primary.main",
                   fontWeight: 500,
                   fontSize: "0.9rem",
-                  fontFamily: "monospace",
+                  fontFamily: urlCopied ? "inherit" : "monospace",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
                   flex: 1,
                   minWidth: 0,
                   mr: 1,
+                  transition: "color 0.15s ease",
                 }}
               >
-                {shortUrl}
+                {urlCopied ? t("actions.copySuccess") : shortUrl}
               </Typography>
               {urlCopied ? (
                 <Check
