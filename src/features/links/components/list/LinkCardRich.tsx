@@ -61,6 +61,18 @@ interface LinkCardRichProps {
   onDelete: (id: string) => Promise<void>;
 }
 
+/**
+ * Desktop link card with rich metrics, copy chip, Analytics CTA, status, and inline actions.
+ *
+ * Renders one row per link in the list view (≥sm). The short URL chip is click-to-copy
+ * and animates to a success state for 1.5s on success. The Analytics button uses the
+ * pulse keyframes to draw attention; the animation is suppressed when the user has
+ * `prefers-reduced-motion: reduce` set.
+ *
+ * @param link - The link record from the API.
+ * @param meta - Optional batch-loaded metadata (preview, trend, sparkline, health).
+ * @param onDelete - Async handler invoked when the user confirms deletion.
+ */
 export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();

@@ -207,9 +207,13 @@ const LinkMobileCard = memo(
                 alignItems: "center",
                 justifyContent: "space-between",
                 cursor: "pointer",
+                transition:
+                  "border-color 0.15s ease, background-color 0.15s ease",
                 "&:hover": {
-                  borderColor: "primary.light",
-                  bgcolor: "rgba(25, 118, 210, 0.04)",
+                  borderColor: urlCopied ? "success.light" : "primary.light",
+                  bgcolor: urlCopied
+                    ? "rgba(46, 125, 50, 0.06)"
+                    : "rgba(25, 118, 210, 0.04)",
                 },
               }}
             >

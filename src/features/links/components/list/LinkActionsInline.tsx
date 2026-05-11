@@ -11,6 +11,16 @@ interface LinkActionsInlineProps {
   onAnalytics: () => void;
 }
 
+/**
+ * Inline quick-action row attached to mobile link cards (Analytics + Copy).
+ *
+ * Analytics is rendered as a contained labeled button to maximize discoverability of
+ * the per-link analytics page. Copy stays an icon-only IconButton because the
+ * prominent short-URL chip above already provides the primary copy affordance.
+ *
+ * @param shortUrl - The fully qualified short URL to copy.
+ * @param onAnalytics - Callback fired when the user taps the Analytics button.
+ */
 export function LinkActionsInline({
   shortUrl,
   onAnalytics,
