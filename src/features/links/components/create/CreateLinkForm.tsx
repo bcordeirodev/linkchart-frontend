@@ -21,7 +21,6 @@ import { showErrorMessage } from "@/lib/store/messageSlice";
 import { ApiError } from "@/lib/api/client";
 import { linkService } from "@/services";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
-import { ResponsiveContainer } from "@/shared/ui/base/ResponsiveContainer";
 
 import { LinkFormFields } from "../../components/forms/LinkFormFields";
 import {
@@ -33,8 +32,9 @@ import type { LinkFormData } from "../../components/forms/LinkFormSchema";
 import type { CreateLinkFormProps } from "../../types/forms";
 
 /**
- * Formulário de criação de links com React Hook Form + Zod
- * Validação robusta e interface simplificada
+ * Form for creating a new link. Wraps `LinkFormFields` with submit/cancel
+ * affordances and the `react-hook-form` plumbing. Page identity is provided
+ * by the page chrome, so this card renders without an in-card title.
  */
 export function CreateLinkForm({
   onSuccess,
@@ -50,8 +50,7 @@ export function CreateLinkForm({
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid, isDirty },
-    reset,
+    formState: { errors, isValid },
     setError,
   } = useForm<LinkFormData>({
     resolver: zodResolver(
@@ -75,7 +74,6 @@ export function CreateLinkForm({
         return dateValue.toISOString();
       }
 
-      // Fallback para string ISO se por algum motivo não for DayJS
       if (typeof dateValue === "string") {
         return dateValue;
       }
@@ -93,8 +91,6 @@ export function CreateLinkForm({
         ...data,
         expires_at: convertDateForSubmit(data.expires_at),
         starts_in: convertDateForSubmit(data.starts_in),
-
-        // Remover campos UTM vazios
         utm_source: data.utm_source || undefined,
         utm_medium: data.utm_medium || undefined,
         utm_campaign: data.utm_campaign || undefined,
@@ -104,12 +100,10 @@ export function CreateLinkForm({
 
       const response = await linkService.save(payload);
 
-      // O linkService retorna LinkResponse diretamente
       setSuccess(true);
 
       onSuccess?.(response);
 
-      // Redirecionar após 2 segundos
       setTimeout(() => {
         navigate("/links");
       }, 2000);
@@ -132,11 +126,6 @@ export function CreateLinkForm({
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleReset = () => {
-    reset(defaultLinkFormValues);
-    setApiError(null);
   };
 
   const handleCancel = () => {
@@ -165,84 +154,62 @@ export function CreateLinkForm({
   }
 
   return (
-    <ResponsiveContainer variant="form" maxWidth="md">
-      <EnhancedPaper variant="glass" animated>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Box sx={{ p: 3, pb: 2 }}>
-            <Typography variant="h5" fontWeight={600} gutterBottom>
-              {t("form.createTitle")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Transforme URLs longas em links curtos e rastreáveis
-            </Typography>
+    <EnhancedPaper variant="glass" animated>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {apiError ? (
+          <Box sx={{ px: 3, pt: 3 }}>
+            <Alert severity="error">{apiError}</Alert>
           </Box>
+        ) : null}
 
-          {apiError ? (
-            <Box sx={{ px: 3, pb: 2 }}>
-              <Alert severity="error">{apiError}</Alert>
-            </Box>
-          ) : null}
+        <Box sx={{ px: 3, py: 3 }}>
+          <LinkFormFields control={control} errors={errors} isEdit={false} />
+        </Box>
 
-          <Box sx={{ px: 3, pb: 3 }}>
-            <LinkFormFields control={control} errors={errors} isEdit={false} />
-          </Box>
-
-          <Box
-            sx={{
-              px: 3,
-              py: 2.5,
-              borderTop: 1,
-              borderColor: "divider",
-              backgroundColor: "action.hover",
-            }}
+        <Box
+          sx={{
+            px: 3,
+            pb: 2.5,
+            pt: 1,
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: 1.5,
+          }}
+        >
+          <Stack
+            direction="row"
+            spacing={1.5}
+            sx={{ width: { xs: "100%", sm: "auto" } }}
           >
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              spacing={2}
-              justifyContent="space-between"
-              sx={{ width: "100%" }}
+            <Button
+              variant="outlined"
+              onClick={handleCancel}
+              disabled={loading}
+              sx={{ flex: { xs: 1, sm: "initial" } }}
             >
-              <Button
-                variant="outlined"
-                onClick={handleCancel}
-                disabled={loading}
-              >
-                Cancelar
-              </Button>
+              Cancelar
+            </Button>
 
-              <Stack direction="row" spacing={2}>
-                {isDirty ? (
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    onClick={handleReset}
-                    disabled={loading}
-                  >
-                    Resetar
-                  </Button>
-                ) : null}
-
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="success"
-                  disabled={!isValid || loading}
-                  startIcon={
-                    loading ? (
-                      <CircularProgress size={16} color="inherit" />
-                    ) : (
-                      <AppIcon intent="save" />
-                    )
-                  }
-                >
-                  {loading ? t("form.submit") : t("form.submit")}
-                </Button>
-              </Stack>
-            </Stack>
-          </Box>
-        </form>
-      </EnhancedPaper>
-    </ResponsiveContainer>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={!isValid || loading}
+              startIcon={
+                loading ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : (
+                  <AppIcon intent="save" />
+                )
+              }
+              sx={{ flex: { xs: 1, sm: "initial" } }}
+            >
+              {t("form.submit")}
+            </Button>
+          </Stack>
+        </Box>
+      </form>
+    </EnhancedPaper>
   );
 }
 
