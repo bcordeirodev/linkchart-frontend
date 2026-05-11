@@ -19,42 +19,6 @@ export default class AnalyticsService extends BaseService {
   }
 
   /**
-   * Returns the global analytics dashboard for the authenticated user.
-   *
-   * @returns aggregated `AnalyticsData`; falls back to an empty shell on error.
-   * @endpoint `GET /api/analytics`
-   */
-  async getAnalytics(): Promise<AnalyticsData> {
-    const fallbackData: AnalyticsData = {
-      overview: {
-        total_clicks: 0,
-        unique_visitors: 0,
-        countries_reached: 0,
-        avg_daily_clicks: 0,
-      },
-      geographic: {
-        heatmap_data: [],
-        top_countries: [],
-        top_states: [],
-        top_cities: [],
-      },
-      temporal: {
-        clicks_by_hour: [],
-        clicks_by_day_of_week: [],
-      },
-      audience: {
-        device_breakdown: [],
-      },
-      insights: [],
-    };
-
-    return this.get<AnalyticsData>(API_CONFIG.ENDPOINTS.ANALYTICS, {
-      fallback: fallbackData,
-      context: "get_analytics",
-    });
-  }
-
-  /**
    * Returns the analytics payload for a single link.
    *
    * @param linkId - canonical link id.

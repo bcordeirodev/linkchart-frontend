@@ -18,7 +18,6 @@ import type { PartialDeep } from "type-fest";
 export interface LoginResponse {
   token: string;
   user: UserResponse;
-  expires_in: number;
 }
 
 export interface RegisterRequest {

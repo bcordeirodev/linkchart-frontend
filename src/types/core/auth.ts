@@ -49,17 +49,16 @@ export interface UserResponse {
 }
 
 /**
- * Resposta de login da API
+ * Resposta de login da API.
+ *
+ * Backend (`AuthController::login`) emits `{ success, message, token, user }` only.
+ * `expires_in` / `token_type` are not sent — do not re-add unless the backend changes.
  */
 export interface LoginResponse {
   /** Token de acesso */
   token: string;
   /** Dados do usuário */
   user: UserResponse;
-  /** Tempo de expiração em segundos */
-  expires_in: number;
-  /** Tipo do token */
-  token_type: "bearer";
 }
 
 /**

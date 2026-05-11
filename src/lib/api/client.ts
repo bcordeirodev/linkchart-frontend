@@ -16,27 +16,36 @@ export interface ApiErrorPayload {
 
 /**
  * Erro lançado pelo cliente HTTP. Traz o payload normalizado + status + mensagem
- * pronta para exibição.
+ * pronta para exibição. Também propaga `X-Request-Id` do backend para correlacionar
+ * com os logs (`AssignRequestId` middleware no Laravel grava o mesmo id em todo log
+ * da request — veja `backend/CLAUDE.md` seção Logging).
  */
 export class ApiError extends Error {
   readonly status: number;
   readonly code: string;
   readonly details?: Record<string, unknown>;
+  readonly requestId?: string;
 
   constructor(
     status: number,
     code: string,
     message: string,
     details?: Record<string, unknown>,
+    requestId?: string,
   ) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.code = code;
     this.details = details;
+    this.requestId = requestId;
   }
 
-  static fromResponse(status: number, body: unknown): ApiError {
+  static fromResponse(
+    status: number,
+    body: unknown,
+    requestId?: string,
+  ): ApiError {
     if (body && typeof body === "object" && "error" in body) {
       const err = (body as { error: unknown }).error;
 
@@ -47,6 +56,7 @@ export class ApiError extends Error {
           e.code ?? "UNKNOWN_ERROR",
           e.message ?? `HTTP ${status}`,
           e.details,
+          requestId,
         );
       }
     }
@@ -56,6 +66,7 @@ export class ApiError extends Error {
       "UNKNOWN_ERROR",
       `HTTP ${status}`,
       body ? { body } : undefined,
+      requestId,
     );
   }
 }
@@ -315,9 +326,10 @@ class ApiClient {
     options: RequestOptions,
   ): Promise<T> {
     const raw = await this.parseBody(res);
+    const requestId = res.headers.get("X-Request-Id") ?? undefined;
 
     if (!res.ok) {
-      throw ApiError.fromResponse(res.status, raw);
+      throw ApiError.fromResponse(res.status, raw, requestId);
     }
 
     if (raw === null || raw === undefined) {
