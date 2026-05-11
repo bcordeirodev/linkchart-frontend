@@ -31,6 +31,12 @@ import {
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
 import type { EditLinkFormProps } from "../../types/forms";
 
+/**
+ * Form for editing an existing link. Loads the link by id, hydrates the
+ * `react-hook-form` state, and exposes Cancel/Save actions. Page identity is
+ * carried by the page chrome (`LinkActions` toolbar above), so this card
+ * renders without an in-card title.
+ */
 export function EditLinkForm({
   linkId,
   onSuccess,
@@ -42,6 +48,7 @@ export function EditLinkForm({
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(true);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   const {
     control,
@@ -92,6 +99,7 @@ export function EditLinkForm({
     const fetchLinkData = async () => {
       try {
         setFetchingData(true);
+        setLoadFailed(false);
         const linkData = await linkService.findOne(linkId);
 
         if (linkData) {
@@ -121,6 +129,7 @@ export function EditLinkForm({
             ? error.message
             : "Erro ao carregar dados do link",
         );
+        setLoadFailed(true);
       } finally {
         setFetchingData(false);
       }
@@ -143,7 +152,6 @@ export function EditLinkForm({
         return dateValue.toISOString();
       }
 
-      // Fallback para string ISO se por algum motivo não for DayJS
       if (typeof dateValue === "string") {
         return dateValue;
       }
@@ -218,7 +226,7 @@ export function EditLinkForm({
     return <LinkFormSkeleton isEdit />;
   }
 
-  if (apiError) {
+  if (loadFailed) {
     return (
       <EnhancedPaper variant="glass" animated sx={{ p: 4 }}>
         <Alert
@@ -230,7 +238,7 @@ export function EditLinkForm({
           }
         >
           <Typography variant="h6" component="div">
-            {apiError ? "Erro ao carregar" : "Link não encontrado"}
+            Erro ao carregar
           </Typography>
           <Typography variant="body2">
             {apiError ||
@@ -244,44 +252,36 @@ export function EditLinkForm({
   return (
     <EnhancedPaper variant="glass" animated>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ p: 3, pb: 2 }}>
-          <Typography variant="h5" fontWeight={600} gutterBottom>
-            {t("form.editTitle")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Modifique as configurações do seu link
-          </Typography>
-        </Box>
-
         {apiError ? (
-          <Box sx={{ px: 3, pb: 2 }}>
+          <Box sx={{ px: 3, pt: 3 }}>
             <Alert severity="error">{apiError}</Alert>
           </Box>
         ) : null}
 
-        <Box sx={{ px: 3, pb: 3 }}>
+        <Box sx={{ px: 3, py: 3 }}>
           <LinkFormFields control={control} errors={errors} isEdit />
         </Box>
 
         <Box
           sx={{
             px: 3,
-            py: 2.5,
-            borderTop: 1,
-            borderColor: "divider",
-            backgroundColor: "action.hover",
+            pb: 2.5,
+            pt: 1,
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: 1.5,
           }}
         >
           <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={2}
-            justifyContent="space-between"
-            sx={{ width: "100%" }}
+            direction="row"
+            spacing={1.5}
+            sx={{ width: { xs: "100%", sm: "auto" } }}
           >
             <Button
               variant="outlined"
               onClick={handleCancel}
               disabled={loading}
+              sx={{ flex: { xs: 1, sm: "initial" } }}
             >
               Cancelar
             </Button>
@@ -298,6 +298,7 @@ export function EditLinkForm({
                   <AppIcon intent="save" />
                 )
               }
+              sx={{ flex: { xs: 1, sm: "initial" } }}
             >
               {t("form.submitEdit")}
             </Button>
