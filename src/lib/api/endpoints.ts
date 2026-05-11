@@ -16,7 +16,6 @@
  */
 export const API_CONFIG = {
   BASE_URL: process.env.NEXT_PUBLIC_API_URL || "", // Empty string uses Next.js rewrites proxy
-  TEST_URL: process.env.NEXT_PUBLIC_TEST_API_URL || "http://localhost",
 
   TIMEOUT: 10000,
   RETRY_ATTEMPTS: 3,
@@ -29,9 +28,7 @@ export const API_CONFIG = {
   ENDPOINTS: {
     // --- Analytics (global + per-link) ---
     ANALYTICS: "/api/analytics",
-    TEST_ANALYTICS: "/api/test-analytics/1",
     LINK_ANALYTICS: (id: string) => `/api/links/${id}/analytics`,
-    TEST_LINK_ANALYTICS: (id: string) => `/api/test-link-analytics/${id}`,
 
     // --- Links (authenticated CRUD) ---
     LINKS: "/api/links",
@@ -66,22 +63,7 @@ export const API_CONFIG = {
       RESEND_VERIFICATION_EMAIL: "/api/resend-verification-email",
     },
 
-    // --- Logs (admin-only diagnostics) ---
-    LOGS: "/api/logs",
-    LOGS_DIAGNOSTIC: "/api/logs/diagnostic",
-    LOGS_RECENT_ERRORS: "/api/logs/recent-errors",
-    LOGS_TEST: "/api/logs/test",
-    LOGS_FILE: (filename: string) => `/api/logs/${filename}`,
-
-    // --- Reports (PDF/exportable bundles built on top of analytics) ---
-    REPORTS_DASHBOARD: (linkId: string) =>
-      `/api/reports/link/${linkId}/dashboard`,
-    REPORTS_EXECUTIVE: (linkId: string) =>
-      `/api/reports/link/${linkId}/executive`,
-
     // --- Per-link analytics dashboards (one endpoint per tab) ---
-    ANALYTICS_COMPREHENSIVE: (linkId: string) =>
-      `/api/analytics/link/${linkId}/comprehensive`,
     ANALYTICS_DASHBOARD: (linkId: string) =>
       `/api/analytics/link/${linkId}/dashboard`,
     ANALYTICS_GEOGRAPHIC: (linkId: string) =>
@@ -120,14 +102,6 @@ export const API_CONFIG = {
  */
 export const buildApiUrl = (endpoint: string): string => {
   return `${API_CONFIG.BASE_URL}${endpoint}`;
-};
-
-/**
- * Prefixes an endpoint path with the configured test base URL (`NEXT_PUBLIC_TEST_API_URL`).
- * Used by ad-hoc test/diagnostic helpers that point at a non-default backend.
- */
-export const buildTestUrl = (endpoint: string): string => {
-  return `${API_CONFIG.TEST_URL}${endpoint}`;
 };
 
 /**
