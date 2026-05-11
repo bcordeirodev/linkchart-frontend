@@ -206,86 +206,107 @@ export function LinkFormFields({
       >
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Controller
-              name="click_limit"
-              control={control}
-              render={({ field: { onChange, value, ...field } }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  type="number"
-                  label={t("form.clickLimit")}
-                  placeholder={t("form.clickLimitPlaceholder")}
-                  value={value || ""}
-                  onChange={(e) =>
-                    onChange(e.target.value ? Number(e.target.value) : null)
-                  }
-                  error={!!errors.click_limit}
-                  helperText={
-                    errors.click_limit?.message || t("form.clickLimitHelper")
-                  }
-                  InputProps={{
-                    inputProps: { min: 1, max: 1000000 },
-                  }}
-                />
-              )}
-            />
+            <Box>
+              <FormLabel
+                error={!!errors.click_limit}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("form.clickLimit")}
+              </FormLabel>
+              <Controller
+                name="click_limit"
+                control={control}
+                render={({ field: { onChange, value, ...field } }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    type="number"
+                    placeholder={t("form.clickLimitPlaceholder")}
+                    value={value || ""}
+                    onChange={(e) =>
+                      onChange(e.target.value ? Number(e.target.value) : null)
+                    }
+                    error={!!errors.click_limit}
+                    helperText={
+                      errors.click_limit?.message || t("form.clickLimitHelper")
+                    }
+                    InputProps={{
+                      inputProps: { min: 1, max: 1000000 },
+                    }}
+                  />
+                )}
+              />
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Controller
-              name="starts_in"
-              control={control}
-              render={({ field: { value, ...field } }) => (
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  adapterLocale="en-gb"
-                >
-                  <DateTimePicker
-                    {...field}
-                    label={t("form.startDate")}
-                    value={value ?? null}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        error: !!errors.starts_in,
-                        helperText:
-                          errors.starts_in?.message ||
-                          t("form.startDateHelper"),
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              )}
-            />
+            <Box>
+              <FormLabel
+                error={!!errors.starts_in}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("form.startDate")}
+              </FormLabel>
+              <Controller
+                name="starts_in"
+                control={control}
+                render={({ field: { value, ...field } }) => (
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale="en-gb"
+                  >
+                    <DateTimePicker
+                      {...field}
+                      value={value ?? null}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!errors.starts_in,
+                          helperText:
+                            errors.starts_in?.message ||
+                            t("form.startDateHelper"),
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                )}
+              />
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Controller
-              name="expires_at"
-              control={control}
-              render={({ field: { value, ...field } }) => (
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  adapterLocale="en-gb"
-                >
-                  <DateTimePicker
-                    {...field}
-                    label={t("form.expiresAt")}
-                    value={value}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        error: !!errors.expires_at,
-                        helperText:
-                          errors.expires_at?.message ||
-                          t("form.expiresAtHelper"),
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              )}
-            />
+            <Box>
+              <FormLabel
+                error={!!errors.expires_at}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("form.expiresAt")}
+              </FormLabel>
+              <Controller
+                name="expires_at"
+                control={control}
+                render={({ field: { value, ...field } }) => (
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale="en-gb"
+                  >
+                    <DateTimePicker
+                      {...field}
+                      value={value}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!errors.expires_at,
+                          helperText:
+                            errors.expires_at?.message ||
+                            t("form.expiresAtHelper"),
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                )}
+              />
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>
