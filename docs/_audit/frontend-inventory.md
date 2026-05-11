@@ -229,34 +229,11 @@
 
 **Utils (`utils/`):** none.
 
-### 1.5 `src/features/redirect/`
+### 1.5 `src/features/redirect/` — REMOVED 2026-05-11
 
-**Index/barrel exports:** (from `redirect/index.ts`)
+The entire feature folder, `app/(public)/r/[slug]/page.tsx`, and `src/shared/layout/LoadingWithRedirect.tsx` were deleted. The frontend interstitial was bypassing the backend `/r/{slug}` route (called `/api/public/link/{slug}` then `window.location.href = original_url`), so cliques landing on the app domain were not being dispatched to `ProcessLinkClickJob`.
 
-- `Redirect`, `SmartRedirect`, `RedirectStats`
-- Re-exports of `./components/RedirectSettings`
-- `useRedirectWithDelay` (and default)
-
-**Components:**
-
-- `components/Redirect.tsx` — `useEffect` + `router.push` wrapper for declarative redirects.
-- `components/RedirectClientPage.tsx` — full-page redirect UI (countdown, safety badge, error/manual fallback). **FORBIDDEN ZONE-adjacent** (referenced by `/r/[slug]`).
-- `components/RedirectDynamic.tsx` — `dynamic(() => import('./RedirectClientPage'), { ssr: false })` thin wrapper. **FORBIDDEN ZONE.**
-- `components/RedirectLoader.tsx` — animated loading screen during slug resolution.
-- `components/RedirectSettings.tsx` — admin settings card for redirect behaviour (delay, show stats).
-- `components/RedirectStats.tsx` — small stats panel shown during the wait state.
-- `components/SmartRedirect.tsx` — wraps `useRedirectWithDelay` + `LoadingWithRedirect` for post-auth flows.
-- `components/styles/Redirect.styled.ts` — MUI styled containers shared by redirect components.
-
-**Hooks (`hooks/`):**
-
-| Hook                   | Type   | Endpoint(s) consumed | Query key | Notes                                                                                                                               |
-| ---------------------- | ------ | -------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `useRedirectWithDelay` | manual | (no API)             | (n/a)     | Returns `{ isRedirecting, countdown, startRedirect, cancelRedirect, redirectImmediately }`. Optionally clears `sessionRedirectUrl`. |
-
-**Services consumed:** none. Uses `resetSessionRedirectUrl` from `@/lib/auth/sessionRedirectUrl`.
-
-**Types (`types/`):** none.
+Today `/r/:slug` on the app domain is handled by a 307 in `next.config.ts` that forwards to `${NEXT_PUBLIC_REDIRECT_URL}/{slug}` (backend canonical route). See `docs/adr/0005-redirect-canonico-no-backend.md` (revisado 2026-05-11) and `docs/diagrams/redirect-flow.md`.
 
 **Utils (`utils/`):** none.
 
@@ -556,14 +533,14 @@ Cross-check vs. `src/lib/api/endpoints.ts`:
 
 **Layout:** `app/(public)/layout.tsx` (pass-through; pages set their own chrome via `PublicLayout`).
 
-| Route                      | Page component                                                                         | Feature consumed                         |
-| -------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------- |
-| `/shorter`                 | `app/(public)/shorter/page.tsx` + `ShorterClientPage.tsx`                              | `features/shorter`                       |
-| `/r/[slug]`                | `app/(public)/r/[slug]/page.tsx` (`generateMetadata` server fetch + `RedirectDynamic`) | `features/redirect` — **FORBIDDEN ZONE** |
-| `/public-analytics/[slug]` | `app/(public)/public-analytics/[slug]/page.tsx`                                        | `features/public-analytics`              |
-| `/privacy`                 | `app/(public)/privacy/page.tsx`                                                        | (static)                                 |
-| `/support`                 | `app/(public)/support/page.tsx`                                                        | (static)                                 |
-| `/terms`                   | `app/(public)/terms/page.tsx`                                                          | (static)                                 |
+| Route                      | Page component                                                              | Feature consumed                                   |
+| -------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------- |
+| `/shorter`                 | `app/(public)/shorter/page.tsx` + `ShorterClientPage.tsx`                   | `features/shorter`                                 |
+| `/r/[slug]`                | `next.config.ts` `redirects()` — 307 to `${NEXT_PUBLIC_REDIRECT_URL}/:slug` | (no frontend page; backend `web.php` is canonical) |
+| `/public-analytics/[slug]` | `app/(public)/public-analytics/[slug]/page.tsx`                             | `features/public-analytics`                        |
+| `/privacy`                 | `app/(public)/privacy/page.tsx`                                             | (static)                                           |
+| `/support`                 | `app/(public)/support/page.tsx`                                             | (static)                                           |
+| `/terms`                   | `app/(public)/terms/page.tsx`                                               | (static)                                           |
 
 ### 6.5 Middleware
 
@@ -591,7 +568,7 @@ Cross-check vs. `src/lib/api/endpoints.ts`:
 
 > Items here are **not eligible** for Phase 2 in this work. They are documented for future planning.
 
-- [ ] **R-HIGH-1:** Re-organize `src/features/redirect/components/RedirectClientPage.tsx` and its `RedirectDynamic.tsx` wrapper — touches `app/(public)/r/[slug]/page.tsx` which is a **FORBIDDEN ZONE** (Open Graph + tracking critical path). Any change risks regressing the bot/human split documented in the root `CLAUDE.md`. **Ineligible for Phase 2.**
+- [x] **R-HIGH-1:** ~~Re-organize `src/features/redirect/components/RedirectClientPage.tsx` and its `RedirectDynamic.tsx` wrapper~~ — **RESOLVED 2026-05-11**: the entire `src/features/redirect/`, `app/(public)/r/[slug]/`, and `src/shared/layout/LoadingWithRedirect.tsx` were deleted. The duplicated client interstitial was bypassing `ProcessLinkClickJob` and silently dropping click counts on the app domain. A 307 redirect in `next.config.ts` now forwards `/r/:slug` to `${NEXT_PUBLIC_REDIRECT_URL}/:slug` so the backend canonical route handles 302 + tracking. See ADR 0005 (revisado) and `docs/diagrams/redirect-flow.md`.
 - [ ] **R-HIGH-2:** Move `src/lib/auth/components/EmailVerificationGuard.tsx` out of `lib/auth/components/` (e.g., into `shared/components/guards/`) — touches a **FORBIDDEN ZONE** guard wrapping `app/(app)/layout.tsx`. Any move ripples through every authenticated route. **Ineligible for Phase 2.**
 - [ ] **R-HIGH-3:** Add or reactivate the `/api/r/{slug}` AJAX redirect path — explicitly retired in `routes/api.php` (04/11/2025) and called out in root `CLAUDE.md` ("Não reabrir sem justificativa"). **Ineligible for Phase 2.**
 - [ ] **R-HIGH-4:** Modify `middleware.ts` — explicit **FORBIDDEN ZONE** (security headers only). **Ineligible for Phase 2.**
