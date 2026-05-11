@@ -102,6 +102,12 @@ export function LinkFormFields({
           </Box>
 
           <Box>
+            <FormLabel
+              error={!!errors.custom_slug}
+              sx={{ display: "block", mb: 0.75 }}
+            >
+              {t("form.customSlug")}
+            </FormLabel>
             <Controller
               name="custom_slug"
               control={control}
@@ -109,7 +115,6 @@ export function LinkFormFields({
                 <TextField
                   {...field}
                   fullWidth
-                  label={t("form.customSlug")}
                   placeholder={t("form.customSlugPlaceholder")}
                   error={!!errors.custom_slug}
                   helperText={
@@ -146,37 +151,51 @@ export function LinkFormFields({
             />
           </Box>
 
-          <Controller
-            name="title"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                fullWidth
-                label={t("form.title")}
-                placeholder={t("form.titlePlaceholder")}
-                error={!!errors.title}
-                helperText={errors.title?.message ?? " "}
-              />
-            )}
-          />
+          <Box>
+            <FormLabel
+              error={!!errors.title}
+              sx={{ display: "block", mb: 0.75 }}
+            >
+              {t("form.title")}
+            </FormLabel>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  placeholder={t("form.titlePlaceholder")}
+                  error={!!errors.title}
+                  helperText={errors.title?.message ?? " "}
+                />
+              )}
+            />
+          </Box>
 
-          <Controller
-            name="description"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                fullWidth
-                multiline
-                rows={3}
-                label={t("form.descriptionLabel")}
-                placeholder={t("form.descriptionPlaceholder")}
-                error={!!errors.description}
-                helperText={errors.description?.message ?? " "}
-              />
-            )}
-          />
+          <Box>
+            <FormLabel
+              error={!!errors.description}
+              sx={{ display: "block", mb: 0.75 }}
+            >
+              {t("form.descriptionLabel")}
+            </FormLabel>
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  multiline
+                  rows={3}
+                  placeholder={t("form.descriptionPlaceholder")}
+                  error={!!errors.description}
+                  helperText={errors.description?.message ?? " "}
+                />
+              )}
+            />
+          </Box>
         </Stack>
       </FormSection>
 
