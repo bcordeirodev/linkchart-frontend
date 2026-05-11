@@ -73,6 +73,14 @@
     "descriptionPlaceholder": "Describe the link content (optional)",
     "descriptionHelper": "Optional — add more context to your link",
     "advancedSettings": "Advanced Settings",
+    "sections": {
+      "basic": "Basic",
+      "advanced": "Advanced",
+      "advancedCaption": "Optional — click limit, dates and status",
+      "utm": "UTM Parameters",
+      "utmCaption": "Optional — measure where clicks come from"
+    },
+    "slugPrefixHint": "Use letters, numbers and hyphens",
     "slugPlaceholder": "my-slug",
     "clickLimitPlaceholder": "1000",
     "startDate": "Start date",
