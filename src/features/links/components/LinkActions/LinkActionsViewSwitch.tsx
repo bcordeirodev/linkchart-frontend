@@ -24,6 +24,9 @@ interface LinkActionsViewSwitchProps {
  *
  * Clicking a toggle immediately navigates; selecting the already-active
  * toggle is a no-op (MUI emits `null` for that case in exclusive mode).
+ *
+ * @param fullWidth - When true, the group expands to fill its container
+ *                    (used on mobile to make the pills divide width evenly).
  */
 export function LinkActionsViewSwitch({
   linkId,
@@ -60,6 +63,7 @@ export function LinkActionsViewSwitch({
       onChange={handleChange}
       size="small"
       fullWidth={fullWidth}
+      aria-label={t("actions.viewSwitch")}
       sx={{
         backgroundColor: theme.palette.action.hover,
         borderRadius: 1,
