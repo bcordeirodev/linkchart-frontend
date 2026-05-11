@@ -2,6 +2,8 @@
 import {
   BarChart3,
   CalendarDays,
+  Check,
+  Copy,
   ExternalLink,
   MousePointerClick,
 } from "lucide-react";
@@ -149,24 +151,47 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
             sx={{
               px: 1.5,
               py: 0.25,
-              bgcolor: "rgba(25, 118, 210, 0.08)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.75,
+              bgcolor: copied
+                ? "rgba(46, 125, 50, 0.08)"
+                : "rgba(25, 118, 210, 0.08)",
               borderRadius: "20px",
               border: "1px solid",
-              borderColor: "primary.light",
+              borderColor: copied ? "success.light" : "primary.light",
               fontFamily: "monospace",
               fontSize: "0.75rem",
-              color: "primary.main",
+              color: copied ? "success.main" : "primary.main",
               fontWeight: 600,
               cursor: "pointer",
               maxWidth: 360,
               overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
               flexShrink: 0,
-              "&:hover": { bgcolor: "rgba(25, 118, 210, 0.15)" },
+              transition:
+                "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease",
+              "&:hover": {
+                bgcolor: copied
+                  ? "rgba(46, 125, 50, 0.12)"
+                  : "rgba(25, 118, 210, 0.15)",
+              },
             }}
           >
-            {shortUrl}
+            {copied ? (
+              <Check size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
+            ) : (
+              <Copy size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
+            )}
+            <Box
+              component="span"
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {copied ? t("actions.copySuccess") : shortUrl}
+            </Box>
           </Box>
         </Tooltip>
 
