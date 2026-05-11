@@ -48,7 +48,9 @@
     "copy": "Copiar",
     "delete": "Excluir",
     "qrCode": "QR Code",
-    "deleteError": "Erro ao excluir link. Tente novamente."
+    "deleteError": "Erro ao excluir link. Tente novamente.",
+    "back": "Voltar",
+    "more": "Mais ações"
   },
   "form": {
     "createTitle": "Criar Novo Link",
