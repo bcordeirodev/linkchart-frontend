@@ -10,6 +10,12 @@ export type RootState = ReturnType<typeof rootReducer>;
 
 const middlewares: Middleware[] = [dynamicMiddleware];
 
+/**
+ * Builds a fresh Redux Toolkit store wired with `rootReducer` and the
+ * dynamic middleware. Accepts an optional `preloadedState` for SSR hydration
+ * and test isolation; the module-level `store` export is the singleton used by
+ * the app at runtime.
+ */
 export const makeStore = (preloadedState?: Partial<RootState>) => {
   const store = configureStore({
     reducer: rootReducer,
