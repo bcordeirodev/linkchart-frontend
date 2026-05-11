@@ -13,31 +13,32 @@ import { createPresetAnimations } from "@/lib/theme";
 import type { ReactNode } from "react";
 
 interface AnalyticsStateManagerProps {
+  /** True while the underlying query is loading — shows the spinner block. */
   loading: boolean;
+  /** Non-null error message — shows the error block (overrides empty + success). */
   error: string | null;
+  /** Whether the loaded payload has renderable data — false shows the empty block. */
   hasData: boolean;
+  /** Renderable content for the success state. */
   children: ReactNode;
+  /** Optional retry handler; when provided in the error state, renders a "Tentar Novamente" button. */
   onRetry?: () => void;
+  /** Override for the loading-state message (default: `t("common:loading.data")`). */
   loadingMessage?: string;
+  /** Override for the error description (default: the raw `error` string). */
   errorMessage?: string;
+  /** Override for the empty-state message (default: `t("common:status.noData")`). */
   emptyMessage?: string;
+  /** Min height of the state container in px (default `300`; halved when `compact`). */
   minHeight?: number;
+  /** Compact density — shrinks padding, font sizes and `minHeight`. */
   compact?: boolean;
 }
 
 /**
- * 🎭 ANALYTICS STATE MANAGER - Gerenciador Unificado de Estados
+ * Renders one of four mutually exclusive blocks (loading / error / empty / children) for analytics widgets.
  *
- * @description
- * Componente reutilizável para gerenciar estados de loading, error e empty
- * em todos os componentes de analytics, garantindo consistência visual.
- *
- * @features
- * - Estados unificados (loading, error, empty, success)
- * - Animações consistentes
- * - Ações customizáveis (retry)
- * - Responsivo e acessível
- * - Tema consistente
+ * Priority order: `loading` → `error` → `!hasData` → `children`. Uses `createPresetAnimations(theme).fadeIn` for transitions and the `common` i18n namespace for default messages.
  */
 export function AnalyticsStateManager({
   loading,

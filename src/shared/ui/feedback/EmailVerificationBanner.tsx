@@ -9,12 +9,14 @@ import { showErrorMessage } from "@/lib/store/messageSlice";
 import { authService } from "@/services";
 
 interface EmailVerificationBannerProps {
+  /** Fired with the resolved verification status after the initial check. Useful for parent layouts that gate routes on verification. */
   onVerificationStatusChange?: (isVerified: boolean) => void;
 }
 
 /**
- * Banner de notificação para verificação de email
- * Mostra apenas se o usuário não verificou o email
+ * Warning banner that nudges the user to verify their email; renders nothing until verification status is known to be unverified (and not user-dismissed).
+ *
+ * On mount, calls `authService.getEmailVerificationStatus()`. Renders `null` for verified users or after the user clicks the dismiss "x". The "Reenviar" button is rate-limited client-side: disabled for 2 minutes after a successful `authService.resendVerificationEmail()`.
  */
 export function EmailVerificationBanner({
   onVerificationStatusChange,

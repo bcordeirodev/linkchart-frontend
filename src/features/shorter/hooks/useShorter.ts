@@ -6,6 +6,16 @@ import { publicLinkService } from "@/services/link-public.service";
 
 import type { PublicLinkResponse } from "@/services/link-public.service";
 
+/**
+ * Drives the public `/shorter` page state machine: success/error/reset/auth nav.
+ *
+ * @returns `{ isRedirecting, result, error, handleSuccess, handleError, clearError, handleReset, handleSignUp, handleLogin }`
+ *
+ * @remarks
+ * No direct network calls — receives the `PublicLinkResponse` from `usePublicURLShortener` via `handleSuccess`.
+ * `handleSuccess` writes `res.short_url` to the clipboard (best-effort, swallowed on failure) and schedules a 150 ms-delayed `navigate(...)` to `getPublicAnalyticsUrl(slug)` so the exit animation has time to play.
+ * The pending nav timer is cleared on unmount and on `handleReset`.
+ */
 export function useShorter() {
   const navigate = useNavigate();
   const [isRedirecting, setIsRedirecting] = useState(false);

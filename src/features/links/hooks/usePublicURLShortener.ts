@@ -22,8 +22,14 @@ interface UsePublicURLShortenerReturn {
 }
 
 /**
- * Hook personalizado para encurtamento público de URLs
- * Usa o publicLinkService para criar links sem autenticação
+ * Public (unauthenticated) URL shortener used by the `/shorter` page.
+ *
+ * @returns `{ shortened, loading, error, createPublicShortUrl, reset }`
+ *
+ * @remarks
+ * Endpoint: `POST /api/public/links` (via `publicLinkService.createPublicLink()`).
+ * Rate-limited backend-side at 10/min per IP (see `routes/api.php` group `public-shorten`).
+ * URL is normalised via `publicLinkService.formatUrl` (prepends `https://` when missing) and validated locally before the request.
  */
 export function usePublicURLShortener(): UsePublicURLShortenerReturn {
   const [shortened, setShortened] = useState<PublicLinkResponse | null>(null);

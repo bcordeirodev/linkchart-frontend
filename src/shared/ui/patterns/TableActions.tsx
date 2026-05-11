@@ -33,19 +33,35 @@ const mapSize = (
 };
 
 interface TableActionsProps {
+  /** Edit handler — renders a Pencil icon with `color="warning"`. */
   onEdit?: () => void;
+  /** Delete handler — renders a Trash2 icon with `color="error"` (rendered last). */
   onDelete?: () => void;
+  /** Analytics handler — renders a BarChart3 icon with `color="success"` (rendered first). */
   onAnalytics?: () => void;
+  /** QR-code handler — renders a QrCode icon with `color="secondary"`. */
   onQR?: () => void;
+  /** Copy handler — renders a ClipboardCopy icon with `color="info"`. */
   onCopy?: () => void;
+  /** Share handler — renders a Share2 icon with `color="secondary"`. */
   onShare?: () => void;
+  /** Download handler — renders a Download icon with `color="info"`. */
   onDownload?: () => void;
+  /** When true, disables every button (for in-flight mutations). */
   loading?: boolean;
+  /** Extra nodes rendered just before the delete button. */
   customActions?: React.ReactNode;
+  /** Project-specific icon size — `"xs"`/`"sm"` map to MUI `"small"`, `"md"` → `"medium"`, `"lg"` → `"large"`. Default `"sm"`. */
   size?: "xs" | "sm" | "md" | "lg";
+  /** MUI `<Stack>` spacing between buttons (default `0.5`). */
   spacing?: number;
 }
 
+/**
+ * Row of icon-only action buttons for tables.
+ *
+ * Each action is rendered only when its handler prop is provided. Order is fixed: analytics, edit, copy, share, QR, download, `customActions`, delete. Each button gets a Portuguese tooltip and a scale-105 hover micro-interaction.
+ */
 export function TableActions({
   onEdit,
   onDelete,
@@ -206,6 +222,9 @@ export function TableActions({
   );
 }
 
+/**
+ * Convenience wrapper: `TableActions` pre-configured for the links table (analytics + edit + copy + QR + delete).
+ */
 export function LinkTableActions({
   onAnalytics,
   onEdit,
@@ -230,6 +249,9 @@ export function LinkTableActions({
   );
 }
 
+/**
+ * Convenience wrapper: `TableActions` pre-configured for the analytics table (edit + download + share).
+ */
 export function AnalyticsTableActions({
   onEdit,
   onDownload,

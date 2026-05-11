@@ -27,7 +27,7 @@ import {
   SaveButton,
   StyledAvatar,
   StyledTextField,
-} from "./styles/Profile.styled";
+} from "./Profile.styled";
 
 import type { UserProfile } from "@/services";
 

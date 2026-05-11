@@ -13,6 +13,7 @@ import type {
   GeographicResponse,
 } from "@/types/analytics/geographic";
 
+/** Summary stats derived from `GeographicMeta` (country/state/city counts plus a coarse coverage ratio). */
 export interface GeographicStats {
   totalCountries: number;
   totalStates: number;
@@ -20,17 +21,21 @@ export interface GeographicStats {
   totalClicks: number;
   maxClicks: number;
   totalLocations: number;
+  /** Share of the ~195 recognised countries reached, capped at 100. */
   coveragePercentage: number;
   lastUpdate: string;
 }
 
+/** Input options accepted by `useGeographicData`. */
 export interface UseGeographicDataOptions {
   linkId: string;
   refreshInterval?: number;
   enableRealtime?: boolean;
+  /** In-memory threshold used to drop low-volume rows from the response. */
   minClicks?: number;
 }
 
+/** Return shape of `useGeographicData`. */
 export interface UseGeographicDataReturn {
   data: GeographicData | null;
   meta: GeographicMeta | null;
@@ -41,6 +46,11 @@ export interface UseGeographicDataReturn {
   isRealtime: boolean;
 }
 
+/**
+ * Maps `GeographicMeta` (counters returned alongside `data` in the
+ * `{ data, meta }` envelope) into the `GeographicStats` shape the UI renders.
+ * Computes `coveragePercentage` as `unique_countries / 195`, capped at 100.
+ */
 function calculateStats(meta: GeographicMeta): GeographicStats {
   return {
     totalCountries: meta.unique_countries,
@@ -57,6 +67,21 @@ function calculateStats(meta: GeographicMeta): GeographicStats {
   };
 }
 
+/**
+ * Fetches geographic analytics (top countries/states/cities + heatmap) for a link.
+ *
+ * @param options.linkId - canonical link id; the query stays disabled when falsy
+ * @param options.refreshInterval - polling interval in ms when realtime is on (default `30000`)
+ * @param options.enableRealtime - when true, refetches every `refreshInterval` ms (default `false`)
+ * @param options.minClicks - in-memory threshold to drop low-volume rows from `top_countries`/`top_states`/`top_cities`/`heatmap_data` (default `1`)
+ * @returns `{ data: GeographicData | null, meta, stats, loading, error, refresh, isRealtime }`
+ *
+ * @remarks
+ * Cache key: `queryKeys.analytics.geographic(linkId)` → `["analytics", linkId, "geographic"]`.
+ * Endpoint: `GET /api/analytics/link/{id}/geographic` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_GEOGRAPHIC`).
+ * Uses `rawEnvelope: true` because this endpoint returns `{ data, meta }` and the consumer needs both halves.
+ * Returned `GeographicData` shape is defined in `src/types/analytics/geographic.ts`.
+ */
 export function useGeographicData({
   linkId,
   refreshInterval = 30000,
@@ -71,9 +96,12 @@ export function useGeographicData({
   } = useQuery({
     queryKey: queryKeys.analytics.geographic(linkId),
     queryFn: () =>
-      api.get<GeographicResponse>(`/api/analytics/link/${linkId}/geographic`, {
-        rawEnvelope: true,
-      }),
+      api.get<GeographicResponse>(
+        API_CONFIG.ENDPOINTS.ANALYTICS_GEOGRAPHIC(linkId),
+        {
+          rawEnvelope: true,
+        },
+      ),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,

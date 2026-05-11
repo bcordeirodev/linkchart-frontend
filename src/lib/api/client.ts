@@ -80,14 +80,16 @@ interface RequestBodyInit extends RequestOptions {
 }
 
 /**
- * Cliente HTTP único — todo módulo fala com a API através dele.
+ * HTTP client used by every `BaseService`.
  *
- * Responsabilidades:
- * - Autenticação (Bearer via localStorage.token)
- * - Conversão camelCase ⇄ snake_case na fronteira (request out, response in)
- * - Unwrap automático do envelope `{ data }` introduzido na Onda 0
- * - Tradução do envelope de erro `{ error: { code, message, details } }` em ApiError tipado
- * - Timeout configurável
+ * Responsibilities:
+ * - Inject `Authorization: Bearer <token>` from `localStorage.token` (browser-only).
+ * - Unwrap the `{data, meta?, message?}` success envelope (toggle off with `rawEnvelope: true`).
+ * - Normalize errors into `ApiError` from the `{error: {code, message, details?}}` envelope.
+ * - Apply an `AbortController` timeout (default `REQUEST_TIMEOUT`).
+ *
+ * Use relative paths (`/api/...`) — Next.js `next.config.ts` rewrites proxy them
+ * to `process.env.API_URL`, eliminating CORS entirely in development.
  */
 class ApiClient {
   private readonly baseURL: string;
@@ -102,24 +104,51 @@ class ApiClient {
     this.timeout = timeout;
   }
 
+  /**
+   * Merges extra headers that will be sent with every subsequent request.
+   *
+   * @param headers - header name -> value map.
+   */
   setGlobalHeaders(headers: Record<string, string>): void {
     Object.assign(this.globalHeaders, headers);
   }
 
+  /**
+   * Removes specific global headers previously set by `setGlobalHeaders`.
+   *
+   * @param headerKeys - header names to drop.
+   */
   removeGlobalHeaders(headerKeys: string[]): void {
     headerKeys.forEach((key) => delete this.globalHeaders[key]);
   }
 
+  /**
+   * Drops all globally-merged headers, leaving only per-request defaults.
+   */
   clearGlobalHeaders(): void {
     for (const key of Object.keys(this.globalHeaders)) {
       delete this.globalHeaders[key];
     }
   }
 
+  /**
+   * Performs a `GET` request and returns the unwrapped response body.
+   *
+   * @param endpoint - relative path (e.g. `/api/links`).
+   * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
+   * @returns the unwrapped response body of type `T`.
+   */
   async get<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     return this.request<T>({ method: "GET", ...options }, endpoint);
   }
 
+  /**
+   * Performs a JSON-bodied `POST` request and returns the unwrapped response body.
+   *
+   * @param endpoint - relative path.
+   * @param body - JSON-serializable payload.
+   * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
+   */
   async post<T>(
     endpoint: string,
     body?: unknown,
@@ -128,6 +157,13 @@ class ApiClient {
     return this.request<T>({ method: "POST", body, ...options }, endpoint);
   }
 
+  /**
+   * Performs a JSON-bodied `PUT` request.
+   *
+   * @param endpoint - relative path.
+   * @param body - JSON-serializable payload.
+   * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
+   */
   async put<T>(
     endpoint: string,
     body?: unknown,
@@ -136,6 +172,13 @@ class ApiClient {
     return this.request<T>({ method: "PUT", body, ...options }, endpoint);
   }
 
+  /**
+   * Performs a JSON-bodied `PATCH` request.
+   *
+   * @param endpoint - relative path.
+   * @param body - JSON-serializable payload.
+   * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
+   */
   async patch<T>(
     endpoint: string,
     body?: unknown,
@@ -144,13 +187,24 @@ class ApiClient {
     return this.request<T>({ method: "PATCH", body, ...options }, endpoint);
   }
 
+  /**
+   * Performs a `DELETE` request.
+   *
+   * @param endpoint - relative path.
+   * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
+   */
   async delete<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     return this.request<T>({ method: "DELETE", ...options }, endpoint);
   }
 
   /**
-   * POST form-urlencoded (evita preflight CORS). Usado em fluxos de auth
-   * legados. Aplica unwrap do envelope, mas sem Authorization header.
+   * Performs an `application/x-www-form-urlencoded` `POST` to skip the CORS preflight.
+   *
+   * @param endpoint - relative path.
+   * @param form - flat string -> string map serialized with `URLSearchParams`.
+   * @param options - per-request options (unwrap still applies; sent without `Authorization`).
+   *
+   * @remarks Used by legacy auth flows (`signIn`) where the preflight would block the request.
    */
   async postForm<T>(
     endpoint: string,
@@ -182,8 +236,11 @@ class ApiClient {
   }
 
   /**
-   * Upload multipart. Envia FormData cru (sem case conversion) e unwrap
-   * padrão na resposta.
+   * Performs a `multipart/form-data` upload; lets `fetch` set the multipart boundary.
+   *
+   * @param endpoint - relative path.
+   * @param formData - browser `FormData` payload (sent as-is).
+   * @param options - per-request options; envelope unwrap still applies.
    */
   async upload<T>(
     endpoint: string,

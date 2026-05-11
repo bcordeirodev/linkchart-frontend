@@ -2,6 +2,12 @@ import type { SxProps, Theme } from "@mui/material/styles";
 
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 
+/**
+ * Returns the shared MUI `sx` for `<TextField variant="outlined" />` inputs in
+ * the auth forms. Pulls the input background from the raw `darkNeutral` /
+ * `lightNeutral` constants (intentionally not exposed as a theme token) and
+ * aligns border, label, helper and adornment colors with the active palette.
+ */
 export function authTextFieldSx(theme: Theme): SxProps<Theme> {
   const isDark = theme.palette.mode === "dark";
   // neutral.input (#1C1C1F dark / #F4F4F5 light) is intentionally read from raw

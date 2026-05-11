@@ -12,6 +12,17 @@ export type SlugAvailabilityStatus =
 
 const SLUG_PATTERN = /^[a-z0-9-]{3,50}$/;
 
+/**
+ * Debounced check that returns whether a custom slug is available.
+ *
+ * @param slug - the candidate slug (must match `^[a-z0-9-]{3,50}$`)
+ * @returns one of `"idle" | "checking" | "available" | "taken"`
+ *
+ * @remarks
+ * Endpoint: `GET /api/public/links/{slug}` (via `publicLinkService.getLinkBySlug()`).
+ * Treats HTTP 404 as `"available"` and any other `ApiError` as `"idle"` (network/unknown error — don't block the form).
+ * Debounced 500 ms after the last `slug` change; invalid slugs short-circuit to `"idle"` without a request.
+ */
 export function useSlugAvailability(slug: string): SlugAvailabilityStatus {
   const [status, setStatus] = useState<SlugAvailabilityStatus>("idle");
 

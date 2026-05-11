@@ -1,5 +1,18 @@
 /**
- * Configurações e endpoints da API
+ * Single source of truth for API paths, base URLs, and HTTP-level config.
+ *
+ * Every service in `src/services/` and every TanStack Query hook should reach
+ * for `API_CONFIG.ENDPOINTS.*` (or the legacy `API_ENDPOINTS` / per-feature
+ * re-exports) instead of inlining strings — that way the proxy rewrites,
+ * cache TTLs, and timeouts stay centralised.
+ *
+ * Sections under `ENDPOINTS`:
+ * - Top-level: global analytics + link CRUD + link-meta batch.
+ * - `ENDPOINTS.AUTH`: identity (login, register, profile, password, email verification).
+ * - `ENDPOINTS.PUBLIC`: unauthenticated `/api/public/*` endpoints used by `/shorter`.
+ *
+ * Paths are relative (`/api/...`) — Next.js rewrites in `next.config.ts` proxy
+ * them to `process.env.API_URL`, so CORS never fires in development.
  */
 export const API_CONFIG = {
   BASE_URL: process.env.NEXT_PUBLIC_API_URL || "", // Empty string uses Next.js rewrites proxy
@@ -14,28 +27,30 @@ export const API_CONFIG = {
   },
 
   ENDPOINTS: {
+    // --- Analytics (global + per-link) ---
     ANALYTICS: "/api/analytics",
     TEST_ANALYTICS: "/api/test-analytics/1",
     LINK_ANALYTICS: (id: string) => `/api/links/${id}/analytics`,
     TEST_LINK_ANALYTICS: (id: string) => `/api/test-link-analytics/${id}`,
 
-    // Links
+    // --- Links (authenticated CRUD) ---
     LINKS: "/api/links",
     LINK: (id: string) => `/api/links/${id}`,
     CREATE_LINK: "/api/links",
     UPDATE_LINK: (id: string) => `/api/links/${id}`,
     DELETE_LINK: (id: string) => `/api/links/${id}`,
 
-    // Link meta (sparkline, trend, preview, health)
+    // --- Link meta (sparkline, trend, preview, health) ---
     LINKS_BATCH_META: "/api/links/batch-meta",
     LINK_SPARKLINE: (id: string) => `/api/links/${id}/sparkline`,
     LINK_TREND: (id: string) => `/api/links/${id}/trend`,
     LINK_PREVIEW: (id: string) => `/api/links/${id}/preview`,
     LINK_HEALTH: (id: string) => `/api/links/${id}/health`,
 
-    // Lista paginada de cliques de um link (tab Cliques no analytics individual)
+    // --- Per-link clicks list (paginated; powers the "Cliques" tab) ---
     LINK_CLICKS_LIST: (id: string) => `/api/link/${id}/clicks-list`,
 
+    // --- AUTH: identity, profile, password, email verification ---
     AUTH: {
       LOGIN: "/api/auth/login",
       LOGOUT: "/api/logout",
@@ -51,19 +66,24 @@ export const API_CONFIG = {
       RESEND_VERIFICATION_EMAIL: "/api/resend-verification-email",
     },
 
+    // --- Logs (admin-only diagnostics) ---
     LOGS: "/api/logs",
     LOGS_DIAGNOSTIC: "/api/logs/diagnostic",
     LOGS_RECENT_ERRORS: "/api/logs/recent-errors",
     LOGS_TEST: "/api/logs/test",
     LOGS_FILE: (filename: string) => `/api/logs/${filename}`,
 
+    // --- Reports (PDF/exportable bundles built on top of analytics) ---
     REPORTS_DASHBOARD: (linkId: string) =>
       `/api/reports/link/${linkId}/dashboard`,
     REPORTS_EXECUTIVE: (linkId: string) =>
       `/api/reports/link/${linkId}/executive`,
 
+    // --- Per-link analytics dashboards (one endpoint per tab) ---
     ANALYTICS_COMPREHENSIVE: (linkId: string) =>
       `/api/analytics/link/${linkId}/comprehensive`,
+    ANALYTICS_DASHBOARD: (linkId: string) =>
+      `/api/analytics/link/${linkId}/dashboard`,
     ANALYTICS_GEOGRAPHIC: (linkId: string) =>
       `/api/analytics/link/${linkId}/geographic`,
     ANALYTICS_TEMPORAL: (linkId: string) =>
@@ -72,6 +92,13 @@ export const API_CONFIG = {
       `/api/analytics/link/${linkId}/audience`,
     ANALYTICS_INSIGHTS: (linkId: string) =>
       `/api/analytics/link/${linkId}/insights`,
+
+    // --- PUBLIC: unauthenticated `/api/public/*` (used by `/shorter`) ---
+    PUBLIC: {
+      SHORTEN: "/api/public/shorten",
+      LINK_BY_SLUG: (slug: string) => `/api/public/link/${slug}`,
+      ANALYTICS: (slug: string) => `/api/public/analytics/${slug}`,
+    },
   },
 
   CACHE: {
@@ -87,27 +114,40 @@ export const API_CONFIG = {
   },
 };
 
-// Função para construir URLs completas
+/**
+ * Prefixes an API endpoint path with the configured base URL.
+ * Returns the path unchanged when `API_CONFIG.BASE_URL` is empty (dev with Next.js rewrites).
+ */
 export const buildApiUrl = (endpoint: string): string => {
   return `${API_CONFIG.BASE_URL}${endpoint}`;
 };
 
-// Função para construir URLs de teste
+/**
+ * Prefixes an endpoint path with the configured test base URL (`NEXT_PUBLIC_TEST_API_URL`).
+ * Used by ad-hoc test/diagnostic helpers that point at a non-default backend.
+ */
 export const buildTestUrl = (endpoint: string): string => {
   return `${API_CONFIG.TEST_URL}${endpoint}`;
 };
 
-// Função para verificar se estamos em desenvolvimento
+/**
+ * Returns `true` when `process.env.NODE_ENV === "development"`.
+ */
 export const isDevelopment = (): boolean => {
   return process.env.NODE_ENV === "development";
 };
 
-// Função para verificar se estamos em produção
+/**
+ * Returns `true` when `process.env.NODE_ENV === "production"`.
+ */
 export const isProduction = (): boolean => {
   return process.env.NODE_ENV === "production";
 };
 
-// Função para obter timeout baseado no ambiente
+/**
+ * Returns the HTTP timeout in ms, doubling the default in production
+ * to absorb cold-start / network variance.
+ */
 export const getTimeout = (): number => {
   return isProduction() ? API_CONFIG.TIMEOUT * 2 : API_CONFIG.TIMEOUT;
 };

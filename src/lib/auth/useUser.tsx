@@ -18,6 +18,17 @@ interface useUser {
   refreshUser: () => Promise<void>;
 }
 
+/**
+ * Convenience hook that adapts `useAuth` to the legacy `useUser` shape used
+ * by settings/profile components.
+ *
+ * @returns `{data, isGuest, signOut, updateUser, updateUserSettings, refreshUser}`.
+ *
+ * @remarks
+ * - `isGuest` is derived from `user.role` being empty/missing.
+ * - `updateUserSettings` is a no-op when the new settings object is structurally
+ *   equal to the current one (lodash `isEqual` short-circuit).
+ */
 function useUser(): useUser {
   const {
     user,

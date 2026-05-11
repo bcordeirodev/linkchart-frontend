@@ -32,4 +32,4 @@ export const profileService = new ProfileService();
 export const analyticsService = new AnalyticsService();
 
 // Re-export types that might be needed
-export type { UserProfile } from "../features/profile/types/user";
+export type { UserProfile } from "../features/profile/types";

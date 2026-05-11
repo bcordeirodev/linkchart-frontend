@@ -10,6 +10,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
 import { api } from "@/lib/api/client";
+import { API_CONFIG } from "@/lib/api/endpoints";
 
 import type {
   ActivityData,
@@ -24,7 +25,18 @@ import type {
 } from "@/types/analytics/dashboard";
 
 /**
- * Hook para gerenciar dados do dashboard
+ * Fetches the dashboard payload for a given link, with optional polling.
+ *
+ * @param options.linkId - canonical link id; the hook stays idle when undefined/empty
+ * @param options.timeframe - one of `"1h" | "24h" | "7d" | "30d" | "all"` (default `"24h"`)
+ * @param options.refreshInterval - polling interval in ms when `enableRealtime` is true (default `60000`)
+ * @param options.enableRealtime - when true, polls every `refreshInterval` ms (default `false`)
+ * @returns `{ data: DashboardData | null, stats, loading, error, refresh, isRealtime }`
+ *
+ * @remarks
+ * Endpoint: `GET /api/analytics/link/{id}/dashboard?hours={n}&include_charts=true` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD`).
+ * Unlike the other analytics hooks, this one uses `useState`/`useEffect` directly (not TanStack Query) — it predates the migration and keeps its own AbortController-based request deduplication.
+ * Cache key is therefore not part of the shared `queryKeys.analytics.*` namespace.
  */
 export function useDashboardData({
   linkId,
@@ -78,7 +90,7 @@ export function useDashboardData({
         return;
       }
 
-      const endpoint = `/api/analytics/link/${linkId}/dashboard`;
+      const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD(linkId);
       const fullEndpoint = buildEndpointWithParams(endpoint, params);
 
       // Client já desembrulha envelope { data } (Onda 0).
@@ -206,7 +218,9 @@ interface ApiResponse extends ApiResponseData {
 }
 
 /**
- * Converte timeframe para horas
+ * Maps a human-friendly timeframe label (`"1h" | "24h" | "7d" | "30d" | "all"`)
+ * to the `hours` query-string value expected by the dashboard endpoint.
+ * `"all"` is translated to `"0"`, which the backend interprets as no time bound.
  */
 function getHoursFromTimeframe(
   timeframe: "1h" | "24h" | "7d" | "30d" | "all",
@@ -216,7 +230,9 @@ function getHoursFromTimeframe(
 }
 
 /**
- * Constrói endpoint com parâmetros
+ * Appends a `URLSearchParams`-encoded query string to `endpoint`, skipping
+ * keys whose value is `undefined`/`null`. Returns the bare endpoint when no
+ * params are provided.
  */
 function buildEndpointWithParams(
   endpoint: string,
@@ -290,7 +306,9 @@ function mapResponseToDashboardData(response: ApiResponse): DashboardData {
 }
 
 /**
- * Calcula estatísticas do dashboard
+ * Derives dashboard summary stats from `DashboardData`, including a coarse
+ * `dataQuality` tier (`excellent`/`good`/`fair`/`poor`) bucketed by total
+ * clicks so the UI can adapt empty/sparse states without per-component checks.
  */
 function calculateStats(data: DashboardData): DashboardStats {
   const totalClicks = data.summary.total_clicks || 0;

@@ -8,11 +8,17 @@ interface NavigateOptions {
 }
 
 /**
- * Drop-in replacement for react-router-dom's useNavigate.
- * Supports:
- *   navigate("/path")
- *   navigate("/path", { replace: true, state: {...} })
- *   navigate(-1)  — maps to router.back()
+ * Drop-in replacement for `react-router-dom`'s `useNavigate` over Next.js App Router.
+ *
+ * @returns `(to, options?) => void` — supports:
+ * - `navigate("/path")` — `router.push`.
+ * - `navigate("/path", {replace: true})` — `router.replace`.
+ * - `navigate(-1)` — `router.back()`. Positive numbers map to `router.forward()`.
+ *
+ * @remarks
+ * `options.state` is intentionally ignored: the App Router does not expose
+ * `history.state` to client code. Migrate callers that need to pass state to
+ * URL search params or a server cookie.
  */
 export function useNavigate() {
   const router = useRouter();

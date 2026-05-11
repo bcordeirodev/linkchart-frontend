@@ -22,6 +22,20 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+/**
+ * Top-level auth provider mounted near the root of the App Router tree.
+ *
+ * Hydrates `user` from `localStorage` on mount, calls `authService.getMe()`
+ * to validate the JWT, and exposes `login`, `logout`, `updateUser`, and
+ * `refreshUser` to descendants via `useAuth`.
+ *
+ * @remarks
+ * - Falls back to the cached `localStorage.user` on transient network errors so
+ *   the UI doesn't blink to logged-out during a flaky connection. Only `401`
+ *   responses clear the session.
+ * - Tokens are read straight from `localStorage.token`; `ApiClient` injects them
+ *   on the wire via `Authorization: Bearer`.
+ */
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -217,6 +231,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+/**
+ * Reads the current auth context.
+ *
+ * @returns `{user, isAuthenticated, isLoading, login, logout, updateUser, refreshUser}`.
+ * @throws if called outside an `<AuthProvider>` subtree.
+ */
 export function useAuth() {
   const context = useContext(AuthContext);
 

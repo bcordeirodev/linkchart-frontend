@@ -26,6 +26,13 @@ interface AuthJsFormProps {
   formType: "signin" | "signup";
 }
 
+/**
+ * Renders either the sign-in or the (placeholder) sign-up form.
+ *
+ * Reads `?error=...` from the URL to surface upstream provider errors as an
+ * MUI `<Alert>`, then delegates to the inner form variant. After a successful
+ * sign-in, the user is sent to `getSessionRedirectUrl()` (or `/links` by default).
+ */
 function AuthJsForm(props: AuthJsFormProps) {
   const { formType = "signin" } = props;
   const { login } = useAuth();
@@ -57,6 +64,14 @@ function AuthJsForm(props: AuthJsFormProps) {
   );
 }
 
+/**
+ * Sign-in variant rendered by {@link AuthJsForm} when `formType === "signin"`.
+ *
+ * Owns local `email`/`password`/`loading` state and submits via the injected
+ * `onLogin` callback (wired to `useAuth().login`). On success, navigates to the
+ * session redirect URL (or `/links`); on failure, dispatches an error toast.
+ * Includes a "forgot password" link below the submit button.
+ */
 function SimpleSignInForm({
   onLogin,
 }: {
@@ -172,6 +187,13 @@ function SimpleSignInForm({
   );
 }
 
+/**
+ * Sign-up variant rendered by {@link AuthJsForm} when `formType === "signup"`.
+ *
+ * Placeholder component: renders a "feature coming soon" message until the
+ * registration flow is wired up. Kept as a separate subcomponent so the parent
+ * can pick between sign-in and sign-up purely by branching on `formType`.
+ */
 function SimpleSignUpForm() {
   return (
     <Box sx={{ textAlign: "center", p: { xs: 2, sm: 3, md: 4 } }}>

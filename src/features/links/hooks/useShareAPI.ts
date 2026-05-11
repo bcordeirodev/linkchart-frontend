@@ -16,8 +16,15 @@ interface UseShareAPIReturn {
 }
 
 /**
- * Hook personalizado para Web Share API
- * Fallback para clipboard quando Share API não está disponível
+ * Wraps `navigator.share` with a graceful clipboard fallback.
+ *
+ * @returns `{ canShare, share, shareOrCopy }`
+ *
+ * @remarks
+ * No network calls — this is purely a browser-platform helper.
+ * `canShare` is `true` only on environments exposing the Web Share API (most mobile browsers + Chromium desktop).
+ * `share` swallows `AbortError` (user-cancelled share sheet) but re-throws other errors.
+ * `shareOrCopy` falls back to `useClipboard().copy(data.url)` when share is unavailable or fails.
  */
 export function useShareAPI(): UseShareAPIReturn {
   const { copy } = useClipboard();

@@ -14,6 +14,12 @@ import type {
   UseAudienceDataReturn,
 } from "@/types/analytics";
 
+/**
+ * Derives summary stats (primary device/browser, total clicks) from the raw
+ * `AudienceData` returned by the API. Returns sentinel values (`"N/A"`, `0`)
+ * when the device breakdown is empty so callers can render an empty state
+ * without null checks.
+ */
 function calculateStats(audienceData: AudienceData): AudienceStats {
   const devices = audienceData.device_breakdown || [];
 
@@ -40,6 +46,20 @@ function calculateStats(audienceData: AudienceData): AudienceStats {
   };
 }
 
+/**
+ * Fetches audience analytics (device/browser/OS breakdowns) for a link.
+ *
+ * @param options.linkId - canonical link id; the query stays disabled when falsy
+ * @param options.enableRealtime - when true, refetches every `refreshInterval` ms (default `true`)
+ * @param options.refreshInterval - polling interval in ms when realtime is on (default `60000`)
+ * @returns `{ data: AudienceData | null, stats, loading, error, lastUpdate, refresh, isRealtime }`
+ *
+ * @remarks
+ * Cache key: `queryKeys.analytics.audience(linkId)` → `["analytics", linkId, "audience"]`.
+ * Endpoint: `GET /api/analytics/link/{id}/audience` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_AUDIENCE`).
+ * Returned `AudienceData` shape is defined in `src/types/analytics`.
+ * `stats` (primary device/browser, total clicks) is derived client-side from `device_breakdown`/`browser_breakdown`.
+ */
 export function useAudienceData({
   linkId,
   enableRealtime = true,
@@ -48,7 +68,7 @@ export function useAudienceData({
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: queryKeys.analytics.audience(linkId),
     queryFn: () =>
-      api.get<AudienceData>(`/api/analytics/link/${linkId}/audience`),
+      api.get<AudienceData>(API_CONFIG.ENDPOINTS.ANALYTICS_AUDIENCE(linkId)),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,

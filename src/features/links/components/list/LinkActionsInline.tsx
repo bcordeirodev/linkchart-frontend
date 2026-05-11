@@ -1,6 +1,6 @@
 "use client";
-import { CircularProgress, IconButton, Stack, Tooltip } from "@mui/material";
-import { BarChart3, ClipboardCopy } from "lucide-react";
+import { IconButton, Stack, Tooltip } from "@mui/material";
+import { BarChart3, Check, ClipboardCopy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 
@@ -49,18 +49,14 @@ export function LinkActionsInline({
             copy(shortUrl);
           }}
           sx={{
-            color: "text.secondary",
+            color: copied ? "success.main" : "text.secondary",
             "&:hover": {
               color: "primary.main",
               bgcolor: "rgba(25, 118, 210, 0.08)",
             },
           }}
         >
-          {copied ? (
-            <CircularProgress size={14} color="primary" />
-          ) : (
-            <ClipboardCopy {...ICON_MD} />
-          )}
+          {copied ? <Check {...ICON_MD} /> : <ClipboardCopy {...ICON_MD} />}
         </IconButton>
       </Tooltip>
     </Stack>

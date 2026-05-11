@@ -22,7 +22,7 @@ import _ from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import useUser from "@/lib/auth/useUser";
-import settingsConfig from "@/lib/settingsConfig";
+import settingsConfig from "@/shared/layout/core/settingsConfig";
 
 import { LayoutSettingsContext } from "./LayoutSettingsContext";
 

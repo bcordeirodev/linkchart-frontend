@@ -23,14 +23,9 @@ interface ResponsiveContainerProps extends Omit<ContainerProps, "children"> {
 }
 
 /**
- * Container responsivo unificado que aplica espaçamentos consistentes
- * baseados no design system otimizado para mobile-first
+ * MUI `<Container>` wrapper that applies `responsiveSpacing[variant]` (page/section/card/form) and a `maxWidth="xl"` default.
  *
- * @features
- * - Estilos sx têm prioridade total sobre estilos padrão
- * - Detecta automaticamente se sx contém propriedades de spacing
- * - Suporta sx={{ p: 0 }} para remover padding completamente
- * - Compatível com todas as propriedades de spacing do MUI
+ * The `sx` prop has full priority — if it contains any padding key (`p`, `px`, etc.) or any margin key (when `withMarginBottom`), the default spacing is suppressed for that axis. `spacing` overrides the variant preset with a literal xs/sm/md ramp.
  */
 export function ResponsiveContainer({
   children,
@@ -135,7 +130,7 @@ export function ResponsiveContainer({
 }
 
 /**
- * Versão simplificada para uso interno de páginas
+ * Convenience wrapper: `ResponsiveContainer` with `variant="page"` (top-level page padding).
  */
 export function PageContainer({
   children,
@@ -149,7 +144,9 @@ export function PageContainer({
 }
 
 /**
- * Container para seções dentro de páginas
+ * Convenience wrapper: `ResponsiveContainer` with `variant="section"` and `withMarginBottom`.
+ *
+ * Wraps children in a `<Box sx={{ width: "100%" }}>` for predictable fluid widths.
  */
 export function SectionContainer({
   children,
@@ -163,7 +160,7 @@ export function SectionContainer({
 }
 
 /**
- * Container para formulários
+ * Convenience wrapper: `ResponsiveContainer` with `variant="form"` and `maxWidth="md"`.
  */
 export function FormContainer({
   children,

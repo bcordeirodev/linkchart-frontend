@@ -13,7 +13,9 @@ import {
 import type { MetricCardProps } from "../components";
 
 /**
- * Card de métricas otimizado e reutilizável
+ * Single-metric KPI card with optional trend indicator.
+ *
+ * Renders title + large numeric value + optional subtitle + icon, and an optional trend row (`↗ N%` in `success.main` when positive, `↘ N%` in `error.main` when negative) labelled with `t("analytics:metrics.vsPreviousPeriod")`. `MetricCardProps` is defined in `../components`.
  */
 export function MetricCardOptimized({
   title,

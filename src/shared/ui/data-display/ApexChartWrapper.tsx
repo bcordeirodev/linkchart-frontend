@@ -32,6 +32,7 @@ import {
 // Chart importado diretamente
 
 interface ApexChartWrapperProps {
+  /** Underlying ApexCharts chart type. */
   type:
     | "line"
     | "area"
@@ -43,16 +44,24 @@ interface ApexChartWrapperProps {
     | "bubble"
     | "heatmap"
     | "treemap";
+  /** Explicit pixel height — overrides the responsive `size` mapping. */
   height?: number; // explicit override — existing callers keep working unchanged
+  /** Responsive size hint (resolves to a height via `useChartHeight(size)`). */
   size?: ChartSize; // NEW: responsive size hint
+  /** Width as px or CSS string (default `"100%"`). */
   width?: string | number;
+  /** ApexCharts `options` object — merged with the theme defaults (palette, foreColor, grid, responsive). */
   options: Record<string, unknown>;
+  /** ApexCharts `series` array. The shape validation accepts number arrays (donut/pie), `{data}` objects, and nested arrays. */
   series: unknown[];
 }
 
 /**
- * 📊 APEX CHART WRAPPER COM STYLED COMPONENTS
- * Wrapper melhorado com tratamento de erro e loading states
+ * Theming + state-management wrapper around `react-apexcharts`.
+ *
+ * Uses `next/dynamic` with `ssr: false` so the ApexCharts ESM bundle is never loaded on the server.
+ * Renders one of four states: no-data placeholder (when `series` has no usable points), error placeholder with derived stats, loading spinner, or the chart itself.
+ * Auto-injects `chartPalette`, `theme.palette.mode`, `theme.palette.text.secondary` (foreColor), and an `xs`-breakpoint responsive block (legend bottom, no toolbar).
  */
 
 const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
