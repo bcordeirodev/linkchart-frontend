@@ -4,7 +4,7 @@ import { Monitor, Smartphone, Tablet } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { ChartCard } from "@/shared/ui/base/ChartCard";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type { DeviceByPeriodEntry } from "@/types/analytics/temporal";
 

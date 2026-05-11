@@ -5,7 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { getStandardChartColors } from "@/lib/theme";
-import { ChartCard } from "@/shared/ui/base/ChartCard";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type { DailyTimelineEntry } from "@/types/analytics/temporal";
 
