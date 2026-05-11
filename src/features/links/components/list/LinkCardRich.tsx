@@ -195,21 +195,23 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
           </Box>
         </Tooltip>
 
-        <Tooltip title="Analytics">
+        <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
           <Button
             size="small"
             variant="contained"
             color="primary"
+            startIcon={<BarChart3 {...ICON_SM} />}
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/links/analytics/${link.id}`);
             }}
             sx={{
               flexShrink: 0,
-              minWidth: 0,
               borderRadius: "20px",
-              px: 1,
+              px: 1.5,
               py: 0.25,
+              fontSize: "0.75rem",
+              textTransform: "none",
               boxShadow: "none",
               animation: `${analyticsPulse} 2.4s ease-in-out infinite`,
               "@media (prefers-reduced-motion: reduce)": {
@@ -218,7 +220,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
               "&:hover": { boxShadow: "none", animation: "none" },
             }}
           >
-            <BarChart3 {...ICON_SM} />
+            {t("actions.analytics")}
           </Button>
         </Tooltip>
 
