@@ -48,7 +48,9 @@
     "copy": "Copy",
     "delete": "Delete",
     "qrCode": "QR Code",
-    "deleteError": "Error deleting link. Please try again."
+    "deleteError": "Error deleting link. Please try again.",
+    "back": "Back",
+    "more": "More actions"
   },
   "form": {
     "createTitle": "Create New Link",
