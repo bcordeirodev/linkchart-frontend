@@ -22,19 +22,10 @@ interface LinkUpdateRequestExtended
     Record<string, unknown> {}
 
 /**
- * Serviço para gerenciamento de links
+ * REST client for `/api/links` (authenticated CRUD) and the per-link
+ * analytics + clicks-list endpoints.
  *
- * Herda do BaseService para:
- * - Tratamento de erro padronizado
- * - Logging centralizado
- * - Type safety
- * - Fallbacks automáticos
- */
-
-// Tipos centralizados importados de @/types
-
-/**
- * Classe de serviço para links usando BaseService
+ * Wraps `BaseService` and inherits envelope unwrap + JWT injection from `ApiClient`.
  */
 export default class LinkService extends BaseService {
   constructor() {
@@ -42,7 +33,11 @@ export default class LinkService extends BaseService {
   }
 
   /**
-   * Cria um novo link encurtado
+   * Creates a new shortened link for the authenticated user.
+   *
+   * @param body - link payload; `original_url` is required.
+   * @returns the created `LinkResponse`.
+   * @endpoint `POST /api/links`
    */
   async save(body: LinkCreateRequestExtended): Promise<LinkResponse> {
     this.validateRequired(body, ["original_url"]);
@@ -53,7 +48,12 @@ export default class LinkService extends BaseService {
   }
 
   /**
-   * Atualiza um link existente
+   * Updates an existing link owned by the authenticated user.
+   *
+   * @param id - link id.
+   * @param body - partial link payload.
+   * @returns the updated `LinkResponse`.
+   * @endpoint `PUT /api/links/{id}`
    */
   async update(
     id: string,
@@ -67,7 +67,10 @@ export default class LinkService extends BaseService {
   }
 
   /**
-   * Busca todos os links do usuário
+   * Lists every link owned by the authenticated user.
+   *
+   * @returns array of `LinkResponse` (already unwrapped from the `{data}` envelope).
+   * @endpoint `GET /api/links`
    */
   async all(): Promise<LinkResponse[]> {
     return this.get<LinkResponse[]>(API_CONFIG.ENDPOINTS.LINKS, {
@@ -76,7 +79,11 @@ export default class LinkService extends BaseService {
   }
 
   /**
-   * Busca um link específico por ID
+   * Fetches a single link by id.
+   *
+   * @param id - link id.
+   * @returns the matching `LinkResponse`.
+   * @endpoint `GET /api/links/{id}`
    */
   async findOne(id: string): Promise<LinkResponse> {
     this.validateId(id, "Link ID");
@@ -87,7 +94,11 @@ export default class LinkService extends BaseService {
   }
 
   /**
-   * Remove um link
+   * Deletes a link owned by the authenticated user.
+   *
+   * @param id - link id.
+   * @returns `{message}` confirmation envelope.
+   * @endpoint `DELETE /api/links/{id}`
    */
   async remove(id: string): Promise<{ message: string }> {
     this.validateId(id, "Link ID");
@@ -99,7 +110,11 @@ export default class LinkService extends BaseService {
   }
 
   /**
-   * Busca analytics de um link
+   * Returns the legacy analytics payload for a link (by id, despite the parameter name).
+   *
+   * @param slug - link id passed straight into the route.
+   * @returns the raw analytics payload; falls back to `{}` on error.
+   * @endpoint `GET /api/links/{id}/analytics`
    */
   async getAnalytics(slug: string): Promise<unknown> {
     this.validateId(slug, "Link slug");
@@ -111,8 +126,16 @@ export default class LinkService extends BaseService {
   }
 
   /**
-   * Lista paginada de cliques de um link, usada na tab "Cliques" do analytics.
-   * Usa rawEnvelope para preservar `data` + `meta` (paginação) no payload.
+   * Returns a paginated list of clicks for a link (used by the analytics "Cliques" tab).
+   *
+   * @param id - link id.
+   * @param params - paging/sort/filter query options.
+   * @returns the raw `{data, meta}` envelope so the caller can render pagination.
+   * @endpoint `GET /api/link/{id}/clicks-list`
+   *
+   * @remarks
+   * Uses `api.get` directly (with `rawEnvelope: true`) instead of the `BaseService`
+   * helpers so the `meta` block is preserved alongside `data`.
    */
   async getClicksList(
     id: string,

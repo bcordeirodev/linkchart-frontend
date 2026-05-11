@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import { URLShortenerForm } from "@/features/links/components/URLShortenerForm";
 import { ShorterHero, ShorterStats } from "@/features/shorter/components";
-import { useShorter } from "@/features/shorter/hooks";
+import { useShorter } from "@/features/shorter/hooks/useShorter";
 import { PublicLayout } from "@/shared/layout";
 
 import { BenefitBadges } from "./BenefitBadges";

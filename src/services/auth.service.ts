@@ -18,19 +18,11 @@ interface RegisterRequest extends Record<string, unknown> {
 }
 
 /**
- * Serviço de autenticação
+ * REST client for `/api/auth/*` and adjacent identity endpoints.
  *
- * Herda do BaseService para:
- * - Tratamento de erro padronizado
- * - Logging centralizado
- * - Type safety
- * - Fallbacks automáticos
- */
-
-// Tipos centralizados importados de @/types
-
-/**
- * Classe de serviço para autenticação usando BaseService
+ * Wraps `BaseService` and inherits envelope unwrap + JWT injection from `ApiClient`.
+ * Login is sent as `application/x-www-form-urlencoded` to keep the request
+ * "simple" (no preflight) when the proxy is not used.
  */
 export default class AuthService extends BaseService {
   constructor() {
@@ -38,7 +30,14 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Realiza login do usuário
+   * Authenticates with email + password and returns a fresh JWT.
+   *
+   * @param body - `{ email, password }` payload.
+   * @returns the `LoginResponse` envelope including `token` and `user`.
+   * @endpoint `POST /api/auth/login`
+   *
+   * @remarks
+   * Sent as `x-www-form-urlencoded` via `api.postForm` to avoid the CORS preflight.
    */
   async signIn(body: LoginRequest): Promise<LoginResponse> {
     this.validateRequired(body, ["email", "password"]);
@@ -51,7 +50,11 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Registra um novo usuário
+   * Creates a new account and returns the resulting JWT envelope.
+   *
+   * @param body - `{ name, email, password, password_confirmation }`.
+   * @returns the `LoginResponse` envelope (auto-login on signup).
+   * @endpoint `POST /api/auth/register`
    */
   async signUp(body: RegisterRequest): Promise<LoginResponse> {
     this.validateRequired(body, [
@@ -67,7 +70,10 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Busca dados do usuário autenticado
+   * Returns the currently authenticated user.
+   *
+   * @returns the `UserResponse` for the JWT in `localStorage.token`.
+   * @endpoint `GET /api/me`
    */
   async getMe(): Promise<UserResponse> {
     return this.get<UserResponse>(API_ENDPOINTS.AUTH.ME, {
@@ -76,7 +82,10 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Realiza logout do usuário
+   * Invalidates the current JWT on the backend.
+   *
+   * @returns confirmation message; falls back to a success message on error.
+   * @endpoint `POST /api/logout`
    */
   async signOut(): Promise<{ message: string }> {
     return this.post<{ message: string }>(
@@ -90,7 +99,11 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Atualiza perfil do usuário
+   * Patches the profile fields of the authenticated user.
+   *
+   * @param updates - partial user fields to overwrite.
+   * @returns the updated `UserResponse`.
+   * @endpoint `PUT /api/profile`
    */
   async updateProfile(updates: Partial<UserResponse>): Promise<UserResponse> {
     return this.put<UserResponse>(API_ENDPOINTS.AUTH.UPDATE_PROFILE, updates, {
@@ -99,7 +112,11 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Verificar email usando token
+   * Confirms an email-verification token sent by the backend.
+   *
+   * @param token - opaque token from the verification email link.
+   * @returns `{success, message, type?, user?}` envelope reflecting the outcome.
+   * @endpoint `POST /api/auth/verify-email`
    */
   async verifyEmail(token: string): Promise<{
     success: boolean;
@@ -119,7 +136,11 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Solicitar recuperação de senha
+   * Triggers the password-reset email flow.
+   *
+   * @param email - account email to send the reset link to.
+   * @returns `{success, message, type?}` envelope.
+   * @endpoint `POST /api/auth/forgot-password`
    */
   async forgotPassword(email: string): Promise<{
     success: boolean;
@@ -138,7 +159,11 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Redefinir senha usando token
+   * Resets the password using a token issued by `forgotPassword`.
+   *
+   * @param data - `{token, password, password_confirmation}`.
+   * @returns `{success, message, type?, user?}` envelope.
+   * @endpoint `POST /api/auth/reset-password`
    */
   async resetPassword(data: {
     token: string;
@@ -158,7 +183,10 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Verificar status de verificação do email
+   * Reads the current email-verification state for the logged-in user.
+   *
+   * @returns flags `{email_verified, can_resend, last_sent?}` plus the bound email.
+   * @endpoint `GET /api/email-verification-status`
    */
   async getEmailVerificationStatus(): Promise<{
     success: boolean;
@@ -173,7 +201,10 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Reenviar email de verificação
+   * Re-sends the verification email if the cool-down has elapsed.
+   *
+   * @returns `{success, message, email?, expires_at?}` envelope.
+   * @endpoint `POST /api/resend-verification-email`
    */
   async resendVerificationEmail(): Promise<{
     success: boolean;
@@ -191,7 +222,11 @@ export default class AuthService extends BaseService {
   }
 
   /**
-   * Altera senha do usuário
+   * Changes the password for the authenticated user.
+   *
+   * @param data - `{current_password, new_password, new_password_confirmation}`.
+   * @returns `{message}` confirmation envelope.
+   * @endpoint `PUT /api/change-password`
    */
   async changePassword(data: {
     current_password: string;

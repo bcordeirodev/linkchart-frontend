@@ -65,6 +65,11 @@ function SlideDown(props: SlideProps) {
 
 SlideDown.displayName = "SlideDown";
 
+/**
+ * Global Redux-driven toast/snackbar — accent-stripe surface with icon, message, optional action, and auto-hide progress bar.
+ *
+ * Takes no props: state is pulled from `messageSlice` (`open`, `options`, `queue`). Variant (`success`/`error`/`warning`/`info`) selects the icon and the semantic tone (`semanticDark`/`semanticLight`); transition direction depends on `anchorOrigin.vertical`. The queue length is shown as a `+N` pill when more messages are pending. Render via Redux dispatch (`showMessage(...)`) — see `lib/store/messageSlice.ts`.
+ */
 export function Message() {
   const theme = useTheme();
   const dispatch = useAppDispatch();

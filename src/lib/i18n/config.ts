@@ -34,10 +34,17 @@ const resources = {
   },
 };
 
-// Called once from Providers with the server-detected language (from cookie).
-// Both the server and the client use this same initial language, preventing
-// hydration mismatches. Post-hydration, detectAndApplyLanguage() updates to
-// the user's actual stored preference.
+/**
+ * Initialises `i18next` with the bundled `pt-BR` and `en` resources.
+ *
+ * @param lng - initial language; defaults to `"en"`. The server passes the
+ *              cookie-detected value so SSR and client hydrate with the same
+ *              language and no mismatch warnings fire.
+ *
+ * @remarks
+ * Idempotent — bails out if `i18n.isInitialized` is already `true`. After
+ * hydration, `detectAndApplyLanguage()` switches to the stored preference.
+ */
 export function initI18n(lng: string = "en") {
   if (i18n.isInitialized) return;
   void i18n.use(initReactI18next).init({
@@ -51,7 +58,14 @@ export function initI18n(lng: string = "en") {
   });
 }
 
-// Run after hydration to apply the user's actual language preference.
+/**
+ * Reconciles the active i18n language with the user's stored preference.
+ *
+ * Called from a client effect after hydration. Reads the language from the
+ * `i18nextLng` cookie, then `localStorage`, then `navigator.language` (mapping
+ * `pt*` to `pt-BR`). When the preference differs from the current language,
+ * triggers `i18n.changeLanguage()` to swap resources at runtime.
+ */
 export function detectAndApplyLanguage() {
   const cookie = document.cookie.match(/(?:^|; )i18nextLng=([^;]*)/)?.[1];
   const stored =

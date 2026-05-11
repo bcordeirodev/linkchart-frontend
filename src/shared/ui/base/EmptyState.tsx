@@ -11,20 +11,27 @@ import type { BaseComponentProps } from "../components";
 import type React from "react";
 
 interface EmptyStateProps extends BaseComponentProps {
+  /** Preset that picks a default emoji and title colour. */
   variant?: "default" | "charts" | "data" | "search";
+  /** Icon override — either an emoji/text string or a ReactNode. Defaults to the variant emoji. */
   icon?: string | React.ReactNode;
+  /** Primary heading text. Required. */
   title: string;
+  /** Optional body text shown below the title (capped at 400 px). */
   description?: string;
+  /** Optional CTA rendered as an outlined `<Button>`. */
   action?: {
     label: string;
     onClick: () => void;
   };
+  /** Container height (number → px, string passed as-is). Default `300`. */
   height?: number | string;
 }
 
 /**
- * Componente EmptyState seguindo padrões arquiteturais
- * Usado para exibir estados vazios de forma consistente
+ * Centred empty-state placeholder with icon, title, description and optional CTA.
+ *
+ * Used by analytics widgets, list pages with no rows, and search results with zero matches. Variant only affects the default icon + title colour — actual layout is identical across variants.
  */
 export function EmptyState({
   variant = "default",

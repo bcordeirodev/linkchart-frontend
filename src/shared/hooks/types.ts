@@ -1,6 +1,17 @@
 /**
- * 🎣 TIPOS DE HOOKS
- * Tipos para todos os hooks customizados da aplicação
+ * Shared hook return-shape and option types.
+ *
+ * Conventions:
+ * - `Use<Domain>State` and `Use<Domain>Actions` are kept separate so consumers
+ *   can re-use just the state (e.g. for context values) or just the action
+ *   surface (e.g. for ref-based imperative APIs).
+ * - The merged `Use<Domain>` interface (extending both halves) is the typical
+ *   public contract returned by the corresponding hook implementation in this
+ *   folder.
+ *
+ * Hook implementations live next to this file (`useClipboard`, `useDebounce`,
+ * etc.); add a new section here whenever a hook gains a non-trivial public
+ * shape so consumers can `import type` instead of restating the type inline.
  */
 
 import type { LinkResponse, MetricsDashboardResponse } from "@/types";

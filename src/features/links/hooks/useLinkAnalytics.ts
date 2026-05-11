@@ -15,16 +15,15 @@ interface UseLinkAnalyticsReturn {
 }
 
 /**
- * 🔄 Hook otimizado para analytics de link individual REFATORADO
+ * Loads basic link info and returns a minimal `LinkAnalyticsData` shell for legacy consumers.
  *
- * @description
- * Agora usa hooks individuais por tab ao invés do useEnhancedAnalytics.
- * Cada componente de analytics do link usa seu próprio hook específico.
+ * @param linkId - canonical link id
+ * @returns `{ data: LinkAnalyticsData | null, linkInfo, loading, error, refetch }`
  *
- * @architecture
- * - Não depende mais do endpoint comprehensive
- * - Busca apenas dados básicos do link
- * - Componentes individuais usam hooks específicos (useTemporalData, useGeographicData, etc.)
+ * @remarks
+ * Endpoint: `GET /api/links/{id}` (via `linkService.findOne()`); detailed analytics are loaded by tab-specific hooks (`useTemporalData`, `useGeographicData`, `useAudienceData`, `useInsightsData`).
+ * The returned `data.overview.unique_visitors`/`avg_daily_clicks` are estimates derived from `linkInfo.clicks` and exist purely for backwards compatibility with the pre-split analytics shape.
+ * Does not use TanStack Query — keeps a local `useState`/`useEffect` flow.
  */
 export function useLinkAnalyticsOptimized(
   linkId: string,

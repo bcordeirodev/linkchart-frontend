@@ -8,9 +8,14 @@ interface Location {
 }
 
 /**
- * Minimal shim for react-router-dom's useLocation.
- * Next.js App Router has no history.state; state is always null here.
- * Callers using location.pathname work correctly.
+ * Minimal shim for `react-router-dom`'s `useLocation` so legacy components keep working.
+ *
+ * @returns `{pathname, state}` — `pathname` comes from Next's `usePathname`;
+ *          `state` is always `null` because the App Router doesn't expose
+ *          `history.state` to client components.
+ *
+ * @remarks Code that only reads `location.pathname` works as-is; anything
+ * relying on router state should be migrated to a real Next.js primitive.
  */
 export function useLocation(): Location {
   const pathname = usePathname();

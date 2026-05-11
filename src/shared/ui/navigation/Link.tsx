@@ -121,7 +121,9 @@ const isExternalLink = (url: string): boolean => {
 };
 
 /**
- * Componente de link inteligente
+ * Smart link that picks the right primitive: external URLs render a styled `<a>` with `target="_blank"` + `rel="noopener noreferrer"`; relative paths render a `next/link` wrapped in MUI `<Link>`.
+ *
+ * Accepts either `to` or `href` (synonyms). Returns a plain `<span>` when both are empty so callers can drop in/out of link behaviour without conditional JSX. `isExternalLink` matches `http(s)://`, `mailto:`, `tel:`, `ftp://`, `//` and any `://`.
  */
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
   const {

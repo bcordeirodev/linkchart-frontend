@@ -11,7 +11,7 @@
  * - Performance otimizada com memo
  */
 
-import { Link2, Eye, Clock } from "lucide-react";
+import { Check, Copy, Eye, Clock, Link2 } from "lucide-react";
 import { ICON_SM, ICON_MD } from "@/lib/theme/iconDefaults";
 import {
   Box,
@@ -21,13 +21,16 @@ import {
   Chip,
   Stack,
   Avatar,
+  Tooltip,
   useTheme,
 } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 import { enUS, ptBR } from "date-fns/locale";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
+import useClipboard from "@/hooks/useClipboard";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkActionsInline } from "./LinkActionsInline";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 
@@ -82,6 +85,10 @@ const LinkMobileCard = memo(
     const theme = useTheme();
     const isDark = theme.palette.mode === "dark";
     const navigate = useNavigate();
+    const { copied: urlCopied, copy: copyUrl } = useClipboard({
+      timeout: 1500,
+    });
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { t, i18n } = useTranslation("links");
     const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
 
@@ -184,31 +191,58 @@ const LinkMobileCard = memo(
             </Box>
           </Box>
 
-          {/* URL encurtada */}
-          <Box
-            sx={{
-              p: 2,
-              bgcolor: theme.palette.background.paper,
-              borderRadius: `${radiusTokens.md}px`,
-              border: `1px solid ${theme.palette.divider}`,
-              mb: 2,
-            }}
+          {/* URL encurtada — clicável para copiar */}
+          <Tooltip
+            title={urlCopied ? t("actions.copySuccess") : t("actions.copyLink")}
           >
-            <Typography
-              variant="body2"
+            <Box
+              onClick={() => copyUrl(shortUrl)}
               sx={{
-                color: "primary.main",
-                fontWeight: 500,
-                fontSize: "0.9rem",
-                fontFamily: "monospace",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
+                p: 2,
+                bgcolor: theme.palette.background.paper,
+                borderRadius: `${radiusTokens.md}px`,
+                border: `1px solid ${theme.palette.divider}`,
+                mb: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                "&:hover": {
+                  borderColor: "primary.light",
+                  bgcolor: "rgba(25, 118, 210, 0.04)",
+                },
               }}
             >
-              {shortUrl}
-            </Typography>
-          </Box>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "primary.main",
+                  fontWeight: 500,
+                  fontSize: "0.9rem",
+                  fontFamily: "monospace",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  flex: 1,
+                  minWidth: 0,
+                  mr: 1,
+                }}
+              >
+                {shortUrl}
+              </Typography>
+              {urlCopied ? (
+                <Check
+                  size={16}
+                  style={{
+                    color: "var(--mui-palette-success-main, #2e7d32)",
+                    flexShrink: 0,
+                  }}
+                />
+              ) : (
+                <Copy size={16} style={{ opacity: 0.5, flexShrink: 0 }} />
+              )}
+            </Box>
+          </Tooltip>
 
           {/* Sparkline mini */}
           {!!meta?.sparkline?.length && (
@@ -313,21 +347,22 @@ const LinkMobileCard = memo(
                   }
                 }}
                 onQR={() => navigate(`/links/qr/${link.id}`)}
-                onDelete={() => {
-                  if (
-                    window.confirm(
-                      `${t("actions.deleteConfirm")}\n${t("actions.deleteConfirmDesc")}`,
-                    )
-                  ) {
-                    if (onDelete) {
-                      onDelete(String(link.id));
-                    }
-                  }
-                }}
+                onDelete={() => setDeleteDialogOpen(true)}
               />
             </Stack>
           </Box>
         </CardContent>
+        <DeleteConfirmDialog
+          open={deleteDialogOpen}
+          shortUrl={shortUrl}
+          onConfirm={() => {
+            setDeleteDialogOpen(false);
+            if (onDelete) {
+              onDelete(String(link.id));
+            }
+          }}
+          onCancel={() => setDeleteDialogOpen(false)}
+        />
       </Card>
     );
   },

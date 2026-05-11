@@ -35,6 +35,19 @@ interface UseLinkClicksReturn {
 
 const DEFAULT_PER_PAGE = 25;
 
+/**
+ * Paginated, sortable, searchable list of click events for a single link.
+ *
+ * @param options.linkId - canonical link id; the hook stays idle when empty
+ * @param options.initialPage - 1-based page (default `1`)
+ * @param options.initialPerPage - page size (default `25`)
+ * @returns items + meta + paging/sort controls (`setPage`, `setPerPage`, `setSearch`, `setSort`, `refresh`)
+ *
+ * @remarks
+ * Endpoint: `GET /api/links/{id}/clicks` (via `linkService.getClicksList()`).
+ * Uses local `useState`/`useEffect` (not TanStack Query) and a `reqId` ref to discard out-of-order responses.
+ * Changing `search` or `perPage` resets `page` to 1.
+ */
 export function useLinkClicks({
   linkId,
   initialPage = 1,

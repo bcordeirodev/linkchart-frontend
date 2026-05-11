@@ -3,7 +3,26 @@ import { useDispatch, useSelector, useStore } from "react-redux";
 
 import type { AppDispatch, AppStore, RootState } from "./store";
 
-// Use throughout your app instead of plain `useDispatch` and `useSelector`
+/**
+ * Type-safe `useDispatch` bound to the app's `AppDispatch` shape.
+ *
+ * Always import this instead of `react-redux`'s plain `useDispatch` so that
+ * thunk return types and action shapes are inferred correctly.
+ */
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+
+/**
+ * Type-safe `useSelector` bound to the app's `RootState`.
+ *
+ * Always import this instead of `react-redux`'s plain `useSelector` so that
+ * `state.*` autocompletion and structural narrowing work everywhere.
+ */
 export const useAppSelector = useSelector.withTypes<RootState>();
+
+/**
+ * Type-safe `useStore` bound to the app's `AppStore`.
+ *
+ * Rarely needed; prefer `useAppDispatch`/`useAppSelector`. Useful when a
+ * non-React utility needs to read state imperatively from a hook context.
+ */
 export const useAppStore = useStore.withTypes<AppStore>();
