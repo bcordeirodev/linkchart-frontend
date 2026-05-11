@@ -26,8 +26,7 @@ export const API_CONFIG = {
   },
 
   ENDPOINTS: {
-    // --- Analytics (global + per-link) ---
-    ANALYTICS: "/api/analytics",
+    // --- Analytics (per-link only — global /api/analytics never existed on backend) ---
     LINK_ANALYTICS: (id: string) => `/api/links/${id}/analytics`,
 
     // --- Links (authenticated CRUD) ---
