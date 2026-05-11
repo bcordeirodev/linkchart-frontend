@@ -14,6 +14,3 @@ export { useNavigate } from "./useNavigate";
 export { default as usePathname } from "./usePathname";
 export { useSearchParams } from "./useSearchParams";
 export { useLocation } from "./useLocation";
-
-// Types
-export * from "./types";
