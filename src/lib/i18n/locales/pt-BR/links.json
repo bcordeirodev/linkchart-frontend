@@ -50,7 +50,8 @@
     "qrCode": "QR Code",
     "deleteError": "Erro ao excluir link. Tente novamente.",
     "back": "Voltar",
-    "more": "Mais ações"
+    "more": "Mais ações",
+    "viewSwitch": "Trocar visualização"
   },
   "form": {
     "createTitle": "Criar Novo Link",

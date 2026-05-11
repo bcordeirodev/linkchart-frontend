@@ -50,7 +50,8 @@
     "qrCode": "QR Code",
     "deleteError": "Error deleting link. Please try again.",
     "back": "Back",
-    "more": "More actions"
+    "more": "More actions",
+    "viewSwitch": "Switch view"
   },
   "form": {
     "createTitle": "Create New Link",
