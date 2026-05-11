@@ -5,10 +5,8 @@ import { useNavigate } from "@/shared/hooks";
 import { useState, useEffect } from "react";
 
 import { EditLinkForm, LinkActions } from "@/features/links";
-import { getShortUrl } from "@/lib/utils/shortUrl";
 import { AppIcon } from "@/shared/ui/icons";
 import { ResponsiveContainer } from "@/shared/ui/base";
-import PageBreadcrumb from "@/shared/ui/navigation/PageBreadcrumb";
 import { LinkFormSkeleton } from "@/shared/ui/feedback/skeletons";
 import { linkService } from "@/services";
 
@@ -25,7 +23,10 @@ interface Props {
 
 function LinkEditPage({ id }: Props) {
   const navigate = useNavigate();
-  const [linkData, setLinkData] = useState<{ short_url?: string } | null>(null);
+  const [linkData, setLinkData] = useState<{
+    short_url?: string;
+    title?: string;
+  } | null>(null);
 
   // Carregar dados do link para a barra de ações
   useEffect(() => {
@@ -40,6 +41,7 @@ function LinkEditPage({ id }: Props) {
         if (link) {
           setLinkData({
             short_url: link.slug || link.custom_slug,
+            title: link.title,
           });
         }
       } catch (_error) {
@@ -63,8 +65,6 @@ function LinkEditPage({ id }: Props) {
       >
         <ResponsiveContainer variant="form" maxWidth="md">
           <Stack spacing={3}>
-            <PageBreadcrumb />
-
             <Alert
               severity="error"
               action={
@@ -93,21 +93,17 @@ function LinkEditPage({ id }: Props) {
     >
       <ResponsiveContainer variant="form" maxWidth="md">
         <Stack spacing={3}>
-          {/* Ações do Link */}
           {linkData ? (
             <LinkActions
               linkId={id}
-              shortUrl={getShortUrl(linkData.short_url ?? "")}
+              currentView="edit"
+              shortUrl={linkData.short_url}
+              title={linkData.title}
               onDeleteSuccess={handleDeleteSuccess}
-              currentPage="edit"
-              actions={{
-                showEdit: false,
-              }}
             />
           ) : null}
 
-          {/* Form Section */}
-          <EditLinkForm linkId={id} showBackButton />
+          <EditLinkForm linkId={id} />
         </Stack>
       </ResponsiveContainer>
     </AuthGuardRedirect>

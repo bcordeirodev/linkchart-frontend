@@ -143,38 +143,13 @@ function LinkQRPage({ id }: Props) {
   return (
     <AuthGuardRedirect auth={["user", "admin"]} fallback={<QRCodeSkeleton />}>
       <ResponsiveContainer variant="page" maxWidth="md">
-        {/* Ações do Link */}
         <LinkActions
           linkId={id}
+          currentView="qr"
           shortUrl={getShortUrl(linkInfo.slug || linkInfo.custom_slug || "")}
+          title={linkInfo.title || linkInfo.original_url}
           onDeleteSuccess={handleDeleteSuccess}
-          currentPage="qr"
-          actions={{
-            showQR: false, // Ocultar QR na página de QR Code
-          }}
         />
-
-        {/* Header */}
-        <Box sx={{ mb: 4, mt: 3 }}>
-          <Typography
-            variant="h4"
-            component="h1"
-            sx={{ fontSize: { xs: "1.5rem", md: "2rem" }, mb: 2 }}
-          >
-            {t("qr.title")}
-          </Typography>
-
-          <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            sx={{
-              wordBreak: "break-word",
-              fontSize: { xs: "0.9rem", md: "1rem" },
-            }}
-          >
-            {linkInfo.title || linkInfo.original_url}
-          </Typography>
-        </Box>
 
         {/* QR Code */}
         <Card sx={{ mb: 4, maxWidth: { xs: "100%", sm: 400 }, mx: "auto" }}>
