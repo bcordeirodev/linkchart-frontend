@@ -9,6 +9,8 @@ import {
   CardContent,
   Alert,
   CircularProgress,
+  Divider,
+  Stack,
 } from "@mui/material";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useState, useEffect, useMemo } from "react";
@@ -28,6 +30,12 @@ interface Props {
   id: string;
 }
 
+/**
+ * Renders the QR code for an existing link in a single consolidated card.
+ * The `LinkActions` toolbar sits above and owns back navigation, title and
+ * sibling actions. The separate "Informações do Link" card was folded into
+ * this view because the same data is reachable from /links and /links/edit.
+ */
 function LinkQRPage({ id }: Props) {
   const navigate = useNavigate();
   const { t } = useTranslation("links");
@@ -79,7 +87,6 @@ function LinkQRPage({ id }: Props) {
     );
   }, [linkInfo?.short_url, tPublic]);
 
-  // Handler para quando o link for excluído com sucesso
   const handleDeleteSuccess = () => {
     navigate("/links");
   };
@@ -89,7 +96,6 @@ function LinkQRPage({ id }: Props) {
       return;
     }
 
-    // Criar link de download
     const link = document.createElement("a");
     link.download = `qr-code-${linkInfo.slug || linkInfo.id}.png`;
     link.href = qrCodeDataUrl;
@@ -151,14 +157,27 @@ function LinkQRPage({ id }: Props) {
           onDeleteSuccess={handleDeleteSuccess}
         />
 
-        {/* QR Code */}
-        <Card sx={{ mb: 4, maxWidth: { xs: "100%", sm: 400 }, mx: "auto" }}>
-          <CardContent sx={{ textAlign: "center", py: 4 }}>
-            <Typography variant="h6" gutterBottom>
+        <Card
+          sx={{
+            mt: 1,
+            maxWidth: { xs: "100%", sm: 480 },
+            mx: "auto",
+          }}
+        >
+          <CardContent sx={{ py: 4, px: { xs: 3, sm: 4 } }}>
+            <Typography
+              variant="overline"
+              sx={{
+                display: "block",
+                textAlign: "center",
+                color: "text.secondary",
+                letterSpacing: 0.6,
+                mb: 2,
+              }}
+            >
               {t("qr.title")}
             </Typography>
 
-            {/* QR Code Real */}
             {qrCodeDataUrl ? (
               <Box
                 sx={{
@@ -202,35 +221,29 @@ function LinkQRPage({ id }: Props) {
 
             <Typography
               variant="body2"
-              color="text.secondary"
               sx={{
-                mb: 3,
+                textAlign: "center",
                 wordBreak: "break-all",
-                fontSize: { xs: "0.8rem", md: "0.875rem" },
+                fontFamily: "monospace",
+                color: "primary.main",
+                mb: 2.5,
               }}
             >
               {linkInfo.short_url}
             </Typography>
 
-            {/* Ações */}
-            <Box
-              sx={{
-                display: "flex",
-                gap: { xs: 1, sm: 2 },
-                justifyContent: "center",
-                flexWrap: "wrap",
-                flexDirection: { xs: "column", sm: "row" },
-              }}
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={1.5}
+              justifyContent="center"
+              sx={{ mb: 3 }}
             >
               <Button
                 variant="contained"
                 startIcon={<Download {...ICON_MD} />}
                 onClick={handleDownloadQR}
                 disabled={!qrCodeDataUrl}
-                sx={{
-                  minWidth: { xs: "100%", sm: 140 },
-                  fontSize: { xs: "0.875rem", md: "0.875rem" },
-                }}
+                sx={{ minWidth: { xs: "100%", sm: 140 } }}
               >
                 {t("qr.download")}
               </Button>
@@ -239,70 +252,25 @@ function LinkQRPage({ id }: Props) {
                 startIcon={<Share2 {...ICON_MD} />}
                 onClick={handleShareQR}
                 disabled={!linkInfo}
-                sx={{
-                  minWidth: { xs: "100%", sm: 140 },
-                  fontSize: { xs: "0.875rem", md: "0.875rem" },
-                }}
+                sx={{ minWidth: { xs: "100%", sm: 140 } }}
               >
                 {t("qr.copy")}
               </Button>
-            </Box>
-          </CardContent>
-        </Card>
+            </Stack>
 
-        {/* Informações do Link */}
-        <Card>
-          <CardContent>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ fontSize: { xs: "1.1rem", md: "1.25rem" } }}
-            >
-              Informações do Link
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: { xs: 1.5, md: 1 },
-              }}
-            >
-              <Typography
-                variant="body2"
-                sx={{ fontSize: { xs: "0.875rem", md: "0.875rem" } }}
-              >
-                <strong>URL Original:</strong>{" "}
-                <Box
-                  component="span"
-                  sx={{
-                    wordBreak: "break-all",
-                    color: "text.secondary",
-                  }}
-                >
-                  {linkInfo.original_url}
+            <Divider sx={{ mb: 2 }} />
+
+            <Stack spacing={0.75}>
+              <Typography variant="body2" sx={{ wordBreak: "break-all" }}>
+                <Box component="span" sx={{ color: "text.secondary", mr: 1 }}>
+                  URL original
                 </Box>
+                {linkInfo.original_url}
               </Typography>
-              <Typography
-                variant="body2"
-                sx={{ fontSize: { xs: "0.875rem", md: "0.875rem" } }}
-              >
-                <strong>URL Encurtada:</strong>{" "}
-                <Box
-                  component="span"
-                  sx={{
-                    wordBreak: "break-all",
-                    color: "primary.main",
-                    fontFamily: "monospace",
-                  }}
-                >
-                  {linkInfo.short_url}
+              <Typography variant="body2">
+                <Box component="span" sx={{ color: "text.secondary", mr: 1 }}>
+                  Status
                 </Box>
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ fontSize: { xs: "0.875rem", md: "0.875rem" } }}
-              >
-                <strong>Status:</strong>{" "}
                 <Box
                   component="span"
                   sx={{
@@ -310,19 +278,17 @@ function LinkQRPage({ id }: Props) {
                     fontWeight: 600,
                   }}
                 >
-                  {linkInfo.is_active ? "Ativo" : "Inativo"}
+                  {linkInfo.is_active ? "● Ativo" : "● Inativo"}
                 </Box>
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ fontSize: { xs: "0.875rem", md: "0.875rem" } }}
-              >
-                <strong>Criado em:</strong>{" "}
-                <Box component="span" sx={{ color: "text.secondary" }}>
-                  {new Date(linkInfo.created_at).toLocaleDateString("pt-BR")}
+                <Box component="span" sx={{ color: "text.secondary", mx: 1 }}>
+                  ·
                 </Box>
+                <Box component="span" sx={{ color: "text.secondary", mr: 1 }}>
+                  Criado
+                </Box>
+                {new Date(linkInfo.created_at).toLocaleDateString("pt-BR")}
               </Typography>
-            </Box>
+            </Stack>
           </CardContent>
         </Card>
       </ResponsiveContainer>
