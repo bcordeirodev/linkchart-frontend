@@ -41,7 +41,7 @@ export interface LinkActionsProps {
  * Page-header toolbar shown above every per-link view (Analytics,
  * Edit, QR Code). Provides:
  *
- * - A smart back link (browser history with `/links` fallback).
+ * - A back link that always returns to the links list (`/links`).
  * - The link's title and short URL.
  * - A segmented control to switch between sibling views.
  * - The primary Copy action.
@@ -113,7 +113,7 @@ export function LinkActions({
       onClick={handleOpenMenu}
       aria-label={t("actions.more")}
       aria-haspopup="menu"
-      aria-expanded={Boolean(menuAnchor)}
+      aria-expanded={menuAnchor ? true : undefined}
       disabled={loading}
       size="small"
     >
