@@ -25,10 +25,10 @@ export function LinkActionsTitleRow({
   return (
     <Box sx={{ minWidth: 0, flex: 1 }}>
       <Typography
-        variant="h6"
+        variant="h4"
         component="h1"
         sx={{
-          fontSize: { xs: "1rem", sm: "1.125rem" },
+          fontSize: { xs: "1.5rem", sm: "2rem" },
           fontWeight: 700,
           lineHeight: 1.2,
           overflow: "hidden",

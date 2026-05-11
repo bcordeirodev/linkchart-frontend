@@ -1,8 +1,7 @@
 "use client";
 import { Box } from "@mui/material";
 import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import NextLink from "next/link";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
@@ -10,36 +9,22 @@ import { ICON_MD } from "@/lib/theme/iconDefaults";
 /**
  * Back link rendered at the top of the LinkActions toolbar.
  *
- * Behavior: on click, calls `router.back()` when the current tab has
- * prior history (`window.history.length > 1`), otherwise navigates to
- * `/links` so cold-loaded pages still have a sensible fallback.
+ * Always navigates to `/links` (the links list page), regardless of
+ * browser history. The previous smart-history behavior was dropped
+ * because users reported losing a reliable way to return to the list
+ * when jumping between sibling views of the same link.
  *
- * The element is a real anchor (`<a href="/links">`) so that
- * middle-click / cmd-click open the fallback destination in a new tab.
- * The smart-back behavior is wired in `onClick`, which preventDefaults
- * the normal navigation.
+ * Uses Next.js `<Link>` so the anchor is real (middle-click / cmd-click
+ * open `/links` in a new tab) AND the in-tab click is client-side
+ * routing (no full page reload).
  */
 export function LinkActionsBackLink() {
-  const router = useRouter();
   const { t } = useTranslation("links");
-
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>) => {
-      event.preventDefault();
-      if (typeof window !== "undefined" && window.history.length > 1) {
-        router.back();
-      } else {
-        router.push("/links");
-      }
-    },
-    [router],
-  );
 
   return (
     <Box
-      component="a"
+      component={NextLink}
       href="/links"
-      onClick={handleClick}
       sx={{
         display: "inline-flex",
         alignItems: "center",
