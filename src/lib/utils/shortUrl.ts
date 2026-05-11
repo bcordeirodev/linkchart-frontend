@@ -27,3 +27,12 @@ export const getShortUrl = (slugOrUrl: string): string => {
     return `${REDIRECT_BASE}/${slugOrUrl}`;
   }
 };
+
+/**
+ * Returns the canonical prefix shown in the UI for short URLs (e.g.
+ * `"http://localhost:8000/r/"`). Useful as a `startAdornment` next to a slug
+ * input so the user sees the full URL being composed.
+ *
+ * @returns the redirect base with a trailing slash.
+ */
+export const getShortUrlPrefix = (): string => `${REDIRECT_BASE}/`;
