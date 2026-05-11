@@ -218,7 +218,9 @@ interface ApiResponse extends ApiResponseData {
 }
 
 /**
- * Converte timeframe para horas
+ * Maps a human-friendly timeframe label (`"1h" | "24h" | "7d" | "30d" | "all"`)
+ * to the `hours` query-string value expected by the dashboard endpoint.
+ * `"all"` is translated to `"0"`, which the backend interprets as no time bound.
  */
 function getHoursFromTimeframe(
   timeframe: "1h" | "24h" | "7d" | "30d" | "all",
@@ -228,7 +230,9 @@ function getHoursFromTimeframe(
 }
 
 /**
- * Constrói endpoint com parâmetros
+ * Appends a `URLSearchParams`-encoded query string to `endpoint`, skipping
+ * keys whose value is `undefined`/`null`. Returns the bare endpoint when no
+ * params are provided.
  */
 function buildEndpointWithParams(
   endpoint: string,
@@ -302,7 +306,9 @@ function mapResponseToDashboardData(response: ApiResponse): DashboardData {
 }
 
 /**
- * Calcula estatísticas do dashboard
+ * Derives dashboard summary stats from `DashboardData`, including a coarse
+ * `dataQuality` tier (`excellent`/`good`/`fair`/`poor`) bucketed by total
+ * clicks so the UI can adapt empty/sparse states without per-component checks.
  */
 function calculateStats(data: DashboardData): DashboardStats {
   const totalClicks = data.summary.total_clicks || 0;

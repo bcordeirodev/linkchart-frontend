@@ -13,6 +13,7 @@ import type {
   GeographicResponse,
 } from "@/types/analytics/geographic";
 
+/** Summary stats derived from `GeographicMeta` (country/state/city counts plus a coarse coverage ratio). */
 export interface GeographicStats {
   totalCountries: number;
   totalStates: number;
@@ -20,17 +21,21 @@ export interface GeographicStats {
   totalClicks: number;
   maxClicks: number;
   totalLocations: number;
+  /** Share of the ~195 recognised countries reached, capped at 100. */
   coveragePercentage: number;
   lastUpdate: string;
 }
 
+/** Input options accepted by `useGeographicData`. */
 export interface UseGeographicDataOptions {
   linkId: string;
   refreshInterval?: number;
   enableRealtime?: boolean;
+  /** In-memory threshold used to drop low-volume rows from the response. */
   minClicks?: number;
 }
 
+/** Return shape of `useGeographicData`. */
 export interface UseGeographicDataReturn {
   data: GeographicData | null;
   meta: GeographicMeta | null;
@@ -41,6 +46,11 @@ export interface UseGeographicDataReturn {
   isRealtime: boolean;
 }
 
+/**
+ * Maps `GeographicMeta` (counters returned alongside `data` in the
+ * `{ data, meta }` envelope) into the `GeographicStats` shape the UI renders.
+ * Computes `coveragePercentage` as `unique_countries / 195`, capped at 100.
+ */
 function calculateStats(meta: GeographicMeta): GeographicStats {
   return {
     totalCountries: meta.unique_countries,

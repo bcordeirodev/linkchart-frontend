@@ -7,6 +7,7 @@ import { api } from "@/lib/api/client";
 import { queryKeys } from "@/lib/query/keys";
 import { API_CONFIG } from "@/lib/api/endpoints";
 
+/** Single AI-generated business insight returned by the insights endpoint. */
 export interface BusinessInsight {
   type:
     | "geographic"
@@ -29,6 +30,7 @@ export interface BusinessInsight {
   data_points?: Record<string, unknown>;
 }
 
+/** Full insights payload (list of insights + aggregate summary and optional analytics breakdowns). */
 export interface InsightsData {
   insights: BusinessInsight[];
   summary: {
@@ -60,6 +62,7 @@ export interface InsightsData {
   };
 }
 
+/** Client-side derived stats over the insights list (counts, average confidence, top category). */
 export interface InsightsStats {
   totalInsights: number;
   highPriorityCount: number;
@@ -69,14 +72,18 @@ export interface InsightsStats {
   lastGenerated: string;
 }
 
+/** Input options accepted by `useInsightsData`. */
 export interface UseInsightsDataOptions {
   linkId: string;
   refreshInterval?: number;
   enableRealtime?: boolean;
+  /** Drop insights below this confidence threshold (0–1) before returning them. */
   minConfidence?: number;
+  /** If non-empty, keep only insights whose `type` is in this list. */
   categories?: string[];
 }
 
+/** Return shape of `useInsightsData`. */
 export interface UseInsightsDataReturn {
   data: InsightsData | null;
   stats: InsightsStats | null;
@@ -86,6 +93,11 @@ export interface UseInsightsDataReturn {
   isRealtime: boolean;
 }
 
+/**
+ * Derives `InsightsStats` from `InsightsData`: counts by priority/actionability,
+ * the mean confidence rounded to 2 decimals, and the dominant insight type.
+ * Falls back to `"performance"` as the top category when the list is empty.
+ */
 function calculateStats(insightsData: InsightsData): InsightsStats {
   const insights = insightsData.insights || [];
 
@@ -118,6 +130,13 @@ function calculateStats(insightsData: InsightsData): InsightsStats {
   };
 }
 
+/**
+ * Normalises the two backend response shapes into a single `InsightsData`:
+ * the legacy `BusinessInsight[]` (rebuilds a synthetic `summary` from the
+ * filtered list) and the current `InsightsData` envelope (just filters its
+ * `insights` array). Both branches apply the `minConfidence` and `categories`
+ * filters in-memory before returning.
+ */
 function normaliseResponse(
   response: BusinessInsight[] | InsightsData,
   minConfidence: number,
