@@ -16,17 +16,6 @@ export async function authGetDbUser(_userId: string): Promise<User> {
 }
 
 /**
- * Stub kept for legacy callers — looking up users by email is intentionally
- * unsupported by the backend for privacy reasons.
- *
- * @throws always.
- */
-export async function authGetDbUserByEmail(_email: string): Promise<User> {
-  // Esta funcionalidade não está disponível na API real por questões de segurança
-  throw new Error("Busca por email não disponível na API real");
-}
-
-/**
  * Registers a new user via the legacy auth API surface.
  *
  * @param user - partial user fields (normalised through `UserModel`).

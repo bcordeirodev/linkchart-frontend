@@ -38,6 +38,7 @@
   "actions": {
     "copyLink": "Copy link",
     "copySuccess": "Link copied!",
+    "analytics": "Analytics",
     "deleteConfirm": "Delete this link?",
     "deleteConfirmDesc": "This action cannot be undone. All click data will be lost.",
     "activate": "Activate",

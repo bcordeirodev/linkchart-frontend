@@ -207,28 +207,33 @@ const LinkMobileCard = memo(
                 alignItems: "center",
                 justifyContent: "space-between",
                 cursor: "pointer",
+                transition:
+                  "border-color 0.15s ease, background-color 0.15s ease",
                 "&:hover": {
-                  borderColor: "primary.light",
-                  bgcolor: "rgba(25, 118, 210, 0.04)",
+                  borderColor: urlCopied ? "success.light" : "primary.light",
+                  bgcolor: urlCopied
+                    ? "rgba(46, 125, 50, 0.06)"
+                    : "rgba(25, 118, 210, 0.04)",
                 },
               }}
             >
               <Typography
                 variant="body2"
                 sx={{
-                  color: "primary.main",
+                  color: urlCopied ? "success.main" : "primary.main",
                   fontWeight: 500,
                   fontSize: "0.9rem",
-                  fontFamily: "monospace",
+                  fontFamily: urlCopied ? "inherit" : "monospace",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
                   flex: 1,
                   minWidth: 0,
                   mr: 1,
+                  transition: "color 0.15s ease",
                 }}
               >
-                {shortUrl}
+                {urlCopied ? t("actions.copySuccess") : shortUrl}
               </Typography>
               {urlCopied ? (
                 <Check

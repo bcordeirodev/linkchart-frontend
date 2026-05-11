@@ -25,7 +25,7 @@ import {
   formatPieChart,
 } from "@/features/analytics/utils/chartFormatters";
 import { getStandardChartColors, getChartColorsByType } from "@/lib/theme";
-import { ChartCard } from "@/shared/ui/base/ChartCard";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
 import type {

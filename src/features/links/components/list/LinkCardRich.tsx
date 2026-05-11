@@ -2,6 +2,8 @@
 import {
   BarChart3,
   CalendarDays,
+  Check,
+  Copy,
   ExternalLink,
   MousePointerClick,
 } from "lucide-react";
@@ -59,6 +61,18 @@ interface LinkCardRichProps {
   onDelete: (id: string) => Promise<void>;
 }
 
+/**
+ * Desktop link card with rich metrics, copy chip, Analytics CTA, status, and inline actions.
+ *
+ * Renders one row per link in the list view (≥sm). The short URL chip is click-to-copy
+ * and animates to a success state for 1.5s on success. The Analytics button uses the
+ * pulse keyframes to draw attention; the animation is suppressed when the user has
+ * `prefers-reduced-motion: reduce` set.
+ *
+ * @param link - The link record from the API.
+ * @param meta - Optional batch-loaded metadata (preview, trend, sparkline, health).
+ * @param onDelete - Async handler invoked when the user confirms deletion.
+ */
 export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -149,42 +163,67 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
             sx={{
               px: 1.5,
               py: 0.25,
-              bgcolor: "rgba(25, 118, 210, 0.08)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.75,
+              bgcolor: copied
+                ? "rgba(46, 125, 50, 0.08)"
+                : "rgba(25, 118, 210, 0.08)",
               borderRadius: "20px",
               border: "1px solid",
-              borderColor: "primary.light",
+              borderColor: copied ? "success.light" : "primary.light",
               fontFamily: "monospace",
               fontSize: "0.75rem",
-              color: "primary.main",
+              color: copied ? "success.main" : "primary.main",
               fontWeight: 600,
               cursor: "pointer",
               maxWidth: 360,
               overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
               flexShrink: 0,
-              "&:hover": { bgcolor: "rgba(25, 118, 210, 0.15)" },
+              transition:
+                "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease",
+              "&:hover": {
+                bgcolor: copied
+                  ? "rgba(46, 125, 50, 0.12)"
+                  : "rgba(25, 118, 210, 0.15)",
+              },
             }}
           >
-            {shortUrl}
+            {copied ? (
+              <Check size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
+            ) : (
+              <Copy size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
+            )}
+            <Box
+              component="span"
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {copied ? t("actions.copySuccess") : shortUrl}
+            </Box>
           </Box>
         </Tooltip>
 
-        <Tooltip title="Analytics">
+        <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
           <Button
             size="small"
             variant="contained"
             color="primary"
+            startIcon={<BarChart3 {...ICON_SM} />}
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/links/analytics/${link.id}`);
             }}
             sx={{
               flexShrink: 0,
-              minWidth: 0,
               borderRadius: "20px",
-              px: 1,
+              px: 1.5,
               py: 0.25,
+              fontSize: "0.75rem",
+              textTransform: "none",
               boxShadow: "none",
               animation: `${analyticsPulse} 2.4s ease-in-out infinite`,
               "@media (prefers-reduced-motion: reduce)": {
@@ -193,7 +232,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
               "&:hover": { boxShadow: "none", animation: "none" },
             }}
           >
-            <BarChart3 {...ICON_SM} />
+            {t("actions.analytics")}
           </Button>
         </Tooltip>
 
