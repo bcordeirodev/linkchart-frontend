@@ -6,10 +6,7 @@ import { useTranslation } from "react-i18next";
 import { LinkAnalyticsTabsOptimized } from "@/features/links/components/analytics/LinkAnalyticsTabs";
 import { LinkActions } from "@/features/links/components/LinkActions";
 import { useLinkAnalyticsOptimized } from "@/features/links/hooks/useLinkAnalytics";
-import { getShortUrl } from "@/lib/utils/shortUrl";
-import { AppIcon } from "@/shared/ui/icons";
 import { ResponsiveContainer } from "@/shared/ui/base";
-import { PageHeader } from "@/shared/ui/base/PageHeader";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
 
@@ -51,15 +48,9 @@ function LinkAnalyticsPage({ id }: Props) {
       <ResponsiveContainer variant="page">
         <LinkActions
           linkId={id}
-          shortUrl={getShortUrl(linkInfo?.short_url ?? "")}
-          currentPage="analytics"
-        />
-
-        <PageHeader
-          title={linkInfo?.title || t("dashboard.title")}
-          subtitle={t("dashboard.subtitle", { url: linkInfo?.short_url || id })}
-          icon={<AppIcon intent="analytics" size={32} />}
-          variant="analytics"
+          currentView="analytics"
+          shortUrl={linkInfo?.short_url}
+          title={linkInfo?.title}
         />
 
         <LinkAnalyticsTabsOptimized {...tabsProps} />
