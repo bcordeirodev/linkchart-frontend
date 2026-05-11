@@ -34,7 +34,7 @@ CRUD do link encurtado autenticado: criar, listar (com filtros + meta enriquecid
 
 - `LinkFormFields.tsx` — campos compartilhados entre create e edit.
 - `LinkFormSchema.ts` — schema Zod canônico.
-- `UrlSafetyIndicator.tsx` — exibe resultado de `useUrlSafetyCheck`.
+- `UrlSafetyIndicator.tsx` — `getUrlSafetyHelperNode()` helper; retorna ReactNode para uso como `helperText` de TextField com o status da verificação de segurança da URL.
 
 ### Analytics da listagem (`components/analytics/`)
 
