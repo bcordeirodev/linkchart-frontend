@@ -1,8 +1,10 @@
 "use client";
+import type { ReactNode } from "react";
 import {
   TextField,
   Switch,
   FormControlLabel,
+  FormLabel,
   Grid,
   Box,
   Stack,
@@ -19,8 +21,7 @@ import useThemeMediaQuery from "@/shared/hooks/useThemeMediaQuery";
 import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
 
 import { useUrlSafetyCheck } from "../../hooks/useUrlSafetyCheck";
-// UrlSafetyIndicator will be integrated into helperText in Task 2
-// import { UrlSafetyIndicator } from "./UrlSafetyIndicator";
+import { getUrlSafetyHelperNode } from "./UrlSafetyIndicator";
 import { FormSection } from "./FormSection";
 
 import type { LinkFormData } from "./LinkFormSchema";
@@ -49,15 +50,39 @@ export function LinkFormFields({
   const shortUrlPrefix = getShortUrlPrefix();
 
   const urlValue = useWatch({ control, name: "original_url" });
-  const { status: _safetyStatus, threats: _threats } = useUrlSafetyCheck(
-    urlValue ?? "",
-  );
+  const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
+
+  const urlIsUnsafe = !errors.original_url && safetyStatus === "unsafe";
+  const urlIsSafe = !errors.original_url && safetyStatus === "safe";
+
+  const urlHelperContent: ReactNode = errors.original_url
+    ? errors.original_url.message
+    : safetyStatus !== "idle"
+      ? getUrlSafetyHelperNode(safetyStatus, threats, t)
+      : t("form.originalUrlHelper");
+
+  // Only 'safe' needs an explicit color override; 'unsafe' is handled by
+  // error={true} adding .Mui-error, and 'checking'/'error' fall through to the
+  // global text.disabled selector on the Stack.
+  const urlHelperSx = urlIsSafe ? { color: "success.main" } : undefined;
 
   return (
-    <Stack spacing={2}>
+    <Stack
+      spacing={2}
+      sx={{
+        "& .MuiFormHelperText-root:not(.Mui-error)": { color: "text.disabled" },
+      }}
+    >
       <FormSection label={t("form.sections.basic")} isFirst>
         <Stack spacing={2}>
           <Box>
+            <FormLabel
+              required
+              error={!!errors.original_url || urlIsUnsafe}
+              sx={{ display: "block", mb: 0.75 }}
+            >
+              {t("form.originalUrl")}
+            </FormLabel>
             <Controller
               name="original_url"
               control={control}
@@ -65,16 +90,15 @@ export function LinkFormFields({
                 <TextField
                   {...field}
                   fullWidth
-                  label={t("form.originalUrl")}
                   placeholder={t("form.originalUrlPlaceholder")}
-                  error={!!errors.original_url}
-                  helperText={
-                    errors.original_url?.message || t("form.originalUrlHelper")
+                  error={!!errors.original_url || urlIsUnsafe}
+                  helperText={urlHelperContent}
+                  FormHelperTextProps={
+                    urlHelperSx ? { sx: urlHelperSx } : undefined
                   }
                 />
               )}
             />
-            {/* UrlSafetyIndicator will be merged into helperText in Task 2 */}
           </Box>
 
           <Box>
