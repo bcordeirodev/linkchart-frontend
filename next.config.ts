@@ -24,6 +24,22 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Forward /r/{slug} hits on the app domain to the canonical redirect host so the
+  // backend (web.php) serves the 302 and dispatches ProcessLinkClickJob. A 307 (not a
+  // rewrite) is used so the browser actually navigates and the backend sees the real
+  // client IP for geo/tracking enrichment.
+  async redirects() {
+    const redirectBase = (
+      process.env.NEXT_PUBLIC_REDIRECT_URL ?? "http://localhost:8000/r"
+    ).replace(/\/$/, "");
+    return [
+      {
+        source: "/r/:slug",
+        destination: `${redirectBase}/:slug`,
+        permanent: false,
+      },
+    ];
+  },
   // Allow images from the backend domain
   images: {
     remotePatterns: [
