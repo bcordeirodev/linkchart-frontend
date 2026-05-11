@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import useClipboard from "@/hooks/useClipboard";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { getShortUrl } from "@/lib/utils/shortUrl";
 
 import type { PublicLinkData } from "../../types";
 
@@ -16,6 +17,7 @@ interface LinkHeroCardProps {
 
 export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   const theme = useTheme();
+  const shortUrl = getShortUrl(linkData.short_url);
   const { copy: copyShort, copied: copiedShort } = useClipboard({
     timeout: 1500,
   });
@@ -122,11 +124,11 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
               whiteSpace: "nowrap",
             }}
           >
-            {linkData.short_url}
+            {shortUrl}
           </Typography>
           <Box
             component="button"
-            onClick={() => copyShort(linkData.short_url)}
+            onClick={() => copyShort(shortUrl)}
             sx={{
               display: "flex",
               alignItems: "center",

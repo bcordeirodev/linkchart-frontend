@@ -5,6 +5,7 @@ import { useNavigate } from "@/shared/hooks";
 import { useState, useEffect } from "react";
 
 import { EditLinkForm, LinkActions } from "@/features/links";
+import { getShortUrl } from "@/lib/utils/shortUrl";
 import { AppIcon } from "@/shared/ui/icons";
 import { ResponsiveContainer } from "@/shared/ui/base";
 import PageBreadcrumb from "@/shared/ui/navigation/PageBreadcrumb";
@@ -96,7 +97,7 @@ function LinkEditPage({ id }: Props) {
           {linkData ? (
             <LinkActions
               linkId={id}
-              shortUrl={linkData.short_url}
+              shortUrl={getShortUrl(linkData.short_url ?? "")}
               onDeleteSuccess={handleDeleteSuccess}
               currentPage="edit"
               actions={{

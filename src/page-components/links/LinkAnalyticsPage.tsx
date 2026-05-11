@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { LinkAnalyticsTabsOptimized } from "@/features/links/components/analytics/LinkAnalyticsTabs";
 import { LinkActions } from "@/features/links/components/LinkActions";
 import { useLinkAnalyticsOptimized } from "@/features/links/hooks/useLinkAnalytics";
+import { getShortUrl } from "@/lib/utils/shortUrl";
 import { AppIcon } from "@/shared/ui/icons";
 import { ResponsiveContainer } from "@/shared/ui/base";
 import { PageHeader } from "@/shared/ui/base/PageHeader";
@@ -50,7 +51,7 @@ function LinkAnalyticsPage({ id }: Props) {
       <ResponsiveContainer variant="page">
         <LinkActions
           linkId={id}
-          shortUrl={linkInfo?.short_url}
+          shortUrl={getShortUrl(linkInfo?.short_url ?? "")}
           currentPage="analytics"
         />
 
