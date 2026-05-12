@@ -10,28 +10,61 @@
       "heading": "2. Dados que coletamos",
       "intro": "Coletamos as seguintes categorias de dados ao usar o Link Charts:",
       "items": {
-        "urls": { "label": "URLs encurtadas", "text": "o endereço original que você fornece." },
-        "clicks": { "label": "Dados de cliques", "text": "data, hora, país de origem, tipo de dispositivo, navegador e sistema operacional de cada visitante que acessa seus links." },
-        "ip": { "label": "Endereço IP", "text": "usado para geolocalização aproximada (país/região) e proteção contra abuso." },
-        "cookies": { "label": "Cookies e identificadores", "text": "preferência de idioma, sessão autenticada, e — com seu consentimento — cookies de analytics e publicidade." },
-        "account": { "label": "Dados de conta", "text": "nome e endereço de e-mail, caso você crie uma conta." }
+        "urls": {
+          "label": "URLs encurtadas",
+          "text": "o endereço original que você fornece."
+        },
+        "clicks": {
+          "label": "Dados de cliques",
+          "text": "data, hora, país de origem, tipo de dispositivo, navegador e sistema operacional de cada visitante que acessa seus links."
+        },
+        "ip": {
+          "label": "Endereço IP",
+          "text": "usado para geolocalização aproximada (país/região) e proteção contra abuso."
+        },
+        "cookies": {
+          "label": "Cookies e identificadores",
+          "text": "preferência de idioma, sessão autenticada, e — com seu consentimento — cookies de analytics e publicidade."
+        },
+        "account": {
+          "label": "Dados de conta",
+          "text": "nome e endereço de e-mail, caso você crie uma conta."
+        }
       }
     },
     "s3": {
       "heading": "3. Finalidade e base legal (LGPD art. 7)",
       "items": {
-        "platform": { "label": "Funcionamento da plataforma", "text": "(encurtamento, redirecionamento, conta): execução de contrato — art. 7, V." },
-        "analytics": { "label": "Analytics de cliques", "text": "(estatísticas dos seus links): legítimo interesse — art. 7, IX." },
-        "ga": { "label": "Google Analytics", "text": "(comportamento de navegação): consentimento — art. 7, I. Ativado apenas se você aceitar cookies de analytics." },
-        "adsense": { "label": "Google AdSense", "text": "(publicidade): consentimento — art. 7, I. Ativado apenas se você aceitar cookies de publicidade." }
+        "platform": {
+          "label": "Funcionamento da plataforma",
+          "text": "(encurtamento, redirecionamento, conta): execução de contrato — art. 7, V."
+        },
+        "analytics": {
+          "label": "Analytics de cliques",
+          "text": "(estatísticas dos seus links): legítimo interesse — art. 7, IX."
+        },
+        "ga": {
+          "label": "Google Analytics",
+          "text": "(comportamento de navegação): consentimento — art. 7, I. Ativado apenas se você aceitar cookies de analytics."
+        },
+        "adsense": {
+          "label": "Google AdSense",
+          "text": "(publicidade): consentimento — art. 7, I. Ativado apenas se você aceitar cookies de publicidade."
+        }
       }
     },
     "s4": {
       "heading": "4. Compartilhamento de dados",
       "intro": "Não vendemos seus dados pessoais. Compartilhamos apenas com os seguintes prestadores de serviço, para as finalidades indicadas:",
       "items": {
-        "ga": { "label": "Google Analytics (Google LLC)", "text": "análise de comportamento de navegação — somente com consentimento (analytics_storage)." },
-        "adsense": { "label": "Google AdSense (Google LLC)", "text": "veiculação de publicidade — somente com consentimento (ad_storage, ad_user_data, ad_personalization)." }
+        "ga": {
+          "label": "Google Analytics (Google LLC)",
+          "text": "análise de comportamento de navegação — somente com consentimento (analytics_storage)."
+        },
+        "adsense": {
+          "label": "Google AdSense (Google LLC)",
+          "text": "veiculação de publicidade — somente com consentimento (ad_storage, ad_user_data, ad_personalization)."
+        }
       }
     },
     "s5": {
@@ -57,7 +90,10 @@
       "items": {
         "clicks": { "label": "Logs de cliques", "text": "24 meses." },
         "cookies": { "label": "Cookies de preferência", "text": "6 meses." },
-        "account": { "label": "Dados de conta", "text": "enquanto a conta estiver ativa + 30 dias após exclusão." }
+        "account": {
+          "label": "Dados de conta",
+          "text": "enquanto a conta estiver ativa + 30 dias após exclusão."
+        }
       }
     },
     "s8": {
@@ -68,10 +104,22 @@
       "heading": "9. Direitos de residentes da Califórnia (CCPA)",
       "intro": "Se você reside na Califórnia (EUA), a Lei de Privacidade do Consumidor da Califórnia (CCPA) garante direitos adicionais:",
       "rights": {
-        "know": { "label": "Direito de saber", "text": "quais dados pessoais coletamos e com quem compartilhamos." },
-        "delete": { "label": "Direito de exclusão", "text": "solicitar a exclusão dos seus dados pessoais." },
-        "optOut": { "label": "Direito de opt-out da venda", "text": "não vendemos dados pessoais. Para desativar o compartilhamento com parceiros de publicidade, use o link \"Não vender meus dados\" no rodapé." },
-        "nonDiscrimination": { "label": "Direito à não-discriminação", "text": "não discriminamos usuários que exercem seus direitos CCPA." }
+        "know": {
+          "label": "Direito de saber",
+          "text": "quais dados pessoais coletamos e com quem compartilhamos."
+        },
+        "delete": {
+          "label": "Direito de exclusão",
+          "text": "solicitar a exclusão dos seus dados pessoais."
+        },
+        "optOut": {
+          "label": "Direito de opt-out da venda",
+          "text": "não vendemos dados pessoais. Para desativar o compartilhamento com parceiros de publicidade, use o link \"Não vender meus dados\" no rodapé."
+        },
+        "nonDiscrimination": {
+          "label": "Direito à não-discriminação",
+          "text": "não discriminamos usuários que exercem seus direitos CCPA."
+        }
       },
       "contact": "Para exercer direitos CCPA: <mailLink>linkcharts@gmail.com</mailLink>."
     },
@@ -84,12 +132,42 @@
         "category": "Categoria"
       },
       "rows": [
-        { "name": "cc_cookie", "purpose": "Preferência de consentimento", "duration": "6 meses", "category": "Necessário" },
-        { "name": "i18nextLng", "purpose": "Preferência de idioma", "duration": "1 ano", "category": "Necessário" },
-        { "name": "_ga", "purpose": "Identificador de sessão (GA)", "duration": "2 anos", "category": "Analytics" },
-        { "name": "_ga_*", "purpose": "Estado de sessão (GA)", "duration": "2 anos", "category": "Analytics" },
-        { "name": "_gcl_au", "purpose": "Atribuição de conversão", "duration": "3 meses", "category": "Publicidade" },
-        { "name": "IDE", "purpose": "Personalização de anúncios", "duration": "1 ano", "category": "Publicidade" }
+        {
+          "name": "cc_cookie",
+          "purpose": "Preferência de consentimento",
+          "duration": "6 meses",
+          "category": "Necessário"
+        },
+        {
+          "name": "i18nextLng",
+          "purpose": "Preferência de idioma",
+          "duration": "1 ano",
+          "category": "Necessário"
+        },
+        {
+          "name": "_ga",
+          "purpose": "Identificador de sessão (GA)",
+          "duration": "2 anos",
+          "category": "Analytics"
+        },
+        {
+          "name": "_ga_*",
+          "purpose": "Estado de sessão (GA)",
+          "duration": "2 anos",
+          "category": "Analytics"
+        },
+        {
+          "name": "_gcl_au",
+          "purpose": "Atribuição de conversão",
+          "duration": "3 meses",
+          "category": "Publicidade"
+        },
+        {
+          "name": "IDE",
+          "purpose": "Personalização de anúncios",
+          "duration": "1 ano",
+          "category": "Publicidade"
+        }
       ]
     },
     "s11": {

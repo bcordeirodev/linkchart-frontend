@@ -1,0 +1,192 @@
+{
+  "privacy": {
+    "title": "Privacy Policy",
+    "effectiveDate": "Effective: May 6, 2026 · Link Charts",
+    "s1": {
+      "heading": "1. Who we are",
+      "body": "Link Charts is a free URL shortening service with analytics, operated by Bruno Cordeiro. We are the controller of your personal data under Brazil's General Data Protection Law (LGPD — Law 13.709/2018) and applicable international privacy regulations. Contact: <mailLink>linkcharts@gmail.com</mailLink>."
+    },
+    "s2": {
+      "heading": "2. Data we collect",
+      "intro": "We collect the following categories of data when you use Link Charts:",
+      "items": {
+        "urls": { "label": "Shortened URLs", "text": "the original address you provide." },
+        "clicks": { "label": "Click data", "text": "date, time, country of origin, device type, browser, and operating system of each visitor who accesses your links." },
+        "ip": { "label": "IP address", "text": "used for approximate geolocation (country/region) and abuse protection." },
+        "cookies": { "label": "Cookies and identifiers", "text": "language preference, authenticated session, and — with your consent — analytics and advertising cookies." },
+        "account": { "label": "Account data", "text": "name and email address, if you create an account." }
+      }
+    },
+    "s3": {
+      "heading": "3. Purpose and legal basis (LGPD art. 7)",
+      "items": {
+        "platform": { "label": "Platform operation", "text": "(shortening, redirect, account): contract performance — art. 7, V." },
+        "analytics": { "label": "Click analytics", "text": "(statistics for your links): legitimate interest — art. 7, IX." },
+        "ga": { "label": "Google Analytics", "text": "(browsing behaviour): consent — art. 7, I. Activated only if you accept analytics cookies." },
+        "adsense": { "label": "Google AdSense", "text": "(advertising): consent — art. 7, I. Activated only if you accept advertising cookies." }
+      }
+    },
+    "s4": {
+      "heading": "4. Data sharing",
+      "intro": "We do not sell your personal data. We share data only with the following service providers, for the stated purposes:",
+      "items": {
+        "ga": { "label": "Google Analytics (Google LLC)", "text": "browsing behaviour analysis — consent only (analytics_storage)." },
+        "adsense": { "label": "Google AdSense (Google LLC)", "text": "ad delivery — consent only (ad_storage, ad_user_data, ad_personalization)." }
+      }
+    },
+    "s5": {
+      "heading": "5. Your rights (LGPD art. 18)",
+      "intro": "As a data subject, you have the following rights:",
+      "rights": [
+        "Confirmation of processing existence",
+        "Access to data",
+        "Correction of incomplete, inaccurate, or outdated data",
+        "Anonymization, blocking, or deletion of unnecessary data",
+        "Data portability",
+        "Information about third-party sharing",
+        "Withdrawal of consent at any time"
+      ],
+      "contact": "To exercise your rights: <mailLink>linkcharts@gmail.com</mailLink>. Or use the \"Do not sell my data\" link in the footer to manage your cookie preferences."
+    },
+    "s6": {
+      "heading": "6. International data transfers",
+      "body": "Google Analytics and Google AdSense process data in the United States. These transfers occur under the Standard Contractual Clauses approved by the European Commission and equivalent safeguards accepted by Brazil's ANPD."
+    },
+    "s7": {
+      "heading": "7. Data retention",
+      "items": {
+        "clicks": { "label": "Click logs", "text": "24 months." },
+        "cookies": { "label": "Preference cookies", "text": "6 months." },
+        "account": { "label": "Account data", "text": "while the account is active + 30 days after deletion." }
+      }
+    },
+    "s8": {
+      "heading": "8. Security",
+      "body": "We use HTTPS for all communications, restricted database access, and periodic permission reviews. No system is 100% secure; in the event of an incident affecting your data, we will notify you as required by applicable law."
+    },
+    "s9": {
+      "heading": "9. California residents' rights (CCPA)",
+      "intro": "If you reside in California (USA), the California Consumer Privacy Act (CCPA) grants you additional rights:",
+      "rights": {
+        "know": { "label": "Right to know", "text": "what personal data we collect and with whom we share it." },
+        "delete": { "label": "Right to delete", "text": "request deletion of your personal data." },
+        "optOut": { "label": "Right to opt out of sale", "text": "we do not sell personal data. To disable sharing with advertising partners, use the \"Do not sell my data\" link in the footer." },
+        "nonDiscrimination": { "label": "Right to non-discrimination", "text": "we do not discriminate against users who exercise their CCPA rights." }
+      },
+      "contact": "To exercise CCPA rights: <mailLink>linkcharts@gmail.com</mailLink>."
+    },
+    "s10": {
+      "heading": "10. Cookie table",
+      "headers": {
+        "cookie": "Cookie",
+        "purpose": "Purpose",
+        "duration": "Duration",
+        "category": "Category"
+      },
+      "rows": [
+        { "name": "cc_cookie", "purpose": "Consent preference", "duration": "6 months", "category": "Necessary" },
+        { "name": "i18nextLng", "purpose": "Language preference", "duration": "1 year", "category": "Necessary" },
+        { "name": "_ga", "purpose": "Session identifier (GA)", "duration": "2 years", "category": "Analytics" },
+        { "name": "_ga_*", "purpose": "Session state (GA)", "duration": "2 years", "category": "Analytics" },
+        { "name": "_gcl_au", "purpose": "Conversion attribution", "duration": "3 months", "category": "Advertising" },
+        { "name": "IDE", "purpose": "Ad personalisation", "duration": "1 year", "category": "Advertising" }
+      ]
+    },
+    "s11": {
+      "heading": "11. Policy updates",
+      "body": "This policy may be updated. The effective date at the top indicates the current version. Significant changes will be communicated by email to registered users."
+    },
+    "s12": {
+      "heading": "12. Contact and data controller",
+      "line1": "Bruno Cordeiro · Link Charts",
+      "emailLabel": "Email:",
+      "githubLabel": "GitHub:"
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "effectiveDate": "Effective: May 6, 2026 · Link Charts",
+    "s1": {
+      "heading": "1. Acceptance of terms",
+      "body": "By accessing or using Link Charts, you agree to these Terms of Service and our <privacyLink>Privacy Policy</privacyLink>. If you do not agree, please do not use the service."
+    },
+    "s2": {
+      "heading": "2. Service description",
+      "body": "Link Charts is a free URL shortening platform that provides basic click analytics, geolocation, and device data. The service is provided \"as is\", without warranty of uninterrupted availability. We reserve the right to modify or discontinue features without prior notice."
+    },
+    "s3": {
+      "heading": "3. Acceptable use",
+      "intro": "It is expressly prohibited to use Link Charts to shorten URLs that contain or lead to:",
+      "items": [
+        "Malware, viruses, ransomware, phishing, or any malicious code",
+        "Content that is illegal under Brazilian or international law",
+        "Spam or unsolicited commercial messages",
+        "Content that infringes copyrights, trademarks, or third-party privacy rights",
+        "Content promoting violence, hatred, discrimination, or terrorism",
+        "Sexually explicit material involving minors"
+      ]
+    },
+    "s4": {
+      "heading": "4. Responsibility for links",
+      "body": "You are solely responsible for the content of the URLs you shorten. Link Charts does not proactively monitor link content, but reserves the right to remove any link that violates these terms, without prior notice or justification."
+    },
+    "s5": {
+      "heading": "5. User account",
+      "body": "You are responsible for maintaining the confidentiality of your account credentials and for all activities carried out from your account. Notify us immediately of any unauthorized use: <mailLink>linkcharts@gmail.com</mailLink>."
+    },
+    "s6": {
+      "heading": "6. Limitation of liability",
+      "body": "Link Charts is not liable for direct, indirect, incidental, or consequential damages arising from the use or inability to use the service, including damages caused by links shortened by third parties. In no event shall our liability exceed the amount paid for the service in the last 12 months (zero, for free use)."
+    },
+    "s7": {
+      "heading": "7. Termination",
+      "body": "We may terminate or suspend your access to the service, with or without notice, for violation of these terms or for any other reason at our discretion. You may close your account at any time through the settings panel or by requesting via email."
+    },
+    "s8": {
+      "heading": "8. Intellectual property",
+      "body": "The code, design, and content of Link Charts are protected by copyright. Use of the service does not transfer any intellectual property rights. Shortened links and analytics data generated from your links belong to you."
+    },
+    "s9": {
+      "heading": "9. Governing law and jurisdiction",
+      "body": "These terms are governed by the laws of the Federative Republic of Brazil. Any dispute shall be submitted to the courts of the city of São Paulo, State of São Paulo, to the exclusion of any other, however privileged."
+    },
+    "s10": {
+      "heading": "10. Contact",
+      "body": "For questions about these terms: <mailLink>linkcharts@gmail.com</mailLink>"
+    }
+  },
+  "support": {
+    "title": "Support",
+    "subtitle": "Questions, suggestions, or issues? We're here to help.",
+    "contact": {
+      "heading": "Contact us",
+      "emailText": "📧 Email: <mailLink>linkcharts@gmail.com</mailLink> — we respond within 2 business days.",
+      "bugsText": "🐛 Bugs & suggestions: <githubLink>github.com/bcordeirodev</githubLink> — open an issue in the repository."
+    },
+    "faq": {
+      "heading": "Frequently asked questions",
+      "items": [
+        {
+          "q": "How does link shortening work?",
+          "a": "Paste any URL into the field on the home page, customise the slug if you wish, and click \"Shorten\". You'll receive a short link immediately — no account required."
+        },
+        {
+          "q": "Do I need an account to use the service?",
+          "a": "No. Basic shortening is free and requires no registration. An account is only needed to access advanced analytics, manage your links, and set custom slugs."
+        },
+        {
+          "q": "How can I delete a link I created?",
+          "a": "Log in, go to \"My Links\" in the main menu, find the link you want, and use the delete option. Links created without an account cannot be deleted later."
+        },
+        {
+          "q": "Is my data safe?",
+          "a": "Yes. We use HTTPS for all connections and do not sell personal data to third parties. See our Privacy Policy for full details."
+        },
+        {
+          "q": "I found a shortened link with malicious content. What should I do?",
+          "a": "Send the full link (including the slug) to linkcharts@gmail.com with the subject line \"Link Report\". We review and remove abusive links within 24 hours."
+        }
+      ]
+    }
+  }
+}

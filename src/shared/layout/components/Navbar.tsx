@@ -165,6 +165,7 @@ export function Navbar({
                     }}
                   >
                     <Avatar
+                      src={user.photoURL}
                       sx={{
                         width: 36,
                         height: 36,
@@ -232,6 +233,7 @@ export function Navbar({
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Avatar
+                  src={user?.photoURL}
                   sx={{
                     width: 48,
                     height: 48,

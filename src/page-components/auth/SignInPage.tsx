@@ -1,21 +1,106 @@
 "use client";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { AuthLayout } from "@/shared/layout";
 import AuthGuardRedirect from "@/lib/auth/AuthGuardRedirect";
 import authRoles from "@/lib/auth/authRoles";
 
+/** Facebook "f" logo in official brand color. */
+function FacebookLogo({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+        fill="#1877F2"
+      />
+    </svg>
+  );
+}
+
+/** Google "G" logo in official brand colors. */
+function GoogleLogo({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+        fill="#4285F4"
+      />
+      <path
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+        fill="#34A853"
+      />
+      <path
+        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+        fill="#FBBC05"
+      />
+      <path
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+        fill="#EA4335"
+      />
+    </svg>
+  );
+}
+
 /**
  * Sign-in page — delegates authentication to Auth0 Universal Login.
  *
- * "Continue with Google" connects google-oauth2 directly.
- * "Sign In" opens Auth0 Universal Login (supports email/password and any
- * other configured social connection).
+ * Social buttons pass `connection=<id>` to bypass the Universal Login
+ * screen for direct OAuth flows. "Sign in" opens the Universal Login
+ * page and supports all configured connections (email/password, etc.).
  */
 function SignInPage() {
   const { t } = useTranslation("auth");
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+
+  const socialBg = isDark ? "rgba(255,255,255,0.08)" : "#fff";
+  const socialBorder = isDark
+    ? alpha(theme.palette.divider, 0.5)
+    : "rgba(0,0,0,0.12)";
+  const socialText = isDark ? theme.palette.text.primary : "rgba(0,0,0,0.87)";
+  const socialHoverBg = isDark ? "rgba(255,255,255,0.13)" : "rgba(0,0,0,0.03)";
+  const socialHoverBorder = isDark
+    ? alpha(theme.palette.divider, 0.8)
+    : "rgba(0,0,0,0.2)";
+  const socialBoxShadow = isDark
+    ? "none"
+    : "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)";
+
+  const socialSx = {
+    backgroundColor: socialBg,
+    borderColor: socialBorder,
+    color: socialText,
+    fontWeight: 600,
+    fontSize: "0.9375rem",
+    textTransform: "none",
+    py: 1.25,
+    borderRadius: "10px",
+    boxShadow: socialBoxShadow,
+    transition: "background-color 150ms ease, box-shadow 150ms ease",
+    "&:hover": {
+      backgroundColor: socialHoverBg,
+      borderColor: socialHoverBorder,
+      boxShadow: isDark ? "none" : "0 2px 6px rgba(0,0,0,0.12)",
+    },
+  } as const;
 
   return (
     <AuthGuardRedirect auth={authRoles.onlyGuest}>
@@ -24,23 +109,66 @@ function SignInPage() {
         subtitle={t("signIn.subtitle")}
         variant="signin"
       >
-        <Stack spacing={2}>
+        <Stack spacing={1.5}>
+          {/* Google OAuth button */}
           <Button
             component="a"
             href="/auth/login?connection=google-oauth2"
-            variant="contained"
+            variant="outlined"
             size="large"
             fullWidth
+            startIcon={<GoogleLogo size={20} />}
+            sx={socialSx}
           >
             {t("signIn.googleButton")}
           </Button>
 
+          {/* Facebook OAuth button */}
           <Button
             component="a"
-            href="/auth/login"
+            href="/auth/login?connection=facebook"
             variant="outlined"
             size="large"
             fullWidth
+            startIcon={<FacebookLogo size={20} />}
+            sx={socialSx}
+          >
+            {t("signIn.facebookButton")}
+          </Button>
+
+          {/* Divider */}
+          <Box
+            sx={{ display: "flex", alignItems: "center", gap: 1.5, py: 0.5 }}
+          >
+            <Divider sx={{ flex: 1 }} />
+            <Typography
+              variant="caption"
+              sx={{
+                color: theme.palette.text.disabled,
+                fontWeight: 500,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+              }}
+            >
+              {t("signIn.orDivider")}
+            </Typography>
+            <Divider sx={{ flex: 1 }} />
+          </Box>
+
+          {/* Universal Login (email/password + any other connection) */}
+          <Button
+            component="a"
+            href="/auth/login"
+            variant="contained"
+            size="large"
+            fullWidth
+            sx={{
+              fontWeight: 600,
+              fontSize: "0.9375rem",
+              textTransform: "none",
+              py: 1.25,
+              borderRadius: "10px",
+            }}
           >
             {t("signIn.submitButton")}
           </Button>

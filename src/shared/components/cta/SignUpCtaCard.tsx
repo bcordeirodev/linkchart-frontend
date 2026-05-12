@@ -37,7 +37,7 @@ export function SignUpCtaCard({
   description,
   features,
   ctaLabel,
-  ctaHref = "/sign-up",
+  ctaHref = "/auth/login",
   onCtaClick,
   id,
 }: SignUpCtaCardProps) {
