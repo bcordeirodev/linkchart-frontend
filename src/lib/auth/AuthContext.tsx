@@ -1,6 +1,13 @@
 "use client";
-import { createContext, useContext, useCallback, useEffect, useState } from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { getAccessToken, useUser } from "@auth0/nextjs-auth0/client";
 
 import { authService } from "@/services";
 
@@ -25,6 +32,26 @@ interface AuthProviderProps {
 }
 
 /**
+ * Converts a backend `UserResponse` DTO to the frontend `User` shape.
+ *
+ * Extracted to module scope so it is not recreated on every render and
+ * can be referenced inside `useCallback` without causing stale-closure issues.
+ */
+function convertUserDBToUser(userDB: UserResponse): User {
+  return {
+    id: String(userDB.id),
+    name: userDB.name || userDB.email,
+    email: userDB.email,
+    displayName: userDB.name,
+    role: ["user"],
+    settings: {
+      layout: { style: "layout1", config: {} },
+      direction: "ltr",
+    },
+  };
+}
+
+/**
  * Top-level auth provider mounted near the root of the App Router tree.
  *
  * Uses the Auth0 `useUser()` hook (from `Auth0Provider` ancestor) to detect
@@ -43,19 +70,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { user: auth0User, isLoading: auth0Loading } = useUser();
-
-  const convertUserDBToUser = (userDB: UserResponse): User => ({
-    id: String(userDB.id),
-    name: userDB.name || userDB.email,
-    email: userDB.email,
-    displayName: userDB.name,
-    role: ["user"],
-    settings: {
-      layout: { style: "layout1", config: {} },
-      direction: "ltr",
-    },
-  });
+  const {
+    user: auth0User,
+    isLoading: auth0Loading,
+    error: auth0Error,
+  } = useUser();
 
   const clearSession = useCallback(() => {
     setUser(null);
@@ -65,11 +84,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   /** Fetches a fresh Auth0 access token and exchanges it for a backend JWT. */
   const exchangeAuth0Token = useCallback(async (): Promise<void> => {
-    const tokenResponse = await fetch("/auth/access-token");
-    if (!tokenResponse.ok) {
-      throw new Error("Failed to fetch Auth0 access token");
-    }
-    const { token: accessToken } = (await tokenResponse.json()) as { token: string };
+    const accessToken = await getAccessToken();
 
     const loginResponse: LoginResponse = await authService.auth0Exchange(accessToken);
     const converted = convertUserDBToUser(loginResponse.user);
@@ -81,11 +96,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     if (auth0Loading) return;
 
+    let cancelled = false;
+
+    if (auth0Error) {
+      console.error("Auth0 session error:", auth0Error);
+      // Don't clear local session — Auth0 transport error shouldn't kill a valid backend JWT.
+      if (!cancelled) setIsLoading(false);
+      return;
+    }
+
     const initializeAuth = async () => {
       try {
         if (!auth0User) {
           // No Auth0 session — ensure local state is clean.
-          clearSession();
+          if (!cancelled) clearSession();
           return;
         }
 
@@ -95,9 +119,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (token && storedUser) {
           // Hydrate from cache immediately so the UI doesn't flash.
           try {
-            setUser(JSON.parse(storedUser) as User);
+            if (!cancelled) setUser(JSON.parse(storedUser) as User);
           } catch {
-            clearSession();
+            if (!cancelled) clearSession();
             await exchangeAuth0Token();
             return;
           }
@@ -117,7 +141,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
               try {
                 await exchangeAuth0Token();
               } catch {
-                clearSession();
+                if (!cancelled) clearSession();
               }
             }
             // Network errors: keep cached user (graceful degradation).
@@ -127,25 +151,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
           try {
             await exchangeAuth0Token();
           } catch {
-            clearSession();
+            if (!cancelled) clearSession();
           }
         }
       } catch (error) {
         console.error("Auth init error:", error);
-        clearSession();
+        if (!cancelled) clearSession();
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     };
 
     initializeAuth();
-  }, [auth0User, auth0Loading, clearSession, exchangeAuth0Token]);
+    return () => {
+      cancelled = true;
+    };
+  }, [auth0User, auth0Loading, auth0Error, clearSession, exchangeAuth0Token]);
 
-  const login = (): void => {
+  const login = useCallback((): void => {
     window.location.href = "/auth/login";
-  };
+  }, []);
 
-  const logout = async (): Promise<void> => {
+  const logout = useCallback(async (): Promise<void> => {
     try {
       await authService.signOut();
     } catch {
@@ -153,9 +180,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
     clearSession();
     window.location.href = "/auth/logout";
-  };
+  }, [clearSession]);
 
-  const refreshUser = async (): Promise<void> => {
+  const refreshUser = useCallback(async (): Promise<void> => {
     const token = localStorage.getItem("token");
     if (!token) {
       setUser(null);
@@ -178,35 +205,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
         clearSession();
       }
     }
-  };
+  }, [clearSession]);
 
-  const updateUser = async (updates: Partial<User>): Promise<User | undefined> => {
-    if (!user) return undefined;
+  const updateUser = useCallback(
+    async (updates: Partial<User>): Promise<User | undefined> => {
+      if (!user) return undefined;
 
-    try {
-      const updatedUserDB = await authService.updateProfile({
-        name: updates.displayName || user.displayName,
-        email: updates.email || user.email,
-      });
-      const updatedUser = convertUserDBToUser(updatedUserDB);
-      setUser(updatedUser);
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      return updatedUser;
-    } catch (error) {
-      console.error("Failed to update user:", error);
-      throw new Error("Falha ao atualizar perfil");
-    }
-  };
+      try {
+        const updatedUserDB = await authService.updateProfile({
+          name: updates.displayName || user.displayName,
+          email: updates.email || user.email,
+        });
+        const updatedUser = convertUserDBToUser(updatedUserDB);
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        return updatedUser;
+      } catch (error) {
+        console.error("Failed to update user:", error);
+        throw error;
+      }
+    },
+    [user],
+  );
 
-  const value: AuthContextType = {
-    user,
-    isAuthenticated: !!user,
-    isLoading: isLoading || auth0Loading,
-    login,
-    logout,
-    updateUser,
-    refreshUser,
-  };
+  const value = useMemo<AuthContextType>(
+    () => ({
+      user,
+      isAuthenticated: !!user,
+      isLoading: isLoading || auth0Loading,
+      login,
+      logout,
+      updateUser,
+      refreshUser,
+    }),
+    [user, isLoading, auth0Loading, login, logout, updateUser, refreshUser],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
