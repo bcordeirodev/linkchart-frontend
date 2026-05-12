@@ -50,6 +50,27 @@ export default class AuthService extends BaseService {
   }
 
   /**
+   * Exchanges an Auth0 access token for a backend-issued JWT.
+   *
+   * Called once after Auth0 completes the OAuth flow (callback). The backend
+   * validates the token via Auth0's /userinfo endpoint and returns the same
+   * response shape as `signIn()`.
+   *
+   * @param accessToken - Auth0 access token from GET /auth/access-token.
+   * @returns the `LoginResponse` envelope including `token` and `user`.
+   * @endpoint `POST /api/auth/auth0-exchange`
+   */
+  async auth0Exchange(accessToken: string): Promise<LoginResponse> {
+    this.validateRequired({ accessToken }, ["accessToken"]);
+
+    return this.post<LoginResponse>(
+      API_ENDPOINTS.AUTH.AUTH0_EXCHANGE,
+      { access_token: accessToken },
+      { context: "auth0_exchange" },
+    );
+  }
+
+  /**
    * Creates a new account and returns the resulting JWT envelope.
    *
    * @param body - `{ name, email, password, password_confirmation }`.

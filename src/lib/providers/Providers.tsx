@@ -10,6 +10,8 @@ import { useEffect, useMemo } from "react";
 import { Provider } from "react-redux";
 import { useTranslation } from "react-i18next";
 
+import { Auth0Provider } from "@auth0/nextjs-auth0/client";
+
 import { initI18n, detectAndApplyLanguage } from "@/i18n/config";
 import { AuthProvider } from "@/lib/auth/AuthContext";
 import { LayoutProvider } from "@/shared/layout/core";
@@ -36,29 +38,31 @@ export function Providers({ children, initialLang = "en" }: ProvidersProps) {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppContext.Provider value={val}>
-        <LocalizationProvider
-          dateAdapter={AdapterDateFns}
-          adapterLocale={dateLocale}
-        >
-          <Provider store={store}>
-            <AuthProvider>
-              <LayoutProvider>
-                <MainThemeProvider>
-                  <SnackbarProvider
-                    maxSnack={5}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    style={{ zIndex: 99 }}
-                  >
-                    {children}
-                  </SnackbarProvider>
-                </MainThemeProvider>
-              </LayoutProvider>
-            </AuthProvider>
-          </Provider>
-        </LocalizationProvider>
-      </AppContext.Provider>
-    </QueryClientProvider>
+    <Auth0Provider>
+      <QueryClientProvider client={queryClient}>
+        <AppContext.Provider value={val}>
+          <LocalizationProvider
+            dateAdapter={AdapterDateFns}
+            adapterLocale={dateLocale}
+          >
+            <Provider store={store}>
+              <AuthProvider>
+                <LayoutProvider>
+                  <MainThemeProvider>
+                    <SnackbarProvider
+                      maxSnack={5}
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                      style={{ zIndex: 99 }}
+                    >
+                      {children}
+                    </SnackbarProvider>
+                  </MainThemeProvider>
+                </LayoutProvider>
+              </AuthProvider>
+            </Provider>
+          </LocalizationProvider>
+        </AppContext.Provider>
+      </QueryClientProvider>
+    </Auth0Provider>
   );
 }
