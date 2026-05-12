@@ -58,6 +58,9 @@ export const metadata: Metadata = {
       "Free URL shortener with powerful real-time analytics, click tracking, and geographic insights.",
     images: [`${appUrl}/og-default.png`],
   },
+  verification: {
+    google: "ScMRnsLtVWdaMwHKhOHLIK2wVXpdb68uwa6kHzuDUTU",
+  },
 };
 
 export default async function RootLayout({
