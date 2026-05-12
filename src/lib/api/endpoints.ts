@@ -60,6 +60,7 @@ export const API_CONFIG = {
       RESET_PASSWORD: "/api/auth/reset-password",
       EMAIL_VERIFICATION_STATUS: "/api/email-verification-status",
       RESEND_VERIFICATION_EMAIL: "/api/resend-verification-email",
+      AUTH0_EXCHANGE: "/api/auth/auth0-exchange",
     },
 
     // --- Per-link analytics dashboards (one endpoint per tab) ---
@@ -144,6 +145,7 @@ export const API_ENDPOINTS = {
       API_CONFIG.ENDPOINTS.AUTH.EMAIL_VERIFICATION_STATUS,
     RESEND_VERIFICATION_EMAIL:
       API_CONFIG.ENDPOINTS.AUTH.RESEND_VERIFICATION_EMAIL,
+    AUTH0_EXCHANGE: API_CONFIG.ENDPOINTS.AUTH.AUTH0_EXCHANGE,
   },
 };
 

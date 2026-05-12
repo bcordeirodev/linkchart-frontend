@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { auth0 } from "@/lib/auth0";
 import type { NextRequest } from "next/server";
 
 const SECURITY_HEADERS: Record<string, string> = {
@@ -10,12 +10,20 @@ const SECURITY_HEADERS: Record<string, string> = {
   "X-DNS-Prefetch-Control": "on",
 };
 
-export function middleware(_request: NextRequest) {
-  const response = NextResponse.next();
+/**
+ * Merged middleware: Auth0 handles /auth/* routes; security headers are
+ * applied to every non-redirect response so they reach all app pages.
+ */
+export async function middleware(request: NextRequest) {
+  const response = await auth0.middleware(request);
 
-  Object.entries(SECURITY_HEADERS).forEach(([key, value]) => {
-    response.headers.set(key, value);
-  });
+  // Skip header injection on redirects (Auth0 login/logout redirects).
+  const isRedirect = response.status >= 300 && response.status < 400;
+  if (!isRedirect) {
+    Object.entries(SECURITY_HEADERS).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+  }
 
   return response;
 }
