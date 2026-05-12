@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import { cookies } from "next/headers";
 
 import { Providers } from "@/lib/providers/Providers";
@@ -67,35 +68,45 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const initialLang = cookieStore.get("i18nextLng")?.value ?? "en";
 
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html lang={initialLang} suppressHydrationWarning>
-      <head suppressHydrationWarning>
-        {/* Consent Mode v2 defaults — must run before any gtag call */}
-        <script
+      <body className={inter.variable}>
+        {/*
+         * Consent Mode v2 defaults — must fire before any gtag/AdSense call.
+         * `beforeInteractive` is injected by Next.js into the raw HTML outside
+         * React's vDOM, so it never triggers a hydration mismatch.
+         */}
+        <Script
+          id="consent-mode"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};window.gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});`,
           }}
         />
-        {process.env.NEXT_PUBLIC_GA_ID ? (
+        {gaId ? (
           <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+            <Script
+              id="gtm"
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
             />
-            <script
+            <Script
+              id="gtag-config"
+              strategy="afterInteractive"
               dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}');`,
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${gaId}');`,
               }}
             />
           </>
         ) : null}
-        <script
-          async
+        <Script
+          id="adsense"
+          strategy="afterInteractive"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1396026257166470"
           crossOrigin="anonymous"
         />
-      </head>
-      <body className={inter.variable}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
