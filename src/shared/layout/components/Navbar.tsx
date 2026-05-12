@@ -66,7 +66,6 @@ export function Navbar({
   const handleLogout = async () => {
     handleMenuClose();
     await logout();
-    navigate("/sign-in");
   };
 
   return (
@@ -362,6 +361,27 @@ export function Navbar({
               <AppIcon intent="profile" size={20} />
             </ListItemIcon>
             <ListItemText primary={t("nav.profile")} />
+          </ListItemButton>
+
+          <Divider sx={{ my: 1 }} />
+
+          <ListItemButton
+            onClick={() => {
+              setDrawerOpen(false);
+              void logout();
+            }}
+            sx={{
+              px: 3,
+              py: 1.5,
+              borderRadius: `${radiusTokens.sm}px`,
+              mx: 1,
+              color: "error.main",
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 36 }}>
+              <AppIcon intent="logout" size={20} color="currentColor" />
+            </ListItemIcon>
+            <ListItemText primary={t("nav.signOut")} />
           </ListItemButton>
         </List>
       </Drawer>
