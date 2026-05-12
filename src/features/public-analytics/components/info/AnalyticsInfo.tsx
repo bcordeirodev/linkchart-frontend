@@ -86,7 +86,7 @@ export function AnalyticsInfo({ actions }: AnalyticsInfoProps) {
 					</Button>
 					<Button
 						variant="outlined"
-						onClick={() => navigate('/sign-up')}
+						onClick={() => navigate('/auth/login')}
 						size="large"
 					>
 						Criar Conta Gratuita
@@ -94,7 +94,7 @@ export function AnalyticsInfo({ actions }: AnalyticsInfoProps) {
 				</Stack>
 			</CardContent> */}
       <UpgradeCTA
-        onSignUp={() => navigate("/sign-up")}
+        onSignUp={() => navigate("/auth/login")}
         onLogin={() => navigate("/sign-in")}
         onCreateLink={handleCreateLink}
       />

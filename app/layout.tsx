@@ -69,7 +69,7 @@ export default async function RootLayout({
 
   return (
     <html lang={initialLang} suppressHydrationWarning>
-      <head>
+      <head suppressHydrationWarning>
         {/* Consent Mode v2 defaults — must run before any gtag call */}
         <script
           dangerouslySetInnerHTML={{

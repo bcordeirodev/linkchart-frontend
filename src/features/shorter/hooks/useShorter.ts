@@ -80,7 +80,7 @@ export function useShorter() {
     setError(null);
   }, []);
 
-  const handleSignUp = useCallback(() => navigate("/sign-up"), [navigate]);
+  const handleSignUp = useCallback(() => navigate("/auth/login"), [navigate]);
   const handleLogin = useCallback(() => navigate("/sign-in"), [navigate]);
 
   return {
