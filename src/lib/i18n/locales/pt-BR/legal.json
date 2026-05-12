@@ -1,0 +1,192 @@
+{
+  "privacy": {
+    "title": "Política de Privacidade",
+    "effectiveDate": "Vigência: 6 de maio de 2026 · Link Charts",
+    "s1": {
+      "heading": "1. Quem somos",
+      "body": "Link Charts é um serviço gratuito de encurtamento de URLs com analytics, operado por Bruno Cordeiro. Somos o controlador dos seus dados pessoais conforme a Lei Geral de Proteção de Dados (LGPD — Lei 13.709/2018). Para entrar em contato: <mailLink>linkcharts@gmail.com</mailLink>."
+    },
+    "s2": {
+      "heading": "2. Dados que coletamos",
+      "intro": "Coletamos as seguintes categorias de dados ao usar o Link Charts:",
+      "items": {
+        "urls": { "label": "URLs encurtadas", "text": "o endereço original que você fornece." },
+        "clicks": { "label": "Dados de cliques", "text": "data, hora, país de origem, tipo de dispositivo, navegador e sistema operacional de cada visitante que acessa seus links." },
+        "ip": { "label": "Endereço IP", "text": "usado para geolocalização aproximada (país/região) e proteção contra abuso." },
+        "cookies": { "label": "Cookies e identificadores", "text": "preferência de idioma, sessão autenticada, e — com seu consentimento — cookies de analytics e publicidade." },
+        "account": { "label": "Dados de conta", "text": "nome e endereço de e-mail, caso você crie uma conta." }
+      }
+    },
+    "s3": {
+      "heading": "3. Finalidade e base legal (LGPD art. 7)",
+      "items": {
+        "platform": { "label": "Funcionamento da plataforma", "text": "(encurtamento, redirecionamento, conta): execução de contrato — art. 7, V." },
+        "analytics": { "label": "Analytics de cliques", "text": "(estatísticas dos seus links): legítimo interesse — art. 7, IX." },
+        "ga": { "label": "Google Analytics", "text": "(comportamento de navegação): consentimento — art. 7, I. Ativado apenas se você aceitar cookies de analytics." },
+        "adsense": { "label": "Google AdSense", "text": "(publicidade): consentimento — art. 7, I. Ativado apenas se você aceitar cookies de publicidade." }
+      }
+    },
+    "s4": {
+      "heading": "4. Compartilhamento de dados",
+      "intro": "Não vendemos seus dados pessoais. Compartilhamos apenas com os seguintes prestadores de serviço, para as finalidades indicadas:",
+      "items": {
+        "ga": { "label": "Google Analytics (Google LLC)", "text": "análise de comportamento de navegação — somente com consentimento (analytics_storage)." },
+        "adsense": { "label": "Google AdSense (Google LLC)", "text": "veiculação de publicidade — somente com consentimento (ad_storage, ad_user_data, ad_personalization)." }
+      }
+    },
+    "s5": {
+      "heading": "5. Seus direitos (LGPD art. 18)",
+      "intro": "Como titular de dados, você tem os seguintes direitos:",
+      "rights": [
+        "Confirmação da existência de tratamento",
+        "Acesso aos dados",
+        "Correção de dados incompletos, inexatos ou desatualizados",
+        "Anonimização, bloqueio ou eliminação de dados desnecessários",
+        "Portabilidade dos dados",
+        "Informação sobre compartilhamento com terceiros",
+        "Revogação do consentimento a qualquer momento"
+      ],
+      "contact": "Para exercer seus direitos: <mailLink>linkcharts@gmail.com</mailLink>. Ou use o link \"Não vender meus dados\" no rodapé para gerenciar suas preferências de cookies."
+    },
+    "s6": {
+      "heading": "6. Transferência internacional de dados",
+      "body": "O Google Analytics e o Google AdSense processam dados nos Estados Unidos. Essas transferências ocorrem com base nas cláusulas contratuais padrão aprovadas pela Comissão Europeia e salvaguardas equivalentes aceitas pela ANPD."
+    },
+    "s7": {
+      "heading": "7. Retenção de dados",
+      "items": {
+        "clicks": { "label": "Logs de cliques", "text": "24 meses." },
+        "cookies": { "label": "Cookies de preferência", "text": "6 meses." },
+        "account": { "label": "Dados de conta", "text": "enquanto a conta estiver ativa + 30 dias após exclusão." }
+      }
+    },
+    "s8": {
+      "heading": "8. Segurança",
+      "body": "Utilizamos HTTPS em todas as comunicações, acesso restrito ao banco de dados e revisão periódica de permissões. Nenhum sistema é 100% seguro; em caso de incidente que afete seus dados, notificaremos conforme exigido pela LGPD."
+    },
+    "s9": {
+      "heading": "9. Direitos de residentes da Califórnia (CCPA)",
+      "intro": "Se você reside na Califórnia (EUA), a Lei de Privacidade do Consumidor da Califórnia (CCPA) garante direitos adicionais:",
+      "rights": {
+        "know": { "label": "Direito de saber", "text": "quais dados pessoais coletamos e com quem compartilhamos." },
+        "delete": { "label": "Direito de exclusão", "text": "solicitar a exclusão dos seus dados pessoais." },
+        "optOut": { "label": "Direito de opt-out da venda", "text": "não vendemos dados pessoais. Para desativar o compartilhamento com parceiros de publicidade, use o link \"Não vender meus dados\" no rodapé." },
+        "nonDiscrimination": { "label": "Direito à não-discriminação", "text": "não discriminamos usuários que exercem seus direitos CCPA." }
+      },
+      "contact": "Para exercer direitos CCPA: <mailLink>linkcharts@gmail.com</mailLink>."
+    },
+    "s10": {
+      "heading": "10. Tabela de cookies",
+      "headers": {
+        "cookie": "Cookie",
+        "purpose": "Finalidade",
+        "duration": "Duração",
+        "category": "Categoria"
+      },
+      "rows": [
+        { "name": "cc_cookie", "purpose": "Preferência de consentimento", "duration": "6 meses", "category": "Necessário" },
+        { "name": "i18nextLng", "purpose": "Preferência de idioma", "duration": "1 ano", "category": "Necessário" },
+        { "name": "_ga", "purpose": "Identificador de sessão (GA)", "duration": "2 anos", "category": "Analytics" },
+        { "name": "_ga_*", "purpose": "Estado de sessão (GA)", "duration": "2 anos", "category": "Analytics" },
+        { "name": "_gcl_au", "purpose": "Atribuição de conversão", "duration": "3 meses", "category": "Publicidade" },
+        { "name": "IDE", "purpose": "Personalização de anúncios", "duration": "1 ano", "category": "Publicidade" }
+      ]
+    },
+    "s11": {
+      "heading": "11. Atualizações desta política",
+      "body": "Esta política pode ser atualizada. A data de vigência no topo indica a versão em vigor. Mudanças significativas serão comunicadas por e-mail aos usuários cadastrados."
+    },
+    "s12": {
+      "heading": "12. Contato e responsável pelo tratamento",
+      "line1": "Bruno Cordeiro · Link Charts",
+      "emailLabel": "E-mail:",
+      "githubLabel": "GitHub:"
+    }
+  },
+  "terms": {
+    "title": "Termos de Serviço",
+    "effectiveDate": "Vigência: 6 de maio de 2026 · Link Charts",
+    "s1": {
+      "heading": "1. Aceitação dos termos",
+      "body": "Ao acessar ou usar o Link Charts, você concorda com estes Termos de Serviço e com nossa <privacyLink>Política de Privacidade</privacyLink>. Se não concordar, não utilize o serviço."
+    },
+    "s2": {
+      "heading": "2. Descrição do serviço",
+      "body": "O Link Charts é uma plataforma gratuita de encurtamento de URLs que oferece analytics básico de cliques, geolocalização e dados de dispositivo. O serviço é fornecido \"como está\", sem garantia de disponibilidade ininterrupta. Reservamo-nos o direito de alterar ou descontinuar funcionalidades sem aviso prévio."
+    },
+    "s3": {
+      "heading": "3. Uso aceitável",
+      "intro": "É expressamente proibido usar o Link Charts para encurtar URLs que contenham ou levem a:",
+      "items": [
+        "Malware, vírus, ransomware, phishing ou qualquer código malicioso",
+        "Conteúdo ilegal sob as leis brasileiras ou internacionais",
+        "Spam ou mensagens comerciais não solicitadas",
+        "Conteúdo que viole direitos autorais, marcas registradas ou direitos de privacidade de terceiros",
+        "Conteúdo que promova violência, ódio, discriminação ou terrorismo",
+        "Material sexualmente explícito envolvendo menores"
+      ]
+    },
+    "s4": {
+      "heading": "4. Responsabilidade pelos links",
+      "body": "Você é inteiramente responsável pelo conteúdo das URLs que encurtar. O Link Charts não monitora proativamente o conteúdo dos links, mas reserva-se o direito de remover qualquer link que viole estes termos, sem aviso prévio e sem necessidade de justificativa."
+    },
+    "s5": {
+      "heading": "5. Conta de usuário",
+      "body": "Você é responsável por manter a confidencialidade das credenciais de sua conta e por todas as atividades realizadas a partir dela. Notifique-nos imediatamente em caso de uso não autorizado: <mailLink>linkcharts@gmail.com</mailLink>."
+    },
+    "s6": {
+      "heading": "6. Limitação de responsabilidade",
+      "body": "O Link Charts não se responsabiliza por danos diretos, indiretos, incidentais ou consequentes decorrentes do uso ou incapacidade de uso do serviço, incluindo danos causados por links encurtados por terceiros. Em nenhuma hipótese nossa responsabilidade excederá o valor pago pelo serviço nos últimos 12 meses (zero, para uso gratuito)."
+    },
+    "s7": {
+      "heading": "7. Rescisão",
+      "body": "Podemos encerrar ou suspender seu acesso ao serviço, com ou sem aviso prévio, por violação destes termos ou por qualquer outro motivo a nosso critério. Você pode encerrar sua conta a qualquer momento pelo painel de configurações ou solicitando por e-mail."
+    },
+    "s8": {
+      "heading": "8. Propriedade intelectual",
+      "body": "O código, design e conteúdo do Link Charts são protegidos por direitos autorais. O uso do serviço não transfere qualquer direito de propriedade intelectual. Links encurtados e dados de analytics gerados a partir dos seus links pertencem a você."
+    },
+    "s9": {
+      "heading": "9. Lei aplicável e foro",
+      "body": "Estes termos são regidos pelas leis da República Federativa do Brasil. Qualquer disputa será submetida ao foro da comarca de São Paulo, Estado de São Paulo, com renúncia a qualquer outro, por mais privilegiado que seja."
+    },
+    "s10": {
+      "heading": "10. Contato",
+      "body": "Para dúvidas sobre estes termos: <mailLink>linkcharts@gmail.com</mailLink>"
+    }
+  },
+  "support": {
+    "title": "Suporte",
+    "subtitle": "Dúvidas, sugestões ou problemas? Estamos aqui para ajudar.",
+    "contact": {
+      "heading": "Fale conosco",
+      "emailText": "📧 E-mail: <mailLink>linkcharts@gmail.com</mailLink> — respondemos em até 2 dias úteis.",
+      "bugsText": "🐛 Bugs e sugestões: <githubLink>github.com/bcordeirodev</githubLink> — abra uma issue no repositório."
+    },
+    "faq": {
+      "heading": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "Como funciona o encurtamento de links?",
+          "a": "Cole qualquer URL no campo da página inicial, personalize o slug se quiser, e clique em \"Encurtar\". Você receberá um link curto imediatamente — sem precisar de conta."
+        },
+        {
+          "q": "Preciso criar uma conta para usar o serviço?",
+          "a": "Não. O encurtamento básico é gratuito e não exige cadastro. Uma conta é necessária apenas para acessar analytics avançado, gerenciar seus links e definir slugs personalizados."
+        },
+        {
+          "q": "Como posso deletar um link que criei?",
+          "a": "Faça login, acesse \"Meus Links\" no menu principal, localize o link desejado e use a opção de exclusão. Links criados sem conta não podem ser deletados posteriormente."
+        },
+        {
+          "q": "Meus dados estão seguros?",
+          "a": "Sim. Usamos HTTPS em todas as conexões e não vendemos dados pessoais a terceiros. Consulte nossa Política de Privacidade para detalhes completos."
+        },
+        {
+          "q": "Encontrei um link encurtado com conteúdo malicioso. O que fazer?",
+          "a": "Envie o link (completo, incluindo o slug) para linkcharts@gmail.com com o assunto \"Reporte de link\". Analisamos e removemos links abusivos em até 24 horas."
+        }
+      ]
+    }
+  }
+}
