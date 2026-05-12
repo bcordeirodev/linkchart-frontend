@@ -85,6 +85,14 @@ jobs:
             --exclude='.env' \
             . root@${{ secrets.PRODUCTION_HOST }}:/var/www/linkchart-frontend-next/
 
+      - name: Write production secrets to server
+        run: |
+          {
+            echo "AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }}"
+            echo "AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}"
+            echo "GOOGLE_SAFE_BROWSING_KEY=${{ secrets.GOOGLE_SAFE_BROWSING_KEY }}"
+          } | ssh root@${{ secrets.PRODUCTION_HOST }} "cat > /var/www/linkchart-frontend-next/.env"
+
       - name: Build and start container on server
         uses: appleboy/ssh-action@v1.0.3
         with:
