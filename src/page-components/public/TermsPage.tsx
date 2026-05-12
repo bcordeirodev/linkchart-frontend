@@ -24,7 +24,10 @@ export default function TermsPage() {
 
   return (
     <PublicLayout chrome="minimal" variant="simple">
-      <Container maxWidth="md" sx={{ pt: { xs: 7, md: 8 }, pb: { xs: 6, md: 8 } }}>
+      <Container
+        maxWidth="md"
+        sx={{ pt: { xs: 7, md: 8 }, pb: { xs: 6, md: 8 } }}
+      >
         <Typography variant="h4" fontWeight={800} gutterBottom>
           {t("terms.title")}
         </Typography>
@@ -39,7 +42,11 @@ export default function TermsPage() {
             {t("terms.s1.heading")}
           </Typography>
           <Typography sx={bodySx}>
-            <Trans i18nKey="terms.s1.body" ns="legal" components={{ privacyLink }} />
+            <Trans
+              i18nKey="terms.s1.body"
+              ns="legal"
+              components={{ privacyLink }}
+            />
           </Typography>
         </Box>
 
@@ -57,7 +64,10 @@ export default function TermsPage() {
             {t("terms.s3.heading")}
           </Typography>
           <Typography sx={bodySx}>{t("terms.s3.intro")}</Typography>
-          <Box component="ul" sx={{ color: "text.secondary", pl: 3, mt: 1, lineHeight: 2 }}>
+          <Box
+            component="ul"
+            sx={{ color: "text.secondary", pl: 3, mt: 1, lineHeight: 2 }}
+          >
             {s3Items.map((item) => (
               <li key={item}>{item}</li>
             ))}
@@ -78,7 +88,11 @@ export default function TermsPage() {
             {t("terms.s5.heading")}
           </Typography>
           <Typography sx={bodySx}>
-            <Trans i18nKey="terms.s5.body" ns="legal" components={{ mailLink }} />
+            <Trans
+              i18nKey="terms.s5.body"
+              ns="legal"
+              components={{ mailLink }}
+            />
           </Typography>
         </Box>
 
@@ -120,7 +134,11 @@ export default function TermsPage() {
             {t("terms.s10.heading")}
           </Typography>
           <Typography sx={bodySx}>
-            <Trans i18nKey="terms.s10.body" ns="legal" components={{ mailLink }} />
+            <Trans
+              i18nKey="terms.s10.body"
+              ns="legal"
+              components={{ mailLink }}
+            />
           </Typography>
         </Box>
       </Container>
