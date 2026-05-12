@@ -10,28 +10,61 @@
       "heading": "2. Data we collect",
       "intro": "We collect the following categories of data when you use Link Charts:",
       "items": {
-        "urls": { "label": "Shortened URLs", "text": "the original address you provide." },
-        "clicks": { "label": "Click data", "text": "date, time, country of origin, device type, browser, and operating system of each visitor who accesses your links." },
-        "ip": { "label": "IP address", "text": "used for approximate geolocation (country/region) and abuse protection." },
-        "cookies": { "label": "Cookies and identifiers", "text": "language preference, authenticated session, and — with your consent — analytics and advertising cookies." },
-        "account": { "label": "Account data", "text": "name and email address, if you create an account." }
+        "urls": {
+          "label": "Shortened URLs",
+          "text": "the original address you provide."
+        },
+        "clicks": {
+          "label": "Click data",
+          "text": "date, time, country of origin, device type, browser, and operating system of each visitor who accesses your links."
+        },
+        "ip": {
+          "label": "IP address",
+          "text": "used for approximate geolocation (country/region) and abuse protection."
+        },
+        "cookies": {
+          "label": "Cookies and identifiers",
+          "text": "language preference, authenticated session, and — with your consent — analytics and advertising cookies."
+        },
+        "account": {
+          "label": "Account data",
+          "text": "name and email address, if you create an account."
+        }
       }
     },
     "s3": {
       "heading": "3. Purpose and legal basis (LGPD art. 7)",
       "items": {
-        "platform": { "label": "Platform operation", "text": "(shortening, redirect, account): contract performance — art. 7, V." },
-        "analytics": { "label": "Click analytics", "text": "(statistics for your links): legitimate interest — art. 7, IX." },
-        "ga": { "label": "Google Analytics", "text": "(browsing behaviour): consent — art. 7, I. Activated only if you accept analytics cookies." },
-        "adsense": { "label": "Google AdSense", "text": "(advertising): consent — art. 7, I. Activated only if you accept advertising cookies." }
+        "platform": {
+          "label": "Platform operation",
+          "text": "(shortening, redirect, account): contract performance — art. 7, V."
+        },
+        "analytics": {
+          "label": "Click analytics",
+          "text": "(statistics for your links): legitimate interest — art. 7, IX."
+        },
+        "ga": {
+          "label": "Google Analytics",
+          "text": "(browsing behaviour): consent — art. 7, I. Activated only if you accept analytics cookies."
+        },
+        "adsense": {
+          "label": "Google AdSense",
+          "text": "(advertising): consent — art. 7, I. Activated only if you accept advertising cookies."
+        }
       }
     },
     "s4": {
       "heading": "4. Data sharing",
       "intro": "We do not sell your personal data. We share data only with the following service providers, for the stated purposes:",
       "items": {
-        "ga": { "label": "Google Analytics (Google LLC)", "text": "browsing behaviour analysis — consent only (analytics_storage)." },
-        "adsense": { "label": "Google AdSense (Google LLC)", "text": "ad delivery — consent only (ad_storage, ad_user_data, ad_personalization)." }
+        "ga": {
+          "label": "Google Analytics (Google LLC)",
+          "text": "browsing behaviour analysis — consent only (analytics_storage)."
+        },
+        "adsense": {
+          "label": "Google AdSense (Google LLC)",
+          "text": "ad delivery — consent only (ad_storage, ad_user_data, ad_personalization)."
+        }
       }
     },
     "s5": {
@@ -57,7 +90,10 @@
       "items": {
         "clicks": { "label": "Click logs", "text": "24 months." },
         "cookies": { "label": "Preference cookies", "text": "6 months." },
-        "account": { "label": "Account data", "text": "while the account is active + 30 days after deletion." }
+        "account": {
+          "label": "Account data",
+          "text": "while the account is active + 30 days after deletion."
+        }
       }
     },
     "s8": {
@@ -68,10 +104,22 @@
       "heading": "9. California residents' rights (CCPA)",
       "intro": "If you reside in California (USA), the California Consumer Privacy Act (CCPA) grants you additional rights:",
       "rights": {
-        "know": { "label": "Right to know", "text": "what personal data we collect and with whom we share it." },
-        "delete": { "label": "Right to delete", "text": "request deletion of your personal data." },
-        "optOut": { "label": "Right to opt out of sale", "text": "we do not sell personal data. To disable sharing with advertising partners, use the \"Do not sell my data\" link in the footer." },
-        "nonDiscrimination": { "label": "Right to non-discrimination", "text": "we do not discriminate against users who exercise their CCPA rights." }
+        "know": {
+          "label": "Right to know",
+          "text": "what personal data we collect and with whom we share it."
+        },
+        "delete": {
+          "label": "Right to delete",
+          "text": "request deletion of your personal data."
+        },
+        "optOut": {
+          "label": "Right to opt out of sale",
+          "text": "we do not sell personal data. To disable sharing with advertising partners, use the \"Do not sell my data\" link in the footer."
+        },
+        "nonDiscrimination": {
+          "label": "Right to non-discrimination",
+          "text": "we do not discriminate against users who exercise their CCPA rights."
+        }
       },
       "contact": "To exercise CCPA rights: <mailLink>linkcharts@gmail.com</mailLink>."
     },
@@ -84,12 +132,42 @@
         "category": "Category"
       },
       "rows": [
-        { "name": "cc_cookie", "purpose": "Consent preference", "duration": "6 months", "category": "Necessary" },
-        { "name": "i18nextLng", "purpose": "Language preference", "duration": "1 year", "category": "Necessary" },
-        { "name": "_ga", "purpose": "Session identifier (GA)", "duration": "2 years", "category": "Analytics" },
-        { "name": "_ga_*", "purpose": "Session state (GA)", "duration": "2 years", "category": "Analytics" },
-        { "name": "_gcl_au", "purpose": "Conversion attribution", "duration": "3 months", "category": "Advertising" },
-        { "name": "IDE", "purpose": "Ad personalisation", "duration": "1 year", "category": "Advertising" }
+        {
+          "name": "cc_cookie",
+          "purpose": "Consent preference",
+          "duration": "6 months",
+          "category": "Necessary"
+        },
+        {
+          "name": "i18nextLng",
+          "purpose": "Language preference",
+          "duration": "1 year",
+          "category": "Necessary"
+        },
+        {
+          "name": "_ga",
+          "purpose": "Session identifier (GA)",
+          "duration": "2 years",
+          "category": "Analytics"
+        },
+        {
+          "name": "_ga_*",
+          "purpose": "Session state (GA)",
+          "duration": "2 years",
+          "category": "Analytics"
+        },
+        {
+          "name": "_gcl_au",
+          "purpose": "Conversion attribution",
+          "duration": "3 months",
+          "category": "Advertising"
+        },
+        {
+          "name": "IDE",
+          "purpose": "Ad personalisation",
+          "duration": "1 year",
+          "category": "Advertising"
+        }
       ]
     },
     "s11": {
