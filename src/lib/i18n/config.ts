@@ -5,12 +5,14 @@ import { initReactI18next } from "react-i18next";
 import enAnalytics from "./locales/en/analytics.json";
 import enAuth from "./locales/en/auth.json";
 import enCommon from "./locales/en/common.json";
+import enLegal from "./locales/en/legal.json";
 import enLinks from "./locales/en/links.json";
 import enProfile from "./locales/en/profile.json";
 import enPublic from "./locales/en/public.json";
 import ptBRAnalytics from "./locales/pt-BR/analytics.json";
 import ptBRAuth from "./locales/pt-BR/auth.json";
 import ptBRCommon from "./locales/pt-BR/common.json";
+import ptBRLegal from "./locales/pt-BR/legal.json";
 import ptBRLinks from "./locales/pt-BR/links.json";
 import ptBRProfile from "./locales/pt-BR/profile.json";
 import ptBRPublic from "./locales/pt-BR/public.json";
@@ -23,6 +25,7 @@ const resources = {
     analytics: enAnalytics,
     profile: enProfile,
     public: enPublic,
+    legal: enLegal,
   },
   "pt-BR": {
     common: ptBRCommon,
@@ -31,6 +34,7 @@ const resources = {
     analytics: ptBRAnalytics,
     profile: ptBRProfile,
     public: ptBRPublic,
+    legal: ptBRLegal,
   },
 };
 
@@ -46,13 +50,21 @@ const resources = {
  * hydration, `detectAndApplyLanguage()` switches to the stored preference.
  */
 export function initI18n(lng: string = "en") {
-  if (i18n.isInitialized) return;
+  if (i18n.isInitialized) {
+    // The singleton persists across server requests in the same Node.js process.
+    // Without this, a second request with a different language would silently
+    // keep the language from the first request, causing SSR/client className mismatches.
+    if (i18n.language !== lng) {
+      void i18n.changeLanguage(lng);
+    }
+    return;
+  }
   void i18n.use(initReactI18next).init({
     lng,
     resources,
     fallbackLng: "en",
     defaultNS: "common",
-    ns: ["common", "auth", "links", "analytics", "profile", "public"],
+    ns: ["common", "auth", "links", "analytics", "profile", "public", "legal"],
     supportedLngs: ["en", "pt-BR"],
     interpolation: { escapeValue: false },
   });
