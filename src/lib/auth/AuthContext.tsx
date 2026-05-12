@@ -1,5 +1,6 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useCallback, useEffect, useState } from "react";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 import { authService } from "@/services";
 
@@ -10,8 +11,9 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  /** Redirects to Auth0 Universal Login (/auth/login). */
+  login: () => void;
+  logout: () => Promise<void>;
   updateUser: (updates: Partial<User>) => Promise<User | undefined>;
   refreshUser: () => Promise<void>;
 }
@@ -25,203 +27,181 @@ interface AuthProviderProps {
 /**
  * Top-level auth provider mounted near the root of the App Router tree.
  *
- * Hydrates `user` from `localStorage` on mount, calls `authService.getMe()`
- * to validate the JWT, and exposes `login`, `logout`, `updateUser`, and
- * `refreshUser` to descendants via `useAuth`.
+ * Uses the Auth0 `useUser()` hook (from `Auth0Provider` ancestor) to detect
+ * the Auth0 session. When an Auth0 session is active but no backend JWT
+ * exists in localStorage, it calls `POST /api/auth/auth0-exchange` to obtain
+ * one. `ApiClient` continues to inject `localStorage.token` as the bearer
+ * token on every API call — no change required downstream.
  *
  * @remarks
- * - Falls back to the cached `localStorage.user` on transient network errors so
- *   the UI doesn't blink to logged-out during a flaky connection. Only `401`
- *   responses clear the session.
- * - Tokens are read straight from `localStorage.token`; `ApiClient` injects them
- *   on the wire via `Authorization: Bearer`.
+ * - `login()` redirects to `/auth/login` (Auth0 Universal Login).
+ * - `logout()` clears localStorage and redirects to `/auth/logout`.
+ * - On network errors during JWT validation, the cached localStorage user
+ *   is kept (graceful degradation); only 401 clears the session.
  */
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Converter UserResponse para User
+  const { user: auth0User, isLoading: auth0Loading } = useUser();
+
   const convertUserDBToUser = (userDB: UserResponse): User => ({
     id: String(userDB.id),
-    name: userDB.name || userDB.email, // Usar name ou email como fallback
+    name: userDB.name || userDB.email,
     email: userDB.email,
     displayName: userDB.name,
-    role: ["user"], // Role padrão, pode ser expandido depois
+    role: ["user"],
     settings: {
-      layout: {
-        style: "layout1",
-        config: {},
-      },
+      layout: { style: "layout1", config: {} },
       direction: "ltr",
     },
   });
 
-  // Verificar token e buscar usuário atual
-  const refreshUser = async (): Promise<void> => {
-    try {
-      const token = localStorage.getItem("token");
+  const clearSession = useCallback(() => {
+    setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  }, []);
 
-      if (!token) {
-        setUser(null);
-        return;
-      }
-
-      // Buscar usuário atual da API
-      const userDB = await authService.getMe();
-      const user = convertUserDBToUser(userDB);
-      setUser(user);
-      localStorage.setItem("user", JSON.stringify(user));
-      // Usuário atualizado
-    } catch (error) {
-      // Erro no refresh tratado
-
-      // Verificar se é erro de autenticação (401) ou erro de rede
-      const isAuthError =
-        error &&
-        typeof error === "object" &&
-        "status" in error &&
-        error.status === 401;
-
-      if (isAuthError) {
-        // Token inválido detectado, limpando sessão
-        setUser(null);
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-      } else {
-        // Erro de rede no refreshUser, mantendo sessão local
-        // Não limpar dados se for erro de rede
-      }
+  /** Fetches a fresh Auth0 access token and exchanges it for a backend JWT. */
+  const exchangeAuth0Token = useCallback(async (): Promise<void> => {
+    const tokenResponse = await fetch("/auth/access-token");
+    if (!tokenResponse.ok) {
+      throw new Error("Failed to fetch Auth0 access token");
     }
-  };
+    const { token: accessToken } = (await tokenResponse.json()) as { token: string };
+
+    const loginResponse: LoginResponse = await authService.auth0Exchange(accessToken);
+    const converted = convertUserDBToUser(loginResponse.user);
+    setUser(converted);
+    localStorage.setItem("token", loginResponse.token);
+    localStorage.setItem("user", JSON.stringify(converted));
+  }, []);
 
   useEffect(() => {
+    if (auth0Loading) return;
+
     const initializeAuth = async () => {
       try {
-        // Verificar se há token e usuário armazenado
+        if (!auth0User) {
+          // No Auth0 session — ensure local state is clean.
+          clearSession();
+          return;
+        }
+
         const token = localStorage.getItem("token");
         const storedUser = localStorage.getItem("user");
 
         if (token && storedUser) {
+          // Hydrate from cache immediately so the UI doesn't flash.
           try {
-            const user = JSON.parse(storedUser);
-            setUser(user);
+            setUser(JSON.parse(storedUser) as User);
+          } catch {
+            clearSession();
+            await exchangeAuth0Token();
+            return;
+          }
 
-            try {
-              await authService.getMe();
-            } catch (error) {
-              // Verificar se é erro de autenticação (401) ou erro de rede
-              const isAuthError =
-                error &&
-                typeof error === "object" &&
-                "status" in error &&
-                error.status === 401;
+          // Validate the backend JWT.
+          try {
+            await authService.getMe();
+          } catch (error) {
+            const isAuthError =
+              error &&
+              typeof error === "object" &&
+              "status" in error &&
+              (error as { status: number }).status === 401;
 
-              if (isAuthError) {
-                // Token expirado ou inválido - limpar dados locais
-                console.warn(
-                  "Token expirado ou inválido detectado durante inicialização, limpando dados locais",
-                );
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
-                setUser(null);
-              } else {
-                console.warn(
-                  "Erro ao verificar token (mantendo sessão local):",
-                  error,
-                );
+            if (isAuthError) {
+              // Backend JWT expired — re-exchange with Auth0.
+              try {
+                await exchangeAuth0Token();
+              } catch {
+                clearSession();
               }
             }
-          } catch {
-            localStorage.removeItem("user");
-            localStorage.removeItem("token");
-            setUser(null);
+            // Network errors: keep cached user (graceful degradation).
           }
         } else {
-          setUser(null);
+          // Auth0 session active but no backend JWT — exchange now.
+          try {
+            await exchangeAuth0Token();
+          } catch {
+            clearSession();
+          }
         }
       } catch (error) {
-        console.error("Erro na inicialização da auth:", error);
-        setUser(null);
+        console.error("Auth init error:", error);
+        clearSession();
       } finally {
         setIsLoading(false);
       }
     };
 
     initializeAuth();
-  }, []);
+  }, [auth0User, auth0Loading, clearSession, exchangeAuth0Token]);
 
-  const login = async (email: string, password: string): Promise<void> => {
-    try {
-      // Iniciando login
-
-      // Chamada real à API
-      const response: LoginResponse = await authService.signIn({
-        email,
-        password,
-      });
-      // Login bem-sucedido
-
-      // Armazenar token
-      localStorage.setItem("token", response.token);
-      // Token armazenado
-
-      // Converter e armazenar usuário
-      const user = convertUserDBToUser(response.user);
-      setUser(user);
-      localStorage.setItem("user", JSON.stringify(user));
-      // Usuário armazenado
-    } catch {
-      // Erro no login tratado
-      throw new Error("Login falhou. Verifique suas credenciais.");
-    }
+  const login = (): void => {
+    window.location.href = "/auth/login";
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
-      // Iniciando logout
-
-      // Chamar logout na API
       await authService.signOut();
-      // Logout na API bem-sucedido
     } catch {
-      // Erro no logout da API (continuando com logout local)
-    } finally {
-      // Limpar dados locais sempre
-      setUser(null);
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      // Logout concluído
+      // Best-effort backend JWT invalidation.
     }
+    clearSession();
+    window.location.href = "/auth/logout";
   };
 
-  const updateUser = async (
-    updates: Partial<User>,
-  ): Promise<User | undefined> => {
-    if (!user) {
-      return undefined;
+  const refreshUser = async (): Promise<void> => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setUser(null);
+      return;
     }
 
     try {
-      // Atualizar usuário na API
+      const userDB = await authService.getMe();
+      const converted = convertUserDBToUser(userDB);
+      setUser(converted);
+      localStorage.setItem("user", JSON.stringify(converted));
+    } catch (error) {
+      const isAuthError =
+        error &&
+        typeof error === "object" &&
+        "status" in error &&
+        (error as { status: number }).status === 401;
+
+      if (isAuthError) {
+        clearSession();
+      }
+    }
+  };
+
+  const updateUser = async (updates: Partial<User>): Promise<User | undefined> => {
+    if (!user) return undefined;
+
+    try {
       const updatedUserDB = await authService.updateProfile({
         name: updates.displayName || user.displayName,
         email: updates.email || user.email,
       });
       const updatedUser = convertUserDBToUser(updatedUserDB);
-
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
       return updatedUser;
     } catch (error) {
-      console.error("Erro ao atualizar usuário:", error);
+      console.error("Failed to update user:", error);
       throw new Error("Falha ao atualizar perfil");
     }
   };
 
-  const value = {
+  const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
-    isLoading,
+    isLoading: isLoading || auth0Loading,
     login,
     logout,
     updateUser,
