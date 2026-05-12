@@ -7,4 +7,8 @@ import { Auth0Client } from "@auth0/nextjs-auth0/server";
  * and APP_BASE_URL from environment variables. Used by middleware.ts to
  * handle /auth/* routes and by server components to read the session.
  */
-export const auth0 = new Auth0Client();
+export const auth0 = new Auth0Client({
+  // Return 204 (not 401) from /auth/profile when no session exists,
+  // so useUser() sees null instead of throwing "Unauthorized".
+  noContentProfileResponseWhenUnauthenticated: true,
+});
