@@ -12,7 +12,11 @@ import { type NextRequest, NextResponse } from "next/server";
  * and treats the user as a guest.
  */
 export async function GET(request: NextRequest) {
-  const home = new URL("/", request.url);
+  // Use the configured app base URL so the redirect always lands on the
+  // correct host, even if the user somehow ended up on 0.0.0.0.
+  const base =
+    process.env.APP_BASE_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? request.url;
+  const home = new URL("/", base);
   const response = NextResponse.redirect(home);
 
   // Delete the Auth0 encrypted session cookie.

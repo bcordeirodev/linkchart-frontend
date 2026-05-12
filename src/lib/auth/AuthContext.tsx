@@ -130,7 +130,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
             // Keep the profile picture fresh from the Auth0 session.
             if (picture) cached.photoURL = picture;
             if (!cancelled) setUser(cached);
-          } catch {
+          } catch (parseErr) {
+            console.error("[AuthContext] Cached user parse failed:", parseErr);
             if (!cancelled) clearSession();
             await exchangeAuth0Token(picture);
             return;
@@ -150,7 +151,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
               // Backend JWT expired — re-exchange with Auth0.
               try {
                 await exchangeAuth0Token(picture);
-              } catch {
+              } catch (exchangeErr) {
+                console.error(
+                  "[AuthContext] Token re-exchange failed:",
+                  exchangeErr,
+                );
                 if (!cancelled) clearSession();
               }
             }
@@ -160,7 +165,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           // Auth0 session active but no backend JWT — exchange now.
           try {
             await exchangeAuth0Token(picture);
-          } catch {
+          } catch (exchangeErr) {
+            console.error("[AuthContext] Token exchange failed:", exchangeErr);
             if (!cancelled) clearSession();
           }
         }
