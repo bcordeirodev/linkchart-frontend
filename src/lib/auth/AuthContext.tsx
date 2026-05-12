@@ -86,7 +86,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const exchangeAuth0Token = useCallback(async (): Promise<void> => {
     const accessToken = await getAccessToken();
 
-    const loginResponse: LoginResponse = await authService.auth0Exchange(accessToken);
+    const loginResponse: LoginResponse =
+      await authService.auth0Exchange(accessToken);
     const converted = convertUserDBToUser(loginResponse.user);
     setUser(converted);
     localStorage.setItem("token", loginResponse.token);

@@ -160,6 +160,7 @@ function LinkQRPage({ id }: Props) {
         <Card
           sx={{
             mt: 1,
+            width: "100%",
             maxWidth: { xs: "100%", sm: 480 },
             mx: "auto",
           }}
