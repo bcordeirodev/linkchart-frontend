@@ -23,6 +23,12 @@ services:
       - API_URL=http://linkchartapi:80
       - GOOGLE_SAFE_BROWSING_KEY
       - HOSTNAME=0.0.0.0
+      # Auth0 — server-side only, never baked into the bundle
+      - APP_BASE_URL=https://linkcharts.com.br
+      - AUTH0_DOMAIN=dev-w4znncuexg628diu.us.auth0.com
+      - AUTH0_CLIENT_ID=ynlcwMzBjCPt3qzTRLv4VyP5CkgSREzD
+      - AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET}
+      - AUTH0_SECRET=${AUTH0_SECRET}
     healthcheck:
       test:
         - "CMD"
