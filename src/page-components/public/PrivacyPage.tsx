@@ -3,7 +3,7 @@
 import { Trans, useTranslation } from "react-i18next";
 import { Box, Container, Divider, Link, Typography } from "@mui/material";
 
-import PublicLayout from "@/shared/layout/PublicLayout";
+import { PublicLayout } from "@/shared/layout";
 
 const sectionSx = { mb: 4 };
 const headingSx = { fontWeight: 700, mb: 1.5 };
@@ -82,7 +82,7 @@ export default function PrivacyPage() {
           <Box component="ul" sx={listSx}>
             {Object.values(s3Items).map(({ label, text }) => (
               <li key={label}>
-                <strong>{label}</strong> {text}
+                <strong>{label}:</strong> {text}
               </li>
             ))}
           </Box>
