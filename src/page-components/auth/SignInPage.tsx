@@ -1,14 +1,18 @@
 "use client";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import { useTranslation } from "react-i18next";
 
 import { AuthLayout } from "@/shared/layout";
-
-import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
-import authRoles from "../../lib/auth/authRoles";
-import AuthJsForm from "../../lib/auth/forms/AuthJsForm";
+import AuthGuardRedirect from "@/lib/auth/AuthGuardRedirect";
+import authRoles from "@/lib/auth/authRoles";
 
 /**
- * Página de login com layout moderno
+ * Sign-in page — delegates authentication to Auth0 Universal Login.
+ *
+ * "Continue with Google" connects google-oauth2 directly.
+ * "Sign In" opens Auth0 Universal Login (supports email/password and any
+ * other configured social connection).
  */
 function SignInPage() {
   const { t } = useTranslation("auth");
@@ -19,15 +23,28 @@ function SignInPage() {
         title={t("signIn.title")}
         subtitle={t("signIn.subtitle")}
         variant="signin"
-        footerLinks={[
-          {
-            text: t("signIn.noAccount"),
-            linkText: t("signIn.signUpLink"),
-            href: "/sign-up",
-          },
-        ]}
       >
-        <AuthJsForm formType="signin" />
+        <Stack spacing={2}>
+          <Button
+            component="a"
+            href="/auth/login?connection=google-oauth2"
+            variant="contained"
+            size="large"
+            fullWidth
+          >
+            {t("signIn.googleButton")}
+          </Button>
+
+          <Button
+            component="a"
+            href="/auth/login"
+            variant="outlined"
+            size="large"
+            fullWidth
+          >
+            {t("signIn.submitButton")}
+          </Button>
+        </Stack>
       </AuthLayout>
     </AuthGuardRedirect>
   );
