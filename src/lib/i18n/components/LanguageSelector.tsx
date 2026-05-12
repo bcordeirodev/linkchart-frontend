@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Box, Button, ButtonGroup, Tooltip, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
@@ -31,6 +32,10 @@ export function LanguageSelector({ compact = false }: LanguageSelectorProps) {
   const { currentLanguage, switchLanguage } = useLanguage();
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (compact) {
     const baseBg = alpha(theme.palette.text.primary, isDark ? 0.04 : 0.05);
@@ -54,7 +59,7 @@ export function LanguageSelector({ compact = false }: LanguageSelectorProps) {
         }}
       >
         {LANGUAGES.map(({ code, label, flag }) => {
-          const isActive = currentLanguage === code;
+          const isActive = mounted && currentLanguage === code;
           return (
             <Tooltip key={code} title={label} arrow>
               <Box
@@ -106,7 +111,9 @@ export function LanguageSelector({ compact = false }: LanguageSelectorProps) {
         <Tooltip key={code} title={label} arrow>
           <Button
             onClick={() => switchLanguage(code)}
-            variant={currentLanguage === code ? "contained" : "outlined"}
+            variant={
+              mounted && currentLanguage === code ? "contained" : "outlined"
+            }
             sx={{ minWidth: 40, px: 1, fontSize: "1rem" }}
             aria-label={label}
           >
