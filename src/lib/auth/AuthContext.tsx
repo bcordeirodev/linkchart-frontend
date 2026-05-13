@@ -82,13 +82,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem("user");
   }, []);
 
-  /** Fetches a fresh Auth0 access token and exchanges it for a backend JWT. */
+  /**
+   * Fetches a fresh Auth0 access token and exchanges it for a backend JWT.
+   *
+   * `emailHint` and `nameHint` are forwarded as fallback fields.
+   * They are used by the backend when Auth0's /userinfo endpoint omits the
+   * `email` claim — which can happen for Facebook logins if the access token
+   * was issued without the `email` scope (e.g. tenant default missing it).
+   * The hints come from the Auth0 session's `user` object (ID-token claims),
+   * so they are trustworthy even though they originate on the client.
+   */
   const exchangeAuth0Token = useCallback(
-    async (pictureUrl?: string | null): Promise<void> => {
+    async (
+      pictureUrl?: string | null,
+      emailHint?: string,
+      nameHint?: string,
+    ): Promise<void> => {
       const accessToken = await getAccessToken();
 
-      const loginResponse: LoginResponse =
-        await authService.auth0Exchange(accessToken);
+      const loginResponse: LoginResponse = await authService.auth0Exchange(
+        accessToken,
+        emailHint,
+        nameHint,
+      );
       const converted = convertUserDBToUser(loginResponse.user);
       if (pictureUrl) converted.photoURL = pictureUrl;
       setUser(converted);
@@ -133,7 +149,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
           } catch (parseErr) {
             console.error("[AuthContext] Cached user parse failed:", parseErr);
             if (!cancelled) clearSession();
-            await exchangeAuth0Token(picture);
+            await exchangeAuth0Token(
+              picture,
+              auth0User.email ?? undefined,
+              auth0User.name ?? undefined,
+            );
             return;
           }
 
@@ -150,7 +170,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
             if (isAuthError) {
               // Backend JWT expired — re-exchange with Auth0.
               try {
-                await exchangeAuth0Token(picture);
+                await exchangeAuth0Token(
+                  picture,
+                  auth0User.email ?? undefined,
+                  auth0User.name ?? undefined,
+                );
               } catch (exchangeErr) {
                 console.error(
                   "[AuthContext] Token re-exchange failed:",
@@ -164,7 +188,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         } else {
           // Auth0 session active but no backend JWT — exchange now.
           try {
-            await exchangeAuth0Token(picture);
+            await exchangeAuth0Token(
+              picture,
+              auth0User.email ?? undefined,
+              auth0User.name ?? undefined,
+            );
           } catch (exchangeErr) {
             console.error("[AuthContext] Token exchange failed:", exchangeErr);
             if (!cancelled) clearSession();

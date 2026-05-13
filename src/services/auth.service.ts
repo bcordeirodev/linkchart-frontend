@@ -56,16 +56,32 @@ export default class AuthService extends BaseService {
    * validates the token via Auth0's /userinfo endpoint and returns the same
    * response shape as `signIn()`.
    *
+   * `emailHint` and `nameHint` are forwarded as optional fallback fields.
+   * The backend uses them when Auth0's /userinfo omits the `email` claim,
+   * which can happen for Facebook/social logins depending on the access-token
+   * scopes. They come from the Auth0 session's ID-token claims (`auth0User`)
+   * and are therefore trustworthy.
+   *
    * @param accessToken - Auth0 access token from GET /auth/access-token.
+   * @param emailHint  - Email from the Auth0 session user object (fallback).
+   * @param nameHint   - Name from the Auth0 session user object (fallback).
    * @returns the `LoginResponse` envelope including `token` and `user`.
    * @endpoint `POST /api/auth/auth0-exchange`
    */
-  async auth0Exchange(accessToken: string): Promise<LoginResponse> {
+  async auth0Exchange(
+    accessToken: string,
+    emailHint?: string,
+    nameHint?: string,
+  ): Promise<LoginResponse> {
     this.validateRequired({ accessToken }, ["accessToken"]);
 
     return this.post<LoginResponse>(
       API_ENDPOINTS.AUTH.AUTH0_EXCHANGE,
-      { access_token: accessToken },
+      {
+        access_token: accessToken,
+        ...(emailHint ? { email_hint: emailHint } : {}),
+        ...(nameHint ? { name_hint: nameHint } : {}),
+      },
       { context: "auth0_exchange" },
     );
   }
