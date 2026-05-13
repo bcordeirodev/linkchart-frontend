@@ -13,10 +13,20 @@ import { Auth0Client } from "@auth0/nextjs-auth0/server";
  * the middleware executes — preventing the SDK from inferring the base URL
  * from the request Host header, which can be `0.0.0.0` when Next.js dev
  * server binds on all interfaces.
+ *
+ * `beforeSessionSaved` strips the raw ID token from the encrypted session
+ * cookie. User claims are already extracted into `session.user` by the SDK,
+ * so discarding the raw JWT shrinks __session from ~3.5 KB to ~1 KB — well
+ * under Nginx's proxy_buffer_size limit that was causing 502s on callback.
  */
 export const auth0 = new Auth0Client({
   appBaseUrl: process.env.APP_BASE_URL ?? process.env.NEXT_PUBLIC_APP_URL,
   // Return 204 (not 401) from /auth/profile when no session exists,
   // so useUser() sees null instead of throwing "Unauthorized".
   noContentProfileResponseWhenUnauthenticated: true,
+  async beforeSessionSaved(session) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { idToken: _idToken, ...tokenSet } = session.tokenSet;
+    return { ...session, tokenSet };
+  },
 });
