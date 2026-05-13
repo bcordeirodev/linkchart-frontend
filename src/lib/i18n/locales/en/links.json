@@ -166,7 +166,13 @@
   "health": {
     "ok": "Healthy",
     "error": "Error",
-    "unknown": "Not verified"
+    "unknown": "Not verified",
+    "tooltip": {
+      "ok": "The destination URL is reachable",
+      "error": "The destination URL is not accessible",
+      "unknown": "This URL has not been checked yet",
+      "checked_ago": "Checked {{time}} ago"
+    }
   },
   "analytics": {
     "tabs": {
