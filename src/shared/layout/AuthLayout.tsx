@@ -150,8 +150,8 @@ function AuthLayout({
                 sx={{
                   fontWeight: 600,
                   color: theme.palette.text.primary,
-                  mb: 1,
-                  fontSize: { xs: "1.5rem", sm: "1.75rem" },
+                  mb: 0.75,
+                  fontSize: { xs: "1.375rem", sm: "1.625rem" },
                   lineHeight: 1.3,
                 }}
               >
@@ -164,7 +164,7 @@ function AuthLayout({
                 variant="body1"
                 sx={{
                   color: theme.palette.text.secondary,
-                  fontSize: "1rem",
+                  fontSize: "0.9375rem",
                   lineHeight: 1.6,
                 }}
               >

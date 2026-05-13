@@ -102,7 +102,7 @@ function SignInPage() {
     fontWeight: 600,
     fontSize: "0.9375rem",
     textTransform: "none",
-    py: 1.25,
+    py: 1.375,
     borderRadius: "10px",
     boxShadow: socialBoxShadow,
     transition: "background-color 150ms ease, box-shadow 150ms ease",
@@ -120,7 +120,7 @@ function SignInPage() {
         subtitle={t("signIn.subtitle")}
         variant="signin"
       >
-        <Stack spacing={1.5}>
+        <Stack spacing={2}>
           {socialError === "facebook_no_email" && (
             <Alert
               severity="error"
@@ -159,7 +159,7 @@ function SignInPage() {
 
           {/* Divider */}
           <Box
-            sx={{ display: "flex", alignItems: "center", gap: 1.5, py: 0.5 }}
+            sx={{ display: "flex", alignItems: "center", gap: 1.5, py: 0.75 }}
           >
             <Divider sx={{ flex: 1 }} />
             <Typography
@@ -187,7 +187,7 @@ function SignInPage() {
               fontWeight: 600,
               fontSize: "0.9375rem",
               textTransform: "none",
-              py: 1.25,
+              py: 1.375,
               borderRadius: "10px",
             }}
           >
@@ -198,7 +198,7 @@ function SignInPage() {
           <Typography
             variant="body2"
             align="center"
-            sx={{ color: theme.palette.text.secondary, pt: 0.5 }}
+            sx={{ color: theme.palette.text.secondary, pt: 1 }}
           >
             {t("signIn.noAccount")}{" "}
             <Typography
