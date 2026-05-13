@@ -194,13 +194,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch {
       // Best-effort backend JWT invalidation.
     }
-    clearSession();
-    // Use /api/auth/sign-out instead of Auth0's /auth/logout endpoint so that
-    // the "Allowed Logout URLs" allowlist in the Auth0 Dashboard is not required
-    // for local development. The route deletes the __session cookie server-side
-    // and clears accumulated __txn_* transaction cookies before redirecting home.
+    // Do NOT call clearSession() here. Setting user=null before the page
+    // navigates away causes AuthGuardRedirect (still mounted on /links) to
+    // detect isGuest=true and push to /sign-in, creating a visible flash.
+    // localStorage is cleared by initializeAuth() on the next page load once
+    // the Auth0 session cookies have been wiped by the sign-out route.
     window.location.href = "/api/auth/sign-out";
-  }, [clearSession]);
+  }, []);
 
   const refreshUser = useCallback(async (): Promise<void> => {
     const token = localStorage.getItem("token");
