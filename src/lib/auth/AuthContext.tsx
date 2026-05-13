@@ -9,6 +9,7 @@ import {
 } from "react";
 import { getAccessToken, useUser } from "@auth0/nextjs-auth0/client";
 
+import { ApiError } from "@/lib/api/client";
 import { authService } from "@/services";
 
 import type { LoginResponse, User, UserResponse } from "@/types";
@@ -49,6 +50,18 @@ function convertUserDBToUser(userDB: UserResponse): User {
       direction: "ltr",
     },
   };
+}
+
+/**
+ * Redirects to the sign-in page after clearing the Auth0 session, storing an
+ * error key in localStorage so `SignInPage` can display a user-facing message.
+ *
+ * Used when the token exchange fails with `auth0_userinfo_incomplete` — the
+ * Auth0 session must be wiped to prevent an infinite re-authentication loop.
+ */
+function redirectWithSocialLoginError(errorKey: string): void {
+  localStorage.setItem("social_login_error", errorKey);
+  window.location.href = "/api/auth/sign-out?to=/sign-in";
 }
 
 /**
@@ -180,6 +193,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
                   "[AuthContext] Token re-exchange failed:",
                   exchangeErr,
                 );
+                if (
+                  exchangeErr instanceof ApiError &&
+                  exchangeErr.code === "auth0_userinfo_incomplete"
+                ) {
+                  redirectWithSocialLoginError("facebook_no_email");
+                  return;
+                }
                 if (!cancelled) clearSession();
               }
             }
@@ -195,6 +215,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
             );
           } catch (exchangeErr) {
             console.error("[AuthContext] Token exchange failed:", exchangeErr);
+            if (
+              exchangeErr instanceof ApiError &&
+              exchangeErr.code === "auth0_userinfo_incomplete"
+            ) {
+              redirectWithSocialLoginError("facebook_no_email");
+              return;
+            }
             if (!cancelled) clearSession();
           }
         }
