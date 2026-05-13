@@ -74,7 +74,9 @@ let socialLoginNavigating = false;
 function redirectWithSocialLoginError(errorKey: string): void {
   socialLoginNavigating = true;
   localStorage.setItem("social_login_error", errorKey);
-  window.location.href = "/api/auth/sign-out?to=/sign-in";
+  // Use the SDK's /auth/logout so Auth0's SSO session is also cleared.
+  // returnTo=/sign-in ensures the error alert is shown immediately.
+  window.location.href = "/auth/logout?returnTo=/sign-in";
 }
 
 /**
@@ -268,8 +270,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // navigates away causes AuthGuardRedirect (still mounted on /links) to
     // detect isGuest=true and push to /sign-in, creating a visible flash.
     // localStorage is cleared by initializeAuth() on the next page load once
-    // the Auth0 session cookies have been wiped by the sign-out route.
-    window.location.href = "/api/auth/sign-out";
+    // the Auth0 session cookies have been wiped.
+    //
+    // Use the SDK's /auth/logout route so it calls Auth0's /v2/logout and
+    // clears the SSO session on the Auth0 domain. Without this, Auth0's
+    // server-side session persists and silently re-authenticates the user
+    // with the same account on the next login attempt.
+    window.location.href = "/auth/logout";
   }, []);
 
   const refreshUser = useCallback(async (): Promise<void> => {
