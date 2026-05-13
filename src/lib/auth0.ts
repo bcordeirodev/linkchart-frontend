@@ -14,6 +14,13 @@ import { Auth0Client } from "@auth0/nextjs-auth0/server";
  * from the request Host header, which can be `0.0.0.0` when Next.js dev
  * server binds on all interfaces.
  *
+ * `authorizationParameters.scope` is set explicitly. Without it the SDK
+ * relies on the Auth0 tenant default, which may omit the `email` scope from
+ * the access token for social connections (Facebook, Google). Auth0's
+ * `/userinfo` endpoint only returns claims that correspond to the scopes
+ * present in the access token, so a missing `email` scope means the backend
+ * exchange gets no email even though Auth0 received it from Facebook.
+ *
  * `beforeSessionSaved` strips the raw ID token from the encrypted session
  * cookie. User claims are already extracted into `session.user` by the SDK,
  * so discarding the raw JWT shrinks __session from ~3.5 KB to ~1 KB — well
@@ -21,6 +28,9 @@ import { Auth0Client } from "@auth0/nextjs-auth0/server";
  */
 export const auth0 = new Auth0Client({
   appBaseUrl: process.env.APP_BASE_URL ?? process.env.NEXT_PUBLIC_APP_URL,
+  authorizationParameters: {
+    scope: "openid profile email",
+  },
   // Return 204 (not 401) from /auth/profile when no session exists,
   // so useUser() sees null instead of throwing "Unauthorized".
   noContentProfileResponseWhenUnauthenticated: true,
