@@ -53,13 +53,26 @@ function convertUserDBToUser(userDB: UserResponse): User {
 }
 
 /**
+ * Set to `true` just before `window.location.href` navigation in
+ * `redirectWithSocialLoginError`. Prevents the `finally` block in
+ * `initializeAuth` from calling `setIsLoading(false)`, which would otherwise
+ * cause React to re-render synchronously, allow `AuthGuardRedirect` to
+ * SPA-navigate to `/sign-in`, mount `SignInPage`, and clear the
+ * `social_login_error` key from localStorage — all before the browser's
+ * full-page navigation task fires. Reset to `false` on every new page load
+ * (module is re-imported after a hard navigation).
+ */
+let socialLoginNavigating = false;
+
+/**
  * Redirects to the sign-in page after clearing the Auth0 session, storing an
  * error key in localStorage so `SignInPage` can display a user-facing message.
  *
- * Used when the token exchange fails with `auth0_userinfo_incomplete` — the
- * Auth0 session must be wiped to prevent an infinite re-authentication loop.
+ * Sets `socialLoginNavigating` to keep `isLoading=true` during the transition,
+ * so `AuthGuardRedirect` cannot SPA-navigate and consume the key early.
  */
 function redirectWithSocialLoginError(errorKey: string): void {
+  socialLoginNavigating = true;
   localStorage.setItem("social_login_error", errorKey);
   window.location.href = "/api/auth/sign-out?to=/sign-in";
 }
@@ -229,7 +242,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         console.error("Auth init error:", error);
         if (!cancelled) clearSession();
       } finally {
-        if (!cancelled) setIsLoading(false);
+        // Skip setIsLoading when a full-page navigation is already in flight.
+        // See `socialLoginNavigating` declaration above for the full rationale.
+        if (!cancelled && !socialLoginNavigating) setIsLoading(false);
       }
     };
 
