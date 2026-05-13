@@ -134,7 +134,7 @@ function SignInPage() {
           {/* Google OAuth button */}
           <Button
             component="a"
-            href="/auth/login?connection=google-oauth2"
+            href="/auth/login?connection=google-oauth2&returnTo=/sign-in"
             variant="outlined"
             size="large"
             fullWidth
@@ -147,7 +147,7 @@ function SignInPage() {
           {/* Facebook OAuth button */}
           <Button
             component="a"
-            href="/auth/login?connection=facebook&auth_type=rerequest"
+            href="/auth/login?connection=facebook&auth_type=rerequest&returnTo=/sign-in"
             variant="outlined"
             size="large"
             fullWidth
@@ -179,7 +179,7 @@ function SignInPage() {
           {/* Universal Login (email/password + any other connection) */}
           <Button
             component="a"
-            href="/auth/login"
+            href="/auth/login?returnTo=/sign-in"
             variant="contained"
             size="large"
             fullWidth
@@ -191,8 +191,30 @@ function SignInPage() {
               borderRadius: "10px",
             }}
           >
-            {t("signIn.submitButton")}
+            {t("signIn.emailButton")}
           </Button>
+
+          {/* Sign-up link */}
+          <Typography
+            variant="body2"
+            align="center"
+            sx={{ color: theme.palette.text.secondary, pt: 0.5 }}
+          >
+            {t("signIn.noAccount")}{" "}
+            <Typography
+              component="a"
+              href="/auth/login?screen_hint=signup&returnTo=/sign-in"
+              variant="body2"
+              sx={{
+                color: theme.palette.primary.main,
+                fontWeight: 600,
+                textDecoration: "none",
+                "&:hover": { textDecoration: "underline" },
+              }}
+            >
+              {t("signIn.signUpLink")}
+            </Typography>
+          </Typography>
         </Stack>
       </AuthLayout>
     </AuthGuardRedirect>
