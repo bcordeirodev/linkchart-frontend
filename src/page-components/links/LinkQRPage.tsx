@@ -148,7 +148,7 @@ function LinkQRPage({ id }: Props) {
 
   return (
     <AuthGuardRedirect auth={["user", "admin"]} fallback={<QRCodeSkeleton />}>
-      <ResponsiveContainer variant="page" maxWidth="md">
+      <ResponsiveContainer variant="page">
         <LinkActions
           linkId={id}
           currentView="qr"
