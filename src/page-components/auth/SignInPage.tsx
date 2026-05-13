@@ -147,7 +147,7 @@ function SignInPage() {
           {/* Facebook OAuth button */}
           <Button
             component="a"
-            href="/auth/login?connection=facebook"
+            href="/auth/login?connection=facebook&auth_type=rerequest"
             variant="outlined"
             size="large"
             fullWidth
