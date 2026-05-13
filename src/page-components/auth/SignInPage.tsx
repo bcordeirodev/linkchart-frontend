@@ -1,4 +1,6 @@
 "use client";
+import { useEffect, useState } from "react";
+import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
@@ -69,6 +71,15 @@ function GoogleLogo({ size = 20 }: { size?: number }) {
 function SignInPage() {
   const { t } = useTranslation("auth");
   const theme = useTheme();
+  const [socialError, setSocialError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const errorKey = localStorage.getItem("social_login_error");
+    if (errorKey) {
+      localStorage.removeItem("social_login_error");
+      setSocialError(errorKey);
+    }
+  }, []);
   const isDark = theme.palette.mode === "dark";
 
   const socialBg = isDark ? "rgba(255,255,255,0.08)" : "#fff";
@@ -110,6 +121,16 @@ function SignInPage() {
         variant="signin"
       >
         <Stack spacing={1.5}>
+          {socialError === "facebook_no_email" && (
+            <Alert
+              severity="error"
+              onClose={() => setSocialError(null)}
+              sx={{ borderRadius: "10px" }}
+            >
+              {t("signIn.errors.facebookNoEmail")}
+            </Alert>
+          )}
+
           {/* Google OAuth button */}
           <Button
             component="a"

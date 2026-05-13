@@ -1,10 +1,18 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 /**
+ * Returns true for safe same-origin paths: starts with `/`, no `//` (protocol-relative),
+ * no `:` (prevents `javascript:` and similar schemes).
+ */
+function isSafePath(path: string): boolean {
+  return path.startsWith("/") && !path.startsWith("//") && !path.includes(":");
+}
+
+/**
  * GET /api/auth/sign-out
  *
  * Clears the Auth0 session cookie (including chunked variants) and any
- * lingering transaction cookies, then redirects to the home page.
+ * lingering transaction cookies, then redirects to `?to=<path>` (default `/`).
  *
  * This avoids the Auth0 OIDC logout endpoint (which requires
  * `post_logout_redirect_uri` to be in the "Allowed Logout URLs" allowlist).
@@ -22,7 +30,10 @@ export async function GET(request: NextRequest) {
   // correct host, even if the user somehow ended up on 0.0.0.0.
   const base =
     process.env.APP_BASE_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? request.url;
-  const home = new URL("/", base);
+
+  const toParam = request.nextUrl.searchParams.get("to");
+  const destination = toParam && isSafePath(toParam) ? toParam : "/";
+  const home = new URL(destination, base);
   const response = NextResponse.redirect(home);
 
   const cookieHeader = request.headers.get("cookie") ?? "";
