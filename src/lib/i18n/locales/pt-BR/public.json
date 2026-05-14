@@ -30,6 +30,20 @@
       "sectionTitle": "Números que Impressionam"
     },
     "howItWorks": "Como Funciona",
+    "steps": {
+      "paste": {
+        "title": "Cole o URL",
+        "desc": "Insira qualquer link longo no campo acima."
+      },
+      "customize": {
+        "title": "Personalize",
+        "desc": "Defina um slug personalizado ou deixe gerar automaticamente."
+      },
+      "share": {
+        "title": "Compartilhe",
+        "desc": "Copie o link curto e acompanhe os cliques em tempo real."
+      }
+    },
     "form": {
       "urlLabel": "URL Original",
       "urlPlaceholder": "Cole a URL aqui... (ex: https://exemplo.com/pagina-longa)",

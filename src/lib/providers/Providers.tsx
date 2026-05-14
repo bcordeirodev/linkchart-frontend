@@ -6,7 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { enUS } from "date-fns/locale/en-US";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { SnackbarProvider } from "notistack";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Provider } from "react-redux";
 import { useTranslation } from "react-i18next";
 
@@ -26,7 +26,11 @@ interface ProvidersProps {
 }
 
 export function Providers({ children, initialLang = "en" }: ProvidersProps) {
-  initI18n(initialLang);
+  const didInit = useRef(false);
+  if (!didInit.current) {
+    initI18n(initialLang);
+    didInit.current = true;
+  }
 
   const { i18n } = useTranslation();
   const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;

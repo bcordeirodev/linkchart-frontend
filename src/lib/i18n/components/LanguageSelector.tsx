@@ -6,9 +6,9 @@ import { radiusTokens } from "@/lib/theme/designSystem";
 
 import { useLanguage, type SupportedLanguage } from "../hooks/useLanguage";
 
-const LANGUAGES: { code: SupportedLanguage; label: string; flag: string }[] = [
-  { code: "en", label: "English", flag: "🇺🇸" },
-  { code: "pt-BR", label: "Português", flag: "🇧🇷" },
+const LANGUAGES: { code: SupportedLanguage; label: string; abbr: string }[] = [
+  { code: "en", label: "English", abbr: "EN" },
+  { code: "pt-BR", label: "Português", abbr: "PT" },
 ];
 
 interface LanguageSelectorProps {
@@ -58,7 +58,7 @@ export function LanguageSelector({ compact = false }: LanguageSelectorProps) {
           backdropFilter: "blur(8px)",
         }}
       >
-        {LANGUAGES.map(({ code, label, flag }) => {
+        {LANGUAGES.map(({ code, label, abbr }) => {
           const isActive = mounted && currentLanguage === code;
           return (
             <Tooltip key={code} title={label} arrow>
@@ -79,20 +79,28 @@ export function LanguageSelector({ compact = false }: LanguageSelectorProps) {
                   border: isActive
                     ? `1px solid ${activeBorder}`
                     : "1px solid transparent",
-                  color: theme.palette.text.primary,
+                  color: isActive
+                    ? theme.palette.primary.main
+                    : theme.palette.text.secondary,
                   cursor: "pointer",
-                  fontSize: "0.95rem",
+                  fontSize: "0.6875rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.04em",
                   lineHeight: 1,
-                  transition: "background 160ms ease, border-color 160ms ease",
+                  transition:
+                    "background 160ms ease, border-color 160ms ease, color 160ms ease",
                   p: 0,
                   "&:hover": {
                     background: isActive
                       ? activeBg
                       : alpha(theme.palette.text.primary, 0.06),
+                    color: isActive
+                      ? theme.palette.primary.main
+                      : theme.palette.text.primary,
                   },
                 }}
               >
-                {flag}
+                {abbr}
               </Box>
             </Tooltip>
           );
@@ -107,17 +115,23 @@ export function LanguageSelector({ compact = false }: LanguageSelectorProps) {
       variant="outlined"
       sx={{ borderRadius: `${radiusTokens.sm}px` }}
     >
-      {LANGUAGES.map(({ code, label, flag }) => (
+      {LANGUAGES.map(({ code, label, abbr }) => (
         <Tooltip key={code} title={label} arrow>
           <Button
             onClick={() => switchLanguage(code)}
             variant={
               mounted && currentLanguage === code ? "contained" : "outlined"
             }
-            sx={{ minWidth: 40, px: 1, fontSize: "1rem" }}
+            sx={{
+              minWidth: 40,
+              px: 1,
+              fontSize: "0.6875rem",
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+            }}
             aria-label={label}
           >
-            {flag}
+            {abbr}
           </Button>
         </Tooltip>
       ))}

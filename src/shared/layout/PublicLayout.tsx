@@ -285,9 +285,9 @@ function MinimalFooter() {
             "& a:hover": { color: linkHover },
           }}
         >
-          <a href="/privacy">Privacidade</a>
-          <a href="/terms">Termos</a>
-          <a href="/support">Suporte</a>
+          <a href="/privacy">{t("footer.privacy")}</a>
+          <a href="/terms">{t("footer.terms")}</a>
+          <a href="/support">{t("footer.support")}</a>
         </Box>
       </Box>
     </Box>
