@@ -142,8 +142,8 @@ export function TemporalChart({
           scrollButtons="auto"
         >
           <Tab label={t("temporal.chart.tabPatterns")} />
-          <Tab label={t("temporal.chart.tabPerformance")} />
           <Tab label={t("temporal.chart.tabTimeline")} />
+          <Tab label={t("temporal.chart.tabPerformance")} />
           <Tab label={t("temporal.chart.tabDistribution")} />
         </Tabs>
       </Box>
@@ -416,6 +416,7 @@ export function TemporalChart({
               <Grid item xs={12}>
                 <ChartCard
                   title={t("temporal.chart.localTimePatterns")}
+                  subtitle={t("charts.descriptions.localTimePatterns")}
                   icon={<Clock {...ICON_LG} />}
                 >
                   <ApexChartWrapper
@@ -469,7 +470,10 @@ export function TemporalChart({
           {weekendVsWeekday && (
             <Grid container spacing={3}>
               <Grid item xs={12} md={8}>
-                <ChartCard title={t("temporal.chart.weekendVsWeekday")}>
+                <ChartCard
+                  title={t("temporal.chart.weekendVsWeekday")}
+                  subtitle={t("charts.descriptions.weekendVsWeekday")}
+                >
                   <ApexChartWrapper
                     type="pie"
                     {...formatPieChart(
@@ -628,8 +632,8 @@ export function TemporalChart({
         </Stack>
       )}
 
-      {/* Tab 1 — Performance */}
-      {activeTab === 1 && (
+      {/* Tab 2 — Performance */}
+      {activeTab === 2 && (
         <Stack spacing={4}>
           {hasPeakAnalysis && advancedData?.peak_analysis ? (
             <PeakAnalysisCard peakAnalysis={advancedData.peak_analysis} />
@@ -650,8 +654,8 @@ export function TemporalChart({
         </Stack>
       )}
 
-      {/* Tab 2 — Timeline */}
-      {activeTab === 2 && (
+      {/* Tab 1 — Timeline */}
+      {activeTab === 1 && (
         <Stack spacing={4}>
           {hasDailyTimeline && advancedData?.daily_timeline ? (
             <DailyTimelineChart data={advancedData.daily_timeline} />
