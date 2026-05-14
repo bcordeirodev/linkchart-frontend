@@ -78,6 +78,9 @@
     "tryAdjusting": "Tente ajustar seus filtros ou termos de pesquisa."
   },
   "footer": {
-    "copyright": "© 2024 Link Charts. Todos os direitos reservados."
+    "copyright": "© 2024 Link Charts. Todos os direitos reservados.",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "support": "Suporte"
   }
 }

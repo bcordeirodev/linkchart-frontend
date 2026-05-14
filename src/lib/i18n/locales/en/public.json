@@ -30,6 +30,20 @@
       "sectionTitle": "Numbers That Impress"
     },
     "howItWorks": "How It Works",
+    "steps": {
+      "paste": {
+        "title": "Paste the URL",
+        "desc": "Enter any long link in the field above."
+      },
+      "customize": {
+        "title": "Customize",
+        "desc": "Set a custom slug or let it generate automatically."
+      },
+      "share": {
+        "title": "Share",
+        "desc": "Copy the short link and track clicks in real time."
+      }
+    },
     "form": {
       "urlLabel": "Original URL",
       "urlPlaceholder": "Paste the URL here... (e.g. https://example.com/long-page)",
