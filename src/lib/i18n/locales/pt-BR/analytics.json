@@ -76,6 +76,10 @@
     },
     "chart": {
       "generalPatterns": "Padrões Gerais",
+      "tabPatterns": "Padrões",
+      "tabPerformance": "Performance",
+      "tabTimeline": "Timeline",
+      "tabDistribution": "Distribuição",
       "localTime": "Hora Local",
       "weekend": "Fim de Semana",
       "businessHours": "Horário Comercial",

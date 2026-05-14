@@ -76,6 +76,10 @@
     },
     "chart": {
       "generalPatterns": "General Patterns",
+      "tabPatterns": "Patterns",
+      "tabPerformance": "Performance",
+      "tabTimeline": "Timeline",
+      "tabDistribution": "Distribution",
       "localTime": "Local Time",
       "weekend": "Weekend",
       "businessHours": "Business Hours",
