@@ -68,8 +68,8 @@ export function LinkAnalyticsTabsOptimized({
   // Configuração padronizada de tabs
   const tabLabels = [
     { label: t("analytics.tabs.overview"), Icon: LayoutDashboard },
-    { label: t("analytics.tabs.geographic"), Icon: Globe },
     { label: t("analytics.tabs.temporal"), Icon: Clock },
+    { label: t("analytics.tabs.geographic"), Icon: Globe },
     { label: t("analytics.tabs.audience"), Icon: Users },
     { label: t("analytics.tabs.insights"), Icon: Lightbulb },
     { label: t("analytics.clicksTable.title"), Icon: MousePointer2 },
@@ -139,23 +139,23 @@ export function LinkAnalyticsTabsOptimized({
         )}
       </TabPanel>
 
-      {/* Geografia Tab */}
+      {/* Temporal Tab */}
       <TabPanel value={tabValue} index={1}>
         {/* Renderizar apenas se a tab está ativa */}
         {tabValue === 1 && (
+          <TemporalAnalysis linkId={linkId} enableRealtime={false} />
+        )}
+      </TabPanel>
+
+      {/* Geografia Tab */}
+      <TabPanel value={tabValue} index={2}>
+        {/* Renderizar apenas se a tab está ativa */}
+        {tabValue === 2 && (
           <GeographicAnalysis
             linkId={linkId}
             enableRealtime={false}
             minClicks={1}
           />
-        )}
-      </TabPanel>
-
-      {/* Temporal Tab */}
-      <TabPanel value={tabValue} index={2}>
-        {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 2 && (
-          <TemporalAnalysis linkId={linkId} enableRealtime={false} />
         )}
       </TabPanel>
 
