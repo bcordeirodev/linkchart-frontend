@@ -54,6 +54,12 @@ interface TemporalChartProps {
   advancedData?: AdvancedTemporalData;
 }
 
+/**
+ * Renders temporal analytics charts grouped into 4 tabs:
+ * Patterns, Performance, Timeline, and Distribution.
+ * Charts within each tab are stacked vertically and rendered
+ * conditionally based on data availability.
+ */
 export function TemporalChart({
   hourlyData,
   weeklyData,
