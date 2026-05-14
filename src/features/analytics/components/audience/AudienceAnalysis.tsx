@@ -95,17 +95,16 @@ export function AudienceAnalysis({
             </Box>
           ) : null}
 
-          {(audienceData as AnyData)?.quality_breakdown &&
-            (audienceData as AnyData)?.quality_breakdown?.tiers !==
-              undefined && (
-              <Box sx={{ mb: 3 }}>
-                <QualitySection
-                  quality={(audienceData as AnyData).quality_breakdown}
-                />
-              </Box>
-            )}
-
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <AudienceInsights
+                deviceBreakdown={deviceBreakdown}
+                browserBreakdown={(audienceData as AnyData)?.browser_breakdown}
+                totalClicks={totalClicks}
+                showAdvancedInsights={shouldUseHook}
+              />
+            </Grid>
+
             <Grid item xs={12}>
               <EnhancedPaper variant="glass" animated>
                 <AudienceChart
@@ -139,16 +138,17 @@ export function AudienceAnalysis({
                   />
                 </Grid>
               )}
-
-            <Grid item xs={12}>
-              <AudienceInsights
-                deviceBreakdown={deviceBreakdown}
-                browserBreakdown={(audienceData as AnyData)?.browser_breakdown}
-                totalClicks={totalClicks}
-                showAdvancedInsights={shouldUseHook}
-              />
-            </Grid>
           </Grid>
+
+          {(audienceData as AnyData)?.quality_breakdown &&
+            (audienceData as AnyData)?.quality_breakdown?.tiers !==
+              undefined && (
+              <Box sx={{ mt: 3 }}>
+                <QualitySection
+                  quality={(audienceData as AnyData).quality_breakdown}
+                />
+              </Box>
+            )}
         </ResponsiveContainer>
       </AnalyticsStateManager>
     </Box>
