@@ -75,17 +75,12 @@
       "dawn": "Dawn"
     },
     "chart": {
-      "generalPatterns": "General Patterns",
       "tabPatterns": "Patterns",
       "tabPerformance": "Performance",
       "tabTimeline": "Timeline",
       "tabDistribution": "Distribution",
-      "localTime": "Local Time",
       "weekend": "Weekend",
       "businessHours": "Business Hours",
-      "peaks": "Peaks",
-      "trends": "Trends",
-      "timezones": "Time Zones",
       "peakHour": "Peak hour:",
       "activeHours": "active hours",
       "weekendDays": "Weekend",
@@ -125,10 +120,7 @@
       "clicks": "clicks",
       "uniqueVisitors": "unique visitors",
       "ofTotal": "% of total",
-      "insightsLabel": "Insights",
-      "dailyTimeline": "Daily Timeline",
-      "heatmapHourDay": "Hour×Day Heatmap",
-      "deviceByPeriod": "Devices by Period"
+      "insightsLabel": "Insights"
     },
     "peak": {
       "peakHour": "Peak Hour",

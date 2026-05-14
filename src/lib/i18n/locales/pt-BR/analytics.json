@@ -75,17 +75,12 @@
       "dawn": "Madrugada"
     },
     "chart": {
-      "generalPatterns": "Padrões Gerais",
       "tabPatterns": "Padrões",
       "tabPerformance": "Performance",
       "tabTimeline": "Timeline",
       "tabDistribution": "Distribuição",
-      "localTime": "Hora Local",
       "weekend": "Fim de Semana",
       "businessHours": "Horário Comercial",
-      "peaks": "Picos",
-      "trends": "Tendências",
-      "timezones": "Fusos Horários",
       "peakHour": "Horário de pico:",
       "activeHours": "horas ativas",
       "weekendDays": "Fim de Semana",
@@ -125,10 +120,7 @@
       "clicks": "cliques",
       "uniqueVisitors": "visitantes únicos",
       "ofTotal": "% do total",
-      "insightsLabel": "Insights",
-      "dailyTimeline": "Timeline Diária",
-      "heatmapHourDay": "Heatmap Hora×Dia",
-      "deviceByPeriod": "Dispositivos por Período"
+      "insightsLabel": "Insights"
     },
     "peak": {
       "peakHour": "Hora de Pico",
