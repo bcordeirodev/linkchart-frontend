@@ -84,8 +84,7 @@ export function TemporalChart({
     advancedData &&
     ((advancedData.weekly_trends?.length ?? 0) > 0 ||
       (advancedData.monthly_trends?.length ?? 0) > 0);
-  const hasTimezones =
-    (advancedData?.timezone_analysis?.length ?? 0) > 0;
+  const hasTimezones = (advancedData?.timezone_analysis?.length ?? 0) > 0;
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
