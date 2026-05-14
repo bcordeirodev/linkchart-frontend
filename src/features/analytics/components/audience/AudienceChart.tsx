@@ -252,6 +252,22 @@ export function AudienceChart({
         </Box>
       ) : null}
 
+      {/* Descrição dinâmica por sub-tab */}
+      {hasEnhancedData && (
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          {
+            [
+              t("audience.chart.tabDescriptions.devices"),
+              t("audience.chart.tabDescriptions.browsers"),
+              t("audience.chart.tabDescriptions.systems"),
+              t("audience.chart.tabDescriptions.performance"),
+              t("audience.chart.tabDescriptions.languages"),
+              t("audience.chart.tabDescriptions.renderingEngine"),
+            ][activeTab]
+          }
+        </Typography>
+      )}
+
       {/* Tab 0: Devices */}
       {(!hasEnhancedData || activeTab === 0) && (
         <>
