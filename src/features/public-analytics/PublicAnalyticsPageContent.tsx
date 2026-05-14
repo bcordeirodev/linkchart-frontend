@@ -130,7 +130,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
                 process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_ABOVE_CHARTS ??
                 ""
               }
-              format="leaderboard"
+              format="auto"
             />
 
             <Fade in timeout={800}>
@@ -138,6 +138,14 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
                 <PublicCharts analyticsData={analyticsData} />
               </Box>
             </Fade>
+
+            <AdSlot
+              slot={
+                process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_BELOW_CHARTS ??
+                ""
+              }
+              format="auto"
+            />
 
             <Fade in timeout={1000}>
               <Box>

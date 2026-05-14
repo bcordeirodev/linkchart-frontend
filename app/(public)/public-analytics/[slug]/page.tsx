@@ -27,6 +27,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: `Public analytics for the link "${slug}". ${clicks} total clicks tracked.`,
     alternates: {
       canonical: `${appUrl}/public-analytics/${slug}`,
+      languages: {
+        en: `${appUrl}/public-analytics/${slug}`,
+        "pt-BR": `${appUrl}/public-analytics/${slug}`,
+        "x-default": `${appUrl}/public-analytics/${slug}`,
+      },
     },
     // Per-slug analytics pages can multiply quickly and offer thin content
     // for users that didn't create the link. We allow link equity to flow

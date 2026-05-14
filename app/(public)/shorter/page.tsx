@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import ShorterClientPage from "./ShorterClientPage";
-import { buildWebApplicationSchema } from "@/lib/seo/structuredData";
+import {
+  buildWebApplicationSchema,
+  buildFaqSchema,
+} from "@/lib/seo/structuredData";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
 
@@ -10,6 +13,11 @@ export const metadata: Metadata = {
     "Shorten any URL for free in seconds. Get real-time click analytics, geographic data, and custom slugs — no account needed.",
   alternates: {
     canonical: `${appUrl}/shorter`,
+    languages: {
+      en: `${appUrl}/shorter`,
+      "pt-BR": `${appUrl}/shorter`,
+      "x-default": `${appUrl}/shorter`,
+    },
   },
   robots: {
     index: true,
@@ -46,12 +54,17 @@ export const metadata: Metadata = {
 };
 
 export default function ShorterPage() {
-  const schema = buildWebApplicationSchema();
+  const appSchema = buildWebApplicationSchema();
+  const faqSchema = buildFaqSchema();
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <ShorterClientPage />
     </>

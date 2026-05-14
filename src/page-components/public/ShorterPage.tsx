@@ -115,8 +115,17 @@ function ShorterPage() {
             <ShorterStats />
           </Box>
 
+          <AdSlot
+            slot={
+              process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BETWEEN_SECTIONS ??
+              ""
+            }
+            format="auto"
+          />
+
           <Box sx={{ mt: { xs: 6, md: 8 }, mb: 2, maxWidth: 800, mx: "auto" }}>
             <Typography
+              component="h2"
               sx={{
                 fontSize: "0.75rem",
                 fontWeight: 700,
@@ -137,28 +146,26 @@ function ShorterPage() {
                 gap: { xs: 2, sm: 2.5 },
               }}
             >
-              {(
-                [
-                  {
-                    icon: <Link2 size={22} />,
-                    step: "01",
-                    title: "Cole o URL",
-                    desc: "Insira qualquer link longo no campo acima.",
-                  },
-                  {
-                    icon: <SlidersHorizontal size={22} />,
-                    step: "02",
-                    title: "Personalize",
-                    desc: "Defina um slug personalizado ou deixe gerar automaticamente.",
-                  },
-                  {
-                    icon: <BarChart2 size={22} />,
-                    step: "03",
-                    title: "Compartilhe",
-                    desc: "Copie o link curto e acompanhe os cliques em tempo real.",
-                  },
-                ] as const
-              ).map(({ icon, step, title, desc }) => (
+              {[
+                {
+                  icon: <Link2 size={22} />,
+                  step: "01",
+                  title: t("shorter.steps.paste.title"),
+                  desc: t("shorter.steps.paste.desc"),
+                },
+                {
+                  icon: <SlidersHorizontal size={22} />,
+                  step: "02",
+                  title: t("shorter.steps.customize.title"),
+                  desc: t("shorter.steps.customize.desc"),
+                },
+                {
+                  icon: <BarChart2 size={22} />,
+                  step: "03",
+                  title: t("shorter.steps.share.title"),
+                  desc: t("shorter.steps.share.desc"),
+                },
+              ].map(({ icon, step, title, desc }) => (
                 <Box
                   key={step}
                   sx={{
@@ -199,6 +206,7 @@ function ShorterPage() {
                     {step}
                   </Typography>
                   <Typography
+                    component="h3"
                     sx={{
                       color: "rgba(255,255,255,0.92)",
                       fontWeight: 600,
