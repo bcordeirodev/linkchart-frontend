@@ -227,15 +227,16 @@ export function TimezoneDistributionChart({
           <Box
             sx={{
               p: 2,
-              bgcolor: "info.main",
-              color: "info.contrastText",
-              borderRadius: 1,
+              bgcolor: "action.hover",
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 2,
             }}
           >
             <Typography variant="subtitle2" gutterBottom>
               {t("temporal.timezone.insightTitle")}
             </Typography>
-            <Typography variant="body2">
+            <Typography variant="body2" color="text.secondary">
               {sortedTimezones[0] ? (
                 <>
                   {t("temporal.timezone.insightConcentrated", {
