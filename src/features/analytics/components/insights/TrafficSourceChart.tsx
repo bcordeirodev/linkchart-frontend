@@ -306,6 +306,9 @@ export function TrafficSourceChart({
             />
             {displayTitle}
           </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            {t("insights.traffic.description")}
+          </Typography>
         </Box>
       ) : null}
 

@@ -26,7 +26,11 @@ export function DayOfWeekChart({ data, height = 300 }: DayOfWeekChartProps) {
   const isDark = theme.palette.mode === "dark";
 
   return (
-    <ChartCard title={t("charts.dayOfWeek")} icon={<Calendar {...ICON_LG} />}>
+    <ChartCard
+      title={t("charts.dayOfWeek")}
+      subtitle={t("charts.descriptions.dayOfWeek")}
+      icon={<Calendar {...ICON_LG} />}
+    >
       <ApexChartWrapper
         type="bar"
         height={height}

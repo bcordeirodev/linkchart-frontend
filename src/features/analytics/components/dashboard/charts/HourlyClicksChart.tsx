@@ -31,6 +31,7 @@ export function HourlyClicksChart({
   return (
     <ChartCard
       title={t("charts.hourlyClicks")}
+      subtitle={t("charts.descriptions.hourlyClicks")}
       icon={<TrendingUp {...ICON_LG} />}
     >
       <ApexChartWrapper
