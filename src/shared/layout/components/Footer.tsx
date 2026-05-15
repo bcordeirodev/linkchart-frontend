@@ -1,163 +1,76 @@
 "use client";
-/**
- * 🦶 FOOTER COMPONENT - LINK CHART
- * Componente de rodapé da aplicação
- *
- * @description
- * Footer responsivo com informações da aplicação, links úteis e copyright.
- * Integra com o sistema de temas para consistência visual.
- *
- * @features
- * - ✅ Design responsivo
- * - ✅ Integração com temas
- * - ✅ Links úteis
- * - ✅ Informações de copyright
- * - ✅ Estilo minimalista
- *
- * @since 2.0.0
- */
 
-import { Github } from "lucide-react";
+import { Box, Typography, useTheme } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
-import { Box, Container, Typography, Link, useTheme } from "@mui/material";
-import * as CookieConsent from "@/lib/consent/cookieconsent.esm.js";
-import { ICON_LG } from "@/lib/theme/iconDefaults";
-
-import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 
 /**
- * Props do componente Footer
+ * Rodapé minimalista compartilhado entre layouts públicos e autenticados.
+ * 1 linha: copyright à esquerda, links à direita.
  */
-interface FooterProps {
-  /** Estilo do footer */
-  style?: "fixed" | "static" | "sticky";
-}
-
-/**
- * Componente de rodapé da aplicação
- */
-export function Footer({ style = "static" }: FooterProps) {
+export function Footer() {
   const theme = useTheme();
   const { t } = useTranslation("common");
+  const isDark = theme.palette.mode === "dark";
+  const linkColor = alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6);
+  const linkHover = alpha(theme.palette.text.primary, isDark ? 0.85 : 0.92);
   const currentYear = new Date().getFullYear();
 
-  const footerSx = {
-    backgroundColor:
-      theme.palette.mode === "dark"
-        ? darkNeutral.surface
-        : lightNeutral.surface,
-    borderTop: `1px solid ${theme.palette.divider}`,
-    py: 3,
-    mt: "auto",
-    ...(style === "fixed" && {
-      position: "fixed" as const,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      zIndex: theme.zIndex.appBar - 1,
-    }),
-    ...(style === "sticky" && {
-      position: "sticky" as const,
-      bottom: 0,
-    }),
-  };
-
   return (
-    <Box component="footer" sx={footerSx}>
-      <Container maxWidth="lg">
+    <Box
+      component="footer"
+      sx={{
+        position: "relative",
+        zIndex: 2,
+        mt: "auto",
+        px: { xs: 2, sm: 3, md: 4 },
+        py: { xs: 2, sm: 2.25 },
+        borderTop: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+      }}
+    >
+      <Box
+        sx={{
+          maxWidth: 1100,
+          mx: "auto",
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: { xs: 1, sm: 2 },
+          textAlign: "center",
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: "0.75rem",
+            color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6),
+            letterSpacing: "0.01em",
+          }}
+        >
+          © {currentYear} {t("appName")}
+        </Typography>
+
         <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            justifyContent: "space-between",
             alignItems: "center",
-            gap: 2,
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: { xs: 1.5, sm: 2.25 },
+            "& a": {
+              fontSize: "0.75rem",
+              color: linkColor,
+              textDecoration: "none",
+              transition: "color 160ms ease",
+            },
+            "& a:hover": { color: linkHover },
           }}
         >
-          {/* Copyright */}
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ textAlign: { xs: "center", md: "left" } }}
-          >
-            © {currentYear} {t("appName")}. Todos os direitos reservados.
-          </Typography>
-
-          {/* Links */}
-          <Box
-            sx={{
-              display: "flex",
-              gap: 3,
-              alignItems: "center",
-              flexWrap: "wrap",
-              justifyContent: { xs: "center", md: "flex-start" },
-            }}
-          >
-            <Link
-              href="/privacy"
-              color="text.secondary"
-              underline="hover"
-              variant="body2"
-            >
-              Privacidade
-            </Link>
-            <Link
-              href="/terms"
-              color="text.secondary"
-              underline="hover"
-              variant="body2"
-            >
-              Termos
-            </Link>
-            <Link
-              href="/support"
-              color="text.secondary"
-              underline="hover"
-              variant="body2"
-            >
-              Suporte
-            </Link>
-            <Link
-              component="button"
-              onClick={() => CookieConsent.showPreferences()}
-              color="text.secondary"
-              underline="hover"
-              variant="body2"
-              sx={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                p: 0,
-              }}
-            >
-              Não vender meus dados
-            </Link>
-          </Box>
-
-          {/* Social Links */}
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <Link
-              href="https://github.com/bcordeirodev"
-              target="_blank"
-              rel="noopener noreferrer"
-              color="text.secondary"
-              aria-label="GitHub"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                p: 0.5,
-                borderRadius: 1,
-                "&:hover": {
-                  color: "primary.main",
-                  backgroundColor: theme.palette.action.hover,
-                },
-              }}
-            >
-              <Github {...ICON_LG} />
-            </Link>
-          </Box>
+          <a href="/privacy">{t("footer.privacy")}</a>
+          <a href="/terms">{t("footer.terms")}</a>
+          <a href="/support">{t("footer.support")}</a>
         </Box>
-      </Container>
+      </Box>
     </Box>
   );
 }
