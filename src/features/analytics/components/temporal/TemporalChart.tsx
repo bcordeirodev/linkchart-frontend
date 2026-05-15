@@ -177,6 +177,7 @@ export function TemporalChart({
                 <ChartCard title={t("temporal.chart.periodSummary")}>
                   <ApexChartWrapper
                     type="bar"
+                    height={200}
                     {...formatBarChart(
                       [
                         {
@@ -204,7 +205,6 @@ export function TemporalChart({
                       false,
                       isDark,
                     )}
-                    size="standard"
                   />
                 </ChartCard>
               </Grid>
@@ -216,9 +216,7 @@ export function TemporalChart({
                   <ApexChartWrapper
                     type="bar"
                     {...formatBarChart(
-                      weeklyData
-                        .slice()
-                        .sort((a, b) => b.clicks - a.clicks),
+                      weeklyData.slice().sort((a, b) => b.clicks - a.clicks),
                       "day_name",
                       "clicks",
                       chartColors.secondary?.main ?? chartColors.primary.main,

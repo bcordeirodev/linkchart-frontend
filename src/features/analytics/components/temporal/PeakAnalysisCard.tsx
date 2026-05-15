@@ -144,11 +144,17 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                 <Box>
                   <Typography
                     variant="h6"
-                    gutterBottom
                     sx={{ display: "flex", alignItems: "center", gap: 1 }}
                   >
                     <Zap size={16} strokeWidth={1.5} />
                     {t("temporal.peak.engagementPeakAnalysis")}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
+                    {t("charts.descriptions.peakAnalysis")}
                   </Typography>
                 </Box>
 

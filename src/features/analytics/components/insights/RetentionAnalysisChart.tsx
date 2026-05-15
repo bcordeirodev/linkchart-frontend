@@ -253,6 +253,9 @@ export function RetentionAnalysisChart({
             />
             {displayTitle}
           </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            {t("insights.retention.description")}
+          </Typography>
         </Box>
       ) : null}
 

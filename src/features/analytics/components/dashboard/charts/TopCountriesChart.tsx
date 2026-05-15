@@ -33,7 +33,11 @@ export function TopCountriesChart({
   const topCountries = data.slice(0, maxCountries);
 
   return (
-    <ChartCard title={t("charts.topCountries")} icon={<Globe {...ICON_LG} />}>
+    <ChartCard
+      title={t("charts.topCountries")}
+      subtitle={t("charts.descriptions.topCountries")}
+      icon={<Globe {...ICON_LG} />}
+    >
       <ApexChartWrapper
         type="bar"
         height={height}

@@ -38,7 +38,32 @@
     "temporalTrends": "Tendências Temporais",
     "peakAnalysis": "Horários de Pico",
     "browserBreakdown": "Distribuição de Navegadores",
-    "osBreakdown": "Distribuição de Sistemas Operacionais"
+    "osBreakdown": "Distribuição de Sistemas Operacionais",
+    "descriptions": {
+      "hourlyClicks": "Distribuição dos cliques nas 24h do dia. Identifique o horário de pico para agendar publicações e campanhas no momento de maior engajamento.",
+      "dayOfWeek": "Volume de cliques por dia da semana. Descubra quais dias geram mais tráfego e concentre ações nesses períodos.",
+      "deviceBreakdown": "Proporção de acessos por tipo de dispositivo (desktop, mobile, tablet). Use para orientar o design e a responsividade do seu conteúdo.",
+      "topCountries": "Países que mais geraram cliques neste link. Use para priorizar mercados e adaptar o idioma ou o fuso horário das campanhas.",
+      "localTimePatterns": "Cliques agrupados pela hora local do visitante (considera o fuso horário detectado). Mais preciso que o horário do servidor para audiências internacionais.",
+      "weekendVsWeekday": "Comparativo de volume entre fins de semana e dias úteis. Indica quando seu público é mais receptivo a conteúdo.",
+      "businessHours": "Divisão de cliques dentro (9h–18h) e fora do horário comercial. Um volume alto fora desse intervalo sugere audiência de entretenimento ou consumo pessoal (B2C).",
+      "peakAnalysis": "Análise detalhada do horário e dia de maior engajamento, com recomendações práticas de timing para lançamentos e campanhas.",
+      "temporalTrends": "Evolução semanal e mensal do volume de cliques. Identifique ciclos de crescimento, sazonalidade ou queda ao longo do tempo.",
+      "dailyTimeline": "Histórico dia a dia de cliques e visitantes únicos. Arraste para selecionar um intervalo e aplicar zoom em um período específico.",
+      "hourDayHeatmap": "Intensidade de cliques por combinação de hora do dia × dia da semana. Células mais escuras indicam maior concentração — use para encontrar o melhor momento de publicação.",
+      "timezoneDistribution": "De onde vêm os visitantes pelo fuso horário detectado no navegador. Útil para alinhar o horário de publicações com regiões geográficas específicas.",
+      "deviceByPeriod": "Como desktop, mobile e tablet se distribuem em cada período do dia (manhã, tarde, noite, madrugada). Adapte o formato e o peso visual do conteúdo por período.",
+      "choropleth": "Mapa-múndi com intensidade de cliques por país. Cores mais escuras = maior volume. Passe o mouse para ver detalhes ou clique em um país para filtrar os rankings.",
+      "continentBreakdown": "Percentual de cliques por continente. Visão macro do alcance geográfico — identifique em quais regiões do mundo seu link está presente.",
+      "countryDistribution": "Participação dos principais países no total de cliques. Mostra quais mercados concentram sua audiência e o quanto cada um representa.",
+      "retention": "Taxa de visitantes que retornaram ao link (visitaram mais de uma vez). Acima de 20% indica conteúdo com alto potencial de recorrência.",
+      "sessionDepth": "Quantos cliques por sessão cada visitante realiza. Sessões mais profundas (mais cliques) indicam maior interesse e engajamento com o conteúdo.",
+      "trafficSources": "Origem do tráfego: direto, orgânico, redes sociais, e-mail, referências externas, etc. Avalie quais canais trazem mais visitantes para este link.",
+      "trafficQuality": "Classificação dos cliques em orgânicos, suspeitos e fraude com base em fingerprint de dispositivo e padrões de comportamento. Score 0–100; acima de 70 é considerado saudável.",
+      "browserBreakdown": "Navegadores mais usados pela sua audiência (Chrome, Safari, Firefox, etc.). Auxilia em decisões de compatibilidade e testes de UI.",
+      "osBreakdown": "Sistemas operacionais mais usados (iOS, Android, Windows, macOS, etc.). Combina com dados de dispositivo para traçar o perfil técnico da audiência.",
+      "languages": "Idiomas detectados nas configurações dos navegadores dos visitantes. Use para planejar a internacionalização do conteúdo ou criar versões localizadas."
+    }
   },
   "tabs": {
     "overview": "Visão Geral",
@@ -200,6 +225,7 @@
       "hint": "Se mobile domina à noite, priorize layouts responsivos e conteúdo curto para esse período."
     },
     "trends": {
+      "description": "Evolução do volume de cliques semana a semana e mês a mês. Identifique ciclos de crescimento, sazonalidade ou queda no engajamento ao longo do tempo.",
       "noData": "Dados de tendências ainda não disponíveis",
       "noDataSub": "Continue compartilhando seu link para gerar dados de tendências ao longo do tempo",
       "weeklyTitle": "Tendências Semanais",
@@ -403,6 +429,14 @@
         "languages": "Idiomas",
         "renderingEngine": "Rendering Engine"
       },
+      "tabDescriptions": {
+        "devices": "Proporção de visitas por tipo de dispositivo (desktop, mobile, tablet). Use para decidir se o conteúdo deve priorizar layouts responsivos ou apps nativos.",
+        "browsers": "Navegadores mais usados pela sua audiência (Chrome, Safari, Firefox, etc.). Auxilia em decisões de compatibilidade, polyfills e testes de UI.",
+        "systems": "Sistemas operacionais mais usados (iOS, Android, Windows, macOS). Combina com dados de dispositivo para traçar o perfil técnico completo da audiência.",
+        "performance": "Tempo médio de resposta e performance de carregamento por tipo de dispositivo. Identifique se algum segmento tem experiência degradada.",
+        "languages": "Idiomas detectados nas configurações do navegador dos visitantes. Use para planejar internacionalização ou criar versões localizadas do conteúdo.",
+        "renderingEngine": "Motor de renderização do navegador (Blink, WebKit, Gecko, etc.). Útil para diagnóstico de bugs de compatibilidade em browsers menos comuns."
+      },
       "stats": {
         "detected": "Dispositivos Detectados",
         "primary": "Dispositivo Principal",
@@ -526,6 +560,7 @@
     },
     "retention": {
       "title": "Análise de Retenção",
+      "description": "Taxa de visitantes que retornaram ao link mais de uma vez. Acima de 20% indica conteúdo com alto potencial de recorrência e fidelização.",
       "loading": "Carregando análise de retenção...",
       "noData": "Dados insuficientes para análise de retenção",
       "retentionRate": "Taxa de Retenção",
@@ -603,6 +638,7 @@
     },
     "traffic": {
       "title": "Análise de Fontes de Tráfego",
+      "description": "Origem do tráfego: canais diretos, orgânicos, redes sociais, e-mail, referências externas, etc. Avalie quais canais trazem mais visitantes e qual o engajamento de cada um.",
       "loading": "Carregando análise de fontes...",
       "noData": "Dados insuficientes para análise de fontes de tráfego",
       "topSource": "Fonte Principal",
@@ -625,6 +661,18 @@
       "uniqueVisitors": "{{n}} visitantes únicos",
       "session": "Sessão: {{n}} clicks",
       "time": "Tempo: {{n}}s"
+    },
+    "trafficQuality": {
+      "title": "Qualidade do Tráfego",
+      "description": "Classificação dos cliques em orgânicos, suspeitos e fraude com base em fingerprint de dispositivo e padrões de comportamento. Score 0–100; acima de 70 é considerado saudável.",
+      "tooltipNote": "Score calculado com base em headers, comportamento e consistência de fingerprint. Sem APIs externas.",
+      "avgScore": "Score médio: {{score}}",
+      "tiers": {
+        "organic": "Orgânico",
+        "suspicious": "Suspeito",
+        "likely_fraud": "Fraude",
+        "unknown": "Não analisado"
+      }
     }
   },
   "linkInfo": {

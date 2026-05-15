@@ -142,56 +142,8 @@ export function InsightsAnalysis({
             </Grid>
           </Box>
 
-          {/* RESTANTE DO CONTEÚDO */}
-          {/* ETAPA 3: NOVOS COMPONENTES DE INSIGHTS AVANÇADOS */}
-          {data?.analytics_data ? (
-            <Box sx={{ mb: 4 }}>
-              <Grid container spacing={3}>
-                {/* Análise de Retenção */}
-                {data.analytics_data.retention ? (
-                  <Grid item xs={12}>
-                    <RetentionAnalysisChart
-                      data={data.analytics_data.retention}
-                      loading={loading}
-                      showTitle
-                    />
-                  </Grid>
-                ) : null}
-
-                {/* Análise de Profundidade de Sessão */}
-                {data.analytics_data.session_depth ? (
-                  <Grid item xs={12}>
-                    <SessionDepthChart
-                      data={data.analytics_data.session_depth}
-                      loading={loading}
-                      showTitle
-                    />
-                  </Grid>
-                ) : null}
-
-                {/* Análise de Fontes de Tráfego */}
-                {data.analytics_data.traffic_sources ? (
-                  <Grid item xs={12}>
-                    <TrafficSourceChart
-                      data={data.analytics_data.traffic_sources}
-                      loading={loading}
-                      showTitle
-                    />
-                  </Grid>
-                ) : null}
-
-                {/* Qualidade do Tráfego (Phase 3) */}
-                {data.analytics_data.quality ? (
-                  <Grid item xs={12}>
-                    <TrafficQualityChart data={data.analytics_data.quality} />
-                  </Grid>
-                ) : null}
-              </Grid>
-            </Box>
-          ) : null}
-
-          {/* Lista de Insights Tradicionais */}
-          <Box sx={{ mb: 3 }}>
+          {/* 1. Insights acionáveis — primeiro porque é o que o usuário deve agir */}
+          <Box sx={{ mb: 4 }}>
             <Typography
               variant="h6"
               gutterBottom
@@ -206,6 +158,53 @@ export function InsightsAnalysis({
               maxItems={maxInsights}
             />
           </Box>
+
+          {/* 2. Gráficos analíticos — ordem por importância estratégica */}
+          {data?.analytics_data ? (
+            <Box sx={{ mb: 4 }}>
+              <Grid container spacing={3}>
+                {/* Fontes de Tráfego: de onde vêm os visitantes? (mais estratégico) */}
+                {data.analytics_data.traffic_sources ? (
+                  <Grid item xs={12}>
+                    <TrafficSourceChart
+                      data={data.analytics_data.traffic_sources}
+                      loading={loading}
+                      showTitle
+                    />
+                  </Grid>
+                ) : null}
+
+                {/* Qualidade do Tráfego: o tráfego é legítimo? (diagnóstico crítico) */}
+                {data.analytics_data.quality ? (
+                  <Grid item xs={12}>
+                    <TrafficQualityChart data={data.analytics_data.quality} />
+                  </Grid>
+                ) : null}
+
+                {/* Retenção: visitantes voltam? (fidelização) */}
+                {data.analytics_data.retention ? (
+                  <Grid item xs={12}>
+                    <RetentionAnalysisChart
+                      data={data.analytics_data.retention}
+                      loading={loading}
+                      showTitle
+                    />
+                  </Grid>
+                ) : null}
+
+                {/* Profundidade de Sessão: o quanto os visitantes se engajam? (mais granular) */}
+                {data.analytics_data.session_depth ? (
+                  <Grid item xs={12}>
+                    <SessionDepthChart
+                      data={data.analytics_data.session_depth}
+                      loading={loading}
+                      showTitle
+                    />
+                  </Grid>
+                ) : null}
+              </Grid>
+            </Box>
+          ) : null}
 
           {/* Informações adicionais */}
           {stats ? (

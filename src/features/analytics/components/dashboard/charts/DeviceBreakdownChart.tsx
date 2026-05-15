@@ -54,6 +54,7 @@ export function DeviceBreakdownChart({
   return (
     <ChartCard
       title={t("charts.deviceBreakdown")}
+      subtitle={t("charts.descriptions.deviceBreakdown")}
       icon={<Smartphone {...ICON_LG} />}
     >
       <ApexChartWrapper
