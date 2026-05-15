@@ -174,80 +174,60 @@ export function TemporalChart({
 
             {hourlyTotal > 0 ? (
               <Grid item xs={12} lg={6}>
-                <Box sx={{ p: 2, bgcolor: "action.hover", borderRadius: 1 }}>
-                  <Typography variant="body2" gutterBottom>
-                    <strong>{t("temporal.chart.periodSummary")}</strong>
-                  </Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4}>
-                      <Typography variant="caption" color="text.secondary">
-                        {t("temporal.chart.morningPeriod")}
-                      </Typography>
-                      <Typography variant="body2" fontWeight="medium">
-                        {hourlyData
-                          .slice(6, 12)
-                          .reduce((sum, h) => sum + h.clicks, 0)}{" "}
-                        {t("temporal.chart.clicks")}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                      <Typography variant="caption" color="text.secondary">
-                        {t("temporal.chart.afternoonPeriod")}
-                      </Typography>
-                      <Typography variant="body2" fontWeight="medium">
-                        {hourlyData
-                          .slice(12, 18)
-                          .reduce((sum, h) => sum + h.clicks, 0)}{" "}
-                        {t("temporal.chart.clicks")}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                      <Typography variant="caption" color="text.secondary">
-                        {t("temporal.chart.eveningPeriod")}
-                      </Typography>
-                      <Typography variant="body2" fontWeight="medium">
-                        {hourlyData
-                          .slice(18, 24)
-                          .reduce((sum, h) => sum + h.clicks, 0)}{" "}
-                        {t("temporal.chart.clicks")}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Box>
+                <ChartCard title={t("temporal.chart.periodSummary")}>
+                  <ApexChartWrapper
+                    type="bar"
+                    {...formatBarChart(
+                      [
+                        {
+                          name: t("temporal.chart.morningPeriod"),
+                          value: hourlyData
+                            .slice(6, 12)
+                            .reduce((sum, h) => sum + h.clicks, 0),
+                        },
+                        {
+                          name: t("temporal.chart.afternoonPeriod"),
+                          value: hourlyData
+                            .slice(12, 18)
+                            .reduce((sum, h) => sum + h.clicks, 0),
+                        },
+                        {
+                          name: t("temporal.chart.eveningPeriod"),
+                          value: hourlyData
+                            .slice(18, 24)
+                            .reduce((sum, h) => sum + h.clicks, 0),
+                        },
+                      ],
+                      "name",
+                      "value",
+                      chartColors.primary.main,
+                      false,
+                      isDark,
+                    )}
+                    size="standard"
+                  />
+                </ChartCard>
               </Grid>
             ) : null}
 
             {weeklyTotal > 0 ? (
               <Grid item xs={12} lg={6}>
-                <Box sx={{ p: 2, bgcolor: "action.hover", borderRadius: 1 }}>
-                  <Typography variant="body2" gutterBottom>
-                    <strong>{t("temporal.chart.daysByEngagement")}</strong>
-                  </Typography>
-                  {weeklyData
-                    .slice()
-                    .sort((a, b) => b.clicks - a.clicks)
-                    .map((day, index) => (
-                      <Box
-                        key={day.day}
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          py: 0.5,
-                          borderBottom:
-                            index < weeklyData.length - 1
-                              ? "1px solid"
-                              : "none",
-                          borderBottomColor: "divider",
-                        }}
-                      >
-                        <Typography variant="body2">{day.day_name}</Typography>
-                        <Typography variant="body2" fontWeight="medium">
-                          {day.clicks} {t("temporal.chart.clicks")}
-                        </Typography>
-                      </Box>
-                    ))}
-                </Box>
+                <ChartCard title={t("temporal.chart.daysByEngagement")}>
+                  <ApexChartWrapper
+                    type="bar"
+                    {...formatBarChart(
+                      weeklyData
+                        .slice()
+                        .sort((a, b) => b.clicks - a.clicks),
+                      "day_name",
+                      "clicks",
+                      chartColors.secondary?.main ?? chartColors.primary.main,
+                      false,
+                      isDark,
+                    )}
+                    size="standard"
+                  />
+                </ChartCard>
               </Grid>
             ) : null}
 
