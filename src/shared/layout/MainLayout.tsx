@@ -85,7 +85,7 @@ function MainLayout({
         {children}
       </Box>
 
-      {showFooter ? <Footer style="static" /> : null}
+      {showFooter ? <Footer /> : null}
     </Box>
   );
 }
