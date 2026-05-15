@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { getStandardChartColors } from "@/lib/theme";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import type {
   WeeklyTrendEntry,
   MonthlyTrendEntry,
@@ -327,7 +328,10 @@ export function TemporalTrendsChart({
         {/* Resumo Geral */}
         {hasWeeklyData || hasMonthlyData ? (
           <Grid item xs={12}>
-            <Card>
+            <Card
+              elevation={0}
+              sx={{ border: "1px solid", borderColor: "divider", borderRadius: `${radiusTokens.lg}px` }}
+            >
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   {t("temporal.trends.growthAnalysis")}

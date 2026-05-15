@@ -18,6 +18,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
+import { radiusTokens } from "@/lib/theme/designSystem";
 
 import {
   formatAreaChart,
@@ -153,7 +154,7 @@ export function TemporalChart({
           {/* General Patterns */}
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Alert severity="info" sx={{ mb: 3, mt: 1 }}>
+              <Alert severity="info" sx={{ mt: 1 }}>
                 <Typography variant="body2">
                   <strong>{t("temporal.chart.insightsLabel")}:</strong>{" "}
                   {hourlyTotal > 0 ? (
@@ -231,7 +232,14 @@ export function TemporalChart({
 
             {showInsights && (hourlyTotal > 0 || weeklyTotal > 0) ? (
               <Grid item xs={12}>
-                <Card sx={{ mt: 2 }}>
+                <Card
+                  elevation={0}
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: `${radiusTokens.lg}px`,
+                  }}
+                >
                   <CardContent>
                     <Typography
                       variant="h6"
@@ -472,13 +480,14 @@ export function TemporalChart({
                   />
                 </ChartCard>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={4} sx={{ display: "flex", flexDirection: "column" }}>
                 <Card
                   elevation={0}
                   sx={{
                     border: "1px solid",
                     borderColor: "divider",
-                    height: "100%",
+                    borderRadius: `${radiusTokens.lg}px`,
+                    flex: 1,
                   }}
                 >
                   <CardContent>
@@ -555,13 +564,14 @@ export function TemporalChart({
                   />
                 </ChartCard>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={4} sx={{ display: "flex", flexDirection: "column" }}>
                 <Card
                   elevation={0}
                   sx={{
                     border: "1px solid",
                     borderColor: "divider",
-                    height: "100%",
+                    borderRadius: `${radiusTokens.lg}px`,
+                    flex: 1,
                   }}
                 >
                   <CardContent>
