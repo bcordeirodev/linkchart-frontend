@@ -270,7 +270,6 @@ export const formatBarChart = (
       options: {
         chart: {
           type: "bar",
-          height: 350,
           toolbar: { show: false },
           animations: {
             enabled: true,
@@ -361,16 +360,10 @@ export const formatBarChart = (
     }));
 
   return {
-    series: [
-      {
-        name: seriesName,
-        data: processedDataVertical,
-      },
-    ],
+    series: [{ name: seriesName, data: processedDataVertical }],
     options: {
       chart: {
         type: "bar",
-        height: 350,
         toolbar: { show: false },
         animations: {
           enabled: true,
@@ -400,18 +393,10 @@ export const formatBarChart = (
         },
         offsetY: -20,
       },
-      fill: {
-        opacity: 1,
-        type: "solid",
-      },
-      stroke: {
-        show: true,
-        width: 1,
-        colors: ["transparent"],
-      },
+      fill: { opacity: 1, type: "solid" },
+      stroke: { show: true, width: 1, colors: ["transparent"] },
       xaxis: {
         type: "category",
-        categories: processedDataVertical.map((item) => item.x),
         labels: {
           style: {
             colors: isDark ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
@@ -432,16 +417,9 @@ export const formatBarChart = (
       },
       grid: {
         borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
-        yaxis: {
-          lines: {
-            show: true,
-          },
-        },
-        xaxis: {
-          lines: {
-            show: false,
-          },
-        },
+        padding: { right: 0 },
+        yaxis: { lines: { show: true } },
+        xaxis: { lines: { show: false } },
       },
       tooltip: getTooltipConfig(isDark),
     },
