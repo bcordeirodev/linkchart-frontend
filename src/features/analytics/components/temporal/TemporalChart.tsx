@@ -133,7 +133,7 @@ export function TemporalChart({
       : false;
 
   return (
-    <Box>
+    <Box sx={{ overflow: "hidden" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
         <Tabs
           value={activeTab}
