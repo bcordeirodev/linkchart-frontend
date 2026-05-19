@@ -8,6 +8,14 @@
       "title": "Nenhum link ainda",
       "description": "Crie seu primeiro link encurtado e comece a rastrear os cliques.",
       "createButton": "Criar seu primeiro link"
+    },
+    "quickCreate": {
+      "label": "Criação rápida",
+      "urlPlaceholder": "Cole uma URL para encurtar...",
+      "slugPlaceholder": "Slug personalizado (opcional)",
+      "submit": "Encurtar",
+      "success": "Link criado!",
+      "moreOptions": "Mais opções"
     }
   },
   "table": {
