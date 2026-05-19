@@ -15,7 +15,8 @@
       "slugPlaceholder": "Slug personalizado (opcional)",
       "submit": "Encurtar",
       "success": "Link criado!",
-      "moreOptions": "Mais opções"
+      "moreOptions": "Mais opções",
+      "moreOptionsTooltip": "Abrir página de criação completa com título, UTM, limite de cliques e mais"
     }
   },
   "table": {

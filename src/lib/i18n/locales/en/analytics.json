@@ -62,7 +62,8 @@
       "trafficQuality": "Click classification into organic, suspicious, and fraud based on device fingerprint and behavioral patterns. Score 0–100; above 70 is considered healthy.",
       "browserBreakdown": "Browsers most used by your audience (Chrome, Safari, Firefox, etc.). Helps with compatibility decisions and UI testing priorities.",
       "osBreakdown": "Operating systems most used (iOS, Android, Windows, macOS, etc.). Combined with device data, helps build the technical profile of your audience.",
-      "languages": "Languages detected in visitors' browser settings. Use to plan content internationalization or create localized versions."
+      "languages": "Languages detected in visitors' browser settings. Use to plan content internationalization or create localized versions.",
+      "periodSummary": "Click totals grouped by time period (morning, afternoon, evening, dawn). Understand which part of the day drives the most traffic to this link."
     }
   },
   "tabs": {

@@ -2,26 +2,24 @@
 import { Link2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { ICON_XL } from "@/lib/theme/iconDefaults";
+import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { PageHeader } from "@/shared/ui/base/PageHeader";
 
-import { LinksHeaderActions } from "./LinksHeaderActions";
-
-interface LinksHeaderProps {
-  onCreateNew?: () => void;
-}
-
-export function LinksHeader({ onCreateNew }: LinksHeaderProps) {
+/**
+ * Page-level header for the links list page.
+ * The "New Link" action was removed — quick creation is handled by LinksQuickCreate inline.
+ */
+export function LinksHeader() {
   const { t } = useTranslation("links");
 
   return (
     <PageHeader
       title={t("list.pageTitle")}
       subtitle={t("list.pageSubtitle")}
-      icon={<Link2 {...ICON_XL} />}
+      icon={<Link2 {...ICON_MD} />}
       variant="default"
       showDecorative
-      actions={<LinksHeaderActions onCreateNew={onCreateNew} />}
+      compact
     />
   );
 }
