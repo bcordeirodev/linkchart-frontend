@@ -21,11 +21,11 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
 
 export const metadata: Metadata = {
   title: {
-    default: "Link Charts — URL Shortener with Analytics",
+    default: "Link Charts — Free URL Shortener with Analytics",
     template: "%s | Link Charts",
   },
   description:
-    "Free URL shortener with powerful real-time analytics, click tracking, and geographic insights.",
+    "Free URL shortener with click analytics, geographic insights, QR codes and UTM tracking. No account needed — shorten any link in seconds.",
   metadataBase: new URL(appUrl),
   manifest: "/manifest.webmanifest",
   icons: {
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     siteName: "Link Charts",
     title: "Link Charts — URL Shortener with Analytics",
     description:
-      "Free URL shortener with powerful real-time analytics, click tracking, and geographic insights.",
+      "Free URL shortener with click analytics, geographic insights, QR codes and UTM tracking. No account needed — shorten any link in seconds.",
     images: [
       {
         url: `${appUrl}/og-default.png`,
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Link Charts — URL Shortener with Analytics",
     description:
-      "Free URL shortener with powerful real-time analytics, click tracking, and geographic insights.",
+      "Free URL shortener with click analytics, geographic insights, QR codes and UTM tracking. No account needed — shorten any link in seconds.",
     images: [`${appUrl}/og-default.png`],
   },
   verification: {
