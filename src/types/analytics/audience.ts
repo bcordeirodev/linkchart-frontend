@@ -159,6 +159,12 @@ export interface AudienceData {
   return_visitor_stats?: ReturnVisitorStats;
   /** Distribuição de qualidade de tráfego (Phase 3: quality scoring) */
   quality_breakdown?: QualityBreakdown;
+  /** Breakdown by social platform identified via referer (social_platform column). */
+  social_platform_breakdown?: Array<{
+    platform: string;
+    clicks: number;
+    percentage: number;
+  }>;
 }
 
 /**
