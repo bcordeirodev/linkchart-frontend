@@ -155,6 +155,73 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
           {link.title || t("list.noTitle")}
         </Typography>
 
+        <Tooltip
+          title={copied ? t("actions.copySuccess") : t("actions.copyLink")}
+        >
+          <Box
+            onClick={() => copy(shortUrl)}
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.75,
+              px: 1.25,
+              py: 0.4,
+              borderRadius: "20px",
+              border: "1.5px solid",
+              borderColor: copied ? "success.main" : "rgba(255,255,255,0.15)",
+              bgcolor: copied
+                ? "rgba(46, 125, 50, 0.1)"
+                : "rgba(255,255,255,0.04)",
+              cursor: "pointer",
+              userSelect: "none",
+              flexShrink: 0,
+              maxWidth: 200,
+              minWidth: 0,
+              transition:
+                "border-color 0.18s ease, background-color 0.18s ease",
+              "&:hover": {
+                borderColor: copied ? "success.main" : "primary.main",
+                bgcolor: copied
+                  ? "rgba(46, 125, 50, 0.14)"
+                  : "rgba(25, 118, 210, 0.1)",
+                "& .chip-icon": { opacity: 1 },
+              },
+            }}
+          >
+            <Box
+              className="chip-icon"
+              sx={{
+                color: copied ? "success.main" : "primary.main",
+                opacity: copied ? 1 : 0.75,
+                display: "flex",
+                flexShrink: 0,
+                transition: "opacity 0.15s ease",
+              }}
+            >
+              {copied ? (
+                <Check size={13} strokeWidth={2.5} />
+              ) : (
+                <Copy size={13} strokeWidth={1.75} />
+              )}
+            </Box>
+            <Typography
+              component="span"
+              sx={{
+                fontFamily: "monospace",
+                fontSize: "0.72rem",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                color: copied ? "success.main" : "text.secondary",
+                letterSpacing: "0.01em",
+                transition: "color 0.18s ease",
+              }}
+            >
+              {copied ? t("actions.copySuccess") : shortUrl}
+            </Typography>
+          </Box>
+        </Tooltip>
+
         <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
           <Button
             size="small"
@@ -209,75 +276,6 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
           />
         </Box>
       </Box>
-
-      <Divider />
-
-      {/* Copy row — primary CTA */}
-      <Tooltip
-        title={copied ? t("actions.copySuccess") : t("actions.copyLink")}
-      >
-        <Box
-          onClick={() => copy(shortUrl)}
-          sx={{
-            px: 3,
-            py: 0.875,
-            display: "flex",
-            alignItems: "center",
-            gap: 1.5,
-            cursor: "pointer",
-            userSelect: "none",
-            transition: "background-color 0.15s ease",
-            bgcolor: copied ? "rgba(46, 125, 50, 0.07)" : "transparent",
-            "&:hover": {
-              bgcolor: copied
-                ? "rgba(46, 125, 50, 0.1)"
-                : "rgba(25, 118, 210, 0.05)",
-            },
-          }}
-        >
-          <Box
-            sx={{
-              color: copied ? "success.main" : "text.disabled",
-              display: "flex",
-              flexShrink: 0,
-            }}
-          >
-            {copied ? (
-              <Check size={15} strokeWidth={2.5} />
-            ) : (
-              <Copy size={15} strokeWidth={1.75} />
-            )}
-          </Box>
-          <Typography
-            component="span"
-            sx={{
-              flex: 1,
-              fontFamily: copied ? "inherit" : "monospace",
-              fontSize: "0.825rem",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              color: copied ? "success.main" : "text.primary",
-              opacity: copied ? 1 : 0.85,
-            }}
-          >
-            {copied ? t("actions.copySuccess") : shortUrl}
-          </Typography>
-          <Typography
-            component="span"
-            sx={{
-              fontSize: "0.68rem",
-              fontWeight: 700,
-              letterSpacing: "0.07em",
-              textTransform: "uppercase",
-              flexShrink: 0,
-              color: copied ? "success.main" : "primary.main",
-            }}
-          >
-            {copied ? "✓" : t("actions.copyLink")}
-          </Typography>
-        </Box>
-      </Tooltip>
 
       <Divider />
 
