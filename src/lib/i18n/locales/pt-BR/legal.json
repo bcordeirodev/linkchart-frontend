@@ -263,6 +263,14 @@
         {
           "q": "Encontrei um link encurtado com conteúdo malicioso. O que fazer?",
           "a": "Envie o link (completo, incluindo o slug) para linkcharts@gmail.com com o assunto \"Reporte de link\". Analisamos e removemos links abusivos em até 24 horas."
+        },
+        {
+          "q": "Todo link encurtado inclui um QR code?",
+          "a": "Sim. Um QR code gratuito é gerado automaticamente para cada link. Faça login, abra o link em \"Meus Links\" e acesse a aba QR Code para baixá-lo em formato PNG."
+        },
+        {
+          "q": "Posso rastrear parâmetros UTM com meus links encurtados?",
+          "a": "Sim. O Link Charts detecta e registra automaticamente os parâmetros UTM — source, medium, campaign, term e content — quando adicionados ao seu link encurtado. Os dados aparecem em tempo real no painel de analytics, organizados por campanha."
         }
       ]
     }

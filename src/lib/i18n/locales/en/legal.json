@@ -263,6 +263,14 @@
         {
           "q": "I found a shortened link with malicious content. What should I do?",
           "a": "Send the full link (including the slug) to linkcharts@gmail.com with the subject line \"Link Report\". We review and remove abusive links within 24 hours."
+        },
+        {
+          "q": "Does each shortened link include a QR code?",
+          "a": "Yes. A free QR code is generated automatically for every link. Log in, open the link from \"My Links\", and go to the QR Code tab to download it in PNG format."
+        },
+        {
+          "q": "Can I track UTM campaign parameters with my short links?",
+          "a": "Yes. Link Charts automatically detects and records UTM parameters — source, medium, campaign, term and content — when they are appended to your short link. The data appears in the link analytics dashboard in real time, broken down by campaign."
         }
       ]
     }
