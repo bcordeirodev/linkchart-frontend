@@ -11,10 +11,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const cookieStore = await cookies();
   const isEn = (cookieStore.get("i18nextLng")?.value ?? "pt-BR") === "en";
   return {
-    title: isEn ? "Support" : "Suporte",
+    title: isEn
+      ? "URL Shortener Help & FAQ — Features Guide"
+      : "Ajuda — Como Encurtar URL com Analytics",
     description: isEn
-      ? "Link Charts support centre — get help, report issues, and contact us."
-      : "Central de suporte do Link Charts — tire dúvidas, reporte problemas e entre em contato.",
+      ? "Learn how to use Link Charts: shorten URLs, track click analytics, add UTM parameters, set custom slugs and generate QR codes. Full features FAQ."
+      : "Aprenda a usar o Link Charts: encurte links grátis, rastreie cliques por país e dispositivo, adicione parâmetros UTM e gere QR codes. Perguntas frequentes.",
     alternates: { canonical: `${appUrl}/support` },
     robots: { index: true, follow: true },
   };
