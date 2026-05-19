@@ -4,12 +4,11 @@ import {
   Box,
   Button,
   InputAdornment,
-  Paper,
   TextField,
   Typography,
   useTheme,
 } from "@mui/material";
-import { CheckCircle2, Link2, Zap } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Link2, Zap } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -104,24 +103,41 @@ export function LinksQuickCreate() {
   );
 
   return (
-    <Paper
-      variant="outlined"
+    <Box
       sx={{
-        px: { xs: 2, sm: 2.5 },
-        pt: { xs: 1.75, sm: 2 },
-        pb: { xs: 2, sm: 2.5 },
         mb: 3,
-        borderRadius: 2,
-        backgroundColor: theme.palette.background.default,
+        px: { xs: 2, sm: 3 },
+        pt: 2,
+        pb: 2.5,
+        borderRadius: "12px",
+        borderTop: "1px solid rgba(25, 118, 210, 0.2)",
+        borderRight: "1px solid rgba(25, 118, 210, 0.2)",
+        borderBottom: "1px solid rgba(25, 118, 210, 0.2)",
+        borderLeft: "3px solid",
+        borderLeftColor: "primary.main",
+        bgcolor: "rgba(25, 118, 210, 0.04)",
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1.5 }}>
-        <Zap {...ICON_SM} color={theme.palette.primary.main} />
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.75 }}>
+        <Box
+          sx={{
+            display: "flex",
+            p: 0.5,
+            borderRadius: "6px",
+            bgcolor: "rgba(25, 118, 210, 0.15)",
+            color: "primary.main",
+          }}
+        >
+          <Zap size={13} strokeWidth={2.5} />
+        </Box>
         <Typography
-          variant="body2"
-          fontWeight={600}
-          color="text.primary"
-          sx={{ letterSpacing: "0.02em" }}
+          variant="caption"
+          sx={{
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "text.primary",
+          }}
         >
           {t("list.quickCreate.label")}
         </Typography>
@@ -177,18 +193,25 @@ export function LinksQuickCreate() {
           <Button
             type="submit"
             variant="contained"
+            disableElevation
             disabled={isPending || urlIsUnsafe || urlIsChecking}
-            startIcon={succeeded ? <CheckCircle2 {...ICON_SM} /> : undefined}
+            startIcon={
+              succeeded ? <CheckCircle2 {...ICON_SM} /> : <Zap {...ICON_SM} />
+            }
             sx={{
               textTransform: "none",
               fontWeight: 600,
+              borderRadius: "20px",
               minWidth: 110,
               whiteSpace: "nowrap",
               flexShrink: 0,
-              transition: theme.transitions.create("background-color"),
+              transition: theme.transitions.create([
+                "background-color",
+                "border-color",
+              ]),
               ...(succeeded && {
-                backgroundColor: theme.palette.success.main,
-                "&:hover": { backgroundColor: theme.palette.success.dark },
+                bgcolor: "success.main",
+                "&:hover": { bgcolor: "success.dark" },
               }),
             }}
           >
@@ -199,19 +222,21 @@ export function LinksQuickCreate() {
           <Button
             variant="text"
             onClick={() => navigate("/links/create")}
+            endIcon={<ArrowUpRight size={14} strokeWidth={2} />}
             sx={{
               textTransform: "none",
               color: "text.secondary",
               whiteSpace: "nowrap",
               flexShrink: 0,
               fontSize: "0.8125rem",
+              "&:hover": { color: "text.primary" },
             }}
           >
             {t("list.quickCreate.moreOptions")}
           </Button>
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 }
 
