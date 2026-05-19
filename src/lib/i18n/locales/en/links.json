@@ -8,6 +8,14 @@
       "title": "No links yet",
       "description": "Create your first shortened link and start tracking clicks.",
       "createButton": "Create your first link"
+    },
+    "quickCreate": {
+      "label": "Quick create",
+      "urlPlaceholder": "Paste a URL to shorten...",
+      "slugPlaceholder": "Custom slug (optional)",
+      "submit": "Shorten",
+      "success": "Link created!",
+      "moreOptions": "More options"
     }
   },
   "table": {
