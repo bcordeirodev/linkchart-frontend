@@ -152,7 +152,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
             whiteSpace: "nowrap",
           }}
         >
-          {link.title || t("list.noTitle")}
+          {link.title || link.slug || link.custom_slug || t("list.noTitle")}
         </Typography>
 
         <Button
@@ -248,14 +248,15 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
       {/* Linha 2 — URL original + thumb OG */}
       <Box sx={{ px: 3, py: 1, display: "flex", alignItems: "center", gap: 2 }}>
         <ExternalLink
-          size={14}
-          strokeWidth={1.5}
-          style={{ flexShrink: 0, opacity: 0.5 }}
+          size={15}
+          strokeWidth={1.75}
+          style={{ flexShrink: 0, opacity: 0.7 }}
         />
         <Typography
           variant="body2"
-          color="text.secondary"
           sx={{
+            color: "text.primary",
+            opacity: 0.8,
             flex: 1,
             overflow: "hidden",
             textOverflow: "ellipsis",
