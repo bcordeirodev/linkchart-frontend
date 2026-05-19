@@ -171,17 +171,27 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
             py: 0.25,
             fontSize: "0.75rem",
             textTransform: "none",
-            transition: "background-color 0.2s ease, color 0.2s ease",
+            border: "1px solid",
+            transition:
+              "background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease",
             ...(copied
               ? {
-                  bgcolor: "success.main",
-                  color: "success.contrastText",
-                  "&:hover": { bgcolor: "success.dark" },
+                  bgcolor: "rgba(46, 125, 50, 0.15)",
+                  borderColor: "success.main",
+                  color: "success.light",
+                  "&:hover": {
+                    bgcolor: "rgba(46, 125, 50, 0.22)",
+                    borderColor: "success.main",
+                  },
                 }
               : {
-                  bgcolor: "rgba(255,255,255,0.1)",
-                  color: "text.primary",
-                  "&:hover": { bgcolor: "rgba(255,255,255,0.15)" },
+                  bgcolor: "rgba(25, 118, 210, 0.12)",
+                  borderColor: "rgba(25, 118, 210, 0.45)",
+                  color: "primary.light",
+                  "&:hover": {
+                    bgcolor: "rgba(25, 118, 210, 0.2)",
+                    borderColor: "primary.main",
+                  },
                 }),
           }}
         >
