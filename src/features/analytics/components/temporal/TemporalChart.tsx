@@ -133,7 +133,7 @@ export function TemporalChart({
       : false;
 
   return (
-    <Box sx={{ overflow: "hidden" }}>
+    <Box sx={{ width: "100%", overflow: "hidden" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
         <Tabs
           value={activeTab}
@@ -151,470 +151,486 @@ export function TemporalChart({
       {/* Tab 0 — Patterns */}
       {activeTab === 0 && (
         <Stack spacing={4}>
-          {/* General Patterns */}
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Alert severity="info" sx={{ mt: 1 }}>
-                <Typography variant="body2">
-                  <strong>{t("temporal.chart.insightsLabel")}:</strong>{" "}
-                  {hourlyTotal > 0 ? (
-                    <>
-                      {t("temporal.chart.peakHour")}{" "}
-                      <strong>{peakHour.label}</strong> ({peakHour.clicks}{" "}
-                      {t("temporal.chart.clicks")}).{" "}
-                      {t("temporal.chart.dayPatterns")}:{" "}
-                      <strong>{peakDay.day_name}</strong> ({peakDay.clicks}{" "}
-                      {t("temporal.chart.clicks")}).
-                    </>
-                  ) : (
-                    t("temporal.chart.noData")
-                  )}
-                </Typography>
-              </Alert>
-            </Grid>
+          <Alert severity="info">
+            <Typography variant="body2">
+              <strong>{t("temporal.chart.insightsLabel")}:</strong>{" "}
+              {hourlyTotal > 0 ? (
+                <>
+                  {t("temporal.chart.peakHour")}{" "}
+                  <strong>{peakHour.label}</strong> ({peakHour.clicks}{" "}
+                  {t("temporal.chart.clicks")}).{" "}
+                  {t("temporal.chart.dayPatterns")}:{" "}
+                  <strong>{peakDay.day_name}</strong> ({peakDay.clicks}{" "}
+                  {t("temporal.chart.clicks")}).
+                </>
+              ) : (
+                t("temporal.chart.noData")
+              )}
+            </Typography>
+          </Alert>
 
-            {hourlyTotal > 0 ? (
-              <Grid item xs={12} lg={6}>
-                <ChartCard title={t("temporal.chart.periodSummary")}>
-                  <ApexChartWrapper
-                    type="bar"
-                    height={200}
-                    {...formatBarChart(
-                      [
-                        {
-                          name: t("temporal.chart.morningPeriod"),
-                          value: hourlyData
-                            .slice(6, 12)
-                            .reduce((sum, h) => sum + h.clicks, 0),
-                        },
-                        {
-                          name: t("temporal.chart.afternoonPeriod"),
-                          value: hourlyData
-                            .slice(12, 18)
-                            .reduce((sum, h) => sum + h.clicks, 0),
-                        },
-                        {
-                          name: t("temporal.chart.eveningPeriod"),
-                          value: hourlyData
-                            .slice(18, 24)
-                            .reduce((sum, h) => sum + h.clicks, 0),
-                        },
-                      ],
-                      "name",
-                      "value",
-                      chartColors.primary.main,
-                      false,
-                      isDark,
-                    )}
-                  />
-                </ChartCard>
+          {hourlyTotal > 0 || weeklyTotal > 0 ? (
+            <Box>
+              <Grid container spacing={3}>
+                {hourlyTotal > 0 ? (
+                  <Grid item xs={12} lg={6} sx={{ minWidth: 0 }}>
+                    <ChartCard
+                      title={t("temporal.chart.periodSummary")}
+                      subtitle={t("charts.descriptions.periodSummary")}
+                    >
+                      <ApexChartWrapper
+                        type="bar"
+                        size="standard"
+                        {...formatBarChart(
+                          [
+                            {
+                              name: t("temporal.chart.morningPeriod"),
+                              value: hourlyData
+                                .slice(6, 12)
+                                .reduce((sum, h) => sum + h.clicks, 0),
+                            },
+                            {
+                              name: t("temporal.chart.afternoonPeriod"),
+                              value: hourlyData
+                                .slice(12, 18)
+                                .reduce((sum, h) => sum + h.clicks, 0),
+                            },
+                            {
+                              name: t("temporal.chart.eveningPeriod"),
+                              value: hourlyData
+                                .slice(18, 24)
+                                .reduce((sum, h) => sum + h.clicks, 0),
+                            },
+                          ],
+                          "name",
+                          "value",
+                          chartColors.primary.main,
+                          false,
+                          isDark,
+                        )}
+                      />
+                    </ChartCard>
+                  </Grid>
+                ) : null}
+
+                {weeklyTotal > 0 ? (
+                  <Grid item xs={12} lg={6} sx={{ minWidth: 0 }}>
+                    <ChartCard
+                      title={t("temporal.chart.daysByEngagement")}
+                      subtitle={t("charts.descriptions.dayOfWeek")}
+                    >
+                      <ApexChartWrapper
+                        type="bar"
+                        size="standard"
+                        {...formatBarChart(
+                          weeklyData
+                            .slice()
+                            .sort((a, b) => b.clicks - a.clicks),
+                          "day_name",
+                          "clicks",
+                          chartColors.secondary?.main ??
+                            chartColors.primary.main,
+                          false,
+                          isDark,
+                        )}
+                      />
+                    </ChartCard>
+                  </Grid>
+                ) : null}
               </Grid>
-            ) : null}
+            </Box>
+          ) : null}
 
-            {weeklyTotal > 0 ? (
-              <Grid item xs={12} lg={6}>
-                <ChartCard title={t("temporal.chart.daysByEngagement")}>
-                  <ApexChartWrapper
-                    type="bar"
-                    {...formatBarChart(
-                      weeklyData.slice().sort((a, b) => b.clicks - a.clicks),
-                      "day_name",
-                      "clicks",
-                      chartColors.secondary?.main ?? chartColors.primary.main,
-                      false,
-                      isDark,
-                    )}
-                    size="standard"
-                  />
-                </ChartCard>
-              </Grid>
-            ) : null}
-
-            {showInsights && (hourlyTotal > 0 || weeklyTotal > 0) ? (
-              <Grid item xs={12}>
-                <Card
-                  elevation={0}
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "divider",
-                    borderRadius: `${radiusTokens.lg}px`,
-                  }}
+          {showInsights && (hourlyTotal > 0 || weeklyTotal > 0) ? (
+            <Card
+              elevation={0}
+              sx={{
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: `${radiusTokens.lg}px`,
+              }}
+            >
+              <CardContent>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
-                  <CardContent>
+                  <Search size={16} strokeWidth={1.5} />
+                  {t("temporal.chart.patternAnalysis")}
+                </Typography>
+
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={6}>
                     <Typography
-                      variant="h6"
+                      variant="subtitle2"
                       gutterBottom
                       sx={{ display: "flex", alignItems: "center", gap: 1 }}
                     >
-                      <Search size={16} strokeWidth={1.5} />
-                      {t("temporal.chart.patternAnalysis")}
+                      <Clock size={16} strokeWidth={1.5} />{" "}
+                      {t("temporal.chart.hourPatterns")}
                     </Typography>
-
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} md={6}>
-                        <Typography
-                          variant="subtitle2"
-                          gutterBottom
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                        >
-                          <Clock size={16} strokeWidth={1.5} />{" "}
-                          {t("temporal.chart.hourPatterns")}
+                    <Stack spacing={1} my={2}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                        }}
+                      >
+                        <Chip
+                          label={
+                            isBusinessHoursActive
+                              ? t("temporal.chart.businessHours")
+                              : t("temporal.chart.outsideHoursChip")
+                          }
+                          color={isBusinessHoursActive ? "success" : "warning"}
+                          size="small"
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                          {isBusinessHoursActive
+                            ? t("temporal.chart.activeNow")
+                            : t("temporal.chart.activeAfterHours")}
                         </Typography>
-                        <Stack spacing={1} my={2}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
-                          >
-                            <Chip
-                              label={
-                                isBusinessHoursActive
-                                  ? t("temporal.chart.businessHours")
-                                  : t("temporal.chart.outsideHoursChip")
-                              }
-                              color={
-                                isBusinessHoursActive ? "success" : "warning"
-                              }
-                              size="small"
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              {isBusinessHoursActive
-                                ? t("temporal.chart.activeNow")
-                                : t("temporal.chart.activeAfterHours")}
-                            </Typography>
-                          </Box>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
-                          >
-                            <Chip
-                              label={`${activeHours}/24 ${t("temporal.chart.activeHours")}`}
-                              color="info"
-                              size="small"
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              {t("temporal.chart.activityPercent", {
-                                percent: ((activeHours / 24) * 100).toFixed(0),
-                              })}
-                            </Typography>
-                          </Box>
-                        </Stack>
-                      </Grid>
-
-                      <Grid item xs={12} md={6}>
-                        <Typography variant="subtitle2" gutterBottom>
-                          {t("temporal.chart.dayPatterns")}
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                        }}
+                      >
+                        <Chip
+                          label={`${activeHours}/24 ${t("temporal.chart.activeHours")}`}
+                          color="info"
+                          size="small"
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                          {t("temporal.chart.activityPercent", {
+                            percent: ((activeHours / 24) * 100).toFixed(0),
+                          })}
                         </Typography>
-                        <Stack spacing={1}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
-                          >
-                            <Chip
-                              label={
-                                isWeekendActive
-                                  ? t("temporal.chart.weekendDays")
-                                  : t("temporal.chart.weekdays")
-                              }
-                              color={isWeekendActive ? "secondary" : "primary"}
-                              size="small"
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              {isWeekendActive
-                                ? t("temporal.chart.weekendActiveDesc")
-                                : t("temporal.chart.weekdayActiveDesc")}
-                            </Typography>
-                          </Box>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
-                          >
-                            <Chip
-                              label={`${activeDays}/7 ${t("temporal.chart.activeDays")}`}
-                              color="info"
-                              size="small"
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              {t("temporal.chart.weekActivityPercent", {
-                                percent: ((activeDays / 7) * 100).toFixed(0),
-                              })}
-                            </Typography>
-                          </Box>
-                        </Stack>
-                      </Grid>
-                    </Grid>
+                      </Box>
+                    </Stack>
+                  </Grid>
 
-                    <Divider sx={{ my: 2 }} />
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      {t("temporal.chart.dayPatterns")}
+                    </Typography>
+                    <Stack spacing={1}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                        }}
+                      >
+                        <Chip
+                          label={
+                            isWeekendActive
+                              ? t("temporal.chart.weekendDays")
+                              : t("temporal.chart.weekdays")
+                          }
+                          color={isWeekendActive ? "secondary" : "primary"}
+                          size="small"
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                          {isWeekendActive
+                            ? t("temporal.chart.weekendActiveDesc")
+                            : t("temporal.chart.weekdayActiveDesc")}
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                        }}
+                      >
+                        <Chip
+                          label={`${activeDays}/7 ${t("temporal.chart.activeDays")}`}
+                          color="info"
+                          size="small"
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                          {t("temporal.chart.weekActivityPercent", {
+                            percent: ((activeDays / 7) * 100).toFixed(0),
+                          })}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Grid>
+                </Grid>
 
-                    <Box>
-                      <Typography variant="subtitle2" gutterBottom>
-                        {t("temporal.chart.timingRecommendations")}
+                <Divider sx={{ my: 2 }} />
+
+                <Box>
+                  <Typography variant="subtitle2" gutterBottom>
+                    {t("temporal.chart.timingRecommendations")}
+                  </Typography>
+                  <Stack spacing={1}>
+                    {peakHour && peakHour.clicks > 0 ? (
+                      <Typography variant="body2" color="text.secondary">
+                        {t("temporal.chart.scheduleTip", {
+                          hour: peakHour.label,
+                          clicks: peakHour.clicks,
+                        })}
                       </Typography>
-                      <Stack spacing={1}>
-                        {peakHour && peakHour.clicks > 0 ? (
-                          <Typography variant="body2" color="text.secondary">
-                            {t("temporal.chart.scheduleTip", {
-                              hour: peakHour.label,
-                              clicks: peakHour.clicks,
-                            })}
-                          </Typography>
-                        ) : null}
-                        {peakDay && peakDay.clicks > 0 ? (
-                          <Typography variant="body2" color="text.secondary">
-                            {t("temporal.chart.mostActiveDay", {
-                              day: peakDay.day_name,
-                            })}
-                          </Typography>
-                        ) : null}
-                        {isBusinessHoursActive ? (
-                          <Typography variant="body2" color="text.secondary">
-                            {t("temporal.chart.businessFocus")}
-                          </Typography>
-                        ) : null}
-                        {!isBusinessHoursActive && hourlyTotal > 0 && (
-                          <Typography variant="body2" color="text.secondary">
-                            {t("temporal.chart.afterHoursFocus")}
-                          </Typography>
-                        )}
-                      </Stack>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ) : null}
-          </Grid>
+                    ) : null}
+                    {peakDay && peakDay.clicks > 0 ? (
+                      <Typography variant="body2" color="text.secondary">
+                        {t("temporal.chart.mostActiveDay", {
+                          day: peakDay.day_name,
+                        })}
+                      </Typography>
+                    ) : null}
+                    {isBusinessHoursActive ? (
+                      <Typography variant="body2" color="text.secondary">
+                        {t("temporal.chart.businessFocus")}
+                      </Typography>
+                    ) : null}
+                    {!isBusinessHoursActive && hourlyTotal > 0 && (
+                      <Typography variant="body2" color="text.secondary">
+                        {t("temporal.chart.afterHoursFocus")}
+                      </Typography>
+                    )}
+                  </Stack>
+                </Box>
+              </CardContent>
+            </Card>
+          ) : null}
 
           {/* Local Time */}
           {hourlyPatternsLocal && hourlyPatternsLocal.length >= 3 && (
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <ChartCard
-                  title={t("temporal.chart.localTimePatterns")}
-                  subtitle={t("charts.descriptions.localTimePatterns")}
-                  icon={<Clock {...ICON_LG} />}
-                >
-                  <ApexChartWrapper
-                    type="area"
-                    {...formatAreaChart(
-                      hourlyPatternsLocal.map((item) => ({
-                        hour: `${item.hour.toString().padStart(2, "0")}:00`,
-                        clicks: item.clicks,
-                        avg_response_time: item.avg_response_time,
-                        unique_visitors: item.unique_visitors,
-                      })),
-                      "hour",
-                      "clicks",
-                      chartColors.primary.main,
-                      isDark,
-                    )}
-                    size="standard"
-                  />
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="subtitle2" gutterBottom>
-                      {t("temporal.chart.hourlyPerformance")}
-                    </Typography>
-                    <Stack spacing={1}>
-                      {hourlyPatternsLocal.slice(0, 5).map((item) => (
-                        <Box
-                          key={item.hour}
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            p: 1,
-                            bgcolor: "background.paper",
-                            borderRadius: 1,
-                          }}
-                        >
-                          <Typography variant="body2">{item.hour}h</Typography>
-                          <Typography variant="caption">
-                            {item.clicks} {t("temporal.chart.clicks")} |{" "}
-                            {item.avg_response_time}ms | {item.unique_visitors}{" "}
-                            {t("temporal.chart.uniqueVisitors")}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Stack>
-                  </Box>
-                </ChartCard>
-              </Grid>
-            </Grid>
+            <ChartCard
+              title={t("temporal.chart.localTimePatterns")}
+              subtitle={t("charts.descriptions.localTimePatterns")}
+              icon={<Clock {...ICON_LG} />}
+            >
+              <ApexChartWrapper
+                type="area"
+                {...formatAreaChart(
+                  hourlyPatternsLocal.map((item) => ({
+                    hour: `${item.hour.toString().padStart(2, "0")}:00`,
+                    clicks: item.clicks,
+                    avg_response_time: item.avg_response_time,
+                    unique_visitors: item.unique_visitors,
+                  })),
+                  "hour",
+                  "clicks",
+                  chartColors.primary.main,
+                  isDark,
+                )}
+                size="standard"
+              />
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="subtitle2" gutterBottom>
+                  {t("temporal.chart.hourlyPerformance")}
+                </Typography>
+                <Stack spacing={1}>
+                  {hourlyPatternsLocal.slice(0, 5).map((item) => (
+                    <Box
+                      key={item.hour}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        p: 1,
+                        bgcolor: "background.paper",
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Typography variant="body2">{item.hour}h</Typography>
+                      <Typography variant="caption">
+                        {item.clicks} {t("temporal.chart.clicks")} |{" "}
+                        {item.avg_response_time}ms | {item.unique_visitors}{" "}
+                        {t("temporal.chart.uniqueVisitors")}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Stack>
+              </Box>
+            </ChartCard>
           )}
 
           {/* Weekend vs Weekday */}
           {weekendVsWeekday && (
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={8}>
-                <ChartCard
-                  title={t("temporal.chart.weekendVsWeekday")}
-                  subtitle={t("charts.descriptions.weekendVsWeekday")}
+            <Box>
+              <Grid container spacing={3}>
+                <Grid item xs={12} lg={8} sx={{ minWidth: 0 }}>
+                  <ChartCard
+                    title={t("temporal.chart.weekendVsWeekday")}
+                    subtitle={t("charts.descriptions.weekendVsWeekday")}
+                  >
+                    <ApexChartWrapper
+                      type="pie"
+                      {...formatPieChart(
+                        [
+                          {
+                            name: t("temporal.chart.weekdays"),
+                            value: weekendVsWeekday.weekday.clicks,
+                          },
+                          {
+                            name: t("temporal.chart.weekend"),
+                            value: weekendVsWeekday.weekend.clicks,
+                          },
+                        ],
+                        "name",
+                        "value",
+                        isDark,
+                      )}
+                      size="standard"
+                    />
+                  </ChartCard>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  lg={4}
+                  sx={{ display: "flex", flexDirection: "column", minWidth: 0 }}
                 >
-                  <ApexChartWrapper
-                    type="pie"
-                    {...formatPieChart(
-                      [
-                        {
-                          name: t("temporal.chart.weekdays"),
-                          value: weekendVsWeekday.weekday.clicks,
-                        },
-                        {
-                          name: t("temporal.chart.weekend"),
-                          value: weekendVsWeekday.weekend.clicks,
-                        },
-                      ],
-                      "name",
-                      "value",
-                      isDark,
-                    )}
-                    size="standard"
-                  />
-                </ChartCard>
+                  <Card
+                    elevation={0}
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "divider",
+                      borderRadius: `${radiusTokens.lg}px`,
+                      flex: 1,
+                    }}
+                  >
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        {t("temporal.chart.comparison")}
+                      </Typography>
+                      <Stack spacing={2}>
+                        <Box>
+                          <Typography variant="subtitle2" color="primary">
+                            {t("temporal.chart.weekdays")}
+                          </Typography>
+                          <Typography variant="body2">
+                            {weekendVsWeekday.weekday.clicks}{" "}
+                            {t("temporal.chart.clicks")}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {weekendVsWeekday.weekday.unique_visitors}{" "}
+                            {t("temporal.chart.uniqueVisitors")}
+                          </Typography>
+                        </Box>
+                        <Divider />
+                        <Box>
+                          <Typography variant="subtitle2" color="secondary">
+                            {t("temporal.chart.weekend")}
+                          </Typography>
+                          <Typography variant="body2">
+                            {weekendVsWeekday.weekend.clicks}{" "}
+                            {t("temporal.chart.clicks")}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {weekendVsWeekday.weekend.unique_visitors}{" "}
+                            {t("temporal.chart.uniqueVisitors")}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={4} sx={{ display: "flex", flexDirection: "column" }}>
-                <Card
-                  elevation={0}
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "divider",
-                    borderRadius: `${radiusTokens.lg}px`,
-                    flex: 1,
-                  }}
-                >
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {t("temporal.chart.comparison")}
-                    </Typography>
-                    <Stack spacing={2}>
-                      <Box>
-                        <Typography variant="subtitle2" color="primary">
-                          {t("temporal.chart.weekdays")}
-                        </Typography>
-                        <Typography variant="body2">
-                          {weekendVsWeekday.weekday.clicks}{" "}
-                          {t("temporal.chart.clicks")}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {weekendVsWeekday.weekday.unique_visitors}{" "}
-                          {t("temporal.chart.uniqueVisitors")}
-                        </Typography>
-                      </Box>
-                      <Divider />
-                      <Box>
-                        <Typography variant="subtitle2" color="secondary">
-                          {t("temporal.chart.weekend")}
-                        </Typography>
-                        <Typography variant="body2">
-                          {weekendVsWeekday.weekend.clicks}{" "}
-                          {t("temporal.chart.clicks")}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {weekendVsWeekday.weekend.unique_visitors}{" "}
-                          {t("temporal.chart.uniqueVisitors")}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
+            </Box>
           )}
 
           {/* Business Hours */}
           {businessHoursAnalysis && (
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={8}>
-                <ChartCard title={t("temporal.chart.businessHoursAnalysis")}>
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ display: "block", mb: 2 }}
-                  >
-                    {t("temporal.chart.businessHoursNote")}
-                  </Typography>
-                  <ApexChartWrapper
-                    type="bar"
-                    {...formatBarChart(
-                      [
-                        {
-                          name: t("temporal.chart.businessHoursLabel"),
-                          value: businessHoursAnalysis.business_hours.clicks,
-                        },
-                        {
-                          name: t("temporal.chart.afterHoursLabel"),
-                          value: businessHoursAnalysis.after_hours.clicks,
-                        },
-                      ],
-                      "name",
-                      "value",
-                      chartColors.primary.main,
-                      false,
-                      isDark,
-                    )}
-                    size="standard"
-                  />
-                </ChartCard>
-              </Grid>
-              <Grid item xs={12} md={4} sx={{ display: "flex", flexDirection: "column" }}>
-                <Card
-                  elevation={0}
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "divider",
-                    borderRadius: `${radiusTokens.lg}px`,
-                    flex: 1,
-                  }}
-                >
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {t("temporal.chart.engagementMetrics")}
+            <Box>
+              <Grid container spacing={3}>
+                <Grid item xs={12} lg={8} sx={{ minWidth: 0 }}>
+                  <ChartCard title={t("temporal.chart.businessHoursAnalysis")}>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: "block", mb: 2 }}
+                    >
+                      {t("temporal.chart.businessHoursNote")}
                     </Typography>
-                    <Stack spacing={2}>
-                      <Box>
-                        <Typography variant="subtitle2" color="primary">
-                          {t("temporal.chart.businessHoursLabel")}
-                        </Typography>
-                        <Typography variant="body2">
-                          {businessHoursAnalysis.business_hours.clicks}{" "}
-                          {t("temporal.chart.clicks")}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {businessHoursAnalysis.business_hours.percentage.toFixed(
-                            1,
-                          )}
-                          {t("temporal.chart.ofTotal")}
-                        </Typography>
-                      </Box>
-                      <Divider />
-                      <Box>
-                        <Typography variant="subtitle2" color="secondary">
-                          {t("temporal.chart.afterHoursLabel")}
-                        </Typography>
-                        <Typography variant="body2">
-                          {businessHoursAnalysis.after_hours.clicks}{" "}
-                          {t("temporal.chart.clicks")}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {businessHoursAnalysis.after_hours.percentage.toFixed(
-                            1,
-                          )}
-                          {t("temporal.chart.ofTotal")}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </CardContent>
-                </Card>
+                    <ApexChartWrapper
+                      type="bar"
+                      {...formatBarChart(
+                        [
+                          {
+                            name: t("temporal.chart.businessHoursLabel"),
+                            value: businessHoursAnalysis.business_hours.clicks,
+                          },
+                          {
+                            name: t("temporal.chart.afterHoursLabel"),
+                            value: businessHoursAnalysis.after_hours.clicks,
+                          },
+                        ],
+                        "name",
+                        "value",
+                        chartColors.primary.main,
+                        false,
+                        isDark,
+                      )}
+                      size="standard"
+                    />
+                  </ChartCard>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  lg={4}
+                  sx={{ display: "flex", flexDirection: "column", minWidth: 0 }}
+                >
+                  <Card
+                    elevation={0}
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "divider",
+                      borderRadius: `${radiusTokens.lg}px`,
+                      flex: 1,
+                    }}
+                  >
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        {t("temporal.chart.engagementMetrics")}
+                      </Typography>
+                      <Stack spacing={2}>
+                        <Box>
+                          <Typography variant="subtitle2" color="primary">
+                            {t("temporal.chart.businessHoursLabel")}
+                          </Typography>
+                          <Typography variant="body2">
+                            {businessHoursAnalysis.business_hours.clicks}{" "}
+                            {t("temporal.chart.clicks")}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {businessHoursAnalysis.business_hours.percentage.toFixed(
+                              1,
+                            )}
+                            {t("temporal.chart.ofTotal")}
+                          </Typography>
+                        </Box>
+                        <Divider />
+                        <Box>
+                          <Typography variant="subtitle2" color="secondary">
+                            {t("temporal.chart.afterHoursLabel")}
+                          </Typography>
+                          <Typography variant="body2">
+                            {businessHoursAnalysis.after_hours.clicks}{" "}
+                            {t("temporal.chart.clicks")}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {businessHoursAnalysis.after_hours.percentage.toFixed(
+                              1,
+                            )}
+                            {t("temporal.chart.ofTotal")}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           )}
         </Stack>
       )}
