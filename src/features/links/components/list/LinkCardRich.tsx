@@ -155,72 +155,38 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
           {link.title || t("list.noTitle")}
         </Typography>
 
-        <Tooltip
-          title={copied ? t("actions.copySuccess") : t("actions.copyLink")}
+        <Button
+          size="small"
+          variant="contained"
+          disableElevation
+          startIcon={copied ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
+          onClick={(e) => {
+            e.stopPropagation();
+            copy(shortUrl);
+          }}
+          sx={{
+            flexShrink: 0,
+            borderRadius: "20px",
+            px: 1.5,
+            py: 0.25,
+            fontSize: "0.75rem",
+            textTransform: "none",
+            transition: "background-color 0.2s ease, color 0.2s ease",
+            ...(copied
+              ? {
+                  bgcolor: "success.main",
+                  color: "success.contrastText",
+                  "&:hover": { bgcolor: "success.dark" },
+                }
+              : {
+                  bgcolor: "rgba(255,255,255,0.1)",
+                  color: "text.primary",
+                  "&:hover": { bgcolor: "rgba(255,255,255,0.15)" },
+                }),
+          }}
         >
-          <Box
-            onClick={() => copy(shortUrl)}
-            sx={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 0.75,
-              px: 1.25,
-              py: 0.4,
-              borderRadius: "20px",
-              border: "1.5px solid",
-              borderColor: copied ? "success.main" : "rgba(255,255,255,0.15)",
-              bgcolor: copied
-                ? "rgba(46, 125, 50, 0.1)"
-                : "rgba(255,255,255,0.04)",
-              cursor: "pointer",
-              userSelect: "none",
-              flexShrink: 0,
-              maxWidth: 200,
-              minWidth: 0,
-              transition:
-                "border-color 0.18s ease, background-color 0.18s ease",
-              "&:hover": {
-                borderColor: copied ? "success.main" : "primary.main",
-                bgcolor: copied
-                  ? "rgba(46, 125, 50, 0.14)"
-                  : "rgba(25, 118, 210, 0.1)",
-                "& .chip-icon": { opacity: 1 },
-              },
-            }}
-          >
-            <Box
-              className="chip-icon"
-              sx={{
-                color: copied ? "success.main" : "primary.main",
-                opacity: copied ? 1 : 0.75,
-                display: "flex",
-                flexShrink: 0,
-                transition: "opacity 0.15s ease",
-              }}
-            >
-              {copied ? (
-                <Check size={13} strokeWidth={2.5} />
-              ) : (
-                <Copy size={13} strokeWidth={1.75} />
-              )}
-            </Box>
-            <Typography
-              component="span"
-              sx={{
-                fontFamily: "monospace",
-                fontSize: "0.72rem",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                color: copied ? "success.main" : "text.secondary",
-                letterSpacing: "0.01em",
-                transition: "color 0.18s ease",
-              }}
-            >
-              {copied ? t("actions.copySuccess") : shortUrl}
-            </Typography>
-          </Box>
-        </Tooltip>
+          {copied ? t("actions.copySuccess") : t("actions.copyLink")}
+        </Button>
 
         <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
           <Button
