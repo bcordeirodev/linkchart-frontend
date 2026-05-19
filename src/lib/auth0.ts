@@ -35,7 +35,6 @@ export const auth0 = new Auth0Client({
   // so useUser() sees null instead of throwing "Unauthorized".
   noContentProfileResponseWhenUnauthenticated: true,
   async beforeSessionSaved(session) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { idToken: _idToken, ...tokenSet } = session.tokenSet;
     return { ...session, tokenSet };
   },
