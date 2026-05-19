@@ -1,24 +1,15 @@
 "use client";
-import {
-  BarChart3,
-  CalendarDays,
-  Check,
-  Copy,
-  ExternalLink,
-  MousePointerClick,
-} from "lucide-react";
+import { BarChart3, Check, Copy, ExternalLink } from "lucide-react";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import {
   Box,
   Button,
+  Chip,
   Divider,
   Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { keyframes } from "@mui/system";
-import { format, formatDistanceToNow } from "date-fns";
-import { enUS, ptBR } from "date-fns/locale";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
@@ -33,20 +24,8 @@ import type { LinkMeta, LinkResponse } from "@/types";
 
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkActionsMenu } from "./LinkActionsMenu";
-import { LinkHealthBadge } from "./LinkHealthBadge";
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
-import { LinkSparkline } from "./LinkSparkline";
-import { LinkTrendBadge } from "./LinkTrendBadge";
 import { getShortUrl } from "@/lib/utils/shortUrl";
-
-const analyticsPulse = keyframes`
-	0%, 100% {
-		box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.5);
-	}
-	50% {
-		box-shadow: 0 0 0 9px rgba(25, 118, 210, 0);
-	}
-`;
 
 const STATUS_LABEL_KEYS = {
   active: "status.active",
@@ -62,27 +41,18 @@ interface LinkCardRichProps {
 }
 
 /**
- * Desktop link card with rich metrics, copy chip, Analytics CTA, status, and inline actions.
+ * Desktop link card with two-zone layout: identity (left) and actions (right).
  *
- * Renders one row per link in the list view (≥sm). The short URL chip is click-to-copy
- * and animates to a success state for 1.5s on success. The Analytics button uses the
- * pulse keyframes to draw attention; the animation is suppressed when the user has
- * `prefers-reduced-motion: reduce` set.
- *
- * @param link - The link record from the API.
- * @param meta - Optional batch-loaded metadata (preview, trend, sparkline, health).
- * @param onDelete - Async handler invoked when the user confirms deletion.
+ * Copy is the primary CTA — contained button in the action panel. Analytics is
+ * secondary (outlined). Metrics, sparkline, and trend are intentionally omitted;
+ * users who want them navigate to the per-link analytics page.
  */
 export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { t, i18n } = useTranslation("links");
-  const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
-
+  const { t } = useTranslation("links");
   const { copied, copy } = useClipboard({ timeout: 1500 });
-
   const shortUrl = getShortUrl(link.slug);
-
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleConfirmDelete = useCallback(async () => {
@@ -96,27 +66,9 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
     }
   }, [link.id, onDelete, dispatch]);
 
-  const handleDelete = useCallback(() => {
-    setDeleteDialogOpen(true);
-  }, []);
-
   const status = getLinkStatus(link);
   const { color: statusColor } = STATUS_MAP[status];
   const statusLabel = t(STATUS_LABEL_KEYS[status]);
-
-  const lastClickAt = meta?.trend?.last_click_at;
-  const lastClickLabel = lastClickAt
-    ? formatDistanceToNow(new Date(lastClickAt), {
-        addSuffix: true,
-        locale: dateLocale,
-      })
-    : t("metrics.neverClicked");
-
-  const createdDate = link.created_at ? new Date(link.created_at) : null;
-  const createdLabel =
-    createdDate && !isNaN(createdDate.getTime())
-      ? format(createdDate, "dd/MM/yyyy", { locale: dateLocale })
-      : null;
 
   return (
     <EnhancedPaper
@@ -127,73 +79,111 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
         overflow: "hidden",
         transition: "box-shadow 0.2s",
         "&:hover": { boxShadow: 4 },
+        display: "flex",
       }}
     >
-      {/* Linha 1 — Header */}
-      <Box
+      {/* Left zone — identity */}
+      <Stack
+        spacing={0.75}
+        justifyContent="center"
+        sx={{ flex: 1, minWidth: 0, py: 2, px: 2.5 }}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <LinkPreviewThumb preview={meta?.preview} size={20} />
+          <Typography
+            variant="body1"
+            sx={{
+              fontWeight: 700,
+              flex: 1,
+              minWidth: 0,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {link.title || t("list.noTitle")}
+          </Typography>
+          <Chip
+            size="small"
+            label={statusLabel}
+            sx={{
+              bgcolor: `${statusColor}22`,
+              color: statusColor,
+              border: `1px solid ${statusColor}44`,
+              fontWeight: 600,
+              fontSize: "0.7rem",
+              height: 20,
+              borderRadius: "6px",
+              ml: "auto",
+              flexShrink: 0,
+            }}
+          />
+        </Stack>
+
+        <Stack direction="row" spacing={0.75} alignItems="center">
+          <ExternalLink
+            size={13}
+            strokeWidth={1.5}
+            style={{ flexShrink: 0, opacity: 0.4 }}
+          />
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+            title={link.original_url}
+          >
+            {link.original_url}
+          </Typography>
+        </Stack>
+      </Stack>
+
+      <Divider orientation="vertical" flexItem />
+
+      {/* Right zone — actions */}
+      <Stack
+        spacing={1}
         sx={{
-          px: 3,
-          py: 1,
-          display: "flex",
-          alignItems: "center",
-          gap: 1.5,
-          flexWrap: "wrap",
+          width: 176,
+          flexShrink: 0,
+          py: 2,
+          px: 1.5,
+          bgcolor: "action.hover",
         }}
       >
-        <LinkPreviewThumb preview={meta?.preview} size={24} />
-        <Typography
-          variant="body1"
-          sx={{
-            fontWeight: 600,
-            flex: 1,
-            minWidth: 0,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {link.title || t("list.noTitle")}
-        </Typography>
-
         <Tooltip
           title={copied ? t("actions.copySuccess") : t("actions.copyLink")}
         >
-          <Box
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            size="medium"
+            startIcon={
+              copied ? (
+                <Check size={15} strokeWidth={2} />
+              ) : (
+                <Copy size={15} strokeWidth={2} />
+              )
+            }
             onClick={() => copy(shortUrl)}
             sx={{
-              px: 1.5,
-              py: 0.25,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 0.75,
-              bgcolor: copied
-                ? "rgba(46, 125, 50, 0.08)"
-                : "rgba(25, 118, 210, 0.08)",
-              borderRadius: "20px",
-              border: "1px solid",
-              borderColor: copied ? "success.light" : "primary.light",
-              fontFamily: "monospace",
-              fontSize: "0.75rem",
-              color: copied ? "success.main" : "primary.main",
+              textTransform: "none",
+              fontFamily: copied ? "inherit" : "monospace",
+              fontSize: "0.8rem",
               fontWeight: 600,
-              cursor: "pointer",
-              maxWidth: 360,
-              overflow: "hidden",
-              flexShrink: 0,
-              transition:
-                "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease",
-              "&:hover": {
-                bgcolor: copied
-                  ? "rgba(46, 125, 50, 0.12)"
-                  : "rgba(25, 118, 210, 0.15)",
-              },
+              boxShadow: "none",
+              transition: "background-color 0.15s ease, color 0.15s ease",
+              ...(copied && {
+                bgcolor: "success.main",
+                "&:hover": { bgcolor: "success.dark" },
+              }),
+              "& .MuiButton-startIcon": { flexShrink: 0 },
             }}
           >
-            {copied ? (
-              <Check size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
-            ) : (
-              <Copy size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
-            )}
             <Box
               component="span"
               sx={{
@@ -204,242 +194,34 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
             >
               {copied ? t("actions.copySuccess") : shortUrl}
             </Box>
-          </Box>
-        </Tooltip>
-
-        <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
-          <Button
-            size="small"
-            variant="contained"
-            color="primary"
-            startIcon={<BarChart3 {...ICON_SM} />}
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/links/analytics/${link.id}`);
-            }}
-            sx={{
-              flexShrink: 0,
-              borderRadius: "20px",
-              px: 1.5,
-              py: 0.25,
-              fontSize: "0.75rem",
-              textTransform: "none",
-              boxShadow: "none",
-              animation: `${analyticsPulse} 2.4s ease-in-out infinite`,
-              "@media (prefers-reduced-motion: reduce)": {
-                animation: "none",
-              },
-              "&:hover": { boxShadow: "none", animation: "none" },
-            }}
-          >
-            {t("actions.analytics")}
           </Button>
         </Tooltip>
 
-        <Stack
-          direction="row"
-          spacing={0.5}
-          alignItems="center"
-          sx={{ flexShrink: 0 }}
+        <Button
+          variant="outlined"
+          color="primary"
+          fullWidth
+          size="small"
+          startIcon={<BarChart3 {...ICON_SM} />}
+          onClick={() => navigate(`/links/analytics/${link.id}`)}
+          sx={{
+            textTransform: "none",
+            fontSize: "0.75rem",
+            boxShadow: "none",
+          }}
         >
-          <Box
-            sx={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              bgcolor: statusColor,
-            }}
-          />
-          <Typography variant="caption">{statusLabel}</Typography>
-        </Stack>
+          {t("actions.analytics")}
+        </Button>
 
-        <Box onClick={(e) => e.stopPropagation()}>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
           <LinkActionsMenu
             onEdit={() => navigate(`/links/edit/${link.id}`)}
             onQR={() => navigate(`/links/qr/${link.id}`)}
-            onDelete={handleDelete}
+            onDelete={() => setDeleteDialogOpen(true)}
           />
         </Box>
-      </Box>
+      </Stack>
 
-      <Divider />
-
-      {/* Linha 2 — URL original + thumb OG */}
-      <Box sx={{ px: 3, py: 1, display: "flex", alignItems: "center", gap: 2 }}>
-        <ExternalLink
-          size={14}
-          strokeWidth={1.5}
-          style={{ flexShrink: 0, opacity: 0.5 }}
-        />
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            flex: 1,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-          title={link.original_url}
-        >
-          {link.original_url}
-        </Typography>
-        {meta?.preview?.og_image_url ? (
-          <Box
-            component="img"
-            src={meta.preview.og_image_url}
-            alt={meta.preview.og_title ?? ""}
-            sx={{
-              width: 64,
-              height: 40,
-              objectFit: "cover",
-              borderRadius: 1,
-              flexShrink: 0,
-            }}
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
-        ) : null}
-      </Box>
-
-      <Divider />
-
-      {/* Linha 3 — Métricas */}
-      <Box
-        sx={{
-          px: 3,
-          py: 1,
-          display: "flex",
-          alignItems: "center",
-          gap: 3,
-          flexWrap: "wrap",
-        }}
-      >
-        {meta?.sparkline?.length ? (
-          <Box sx={{ flexShrink: 0 }}>
-            <LinkSparkline
-              data={meta.sparkline}
-              trend={meta.trend?.percent_change}
-            />
-          </Box>
-        ) : (
-          <Box
-            sx={{
-              width: 120,
-              height: 32,
-              bgcolor: "action.hover",
-              borderRadius: 1,
-            }}
-          />
-        )}
-
-        <Box
-          sx={{ height: 24, bgcolor: "divider", width: "1px", flexShrink: 0 }}
-        />
-
-        <LinkTrendBadge trend={meta?.trend} />
-
-        <Box
-          sx={{ height: 24, bgcolor: "divider", width: "1px", flexShrink: 0 }}
-        />
-
-        <Stack spacing={0}>
-          <Typography variant="caption" color="text.secondary">
-            {t("metrics.lastClick")}
-          </Typography>
-          <Typography variant="caption" sx={{ fontWeight: 600 }}>
-            {lastClickLabel}
-          </Typography>
-        </Stack>
-
-        <Box
-          sx={{ height: 24, bgcolor: "divider", width: "1px", flexShrink: 0 }}
-        />
-
-        <LinkHealthBadge health={meta?.health} />
-
-        <Box
-          sx={{ height: 24, bgcolor: "divider", width: "1px", flexShrink: 0 }}
-        />
-
-        <Stack direction="row" spacing={0.75} alignItems="center">
-          <MousePointerClick {...ICON_SM} style={{ opacity: 0.5 }} />
-          <Stack spacing={0}>
-            <Typography variant="caption" color="text.secondary">
-              {t("metrics.totalClicks")}
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{ fontWeight: 700, color: "text.primary" }}
-            >
-              {link.clicks.toLocaleString()}
-            </Typography>
-          </Stack>
-        </Stack>
-
-        {createdLabel ? (
-          <>
-            <Box
-              sx={{
-                height: 24,
-                bgcolor: "divider",
-                width: "1px",
-                flexShrink: 0,
-              }}
-            />
-            <Stack direction="row" spacing={0.75} alignItems="center">
-              <CalendarDays {...ICON_SM} style={{ opacity: 0.5 }} />
-              <Stack spacing={0}>
-                <Typography variant="caption" color="text.secondary">
-                  {t("table.created")}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  sx={{ fontWeight: 600, color: "text.primary" }}
-                >
-                  {createdLabel}
-                </Typography>
-              </Stack>
-            </Stack>
-          </>
-        ) : null}
-
-        {link.click_limit ? (
-          <>
-            <Box
-              sx={{
-                height: 24,
-                bgcolor: "divider",
-                width: "1px",
-                flexShrink: 0,
-              }}
-            />
-            <Tooltip
-              title={`${t("table.clickLimit")}: ${link.click_limit.toLocaleString()}`}
-            >
-              <Stack spacing={0}>
-                <Typography variant="caption" color="text.secondary">
-                  {t("table.clickLimit")}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 600,
-                    color:
-                      link.clicks >= link.click_limit
-                        ? "error.main"
-                        : "text.primary",
-                  }}
-                >
-                  {link.clicks.toLocaleString()} /{" "}
-                  {link.click_limit.toLocaleString()}
-                </Typography>
-              </Stack>
-            </Tooltip>
-          </>
-        ) : null}
-      </Box>
       <DeleteConfirmDialog
         open={deleteDialogOpen}
         shortUrl={shortUrl}
