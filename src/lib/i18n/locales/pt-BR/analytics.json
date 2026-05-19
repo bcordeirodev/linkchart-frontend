@@ -62,7 +62,8 @@
       "trafficQuality": "Classificação dos cliques em orgânicos, suspeitos e fraude com base em fingerprint de dispositivo e padrões de comportamento. Score 0–100; acima de 70 é considerado saudável.",
       "browserBreakdown": "Navegadores mais usados pela sua audiência (Chrome, Safari, Firefox, etc.). Auxilia em decisões de compatibilidade e testes de UI.",
       "osBreakdown": "Sistemas operacionais mais usados (iOS, Android, Windows, macOS, etc.). Combina com dados de dispositivo para traçar o perfil técnico da audiência.",
-      "languages": "Idiomas detectados nas configurações dos navegadores dos visitantes. Use para planejar a internacionalização do conteúdo ou criar versões localizadas."
+      "languages": "Idiomas detectados nas configurações dos navegadores dos visitantes. Use para planejar a internacionalização do conteúdo ou criar versões localizadas.",
+      "periodSummary": "Total de cliques agrupados por período do dia (manhã, tarde, noite, madrugada). Entenda qual parte do dia gera mais tráfego para este link."
     }
   },
   "tabs": {

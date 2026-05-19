@@ -157,8 +157,8 @@ export function PageHeader({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                width: { xs: 48, sm: 56, md: 64 },
-                height: { xs: 48, sm: 56, md: 64 },
+                width: { xs: 36, sm: 40, md: 44 },
+                height: { xs: 36, sm: 40, md: 44 },
                 borderRadius: `${radiusTokens.md}px`,
                 backgroundColor: config.accent,
                 color: theme.palette.primary.contrastText,
@@ -166,7 +166,6 @@ export function PageHeader({
                   ? elevationTokens.xs
                   : elevationLightTokens.xs,
                 flexShrink: 0,
-                fontSize: { xs: "1.5rem", sm: "1.75rem", md: "2rem" },
               }}
             >
               {icon}

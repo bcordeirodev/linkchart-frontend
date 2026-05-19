@@ -5,12 +5,13 @@ import {
   Button,
   InputAdornment,
   TextField,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
 import { ArrowUpRight, CheckCircle2, Link2, Zap } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
@@ -21,29 +22,6 @@ import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { useNavigate } from "@/shared/hooks";
 
 const RESERVED_SLUGS = ["api", "admin", "www", "mail", "ftp", "r", "redirect"];
-
-type TranslateFn = (key: string) => string;
-
-function buildSchema(t: TranslateFn) {
-  return z.object({
-    original_url: z
-      .string()
-      .min(1, t("form.validation.urlRequired"))
-      .url(t("form.validation.urlInvalid"))
-      .regex(/^https?:\/\//, t("form.validation.urlScheme")),
-    custom_slug: z
-      .string()
-      .min(3, t("form.validation.slugMin"))
-      .max(50, t("form.validation.slugMax"))
-      .regex(/^[a-zA-Z0-9\-_]+$/, t("form.validation.slugPattern"))
-      .refine(
-        (s) => !RESERVED_SLUGS.includes(s.toLowerCase()),
-        t("form.validation.slugReserved"),
-      )
-      .optional()
-      .or(z.literal("")),
-  });
-}
 
 type QuickFormData = {
   original_url: string;
@@ -63,7 +41,28 @@ export function LinksQuickCreate() {
   const { mutateAsync, isPending } = useCreateLink();
   const [succeeded, setSucceeded] = useState(false);
 
-  const schema = useMemo(() => buildSchema(t), [t]);
+  const schema = useMemo(
+    () =>
+      z.object({
+        original_url: z
+          .string()
+          .min(1, t("form.validation.urlRequired"))
+          .url(t("form.validation.urlInvalid"))
+          .regex(/^https?:\/\//, t("form.validation.urlScheme")),
+        custom_slug: z
+          .string()
+          .min(3, t("form.validation.slugMin"))
+          .max(50, t("form.validation.slugMax"))
+          .regex(/^[a-zA-Z0-9\-_]+$/, t("form.validation.slugPattern"))
+          .refine(
+            (s) => !RESERVED_SLUGS.includes(s.toLowerCase()),
+            t("form.validation.slugReserved"),
+          )
+          .optional()
+          .or(z.literal("")),
+      }),
+    [t],
+  );
 
   const {
     register,
@@ -82,14 +81,14 @@ export function LinksQuickCreate() {
   const urlIsUnsafe = safetyStatus === "unsafe";
   const urlIsChecking = safetyStatus === "checking";
 
-  const urlHelperText = errors.original_url?.message
+  const urlHelperText: React.ReactNode = errors.original_url?.message
     ? errors.original_url.message
     : safetyStatus !== "idle"
       ? getUrlSafetyHelperNode(safetyStatus, threats, t)
       : undefined;
 
-  const onSubmit = useCallback(
-    async (data: QuickFormData) => {
+  const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
+    async (data): Promise<void> => {
       if (urlIsUnsafe || urlIsChecking) return;
       await mutateAsync({
         original_url: data.original_url,
@@ -219,21 +218,23 @@ export function LinksQuickCreate() {
               ? t("list.quickCreate.success")
               : t("list.quickCreate.submit")}
           </Button>
-          <Button
-            variant="text"
-            onClick={() => navigate("/links/create")}
-            endIcon={<ArrowUpRight size={14} strokeWidth={2} />}
-            sx={{
-              textTransform: "none",
-              color: "text.secondary",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-              fontSize: "0.8125rem",
-              "&:hover": { color: "text.primary" },
-            }}
-          >
-            {t("list.quickCreate.moreOptions")}
-          </Button>
+          <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
+            <Button
+              variant="text"
+              onClick={() => navigate("/links/create")}
+              endIcon={<ArrowUpRight size={14} strokeWidth={2} />}
+              sx={{
+                textTransform: "none",
+                color: "text.secondary",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+                fontSize: "0.8125rem",
+                "&:hover": { color: "text.primary" },
+              }}
+            >
+              {t("list.quickCreate.moreOptions")}
+            </Button>
+          </Tooltip>
         </Box>
       </Box>
     </Box>

@@ -330,7 +330,11 @@ export function TemporalTrendsChart({
           <Grid item xs={12}>
             <Card
               elevation={0}
-              sx={{ border: "1px solid", borderColor: "divider", borderRadius: `${radiusTokens.lg}px` }}
+              sx={{
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: `${radiusTokens.lg}px`,
+              }}
             >
               <CardContent>
                 <Typography variant="h6" gutterBottom>

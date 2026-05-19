@@ -15,7 +15,8 @@
       "slugPlaceholder": "Custom slug (optional)",
       "submit": "Shorten",
       "success": "Link created!",
-      "moreOptions": "More options"
+      "moreOptions": "More options",
+      "moreOptionsTooltip": "Open the full creation page with title, UTM parameters, click limits and more"
     }
   },
   "table": {
