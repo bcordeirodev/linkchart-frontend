@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Link Charts",
-    title: "Link Charts — URL Shortener with Analytics",
+    title: "Link Charts — Free URL Shortener with Analytics",
     description:
       "Free URL shortener with click analytics, geographic insights, QR codes and UTM tracking. No account needed — shorten any link in seconds.",
     images: [
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Link Charts — URL Shortener with Analytics",
+    title: "Link Charts — Free URL Shortener with Analytics",
     description:
       "Free URL shortener with click analytics, geographic insights, QR codes and UTM tracking. No account needed — shorten any link in seconds.",
     images: [`${appUrl}/og-default.png`],
