@@ -252,14 +252,14 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
         <ExternalLink
           size={15}
           strokeWidth={1.75}
-          style={{ flexShrink: 0, opacity: 0.9 }}
+          style={{ flexShrink: 0, display: "block" }}
         />
         <Typography
           variant="body2"
           sx={{
             color: "common.white",
             opacity: 0.9,
-            lineHeight: 1.4,
+            lineHeight: 1,
             flex: 1,
             overflow: "hidden",
             textOverflow: "ellipsis",
