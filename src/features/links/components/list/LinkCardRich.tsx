@@ -246,17 +246,20 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
       <Divider />
 
       {/* Linha 2 — URL original + thumb OG */}
-      <Box sx={{ px: 3, py: 1, display: "flex", alignItems: "center", gap: 2 }}>
+      <Box
+        sx={{ px: 3, py: 0.625, display: "flex", alignItems: "center", gap: 2 }}
+      >
         <ExternalLink
           size={15}
           strokeWidth={1.75}
-          style={{ flexShrink: 0, opacity: 0.7 }}
+          style={{ flexShrink: 0, opacity: 0.9 }}
         />
         <Typography
           variant="body2"
           sx={{
-            color: "text.primary",
-            opacity: 0.8,
+            color: "common.white",
+            opacity: 0.9,
+            lineHeight: 1.4,
             flex: 1,
             overflow: "hidden",
             textOverflow: "ellipsis",
