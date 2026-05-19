@@ -184,7 +184,7 @@ export function buildOrganizationSchema() {
     url: APP_URL,
     logo: `${APP_URL}/og-default.png`,
     description:
-      "Free URL shortener with powerful real-time analytics, click tracking, and geographic insights.",
+      "Link Charts is a free URL shortener with real-time analytics. Track link clicks by geography, device, browser and UTM campaign — no account required. Every link includes a free QR code and public analytics page.",
     contactPoint: [
       {
         "@type": "ContactPoint",
