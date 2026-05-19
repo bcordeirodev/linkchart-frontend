@@ -259,7 +259,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
           sx={{
             color: "common.white",
             opacity: 0.9,
-            lineHeight: 1,
+            lineHeight: 2.2,
             flex: 1,
             overflow: "hidden",
             textOverflow: "ellipsis",
