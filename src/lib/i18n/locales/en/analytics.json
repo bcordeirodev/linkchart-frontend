@@ -16,6 +16,16 @@
     "charts": {
       "noData": "No Data Available",
       "noDataDesc": "Share your links to see detailed click charts."
+    },
+    "utmSource": {
+      "title": "UTM Campaigns",
+      "topLabel": "Top 5 utm_source values"
+    },
+    "socialApp": {
+      "title": "Social App Traffic",
+      "subtitle": "Instagram · TikTok · WhatsApp · others",
+      "other": "Other",
+      "note": "Detected via mobile in-app browser"
     }
   },
   "timeframe": {
@@ -247,6 +257,18 @@
       "monthlyGrowth": "Growth of {{n}} clicks last month",
       "monthlyDrop": "Drop of {{n}} clicks last month",
       "monthlyStable": "➖ Stable last month"
+    },
+    "viralRank": {
+      "title": "Viral Rank Over Time",
+      "clicks": "Clicks",
+      "clicksUnit": "clicks",
+      "peak": "Viral peak",
+      "ranks": {
+        "cold": "Cold",
+        "warming": "Warming",
+        "trending": "Trending",
+        "viral": "Viral"
+      }
     }
   },
   "geographic": {
@@ -488,6 +510,10 @@
         "api_programmatic": "Programmatic",
         "unknown": "Unknown"
       }
+    },
+    "socialPlatform": {
+      "title": "By Social Platform",
+      "subtitle": "Clicks by source platform (via referrer)"
     }
   },
   "performance": {

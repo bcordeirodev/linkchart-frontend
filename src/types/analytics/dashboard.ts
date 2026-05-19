@@ -67,6 +67,19 @@ export interface DashboardSummary {
     unscored: number;
     organic_percentage: number;
   };
+  /** Top UTM sources (utm_source field from link_utms). Empty when no UTM clicks. */
+  utm_top_sources?: Array<{
+    source: string;
+    clicks: number;
+    percentage: number;
+  }>;
+  /** Social in-app browser stats (navigation_context=in_app_webview + is_mobile). */
+  social_iab?: {
+    total: number;
+    percentage: number;
+    ios_pct: number;
+    android_pct: number;
+  };
 }
 
 /**
