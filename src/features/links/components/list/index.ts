@@ -11,3 +11,4 @@ export { LinksFilters } from "./LinksFilters";
 export { LinksHeader } from "./LinksHeader";
 export { LinksHeaderActions } from "./LinksHeaderActions";
 export { LinksMobileCards } from "./LinksMobileCards";
+export { LinksQuickCreate } from "./LinksQuickCreate";

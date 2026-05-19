@@ -9,6 +9,7 @@ import {
   LinksFilters,
   LinksHeader,
   LinksMobileCards,
+  LinksQuickCreate,
 } from "@/features/links/components/list";
 import { useLinks, useDeleteLink } from "@/features/links/hooks/useLinks";
 import { useLinksMeta } from "@/features/links/hooks/useLinksMeta";
@@ -119,6 +120,8 @@ function LinkListPage() {
     >
       <ResponsiveContainer variant="page">
         <LinksHeader />
+
+        <LinksQuickCreate />
 
         <LinkMetrics linksData={links} showTitle={false} />
 
