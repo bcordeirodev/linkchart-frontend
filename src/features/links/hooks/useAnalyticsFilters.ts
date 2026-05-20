@@ -27,6 +27,9 @@ export interface AnalyticsFilters {
   dateTo: string | null;
   excludeBots: boolean;
 
+  // Active tab (stored in URL so it survives filter changes)
+  tab: number;
+
   // Temporal
   groupBy: GroupBy;
   segment: Segment;
@@ -45,6 +48,7 @@ export interface AnalyticsFilters {
   setPeriod: (v: Period) => void;
   setDateRange: (from: string, to: string) => void;
   setExcludeBots: (v: boolean) => void;
+  setTab: (v: number) => void;
   setGroupBy: (v: GroupBy) => void;
   setSegment: (v: Segment) => void;
   setContinent: (v: string | null) => void;
@@ -161,6 +165,10 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     : [];
   const actionableOnly = searchParams.get("actionable") === "true";
 
+  const rawTab = parseInt(searchParams.get("tab") ?? "0", 10);
+  const tab =
+    Number.isFinite(rawTab) && rawTab >= 0 && rawTab <= 5 ? rawTab : 0;
+
   const customFrom = searchParams.get("date_from");
   const customTo = searchParams.get("date_to");
   const { dateFrom, dateTo } =
@@ -203,6 +211,11 @@ export function useAnalyticsFilters(): AnalyticsFilters {
 
   const setExcludeBots = useCallback(
     (v: boolean) => setParam({ bots: v ? "true" : null }),
+    [setParam],
+  );
+
+  const setTab = useCallback(
+    (v: number) => setParam({ tab: v === 0 ? null : String(v) }),
     [setParam],
   );
 
@@ -252,6 +265,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     dateFrom,
     dateTo,
     excludeBots,
+    tab,
     groupBy,
     segment,
     continent,
@@ -263,6 +277,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     setPeriod,
     setDateRange,
     setExcludeBots,
+    setTab,
     setGroupBy,
     setSegment,
     setContinent,
