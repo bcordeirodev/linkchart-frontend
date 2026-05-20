@@ -1,5 +1,6 @@
 "use client";
 import { Box, Typography, LinearProgress } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const SEASON_LABELS: Record<string, string> = {
   summer: "Verão",
@@ -29,12 +30,17 @@ interface Props {
  * Exibe a distribuição de cliques por estação do ano.
  */
 export function SeasonalDistributionChart({ data }: Props) {
+  const { t } = useTranslation("analytics");
+
   if (!data?.length) return null;
 
   return (
     <Box>
-      <Typography variant="subtitle2" sx={{ mb: 2 }}>
-        Distribuição por Estação
+      <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+        {t("temporal.seasonal.title", { defaultValue: "Distribuição por Estação" })}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        {t("temporal.seasonal.description")}
       </Typography>
       {data.map((s) => (
         <Box key={s.season} sx={{ mb: 2 }}>

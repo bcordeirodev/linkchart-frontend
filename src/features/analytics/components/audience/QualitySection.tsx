@@ -64,8 +64,11 @@ export function QualitySection({ quality }: QualitySectionProps) {
 
   return (
     <Box sx={{ mb: 3 }}>
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+      <Typography variant="h6" sx={{ mb: 0.75, fontWeight: 600 }}>
         {t("audience.quality.title")}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        {t("audience.quality.description")}
       </Typography>
 
       <Grid container spacing={2}>

@@ -51,10 +51,17 @@ export function BehaviorSection({ navigationContext }: BehaviorSectionProps) {
         <CardContent>
           <Typography
             variant="subtitle2"
-            sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}
+            sx={{ mb: 0.75, display: "flex", alignItems: "center", gap: 1 }}
           >
             <Navigation {...ICON_MD} />
             {t("audience.behavior.navigationContext")}
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ mb: 2 }}
+          >
+            {t("audience.behavior.description")}
           </Typography>
 
           <Stack spacing={2}>

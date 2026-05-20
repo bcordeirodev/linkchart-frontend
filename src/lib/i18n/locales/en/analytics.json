@@ -272,6 +272,14 @@
         "trending": "Trending",
         "viral": "Viral"
       }
+    },
+    "holiday": {
+      "description": "Comparison of clicks on national holidays versus regular days. Identify whether your audience is more active during time off or the working week.",
+      "title": "Holiday Impact"
+    },
+    "seasonal": {
+      "description": "Click distribution by season (Summer, Autumn, Winter, Spring). Reveals engagement seasonality and helps plan campaigns around peak periods.",
+      "title": "Distribution by Season"
     }
   },
   "geographic": {
@@ -504,7 +512,8 @@
         "organic": "Organic",
         "suspicious": "Suspicious",
         "likely_fraud": "Fraud"
-      }
+      },
+      "description": "Classification of clicks into organic, suspicious, and likely fraud, calculated via device fingerprint, behavior patterns, and click velocity. Use to assess the integrity of your traffic."
     },
     "behavior": {
       "title": "How They Arrived",
@@ -515,7 +524,8 @@
         "in_app_webview": "In-app (Instagram, WhatsApp…)",
         "api_programmatic": "Programmatic",
         "unknown": "Unknown"
-      }
+      },
+      "description": "How each visitor arrived at the link: directly via browser, via referral from another site, via mobile app (webview), or programmatically. Helps understand how the link is being used."
     },
     "socialPlatform": {
       "title": "By Social Platform",
@@ -736,10 +746,12 @@
       "warming": "Warming",
       "trending": "Trending",
       "viral": "Viral"
-    }
+    },
+    "description": "Current virality rank calculated from click velocity over the last few hours. The hotter the rank, the higher the organic engagement spike."
   },
   "quality": {
     "title": "Quality",
-    "subtitle": "{{suspicious}} suspicious · {{fraud}} fraud"
+    "subtitle": "{{suspicious}} suspicious · {{fraud}} fraud",
+    "description": "Percentage of clicks classified as organic (real humans). Suspicious and fraudulent clicks are detected via fingerprint, behavior patterns, and click velocity."
   }
 }

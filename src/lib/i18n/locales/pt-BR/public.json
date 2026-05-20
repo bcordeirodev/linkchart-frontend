@@ -129,7 +129,12 @@
         "5": "Sex",
         "6": "Sáb",
         "7": "Dom"
-      }
+      },
+      "hourlyClicksDesc": "Cliques distribuídos pelas 24h do dia. Identifique o horário de pico para maximizar o alcance das publicações.",
+      "dayOfWeekDesc": "Volume de cliques por dia da semana. Descubra quais dias geram mais tráfego para este link.",
+      "topCountriesDesc": "Países que mais acessaram este link. Indica a distribuição geográfica da audiência.",
+      "devicesDesc": "Proporção de acessos por tipo de dispositivo (mobile, desktop, tablet).",
+      "browsersDesc": "Navegadores mais usados pelos visitantes deste link."
     },
     "linkInfo": {
       "copy": "Copiar",

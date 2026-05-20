@@ -174,6 +174,7 @@ function ChartsGrid({
         <Grid item xs={12}>
           <ChartCard
             title={t("publicAnalytics.charts.hourlyClicks")}
+            subtitle={t("publicAnalytics.charts.hourlyClicksDesc")}
             icon={<Clock {...ICON_LG} />}
             sx={cardSx}
           >
@@ -196,6 +197,7 @@ function ChartsGrid({
         <Grid item xs={12} md={countryData ? 6 : 12}>
           <ChartCard
             title={t("publicAnalytics.charts.dayOfWeek")}
+            subtitle={t("publicAnalytics.charts.dayOfWeekDesc")}
             icon={<Calendar {...ICON_LG} />}
             sx={cardSx}
           >
@@ -219,6 +221,7 @@ function ChartsGrid({
         <Grid item xs={12} md={dowData ? 6 : 12}>
           <ChartCard
             title={t("publicAnalytics.charts.topCountries")}
+            subtitle={t("publicAnalytics.charts.topCountriesDesc")}
             icon={<Globe {...ICON_LG} />}
             sx={cardSx}
           >
@@ -242,6 +245,7 @@ function ChartsGrid({
         <Grid item xs={12} md={browserData ? 6 : 12}>
           <ChartCard
             title={t("publicAnalytics.charts.devices")}
+            subtitle={t("publicAnalytics.charts.devicesDesc")}
             icon={<Smartphone {...ICON_LG} />}
             sx={cardSx}
           >
@@ -263,6 +267,7 @@ function ChartsGrid({
         <Grid item xs={12} md={deviceData ? 6 : 12}>
           <ChartCard
             title={t("publicAnalytics.charts.browsers")}
+            subtitle={t("publicAnalytics.charts.browsersDesc")}
             icon={<Monitor {...ICON_LG} />}
             sx={cardSx}
           >
