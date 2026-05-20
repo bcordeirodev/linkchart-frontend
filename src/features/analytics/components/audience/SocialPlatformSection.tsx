@@ -26,13 +26,24 @@ interface SocialPlatformEntry {
 
 const PLATFORM_COLORS: Record<string, string> = {
   instagram: "#e1306c",
-  tiktok: "#010101",
+  tiktok: "#69C9D0",
   facebook: "#1877f2",
   youtube: "#ff0000",
   twitter: "#1da1f2",
   whatsapp: "#25d366",
   telegram: "#0088cc",
   linkedin: "#0077b5",
+};
+
+const PLATFORM_DISPLAY: Record<string, string> = {
+  instagram: "Instagram",
+  tiktok: "TikTok",
+  facebook: "Facebook",
+  youtube: "YouTube",
+  twitter: "Twitter / X",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
+  linkedin: "LinkedIn",
 };
 
 interface Props {
@@ -80,11 +91,8 @@ export function SocialPlatformSection({ platforms }: Props) {
                       mb: 0.5,
                     }}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{ textTransform: "capitalize" }}
-                    >
-                      {entry.platform}
+                    <Typography variant="body2">
+                      {PLATFORM_DISPLAY[entry.platform] ?? entry.platform}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       {entry.clicks} ({entry.percentage.toFixed(1)}%)
