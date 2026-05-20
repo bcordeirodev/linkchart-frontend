@@ -173,8 +173,8 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                 <Skeleton variant="text" width={40} height={28} />
               ) : (
                 <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 700, lineHeight: 1.2 }}
+                  variant="h4"
+                  sx={{ fontWeight: 700, lineHeight: 1.1 }}
                 >
                   {stats && stats.total_links > 0
                     ? Math.round(
@@ -193,8 +193,8 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                 <Skeleton variant="text" width={40} height={28} />
               ) : (
                 <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 700, lineHeight: 1.2 }}
+                  variant="h4"
+                  sx={{ fontWeight: 700, lineHeight: 1.1 }}
                 >
                   {(stats?.links_this_month ?? 0).toLocaleString(i18n.language)}
                 </Typography>
@@ -209,8 +209,8 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                 <Skeleton variant="text" width={48} height={28} />
               ) : (
                 <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 700, lineHeight: 1.2 }}
+                  variant="h4"
+                  sx={{ fontWeight: 700, lineHeight: 1.1 }}
                 >
                   {(stats?.clicks_this_month ?? 0).toLocaleString(
                     i18n.language,
