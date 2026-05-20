@@ -14,12 +14,13 @@ import { getShortUrl } from "@/lib/utils/shortUrl";
  * staleTime: 5 min) — no extra network requests per card render.
  *
  * @param slug - bare link slug or custom_slug (e.g. "abc123").
+ * @returns the absolute short URL for the slug, using the custom subdomain when active.
  */
 export function useShortUrl(slug: string): string {
   const { subdomain } = useSubdomain();
 
-  if (subdomain?.status === "active" && slug) {
-    return `${subdomain.full_url}/${slug}`;
+  if (subdomain?.status === "active") {
+    return slug ? `${subdomain.full_url.replace(/\/$/, "")}/${slug}` : "";
   }
 
   return getShortUrl(slug);
