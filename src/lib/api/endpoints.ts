@@ -55,6 +55,7 @@ export const API_CONFIG = {
       ME: "/api/me",
       UPDATE_PROFILE: "/api/profile",
       CHANGE_PASSWORD: "/api/change-password",
+      PROFILE_STATS: "/api/profile/stats",
       VERIFY_EMAIL: "/api/auth/verify-email",
       FORGOT_PASSWORD: "/api/auth/forgot-password",
       RESET_PASSWORD: "/api/auth/reset-password",
@@ -146,6 +147,7 @@ export const API_ENDPOINTS = {
     RESEND_VERIFICATION_EMAIL:
       API_CONFIG.ENDPOINTS.AUTH.RESEND_VERIFICATION_EMAIL,
     AUTH0_EXCHANGE: API_CONFIG.ENDPOINTS.AUTH.AUTH0_EXCHANGE,
+    PROFILE_STATS: API_CONFIG.ENDPOINTS.AUTH.PROFILE_STATS,
   },
 };
 
