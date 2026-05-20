@@ -1,5 +1,12 @@
 "use client";
-import { BarChart2, Calendar, Shield, BadgeCheck, AlertCircle } from "lucide-react";
+import {
+  BarChart2,
+  Calendar,
+  Shield,
+  BadgeCheck,
+  AlertCircle,
+} from "lucide-react";
+import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
@@ -21,7 +28,7 @@ interface ProfileSidebarProps {
  *  2. Activity — total links and total clicks from useProfileStats
  */
 export function ProfileSidebar({ user }: ProfileSidebarProps) {
-  const { t } = useTranslation("profile");
+  const { t, i18n } = useTranslation("profile");
   const { data: stats, isLoading: statsLoading } = useProfileStats();
 
   return (
@@ -46,7 +53,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                   gap: 2,
                   p: 2,
                   borderRadius: 2,
-                  bgcolor: "success.50",
+                  bgcolor: (theme) => alpha(theme.palette.success.light, 0.15),
                 }}
               >
                 <BadgeCheck {...ICON_MD} />
@@ -67,7 +74,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                   gap: 2,
                   p: 2,
                   borderRadius: 2,
-                  bgcolor: "warning.50",
+                  bgcolor: (theme) => alpha(theme.palette.warning.light, 0.15),
                 }}
               >
                 <AlertCircle {...ICON_MD} />
@@ -89,7 +96,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                 gap: 2,
                 p: 2,
                 borderRadius: 2,
-                bgcolor: "info.50",
+                bgcolor: (theme) => alpha(theme.palette.info.light, 0.15),
               }}
             >
               <Calendar {...ICON_SM} />
@@ -99,7 +106,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   {user.created_at
-                    ? new Date(user.created_at).toLocaleDateString("pt-BR")
+                    ? new Date(user.created_at).toLocaleDateString(i18n.language)
                     : t("sidebar.dateUnavailable")}
                 </Typography>
               </Box>
@@ -144,7 +151,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                   variant="h4"
                   sx={{ fontWeight: 700, lineHeight: 1.1 }}
                 >
-                  {(stats?.total_clicks ?? 0).toLocaleString("pt-BR")}
+                  {(stats?.total_clicks ?? 0).toLocaleString(i18n.language)}
                 </Typography>
               )}
               <Typography variant="caption" color="text.secondary">
