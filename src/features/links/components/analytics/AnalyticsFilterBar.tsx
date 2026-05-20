@@ -1,36 +1,88 @@
 "use client";
 
-import { Box, Chip, Stack, Switch, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Divider,
+  Stack,
+  Switch,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { format, parseISO } from "date-fns";
 import { useTranslation } from "react-i18next";
 import type {
-  Period,
   AnalyticsFilters,
+  Period,
 } from "@/features/links/hooks/useAnalyticsFilters";
 
 /** Props for the global analytics filter bar. */
 interface AnalyticsFilterBarProps {
   period: AnalyticsFilters["period"];
+  /** ISO date string (yyyy-MM-dd) for the start of the active range, or null for "all time". */
+  dateFrom: string | null;
+  /** ISO date string (yyyy-MM-dd) for the end of the active range, or null for "all time". */
+  dateTo: string | null;
   excludeBots: boolean;
   onPeriodChange: (v: Period) => void;
+  onDateRangeChange: (from: string, to: string) => void;
   onExcludeBotsChange: (v: boolean) => void;
 }
 
-const PERIODS: Period[] = ["1h", "24h", "7d", "30d", "90d", "all"];
+/** Period presets shown as shortcut chips. */
+const PRESET_PERIODS: Period[] = ["1h", "24h", "7d", "30d", "90d", "all"];
+
+/** Convert an ISO date string or null to a Date object (for the DatePicker). */
+function toDate(iso: string | null): Date | null {
+  if (!iso) return null;
+  try {
+    return parseISO(iso);
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Global analytics filter bar rendered above all tabs in LinkAnalyticsTabs.
  *
- * Displays period preset chips and a bot-exclusion toggle. State changes are
- * surfaced via callback props — the bar is fully controlled.
+ * Displays:
+ * - Two DatePicker inputs (from / to) — always visible for custom ranges
+ * - Period preset shortcut chips (1h / 24h / 7d / 30d / 90d / Todo período)
+ * - Bot-exclusion toggle
+ *
+ * Clicking a preset fills the date pickers with the resolved range and sets the
+ * period. Editing the date pickers directly switches to period="custom" and calls
+ * onDateRangeChange with the new ISO strings.
  */
 export function AnalyticsFilterBar({
   period,
+  dateFrom,
+  dateTo,
   excludeBots,
   onPeriodChange,
+  onDateRangeChange,
   onExcludeBotsChange,
 }: AnalyticsFilterBarProps) {
   const { t } = useTranslation("analytics");
   const theme = useTheme();
+
+  /** Called when the "from" picker changes. Keeps existing dateTo if set. */
+  const handleFromChange = (date: Date | null) => {
+    if (!date) return;
+    const from = format(date, "yyyy-MM-dd");
+    const to = dateTo ?? format(new Date(), "yyyy-MM-dd");
+    onDateRangeChange(from, to);
+  };
+
+  /** Called when the "to" picker changes. Keeps existing dateFrom if set. */
+  const handleToChange = (date: Date | null) => {
+    if (!date) return;
+    const from = dateFrom ?? format(new Date(), "yyyy-MM-dd");
+    const to = format(date, "yyyy-MM-dd");
+    onDateRangeChange(from, to);
+  };
 
   return (
     <Box
@@ -38,7 +90,7 @@ export function AnalyticsFilterBar({
         display: "flex",
         alignItems: "center",
         flexWrap: "wrap",
-        gap: 1,
+        gap: 1.5,
         px: 2,
         py: 1.5,
         mb: 2,
@@ -47,21 +99,94 @@ export function AnalyticsFilterBar({
         border: `1px solid ${theme.palette.divider}`,
       }}
     >
-      <Typography
-        variant="caption"
-        color="text.secondary"
-        sx={{
-          fontWeight: 600,
-          textTransform: "uppercase",
-          letterSpacing: "0.05em",
-          mr: 0.5,
-        }}
+      {/* Date range pickers */}
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1}
+        flexWrap="wrap"
+        useFlexGap
       >
-        {t("filters.period")}
-      </Typography>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+          }}
+        >
+          {t("filters.dateFrom")}
+        </Typography>
+        <DatePicker
+          value={toDate(dateFrom)}
+          onChange={handleFromChange}
+          maxDate={toDate(dateTo) ?? new Date()}
+          slots={{ textField: TextField }}
+          slotProps={{
+            textField: {
+              size: "small",
+              sx: { width: 148 },
+              inputProps: { "aria-label": t("filters.dateFrom") },
+            },
+          }}
+        />
+        <Typography variant="caption" color="text.disabled">
+          →
+        </Typography>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+          }}
+        >
+          {t("filters.dateTo")}
+        </Typography>
+        <DatePicker
+          value={toDate(dateTo)}
+          onChange={handleToChange}
+          minDate={toDate(dateFrom) ?? undefined}
+          maxDate={new Date()}
+          slots={{ textField: TextField }}
+          slotProps={{
+            textField: {
+              size: "small",
+              sx: { width: 148 },
+              inputProps: { "aria-label": t("filters.dateTo") },
+            },
+          }}
+        />
+      </Stack>
 
-      <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
-        {PERIODS.map((p) => (
+      <Divider
+        orientation="vertical"
+        flexItem
+        sx={{ display: { xs: "none", sm: "block" } }}
+      />
+
+      {/* Shortcut chips */}
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1}
+        flexWrap="wrap"
+        useFlexGap
+      >
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+          }}
+        >
+          {t("filters.period")}
+        </Typography>
+        {PRESET_PERIODS.map((p) => (
           <Chip
             key={p}
             label={t(`filters.periods.${p}`)}
@@ -74,16 +199,13 @@ export function AnalyticsFilterBar({
         ))}
       </Stack>
 
-      <Box
-        sx={{
-          width: 1,
-          height: 20,
-          bgcolor: "divider",
-          mx: 0.5,
-          display: { xs: "none", sm: "block" },
-        }}
+      <Divider
+        orientation="vertical"
+        flexItem
+        sx={{ display: { xs: "none", sm: "block" } }}
       />
 
+      {/* Bot exclusion toggle */}
       <Stack direction="row" alignItems="center" spacing={0.5}>
         <Switch
           size="small"
