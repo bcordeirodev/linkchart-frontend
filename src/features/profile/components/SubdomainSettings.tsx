@@ -18,17 +18,21 @@ import {
   FormLabel,
   IconButton,
   InputAdornment,
-  Paper,
   Skeleton,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
+import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { ICON_MD } from "@/lib/theme/iconDefaults";
 
 import { useSubdomain } from "../hooks/useSubdomain";
 
@@ -120,16 +124,16 @@ export function SubdomainSettings() {
   // ── Loading state ────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <Paper sx={{ p: 3 }}>
+      <EnhancedPaper sx={{ p: 3 }}>
         <Skeleton variant="text" width={200} height={28} sx={{ mb: 1 }} />
         <Skeleton variant="text" width={320} height={20} sx={{ mb: 3 }} />
         <Skeleton variant="rectangular" height={56} />
-      </Paper>
+      </EnhancedPaper>
     );
   }
 
   return (
-    <Paper sx={{ p: 3 }}>
+    <EnhancedPaper sx={{ p: 3 }}>
       {/* ── Section header ───────────────────────────────────────────── */}
       <Box
         sx={{
@@ -139,7 +143,13 @@ export function SubdomainSettings() {
           mb: 0.5,
         }}
       >
-        <Typography variant="h6">{t("subdomain.title")}</Typography>
+        <Typography
+          variant="h6"
+          sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+        >
+          <Globe {...ICON_MD} />
+          {t("subdomain.title")}
+        </Typography>
         {subdomain ? (
           <Chip
             label={t("subdomain.chip.active")}
@@ -163,36 +173,55 @@ export function SubdomainSettings() {
       {/* ── Active subdomain ─────────────────────────────────────────── */}
       {subdomain ? (
         <Box>
-          <FormLabel sx={{ display: "block", mb: 0.75 }}>
-            {t("subdomain.activeLabel")}
-          </FormLabel>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-            <TextField
-              value={subdomain.full_url}
-              slotProps={{ input: { readOnly: true } }}
-              size="small"
-              sx={{ flexGrow: 1 }}
-              fullWidth
-            />
-            <Tooltip
-              title={copied ? t("subdomain.copied") : t("subdomain.copy")}
+          {/* Prominent URL display */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              p: 2,
+              borderRadius: 2,
+              bgcolor: (theme) => alpha(theme.palette.success.light, 0.1),
+              border: (theme) =>
+                `1px solid ${alpha(theme.palette.success.main, 0.25)}`,
+              mb: 2,
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: "monospace",
+                fontWeight: 600,
+                color: "success.dark",
+                wordBreak: "break-all",
+                flexGrow: 1,
+                mr: 1,
+              }}
             >
-              <IconButton onClick={handleCopy} size="small">
-                <ContentCopyIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={t("subdomain.openInNew")}>
-              <IconButton
-                component="a"
-                href={subdomain.full_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                size="small"
+              {subdomain.full_url}
+            </Typography>
+            <Box sx={{ display: "flex", gap: 0.5, flexShrink: 0 }}>
+              <Tooltip
+                title={copied ? t("subdomain.copied") : t("subdomain.copy")}
               >
-                <OpenInNewIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
+                <IconButton onClick={handleCopy} size="small">
+                  <ContentCopyIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t("subdomain.openInNew")}>
+                <IconButton
+                  component="a"
+                  href={subdomain.full_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  size="small"
+                >
+                  <OpenInNewIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Box>
+
           <Button
             variant="outlined"
             color="error"
@@ -345,6 +374,6 @@ export function SubdomainSettings() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Paper>
+    </EnhancedPaper>
   );
 }

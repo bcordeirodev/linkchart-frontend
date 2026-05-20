@@ -109,7 +109,11 @@ function ProfilePage() {
                 gap: { xs: 2, sm: 3, md: 4 },
               }}
             >
-              <ProfileForm user={user} onUserUpdate={handleUserUpdate} />
+              <ProfileForm
+                user={user}
+                onUserUpdate={handleUserUpdate}
+                photoURL={authUser?.photoURL}
+              />
               {process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" && (
                 <SubdomainSettings />
               )}
