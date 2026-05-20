@@ -298,7 +298,14 @@ export function SubdomainSettings() {
               input: {
                 endAdornment: (
                   <InputAdornment position="end">
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 600,
+                        color: "text.primary",
+                        opacity: 0.5,
+                      }}
+                    >
                       .linkcharts.com.br
                     </Typography>
                   </InputAdornment>
@@ -306,7 +313,6 @@ export function SubdomainSettings() {
                 sx: {
                   fontFamily: "monospace",
                   fontWeight: 500,
-                  fontSize: "1rem",
                   color: "text.primary",
                 },
               },
