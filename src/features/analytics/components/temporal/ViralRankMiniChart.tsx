@@ -159,6 +159,10 @@ export function ViralRankMiniChart({ data }: Props) {
           ))}
         </Box>
 
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+          {t("temporal.viralRank.description")}
+        </Typography>
+
         <ApexChartWrapper
           type="bar"
           series={series}

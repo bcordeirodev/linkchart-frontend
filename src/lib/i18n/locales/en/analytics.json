@@ -19,13 +19,15 @@
     },
     "utmSource": {
       "title": "UTM Campaigns",
-      "topLabel": "Top 5 utm_source values"
+      "topLabel": "Top 5 utm_source values",
+      "description": "Traffic sources tagged with UTM parameters. Use to measure which campaign or channel drives the most clicks and compare performance across promotion strategies."
     },
     "socialApp": {
       "title": "Social App Traffic",
       "subtitle": "Instagram · TikTok · WhatsApp · others",
       "other": "Other",
-      "note": "Detected via mobile in-app browser"
+      "note": "Detected via mobile in-app browser",
+      "description": "Percentage of clicks from in-app browsers of social apps (Instagram, TikTok, WhatsApp). Indicates the visitor arrived directly from the feed without opening the device browser."
     }
   },
   "timeframe": {
@@ -263,6 +265,7 @@
       "clicks": "Clicks",
       "clicksUnit": "clicks",
       "peak": "Viral peak",
+      "description": "Daily virality rank evolution. Hotter bars (orange/red) signal days with high click concentration in a short interval — organic engagement spikes.",
       "ranks": {
         "cold": "Cold",
         "warming": "Warming",
@@ -467,8 +470,11 @@
         "dominance": "Primary Dominance"
       },
       "deviceDistribution": "Device Distribution",
+      "deviceDistributionDesc": "Proportion of clicks by device type. Use to decide whether content should prioritize mobile or desktop layouts.",
       "deviceRanking": "Device Ranking",
+      "deviceRankingDesc": "Device type ranking by total click volume. Directly compares which device dominates traffic for this link.",
       "deviceDetails": "Device Details",
+      "deviceDetailsDesc": "Detailed list with click count and percentage for each detected device type.",
       "ofTotal": "of total",
       "clicks": "clicks",
       "browserMarketShare": "Browser Market Share",
@@ -513,7 +519,8 @@
     },
     "socialPlatform": {
       "title": "By Social Platform",
-      "subtitle": "Clicks by source platform (via referrer)"
+      "subtitle": "Clicks by source platform (via referrer)",
+      "description": "Click distribution by source social network, identified via the Referer header. Shows which platform each visitor came from before clicking the link."
     }
   },
   "performance": {
@@ -678,7 +685,9 @@
       "categories": "categories",
       "lowDiversityAlert": "Low source diversity! You only have {{n}} traffic source(s). Consider diversifying to reduce dependency risks.",
       "channelDistribution": "Channel Distribution",
+      "channelDistributionDesc": "Share of clicks by traffic channel (social, search, direct, email, referral). Use to diversify sources and reduce dependency on a single channel.",
       "engagementByChannel": "Engagement by Channel",
+      "engagementByChannelDesc": "Average session depth per channel. Channels with greater depth indicate more engaged visitors — focus efforts where the return is highest.",
       "avgSessionByChannel": "Average session depth by channel",
       "channelDetails": "Detailed Channel Performance",
       "topSources": "Top 5 Individual Sources",

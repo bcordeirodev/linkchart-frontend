@@ -49,10 +49,13 @@ export function UtmSourceCard({ data }: Props) {
       <CardContent>
         <Typography
           variant="subtitle2"
-          sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}
+          sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}
         >
           <Tag {...ICON_MD} />
           {t("dashboard.utmSource.title")}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          {t("dashboard.utmSource.description")}
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
           {data.map((entry) => (

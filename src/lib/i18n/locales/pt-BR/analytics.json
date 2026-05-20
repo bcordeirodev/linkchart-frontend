@@ -19,13 +19,15 @@
     },
     "utmSource": {
       "title": "Campanhas UTM",
-      "topLabel": "Top 5 origens utm_source"
+      "topLabel": "Top 5 origens utm_source",
+      "description": "Origens de tráfego marcadas com parâmetros UTM. Use para medir qual campanha ou canal gera mais cliques e comparar o desempenho entre estratégias de divulgação."
     },
     "socialApp": {
       "title": "Tráfego via App Social",
       "subtitle": "Instagram · TikTok · WhatsApp · outros",
       "other": "Outros",
-      "note": "Detectado via browser interno de app mobile"
+      "note": "Detectado via browser interno de app mobile",
+      "description": "Percentual de cliques vindos de navegadores internos de apps sociais (Instagram, TikTok, WhatsApp). Indica que o visitante chegou direto do feed sem abrir o browser do dispositivo."
     }
   },
   "timeframe": {
@@ -263,6 +265,7 @@
       "clicks": "Cliques",
       "clicksUnit": "cliques",
       "peak": "Pico viral",
+      "description": "Evolução diária do rank de viralidade. Barras mais quentes (laranja/vermelho) sinalizam dias com alta concentração de cliques num curto intervalo — picos de engajamento orgânico.",
       "ranks": {
         "cold": "Frio",
         "warming": "Aquecendo",
@@ -467,8 +470,11 @@
         "dominance": "Dominância Principal"
       },
       "deviceDistribution": "Distribuição por Dispositivo",
+      "deviceDistributionDesc": "Proporção de cliques por tipo de dispositivo. Use para decidir se o conteúdo deve priorizar layouts mobile ou desktop.",
       "deviceRanking": "Ranking de Dispositivos",
+      "deviceRankingDesc": "Ranking dos tipos de dispositivo pelo volume total de cliques. Compara diretamente qual dispositivo domina o tráfego do link.",
       "deviceDetails": "Detalhes por Dispositivo",
+      "deviceDetailsDesc": "Lista detalhada com contagem e percentual de cliques por cada tipo de dispositivo detectado.",
       "ofTotal": "do total",
       "clicks": "cliques",
       "browserMarketShare": "Market Share de Navegadores",
@@ -513,7 +519,8 @@
     },
     "socialPlatform": {
       "title": "Por Plataforma Social",
-      "subtitle": "Cliques por plataforma de origem (via referer)"
+      "subtitle": "Cliques por plataforma de origem (via referer)",
+      "description": "Distribuição de cliques por rede social de origem, identificada via cabeçalho Referer. Revela de qual plataforma cada visitante veio antes de clicar no link."
     }
   },
   "performance": {
@@ -678,7 +685,9 @@
       "categories": "categorias",
       "lowDiversityAlert": "Baixa diversidade de fontes! Você tem apenas {{n}} fonte(s) de tráfego. Considere diversificar para reduzir riscos de dependência.",
       "channelDistribution": "Distribuição por Canais",
+      "channelDistributionDesc": "Fatia de cliques por canal de tráfego (social, busca, direto, e-mail, referral). Use para diversificar fontes e reduzir dependência de um único canal.",
       "engagementByChannel": "Engajamento por Canal",
+      "engagementByChannelDesc": "Profundidade média de sessão por canal. Canais com maior depth indicam visitantes mais engajados — concentre esforços onde o retorno é maior.",
       "avgSessionByChannel": "Profundidade média da sessão por canal",
       "channelDetails": "Performance Detalhada por Canal",
       "topSources": "Top 5 Fontes Individuais",

@@ -46,10 +46,13 @@ export function SocialAppCard({ data }: Props) {
       <CardContent>
         <Typography
           variant="subtitle2"
-          sx={{ mb: 1.5, display: "flex", alignItems: "center", gap: 1 }}
+          sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}
         >
           <Smartphone {...ICON_MD} />
           {t("dashboard.socialApp.title")}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+          {t("dashboard.socialApp.description")}
         </Typography>
         <Typography variant="h3" sx={{ fontWeight: 700, mb: 0.5 }}>
           {data.percentage.toFixed(0)}%
