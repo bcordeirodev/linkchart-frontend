@@ -23,27 +23,27 @@ import { TabPanel } from "@/shared/ui/base/TabPanel";
 
 import { LinkDashboard } from "@/features/analytics/components/dashboard/LinkDashboard";
 
+import { AnalyticsFilterBar } from "./AnalyticsFilterBar";
+import { useAnalyticsFilters } from "@/features/links/hooks/useAnalyticsFilters";
 import { ClicksTable } from "./ClicksTable";
 
-// Importar componentes especializados que usam hooks próprios
-
 interface LinkAnalyticsTabsOptimizedProps {
+  /** The ID of the link whose analytics are displayed. */
   linkId: string;
+  /** Reserved for future loading-skeleton integration. */
   loading?: boolean;
 }
 
 /**
- * 📋 Tabs otimizadas para analytics de link individual
+ * Tabs for individual-link analytics with URL-persisted filters.
  *
- * @description
- * Versão otimizada que usa componentes com hooks próprios,
- * seguindo o mesmo padrão do analytics global.
+ * Instantiates `useAnalyticsFilters` once and fans filter state out to every
+ * tab component. The global `AnalyticsFilterBar` (period presets + bot toggle)
+ * is rendered above the tab navigation. Tab-specific filter controls live
+ * inside each analysis component and receive their slice of filter state via
+ * props.
  *
- * @features
- * - Cada tab usa seu próprio hook específico
- * - Componentes reutilizáveis do módulo analytics
- * - Estrutura limpa e consistente
- * - Menos de 150 linhas
+ * AudienceAnalysis and ClicksTable receive no filter props (Phase 2).
  */
 export function LinkAnalyticsTabsOptimized({
   linkId,
@@ -52,12 +52,14 @@ export function LinkAnalyticsTabsOptimized({
   const [tabValue, setTabValue] = useState(0);
   const theme = useTheme();
   const { t } = useTranslation("links");
+  const filters = useAnalyticsFilters();
 
+  /** Handles tab switch triggered by user interaction. */
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
-  // Configuração padronizada de tabs
+  /** Ordered tab metadata used to render the navigation row. */
   const tabLabels = [
     { label: t("analytics.tabs.overview"), Icon: LayoutDashboard },
     { label: t("analytics.tabs.temporal"), Icon: Clock },
@@ -69,6 +71,14 @@ export function LinkAnalyticsTabsOptimized({
 
   return (
     <Box>
+      {/* Global filter bar — period presets + bot-exclusion toggle */}
+      <AnalyticsFilterBar
+        period={filters.period}
+        excludeBots={filters.excludeBots}
+        onPeriodChange={filters.setPeriod}
+        onExcludeBotsChange={filters.setExcludeBots}
+      />
+
       {/* Tabs Navigation */}
       <Box
         sx={{
@@ -105,62 +115,86 @@ export function LinkAnalyticsTabsOptimized({
         </Tabs>
       </Box>
 
-      {/* Tab Panels - LAZY LOADING: Apenas a tab ativa é renderizada */}
+      {/* Tab Panels - LAZY LOADING: only the active tab is rendered */}
 
       {/* Dashboard Tab */}
       <TabPanel value={tabValue} index={0}>
-        {/* Renderizar apenas se a tab está ativa */}
         {tabValue === 0 && (
           <LinkDashboard
             linkId={linkId}
             showTitle={false}
             enableRealtime={false}
             compact={false}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
           />
         )}
       </TabPanel>
 
       {/* Temporal Tab */}
       <TabPanel value={tabValue} index={1}>
-        {/* Renderizar apenas se a tab está ativa */}
         {tabValue === 1 && (
-          <TemporalAnalysis linkId={linkId} enableRealtime={false} />
-        )}
-      </TabPanel>
-
-      {/* Geografia Tab */}
-      <TabPanel value={tabValue} index={2}>
-        {/* Renderizar apenas se a tab está ativa */}
-        {tabValue === 2 && (
-          <GeographicAnalysis
+          <TemporalAnalysis
             linkId={linkId}
             enableRealtime={false}
-            minClicks={1}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
+            groupBy={filters.groupBy}
+            segment={filters.segment}
+            onGroupByChange={filters.setGroupBy}
+            onSegmentChange={filters.setSegment}
           />
         )}
       </TabPanel>
 
-      {/* Audiência Tab */}
+      {/* Geographic Tab */}
+      <TabPanel value={tabValue} index={2}>
+        {tabValue === 2 && (
+          <GeographicAnalysis
+            linkId={linkId}
+            enableRealtime={false}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
+            continent={filters.continent}
+            minClicks={filters.minClicks}
+            geoLevel={filters.geoLevel}
+            onContinentChange={filters.setContinent}
+            onMinClicksChange={filters.setMinClicks}
+            onGeoLevelChange={filters.setGeoLevel}
+          />
+        )}
+      </TabPanel>
+
+      {/* Audience Tab — Phase 2: no filter props yet */}
       <TabPanel value={tabValue} index={3}>
-        {/* Renderizar apenas se a tab está ativa */}
         {tabValue === 3 && <AudienceAnalysis linkId={linkId} />}
       </TabPanel>
 
       {/* Insights Tab */}
       <TabPanel value={tabValue} index={4}>
-        {/* Renderizar apenas se a tab está ativa */}
         {tabValue === 4 && (
           <InsightsAnalysis
             linkId={linkId}
             enableRealtime={false}
             maxInsights={10}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
+            priority={filters.priority}
+            insightCategories={filters.insightCategories}
+            actionableOnly={filters.actionableOnly}
+            onPriorityChange={filters.setPriority}
+            onCategoriesChange={filters.setInsightCategories}
+            onActionableOnlyChange={filters.setActionableOnly}
           />
         )}
       </TabPanel>
 
-      {/* Cliques Tab */}
+      {/* Clicks Tab — Phase 2: no filter props yet */}
       <TabPanel value={tabValue} index={5}>
-        {/* Renderizar apenas se a tab está ativa */}
         {tabValue === 5 && <ClicksTable linkId={linkId} />}
       </TabPanel>
     </Box>
