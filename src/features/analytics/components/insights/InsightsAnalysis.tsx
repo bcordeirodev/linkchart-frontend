@@ -30,8 +30,6 @@ const confidenceMap: Record<InsightPriority, number> = {
 interface InsightsAnalysisProps {
   /** Canonical id of the link to display analytics for. */
   linkId: string;
-  /** Override the section title text. */
-  title?: string;
   /** Whether to subscribe to realtime updates. Defaults to `false`. */
   enableRealtime?: boolean;
   /** Maximum number of insights to display. Defaults to `50`. */
@@ -90,7 +88,6 @@ interface InsightsAnalysisProps {
  */
 export function InsightsAnalysis({
   linkId,
-  title: _title,
   enableRealtime = false,
   maxInsights = 50,
   dateFrom,

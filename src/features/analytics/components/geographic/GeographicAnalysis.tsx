@@ -23,8 +23,6 @@ import { RealTimeHeatmapChart } from "./index";
 interface GeographicAnalysisProps {
   /** Canonical id of the link to display analytics for. */
   linkId: string;
-  /** Override the section title text. */
-  title?: string;
   /** Whether to subscribe to realtime updates. Defaults to `false`. */
   enableRealtime?: boolean;
   /** ISO date string (yyyy-MM-dd) for the start of the period filter. */
@@ -59,7 +57,6 @@ interface GeographicAnalysisProps {
  */
 export function GeographicAnalysis({
   linkId,
-  title: _title,
   enableRealtime = false,
   dateFrom,
   dateTo,
@@ -75,14 +72,7 @@ export function GeographicAnalysis({
   const [activeSubTab, setActiveSubTab] = useState(0);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
-  const {
-    data,
-    stats,
-    loading,
-    error,
-    refresh,
-    isRealtime: _isRealtime,
-  } = useGeographicData({
+  const { data, stats, loading, error, refresh } = useGeographicData({
     linkId,
     enableRealtime,
     dateFrom,
@@ -132,7 +122,7 @@ export function GeographicAnalysis({
           {onContinentChange && onMinClicksChange && onGeoLevelChange && (
             <GeographicFilterBar
               continent={continent ?? null}
-              minClicks={minClicks ?? 1}
+              minClicks={minClicks}
               geoLevel={resolvedGeoLevel}
               onContinentChange={onContinentChange}
               onMinClicksChange={onMinClicksChange}
