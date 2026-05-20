@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { format, subDays, subHours } from "date-fns";
+import { format, startOfDay, subDays, subHours } from "date-fns";
 
 /** Period preset identifiers for the global date filter. */
 export type Period = "1h" | "24h" | "7d" | "30d" | "90d" | "all" | "custom";
@@ -73,25 +73,36 @@ function parseEnum<T extends string>(
     : fallback;
 }
 
-/** Derive ISO date strings for a given period preset relative to now. */
+/** Formats a Date as a datetime string for URL params and API requests. */
+const fmtDt = (d: Date) => format(d, "yyyy-MM-dd HH:mm:ss");
+
+/** Derive datetime strings for a given period preset relative to now. */
 function resolveDates(period: Period): {
   dateFrom: string | null;
   dateTo: string | null;
 } {
   const now = new Date();
-  const fmt = (d: Date) => format(d, "yyyy-MM-dd");
 
   switch (period) {
     case "1h":
-      return { dateFrom: fmt(subHours(now, 1)), dateTo: fmt(now) };
+      return { dateFrom: fmtDt(subHours(now, 1)), dateTo: fmtDt(now) };
     case "24h":
-      return { dateFrom: fmt(subDays(now, 1)), dateTo: fmt(now) };
+      return { dateFrom: fmtDt(subDays(now, 1)), dateTo: fmtDt(now) };
     case "7d":
-      return { dateFrom: fmt(subDays(now, 7)), dateTo: fmt(now) };
+      return {
+        dateFrom: fmtDt(startOfDay(subDays(now, 7))),
+        dateTo: fmtDt(now),
+      };
     case "30d":
-      return { dateFrom: fmt(subDays(now, 30)), dateTo: fmt(now) };
+      return {
+        dateFrom: fmtDt(startOfDay(subDays(now, 30))),
+        dateTo: fmtDt(now),
+      };
     case "90d":
-      return { dateFrom: fmt(subDays(now, 90)), dateTo: fmt(now) };
+      return {
+        dateFrom: fmtDt(startOfDay(subDays(now, 90))),
+        dateTo: fmtDt(now),
+      };
     case "all":
       return { dateFrom: null, dateTo: null };
     case "custom":
@@ -210,6 +221,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   const setDateRange = useCallback(
     (from: string, to: string) =>
       setParam({ period: "custom", date_from: from, date_to: to }),
+    // from/to are already formatted as "yyyy-MM-dd HH:mm:ss" by AnalyticsFilterBar
     [setParam],
   );
 
