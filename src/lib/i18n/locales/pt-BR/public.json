@@ -1,7 +1,7 @@
 {
   "shorter": {
     "heroTitle": "Encurte qualquer link.",
-    "heroSubtitle": "Encurtador de URL gratuito com analytics avançado.",
+    "heroSubtitle": "Encurtador de URL gratuito com analytics em tempo real, subdomínio personalizado grátis e QR Code.",
     "linkCreated": "Link criado com sucesso",
     "freeNoSignup": "100% gratuito · sem cadastro",
     "readyToShare": "Pronto para compartilhar!",
@@ -78,7 +78,7 @@
   "publicAnalytics": {
     "title": "Analytics do Link",
     "subtitle": "Analytics público de",
-    "pageSubtitle": "Desempenho e estatísticas deste link em tempo real",
+    "pageSubtitle": "Performance, estatísticas geográficas e insights do público deste link em tempo real.",
     "noData": "Nenhum dado de analytics disponível ainda.",
     "signUpCta": "Quer isso para seus links?",
     "signUpButton": "Criar conta gratuita",
@@ -150,8 +150,8 @@
       "features": [
         "Grátis para sempre",
         "QR Code incluso",
-        "Sem cartão",
-        "Slug personalizado"
+        "Subdomínio personalizado grátis",
+        "Analytics em tempo real"
       ]
     }
   },
@@ -187,7 +187,8 @@
     "customSlug": "Slug personalizado",
     "geoLocation": "Geolocalização de cliques",
     "utmCampaigns": "Campanhas UTM",
-    "fullDashboard": "Dashboard completo"
+    "fullDashboard": "Dashboard completo",
+    "freeSubdomain": "Subdomínio personalizado grátis"
   },
   "qr": {
     "errors": {
