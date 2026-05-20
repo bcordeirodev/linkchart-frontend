@@ -106,7 +106,9 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   {user.created_at
-                    ? new Date(user.created_at).toLocaleDateString(i18n.language)
+                    ? new Date(user.created_at).toLocaleDateString(
+                        i18n.language,
+                      )
                     : t("sidebar.dateUnavailable")}
                 </Typography>
               </Box>
