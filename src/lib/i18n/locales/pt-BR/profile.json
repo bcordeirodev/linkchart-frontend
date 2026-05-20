@@ -86,9 +86,9 @@
       "text": "Ao reivindicar este subdomínio você confirma que é responsável por todo conteúdo acessado através dele e que não violará marcas registradas ou direitos de terceiros.",
       "checkbox": "Li e aceito os termos acima"
     },
-    "urlPreviewLabel": "Pré-visualização:",
-    "exampleHint": "suaempresa.linkcharts.com.br",
-    "openButton": "Abrir",
-    "copyButton": "Copiar URL"
+    "yourDomainLabel": "Seu subdomínio",
+    "linksLookLike": "Seus links ficam assim:",
+    "exampleDesc": "Com o subdomínio, seus links passam a ter este formato:",
+    "exampleSlug": "suaempresa"
   }
 }

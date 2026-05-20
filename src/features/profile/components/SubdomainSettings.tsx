@@ -17,15 +17,14 @@ import {
   FormControlLabel,
   FormLabel,
   InputAdornment,
+  Link,
   Skeleton,
   TextField,
   Typography,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -43,13 +42,32 @@ function isValidSubdomainLabel(value: string): boolean {
   );
 }
 
+/** Two representative slugs used in examples. Not translatable intentionally. */
+const EXAMPLE_SLUGS = ["abc123", "promo-verao"] as const;
+
+/**
+ * Renders a muted monospace row showing how a link URL will look.
+ * Used in both the claim form (preview) and the active state (examples).
+ */
+function LinkExample({ url }: { url: string }) {
+  return (
+    <Typography
+      variant="caption"
+      component="div"
+      sx={{ fontFamily: "monospace", color: "text.secondary", lineHeight: 1.8 }}
+    >
+      {url}
+    </Typography>
+  );
+}
+
 /**
  * Profile settings section that lets the user claim or release a custom subdomain.
  *
  * Renders three states:
  *  1. Loading — MUI Skeletons while initial data is being fetched
- *  2. No subdomain — claim form with live URL preview, availability check + responsibility checkbox
- *  3. Active subdomain — clean URL display + action buttons (copy, open) + release option
+ *  2. No subdomain — before/after explanation + live URL preview + claim form
+ *  3. Active subdomain — URL as clickable link + link format examples + release
  */
 export function SubdomainSettings() {
   const { t } = useTranslation("profile");
@@ -69,7 +87,6 @@ export function SubdomainSettings() {
 
   const [inputValue, setInputValue] = useState("");
   const [inputError, setInputError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
   const [releaseDialogOpen, setReleaseDialogOpen] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
@@ -100,14 +117,6 @@ export function SubdomainSettings() {
     }
   };
 
-  /** Copies the full subdomain URL to the clipboard. */
-  const handleCopy = () => {
-    if (!subdomain?.full_url) return;
-    navigator.clipboard.writeText(subdomain.full_url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   /** Releases the current subdomain after dialog confirmation. */
   const handleRelease = async () => {
     try {
@@ -118,6 +127,10 @@ export function SubdomainSettings() {
       // Error surfaced via releaseError
     }
   };
+
+  // Derive the example label: live input value, or the static hint when empty
+  const previewLabel =
+    inputValue.length > 0 ? inputValue : t("subdomain.exampleSlug");
 
   // ── Loading state ────────────────────────────────────────────────────
   if (isLoading) {
@@ -181,58 +194,48 @@ export function SubdomainSettings() {
       {/* ── Active subdomain ─────────────────────────────────────────── */}
       {subdomain ? (
         <Box>
-          {/* Clean URL display — no buttons inside */}
-          <Box
+          {/* URL as a plain clickable link — no box, no buttons */}
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: "block", mb: 0.5 }}
+          >
+            {t("subdomain.yourDomainLabel")}
+          </Typography>
+          <Link
+            href={subdomain.full_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="hover"
             sx={{
-              p: 2,
-              borderRadius: 2,
-              bgcolor: (theme) => alpha(theme.palette.success.light, 0.1),
-              border: (theme) =>
-                `1px solid ${alpha(theme.palette.success.main, 0.25)}`,
-              mb: 2,
+              fontFamily: "monospace",
+              fontWeight: 600,
+              fontSize: "1rem",
+              display: "inline-block",
+              mb: 3,
             }}
           >
-            <Typography
-              variant="body2"
-              sx={{
-                fontFamily: "monospace",
-                fontWeight: 600,
-                color: "success.dark",
-                wordBreak: "break-all",
-              }}
-            >
-              {subdomain.full_url}
-            </Typography>
-          </Box>
+            {subdomain.full_url}
+          </Link>
 
-          {/* Action buttons row */}
-          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={
-                copied ? (
-                  <CheckCircleOutlineIcon fontSize="small" />
-                ) : (
-                  <ContentCopyIcon fontSize="small" />
-                )
-              }
-              onClick={handleCopy}
-              color={copied ? "success" : "inherit"}
-            >
-              {copied ? t("subdomain.copied") : t("subdomain.copyButton")}
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<OpenInNewIcon fontSize="small" />}
-              component="a"
-              href={subdomain.full_url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t("subdomain.openButton")}
-            </Button>
+          {/* Link format examples */}
+          <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+            {t("subdomain.linksLookLike")}
+          </Typography>
+          <Box
+            sx={{
+              pl: 1.5,
+              borderLeft: (theme) =>
+                `3px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+              mb: 3,
+            }}
+          >
+            {EXAMPLE_SLUGS.map((slug) => (
+              <LinkExample
+                key={slug}
+                url={`${subdomain.subdomain}.linkcharts.com.br/${slug}`}
+              />
+            ))}
           </Box>
 
           <Divider sx={{ mb: 2 }} />
@@ -257,6 +260,27 @@ export function SubdomainSettings() {
       ) : (
         /* ── Claim form ──────────────────────────────────────────────── */
         <Box>
+          {/* How-it-works: live example block */}
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            {t("subdomain.exampleDesc")}
+          </Typography>
+          <Box
+            sx={{
+              pl: 1.5,
+              borderLeft: (theme) =>
+                `3px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+              mb: 3,
+            }}
+          >
+            {EXAMPLE_SLUGS.map((slug) => (
+              <LinkExample
+                key={slug}
+                url={`${previewLabel}.linkcharts.com.br/${slug}`}
+              />
+            ))}
+          </Box>
+
+          {/* Input */}
           <FormLabel sx={{ display: "block", mb: 0.75 }}>
             {t("subdomain.inputLabel")}
           </FormLabel>
@@ -280,19 +304,6 @@ export function SubdomainSettings() {
             }}
             sx={{ mb: 0.75 }}
           />
-
-          {/* Live URL preview */}
-          <Box sx={{ mb: 1.5 }}>
-            <Typography
-              variant="caption"
-              color="text.disabled"
-              sx={{ fontFamily: "monospace" }}
-            >
-              {inputValue.length > 0
-                ? `${inputValue}.linkcharts.com.br`
-                : t("subdomain.exampleHint")}
-            </Typography>
-          </Box>
 
           {/* Availability indicator */}
           {inputValue.length >= 3 && (
