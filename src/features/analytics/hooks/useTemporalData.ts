@@ -25,6 +25,14 @@ export interface UseTemporalDataOptions {
   linkId: string;
   refreshInterval?: number;
   enableRealtime?: boolean;
+  /** ISO date string (yyyy-MM-dd) for the start of the period. */
+  dateFrom?: string | null;
+  /** ISO date string (yyyy-MM-dd) for the end of the period. */
+  dateTo?: string | null;
+  /** When true, adds `exclude_bots=true` to the request. */
+  excludeBots?: boolean;
+  /** Restricts results to a weekday/weekend/business-hours segment. */
+  segment?: "all" | "weekday" | "weekend" | "business";
   /** @deprecated mantido por compatibilidade, sem efeito */
   includeAdvanced?: boolean;
 }
@@ -96,11 +104,15 @@ function calculateStats(temporalData: TemporalData): TemporalStats {
  * @param options.linkId - canonical link id; the query stays disabled when falsy
  * @param options.refreshInterval - polling interval in ms when realtime is on (default `30000`)
  * @param options.enableRealtime - when true, refetches every `refreshInterval` ms (default `false`)
+ * @param options.dateFrom - ISO date string (yyyy-MM-dd) for the start of the period
+ * @param options.dateTo - ISO date string (yyyy-MM-dd) for the end of the period
+ * @param options.excludeBots - when true, adds `exclude_bots=true` to the request
+ * @param options.segment - restricts data to weekday/weekend/business-hours subset
  * @returns `{ data: TemporalData | null, stats, loading, error, refresh, isRealtime }`
  *
  * @remarks
- * Cache key: `queryKeys.analytics.temporal(linkId)` → `["analytics", linkId, "temporal"]`.
- * Endpoint: `GET /api/analytics/link/{id}/temporal` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_TEMPORAL`).
+ * Cache key: `queryKeys.analytics.temporal(linkId)` + filter params for cache isolation.
+ * Endpoint: `GET /api/analytics/link/{id}/temporal[?date_from=…&date_to=…&exclude_bots=true&segment=…]` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_TEMPORAL`).
  * Returned `TemporalData` shape is defined in `src/types/analytics`.
  * `stats` (peak hour/day, trend direction) is derived client-side from `clicks_by_hour` and `clicks_by_day_of_week`.
  */
@@ -108,11 +120,27 @@ export function useTemporalData({
   linkId,
   refreshInterval = 30000,
   enableRealtime = false,
+  dateFrom,
+  dateTo,
+  excludeBots,
+  segment,
 }: UseTemporalDataOptions): UseTemporalDataReturn {
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: queryKeys.analytics.temporal(linkId),
-    queryFn: () =>
-      api.get<TemporalData>(API_CONFIG.ENDPOINTS.ANALYTICS_TEMPORAL(linkId)),
+    queryKey: [
+      ...queryKeys.analytics.temporal(linkId),
+      { dateFrom, dateTo, excludeBots, segment },
+    ],
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (dateFrom) params.set("date_from", dateFrom);
+      if (dateTo) params.set("date_to", dateTo);
+      if (excludeBots) params.set("exclude_bots", "true");
+      if (segment && segment !== "all") params.set("segment", segment);
+      const qs = params.toString();
+      return api.get<TemporalData>(
+        `${API_CONFIG.ENDPOINTS.ANALYTICS_TEMPORAL(linkId)}${qs ? `?${qs}` : ""}`,
+      );
+    },
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,

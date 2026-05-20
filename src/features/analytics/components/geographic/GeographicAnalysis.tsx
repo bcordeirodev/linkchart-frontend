@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import { Globe, Map, BarChart3, Layers } from "lucide-react";
+import { Map, BarChart3, Layers } from "lucide-react";
 import { Box, Grid, Tab, Tabs } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { ICON_LG, ICON_SM } from "@/lib/theme/iconDefaults";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
-import TabDescription from "@/shared/ui/base/TabDescription";
+import type { GeoLevel } from "@/features/links/hooks/useAnalyticsFilters";
 
 import { useGeographicData } from "../../hooks/useGeographicData";
 
@@ -14,36 +14,81 @@ import { ContinentBreakdown } from "./ContinentBreakdown";
 import { CountryDistributionChart } from "./CountryDistributionChart";
 import { GeographicChart } from "./GeographicChart";
 import { GeographicChoropleth } from "./GeographicChoropleth";
+import { GeographicFilterBar } from "./GeographicFilterBar";
 import { GeographicInsights } from "./GeographicInsights";
 import { GeographicMetrics } from "./GeographicMetrics";
 import { RealTimeHeatmapChart } from "./index";
 
+/** Props accepted by the {@link GeographicAnalysis} component. */
 interface GeographicAnalysisProps {
+  /** Canonical id of the link to display analytics for. */
   linkId: string;
-  title?: string;
+  /** Whether to subscribe to realtime updates. Defaults to `false`. */
   enableRealtime?: boolean;
+  /** ISO date string (yyyy-MM-dd) for the start of the period filter. */
+  dateFrom?: string | null;
+  /** ISO date string (yyyy-MM-dd) for the end of the period filter. */
+  dateTo?: string | null;
+  /** When `true`, bot traffic is excluded from all metrics. */
+  excludeBots?: boolean;
+  /** Filters results to a specific continent code (e.g. `"EU"`, `"NA"`). */
+  continent?: string | null;
+  /** Server-side threshold — hides locations with fewer clicks than this value. */
   minClicks?: number;
+  /**
+   * Frontend-only display control — which geographic level to highlight
+   * in the rankings tab (country / state / city).
+   */
+  geoLevel?: GeoLevel;
+  /** Callback to propagate `continent` changes to the parent. */
+  onContinentChange?: (v: string | null) => void;
+  /** Callback to propagate `minClicks` changes to the parent. */
+  onMinClicksChange?: (v: number) => void;
+  /** Callback to propagate `geoLevel` changes to the parent. */
+  onGeoLevelChange?: (v: GeoLevel) => void;
 }
 
+/**
+ * Componente de análise geográfica com mapa, rankings e breakdown por continente.
+ *
+ * Renders an optional {@link GeographicFilterBar} when the three change
+ * callbacks are provided.  The `geoLevel` prop selects which rankings tier
+ * (country / state / city) is initially visible inside the rankings tab.
+ */
 export function GeographicAnalysis({
   linkId,
-  title,
   enableRealtime = false,
+  dateFrom,
+  dateTo,
+  excludeBots,
+  continent,
   minClicks = 1,
+  geoLevel,
+  onContinentChange,
+  onMinClicksChange,
+  onGeoLevelChange,
 }: GeographicAnalysisProps) {
   const { t } = useTranslation("analytics");
-  const displayTitle = title ?? t("geographic.title");
   const [activeSubTab, setActiveSubTab] = useState(0);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
-  const { data, stats, loading, error, refresh, isRealtime } =
-    useGeographicData({
-      linkId,
-      enableRealtime,
-      minClicks,
-      refreshInterval: 30000,
-    });
+  const { data, stats, loading, error, refresh } = useGeographicData({
+    linkId,
+    enableRealtime,
+    dateFrom,
+    dateTo,
+    excludeBots,
+    continent,
+    minClicks,
+    refreshInterval: 30000,
+  });
 
+  /**
+   * Handles sub-tab changes (Overview / Heatmap / Rankings).
+   *
+   * @param _event - Unused synthetic event.
+   * @param newValue - The index of the newly selected tab.
+   */
   const handleSubTabChange = (
     _event: React.SyntheticEvent,
     newValue: number,
@@ -58,21 +103,11 @@ export function GeographicAnalysis({
     (data?.top_cities?.length ?? 0) > 0;
   const hasContinents = (data?.continents?.length ?? 0) > 0;
 
+  /** Resolved geoLevel with default fallback. */
+  const resolvedGeoLevel = geoLevel ?? "country";
+
   return (
     <Box>
-      {/* Cabeçalho do módulo */}
-      <Box sx={{ mb: 3 }}>
-        <TabDescription
-          icon={<Globe {...ICON_LG} />}
-          title={displayTitle}
-          description={t("geographic.description")}
-          highlight={t("geographic.countriesReached", {
-            count: stats?.totalCountries || 0,
-          })}
-          metadata={isRealtime ? t("dashboard.realtime") : undefined}
-        />
-      </Box>
-
       <AnalyticsStateManager
         loading={loading}
         error={error}
@@ -83,12 +118,20 @@ export function GeographicAnalysis({
         minHeight={300}
       >
         <Box>
+          {/* Filter bar — only rendered when parent supplies all three callbacks */}
+          {onContinentChange && onMinClicksChange && onGeoLevelChange && (
+            <GeographicFilterBar
+              continent={continent ?? null}
+              minClicks={minClicks}
+              geoLevel={resolvedGeoLevel}
+              onContinentChange={onContinentChange}
+              onMinClicksChange={onMinClicksChange}
+              onGeoLevelChange={onGeoLevelChange}
+            />
+          )}
+
           {/* 5 metric cards no topo, fora das sub-tabs */}
-          <GeographicMetrics
-            stats={stats}
-            showTitle
-            title={t("geographic.metrics.title")}
-          />
+          <GeographicMetrics stats={stats} />
 
           {/* Sub-tabs */}
           <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
@@ -163,12 +206,16 @@ export function GeographicAnalysis({
             />
           )}
 
-          {/* Sub-tab 2: Rankings com drill-down */}
+          {/* Sub-tab 2: Rankings com drill-down — geoLevel controls initial view */}
           {activeSubTab === 2 && (
             <GeographicChart
-              countries={data?.top_countries || []}
-              states={data?.top_states || []}
-              cities={data?.top_cities || []}
+              countries={
+                resolvedGeoLevel === "country" ? data?.top_countries || [] : []
+              }
+              states={
+                resolvedGeoLevel === "state" ? data?.top_states || [] : []
+              }
+              cities={resolvedGeoLevel === "city" ? data?.top_cities || [] : []}
               totalClicks={stats?.totalClicks || 0}
               selectedCountry={selectedCountry}
               onCountrySelect={setSelectedCountry}

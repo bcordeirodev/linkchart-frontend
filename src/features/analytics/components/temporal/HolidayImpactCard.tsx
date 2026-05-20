@@ -41,9 +41,7 @@ export function HolidayImpactCard({ data }: Props) {
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
           <CelebrationIcon color="primary" />
           <Typography variant="h6">
-            {t("temporal.holiday.title", {
-              defaultValue: "Impacto de Feriados",
-            })}
+            {t("temporal.holiday.title", { defaultValue: "Impacto de Feriados" })}
           </Typography>
           <Chip
             label={`${data.holiday_percentage}%`}

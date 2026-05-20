@@ -37,9 +37,7 @@ export function SeasonalDistributionChart({ data }: Props) {
   return (
     <Box>
       <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-        {t("temporal.seasonal.title", {
-          defaultValue: "Distribuição por Estação",
-        })}
+        {t("temporal.seasonal.title", { defaultValue: "Distribuição por Estação" })}
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         {t("temporal.seasonal.description")}

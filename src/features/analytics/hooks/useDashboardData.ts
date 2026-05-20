@@ -28,13 +28,15 @@ import type {
  * Fetches the dashboard payload for a given link, with optional polling.
  *
  * @param options.linkId - canonical link id; the hook stays idle when undefined/empty
- * @param options.timeframe - one of `"1h" | "24h" | "7d" | "30d" | "all"` (default `"24h"`)
+ * @param options.dateFrom - ISO date string (yyyy-MM-dd) for the start of the period
+ * @param options.dateTo - ISO date string (yyyy-MM-dd) for the end of the period
+ * @param options.excludeBots - when true, adds `exclude_bots=true` to the request
  * @param options.refreshInterval - polling interval in ms when `enableRealtime` is true (default `60000`)
  * @param options.enableRealtime - when true, polls every `refreshInterval` ms (default `false`)
  * @returns `{ data: DashboardData | null, stats, loading, error, refresh, isRealtime }`
  *
  * @remarks
- * Endpoint: `GET /api/analytics/link/{id}/dashboard?hours={n}&include_charts=true` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD`).
+ * Endpoint: `GET /api/analytics/link/{id}/dashboard?include_charts=true[&date_from=…][&date_to=…][&exclude_bots=true]` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD`).
  * Unlike the other analytics hooks, this one uses `useState`/`useEffect` directly (not TanStack Query) — it predates the migration and keeps its own AbortController-based request deduplication.
  * Cache key is therefore not part of the shared `queryKeys.analytics.*` namespace.
  */
@@ -42,7 +44,9 @@ export function useDashboardData({
   linkId,
   refreshInterval = 60000,
   enableRealtime = false,
-  timeframe = "24h",
+  dateFrom,
+  dateTo,
+  excludeBots = false,
 }: UseDashboardDataOptions = {}): UseDashboardDataReturn {
   const [data, setData] = useState<DashboardData | null>(null);
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -60,12 +64,12 @@ export function useDashboardData({
    */
   const fetchDashboardData = useCallback(async () => {
     try {
-      const params = {
-        hours: getHoursFromTimeframe(timeframe),
-        include_charts: "true",
-      };
+      const params = new URLSearchParams({ include_charts: "true" });
+      if (dateFrom) params.set("date_from", dateFrom);
+      if (dateTo) params.set("date_to", dateTo);
+      if (excludeBots) params.set("exclude_bots", "true");
 
-      const requestKey = `${linkId}-${timeframe}-${JSON.stringify(params)}`;
+      const requestKey = `${linkId}-${dateFrom}-${dateTo}-${excludeBots}-${params.toString()}`;
 
       // Evita requisições duplicadas
       if (
@@ -91,7 +95,8 @@ export function useDashboardData({
       }
 
       const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD(linkId);
-      const fullEndpoint = buildEndpointWithParams(endpoint, params);
+      const qs = params.toString();
+      const fullEndpoint = qs ? `${endpoint}?${qs}` : endpoint;
 
       // Client já desembrulha envelope { data } (Onda 0).
       const response = await api.get<ApiResponse>(fullEndpoint);
@@ -118,7 +123,7 @@ export function useDashboardData({
     } finally {
       isRequestingRef.current = false;
     }
-  }, [linkId, timeframe]);
+  }, [linkId, dateFrom, dateTo, excludeBots]);
 
   /**
    * Atualiza dados manualmente
@@ -164,8 +169,7 @@ export function useDashboardData({
         clearInterval(intervalRef.current);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [linkId, timeframe]);
+  }, [fetchDashboardData]);
 
   return {
     data,
@@ -194,6 +198,7 @@ interface ApiResponseData {
   link_info?: DashboardData["link_info"];
 }
 
+/** Shape of the metrics field returned by the dashboard API endpoint. */
 interface ApiMetrics {
   dashboard?: DashboardSummary;
   geographic?: GeographicSummary;
@@ -202,6 +207,7 @@ interface ApiMetrics {
   };
 }
 
+/** Shape of the charts field returned by the dashboard API endpoint. */
 interface ApiCharts {
   temporal?: DashboardData["temporal_data"];
   geographic?: DashboardData["geographic_data"];
@@ -211,42 +217,11 @@ interface ApiCharts {
 // Shape que chega ao hook pós-Onda-0: payload direto do AnalyticsController,
 // sem envelope {success, data}. Mantém campos legados (metrics/charts) apenas
 // por compatibilidade com respostas antigas de cache.
+/** Full API response envelope for the dashboard endpoint. */
 interface ApiResponse extends ApiResponseData {
   metrics?: ApiMetrics;
   charts?: ApiCharts;
   timeframe?: string;
-}
-
-/**
- * Maps a human-friendly timeframe label (`"1h" | "24h" | "7d" | "30d" | "all"`)
- * to the `hours` query-string value expected by the dashboard endpoint.
- * `"all"` is translated to `"0"`, which the backend interprets as no time bound.
- */
-function getHoursFromTimeframe(
-  timeframe: "1h" | "24h" | "7d" | "30d" | "all",
-): string {
-  const map = { "1h": "1", "24h": "24", "7d": "168", "30d": "720", all: "0" };
-  return map[timeframe];
-}
-
-/**
- * Appends a `URLSearchParams`-encoded query string to `endpoint`, skipping
- * keys whose value is `undefined`/`null`. Returns the bare endpoint when no
- * params are provided.
- */
-function buildEndpointWithParams(
-  endpoint: string,
-  params: Record<string, string>,
-): string {
-  const urlParams = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      urlParams.append(key, String(value));
-    }
-  });
-  return urlParams.toString()
-    ? `${endpoint}?${urlParams.toString()}`
-    : endpoint;
 }
 
 /**

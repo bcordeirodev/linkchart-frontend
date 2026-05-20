@@ -8,6 +8,7 @@ export { AppLogo } from "./AppLogo";
 
 // Layout & Structure
 export { default as TabPanel } from "./TabPanel";
+export { default as TabDescription } from "./TabDescription";
 export { default as EnhancedPaper } from "./EnhancedPaper";
 
 // Novos componentes unificados
