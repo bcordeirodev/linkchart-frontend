@@ -1,5 +1,5 @@
 "use client";
-import { MonitorSmartphone, Globe, Clock, TrendingUp } from "lucide-react";
+import { MonitorSmartphone, AppWindow, Cpu, Clock, TrendingUp, Repeat } from "lucide-react";
 import {
   Box,
   Card,
@@ -63,7 +63,7 @@ export function AudienceMetrics({
       id: "browser_types",
       title: t("audience.metrics.browsers"),
       value: browserTypes.toString(),
-      icon: <Globe {...ICON_LG} />,
+      icon: <AppWindow {...ICON_LG} />,
       color: "success" as const,
       subtitle: t("audience.metrics.differentBrowsers"),
     },
@@ -71,7 +71,7 @@ export function AudienceMetrics({
       id: "os_types",
       title: t("audience.metrics.operatingSystems"),
       value: osTypes.toString(),
-      icon: <Clock {...ICON_LG} />,
+      icon: <Cpu {...ICON_LG} />,
       color: "info" as const,
       subtitle: t("audience.metrics.differentOS"),
     },
@@ -90,7 +90,7 @@ export function AudienceMetrics({
         data?.audience?.return_visitor_stats != null
           ? data.audience.return_visitor_stats.return_rate.toFixed(1) + "%"
           : "--",
-      icon: <TrendingUp {...ICON_LG} />,
+      icon: <Repeat {...ICON_LG} />,
       color: "success" as const,
       subtitle: t("audience.metrics.returnVisitorsSubtitle"),
     },

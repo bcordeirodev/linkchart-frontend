@@ -1,6 +1,6 @@
 "use client";
-import { Box, Typography, Card, CardContent } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Box, Typography, Card, CardContent, Divider } from "@mui/material";
+import { useTheme, alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -69,64 +69,71 @@ export function MetricCardOptimized({
             display: "flex",
             alignItems: "flex-start",
             justifyContent: "space-between",
-            mb: 2,
+            mb: 1,
           }}
         >
-          <Box sx={{ flex: 1 }}>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mb: 1, fontWeight: 500 }}
-            >
-              {title}
-            </Typography>
-
-            <Typography
-              variant="h4"
-              component="div"
-              sx={{
-                fontWeight: 600,
-                fontVariantNumeric: "tabular-nums",
-                color: selectedColor,
-                mb: subtitle ? 0.5 : 0,
-              }}
-            >
-              {value}
-            </Typography>
-
-            {subtitle ? (
-              <Typography variant="caption" color="text.secondary">
-                {subtitle}
-              </Typography>
-            ) : null}
-          </Box>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontWeight: 500 }}
+          >
+            {title}
+          </Typography>
 
           <Box
             sx={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              bgcolor: alpha(selectedColor, 0.12),
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               color: selectedColor,
-              fontSize: "2rem",
-              opacity: 0.8,
+              flexShrink: 0,
             }}
           >
             {icon}
           </Box>
         </Box>
 
+        <Typography
+          variant="h4"
+          component="div"
+          sx={{
+            fontWeight: 600,
+            fontVariantNumeric: "tabular-nums",
+            color: selectedColor,
+            mb: subtitle ? 0.5 : 0,
+          }}
+        >
+          {value}
+        </Typography>
+
+        {subtitle ? (
+          <Typography variant="caption" color="text.secondary">
+            {subtitle}
+          </Typography>
+        ) : null}
+
         {trend ? (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                color: trend.isPositive ? "success.main" : "error.main",
-                fontWeight: 600,
-              }}
-            >
-              {trend.isPositive ? "↗" : "↘"} {Math.abs(trend.value)}%
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {t("metrics.vsPreviousPeriod")}
-            </Typography>
-          </Box>
+          <>
+            <Divider sx={{ my: 1.5 }} />
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: trend.isPositive ? "success.main" : "error.main",
+                  fontWeight: 600,
+                }}
+              >
+                {trend.isPositive ? "↗" : "↘"} {Math.abs(trend.value)}%
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {t("metrics.vsPreviousPeriod")}
+              </Typography>
+            </Box>
+          </>
         ) : null}
       </CardContent>
     </Card>

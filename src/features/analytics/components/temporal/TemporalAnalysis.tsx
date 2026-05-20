@@ -1,5 +1,5 @@
 "use client";
-import { Clock, TrendingUp, Calendar } from "lucide-react";
+import { Clock, TrendingUp, Calendar, Activity } from "lucide-react";
 import { Box, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
@@ -106,7 +106,7 @@ export function TemporalAnalysis({
                 <MetricCard
                   title={t("temporal.metrics.avgPerHour")}
                   value={stats?.averageHourlyClicks?.toString() || "0"}
-                  icon={<Clock {...ICON_LG} />}
+                  icon={<Activity {...ICON_LG} />}
                   color="info"
                   subtitle={t("temporal.metrics.clicksPerHour")}
                 />
