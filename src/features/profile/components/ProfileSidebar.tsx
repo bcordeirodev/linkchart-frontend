@@ -128,7 +128,9 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
             {t("sidebar.activity")}
           </Typography>
           <Divider sx={{ mb: 2 }} />
-          <Box sx={{ display: "flex", gap: 5 }}>
+
+          {/* Totals row */}
+          <Box sx={{ display: "flex", gap: 4, mb: 2.5 }}>
             <Box>
               {statsLoading ? (
                 <Skeleton variant="text" width={48} height={52} />
@@ -137,7 +139,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                   variant="h4"
                   sx={{ fontWeight: 700, lineHeight: 1.1 }}
                 >
-                  {stats?.total_links ?? 0}
+                  {(stats?.total_links ?? 0).toLocaleString(i18n.language)}
                 </Typography>
               )}
               <Typography variant="caption" color="text.secondary">
@@ -158,6 +160,65 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
               )}
               <Typography variant="caption" color="text.secondary">
                 {t("sidebar.totalClicks")}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Divider sx={{ mb: 2 }} />
+
+          {/* Secondary stats: avg clicks/link + this month */}
+          <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+            <Box>
+              {statsLoading ? (
+                <Skeleton variant="text" width={40} height={28} />
+              ) : (
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 700, lineHeight: 1.2 }}
+                >
+                  {stats && stats.total_links > 0
+                    ? Math.round(
+                        stats.total_clicks / stats.total_links,
+                      ).toLocaleString(i18n.language)
+                    : "—"}
+                </Typography>
+              )}
+              <Typography variant="caption" color="text.secondary">
+                {t("sidebar.avgClicks")}
+              </Typography>
+            </Box>
+
+            <Box>
+              {statsLoading ? (
+                <Skeleton variant="text" width={40} height={28} />
+              ) : (
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 700, lineHeight: 1.2 }}
+                >
+                  {(stats?.links_this_month ?? 0).toLocaleString(i18n.language)}
+                </Typography>
+              )}
+              <Typography variant="caption" color="text.secondary">
+                {t("sidebar.linksThisMonth")}
+              </Typography>
+            </Box>
+
+            <Box>
+              {statsLoading ? (
+                <Skeleton variant="text" width={48} height={28} />
+              ) : (
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 700, lineHeight: 1.2 }}
+                >
+                  {(stats?.clicks_this_month ?? 0).toLocaleString(
+                    i18n.language,
+                  )}
+                </Typography>
+              )}
+              <Typography variant="caption" color="text.secondary">
+                {t("sidebar.clicksThisMonth")}
               </Typography>
             </Box>
           </Box>

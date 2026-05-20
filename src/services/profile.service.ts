@@ -38,6 +38,8 @@ export interface UpdateProfileResponse {
 export interface ProfileStats {
   total_links: number;
   total_clicks: number;
+  links_this_month: number;
+  clicks_this_month: number;
 }
 
 /**
