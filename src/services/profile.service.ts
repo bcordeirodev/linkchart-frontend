@@ -33,6 +33,14 @@ export interface UpdateProfileResponse {
 }
 
 /**
+ * Shape returned by GET /api/profile/stats.
+ */
+export interface ProfileStats {
+  total_links: number;
+  total_clicks: number;
+}
+
+/**
  * REST client for `/api/me` and `/api/profile` (profile read/update).
  *
  * Wraps `BaseService` and inherits envelope unwrap + JWT injection from `ApiClient`.
@@ -75,6 +83,18 @@ export default class ProfileService extends BaseService {
       },
     );
   }
+
+  /**
+   * Returns total link and click counts for the authenticated user.
+   *
+   * @returns `ProfileStats` with total_links and total_clicks.
+   * @endpoint `GET /api/profile/stats`
+   */
+  async getStats(): Promise<ProfileStats> {
+    return this.get<ProfileStats>(API_ENDPOINTS.AUTH.PROFILE_STATS, {
+      context: "get_profile_stats",
+    });
+  }
 }
 
 // Instância singleton do serviço
@@ -84,6 +104,7 @@ const profileService = new ProfileService();
 export const getCurrentUser =
   profileService.getCurrentUser.bind(profileService);
 export const updateProfile = profileService.updateProfile.bind(profileService);
+export const getStats = profileService.getStats.bind(profileService);
 
 // Export da instância do serviço
 export { profileService };
