@@ -150,7 +150,7 @@ export function AnalyticsFilterBar({
             slotProps={{
               textField: {
                 size: "small",
-                sx: { width: 176 },
+                sx: { width: 200 },
                 inputProps: { "aria-label": t("filters.dateFrom") },
               },
             }}
@@ -179,7 +179,7 @@ export function AnalyticsFilterBar({
             slotProps={{
               textField: {
                 size: "small",
-                sx: { width: 176 },
+                sx: { width: 200 },
                 inputProps: { "aria-label": t("filters.dateTo") },
               },
             }}
