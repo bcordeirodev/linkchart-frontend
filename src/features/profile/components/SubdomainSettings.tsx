@@ -144,6 +144,7 @@ export function SubdomainSettings() {
           <Chip
             label={t("subdomain.chip.active")}
             color="success"
+            variant="filled"
             size="small"
           />
         ) : (
