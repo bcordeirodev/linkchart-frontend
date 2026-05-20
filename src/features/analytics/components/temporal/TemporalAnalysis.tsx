@@ -27,8 +27,6 @@ import { ViralRankMiniChart } from "./ViralRankMiniChart";
 interface TemporalAnalysisProps {
   /** Canonical id of the link to display analytics for. */
   linkId: string;
-  /** Override the section title text. */
-  title?: string;
   /** Whether to subscribe to realtime updates. Defaults to `false`. */
   enableRealtime?: boolean;
   /** ISO date string (yyyy-MM-dd) for the start of the period filter. */
@@ -38,10 +36,9 @@ interface TemporalAnalysisProps {
   /** When `true`, bot traffic is excluded from all metrics. */
   excludeBots?: boolean;
   /**
-   * Frontend-only display control — which chart granularity to show first.
-   * `"day"` renders the day-of-week chart before the hourly chart;
-   * `"hour"` (default) keeps the hourly chart first.
-   * Does not affect the backend query.
+   * Chart granularity display mode. "hour" renders HourlyClicksChart first;
+   * "day" and "month" render DayOfWeekChart first (no dedicated monthly chart yet).
+   * Does not affect API requests — backend returns all groupings per response.
    */
   groupBy?: GroupBy;
   /** Restricts data to weekday / weekend / business-hours subset (backend filter). */
@@ -59,12 +56,11 @@ interface TemporalAnalysisProps {
  * `onSegmentChange` callbacks are provided.
  *
  * Chart rendering order is controlled by `groupBy`:
- * - `"day"` → `DayOfWeekChart` renders before `HourlyClicksChart`
- * - `"hour"` or `"month"` (default) → `HourlyClicksChart` renders first
+ * - `"day"` or `"month"` → `DayOfWeekChart` renders before `HourlyClicksChart`
+ * - `"hour"` (default) → `HourlyClicksChart` renders first
  */
 export function TemporalAnalysis({
   linkId,
-  title: _title,
   enableRealtime = false,
   dateFrom,
   dateTo,
@@ -75,14 +71,7 @@ export function TemporalAnalysis({
   onSegmentChange,
 }: TemporalAnalysisProps) {
   const { t } = useTranslation("analytics");
-  const {
-    data,
-    stats,
-    loading,
-    error,
-    refresh,
-    isRealtime: _isRealtime,
-  } = useTemporalData({
+  const { data, stats, loading, error, refresh } = useTemporalData({
     linkId,
     enableRealtime,
     dateFrom,
@@ -112,8 +101,9 @@ export function TemporalAnalysis({
         ? t("temporal.metrics.declining")
         : t("temporal.metrics.stable");
 
-  /** When groupBy is "day", day-of-week chart renders first. */
-  const dayFirst = (groupBy ?? "hour") === "day";
+  /** When groupBy is "day" or "month", day-of-week chart renders first. */
+  const resolved = groupBy ?? "hour";
+  const dayFirst = resolved === "day" || resolved === "month";
 
   const hourlyChartNode =
     (data?.clicks_by_hour?.length ?? 0) > 0 ? (

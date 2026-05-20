@@ -41,8 +41,6 @@ interface LinkDashboardProps {
   linkId: string;
   /** Whether to render the link info title card. Defaults to `true`. */
   showTitle?: boolean;
-  /** Override the dashboard title text. */
-  title?: string;
   /** Whether to subscribe to realtime updates. Defaults to `false`. */
   enableRealtime?: boolean;
   /** Render in compact mode (reduced height, no charts). Defaults to `false`. */
@@ -69,7 +67,6 @@ interface LinkDashboardProps {
 export function LinkDashboard({
   linkId,
   showTitle = true,
-  title: _title,
   enableRealtime = false,
   compact = false,
   chartsHeight,
