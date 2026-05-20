@@ -195,11 +195,7 @@ export function SubdomainSettings() {
       {subdomain ? (
         <Box>
           {/* URL as a plain clickable link — no box, no buttons */}
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ display: "block", mb: 0.5 }}
-          >
+          <Typography variant="subtitle2" sx={{ display: "block", mb: 0.75 }}>
             {t("subdomain.yourDomainLabel")}
           </Typography>
           <Link
@@ -210,7 +206,7 @@ export function SubdomainSettings() {
             sx={{
               fontFamily: "monospace",
               fontWeight: 600,
-              fontSize: "1rem",
+              fontSize: "1.1rem",
               display: "inline-block",
               mb: 3,
             }}
@@ -281,7 +277,14 @@ export function SubdomainSettings() {
           </Box>
 
           {/* Input */}
-          <FormLabel sx={{ display: "block", mb: 0.75 }}>
+          <FormLabel
+            sx={{
+              display: "block",
+              mb: 0.75,
+              fontWeight: 600,
+              color: "text.primary",
+            }}
+          >
             {t("subdomain.inputLabel")}
           </FormLabel>
           <TextField
@@ -289,7 +292,7 @@ export function SubdomainSettings() {
             onChange={(e) => handleInputChange(e.target.value)}
             placeholder={t("subdomain.inputPlaceholder")}
             error={!!inputError}
-            size="small"
+            size="medium"
             fullWidth
             slotProps={{
               input: {
