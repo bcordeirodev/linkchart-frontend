@@ -250,7 +250,10 @@ export function SubdomainSettings() {
             size="small"
             onClick={handleClaim}
             disabled={
-              isClaiming || !availability?.available || inputValue.length < 3
+              isClaiming ||
+              isCheckingAvailability ||
+              !availability?.available ||
+              inputValue.length < 3
             }
           >
             {isClaiming ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
