@@ -4,10 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { subdomainService } from "@/services/subdomain.service";
-import type {
-  SubdomainAvailability,
-  SubdomainResponse,
-} from "../types/subdomain";
+import type { SubdomainAvailability } from "../types/subdomain";
 
 /** Query key used across the app to identify the subdomain cache entry. */
 export const SUBDOMAIN_QUERY_KEY = ["subdomain"] as const;
