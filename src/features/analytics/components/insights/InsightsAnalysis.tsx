@@ -10,21 +10,12 @@ import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import { useInsightsData } from "../../hooks/useInsightsData";
-import type { InsightPriority } from "@/features/links/hooks/useAnalyticsFilters";
 
 import { BusinessInsights } from "./BusinessInsights";
-import { InsightsFilterBar } from "./InsightsFilterBar";
 import { RetentionAnalysisChart } from "./RetentionAnalysisChart";
 import { SessionDepthChart } from "./SessionDepthChart";
 import { TrafficSourceChart } from "./TrafficSourceChart";
 import { TrafficQualityChart } from "./TrafficQualityChart";
-
-/** Maps {@link InsightPriority} values to `minConfidence` thresholds. */
-const confidenceMap: Record<InsightPriority, number> = {
-  all: 0.5,
-  high: 0.8,
-  medium: 0.6,
-};
 
 /** Props accepted by the {@link InsightsAnalysis} component. */
 interface InsightsAnalysisProps {
@@ -40,18 +31,6 @@ interface InsightsAnalysisProps {
   dateTo?: string | null;
   /** When `true`, bot traffic is excluded from all metrics. */
   excludeBots?: boolean;
-  /** Priority filter — maps to a `minConfidence` threshold passed to the hook. */
-  priority?: InsightPriority;
-  /** Category strings to include; empty array means "all categories". */
-  insightCategories?: string[];
-  /** When `true`, only insights flagged as actionable are displayed. */
-  actionableOnly?: boolean;
-  /** Callback to propagate `priority` changes to the parent. */
-  onPriorityChange?: (v: InsightPriority) => void;
-  /** Callback to propagate `insightCategories` changes to the parent. */
-  onCategoriesChange?: (v: string[]) => void;
-  /** Callback to propagate `actionableOnly` changes to the parent. */
-  onActionableOnlyChange?: (v: boolean) => void;
 }
 
 /**
@@ -93,12 +72,6 @@ export function InsightsAnalysis({
   dateFrom,
   dateTo,
   excludeBots,
-  priority,
-  insightCategories,
-  actionableOnly,
-  onPriorityChange,
-  onCategoriesChange,
-  onActionableOnlyChange,
 }: InsightsAnalysisProps) {
   const { t } = useTranslation("analytics");
 
@@ -108,19 +81,15 @@ export function InsightsAnalysis({
     dateFrom,
     dateTo,
     excludeBots,
-    minConfidence: confidenceMap[priority ?? "all"],
-    categories: insightCategories ?? [],
-    refreshInterval: 300000, // 5 minutos (insights não mudam frequentemente)
+    minConfidence: 0.5,
+    categories: [],
+    refreshInterval: 300000,
   });
 
-  /**
-   * Applies the `actionableOnly` in-memory post-filter after the hook data
-   * has been normalised.  Returns all insights when `actionableOnly` is falsy.
-   */
-  const filteredInsights = useMemo(() => {
-    if (!data?.insights) return [];
-    return data.insights.filter((i) => !actionableOnly || i.actionable);
-  }, [data?.insights, actionableOnly]);
+  const filteredInsights = useMemo(
+    () => data?.insights ?? [],
+    [data?.insights],
+  );
 
   return (
     <Box>
@@ -134,18 +103,6 @@ export function InsightsAnalysis({
         minHeight={300}
       >
         <Box>
-          {/* Filter bar — only rendered when parent supplies all three callbacks */}
-          {onPriorityChange && onCategoriesChange && onActionableOnlyChange && (
-            <InsightsFilterBar
-              priority={priority ?? "all"}
-              insightCategories={insightCategories ?? []}
-              actionableOnly={actionableOnly ?? false}
-              onPriorityChange={onPriorityChange}
-              onCategoriesChange={onCategoriesChange}
-              onActionableOnlyChange={onActionableOnlyChange}
-            />
-          )}
-
           {/* MÉTRICAS */}
           <Box sx={{ mb: 3 }}>
             <Grid container spacing={3}>

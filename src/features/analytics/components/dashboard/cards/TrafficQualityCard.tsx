@@ -1,7 +1,7 @@
 "use client";
 import { useTranslation } from "react-i18next";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 
 import { MetricCardOptimized } from "@/shared/ui/base/MetricCardOptimized";
 
@@ -45,13 +45,6 @@ export function TrafficQualityCard({ data }: Props) {
           fraud: data.likely_fraud,
         })}
       />
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{ mt: 1, px: 0.5, fontSize: "0.75rem" }}
-      >
-        {t("quality.description")}
-      </Typography>
     </Box>
   );
 }
