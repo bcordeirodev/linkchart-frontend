@@ -50,5 +50,31 @@
     "pendingVerification": "Verificação Pendente",
     "pendingVerificationDesc": "Verifique seu e-mail para acesso completo",
     "dateUnavailable": "Data não disponível"
+  },
+  "subdomain": {
+    "title": "Subdomínio Personalizado",
+    "description": "Crie um subdomínio próprio para encurtar seus links. Links futuros usarão esta URL como base.",
+    "inputLabel": "Seu subdomínio",
+    "inputPlaceholder": "minhaempresa",
+    "activeLabel": "Subdomínio ativo",
+    "claimButton": "Reivindicar",
+    "releaseButton": "Liberar subdomínio",
+    "checking": "Verificando...",
+    "available": "Disponível",
+    "unavailable": "Já utilizado",
+    "copy": "Copiar URL",
+    "copied": "Copiado!",
+    "openInNew": "Abrir em nova aba",
+    "claimError": "Não foi possível reivindicar o subdomínio. Tente novamente.",
+    "validation": {
+      "format": "Use apenas letras minúsculas, números e hífens (mínimo 3 caracteres). Não pode começar ou terminar com hífen.",
+      "unavailable": "Este subdomínio já está em uso."
+    },
+    "releaseDialog": {
+      "title": "Liberar subdomínio?",
+      "body": "Ao liberar, links futuros voltarão ao domínio padrão. Links existentes não são afetados e continuarão funcionando normalmente.",
+      "cancel": "Cancelar",
+      "confirm": "Liberar"
+    }
   }
 }

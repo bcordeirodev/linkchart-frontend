@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { PasswordChangeForm } from "@/features/profile/components/PasswordChangeForm";
 import { ProfileForm } from "@/features/profile/components/ProfileForm";
 import { ProfileSidebar } from "@/features/profile/components/ProfileSidebar";
+import { SubdomainSettings } from "@/features/profile/components/SubdomainSettings";
 import { AppIcon } from "@/shared/ui/icons";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showMessage } from "@/lib/store/messageSlice";
@@ -110,6 +111,7 @@ function ProfilePage() {
             >
               <ProfileForm user={user} onUserUpdate={handleUserUpdate} />
               <PasswordChangeForm />
+              <SubdomainSettings />
             </Box>
           </Grid>
 
