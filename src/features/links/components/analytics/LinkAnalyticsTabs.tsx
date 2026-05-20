@@ -13,28 +13,23 @@ import {
 import { useTranslation } from "react-i18next";
 
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
-import { ICON_SM, ICON_LG } from "@/lib/theme/iconDefaults";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
 
 import { AudienceAnalysis } from "@/features/analytics/components/audience/AudienceAnalysis";
 import { GeographicAnalysis } from "@/features/analytics/components/geographic/GeographicAnalysis";
 import { InsightsAnalysis } from "@/features/analytics/components/insights/InsightsAnalysis";
 import { TemporalAnalysis } from "@/features/analytics/components/temporal";
-import TabDescription from "@/shared/ui/base/TabDescription";
 import { TabPanel } from "@/shared/ui/base/TabPanel";
 
 import { LinkDashboard } from "@/features/analytics/components/dashboard/LinkDashboard";
 
 import { ClicksTable } from "./ClicksTable";
 
-import type { LinkAnalyticsData } from "../../types/analytics";
-
 // Importar componentes especializados que usam hooks próprios
 
 interface LinkAnalyticsTabsOptimizedProps {
-  data?: LinkAnalyticsData | null;
   linkId: string;
   loading?: boolean;
-  showHeader?: boolean;
 }
 
 /**
@@ -51,15 +46,12 @@ interface LinkAnalyticsTabsOptimizedProps {
  * - Menos de 150 linhas
  */
 export function LinkAnalyticsTabsOptimized({
-  data,
   linkId,
   loading: _loading = false,
-  showHeader = true,
 }: LinkAnalyticsTabsOptimizedProps) {
   const [tabValue, setTabValue] = useState(0);
   const theme = useTheme();
   const { t } = useTranslation("links");
-  const { t: tAnalytics } = useTranslation("analytics");
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -117,23 +109,12 @@ export function LinkAnalyticsTabsOptimized({
 
       {/* Dashboard Tab */}
       <TabPanel value={tabValue} index={0}>
-        {showHeader ? (
-          <Box sx={{ mb: 2 }}>
-            <TabDescription
-              icon={<LayoutDashboard {...ICON_LG} />}
-              title={tAnalytics("dashboard.title")}
-              description={tAnalytics("dashboard.description")}
-              highlight={`${data?.overview?.total_clicks || 0} ${tAnalytics("dashboard.totalClicksLabel")}`}
-            />
-          </Box>
-        ) : null}
         {/* Renderizar apenas se a tab está ativa */}
         {tabValue === 0 && (
           <LinkDashboard
             linkId={linkId}
             showTitle={false}
             enableRealtime={false}
-            showTimeframeSelector
             compact={false}
           />
         )}
