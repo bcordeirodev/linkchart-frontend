@@ -163,7 +163,14 @@ export function LinkAnalyticsTabsOptimized({
 
       {/* Audience Tab */}
       <TabPanel value={filters.tab} index={3}>
-        {filters.tab === 3 && <AudienceAnalysis linkId={linkId} />}
+        {filters.tab === 3 && (
+          <AudienceAnalysis
+            linkId={linkId}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
+          />
+        )}
       </TabPanel>
 
       {/* Insights Tab */}

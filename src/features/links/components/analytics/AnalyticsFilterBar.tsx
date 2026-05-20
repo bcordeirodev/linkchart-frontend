@@ -211,9 +211,14 @@ export function AnalyticsFilterBar({
           size="small"
           checked={excludeBots}
           onChange={(e) => onExcludeBotsChange(e.target.checked)}
+          color="success"
           inputProps={{ "aria-label": t("filters.excludeBots") }}
         />
-        <Typography variant="caption" color="text.secondary">
+        <Typography
+          variant="caption"
+          color={excludeBots ? "success.main" : "text.secondary"}
+          sx={{ fontWeight: excludeBots ? 600 : 400 }}
+        >
           {t("filters.excludeBots")}
         </Typography>
       </Stack>
