@@ -129,7 +129,12 @@
         "5": "Fri",
         "6": "Sat",
         "7": "Sun"
-      }
+      },
+      "hourlyClicksDesc": "Clicks distributed across the 24 hours of the day. Identify peak times to maximize post reach.",
+      "dayOfWeekDesc": "Click volume by day of the week. Discover which days generate the most traffic for this link.",
+      "topCountriesDesc": "Countries that accessed this link the most. Shows the geographic distribution of the audience.",
+      "devicesDesc": "Proportion of visits by device type (mobile, desktop, tablet).",
+      "browsersDesc": "Most used browsers among visitors of this link."
     },
     "linkInfo": {
       "copy": "Copy",

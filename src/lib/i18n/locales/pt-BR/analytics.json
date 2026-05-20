@@ -272,6 +272,14 @@
         "trending": "Trending",
         "viral": "Viral"
       }
+    },
+    "holiday": {
+      "description": "Comparativo de cliques em feriados nacionais versus dias normais. Identifique se sua audiência é mais ativa em períodos de folga ou durante a semana de trabalho.",
+      "title": "Impacto de Feriados"
+    },
+    "seasonal": {
+      "description": "Distribuição de cliques por estação do ano (Verão, Outono, Inverno, Primavera). Revela sazonalidade no engajamento e ajuda a planejar campanhas pelos períodos mais quentes.",
+      "title": "Distribuição por Estação"
     }
   },
   "geographic": {
@@ -504,7 +512,8 @@
         "organic": "Orgânico",
         "suspicious": "Suspeito",
         "likely_fraud": "Fraude"
-      }
+      },
+      "description": "Classificação dos cliques em orgânicos, suspeitos e prováveis fraudes, calculada por fingerprint de dispositivo, padrão de comportamento e velocidade de clique. Use para avaliar a integridade do tráfego."
     },
     "behavior": {
       "title": "Como Chegaram",
@@ -515,7 +524,8 @@
         "in_app_webview": "App (Instagram, WhatsApp…)",
         "api_programmatic": "Programático",
         "unknown": "Desconhecido"
-      }
+      },
+      "description": "Forma como cada visitante chegou ao link: diretamente pelo browser, via referral de outro site, por app mobile (webview) ou de forma programática. Ajuda a entender o contexto de uso do link."
     },
     "socialPlatform": {
       "title": "Por Plataforma Social",
@@ -736,10 +746,12 @@
       "warming": "Aquecendo",
       "trending": "Trending",
       "viral": "Viral"
-    }
+    },
+    "description": "Rank atual de viralidade calculado com base na velocidade de cliques nas últimas horas. Quanto mais quente o rank, maior o pico de engajamento orgânico."
   },
   "quality": {
     "title": "Qualidade",
-    "subtitle": "{{suspicious}} suspeitos · {{fraud}} fraude"
+    "subtitle": "{{suspicious}} suspeitos · {{fraud}} fraude",
+    "description": "Percentual de cliques classificados como orgânicos (humanos reais). Cliques suspeitos e fraudulentos são detectados por fingerprint, padrão de comportamento e velocidade."
   }
 }

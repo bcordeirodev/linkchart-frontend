@@ -543,7 +543,10 @@ export function TemporalChart({
             <Box>
               <Grid container spacing={3}>
                 <Grid item xs={12} lg={8} sx={{ minWidth: 0 }}>
-                  <ChartCard title={t("temporal.chart.businessHoursAnalysis")}>
+                  <ChartCard
+                    title={t("temporal.chart.businessHoursAnalysis")}
+                    subtitle={t("charts.descriptions.businessHours")}
+                  >
                     <Typography
                       variant="caption"
                       color="text.secondary"

@@ -70,9 +70,7 @@ export function TimezoneDistributionChart({
         <Grid item xs={12} lg={8}>
           <ChartCard
             title={t("temporal.timezone.chartTitle")}
-            subtitle={t("temporal.timezone.detected", {
-              count: timezoneAnalysis.length,
-            })}
+            subtitle={t("charts.descriptions.timezoneDistribution")}
           >
             <ApexChartWrapper
               type="bar"

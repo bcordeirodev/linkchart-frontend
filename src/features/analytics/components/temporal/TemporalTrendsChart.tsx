@@ -106,9 +106,7 @@ export function TemporalTrendsChart({
           <Grid item xs={12} lg={6}>
             <ChartCard
               title={t("temporal.trends.weeklyTitle")}
-              subtitle={t("temporal.trends.weeklyAvg", {
-                avg: Math.round(weeklyAvg),
-              })}
+              subtitle={t("charts.descriptions.temporalTrends")}
             >
               <ApexChartWrapper
                 type="area"
@@ -218,9 +216,7 @@ export function TemporalTrendsChart({
           <Grid item xs={12} lg={6}>
             <ChartCard
               title={t("temporal.trends.monthlyTitle")}
-              subtitle={t("temporal.trends.monthlyAvg", {
-                avg: Math.round(monthlyAvg),
-              })}
+              subtitle={t("charts.descriptions.temporalTrends")}
             >
               <ApexChartWrapper
                 type="area"

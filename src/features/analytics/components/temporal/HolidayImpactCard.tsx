@@ -8,6 +8,7 @@ import {
   Divider,
 } from "@mui/material";
 import CelebrationIcon from "@mui/icons-material/Celebration";
+import { useTranslation } from "react-i18next";
 
 interface HolidayEntry {
   holiday: string;
@@ -30,20 +31,27 @@ interface Props {
  * Exibe o impacto de feriados nos cliques do link.
  */
 export function HolidayImpactCard({ data }: Props) {
+  const { t } = useTranslation("analytics");
+
   if (!data?.top_holidays?.length && !data?.holiday_clicks) return null;
 
   return (
     <Card variant="outlined">
       <CardContent>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
           <CelebrationIcon color="primary" />
-          <Typography variant="h6">Impacto de Feriados</Typography>
+          <Typography variant="h6">
+            {t("temporal.holiday.title", { defaultValue: "Impacto de Feriados" })}
+          </Typography>
           <Chip
             label={`${data.holiday_percentage}%`}
             size="small"
             color="primary"
           />
         </Box>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+          {t("temporal.holiday.description")}
+        </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           {data.holiday_clicks} cliques em feriados vs {data.non_holiday_clicks}{" "}
           em dias normais
