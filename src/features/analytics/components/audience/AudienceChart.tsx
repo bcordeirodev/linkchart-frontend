@@ -364,6 +364,9 @@ export function AudienceChart({
                     <Smartphone {...ICON_MD} />{" "}
                     {t("audience.chart.deviceDistribution")}
                   </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    {t("audience.chart.deviceDistributionDesc")}
+                  </Typography>
                   <ApexChartWrapper
                     type="pie"
                     size="standard"
@@ -394,6 +397,9 @@ export function AudienceChart({
                     }}
                   >
                     <Trophy {...ICON_MD} /> {t("audience.chart.deviceRanking")}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    {t("audience.chart.deviceRankingDesc")}
                   </Typography>
                   <ApexChartWrapper
                     type="bar"
@@ -427,6 +433,9 @@ export function AudienceChart({
                 }}
               >
                 <BarChart3 {...ICON_MD} /> {t("audience.chart.deviceDetails")}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                {t("audience.chart.deviceDetailsDesc")}
               </Typography>
 
               <Stack spacing={2}>

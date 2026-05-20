@@ -395,6 +395,9 @@ export function TrafficSourceChart({
                 >
                   {t("insights.traffic.channelDistribution")}
                 </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: "center" }}>
+                  {t("insights.traffic.channelDistributionDesc")}
+                </Typography>
                 <ApexChartWrapper
                   options={channelsPieOptions}
                   series={channelsPieData}
@@ -425,6 +428,9 @@ export function TrafficSourceChart({
                   sx={{ textAlign: "center", fontWeight: 600 }}
                 >
                   {t("insights.traffic.engagementByChannel")}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: "center" }}>
+                  {t("insights.traffic.engagementByChannelDesc")}
                 </Typography>
                 <ApexChartWrapper
                   options={performanceBarOptions}

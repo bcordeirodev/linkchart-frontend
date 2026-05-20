@@ -73,10 +73,13 @@ export function SocialPlatformSection({ platforms }: Props) {
         <CardContent>
           <Typography
             variant="subtitle2"
-            sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}
+            sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}
           >
             <Share2 {...ICON_MD} />
             {t("audience.socialPlatform.subtitle")}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {t("audience.socialPlatform.description")}
           </Typography>
           <Stack spacing={2}>
             {platforms.map((entry) => {
