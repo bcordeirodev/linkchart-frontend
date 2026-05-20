@@ -251,6 +251,12 @@ export interface UseAudienceDataOptions {
   refreshInterval?: number;
   /** Incluir dados detalhados de browser/OS (padrão: false) */
   includeDetails?: boolean;
+  /** ISO date string (yyyy-MM-dd) for the start of the period filter. */
+  dateFrom?: string | null;
+  /** ISO date string (yyyy-MM-dd) for the end of the period filter. */
+  dateTo?: string | null;
+  /** When `true`, bot traffic is excluded from all metrics. */
+  excludeBots?: boolean;
 }
 
 /**

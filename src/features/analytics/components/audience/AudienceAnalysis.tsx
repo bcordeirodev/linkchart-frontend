@@ -21,6 +21,12 @@ type AnyData = Record<string, any>;
 interface LegacyAudienceAnalysisProps {
   data?: unknown;
   linkId: string;
+  /** ISO date string (yyyy-MM-dd) for the start of the period filter. */
+  dateFrom?: string | null;
+  /** ISO date string (yyyy-MM-dd) for the end of the period filter. */
+  dateTo?: string | null;
+  /** When `true`, bot traffic is excluded from all metrics. */
+  excludeBots?: boolean;
 }
 
 /**
@@ -29,6 +35,9 @@ interface LegacyAudienceAnalysisProps {
 export function AudienceAnalysis({
   data: legacyData,
   linkId,
+  dateFrom,
+  dateTo,
+  excludeBots,
 }: LegacyAudienceAnalysisProps &
   Partial<Pick<AudienceAnalysisProps, "title">>) {
   const { t } = useTranslation("analytics");
@@ -45,6 +54,9 @@ export function AudienceAnalysis({
     enableRealtime: shouldUseHook,
     refreshInterval: 60000,
     includeDetails: true,
+    dateFrom,
+    dateTo,
+    excludeBots,
   });
 
   const audienceData = shouldUseHook ? hookData : legacyData;

@@ -107,7 +107,7 @@ function resolveDates(period: Period): {
  * Instantiated once in `LinkAnalyticsTabs`. Tab components receive state as
  * props — no tab reads the URL directly.
  *
- * Defaults: period=7d, excludeBots=false, groupBy=hour, segment=all,
+ * Defaults: period=all, excludeBots=true, groupBy=hour, segment=all,
  *   minClicks=1, geoLevel=country, priority=all, actionableOnly=false.
  */
 export function useAnalyticsFilters(): AnalyticsFilters {
@@ -134,8 +134,9 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   const GEO_LEVELS: readonly GeoLevel[] = ["country", "state", "city"];
   const PRIORITIES: readonly InsightPriority[] = ["all", "high", "medium"];
 
-  const period = parseEnum<Period>(searchParams.get("period"), PERIODS, "7d");
-  const excludeBots = searchParams.get("bots") === "true";
+  const period = parseEnum<Period>(searchParams.get("period"), PERIODS, "all");
+  // Default is true; "false" in URL explicitly disables it.
+  const excludeBots = searchParams.get("bots") !== "false";
   const groupBy = parseEnum<GroupBy>(
     searchParams.get("groupBy"),
     GROUP_BYS,
@@ -193,7 +194,10 @@ export function useAnalyticsFilters(): AnalyticsFilters {
 
   const setPeriod = useCallback(
     (v: Period) => {
-      const updates: Record<string, string | null> = { period: v };
+      // "all" is the default — omit from URL to keep it clean
+      const updates: Record<string, string | null> = {
+        period: v === "all" ? null : v,
+      };
       if (v !== "custom") {
         updates.date_from = null;
         updates.date_to = null;
@@ -210,7 +214,8 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   );
 
   const setExcludeBots = useCallback(
-    (v: boolean) => setParam({ bots: v ? "true" : null }),
+    // Default is true, so store "false" when disabled and omit when enabled
+    (v: boolean) => setParam({ bots: v ? null : "false" }),
     [setParam],
   );
 
