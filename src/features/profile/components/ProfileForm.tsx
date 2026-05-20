@@ -134,7 +134,7 @@ export function ProfileForm({
               {formData.name || "—"}
             </Typography>
             <Typography variant="caption" color="text.secondary" noWrap>
-              {formData.email}
+              {user.email}
             </Typography>
           </Box>
         </Box>
