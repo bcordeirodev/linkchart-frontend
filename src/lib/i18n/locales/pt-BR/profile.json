@@ -42,8 +42,9 @@
   },
   "sidebar": {
     "memberSince": "Membro desde",
-    "totalLinks": "Total de links",
-    "totalClicks": "Total de cliques",
+    "activity": "Atividade",
+    "totalLinks": "Links",
+    "totalClicks": "Cliques",
     "accountStatus": "Status da Conta",
     "verified": "Conta Verificada",
     "verifiedDesc": "Acesso completo liberado",
@@ -66,6 +67,7 @@
     "copied": "Copiado!",
     "openInNew": "Abrir em nova aba",
     "claimError": "Não foi possível reivindicar o subdomínio. Tente novamente.",
+    "releaseError": "Não foi possível liberar o subdomínio. Tente novamente.",
     "validation": {
       "format": "Use apenas letras minúsculas, números e hífens (mínimo 3 caracteres). Não pode começar ou terminar com hífen.",
       "unavailable": "Este subdomínio já está em uso."
@@ -75,6 +77,14 @@
       "body": "Ao liberar, links futuros voltarão ao domínio padrão. Links existentes não são afetados e continuarão funcionando normalmente.",
       "cancel": "Cancelar",
       "confirm": "Liberar"
+    },
+    "chip": {
+      "free": "GRÁTIS",
+      "active": "ATIVO"
+    },
+    "responsibility": {
+      "text": "Ao reivindicar este subdomínio você confirma que é responsável por todo conteúdo acessado através dele e que não violará marcas registradas ou direitos de terceiros.",
+      "checkbox": "Li e aceito os termos acima"
     }
   }
 }

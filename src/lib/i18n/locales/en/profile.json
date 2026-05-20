@@ -42,8 +42,9 @@
   },
   "sidebar": {
     "memberSince": "Member since",
-    "totalLinks": "Total links",
-    "totalClicks": "Total clicks",
+    "activity": "Activity",
+    "totalLinks": "Links",
+    "totalClicks": "Clicks",
     "accountStatus": "Account Status",
     "verified": "Verified Account",
     "verifiedDesc": "Full access granted",
@@ -66,6 +67,7 @@
     "copied": "Copied!",
     "openInNew": "Open in new tab",
     "claimError": "Could not claim the subdomain. Please try again.",
+    "releaseError": "Could not release the subdomain. Please try again.",
     "validation": {
       "format": "Use only lowercase letters, numbers, and hyphens (minimum 3 characters). Cannot start or end with a hyphen.",
       "unavailable": "This subdomain is already taken."
@@ -75,6 +77,14 @@
       "body": "After releasing, future links will use the default domain. Existing links are not affected and will continue to work normally.",
       "cancel": "Cancel",
       "confirm": "Release"
+    },
+    "chip": {
+      "free": "FREE",
+      "active": "ACTIVE"
+    },
+    "responsibility": {
+      "text": "By claiming this subdomain you confirm you are responsible for all content accessed through it and that you will not violate trademarks or third-party rights.",
+      "checkbox": "I have read and accept the terms above"
     }
   }
 }
