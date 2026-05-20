@@ -364,11 +364,7 @@ export function AudienceChart({
                     <Smartphone {...ICON_MD} />{" "}
                     {t("audience.chart.deviceDistribution")}
                   </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 1 }}
-                  >
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                     {t("audience.chart.deviceDistributionDesc")}
                   </Typography>
                   <ApexChartWrapper
@@ -402,11 +398,7 @@ export function AudienceChart({
                   >
                     <Trophy {...ICON_MD} /> {t("audience.chart.deviceRanking")}
                   </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 1 }}
-                  >
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                     {t("audience.chart.deviceRankingDesc")}
                   </Typography>
                   <ApexChartWrapper

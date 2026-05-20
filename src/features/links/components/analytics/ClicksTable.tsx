@@ -1,5 +1,6 @@
 "use client";
 
+import { MousePointer2 } from "lucide-react";
 import { Box, Chip, Stack, Tooltip, Typography } from "@mui/material";
 import { format, isValid } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
@@ -7,7 +8,9 @@ import { useTranslation } from "react-i18next";
 
 import { useLinkClicks } from "@/features/links/hooks/useLinkClicks";
 import { useResponsive } from "@/lib/theme";
+import { ICON_LG } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
+import TabDescription from "@/shared/ui/base/TabDescription";
 import DataTable from "@/shared/ui/data-display/DataTable";
 
 import type { LinkClickItem } from "@/features/links/types/click";
@@ -276,6 +279,17 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
 
   return (
     <Box>
+      <Box sx={{ mb: 3 }}>
+        <TabDescription
+          icon={<MousePointer2 {...ICON_LG} />}
+          title={t("analytics.clicksTable.title")}
+          description={t("analytics.clicksTable.description")}
+          highlight={t("analytics.clicksTable.clicksRegistered", {
+            count: total,
+          })}
+        />
+      </Box>
+
       <AnalyticsStateManager
         loading={isInitialLoading}
         error={error}

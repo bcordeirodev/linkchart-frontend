@@ -1,11 +1,14 @@
 "use client";
+import { Users } from "lucide-react";
 import { Box, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useAudienceData } from "@/features/analytics/hooks/useAudienceData";
+import { ICON_LG } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { ResponsiveContainer } from "@/shared/ui/base/ResponsiveContainer";
+import TabDescription from "@/shared/ui/base/TabDescription";
 import { AudienceChart } from "./AudienceChart";
 import { AudienceInsights } from "./AudienceInsights";
 import { AudienceMetrics } from "./AudienceMetrics";
@@ -29,10 +32,11 @@ interface LegacyAudienceAnalysisProps {
 export function AudienceAnalysis({
   data: legacyData,
   linkId,
-  title: _title,
+  title,
 }: LegacyAudienceAnalysisProps &
   Partial<Pick<AudienceAnalysisProps, "title">>) {
   const { t } = useTranslation("analytics");
+  const displayTitle = title ?? t("audience.title");
   const shouldUseHook = !legacyData;
 
   const {
@@ -60,6 +64,18 @@ export function AudienceAnalysis({
 
   return (
     <Box>
+      <Box sx={{ mb: 3 }}>
+        <TabDescription
+          icon={<Users {...ICON_LG} />}
+          title={displayTitle}
+          description={t("audience.description")}
+          highlight={t("audience.deviceTypes", {
+            count: deviceBreakdown?.length || 0,
+          })}
+          metadata={t("audience.linkSpecific")}
+        />
+      </Box>
+
       <AnalyticsStateManager
         loading={shouldUseHook ? loading : false}
         error={shouldUseHook && error ? error : null}
@@ -72,7 +88,11 @@ export function AudienceAnalysis({
         <ResponsiveContainer style={{ padding: 0 }}>
           {shouldUseHook && stats ? (
             <Box sx={{ mb: 3 }}>
-              <AudienceMetrics data={{ audience: audienceData, stats }} />
+              <AudienceMetrics
+                data={{ audience: audienceData, stats }}
+                showTitle
+                title={t("audience.metrics.title")}
+              />
             </Box>
           ) : null}
 

@@ -7,14 +7,10 @@
  * Unifica a lógica de dashboard e charts em um único componente coeso.
  */
 
-import { Link2 } from "lucide-react";
 import { Box, Grid, Typography } from "@mui/material";
-import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-
-import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import { useDashboardData } from "@/features/analytics/hooks/useDashboardData";
 import { LinkMetrics } from "@/features/links/components/LinkMetrics";
@@ -22,13 +18,11 @@ import { createPresetAnimations } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { EmptyState } from "@/shared/ui/base/EmptyState";
-import TabDescription from "@/shared/ui/base/TabDescription";
 
 import type { DashboardData } from "@/types/analytics/dashboard";
 
 import {
   LinkInfoCard,
-  TimeframeSelector,
   ViralityCard,
   TrafficQualityCard,
   UtmSourceCard,
@@ -41,52 +35,57 @@ import {
   TopCountriesChart,
 } from "./charts";
 
+/** Props accepted by the {@link LinkDashboard} component. */
 interface LinkDashboardProps {
+  /** Canonical id of the link to display analytics for. */
   linkId: string;
+  /** Whether to render the link info title card. Defaults to `true`. */
   showTitle?: boolean;
-  title?: string;
+  /** Whether to subscribe to realtime updates. Defaults to `false`. */
   enableRealtime?: boolean;
-  showTimeframeSelector?: boolean;
+  /** Render in compact mode (reduced height, no charts). Defaults to `false`. */
   compact?: boolean;
+  /** Override the default chart height in pixels. */
   chartsHeight?: number;
+  /** Whether to render the chart section. Defaults to `true`. */
   showCharts?: boolean;
+  /** ISO date string (yyyy-MM-dd) for the start of the period filter. */
+  dateFrom?: string | null;
+  /** ISO date string (yyyy-MM-dd) for the end of the period filter. */
+  dateTo?: string | null;
+  /** When `true`, bot traffic is excluded from all metrics. */
+  excludeBots?: boolean;
 }
 
 /**
- * LinkDashboard - Dashboard completo e unificado para link individual
+ * LinkDashboard — full unified dashboard for an individual link.
+ *
+ * Accepts external date-range and bot-exclusion props so that the parent
+ * (e.g. `LinkAnalyticsTabs`) can drive the filter state from the URL via
+ * `useAnalyticsFilters` without this component owning a local timeframe state.
  */
 export function LinkDashboard({
   linkId,
   showTitle = true,
-  title,
   enableRealtime = false,
-  showTimeframeSelector = true,
   compact = false,
   chartsHeight,
   showCharts = true,
+  dateFrom,
+  dateTo,
+  excludeBots,
 }: LinkDashboardProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const animations = createPresetAnimations(theme);
-  const [timeframe, setTimeframe] = useState<
-    "1h" | "24h" | "7d" | "30d" | "all"
-  >("7d");
-  const TIMEFRAME_DAYS: Record<"1h" | "24h" | "7d" | "30d" | "all", number> = {
-    "1h": 0.04,
-    "24h": 1,
-    "7d": 7,
-    "30d": 30,
-    all: 0,
-  };
-
-  // If title prop is not passed, use translated default
-  const displayTitle = title ?? t("dashboard.title");
 
   const { data, stats, loading, error, refresh, isRealtime } = useDashboardData(
     {
       linkId,
       enableRealtime,
-      timeframe,
+      dateFrom,
+      dateTo,
+      excludeBots,
       refreshInterval: 60000,
     },
   );
@@ -103,31 +102,11 @@ export function LinkDashboard({
       compact={compact}
     >
       <Box>
-        {/* Header */}
-        {showTitle ? (
+        {/* Informações do Link */}
+        {showTitle && data?.link_info ? (
           <Box sx={{ mb: 2 }}>
-            <TabDescription
-              icon={<Link2 {...ICON_LG} />}
-              title={displayTitle}
-              description={t("dashboard.description")}
-              highlight={`${data?.summary?.total_clicks || 0} ${t("dashboard.totalClicksLabel")}`}
-              metadata={
-                isRealtime
-                  ? t("dashboard.realtime")
-                  : t(`timeframe.${timeframe}`)
-              }
-            />
-
-            {/* Informações do Link */}
-            {data?.link_info ? (
-              <LinkInfoCard linkInfo={data.link_info} />
-            ) : null}
+            <LinkInfoCard linkInfo={data.link_info} />
           </Box>
-        ) : null}
-
-        {/* Seletor de Timeframe — independente do showTitle */}
-        {showTimeframeSelector ? (
-          <TimeframeSelector value={timeframe} onChange={setTimeframe} />
         ) : null}
 
         {/* Conteúdo Principal */}
@@ -136,10 +115,9 @@ export function LinkDashboard({
           <LinkMetrics
             summary={data?.summary}
             linksData={[]}
-            showTitle={!compact}
-            title={t("dashboard.metrics.title")}
+            showTitle={false}
             mode="single-link"
-            timeframeDays={TIMEFRAME_DAYS[timeframe]}
+            timeframeDays={0}
             noContainer
           />
 
@@ -152,19 +130,6 @@ export function LinkDashboard({
           {data?.summary?.quality && (
             <Grid item xs={12} sm={6} md={4}>
               <TrafficQualityCard data={data.summary.quality} />
-            </Grid>
-          )}
-
-          {data?.summary?.utm_top_sources &&
-            data.summary.utm_top_sources.length > 0 && (
-              <Grid item xs={12} sm={6} md={4}>
-                <UtmSourceCard data={data.summary.utm_top_sources} />
-              </Grid>
-            )}
-
-          {data?.summary?.social_iab && data.summary.social_iab.total > 0 && (
-            <Grid item xs={12} sm={6} md={4}>
-              <SocialAppCard data={data.summary.social_iab} />
             </Grid>
           )}
 
@@ -200,7 +165,13 @@ export function LinkDashboard({
 }
 
 /**
- * Função auxiliar para renderizar gráficos
+ * Renders the chart grid section for the dashboard.
+ *
+ * @param data - Full dashboard data payload from the API.
+ * @param height - Optional fixed height for each chart.
+ * @param animations - MUI animation preset object.
+ * @param t - i18next translation function scoped to the `"analytics"` namespace.
+ * @returns A `<Grid>` of charts or an {@link EmptyState} when there is no data.
  */
 function renderCharts(
   data: DashboardData,
@@ -305,6 +276,19 @@ function renderCharts(
             data={chartData.geographic.top_countries}
             height={height}
           />
+        </Grid>
+      ) : null}
+
+      {/* Campanhas UTM e Tráfego via App Social */}
+      {data.summary?.utm_top_sources &&
+      data.summary.utm_top_sources.length > 0 ? (
+        <Grid item xs={12} md={6} sx={{ display: "flex" }}>
+          <UtmSourceCard data={data.summary.utm_top_sources} />
+        </Grid>
+      ) : null}
+      {data.summary?.social_iab && data.summary.social_iab.total > 0 ? (
+        <Grid item xs={12} md={6} sx={{ display: "flex" }}>
+          <SocialAppCard data={data.summary.social_iab} />
         </Grid>
       ) : null}
     </Grid>
