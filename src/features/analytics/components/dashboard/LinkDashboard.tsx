@@ -31,6 +31,8 @@ import {
   TimeframeSelector,
   ViralityCard,
   TrafficQualityCard,
+  UtmSourceCard,
+  SocialAppCard,
 } from "./cards";
 import {
   DayOfWeekChart,
@@ -150,6 +152,19 @@ export function LinkDashboard({
           {data?.summary?.quality && (
             <Grid item xs={12} sm={6} md={4}>
               <TrafficQualityCard data={data.summary.quality} />
+            </Grid>
+          )}
+
+          {data?.summary?.utm_top_sources &&
+            data.summary.utm_top_sources.length > 0 && (
+              <Grid item xs={12} sm={6} md={4}>
+                <UtmSourceCard data={data.summary.utm_top_sources} />
+              </Grid>
+            )}
+
+          {data?.summary?.social_iab && data.summary.social_iab.total > 0 && (
+            <Grid item xs={12} sm={6} md={4}>
+              <SocialAppCard data={data.summary.social_iab} />
             </Grid>
           )}
 
