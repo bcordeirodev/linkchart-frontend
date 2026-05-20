@@ -110,10 +110,10 @@ function ProfilePage() {
               }}
             >
               <ProfileForm user={user} onUserUpdate={handleUserUpdate} />
-              <PasswordChangeForm />
               {process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" && (
                 <SubdomainSettings />
               )}
+              <PasswordChangeForm />
             </Box>
           </Grid>
 
