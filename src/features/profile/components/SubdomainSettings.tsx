@@ -5,12 +5,16 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
+  Chip,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
+  FormControlLabel,
   FormLabel,
   IconButton,
   InputAdornment,
@@ -42,8 +46,8 @@ function isValidSubdomainLabel(value: string): boolean {
  *
  * Renders three states:
  *  1. Loading — MUI Skeletons while initial data is being fetched
- *  2. No subdomain — claim form with real-time availability indicator
- *  3. Active subdomain — display chip + copy button + release dialog
+ *  2. No subdomain — claim form with availability check + responsibility checkbox
+ *  3. Active subdomain — display URL + copy + open + release dialog
  */
 export function SubdomainSettings() {
   const { t } = useTranslation("profile");
@@ -55,6 +59,7 @@ export function SubdomainSettings() {
     claimError,
     release,
     isReleasing,
+    releaseError,
     checkAvailability,
     availability,
     isCheckingAvailability,
@@ -64,6 +69,7 @@ export function SubdomainSettings() {
   const [inputError, setInputError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [releaseDialogOpen, setReleaseDialogOpen] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   /** Sanitizes input to lowercase alphanumeric + hyphens, then triggers debounced check. */
   const handleInputChange = (value: string) => {
@@ -86,8 +92,9 @@ export function SubdomainSettings() {
     try {
       await claim(inputValue);
       setInputValue("");
+      setTermsAccepted(false);
     } catch {
-      // Error surface via claimError
+      // Error surfaced via claimError
     }
   };
 
@@ -101,8 +108,13 @@ export function SubdomainSettings() {
 
   /** Releases the current subdomain after dialog confirmation. */
   const handleRelease = async () => {
-    await release();
-    setReleaseDialogOpen(false);
+    try {
+      await release();
+      setReleaseDialogOpen(false);
+      setTermsAccepted(false);
+    } catch {
+      // Error surfaced via releaseError
+    }
   };
 
   // ── Loading state ────────────────────────────────────────────────────
@@ -118,12 +130,34 @@ export function SubdomainSettings() {
 
   return (
     <Paper sx={{ p: 3 }}>
-      <Typography variant="h6" sx={{ mb: 0.5 }}>
-        {t("subdomain.title")}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      {/* ── Section header ───────────────────────────────────────────── */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 0.5,
+        }}
+      >
+        <Typography variant="h6">{t("subdomain.title")}</Typography>
+        {subdomain ? (
+          <Chip
+            label={t("subdomain.chip.active")}
+            color="success"
+            size="small"
+          />
+        ) : (
+          <Chip
+            label={t("subdomain.chip.free")}
+            size="small"
+            variant="outlined"
+          />
+        )}
+      </Box>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         {t("subdomain.description")}
       </Typography>
+      <Divider sx={{ mb: 3 }} />
 
       {/* ── Active subdomain ─────────────────────────────────────────── */}
       {subdomain ? (
@@ -168,6 +202,12 @@ export function SubdomainSettings() {
             {isReleasing ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
             {t("subdomain.releaseButton")}
           </Button>
+
+          {releaseError && (
+            <Alert severity="error" sx={{ mt: 1.5 }}>
+              {t("subdomain.releaseError")}
+            </Alert>
+          )}
         </Box>
       ) : (
         /* ── Claim form ──────────────────────────────────────────────── */
@@ -239,6 +279,26 @@ export function SubdomainSettings() {
             </Typography>
           )}
 
+          {/* Responsibility clause */}
+          <Alert severity="warning" variant="outlined" sx={{ mb: 1 }}>
+            {t("subdomain.responsibility.text")}
+          </Alert>
+          <FormControlLabel
+            control={
+              <Checkbox
+                size="small"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+              />
+            }
+            label={
+              <Typography variant="body2">
+                {t("subdomain.responsibility.checkbox")}
+              </Typography>
+            }
+            sx={{ mb: 1.5, alignItems: "center" }}
+          />
+
           {claimError && (
             <Alert severity="error" sx={{ mb: 1.5 }}>
               {t("subdomain.claimError")}
@@ -253,7 +313,8 @@ export function SubdomainSettings() {
               isClaiming ||
               isCheckingAvailability ||
               !availability?.available ||
-              inputValue.length < 3
+              inputValue.length < 3 ||
+              !termsAccepted
             }
           >
             {isClaiming ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
