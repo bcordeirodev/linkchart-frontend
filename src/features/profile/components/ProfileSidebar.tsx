@@ -1,11 +1,11 @@
 "use client";
-import { Calendar, Shield, BadgeCheck, AlertCircle } from "lucide-react";
+import { BarChart2, Calendar, Shield, BadgeCheck, AlertCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { ICON_SM, ICON_MD } from "@/lib/theme/iconDefaults";
-import { Box, Stack, Typography } from "@mui/material";
-
+import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
+import { Box, Divider, Skeleton, Stack, Typography } from "@mui/material";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { useProfileStats } from "../hooks/useProfileStats";
 
 import type { UserProfile } from "@/services";
 
@@ -14,24 +14,29 @@ interface ProfileSidebarProps {
 }
 
 /**
- * Sidebar do perfil com informações adicionais
- * Status da conta e recursos disponíveis
+ * Sidebar do perfil com status da conta e estatísticas de atividade.
+ *
+ * Composta por dois cards:
+ *  1. Account Status — verified badge + member since
+ *  2. Activity — total links and total clicks from useProfileStats
  */
 export function ProfileSidebar({ user }: ProfileSidebarProps) {
   const { t } = useTranslation("profile");
+  const { data: stats, isLoading: statsLoading } = useProfileStats();
+
   return (
     <Stack spacing={3}>
-      {/* Status da Conta */}
+      {/* ── Card 1: Account Status ───────────────────────────────── */}
       <EnhancedPaper>
         <Box sx={{ p: 3 }}>
           <Typography
             variant="h6"
-            gutterBottom
-            sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+            sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}
           >
             <Shield {...ICON_MD} />
             {t("sidebar.accountStatus")}
           </Typography>
+          <Divider sx={{ mb: 2 }} />
           <Stack spacing={2}>
             {user.email_verified_at ? (
               <Box
@@ -76,6 +81,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
                 </Box>
               </Box>
             )}
+
             <Box
               sx={{
                 display: "flex",
@@ -99,6 +105,53 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
               </Box>
             </Box>
           </Stack>
+        </Box>
+      </EnhancedPaper>
+
+      {/* ── Card 2: Activity ─────────────────────────────────────── */}
+      <EnhancedPaper>
+        <Box sx={{ p: 3 }}>
+          <Typography
+            variant="h6"
+            sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}
+          >
+            <BarChart2 {...ICON_MD} />
+            {t("sidebar.activity")}
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          <Box sx={{ display: "flex", gap: 5 }}>
+            <Box>
+              {statsLoading ? (
+                <Skeleton variant="text" width={48} height={52} />
+              ) : (
+                <Typography
+                  variant="h4"
+                  sx={{ fontWeight: 700, lineHeight: 1.1 }}
+                >
+                  {stats?.total_links ?? 0}
+                </Typography>
+              )}
+              <Typography variant="caption" color="text.secondary">
+                {t("sidebar.totalLinks")}
+              </Typography>
+            </Box>
+
+            <Box>
+              {statsLoading ? (
+                <Skeleton variant="text" width={64} height={52} />
+              ) : (
+                <Typography
+                  variant="h4"
+                  sx={{ fontWeight: 700, lineHeight: 1.1 }}
+                >
+                  {(stats?.total_clicks ?? 0).toLocaleString("pt-BR")}
+                </Typography>
+              )}
+              <Typography variant="caption" color="text.secondary">
+                {t("sidebar.totalClicks")}
+              </Typography>
+            </Box>
+          </Box>
         </Box>
       </EnhancedPaper>
     </Stack>
