@@ -77,6 +77,12 @@ export interface UseInsightsDataOptions {
   linkId: string;
   refreshInterval?: number;
   enableRealtime?: boolean;
+  /** ISO date string (yyyy-MM-dd) for the start of the period. */
+  dateFrom?: string | null;
+  /** ISO date string (yyyy-MM-dd) for the end of the period. */
+  dateTo?: string | null;
+  /** When true, adds `exclude_bots=true` to the request. */
+  excludeBots?: boolean;
   /** Drop insights below this confidence threshold (0–1) before returning them. */
   minConfidence?: number;
   /** If non-empty, keep only insights whose `type` is in this list. */
@@ -175,13 +181,16 @@ function normaliseResponse(
  * @param options.linkId - canonical link id; the query stays disabled when falsy
  * @param options.refreshInterval - polling interval in ms when realtime is on (default `300000`, 5 min)
  * @param options.enableRealtime - when true, refetches every `refreshInterval` ms (default `false`)
+ * @param options.dateFrom - ISO date string (yyyy-MM-dd) for the start of the period
+ * @param options.dateTo - ISO date string (yyyy-MM-dd) for the end of the period
+ * @param options.excludeBots - when true, adds `exclude_bots=true` to the request
  * @param options.minConfidence - drop insights below this confidence threshold in-memory (default `0.5`)
  * @param options.categories - if non-empty, keep only insights whose `type` is in this list
  * @returns `{ data: InsightsData | null, stats, loading, error, refresh, isRealtime }`
  *
  * @remarks
- * Cache key: `queryKeys.analytics.insights(linkId)` → `["analytics", linkId, "insights"]`.
- * Endpoint: `GET /api/analytics/link/{id}/insights` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_INSIGHTS`).
+ * Cache key: `queryKeys.analytics.insights(linkId)` + filter params for cache isolation.
+ * Endpoint: `GET /api/analytics/link/{id}/insights[?date_from=…&date_to=…&exclude_bots=true]` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_INSIGHTS`).
  * Backend may return either `BusinessInsight[]` (legacy) or `InsightsData` (current); `normaliseResponse` covers both shapes.
  * `stats` (high-priority count, average confidence, top category) is derived client-side.
  */
@@ -189,6 +198,9 @@ export function useInsightsData({
   linkId,
   refreshInterval = 300000,
   enableRealtime = false,
+  dateFrom,
+  dateTo,
+  excludeBots,
   minConfidence = 0.5,
   categories = [],
 }: UseInsightsDataOptions): UseInsightsDataReturn {
@@ -198,11 +210,20 @@ export function useInsightsData({
     error,
     refetch,
   } = useQuery({
-    queryKey: queryKeys.analytics.insights(linkId),
-    queryFn: () =>
-      api.get<BusinessInsight[] | InsightsData>(
-        API_CONFIG.ENDPOINTS.ANALYTICS_INSIGHTS(linkId),
-      ),
+    queryKey: [
+      ...queryKeys.analytics.insights(linkId),
+      { dateFrom, dateTo, excludeBots },
+    ],
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (dateFrom) params.set("date_from", dateFrom);
+      if (dateTo) params.set("date_to", dateTo);
+      if (excludeBots) params.set("exclude_bots", "true");
+      const qs = params.toString();
+      return api.get<BusinessInsight[] | InsightsData>(
+        `${API_CONFIG.ENDPOINTS.ANALYTICS_INSIGHTS(linkId)}${qs ? `?${qs}` : ""}`,
+      );
+    },
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,
