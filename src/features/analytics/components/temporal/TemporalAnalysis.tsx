@@ -7,77 +7,34 @@ import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
+import TabDescription from "@/shared/ui/base/TabDescription";
+
 import { useTemporalData } from "../../hooks/useTemporalData";
-import type {
-  GroupBy,
-  Segment,
-} from "@/features/links/hooks/useAnalyticsFilters";
-import {
-  DayOfWeekChart,
-  HourlyClicksChart,
-} from "@/features/analytics/components/dashboard/charts";
 
 import { TemporalChart } from "./TemporalChart";
-import { TemporalFilterBar } from "./TemporalFilterBar";
 import { HolidayImpactCard } from "./HolidayImpactCard";
 import { SeasonalDistributionChart } from "./SeasonalDistributionChart";
 import { ViralRankMiniChart } from "./ViralRankMiniChart";
 
-/** Props accepted by the {@link TemporalAnalysis} component. */
 interface TemporalAnalysisProps {
-  /** Canonical id of the link to display analytics for. */
   linkId: string;
-  /** Whether to subscribe to realtime updates. Defaults to `false`. */
+  title?: string;
   enableRealtime?: boolean;
-  /** ISO date string (yyyy-MM-dd) for the start of the period filter. */
-  dateFrom?: string | null;
-  /** ISO date string (yyyy-MM-dd) for the end of the period filter. */
-  dateTo?: string | null;
-  /** When `true`, bot traffic is excluded from all metrics. */
-  excludeBots?: boolean;
-  /**
-   * Chart granularity display mode. "hour" renders HourlyClicksChart first;
-   * "day" and "month" render DayOfWeekChart first (no dedicated monthly chart yet).
-   * Does not affect API requests — backend returns all groupings per response.
-   */
-  groupBy?: GroupBy;
-  /** Restricts data to weekday / weekend / business-hours subset (backend filter). */
-  segment?: Segment;
-  /** Callback to propagate `groupBy` changes to the parent. */
-  onGroupByChange?: (v: GroupBy) => void;
-  /** Callback to propagate `segment` changes to the parent. */
-  onSegmentChange?: (v: Segment) => void;
 }
 
 /**
- * Componente de análise temporal com padrões de cliques por hora e dia da semana.
- *
- * Renders an optional {@link TemporalFilterBar} when `onGroupByChange` and
- * `onSegmentChange` callbacks are provided.
- *
- * Chart rendering order is controlled by `groupBy`:
- * - `"day"` or `"month"` → `DayOfWeekChart` renders before `HourlyClicksChart`
- * - `"hour"` (default) → `HourlyClicksChart` renders first
+ * Componente de análise temporal com padrões de cliques por hora e dia da semana
  */
 export function TemporalAnalysis({
   linkId,
+  title,
   enableRealtime = false,
-  dateFrom,
-  dateTo,
-  excludeBots,
-  groupBy,
-  segment,
-  onGroupByChange,
-  onSegmentChange,
 }: TemporalAnalysisProps) {
   const { t } = useTranslation("analytics");
-  const { data, stats, loading, error, refresh } = useTemporalData({
+  const displayTitle = title ?? t("temporal.title");
+  const { data, stats, loading, error, refresh, isRealtime } = useTemporalData({
     linkId,
     enableRealtime,
-    dateFrom,
-    dateTo,
-    excludeBots,
-    segment,
     includeAdvanced: false, // Deprecated - endpoint sempre inclui dados advanced
     refreshInterval: 30000,
   });
@@ -101,26 +58,20 @@ export function TemporalAnalysis({
         ? t("temporal.metrics.declining")
         : t("temporal.metrics.stable");
 
-  /** When groupBy is "day" or "month", day-of-week chart renders first. */
-  const resolved = groupBy ?? "hour";
-  const dayFirst = resolved === "day" || resolved === "month";
-
-  const hourlyChartNode =
-    (data?.clicks_by_hour?.length ?? 0) > 0 ? (
-      <Grid item xs={12} md={6}>
-        <HourlyClicksChart data={data!.clicks_by_hour} />
-      </Grid>
-    ) : null;
-
-  const weeklyChartNode =
-    (data?.clicks_by_day_of_week?.length ?? 0) > 0 ? (
-      <Grid item xs={12} md={6}>
-        <DayOfWeekChart data={data!.clicks_by_day_of_week} />
-      </Grid>
-    ) : null;
-
   return (
     <Box>
+      <Box sx={{ mb: 3 }}>
+        <TabDescription
+          icon={<Clock {...ICON_LG} />}
+          title={displayTitle}
+          description={t("temporal.description")}
+          highlight={`${t("temporal.chart.peakHour")} ${peakHour} - ${peakDay}`}
+          metadata={
+            isRealtime ? t("dashboard.realtime") : t("temporal.allData")
+          }
+        />
+      </Box>
+
       <AnalyticsStateManager
         loading={loading}
         error={error}
@@ -131,16 +82,6 @@ export function TemporalAnalysis({
         minHeight={300}
       >
         <Box>
-          {/* Filter bar — only rendered when parent supplies callbacks */}
-          {onGroupByChange && onSegmentChange && (
-            <TemporalFilterBar
-              groupBy={groupBy ?? "hour"}
-              segment={segment ?? "all"}
-              onGroupByChange={onGroupByChange}
-              onSegmentChange={onSegmentChange}
-            />
-          )}
-
           <Box sx={{ mb: 3 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} md={3}>
@@ -188,23 +129,7 @@ export function TemporalAnalysis({
             </Grid>
           </Box>
 
-          {/* Summary charts — order controlled by groupBy */}
           <Grid container spacing={3}>
-            {dayFirst ? (
-              <>
-                {weeklyChartNode}
-                {hourlyChartNode}
-              </>
-            ) : (
-              <>
-                {hourlyChartNode}
-                {weeklyChartNode}
-              </>
-            )}
-          </Grid>
-
-          {/* Rich tabbed chart with advanced analytics */}
-          <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12}>
               <TemporalChart
                 hourlyData={data?.clicks_by_hour || []}

@@ -1,7 +1,7 @@
 "use client";
 
 import { Alert } from "@mui/material";
-import { memo, useMemo, Suspense } from "react";
+import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { LinkAnalyticsTabsOptimized } from "@/features/links/components/analytics/LinkAnalyticsTabs";
 import { LinkActions } from "@/features/links/components/LinkActions";
@@ -27,6 +27,7 @@ function LinkAnalyticsPage({ id }: Props) {
   const tabsProps = useMemo(
     () => ({
       linkId: id!,
+      showHeader: false, // Header será mostrado pela página
     }),
     [id],
   );
@@ -52,9 +53,7 @@ function LinkAnalyticsPage({ id }: Props) {
           title={linkInfo?.title}
         />
 
-        <Suspense>
-          <LinkAnalyticsTabsOptimized {...tabsProps} />
-        </Suspense>
+        <LinkAnalyticsTabsOptimized {...tabsProps} />
       </ResponsiveContainer>
     </AuthGuardRedirect>
   );
