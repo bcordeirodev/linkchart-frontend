@@ -45,8 +45,8 @@ interface ProfileFormProps {
 /**
  * Formulário de edição do perfil.
  *
- * Layout: section title + Divider, avatar centered, then full-width
- * fields with external FormLabels. Save / reset in footer.
+ * Layout: section title + Divider, compact identity row (avatar + current
+ * name/email), then full-width fields with external FormLabels.
  */
 export function ProfileForm({
   user,
@@ -112,24 +112,36 @@ export function ProfileForm({
           </LoadingOverlay>
         ) : null}
 
-        {/* ── Section header — matches all other profile cards ────── */}
+        {/* ── Section header ───────────────────────────────────────── */}
         <Typography variant="h6" sx={{ mb: 1 }}>
           {t("sections.personalInfo")}
         </Typography>
         <Divider sx={{ mb: 3 }} />
 
-        {/* ── Avatar — compact, centered ───────────────────────────── */}
-        <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+        {/* ── Identity row: avatar + current name/email ────────────── */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
           <StyledAvatar
             src={photoURL}
             imgProps={{ referrerPolicy: "no-referrer" }}
-            sx={{ width: 72, height: 72, fontSize: "1.75rem" }}
+            sx={{ width: 56, height: 56, fontSize: "1.25rem", flexShrink: 0 }}
           >
             {!photoURL && formData.name?.[0]?.toUpperCase()}
           </StyledAvatar>
+          <Box sx={{ minWidth: 0 }}>
+            <Typography
+              variant="subtitle2"
+              sx={{ fontWeight: 600, lineHeight: 1.3 }}
+              noWrap
+            >
+              {formData.name || "—"}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" noWrap>
+              {formData.email}
+            </Typography>
+          </Box>
         </Box>
 
-        {/* ── Fields with external labels ──────────────────────────── */}
+        {/* ── Editable fields ──────────────────────────────────────── */}
         <Stack spacing={2.5}>
           <Box>
             <FormLabel sx={{ display: "block", mb: 0.75 }}>
