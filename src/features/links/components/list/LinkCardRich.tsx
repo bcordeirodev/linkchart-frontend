@@ -82,6 +82,7 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
   const { copied, copy } = useClipboard({ timeout: 1500 });
 
   const shortUrl = useShortUrl(link.slug);
+  const displayUrl = shortUrl.replace(/^https?:\/\//, "");
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -155,48 +156,61 @@ export function LinkCardRich({ link, meta, onDelete }: LinkCardRichProps) {
           {link.title || link.slug || link.custom_slug || t("list.noTitle")}
         </Typography>
 
-        <Button
-          size="small"
-          variant="contained"
-          disableElevation
-          startIcon={copied ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
-          onClick={(e) => {
-            e.stopPropagation();
-            copy(shortUrl);
-          }}
-          sx={{
-            flexShrink: 0,
-            borderRadius: "20px",
-            px: 1.5,
-            py: 0.25,
-            fontSize: "0.75rem",
-            textTransform: "none",
-            border: "1px solid",
-            transition:
-              "background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease",
-            ...(copied
-              ? {
-                  bgcolor: "rgba(46, 125, 50, 0.15)",
-                  borderColor: "success.main",
-                  color: "success.light",
-                  "&:hover": {
-                    bgcolor: "rgba(46, 125, 50, 0.22)",
+        <Tooltip title={copied ? "" : shortUrl}>
+          <Button
+            size="small"
+            variant="contained"
+            disableElevation
+            startIcon={copied ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
+            onClick={(e) => {
+              e.stopPropagation();
+              copy(shortUrl);
+            }}
+            sx={{
+              flexShrink: 0,
+              borderRadius: "20px",
+              px: 1.5,
+              py: 0.25,
+              fontSize: "0.75rem",
+              textTransform: "none",
+              border: "1px solid",
+              maxWidth: 260,
+              transition:
+                "background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease",
+              "& .MuiButton-startIcon": { flexShrink: 0 },
+              ...(copied
+                ? {
+                    bgcolor: "rgba(46, 125, 50, 0.15)",
                     borderColor: "success.main",
-                  },
-                }
-              : {
-                  bgcolor: "rgba(25, 118, 210, 0.12)",
-                  borderColor: "rgba(25, 118, 210, 0.45)",
-                  color: "primary.light",
-                  "&:hover": {
-                    bgcolor: "rgba(25, 118, 210, 0.2)",
-                    borderColor: "primary.main",
-                  },
-                }),
-          }}
-        >
-          {copied ? t("actions.copySuccess") : t("actions.copyLink")}
-        </Button>
+                    color: "success.light",
+                    "&:hover": {
+                      bgcolor: "rgba(46, 125, 50, 0.22)",
+                      borderColor: "success.main",
+                    },
+                  }
+                : {
+                    bgcolor: "rgba(25, 118, 210, 0.12)",
+                    borderColor: "rgba(25, 118, 210, 0.45)",
+                    color: "primary.light",
+                    "&:hover": {
+                      bgcolor: "rgba(25, 118, 210, 0.2)",
+                      borderColor: "primary.main",
+                    },
+                  }),
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {copied ? t("actions.copySuccess") : displayUrl}
+            </Box>
+          </Button>
+        </Tooltip>
 
         <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
           <Button
