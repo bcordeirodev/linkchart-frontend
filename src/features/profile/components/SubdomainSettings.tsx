@@ -298,11 +298,17 @@ export function SubdomainSettings() {
               input: {
                 endAdornment: (
                   <InputAdornment position="end">
-                    <Typography variant="body2" color="text.disabled">
+                    <Typography variant="body2" color="text.secondary">
                       .linkcharts.com.br
                     </Typography>
                   </InputAdornment>
                 ),
+                sx: {
+                  fontFamily: "monospace",
+                  fontWeight: 500,
+                  fontSize: "1rem",
+                  color: "text.primary",
+                },
               },
             }}
             sx={{ mb: 0.75 }}
@@ -352,7 +358,19 @@ export function SubdomainSettings() {
           )}
 
           {/* Responsibility clause */}
-          <Alert severity="warning" variant="outlined" sx={{ mb: 1 }}>
+          <Alert
+            severity="warning"
+            variant="outlined"
+            sx={{
+              mb: 1,
+              bgcolor: (theme) => alpha(theme.palette.warning.light, 0.08),
+              borderColor: (theme) => alpha(theme.palette.warning.main, 0.3),
+              color: "text.secondary",
+              "& .MuiAlert-icon": {
+                color: (theme) => alpha(theme.palette.warning.main, 0.6),
+              },
+            }}
+          >
             {t("subdomain.responsibility.text")}
           </Alert>
           <FormControlLabel
