@@ -3,7 +3,7 @@ import { X, Mail, User, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import { Box, Chip, CircularProgress, Divider } from "@mui/material";
+import { CircularProgress, Divider } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 
 import { useAppDispatch } from "@/lib/store/hooks";
@@ -38,13 +38,18 @@ interface ProfileFormData {
 interface ProfileFormProps {
   user: UserProfile;
   onUserUpdate: (user: UserProfile) => void;
+  photoURL?: string;
 }
 
 /**
  * Formulário de edição do perfil
  * Permite editar nome e email do usuário
  */
-export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
+export function ProfileForm({
+  user,
+  onUserUpdate,
+  photoURL,
+}: ProfileFormProps) {
   const dispatch = useAppDispatch();
   const { t } = useTranslation("profile");
   const [formData, setFormData] = useState<ProfileFormData>({
@@ -114,26 +119,19 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
         ) : null}
 
         <ProfileHeader>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-            <ProfileTitle>{t("sections.personalInfo")}</ProfileTitle>
-            <Chip
-              label={
-                user.email_verified_at
-                  ? t("form.verifiedBadge")
-                  : t("form.pendingBadge")
-              }
-              color={user.email_verified_at ? "success" : "warning"}
-              size="small"
-              variant="outlined"
-            />
-          </Box>
+          <ProfileTitle>{t("sections.personalInfo")}</ProfileTitle>
         </ProfileHeader>
         <Divider sx={{ mb: 3 }} />
 
         <ProfileGrid>
           <AvatarSection>
             <AvatarContainer>
-              <StyledAvatar>{formData.name?.[0]?.toUpperCase()}</StyledAvatar>
+              <StyledAvatar
+                src={photoURL}
+                imgProps={{ referrerPolicy: "no-referrer" }}
+              >
+                {!photoURL && formData.name?.[0]?.toUpperCase()}
+              </StyledAvatar>
             </AvatarContainer>
           </AvatarSection>
 
