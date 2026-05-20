@@ -8,6 +8,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   IconButton,
   InputAdornment,
   Stack,
@@ -132,6 +133,8 @@ export function PasswordChangeForm() {
               {t("password.subtitle")}
             </Typography>
           </Box>
+
+          <Divider />
 
           <Box
             component="form"
