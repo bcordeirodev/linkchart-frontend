@@ -3,7 +3,7 @@ import { X, Mail, User, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import { CircularProgress } from "@mui/material";
+import { Box, Chip, CircularProgress, Divider } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 
 import { useAppDispatch } from "@/lib/store/hooks";
@@ -19,7 +19,6 @@ import {
   CancelButton,
   FormFieldsContainer,
   LoadingOverlay,
-  ProfileBadge,
   ProfileContainer,
   ProfileGrid,
   ProfileHeader,
@@ -114,15 +113,22 @@ export function ProfileForm({ user, onUserUpdate }: ProfileFormProps) {
           </LoadingOverlay>
         ) : null}
 
-        <ProfileBadge isVerified={!!user.email_verified_at}>
-          {user.email_verified_at
-            ? t("form.verifiedBadge")
-            : t("form.pendingBadge")}
-        </ProfileBadge>
-
         <ProfileHeader>
-          <ProfileTitle>{t("sections.personalInfo")}</ProfileTitle>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <ProfileTitle>{t("sections.personalInfo")}</ProfileTitle>
+            <Chip
+              label={
+                user.email_verified_at
+                  ? t("form.verifiedBadge")
+                  : t("form.pendingBadge")
+              }
+              color={user.email_verified_at ? "success" : "warning"}
+              size="small"
+              variant="outlined"
+            />
+          </Box>
         </ProfileHeader>
+        <Divider sx={{ mb: 3 }} />
 
         <ProfileGrid>
           <AvatarSection>
