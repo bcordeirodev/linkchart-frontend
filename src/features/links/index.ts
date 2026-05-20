@@ -25,6 +25,7 @@ export * from "./components/analytics";
 export * from "./hooks/useLinks";
 export * from "./hooks/useShareAPI";
 export * from "./hooks/useLinkAnalytics";
+export * from "./hooks/useShortUrl";
 
 // Types
 export * from "./types/link";
