@@ -1,7 +1,6 @@
 "use client";
 
 import { Tabs, Tab, Box, useTheme } from "@mui/material";
-import { useState } from "react";
 import {
   LayoutDashboard,
   Globe,
@@ -49,14 +48,13 @@ export function LinkAnalyticsTabsOptimized({
   linkId,
   loading: _loading = false,
 }: LinkAnalyticsTabsOptimizedProps) {
-  const [tabValue, setTabValue] = useState(0);
   const theme = useTheme();
   const { t } = useTranslation("links");
   const filters = useAnalyticsFilters();
 
   /** Handles tab switch triggered by user interaction. */
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    filters.setTab(newValue);
   };
 
   /** Ordered tab metadata used to render the navigation row. */
@@ -89,7 +87,7 @@ export function LinkAnalyticsTabsOptimized({
         }}
       >
         <Tabs
-          value={tabValue}
+          value={filters.tab}
           onChange={handleTabChange}
           variant="scrollable"
           scrollButtons="auto"
@@ -118,8 +116,8 @@ export function LinkAnalyticsTabsOptimized({
       {/* Tab Panels - LAZY LOADING: only the active tab is rendered */}
 
       {/* Dashboard Tab */}
-      <TabPanel value={tabValue} index={0}>
-        {tabValue === 0 && (
+      <TabPanel value={filters.tab} index={0}>
+        {filters.tab === 0 && (
           <LinkDashboard
             linkId={linkId}
             showTitle={false}
@@ -133,8 +131,8 @@ export function LinkAnalyticsTabsOptimized({
       </TabPanel>
 
       {/* Temporal Tab */}
-      <TabPanel value={tabValue} index={1}>
-        {tabValue === 1 && (
+      <TabPanel value={filters.tab} index={1}>
+        {filters.tab === 1 && (
           <TemporalAnalysis
             linkId={linkId}
             enableRealtime={false}
@@ -150,8 +148,8 @@ export function LinkAnalyticsTabsOptimized({
       </TabPanel>
 
       {/* Geographic Tab */}
-      <TabPanel value={tabValue} index={2}>
-        {tabValue === 2 && (
+      <TabPanel value={filters.tab} index={2}>
+        {filters.tab === 2 && (
           <GeographicAnalysis
             linkId={linkId}
             enableRealtime={false}
@@ -169,13 +167,13 @@ export function LinkAnalyticsTabsOptimized({
       </TabPanel>
 
       {/* Audience Tab — Phase 2: no filter props yet */}
-      <TabPanel value={tabValue} index={3}>
-        {tabValue === 3 && <AudienceAnalysis linkId={linkId} />}
+      <TabPanel value={filters.tab} index={3}>
+        {filters.tab === 3 && <AudienceAnalysis linkId={linkId} />}
       </TabPanel>
 
       {/* Insights Tab */}
-      <TabPanel value={tabValue} index={4}>
-        {tabValue === 4 && (
+      <TabPanel value={filters.tab} index={4}>
+        {filters.tab === 4 && (
           <InsightsAnalysis
             linkId={linkId}
             enableRealtime={false}
@@ -194,8 +192,8 @@ export function LinkAnalyticsTabsOptimized({
       </TabPanel>
 
       {/* Clicks Tab — Phase 2: no filter props yet */}
-      <TabPanel value={tabValue} index={5}>
-        {tabValue === 5 && <ClicksTable linkId={linkId} />}
+      <TabPanel value={filters.tab} index={5}>
+        {filters.tab === 5 && <ClicksTable linkId={linkId} />}
       </TabPanel>
     </Box>
   );
