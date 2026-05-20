@@ -14,6 +14,7 @@ import { AudienceInsights } from "./AudienceInsights";
 import { AudienceMetrics } from "./AudienceMetrics";
 import { BehaviorSection } from "./BehaviorSection";
 import { QualitySection } from "./QualitySection";
+import { SocialPlatformSection } from "./SocialPlatformSection";
 
 import type { AudienceAnalysisProps } from "@/types/analytics";
 
@@ -134,6 +135,18 @@ export function AudienceAnalysis({
                   <BehaviorSection
                     navigationContext={
                       (audienceData as AnyData).navigation_context_breakdown
+                    }
+                  />
+                </Grid>
+              )}
+
+            {(audienceData as AnyData)?.social_platform_breakdown &&
+              (audienceData as AnyData)?.social_platform_breakdown?.length >
+                0 && (
+                <Grid item xs={12}>
+                  <SocialPlatformSection
+                    platforms={
+                      (audienceData as AnyData).social_platform_breakdown
                     }
                   />
                 </Grid>
