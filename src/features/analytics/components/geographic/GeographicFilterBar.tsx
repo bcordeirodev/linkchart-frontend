@@ -14,16 +14,16 @@ interface GeographicFilterBarProps {
   onGeoLevelChange: (v: GeoLevel) => void;
 }
 
-const CONTINENT_OPTIONS: { code: string | null; key: string }[] = [
-  { code: null, key: "all" },
-  { code: "NA", key: "NA" },
-  { code: "EU", key: "EU" },
-  { code: "AS", key: "AS" },
-  { code: "AF", key: "AF" },
-  { code: "OC", key: "OC" },
-];
+const CONTINENT_OPTIONS = [
+  { code: null, key: "all" as const },
+  { code: "NA", key: "NA" as const },
+  { code: "EU", key: "EU" as const },
+  { code: "AS", key: "AS" as const },
+  { code: "AF", key: "AF" as const },
+  { code: "OC", key: "OC" as const },
+] as const;
 
-const MIN_CLICKS_OPTIONS = [1, 5, 10, 50];
+const MIN_CLICKS_OPTIONS = [1, 5, 10, 50] as const;
 const GEO_LEVEL_OPTIONS: GeoLevel[] = ["country", "state", "city"];
 
 /**
@@ -82,7 +82,7 @@ export function GeographicFilterBar({
         {CONTINENT_OPTIONS.map(({ code, key }) => (
           <Chip
             key={key}
-            label={t(`filters.continentOptions.${key}` as any)}
+            label={t(`filters.continentOptions.${key}`)}
             size="small"
             variant={continent === code ? "filled" : "outlined"}
             color={continent === code ? "primary" : "default"}
@@ -121,7 +121,7 @@ export function GeographicFilterBar({
           {MIN_CLICKS_OPTIONS.map((v) => (
             <Chip
               key={v}
-              label={t(`filters.minClicksOptions.${v}` as any)}
+              label={t(`filters.minClicksOptions.${v}`)}
               size="small"
               variant={minClicks === v ? "filled" : "outlined"}
               color={minClicks === v ? "primary" : "default"}
