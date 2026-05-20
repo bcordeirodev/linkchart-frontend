@@ -1,5 +1,5 @@
 "use client";
-import { X, Mail, User, Save } from "lucide-react";
+import { X, User, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
@@ -32,7 +32,6 @@ import type { UserProfile } from "@/services";
 
 interface ProfileFormData {
   name: string;
-  email: string;
 }
 
 interface ProfileFormProps {
@@ -57,7 +56,6 @@ export function ProfileForm({
   const { t } = useTranslation("profile");
   const [formData, setFormData] = useState<ProfileFormData>({
     name: user.name || "",
-    email: user.email || "",
   });
   const [saving, setSaving] = useState(false);
 
@@ -73,7 +71,7 @@ export function ProfileForm({
     try {
       const response = await profileService.updateProfile({
         name: formData.name,
-        email: formData.email,
+        email: user.email,
       });
       onUserUpdate(response.user);
     } catch (error: unknown) {
@@ -87,20 +85,20 @@ export function ProfileForm({
     } finally {
       setSaving(false);
     }
-  }, [formData.name, formData.email, dispatch, onUserUpdate, t]);
+  }, [formData.name, user.email, dispatch, onUserUpdate, t]);
 
   const handleReset = useCallback(() => {
-    setFormData({ name: user.name || "", email: user.email || "" });
+    setFormData({ name: user.name || "" });
   }, [user]);
 
   const isFormValid = useMemo(
-    () => formData.name.trim().length > 0 && formData.email.trim().length > 0,
-    [formData.name, formData.email],
+    () => formData.name.trim().length > 0,
+    [formData.name],
   );
 
   const hasChanges = useMemo(
-    () => formData.name !== user.name || formData.email !== user.email,
-    [user, formData.name, formData.email],
+    () => formData.name !== user.name,
+    [user.name, formData.name],
   );
 
   return (
@@ -155,23 +153,6 @@ export function ProfileForm({
               InputProps={{
                 startAdornment: (
                   <User {...ICON_MD} style={{ marginRight: 12 }} />
-                ),
-              }}
-            />
-          </Box>
-          <Box>
-            <FormLabel sx={{ display: "block", mb: 0.75 }}>
-              {t("form.email")}
-            </FormLabel>
-            <StyledTextField
-              value={formData.email}
-              fullWidth
-              type="email"
-              helperText={t("form.emailHelper")}
-              InputProps={{
-                readOnly: true,
-                startAdornment: (
-                  <Mail {...ICON_MD} style={{ marginRight: 12 }} />
                 ),
               }}
             />
