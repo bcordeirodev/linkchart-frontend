@@ -1,7 +1,7 @@
 {
   "shorter": {
     "heroTitle": "Shorten any link.",
-    "heroSubtitle": "Free URL shortener with powerful analytics.",
+    "heroSubtitle": "Free URL shortener with real-time analytics, free custom subdomain and QR code.",
     "linkCreated": "Link created successfully",
     "freeNoSignup": "100% free · no signup required",
     "readyToShare": "Ready to share!",
@@ -78,7 +78,7 @@
   "publicAnalytics": {
     "title": "Link Analytics",
     "subtitle": "Public analytics for",
-    "pageSubtitle": "Performance and statistics for this link in real time",
+    "pageSubtitle": "Real-time performance, geographic stats and audience insights for this link.",
     "noData": "No analytics data available yet.",
     "signUpCta": "Want this for your links?",
     "signUpButton": "Create free account",
@@ -150,8 +150,8 @@
       "features": [
         "Free forever",
         "QR Code included",
-        "No credit card",
-        "Custom slug"
+        "Free custom subdomain",
+        "Real-time analytics"
       ]
     }
   },
@@ -187,7 +187,8 @@
     "customSlug": "Custom slug",
     "geoLocation": "Click geolocation",
     "utmCampaigns": "UTM campaigns",
-    "fullDashboard": "Full analytics dashboard"
+    "fullDashboard": "Full analytics dashboard",
+    "freeSubdomain": "Free custom subdomain"
   },
   "qr": {
     "errors": {
