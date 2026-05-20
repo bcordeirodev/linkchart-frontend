@@ -123,7 +123,7 @@ export function ProfileForm({
           <StyledAvatar
             src={photoURL}
             imgProps={{ referrerPolicy: "no-referrer" }}
-            sx={{ width: 56, height: 56, fontSize: "1.25rem", flexShrink: 0 }}
+            sx={{ width: 80, height: 80, fontSize: "1.75rem", flexShrink: 0 }}
           >
             {!photoURL && formData.name?.[0]?.toUpperCase()}
           </StyledAvatar>
@@ -165,12 +165,11 @@ export function ProfileForm({
             </FormLabel>
             <StyledTextField
               value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
               fullWidth
               type="email"
-              isEditing
               helperText={t("form.emailHelper")}
               InputProps={{
+                readOnly: true,
                 startAdornment: (
                   <Mail {...ICON_MD} style={{ marginRight: 12 }} />
                 ),
