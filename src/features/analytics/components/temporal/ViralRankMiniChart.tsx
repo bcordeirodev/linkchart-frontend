@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import { Flame } from "lucide-react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
@@ -58,56 +58,66 @@ export function ViralRankMiniChart({ data }: Props) {
     );
   }, [data]);
 
-  if (!data || data.length === 0 || !hasNonCold) return null;
-
-  const series = [
-    {
-      name: t("temporal.viralRank.clicks"),
-      data: data.map((d) => d.click_count),
-    },
-  ];
-
-  const options = {
-    chart: {
-      type: "bar" as const,
-      toolbar: { show: false },
-      background: "transparent",
-    },
-    plotOptions: { bar: { borderRadius: 3, columnWidth: "60%" } },
-    colors: data.map((d) => RANK_COLORS[d.peak_rank] ?? RANK_COLORS.cold),
-    xaxis: {
-      categories: data.map((d) => {
-        const parts = d.date.split("-");
-        return `${parts[2]}/${parts[1]}`;
-      }),
-      labels: {
-        style: { colors: theme.palette.text.secondary, fontSize: "11px" },
+  const series = useMemo(
+    () => [
+      {
+        name: t("temporal.viralRank.clicks"),
+        data: (data ?? []).map((d) => d.click_count),
       },
-      axisBorder: { show: false },
-      axisTicks: { show: false },
-    },
-    yaxis: {
-      labels: { style: { colors: theme.palette.text.secondary } },
-    },
-    grid: { borderColor: theme.palette.divider },
-    theme: { mode: isDark ? ("dark" as const) : ("light" as const) },
-    tooltip: {
-      y: {
-        formatter: (val: number) =>
-          `${val} ${t("temporal.viralRank.clicksUnit")}`,
+    ],
+    [data, t],
+  );
+
+  const options = useMemo(
+    () => ({
+      chart: {
+        type: "bar" as const,
+        toolbar: { show: false },
+        background: "transparent",
       },
-      x: {
-        formatter: (_: unknown, opts?: { dataPointIndex?: number }) => {
-          const idx = opts?.dataPointIndex;
-          if (idx === undefined) return "";
-          const d = data[idx];
-          const rankLabel = t(`temporal.viralRank.ranks.${d.peak_rank}`);
-          return `${d.date} · ${rankLabel}`;
+      plotOptions: {
+        bar: { borderRadius: 3, columnWidth: "60%", distributed: true },
+      },
+      colors: (data ?? []).map(
+        (d) => RANK_COLORS[d.peak_rank] ?? RANK_COLORS.cold,
+      ),
+      xaxis: {
+        categories: (data ?? []).map((d) => {
+          const parts = d.date.split("-");
+          return `${parts[2]}/${parts[1]}`;
+        }),
+        labels: {
+          style: { colors: theme.palette.text.secondary, fontSize: "11px" },
+        },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+      },
+      yaxis: {
+        labels: { style: { colors: theme.palette.text.secondary } },
+      },
+      grid: { borderColor: theme.palette.divider },
+      theme: { mode: isDark ? ("dark" as const) : ("light" as const) },
+      tooltip: {
+        y: {
+          formatter: (val: number) =>
+            `${val} ${t("temporal.viralRank.clicksUnit")}`,
+        },
+        x: {
+          formatter: (_: unknown, opts?: { dataPointIndex?: number }) => {
+            const idx = opts?.dataPointIndex;
+            if (idx === undefined || !data) return "";
+            const d = data[idx];
+            const rankLabel = t(`temporal.viralRank.ranks.${d.peak_rank}`);
+            return `${d.date} · ${rankLabel}`;
+          },
         },
       },
-    },
-    legend: { show: false },
-  };
+      legend: { show: false },
+    }),
+    [data, theme, t, isDark],
+  );
+
+  if (!data || data.length === 0 || !hasNonCold) return null;
 
   return (
     <Card
@@ -161,17 +171,17 @@ export function ViralRankMiniChart({ data }: Props) {
             sx={{
               mt: 1.5,
               p: 1.5,
-              bgcolor: "rgba(239,68,68,0.08)",
-              border: "1px solid rgba(239,68,68,0.2)",
+              bgcolor: alpha(theme.palette.error.main, 0.08),
+              border: `1px solid ${alpha(theme.palette.error.main, 0.2)}`,
               borderRadius: 1.5,
               display: "flex",
               alignItems: "center",
               gap: 1,
             }}
           >
-            <Flame size={16} color="#ef4444" />
+            <Flame size={16} color={theme.palette.error.main} />
             <Typography variant="caption">
-              <strong style={{ color: "#fca5a5" }}>
+              <strong style={{ color: theme.palette.error.light }}>
                 {t("temporal.viralRank.peak")}
               </strong>{" "}
               <span style={{ color: theme.palette.text.secondary }}>
