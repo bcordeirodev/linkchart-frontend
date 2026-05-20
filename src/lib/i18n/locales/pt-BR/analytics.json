@@ -96,7 +96,8 @@
       "retention": "Retenção",
       "engagement": "Engajamento"
     },
-    "actionableOnly": "Só acionáveis"
+    "actionableOnly": "Só acionáveis",
+    "title": "Filtros"
   },
   "timeframe": {
     "label": "Período",

@@ -96,7 +96,8 @@
       "retention": "Retention",
       "engagement": "Engagement"
     },
-    "actionableOnly": "Actionable only"
+    "actionableOnly": "Actionable only",
+    "title": "Filters"
   },
   "timeframe": {
     "label": "Timeframe",
