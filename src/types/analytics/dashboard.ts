@@ -162,12 +162,7 @@ export interface UseDashboardDataOptions {
 
   refreshInterval?: number;
   enableRealtime?: boolean;
-  /** ISO date string (yyyy-MM-dd) for the start of the period. Omit for open-ended. */
-  dateFrom?: string | null;
-  /** ISO date string (yyyy-MM-dd) for the end of the period. Omit for open-ended. */
-  dateTo?: string | null;
-  /** When true, adds `exclude_bots=true` to the request. */
-  excludeBots?: boolean;
+  timeframe?: "1h" | "24h" | "7d" | "30d" | "all";
   includeInactive?: boolean;
 }
 

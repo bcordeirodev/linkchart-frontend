@@ -1,7 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import { Box, Typography } from "@mui/material";
 
 import { MetricCardOptimized } from "@/shared/ui/base/MetricCardOptimized";
 
@@ -34,24 +33,15 @@ export function TrafficQualityCard({ data }: Props) {
         : "error";
 
   return (
-    <Box>
-      <MetricCardOptimized
-        title={t("quality.title")}
-        value={`${data.organic_percentage}%`}
-        icon={<VerifiedUserIcon />}
-        color={color}
-        subtitle={t("quality.subtitle", {
-          suspicious: data.suspicious,
-          fraud: data.likely_fraud,
-        })}
-      />
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{ mt: 1, px: 0.5, fontSize: "0.75rem" }}
-      >
-        {t("quality.description")}
-      </Typography>
-    </Box>
+    <MetricCardOptimized
+      title={t("quality.title")}
+      value={`${data.organic_percentage}%`}
+      icon={<VerifiedUserIcon />}
+      color={color}
+      subtitle={t("quality.subtitle", {
+        suspicious: data.suspicious,
+        fraud: data.likely_fraud,
+      })}
+    />
   );
 }

@@ -30,72 +30,6 @@
       "description": "Percentual de cliques vindos de navegadores internos de apps sociais (Instagram, TikTok, WhatsApp). Indica que o visitante chegou direto do feed sem abrir o browser do dispositivo."
     }
   },
-  "filters": {
-    "period": "Período",
-    "periods": {
-      "1h": "1 hora",
-      "24h": "24 horas",
-      "7d": "7 dias",
-      "30d": "30 dias",
-      "90d": "90 dias",
-      "all": "Todo período",
-      "custom": "Personalizado"
-    },
-    "excludeBots": "Excluir bots",
-    "bots": "Bots",
-    "groupBy": "Agrupar por",
-    "groupByOptions": {
-      "hour": "Hora do dia",
-      "day": "Dia da semana",
-      "month": "Mês"
-    },
-    "segment": "Segmento",
-    "segmentOptions": {
-      "all": "Todos os dias",
-      "weekday": "Seg–Sex",
-      "weekend": "Fins de semana",
-      "business": "Horário comercial"
-    },
-    "continent": "Continente",
-    "continentOptions": {
-      "all": "Todos",
-      "NA": "Américas",
-      "EU": "Europa",
-      "AS": "Ásia",
-      "AF": "África",
-      "OC": "Oceania"
-    },
-    "minClicks": "Min. cliques",
-    "minClicksOptions": {
-      "1": "≥ 1",
-      "5": "≥ 5",
-      "10": "≥ 10",
-      "50": "≥ 50"
-    },
-    "geoLevel": "Nível",
-    "geoLevelOptions": {
-      "country": "País",
-      "state": "Estado",
-      "city": "Cidade"
-    },
-    "priority": "Prioridade",
-    "priorityOptions": {
-      "all": "Todas",
-      "high": "Alta",
-      "medium": "Média"
-    },
-    "insightType": "Tipo",
-    "insightTypeOptions": {
-      "geographic": "Geográfico",
-      "temporal": "Temporal",
-      "audience": "Audiência",
-      "performance": "Performance",
-      "security": "Segurança",
-      "retention": "Retenção",
-      "engagement": "Engajamento"
-    },
-    "actionableOnly": "Só acionáveis"
-  },
   "timeframe": {
     "label": "Período",
     "1h": "Última hora",
@@ -331,7 +265,7 @@
       "clicks": "Cliques",
       "clicksUnit": "cliques",
       "peak": "Pico viral",
-      "description": "Rank atual de viralidade calculado com base na velocidade de cliques nas últimas horas. Quanto mais quente o rank, maior o pico de engajamento orgânico.",
+      "description": "Evolução diária do rank de viralidade. Barras mais quentes (laranja/vermelho) sinalizam dias com alta concentração de cliques num curto intervalo — picos de engajamento orgânico.",
       "ranks": {
         "cold": "Frio",
         "warming": "Aquecendo",
@@ -579,7 +513,7 @@
         "suspicious": "Suspeito",
         "likely_fraud": "Fraude"
       },
-      "description": "Percentual de cliques classificados como orgânicos (humanos reais). Cliques suspeitos e fraudulentos são detectados por fingerprint, padrão de comportamento e velocidade."
+      "description": "Classificação dos cliques em orgânicos, suspeitos e prováveis fraudes, calculada por fingerprint de dispositivo, padrão de comportamento e velocidade de clique. Use para avaliar a integridade do tráfego."
     },
     "behavior": {
       "title": "Como Chegaram",
@@ -812,10 +746,12 @@
       "warming": "Aquecendo",
       "trending": "Trending",
       "viral": "Viral"
-    }
+    },
+    "description": "Rank atual de viralidade calculado com base na velocidade de cliques nas últimas horas. Quanto mais quente o rank, maior o pico de engajamento orgânico."
   },
   "quality": {
     "title": "Qualidade",
-    "subtitle": "{{suspicious}} suspeitos · {{fraud}} fraude"
+    "subtitle": "{{suspicious}} suspeitos · {{fraud}} fraude",
+    "description": "Percentual de cliques classificados como orgânicos (humanos reais). Cliques suspeitos e fraudulentos são detectados por fingerprint, padrão de comportamento e velocidade."
   }
 }

@@ -51,11 +51,11 @@ export function TemporalTrendsChart({
   const monthlyValues = monthlyData.map((d) => d.y);
 
   const weeklyTotal = weeklyValues.reduce((sum, val) => sum + val, 0);
-  const weeklyAvg =
+  const _weeklyAvg =
     weeklyValues.length > 0 ? weeklyTotal / weeklyValues.length : 0;
 
   const monthlyTotal = monthlyValues.reduce((sum, val) => sum + val, 0);
-  const monthlyAvg =
+  const _monthlyAvg =
     monthlyValues.length > 0 ? monthlyTotal / monthlyValues.length : 0;
 
   const weeklyTrend =

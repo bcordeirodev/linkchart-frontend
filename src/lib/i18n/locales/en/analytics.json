@@ -30,72 +30,6 @@
       "description": "Percentage of clicks from in-app browsers of social apps (Instagram, TikTok, WhatsApp). Indicates the visitor arrived directly from the feed without opening the device browser."
     }
   },
-  "filters": {
-    "period": "Period",
-    "periods": {
-      "1h": "1 hour",
-      "24h": "24 hours",
-      "7d": "7 days",
-      "30d": "30 days",
-      "90d": "90 days",
-      "all": "All time",
-      "custom": "Custom"
-    },
-    "excludeBots": "Exclude bots",
-    "bots": "Bots",
-    "groupBy": "Group by",
-    "groupByOptions": {
-      "hour": "Hour of day",
-      "day": "Day of week",
-      "month": "Month"
-    },
-    "segment": "Segment",
-    "segmentOptions": {
-      "all": "All days",
-      "weekday": "Mon–Fri",
-      "weekend": "Weekends",
-      "business": "Business hours"
-    },
-    "continent": "Continent",
-    "continentOptions": {
-      "all": "All",
-      "NA": "Americas",
-      "EU": "Europe",
-      "AS": "Asia",
-      "AF": "Africa",
-      "OC": "Oceania"
-    },
-    "minClicks": "Min. clicks",
-    "minClicksOptions": {
-      "1": "≥ 1",
-      "5": "≥ 5",
-      "10": "≥ 10",
-      "50": "≥ 50"
-    },
-    "geoLevel": "Level",
-    "geoLevelOptions": {
-      "country": "Country",
-      "state": "State",
-      "city": "City"
-    },
-    "priority": "Priority",
-    "priorityOptions": {
-      "all": "All",
-      "high": "High",
-      "medium": "Medium"
-    },
-    "insightType": "Type",
-    "insightTypeOptions": {
-      "geographic": "Geographic",
-      "temporal": "Temporal",
-      "audience": "Audience",
-      "performance": "Performance",
-      "security": "Security",
-      "retention": "Retention",
-      "engagement": "Engagement"
-    },
-    "actionableOnly": "Actionable only"
-  },
   "timeframe": {
     "label": "Timeframe",
     "1h": "Last hour",
@@ -331,7 +265,7 @@
       "clicks": "Clicks",
       "clicksUnit": "clicks",
       "peak": "Viral peak",
-      "description": "Current virality rank calculated from click velocity over the last few hours. The hotter the rank, the higher the organic engagement spike.",
+      "description": "Daily virality rank evolution. Hotter bars (orange/red) signal days with high click concentration in a short interval — organic engagement spikes.",
       "ranks": {
         "cold": "Cold",
         "warming": "Warming",
@@ -579,7 +513,7 @@
         "suspicious": "Suspicious",
         "likely_fraud": "Fraud"
       },
-      "description": "Percentage of clicks classified as organic (real humans). Suspicious and fraudulent clicks are detected via fingerprint, behavior patterns, and click velocity."
+      "description": "Classification of clicks into organic, suspicious, and likely fraud, calculated via device fingerprint, behavior patterns, and click velocity. Use to assess the integrity of your traffic."
     },
     "behavior": {
       "title": "How They Arrived",
@@ -812,10 +746,12 @@
       "warming": "Warming",
       "trending": "Trending",
       "viral": "Viral"
-    }
+    },
+    "description": "Current virality rank calculated from click velocity over the last few hours. The hotter the rank, the higher the organic engagement spike."
   },
   "quality": {
     "title": "Quality",
-    "subtitle": "{{suspicious}} suspicious · {{fraud}} fraud"
+    "subtitle": "{{suspicious}} suspicious · {{fraud}} fraud",
+    "description": "Percentage of clicks classified as organic (real humans). Suspicious and fraudulent clicks are detected via fingerprint, behavior patterns, and click velocity."
   }
 }

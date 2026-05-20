@@ -1,5 +1,4 @@
 "use client";
-import { useMemo } from "react";
 import { Lightbulb, TrendingUp, Flag, BarChart3 } from "lucide-react";
 import { Box, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -9,49 +8,21 @@ import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
+import TabDescription from "@/shared/ui/base/TabDescription";
+
 import { useInsightsData } from "../../hooks/useInsightsData";
-import type { InsightPriority } from "@/features/links/hooks/useAnalyticsFilters";
 
 import { BusinessInsights } from "./BusinessInsights";
-import { InsightsFilterBar } from "./InsightsFilterBar";
 import { RetentionAnalysisChart } from "./RetentionAnalysisChart";
 import { SessionDepthChart } from "./SessionDepthChart";
 import { TrafficSourceChart } from "./TrafficSourceChart";
 import { TrafficQualityChart } from "./TrafficQualityChart";
 
-/** Maps {@link InsightPriority} values to `minConfidence` thresholds. */
-const confidenceMap: Record<InsightPriority, number> = {
-  all: 0.5,
-  high: 0.8,
-  medium: 0.6,
-};
-
-/** Props accepted by the {@link InsightsAnalysis} component. */
 interface InsightsAnalysisProps {
-  /** Canonical id of the link to display analytics for. */
   linkId: string;
-  /** Whether to subscribe to realtime updates. Defaults to `false`. */
+  title?: string;
   enableRealtime?: boolean;
-  /** Maximum number of insights to display. Defaults to `50`. */
   maxInsights?: number;
-  /** ISO date string (yyyy-MM-dd) for the start of the period filter. */
-  dateFrom?: string | null;
-  /** ISO date string (yyyy-MM-dd) for the end of the period filter. */
-  dateTo?: string | null;
-  /** When `true`, bot traffic is excluded from all metrics. */
-  excludeBots?: boolean;
-  /** Priority filter — maps to a `minConfidence` threshold passed to the hook. */
-  priority?: InsightPriority;
-  /** Category strings to include; empty array means "all categories". */
-  insightCategories?: string[];
-  /** When `true`, only insights flagged as actionable are displayed. */
-  actionableOnly?: boolean;
-  /** Callback to propagate `priority` changes to the parent. */
-  onPriorityChange?: (v: InsightPriority) => void;
-  /** Callback to propagate `insightCategories` changes to the parent. */
-  onCategoriesChange?: (v: string[]) => void;
-  /** Callback to propagate `actionableOnly` changes to the parent. */
-  onActionableOnlyChange?: (v: boolean) => void;
 }
 
 /**
@@ -60,10 +31,6 @@ interface InsightsAnalysisProps {
  * @description
  * Componente principal do módulo de insights que usa o hook dedicado
  * useInsightsData para buscar e gerenciar insights de negócio.
- *
- * Renders an optional {@link InsightsFilterBar} when all three change
- * callbacks are provided.  The `actionableOnly` flag is applied as an
- * in-memory post-filter after the hook runs.
  *
  * @features
  * - Hook específico useInsightsData
@@ -76,6 +43,7 @@ interface InsightsAnalysisProps {
  * ```tsx
  * // Insights globais com filtros
  * <InsightsAnalysis
+ *   showFilters={true}
  *   maxInsights={10}
  * />
  *
@@ -88,42 +56,40 @@ interface InsightsAnalysisProps {
  */
 export function InsightsAnalysis({
   linkId,
+
+  title,
   enableRealtime = false,
   maxInsights = 50,
-  dateFrom,
-  dateTo,
-  excludeBots,
-  priority,
-  insightCategories,
-  actionableOnly,
-  onPriorityChange,
-  onCategoriesChange,
-  onActionableOnlyChange,
 }: InsightsAnalysisProps) {
   const { t } = useTranslation("analytics");
-
+  const displayTitle = title ?? t("insights.title");
+  // Usar hook específico para dados de insights
   const { data, stats, loading, error, refresh, isRealtime } = useInsightsData({
     linkId,
     enableRealtime,
-    dateFrom,
-    dateTo,
-    excludeBots,
-    minConfidence: confidenceMap[priority ?? "all"],
-    categories: insightCategories ?? [],
     refreshInterval: 300000, // 5 minutos (insights não mudam frequentemente)
   });
 
-  /**
-   * Applies the `actionableOnly` in-memory post-filter after the hook data
-   * has been normalised.  Returns all insights when `actionableOnly` is falsy.
-   */
-  const filteredInsights = useMemo(() => {
-    if (!data?.insights) return [];
-    return data.insights.filter((i) => !actionableOnly || i.actionable);
-  }, [data?.insights, actionableOnly]);
-
   return (
     <Box>
+      {/* 1. BOX DE APRESENTAÇÃO DO MÓDULO - SEMPRE VISÍVEL */}
+      <Box sx={{ mb: 3 }}>
+        <TabDescription
+          icon={<Lightbulb {...ICON_LG} />}
+          title={displayTitle}
+          description={t("insights.description")}
+          highlight={t("insights.available", {
+            count: data?.insights?.length || 0,
+          })}
+          metadata={
+            isRealtime
+              ? t("dashboard.realtime")
+              : t("insights.intelligentAnalysis")
+          }
+        />
+      </Box>
+
+      {/* 2. CONTEÚDO COM LOADER */}
       <AnalyticsStateManager
         loading={loading}
         error={error}
@@ -134,18 +100,6 @@ export function InsightsAnalysis({
         minHeight={300}
       >
         <Box>
-          {/* Filter bar — only rendered when parent supplies all three callbacks */}
-          {onPriorityChange && onCategoriesChange && onActionableOnlyChange && (
-            <InsightsFilterBar
-              priority={priority ?? "all"}
-              insightCategories={insightCategories ?? []}
-              actionableOnly={actionableOnly ?? false}
-              onPriorityChange={onPriorityChange}
-              onCategoriesChange={onCategoriesChange}
-              onActionableOnlyChange={onActionableOnlyChange}
-            />
-          )}
-
           {/* MÉTRICAS */}
           <Box sx={{ mb: 3 }}>
             <Grid container spacing={3}>
@@ -199,7 +153,7 @@ export function InsightsAnalysis({
               {t("insights.autoInsights")}
             </Typography>
             <BusinessInsights
-              insights={filteredInsights}
+              insights={data?.insights || []}
               showTitle={false}
               maxItems={maxInsights}
             />
@@ -271,7 +225,7 @@ export function InsightsAnalysis({
                 • {t("insights.footer.lastGenerated")}{" "}
                 {new Date(stats.lastGenerated).toLocaleString()} •{" "}
                 {t("insights.footer.showing", {
-                  shown: filteredInsights.length,
+                  shown: data?.insights?.length || 0,
                   total: stats.totalInsights,
                 })}
                 {isRealtime ? ` • ${t("insights.footer.autoUpdate")}` : null}

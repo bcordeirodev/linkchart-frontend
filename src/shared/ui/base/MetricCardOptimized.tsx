@@ -45,9 +45,9 @@ export function MetricCardOptimized({
     <Card
       sx={{
         height: "100%",
-        backgroundColor: theme.palette.background.paper,
         borderRadius: `${radiusTokens.lg}px`,
         border: `1px solid ${theme.palette.divider}`,
+        backgroundColor: theme.palette.background.paper,
         boxShadow:
           theme.palette.mode === "dark"
             ? elevationTokens.xs
@@ -63,27 +63,34 @@ export function MetricCardOptimized({
       }}
       {...other}
     >
-      <CardContent sx={{ p: 3 }}>
+      <CardContent
+        sx={{ pt: 2.5, pb: 2.5, px: 3, "&:last-child": { pb: 2.5 } }}
+      >
         <Box
           sx={{
             display: "flex",
-            alignItems: "flex-start",
+            alignItems: "center",
             justifyContent: "space-between",
-            mb: 1,
+            mb: 1.5,
           }}
         >
           <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontWeight: 500 }}
+            sx={{
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: "0.07em",
+              textTransform: "uppercase",
+              color: "text.secondary",
+              lineHeight: 1,
+            }}
           >
             {title}
           </Typography>
 
           <Box
             sx={{
-              width: 36,
-              height: 36,
+              width: 34,
+              height: 34,
               borderRadius: "50%",
               bgcolor: alpha(selectedColor, 0.12),
               display: "flex",
@@ -98,12 +105,13 @@ export function MetricCardOptimized({
         </Box>
 
         <Typography
-          variant="h4"
           component="div"
           sx={{
-            fontWeight: 600,
+            fontSize: "1.125rem",
+            fontWeight: 700,
             fontVariantNumeric: "tabular-nums",
             color: selectedColor,
+            lineHeight: 1.1,
             mb: subtitle ? 0.5 : 0,
           }}
         >
@@ -111,25 +119,35 @@ export function MetricCardOptimized({
         </Typography>
 
         {subtitle ? (
-          <Typography variant="caption" color="text.secondary">
+          <Typography
+            sx={{
+              fontSize: 12,
+              color: "text.secondary",
+              mt: 0.5,
+              lineHeight: 1.4,
+            }}
+          >
             {subtitle}
           </Typography>
         ) : null}
 
         {trend ? (
           <>
-            <Divider sx={{ my: 1.5 }} />
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Divider sx={{ mt: 2, mb: 1.5 }} />
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
               <Typography
-                variant="body2"
                 sx={{
+                  fontSize: 13,
+                  fontWeight: 700,
                   color: trend.isPositive ? "success.main" : "error.main",
-                  fontWeight: 600,
+                  lineHeight: 1,
                 }}
               >
                 {trend.isPositive ? "↗" : "↘"} {Math.abs(trend.value)}%
               </Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography
+                sx={{ fontSize: 11, color: "text.disabled", lineHeight: 1 }}
+              >
                 {t("metrics.vsPreviousPeriod")}
               </Typography>
             </Box>
