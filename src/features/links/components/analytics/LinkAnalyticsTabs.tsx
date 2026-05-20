@@ -69,11 +69,14 @@ export function LinkAnalyticsTabsOptimized({
 
   return (
     <Box>
-      {/* Global filter bar — period presets + bot-exclusion toggle */}
+      {/* Global filter bar — date range + shortcut presets + bot-exclusion toggle */}
       <AnalyticsFilterBar
         period={filters.period}
+        dateFrom={filters.dateFrom}
+        dateTo={filters.dateTo}
         excludeBots={filters.excludeBots}
         onPeriodChange={filters.setPeriod}
+        onDateRangeChange={filters.setDateRange}
         onExcludeBotsChange={filters.setExcludeBots}
       />
 

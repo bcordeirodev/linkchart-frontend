@@ -31,7 +31,9 @@
     }
   },
   "filters": {
-    "period": "Período",
+    "period": "Atalhos",
+    "dateFrom": "De",
+    "dateTo": "Até",
     "periods": {
       "1h": "1 hora",
       "24h": "24 horas",
@@ -807,6 +809,7 @@
   },
   "virality": {
     "title": "Viralidade",
+    "description": "Pico de engajamento com base na velocidade de cliques nas últimas horas.",
     "rank": {
       "cold": "Frio",
       "warming": "Aquecendo",
@@ -816,6 +819,7 @@
   },
   "quality": {
     "title": "Qualidade",
+    "description": "Distribuição do tráfego por nível de qualidade: orgânico, suspeito e potencial fraude.",
     "subtitle": "{{suspicious}} suspeitos · {{fraud}} fraude"
   }
 }

@@ -31,7 +31,9 @@
     }
   },
   "filters": {
-    "period": "Period",
+    "period": "Shortcuts",
+    "dateFrom": "From",
+    "dateTo": "To",
     "periods": {
       "1h": "1 hour",
       "24h": "24 hours",
@@ -807,6 +809,7 @@
   },
   "virality": {
     "title": "Virality",
+    "description": "Peak engagement level based on click velocity over the last few hours.",
     "rank": {
       "cold": "Cold",
       "warming": "Warming",
@@ -816,6 +819,7 @@
   },
   "quality": {
     "title": "Quality",
+    "description": "Traffic distribution by quality level: organic, suspicious, and likely fraud.",
     "subtitle": "{{suspicious}} suspicious · {{fraud}} fraud"
   }
 }
