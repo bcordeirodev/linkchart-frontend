@@ -85,6 +85,10 @@
     "responsibility": {
       "text": "By claiming this subdomain you confirm you are responsible for all content accessed through it and that you will not violate trademarks or third-party rights.",
       "checkbox": "I have read and accept the terms above"
-    }
+    },
+    "urlPreviewLabel": "Preview:",
+    "exampleHint": "yourcompany.linkcharts.com.br",
+    "openButton": "Open",
+    "copyButton": "Copy URL"
   }
 }

@@ -16,11 +16,9 @@ import {
   Divider,
   FormControlLabel,
   FormLabel,
-  IconButton,
   InputAdornment,
   Skeleton,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -50,8 +48,8 @@ function isValidSubdomainLabel(value: string): boolean {
  *
  * Renders three states:
  *  1. Loading — MUI Skeletons while initial data is being fetched
- *  2. No subdomain — claim form with availability check + responsibility checkbox
- *  3. Active subdomain — display URL + copy + open + release dialog
+ *  2. No subdomain — claim form with live URL preview, availability check + responsibility checkbox
+ *  3. Active subdomain — clean URL display + action buttons (copy, open) + release option
  */
 export function SubdomainSettings() {
   const { t } = useTranslation("profile");
@@ -124,7 +122,12 @@ export function SubdomainSettings() {
   // ── Loading state ────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <EnhancedPaper sx={{ p: 3 }}>
+      <EnhancedPaper
+        sx={{
+          p: 3,
+          borderTop: (theme) => `3px solid ${theme.palette.primary.main}`,
+        }}
+      >
         <Skeleton variant="text" width={200} height={28} sx={{ mb: 1 }} />
         <Skeleton variant="text" width={320} height={20} sx={{ mb: 3 }} />
         <Skeleton variant="rectangular" height={56} />
@@ -133,7 +136,12 @@ export function SubdomainSettings() {
   }
 
   return (
-    <EnhancedPaper sx={{ p: 3 }}>
+    <EnhancedPaper
+      sx={{
+        p: 3,
+        borderTop: (theme) => `3px solid ${theme.palette.primary.main}`,
+      }}
+    >
       {/* ── Section header ───────────────────────────────────────────── */}
       <Box
         sx={{
@@ -173,12 +181,9 @@ export function SubdomainSettings() {
       {/* ── Active subdomain ─────────────────────────────────────────── */}
       {subdomain ? (
         <Box>
-          {/* Prominent URL display */}
+          {/* Clean URL display — no buttons inside */}
           <Box
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
               p: 2,
               borderRadius: 2,
               bgcolor: (theme) => alpha(theme.palette.success.light, 0.1),
@@ -194,33 +199,43 @@ export function SubdomainSettings() {
                 fontWeight: 600,
                 color: "success.dark",
                 wordBreak: "break-all",
-                flexGrow: 1,
-                mr: 1,
               }}
             >
               {subdomain.full_url}
             </Typography>
-            <Box sx={{ display: "flex", gap: 0.5, flexShrink: 0 }}>
-              <Tooltip
-                title={copied ? t("subdomain.copied") : t("subdomain.copy")}
-              >
-                <IconButton onClick={handleCopy} size="small">
-                  <ContentCopyIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t("subdomain.openInNew")}>
-                <IconButton
-                  component="a"
-                  href={subdomain.full_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  size="small"
-                >
-                  <OpenInNewIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </Box>
           </Box>
+
+          {/* Action buttons row */}
+          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={
+                copied ? (
+                  <CheckCircleOutlineIcon fontSize="small" />
+                ) : (
+                  <ContentCopyIcon fontSize="small" />
+                )
+              }
+              onClick={handleCopy}
+              color={copied ? "success" : "inherit"}
+            >
+              {copied ? t("subdomain.copied") : t("subdomain.copyButton")}
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<OpenInNewIcon fontSize="small" />}
+              component="a"
+              href={subdomain.full_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("subdomain.openButton")}
+            </Button>
+          </Box>
+
+          <Divider sx={{ mb: 2 }} />
 
           <Button
             variant="outlined"
@@ -265,6 +280,19 @@ export function SubdomainSettings() {
             }}
             sx={{ mb: 0.75 }}
           />
+
+          {/* Live URL preview */}
+          <Box sx={{ mb: 1.5 }}>
+            <Typography
+              variant="caption"
+              color="text.disabled"
+              sx={{ fontFamily: "monospace" }}
+            >
+              {inputValue.length > 0
+                ? `${inputValue}.linkcharts.com.br`
+                : t("subdomain.exampleHint")}
+            </Typography>
+          </Box>
 
           {/* Availability indicator */}
           {inputValue.length >= 3 && (
