@@ -55,6 +55,20 @@ export interface AnalyticsFilters {
   setActionableOnly: (v: boolean) => void;
 }
 
+/**
+ * Parses a URL search param against an allowed set of values.
+ * Returns the fallback if the param is absent or not in the allowed set.
+ */
+function parseEnum<T extends string>(
+  value: string | null,
+  allowed: readonly T[],
+  fallback: T,
+): T {
+  return value !== null && (allowed as readonly string[]).includes(value)
+    ? (value as T)
+    : fallback;
+}
+
 /** Derive ISO date strings for a given period preset relative to now. */
 function resolveDates(period: Period): {
   dateFrom: string | null;
@@ -78,6 +92,8 @@ function resolveDates(period: Period): {
       return { dateFrom: null, dateTo: null };
     case "custom":
       return { dateFrom: null, dateTo: null };
+    default:
+      return { dateFrom: null, dateTo: null };
   }
 }
 
@@ -95,17 +111,51 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   const router = useRouter();
   const pathname = usePathname();
 
-  const get = <T extends string>(key: string, fallback: T): T =>
-    (searchParams.get(key) as T | null) ?? fallback;
+  const PERIODS: readonly Period[] = [
+    "1h",
+    "24h",
+    "7d",
+    "30d",
+    "90d",
+    "all",
+    "custom",
+  ];
+  const GROUP_BYS: readonly GroupBy[] = ["hour", "day", "month"];
+  const SEGMENTS: readonly Segment[] = [
+    "all",
+    "weekday",
+    "weekend",
+    "business",
+  ];
+  const GEO_LEVELS: readonly GeoLevel[] = ["country", "state", "city"];
+  const PRIORITIES: readonly InsightPriority[] = ["all", "high", "medium"];
 
-  const period = get<Period>("period", "7d");
+  const period = parseEnum<Period>(searchParams.get("period"), PERIODS, "7d");
   const excludeBots = searchParams.get("bots") === "true";
-  const groupBy = get<GroupBy>("groupBy", "hour");
-  const segment = get<Segment>("segment", "all");
+  const groupBy = parseEnum<GroupBy>(
+    searchParams.get("groupBy"),
+    GROUP_BYS,
+    "hour",
+  );
+  const segment = parseEnum<Segment>(
+    searchParams.get("segment"),
+    SEGMENTS,
+    "all",
+  );
   const continent = searchParams.get("continent") || null;
-  const minClicks = parseInt(searchParams.get("minClicks") ?? "1", 10);
-  const geoLevel = get<GeoLevel>("geoLevel", "country");
-  const priority = get<InsightPriority>("priority", "all");
+  const rawMinClicks = parseInt(searchParams.get("minClicks") ?? "1", 10);
+  const minClicks =
+    Number.isFinite(rawMinClicks) && rawMinClicks >= 1 ? rawMinClicks : 1;
+  const geoLevel = parseEnum<GeoLevel>(
+    searchParams.get("geoLevel"),
+    GEO_LEVELS,
+    "country",
+  );
+  const priority = parseEnum<InsightPriority>(
+    searchParams.get("priority"),
+    PRIORITIES,
+    "all",
+  );
   const insightCategories = searchParams.get("categories")
     ? searchParams.get("categories")!.split(",").filter(Boolean)
     : [];

@@ -169,8 +169,7 @@ export function useDashboardData({
         clearInterval(intervalRef.current);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [linkId, dateFrom, dateTo, excludeBots]);
+  }, [fetchDashboardData]);
 
   return {
     data,
@@ -199,6 +198,7 @@ interface ApiResponseData {
   link_info?: DashboardData["link_info"];
 }
 
+/** Shape of the metrics field returned by the dashboard API endpoint. */
 interface ApiMetrics {
   dashboard?: DashboardSummary;
   geographic?: GeographicSummary;
@@ -207,6 +207,7 @@ interface ApiMetrics {
   };
 }
 
+/** Shape of the charts field returned by the dashboard API endpoint. */
 interface ApiCharts {
   temporal?: DashboardData["temporal_data"];
   geographic?: DashboardData["geographic_data"];
@@ -216,6 +217,7 @@ interface ApiCharts {
 // Shape que chega ao hook pós-Onda-0: payload direto do AnalyticsController,
 // sem envelope {success, data}. Mantém campos legados (metrics/charts) apenas
 // por compatibilidade com respostas antigas de cache.
+/** Full API response envelope for the dashboard endpoint. */
 interface ApiResponse extends ApiResponseData {
   metrics?: ApiMetrics;
   charts?: ApiCharts;
