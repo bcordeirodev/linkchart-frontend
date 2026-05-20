@@ -3,7 +3,14 @@ import { X, Mail, User, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import { CircularProgress, Divider } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Divider,
+  FormLabel,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 
 import { useAppDispatch } from "@/lib/store/hooks";
@@ -11,18 +18,11 @@ import { showMessage } from "@/lib/store/messageSlice";
 import { profileService } from "@/services";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
-// Styled Components
 import {
   ActionButtonsContainer,
-  AvatarContainer,
-  AvatarSection,
   CancelButton,
-  FormFieldsContainer,
   LoadingOverlay,
   ProfileContainer,
-  ProfileGrid,
-  ProfileHeader,
-  ProfileTitle,
   SaveButton,
   StyledAvatar,
   StyledTextField,
@@ -38,12 +38,15 @@ interface ProfileFormData {
 interface ProfileFormProps {
   user: UserProfile;
   onUserUpdate: (user: UserProfile) => void;
+  /** Profile picture URL from Auth0 (Google / Facebook). Falls back to initials. */
   photoURL?: string;
 }
 
 /**
- * Formulário de edição do perfil
- * Permite editar nome e email do usuário
+ * Formulário de edição do perfil.
+ *
+ * Layout: section title + Divider, avatar centered, then full-width
+ * fields with external FormLabels. Save / reset in footer.
  */
 export function ProfileForm({
   user,
@@ -58,13 +61,9 @@ export function ProfileForm({
   });
   const [saving, setSaving] = useState(false);
 
-  // Handlers otimizados
   const handleInputChange = useCallback(
     (field: keyof ProfileFormData, value: string) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
+      setFormData((prev) => ({ ...prev, [field]: value }));
     },
     [],
   );
@@ -76,7 +75,6 @@ export function ProfileForm({
         name: formData.name,
         email: formData.email,
       });
-
       onUserUpdate(response.user);
     } catch (error: unknown) {
       dispatch(
@@ -92,13 +90,9 @@ export function ProfileForm({
   }, [formData.name, formData.email, dispatch, onUserUpdate, t]);
 
   const handleReset = useCallback(() => {
-    setFormData({
-      name: user.name || "",
-      email: user.email || "",
-    });
+    setFormData({ name: user.name || "", email: user.email || "" });
   }, [user]);
 
-  // Validações memoizadas
   const isFormValid = useMemo(
     () => formData.name.trim().length > 0 && formData.email.trim().length > 0,
     [formData.name, formData.email],
@@ -118,26 +112,30 @@ export function ProfileForm({
           </LoadingOverlay>
         ) : null}
 
-        <ProfileHeader>
-          <ProfileTitle>{t("sections.personalInfo")}</ProfileTitle>
-        </ProfileHeader>
+        {/* ── Section header — matches all other profile cards ────── */}
+        <Typography variant="h6" sx={{ mb: 1 }}>
+          {t("sections.personalInfo")}
+        </Typography>
         <Divider sx={{ mb: 3 }} />
 
-        <ProfileGrid>
-          <AvatarSection>
-            <AvatarContainer>
-              <StyledAvatar
-                src={photoURL}
-                imgProps={{ referrerPolicy: "no-referrer" }}
-              >
-                {!photoURL && formData.name?.[0]?.toUpperCase()}
-              </StyledAvatar>
-            </AvatarContainer>
-          </AvatarSection>
+        {/* ── Avatar — compact, centered ───────────────────────────── */}
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+          <StyledAvatar
+            src={photoURL}
+            imgProps={{ referrerPolicy: "no-referrer" }}
+            sx={{ width: 72, height: 72, fontSize: "1.75rem" }}
+          >
+            {!photoURL && formData.name?.[0]?.toUpperCase()}
+          </StyledAvatar>
+        </Box>
 
-          <FormFieldsContainer>
+        {/* ── Fields with external labels ──────────────────────────── */}
+        <Stack spacing={2.5}>
+          <Box>
+            <FormLabel sx={{ display: "block", mb: 0.75 }}>
+              {t("form.displayName")}
+            </FormLabel>
             <StyledTextField
-              label={t("form.displayName")}
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
               fullWidth
@@ -148,21 +146,26 @@ export function ProfileForm({
                 ),
               }}
             />
+          </Box>
+          <Box>
+            <FormLabel sx={{ display: "block", mb: 0.75 }}>
+              {t("form.email")}
+            </FormLabel>
             <StyledTextField
-              label={t("form.email")}
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
               fullWidth
               type="email"
               isEditing
+              helperText={t("form.emailHelper")}
               InputProps={{
                 startAdornment: (
                   <Mail {...ICON_MD} style={{ marginRight: 12 }} />
                 ),
               }}
             />
-          </FormFieldsContainer>
-        </ProfileGrid>
+          </Box>
+        </Stack>
 
         <ActionButtonsContainer>
           <CancelButton

@@ -7,12 +7,11 @@ import { PasswordChangeForm } from "@/features/profile/components/PasswordChange
 import { ProfileForm } from "@/features/profile/components/ProfileForm";
 import { ProfileSidebar } from "@/features/profile/components/ProfileSidebar";
 import { SubdomainSettings } from "@/features/profile/components/SubdomainSettings";
-import { AppIcon } from "@/shared/ui/icons";
+import { LinkActionsBackLink } from "@/features/links/components/LinkActions/LinkActionsBackLink";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showMessage } from "@/lib/store/messageSlice";
 import { profileService } from "@/services";
 import { ResponsiveContainer } from "@/shared/ui/base";
-import { PageHeader } from "@/shared/ui/base/PageHeader";
 import { ProfileSkeleton } from "@/shared/ui/feedback/skeletons";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
@@ -89,16 +88,9 @@ function ProfilePage() {
   return (
     <AuthGuardRedirect auth={["user", "admin"]} fallback={<ProfileSkeleton />}>
       <ResponsiveContainer variant="page" maxWidth="xl">
-        <PageHeader
-          title={t("title")}
-          subtitle={t("subtitle")}
-          icon={<AppIcon intent="profile" size={32} />}
-          variant="profile"
-          breadcrumbs={[
-            { label: "Dashboard", href: "/" },
-            { label: "Perfil", current: true },
-          ]}
-        />
+        <Box sx={{ mb: 3 }}>
+          <LinkActionsBackLink />
+        </Box>
 
         <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
           <Grid item xs={12} md={8}>
