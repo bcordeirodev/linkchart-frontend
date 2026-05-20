@@ -6,15 +6,12 @@ import { useTranslation } from "react-i18next";
 
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
-import type { GeoLevel } from "@/features/links/hooks/useAnalyticsFilters";
-
 import { useGeographicData } from "../../hooks/useGeographicData";
 
 import { ContinentBreakdown } from "./ContinentBreakdown";
 import { CountryDistributionChart } from "./CountryDistributionChart";
 import { GeographicChart } from "./GeographicChart";
 import { GeographicChoropleth } from "./GeographicChoropleth";
-import { GeographicFilterBar } from "./GeographicFilterBar";
 import { GeographicInsights } from "./GeographicInsights";
 import { GeographicMetrics } from "./GeographicMetrics";
 import { RealTimeHeatmapChart } from "./index";
@@ -31,21 +28,8 @@ interface GeographicAnalysisProps {
   dateTo?: string | null;
   /** When `true`, bot traffic is excluded from all metrics. */
   excludeBots?: boolean;
-  /** Filters results to a specific continent code (e.g. `"EU"`, `"NA"`). */
-  continent?: string | null;
   /** Server-side threshold — hides locations with fewer clicks than this value. */
   minClicks?: number;
-  /**
-   * Frontend-only display control — which geographic level to highlight
-   * in the rankings tab (country / state / city).
-   */
-  geoLevel?: GeoLevel;
-  /** Callback to propagate `continent` changes to the parent. */
-  onContinentChange?: (v: string | null) => void;
-  /** Callback to propagate `minClicks` changes to the parent. */
-  onMinClicksChange?: (v: number) => void;
-  /** Callback to propagate `geoLevel` changes to the parent. */
-  onGeoLevelChange?: (v: GeoLevel) => void;
 }
 
 /**
@@ -61,12 +45,7 @@ export function GeographicAnalysis({
   dateFrom,
   dateTo,
   excludeBots,
-  continent,
   minClicks = 1,
-  geoLevel,
-  onContinentChange,
-  onMinClicksChange,
-  onGeoLevelChange,
 }: GeographicAnalysisProps) {
   const { t } = useTranslation("analytics");
   const [activeSubTab, setActiveSubTab] = useState(0);
@@ -78,7 +57,6 @@ export function GeographicAnalysis({
     dateFrom,
     dateTo,
     excludeBots,
-    continent,
     minClicks,
     refreshInterval: 30000,
   });
@@ -103,9 +81,6 @@ export function GeographicAnalysis({
     (data?.top_cities?.length ?? 0) > 0;
   const hasContinents = (data?.continents?.length ?? 0) > 0;
 
-  /** Resolved geoLevel with default fallback. */
-  const resolvedGeoLevel = geoLevel ?? "country";
-
   return (
     <Box>
       <AnalyticsStateManager
@@ -118,18 +93,6 @@ export function GeographicAnalysis({
         minHeight={300}
       >
         <Box>
-          {/* Filter bar — only rendered when parent supplies all three callbacks */}
-          {onContinentChange && onMinClicksChange && onGeoLevelChange && (
-            <GeographicFilterBar
-              continent={continent ?? null}
-              minClicks={minClicks}
-              geoLevel={resolvedGeoLevel}
-              onContinentChange={onContinentChange}
-              onMinClicksChange={onMinClicksChange}
-              onGeoLevelChange={onGeoLevelChange}
-            />
-          )}
-
           {/* 5 metric cards no topo, fora das sub-tabs */}
           <GeographicMetrics stats={stats} />
 
@@ -206,16 +169,12 @@ export function GeographicAnalysis({
             />
           )}
 
-          {/* Sub-tab 2: Rankings com drill-down — geoLevel controls initial view */}
+          {/* Sub-tab 2: Rankings */}
           {activeSubTab === 2 && (
             <GeographicChart
-              countries={
-                resolvedGeoLevel === "country" ? data?.top_countries || [] : []
-              }
-              states={
-                resolvedGeoLevel === "state" ? data?.top_states || [] : []
-              }
-              cities={resolvedGeoLevel === "city" ? data?.top_cities || [] : []}
+              countries={data?.top_countries || []}
+              states={data?.top_states || []}
+              cities={data?.top_cities || []}
               totalClicks={stats?.totalClicks || 0}
               selectedCountry={selectedCountry}
               onCountrySelect={setSelectedCountry}

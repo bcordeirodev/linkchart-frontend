@@ -142,9 +142,7 @@ export function LinkAnalyticsTabsOptimized({
             dateFrom={filters.dateFrom}
             dateTo={filters.dateTo}
             excludeBots={filters.excludeBots}
-            groupBy={filters.groupBy}
             segment={filters.segment}
-            onGroupByChange={filters.setGroupBy}
             onSegmentChange={filters.setSegment}
           />
         )}
@@ -159,17 +157,11 @@ export function LinkAnalyticsTabsOptimized({
             dateFrom={filters.dateFrom}
             dateTo={filters.dateTo}
             excludeBots={filters.excludeBots}
-            continent={filters.continent}
-            minClicks={filters.minClicks}
-            geoLevel={filters.geoLevel}
-            onContinentChange={filters.setContinent}
-            onMinClicksChange={filters.setMinClicks}
-            onGeoLevelChange={filters.setGeoLevel}
           />
         )}
       </TabPanel>
 
-      {/* Audience Tab — Phase 2: no filter props yet */}
+      {/* Audience Tab */}
       <TabPanel value={filters.tab} index={3}>
         {filters.tab === 3 && <AudienceAnalysis linkId={linkId} />}
       </TabPanel>
@@ -184,12 +176,6 @@ export function LinkAnalyticsTabsOptimized({
             dateFrom={filters.dateFrom}
             dateTo={filters.dateTo}
             excludeBots={filters.excludeBots}
-            priority={filters.priority}
-            insightCategories={filters.insightCategories}
-            actionableOnly={filters.actionableOnly}
-            onPriorityChange={filters.setPriority}
-            onCategoriesChange={filters.setInsightCategories}
-            onActionableOnlyChange={filters.setActionableOnly}
           />
         )}
       </TabPanel>

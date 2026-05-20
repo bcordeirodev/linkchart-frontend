@@ -8,10 +8,7 @@ import { ICON_LG } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import { useTemporalData } from "../../hooks/useTemporalData";
-import type {
-  GroupBy,
-  Segment,
-} from "@/features/links/hooks/useAnalyticsFilters";
+import type { Segment } from "@/features/links/hooks/useAnalyticsFilters";
 import {
   DayOfWeekChart,
   HourlyClicksChart,
@@ -35,16 +32,8 @@ interface TemporalAnalysisProps {
   dateTo?: string | null;
   /** When `true`, bot traffic is excluded from all metrics. */
   excludeBots?: boolean;
-  /**
-   * Chart granularity display mode. "hour" renders HourlyClicksChart first;
-   * "day" and "month" render DayOfWeekChart first (no dedicated monthly chart yet).
-   * Does not affect API requests — backend returns all groupings per response.
-   */
-  groupBy?: GroupBy;
   /** Restricts data to weekday / weekend / business-hours subset (backend filter). */
   segment?: Segment;
-  /** Callback to propagate `groupBy` changes to the parent. */
-  onGroupByChange?: (v: GroupBy) => void;
   /** Callback to propagate `segment` changes to the parent. */
   onSegmentChange?: (v: Segment) => void;
 }
@@ -65,9 +54,7 @@ export function TemporalAnalysis({
   dateFrom,
   dateTo,
   excludeBots,
-  groupBy,
   segment,
-  onGroupByChange,
   onSegmentChange,
 }: TemporalAnalysisProps) {
   const { t } = useTranslation("analytics");
@@ -101,10 +88,6 @@ export function TemporalAnalysis({
         ? t("temporal.metrics.declining")
         : t("temporal.metrics.stable");
 
-  /** When groupBy is "day" or "month", day-of-week chart renders first. */
-  const resolved = groupBy ?? "hour";
-  const dayFirst = resolved === "day" || resolved === "month";
-
   const hourlyChartNode =
     (data?.clicks_by_hour?.length ?? 0) > 0 ? (
       <Grid item xs={12} md={6}>
@@ -131,12 +114,10 @@ export function TemporalAnalysis({
         minHeight={300}
       >
         <Box>
-          {/* Filter bar — only rendered when parent supplies callbacks */}
-          {onGroupByChange && onSegmentChange && (
+          {/* Filter bar — only rendered when parent supplies segment callback */}
+          {onSegmentChange && (
             <TemporalFilterBar
-              groupBy={groupBy ?? "hour"}
               segment={segment ?? "all"}
-              onGroupByChange={onGroupByChange}
               onSegmentChange={onSegmentChange}
             />
           )}
@@ -188,19 +169,10 @@ export function TemporalAnalysis({
             </Grid>
           </Box>
 
-          {/* Summary charts — order controlled by groupBy */}
+          {/* Summary charts */}
           <Grid container spacing={3}>
-            {dayFirst ? (
-              <>
-                {weeklyChartNode}
-                {hourlyChartNode}
-              </>
-            ) : (
-              <>
-                {hourlyChartNode}
-                {weeklyChartNode}
-              </>
-            )}
+            {hourlyChartNode}
+            {weeklyChartNode}
           </Grid>
 
           {/* Rich tabbed chart with advanced analytics */}
