@@ -53,6 +53,13 @@ interface TemporalChartProps {
   weekendVsWeekday?: WeekendVsWeekdayData;
   businessHoursAnalysis?: BusinessHoursData;
   advancedData?: AdvancedTemporalData;
+  /**
+   * Active segment filter from the parent `TemporalAnalysis`.
+   * Used to hide comparison charts whose output is trivially 100 %/0 %
+   * when the filter already pre-excludes that dimension (e.g. the
+   * Weekend vs Weekday pie is meaningless when `segment = 'weekday'`).
+   */
+  segment?: "all" | "weekday" | "weekend" | "business";
 }
 
 /**
@@ -69,6 +76,7 @@ export function TemporalChart({
   weekendVsWeekday,
   businessHoursAnalysis,
   advancedData,
+  segment,
 }: TemporalChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
@@ -112,7 +120,11 @@ export function TemporalChart({
   const weeklyTotal = getTotalClicks(weeklyData);
 
   const avgClicksPerHour = hourlyTotal / 24;
-  const avgClicksPerDay = weeklyTotal / 7;
+  // Use the number of days that actually have data as the denominator so the
+  // average stays meaningful when a segment filter reduces the active day set
+  // (e.g. weekday filter → 5 days, not 7).
+  const daysWithData = weeklyData.filter((d) => d.clicks > 0).length || 7;
+  const avgClicksPerDay = weeklyTotal / daysWithData;
   const activeHours = hourlyData.filter(
     (hour) => hour.clicks > avgClicksPerHour,
   ).length;
@@ -120,10 +132,12 @@ export function TemporalChart({
     (day) => day.clicks > avgClicksPerDay,
   ).length;
 
+  // weeklyData is ordered Mon(0)…Sat(5)…Sun(6) (ISO day_of_week 1–7).
+  // Weekend = indices 5 (Sat) + 6 (Sun); weekdays = indices 0–4 (Mon–Fri).
   const isWeekendActive =
     weeklyData.length >= 7
-      ? weeklyData[0].clicks + weeklyData[6].clicks >
-        weeklyData.slice(1, 6).reduce((sum, day) => sum + day.clicks, 0)
+      ? weeklyData[5].clicks + weeklyData[6].clicks >
+        weeklyData.slice(0, 5).reduce((sum, day) => sum + day.clicks, 0)
       : false;
   const isBusinessHoursActive =
     hourlyData.length >= 24
@@ -131,6 +145,15 @@ export function TemporalChart({
         hourlyData.slice(0, 9).reduce((sum, hour) => sum + hour.clicks, 0) +
           hourlyData.slice(18, 24).reduce((sum, hour) => sum + hour.clicks, 0)
       : false;
+
+  // Hide comparison charts when the active segment filter pre-excludes one of
+  // their dimensions — the result would be trivially 100 %/0 % and misleading.
+  // weekday/weekend filter → Weekend vs Weekday comparison is meaningless.
+  // business filter        → Business Hours comparison is meaningless.
+  const showWeekendComparison =
+    !segment || segment === "all" || segment === "business";
+  const showBusinessComparison =
+    !segment || segment === "all" || segment === "weekday" || segment === "weekend";
 
   return (
     <Box sx={{ width: "100%", overflow: "hidden" }}>
@@ -453,8 +476,8 @@ export function TemporalChart({
             </ChartCard>
           )}
 
-          {/* Weekend vs Weekday */}
-          {weekendVsWeekday && (
+          {/* Weekend vs Weekday — hidden when weekday/weekend segment is active */}
+          {weekendVsWeekday && showWeekendComparison && (
             <Box>
               <Grid container spacing={3}>
                 <Grid item xs={12} lg={8} sx={{ minWidth: 0 }}>
@@ -538,8 +561,8 @@ export function TemporalChart({
             </Box>
           )}
 
-          {/* Business Hours */}
-          {businessHoursAnalysis && (
+          {/* Business Hours — hidden when business segment is active */}
+          {businessHoursAnalysis && showBusinessComparison && (
             <Box>
               <Grid container spacing={3}>
                 <Grid item xs={12} lg={8} sx={{ minWidth: 0 }}>
