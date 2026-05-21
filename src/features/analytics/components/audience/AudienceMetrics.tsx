@@ -204,7 +204,7 @@ export function AudienceMetrics({
           <Divider sx={{ mb: 3 }} />
           <Grid container spacing={3}>
             {languageBreakdown.length > 0 ? (
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <Card sx={cardSx}>
                   <CardContent>
                     <Typography
@@ -229,7 +229,7 @@ export function AudienceMetrics({
             ) : null}
 
             {platformBreakdown.length > 0 ? (
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <Card sx={cardSx}>
                   <CardContent>
                     <Typography
@@ -254,7 +254,7 @@ export function AudienceMetrics({
             ) : null}
 
             {connectionBreakdown.length > 0 ? (
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <Card sx={cardSx}>
                   <CardContent>
                     <Typography
