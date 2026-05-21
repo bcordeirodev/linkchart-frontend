@@ -4,12 +4,17 @@ import type { LinkTrend } from "@/types";
 
 interface LinkTrendBadgeProps {
   trend?: LinkTrend | null;
+  compact?: boolean;
 }
 
-export function LinkTrendBadge({ trend }: LinkTrendBadgeProps) {
+export function LinkTrendBadge({ trend, compact = false }: LinkTrendBadgeProps) {
   if (!trend) {
     return (
-      <Typography variant="caption" color="text.disabled">
+      <Typography
+        variant="caption"
+        color="text.disabled"
+        sx={{ fontSize: compact ? "0.75rem" : undefined }}
+      >
         —
       </Typography>
     );
@@ -25,6 +30,23 @@ export function LinkTrendBadge({ trend }: LinkTrendBadgeProps) {
       : "error.main";
   const Icon = isPositive ? TrendingUp : isNeutral ? Minus : TrendingDown;
   const sign = isPositive ? "+" : "";
+
+  if (compact) {
+    return (
+      <Stack direction="row" spacing={0.5} alignItems="center">
+        <Typography variant="caption" sx={{ fontWeight: 700, fontSize: "0.75rem" }}>
+          {current.toLocaleString("pt-BR")}
+        </Typography>
+        <Stack direction="row" alignItems="center" sx={{ color }}>
+          <Icon size={12} strokeWidth={1.5} />
+          <Typography variant="caption" sx={{ color, fontWeight: 600, fontSize: "0.7rem" }}>
+            {sign}
+            {percent_change.toFixed(1)}%
+          </Typography>
+        </Stack>
+      </Stack>
+    );
+  }
 
   return (
     <Stack direction="row" spacing={0.5} alignItems="center">

@@ -1,6 +1,30 @@
+import type { Theme } from "@mui/material/styles";
+
 import type { LinkResponse } from "@/types";
 
 export type LinkStatus = "active" | "inactive" | "scheduled" | "expired";
+
+/** Resolves palette paths like `success.main` to a concrete color (required for `alpha()`). */
+export function resolvePaletteColor(theme: Theme, path: string): string {
+  const [paletteKey, shade = "main"] = path.split(".");
+  const palette = theme.palette[paletteKey as keyof typeof theme.palette];
+
+  if (palette && typeof palette === "object" && shade in palette) {
+    const value = (palette as Record<string, unknown>)[shade];
+    if (typeof value === "string") {
+      return value;
+    }
+  }
+
+  return theme.palette.text.secondary;
+}
+
+export function getResolvedStatusColor(
+  theme: Theme,
+  status: LinkStatus,
+): string {
+  return resolvePaletteColor(theme, STATUS_MAP[status].color);
+}
 
 export const STATUS_MAP: Record<LinkStatus, { color: string }> = {
   active: { color: "success.main" },

@@ -86,7 +86,7 @@ export function LinkAnalyticsTabsOptimized({
           backgroundColor: theme.palette.background.paper,
           borderRadius: `${radiusTokens.lg}px`,
           border: `1px solid ${theme.palette.divider}`,
-          mb: 3,
+          mb: "10px",
         }}
       >
         <Tabs
@@ -157,6 +157,10 @@ export function LinkAnalyticsTabsOptimized({
             dateFrom={filters.dateFrom}
             dateTo={filters.dateTo}
             excludeBots={filters.excludeBots}
+            continent={filters.continent}
+            onContinentChange={filters.setContinent}
+            subTabIndex={filters.geoSubTab}
+            onSubTabChange={filters.setGeoSubTab}
           />
         )}
       </TabPanel>

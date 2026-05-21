@@ -9,14 +9,30 @@
       "description": "Create your first shortened link and start tracking clicks.",
       "createButton": "Create your first link"
     },
+    "sections": {
+      "overview": "Overview",
+      "overviewDescription": "Summary of your link collection.",
+      "filters": "Search & filters",
+      "filtersDescription": "Find links by text or status, and sort the list.",
+      "links": "My links",
+      "linksBrowseDescription_one": "{{count}} link — use search and filters below to refine",
+      "linksBrowseDescription_other": "{{count}} links — use search and filters below to refine",
+      "linksDescription_one": "{{count}} link in your list",
+      "linksDescription_other": "{{count}} links in your list",
+      "linksFiltered_one": "{{count}} link matching current filters",
+      "linksFiltered_other": "{{count}} links matching current filters"
+    },
     "quickCreate": {
       "label": "Quick create",
-      "urlPlaceholder": "Paste a URL to shorten...",
-      "slugPlaceholder": "Custom slug (optional)",
+      "description": "Paste your destination URL and shorten in seconds. Custom slug is optional.",
+      "urlLabel": "Destination URL",
+      "slugLabel": "Slug (optional)",
+      "urlPlaceholder": "https://example.com/page",
+      "slugPlaceholder": "my-link",
       "submit": "Shorten",
       "success": "Link created!",
-      "moreOptions": "More options",
-      "moreOptionsTooltip": "Open the full creation page with title, UTM parameters, click limits and more"
+      "moreOptions": "Advanced options",
+      "moreOptionsTooltip": "Open full link creation with title, UTM parameters, click limits and more"
     }
   },
   "table": {

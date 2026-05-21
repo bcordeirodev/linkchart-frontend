@@ -1,27 +1,26 @@
 "use client";
 /**
  * LINKS MOBILE CARDS
- * Componente otimizado para visualização de links em mobile
  *
- * @features
- * - Cards otimizados para mobile
- * - Status correto (ativo, inativo, agendado, expirado)
- * - Confirmação antes de deletar
- * - Ações inline (copiar, analytics) e menu (editar, QR, deletar)
- * - Performance otimizada com memo
+ * Optimised card list for narrow viewports. Each card shows:
+ * - Favicon, title, status chip and overflow menu in the header row
+ * - Destination URL (truncated)
+ * - Action zone: click-to-copy short-URL strip + Analytics button (one row, no duplication)
+ * - Compact metrics footer (sparkline, trend %, clicks, date, health)
+ *
+ * A status-coloured left accent (inset box-shadow) mirrors the desktop card.
  */
 
-import { Check, Copy, Eye, Clock, Link2 } from "lucide-react";
-import { ICON_SM, ICON_MD } from "@/lib/theme/iconDefaults";
+import { Eye, Clock, Link2 } from "lucide-react";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
 import {
+  alpha,
   Box,
   Card,
   CardContent,
   Typography,
   Chip,
   Stack,
-  Avatar,
-  Tooltip,
   useTheme,
 } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
@@ -29,22 +28,23 @@ import { enUS, ptBR } from "date-fns/locale";
 import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
-import useClipboard from "@/hooks/useClipboard";
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
-import { LinkActionsInline } from "./LinkActionsInline";
+import { LinkCardActionBar } from "./LinkCardActionBar";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 
 import {
   elevationLightTokens,
   elevationTokens,
-  motionTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
 
-import { getLinkStatus } from "../../utils/linkStatus";
+import {
+  getLinkStatus,
+  getResolvedStatusColor,
+  STATUS_MAP,
+} from "../../utils/linkStatus";
 import type { LinkStatus } from "../../utils/linkStatus";
 
-// Types
 import type {
   BatchMetaResponse,
   LinkMeta,
@@ -52,8 +52,16 @@ import type {
 } from "@/types";
 
 import { LinkHealthBadge } from "./LinkHealthBadge";
+import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { LinkSparkline } from "./LinkSparkline";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
+import {
+  getLinkCardMetricsRowSx,
+  getLinkCardShellSx,
+  getNewlyCreatedHighlightSx,
+  linkCardContentSx,
+  linkCardMetricInlineSx,
+} from "./linksPanelStyles";
 
 const STATUS_LABEL_KEYS = {
   active: "status.active",
@@ -68,6 +76,7 @@ interface LinksMobileCardsProps {
   onDelete?: (id: string) => void;
   onEdit?: (link: Link) => void;
   meta?: BatchMetaResponse;
+  highlightedLinkId?: string | null;
 }
 
 interface LinkMobileCardProps {
@@ -75,45 +84,31 @@ interface LinkMobileCardProps {
   onDelete?: (id: string) => void;
   onEdit?: (link: Link) => void;
   meta?: LinkMeta;
+  isHighlighted?: boolean;
 }
 
 /**
- * Card individual para mobile
+ * Individual mobile card for a single link.
  */
 const LinkMobileCard = memo(
-  ({ link, onDelete, onEdit, meta }: LinkMobileCardProps) => {
+  ({ link, onDelete, onEdit, meta, isHighlighted = false }: LinkMobileCardProps) => {
     const theme = useTheme();
-    const isDark = theme.palette.mode === "dark";
     const navigate = useNavigate();
-    const { copied: urlCopied, copy: copyUrl } = useClipboard({
-      timeout: 1500,
-    });
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { t, i18n } = useTranslation("links");
     const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
+    const isDark = theme.palette.mode === "dark";
 
-    // Formatação de dados
     const shortUrl = useShortUrl(link.slug || link.custom_slug || "");
+    const displayUrl = shortUrl.replace(/^https?:\/\//, "");
 
-    // Validação e formatação segura da data
     const getFormattedDate = () => {
       try {
-        if (!link.created_at) {
-          return t("table.dateUnavailable");
-        }
-
+        if (!link.created_at) return t("table.dateUnavailable");
         const date = new Date(link.created_at);
-
-        if (isNaN(date.getTime())) {
-          return t("table.dateInvalid");
-        }
-
-        return formatDistanceToNow(date, {
-          addSuffix: true,
-          locale: dateLocale,
-        });
-      } catch (error) {
-        console.error("Erro ao formatar data:", error);
+        if (isNaN(date.getTime())) return t("table.dateInvalid");
+        return formatDistanceToNow(date, { addSuffix: true, locale: dateLocale });
+      } catch {
         return t("table.dateUnavailable");
       }
     };
@@ -121,250 +116,188 @@ const LinkMobileCard = memo(
     const createdAt = getFormattedDate();
 
     const linkStatus = getLinkStatus(link);
+    const statusColorKey = STATUS_MAP[linkStatus].color;
+    const statusColorValue = getResolvedStatusColor(theme, linkStatus);
     const statusLabel = t(STATUS_LABEL_KEYS[linkStatus]);
 
-    // Truncar URL longa
-    const truncateUrl = (url: string, maxLength = 40) => {
-      if (url.length <= maxLength) {
-        return url;
-      }
+    const truncateUrl = (url: string, maxLength = 48) =>
+      url.length <= maxLength ? url : `${url.substring(0, maxLength)}…`;
 
-      return `${url.substring(0, maxLength)}...`;
-    };
+    // Consistent decorative left accent — same blue-gray as desktop card.
+    const accentShadow = `inset 3px 0 0 0 ${alpha(
+      theme.palette.primary.light,
+      isDark ? 0.38 : 0.32,
+    )}`;
+    const baseElevation = isDark ? elevationTokens.xs : elevationLightTokens.xs;
+    const hoverElevation = isDark ? elevationTokens.sm : elevationLightTokens.sm;
 
     return (
       <Card
+        id={`link-card-${link.id}`}
         sx={{
-          mb: 2,
-          borderRadius: `${radiusTokens.lg}px`,
-          border: `1px solid ${theme.palette.divider}`,
-          boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
-          transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-          "&:hover": {
-            boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
-          },
+          mb: 1,
+          ...getLinkCardShellSx(theme),
+          ...(isHighlighted
+            ? getNewlyCreatedHighlightSx(theme)
+            : {
+                boxShadow: `${accentShadow}, ${baseElevation}`,
+                "&:hover": {
+                  boxShadow: `${accentShadow}, ${hoverElevation}`,
+                },
+              }),
         }}
       >
-        <CardContent sx={{ p: 3, "&:last-child": { pb: 3 } }}>
-          {/* Header com título e ações */}
-          <Box sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
-            <Avatar
-              sx={{
-                width: 40,
-                height: 40,
-                mr: 2,
-                bgcolor: link.is_active ? "primary.main" : "grey.400",
-                fontSize: "1rem",
-              }}
-            >
-              <Link2 {...ICON_MD} />
-            </Avatar>
-
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontSize: "1.1rem",
-                  fontWeight: 600,
-                  color: "text.primary",
-                  mb: 0.5,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {link.title || t("list.noTitle")}
-              </Typography>
-
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "text.secondary",
-                  fontSize: "0.875rem",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {truncateUrl(link.original_url)}
-              </Typography>
-            </Box>
-          </Box>
-
-          {/* URL encurtada — clicável para copiar */}
-          <Tooltip
-            title={urlCopied ? t("actions.copySuccess") : t("actions.copyLink")}
+        <CardContent
+          sx={{
+            ...linkCardContentSx,
+            "&:last-child": { pb: linkCardContentSx.py },
+          }}
+        >
+          {/* 1 — Favicon · title · status chip · menu — all in one row */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={0.75}
+            sx={{ mb: 0.375, minWidth: 0 }}
           >
-            <Box
-              onClick={() => copyUrl(shortUrl)}
+            <LinkPreviewThumb preview={meta?.preview} size={20} />
+            <Typography
+              variant="body2"
               sx={{
-                p: 2,
-                bgcolor: theme.palette.background.paper,
-                borderRadius: `${radiusTokens.md}px`,
-                border: `1px solid ${theme.palette.divider}`,
-                mb: 2,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                cursor: "pointer",
-                transition:
-                  "border-color 0.15s ease, background-color 0.15s ease",
-                "&:hover": {
-                  borderColor: urlCopied ? "success.light" : "primary.light",
-                  bgcolor: urlCopied
-                    ? "rgba(46, 125, 50, 0.06)"
-                    : "rgba(25, 118, 210, 0.04)",
-                },
+                fontSize: "0.875rem",
+                fontWeight: 600,
+                flex: 1,
+                minWidth: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
-              <Typography
-                variant="body2"
-                sx={{
-                  color: urlCopied ? "success.main" : "primary.main",
-                  fontWeight: 500,
-                  fontSize: "0.9rem",
-                  fontFamily: urlCopied ? "inherit" : "monospace",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  flex: 1,
-                  minWidth: 0,
-                  mr: 1,
-                  transition: "color 0.15s ease",
-                }}
-              >
-                {urlCopied ? t("actions.copySuccess") : shortUrl}
-              </Typography>
-              {urlCopied ? (
-                <Check
-                  size={16}
-                  style={{
-                    color: "var(--mui-palette-success-main, #2e7d32)",
-                    flexShrink: 0,
-                  }}
-                />
-              ) : (
-                <Copy size={16} style={{ opacity: 0.5, flexShrink: 0 }} />
-              )}
-            </Box>
-          </Tooltip>
-
-          {/* Sparkline mini */}
-          {!!meta?.sparkline?.length && (
-            <Box sx={{ mb: 1.5 }}>
-              <LinkSparkline
-                data={meta.sparkline}
-                trend={meta.trend?.percent_change}
-                height={24}
-                width="100%"
-              />
-            </Box>
-          )}
-
-          {/* Tendência + health */}
-          {meta?.trend ? (
-            <Stack
-              direction="row"
-              spacing={1}
-              alignItems="center"
-              sx={{ mb: 1.5 }}
-            >
-              <Typography
-                variant="caption"
-                sx={{
-                  color:
-                    meta.trend.percent_change >= 0
-                      ? "success.main"
-                      : "error.main",
-                  fontWeight: 600,
-                }}
-              >
-                {meta.trend.percent_change >= 0 ? "+" : ""}
-                {meta.trend.percent_change.toFixed(1)}%
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                •
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {meta.trend.last_click_at
-                  ? formatDistanceToNow(new Date(meta.trend.last_click_at), {
-                      addSuffix: true,
-                      locale: dateLocale,
-                    })
-                  : t("metrics.neverClicked")}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                •
-              </Typography>
-              <LinkHealthBadge health={meta.health} />
-            </Stack>
-          ) : null}
-
-          {/* Métricas e status */}
-          <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Eye {...ICON_SM} style={{ opacity: 0.6 }} />
-              <Typography
-                variant="body2"
-                sx={{ color: "text.secondary", fontSize: "0.8rem" }}
-              >
-                {link.clicks || 0} {t("table.clicks").toLowerCase()}
-              </Typography>
-            </Box>
-
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Clock {...ICON_SM} style={{ opacity: 0.6 }} />
-              <Typography
-                variant="body2"
-                sx={{ color: "text.secondary", fontSize: "0.8rem" }}
-              >
-                {createdAt}
-              </Typography>
-            </Box>
+              {link.title || t("list.noTitle")}
+            </Typography>
+            <Chip
+              size="small"
+              label={statusLabel}
+              sx={{
+                height: 20,
+                fontSize: "0.625rem",
+                fontWeight: 500,
+                flexShrink: 0,
+                bgcolor: alpha(statusColorValue, 0.12),
+                color: statusColorKey,
+                border: `1px solid ${alpha(statusColorValue, 0.22)}`,
+                "& .MuiChip-label": { px: 0.75 },
+              }}
+            />
+            <LinkActionsMenu
+              onEdit={() => {
+                if (onEdit) {
+                  onEdit(link);
+                } else {
+                  navigate(`/links/edit/${link.id}`);
+                }
+              }}
+              onQR={() => navigate(`/links/qr/${link.id}`)}
+              onDelete={() => setDeleteDialogOpen(true)}
+            />
           </Stack>
 
-          {/* Status e ações rápidas */}
-          <Box
+          {/* 2 — Destination URL full width */}
+          <Typography
+            variant="caption"
+            color="text.secondary"
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              display: "block",
+              fontSize: "0.75rem",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              mb: 0.75,
             }}
           >
-            <Chip
-              label={statusLabel}
-              size="small"
-              color={linkStatus === "active" ? "success" : "default"}
-              sx={{ fontSize: "0.75rem" }}
-            />
+            {truncateUrl(link.original_url)}
+          </Typography>
 
-            <Stack direction="row" spacing={0.5} alignItems="center">
-              <LinkActionsInline
-                shortUrl={shortUrl}
-                onAnalytics={() => navigate(`/links/analytics/${link.id}`)}
-              />
-              <LinkActionsMenu
-                onEdit={() => {
-                  if (onEdit) {
-                    onEdit(link);
-                  } else {
-                    navigate(`/links/edit/${link.id}`);
-                  }
-                }}
-                onQR={() => navigate(`/links/qr/${link.id}`)}
-                onDelete={() => setDeleteDialogOpen(true)}
-              />
-            </Stack>
-          </Box>
+          <LinkCardActionBar
+            shortUrl={shortUrl}
+            displayUrl={displayUrl}
+            onAnalytics={() => navigate(`/links/analytics/${link.id}`)}
+            sx={{ mb: 0.75 }}
+          />
+
+          <Box sx={{ ...getLinkCardMetricsRowSx(theme), mt: 0.75, pt: 0.75 }}>
+                {!!meta?.sparkline?.length && (
+                  <LinkSparkline
+                    data={meta.sparkline}
+                    trend={meta.trend?.percent_change}
+                    height={22}
+                    width={72}
+                  />
+                )}
+
+                {meta?.trend ? (
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: "0.7rem",
+                      color:
+                        meta.trend.percent_change >= 0
+                          ? "success.main"
+                          : "error.main",
+                    }}
+                  >
+                    {meta.trend.percent_change >= 0 ? "+" : ""}
+                    {meta.trend.percent_change.toFixed(1)}%
+                  </Typography>
+                ) : null}
+
+                <Box sx={linkCardMetricInlineSx}>
+                  <Eye {...ICON_SM} style={{ opacity: 0.4 }} />
+                  <Typography
+                    variant="caption"
+                    sx={{ fontWeight: 600, fontSize: "0.7rem" }}
+                  >
+                    {link.clicks || 0}
+                  </Typography>
+                </Box>
+
+                <Box sx={linkCardMetricInlineSx}>
+                  <Clock {...ICON_SM} style={{ opacity: 0.4 }} />
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ fontSize: "0.7rem" }}
+                  >
+                    {createdAt}
+                  </Typography>
+                </Box>
+
+                {meta?.trend ? (
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ fontSize: "0.7rem" }}
+                  >
+                    {meta.trend.last_click_at
+                      ? formatDistanceToNow(new Date(meta.trend.last_click_at), {
+                          addSuffix: true,
+                          locale: dateLocale,
+                        })
+                      : t("metrics.neverClicked")}
+                  </Typography>
+                ) : null}
+
+                <LinkHealthBadge health={meta?.health} />
+              </Box>
         </CardContent>
+
         <DeleteConfirmDialog
           open={deleteDialogOpen}
           shortUrl={shortUrl}
           onConfirm={() => {
             setDeleteDialogOpen(false);
-            if (onDelete) {
-              onDelete(String(link.id));
-            }
+            if (onDelete) onDelete(String(link.id));
           }}
           onCancel={() => setDeleteDialogOpen(false)}
         />
@@ -376,10 +309,17 @@ const LinkMobileCard = memo(
 LinkMobileCard.displayName = "LinkMobileCard";
 
 /**
- * Container principal dos cards mobile
+ * Renders a scrollable list of mobile link cards with an inline loading skeleton.
  */
 export const LinksMobileCards = memo(
-  ({ data, loading, onDelete, onEdit, meta }: LinksMobileCardsProps) => {
+  ({
+    data,
+    loading,
+    onDelete,
+    onEdit,
+    meta,
+    highlightedLinkId = null,
+  }: LinksMobileCardsProps) => {
     const { t } = useTranslation("links");
 
     if (loading) {
@@ -465,13 +405,7 @@ export const LinksMobileCards = memo(
 
     if (!data || data.length === 0) {
       return (
-        <Box
-          sx={{
-            textAlign: "center",
-            py: 6,
-            px: 3,
-          }}
-        >
+        <Box sx={{ textAlign: "center", py: 6, px: 3 }}>
           <Link2
             size={64}
             strokeWidth={1.5}
@@ -488,7 +422,7 @@ export const LinksMobileCards = memo(
     }
 
     return (
-      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+      <Box>
         {data.map((link) => (
           <LinkMobileCard
             key={link.id}
@@ -496,6 +430,7 @@ export const LinksMobileCards = memo(
             meta={meta?.[String(link.id)]}
             onDelete={onDelete}
             onEdit={onEdit}
+            isHighlighted={String(link.id) === highlightedLinkId}
           />
         ))}
       </Box>

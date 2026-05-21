@@ -19,6 +19,10 @@ export {
   FormContainer,
 } from "./ResponsiveContainer";
 export { default as PageHeader } from "./PageHeader";
+export {
+  PageSectionHeading,
+  type PageSectionHeadingProps,
+} from "./PageSectionHeading";
 
 // Data Display
 export { default as MetricCardOptimized } from "./MetricCardOptimized";

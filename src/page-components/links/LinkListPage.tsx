@@ -1,28 +1,32 @@
 "use client";
-import { Stack } from "@mui/material";
-import { useMemo, useState } from "react";
+
+import { BarChart3 } from "lucide-react";
+import { Box, Stack } from "@mui/material";
+import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { LinkMetrics } from "@/features/links/components/LinkMetrics";
 import {
-  LinkCardRich,
-  LinksEmptyState,
-  LinksFilters,
-  LinksHeader,
-  LinksMobileCards,
+  LinksBrowseSection,
+  LinksListSectionHeading,
   LinksQuickCreate,
 } from "@/features/links/components/list";
 import { useLinks, useDeleteLink } from "@/features/links/hooks/useLinks";
+import { useNewlyCreatedLinkHighlight } from "@/features/links/hooks/useNewlyCreatedLinkHighlight";
 import { useLinksMeta } from "@/features/links/hooks/useLinksMeta";
 import { getLinkStatus } from "@/features/links/utils/linkStatus";
+import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useResponsive } from "@/lib/theme";
 import { ResponsiveContainer } from "@/shared/ui/base";
 import { LinkListSkeleton } from "@/shared/ui/feedback/skeletons";
-import type { LinkResponse } from "@/types";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
 
+import type { LinkResponse } from "@/types";
+
 function LinkListPage() {
   const { isMobile } = useResponsive();
+  const { t } = useTranslation("links");
   const { links, loading } = useLinks();
   const { mutateAsync: deleteLinkMutation } = useDeleteLink();
   const deleteLink = (id: string): Promise<void> =>
@@ -30,6 +34,8 @@ function LinkListPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("created_at");
+
+  const hasActiveFilters = Boolean(searchTerm) || statusFilter !== "all";
 
   const filteredLinks = useMemo(() => {
     return links.filter((link) => {
@@ -96,6 +102,21 @@ function LinkListPage() {
     }
   }, [filteredLinks, sortBy, meta]);
 
+  const visibleLinkIds = useMemo(
+    () => sortedLinks.map((l) => String(l.id)),
+    [sortedLinks],
+  );
+  const { highlightedLinkId, highlightLink } =
+    useNewlyCreatedLinkHighlight(visibleLinkIds);
+
+  const handleLinkCreated = useCallback(
+    (link: LinkResponse) => {
+      setSortBy("created_at");
+      highlightLink(link);
+    },
+    [highlightLink],
+  );
+
   const handleClearFilters = () => {
     setSearchTerm("");
     setStatusFilter("all");
@@ -119,45 +140,37 @@ function LinkListPage() {
       fallback={<LinkListSkeleton isMobile={isMobile} count={6} />}
     >
       <ResponsiveContainer variant="page">
-        <LinksHeader />
+        <Stack spacing={{ xs: 2.5, sm: 3 }} component="section">
+          <Box component="div">
+            <LinksListSectionHeading
+              icon={<BarChart3 {...ICON_MD} />}
+              title={t("list.sections.overview")}
+              description={t("list.pageSubtitle")}
+              titleVariant="page"
+              sx={{ mb: { xs: 1.5, sm: 2 } }}
+            />
+            <LinkMetrics linksData={links} showTitle={false} />
+          </Box>
 
-        <LinksQuickCreate />
+          <LinksQuickCreate onLinkCreated={handleLinkCreated} />
 
-        <LinkMetrics linksData={links} showTitle={false} />
-
-        <LinksFilters
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          statusFilter={statusFilter}
-          onStatusChange={setStatusFilter}
-          sortBy={sortBy}
-          onSortChange={setSortBy}
-        />
-
-        {sortedLinks.length === 0 ? (
-          <LinksEmptyState
-            hasActiveFilters={Boolean(searchTerm) || statusFilter !== "all"}
-            onClearFilters={handleClearFilters}
-          />
-        ) : isMobile ? (
-          <LinksMobileCards
-            data={sortedLinks}
+          <LinksBrowseSection
+            highlightedLinkId={highlightedLinkId}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            statusFilter={statusFilter}
+            onStatusChange={setStatusFilter}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            sortedLinks={sortedLinks}
             meta={meta}
             loading={loading}
+            isMobile={isMobile}
+            hasActiveFilters={hasActiveFilters}
+            onClearFilters={handleClearFilters}
             onDelete={deleteLink}
           />
-        ) : (
-          <Stack spacing={2}>
-            {sortedLinks.map((link: LinkResponse) => (
-              <LinkCardRich
-                key={link.id}
-                link={link}
-                meta={meta[String(link.id)]}
-                onDelete={deleteLink}
-              />
-            ))}
-          </Stack>
-        )}
+        </Stack>
       </ResponsiveContainer>
     </AuthGuardRedirect>
   );

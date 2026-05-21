@@ -9,14 +9,30 @@
       "description": "Crie seu primeiro link encurtado e comece a rastrear os cliques.",
       "createButton": "Criar seu primeiro link"
     },
+    "sections": {
+      "overview": "Visão geral",
+      "overviewDescription": "Resumo da sua coleção de links.",
+      "filters": "Busca e filtros",
+      "filtersDescription": "Encontre links por texto, status ou ordene a lista.",
+      "links": "Meus links",
+      "linksBrowseDescription_one": "{{count}} link — use busca e filtros abaixo para refinar",
+      "linksBrowseDescription_other": "{{count}} links — use busca e filtros abaixo para refinar",
+      "linksDescription_one": "{{count}} link na lista",
+      "linksDescription_other": "{{count}} links na lista",
+      "linksFiltered_one": "{{count}} link encontrado com os filtros atuais",
+      "linksFiltered_other": "{{count}} links encontrados com os filtros atuais"
+    },
     "quickCreate": {
       "label": "Criação rápida",
-      "urlPlaceholder": "Cole uma URL para encurtar...",
-      "slugPlaceholder": "Slug personalizado (opcional)",
+      "description": "Cole a URL de destino e encurte em segundos. O slug personalizado é opcional.",
+      "urlLabel": "URL de destino",
+      "slugLabel": "Slug (opcional)",
+      "urlPlaceholder": "https://exemplo.com/pagina",
+      "slugPlaceholder": "meu-link",
       "submit": "Encurtar",
       "success": "Link criado!",
-      "moreOptions": "Mais opções",
-      "moreOptionsTooltip": "Abrir página de criação completa com título, UTM, limite de cliques e mais"
+      "moreOptions": "Opções avançadas",
+      "moreOptionsTooltip": "Abrir criação completa com título, UTM, limite de cliques e mais"
     }
   },
   "table": {

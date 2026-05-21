@@ -17,7 +17,7 @@ import { debounce } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { radiusTokens } from "@/lib/theme/designSystem";
+import { getLinksFilterInsetSx, getLinksPanelSx } from "./linksPanelStyles";
 
 interface LinksFiltersProps {
   searchTerm: string;
@@ -26,6 +26,8 @@ interface LinksFiltersProps {
   onStatusChange: (value: string) => void;
   sortBy: string;
   onSortChange: (value: string) => void;
+  /** When true, renders inside a parent card (no outer paper wrapper). */
+  embedded?: boolean;
 }
 
 export function LinksFilters({
@@ -35,6 +37,7 @@ export function LinksFilters({
   onStatusChange,
   sortBy,
   onSortChange,
+  embedded = false,
 }: LinksFiltersProps) {
   const theme = useTheme();
   const { t } = useTranslation("links");
@@ -63,16 +66,12 @@ export function LinksFilters({
   useEffect(() => () => debouncedSearch.cancel(), [debouncedSearch]);
   useEffect(() => setLocalSearch(searchTerm), [searchTerm]);
 
+  const shellSx = embedded
+    ? getLinksFilterInsetSx(theme)
+    : { ...getLinksPanelSx(theme), mb: 0, overflow: "hidden" as const };
+
   return (
-    <Box
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: `${radiusTokens.lg}px`,
-        border: `1px solid ${theme.palette.divider}`,
-        mb: 3,
-        overflow: "hidden",
-      }}
-    >
+    <Box sx={shellSx}>
       {/* Linha 1: busca + ordenação */}
       <Box
         sx={{
