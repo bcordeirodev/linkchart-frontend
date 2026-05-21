@@ -132,13 +132,17 @@ export function TemporalChart({
     (day) => day.clicks > avgClicksPerDay,
   ).length;
 
-  // weeklyData is ordered Mon(0)…Sat(5)…Sun(6) (ISO day_of_week 1–7).
-  // Weekend = indices 5 (Sat) + 6 (Sun); weekdays = indices 0–4 (Mon–Fri).
+  // Use the `day` field (ISO 1=Mon…7=Sun) instead of positional indices so
+  // the computation stays correct when weeklyData is pre-filtered by segment
+  // (e.g. only 5 entries for weekday filter or 2 entries for weekend filter).
+  const weekendClicks = weeklyData
+    .filter((d) => (d.day as number) >= 6) // Sat=6, Sun=7
+    .reduce((sum, d) => sum + d.clicks, 0);
+  const weekdayClicks = weeklyData
+    .filter((d) => (d.day as number) <= 5) // Mon=1 … Fri=5
+    .reduce((sum, d) => sum + d.clicks, 0);
   const isWeekendActive =
-    weeklyData.length >= 7
-      ? weeklyData[5].clicks + weeklyData[6].clicks >
-        weeklyData.slice(0, 5).reduce((sum, day) => sum + day.clicks, 0)
-      : false;
+    weeklyData.length > 0 ? weekendClicks > weekdayClicks : false;
   const isBusinessHoursActive =
     hourlyData.length >= 24
       ? hourlyData.slice(9, 18).reduce((sum, hour) => sum + hour.clicks, 0) >
