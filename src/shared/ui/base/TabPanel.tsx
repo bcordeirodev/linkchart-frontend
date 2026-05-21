@@ -31,7 +31,7 @@ export function TabPanel({
     >
       {isActive ? (
         <Fade in timeout={180}>
-          <Box sx={{ py: 3, ...sx }}>{children}</Box>
+          <Box sx={{ pt: 2, pb: 3, ...sx }}>{children}</Box>
         </Fade>
       ) : null}
     </div>

@@ -83,11 +83,7 @@ export function AudienceAnalysis({
         <ResponsiveContainer style={{ padding: 0 }}>
           {shouldUseHook && stats ? (
             <Box sx={{ mb: 3 }}>
-              <AudienceMetrics
-                data={{ audience: audienceData, stats }}
-                showTitle
-                title={t("audience.metrics.title")}
-              />
+              <AudienceMetrics data={{ audience: audienceData, stats }} />
             </Box>
           ) : null}
 
