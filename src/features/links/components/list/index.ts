@@ -1,14 +1,17 @@
 export { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 export { LinkActionsInline } from "./LinkActionsInline";
 export { LinkActionsMenu } from "./LinkActionsMenu";
+export { LinkCardActionBar } from "./LinkCardActionBar";
 export { LinkCardRich } from "./LinkCardRich";
 export { LinkHealthBadge } from "./LinkHealthBadge";
 export { LinkPreviewThumb } from "./LinkPreviewThumb";
 export { LinkSparkline } from "./LinkSparkline";
 export { LinkTrendBadge } from "./LinkTrendBadge";
 export { LinksEmptyState } from "./LinksEmptyState";
+export { LinksBrowseSection } from "./LinksBrowseSection";
 export { LinksFilters } from "./LinksFilters";
 export { LinksHeader } from "./LinksHeader";
+export { LinksListSectionHeading } from "./LinksListSectionHeading";
 export { LinksHeaderActions } from "./LinksHeaderActions";
 export { LinksMobileCards } from "./LinksMobileCards";
 export { LinksQuickCreate } from "./LinksQuickCreate";

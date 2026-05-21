@@ -38,6 +38,8 @@ export interface AnalyticsFilters {
   continent: string | null;
   minClicks: number;
   geoLevel: GeoLevel;
+  /** Index of the active geographic sub-tab (0=Overview, 1=Heatmap, 2=Rankings). URL-persisted so it survives RSC remounts triggered by filter changes. */
+  geoSubTab: number;
 
   // Insights
   priority: InsightPriority;
@@ -54,6 +56,7 @@ export interface AnalyticsFilters {
   setContinent: (v: string | null) => void;
   setMinClicks: (v: number) => void;
   setGeoLevel: (v: GeoLevel) => void;
+  setGeoSubTab: (v: number) => void;
   setPriority: (v: InsightPriority) => void;
   setInsightCategories: (v: string[]) => void;
   setActionableOnly: (v: boolean) => void;
@@ -181,6 +184,12 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   const tab =
     Number.isFinite(rawTab) && rawTab >= 0 && rawTab <= 5 ? rawTab : 0;
 
+  const rawGeoSubTab = parseInt(searchParams.get("geoSubTab") ?? "0", 10);
+  const geoSubTab =
+    Number.isFinite(rawGeoSubTab) && rawGeoSubTab >= 0 && rawGeoSubTab <= 2
+      ? rawGeoSubTab
+      : 0;
+
   const customFrom = searchParams.get("date_from");
   const customTo = searchParams.get("date_to");
   const { dateFrom, dateTo } =
@@ -261,6 +270,11 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     [setParam],
   );
 
+  const setGeoSubTab = useCallback(
+    (v: number) => setParam({ geoSubTab: v === 0 ? null : String(v) }),
+    [setParam],
+  );
+
   const setPriority = useCallback(
     (v: InsightPriority) => setParam({ priority: v === "all" ? null : v }),
     [setParam],
@@ -300,6 +314,8 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     setContinent,
     setMinClicks,
     setGeoLevel,
+    geoSubTab,
+    setGeoSubTab,
     setPriority,
     setInsightCategories,
     setActionableOnly,

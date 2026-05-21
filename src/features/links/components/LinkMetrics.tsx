@@ -173,7 +173,7 @@ export function LinkMetrics({
   }
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={{ mb: 0 }}>
       {showTitle ? (
         <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
           {titleText}

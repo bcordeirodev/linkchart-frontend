@@ -1,14 +1,17 @@
 "use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
+  FormLabel,
   InputAdornment,
+  Stack,
   TextField,
   Tooltip,
   Typography,
-  useTheme,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { ArrowUpRight, CheckCircle2, Link2, Zap } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
@@ -18,8 +21,21 @@ import { z } from "zod";
 import { useCreateLink } from "@/features/links/hooks/useLinks";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
 import { getUrlSafetyHelperNode } from "@/features/links/components/forms/UrlSafetyIndicator";
-import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
+import { radiusTokens } from "@/lib/theme/designSystem";
+import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
+
+import { LinksListSectionHeading } from "./LinksListSectionHeading";
+import { getLinksQuickCreatePanelSx } from "./linksPanelStyles";
+
+import type { LinkResponse } from "@/types";
+import type { ReactNode } from "react";
+
+interface LinksQuickCreateProps {
+  /** Called after a link is created (list is invalidated by the mutation). */
+  onLinkCreated?: (link: LinkResponse) => void;
+}
 
 const RESERVED_SLUGS = ["api", "admin", "www", "mail", "ftp", "r", "redirect"];
 
@@ -28,13 +44,41 @@ type QuickFormData = {
   custom_slug?: string;
 };
 
+/** Matches MUI medium button height for a single control row. */
+const CONTROL_HEIGHT = 40;
+
+const inputRootSx = {
+  "& .MuiOutlinedInput-root": {
+    height: CONTROL_HEIGHT,
+    borderRadius: `${radiusTokens.md}px`,
+    bgcolor: "background.default",
+    "& input": {
+      py: 0,
+      height: "100%",
+      boxSizing: "border-box",
+    },
+  },
+  "& .MuiFormHelperText-root": {
+    mx: 0,
+    mt: 0.75,
+  },
+};
+
+const submitButtonSx = {
+  height: CONTROL_HEIGHT,
+  minHeight: CONTROL_HEIGHT,
+  textTransform: "none",
+  fontWeight: 600,
+  minWidth: { md: 132 },
+  borderRadius: `${radiusTokens.md}px`,
+  whiteSpace: "nowrap",
+  px: 2.5,
+};
+
 /**
  * Inline quick-create form at the top of the links list page.
- * Exposes only URL and optional slug; full options are one click away via "More options".
- * Runs Google Safe Browsing on the URL before allowing submission.
- * Relies on `useCreateLink` so the list query is invalidated automatically on success.
  */
-export function LinksQuickCreate() {
+export function LinksQuickCreate({ onLinkCreated }: LinksQuickCreateProps = {}) {
   const theme = useTheme();
   const { t } = useTranslation("links");
   const navigate = useNavigate();
@@ -81,163 +125,201 @@ export function LinksQuickCreate() {
   const urlIsUnsafe = safetyStatus === "unsafe";
   const urlIsChecking = safetyStatus === "checking";
 
-  const urlHelperText: React.ReactNode = errors.original_url?.message
+  const urlHelperText: ReactNode = errors.original_url?.message
     ? errors.original_url.message
     : safetyStatus !== "idle"
       ? getUrlSafetyHelperNode(safetyStatus, threats, t)
-      : undefined;
+      : " ";
 
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
     async (data): Promise<void> => {
       if (urlIsUnsafe || urlIsChecking) return;
-      await mutateAsync({
+      const created = await mutateAsync({
         original_url: data.original_url,
         custom_slug: data.custom_slug || undefined,
       });
+      onLinkCreated?.(created);
       setSucceeded(true);
       reset();
       setTimeout(() => setSucceeded(false), 2000);
     },
-    [mutateAsync, reset, urlIsUnsafe, urlIsChecking],
+    [mutateAsync, onLinkCreated, reset, urlIsUnsafe, urlIsChecking],
   );
 
   return (
-    <Box
-      sx={{
-        mb: 3,
-        px: { xs: 2, sm: 3 },
-        pt: 2,
-        pb: 2.5,
-        borderRadius: "12px",
-        borderTop: "1px solid rgba(25, 118, 210, 0.2)",
-        borderRight: "1px solid rgba(25, 118, 210, 0.2)",
-        borderBottom: "1px solid rgba(25, 118, 210, 0.2)",
-        borderLeft: "3px solid",
-        borderLeftColor: "primary.main",
-        bgcolor: "rgba(25, 118, 210, 0.04)",
-      }}
+    <EnhancedPaper
+      variant="outlined"
+      animated={false}
+      sx={{ mb: 0, ...getLinksQuickCreatePanelSx(theme) }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.75 }}>
-        <Box
-          sx={{
-            display: "flex",
-            p: 0.5,
-            borderRadius: "6px",
-            bgcolor: "rgba(25, 118, 210, 0.15)",
-            color: "primary.main",
-          }}
-        >
-          <Zap size={13} strokeWidth={2.5} />
-        </Box>
-        <Typography
-          variant="caption"
-          sx={{
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "text.primary",
-          }}
-        >
-          {t("list.quickCreate.label")}
-        </Typography>
-      </Box>
-
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmit)}
-        sx={{
-          display: "flex",
-          gap: 1.5,
-          flexDirection: { xs: "column", sm: "row" },
-          alignItems: { xs: "stretch", sm: "flex-start" },
-        }}
-      >
-        <TextField
-          {...register("original_url")}
-          placeholder={t("list.quickCreate.urlPlaceholder")}
-          size="small"
-          error={!!errors.original_url || urlIsUnsafe}
-          helperText={urlHelperText}
-          disabled={isPending}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Link2 {...ICON_SM} color={theme.palette.text.secondary} />
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={{ flex: 2, minWidth: 0 }}
-        />
-
-        <TextField
-          {...register("custom_slug")}
-          placeholder={t("list.quickCreate.slugPlaceholder")}
-          size="small"
-          error={!!errors.custom_slug}
-          helperText={errors.custom_slug?.message}
-          disabled={isPending}
-          sx={{ flex: 1, minWidth: 0 }}
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <LinksListSectionHeading
+          icon={<Zap {...ICON_MD} />}
+          title={t("list.quickCreate.label")}
+          description={t("list.quickCreate.description")}
+          action={
+            <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
+              <Button
+                variant="text"
+                size="small"
+                onClick={() => navigate("/links/create")}
+                endIcon={<ArrowUpRight size={14} strokeWidth={2} />}
+                sx={{
+                  textTransform: "none",
+                  color: "text.secondary",
+                  "&:hover": { color: "text.primary", bgcolor: "action.hover" },
+                }}
+              >
+                {t("list.quickCreate.moreOptions")}
+              </Button>
+            </Tooltip>
+          }
         />
 
         <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            flexShrink: 0,
-            alignSelf: { xs: "stretch", sm: "flex-start" },
-          }}
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
         >
-          <Button
-            type="submit"
-            variant="contained"
-            disableElevation
-            disabled={isPending || urlIsUnsafe || urlIsChecking}
-            startIcon={
-              succeeded ? <CheckCircle2 {...ICON_SM} /> : <Zap {...ICON_SM} />
-            }
+          {/* Labels — desktop only (mobile uses placeholders) */}
+          <Box
             sx={{
-              textTransform: "none",
-              fontWeight: 600,
-              borderRadius: "20px",
-              minWidth: 110,
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-              transition: theme.transitions.create([
-                "background-color",
-                "border-color",
-              ]),
-              ...(succeeded && {
-                bgcolor: "success.main",
-                "&:hover": { bgcolor: "success.dark" },
-              }),
+              display: { xs: "none", md: "flex" },
+              gap: 2,
+              mb: 0.75,
             }}
           >
-            {succeeded
-              ? t("list.quickCreate.success")
-              : t("list.quickCreate.submit")}
-          </Button>
-          <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
-            <Button
-              variant="text"
-              onClick={() => navigate("/links/create")}
-              endIcon={<ArrowUpRight size={14} strokeWidth={2} />}
-              sx={{
-                textTransform: "none",
-                color: "text.secondary",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-                fontSize: "0.8125rem",
-                "&:hover": { color: "text.primary" },
-              }}
-            >
-              {t("list.quickCreate.moreOptions")}
-            </Button>
-          </Tooltip>
+            <FormLabel sx={{ flex: 2, minWidth: 0 }}>
+              {t("list.quickCreate.urlLabel")}
+            </FormLabel>
+            <FormLabel sx={{ flex: 1, minWidth: 0 }}>
+              {t("list.quickCreate.slugLabel")}
+            </FormLabel>
+            <Box sx={{ width: 132, flexShrink: 0 }} aria-hidden />
+          </Box>
+
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            spacing={2}
+            alignItems={{ xs: "stretch", md: "center" }}
+          >
+            <Box sx={{ flex: { md: 2 }, minWidth: 0 }}>
+              <FormLabel
+                sx={{ display: { xs: "block", md: "none" }, mb: 0.75 }}
+              >
+                {t("list.quickCreate.urlLabel")}
+              </FormLabel>
+              <TextField
+                {...register("original_url")}
+                placeholder={t("list.quickCreate.urlPlaceholder")}
+                size="small"
+                fullWidth
+                error={!!errors.original_url || urlIsUnsafe}
+                helperText={urlHelperText}
+                disabled={isPending}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Link2 {...ICON_SM} color={theme.palette.text.secondary} />
+                      </InputAdornment>
+                    ),
+                  },
+                  formHelperText: {
+                    sx: {
+                      display: { md: "none" },
+                      minHeight: urlHelperText === " " ? 0 : undefined,
+                    },
+                  },
+                }}
+                sx={inputRootSx}
+              />
+            </Box>
+
+            <Box sx={{ flex: { md: 1 }, minWidth: 0 }}>
+              <FormLabel
+                sx={{ display: { xs: "block", md: "none" }, mb: 0.75 }}
+              >
+                {t("list.quickCreate.slugLabel")}
+              </FormLabel>
+              <TextField
+                {...register("custom_slug")}
+                placeholder={t("list.quickCreate.slugPlaceholder")}
+                size="small"
+                fullWidth
+                error={!!errors.custom_slug}
+                helperText={errors.custom_slug?.message}
+                disabled={isPending}
+                slotProps={{
+                  input: {
+                    sx: { fontFamily: "monospace", fontWeight: 500 },
+                  },
+                  formHelperText: {
+                    sx: { display: { md: "none" } },
+                  },
+                }}
+                sx={inputRootSx}
+              />
+            </Box>
+
+            <Box sx={{ flexShrink: 0, width: { md: 132 } }}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                disabled={isPending || urlIsUnsafe || urlIsChecking}
+                startIcon={
+                  succeeded ? (
+                    <CheckCircle2 {...ICON_SM} />
+                  ) : (
+                    <Zap {...ICON_SM} />
+                  )
+                }
+                sx={submitButtonSx}
+              >
+                {succeeded
+                  ? t("list.quickCreate.success")
+                  : t("list.quickCreate.submit")}
+              </Button>
+            </Box>
+          </Stack>
+
+          {/* Helpers below the aligned row on desktop */}
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              gap: 2,
+              mt: 0.75,
+            }}
+          >
+            <Box sx={{ flex: 2, minWidth: 0 }}>
+              {urlHelperText !== " " ? (
+                <Typography
+                  variant="caption"
+                  component="div"
+                  color={
+                    errors.original_url || urlIsUnsafe
+                      ? "error"
+                      : "text.secondary"
+                  }
+                >
+                  {urlHelperText}
+                </Typography>
+              ) : null}
+            </Box>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              {errors.custom_slug?.message ? (
+                <Typography variant="caption" color="error">
+                  {errors.custom_slug.message}
+                </Typography>
+              ) : null}
+            </Box>
+            <Box sx={{ width: 132, flexShrink: 0 }} />
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </EnhancedPaper>
   );
 }
 
