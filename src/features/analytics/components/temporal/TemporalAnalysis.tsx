@@ -185,6 +185,7 @@ export function TemporalAnalysis({
                 weekendVsWeekday={data?.weekend_vs_weekday}
                 businessHoursAnalysis={data?.business_hours_analysis}
                 advancedData={data?.advanced}
+                segment={segment}
               />
             </Grid>
           </Grid>
