@@ -9,6 +9,7 @@ services:
         - NEXT_PUBLIC_GA_ID
         - NEXT_PUBLIC_ADSENSE_CLIENT
         - NEXT_PUBLIC_ADSENSE_PUBLISHER_ID=ca-pub-1396026257166470
+        - NEXT_PUBLIC_SUBDOMAINS_ENABLED=true
         # API_URL é build arg porque next.config.ts rewrites() é avaliado em build time
         - API_URL=http://linkchartapi:80
     container_name: linkcharts-frontend-next-prod
