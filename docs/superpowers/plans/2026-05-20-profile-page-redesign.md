@@ -12,27 +12,28 @@
 
 ## File Map
 
-| Path | Action |
-|------|--------|
-| `backend/app/Http/Controllers/Auth/AuthController.php` | Add `stats()` method |
-| `backend/routes/api.php` | Add `GET /profile/stats` route |
-| `backend/tests/Feature/Auth/ProfileStatsTest.php` | New — 4 test cases |
-| `frontend-next/src/lib/api/endpoints.ts` | Add `AUTH.PROFILE_STATS` |
-| `frontend-next/src/services/profile.service.ts` | Add `ProfileStats` type + `getStats()` |
-| `frontend-next/src/features/profile/hooks/useProfileStats.ts` | New hook |
-| `frontend-next/src/lib/i18n/locales/pt-BR/profile.json` | Add sidebar.activity, subdomain.chip, subdomain.responsibility |
-| `frontend-next/src/lib/i18n/locales/en/profile.json` | Same |
-| `frontend-next/src/features/profile/components/ProfileSidebar.tsx` | Add Activity card with stats |
-| `frontend-next/src/features/profile/components/SubdomainSettings.tsx` | Chip, Divider, responsibility clause + checkbox |
-| `frontend-next/src/features/profile/components/ProfileForm.tsx` | Unified header (Divider, inline badge) |
-| `frontend-next/src/features/profile/components/PasswordChangeForm.tsx` | Add Divider after header |
-| `frontend-next/src/page-components/user/ProfilePage.tsx` | Reorder: Subdomain before Password |
+| Path                                                                   | Action                                                         |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `backend/app/Http/Controllers/Auth/AuthController.php`                 | Add `stats()` method                                           |
+| `backend/routes/api.php`                                               | Add `GET /profile/stats` route                                 |
+| `backend/tests/Feature/Auth/ProfileStatsTest.php`                      | New — 4 test cases                                             |
+| `frontend-next/src/lib/api/endpoints.ts`                               | Add `AUTH.PROFILE_STATS`                                       |
+| `frontend-next/src/services/profile.service.ts`                        | Add `ProfileStats` type + `getStats()`                         |
+| `frontend-next/src/features/profile/hooks/useProfileStats.ts`          | New hook                                                       |
+| `frontend-next/src/lib/i18n/locales/pt-BR/profile.json`                | Add sidebar.activity, subdomain.chip, subdomain.responsibility |
+| `frontend-next/src/lib/i18n/locales/en/profile.json`                   | Same                                                           |
+| `frontend-next/src/features/profile/components/ProfileSidebar.tsx`     | Add Activity card with stats                                   |
+| `frontend-next/src/features/profile/components/SubdomainSettings.tsx`  | Chip, Divider, responsibility clause + checkbox                |
+| `frontend-next/src/features/profile/components/ProfileForm.tsx`        | Unified header (Divider, inline badge)                         |
+| `frontend-next/src/features/profile/components/PasswordChangeForm.tsx` | Add Divider after header                                       |
+| `frontend-next/src/page-components/user/ProfilePage.tsx`               | Reorder: Subdomain before Password                             |
 
 ---
 
 ## Task 1: Backend — profile stats endpoint
 
 **Files:**
+
 - Create: `backend/tests/Feature/Auth/ProfileStatsTest.php`
 - Modify: `backend/app/Http/Controllers/Auth/AuthController.php`
 - Modify: `backend/routes/api.php`
@@ -171,6 +172,7 @@ php artisan test --filter ProfileStatsTest
 ```
 
 Expected output:
+
 ```
 PASS  Tests\Feature\Auth\ProfileStatsTest
 ✓ test returns zero stats for user with no links
@@ -201,6 +203,7 @@ git commit -m "feat(profile): add GET /profile/stats endpoint"
 ## Task 2: Frontend — API endpoint constant + ProfileService + useProfileStats hook
 
 **Files:**
+
 - Modify: `frontend-next/src/lib/api/endpoints.ts`
 - Modify: `frontend-next/src/services/profile.service.ts`
 - Create: `frontend-next/src/features/profile/hooks/useProfileStats.ts`
@@ -216,6 +219,7 @@ PROFILE_STATS: "/api/profile/stats",
 ```
 
 The `AUTH` block should now contain:
+
 ```typescript
 AUTH: {
   LOGIN: "/api/auth/login",
@@ -231,6 +235,7 @@ AUTH: {
 ```
 
 Also find the `API_ENDPOINTS` re-export object near the bottom of the file and add:
+
 ```typescript
 PROFILE_STATS: API_CONFIG.ENDPOINTS.AUTH.PROFILE_STATS,
 ```
@@ -317,6 +322,7 @@ git commit -m "feat(profile): add profile stats service and hook"
 ## Task 3: i18n — add new translation keys
 
 **Files:**
+
 - Modify: `src/lib/i18n/locales/pt-BR/profile.json`
 - Modify: `src/lib/i18n/locales/en/profile.json`
 
@@ -325,6 +331,7 @@ git commit -m "feat(profile): add profile stats service and hook"
 Open `src/lib/i18n/locales/pt-BR/profile.json`.
 
 Inside `"sidebar"`, add after `"dateUnavailable"`:
+
 ```json
 "activity": "Atividade",
 "totalLinks": "Links",
@@ -332,6 +339,7 @@ Inside `"sidebar"`, add after `"dateUnavailable"`:
 ```
 
 Inside `"subdomain"`, add after `"releaseError"`:
+
 ```json
 "chip": {
   "free": "GRÁTIS",
@@ -348,6 +356,7 @@ Inside `"subdomain"`, add after `"releaseError"`:
 Open `src/lib/i18n/locales/en/profile.json`.
 
 Inside `"sidebar"`, add after `"dateUnavailable"`:
+
 ```json
 "activity": "Activity",
 "totalLinks": "Links",
@@ -355,6 +364,7 @@ Inside `"sidebar"`, add after `"dateUnavailable"`:
 ```
 
 Inside `"subdomain"`, add after `"releaseError"`:
+
 ```json
 "chip": {
   "free": "FREE",
@@ -386,6 +396,7 @@ git commit -m "feat(profile): add i18n keys for stats and subdomain responsibili
 ## Task 4: ProfileSidebar — add Activity stats card
 
 **Files:**
+
 - Modify: `src/features/profile/components/ProfileSidebar.tsx`
 
 - [ ] **Step 1: Rewrite ProfileSidebar.tsx**
@@ -394,7 +405,13 @@ Replace the entire file with:
 
 ```tsx
 "use client";
-import { BarChart2, Calendar, Shield, BadgeCheck, AlertCircle } from "lucide-react";
+import {
+  BarChart2,
+  Calendar,
+  Shield,
+  BadgeCheck,
+  AlertCircle,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
@@ -576,6 +593,7 @@ git commit -m "feat(profile): add activity stats card to sidebar"
 ## Task 5: SubdomainSettings — chip, Divider, responsibility clause + checkbox
 
 **Files:**
+
 - Modify: `src/features/profile/components/SubdomainSettings.tsx`
 
 - [ ] **Step 1: Rewrite SubdomainSettings.tsx**
@@ -954,6 +972,7 @@ git commit -m "feat(profile): redesign SubdomainSettings with chip, divider, and
 ## Task 6: ProfileForm — unified header with Divider and inline badge
 
 **Files:**
+
 - Modify: `src/features/profile/components/ProfileForm.tsx`
 
 The goal is to add a `Divider` between the section header and the content, and replace the absolute-positioned `ProfileBadge` with an inline `Chip` next to the title. Logic and styled components remain unchanged.
@@ -963,6 +982,7 @@ The goal is to add a `Divider` between the section header and the content, and r
 In `src/features/profile/components/ProfileForm.tsx`:
 
 1. Add `Chip` and `Divider` to the MUI imports:
+
 ```tsx
 import { Chip, CircularProgress, Divider } from "@mui/material";
 ```
@@ -1024,6 +1044,7 @@ git commit -m "feat(profile): add divider and inline verified chip to ProfileFor
 ## Task 7: PasswordChangeForm — add Divider after header
 
 **Files:**
+
 - Modify: `src/features/profile/components/PasswordChangeForm.tsx`
 
 The `PasswordChangeForm` already has the title + subtitle pattern. This task only adds a `Divider` below the subtitle to match the other sections.
@@ -1033,6 +1054,7 @@ The `PasswordChangeForm` already has the title + subtitle pattern. This task onl
 In `src/features/profile/components/PasswordChangeForm.tsx`:
 
 1. Add `Divider` to the MUI import line:
+
 ```tsx
 import {
   Box,
@@ -1087,6 +1109,7 @@ git commit -m "feat(profile): add divider after PasswordChangeForm header"
 ## Task 8: ProfilePage — reorder sections and final QA
 
 **Files:**
+
 - Modify: `src/page-components/user/ProfilePage.tsx`
 
 - [ ] **Step 1: Reorder the main column sections**
@@ -1104,11 +1127,13 @@ Open `src/page-components/user/ProfilePage.tsx`. Find the main column content (a
 Reorder to put `SubdomainSettings` before `PasswordChangeForm`:
 
 ```tsx
-              <ProfileForm user={user} onUserUpdate={handleUserUpdate} />
-              {process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" && (
-                <SubdomainSettings />
-              )}
-              <PasswordChangeForm />
+<ProfileForm user={user} onUserUpdate={handleUserUpdate} />;
+{
+  process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" && (
+    <SubdomainSettings />
+  );
+}
+<PasswordChangeForm />;
 ```
 
 - [ ] **Step 2: Run full quality check**
@@ -1148,6 +1173,7 @@ git commit -m "feat(profile): move subdomain section above password section"
 ## Self-Review
 
 **Spec coverage:**
+
 - ✅ Visual system (unified header: title + subtitle + Divider) → Tasks 4, 5, 6, 7
 - ✅ Section reorder (Subdomain before Password) → Task 8
 - ✅ SubdomainSettings: FREE/ACTIVE chip → Task 5
@@ -1164,6 +1190,7 @@ git commit -m "feat(profile): move subdomain section above password section"
 - ✅ i18n both locales → Task 3
 
 **Type consistency:**
+
 - `ProfileStats` defined in `profile.service.ts`, re-exported from `useProfileStats.ts` — consistent
 - `stats?.total_links` / `stats?.total_clicks` match the interface shape
 - `t("subdomain.chip.free")` / `t("subdomain.chip.active")` / `t("subdomain.responsibility.text")` / `t("subdomain.responsibility.checkbox")` all defined in Task 3 before use in Task 5

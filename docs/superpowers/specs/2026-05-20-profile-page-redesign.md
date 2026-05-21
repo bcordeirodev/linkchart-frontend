@@ -21,6 +21,7 @@ All three section cards follow the same internal pattern:
 ```
 
 **Rules applied across all sections:**
+
 - `Typography variant="h6"` title + `Typography variant="body2" color="text.secondary"` subtitle
 - `Divider` between header and content
 - All TextFields use external `FormLabel` above the input (no floating label/notch)
@@ -30,6 +31,7 @@ All three section cards follow the same internal pattern:
 ## Section Order (changed)
 
 New order in `ProfilePage.tsx`:
+
 1. Personal Info (`ProfileForm`)
 2. **Custom Subdomain** (`SubdomainSettings`) ← moved up (most differentiated feature)
 3. Change Password (`PasswordChangeForm`) ← moved down (utility)
@@ -65,6 +67,7 @@ New order in `ProfilePage.tsx`:
 ```
 
 **Claim button disabled until ALL of:**
+
 - Input length ≥ 3 and format valid
 - Availability check returned `available: true`
 - Responsibility checkbox is checked
@@ -114,10 +117,12 @@ Both `pt-BR/profile.json` and `en/profile.json` under `subdomain`:
 Apply the unified header pattern (title + subtitle + Divider) to both components. No logic changes — visual only.
 
 `ProfileForm` specific:
+
 - Verified/Pending badge moves to inline chip next to the section title (replaces the absolute-positioned `ProfileBadge`)
 - External `FormLabel` above Name and Email fields (remove `label` prop from `StyledTextField`)
 
 `PasswordChangeForm` specific:
+
 - Same title + subtitle + Divider header
 - No logic or validation changes
 
@@ -126,10 +131,12 @@ Apply the unified header pattern (title + subtitle + Divider) to both components
 Two separate `Paper` cards stacked vertically:
 
 **Card 1 — Account Status** (existing, visually aligned to new system):
+
 - Verified/pending status row
 - Member since row
 
 **Card 2 — Activity** (new):
+
 ```
 ┌──────────────────────────────┐
 │ 📊 Activity                  │
@@ -177,7 +184,7 @@ Route::get('/profile/stats', [AuthController::class, 'stats']);
 ```typescript
 export function useProfileStats() {
   return useQuery({
-    queryKey: ['profile', 'stats'],
+    queryKey: ["profile", "stats"],
     queryFn: () => profileService.getStats(),
     staleTime: 2 * 60 * 1000,
   });
@@ -241,23 +248,25 @@ async getStats(): Promise<{ total_links: number; total_clicks: number }> {
 ## Files Changed
 
 ### Backend
-| File | Change |
-|------|--------|
-| `app/Http/Controllers/Auth/AuthController.php` | Add `stats()` method |
-| `routes/api.php` | Add `GET /profile/stats` route |
+
+| File                                           | Change                         |
+| ---------------------------------------------- | ------------------------------ |
+| `app/Http/Controllers/Auth/AuthController.php` | Add `stats()` method           |
+| `routes/api.php`                               | Add `GET /profile/stats` route |
 
 ### Frontend
-| File | Change |
-|------|--------|
-| `src/features/profile/components/SubdomainSettings.tsx` | Chip, responsibility clause + checkbox, visual header |
-| `src/features/profile/components/ProfileSidebar.tsx` | Add Activity card with stats + Skeleton |
-| `src/features/profile/components/ProfileForm.tsx` | Header pattern, inline verified badge, external labels |
-| `src/features/profile/components/PasswordChangeForm.tsx` | Header pattern only |
-| `src/features/profile/hooks/useProfileStats.ts` | New hook |
-| `src/services/profile.service.ts` | Add `getStats()` method |
-| `src/page-components/user/ProfilePage.tsx` | Reorder: Subdomain before Password |
-| `src/lib/i18n/locales/pt-BR/profile.json` | New keys |
-| `src/lib/i18n/locales/en/profile.json` | New keys |
+
+| File                                                     | Change                                                 |
+| -------------------------------------------------------- | ------------------------------------------------------ |
+| `src/features/profile/components/SubdomainSettings.tsx`  | Chip, responsibility clause + checkbox, visual header  |
+| `src/features/profile/components/ProfileSidebar.tsx`     | Add Activity card with stats + Skeleton                |
+| `src/features/profile/components/ProfileForm.tsx`        | Header pattern, inline verified badge, external labels |
+| `src/features/profile/components/PasswordChangeForm.tsx` | Header pattern only                                    |
+| `src/features/profile/hooks/useProfileStats.ts`          | New hook                                               |
+| `src/services/profile.service.ts`                        | Add `getStats()` method                                |
+| `src/page-components/user/ProfilePage.tsx`               | Reorder: Subdomain before Password                     |
+| `src/lib/i18n/locales/pt-BR/profile.json`                | New keys                                               |
+| `src/lib/i18n/locales/en/profile.json`                   | New keys                                               |
 
 ## Out of Scope
 
