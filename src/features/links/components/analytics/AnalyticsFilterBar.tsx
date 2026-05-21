@@ -113,6 +113,7 @@ export function AnalyticsFilterBar({
           mb: 1,
           letterSpacing: "0.1em",
           lineHeight: 1.6,
+          fontWeight: 700,
         }}
       >
         {t("filters.title")}
@@ -153,6 +154,7 @@ export function AnalyticsFilterBar({
                 sx: { width: 200 },
                 inputProps: { "aria-label": t("filters.dateFrom") },
               },
+              actionBar: { actions: [] },
             }}
           />
           <Typography variant="caption" color="text.disabled">
@@ -182,6 +184,7 @@ export function AnalyticsFilterBar({
                 sx: { width: 200 },
                 inputProps: { "aria-label": t("filters.dateTo") },
               },
+              actionBar: { actions: [] },
             }}
           />
         </Stack>
