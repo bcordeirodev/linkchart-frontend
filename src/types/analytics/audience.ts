@@ -165,6 +165,25 @@ export interface AudienceData {
     clicks: number;
     percentage: number;
   }>;
+  /**
+   * Breakdown by ISP connection type (Phase 2: classifyConnectionType).
+   * Values: residential | mobile | cellular | datacenter | broadband | wifi | education | unknown.
+   * Clicks recorded before Phase 2 have null connection_type and are coalesced to 'unknown'.
+   */
+  connection_type_breakdown?: Array<{
+    type: string;
+    clicks: number;
+    percentage: number;
+  }>;
+  /**
+   * Breakdown by browser rendering engine (Phase 2: derived from browser name).
+   * Values: blink | gecko | webkit | trident | unknown.
+   */
+  rendering_engine?: Array<{
+    engine: string;
+    clicks: number;
+    percentage: number;
+  }>;
 }
 
 /**

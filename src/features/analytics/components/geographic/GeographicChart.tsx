@@ -41,6 +41,9 @@ export function GeographicChart({
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
 
+  const showCountries = !hideCountries;
+  const showStates = !hideStates;
+
   const filteredStates = selectedCountry
     ? states.filter(
         (s) =>
@@ -81,7 +84,7 @@ export function GeographicChart({
   return (
     <Grid container spacing={3}>
       {/* Top Países */}
-      {!hideCountries && (
+      {showCountries && (
         <Grid item xs={12} lg={6}>
           <Card sx={cardSx}>
             <CardContent>
@@ -225,7 +228,7 @@ export function GeographicChart({
       )}
 
       {/* Top Estados */}
-      {!hideStates && (
+      {showStates && (
         <Grid item xs={12} lg={6}>
           <Card sx={cardSx}>
             <CardContent>

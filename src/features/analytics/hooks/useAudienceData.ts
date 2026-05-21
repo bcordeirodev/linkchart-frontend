@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { api } from "@/lib/api/client";
 import { queryKeys } from "@/lib/query/keys";
@@ -71,7 +71,7 @@ export function useAudienceData({
   dateTo,
   excludeBots,
 }: UseAudienceDataOptions): UseAudienceDataReturn {
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, isPlaceholderData, error, refetch } = useQuery({
     queryKey: [
       ...queryKeys.analytics.audience(linkId),
       { dateFrom, dateTo, excludeBots },
@@ -88,6 +88,18 @@ export function useAudienceData({
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,
+    // Keeps the previous dataset visible while a filter-change fetch is in flight so
+    // AnalyticsStateManager never enters its loading state between filter changes.
+    //
+    // Why both flags together matter:
+    //   • `placeholderData: keepPreviousData` → `data` stays non-null during the new
+    //     fetch, so `hasData` passed to AnalyticsStateManager stays true.
+    //   • `isLoading && !isPlaceholderData` → `loading` is false when placeholder data
+    //     is present (filter transition) but true on the very first load (no data at all).
+    //     Without this second condition, TanStack v5 still reports `isLoading=true` for
+    //     the new queryKey even while serving placeholder data, which is enough to trigger
+    //     the AnalyticsStateManager loading state.
+    placeholderData: keepPreviousData,
   });
 
   const stats = useMemo(() => (data ? calculateStats(data) : null), [data]);
@@ -95,7 +107,7 @@ export function useAudienceData({
   return {
     data: data ?? null,
     stats,
-    loading: isLoading,
+    loading: isLoading && !isPlaceholderData,
     error: error ? (error as Error).message : null,
     lastUpdate: data ? new Date() : null,
     refresh: refetch,

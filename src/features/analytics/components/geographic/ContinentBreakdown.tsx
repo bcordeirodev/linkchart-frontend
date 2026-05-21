@@ -30,9 +30,11 @@ const CONTINENT_COLORS = [
 
 interface ContinentBreakdownProps {
   continents: ContinentData[];
+  /** ISO 2-letter continent code that is currently active as a backend filter. When set, highlights the matching legend row. */
+  activeContinentCode?: string | null;
 }
 
-export function ContinentBreakdown({ continents }: ContinentBreakdownProps) {
+export function ContinentBreakdown({ continents, activeContinentCode }: ContinentBreakdownProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
@@ -136,41 +138,56 @@ export function ContinentBreakdown({ continents }: ContinentBreakdownProps) {
           <Box
             sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.5 }}
           >
-            {continents.map((c, i) => (
-              <Box
-                key={c.continent}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 1,
-                }}
-              >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
-                  <Box
-                    sx={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: 0.5,
-                      bgcolor: CONTINENT_COLORS[i] ?? "#888",
-                      flexShrink: 0,
-                    }}
-                  />
-                  <Typography variant="caption" noWrap sx={{ maxWidth: 120 }}>
-                    {t(`geographic.continents.${c.continent}`, {
-                      defaultValue: c.continent_name,
-                    })}
+            {continents.map((c, i) => {
+              const isActive = activeContinentCode === c.continent;
+              return (
+                <Box
+                  key={c.continent}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 1,
+                    px: 0.75,
+                    py: 0.25,
+                    borderRadius: 1,
+                    bgcolor: isActive ? "action.selected" : "transparent",
+                    outline: isActive
+                      ? `1px solid ${theme.palette.primary.main}40`
+                      : "none",
+                    transition: "background-color 0.15s",
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                    <Box
+                      sx={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 0.5,
+                        bgcolor: CONTINENT_COLORS[i] ?? "#888",
+                        flexShrink: 0,
+                      }}
+                    />
+                    <Typography
+                      variant="caption"
+                      noWrap
+                      sx={{ maxWidth: 120, fontWeight: isActive ? 700 : 400 }}
+                    >
+                      {t(`geographic.continents.${c.continent}`, {
+                        defaultValue: c.continent_name,
+                      })}
+                    </Typography>
+                  </Box>
+                  <Typography
+                    variant="caption"
+                    color={isActive ? "primary" : "text.secondary"}
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {c.percentage?.toFixed(1) ?? "0"}%
                   </Typography>
                 </Box>
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ fontWeight: 600 }}
-                >
-                  {c.percentage?.toFixed(1) ?? "0"}%
-                </Typography>
-              </Box>
-            ))}
+              );
+            })}
           </Box>
         </Box>
       </CardContent>

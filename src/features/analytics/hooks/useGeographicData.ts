@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { api } from "@/lib/api/client";
 import { queryKeys } from "@/lib/query/keys";
@@ -107,6 +107,7 @@ export function useGeographicData({
   const {
     data: raw,
     isLoading,
+    isPlaceholderData,
     error,
     refetch,
   } = useQuery({
@@ -131,6 +132,18 @@ export function useGeographicData({
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     enabled: !!linkId,
+    // Keeps the previous dataset visible while a filter-change fetch is in flight so
+    // AnalyticsStateManager never goes into its loading state between filter changes.
+    //
+    // Why both flags together matter:
+    //   • `placeholderData: keepPreviousData` → `data` stays non-null during the new
+    //     fetch, so `hasData` passed to AnalyticsStateManager stays true.
+    //   • `isLoading && !isPlaceholderData` → `loading` is false when placeholder data
+    //     is present (filter transition) but true on the very first load (no data at all).
+    //     Without this second condition, TanStack v5 still reports `isLoading=true` for
+    //     the new queryKey even while serving placeholder data, which is enough to trigger
+    //     the AnalyticsStateManager loading state and unmount the sub-tabs.
+    placeholderData: keepPreviousData,
   });
 
   const data = useMemo<GeographicData | null>(() => raw?.data ?? null, [raw]);
@@ -142,7 +155,9 @@ export function useGeographicData({
     data,
     meta,
     stats,
-    loading: isLoading,
+    // True only on the very first load (no data at all).
+    // False during filter transitions so the active sub-tab is preserved.
+    loading: isLoading && !isPlaceholderData,
     error: error ? (error as Error).message : null,
     refresh: refetch,
     isRealtime: enableRealtime,
