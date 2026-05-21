@@ -1,5 +1,5 @@
 {
-  "title": "Profile Settings",
+  "title": "My profile",
   "subtitle": "Manage your account information and security.",
   "sections": {
     "personalInfo": "Personal Information",
@@ -17,6 +17,13 @@
     "verifiedBadge": "Verified",
     "pendingBadge": "Pending",
     "resetButton": "Reset"
+  },
+  "security": {
+    "oauth": {
+      "title": "Account security",
+      "subtitle": "Your account is linked to an external sign-in provider.",
+      "body": "You sign in with Google or Facebook. Your password is managed by that provider — there is no local password to change here. To update credentials, use your Google or Facebook account security settings."
+    }
   },
   "password": {
     "title": "Change Password",
@@ -83,9 +90,10 @@
       "confirm": "Release"
     },
     "chip": {
-      "free": "FREE",
-      "active": "ACTIVE"
+      "free": "Free",
+      "active": "Active"
     },
+    "freeNote": "Included at no extra cost on your account.",
     "responsibility": {
       "text": "By claiming this subdomain you confirm you are responsible for all content accessed through it and that you will not violate trademarks or third-party rights.",
       "checkbox": "I have read and accept the terms above"
@@ -93,6 +101,8 @@
     "yourDomainLabel": "Your subdomain",
     "linksLookLike": "Your links will look like this:",
     "exampleDesc": "With your subdomain, links take this format:",
-    "exampleSlug": "yourcompany"
+    "exampleSlug": "yourcompany",
+    "formatHint": "3–63 characters: lowercase letters, numbers, and hyphens (not at the start or end).",
+    "previewLabel": "Preview"
   }
 }

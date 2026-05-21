@@ -1,19 +1,35 @@
-import { Box, Stack, Skeleton, Grid } from "@mui/material";
+import { Box, Stack, Skeleton } from "@mui/material";
 
 import { ResponsiveContainer, EnhancedPaper } from "@/shared/ui/base";
 
 export function ProfileSkeleton() {
   return (
-    <ResponsiveContainer variant="page" maxWidth="xl">
-      <Stack spacing={3}>
-        <Box>
-          <Skeleton variant="text" width={180} height={48} sx={{ mb: 1 }} />
-          <Skeleton variant="text" width={350} height={24} />
+    <ResponsiveContainer variant="page">
+      <Stack spacing={{ xs: 2.5, sm: 3 }} sx={{ width: "100%" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: 2,
+          }}
+        >
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Skeleton variant="text" width={160} height={32} sx={{ mb: 0.5 }} />
+            <Skeleton variant="text" width={280} height={18} />
+          </Box>
+          <Skeleton variant="rounded" width={100} height={32} sx={{ borderRadius: 999 }} />
         </Box>
 
-        <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
-          <Grid item xs={12} md={8}>
-            <Stack spacing={{ xs: 2, sm: 3, md: 4 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "minmax(0, 2fr) minmax(0, 1fr)" },
+            gap: { xs: 2, sm: 3 },
+            width: "100%",
+          }}
+        >
+          <Stack spacing={{ xs: 2, sm: 3 }}>
               <EnhancedPaper variant="glass">
                 <Box sx={{ p: 3 }}>
                   <Skeleton
@@ -61,11 +77,9 @@ export function ProfileSkeleton() {
                   </Box>
                 </Box>
               </EnhancedPaper>
-            </Stack>
-          </Grid>
+          </Stack>
 
-          <Grid item xs={12} md={4}>
-            <EnhancedPaper variant="glass">
+          <EnhancedPaper variant="glass">
               <Box sx={{ p: 3 }}>
                 <Box
                   sx={{
@@ -115,9 +129,8 @@ export function ProfileSkeleton() {
                   </Box>
                 </Stack>
               </Box>
-            </EnhancedPaper>
-          </Grid>
-        </Grid>
+          </EnhancedPaper>
+        </Box>
       </Stack>
     </ResponsiveContainer>
   );

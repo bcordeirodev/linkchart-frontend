@@ -1,5 +1,5 @@
 {
-  "title": "Configurações de Perfil",
+  "title": "Meu perfil",
   "subtitle": "Gerencie as informações da sua conta e segurança.",
   "sections": {
     "personalInfo": "Informações Pessoais",
@@ -17,6 +17,13 @@
     "verifiedBadge": "Verificado",
     "pendingBadge": "Pendente",
     "resetButton": "Resetar"
+  },
+  "security": {
+    "oauth": {
+      "title": "Segurança da conta",
+      "subtitle": "Sua conta está vinculada a um provedor de login externo.",
+      "body": "Você entra com Google ou Facebook. A senha é gerenciada por esse provedor — não há senha local para alterar aqui. Para trocar credenciais, use as configurações de segurança da sua conta Google ou Facebook."
+    }
   },
   "password": {
     "title": "Alterar Senha",
@@ -46,7 +53,7 @@
     "totalLinks": "Links",
     "totalClicks": "Cliques",
     "avgClicks": "Média/link",
-    "thisMonth": "Este mês",
+    "thisMonth": "Resumo do mês",
     "linksThisMonth": "Links este mês",
     "clicksThisMonth": "Cliques este mês",
     "accountStatus": "Status da Conta",
@@ -83,9 +90,10 @@
       "confirm": "Liberar"
     },
     "chip": {
-      "free": "GRÁTIS",
-      "active": "ATIVO"
+      "free": "Grátis",
+      "active": "Ativo"
     },
+    "freeNote": "Recurso gratuito — sem custo adicional na sua conta.",
     "responsibility": {
       "text": "Ao reivindicar este subdomínio você confirma que é responsável por todo conteúdo acessado através dele e que não violará marcas registradas ou direitos de terceiros.",
       "checkbox": "Li e aceito os termos acima"
@@ -93,6 +101,8 @@
     "yourDomainLabel": "Seu subdomínio",
     "linksLookLike": "Seus links ficam assim:",
     "exampleDesc": "Com o subdomínio, seus links passam a ter este formato:",
-    "exampleSlug": "suaempresa"
+    "exampleSlug": "suaempresa",
+    "formatHint": "3–63 caracteres: letras minúsculas, números e hífens (não no início nem no fim).",
+    "previewLabel": "Pré-visualização"
   }
 }

@@ -2,14 +2,6 @@
 import { Box, Avatar, TextField, Button } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 
-/**
- * 🎨 STYLED COMPONENTS PARA PROFILE MODULE
- * Componentes estilizados para perfil do usuário
- */
-
-// ========================================
-// 📦 MAIN CONTAINERS
-// ========================================
 
 export const ProfileContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(4),
