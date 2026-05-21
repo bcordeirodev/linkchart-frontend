@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import { Clock, TrendingUp, Calendar, Activity } from "lucide-react";
 import { Box, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -88,6 +89,18 @@ export function TemporalAnalysis({
         ? t("temporal.metrics.declining")
         : t("temporal.metrics.stable");
 
+  // The backend always returns all 7 days (with 0 clicks for segment-excluded days).
+  // Filter to only the days that are relevant to the active segment so the
+  // summary chart does not render empty bars for Sat/Sun (weekday filter) or
+  // Mon–Fri (weekend filter).
+  // day values: 1=Mon … 5=Fri, 6=Sat, 7=Sun  (ISO, matches backend output).
+  const dayOfWeekChartData = useMemo(() => {
+    const raw = data?.clicks_by_day_of_week ?? [];
+    if (segment === "weekday") return raw.filter((d) => d.day <= 5);
+    if (segment === "weekend") return raw.filter((d) => d.day >= 6);
+    return raw;
+  }, [data?.clicks_by_day_of_week, segment]);
+
   const hourlyChartNode =
     (data?.clicks_by_hour?.length ?? 0) > 0 ? (
       <Grid item xs={12} md={6}>
@@ -96,9 +109,9 @@ export function TemporalAnalysis({
     ) : null;
 
   const weeklyChartNode =
-    (data?.clicks_by_day_of_week?.length ?? 0) > 0 ? (
+    dayOfWeekChartData.length > 0 ? (
       <Grid item xs={12} md={6}>
-        <DayOfWeekChart data={data!.clicks_by_day_of_week} />
+        <DayOfWeekChart data={dayOfWeekChartData} />
       </Grid>
     ) : null;
 
@@ -180,7 +193,7 @@ export function TemporalAnalysis({
             <Grid item xs={12}>
               <TemporalChart
                 hourlyData={data?.clicks_by_hour || []}
-                weeklyData={data?.clicks_by_day_of_week || []}
+                weeklyData={dayOfWeekChartData}
                 hourlyPatternsLocal={data?.hourly_patterns_local}
                 weekendVsWeekday={data?.weekend_vs_weekday}
                 businessHoursAnalysis={data?.business_hours_analysis}
