@@ -177,7 +177,7 @@ export interface TemporalData {
   /** Viral rank per day — peak rank and click count. Excludes days with null viral_rank. */
   viral_rank_by_day?: Array<{
     date: string;
-    peak_rank: 'cold' | 'warming' | 'trending' | 'viral';
+    peak_rank: "cold" | "warming" | "trending" | "viral";
     click_count: number;
   }>;
 }

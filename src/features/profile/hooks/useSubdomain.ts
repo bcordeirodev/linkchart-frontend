@@ -95,6 +95,7 @@ export function useSubdomain() {
     claimError: claimMutation.error,
     release: releaseMutation.mutateAsync,
     isReleasing: releaseMutation.isPending,
+    releaseError: releaseMutation.error,
     checkAvailability,
     availability,
     isCheckingAvailability,

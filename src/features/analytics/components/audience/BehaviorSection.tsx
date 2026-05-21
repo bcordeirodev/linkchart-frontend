@@ -56,11 +56,7 @@ export function BehaviorSection({ navigationContext }: BehaviorSectionProps) {
             <Navigation {...ICON_MD} />
             {t("audience.behavior.navigationContext")}
           </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mb: 2 }}
-          >
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             {t("audience.behavior.description")}
           </Typography>
 

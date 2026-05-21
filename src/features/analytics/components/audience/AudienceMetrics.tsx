@@ -1,5 +1,12 @@
 "use client";
-import { MonitorSmartphone, AppWindow, Cpu, Clock, TrendingUp, Repeat } from "lucide-react";
+import {
+  MonitorSmartphone,
+  AppWindow,
+  Cpu,
+  Clock,
+  TrendingUp,
+  Repeat,
+} from "lucide-react";
 import {
   Box,
   Card,
