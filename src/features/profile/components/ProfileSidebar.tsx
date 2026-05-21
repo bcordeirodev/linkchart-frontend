@@ -1,4 +1,5 @@
 "use client";
+
 import {
   BarChart2,
   Calendar,
@@ -6,13 +7,18 @@ import {
   BadgeCheck,
   AlertCircle,
 } from "lucide-react";
-import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
-import { Box, Divider, Skeleton, Stack, Typography } from "@mui/material";
-import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { Divider, Skeleton, Stack, Typography } from "@mui/material";
+
 import { useProfileStats } from "../hooks/useProfileStats";
+import {
+  ProfileInfoRow,
+  ProfileSection,
+  ProfileSectionHeader,
+  ProfileStatGrid,
+} from "./ProfileSection";
 
 import type { UserProfile } from "@/services";
 
@@ -20,210 +26,114 @@ interface ProfileSidebarProps {
   user: UserProfile;
 }
 
-/**
- * Sidebar do perfil com status da conta e estatísticas de atividade.
- *
- * Composta por dois cards:
- *  1. Account Status — verified badge + member since
- *  2. Activity — total links and total clicks from useProfileStats
- */
 export function ProfileSidebar({ user }: ProfileSidebarProps) {
   const { t, i18n } = useTranslation("profile");
   const { data: stats, isLoading: statsLoading } = useProfileStats();
 
+  const memberSince = user.created_at
+    ? new Date(user.created_at).toLocaleDateString(i18n.language)
+    : t("sidebar.dateUnavailable");
+
+  const statValue = (n: number) =>
+    statsLoading ? (
+      <Skeleton variant="text" width={48} height={32} />
+    ) : (
+      n.toLocaleString(i18n.language)
+    );
+
+  const statValueOptional = (value: string | number) =>
+    statsLoading ? (
+      <Skeleton variant="text" width={40} height={32} />
+    ) : (
+      value
+    );
+
+  const avgClicks =
+    stats && stats.total_links > 0
+      ? Math.round(stats.total_clicks / stats.total_links).toLocaleString(
+          i18n.language,
+        )
+      : "—";
+
   return (
-    <Stack spacing={3}>
-      {/* ── Card 1: Account Status ───────────────────────────────── */}
-      <EnhancedPaper>
-        <Box sx={{ p: 3 }}>
-          <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}
-          >
-            <Shield {...ICON_MD} />
-            {t("sidebar.accountStatus")}
-          </Typography>
-          <Divider sx={{ mb: 2 }} />
-          <Stack spacing={2}>
-            {user.email_verified_at ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                  p: 2,
-                  borderRadius: 2,
-                  bgcolor: (theme) => alpha(theme.palette.success.light, 0.15),
-                }}
-              >
-                <BadgeCheck {...ICON_MD} />
-                <Box>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {t("sidebar.verified")}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {t("sidebar.verifiedDesc")}
-                  </Typography>
-                </Box>
-              </Box>
+    <Stack spacing={2}>
+      <ProfileSection>
+        <ProfileSectionHeader
+          icon={<Shield {...ICON_MD} />}
+          title={t("sidebar.accountStatus")}
+        />
+        <ProfileInfoRow
+          icon={
+            user.email_verified_at ? (
+              <BadgeCheck {...ICON_MD} />
             ) : (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                  p: 2,
-                  borderRadius: 2,
-                  bgcolor: (theme) => alpha(theme.palette.warning.light, 0.15),
-                }}
-              >
-                <AlertCircle {...ICON_MD} />
-                <Box>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {t("sidebar.pendingVerification")}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {t("sidebar.pendingVerificationDesc")}
-                  </Typography>
-                </Box>
-              </Box>
-            )}
+              <AlertCircle {...ICON_MD} />
+            )
+          }
+          label={
+            user.email_verified_at
+              ? t("sidebar.verified")
+              : t("sidebar.pendingVerification")
+          }
+          value={
+            user.email_verified_at
+              ? t("sidebar.verifiedDesc")
+              : t("sidebar.pendingVerificationDesc")
+          }
+        />
+        <ProfileInfoRow
+          icon={<Calendar {...ICON_SM} />}
+          label={t("sidebar.memberSince")}
+          value={memberSince}
+        />
+      </ProfileSection>
 
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-                p: 2,
-                borderRadius: 2,
-                bgcolor: (theme) => alpha(theme.palette.info.light, 0.15),
-              }}
-            >
-              <Calendar {...ICON_SM} />
-              <Box>
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  {t("sidebar.memberSince")}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {user.created_at
-                    ? new Date(user.created_at).toLocaleDateString(
-                        i18n.language,
-                      )
-                    : t("sidebar.dateUnavailable")}
-                </Typography>
-              </Box>
-            </Box>
-          </Stack>
-        </Box>
-      </EnhancedPaper>
+      <ProfileSection>
+        <ProfileSectionHeader
+          icon={<BarChart2 {...ICON_MD} />}
+          title={t("sidebar.activity")}
+        />
 
-      {/* ── Card 2: Activity ─────────────────────────────────────── */}
-      <EnhancedPaper>
-        <Box sx={{ p: 3 }}>
-          <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}
-          >
-            <BarChart2 {...ICON_MD} />
-            {t("sidebar.activity")}
-          </Typography>
-          <Divider sx={{ mb: 2 }} />
+        <ProfileStatGrid
+          items={[
+            {
+              label: t("sidebar.totalLinks"),
+              value: statValue(stats?.total_links ?? 0),
+            },
+            {
+              label: t("sidebar.totalClicks"),
+              value: statValue(stats?.total_clicks ?? 0),
+            },
+          ]}
+        />
 
-          {/* Totals row */}
-          <Box sx={{ display: "flex", gap: 4, mb: 2.5 }}>
-            <Box>
-              {statsLoading ? (
-                <Skeleton variant="text" width={48} height={52} />
-              ) : (
-                <Typography
-                  variant="h4"
-                  sx={{ fontWeight: 700, lineHeight: 1.1 }}
-                >
-                  {(stats?.total_links ?? 0).toLocaleString(i18n.language)}
-                </Typography>
-              )}
-              <Typography variant="caption" color="text.secondary">
-                {t("sidebar.totalLinks")}
-              </Typography>
-            </Box>
+        <Divider sx={{ my: 2 }} />
 
-            <Box>
-              {statsLoading ? (
-                <Skeleton variant="text" width={64} height={52} />
-              ) : (
-                <Typography
-                  variant="h4"
-                  sx={{ fontWeight: 700, lineHeight: 1.1 }}
-                >
-                  {(stats?.total_clicks ?? 0).toLocaleString(i18n.language)}
-                </Typography>
-              )}
-              <Typography variant="caption" color="text.secondary">
-                {t("sidebar.totalClicks")}
-              </Typography>
-            </Box>
-          </Box>
-
-          <Divider sx={{ mb: 2 }} />
-
-          {/* Secondary stats: avg clicks/link + this month */}
-          <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-            <Box>
-              {statsLoading ? (
-                <Skeleton variant="text" width={40} height={28} />
-              ) : (
-                <Typography
-                  variant="h4"
-                  sx={{ fontWeight: 700, lineHeight: 1.1 }}
-                >
-                  {stats && stats.total_links > 0
-                    ? Math.round(
-                        stats.total_clicks / stats.total_links,
-                      ).toLocaleString(i18n.language)
-                    : "—"}
-                </Typography>
-              )}
-              <Typography variant="caption" color="text.secondary">
-                {t("sidebar.avgClicks")}
-              </Typography>
-            </Box>
-
-            <Box>
-              {statsLoading ? (
-                <Skeleton variant="text" width={40} height={28} />
-              ) : (
-                <Typography
-                  variant="h4"
-                  sx={{ fontWeight: 700, lineHeight: 1.1 }}
-                >
-                  {(stats?.links_this_month ?? 0).toLocaleString(i18n.language)}
-                </Typography>
-              )}
-              <Typography variant="caption" color="text.secondary">
-                {t("sidebar.linksThisMonth")}
-              </Typography>
-            </Box>
-
-            <Box>
-              {statsLoading ? (
-                <Skeleton variant="text" width={48} height={28} />
-              ) : (
-                <Typography
-                  variant="h4"
-                  sx={{ fontWeight: 700, lineHeight: 1.1 }}
-                >
-                  {(stats?.clicks_this_month ?? 0).toLocaleString(
-                    i18n.language,
-                  )}
-                </Typography>
-              )}
-              <Typography variant="caption" color="text.secondary">
-                {t("sidebar.clicksThisMonth")}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-      </EnhancedPaper>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: "block", mb: 1.5, fontWeight: 600 }}
+        >
+          {t("sidebar.thisMonth")}
+        </Typography>
+        <ProfileStatGrid
+          columns={3}
+          items={[
+            {
+              label: t("sidebar.avgClicks"),
+              value: statValueOptional(avgClicks),
+            },
+            {
+              label: t("sidebar.linksThisMonth"),
+              value: statValue(stats?.links_this_month ?? 0),
+            },
+            {
+              label: t("sidebar.clicksThisMonth"),
+              value: statValue(stats?.clicks_this_month ?? 0),
+            },
+          ]}
+        />
+      </ProfileSection>
     </Stack>
   );
 }

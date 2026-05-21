@@ -13,27 +13,38 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider,
   FormControlLabel,
   FormLabel,
+  IconButton,
   InputAdornment,
   Link,
   Skeleton,
+  Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { semanticDark, semanticLight } from "@/lib/theme/colors";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { radiusTokens } from "@/lib/theme/designSystem";
 
 import { useSubdomain } from "../hooks/useSubdomain";
+import {
+  ProfileMutedBox,
+  ProfileSection,
+  ProfileSectionHeader,
+} from "./ProfileSection";
 
-/** Validates the subdomain label on the client before making an API call. */
+const DOMAIN_SUFFIX = ".linkcharts.com.br";
+
 function isValidSubdomainLabel(value: string): boolean {
   return (
     /^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(value) &&
@@ -42,34 +53,82 @@ function isValidSubdomainLabel(value: string): boolean {
   );
 }
 
-/** Two representative slugs used in examples. Not translatable intentionally. */
 const EXAMPLE_SLUGS = ["abc123", "promo-verao"] as const;
 
-/**
- * Renders a muted monospace row showing how a link URL will look.
- * Used in both the claim form (preview) and the active state (examples).
- */
-function LinkExample({ url }: { url: string }) {
+function LinkExample({ url, highlightPrefix }: { url: string; highlightPrefix?: string }) {
+  if (highlightPrefix && url.startsWith(highlightPrefix)) {
+    const rest = url.slice(highlightPrefix.length);
+    return (
+      <Typography
+        variant="caption"
+        component="div"
+        sx={{ fontFamily: "monospace", lineHeight: 1.9, wordBreak: "break-all" }}
+      >
+        <Box component="span" sx={{ fontWeight: 500, color: "text.secondary" }}>
+          {highlightPrefix}
+        </Box>
+        <Box component="span" sx={{ color: "text.disabled" }}>
+          {rest}
+        </Box>
+      </Typography>
+    );
+  }
+
   return (
     <Typography
       variant="caption"
       component="div"
-      sx={{ fontFamily: "monospace", color: "text.secondary", lineHeight: 1.8 }}
+      sx={{
+        fontFamily: "monospace",
+        color: "text.disabled",
+        lineHeight: 1.9,
+        wordBreak: "break-all",
+      }}
     >
       {url}
     </Typography>
   );
 }
 
-/**
- * Profile settings section that lets the user claim or release a custom subdomain.
- *
- * Renders three states:
- *  1. Loading — MUI Skeletons while initial data is being fetched
- *  2. No subdomain — before/after explanation + live URL preview + claim form
- *  3. Active subdomain — URL as clickable link + link format examples + release
- */
+function SubdomainStatusChip({
+  active,
+  label,
+}: {
+  active: boolean;
+  label: string;
+}) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+  const semantic = isDark ? semanticDark : semanticLight;
+  const brand = theme.palette.primary.main;
+  const free = semantic.success;
+
+  const main = active ? brand : free.main;
+  const bg = active ? alpha(brand, isDark ? 0.14 : 0.1) : free.subtleBg;
+  const border = active
+    ? alpha(brand, isDark ? 0.28 : 0.2)
+    : free.border;
+
+  return (
+    <Chip
+      label={label}
+      size="small"
+      sx={{
+        height: 24,
+        fontWeight: 600,
+        fontSize: "0.6875rem",
+        letterSpacing: 0.2,
+        bgcolor: bg,
+        color: main,
+        border: `1px solid ${border}`,
+        "& .MuiChip-label": { px: 1.25 },
+      }}
+    />
+  );
+}
+
 export function SubdomainSettings() {
+  const theme = useTheme();
   const { t } = useTranslation("profile");
   const {
     subdomain,
@@ -89,8 +148,8 @@ export function SubdomainSettings() {
   const [inputError, setInputError] = useState<string | null>(null);
   const [releaseDialogOpen, setReleaseDialogOpen] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  /** Sanitizes input to lowercase alphanumeric + hyphens, then triggers debounced check. */
   const handleInputChange = (value: string) => {
     const sanitized = value.toLowerCase().replace(/[^a-z0-9-]/g, "");
     setInputValue(sanitized);
@@ -98,7 +157,6 @@ export function SubdomainSettings() {
     checkAvailability(sanitized);
   };
 
-  /** Validates and submits the claim request. */
   const handleClaim = async () => {
     if (!isValidSubdomainLabel(inputValue)) {
       setInputError(t("subdomain.validation.format"));
@@ -113,222 +171,243 @@ export function SubdomainSettings() {
       setInputValue("");
       setTermsAccepted(false);
     } catch {
-      // Error surfaced via claimError
+      // claimError
     }
   };
 
-  /** Releases the current subdomain after dialog confirmation. */
   const handleRelease = async () => {
     try {
       await release();
       setReleaseDialogOpen(false);
       setTermsAccepted(false);
     } catch {
-      // Error surfaced via releaseError
+      // releaseError
     }
   };
 
-  // Derive the example label: live input value, or the static hint when empty
+  const handleCopy = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // ignore
+    }
+  };
+
   const previewLabel =
     inputValue.length > 0 ? inputValue : t("subdomain.exampleSlug");
+  const previewPrefix = `${previewLabel}${DOMAIN_SUFFIX}/`;
 
-  // ── Loading state ────────────────────────────────────────────────────
+  const statusChip = (
+    <SubdomainStatusChip
+      active={!!subdomain}
+      label={
+        subdomain ? t("subdomain.chip.active") : t("subdomain.chip.free")
+      }
+    />
+  );
+
   if (isLoading) {
     return (
-      <EnhancedPaper
-        sx={{
-          p: 3,
-          borderTop: (theme) => `3px solid ${theme.palette.primary.main}`,
-        }}
-      >
-        <Skeleton variant="text" width={200} height={28} sx={{ mb: 1 }} />
-        <Skeleton variant="text" width={320} height={20} sx={{ mb: 3 }} />
-        <Skeleton variant="rectangular" height={56} />
-      </EnhancedPaper>
+      <ProfileSection emphasized>
+        <Skeleton variant="text" width={220} height={32} sx={{ mb: 1 }} />
+        <Skeleton variant="text" width="80%" height={20} sx={{ mb: 2 }} />
+        <Skeleton variant="rounded" height={88} sx={{ mb: 2 }} />
+        <Skeleton variant="rounded" height={48} />
+      </ProfileSection>
     );
   }
 
   return (
-    <EnhancedPaper
-      sx={{
-        p: 3,
-        borderTop: (theme) => `3px solid ${theme.palette.primary.main}`,
-      }}
-    >
-      {/* ── Section header ───────────────────────────────────────────── */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 0.5,
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
-        >
-          <Globe {...ICON_MD} />
-          {t("subdomain.title")}
-        </Typography>
-        {subdomain ? (
-          <Chip
-            label={t("subdomain.chip.active")}
-            color="success"
-            variant="filled"
-            size="small"
-          />
-        ) : (
-          <Chip
-            label={t("subdomain.chip.free")}
-            size="small"
-            variant="outlined"
-          />
-        )}
-      </Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        {t("subdomain.description")}
-      </Typography>
-      <Divider sx={{ mb: 3 }} />
-
-      {/* ── Active subdomain ─────────────────────────────────────────── */}
-      {subdomain ? (
-        <Box>
-          {/* URL as a plain clickable link — no box, no buttons */}
-          <Typography variant="subtitle2" sx={{ display: "block", mb: 0.75 }}>
-            {t("subdomain.yourDomainLabel")}
-          </Typography>
-          <Link
-            href={subdomain.full_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            underline="hover"
-            sx={{
-              fontFamily: "monospace",
-              fontWeight: 600,
-              fontSize: "1.1rem",
-              display: "inline-block",
-              mb: 3,
-            }}
-          >
-            {subdomain.full_url}
-          </Link>
-
-          {/* Link format examples */}
-          <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
-            {t("subdomain.linksLookLike")}
-          </Typography>
-          <Box
-            sx={{
-              pl: 1.5,
-              borderLeft: (theme) =>
-                `3px solid ${alpha(theme.palette.primary.main, 0.3)}`,
-              mb: 3,
-            }}
-          >
-            {EXAMPLE_SLUGS.map((slug) => (
-              <LinkExample
-                key={slug}
-                url={`${subdomain.subdomain}.linkcharts.com.br/${slug}`}
-              />
-            ))}
-          </Box>
-
-          <Divider sx={{ mb: 2 }} />
-
-          <Button
-            variant="outlined"
-            color="error"
-            size="small"
-            onClick={() => setReleaseDialogOpen(true)}
-            disabled={isReleasing}
-          >
-            {isReleasing ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
-            {t("subdomain.releaseButton")}
-          </Button>
-
-          {releaseError && (
-            <Alert severity="error" sx={{ mt: 1.5 }}>
-              {t("subdomain.releaseError")}
-            </Alert>
-          )}
-        </Box>
-      ) : (
-        /* ── Claim form ──────────────────────────────────────────────── */
-        <Box>
-          {/* How-it-works: live example block */}
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            {t("subdomain.exampleDesc")}
-          </Typography>
-          <Box
-            sx={{
-              pl: 1.5,
-              borderLeft: (theme) =>
-                `3px solid ${alpha(theme.palette.primary.main, 0.3)}`,
-              mb: 3,
-            }}
-          >
-            {EXAMPLE_SLUGS.map((slug) => (
-              <LinkExample
-                key={slug}
-                url={`${previewLabel}.linkcharts.com.br/${slug}`}
-              />
-            ))}
-          </Box>
-
-          {/* Input */}
-          <FormLabel
-            sx={{
-              display: "block",
-              mb: 0.75,
-              fontWeight: 600,
-              color: "text.primary",
-            }}
-          >
-            {t("subdomain.inputLabel")}
-          </FormLabel>
-          <TextField
-            value={inputValue}
-            onChange={(e) => handleInputChange(e.target.value)}
-            placeholder={t("subdomain.inputPlaceholder")}
-            error={!!inputError}
-            size="medium"
-            fullWidth
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontWeight: 600,
-                        color: "text.primary",
-                        opacity: 0.5,
-                      }}
-                    >
-                      .linkcharts.com.br
-                    </Typography>
-                  </InputAdornment>
-                ),
-                sx: {
-                  fontFamily: "monospace",
+    <ProfileSection emphasized>
+      <ProfileSectionHeader
+        featured
+        icon={<Globe {...ICON_MD} />}
+        title={t("subdomain.title")}
+        description={
+          <>
+            <Typography variant="body2" color="inherit">
+              {t("subdomain.description")}
+            </Typography>
+            {!subdomain ? (
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "block",
+                  mt: 0.75,
+                  color: (theme) =>
+                    theme.palette.mode === "dark"
+                      ? semanticDark.success.main
+                      : semanticLight.success.dark,
                   fontWeight: 500,
-                  color: "text.primary",
-                },
-              },
-            }}
-            sx={{ mb: 0.75 }}
-          />
+                }}
+              >
+                {t("subdomain.freeNote")}
+              </Typography>
+            ) : null}
+          </>
+        }
+        action={statusChip}
+      />
 
-          {/* Availability indicator */}
-          {inputValue.length >= 3 && (
+      {subdomain ? (
+        <Stack spacing={2.5}>
+          <ProfileMutedBox accent label={t("subdomain.yourDomainLabel")}>
             <Box
-              sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 1.5 }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                flexWrap: "wrap",
+              }}
             >
+              <Link
+                href={subdomain.full_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="hover"
+                sx={{
+                  fontFamily: "monospace",
+                  fontWeight: 600,
+                  fontSize: "0.95rem",
+                  color: "text.primary",
+                  wordBreak: "break-all",
+                }}
+              >
+                {subdomain.full_url}
+              </Link>
+              <Tooltip title={copied ? t("subdomain.copied") : t("subdomain.copy")}>
+                <IconButton
+                  size="small"
+                  aria-label={t("subdomain.copy")}
+                  onClick={() => handleCopy(subdomain.full_url)}
+                >
+                  <ContentCopyIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t("subdomain.openInNew")}>
+                <IconButton
+                  size="small"
+                  component="a"
+                  href={subdomain.full_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t("subdomain.openInNew")}
+                >
+                  <OpenInNewIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </ProfileMutedBox>
+
+          <ProfileMutedBox accent label={t("subdomain.linksLookLike")}>
+            <Stack spacing={0.5}>
+              {EXAMPLE_SLUGS.map((slug) => (
+                <LinkExample
+                  key={slug}
+                  url={`${subdomain.subdomain}${DOMAIN_SUFFIX}/${slug}`}
+                  highlightPrefix={`${subdomain.subdomain}${DOMAIN_SUFFIX}/`}
+                />
+              ))}
+            </Stack>
+          </ProfileMutedBox>
+
+          <Box>
+            <Button
+              variant="outlined"
+              color="inherit"
+              size="small"
+              onClick={() => setReleaseDialogOpen(true)}
+              disabled={isReleasing}
+              sx={{ borderColor: "divider", color: "text.secondary" }}
+            >
+              {isReleasing ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
+              {t("subdomain.releaseButton")}
+            </Button>
+            {releaseError ? (
+              <Alert severity="error" sx={{ mt: 1.5 }}>
+                {t("subdomain.releaseError")}
+              </Alert>
+            ) : null}
+          </Box>
+        </Stack>
+      ) : (
+        <Stack spacing={2.5}>
+          <ProfileMutedBox soft accent label={t("subdomain.previewLabel")}>
+            <Stack spacing={0.5}>
+              {EXAMPLE_SLUGS.map((slug) => (
+                <LinkExample
+                  key={slug}
+                  url={`${previewPrefix}${slug}`}
+                  highlightPrefix={previewPrefix}
+                />
+              ))}
+            </Stack>
+          </ProfileMutedBox>
+
+          <Box>
+            <FormLabel
+              sx={{
+                display: "block",
+                mb: 0.75,
+                fontWeight: 600,
+                color: "text.primary",
+              }}
+            >
+              {t("subdomain.inputLabel")}
+            </FormLabel>
+            <TextField
+              value={inputValue}
+              onChange={(e) => handleInputChange(e.target.value)}
+              placeholder={t("subdomain.inputPlaceholder")}
+              error={!!inputError}
+              fullWidth
+              size="small"
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontFamily: "monospace",
+                          color: "text.secondary",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {DOMAIN_SUFFIX}
+                      </Typography>
+                    </InputAdornment>
+                  ),
+                  sx: {
+                    fontFamily: "monospace",
+                    fontWeight: 500,
+                  },
+                },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: `${radiusTokens.md}px`,
+                  bgcolor: theme.palette.background.default,
+                },
+              }}
+            />
+            <Typography
+              variant="caption"
+              color="text.disabled"
+              sx={{ display: "block", mt: 0.75 }}
+            >
+              {t("subdomain.formatHint")}
+            </Typography>
+          </Box>
+
+          {inputValue.length >= 3 ? (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
               {isCheckingAvailability ? (
                 <CircularProgress size={14} />
               ) : availability?.available ? (
-                <CheckCircleOutlineIcon fontSize="small" color="success" />
+                <CheckCircleOutlineIcon fontSize="small" sx={{ color: "text.secondary" }} />
               ) : availability ? (
                 <ErrorOutlineIcon fontSize="small" color="error" />
               ) : null}
@@ -338,8 +417,8 @@ export function SubdomainSettings() {
                   isCheckingAvailability
                     ? "text.secondary"
                     : availability?.available
-                      ? "success.main"
-                      : "error.main"
+                      ? "text.secondary"
+                      : "error"
                 }
               >
                 {isCheckingAvailability
@@ -351,75 +430,68 @@ export function SubdomainSettings() {
                       : ""}
               </Typography>
             </Box>
-          )}
+          ) : null}
 
-          {inputError && (
-            <Typography
-              variant="caption"
-              color="error"
-              sx={{ display: "block", mb: 1.5 }}
-            >
+          {inputError ? (
+            <Typography variant="caption" color="error">
               {inputError}
             </Typography>
-          )}
+          ) : null}
 
-          {/* Responsibility clause */}
-          <Alert
-            severity="warning"
-            variant="outlined"
-            sx={{
-              mb: 1,
-              bgcolor: (theme) => alpha(theme.palette.warning.light, 0.08),
-              borderColor: (theme) => alpha(theme.palette.warning.main, 0.3),
-              color: "text.secondary",
-              "& .MuiAlert-icon": {
-                color: (theme) => alpha(theme.palette.warning.main, 0.6),
-              },
-            }}
-          >
+          <Typography variant="body2" color="text.secondary">
             {t("subdomain.responsibility.text")}
-          </Alert>
+          </Typography>
           <FormControlLabel
             control={
               <Checkbox
                 size="small"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
+                sx={{ py: 0.25 }}
               />
             }
             label={
-              <Typography variant="body2">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ lineHeight: 1.5 }}
+              >
                 {t("subdomain.responsibility.checkbox")}
               </Typography>
             }
-            sx={{ mb: 1.5, alignItems: "center" }}
+            sx={{
+              alignItems: "center",
+              m: 0,
+              ml: -0.5,
+              gap: 0.25,
+              "& .MuiFormControlLabel-label": { mt: 0 },
+            }}
           />
 
-          {claimError && (
-            <Alert severity="error" sx={{ mb: 1.5 }}>
-              {t("subdomain.claimError")}
-            </Alert>
-          )}
+          {claimError ? (
+            <Alert severity="error">{t("subdomain.claimError")}</Alert>
+          ) : null}
 
-          <Button
-            variant="contained"
-            size="small"
-            onClick={handleClaim}
-            disabled={
-              isClaiming ||
-              isCheckingAvailability ||
-              !availability?.available ||
-              inputValue.length < 3 ||
-              !termsAccepted
-            }
-          >
-            {isClaiming ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
-            {t("subdomain.claimButton")}
-          </Button>
-        </Box>
+          <Box>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleClaim}
+              disabled={
+                isClaiming ||
+                isCheckingAvailability ||
+                !availability?.available ||
+                inputValue.length < 3 ||
+                !termsAccepted
+              }
+            >
+              {isClaiming ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
+              {t("subdomain.claimButton")}
+            </Button>
+          </Box>
+        </Stack>
       )}
 
-      {/* ── Release confirmation dialog ──────────────────────────────── */}
       <Dialog
         open={releaseDialogOpen}
         onClose={() => setReleaseDialogOpen(false)}
@@ -440,6 +512,6 @@ export function SubdomainSettings() {
           </Button>
         </DialogActions>
       </Dialog>
-    </EnhancedPaper>
+    </ProfileSection>
   );
 }

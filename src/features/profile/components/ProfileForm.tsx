@@ -1,32 +1,29 @@
 "use client";
+
 import { X, User, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useCallback, useMemo, useState } from "react";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import {
   Box,
+  Button,
   CircularProgress,
-  Divider,
   FormLabel,
   Stack,
   Typography,
 } from "@mui/material";
-import { useCallback, useMemo, useState } from "react";
 
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showMessage } from "@/lib/store/messageSlice";
 import { profileService } from "@/services";
-import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 import {
-  ActionButtonsContainer,
-  CancelButton,
   LoadingOverlay,
-  ProfileContainer,
-  SaveButton,
   StyledAvatar,
   StyledTextField,
 } from "./Profile.styled";
+import { ProfileSection, ProfileSectionHeader } from "./ProfileSection";
 
 import type { UserProfile } from "@/services";
 
@@ -37,16 +34,9 @@ interface ProfileFormData {
 interface ProfileFormProps {
   user: UserProfile;
   onUserUpdate: (user: UserProfile) => void;
-  /** Profile picture URL from Auth0 (Google / Facebook). Falls back to initials. */
   photoURL?: string;
 }
 
-/**
- * Formulário de edição do perfil.
- *
- * Layout: section title + Divider, compact identity row (avatar + current
- * name/email), then full-width fields with external FormLabels.
- */
 export function ProfileForm({
   user,
   onUserUpdate,
@@ -102,46 +92,47 @@ export function ProfileForm({
   );
 
   return (
-    <EnhancedPaper>
-      <ProfileContainer>
+    <ProfileSection>
+      <Box sx={{ position: "relative" }}>
         {saving ? (
           <LoadingOverlay>
             <CircularProgress size={40} />
           </LoadingOverlay>
         ) : null}
 
-        {/* ── Section header ───────────────────────────────────────── */}
-        <Typography variant="h6" sx={{ mb: 1 }}>
-          {t("sections.personalInfo")}
-        </Typography>
-        <Divider sx={{ mb: 3 }} />
+        <ProfileSectionHeader
+          icon={<User {...ICON_MD} />}
+          title={t("sections.personalInfo")}
+          description={user.email}
+        />
 
-        {/* ── Identity row: avatar + current name/email ────────────── */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "center", sm: "flex-start" },
+            gap: 2.5,
+            mb: 3,
+          }}
+        >
           <StyledAvatar
             src={photoURL}
             imgProps={{ referrerPolicy: "no-referrer" }}
-            sx={{ width: 80, height: 80, fontSize: "1.75rem", flexShrink: 0 }}
+            sx={{
+              width: 72,
+              height: 72,
+              fontSize: "1.5rem",
+              flexShrink: 0,
+              boxShadow: "none",
+              border: 2,
+              borderColor: "divider",
+              "&:hover": { transform: "none" },
+            }}
           >
             {!photoURL && formData.name?.[0]?.toUpperCase()}
           </StyledAvatar>
-          <Box sx={{ minWidth: 0 }}>
-            <Typography
-              variant="subtitle2"
-              sx={{ fontWeight: 600, lineHeight: 1.3 }}
-              noWrap
-            >
-              {formData.name || "—"}
-            </Typography>
-            <Typography variant="caption" color="text.secondary" noWrap>
-              {user.email}
-            </Typography>
-          </Box>
-        </Box>
 
-        {/* ── Editable fields ──────────────────────────────────────── */}
-        <Stack spacing={2.5}>
-          <Box>
+          <Box sx={{ flex: 1, width: "100%", minWidth: 0 }}>
             <FormLabel sx={{ display: "block", mb: 0.75 }}>
               {t("form.displayName")}
             </FormLabel>
@@ -150,43 +141,48 @@ export function ProfileForm({
               onChange={(e) => handleInputChange("name", e.target.value)}
               fullWidth
               isEditing
-              InputProps={{
-                startAdornment: (
-                  <User {...ICON_MD} style={{ marginRight: 12 }} />
-                ),
-              }}
             />
           </Box>
-        </Stack>
+        </Box>
 
-        <ActionButtonsContainer>
-          <CancelButton
+        <Stack
+          direction={{ xs: "column-reverse", sm: "row" }}
+          spacing={1.5}
+          justifyContent="flex-end"
+          sx={{
+            pt: 2,
+            borderTop: 1,
+            borderColor: "divider",
+          }}
+        >
+          <Button
             variant="outlined"
+            color="inherit"
             startIcon={<X {...ICON_MD} />}
             onClick={handleReset}
-            disabled={saving}
+            disabled={saving || !hasChanges}
+            sx={{ borderColor: "divider", color: "text.secondary" }}
           >
             {t("form.resetButton")}
-          </CancelButton>
-          <SaveButton
+          </Button>
+          <Button
             variant="contained"
+            color="primary"
             startIcon={
               saving ? (
-                <CircularProgress size={20} color="inherit" />
+                <CircularProgress size={18} color="inherit" />
               ) : (
                 <Save {...ICON_MD} />
               )
             }
             onClick={handleSave}
             disabled={saving || !isFormValid || !hasChanges}
-            hasChanges={hasChanges}
-            isLoading={saving}
           >
             {t("form.saveButton")}
-          </SaveButton>
-        </ActionButtonsContainer>
-      </ProfileContainer>
-    </EnhancedPaper>
+          </Button>
+        </Stack>
+      </Box>
+    </ProfileSection>
   );
 }
 

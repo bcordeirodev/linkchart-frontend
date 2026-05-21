@@ -2,6 +2,7 @@
 export * from "./components/ProfileForm";
 export * from "./components/ProfileSidebar";
 export * from "./components/PasswordChangeForm";
+export * from "./components/OAuthSecurityCard";
 export * from "./components/SubdomainSettings";
 
 // Hooks
