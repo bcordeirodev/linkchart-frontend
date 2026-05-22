@@ -11,7 +11,9 @@ import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import { useInsightsData } from "../../hooks/useInsightsData";
 
+import type { InsightPriority } from "@/features/links/hooks/useAnalyticsFilters";
 import { BusinessInsights } from "./BusinessInsights";
+import { InsightsFilterBar } from "./InsightsFilterBar";
 import { RetentionAnalysisChart } from "./RetentionAnalysisChart";
 import { SessionDepthChart } from "./SessionDepthChart";
 import { TrafficSourceChart } from "./TrafficSourceChart";
@@ -31,6 +33,21 @@ interface InsightsAnalysisProps {
   dateTo?: string | null;
   /** When `true`, bot traffic is excluded from all metrics. */
   excludeBots?: boolean;
+  /**
+   * Active priority filter. When provided together with its setter the
+   * {@link InsightsFilterBar} is rendered. Defaults to `"all"`.
+   */
+  priority?: InsightPriority;
+  /** Array of active insight-type category filters. Defaults to `[]` (all types). */
+  insightCategories?: string[];
+  /** When `true`, only insights with `actionable === true` are shown. */
+  actionableOnly?: boolean;
+  /** Callback fired when the user changes the priority chip selection. */
+  onPriorityChange?: (v: InsightPriority) => void;
+  /** Callback fired when the user toggles a category chip. */
+  onCategoriesChange?: (v: string[]) => void;
+  /** Callback fired when the user toggles the actionable-only switch. */
+  onActionableOnlyChange?: (v: boolean) => void;
 }
 
 /**
@@ -72,6 +89,12 @@ export function InsightsAnalysis({
   dateFrom,
   dateTo,
   excludeBots,
+  priority = "all",
+  insightCategories = [],
+  actionableOnly = false,
+  onPriorityChange,
+  onCategoriesChange,
+  onActionableOnlyChange,
 }: InsightsAnalysisProps) {
   const { t } = useTranslation("analytics");
 
@@ -86,10 +109,25 @@ export function InsightsAnalysis({
     refreshInterval: 300000,
   });
 
-  const filteredInsights = useMemo(
-    () => data?.insights ?? [],
-    [data?.insights],
-  );
+  /** Client-side post-filter applied on top of the hook's confidence/category filters. */
+  const filteredInsights = useMemo(() => {
+    let list = data?.insights ?? [];
+    if (priority !== "all") {
+      list = list.filter((i) => i.priority === priority);
+    }
+    if (insightCategories.length > 0) {
+      list = list.filter((i) => insightCategories.includes(i.type));
+    }
+    if (actionableOnly) {
+      list = list.filter((i) => i.actionable);
+    }
+    return list;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.insights, priority, JSON.stringify(insightCategories), actionableOnly]);
+
+  /** Whether to render the filter bar — requires all three callbacks to be present. */
+  const showFilterBar =
+    !!onPriorityChange && !!onCategoriesChange && !!onActionableOnlyChange;
 
   return (
     <Box>
@@ -103,6 +141,18 @@ export function InsightsAnalysis({
         minHeight={300}
       >
         <Box>
+          {/* FILTROS */}
+          {showFilterBar ? (
+            <InsightsFilterBar
+              priority={priority}
+              insightCategories={insightCategories}
+              actionableOnly={actionableOnly}
+              onPriorityChange={onPriorityChange!}
+              onCategoriesChange={onCategoriesChange!}
+              onActionableOnlyChange={onActionableOnlyChange!}
+            />
+          ) : null}
+
           {/* MÉTRICAS */}
           <Box sx={{ mb: 3 }}>
             <Grid container spacing={3}>
@@ -229,7 +279,7 @@ export function InsightsAnalysis({
                 {new Date(stats.lastGenerated).toLocaleString()} •{" "}
                 {t("insights.footer.showing", {
                   shown: filteredInsights.length,
-                  total: stats.totalInsights,
+                  total: data?.insights?.length ?? stats.totalInsights,
                 })}
                 {isRealtime ? ` • ${t("insights.footer.autoUpdate")}` : null}
               </Typography>

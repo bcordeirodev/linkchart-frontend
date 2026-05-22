@@ -23,6 +23,7 @@ import {
   Avatar,
   LinearProgress,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
@@ -47,29 +48,34 @@ interface HttpProtocolEntry {
   percentage: number;
 }
 
+/** Props accepted by the {@link BusinessInsights} component. */
 interface BusinessInsightsProps {
+  /** Array of insight objects to render. */
   insights: BusinessInsight[];
+  /** When `true`, renders the "Business Insights" section title. Defaults to `true`. */
   showTitle?: boolean;
+  /** Maximum number of insight cards to display. Defaults to `20`. */
   maxItems?: number;
-  priorityFilter?: ("high" | "medium" | "low")[];
-  categoryFilter?: string[];
+  /** Optional HTTP protocol breakdown entries rendered as a bar chart at the bottom. */
   httpProtocol?: HttpProtocolEntry[];
 }
 
 /**
- * Componente para exibir insights de negócio baseados nos dados reais da API
- * Mostra análises automáticas dos padrões encontrados nos dados
- * Melhorado com stack vertical e cores de prioridade
+ * Renders AI-generated business insights as priority-sorted cards.
+ *
+ * Displays each insight with a colour-coded priority badge (high/medium/low),
+ * a category icon, and optional HTTP protocol usage bars. When the `insights`
+ * array is empty an info Alert is shown instead. An auto-summary Alert is
+ * rendered below the list when at least one card is visible.
  */
 export function BusinessInsights({
   insights,
   showTitle = true,
   maxItems = 20,
-  priorityFilter: _priorityFilter,
-  categoryFilter: _categoryFilter,
   httpProtocol,
 }: BusinessInsightsProps) {
   const theme = useTheme();
+  const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
 
   if (!insights || insights.length === 0) {
@@ -95,11 +101,10 @@ export function BusinessInsights({
           }}
         >
           <BarChart3 size={16} strokeWidth={1.5} />
-          Insights não disponíveis
+          {t("insights.unavailableTitle")}
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          Não há insights suficientes para exibir. Mais dados são necessários
-          para gerar análises.
+          {t("insights.unavailableDesc")}
         </Typography>
       </Alert>
     );
@@ -183,7 +188,7 @@ export function BusinessInsights({
           }}
         >
           <Lightbulb size={16} strokeWidth={1.5} />
-          Insights de Negócio
+          {t("insights.title")}
         </Typography>
       ) : null}
 
@@ -218,8 +223,11 @@ export function BusinessInsights({
                         letterSpacing: 1,
                       }}
                     >
-                      {insight.type.charAt(0).toUpperCase() +
-                        insight.type.slice(1)}
+                      {t(`filters.insightTypeOptions.${insight.type}`, {
+                        defaultValue:
+                          insight.type.charAt(0).toUpperCase() +
+                          insight.type.slice(1),
+                      })}
                     </Typography>
                   </Divider>
                 </Box>
@@ -320,8 +328,11 @@ export function BusinessInsights({
                         }}
                       >
                         <TrendingUp size={12} strokeWidth={1.5} />
-                        {insight.type.charAt(0).toUpperCase() +
-                          insight.type.slice(1)}
+                        {t(`filters.insightTypeOptions.${insight.type}`, {
+                          defaultValue:
+                            insight.type.charAt(0).toUpperCase() +
+                            insight.type.slice(1),
+                        })}
                       </Typography>
                     </Box>
                   </Stack>
@@ -350,9 +361,7 @@ export function BusinessInsights({
               fontWeight: 500,
             }}
           >
-            <strong>{organizedInsights.length} insights</strong> gerados
-            automaticamente baseados nos seus dados reais. Organizados por
-            prioridade e categoria para melhor análise.
+            {t("insights.autoSummary", { count: organizedInsights.length })}
           </Typography>
         </Alert>
       )}
@@ -381,7 +390,7 @@ export function BusinessInsights({
               }}
             >
               <BarChart3 size={16} strokeWidth={1.5} />
-              Protocolo HTTP
+              {t("insights.httpProtocolTitle")}
             </Typography>
 
             {/* Destaque HTTP/2 */}
@@ -395,7 +404,9 @@ export function BusinessInsights({
               return http2 ? (
                 <Box sx={{ mb: 2 }}>
                   <Chip
-                    label={`HTTP/2: ${Number(http2.percentage).toFixed(1)}% das conexões`}
+                    label={t("insights.http2Connections", {
+                      percent: Number(http2.percentage).toFixed(1),
+                    })}
                     color="success"
                     variant="filled"
                     size="small"
