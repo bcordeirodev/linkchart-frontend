@@ -32,16 +32,16 @@
     "howItWorks": "Como Funciona",
     "steps": {
       "paste": {
-        "title": "Cole o URL",
-        "desc": "Insira qualquer link longo no campo acima."
+        "title": "Cole a URL",
+        "desc": "Informe o link longo no formulário. Opcional: escolha um slug personalizado."
       },
-      "customize": {
-        "title": "Personalize",
-        "desc": "Defina um slug personalizado e, com conta grátis, use seu subdomínio na URL."
+      "shorten": {
+        "title": "Encurte na hora",
+        "desc": "Clique em Encurtar agora — sem cadastro. Seu link curto fica pronto em segundos."
       },
-      "share": {
-        "title": "Compartilhe",
-        "desc": "Copie o link curto e acompanhe os cliques em tempo real."
+      "track": {
+        "title": "Compartilhe e analise",
+        "desc": "Copie o link, compartilhe onde quiser e acompanhe cliques em tempo real na página de analytics."
       }
     },
     "form": {
@@ -57,13 +57,19 @@
       "slugInvalid": "3–50 caracteres: letras minúsculas, números e hífens",
       "submitButton": "⚡ Encurtar Agora",
       "errorMessage": "Erro ao encurtar a URL. Tente novamente.",
-      "slugChecking": "Verificando...",
-      "slugAvailable": "Disponível",
-      "slugTaken": "Já está em uso",
-      "safetyChecking": "Verificando segurança...",
-      "safetySafe": "URL segura",
-      "safetyBlocked": "URL bloqueada: {{threats}}",
-      "safetyError": "Verificação indisponível"
+      "slugSuggestionChecking": "Verificando sugestão de slug…",
+      "slugTabHint": "Tab para aceitar a sugestão",
+      "safety": {
+        "checking": "Verificando segurança...",
+        "safe": "URL verificada · sem ameaças detectadas",
+        "unsafe": "URL bloqueada: {{threats}}",
+        "error": "Verificação de segurança indisponível"
+      },
+      "slugAvailability": {
+        "checking": "Verificando disponibilidade do slug…",
+        "available": "Slug disponível · pronto para usar",
+        "taken": "Este slug já está em uso"
+      }
     },
     "upgrade": {
       "title": "Obtenha mais com uma conta gratuita",
@@ -147,7 +153,10 @@
       "copy": "Copiar",
       "shortenAnother": "Encurtar outro link",
       "visitDestination": "Visitar destino",
-      "shortenedLink": "Link encurtado",
+      "shortenedLink": "Link curto",
+      "destination": "Destino",
+      "analyticsPageUrl": "Página de analytics",
+      "copyAnalyticsUrl": "Copiar URL da página de analytics",
       "publicAnalyticsAvailable": "Analytics públicos disponíveis"
     },
     "cta": {

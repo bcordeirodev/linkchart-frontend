@@ -49,8 +49,8 @@ export function useUrlMeta(url: string): {
 
     let cancelled = false;
 
-    // Show loading immediately so the spinner appears without waiting for
-    // the debounce to expire.
+    // Drop stale title from a previous URL while the new one debounces.
+    setOgTitle(null);
     setIsLoading(true);
 
     const timer = setTimeout(async () => {
@@ -73,7 +73,6 @@ export function useUrlMeta(url: string): {
     return () => {
       cancelled = true;
       clearTimeout(timer);
-      setIsLoading(false);
     };
   }, [url]);
 

@@ -19,10 +19,18 @@ import "dayjs/locale/en-gb";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import useThemeMediaQuery from "@/shared/hooks/useThemeMediaQuery";
-import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
+import { useSubdomain } from "@/features/profile/hooks/useSubdomain";
+import { getShortUrlPrefixForSubdomain } from "@/lib/utils/shortUrl";
 
 import { useUrlSafetyCheck } from "../../hooks/useUrlSafetyCheck";
-import { getUrlSafetyHelperNode } from "./UrlSafetyIndicator";
+import {
+  buildSlugAvailabilityLabels,
+  buildUrlSafetyLabels,
+  FormFieldFeedback,
+  getSlugAvailabilityHelperNode,
+  getUrlSafetyHelperNode,
+} from "./UrlSafetyIndicator";
+import { useSlugAvailability } from "../../hooks/useSlugAvailability";
 import { FormSection } from "./FormSection";
 
 import type { LinkFormData } from "./LinkFormSchema";
@@ -42,6 +50,10 @@ interface LinkFormFieldsProps {
    * while metadata is being fetched in the background.
    */
   isLoadingMeta?: boolean;
+  /** og:title ghost text / auto-fill source while the title field is empty. */
+  titleSuggestion?: string | null;
+  /** True while an available slug variant is being resolved. */
+  isResolvingSlugSuggestion?: boolean;
 }
 
 /**
@@ -61,27 +73,30 @@ export function LinkFormFields({
   isEdit: _isEdit = false,
   slugSuggestion,
   isLoadingMeta = false,
+  titleSuggestion = null,
+  isResolvingSlugSuggestion = false,
 }: LinkFormFieldsProps) {
   const { t } = useTranslation("links");
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("sm"));
-  const shortUrlPrefix = getShortUrlPrefix();
+  const { subdomain } = useSubdomain();
+  const shortUrlPrefix = getShortUrlPrefixForSubdomain(
+    subdomain?.status === "active" ? subdomain : null,
+  );
 
   const urlValue = useWatch({ control, name: "original_url" });
+  const slugValue = useWatch({ control, name: "custom_slug" });
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
+  const slugAvailability = useSlugAvailability(slugValue?.trim() ?? "");
+  const urlSafetyLabels = buildUrlSafetyLabels(t);
+  const slugAvailabilityLabels = buildSlugAvailabilityLabels(t);
 
   const urlIsUnsafe = !errors.original_url && safetyStatus === "unsafe";
-  const urlIsSafe = !errors.original_url && safetyStatus === "safe";
 
   const urlHelperContent: ReactNode = errors.original_url
     ? errors.original_url.message
     : safetyStatus !== "idle"
-      ? getUrlSafetyHelperNode(safetyStatus, threats, t)
+      ? getUrlSafetyHelperNode(safetyStatus, threats, urlSafetyLabels)
       : t("form.originalUrlHelper");
-
-  // Only 'safe' needs an explicit color override; 'unsafe' is handled by
-  // error={true} adding .Mui-error, and 'checking'/'error' fall through to the
-  // global text.disabled selector on the Stack.
-  const urlHelperSx = urlIsSafe ? { color: "success.main" } : undefined;
 
   return (
     <Stack
@@ -111,7 +126,15 @@ export function LinkFormFields({
                   error={!!errors.original_url || urlIsUnsafe}
                   helperText={urlHelperContent}
                   FormHelperTextProps={
-                    urlHelperSx ? { sx: urlHelperSx } : undefined
+                    safetyStatus === "safe"
+                      ? {
+                          sx: {
+                            color: "inherit",
+                            lineHeight: 1.5,
+                            mt: 0.75,
+                          },
+                        }
+                      : undefined
                   }
                   InputProps={{
                     endAdornment: isLoadingMeta ? (
@@ -142,7 +165,7 @@ export function LinkFormFields({
               render={({ field }) => {
                 // Show ghost text suggestion only when the field is empty and
                 // a suggestion is available. Pressing Tab accepts it.
-                const showSuggestion = !field.value && !!slugSuggestion;
+                const showSuggestion = !field.value?.trim() && !!slugSuggestion;
 
                 return (
                   <TextField
@@ -162,32 +185,48 @@ export function LinkFormFields({
                     error={!!errors.custom_slug}
                     helperText={
                       errors.custom_slug?.message ||
-                      (showSuggestion
-                        ? t("form.slugTabHint")
-                        : isMobile
-                          ? `${shortUrlPrefix} · ${t("form.slugPrefixHint")}`
-                          : t("form.customSlugHelper"))
+                      (slugValue?.trim() && slugAvailability !== "idle"
+                        ? getSlugAvailabilityHelperNode(
+                            slugAvailability,
+                            slugAvailabilityLabels,
+                          )
+                        : showSuggestion
+                          ? t("form.slugTabHint")
+                          : isResolvingSlugSuggestion
+                            ? t("form.slugSuggestionChecking")
+                            : isMobile
+                              ? `${shortUrlPrefix} · ${t("form.slugPrefixHint")}`
+                              : t("form.customSlugHelper"))
                     }
-                    InputProps={
-                      isMobile
-                        ? undefined
-                        : {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Typography
-                                  variant="body2"
-                                  sx={{
-                                    fontFamily: "monospace",
-                                    color: "text.secondary",
-                                    pr: 0.5,
-                                  }}
-                                >
-                                  {shortUrlPrefix}
-                                </Typography>
-                              </InputAdornment>
-                            ),
-                          }
-                    }
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Typography
+                            variant="body2"
+                            noWrap
+                            sx={{
+                              fontFamily: "monospace",
+                              color: "text.secondary",
+                              pr: 0.5,
+                              maxWidth: isMobile ? 140 : 280,
+                              fontSize: isMobile ? "0.7rem" : undefined,
+                            }}
+                          >
+                            {shortUrlPrefix}
+                          </Typography>
+                        </InputAdornment>
+                      ),
+                      endAdornment:
+                        isResolvingSlugSuggestion && !showSuggestion ? (
+                          <InputAdornment position="end">
+                            <CircularProgress
+                              size={14}
+                              thickness={5}
+                              sx={{ color: "text.disabled" }}
+                            />
+                          </InputAdornment>
+                        ) : undefined,
+                    }}
                     sx={{
                       "& .MuiInputBase-input": { fontFamily: "monospace" },
                     }}
@@ -207,15 +246,32 @@ export function LinkFormFields({
             <Controller
               name="title"
               control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  placeholder={t("form.titlePlaceholder")}
-                  error={!!errors.title}
-                  helperText={errors.title?.message ?? " "}
-                />
-              )}
+              render={({ field }) => {
+                const showTitleSuggestion =
+                  !field.value?.trim() && !!titleSuggestion;
+
+                return (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    placeholder={
+                      showTitleSuggestion
+                        ? titleSuggestion!
+                        : t("form.titlePlaceholder")
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && showTitleSuggestion) {
+                        field.onChange(titleSuggestion);
+                      }
+                    }}
+                    error={!!errors.title}
+                    helperText={
+                      errors.title?.message ||
+                      (showTitleSuggestion ? t("form.titleTabHint") : " ")
+                    }
+                  />
+                );
+              }}
             />
           </Box>
 

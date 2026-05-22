@@ -1,12 +1,29 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Box, Divider, Typography, useTheme, alpha } from "@mui/material";
-import { ExternalLink, Copy, Check, Link2, BarChart3 } from "lucide-react";
+
+import { useState, useEffect, useId } from "react";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Link,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import { ExternalLink, Copy, Check, Link2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import useClipboard from "@/hooks/useClipboard";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { radiusTokens } from "@/lib/theme/designSystem";
+import {
+  getPublicInsetSx,
+  getPublicPanelSx,
+  publicHairline,
+} from "@/lib/theme/publicPageStyles";
 import { getShortUrl } from "@/lib/utils/shortUrl";
+import { PublicBlockIcon } from "@/shared/ui/base";
 
 import type { PublicLinkData } from "../../types";
 
@@ -15,8 +32,16 @@ interface LinkHeroCardProps {
   onCreateLink: () => void;
 }
 
+/**
+ * Hero card for /public-analytics/[slug]: short URL, destination, bookmark URL, CTA.
+ */
 export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation("public");
+  const shortUrlHeadingId = useId();
+  const destinationHeadingId = useId();
+  const saveHeadingId = useId();
+
   const shortUrl = getShortUrl(linkData.short_url);
   const { copy: copyShort, copied: copiedShort } = useClipboard({
     timeout: 1500,
@@ -24,289 +49,275 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   const { copy: copyAnalytics, copied: copiedAnalytics } = useClipboard({
     timeout: 2000,
   });
-  const { t } = useTranslation("public");
   const [analyticsUrl, setAnalyticsUrl] = useState("");
 
   useEffect(() => {
     setAnalyticsUrl(window.location.href);
   }, []);
 
+  const dividerColor = publicHairline(theme);
+
   return (
     <Box
-      sx={{
-        background: theme.palette.background.paper,
-        border: `1px solid ${theme.palette.divider}`,
-        borderRadius: "16px",
-        overflow: "hidden",
-        position: "relative",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "1px",
-          background: `linear-gradient(90deg, transparent 0%, ${alpha(theme.palette.primary.main, 0.6)} 50%, transparent 100%)`,
-        },
-      }}
+      component="article"
+      aria-labelledby={shortUrlHeadingId}
+      sx={getPublicPanelSx(theme)}
     >
-      {/* Header — identity */}
-      <Box
-        sx={{ p: { xs: "24px", md: "28px" }, pb: { xs: "20px", md: "24px" } }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
-          <Box
+      <Stack spacing={2.5} sx={{ p: { xs: 2.5, md: 3 } }}>
+        {/* Identity */}
+        <Stack
+          component="header"
+          direction="row"
+          alignItems="flex-start"
+          gap={1.25}
+        >
+          <PublicBlockIcon icon={Link2} />
+          <Box sx={{ minWidth: 0 }}>
+            <Typography
+              component="h2"
+              id={shortUrlHeadingId}
+              sx={{
+                fontFamily: "monospace",
+                fontSize: { xs: "1.125rem", md: "1.25rem" },
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                lineHeight: 1.2,
+                color: theme.palette.text.primary,
+              }}
+            >
+              /{linkData.slug}
+            </Typography>
+            {linkData.title ? (
+              <Typography
+                component="p"
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5, lineHeight: 1.45 }}
+                noWrap
+              >
+                {linkData.title}
+              </Typography>
+            ) : (
+              <Typography
+                component="p"
+                variant="caption"
+                color="text.secondary"
+                sx={{ mt: 0.5, display: "block" }}
+              >
+                {t("publicAnalytics.linkInfo.publicAnalyticsAvailable")}
+              </Typography>
+            )}
+          </Box>
+        </Stack>
+
+        {/* Short URL */}
+        <Box component="section" aria-labelledby={`${shortUrlHeadingId}-label`}>
+          <Typography
+            id={`${shortUrlHeadingId}-label`}
+            component="h3"
+            variant="overline"
+            color="text.secondary"
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 36,
-              height: 36,
-              borderRadius: "10px",
-              background: alpha(theme.palette.primary.main, 0.12),
-              border: `1px solid ${alpha(theme.palette.primary.main, 0.22)}`,
-              flexShrink: 0,
+              display: "block",
+              mb: 1,
+              letterSpacing: "0.08em",
+              fontWeight: 700,
             }}
           >
-            <Link2
-              size={16}
-              strokeWidth={2}
-              color={theme.palette.primary.light}
-            />
-          </Box>
-          <Box>
+            {t("publicAnalytics.linkInfo.shortenedLink")}
+          </Typography>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            alignItems={{ sm: "center" }}
+            gap={1}
+            sx={{
+              ...getPublicInsetSx(theme, { primaryTint: true }),
+              p: { xs: 1.25, sm: 1.5 },
+            }}
+          >
             <Typography
+              component="p"
               sx={{
-                fontSize: "0.875rem",
+                flex: 1,
+                minWidth: 0,
+                m: 0,
+                fontFamily: "monospace",
+                fontSize: { xs: "0.9375rem", md: "1rem" },
                 fontWeight: 600,
-                color: theme.palette.text.primary,
-                lineHeight: 1.2,
+                color: theme.palette.primary.light,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
-              {t("publicAnalytics.linkInfo.shortenedLink")}
+              <Link
+                href={shortUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="hover"
+                sx={{ color: "inherit", fontWeight: "inherit" }}
+              >
+                {shortUrl}
+              </Link>
             </Typography>
-            <Typography
-              sx={{
-                fontSize: "0.75rem",
-                color: theme.palette.text.secondary,
-                lineHeight: 1.3,
-                mt: 0.25,
-              }}
+            <Button
+              size="small"
+              variant="contained"
+              color={copiedShort ? "success" : "primary"}
+              onClick={() => copyShort(shortUrl)}
+              startIcon={
+                copiedShort ? (
+                  <Check size={14} aria-hidden />
+                ) : (
+                  <Copy size={14} aria-hidden />
+                )
+              }
+              sx={{ flexShrink: 0, alignSelf: { xs: "stretch", sm: "center" } }}
             >
-              {t("publicAnalytics.linkInfo.publicAnalyticsAvailable")}
-            </Typography>
-          </Box>
+              {copiedShort
+                ? t("publicAnalytics.saveUrlBanner.copied")
+                : t("publicAnalytics.linkInfo.copy")}
+            </Button>
+          </Stack>
         </Box>
 
-        {/* Short URL — hero element */}
-        <Box
-          sx={{
-            background: alpha(theme.palette.primary.main, 0.08),
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.28)}`,
-            borderRadius: "12px",
-            p: "14px 16px 14px 20px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 2,
-            mb: 2,
-            boxShadow: `0 2px 20px ${alpha(theme.palette.primary.main, 0.08)}`,
-          }}
-        >
+        {/* Destination */}
+        <Box component="section" aria-labelledby={destinationHeadingId}>
           <Typography
+            id={destinationHeadingId}
+            component="h3"
+            variant="overline"
+            color="text.secondary"
             sx={{
-              fontFamily: "monospace",
-              fontSize: { xs: "1rem", md: "1.125rem" },
+              display: "block",
+              mb: 0.75,
+              letterSpacing: "0.08em",
               fontWeight: 700,
-              color: theme.palette.primary.light,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
             }}
           >
-            {shortUrl}
+            {t("publicAnalytics.linkInfo.destination")}
           </Typography>
-          <Box
-            component="button"
-            onClick={() => copyShort(shortUrl)}
+          <Link
+            href={linkData.original_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="hover"
             sx={{
-              display: "flex",
+              display: "inline-flex",
               alignItems: "center",
               gap: 0.75,
-              background: copiedShort
-                ? theme.palette.success.main
-                : theme.palette.primary.main,
-              border: "none",
-              borderRadius: "8px",
-              px: 2,
-              py: 0.875,
-              fontSize: "0.8125rem",
-              fontWeight: 600,
-              color: "#fff",
-              cursor: "pointer",
-              flexShrink: 0,
-              transition: "all 0.18s",
-              boxShadow: copiedShort
-                ? `0 2px 10px ${alpha(theme.palette.success.main, 0.35)}`
-                : `0 2px 10px ${alpha(theme.palette.primary.main, 0.35)}`,
-              "&:hover": {
-                opacity: 0.88,
-                transform: "translateY(-1px)",
-                boxShadow: copiedShort
-                  ? `0 4px 16px ${alpha(theme.palette.success.main, 0.45)}`
-                  : `0 4px 16px ${alpha(theme.palette.primary.main, 0.45)}`,
-              },
-              "&:active": { transform: "translateY(0)" },
-            }}
-          >
-            {copiedShort ? <Check size={14} /> : <Copy size={14} />}
-            {copiedShort
-              ? t("publicAnalytics.saveUrlBanner.copied")
-              : t("publicAnalytics.linkInfo.copy")}
-          </Box>
-        </Box>
-
-        {/* Destination URL */}
-        <Box
-          component="a"
-          href={linkData.original_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            color: theme.palette.text.secondary,
-            textDecoration: "none",
-            transition: "color 0.2s",
-            "&:hover": { color: theme.palette.text.primary },
-          }}
-        >
-          <ExternalLink size={13} strokeWidth={1.5} style={{ flexShrink: 0 }} />
-          <Typography
-            sx={{
+              maxWidth: "100%",
+              color: "text.secondary",
               fontFamily: "monospace",
               fontSize: "0.8125rem",
-              color: "inherit",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
+              "&:hover": { color: "text.primary" },
             }}
           >
-            {linkData.original_url}
-          </Typography>
+            <ExternalLink size={14} strokeWidth={1.75} aria-hidden />
+            <Box
+              component="span"
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {linkData.original_url}
+            </Box>
+          </Link>
         </Box>
-      </Box>
 
-      <Divider sx={{ borderColor: theme.palette.divider }} />
+        <Divider sx={{ borderColor: dividerColor }} />
 
-      {/* Footer — save + CTA */}
-      <Box sx={{ p: { xs: "20px 24px", md: "22px 28px" } }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
-          <BarChart3 size={15} color={theme.palette.primary.main} />
+        {/* Bookmark this analytics page */}
+        <Box component="section" aria-labelledby={saveHeadingId}>
           <Typography
-            sx={{
-              fontSize: "0.875rem",
-              fontWeight: 600,
-              color: theme.palette.text.primary,
-            }}
+            id={saveHeadingId}
+            component="h3"
+            variant="subtitle2"
+            fontWeight={600}
+            sx={{ mb: 0.5 }}
           >
             {t("publicAnalytics.saveUrlBanner.title")}
           </Typography>
+          <Typography
+            component="p"
+            variant="body2"
+            color="text.secondary"
+            sx={{ mb: 1.5, lineHeight: 1.55 }}
+          >
+            {t("publicAnalytics.saveUrlBanner.desc")}
+          </Typography>
+          <Stack
+            direction="row"
+            alignItems="center"
+            gap={0.75}
+            role="group"
+            aria-label={t("publicAnalytics.linkInfo.analyticsPageUrl")}
+            sx={{
+              ...getPublicInsetSx(theme),
+              p: 1,
+              borderRadius: `${radiusTokens.sm}px`,
+            }}
+          >
+            <Typography
+              component="span"
+              variant="caption"
+              color="text.secondary"
+              sx={{
+                flexShrink: 0,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.04em",
+              }}
+            >
+              {t("publicAnalytics.linkInfo.analyticsPageUrl")}
+            </Typography>
+            <Typography
+              component="code"
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                fontFamily: "monospace",
+                fontSize: "0.75rem",
+                color: "text.primary",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                bgcolor: "transparent",
+              }}
+            >
+              {analyticsUrl}
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => copyAnalytics(analyticsUrl)}
+              aria-label={t("publicAnalytics.linkInfo.copyAnalyticsUrl")}
+              color={copiedAnalytics ? "success" : "default"}
+            >
+              {copiedAnalytics ? (
+                <Check {...ICON_SM} aria-hidden />
+              ) : (
+                <Copy {...ICON_SM} aria-hidden />
+              )}
+            </IconButton>
+          </Stack>
         </Box>
 
-        {/* Analytics URL */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1.5,
-            background: alpha(theme.palette.text.primary, 0.04),
-            border: `1px solid ${theme.palette.divider}`,
-            borderRadius: "8px",
-            p: "10px 14px",
-            mb: 2,
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              color: theme.palette.text.secondary,
-              flexShrink: 0,
-            }}
-          >
-            Analytics:
-          </Typography>
-          <Typography
-            sx={{
-              fontFamily: "monospace",
-              fontSize: "0.8125rem",
-              color: theme.palette.text.primary,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              flex: 1,
-            }}
-          >
-            {analyticsUrl}
-          </Typography>
-          <Box
-            component="button"
-            onClick={() => copyAnalytics(analyticsUrl)}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              background: "transparent",
-              border: "none",
-              color: copiedAnalytics
-                ? theme.palette.success.main
-                : theme.palette.text.secondary,
-              cursor: "pointer",
-              flexShrink: 0,
-              p: 0.5,
-              borderRadius: "4px",
-              transition: "color 0.2s",
-              "&:hover": {
-                color: copiedAnalytics
-                  ? theme.palette.success.main
-                  : theme.palette.text.primary,
-              },
-            }}
-          >
-            {copiedAnalytics ? <Check {...ICON_SM} /> : <Copy {...ICON_SM} />}
-          </Box>
-        </Box>
-
-        {/* CTA */}
-        <Box
-          component="button"
+        <Button
+          variant="contained"
+          fullWidth
           onClick={onCreateLink}
           sx={{
-            width: "100%",
-            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            border: "none",
-            borderRadius: "10px",
-            color: theme.palette.primary.contrastText,
-            fontSize: "0.9375rem",
-            fontWeight: 600,
-            cursor: "pointer",
-            px: 2,
             py: 1.25,
-            letterSpacing: "0.01em",
-            transition: "all 0.18s",
-            boxShadow: `0 2px 14px ${alpha(theme.palette.primary.main, 0.3)}`,
-            "&:hover": {
-              opacity: 0.92,
-              transform: "translateY(-1px)",
-              boxShadow: `0 4px 20px ${alpha(theme.palette.primary.main, 0.45)}`,
-            },
-            "&:active": { transform: "translateY(0)" },
+            fontWeight: 600,
+            borderRadius: `${radiusTokens.md}px`,
+            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
           }}
         >
           {t("publicAnalytics.linkInfo.shortenAnother")}
-        </Box>
-      </Box>
+        </Button>
+      </Stack>
     </Box>
   );
 }

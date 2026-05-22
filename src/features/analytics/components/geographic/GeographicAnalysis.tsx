@@ -144,93 +144,108 @@ export function GeographicAnalysis({
           {/* 5 metric cards no topo, fora das sub-tabs */}
           <GeographicMetrics stats={stats} />
 
-          {/* Sub-tabs */}
-          <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
-            <Tabs
-              value={activeSubTab}
-              onChange={handleSubTabChange}
-              variant="scrollable"
-              scrollButtons="auto"
-            >
-              <Tab
-                label={t("geographic.subtabs.overview")}
-                icon={<Layers {...ICON_SM} />}
-                iconPosition="start"
-                disabled={!hasContinents && !hasRankings}
-              />
-              <Tab
-                label={t("geographic.subtabs.heatmap")}
-                icon={<Map {...ICON_SM} />}
-                iconPosition="start"
-                disabled={!hasHeatmapData}
-              />
-              <Tab
-                label={t("geographic.subtabs.rankings")}
-                icon={<BarChart3 {...ICON_SM} />}
-                iconPosition="start"
-                disabled={!hasRankings}
-              />
-            </Tabs>
-          </Box>
-
-          {/* Sub-tab 0: Visão geral */}
-          {activeSubTab === 0 && (
-            <Grid container spacing={{ xs: 2, md: 3 }}>
-              <Grid item xs={12} md={8}>
-                <GeographicChoropleth
-                  countries={data?.top_countries || []}
-                  selectedCountry={selectedCountry}
-                  onCountrySelect={setSelectedCountry}
+          {/* Sub-tabs — bordered container groups the sub-tab nav + content as
+               a distinct hierarchical level, separate from the metric cards above */}
+          <Box
+            sx={{
+              mt: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 2,
+              p: { xs: 1.5, md: 2 },
+            }}
+          >
+            {/* Sub-tab nav */}
+            <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+              <Tabs
+                value={activeSubTab}
+                onChange={handleSubTabChange}
+                variant="scrollable"
+                scrollButtons="auto"
+              >
+                <Tab
+                  label={t("geographic.subtabs.overview")}
+                  icon={<Layers {...ICON_SM} />}
+                  iconPosition="start"
+                  disabled={!hasContinents && !hasRankings}
                 />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                  <ContinentBreakdown
-                    continents={data?.continents || []}
-                    activeContinentCode={continent ?? null}
-                  />
-                  <CountryDistributionChart
+                <Tab
+                  label={t("geographic.subtabs.heatmap")}
+                  icon={<Map {...ICON_SM} />}
+                  iconPosition="start"
+                  disabled={!hasHeatmapData}
+                />
+                <Tab
+                  label={t("geographic.subtabs.rankings")}
+                  icon={<BarChart3 {...ICON_SM} />}
+                  iconPosition="start"
+                  disabled={!hasRankings}
+                />
+              </Tabs>
+            </Box>
+
+            {/* Sub-tab 0: Visão geral */}
+            {activeSubTab === 0 && (
+              <Grid container spacing={{ xs: 2, md: 3 }}>
+                <Grid item xs={12} md={8}>
+                  <GeographicChoropleth
                     countries={data?.top_countries || []}
+                    selectedCountry={selectedCountry}
+                    onCountrySelect={setSelectedCountry}
                   />
-                </Box>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+                  >
+                    <ContinentBreakdown
+                      continents={data?.continents || []}
+                      activeContinentCode={continent ?? null}
+                    />
+                    <CountryDistributionChart
+                      countries={data?.top_countries || []}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <GeographicInsights
+                    countries={data?.top_countries || []}
+                    states={data?.top_states || []}
+                    cities={data?.top_cities || []}
+                    totalCountries={stats?.totalCountries}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <GeographicInsights
-                  countries={data?.top_countries || []}
-                  states={data?.top_states || []}
-                  cities={data?.top_cities || []}
-                  totalCountries={stats?.totalCountries}
-                />
-              </Grid>
-            </Grid>
-          )}
+            )}
 
-          {/* Sub-tab 1: Mapa de calor — height is capped on mobile to avoid consuming the full viewport */}
-          {activeSubTab === 1 && hasHeatmapData && (
-            <RealTimeHeatmapChart
-              data={data?.heatmap_data || []}
-              loading={loading}
-              error={error}
-              onRefresh={refresh}
-              height={isMobile ? 380 : 700}
-              title={t("geographic.subtabs.heatmap")}
-              showControls
-              showStats={false}
-              stats={stats}
-            />
-          )}
+            {/* Sub-tab 1: Mapa de calor — height is capped on mobile to avoid consuming the full viewport */}
+            {activeSubTab === 1 && hasHeatmapData && (
+              <RealTimeHeatmapChart
+                data={data?.heatmap_data || []}
+                loading={loading}
+                error={error}
+                onRefresh={refresh}
+                height={isMobile ? 380 : 700}
+                title={t("geographic.subtabs.heatmap")}
+                showControls
+                showStats={false}
+                stats={stats}
+              />
+            )}
 
-          {/* Sub-tab 2: Rankings */}
-          {activeSubTab === 2 && (
-            <GeographicChart
-              countries={data?.top_countries || []}
-              states={data?.top_states || []}
-              cities={data?.top_cities || []}
-              totalClicks={stats?.totalClicks || 0}
-              selectedCountry={selectedCountry}
-              onCountrySelect={setSelectedCountry}
-            />
-          )}
+            {/* Sub-tab 2: Rankings */}
+            {activeSubTab === 2 && (
+              <GeographicChart
+                countries={data?.top_countries || []}
+                states={data?.top_states || []}
+                cities={data?.top_cities || []}
+                totalClicks={stats?.totalClicks || 0}
+                selectedCountry={selectedCountry}
+                onCountrySelect={setSelectedCountry}
+              />
+            )}
+          </Box>
+          {/* closes sub-tabs bordered container */}
         </Box>
       </AnalyticsStateManager>
     </Box>

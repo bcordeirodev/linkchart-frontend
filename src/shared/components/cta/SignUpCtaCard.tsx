@@ -4,8 +4,18 @@ import { alpha } from "@mui/material/styles";
 import { Check, UserPlus } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
+import { radiusTokens } from "@/lib/theme/designSystem";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
+import {
+  getPublicBlockDescriptionSx,
+  getPublicBlockIconShellSx,
+  getPublicBlockTitleSx,
+  getPublicFormShellSx,
+  getPublicInsetSx,
+  publicHairline,
+} from "@/lib/theme/publicPageStyles";
 import { useNavigate } from "@/shared/hooks";
+import { PublicBlockIcon } from "@/shared/ui/base";
 
 interface SignUpCtaCardProps {
   /** Bloco principal (ex: "Crie sua conta gratuita") */
@@ -59,25 +69,22 @@ export function SignUpCtaCard({
     navigate(ctaHref);
   };
 
-  const surface = alpha(theme.palette.text.primary, isDark ? 0.03 : 0.04);
-  const surfaceBorder = alpha(theme.palette.divider, isDark ? 0.7 : 1);
-  const titleColor = alpha(theme.palette.text.primary, isDark ? 0.92 : 0.95);
-  const descColor = alpha(theme.palette.text.primary, isDark ? 0.65 : 0.72);
   const featureColor = alpha(theme.palette.text.primary, isDark ? 0.88 : 0.85);
-  const innerBorder = alpha(theme.palette.divider, 0.5);
-  const chipBg = alpha(theme.palette.text.primary, isDark ? 0.06 : 0.05);
-  const chipBorder = alpha(theme.palette.divider, isDark ? 0.55 : 0.65);
+  const innerBorder = publicHairline(theme, "inset");
+  const chipInset = getPublicInsetSx(theme);
 
-  const iconNode = headerIcon ?? <UserPlus {...ICON_MD} aria-hidden />;
+  const iconNode = headerIcon ? (
+    <Box sx={getPublicBlockIconShellSx(theme)}>{headerIcon}</Box>
+  ) : (
+    <PublicBlockIcon icon={UserPlus} />
+  );
 
   return (
     <Box
       id={id}
       sx={{
         position: "relative",
-        background: surface,
-        border: `1px solid ${surfaceBorder}`,
-        borderRadius: "12px",
+        ...getPublicFormShellSx(theme),
         p: { xs: "20px", md: "22px 26px" },
         overflow: "hidden",
         "&::before": {
@@ -110,46 +117,16 @@ export function SignUpCtaCard({
             minWidth: 0,
           }}
         >
-          <Box
-            sx={{
-              mt: 0.125,
-              width: 36,
-              height: 36,
-              borderRadius: "10px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              color: theme.palette.primary.main,
-              background: alpha(
-                theme.palette.primary.main,
-                isDark ? 0.14 : 0.1,
-              ),
-              border: `1px solid ${alpha(theme.palette.primary.main, 0.28)}`,
-            }}
-          >
-            {iconNode}
-          </Box>
+          {iconNode}
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography
-              sx={{
-                fontSize: "0.9375rem",
-                fontWeight: 700,
-                color: titleColor,
-                mb: 0.5,
-                letterSpacing: "-0.01em",
-                lineHeight: 1.35,
-              }}
+              component="h2"
+              sx={{ ...getPublicBlockTitleSx(theme), mb: 0.5 }}
             >
               {title}
             </Typography>
             <Typography
-              sx={{
-                fontSize: "0.8125rem",
-                color: descColor,
-                lineHeight: 1.6,
-                maxWidth: 520,
-              }}
+              sx={{ ...getPublicBlockDescriptionSx(theme), maxWidth: 520 }}
             >
               {description}
             </Typography>
@@ -204,9 +181,8 @@ export function SignUpCtaCard({
                 gap: 0.625,
                 px: 1.25,
                 py: 0.625,
-                borderRadius: "8px",
-                background: chipBg,
-                border: `1px solid ${chipBorder}`,
+                ...chipInset,
+                boxShadow: "none",
               }}
             >
               <Box

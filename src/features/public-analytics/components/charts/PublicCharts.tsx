@@ -19,9 +19,16 @@ import {
 } from "@/features/analytics/utils/chartFormatters";
 import { createPresetAnimations } from "@/lib/theme";
 import { chartByType } from "@/lib/theme/colors";
+import {
+  getPublicChartCardOverrideSx,
+  getPublicInsetSx,
+  publicHairline,
+} from "@/lib/theme/publicPageStyles";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
+
+import type { Theme } from "@mui/material/styles";
 
 import type { PublicAnalyticsData } from "../../types";
 
@@ -93,7 +100,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
       </Box>
 
       <ChartsGrid
-        isDark={isDark}
+        theme={theme}
         t={t as (key: string) => string}
         hourData={hasHourData ? hourData : undefined}
         dowData={hasDowData ? dowData : undefined}
@@ -127,7 +134,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
 }
 
 interface ChartsGridProps {
-  isDark: boolean;
+  theme: Theme;
   t: (key: string) => string;
   hourData?: { hour: string; clicks: number }[];
   dowData?: { day: string; clicks: number }[];
@@ -136,30 +143,8 @@ interface ChartsGridProps {
   countryData?: { country: string; clicks: number }[];
 }
 
-const darkCardSx = {
-  "& .MuiCard-root": {
-    background: "rgba(255,255,255,0.03)",
-    border: "1px solid rgba(255,255,255,0.08)",
-    boxShadow: "none",
-  },
-  "& .MuiCardContent-root .MuiTypography-h5": {
-    fontSize: "0.8125rem",
-    fontWeight: 600,
-    color: "rgba(255,255,255,0.6)",
-    letterSpacing: "0.02em",
-  },
-};
-
-const lightCardSx = {
-  "& .MuiCardContent-root .MuiTypography-h5": {
-    fontSize: "0.8125rem",
-    fontWeight: 600,
-    letterSpacing: "0.02em",
-  },
-};
-
 function ChartsGrid({
-  isDark,
+  theme,
   t,
   hourData,
   dowData,
@@ -167,7 +152,8 @@ function ChartsGrid({
   browserData,
   countryData,
 }: ChartsGridProps) {
-  const cardSx = isDark ? darkCardSx : lightCardSx;
+  const cardSx = getPublicChartCardOverrideSx(theme);
+  const isDark = theme.palette.mode === "dark";
   return (
     <Grid container spacing={{ xs: 1.5, md: 2 }}>
       {hourData ? (
@@ -299,15 +285,13 @@ function EmptyChartsState() {
   return (
     <Box
       sx={{
+        ...getPublicInsetSx(theme),
         py: { xs: 4, md: 5 },
         px: 3,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         gap: 1.25,
-        border: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
-        borderRadius: "12px",
-        background: alpha(theme.palette.text.primary, isDark ? 0.02 : 0.03),
       }}
     >
       <BarChart2 size={28} color={iconColor} strokeWidth={1.5} />

@@ -28,6 +28,7 @@ export function LinkActionsCopyButton({
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
+  const copyFg = theme.palette.common.white;
   const { t } = useTranslation("links");
   const { copied, copy } = useClipboard({ timeout: 1500 });
 
@@ -57,6 +58,8 @@ export function LinkActionsCopyButton({
           textTransform: "none",
           fontWeight: 600,
           py: 0.875,
+          color: copyFg,
+          "& .MuiButton-startIcon": { color: copyFg },
         }}
       >
         {copied ? t("actions.copySuccess") : t("actions.copyLink")}
@@ -141,26 +144,16 @@ export function LinkActionsCopyButton({
           }}
         >
           {copied ? (
-            <Check
-              size={14}
-              strokeWidth={2.5}
-              color={theme.palette.success.contrastText}
-            />
+            <Check size={14} strokeWidth={2.5} color={copyFg} />
           ) : (
-            <Copy
-              size={14}
-              strokeWidth={2}
-              color={theme.palette.primary.contrastText}
-            />
+            <Copy size={14} strokeWidth={2} color={copyFg} />
           )}
           <Typography
             variant="caption"
             sx={{
               fontWeight: 600,
               fontSize: "0.6875rem",
-              color: copied
-                ? theme.palette.success.contrastText
-                : theme.palette.primary.contrastText,
+              color: copyFg,
               whiteSpace: "nowrap",
             }}
           >

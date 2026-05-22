@@ -43,6 +43,18 @@ type ActiveSubdomain = {
 };
 
 /**
+ * Prefix for slug inputs: custom subdomain base when active, otherwise `/r/`.
+ */
+export function getShortUrlPrefixForSubdomain(
+  subdomain?: ActiveSubdomain | null,
+): string {
+  if (subdomain?.status === "active" && subdomain.full_url) {
+    return `${subdomain.full_url.replace(/\/$/, "")}/`;
+  }
+  return getShortUrlPrefix();
+}
+
+/**
  * Builds the public short URL for a slug, using a custom subdomain when active.
  */
 export function buildShortUrlForSlug(

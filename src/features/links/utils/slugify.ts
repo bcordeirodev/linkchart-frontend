@@ -1,3 +1,5 @@
+import { normalizeSlugForMode } from "@/features/links/utils/slugAvailabilityCheck";
+
 /**
  * Converts an arbitrary string (typically an og:title) into a URL-safe slug
  * that satisfies the backend's `alpha_dash` rule and the frontend's regex
@@ -57,27 +59,12 @@ export function slugify(text: string): string {
 /** Hyphen-only slug for /shorter (`[a-z0-9-]`, max 50). */
 export function slugifyPublic(text: string): string {
   const loose = slugify(text.replace(/_/g, "-"));
-  if (!loose) {
-    return "";
-  }
-  return (
-    loose
-      .replace(/_/g, "-")
-      .replace(/[^a-z0-9-]/g, "")
-      .replace(/-+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 50)
-      .replace(/^-+|-+$/g, "") || ""
-  );
+  return normalizeSlugForMode(loose, "public") ?? "";
 }
 
 /** Path/hostname slug for /shorter (hyphen-only, max 50). */
 export function slugifyFromUrlPublic(url: string): string {
-  const loose = slugifyFromUrl(url);
-  if (!loose) {
-    return "";
-  }
-  return slugifyPublic(loose);
+  return normalizeSlugForMode(slugifyFromUrl(url), "public") ?? "";
 }
 
 export function slugifyFromUrl(url: string): string {

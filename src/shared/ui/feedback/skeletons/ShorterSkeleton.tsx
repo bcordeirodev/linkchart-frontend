@@ -1,5 +1,9 @@
 import { Box, Container, Skeleton, Stack } from "@mui/material";
 
+import {
+  SHORTER_CONTENT_MAX_WIDTH,
+  SHORTER_PAGE_CONTAINER_MAX_WIDTH,
+} from "@/features/shorter/constants";
 import { PublicLayout } from "@/shared/layout";
 
 import { LinkFormSkeleton } from "./LinkFormSkeleton";
@@ -8,7 +12,7 @@ export function ShorterSkeleton() {
   return (
     <PublicLayout variant="shorter" chrome="minimal">
       <Container
-        maxWidth="md"
+        maxWidth={SHORTER_PAGE_CONTAINER_MAX_WIDTH}
         sx={{
           position: "relative",
           zIndex: 1,
@@ -48,7 +52,7 @@ export function ShorterSkeleton() {
         <LinkFormSkeleton />
 
         {/* BenefitBadges idle state — SignUpCtaCard */}
-        <Box sx={{ mt: 2.5, maxWidth: 800, mx: "auto" }}>
+        <Box sx={{ mt: 2.5, maxWidth: SHORTER_CONTENT_MAX_WIDTH, mx: "auto" }}>
           <Box
             sx={{
               border: "1px solid",
@@ -80,7 +84,13 @@ export function ShorterSkeleton() {
         </Box>
 
         {/* ShorterStats — label + xs "1fr 1fr", md "repeat(4, 1fr)" grid */}
-        <Box sx={{ mt: { xs: 6, md: 7 }, maxWidth: 800, mx: "auto" }}>
+        <Box
+          sx={{
+            mt: { xs: 6, md: 7 },
+            maxWidth: SHORTER_CONTENT_MAX_WIDTH,
+            mx: "auto",
+          }}
+        >
           <Skeleton
             variant="text"
             width={120}
@@ -117,7 +127,14 @@ export function ShorterSkeleton() {
         </Box>
 
         {/* How it works — label + 3-column step cards */}
-        <Box sx={{ mt: { xs: 6, md: 8 }, mb: 2, maxWidth: 800, mx: "auto" }}>
+        <Box
+          sx={{
+            mt: { xs: 6, md: 8 },
+            mb: 2,
+            maxWidth: SHORTER_CONTENT_MAX_WIDTH,
+            mx: "auto",
+          }}
+        >
           <Skeleton
             variant="text"
             width={120}

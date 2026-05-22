@@ -190,20 +190,27 @@ export function TemporalAnalysis({
             {weeklyChartNode}
           </Grid>
 
-          {/* Rich tabbed chart with advanced analytics */}
-          <Grid container spacing={3} sx={{ mt: 1 }}>
-            <Grid item xs={12}>
-              <TemporalChart
-                hourlyData={data?.clicks_by_hour || []}
-                weeklyData={dayOfWeekChartData}
-                hourlyPatternsLocal={data?.hourly_patterns_local}
-                weekendVsWeekday={data?.weekend_vs_weekday}
-                businessHoursAnalysis={data?.business_hours_analysis}
-                advancedData={data?.advanced}
-                segment={segment}
-              />
-            </Grid>
-          </Grid>
+          {/* Rich tabbed chart with advanced analytics — bordered to visually
+               distinguish this sub-tab section from the summary charts above */}
+          <Box
+            sx={{
+              mt: 3,
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 2,
+              p: { xs: 1.5, md: 2 },
+            }}
+          >
+            <TemporalChart
+              hourlyData={data?.clicks_by_hour || []}
+              weeklyData={dayOfWeekChartData}
+              hourlyPatternsLocal={data?.hourly_patterns_local}
+              weekendVsWeekday={data?.weekend_vs_weekday}
+              businessHoursAnalysis={data?.business_hours_analysis}
+              advancedData={data?.advanced}
+              segment={segment}
+            />
+          </Box>
 
           {data?.holiday_impact?.top_holidays?.length ||
           data?.seasonal_distribution?.length ? (

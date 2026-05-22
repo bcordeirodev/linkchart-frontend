@@ -399,37 +399,37 @@ export function LinksQuickCreate({
                         />
                       </InputAdornment>
                     ) : showSlugSuggestion ? (
-                    <InputAdornment position="end">
-                      <Box
-                        component="button"
-                        type="button"
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          acceptSlugSuggestion();
-                        }}
-                        sx={{
-                          border: "none",
-                          cursor: "pointer",
-                          font: "inherit",
-                          fontSize: "0.6875rem",
-                          fontWeight: 600,
-                          lineHeight: 1,
-                          py: 0.25,
-                          px: 0.625,
-                          borderRadius: `${radiusTokens.sm}px`,
-                          color: primary,
-                          bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
-                          transition: "background-color 120ms ease",
-                          "&:hover": {
-                            bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
-                          },
-                        }}
-                      >
-                        {t("list.quickCreate.slugAccept")}
-                      </Box>
-                    </InputAdornment>
-                  ) : undefined,
+                      <InputAdornment position="end">
+                        <Box
+                          component="button"
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            acceptSlugSuggestion();
+                          }}
+                          sx={{
+                            border: "none",
+                            cursor: "pointer",
+                            font: "inherit",
+                            fontSize: "0.6875rem",
+                            fontWeight: 600,
+                            lineHeight: 1,
+                            py: 0.25,
+                            px: 0.625,
+                            borderRadius: `${radiusTokens.sm}px`,
+                            color: primary,
+                            bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
+                            transition: "background-color 120ms ease",
+                            "&:hover": {
+                              bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
+                            },
+                          }}
+                        >
+                          {t("list.quickCreate.slugAccept")}
+                        </Box>
+                      </InputAdornment>
+                    ) : undefined,
                 },
                 formHelperText: {
                   sx: {
@@ -449,11 +449,7 @@ export function LinksQuickCreate({
               fullWidth
               disabled={isPending || urlIsUnsafe || urlIsChecking}
               startIcon={
-                succeeded ? (
-                  <CheckCircle2 {...ICON_SM} />
-                ) : (
-                  <Zap {...ICON_SM} />
-                )
+                succeeded ? <CheckCircle2 {...ICON_SM} /> : <Zap {...ICON_SM} />
               }
               sx={[
                 submitButtonSx,
@@ -487,7 +483,13 @@ export function LinksQuickCreate({
                 </Typography>
               ) : null}
             </Box>
-            <Box sx={{ ...mdCell(3, 2), minWidth: 0, display: { xs: "none", md: "block" } }}>
+            <Box
+              sx={{
+                ...mdCell(3, 2),
+                minWidth: 0,
+                display: { xs: "none", md: "block" },
+              }}
+            >
               {errors.custom_slug?.message ? (
                 <Typography variant="caption" color="error">
                   {errors.custom_slug.message}
