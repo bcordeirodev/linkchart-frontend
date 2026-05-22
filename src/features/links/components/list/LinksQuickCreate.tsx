@@ -278,7 +278,12 @@ export function LinksQuickCreate({
                 size="small"
                 fullWidth
                 error={!!errors.custom_slug}
-                helperText={errors.custom_slug?.message}
+                helperText={
+                  errors.custom_slug?.message ||
+                  (!slugValue && slugSuggestion
+                    ? t("list.quickCreate.slugTabHint")
+                    : undefined)
+                }
                 disabled={isPending}
                 slotProps={{
                   input: {
