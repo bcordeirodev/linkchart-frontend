@@ -125,11 +125,12 @@ export function AnalyticsFilterBar({
       <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1.5}>
         {/* Date range pickers */}
         <Stack
-          direction="row"
-          alignItems="center"
+          direction={{ xs: "column", sm: "row" }}
+          alignItems={{ xs: "flex-start", sm: "center" }}
           spacing={1}
           flexWrap="wrap"
           useFlexGap
+          sx={{ width: { xs: "100%", sm: "auto" } }}
         >
           <Typography
             variant="caption"
@@ -151,13 +152,18 @@ export function AnalyticsFilterBar({
             slotProps={{
               textField: {
                 size: "small",
-                sx: { width: 200 },
+                // Full-width on mobile so the picker doesn't overflow
+                sx: { width: { xs: "100%", sm: 200 } },
                 inputProps: { "aria-label": t("filters.dateFrom") },
               },
               actionBar: { actions: [] },
             }}
           />
-          <Typography variant="caption" color="text.disabled">
+          <Typography
+            variant="caption"
+            color="text.disabled"
+            sx={{ display: { xs: "none", sm: "block" } }}
+          >
             →
           </Typography>
           <Typography
@@ -181,7 +187,8 @@ export function AnalyticsFilterBar({
             slotProps={{
               textField: {
                 size: "small",
-                sx: { width: 200 },
+                // Full-width on mobile so the picker doesn't overflow
+                sx: { width: { xs: "100%", sm: 200 } },
                 inputProps: { "aria-label": t("filters.dateTo") },
               },
               actionBar: { actions: [] },

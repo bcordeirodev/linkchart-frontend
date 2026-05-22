@@ -80,6 +80,9 @@
   },
   "form": {
     "createTitle": "Criar Novo Link",
+    "createSubtitle": "URL de destino, slug opcional e configurações avançadas em um só lugar.",
+    "loadErrorTitle": "Não foi possível carregar o link",
+    "loadErrorDesc": "O link não existe ou você não tem permissão para editá-lo.",
     "editTitle": "Editar Link",
     "originalUrl": "URL de destino",
     "originalUrlPlaceholder": "https://exemplo.com/sua-url-longa",
@@ -173,8 +176,17 @@
     "uniqueVisitors": "Visitantes Únicos",
     "avgClicksDay": "Média de Cliques / Dia",
     "avgClicksPerLink": "Média de Cliques / Link",
-    "lastClick": "Último Clique",
-    "neverClicked": "Nunca clicado",
+    "lastClick": "Último clique",
+    "lastClickShort": "Último",
+    "clicksShort": "Cliques",
+    "neverClicked": "Nunca",
+    "justNow": "Agora",
+    "minutesAgo_one": "há {{count}} min",
+    "minutesAgo_other": "há {{count}} min",
+    "hoursAgo_one": "há {{count}} h",
+    "hoursAgo_other": "há {{count}} h",
+    "daysAgo_one": "há {{count}} dia",
+    "daysAgo_other": "há {{count}} dias",
     "countriesReached": "Países Alcançados",
     "clicksToday": "Cliques Hoje",
     "linksCreated": "Links Criados",
@@ -239,8 +251,13 @@
   },
   "qr": {
     "title": "Código QR",
-    "download": "Baixar Código QR",
-    "copy": "Copiar imagem",
-    "description": "Escaneie para abrir o link curto"
+    "download": "Baixar PNG",
+    "copy": "Compartilhar link",
+    "description": "Escaneie para abrir o link curto.",
+    "originalUrl": "URL original",
+    "status": "Status",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "createdAt": "Criado em"
   }
 }

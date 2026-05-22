@@ -15,8 +15,13 @@ export function LinkTrendBadge({
     return (
       <Typography
         variant="caption"
+        component="span"
         color="text.disabled"
-        sx={{ fontSize: compact ? "0.75rem" : undefined }}
+        sx={{
+          fontSize: compact ? "0.75rem" : undefined,
+          lineHeight: compact ? "20px" : undefined,
+          m: 0,
+        }}
       >
         —
       </Typography>
@@ -36,18 +41,41 @@ export function LinkTrendBadge({
 
   if (compact) {
     return (
-      <Stack direction="row" spacing={0.5} alignItems="center">
+      <Stack
+        direction="row"
+        spacing={0.5}
+        alignItems="center"
+        sx={{ minHeight: 20, lineHeight: "20px" }}
+      >
         <Typography
           variant="caption"
-          sx={{ fontWeight: 700, fontSize: "0.75rem" }}
+          component="span"
+          sx={{
+            fontWeight: 700,
+            fontSize: "0.75rem",
+            lineHeight: "20px",
+            m: 0,
+          }}
         >
           {current.toLocaleString("pt-BR")}
         </Typography>
-        <Stack direction="row" alignItems="center" sx={{ color }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={0.25}
+          sx={{ color }}
+        >
           <Icon size={12} strokeWidth={1.5} />
           <Typography
             variant="caption"
-            sx={{ color, fontWeight: 600, fontSize: "0.7rem" }}
+            component="span"
+            sx={{
+              color,
+              fontWeight: 600,
+              fontSize: "0.75rem",
+              lineHeight: "20px",
+              m: 0,
+            }}
           >
             {sign}
             {percent_change.toFixed(1)}%

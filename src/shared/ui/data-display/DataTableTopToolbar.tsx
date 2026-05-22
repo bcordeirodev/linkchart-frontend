@@ -136,8 +136,10 @@ function DataTableTopToolbar<TData extends MRT_RowData>({
                   {...globalFilterProps}
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      height: 32,
-                      minHeight: 32,
+                      // 44px on mobile meets Apple HIG touch-target minimum;
+                      // 32px is fine on desktop where a pointer is used.
+                      height: { xs: 40, sm: 32 },
+                      minHeight: { xs: 40, sm: 32 },
                       paddingX: 1,
                     },
                   }}

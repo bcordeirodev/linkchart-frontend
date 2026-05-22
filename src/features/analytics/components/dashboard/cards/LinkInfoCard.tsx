@@ -41,7 +41,17 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
       <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
         {linkInfo.title || t("list.noTitle")}
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{
+          mb: 1,
+          // Long URLs must break rather than overflow the card
+          wordBreak: "break-all",
+          overflowWrap: "anywhere",
+          overflow: "hidden",
+        }}
+      >
         {linkInfo.original_url}
       </Typography>
       <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>

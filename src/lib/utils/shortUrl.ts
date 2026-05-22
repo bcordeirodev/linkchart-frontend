@@ -36,3 +36,66 @@ export const getShortUrl = (slugOrUrl: string): string => {
  * @returns the redirect base with a trailing slash.
  */
 export const getShortUrlPrefix = (): string => `${REDIRECT_BASE}/`;
+
+type ActiveSubdomain = {
+  full_url: string;
+  status: "active" | "inactive";
+};
+
+/**
+ * Builds the public short URL for a slug, using a custom subdomain when active.
+ */
+export function buildShortUrlForSlug(
+  slug: string,
+  subdomain?: ActiveSubdomain | null,
+): string {
+  if (!slug?.trim()) {
+    return "";
+  }
+
+  if (subdomain?.status === "active" && subdomain.full_url) {
+    return `${subdomain.full_url.replace(/\/$/, "")}/${slug}`;
+  }
+
+  return getShortUrl(slug);
+}
+
+type LinkShortUrlFields = {
+  slug?: string;
+  custom_slug?: string;
+  short_url?: string;
+};
+
+/**
+ * Resolves the short URL to copy/share for a link record (subdomain-aware).
+ */
+export function getShortUrlForLink(
+  link: LinkShortUrlFields,
+  subdomain?: ActiveSubdomain | null,
+): string {
+  const slug = (link.custom_slug || link.slug || "").trim();
+
+  if (subdomain?.status === "active") {
+    return buildShortUrlForSlug(slug, subdomain);
+  }
+
+  if (link.short_url) {
+    return getShortUrl(link.short_url);
+  }
+
+  return buildShortUrlForSlug(slug, null);
+}
+
+/** Writes text to the clipboard; returns false when unavailable or denied. */
+export async function copyTextToClipboard(text: string): Promise<boolean> {
+  if (!text || typeof navigator === "undefined" || !navigator.clipboard) {
+    return false;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}

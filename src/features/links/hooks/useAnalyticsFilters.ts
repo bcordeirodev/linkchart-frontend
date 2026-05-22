@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { format, startOfDay, subDays, subHours } from "date-fns";
 
@@ -209,10 +209,20 @@ export function useAnalyticsFilters(): AnalyticsFilters {
 
   const customFrom = searchParams.get("date_from");
   const customTo = searchParams.get("date_to");
-  const { dateFrom, dateTo } =
-    period === "custom"
-      ? { dateFrom: customFrom, dateTo: customTo }
-      : resolveDates(period);
+
+  // Memoize resolved dates so that switching tabs (which re-renders the parent)
+  // does not produce new Date() strings that differ by milliseconds.
+  // A fresh period string or custom date already changes the URL and invalidates
+  // the memo — so analytics hooks only refetch when the user actually changes
+  // the filter, not on every incidental re-render.
+  const { dateFrom, dateTo } = useMemo(
+    () =>
+      period === "custom"
+        ? { dateFrom: customFrom, dateTo: customTo }
+        : resolveDates(period),
+
+    [period, customFrom, customTo],
+  );
 
   const setParam = useCallback(
     (updates: Record<string, string | null>) => {

@@ -7,8 +7,10 @@
  * Unifica a lógica de dashboard e charts em um único componente coeso.
  */
 
+import { useMemo } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { Circle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 
@@ -58,6 +60,28 @@ interface LinkDashboardProps {
   excludeBots?: boolean;
 }
 
+/** Pre-mapped chart data derived from the raw DashboardData payload. */
+interface ChartData {
+  temporal?: {
+    clicks_by_hour: NonNullable<
+      DashboardData["temporal_data"]
+    >["clicks_by_hour"];
+    clicks_by_day_of_week: NonNullable<
+      DashboardData["temporal_data"]
+    >["clicks_by_day_of_week"];
+  };
+  geographic?: {
+    top_countries: Array<{ country: string; clicks: number; iso_code: string }>;
+  };
+  audience?: {
+    device_breakdown: NonNullable<
+      DashboardData["audience_data"]
+    >["device_breakdown"];
+  };
+  utmTopSources?: NonNullable<DashboardData["summary"]>["utm_top_sources"];
+  socialIab?: NonNullable<DashboardData["summary"]>["social_iab"];
+}
+
 /**
  * LinkDashboard — full unified dashboard for an individual link.
  *
@@ -78,7 +102,9 @@ export function LinkDashboard({
 }: LinkDashboardProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const animations = createPresetAnimations(theme);
+
+  // Memoize to avoid creating a new animations object on every render
+  const animations = useMemo(() => createPresetAnimations(theme), [theme]);
 
   const { data, stats, loading, error, refresh, isRealtime } = useDashboardData(
     {
@@ -90,6 +116,43 @@ export function LinkDashboard({
       refreshInterval: 60000,
     },
   );
+
+  /**
+   * Pre-maps raw DashboardData into the shapes expected by each chart component.
+   * Memoized so the transformation only re-runs when `data` actually changes,
+   * not on every parent re-render.
+   */
+  const chartData: ChartData | null = useMemo(() => {
+    if (!data) return null;
+
+    return {
+      temporal: data.temporal_data
+        ? {
+            clicks_by_hour: data.temporal_data.clicks_by_hour || [],
+            clicks_by_day_of_week:
+              data.temporal_data.clicks_by_day_of_week || [],
+          }
+        : undefined,
+      geographic: data.geographic_data
+        ? {
+            top_countries: (data.geographic_data.top_countries || []).map(
+              (c) => ({
+                country: c.country,
+                clicks: c.clicks,
+                iso_code: c.country?.substring(0, 2).toUpperCase() || "XX",
+              }),
+            ),
+          }
+        : undefined,
+      audience: data.audience_data
+        ? {
+            device_breakdown: data.audience_data.device_breakdown || [],
+          }
+        : undefined,
+      utmTopSources: data.summary?.utm_top_sources,
+      socialIab: data.summary?.social_iab,
+    };
+  }, [data]);
 
   return (
     <AnalyticsStateManager
@@ -112,7 +175,7 @@ export function LinkDashboard({
         ) : null}
 
         {/* Conteúdo Principal */}
-        <Grid container spacing={3}>
+        <Grid container spacing={{ xs: 2, md: 3 }}>
           {/* Métricas + Viralidade + Qualidade — mesma linha visual */}
           <LinkMetrics
             summary={data?.summary}
@@ -136,9 +199,9 @@ export function LinkDashboard({
           )}
 
           {/* Gráficos - Renderização Direta */}
-          {!compact && showCharts && data ? (
+          {!compact && showCharts && chartData ? (
             <Grid item xs={12}>
-              {renderCharts(data, chartsHeight, animations, t)}
+              {renderCharts(data!, chartData, chartsHeight, animations, t)}
             </Grid>
           ) : null}
         </Grid>
@@ -157,7 +220,21 @@ export function LinkDashboard({
               {t("dashboard.dataQuality")}: {stats.dataQuality} •{" "}
               {t("dashboard.lastUpdate")}:{" "}
               {new Date(stats.lastUpdate).toLocaleTimeString()}
-              {isRealtime ? ` • 🔴 ${t("dashboard.realtime")}` : ""}
+              {isRealtime ? (
+                <>
+                  {" • "}
+                  <Circle
+                    size={8}
+                    fill="currentColor"
+                    style={{
+                      color: theme.palette.error.main,
+                      verticalAlign: "middle",
+                      display: "inline",
+                    }}
+                  />
+                  {` ${t("dashboard.realtime")}`}
+                </>
+              ) : null}
             </Typography>
           </Box>
         ) : null}
@@ -167,9 +244,13 @@ export function LinkDashboard({
 }
 
 /**
- * Renders the chart grid section for the dashboard.
+ * Renders the chart grid section for the dashboard using pre-mapped `chartData`.
  *
- * @param data - Full dashboard data payload from the API.
+ * Accepts the pre-computed `ChartData` object (memoized in the parent) so that
+ * this helper never triggers redundant array transformations on each call.
+ *
+ * @param data - Full dashboard data payload (used for UTM / social fields).
+ * @param chartData - Pre-mapped chart data derived from `data` via `useMemo`.
  * @param height - Optional fixed height for each chart.
  * @param animations - MUI animation preset object.
  * @param t - i18next translation function scoped to the `"analytics"` namespace.
@@ -177,50 +258,11 @@ export function LinkDashboard({
  */
 function renderCharts(
   data: DashboardData,
+  chartData: ChartData,
   height: number | undefined,
   animations: ReturnType<typeof createPresetAnimations>,
   t: TFunction<"analytics">,
 ) {
-  // Mapear dados para formato esperado pelos componentes de gráficos
-  const chartData = {
-    temporal: data.temporal_data
-      ? {
-          clicks_by_hour: data.temporal_data.clicks_by_hour || [],
-          clicks_by_day_of_week: data.temporal_data.clicks_by_day_of_week || [],
-        }
-      : undefined,
-    geographic: data.geographic_data
-      ? {
-          top_countries: (data.geographic_data.top_countries || []).map(
-            (c) => ({
-              country: c.country,
-              clicks: c.clicks,
-              iso_code: c.country?.substring(0, 2).toUpperCase() || "XX",
-            }),
-          ),
-          top_cities: (data.geographic_data.top_cities || []).map((c) => ({
-            city: c.city,
-            clicks: c.clicks,
-            state: "Unknown",
-            country: "Unknown",
-          })),
-          top_states: [],
-          heatmap_data: [],
-        }
-      : undefined,
-    audience: data.audience_data
-      ? {
-          device_breakdown: data.audience_data.device_breakdown || [],
-        }
-      : undefined,
-    overview: {
-      total_clicks: data.summary?.total_clicks || 0,
-      unique_visitors: data.summary?.unique_visitors || 0,
-      countries_reached: data.summary?.countries_reached || 0,
-      avg_daily_clicks: 0,
-    },
-  };
-
   const hasTemporal = !!(
     chartData.temporal?.clicks_by_hour?.length ||
     chartData.temporal?.clicks_by_day_of_week?.length
@@ -282,15 +324,14 @@ function renderCharts(
       ) : null}
 
       {/* Campanhas UTM e Tráfego via App Social */}
-      {data.summary?.utm_top_sources &&
-      data.summary.utm_top_sources.length > 0 ? (
+      {chartData.utmTopSources && chartData.utmTopSources.length > 0 ? (
         <Grid item xs={12} md={6} sx={{ display: "flex" }}>
-          <UtmSourceCard data={data.summary.utm_top_sources} />
+          <UtmSourceCard data={chartData.utmTopSources} />
         </Grid>
       ) : null}
-      {data.summary?.social_iab && data.summary.social_iab.total > 0 ? (
+      {chartData.socialIab && chartData.socialIab.total > 0 ? (
         <Grid item xs={12} md={6} sx={{ display: "flex" }}>
-          <SocialAppCard data={data.summary.social_iab} />
+          <SocialAppCard data={chartData.socialIab} />
         </Grid>
       ) : null}
     </Grid>
