@@ -1,7 +1,10 @@
+// src/features/analytics/components/insights/InsightsFilterBar.tsx
 "use client";
 
-import { Box, Chip, Stack, Switch, Typography, useTheme } from "@mui/material";
+import { Stack, Switch, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
+import { TabFilterBar } from "@/shared/ui/base/TabFilterBar";
 import type { InsightPriority } from "@/features/links/hooks/useAnalyticsFilters";
 
 /** Props for the Insights tab filter bar. */
@@ -15,6 +18,7 @@ interface InsightsFilterBarProps {
 }
 
 const PRIORITY_OPTIONS: InsightPriority[] = ["all", "high", "medium"];
+
 const CATEGORY_OPTIONS = [
   "geographic",
   "temporal",
@@ -28,10 +32,13 @@ const CATEGORY_OPTIONS = [
 /**
  * Filter bar for the Insights analytics tab.
  *
- * Controls three dimensions:
- * - `priority`: "all" | "high" | "medium" — client-side filter
- * - `insightCategories`: multi-select array of type strings — client-side filter
- * - `actionableOnly`: boolean toggle — client-side filter
+ * Controls three dimensions (all client-side post-filters):
+ * - `priority`: "all" | "high" | "medium" — single-select
+ * - `insightCategories`: multi-select array of type strings
+ * - `actionableOnly`: boolean toggle rendered as a Switch inline with priority chips
+ *
+ * Delegates rendering to {@link TabFilterBar}. Provides a clear-all (×) button
+ * when any filter differs from its default value.
  */
 export function InsightsFilterBar({
   priority,
@@ -42,11 +49,8 @@ export function InsightsFilterBar({
   onActionableOnlyChange,
 }: InsightsFilterBarProps) {
   const { t } = useTranslation("analytics");
-  const theme = useTheme();
 
-  /**
-   * Toggles a single category in/out of the selected categories array.
-   */
+  /** Toggles a single category in/out of the selected array. */
   const toggleCategory = (cat: string) => {
     if (insightCategories.includes(cat)) {
       onCategoriesChange(insightCategories.filter((c) => c !== cat));
@@ -55,104 +59,59 @@ export function InsightsFilterBar({
     }
   };
 
+  const hasActiveFilters =
+    priority !== "all" || insightCategories.length > 0 || actionableOnly;
+
+  const handleClearAll = () => {
+    onPriorityChange("all");
+    onCategoriesChange([]);
+    onActionableOnlyChange(false);
+  };
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 1.5,
-        px: 2,
-        py: 1.5,
-        mb: 2,
-        bgcolor: "background.paper",
-        borderRadius: 2,
-        border: `1px solid ${theme.palette.divider}`,
-      }}
-    >
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={3}
-        flexWrap="wrap"
-        useFlexGap
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={1}
-          flexWrap="wrap"
-          useFlexGap
-        >
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.05em",
-              minWidth: 72,
-            }}
-          >
-            {t("filters.priority")}
-          </Typography>
-          {PRIORITY_OPTIONS.map((opt) => (
-            <Chip
-              key={opt}
-              label={t(`filters.priorityOptions.${opt}`)}
-              size="small"
-              variant={priority === opt ? "filled" : "outlined"}
-              color={priority === opt ? "primary" : "default"}
-              onClick={() => onPriorityChange(opt)}
-              sx={{ cursor: "pointer" }}
-            />
-          ))}
-        </Stack>
-
-        <Stack direction="row" alignItems="center" spacing={0.5}>
-          <Switch
-            size="small"
-            checked={actionableOnly}
-            onChange={(e) => onActionableOnlyChange(e.target.checked)}
-            inputProps={{ "aria-label": t("filters.actionableOnly") }}
-          />
-          <Typography variant="caption" color="text.secondary">
-            {t("filters.actionableOnly")}
-          </Typography>
-        </Stack>
-      </Stack>
-
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={1}
-        flexWrap="wrap"
-        useFlexGap
-      >
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{
-            fontWeight: 600,
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-            minWidth: 72,
-          }}
-        >
-          {t("filters.insightType")}
-        </Typography>
-        {CATEGORY_OPTIONS.map((cat) => (
-          <Chip
-            key={cat}
-            label={t(`filters.insightTypeOptions.${cat}`)}
-            size="small"
-            variant={insightCategories.includes(cat) ? "filled" : "outlined"}
-            color={insightCategories.includes(cat) ? "secondary" : "default"}
-            onClick={() => toggleCategory(cat)}
-            sx={{ cursor: "pointer" }}
-          />
-        ))}
-      </Stack>
-    </Box>
+    <TabFilterBar
+      groups={[
+        {
+          label: t("filters.priority"),
+          type: "single",
+          items: PRIORITY_OPTIONS.map((opt) => ({
+            value: opt,
+            label: t(`filters.priorityOptions.${opt}`),
+            selected: priority === opt,
+            onSelect: () => onPriorityChange(opt),
+          })),
+          addon: (
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={0.5}
+              sx={{ ml: 1 }}
+            >
+              <Switch
+                size="small"
+                checked={actionableOnly}
+                onChange={(e) => onActionableOnlyChange(e.target.checked)}
+                inputProps={{ "aria-label": t("filters.actionableOnly") }}
+              />
+              <Typography variant="caption" color="text.secondary">
+                {t("filters.actionableOnly")}
+              </Typography>
+            </Stack>
+          ),
+        },
+        {
+          label: t("filters.insightType"),
+          type: "multi",
+          items: CATEGORY_OPTIONS.map((cat) => ({
+            value: cat,
+            label: t(`filters.insightTypeOptions.${cat}`),
+            selected: insightCategories.includes(cat),
+            onSelect: () => toggleCategory(cat),
+          })),
+        },
+      ]}
+      onClearAll={hasActiveFilters ? handleClearAll : undefined}
+    />
   );
 }
 
