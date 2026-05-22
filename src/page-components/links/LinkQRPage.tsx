@@ -152,7 +152,7 @@ function LinkQRPage({ id }: Props) {
         <LinkActions
           linkId={id}
           currentView="qr"
-          shortUrl={getShortUrl(linkInfo.slug || linkInfo.custom_slug || "")}
+          slug={linkInfo.slug || linkInfo.custom_slug}
           title={linkInfo.title || linkInfo.original_url}
           onDeleteSuccess={handleDeleteSuccess}
         />
