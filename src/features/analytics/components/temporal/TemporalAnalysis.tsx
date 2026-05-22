@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
+import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import { useTemporalData } from "../../hooks/useTemporalData";
 import type { Segment } from "@/features/links/hooks/useAnalyticsFilters";
@@ -121,6 +122,7 @@ export function TemporalAnalysis({
         loading={loading}
         error={error}
         hasData={!!data}
+        skeleton={<AnalyticsTabSkeleton hasFilter metricCards={4} />}
         onRetry={refresh}
         loadingMessage={t("temporal.loading")}
         emptyMessage={t("temporal.empty")}
