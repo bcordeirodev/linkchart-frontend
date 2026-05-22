@@ -8,9 +8,9 @@ import {
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
 
 export const metadata: Metadata = {
-  title: "Free URL Shortener with Analytics — No Account Needed",
+  title: "Free URL Shortener with Analytics & Custom Subdomain",
   description:
-    "Shorten any URL free — no account needed. Track clicks by country, device and UTM campaign. Free QR code and custom slug included.",
+    "Shorten any URL free — no account needed. Track clicks by country, device and UTM. Free custom subdomain, QR code and custom slug with a free account.",
   alternates: {
     canonical: `${appUrl}/shorter`,
     languages: {
@@ -30,9 +30,9 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Free URL Shortener with Analytics & QR Code | Link Charts",
+    title: "Free URL Shortener with Analytics & Custom Subdomain | Link Charts",
     description:
-      "Shorten any URL free — no account needed. Track clicks by country, device and UTM campaign. Free QR code and custom slug included.",
+      "Shorten any URL free — no account needed. Track clicks by country, device and UTM. Free custom subdomain, QR code and custom slug with a free account.",
     type: "website",
     url: `${appUrl}/shorter`,
     images: [
@@ -46,9 +46,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free URL Shortener with Analytics & QR Code | Link Charts",
+    title: "Free URL Shortener with Analytics & Custom Subdomain | Link Charts",
     description:
-      "Shorten any URL free — no account needed. Track clicks by country, device and UTM campaign. Free QR code and custom slug included.",
+      "Shorten any URL free — no account needed. Track clicks by country, device and UTM. Free custom subdomain, QR code and custom slug with a free account.",
     images: [`${appUrl}/og-default.png`],
   },
 };

@@ -78,7 +78,9 @@ const submitButtonSx = {
 /**
  * Inline quick-create form at the top of the links list page.
  */
-export function LinksQuickCreate({ onLinkCreated }: LinksQuickCreateProps = {}) {
+export function LinksQuickCreate({
+  onLinkCreated,
+}: LinksQuickCreateProps = {}) {
   const theme = useTheme();
   const { t } = useTranslation("links");
   const navigate = useNavigate();
@@ -176,11 +178,7 @@ export function LinksQuickCreate({ onLinkCreated }: LinksQuickCreateProps = {}) 
           }
         />
 
-        <Box
-          component="form"
-          onSubmit={handleSubmit(onSubmit)}
-          noValidate
-        >
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
           {/* Labels — desktop only (mobile uses placeholders) */}
           <Box
             sx={{
@@ -221,7 +219,10 @@ export function LinksQuickCreate({ onLinkCreated }: LinksQuickCreateProps = {}) 
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Link2 {...ICON_SM} color={theme.palette.text.secondary} />
+                        <Link2
+                          {...ICON_SM}
+                          color={theme.palette.text.secondary}
+                        />
                       </InputAdornment>
                     ),
                   },

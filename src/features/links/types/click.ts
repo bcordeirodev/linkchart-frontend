@@ -37,6 +37,7 @@ export interface LinkClickItem {
   referer: string | null;
   referer_host: string | null;
   click_source: string | null;
+  navigation_context: string | null;
   is_return_visitor: boolean;
   response_time: number | null;
   utm: LinkClickUtm | null;
@@ -52,6 +53,9 @@ export interface LinkClicksMeta {
   sort_by: string;
   sort_dir: "asc" | "desc";
   search: string;
+  date_from: string | null;
+  date_to: string | null;
+  exclude_bots: boolean;
 }
 
 export interface LinkClicksListResponse {
@@ -65,4 +69,10 @@ export interface LinkClicksListParams {
   search?: string;
   sort_by?: string;
   sort_dir?: "asc" | "desc";
+  /** ISO datetime string — filters clicks with `created_at >= date_from`. */
+  date_from?: string | null;
+  /** ISO datetime string — filters clicks with `created_at <= date_to`. */
+  date_to?: string | null;
+  /** When true, excludes bot clicks from the result. */
+  exclude_bots?: boolean;
 }

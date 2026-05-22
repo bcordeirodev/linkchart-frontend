@@ -37,7 +37,7 @@
       },
       "customize": {
         "title": "Customize",
-        "desc": "Set a custom slug or let it generate automatically."
+        "desc": "Set a custom slug and, with a free account, use your own subdomain in the URL."
       },
       "share": {
         "title": "Share",
@@ -67,8 +67,15 @@
     },
     "upgrade": {
       "title": "Get more with a free account",
-      "description": "Track clicks, see analytics and manage all your links in one place.",
+      "description": "Track clicks, claim a free custom subdomain (e.g. your-brand.linkcharts.com.br) and manage all your links in one place.",
       "button": "Create free account"
+    },
+    "subdomainPromo": {
+      "title": "Free custom subdomain",
+      "description": "Included with your free account — no extra cost. Your short links use your brand in the URL.",
+      "previewLabel": "Example",
+      "exampleLabel": "your-brand",
+      "exampleSlug": "promo"
     },
     "error": {
       "invalidUrl": "Please enter a valid URL.",

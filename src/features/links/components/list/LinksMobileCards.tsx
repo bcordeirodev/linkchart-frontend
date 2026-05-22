@@ -91,7 +91,13 @@ interface LinkMobileCardProps {
  * Individual mobile card for a single link.
  */
 const LinkMobileCard = memo(
-  ({ link, onDelete, onEdit, meta, isHighlighted = false }: LinkMobileCardProps) => {
+  ({
+    link,
+    onDelete,
+    onEdit,
+    meta,
+    isHighlighted = false,
+  }: LinkMobileCardProps) => {
     const theme = useTheme();
     const navigate = useNavigate();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -107,7 +113,10 @@ const LinkMobileCard = memo(
         if (!link.created_at) return t("table.dateUnavailable");
         const date = new Date(link.created_at);
         if (isNaN(date.getTime())) return t("table.dateInvalid");
-        return formatDistanceToNow(date, { addSuffix: true, locale: dateLocale });
+        return formatDistanceToNow(date, {
+          addSuffix: true,
+          locale: dateLocale,
+        });
       } catch {
         return t("table.dateUnavailable");
       }
@@ -129,7 +138,9 @@ const LinkMobileCard = memo(
       isDark ? 0.38 : 0.32,
     )}`;
     const baseElevation = isDark ? elevationTokens.xs : elevationLightTokens.xs;
-    const hoverElevation = isDark ? elevationTokens.sm : elevationLightTokens.sm;
+    const hoverElevation = isDark
+      ? elevationTokens.sm
+      : elevationLightTokens.sm;
 
     return (
       <Card
@@ -226,70 +237,70 @@ const LinkMobileCard = memo(
           />
 
           <Box sx={{ ...getLinkCardMetricsRowSx(theme), mt: 0.75, pt: 0.75 }}>
-                {!!meta?.sparkline?.length && (
-                  <LinkSparkline
-                    data={meta.sparkline}
-                    trend={meta.trend?.percent_change}
-                    height={22}
-                    width={72}
-                  />
-                )}
+            {!!meta?.sparkline?.length && (
+              <LinkSparkline
+                data={meta.sparkline}
+                trend={meta.trend?.percent_change}
+                height={22}
+                width={72}
+              />
+            )}
 
-                {meta?.trend ? (
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: "0.7rem",
-                      color:
-                        meta.trend.percent_change >= 0
-                          ? "success.main"
-                          : "error.main",
-                    }}
-                  >
-                    {meta.trend.percent_change >= 0 ? "+" : ""}
-                    {meta.trend.percent_change.toFixed(1)}%
-                  </Typography>
-                ) : null}
+            {meta?.trend ? (
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "0.7rem",
+                  color:
+                    meta.trend.percent_change >= 0
+                      ? "success.main"
+                      : "error.main",
+                }}
+              >
+                {meta.trend.percent_change >= 0 ? "+" : ""}
+                {meta.trend.percent_change.toFixed(1)}%
+              </Typography>
+            ) : null}
 
-                <Box sx={linkCardMetricInlineSx}>
-                  <Eye {...ICON_SM} style={{ opacity: 0.4 }} />
-                  <Typography
-                    variant="caption"
-                    sx={{ fontWeight: 600, fontSize: "0.7rem" }}
-                  >
-                    {link.clicks || 0}
-                  </Typography>
-                </Box>
+            <Box sx={linkCardMetricInlineSx}>
+              <Eye {...ICON_SM} style={{ opacity: 0.4 }} />
+              <Typography
+                variant="caption"
+                sx={{ fontWeight: 600, fontSize: "0.7rem" }}
+              >
+                {link.clicks || 0}
+              </Typography>
+            </Box>
 
-                <Box sx={linkCardMetricInlineSx}>
-                  <Clock {...ICON_SM} style={{ opacity: 0.4 }} />
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ fontSize: "0.7rem" }}
-                  >
-                    {createdAt}
-                  </Typography>
-                </Box>
+            <Box sx={linkCardMetricInlineSx}>
+              <Clock {...ICON_SM} style={{ opacity: 0.4 }} />
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ fontSize: "0.7rem" }}
+              >
+                {createdAt}
+              </Typography>
+            </Box>
 
-                {meta?.trend ? (
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ fontSize: "0.7rem" }}
-                  >
-                    {meta.trend.last_click_at
-                      ? formatDistanceToNow(new Date(meta.trend.last_click_at), {
-                          addSuffix: true,
-                          locale: dateLocale,
-                        })
-                      : t("metrics.neverClicked")}
-                  </Typography>
-                ) : null}
+            {meta?.trend ? (
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ fontSize: "0.7rem" }}
+              >
+                {meta.trend.last_click_at
+                  ? formatDistanceToNow(new Date(meta.trend.last_click_at), {
+                      addSuffix: true,
+                      locale: dateLocale,
+                    })
+                  : t("metrics.neverClicked")}
+              </Typography>
+            ) : null}
 
-                <LinkHealthBadge health={meta?.health} />
-              </Box>
+            <LinkHealthBadge health={meta?.health} />
+          </Box>
         </CardContent>
 
         <DeleteConfirmDialog

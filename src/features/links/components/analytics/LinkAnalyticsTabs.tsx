@@ -87,12 +87,12 @@ export function LinkAnalyticsTabsOptimized({
 
   /** Ordered tab metadata used to render the navigation row. */
   const tabLabels = [
-    { label: t("analytics.tabs.overview"),    Icon: LayoutDashboard },
-    { label: t("analytics.tabs.temporal"),     Icon: Clock           },
-    { label: t("analytics.tabs.geographic"),   Icon: Globe           },
-    { label: t("analytics.tabs.audience"),     Icon: Users           },
-    { label: t("analytics.tabs.insights"),     Icon: Lightbulb       },
-    { label: t("analytics.clicksTable.title"), Icon: MousePointer2   },
+    { label: t("analytics.tabs.overview"), Icon: LayoutDashboard },
+    { label: t("analytics.tabs.temporal"), Icon: Clock },
+    { label: t("analytics.tabs.geographic"), Icon: Globe },
+    { label: t("analytics.tabs.audience"), Icon: Users },
+    { label: t("analytics.tabs.insights"), Icon: Lightbulb },
+    { label: t("analytics.clicksTable.title"), Icon: MousePointer2 },
   ];
 
   /**
@@ -176,7 +176,8 @@ export function LinkAnalyticsTabsOptimized({
 
       {/* Tab panels — mount-once, hidden via display:none when inactive */}
 
-      {tabPanel("overview", (
+      {tabPanel(
+        "overview",
         <LinkDashboard
           linkId={linkId}
           showTitle={false}
@@ -185,10 +186,11 @@ export function LinkAnalyticsTabsOptimized({
           dateFrom={filters.dateFrom}
           dateTo={filters.dateTo}
           excludeBots={filters.excludeBots}
-        />
-      ))}
+        />,
+      )}
 
-      {tabPanel("temporal", (
+      {tabPanel(
+        "temporal",
         <TemporalAnalysis
           linkId={linkId}
           enableRealtime={false}
@@ -197,10 +199,11 @@ export function LinkAnalyticsTabsOptimized({
           excludeBots={filters.excludeBots}
           segment={filters.segment}
           onSegmentChange={filters.setSegment}
-        />
-      ))}
+        />,
+      )}
 
-      {tabPanel("geographic", (
+      {tabPanel(
+        "geographic",
         <GeographicAnalysis
           linkId={linkId}
           enableRealtime={false}
@@ -211,19 +214,21 @@ export function LinkAnalyticsTabsOptimized({
           onContinentChange={filters.setContinent}
           subTabIndex={filters.geoSubTab}
           onSubTabChange={filters.setGeoSubTab}
-        />
-      ))}
+        />,
+      )}
 
-      {tabPanel("audience", (
+      {tabPanel(
+        "audience",
         <AudienceAnalysis
           linkId={linkId}
           dateFrom={filters.dateFrom}
           dateTo={filters.dateTo}
           excludeBots={filters.excludeBots}
-        />
-      ))}
+        />,
+      )}
 
-      {tabPanel("insights", (
+      {tabPanel(
+        "insights",
         <InsightsAnalysis
           linkId={linkId}
           enableRealtime={false}
@@ -237,17 +242,18 @@ export function LinkAnalyticsTabsOptimized({
           onPriorityChange={filters.setPriority}
           onCategoriesChange={filters.setInsightCategories}
           onActionableOnlyChange={filters.setActionableOnly}
-        />
-      ))}
+        />,
+      )}
 
-      {tabPanel("clicks", (
+      {tabPanel(
+        "clicks",
         <ClicksTable
           linkId={linkId}
           dateFrom={filters.dateFrom}
           dateTo={filters.dateTo}
           excludeBots={filters.excludeBots}
-        />
-      ))}
+        />,
+      )}
     </Box>
   );
 }

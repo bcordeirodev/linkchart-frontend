@@ -1,7 +1,15 @@
 "use client";
 
 import { BarChart3, Check, ChevronRight, Copy } from "lucide-react";
-import { alpha, Box, Button, keyframes, Stack, Tooltip, Typography } from "@mui/material";
+import {
+  alpha,
+  Box,
+  Button,
+  keyframes,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import type { KeyboardEvent, MouseEvent } from "react";
@@ -49,8 +57,7 @@ export function LinkCardActionBar({
   const { t } = useTranslation("links");
   const { copied, copy } = useClipboard({ timeout: 1500 });
 
-  const displayUrl =
-    displayUrlProp ?? shortUrl.replace(/^https?:\/\//, "");
+  const displayUrl = displayUrlProp ?? shortUrl.replace(/^https?:\/\//, "");
 
   const handleCopy = (e: MouseEvent | KeyboardEvent) => {
     e.stopPropagation();
@@ -130,9 +137,7 @@ export function LinkCardActionBar({
               gap: 0.5,
               px: 1.125,
               flexShrink: 0,
-              bgcolor: copied
-                ? theme.palette.success.main
-                : primary,
+              bgcolor: copied ? theme.palette.success.main : primary,
               borderRight: `1px solid ${
                 copied
                   ? alpha(theme.palette.success.dark, 0.35)

@@ -139,20 +139,6 @@ export const linkCardContentSx = {
   py: { xs: 1, sm: 1.25 },
 } as const;
 
-/**
- * Header grid: favicon | main | actions.
- * @deprecated LinkCardRich now uses a Stack layout; kept for any external consumers.
- */
-export const linkCardHeaderGridSx = {
-  display: "grid",
-  gridTemplateColumns: "24px minmax(0, 1fr) auto",
-  gridTemplateRows: "auto auto",
-  columnGap: 1.25,
-  rowGap: 0.375,
-  alignItems: "center",
-  minWidth: 0,
-} as const;
-
 /** Subtle inset for filter toolbar inside a links panel. */
 export function getLinksFilterInsetSx(theme: Theme) {
   return {

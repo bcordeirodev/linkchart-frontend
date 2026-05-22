@@ -222,9 +222,19 @@
       "device": "Dispositivo",
       "browser": "Navegador",
       "os": "Sistema Operacional",
+      "source": "Fonte",
       "referer": "Referer",
       "utm": "UTM",
-      "ip": "IP"
+      "ip": "IP",
+      "returnVisitor": "Recorrente",
+      "sourceValues": {
+        "direct": "Direto",
+        "social": "Social",
+        "search": "Busca",
+        "email": "Email",
+        "referral": "Referência",
+        "unknown": "Desconhecido"
+      }
     }
   },
   "qr": {

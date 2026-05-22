@@ -95,7 +95,11 @@ function ProfilePage() {
   return (
     <AuthGuardRedirect auth={["user", "admin"]} fallback={<ProfileSkeleton />}>
       <ResponsiveContainer variant="page">
-        <Stack spacing={{ xs: 2.5, sm: 3 }} component="section" sx={{ width: "100%" }}>
+        <Stack
+          spacing={{ xs: 2.5, sm: 3 }}
+          component="section"
+          sx={{ width: "100%" }}
+        >
           <PageSectionHeading
             icon={<UserCircle {...ICON_MD} />}
             title={t("title")}
@@ -107,7 +111,10 @@ function ProfilePage() {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: { xs: "1fr", md: "minmax(0, 2fr) minmax(0, 1fr)" },
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "minmax(0, 2fr) minmax(0, 1fr)",
+              },
               gap: { xs: 2, sm: 3 },
               width: "100%",
               alignItems: "start",
@@ -122,11 +129,7 @@ function ProfilePage() {
                 onUserUpdate={handleUserUpdate}
                 photoURL={authUser?.photoURL}
               />
-              {usesOAuthLogin ? (
-                <OAuthSecurityCard />
-              ) : (
-                <PasswordChangeForm />
-              )}
+              {usesOAuthLogin ? <OAuthSecurityCard /> : <PasswordChangeForm />}
             </Stack>
 
             <Box sx={{ minWidth: 0 }}>

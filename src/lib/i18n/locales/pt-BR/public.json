@@ -37,7 +37,7 @@
       },
       "customize": {
         "title": "Personalize",
-        "desc": "Defina um slug personalizado ou deixe gerar automaticamente."
+        "desc": "Defina um slug personalizado e, com conta grátis, use seu subdomínio na URL."
       },
       "share": {
         "title": "Compartilhe",
@@ -67,8 +67,15 @@
     },
     "upgrade": {
       "title": "Obtenha mais com uma conta gratuita",
-      "description": "Rastreie cliques, veja analytics e gerencie todos seus links em um só lugar.",
+      "description": "Rastreie cliques, reivindique um subdomínio personalizado grátis (ex.: sua-marca.linkcharts.com.br) e gerencie todos os seus links em um só lugar.",
       "button": "Criar conta gratuita"
+    },
+    "subdomainPromo": {
+      "title": "Subdomínio personalizado grátis",
+      "description": "Incluído na conta gratuita — sem custo extra. Seus links passam a usar a sua marca na URL.",
+      "previewLabel": "Exemplo",
+      "exampleLabel": "sua-marca",
+      "exampleSlug": "promo"
     },
     "error": {
       "invalidUrl": "Insira uma URL válida.",

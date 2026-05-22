@@ -2,7 +2,6 @@
 import { Box, Avatar, TextField, Button } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 
-
 export const ProfileContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(4),
   position: "relative",

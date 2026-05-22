@@ -6,7 +6,11 @@ import { useTranslation } from "react-i18next";
 
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import { URLShortenerForm } from "@/features/links/components/URLShortenerForm";
-import { ShorterHero, ShorterStats } from "@/features/shorter/components";
+import {
+  ShorterHero,
+  ShorterStats,
+  ShorterSubdomainPromo,
+} from "@/features/shorter/components";
 import { useShorter } from "@/features/shorter/hooks/useShorter";
 import { PublicLayout } from "@/shared/layout";
 
@@ -110,6 +114,8 @@ function ShorterPage() {
             state={isRedirecting ? "success" : "idle"}
             onReset={handleReset}
           />
+
+          {!isRedirecting ? <ShorterSubdomainPromo /> : null}
 
           <Box sx={{ mt: { xs: 6, md: 7 }, maxWidth: 800, mx: "auto" }}>
             <ShorterStats />

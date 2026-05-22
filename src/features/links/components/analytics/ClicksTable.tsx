@@ -20,6 +20,12 @@ import type {
 
 interface ClicksTableProps {
   linkId: string;
+  /** ISO datetime string — forwarded to the backend as `date_from`. */
+  dateFrom?: string | null;
+  /** ISO datetime string — forwarded to the backend as `date_to`. */
+  dateTo?: string | null;
+  /** When true, bot clicks are excluded from the result. */
+  excludeBots?: boolean;
 }
 
 interface CellProps {
@@ -36,6 +42,19 @@ const SORTABLE_COLUMNS = new Set([
   "browser",
   "referer",
 ]);
+
+/** click_source values emitted by the backend categoriseClickSource(). */
+const CLICK_SOURCE_COLORS: Record<
+  string,
+  "default" | "primary" | "success" | "info" | "warning" | "secondary"
+> = {
+  direct: "default",
+  social: "primary",
+  search: "success",
+  email: "info",
+  referral: "secondary",
+  unknown: "default",
+};
 
 function formatDate(value: string | null, fmt: string): string {
   if (!value) {
@@ -70,21 +89,36 @@ function formatReferer(click: LinkClickItem): string {
   return click.referer_host || click.referer;
 }
 
+/** Date/time cell — also shows timezone caption and a "Returning" badge. */
 function WhenCell({ row }: CellProps) {
   const { t } = useTranslation("links");
+  const click = row.original;
+
   return (
     <Stack spacing={0.25}>
       <Typography variant="body2">
-        {formatDate(
-          row.original.created_at,
-          t("analytics.clicksTable.dateFormat"),
-        )}
+        {formatDate(click.created_at, t("analytics.clicksTable.dateFormat"))}
       </Typography>
-      {row.original.timezone ? (
-        <Typography variant="caption" color="text.secondary">
-          {row.original.timezone}
-        </Typography>
-      ) : null}
+      <Stack direction="row" spacing={0.5} alignItems="center" flexWrap="wrap">
+        {click.timezone ? (
+          <Typography variant="caption" color="text.secondary">
+            {click.timezone}
+          </Typography>
+        ) : null}
+        {click.is_return_visitor ? (
+          <Chip
+            size="small"
+            label={t("analytics.clicksTable.returnVisitor")}
+            color="secondary"
+            variant="outlined"
+            sx={{
+              height: 16,
+              fontSize: "0.6rem",
+              "& .MuiChip-label": { px: 0.75 },
+            }}
+          />
+        ) : null}
+      </Stack>
     </Stack>
   );
 }
@@ -112,6 +146,7 @@ type ChipColor =
   | "success"
   | "warning";
 
+/** Device cell — shows device type chip and OS below it. */
 function DeviceCell({ row }: CellProps) {
   const click = row.original;
   const label =
@@ -125,13 +160,26 @@ function DeviceCell({ row }: CellProps) {
     color = "info";
   }
 
+  const osLabel = click.os
+    ? click.os_version
+      ? `${click.os} ${click.os_version}`
+      : click.os
+    : null;
+
   return (
-    <Chip
-      size="small"
-      color={color}
-      label={click.is_bot ? `Bot · ${label}` : label}
-      variant="outlined"
-    />
+    <Stack spacing={0.25}>
+      <Chip
+        size="small"
+        color={color}
+        label={click.is_bot ? `Bot · ${label}` : label}
+        variant="outlined"
+      />
+      {osLabel ? (
+        <Typography variant="caption" color="text.secondary">
+          {osLabel}
+        </Typography>
+      ) : null}
+    </Stack>
   );
 }
 
@@ -143,6 +191,24 @@ function BrowserCell({ row }: CellProps) {
   }
 
   return <span>{ver ? `${browser} ${ver}` : browser}</span>;
+}
+
+/** Traffic source chip based on `click_source` (direct/social/search/email/referral/unknown). */
+function SourceCell({ row }: CellProps) {
+  const { t } = useTranslation("links");
+  const source = row.original.click_source || "unknown";
+  const color = CLICK_SOURCE_COLORS[source] ?? "default";
+
+  return (
+    <Chip
+      size="small"
+      color={color}
+      label={t(`analytics.clicksTable.sourceValues.${source}`, {
+        defaultValue: source,
+      })}
+      variant="outlined"
+    />
+  );
 }
 
 function RefererCell({ row }: CellProps) {
@@ -187,7 +253,12 @@ function UtmCell({ row }: CellProps) {
   );
 }
 
-export function ClicksTable({ linkId }: ClicksTableProps) {
+export function ClicksTable({
+  linkId,
+  dateFrom,
+  dateTo,
+  excludeBots = false,
+}: ClicksTableProps) {
   const { isMobile } = useResponsive();
   const { t } = useTranslation("links");
   const {
@@ -201,7 +272,7 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
     setSearch,
     setSort,
     refresh,
-  } = useLinkClicks({ linkId });
+  } = useLinkClicks({ linkId, dateFrom, dateTo, excludeBots });
 
   // Single source of truth: MRT state derived directly from hook params.
   // Avoids dual-state sync issues that prevented pagination from working.
@@ -221,57 +292,69 @@ export function ClicksTable({ linkId }: ClicksTableProps) {
   }, [globalFilter, setSearch]);
 
   const total = meta?.total ?? 0;
-  const COLUMNS: MRT_ColumnDef<LinkClickItem>[] = [
-    {
-      accessorKey: "created_at",
-      header: t("analytics.clicksTable.date"),
-      minSize: 160,
-      size: 200,
-      Cell: WhenCell,
-    },
-    {
-      id: "location",
-      accessorFn: (row) => formatLocation(row),
-      header: t("analytics.clicksTable.location"),
-      enableSorting: false,
-      minSize: 180,
-      size: 240,
-      Cell: LocationCell,
-    },
-    {
-      accessorKey: "device",
-      header: t("analytics.clicksTable.device"),
-      minSize: 110,
-      size: 140,
-      Cell: DeviceCell,
-    },
-    {
-      accessorKey: "browser",
-      header: t("analytics.clicksTable.browser"),
-      minSize: 120,
-      size: 160,
-      Cell: BrowserCell,
-    },
-    {
-      id: "referer",
-      accessorFn: (row) => formatReferer(row),
-      header: t("analytics.clicksTable.referer"),
-      minSize: 150,
-      size: 200,
-      Cell: RefererCell,
-    },
-    {
-      id: "utm",
-      header: t("analytics.clicksTable.utm"),
-      enableSorting: false,
-      minSize: 160,
-      size: 220,
-      accessorFn: (row) => row.utm?.campaign || "",
-      Cell: UtmCell,
-    },
-  ];
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const columns = useMemo(() => COLUMNS, [t]);
+
+  const columns = useMemo<MRT_ColumnDef<LinkClickItem>[]>(
+    () => [
+      {
+        accessorKey: "created_at",
+        header: t("analytics.clicksTable.date"),
+        minSize: 160,
+        size: 200,
+        Cell: WhenCell,
+      },
+      {
+        id: "location",
+        accessorFn: (row) => formatLocation(row),
+        header: t("analytics.clicksTable.location"),
+        enableSorting: false,
+        minSize: 180,
+        size: 240,
+        Cell: LocationCell,
+      },
+      {
+        accessorKey: "device",
+        header: t("analytics.clicksTable.device"),
+        minSize: 120,
+        size: 150,
+        Cell: DeviceCell,
+      },
+      {
+        accessorKey: "browser",
+        header: t("analytics.clicksTable.browser"),
+        minSize: 120,
+        size: 160,
+        Cell: BrowserCell,
+      },
+      {
+        id: "click_source",
+        accessorKey: "click_source",
+        header: t("analytics.clicksTable.source"),
+        enableSorting: false,
+        minSize: 110,
+        size: 140,
+        Cell: SourceCell,
+      },
+      {
+        id: "referer",
+        accessorFn: (row) => formatReferer(row),
+        header: t("analytics.clicksTable.referer"),
+        minSize: 150,
+        size: 200,
+        Cell: RefererCell,
+      },
+      {
+        id: "utm",
+        header: t("analytics.clicksTable.utm"),
+        enableSorting: false,
+        minSize: 160,
+        size: 220,
+        accessorFn: (row) => row.utm?.campaign || "",
+        Cell: UtmCell,
+      },
+    ],
+    [t],
+  );
+
   const isInitialLoading = loading && items.length === 0;
 
   return (

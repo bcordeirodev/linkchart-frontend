@@ -14,7 +14,7 @@ export function buildWebApplicationSchema() {
     "@type": "WebApplication",
     name: "Link Charts",
     description:
-      "Link Charts is a free URL shortener with real-time analytics. Track link clicks by geography, device, browser and UTM campaign — no account required. Every link includes a free QR code and public analytics page.",
+      "Link Charts is a free URL shortener with real-time analytics. Track link clicks by geography, device, browser and UTM campaign — no account required. Free accounts include a custom subdomain, QR code and public analytics page per link.",
     url: APP_URL,
     applicationCategory: "UtilityApplication",
     applicationSubCategory: "URL Shortener",
@@ -28,6 +28,7 @@ export function buildWebApplicationSchema() {
       "Geographic analytics by country, region and city",
       "Device, browser and OS breakdown",
       "Custom slug for branded short links",
+      "Free custom subdomain for branded short links (e.g. your-brand.linkcharts.com.br)",
       "Free QR code automatically generated for every link",
       "UTM campaign parameter tracking",
       "Public shareable analytics page per link",
@@ -122,6 +123,14 @@ export function buildFaqSchema() {
         acceptedAnswer: {
           "@type": "Answer",
           text: "Yes. You can set a custom slug for your shortened URL (e.g., linkcharts.com.br/r/my-campaign). Custom slugs require a free account.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Does Link Charts offer a free custom subdomain?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Free accounts can claim a custom subdomain (e.g. your-brand.linkcharts.com.br). All new short links use that branded base URL at no extra cost.",
         },
       },
       {
