@@ -1,8 +1,7 @@
 "use client";
 import { ExternalLink } from "lucide-react";
 import { alpha, Box, Chip, Stack, Tooltip, Typography } from "@mui/material";
-import { format, formatDistanceToNow } from "date-fns";
-import { enUS, ptBR } from "date-fns/locale";
+import { format } from "date-fns";
 import { useTheme, type Theme } from "@mui/material/styles";
 import {
   Children,
@@ -15,6 +14,10 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 
+import {
+  formatLastClickLabel,
+  getDateFnsLocale,
+} from "@/features/links/utils/formatLastClick";
 import {
   getLinkStatus,
   getResolvedStatusColor,
@@ -47,6 +50,8 @@ import {
   linkCardContentSx,
   linkCardMetricInlineSx,
   linkCardMetricLabelSx,
+  linkCardMetricSegmentSx,
+  linkCardMetricValueSx,
 } from "./linksPanelStyles";
 
 const STATUS_LABEL_KEYS = {
@@ -72,7 +77,7 @@ function InlineMetric({
 }) {
   return (
     <Box sx={linkCardMetricInlineSx}>
-      <Typography variant="caption" sx={linkCardMetricLabelSx}>
+      <Typography variant="caption" component="span" sx={linkCardMetricLabelSx}>
         {label}
       </Typography>
       {children}
@@ -102,7 +107,7 @@ function MetricsRow({
           key={isValidElement(child) && child.key != null ? child.key : index}
         >
           {index > 0 ? <Box aria-hidden sx={dividerSx} /> : null}
-          {child}
+          <Box sx={linkCardMetricSegmentSx}>{child}</Box>
         </Fragment>
       ))}
     </>
@@ -165,7 +170,7 @@ export function LinkCardRich({
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("links");
-  const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
+  const dateLocale = getDateFnsLocale(i18n.language);
   const isDark = theme.palette.mode === "dark";
 
   const shortUrl = useShortUrl(link.slug);
@@ -194,12 +199,8 @@ export function LinkCardRich({
   const statusLabel = t(STATUS_LABEL_KEYS[status]);
 
   const lastClickAt = meta?.trend?.last_click_at;
-  const lastClickLabel = lastClickAt
-    ? formatDistanceToNow(new Date(lastClickAt), {
-        addSuffix: true,
-        locale: dateLocale,
-      })
-    : t("metrics.neverClicked");
+  const lastClickLabel = formatLastClickLabel(lastClickAt, dateLocale, t);
+  const hasLastClick = Boolean(lastClickAt);
 
   const createdDate = link.created_at ? new Date(link.created_at) : null;
   const createdLabel =
@@ -330,24 +331,25 @@ export function LinkCardRich({
         <Box sx={getLinkCardMetricsRowSx(theme)}>
           <MetricsRow dividerSx={metricDividerSx}>
             {meta?.sparkline?.length ? (
-              <Box
-                sx={{ display: "flex", alignItems: "center", minHeight: 22 }}
-              >
-                <LinkSparkline
-                  data={meta.sparkline}
-                  trend={meta.trend?.percent_change}
-                  height={22}
-                  width={72}
-                />
-              </Box>
+              <LinkSparkline
+                data={meta.sparkline}
+                trend={meta.trend?.percent_change}
+                height={20}
+                width={72}
+              />
             ) : null}
 
             <LinkTrendBadge trend={meta?.trend} compact />
 
-            <InlineMetric label={t("metrics.lastClick")}>
+            <InlineMetric label={t("metrics.lastClickShort")}>
               <Typography
                 variant="caption"
-                sx={{ fontWeight: 600, fontSize: "0.75rem" }}
+                component="span"
+                sx={{
+                  ...linkCardMetricValueSx,
+                  color: hasLastClick ? "text.primary" : "text.disabled",
+                  fontWeight: hasLastClick ? 600 : 500,
+                }}
               >
                 {lastClickLabel}
               </Typography>
@@ -355,12 +357,13 @@ export function LinkCardRich({
 
             <LinkHealthBadge health={meta?.health} />
 
-            <InlineMetric label={t("metrics.totalClicks")}>
+            <InlineMetric label={t("metrics.clicksShort")}>
               <Typography
                 variant="caption"
-                sx={{ fontWeight: 700, fontSize: "0.75rem" }}
+                component="span"
+                sx={linkCardMetricValueSx}
               >
-                {link.clicks.toLocaleString()}
+                {link.clicks.toLocaleString(i18n.language)}
               </Typography>
             </InlineMetric>
 
@@ -368,7 +371,8 @@ export function LinkCardRich({
               <InlineMetric label={t("table.created")}>
                 <Typography
                   variant="caption"
-                  sx={{ fontWeight: 600, fontSize: "0.75rem" }}
+                  component="span"
+                  sx={linkCardMetricValueSx}
                 >
                   {createdLabel}
                 </Typography>
@@ -382,9 +386,9 @@ export function LinkCardRich({
                 <InlineMetric label={t("table.clickLimit")}>
                   <Typography
                     variant="caption"
+                    component="span"
                     sx={{
-                      fontWeight: 600,
-                      fontSize: "0.75rem",
+                      ...linkCardMetricValueSx,
                       color:
                         link.clicks >= link.click_limit
                           ? "error.main"

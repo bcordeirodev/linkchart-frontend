@@ -85,7 +85,8 @@ export function FormSection({
           sx={{
             color: "text.secondary",
             fontWeight: 600,
-            letterSpacing: 0.6,
+            fontSize: "0.6875rem",
+            letterSpacing: "0.08em",
             lineHeight: 1.6,
           }}
         >

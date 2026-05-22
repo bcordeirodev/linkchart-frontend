@@ -1,45 +1,32 @@
 "use client";
-import { Stack, Fade, Box } from "@mui/material";
-import { useEffect, useState } from "react";
+
+import { Link2 } from "lucide-react";
+import { Stack } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { CreateLinkForm } from "@/features/links";
-import { ResponsiveContainer } from "@/shared/ui/base";
+import { LinkActionsBackLink } from "@/features/links/components/LinkActions/LinkActionsBackLink";
+import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { PageSectionHeading, ResponsiveContainer } from "@/shared/ui/base";
 import { LinkFormSkeleton } from "@/shared/ui/feedback/skeletons";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
 
-/**
- * Página de criação de links simplificada e otimizada
- * Segue padrões DDD com responsabilidade única
- *
- * Features:
- * - Hero section com animações
- * - Formulário especializado para criação
- * - Auto-geração de slug
- * - Validação Zod integrada
- * - Mensagens de sucesso/erro
- */
 function LinkCreatePage() {
-  const [formMounted, setFormMounted] = useState(false);
-
-  useEffect(() => {
-    // Garante que o formulário está montado antes de iniciar a animação
-    const timer = setTimeout(() => setFormMounted(true), 200);
-    return () => clearTimeout(timer);
-  }, []);
+  const { t } = useTranslation("links");
 
   return (
     <AuthGuardRedirect auth={["user", "admin"]} fallback={<LinkFormSkeleton />}>
       <ResponsiveContainer variant="form" maxWidth="md">
-        <Stack spacing={4}>
-          {/* Form Section */}
-          <Box>
-            <Fade in={formMounted} timeout={800} mountOnEnter unmountOnExit>
-              <Box>
-                <CreateLinkForm showBackButton />
-              </Box>
-            </Fade>
-          </Box>
+        <Stack spacing={{ xs: 2, sm: 2.5 }} component="section">
+          <PageSectionHeading
+            icon={<Link2 {...ICON_MD} />}
+            title={t("form.createTitle")}
+            description={t("form.createSubtitle")}
+            titleVariant="page"
+            action={<LinkActionsBackLink />}
+          />
+          <CreateLinkForm showBackButton />
         </Stack>
       </ResponsiveContainer>
     </AuthGuardRedirect>

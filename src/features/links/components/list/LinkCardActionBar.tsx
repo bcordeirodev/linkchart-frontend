@@ -1,35 +1,22 @@
 "use client";
 
 import { BarChart3, Check, ChevronRight, Copy } from "lucide-react";
-import {
-  alpha,
-  Box,
-  Button,
-  keyframes,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { alpha, Box, Button, Stack, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import type { KeyboardEvent, MouseEvent } from "react";
 
 import useClipboard from "@/hooks/useClipboard";
-import { radiusTokens } from "@/lib/theme/designSystem";
+import {
+  elevationLightTokens,
+  elevationTokens,
+  radiusTokens,
+} from "@/lib/theme/designSystem";
 
 import type { SxProps, Theme } from "@mui/material";
 
-const ACTION_HEIGHT = 34;
-
-/** Subtle Analytics emphasis — slightly more visible than idle copy strip. */
-const analyticsGlow = keyframes`
-  0%, 100% {
-    box-shadow: 0 1px 4px rgba(25, 118, 210, 0.18);
-  }
-  50% {
-    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.28);
-  }
-`;
+const ACTION_HEIGHT = 36;
+const ANALYTICS_MIN_WIDTH = { xs: 128, sm: 152 };
 
 interface LinkCardActionBarProps {
   shortUrl: string;
@@ -40,9 +27,7 @@ interface LinkCardActionBarProps {
 }
 
 /**
- * Action row for link cards:
- * - Copy strip — primary utility: grab the short URL in one click (dominant width).
- * - Analytics — navigation CTA: open per-link stats (contained, visually anchored).
+ * Action row for link cards: copy control (button-like strip) + Analytics CTA.
  */
 export function LinkCardActionBar({
   shortUrl,
@@ -54,6 +39,7 @@ export function LinkCardActionBar({
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
+  const elevation = isDark ? elevationTokens : elevationLightTokens;
   const { t } = useTranslation("links");
   const { copied, copy } = useClipboard({ timeout: 1500 });
 
@@ -63,6 +49,14 @@ export function LinkCardActionBar({
     e.stopPropagation();
     copy(shortUrl);
   };
+
+  const idleCopyShadow = isDark ? elevation.xs : elevationLightTokens.xs;
+  const copyBorderIdle = copied
+    ? alpha(theme.palette.success.main, isDark ? 0.42 : 0.38)
+    : alpha(primary, isDark ? 0.32 : 0.26);
+  const copyBorderHover = copied
+    ? alpha(theme.palette.success.main, isDark ? 0.55 : 0.5)
+    : alpha(primary, isDark ? 0.48 : 0.4);
 
   return (
     <Stack
@@ -80,123 +74,90 @@ export function LinkCardActionBar({
         ...sx,
       }}
     >
-      {/* Copy — the short URL is the product; make the control feel valuable */}
       <Tooltip title={copied ? t("actions.copySuccess") : shortUrl}>
-        <Box
-          role="button"
-          tabIndex={0}
+        <Button
+          variant="outlined"
+          color={copied ? "success" : "primary"}
+          fullWidth
           aria-label={t("actions.copyLink")}
           onClick={handleCopy}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              handleCopy(e);
-            }
-          }}
+          startIcon={
+            copied ? (
+              <Check size={15} strokeWidth={2.5} />
+            ) : (
+              <Copy size={15} strokeWidth={2} />
+            )
+          }
           sx={{
             flex: 1,
-            display: "flex",
-            alignItems: "stretch",
             minWidth: 0,
             height: ACTION_HEIGHT,
+            minHeight: ACTION_HEIGHT,
             borderRadius: `${radiusTokens.md}px`,
-            border: `1px solid ${
-              copied
-                ? alpha(theme.palette.success.main, 0.4)
-                : theme.palette.divider
-            }`,
+            textTransform: "none",
+            justifyContent: "flex-start",
+            gap: 1.25,
+            px: 1.5,
+            py: 0,
+            border: "1.5px solid",
+            borderColor: copyBorderIdle,
             bgcolor: copied
-              ? alpha(theme.palette.success.main, 0.05)
-              : isDark
-                ? alpha(theme.palette.common.white, 0.03)
-                : alpha(theme.palette.common.black, 0.02),
-            cursor: "pointer",
-            overflow: "hidden",
-            transition:
-              "border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease",
-            userSelect: "none",
-            boxShadow: "none",
-            "&:hover": {
-              borderColor: copied
-                ? alpha(theme.palette.success.main, 0.5)
-                : alpha(primary, 0.28),
-              bgcolor: copied
-                ? alpha(theme.palette.success.main, 0.08)
-                : alpha(primary, 0.04),
+              ? alpha(theme.palette.success.main, 0.06)
+              : theme.palette.background.paper,
+            boxShadow: copied
+              ? `0 1px 4px ${alpha(theme.palette.success.main, 0.2)}`
+              : idleCopyShadow,
+            "& .MuiButton-startIcon": {
+              margin: 0,
+              mr: 0.625,
             },
-            "&:focus-visible": {
-              outline: `2px solid ${alpha(primary, 0.5)}`,
-              outlineOffset: 1,
+            "&:hover": {
+              border: "1.5px solid",
+              borderColor: copyBorderHover,
+              bgcolor: copied
+                ? alpha(theme.palette.success.main, 0.1)
+                : alpha(primary, isDark ? 0.08 : 0.04),
+              boxShadow: isDark ? elevation.sm : elevationLightTokens.sm,
             },
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 0.5,
-              px: 1.125,
-              flexShrink: 0,
-              bgcolor: copied ? theme.palette.success.main : primary,
-              borderRight: `1px solid ${
-                copied
-                  ? alpha(theme.palette.success.dark, 0.35)
-                  : alpha(theme.palette.primary.dark, 0.25)
-              }`,
-            }}
-          >
-            {copied ? (
-              <Check
-                size={14}
-                strokeWidth={2.5}
-                color={theme.palette.success.contrastText}
-              />
-            ) : (
-              <Copy
-                size={14}
-                strokeWidth={2}
-                color={theme.palette.primary.contrastText}
-              />
-            )}
-            <Typography
-              variant="caption"
-              sx={{
-                fontWeight: 600,
-                fontSize: "0.6875rem",
-                color: copied
-                  ? theme.palette.success.contrastText
-                  : theme.palette.primary.contrastText,
-                whiteSpace: "nowrap",
-              }}
-            >
-              {copied ? t("actions.copySuccess") : t("actions.copy")}
-            </Typography>
-          </Box>
-
           <Typography
             component="span"
             sx={{
               flex: 1,
-              display: "flex",
-              alignItems: "center",
-              px: 1.125,
               minWidth: 0,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
-              fontSize: "0.8125rem",
-              fontFamily:
-                'ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace',
+              textAlign: "left",
+              fontSize: "0.875rem",
+              lineHeight: 1.25,
+              letterSpacing: "0.01em",
+              fontFamily: theme.typography.fontFamily,
+              fontVariantNumeric: "tabular-nums",
+              fontFeatureSettings: '"tnum"',
               fontWeight: 500,
               color: copied ? "success.main" : "text.primary",
             }}
           >
             {displayUrl}
           </Typography>
-        </Box>
+          <Typography
+            component="span"
+            sx={{
+              flexShrink: 0,
+              fontSize: "0.8125rem",
+              lineHeight: 1.25,
+              letterSpacing: "0.02em",
+              fontWeight: 600,
+              color: copied ? "success.main" : "primary.main",
+            }}
+          >
+            {copied ? t("actions.copySuccess") : t("actions.copy")}
+          </Typography>
+        </Button>
       </Tooltip>
 
-      {/* Analytics — same height / radius / padding rhythm as copy strip */}
       <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
         <Box
           sx={{
@@ -219,21 +180,21 @@ export function LinkCardActionBar({
             sx={{
               height: ACTION_HEIGHT,
               minHeight: ACTION_HEIGHT,
+              minWidth: ANALYTICS_MIN_WIDTH,
+              width: { xs: ANALYTICS_MIN_WIDTH.xs, sm: ANALYTICS_MIN_WIDTH.sm },
               boxSizing: "border-box",
               borderRadius: `${radiusTokens.md}px`,
-              px: 1.125,
+              px: { xs: 1.5, sm: 2 },
               py: 0,
-              fontSize: "0.8125rem",
+              fontSize: "0.875rem",
               fontWeight: 600,
+              letterSpacing: "0.01em",
               textTransform: "none",
-              lineHeight: 1,
-              bgcolor: isDark ? alpha(primary, 0.82) : primary,
+              lineHeight: 1.2,
+              whiteSpace: "nowrap",
+              bgcolor: isDark ? alpha(primary, 0.88) : primary,
               color: theme.palette.primary.contrastText,
-              animation: `${analyticsGlow} 4s ease-in-out infinite`,
-              "@media (prefers-reduced-motion: reduce)": {
-                animation: "none",
-                boxShadow: `0 1px 4px ${alpha(primary, 0.2)}`,
-              },
+              boxShadow: `0 1px 3px ${alpha(primary, isDark ? 0.35 : 0.25)}`,
               "& .MuiButton-startIcon": {
                 margin: 0,
                 mr: 0.5,
@@ -245,9 +206,8 @@ export function LinkCardActionBar({
                 display: { xs: "none", sm: "inherit" },
               },
               "&:hover": {
-                animation: "none",
                 bgcolor: "primary.dark",
-                boxShadow: `0 2px 8px ${alpha(primary, isDark ? 0.35 : 0.28)}`,
+                boxShadow: `0 2px 8px ${alpha(primary, isDark ? 0.4 : 0.3)}`,
               },
             }}
           >

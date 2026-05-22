@@ -6,13 +6,19 @@ import type { ChartOptions, ChartSeries } from "@/types";
  */
 
 /**
+ * Família de fonte padrão usada em todos os gráficos.
+ * Mantida como constante para consistência e para facilitar trocas globais.
+ */
+const CHART_FONT_FAMILY = "Inter, system-ui, sans-serif";
+
+/**
  * Configuração de tooltip adaptável ao tema - melhorada
  */
 const getTooltipConfig = (isDark = false, clicksLabel = "cliques") => ({
   theme: isDark ? "dark" : "light",
   style: {
     fontSize: "14px",
-    fontFamily: "Inter, system-ui, sans-serif",
+    fontFamily: CHART_FONT_FAMILY,
     borderRadius: "12px",
     boxShadow: isDark
       ? "0 8px 32px rgba(0, 0, 0, 0.4)"
@@ -55,14 +61,14 @@ const getTextConfig = (isDark = false) => {
         fontSize: "16px",
         fontWeight: "600",
         color: textColor,
-        fontFamily: "Inter, system-ui, sans-serif",
+        fontFamily: CHART_FONT_FAMILY,
       },
     },
     subtitle: {
       style: {
         fontSize: "14px",
         color: subtitleColor,
-        fontFamily: "Inter, system-ui, sans-serif",
+        fontFamily: CHART_FONT_FAMILY,
       },
     },
     xaxis: {
@@ -70,7 +76,7 @@ const getTextConfig = (isDark = false) => {
         style: {
           colors: textColor,
           fontSize: "12px",
-          fontFamily: "Inter, system-ui, sans-serif",
+          fontFamily: CHART_FONT_FAMILY,
           fontWeight: "500",
         },
         rotate: 0,
@@ -91,7 +97,7 @@ const getTextConfig = (isDark = false) => {
         style: {
           colors: textColor,
           fontSize: "12px",
-          fontFamily: "Inter, system-ui, sans-serif",
+          fontFamily: CHART_FONT_FAMILY,
           fontWeight: "500",
         },
         formatter: (value: number | string) => {
@@ -124,7 +130,7 @@ const getTextConfig = (isDark = false) => {
         colors: textColor,
         useSeriesColors: false,
       },
-      fontFamily: "Inter, system-ui, sans-serif",
+      fontFamily: CHART_FONT_FAMILY,
       fontSize: "13px",
       fontWeight: "500",
     },
@@ -221,6 +227,13 @@ export const formatAreaChart = (
   };
 };
 
+/** Shared label styles for horizontal and vertical bar charts. */
+const getBarLabelStyle = (isDark: boolean) => ({
+  colors: isDark ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
+  fontSize: "12px",
+  fontFamily: CHART_FONT_FAMILY,
+});
+
 /**
  * Formata dados para gráfico de barras
  */
@@ -248,7 +261,7 @@ export const formatBarChart = (
     };
   }
 
-  // Processar dados de forma mais simples para ApexCharts
+  // Process data once — shared by both horizontal and vertical paths
   const processedData = data
     .filter((item) => item && typeof item === "object")
     .map((item) => ({
@@ -258,15 +271,13 @@ export const formatBarChart = (
       y: Number(item[yKey] || 0),
     }));
 
+  const labelStyle = getBarLabelStyle(isDark);
+  const gridColor = isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)";
+
   // Configuração simplificada para barras horizontais
   if (horizontal) {
     return {
-      series: [
-        {
-          name: seriesName,
-          data: processedData,
-        },
-      ],
+      series: [{ name: seriesName, data: processedData }],
       options: {
         chart: {
           type: "bar",
@@ -292,7 +303,7 @@ export const formatBarChart = (
             colors: ["#fff"],
             fontSize: "11px",
             fontWeight: "bold",
-            fontFamily: "Inter, system-ui, sans-serif",
+            fontFamily: CHART_FONT_FAMILY,
           },
           formatter(val: number) {
             return val.toString();
@@ -300,67 +311,26 @@ export const formatBarChart = (
         },
         xaxis: {
           type: "numeric",
-          labels: {
-            style: {
-              colors: isDark
-                ? "rgba(255, 255, 255, 0.7)"
-                : "rgba(0, 0, 0, 0.7)",
-              fontSize: "12px",
-              fontFamily: "Inter, system-ui, sans-serif",
-            },
-          },
+          labels: { style: labelStyle },
         },
         yaxis: {
-          labels: {
-            style: {
-              colors: isDark
-                ? "rgba(255, 255, 255, 0.7)"
-                : "rgba(0, 0, 0, 0.7)",
-              fontSize: "12px",
-              fontFamily: "Inter, system-ui, sans-serif",
-            },
-          },
+          labels: { style: labelStyle },
         },
         grid: {
-          borderColor: isDark
-            ? "rgba(255, 255, 255, 0.1)"
-            : "rgba(0, 0, 0, 0.1)",
-          xaxis: {
-            lines: {
-              show: true,
-            },
-          },
-          yaxis: {
-            lines: {
-              show: false,
-            },
-          },
+          borderColor: gridColor,
+          xaxis: { lines: { show: true } },
+          yaxis: { lines: { show: false } },
         },
         tooltip: getTooltipConfig(isDark),
-        fill: {
-          opacity: 1,
-        },
-        stroke: {
-          show: true,
-          width: 1,
-          colors: ["transparent"],
-        },
+        fill: { opacity: 1 },
+        stroke: { show: true, width: 1, colors: ["transparent"] },
       },
     };
   }
 
-  // Configuração para barras verticais (original)
-  const processedDataVertical = data
-    .filter((item) => item && typeof item === "object")
-    .map((item) => ({
-      x: String(
-        item[xKey] !== undefined && item[xKey] !== null ? item[xKey] : "",
-      ),
-      y: Number(item[yKey] || 0),
-    }));
-
+  // Configuração para barras verticais
   return {
-    series: [{ name: seriesName, data: processedDataVertical }],
+    series: [{ name: seriesName, data: processedData }],
     options: {
       chart: {
         type: "bar",
@@ -386,7 +356,7 @@ export const formatBarChart = (
           colors: [isDark ? "#fff" : "#333"],
           fontSize: "11px",
           fontWeight: "bold",
-          fontFamily: "Inter, system-ui, sans-serif",
+          fontFamily: CHART_FONT_FAMILY,
         },
         formatter(val: number) {
           return val.toString();
@@ -397,26 +367,16 @@ export const formatBarChart = (
       stroke: { show: true, width: 1, colors: ["transparent"] },
       xaxis: {
         type: "category",
-        labels: {
-          style: {
-            colors: isDark ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
-            fontSize: "12px",
-            fontFamily: "Inter, system-ui, sans-serif",
-          },
-        },
+        labels: { style: labelStyle },
       },
       yaxis: {
         labels: {
-          style: {
-            colors: isDark ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
-            fontSize: "12px",
-            fontFamily: "Inter, system-ui, sans-serif",
-          },
+          style: labelStyle,
           formatter: (value: number) => Math.round(value).toString(),
         },
       },
       grid: {
-        borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
+        borderColor: gridColor,
         padding: { right: 0 },
         yaxis: { lines: { show: true } },
         xaxis: { lines: { show: false } },
@@ -452,6 +412,10 @@ export const formatPieChart = (
 
   const filteredData = data.filter((item) => item && typeof item === "object");
 
+  const textColor = isDark
+    ? "rgba(255, 255, 255, 0.85)"
+    : "rgba(0, 0, 0, 0.75)";
+
   return {
     series: filteredData.map((item) => Number(item[valueKey] || 0)),
     options: {
@@ -483,16 +447,14 @@ export const formatPieChart = (
               name: {
                 show: true,
                 fontSize: "14px",
-                fontFamily: "Inter, system-ui, sans-serif",
+                fontFamily: CHART_FONT_FAMILY,
                 fontWeight: 600,
-                color: isDark
-                  ? "rgba(255, 255, 255, 0.85)"
-                  : "rgba(0, 0, 0, 0.75)",
+                color: textColor,
               },
               value: {
                 show: true,
                 fontSize: "16px",
-                fontFamily: "Inter, system-ui, sans-serif",
+                fontFamily: CHART_FONT_FAMILY,
                 fontWeight: 700,
                 color: isDark
                   ? "rgba(255, 255, 255, 0.9)"
@@ -531,10 +493,10 @@ export const formatPieChart = (
         offsetY: 0,
         height: 230,
         labels: {
-          colors: isDark ? "rgba(255, 255, 255, 0.85)" : "rgba(0, 0, 0, 0.75)",
+          colors: textColor,
           useSeriesColors: false,
         },
-        fontFamily: "Inter, system-ui, sans-serif",
+        fontFamily: CHART_FONT_FAMILY,
         fontSize: "13px",
         fontWeight: "500",
       },

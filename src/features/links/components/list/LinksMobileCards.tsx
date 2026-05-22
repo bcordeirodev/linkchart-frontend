@@ -24,7 +24,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
-import { enUS, ptBR } from "date-fns/locale";
 import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
@@ -38,6 +37,10 @@ import {
   radiusTokens,
 } from "@/lib/theme/designSystem";
 
+import {
+  formatLastClickLabel,
+  getDateFnsLocale,
+} from "../../utils/formatLastClick";
 import {
   getLinkStatus,
   getResolvedStatusColor,
@@ -54,6 +57,7 @@ import type {
 import { LinkHealthBadge } from "./LinkHealthBadge";
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { LinkSparkline } from "./LinkSparkline";
+import { LinkTrendBadge } from "./LinkTrendBadge";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
 import {
   getLinkCardMetricsRowSx,
@@ -61,6 +65,7 @@ import {
   getNewlyCreatedHighlightSx,
   linkCardContentSx,
   linkCardMetricInlineSx,
+  linkCardMetricValueSx,
 } from "./linksPanelStyles";
 
 const STATUS_LABEL_KEYS = {
@@ -102,7 +107,7 @@ const LinkMobileCard = memo(
     const navigate = useNavigate();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { t, i18n } = useTranslation("links");
-    const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
+    const dateLocale = getDateFnsLocale(i18n.language);
     const isDark = theme.palette.mode === "dark";
 
     const shortUrl = useShortUrl(link.slug || link.custom_slug || "");
@@ -241,63 +246,48 @@ const LinkMobileCard = memo(
               <LinkSparkline
                 data={meta.sparkline}
                 trend={meta.trend?.percent_change}
-                height={22}
+                height={20}
                 width={72}
               />
             )}
 
-            {meta?.trend ? (
-              <Typography
-                variant="caption"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: "0.7rem",
-                  color:
-                    meta.trend.percent_change >= 0
-                      ? "success.main"
-                      : "error.main",
-                }}
-              >
-                {meta.trend.percent_change >= 0 ? "+" : ""}
-                {meta.trend.percent_change.toFixed(1)}%
-              </Typography>
-            ) : null}
+            {meta?.trend ? <LinkTrendBadge trend={meta.trend} compact /> : null}
 
             <Box sx={linkCardMetricInlineSx}>
-              <Eye {...ICON_SM} style={{ opacity: 0.4 }} />
+              <Eye {...ICON_SM} style={{ opacity: 0.4, flexShrink: 0 }} />
               <Typography
                 variant="caption"
-                sx={{ fontWeight: 600, fontSize: "0.7rem" }}
+                component="span"
+                sx={linkCardMetricValueSx}
               >
                 {link.clicks || 0}
               </Typography>
             </Box>
 
-            <Box sx={linkCardMetricInlineSx}>
-              <Clock {...ICON_SM} style={{ opacity: 0.4 }} />
+            {meta?.trend ? (
               <Typography
                 variant="caption"
-                color="text.secondary"
-                sx={{ fontSize: "0.7rem" }}
+                component="span"
+                sx={linkCardMetricValueSx}
+              >
+                {formatLastClickLabel(meta.trend.last_click_at, dateLocale, t)}
+              </Typography>
+            ) : null}
+
+            <Box sx={linkCardMetricInlineSx}>
+              <Clock {...ICON_SM} style={{ opacity: 0.4, flexShrink: 0 }} />
+              <Typography
+                variant="caption"
+                component="span"
+                sx={{
+                  ...linkCardMetricValueSx,
+                  color: "text.secondary",
+                  fontWeight: 500,
+                }}
               >
                 {createdAt}
               </Typography>
             </Box>
-
-            {meta?.trend ? (
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ fontSize: "0.7rem" }}
-              >
-                {meta.trend.last_click_at
-                  ? formatDistanceToNow(new Date(meta.trend.last_click_at), {
-                      addSuffix: true,
-                      locale: dateLocale,
-                    })
-                  : t("metrics.neverClicked")}
-              </Typography>
-            ) : null}
 
             <LinkHealthBadge health={meta?.health} />
           </Box>

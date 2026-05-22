@@ -27,7 +27,16 @@ export function TimeframeSelector({ value, onChange }: TimeframeSelectorProps) {
   };
 
   return (
-    <Box sx={{ mt: 2, mb: 3, display: "flex", justifyContent: "center" }}>
+    <Box
+      sx={{
+        mt: 2,
+        mb: 3,
+        display: "flex",
+        justifyContent: "center",
+        // Prevents horizontal overflow when buttons can't fit in one row
+        overflow: "hidden",
+      }}
+    >
       <ToggleButtonGroup
         value={value}
         exclusive
@@ -35,15 +44,19 @@ export function TimeframeSelector({ value, onChange }: TimeframeSelectorProps) {
         size="small"
         sx={{
           display: "flex",
+          flexWrap: "wrap",
           gap: 1,
+          rowGap: 0.75,
+          justifyContent: "center",
           "& .MuiToggleButton-root": {
-            px: 2,
+            px: { xs: 1.5, sm: 2 },
             py: 0.5,
             border: "1px solid !important",
             borderColor: "divider !important",
             borderRadius: `${radiusTokens.md}px !important`,
             color: "text.secondary",
             fontWeight: 600,
+            fontSize: { xs: "0.75rem", sm: "0.8125rem" },
             transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
             "&:hover": {
               backgroundColor: "action.hover",
