@@ -9,6 +9,7 @@ import {
   Box,
   Stack,
   InputAdornment,
+  CircularProgress,
   Typography,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -31,6 +32,16 @@ interface LinkFormFieldsProps {
   control: Control<LinkFormData>;
   errors: FieldErrors<LinkFormData>;
   isEdit?: boolean;
+  /**
+   * Slugified og:title suggestion to show as ghost text in the slug field.
+   * Only rendered when the field is empty and no error is present.
+   */
+  slugSuggestion?: string | null;
+  /**
+   * When true, shows a subtle loading spinner in the URL field's end adornment
+   * while metadata is being fetched in the background.
+   */
+  isLoadingMeta?: boolean;
 }
 
 /**
@@ -39,11 +50,17 @@ interface LinkFormFieldsProps {
  * previous "Configurações Avançadas / UTM" Collapse pattern to quiet section
  * headers via `FormSection`. `custom_slug` lives in the basic section because
  * it defines the final short URL.
+ *
+ * When `slugSuggestion` is provided and the `custom_slug` field is empty, the
+ * suggestion is shown as ghost text (via `placeholder`). Pressing Tab while the
+ * field is focused and empty accepts the suggestion into the field value.
  */
 export function LinkFormFields({
   control,
   errors,
   isEdit: _isEdit = false,
+  slugSuggestion,
+  isLoadingMeta = false,
 }: LinkFormFieldsProps) {
   const { t } = useTranslation("links");
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -96,6 +113,17 @@ export function LinkFormFields({
                   FormHelperTextProps={
                     urlHelperSx ? { sx: urlHelperSx } : undefined
                   }
+                  InputProps={{
+                    endAdornment: isLoadingMeta ? (
+                      <InputAdornment position="end">
+                        <CircularProgress
+                          size={14}
+                          thickness={5}
+                          sx={{ color: "text.disabled" }}
+                        />
+                      </InputAdornment>
+                    ) : undefined,
+                  }}
                 />
               )}
             />
@@ -111,43 +139,59 @@ export function LinkFormFields({
             <Controller
               name="custom_slug"
               control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  placeholder={t("form.customSlugPlaceholder")}
-                  error={!!errors.custom_slug}
-                  helperText={
-                    errors.custom_slug?.message ||
-                    (isMobile
-                      ? `${shortUrlPrefix} · ${t("form.slugPrefixHint")}`
-                      : t("form.customSlugHelper"))
-                  }
-                  InputProps={
-                    isMobile
-                      ? undefined
-                      : {
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontFamily: "monospace",
-                                  color: "text.secondary",
-                                  pr: 0.5,
-                                }}
-                              >
-                                {shortUrlPrefix}
-                              </Typography>
-                            </InputAdornment>
-                          ),
-                        }
-                  }
-                  sx={{
-                    "& .MuiInputBase-input": { fontFamily: "monospace" },
-                  }}
-                />
-              )}
+              render={({ field }) => {
+                // Show ghost text suggestion only when the field is empty and
+                // a suggestion is available. Pressing Tab accepts it.
+                const showSuggestion = !field.value && !!slugSuggestion;
+
+                return (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    placeholder={
+                      showSuggestion
+                        ? slugSuggestion!
+                        : t("form.customSlugPlaceholder")
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && showSuggestion) {
+                        field.onChange(slugSuggestion);
+                        // Allow Tab to continue moving focus naturally
+                      }
+                    }}
+                    error={!!errors.custom_slug}
+                    helperText={
+                      errors.custom_slug?.message ||
+                      (isMobile
+                        ? `${shortUrlPrefix} · ${t("form.slugPrefixHint")}`
+                        : t("form.customSlugHelper"))
+                    }
+                    InputProps={
+                      isMobile
+                        ? undefined
+                        : {
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    fontFamily: "monospace",
+                                    color: "text.secondary",
+                                    pr: 0.5,
+                                  }}
+                                >
+                                  {shortUrlPrefix}
+                                </Typography>
+                              </InputAdornment>
+                            ),
+                          }
+                    }
+                    sx={{
+                      "& .MuiInputBase-input": { fontFamily: "monospace" },
+                    }}
+                  />
+                );
+              }}
             />
           </Box>
 
