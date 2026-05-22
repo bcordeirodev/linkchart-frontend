@@ -83,9 +83,12 @@ export function FormSection({
         <Typography
           variant="overline"
           sx={{
-            color: "text.secondary",
+            color: (theme) =>
+              theme.palette.mode === "dark"
+                ? theme.palette.grey[100]
+                : theme.palette.text.primary,
             fontWeight: 600,
-            fontSize: "0.6875rem",
+            fontSize: "0.72rem",
             letterSpacing: "0.08em",
             lineHeight: 1.6,
           }}
@@ -95,7 +98,13 @@ export function FormSection({
         {caption ? (
           <Typography
             variant="caption"
-            sx={{ color: "text.secondary", flex: 1 }}
+            sx={{
+              color: (theme) =>
+                theme.palette.mode === "dark"
+                  ? theme.palette.grey[300]
+                  : theme.palette.text.secondary,
+              flex: 1,
+            }}
           >
             — {caption}
           </Typography>

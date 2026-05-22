@@ -9,3 +9,4 @@ export { RedirectingState } from "./RedirectingState";
 export { ErrorAlert } from "./ErrorAlert";
 export { UpgradeCTA } from "./UpgradeCTA";
 export { ShorterSubdomainPromo } from "./ShorterSubdomainPromo";
+export { ShorterHowItWorks } from "./ShorterHowItWorks";

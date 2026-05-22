@@ -23,6 +23,10 @@ export {
   PageSectionHeading,
   type PageSectionHeadingProps,
 } from "./PageSectionHeading";
+export {
+  PublicBlockIcon,
+  type PublicBlockIconVariant,
+} from "./PublicBlockIcon";
 
 // Data Display
 export { default as MetricCardOptimized } from "./MetricCardOptimized";

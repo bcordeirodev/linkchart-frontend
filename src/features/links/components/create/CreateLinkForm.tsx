@@ -1,6 +1,5 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Alert } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
@@ -18,6 +17,7 @@ import {
 } from "../../components/forms/LinkFormSchema";
 import { useCopyShortUrlForLink } from "../../hooks/useCopyShortUrlForLink";
 import { useCreateLink } from "../../hooks/useLinks";
+import { useLinkFormMetaSuggestions } from "../../hooks/useLinkFormMetaSuggestions";
 
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
 import type { CreateLinkFormProps } from "../../types/forms";
@@ -36,6 +36,7 @@ export function CreateLinkForm({
     handleSubmit,
     formState: { errors, isValid },
     setError,
+    setValue,
   } = useForm<LinkFormData>({
     resolver: zodResolver(
       createLinkFormSchema(
@@ -45,6 +46,13 @@ export function CreateLinkForm({
     defaultValues: defaultLinkFormValues,
     mode: "onChange",
   });
+
+  const {
+    slugSuggestion,
+    isResolvingSlugSuggestion,
+    titleSuggestion,
+    isLoadingMeta,
+  } = useLinkFormMetaSuggestions({ control, setValue });
 
   const convertDateForSubmit = (
     dateValue: Dayjs | null | undefined,
@@ -115,7 +123,15 @@ export function CreateLinkForm({
           />
         }
       >
-        <LinkFormFields control={control} errors={errors} isEdit={false} />
+        <LinkFormFields
+          control={control}
+          errors={errors}
+          isEdit={false}
+          slugSuggestion={slugSuggestion}
+          isResolvingSlugSuggestion={isResolvingSlugSuggestion}
+          titleSuggestion={titleSuggestion}
+          isLoadingMeta={isLoadingMeta}
+        />
       </LinkFormShell>
     </form>
   );

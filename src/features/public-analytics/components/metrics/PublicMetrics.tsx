@@ -4,6 +4,8 @@ import { alpha } from "@mui/material/styles";
 import { MousePointerClick, Activity, CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { getPublicMetricCardSx } from "@/lib/theme/publicPageStyles";
+
 import type { PublicAnalyticsData } from "../../types";
 
 interface PublicMetricsProps {
@@ -15,12 +17,12 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
   const { t, i18n } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
 
-  const cardBase = {
-    background: alpha(theme.palette.text.primary, isDark ? 0.03 : 0.04),
-    border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.7 : 1)}`,
-    borderRadius: "12px",
-    p: { xs: "18px", md: "20px" },
-  } as const;
+  if (analyticsData.total_clicks < 1) {
+    return null;
+  }
+
+  const cardBase = getPublicMetricCardSx(theme);
+  const cardAccent = getPublicMetricCardSx(theme, true);
 
   const labelColor = alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6);
   const subColor = alpha(theme.palette.text.primary, isDark ? 0.4 : 0.5);
@@ -75,9 +77,7 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
     >
       <Box
         sx={{
-          ...cardBase,
-          borderColor: alpha(theme.palette.primary.main, 0.24),
-          background: alpha(theme.palette.primary.main, isDark ? 0.06 : 0.05),
+          ...cardAccent,
           gridColumn: { xs: "span 2", md: "span 1" },
         }}
       >

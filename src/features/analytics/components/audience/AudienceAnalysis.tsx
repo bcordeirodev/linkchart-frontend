@@ -8,6 +8,7 @@ import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { ResponsiveContainer } from "@/shared/ui/base/ResponsiveContainer";
 import { AudienceChart } from "./AudienceChart";
+import { AudienceExtraCharts } from "./AudienceExtraCharts";
 import { AudienceInsights } from "./AudienceInsights";
 import { AudienceMetrics } from "./AudienceMetrics";
 import { BehaviorSection } from "./BehaviorSection";
@@ -82,6 +83,7 @@ export function AudienceAnalysis({
         minHeight={300}
       >
         <ResponsiveContainer style={{ padding: 0 }}>
+          {/* 1. Metric cards */}
           {shouldUseHook && stats ? (
             <Box sx={{ mb: 3 }}>
               <AudienceMetrics data={{ audience: audienceData, stats }} />
@@ -89,15 +91,7 @@ export function AudienceAnalysis({
           ) : null}
 
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <AudienceInsights
-                deviceBreakdown={deviceBreakdown}
-                browserBreakdown={(audienceData as AnyData)?.browser_breakdown}
-                totalClicks={totalClicks}
-                showAdvancedInsights={shouldUseHook}
-              />
-            </Grid>
-
+            {/* 2. Main tabbed chart — protagonist */}
             <Grid item xs={12}>
               <EnhancedPaper variant="glass" animated>
                 <AudienceChart
@@ -120,6 +114,7 @@ export function AudienceAnalysis({
               </EnhancedPaper>
             </Grid>
 
+            {/* 3. Behavior / navigation context */}
             {(audienceData as AnyData)?.navigation_context_breakdown &&
               (audienceData as AnyData)?.navigation_context_breakdown?.length >
                 0 && (
@@ -132,6 +127,7 @@ export function AudienceAnalysis({
                 </Grid>
               )}
 
+            {/* 4. Social platforms */}
             {(audienceData as AnyData)?.social_platform_breakdown &&
               (audienceData as AnyData)?.social_platform_breakdown?.length >
                 0 && (
@@ -145,6 +141,7 @@ export function AudienceAnalysis({
               )}
           </Grid>
 
+          {/* 5. Quality section */}
           {(audienceData as AnyData)?.quality_breakdown &&
             (audienceData as AnyData)?.quality_breakdown?.tiers !==
               undefined && (
@@ -154,6 +151,30 @@ export function AudienceAnalysis({
                 />
               </Box>
             )}
+
+          {/* 6. Audience insights — secondary detail */}
+          <Box sx={{ mt: 3 }}>
+            <AudienceInsights
+              deviceBreakdown={deviceBreakdown}
+              browserBreakdown={(audienceData as AnyData)?.browser_breakdown}
+              totalClicks={totalClicks}
+              showAdvancedInsights={shouldUseHook}
+            />
+          </Box>
+
+          {/* 7. Supplementary donut charts (Idioma / Plataforma / Tipo de Conexão) */}
+          <AudienceExtraCharts
+            languageBreakdown={
+              (audienceData as AnyData)?.audience?.language_breakdown ?? []
+            }
+            platformBreakdown={
+              (audienceData as AnyData)?.audience?.platform_breakdown ?? []
+            }
+            connectionBreakdown={
+              (audienceData as AnyData)?.audience?.connection_type_breakdown ??
+              []
+            }
+          />
         </ResponsiveContainer>
       </AnalyticsStateManager>
     </Box>
