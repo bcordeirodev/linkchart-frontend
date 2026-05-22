@@ -16,7 +16,10 @@ interface ProfileSectionProps {
 }
 
 /** Card shell shared by profile settings sections. */
-export function ProfileSection({ children, emphasized = false }: ProfileSectionProps) {
+export function ProfileSection({
+  children,
+  emphasized = false,
+}: ProfileSectionProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const accent = theme.palette.primary.main;
@@ -136,7 +139,11 @@ export function ProfileSectionHeader({
                 <Typography
                   variant="caption"
                   color="inherit"
-                  sx={{ fontSize: "0.75rem", lineHeight: 1.4, display: "block" }}
+                  sx={{
+                    fontSize: "0.75rem",
+                    lineHeight: 1.4,
+                    display: "block",
+                  }}
                 >
                   {description}
                 </Typography>

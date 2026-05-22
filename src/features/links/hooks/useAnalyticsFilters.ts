@@ -199,11 +199,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     : [];
   const actionableOnly = searchParams.get("actionable") === "true";
 
-  const tab = parseEnum<TabId>(
-    searchParams.get("tab"),
-    TAB_IDS,
-    "overview",
-  );
+  const tab = parseEnum<TabId>(searchParams.get("tab"), TAB_IDS, "overview");
 
   const rawGeoSubTab = parseInt(searchParams.get("geoSubTab") ?? "0", 10);
   const geoSubTab =

@@ -40,12 +40,13 @@ export function BenefitBadges({ state, onReset }: BenefitBadgesProps) {
   if (!isSuccess) {
     const features = [
       t("benefits.realtimeAnalytics"),
+      t("benefits.freeSubdomain"),
       t("benefits.freeQr"),
-      t("benefits.noExpiration"),
       t("benefits.customSlug"),
       t("benefits.geoLocation"),
       t("benefits.utmCampaigns"),
       t("benefits.fullDashboard"),
+      t("benefits.noExpiration"),
     ];
 
     return (

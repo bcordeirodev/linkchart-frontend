@@ -62,7 +62,11 @@ export function LinksBrowseSection({
     : t("list.sections.linksBrowseDescription", { count });
 
   return (
-    <EnhancedPaper variant="outlined" animated={false} sx={getLinksPanelSx(theme)}>
+    <EnhancedPaper
+      variant="outlined"
+      animated={false}
+      sx={getLinksPanelSx(theme)}
+    >
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
         <LinksListSectionHeading
           icon={<Link2 {...ICON_MD} />}

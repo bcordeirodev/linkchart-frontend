@@ -13,6 +13,12 @@ interface UseLinkClicksOptions {
   linkId: string;
   initialPage?: number;
   initialPerPage?: number;
+  /** ISO datetime string — filters clicks with `created_at >= dateFrom`. */
+  dateFrom?: string | null;
+  /** ISO datetime string — filters clicks with `created_at <= dateTo`. */
+  dateTo?: string | null;
+  /** When true, excludes bot clicks from the result. */
+  excludeBots?: boolean;
 }
 
 interface UseLinkClicksReturn {
@@ -41,17 +47,23 @@ const DEFAULT_PER_PAGE = 25;
  * @param options.linkId - canonical link id; the hook stays idle when empty
  * @param options.initialPage - 1-based page (default `1`)
  * @param options.initialPerPage - page size (default `25`)
+ * @param options.dateFrom - ISO datetime string; filters `created_at >= dateFrom`
+ * @param options.dateTo - ISO datetime string; filters `created_at <= dateTo`
+ * @param options.excludeBots - when true, excludes bot clicks from results
  * @returns items + meta + paging/sort controls (`setPage`, `setPerPage`, `setSearch`, `setSort`, `refresh`)
  *
  * @remarks
- * Endpoint: `GET /api/links/{id}/clicks` (via `linkService.getClicksList()`).
+ * Endpoint: `GET /api/link/{id}/clicks-list` (via `linkService.getClicksList()`).
  * Uses local `useState`/`useEffect` (not TanStack Query) and a `reqId` ref to discard out-of-order responses.
- * Changing `search` or `perPage` resets `page` to 1.
+ * Changing `search`, `perPage`, `dateFrom`, `dateTo`, or `excludeBots` resets `page` to 1.
  */
 export function useLinkClicks({
   linkId,
   initialPage = 1,
   initialPerPage = DEFAULT_PER_PAGE,
+  dateFrom,
+  dateTo,
+  excludeBots = false,
 }: UseLinkClicksOptions): UseLinkClicksReturn {
   const [items, setItems] = useState<LinkClickItem[]>([]);
   const [meta, setMeta] = useState<LinkClicksMeta | null>(null);
@@ -65,6 +77,23 @@ export function useLinkClicks({
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
   const reqIdRef = useRef(0);
+
+  // Reset to page 1 whenever the external filter props change
+  const prevDateFrom = useRef(dateFrom);
+  const prevDateTo = useRef(dateTo);
+  const prevExcludeBots = useRef(excludeBots);
+  useEffect(() => {
+    if (
+      prevDateFrom.current !== dateFrom ||
+      prevDateTo.current !== dateTo ||
+      prevExcludeBots.current !== excludeBots
+    ) {
+      prevDateFrom.current = dateFrom;
+      prevDateTo.current = dateTo;
+      prevExcludeBots.current = excludeBots;
+      setPage(1);
+    }
+  }, [dateFrom, dateTo, excludeBots]);
 
   const fetchClicks = useCallback(async () => {
     if (!linkId) {
@@ -82,6 +111,9 @@ export function useLinkClicks({
         search: search || undefined,
         sort_by: sortBy,
         sort_dir: sortDir,
+        date_from: dateFrom ?? undefined,
+        date_to: dateTo ?? undefined,
+        exclude_bots: excludeBots || undefined,
       });
 
       // Descarta resposta de request superada
@@ -106,7 +138,17 @@ export function useLinkClicks({
         setLoading(false);
       }
     }
-  }, [linkId, page, perPage, search, sortBy, sortDir]);
+  }, [
+    linkId,
+    page,
+    perPage,
+    search,
+    sortBy,
+    sortDir,
+    dateFrom,
+    dateTo,
+    excludeBots,
+  ]);
 
   useEffect(() => {
     fetchClicks();

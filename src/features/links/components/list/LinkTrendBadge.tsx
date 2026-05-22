@@ -7,7 +7,10 @@ interface LinkTrendBadgeProps {
   compact?: boolean;
 }
 
-export function LinkTrendBadge({ trend, compact = false }: LinkTrendBadgeProps) {
+export function LinkTrendBadge({
+  trend,
+  compact = false,
+}: LinkTrendBadgeProps) {
   if (!trend) {
     return (
       <Typography
@@ -34,12 +37,18 @@ export function LinkTrendBadge({ trend, compact = false }: LinkTrendBadgeProps) 
   if (compact) {
     return (
       <Stack direction="row" spacing={0.5} alignItems="center">
-        <Typography variant="caption" sx={{ fontWeight: 700, fontSize: "0.75rem" }}>
+        <Typography
+          variant="caption"
+          sx={{ fontWeight: 700, fontSize: "0.75rem" }}
+        >
           {current.toLocaleString("pt-BR")}
         </Typography>
         <Stack direction="row" alignItems="center" sx={{ color }}>
           <Icon size={12} strokeWidth={1.5} />
-          <Typography variant="caption" sx={{ color, fontWeight: 600, fontSize: "0.7rem" }}>
+          <Typography
+            variant="caption"
+            sx={{ color, fontWeight: 600, fontSize: "0.7rem" }}
+          >
             {sign}
             {percent_change.toFixed(1)}%
           </Typography>

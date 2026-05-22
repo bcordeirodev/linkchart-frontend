@@ -157,7 +157,10 @@ export function TemporalChart({
   const showWeekendComparison =
     !segment || segment === "all" || segment === "business";
   const showBusinessComparison =
-    !segment || segment === "all" || segment === "weekday" || segment === "weekend";
+    !segment ||
+    segment === "all" ||
+    segment === "weekday" ||
+    segment === "weekend";
 
   return (
     <Box sx={{ width: "100%", overflow: "hidden" }}>

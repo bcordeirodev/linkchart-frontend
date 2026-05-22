@@ -42,11 +42,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
     );
 
   const statValueOptional = (value: string | number) =>
-    statsLoading ? (
-      <Skeleton variant="text" width={40} height={32} />
-    ) : (
-      value
-    );
+    statsLoading ? <Skeleton variant="text" width={40} height={32} /> : value;
 
   const avgClicks =
     stats && stats.total_links > 0

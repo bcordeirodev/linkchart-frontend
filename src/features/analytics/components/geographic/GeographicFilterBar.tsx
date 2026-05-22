@@ -12,12 +12,12 @@ interface GeographicFilterBarProps {
 }
 
 const CONTINENT_OPTIONS = [
-  { code: null,  key: "all" as const },
-  { code: "NA",  key: "NA"  as const },
-  { code: "EU",  key: "EU"  as const },
-  { code: "AS",  key: "AS"  as const },
-  { code: "AF",  key: "AF"  as const },
-  { code: "OC",  key: "OC"  as const },
+  { code: null, key: "all" as const },
+  { code: "NA", key: "NA" as const },
+  { code: "EU", key: "EU" as const },
+  { code: "AS", key: "AS" as const },
+  { code: "AF", key: "AF" as const },
+  { code: "OC", key: "OC" as const },
 ] as const;
 
 /**

@@ -34,7 +34,10 @@ interface ContinentBreakdownProps {
   activeContinentCode?: string | null;
 }
 
-export function ContinentBreakdown({ continents, activeContinentCode }: ContinentBreakdownProps) {
+export function ContinentBreakdown({
+  continents,
+  activeContinentCode,
+}: ContinentBreakdownProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
@@ -158,7 +161,9 @@ export function ContinentBreakdown({ continents, activeContinentCode }: Continen
                     transition: "background-color 0.15s",
                   }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                  <Box
+                    sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+                  >
                     <Box
                       sx={{
                         width: 10,

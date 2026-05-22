@@ -55,14 +55,24 @@ function isValidSubdomainLabel(value: string): boolean {
 
 const EXAMPLE_SLUGS = ["abc123", "promo-verao"] as const;
 
-function LinkExample({ url, highlightPrefix }: { url: string; highlightPrefix?: string }) {
+function LinkExample({
+  url,
+  highlightPrefix,
+}: {
+  url: string;
+  highlightPrefix?: string;
+}) {
   if (highlightPrefix && url.startsWith(highlightPrefix)) {
     const rest = url.slice(highlightPrefix.length);
     return (
       <Typography
         variant="caption"
         component="div"
-        sx={{ fontFamily: "monospace", lineHeight: 1.9, wordBreak: "break-all" }}
+        sx={{
+          fontFamily: "monospace",
+          lineHeight: 1.9,
+          wordBreak: "break-all",
+        }}
       >
         <Box component="span" sx={{ fontWeight: 500, color: "text.secondary" }}>
           {highlightPrefix}
@@ -105,9 +115,7 @@ function SubdomainStatusChip({
 
   const main = active ? brand : free.main;
   const bg = active ? alpha(brand, isDark ? 0.14 : 0.1) : free.subtleBg;
-  const border = active
-    ? alpha(brand, isDark ? 0.28 : 0.2)
-    : free.border;
+  const border = active ? alpha(brand, isDark ? 0.28 : 0.2) : free.border;
 
   return (
     <Chip
@@ -202,9 +210,7 @@ export function SubdomainSettings() {
   const statusChip = (
     <SubdomainStatusChip
       active={!!subdomain}
-      label={
-        subdomain ? t("subdomain.chip.active") : t("subdomain.chip.free")
-      }
+      label={subdomain ? t("subdomain.chip.active") : t("subdomain.chip.free")}
     />
   );
 
@@ -277,7 +283,9 @@ export function SubdomainSettings() {
               >
                 {subdomain.full_url}
               </Link>
-              <Tooltip title={copied ? t("subdomain.copied") : t("subdomain.copy")}>
+              <Tooltip
+                title={copied ? t("subdomain.copied") : t("subdomain.copy")}
+              >
                 <IconButton
                   size="small"
                   aria-label={t("subdomain.copy")}
@@ -322,7 +330,9 @@ export function SubdomainSettings() {
               disabled={isReleasing}
               sx={{ borderColor: "divider", color: "text.secondary" }}
             >
-              {isReleasing ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
+              {isReleasing ? (
+                <CircularProgress size={16} sx={{ mr: 1 }} />
+              ) : null}
               {t("subdomain.releaseButton")}
             </Button>
             {releaseError ? (
@@ -407,7 +417,10 @@ export function SubdomainSettings() {
               {isCheckingAvailability ? (
                 <CircularProgress size={14} />
               ) : availability?.available ? (
-                <CheckCircleOutlineIcon fontSize="small" sx={{ color: "text.secondary" }} />
+                <CheckCircleOutlineIcon
+                  fontSize="small"
+                  sx={{ color: "text.secondary" }}
+                />
               ) : availability ? (
                 <ErrorOutlineIcon fontSize="small" color="error" />
               ) : null}
@@ -485,7 +498,9 @@ export function SubdomainSettings() {
                 !termsAccepted
               }
             >
-              {isClaiming ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
+              {isClaiming ? (
+                <CircularProgress size={16} sx={{ mr: 1 }} />
+              ) : null}
               {t("subdomain.claimButton")}
             </Button>
           </Box>

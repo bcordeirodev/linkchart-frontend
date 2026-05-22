@@ -124,7 +124,12 @@ export function InsightsAnalysis({
     }
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.insights, priority, JSON.stringify(insightCategories), actionableOnly]);
+  }, [
+    data?.insights,
+    priority,
+    JSON.stringify(insightCategories),
+    actionableOnly,
+  ]);
 
   /** Whether to render the filter bar — requires all three callbacks to be present. */
   const showFilterBar =

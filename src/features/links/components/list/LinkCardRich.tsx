@@ -98,7 +98,9 @@ function MetricsRow({
   return (
     <>
       {items.map((child, index) => (
-        <Fragment key={isValidElement(child) && child.key != null ? child.key : index}>
+        <Fragment
+          key={isValidElement(child) && child.key != null ? child.key : index}
+        >
           {index > 0 ? <Box aria-hidden sx={dividerSx} /> : null}
           {child}
         </Fragment>
@@ -136,7 +138,12 @@ function LinkOgPreview({
         component="img"
         src={imageUrl}
         alt={title ?? ""}
-        sx={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        sx={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: "block",
+        }}
         onError={(e) => {
           (e.target as HTMLImageElement).style.display = "none";
         }}
@@ -229,7 +236,12 @@ export function LinkCardRich({
     >
       <Box sx={linkCardContentSx}>
         {/* 1 — Favicon + title + status + menu (one row) */}
-        <Stack direction="row" alignItems="center" spacing={1} sx={{ minWidth: 0 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1}
+          sx={{ minWidth: 0 }}
+        >
           <LinkPreviewThumb preview={meta?.preview} size={22} />
           <Typography
             variant="body2"
@@ -259,7 +271,10 @@ export function LinkCardRich({
               "& .MuiChip-label": { px: 0.75 },
             }}
           />
-          <Box onClick={(e) => e.stopPropagation()} sx={{ flexShrink: 0, ml: 0.25 }}>
+          <Box
+            onClick={(e) => e.stopPropagation()}
+            sx={{ flexShrink: 0, ml: 0.25 }}
+          >
             <LinkActionsMenu
               onEdit={() => navigate(`/links/edit/${link.id}`)}
               onQR={() => navigate(`/links/qr/${link.id}`)}
@@ -315,7 +330,9 @@ export function LinkCardRich({
         <Box sx={getLinkCardMetricsRowSx(theme)}>
           <MetricsRow dividerSx={metricDividerSx}>
             {meta?.sparkline?.length ? (
-              <Box sx={{ display: "flex", alignItems: "center", minHeight: 22 }}>
+              <Box
+                sx={{ display: "flex", alignItems: "center", minHeight: 22 }}
+              >
                 <LinkSparkline
                   data={meta.sparkline}
                   trend={meta.trend?.percent_change}
@@ -328,7 +345,10 @@ export function LinkCardRich({
             <LinkTrendBadge trend={meta?.trend} compact />
 
             <InlineMetric label={t("metrics.lastClick")}>
-              <Typography variant="caption" sx={{ fontWeight: 600, fontSize: "0.75rem" }}>
+              <Typography
+                variant="caption"
+                sx={{ fontWeight: 600, fontSize: "0.75rem" }}
+              >
                 {lastClickLabel}
               </Typography>
             </InlineMetric>
@@ -336,14 +356,20 @@ export function LinkCardRich({
             <LinkHealthBadge health={meta?.health} />
 
             <InlineMetric label={t("metrics.totalClicks")}>
-              <Typography variant="caption" sx={{ fontWeight: 700, fontSize: "0.75rem" }}>
+              <Typography
+                variant="caption"
+                sx={{ fontWeight: 700, fontSize: "0.75rem" }}
+              >
                 {link.clicks.toLocaleString()}
               </Typography>
             </InlineMetric>
 
             {createdLabel ? (
               <InlineMetric label={t("table.created")}>
-                <Typography variant="caption" sx={{ fontWeight: 600, fontSize: "0.75rem" }}>
+                <Typography
+                  variant="caption"
+                  sx={{ fontWeight: 600, fontSize: "0.75rem" }}
+                >
                   {createdLabel}
                 </Typography>
               </InlineMetric>
@@ -365,7 +391,8 @@ export function LinkCardRich({
                           : "text.primary",
                     }}
                   >
-                    {link.clicks.toLocaleString()}/{link.click_limit.toLocaleString()}
+                    {link.clicks.toLocaleString()}/
+                    {link.click_limit.toLocaleString()}
                   </Typography>
                 </InlineMetric>
               </Tooltip>
