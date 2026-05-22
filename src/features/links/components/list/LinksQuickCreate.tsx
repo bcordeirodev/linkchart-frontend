@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
+  CircularProgress,
   FormLabel,
   InputAdornment,
   Stack,
@@ -20,6 +21,8 @@ import { z } from "zod";
 
 import { useCreateLink } from "@/features/links/hooks/useLinks";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
+import { useUrlMeta } from "@/features/links/hooks/useUrlMeta";
+import { slugify } from "@/features/links/utils/slugify";
 import { getUrlSafetyHelperNode } from "@/features/links/components/forms/UrlSafetyIndicator";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { radiusTokens } from "@/lib/theme/designSystem";
@@ -115,6 +118,7 @@ export function LinksQuickCreate({
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<QuickFormData>({
     resolver: zodResolver(schema),
@@ -122,7 +126,12 @@ export function LinksQuickCreate({
   });
 
   const urlValue = watch("original_url");
+  const slugValue = watch("custom_slug");
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
+
+  // Metadata-based slug suggestion
+  const { ogTitle, isLoading: isLoadingMeta } = useUrlMeta(urlValue ?? "");
+  const slugSuggestion = ogTitle ? slugify(ogTitle) : null;
 
   const urlIsUnsafe = safetyStatus === "unsafe";
   const urlIsChecking = safetyStatus === "checking";
@@ -225,6 +234,15 @@ export function LinksQuickCreate({
                         />
                       </InputAdornment>
                     ),
+                    endAdornment: isLoadingMeta ? (
+                      <InputAdornment position="end">
+                        <CircularProgress
+                          size={14}
+                          thickness={5}
+                          sx={{ color: "text.disabled" }}
+                        />
+                      </InputAdornment>
+                    ) : undefined,
                   },
                   formHelperText: {
                     sx: {
@@ -245,7 +263,18 @@ export function LinksQuickCreate({
               </FormLabel>
               <TextField
                 {...register("custom_slug")}
-                placeholder={t("list.quickCreate.slugPlaceholder")}
+                placeholder={
+                  !slugValue && slugSuggestion
+                    ? slugSuggestion
+                    : t("list.quickCreate.slugPlaceholder")
+                }
+                onKeyDown={(e) => {
+                  if (e.key === "Tab" && !slugValue && slugSuggestion) {
+                    setValue("custom_slug", slugSuggestion, {
+                      shouldValidate: true,
+                    });
+                  }
+                }}
                 size="small"
                 fullWidth
                 error={!!errors.custom_slug}
