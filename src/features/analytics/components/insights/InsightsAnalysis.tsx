@@ -8,6 +8,7 @@ import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
+import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import { useInsightsData } from "../../hooks/useInsightsData";
 
@@ -135,6 +136,7 @@ export function InsightsAnalysis({
         loading={loading}
         error={error}
         hasData={!!data?.insights?.length}
+        skeleton={<AnalyticsTabSkeleton hasFilter metricCards={4} />}
         onRetry={refresh}
         loadingMessage={t("insights.loading")}
         emptyMessage={t("insights.empty")}
