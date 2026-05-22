@@ -53,6 +53,8 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
     );
   }
 
+  const hasClicks = analyticsData.total_clicks >= 1;
+
   return (
     <PublicLayout variant="shorter" chrome="minimal">
       <Box sx={{ position: "relative", minHeight: "100vh" }}>
@@ -119,11 +121,13 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
               </Box>
             </Fade>
 
-            <Fade in timeout={600}>
-              <Box>
-                <PublicMetrics analyticsData={analyticsData} />
-              </Box>
-            </Fade>
+            {hasClicks ? (
+              <Fade in timeout={600}>
+                <Box>
+                  <PublicMetrics analyticsData={analyticsData} />
+                </Box>
+              </Fade>
+            ) : null}
 
             <AdSlot
               slot={

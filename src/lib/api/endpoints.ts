@@ -36,8 +36,9 @@ export const API_CONFIG = {
     UPDATE_LINK: (id: string) => `/api/links/${id}`,
     DELETE_LINK: (id: string) => `/api/links/${id}`,
 
-    // --- Link meta (sparkline, trend, preview, health) ---
+    // --- Link meta (sparkline, trend, preview, health, url-meta) ---
     LINKS_BATCH_META: "/api/links/batch-meta",
+    LINK_URL_META: "/api/links/url-meta",
     LINK_SPARKLINE: (id: string) => `/api/links/${id}/sparkline`,
     LINK_TREND: (id: string) => `/api/links/${id}/trend`,
     LINK_PREVIEW: (id: string) => `/api/links/${id}/preview`,

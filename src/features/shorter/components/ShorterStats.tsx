@@ -5,6 +5,8 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 
+import { getPublicSectionHeadingSx } from "@/lib/theme/publicPageStyles";
+
 export function ShorterStats() {
   const theme = useTheme();
   const { t } = useTranslation("public");
@@ -22,17 +24,7 @@ export function ShorterStats() {
 
   return (
     <Box ref={containerRef}>
-      <Typography
-        sx={{
-          textAlign: "center",
-          mb: { xs: 3, md: 3.5 },
-          fontSize: "0.75rem",
-          fontWeight: 700,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: theme.palette.text.secondary,
-        }}
-      >
+      <Typography component="h2" sx={getPublicSectionHeadingSx(theme)}>
         {t("shorter.stats.sectionTitle")}
       </Typography>
 

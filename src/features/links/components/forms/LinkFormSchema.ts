@@ -13,7 +13,7 @@ export function createLinkFormSchema(t: TranslateFn) {
       original_url: z
         .string()
         .min(1, t("form.validation.urlRequired"))
-        .max(2048, t("form.validation.urlMaxLength"))
+        .max(4096, t("form.validation.urlMaxLength"))
         .url(t("form.validation.urlInvalid"))
         .regex(/^https?:\/\//, t("form.validation.urlScheme"))
         .refine((url) => {
@@ -34,7 +34,7 @@ export function createLinkFormSchema(t: TranslateFn) {
       custom_slug: z
         .string()
         .min(3, t("form.validation.slugMin"))
-        .max(50, t("form.validation.slugMax"))
+        .max(100, t("form.validation.slugMax"))
         .regex(/^[a-zA-Z0-9\-_]+$/, t("form.validation.slugPattern"))
         .refine(
           (slug) => !RESERVED_SLUGS.includes(slug?.toLowerCase()),

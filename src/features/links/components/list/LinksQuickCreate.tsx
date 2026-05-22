@@ -2,11 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  alpha,
   Box,
   Button,
+  CircularProgress,
   FormLabel,
   InputAdornment,
-  Stack,
   TextField,
   Tooltip,
   Typography,
@@ -20,7 +21,14 @@ import { z } from "zod";
 
 import { useCreateLink } from "@/features/links/hooks/useLinks";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
-import { getUrlSafetyHelperNode } from "@/features/links/components/forms/UrlSafetyIndicator";
+import { useAvailableSlugSuggestion } from "@/features/links/hooks/useAvailableSlugSuggestion";
+import { useUrlMeta } from "@/features/links/hooks/useUrlMeta";
+import { RESERVED_SLUGS } from "@/features/links/utils/slugAvailabilityCheck";
+import { slugify, slugifyFromUrl } from "@/features/links/utils/slugify";
+import {
+  buildUrlSafetyLabels,
+  getUrlSafetyHelperNode,
+} from "@/features/links/components/forms/UrlSafetyIndicator";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
@@ -30,14 +38,13 @@ import { LinksListSectionHeading } from "./LinksListSectionHeading";
 import { getLinksQuickCreatePanelSx } from "./linksPanelStyles";
 
 import type { LinkResponse } from "@/types";
+import type { Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
 
 interface LinksQuickCreateProps {
   /** Called after a link is created (list is invalidated by the mutation). */
   onLinkCreated?: (link: LinkResponse) => void;
 }
-
-const RESERVED_SLUGS = ["api", "admin", "www", "mail", "ftp", "r", "redirect"];
 
 type QuickFormData = {
   original_url: string;
@@ -47,22 +54,69 @@ type QuickFormData = {
 /** Matches MUI medium button height for a single control row. */
 const CONTROL_HEIGHT = 40;
 
-const inputRootSx = {
+const getInputRootSx = (theme: Theme) => {
+  const bg = theme.palette.background.default;
+
+  return {
+    "& .MuiOutlinedInput-root": {
+      height: CONTROL_HEIGHT,
+      borderRadius: `${radiusTokens.md}px`,
+      bgcolor: bg,
+      "&:hover": { bgcolor: bg },
+      "&.Mui-focused": { bgcolor: `${bg} !important` },
+      "& input": {
+        py: 0,
+        height: "100%",
+        boxSizing: "border-box",
+      },
+      "& input:-webkit-autofill": {
+        WebkitBoxShadow: `0 0 0 100px ${bg} inset`,
+        WebkitTextFillColor: theme.palette.text.primary,
+      },
+    },
+    "& .MuiFormHelperText-root": {
+      mx: 0,
+      mt: 0.75,
+    },
+  };
+};
+
+/** Extra styles when slug field shows the «Usar» accept control. */
+const slugAcceptAdornmentSx = {
   "& .MuiOutlinedInput-root": {
     height: CONTROL_HEIGHT,
-    borderRadius: `${radiusTokens.md}px`,
-    bgcolor: "background.default",
-    "& input": {
-      py: 0,
-      height: "100%",
-      boxSizing: "border-box",
+    minHeight: CONTROL_HEIGHT,
+    alignItems: "center",
+    pr: 1.25,
+    "& .MuiOutlinedInput-input": {
+      pr: "6px",
     },
   },
-  "& .MuiFormHelperText-root": {
-    mx: 0,
-    mt: 0.75,
+  "& .MuiInputAdornment-positionEnd": {
+    height: "auto",
+    maxHeight: 24,
+    ml: 0.75,
+    mr: 0.5,
+    flexShrink: 0,
   },
-};
+} as const;
+
+/** One grid for all breakpoints — avoids duplicate `register()` on hidden fields. */
+const formGridSx = {
+  display: "grid",
+  gridTemplateColumns: {
+    xs: "1fr",
+    md: "minmax(0, 2fr) minmax(0, 1fr) 132px",
+  },
+  columnGap: 2,
+  rowGap: { xs: 2, md: 0.75 },
+  alignItems: "start",
+} as const;
+
+const mdCell = (row: number, col: number) => ({
+  gridRow: { md: row },
+  gridColumn: { md: col },
+});
 
 const submitButtonSx = {
   height: CONTROL_HEIGHT,
@@ -82,6 +136,7 @@ export function LinksQuickCreate({
   onLinkCreated,
 }: LinksQuickCreateProps = {}) {
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("links");
   const navigate = useNavigate();
   const { mutateAsync, isPending } = useCreateLink();
@@ -98,10 +153,11 @@ export function LinksQuickCreate({
         custom_slug: z
           .string()
           .min(3, t("form.validation.slugMin"))
-          .max(50, t("form.validation.slugMax"))
+          .max(100, t("form.validation.slugMax"))
           .regex(/^[a-zA-Z0-9\-_]+$/, t("form.validation.slugPattern"))
           .refine(
-            (s) => !RESERVED_SLUGS.includes(s.toLowerCase()),
+            (s) =>
+              !(RESERVED_SLUGS as readonly string[]).includes(s.toLowerCase()),
             t("form.validation.slugReserved"),
           )
           .optional()
@@ -115,6 +171,7 @@ export function LinksQuickCreate({
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<QuickFormData>({
     resolver: zodResolver(schema),
@@ -122,15 +179,42 @@ export function LinksQuickCreate({
   });
 
   const urlValue = watch("original_url");
+  const slugValue = watch("custom_slug");
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
+
+  const { ogTitle, isLoading: isLoadingMeta } = useUrlMeta(urlValue ?? "");
+  const baseSlugSuggestion = useMemo(() => {
+    if (!urlValue) return null;
+    if (ogTitle) {
+      const fromTitle = slugify(ogTitle);
+      if (fromTitle) return fromTitle;
+    }
+    return slugifyFromUrl(urlValue) || null;
+  }, [ogTitle, urlValue]);
+  const { availableSlug, status: slugSuggestionStatus } =
+    useAvailableSlugSuggestion(!slugValue ? baseSlugSuggestion : null);
+
+  const showSlugSuggestion =
+    !slugValue && slugSuggestionStatus === "ready" && !!availableSlug;
+  const isResolvingSlugSuggestion =
+    !slugValue &&
+    !!baseSlugSuggestion &&
+    (isLoadingMeta || slugSuggestionStatus === "resolving");
+
+  const acceptSlugSuggestion = useCallback(() => {
+    if (availableSlug) {
+      setValue("custom_slug", availableSlug, { shouldValidate: true });
+    }
+  }, [availableSlug, setValue]);
 
   const urlIsUnsafe = safetyStatus === "unsafe";
   const urlIsChecking = safetyStatus === "checking";
 
+  const urlSafetyLabels = buildUrlSafetyLabels(t);
   const urlHelperText: ReactNode = errors.original_url?.message
     ? errors.original_url.message
     : safetyStatus !== "idle"
-      ? getUrlSafetyHelperNode(safetyStatus, threats, t)
+      ? getUrlSafetyHelperNode(safetyStatus, threats, urlSafetyLabels)
       : " ";
 
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
@@ -147,6 +231,21 @@ export function LinksQuickCreate({
     },
     [mutateAsync, onLinkCreated, reset, urlIsUnsafe, urlIsChecking],
   );
+
+  const inputRootSx = getInputRootSx(theme);
+  const primary = theme.palette.primary.main;
+  const slugHelperText = (() => {
+    if (errors.custom_slug?.message) {
+      return errors.custom_slug.message;
+    }
+    if (showSlugSuggestion) {
+      return t("list.quickCreate.slugTabHint");
+    }
+    if (isResolvingSlugSuggestion) {
+      return t("list.quickCreate.slugSuggestionChecking");
+    }
+    return undefined;
+  })();
 
   return (
     <EnhancedPaper
@@ -179,122 +278,197 @@ export function LinksQuickCreate({
         />
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-          {/* Labels — desktop only (mobile uses placeholders) */}
-          <Box
-            sx={{
-              display: { xs: "none", md: "flex" },
-              gap: 2,
-              mb: 0.75,
-            }}
-          >
-            <FormLabel sx={{ flex: 2, minWidth: 0 }}>
+          <Box sx={formGridSx}>
+            <FormLabel
+              sx={{
+                ...mdCell(1, 1),
+                display: "block",
+                lineHeight: 1.25,
+                order: { xs: 1, md: "unset" },
+              }}
+            >
               {t("list.quickCreate.urlLabel")}
             </FormLabel>
-            <FormLabel sx={{ flex: 1, minWidth: 0 }}>
+            <FormLabel
+              sx={{
+                ...mdCell(1, 2),
+                display: "block",
+                lineHeight: 1.25,
+                order: { xs: 4, md: "unset" },
+              }}
+            >
               {t("list.quickCreate.slugLabel")}
             </FormLabel>
-            <Box sx={{ width: 132, flexShrink: 0 }} aria-hidden />
-          </Box>
+            <Box
+              aria-hidden
+              sx={{ ...mdCell(1, 3), display: { xs: "none", md: "block" } }}
+            />
 
-          <Stack
-            direction={{ xs: "column", md: "row" }}
-            spacing={2}
-            alignItems={{ xs: "stretch", md: "center" }}
-          >
-            <Box sx={{ flex: { md: 2 }, minWidth: 0 }}>
-              <FormLabel
-                sx={{ display: { xs: "block", md: "none" }, mb: 0.75 }}
-              >
-                {t("list.quickCreate.urlLabel")}
-              </FormLabel>
-              <TextField
-                {...register("original_url")}
-                placeholder={t("list.quickCreate.urlPlaceholder")}
-                size="small"
-                fullWidth
-                error={!!errors.original_url || urlIsUnsafe}
-                helperText={urlHelperText}
-                disabled={isPending}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Link2
-                          {...ICON_SM}
-                          color={theme.palette.text.secondary}
+            <TextField
+              {...register("original_url")}
+              placeholder={t("list.quickCreate.urlPlaceholder")}
+              size="small"
+              fullWidth
+              error={!!errors.original_url || urlIsUnsafe}
+              helperText={urlHelperText}
+              disabled={isPending}
+              sx={[
+                inputRootSx,
+                mdCell(2, 1),
+                { order: { xs: 2, md: "unset" } },
+              ]}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Link2
+                        {...ICON_SM}
+                        color={theme.palette.text.secondary}
+                      />
+                    </InputAdornment>
+                  ),
+                  endAdornment: isLoadingMeta ? (
+                    <InputAdornment position="end">
+                      <CircularProgress
+                        size={14}
+                        thickness={5}
+                        sx={{ color: "text.disabled" }}
+                      />
+                    </InputAdornment>
+                  ) : undefined,
+                },
+                formHelperText: {
+                  sx: {
+                    display: { md: "none" },
+                    minHeight: urlHelperText === " " ? 0 : undefined,
+                  },
+                },
+              }}
+            />
+
+            <TextField
+              {...register("custom_slug")}
+              placeholder={
+                showSlugSuggestion
+                  ? availableSlug!
+                  : isResolvingSlugSuggestion && baseSlugSuggestion
+                    ? baseSlugSuggestion
+                    : t("list.quickCreate.slugPlaceholder")
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Tab" && showSlugSuggestion) {
+                  acceptSlugSuggestion();
+                }
+              }}
+              size="small"
+              fullWidth
+              error={!!errors.custom_slug}
+              helperText={slugHelperText}
+              disabled={isPending}
+              sx={[
+                inputRootSx,
+                showSlugSuggestion && slugAcceptAdornmentSx,
+                mdCell(2, 2),
+                { order: { xs: 5, md: "unset" } },
+              ]}
+              slotProps={{
+                input: {
+                  sx: {
+                    fontFamily: "monospace",
+                    fontWeight: 500,
+                    ...((showSlugSuggestion || isResolvingSlugSuggestion) &&
+                    (availableSlug || baseSlugSuggestion)
+                      ? {
+                          "&::placeholder": {
+                            color: alpha(
+                              primary,
+                              showSlugSuggestion ? 0.55 : 0.35,
+                            ),
+                            opacity: 1,
+                          },
+                        }
+                      : undefined),
+                  },
+                  endAdornment:
+                    isResolvingSlugSuggestion && !showSlugSuggestion ? (
+                      <InputAdornment position="end">
+                        <CircularProgress
+                          size={14}
+                          thickness={5}
+                          sx={{ color: "text.disabled" }}
                         />
                       </InputAdornment>
-                    ),
+                    ) : showSlugSuggestion ? (
+                      <InputAdornment position="end">
+                        <Box
+                          component="button"
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            acceptSlugSuggestion();
+                          }}
+                          sx={{
+                            border: "none",
+                            cursor: "pointer",
+                            font: "inherit",
+                            fontSize: "0.6875rem",
+                            fontWeight: 600,
+                            lineHeight: 1,
+                            py: 0.25,
+                            px: 0.625,
+                            borderRadius: `${radiusTokens.sm}px`,
+                            color: primary,
+                            bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
+                            transition: "background-color 120ms ease",
+                            "&:hover": {
+                              bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
+                            },
+                          }}
+                        >
+                          {t("list.quickCreate.slugAccept")}
+                        </Box>
+                      </InputAdornment>
+                    ) : undefined,
+                },
+                formHelperText: {
+                  sx: {
+                    display: { md: "none" },
+                    color: "text.secondary",
+                    fontSize: "0.75rem",
+                    lineHeight: 1.45,
                   },
-                  formHelperText: {
-                    sx: {
-                      display: { md: "none" },
-                      minHeight: urlHelperText === " " ? 0 : undefined,
-                    },
-                  },
-                }}
-                sx={inputRootSx}
-              />
-            </Box>
+                },
+              }}
+            />
 
-            <Box sx={{ flex: { md: 1 }, minWidth: 0 }}>
-              <FormLabel
-                sx={{ display: { xs: "block", md: "none" }, mb: 0.75 }}
-              >
-                {t("list.quickCreate.slugLabel")}
-              </FormLabel>
-              <TextField
-                {...register("custom_slug")}
-                placeholder={t("list.quickCreate.slugPlaceholder")}
-                size="small"
-                fullWidth
-                error={!!errors.custom_slug}
-                helperText={errors.custom_slug?.message}
-                disabled={isPending}
-                slotProps={{
-                  input: {
-                    sx: { fontFamily: "monospace", fontWeight: 500 },
-                  },
-                  formHelperText: {
-                    sx: { display: { md: "none" } },
-                  },
-                }}
-                sx={inputRootSx}
-              />
-            </Box>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={isPending || urlIsUnsafe || urlIsChecking}
+              startIcon={
+                succeeded ? <CheckCircle2 {...ICON_SM} /> : <Zap {...ICON_SM} />
+              }
+              sx={[
+                submitButtonSx,
+                mdCell(2, 3),
+                { order: { xs: 6, md: "unset" } },
+              ]}
+            >
+              {succeeded
+                ? t("list.quickCreate.success")
+                : t("list.quickCreate.submit")}
+            </Button>
 
-            <Box sx={{ flexShrink: 0, width: { md: 132 } }}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                disabled={isPending || urlIsUnsafe || urlIsChecking}
-                startIcon={
-                  succeeded ? (
-                    <CheckCircle2 {...ICON_SM} />
-                  ) : (
-                    <Zap {...ICON_SM} />
-                  )
-                }
-                sx={submitButtonSx}
-              >
-                {succeeded
-                  ? t("list.quickCreate.success")
-                  : t("list.quickCreate.submit")}
-              </Button>
-            </Box>
-          </Stack>
-
-          {/* Helpers below the aligned row on desktop */}
-          <Box
-            sx={{
-              display: { xs: "none", md: "flex" },
-              gap: 2,
-              mt: 0.75,
-            }}
-          >
-            <Box sx={{ flex: 2, minWidth: 0 }}>
+            <Box
+              sx={{
+                ...mdCell(3, 1),
+                minWidth: 0,
+                display: { xs: "none", md: "block" },
+              }}
+            >
               {urlHelperText !== " " ? (
                 <Typography
                   variant="caption"
@@ -309,14 +483,30 @@ export function LinksQuickCreate({
                 </Typography>
               ) : null}
             </Box>
-            <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box
+              sx={{
+                ...mdCell(3, 2),
+                minWidth: 0,
+                display: { xs: "none", md: "block" },
+              }}
+            >
               {errors.custom_slug?.message ? (
                 <Typography variant="caption" color="error">
                   {errors.custom_slug.message}
                 </Typography>
+              ) : slugHelperText ? (
+                <Typography
+                  variant="caption"
+                  sx={{ color: "text.secondary", lineHeight: 1.45 }}
+                >
+                  {slugHelperText}
+                </Typography>
               ) : null}
             </Box>
-            <Box sx={{ width: 132, flexShrink: 0 }} />
+            <Box
+              aria-hidden
+              sx={{ ...mdCell(3, 3), display: { xs: "none", md: "block" } }}
+            />
           </Box>
         </Box>
       </Box>

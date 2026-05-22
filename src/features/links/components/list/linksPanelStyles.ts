@@ -9,26 +9,50 @@ import {
 
 import type { Theme } from "@mui/material/styles";
 
+/** Slightly stronger than `theme.palette.divider` for /links cards and panels. */
+export function getLinksBorderColor(theme: Theme) {
+  const isDark = theme.palette.mode === "dark";
+
+  return alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14);
+}
+
+/** Hairline shadow for /links cards — softer than `elevation*.xs`. */
+export function getLinksCardShadow(
+  theme: Theme,
+  state: "rest" | "hover" = "rest",
+) {
+  const isDark = theme.palette.mode === "dark";
+  const ink = theme.palette.common.black;
+
+  if (state === "hover") {
+    return isDark
+      ? `0 2px 6px ${alpha(ink, 0.22)}, 0 1px 2px ${alpha(ink, 0.14)}`
+      : `0 2px 6px ${alpha(ink, 0.06)}, 0 1px 2px ${alpha(ink, 0.04)}`;
+  }
+
+  return isDark
+    ? `0 1px 3px ${alpha(ink, 0.16)}, 0 1px 2px ${alpha(ink, 0.1)}`
+    : `0 1px 4px ${alpha(ink, 0.045)}, 0 1px 2px ${alpha(ink, 0.03)}`;
+}
+
 /** Shell styles aligned with `MetricCardOptimized` (border, radius, shadow). */
 export function getLinksPanelSx(theme: Theme) {
-  const isDark = theme.palette.mode === "dark";
+  const borderColor = getLinksBorderColor(theme);
 
   return {
     backgroundColor: theme.palette.background.paper,
     borderRadius: `${radiusTokens.lg}px`,
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+    border: `1px solid ${borderColor}`,
+    boxShadow: getLinksCardShadow(theme),
   };
 }
 
 /** Quick-create panel — metric base with a thicker neutral border. */
 export function getLinksQuickCreatePanelSx(theme: Theme) {
-  const isDark = theme.palette.mode === "dark";
-
   return {
     ...getLinksPanelSx(theme),
-    border: `2px solid ${theme.palette.divider}`,
-    boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
+    border: `2px solid ${getLinksBorderColor(theme)}`,
+    boxShadow: getLinksCardShadow(theme, "hover"),
   };
 }
 
@@ -73,7 +97,7 @@ export function getLinkCardShellSx(theme: Theme) {
 
   return {
     borderRadius: `${radiusTokens.lg}px`,
-    border: `1px solid ${theme.palette.divider}`,
+    border: `1px solid ${getLinksBorderColor(theme)}`,
     overflow: "hidden" as const,
     backgroundColor: theme.palette.background.paper,
     boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
@@ -93,7 +117,7 @@ export function getLinkCardUrlBarSx(theme: Theme) {
     px: 1,
     py: 0.5,
     borderRadius: `${radiusTokens.sm}px`,
-    border: `1px solid ${theme.palette.divider}`,
+    border: `1px solid ${getLinksBorderColor(theme)}`,
     backgroundColor:
       theme.palette.mode === "dark"
         ? alpha(theme.palette.common.white, 0.03)
@@ -112,8 +136,7 @@ export function getLinkCardMetricsRowSx(theme: Theme) {
     rowGap: 0.5,
     pt: 0.625,
     mt: 0.625,
-    // Use the system divider token directly — no arbitrary alpha multiplier.
-    borderTop: `1px solid ${theme.palette.divider}`,
+    borderTop: `1px solid ${getLinksBorderColor(theme)}`,
     minWidth: 0,
   };
 }
@@ -128,7 +151,7 @@ export function getLinkCardMetricDividerSx(theme: Theme) {
     alignSelf: "stretch",
     minHeight: LINK_CARD_METRIC_ROW_HEIGHT,
     mx: { xs: 1, sm: 1.25 },
-    bgcolor: theme.palette.divider,
+    bgcolor: getLinksBorderColor(theme),
     flexShrink: 0,
   };
 }
@@ -183,7 +206,7 @@ export const linkCardContentSx = {
 export function getLinksFilterInsetSx(theme: Theme) {
   return {
     borderRadius: `${radiusTokens.md}px`,
-    border: `1px solid ${theme.palette.divider}`,
+    border: `1px solid ${getLinksBorderColor(theme)}`,
     backgroundColor:
       theme.palette.mode === "dark"
         ? alpha(theme.palette.common.white, 0.03)

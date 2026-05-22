@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 import { CheckCircle2, Copy, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
 import useClipboard from "@/hooks/useClipboard";
 import { ICON_LG, ICON_SM } from "@/lib/theme/iconDefaults";
 
@@ -32,7 +33,7 @@ export function ShorterSuccessState({
         borderRadius: "12px",
         p: { xs: "24px", md: "28px 32px" },
         textAlign: "center",
-        maxWidth: 800,
+        maxWidth: SHORTER_CONTENT_MAX_WIDTH,
         mx: "auto",
       }}
     >

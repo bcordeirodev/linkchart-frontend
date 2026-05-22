@@ -3,8 +3,6 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "@/shared/hooks";
 import { useAuth } from "@/lib/auth/AuthContext";
 
-import { publicLinkService } from "@/services/link-public.service";
-
 import type { PublicLinkResponse } from "@/services/link-public.service";
 
 /**
@@ -15,7 +13,7 @@ import type { PublicLinkResponse } from "@/services/link-public.service";
  * @remarks
  * No direct network calls — receives the `PublicLinkResponse` from `usePublicURLShortener` via `handleSuccess`.
  * `handleSuccess` writes `res.short_url` to the clipboard (best-effort, swallowed on failure) and schedules a 150 ms-delayed `navigate(...)` so the exit animation has time to play.
- * Authenticated users are sent to the private analytics dashboard (`/links/analytics/{id}`); guests go to the public analytics page.
+ * Authenticated users are sent to the private analytics dashboard (`/links/analytics/{id}`); guests stay on `/shorter?slug=…` with the public analytics stack.
  * The pending nav timer is cleared on unmount and on `handleReset`.
  */
 export function useShorter() {
@@ -48,7 +46,7 @@ export function useShorter() {
         try {
           const destination = isAuthenticated
             ? `/links/analytics/${res.id}`
-            : publicLinkService.getPublicAnalyticsUrl(res.slug);
+            : `/shorter?slug=${encodeURIComponent(res.slug)}`;
           navigate(destination, {
             replace: true,
             state: { fromShorter: true, newLink: true, linkData: res },

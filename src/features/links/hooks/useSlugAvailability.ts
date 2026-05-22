@@ -1,16 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
 
-import { ApiError } from "@/lib/api/client";
-import { publicLinkService } from "@/services/link-public.service";
+import {
+  checkSlugAvailabilityOnce,
+  PUBLIC_SLUG_PATTERN,
+  SLUG_AVAILABILITY_PATTERN,
+  type SlugValidationMode,
+} from "@/features/links/utils/slugAvailabilityCheck";
 
 export type SlugAvailabilityStatus =
   | "idle"
   | "checking"
   | "available"
   | "taken";
-
-const SLUG_PATTERN = /^[a-z0-9-]{3,50}$/;
 
 /**
  * Debounced check that returns whether a custom slug is available.
@@ -23,11 +25,16 @@ const SLUG_PATTERN = /^[a-z0-9-]{3,50}$/;
  * Treats HTTP 404 as `"available"` and any other `ApiError` as `"idle"` (network/unknown error — don't block the form).
  * Debounced 500 ms after the last `slug` change; invalid slugs short-circuit to `"idle"` without a request.
  */
-export function useSlugAvailability(slug: string): SlugAvailabilityStatus {
+export function useSlugAvailability(
+  slug: string,
+  mode: SlugValidationMode = "auth",
+): SlugAvailabilityStatus {
   const [status, setStatus] = useState<SlugAvailabilityStatus>("idle");
+  const pattern =
+    mode === "public" ? PUBLIC_SLUG_PATTERN : SLUG_AVAILABILITY_PATTERN;
 
   useEffect(() => {
-    if (!slug || !SLUG_PATTERN.test(slug)) {
+    if (!slug || !pattern.test(slug)) {
       setStatus("idle");
       return;
     }
@@ -37,22 +44,22 @@ export function useSlugAvailability(slug: string): SlugAvailabilityStatus {
     const timer = setTimeout(async () => {
       if (cancelled) return;
       setStatus("checking");
-      try {
-        await publicLinkService.getLinkBySlug(slug);
-        if (!cancelled) setStatus("taken");
-      } catch (err) {
-        if (cancelled) return;
-        setStatus(
-          err instanceof ApiError && err.status === 404 ? "available" : "idle",
-        );
-      }
+      const result = await checkSlugAvailabilityOnce(slug, mode);
+      if (cancelled) return;
+      setStatus(
+        result === "available"
+          ? "available"
+          : result === "taken"
+            ? "taken"
+            : "idle",
+      );
     }, 500);
 
     return () => {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [slug]);
+  }, [slug, mode, pattern]);
 
   return status;
 }
