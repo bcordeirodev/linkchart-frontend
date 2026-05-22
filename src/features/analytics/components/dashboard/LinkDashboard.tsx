@@ -17,6 +17,7 @@ import { LinkMetrics } from "@/features/links/components/LinkMetrics";
 import { createPresetAnimations } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
+import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { EmptyState } from "@/shared/ui/base/EmptyState";
 
 import type { DashboardData } from "@/types/analytics/dashboard";
@@ -95,6 +96,7 @@ export function LinkDashboard({
       loading={loading}
       error={error}
       hasData={!!data}
+      skeleton={compact ? undefined : <AnalyticsTabSkeleton metricCards={4} />}
       onRetry={refresh}
       loadingMessage={t("dashboard.loading")}
       emptyMessage={t("dashboard.empty")}
