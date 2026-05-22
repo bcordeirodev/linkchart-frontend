@@ -96,7 +96,6 @@ export function URLShortenerForm({
   const urlValue = watch("originalUrl");
   const slugValue = watch("customSlug");
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
-  const slugAvailability = useSlugAvailability(slugValue ?? "");
 
   // Metadata-based slug suggestion — authenticated users only (endpoint
   // requires api.auth; unauthenticated users silently get ogTitle=null)
@@ -107,6 +106,15 @@ export function URLShortenerForm({
   // needing it in the callback's dependency list
   const ogTitleRef = useRef<string | null>(null);
   ogTitleRef.current = ogTitle;
+
+  // When the field is empty, check the suggestion's availability so ghost text
+  // is never shown for a slug that is already taken. When the user has typed
+  // something, revert to checking their input as before.
+  const slugCheckTarget =
+    !slugValue && slugSuggestion ? slugSuggestion : (slugValue ?? "");
+  const slugAvailability = useSlugAvailability(slugCheckTarget);
+  // Only show the available/taken/checking indicator for explicitly typed slugs.
+  const showSlugAvailabilityUI = !!slugValue;
 
   const onSubmit = async (formData: IFormData) => {
     try {
@@ -277,12 +285,19 @@ export function URLShortenerForm({
                   },
                 })}
                 placeholder={
-                  !slugValue && slugSuggestion
+                  !slugValue &&
+                  slugSuggestion &&
+                  slugAvailability === "available"
                     ? slugSuggestion
                     : t("shorter.form.slugPlaceholder")
                 }
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (e.key === "Tab" && !slugValue && slugSuggestion) {
+                  if (
+                    e.key === "Tab" &&
+                    !slugValue &&
+                    slugSuggestion &&
+                    slugAvailability === "available"
+                  ) {
                     setValue("customSlug", slugSuggestion, {
                       shouldValidate: true,
                     });
@@ -306,7 +321,7 @@ export function URLShortenerForm({
                   {errors.customSlug.message}
                 </Typography>
               </Box>
-            ) : slugAvailability === "checking" ? (
+            ) : showSlugAvailabilityUI && slugAvailability === "checking" ? (
               <Box
                 sx={{
                   display: "flex",
@@ -327,7 +342,7 @@ export function URLShortenerForm({
                   {t("shorter.form.slugChecking")}
                 </Typography>
               </Box>
-            ) : slugAvailability === "available" ? (
+            ) : showSlugAvailabilityUI && slugAvailability === "available" ? (
               <Box
                 sx={{
                   display: "flex",
@@ -348,7 +363,7 @@ export function URLShortenerForm({
                   {t("shorter.form.slugAvailable")}
                 </Typography>
               </Box>
-            ) : slugAvailability === "taken" ? (
+            ) : showSlugAvailabilityUI && slugAvailability === "taken" ? (
               <Box
                 sx={{
                   display: "flex",
