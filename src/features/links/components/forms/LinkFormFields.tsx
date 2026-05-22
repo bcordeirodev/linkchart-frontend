@@ -162,9 +162,11 @@ export function LinkFormFields({
                     error={!!errors.custom_slug}
                     helperText={
                       errors.custom_slug?.message ||
-                      (isMobile
-                        ? `${shortUrlPrefix} · ${t("form.slugPrefixHint")}`
-                        : t("form.customSlugHelper"))
+                      (showSuggestion
+                        ? t("form.slugTabHint")
+                        : isMobile
+                          ? `${shortUrlPrefix} · ${t("form.slugPrefixHint")}`
+                          : t("form.customSlugHelper"))
                     }
                     InputProps={
                       isMobile
