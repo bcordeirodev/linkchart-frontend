@@ -97,6 +97,8 @@
       "engagement": "Engajamento"
     },
     "actionableOnly": "Só acionáveis",
+    "active": "ativos",
+    "clearAll": "Limpar filtros",
     "title": "Filtros"
   },
   "timeframe": {
