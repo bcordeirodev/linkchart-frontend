@@ -1,7 +1,23 @@
 import { ApiError } from "@/lib/api/client";
 import { publicLinkService } from "@/services/link-public.service";
 
-export const SLUG_AVAILABILITY_PATTERN = /^[a-z0-9_-]{3,100}$/;
+export type SlugValidationMode = "public" | "auth";
+
+const SLUG_RULES = {
+  public: {
+    maxLength: 100,
+    pattern: /^[a-z0-9-]{3,100}$/,
+  },
+  auth: {
+    maxLength: 100,
+    pattern: /^[a-z0-9_-]{3,100}$/,
+  },
+} as const;
+
+/** @deprecated Use mode-specific checks; kept for auth callers. */
+export const SLUG_AVAILABILITY_PATTERN = SLUG_RULES.auth.pattern;
+
+export const PUBLIC_SLUG_PATTERN = SLUG_RULES.public.pattern;
 
 export const RESERVED_SLUGS = [
   "api",
@@ -23,14 +39,55 @@ function isReservedSlug(slug: string): boolean {
   return (RESERVED_SLUGS as readonly string[]).includes(slug.toLowerCase());
 }
 
-function fitsSlugPattern(slug: string): boolean {
-  return SLUG_AVAILABILITY_PATTERN.test(slug) && !isReservedSlug(slug);
+/**
+ * Normalizes a raw slug to the rules of the target form (public vs auth).
+ */
+export function normalizeSlugForMode(
+  raw: string,
+  mode: SlugValidationMode,
+): string | null {
+  if (!raw?.trim()) {
+    return null;
+  }
+
+  const { maxLength, pattern } = SLUG_RULES[mode];
+  let slug = raw.toLowerCase().trim();
+
+  if (mode === "public") {
+    slug = slug.replace(/_/g, "-").replace(/[^a-z0-9-]/g, "");
+  } else {
+    slug = slug.replace(/[^a-z0-9_-]/g, "");
+  }
+
+  slug = slug
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, maxLength)
+    .replace(/^-+|-+$/g, "");
+
+  if (slug.length < 3 || !pattern.test(slug) || isReservedSlug(slug)) {
+    return null;
+  }
+
+  return slug;
 }
 
-/** Appends `-N` while keeping total length ≤ 100. */
-export function buildNumericSlugVariant(baseSlug: string, n: number): string {
+function fitsSlugPattern(slug: string, mode: SlugValidationMode): boolean {
+  return (
+    SLUG_RULES[mode].pattern.test(slug) &&
+    !isReservedSlug(slug)
+  );
+}
+
+/** Appends `-N` while keeping total length within the mode limit. */
+export function buildNumericSlugVariant(
+  baseSlug: string,
+  n: number,
+  mode: SlugValidationMode = "auth",
+): string {
+  const maxLength = SLUG_RULES[mode].maxLength;
   const suffix = `-${n}`;
-  return `${baseSlug.slice(0, 100 - suffix.length)}${suffix}`;
+  return `${baseSlug.slice(0, maxLength - suffix.length)}${suffix}`;
 }
 
 function randomSlugSuffix(length: number): string {
@@ -50,41 +107,51 @@ function randomSlugSuffix(length: number): string {
 }
 
 /** Keeps the slug prefix and adds a short random suffix, e.g. `meu-post-k3f9`. */
-export function buildRandomSlugVariant(baseSlug: string): string {
+export function buildRandomSlugVariant(
+  baseSlug: string,
+  mode: SlugValidationMode = "auth",
+): string {
+  const maxLength = SLUG_RULES[mode].maxLength;
   const suffix = `-${randomSlugSuffix(4)}`;
-  return `${baseSlug.slice(0, 100 - suffix.length)}${suffix}`;
+  return `${baseSlug.slice(0, maxLength - suffix.length)}${suffix}`;
 }
 
-/** Time-based suffix when many collisions occur — still anchored on the base slug. */
-function buildTimestampSlugVariant(baseSlug: string): string {
+function buildTimestampSlugVariant(
+  baseSlug: string,
+  mode: SlugValidationMode,
+): string {
+  const maxLength = SLUG_RULES[mode].maxLength;
   const suffix = `-${Date.now().toString(36)}`;
-  return `${baseSlug.slice(0, 100 - suffix.length)}${suffix}`;
+  return `${baseSlug.slice(0, maxLength - suffix.length)}${suffix}`;
 }
 
-function* slugCandidateSequence(baseSlug: string): Generator<string> {
+function* slugCandidateSequence(
+  baseSlug: string,
+  mode: SlugValidationMode,
+): Generator<string> {
   const base = baseSlug.toLowerCase().trim();
 
-  if (fitsSlugPattern(base)) {
+  if (fitsSlugPattern(base, mode)) {
     yield base;
   }
 
   for (let n = 2; n <= MAX_NUMERIC_SUFFIX; n++) {
-    const candidate = buildNumericSlugVariant(base, n);
-    if (fitsSlugPattern(candidate)) {
+    const candidate = buildNumericSlugVariant(base, n, mode);
+    if (fitsSlugPattern(candidate, mode)) {
       yield candidate;
     }
   }
 
   for (let i = 0; i < MAX_RANDOM_ATTEMPTS; i++) {
-    const candidate = buildRandomSlugVariant(base);
-    if (fitsSlugPattern(candidate)) {
+    const candidate = buildRandomSlugVariant(base, mode);
+    if (fitsSlugPattern(candidate, mode)) {
       yield candidate;
     }
   }
 
   for (let i = 0; i < 3; i++) {
-    const candidate = buildTimestampSlugVariant(base);
-    if (fitsSlugPattern(candidate)) {
+    const candidate = buildTimestampSlugVariant(base, mode);
+    if (fitsSlugPattern(candidate, mode)) {
       yield candidate;
     }
   }
@@ -96,8 +163,9 @@ function* slugCandidateSequence(baseSlug: string): Generator<string> {
  */
 export async function checkSlugAvailabilityOnce(
   slug: string,
+  mode: SlugValidationMode = "auth",
 ): Promise<SlugAvailabilityResult> {
-  if (!slug || !fitsSlugPattern(slug)) {
+  if (!slug || !fitsSlugPattern(slug, mode)) {
     return "invalid";
   }
 
@@ -109,14 +177,9 @@ export async function checkSlugAvailabilityOnce(
   }
 }
 
-/**
- * Finds the first free variant: base slug, then `-2`, `-3`, …, then short random
- * suffixes anchored on the same prefix. Almost always returns a slug when `baseSlug`
- * is valid (3–50 chars); returns `null` only when the base cannot produce candidates.
- */
 export type ResolveAvailableSlugOptions = {
-  /** Slug owned by the link being edited — skips the public availability check. */
   excludeSlug?: string | null;
+  mode?: SlugValidationMode;
 };
 
 function isExcludedSlug(
@@ -131,49 +194,48 @@ function isExcludedSlug(
 
 async function isSlugCandidateAvailable(
   candidate: string,
+  mode: SlugValidationMode,
   excludeSlug?: string | null,
 ): Promise<boolean> {
+  if (!fitsSlugPattern(candidate, mode)) {
+    return false;
+  }
   if (isExcludedSlug(candidate, excludeSlug)) {
     return true;
   }
-  return (await checkSlugAvailabilityOnce(candidate)) === "available";
+  return (await checkSlugAvailabilityOnce(candidate, mode)) === "available";
 }
 
 export async function resolveAvailableSlug(
   baseSlug: string,
   options: ResolveAvailableSlugOptions = {},
 ): Promise<string | null> {
-  const { excludeSlug = null } = options;
-  const base = baseSlug.toLowerCase().trim();
-  if (!base || !SLUG_AVAILABILITY_PATTERN.test(base)) {
+  const { excludeSlug = null, mode = "auth" } = options;
+  const base = normalizeSlugForMode(baseSlug, mode);
+  if (!base) {
     return null;
   }
 
-  for (const candidate of slugCandidateSequence(base)) {
-    if (await isSlugCandidateAvailable(candidate, excludeSlug)) {
+  for (const candidate of slugCandidateSequence(base, mode)) {
+    if (await isSlugCandidateAvailable(candidate, mode, excludeSlug)) {
       return candidate;
     }
   }
 
   for (let i = 0; i < 12; i++) {
-    const candidate = buildTimestampSlugVariant(base);
-    if (!fitsSlugPattern(candidate)) {
-      continue;
-    }
-    if (await isSlugCandidateAvailable(candidate, excludeSlug)) {
+    const candidate = buildTimestampSlugVariant(base, mode);
+    if (await isSlugCandidateAvailable(candidate, mode, excludeSlug)) {
       return candidate;
     }
   }
 
   for (let i = 0; i < 12; i++) {
-    const candidate = buildRandomSlugVariant(base);
-    if (!fitsSlugPattern(candidate)) {
-      continue;
-    }
-    if (await isSlugCandidateAvailable(candidate, excludeSlug)) {
+    const candidate = buildRandomSlugVariant(base, mode);
+    if (await isSlugCandidateAvailable(candidate, mode, excludeSlug)) {
       return candidate;
     }
   }
 
-  return buildRandomSlugVariant(base);
+  const fallback = normalizeSlugForMode(buildRandomSlugVariant(base, mode), mode);
+  return fallback;
 }
