@@ -1,6 +1,8 @@
 "use client";
+import { useRef } from "react";
 import type React from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import {
   Globe,
   Link2,
@@ -18,11 +20,22 @@ import { useTranslation } from "react-i18next";
 import { usePublicURLShortener } from "@/features/links/hooks/usePublicURLShortener";
 import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
+import { useUrlMeta } from "@/features/links/hooks/useUrlMeta";
+import { slugify } from "@/features/links/utils/slugify";
 import { ApiError } from "@/lib/api/client";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showErrorMessage } from "@/lib/store/messageSlice";
+import {
+  getPublicFormFieldSx,
+  getPublicFormShellSx,
+} from "@/lib/theme/publicPageStyles";
 import { GradientButton } from "@/shared/ui/base/GradientButton";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
+
+import {
+  getUrlShortenerInputSx,
+  getUrlShortenerLabelSx,
+} from "./urlShortenerFormStyles";
 
 import type { UrlSafetyStatus } from "@/features/links/hooks/useUrlSafetyCheck";
 import type { PublicLinkResponse } from "@/services/link-public.service";
@@ -37,46 +50,6 @@ interface URLShortenerFormProps {
   onError?: (error: string) => void;
   loading?: boolean;
 }
-
-const fieldSx = {
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: "10px",
-  px: 2,
-  py: 1.5,
-  display: "flex",
-  alignItems: "center",
-  gap: 1.5,
-  transition: "border-color 0.2s, background 0.2s",
-  "&:hover": {
-    borderColor: "rgba(255,255,255,0.18)",
-  },
-  "&:focus-within": {
-    borderColor: "rgba(99,102,241,0.5)",
-    background: "rgba(99,102,241,0.05)",
-  },
-};
-
-const inputSx = {
-  flex: 1,
-  background: "transparent",
-  border: "none",
-  outline: "none",
-  color: "white",
-  fontSize: "0.875rem",
-  fontFamily: "inherit",
-  minWidth: 0,
-  "&::placeholder": { color: "rgba(255,255,255,0.25)" },
-};
-
-const labelSx = {
-  fontSize: "0.6875rem",
-  fontWeight: 600,
-  color: "rgba(255,255,255,0.35)",
-  letterSpacing: "0.5px",
-  textTransform: "uppercase" as const,
-  mb: 0.75,
-};
 
 const safetyColors: Record<UrlSafetyStatus, string> = {
   idle: "transparent",
@@ -99,12 +72,18 @@ export function URLShortenerForm({
   onError,
   loading: externalLoading,
 }: URLShortenerFormProps) {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const { t } = useTranslation("public");
+  const fieldSx = getPublicFormFieldSx(theme);
+  const labelSx = getUrlShortenerLabelSx(theme);
+  const inputSx = getUrlShortenerInputSx(theme);
+  const iconMuted = alpha(theme.palette.text.primary, 0.38);
   const {
     handleSubmit,
     register,
     watch,
+    setValue,
     setError,
     formState: { errors },
   } = useForm<IFormData>({
@@ -119,11 +98,22 @@ export function URLShortenerForm({
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
   const slugAvailability = useSlugAvailability(slugValue ?? "");
 
+  // Metadata-based slug suggestion — authenticated users only (endpoint
+  // requires api.auth; unauthenticated users silently get ogTitle=null)
+  const { ogTitle } = useUrlMeta(urlValue ?? "");
+  const slugSuggestion = ogTitle ? slugify(ogTitle) : null;
+
+  // Keep a ref so the submit handler always reads the latest og:title without
+  // needing it in the callback's dependency list
+  const ogTitleRef = useRef<string | null>(null);
+  ogTitleRef.current = ogTitle;
+
   const onSubmit = async (formData: IFormData) => {
     try {
       const result = await createPublicShortUrl({
         original_url: formData.originalUrl,
         custom_slug: formData.customSlug.trim() || undefined,
+        title: ogTitleRef.current ?? undefined,
       });
       onSuccess?.(result);
     } catch (err) {
@@ -165,15 +155,7 @@ export function URLShortenerForm({
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
-        sx={{
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: "14px",
-          p: { xs: 3, md: 3.5 },
-          backdropFilter: "blur(20px)",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
-          transition: "box-shadow 0.3s",
-        }}
+        sx={getPublicFormShellSx(theme)}
       >
         <Box
           sx={{
@@ -191,12 +173,12 @@ export function URLShortenerForm({
           <Box>
             <Typography sx={labelSx}>
               {t("shorter.form.urlLabel")}{" "}
-              <Box component="span" sx={{ color: "#6366f1" }}>
+              <Box component="span" sx={{ color: theme.palette.primary.main }}>
                 *
               </Box>
             </Typography>
             <Box sx={fieldSx}>
-              <Globe {...ICON_SM} color="rgba(255,255,255,0.3)" />
+              <Globe {...ICON_SM} color={iconMuted} />
               <Box
                 component="input"
                 {...register("originalUrl", {
@@ -252,14 +234,14 @@ export function URLShortenerForm({
                   fontWeight: 400,
                   textTransform: "none",
                   letterSpacing: 0,
-                  color: "rgba(255,255,255,0.2)",
+                  color: alpha(theme.palette.text.primary, 0.35),
                 }}
               >
                 {t("shorter.form.optional")}
               </Box>
             </Typography>
             <Box sx={fieldSx}>
-              <Link2 {...ICON_SM} color="rgba(255,255,255,0.3)" />
+              <Link2 {...ICON_SM} color={iconMuted} />
 
               <Box
                 component="input"
@@ -269,7 +251,18 @@ export function URLShortenerForm({
                     message: t("shorter.form.slugInvalid"),
                   },
                 })}
-                placeholder={t("shorter.form.slugPlaceholder")}
+                placeholder={
+                  !slugValue && slugSuggestion
+                    ? slugSuggestion
+                    : t("shorter.form.slugPlaceholder")
+                }
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === "Tab" && !slugValue && slugSuggestion) {
+                    setValue("customSlug", slugSuggestion, {
+                      shouldValidate: true,
+                    });
+                  }
+                }}
                 sx={inputSx}
               />
             </Box>

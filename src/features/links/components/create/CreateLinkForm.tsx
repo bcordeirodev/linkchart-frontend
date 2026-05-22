@@ -1,7 +1,7 @@
 "use client";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Alert } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 import type { Dayjs } from "dayjs";
@@ -18,6 +18,8 @@ import {
 } from "../../components/forms/LinkFormSchema";
 import { useCopyShortUrlForLink } from "../../hooks/useCopyShortUrlForLink";
 import { useCreateLink } from "../../hooks/useLinks";
+import { useUrlMeta } from "../../hooks/useUrlMeta";
+import { slugify } from "../../utils/slugify";
 
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
 import type { CreateLinkFormProps } from "../../types/forms";
@@ -36,6 +38,8 @@ export function CreateLinkForm({
     handleSubmit,
     formState: { errors, isValid },
     setError,
+    setValue,
+    getValues,
   } = useForm<LinkFormData>({
     resolver: zodResolver(
       createLinkFormSchema(
@@ -45,6 +49,18 @@ export function CreateLinkForm({
     defaultValues: defaultLinkFormValues,
     mode: "onChange",
   });
+
+  // Watch the URL field to trigger metadata lookup
+  const urlValue = useWatch({ control, name: "original_url" });
+  const { ogTitle, isLoading: isLoadingMeta } = useUrlMeta(urlValue ?? "");
+  const slugSuggestion = ogTitle ? slugify(ogTitle) : null;
+
+  // Silently fill the title field when og:title arrives and the field is still empty
+  useEffect(() => {
+    if (ogTitle && !getValues("title")) {
+      setValue("title", ogTitle, { shouldValidate: false, shouldDirty: false });
+    }
+  }, [ogTitle, setValue, getValues]);
 
   const convertDateForSubmit = (
     dateValue: Dayjs | null | undefined,
@@ -115,7 +131,13 @@ export function CreateLinkForm({
           />
         }
       >
-        <LinkFormFields control={control} errors={errors} isEdit={false} />
+        <LinkFormFields
+          control={control}
+          errors={errors}
+          isEdit={false}
+          slugSuggestion={slugSuggestion}
+          isLoadingMeta={isLoadingMeta}
+        />
       </LinkFormShell>
     </form>
   );
