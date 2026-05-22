@@ -33,6 +33,8 @@ interface AnalyticsStateManagerProps {
   minHeight?: number;
   /** Compact density — shrinks padding, font sizes and `minHeight`. */
   compact?: boolean;
+  /** Node rendered while loading=true. Falls back to the spinner when omitted (backward-compatible). */
+  skeleton?: ReactNode;
 }
 
 /**
@@ -51,6 +53,7 @@ export function AnalyticsStateManager({
   emptyMessage,
   minHeight = 300,
   compact = false,
+  skeleton,
 }: AnalyticsStateManagerProps) {
   const theme = useTheme();
   const { t } = useTranslation("common");
@@ -61,6 +64,9 @@ export function AnalyticsStateManager({
 
   // Estado de Loading
   if (loading) {
+    if (skeleton) {
+      return <>{skeleton}</>;
+    }
     return (
       <Box
         sx={{
@@ -189,8 +195,20 @@ export function AnalyticsStateManager({
     );
   }
 
-  // Estado Success - renderizar children
-  return <>{children}</>;
+  // Estado Success - renderizar children com animação de entrada
+  return (
+    <Box
+      sx={{
+        "@keyframes analyticsContentIn": {
+          from: { opacity: 0, transform: "translateY(6px)" },
+          to: { opacity: 1, transform: "translateY(0)" },
+        },
+        animation: "analyticsContentIn 200ms ease-out",
+      }}
+    >
+      {children}
+    </Box>
+  );
 }
 
 export default AnalyticsStateManager;
