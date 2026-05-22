@@ -18,6 +18,7 @@ import {
 } from "../../components/forms/LinkFormSchema";
 import { useCopyShortUrlForLink } from "../../hooks/useCopyShortUrlForLink";
 import { useCreateLink } from "../../hooks/useLinks";
+import { useSlugAvailability } from "../../hooks/useSlugAvailability";
 import { useUrlMeta } from "../../hooks/useUrlMeta";
 import { slugify } from "../../utils/slugify";
 
@@ -54,6 +55,9 @@ export function CreateLinkForm({
   const urlValue = useWatch({ control, name: "original_url" });
   const { ogTitle, isLoading: isLoadingMeta } = useUrlMeta(urlValue ?? "");
   const slugSuggestion = ogTitle ? slugify(ogTitle) : null;
+  // Only surface the suggestion as ghost text when confirmed available so we
+  // never send the user into a slug-taken error on submit.
+  const slugSuggestionAvailability = useSlugAvailability(slugSuggestion ?? "");
 
   // Silently fill the title field when og:title arrives and the field is still empty
   useEffect(() => {
@@ -135,7 +139,9 @@ export function CreateLinkForm({
           control={control}
           errors={errors}
           isEdit={false}
-          slugSuggestion={slugSuggestion}
+          slugSuggestion={
+            slugSuggestionAvailability === "available" ? slugSuggestion : null
+          }
           isLoadingMeta={isLoadingMeta}
         />
       </LinkFormShell>
