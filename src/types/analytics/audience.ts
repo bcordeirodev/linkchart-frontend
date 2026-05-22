@@ -268,8 +268,6 @@ export interface UseAudienceDataOptions {
   enableRealtime?: boolean;
   /** Intervalo de atualização em milissegundos (padrão: 60000) */
   refreshInterval?: number;
-  /** Incluir dados detalhados de browser/OS (padrão: false) */
-  includeDetails?: boolean;
   /** ISO date string (yyyy-MM-dd) for the start of the period filter. */
   dateFrom?: string | null;
   /** ISO date string (yyyy-MM-dd) for the end of the period filter. */

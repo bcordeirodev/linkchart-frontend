@@ -53,7 +53,6 @@ export function AudienceAnalysis({
     linkId,
     enableRealtime: shouldUseHook,
     refreshInterval: 60000,
-    includeDetails: true,
     dateFrom,
     dateTo,
     excludeBots,
