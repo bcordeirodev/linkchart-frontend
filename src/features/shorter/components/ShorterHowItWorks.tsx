@@ -13,10 +13,12 @@ import {
 } from "@/lib/theme/publicPageStyles";
 import { PublicBlockIcon } from "@/shared/ui/base";
 
-const STEPS = [
-  { key: "paste" as const, icon: Link2, step: "01" },
-  { key: "shorten" as const, icon: Zap, step: "02" },
-  { key: "track" as const, icon: BarChart2, step: "03" },
+type StepKey = "paste" | "shorten" | "track";
+
+const STEPS: Array<{ key: StepKey; icon: typeof Link2; step: string }> = [
+  { key: "paste", icon: Link2, step: "01" },
+  { key: "shorten", icon: Zap, step: "02" },
+  { key: "track", icon: BarChart2, step: "03" },
 ];
 
 /**
@@ -25,6 +27,22 @@ const STEPS = [
 export function ShorterHowItWorks() {
   const theme = useTheme();
   const { t } = useTranslation("public");
+
+  // Pre-resolved so tsc doesn't crash on template-literal overload resolution (TS 5.8 bug).
+  const stepLabels: Record<StepKey, { title: string; desc: string }> = {
+    paste: {
+      title: t("shorter.steps.paste.title"),
+      desc: t("shorter.steps.paste.desc"),
+    },
+    shorten: {
+      title: t("shorter.steps.shorten.title"),
+      desc: t("shorter.steps.shorten.desc"),
+    },
+    track: {
+      title: t("shorter.steps.track.title"),
+      desc: t("shorter.steps.track.desc"),
+    },
+  };
 
   return (
     <Box
@@ -95,7 +113,7 @@ export function ShorterHowItWorks() {
                 mt: 0.5,
               }}
             >
-              {t(`shorter.steps.${key}.title`)}
+              {stepLabels[key].title}
             </Typography>
             <Typography
               component="p"
@@ -110,7 +128,7 @@ export function ShorterHowItWorks() {
                 m: 0,
               }}
             >
-              {t(`shorter.steps.${key}.desc`)}
+              {stepLabels[key].desc}
             </Typography>
           </Box>
         ))}
