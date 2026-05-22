@@ -49,8 +49,18 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
     hour: `${d.hour}h`,
     clicks: d.clicks,
   }));
+  // Pre-computed map avoids template-literal overload resolution crash in TS 5.8.
+  const DOW_KEYS = [
+    "publicAnalytics.charts.dow.0",
+    "publicAnalytics.charts.dow.1",
+    "publicAnalytics.charts.dow.2",
+    "publicAnalytics.charts.dow.3",
+    "publicAnalytics.charts.dow.4",
+    "publicAnalytics.charts.dow.5",
+    "publicAnalytics.charts.dow.6",
+  ] as const;
   const dowData = (charts?.temporal?.clicks_by_day_of_week ?? []).map((d) => ({
-    day: t(`publicAnalytics.charts.dow.${d.day}`, {
+    day: t(DOW_KEYS[d.day as number] ?? DOW_KEYS[0], {
       defaultValue: String(d.day),
     }),
     clicks: d.clicks,

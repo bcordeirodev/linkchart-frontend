@@ -227,47 +227,46 @@ export function FormFieldFeedback({
 }
 
 /** Builds URL safety labels from the `links` namespace. */
-export function buildUrlSafetyLabels(
-  t: (key: string, options?: Record<string, unknown>) => string,
-): UrlSafetyLabels {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function buildUrlSafetyLabels(t: any): UrlSafetyLabels {
   return {
-    checking: t("form.safety.checking"),
-    safe: t("form.safety.safe"),
-    unsafe: (threats) => t("form.safety.unsafe", { threats }),
-    error: t("form.safety.error"),
+    checking: t("form.safety.checking") as string,
+    safe: t("form.safety.safe") as string,
+    unsafe: (threats: string) => t("form.safety.unsafe", { threats }) as string,
+    error: t("form.safety.error") as string,
   };
 }
 
 /** Builds slug availability labels from the `links` namespace. */
-export function buildSlugAvailabilityLabels(
-  t: (key: string, options?: Record<string, unknown>) => string,
-): SlugAvailabilityLabels {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function buildSlugAvailabilityLabels(t: any): SlugAvailabilityLabels {
   return {
-    checking: t("form.slugAvailability.checking"),
-    available: t("form.slugAvailability.available"),
-    taken: t("form.slugAvailability.taken"),
+    checking: t("form.slugAvailability.checking") as string,
+    available: t("form.slugAvailability.available") as string,
+    taken: t("form.slugAvailability.taken") as string,
   };
 }
 
 /** Builds URL safety labels from the `public` /shorter namespace. */
-export function buildPublicUrlSafetyLabels(
-  t: (key: string, options?: Record<string, unknown>) => string,
-): UrlSafetyLabels {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function buildPublicUrlSafetyLabels(t: any): UrlSafetyLabels {
   return {
-    checking: t("shorter.form.safety.checking"),
-    safe: t("shorter.form.safety.safe"),
-    unsafe: (threats) => t("shorter.form.safety.unsafe", { threats }),
-    error: t("shorter.form.safety.error"),
+    checking: t("shorter.form.safety.checking") as string,
+    safe: t("shorter.form.safety.safe") as string,
+    unsafe: (threats: string) =>
+      t("shorter.form.safety.unsafe", { threats }) as string,
+    error: t("shorter.form.safety.error") as string,
   };
 }
 
 /** Builds slug availability labels from the `public` /shorter namespace. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function buildPublicSlugAvailabilityLabels(
-  t: (key: string, options?: Record<string, unknown>) => string,
+  t: any,
 ): SlugAvailabilityLabels {
   return {
-    checking: t("shorter.form.slugAvailability.checking"),
-    available: t("shorter.form.slugAvailability.available"),
-    taken: t("shorter.form.slugAvailability.taken"),
+    checking: t("shorter.form.slugAvailability.checking") as string,
+    available: t("shorter.form.slugAvailability.available") as string,
+    taken: t("shorter.form.slugAvailability.taken") as string,
   };
 }
