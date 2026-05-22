@@ -36,7 +36,7 @@ function LinkEditPage({ id }: Props) {
         fallback={<LinkFormSkeleton isEdit />}
       >
         <ResponsiveContainer variant="form" maxWidth="md">
-          <Stack spacing={3}>
+          <Stack spacing={{ xs: 2, sm: 2.5 }}>
             <Alert
               severity="error"
               action={
@@ -64,7 +64,7 @@ function LinkEditPage({ id }: Props) {
       fallback={<LinkFormSkeleton isEdit />}
     >
       <ResponsiveContainer variant="form" maxWidth="md">
-        <Stack spacing={3}>
+        <Stack spacing={{ xs: 2, sm: 2.5 }}>
           {!linkHeaderLoading && link ? (
             <LinkActions
               linkId={id}

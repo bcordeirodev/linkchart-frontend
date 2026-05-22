@@ -1,13 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Typography,
-  Stack,
-  Button,
-  Alert,
-  CircularProgress,
-  Box,
-} from "@mui/material";
+import { Alert, Button, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -15,14 +8,17 @@ import { useNavigate } from "@/shared/hooks";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 
-import { AppIcon } from "@/shared/ui/icons";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showErrorMessage } from "@/lib/store/messageSlice";
 import { linkService } from "@/services";
 import { LinkFormSkeleton } from "@/shared/ui/feedback/skeletons";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { getLinkFormPanelSx } from "@/features/links/components/forms/linkFormPanelStyles";
+import { useTheme } from "@mui/material/styles";
 
+import { LinkFormActionsFooter } from "../../components/forms/LinkFormActionsFooter";
 import { LinkFormFields } from "../../components/forms/LinkFormFields";
+import { LinkFormShell } from "../../components/forms/LinkFormShell";
 import {
   createLinkFormSchema,
   defaultLinkFormValues,
@@ -31,17 +27,12 @@ import {
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
 import type { EditLinkFormProps } from "../../types/forms";
 
-/**
- * Form for editing an existing link. Loads the link by id, hydrates the
- * `react-hook-form` state, and exposes Cancel/Save actions. Page identity is
- * carried by the page chrome (`LinkActions` toolbar above), so this card
- * renders without an in-card title.
- */
 export function EditLinkForm({
   linkId,
   onSuccess,
   showBackButton = false,
 }: EditLinkFormProps) {
+  const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { t } = useTranslation("links");
@@ -155,7 +146,7 @@ export function EditLinkForm({
       if (typeof dateValue === "string") {
         return dateValue;
       }
-    } catch (_error) {
+    } catch {
       return undefined;
     }
   };
@@ -228,21 +219,24 @@ export function EditLinkForm({
 
   if (loadFailed) {
     return (
-      <EnhancedPaper variant="glass" animated sx={{ p: 4 }}>
+      <EnhancedPaper
+        variant="outlined"
+        animated={false}
+        sx={{ ...getLinkFormPanelSx(theme), p: 2.5 }}
+      >
         <Alert
           severity="error"
           action={
             <Button size="small" onClick={handleCancel}>
-              Voltar
+              {t("actions.back")}
             </Button>
           }
         >
-          <Typography variant="h6" component="div">
-            Erro ao carregar
+          <Typography variant="subtitle2" component="div" gutterBottom>
+            {t("form.loadErrorTitle")}
           </Typography>
           <Typography variant="body2">
-            {apiError ||
-              "O link solicitado não foi encontrado ou você não tem permissão para editá-lo."}
+            {apiError || t("form.loadErrorDesc")}
           </Typography>
         </Alert>
       </EnhancedPaper>
@@ -250,62 +244,22 @@ export function EditLinkForm({
   }
 
   return (
-    <EnhancedPaper variant="glass" animated>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {apiError ? (
-          <Box sx={{ px: 3, pt: 3 }}>
-            <Alert severity="error">{apiError}</Alert>
-          </Box>
-        ) : null}
-
-        <Box sx={{ px: 3, py: 3 }}>
-          <LinkFormFields control={control} errors={errors} isEdit />
-        </Box>
-
-        <Box
-          sx={{
-            px: 3,
-            pb: 2.5,
-            pt: 1,
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: 1.5,
-          }}
-        >
-          <Stack
-            direction="row"
-            spacing={1.5}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            <Button
-              variant="outlined"
-              onClick={handleCancel}
-              disabled={loading}
-              sx={{ flex: { xs: 1, sm: "initial" } }}
-            >
-              Cancelar
-            </Button>
-
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={loading}
-              startIcon={
-                loading ? (
-                  <CircularProgress size={16} color="inherit" />
-                ) : (
-                  <AppIcon intent="save" />
-                )
-              }
-              sx={{ flex: { xs: 1, sm: "initial" } }}
-            >
-              {t("form.submitEdit")}
-            </Button>
-          </Stack>
-        </Box>
-      </form>
-    </EnhancedPaper>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <LinkFormShell
+        alert={
+          apiError ? <Alert severity="error">{apiError}</Alert> : undefined
+        }
+        footer={
+          <LinkFormActionsFooter
+            onCancel={handleCancel}
+            submitLabel={t("form.submitEdit")}
+            loading={loading}
+          />
+        }
+      >
+        <LinkFormFields control={control} errors={errors} isEdit />
+      </LinkFormShell>
+    </form>
   );
 }
 

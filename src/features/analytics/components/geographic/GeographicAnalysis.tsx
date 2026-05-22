@@ -4,6 +4,8 @@ import { Map, BarChart3, Layers } from "lucide-react";
 import { Box, Grid, Tab, Tabs } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import { useResponsive } from "@/lib/theme";
+
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
@@ -71,6 +73,7 @@ export function GeographicAnalysis({
   onSubTabChange,
 }: GeographicAnalysisProps) {
   const { t } = useTranslation("analytics");
+  const { isMobile } = useResponsive();
 
   // Uncontrolled fallback — used only when `subTabIndex` is not provided.
   const [localSubTab, setLocalSubTab] = useState(0);
@@ -172,7 +175,7 @@ export function GeographicAnalysis({
 
           {/* Sub-tab 0: Visão geral */}
           {activeSubTab === 0 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={{ xs: 2, md: 3 }}>
               <Grid item xs={12} md={8}>
                 <GeographicChoropleth
                   countries={data?.top_countries || []}
@@ -202,14 +205,14 @@ export function GeographicAnalysis({
             </Grid>
           )}
 
-          {/* Sub-tab 1: Mapa de calor */}
+          {/* Sub-tab 1: Mapa de calor — height is capped on mobile to avoid consuming the full viewport */}
           {activeSubTab === 1 && hasHeatmapData && (
             <RealTimeHeatmapChart
               data={data?.heatmap_data || []}
               loading={loading}
               error={error}
               onRefresh={refresh}
-              height={700}
+              height={isMobile ? 380 : 700}
               title={t("geographic.subtabs.heatmap")}
               showControls
               showStats={false}

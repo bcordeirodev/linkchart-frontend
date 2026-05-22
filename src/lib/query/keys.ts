@@ -20,6 +20,7 @@ export const queryKeys = {
     meta: (ids: string[]) => ["links", "meta", [...ids].sort()] as const,
   },
   analytics: {
+    dashboard: (id: string) => ["analytics", id, "dashboard"] as const,
     temporal: (id: string) => ["analytics", id, "temporal"] as const,
     geographic: (id: string) => ["analytics", id, "geographic"] as const,
     audience: (id: string) => ["analytics", id, "audience"] as const,

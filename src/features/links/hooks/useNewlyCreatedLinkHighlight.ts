@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { useCopyShortUrlForLink } from "@/features/links/hooks/useCopyShortUrlForLink";
 import type { LinkResponse } from "@/types";
 
 const HIGHLIGHT_MS = 4500;
@@ -14,10 +15,15 @@ export function useNewlyCreatedLinkHighlight(visibleLinkIds: string[]) {
   const [highlightedLinkId, setHighlightedLinkId] = useState<string | null>(
     null,
   );
+  const copyShortUrlForLink = useCopyShortUrlForLink();
 
-  const highlightLink = useCallback((link: LinkResponse) => {
-    setHighlightedLinkId(String(link.id));
-  }, []);
+  const highlightLink = useCallback(
+    (link: LinkResponse) => {
+      setHighlightedLinkId(String(link.id));
+      void copyShortUrlForLink(link);
+    },
+    [copyShortUrlForLink],
+  );
 
   useEffect(() => {
     if (!highlightedLinkId) {

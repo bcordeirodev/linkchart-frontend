@@ -54,17 +54,35 @@ export function LinkHealthBadge({ health }: LinkHealthBadgeProps) {
 
   return (
     <Tooltip title={tooltipContent}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+      <Box
+        sx={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 0.375,
+          minHeight: 20,
+          lineHeight: "20px",
+        }}
+      >
         <Box
           sx={{
-            width: 8,
-            height: 8,
+            width: 7,
+            height: 7,
             borderRadius: "50%",
             bgcolor: color,
             flexShrink: 0,
           }}
         />
-        <Typography variant="caption" sx={{ color, fontWeight: 500 }}>
+        <Typography
+          variant="caption"
+          component="span"
+          sx={{
+            color,
+            fontWeight: 500,
+            fontSize: "0.75rem",
+            lineHeight: "20px",
+            m: 0,
+          }}
+        >
           {label}
         </Typography>
       </Box>
