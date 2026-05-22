@@ -1,5 +1,12 @@
 "use client";
-import { Box, Card, CardContent, Divider, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 import {
@@ -88,7 +95,9 @@ export function AudienceExtraCharts({
   const othersLangClicks = restLang.reduce((s, l) => s + l.clicks, 0);
   const langChartData = [
     ...top7Lang.map((l) => ({ name: l.region ?? l.language, value: l.clicks })),
-    ...(othersLangClicks > 0 ? [{ name: "Outros", value: othersLangClicks }] : []),
+    ...(othersLangClicks > 0
+      ? [{ name: "Outros", value: othersLangClicks }]
+      : []),
   ];
 
   const platformChartData = platformBreakdown.map((p) => ({
@@ -132,7 +141,12 @@ export function AudienceExtraCharts({
                 <ApexChartWrapper
                   type="donut"
                   size="compact"
-                  {...formatPieChart(platformChartData, "name", "value", isDark)}
+                  {...formatPieChart(
+                    platformChartData,
+                    "name",
+                    "value",
+                    isDark,
+                  )}
                 />
               </CardContent>
             </Card>

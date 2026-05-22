@@ -1,27 +1,23 @@
 "use client";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import type React from "react";
 import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import {
-  Globe,
-  Link2,
-  ShieldCheck,
-  ShieldAlert,
-  ShieldOff,
-  CheckCircle2,
-  XCircle,
-  Loader2,
-} from "lucide-react";
+import { Globe, Link2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { useAvailableSlugSuggestion } from "@/features/links/hooks/useAvailableSlugSuggestion";
 import { usePublicURLShortener } from "@/features/links/hooks/usePublicURLShortener";
 import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
 import { useUrlMeta } from "@/features/links/hooks/useUrlMeta";
-import { slugify } from "@/features/links/utils/slugify";
+import { PUBLIC_SLUG_PATTERN } from "@/features/links/utils/slugAvailabilityCheck";
+import {
+  slugifyFromUrlPublic,
+  slugifyPublic,
+} from "@/features/links/utils/slugify";
 import { ApiError } from "@/lib/api/client";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showErrorMessage } from "@/lib/store/messageSlice";
@@ -29,15 +25,23 @@ import {
   getPublicFormFieldSx,
   getPublicFormShellSx,
 } from "@/lib/theme/publicPageStyles";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
 import { GradientButton } from "@/shared/ui/base/GradientButton";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 
+import {
+  buildPublicSlugAvailabilityLabels,
+  buildPublicUrlSafetyLabels,
+  FormFieldFeedback,
+  getSlugAvailabilityHelperNode,
+  getUrlSafetyHelperNode,
+  InlineStatusRow,
+} from "./forms/UrlSafetyIndicator";
 import {
   getUrlShortenerInputSx,
   getUrlShortenerLabelSx,
 } from "./urlShortenerFormStyles";
 
-import type { UrlSafetyStatus } from "@/features/links/hooks/useUrlSafetyCheck";
 import type { PublicLinkResponse } from "@/services/link-public.service";
 
 interface IFormData {
@@ -50,22 +54,6 @@ interface URLShortenerFormProps {
   onError?: (error: string) => void;
   loading?: boolean;
 }
-
-const safetyColors: Record<UrlSafetyStatus, string> = {
-  idle: "transparent",
-  checking: "rgba(255,255,255,0.3)",
-  safe: "#34d399",
-  unsafe: "#f87171",
-  error: "rgba(255,255,255,0.2)",
-};
-
-const safetyIcons: Record<UrlSafetyStatus, React.ReactNode> = {
-  idle: null,
-  checking: null,
-  safe: <ShieldCheck {...ICON_SM} color="#34d399" />,
-  unsafe: <ShieldAlert {...ICON_SM} color="#f87171" />,
-  error: <ShieldOff {...ICON_SM} color="rgba(255,255,255,0.2)" />,
-};
 
 export function URLShortenerForm({
   onSuccess,
@@ -97,24 +85,41 @@ export function URLShortenerForm({
   const slugValue = watch("customSlug");
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
 
-  // Metadata-based slug suggestion — authenticated users only (endpoint
-  // requires api.auth; unauthenticated users silently get ogTitle=null)
-  const { ogTitle } = useUrlMeta(urlValue ?? "");
-  const slugSuggestion = ogTitle ? slugify(ogTitle) : null;
+  const { ogTitle, isLoading: isLoadingMeta } = useUrlMeta(urlValue ?? "");
 
-  // Keep a ref so the submit handler always reads the latest og:title without
-  // needing it in the callback's dependency list
+  const baseSlugSuggestion = useMemo(() => {
+    if (!urlValue?.trim()) {
+      return null;
+    }
+    if (ogTitle) {
+      const fromTitle = slugifyPublic(ogTitle);
+      if (fromTitle) {
+        return fromTitle;
+      }
+    }
+    return slugifyFromUrlPublic(urlValue) || null;
+  }, [ogTitle, urlValue]);
+
+  const { availableSlug, status: slugSuggestionStatus } =
+    useAvailableSlugSuggestion(!slugValue?.trim() ? baseSlugSuggestion : null, {
+      mode: "public",
+    });
+
+  const showSlugSuggestion =
+    !slugValue?.trim() && slugSuggestionStatus === "ready" && !!availableSlug;
+  const isResolvingSlugSuggestion =
+    !slugValue?.trim() &&
+    !!baseSlugSuggestion &&
+    (isLoadingMeta || slugSuggestionStatus === "resolving");
+
+  const slugAvailability = useSlugAvailability(
+    slugValue?.trim() ?? "",
+    "public",
+  );
+  const showSlugAvailabilityUI = !!slugValue?.trim();
+
   const ogTitleRef = useRef<string | null>(null);
   ogTitleRef.current = ogTitle;
-
-  // When the field is empty, check the suggestion's availability so ghost text
-  // is never shown for a slug that is already taken. When the user has typed
-  // something, revert to checking their input as before.
-  const slugCheckTarget =
-    !slugValue && slugSuggestion ? slugSuggestion : (slugValue ?? "");
-  const slugAvailability = useSlugAvailability(slugCheckTarget);
-  // Only show the available/taken/checking indicator for explicitly typed slugs.
-  const showSlugAvailabilityUI = !!slugValue;
 
   const onSubmit = async (formData: IFormData) => {
     try {
@@ -138,16 +143,8 @@ export function URLShortenerForm({
     }
   };
 
-  const safetyLabel =
-    safetyStatus === "unsafe"
-      ? t("shorter.form.safetyBlocked", { threats: threats.join(", ") })
-      : safetyStatus === "checking"
-        ? t("shorter.form.safetyChecking")
-        : safetyStatus === "safe"
-          ? t("shorter.form.safetySafe")
-          : safetyStatus === "error"
-            ? t("shorter.form.safetyError")
-            : "";
+  const urlSafetyLabels = buildPublicUrlSafetyLabels(t);
+  const slugAvailabilityLabels = buildPublicSlugAvailabilityLabels(t);
 
   return (
     <motion.div
@@ -158,7 +155,7 @@ export function URLShortenerForm({
         scale: isLoading ? 0.985 : 1,
       }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      style={{ maxWidth: 800, margin: "0 auto" }}
+      style={{ maxWidth: SHORTER_CONTENT_MAX_WIDTH, margin: "0 auto" }}
     >
       <Box
         component="form"
@@ -170,7 +167,7 @@ export function URLShortenerForm({
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr",
-              sm: "minmax(0, 7fr) minmax(0, 3fr)",
+              sm: "minmax(0, 6fr) minmax(0, 4fr)",
             },
             gap: 1.5,
             mb: 2,
@@ -207,52 +204,10 @@ export function URLShortenerForm({
               >
                 {errors.originalUrl.message}
               </Typography>
-            ) : safetyStatus === "safe" ? (
-              <motion.span
-                key="safe-chip"
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.22, ease: "easeOut" }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 4,
-                  marginTop: 4,
-                  marginLeft: 4,
-                  padding: "2px 8px 2px 6px",
-                  borderRadius: 100,
-                  background: "rgba(52, 211, 153, 0.08)",
-                  border: "1px solid rgba(52, 211, 153, 0.20)",
-                  color: "#34d399",
-                  fontSize: "0.75rem",
-                  fontWeight: 500,
-                  lineHeight: 1.4,
-                }}
-              >
-                {safetyIcons.safe}
-                {safetyLabel}
-              </motion.span>
             ) : safetyStatus !== "idle" ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.75,
-                  mt: 0.5,
-                  pl: 0.5,
-                }}
-              >
-                {safetyIcons[safetyStatus]}
-                <Typography
-                  sx={{
-                    fontSize: "0.75rem",
-                    color: safetyColors[safetyStatus],
-                    fontWeight: safetyStatus === "unsafe" ? 600 : 400,
-                  }}
-                >
-                  {safetyLabel}
-                </Typography>
-              </Box>
+              <FormFieldFeedback>
+                {getUrlSafetyHelperNode(safetyStatus, threats, urlSafetyLabels)}
+              </FormFieldFeedback>
             ) : null}
           </Box>
 
@@ -280,112 +235,79 @@ export function URLShortenerForm({
                 component="input"
                 {...register("customSlug", {
                   pattern: {
-                    value: /^[a-z0-9-]{3,50}$/,
+                    value: PUBLIC_SLUG_PATTERN,
                     message: t("shorter.form.slugInvalid"),
                   },
                 })}
                 placeholder={
-                  !slugValue &&
-                  slugSuggestion &&
-                  slugAvailability === "available"
-                    ? slugSuggestion
-                    : t("shorter.form.slugPlaceholder")
+                  showSlugSuggestion
+                    ? availableSlug!
+                    : isResolvingSlugSuggestion && baseSlugSuggestion
+                      ? baseSlugSuggestion
+                      : t("shorter.form.slugPlaceholder")
                 }
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (
-                    e.key === "Tab" &&
-                    !slugValue &&
-                    slugSuggestion &&
-                    slugAvailability === "available"
-                  ) {
-                    setValue("customSlug", slugSuggestion, {
+                  if (e.key === "Tab" && showSlugSuggestion) {
+                    setValue("customSlug", availableSlug!, {
                       shouldValidate: true,
                     });
                   }
                 }}
-                sx={inputSx}
+                sx={{
+                  ...(typeof inputSx === "object" && !Array.isArray(inputSx)
+                    ? inputSx
+                    : {}),
+                  ...((showSlugSuggestion || isResolvingSlugSuggestion) && {
+                    "&::placeholder": {
+                      color: alpha(
+                        theme.palette.primary.main,
+                        showSlugSuggestion ? 0.55 : 0.35,
+                      ),
+                      opacity: 1,
+                    },
+                  }),
+                }}
               />
             </Box>
             {errors.customSlug ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  mt: 0.5,
-                  pl: 0.5,
-                }}
+              <Typography
+                sx={{ fontSize: "0.75rem", color: "#f87171", mt: 0.5, pl: 0.5 }}
               >
-                <XCircle size={12} color="#f87171" />
-                <Typography sx={{ fontSize: "0.6875rem", color: "#f87171" }}>
-                  {errors.customSlug.message}
+                {errors.customSlug.message}
+              </Typography>
+            ) : showSlugAvailabilityUI && slugAvailability !== "idle" ? (
+              <FormFieldFeedback>
+                {getSlugAvailabilityHelperNode(
+                  slugAvailability,
+                  slugAvailabilityLabels,
+                )}
+              </FormFieldFeedback>
+            ) : showSlugSuggestion ? (
+              <FormFieldFeedback>
+                <Typography
+                  component="span"
+                  sx={{
+                    fontSize: "0.75rem",
+                    color: alpha(theme.palette.text.primary, 0.45),
+                  }}
+                >
+                  {t("shorter.form.slugTabHint")}
                 </Typography>
-              </Box>
-            ) : showSlugAvailabilityUI && slugAvailability === "checking" ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  mt: 0.5,
-                  pl: 0.5,
-                }}
-              >
-                <Loader2
-                  size={12}
-                  color="rgba(255,255,255,0.3)"
-                  style={{ animation: "spin 1s linear infinite" }}
+              </FormFieldFeedback>
+            ) : isResolvingSlugSuggestion ? (
+              <FormFieldFeedback>
+                <InlineStatusRow
+                  icon={
+                    <CircularProgress
+                      size={11}
+                      sx={{ color: alpha(theme.palette.text.primary, 0.35) }}
+                    />
+                  }
+                  label={t("shorter.form.slugSuggestionChecking")}
+                  color={alpha(theme.palette.text.primary, 0.45)}
                 />
-                <Typography
-                  sx={{ fontSize: "0.6875rem", color: "rgba(255,255,255,0.3)" }}
-                >
-                  {t("shorter.form.slugChecking")}
-                </Typography>
-              </Box>
-            ) : showSlugAvailabilityUI && slugAvailability === "available" ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  mt: 0.5,
-                  pl: 0.5,
-                }}
-              >
-                <CheckCircle2 size={12} color="#34d399" />
-                <Typography
-                  sx={{
-                    fontSize: "0.6875rem",
-                    color: "#34d399",
-                    fontWeight: 500,
-                  }}
-                >
-                  {t("shorter.form.slugAvailable")}
-                </Typography>
-              </Box>
-            ) : showSlugAvailabilityUI && slugAvailability === "taken" ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  mt: 0.5,
-                  pl: 0.5,
-                }}
-              >
-                <XCircle size={12} color="#f87171" />
-                <Typography
-                  sx={{
-                    fontSize: "0.6875rem",
-                    color: "#f87171",
-                    fontWeight: 500,
-                  }}
-                >
-                  {t("shorter.form.slugTaken")}
-                </Typography>
-              </Box>
+              </FormFieldFeedback>
             ) : null}
-            <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
           </Box>
         </Box>
 

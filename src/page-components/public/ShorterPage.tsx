@@ -1,17 +1,22 @@
 "use client";
-import { Alert, Box, Container, Typography, useTheme } from "@mui/material";
-import { Link2, SlidersHorizontal, BarChart2 } from "lucide-react";
-import { memo } from "react";
-import { useTranslation } from "react-i18next";
+import { Alert, Box, Container } from "@mui/material";
+import { memo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import { URLShortenerForm } from "@/features/links/components/URLShortenerForm";
 import {
   ShorterHero,
   ShorterStats,
+  ShorterHowItWorks,
   ShorterSubdomainPromo,
 } from "@/features/shorter/components";
+import {
+  SHORTER_CONTENT_MAX_WIDTH,
+  SHORTER_PAGE_CONTAINER_MAX_WIDTH,
+} from "@/features/shorter/constants";
 import { useShorter } from "@/features/shorter/hooks/useShorter";
+import { PublicAnalyticsSections } from "@/features/public-analytics";
 import { PublicLayout } from "@/shared/layout";
 
 import { BenefitBadges } from "./BenefitBadges";
@@ -29,9 +34,10 @@ const blobKeyframes = `
   }
 `;
 
-function ShorterPage() {
-  const theme = useTheme();
-  const { t } = useTranslation("public");
+function ShorterPageContent() {
+  const searchParams = useSearchParams();
+  const analyticsSlug = searchParams.get("slug")?.trim() || null;
+
   const {
     isRedirecting,
     error,
@@ -41,11 +47,13 @@ function ShorterPage() {
     handleReset,
   } = useShorter();
 
+  const showAnalytics = Boolean(analyticsSlug);
+  const showLanding = !showAnalytics;
+
   return (
     <PublicLayout variant="shorter" chrome="minimal">
       <style>{blobKeyframes}</style>
       <Box sx={{ position: "relative", minHeight: "100vh" }}>
-        {/* top-right blob */}
         <Box
           sx={{
             position: "fixed",
@@ -61,7 +69,6 @@ function ShorterPage() {
             animation: "floatA 12s ease-in-out infinite",
           }}
         />
-        {/* bottom-left blob */}
         <Box
           sx={{
             position: "fixed",
@@ -79,7 +86,7 @@ function ShorterPage() {
         />
 
         <Container
-          maxWidth="md"
+          maxWidth={SHORTER_PAGE_CONTAINER_MAX_WIDTH}
           sx={{
             position: "relative",
             zIndex: 1,
@@ -87,160 +94,84 @@ function ShorterPage() {
             pb: { xs: 6, md: 8 },
           }}
         >
-          <ShorterHero state={isRedirecting ? "success" : "idle"} />
-
-          {error ? (
-            <Alert
-              severity="error"
-              onClose={clearError}
-              sx={{ mb: 2, maxWidth: 800, mx: "auto", borderRadius: 2 }}
-            >
-              {error}
-            </Alert>
+          {showAnalytics && analyticsSlug ? (
+            <PublicAnalyticsSections
+              slug={analyticsSlug}
+              showPageHeading={false}
+            />
           ) : null}
 
-          <URLShortenerForm
-            onSuccess={handleSuccess}
-            onError={handleError}
-            loading={isRedirecting}
-          />
+          {showLanding ? (
+            <>
+              <ShorterHero state={isRedirecting ? "success" : "idle"} />
 
-          <AdSlot
-            slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BELOW_FORM ?? ""}
-            format="rectangle"
-          />
-
-          <BenefitBadges
-            state={isRedirecting ? "success" : "idle"}
-            onReset={handleReset}
-          />
-
-          {!isRedirecting ? <ShorterSubdomainPromo /> : null}
-
-          <Box sx={{ mt: { xs: 6, md: 7 }, maxWidth: 800, mx: "auto" }}>
-            <ShorterStats />
-          </Box>
-
-          <AdSlot
-            slot={
-              process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BETWEEN_SECTIONS ??
-              ""
-            }
-            format="auto"
-          />
-
-          <Box sx={{ mt: { xs: 6, md: 8 }, mb: 2, maxWidth: 800, mx: "auto" }}>
-            <Typography
-              component="h2"
-              sx={{
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                textAlign: "center",
-                display: "block",
-                color: theme.palette.text.secondary,
-                mb: 3,
-              }}
-            >
-              {t("shorter.howItWorks")}
-            </Typography>
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
-                gap: { xs: 2, sm: 2.5 },
-              }}
-            >
-              {[
-                {
-                  icon: <Link2 size={22} />,
-                  step: "01",
-                  title: t("shorter.steps.paste.title"),
-                  desc: t("shorter.steps.paste.desc"),
-                },
-                {
-                  icon: <SlidersHorizontal size={22} />,
-                  step: "02",
-                  title: t("shorter.steps.customize.title"),
-                  desc: t("shorter.steps.customize.desc"),
-                },
-                {
-                  icon: <BarChart2 size={22} />,
-                  step: "03",
-                  title: t("shorter.steps.share.title"),
-                  desc: t("shorter.steps.share.desc"),
-                },
-              ].map(({ icon, step, title, desc }) => (
-                <Box
-                  key={step}
+              {error ? (
+                <Alert
+                  severity="error"
+                  onClose={clearError}
                   sx={{
-                    textAlign: "center",
-                    px: 2.5,
-                    py: 3,
-                    borderRadius: "12px",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    background: "rgba(255,255,255,0.025)",
-                    transition:
-                      "border-color 200ms ease, background 200ms ease",
-                    "&:hover": {
-                      borderColor: "rgba(99,102,241,0.28)",
-                      background: "rgba(255,255,255,0.04)",
-                    },
+                    mb: 2,
+                    maxWidth: SHORTER_CONTENT_MAX_WIDTH,
+                    mx: "auto",
+                    borderRadius: 2,
                   }}
                 >
-                  <Box
-                    sx={{
-                      color: theme.palette.primary.main,
-                      mb: 1.25,
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {icon}
-                  </Box>
-                  <Typography
-                    sx={{
-                      fontSize: "0.6875rem",
-                      fontWeight: 600,
-                      letterSpacing: "0.12em",
-                      textTransform: "uppercase",
-                      color: "rgba(255,255,255,0.45)",
-                      display: "block",
-                    }}
-                  >
-                    {step}
-                  </Typography>
-                  <Typography
-                    component="h3"
-                    sx={{
-                      color: "rgba(255,255,255,0.92)",
-                      fontWeight: 600,
-                      fontSize: "0.9375rem",
-                      display: "block",
-                      mt: 0.5,
-                      letterSpacing: "-0.01em",
-                    }}
-                  >
-                    {title}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: "rgba(255,255,255,0.6)",
-                      mt: 0.75,
-                      fontSize: "0.8125rem",
-                      lineHeight: 1.55,
-                    }}
-                  >
-                    {desc}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </Box>
+                  {error}
+                </Alert>
+              ) : null}
+
+              <URLShortenerForm
+                onSuccess={handleSuccess}
+                onError={handleError}
+                loading={isRedirecting}
+              />
+
+              <AdSlot
+                slot={
+                  process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BELOW_FORM ?? ""
+                }
+                format="rectangle"
+              />
+
+              <BenefitBadges
+                state={isRedirecting ? "success" : "idle"}
+                onReset={handleReset}
+              />
+
+              {!isRedirecting ? <ShorterSubdomainPromo /> : null}
+
+              <Box
+                sx={{
+                  mt: { xs: 6, md: 7 },
+                  maxWidth: SHORTER_CONTENT_MAX_WIDTH,
+                  mx: "auto",
+                }}
+              >
+                <ShorterStats />
+              </Box>
+
+              <AdSlot
+                slot={
+                  process.env
+                    .NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BETWEEN_SECTIONS ?? ""
+                }
+                format="auto"
+              />
+
+              {!isRedirecting ? <ShorterHowItWorks /> : null}
+            </>
+          ) : null}
         </Container>
       </Box>
     </PublicLayout>
+  );
+}
+
+function ShorterPage() {
+  return (
+    <Suspense fallback={null}>
+      <ShorterPageContent />
+    </Suspense>
   );
 }
 

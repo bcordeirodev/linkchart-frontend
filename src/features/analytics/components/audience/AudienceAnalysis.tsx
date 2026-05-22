@@ -171,7 +171,8 @@ export function AudienceAnalysis({
               (audienceData as AnyData)?.audience?.platform_breakdown ?? []
             }
             connectionBreakdown={
-              (audienceData as AnyData)?.audience?.connection_type_breakdown ?? []
+              (audienceData as AnyData)?.audience?.connection_type_breakdown ??
+              []
             }
           />
         </ResponsiveContainer>

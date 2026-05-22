@@ -61,7 +61,7 @@ export function ShorterHero({ state }: ShorterHeroProps) {
             fontSize: "0.9375rem",
             color: theme.palette.text.secondary,
             lineHeight: 1.65,
-            maxWidth: 480,
+            maxWidth: 560,
             mx: "auto",
           }}
         >

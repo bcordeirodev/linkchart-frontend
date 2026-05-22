@@ -1,32 +1,11 @@
 "use client";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
+import { getPublicChipSx } from "@/lib/theme/publicPageStyles";
 import { SignUpCtaCard } from "@/shared/components";
-
-const badgeSx = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 0.75,
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.12)",
-  borderRadius: "8px",
-  px: 1.5,
-  py: 0.625,
-  fontSize: "0.6875rem",
-  color: "rgba(255,255,255,0.62)",
-  letterSpacing: "0.2px",
-  fontWeight: 500,
-};
-
-const checkMark = (
-  <Typography
-    component="span"
-    sx={{ color: "#34d399", fontSize: "0.625rem", lineHeight: 1 }}
-  >
-    &#x2713;
-  </Typography>
-);
 
 interface BenefitBadgesProps {
   state: "idle" | "success";
@@ -34,8 +13,24 @@ interface BenefitBadgesProps {
 }
 
 export function BenefitBadges({ state, onReset }: BenefitBadgesProps) {
+  const theme = useTheme();
   const { t } = useTranslation("public");
   const isSuccess = state === "success";
+  const chipSx = getPublicChipSx(theme);
+  const isDark = theme.palette.mode === "dark";
+
+  const checkMark = (
+    <Typography
+      component="span"
+      sx={{
+        color: theme.palette.success.main,
+        fontSize: "0.625rem",
+        lineHeight: 1,
+      }}
+    >
+      &#x2713;
+    </Typography>
+  );
 
   if (!isSuccess) {
     const features = [
@@ -50,7 +45,7 @@ export function BenefitBadges({ state, onReset }: BenefitBadgesProps) {
     ];
 
     return (
-      <Box sx={{ mt: 2.5, maxWidth: 800, mx: "auto" }}>
+      <Box sx={{ mt: 2.5, maxWidth: SHORTER_CONTENT_MAX_WIDTH, mx: "auto" }}>
         <SignUpCtaCard
           title={t("shorter.upgrade.title")}
           description={t("shorter.upgrade.description")}
@@ -62,7 +57,7 @@ export function BenefitBadges({ state, onReset }: BenefitBadgesProps) {
   }
 
   return (
-    <Box sx={{ mt: 2.5, maxWidth: 800, mx: "auto" }}>
+    <Box sx={{ mt: 2.5, maxWidth: SHORTER_CONTENT_MAX_WIDTH, mx: "auto" }}>
       <Box
         sx={{
           display: "flex",
@@ -71,30 +66,53 @@ export function BenefitBadges({ state, onReset }: BenefitBadgesProps) {
           flexWrap: "wrap",
         }}
       >
-        <Box sx={badgeSx}>
+        <Box
+          sx={{
+            ...chipSx,
+            fontSize: "0.6875rem",
+            color: alpha(theme.palette.text.primary, isDark ? 0.72 : 0.68),
+            letterSpacing: "0.02em",
+            fontWeight: 500,
+          }}
+        >
           {checkMark} {t("benefits.active")}
         </Box>
-        <Box sx={badgeSx}>
+        <Box
+          sx={{
+            ...chipSx,
+            fontSize: "0.6875rem",
+            color: alpha(theme.palette.text.primary, isDark ? 0.72 : 0.68),
+            letterSpacing: "0.02em",
+            fontWeight: 500,
+          }}
+        >
           {checkMark} {t("benefits.analytics")}
         </Box>
-        <Box
-          component="button"
+        <Button
           onClick={onReset}
           sx={{
-            ...badgeSx,
-            cursor: "pointer",
-            border: "1px solid rgba(99,102,241,0.32)",
-            color: "rgba(199,210,254,0.92)",
-            background: "rgba(99,102,241,0.06)",
-            transition: "border-color 160ms ease, background 160ms ease",
+            ...chipSx,
+            fontSize: "0.6875rem",
+            fontWeight: 500,
+            letterSpacing: "0.02em",
+            textTransform: "none",
+            color: theme.palette.primary.light,
+            borderColor: alpha(
+              theme.palette.primary.main,
+              isDark ? 0.28 : 0.32,
+            ),
+            bgcolor: alpha(theme.palette.primary.main, isDark ? 0.06 : 0.05),
             "&:hover": {
-              borderColor: "rgba(99,102,241,0.55)",
-              background: "rgba(99,102,241,0.1)",
+              borderColor: alpha(
+                theme.palette.primary.main,
+                isDark ? 0.4 : 0.42,
+              ),
+              bgcolor: alpha(theme.palette.primary.main, isDark ? 0.1 : 0.08),
             },
           }}
         >
           {t("benefits.shortenAnother")}
-        </Box>
+        </Button>
       </Box>
     </Box>
   );

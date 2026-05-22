@@ -73,10 +73,7 @@ export function normalizeSlugForMode(
 }
 
 function fitsSlugPattern(slug: string, mode: SlugValidationMode): boolean {
-  return (
-    SLUG_RULES[mode].pattern.test(slug) &&
-    !isReservedSlug(slug)
-  );
+  return SLUG_RULES[mode].pattern.test(slug) && !isReservedSlug(slug);
 }
 
 /** Appends `-N` while keeping total length within the mode limit. */
@@ -173,7 +170,9 @@ export async function checkSlugAvailabilityOnce(
     await publicLinkService.getLinkBySlug(slug);
     return "taken";
   } catch (err) {
-    return err instanceof ApiError && err.status === 404 ? "available" : "invalid";
+    return err instanceof ApiError && err.status === 404
+      ? "available"
+      : "invalid";
   }
 }
 
@@ -236,6 +235,9 @@ export async function resolveAvailableSlug(
     }
   }
 
-  const fallback = normalizeSlugForMode(buildRandomSlugVariant(base, mode), mode);
+  const fallback = normalizeSlugForMode(
+    buildRandomSlugVariant(base, mode),
+    mode,
+  );
   return fallback;
 }

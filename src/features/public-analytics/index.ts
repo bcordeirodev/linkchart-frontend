@@ -15,3 +15,4 @@ export * from "./components";
 
 // Next.js App Router adapter (accepts slug as prop instead of useParams)
 export { PublicAnalyticsPageContent } from "./PublicAnalyticsPageContent";
+export { PublicAnalyticsSections } from "./PublicAnalyticsSections";

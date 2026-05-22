@@ -32,16 +32,16 @@
     "howItWorks": "How It Works",
     "steps": {
       "paste": {
-        "title": "Paste the URL",
-        "desc": "Enter any long link in the field above."
+        "title": "Paste your URL",
+        "desc": "Enter the long link in the form. Optional: pick a custom slug."
       },
-      "customize": {
-        "title": "Customize",
-        "desc": "Set a custom slug and, with a free account, use your own subdomain in the URL."
+      "shorten": {
+        "title": "Shorten instantly",
+        "desc": "Click Shorten Now — no account needed. Your short link is ready in seconds."
       },
-      "share": {
-        "title": "Share",
-        "desc": "Copy the short link and track clicks in real time."
+      "track": {
+        "title": "Share & track",
+        "desc": "Copy the link, share it anywhere, and follow clicks in real time on the public analytics page."
       }
     },
     "form": {
@@ -57,13 +57,19 @@
       "slugInvalid": "3–50 characters: lowercase letters, numbers and hyphens",
       "submitButton": "⚡ Shorten Now",
       "errorMessage": "Error shortening URL. Please try again.",
-      "slugChecking": "Checking...",
-      "slugAvailable": "Available",
-      "slugTaken": "Already taken",
-      "safetyChecking": "Checking URL safety...",
-      "safetySafe": "URL is safe",
-      "safetyBlocked": "Blocked URL: {{threats}}",
-      "safetyError": "Safety check unavailable"
+      "slugSuggestionChecking": "Checking slug suggestion…",
+      "slugTabHint": "Tab to accept suggestion",
+      "safety": {
+        "checking": "Checking security...",
+        "safe": "URL verified · no threats detected",
+        "unsafe": "Blocked URL: {{threats}}",
+        "error": "Security check unavailable"
+      },
+      "slugAvailability": {
+        "checking": "Checking slug availability…",
+        "available": "Slug available · ready to use",
+        "taken": "This slug is already in use"
+      }
     },
     "upgrade": {
       "title": "Get more with a free account",
@@ -147,7 +153,10 @@
       "copy": "Copy",
       "shortenAnother": "Shorten another link",
       "visitDestination": "Visit destination",
-      "shortenedLink": "Shortened link",
+      "shortenedLink": "Short link",
+      "destination": "Destination",
+      "analyticsPageUrl": "Public analytics page",
+      "copyAnalyticsUrl": "Copy analytics page URL",
       "publicAnalyticsAvailable": "Public analytics available"
     },
     "cta": {

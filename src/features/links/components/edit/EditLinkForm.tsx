@@ -23,6 +23,7 @@ import {
   createLinkFormSchema,
   defaultLinkFormValues,
 } from "../../components/forms/LinkFormSchema";
+import { useLinkFormMetaSuggestions } from "../../hooks/useLinkFormMetaSuggestions";
 
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
 import type { EditLinkFormProps } from "../../types/forms";
@@ -40,6 +41,7 @@ export function EditLinkForm({
   const [fetchingData, setFetchingData] = useState(true);
   const [apiError, setApiError] = useState<string | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [ownedSlug, setOwnedSlug] = useState<string | null>(null);
 
   const {
     control,
@@ -47,6 +49,7 @@ export function EditLinkForm({
     formState: { errors },
     reset,
     setError,
+    setValue,
   } = useForm<LinkFormData>({
     resolver: zodResolver(
       createLinkFormSchema(
@@ -55,6 +58,17 @@ export function EditLinkForm({
     ),
     defaultValues: defaultLinkFormValues,
     mode: "onChange",
+  });
+
+  const {
+    slugSuggestion,
+    isResolvingSlugSuggestion,
+    titleSuggestion,
+    isLoadingMeta,
+  } = useLinkFormMetaSuggestions({
+    control,
+    setValue,
+    excludeSlug: ownedSlug,
   });
 
   const convertApiDateToDayjs = (
@@ -111,6 +125,7 @@ export function EditLinkForm({
           };
 
           reset(formValues);
+          setOwnedSlug(formValues.custom_slug?.trim() || null);
         } else {
           throw new Error("Link não encontrado");
         }
@@ -257,7 +272,15 @@ export function EditLinkForm({
           />
         }
       >
-        <LinkFormFields control={control} errors={errors} isEdit />
+        <LinkFormFields
+          control={control}
+          errors={errors}
+          isEdit
+          slugSuggestion={slugSuggestion}
+          isResolvingSlugSuggestion={isResolvingSlugSuggestion}
+          titleSuggestion={titleSuggestion}
+          isLoadingMeta={isLoadingMeta}
+        />
       </LinkFormShell>
     </form>
   );
