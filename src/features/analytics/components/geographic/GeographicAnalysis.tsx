@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
+import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { useGeographicData } from "../../hooks/useGeographicData";
 
 import { ContinentBreakdown } from "./ContinentBreakdown";
@@ -122,6 +123,7 @@ export function GeographicAnalysis({
         loading={loading}
         error={error}
         hasData={!!data}
+        skeleton={<AnalyticsTabSkeleton hasFilter metricCards={5} />}
         onRetry={refresh}
         loadingMessage={t("geographic.loading")}
         emptyMessage={t("geographic.empty")}
