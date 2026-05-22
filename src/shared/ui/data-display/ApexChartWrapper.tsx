@@ -1,6 +1,7 @@
 "use client";
 import { CircularProgress } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { BarChart2, TrendingUp } from "lucide-react";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -28,8 +29,6 @@ import {
   NoDataTitle,
   NoDataDescription,
 } from "./ApexChartWrapper.styled";
-
-// Chart importado diretamente
 
 interface ApexChartWrapperProps {
   /** Underlying ApexCharts chart type. */
@@ -61,7 +60,7 @@ interface ApexChartWrapperProps {
  *
  * Uses `next/dynamic` with `ssr: false` so the ApexCharts ESM bundle is never loaded on the server.
  * Renders one of four states: no-data placeholder (when `series` has no usable points), error placeholder with derived stats, loading spinner, or the chart itself.
- * Auto-injects `chartPalette`, `theme.palette.mode`, `theme.palette.text.secondary` (foreColor), and an `xs`-breakpoint responsive block (legend bottom, no toolbar).
+ * Auto-injects `chartPalette`, `theme.palette.mode`, `theme.palette.text.secondary` (foreColor), `theme.typography.fontFamily`, and an `xs`-breakpoint responsive block (legend bottom, no toolbar).
  */
 
 const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
@@ -77,6 +76,10 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
   const height = useChartHeight(size, heightProp);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Use the theme's font family so charts always match the app's typography
+  const fontFamily =
+    theme.typography.fontFamily ?? "Inter, system-ui, sans-serif";
 
   // Verificar se há dados válidos
   const hasValidData = series && Array.isArray(series) && series.length > 0;
@@ -146,13 +149,13 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
     setIsLoading(false);
   }, []);
 
-  // Removido: Loading state durante hidratação (não necessário em React puro)
-
   // No data state
   if (!hasDataPoints) {
     return (
       <NoDataContainer style={{ height }}>
-        <NoDataIcon>📈</NoDataIcon>
+        <NoDataIcon>
+          <TrendingUp size={48} />
+        </NoDataIcon>
         <NoDataTitle variant="h6">{t("chart.noData")}</NoDataTitle>
         <NoDataDescription>{t("chart.noDataDesc")}</NoDataDescription>
       </NoDataContainer>
@@ -197,7 +200,9 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 
     return (
       <ErrorContainer style={{ height }}>
-        <ErrorIcon>📊</ErrorIcon>
+        <ErrorIcon>
+          <BarChart2 size={48} />
+        </ErrorIcon>
         <ErrorTitle variant="h6">{t("chart.errorTitle", { type })}</ErrorTitle>
         <ErrorDescription>{t("chart.errorDesc")}</ErrorDescription>
 
@@ -252,7 +257,7 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
             type,
             background: "transparent",
             foreColor: theme.palette.text.secondary,
-            fontFamily: "Inter, system-ui, sans-serif",
+            fontFamily,
             toolbar: {
               show: false,
               ...((options.chart as Record<string, unknown>)?.toolbar || {}),

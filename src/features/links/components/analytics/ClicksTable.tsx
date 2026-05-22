@@ -253,6 +253,183 @@ function UtmCell({ row }: CellProps) {
   );
 }
 
+interface ColSkeletonConfig {
+  /** Proportional flex value, derived from the column `size` config. */
+  flex: number;
+  /** Width of the header label skeleton (percentage string). */
+  headerW: string;
+  /** Cell anatomy type — drives which inner skeleton shapes are rendered. */
+  type: "twoLine" | "chipLine" | "chip" | "text";
+  /** Primary (top) line / chip width. */
+  l1: string;
+  /** Secondary (bottom) caption width — only for twoLine / chipLine. */
+  l2?: string;
+}
+
+/**
+ * Column-aware skeleton that mirrors the anatomy of ClicksTable before data
+ * arrives.  Each column uses its real `size` proportion and renders the same
+ * inner structure as the live cell (two-line text, chip + caption, etc.).
+ */
+function ClicksTableSkeleton({ isMobile }: { isMobile: boolean }) {
+  /** Proportional flex values are derived from each column's `size` config. */
+  const cols: ColSkeletonConfig[] = [
+    { flex: 2.0, headerW: "62%", type: "twoLine", l1: "80%", l2: "52%" }, // Date
+    { flex: 2.4, headerW: "68%", type: "twoLine", l1: "88%", l2: "38%" }, // Location
+    { flex: 1.5, headerW: "55%", type: "chipLine", l1: "68%", l2: "48%" }, // Device
+    { flex: 1.6, headerW: "62%", type: "text", l1: "72%" }, // Browser
+    { flex: 1.4, headerW: "50%", type: "chip", l1: "78%" }, // Source
+    { flex: 2.0, headerW: "65%", type: "text", l1: "82%" }, // Referer
+    { flex: 2.2, headerW: "52%", type: "twoLine", l1: "65%", l2: "45%" }, // UTM
+  ];
+
+  const tableContent = (
+    <>
+      {/* Column header row */}
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1.5,
+          px: 2,
+          py: 1,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        {cols.map((col, i) => (
+          <Box key={i} sx={{ flex: col.flex, minWidth: 0 }}>
+            <Skeleton
+              variant="rounded"
+              animation="wave"
+              height={13}
+              width={col.headerW}
+            />
+          </Box>
+        ))}
+      </Box>
+
+      {/* Data rows — opacity fades to hint at pagination boundary */}
+      {Array.from({ length: 8 }).map((_, row) => (
+        <Box
+          key={row}
+          sx={{
+            display: "flex",
+            gap: 1.5,
+            px: 2,
+            py: 1.5,
+            borderBottom: "1px solid",
+            borderColor: "divider",
+            opacity: Math.max(0.18, 1 - row * 0.1),
+            alignItems: "flex-start",
+          }}
+        >
+          {cols.map((col, c) => (
+            <Box key={c} sx={{ flex: col.flex, minWidth: 0 }}>
+              {col.type === "twoLine" && (
+                <Stack spacing={0.6}>
+                  <Skeleton
+                    variant="rounded"
+                    animation="wave"
+                    height={14}
+                    width={col.l1}
+                  />
+                  <Skeleton
+                    variant="rounded"
+                    animation="wave"
+                    height={11}
+                    width={col.l2}
+                  />
+                </Stack>
+              )}
+              {col.type === "chipLine" && (
+                <Stack spacing={0.6}>
+                  <Skeleton
+                    variant="rounded"
+                    animation="wave"
+                    height={22}
+                    width={col.l1}
+                    sx={{ borderRadius: "12px" }}
+                  />
+                  <Skeleton
+                    variant="rounded"
+                    animation="wave"
+                    height={11}
+                    width={col.l2}
+                  />
+                </Stack>
+              )}
+              {col.type === "chip" && (
+                <Skeleton
+                  variant="rounded"
+                  animation="wave"
+                  height={22}
+                  width={col.l1}
+                  sx={{ borderRadius: "12px" }}
+                />
+              )}
+              {col.type === "text" && (
+                <Skeleton
+                  variant="rounded"
+                  animation="wave"
+                  height={14}
+                  width={col.l1}
+                />
+              )}
+            </Box>
+          ))}
+        </Box>
+      ))}
+    </>
+  );
+
+  return (
+    <Box>
+      {/* Toolbar: search + optional date-range pickers */}
+      <Stack direction="row" spacing={1} sx={{ mb: 1.5, px: 0.5 }}>
+        <Skeleton
+          variant="rounded"
+          animation="wave"
+          height={40}
+          sx={{ flex: 2, borderRadius: 1.5 }}
+        />
+        {!isMobile && (
+          <>
+            <Skeleton
+              variant="rounded"
+              animation="wave"
+              height={40}
+              sx={{ width: 140, flexShrink: 0, borderRadius: 1.5 }}
+            />
+            <Skeleton
+              variant="rounded"
+              animation="wave"
+              height={40}
+              sx={{ width: 140, flexShrink: 0, borderRadius: 1.5 }}
+            />
+            <Skeleton
+              variant="rounded"
+              animation="wave"
+              height={40}
+              sx={{ width: 36, flexShrink: 0, borderRadius: 1.5 }}
+            />
+          </>
+        )}
+      </Stack>
+
+      {/* Table body — on mobile matches the live table's horizontal-scroll wrapper */}
+      <Box
+        sx={
+          isMobile
+            ? { overflowX: "auto", WebkitOverflowScrolling: "touch" }
+            : undefined
+        }
+      >
+        <Box sx={isMobile ? { minWidth: 600 } : undefined}>{tableContent}</Box>
+      </Box>
+    </Box>
+  );
+}
+
 export function ClicksTable({
   linkId,
   dateFrom,
@@ -363,34 +540,7 @@ export function ClicksTable({
         loading={isInitialLoading}
         error={error}
         hasData={items.length > 0 || loading}
-        skeleton={
-          <Box>
-            {/* Search bar placeholder */}
-            <Skeleton
-              variant="rounded"
-              animation="wave"
-              height={52}
-              sx={{ mb: 1.5, borderRadius: 2 }}
-            />
-            {/* Table header */}
-            <Skeleton
-              variant="rounded"
-              animation="wave"
-              height={40}
-              sx={{ mb: 0.5, borderRadius: 1, opacity: 0.6 }}
-            />
-            {/* Table rows */}
-            {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton
-                key={i}
-                variant="rounded"
-                animation="wave"
-                height={48}
-                sx={{ mb: 0.5, borderRadius: 1, opacity: 1 - i * 0.08 }}
-              />
-            ))}
-          </Box>
-        }
+        skeleton={<ClicksTableSkeleton isMobile={isMobile} />}
         onRetry={refresh}
         loadingMessage={t("analytics.clicksTable.loadingMessage")}
         emptyMessage={t("analytics.clicksTable.emptyMessage")}
@@ -451,7 +601,11 @@ export function ClicksTable({
             }}
             muiSearchTextFieldProps={{
               placeholder: t("analytics.clicksTable.searchPlaceholder"),
-              sx: { minWidth: "320px" },
+              // Responsive: expands to fill toolbar on mobile, capped on larger screens
+              sx: {
+                minWidth: { xs: "auto", sm: "280px" },
+                flex: { xs: 1, sm: "none" },
+              },
               variant: "outlined",
               size: "small",
             }}

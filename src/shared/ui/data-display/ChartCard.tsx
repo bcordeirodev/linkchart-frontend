@@ -8,8 +8,10 @@
  * Seguindo os padrões de design do projeto.
  */
 
+import { useMemo } from "react";
 import { Box, Card, CardContent, Fade, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import { createPresetAnimations } from "@/lib/theme";
 import {
@@ -65,7 +67,10 @@ export function ChartCard({
   sx = {},
 }: ChartCardProps) {
   const theme = useTheme();
-  const animations = createPresetAnimations(theme);
+  const { t } = useTranslation("common");
+
+  // Memoize to avoid creating a new animations object on every render
+  const animations = useMemo(() => createPresetAnimations(theme), [theme]);
 
   return (
     <Box
@@ -124,7 +129,7 @@ export function ChartCard({
           <Box sx={{ mb: 2 }}>
             {loading ? (
               <Typography color="text.secondary">
-                Carregando gráfico...
+                {t("chart.loadingShort")}
               </Typography>
             ) : (
               <Fade in timeout={260}>

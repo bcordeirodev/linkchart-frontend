@@ -114,8 +114,8 @@ export function LinkAnalyticsTabsOptimized({
         aria-labelledby={`tab-${TAB_IDS.indexOf(id)}`}
         sx={{
           display: filters.tab === id ? "block" : "none",
-          pt: 2,
-          pb: 3,
+          pt: { xs: 1.5, md: 2 },
+          pb: { xs: 2, md: 3 },
         }}
       >
         {children}
@@ -142,7 +142,7 @@ export function LinkAnalyticsTabsOptimized({
           backgroundColor: theme.palette.background.paper,
           borderRadius: `${radiusTokens.lg}px`,
           border: `1px solid ${theme.palette.divider}`,
-          mb: "10px",
+          mb: 1.25,
         }}
       >
         <Tabs

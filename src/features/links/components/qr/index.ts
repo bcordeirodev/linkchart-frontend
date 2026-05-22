@@ -1,0 +1,1 @@
+export { LinkQRPanel } from "./LinkQRPanel";

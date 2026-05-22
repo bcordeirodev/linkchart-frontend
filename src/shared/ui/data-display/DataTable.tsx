@@ -143,7 +143,11 @@ function DataTable<TData extends Record<string, any>>(
         },
         muiSearchTextFieldProps: {
           placeholder: "Search",
-          sx: { minWidth: "300px" },
+          // minWidth is intentionally responsive: full-width on xs, capped on sm+
+          sx: {
+            minWidth: { xs: "auto", sm: "280px" },
+            flex: { xs: 1, sm: "none" },
+          },
           variant: "outlined",
           size: "small",
         },

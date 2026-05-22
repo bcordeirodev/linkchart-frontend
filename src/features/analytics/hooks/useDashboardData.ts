@@ -5,12 +5,17 @@
  * @description
  * Hook customizado para gerenciar dados do dashboard com métricas agregadas,
  * suporte a tempo real e validação de dados.
+ *
+ * Usa TanStack Query para cache compartilhado, deduplicação de requisições e
+ * refetch automático em background — consistente com os demais hooks de analytics.
  */
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { api } from "@/lib/api/client";
 import { API_CONFIG } from "@/lib/api/endpoints";
+import { queryKeys } from "@/lib/query/keys";
 
 import type {
   ActivityData,
@@ -27,7 +32,7 @@ import type {
 /**
  * Fetches the dashboard payload for a given link, with optional polling.
  *
- * @param options.linkId - canonical link id; the hook stays idle when undefined/empty
+ * @param options.linkId - canonical link id; the query stays disabled when undefined/empty
  * @param options.dateFrom - ISO date string (yyyy-MM-dd) for the start of the period
  * @param options.dateTo - ISO date string (yyyy-MM-dd) for the end of the period
  * @param options.excludeBots - when true, adds `exclude_bots=true` to the request
@@ -36,9 +41,12 @@ import type {
  * @returns `{ data: DashboardData | null, stats, loading, error, refresh, isRealtime }`
  *
  * @remarks
- * Endpoint: `GET /api/analytics/link/{id}/dashboard?include_charts=true[&date_from=…][&date_to=…][&exclude_bots=true]` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD`).
- * Unlike the other analytics hooks, this one uses `useState`/`useEffect` directly (not TanStack Query) — it predates the migration and keeps its own AbortController-based request deduplication.
- * Cache key is therefore not part of the shared `queryKeys.analytics.*` namespace.
+ * Endpoint: `GET /api/analytics/link/{id}/dashboard?include_charts=true[&date_from=…][&date_to=…][&exclude_bots=true]`
+ * (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD`).
+ *
+ * Cache key: `queryKeys.analytics.dashboard(linkId)` + filter params for cache isolation.
+ * Uses TanStack Query v5 for shared cache, request deduplication and background refetch —
+ * consistent with the geographic, temporal, audience and insights hooks.
  */
 export function useDashboardData({
   linkId,
@@ -48,136 +56,58 @@ export function useDashboardData({
   dateTo,
   excludeBots = false,
 }: UseDashboardDataOptions = {}): UseDashboardDataReturn {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isRealtime, setIsRealtime] = useState(false);
-
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-  const isRequestingRef = useRef<boolean>(false);
-  const lastRequestParamsRef = useRef<string>("");
-
-  /**
-   * Busca dados do dashboard da API
-   */
-  const fetchDashboardData = useCallback(async () => {
-    try {
+  const {
+    data: rawData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: [
+      ...queryKeys.analytics.dashboard(linkId ?? ""),
+      { dateFrom, dateTo, excludeBots },
+    ],
+    queryFn: async (): Promise<ApiResponse> => {
       const params = new URLSearchParams({ include_charts: "true" });
       if (dateFrom) params.set("date_from", dateFrom);
       if (dateTo) params.set("date_to", dateTo);
       if (excludeBots) params.set("exclude_bots", "true");
 
-      const requestKey = `${linkId}-${dateFrom}-${dateTo}-${excludeBots}-${params.toString()}`;
-
-      // Evita requisições duplicadas
-      if (
-        isRequestingRef.current &&
-        lastRequestParamsRef.current === requestKey
-      ) {
-        return;
-      }
-
-      isRequestingRef.current = true;
-      lastRequestParamsRef.current = requestKey;
-
-      // Cancela requisição anterior se existir
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      abortControllerRef.current = new AbortController();
-      setError(null);
-
-      if (!linkId) {
-        return;
-      }
-
-      const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD(linkId);
+      const endpoint = API_CONFIG.ENDPOINTS.ANALYTICS_DASHBOARD(linkId!);
       const qs = params.toString();
       const fullEndpoint = qs ? `${endpoint}?${qs}` : endpoint;
 
-      // Client já desembrulha envelope { data } (Onda 0).
       const response = await api.get<ApiResponse>(fullEndpoint);
 
       if (!response) {
         throw new Error("Dados do dashboard não encontrados");
       }
 
-      const dashboardData = mapResponseToDashboardData(response);
-      setData(dashboardData);
+      return response;
+    },
+    staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
+    refetchInterval: enableRealtime ? refreshInterval : false,
+    enabled: !!linkId,
+  });
 
-      const calculatedStats = calculateStats(dashboardData);
-      setStats(calculatedStats);
-    } catch (err) {
-      if (err instanceof Error && err.name === "AbortError") {
-        return;
-      }
+  const data = useMemo(
+    () => (rawData ? mapResponseToDashboardData(rawData) : null),
+    [rawData],
+  );
 
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "Erro ao carregar dados do dashboard";
-      setError(errorMessage);
-    } finally {
-      isRequestingRef.current = false;
-    }
-  }, [linkId, dateFrom, dateTo, excludeBots]);
-
-  /**
-   * Atualiza dados manualmente
-   */
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    await fetchDashboardData();
-    setLoading(false);
-  }, [fetchDashboardData]);
-
-  // Setup realtime updates
-  useEffect(() => {
-    if (enableRealtime && refreshInterval > 0) {
-      intervalRef.current = setInterval(() => {
-        fetchDashboardData();
-      }, refreshInterval);
-      setIsRealtime(true);
-    } else {
-      setIsRealtime(false);
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [enableRealtime, refreshInterval, fetchDashboardData]);
-
-  // Initial fetch
-  useEffect(() => {
-    setLoading(true);
-    fetchDashboardData().finally(() => {
-      setLoading(false);
-    });
-
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [fetchDashboardData]);
+  const stats = useMemo(() => (data ? calculateStats(data) : null), [data]);
 
   return {
     data,
     stats,
-    loading,
-    error,
-    refresh,
-    isRealtime,
+    loading: isLoading,
+    error: error
+      ? error instanceof Error
+        ? error.message
+        : "Erro ao carregar dados do dashboard"
+      : null,
+    // Wrap refetch so the return shape matches UseDashboardDataReturn's `() => Promise<void>`
+    refresh: () => refetch().then(() => undefined),
+    isRealtime: enableRealtime,
   };
 }
 

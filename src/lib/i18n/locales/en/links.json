@@ -80,6 +80,9 @@
   },
   "form": {
     "createTitle": "Create New Link",
+    "createSubtitle": "Destination URL, optional slug, and advanced settings in one place.",
+    "loadErrorTitle": "Could not load link",
+    "loadErrorDesc": "The link does not exist or you do not have permission to edit it.",
     "editTitle": "Edit Link",
     "originalUrl": "Destination URL",
     "originalUrlPlaceholder": "https://example.com/your-long-url",
@@ -173,8 +176,17 @@
     "uniqueVisitors": "Unique Visitors",
     "avgClicksDay": "Avg. Clicks / Day",
     "avgClicksPerLink": "Avg. Clicks / Link",
-    "lastClick": "Last Click",
-    "neverClicked": "Never clicked",
+    "lastClick": "Last click",
+    "lastClickShort": "Last",
+    "clicksShort": "Clicks",
+    "neverClicked": "Never",
+    "justNow": "Just now",
+    "minutesAgo_one": "{{count}}m ago",
+    "minutesAgo_other": "{{count}}m ago",
+    "hoursAgo_one": "{{count}}h ago",
+    "hoursAgo_other": "{{count}}h ago",
+    "daysAgo_one": "{{count}}d ago",
+    "daysAgo_other": "{{count}}d ago",
     "countriesReached": "Countries Reached",
     "clicksToday": "Clicks Today",
     "linksCreated": "Links Created",
@@ -239,8 +251,13 @@
   },
   "qr": {
     "title": "QR Code",
-    "download": "Download QR Code",
-    "copy": "Copy image",
-    "description": "Scan to open the short link"
+    "download": "Download PNG",
+    "copy": "Share link",
+    "description": "Scan to open the short link.",
+    "originalUrl": "Original URL",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "createdAt": "Created"
   }
 }

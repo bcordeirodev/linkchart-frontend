@@ -1,11 +1,13 @@
 "use client";
-import { ToggleButton, ToggleButtonGroup, useTheme } from "@mui/material";
+import { Box, ToggleButton, ToggleButtonGroup, useTheme } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { BarChart3, Pencil, QrCode } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import { useNavigate } from "@/shared/hooks";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { radiusTokens } from "@/lib/theme/designSystem";
 
 /** One of the three sibling views of a single link. */
 export type LinkView = "analytics" | "edit" | "qr";
@@ -13,20 +15,22 @@ export type LinkView = "analytics" | "edit" | "qr";
 interface LinkActionsViewSwitchProps {
   linkId: string;
   currentView: LinkView;
-  /** When true, the group expands to fill its container (used on mobile). */
   fullWidth?: boolean;
 }
 
+const VIEWS: {
+  id: LinkView;
+  icon: LucideIcon;
+  labelKey: "analytics" | "edit" | "qrCode";
+}[] = [
+  { id: "analytics", icon: BarChart3, labelKey: "analytics" },
+  { id: "edit", icon: Pencil, labelKey: "edit" },
+  { id: "qr", icon: QrCode, labelKey: "qrCode" },
+];
+
 /**
- * Segmented control that switches between the three sibling views of a
- * link: Analytics, Edit, QR Code. The active toggle carries
- * `aria-current="page"` so screen readers announce the current page.
- *
- * Clicking a toggle immediately navigates; selecting the already-active
- * toggle is a no-op (MUI emits `null` for that case in exclusive mode).
- *
- * @param fullWidth - When true, the group expands to fill its container
- *                    (used on mobile to make the pills divide width evenly).
+ * Segmented control — Analytics / Editar / QR Code.
+ * Neutral, low-contrast styling so it stays secondary to page content.
  */
 export function LinkActionsViewSwitch({
   linkId,
@@ -65,63 +69,77 @@ export function LinkActionsViewSwitch({
       fullWidth={fullWidth}
       aria-label={t("actions.viewSwitch")}
       sx={{
+        width: fullWidth ? "100%" : "auto",
+        gap: 0.375,
+        p: 0.375,
         backgroundColor: theme.palette.action.hover,
-        borderRadius: 1.5,
-        p: 0.5,
-        "& .MuiToggleButton-root": {
+        borderRadius: `${radiusTokens.md}px`,
+        "& .MuiToggleButtonGroup-grouped": {
+          margin: 0,
           border: 0,
-          borderRadius: 1,
+          borderRadius: `${radiusTokens.sm}px`,
+          "&:not(:first-of-type)": {
+            marginLeft: 0,
+            borderLeft: 0,
+          },
+        },
+        "& .MuiToggleButton-root": {
+          flex: fullWidth ? 1 : "0 1 auto",
+          minHeight: 34,
+          minWidth: fullWidth ? 0 : 84,
           textTransform: "none",
-          fontWeight: 600,
+          fontWeight: 500,
           fontSize: "0.75rem",
           py: 0.5,
           px: { xs: 1, sm: 1.25 },
-          color: theme.palette.text.primary,
-          opacity: 0.6,
-          gap: 0.75,
+          color: theme.palette.text.secondary,
           transition: theme.transitions.create(
-            ["opacity", "background-color", "box-shadow"],
+            ["color", "background-color", "box-shadow"],
             { duration: theme.transitions.duration.shortest },
           ),
           "&:hover": {
-            opacity: 0.9,
             backgroundColor: "transparent",
+            color: theme.palette.text.primary,
           },
           "&.Mui-selected": {
             backgroundColor: theme.palette.background.paper,
             color: theme.palette.text.primary,
-            fontWeight: 700,
-            opacity: 1,
+            fontWeight: 600,
             boxShadow: theme.shadows[1],
           },
           "&.Mui-selected:hover": {
             backgroundColor: theme.palette.background.paper,
-            opacity: 1,
           },
         },
       }}
     >
-      <ToggleButton
-        value="analytics"
-        aria-current={currentView === "analytics" ? "page" : undefined}
-      >
-        <BarChart3 {...ICON_MD} />
-        {t("actions.analytics")}
-      </ToggleButton>
-      <ToggleButton
-        value="edit"
-        aria-current={currentView === "edit" ? "page" : undefined}
-      >
-        <Pencil {...ICON_MD} />
-        {t("actions.edit")}
-      </ToggleButton>
-      <ToggleButton
-        value="qr"
-        aria-current={currentView === "qr" ? "page" : undefined}
-      >
-        <QrCode {...ICON_MD} />
-        {t("actions.qrCode")}
-      </ToggleButton>
+      {VIEWS.map(({ id, icon: Icon, labelKey }) => (
+        <ToggleButton
+          key={id}
+          value={id}
+          aria-current={currentView === id ? "page" : undefined}
+        >
+          <Box
+            component="span"
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.5,
+            }}
+          >
+            <Icon {...ICON_SM} strokeWidth={1.75} />
+            <Box
+              component="span"
+              sx={{
+                display: fullWidth ? "inline" : { xs: "none", sm: "inline" },
+                whiteSpace: "nowrap",
+              }}
+            >
+              {t(`actions.${labelKey}`)}
+            </Box>
+          </Box>
+        </ToggleButton>
+      ))}
     </ToggleButtonGroup>
   );
 }

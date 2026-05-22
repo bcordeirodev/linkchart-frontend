@@ -1,36 +1,27 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, CircularProgress, Stack, Box } from "@mui/material";
+import { Alert } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 
-import { AppIcon } from "@/shared/ui/icons";
 import { ApiError } from "@/lib/api/client";
-import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
+import { LinkFormActionsFooter } from "../../components/forms/LinkFormActionsFooter";
 import { LinkFormFields } from "../../components/forms/LinkFormFields";
+import { LinkFormShell } from "../../components/forms/LinkFormShell";
 import {
   createLinkFormSchema,
   defaultLinkFormValues,
 } from "../../components/forms/LinkFormSchema";
+import { useCopyShortUrlForLink } from "../../hooks/useCopyShortUrlForLink";
 import { useCreateLink } from "../../hooks/useLinks";
 
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
 import type { CreateLinkFormProps } from "../../types/forms";
 
-/**
- * Form for creating a new link. Wraps `LinkFormFields` with submit/cancel
- * affordances and the `react-hook-form` plumbing. Page identity is provided
- * by the page chrome, so this card renders without an in-card title.
- *
- * On success: cache is invalidated via `useCreateLink` and the user is
- * redirected immediately to `/links` where the new link appears first.
- * Generic API errors are dispatched as toasts by the mutation hook;
- * field-level validation errors are mapped to their respective inputs.
- */
 export function CreateLinkForm({
   onSuccess,
   showBackButton = false,
@@ -38,6 +29,7 @@ export function CreateLinkForm({
   const navigate = useNavigate();
   const { t } = useTranslation("links");
   const mutation = useCreateLink();
+  const copyShortUrlForLink = useCopyShortUrlForLink();
 
   const {
     control,
@@ -69,7 +61,7 @@ export function CreateLinkForm({
       if (typeof dateValue === "string") {
         return dateValue;
       }
-    } catch (_error) {
+    } catch {
       return undefined;
     }
   };
@@ -88,11 +80,10 @@ export function CreateLinkForm({
 
     try {
       const response = await mutation.mutateAsync(payload);
+      await copyShortUrlForLink(response);
       onSuccess?.(response);
       navigate("/links");
     } catch (error: unknown) {
-      // Field-level validation errors from the API are mapped to their inputs.
-      // Generic errors are already dispatched as a toast by useCreateLink's onError.
       if (error instanceof ApiError && error.details?.errors) {
         const backendErrors = error.details.errors as Record<string, string[]>;
         Object.keys(backendErrors).forEach((field) => {
@@ -113,56 +104,20 @@ export function CreateLinkForm({
   };
 
   return (
-    <EnhancedPaper variant="glass" animated>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ px: 3, py: 3 }}>
-          <LinkFormFields control={control} errors={errors} isEdit={false} />
-        </Box>
-
-        <Box
-          sx={{
-            px: 3,
-            pb: 2.5,
-            pt: 1,
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: 1.5,
-          }}
-        >
-          <Stack
-            direction="row"
-            spacing={1.5}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            <Button
-              variant="outlined"
-              onClick={handleCancel}
-              disabled={mutation.isPending}
-              sx={{ flex: { xs: 1, sm: "initial" } }}
-            >
-              Cancelar
-            </Button>
-
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={!isValid || mutation.isPending}
-              startIcon={
-                mutation.isPending ? (
-                  <CircularProgress size={16} color="inherit" />
-                ) : (
-                  <AppIcon intent="save" />
-                )
-              }
-              sx={{ flex: { xs: 1, sm: "initial" } }}
-            >
-              {t("form.submit")}
-            </Button>
-          </Stack>
-        </Box>
-      </form>
-    </EnhancedPaper>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <LinkFormShell
+        footer={
+          <LinkFormActionsFooter
+            onCancel={handleCancel}
+            submitLabel={t("form.submit")}
+            loading={mutation.isPending}
+            submitDisabled={!isValid}
+          />
+        }
+      >
+        <LinkFormFields control={control} errors={errors} isEdit={false} />
+      </LinkFormShell>
+    </form>
   );
 }
 

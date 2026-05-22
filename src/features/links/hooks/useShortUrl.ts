@@ -1,7 +1,7 @@
 "use client";
 
 import { useSubdomain } from "@/features/profile/hooks/useSubdomain";
-import { getShortUrl } from "@/lib/utils/shortUrl";
+import { buildShortUrlForSlug } from "@/lib/utils/shortUrl";
 
 /**
  * Returns the public short URL for a given slug, respecting the authenticated
@@ -19,9 +19,8 @@ import { getShortUrl } from "@/lib/utils/shortUrl";
 export function useShortUrl(slug: string): string {
   const { subdomain } = useSubdomain();
 
-  if (subdomain?.status === "active") {
-    return slug ? `${subdomain.full_url.replace(/\/$/, "")}/${slug}` : "";
-  }
-
-  return getShortUrl(slug);
+  return buildShortUrlForSlug(
+    slug,
+    subdomain?.status === "active" ? subdomain : null,
+  );
 }
