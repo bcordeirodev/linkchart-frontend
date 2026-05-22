@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Chip, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Chip, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 import { format, isValid } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -363,6 +363,34 @@ export function ClicksTable({
         loading={isInitialLoading}
         error={error}
         hasData={items.length > 0 || loading}
+        skeleton={
+          <Box>
+            {/* Search bar placeholder */}
+            <Skeleton
+              variant="rounded"
+              animation="wave"
+              height={52}
+              sx={{ mb: 1.5, borderRadius: 2 }}
+            />
+            {/* Table header */}
+            <Skeleton
+              variant="rounded"
+              animation="wave"
+              height={40}
+              sx={{ mb: 0.5, borderRadius: 1, opacity: 0.6 }}
+            />
+            {/* Table rows */}
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                variant="rounded"
+                animation="wave"
+                height={48}
+                sx={{ mb: 0.5, borderRadius: 1, opacity: 1 - i * 0.08 }}
+              />
+            ))}
+          </Box>
+        }
         onRetry={refresh}
         loadingMessage={t("analytics.clicksTable.loadingMessage")}
         emptyMessage={t("analytics.clicksTable.emptyMessage")}
