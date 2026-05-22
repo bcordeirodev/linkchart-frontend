@@ -1,56 +1,41 @@
 "use client";
 import { Box, Typography } from "@mui/material";
 
+import { LinkActionsShortUrl } from "./LinkActionsShortUrl";
+
 interface LinkActionsTitleRowProps {
-  /** Link title; falls back to `shortUrl` when undefined. */
   title?: string;
-  /** Short URL shown as subtitle. */
   shortUrl?: string;
 }
 
-/**
- * Pure presentational title block of the LinkActions toolbar.
- *
- * Displays the link's title (falling back to the short URL when the
- * title is still loading) and the short URL as a subtitle. Truncates
- * both lines with ellipsis to avoid layout shift on long titles.
- *
- * Action buttons (Copy, overflow trigger) are positioned by the parent
- * orchestrator and are NOT rendered inside this component.
- */
 export function LinkActionsTitleRow({
   title,
   shortUrl,
 }: LinkActionsTitleRowProps) {
+  const heading = title || shortUrl || "";
+  const showUrlLine = Boolean(shortUrl && shortUrl !== heading);
+
   return (
     <Box sx={{ minWidth: 0, flex: 1 }}>
       <Typography
-        variant="h4"
+        variant="h6"
         component="h1"
         sx={{
-          fontSize: { xs: "1.5rem", sm: "2rem" },
-          fontWeight: 700,
-          lineHeight: 1.2,
+          fontSize: { xs: "1.25rem", sm: "1.375rem" },
+          fontWeight: 600,
+          letterSpacing: "-0.02em",
+          lineHeight: 1.3,
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
         }}
       >
-        {title || shortUrl || ""}
+        {heading}
       </Typography>
-      {shortUrl ? (
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            fontSize: { xs: "0.75rem", sm: "0.8125rem" },
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {shortUrl}
-        </Typography>
+      {showUrlLine ? (
+        <Box sx={{ mt: 0.375 }}>
+          <LinkActionsShortUrl url={shortUrl!} />
+        </Box>
       ) : null}
     </Box>
   );

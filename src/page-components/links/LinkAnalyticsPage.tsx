@@ -48,6 +48,7 @@ function LinkAnalyticsPage({ id }: Props) {
         <LinkActions
           linkId={id}
           currentView="analytics"
+          slug={linkInfo?.slug}
           shortUrl={linkInfo?.short_url}
           title={linkInfo?.title}
         />

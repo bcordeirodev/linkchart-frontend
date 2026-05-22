@@ -2,13 +2,12 @@
 
 import { Alert, Stack, Button } from "@mui/material";
 import { useNavigate } from "@/shared/hooks";
-import { useState, useEffect } from "react";
 
 import { EditLinkForm, LinkActions } from "@/features/links";
+import { useLinkById } from "@/features/links/hooks/useLinks";
 import { AppIcon } from "@/shared/ui/icons";
 import { ResponsiveContainer } from "@/shared/ui/base";
 import { LinkFormSkeleton } from "@/shared/ui/feedback/skeletons";
-import { linkService } from "@/services";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
 
@@ -23,34 +22,7 @@ interface Props {
 
 function LinkEditPage({ id }: Props) {
   const navigate = useNavigate();
-  const [linkData, setLinkData] = useState<{
-    short_url?: string;
-    title?: string;
-  } | null>(null);
-
-  // Carregar dados do link para a barra de ações
-  useEffect(() => {
-    const fetchLinkData = async () => {
-      if (!id) {
-        return;
-      }
-
-      try {
-        const link = await linkService.findOne(id);
-
-        if (link) {
-          setLinkData({
-            short_url: link.slug || link.custom_slug,
-            title: link.title,
-          });
-        }
-      } catch (_error) {
-        // Erro ao carregar dados do link - não é crítico para a página
-      }
-    };
-
-    fetchLinkData();
-  }, [id]);
+  const { data: link, isLoading: linkHeaderLoading } = useLinkById(id);
 
   const handleDeleteSuccess = () => {
     navigate("/links");
@@ -93,12 +65,12 @@ function LinkEditPage({ id }: Props) {
     >
       <ResponsiveContainer variant="form" maxWidth="md">
         <Stack spacing={3}>
-          {linkData ? (
+          {!linkHeaderLoading && link ? (
             <LinkActions
               linkId={id}
               currentView="edit"
-              shortUrl={linkData.short_url}
-              title={linkData.title}
+              slug={link.slug || link.custom_slug}
+              title={link.title}
               onDeleteSuccess={handleDeleteSuccess}
             />
           ) : null}
