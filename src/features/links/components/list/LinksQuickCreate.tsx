@@ -21,10 +21,14 @@ import { z } from "zod";
 
 import { useCreateLink } from "@/features/links/hooks/useLinks";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
+import { useAvailableSlugSuggestion } from "@/features/links/hooks/useAvailableSlugSuggestion";
 import { useUrlMeta } from "@/features/links/hooks/useUrlMeta";
-import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability";
-import { slugify } from "@/features/links/utils/slugify";
-import { getUrlSafetyHelperNode } from "@/features/links/components/forms/UrlSafetyIndicator";
+import { RESERVED_SLUGS } from "@/features/links/utils/slugAvailabilityCheck";
+import { slugify, slugifyFromUrl } from "@/features/links/utils/slugify";
+import {
+  buildUrlSafetyLabels,
+  getUrlSafetyHelperNode,
+} from "@/features/links/components/forms/UrlSafetyIndicator";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
@@ -41,8 +45,6 @@ interface LinksQuickCreateProps {
   /** Called after a link is created (list is invalidated by the mutation). */
   onLinkCreated?: (link: LinkResponse) => void;
 }
-
-const RESERVED_SLUGS = ["api", "admin", "www", "mail", "ftp", "r", "redirect"];
 
 type QuickFormData = {
   original_url: string;
@@ -151,10 +153,11 @@ export function LinksQuickCreate({
         custom_slug: z
           .string()
           .min(3, t("form.validation.slugMin"))
-          .max(50, t("form.validation.slugMax"))
+          .max(100, t("form.validation.slugMax"))
           .regex(/^[a-zA-Z0-9\-_]+$/, t("form.validation.slugPattern"))
           .refine(
-            (s) => !RESERVED_SLUGS.includes(s.toLowerCase()),
+            (s) =>
+              !(RESERVED_SLUGS as readonly string[]).includes(s.toLowerCase()),
             t("form.validation.slugReserved"),
           )
           .optional()
@@ -179,33 +182,39 @@ export function LinksQuickCreate({
   const slugValue = watch("custom_slug");
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
 
-  // Metadata-based slug suggestion. Verify availability before surfacing as
-  // ghost text so we never propose a slug that is already taken.
   const { ogTitle, isLoading: isLoadingMeta } = useUrlMeta(urlValue ?? "");
-  const slugSuggestion = ogTitle ? slugify(ogTitle) : null;
-  // Only check when the field is empty — pass "" while the user is typing so
-  // the hook stays idle and doesn't race against normal slug validation.
-  const slugSuggestionAvailability = useSlugAvailability(
-    !slugValue ? (slugSuggestion ?? "") : "",
-  );
+  const baseSlugSuggestion = useMemo(() => {
+    if (!urlValue) return null;
+    if (ogTitle) {
+      const fromTitle = slugify(ogTitle);
+      if (fromTitle) return fromTitle;
+    }
+    return slugifyFromUrl(urlValue) || null;
+  }, [ogTitle, urlValue]);
+  const { availableSlug, status: slugSuggestionStatus } =
+    useAvailableSlugSuggestion(!slugValue ? baseSlugSuggestion : null);
+
   const showSlugSuggestion =
+    !slugValue && slugSuggestionStatus === "ready" && !!availableSlug;
+  const isResolvingSlugSuggestion =
     !slugValue &&
-    !!slugSuggestion &&
-    slugSuggestionAvailability === "available";
+    !!baseSlugSuggestion &&
+    (isLoadingMeta || slugSuggestionStatus === "resolving");
 
   const acceptSlugSuggestion = useCallback(() => {
-    if (slugSuggestion) {
-      setValue("custom_slug", slugSuggestion, { shouldValidate: true });
+    if (availableSlug) {
+      setValue("custom_slug", availableSlug, { shouldValidate: true });
     }
-  }, [slugSuggestion, setValue]);
+  }, [availableSlug, setValue]);
 
   const urlIsUnsafe = safetyStatus === "unsafe";
   const urlIsChecking = safetyStatus === "checking";
 
+  const urlSafetyLabels = buildUrlSafetyLabels(t);
   const urlHelperText: ReactNode = errors.original_url?.message
     ? errors.original_url.message
     : safetyStatus !== "idle"
-      ? getUrlSafetyHelperNode(safetyStatus, threats, t)
+      ? getUrlSafetyHelperNode(safetyStatus, threats, urlSafetyLabels)
       : " ";
 
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
@@ -225,9 +234,18 @@ export function LinksQuickCreate({
 
   const inputRootSx = getInputRootSx(theme);
   const primary = theme.palette.primary.main;
-  const slugHelperText =
-    errors.custom_slug?.message ||
-    (showSlugSuggestion ? t("list.quickCreate.slugTabHint") : undefined);
+  const slugHelperText = (() => {
+    if (errors.custom_slug?.message) {
+      return errors.custom_slug.message;
+    }
+    if (showSlugSuggestion) {
+      return t("list.quickCreate.slugTabHint");
+    }
+    if (isResolvingSlugSuggestion) {
+      return t("list.quickCreate.slugSuggestionChecking");
+    }
+    return undefined;
+  })();
 
   return (
     <EnhancedPaper
@@ -332,8 +350,10 @@ export function LinksQuickCreate({
               {...register("custom_slug")}
               placeholder={
                 showSlugSuggestion
-                  ? slugSuggestion!
-                  : t("list.quickCreate.slugPlaceholder")
+                  ? availableSlug!
+                  : isResolvingSlugSuggestion && baseSlugSuggestion
+                    ? baseSlugSuggestion
+                    : t("list.quickCreate.slugPlaceholder")
               }
               onKeyDown={(e) => {
                 if (e.key === "Tab" && showSlugSuggestion) {
@@ -356,16 +376,29 @@ export function LinksQuickCreate({
                   sx: {
                     fontFamily: "monospace",
                     fontWeight: 500,
-                    ...(showSlugSuggestion
+                    ...((showSlugSuggestion || isResolvingSlugSuggestion) &&
+                    (availableSlug || baseSlugSuggestion)
                       ? {
                           "&::placeholder": {
-                            color: alpha(primary, 0.55),
+                            color: alpha(
+                              primary,
+                              showSlugSuggestion ? 0.55 : 0.35,
+                            ),
                             opacity: 1,
                           },
                         }
                       : undefined),
                   },
-                  endAdornment: showSlugSuggestion ? (
+                  endAdornment:
+                    isResolvingSlugSuggestion && !showSlugSuggestion ? (
+                      <InputAdornment position="end">
+                        <CircularProgress
+                          size={14}
+                          thickness={5}
+                          sx={{ color: "text.disabled" }}
+                        />
+                      </InputAdornment>
+                    ) : showSlugSuggestion ? (
                     <InputAdornment position="end">
                       <Box
                         component="button"
@@ -459,12 +492,12 @@ export function LinksQuickCreate({
                 <Typography variant="caption" color="error">
                   {errors.custom_slug.message}
                 </Typography>
-              ) : showSlugSuggestion ? (
+              ) : slugHelperText ? (
                 <Typography
                   variant="caption"
                   sx={{ color: "text.secondary", lineHeight: 1.45 }}
                 >
-                  {t("list.quickCreate.slugTabHint")}
+                  {slugHelperText}
                 </Typography>
               ) : null}
             </Box>
