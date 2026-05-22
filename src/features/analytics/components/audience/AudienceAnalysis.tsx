@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { useAudienceData } from "@/features/analytics/hooks/useAudienceData";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
+import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { ResponsiveContainer } from "@/shared/ui/base/ResponsiveContainer";
 import { AudienceChart } from "./AudienceChart";
@@ -74,6 +75,7 @@ export function AudienceAnalysis({
         loading={shouldUseHook ? loading : false}
         error={shouldUseHook && error ? error : null}
         hasData={!!deviceBreakdown?.length}
+        skeleton={<AnalyticsTabSkeleton metricCards={6} />}
         onRetry={refresh}
         loadingMessage={t("audience.loading")}
         emptyMessage={t("audience.empty")}
