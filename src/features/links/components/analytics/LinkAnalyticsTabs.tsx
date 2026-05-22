@@ -187,6 +187,12 @@ export function LinkAnalyticsTabsOptimized({
             dateFrom={filters.dateFrom}
             dateTo={filters.dateTo}
             excludeBots={filters.excludeBots}
+            priority={filters.priority}
+            insightCategories={filters.insightCategories}
+            actionableOnly={filters.actionableOnly}
+            onPriorityChange={filters.setPriority}
+            onCategoriesChange={filters.setInsightCategories}
+            onActionableOnlyChange={filters.setActionableOnly}
           />
         )}
       </TabPanel>
