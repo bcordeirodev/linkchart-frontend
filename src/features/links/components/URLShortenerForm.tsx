@@ -199,6 +199,31 @@ export function URLShortenerForm({
               >
                 {errors.originalUrl.message}
               </Typography>
+            ) : safetyStatus === "safe" ? (
+              <motion.span
+                key="safe-chip"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  marginTop: 4,
+                  marginLeft: 4,
+                  padding: "2px 8px 2px 6px",
+                  borderRadius: 100,
+                  background: "rgba(52, 211, 153, 0.08)",
+                  border: "1px solid rgba(52, 211, 153, 0.20)",
+                  color: "#34d399",
+                  fontSize: "0.75rem",
+                  fontWeight: 500,
+                  lineHeight: 1.4,
+                }}
+              >
+                {safetyIcons.safe}
+                {safetyLabel}
+              </motion.span>
             ) : safetyStatus !== "idle" ? (
               <Box
                 sx={{
