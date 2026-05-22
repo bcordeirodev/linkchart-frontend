@@ -4,6 +4,25 @@ import { useCallback } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { format, startOfDay, subDays, subHours } from "date-fns";
 
+/** Named identifier for each analytics tab — used in URL params instead of numeric indices. */
+export type TabId =
+  | "overview"
+  | "temporal"
+  | "geographic"
+  | "audience"
+  | "insights"
+  | "clicks";
+
+/** Ordered list of TabIds — index matches the numeric position expected by MUI Tabs. */
+export const TAB_IDS: readonly TabId[] = [
+  "overview",
+  "temporal",
+  "geographic",
+  "audience",
+  "insights",
+  "clicks",
+];
+
 /** Period preset identifiers for the global date filter. */
 export type Period = "1h" | "24h" | "7d" | "30d" | "90d" | "all" | "custom";
 
@@ -28,7 +47,7 @@ export interface AnalyticsFilters {
   excludeBots: boolean;
 
   // Active tab (stored in URL so it survives filter changes)
-  tab: number;
+  tab: TabId;
 
   // Temporal
   groupBy: GroupBy;
@@ -50,7 +69,7 @@ export interface AnalyticsFilters {
   setPeriod: (v: Period) => void;
   setDateRange: (from: string, to: string) => void;
   setExcludeBots: (v: boolean) => void;
-  setTab: (v: number) => void;
+  setTab: (v: TabId) => void;
   setGroupBy: (v: GroupBy) => void;
   setSegment: (v: Segment) => void;
   setContinent: (v: string | null) => void;
@@ -180,9 +199,11 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     : [];
   const actionableOnly = searchParams.get("actionable") === "true";
 
-  const rawTab = parseInt(searchParams.get("tab") ?? "0", 10);
-  const tab =
-    Number.isFinite(rawTab) && rawTab >= 0 && rawTab <= 5 ? rawTab : 0;
+  const tab = parseEnum<TabId>(
+    searchParams.get("tab"),
+    TAB_IDS,
+    "overview",
+  );
 
   const rawGeoSubTab = parseInt(searchParams.get("geoSubTab") ?? "0", 10);
   const geoSubTab =
@@ -241,7 +262,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   );
 
   const setTab = useCallback(
-    (v: number) => setParam({ tab: v === 0 ? null : String(v) }),
+    (v: TabId) => setParam({ tab: v === "overview" ? null : v }),
     [setParam],
   );
 
