@@ -10,7 +10,10 @@ export type SlugAvailabilityStatus =
   | "available"
   | "taken";
 
-const SLUG_PATTERN = /^[a-z0-9-]{3,50}$/;
+// Matches slugify() output: lowercase letters, digits, hyphens, underscores.
+// Underscores are valid in slugs (form regex allows them via /^[a-zA-Z0-9\-_]+$/)
+// and slugify() preserves them when present in the source title.
+const SLUG_PATTERN = /^[a-z0-9_-]{3,50}$/;
 
 /**
  * Debounced check that returns whether a custom slug is available.
