@@ -346,11 +346,20 @@
     },
     "holiday": {
       "description": "Comparativo de cliques em feriados nacionais versus dias normais. Identifique se sua audiência é mais ativa em períodos de folga ou durante a semana de trabalho.",
-      "title": "Impacto de Feriados"
+      "title": "Impacto de Feriados",
+      "inHolidays": "dos cliques em feriados",
+      "holidayClicks": "cliques em feriados",
+      "normalDays": "em dias normais"
     },
     "seasonal": {
       "description": "Distribuição de cliques por estação do ano (Verão, Outono, Inverno, Primavera). Revela sazonalidade no engajamento e ajuda a planejar campanhas pelos períodos mais quentes.",
-      "title": "Distribuição por Estação"
+      "title": "Distribuição por Estação",
+      "labels": {
+        "summer": "Verão",
+        "winter": "Inverno",
+        "spring": "Primavera",
+        "fall": "Outono"
+      }
     }
   },
   "geographic": {

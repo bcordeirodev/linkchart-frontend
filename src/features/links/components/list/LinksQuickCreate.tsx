@@ -319,9 +319,7 @@ export function LinksQuickCreate({
                 variant="outlined"
                 size="small"
                 onClick={() => navigate("/links/create")}
-                startIcon={
-                  <SlidersHorizontal size={13} strokeWidth={1.75} />
-                }
+                startIcon={<SlidersHorizontal size={13} strokeWidth={1.75} />}
                 endIcon={<ArrowUpRight size={12} strokeWidth={2} />}
                 sx={getAdvancedOptionsButtonSx(theme)}
               >
