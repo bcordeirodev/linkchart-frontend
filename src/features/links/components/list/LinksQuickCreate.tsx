@@ -13,7 +13,13 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { ArrowUpRight, CheckCircle2, Link2, Zap } from "lucide-react";
+import {
+  ArrowUpRight,
+  CheckCircle2,
+  Link2,
+  SlidersHorizontal,
+  Zap,
+} from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -35,7 +41,10 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
 
 import { LinksListSectionHeading } from "./LinksListSectionHeading";
-import { getLinksQuickCreatePanelSx } from "./linksPanelStyles";
+import {
+  getLinksBorderColor,
+  getLinksQuickCreatePanelSx,
+} from "./linksPanelStyles";
 
 import type { LinkResponse } from "@/types";
 import type { Theme } from "@mui/material/styles";
@@ -127,6 +136,52 @@ const submitButtonSx = {
   borderRadius: `${radiusTokens.md}px`,
   whiteSpace: "nowrap",
   px: 2.5,
+};
+
+const getAdvancedOptionsButtonSx = (theme: Theme) => {
+  const isDark = theme.palette.mode === "dark";
+  const borderColor = getLinksBorderColor(theme);
+  const ink = theme.palette.text.primary;
+
+  return {
+    "&.MuiButton-sizeSmall": {
+      minHeight: 26,
+      padding: "2px 8px",
+    },
+    textTransform: "none",
+    fontWeight: 500,
+    fontSize: "0.75rem",
+    lineHeight: 1.2,
+    borderRadius: `${radiusTokens.sm}px`,
+    color: "text.secondary",
+    borderColor,
+    bgcolor: "transparent",
+    px: 0.875,
+    py: 0.25,
+    minHeight: 26,
+    whiteSpace: "nowrap",
+    boxShadow: "none",
+    transition: theme.transitions.create(
+      ["background-color", "border-color", "color"],
+      { duration: 150 },
+    ),
+    "& .MuiButton-startIcon": {
+      marginRight: 0.375,
+      marginLeft: -0.125,
+      "& svg": { width: 13, height: 13 },
+    },
+    "& .MuiButton-endIcon": {
+      marginLeft: 0.125,
+      marginRight: -0.125,
+      "& svg": { width: 12, height: 12 },
+    },
+    "&:hover": {
+      color: "text.primary",
+      bgcolor: alpha(ink, isDark ? 0.06 : 0.04),
+      borderColor: alpha(ink, isDark ? 0.28 : 0.2),
+      boxShadow: "none",
+    },
+  };
 };
 
 /**
@@ -261,15 +316,14 @@ export function LinksQuickCreate({
           action={
             <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
               <Button
-                variant="text"
+                variant="outlined"
                 size="small"
                 onClick={() => navigate("/links/create")}
-                endIcon={<ArrowUpRight size={14} strokeWidth={2} />}
-                sx={{
-                  textTransform: "none",
-                  color: "text.secondary",
-                  "&:hover": { color: "text.primary", bgcolor: "action.hover" },
-                }}
+                startIcon={
+                  <SlidersHorizontal size={13} strokeWidth={1.75} />
+                }
+                endIcon={<ArrowUpRight size={12} strokeWidth={2} />}
+                sx={getAdvancedOptionsButtonSx(theme)}
               >
                 {t("list.quickCreate.moreOptions")}
               </Button>
