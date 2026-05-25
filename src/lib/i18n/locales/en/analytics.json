@@ -346,11 +346,20 @@
     },
     "holiday": {
       "description": "Comparison of clicks on national holidays versus regular days. Identify whether your audience is more active during time off or the working week.",
-      "title": "Holiday Impact"
+      "title": "Holiday Impact",
+      "inHolidays": "of clicks on holidays",
+      "holidayClicks": "holiday clicks",
+      "normalDays": "on regular days"
     },
     "seasonal": {
       "description": "Click distribution by season (Summer, Autumn, Winter, Spring). Reveals engagement seasonality and helps plan campaigns around peak periods.",
-      "title": "Distribution by Season"
+      "title": "Distribution by Season",
+      "labels": {
+        "summer": "Summer",
+        "winter": "Winter",
+        "spring": "Spring",
+        "fall": "Autumn"
+      }
     }
   },
   "geographic": {

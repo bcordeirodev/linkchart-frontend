@@ -260,7 +260,7 @@ export function buildPublicUrlSafetyLabels(t: any): UrlSafetyLabels {
 }
 
 /** Builds slug availability labels from the `public` /shorter namespace. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export function buildPublicSlugAvailabilityLabels(
   t: any,
 ): SlugAvailabilityLabels {
