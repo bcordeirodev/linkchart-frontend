@@ -324,7 +324,11 @@ export function BusinessInsights({
                             color: "text.primary",
                           }}
                         >
-                          {resolveText(insight.title_key, insight.title_params, insight.title)}
+                          {resolveText(
+                            insight.title_key,
+                            insight.title_params,
+                            insight.title,
+                          )}
                         </Typography>
 
                         {/* Badge de prioridade padronizado */}
@@ -353,7 +357,11 @@ export function BusinessInsights({
                           mb: 2,
                         }}
                       >
-                        {resolveText(insight.description_key, insight.description_params, insight.description)}
+                        {resolveText(
+                          insight.description_key,
+                          insight.description_params,
+                          insight.description,
+                        )}
                       </Typography>
 
                       {/* Categoria com divisória sutil */}
