@@ -8,13 +8,18 @@ import type { PublicLinkResponse } from "@/services/link-public.service";
 /**
  * Drives the public `/shorter` page state machine: success/error/reset/auth nav.
  *
- * @returns `{ isRedirecting, result, error, handleSuccess, handleError, clearError, handleReset, handleSignUp, handleLogin }`
+ * @returns `{ isRedirecting, result, error, formKey, handleSuccess, handleError, clearError, handleReset, handleSignUp, handleLogin }`
  *
  * @remarks
  * No direct network calls — receives the `PublicLinkResponse` from `usePublicURLShortener` via `handleSuccess`.
  * `handleSuccess` writes `res.short_url` to the clipboard (best-effort, swallowed on failure) and schedules a 150 ms-delayed `navigate(...)` so the exit animation has time to play.
  * Authenticated users are sent to the private analytics dashboard (`/links/analytics/{id}`); guests stay on `/shorter?slug=…` with the public analytics stack.
  * The pending nav timer is cleared on unmount and on `handleReset`.
+ *
+ * `formKey` is a monotonically-increasing counter that increments every time `handleReset` is
+ * called. Consumers should pass it as the React `key` prop to `URLShortenerForm` so the form
+ * is fully unmounted and remounted on reset — clearing all `useForm` field values, cancelling
+ * in-flight slug/safety hooks, and preventing stale spinners from persisting.
  */
 export function useShorter() {
   const navigate = useNavigate();
@@ -22,6 +27,7 @@ export function useShorter() {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [result, setResult] = useState<PublicLinkResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [formKey, setFormKey] = useState(0);
   const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -51,6 +57,12 @@ export function useShorter() {
             replace: true,
             state: { fromShorter: true, newLink: true, linkData: res },
           });
+          // Always clear the redirecting flag once navigation is scheduled.
+          // For authenticated users the component unmounts anyway; for guests
+          // (who stay on the same /shorter route with ?slug=…) the state would
+          // otherwise persist and block the form if the user ever returns to
+          // the landing section without going through handleReset.
+          setIsRedirecting(false);
         } catch (err) {
           console.error("Erro ao redirecionar:", err);
           setError("Erro ao redirecionar para analytics");
@@ -76,6 +88,9 @@ export function useShorter() {
     setIsRedirecting(false);
     setResult(null);
     setError(null);
+    // Increment formKey so URLShortenerForm is force-remounted, clearing all
+    // internal useForm fields, slug suggestion state, and safety-check hooks.
+    setFormKey((k) => k + 1);
   }, []);
 
   const handleSignUp = useCallback(() => navigate("/auth/login"), [navigate]);
@@ -85,6 +100,7 @@ export function useShorter() {
     isRedirecting,
     result,
     error,
+    formKey,
     handleSuccess,
     handleError,
     clearError,

@@ -96,7 +96,7 @@ export function BenefitBadges({ state, onReset }: BenefitBadgesProps) {
             fontWeight: 500,
             letterSpacing: "0.02em",
             textTransform: "none",
-            color: theme.palette.primary.light,
+            color: theme.palette.primary.main,
             borderColor: alpha(
               theme.palette.primary.main,
               isDark ? 0.28 : 0.32,

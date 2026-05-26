@@ -3,6 +3,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { ChevronDown } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -28,6 +29,7 @@ interface FaqItem {
 export function ShorterFaq() {
   const theme = useTheme();
   const { t } = useTranslation("public");
+  const isDark = theme.palette.mode === "dark";
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const items = t("shorter.faq.items", { returnObjects: true }) as FaqItem[];
@@ -71,8 +73,9 @@ export function ShorterFaq() {
                   borderColor: alpha(theme.palette.primary.main, 0.32),
                   bgcolor: alpha(
                     theme.palette.primary.main,
-                    theme.palette.mode === "dark" ? 0.04 : 0.02,
+                    isDark ? 0.04 : 0.02,
                   ),
+                  boxShadow: `inset 3px 0 0 ${alpha(theme.palette.primary.main, isDark ? 0.5 : 0.4)}`,
                 }),
               }}
             >
@@ -126,33 +129,44 @@ export function ShorterFaq() {
               </Box>
 
               {/* Answer */}
-              {isOpen && (
-                <Box
-                  id={`faq-answer-${i}`}
-                  role="region"
-                  aria-labelledby={`faq-question-${i}`}
-                  sx={{
-                    px: { xs: 2, md: 2.5 },
-                    pb: { xs: 2, md: 2.25 },
-                    pt: 0,
-                  }}
-                >
-                  <Typography
-                    component="p"
-                    sx={{
-                      fontSize: "0.8125rem",
-                      lineHeight: 1.65,
-                      color: alpha(
-                        theme.palette.text.primary,
-                        theme.palette.mode === "dark" ? 0.72 : 0.75,
-                      ),
-                      m: 0,
-                    }}
+              <AnimatePresence initial={false}>
+                {isOpen && (
+                  <motion.div
+                    key={`faq-answer-${i}`}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ overflow: "hidden" }}
                   >
-                    {item.a}
-                  </Typography>
-                </Box>
-              )}
+                    <Box
+                      id={`faq-answer-${i}`}
+                      role="region"
+                      aria-labelledby={`faq-question-${i}`}
+                      sx={{
+                        px: { xs: 2, md: 2.5 },
+                        pb: { xs: 2, md: 2.25 },
+                        pt: 0,
+                      }}
+                    >
+                      <Typography
+                        component="p"
+                        sx={{
+                          fontSize: "0.8125rem",
+                          lineHeight: 1.65,
+                          color: alpha(
+                            theme.palette.text.primary,
+                            isDark ? 0.72 : 0.75,
+                          ),
+                          m: 0,
+                        }}
+                      >
+                        {item.a}
+                      </Typography>
+                    </Box>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </Box>
           );
         })}

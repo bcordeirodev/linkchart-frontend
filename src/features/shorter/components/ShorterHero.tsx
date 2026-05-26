@@ -26,7 +26,7 @@ export function ShorterHero({ state }: ShorterHeroProps) {
         <Typography
           component="h1"
           sx={{
-            fontSize: { xs: "2rem", md: "2.75rem" },
+            fontSize: { xs: "1.5rem", md: "2rem" },
             fontWeight: 800,
             letterSpacing: "-0.03em",
             lineHeight: 1.15,

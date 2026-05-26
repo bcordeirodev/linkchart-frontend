@@ -57,15 +57,15 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
     : "";
 
   const isActive = analyticsData.is_active;
+  const statusTone = isActive
+    ? theme.palette.success.main
+    : theme.palette.error.main;
   const statusBg = isActive
-    ? alpha(theme.palette.success.main, 0.1)
-    : alpha(theme.palette.error.main, 0.1);
+    ? alpha(theme.palette.success.main, isDark ? 0.14 : 0.1)
+    : alpha(theme.palette.error.main, isDark ? 0.14 : 0.1);
   const statusBorder = isActive
-    ? alpha(theme.palette.success.main, 0.28)
-    : alpha(theme.palette.error.main, 0.28);
-  const statusColor = isActive
-    ? theme.palette.success.light
-    : theme.palette.error.light;
+    ? alpha(theme.palette.success.main, isDark ? 0.38 : 0.3)
+    : alpha(theme.palette.error.main, isDark ? 0.38 : 0.3);
 
   return (
     <Box
@@ -97,7 +97,7 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
           sx={{
             fontSize: { xs: "2.25rem", md: "2.5rem" },
             fontWeight: 800,
-            color: theme.palette.primary.light,
+            color: alpha(theme.palette.primary.main, isDark ? 0.95 : 0.9),
             lineHeight: 1,
             letterSpacing: "-0.025em",
             fontFeatureSettings: '"tnum" 1, "lnum" 1',
@@ -143,7 +143,7 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
             sx={{
               fontSize: "0.75rem",
               fontWeight: 600,
-              color: statusColor,
+              color: statusTone,
               letterSpacing: "0.01em",
             }}
           >

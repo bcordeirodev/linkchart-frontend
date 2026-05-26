@@ -61,12 +61,13 @@ export function URLShortenerForm({
   loading: externalLoading,
 }: URLShortenerFormProps) {
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const dispatch = useAppDispatch();
   const { t } = useTranslation("public");
   const fieldSx = getPublicFormFieldSx(theme);
   const labelSx = getUrlShortenerLabelSx(theme);
   const inputSx = getUrlShortenerInputSx(theme);
-  const iconMuted = alpha(theme.palette.text.primary, 0.38);
+  const iconMuted = alpha(theme.palette.text.primary, isDark ? 0.44 : 0.38);
   const {
     handleSubmit,
     register,
@@ -200,7 +201,12 @@ export function URLShortenerForm({
             </Box>
             {errors.originalUrl ? (
               <Typography
-                sx={{ fontSize: "0.75rem", color: "#f87171", mt: 0.5, pl: 0.5 }}
+                sx={{
+                  fontSize: "0.75rem",
+                  color: alpha(theme.palette.error.main, isDark ? 0.92 : 0.94),
+                  mt: 0.5,
+                  pl: 0.5,
+                }}
               >
                 {errors.originalUrl.message}
               </Typography>
@@ -271,7 +277,12 @@ export function URLShortenerForm({
             </Box>
             {errors.customSlug ? (
               <Typography
-                sx={{ fontSize: "0.75rem", color: "#f87171", mt: 0.5, pl: 0.5 }}
+                sx={{
+                  fontSize: "0.75rem",
+                  color: alpha(theme.palette.error.main, isDark ? 0.92 : 0.94),
+                  mt: 0.5,
+                  pl: 0.5,
+                }}
               >
                 {errors.customSlug.message}
               </Typography>
@@ -330,7 +341,7 @@ export function URLShortenerForm({
               <CircularProgress
                 size={16}
                 thickness={5}
-                sx={{ color: "rgba(255,255,255,0.75)" }}
+                sx={{ color: alpha(theme.palette.common.white, 0.82) }}
               />
               {t("shorter.shortening")}
             </Box>

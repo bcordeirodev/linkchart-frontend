@@ -8,6 +8,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -29,6 +30,7 @@ interface PublicAnalyticsPageContentProps {
 
 function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("public");
   const {
     linkData,
@@ -61,6 +63,16 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
         <Box
           sx={{
             position: "fixed",
+            inset: 0,
+            pointerEvents: "none",
+            zIndex: 0,
+            background: `radial-gradient(circle at 20% 18%, ${alpha(theme.palette.primary.main, isDark ? 0.16 : 0.1)} 0%, transparent 55%),
+                         radial-gradient(circle at 78% 86%, ${alpha(theme.palette.secondary.main, isDark ? 0.12 : 0.08)} 0%, transparent 52%)`,
+          }}
+        />
+        <Box
+          sx={{
+            position: "fixed",
             top: "-10%",
             right: "-5%",
             width: 400,
@@ -68,8 +80,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
             borderRadius: "50%",
             pointerEvents: "none",
             zIndex: 0,
-            background:
-              "radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 60%)",
+            background: `radial-gradient(circle, ${alpha(theme.palette.primary.main, isDark ? 0.18 : 0.13)} 0%, transparent 60%)`,
           }}
         />
 

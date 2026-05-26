@@ -101,10 +101,14 @@ function PublicAnalyticsSections({
         </Fade>
       ) : null}
 
-      <AdSlot
-        slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_ABOVE_CHARTS ?? ""}
-        format="auto"
-      />
+      {hasClicks ? (
+        <AdSlot
+          slot={
+            process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_ABOVE_CHARTS ?? ""
+          }
+          format="auto"
+        />
+      ) : null}
 
       <Fade in timeout={800}>
         <Box>
@@ -112,10 +116,14 @@ function PublicAnalyticsSections({
         </Box>
       </Fade>
 
-      <AdSlot
-        slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_BELOW_CHARTS ?? ""}
-        format="auto"
-      />
+      {hasClicks ? (
+        <AdSlot
+          slot={
+            process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_BELOW_CHARTS ?? ""
+          }
+          format="auto"
+        />
+      ) : null}
 
       <Fade in timeout={1000}>
         <Box>

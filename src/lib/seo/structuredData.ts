@@ -162,7 +162,7 @@ export function buildFaqSchema() {
         name: "Is Link Charts a free Bitly alternative?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Yes. Link Charts is a free Bitly alternative with real-time click analytics, geographic data, device breakdown, UTM campaign tracking, custom slugs and free QR codes — all without a paid plan.",
+          text: "It depends on what you need. Link Charts focuses on advanced free analytics: geographic tracking by country and city, device and browser breakdown, UTM campaign tracking, custom subdomain, and QR Code — features that require a paid plan on Bitly.",
         },
       },
       {
@@ -226,7 +226,7 @@ export function buildFaqSchemaPtBR() {
         name: "Qual a melhor alternativa gratuita ao Bitly?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Link Charts é uma alternativa gratuita ao Bitly com analytics em tempo real, rastreamento geográfico, breakdown por dispositivo, rastreamento de UTM, subdomínio personalizado e QR Code — tudo sem custo.",
+          text: "Depende do que você precisa. O Link Charts foca em analytics avançado gratuito: rastreamento geográfico por país e cidade, breakdown por dispositivo e navegador, UTM, subdomínio personalizado e QR Code — recursos que no Bitly exigem plano pago.",
         },
       },
       {
