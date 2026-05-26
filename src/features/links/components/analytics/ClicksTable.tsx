@@ -56,6 +56,13 @@ const CLICK_SOURCE_COLORS: Record<
   unknown: "default",
 };
 
+/** quality_tier chip color map for Phase 3 scoring values. */
+const QUALITY_TIER_COLORS: Record<string, "success" | "warning" | "error"> = {
+  organic: "success",
+  suspicious: "warning",
+  likely_fraud: "error",
+};
+
 function formatDate(value: string | null, fmt: string): string {
   if (!value) {
     return "—";
@@ -230,6 +237,71 @@ function RefererCell({ row }: CellProps) {
   );
 }
 
+/**
+ * Cell for the `social_platform` column.
+ *
+ * Renders the detected social platform name when present. For rows where
+ * `social_platform` is NULL (clicks recorded before May 2026), renders an
+ * em-dash with a tooltip explaining the tracking gap.
+ */
+function SocialPlatformCell({ row }: CellProps) {
+  const { t } = useTranslation("links");
+  const platform = row.original.social_platform;
+
+  if (!platform) {
+    return (
+      <Tooltip
+        title={t("analytics.clicksTable.socialPlatform.nullTooltip")}
+        arrow
+      >
+        <Typography variant="body2" color="text.secondary">
+          {"—"}
+        </Typography>
+      </Tooltip>
+    );
+  }
+
+  return <Typography variant="body2">{platform}</Typography>;
+}
+
+/**
+ * Cell for the `quality_tier` column.
+ *
+ * Renders a color-coded MUI Chip for known tiers (organic → success/green,
+ * suspicious → warning/amber, likely_fraud → error/red). For NULL values
+ * (clicks recorded before Phase 3 quality scoring was implemented) renders
+ * an em-dash with a descriptive tooltip.
+ */
+function QualityTierCell({ row }: CellProps) {
+  const { t } = useTranslation("links");
+  const tier = row.original.quality_tier;
+
+  if (!tier) {
+    return (
+      <Tooltip title={t("analytics.clicksTable.qualityTier.nullTooltip")} arrow>
+        <Typography variant="body2" color="text.secondary">
+          {"—"}
+        </Typography>
+      </Tooltip>
+    );
+  }
+
+  const color = QUALITY_TIER_COLORS[tier] ?? "default";
+  const labelKey =
+    tier === "likely_fraud"
+      ? "analytics.clicksTable.qualityTier.likelyFraud"
+      : `analytics.clicksTable.qualityTier.${tier}`;
+
+  return (
+    <Chip
+      size="small"
+      color={color as ChipColor}
+      label={t(labelKey, { defaultValue: tier })}
+      variant="outlined"
+    />
+  );
+}
+
 function UtmCell({ row }: CellProps) {
   const utm = row.original.utm;
 
@@ -280,6 +352,8 @@ function ClicksTableSkeleton({ isMobile }: { isMobile: boolean }) {
     { flex: 1.6, headerW: "62%", type: "text", l1: "72%" }, // Browser
     { flex: 1.4, headerW: "50%", type: "chip", l1: "78%" }, // Source
     { flex: 2.0, headerW: "65%", type: "text", l1: "82%" }, // Referer
+    { flex: 1.4, headerW: "60%", type: "text", l1: "65%" }, // Social Platform
+    { flex: 1.3, headerW: "55%", type: "chip", l1: "70%" }, // Quality
     { flex: 2.2, headerW: "52%", type: "twoLine", l1: "65%", l2: "45%" }, // UTM
   ];
 
@@ -518,6 +592,22 @@ export function ClicksTable({
         minSize: 150,
         size: 200,
         Cell: RefererCell,
+      },
+      {
+        accessorKey: "social_platform",
+        header: t("analytics.clicksTable.socialPlatform.columnHeader"),
+        enableSorting: false,
+        minSize: 110,
+        size: 140,
+        Cell: SocialPlatformCell,
+      },
+      {
+        accessorKey: "quality_tier",
+        header: t("analytics.clicksTable.qualityTier.columnHeader"),
+        enableSorting: false,
+        minSize: 100,
+        size: 130,
+        Cell: QualityTierCell,
       },
       {
         id: "utm",

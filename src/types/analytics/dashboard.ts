@@ -48,7 +48,6 @@ export interface DashboardSummary {
   total_clicks: number;
   unique_visitors: number;
   avg_clicks_per_link: number;
-  success_rate: number;
   avg_response_time: number;
   countries_reached: number;
   links_with_traffic: number;
@@ -73,12 +72,18 @@ export interface DashboardSummary {
     clicks: number;
     percentage: number;
   }>;
-  /** Social in-app browser stats (navigation_context=in_app_webview + is_mobile). */
+  /**
+   * Social in-app browser stats (navigation_context=in_app_webview + is_mobile).
+   * `navigation_context_available` is false when fewer than 20% of clicks in the
+   * window have a non-null navigation_context — indicates the link predates Phase 1
+   * tracking and the data may not reflect real IAB share.
+   */
   social_iab?: {
     total: number;
     percentage: number;
     ios_pct: number;
     android_pct: number;
+    navigation_context_available: boolean;
   };
 }
 

@@ -28,6 +28,9 @@
       "other": "Outros",
       "note": "Detectado via browser interno de app mobile",
       "description": "Percentual de cliques vindos de navegadores internos de apps sociais (Instagram, TikTok, WhatsApp). Indica que o visitante chegou direto do feed sem abrir o browser do dispositivo."
+    },
+    "socialIab": {
+      "phaseDisclaimer": "Dados de apps sociais disponíveis apenas para cliques recentes (rastreamento Fase 1)"
     }
   },
   "filters": {
@@ -341,8 +344,31 @@
         "cold": "Frio",
         "warming": "Aquecendo",
         "trending": "Trending",
-        "viral": "Viral"
+        "viral": "Viral",
+        "unranked": "Não rastreado (anterior ao rastreamento)"
       }
+    },
+    "dailyTimeline": {
+      "cappedWarning": "Exibindo últimos 90 dias. Use o filtro de datas para ver dados anteriores."
+    },
+    "periods": {
+      "dawn": "Madrugada (0–6h)",
+      "morning": "Manhã (6–12h)",
+      "afternoon": "Tarde (12–18h)",
+      "evening": "Noite (18–24h)"
+    },
+    "clickVelocity": {
+      "title": "Distribuição de Velocidade de Cliques",
+      "description": "Tempo entre cliques consecutivos neste link",
+      "phaseDisclaimer": "Dados de velocidade disponíveis para cliques após início do rastreamento Fase 2",
+      "totalWithData": "{{count}} cliques com dados de velocidade"
+    },
+    "velocity": {
+      "instant": "Instantâneo (< 1s)",
+      "veryFast": "Muito rápido (1–10s)",
+      "fast": "Rápido (10s–1m)",
+      "moderate": "Moderado (1–5m)",
+      "slow": "Lento (> 5m)"
     },
     "holiday": {
       "description": "Comparativo de cliques em feriados nacionais versus dias normais. Identifique se sua audiência é mais ativa em períodos de folga ou durante a semana de trabalho.",
@@ -398,7 +424,8 @@
       "citiesSubtitle": "Principais cidades que direcionam tráfego para este link.",
       "noCountriesData": "Dados geográficos aparecerão aqui após os primeiros cliques",
       "noStatesData": "Dados de estados aparecerão aqui após os primeiros cliques",
-      "noCitiesData": "Dados de cidades aparecerão aqui após os primeiros cliques"
+      "noCitiesData": "Dados de cidades aparecerão aqui após os primeiros cliques",
+      "clicks": "cliques"
     },
     "continents": {
       "title": "Por Continente",
@@ -486,7 +513,8 @@
       "legendMedium": "Médio (>20%)",
       "legendLow": "Baixo",
       "legendSizeNote": "· Tamanho proporcional ao volume",
-      "showingLocations": "{{shown}} de {{total}} localiz. visíveis"
+      "showingLocations": "{{shown}} de {{total}} localiz. visíveis",
+      "cappedWarning": "Exibindo as 500 principais localidades. Algumas localidades podem estar omitidas."
     }
   },
   "audience": {
@@ -611,6 +639,28 @@
       "title": "Por Plataforma Social",
       "subtitle": "Cliques por plataforma de origem (via referer)",
       "description": "Distribuição de cliques por rede social de origem, identificada via cabeçalho Referer. Revela de qual plataforma cada visitante veio antes de clicar no link."
+    },
+    "fetchDest": {
+      "title": "Distribuição do Tipo de Requisição",
+      "description": "Como o navegador iniciou cada requisição de clique (cabeçalho Sec-Fetch-Dest)",
+      "phaseDisclaimer": "Dados do tipo de requisição disponíveis após rastreamento Fase 1"
+    },
+    "chMobile": {
+      "title": "Sinal de Cliente Móvel",
+      "mobile": "Móvel",
+      "not_mobile": "Desktop"
+    },
+    "phaseData": {
+      "unavailable": "Estes dados estão disponíveis apenas para cliques recentes com rastreamento avançado"
+    },
+    "extraCharts": {
+      "language": "Idioma",
+      "languageDescription": "Idioma principal detectado nas configurações do navegador (Fase 1: Accept-Language / Sec-CH-UA).",
+      "platform": "Plataforma",
+      "platformDescription": "Plataforma do sistema operacional detectada via Client Hints (Fase 1: Sec-CH-UA-Platform).",
+      "connectionType": "Tipo de Conexão",
+      "connectionTypeDescription": "Tipo de conexão ISP classificado a partir de dados de rede (Fase 2).",
+      "others": "Outros"
     }
   },
   "performance": {
@@ -721,6 +771,8 @@
       "performanceChip": "Performance: {{label}}",
       "visitorsTooltip": "{{n}} visitantes",
       "retentionTooltip": "{{n}}% de retenção",
+      "visitorDistributionDesc": "{{returning}} visitantes recorrentes de um total de {{total}} visitantes únicos.",
+      "analysisRaw": "Sua taxa de visitantes recorrentes é {{rate}}% ({{returning}} de {{total}} visitantes únicos). Novos visitantes representam {{newPct}}%.",
       "quality": {
         "excellent": "Excelente",
         "good": "Bom",
@@ -757,6 +809,9 @@
       "powerUserHighlight": "Destaque: Você tem uma base sólida de power users ({{percent}}%)! Considere criar conteúdo premium ou programas de fidelidade.",
       "avgTime": "Tempo médio: {{n}}s",
       "usersCount": "{{n}} usuários ({{percent}}%)",
+      "sessionsUnit": "sessões",
+      "clickDistributionDesc": "Distribuição das sessões por número de cliques. Cada barra mostra quantas sessões tiveram exatamente aquela quantidade de cliques.",
+      "analysisRaw": "Os usuários clicam em média {{avg}} vezes por sessão. {{powerCount}} sessões ({{power}}%) são power users com 3 ou mais cliques.",
       "qualityLabel": {
         "excellent": "Excelente",
         "good": "Bom",
@@ -791,7 +846,20 @@
       "seriesName": "Profundidade Média da Sessão",
       "uniqueVisitors": "{{n}} visitantes únicos",
       "session": "Sessão: {{n}} clicks",
-      "time": "Tempo: {{n}}s"
+      "time": "Tempo: {{n}}s",
+      "navigationContext": "Contexto de Navegação",
+      "contextLabels": {
+        "browser_direct": "Direto (navegador)",
+        "browser_referral": "Referral (navegador)",
+        "in_app_webview": "App (WebView)",
+        "api_programmatic": "Programático / API",
+        "preload": "Pré-carregado"
+      }
+    },
+    "recommendations": {
+      "highSocialTraffic": "Alto tráfego social detectado. Considere diversificar com SEO e marketing por email.",
+      "highDirectTraffic": "Tráfego muito direto. Explore campanhas em redes sociais para ampliar alcance.",
+      "lowSourceDiversity": "Baixa diversidade de fontes. Considere múltiplos canais para reduzir riscos de dependência."
     },
     "trafficQuality": {
       "title": "Qualidade do Tráfego",

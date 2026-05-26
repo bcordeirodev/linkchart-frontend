@@ -2,7 +2,7 @@
 
 ## Goal
 
-Redesign the `/profile` page to be visually polished, minimalist, and market-standard (Vercel/Linear style) while improving the subdomain settings UX with a responsibility acceptance clause and adding user stats to the sidebar.
+Redesign the `/profile` page to be visually polished, minimalist, and market-standard (Linear/Shadcn style) while improving the subdomain settings UX with a responsibility acceptance clause and adding user stats to the sidebar.
 
 ## Visual System
 

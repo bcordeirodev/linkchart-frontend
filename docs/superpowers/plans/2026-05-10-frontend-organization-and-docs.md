@@ -2129,7 +2129,7 @@ Browser → Next.js (App Router) → ApiClient → Laravel API → PostgreSQL/Re
 ```mermaid
 flowchart LR
   Browser[Browser]
-  subgraph Front["frontend-next (Vercel/Docker)"]
+  subgraph Front["frontend-next (Docker)"]
     App[Next.js App Router]
     SC[Server Components]
     CC[Client Components]

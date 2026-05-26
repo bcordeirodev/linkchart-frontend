@@ -11,6 +11,7 @@ export { DailyTimelineChart } from "./DailyTimelineChart";
 export { DeviceByPeriodChart } from "./DeviceByPeriodChart";
 export { HolidayImpactCard } from "./HolidayImpactCard";
 export { SeasonalDistributionChart } from "./SeasonalDistributionChart";
+export { ClickVelocityChart } from "./ClickVelocityChart";
 
 // Hook específico
 export { useTemporalData } from "../../hooks/useTemporalData";

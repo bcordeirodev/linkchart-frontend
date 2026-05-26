@@ -37,9 +37,13 @@ export interface LinkClickItem {
   referer: string | null;
   referer_host: string | null;
   click_source: string | null;
+  /** Social platform detected at click time (e.g. 'instagram', 'tiktok'). NULL for clicks recorded before May 2026. */
+  social_platform: string | null;
   navigation_context: string | null;
   is_return_visitor: boolean;
   response_time: number | null;
+  /** Quality classification assigned by Phase 3 scoring ('organic' | 'suspicious' | 'likely_fraud'). NULL for clicks recorded before quality scoring was implemented. */
+  quality_tier: "organic" | "suspicious" | "likely_fraud" | null;
   utm: LinkClickUtm | null;
 }
 

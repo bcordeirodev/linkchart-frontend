@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Redesign the `/profile` page to be visually polished and market-standard (Vercel/Linear style) with a responsibility acceptance clause on the subdomain block and user stats in the sidebar.
+**Goal:** Redesign the `/profile` page to be visually polished and market-standard (Linear/Shadcn style) with a responsibility acceptance clause on the subdomain block and user stats in the sidebar.
 
 **Architecture:** Backend gains a single `GET /api/profile/stats` endpoint on `AuthController`. Frontend adds a `useProfileStats` hook backed by a new `ProfileService.getStats()` method, then applies the unified header pattern (title + subtitle + Divider) across all three section cards, redesigns `SubdomainSettings` with a chip + responsibility checkbox, and adds an Activity stats card to the sidebar.
 

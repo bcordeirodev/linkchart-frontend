@@ -1,5 +1,6 @@
 "use client";
 import {
+  Alert,
   Box,
   Card,
   CardContent,
@@ -10,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ShieldCheck, ShieldAlert, Bot } from "lucide-react";
+import { Info, ShieldCheck, ShieldAlert, Bot } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
@@ -70,6 +71,21 @@ export function QualitySection({ quality }: QualitySectionProps) {
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         {t("audience.quality.description")}
       </Typography>
+
+      {"phase_available" in quality && !quality.phase_available && (
+        <Alert
+          severity="info"
+          icon={<Info size={16} />}
+          sx={{ mb: 2, borderRadius: `${radiusTokens.lg}px` }}
+        >
+          <Chip
+            label={tStr("audience.phaseData.unavailable")}
+            size="small"
+            color="info"
+            variant="outlined"
+          />
+        </Alert>
+      )}
 
       <Grid container spacing={2}>
         {/* Donut quality_tier */}

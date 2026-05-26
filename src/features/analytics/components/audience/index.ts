@@ -7,9 +7,11 @@
 // Componentes principais
 export { AudienceAnalysis } from "./AudienceAnalysis";
 export { AudienceChart } from "./AudienceChart";
+export { AudienceExtraCharts } from "./AudienceExtraCharts";
 export { AudienceInsights } from "./AudienceInsights";
 export { AudienceMetrics } from "./AudienceMetrics";
 export { BehaviorSection } from "./BehaviorSection";
+export { FetchDestChart } from "./FetchDestChart";
 export { LanguageBreakdownChart } from "./LanguageBreakdownChart";
 export { QualitySection } from "./QualitySection";
 

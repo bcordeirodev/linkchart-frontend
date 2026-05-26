@@ -86,7 +86,10 @@ export function TemporalChart({
   const chartColors = getStandardChartColors(theme);
 
   const hasHeatmap = (advancedData?.heatmap_data?.length ?? 0) > 0;
-  const hasDailyTimeline = (advancedData?.daily_timeline?.length ?? 0) > 0;
+  // daily_timeline is now a DailyTimeline object; fall back to array-length check for legacy payloads.
+  const hasDailyTimeline = Array.isArray(advancedData?.daily_timeline)
+    ? (advancedData!.daily_timeline as unknown as unknown[]).length > 0
+    : (advancedData?.daily_timeline?.data?.length ?? 0) > 0;
   const hasDeviceByPeriod = (advancedData?.device_by_period?.length ?? 0) > 0;
   const hasPeakAnalysis = advancedData?.peak_analysis?.peak_hour != null;
   const hasTrends =

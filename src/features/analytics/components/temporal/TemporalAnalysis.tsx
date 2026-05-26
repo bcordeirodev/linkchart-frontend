@@ -21,6 +21,7 @@ import { TemporalFilterBar } from "./TemporalFilterBar";
 import { HolidayImpactCard } from "./HolidayImpactCard";
 import { SeasonalDistributionChart } from "./SeasonalDistributionChart";
 import { ViralRankMiniChart } from "./ViralRankMiniChart";
+import { ClickVelocityChart } from "./ClickVelocityChart";
 
 /** Props accepted by the {@link TemporalAnalysis} component. */
 interface TemporalAnalysisProps {
@@ -234,6 +235,14 @@ export function TemporalAnalysis({
             <Grid container spacing={3} sx={{ mt: 1 }}>
               <Grid item xs={12}>
                 <ViralRankMiniChart data={data.viral_rank_by_day} />
+              </Grid>
+            </Grid>
+          )}
+
+          {data?.click_velocity && (
+            <Grid container spacing={3} sx={{ mt: 1 }}>
+              <Grid item xs={12}>
+                <ClickVelocityChart data={data.click_velocity} />
               </Grid>
             </Grid>
           )}

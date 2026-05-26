@@ -77,8 +77,8 @@ export function ContinentBreakdown({
       animations: { enabled: true, speed: 400 },
     },
     labels: continents.map((c) =>
-      t(`geographic.continents.${c.continent}`, {
-        defaultValue: c.continent_name,
+      t(`geographic.continents.${c.continent}` as any, {
+        defaultValue: c.continent_name ?? c.continent,
       }),
     ),
     colors: CONTINENT_COLORS.slice(0, continents.length),
@@ -178,8 +178,8 @@ export function ContinentBreakdown({
                       noWrap
                       sx={{ maxWidth: 120, fontWeight: isActive ? 700 : 400 }}
                     >
-                      {t(`geographic.continents.${c.continent}`, {
-                        defaultValue: c.continent_name,
+                      {t(`geographic.continents.${c.continent}` as any, {
+                        defaultValue: c.continent_name ?? c.continent,
                       })}
                     </Typography>
                   </Box>

@@ -1,5 +1,5 @@
 "use client";
-import { Box, Grid, Chip, Stack, Typography } from "@mui/material";
+import { Alert, Box, Grid, Chip, Stack, Typography } from "@mui/material";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
@@ -7,23 +7,60 @@ import { useTranslation } from "react-i18next";
 import { getStandardChartColors } from "@/lib/theme";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-import type { DailyTimelineEntry } from "@/types/analytics/temporal";
+import type {
+  DailyTimeline,
+  DailyTimelineEntry,
+} from "@/types/analytics/temporal";
 
+/**
+ * Props accepted by {@link DailyTimelineChart}.
+ *
+ * Accepts either a legacy flat array (backward compat) or the new
+ * {@link DailyTimeline} object that carries cap metadata.
+ */
 interface DailyTimelineChartProps {
-  data: DailyTimelineEntry[];
+  /** Timeline data. May be a legacy `DailyTimelineEntry[]` or the new `DailyTimeline` object. */
+  data: DailyTimelineEntry[] | DailyTimeline;
 }
 
+/**
+ * Normalises the `data` prop into a flat entry array plus cap metadata.
+ * Supports both the legacy array shape and the new `DailyTimeline` object.
+ */
+function normalise(data: DailyTimelineEntry[] | DailyTimeline): {
+  entries: DailyTimelineEntry[];
+  capped: boolean;
+  earliestAvailableAt: string | null;
+} {
+  if (Array.isArray(data)) {
+    return { entries: data, capped: false, earliestAvailableAt: null };
+  }
+  return {
+    entries: data.data,
+    capped: data.capped,
+    earliestAvailableAt: data.earliest_available_at,
+  };
+}
+
+/**
+ * Area charts showing daily click and unique-visitor trends.
+ *
+ * When the backend applied a 90-day cap (`capped === true`), an informational
+ * MUI `Alert` is rendered above the charts directing users to the date filter.
+ */
 export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
   const theme = useTheme();
   const { t, i18n } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
   const chartColors = getStandardChartColors(theme);
 
-  if (!data || data.length === 0) {
+  const { entries, capped } = normalise(data);
+
+  if (!entries || entries.length === 0) {
     return null;
   }
 
-  const sorted = [...data].sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
   const clickSeries = sorted.map((d) => ({ x: d.date, y: d.clicks }));
   const uniqueSeries = sorted.map((d) => ({ x: d.date, y: d.unique_visitors }));
 
@@ -89,6 +126,12 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
 
   return (
     <Box>
+      {capped && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          {t("temporal.dailyTimeline.cappedWarning")}
+        </Alert>
+      )}
+
       <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2, gap: 1 }}>
         <Chip
           label={t("temporal.timeline.totalChip", {

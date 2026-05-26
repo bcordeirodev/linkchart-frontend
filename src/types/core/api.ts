@@ -64,6 +64,13 @@ export interface CityData extends Record<string, unknown> {
   clicks: number;
   /** Percentual em relação ao total */
   percentage?: Percentage;
+  /**
+   * Most common postal code observed for this city group.
+   * Resolved server-side by counting occurrences of each distinct postal code
+   * within the (city, country, state) partition and picking the highest-count value.
+   * `null` when no postal code data is available for this city.
+   */
+  most_common_postal_code?: string | null;
 }
 
 /**

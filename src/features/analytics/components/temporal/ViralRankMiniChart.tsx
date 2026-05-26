@@ -15,15 +15,18 @@ import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
 interface ViralRankDay {
   date: string;
-  peak_rank: "cold" | "warming" | "trending" | "viral";
+  peak_rank: "cold" | "warming" | "trending" | "viral" | "unranked";
   click_count: number;
 }
 
+/** Color map for all viral rank values, including pre-Phase 2 `unranked`. */
 const RANK_COLORS: Record<string, string> = {
   cold: "#475569",
   warming: "#f59e0b",
   trending: "#f97316",
   viral: "#ef4444",
+  /** Neutral gray for clicks recorded before Phase 2 tracking began. */
+  unranked: "#94a3b8",
 };
 
 interface Props {
@@ -40,10 +43,13 @@ export function ViralRankMiniChart({ data }: Props) {
   const isDark = theme.palette.mode === "dark";
   const elevation = isDark ? elevationTokens : elevationLightTokens;
 
+  // Show the chart when any data exists (including unranked pre-Phase 2 clicks).
+  // Previously hidden when all days were 'cold' — now we also surface 'unranked' days.
   const hasNonCold = useMemo(
     () => data?.some((d) => d.peak_rank !== "cold") ?? false,
     [data],
   );
+  const hasAnyData = useMemo(() => (data?.length ?? 0) > 0, [data]);
 
   const peakDay = useMemo(() => {
     if (!data) return null;
@@ -117,7 +123,7 @@ export function ViralRankMiniChart({ data }: Props) {
     [data, theme, t, isDark],
   );
 
-  if (!data || data.length === 0 || !hasNonCold) return null;
+  if (!hasAnyData) return null;
 
   return (
     <Card
@@ -139,24 +145,26 @@ export function ViralRankMiniChart({ data }: Props) {
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2, mb: 2, flexWrap: "wrap" }}>
-          {(["cold", "warming", "trending", "viral"] as const).map((rank) => (
-            <Box
-              key={rank}
-              sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-            >
+          {(["cold", "warming", "trending", "viral", "unranked"] as const).map(
+            (rank) => (
               <Box
-                sx={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: 0.5,
-                  bgcolor: RANK_COLORS[rank],
-                }}
-              />
-              <Typography variant="caption" color="text.secondary">
-                {t(`temporal.viralRank.ranks.${rank}`)}
-              </Typography>
-            </Box>
-          ))}
+                key={rank}
+                sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+              >
+                <Box
+                  sx={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 0.5,
+                    bgcolor: RANK_COLORS[rank],
+                  }}
+                />
+                <Typography variant="caption" color="text.secondary">
+                  {t(`temporal.viralRank.ranks.${rank}`)}
+                </Typography>
+              </Box>
+            ),
+          )}
         </Box>
 
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
