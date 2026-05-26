@@ -65,11 +65,11 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   const sectionLabelSx = {
     display: "block",
     mb: 0.9,
-    fontSize: "0.6875rem",
-    fontWeight: 700,
+    fontSize: "0.71875rem",
+    fontWeight: 800,
     letterSpacing: "0.08em",
     textTransform: "uppercase" as const,
-    color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.58),
+    color: alpha(theme.palette.text.primary, isDark ? 0.76 : 0.72),
   };
   const inlineCopyButtonSx = {
     flexShrink: 0,
@@ -282,8 +282,13 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             id={saveHeadingId}
             component="h3"
             variant="subtitle2"
-            fontWeight={600}
-            sx={{ mb: 0.5 }}
+            fontWeight={700}
+            sx={{
+              mb: 0.5,
+              fontSize: "0.9375rem",
+              letterSpacing: "-0.01em",
+              color: theme.palette.text.primary,
+            }}
           >
             {t("publicAnalytics.saveUrlBanner.title")}
           </Typography>

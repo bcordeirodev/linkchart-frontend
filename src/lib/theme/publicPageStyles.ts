@@ -183,7 +183,10 @@ export function getPublicChartCardOverrideSx(theme: Theme): SxProps<Theme> {
       fontSize: "0.8125rem",
       fontWeight: 600,
       letterSpacing: "0.02em",
-      ...(isDark ? { color: alpha(theme.palette.text.primary, 0.6) } : {}),
+      ...(isDark ? { color: alpha(theme.palette.text.primary, 0.82) } : {}),
+    },
+    "& .MuiCardContent-root .MuiTypography-body2": {
+      ...(isDark ? { color: alpha(theme.palette.text.primary, 0.68) } : {}),
     },
   };
 }

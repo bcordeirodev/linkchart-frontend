@@ -192,12 +192,20 @@ function ShorterPageContent() {
                 loading={isRedirecting}
               />
 
-              <AdSlot
-                slot={
-                  process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BELOW_FORM ?? ""
-                }
-                format="rectangle"
-              />
+              <Box
+                sx={{
+                  maxWidth: SHORTER_CONTENT_MAX_WIDTH,
+                  mx: "auto",
+                }}
+              >
+                <AdSlot
+                  slot={
+                    process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BELOW_FORM ??
+                    ""
+                  }
+                  format="rectangle"
+                />
+              </Box>
 
               <BenefitBadges
                 state={isRedirecting ? "success" : "idle"}
@@ -216,13 +224,20 @@ function ShorterPageContent() {
                 <ShorterStats />
               </Box>
 
-              <AdSlot
-                slot={
-                  process.env
-                    .NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BETWEEN_SECTIONS ?? ""
-                }
-                format="auto"
-              />
+              <Box
+                sx={{
+                  maxWidth: SHORTER_CONTENT_MAX_WIDTH,
+                  mx: "auto",
+                }}
+              >
+                <AdSlot
+                  slot={
+                    process.env
+                      .NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BETWEEN_SECTIONS ?? ""
+                  }
+                  format="auto"
+                />
+              </Box>
 
               {!isRedirecting ? <ShorterHowItWorks /> : null}
 

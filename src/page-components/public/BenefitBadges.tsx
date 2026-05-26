@@ -4,8 +4,8 @@ import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
+import { PublicCtaBlock } from "@/features/public-analytics/components/info/PublicCtaBlock";
 import { getPublicChipSx } from "@/lib/theme/publicPageStyles";
-import { SignUpCtaCard } from "@/shared/components";
 
 interface BenefitBadgesProps {
   state: "idle" | "success";
@@ -33,25 +33,9 @@ export function BenefitBadges({ state, onReset }: BenefitBadgesProps) {
   );
 
   if (!isSuccess) {
-    const features = [
-      t("benefits.realtimeAnalytics"),
-      t("benefits.freeSubdomain"),
-      t("benefits.freeQr"),
-      t("benefits.customSlug"),
-      t("benefits.geoLocation"),
-      t("benefits.utmCampaigns"),
-      t("benefits.fullDashboard"),
-      t("benefits.noExpiration"),
-    ];
-
     return (
       <Box sx={{ mt: 2.5, maxWidth: SHORTER_CONTENT_MAX_WIDTH, mx: "auto" }}>
-        <SignUpCtaCard
-          title={t("shorter.upgrade.title")}
-          description={t("shorter.upgrade.description")}
-          features={features}
-          ctaLabel={t("shorter.upgrade.button")}
-        />
+        <PublicCtaBlock />
       </Box>
     );
   }

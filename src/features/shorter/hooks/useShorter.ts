@@ -2,6 +2,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "@/shared/hooks";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { publicLinkService } from "@/services/link-public.service";
 
 import type { PublicLinkResponse } from "@/services/link-public.service";
 
@@ -47,7 +48,7 @@ export function useShorter() {
       setResult(res);
       setIsRedirecting(true);
 
-      void navigator.clipboard?.writeText(res.short_url).catch(() => undefined);
+      void publicLinkService.copyToClipboard(res.short_url);
 
       // Short delay so the exit animation plays before navigation
       navTimerRef.current = setTimeout(() => {
