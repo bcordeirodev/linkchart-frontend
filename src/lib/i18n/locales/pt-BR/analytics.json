@@ -872,6 +872,85 @@
         "likely_fraud": "Fraude",
         "unknown": "Não analisado"
       }
+    },
+    "generators": {
+      "engagement": {
+        "positiveGrowth": {
+          "title": "Crescimento Acelerado",
+          "description": "Seus cliques cresceram {{rate}}% na última semana. Continue com a estratégia atual!",
+          "recommendation": "Analise o que funcionou bem e replique a estratégia."
+        },
+        "negativeGrowth": {
+          "title": "Declínio no Engajamento",
+          "description": "Seus cliques diminuíram {{rate}}% na última semana. Revise sua estratégia de conteúdo.",
+          "recommendation": "Revise o conteúdo, timing e canais de distribuição."
+        }
+      },
+      "device": {
+        "dominant": {
+          "title": "Dispositivo Dominante",
+          "description": "{{device}} representa {{pct}}% dos acessos.",
+          "recommendation": "Otimize sua página de destino para {{device}}."
+        }
+      },
+      "diversity": {
+        "international": {
+          "title": "Alcance Internacional",
+          "description": "Seu link alcançou {{countries}} países diferentes, mostrando potencial global.",
+          "recommendation": "Considere expandir para mercados internacionais com maior tráfego."
+        }
+      },
+      "performance": {
+        "slow": {
+          "title": "Velocidade de Resposta Lenta",
+          "description": "Tempo médio de resposta: {{avg}}ms.",
+          "recommendation": "Otimize sua infraestrutura."
+        },
+        "good": {
+          "title": "Boa Performance de Resposta",
+          "description": "Tempo médio de resposta: {{avg}}ms.",
+          "recommendation": "Continue monitorando."
+        }
+      },
+      "geographic": {
+        "mainMarket": {
+          "title": "Mercado Principal",
+          "description": "{{country}} representa {{pct}}% dos seus cliques. Considere criar conteúdo específico para este mercado.",
+          "recommendation": "Crie campanhas direcionadas para este país e considere traduzir o conteúdo."
+        }
+      },
+      "security": {
+        "suspicious": {
+          "title": "Atividade Suspeita Detectada",
+          "description": "Detectamos {{count}} IP(s) com atividade anormalmente alta. Monitore possível tráfego artificial.",
+          "recommendation": "Analise os IPs com maior atividade e considere implementar rate limiting."
+        }
+      },
+      "temporal": {
+        "peakHour": {
+          "title": "Horário de Pico",
+          "description": "A maioria dos cliques ocorre às {{hour}}h.",
+          "recommendation": "Publique conteúdo às {{hour}}h para maximizar alcance."
+        }
+      },
+      "retention": {
+        "benchmark": {
+          "above": "acima da média",
+          "average": "na média",
+          "below": "abaixo da média"
+        },
+        "rate": {
+          "title": "Taxa de Retenção"
+        },
+        "excellent": {
+          "description": "Sua taxa de visitantes recorrentes é {{rate}}% ({{bench}}). Excelente! Seu conteúdo está gerando lealdade.",
+          "recommendation": "Continue criando conteúdo de qualidade para manter a lealdade."
+        },
+        "low": {
+          "description": "Sua taxa de visitantes recorrentes é {{rate}}% ({{bench}}). Considere estratégias para aumentar o retorno de visitantes.",
+          "recommendation": "Implemente newsletters, notificações push ou conteúdo serializado."
+        }
+      }
     }
   },
   "linkInfo": {

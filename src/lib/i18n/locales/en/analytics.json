@@ -872,6 +872,85 @@
         "likely_fraud": "Fraud",
         "unknown": "Unscored"
       }
+    },
+    "generators": {
+      "engagement": {
+        "positiveGrowth": {
+          "title": "Accelerated Growth",
+          "description": "Your clicks grew {{rate}}% in the last week. Keep up the current strategy!",
+          "recommendation": "Analyze what worked well and replicate the strategy."
+        },
+        "negativeGrowth": {
+          "title": "Engagement Decline",
+          "description": "Your clicks decreased {{rate}}% in the last week. Review your content strategy.",
+          "recommendation": "Review content, timing, and distribution channels."
+        }
+      },
+      "device": {
+        "dominant": {
+          "title": "Dominant Device",
+          "description": "{{device}} accounts for {{pct}}% of accesses.",
+          "recommendation": "Optimize your landing page for {{device}}."
+        }
+      },
+      "diversity": {
+        "international": {
+          "title": "International Reach",
+          "description": "Your link reached {{countries}} different countries, showing global potential.",
+          "recommendation": "Consider expanding to international markets with higher traffic."
+        }
+      },
+      "performance": {
+        "slow": {
+          "title": "Slow Response Time",
+          "description": "Average response time: {{avg}}ms.",
+          "recommendation": "Optimize your infrastructure."
+        },
+        "good": {
+          "title": "Good Response Performance",
+          "description": "Average response time: {{avg}}ms.",
+          "recommendation": "Keep monitoring."
+        }
+      },
+      "geographic": {
+        "mainMarket": {
+          "title": "Main Market",
+          "description": "{{country}} represents {{pct}}% of your clicks. Consider creating specific content for this market.",
+          "recommendation": "Create targeted campaigns for this country and consider translating the content."
+        }
+      },
+      "security": {
+        "suspicious": {
+          "title": "Suspicious Activity Detected",
+          "description": "We detected {{count}} IP(s) with abnormally high activity. Monitor for possible artificial traffic.",
+          "recommendation": "Analyze the most active IPs and consider implementing rate limiting."
+        }
+      },
+      "temporal": {
+        "peakHour": {
+          "title": "Peak Hour",
+          "description": "Most clicks occur at {{hour}}h.",
+          "recommendation": "Publish content at {{hour}}h to maximize reach."
+        }
+      },
+      "retention": {
+        "benchmark": {
+          "above": "above average",
+          "average": "average",
+          "below": "below average"
+        },
+        "rate": {
+          "title": "Retention Rate"
+        },
+        "excellent": {
+          "description": "Your return visitor rate is {{rate}}% ({{bench}}). Excellent! Your content is building loyalty.",
+          "recommendation": "Keep creating quality content to maintain loyalty."
+        },
+        "low": {
+          "description": "Your return visitor rate is {{rate}}% ({{bench}}). Consider strategies to increase visitor return.",
+          "recommendation": "Implement newsletters, push notifications, or serialized content."
+        }
+      }
     }
   },
   "linkInfo": {

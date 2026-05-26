@@ -14,7 +14,7 @@ const CHART_FONT_FAMILY = "Inter, system-ui, sans-serif";
 /**
  * Configuração de tooltip adaptável ao tema - melhorada
  */
-const getTooltipConfig = (isDark = false, clicksLabel = "cliques") => ({
+const getTooltipConfig = (isDark = false, clicksLabel = "clicks") => ({
   theme: isDark ? "dark" : "light",
   style: {
     fontSize: "14px",
@@ -149,8 +149,8 @@ export const formatAreaChart = (
   labels?: { series?: string; noData?: string; clicksLabel?: string },
 ): { series: ChartSeries[]; options: Record<string, unknown> } => {
   const seriesName = labels?.series ?? "Total";
-  const noDataText = labels?.noData ?? "Nenhum dado disponível";
-  const clicksLabel = labels?.clicksLabel ?? "cliques";
+  const noDataText = labels?.noData ?? "No data available";
+  const clicksLabel = labels?.clicksLabel ?? "clicks";
 
   if (!data || !Array.isArray(data) || data.length === 0) {
     return {
@@ -246,9 +246,9 @@ export const formatBarChart = (
   isDark = false,
   labels?: { series?: string; noData?: string; clicksLabel?: string },
 ): { series: ChartSeries[]; options: Record<string, unknown> } => {
-  const seriesName = labels?.series ?? "Cliques";
-  const noDataText = labels?.noData ?? "Nenhum dado disponível";
-  const _clicksLabel = labels?.clicksLabel ?? "cliques";
+  const seriesName = labels?.series ?? "Clicks";
+  const noDataText = labels?.noData ?? "No data available";
+  const _clicksLabel = labels?.clicksLabel ?? "clicks";
 
   if (!data || !Array.isArray(data) || data.length === 0) {
     return {
@@ -396,7 +396,7 @@ export const formatPieChart = (
   isDark = false,
   labels?: { noData?: string },
 ): { series: number[]; options: ChartOptions } => {
-  const noDataText = labels?.noData ?? "Nenhum dado disponível";
+  const noDataText = labels?.noData ?? "No data available";
 
   if (!data || !Array.isArray(data) || data.length === 0) {
     return {

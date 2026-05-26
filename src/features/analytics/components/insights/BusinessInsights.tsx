@@ -38,8 +38,21 @@ import {
 interface BusinessInsight {
   type: string;
   title: string;
+  /** i18n key for the insight title (preferred over `title` when present). */
+  title_key?: string;
+  /** Interpolation params for `title_key`. */
+  title_params?: Record<string, string | number>;
   description: string;
+  /** i18n key for the insight description (preferred over `description` when present). */
+  description_key?: string;
+  /** Interpolation params for `description_key`. */
+  description_params?: Record<string, string | number>;
   priority: "high" | "medium" | "low";
+  recommendation?: string;
+  /** i18n key for the recommendation (preferred over `recommendation` when present). */
+  recommendation_key?: string;
+  /** Interpolation params for `recommendation_key`. */
+  recommendation_params?: Record<string, string | number>;
 }
 
 interface HttpProtocolEntry {
@@ -77,6 +90,37 @@ export function BusinessInsights({
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
+
+  /**
+   * Resolves insight text by preferring an i18n key (with optional interpolation
+   * params) over the raw fallback string. Returns an empty string when both are
+   * absent.
+   *
+   * When `params` contains a `bench_key` entry, its value is treated as a
+   * nested translation key whose result is substituted as `bench` in the
+   * interpolation map. This enables the retention generator's benchmark label
+   * to be fully localised without special-casing the generator on the backend.
+   *
+   * @param key - Optional i18next translation key.
+   * @param params - Optional interpolation variables for the key.
+   * @param fallback - Raw string to use when no key is provided.
+   */
+  const resolveText = (
+    key?: string,
+    params?: Record<string, string | number>,
+    fallback?: string,
+  ): string => {
+    if (key) {
+      let resolved: Record<string, string | number> = { ...(params ?? {}) };
+      if (resolved.bench_key && typeof resolved.bench_key === "string") {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        resolved = { ...resolved, bench: t(resolved.bench_key as any) };
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return t(key as any, resolved);
+    }
+    return fallback ?? "";
+  };
 
   if (!insights || insights.length === 0) {
     return (
@@ -280,7 +324,7 @@ export function BusinessInsights({
                             color: "text.primary",
                           }}
                         >
-                          {insight.title}
+                          {resolveText(insight.title_key, insight.title_params, insight.title)}
                         </Typography>
 
                         {/* Badge de prioridade padronizado */}
@@ -309,7 +353,7 @@ export function BusinessInsights({
                           mb: 2,
                         }}
                       >
-                        {insight.description}
+                        {resolveText(insight.description_key, insight.description_params, insight.description)}
                       </Typography>
 
                       {/* Categoria com divisória sutil */}
