@@ -108,6 +108,107 @@ export interface QualityBreakdown {
   bot_clicks: number;
   bot_percentage: number;
   avg_fingerprint_score: number;
+  /** Whether Phase 3 quality scoring data is meaningfully available (≥20% of clicks have quality_tier). */
+  phase_available: boolean;
+}
+
+/**
+ * Entry in the fetch_dest breakdown data array.
+ */
+export interface FetchDestEntry {
+  /** Value of the Sec-Fetch-Dest header (e.g. "document", "image", "script"). */
+  fetch_dest: string;
+  /** Number of clicks with this fetch_dest value. */
+  clicks: number;
+  /** Percentage relative to all fetch_dest-tagged clicks. */
+  percentage: number;
+}
+
+/**
+ * Breakdown of clicks by Client Hint mobile signal (ch_is_mobile column, Phase 1).
+ */
+export interface ChMobileBreakdown {
+  /** Number of clicks where ch_is_mobile = 1. */
+  mobile: number;
+  /** Number of clicks where ch_is_mobile = 0. */
+  not_mobile: number;
+  /** Number of clicks where ch_is_mobile is NULL. */
+  unknown: number;
+  /** True when mobile+not_mobile exceeds 5% of total clicks. */
+  phase1_available: boolean;
+}
+
+/**
+ * Phase-aware language breakdown returned by the backend.
+ */
+export interface LanguageBreakdown {
+  data: Array<{
+    language: string;
+    region: string | null;
+    clicks: number;
+    percentage: number;
+  }>;
+  /** True when ≥20% of clicks have a non-null primary_language (Phase 1 data available). */
+  phase_available: boolean;
+}
+
+/**
+ * Phase-aware platform breakdown returned by the backend.
+ */
+export interface PlatformBreakdown {
+  data: Array<{
+    platform: string;
+    clicks: number;
+    percentage: number;
+  }>;
+  /** True when ≥20% of clicks have a non-null ch_platform (Phase 1 data available). */
+  phase_available: boolean;
+  /** Client Hint mobile signal aggregation. */
+  ch_mobile_breakdown: ChMobileBreakdown;
+}
+
+/**
+ * Phase-aware connection type breakdown returned by the backend.
+ */
+export interface ConnectionTypeBreakdown {
+  data: Array<{
+    type: string;
+    clicks: number;
+    percentage: number;
+  }>;
+  /** True when ≥20% of clicks have a non-null connection_type (Phase 2 data available). */
+  phase_available: boolean;
+}
+
+/**
+ * Phase-aware rendering engine breakdown returned by the backend.
+ */
+export interface RenderingEngineBreakdown {
+  data: Array<{
+    engine: string;
+    clicks: number;
+    percentage: number;
+  }>;
+  /** True when ≥20% of clicks have a non-null rendering_engine (Phase 2 data available). */
+  phase_available: boolean;
+}
+
+/**
+ * Phase-aware navigation context breakdown returned by the backend.
+ */
+export interface NavigationContextBreakdown {
+  data: NavigationContextEntry[];
+  /** True when ≥20% of clicks have a non-null navigation_context (Phase 1 data available). */
+  phase_available: boolean;
+}
+
+/**
+ * Fetch-dest (Sec-Fetch-Dest) breakdown returned by the backend.
+ */
+export interface FetchDestBreakdown {
+  data: FetchDestEntry[];
+  /** True when fetch_dest-tagged clicks exceed 5% of total (Phase 1 active for this link). */
+  phase1_available: boolean;
 }
 
 /**
@@ -134,30 +235,43 @@ export interface AudienceData {
   device_performance?: DevicePerformanceData[];
   /** Distribuição de idiomas */
   languages?: LanguageData[];
-  /** Distribuição de idiomas parseada com região (Client Hints / Accept-Language) */
-  language_breakdown?: Array<{
-    language: string;
-    region: string | null;
-    clicks: number;
-    percentage: number;
-  }>;
-  /** Distribuição de plataforma via Client Hints */
-  platform_breakdown?: Array<{
-    platform: string;
-    clicks: number;
-    percentage: number;
-  }>;
+  /**
+   * Phase-aware language breakdown (primary_language + language_region columns, Phase 1).
+   * Backend may also return the legacy array shape; the phase_available flag distinguishes the new shape.
+   */
+  language_breakdown?:
+    | LanguageBreakdown
+    | Array<{
+        language: string;
+        region: string | null;
+        clicks: number;
+        percentage: number;
+      }>;
+  /**
+   * Phase-aware platform breakdown (ch_platform + ch_is_mobile columns, Phase 1).
+   * Backend may also return the legacy array shape.
+   */
+  platform_breakdown?:
+    | PlatformBreakdown
+    | Array<{ platform: string; clicks: number; percentage: number }>;
   /** Estatísticas de Data Saver / conexão limitada */
   data_saver?: {
     clicks: number;
     total: number;
     percentage: number;
   };
-  /** Breakdown por contexto de navegação (Phase 1: Sec-Fetch headers) */
-  navigation_context_breakdown?: NavigationContextEntry[];
+  /**
+   * Phase-aware navigation context breakdown (Sec-Fetch headers, Phase 1).
+   * Backend may also return the legacy array shape.
+   */
+  navigation_context_breakdown?:
+    | NavigationContextBreakdown
+    | NavigationContextEntry[];
   /** Estatísticas de visitantes recorrentes e profundidade de sessão */
   return_visitor_stats?: ReturnVisitorStats;
-  /** Distribuição de qualidade de tráfego (Phase 3: quality scoring) */
+  /**
+   * Phase-aware quality breakdown (Phase 3: quality scoring).
+   */
   quality_breakdown?: QualityBreakdown;
   /** Breakdown by social platform identified via referer (social_platform column). */
   social_platform_breakdown?: Array<{
@@ -166,24 +280,26 @@ export interface AudienceData {
     percentage: number;
   }>;
   /**
-   * Breakdown by ISP connection type (Phase 2: classifyConnectionType).
+   * Phase-aware connection type breakdown (Phase 2: classifyConnectionType).
    * Values: residential | mobile | cellular | datacenter | broadband | wifi | education | unknown.
-   * Clicks recorded before Phase 2 have null connection_type and are coalesced to 'unknown'.
+   * Backend may also return the legacy array shape.
    */
-  connection_type_breakdown?: Array<{
-    type: string;
-    clicks: number;
-    percentage: number;
-  }>;
+  connection_type_breakdown?:
+    | ConnectionTypeBreakdown
+    | Array<{ type: string; clicks: number; percentage: number }>;
   /**
-   * Breakdown by browser rendering engine (Phase 2: derived from browser name).
+   * Phase-aware rendering engine breakdown (Phase 2: derived from browser name).
    * Values: blink | gecko | webkit | trident | unknown.
+   * Backend may also return the legacy array shape.
    */
-  rendering_engine?: Array<{
-    engine: string;
-    clicks: number;
-    percentage: number;
-  }>;
+  rendering_engine?:
+    | RenderingEngineBreakdown
+    | Array<{ engine: string; clicks: number; percentage: number }>;
+  /**
+   * Fetch-dest breakdown (Sec-Fetch-Dest header, Phase 1).
+   * Shows how the browser initiated each click request (document, image, script, etc.).
+   */
+  fetch_dest_breakdown?: FetchDestBreakdown;
 }
 
 /**

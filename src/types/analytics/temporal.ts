@@ -106,18 +106,62 @@ export interface HeatmapSeriesEntry {
   data: { x: string; y: number }[];
 }
 
+/** A single day entry in the daily click timeline. */
 export interface DailyTimelineEntry {
   date: string;
   clicks: number;
   unique_visitors: number;
 }
 
+/**
+ * Wraps the daily timeline array with cap metadata.
+ *
+ * When `capped` is `true` the backend returned only the last 90 days.
+ * `earliest_available_at` is the actual earliest click date (YYYY-MM-DD)
+ * and is `null` when there are no clicks at all.
+ */
+export interface DailyTimeline {
+  /** Day-by-day click/visitor entries. */
+  data: DailyTimelineEntry[];
+  /** `true` when the 90-day cap was applied (no explicit `dateFrom` filter). */
+  capped: boolean;
+  /** ISO date string of the earliest available click, or `null`. */
+  earliest_available_at: string | null;
+}
+
+/** Device usage aggregated by time-of-day period. Period key is one of `dawn | morning | afternoon | evening`. */
 export interface DeviceByPeriodEntry {
+  /** Period identifier key used for i18n lookup. */
   period: string;
-  label: string;
   desktop: number;
   mobile: number;
   tablet: number;
+}
+
+/** A single velocity bucket returned by `getClickVelocityDistribution`. */
+export interface VelocityBucket {
+  /** Machine-readable bucket key (instant | very_fast | fast | moderate | slow). */
+  bucket: string;
+  /** i18n key path relative to the `temporal` namespace. */
+  label_key: string;
+  /** Lower bound in seconds (inclusive). */
+  min_sec: number;
+  /** Upper bound in seconds (exclusive), or `null` for the open-ended 'slow' bucket. */
+  max_sec: number | null;
+  /** Number of clicks in this bucket. */
+  count: number;
+}
+
+/** Click velocity distribution returned by the temporal endpoint. */
+export interface ClickVelocityData {
+  velocity_distribution: VelocityBucket[];
+  /**
+   * `true` when ≥50 % of clicks have non-null `seconds_since_last_click`,
+   * indicating Phase 2 tracking covers the majority of the data.
+   */
+  phase2_available: boolean;
+  /** Count of clicks with non-null velocity data. */
+  total_with_data: number;
 }
 
 export interface AdvancedTemporalData {
@@ -126,7 +170,8 @@ export interface AdvancedTemporalData {
   peak_analysis: PeakAnalysis;
   timezone_analysis: TimezoneAnalysis[];
   heatmap_data?: HeatmapSeriesEntry[];
-  daily_timeline?: DailyTimelineEntry[];
+  /** Daily timeline with cap metadata. */
+  daily_timeline?: DailyTimeline;
   device_by_period?: DeviceByPeriodEntry[];
 }
 
@@ -174,12 +219,17 @@ export interface TemporalData {
     clicks: number;
     percentage: number;
   }>;
-  /** Viral rank per day — peak rank and click count. Excludes days with null viral_rank. */
+  /**
+   * Viral rank per day — peak rank and click count.
+   * Days where all clicks have NULL viral_rank (pre-Phase 2) are mapped to 'unranked'.
+   */
   viral_rank_by_day?: Array<{
     date: string;
-    peak_rank: "cold" | "warming" | "trending" | "viral";
+    peak_rank: "cold" | "warming" | "trending" | "viral" | "unranked";
     click_count: number;
   }>;
+  /** Click velocity distribution (seconds between consecutive clicks). */
+  click_velocity?: ClickVelocityData;
 }
 
 /**

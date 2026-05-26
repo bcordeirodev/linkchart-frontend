@@ -168,7 +168,6 @@ function mapResponseToDashboardData(response: ApiResponse): DashboardData {
     total_clicks: 0,
     unique_visitors: 0,
     avg_clicks_per_link: 0,
-    success_rate: 0,
     avg_response_time: 0,
     countries_reached: 0,
     links_with_traffic: 0,

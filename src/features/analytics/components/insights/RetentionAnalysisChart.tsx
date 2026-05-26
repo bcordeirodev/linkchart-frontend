@@ -1,17 +1,9 @@
 "use client";
-import { Repeat2, TrendingUp, Users, BarChart3, Lightbulb } from "lucide-react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Chip,
-  Stack,
-} from "@mui/material";
+import { Repeat2, TrendingUp, Users, Lightbulb } from "lucide-react";
+import { Box, Typography, Card, CardContent, Grid, Stack } from "@mui/material";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
-import { useTheme, alpha } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { getChartColor } from "@/lib/theme/colors";
@@ -24,21 +16,23 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
+/**
+ * Real retention data shape returned by the backend.
+ *
+ * Rates are decimals in [0.0, 1.0]. `retention_score` and `benchmark_comparison`
+ * have been removed — they were fabricated from arbitrary formulas.
+ */
 interface RetentionData {
+  /** Fraction of unique visitors who are return visitors (0.0–1.0). */
   return_visitor_rate: number;
+  /** Fraction of unique visitors who are new (0.0–1.0). */
   new_visitor_rate: number;
   total_visitors: number;
   return_visitors: number;
   new_visitors: number;
-  retention_score: number;
-  benchmark_comparison:
-    | "excellent"
-    | "good"
-    | "average"
-    | "needs_improvement"
-    | "insufficient_data";
 }
 
+/** Props accepted by {@link RetentionAnalysisChart}. */
 interface RetentionAnalysisChartProps {
   data: RetentionData;
   loading?: boolean;
@@ -47,10 +41,11 @@ interface RetentionAnalysisChartProps {
 }
 
 /**
- * 🔄 RETENTION ANALYSIS CHART - ETAPA 3: INSIGHTS ENHANCEMENTS
+ * Visualises visitor retention as a donut chart (return vs. new visitors)
+ * and a summary card with raw numbers.
  *
- * Componente para visualizar análise de retenção de visitantes
- * Mostra taxa de visitantes recorrentes vs novos com benchmarks
+ * Removed fabricated displays: `retention_score` gauge and `benchmark_comparison` chip.
+ * Rates from the API are [0.0, 1.0] decimals; they are multiplied by 100 for display.
  */
 export function RetentionAnalysisChart({
   data,
@@ -62,7 +57,10 @@ export function RetentionAnalysisChart({
   const { t } = useTranslation("analytics");
   const displayTitle = title ?? t("insights.retention.title");
 
-  // Configuração do gráfico de pizza para visitantes
+  // Convert [0.0, 1.0] rates to display percentages
+  const returnPct = Math.round(data.return_visitor_rate * 100 * 10) / 10;
+  const newPct = Math.round(data.new_visitor_rate * 100 * 10) / 10;
+
   const visitorsPieOptions = {
     chart: {
       type: "donut" as const,
@@ -107,7 +105,7 @@ export function RetentionAnalysisChart({
               label: t("insights.retention.retentionLabel"),
               fontSize: "14px",
               color: theme.palette.text.secondary,
-              formatter: () => `${data.return_visitor_rate}%`,
+              formatter: () => `${returnPct}%`,
             },
           },
         },
@@ -123,99 +121,6 @@ export function RetentionAnalysisChart({
   };
 
   const visitorsPieData = [data.return_visitors, data.new_visitors];
-
-  // Configuração do gráfico de barras para benchmark
-  const benchmarkBarOptions = {
-    chart: {
-      type: "bar" as const,
-      height: 200,
-      toolbar: { show: false },
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true,
-        borderRadius: 4,
-        dataLabels: {
-          position: "center" as const,
-        },
-      },
-    },
-    dataLabels: {
-      enabled: true,
-      formatter: (val: number) => `${val}%`,
-      style: {
-        colors: ["#fff"],
-        fontSize: "12px",
-        fontWeight: "bold",
-      },
-    },
-    xaxis: {
-      categories: [
-        t("insights.retention.yourRate"),
-        t("insights.retention.avgBenchmark"),
-      ],
-      labels: {
-        style: {
-          colors: theme.palette.text.primary,
-        },
-      },
-    },
-    yaxis: {
-      labels: {
-        style: {
-          colors: theme.palette.text.primary,
-        },
-      },
-    },
-    colors: [
-      data.benchmark_comparison === "excellent"
-        ? theme.palette.success.main
-        : data.benchmark_comparison === "good"
-          ? theme.palette.info.main
-          : data.benchmark_comparison === "average"
-            ? theme.palette.warning.main
-            : theme.palette.error.main,
-      alpha(theme.palette.text.secondary, 0.3),
-    ],
-    tooltip: {
-      theme: theme.palette.mode,
-      y: {
-        formatter: (val: number) =>
-          t("insights.retention.retentionTooltip", { n: val }),
-      },
-    },
-  };
-
-  // Benchmark de referência da indústria
-  const industryBenchmark = 20; // 20% é considerado médio
-  const benchmarkBarData = [
-    {
-      name: t("insights.retention.seriesName"),
-      data: [data.return_visitor_rate, industryBenchmark],
-    },
-  ];
-
-  // Cor do benchmark baseada na performance
-  const getBenchmarkColor = (comparison: string) => {
-    switch (comparison) {
-      case "excellent":
-        return theme.palette.success.main;
-      case "good":
-        return theme.palette.info.main;
-      case "average":
-        return theme.palette.warning.main;
-      case "needs_improvement":
-        return theme.palette.error.main;
-      default:
-        return theme.palette.text.secondary;
-    }
-  };
-
-  const getBenchmarkLabel = (comparison: string) => {
-    const key = `insights.retention.quality.${comparison}` as const;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return t(key as any) || comparison;
-  };
 
   if (loading) {
     return (
@@ -260,27 +165,18 @@ export function RetentionAnalysisChart({
       ) : null}
 
       <Box sx={{ p: 3 }}>
-        {/* Métricas Principais */}
+        {/* Real Metrics */}
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <MetricCard
               title={t("insights.retention.retentionRate")}
-              value={`${data.return_visitor_rate}%`}
+              value={`${returnPct}%`}
               icon={<Repeat2 {...ICON_LG} />}
               color="success"
               subtitle={t("insights.retention.returningVisitorsSub")}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <MetricCard
-              title={t("insights.retention.retentionScore")}
-              value={data.retention_score}
-              icon={<BarChart3 {...ICON_LG} />}
-              color="info"
-              subtitle={t("insights.retention.scoreSub")}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <MetricCard
               title={t("insights.retention.returningVisitors")}
               value={data.return_visitors}
@@ -289,7 +185,7 @@ export function RetentionAnalysisChart({
               subtitle={t("insights.retention.loyalUsers")}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <MetricCard
               title={t("insights.retention.totalVisitors")}
               value={data.total_visitors}
@@ -300,104 +196,46 @@ export function RetentionAnalysisChart({
           </Grid>
         </Grid>
 
-        {/* Benchmark Status */}
-        <Box sx={{ mb: 3, textAlign: "center" }}>
-          <Chip
-            label={t("insights.retention.performanceChip", {
-              label: getBenchmarkLabel(data.benchmark_comparison),
-            })}
-            sx={{
-              backgroundColor: getBenchmarkColor(data.benchmark_comparison),
-              color: "white",
-              fontWeight: 600,
-              fontSize: "0.9rem",
-              px: 2,
-              py: 1,
-              borderRadius: `${radiusTokens.md}px`,
-            }}
-          />
-        </Box>
-
-        {/* Gráficos */}
-        <Grid container spacing={3}>
-          {/* Gráfico de Pizza - Distribuição de Visitantes */}
-          <Grid item xs={12} md={6}>
-            <Card
-              sx={{
-                height: "100%",
-                borderRadius: `${radiusTokens.lg}px`,
-                border: `1px solid ${theme.palette.divider}`,
-                boxShadow:
-                  theme.palette.mode === "dark"
-                    ? elevationTokens.xs
-                    : elevationLightTokens.xs,
-              }}
+        {/* Visitor Distribution Donut */}
+        <Card
+          sx={{
+            borderRadius: `${radiusTokens.lg}px`,
+            border: `1px solid ${theme.palette.divider}`,
+            boxShadow:
+              theme.palette.mode === "dark"
+                ? elevationTokens.xs
+                : elevationLightTokens.xs,
+            mb: 3,
+          }}
+        >
+          <CardContent>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ textAlign: "center", fontWeight: 600 }}
             >
-              <CardContent>
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  sx={{ textAlign: "center", fontWeight: 600 }}
-                >
-                  {t("insights.retention.visitorDistribution")}
-                </Typography>
-                <ApexChartWrapper
-                  options={visitorsPieOptions}
-                  series={visitorsPieData}
-                  type="donut"
-                  size="standard"
-                />
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Gráfico de Barras - Benchmark Comparison */}
-          <Grid item xs={12} md={6}>
-            <Card
-              sx={{
-                height: "100%",
-                borderRadius: `${radiusTokens.lg}px`,
-                border: `1px solid ${theme.palette.divider}`,
-                boxShadow:
-                  theme.palette.mode === "dark"
-                    ? elevationTokens.xs
-                    : elevationLightTokens.xs,
-              }}
+              {t("insights.retention.visitorDistribution")}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ textAlign: "center", mb: 1 }}
             >
-              <CardContent>
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  sx={{ textAlign: "center", fontWeight: 600 }}
-                >
-                  {t("insights.retention.benchmarkComparison")}
-                </Typography>
-                <ApexChartWrapper
-                  options={benchmarkBarOptions}
-                  series={benchmarkBarData}
-                  type="bar"
-                  size="compact"
-                />
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ display: "block", mt: 1 }}
-                >
-                  {t("insights.retention.benchmarkNote")}
-                </Typography>
-                <Box sx={{ mt: 2, textAlign: "center" }}>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("insights.retention.industryBenchmark", {
-                      n: industryBenchmark,
-                    })}
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+              {t("insights.retention.visitorDistributionDesc", {
+                returning: data.return_visitors,
+                total: data.total_visitors,
+              })}
+            </Typography>
+            <ApexChartWrapper
+              options={visitorsPieOptions}
+              series={visitorsPieData}
+              type="donut"
+              size="standard"
+            />
+          </CardContent>
+        </Card>
 
-        {/* Insights e Recomendações */}
+        {/* Insights Card */}
         <Box sx={{ mt: 3 }}>
           <Card
             sx={{
@@ -426,21 +264,16 @@ export function RetentionAnalysisChart({
                 </Typography>
 
                 <Typography variant="body1">
-                  {t("insights.retention.analysisPrefix", {
-                    rate: data.return_visitor_rate,
-                  })}{" "}
-                  {data.benchmark_comparison === "excellent" &&
-                    t("insights.retention.analysisExcellent")}
-                  {data.benchmark_comparison === "good" &&
-                    t("insights.retention.analysisGood")}
-                  {data.benchmark_comparison === "average" &&
-                    t("insights.retention.analysisAverage")}
-                  {data.benchmark_comparison === "needs_improvement" &&
-                    t("insights.retention.analysisNeedsImprovement")}
+                  {t("insights.retention.analysisRaw", {
+                    rate: returnPct,
+                    newPct,
+                    returning: data.return_visitors,
+                    total: data.total_visitors,
+                  })}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary">
-                  {data.return_visitor_rate >= 25
+                  {returnPct >= 25
                     ? t("insights.retention.recHigh")
                     : t("insights.retention.recLow")}
                 </Typography>

@@ -31,13 +31,26 @@ export interface GeographicData {
 }
 
 /**
- * Dados de cliques por continente
+ * Dados de cliques por continente.
+ *
+ * The backend returns the raw 2-letter ISO code in both `continent` (legacy key
+ * kept for backward-compat) and `continent_code`.  `continent_name` is no longer
+ * emitted by the backend — continent labels are resolved on the frontend via the
+ * `geographic.continents.<CODE>` i18n keys so they reflect the user's active locale.
  */
 export interface ContinentData {
-  /** Código do continente (ex: "SA", "NA") */
+  /** Código ISO do continente (ex: "SA", "NA", "EU"). Primary lookup key. */
+  continent_code: string;
+  /**
+   * Legacy alias for `continent_code` — the backend still emits this key for
+   * backward compatibility with code that reads `c.continent`.
+   */
   continent: string;
-  /** Nome completo do continente */
-  continent_name: string;
+  /**
+   * @deprecated The backend no longer emits `continent_name`.
+   * Use `t(\`geographic.continents.${c.continent_code}\`)` instead.
+   */
+  continent_name?: string;
   /** Número total de cliques */
   clicks: number;
   /** Percentual em relação ao total */
@@ -53,8 +66,26 @@ export interface GeographicMeta {
   unique_states: number;
   unique_cities: number;
   max_clicks: number;
+  /**
+   * Number of distinct location groups returned in `heatmap_data`.
+   * Capped at 500 — check `heatmap_capped` to know if more groups exist.
+   */
   total_locations: number;
-  last_updated: string;
+  /**
+   * True when the heatmap reached the 500-row server-side cap.
+   * When true, some locations are omitted from the heatmap data.
+   */
+  heatmap_capped: boolean;
+  /**
+   * Total distinct location groups available before the 500-row cap was applied.
+   * Equals `total_locations` when `heatmap_capped` is false.
+   */
+  total_locations_available: number;
+  /**
+   * ISO 8601 timestamp of the most recent click matching the active filters.
+   * `null` when no clicks exist for the current filter combination.
+   */
+  last_updated: string | null;
   link_info: {
     id: number;
     title: string;

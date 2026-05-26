@@ -329,7 +329,9 @@ function renderCharts(
           <UtmSourceCard data={chartData.utmTopSources} />
         </Grid>
       ) : null}
-      {chartData.socialIab && chartData.socialIab.total > 0 ? (
+      {chartData.socialIab &&
+      (chartData.socialIab.total > 0 ||
+        !chartData.socialIab.navigation_context_available) ? (
         <Grid item xs={12} md={6} sx={{ display: "flex" }}>
           <SocialAppCard data={chartData.socialIab} />
         </Grid>

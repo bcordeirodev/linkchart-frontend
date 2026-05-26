@@ -6,19 +6,10 @@ import {
   BarChart3,
   Lightbulb,
 } from "lucide-react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Chip,
-  Stack,
-  LinearProgress,
-} from "@mui/material";
+import { Box, Typography, Card, CardContent, Grid, Stack } from "@mui/material";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
-import { useTheme, alpha } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { getChartColor } from "@/lib/theme/colors";
@@ -31,24 +22,41 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
+/**
+ * Single bucket in the session distribution histogram.
+ *
+ * Field names match the updated backend shape:
+ *   `clicks_count` (previously `session_clicks`) and `frequency` (previously `users`).
+ */
 interface SessionDistribution {
-  session_clicks: number;
-  users: number;
+  /** Number of clicks that define this bucket. */
+  clicks_count: number;
+  /** Number of sessions in this bucket. */
+  frequency: number;
   percentage: number;
   avg_response_time: number;
 }
 
+/**
+ * Real session depth data returned by the backend.
+ *
+ * Removed fabricated fields:
+ *   - `engagement_score`: was `min(100, avg * 20)` — arbitrary scaling.
+ *   - `session_quality`: label derived from hardcoded thresholds.
+ *   - `total_sessions`: not needed externally; derived from distribution.
+ *
+ * `power_users_count` now counts sessions with 3+ clicks (was 5+ before).
+ */
 interface SessionDepthData {
-  avg_session_depth: number;
+  /** Mean number of clicks per session (real aggregate). */
+  avg_session_clicks: number;
   max_session_depth: number;
   session_distribution: SessionDistribution[];
+  /** Count of sessions with 3 or more clicks. */
   power_users_count: number;
-  power_users_percentage: number;
-  engagement_score: number;
-  session_quality: "excellent" | "good" | "average" | "low" | "no_data";
-  total_sessions: number;
 }
 
+/** Props accepted by {@link SessionDepthChart}. */
 interface SessionDepthChartProps {
   data: SessionDepthData;
   loading?: boolean;
@@ -57,10 +65,11 @@ interface SessionDepthChartProps {
 }
 
 /**
- * 📈 SESSION DEPTH CHART - ETAPA 3: INSIGHTS ENHANCEMENTS
+ * Visualises session depth analytics: average clicks per session,
+ * a histogram of the click distribution, and a power-users count.
  *
- * Componente para visualizar análise de profundidade de sessão
- * Mostra distribuição de clicks por sessão e identifica power users
+ * Removed fabricated displays: `engagement_score` LinearProgress gauge
+ * and `session_quality` chip. Raw data is shown instead.
  */
 export function SessionDepthChart({
   data,
@@ -72,7 +81,17 @@ export function SessionDepthChart({
   const { t } = useTranslation("analytics");
   const displayTitle = title ?? t("insights.session.title");
 
-  // Configuração do gráfico de barras para distribuição de sessões
+  // Total sessions derived from distribution for power-user % calculation
+  const totalSessions = data.session_distribution.reduce(
+    (sum, item) => sum + item.frequency,
+    0,
+  );
+  const powerUsersPct =
+    totalSessions > 0
+      ? Math.round((data.power_users_count / totalSessions) * 100 * 10) / 10
+      : 0;
+
+  // Bar chart: click distribution histogram
   const distributionBarOptions = {
     chart: {
       type: "bar" as const,
@@ -99,7 +118,7 @@ export function SessionDepthChart({
     xaxis: {
       categories: data.session_distribution.map(
         (item) =>
-          `${item.session_clicks} click${item.session_clicks > 1 ? "s" : ""}`,
+          `${item.clicks_count} click${item.clicks_count > 1 ? "s" : ""}`,
       ),
       labels: {
         style: {
@@ -124,7 +143,7 @@ export function SessionDepthChart({
           { dataPointIndex }: { dataPointIndex: number },
         ) => {
           const item = data.session_distribution[dataPointIndex];
-          return `${item.users} usuários (${val}%)`;
+          return `${item.frequency} ${t("insights.session.sessionsUnit")} (${val}%)`;
         },
       },
     },
@@ -137,88 +156,6 @@ export function SessionDepthChart({
     },
   ];
 
-  // Configuração do gráfico de área para engagement progression
-  const engagementAreaOptions = {
-    chart: {
-      type: "area" as const,
-      height: 250,
-      toolbar: { show: false },
-      sparkline: { enabled: false },
-    },
-    stroke: {
-      curve: "smooth" as const,
-      width: 3,
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.7,
-        opacityTo: 0.1,
-        stops: [0, 90, 100],
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    xaxis: {
-      categories: data.session_distribution.map(
-        (item) => `${item.session_clicks}`,
-      ),
-      labels: {
-        style: {
-          colors: theme.palette.text.primary,
-        },
-      },
-    },
-    yaxis: {
-      labels: {
-        style: {
-          colors: theme.palette.text.primary,
-        },
-      },
-    },
-    colors: [getChartColor(1)],
-    tooltip: {
-      theme: theme.palette.mode,
-      x: {
-        formatter: (val: number) => `${val} clicks por sessão`,
-      },
-      y: {
-        formatter: (val: number) => `${val} usuários`,
-      },
-    },
-  };
-
-  const engagementAreaData = [
-    {
-      name: t("insights.session.usersByClicks"),
-      data: data.session_distribution.map((item) => item.users),
-    },
-  ];
-
-  // Cor da qualidade da sessão
-  const getQualityColor = (quality: string) => {
-    switch (quality) {
-      case "excellent":
-        return theme.palette.success.main;
-      case "good":
-        return theme.palette.info.main;
-      case "average":
-        return theme.palette.warning.main;
-      case "low":
-        return theme.palette.error.main;
-      default:
-        return theme.palette.text.secondary;
-    }
-  };
-
-  const getQualityLabel = (quality: string) => {
-    const key = `insights.session.qualityLabel.${quality}` as const;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return t(key as any) || quality;
-  };
-
   if (loading) {
     return (
       <EnhancedPaper>
@@ -229,7 +166,7 @@ export function SessionDepthChart({
     );
   }
 
-  if (data.total_sessions === 0) {
+  if (data.session_distribution.length === 0) {
     return (
       <EnhancedPaper>
         <Box sx={{ p: 3, textAlign: "center" }}>
@@ -262,30 +199,21 @@ export function SessionDepthChart({
       ) : null}
 
       <Box sx={{ p: 3 }}>
-        {/* Métricas Principais */}
+        {/* Real Metrics — no fabricated scores */}
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <MetricCard
               title={t("insights.session.avgDepth")}
-              value={data.avg_session_depth}
+              value={data.avg_session_clicks}
               icon={<MousePointer2 {...ICON_LG} />}
               color="primary"
               subtitle={t("insights.session.clicksPerSession")}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <MetricCard
-              title={t("insights.session.engagementScore")}
-              value={data.engagement_score}
-              icon={<BarChart3 {...ICON_LG} />}
-              color="success"
-              subtitle={t("insights.session.scoreSub")}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <MetricCard
               title={t("insights.session.powerUsers")}
-              value={`${data.power_users_percentage}%`}
+              value={`${powerUsersPct}%`}
               icon={<Star {...ICON_LG} />}
               color="warning"
               subtitle={t("insights.session.powerUsersSub", {
@@ -293,7 +221,7 @@ export function SessionDepthChart({
               })}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <MetricCard
               title={t("insights.session.maxClicks")}
               value={data.max_session_depth}
@@ -304,145 +232,36 @@ export function SessionDepthChart({
           </Grid>
         </Grid>
 
-        {/* Status da Qualidade */}
-        <Box sx={{ mb: 3, textAlign: "center" }}>
-          <Chip
-            label={t("insights.session.sessionQuality", {
-              label: getQualityLabel(data.session_quality),
-            })}
-            sx={{
-              backgroundColor: getQualityColor(data.session_quality),
-              color: "white",
-              fontWeight: 600,
-              fontSize: "0.9rem",
-              px: 2,
-              py: 1,
-              borderRadius: `${radiusTokens.md}px`,
-            }}
-          />
-        </Box>
+        {/* Distribution Histogram */}
+        <Card
+          sx={{
+            borderRadius: `${radiusTokens.lg}px`,
+            border: `1px solid ${theme.palette.divider}`,
+            boxShadow:
+              theme.palette.mode === "dark"
+                ? elevationTokens.xs
+                : elevationLightTokens.xs,
+            mb: 3,
+          }}
+        >
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+              {t("insights.session.clickDistribution")}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              {t("insights.session.clickDistributionDesc")}
+            </Typography>
+            <ApexChartWrapper
+              options={distributionBarOptions}
+              series={distributionBarData}
+              type="bar"
+              size="standard"
+            />
+          </CardContent>
+        </Card>
 
-        {/* Indicador de Engajamento */}
+        {/* Distribution Detail Cards */}
         <Box sx={{ mb: 3 }}>
-          <Card
-            sx={{
-              borderRadius: `${radiusTokens.lg}px`,
-              border: `1px solid ${theme.palette.divider}`,
-              boxShadow:
-                theme.palette.mode === "dark"
-                  ? elevationTokens.xs
-                  : elevationLightTokens.xs,
-            }}
-          >
-            <CardContent>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                {t("insights.session.engagementLevel")}
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Box sx={{ flex: 1 }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={data.engagement_score}
-                    sx={{
-                      height: 12,
-                      borderRadius: 6,
-                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                      "& .MuiLinearProgress-bar": {
-                        backgroundColor: getQualityColor(data.session_quality),
-                        borderRadius: 6,
-                      },
-                    }}
-                  />
-                </Box>
-                <Typography
-                  variant="h6"
-                  sx={{ minWidth: 60, textAlign: "right" }}
-                >
-                  {data.engagement_score}/100
-                </Typography>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {t("insights.session.engagementBasis")}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-
-        {/* Gráficos */}
-        <Grid container spacing={3}>
-          {/* Gráfico de Barras - Distribuição de Sessões */}
-          <Grid item xs={12} md={7}>
-            <Card
-              sx={{
-                height: "100%",
-                borderRadius: `${radiusTokens.lg}px`,
-                border: `1px solid ${theme.palette.divider}`,
-                boxShadow:
-                  theme.palette.mode === "dark"
-                    ? elevationTokens.xs
-                    : elevationLightTokens.xs,
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                  {t("insights.session.clickDistribution")}
-                </Typography>
-                <ApexChartWrapper
-                  options={distributionBarOptions}
-                  series={distributionBarData}
-                  type="bar"
-                  size="standard"
-                />
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Gráfico de Área - Curva de Engajamento */}
-          <Grid item xs={12} md={5}>
-            <Card
-              sx={{
-                height: "100%",
-                borderRadius: `${radiusTokens.lg}px`,
-                border: `1px solid ${theme.palette.divider}`,
-                boxShadow:
-                  theme.palette.mode === "dark"
-                    ? elevationTokens.xs
-                    : elevationLightTokens.xs,
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                  {t("insights.session.engagementCurve")}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ display: "block", mb: 1 }}
-                >
-                  {t("insights.session.curveDesc")}
-                </Typography>
-                <ApexChartWrapper
-                  options={engagementAreaOptions}
-                  series={engagementAreaData}
-                  type="area"
-                  size="compact"
-                />
-                <Box sx={{ mt: 2 }}>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ textAlign: "center" }}
-                  >
-                    {t("insights.session.usersByClicks")}
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-
-        {/* Detalhes da Distribuição */}
-        <Box sx={{ mt: 3 }}>
           <Card
             sx={{
               borderRadius: `${radiusTokens.lg}px`,
@@ -480,12 +299,12 @@ export function SessionDepthChart({
                       }}
                     >
                       <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                        {item.session_clicks} Click
-                        {item.session_clicks > 1 ? "s" : ""}
+                        {item.clicks_count} Click
+                        {item.clicks_count > 1 ? "s" : ""}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         {t("insights.session.usersCount", {
-                          n: item.users,
+                          n: item.frequency,
                           percent: item.percentage,
                         })}
                       </Typography>
@@ -504,7 +323,7 @@ export function SessionDepthChart({
           </Card>
         </Box>
 
-        {/* Insights e Recomendações */}
+        {/* Insights Card */}
         <Box sx={{ mt: 3 }}>
           <Card
             sx={{
@@ -533,22 +352,20 @@ export function SessionDepthChart({
                 </Typography>
 
                 <Typography variant="body1">
-                  {t("insights.session.analysisText", {
-                    avg: data.avg_session_depth,
-                    power: data.power_users_percentage,
-                    quality: getQualityLabel(
-                      data.session_quality,
-                    ).toLowerCase(),
+                  {t("insights.session.analysisRaw", {
+                    avg: data.avg_session_clicks,
+                    power: powerUsersPct,
+                    powerCount: data.power_users_count,
                   })}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary">
-                  {data.avg_session_depth >= 2.5
+                  {data.avg_session_clicks >= 2.5
                     ? t("insights.session.recHigh")
                     : t("insights.session.recLow")}
                 </Typography>
 
-                {data.power_users_percentage > 20 && (
+                {powerUsersPct > 20 && (
                   <Typography
                     variant="body2"
                     sx={{
@@ -557,7 +374,7 @@ export function SessionDepthChart({
                     }}
                   >
                     {t("insights.session.powerUserHighlight", {
-                      percent: data.power_users_percentage,
+                      percent: powerUsersPct,
                     })}
                   </Typography>
                 )}

@@ -363,18 +363,36 @@ export function GeographicChart({
             </Typography>
 
             {cities.length > 0 ? (
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                {cities.slice(0, 20).map((city) => (
-                  <Chip
+              <Box>
+                {cities.slice(0, 10).map((city, index) => (
+                  <Box
                     key={`${city.country}-${city.state}-${city.city}`}
-                    label={`${city.city} (${city.clicks})`}
-                    variant="outlined"
-                    size="small"
                     sx={{
-                      fontSize: "0.75rem",
-                      height: 28,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      py: 1,
+                      borderBottom:
+                        index < cities.length - 1
+                          ? `1px solid ${theme.palette.divider}`
+                          : "none",
                     }}
-                  />
+                  >
+                    <Box>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {city.state ? `${city.city}, ${city.state}` : city.city}
+                        {city.most_common_postal_code
+                          ? ` · ZIP ${city.most_common_postal_code}`
+                          : ""}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {city.country}
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      {city.clicks} {t("geographic.chart.clicks")}
+                    </Typography>
+                  </Box>
                 ))}
               </Box>
             ) : (

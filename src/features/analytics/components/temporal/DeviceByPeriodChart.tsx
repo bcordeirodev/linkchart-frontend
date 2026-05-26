@@ -21,7 +21,18 @@ export function DeviceByPeriodChart({ data }: DeviceByPeriodChartProps) {
     return null;
   }
 
-  const categories = data.map((d) => d.label);
+  // Map the period key to a translated label. Inline template literal so the
+  // i18n type system can resolve the key union. Falls back to `d.period` for
+  // any unknown period key.
+  const periodLabel = (d: DeviceByPeriodEntry): string =>
+    t(
+      `temporal.periods.${d.period as "dawn" | "morning" | "afternoon" | "evening"}`,
+      {
+        defaultValue: d.period,
+      },
+    );
+
+  const categories = data.map(periodLabel);
   const desktopSeries = data.map((d) => d.desktop);
   const mobileSeries = data.map((d) => d.mobile);
   const tabletSeries = data.map((d) => d.tablet);

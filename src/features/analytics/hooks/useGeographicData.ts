@@ -23,7 +23,12 @@ export interface GeographicStats {
   totalLocations: number;
   /** Share of the ~195 recognised countries reached, capped at 100. */
   coveragePercentage: number;
-  lastUpdate: string;
+  /** ISO 8601 timestamp of the most recent click, or `null` when there are no clicks. */
+  lastUpdate: string | null;
+  /** True when the heatmap hit the 500-row server-side cap. */
+  heatmapCapped: boolean;
+  /** Total distinct location groups before the cap was applied. */
+  totalLocationsAvailable: number;
 }
 
 /** Input options accepted by `useGeographicData`. */
@@ -58,6 +63,9 @@ export interface UseGeographicDataReturn {
  * Maps `GeographicMeta` (counters returned alongside `data` in the
  * `{ data, meta }` envelope) into the `GeographicStats` shape the UI renders.
  * Computes `coveragePercentage` as `unique_countries / 195`, capped at 100.
+ *
+ * @param meta - Raw geographic metadata from the API response envelope.
+ * @returns Derived stats object consumed by geographic UI components.
  */
 function calculateStats(meta: GeographicMeta): GeographicStats {
   return {
@@ -71,7 +79,10 @@ function calculateStats(meta: GeographicMeta): GeographicStats {
       meta.unique_countries > 0
         ? Math.min((meta.unique_countries / 195) * 100, 100)
         : 0,
-    lastUpdate: meta.last_updated,
+    lastUpdate: meta.last_updated ?? null,
+    heatmapCapped: meta.heatmap_capped ?? false,
+    totalLocationsAvailable:
+      meta.total_locations_available ?? meta.total_locations,
   };
 }
 

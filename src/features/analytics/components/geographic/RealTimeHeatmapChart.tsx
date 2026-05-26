@@ -671,6 +671,12 @@ export function RealTimeHeatmapChart({
                 {t("geographic.heatmap.errorSample", { error })}
               </Alert>
             ) : null}
+
+            {stats?.heatmapCapped ? (
+              <Alert severity="warning" sx={{ mt: 2 }}>
+                {t("geographic.heatmap.cappedWarning")}
+              </Alert>
+            ) : null}
           </Box>
         ) : null}
 

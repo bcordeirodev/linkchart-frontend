@@ -115,17 +115,15 @@ export function AudienceAnalysis({
             </Grid>
 
             {/* 3. Behavior / navigation context */}
-            {(audienceData as AnyData)?.navigation_context_breakdown &&
-              (audienceData as AnyData)?.navigation_context_breakdown?.length >
-                0 && (
-                <Grid item xs={12}>
-                  <BehaviorSection
-                    navigationContext={
-                      (audienceData as AnyData).navigation_context_breakdown
-                    }
-                  />
-                </Grid>
-              )}
+            {(audienceData as AnyData)?.navigation_context_breakdown && (
+              <Grid item xs={12}>
+                <BehaviorSection
+                  navigationContext={
+                    (audienceData as AnyData).navigation_context_breakdown
+                  }
+                />
+              </Grid>
+            )}
 
             {/* 4. Social platforms */}
             {(audienceData as AnyData)?.social_platform_breakdown &&
@@ -162,17 +160,26 @@ export function AudienceAnalysis({
             />
           </Box>
 
-          {/* 7. Supplementary donut charts (Idioma / Plataforma / Tipo de Conexão) */}
+          {/* 7. Supplementary donut charts (Idioma / Plataforma / Tipo de Conexão / Fetch-Dest) */}
           <AudienceExtraCharts
             languageBreakdown={
-              (audienceData as AnyData)?.audience?.language_breakdown ?? []
+              (audienceData as AnyData)?.language_breakdown ??
+              (audienceData as AnyData)?.audience?.language_breakdown ??
+              []
             }
             platformBreakdown={
-              (audienceData as AnyData)?.audience?.platform_breakdown ?? []
+              (audienceData as AnyData)?.platform_breakdown ??
+              (audienceData as AnyData)?.audience?.platform_breakdown ??
+              []
             }
             connectionBreakdown={
+              (audienceData as AnyData)?.connection_type_breakdown ??
               (audienceData as AnyData)?.audience?.connection_type_breakdown ??
               []
+            }
+            fetchDestBreakdown={
+              (audienceData as AnyData)?.fetch_dest_breakdown ??
+              (audienceData as AnyData)?.audience?.fetch_dest_breakdown
             }
           />
         </ResponsiveContainer>

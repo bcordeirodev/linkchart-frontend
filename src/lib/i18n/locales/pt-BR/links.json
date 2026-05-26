@@ -258,6 +258,17 @@
         "email": "Email",
         "referral": "Referência",
         "unknown": "Desconhecido"
+      },
+      "socialPlatform": {
+        "columnHeader": "Plataforma Social",
+        "nullTooltip": "Registrado antes do rastreamento de plataforma social (maio 2026)"
+      },
+      "qualityTier": {
+        "columnHeader": "Qualidade",
+        "organic": "Orgânico",
+        "suspicious": "Suspeito",
+        "likelyFraud": "Provável Fraude",
+        "nullTooltip": "Registrado antes da implementação do sistema de qualidade"
       }
     }
   },

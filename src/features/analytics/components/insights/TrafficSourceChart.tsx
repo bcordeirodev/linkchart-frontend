@@ -55,9 +55,17 @@ interface TrafficChannel {
   avg_session_depth: number;
 }
 
+/**
+ * A strategic recommendation from the traffic source analysis.
+ *
+ * `message_key` is an i18n key (e.g. `"insights.recommendations.highSocialTraffic"`)
+ * that the component translates via `t(rec.message_key)`. The old `message` field
+ * with hardcoded Portuguese text has been removed from the backend.
+ */
 interface TrafficRecommendation {
   type: "optimization" | "growth" | "diversification";
-  message: string;
+  /** i18n key for the recommendation text — use `t(message_key)` to display. */
+  message_key: string;
   priority: "high" | "medium" | "low";
 }
 
@@ -649,16 +657,9 @@ export function TrafficSourceChart({
                   }}
                 >
                   <Activity size={16} strokeWidth={1.5} />
-                  Contexto de Navegação
+                  {t("insights.traffic.navigationContext")}
                 </Typography>
                 {(() => {
-                  const contextLabels: Record<string, string> = {
-                    browser_direct: "Direto (navegador)",
-                    browser_referral: "Referral (navegador)",
-                    in_app_webview: "App (WebView)",
-                    api_programmatic: "Programático/API",
-                    preload: "Pré-carregado",
-                  };
                   return (
                     <Stack spacing={1.5}>
                       {data.navigation_context!.map((entry) => (
@@ -679,7 +680,10 @@ export function TrafficSourceChart({
                             >
                               <Chip
                                 label={
-                                  contextLabels[entry.context] ?? entry.context
+                                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                  t(
+                                    `insights.traffic.contextLabels.${entry.context}` as any,
+                                  ) || entry.context
                                 }
                                 size="small"
                                 variant="outlined"
@@ -788,7 +792,10 @@ export function TrafficSourceChart({
                               {rec.type}
                             </Typography>
                           </Box>
-                          <Typography variant="body2">{rec.message}</Typography>
+                          <Typography variant="body2">
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                            {t(rec.message_key as any)}
+                          </Typography>
                         </Box>
                       </Box>
                     </Box>

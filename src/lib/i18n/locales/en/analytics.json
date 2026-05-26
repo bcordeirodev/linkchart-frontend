@@ -28,6 +28,9 @@
       "other": "Other",
       "note": "Detected via mobile in-app browser",
       "description": "Percentage of clicks from in-app browsers of social apps (Instagram, TikTok, WhatsApp). Indicates the visitor arrived directly from the feed without opening the device browser."
+    },
+    "socialIab": {
+      "phaseDisclaimer": "Social in-app data only available for recent clicks (Phase 1 tracking)"
     }
   },
   "filters": {
@@ -341,8 +344,31 @@
         "cold": "Cold",
         "warming": "Warming",
         "trending": "Trending",
-        "viral": "Viral"
+        "viral": "Viral",
+        "unranked": "Unranked (pre-tracking)"
       }
+    },
+    "dailyTimeline": {
+      "cappedWarning": "Showing last 90 days. Use the date filter to view older data."
+    },
+    "periods": {
+      "dawn": "Dawn (0–6h)",
+      "morning": "Morning (6–12h)",
+      "afternoon": "Afternoon (12–18h)",
+      "evening": "Evening (18–24h)"
+    },
+    "clickVelocity": {
+      "title": "Click Velocity Distribution",
+      "description": "Time between consecutive clicks on this link",
+      "phaseDisclaimer": "Velocity data available for clicks after Phase 2 tracking began",
+      "totalWithData": "{{count}} clicks with velocity data"
+    },
+    "velocity": {
+      "instant": "Instant (< 1s)",
+      "veryFast": "Very Fast (1–10s)",
+      "fast": "Fast (10s–1m)",
+      "moderate": "Moderate (1–5m)",
+      "slow": "Slow (> 5m)"
     },
     "holiday": {
       "description": "Comparison of clicks on national holidays versus regular days. Identify whether your audience is more active during time off or the working week.",
@@ -398,7 +424,8 @@
       "citiesSubtitle": "Top cities driving traffic to this link.",
       "noCountriesData": "Geographic data will appear here after the first clicks",
       "noStatesData": "State data will appear here after the first clicks",
-      "noCitiesData": "City data will appear here after the first clicks"
+      "noCitiesData": "City data will appear here after the first clicks",
+      "clicks": "clicks"
     },
     "continents": {
       "title": "By Continent",
@@ -486,7 +513,8 @@
       "legendMedium": "Medium (>20%)",
       "legendLow": "Low",
       "legendSizeNote": "· Size proportional to volume",
-      "showingLocations": "{{shown}} of {{total}} locations visible"
+      "showingLocations": "{{shown}} of {{total}} locations visible",
+      "cappedWarning": "Showing top 500 locations. Some locations may be omitted."
     }
   },
   "audience": {
@@ -611,6 +639,28 @@
       "title": "By Social Platform",
       "subtitle": "Clicks by source platform (via referrer)",
       "description": "Click distribution by source social network, identified via the Referer header. Shows which platform each visitor came from before clicking the link."
+    },
+    "fetchDest": {
+      "title": "Request Type Distribution",
+      "description": "How the browser initiated each click request (Sec-Fetch-Dest header)",
+      "phaseDisclaimer": "Request type data available for clicks after Phase 1 tracking"
+    },
+    "chMobile": {
+      "title": "Client Hint: Mobile Signal",
+      "mobile": "Mobile",
+      "not_mobile": "Desktop"
+    },
+    "phaseData": {
+      "unavailable": "This data is only available for recent clicks using enhanced tracking"
+    },
+    "extraCharts": {
+      "language": "Language",
+      "languageDescription": "Primary language detected from browser settings (Phase 1: Accept-Language / Sec-CH-UA).",
+      "platform": "Platform",
+      "platformDescription": "Operating platform detected via Client Hints (Phase 1: Sec-CH-UA-Platform).",
+      "connectionType": "Connection Type",
+      "connectionTypeDescription": "ISP connection type classified from network data (Phase 2).",
+      "others": "Others"
     }
   },
   "performance": {
@@ -721,6 +771,8 @@
       "performanceChip": "Performance: {{label}}",
       "visitorsTooltip": "{{n}} visitors",
       "retentionTooltip": "{{n}}% retention",
+      "visitorDistributionDesc": "{{returning}} returning visitors out of {{total}} total unique visitors.",
+      "analysisRaw": "Your return visitor rate is {{rate}}% ({{returning}} of {{total}} unique visitors). New visitors account for {{newPct}}%.",
       "quality": {
         "excellent": "Excellent",
         "good": "Good",
@@ -757,6 +809,9 @@
       "powerUserHighlight": "Highlight: You have a solid base of power users ({{percent}}%)! Consider creating premium content or loyalty programs.",
       "avgTime": "Avg time: {{n}}s",
       "usersCount": "{{n}} users ({{percent}}%)",
+      "sessionsUnit": "sessions",
+      "clickDistributionDesc": "Distribution of sessions by number of clicks. Each bar shows how many sessions had exactly that many clicks.",
+      "analysisRaw": "Users click an average of {{avg}} times per session. {{powerCount}} sessions ({{power}}%) are power users with 3 or more clicks.",
       "qualityLabel": {
         "excellent": "Excellent",
         "good": "Good",
@@ -791,7 +846,20 @@
       "seriesName": "Average Session Depth",
       "uniqueVisitors": "{{n}} unique visitors",
       "session": "Session: {{n}} clicks",
-      "time": "Time: {{n}}s"
+      "time": "Time: {{n}}s",
+      "navigationContext": "Navigation Context",
+      "contextLabels": {
+        "browser_direct": "Direct (browser)",
+        "browser_referral": "Referral (browser)",
+        "in_app_webview": "App (WebView)",
+        "api_programmatic": "Programmatic / API",
+        "preload": "Pre-loaded"
+      }
+    },
+    "recommendations": {
+      "highSocialTraffic": "High social traffic detected. Consider diversifying with SEO and email marketing.",
+      "highDirectTraffic": "Very direct traffic. Explore social media campaigns to expand reach.",
+      "lowSourceDiversity": "Low source diversity. Consider multiple channels to reduce dependency risks."
     },
     "trafficQuality": {
       "title": "Traffic Quality",

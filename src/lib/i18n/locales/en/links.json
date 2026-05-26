@@ -258,6 +258,17 @@
         "email": "Email",
         "referral": "Referral",
         "unknown": "Unknown"
+      },
+      "socialPlatform": {
+        "columnHeader": "Social Platform",
+        "nullTooltip": "Recorded before social platform tracking (May 2026)"
+      },
+      "qualityTier": {
+        "columnHeader": "Quality",
+        "organic": "Organic",
+        "suspicious": "Suspicious",
+        "likelyFraud": "Likely Fraud",
+        "nullTooltip": "Recorded before quality scoring was implemented"
       }
     }
   },
