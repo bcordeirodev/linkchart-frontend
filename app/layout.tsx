@@ -72,6 +72,7 @@ export default async function RootLayout({
   const initialLang = cookieStore.get("i18nextLng")?.value ?? "pt-BR";
 
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID;
 
   return (
     <html lang={initialLang} suppressHydrationWarning>
@@ -104,12 +105,20 @@ export default async function RootLayout({
             />
           </>
         ) : null}
-        <Script
-          id="adsense"
-          strategy="afterInteractive"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1396026257166470"
-          crossOrigin="anonymous"
-        />
+        {/*
+         * AdSense — uses a native <script async> instead of Next.js <Script>
+         * intentionally: <Script> appends a `data-nscript` attribute that
+         * AdSense's own validation rejects with a console warning.
+         * A native <script async> in a Server Component is hoisted to <head>
+         * by React and does not receive any framework-specific attributes.
+         */}
+        {adsenseId ? (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
+            crossOrigin="anonymous"
+          />
+        ) : null}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
