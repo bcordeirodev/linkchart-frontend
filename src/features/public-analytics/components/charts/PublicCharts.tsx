@@ -22,7 +22,6 @@ import { chartByType } from "@/lib/theme/colors";
 import {
   getPublicChartCardOverrideSx,
   getPublicInsetSx,
-  publicHairline,
 } from "@/lib/theme/publicPageStyles";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -42,7 +41,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
   const isDark = theme.palette.mode === "dark";
   const animations = createPresetAnimations(theme);
   const { charts } = analyticsData;
-  const titleColor = alpha(theme.palette.text.primary, isDark ? 0.55 : 0.7);
+  const titleColor = alpha(theme.palette.text.primary, isDark ? 0.74 : 0.78);
   const titleAccent = alpha(theme.palette.primary.main, 0.6);
 
   const hourData = (charts?.temporal?.clicks_by_hour ?? []).map((d) => ({
@@ -289,8 +288,8 @@ function EmptyChartsState() {
   const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
   const iconColor = alpha(theme.palette.text.primary, isDark ? 0.18 : 0.22);
-  const titleColor = alpha(theme.palette.text.primary, isDark ? 0.45 : 0.55);
-  const subColor = alpha(theme.palette.text.primary, isDark ? 0.3 : 0.4);
+  const titleColor = alpha(theme.palette.text.primary, isDark ? 0.68 : 0.62);
+  const subColor = alpha(theme.palette.text.primary, isDark ? 0.54 : 0.5);
 
   return (
     <Box

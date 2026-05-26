@@ -111,6 +111,11 @@ export function SignUpCtaCard({
         ...getPublicFormShellSx(theme),
         p: { xs: "20px", md: "22px 26px" },
         overflow: "hidden",
+        ...(isDark && {
+          bgcolor: alpha(theme.palette.primary.main, 0.11),
+          borderColor: alpha(theme.palette.primary.main, 0.42),
+          boxShadow: `0 8px 28px ${alpha(theme.palette.primary.main, 0.2)}`,
+        }),
         "&::before": {
           content: '""',
           position: "absolute",
@@ -119,6 +124,13 @@ export function SignUpCtaCard({
           right: 0,
           height: "1px",
           background: `linear-gradient(90deg, transparent 0%, ${alpha(theme.palette.primary.main, 0.6)} 50%, transparent 100%)`,
+        },
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background: `radial-gradient(circle at 85% 18%, ${alpha(theme.palette.secondary.main, isDark ? 0.18 : 0.08)} 0%, transparent 42%)`,
         },
       }}
     >

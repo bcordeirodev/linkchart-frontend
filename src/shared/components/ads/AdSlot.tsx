@@ -18,8 +18,8 @@ declare global {
   }
 }
 
-/** Approximate reserved height per format, matching real AdSense slot sizes. */
-const FORMAT_MIN_HEIGHT: Record<NonNullable<AdSlotProps["format"]>, number> = {
+/** Fixed height per format, matching real AdSense slot sizes. */
+const FORMAT_HEIGHT: Record<NonNullable<AdSlotProps["format"]>, number> = {
   rectangle: 280,
   leaderboard: 90,
   auto: 120,
@@ -27,8 +27,8 @@ const FORMAT_MIN_HEIGHT: Record<NonNullable<AdSlotProps["format"]>, number> = {
 
 /** Human-readable label shown inside the dev placeholder box. */
 const FORMAT_LABEL: Record<NonNullable<AdSlotProps["format"]>, string> = {
-  rectangle: "Rectangle 336×280",
-  leaderboard: "Leaderboard 728×90",
+  rectangle: "Rectangle 336×280 (responsive)",
+  leaderboard: "Leaderboard 728×90 (responsive)",
   auto: "Responsive",
 };
 
@@ -64,15 +64,21 @@ export function AdSlot({ slot, format = "auto", className }: AdSlotProps) {
     // In production without a publisher ID, stay silent — no empty <ins>.
     if (!isDev) return null;
 
-    const minHeight = FORMAT_MIN_HEIGHT[format];
+    // No slot configured — render nothing so unconfigured ads are invisible.
+    if (!hasSlot) return null;
+
+    const height = FORMAT_HEIGHT[format];
     const label = FORMAT_LABEL[format];
 
     return (
       <Box
         sx={{
           my: 2,
+          mx: "auto",
           width: "100%",
-          minHeight,
+          maxWidth: "100%",
+          height,
+          flexShrink: 0,
           border: "1.5px dashed",
           borderColor: "divider",
           borderRadius: 2,
@@ -92,22 +98,13 @@ export function AdSlot({ slot, format = "auto", className }: AdSlotProps) {
         <Typography variant="caption" color="text.disabled" fontWeight={600}>
           Ad slot — {label}
         </Typography>
-        {hasSlot ? (
-          <Typography
-            variant="caption"
-            color="text.disabled"
-            sx={{ opacity: 0.6 }}
-          >
-            slot {slot}
-          </Typography>
-        ) : (
-          <Typography
-            variant="caption"
-            sx={{ color: "warning.main", opacity: 0.8 }}
-          >
-            ⚠ NEXT_PUBLIC_ADSENSE_SLOT_* not set
-          </Typography>
-        )}
+        <Typography
+          variant="caption"
+          color="text.disabled"
+          sx={{ opacity: 0.6 }}
+        >
+          slot {slot}
+        </Typography>
       </Box>
     );
   }
