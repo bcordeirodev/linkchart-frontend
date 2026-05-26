@@ -109,7 +109,10 @@ export function AudienceAnalysis({
                     (audienceData as AnyData)?.device_performance
                   }
                   languages={(audienceData as AnyData)?.languages}
-                  renderingEngine={(audienceData as AnyData)?.rendering_engine}
+                  renderingEngine={(() => {
+                    const re = (audienceData as AnyData)?.rendering_engine;
+                    return Array.isArray(re) ? re : re?.data;
+                  })()}
                 />
               </EnhancedPaper>
             </Grid>

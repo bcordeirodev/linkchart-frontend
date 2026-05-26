@@ -39,7 +39,9 @@ function PublicAnalyticsSections({
   } = usePublicAnalytics({ slug });
 
   if (loading) {
-    return <PublicAnalyticsSkeleton />;
+    return (
+      <PublicAnalyticsSkeleton embedded showPageHeading={showPageHeading} />
+    );
   }
 
   if (error || !linkData || !analyticsData) {
