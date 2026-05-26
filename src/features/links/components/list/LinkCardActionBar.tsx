@@ -56,15 +56,15 @@ export function LinkCardActionBar({
   };
 
   const copyFg = isDark ? theme.palette.common.white : primaryDark;
-  const copyBgIdle = isDark ? alpha(primaryLight, 0.14) : alpha(primary, 0.1);
-  const copyBgCopied = isDark ? alpha(success, 0.14) : alpha(success, 0.08);
+  const copyBgIdle = isDark ? alpha(primaryLight, 0.08) : alpha(primary, 0.05);
+  const copyBgCopied = isDark ? alpha(success, 0.1) : alpha(success, 0.06);
   const idleCopyShadow = isDark ? elevation.xs : elevationLightTokens.xs;
   const copyBorderIdle = copied
-    ? alpha(successDark, isDark ? 0.62 : 0.5)
-    : alpha(primaryDark, isDark ? 0.58 : 0.45);
+    ? alpha(successDark, isDark ? 0.46 : 0.36)
+    : alpha(primaryDark, isDark ? 0.42 : 0.3);
   const copyBorderHover = copied
-    ? alpha(successDark, isDark ? 0.72 : 0.58)
-    : alpha(primaryDark, isDark ? 0.68 : 0.55);
+    ? alpha(successDark, isDark ? 0.56 : 0.42)
+    : alpha(primaryDark, isDark ? 0.5 : 0.36);
   return (
     <Stack
       direction="row"
@@ -121,8 +121,8 @@ export function LinkCardActionBar({
               border: "2px solid",
               borderColor: copyBorderHover,
               bgcolor: copied
-                ? alpha(success, isDark ? 0.2 : 0.12)
-                : alpha(primary, isDark ? 0.2 : 0.1),
+                ? alpha(success, isDark ? 0.14 : 0.08)
+                : alpha(primary, isDark ? 0.14 : 0.08),
               boxShadow: isDark ? elevation.sm : elevationLightTokens.sm,
             },
           }}
@@ -176,9 +176,8 @@ export function LinkCardActionBar({
           }}
         >
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
-            disableElevation
             startIcon={<BarChart3 size={14} strokeWidth={2} />}
             endIcon={<ChevronRight size={14} strokeWidth={2.5} />}
             onClick={(e) => {
@@ -200,9 +199,11 @@ export function LinkCardActionBar({
               textTransform: "none",
               lineHeight: 1.2,
               whiteSpace: "nowrap",
-              bgcolor: isDark ? alpha(primary, 0.88) : primary,
-              color: theme.palette.primary.contrastText,
-              boxShadow: `0 1px 3px ${alpha(primary, isDark ? 0.35 : 0.25)}`,
+              border: "2px solid",
+              borderColor: alpha(primaryDark, isDark ? 0.5 : 0.32),
+              bgcolor: isDark ? alpha(primary, 0.58) : alpha(primary, 0.88),
+              color: alpha(theme.palette.common.white, 0.96),
+              boxShadow: isDark ? elevation.xs : elevationLightTokens.xs,
               "& .MuiButton-startIcon": {
                 margin: 0,
                 mr: 0.5,
@@ -214,8 +215,9 @@ export function LinkCardActionBar({
                 display: { xs: "none", sm: "inherit" },
               },
               "&:hover": {
-                bgcolor: "primary.dark",
-                boxShadow: `0 2px 8px ${alpha(primary, isDark ? 0.4 : 0.3)}`,
+                borderColor: alpha(primaryDark, isDark ? 0.62 : 0.42),
+                bgcolor: isDark ? alpha(primary, 0.68) : primaryDark,
+                boxShadow: isDark ? elevation.sm : elevationLightTokens.sm,
               },
             }}
           >

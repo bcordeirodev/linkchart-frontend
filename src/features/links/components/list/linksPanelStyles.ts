@@ -13,7 +13,8 @@ import type { Theme } from "@mui/material/styles";
 export function getLinksBorderColor(theme: Theme) {
   const isDark = theme.palette.mode === "dark";
 
-  return alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14);
+  // Softer neutral border to avoid the "heavy card" look in /links.
+  return alpha(theme.palette.text.primary, isDark ? 0.12 : 0.1);
 }
 
 /** Hairline shadow for /links cards — softer than `elevation*.xs`. */
