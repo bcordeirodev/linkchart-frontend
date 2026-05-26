@@ -81,6 +81,8 @@
     "copyright": "© 2024 Link Charts. All rights reserved.",
     "privacy": "Privacy",
     "terms": "Terms",
-    "support": "Support"
+    "support": "Support",
+    "cookies": "Manage cookies",
+    "cookiesNavAriaLabel": "footer links"
   }
 }
