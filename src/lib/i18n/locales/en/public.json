@@ -86,6 +86,59 @@
     "error": {
       "invalidUrl": "Please enter a valid URL.",
       "generic": "Could not shorten the link. Please try again."
+    },
+    "faq": {
+      "sectionTitle": "Frequently Asked Questions",
+      "items": [
+        {
+          "q": "How do I count how many times a link was clicked for free?",
+          "a": "Link Charts shows the total click count for each link on the real-time analytics dashboard. Access the free dashboard to see the click counter, geographic distribution, and device breakdown — at no cost."
+        },
+        {
+          "q": "How do I shorten a link for WhatsApp?",
+          "a": "Paste the long URL into the shortener field and click Shorten. The generated short link works directly on WhatsApp, Telegram, Instagram, and any messaging app, without creating an account."
+        },
+        {
+          "q": "Is there a free link shortener without registration?",
+          "a": "Yes. Link Charts lets you shorten links for free without creating an account. To save your links and access detailed analytics for each one, just create a free account."
+        },
+        {
+          "q": "What is the best free alternative to Bitly?",
+          "a": "Link Charts is a free alternative to Bitly with real-time analytics, geographic tracking by country and city, device and browser breakdown, UTM campaign tracking, free custom subdomain, and QR code — all at no cost."
+        },
+        {
+          "q": "How do I create a click counter for my links?",
+          "a": "When you shorten a link with Link Charts, a click counter is created automatically. You can track total clicks, geographic origin, device types, and peak hours in real time on the dashboard."
+        },
+        {
+          "q": "How can I see which country my link clicks came from?",
+          "a": "The analytics for each link in Link Charts includes a geographic heatmap with breakdown by country, state, and city. Open the Geographic tab in the link dashboard to see where your visitors came from."
+        },
+        {
+          "q": "Can I get a free custom subdomain for my links?",
+          "a": "Yes. By creating a free Link Charts account, you can set a custom subdomain — for example, yourbrand.linkcharts.com.br — for all your shortened links, at no extra cost."
+        },
+        {
+          "q": "How do I track UTM parameters on shortened links?",
+          "a": "Link Charts automatically detects and records UTM parameters — source, medium, campaign, term, and content — for each click received. Campaign data appears in the Insights tab of the dashboard in real time."
+        },
+        {
+          "q": "How do I generate a free QR code for a link?",
+          "a": "Every shortened link in Link Charts automatically generates a free high-resolution QR code. You can download it directly from the dashboard in the QR Code tab, ready for print or digital materials."
+        },
+        {
+          "q": "Do shortened links work on WhatsApp and Instagram?",
+          "a": "Yes. Links shortened with Link Charts work on WhatsApp, Instagram, Telegram, Twitter/X, and all messaging apps and social networks. The link redirects the visitor to the destination and tracks the click automatically."
+        },
+        {
+          "q": "How long do shortened links stay active?",
+          "a": "Shortened links stay active indefinitely. You can also set an expiration date or a click limit so the link deactivates automatically once the defined criterion is reached."
+        },
+        {
+          "q": "Can I view link analytics without logging in?",
+          "a": "Yes. Each shortened link has a public analytics page accessible without login. Share the analytics link so anyone can follow the click data, country of origin, and device breakdown in real time."
+        }
+      ]
     }
   },
   "publicAnalytics": {

@@ -10,6 +10,7 @@ import {
   ShorterStats,
   ShorterHowItWorks,
   ShorterSubdomainPromo,
+  ShorterFaq,
 } from "@/features/shorter/components";
 import {
   SHORTER_CONTENT_MAX_WIDTH,
@@ -159,6 +160,8 @@ function ShorterPageContent() {
               />
 
               {!isRedirecting ? <ShorterHowItWorks /> : null}
+
+              {!isRedirecting ? <ShorterFaq /> : null}
             </>
           ) : null}
         </Container>

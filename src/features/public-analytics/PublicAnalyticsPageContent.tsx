@@ -129,13 +129,18 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
               </Fade>
             ) : null}
 
-            <AdSlot
-              slot={
-                process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_ABOVE_CHARTS ??
-                ""
-              }
-              format="auto"
-            />
+            {/* Only show ads on pages that have analytics data — avoids
+                "screens without publisher-content" AdSense policy violation
+                on zero-click links where the page is essentially empty. */}
+            {hasClicks ? (
+              <AdSlot
+                slot={
+                  process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_ABOVE_CHARTS ??
+                  ""
+                }
+                format="auto"
+              />
+            ) : null}
 
             <Fade in timeout={800}>
               <Box>
@@ -143,13 +148,15 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
               </Box>
             </Fade>
 
-            <AdSlot
-              slot={
-                process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_BELOW_CHARTS ??
-                ""
-              }
-              format="auto"
-            />
+            {hasClicks ? (
+              <AdSlot
+                slot={
+                  process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANALYTICS_BELOW_CHARTS ??
+                  ""
+                }
+                format="auto"
+              />
+            ) : null}
 
             <Fade in timeout={1000}>
               <Box>
