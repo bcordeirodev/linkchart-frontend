@@ -20,6 +20,8 @@ import type { PublicLinkResponse } from "@/services/link-public.service";
  * called. Consumers should pass it as the React `key` prop to `URLShortenerForm` so the form
  * is fully unmounted and remounted on reset — clearing all `useForm` field values, cancelling
  * in-flight slug/safety hooks, and preventing stale spinners from persisting.
+ * `isRedirecting` is also reset to `false` immediately after `navigate()` fires so the form
+ * button never stays blocked if the user returns to the landing section after navigation.
  */
 export function useShorter() {
   const navigate = useNavigate();
