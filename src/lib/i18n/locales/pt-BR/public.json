@@ -86,6 +86,59 @@
     "error": {
       "invalidUrl": "Insira uma URL válida.",
       "generic": "Não foi possível encurtar o link. Tente novamente."
+    },
+    "faq": {
+      "sectionTitle": "Perguntas Frequentes",
+      "items": [
+        {
+          "q": "Como contar quantas vezes um link foi clicado gratuitamente?",
+          "a": "Link Charts mostra o total de cliques de cada link no painel de analytics em tempo real. Acesse o dashboard gratuito para ver o contador de cliques, distribuição geográfica e breakdown por dispositivo — sem nenhum custo."
+        },
+        {
+          "q": "Como encurtar link para o WhatsApp?",
+          "a": "Cole a URL longa no campo do encurtador e clique em Encurtar. O link curto gerado funciona diretamente no WhatsApp, Telegram, Instagram e qualquer aplicativo de mensagem, sem precisar criar conta."
+        },
+        {
+          "q": "Existe encurtador de link gratuito sem cadastro?",
+          "a": "Sim. O Link Charts permite encurtar links gratuitamente sem criar conta. Para salvar seus links e acessar analytics detalhados de cada um, basta criar uma conta gratuita."
+        },
+        {
+          "q": "Qual a melhor alternativa gratuita ao Bitly?",
+          "a": "Link Charts é uma alternativa gratuita ao Bitly com analytics em tempo real, rastreamento geográfico por país e cidade, breakdown por dispositivo e navegador, rastreamento de UTM, subdomínio personalizado e QR Code — tudo sem custo."
+        },
+        {
+          "q": "Como criar um contador de cliques para meus links?",
+          "a": "Ao encurtar um link no Link Charts, um contador de cliques é criado automaticamente. Você pode acompanhar o total de cliques, origem geográfica, dispositivos utilizados e horários de pico em tempo real no dashboard."
+        },
+        {
+          "q": "Como ver de qual país vieram os cliques no meu link?",
+          "a": "O analytics de cada link no Link Charts inclui mapa de calor geográfico com detalhamento por país, estado e cidade. Acesse a aba Geográfico no dashboard do link para visualizar de onde vieram os visitantes."
+        },
+        {
+          "q": "Posso ter subdomínio personalizado gratuito para meus links?",
+          "a": "Sim. Ao criar uma conta gratuita no Link Charts, você pode definir um subdomínio personalizado — por exemplo, seunome.linkcharts.com.br — para todos os seus links encurtados, sem custo adicional."
+        },
+        {
+          "q": "Como rastrear parâmetros UTM em links encurtados?",
+          "a": "Link Charts detecta e registra automaticamente os parâmetros UTM — source, medium, campaign, term e content — de cada clique recebido. Os dados de campanha aparecem na aba Insights do dashboard em tempo real."
+        },
+        {
+          "q": "Como gerar QR Code grátis para um link?",
+          "a": "Cada link encurtado no Link Charts gera automaticamente um QR Code gratuito de alta resolução. Você pode baixá-lo diretamente do dashboard na aba QR Code, pronto para usar em materiais impressos ou digitais."
+        },
+        {
+          "q": "O link encurtado funciona no WhatsApp e Instagram?",
+          "a": "Sim. Links encurtados com Link Charts funcionam em WhatsApp, Instagram, Telegram, Twitter/X e todos os aplicativos de mensagem e redes sociais. O link redireciona o visitante para o destino e contabiliza o clique automaticamente."
+        },
+        {
+          "q": "Por quanto tempo o link encurtado fica ativo?",
+          "a": "Links encurtados ficam ativos indefinidamente. Você também pode definir uma data de expiração ou um limite de cliques para que o link seja desativado automaticamente quando atingir o critério definido."
+        },
+        {
+          "q": "É possível ver analytics de um link sem fazer login?",
+          "a": "Sim. Cada link encurtado tem uma página pública de analytics acessível sem login. Você pode compartilhar o link de analytics para que qualquer pessoa acompanhe os dados de cliques, país de origem e dispositivos em tempo real."
+        }
+      ]
     }
   },
   "publicAnalytics": {
