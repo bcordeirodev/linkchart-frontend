@@ -162,4 +162,3 @@ export function ShorterFaq() {
 }
 
 export default ShorterFaq;
-
