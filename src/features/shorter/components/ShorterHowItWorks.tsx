@@ -27,6 +27,7 @@ const STEPS: Array<{ key: StepKey; icon: typeof Link2; step: string }> = [
 export function ShorterHowItWorks() {
   const theme = useTheme();
   const { t } = useTranslation("public");
+  const isDark = theme.palette.mode === "dark";
 
   // Pre-resolved so tsc doesn't crash on template-literal overload resolution (TS 5.8 bug).
   const stepLabels: Record<StepKey, { title: string; desc: string }> = {
@@ -94,12 +95,20 @@ export function ShorterHowItWorks() {
             <Typography
               component="span"
               sx={{
-                fontSize: "0.6875rem",
-                fontWeight: 600,
-                letterSpacing: "0.12em",
+                display: "inline-block",
+                fontSize: "0.625rem",
+                fontWeight: 700,
+                letterSpacing: "0.1em",
                 textTransform: "uppercase",
-                color: theme.palette.text.secondary,
-                display: "block",
+                color: alpha(theme.palette.primary.main, isDark ? 0.85 : 0.75),
+                bgcolor: alpha(
+                  theme.palette.primary.main,
+                  isDark ? 0.14 : 0.08,
+                ),
+                px: 1,
+                py: 0.25,
+                borderRadius: "20px",
+                mb: 0.5,
               }}
             >
               {step}

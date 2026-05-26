@@ -22,6 +22,7 @@ import {
   getPublicPanelSx,
   publicHairline,
 } from "@/lib/theme/publicPageStyles";
+import { alpha } from "@mui/material/styles";
 import { getShortUrl } from "@/lib/utils/shortUrl";
 import { PublicBlockIcon } from "@/shared/ui/base";
 
@@ -38,6 +39,7 @@ interface LinkHeroCardProps {
 export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
+  const isDark = theme.palette.mode === "dark";
   const shortUrlHeadingId = useId();
   const destinationHeadingId = useId();
   const saveHeadingId = useId();
@@ -56,6 +58,28 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   }, []);
 
   const dividerColor = publicHairline(theme);
+  const shortUrlColor = alpha(theme.palette.common.white, isDark ? 0.95 : 0.92);
+  const ctaTextColor = isDark
+    ? theme.palette.common.white
+    : "rgba(255,255,255,0.96)";
+  const sectionLabelSx = {
+    display: "block",
+    mb: 0.9,
+    fontSize: "0.6875rem",
+    fontWeight: 700,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase" as const,
+    color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.58),
+  };
+  const inlineCopyButtonSx = {
+    flexShrink: 0,
+    borderRadius: `${radiusTokens.sm}px`,
+    alignSelf: { xs: "stretch", sm: "center" } as const,
+    minWidth: { xs: "100%", sm: 104 },
+    fontSize: "0.75rem",
+    fontWeight: 600,
+    textTransform: "none" as const,
+  };
 
   return (
     <Box
@@ -71,7 +95,17 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           alignItems="flex-start"
           gap={1.25}
         >
-          <PublicBlockIcon icon={Link2} />
+          <PublicBlockIcon
+            icon={Link2}
+            sx={{
+              color: shortUrlColor,
+              bgcolor: alpha(theme.palette.common.white, isDark ? 0.08 : 0.14),
+              borderColor: alpha(
+                theme.palette.common.white,
+                isDark ? 0.22 : 0.3,
+              ),
+            }}
+          />
           <Box sx={{ minWidth: 0 }}>
             <Typography
               component="h2"
@@ -101,8 +135,20 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
               <Typography
                 component="p"
                 variant="caption"
-                color="text.secondary"
-                sx={{ mt: 0.5, display: "block" }}
+                sx={{
+                  mt: 0.5,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  px: 0.75,
+                  py: 0.25,
+                  borderRadius: "999px",
+                  bgcolor: alpha(
+                    theme.palette.primary.main,
+                    isDark ? 0.22 : 0.56,
+                  ),
+                  color: alpha(theme.palette.common.white, 0.95),
+                  letterSpacing: "0.02em",
+                }}
               >
                 {t("publicAnalytics.linkInfo.publicAnalyticsAvailable")}
               </Typography>
@@ -117,12 +163,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             component="h3"
             variant="overline"
             color="text.secondary"
-            sx={{
-              display: "block",
-              mb: 1,
-              letterSpacing: "0.08em",
-              fontWeight: 700,
-            }}
+            sx={sectionLabelSx}
           >
             {t("publicAnalytics.linkInfo.shortenedLink")}
           </Typography>
@@ -144,7 +185,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
                 fontFamily: "monospace",
                 fontSize: { xs: "0.9375rem", md: "1rem" },
                 fontWeight: 600,
-                color: theme.palette.primary.light,
+                color: shortUrlColor,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -172,7 +213,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
                   <Copy size={14} aria-hidden />
                 )
               }
-              sx={{ flexShrink: 0, alignSelf: { xs: "stretch", sm: "center" } }}
+              sx={inlineCopyButtonSx}
             >
               {copiedShort
                 ? t("publicAnalytics.saveUrlBanner.copied")
@@ -188,43 +229,49 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             component="h3"
             variant="overline"
             color="text.secondary"
-            sx={{
-              display: "block",
-              mb: 0.75,
-              letterSpacing: "0.08em",
-              fontWeight: 700,
-            }}
+            sx={sectionLabelSx}
           >
             {t("publicAnalytics.linkInfo.destination")}
           </Typography>
-          <Link
-            href={linkData.original_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            underline="hover"
+          <Box
             sx={{
-              display: "inline-flex",
+              ...getPublicInsetSx(theme),
+              p: { xs: 1.15, sm: 1.25 },
+              display: "flex",
               alignItems: "center",
               gap: 0.75,
-              maxWidth: "100%",
-              color: "text.secondary",
-              fontFamily: "monospace",
-              fontSize: "0.8125rem",
-              "&:hover": { color: "text.primary" },
             }}
           >
-            <ExternalLink size={14} strokeWidth={1.75} aria-hidden />
             <Box
               component="span"
               sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                color: shortUrlColor,
+                flexShrink: 0,
+              }}
+            >
+              <ExternalLink size={14} strokeWidth={1.75} aria-hidden />
+            </Box>
+            <Link
+              href={linkData.original_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              underline="hover"
+              sx={{
+                maxWidth: "100%",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
+                color: alpha(theme.palette.text.primary, isDark ? 0.74 : 0.78),
+                fontFamily: "monospace",
+                fontSize: "0.8125rem",
+                "&:hover": { color: "text.primary" },
               }}
             >
               {linkData.original_url}
-            </Box>
-          </Link>
+            </Link>
+          </Box>
         </Box>
 
         <Divider sx={{ borderColor: dividerColor }} />
@@ -256,44 +303,68 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             aria-label={t("publicAnalytics.linkInfo.analyticsPageUrl")}
             sx={{
               ...getPublicInsetSx(theme),
-              p: 1,
+              p: { xs: 1, sm: 1.1 },
               borderRadius: `${radiusTokens.sm}px`,
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { xs: "stretch", sm: "center" },
             }}
           >
-            <Typography
-              component="span"
-              variant="caption"
-              color="text.secondary"
-              sx={{
-                flexShrink: 0,
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "0.04em",
-              }}
-            >
-              {t("publicAnalytics.linkInfo.analyticsPageUrl")}
-            </Typography>
-            <Typography
-              component="code"
-              sx={{
-                flex: 1,
-                minWidth: 0,
-                fontFamily: "monospace",
-                fontSize: "0.75rem",
-                color: "text.primary",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                bgcolor: "transparent",
-              }}
-            >
-              {analyticsUrl}
-            </Typography>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography
+                component="span"
+                variant="caption"
+                color="text.secondary"
+                sx={{
+                  display: "block",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                  mb: 0.35,
+                }}
+              >
+                {t("publicAnalytics.linkInfo.analyticsPageUrl")}
+              </Typography>
+              <Typography
+                component="code"
+                sx={{
+                  display: "block",
+                  minWidth: 0,
+                  fontFamily: "monospace",
+                  fontSize: { xs: "0.75rem", sm: "0.8125rem" },
+                  color: alpha(theme.palette.text.primary, isDark ? 0.8 : 0.84),
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  bgcolor: "transparent",
+                }}
+              >
+                {analyticsUrl || "—"}
+              </Typography>
+            </Box>
             <IconButton
               size="small"
               onClick={() => copyAnalytics(analyticsUrl)}
               aria-label={t("publicAnalytics.linkInfo.copyAnalyticsUrl")}
               color={copiedAnalytics ? "success" : "default"}
+              disabled={!analyticsUrl}
+              sx={{
+                alignSelf: { xs: "flex-end", sm: "center" },
+                flexShrink: 0,
+                color: copiedAnalytics
+                  ? theme.palette.success.main
+                  : shortUrlColor,
+                border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.35 : 0.4)}`,
+                bgcolor: alpha(
+                  theme.palette.background.paper,
+                  isDark ? 0.5 : 0.86,
+                ),
+                "&:hover": {
+                  bgcolor: alpha(
+                    theme.palette.background.paper,
+                    isDark ? 0.65 : 0.94,
+                  ),
+                },
+              }}
             >
               {copiedAnalytics ? (
                 <Check {...ICON_SM} aria-hidden />
@@ -313,6 +384,16 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             fontWeight: 600,
             borderRadius: `${radiusTokens.md}px`,
             background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            color: ctaTextColor,
+            boxShadow: `0 2px 14px rgba(0,0,0,${isDark ? 0.26 : 0.18})`,
+            transition:
+              "transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease",
+            "&:hover": {
+              boxShadow: `0 4px 20px rgba(0,0,0,${isDark ? 0.34 : 0.24})`,
+              opacity: 0.93,
+              transform: "translateY(-1px)",
+            },
+            "&:active": { transform: "translateY(0)" },
           }}
         >
           {t("publicAnalytics.linkInfo.shortenAnother")}

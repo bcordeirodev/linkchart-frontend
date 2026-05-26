@@ -4,7 +4,6 @@ import { alpha } from "@mui/material/styles";
 import { Check, UserPlus } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { radiusTokens } from "@/lib/theme/designSystem";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import {
   getPublicBlockDescriptionSx,
@@ -69,14 +68,39 @@ export function SignUpCtaCard({
     navigate(ctaHref);
   };
 
-  const featureColor = alpha(theme.palette.text.primary, isDark ? 0.88 : 0.85);
+  const featureColor = isDark
+    ? alpha(theme.palette.common.white, 0.9)
+    : alpha(theme.palette.text.primary, 0.85);
+  const titleColor = isDark
+    ? alpha(theme.palette.common.white, 0.95)
+    : alpha(theme.palette.text.primary, 0.95);
+  const descriptionColor = isDark
+    ? alpha(theme.palette.common.white, 0.74)
+    : alpha(theme.palette.text.primary, 0.68);
+  const iconColor = isDark
+    ? alpha(theme.palette.common.white, 0.95)
+    : theme.palette.primary.main;
   const innerBorder = publicHairline(theme, "inset");
   const chipInset = getPublicInsetSx(theme);
+  const iconShellOverride = isDark
+    ? {
+        color: iconColor,
+        bgcolor: alpha(theme.palette.common.white, 0.08),
+        borderColor: alpha(theme.palette.common.white, 0.24),
+      }
+    : undefined;
 
   const iconNode = headerIcon ? (
-    <Box sx={getPublicBlockIconShellSx(theme)}>{headerIcon}</Box>
+    <Box
+      sx={{
+        ...getPublicBlockIconShellSx(theme),
+        ...(iconShellOverride ?? {}),
+      }}
+    >
+      {headerIcon}
+    </Box>
   ) : (
-    <PublicBlockIcon icon={UserPlus} />
+    <PublicBlockIcon icon={UserPlus} sx={iconShellOverride} />
   );
 
   return (
@@ -121,12 +145,20 @@ export function SignUpCtaCard({
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography
               component="h2"
-              sx={{ ...getPublicBlockTitleSx(theme), mb: 0.5 }}
+              sx={{
+                ...getPublicBlockTitleSx(theme),
+                color: titleColor,
+                mb: 0.5,
+              }}
             >
               {title}
             </Typography>
             <Typography
-              sx={{ ...getPublicBlockDescriptionSx(theme), maxWidth: 520 }}
+              sx={{
+                ...getPublicBlockDescriptionSx(theme),
+                color: descriptionColor,
+                maxWidth: 520,
+              }}
             >
               {description}
             </Typography>
@@ -190,7 +222,7 @@ export function SignUpCtaCard({
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  color: theme.palette.primary.main,
+                  color: iconColor,
                   flexShrink: 0,
                 }}
               >

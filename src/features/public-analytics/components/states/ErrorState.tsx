@@ -3,7 +3,17 @@ import { Home } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import { Container, Alert, Button, Box } from "@mui/material";
+import {
+  Container,
+  Alert,
+  Button,
+  Box,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import { getPublicInsetSx } from "@/lib/theme/publicPageStyles";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
 
 import { PublicLayout } from "@/shared/layout";
 
@@ -24,6 +34,8 @@ export function ErrorState({
   debugInfo,
   onCreateLink,
 }: ErrorStateProps) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("public");
   return (
     <PublicLayout variant="shorter" chrome="minimal">
@@ -33,18 +45,40 @@ export function ErrorState({
       >
         <Alert
           severity="error"
-          sx={{ mb: 4 }}
+          sx={{
+            ...getPublicInsetSx(theme),
+            mb: 4,
+            maxWidth: SHORTER_CONTENT_MAX_WIDTH,
+            mx: "auto",
+            borderColor: alpha(theme.palette.error.main, isDark ? 0.42 : 0.35),
+            bgcolor: alpha(theme.palette.error.main, isDark ? 0.14 : 0.08),
+            color: theme.palette.text.primary,
+            "& .MuiAlert-icon": {
+              color: theme.palette.error.main,
+            },
+          }}
           action={
-            <Button color="inherit" onClick={onCreateLink}>
+            <Button
+              color="inherit"
+              onClick={onCreateLink}
+              sx={{ fontWeight: 600, opacity: 0.9 }}
+            >
               {t("publicAnalytics.createLink")}
             </Button>
           }
         >
           {error}
           {debugInfo ? (
-            <div style={{ marginTop: "10px", fontSize: "12px", opacity: 0.7 }}>
+            <Typography
+              component="div"
+              sx={{
+                mt: 1.25,
+                fontSize: "0.75rem",
+                color: alpha(theme.palette.text.primary, isDark ? 0.72 : 0.75),
+              }}
+            >
               Debug: {debugInfo}
-            </div>
+            </Typography>
           ) : null}
         </Alert>
 
@@ -54,6 +88,11 @@ export function ErrorState({
             startIcon={<Home {...ICON_MD} />}
             onClick={onCreateLink}
             size="large"
+            sx={{
+              fontWeight: 600,
+              boxShadow: "none",
+              "&:hover": { boxShadow: "none", opacity: 0.92 },
+            }}
           >
             {t("publicAnalytics.backToShortener")}
           </Button>

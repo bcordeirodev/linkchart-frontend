@@ -1,6 +1,7 @@
 "use client";
-import { Alert, Box, Container } from "@mui/material";
-import { memo, Suspense } from "react";
+import { Alert, Box, Container, useTheme } from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import { memo, Suspense, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { AdSlot } from "@/shared/components/ads/AdSlot";
@@ -17,6 +18,7 @@ import {
   SHORTER_PAGE_CONTAINER_MAX_WIDTH,
 } from "@/features/shorter/constants";
 import { useShorter } from "@/features/shorter/hooks/useShorter";
+import { getPublicInsetSx } from "@/lib/theme/publicPageStyles";
 import { PublicAnalyticsSections } from "@/features/public-analytics";
 import { PublicLayout } from "@/shared/layout";
 
@@ -33,15 +35,23 @@ const blobKeyframes = `
     40% { transform: translate(-25px,20px) scale(1.04); }
     70% { transform: translate(18px,-15px) scale(0.97); }
   }
+  @keyframes floatC {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(20px,-25px) scale(1.05); }
+  }
 `;
 
 function ShorterPageContent() {
+  const theme = useTheme();
   const searchParams = useSearchParams();
   const analyticsSlug = searchParams.get("slug")?.trim() || null;
+  const previousAnalyticsSlugRef = useRef<string | null>(analyticsSlug);
+  const isDark = theme.palette.mode === "dark";
 
   const {
     isRedirecting,
     error,
+    formKey,
     handleSuccess,
     handleError,
     clearError,
@@ -51,10 +61,31 @@ function ShorterPageContent() {
   const showAnalytics = Boolean(analyticsSlug);
   const showLanding = !showAnalytics;
 
+  useEffect(() => {
+    const previousSlug = previousAnalyticsSlugRef.current;
+    const returnedFromAnalytics = Boolean(previousSlug) && !analyticsSlug;
+
+    if (returnedFromAnalytics) {
+      handleReset();
+    }
+
+    previousAnalyticsSlugRef.current = analyticsSlug;
+  }, [analyticsSlug, handleReset]);
+
   return (
     <PublicLayout variant="shorter" chrome="minimal">
       <style>{blobKeyframes}</style>
       <Box sx={{ position: "relative", minHeight: "100vh" }}>
+        <Box
+          sx={{
+            position: "fixed",
+            inset: 0,
+            pointerEvents: "none",
+            zIndex: 0,
+            background: `radial-gradient(circle at 20% 18%, ${alpha(theme.palette.primary.main, isDark ? 0.16 : 0.1)} 0%, transparent 55%),
+                         radial-gradient(circle at 78% 86%, ${alpha(theme.palette.secondary.main, isDark ? 0.12 : 0.08)} 0%, transparent 52%)`,
+          }}
+        />
         <Box
           sx={{
             position: "fixed",
@@ -65,9 +96,11 @@ function ShorterPageContent() {
             borderRadius: "50%",
             pointerEvents: "none",
             zIndex: 0,
-            background:
-              "radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 60%)",
+            background: `radial-gradient(circle, ${alpha(theme.palette.primary.main, isDark ? 0.18 : 0.13)} 0%, transparent 60%)`,
             animation: "floatA 12s ease-in-out infinite",
+            "@media (prefers-reduced-motion: reduce)": {
+              animation: "none",
+            },
           }}
         />
         <Box
@@ -80,9 +113,28 @@ function ShorterPageContent() {
             borderRadius: "50%",
             pointerEvents: "none",
             zIndex: 0,
-            background:
-              "radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 60%)",
+            background: `radial-gradient(circle, ${alpha(theme.palette.secondary.main, isDark ? 0.14 : 0.1)} 0%, transparent 60%)`,
             animation: "floatB 16s ease-in-out infinite",
+            "@media (prefers-reduced-motion: reduce)": {
+              animation: "none",
+            },
+          }}
+        />
+        <Box
+          sx={{
+            position: "fixed",
+            top: "45%",
+            right: "-4%",
+            width: 300,
+            height: 300,
+            borderRadius: "50%",
+            pointerEvents: "none",
+            zIndex: 0,
+            background: `radial-gradient(circle, ${alpha(theme.palette.success.main, isDark ? 0.12 : 0.08)} 0%, transparent 60%)`,
+            animation: "floatC 20s ease-in-out infinite",
+            "@media (prefers-reduced-motion: reduce)": {
+              animation: "none",
+            },
           }}
         />
 
@@ -112,9 +164,21 @@ function ShorterPageContent() {
                   onClose={clearError}
                   sx={{
                     mb: 2,
+                    ...getPublicInsetSx(theme),
                     maxWidth: SHORTER_CONTENT_MAX_WIDTH,
                     mx: "auto",
-                    borderRadius: 2,
+                    borderColor: alpha(
+                      theme.palette.error.main,
+                      isDark ? 0.42 : 0.35,
+                    ),
+                    bgcolor: alpha(
+                      theme.palette.error.main,
+                      isDark ? 0.14 : 0.08,
+                    ),
+                    color: theme.palette.text.primary,
+                    "& .MuiAlert-icon": {
+                      color: theme.palette.error.main,
+                    },
                   }}
                 >
                   {error}
@@ -122,6 +186,7 @@ function ShorterPageContent() {
               ) : null}
 
               <URLShortenerForm
+                key={formKey}
                 onSuccess={handleSuccess}
                 onError={handleError}
                 loading={isRedirecting}

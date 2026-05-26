@@ -680,7 +680,6 @@ export function TrafficSourceChart({
                             >
                               <Chip
                                 label={
-                                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                   t(
                                     `insights.traffic.contextLabels.${entry.context}` as any,
                                   ) || entry.context
