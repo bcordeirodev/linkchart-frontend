@@ -192,7 +192,7 @@ export function GeographicChart({
                               variant="body2"
                               sx={{ fontWeight: 500 }}
                             >
-                              {country.clicks} clicks
+                              {country.clicks} {t("geographic.chart.clicks")}
                             </Typography>
                             <Typography
                               variant="caption"
@@ -314,7 +314,7 @@ export function GeographicChart({
                           </Typography>
                         </Box>
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {state.clicks} clicks
+                          {state.clicks} {t("geographic.chart.clicks")}
                         </Typography>
                       </Box>
                     ))}
