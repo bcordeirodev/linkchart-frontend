@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import ShorterClientPage from "./ShorterClientPage";
 import {
   buildWebApplicationSchema,
-  buildFaqSchema,
+  buildFaqSchemaPtBR,
 } from "@/lib/seo/structuredData";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
 
 export const metadata: Metadata = {
-  title: "Free URL Shortener with Analytics & Custom Subdomain",
+  title: "Encurtador de Link Gratuito com Analytics em Tempo Real",
   description:
-    "Shorten any URL free — no account needed. Track clicks by country, device and UTM. Free custom subdomain, QR code and custom slug with a free account.",
+    "Encurte qualquer URL gratuitamente, sem cadastro. Rastreie cliques por país, dispositivo e campanha UTM. Subdomínio personalizado, QR Code e slug customizado grátis.",
   alternates: {
     canonical: `${appUrl}/shorter`,
     languages: {
@@ -30,9 +30,10 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Free URL Shortener with Analytics & Custom Subdomain | Link Charts",
+    title:
+      "Encurtador de Link Gratuito com Analytics em Tempo Real | Link Charts",
     description:
-      "Shorten any URL free — no account needed. Track clicks by country, device and UTM. Free custom subdomain, QR code and custom slug with a free account.",
+      "Encurte qualquer URL gratuitamente, sem cadastro. Rastreie cliques por país, dispositivo e campanha UTM. Subdomínio personalizado, QR Code e slug customizado grátis.",
     type: "website",
     url: `${appUrl}/shorter`,
     images: [
@@ -40,22 +41,23 @@ export const metadata: Metadata = {
         url: `${appUrl}/og-default.png`,
         width: 1200,
         height: 630,
-        alt: "Link Charts",
+        alt: "Link Charts — Encurtador de Link com Analytics",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free URL Shortener with Analytics & Custom Subdomain | Link Charts",
+    title:
+      "Encurtador de Link Gratuito com Analytics em Tempo Real | Link Charts",
     description:
-      "Shorten any URL free — no account needed. Track clicks by country, device and UTM. Free custom subdomain, QR code and custom slug with a free account.",
+      "Encurte qualquer URL gratuitamente, sem cadastro. Rastreie cliques por país, dispositivo e campanha UTM. Subdomínio personalizado, QR Code e slug customizado grátis.",
     images: [`${appUrl}/og-default.png`],
   },
 };
 
 export default function ShorterPage() {
   const appSchema = buildWebApplicationSchema();
-  const faqSchema = buildFaqSchema();
+  const faqSchema = buildFaqSchemaPtBR();
   return (
     <>
       <script

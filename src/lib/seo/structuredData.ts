@@ -185,6 +185,118 @@ export function buildFaqSchema() {
   };
 }
 
+/**
+ * FAQPage schema in Brazilian Portuguese for /shorter.
+ *
+ * Questions are sourced from real Google Search queries targeting Brazilian
+ * users searching for URL shorteners and link click counters. Plain text only —
+ * no markdown, no HTML entities.
+ */
+export function buildFaqSchemaPtBR() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Como contar quantas vezes um link foi clicado gratuitamente?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Link Charts mostra o total de cliques de cada link no painel de analytics em tempo real. Acesse o dashboard gratuito para ver o contador de cliques, distribuição geográfica e breakdown por dispositivo — sem nenhum custo.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como encurtar link para o WhatsApp?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Basta colar a URL longa no campo acima e clicar em Encurtar. O link curto gerado funciona diretamente no WhatsApp, Telegram, Instagram e qualquer aplicativo de mensagem, sem precisar criar conta.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Existe encurtador de link gratuito sem cadastro?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. Link Charts permite encurtar links gratuitamente sem criar conta. Para salvar seus links e acessar analytics detalhados, basta criar uma conta gratuita.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Qual a melhor alternativa gratuita ao Bitly?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Link Charts é uma alternativa gratuita ao Bitly com analytics em tempo real, rastreamento geográfico, breakdown por dispositivo, rastreamento de UTM, subdomínio personalizado e QR Code — tudo sem custo.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como criar um contador de cliques para meus links?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Ao encurtar um link no Link Charts, um contador de cliques é criado automaticamente. Você pode acompanhar o total de cliques, origem geográfica e dispositivos em tempo real no dashboard.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como ver de qual país vieram os cliques no meu link?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O analytics de cada link no Link Charts inclui mapa de calor geográfico com detalhamento por país, estado e cidade. Basta acessar a aba Geográfico no dashboard do link.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Posso ter subdomínio personalizado gratuito para meus links?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. Ao criar uma conta gratuita no Link Charts, você pode definir um subdomínio personalizado (por exemplo: seunome.linkcharts.com.br) para todos os seus links encurtados, sem custo adicional.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como rastrear parâmetros UTM em links encurtados?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Link Charts detecta e registra automaticamente os parâmetros UTM (source, medium, campaign, term e content) de cada clique. Os dados aparecem na aba Insights do dashboard em tempo real.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como gerar QR Code grátis para um link?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Cada link encurtado no Link Charts gera automaticamente um QR Code gratuito. Você pode baixá-lo diretamente do dashboard na aba de QR Code.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "O link encurtado funciona no WhatsApp e Instagram?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. Links encurtados com Link Charts funcionam em WhatsApp, Instagram, Telegram e todos os aplicativos de mensagem e redes sociais. O link redireciona para o destino e contabiliza o clique automaticamente.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Por quanto tempo o link encurtado fica ativo?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Links encurtados ficam ativos indefinidamente. Você também pode definir uma data de expiração ou limite de cliques para que o link seja desativado automaticamente quando atingir o critério.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "É possível ver analytics de um link sem fazer login?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. Cada link encurtado tem uma página pública de analytics que pode ser acessada sem login. Basta compartilhar o link de analytics para que qualquer pessoa acompanhe os dados do link.",
+        },
+      },
+    ],
+  };
+}
+
 export function buildOrganizationSchema() {
   return {
     "@context": "https://schema.org",

@@ -69,7 +69,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const cookieStore = await cookies();
-  const initialLang = cookieStore.get("i18nextLng")?.value ?? "en";
+  const initialLang = cookieStore.get("i18nextLng")?.value ?? "pt-BR";
 
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
