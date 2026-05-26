@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Alert,
   Box,
   Card,
   CardContent,
@@ -14,13 +13,13 @@ import { Info } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import {
   elevationLightTokens,
   elevationTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
 import type { FetchDestBreakdown } from "@/types/analytics/audience";
+import { getPhaseDataChipSx } from "./phaseDataChipSx";
 
 interface FetchDestChartProps {
   /** Fetch-dest breakdown data from the audience API. */
@@ -67,18 +66,15 @@ export function FetchDestChart({ fetchDestBreakdown }: FetchDestChartProps) {
       </Typography>
 
       {!phase1_available && (
-        <Alert
-          severity="info"
-          icon={<Info {...ICON_MD} />}
-          sx={{ mb: 2, borderRadius: `${radiusTokens.md}px` }}
-        >
+        <Box sx={{ mb: 2 }}>
           <Chip
+            icon={<Info size={14} />}
             label={t("audience.fetchDest.phaseDisclaimer")}
             size="small"
-            color="info"
-            variant="outlined"
+            variant="filled"
+            sx={getPhaseDataChipSx(theme)}
           />
-        </Alert>
+        </Box>
       )}
 
       <Card

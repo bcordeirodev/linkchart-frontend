@@ -30,6 +30,7 @@ import type {
 } from "@/types/analytics/audience";
 
 import { FetchDestChart } from "./FetchDestChart";
+import { getPhaseDataChipSx } from "./phaseDataChipSx";
 
 /** Entry in the language breakdown array returned by the audience API. */
 interface LanguageEntry {
@@ -206,12 +207,7 @@ export function AudienceExtraCharts({
                     icon={<Info {...ICON_MD} />}
                     sx={phaseDisclaimerSx}
                   >
-                    <Chip
-                      label={t("audience.phaseData.unavailable")}
-                      size="small"
-                      color="info"
-                      variant="outlined"
-                    />
+                    {t("audience.phaseData.unavailable")}
                   </Alert>
                 )}
                 <ApexChartWrapper
@@ -245,12 +241,7 @@ export function AudienceExtraCharts({
                     icon={<Info {...ICON_MD} />}
                     sx={phaseDisclaimerSx}
                   >
-                    <Chip
-                      label={t("audience.phaseData.unavailable")}
-                      size="small"
-                      color="info"
-                      variant="outlined"
-                    />
+                    {t("audience.phaseData.unavailable")}
                   </Alert>
                 )}
                 <ApexChartWrapper
@@ -347,8 +338,8 @@ export function AudienceExtraCharts({
                     <Chip
                       label={t("audience.phaseData.unavailable")}
                       size="small"
-                      color="info"
-                      variant="outlined"
+                      variant="filled"
+                      sx={getPhaseDataChipSx(theme)}
                     />
                   </Box>
                 )}
@@ -378,12 +369,7 @@ export function AudienceExtraCharts({
                     icon={<Info {...ICON_MD} />}
                     sx={phaseDisclaimerSx}
                   >
-                    <Chip
-                      label={t("audience.phaseData.unavailable")}
-                      size="small"
-                      color="info"
-                      variant="outlined"
-                    />
+                    {t("audience.phaseData.unavailable")}
                   </Alert>
                 )}
                 <ApexChartWrapper

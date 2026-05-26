@@ -1,6 +1,5 @@
 "use client";
 import {
-  Alert,
   Box,
   Card,
   CardContent,
@@ -19,6 +18,7 @@ import {
   elevationTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
+import { getPhaseDataChipSx } from "./phaseDataChipSx";
 import type {
   NavigationContextEntry,
   NavigationContextBreakdown,
@@ -80,18 +80,15 @@ export function BehaviorSection({ navigationContext }: BehaviorSectionProps) {
       </Typography>
 
       {!phaseAvailable && (
-        <Alert
-          severity="info"
-          icon={<Info {...ICON_MD} />}
-          sx={{ mb: 2, borderRadius: `${radiusTokens.md}px` }}
-        >
+        <Box sx={{ mb: 2 }}>
           <Chip
+            icon={<Info size={14} />}
             label={t("audience.phaseData.unavailable")}
             size="small"
-            color="info"
-            variant="outlined"
+            variant="filled"
+            sx={getPhaseDataChipSx(theme)}
           />
-        </Alert>
+        </Box>
       )}
 
       <Card

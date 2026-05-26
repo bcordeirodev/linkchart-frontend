@@ -24,6 +24,7 @@ import {
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
 import type { QualityBreakdown } from "@/types/analytics/audience";
+import { getPhaseDataChipSx } from "./phaseDataChipSx";
 
 const TIER_COLORS: Record<string, string> = {
   organic: "#22c55e",
@@ -81,8 +82,8 @@ export function QualitySection({ quality }: QualitySectionProps) {
           <Chip
             label={tStr("audience.phaseData.unavailable")}
             size="small"
-            color="info"
-            variant="outlined"
+            variant="filled"
+            sx={getPhaseDataChipSx(theme)}
           />
         </Alert>
       )}
