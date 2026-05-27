@@ -1,33 +1,12 @@
 "use client";
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  Stack,
-  Typography,
-  Tabs,
-  Tab,
-} from "@mui/material";
-import {
-  Users,
-  Smartphone,
-  Globe,
-  Monitor,
-  Zap,
-  BarChart3,
-  Trophy,
-} from "lucide-react";
+import { Box, Chip, Tab, Tabs, Typography } from "@mui/material";
+import { Globe, Monitor, Smartphone, Zap } from "lucide-react";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Users } from "lucide-react";
 
-import {
-  formatBarChart,
-  formatPieChart,
-} from "@/features/analytics/utils/chartFormatters";
 import { chartByType } from "@/lib/theme/colors";
 import {
   elevationLightTokens,
@@ -35,16 +14,23 @@ import {
   motionTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
-import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
 import type {
-  DeviceData,
   BrowserData,
-  OSData,
+  DeviceData,
   DevicePerformanceData,
   LanguageData,
+  OSData,
 } from "@/types";
 
+import { AudienceBrowsersTab } from "./tabs/AudienceBrowsersTab";
+import { AudienceDevicesTab } from "./tabs/AudienceDevicesTab";
+import { AudienceLanguagesTab } from "./tabs/AudienceLanguagesTab";
+import { AudienceOSTab } from "./tabs/AudienceOSTab";
+import { AudiencePerformanceTab } from "./tabs/AudiencePerformanceTab";
+import { AudienceRenderingEngineTab } from "./tabs/AudienceRenderingEngineTab";
+
+/** Props for the AudienceChart component. */
 interface AudienceChartProps {
   deviceBreakdown: DeviceData[];
   browserBreakdown?: unknown[];
@@ -64,6 +50,13 @@ interface AudienceChartProps {
   }>;
 }
 
+/**
+ * Orchestrates the audience analytics tabs.
+ *
+ * Manages the active tab state and derives chart-ready data from props,
+ * then delegates rendering to focused tab components. No data fetching
+ * occurs here — all data flows in from the parent via props.
+ */
 export function AudienceChart({
   deviceBreakdown,
   browserBreakdown: _browserBreakdown,
@@ -100,22 +93,12 @@ export function AudienceChart({
     borderRadius: `${radiusTokens.md}px`,
     border: `1px solid ${theme.palette.divider}`,
   } as const;
+
   const devicesPalette = chartByType.devices;
   const deviceBarColor = devicesPalette.mobile;
   const performanceBarColor = devicesPalette.tablet;
 
-  const totalDevices = deviceBreakdown.reduce(
-    (sum, device) => sum + device.clicks,
-    0,
-  );
-  const primaryDevice =
-    deviceBreakdown.length > 0
-      ? deviceBreakdown.reduce(
-          (max, device) => (device.clicks > max.clicks ? device : max),
-          deviceBreakdown[0],
-        )
-      : { device: "--", clicks: 0 };
-
+  // Derive chart-ready data from raw props once, at the orchestrator level.
   const deviceChartData = deviceBreakdown.map((device) => ({
     name: device.device,
     value: device.clicks,
@@ -164,6 +147,7 @@ export function AudienceChart({
     languages?.length ||
     renderingEngine?.length;
 
+  /** @param newValue — selected tab index */
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
@@ -252,7 +236,7 @@ export function AudienceChart({
         </Box>
       ) : null}
 
-      {/* Descrição dinâmica por sub-tab */}
+      {/* Dynamic description per active tab */}
       {hasEnhancedData && (
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           {
@@ -270,554 +254,71 @@ export function AudienceChart({
 
       {/* Tab 0: Devices */}
       {(!hasEnhancedData || activeTab === 0) && (
-        <>
-          <Grid container spacing={2} sx={{ mb: 3 }}>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card sx={cardSx}>
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Typography
-                    variant="h4"
-                    color="primary"
-                    gutterBottom
-                    sx={{ fontWeight: 600 }}
-                  >
-                    {totalDevices}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("audience.chart.stats.detected")}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card sx={cardSx}>
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Typography
-                    variant="h4"
-                    color="secondary"
-                    gutterBottom
-                    sx={{ fontWeight: 600 }}
-                  >
-                    {primaryDevice?.device || "N/A"}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("audience.chart.stats.primary")}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card sx={cardSx}>
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Typography
-                    variant="h4"
-                    color="info"
-                    gutterBottom
-                    sx={{ fontWeight: 600 }}
-                  >
-                    {deviceBreakdown.length}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("audience.chart.stats.types")}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card sx={cardSx}>
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Typography
-                    variant="h4"
-                    color="success"
-                    gutterBottom
-                    sx={{ fontWeight: 600 }}
-                  >
-                    {primaryDevice
-                      ? ((primaryDevice.clicks / totalClicks) * 100).toFixed(1)
-                      : "0"}
-                    %
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("audience.chart.stats.dominance")}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Card sx={cardSx}>
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{
-                      position: "relative",
-                      zIndex: 1,
-                      mt: 1,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <Smartphone {...ICON_MD} />{" "}
-                    {t("audience.chart.deviceDistribution")}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 1 }}
-                  >
-                    {t("audience.chart.deviceDistributionDesc")}
-                  </Typography>
-                  <ApexChartWrapper
-                    type="pie"
-                    size="standard"
-                    {...formatPieChart(
-                      deviceChartData,
-                      "name",
-                      "value",
-                      isDark,
-                    )}
-                  />
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Card sx={cardSx}>
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{
-                      position: "relative",
-                      zIndex: 1,
-                      mt: 1,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <Trophy {...ICON_MD} /> {t("audience.chart.deviceRanking")}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 1 }}
-                  >
-                    {t("audience.chart.deviceRankingDesc")}
-                  </Typography>
-                  <ApexChartWrapper
-                    type="bar"
-                    size="standard"
-                    {...formatBarChart(
-                      deviceChartData,
-                      "name",
-                      "value",
-                      deviceBarColor,
-                      true,
-                      isDark,
-                    )}
-                  />
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-
-          <Card sx={{ ...cardSx, mt: 3 }}>
-            <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  position: "relative",
-                  zIndex: 1,
-                  mt: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <BarChart3 {...ICON_MD} /> {t("audience.chart.deviceDetails")}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                {t("audience.chart.deviceDetailsDesc")}
-              </Typography>
-
-              <Stack spacing={2}>
-                {deviceBreakdown.map((device, index) => (
-                  <Box
-                    key={device.device}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      p: 2,
-                      ...itemRowSx,
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Chip
-                        label={index + 1}
-                        color={index === 0 ? "primary" : "default"}
-                        size="small"
-                      />
-                      <Box>
-                        <Typography
-                          variant="subtitle2"
-                          sx={{ fontWeight: 600 }}
-                        >
-                          {device.device}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {((device.clicks / totalClicks) * 100).toFixed(1)}%{" "}
-                          {t("audience.chart.ofTotal")}
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <Box sx={{ textAlign: "right" }}>
-                      <Typography
-                        variant="h6"
-                        color="primary"
-                        sx={{ fontWeight: 600 }}
-                      >
-                        {device.clicks}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {t("audience.chart.clicks")}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
-        </>
+        <AudienceDevicesTab
+          deviceChartData={deviceChartData}
+          deviceBreakdown={deviceBreakdown}
+          totalClicks={totalClicks}
+          isDark={isDark}
+          cardSx={cardSx}
+          itemRowSx={itemRowSx}
+          deviceBarColor={deviceBarColor}
+        />
       )}
 
       {/* Tab 1: Browsers */}
       {hasEnhancedData && activeTab === 1 && browsers ? (
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <Card elevation={0} sx={outlinedCardSx}>
-              <CardContent>
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
-                  <Globe size={16} strokeWidth={1.5} />
-                  {t("audience.chart.browserMarketShare")}
-                </Typography>
-                <ApexChartWrapper
-                  type="pie"
-                  {...formatPieChart(browserChartData, "name", "value", isDark)}
-                  size="standard"
-                />
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {t("audience.chart.topBrowsers")}
-                </Typography>
-                <Stack spacing={2}>
-                  {browsers.slice(0, 5).map((browser) => (
-                    <Box
-                      key={`${browser.browser}-${browser.version}`}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        p: 1,
-                        ...itemRowSx,
-                      }}
-                    >
-                      <Box>
-                        <Typography variant="subtitle2">
-                          {browser.browser}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {browser.version}
-                        </Typography>
-                      </Box>
-                      <Box sx={{ textAlign: "right" }}>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                          {browser.clicks}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {browser.percentage?.toFixed(1)}%
-                        </Typography>
-                      </Box>
-                    </Box>
-                  ))}
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+        <AudienceBrowsersTab
+          browserChartData={browserChartData}
+          browsers={browsers}
+          isDark={isDark}
+          outlinedCardSx={outlinedCardSx}
+          itemRowSx={itemRowSx}
+        />
       ) : null}
 
       {/* Tab 2: Operating Systems */}
       {hasEnhancedData && activeTab === 2 && operatingSystems ? (
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <Card elevation={0} sx={outlinedCardSx}>
-              <CardContent>
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
-                  <Monitor {...ICON_MD} /> {t("audience.chart.osDistribution")}
-                </Typography>
-                <ApexChartWrapper
-                  type="donut"
-                  {...formatPieChart(osChartData, "name", "value", isDark)}
-                  size="standard"
-                />
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {t("audience.chart.topOS")}
-                </Typography>
-                <Stack spacing={2}>
-                  {operatingSystems.slice(0, 5).map((os) => (
-                    <Box
-                      key={`${os.os}-${os.version}`}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        p: 1,
-                        ...itemRowSx,
-                      }}
-                    >
-                      <Box>
-                        <Typography variant="subtitle2">{os.os}</Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {os.version}
-                        </Typography>
-                      </Box>
-                      <Box sx={{ textAlign: "right" }}>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                          {os.clicks}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {os.percentage?.toFixed(1)}%
-                        </Typography>
-                      </Box>
-                    </Box>
-                  ))}
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+        <AudienceOSTab
+          osChartData={osChartData}
+          operatingSystems={operatingSystems}
+          isDark={isDark}
+          outlinedCardSx={outlinedCardSx}
+          itemRowSx={itemRowSx}
+        />
       ) : null}
 
       {/* Tab 3: Device Performance */}
       {hasEnhancedData && activeTab === 3 && devicePerformance ? (
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Card elevation={0} sx={outlinedCardSx}>
-              <CardContent>
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
-                  <Zap {...ICON_MD} /> {t("audience.chart.devicePerformance")}
-                </Typography>
-                <ApexChartWrapper
-                  type="bar"
-                  {...formatBarChart(
-                    performanceChartData,
-                    "name",
-                    "value",
-                    performanceBarColor,
-                    false,
-                    isDark,
-                  )}
-                  size="standard"
-                />
-
-                <Box sx={{ mt: 3 }}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    {t("audience.chart.performanceDetails")}
-                  </Typography>
-                  <Stack spacing={1}>
-                    {devicePerformance.map((perf) => (
-                      <Box
-                        key={perf.device}
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          p: 1,
-                          ...itemRowSx,
-                        }}
-                      >
-                        <Typography variant="body2">{perf.device}</Typography>
-                        <Box sx={{ textAlign: "right" }}>
-                          <Typography variant="caption">
-                            {t("audience.chart.performanceAvg")}{" "}
-                            {perf.avg_response_time}ms |{" "}
-                            {t("audience.chart.performanceMin")}{" "}
-                            {perf.min_response_time}ms |{" "}
-                            {t("audience.chart.performanceMax")}{" "}
-                            {perf.max_response_time}ms
-                          </Typography>
-                        </Box>
-                      </Box>
-                    ))}
-                  </Stack>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+        <AudiencePerformanceTab
+          performanceChartData={performanceChartData}
+          devicePerformance={devicePerformance}
+          isDark={isDark}
+          outlinedCardSx={outlinedCardSx}
+          itemRowSx={itemRowSx}
+          performanceBarColor={performanceBarColor}
+        />
       ) : null}
 
       {/* Tab 4: Languages */}
       {hasEnhancedData && activeTab === 4 && languages ? (
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <Card elevation={0} sx={outlinedCardSx}>
-              <CardContent>
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
-                  <Globe {...ICON_MD} />{" "}
-                  {t("audience.chart.languageDistribution")}
-                </Typography>
-                <ApexChartWrapper
-                  type="pie"
-                  {...formatPieChart(
-                    languageChartData,
-                    "name",
-                    "value",
-                    isDark,
-                  )}
-                  size="standard"
-                />
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {t("audience.chart.topLanguages")}
-                </Typography>
-                <Stack spacing={2}>
-                  {languages.slice(0, 5).map((language) => (
-                    <Box
-                      key={language.language}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        p: 1,
-                        ...itemRowSx,
-                      }}
-                    >
-                      <Box>
-                        <Typography variant="subtitle2">
-                          {language.language}
-                        </Typography>
-                      </Box>
-                      <Box sx={{ textAlign: "right" }}>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                          {language.clicks}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {language.percentage.toFixed(1)}%
-                        </Typography>
-                      </Box>
-                    </Box>
-                  ))}
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+        <AudienceLanguagesTab
+          languageChartData={languageChartData}
+          languages={languages}
+          isDark={isDark}
+          outlinedCardSx={outlinedCardSx}
+          itemRowSx={itemRowSx}
+        />
       ) : null}
 
       {/* Tab 5: Rendering Engine */}
       {hasEnhancedData && activeTab === 5 && renderingEngine ? (
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <Card elevation={0} sx={outlinedCardSx}>
-              <CardContent>
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
-                  <Monitor {...ICON_MD} />{" "}
-                  {t("audience.chart.renderingEngineDistribution")}
-                </Typography>
-                <ApexChartWrapper
-                  type="donut"
-                  {...formatPieChart(
-                    renderingEngineChartData,
-                    "name",
-                    "value",
-                    isDark,
-                  )}
-                  size="standard"
-                />
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {t("audience.chart.topEngines")}
-                </Typography>
-                <Stack spacing={2}>
-                  {renderingEngine.slice(0, 5).map((engine) => (
-                    <Box
-                      key={engine.engine}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        p: 1,
-                        ...itemRowSx,
-                      }}
-                    >
-                      <Box>
-                        <Typography variant="subtitle2">
-                          {engine.engine}
-                        </Typography>
-                      </Box>
-                      <Box sx={{ textAlign: "right" }}>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                          {engine.clicks}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {engine.percentage.toFixed(1)}%
-                        </Typography>
-                      </Box>
-                    </Box>
-                  ))}
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+        <AudienceRenderingEngineTab
+          renderingEngineChartData={renderingEngineChartData}
+          renderingEngine={renderingEngine}
+          isDark={isDark}
+          outlinedCardSx={outlinedCardSx}
+          itemRowSx={itemRowSx}
+        />
       ) : null}
     </Box>
   );
