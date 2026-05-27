@@ -143,6 +143,7 @@ export function useTemporalData({
     },
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
+    refetchIntervalInBackground: false,
     enabled: !!linkId,
   });
 

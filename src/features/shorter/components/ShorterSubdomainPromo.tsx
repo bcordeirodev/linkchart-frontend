@@ -36,11 +36,12 @@ export function ShorterSubdomainPromo() {
     theme.palette.text.primary,
     isDark ? 0.95 : 0.92,
   );
+  const blockIconColor = alpha(theme.palette.common.white, isDark ? 0.96 : 0.94);
 
   return (
     <Box
       sx={{
-        ...getPublicInsetSx(theme, { primaryTint: true }),
+        ...getPublicInsetSx(theme),
         mt: 2.5,
         maxWidth: SHORTER_CONTENT_MAX_WIDTH,
         mx: "auto",
@@ -50,6 +51,25 @@ export function ShorterSubdomainPromo() {
         flexDirection: { xs: "column", sm: "row" },
         alignItems: { xs: "flex-start", sm: "center" },
         gap: { xs: 1.5, sm: 2.5 },
+        borderColor: alpha(theme.palette.divider, isDark ? 0.3 : 0.28),
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "1px",
+          background: `linear-gradient(90deg, transparent 0%, ${alpha(theme.palette.primary.main, isDark ? 0.22 : 0.16)} 50%, transparent 100%)`,
+        },
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background: `radial-gradient(circle at 84% 18%, ${alpha(theme.palette.secondary.main, isDark ? 0.05 : 0.03)} 0%, transparent 42%)`,
+        },
+        position: "relative",
+        overflow: "hidden",
       }}
     >
       <Box
@@ -61,7 +81,7 @@ export function ShorterSubdomainPromo() {
           gap: 1.25,
         }}
       >
-        <PublicBlockIcon icon={Globe} />
+        <PublicBlockIcon icon={Globe} sx={{ color: blockIconColor }} />
         <Box sx={{ minWidth: 0 }}>
           <Typography
             component="h2"
@@ -110,8 +130,7 @@ export function ShorterSubdomainPromo() {
           sx={{
             m: 0,
             minWidth: 0,
-            fontFamily:
-              "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+            fontFamily: "monospace",
             fontSize: { xs: "0.8125rem", sm: "0.875rem" },
             letterSpacing: "-0.01em",
             lineHeight: 1.45,

@@ -9,7 +9,6 @@ import {
   getPublicBlockDescriptionSx,
   getPublicBlockIconShellSx,
   getPublicBlockTitleSx,
-  getPublicFormShellSx,
   getPublicInsetSx,
   publicHairline,
 } from "@/lib/theme/publicPageStyles";
@@ -80,15 +79,10 @@ export function SignUpCtaCard({
   const iconColor = isDark
     ? alpha(theme.palette.common.white, 0.95)
     : theme.palette.primary.main;
+  const headerIconColor = alpha(theme.palette.common.white, isDark ? 0.96 : 0.94);
   const innerBorder = publicHairline(theme, "inset");
   const chipInset = getPublicInsetSx(theme);
-  const iconShellOverride = isDark
-    ? {
-        color: iconColor,
-        bgcolor: alpha(theme.palette.common.white, 0.08),
-        borderColor: alpha(theme.palette.common.white, 0.24),
-      }
-    : undefined;
+  const iconShellOverride = { color: headerIconColor };
 
   const iconNode = headerIcon ? (
     <Box
@@ -108,14 +102,11 @@ export function SignUpCtaCard({
       id={id}
       sx={{
         position: "relative",
-        ...getPublicFormShellSx(theme),
+        ...getPublicInsetSx(theme),
         p: { xs: "20px", md: "22px 26px" },
         overflow: "hidden",
-        ...(isDark && {
-          bgcolor: alpha(theme.palette.primary.main, 0.11),
-          borderColor: alpha(theme.palette.primary.main, 0.42),
-          boxShadow: `0 8px 28px ${alpha(theme.palette.primary.main, 0.2)}`,
-        }),
+        boxShadow: "none",
+        borderColor: alpha(theme.palette.divider, isDark ? 0.3 : 0.28),
         "&::before": {
           content: '""',
           position: "absolute",
@@ -123,14 +114,14 @@ export function SignUpCtaCard({
           left: 0,
           right: 0,
           height: "1px",
-          background: `linear-gradient(90deg, transparent 0%, ${alpha(theme.palette.primary.main, 0.6)} 50%, transparent 100%)`,
+          background: `linear-gradient(90deg, transparent 0%, ${alpha(theme.palette.primary.main, isDark ? 0.22 : 0.16)} 50%, transparent 100%)`,
         },
         "&::after": {
           content: '""',
           position: "absolute",
           inset: 0,
           pointerEvents: "none",
-          background: `radial-gradient(circle at 85% 18%, ${alpha(theme.palette.secondary.main, isDark ? 0.18 : 0.08)} 0%, transparent 42%)`,
+          background: `radial-gradient(circle at 84% 18%, ${alpha(theme.palette.secondary.main, isDark ? 0.05 : 0.03)} 0%, transparent 42%)`,
         },
       }}
     >

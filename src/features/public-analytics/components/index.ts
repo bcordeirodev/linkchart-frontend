@@ -1,6 +1,5 @@
 // Info
 export { LinkHeroCard } from "./info/LinkHeroCard";
-export { AnalyticsInfo } from "./info/AnalyticsInfo";
 export { PublicCtaBlock } from "./info/PublicCtaBlock";
 
 // Metrics
