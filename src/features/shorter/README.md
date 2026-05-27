@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Página pública (`/shorter`) que permite a qualquer visitante encurtar uma URL sem auth. Formulário simples + estados de carregando / sucesso / erro. Inclui CTA para upgrade para conta autenticada.
+Página pública (`/shorter`) que oferece seções informativas e educativas — stats, hero, subdomain promo, how-it-works e FAQ. A lógica de encurtamento está consolidada no servidor (backend) com suporte a rate limiting.
 
 ## Domínio espelhado no backend
 
@@ -11,13 +11,11 @@ Página pública (`/shorter`) que permite a qualquer visitante encurtar uma URL 
 
 ## Componentes principais
 
-- `components/ShorterForm.tsx` — formulário principal (URL + opções básicas).
-- `components/ShorterHero.tsx` — bloco de destaque acima do formulário.
-- `components/ShorterStats.tsx` — estatísticas (ex: total de URLs encurtadas).
-- `components/ShorterSuccessState.tsx` — exibe URL curta + ações (copiar / share / abrir analytics públicos).
-- `components/RedirectingState.tsx` — bloco transitório durante a navegação para a página de analytics.
-- `components/ErrorAlert.tsx` — bloco de erro estruturado.
-- `components/UpgradeCTA.tsx` — CTA de signup pós-encurtamento.
+- `components/ShorterStats.tsx` — hardcoded stat counters section.
+- `components/ShorterHero.tsx` — page headline, idle/success states.
+- `components/ShorterSubdomainPromo.tsx` — branded subdomain URL preview.
+- `components/ShorterHowItWorks.tsx` — 3-step explainer section.
+- `components/ShorterFaq.tsx` — accordion FAQ.
 
 ## Hooks de dados
 

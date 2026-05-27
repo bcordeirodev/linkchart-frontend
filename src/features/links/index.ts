@@ -29,5 +29,4 @@ export * from "./hooks/useShortUrl";
 
 // Types
 export * from "./types/link";
-export * from "./types/shorter";
 export * from "./types/analytics";
