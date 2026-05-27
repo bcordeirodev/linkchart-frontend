@@ -87,6 +87,10 @@
       "invalidUrl": "Insira uma URL válida.",
       "generic": "Não foi possível encurtar o link. Tente novamente."
     },
+    "errors": {
+      "invalidUrl": "URL inválida",
+      "shortenFailed": "Erro ao encurtar a URL. Tente novamente."
+    },
     "faq": {
       "sectionTitle": "Perguntas Frequentes",
       "items": [
