@@ -14,10 +14,10 @@ export function ShorterStats() {
   const inView = useInView(containerRef, { once: true, margin: "-80px" });
 
   const stats = [
-    { value: "1.000+", label: t("shorter.stats.linksCreated") },
-    { value: "10.000+", label: t("shorter.stats.clicksTracked") },
+    { value: "8.000+", label: t("shorter.stats.linksCreated") },
+    { value: "80.000+", label: t("shorter.stats.clicksTracked") },
     { value: "<100ms", label: t("shorter.stats.responseTime") },
-    { value: "99.8%", label: t("shorter.stats.uptime") },
+    { value: "99.9%", label: t("shorter.stats.uptime") },
   ];
 
   const dividerColor = alpha(theme.palette.divider, 0.6);
