@@ -2,6 +2,7 @@
 import { useCallback, useState } from "react";
 
 import { publicLinkService } from "@/services/link-public.service";
+import { i18n } from "@/lib/i18n";
 
 import type { PublicLinkResponse } from "@/services/link-public.service";
 
@@ -47,7 +48,11 @@ export function usePublicURLShortener(): UsePublicURLShortenerReturn {
 
         // Validar URL
         if (!publicLinkService.validateUrl(formattedUrl)) {
-          throw new Error("URL inválida");
+          const msg = (i18n.t as (key: string, opts: object) => string)(
+            "shorter.errors.invalidUrl",
+            { ns: "public" },
+          );
+          throw new Error(msg);
         }
 
         // Criar link público usando o endpoint correto
@@ -62,7 +67,10 @@ export function usePublicURLShortener(): UsePublicURLShortenerReturn {
         const errorMessage =
           err instanceof Error
             ? err.message
-            : "Erro ao encurtar a URL. Tente novamente.";
+            : (i18n.t as (key: string, opts: object) => string)(
+                "shorter.errors.shortenFailed",
+                { ns: "public" },
+              );
         setError(errorMessage);
         throw err;
       } finally {

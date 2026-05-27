@@ -1,6 +1,7 @@
 "use client";
 
 import { Alert, Stack, Button } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 
 import { EditLinkForm, LinkActions } from "@/features/links";
@@ -22,6 +23,8 @@ interface Props {
 
 function LinkEditPage({ id }: Props) {
   const navigate = useNavigate();
+  const { t } = useTranslation("links");
+  const { t: tCommon } = useTranslation("common");
   const { data: link, isLoading: linkHeaderLoading } = useLinkById(id);
 
   const handleDeleteSuccess = () => {
@@ -45,12 +48,13 @@ function LinkEditPage({ id }: Props) {
                   startIcon={<AppIcon intent="back" size={16} />}
                   onClick={() => navigate(-1)}
                 >
-                  Voltar
+                  {tCommon("actions.back")}
                 </Button>
               }
             >
-              <strong>ID do link não fornecido</strong>
-              <br />O ID do link não foi fornecido na URL ou é inválido.
+              <strong>{t("errors.missingLinkId")}</strong>
+              <br />
+              {t("errors.missingLinkIdDetail")}
             </Alert>
           </Stack>
         </ResponsiveContainer>

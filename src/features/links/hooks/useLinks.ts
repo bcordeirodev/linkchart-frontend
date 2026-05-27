@@ -7,6 +7,7 @@ import { showMessage } from "@/lib/store/messageSlice";
 import { queryKeys } from "@/lib/query/keys";
 import { API_CONFIG } from "@/lib/api/endpoints";
 import { linkService } from "@/services";
+import { i18n } from "@/lib/i18n";
 
 import type {
   LinkCreateRequest,
@@ -68,9 +69,11 @@ export function useCreateLink() {
       queryClient.invalidateQueries({ queryKey: queryKeys.links.all() });
     },
     onError: () => {
-      dispatch(
-        showMessage({ message: "Erro ao criar link", variant: "error" }),
+      const msg = (i18n.t as (key: string, opts: object) => string)(
+        "errors.createLink",
+        { ns: "links" },
       );
+      dispatch(showMessage({ message: msg, variant: "error" }));
     },
   });
 }
@@ -101,9 +104,11 @@ export function useUpdateLink() {
       queryClient.invalidateQueries({ queryKey: queryKeys.links.all() });
     },
     onError: () => {
-      dispatch(
-        showMessage({ message: "Erro ao atualizar link", variant: "error" }),
+      const msg = (i18n.t as (key: string, opts: object) => string)(
+        "errors.updateLink",
+        { ns: "links" },
       );
+      dispatch(showMessage({ message: msg, variant: "error" }));
     },
   });
 }
@@ -127,9 +132,11 @@ export function useDeleteLink() {
       queryClient.invalidateQueries({ queryKey: queryKeys.links.all() });
     },
     onError: () => {
-      dispatch(
-        showMessage({ message: "Erro ao remover link", variant: "error" }),
+      const msg = (i18n.t as (key: string, opts: object) => string)(
+        "errors.deleteLink",
+        { ns: "links" },
       );
+      dispatch(showMessage({ message: msg, variant: "error" }));
     },
   });
 }
@@ -156,9 +163,11 @@ export function useLinkById(id: string) {
     throwOnError: false,
     meta: {
       onError: () => {
-        dispatch(
-          showMessage({ message: "Erro ao buscar link", variant: "error" }),
+        const msg = (i18n.t as (key: string, opts: object) => string)(
+          "errors.fetchLink",
+          { ns: "links" },
         );
+        dispatch(showMessage({ message: msg, variant: "error" }));
       },
     },
   });
