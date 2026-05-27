@@ -79,7 +79,10 @@ export function SignUpCtaCard({
   const iconColor = isDark
     ? alpha(theme.palette.common.white, 0.95)
     : theme.palette.primary.main;
-  const headerIconColor = alpha(theme.palette.common.white, isDark ? 0.96 : 0.94);
+  const headerIconColor = alpha(
+    theme.palette.common.white,
+    isDark ? 0.96 : 0.94,
+  );
   const innerBorder = publicHairline(theme, "inset");
   const chipInset = getPublicInsetSx(theme);
   const iconShellOverride = { color: headerIconColor };
