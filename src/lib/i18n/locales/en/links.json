@@ -282,5 +282,17 @@
     "active": "Active",
     "inactive": "Inactive",
     "createdAt": "Created"
+  },
+  "errors": {
+    "loadLink": "Failed to load link information",
+    "createLink": "Failed to create link",
+    "updateLink": "Failed to update link",
+    "deleteLink": "Failed to delete link",
+    "fetchLink": "Failed to fetch link",
+    "linkNotFound": "Link not found",
+    "missingLinkId": "Link ID not provided",
+    "missingLinkIdDetail": "The link ID was not provided in the URL or is invalid.",
+    "unexpectedUpdate": "Unexpected error updating link",
+    "shareApiUnavailable": "Web Share API is not available"
   }
 }

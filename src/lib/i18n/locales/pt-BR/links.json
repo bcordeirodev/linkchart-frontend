@@ -282,5 +282,17 @@
     "active": "Ativo",
     "inactive": "Inativo",
     "createdAt": "Criado em"
+  },
+  "errors": {
+    "loadLink": "Erro ao carregar informações do link",
+    "createLink": "Erro ao criar link",
+    "updateLink": "Erro ao atualizar link",
+    "deleteLink": "Erro ao remover link",
+    "fetchLink": "Erro ao buscar link",
+    "linkNotFound": "Link não encontrado",
+    "missingLinkId": "ID do link não fornecido",
+    "missingLinkIdDetail": "O ID do link não foi fornecido na URL ou é inválido.",
+    "unexpectedUpdate": "Erro inesperado ao atualizar link",
+    "shareApiUnavailable": "Web Share API não está disponível"
   }
 }

@@ -87,6 +87,10 @@
       "invalidUrl": "Please enter a valid URL.",
       "generic": "Could not shorten the link. Please try again."
     },
+    "errors": {
+      "invalidUrl": "Invalid URL",
+      "shortenFailed": "Failed to shorten the URL. Please try again."
+    },
     "faq": {
       "sectionTitle": "Frequently Asked Questions",
       "items": [
