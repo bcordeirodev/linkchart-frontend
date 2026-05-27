@@ -37,8 +37,6 @@ export function useLinkAnalyticsOptimized(
   const [analyticsData, setAnalyticsData] = useState<LinkAnalyticsData | null>(
     null,
   );
-  const [_analyticsLoading, _setAnalyticsLoading] = useState(false);
-  const [_analyticsError, _setAnalyticsError] = useState<string | null>(null);
 
   // Busca dados específicos do link
   const fetchLinkInfo = useCallback(async () => {
@@ -74,8 +72,8 @@ export function useLinkAnalyticsOptimized(
         // Dados detalhados são carregados pelos hooks individuais
         overview: {
           total_clicks: linkInfo.clicks || 0,
-          unique_visitors: Math.floor((linkInfo.clicks || 0) * 0.8), // Estimativa
-          avg_daily_clicks: Math.floor((linkInfo.clicks || 0) / 30),
+          unique_visitors: 0, // real value loaded by useDashboardData
+          avg_daily_clicks: 0, // real value loaded by useDashboardData
           conversion_rate: 0,
           countries_reached: 0,
           bounce_rate: 0,
