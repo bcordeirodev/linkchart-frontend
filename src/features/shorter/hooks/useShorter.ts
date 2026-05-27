@@ -10,7 +10,7 @@ import type { PublicLinkResponse } from "@/services/link-public.service";
 /**
  * Drives the public `/shorter` page state machine: success/error/reset/auth nav.
  *
- * @returns `{ isRedirecting, result, error, formKey, handleSuccess, handleError, clearError, handleReset, handleSignUp, handleLogin }`
+ * @returns `{ isRedirecting, error, formKey, handleSuccess, handleError, clearError, handleReset, handleSignUp, handleLogin }`
  *
  * @remarks
  * No direct network calls — receives the `PublicLinkResponse` from `usePublicURLShortener` via `handleSuccess`.
@@ -30,7 +30,6 @@ export function useShorter() {
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation("public");
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [result, setResult] = useState<PublicLinkResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [formKey, setFormKey] = useState(0);
   const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -47,7 +46,6 @@ export function useShorter() {
         setError(t("shorter.errors.invalidSlug"));
         return;
       }
-      setResult(res);
       setIsRedirecting(true);
 
       void publicLinkService.copyToClipboard(res.short_url);
@@ -91,19 +89,22 @@ export function useShorter() {
       navTimerRef.current = null;
     }
     setIsRedirecting(false);
-    setResult(null);
     setError(null);
     // Increment formKey so URLShortenerForm is force-remounted, clearing all
     // internal useForm fields, slug suggestion state, and safety-check hooks.
     setFormKey((k) => k + 1);
   }, []);
 
-  const handleSignUp = useCallback(() => navigate("/auth/login"), [navigate]);
-  const handleLogin = useCallback(() => navigate("/sign-in"), [navigate]);
+  /** Navigates to Auth0 signup screen. */
+  const handleSignUp = useCallback(
+    () => navigate("/auth/login?screen_hint=signup"),
+    [navigate],
+  );
+  /** Navigates to Auth0 login screen. */
+  const handleLogin = useCallback(() => navigate("/auth/login"), [navigate]);
 
   return {
     isRedirecting,
-    result,
     error,
     formKey,
     handleSuccess,
