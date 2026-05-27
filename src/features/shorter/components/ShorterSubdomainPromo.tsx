@@ -36,7 +36,10 @@ export function ShorterSubdomainPromo() {
     theme.palette.text.primary,
     isDark ? 0.95 : 0.92,
   );
-  const blockIconColor = alpha(theme.palette.common.white, isDark ? 0.96 : 0.94);
+  const blockIconColor = alpha(
+    theme.palette.common.white,
+    isDark ? 0.96 : 0.94,
+  );
 
   return (
     <Box
