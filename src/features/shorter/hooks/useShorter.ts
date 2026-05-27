@@ -3,6 +3,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "@/shared/hooks";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { publicLinkService } from "@/services/link-public.service";
+import { useTranslation } from "react-i18next";
 
 import type { PublicLinkResponse } from "@/services/link-public.service";
 
@@ -27,6 +28,7 @@ import type { PublicLinkResponse } from "@/services/link-public.service";
 export function useShorter() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { t } = useTranslation("public");
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [result, setResult] = useState<PublicLinkResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +44,7 @@ export function useShorter() {
   const handleSuccess = useCallback(
     (res: PublicLinkResponse) => {
       if (!res?.slug) {
-        setError("Erro: Link criado mas sem slug válido");
+        setError(t("shorter.errors.invalidSlug"));
         return;
       }
       setResult(res);
@@ -73,7 +75,7 @@ export function useShorter() {
         }
       }, 150);
     },
-    [navigate, isAuthenticated],
+    [navigate, isAuthenticated, t],
   );
 
   const handleError = useCallback((errorMessage: string) => {

@@ -89,7 +89,8 @@
     },
     "errors": {
       "invalidUrl": "Invalid URL",
-      "shortenFailed": "Failed to shorten the URL. Please try again."
+      "shortenFailed": "Failed to shorten the URL. Please try again.",
+      "invalidSlug": "Error: link created but slug is invalid"
     },
     "faq": {
       "sectionTitle": "Frequently Asked Questions",

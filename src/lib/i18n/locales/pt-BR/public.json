@@ -89,7 +89,8 @@
     },
     "errors": {
       "invalidUrl": "URL inválida",
-      "shortenFailed": "Erro ao encurtar a URL. Tente novamente."
+      "shortenFailed": "Erro ao encurtar a URL. Tente novamente.",
+      "invalidSlug": "Erro: link criado mas sem slug válido"
     },
     "faq": {
       "sectionTitle": "Perguntas Frequentes",
