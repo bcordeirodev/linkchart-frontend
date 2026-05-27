@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { i18n } from "@/lib/i18n";
 import { queryKeys } from "@/lib/query/keys";
+import { API_CONFIG } from "@/lib/api/endpoints";
 import { linkService } from "@/services";
 
 import type { LinkAnalyticsData } from "../types/analytics";
@@ -44,6 +45,7 @@ export function useLinkAnalyticsOptimized(
   } = useQuery({
     queryKey: queryKeys.links.detail(linkId),
     queryFn: () => linkService.findOne(linkId),
+    staleTime: API_CONFIG.CACHE.LINKS_TTL,
     enabled: !!linkId,
   });
 
@@ -80,7 +82,7 @@ export function useLinkAnalyticsOptimized(
 
   return {
     data: analyticsData,
-    linkInfo: linkInfo ?? null,
+    linkInfo,
     loading: isLoading,
     error: error
       ? (i18n.t as (key: string, opts: object) => string)("errors.loadLink", {
