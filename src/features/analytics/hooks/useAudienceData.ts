@@ -87,6 +87,7 @@ export function useAudienceData({
     },
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
+    refetchIntervalInBackground: false,
     enabled: !!linkId,
     // Keeps the previous dataset visible while a filter-change fetch is in flight so
     // AnalyticsStateManager never enters its loading state between filter changes.
