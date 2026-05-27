@@ -21,6 +21,7 @@ import { useShorter } from "@/features/shorter/hooks/useShorter";
 import { getPublicInsetSx } from "@/lib/theme/publicPageStyles";
 import { PublicAnalyticsSections } from "@/features/public-analytics";
 import { PublicLayout } from "@/shared/layout";
+import { ShorterSkeleton } from "@/shared/ui/feedback/skeletons/ShorterSkeleton";
 
 import { BenefitBadges } from "./BenefitBadges";
 
@@ -252,7 +253,7 @@ function ShorterPageContent() {
 
 function ShorterPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<ShorterSkeleton />}>
       <ShorterPageContent />
     </Suspense>
   );
