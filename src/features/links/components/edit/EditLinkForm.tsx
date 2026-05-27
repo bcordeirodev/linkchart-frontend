@@ -37,6 +37,7 @@ export function EditLinkForm({
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { t } = useTranslation("links");
+  const { t: tCommon } = useTranslation("common");
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(true);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -127,13 +128,11 @@ export function EditLinkForm({
           reset(formValues);
           setOwnedSlug(formValues.custom_slug?.trim() || null);
         } else {
-          throw new Error("Link não encontrado");
+          throw new Error(t("errors.linkNotFound"));
         }
       } catch (error: unknown) {
         setApiError(
-          error instanceof Error
-            ? error.message
-            : "Erro ao carregar dados do link",
+          error instanceof Error ? error.message : t("errors.loadLink"),
         );
         setLoadFailed(true);
       } finally {
@@ -144,7 +143,7 @@ export function EditLinkForm({
     if (linkId) {
       fetchLinkData();
     }
-  }, [linkId, reset]);
+  }, [linkId, reset, t]);
 
   const convertDateForSubmit = (
     dateValue: Dayjs | null | undefined,
@@ -210,7 +209,7 @@ export function EditLinkForm({
         const errorMessage =
           (error && typeof error === "object" && "message" in error
             ? (error.message as string)
-            : null) || "Erro inesperado ao atualizar link";
+            : null) || t("errors.unexpectedUpdate");
         setApiError(errorMessage);
 
         dispatch(showErrorMessage(errorMessage));
@@ -243,7 +242,7 @@ export function EditLinkForm({
           severity="error"
           action={
             <Button size="small" onClick={handleCancel}>
-              {t("actions.back")}
+              {tCommon("actions.back")}
             </Button>
           }
         >

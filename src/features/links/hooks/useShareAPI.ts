@@ -2,6 +2,7 @@
 import { useCallback } from "react";
 
 import { useClipboard } from "@/shared/hooks";
+import { i18n } from "@/lib/i18n";
 
 interface ShareData {
   title?: string;
@@ -34,7 +35,11 @@ export function useShareAPI(): UseShareAPIReturn {
   const share = useCallback(
     async (data: ShareData) => {
       if (!canShare) {
-        throw new Error("Web Share API não está disponível");
+        const msg = (i18n.t as (key: string, opts: object) => string)(
+          "errors.shareApiUnavailable",
+          { ns: "links" },
+        );
+        throw new Error(msg);
       }
 
       try {
