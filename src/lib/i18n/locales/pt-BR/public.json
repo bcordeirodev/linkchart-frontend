@@ -24,7 +24,6 @@
     "stats": {
       "linksCreated": "Links criados",
       "clicksTracked": "Cliques rastreados",
-      "countries": "Países alcançados",
       "responseTime": "Tempo de Resposta",
       "uptime": "Uptime Garantido",
       "sectionTitle": "Números que Impressionam"
@@ -82,10 +81,6 @@
       "previewLabel": "Exemplo",
       "exampleLabel": "sua-marca",
       "exampleSlug": "promo"
-    },
-    "error": {
-      "invalidUrl": "Insira uma URL válida.",
-      "generic": "Não foi possível encurtar o link. Tente novamente."
     },
     "errors": {
       "invalidUrl": "URL inválida",

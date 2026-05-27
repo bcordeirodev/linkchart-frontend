@@ -24,7 +24,6 @@
     "stats": {
       "linksCreated": "Links created",
       "clicksTracked": "Clicks tracked",
-      "countries": "Countries reached",
       "responseTime": "Response Time",
       "uptime": "Uptime Guaranteed",
       "sectionTitle": "Numbers That Impress"
@@ -82,10 +81,6 @@
       "previewLabel": "Example",
       "exampleLabel": "your-brand",
       "exampleSlug": "promo"
-    },
-    "error": {
-      "invalidUrl": "Please enter a valid URL.",
-      "generic": "Could not shorten the link. Please try again."
     },
     "errors": {
       "invalidUrl": "Invalid URL",
