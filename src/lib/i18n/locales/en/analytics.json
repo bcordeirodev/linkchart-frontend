@@ -540,7 +540,8 @@
       "returnVisitors": "Return Visitors",
       "returnVisitorsSubtitle": "return to the link",
       "avgSession": "Avg per Session",
-      "avgSessionSubtitle": "clicks per session"
+      "avgSessionSubtitle": "clicks per session",
+      "insufficientData": "Insufficient data yet"
     },
     "insights": {
       "title": "Audience Insights",

@@ -92,7 +92,10 @@ export function AudienceMetrics({
           : "--",
       icon: <Repeat {...ICON_LG} />,
       color: "success" as const,
-      subtitle: t("audience.metrics.returnVisitorsSubtitle"),
+      subtitle:
+        data?.audience?.return_visitor_stats != null
+          ? t("audience.metrics.returnVisitorsSubtitle")
+          : t("audience.metrics.insufficientData"),
     },
     {
       id: "avg_session",
@@ -104,7 +107,10 @@ export function AudienceMetrics({
           : "--",
       icon: <Clock {...ICON_LG} />,
       color: "info" as const,
-      subtitle: t("audience.metrics.avgSessionSubtitle"),
+      subtitle:
+        data?.audience?.return_visitor_stats != null
+          ? t("audience.metrics.avgSessionSubtitle")
+          : t("audience.metrics.insufficientData"),
     },
   ];
 
