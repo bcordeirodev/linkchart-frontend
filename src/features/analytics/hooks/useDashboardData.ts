@@ -223,7 +223,10 @@ function mapResponseToDashboardData(response: ApiResponse): DashboardData {
  *   used as `lastUpdate` so the value reflects the actual API response time
  *   rather than the current wall-clock time at render.
  */
-function calculateStats(data: DashboardData, fetchedAt: number): DashboardStats {
+function calculateStats(
+  data: DashboardData,
+  fetchedAt: number,
+): DashboardStats {
   const totalClicks = data.summary.total_clicks || 0;
 
   let dataQuality: "excellent" | "good" | "fair" | "poor";

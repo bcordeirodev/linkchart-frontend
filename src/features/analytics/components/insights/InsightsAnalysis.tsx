@@ -52,36 +52,15 @@ interface InsightsAnalysisProps {
 }
 
 /**
- * 💡 INSIGHTS ANALYSIS - COMPONENTE INTEGRADO
+ * Main Insights tab component.
  *
- * @description
- * Componente principal do módulo de insights que usa o hook dedicado
- * useInsightsData para buscar e gerenciar insights de negócio.
+ * Fetches insight data via {@link useInsightsData}, applies client-side
+ * post-filters (priority / categories / actionableOnly), and derives
+ * {@link filteredStats} so the metric cards always reflect the current
+ * filter state rather than the unfiltered total.
  *
  * Renders an optional {@link InsightsFilterBar} when all three change
- * callbacks are provided.  The `actionableOnly` flag is applied as an
- * in-memory post-filter after the hook runs.
- *
- * @features
- * - Hook específico useInsightsData
- * - Filtros interativos por categoria e prioridade
- * - Métricas de confiança e impacto
- * - Insights acionáveis destacados
- * - Estatísticas em tempo real
- *
- * @usage
- * ```tsx
- * // Insights globais com filtros
- * <InsightsAnalysis
- *   maxInsights={10}
- * />
- *
- * // Insights de link específico
- * <InsightsAnalysis
- *   linkId="123"
- *   enableRealtime={false}
- * />
- * ```
+ * callbacks are provided.
  */
 export function InsightsAnalysis({
   linkId,
@@ -106,11 +85,13 @@ export function InsightsAnalysis({
     dateTo,
     excludeBots,
     minConfidence: 0.5,
+    // Categories filter is applied client-side via filteredInsights below.
+    // Passing [] here ensures normaliseResponse never double-filters.
     categories: [],
     refreshInterval: 300000,
   });
 
-  /** Client-side post-filter applied on top of the hook's confidence/category filters. */
+  /** Client-side post-filter applied on top of the hook's results. */
   const filteredInsights = useMemo(() => {
     let list = data?.insights ?? [];
     if (priority !== "all") {
@@ -123,12 +104,37 @@ export function InsightsAnalysis({
       list = list.filter((i) => i.actionable);
     }
     return list;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.insights, priority, insightCategories.join(","), actionableOnly]);
+
+  /**
+   * Stats derived from the filtered list so metric cards reflect what is
+   * actually shown — not the unfiltered total when a filter is active.
+   */
+  const filteredStats = useMemo(() => {
+    if (!stats) return null;
+    const isFiltered =
+      priority !== "all" || insightCategories.length > 0 || actionableOnly;
+    if (!isFiltered) return stats;
+    const high = filteredInsights.filter((i) => i.priority === "high").length;
+    const actionable = filteredInsights.filter((i) => i.actionable).length;
+    const avgConf =
+      filteredInsights.length > 0
+        ? filteredInsights.reduce((s, i) => s + (i.confidence ?? 0.5), 0) /
+          filteredInsights.length
+        : 0;
+    return {
+      ...stats,
+      totalInsights: filteredInsights.length,
+      highPriorityCount: high,
+      actionableCount: actionable,
+      avgConfidence: Math.round(avgConf * 100) / 100,
+    };
   }, [
-    data?.insights,
+    filteredInsights,
     priority,
-    JSON.stringify(insightCategories),
+    insightCategories.join(","),
     actionableOnly,
+    stats,
   ]);
 
   /** Whether to render the filter bar — requires all three callbacks to be present. */
@@ -148,7 +154,6 @@ export function InsightsAnalysis({
         minHeight={300}
       >
         <Box>
-          {/* FILTROS */}
           {showFilterBar ? (
             <InsightsFilterBar
               priority={priority}
@@ -160,13 +165,13 @@ export function InsightsAnalysis({
             />
           ) : null}
 
-          {/* MÉTRICAS */}
+          {/* KPI cards — use filteredStats so they match the visible list */}
           <Box sx={{ mb: 3 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
                   title={t("insights.metrics.total")}
-                  value={stats?.totalInsights?.toString() || "0"}
+                  value={filteredStats?.totalInsights?.toString() || "0"}
                   icon={<Lightbulb {...ICON_LG} />}
                   color="primary"
                   subtitle={t("insights.metrics.totalSub")}
@@ -175,7 +180,7 @@ export function InsightsAnalysis({
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
                   title={t("insights.metrics.highPriority")}
-                  value={stats?.highPriorityCount?.toString() || "0"}
+                  value={filteredStats?.highPriorityCount?.toString() || "0"}
                   icon={<Flag {...ICON_LG} />}
                   color="error"
                   subtitle={t("insights.metrics.highPrioritySub")}
@@ -184,7 +189,7 @@ export function InsightsAnalysis({
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
                   title={t("insights.metrics.actionable")}
-                  value={stats?.actionableCount?.toString() || "0"}
+                  value={filteredStats?.actionableCount?.toString() || "0"}
                   icon={<TrendingUp {...ICON_LG} />}
                   color="success"
                   subtitle={t("insights.metrics.actionableSub")}
@@ -193,7 +198,7 @@ export function InsightsAnalysis({
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
                   title={t("insights.metrics.avgConfidence")}
-                  value={`${Math.round((stats?.avgConfidence || 0) * 100)}%`}
+                  value={`${Math.round((filteredStats?.avgConfidence || 0) * 100)}%`}
                   icon={<BarChart3 {...ICON_LG} />}
                   color="info"
                   subtitle={t("insights.metrics.confidenceSub")}
@@ -202,7 +207,7 @@ export function InsightsAnalysis({
             </Grid>
           </Box>
 
-          {/* 1. Insights acionáveis — primeiro porque é o que o usuário deve agir */}
+          {/* Actionable insights list */}
           <Box sx={{ mb: 4 }}>
             <Typography
               variant="h6"
@@ -219,13 +224,13 @@ export function InsightsAnalysis({
             />
           </Box>
 
-          {/* 2. Gráficos analíticos — ordem por importância estratégica */}
+          {/* Analytics blocks — 2×2 grid to reduce scroll */}
           {data?.analytics_data ? (
             <Box sx={{ mb: 4 }}>
               <Grid container spacing={3}>
-                {/* Fontes de Tráfego: de onde vêm os visitantes? (mais estratégico) */}
+                {/* Row 1: Traffic Sources (wider) + Traffic Quality */}
                 {data.analytics_data.traffic_sources ? (
-                  <Grid item xs={12}>
+                  <Grid item xs={12} lg={7}>
                     <TrafficSourceChart
                       data={data.analytics_data.traffic_sources}
                       loading={loading}
@@ -234,16 +239,15 @@ export function InsightsAnalysis({
                   </Grid>
                 ) : null}
 
-                {/* Qualidade do Tráfego: o tráfego é legítimo? (diagnóstico crítico) */}
                 {data.analytics_data.quality ? (
-                  <Grid item xs={12}>
+                  <Grid item xs={12} lg={5}>
                     <TrafficQualityChart data={data.analytics_data.quality} />
                   </Grid>
                 ) : null}
 
-                {/* Retenção: visitantes voltam? (fidelização) */}
+                {/* Row 2: Retention + Session Depth */}
                 {data.analytics_data.retention ? (
-                  <Grid item xs={12}>
+                  <Grid item xs={12} md={6}>
                     <RetentionAnalysisChart
                       data={data.analytics_data.retention}
                       loading={loading}
@@ -252,9 +256,8 @@ export function InsightsAnalysis({
                   </Grid>
                 ) : null}
 
-                {/* Profundidade de Sessão: o quanto os visitantes se engajam? (mais granular) */}
                 {data.analytics_data.session_depth ? (
-                  <Grid item xs={12}>
+                  <Grid item xs={12} md={6}>
                     <SessionDepthChart
                       data={data.analytics_data.session_depth}
                       loading={loading}
@@ -266,8 +269,7 @@ export function InsightsAnalysis({
             </Box>
           ) : null}
 
-          {/* Informações adicionais */}
-          {stats ? (
+          {filteredStats ? (
             <Box
               sx={{
                 mt: 3,
@@ -280,13 +282,13 @@ export function InsightsAnalysis({
             >
               <Typography variant="caption" color="text.secondary">
                 {t("insights.footer.topCategory", {
-                  category: stats.topCategory,
+                  category: filteredStats.topCategory,
                 })}{" "}
                 • {t("insights.footer.lastGenerated")}{" "}
-                {new Date(stats.lastGenerated).toLocaleString()} •{" "}
+                {new Date(filteredStats.lastGenerated).toLocaleString()} •{" "}
                 {t("insights.footer.showing", {
                   shown: filteredInsights.length,
-                  total: data?.insights?.length ?? stats.totalInsights,
+                  total: data?.insights?.length ?? stats?.totalInsights,
                 })}
                 {isRealtime ? ` • ${t("insights.footer.autoUpdate")}` : null}
               </Typography>
