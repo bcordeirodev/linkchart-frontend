@@ -32,7 +32,7 @@ export function TemporalTimelineTab({
   const { t } = useTranslation("analytics");
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={2}>
       {hasDailyTimeline && advancedData?.daily_timeline ? (
         <DailyTimelineChart data={advancedData.daily_timeline} />
       ) : null}
