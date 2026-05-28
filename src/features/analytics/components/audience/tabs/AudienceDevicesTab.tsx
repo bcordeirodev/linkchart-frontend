@@ -37,10 +37,10 @@ export interface AudienceDevicesTabProps {
   totalClicks: number;
   /** Whether the theme is in dark mode. */
   isDark: boolean;
-  /** Card sx object for elevated cards. */
-  cardSx: Record<string, unknown>;
   /** Row item sx for list rows. */
   itemRowSx: Record<string, unknown>;
+  /** Outlined card sx (no shadow). */
+  outlinedCardSx: Record<string, unknown>;
   /** Bar color for device chart. */
   deviceBarColor: string;
 }
@@ -56,103 +56,17 @@ export function AudienceDevicesTab({
   deviceBreakdown,
   totalClicks,
   isDark,
-  cardSx,
   itemRowSx,
+  outlinedCardSx,
   deviceBarColor,
 }: AudienceDevicesTabProps) {
   const { t } = useTranslation("analytics");
 
-  const totalDevices = deviceBreakdown.reduce(
-    (sum, device) => sum + device.clicks,
-    0,
-  );
-  const primaryDevice =
-    deviceBreakdown.length > 0
-      ? deviceBreakdown.reduce(
-          (max, device) => (device.clicks > max.clicks ? device : max),
-          deviceBreakdown[0],
-        )
-      : { device: "--", clicks: 0 };
-
   return (
     <>
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={cardSx}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Typography
-                variant="h4"
-                color="primary"
-                gutterBottom
-                sx={{ fontWeight: 600 }}
-              >
-                {totalDevices}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t("audience.chart.stats.detected")}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={cardSx}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Typography
-                variant="h4"
-                color="secondary"
-                gutterBottom
-                sx={{ fontWeight: 600 }}
-              >
-                {primaryDevice?.device || "N/A"}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t("audience.chart.stats.primary")}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={cardSx}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Typography
-                variant="h4"
-                color="info"
-                gutterBottom
-                sx={{ fontWeight: 600 }}
-              >
-                {deviceBreakdown.length}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t("audience.chart.stats.types")}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={cardSx}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Typography
-                variant="h4"
-                color="success"
-                gutterBottom
-                sx={{ fontWeight: 600 }}
-              >
-                {primaryDevice
-                  ? ((primaryDevice.clicks / totalClicks) * 100).toFixed(1)
-                  : "0"}
-                %
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t("audience.chart.stats.dominance")}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <Card sx={cardSx}>
+          <Card elevation={0} sx={outlinedCardSx}>
             <CardContent>
               <Typography
                 variant="h6"
@@ -182,7 +96,7 @@ export function AudienceDevicesTab({
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <Card sx={cardSx}>
+          <Card elevation={0} sx={outlinedCardSx}>
             <CardContent>
               <Typography
                 variant="h6"
@@ -218,7 +132,7 @@ export function AudienceDevicesTab({
         </Grid>
       </Grid>
 
-      <Card sx={{ ...cardSx, mt: 3 }}>
+      <Card elevation={0} sx={{ ...outlinedCardSx, mt: 3 }}>
         <CardContent>
           <Typography
             variant="h6"

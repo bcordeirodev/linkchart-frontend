@@ -84,7 +84,7 @@ export function AudienceChart({
   const activeTab = activeTabProp !== undefined ? activeTabProp : localTab;
 
   const elevation = isDark ? elevationTokens : elevationLightTokens;
-  const cardSx = {
+  const _cardSx = {
     borderRadius: `${radiusTokens.lg}px`,
     border: `1px solid ${theme.palette.divider}`,
     boxShadow: elevation.xs,
@@ -246,8 +246,8 @@ export function AudienceChart({
           deviceBreakdown={deviceBreakdown}
           totalClicks={totalClicks}
           isDark={isDark}
-          cardSx={cardSx}
           itemRowSx={itemRowSx}
+          outlinedCardSx={outlinedCardSx}
           deviceBarColor={deviceBarColor}
         />
       )}
