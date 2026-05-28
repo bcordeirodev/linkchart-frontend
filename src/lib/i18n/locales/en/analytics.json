@@ -251,7 +251,9 @@
       "clicksThisDay": "{{total}} total clicks on this day of the week",
       "schedulePostsFor": "• Schedule posts and campaigns for {{day}} at {{hour}}",
       "peakHourRepresents": "• {{total}} clicks at peak hour represent {{percent}}% of daily activity",
-      "focusOnContent": "• Focus on {{period}} content to maximize engagement"
+      "focusOnContent": "• Focus on {{period}} content to maximize engagement",
+      "showRecommendations": "Show recommendations",
+      "hideRecommendations": "Hide recommendations"
     },
     "insights": {
       "title": "Temporal Insights",
