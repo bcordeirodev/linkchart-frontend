@@ -226,6 +226,8 @@ export function LinkAnalyticsTabsOptimized({
           dateFrom={filters.dateFrom}
           dateTo={filters.dateTo}
           excludeBots={filters.excludeBots}
+          subTabIndex={filters.audienceSubTab}
+          onSubTabChange={filters.setAudienceSubTab}
         />,
       )}
 
