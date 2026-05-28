@@ -560,7 +560,10 @@
       "mostPopularDevice": "Most popular device: {{device}} with {{clicks}} clicks",
       "platformDiversity": "Platform diversity: {{level}}",
       "diversityHigh": "High",
-      "diversityLow": "Low"
+      "diversityLow": "Low",
+      "limitedConnection": "Limited Connection",
+      "limitedConnectionChip": "{{percent}}% on limited connection",
+      "limitedConnectionDetail": "{{clicks}} of {{total}} clicks"
     },
     "chart": {
       "title": "Audience Analysis",

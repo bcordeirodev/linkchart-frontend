@@ -560,7 +560,10 @@
       "mostPopularDevice": "Dispositivo mais popular: {{device}} com {{clicks}} cliques",
       "platformDiversity": "Diversidade de plataformas: {{level}}",
       "diversityHigh": "Alta",
-      "diversityLow": "Baixa"
+      "diversityLow": "Baixa",
+      "limitedConnection": "Conexão Limitada",
+      "limitedConnectionChip": "{{percent}}% em conexão limitada",
+      "limitedConnectionDetail": "{{clicks}} de {{total}} cliques"
     },
     "chart": {
       "title": "Análise de Audiência",
