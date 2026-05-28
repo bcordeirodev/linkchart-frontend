@@ -540,7 +540,8 @@
       "returnVisitors": "Visitantes Recorrentes",
       "returnVisitorsSubtitle": "retornam ao link",
       "avgSession": "Média por Sessão",
-      "avgSessionSubtitle": "cliques por sessão"
+      "avgSessionSubtitle": "cliques por sessão",
+      "insufficientData": "Dados insuficientes ainda"
     },
     "insights": {
       "title": "Insights de Audiência",
