@@ -667,7 +667,9 @@
       "platformDescription": "Operating platform detected via Client Hints (Phase 1: Sec-CH-UA-Platform).",
       "connectionType": "Connection Type",
       "connectionTypeDescription": "ISP connection type classified from network data (Phase 2).",
-      "others": "Others"
+      "others": "Others",
+      "showTechnical": "Show technical data",
+      "hideTechnical": "Hide technical data"
     }
   },
   "performance": {
