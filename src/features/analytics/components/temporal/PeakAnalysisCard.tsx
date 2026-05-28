@@ -190,7 +190,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                         {t("temporal.peak.highestImpactHour")}
                       </Typography>
                       <Typography
-                        variant="h4"
+                        variant="h5"
                         sx={{ mb: 0.5, fontWeight: 600 }}
                       >
                         {formatHour(peak_hour)}
@@ -239,7 +239,7 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                         {t("temporal.peak.highestEngagementDay")}
                       </Typography>
                       <Typography
-                        variant="h4"
+                        variant="h5"
                         sx={{ mb: 0.5, fontWeight: 600 }}
                       >
                         {peak_day_name ?? "--"}
