@@ -7,12 +7,11 @@
  * Unifica a lógica de dashboard e charts em um único componente coeso.
  */
 
-import { useMemo } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import React, { useMemo } from "react";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Circle } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { TFunction } from "i18next";
 
 import { useDashboardData } from "@/features/analytics/hooks/useDashboardData";
 import { LinkMetrics } from "@/features/links/components/LinkMetrics";
@@ -82,6 +81,184 @@ interface ChartData {
   socialIab?: NonNullable<DashboardData["summary"]>["social_iab"];
 }
 
+/** Props accepted by the {@link ChartsSection} component. */
+interface ChartsSectionProps {
+  /** Pre-mapped chart data to render. */
+  chartData: ChartData;
+  /** Optional fixed height for each chart in pixels. */
+  height?: number;
+}
+
+/**
+ * ChartsSection — renders individual chart `Grid item` children for the dashboard.
+ *
+ * Returns a React fragment of `Grid item` elements that slot directly into the
+ * parent `Grid container` in {@link LinkDashboard}. Does NOT wrap in its own
+ * `Grid container` to avoid double-nesting.
+ *
+ * Chart order: UTM → Social → Hourly → DayOfWeek → Device → Countries.
+ * Adaptive layout: single items in a pair use `md=12` instead of `md=6`.
+ */
+const ChartsSection = React.memo(function ChartsSection({
+  chartData,
+  height,
+}: ChartsSectionProps) {
+  const { t } = useTranslation("analytics");
+  const theme = useTheme();
+  const animations = useMemo(() => createPresetAnimations(theme), [theme]);
+
+  const hasHourly = !!(chartData.temporal?.clicks_by_hour?.length);
+  const hasWeekly = !!(chartData.temporal?.clicks_by_day_of_week?.length);
+  const hasTemporal = hasHourly || hasWeekly;
+  const hasGeographic = !!chartData.geographic?.top_countries?.length;
+  const hasDevice = !!chartData.audience?.device_breakdown?.length;
+  const hasUtm = !!(chartData.utmTopSources && chartData.utmTopSources.length > 0);
+  const hasSocial = !!(
+    chartData.socialIab &&
+    (chartData.socialIab.total > 0 || !chartData.socialIab.navigation_context_available)
+  );
+
+  if (!hasTemporal && !hasGeographic && !hasDevice && !hasUtm && !hasSocial) {
+    return (
+      <Grid item xs={12}>
+        <EmptyState
+          variant="charts"
+          height={400}
+          title={t("dashboard.charts.noData")}
+          description={t("dashboard.charts.noDataDesc")}
+        />
+      </Grid>
+    );
+  }
+
+  return (
+    <>
+      {/* ── Canais de Aquisição ─────────────────────────────────────────── */}
+      {(hasUtm || hasSocial) && (
+        <Grid item xs={12}>
+          <Divider textAlign="left" sx={{ mt: 1 }}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 700, letterSpacing: "0.1em" }}
+            >
+              {t("sections.acquisition")}
+            </Typography>
+          </Divider>
+        </Grid>
+      )}
+
+      {hasUtm ? (
+        <Grid
+          item
+          xs={12}
+          md={hasUtm && hasSocial ? 6 : 12}
+          sx={{ display: "flex", ...animations.fadeIn }}
+        >
+          <UtmSourceCard data={chartData.utmTopSources!} />
+        </Grid>
+      ) : null}
+
+      {hasSocial ? (
+        <Grid
+          item
+          xs={12}
+          md={hasUtm && hasSocial ? 6 : 12}
+          sx={{ display: "flex", ...animations.fadeIn }}
+        >
+          <SocialAppCard data={chartData.socialIab!} />
+        </Grid>
+      ) : null}
+
+      {/* ── Padrões Temporais ───────────────────────────────────────────── */}
+      {hasTemporal && (
+        <Grid item xs={12}>
+          <Divider textAlign="left" sx={{ mt: 1 }}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 700, letterSpacing: "0.1em" }}
+            >
+              {t("sections.temporal")}
+            </Typography>
+          </Divider>
+        </Grid>
+      )}
+
+      {hasHourly ? (
+        <Grid
+          item
+          xs={12}
+          md={hasHourly && hasWeekly ? 6 : 12}
+          sx={animations.fadeIn}
+        >
+          <HourlyClicksChart
+            data={chartData.temporal!.clicks_by_hour}
+            height={height}
+          />
+        </Grid>
+      ) : null}
+
+      {hasWeekly ? (
+        <Grid
+          item
+          xs={12}
+          md={hasHourly && hasWeekly ? 6 : 12}
+          sx={animations.fadeIn}
+        >
+          <DayOfWeekChart
+            data={chartData.temporal!.clicks_by_day_of_week}
+            height={height}
+          />
+        </Grid>
+      ) : null}
+
+      {/* ── Audiência ───────────────────────────────────────────────────── */}
+      {(hasDevice || hasGeographic) && (
+        <Grid item xs={12}>
+          <Divider textAlign="left" sx={{ mt: 1 }}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 700, letterSpacing: "0.1em" }}
+            >
+              {t("sections.audience")}
+            </Typography>
+          </Divider>
+        </Grid>
+      )}
+
+      {hasDevice ? (
+        <Grid
+          item
+          xs={12}
+          md={hasDevice && hasGeographic ? 6 : 12}
+          sx={animations.fadeIn}
+        >
+          <DeviceBreakdownChart
+            data={chartData.audience!.device_breakdown}
+            height={height}
+          />
+        </Grid>
+      ) : null}
+
+      {hasGeographic ? (
+        <Grid
+          item
+          xs={12}
+          md={hasDevice && hasGeographic ? 6 : 12}
+          sx={animations.fadeIn}
+        >
+          <TopCountriesChart
+            data={chartData.geographic!.top_countries}
+            height={height}
+          />
+        </Grid>
+      ) : null}
+    </>
+  );
+});
+
 /**
  * LinkDashboard — full unified dashboard for an individual link.
  *
@@ -102,9 +279,6 @@ export function LinkDashboard({
 }: LinkDashboardProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
-
-  // Memoize to avoid creating a new animations object on every render
-  const animations = useMemo(() => createPresetAnimations(theme), [theme]);
 
   const { data, stats, loading, error, refresh, isRealtime } = useDashboardData(
     {
@@ -162,7 +336,7 @@ export function LinkDashboard({
       loading={loading}
       error={error}
       hasData={!!data}
-      skeleton={compact ? undefined : <AnalyticsTabSkeleton metricCards={4} />}
+      skeleton={compact ? undefined : <AnalyticsTabSkeleton metricCards={6} />}
       onRetry={refresh}
       loadingMessage={t("dashboard.loading")}
       emptyMessage={t("dashboard.empty")}
@@ -201,11 +375,9 @@ export function LinkDashboard({
             </Grid>
           )}
 
-          {/* Gráficos - Renderização Direta */}
+          {/* Gráficos — ChartsSection contributes Grid items directly */}
           {!compact && showCharts && chartData ? (
-            <Grid item xs={12}>
-              {renderCharts(data!, chartData, chartsHeight, animations, t)}
-            </Grid>
+            <ChartsSection chartData={chartData} height={chartsHeight} />
           ) : null}
         </Grid>
 
@@ -243,103 +415,6 @@ export function LinkDashboard({
         ) : null}
       </Box>
     </AnalyticsStateManager>
-  );
-}
-
-/**
- * Renders the chart grid section for the dashboard using pre-mapped `chartData`.
- *
- * Accepts the pre-computed `ChartData` object (memoized in the parent) so that
- * this helper never triggers redundant array transformations on each call.
- *
- * @param data - Full dashboard data payload (used for UTM / social fields).
- * @param chartData - Pre-mapped chart data derived from `data` via `useMemo`.
- * @param height - Optional fixed height for each chart.
- * @param animations - MUI animation preset object.
- * @param t - i18next translation function scoped to the `"analytics"` namespace.
- * @returns A `<Grid>` of charts or an {@link EmptyState} when there is no data.
- */
-function renderCharts(
-  data: DashboardData,
-  chartData: ChartData,
-  height: number | undefined,
-  animations: ReturnType<typeof createPresetAnimations>,
-  t: TFunction<"analytics">,
-) {
-  const hasTemporal = !!(
-    chartData.temporal?.clicks_by_hour?.length ||
-    chartData.temporal?.clicks_by_day_of_week?.length
-  );
-  const hasGeographic = !!chartData.geographic?.top_countries?.length;
-  const hasDevice = !!chartData.audience?.device_breakdown?.length;
-
-  if (!hasTemporal && !hasGeographic && !hasDevice) {
-    return (
-      <EmptyState
-        variant="charts"
-        height={400}
-        title={t("dashboard.charts.noData")}
-        description={t("dashboard.charts.noDataDesc")}
-      />
-    );
-  }
-
-  return (
-    <Grid container spacing={3} sx={{ ...animations.fadeIn }}>
-      {/* Gráficos Temporais */}
-      {hasTemporal && chartData.temporal ? (
-        <>
-          {chartData.temporal.clicks_by_hour?.length > 0 ? (
-            <Grid item xs={12} md={6}>
-              <HourlyClicksChart
-                data={chartData.temporal.clicks_by_hour}
-                height={height}
-              />
-            </Grid>
-          ) : null}
-          {chartData.temporal.clicks_by_day_of_week?.length > 0 ? (
-            <Grid item xs={12} md={6}>
-              <DayOfWeekChart
-                data={chartData.temporal.clicks_by_day_of_week}
-                height={height}
-              />
-            </Grid>
-          ) : null}
-        </>
-      ) : null}
-
-      {/* Gráficos de Dispositivos e Países */}
-      {hasDevice && chartData.audience?.device_breakdown ? (
-        <Grid item xs={12} md={6}>
-          <DeviceBreakdownChart
-            data={chartData.audience.device_breakdown}
-            height={height}
-          />
-        </Grid>
-      ) : null}
-      {hasGeographic && chartData.geographic?.top_countries ? (
-        <Grid item xs={12} md={6}>
-          <TopCountriesChart
-            data={chartData.geographic.top_countries}
-            height={height}
-          />
-        </Grid>
-      ) : null}
-
-      {/* Campanhas UTM e Tráfego via App Social */}
-      {chartData.utmTopSources && chartData.utmTopSources.length > 0 ? (
-        <Grid item xs={12} md={6} sx={{ display: "flex" }}>
-          <UtmSourceCard data={chartData.utmTopSources} />
-        </Grid>
-      ) : null}
-      {chartData.socialIab &&
-      (chartData.socialIab.total > 0 ||
-        !chartData.socialIab.navigation_context_available) ? (
-        <Grid item xs={12} md={6} sx={{ display: "flex" }}>
-          <SocialAppCard data={chartData.socialIab} />
-        </Grid>
-      ) : null}
-    </Grid>
   );
 }
 

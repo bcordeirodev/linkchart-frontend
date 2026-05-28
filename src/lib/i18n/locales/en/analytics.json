@@ -995,5 +995,10 @@
     "title": "Quality",
     "description": "Traffic distribution by quality level: organic, suspicious, and likely fraud.",
     "subtitle": "{{suspicious}} suspicious · {{fraud}} fraud"
+  },
+  "sections": {
+    "acquisition": "Acquisition Channels",
+    "temporal": "Traffic Patterns",
+    "audience": "Audience"
   }
 }
