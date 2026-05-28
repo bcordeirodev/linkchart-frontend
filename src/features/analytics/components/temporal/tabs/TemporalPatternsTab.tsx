@@ -127,7 +127,7 @@ export function TemporalPatternsTab({
         <Box>
           <Grid container spacing={3}>
             {hourlyTotal > 0 ? (
-              <Grid item xs={12} lg={6} sx={{ minWidth: 0 }}>
+              <Grid item xs={12} md={6} sx={{ minWidth: 0 }}>
                 <ChartCard
                   title={t("temporal.chart.periodSummary")}
                   subtitle={t("charts.descriptions.periodSummary")}
@@ -168,7 +168,7 @@ export function TemporalPatternsTab({
             ) : null}
 
             {weeklyTotal > 0 ? (
-              <Grid item xs={12} lg={6} sx={{ minWidth: 0 }}>
+              <Grid item xs={12} md={6} sx={{ minWidth: 0 }}>
                 <ChartCard
                   title={t("temporal.chart.daysByEngagement")}
                   subtitle={t("charts.descriptions.dayOfWeek")}
