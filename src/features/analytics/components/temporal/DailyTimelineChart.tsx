@@ -183,7 +183,7 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12} md={6}>
           <ChartCard
             title={t("temporal.timeline.clicksTitle")}
             subtitle={t("temporal.timeline.clicksSubtitle", {
@@ -200,7 +200,7 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
             />
           </ChartCard>
         </Grid>
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12} md={6}>
           <ChartCard
             title={t("temporal.timeline.uniqueTitle")}
             subtitle={t("temporal.timeline.uniqueSubtitle")}
