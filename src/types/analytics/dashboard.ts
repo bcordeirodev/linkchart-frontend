@@ -30,7 +30,12 @@ export interface DashboardData {
   } | null;
   /** Dados geográficos para gráficos */
   geographic_data?: {
-    top_countries: { country: string; clicks: number }[];
+    top_countries: {
+      country: string;
+      clicks: number;
+      /** ISO 3166-1 alpha-2 code returned by the backend (e.g. "US", "DE"). */
+      iso_code?: string;
+    }[];
     top_cities: { city: string; clicks: number }[];
   } | null;
   /** Dados de audiência para gráficos */

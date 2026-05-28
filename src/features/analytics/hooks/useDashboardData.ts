@@ -61,6 +61,7 @@ export function useDashboardData({
     isLoading,
     error,
     refetch,
+    dataUpdatedAt,
   } = useQuery({
     queryKey: [
       ...queryKeys.analytics.dashboard(linkId ?? ""),
@@ -95,7 +96,10 @@ export function useDashboardData({
     [rawData],
   );
 
-  const stats = useMemo(() => (data ? calculateStats(data) : null), [data]);
+  const stats = useMemo(
+    () => (data ? calculateStats(data, dataUpdatedAt) : null),
+    [data, dataUpdatedAt],
+  );
 
   return {
     data,
@@ -184,7 +188,6 @@ function mapResponseToDashboardData(response: ApiResponse): DashboardData {
       top_country: response.geographic_data?.top_countries?.[0]?.country,
       top_country_clicks:
         response.geographic_data?.top_countries?.[0]?.clicks || 0,
-      coverage_percentage: 0,
     },
     device_summary: {
       desktop:
@@ -214,8 +217,13 @@ function mapResponseToDashboardData(response: ApiResponse): DashboardData {
  * Derives dashboard summary stats from `DashboardData`, including a coarse
  * `dataQuality` tier (`excellent`/`good`/`fair`/`poor`) bucketed by total
  * clicks so the UI can adapt empty/sparse states without per-component checks.
+ *
+ * @param data - mapped dashboard data
+ * @param fetchedAt - Unix ms timestamp from TanStack Query's `dataUpdatedAt`;
+ *   used as `lastUpdate` so the value reflects the actual API response time
+ *   rather than the current wall-clock time at render.
  */
-function calculateStats(data: DashboardData): DashboardStats {
+function calculateStats(data: DashboardData, fetchedAt: number): DashboardStats {
   const totalClicks = data.summary.total_clicks || 0;
 
   let dataQuality: "excellent" | "good" | "fair" | "poor";
@@ -232,7 +240,7 @@ function calculateStats(data: DashboardData): DashboardStats {
 
   return {
     totalMetrics: Object.keys(data.summary).length,
-    lastUpdate: new Date().toISOString(),
+    lastUpdate: new Date(fetchedAt).toISOString(),
     dataQuality,
     trendsAvailable: (data.recent_activity?.length || 0) > 0,
     alertsCount: 0,

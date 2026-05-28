@@ -139,7 +139,10 @@ export function LinkDashboard({
               (c) => ({
                 country: c.country,
                 clicks: c.clicks,
-                iso_code: c.country?.substring(0, 2).toUpperCase() || "XX",
+                iso_code:
+                  c.iso_code ||
+                  c.country?.substring(0, 2).toUpperCase() ||
+                  "XX",
               }),
             ),
           }
