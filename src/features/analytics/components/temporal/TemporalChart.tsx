@@ -13,6 +13,7 @@ import type {
   WeekendVsWeekdayData,
   BusinessHoursData,
   AdvancedTemporalData,
+  TemporalData,
 } from "@/types";
 
 import { TemporalPatternsTab } from "./tabs/TemporalPatternsTab";
@@ -36,6 +37,8 @@ interface TemporalChartProps {
    * Weekend vs Weekday pie is meaningless when `segment = 'weekday'`).
    */
   segment?: "all" | "weekday" | "weekend" | "business";
+  /** Viral rank data for the Performance tab. */
+  viralRankByDay?: TemporalData["viral_rank_by_day"];
   /** Currently-active sub-tab index. When provided, the component is controlled. */
   activeTab?: number;
   /** Called when the user switches to a different sub-tab. */
@@ -58,6 +61,7 @@ export function TemporalChart({
   weekendVsWeekday,
   businessHoursAnalysis,
   advancedData,
+  viralRankByDay,
   segment,
   activeTab: activeTabProp,
   onTabChange,
@@ -83,6 +87,7 @@ export function TemporalChart({
     ((advancedData.weekly_trends?.length ?? 0) > 0 ||
       (advancedData.monthly_trends?.length ?? 0) > 0);
   const hasTimezones = (advancedData?.timezone_analysis?.length ?? 0) > 0;
+  const hasViralRank = (viralRankByDay?.length ?? 0) > 0;
 
   // ── derived metrics (passed to Patterns tab) ──────────────────────────────
   const peakHour =
@@ -212,6 +217,8 @@ export function TemporalChart({
           hasPeakAnalysis={hasPeakAnalysis}
           hasTrends={!!hasTrends}
           advancedData={advancedData}
+          viralRankByDay={viralRankByDay}
+          hasViralRank={hasViralRank}
         />
       )}
 

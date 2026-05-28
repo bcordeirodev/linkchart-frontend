@@ -20,7 +20,6 @@ import { TemporalChart } from "./TemporalChart";
 import { TemporalFilterBar } from "./TemporalFilterBar";
 import { HolidayImpactCard } from "./HolidayImpactCard";
 import { SeasonalDistributionChart } from "./SeasonalDistributionChart";
-import { ViralRankMiniChart } from "./ViralRankMiniChart";
 import { ClickVelocityChart } from "./ClickVelocityChart";
 
 /** Props accepted by the {@link TemporalAnalysis} component. */
@@ -206,6 +205,7 @@ export function TemporalAnalysis({
               weekendVsWeekday={data?.weekend_vs_weekday}
               businessHoursAnalysis={data?.business_hours_analysis}
               advancedData={data?.advanced}
+              viralRankByDay={data?.viral_rank_by_day}
               segment={segment}
               activeTab={subTabIndex}
               onTabChange={onSubTabChange}
@@ -229,14 +229,6 @@ export function TemporalAnalysis({
               ) : null}
             </Grid>
           ) : null}
-
-          {data?.viral_rank_by_day && data.viral_rank_by_day.length > 0 && (
-            <Grid container spacing={3} sx={{ mt: 1 }}>
-              <Grid item xs={12}>
-                <ViralRankMiniChart data={data.viral_rank_by_day} />
-              </Grid>
-            </Grid>
-          )}
 
           {data?.click_velocity && (
             <Grid container spacing={3} sx={{ mt: 1 }}>

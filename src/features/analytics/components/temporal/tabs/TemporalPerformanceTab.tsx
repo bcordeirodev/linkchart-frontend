@@ -2,10 +2,11 @@
 import { Alert, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import type { AdvancedTemporalData } from "@/types";
+import type { AdvancedTemporalData, TemporalData } from "@/types";
 
 import { PeakAnalysisCard } from "../PeakAnalysisCard";
 import { TemporalTrendsChart } from "../TemporalTrendsChart";
+import { ViralRankMiniChart } from "../ViralRankMiniChart";
 
 /** Props for the Performance tab content. */
 export interface TemporalPerformanceTabProps {
@@ -15,6 +16,10 @@ export interface TemporalPerformanceTabProps {
   hasTrends: boolean;
   /** Full advanced temporal payload; charts read the relevant sub-keys. */
   advancedData?: AdvancedTemporalData;
+  /** Whether viral rank data is available. */
+  hasViralRank: boolean;
+  /** Viral rank by day data. */
+  viralRankByDay?: TemporalData["viral_rank_by_day"];
 }
 
 /**
@@ -28,6 +33,8 @@ export function TemporalPerformanceTab({
   hasPeakAnalysis,
   hasTrends,
   advancedData,
+  hasViralRank,
+  viralRankByDay,
 }: TemporalPerformanceTabProps) {
   const { t } = useTranslation("analytics");
 
@@ -42,7 +49,10 @@ export function TemporalPerformanceTab({
           monthlyTrends={advancedData.monthly_trends || []}
         />
       ) : null}
-      {!hasPeakAnalysis && !hasTrends ? (
+      {hasViralRank && viralRankByDay && viralRankByDay.length > 0 ? (
+        <ViralRankMiniChart data={viralRankByDay} />
+      ) : null}
+      {!hasPeakAnalysis && !hasTrends && !hasViralRank ? (
         <Alert severity="info">
           <Typography variant="body2">{t("temporal.chart.noData")}</Typography>
         </Alert>
