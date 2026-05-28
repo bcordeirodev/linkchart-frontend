@@ -58,7 +58,7 @@ export function AudienceLanguagesTab({
               <Globe {...ICON_MD} /> {t("audience.chart.languageDistribution")}
             </Typography>
             <ApexChartWrapper
-              type="pie"
+              type="donut"
               {...formatPieChart(languageChartData, "name", "value", isDark)}
               size="standard"
             />

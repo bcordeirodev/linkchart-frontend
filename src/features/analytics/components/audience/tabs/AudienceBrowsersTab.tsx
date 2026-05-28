@@ -58,7 +58,7 @@ export function AudienceBrowsersTab({
               {t("audience.chart.browserMarketShare")}
             </Typography>
             <ApexChartWrapper
-              type="pie"
+              type="donut"
               {...formatPieChart(browserChartData, "name", "value", isDark)}
               size="standard"
             />
