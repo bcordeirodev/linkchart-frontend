@@ -20,7 +20,7 @@ interface DayOfWeekChartProps {
   height?: number;
 }
 
-export function DayOfWeekChart({ data, height = 300 }: DayOfWeekChartProps) {
+export function DayOfWeekChart({ data, height }: DayOfWeekChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
@@ -34,6 +34,7 @@ export function DayOfWeekChart({ data, height = 300 }: DayOfWeekChartProps) {
       <ApexChartWrapper
         type="bar"
         height={height}
+        size="standard"
         {...formatBarChart(
           data,
           "day_name",
