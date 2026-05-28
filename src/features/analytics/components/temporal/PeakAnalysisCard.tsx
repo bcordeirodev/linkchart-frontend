@@ -29,16 +29,23 @@ import { useTranslation } from "react-i18next";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
-import type { PeakAnalysis } from "@/types";
+import type { PeakAnalysis, TemporalData } from "@/types";
+
+import { ViralRankMiniChart } from "./ViralRankMiniChart";
 
 interface PeakAnalysisCardProps {
   peakAnalysis: PeakAnalysis;
+  /** Viral rank by day data — rendered between the metric cards and the insights card. */
+  viralRankByDay?: TemporalData["viral_rank_by_day"];
 }
 
 /**
  * Componente para exibir análise de picos temporais (do back-end)
  */
-export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
+export function PeakAnalysisCard({
+  peakAnalysis,
+  viralRankByDay,
+}: PeakAnalysisCardProps) {
   const { t } = useTranslation("analytics");
   const { peak_hour, peak_day_name, peak_hour_clicks, peak_day_clicks } =
     peakAnalysis;
@@ -139,6 +146,13 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
             subtitle={t("temporal.peak.ofDailyActivity")}
           />
         </Grid>
+
+        {/* Viral Rank Mini Chart */}
+        {viralRankByDay && viralRankByDay.length > 0 && (
+          <Grid item xs={12}>
+            <ViralRankMiniChart data={viralRankByDay} />
+          </Grid>
+        )}
 
         {/* Card de Insights */}
         <Grid item xs={12}>
