@@ -87,7 +87,8 @@
     "priorityOptions": {
       "all": "Todas",
       "high": "Alta",
-      "medium": "Média"
+      "medium": "Média",
+      "low": "Baixa"
     },
     "insightType": "Tipo",
     "insightTypeOptions": {

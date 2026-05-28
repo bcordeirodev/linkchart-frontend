@@ -1,7 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
-import { Box } from "@mui/material";
 
 import { MetricCardOptimized } from "@/shared/ui/base/MetricCardOptimized";
 
@@ -53,14 +52,12 @@ export function ViralityCard({ data }: Props) {
     : undefined;
 
   return (
-    <Box>
-      <MetricCardOptimized
-        title={t("virality.title")}
-        value={rankLabel}
-        icon={<WhatshotIcon />}
-        color={color}
-        subtitle={subtitle}
-      />
-    </Box>
+    <MetricCardOptimized
+      title={t("virality.title")}
+      value={rankLabel}
+      icon={<WhatshotIcon />}
+      color={color}
+      subtitle={subtitle}
+    />
   );
 }

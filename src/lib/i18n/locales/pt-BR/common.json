@@ -25,7 +25,7 @@
     "back": "Voltar",
     "close": "Fechar",
     "confirm": "Confirmar",
-    "retry": "Tentar novamente",
+    "retry": "Tentar Novamente",
     "refresh": "Atualizar",
     "viewAnalytics": "Ver analytics",
     "qrCode": "Código QR"
@@ -51,7 +51,8 @@
     "loading": "Carregando...",
     "error": "Ocorreu um erro",
     "noData": "Nenhum dado disponível",
-    "success": "Operação realizada com sucesso"
+    "success": "Operação realizada com sucesso",
+    "shareLinks": "Compartilhe seus links para ver dados aqui!"
   },
   "table": {
     "rowsPerPage": "Linhas por página",

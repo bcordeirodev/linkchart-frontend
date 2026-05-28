@@ -83,9 +83,8 @@ export function SessionDepthChart({
       },
     },
     xaxis: {
-      categories: data.session_distribution.map(
-        (item) =>
-          `${item.clicks_count} click${item.clicks_count > 1 ? "s" : ""}`,
+      categories: data.session_distribution.map((item) =>
+        t("insights.session.clickBucketLabel", { n: item.clicks_count }),
       ),
       labels: {
         style: {

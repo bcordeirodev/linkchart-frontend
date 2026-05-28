@@ -150,7 +150,7 @@ export function AnalyticsStateManager({
               },
             }}
           >
-            Tentar Novamente
+            {t("actions.retry")}
           </Button>
         ) : null}
       </Box>
@@ -189,7 +189,7 @@ export function AnalyticsStateManager({
           color="text.secondary"
           sx={{ maxWidth: 400 }}
         >
-          Compartilhe seus links para ver dados aqui!
+          {t("status.shareLinks")}
         </Typography>
       </Box>
     );
