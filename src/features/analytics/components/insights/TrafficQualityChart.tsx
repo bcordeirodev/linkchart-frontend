@@ -1,22 +1,10 @@
 "use client";
-import {
-  Box,
-  Typography,
-  LinearProgress,
-  Chip,
-  Tooltip,
-  Card,
-  CardContent,
-} from "@mui/material";
+import { Box, Typography, LinearProgress, Chip, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
+import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 const TIER_COLORS: Record<string, string> = {
   organic: "#4caf50",
@@ -51,22 +39,16 @@ interface Props {
  * Dados calculados no backend via Phase 3 scoring (sem APIs externas).
  */
 export function TrafficQualityChart({ data }: Props) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
 
   if (!data?.tier_breakdown?.length) return null;
 
   return (
-    <Card
-      sx={{
-        borderRadius: `${radiusTokens.lg}px`,
-        border: `1px solid ${theme.palette.divider}`,
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
-      }}
+    <EnhancedPaper
+      animated={false}
+      sx={{ borderRadius: `${radiusTokens.lg}px` }}
     >
-      <CardContent sx={{ p: 3 }}>
+      <Box sx={{ p: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
             {t("insights.trafficQuality.title")}
@@ -122,7 +104,7 @@ export function TrafficQualityChart({ data }: Props) {
             </Box>
           );
         })}
-      </CardContent>
-    </Card>
+      </Box>
+    </EnhancedPaper>
   );
 }

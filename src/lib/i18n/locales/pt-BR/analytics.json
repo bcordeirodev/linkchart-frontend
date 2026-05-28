@@ -858,6 +858,8 @@
       "seriesName": "Profundidade Média da Sessão",
       "uniqueVisitors": "{{n}} visitantes únicos",
       "session": "Sessão: {{n}} clicks",
+      "sessionDepthFmt": "{{n}} clicks/sessão",
+      "clicksCount": "{{n}} clicks",
       "time": "Tempo: {{n}}s",
       "navigationContext": "Contexto de Navegação",
       "contextLabels": {

@@ -168,7 +168,8 @@ export function TrafficChannelsView({
     tooltip: {
       theme: theme.palette.mode,
       y: {
-        formatter: (val: number) => `${val.toFixed(2)} clicks/sessão`,
+        formatter: (val: number) =>
+          t("insights.traffic.sessionDepthFmt", { n: val.toFixed(2) }),
       },
     },
   };
