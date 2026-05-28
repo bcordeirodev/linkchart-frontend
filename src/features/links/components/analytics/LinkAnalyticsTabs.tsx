@@ -199,6 +199,8 @@ export function LinkAnalyticsTabsOptimized({
           excludeBots={filters.excludeBots}
           segment={filters.segment}
           onSegmentChange={filters.setSegment}
+          subTabIndex={filters.temporalSubTab}
+          onSubTabChange={filters.setTemporalSubTab}
         />,
       )}
 

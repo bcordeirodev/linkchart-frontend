@@ -1,7 +1,7 @@
 "use client";
 import { Box, Tab, Tabs } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
+import { useState, type SyntheticEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getStandardChartColors } from "@/lib/theme";
@@ -36,6 +36,10 @@ interface TemporalChartProps {
    * Weekend vs Weekday pie is meaningless when `segment = 'weekday'`).
    */
   segment?: "all" | "weekday" | "weekend" | "business";
+  /** Currently-active sub-tab index. When provided, the component is controlled. */
+  activeTab?: number;
+  /** Called when the user switches to a different sub-tab. */
+  onTabChange?: (v: number) => void;
 }
 
 /**
@@ -55,11 +59,14 @@ export function TemporalChart({
   businessHoursAnalysis,
   advancedData,
   segment,
+  activeTab: activeTabProp,
+  onTabChange,
 }: TemporalChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
-  const [activeTab, setActiveTab] = useState(0);
+  const [localTab, setLocalTab] = useState(0);
+  const activeTab = activeTabProp !== undefined ? activeTabProp : localTab;
 
   const chartColors = getStandardChartColors(theme);
 
@@ -142,8 +149,9 @@ export function TemporalChart({
     segment === "weekend";
 
   /** @param _event — synthetic React event (unused) @param newValue — selected tab index */
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
+  const handleTabChange = (_event: SyntheticEvent, newValue: number) => {
+    setLocalTab(newValue);
+    onTabChange?.(newValue);
   };
 
   return (
