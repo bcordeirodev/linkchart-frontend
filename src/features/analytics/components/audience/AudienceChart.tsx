@@ -1,5 +1,5 @@
 "use client";
-import { Box, Chip, Tab, Tabs, Typography } from "@mui/material";
+import { Alert, Box, Chip, Tab, Tabs, Typography } from "@mui/material";
 import { Globe, Monitor, Smartphone, Zap } from "lucide-react";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
@@ -205,7 +205,6 @@ export function AudienceChart({
                   <Globe {...ICON_MD} /> {t("audience.chart.tabs.browsers")}
                 </Box>
               }
-              disabled={!browsers?.length}
             />
             <Tab
               label={
@@ -213,7 +212,6 @@ export function AudienceChart({
                   <Monitor {...ICON_MD} /> {t("audience.chart.tabs.systems")}
                 </Box>
               }
-              disabled={!operatingSystems?.length}
             />
             <Tab
               label={
@@ -221,7 +219,6 @@ export function AudienceChart({
                   <Zap {...ICON_MD} /> {t("audience.chart.tabs.performance")}
                 </Box>
               }
-              disabled={!devicePerformance?.length}
             />
             <Tab
               label={
@@ -229,7 +226,6 @@ export function AudienceChart({
                   <Globe {...ICON_MD} /> {t("audience.chart.tabs.languages")}
                 </Box>
               }
-              disabled={!languages?.length}
             />
             <Tab
               label={
@@ -238,27 +234,10 @@ export function AudienceChart({
                   {t("audience.chart.tabs.renderingEngine")}
                 </Box>
               }
-              disabled={!renderingEngine?.length}
             />
           </Tabs>
         </Box>
       ) : null}
-
-      {/* Dynamic description per active tab */}
-      {hasEnhancedData && (
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {
-            [
-              t("audience.chart.tabDescriptions.devices"),
-              t("audience.chart.tabDescriptions.browsers"),
-              t("audience.chart.tabDescriptions.systems"),
-              t("audience.chart.tabDescriptions.performance"),
-              t("audience.chart.tabDescriptions.languages"),
-              t("audience.chart.tabDescriptions.renderingEngine"),
-            ][activeTab]
-          }
-        </Typography>
-      )}
 
       {/* Tab 0: Devices */}
       {(!hasEnhancedData || activeTab === 0) && (
@@ -274,59 +253,89 @@ export function AudienceChart({
       )}
 
       {/* Tab 1: Browsers */}
-      {hasEnhancedData && activeTab === 1 && browsers ? (
-        <AudienceBrowsersTab
-          browserChartData={browserChartData}
-          browsers={browsers}
-          isDark={isDark}
-          outlinedCardSx={outlinedCardSx}
-          itemRowSx={itemRowSx}
-        />
+      {hasEnhancedData && activeTab === 1 ? (
+        browsers?.length ? (
+          <AudienceBrowsersTab
+            browserChartData={browserChartData}
+            browsers={browsers}
+            isDark={isDark}
+            outlinedCardSx={outlinedCardSx}
+            itemRowSx={itemRowSx}
+          />
+        ) : (
+          <Alert severity="info">
+            <Typography variant="body2">{t("audience.noData")}</Typography>
+          </Alert>
+        )
       ) : null}
 
       {/* Tab 2: Operating Systems */}
-      {hasEnhancedData && activeTab === 2 && operatingSystems ? (
-        <AudienceOSTab
-          osChartData={osChartData}
-          operatingSystems={operatingSystems}
-          isDark={isDark}
-          outlinedCardSx={outlinedCardSx}
-          itemRowSx={itemRowSx}
-        />
+      {hasEnhancedData && activeTab === 2 ? (
+        operatingSystems?.length ? (
+          <AudienceOSTab
+            osChartData={osChartData}
+            operatingSystems={operatingSystems}
+            isDark={isDark}
+            outlinedCardSx={outlinedCardSx}
+            itemRowSx={itemRowSx}
+          />
+        ) : (
+          <Alert severity="info">
+            <Typography variant="body2">{t("audience.noData")}</Typography>
+          </Alert>
+        )
       ) : null}
 
       {/* Tab 3: Device Performance */}
-      {hasEnhancedData && activeTab === 3 && devicePerformance ? (
-        <AudiencePerformanceTab
-          performanceChartData={performanceChartData}
-          devicePerformance={devicePerformance}
-          isDark={isDark}
-          outlinedCardSx={outlinedCardSx}
-          itemRowSx={itemRowSx}
-          performanceBarColor={performanceBarColor}
-        />
+      {hasEnhancedData && activeTab === 3 ? (
+        devicePerformance?.length ? (
+          <AudiencePerformanceTab
+            performanceChartData={performanceChartData}
+            devicePerformance={devicePerformance}
+            isDark={isDark}
+            outlinedCardSx={outlinedCardSx}
+            itemRowSx={itemRowSx}
+            performanceBarColor={performanceBarColor}
+          />
+        ) : (
+          <Alert severity="info">
+            <Typography variant="body2">{t("audience.noData")}</Typography>
+          </Alert>
+        )
       ) : null}
 
       {/* Tab 4: Languages */}
-      {hasEnhancedData && activeTab === 4 && languages ? (
-        <AudienceLanguagesTab
-          languageChartData={languageChartData}
-          languages={languages}
-          isDark={isDark}
-          outlinedCardSx={outlinedCardSx}
-          itemRowSx={itemRowSx}
-        />
+      {hasEnhancedData && activeTab === 4 ? (
+        languages?.length ? (
+          <AudienceLanguagesTab
+            languageChartData={languageChartData}
+            languages={languages}
+            isDark={isDark}
+            outlinedCardSx={outlinedCardSx}
+            itemRowSx={itemRowSx}
+          />
+        ) : (
+          <Alert severity="info">
+            <Typography variant="body2">{t("audience.noData")}</Typography>
+          </Alert>
+        )
       ) : null}
 
       {/* Tab 5: Rendering Engine */}
-      {hasEnhancedData && activeTab === 5 && renderingEngine ? (
-        <AudienceRenderingEngineTab
-          renderingEngineChartData={renderingEngineChartData}
-          renderingEngine={renderingEngine}
-          isDark={isDark}
-          outlinedCardSx={outlinedCardSx}
-          itemRowSx={itemRowSx}
-        />
+      {hasEnhancedData && activeTab === 5 ? (
+        renderingEngine?.length ? (
+          <AudienceRenderingEngineTab
+            renderingEngineChartData={renderingEngineChartData}
+            renderingEngine={renderingEngine}
+            isDark={isDark}
+            outlinedCardSx={outlinedCardSx}
+            itemRowSx={itemRowSx}
+          />
+        ) : (
+          <Alert severity="info">
+            <Typography variant="body2">{t("audience.noData")}</Typography>
+          </Alert>
+        )
       ) : null}
     </Box>
   );
