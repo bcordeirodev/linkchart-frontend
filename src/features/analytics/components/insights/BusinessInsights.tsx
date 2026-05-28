@@ -195,9 +195,7 @@ export function BusinessInsights({
         conversion: 2,
         business: 1,
       };
-      return (
-        (categoryOrder[b.type] || 0) - (categoryOrder[a.type] || 0)
-      );
+      return (categoryOrder[b.type] || 0) - (categoryOrder[a.type] || 0);
     })
     .slice(0, maxItems);
 
@@ -362,7 +360,10 @@ export function BusinessInsights({
                         >
                           <Typography
                             variant="body2"
-                            sx={{ fontWeight: 500, color: palette.dark ?? palette.main }}
+                            sx={{
+                              fontWeight: 500,
+                              color: palette.dark ?? palette.main,
+                            }}
                           >
                             {recommendationText}
                           </Typography>

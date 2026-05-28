@@ -107,15 +107,18 @@ const ChartsSection = React.memo(function ChartsSection({
   const theme = useTheme();
   const animations = useMemo(() => createPresetAnimations(theme), [theme]);
 
-  const hasHourly = !!(chartData.temporal?.clicks_by_hour?.length);
-  const hasWeekly = !!(chartData.temporal?.clicks_by_day_of_week?.length);
+  const hasHourly = !!chartData.temporal?.clicks_by_hour?.length;
+  const hasWeekly = !!chartData.temporal?.clicks_by_day_of_week?.length;
   const hasTemporal = hasHourly || hasWeekly;
   const hasGeographic = !!chartData.geographic?.top_countries?.length;
   const hasDevice = !!chartData.audience?.device_breakdown?.length;
-  const hasUtm = !!(chartData.utmTopSources && chartData.utmTopSources.length > 0);
+  const hasUtm = !!(
+    chartData.utmTopSources && chartData.utmTopSources.length > 0
+  );
   const hasSocial = !!(
     chartData.socialIab &&
-    (chartData.socialIab.total > 0 || !chartData.socialIab.navigation_context_available)
+    (chartData.socialIab.total > 0 ||
+      !chartData.socialIab.navigation_context_available)
   );
 
   if (!hasTemporal && !hasGeographic && !hasDevice && !hasUtm && !hasSocial) {
