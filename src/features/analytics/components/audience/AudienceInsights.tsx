@@ -210,17 +210,22 @@ export function AudienceInsights({
                 sx={{ display: "flex", alignItems: "center", gap: 1 }}
               >
                 <Wrench size={16} strokeWidth={1.5} />
-                Conexão Limitada
+                {t("audience.insights.limitedConnection")}
               </Typography>
               <Stack direction="row" spacing={1} flexWrap="wrap">
                 <Chip
-                  label={`${dataSaver.percentage}% em conexão limitada`}
+                  label={t("audience.insights.limitedConnectionChip", {
+                    percent: dataSaver.percentage,
+                  })}
                   color="warning"
                   variant="outlined"
                   size="small"
                 />
                 <Chip
-                  label={`${dataSaver.clicks} de ${dataSaver.total} cliques`}
+                  label={t("audience.insights.limitedConnectionDetail", {
+                    clicks: dataSaver.clicks,
+                    total: dataSaver.total,
+                  })}
                   variant="outlined"
                   size="small"
                 />
