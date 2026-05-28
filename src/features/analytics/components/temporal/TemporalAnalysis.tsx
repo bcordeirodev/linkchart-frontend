@@ -39,6 +39,10 @@ interface TemporalAnalysisProps {
   segment?: Segment;
   /** Callback to propagate `segment` changes to the parent. */
   onSegmentChange?: (v: Segment) => void;
+  /** Currently-active temporal sub-tab index (0–3). */
+  subTabIndex?: number;
+  /** Called when the user switches temporal sub-tab. */
+  onSubTabChange?: (v: number) => void;
 }
 
 /**
@@ -59,6 +63,8 @@ export function TemporalAnalysis({
   excludeBots,
   segment,
   onSegmentChange,
+  subTabIndex,
+  onSubTabChange,
 }: TemporalAnalysisProps) {
   const { t } = useTranslation("analytics");
   const { data, stats, loading, error, refresh } = useTemporalData({
@@ -210,6 +216,8 @@ export function TemporalAnalysis({
               businessHoursAnalysis={data?.business_hours_analysis}
               advancedData={data?.advanced}
               segment={segment}
+              activeTab={subTabIndex}
+              onTabChange={onSubTabChange}
             />
           </Box>
 
