@@ -20,10 +20,7 @@ interface HourlyClicksChartProps {
   height?: number;
 }
 
-export function HourlyClicksChart({
-  data,
-  height = 300,
-}: HourlyClicksChartProps) {
+export function HourlyClicksChart({ data, height }: HourlyClicksChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
@@ -37,6 +34,7 @@ export function HourlyClicksChart({
       <ApexChartWrapper
         type="area"
         height={height}
+        size="standard"
         {...formatAreaChart(
           data,
           "hour",
