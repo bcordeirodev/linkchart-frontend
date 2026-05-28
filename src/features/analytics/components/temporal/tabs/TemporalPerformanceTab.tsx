@@ -6,7 +6,6 @@ import type { AdvancedTemporalData, TemporalData } from "@/types";
 
 import { PeakAnalysisCard } from "../PeakAnalysisCard";
 import { TemporalTrendsChart } from "../TemporalTrendsChart";
-import { ViralRankMiniChart } from "../ViralRankMiniChart";
 
 /** Props for the Performance tab content. */
 export interface TemporalPerformanceTabProps {
@@ -41,16 +40,16 @@ export function TemporalPerformanceTab({
   return (
     <Stack spacing={2}>
       {hasPeakAnalysis && advancedData?.peak_analysis ? (
-        <PeakAnalysisCard peakAnalysis={advancedData.peak_analysis} />
+        <PeakAnalysisCard
+          peakAnalysis={advancedData.peak_analysis}
+          viralRankByDay={viralRankByDay}
+        />
       ) : null}
       {hasTrends && advancedData ? (
         <TemporalTrendsChart
           weeklyTrends={advancedData.weekly_trends || []}
           monthlyTrends={advancedData.monthly_trends || []}
         />
-      ) : null}
-      {hasViralRank && viralRankByDay && viralRankByDay.length > 0 ? (
-        <ViralRankMiniChart data={viralRankByDay} />
       ) : null}
       {!hasPeakAnalysis && !hasTrends && !hasViralRank ? (
         <Alert severity="info">
