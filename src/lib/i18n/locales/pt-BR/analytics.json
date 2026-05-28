@@ -823,6 +823,7 @@
       "sessionsUnit": "sessões",
       "clickDistributionDesc": "Distribuição das sessões por número de cliques. Cada barra mostra quantas sessões tiveram exatamente aquela quantidade de cliques.",
       "analysisRaw": "Os usuários clicam em média {{avg}} vezes por sessão. {{powerCount}} sessões ({{power}}%) são power users com 3 ou mais cliques.",
+      "clickBucketLabel": "{{n}} click(s)",
       "qualityLabel": {
         "excellent": "Excelente",
         "good": "Bom",
