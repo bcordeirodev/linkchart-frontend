@@ -408,7 +408,7 @@ export function TemporalPatternsTab({
       {weekendVsWeekday && showWeekendComparison && (
         <Box>
           <Grid container spacing={3}>
-            <Grid item xs={12} lg={8} sx={{ minWidth: 0 }}>
+            <Grid item xs={12} md={8} sx={{ minWidth: 0 }}>
               <ChartCard
                 title={t("temporal.chart.weekendVsWeekday")}
                 subtitle={t("charts.descriptions.weekendVsWeekday")}
@@ -437,7 +437,7 @@ export function TemporalPatternsTab({
             <Grid
               item
               xs={12}
-              lg={4}
+              md={4}
               sx={{ display: "flex", flexDirection: "column", minWidth: 0 }}
             >
               <Card
@@ -493,7 +493,7 @@ export function TemporalPatternsTab({
       {businessHoursAnalysis && showBusinessComparison && (
         <Box>
           <Grid container spacing={3}>
-            <Grid item xs={12} lg={8} sx={{ minWidth: 0 }}>
+            <Grid item xs={12} md={8} sx={{ minWidth: 0 }}>
               <ChartCard
                 title={t("temporal.chart.businessHoursAnalysis")}
                 subtitle={t("charts.descriptions.businessHours")}
@@ -531,7 +531,7 @@ export function TemporalPatternsTab({
             <Grid
               item
               xs={12}
-              lg={4}
+              md={4}
               sx={{ display: "flex", flexDirection: "column", minWidth: 0 }}
             >
               <Card
