@@ -42,12 +42,8 @@ interface TemporalAnalysisProps {
 /**
  * Componente de análise temporal com padrões de cliques por hora e dia da semana.
  *
- * Renders an optional {@link TemporalFilterBar} when `onGroupByChange` and
- * `onSegmentChange` callbacks are provided.
- *
- * Chart rendering order is controlled by `groupBy`:
- * - `"day"` or `"month"` → `DayOfWeekChart` renders before `HourlyClicksChart`
- * - `"hour"` (default) → `HourlyClicksChart` renders first
+ * Renders an optional {@link TemporalFilterBar} when `onSegmentChange`
+ * callback is provided.
  */
 export function TemporalAnalysis({
   linkId,
