@@ -190,7 +190,7 @@ const ChartsSection = React.memo(function ChartsSection({
           item
           xs={12}
           md={hasHourly && hasWeekly ? 6 : 12}
-          sx={animations.fadeIn}
+          sx={{ display: "flex", ...animations.fadeIn }}
         >
           <HourlyClicksChart
             data={chartData.temporal!.clicks_by_hour}
@@ -204,7 +204,7 @@ const ChartsSection = React.memo(function ChartsSection({
           item
           xs={12}
           md={hasHourly && hasWeekly ? 6 : 12}
-          sx={animations.fadeIn}
+          sx={{ display: "flex", ...animations.fadeIn }}
         >
           <DayOfWeekChart
             data={chartData.temporal!.clicks_by_day_of_week}
@@ -233,7 +233,7 @@ const ChartsSection = React.memo(function ChartsSection({
           item
           xs={12}
           md={hasDevice && hasGeographic ? 6 : 12}
-          sx={animations.fadeIn}
+          sx={{ display: "flex", ...animations.fadeIn }}
         >
           <DeviceBreakdownChart
             data={chartData.audience!.device_breakdown}
@@ -247,7 +247,7 @@ const ChartsSection = React.memo(function ChartsSection({
           item
           xs={12}
           md={hasDevice && hasGeographic ? 6 : 12}
-          sx={animations.fadeIn}
+          sx={{ display: "flex", ...animations.fadeIn }}
         >
           <TopCountriesChart
             data={chartData.geographic!.top_countries}
