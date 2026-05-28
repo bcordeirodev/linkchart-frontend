@@ -91,6 +91,9 @@ export function InsightsAnalysis({
     refreshInterval: 300000,
   });
 
+  // Stable key for insightCategories so useMemo deps can reference a primitive.
+  const categoriesKey = insightCategories.join(",");
+
   /** Client-side post-filter applied on top of the hook's results. */
   const filteredInsights = useMemo(() => {
     let list = data?.insights ?? [];
@@ -104,7 +107,8 @@ export function InsightsAnalysis({
       list = list.filter((i) => i.actionable);
     }
     return list;
-  }, [data?.insights, priority, insightCategories.join(","), actionableOnly]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.insights, priority, categoriesKey, actionableOnly]);
 
   /**
    * Stats derived from the filtered list so metric cards reflect what is
@@ -129,13 +133,8 @@ export function InsightsAnalysis({
       actionableCount: actionable,
       avgConfidence: Math.round(avgConf * 100) / 100,
     };
-  }, [
-    filteredInsights,
-    priority,
-    insightCategories.join(","),
-    actionableOnly,
-    stats,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredInsights, priority, categoriesKey, actionableOnly, stats]);
 
   /** Whether to render the filter bar — requires all three callbacks to be present. */
   const showFilterBar =

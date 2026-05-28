@@ -130,7 +130,7 @@ export function RetentionAnalysisChart({
   }
 
   return (
-    <EnhancedPaper>
+    <EnhancedPaper animated={false}>
       {showTitle ? (
         <Box sx={{ p: 3, pb: 0 }}>
           <Typography

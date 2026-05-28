@@ -822,6 +822,7 @@
       "usersCount": "{{n}} users ({{percent}}%)",
       "sessionsUnit": "sessions",
       "clickDistributionDesc": "Distribution of sessions by number of clicks. Each bar shows how many sessions had exactly that many clicks.",
+      "clickBucketLabel": "{{n}} click(s)",
       "analysisRaw": "Users click an average of {{avg}} times per session. {{powerCount}} sessions ({{power}}%) are power users with 3 or more clicks.",
       "qualityLabel": {
         "excellent": "Excellent",
@@ -857,6 +858,8 @@
       "seriesName": "Average Session Depth",
       "uniqueVisitors": "{{n}} unique visitors",
       "session": "Session: {{n}} clicks",
+      "sessionDepthFmt": "{{n}} clicks/session",
+      "clicksCount": "{{n}} clicks",
       "time": "Time: {{n}}s",
       "navigationContext": "Navigation Context",
       "contextLabels": {
