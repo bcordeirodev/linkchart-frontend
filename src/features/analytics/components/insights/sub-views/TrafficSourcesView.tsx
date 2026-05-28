@@ -9,14 +9,7 @@ import {
   elevationTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
-
-interface TrafficSource {
-  source: string;
-  clicks: number;
-  percentage: number;
-  avg_response_time: number;
-  avg_session_depth: number;
-}
+import type { TrafficSource } from "../../../hooks/useInsightsData";
 
 interface TrafficSourcesViewProps {
   /** Ranked list of individual traffic sources. */

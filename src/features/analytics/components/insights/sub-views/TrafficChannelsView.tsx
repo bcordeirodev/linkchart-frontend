@@ -10,24 +10,7 @@ import {
   radiusTokens,
 } from "@/lib/theme/designSystem";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-
-interface TrafficSource {
-  source: string;
-  clicks: number;
-  percentage: number;
-  avg_response_time: number;
-  avg_session_depth: number;
-}
-
-interface TrafficChannel {
-  channel: string;
-  clicks: number;
-  percentage: number;
-  unique_visitors: number;
-  sources: TrafficSource[];
-  avg_response_time: number;
-  avg_session_depth: number;
-}
+import type { TrafficChannel } from "../../../hooks/useInsightsData";
 
 interface TrafficChannelsViewProps {
   /** Array of channel data with click counts and performance metrics. */

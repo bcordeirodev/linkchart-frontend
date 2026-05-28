@@ -42,6 +42,76 @@ export interface BusinessInsight {
   data_points?: Record<string, unknown>;
 }
 
+/** Visitor retention breakdown returned by the backend. */
+export interface RetentionData {
+  return_visitor_rate: number;
+  new_visitor_rate: number;
+  total_visitors: number;
+  return_visitors: number;
+  new_visitors: number;
+}
+
+/** Single bucket in the session click-depth histogram. */
+export interface SessionDistributionBucket {
+  clicks_count: number;
+  frequency: number;
+  percentage: number;
+  avg_response_time: number;
+}
+
+/** Session depth analytics returned by the backend. */
+export interface SessionDepthData {
+  avg_session_clicks: number;
+  max_session_depth: number;
+  session_distribution: SessionDistributionBucket[];
+  power_users_count: number;
+}
+
+/** Individual traffic source with performance metrics. */
+export interface TrafficSource {
+  source: string;
+  clicks: number;
+  percentage: number;
+  avg_response_time: number;
+  avg_session_depth: number;
+}
+
+/** Traffic channel aggregation. */
+export interface TrafficChannel {
+  channel: string;
+  clicks: number;
+  percentage: number;
+  unique_visitors: number;
+  sources: TrafficSource[];
+  avg_response_time: number;
+  avg_session_depth: number;
+}
+
+/** Navigation context entry (Sec-Fetch-Site breakdown). */
+export interface NavigationContextEntry {
+  context: string;
+  clicks: number;
+  percentage: number;
+}
+
+/** Traffic recommendation from the backend analysis. */
+export interface TrafficRecommendation {
+  type: "optimization" | "growth" | "diversification";
+  message_key: string;
+  priority: "high" | "medium" | "low";
+}
+
+/** Full traffic sources analytics block returned inside analytics_data. */
+export interface TrafficSourceData {
+  sources: TrafficSource[];
+  channels: TrafficChannel[];
+  top_source: { source: string; clicks: number; percentage: number } | null;
+  source_diversity: number;
+  total_clicks: number;
+  recommendations: TrafficRecommendation[];
+  navigation_context?: NavigationContextEntry[];
+}
+
 /** Full insights payload (list of insights + aggregate summary and optional analytics breakdowns). */
 export interface InsightsData {
   insights: BusinessInsight[];
@@ -54,12 +124,9 @@ export interface InsightsData {
   categories: Record<string, number>;
   generated_at: string;
   analytics_data?: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    retention?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    session_depth?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    traffic_sources?: any;
+    retention?: RetentionData;
+    session_depth?: SessionDepthData;
+    traffic_sources?: TrafficSourceData;
     /** Quality tier breakdown from Phase 3 scoring */
     quality?: {
       avg_quality_score: number | null;
@@ -245,7 +312,7 @@ export function useInsightsData({
   const data = useMemo(
     () => (raw ? normaliseResponse(raw, minConfidence, categories) : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [raw, minConfidence, JSON.stringify(categories)],
+    [raw, minConfidence, categories.join(",")],
   );
 
   const stats = useMemo(() => (data ? calculateStats(data) : null), [data]);

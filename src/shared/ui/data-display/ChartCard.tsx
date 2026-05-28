@@ -94,7 +94,7 @@ export function ChartCard({
         <CardContent>
           {title ? (
             <Typography
-              variant="h5"
+              variant="subtitle1"
               gutterBottom
               sx={{
                 position: "relative",
@@ -103,7 +103,7 @@ export function ChartCard({
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
-                fontWeight: 500,
+                fontWeight: 600,
               }}
             >
               {icon ? (

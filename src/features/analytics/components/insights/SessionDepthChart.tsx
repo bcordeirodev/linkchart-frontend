@@ -21,40 +21,7 @@ import {
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-
-/**
- * Single bucket in the session distribution histogram.
- *
- * Field names match the updated backend shape:
- *   `clicks_count` (previously `session_clicks`) and `frequency` (previously `users`).
- */
-interface SessionDistribution {
-  /** Number of clicks that define this bucket. */
-  clicks_count: number;
-  /** Number of sessions in this bucket. */
-  frequency: number;
-  percentage: number;
-  avg_response_time: number;
-}
-
-/**
- * Real session depth data returned by the backend.
- *
- * Removed fabricated fields:
- *   - `engagement_score`: was `min(100, avg * 20)` — arbitrary scaling.
- *   - `session_quality`: label derived from hardcoded thresholds.
- *   - `total_sessions`: not needed externally; derived from distribution.
- *
- * `power_users_count` now counts sessions with 3+ clicks (was 5+ before).
- */
-interface SessionDepthData {
-  /** Mean number of clicks per session (real aggregate). */
-  avg_session_clicks: number;
-  max_session_depth: number;
-  session_distribution: SessionDistribution[];
-  /** Count of sessions with 3 or more clicks. */
-  power_users_count: number;
-}
+import type { SessionDepthData } from "../../hooks/useInsightsData";
 
 /** Props accepted by {@link SessionDepthChart}. */
 interface SessionDepthChartProps {

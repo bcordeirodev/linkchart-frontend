@@ -23,7 +23,7 @@ interface TopCountriesChartProps {
 
 export function TopCountriesChart({
   data,
-  height = 300,
+  height,
   maxCountries = 10,
 }: TopCountriesChartProps) {
   const theme = useTheme();
@@ -41,6 +41,7 @@ export function TopCountriesChart({
       <ApexChartWrapper
         type="bar"
         height={height}
+        size="standard"
         {...formatBarChart(
           topCountries,
           "country",
