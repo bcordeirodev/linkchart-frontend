@@ -251,7 +251,9 @@
       "clicksThisDay": "{{total}} cliques totais neste dia da semana",
       "schedulePostsFor": "• Programe posts e campanhas para {{day}} às {{hour}}",
       "peakHourRepresents": "• {{total}} cliques na hora de pico representam {{percent}}% da atividade do dia",
-      "focusOnContent": "• Foco em conteúdo de {{period}} pode maximizar o engajamento"
+      "focusOnContent": "• Foco em conteúdo de {{period}} pode maximizar o engajamento",
+      "showRecommendations": "Ver recomendações",
+      "hideRecommendations": "Ocultar recomendações"
     },
     "insights": {
       "title": "Insights Temporais",

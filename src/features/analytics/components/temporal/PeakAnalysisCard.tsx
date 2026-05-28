@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import {
   Box,
   Grid,
@@ -7,6 +8,8 @@ import {
   Typography,
   Stack,
   Chip,
+  Collapse,
+  Button,
 } from "@mui/material";
 import {
   Clock,
@@ -17,6 +20,8 @@ import {
   Sun,
   Sunset,
   Moon,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
@@ -37,6 +42,8 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
   const { t } = useTranslation("analytics");
   const { peak_hour, peak_day_name, peak_hour_clicks, peak_day_clicks } =
     peakAnalysis;
+
+  const [showRecs, setShowRecs] = useState(false);
 
   if (peak_hour == null) {
     return null;
@@ -251,49 +258,70 @@ export function PeakAnalysisCard({ peakAnalysis }: PeakAnalysisCardProps) {
                   </Grid>
                 </Grid>
 
-                {/* Recomendações */}
-                <Box
-                  sx={{
-                    p: 2,
-                    mt: 2,
-                    bgcolor: "background.paper",
-                    borderRadius: 1,
-                    border: "1px solid",
-                    borderColor: "divider",
-                  }}
-                >
-                  <Typography
-                    variant="subtitle2"
-                    gutterBottom
-                    sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                {/* Collapsible recommendations */}
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    size="small"
+                    variant="text"
+                    endIcon={
+                      showRecs ? (
+                        <ChevronUp size={14} />
+                      ) : (
+                        <ChevronDown size={14} />
+                      )
+                    }
+                    onClick={() => setShowRecs((v) => !v)}
+                    sx={{ px: 0, minWidth: 0 }}
                   >
-                    {t("temporal.peak.strategicRecommendations")}
-                  </Typography>
-                  <Stack spacing={0.5}>
-                    <Typography variant="body2">
-                      {t("temporal.peak.schedulePostsFor", {
-                        day: peak_day_name ?? "--",
-                        hour: formatHour(peak_hour),
-                      })}
-                    </Typography>
-                    <Typography variant="body2">
-                      {t("temporal.peak.peakHourRepresents", {
-                        total: peak_hour_clicks,
-                        percent:
-                          peak_day_clicks > 0
-                            ? (
-                                (peak_hour_clicks / peak_day_clicks) *
-                                100
-                              ).toFixed(1)
-                            : "0",
-                      })}
-                    </Typography>
-                    <Typography variant="body2">
-                      {t("temporal.peak.focusOnContent", {
-                        period: period.label.toLowerCase(),
-                      })}
-                    </Typography>
-                  </Stack>
+                    {showRecs
+                      ? t("temporal.peak.hideRecommendations")
+                      : t("temporal.peak.showRecommendations")}
+                  </Button>
+                  <Collapse in={showRecs}>
+                    <Box
+                      sx={{
+                        p: 2,
+                        mt: 1,
+                        bgcolor: "background.paper",
+                        borderRadius: 1,
+                        border: "1px solid",
+                        borderColor: "divider",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle2"
+                        gutterBottom
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        {t("temporal.peak.strategicRecommendations")}
+                      </Typography>
+                      <Stack spacing={0.5}>
+                        <Typography variant="body2">
+                          {t("temporal.peak.schedulePostsFor", {
+                            day: peak_day_name ?? "--",
+                            hour: formatHour(peak_hour),
+                          })}
+                        </Typography>
+                        <Typography variant="body2">
+                          {t("temporal.peak.peakHourRepresents", {
+                            total: peak_hour_clicks,
+                            percent:
+                              peak_day_clicks > 0
+                                ? (
+                                    (peak_hour_clicks / peak_day_clicks) *
+                                    100
+                                  ).toFixed(1)
+                                : "0",
+                          })}
+                        </Typography>
+                        <Typography variant="body2">
+                          {t("temporal.peak.focusOnContent", {
+                            period: period.label.toLowerCase(),
+                          })}
+                        </Typography>
+                      </Stack>
+                    </Box>
+                  </Collapse>
                 </Box>
               </Stack>
             </CardContent>
