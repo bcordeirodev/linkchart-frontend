@@ -167,7 +167,17 @@ export function TimezoneDistributionChart({
                     alignItems="center"
                     sx={{ mb: 0.5 }}
                   >
-                    <Typography variant="body2" fontWeight="medium">
+                    <Typography
+                      variant="body2"
+                      fontWeight="medium"
+                      title={tz.name}
+                      sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        maxWidth: { xs: 140, sm: 200 },
+                      }}
+                    >
                       {index + 1}. {tz.name.split("/").pop()}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -198,7 +208,15 @@ export function TimezoneDistributionChart({
                   <Typography
                     variant="caption"
                     color="text.secondary"
-                    sx={{ display: "block", mt: 0.5 }}
+                    title={tz.name}
+                    sx={{
+                      display: "block",
+                      mt: 0.5,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: { xs: 140, sm: 200 },
+                    }}
                   >
                     {tz.name}
                   </Typography>
