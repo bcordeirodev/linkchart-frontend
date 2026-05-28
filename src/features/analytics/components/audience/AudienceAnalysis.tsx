@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useAudienceData } from "@/features/analytics/hooks/useAudienceData";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
-import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { ResponsiveContainer } from "@/shared/ui/base/ResponsiveContainer";
 import { AudienceChart } from "./AudienceChart";
 import { AudienceExtraCharts } from "./AudienceExtraCharts";
@@ -96,70 +95,75 @@ export function AudienceAnalysis({
             </Box>
           ) : null}
 
-          <Grid container spacing={2}>
-            {/* 2. Main tabbed chart — protagonist */}
-            <Grid item xs={12}>
-              <EnhancedPaper variant="glass" animated>
-                <AudienceChart
-                  deviceBreakdown={deviceBreakdown}
-                  browserBreakdown={
-                    (audienceData as AnyData)?.browser_breakdown
-                  }
-                  osBreakdown={(audienceData as AnyData)?.os_breakdown}
-                  totalClicks={totalClicks}
-                  browsers={(audienceData as AnyData)?.browsers}
-                  operatingSystems={
-                    (audienceData as AnyData)?.operating_systems
-                  }
-                  devicePerformance={
-                    (audienceData as AnyData)?.device_performance
-                  }
-                  languages={(audienceData as AnyData)?.languages}
-                  renderingEngine={(() => {
-                    const re = (audienceData as AnyData)?.rendering_engine;
-                    return Array.isArray(re) ? re : re?.data;
-                  })()}
-                  activeTab={subTabIndex}
-                  onTabChange={onSubTabChange}
-                />
-              </EnhancedPaper>
-            </Grid>
-
-            {/* 3. Behavior / navigation context */}
-            {(audienceData as AnyData)?.navigation_context_breakdown && (
-              <Grid item xs={12}>
-                <BehaviorSection
-                  navigationContext={
-                    (audienceData as AnyData).navigation_context_breakdown
-                  }
-                />
-              </Grid>
-            )}
-
-            {/* 4. Social platforms */}
-            {(audienceData as AnyData)?.social_platform_breakdown &&
-              (audienceData as AnyData)?.social_platform_breakdown?.length >
-                0 && (
+          {(() => {
+            const hasBehaviorData = !!(audienceData as AnyData)
+              ?.navigation_context_breakdown;
+            const hasSocialData =
+              ((audienceData as AnyData)?.social_platform_breakdown?.length ??
+                0) > 0;
+            const showSideBySide = hasBehaviorData && hasSocialData;
+            return (
+              <Grid container spacing={2}>
+                {/* 2. Main tabbed chart — protagonist */}
                 <Grid item xs={12}>
-                  <SocialPlatformSection
-                    platforms={
-                      (audienceData as AnyData).social_platform_breakdown
+                  <AudienceChart
+                    deviceBreakdown={deviceBreakdown}
+                    browserBreakdown={
+                      (audienceData as AnyData)?.browser_breakdown
                     }
+                    osBreakdown={(audienceData as AnyData)?.os_breakdown}
+                    totalClicks={totalClicks}
+                    browsers={(audienceData as AnyData)?.browsers}
+                    operatingSystems={
+                      (audienceData as AnyData)?.operating_systems
+                    }
+                    devicePerformance={
+                      (audienceData as AnyData)?.device_performance
+                    }
+                    languages={(audienceData as AnyData)?.languages}
+                    renderingEngine={(() => {
+                      const re = (audienceData as AnyData)?.rendering_engine;
+                      return Array.isArray(re) ? re : re?.data;
+                    })()}
+                    activeTab={subTabIndex}
+                    onTabChange={onSubTabChange}
                   />
                 </Grid>
-              )}
-          </Grid>
 
-          {/* 5. Quality section */}
-          {(audienceData as AnyData)?.quality_breakdown &&
-            (audienceData as AnyData)?.quality_breakdown?.tiers !==
-              undefined && (
-              <Box sx={{ mt: 3 }}>
-                <QualitySection
-                  quality={(audienceData as AnyData).quality_breakdown}
-                />
-              </Box>
-            )}
+                {/* 3. Behavior / navigation context */}
+                {hasBehaviorData && (
+                  <Grid item xs={12} md={showSideBySide ? 6 : 12}>
+                    <BehaviorSection
+                      navigationContext={
+                        (audienceData as AnyData).navigation_context_breakdown
+                      }
+                    />
+                  </Grid>
+                )}
+
+                {/* 4. Social platforms */}
+                {hasSocialData && (
+                  <Grid item xs={12} md={showSideBySide ? 6 : 12}>
+                    <SocialPlatformSection
+                      platforms={
+                        (audienceData as AnyData).social_platform_breakdown
+                      }
+                    />
+                  </Grid>
+                )}
+
+                {/* 5. Quality section */}
+                {(audienceData as AnyData)?.quality_breakdown?.tiers !==
+                  undefined && (
+                  <Grid item xs={12}>
+                    <QualitySection
+                      quality={(audienceData as AnyData).quality_breakdown}
+                    />
+                  </Grid>
+                )}
+              </Grid>
+            );
+          })()}
 
           {/* 6. Audience insights — secondary detail */}
           <Box sx={{ mt: 3 }}>
