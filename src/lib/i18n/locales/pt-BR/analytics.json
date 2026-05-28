@@ -995,5 +995,10 @@
     "title": "Qualidade",
     "description": "Distribuição do tráfego por nível de qualidade: orgânico, suspeito e potencial fraude.",
     "subtitle": "{{suspicious}} suspeitos · {{fraud}} fraude"
+  },
+  "sections": {
+    "acquisition": "Canais de Aquisição",
+    "temporal": "Padrões Temporais",
+    "audience": "Audiência"
   }
 }
