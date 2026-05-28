@@ -10,7 +10,24 @@ import {
   radiusTokens,
 } from "@/lib/theme/designSystem";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-import type { TrafficChannel } from "../../../hooks/useInsightsData";
+
+interface TrafficSource {
+  source: string;
+  clicks: number;
+  percentage: number;
+  avg_response_time: number;
+  avg_session_depth: number;
+}
+
+interface TrafficChannel {
+  channel: string;
+  clicks: number;
+  percentage: number;
+  unique_visitors: number;
+  sources: TrafficSource[];
+  avg_response_time: number;
+  avg_session_depth: number;
+}
 
 interface TrafficChannelsViewProps {
   /** Array of channel data with click counts and performance metrics. */
@@ -151,8 +168,7 @@ export function TrafficChannelsView({
     tooltip: {
       theme: theme.palette.mode,
       y: {
-        formatter: (val: number) =>
-          t("insights.traffic.sessionDepthFmt", { n: val.toFixed(2) }),
+        formatter: (val: number) => `${val.toFixed(2)} clicks/sessão`,
       },
     },
   };
