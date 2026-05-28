@@ -50,7 +50,7 @@ export function AudiencePerformanceTab({
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={7}>
         <Card elevation={0} sx={outlinedCardSx}>
           <CardContent>
             <Typography
@@ -72,37 +72,66 @@ export function AudiencePerformanceTab({
               )}
               size="standard"
             />
+          </CardContent>
+        </Card>
+      </Grid>
 
-            <Box sx={{ mt: 3 }}>
-              <Typography variant="subtitle1" gutterBottom>
-                {t("audience.chart.performanceDetails")}
-              </Typography>
-              <Stack spacing={1}>
-                {devicePerformance.map((perf) => (
-                  <Box
-                    key={perf.device}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      p: 1,
-                      ...itemRowSx,
-                    }}
+      <Grid item xs={12} md={5}>
+        <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
+          <CardContent>
+            <Typography variant="subtitle1" gutterBottom>
+              {t("audience.chart.performanceDetails")}
+            </Typography>
+            <Stack spacing={1}>
+              {devicePerformance.map((perf) => (
+                <Box key={perf.device} sx={{ p: 1, ...itemRowSx }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ mb: 0.5, fontWeight: 600 }}
                   >
-                    <Typography variant="body2">{perf.device}</Typography>
-                    <Box sx={{ textAlign: "right" }}>
-                      <Typography variant="caption">
-                        {t("audience.chart.performanceAvg")}{" "}
-                        {perf.avg_response_time}ms |{" "}
-                        {t("audience.chart.performanceMin")}{" "}
-                        {perf.min_response_time}ms |{" "}
-                        {t("audience.chart.performanceMax")}{" "}
+                    {perf.device}
+                  </Typography>
+                  <Grid container spacing={1}>
+                    <Grid item xs={4}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        display="block"
+                      >
+                        {t("audience.chart.performanceAvg")}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        {perf.avg_response_time}ms
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        display="block"
+                      >
+                        {t("audience.chart.performanceMin")}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        {perf.min_response_time}ms
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        display="block"
+                      >
+                        {t("audience.chart.performanceMax")}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
                         {perf.max_response_time}ms
                       </Typography>
-                    </Box>
-                  </Box>
-                ))}
-              </Stack>
-            </Box>
+                    </Grid>
+                  </Grid>
+                </Box>
+              ))}
+            </Stack>
           </CardContent>
         </Card>
       </Grid>
