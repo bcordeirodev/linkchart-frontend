@@ -25,7 +25,6 @@ import { TemporalDistributionTab } from "./tabs/TemporalDistributionTab";
 interface TemporalChartProps {
   hourlyData: HourlyData[];
   weeklyData: DayOfWeekData[];
-  showInsights?: boolean;
   hourlyPatternsLocal?: HourlyPatternData[];
   weekendVsWeekday?: WeekendVsWeekdayData;
   businessHoursAnalysis?: BusinessHoursData;
@@ -56,7 +55,6 @@ interface TemporalChartProps {
 export function TemporalChart({
   hourlyData,
   weeklyData,
-  showInsights = true,
   hourlyPatternsLocal,
   weekendVsWeekday,
   businessHoursAnalysis,
@@ -88,58 +86,6 @@ export function TemporalChart({
       (advancedData.monthly_trends?.length ?? 0) > 0);
   const hasTimezones = (advancedData?.timezone_analysis?.length ?? 0) > 0;
   const hasViralRank = (viralRankByDay?.length ?? 0) > 0;
-
-  // ── derived metrics (passed to Patterns tab) ──────────────────────────────
-  const peakHour =
-    hourlyData.length > 0
-      ? hourlyData.reduce((prev, current) =>
-          prev.clicks > current.clicks ? prev : current,
-        )
-      : { label: "--", clicks: 0 };
-
-  const peakDay =
-    weeklyData.length > 0
-      ? weeklyData.reduce((prev, current) =>
-          prev.clicks > current.clicks ? prev : current,
-        )
-      : { day_name: "--", clicks: 0 };
-
-  /** @param data — array of objects that each have a `clicks` property */
-  const getTotalClicks = (data: { clicks: number }[]) =>
-    data.reduce((sum, item) => sum + item.clicks, 0);
-
-  const hourlyTotal = getTotalClicks(hourlyData);
-  const weeklyTotal = getTotalClicks(weeklyData);
-
-  const avgClicksPerHour = hourlyTotal / 24;
-  // Use the number of days that actually have data as the denominator so the
-  // average stays meaningful when a segment filter reduces the active day set
-  // (e.g. weekday filter → 5 days, not 7).
-  const daysWithData = weeklyData.filter((d) => d.clicks > 0).length || 7;
-  const avgClicksPerDay = weeklyTotal / daysWithData;
-  const activeHours = hourlyData.filter(
-    (hour) => hour.clicks > avgClicksPerHour,
-  ).length;
-  const activeDays = weeklyData.filter(
-    (day) => day.clicks > avgClicksPerDay,
-  ).length;
-
-  // Use the `day` field (ISO 1=Mon…7=Sun) instead of positional indices so
-  // the computation stays correct when weeklyData is pre-filtered by segment.
-  const weekendClicks = weeklyData
-    .filter((d) => (d.day as number) >= 6) // Sat=6, Sun=7
-    .reduce((sum, d) => sum + d.clicks, 0);
-  const weekdayClicks = weeklyData
-    .filter((d) => (d.day as number) <= 5) // Mon=1 … Fri=5
-    .reduce((sum, d) => sum + d.clicks, 0);
-  const isWeekendActive =
-    weeklyData.length > 0 ? weekendClicks > weekdayClicks : false;
-  const isBusinessHoursActive =
-    hourlyData.length >= 24
-      ? hourlyData.slice(9, 18).reduce((sum, hour) => sum + hour.clicks, 0) >
-        hourlyData.slice(0, 9).reduce((sum, hour) => sum + hour.clicks, 0) +
-          hourlyData.slice(18, 24).reduce((sum, hour) => sum + hour.clicks, 0)
-      : false;
 
   // Hide comparison charts when the active segment filter pre-excludes one of
   // their dimensions — the result would be trivially 100 %/0 % and misleading.
@@ -180,7 +126,6 @@ export function TemporalChart({
         <TemporalPatternsTab
           hourlyData={hourlyData}
           weeklyData={weeklyData}
-          showInsights={showInsights}
           hourlyPatternsLocal={hourlyPatternsLocal}
           weekendVsWeekday={weekendVsWeekday}
           businessHoursAnalysis={businessHoursAnalysis}
@@ -191,14 +136,6 @@ export function TemporalChart({
           secondaryColor={
             chartColors.secondary?.main ?? chartColors.primary.main
           }
-          hourlyTotal={hourlyTotal}
-          weeklyTotal={weeklyTotal}
-          peakHour={peakHour}
-          peakDay={peakDay}
-          activeHours={activeHours}
-          activeDays={activeDays}
-          isBusinessHoursActive={isBusinessHoursActive}
-          isWeekendActive={isWeekendActive}
         />
       )}
 

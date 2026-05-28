@@ -1,5 +1,5 @@
 "use client";
-import { Clock, Search } from "lucide-react";
+import { Clock } from "lucide-react";
 import { useMemo } from "react";
 import {
   Box,
@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   Grid,
-  Alert,
   Chip,
   Stack,
   Divider,
@@ -39,8 +38,6 @@ export interface TemporalPatternsTabProps {
   hourlyData: HourlyData[];
   /** Daily click data (up to 7 entries). */
   weeklyData: DayOfWeekData[];
-  /** Whether to render the pattern analysis insights card. */
-  showInsights: boolean;
   /** Local-timezone hourly patterns. */
   hourlyPatternsLocal?: HourlyPatternData[];
   /** Weekend vs weekday click comparison. */
@@ -57,22 +54,6 @@ export interface TemporalPatternsTabProps {
   primaryColor: string;
   /** Secondary chart color. */
   secondaryColor: string;
-  /** Total clicks across all hours. */
-  hourlyTotal: number;
-  /** Total clicks across all days. */
-  weeklyTotal: number;
-  /** Peak hour entry with the highest click count. */
-  peakHour: { label: string; clicks: number };
-  /** Peak day entry with the highest click count. */
-  peakDay: { day_name: string; clicks: number };
-  /** Number of hours that exceed the average click rate. */
-  activeHours: number;
-  /** Number of days that exceed the average click rate. */
-  activeDays: number;
-  /** Whether the majority of clicks occur during business hours. */
-  isBusinessHoursActive: boolean;
-  /** Whether the majority of clicks occur on weekends. */
-  isWeekendActive: boolean;
 }
 
 /**
@@ -85,7 +66,6 @@ export interface TemporalPatternsTabProps {
 export function TemporalPatternsTab({
   hourlyData,
   weeklyData,
-  showInsights,
   hourlyPatternsLocal,
   weekendVsWeekday,
   businessHoursAnalysis,
@@ -94,16 +74,17 @@ export function TemporalPatternsTab({
   isDark,
   primaryColor,
   secondaryColor,
-  hourlyTotal,
-  weeklyTotal,
-  peakHour,
-  peakDay,
-  activeHours,
-  activeDays,
-  isBusinessHoursActive,
-  isWeekendActive,
 }: TemporalPatternsTabProps) {
   const { t } = useTranslation("analytics");
+
+  const hourlyTotal = useMemo(
+    () => hourlyData.reduce((sum, h) => sum + h.clicks, 0),
+    [hourlyData],
+  );
+  const weeklyTotal = useMemo(
+    () => weeklyData.reduce((sum, d) => sum + d.clicks, 0),
+    [weeklyData],
+  );
 
   const sortedWeeklyByClicks = useMemo(
     () => weeklyData.slice().sort((a, b) => b.clicks - a.clicks),
@@ -112,23 +93,6 @@ export function TemporalPatternsTab({
 
   return (
     <Stack spacing={2}>
-      <Alert severity="info">
-        <Typography variant="body2">
-          <strong>{t("temporal.chart.insightsLabel")}:</strong>{" "}
-          {hourlyTotal > 0 ? (
-            <>
-              {t("temporal.chart.peakHour")} <strong>{peakHour.label}</strong> (
-              {peakHour.clicks} {t("temporal.chart.clicks")}).{" "}
-              {t("temporal.chart.dayPatterns")}:{" "}
-              <strong>{peakDay.day_name}</strong> ({peakDay.clicks}{" "}
-              {t("temporal.chart.clicks")}).
-            </>
-          ) : (
-            t("temporal.chart.noData")
-          )}
-        </Typography>
-      </Alert>
-
       {hourlyTotal > 0 || weeklyTotal > 0 ? (
         <Box>
           <Grid container spacing={3}>
@@ -196,166 +160,6 @@ export function TemporalPatternsTab({
             ) : null}
           </Grid>
         </Box>
-      ) : null}
-
-      {showInsights && (hourlyTotal > 0 || weeklyTotal > 0) ? (
-        <Card
-          elevation={0}
-          sx={{
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: `${radiusTokens.lg}px`,
-          }}
-        >
-          <CardContent>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
-            >
-              <Search size={16} strokeWidth={1.5} />
-              {t("temporal.chart.patternAnalysis")}
-            </Typography>
-
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Typography
-                  variant="subtitle2"
-                  gutterBottom
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
-                  <Clock size={16} strokeWidth={1.5} />{" "}
-                  {t("temporal.chart.hourPatterns")}
-                </Typography>
-                <Stack spacing={1} my={2}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <Chip
-                      label={
-                        isBusinessHoursActive
-                          ? t("temporal.chart.businessHours")
-                          : t("temporal.chart.outsideHoursChip")
-                      }
-                      color={isBusinessHoursActive ? "success" : "warning"}
-                      size="small"
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {isBusinessHoursActive
-                        ? t("temporal.chart.activeNow")
-                        : t("temporal.chart.activeAfterHours")}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <Chip
-                      label={`${activeHours}/24 ${t("temporal.chart.activeHours")}`}
-                      color="info"
-                      size="small"
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {t("temporal.chart.activityPercent", {
-                        percent: ((activeHours / 24) * 100).toFixed(0),
-                      })}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Typography variant="subtitle2" gutterBottom>
-                  {t("temporal.chart.dayPatterns")}
-                </Typography>
-                <Stack spacing={1}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <Chip
-                      label={
-                        isWeekendActive
-                          ? t("temporal.chart.weekendDays")
-                          : t("temporal.chart.weekdays")
-                      }
-                      color={isWeekendActive ? "secondary" : "primary"}
-                      size="small"
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {isWeekendActive
-                        ? t("temporal.chart.weekendActiveDesc")
-                        : t("temporal.chart.weekdayActiveDesc")}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <Chip
-                      label={`${activeDays}/7 ${t("temporal.chart.activeDays")}`}
-                      color="info"
-                      size="small"
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {t("temporal.chart.weekActivityPercent", {
-                        percent: ((activeDays / 7) * 100).toFixed(0),
-                      })}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </Grid>
-            </Grid>
-
-            <Divider sx={{ my: 2 }} />
-
-            <Box>
-              <Typography variant="subtitle2" gutterBottom>
-                {t("temporal.chart.timingRecommendations")}
-              </Typography>
-              <Stack spacing={1}>
-                {peakHour && peakHour.clicks > 0 ? (
-                  <Typography variant="body2" color="text.secondary">
-                    {t("temporal.chart.scheduleTip", {
-                      hour: peakHour.label,
-                      clicks: peakHour.clicks,
-                    })}
-                  </Typography>
-                ) : null}
-                {peakDay && peakDay.clicks > 0 ? (
-                  <Typography variant="body2" color="text.secondary">
-                    {t("temporal.chart.mostActiveDay", {
-                      day: peakDay.day_name,
-                    })}
-                  </Typography>
-                ) : null}
-                {isBusinessHoursActive ? (
-                  <Typography variant="body2" color="text.secondary">
-                    {t("temporal.chart.businessFocus")}
-                  </Typography>
-                ) : null}
-                {!isBusinessHoursActive && hourlyTotal > 0 && (
-                  <Typography variant="body2" color="text.secondary">
-                    {t("temporal.chart.afterHoursFocus")}
-                  </Typography>
-                )}
-              </Stack>
-            </Box>
-          </CardContent>
-        </Card>
       ) : null}
 
       {/* Local Time */}
