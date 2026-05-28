@@ -31,7 +31,7 @@ function resolveDeviceColor(device: string, fallbackIndex: number): string {
 
 export function DeviceBreakdownChart({
   data,
-  height = 300,
+  height,
 }: DeviceBreakdownChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
@@ -60,6 +60,7 @@ export function DeviceBreakdownChart({
       <ApexChartWrapper
         type="donut"
         height={height}
+        size="standard"
         series={pieProps.series}
         options={{
           ...pieProps.options,

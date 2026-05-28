@@ -17,7 +17,7 @@ interface InsightsFilterBarProps {
   onActionableOnlyChange: (v: boolean) => void;
 }
 
-const PRIORITY_OPTIONS: InsightPriority[] = ["all", "high", "medium"];
+const PRIORITY_OPTIONS: InsightPriority[] = ["all", "high", "medium", "low"];
 
 const CATEGORY_OPTIONS = [
   "geographic",

@@ -36,7 +36,7 @@ export type GroupBy = "hour" | "day" | "month";
 export type GeoLevel = "country" | "state" | "city";
 
 /** Priority options for the Insights tab filter. */
-export type InsightPriority = "all" | "high" | "medium";
+export type InsightPriority = "all" | "high" | "medium" | "low";
 
 /** Full filter state plus setters returned by `useAnalyticsFilters`. */
 export interface AnalyticsFilters {
@@ -171,7 +171,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     "business",
   ];
   const GEO_LEVELS: readonly GeoLevel[] = ["country", "state", "city"];
-  const PRIORITIES: readonly InsightPriority[] = ["all", "high", "medium"];
+  const PRIORITIES: readonly InsightPriority[] = ["all", "high", "medium", "low"];
 
   const period = parseEnum<Period>(searchParams.get("period"), PERIODS, "all");
   // Default is true; "false" in URL explicitly disables it.

@@ -16,61 +16,10 @@ import { radiusTokens } from "@/lib/theme/designSystem";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
+import type { TrafficSourceData } from "../../hooks/useInsightsData";
 import { TrafficChannelsView } from "./sub-views/TrafficChannelsView";
 import { TrafficSourcesView } from "./sub-views/TrafficSourcesView";
 import { TrafficContextView } from "./sub-views/TrafficContextView";
-
-interface TrafficSource {
-  source: string;
-  clicks: number;
-  percentage: number;
-  avg_response_time: number;
-  avg_session_depth: number;
-}
-
-interface TrafficChannel {
-  channel: string;
-  clicks: number;
-  percentage: number;
-  unique_visitors: number;
-  sources: TrafficSource[];
-  avg_response_time: number;
-  avg_session_depth: number;
-}
-
-/**
- * A strategic recommendation from the traffic source analysis.
- *
- * `message_key` is an i18n key (e.g. `"insights.recommendations.highSocialTraffic"`)
- * that the component translates via `t(rec.message_key)`. The old `message` field
- * with hardcoded Portuguese text has been removed from the backend.
- */
-interface TrafficRecommendation {
-  type: "optimization" | "growth" | "diversification";
-  /** i18n key for the recommendation text — use `t(message_key)` to display. */
-  message_key: string;
-  priority: "high" | "medium" | "low";
-}
-
-interface NavigationContextEntry {
-  context: string;
-  clicks: number;
-  percentage: number;
-}
-
-interface TrafficSourceData {
-  sources: TrafficSource[];
-  channels: TrafficChannel[];
-  top_source: {
-    source: string;
-    clicks: number;
-    percentage: number;
-  } | null;
-  source_diversity: number;
-  total_clicks: number;
-  recommendations: TrafficRecommendation[];
-  navigation_context?: NavigationContextEntry[];
-}
 
 interface TrafficSourceChartProps {
   data: TrafficSourceData;

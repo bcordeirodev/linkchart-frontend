@@ -18,24 +18,10 @@ import {
   elevationTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
-
-/**
- * A strategic recommendation from the traffic source analysis.
- *
- * `message_key` is an i18n key translated via `t(rec.message_key)`.
- */
-interface TrafficRecommendation {
-  type: "optimization" | "growth" | "diversification";
-  /** i18n key for the recommendation text — use `t(message_key)` to display. */
-  message_key: string;
-  priority: "high" | "medium" | "low";
-}
-
-interface NavigationContextEntry {
-  context: string;
-  clicks: number;
-  percentage: number;
-}
+import type {
+  NavigationContextEntry,
+  TrafficRecommendation,
+} from "../../../hooks/useInsightsData";
 
 interface TrafficContextViewProps {
   /** Navigation context breakdown (may be undefined or empty). */

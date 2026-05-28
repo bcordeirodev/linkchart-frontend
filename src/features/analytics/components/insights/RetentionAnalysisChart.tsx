@@ -15,22 +15,7 @@ import {
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-
-/**
- * Real retention data shape returned by the backend.
- *
- * Rates are decimals in [0.0, 1.0]. `retention_score` and `benchmark_comparison`
- * have been removed — they were fabricated from arbitrary formulas.
- */
-interface RetentionData {
-  /** Fraction of unique visitors who are return visitors (0.0–1.0). */
-  return_visitor_rate: number;
-  /** Fraction of unique visitors who are new (0.0–1.0). */
-  new_visitor_rate: number;
-  total_visitors: number;
-  return_visitors: number;
-  new_visitors: number;
-}
+import type { RetentionData } from "../../hooks/useInsightsData";
 
 /** Props accepted by {@link RetentionAnalysisChart}. */
 interface RetentionAnalysisChartProps {
