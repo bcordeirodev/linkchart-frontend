@@ -10,10 +10,6 @@ import {
   MapPin,
   Briefcase,
   Lightbulb,
-  Repeat2,
-  Globe,
-  Activity,
-  Wrench,
 } from "lucide-react";
 import {
   Box,
@@ -27,7 +23,6 @@ import {
   Avatar,
   LinearProgress,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
@@ -39,7 +34,26 @@ import {
   motionTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
-import type { BusinessInsight } from "../../hooks/useInsightsData";
+
+interface BusinessInsight {
+  type: string;
+  title: string;
+  /** i18n key for the insight title (preferred over `title` when present). */
+  title_key?: string;
+  /** Interpolation params for `title_key`. */
+  title_params?: Record<string, string | number>;
+  description: string;
+  /** i18n key for the insight description (preferred over `description` when present). */
+  description_key?: string;
+  /** Interpolation params for `description_key`. */
+  description_params?: Record<string, string | number>;
+  priority: "high" | "medium" | "low";
+  recommendation?: string;
+  /** i18n key for the recommendation (preferred over `recommendation` when present). */
+  recommendation_key?: string;
+  /** Interpolation params for `recommendation_key`. */
+  recommendation_params?: Record<string, string | number>;
+}
 
 interface HttpProtocolEntry {
   protocol: string;
@@ -64,7 +78,8 @@ interface BusinessInsightsProps {
  *
  * Displays each insight with a colour-coded priority badge (high/medium/low),
  * a category icon, and optional HTTP protocol usage bars. When the `insights`
- * array is empty an info Alert is shown instead.
+ * array is empty an info Alert is shown instead. An auto-summary Alert is
+ * rendered below the list when at least one card is visible.
  */
 export function BusinessInsights({
   insights,
@@ -143,14 +158,10 @@ export function BusinessInsights({
     const iconMap = {
       geographic: <MapPin {...ICON_MD} />,
       audience: <MonitorSmartphone {...ICON_MD} />,
-      temporal: <Clock {...ICON_MD} />,
+      temporal: <TrendingUp {...ICON_MD} />,
       performance: <BarChart3 {...ICON_MD} />,
       business: <Briefcase {...ICON_MD} />,
-      retention: <Repeat2 {...ICON_MD} />,
-      traffic_source: <Globe {...ICON_MD} />,
-      engagement: <Activity {...ICON_MD} />,
-      conversion: <TrendingUp {...ICON_MD} />,
-      optimization: <Wrench {...ICON_MD} />,
+      schedule: <Clock {...ICON_MD} />,
     };
     return iconMap[type as keyof typeof iconMap] || <Info {...ICON_MD} />;
   };
@@ -190,10 +201,8 @@ export function BusinessInsights({
         security: 10,
         performance: 9,
         geographic: 8,
-        retention: 7,
-        traffic_source: 6,
-        engagement: 5,
-        growth: 4,
+        engagement: 7,
+        growth: 6,
         optimization: 5,
         audience: 4,
         temporal: 3,
@@ -234,11 +243,6 @@ export function BusinessInsights({
           const prevInsight = organizedInsights[index - 1];
           const showCategoryDivider =
             index > 0 && prevInsight && prevInsight.type !== insight.type;
-          const recommendationText = resolveText(
-            insight.recommendation_key,
-            insight.recommendation_params,
-            insight.recommendation,
-          );
 
           return (
             <Box key={index}>
@@ -360,29 +364,6 @@ export function BusinessInsights({
                         )}
                       </Typography>
 
-                      {/* Recomendação accionável */}
-                      {recommendationText ? (
-                        <Box
-                          sx={{
-                            bgcolor: alpha(palette.main, 0.06),
-                            borderLeft: `3px solid ${palette.main}`,
-                            borderRadius: radiusTokens.md + "px",
-                            p: 1.5,
-                            mt: 1.5,
-                          }}
-                        >
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: 500,
-                              color: palette.dark ?? palette.main,
-                            }}
-                          >
-                            {recommendationText}
-                          </Typography>
-                        </Box>
-                      ) : null}
-
                       {/* Categoria com divisória sutil */}
                       <Divider sx={{ my: 1 }} />
 
@@ -413,6 +394,29 @@ export function BusinessInsights({
           );
         })}
       </Stack>
+
+      {/* Resumo dos insights */}
+      {organizedInsights.length > 0 && (
+        <Alert
+          severity="success"
+          sx={{
+            mt: 3,
+            borderRadius: `${radiusTokens.lg}px`,
+            "& .MuiAlert-icon": {
+              fontSize: "1.5rem",
+            },
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: 500,
+            }}
+          >
+            {t("insights.autoSummary", { count: organizedInsights.length })}
+          </Typography>
+        </Alert>
+      )}
 
       {/* Protocolo HTTP */}
       {httpProtocol && httpProtocol.length > 0 ? (

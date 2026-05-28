@@ -21,22 +21,10 @@ export interface BusinessInsight {
     | "retention"
     | "traffic_source";
   title: string;
-  /** i18n key for the insight title (preferred over `title` when present). */
-  title_key?: string;
-  /** Interpolation params for `title_key`. */
-  title_params?: Record<string, string | number>;
   description: string;
-  /** i18n key for the insight description (preferred over `description` when present). */
-  description_key?: string;
-  /** Interpolation params for `description_key`. */
-  description_params?: Record<string, string | number>;
   priority: "high" | "medium" | "low";
   actionable: boolean;
   recommendation?: string;
-  /** i18n key for the recommendation (preferred over `recommendation` when present). */
-  recommendation_key?: string;
-  /** Interpolation params for `recommendation_key`. */
-  recommendation_params?: Record<string, string | number>;
   impact_score?: number;
   confidence?: number;
   data_points?: Record<string, unknown>;
