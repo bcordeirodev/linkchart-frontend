@@ -29,6 +29,10 @@ interface LegacyAudienceAnalysisProps {
   dateTo?: string | null;
   /** When `true`, bot traffic is excluded from all metrics. */
   excludeBots?: boolean;
+  /** Currently-active audience sub-tab index (0–5). */
+  subTabIndex?: number;
+  /** Called when the user switches audience sub-tab. */
+  onSubTabChange?: (v: number) => void;
 }
 
 /**
@@ -40,6 +44,8 @@ export function AudienceAnalysis({
   dateFrom,
   dateTo,
   excludeBots,
+  subTabIndex,
+  onSubTabChange,
 }: LegacyAudienceAnalysisProps &
   Partial<Pick<AudienceAnalysisProps, "title">>) {
   const { t } = useTranslation("analytics");
@@ -113,6 +119,8 @@ export function AudienceAnalysis({
                     const re = (audienceData as AnyData)?.rendering_engine;
                     return Array.isArray(re) ? re : re?.data;
                   })()}
+                  activeTab={subTabIndex}
+                  onTabChange={onSubTabChange}
                 />
               </EnhancedPaper>
             </Grid>
