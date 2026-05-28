@@ -667,7 +667,9 @@
       "platformDescription": "Plataforma do sistema operacional detectada via Client Hints (Fase 1: Sec-CH-UA-Platform).",
       "connectionType": "Tipo de Conexão",
       "connectionTypeDescription": "Tipo de conexão ISP classificado a partir de dados de rede (Fase 2).",
-      "others": "Outros"
+      "others": "Outros",
+      "showTechnical": "Ver dados técnicos",
+      "hideTechnical": "Ocultar dados técnicos"
     }
   },
   "performance": {

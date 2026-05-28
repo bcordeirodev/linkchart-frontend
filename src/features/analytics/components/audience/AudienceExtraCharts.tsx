@@ -2,15 +2,18 @@
 import {
   Alert,
   Box,
+  Button,
   Card,
   CardContent,
   Chip,
+  Collapse,
   Divider,
   Grid,
   Stack,
   Typography,
 } from "@mui/material";
-import { Info } from "lucide-react";
+import { Info, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
@@ -126,6 +129,7 @@ export function AudienceExtraCharts({
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
+  const [showFetchDest, setShowFetchDest] = useState(false);
 
   // Normalise to unified shape
   const lang = normaliseBreakdown<LanguageEntry>(
@@ -385,9 +389,28 @@ export function AudienceExtraCharts({
 
       {/* Fetch-dest breakdown — Technical section */}
       {fetchDestBreakdown && (
-        <Box sx={{ mt: 3 }}>
-          <Divider sx={{ mb: 3 }} />
-          <FetchDestChart fetchDestBreakdown={fetchDestBreakdown} />
+        <Box sx={{ mt: 2 }}>
+          <Divider sx={{ mb: 2 }} />
+          <Button
+            size="small"
+            variant="text"
+            endIcon={
+              showFetchDest ? (
+                <ChevronUp size={14} />
+              ) : (
+                <ChevronDown size={14} />
+              )
+            }
+            onClick={() => setShowFetchDest((v) => !v)}
+            sx={{ px: 0, minWidth: 0, mb: 1 }}
+          >
+            {showFetchDest
+              ? t("audience.extraCharts.hideTechnical")
+              : t("audience.extraCharts.showTechnical")}
+          </Button>
+          <Collapse in={showFetchDest}>
+            <FetchDestChart fetchDestBreakdown={fetchDestBreakdown} />
+          </Collapse>
         </Box>
       )}
     </Box>
