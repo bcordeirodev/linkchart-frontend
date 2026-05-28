@@ -97,9 +97,6 @@ export function TemporalTrendsChart({
 
   return (
     <Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        {t("temporal.trends.description")}
-      </Typography>
       <Grid container spacing={3}>
         {/* Weekly Trends */}
         {hasWeeklyData ? (
