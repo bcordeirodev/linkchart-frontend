@@ -11,11 +11,6 @@ import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import { useTemporalData } from "../../hooks/useTemporalData";
 import type { Segment } from "@/features/links/hooks/useAnalyticsFilters";
-import {
-  DayOfWeekChart,
-  HourlyClicksChart,
-} from "@/features/analytics/components/dashboard/charts";
-
 import { TemporalChart } from "./TemporalChart";
 import { TemporalFilterBar } from "./TemporalFilterBar";
 import { HolidayImpactCard } from "./HolidayImpactCard";
@@ -108,20 +103,6 @@ export function TemporalAnalysis({
     return raw;
   }, [data?.clicks_by_day_of_week, segment]);
 
-  const hourlyChartNode =
-    (data?.clicks_by_hour?.length ?? 0) > 0 ? (
-      <Grid item xs={12} md={6}>
-        <HourlyClicksChart data={data!.clicks_by_hour} />
-      </Grid>
-    ) : null;
-
-  const weeklyChartNode =
-    dayOfWeekChartData.length > 0 ? (
-      <Grid item xs={12} md={6}>
-        <DayOfWeekChart data={dayOfWeekChartData} />
-      </Grid>
-    ) : null;
-
   return (
     <Box>
       <AnalyticsStateManager
@@ -189,12 +170,6 @@ export function TemporalAnalysis({
               </Grid>
             </Grid>
           </Box>
-
-          {/* Summary charts */}
-          <Grid container spacing={3}>
-            {hourlyChartNode}
-            {weeklyChartNode}
-          </Grid>
 
           {/* Rich tabbed chart with advanced analytics */}
           <Box sx={{ mt: 2 }}>
