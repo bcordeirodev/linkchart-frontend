@@ -1,5 +1,5 @@
 "use client";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Card, CardContent, Typography, useTheme } from "@mui/material";
 import { BarChart3, CheckCircle, XCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -28,67 +28,70 @@ export function LinkInfoCard({ linkInfo }: LinkInfoCardProps) {
   const isDark = theme.palette.mode === "dark";
 
   return (
-    <Box
+    <Card
       sx={{
-        mt: 2,
-        p: 2,
-        bgcolor: "background.paper",
         borderRadius: `${radiusTokens.lg}px`,
+        border: `1px solid ${theme.palette.divider}`,
         boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
         transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+        "&:hover": {
+          boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
+        },
       }}
     >
-      <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
-        {linkInfo.title || t("list.noTitle")}
-      </Typography>
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{
-          mb: 1,
-          // Long URLs must break rather than overflow the card
-          wordBreak: "break-all",
-          overflowWrap: "anywhere",
-          overflow: "hidden",
-        }}
-      >
-        {linkInfo.original_url}
-      </Typography>
-      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+      <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+        <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+          {linkInfo.title || t("list.noTitle")}
+        </Typography>
         <Typography
-          variant="caption"
+          variant="body2"
+          color="text.secondary"
           sx={{
-            px: 1,
-            py: 0.5,
-            bgcolor: linkInfo.is_active ? "success.main" : "error.main",
-            color: "common.white",
-            borderRadius: `${radiusTokens.md}px`,
-            fontWeight: 600,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 0.5,
+            mb: 1,
+            // Long URLs must break rather than overflow the card
+            wordBreak: "break-all",
+            overflowWrap: "anywhere",
+            overflow: "hidden",
           }}
         >
-          {linkInfo.is_active ? (
-            <>
-              <CheckCircle size={12} strokeWidth={1.5} /> {t("status.active")}
-            </>
-          ) : (
-            <>
-              <XCircle size={12} strokeWidth={1.5} /> {t("status.inactive")}
-            </>
-          )}
+          {linkInfo.original_url}
         </Typography>
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ display: "inline-flex", alignItems: "center", gap: 0.5 }}
-        >
-          <BarChart3 size={14} strokeWidth={1.5} />
-          {t("metrics.clicksCount", { count: linkInfo.clicks })}
-        </Typography>
-      </Box>
-    </Box>
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <Typography
+            variant="caption"
+            sx={{
+              px: 1,
+              py: 0.5,
+              bgcolor: linkInfo.is_active ? "success.main" : "error.main",
+              color: "common.white",
+              borderRadius: `${radiusTokens.md}px`,
+              fontWeight: 600,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.5,
+            }}
+          >
+            {linkInfo.is_active ? (
+              <>
+                <CheckCircle size={12} strokeWidth={1.5} /> {t("status.active")}
+              </>
+            ) : (
+              <>
+                <XCircle size={12} strokeWidth={1.5} /> {t("status.inactive")}
+              </>
+            )}
+          </Typography>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: "inline-flex", alignItems: "center", gap: 0.5 }}
+          >
+            <BarChart3 size={14} strokeWidth={1.5} />
+            {t("metrics.clicksCount", { count: linkInfo.clicks })}
+          </Typography>
+        </Box>
+      </CardContent>
+    </Card>
   );
 }
 
