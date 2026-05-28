@@ -563,7 +563,9 @@
       "diversityLow": "Low",
       "limitedConnection": "Limited Connection",
       "limitedConnectionChip": "{{percent}}% on limited connection",
-      "limitedConnectionDetail": "{{clicks}} of {{total}} clicks"
+      "limitedConnectionDetail": "{{clicks}} of {{total}} clicks",
+      "expand": "Show insights",
+      "collapse": "Hide insights"
     },
     "chart": {
       "title": "Audience Analysis",
