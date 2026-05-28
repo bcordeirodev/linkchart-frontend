@@ -9,7 +9,14 @@ import {
   elevationTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
-import type { TrafficSource } from "../../../hooks/useInsightsData";
+
+interface TrafficSource {
+  source: string;
+  clicks: number;
+  percentage: number;
+  avg_response_time: number;
+  avg_session_depth: number;
+}
 
 interface TrafficSourcesViewProps {
   /** Ranked list of individual traffic sources. */
@@ -82,7 +89,7 @@ export function TrafficSourcesView({ sources }: TrafficSourcesViewProps) {
                   </Box>
                   <Box sx={{ textAlign: "right" }}>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {t("insights.traffic.clicksCount", { n: source.clicks })}
+                      {source.clicks} clicks
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {Number(source.percentage).toFixed(1)}%
