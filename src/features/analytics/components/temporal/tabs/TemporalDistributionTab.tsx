@@ -32,7 +32,7 @@ export function TemporalDistributionTab({
   const { t } = useTranslation("analytics");
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={2}>
       {hasTimezones && advancedData?.timezone_analysis ? (
         <TimezoneDistributionChart
           timezoneAnalysis={advancedData.timezone_analysis}

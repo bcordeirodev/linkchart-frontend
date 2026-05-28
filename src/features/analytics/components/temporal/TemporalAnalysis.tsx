@@ -144,7 +144,7 @@ export function TemporalAnalysis({
             />
           )}
 
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} md={3}>
                 <MetricCard
@@ -197,17 +197,8 @@ export function TemporalAnalysis({
             {weeklyChartNode}
           </Grid>
 
-          {/* Rich tabbed chart with advanced analytics — bordered to visually
-               distinguish this sub-tab section from the summary charts above */}
-          <Box
-            sx={{
-              mt: 3,
-              border: "1px solid",
-              borderColor: "divider",
-              borderRadius: 2,
-              p: { xs: 1.5, md: 2 },
-            }}
-          >
+          {/* Rich tabbed chart with advanced analytics */}
+          <Box sx={{ mt: 2 }}>
             <TemporalChart
               hourlyData={data?.clicks_by_hour || []}
               weeklyData={dayOfWeekChartData}

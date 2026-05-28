@@ -105,7 +105,7 @@ export function TemporalPatternsTab({
   const { t } = useTranslation("analytics");
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={2}>
       <Alert severity="info">
         <Typography variant="body2">
           <strong>{t("temporal.chart.insightsLabel")}:</strong>{" "}

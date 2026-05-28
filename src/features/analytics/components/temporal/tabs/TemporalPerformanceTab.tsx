@@ -32,7 +32,7 @@ export function TemporalPerformanceTab({
   const { t } = useTranslation("analytics");
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={2}>
       {hasPeakAnalysis && advancedData?.peak_analysis ? (
         <PeakAnalysisCard peakAnalysis={advancedData.peak_analysis} />
       ) : null}
