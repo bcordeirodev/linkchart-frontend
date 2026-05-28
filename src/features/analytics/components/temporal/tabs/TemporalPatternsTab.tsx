@@ -1,5 +1,6 @@
 "use client";
 import { Clock, Search } from "lucide-react";
+import { useMemo } from "react";
 import {
   Box,
   Typography,
@@ -104,6 +105,11 @@ export function TemporalPatternsTab({
 }: TemporalPatternsTabProps) {
   const { t } = useTranslation("analytics");
 
+  const sortedWeeklyByClicks = useMemo(
+    () => weeklyData.slice().sort((a, b) => b.clicks - a.clicks),
+    [weeklyData],
+  );
+
   return (
     <Stack spacing={2}>
       <Alert severity="info">
@@ -177,7 +183,7 @@ export function TemporalPatternsTab({
                     type="bar"
                     size="standard"
                     {...formatBarChart(
-                      weeklyData.slice().sort((a, b) => b.clicks - a.clicks),
+                      sortedWeeklyByClicks,
                       "day_name",
                       "clicks",
                       secondaryColor,
