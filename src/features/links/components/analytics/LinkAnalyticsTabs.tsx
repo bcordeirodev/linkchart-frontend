@@ -166,7 +166,11 @@ export function LinkAnalyticsTabsOptimized({
               key={index}
               id={`tab-${index}`}
               aria-controls={`tabpanel-${TAB_IDS[index]}`}
-              label={label}
+              label={
+                <Box component="span" sx={{ display: { xs: "none", sm: "block" } }}>
+                  {label}
+                </Box>
+              }
               icon={<Icon {...ICON_SM} />}
               iconPosition="start"
             />

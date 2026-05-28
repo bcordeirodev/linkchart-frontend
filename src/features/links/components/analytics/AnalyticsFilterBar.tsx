@@ -98,7 +98,7 @@ export function AnalyticsFilterBar({
         px: 2,
         pt: 1.5,
         pb: 2,
-        mb: 3,
+        mb: 2,
         bgcolor: "background.paper",
         borderRadius: 2,
         border: `1px solid ${theme.palette.divider}`,
