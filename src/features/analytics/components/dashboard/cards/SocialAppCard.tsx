@@ -3,7 +3,7 @@
  * SocialAppCard — shows share of clicks from mobile in-app browsers.
  */
 import { Smartphone } from "lucide-react";
-import { Alert, Box, Card, CardContent, Chip, Typography } from "@mui/material";
+import { Alert, Box, Card, CardContent, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 

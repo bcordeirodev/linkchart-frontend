@@ -171,7 +171,12 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     "business",
   ];
   const GEO_LEVELS: readonly GeoLevel[] = ["country", "state", "city"];
-  const PRIORITIES: readonly InsightPriority[] = ["all", "high", "medium", "low"];
+  const PRIORITIES: readonly InsightPriority[] = [
+    "all",
+    "high",
+    "medium",
+    "low",
+  ];
 
   const period = parseEnum<Period>(searchParams.get("period"), PERIODS, "all");
   // Default is true; "false" in URL explicitly disables it.
