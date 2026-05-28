@@ -82,7 +82,7 @@ export function TrafficSourcesView({ sources }: TrafficSourcesViewProps) {
                   </Box>
                   <Box sx={{ textAlign: "right" }}>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {source.clicks} clicks
+                      {t("insights.traffic.clicksCount", { n: source.clicks })}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {Number(source.percentage).toFixed(1)}%

@@ -25,7 +25,7 @@
     "back": "Back",
     "close": "Close",
     "confirm": "Confirm",
-    "retry": "Try again",
+    "retry": "Try Again",
     "refresh": "Refresh",
     "viewAnalytics": "View analytics",
     "qrCode": "QR Code"
@@ -51,7 +51,8 @@
     "loading": "Loading...",
     "error": "An error occurred",
     "noData": "No data available",
-    "success": "Operation completed successfully"
+    "success": "Operation completed successfully",
+    "shareLinks": "Share your links to see data here!"
   },
   "table": {
     "rowsPerPage": "Rows per page",

@@ -87,7 +87,8 @@
     "priorityOptions": {
       "all": "All",
       "high": "High",
-      "medium": "Medium"
+      "medium": "Medium",
+      "low": "Low"
     },
     "insightType": "Type",
     "insightTypeOptions": {
