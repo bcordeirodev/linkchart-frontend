@@ -17,6 +17,7 @@ import { ICON_MD } from "@/lib/theme/iconDefaults";
 import {
   elevationLightTokens,
   elevationTokens,
+  motionTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
 
@@ -44,7 +45,15 @@ export function UtmSourceCard({ data }: Props) {
 
   return (
     <Card
-      sx={{ borderRadius: `${radiusTokens.lg}px`, boxShadow: elevation.xs }}
+      sx={{
+        borderRadius: `${radiusTokens.lg}px`,
+        border: `1px solid ${theme.palette.divider}`,
+        boxShadow: elevation.xs,
+        transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+        "&:hover": {
+          boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
+        },
+      }}
     >
       <CardContent>
         <Typography

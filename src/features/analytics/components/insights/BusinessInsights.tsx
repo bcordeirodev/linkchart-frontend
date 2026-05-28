@@ -8,8 +8,11 @@ import {
   Clock,
   BarChart3,
   MapPin,
-  Briefcase,
   Lightbulb,
+  Repeat2,
+  Globe,
+  Activity,
+  Wrench,
 } from "lucide-react";
 import {
   Box,
@@ -23,6 +26,7 @@ import {
   Avatar,
   LinearProgress,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
@@ -34,26 +38,7 @@ import {
   motionTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
-
-interface BusinessInsight {
-  type: string;
-  title: string;
-  /** i18n key for the insight title (preferred over `title` when present). */
-  title_key?: string;
-  /** Interpolation params for `title_key`. */
-  title_params?: Record<string, string | number>;
-  description: string;
-  /** i18n key for the insight description (preferred over `description` when present). */
-  description_key?: string;
-  /** Interpolation params for `description_key`. */
-  description_params?: Record<string, string | number>;
-  priority: "high" | "medium" | "low";
-  recommendation?: string;
-  /** i18n key for the recommendation (preferred over `recommendation` when present). */
-  recommendation_key?: string;
-  /** Interpolation params for `recommendation_key`. */
-  recommendation_params?: Record<string, string | number>;
-}
+import type { BusinessInsight } from "../../hooks/useInsightsData";
 
 interface HttpProtocolEntry {
   protocol: string;
@@ -78,8 +63,7 @@ interface BusinessInsightsProps {
  *
  * Displays each insight with a colour-coded priority badge (high/medium/low),
  * a category icon, and optional HTTP protocol usage bars. When the `insights`
- * array is empty an info Alert is shown instead. An auto-summary Alert is
- * rendered below the list when at least one card is visible.
+ * array is empty an info Alert is shown instead.
  */
 export function BusinessInsights({
   insights,
@@ -155,15 +139,19 @@ export function BusinessInsights({
   }
 
   const getInsightIcon = (type: string) => {
-    const iconMap = {
+    const iconMap: Record<string, React.ReactNode> = {
       geographic: <MapPin {...ICON_MD} />,
       audience: <MonitorSmartphone {...ICON_MD} />,
-      temporal: <TrendingUp {...ICON_MD} />,
+      temporal: <Clock {...ICON_MD} />,
       performance: <BarChart3 {...ICON_MD} />,
-      business: <Briefcase {...ICON_MD} />,
-      schedule: <Clock {...ICON_MD} />,
+      security: <AlertCircle {...ICON_MD} />,
+      retention: <Repeat2 {...ICON_MD} />,
+      traffic_source: <Globe {...ICON_MD} />,
+      engagement: <Activity {...ICON_MD} />,
+      conversion: <TrendingUp {...ICON_MD} />,
+      optimization: <Wrench {...ICON_MD} />,
     };
-    return iconMap[type as keyof typeof iconMap] || <Info {...ICON_MD} />;
+    return iconMap[type] ?? <Info {...ICON_MD} />;
   };
 
   const getPriorityPalette = (priority: string) => {
@@ -184,10 +172,8 @@ export function BusinessInsights({
     return iconMap[priority as keyof typeof iconMap] || <Info {...ICON_MD} />;
   };
 
-  // Organizar insights por prioridade e categoria
   const organizedInsights = [...insights]
     .sort((a, b) => {
-      // Primeiro por prioridade
       const priorityOrder = { high: 3, medium: 2, low: 1 };
       const priorityDiff =
         priorityOrder[b.priority] - priorityOrder[a.priority];
@@ -196,13 +182,13 @@ export function BusinessInsights({
         return priorityDiff;
       }
 
-      // Depois por categoria
-      const categoryOrder = {
+      const categoryOrder: Record<string, number> = {
         security: 10,
         performance: 9,
         geographic: 8,
         engagement: 7,
-        growth: 6,
+        retention: 7,
+        traffic_source: 6,
         optimization: 5,
         audience: 4,
         temporal: 3,
@@ -210,8 +196,7 @@ export function BusinessInsights({
         business: 1,
       };
       return (
-        (categoryOrder[b.type as keyof typeof categoryOrder] || 0) -
-        (categoryOrder[a.type as keyof typeof categoryOrder] || 0)
+        (categoryOrder[b.type] || 0) - (categoryOrder[a.type] || 0)
       );
     })
     .slice(0, maxItems);
@@ -236,7 +221,6 @@ export function BusinessInsights({
         </Typography>
       ) : null}
 
-      {/* Insights organizados por categoria */}
       <Stack spacing={3}>
         {organizedInsights.map((insight, index) => {
           const palette = getPriorityPalette(insight.priority);
@@ -244,9 +228,14 @@ export function BusinessInsights({
           const showCategoryDivider =
             index > 0 && prevInsight && prevInsight.type !== insight.type;
 
+          const recommendationText = resolveText(
+            insight.recommendation_key,
+            insight.recommendation_params,
+            insight.recommendation,
+          );
+
           return (
             <Box key={index}>
-              {/* Divisor de categoria */}
               {showCategoryDivider ? (
                 <Box sx={{ mb: 2, mt: 1 }}>
                   <Divider
@@ -296,7 +285,6 @@ export function BusinessInsights({
               >
                 <CardContent sx={{ p: 3 }}>
                   <Stack direction="row" alignItems="flex-start" spacing={2}>
-                    {/* Ícone representativo */}
                     <Avatar
                       sx={{
                         width: 48,
@@ -309,7 +297,6 @@ export function BusinessInsights({
                       {getInsightIcon(insight.type)}
                     </Avatar>
 
-                    {/* Conteúdo principal */}
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Stack
                         direction="row"
@@ -331,7 +318,6 @@ export function BusinessInsights({
                           )}
                         </Typography>
 
-                        {/* Badge de prioridade padronizado */}
                         <Chip
                           icon={getPriorityIcon(insight.priority)}
                           label={insight.priority.toUpperCase()}
@@ -354,7 +340,7 @@ export function BusinessInsights({
                         sx={{
                           lineHeight: 1.6,
                           color: "text.secondary",
-                          mb: 2,
+                          mb: recommendationText ? 1.5 : 2,
                         }}
                       >
                         {resolveText(
@@ -364,7 +350,25 @@ export function BusinessInsights({
                         )}
                       </Typography>
 
-                      {/* Categoria com divisória sutil */}
+                      {recommendationText ? (
+                        <Box
+                          sx={{
+                            bgcolor: alpha(palette.main, 0.06),
+                            borderLeft: `3px solid ${palette.main}`,
+                            borderRadius: `${radiusTokens.md}px`,
+                            p: 1.5,
+                            mb: 2,
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{ fontWeight: 500, color: palette.dark ?? palette.main }}
+                          >
+                            {recommendationText}
+                          </Typography>
+                        </Box>
+                      ) : null}
+
                       <Divider sx={{ my: 1 }} />
 
                       <Typography
@@ -395,29 +399,6 @@ export function BusinessInsights({
         })}
       </Stack>
 
-      {/* Resumo dos insights */}
-      {organizedInsights.length > 0 && (
-        <Alert
-          severity="success"
-          sx={{
-            mt: 3,
-            borderRadius: `${radiusTokens.lg}px`,
-            "& .MuiAlert-icon": {
-              fontSize: "1.5rem",
-            },
-          }}
-        >
-          <Typography
-            variant="body2"
-            sx={{
-              fontWeight: 500,
-            }}
-          >
-            {t("insights.autoSummary", { count: organizedInsights.length })}
-          </Typography>
-        </Alert>
-      )}
-
       {/* Protocolo HTTP */}
       {httpProtocol && httpProtocol.length > 0 ? (
         <Card
@@ -445,7 +426,6 @@ export function BusinessInsights({
               {t("insights.httpProtocolTitle")}
             </Typography>
 
-            {/* Destaque HTTP/2 */}
             {(() => {
               const http2 = httpProtocol.find(
                 (e) =>

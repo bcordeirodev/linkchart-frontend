@@ -11,6 +11,7 @@ import { ICON_MD } from "@/lib/theme/iconDefaults";
 import {
   elevationLightTokens,
   elevationTokens,
+  motionTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
 
@@ -53,7 +54,15 @@ export function SocialAppCard({ data }: Props) {
   if (!data.navigation_context_available) {
     return (
       <Card
-        sx={{ borderRadius: `${radiusTokens.lg}px`, boxShadow: elevation.xs }}
+        sx={{
+          borderRadius: `${radiusTokens.lg}px`,
+          border: `1px solid ${theme.palette.divider}`,
+          boxShadow: elevation.xs,
+          transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+          "&:hover": {
+            boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
+          },
+        }}
       >
         <CardContent>
           <Typography
@@ -81,7 +90,15 @@ export function SocialAppCard({ data }: Props) {
 
   return (
     <Card
-      sx={{ borderRadius: `${radiusTokens.lg}px`, boxShadow: elevation.xs }}
+      sx={{
+        borderRadius: `${radiusTokens.lg}px`,
+        border: `1px solid ${theme.palette.divider}`,
+        boxShadow: elevation.xs,
+        transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+        "&:hover": {
+          boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
+        },
+      }}
     >
       <CardContent>
         <Typography
@@ -94,7 +111,7 @@ export function SocialAppCard({ data }: Props) {
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
           {t("dashboard.socialApp.description")}
         </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 700, mb: 0.5 }}>
+        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
           {data.percentage.toFixed(0)}%
         </Typography>
         <Typography
