@@ -7,8 +7,8 @@
  * Unifica a lógica de dashboard e charts em um único componente coeso.
  */
 
-import React, { useMemo } from "react";
-import { Box, Divider, Grid, Typography } from "@mui/material";
+import React, { useMemo, type ReactNode } from "react";
+import { Box, Divider, Grid, Skeleton, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Circle } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -18,7 +18,6 @@ import { LinkMetrics } from "@/features/links/components/LinkMetrics";
 import { createPresetAnimations } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
-import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { EmptyState } from "@/shared/ui/base/EmptyState";
 
 import type { DashboardData } from "@/types/analytics/dashboard";
@@ -59,6 +58,99 @@ interface LinkDashboardProps {
   excludeBots?: boolean;
 }
 
+/**
+ * Loading skeleton that mirrors the Overview tab layout:
+ * link info card → 6 metric cards (3-col) →
+ * 3 chart sections (Temporal / Audience / Acquisition),
+ * each with a divider label and two side-by-side charts.
+ */
+function OverviewSkeleton() {
+  return (
+    <Box>
+      {/* Link info card */}
+      <Skeleton
+        variant="rounded"
+        animation="wave"
+        height={72}
+        sx={{ mb: 2, borderRadius: 2 }}
+      />
+
+      {/* 6 metric cards — xs: 2 cols, sm: 2 cols, md: 3 cols */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr 1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+          },
+          gap: { xs: 2, md: 3 },
+          mb: { xs: 2, md: 3 },
+        }}
+      >
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Skeleton
+            key={i}
+            variant="rounded"
+            animation="wave"
+            height={120}
+            sx={{ borderRadius: 2 }}
+          />
+        ))}
+      </Box>
+
+      {/* 3 chart sections: Temporal, Audience, Acquisition */}
+      <Stack spacing={3}>
+        {Array.from({ length: 3 }).map((_, sectionIdx) => (
+          <Box key={sectionIdx}>
+            {/* Section divider with overline label */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                mb: 3,
+              }}
+            >
+              <Box sx={{ flex: 1, height: "1px", bgcolor: "divider" }} />
+              <Skeleton
+                variant="rounded"
+                animation="wave"
+                width={110}
+                height={18}
+                sx={{ borderRadius: 1 }}
+              />
+              <Box sx={{ flex: 1, height: "1px", bgcolor: "divider" }} />
+            </Box>
+
+            {/* Two charts side-by-side */}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                gap: { xs: 2, md: 3 },
+              }}
+            >
+              <Skeleton
+                variant="rounded"
+                animation="wave"
+                height={300}
+                sx={{ borderRadius: 2 }}
+              />
+              <Skeleton
+                variant="rounded"
+                animation="wave"
+                height={300}
+                sx={{ borderRadius: 2 }}
+              />
+            </Box>
+          </Box>
+        ))}
+      </Stack>
+    </Box>
+  );
+}
+
 /** Pre-mapped chart data derived from the raw DashboardData payload. */
 interface ChartData {
   temporal?: {
@@ -81,32 +173,16 @@ interface ChartData {
   socialIab?: NonNullable<DashboardData["summary"]>["social_iab"];
 }
 
-/** Props accepted by the {@link ChartsSection} component. */
-interface ChartsSectionProps {
-  /** Pre-mapped chart data to render. */
+type DashboardChartSectionId = "temporal" | "audience" | "acquisition";
+
+/** Props accepted by the {@link DashboardChartSection} component. */
+interface DashboardChartSectionProps {
   chartData: ChartData;
-  /** Optional fixed height for each chart in pixels. */
   height?: number;
+  section: DashboardChartSectionId;
 }
 
-/**
- * ChartsSection — renders individual chart `Grid item` children for the dashboard.
- *
- * Returns a React fragment of `Grid item` elements that slot directly into the
- * parent `Grid container` in {@link LinkDashboard}. Does NOT wrap in its own
- * `Grid container` to avoid double-nesting.
- *
- * Chart order: UTM → Social → Hourly → DayOfWeek → Device → Countries.
- * Adaptive layout: single items in a pair use `md=12` instead of `md=6`.
- */
-const ChartsSection = React.memo(function ChartsSection({
-  chartData,
-  height,
-}: ChartsSectionProps) {
-  const { t } = useTranslation("analytics");
-  const theme = useTheme();
-  const animations = useMemo(() => createPresetAnimations(theme), [theme]);
-
+function chartFlags(chartData: ChartData) {
   const hasHourly = !!chartData.temporal?.clicks_by_hour?.length;
   const hasWeekly = !!chartData.temporal?.clicks_by_day_of_week?.length;
   const hasTemporal = hasHourly || hasWeekly;
@@ -120,145 +196,156 @@ const ChartsSection = React.memo(function ChartsSection({
     (chartData.socialIab.total > 0 ||
       !chartData.socialIab.navigation_context_available)
   );
+  return {
+    hasHourly,
+    hasWeekly,
+    hasTemporal,
+    hasGeographic,
+    hasDevice,
+    hasUtm,
+    hasSocial,
+    hasAudience: hasDevice || hasGeographic,
+    hasAcquisition: hasUtm || hasSocial,
+    hasAny: hasTemporal || hasDevice || hasGeographic || hasUtm || hasSocial,
+  };
+}
 
-  if (!hasTemporal && !hasGeographic && !hasDevice && !hasUtm && !hasSocial) {
-    return (
-      <Grid item xs={12}>
-        <EmptyState
-          variant="charts"
-          height={400}
-          title={t("dashboard.charts.noData")}
-          description={t("dashboard.charts.noDataDesc")}
+/**
+ * Renders one dashboard chart section inside its own Grid container so section
+ * order stays stable (Temporal → Audience → Acquisition last).
+ */
+const DashboardChartSection = React.memo(function DashboardChartSection({
+  chartData,
+  height,
+  section,
+}: DashboardChartSectionProps) {
+  const { t } = useTranslation("analytics");
+  const theme = useTheme();
+  const animations = useMemo(() => createPresetAnimations(theme), [theme]);
+
+  const flags = chartFlags(chartData);
+  const {
+    hasHourly,
+    hasWeekly,
+    hasTemporal,
+    hasGeographic,
+    hasDevice,
+    hasUtm,
+    hasSocial,
+    hasAudience,
+    hasAcquisition,
+  } = flags;
+
+  if (section === "temporal" && !hasTemporal) return null;
+  if (section === "audience" && !hasAudience) return null;
+  if (section === "acquisition" && !hasAcquisition) return null;
+
+  const sectionTitle =
+    section === "temporal"
+      ? t("sections.temporal")
+      : section === "audience"
+        ? t("sections.audience")
+        : t("sections.acquisition");
+
+  const chartCells: { key: string; node: ReactNode }[] = [];
+
+  if (section === "temporal" && hasHourly) {
+    chartCells.push({
+      key: "hourly",
+      node: (
+        <HourlyClicksChart
+          data={chartData.temporal!.clicks_by_hour}
+          height={height}
         />
-      </Grid>
-    );
+      ),
+    });
+  }
+  if (section === "temporal" && hasWeekly) {
+    chartCells.push({
+      key: "weekly",
+      node: (
+        <DayOfWeekChart
+          data={chartData.temporal!.clicks_by_day_of_week}
+          height={height}
+        />
+      ),
+    });
+  }
+  if (section === "audience" && hasDevice) {
+    chartCells.push({
+      key: "device",
+      node: (
+        <DeviceBreakdownChart
+          data={chartData.audience!.device_breakdown}
+          height={height}
+        />
+      ),
+    });
+  }
+  if (section === "audience" && hasGeographic) {
+    chartCells.push({
+      key: "countries",
+      node: (
+        <TopCountriesChart
+          data={chartData.geographic!.top_countries}
+          height={height}
+        />
+      ),
+    });
+  }
+  if (section === "acquisition" && hasUtm) {
+    chartCells.push({
+      key: "utm",
+      node: <UtmSourceCard data={chartData.utmTopSources!} />,
+    });
+  }
+  if (section === "acquisition" && hasSocial) {
+    chartCells.push({
+      key: "social",
+      node: <SocialAppCard data={chartData.socialIab!} />,
+    });
   }
 
+  const twoColumnLayout = chartCells.length > 1;
+
   return (
-    <>
-      {/* ── Canais de Aquisição ─────────────────────────────────────────── */}
-      {(hasUtm || hasSocial) && (
-        <Grid item xs={12}>
-          <Divider textAlign="left" sx={{ mt: 1 }}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 700, letterSpacing: "0.1em" }}
-            >
-              {t("sections.acquisition")}
-            </Typography>
-          </Divider>
-        </Grid>
-      )}
-
-      {hasUtm ? (
-        <Grid
-          item
-          xs={12}
-          md={hasUtm && hasSocial ? 6 : 12}
-          sx={{ display: "flex", ...animations.fadeIn }}
+    <Stack spacing={{ xs: 2, md: 3 }}>
+      <Divider textAlign="left">
+        <Typography
+          variant="overline"
+          color="text.secondary"
+          sx={{ fontWeight: 700, letterSpacing: "0.1em" }}
         >
-          <UtmSourceCard data={chartData.utmTopSources!} />
-        </Grid>
-      ) : null}
+          {sectionTitle}
+        </Typography>
+      </Divider>
 
-      {hasSocial ? (
-        <Grid
-          item
-          xs={12}
-          md={hasUtm && hasSocial ? 6 : 12}
-          sx={{ display: "flex", ...animations.fadeIn }}
-        >
-          <SocialAppCard data={chartData.socialIab!} />
-        </Grid>
-      ) : null}
-
-      {/* ── Padrões Temporais ───────────────────────────────────────────── */}
-      {hasTemporal && (
-        <Grid item xs={12}>
-          <Divider textAlign="left" sx={{ mt: 1 }}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 700, letterSpacing: "0.1em" }}
-            >
-              {t("sections.temporal")}
-            </Typography>
-          </Divider>
-        </Grid>
-      )}
-
-      {hasHourly ? (
-        <Grid
-          item
-          xs={12}
-          md={hasHourly && hasWeekly ? 6 : 12}
-          sx={{ display: "flex", ...animations.fadeIn }}
-        >
-          <HourlyClicksChart
-            data={chartData.temporal!.clicks_by_hour}
-            height={height}
-          />
-        </Grid>
-      ) : null}
-
-      {hasWeekly ? (
-        <Grid
-          item
-          xs={12}
-          md={hasHourly && hasWeekly ? 6 : 12}
-          sx={{ display: "flex", ...animations.fadeIn }}
-        >
-          <DayOfWeekChart
-            data={chartData.temporal!.clicks_by_day_of_week}
-            height={height}
-          />
-        </Grid>
-      ) : null}
-
-      {/* ── Audiência ───────────────────────────────────────────────────── */}
-      {(hasDevice || hasGeographic) && (
-        <Grid item xs={12}>
-          <Divider textAlign="left" sx={{ mt: 1 }}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 700, letterSpacing: "0.1em" }}
-            >
-              {t("sections.audience")}
-            </Typography>
-          </Divider>
-        </Grid>
-      )}
-
-      {hasDevice ? (
-        <Grid
-          item
-          xs={12}
-          md={hasDevice && hasGeographic ? 6 : 12}
-          sx={{ display: "flex", ...animations.fadeIn }}
-        >
-          <DeviceBreakdownChart
-            data={chartData.audience!.device_breakdown}
-            height={height}
-          />
-        </Grid>
-      ) : null}
-
-      {hasGeographic ? (
-        <Grid
-          item
-          xs={12}
-          md={hasDevice && hasGeographic ? 6 : 12}
-          sx={{ display: "flex", ...animations.fadeIn }}
-        >
-          <TopCountriesChart
-            data={chartData.geographic!.top_countries}
-            height={height}
-          />
-        </Grid>
-      ) : null}
-    </>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            md: twoColumnLayout ? "repeat(2, minmax(0, 1fr))" : "1fr",
+          },
+          gap: { xs: 2, md: 3 },
+          width: "100%",
+        }}
+      >
+        {chartCells.map(({ key, node }) => (
+          <Box
+            key={key}
+            sx={{
+              width: "100%",
+              minWidth: 0,
+              display: "flex",
+              ...animations.fadeIn,
+            }}
+          >
+            <Box sx={{ width: "100%", minWidth: 0 }}>{node}</Box>
+          </Box>
+        ))}
+      </Box>
+    </Stack>
   );
 });
 
@@ -339,7 +426,7 @@ export function LinkDashboard({
       loading={loading}
       error={error}
       hasData={!!data}
-      skeleton={compact ? undefined : <AnalyticsTabSkeleton metricCards={6} />}
+      skeleton={compact ? undefined : <OverviewSkeleton />}
       onRetry={refresh}
       loadingMessage={t("dashboard.loading")}
       emptyMessage={t("dashboard.empty")}
@@ -377,12 +464,39 @@ export function LinkDashboard({
               <TrafficQualityCard data={data.summary.quality} />
             </Grid>
           )}
-
-          {/* Gráficos — ChartsSection contributes Grid items directly */}
-          {!compact && showCharts && chartData ? (
-            <ChartsSection chartData={chartData} height={chartsHeight} />
-          ) : null}
         </Grid>
+
+        {/* Gráficos — seções em ordem fixa; Canais de Aquisição por último */}
+        {!compact && showCharts && chartData ? (
+          chartFlags(chartData).hasAny ? (
+            <Stack spacing={3} sx={{ mt: { xs: 2, md: 3 } }}>
+              <DashboardChartSection
+                chartData={chartData}
+                height={chartsHeight}
+                section="temporal"
+              />
+              <DashboardChartSection
+                chartData={chartData}
+                height={chartsHeight}
+                section="audience"
+              />
+              <DashboardChartSection
+                chartData={chartData}
+                height={chartsHeight}
+                section="acquisition"
+              />
+            </Stack>
+          ) : (
+            <Box sx={{ mt: 2 }}>
+              <EmptyState
+                variant="charts"
+                height={400}
+                title={t("dashboard.charts.noData")}
+                description={t("dashboard.charts.noDataDesc")}
+              />
+            </Box>
+          )
+        ) : null}
 
         {/* Footer - Informações de Qualidade */}
         {stats ? (

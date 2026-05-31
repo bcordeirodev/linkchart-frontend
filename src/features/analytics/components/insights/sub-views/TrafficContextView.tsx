@@ -1,49 +1,45 @@
 "use client";
 import { Activity, Lightbulb, TrendingUp, Target, Wrench } from "lucide-react";
 import type { ReactNode } from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Chip,
-  Stack,
-  LinearProgress,
-} from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Box, Typography, Chip, Stack, LinearProgress } from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { insightsSectionHeadingSx, insightsTileSx } from "../insightsLayout";
 import type {
   NavigationContextEntry,
   TrafficRecommendation,
 } from "../../../hooks/useInsightsData";
 
 interface TrafficContextViewProps {
-  /** Navigation context breakdown (may be undefined or empty). */
   navigationContext?: NavigationContextEntry[];
-  /** Strategic recommendations list (may be empty). */
   recommendations: TrafficRecommendation[];
+  /** Which block to render — split by parent layout. */
+  mode?: "all" | "navigation" | "recommendations";
+}
+
+function safePercent(value: number): number {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.min(100, Math.max(0, n)) : 0;
 }
 
 /**
- * Renders the Context sub-view of TrafficSourceChart.
- *
- * Shows the navigation context breakdown (direct, referral, social, etc.)
- * as labelled progress bars, followed by strategic recommendations.
+ * Navigation context bars and/or strategic recommendation cards.
  */
 export function TrafficContextView({
   navigationContext,
   recommendations,
+  mode = "all",
 }: TrafficContextViewProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
 
-  /** Returns the MUI colour token for a given recommendation priority. */
+  const showNavigation =
+    (mode === "all" || mode === "navigation") && !!navigationContext?.length;
+  const showRecommendations =
+    (mode === "all" || mode === "recommendations") &&
+    recommendations.length > 0;
+
   const getPriorityColor = (priority: string): string => {
     switch (priority) {
       case "high":
@@ -57,7 +53,6 @@ export function TrafficContextView({
     }
   };
 
-  /** Returns the icon node for a given recommendation type. */
   const getRecommendationIcon = (type: string): ReactNode => {
     switch (type) {
       case "optimization":
@@ -71,166 +66,149 @@ export function TrafficContextView({
     }
   };
 
-  const cardSx = {
-    borderRadius: `${radiusTokens.lg}px`,
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow:
-      theme.palette.mode === "dark"
-        ? elevationTokens.xs
-        : elevationLightTokens.xs,
-  };
+  const tileSx = insightsTileSx(theme);
 
   return (
     <>
-      {/* Contexto de Navegação */}
-      {navigationContext && navigationContext.length > 0 && (
-        <Box sx={{ mb: 3 }}>
-          <Card sx={cardSx}>
-            <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  fontWeight: 600,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <Activity size={16} strokeWidth={1.5} />
-                {t("insights.traffic.navigationContext")}
-              </Typography>
-              <Stack spacing={1.5}>
-                {navigationContext.map((entry) => (
-                  <Box key={entry.context}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        mb: 0.5,
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                        }}
-                      >
-                        <Chip
-                          label={
-                            t(
-                              `insights.traffic.contextLabels.${entry.context}` as any,
-                            ) || entry.context
-                          }
-                          size="small"
-                          variant="outlined"
-                        />
-                      </Box>
-                      <Typography variant="body2" color="text.secondary">
-                        {entry.clicks} ({Number(entry.percentage).toFixed(1)}%)
-                      </Typography>
-                    </Box>
-                    <LinearProgress
-                      variant="determinate"
-                      value={Number(entry.percentage)}
-                      sx={{ height: 6, borderRadius: 3 }}
-                    />
-                  </Box>
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
-        </Box>
-      )}
+      {showNavigation ? (
+        <Box component="section" sx={{ minWidth: 0 }}>
+          <Typography variant="subtitle1" sx={insightsSectionHeadingSx}>
+            <Activity size={16} strokeWidth={1.5} />
+            {t("insights.traffic.navigationContext")}
+          </Typography>
+          <Stack spacing={1.5}>
+            {navigationContext!.map((entry) => {
+              const pct = safePercent(entry.percentage);
+              const barColor = theme.palette.info.main;
 
-      {/* Recomendações */}
-      {recommendations.length > 0 && (
-        <Box sx={{ mt: 3 }}>
-          <Card sx={cardSx}>
-            <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  fontWeight: 600,
-                }}
-              >
-                <Lightbulb size={16} strokeWidth={1.5} />
-                {t("insights.traffic.strategicRecs")}
-              </Typography>
-              <Stack spacing={2}>
-                {recommendations.map((rec, index) => (
+              return (
+                <Box key={entry.context}>
                   <Box
-                    key={index}
                     sx={{
-                      p: 2,
-                      border: 1,
-                      borderColor: "divider",
-                      borderRadius: `${radiusTokens.md}px`,
-                      backgroundColor: "background.paper",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 0.5,
+                    }}
+                  >
+                    <Chip
+                      label={
+                        t(
+                          `insights.traffic.contextLabels.${entry.context}` as "insights.traffic.contextLabels.browser_direct",
+                        ) || entry.context
+                      }
+                      size="small"
+                      variant="outlined"
+                      sx={{ maxWidth: "70%" }}
+                    />
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ fontVariantNumeric: "tabular-nums", flexShrink: 0 }}
+                    >
+                      {t("insights.traffic.contextClicks", {
+                        n: entry.clicks,
+                        pct: pct.toFixed(1),
+                      })}
+                    </Typography>
+                  </Box>
+                  <LinearProgress
+                    variant="determinate"
+                    value={pct}
+                    sx={{
+                      height: 6,
+                      borderRadius: 3,
+                      bgcolor: alpha(barColor, 0.12),
+                      "& .MuiLinearProgress-bar": {
+                        borderRadius: 3,
+                        bgcolor: barColor,
+                      },
+                    }}
+                  />
+                </Box>
+              );
+            })}
+          </Stack>
+        </Box>
+      ) : null}
+
+      {showRecommendations ? (
+        <Box component="section">
+          <Typography variant="subtitle1" sx={insightsSectionHeadingSx}>
+            <Lightbulb size={16} strokeWidth={1.5} />
+            {t("insights.traffic.strategicRecs")}
+          </Typography>
+          <Stack spacing={1.25}>
+            {recommendations.map((rec, index) => {
+              const priorityColor = getPriorityColor(rec.priority);
+
+              return (
+                <Box
+                  key={`${rec.type}-${rec.message_key}-${index}`}
+                  sx={{
+                    ...tileSx,
+                    borderLeft: `3px solid ${priorityColor}`,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 1.25,
                     }}
                   >
                     <Box
                       sx={{
                         display: "flex",
-                        alignItems: "flex-start",
-                        gap: 1,
+                        alignItems: "center",
+                        color: "primary.main",
+                        mt: 0.25,
+                        flexShrink: 0,
                       }}
                     >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          color: "primary.main",
-                          mt: 0.5,
-                        }}
+                      {getRecommendationIcon(rec.type)}
+                    </Box>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={0.75}
+                        sx={{ mb: 0.75, flexWrap: "wrap" }}
                       >
-                        {getRecommendationIcon(rec.type)}
-                      </Box>
-                      <Box sx={{ flex: 1 }}>
-                        <Box
+                        <Chip
+                          label={rec.priority.toUpperCase()}
+                          size="small"
                           sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                            mb: 0.5,
+                            height: 20,
+                            fontSize: "0.65rem",
+                            fontWeight: 700,
+                            bgcolor: priorityColor,
+                            color: theme.palette.getContrastText(priorityColor),
                           }}
+                        />
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ fontWeight: 500 }}
                         >
-                          <Chip
-                            label={rec.priority.toUpperCase()}
-                            size="small"
-                            sx={{
-                              backgroundColor: getPriorityColor(rec.priority),
-                              color: "white",
-                              fontSize: "0.7rem",
-                              fontWeight: 600,
-                              height: 20,
-                            }}
-                          />
-                          <Typography
-                            variant="caption"
-                            sx={{ textTransform: "capitalize" }}
-                          >
-                            {rec.type}
-                          </Typography>
-                        </Box>
-                        <Typography variant="body2">
-                          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                          {t(rec.message_key as any)}
+                          {t(`insights.traffic.recTypes.${rec.type}`, {
+                            defaultValue: rec.type,
+                          })}
                         </Typography>
-                      </Box>
+                      </Stack>
+                      <Typography variant="body2" sx={{ lineHeight: 1.55 }}>
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        {t(rec.message_key as any)}
+                      </Typography>
                     </Box>
                   </Box>
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
+                </Box>
+              );
+            })}
+          </Stack>
         </Box>
-      )}
+      ) : null}
     </>
   );
 }

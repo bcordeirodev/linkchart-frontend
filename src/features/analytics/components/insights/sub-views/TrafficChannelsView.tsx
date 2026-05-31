@@ -1,14 +1,17 @@
 "use client";
 import { BarChart3 } from "lucide-react";
-import { Box, Typography, Card, CardContent, Grid } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Box, LinearProgress, Stack, Typography } from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+  insightsChartPanelDescSx,
+  insightsChartPanelSx,
+  insightsChartPanelTitleSx,
+  insightsChartRowSx,
+  insightsSectionHeadingSx,
+  insightsTileSx,
+} from "../insightsLayout";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
 interface TrafficSource {
@@ -30,20 +33,22 @@ interface TrafficChannel {
 }
 
 interface TrafficChannelsViewProps {
-  /** Array of channel data with click counts and performance metrics. */
   channels: TrafficChannel[];
-  /** Total click count, shown in the donut chart centre label. */
   totalClicks: number;
-  /** Colour map keyed by channel name (e.g. `"social"`, `"search"`). */
   channelColors: Record<string, string>;
 }
 
+function safePercent(value: number): number {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.min(100, Math.max(0, n)) : 0;
+}
+
+function formatChannelLabel(channel: string): string {
+  return channel.charAt(0).toUpperCase() + channel.slice(1);
+}
+
 /**
- * Renders the Channels sub-view of TrafficSourceChart.
- *
- * Displays a donut chart with channel distribution, a horizontal bar chart
- * with average session depth per channel, and a detail grid card for each
- * channel.
+ * Donut + engagement bar charts and per-channel detail tiles.
  */
 export function TrafficChannelsView({
   channels,
@@ -53,19 +58,15 @@ export function TrafficChannelsView({
   const theme = useTheme();
   const { t } = useTranslation("analytics");
 
-  /** ApexCharts donut config for channel distribution. */
   const channelsPieOptions = {
     chart: {
       type: "donut" as const,
       height: 350,
       toolbar: { show: false },
     },
-    labels: channels.map(
-      (channel) =>
-        channel.channel.charAt(0).toUpperCase() + channel.channel.slice(1),
-    ),
+    labels: channels.map((c) => formatChannelLabel(c.channel)),
     colors: channels.map(
-      (channel) => channelColors[channel.channel] || channelColors.other,
+      (c) => channelColors[c.channel] || channelColors.other,
     ),
     dataLabels: {
       enabled: true,
@@ -73,9 +74,7 @@ export function TrafficChannelsView({
     },
     legend: {
       position: "bottom" as const,
-      labels: {
-        colors: theme.palette.text.primary,
-      },
+      labels: { colors: theme.palette.text.primary },
     },
     plotOptions: {
       pie: {
@@ -100,7 +99,8 @@ export function TrafficChannelsView({
               label: t("insights.traffic.totalLabel"),
               fontSize: "14px",
               color: theme.palette.text.secondary,
-              formatter: () => `${totalClicks} clicks`,
+              formatter: () =>
+                t("insights.traffic.clicksCount", { n: totalClicks }),
             },
           },
         },
@@ -111,15 +111,14 @@ export function TrafficChannelsView({
       y: {
         formatter: (val: number, { seriesIndex }: { seriesIndex: number }) => {
           const channel = channels[seriesIndex];
-          return `${channel.clicks} clicks (${val.toFixed(1)}%)`;
+          return `${channel.clicks} (${val.toFixed(1)}%)`;
         },
       },
     },
   };
 
-  const channelsPieData = channels.map((channel) => channel.percentage);
+  const channelsPieData = channels.map((c) => c.percentage);
 
-  /** ApexCharts horizontal bar config for avg session depth per channel. */
   const performanceBarOptions = {
     chart: {
       type: "bar" as const,
@@ -130,9 +129,7 @@ export function TrafficChannelsView({
       bar: {
         horizontal: true,
         borderRadius: 4,
-        dataLabels: {
-          position: "center" as const,
-        },
+        dataLabels: { position: "center" as const },
       },
     },
     dataLabels: {
@@ -145,25 +142,14 @@ export function TrafficChannelsView({
       },
     },
     xaxis: {
-      categories: channels.map(
-        (channel) =>
-          channel.channel.charAt(0).toUpperCase() + channel.channel.slice(1),
-      ),
-      labels: {
-        style: {
-          colors: theme.palette.text.primary,
-        },
-      },
+      categories: channels.map((c) => formatChannelLabel(c.channel)),
+      labels: { style: { colors: theme.palette.text.primary } },
     },
     yaxis: {
-      labels: {
-        style: {
-          colors: theme.palette.text.primary,
-        },
-      },
+      labels: { style: { colors: theme.palette.text.primary } },
     },
     colors: channels.map(
-      (channel) => channelColors[channel.channel] || channelColors.other,
+      (c) => channelColors[c.channel] || channelColors.other,
     ),
     tooltip: {
       theme: theme.palette.mode,
@@ -177,174 +163,148 @@ export function TrafficChannelsView({
   const performanceBarData = [
     {
       name: t("insights.traffic.seriesName"),
-      data: channels.map((channel) => channel.avg_session_depth),
+      data: channels.map((c) => c.avg_session_depth),
     },
   ];
 
-  const cardSx = {
-    height: "100%",
-    borderRadius: `${radiusTokens.lg}px`,
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow:
-      theme.palette.mode === "dark"
-        ? elevationTokens.xs
-        : elevationLightTokens.xs,
-  };
+  const panelSx = { ...insightsChartPanelSx(theme), height: "100%" };
 
   return (
-    <>
-      {/* Gráficos Principais */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        {/* Donut — Distribuição por Canais */}
-        <Grid item xs={12} md={6}>
-          <Card sx={cardSx}>
-            <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ textAlign: "center", fontWeight: 600 }}
-              >
-                {t("insights.traffic.channelDistribution")}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mb: 2, textAlign: "center" }}
-              >
-                {t("insights.traffic.channelDistributionDesc")}
-              </Typography>
-              <ApexChartWrapper
-                options={channelsPieOptions}
-                series={channelsPieData}
-                type="donut"
-                size="standard"
-              />
-            </CardContent>
-          </Card>
-        </Grid>
+    <Box sx={{ minWidth: 0, width: "100%" }}>
+      <Box sx={{ ...insightsChartRowSx }}>
+        <Box sx={panelSx}>
+          <Typography variant="subtitle1" sx={insightsChartPanelTitleSx}>
+            {t("insights.traffic.channelDistribution")}
+          </Typography>
+          <Typography variant="body2" sx={insightsChartPanelDescSx}>
+            {t("insights.traffic.channelDistributionDesc")}
+          </Typography>
+          <ApexChartWrapper
+            options={channelsPieOptions}
+            series={channelsPieData}
+            type="donut"
+            size="standard"
+          />
+        </Box>
 
-        {/* Bar — Engajamento por Canal */}
-        <Grid item xs={12} md={6}>
-          <Card sx={cardSx}>
-            <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ textAlign: "center", fontWeight: 600 }}
-              >
-                {t("insights.traffic.engagementByChannel")}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mb: 2, textAlign: "center" }}
-              >
-                {t("insights.traffic.engagementByChannelDesc")}
-              </Typography>
-              <ApexChartWrapper
-                options={performanceBarOptions}
-                series={performanceBarData}
-                type="bar"
-                size="standard"
-              />
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ textAlign: "center", mt: 1 }}
-              >
-                {t("insights.traffic.avgSessionByChannel")}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Detalhes dos Canais */}
-      <Box sx={{ mb: 3 }}>
-        <Card sx={cardSx}>
-          <CardContent>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <BarChart3 size={16} strokeWidth={1.5} />
-              {t("insights.traffic.channelDetails")}
-            </Typography>
-            <Grid container spacing={2}>
-              {channels.map((channel, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Box
-                    sx={{
-                      p: 2,
-                      border: 1,
-                      borderColor: "divider",
-                      borderRadius: `${radiusTokens.md}px`,
-                      backgroundColor: "background.paper",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                        mb: 1,
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          width: 12,
-                          height: 12,
-                          borderRadius: "50%",
-                          backgroundColor:
-                            channelColors[channel.channel] ||
-                            channelColors.other,
-                        }}
-                      />
-                      <Typography
-                        variant="subtitle2"
-                        sx={{ fontWeight: 600, textTransform: "capitalize" }}
-                      >
-                        {channel.channel}
-                      </Typography>
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">
-                      {channel.clicks} clicks (
-                      {Number(channel.percentage).toFixed(1)}%)
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {t("insights.traffic.uniqueVisitors", {
-                        n: channel.unique_visitors,
-                      })}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {t("insights.traffic.session", {
-                        n: Number(channel.avg_session_depth).toFixed(2),
-                      })}
-                    </Typography>
-                    {channel.avg_response_time > 0 && (
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ display: "block" }}
-                      >
-                        {t("insights.traffic.time", {
-                          n: Number(channel.avg_response_time).toFixed(2),
-                        })}
-                      </Typography>
-                    )}
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </CardContent>
-        </Card>
+        <Box sx={panelSx}>
+          <Typography variant="subtitle1" sx={insightsChartPanelTitleSx}>
+            {t("insights.traffic.engagementByChannel")}
+          </Typography>
+          <Typography variant="body2" sx={insightsChartPanelDescSx}>
+            {t("insights.traffic.engagementByChannelDesc")}
+          </Typography>
+          <ApexChartWrapper
+            options={performanceBarOptions}
+            series={performanceBarData}
+            type="bar"
+            size="standard"
+          />
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: "block", mt: 1, lineHeight: 1.45 }}
+          >
+            {t("insights.traffic.avgSessionByChannel")}
+          </Typography>
+        </Box>
       </Box>
-    </>
+    </Box>
+  );
+}
+
+interface TrafficChannelDetailsViewProps {
+  channels: TrafficChannel[];
+  channelColors: Record<string, string>;
+}
+
+/** Per-channel performance tiles — pairs with {@link TrafficSourcesView} in a 2-col row. */
+export function TrafficChannelDetailsView({
+  channels,
+  channelColors,
+}: TrafficChannelDetailsViewProps) {
+  const theme = useTheme();
+  const { t } = useTranslation("analytics");
+  const tileSx = insightsTileSx(theme);
+
+  return (
+    <Box component="section" sx={{ minWidth: 0, width: "100%" }}>
+      <Typography variant="subtitle1" sx={insightsSectionHeadingSx}>
+        <BarChart3 size={16} strokeWidth={1.5} />
+        {t("insights.traffic.channelDetails")}
+      </Typography>
+      <Stack spacing={1.25}>
+        {channels.map((channel) => {
+          const pct = safePercent(channel.percentage);
+          const color = channelColors[channel.channel] || channelColors.other;
+
+          return (
+            <Box key={channel.channel} sx={{ ...tileSx, p: 1.5 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  mb: 1,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    bgcolor: color,
+                    flexShrink: 0,
+                  }}
+                />
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontWeight: 600, textTransform: "capitalize" }}
+                >
+                  {channel.channel}
+                </Typography>
+              </Box>
+              <LinearProgress
+                variant="determinate"
+                value={pct}
+                sx={{
+                  height: 5,
+                  borderRadius: 3,
+                  mb: 1,
+                  bgcolor: alpha(color, 0.15),
+                  "& .MuiLinearProgress-bar": {
+                    borderRadius: 3,
+                    bgcolor: color,
+                  },
+                }}
+              />
+              <Stack spacing={0.25}>
+                <Typography variant="body2" color="text.secondary">
+                  {t("insights.traffic.clicksCount", { n: channel.clicks })} ·{" "}
+                  {pct.toFixed(1)}%
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {t("insights.traffic.uniqueVisitors", {
+                    n: channel.unique_visitors,
+                  })}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {t("insights.traffic.session", {
+                    n: Number(channel.avg_session_depth).toFixed(2),
+                  })}
+                </Typography>
+                {channel.avg_response_time > 0 ? (
+                  <Typography variant="caption" color="text.secondary">
+                    {t("insights.traffic.time", {
+                      n: Number(channel.avg_response_time).toFixed(2),
+                    })}
+                  </Typography>
+                ) : null}
+              </Stack>
+            </Box>
+          );
+        })}
+      </Stack>
+    </Box>
   );
 }

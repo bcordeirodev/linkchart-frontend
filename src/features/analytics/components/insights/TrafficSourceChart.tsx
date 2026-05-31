@@ -6,7 +6,7 @@ import {
   BarChart3,
   AlertTriangle,
 } from "lucide-react";
-import { Box, Typography, Grid, Alert } from "@mui/material";
+import { Box, Typography, Alert, Stack } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
@@ -17,26 +17,36 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
 import type { TrafficSourceData } from "../../hooks/useInsightsData";
-import { TrafficChannelsView } from "./sub-views/TrafficChannelsView";
+import {
+  INSIGHTS_BLOCK_PAD,
+  INSIGHTS_SECTION_SPACING,
+  insightsMetricRowSx,
+  insightsTwoColSx,
+} from "./insightsLayout";
+import {
+  TrafficChannelDetailsView,
+  TrafficChannelsView,
+} from "./sub-views/TrafficChannelsView";
 import { TrafficSourcesView } from "./sub-views/TrafficSourcesView";
 import { TrafficContextView } from "./sub-views/TrafficContextView";
+import { TrafficQualityChart } from "./TrafficQualityChart";
+import type { QualityData } from "./TrafficQualityChart";
 
 interface TrafficSourceChartProps {
   data: TrafficSourceData;
+  quality?: QualityData;
   loading?: boolean;
   showTitle?: boolean;
   title?: string;
 }
 
 /**
- * Thin orchestrator that composes the three traffic sub-views:
- * TrafficChannelsView, TrafficSourcesView, and TrafficContextView.
- *
- * Owns the shared colour map and passes data down as props — no data
- * fetching happens inside the sub-views.
+ * Orchestrates traffic-source analytics: KPIs → channels → sources/context →
+ * recommendations → quality. Sub-views are presentational only.
  */
 export function TrafficSourceChart({
   data,
+  quality,
   loading = false,
   showTitle = true,
   title,
@@ -45,7 +55,6 @@ export function TrafficSourceChart({
   const { t } = useTranslation("analytics");
   const displayTitle = title ?? t("insights.traffic.title");
 
-  /** Colour map keyed by channel name, shared across all sub-views. */
   const channelColors: Record<string, string> = {
     social: chartPalette[0],
     search: chartPalette[1],
@@ -55,6 +64,11 @@ export function TrafficSourceChart({
     paid: chartPalette[6],
     other: theme.palette.text.secondary,
   };
+
+  const hasNavigation =
+    !!data.navigation_context && data.navigation_context.length > 0;
+  const hasRecommendations = data.recommendations.length > 0;
+  const hasChannels = data.channels.length > 0;
 
   if (loading) {
     return (
@@ -79,70 +93,64 @@ export function TrafficSourceChart({
   }
 
   return (
-    <EnhancedPaper animated={false}>
-      {showTitle ? (
-        <Box sx={{ p: 3, pb: 0 }}>
-          <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center", gap: 1 }}
-          >
-            <Activity
-              {...ICON_LG}
-              style={{ color: "var(--mui-palette-primary-main)" }}
-            />
-            {displayTitle}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {t("insights.traffic.description")}
-          </Typography>
+    <EnhancedPaper animated={false} sx={{ height: "100%" }}>
+      <Box sx={{ p: INSIGHTS_BLOCK_PAD }}>
+        {showTitle ? (
+          <Box sx={{ mb: 2.5 }}>
+            <Typography
+              variant="h6"
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
+              <Activity
+                {...ICON_LG}
+                style={{ color: "var(--mui-palette-primary-main)" }}
+              />
+              {displayTitle}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mt: 0.75, lineHeight: 1.55, maxWidth: 720 }}
+            >
+              {t("insights.traffic.description")}
+            </Typography>
+          </Box>
+        ) : null}
+
+        <Box sx={{ ...insightsMetricRowSx, mb: 3 }}>
+          <MetricCard
+            title={t("insights.traffic.topSource")}
+            value={data.top_source?.source || "N/A"}
+            icon={<TrendingUp {...ICON_LG} />}
+            color="primary"
+            subtitle={t("insights.traffic.trafficPercent", {
+              n: data.top_source?.percentage || 0,
+            })}
+          />
+          <MetricCard
+            title={t("insights.traffic.diversity")}
+            value={data.source_diversity}
+            icon={<Users2 {...ICON_LG} />}
+            color="info"
+            subtitle={t("insights.traffic.differentSources")}
+          />
+          <MetricCard
+            title={t("insights.traffic.totalClicks")}
+            value={data.total_clicks}
+            icon={<BarChart3 {...ICON_LG} />}
+            color="success"
+            subtitle={t("insights.traffic.allChannels")}
+          />
+          <MetricCard
+            title={t("insights.traffic.activeChannels")}
+            value={data.channels.length}
+            icon={<Activity {...ICON_LG} />}
+            color="secondary"
+            subtitle={t("insights.traffic.categories")}
+          />
         </Box>
-      ) : null}
 
-      <Box sx={{ p: 3 }}>
-        {/* Métricas Principais */}
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={3}>
-            <MetricCard
-              title={t("insights.traffic.topSource")}
-              value={data.top_source?.source || "N/A"}
-              icon={<TrendingUp {...ICON_LG} />}
-              color="primary"
-              subtitle={t("insights.traffic.trafficPercent", {
-                n: data.top_source?.percentage || 0,
-              })}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <MetricCard
-              title={t("insights.traffic.diversity")}
-              value={data.source_diversity}
-              icon={<Users2 {...ICON_LG} />}
-              color="info"
-              subtitle={t("insights.traffic.differentSources")}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <MetricCard
-              title={t("insights.traffic.totalClicks")}
-              value={data.total_clicks}
-              icon={<BarChart3 {...ICON_LG} />}
-              color="success"
-              subtitle={t("insights.traffic.allChannels")}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <MetricCard
-              title={t("insights.traffic.activeChannels")}
-              value={data.channels.length}
-              icon={<Activity {...ICON_LG} />}
-              color="secondary"
-              subtitle={t("insights.traffic.categories")}
-            />
-          </Grid>
-        </Grid>
-
-        {/* Alertas de Diversidade */}
-        {data.source_diversity < 3 && (
+        {data.source_diversity < 3 ? (
           <Box sx={{ mb: 3 }}>
             <Alert
               severity="warning"
@@ -156,23 +164,54 @@ export function TrafficSourceChart({
               </Typography>
             </Alert>
           </Box>
-        )}
+        ) : null}
 
-        {/* Channels sub-view: donut + bar charts + channel detail cards */}
-        <TrafficChannelsView
-          channels={data.channels}
-          totalClicks={data.total_clicks}
-          channelColors={channelColors}
-        />
+        <Stack spacing={INSIGHTS_SECTION_SPACING}>
+          {hasChannels ? (
+            <TrafficChannelsView
+              channels={data.channels}
+              totalClicks={data.total_clicks}
+              channelColors={channelColors}
+            />
+          ) : null}
 
-        {/* Sources sub-view: top-5 ranked source list */}
-        <TrafficSourcesView sources={data.sources} />
+          <Box
+            sx={{
+              ...insightsTwoColSx,
+              gridTemplateColumns: hasChannels
+                ? { xs: "1fr", lg: "minmax(0, 1fr) minmax(0, 1fr)" }
+                : "1fr",
+            }}
+          >
+            {hasChannels ? (
+              <TrafficChannelDetailsView
+                channels={data.channels}
+                channelColors={channelColors}
+              />
+            ) : null}
+            <TrafficSourcesView sources={data.sources} />
+          </Box>
 
-        {/* Context sub-view: navigation context bars + recommendations */}
-        <TrafficContextView
-          navigationContext={data.navigation_context}
-          recommendations={data.recommendations}
-        />
+          {hasNavigation ? (
+            <TrafficContextView
+              navigationContext={data.navigation_context}
+              recommendations={[]}
+              mode="navigation"
+            />
+          ) : null}
+
+          {hasRecommendations ? (
+            <TrafficContextView
+              navigationContext={undefined}
+              recommendations={data.recommendations}
+              mode="recommendations"
+            />
+          ) : null}
+
+          {quality?.tier_breakdown?.length ? (
+            <TrafficQualityChart data={quality} embedded />
+          ) : null}
+        </Stack>
       </Box>
     </EnhancedPaper>
   );

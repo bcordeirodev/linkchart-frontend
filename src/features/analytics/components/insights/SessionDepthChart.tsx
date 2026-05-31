@@ -6,19 +6,21 @@ import {
   BarChart3,
   Lightbulb,
 } from "lucide-react";
-import { Box, Typography, Card, CardContent, Grid, Stack } from "@mui/material";
+import { Box, Typography, Stack } from "@mui/material";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { getChartColor } from "@/lib/theme/colors";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import {
+  INSIGHTS_BLOCK_PAD,
+  insightsChartPanelSx,
+  insightsMetricRowSx,
+  insightsSectionHeadingSx,
+  insightsTileSx,
+} from "./insightsLayout";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
@@ -179,208 +181,160 @@ export function SessionDepthChart({
   }
 
   return (
-    <EnhancedPaper animated={false}>
-      {showTitle ? (
-        <Box sx={{ p: 3, pb: 0 }}>
-          <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center", gap: 1 }}
-          >
-            <MousePointer2
-              {...ICON_LG}
-              style={{ color: "var(--mui-palette-primary-main)" }}
-            />
-            {displayTitle}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {t("insights.session.description")}
-          </Typography>
-        </Box>
-      ) : null}
+    <EnhancedPaper animated={false} sx={{ height: "100%" }}>
+      <Box sx={{ p: INSIGHTS_BLOCK_PAD }}>
+        {showTitle ? (
+          <Box sx={{ mb: 2 }}>
+            <Typography
+              variant="h6"
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
+              <MousePointer2
+                {...ICON_LG}
+                style={{ color: "var(--mui-palette-primary-main)" }}
+              />
+              {displayTitle}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              {t("insights.session.description")}
+            </Typography>
+          </Box>
+        ) : null}
 
-      <Box sx={{ p: 3 }}>
         {/* Real Metrics — no fabricated scores */}
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={4}>
-            <MetricCard
-              title={t("insights.session.avgDepth")}
-              value={data.avg_session_clicks}
-              icon={<MousePointer2 {...ICON_LG} />}
-              color="primary"
-              subtitle={t("insights.session.clicksPerSession")}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <MetricCard
-              title={t("insights.session.powerUsers")}
-              value={`${powerUsersPct}%`}
-              icon={<Star {...ICON_LG} />}
-              color="warning"
-              subtitle={t("insights.session.powerUsersSub", {
-                n: data.power_users_count,
-              })}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <MetricCard
-              title={t("insights.session.maxClicks")}
-              value={data.max_session_depth}
-              icon={<TrendingUp {...ICON_LG} />}
-              color="info"
-              subtitle={t("insights.session.inSession")}
-            />
-          </Grid>
-        </Grid>
-
-        {/* Distribution Histogram */}
-        <Card
+        <Box
           sx={{
-            borderRadius: `${radiusTokens.lg}px`,
-            border: `1px solid ${theme.palette.divider}`,
-            boxShadow:
-              theme.palette.mode === "dark"
-                ? elevationTokens.xs
-                : elevationLightTokens.xs,
+            ...insightsMetricRowSx,
             mb: 3,
+            gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
           }}
         >
-          <CardContent>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-              {t("insights.session.clickDistribution")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              {t("insights.session.clickDistributionDesc")}
-            </Typography>
-            <ApexChartWrapper
-              options={distributionBarOptions}
-              series={distributionBarData}
-              type="bar"
-              size="standard"
-            />
-          </CardContent>
-        </Card>
-
-        {/* Distribution Detail Cards */}
-        <Box sx={{ mb: 3 }}>
-          <Card
-            sx={{
-              borderRadius: `${radiusTokens.lg}px`,
-              border: `1px solid ${theme.palette.divider}`,
-              boxShadow:
-                theme.palette.mode === "dark"
-                  ? elevationTokens.xs
-                  : elevationLightTokens.xs,
-            }}
-          >
-            <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  fontWeight: 600,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <BarChart3 size={16} strokeWidth={1.5} />
-                {t("insights.session.distributionDetails")}
-              </Typography>
-              <Grid container spacing={2}>
-                {data.session_distribution.slice(0, 6).map((item, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={index}>
-                    <Box
-                      sx={{
-                        p: 2,
-                        border: 1,
-                        borderColor: "divider",
-                        borderRadius: `${radiusTokens.md}px`,
-                        backgroundColor: "background.paper",
-                      }}
-                    >
-                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                        {item.clicks_count} Click
-                        {item.clicks_count > 1 ? "s" : ""}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {t("insights.session.usersCount", {
-                          n: item.frequency,
-                          percent: item.percentage,
-                        })}
-                      </Typography>
-                      {item.avg_response_time > 0 && (
-                        <Typography variant="caption" color="text.secondary">
-                          {t("insights.session.avgTime", {
-                            n: Number(item.avg_response_time).toFixed(2),
-                          })}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title={t("insights.session.avgDepth")}
+            value={data.avg_session_clicks}
+            icon={<MousePointer2 {...ICON_LG} />}
+            color="primary"
+            subtitle={t("insights.session.clicksPerSession")}
+          />
+          <MetricCard
+            title={t("insights.session.powerUsers")}
+            value={`${powerUsersPct}%`}
+            icon={<Star {...ICON_LG} />}
+            color="warning"
+            subtitle={t("insights.session.powerUsersSub", {
+              n: data.power_users_count,
+            })}
+          />
+          <MetricCard
+            title={t("insights.session.maxClicks")}
+            value={data.max_session_depth}
+            icon={<TrendingUp {...ICON_LG} />}
+            color="info"
+            subtitle={t("insights.session.inSession")}
+          />
         </Box>
 
-        {/* Insights Card */}
-        <Box sx={{ mt: 3 }}>
-          <Card
+        {/* Distribution Histogram */}
+        <Box sx={{ ...insightsChartPanelSx(theme), mb: 3 }}>
+          <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
+            {t("insights.session.clickDistribution")}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {t("insights.session.clickDistributionDesc")}
+          </Typography>
+          <ApexChartWrapper
+            options={distributionBarOptions}
+            series={distributionBarData}
+            type="bar"
+            size="standard"
+          />
+        </Box>
+
+        {/* Distribution Detail tiles */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="subtitle1" sx={insightsSectionHeadingSx}>
+            <BarChart3 size={16} strokeWidth={1.5} />
+            {t("insights.session.distributionDetails")}
+          </Typography>
+          <Box
             sx={{
-              borderRadius: `${radiusTokens.lg}px`,
-              backgroundColor: "background.paper",
-              border: `1px solid ${theme.palette.divider}`,
-              boxShadow:
-                theme.palette.mode === "dark"
-                  ? elevationTokens.xs
-                  : elevationLightTokens.xs,
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, 1fr)",
+                md: "repeat(3, 1fr)",
+              },
+              gap: 2,
             }}
           >
-            <CardContent>
-              <Stack spacing={2}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    fontWeight: 600,
-                  }}
-                >
-                  <Lightbulb size={16} strokeWidth={1.5} />
-                  {t("insights.session.sessionInsights")}
+            {data.session_distribution.slice(0, 6).map((item, index) => (
+              <Box key={index} sx={insightsTileSx(theme)}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                  {item.clicks_count} Click
+                  {item.clicks_count > 1 ? "s" : ""}
                 </Typography>
-
-                <Typography variant="body1">
-                  {t("insights.session.analysisRaw", {
-                    avg: data.avg_session_clicks,
-                    power: powerUsersPct,
-                    powerCount: data.power_users_count,
+                <Typography variant="body2" color="text.secondary">
+                  {t("insights.session.usersCount", {
+                    n: item.frequency,
+                    percent: item.percentage,
                   })}
                 </Typography>
-
-                <Typography variant="body2" color="text.secondary">
-                  {data.avg_session_clicks >= 2.5
-                    ? t("insights.session.recHigh")
-                    : t("insights.session.recLow")}
-                </Typography>
-
-                {powerUsersPct > 20 && (
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: theme.palette.success.main,
-                      fontWeight: 500,
-                    }}
-                  >
-                    {t("insights.session.powerUserHighlight", {
-                      percent: powerUsersPct,
+                {item.avg_response_time > 0 && (
+                  <Typography variant="caption" color="text.secondary">
+                    {t("insights.session.avgTime", {
+                      n: Number(item.avg_response_time).toFixed(2),
                     })}
                   </Typography>
                 )}
-              </Stack>
-            </CardContent>
-          </Card>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
+        {/* Insights panel */}
+        <Box sx={insightsChartPanelSx(theme)}>
+          <Stack spacing={1.5}>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                fontWeight: 600,
+              }}
+            >
+              <Lightbulb size={16} strokeWidth={1.5} />
+              {t("insights.session.sessionInsights")}
+            </Typography>
+
+            <Typography variant="body1">
+              {t("insights.session.analysisRaw", {
+                avg: data.avg_session_clicks,
+                power: powerUsersPct,
+                powerCount: data.power_users_count,
+              })}
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary">
+              {data.avg_session_clicks >= 2.5
+                ? t("insights.session.recHigh")
+                : t("insights.session.recLow")}
+            </Typography>
+
+            {powerUsersPct > 20 && (
+              <Typography
+                variant="body2"
+                sx={{
+                  color: theme.palette.success.main,
+                  fontWeight: 500,
+                }}
+              >
+                {t("insights.session.powerUserHighlight", {
+                  percent: powerUsersPct,
+                })}
+              </Typography>
+            )}
+          </Stack>
         </Box>
       </Box>
     </EnhancedPaper>

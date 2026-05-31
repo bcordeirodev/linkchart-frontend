@@ -22,11 +22,13 @@ import { ApiError } from "@/lib/api/client";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showErrorMessage } from "@/lib/store/messageSlice";
 import {
+  getPublicBlockDescriptionSx,
+  getPublicBlockTitleSx,
   getPublicFormFieldSx,
   getPublicFormShellSx,
 } from "@/lib/theme/publicPageStyles";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
-import { GradientButton } from "@/shared/ui/base/GradientButton";
+import { GradientButton, PublicBlockIcon } from "@/shared/ui/base";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 
 import {
@@ -163,6 +165,32 @@ export function URLShortenerForm({
         onSubmit={handleSubmit(onSubmit)}
         sx={getPublicFormShellSx(theme)}
       >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 1.25,
+            mb: 2.5,
+          }}
+        >
+          <PublicBlockIcon
+            icon={Link2}
+            sx={{
+              color: alpha(theme.palette.common.white, isDark ? 0.96 : 0.94),
+            }}
+          />
+          <Box sx={{ minWidth: 0 }}>
+            <Typography
+              component="h2"
+              sx={{ ...getPublicBlockTitleSx(theme), mb: 0.5 }}
+            >
+              {t("shorter.form.boxTitle")}
+            </Typography>
+            <Typography sx={getPublicBlockDescriptionSx(theme)}>
+              {t("shorter.form.boxSubtitle")}
+            </Typography>
+          </Box>
+        </Box>
         <Box
           sx={{
             display: "grid",

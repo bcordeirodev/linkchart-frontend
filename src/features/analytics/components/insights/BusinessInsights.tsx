@@ -111,7 +111,6 @@ export function BusinessInsights({
       <Alert
         severity="info"
         sx={{
-          m: 2,
           borderRadius: `${radiusTokens.lg}px`,
           "& .MuiAlert-icon": {
             fontSize: "1.5rem",
@@ -200,13 +199,13 @@ export function BusinessInsights({
     .slice(0, maxItems);
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box>
       {showTitle ? (
         <Typography
           variant="h6"
           gutterBottom
           sx={{
-            mb: 3,
+            mb: 2,
             fontWeight: 600,
             color: "text.primary",
             display: "flex",
@@ -219,7 +218,7 @@ export function BusinessInsights({
         </Typography>
       ) : null}
 
-      <Stack spacing={3}>
+      <Stack spacing={2}>
         {organizedInsights.map((insight, index) => {
           const palette = getPriorityPalette(insight.priority);
           const prevInsight = organizedInsights[index - 1];
@@ -281,7 +280,7 @@ export function BusinessInsights({
                   },
                 }}
               >
-                <CardContent sx={{ p: 3 }}>
+                <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
                   <Stack direction="row" alignItems="flex-start" spacing={2}>
                     <Avatar
                       sx={{

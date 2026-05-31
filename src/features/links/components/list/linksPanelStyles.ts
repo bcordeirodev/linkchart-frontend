@@ -1,11 +1,6 @@
 import { alpha, keyframes } from "@mui/material/styles";
 
-import {
-  elevationLightTokens,
-  elevationTokens,
-  motionTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 
 import type { Theme } from "@mui/material/styles";
 
@@ -60,20 +55,17 @@ export function getLinksQuickCreatePanelSx(theme: Theme) {
 /** Expanding ring pulse after quick-create (visible outside the card). */
 export function getNewlyCreatedHighlightSx(theme: Theme) {
   const primary = theme.palette.primary.main;
-  const accentInset = `inset 3px 0 0 0 ${alpha(
-    theme.palette.primary.light,
-    theme.palette.mode === "dark" ? 0.45 : 0.4,
-  )}`;
+  const baseShadow = getLinksCardShadow(theme);
 
   const ringPulse = keyframes`
     0% {
-      box-shadow: 0 0 0 0 ${alpha(primary, 0.5)}, ${accentInset};
+      box-shadow: 0 0 0 0 ${alpha(primary, 0.5)}, ${baseShadow};
     }
     55% {
-      box-shadow: 0 0 0 9px ${alpha(primary, 0)}, ${accentInset};
+      box-shadow: 0 0 0 9px ${alpha(primary, 0)}, ${baseShadow};
     }
     100% {
-      box-shadow: 0 0 0 0 ${alpha(primary, 0)}, ${accentInset};
+      box-shadow: 0 0 0 0 ${alpha(primary, 0)}, ${baseShadow};
     }
   `;
 
@@ -100,14 +92,20 @@ export function getLinkCardShellSx(theme: Theme) {
     borderRadius: `${radiusTokens.lg}px`,
     border: `1px solid ${getLinksBorderColor(theme)}`,
     overflow: "hidden" as const,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
-    transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+    backgroundColor: isDark
+      ? alpha(theme.palette.common.black, 0.28)
+      : alpha(theme.palette.common.black, 0.035),
+    boxShadow: getLinksCardShadow(theme),
+    transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}, border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {
-      boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
+      boxShadow: getLinksCardShadow(theme, "hover"),
+      borderColor: alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14),
     },
   };
 }
+
+/** Vertical gap between cards in the browse list. */
+export const linkCardListItemMb = { xs: 2, sm: 2.25 } as const;
 
 /** Compact inset strip (short URL copy on mobile). */
 export function getLinkCardUrlBarSx(theme: Theme) {

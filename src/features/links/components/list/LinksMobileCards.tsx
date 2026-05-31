@@ -8,7 +8,7 @@
  * - Action zone: click-to-copy short-URL strip + Analytics button (one row, no duplication)
  * - Compact metrics footer (sparkline, trend %, clicks, date, health)
  *
- * A status-coloured left accent (inset box-shadow) mirrors the desktop card.
+ * Shell styles match the desktop card via `getLinkCardShellSx`.
  */
 
 import { Eye, Clock, Link2 } from "lucide-react";
@@ -31,11 +31,7 @@ import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkCardActionBar } from "./LinkCardActionBar";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
 
 import {
   formatLastClickLabel,
@@ -64,6 +60,7 @@ import {
   getLinkCardShellSx,
   getNewlyCreatedHighlightSx,
   linkCardContentSx,
+  linkCardListItemMb,
   linkCardMetricInlineSx,
   linkCardMetricValueSx,
 } from "./linksPanelStyles";
@@ -108,7 +105,6 @@ const LinkMobileCard = memo(
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { t, i18n } = useTranslation("links");
     const dateLocale = getDateFnsLocale(i18n.language);
-    const isDark = theme.palette.mode === "dark";
 
     const shortUrl = useShortUrl(link.slug || link.custom_slug || "");
     const displayUrl = shortUrl.replace(/^https?:\/\//, "");
@@ -137,30 +133,13 @@ const LinkMobileCard = memo(
     const truncateUrl = (url: string, maxLength = 48) =>
       url.length <= maxLength ? url : `${url.substring(0, maxLength)}…`;
 
-    // Consistent decorative left accent — same blue-gray as desktop card.
-    const accentShadow = `inset 3px 0 0 0 ${alpha(
-      theme.palette.primary.light,
-      isDark ? 0.38 : 0.32,
-    )}`;
-    const baseElevation = isDark ? elevationTokens.xs : elevationLightTokens.xs;
-    const hoverElevation = isDark
-      ? elevationTokens.sm
-      : elevationLightTokens.sm;
-
     return (
       <Card
         id={`link-card-${link.id}`}
         sx={{
-          mb: 1,
+          mb: linkCardListItemMb,
           ...getLinkCardShellSx(theme),
-          ...(isHighlighted
-            ? getNewlyCreatedHighlightSx(theme)
-            : {
-                boxShadow: `${accentShadow}, ${baseElevation}`,
-                "&:hover": {
-                  boxShadow: `${accentShadow}, ${hoverElevation}`,
-                },
-              }),
+          ...(isHighlighted ? getNewlyCreatedHighlightSx(theme) : {}),
         }}
       >
         <CardContent
