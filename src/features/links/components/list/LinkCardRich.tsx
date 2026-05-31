@@ -37,16 +37,13 @@ import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { LinkSparkline } from "./LinkSparkline";
 import { LinkTrendBadge } from "./LinkTrendBadge";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import {
   getLinkCardMetricDividerSx,
   getLinkCardMetricsRowSx,
   getLinkCardShellSx,
   getNewlyCreatedHighlightSx,
+  linkCardListItemMb,
   linkCardContentSx,
   linkCardMetricInlineSx,
   linkCardMetricLabelSx,
@@ -171,7 +168,6 @@ export function LinkCardRich({
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("links");
   const dateLocale = getDateFnsLocale(i18n.language);
-  const isDark = theme.palette.mode === "dark";
 
   const shortUrl = useShortUrl(link.slug);
   const displayUrl = shortUrl.replace(/^https?:\/\//, "");
@@ -208,15 +204,6 @@ export function LinkCardRich({
       ? format(createdDate, "dd/MM/yyyy", { locale: dateLocale })
       : null;
 
-  // Consistent decorative left accent — "cinza azulado/turquesa bem leve".
-  // Uses primary.light at low opacity so all cards share the same calm blue-gray
-  // stripe, regardless of status. Status is still communicated by the chip.
-  const accentShadow = `inset 3px 0 0 0 ${alpha(
-    theme.palette.primary.light,
-    isDark ? 0.38 : 0.32,
-  )}`;
-  const baseElevation = isDark ? elevationTokens.xs : elevationLightTokens.xs;
-  const hoverElevation = isDark ? elevationTokens.sm : elevationLightTokens.sm;
   const metricDividerSx = getLinkCardMetricDividerSx(theme);
 
   return (
@@ -224,15 +211,9 @@ export function LinkCardRich({
       id={`link-card-${link.id}`}
       animated={false}
       sx={{
+        mb: linkCardListItemMb,
         ...getLinkCardShellSx(theme),
-        ...(isHighlighted
-          ? getNewlyCreatedHighlightSx(theme)
-          : {
-              boxShadow: `${accentShadow}, ${baseElevation}`,
-              "&:hover": {
-                boxShadow: `${accentShadow}, ${hoverElevation}`,
-              },
-            }),
+        ...(isHighlighted ? getNewlyCreatedHighlightSx(theme) : {}),
       }}
     >
       <Box sx={linkCardContentSx}>

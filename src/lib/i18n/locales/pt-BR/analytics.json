@@ -862,6 +862,18 @@
       "clicksCount": "{{n}} clicks",
       "time": "Tempo: {{n}}s",
       "navigationContext": "Contexto de Navegação",
+      "contextClicks": "{{n}} cliques ({{pct}}%)",
+      "sections": {
+        "channels": "Canais de tráfego",
+        "channelsDesc": "Visão agregada por canal (social, busca, direto…). Compare distribuição de cliques e profundidade de sessão.",
+        "origin": "Origem e contexto",
+        "originDesc": "Fontes individuais que geraram cliques e como o visitante chegou (navegador, app, API)."
+      },
+      "recTypes": {
+        "growth": "Crescimento",
+        "diversification": "Diversificação",
+        "optimization": "Otimização"
+      },
       "contextLabels": {
         "browser_direct": "Direto (navegador)",
         "browser_referral": "Referral (navegador)",
@@ -880,6 +892,11 @@
       "description": "Classificação dos cliques em orgânicos, suspeitos e fraude com base em fingerprint de dispositivo e padrões de comportamento. Score 0–100; acima de 70 é considerado saudável.",
       "tooltipNote": "Score calculado com base em headers, comportamento e consistência de fingerprint. Sem APIs externas.",
       "avgScore": "Score médio: {{score}}",
+      "avgScoreLabel": "Score médio",
+      "scoreScale": "escala 0–100",
+      "organicShareLabel": "Tráfego orgânico",
+      "organicShareHint": "participação de cliques classificados como orgânicos",
+      "tierScore": "score {{n}}",
       "tiers": {
         "organic": "Orgânico",
         "suspicious": "Suspeito",

@@ -55,6 +55,7 @@ export function SocialAppCard({ data }: Props) {
     return (
       <Card
         sx={{
+          width: "100%",
           borderRadius: `${radiusTokens.lg}px`,
           border: `1px solid ${theme.palette.divider}`,
           boxShadow: elevation.xs,
@@ -91,6 +92,7 @@ export function SocialAppCard({ data }: Props) {
   return (
     <Card
       sx={{
+        width: "100%",
         borderRadius: `${radiusTokens.lg}px`,
         border: `1px solid ${theme.palette.divider}`,
         boxShadow: elevation.xs,

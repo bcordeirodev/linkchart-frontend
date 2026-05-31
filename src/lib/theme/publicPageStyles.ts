@@ -58,7 +58,8 @@ export function getPublicFormShellSx(theme: Theme): SxProps<Theme> {
 
   return {
     ...getPublicPanelSx(theme),
-    bgcolor: alpha(theme.palette.text.primary, isDark ? 0.03 : 0.04),
+    border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.34 : 0.38)}`,
+    bgcolor: alpha(theme.palette.text.primary, isDark ? 0.045 : 0.055),
     p: { xs: 3, md: 3.5 },
     boxShadow: "none",
   };

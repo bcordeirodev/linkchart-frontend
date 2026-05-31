@@ -1,10 +1,9 @@
 "use client";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useAudienceData } from "@/features/analytics/hooks/useAudienceData";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
-import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { ResponsiveContainer } from "@/shared/ui/base/ResponsiveContainer";
 import { AudienceChart } from "./AudienceChart";
 import { AudienceExtraCharts } from "./AudienceExtraCharts";
@@ -15,6 +14,125 @@ import { QualitySection } from "./QualitySection";
 import { SocialPlatformSection } from "./SocialPlatformSection";
 
 import type { AudienceAnalysisProps } from "@/types/analytics";
+
+/**
+ * Loading skeleton that mirrors the Audience tab layout:
+ * 6 metric cards → tabbed main chart → behavior/social row →
+ * quality → audience insights → 4 extra donut charts.
+ */
+function AudienceSkeleton() {
+  return (
+    <Box>
+      {/* 6 metric cards — 2 per row xs, 3 per row sm, 6 per row md */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr 1fr",
+            sm: "repeat(3, 1fr)",
+            md: "repeat(6, 1fr)",
+          },
+          gap: 2,
+          mb: 3,
+        }}
+      >
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Skeleton
+            key={i}
+            variant="rounded"
+            animation="wave"
+            height={120}
+            sx={{ borderRadius: 2 }}
+          />
+        ))}
+      </Box>
+
+      {/* Main tabbed chart — tall protagonist with tab indicators */}
+      <Box sx={{ mb: 2 }}>
+        <Box sx={{ display: "flex", gap: 1, mb: 1.5 }}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton
+              key={i}
+              variant="rounded"
+              animation="wave"
+              width={82}
+              height={30}
+              sx={{ borderRadius: 1 }}
+            />
+          ))}
+        </Box>
+        <Skeleton
+          variant="rounded"
+          animation="wave"
+          height={380}
+          sx={{ borderRadius: 2 }}
+        />
+      </Box>
+
+      {/* Behavior + Social side by side */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+          gap: 2,
+          mb: 2,
+        }}
+      >
+        <Skeleton
+          variant="rounded"
+          animation="wave"
+          height={260}
+          sx={{ borderRadius: 2 }}
+        />
+        <Skeleton
+          variant="rounded"
+          animation="wave"
+          height={260}
+          sx={{ borderRadius: 2 }}
+        />
+      </Box>
+
+      {/* Quality section */}
+      <Skeleton
+        variant="rounded"
+        animation="wave"
+        height={200}
+        sx={{ mb: 2, borderRadius: 2 }}
+      />
+
+      {/* Audience insights */}
+      <Skeleton
+        variant="rounded"
+        animation="wave"
+        height={180}
+        sx={{ mb: 2, borderRadius: 2 }}
+      />
+
+      {/* 4 extra donut charts (Idioma / Plataforma / Conexão / Fetch-Dest) */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "1fr 1fr",
+            md: "repeat(4, 1fr)",
+          },
+          gap: 2,
+        }}
+      >
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton
+            key={i}
+            variant="rounded"
+            animation="wave"
+            height={220}
+            sx={{ borderRadius: 2 }}
+          />
+        ))}
+      </Box>
+    </Box>
+  );
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyData = Record<string, any>;
@@ -81,7 +199,7 @@ export function AudienceAnalysis({
         loading={shouldUseHook ? loading : false}
         error={shouldUseHook && error ? error : null}
         hasData={!!deviceBreakdown?.length}
-        skeleton={<AnalyticsTabSkeleton metricCards={6} />}
+        skeleton={<AudienceSkeleton />}
         onRetry={refresh}
         loadingMessage={t("audience.loading")}
         emptyMessage={t("audience.empty")}

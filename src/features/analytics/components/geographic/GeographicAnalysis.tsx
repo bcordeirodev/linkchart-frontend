@@ -1,14 +1,13 @@
 "use client";
 import { useState } from "react";
 import { Map, BarChart3, Layers } from "lucide-react";
-import { Box, Grid, Tab, Tabs } from "@mui/material";
+import { Box, Grid, Skeleton, Tab, Tabs } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useResponsive } from "@/lib/theme";
 
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
-import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { useGeographicData } from "../../hooks/useGeographicData";
 
 import { ContinentBreakdown } from "./ContinentBreakdown";
@@ -19,6 +18,122 @@ import { GeographicFilterBar } from "./GeographicFilterBar";
 import { GeographicInsights } from "./GeographicInsights";
 import { GeographicMetrics } from "./GeographicMetrics";
 import { RealTimeHeatmapChart } from "./index";
+
+/**
+ * Loading skeleton that mirrors the Geographic tab layout:
+ * filter bar → 5 metric cards → bordered sub-tabs container
+ * (tab nav + choropleth/sidebar + insights).
+ */
+function GeographicSkeleton() {
+  return (
+    <Box>
+      {/* Continent filter bar */}
+      <Skeleton
+        variant="rounded"
+        animation="wave"
+        height={52}
+        sx={{ mb: 2, borderRadius: 2 }}
+      />
+
+      {/* 5 metric cards */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr 1fr",
+            sm: "repeat(3, 1fr)",
+            md: "repeat(5, 1fr)",
+          },
+          gap: 2,
+          mb: 2,
+        }}
+      >
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton
+            key={i}
+            variant="rounded"
+            animation="wave"
+            height={120}
+            sx={{ borderRadius: 2 }}
+          />
+        ))}
+      </Box>
+
+      {/* Sub-tabs bordered container */}
+      <Box
+        sx={{
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 2,
+          p: { xs: 1.5, md: 2 },
+        }}
+      >
+        {/* Tab navigation */}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1.5,
+            mb: 3,
+            pb: 1.5,
+            borderBottom: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton
+              key={i}
+              variant="rounded"
+              animation="wave"
+              width={110}
+              height={32}
+              sx={{ borderRadius: 1 }}
+            />
+          ))}
+        </Box>
+
+        {/* Choropleth (8/12) + continent/country sidebar (4/12) */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "2fr 1fr" },
+            gap: 3,
+          }}
+        >
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            height={400}
+            sx={{ borderRadius: 2 }}
+          />
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+            <Skeleton
+              variant="rounded"
+              animation="wave"
+              height={190}
+              sx={{ borderRadius: 2 }}
+            />
+            <Skeleton
+              variant="rounded"
+              animation="wave"
+              height={190}
+              sx={{ borderRadius: 2 }}
+            />
+          </Box>
+        </Box>
+
+        {/* Geographic insights table */}
+        <Box sx={{ mt: 3 }}>
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            height={230}
+            sx={{ borderRadius: 2 }}
+          />
+        </Box>
+      </Box>
+    </Box>
+  );
+}
 
 /** Props accepted by the {@link GeographicAnalysis} component. */
 interface GeographicAnalysisProps {
@@ -126,7 +241,7 @@ export function GeographicAnalysis({
         loading={loading}
         error={error}
         hasData={!!data}
-        skeleton={<AnalyticsTabSkeleton hasFilter metricCards={5} />}
+        skeleton={<GeographicSkeleton />}
         onRetry={refresh}
         loadingMessage={t("geographic.loading")}
         emptyMessage={t("geographic.empty")}

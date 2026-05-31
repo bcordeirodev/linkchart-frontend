@@ -76,6 +76,8 @@ export function ChartCard({
     <Box
       sx={{
         height,
+        width: "100%",
+        minWidth: 0,
         ...animations.cardHover,
         ...sx,
       }}
@@ -83,6 +85,7 @@ export function ChartCard({
       <Card
         sx={{
           height: "100%",
+          width: "100%",
           borderRadius: `${radiusTokens.lg}px`,
           border: `1px solid ${theme.palette.divider}`,
           boxShadow:
@@ -133,7 +136,7 @@ export function ChartCard({
               </Typography>
             ) : (
               <Fade in timeout={260}>
-                <Box>{children}</Box>
+                <Box sx={{ width: "100%", minWidth: 0 }}>{children}</Box>
               </Fade>
             )}
           </Box>

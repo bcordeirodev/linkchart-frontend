@@ -44,6 +44,8 @@
       }
     },
     "form": {
+      "boxTitle": "Criar link curto",
+      "boxSubtitle": "Cole a URL de destino abaixo. Slug personalizado é opcional.",
       "urlLabel": "URL Original",
       "urlPlaceholder": "Cole a URL aqui... (ex: https://exemplo.com/pagina-longa)",
       "urlRequired": "A URL é obrigatória",

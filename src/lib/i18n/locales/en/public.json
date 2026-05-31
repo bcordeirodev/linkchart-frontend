@@ -44,6 +44,8 @@
       }
     },
     "form": {
+      "boxTitle": "Create a short link",
+      "boxSubtitle": "Paste your destination URL below. Custom slug is optional.",
       "urlLabel": "Original URL",
       "urlPlaceholder": "Paste the URL here... (e.g. https://example.com/long-page)",
       "urlRequired": "URL is required",

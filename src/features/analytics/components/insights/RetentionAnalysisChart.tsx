@@ -1,18 +1,18 @@
 "use client";
 import { Repeat2, TrendingUp, Users, Lightbulb } from "lucide-react";
-import { Box, Typography, Card, CardContent, Grid, Stack } from "@mui/material";
+import { Box, Typography, Stack } from "@mui/material";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { getChartColor } from "@/lib/theme/colors";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import {
+  INSIGHTS_BLOCK_PAD,
+  insightsChartPanelSx,
+  insightsMetricRowSx,
+} from "./insightsLayout";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type { RetentionData } from "../../hooks/useInsightsData";
@@ -130,141 +130,115 @@ export function RetentionAnalysisChart({
   }
 
   return (
-    <EnhancedPaper animated={false}>
-      {showTitle ? (
-        <Box sx={{ p: 3, pb: 0 }}>
-          <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center", gap: 1 }}
-          >
-            <Repeat2
-              {...ICON_LG}
-              style={{ color: "var(--mui-palette-primary-main)" }}
-            />
-            {displayTitle}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {t("insights.retention.description")}
-          </Typography>
-        </Box>
-      ) : null}
-
-      <Box sx={{ p: 3 }}>
-        {/* Real Metrics */}
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={4}>
-            <MetricCard
-              title={t("insights.retention.retentionRate")}
-              value={`${returnPct}%`}
-              icon={<Repeat2 {...ICON_LG} />}
-              color="success"
-              subtitle={t("insights.retention.returningVisitorsSub")}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <MetricCard
-              title={t("insights.retention.returningVisitors")}
-              value={data.return_visitors}
-              icon={<Users {...ICON_LG} />}
-              color="primary"
-              subtitle={t("insights.retention.loyalUsers")}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <MetricCard
-              title={t("insights.retention.totalVisitors")}
-              value={data.total_visitors}
-              icon={<TrendingUp {...ICON_LG} />}
-              color="secondary"
-              subtitle={t("insights.retention.uniqueVisitors")}
-            />
-          </Grid>
-        </Grid>
-
-        {/* Visitor Distribution Donut */}
-        <Card
-          sx={{
-            borderRadius: `${radiusTokens.lg}px`,
-            border: `1px solid ${theme.palette.divider}`,
-            boxShadow:
-              theme.palette.mode === "dark"
-                ? elevationTokens.xs
-                : elevationLightTokens.xs,
-            mb: 3,
-          }}
-        >
-          <CardContent>
+    <EnhancedPaper animated={false} sx={{ height: "100%" }}>
+      <Box sx={{ p: INSIGHTS_BLOCK_PAD }}>
+        {showTitle ? (
+          <Box sx={{ mb: 2 }}>
             <Typography
               variant="h6"
-              gutterBottom
-              sx={{ textAlign: "center", fontWeight: 600 }}
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
-              {t("insights.retention.visitorDistribution")}
+              <Repeat2
+                {...ICON_LG}
+                style={{ color: "var(--mui-palette-primary-main)" }}
+              />
+              {displayTitle}
             </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              {t("insights.retention.description")}
+            </Typography>
+          </Box>
+        ) : null}
+
+        {/* Real Metrics */}
+        <Box
+          sx={{
+            ...insightsMetricRowSx,
+            mb: 3,
+            gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
+          }}
+        >
+          <MetricCard
+            title={t("insights.retention.retentionRate")}
+            value={`${returnPct}%`}
+            icon={<Repeat2 {...ICON_LG} />}
+            color="success"
+            subtitle={t("insights.retention.returningVisitorsSub")}
+          />
+          <MetricCard
+            title={t("insights.retention.returningVisitors")}
+            value={data.return_visitors}
+            icon={<Users {...ICON_LG} />}
+            color="primary"
+            subtitle={t("insights.retention.loyalUsers")}
+          />
+          <MetricCard
+            title={t("insights.retention.totalVisitors")}
+            value={data.total_visitors}
+            icon={<TrendingUp {...ICON_LG} />}
+            color="secondary"
+            subtitle={t("insights.retention.uniqueVisitors")}
+          />
+        </Box>
+
+        {/* Visitor Distribution Donut */}
+        <Box sx={{ ...insightsChartPanelSx(theme), mb: 3 }}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ textAlign: "center", fontWeight: 600 }}
+          >
+            {t("insights.retention.visitorDistribution")}
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ textAlign: "center", mb: 1 }}
+          >
+            {t("insights.retention.visitorDistributionDesc", {
+              returning: data.return_visitors,
+              total: data.total_visitors,
+            })}
+          </Typography>
+          <ApexChartWrapper
+            options={visitorsPieOptions}
+            series={visitorsPieData}
+            type="donut"
+            size="standard"
+          />
+        </Box>
+
+        {/* Insights panel */}
+        <Box sx={insightsChartPanelSx(theme)}>
+          <Stack spacing={1.5}>
             <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ textAlign: "center", mb: 1 }}
+              variant="subtitle1"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                fontWeight: 600,
+              }}
             >
-              {t("insights.retention.visitorDistributionDesc", {
+              <Lightbulb size={16} strokeWidth={1.5} />
+              {t("insights.retention.insightsTitle")}
+            </Typography>
+
+            <Typography variant="body1">
+              {t("insights.retention.analysisRaw", {
+                rate: returnPct,
+                newPct,
                 returning: data.return_visitors,
                 total: data.total_visitors,
               })}
             </Typography>
-            <ApexChartWrapper
-              options={visitorsPieOptions}
-              series={visitorsPieData}
-              type="donut"
-              size="standard"
-            />
-          </CardContent>
-        </Card>
 
-        {/* Insights Card */}
-        <Box sx={{ mt: 3 }}>
-          <Card
-            sx={{
-              borderRadius: `${radiusTokens.lg}px`,
-              backgroundColor: "background.paper",
-              border: `1px solid ${theme.palette.divider}`,
-              boxShadow:
-                theme.palette.mode === "dark"
-                  ? elevationTokens.xs
-                  : elevationLightTokens.xs,
-            }}
-          >
-            <CardContent>
-              <Stack spacing={2}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    fontWeight: 600,
-                  }}
-                >
-                  <Lightbulb size={16} strokeWidth={1.5} />
-                  {t("insights.retention.insightsTitle")}
-                </Typography>
-
-                <Typography variant="body1">
-                  {t("insights.retention.analysisRaw", {
-                    rate: returnPct,
-                    newPct,
-                    returning: data.return_visitors,
-                    total: data.total_visitors,
-                  })}
-                </Typography>
-
-                <Typography variant="body2" color="text.secondary">
-                  {returnPct >= 25
-                    ? t("insights.retention.recHigh")
-                    : t("insights.retention.recLow")}
-                </Typography>
-              </Stack>
-            </CardContent>
-          </Card>
+            <Typography variant="body2" color="text.secondary">
+              {returnPct >= 25
+                ? t("insights.retention.recHigh")
+                : t("insights.retention.recLow")}
+            </Typography>
+          </Stack>
         </Box>
       </Box>
     </EnhancedPaper>

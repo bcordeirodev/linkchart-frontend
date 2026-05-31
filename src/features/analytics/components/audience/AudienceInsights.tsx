@@ -1,21 +1,10 @@
 "use client";
-import { useState } from "react";
-import {
-  Lightbulb,
-  Target,
-  BarChart3,
-  TrendingUp,
-  Wrench,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { Lightbulb, Target, BarChart3, TrendingUp, Wrench } from "lucide-react";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Chip,
-  Collapse,
   Divider,
   Grid,
   Stack,
@@ -93,8 +82,6 @@ export function AudienceInsights({
   const isMobileDominant = mobilePercentage > desktopPercentage;
   const isDesktopDominant = desktopPercentage > mobilePercentage;
   const isBalanced = Math.abs(mobilePercentage - desktopPercentage) < 10;
-  const [showInsights, setShowInsights] = useState(false);
-
   return (
     <Card
       sx={{
@@ -104,14 +91,7 @@ export function AudienceInsights({
       }}
     >
       <CardContent>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: showInsights ? 2 : 0,
-          }}
-        >
+        <Box sx={{ mb: 2 }}>
           <Typography
             variant="h6"
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
@@ -119,22 +99,9 @@ export function AudienceInsights({
             <Lightbulb size={16} strokeWidth={1.5} />
             {t("audience.insights.title")}
           </Typography>
-          <Button
-            size="small"
-            variant="text"
-            endIcon={
-              showInsights ? <ChevronUp size={14} /> : <ChevronDown size={14} />
-            }
-            onClick={() => setShowInsights((v) => !v)}
-            sx={{ px: 0, minWidth: 0 }}
-          >
-            {showInsights
-              ? t("audience.insights.collapse")
-              : t("audience.insights.expand")}
-          </Button>
         </Box>
 
-        <Collapse in={showInsights}>
+        <Box>
           <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid item xs={12} md={6}>
               <Typography
@@ -312,7 +279,7 @@ export function AudienceInsights({
               </Typography>
             </Stack>
           </Box>
-        </Collapse>
+        </Box>
       </CardContent>
     </Card>
   );

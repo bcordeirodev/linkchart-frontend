@@ -1,12 +1,12 @@
 "use client";
 import { useMemo } from "react";
+import type { ReactNode } from "react";
 import { Lightbulb, TrendingUp, Flag, BarChart3 } from "lucide-react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 
-import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
@@ -18,7 +18,47 @@ import { InsightsFilterBar } from "./InsightsFilterBar";
 import { RetentionAnalysisChart } from "./RetentionAnalysisChart";
 import { SessionDepthChart } from "./SessionDepthChart";
 import { TrafficSourceChart } from "./TrafficSourceChart";
-import { TrafficQualityChart } from "./TrafficQualityChart";
+import {
+  INSIGHTS_SECTION_SPACING,
+  insightsMetricRowSx,
+} from "./insightsLayout";
+
+/**
+ * Lightweight section heading used to group analytics blocks with whitespace
+ * instead of nested bordered containers.
+ */
+function SectionHeading({
+  icon,
+  title,
+  subtitle,
+}: {
+  icon: ReactNode;
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <Box sx={{ mb: 2 }}>
+      <Typography
+        variant="subtitle1"
+        sx={{
+          fontWeight: 700,
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          letterSpacing: 0.2,
+        }}
+      >
+        {icon}
+        {title}
+      </Typography>
+      {subtitle ? (
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          {subtitle}
+        </Typography>
+      ) : null}
+    </Box>
+  );
+}
 
 /** Props accepted by the {@link InsightsAnalysis} component. */
 interface InsightsAnalysisProps {
@@ -136,6 +176,12 @@ export function InsightsAnalysis({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredInsights, priority, categoriesKey, actionableOnly, stats]);
 
+  const topCategoryLabel = filteredStats?.topCategory
+    ? t(`filters.insightTypeOptions.${filteredStats.topCategory}`, {
+        defaultValue: filteredStats.topCategory,
+      })
+    : "-";
+
   /** Whether to render the filter bar — requires all three callbacks to be present. */
   const showFilterBar =
     !!onPriorityChange && !!onCategoriesChange && !!onActionableOnlyChange;
@@ -152,7 +198,7 @@ export function InsightsAnalysis({
         emptyMessage={t("insights.empty")}
         minHeight={300}
       >
-        <Box>
+        <Stack spacing={3} sx={{ "& > *": { minWidth: 0 } }}>
           {showFilterBar ? (
             <InsightsFilterBar
               priority={priority}
@@ -165,57 +211,81 @@ export function InsightsAnalysis({
           ) : null}
 
           {/* KPI cards — use filteredStats so they match the visible list */}
-          <Box sx={{ mb: 3 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={3}>
-                <MetricCard
-                  title={t("insights.metrics.total")}
-                  value={filteredStats?.totalInsights?.toString() || "0"}
-                  icon={<Lightbulb {...ICON_LG} />}
-                  color="primary"
-                  subtitle={t("insights.metrics.totalSub")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <MetricCard
-                  title={t("insights.metrics.highPriority")}
-                  value={filteredStats?.highPriorityCount?.toString() || "0"}
-                  icon={<Flag {...ICON_LG} />}
-                  color="error"
-                  subtitle={t("insights.metrics.highPrioritySub")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <MetricCard
-                  title={t("insights.metrics.actionable")}
-                  value={filteredStats?.actionableCount?.toString() || "0"}
-                  icon={<TrendingUp {...ICON_LG} />}
-                  color="success"
-                  subtitle={t("insights.metrics.actionableSub")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <MetricCard
-                  title={t("insights.metrics.avgConfidence")}
-                  value={`${Math.round((filteredStats?.avgConfidence || 0) * 100)}%`}
-                  icon={<BarChart3 {...ICON_LG} />}
-                  color="info"
-                  subtitle={t("insights.metrics.confidenceSub")}
-                />
-              </Grid>
-            </Grid>
+          <Box sx={insightsMetricRowSx}>
+            <MetricCard
+              title={t("insights.metrics.total")}
+              value={filteredStats?.totalInsights?.toString() || "0"}
+              icon={<Lightbulb {...ICON_LG} />}
+              color="primary"
+              subtitle={t("insights.metrics.totalSub")}
+            />
+            <MetricCard
+              title={t("insights.metrics.highPriority")}
+              value={filteredStats?.highPriorityCount?.toString() || "0"}
+              icon={<Flag {...ICON_LG} />}
+              color="error"
+              subtitle={t("insights.metrics.highPrioritySub")}
+            />
+            <MetricCard
+              title={t("insights.metrics.actionable")}
+              value={filteredStats?.actionableCount?.toString() || "0"}
+              icon={<TrendingUp {...ICON_LG} />}
+              color="success"
+              subtitle={t("insights.metrics.actionableSub")}
+            />
+            <MetricCard
+              title={t("insights.metrics.avgConfidence")}
+              value={`${Math.round((filteredStats?.avgConfidence || 0) * 100)}%`}
+              icon={<BarChart3 {...ICON_LG} />}
+              color="info"
+              subtitle={t("insights.metrics.confidenceSub")}
+            />
           </Box>
 
-          {/* Actionable insights list */}
-          <Box sx={{ mb: 4 }}>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+          {/* Retenção e profundidade de sessão — primeiros blocos após os KPIs */}
+          {data?.analytics_data?.retention ||
+          data?.analytics_data?.session_depth ? (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                gap: 2,
+                alignItems: "stretch",
+              }}
             >
-              <Lightbulb size={16} strokeWidth={1.5} />
-              {t("insights.autoInsights")}
-            </Typography>
+              {data.analytics_data.retention ? (
+                <RetentionAnalysisChart
+                  data={data.analytics_data.retention}
+                  loading={loading}
+                  showTitle
+                />
+              ) : null}
+              {data.analytics_data.session_depth ? (
+                <SessionDepthChart
+                  data={data.analytics_data.session_depth}
+                  loading={loading}
+                  showTitle
+                />
+              ) : null}
+            </Box>
+          ) : null}
+
+          {/* Demais análises complementares */}
+          {data?.analytics_data?.traffic_sources ? (
+            <TrafficSourceChart
+              data={data.analytics_data.traffic_sources}
+              quality={data.analytics_data.quality ?? undefined}
+              loading={loading}
+              showTitle
+            />
+          ) : null}
+
+          {/* Insights automáticos — por último na página */}
+          <Box>
+            <SectionHeading
+              icon={<Lightbulb size={18} strokeWidth={1.75} />}
+              title={t("insights.autoInsights")}
+            />
             <BusinessInsights
               insights={filteredInsights}
               showTitle={false}
@@ -223,65 +293,12 @@ export function InsightsAnalysis({
             />
           </Box>
 
-          {/* Analytics blocks — 2×2 grid to reduce scroll */}
-          {data?.analytics_data ? (
-            <Box sx={{ mb: 4 }}>
-              <Grid container spacing={3}>
-                {/* Row 1: Traffic Sources (wider) + Traffic Quality */}
-                {data.analytics_data.traffic_sources ? (
-                  <Grid item xs={12} lg={7}>
-                    <TrafficSourceChart
-                      data={data.analytics_data.traffic_sources}
-                      loading={loading}
-                      showTitle
-                    />
-                  </Grid>
-                ) : null}
-
-                {data.analytics_data.quality ? (
-                  <Grid item xs={12} lg={5}>
-                    <TrafficQualityChart data={data.analytics_data.quality} />
-                  </Grid>
-                ) : null}
-
-                {/* Row 2: Retention + Session Depth */}
-                {data.analytics_data.retention ? (
-                  <Grid item xs={12} md={6}>
-                    <RetentionAnalysisChart
-                      data={data.analytics_data.retention}
-                      loading={loading}
-                      showTitle
-                    />
-                  </Grid>
-                ) : null}
-
-                {data.analytics_data.session_depth ? (
-                  <Grid item xs={12} md={6}>
-                    <SessionDepthChart
-                      data={data.analytics_data.session_depth}
-                      loading={loading}
-                      showTitle
-                    />
-                  </Grid>
-                ) : null}
-              </Grid>
-            </Box>
-          ) : null}
-
           {filteredStats ? (
-            <Box
-              sx={{
-                mt: 3,
-                p: 2,
-                bgcolor: "background.paper",
-                border: 1,
-                borderColor: "divider",
-                borderRadius: `${radiusTokens.md}px`,
-              }}
-            >
+            <Box sx={{ pt: 0.5 }}>
+              <Divider sx={{ mb: 1 }} />
               <Typography variant="caption" color="text.secondary">
                 {t("insights.footer.topCategory", {
-                  category: filteredStats.topCategory,
+                  category: topCategoryLabel,
                 })}{" "}
                 • {t("insights.footer.lastGenerated")}{" "}
                 {new Date(filteredStats.lastGenerated).toLocaleString()} •{" "}
@@ -293,7 +310,7 @@ export function InsightsAnalysis({
               </Typography>
             </Box>
           ) : null}
-        </Box>
+        </Stack>
       </AnalyticsStateManager>
     </Box>
   );

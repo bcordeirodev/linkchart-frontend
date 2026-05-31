@@ -101,7 +101,7 @@ export function LinksBrowseSection({
             highlightedLinkId={highlightedLinkId}
           />
         ) : (
-          <Stack spacing={1}>
+          <Stack spacing={0}>
             {sortedLinks.map((link) => (
               <LinkCardRich
                 key={link.id}
