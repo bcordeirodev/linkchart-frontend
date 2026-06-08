@@ -2,6 +2,7 @@
   "list": {
     "pageTitle": "Manage Links",
     "pageSubtitle": "Create, edit and monitor your shortened links",
+    "heading": "My links",
     "createNew": "New Link",
     "noTitle": "Untitled link",
     "empty": {
