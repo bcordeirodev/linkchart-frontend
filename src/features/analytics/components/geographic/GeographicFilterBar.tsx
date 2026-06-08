@@ -37,6 +37,7 @@ export function GeographicFilterBar({
 
   return (
     <TabFilterBar
+      attached
       groups={[
         {
           label: t("filters.continent"),
