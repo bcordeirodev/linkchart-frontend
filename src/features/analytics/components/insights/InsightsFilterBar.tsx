@@ -70,6 +70,7 @@ export function InsightsFilterBar({
 
   return (
     <TabFilterBar
+      attached
       groups={[
         {
           label: t("filters.priority"),
