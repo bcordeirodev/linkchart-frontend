@@ -1000,7 +1000,9 @@
     "avgSessionDuration": "Avg. Session",
     "peakHour": "Peak Hour",
     "topDevice": "Top Device",
-    "vsPreviousPeriod": "Vs. Previous Period"
+    "vsPreviousPeriod": "Vs. Previous Period",
+    "quality": "Quality",
+    "noData": "No data"
   },
   "virality": {
     "title": "Virality",
