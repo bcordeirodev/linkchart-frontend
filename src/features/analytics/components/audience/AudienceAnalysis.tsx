@@ -208,7 +208,7 @@ export function AudienceAnalysis({
         <ResponsiveContainer style={{ padding: 0 }}>
           {/* 1. Metric cards */}
           {shouldUseHook && stats ? (
-            <Box sx={{ mb: 3 }}>
+            <Box sx={{ mb: 2 }}>
               <AudienceMetrics data={{ audience: audienceData, stats }} />
             </Box>
           ) : null}
