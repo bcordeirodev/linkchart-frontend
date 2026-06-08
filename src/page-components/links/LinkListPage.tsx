@@ -144,7 +144,7 @@ function LinkListPage() {
           <Box component="div">
             <LinksListSectionHeading
               icon={<BarChart3 {...ICON_MD} />}
-              title={t("list.sections.overview")}
+              title={t("list.heading")}
               description={t("list.pageSubtitle")}
               titleVariant="page"
               sx={{ mb: { xs: 1.5, sm: 2 } }}
