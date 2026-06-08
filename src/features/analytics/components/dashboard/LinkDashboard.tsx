@@ -8,7 +8,7 @@
  */
 
 import React, { useMemo, type ReactNode } from "react";
-import { Box, Divider, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Circle } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,7 @@ import { createPresetAnimations } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { EmptyState } from "@/shared/ui/base/EmptyState";
+import { SectionDivider } from "@/shared/ui/SectionDivider";
 
 import type {
   DashboardData,
@@ -312,15 +313,7 @@ const DashboardChartSection = React.memo(function DashboardChartSection({
 
   return (
     <Stack spacing={{ xs: 2, md: 3 }}>
-      <Divider textAlign="left">
-        <Typography
-          variant="overline"
-          color="text.secondary"
-          sx={{ fontWeight: 700, letterSpacing: "0.1em" }}
-        >
-          {sectionTitle}
-        </Typography>
-      </Divider>
+      <SectionDivider title={sectionTitle} mb={0} />
 
       <Box
         sx={{
