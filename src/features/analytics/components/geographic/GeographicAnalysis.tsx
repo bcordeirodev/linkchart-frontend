@@ -275,8 +275,9 @@ export function GeographicAnalysis({
               <Tabs
                 value={activeSubTab}
                 onChange={handleSubTabChange}
-                variant="scrollable"
+                variant={isMobile ? "scrollable" : "fullWidth"}
                 scrollButtons="auto"
+                allowScrollButtonsMobile
               >
                 <Tab
                   label={t("geographic.subtabs.overview")}
