@@ -63,7 +63,7 @@ export function MetricCardOptimized({
       }}
       {...other}
     >
-      <CardContent sx={{ p: 3 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 2.25 } }}>
         <Box
           sx={{
             display: "flex",
@@ -82,8 +82,8 @@ export function MetricCardOptimized({
 
           <Box
             sx={{
-              width: 36,
-              height: 36,
+              width: 28,
+              height: 28,
               borderRadius: "50%",
               bgcolor: alpha(selectedColor, 0.12),
               display: "flex",
