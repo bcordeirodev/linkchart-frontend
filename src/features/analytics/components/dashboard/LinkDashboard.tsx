@@ -8,24 +8,26 @@
  */
 
 import React, { useMemo, type ReactNode } from "react";
-import { Box, Divider, Grid, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Divider, Skeleton, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Circle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { useDashboardData } from "@/features/analytics/hooks/useDashboardData";
-import { LinkMetrics } from "@/features/links/components/LinkMetrics";
 import { createPresetAnimations } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { EmptyState } from "@/shared/ui/base/EmptyState";
 
-import type { DashboardData } from "@/types/analytics/dashboard";
+import type {
+  DashboardData,
+  DashboardSummary,
+} from "@/types/analytics/dashboard";
 
+import { OverviewKpiHeader } from "./OverviewKpiHeader";
 import {
   LinkInfoCard,
   ViralityCard,
-  TrafficQualityCard,
   UtmSourceCard,
   SocialAppCard,
 } from "./cards";
@@ -350,6 +352,24 @@ const DashboardChartSection = React.memo(function DashboardChartSection({
 });
 
 /**
+ * Formats the traffic-quality summary into the same display string used by the
+ * standalone TrafficQualityCard (`"{organic_percentage}%"`). Returns the
+ * provided `noDataLabel` (e.g. "No data") when the quality block is absent, so
+ * the hero header stays consistent with the rest of the dashboard.
+ *
+ * @param quality - The `summary.quality` block from the dashboard payload.
+ * @param noDataLabel - Fallback label shown when quality data is unavailable.
+ * @returns A formatted percentage string, or the no-data fallback.
+ */
+function formatQuality(
+  quality: DashboardSummary["quality"] | undefined,
+  noDataLabel: string,
+): string {
+  if (!quality) return noDataLabel;
+  return `${quality.organic_percentage}%`;
+}
+
+/**
  * LinkDashboard — full unified dashboard for an individual link.
  *
  * Accepts external date-range and bot-exclusion props so that the parent
@@ -441,30 +461,31 @@ export function LinkDashboard({
           </Box>
         ) : null}
 
-        {/* Conteúdo Principal */}
-        <Grid container spacing={{ xs: 2, md: 3 }}>
-          {/* Métricas + Viralidade + Qualidade — mesma linha visual */}
-          <LinkMetrics
-            summary={data?.summary}
-            linksData={[]}
-            showTitle={false}
-            mode="single-link"
-            timeframeDays={0}
-            noContainer
-          />
-
-          {data?.summary?.viral_rank && (
-            <Grid item xs={12} sm={6} md={4}>
-              <ViralityCard data={data.summary.viral_rank} />
-            </Grid>
+        {/* Hero KPI header — total clicks + 4 compact tiles */}
+        <OverviewKpiHeader
+          totalClicks={data?.summary?.total_clicks ?? 0}
+          uniqueVisitors={data?.summary?.unique_visitors ?? 0}
+          countries={data?.summary?.countries_reached ?? 0}
+          avgDaily={
+            data?.summary?.avg_daily_clicks != null
+              ? data.summary.avg_daily_clicks.toLocaleString()
+              : null
+          }
+          qualityLabel={formatQuality(
+            data?.summary?.quality,
+            t("metrics.noData"),
           )}
-
-          {data?.summary?.quality && (
-            <Grid item xs={12} sm={6} md={4}>
-              <TrafficQualityCard data={data.summary.quality} />
-            </Grid>
+          sparkline={(data?.temporal_data?.clicks_by_hour ?? []).map(
+            (h) => h.clicks ?? 0,
           )}
-        </Grid>
+        />
+
+        {/* Viralidade — relocada para logo abaixo do header */}
+        {data?.summary?.viral_rank && (
+          <Box sx={{ mb: 2, maxWidth: { xs: "100%", sm: 360 } }}>
+            <ViralityCard data={data.summary.viral_rank} />
+          </Box>
+        )}
 
         {/* Gráficos — seções em ordem fixa; Canais de Aquisição por último */}
         {!compact && showCharts && chartData ? (
