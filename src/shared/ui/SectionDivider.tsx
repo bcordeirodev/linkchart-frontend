@@ -22,13 +22,24 @@ export function SectionDivider({ title, icon, mb = 2 }: SectionDividerProps) {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb }}>
       {icon ? (
-        <Box sx={{ display: "inline-flex", color: "text.secondary", flexShrink: 0 }}>
+        <Box
+          sx={{
+            display: "inline-flex",
+            color: "text.secondary",
+            flexShrink: 0,
+          }}
+        >
           {icon}
         </Box>
       ) : null}
       <Typography
         variant="subtitle2"
-        sx={{ fontWeight: 600, color: "text.primary", letterSpacing: "-0.01em", flexShrink: 0 }}
+        sx={{
+          fontWeight: 600,
+          color: "text.primary",
+          letterSpacing: "-0.01em",
+          flexShrink: 0,
+        }}
       >
         {title}
       </Typography>

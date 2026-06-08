@@ -20,7 +20,6 @@ import { SessionDepthChart } from "./SessionDepthChart";
 import { TrafficSourceChart } from "./TrafficSourceChart";
 import { insightsMetricRowSx } from "./insightsLayout";
 
-
 /** Props accepted by the {@link InsightsAnalysis} component. */
 interface InsightsAnalysisProps {
   /** Canonical id of the link to display analytics for. */
