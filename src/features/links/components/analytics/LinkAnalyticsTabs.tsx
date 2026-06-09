@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Tab, Tabs, useTheme } from "@mui/material";
+import { Box, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
 import {
   LayoutDashboard,
   Globe,
@@ -59,6 +59,7 @@ export function LinkAnalyticsTabsOptimized({
   loading: _loading = false,
 }: LinkAnalyticsTabsOptimizedProps) {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation("links");
   const filters = useAnalyticsFilters();
 
@@ -142,14 +143,15 @@ export function LinkAnalyticsTabsOptimized({
           backgroundColor: theme.palette.background.paper,
           borderRadius: `${radiusTokens.lg}px`,
           border: `1px solid ${theme.palette.divider}`,
-          mb: 2,
+          mb: 1.25,
         }}
       >
         <Tabs
           value={tabIndex}
           onChange={handleTabChange}
-          variant="scrollable"
+          variant={isMobile ? "scrollable" : "fullWidth"}
           scrollButtons="auto"
+          allowScrollButtonsMobile
           sx={{
             "& .MuiTab-root": {
               textTransform: "none",
