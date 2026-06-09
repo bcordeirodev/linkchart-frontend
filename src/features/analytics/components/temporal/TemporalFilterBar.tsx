@@ -32,6 +32,7 @@ export function TemporalFilterBar({
 
   return (
     <TabFilterBar
+      attached
       groups={[
         {
           label: t("filters.segment"),

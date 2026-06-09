@@ -2,6 +2,7 @@
   "list": {
     "pageTitle": "Gerenciar Links",
     "pageSubtitle": "Crie, edite e monitore seus links encurtados",
+    "heading": "Meus links",
     "createNew": "Novo Link",
     "noTitle": "Link sem título",
     "empty": {

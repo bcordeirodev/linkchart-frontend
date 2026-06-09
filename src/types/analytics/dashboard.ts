@@ -56,6 +56,8 @@ export interface DashboardSummary {
   avg_response_time: number;
   countries_reached: number;
   links_with_traffic: number;
+  /** Average clicks per day over the link's lifetime (backend-computed). */
+  avg_daily_clicks?: number;
   conversion_rate?: number;
   growth_rate?: number;
   /** Viral rank from Redis velocity tracking (Phase 2) */

@@ -48,6 +48,12 @@ interface TabFilterBarProps {
    * the header. Pass `undefined` to hide the button.
    */
   onClearAll?: () => void;
+  /**
+   * Render as a slim strip without the "FILTERS" header block or its divider.
+   * The clear-all (×) affordance moves to the end of the chips row.
+   * Defaults to `false`.
+   */
+  attached?: boolean;
 }
 
 /**
@@ -89,74 +95,94 @@ function countActiveFilters(groups: FilterGroup[]): number {
  * />
  * ```
  */
-export function TabFilterBar({ groups, onClearAll }: TabFilterBarProps) {
+export function TabFilterBar({
+  groups,
+  onClearAll,
+  attached = false,
+}: TabFilterBarProps) {
   const { t } = useTranslation("analytics");
   const theme = useTheme();
   const activeCount = countActiveFilters(groups);
 
   return (
     <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        px: 2,
-        pt: 1.25,
-        pb: 1.5,
-        mb: 2,
-        bgcolor: "background.paper",
-        borderRadius: 2,
-        border: `1px solid ${theme.palette.divider}`,
-      }}
+      sx={
+        attached
+          ? {
+              px: 2,
+              py: 1,
+              mb: 1.25,
+              bgcolor: "rgba(255,255,255,0.02)",
+              borderRadius: "8px",
+              border: "1px solid",
+              borderColor: "divider",
+            }
+          : {
+              display: "flex",
+              flexDirection: "column",
+              px: 2,
+              pt: 1.25,
+              pb: 1.5,
+              mb: 2,
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              border: `1px solid ${theme.palette.divider}`,
+            }
+      }
     >
-      {/* Header row */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Stack direction="row" alignItems="center" spacing={0.75}>
-          <SlidersHorizontal
-            size={13}
-            strokeWidth={2.5}
-            color={theme.palette.text.secondary}
-          />
-          <Typography
-            variant="caption"
-            color="text.secondary"
+      {/* Header row — only shown in full (non-attached) mode */}
+      {!attached && (
+        <>
+          <Box
             sx={{
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            {t("filters.title")}
-          </Typography>
-          {activeCount > 0 && (
-            <Typography
-              variant="caption"
-              color="primary"
-              sx={{ fontWeight: 600, letterSpacing: "0.02em" }}
-            >
-              {activeCount} {t("filters.active")}
-            </Typography>
-          )}
-        </Stack>
+            <Stack direction="row" alignItems="center" spacing={0.75}>
+              <SlidersHorizontal
+                size={13}
+                strokeWidth={2.5}
+                color={theme.palette.text.secondary}
+              />
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                {t("filters.title")}
+              </Typography>
+              {activeCount > 0 && (
+                <Typography
+                  variant="caption"
+                  color="primary"
+                  sx={{ fontWeight: 600, letterSpacing: "0.02em" }}
+                >
+                  {activeCount} {t("filters.active")}
+                </Typography>
+              )}
+            </Stack>
 
-        {onClearAll && activeCount > 0 && (
-          <IconButton
-            size="small"
-            onClick={onClearAll}
-            aria-label={t("filters.clearAll")}
-            sx={{ p: 0.25 }}
-          >
-            <X size={14} />
-          </IconButton>
-        )}
-      </Box>
+            {onClearAll && activeCount > 0 && (
+              <IconButton
+                size="small"
+                onClick={onClearAll}
+                aria-label={t("filters.clearAll")}
+                sx={{ p: 0.25 }}
+              >
+                <X size={14} />
+              </IconButton>
+            )}
+          </Box>
 
-      <Divider sx={{ my: 1 }} />
+          <Divider sx={{ my: 1 }} />
+        </>
+      )}
 
       {/* Filter groups */}
       <Stack spacing={1}>
@@ -201,6 +227,21 @@ export function TabFilterBar({ groups, onClearAll }: TabFilterBarProps) {
             ))}
 
             {group.addon}
+
+            {/* Clear-all affordance moves inline at the end of chips in attached mode */}
+            {attached &&
+              idx === groups.length - 1 &&
+              onClearAll &&
+              activeCount > 0 && (
+                <IconButton
+                  size="small"
+                  onClick={onClearAll}
+                  aria-label={t("filters.clearAll")}
+                  sx={{ p: 0.25 }}
+                >
+                  <X size={14} />
+                </IconButton>
+              )}
           </Stack>
         ))}
       </Stack>

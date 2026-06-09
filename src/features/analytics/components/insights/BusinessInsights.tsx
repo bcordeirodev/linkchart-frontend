@@ -269,6 +269,7 @@ export function BusinessInsights({
                   backgroundColor: "background.paper",
                   border: `1px solid`,
                   borderColor: "divider",
+                  borderLeft: `3px solid ${palette.main}`,
                   boxShadow: isDark
                     ? elevationTokens.xs
                     : elevationLightTokens.xs,
@@ -284,10 +285,10 @@ export function BusinessInsights({
                   <Stack direction="row" alignItems="flex-start" spacing={2}>
                     <Avatar
                       sx={{
-                        width: 48,
-                        height: 48,
-                        backgroundColor: palette.main,
-                        color: palette.contrastText,
+                        width: 36,
+                        height: 36,
+                        backgroundColor: alpha(palette.main, 0.12),
+                        color: palette.main,
                         borderRadius: `${radiusTokens.md}px`,
                       }}
                     >
@@ -320,12 +321,13 @@ export function BusinessInsights({
                           label={insight.priority.toUpperCase()}
                           size="small"
                           sx={{
-                            backgroundColor: palette.main,
-                            color: palette.contrastText,
+                            backgroundColor: alpha(palette.main, 0.12),
+                            color: palette.main,
                             fontWeight: 600,
                             fontSize: "0.75rem",
+                            border: `1px solid ${alpha(palette.main, 0.3)}`,
                             "& .MuiChip-icon": {
-                              color: palette.contrastText,
+                              color: palette.main,
                               fontSize: "1rem",
                             },
                           }}

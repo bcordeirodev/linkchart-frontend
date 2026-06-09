@@ -1,6 +1,5 @@
 "use client";
 import { useMemo } from "react";
-import type { ReactNode } from "react";
 import { Lightbulb, TrendingUp, Flag, BarChart3 } from "lucide-react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -10,6 +9,7 @@ import { ICON_LG } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
+import { SectionDivider } from "@/shared/ui/SectionDivider";
 import { useInsightsData } from "../../hooks/useInsightsData";
 
 import type { InsightPriority } from "@/features/links/hooks/useAnalyticsFilters";
@@ -18,47 +18,7 @@ import { InsightsFilterBar } from "./InsightsFilterBar";
 import { RetentionAnalysisChart } from "./RetentionAnalysisChart";
 import { SessionDepthChart } from "./SessionDepthChart";
 import { TrafficSourceChart } from "./TrafficSourceChart";
-import {
-  INSIGHTS_SECTION_SPACING,
-  insightsMetricRowSx,
-} from "./insightsLayout";
-
-/**
- * Lightweight section heading used to group analytics blocks with whitespace
- * instead of nested bordered containers.
- */
-function SectionHeading({
-  icon,
-  title,
-  subtitle,
-}: {
-  icon: ReactNode;
-  title: string;
-  subtitle?: string;
-}) {
-  return (
-    <Box sx={{ mb: 2 }}>
-      <Typography
-        variant="subtitle1"
-        sx={{
-          fontWeight: 700,
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-          letterSpacing: 0.2,
-        }}
-      >
-        {icon}
-        {title}
-      </Typography>
-      {subtitle ? (
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-          {subtitle}
-        </Typography>
-      ) : null}
-    </Box>
-  );
-}
+import { insightsMetricRowSx } from "./insightsLayout";
 
 /** Props accepted by the {@link InsightsAnalysis} component. */
 interface InsightsAnalysisProps {
@@ -282,9 +242,10 @@ export function InsightsAnalysis({
 
           {/* Insights automáticos — por último na página */}
           <Box>
-            <SectionHeading
+            <SectionDivider
               icon={<Lightbulb size={18} strokeWidth={1.75} />}
               title={t("insights.autoInsights")}
+              mb={2}
             />
             <BusinessInsights
               insights={filteredInsights}

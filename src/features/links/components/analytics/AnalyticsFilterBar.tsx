@@ -96,31 +96,13 @@ export function AnalyticsFilterBar({
     <Box
       sx={{
         px: 2,
-        pt: 1.5,
-        pb: 2,
-        mb: 2,
+        py: 1.25,
+        mb: 1.25,
         bgcolor: "background.paper",
         borderRadius: 2,
         border: `1px solid ${theme.palette.divider}`,
       }}
     >
-      {/* Title */}
-      <Typography
-        variant="overline"
-        color="text.secondary"
-        sx={{
-          display: "block",
-          mb: 1,
-          letterSpacing: "0.1em",
-          lineHeight: 1.6,
-          fontWeight: 700,
-        }}
-      >
-        {t("filters.title")}
-      </Typography>
-
-      <Divider sx={{ mb: 1.5 }} />
-
       {/* Controls row */}
       <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1.5}>
         {/* Date range pickers */}
