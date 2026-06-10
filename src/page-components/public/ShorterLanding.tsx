@@ -15,7 +15,10 @@ import {
 import {
   SHORTER_CONTENT_MAX_WIDTH,
 } from "@/features/shorter/constants";
-import { getPublicInsetSx } from "@/lib/theme/publicPageStyles";
+import {
+  getPublicInsetSx,
+  PUBLIC_SECTION_GAP,
+} from "@/lib/theme/publicPageStyles";
 import type { PublicLinkResponse } from "@/services/link-public.service";
 
 import { BenefitBadges } from "./BenefitBadges";
@@ -43,7 +46,17 @@ export interface ShorterLandingProps {
 
 /**
  * Landing view for the `/shorter` page — renders the hero, form, benefit
- * badges, stats, how-it-works, subdomain promo, FAQ, and ad slots.
+ * badges, social-proof strip, how-it-works, subdomain promo, FAQ, and ad slots.
+ *
+ * Narrative order (above-the-fold first):
+ * 1. Hero + Form (focal conversion surface)
+ * 2. Ad slot (below form)
+ * 3. BenefitBadges (idle: signup CTA; success: achievement chips + reset)
+ * 4. ShorterStats — social-proof strip
+ * 5. ShorterHowItWorks
+ * 6. ShorterSubdomainPromo
+ * 7. Ad slot (mid-page)
+ * 8. ShorterFaq
  *
  * Rendered only when no `?slug=` query parameter is present. All stateful
  * behaviour is delegated to the parent `ShorterPage` container via props.
@@ -62,6 +75,7 @@ export function ShorterLanding({
 
   return (
     <>
+      {/* 1. Hero + Form — focal, above the fold */}
       <ShorterHero state={isRedirecting ? "success" : "idle"} />
 
       {error ? (
@@ -98,6 +112,7 @@ export function ShorterLanding({
         loading={isRedirecting}
       />
 
+      {/* Ad slot — immediately below the form */}
       <Box
         sx={{
           maxWidth: SHORTER_CONTENT_MAX_WIDTH,
@@ -112,16 +127,16 @@ export function ShorterLanding({
         />
       </Box>
 
+      {/* BenefitBadges: idle → signup CTA; success → achievement chips + reset */}
       <BenefitBadges
         state={isRedirecting ? "success" : "idle"}
         onReset={onReset}
       />
 
-      {!isRedirecting ? <ShorterSubdomainPromo /> : null}
-
+      {/* 2. Social-proof strip */}
       <Box
         sx={{
-          mt: { xs: 6, md: 7 },
+          mt: PUBLIC_SECTION_GAP,
           maxWidth: SHORTER_CONTENT_MAX_WIDTH,
           mx: "auto",
         }}
@@ -129,6 +144,21 @@ export function ShorterLanding({
         <ShorterStats />
       </Box>
 
+      {/* 3. How It Works */}
+      {!isRedirecting ? (
+        <Box sx={{ mt: PUBLIC_SECTION_GAP }}>
+          <ShorterHowItWorks />
+        </Box>
+      ) : null}
+
+      {/* 4. Subdomain Promo */}
+      {!isRedirecting ? (
+        <Box sx={{ mt: PUBLIC_SECTION_GAP }}>
+          <ShorterSubdomainPromo />
+        </Box>
+      ) : null}
+
+      {/* Ad slot — mid-page, after promo */}
       <Box
         sx={{
           maxWidth: SHORTER_CONTENT_MAX_WIDTH,
@@ -143,9 +173,12 @@ export function ShorterLanding({
         />
       </Box>
 
-      {!isRedirecting ? <ShorterHowItWorks /> : null}
-
-      {!isRedirecting ? <ShorterFaq /> : null}
+      {/* 5. FAQ */}
+      {!isRedirecting ? (
+        <Box sx={{ mt: PUBLIC_SECTION_GAP }}>
+          <ShorterFaq />
+        </Box>
+      ) : null}
     </>
   );
 }
