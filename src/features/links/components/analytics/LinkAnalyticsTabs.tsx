@@ -2,7 +2,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Tab,
+  Tabs,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import {
   LayoutDashboard,
   Globe,
@@ -13,8 +21,8 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
-import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { motionTokens } from "@/lib/theme/designSystem";
+import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 
 import { AudienceAnalysis } from "@/features/analytics/components/audience/AudienceAnalysis";
 import { GeographicAnalysis } from "@/features/analytics/components/geographic/GeographicAnalysis";
@@ -86,18 +94,43 @@ export function LinkAnalyticsTabsOptimized({
     filters.setTab(TAB_IDS[newValue]);
   };
 
-  /** Ordered tab metadata used to render the navigation row. */
+  /** Ordered tab metadata used to render the nav row and the panel headers. */
   const tabLabels = [
-    { label: t("analytics.tabs.overview"), Icon: LayoutDashboard },
-    { label: t("analytics.tabs.temporal"), Icon: Clock },
-    { label: t("analytics.tabs.geographic"), Icon: Globe },
-    { label: t("analytics.tabs.audience"), Icon: Users },
-    { label: t("analytics.tabs.insights"), Icon: Lightbulb },
-    { label: t("analytics.clicksTable.title"), Icon: MousePointer2 },
+    {
+      label: t("analytics.tabs.overview"),
+      description: t("analytics.tabDescriptions.overview"),
+      Icon: LayoutDashboard,
+    },
+    {
+      label: t("analytics.tabs.temporal"),
+      description: t("analytics.tabDescriptions.temporal"),
+      Icon: Clock,
+    },
+    {
+      label: t("analytics.tabs.geographic"),
+      description: t("analytics.tabDescriptions.geographic"),
+      Icon: Globe,
+    },
+    {
+      label: t("analytics.tabs.audience"),
+      description: t("analytics.tabDescriptions.audience"),
+      Icon: Users,
+    },
+    {
+      label: t("analytics.tabs.insights"),
+      description: t("analytics.tabDescriptions.insights"),
+      Icon: Lightbulb,
+    },
+    {
+      label: t("analytics.clicksTable.title"),
+      description: t("analytics.clicksTable.description"),
+      Icon: MousePointer2,
+    },
   ];
 
   /**
-   * Renders a tab's content panel.
+   * Renders a tab's content panel with the standard header (icon + title +
+   * description) above the tab component.
    *
    * The panel is only added to the DOM on the first visit (`visitedTabs.has(id)`).
    * Once mounted it persists across tab switches via `display` toggling, keeping
@@ -108,17 +141,33 @@ export function LinkAnalyticsTabsOptimized({
    */
   const tabPanel = (id: TabId, children: React.ReactNode) => {
     if (!visitedTabs.has(id)) return null;
+    const index = TAB_IDS.indexOf(id);
+    const meta = tabLabels[index];
+    const HeaderIcon = meta.Icon;
     return (
       <Box
         role="tabpanel"
         id={`tabpanel-${id}`}
-        aria-labelledby={`tab-${TAB_IDS.indexOf(id)}`}
-        sx={{
-          display: filters.tab === id ? "block" : "none",
-          pt: 2,
-          pb: 2,
-        }}
+        aria-labelledby={`tab-${index}`}
+        sx={{ display: filters.tab === id ? "block" : "none" }}
       >
+        {/* Standard tab header — names the active panel and explains it */}
+        <Box sx={{ mb: 2 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              fontWeight: 600,
+            }}
+          >
+            <HeaderIcon {...ICON_MD} /> {meta.label}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            {meta.description}
+          </Typography>
+        </Box>
         {children}
       </Box>
     );
@@ -137,136 +186,160 @@ export function LinkAnalyticsTabsOptimized({
         onExcludeBotsChange={filters.setExcludeBots}
       />
 
-      {/* Tab navigation */}
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          borderRadius: `${radiusTokens.lg}px`,
-          border: `1px solid ${theme.palette.divider}`,
-          mb: 1.25,
-        }}
-      >
-        <Tabs
-          value={tabIndex}
-          onChange={handleTabChange}
-          variant={isMobile ? "scrollable" : "fullWidth"}
-          scrollButtons="auto"
-          allowScrollButtonsMobile
+      {/* Tab nav + active panel share one bordered container so the content
+           visibly belongs to the selected tab (same pattern as the sub-tabs) */}
+      <Box sx={{ border: `1px solid ${theme.palette.divider}` }}>
+        {/* Nav strip — paper band attached to the panel below. No horizontal
+             padding: the selected tab's fill must reach the container edges. */}
+        <Box
           sx={{
-            "& .MuiTab-root": {
-              textTransform: "none",
-              transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-              "&.Mui-selected": {
-                backgroundColor: theme.palette.action.selected,
-                borderRadius: `${radiusTokens.md}px`,
-              },
-            },
+            backgroundColor: theme.palette.background.paper,
+            borderBottom: `1px solid ${theme.palette.divider}`,
           }}
         >
-          {tabLabels.map(({ label, Icon }, index) => (
-            <Tab
-              key={index}
-              id={`tab-${index}`}
-              aria-controls={`tabpanel-${TAB_IDS[index]}`}
-              label={
-                <Box
-                  component="span"
-                  sx={{ display: { xs: "none", sm: "block" } }}
-                >
-                  {label}
-                </Box>
-              }
-              icon={<Icon {...ICON_SM} />}
-              iconPosition="start"
-            />
-          ))}
-        </Tabs>
+          <Tabs
+            value={tabIndex}
+            onChange={handleTabChange}
+            variant={isMobile ? "scrollable" : "fullWidth"}
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+            TabIndicatorProps={{
+              sx: {
+                height: 3,
+                borderTopLeftRadius: 3,
+                borderTopRightRadius: 3,
+              },
+            }}
+            sx={{
+              "& .MuiTab-root": {
+                textTransform: "none",
+                minHeight: 52,
+                color: "text.secondary",
+                transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+                "&:hover": {
+                  color: "text.primary",
+                  backgroundColor: theme.palette.action.hover,
+                },
+                "&.Mui-focusVisible": {
+                  backgroundColor: theme.palette.action.hover,
+                },
+                "&.Mui-selected": {
+                  color: theme.palette.common.white,
+                  backgroundColor: alpha(theme.palette.primary.main, 0.22),
+                },
+                "&.Mui-selected:hover": {
+                  color: theme.palette.common.white,
+                  backgroundColor: alpha(theme.palette.primary.main, 0.3),
+                },
+              },
+            }}
+          >
+            {tabLabels.map(({ label, Icon }, index) => (
+              <Tab
+                key={index}
+                id={`tab-${index}`}
+                aria-controls={`tabpanel-${TAB_IDS[index]}`}
+                label={
+                  <Box
+                    component="span"
+                    sx={{ display: { xs: "none", sm: "block" } }}
+                  >
+                    {label}
+                  </Box>
+                }
+                icon={<Icon {...ICON_SM} />}
+                iconPosition="start"
+              />
+            ))}
+          </Tabs>
+        </Box>
+
+        {/* Tab panels — mount-once, hidden via display:none when inactive */}
+        <Box sx={{ p: { xs: 1.5, md: 2.5 } }}>
+          {tabPanel(
+            "overview",
+            <LinkDashboard
+              linkId={linkId}
+              showTitle={false}
+              enableRealtime={false}
+              compact={false}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+            />,
+          )}
+
+          {tabPanel(
+            "temporal",
+            <TemporalAnalysis
+              linkId={linkId}
+              enableRealtime={false}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              segment={filters.segment}
+              onSegmentChange={filters.setSegment}
+              subTabIndex={filters.temporalSubTab}
+              onSubTabChange={filters.setTemporalSubTab}
+            />,
+          )}
+
+          {tabPanel(
+            "geographic",
+            <GeographicAnalysis
+              linkId={linkId}
+              enableRealtime={false}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              continent={filters.continent}
+              onContinentChange={filters.setContinent}
+              subTabIndex={filters.geoSubTab}
+              onSubTabChange={filters.setGeoSubTab}
+            />,
+          )}
+
+          {tabPanel(
+            "audience",
+            <AudienceAnalysis
+              linkId={linkId}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              subTabIndex={filters.audienceSubTab}
+              onSubTabChange={filters.setAudienceSubTab}
+            />,
+          )}
+
+          {tabPanel(
+            "insights",
+            <InsightsAnalysis
+              linkId={linkId}
+              enableRealtime={false}
+              maxInsights={10}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              priority={filters.priority}
+              insightCategories={filters.insightCategories}
+              actionableOnly={filters.actionableOnly}
+              onPriorityChange={filters.setPriority}
+              onCategoriesChange={filters.setInsightCategories}
+              onActionableOnlyChange={filters.setActionableOnly}
+            />,
+          )}
+
+          {tabPanel(
+            "clicks",
+            <ClicksTable
+              linkId={linkId}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+            />,
+          )}
+        </Box>
       </Box>
-
-      {/* Tab panels — mount-once, hidden via display:none when inactive */}
-
-      {tabPanel(
-        "overview",
-        <LinkDashboard
-          linkId={linkId}
-          showTitle={false}
-          enableRealtime={false}
-          compact={false}
-          dateFrom={filters.dateFrom}
-          dateTo={filters.dateTo}
-          excludeBots={filters.excludeBots}
-        />,
-      )}
-
-      {tabPanel(
-        "temporal",
-        <TemporalAnalysis
-          linkId={linkId}
-          enableRealtime={false}
-          dateFrom={filters.dateFrom}
-          dateTo={filters.dateTo}
-          excludeBots={filters.excludeBots}
-          segment={filters.segment}
-          onSegmentChange={filters.setSegment}
-          subTabIndex={filters.temporalSubTab}
-          onSubTabChange={filters.setTemporalSubTab}
-        />,
-      )}
-
-      {tabPanel(
-        "geographic",
-        <GeographicAnalysis
-          linkId={linkId}
-          enableRealtime={false}
-          dateFrom={filters.dateFrom}
-          dateTo={filters.dateTo}
-          excludeBots={filters.excludeBots}
-          continent={filters.continent}
-          onContinentChange={filters.setContinent}
-          subTabIndex={filters.geoSubTab}
-          onSubTabChange={filters.setGeoSubTab}
-        />,
-      )}
-
-      {tabPanel(
-        "audience",
-        <AudienceAnalysis
-          linkId={linkId}
-          dateFrom={filters.dateFrom}
-          dateTo={filters.dateTo}
-          excludeBots={filters.excludeBots}
-          subTabIndex={filters.audienceSubTab}
-          onSubTabChange={filters.setAudienceSubTab}
-        />,
-      )}
-
-      {tabPanel(
-        "insights",
-        <InsightsAnalysis
-          linkId={linkId}
-          enableRealtime={false}
-          maxInsights={10}
-          dateFrom={filters.dateFrom}
-          dateTo={filters.dateTo}
-          excludeBots={filters.excludeBots}
-          priority={filters.priority}
-          insightCategories={filters.insightCategories}
-          actionableOnly={filters.actionableOnly}
-          onPriorityChange={filters.setPriority}
-          onCategoriesChange={filters.setInsightCategories}
-          onActionableOnlyChange={filters.setActionableOnly}
-        />,
-      )}
-
-      {tabPanel(
-        "clicks",
-        <ClicksTable
-          linkId={linkId}
-          dateFrom={filters.dateFrom}
-          dateTo={filters.dateTo}
-          excludeBots={filters.excludeBots}
-        />,
-      )}
     </Box>
   );
 }
