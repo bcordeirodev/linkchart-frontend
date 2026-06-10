@@ -131,7 +131,10 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
 
             <Fade in timeout={800}>
               <Box>
-                <PublicCharts analyticsData={analyticsData} />
+                <PublicCharts
+                  analyticsData={analyticsData}
+                  shortUrl={linkData.short_url}
+                />
               </Box>
             </Fade>
 

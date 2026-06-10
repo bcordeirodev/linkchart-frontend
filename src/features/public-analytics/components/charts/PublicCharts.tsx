@@ -5,7 +5,6 @@ import {
   Globe,
   Smartphone,
   Monitor,
-  BarChart2,
   TrendingUp,
 } from "lucide-react";
 import { Box, Typography, Grid } from "@mui/material";
@@ -19,23 +18,24 @@ import {
 } from "@/features/analytics/utils/chartFormatters";
 import { createPresetAnimations } from "@/lib/theme";
 import { chartByType } from "@/lib/theme/colors";
-import {
-  getPublicChartCardOverrideSx,
-  getPublicInsetSx,
-} from "@/lib/theme/publicPageStyles";
+import { getPublicChartCardOverrideSx } from "@/lib/theme/publicPageStyles";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import type { Theme } from "@mui/material/styles";
 
+import { EmptyClicksEngagement } from "../states/EmptyClicksEngagement";
+
 import type { PublicAnalyticsData } from "../../types";
 
 interface PublicChartsProps {
   analyticsData: PublicAnalyticsData;
+  /** Fully-resolved short URL passed to the zero-data engagement block. */
+  shortUrl: string;
 }
 
-export function PublicCharts({ analyticsData }: PublicChartsProps) {
+export function PublicCharts({ analyticsData, shortUrl }: PublicChartsProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
@@ -81,7 +81,7 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
       hasCountryData);
 
   if (!hasRealData) {
-    return <EmptyChartsState />;
+    return <EmptyClicksEngagement shortUrl={shortUrl} />;
   }
 
   return (
@@ -283,48 +283,3 @@ function ChartsGrid({
   );
 }
 
-function EmptyChartsState() {
-  const theme = useTheme();
-  const { t } = useTranslation("public");
-  const isDark = theme.palette.mode === "dark";
-  const iconColor = alpha(theme.palette.text.primary, isDark ? 0.18 : 0.22);
-  const titleColor = alpha(theme.palette.text.primary, isDark ? 0.68 : 0.62);
-  const subColor = alpha(theme.palette.text.primary, isDark ? 0.54 : 0.5);
-
-  return (
-    <Box
-      sx={{
-        ...getPublicInsetSx(theme),
-        py: { xs: 4, md: 5 },
-        px: 3,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 1.25,
-      }}
-    >
-      <BarChart2 size={28} color={iconColor} strokeWidth={1.5} />
-      <Typography
-        sx={{
-          fontSize: "0.875rem",
-          fontWeight: 500,
-          color: titleColor,
-          textAlign: "center",
-        }}
-      >
-        {t("publicAnalytics.charts.emptyText")}
-      </Typography>
-      <Typography
-        sx={{
-          fontSize: "0.75rem",
-          color: subColor,
-          textAlign: "center",
-          maxWidth: 340,
-          lineHeight: 1.6,
-        }}
-      >
-        {t("publicAnalytics.charts.emptySub")}
-      </Typography>
-    </Box>
-  );
-}
