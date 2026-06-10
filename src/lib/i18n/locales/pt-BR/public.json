@@ -231,7 +231,9 @@
         "Analytics avançados por link",
         "Rastreamento de campanhas UTM",
         "Dashboard completo de performance"
-      ]
+      ],
+      "unlockTitle": "Isto é um preview gratuito",
+      "unlockBody": "Crie uma conta grátis para desbloquear heatmap geográfico, rastreio de UTM, inteligência de device e links ilimitados."
     }
   },
   "redirect": {

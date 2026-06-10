@@ -231,7 +231,9 @@
         "Advanced analytics per link",
         "UTM campaign tracking",
         "Full performance dashboard"
-      ]
+      ],
+      "unlockTitle": "This is a free preview",
+      "unlockBody": "Create a free account to unlock geographic heatmaps, UTM tracking, device intelligence, and unlimited links."
     }
   },
   "redirect": {
