@@ -120,6 +120,13 @@ export function URLShortenerForm({
   ogTitleRef.current = ogTitle;
 
   const onSubmit = async (formData: IFormData) => {
+    // Defense-in-depth safety gate: never create a link while the URL is being
+    // checked or has been flagged unsafe. The disabled submit button is UI-only
+    // (removable via devtools); this guard is the real enforcement.
+    if (safetyStatus === "checking" || safetyStatus === "unsafe") {
+      return;
+    }
+
     try {
       const result = await createPublicShortUrl({
         original_url: formData.originalUrl,
