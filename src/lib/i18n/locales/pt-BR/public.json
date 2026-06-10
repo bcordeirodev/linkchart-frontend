@@ -234,6 +234,13 @@
       ],
       "unlockTitle": "Isto é um preview gratuito",
       "unlockBody": "Crie uma conta grátis para desbloquear heatmap geográfico, rastreio de UTM, inteligência de device e links ilimitados."
+    },
+    "teaser": {
+      "heading": "Desbloqueie a visão completa",
+      "geoTitle": "Heatmap geográfico",
+      "utmTitle": "Rastreio de campanhas UTM",
+      "deviceTitle": "Inteligência de device",
+      "lockedLabel": "Disponível com uma conta grátis"
     }
   },
   "redirect": {

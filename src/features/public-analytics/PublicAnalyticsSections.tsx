@@ -10,6 +10,7 @@ import { PublicAnalyticsSkeleton } from "@/shared/ui/feedback/skeletons";
 import { PublicCharts } from "./components/charts/PublicCharts";
 import { LinkHeroCard } from "./components/info/LinkHeroCard";
 import { PublicCtaBlock } from "./components/info/PublicCtaBlock";
+import { LockedFeaturesTeaser } from "./components/teaser/LockedFeaturesTeaser";
 import { PublicMetrics } from "./components/metrics/PublicMetrics";
 import { ErrorState } from "./components/states/ErrorState";
 import { usePublicAnalytics } from "./hooks/usePublicAnalytics";
@@ -129,6 +130,12 @@ function PublicAnalyticsSections({
           format="auto"
         />
       ) : null}
+
+      <Fade in timeout={900}>
+        <Box>
+          <LockedFeaturesTeaser />
+        </Box>
+      </Fade>
 
       <Fade in timeout={1000}>
         <Box>

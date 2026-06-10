@@ -234,6 +234,13 @@
       ],
       "unlockTitle": "This is a free preview",
       "unlockBody": "Create a free account to unlock geographic heatmaps, UTM tracking, device intelligence, and unlimited links."
+    },
+    "teaser": {
+      "heading": "Unlock the full picture",
+      "geoTitle": "Geographic heatmap",
+      "utmTitle": "UTM campaign tracking",
+      "deviceTitle": "Device intelligence",
+      "lockedLabel": "Available with a free account"
     }
   },
   "redirect": {
