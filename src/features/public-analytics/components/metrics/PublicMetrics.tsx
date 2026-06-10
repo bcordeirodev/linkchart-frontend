@@ -98,8 +98,7 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
         </Box>
         <Typography
           component="p"
-          aria-live="polite"
-          aria-atomic="true"
+          aria-hidden="true"
           sx={{
             fontSize: { xs: "3rem", md: "3.75rem" },
             fontWeight: 800,
@@ -111,6 +110,21 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
         >
           {animatedClicks.toLocaleString(i18n.language)}
         </Typography>
+        <Box
+          component="span"
+          aria-live="polite"
+          aria-atomic="true"
+          sx={{
+            position: "absolute",
+            width: 1,
+            height: 1,
+            overflow: "hidden",
+            clip: "rect(0 0 0 0)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {analyticsData.total_clicks.toLocaleString(i18n.language)}
+        </Box>
         <Typography sx={subSx}>
           {t("publicAnalytics.metrics.sinceCreation")}
         </Typography>
