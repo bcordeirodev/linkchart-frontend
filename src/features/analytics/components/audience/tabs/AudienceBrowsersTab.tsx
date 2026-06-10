@@ -32,8 +32,9 @@ export interface AudienceBrowsersTabProps {
 /**
  * Renders the Browsers tab content for the AudienceChart.
  *
- * Shows a pie chart of browser market share and a ranked list of the top
- * five browsers. All data flows from props — no hooks inside.
+ * Two equal-width cards: donut of browser market share on the left and a
+ * ranked list of the top five browsers on the right. The list stretches and
+ * centers its rows so both cards read as the same height with no dead gap.
  */
 export function AudienceBrowsersTab({
   browserChartData,
@@ -46,16 +47,24 @@ export function AudienceBrowsersTab({
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={8}>
-        <Card elevation={0} sx={outlinedCardSx}>
+      <Grid item xs={12} md={6}>
+        <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
           <CardContent>
             <Typography
-              variant="h6"
+              variant="subtitle1"
               gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                fontWeight: 600,
+              }}
             >
               <Globe size={16} strokeWidth={1.5} />
               {t("audience.chart.browserMarketShare")}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              {t("audience.chart.tabDescriptions.browsers")}
             </Typography>
             <ApexChartWrapper
               type="donut"
@@ -65,13 +74,19 @@ export function AudienceBrowsersTab({
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={6}>
         <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
+          <CardContent
+            sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+          >
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ fontWeight: 600 }}
+            >
               {t("audience.chart.topBrowsers")}
             </Typography>
-            <Stack spacing={2}>
+            <Stack spacing={1.5} sx={{ flexGrow: 1, justifyContent: "center" }}>
               {browsers.slice(0, 5).map((browser) => (
                 <Box
                   key={`${browser.browser}-${browser.version}`}
@@ -79,7 +94,7 @@ export function AudienceBrowsersTab({
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    p: 1,
+                    p: 1.5,
                     ...itemRowSx,
                   }}
                 >

@@ -69,9 +69,10 @@ export function AudienceDevicesTab({
           <Card elevation={0} sx={outlinedCardSx}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 gutterBottom
                 sx={{
+                  fontWeight: 600,
                   position: "relative",
                   zIndex: 1,
                   mt: 1,
@@ -99,9 +100,10 @@ export function AudienceDevicesTab({
           <Card elevation={0} sx={outlinedCardSx}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 gutterBottom
                 sx={{
+                  fontWeight: 600,
                   position: "relative",
                   zIndex: 1,
                   mt: 1,
@@ -135,9 +137,10 @@ export function AudienceDevicesTab({
       <Card elevation={0} sx={{ ...outlinedCardSx, mt: 3 }}>
         <CardContent>
           <Typography
-            variant="h6"
+            variant="subtitle1"
             gutterBottom
             sx={{
+              fontWeight: 600,
               position: "relative",
               zIndex: 1,
               mt: 1,

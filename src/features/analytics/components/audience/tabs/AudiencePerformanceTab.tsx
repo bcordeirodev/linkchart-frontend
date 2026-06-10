@@ -35,8 +35,9 @@ export interface AudiencePerformanceTabProps {
 /**
  * Renders the Device Performance tab content for the AudienceChart.
  *
- * Shows a bar chart of average response times per device type and a
- * detailed list with avg/min/max breakdown. All data flows from props.
+ * Two equal-width cards: bar chart of average response times on the left
+ * and the avg/min/max details list on the right. The list stretches and
+ * centers its rows so both cards read as the same height with no dead gap.
  */
 export function AudiencePerformanceTab({
   performanceChartData,
@@ -50,15 +51,23 @@ export function AudiencePerformanceTab({
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={7}>
-        <Card elevation={0} sx={outlinedCardSx}>
+      <Grid item xs={12} md={6}>
+        <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
           <CardContent>
             <Typography
-              variant="h6"
+              variant="subtitle1"
               gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                fontWeight: 600,
+              }}
             >
               <Zap {...ICON_MD} /> {t("audience.chart.devicePerformance")}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              {t("audience.chart.tabDescriptions.performance")}
             </Typography>
             <ApexChartWrapper
               type="bar"
@@ -76,15 +85,21 @@ export function AudiencePerformanceTab({
         </Card>
       </Grid>
 
-      <Grid item xs={12} md={5}>
+      <Grid item xs={12} md={6}>
         <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-          <CardContent>
-            <Typography variant="subtitle1" gutterBottom>
+          <CardContent
+            sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+          >
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ fontWeight: 600 }}
+            >
               {t("audience.chart.performanceDetails")}
             </Typography>
-            <Stack spacing={1}>
+            <Stack spacing={1.5} sx={{ flexGrow: 1, justifyContent: "center" }}>
               {devicePerformance.map((perf) => (
-                <Box key={perf.device} sx={{ p: 1, ...itemRowSx }}>
+                <Box key={perf.device} sx={{ p: 1.5, ...itemRowSx }}>
                   <Typography
                     variant="subtitle2"
                     sx={{ mb: 0.5, fontWeight: 600 }}
