@@ -41,6 +41,12 @@ interface TemporalChartProps {
   segment?: "all" | "weekday" | "weekend" | "business";
   /** Viral rank data for the Performance tab. */
   viralRankByDay?: TemporalData["viral_rank_by_day"];
+  /** Holiday impact data for the Distribution tab. */
+  holidayImpact?: TemporalData["holiday_impact"];
+  /** Seasonal distribution data for the Distribution tab. */
+  seasonalDistribution?: TemporalData["seasonal_distribution"];
+  /** Click velocity data for the Distribution tab. */
+  clickVelocity?: TemporalData["click_velocity"];
   /** Currently-active sub-tab index. When provided, the component is controlled. */
   activeTab?: number;
   /** Called when the user switches to a different sub-tab. */
@@ -63,6 +69,9 @@ export function TemporalChart({
   businessHoursAnalysis,
   advancedData,
   viralRankByDay,
+  holidayImpact,
+  seasonalDistribution,
+  clickVelocity,
   segment,
   activeTab: activeTabProp,
   onTabChange,
@@ -176,6 +185,9 @@ export function TemporalChart({
             hasTimezones={hasTimezones}
             hasDeviceByPeriod={hasDeviceByPeriod}
             advancedData={advancedData}
+            holidayImpact={holidayImpact}
+            seasonalDistribution={seasonalDistribution}
+            clickVelocity={clickVelocity}
           />
         )}
       </AnalyticsSubTabs>

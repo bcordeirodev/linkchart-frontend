@@ -571,21 +571,22 @@
     },
     "chart": {
       "title": "Análise de Audiência",
-      "clicksChip": "{{n}} cliques",
       "tabs": {
         "devices": "Dispositivos",
         "browsers": "Navegadores",
         "systems": "Sistemas",
         "performance": "Performance",
         "languages": "Idiomas",
-        "renderingEngine": "Rendering Engine"
+        "renderingEngine": "Rendering Engine",
+        "quality": "Qualidade",
+        "sources": "Origem"
       },
       "tabDescriptions": {
         "devices": "Proporção de visitas por tipo de dispositivo (desktop, mobile, tablet). Use para decidir se o conteúdo deve priorizar layouts responsivos ou apps nativos.",
         "browsers": "Navegadores mais usados pela sua audiência (Chrome, Safari, Firefox, etc.). Auxilia em decisões de compatibilidade, polyfills e testes de UI.",
         "systems": "Sistemas operacionais mais usados (iOS, Android, Windows, macOS). Combina com dados de dispositivo para traçar o perfil técnico completo da audiência.",
         "performance": "Tempo médio de resposta e performance de carregamento por tipo de dispositivo. Identifique se algum segmento tem experiência degradada.",
-        "languages": "Idiomas detectados nas configurações do navegador dos visitantes. Use para planejar internacionalização ou criar versões localizadas do conteúdo.",
+        "languages": "Idiomas detectados nas configurações do navegador dos visitantes, com cada variante regional (en-US, en-GB) contada separadamente. Use para planejar internacionalização ou criar versões localizadas do conteúdo.",
         "renderingEngine": "Motor de renderização do navegador (Blink, WebKit, Gecko, etc.). Útil para diagnóstico de bugs de compatibilidade em browsers menos comuns."
       },
       "stats": {
@@ -664,15 +665,25 @@
       "unavailable": "Estes dados estão disponíveis apenas para cliques recentes com rastreamento avançado"
     },
     "extraCharts": {
-      "language": "Idioma",
-      "languageDescription": "Idioma principal detectado nas configurações do navegador (Fase 1: Accept-Language / Sec-CH-UA).",
+      "language": "Idiomas — regiões agrupadas",
+      "languageDescription": "Mesma dimensão da distribuição acima, mas com as variantes regionais agrupadas no idioma base (en-US + en-GB → Inglês). Os totais podem diferir um pouco do gráfico acima porque aqui só entram cliques enriquecidos pelo rastreamento da Fase 1.",
       "platform": "Plataforma",
       "platformDescription": "Plataforma do sistema operacional detectada via Client Hints (Fase 1: Sec-CH-UA-Platform).",
       "connectionType": "Tipo de Conexão",
       "connectionTypeDescription": "Tipo de conexão ISP classificado a partir de dados de rede (Fase 2).",
       "others": "Outros",
       "showTechnical": "Ver dados técnicos",
-      "hideTechnical": "Ocultar dados técnicos"
+      "hideTechnical": "Ocultar dados técnicos",
+      "connectionLabels": {
+        "residential": "Residencial",
+        "mobile": "Móvel",
+        "cellular": "Celular",
+        "datacenter": "Datacenter",
+        "broadband": "Banda larga",
+        "wifi": "Wi-Fi",
+        "education": "Educação",
+        "unknown": "Desconhecido"
+      }
     }
   },
   "performance": {

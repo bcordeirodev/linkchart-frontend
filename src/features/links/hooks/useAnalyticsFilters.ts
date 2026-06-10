@@ -61,7 +61,7 @@ export interface AnalyticsFilters {
   geoSubTab: number;
   /** Index of the active temporal sub-tab (0=Patterns, 1=Timeline, 2=Performance, 3=Distribution). URL-persisted so it survives RSC remounts. */
   temporalSubTab: number;
-  /** Index of the active audience sub-tab (0=Devices, 1=Browsers, 2=Systems, 3=Performance, 4=Languages, 5=RenderingEngine). URL-persisted so it survives RSC remounts. */
+  /** Index of the active audience sub-tab (0=Devices, 1=Browsers, 2=Systems, 3=Performance, 4=Languages, 5=RenderingEngine, 6=Quality, 7=Sources). URL-persisted so it survives RSC remounts. */
   audienceSubTab: number;
 
   // Insights
@@ -236,7 +236,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   const audienceSubTab =
     Number.isFinite(rawAudienceSubTab) &&
     rawAudienceSubTab >= 0 &&
-    rawAudienceSubTab <= 5
+    rawAudienceSubTab <= 7
       ? rawAudienceSubTab
       : 0;
 

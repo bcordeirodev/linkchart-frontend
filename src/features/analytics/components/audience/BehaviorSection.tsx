@@ -27,6 +27,11 @@ interface BehaviorSectionProps {
    * (`{ data, phase_available }`) and the legacy flat array.
    */
   navigationContext: NavigationContextBreakdown | NavigationContextEntry[];
+  /**
+   * Whether to render the section heading. Pass `false` inside the Sources
+   * sub-tab, whose tab label already provides the context.
+   */
+  showTitle?: boolean;
 }
 
 /**
@@ -52,7 +57,10 @@ function normalise(
  * selected range. The chart is still rendered so the user understands why
  * data may be sparse.
  */
-export function BehaviorSection({ navigationContext }: BehaviorSectionProps) {
+export function BehaviorSection({
+  navigationContext,
+  showTitle = true,
+}: BehaviorSectionProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
 
@@ -62,7 +70,9 @@ export function BehaviorSection({ navigationContext }: BehaviorSectionProps) {
 
   return (
     <Box>
-      <SectionDivider title={t("audience.behavior.title")} />
+      {showTitle ? (
+        <SectionDivider title={t("audience.behavior.title")} />
+      ) : null}
 
       {!phaseAvailable && (
         <Box sx={{ mb: 2 }}>

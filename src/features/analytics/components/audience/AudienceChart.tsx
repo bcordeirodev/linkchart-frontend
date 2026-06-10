@@ -1,11 +1,21 @@
 "use client";
-import { Alert, Box, Chip, Typography } from "@mui/material";
-import { Cpu, Globe, Languages, Monitor, Smartphone, Zap } from "lucide-react";
-import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
+import { Alert, Box, Button, Collapse, Typography } from "@mui/material";
+import {
+  ChevronDown,
+  ChevronUp,
+  Compass,
+  Cpu,
+  Globe,
+  Languages,
+  Monitor,
+  ShieldCheck,
+  Smartphone,
+  Zap,
+} from "lucide-react";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Users } from "lucide-react";
 
 import { chartByType } from "@/lib/theme/colors";
 import {
@@ -23,6 +33,24 @@ import type {
   LanguageData,
   OSData,
 } from "@/types";
+import type {
+  ConnectionTypeBreakdown,
+  FetchDestBreakdown,
+  LanguageBreakdown,
+  NavigationContextBreakdown,
+  NavigationContextEntry,
+  PlatformBreakdown,
+  QualityBreakdown,
+} from "@/types/analytics/audience";
+
+import { AudienceInsights } from "./AudienceInsights";
+import { BehaviorSection } from "./BehaviorSection";
+import { ConnectionTypeCard } from "./ConnectionTypeCard";
+import { FetchDestChart } from "./FetchDestChart";
+import { LanguageBreakdownCard } from "./LanguageBreakdownCard";
+import { PlatformBreakdownCard } from "./PlatformBreakdownCard";
+import { QualitySection } from "./QualitySection";
+import { SocialPlatformSection } from "./SocialPlatformSection";
 
 import { AudienceBrowsersTab } from "./tabs/AudienceBrowsersTab";
 import { AudienceDevicesTab } from "./tabs/AudienceDevicesTab";
@@ -30,6 +58,14 @@ import { AudienceLanguagesTab } from "./tabs/AudienceLanguagesTab";
 import { AudienceOSTab } from "./tabs/AudienceOSTab";
 import { AudiencePerformanceTab } from "./tabs/AudiencePerformanceTab";
 import { AudienceRenderingEngineTab } from "./tabs/AudienceRenderingEngineTab";
+
+/** Half-width grid (full width on mobile) for supplementary cards in a tab. */
+const supplementaryCardGridSx = {
+  mt: 2,
+  display: "grid",
+  gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+  gap: 2,
+} as const;
 
 /** Props for the AudienceChart component. */
 interface AudienceChartProps {
@@ -49,6 +85,26 @@ interface AudienceChartProps {
     clicks: number;
     percentage: number;
   }>;
+  /** Traffic-quality breakdown rendered in the Quality sub-tab. */
+  quality?: QualityBreakdown;
+  /** Whether the device insights block shows the advanced sections. */
+  showAdvancedInsights?: boolean;
+  /** Navigation context data rendered in the Sources sub-tab. */
+  navigationContext?: NavigationContextBreakdown | NavigationContextEntry[];
+  /** Referer-identified social platform clicks for the Sources sub-tab. */
+  socialPlatforms?: Array<{
+    platform: string;
+    clicks: number;
+    percentage: number;
+  }>;
+  /** Browser language distribution rendered in the Languages sub-tab. */
+  languageBreakdown?: LanguageBreakdown;
+  /** Client-Hints platform distribution rendered in the Systems sub-tab. */
+  platformBreakdown?: PlatformBreakdown;
+  /** ISP connection type distribution rendered in the Quality sub-tab. */
+  connectionBreakdown?: ConnectionTypeBreakdown;
+  /** Sec-Fetch-Dest technical breakdown for the Sources sub-tab. */
+  fetchDestBreakdown?: FetchDestBreakdown;
   /** Currently-active sub-tab index. When provided, the component is controlled. */
   activeTab?: number;
   /** Called when the user switches to a different sub-tab. */
@@ -75,6 +131,14 @@ export function AudienceChart({
   devicePerformance,
   languages,
   renderingEngine,
+  quality,
+  showAdvancedInsights = true,
+  navigationContext,
+  socialPlatforms,
+  languageBreakdown,
+  platformBreakdown,
+  connectionBreakdown,
+  fetchDestBreakdown,
   activeTab: activeTabProp,
   onTabChange,
 }: AudienceChartProps) {
@@ -82,7 +146,12 @@ export function AudienceChart({
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
   const [localTab, setLocalTab] = useState(0);
+  const [showFetchDest, setShowFetchDest] = useState(false);
   const activeTab = activeTabProp !== undefined ? activeTabProp : localTab;
+
+  const hasSocialPlatforms = (socialPlatforms?.length ?? 0) > 0;
+  const hasSources =
+    !!navigationContext || hasSocialPlatforms || !!fetchDestBreakdown;
 
   const elevation = isDark ? elevationTokens : elevationLightTokens;
   const _cardSx = {
@@ -163,17 +232,27 @@ export function AudienceChart({
 
   const tabContent = (
     <>
-      {/* Tab 0: Devices */}
+      {/* Tab 0: Devices — distribution charts + device-centric insights */}
       {(!hasEnhancedData || activeTab === 0) && (
-        <AudienceDevicesTab
-          deviceChartData={deviceChartData}
-          deviceBreakdown={deviceBreakdown}
-          totalClicks={totalClicks}
-          isDark={isDark}
-          itemRowSx={itemRowSx}
-          outlinedCardSx={outlinedCardSx}
-          deviceBarColor={deviceBarColor}
-        />
+        <>
+          <AudienceDevicesTab
+            deviceChartData={deviceChartData}
+            deviceBreakdown={deviceBreakdown}
+            totalClicks={totalClicks}
+            isDark={isDark}
+            itemRowSx={itemRowSx}
+            outlinedCardSx={outlinedCardSx}
+            deviceBarColor={deviceBarColor}
+          />
+          <Box sx={{ mt: 2 }}>
+            <AudienceInsights
+              deviceBreakdown={deviceBreakdown}
+              browserBreakdown={_browserBreakdown}
+              totalClicks={totalClicks}
+              showAdvancedInsights={showAdvancedInsights}
+            />
+          </Box>
+        </>
       )}
 
       {/* Tab 1: Browsers */}
@@ -193,21 +272,28 @@ export function AudienceChart({
         )
       ) : null}
 
-      {/* Tab 2: Operating Systems */}
+      {/* Tab 2: Operating Systems — UA-derived list + Client-Hints platform donut */}
       {hasEnhancedData && activeTab === 2 ? (
-        operatingSystems?.length ? (
-          <AudienceOSTab
-            osChartData={osChartData}
-            operatingSystems={operatingSystems}
-            isDark={isDark}
-            outlinedCardSx={outlinedCardSx}
-            itemRowSx={itemRowSx}
-          />
-        ) : (
-          <Alert severity="info">
-            <Typography variant="body2">{t("audience.noData")}</Typography>
-          </Alert>
-        )
+        <>
+          {operatingSystems?.length ? (
+            <AudienceOSTab
+              osChartData={osChartData}
+              operatingSystems={operatingSystems}
+              isDark={isDark}
+              outlinedCardSx={outlinedCardSx}
+              itemRowSx={itemRowSx}
+            />
+          ) : (
+            <Alert severity="info">
+              <Typography variant="body2">{t("audience.noData")}</Typography>
+            </Alert>
+          )}
+          {platformBreakdown ? (
+            <Box sx={supplementaryCardGridSx}>
+              <PlatformBreakdownCard breakdown={platformBreakdown} />
+            </Box>
+          ) : null}
+        </>
       ) : null}
 
       {/* Tab 3: Device Performance */}
@@ -228,21 +314,28 @@ export function AudienceChart({
         )
       ) : null}
 
-      {/* Tab 4: Languages */}
+      {/* Tab 4: Languages — UA-derived list + Accept-Language donut */}
       {hasEnhancedData && activeTab === 4 ? (
-        languages?.length ? (
-          <AudienceLanguagesTab
-            languageChartData={languageChartData}
-            languages={languages}
-            isDark={isDark}
-            outlinedCardSx={outlinedCardSx}
-            itemRowSx={itemRowSx}
-          />
-        ) : (
-          <Alert severity="info">
-            <Typography variant="body2">{t("audience.noData")}</Typography>
-          </Alert>
-        )
+        <>
+          {languages?.length ? (
+            <AudienceLanguagesTab
+              languageChartData={languageChartData}
+              languages={languages}
+              isDark={isDark}
+              outlinedCardSx={outlinedCardSx}
+              itemRowSx={itemRowSx}
+            />
+          ) : (
+            <Alert severity="info">
+              <Typography variant="body2">{t("audience.noData")}</Typography>
+            </Alert>
+          )}
+          {languageBreakdown ? (
+            <Box sx={supplementaryCardGridSx}>
+              <LanguageBreakdownCard breakdown={languageBreakdown} />
+            </Box>
+          ) : null}
+        </>
       ) : null}
 
       {/* Tab 5: Rendering Engine */}
@@ -261,33 +354,117 @@ export function AudienceChart({
           </Alert>
         )
       ) : null}
+
+      {/* Tab 6: Traffic Quality — 2×2: tier/connection donuts + bot/fingerprint */}
+      {hasEnhancedData && activeTab === 6 ? (
+        quality || connectionBreakdown ? (
+          <>
+            {quality ? (
+              <QualitySection
+                quality={quality}
+                connectionBreakdown={connectionBreakdown}
+                showTitle={false}
+              />
+            ) : connectionBreakdown ? (
+              <Box sx={supplementaryCardGridSx}>
+                <ConnectionTypeCard breakdown={connectionBreakdown} />
+              </Box>
+            ) : null}
+          </>
+        ) : (
+          <Alert severity="info">
+            <Typography variant="body2">{t("audience.noData")}</Typography>
+          </Alert>
+        )
+      ) : null}
+
+      {/* Tab 7: Sources — navigation context, social referers and fetch-dest */}
+      {hasEnhancedData && activeTab === 7 ? (
+        hasSources ? (
+          <>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  md:
+                    navigationContext && hasSocialPlatforms ? "1fr 1fr" : "1fr",
+                },
+                gap: 2,
+              }}
+            >
+              {navigationContext ? (
+                <BehaviorSection
+                  navigationContext={navigationContext}
+                  showTitle={false}
+                />
+              ) : null}
+              {hasSocialPlatforms ? (
+                <SocialPlatformSection
+                  platforms={socialPlatforms!}
+                  showTitle={false}
+                />
+              ) : null}
+            </Box>
+
+            {/* Fetch-dest breakdown — collapsible technical detail */}
+            {fetchDestBreakdown ? (
+              <Box sx={{ mt: 2 }}>
+                <Button
+                  size="small"
+                  variant="text"
+                  endIcon={
+                    showFetchDest ? (
+                      <ChevronUp size={14} />
+                    ) : (
+                      <ChevronDown size={14} />
+                    )
+                  }
+                  onClick={() => setShowFetchDest((v) => !v)}
+                  sx={{ px: 0, minWidth: 0, mb: 1 }}
+                >
+                  {showFetchDest
+                    ? t("audience.extraCharts.hideTechnical")
+                    : t("audience.extraCharts.showTechnical")}
+                </Button>
+                <Collapse in={showFetchDest}>
+                  <FetchDestChart fetchDestBreakdown={fetchDestBreakdown} />
+                </Collapse>
+              </Box>
+            ) : null}
+          </>
+        ) : (
+          <Alert severity="info">
+            <Typography variant="body2">{t("audience.noData")}</Typography>
+          </Alert>
+        )
+      ) : null}
+
+      {/* Legacy fallback (no sub-tabs): sections render stacked below devices */}
+      {!hasEnhancedData ? (
+        <>
+          {quality ? (
+            <Box sx={{ mt: 2 }}>
+              <QualitySection quality={quality} />
+            </Box>
+          ) : null}
+          {navigationContext ? (
+            <Box sx={{ mt: 2 }}>
+              <BehaviorSection navigationContext={navigationContext} />
+            </Box>
+          ) : null}
+          {hasSocialPlatforms ? (
+            <Box sx={{ mt: 2 }}>
+              <SocialPlatformSection platforms={socialPlatforms!} />
+            </Box>
+          ) : null}
+        </>
+      ) : null}
     </>
   );
 
   return (
     <Box>
-      <Typography
-        variant="subtitle1"
-        gutterBottom
-        sx={{
-          position: "relative",
-          zIndex: 1,
-          mb: 2,
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-          fontWeight: 600,
-        }}
-      >
-        <Users {...ICON_MD} /> {t("audience.chart.title")}
-        <Chip
-          label={t("audience.chart.clicksChip", { n: totalClicks })}
-          size="small"
-          color="primary"
-          variant="outlined"
-        />
-      </Typography>
-
       {hasEnhancedData ? (
         <AnalyticsSubTabs
           value={activeTab}
@@ -316,6 +493,16 @@ export function AudienceChart({
             {
               label: t("audience.chart.tabs.renderingEngine"),
               icon: <Cpu {...ICON_SM} />,
+            },
+            {
+              label: t("audience.chart.tabs.quality"),
+              icon: <ShieldCheck {...ICON_SM} />,
+              disabled: !quality && !connectionBreakdown,
+            },
+            {
+              label: t("audience.chart.tabs.sources"),
+              icon: <Compass {...ICON_SM} />,
+              disabled: !hasSources,
             },
           ]}
         >

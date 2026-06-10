@@ -26,12 +26,7 @@ import type {
 } from "@/types/analytics/dashboard";
 
 import { OverviewKpiHeader } from "./OverviewKpiHeader";
-import {
-  LinkInfoCard,
-  ViralityCard,
-  UtmSourceCard,
-  SocialAppCard,
-} from "./cards";
+import { LinkInfoCard, UtmSourceCard, SocialAppCard } from "./cards";
 import {
   DayOfWeekChart,
   DeviceBreakdownChart,
@@ -472,13 +467,6 @@ export function LinkDashboard({
             (h) => h.clicks ?? 0,
           )}
         />
-
-        {/* Viralidade — relocada para logo abaixo do header */}
-        {data?.summary?.viral_rank && (
-          <Box sx={{ mb: 2, maxWidth: { xs: "100%", sm: 360 } }}>
-            <ViralityCard data={data.summary.viral_rank} />
-          </Box>
-        )}
 
         {/* Gráficos — seções em ordem fixa; Canais de Aquisição por último */}
         {!compact && showCharts && chartData ? (
