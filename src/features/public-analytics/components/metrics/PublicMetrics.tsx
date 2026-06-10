@@ -5,6 +5,7 @@ import { MousePointerClick, Activity, CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { getPublicMetricCardSx } from "@/lib/theme/publicPageStyles";
+import { useCountUp } from "@/shared/hooks/useCountUp";
 
 import type { PublicAnalyticsData } from "../../types";
 
@@ -16,6 +17,8 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
   const theme = useTheme();
   const { t, i18n } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
+
+  const animatedClicks = useCountUp(analyticsData.total_clicks);
 
   if (analyticsData.total_clicks < 1) {
     return null;
@@ -94,16 +97,19 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
           </Typography>
         </Box>
         <Typography
+          component="p"
+          aria-live="polite"
+          aria-atomic="true"
           sx={{
-            fontSize: { xs: "2.25rem", md: "2.5rem" },
+            fontSize: { xs: "3rem", md: "3.75rem" },
             fontWeight: 800,
             color: alpha(theme.palette.primary.main, isDark ? 0.95 : 0.9),
             lineHeight: 1,
-            letterSpacing: "-0.025em",
+            letterSpacing: "-0.03em",
             fontFeatureSettings: '"tnum" 1, "lnum" 1',
           }}
         >
-          {analyticsData.total_clicks.toLocaleString(i18n.language)}
+          {animatedClicks.toLocaleString(i18n.language)}
         </Typography>
         <Typography sx={subSx}>
           {t("publicAnalytics.metrics.sinceCreation")}
