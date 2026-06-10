@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { Box, Card, CardContent, Typography, useTheme } from "@mui/material";
+import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ApexOptions } from "apexcharts";
 
@@ -56,8 +57,18 @@ export function ContinentBreakdown({
     return (
       <Card sx={cardSx}>
         <CardContent>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-            🌐 {t("geographic.continents.title")}
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Globe size={16} strokeWidth={1.5} />
+            {t("geographic.continents.title")}
           </Typography>
           <Box sx={{ textAlign: "center", py: 4, color: "text.secondary" }}>
             <Typography variant="body2">
@@ -121,8 +132,18 @@ export function ContinentBreakdown({
   return (
     <Card sx={cardSx}>
       <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
-          🌐 {t("geographic.continents.title")}
+        <Typography
+          variant="subtitle1"
+          sx={{
+            fontWeight: 600,
+            mb: 0.5,
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <Globe size={16} strokeWidth={1.5} />
+          {t("geographic.continents.title")}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
           {t("geographic.continents.subtitle")}

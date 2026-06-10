@@ -1,22 +1,12 @@
 "use client";
 import { Share2 } from "lucide-react";
-import {
-  Box,
-  Card,
-  CardContent,
-  LinearProgress,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
+import { SectionDivider } from "@/shared/ui/SectionDivider";
 
 interface SocialPlatformEntry {
   platform: string;
@@ -57,67 +47,53 @@ interface Props {
 export function SocialPlatformSection({ platforms }: Props) {
   const { t } = useTranslation("analytics");
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
 
   if (platforms.length === 0) return null;
 
   return (
-    <Box sx={{ mb: 3 }}>
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-        {t("audience.socialPlatform.title")}
-      </Typography>
-      <Card
-        sx={{ borderRadius: `${radiusTokens.lg}px`, boxShadow: elevation.xs }}
+    <Box>
+      <SectionDivider title={t("audience.socialPlatform.title")} />
+      <ChartCard
+        title={t("audience.socialPlatform.subtitle")}
+        subtitle={t("audience.socialPlatform.description")}
+        icon={<Share2 {...ICON_MD} />}
       >
-        <CardContent>
-          <Typography
-            variant="subtitle2"
-            sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}
-          >
-            <Share2 {...ICON_MD} />
-            {t("audience.socialPlatform.subtitle")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {t("audience.socialPlatform.description")}
-          </Typography>
-          <Stack spacing={2}>
-            {platforms.map((entry) => {
-              const color =
-                PLATFORM_COLORS[entry.platform] ?? theme.palette.primary.main;
-              return (
-                <Box key={entry.platform}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 0.5,
-                    }}
-                  >
-                    <Typography variant="body2">
-                      {PLATFORM_DISPLAY[entry.platform] ?? entry.platform}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {entry.clicks} ({entry.percentage.toFixed(1)}%)
-                    </Typography>
-                  </Box>
-                  <LinearProgress
-                    variant="determinate"
-                    value={entry.percentage}
-                    sx={{
-                      height: 8,
-                      borderRadius: 4,
-                      "& .MuiLinearProgress-bar": {
-                        backgroundColor: color,
-                      },
-                    }}
-                  />
+        <Stack spacing={2}>
+          {platforms.map((entry) => {
+            const color =
+              PLATFORM_COLORS[entry.platform] ?? theme.palette.primary.main;
+            return (
+              <Box key={entry.platform}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 0.5,
+                  }}
+                >
+                  <Typography variant="body2">
+                    {PLATFORM_DISPLAY[entry.platform] ?? entry.platform}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {entry.clicks} ({entry.percentage.toFixed(1)}%)
+                  </Typography>
                 </Box>
-              );
-            })}
-          </Stack>
-        </CardContent>
-      </Card>
+                <LinearProgress
+                  variant="determinate"
+                  value={entry.percentage}
+                  sx={{
+                    height: 8,
+                    borderRadius: 4,
+                    "& .MuiLinearProgress-bar": {
+                      backgroundColor: color,
+                    },
+                  }}
+                />
+              </Box>
+            );
+          })}
+        </Stack>
+      </ChartCard>
     </Box>
   );
 }

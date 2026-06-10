@@ -164,8 +164,13 @@ export function PeakAnalysisCard({
               <Stack>
                 <Box>
                   <Typography
-                    variant="h6"
-                    sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    variant="subtitle1"
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      fontWeight: 600,
+                    }}
                   >
                     <Zap size={16} strokeWidth={1.5} />
                     {t("temporal.peak.engagementPeakAnalysis")}

@@ -186,8 +186,13 @@ export function SessionDepthChart({
         {showTitle ? (
           <Box sx={{ mb: 2 }}>
             <Typography
-              variant="h6"
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              variant="subtitle1"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                fontWeight: 600,
+              }}
             >
               <MousePointer2
                 {...ICON_LG}
@@ -206,7 +211,7 @@ export function SessionDepthChart({
           sx={{
             ...insightsMetricRowSx,
             mb: 3,
-            gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
+            gridTemplateColumns: { xs: "1fr 1fr", sm: "repeat(3, 1fr)" },
           }}
         >
           <MetricCard

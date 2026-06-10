@@ -22,6 +22,8 @@ import {
   radiusTokens,
 } from "@/lib/theme/designSystem";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
+import { SectionDivider } from "@/shared/ui/SectionDivider";
 import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
 import type { QualityBreakdown } from "@/types/analytics/audience";
 import { getPhaseDataChipSx } from "./phaseDataChipSx";
@@ -36,6 +38,10 @@ interface QualitySectionProps {
   quality: QualityBreakdown;
 }
 
+/**
+ * Traffic-quality section of the Audience tab: tier distribution donut,
+ * bot-rate stat card and fingerprint-consistency stat card.
+ */
 export function QualitySection({ quality }: QualitySectionProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
@@ -65,13 +71,8 @@ export function QualitySection({ quality }: QualitySectionProps) {
         : "error";
 
   return (
-    <Box sx={{ mb: 3 }}>
-      <Typography variant="h6" sx={{ mb: 0.75, fontWeight: 600 }}>
-        {t("audience.quality.title")}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        {t("audience.quality.description")}
-      </Typography>
+    <Box>
+      <SectionDivider title={t("audience.quality.title")} />
 
       {"phase_available" in quality && !quality.phase_available && (
         <Alert
@@ -91,61 +92,52 @@ export function QualitySection({ quality }: QualitySectionProps) {
       <Grid container spacing={2}>
         {/* Donut quality_tier */}
         <Grid item xs={12} md={5}>
-          <Card sx={cardSx}>
-            <CardContent>
-              <Typography
-                variant="subtitle2"
-                sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}
-              >
-                <ShieldCheck {...ICON_MD} />
-                {t("audience.quality.distribution")}
+          <ChartCard
+            title={t("audience.quality.distribution")}
+            subtitle={t("audience.quality.description")}
+            icon={<ShieldCheck {...ICON_MD} />}
+          >
+            {quality.tiers.length > 0 ? (
+              <ApexChartWrapper
+                type="donut"
+                size="compact"
+                {...formatPieChart(tierChartData, "name", "value", isDark)}
+              />
+            ) : (
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                {t("audience.noData")}
               </Typography>
-              {quality.tiers.length > 0 ? (
-                <ApexChartWrapper
-                  type="donut"
-                  size="compact"
-                  {...formatPieChart(tierChartData, "name", "value", isDark)}
-                />
-              ) : (
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mt: 2 }}
+            )}
+            <Stack spacing={1} sx={{ mt: 1 }}>
+              {quality.tiers.map((tier) => (
+                <Box
+                  key={tier.tier}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
                 >
-                  {t("audience.noData")}
-                </Typography>
-              )}
-              <Stack spacing={1} sx={{ mt: 1 }}>
-                {quality.tiers.map((tier) => (
-                  <Box
-                    key={tier.tier}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Box
-                        sx={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: "50%",
-                          bgcolor: TIER_COLORS[tier.tier] ?? "#94a3b8",
-                        }}
-                      />
-                      <Typography variant="caption">
-                        {tStr(`audience.quality.tiers.${tier.tier}`)}
-                      </Typography>
-                    </Box>
-                    <Typography variant="caption" sx={{ fontWeight: 600 }}>
-                      {tier.percentage.toFixed(1)}%
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Box
+                      sx={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        bgcolor: TIER_COLORS[tier.tier] ?? "#94a3b8",
+                      }}
+                    />
+                    <Typography variant="caption">
+                      {tStr(`audience.quality.tiers.${tier.tier}`)}
                     </Typography>
                   </Box>
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
+                  <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                    {tier.percentage.toFixed(1)}%
+                  </Typography>
+                </Box>
+              ))}
+            </Stack>
+          </ChartCard>
         </Grid>
 
         {/* Bot rate + Fingerprint — stacked in right column */}
@@ -185,7 +177,9 @@ export function QualitySection({ quality }: QualitySectionProps) {
                     color="text.disabled"
                     sx={{ mt: 0.5, display: "block" }}
                   >
-                    {quality.bot_clicks} cliques de bots detectados
+                    {tStr("audience.quality.botClicksDetected", {
+                      count: quality.bot_clicks,
+                    })}
                   </Typography>
                   {quality.bot_percentage > 5 && (
                     <Chip

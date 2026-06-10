@@ -3,8 +3,6 @@ import {
   Alert,
   Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   Collapse,
   Divider,
@@ -17,13 +15,10 @@ import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import type {
   LanguageBreakdown,
@@ -157,13 +152,6 @@ export function AudienceExtraCharts({
 
   if (!hasData) return null;
 
-  const cardSx = {
-    borderRadius: `${radiusTokens.lg}px`,
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
-    height: "100%",
-  };
-
   const phaseDisclaimerSx = { mb: 1.5, borderRadius: `${radiusTokens.md}px` };
 
   const top7Lang = lang.data.slice(0, 7);
@@ -192,197 +180,165 @@ export function AudienceExtraCharts({
       <Grid container spacing={3}>
         {/* Language donut */}
         {lang.data.length > 0 ? (
-          <Grid item xs={12} md={4}>
-            <Card sx={cardSx}>
-              <CardContent>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                  {t("audience.extraCharts.language")}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mb: 1.5 }}
+          <Grid item xs={12} sm={6} md={4}>
+            <ChartCard
+              title={t("audience.extraCharts.language")}
+              subtitle={t("audience.extraCharts.languageDescription")}
+            >
+              {!lang.phaseAvailable && (
+                <Alert
+                  severity="info"
+                  icon={<Info {...ICON_MD} />}
+                  sx={phaseDisclaimerSx}
                 >
-                  {t("audience.extraCharts.languageDescription")}
-                </Typography>
-                {!lang.phaseAvailable && (
-                  <Alert
-                    severity="info"
-                    icon={<Info {...ICON_MD} />}
-                    sx={phaseDisclaimerSx}
-                  >
-                    {t("audience.phaseData.unavailable")}
-                  </Alert>
-                )}
-                <ApexChartWrapper
-                  type="donut"
-                  size="compact"
-                  {...formatPieChart(langChartData, "name", "value", isDark)}
-                />
-              </CardContent>
-            </Card>
+                  {t("audience.phaseData.unavailable")}
+                </Alert>
+              )}
+              <ApexChartWrapper
+                type="donut"
+                size="compact"
+                {...formatPieChart(langChartData, "name", "value", isDark)}
+              />
+            </ChartCard>
           </Grid>
         ) : null}
 
         {/* Platform donut + ch_is_mobile companion */}
         {platform.data.length > 0 ? (
-          <Grid item xs={12} md={4}>
-            <Card sx={cardSx}>
-              <CardContent>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                  {t("audience.extraCharts.platform")}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mb: 1.5 }}
+          <Grid item xs={12} sm={6} md={4}>
+            <ChartCard
+              title={t("audience.extraCharts.platform")}
+              subtitle={t("audience.extraCharts.platformDescription")}
+            >
+              {!platform.phaseAvailable && (
+                <Alert
+                  severity="info"
+                  icon={<Info {...ICON_MD} />}
+                  sx={phaseDisclaimerSx}
                 >
-                  {t("audience.extraCharts.platformDescription")}
-                </Typography>
-                {!platform.phaseAvailable && (
-                  <Alert
-                    severity="info"
-                    icon={<Info {...ICON_MD} />}
-                    sx={phaseDisclaimerSx}
-                  >
-                    {t("audience.phaseData.unavailable")}
-                  </Alert>
-                )}
-                <ApexChartWrapper
-                  type="donut"
-                  size="compact"
-                  {...formatPieChart(
-                    platformChartData,
-                    "name",
-                    "value",
-                    isDark,
-                  )}
-                />
+                  {t("audience.phaseData.unavailable")}
+                </Alert>
+              )}
+              <ApexChartWrapper
+                type="donut"
+                size="compact"
+                {...formatPieChart(platformChartData, "name", "value", isDark)}
+              />
 
-                {/* ch_is_mobile companion signal */}
-                {chMobile && chMobile.phase1_available && (
-                  <Box
-                    sx={{
-                      mt: 2,
-                      pt: 2,
-                      borderTop: `1px solid ${theme.palette.divider}`,
-                    }}
+              {/* ch_is_mobile companion signal */}
+              {chMobile && chMobile.phase1_available && (
+                <Box
+                  sx={{
+                    mt: 2,
+                    pt: 2,
+                    borderTop: `1px solid ${theme.palette.divider}`,
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    sx={{ fontWeight: 600, display: "block", mb: 1 }}
                   >
-                    <Typography
-                      variant="caption"
-                      sx={{ fontWeight: 600, display: "block", mb: 1 }}
-                    >
-                      {t("audience.chMobile.title")}
-                    </Typography>
-                    <Stack spacing={0.5}>
-                      {[
-                        {
-                          key: "mobile",
-                          count: chMobile.mobile,
-                          total: chMobile.mobile + chMobile.not_mobile,
-                          color: "#3b82f6",
-                        },
-                        {
-                          key: "not_mobile",
-                          count: chMobile.not_mobile,
-                          total: chMobile.mobile + chMobile.not_mobile,
-                          color: "#22c55e",
-                        },
-                      ].map(({ key, count, total, color }) => {
-                        const pct =
-                          total > 0 ? Math.round((count / total) * 100) : 0;
-                        return (
-                          <Box key={key}>
-                            <Box
-                              sx={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                mb: 0.25,
-                              }}
+                    {t("audience.chMobile.title")}
+                  </Typography>
+                  <Stack spacing={0.5}>
+                    {[
+                      {
+                        key: "mobile",
+                        count: chMobile.mobile,
+                        total: chMobile.mobile + chMobile.not_mobile,
+                        color: "#3b82f6",
+                      },
+                      {
+                        key: "not_mobile",
+                        count: chMobile.not_mobile,
+                        total: chMobile.mobile + chMobile.not_mobile,
+                        color: "#22c55e",
+                      },
+                    ].map(({ key, count, total, color }) => {
+                      const pct =
+                        total > 0 ? Math.round((count / total) * 100) : 0;
+                      return (
+                        <Box key={key}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              mb: 0.25,
+                            }}
+                          >
+                            <Typography variant="caption">
+                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                              {(t as any)(`audience.chMobile.${key}`)}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
                             >
-                              <Typography variant="caption">
-                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                {(t as any)(`audience.chMobile.${key}`)}
-                              </Typography>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                              >
-                                {pct}%
-                              </Typography>
-                            </Box>
-                            <Box
-                              sx={{
-                                height: 4,
-                                borderRadius: 2,
-                                bgcolor: "action.hover",
-                                overflow: "hidden",
-                              }}
-                            >
-                              <Box
-                                sx={{
-                                  width: `${pct}%`,
-                                  height: "100%",
-                                  bgcolor: color,
-                                  borderRadius: 2,
-                                  transition: "width 0.4s ease",
-                                }}
-                              />
-                            </Box>
+                              {pct}%
+                            </Typography>
                           </Box>
-                        );
-                      })}
-                    </Stack>
-                  </Box>
-                )}
+                          <Box
+                            sx={{
+                              height: 4,
+                              borderRadius: 2,
+                              bgcolor: "action.hover",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                width: `${pct}%`,
+                                height: "100%",
+                                bgcolor: color,
+                                borderRadius: 2,
+                                transition: "width 0.4s ease",
+                              }}
+                            />
+                          </Box>
+                        </Box>
+                      );
+                    })}
+                  </Stack>
+                </Box>
+              )}
 
-                {/* phase1 not available for ch_mobile */}
-                {chMobile && !chMobile.phase1_available && (
-                  <Box sx={{ mt: 1.5 }}>
-                    <Chip
-                      label={t("audience.phaseData.unavailable")}
-                      size="small"
-                      variant="filled"
-                      sx={getPhaseDataChipSx(theme)}
-                    />
-                  </Box>
-                )}
-              </CardContent>
-            </Card>
+              {/* phase1 not available for ch_mobile */}
+              {chMobile && !chMobile.phase1_available && (
+                <Box sx={{ mt: 1.5 }}>
+                  <Chip
+                    label={t("audience.phaseData.unavailable")}
+                    size="small"
+                    variant="filled"
+                    sx={getPhaseDataChipSx(theme)}
+                  />
+                </Box>
+              )}
+            </ChartCard>
           </Grid>
         ) : null}
 
         {/* Connection type donut */}
         {conn.data.length > 0 ? (
-          <Grid item xs={12} md={4}>
-            <Card sx={cardSx}>
-              <CardContent>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                  {t("audience.extraCharts.connectionType")}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mb: 1.5 }}
+          <Grid item xs={12} sm={6} md={4}>
+            <ChartCard
+              title={t("audience.extraCharts.connectionType")}
+              subtitle={t("audience.extraCharts.connectionTypeDescription")}
+            >
+              {!conn.phaseAvailable && (
+                <Alert
+                  severity="info"
+                  icon={<Info {...ICON_MD} />}
+                  sx={phaseDisclaimerSx}
                 >
-                  {t("audience.extraCharts.connectionTypeDescription")}
-                </Typography>
-                {!conn.phaseAvailable && (
-                  <Alert
-                    severity="info"
-                    icon={<Info {...ICON_MD} />}
-                    sx={phaseDisclaimerSx}
-                  >
-                    {t("audience.phaseData.unavailable")}
-                  </Alert>
-                )}
-                <ApexChartWrapper
-                  type="donut"
-                  size="compact"
-                  {...formatPieChart(connChartData, "name", "value", isDark)}
-                />
-              </CardContent>
-            </Card>
+                  {t("audience.phaseData.unavailable")}
+                </Alert>
+              )}
+              <ApexChartWrapper
+                type="donut"
+                size="compact"
+                {...formatPieChart(connChartData, "name", "value", isDark)}
+              />
+            </ChartCard>
           </Grid>
         ) : null}
       </Grid>

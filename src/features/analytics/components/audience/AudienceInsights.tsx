@@ -93,8 +93,13 @@ export function AudienceInsights({
       <CardContent>
         <Box sx={{ mb: 2 }}>
           <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            variant="subtitle1"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              fontWeight: 600,
+            }}
           >
             <Lightbulb size={16} strokeWidth={1.5} />
             {t("audience.insights.title")}

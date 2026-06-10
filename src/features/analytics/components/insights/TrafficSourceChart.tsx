@@ -98,8 +98,13 @@ export function TrafficSourceChart({
         {showTitle ? (
           <Box sx={{ mb: 2.5 }}>
             <Typography
-              variant="h6"
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              variant="subtitle1"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                fontWeight: 600,
+              }}
             >
               <Activity
                 {...ICON_LG}
