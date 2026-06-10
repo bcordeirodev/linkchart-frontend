@@ -14,7 +14,6 @@ import {
   getPublicSectionHeadingSx,
   publicHairline,
 } from "@/lib/theme/publicPageStyles";
-import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 import { radiusTokens } from "@/lib/theme/designSystem";
 
 // ─── Faux visual helpers ──────────────────────────────────────────────────────
@@ -362,7 +361,6 @@ function TeaserCard({ title, lockedLabel, variant, colors }: TeaserCardProps) {
 export const LockedFeaturesTeaser = memo(function LockedFeaturesTeaser() {
   const { t } = useTranslation("public");
   const theme = useTheme();
-  const _reducedMotion = usePrefersReducedMotion(); // available for future hover animations
   const colors = getPublicChartPalette(theme);
   const isDark = theme.palette.mode === "dark";
 
