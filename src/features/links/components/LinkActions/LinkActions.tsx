@@ -138,60 +138,43 @@ export function LinkActions({
         gap: { xs: 1.25, sm: 1.5 },
       }}
     >
+      {/* Row 1 — utilities: back link left, copy + overflow right, one baseline */}
       <Box
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          alignItems: { sm: "flex-start" },
-          gap: { xs: 1.25, sm: 2 },
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 1,
         }}
       >
-        <Box
-          sx={{
-            flex: 1,
-            minWidth: 0,
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 1,
-            }}
-          >
-            <LinkActionsBackLink />
-            {isMobile ? overflowTrigger : null}
-          </Box>
-          <LinkActionsTitleRow
-            title={title}
-            shortUrl={resolvedShortUrl || undefined}
-          />
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            alignItems: { sm: "center" },
-            gap: 1,
-            flexShrink: 0,
-            width: { xs: "100%", sm: "auto" },
-            pt: { sm: 0.25 },
-          }}
-        >
-          <LinkActionsCopyButton
-            shortUrl={resolvedShortUrl || undefined}
-            disabled={isDeleting}
-            fullWidth={isMobile}
-          />
-          {!isMobile ? overflowTrigger : null}
+        <LinkActionsBackLink />
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {!isMobile ? (
+            <LinkActionsCopyButton
+              shortUrl={resolvedShortUrl || undefined}
+              disabled={isDeleting}
+            />
+          ) : null}
+          {overflowTrigger}
         </Box>
       </Box>
 
+      {/* Row 2 — identity: title + short URL, full width */}
+      <LinkActionsTitleRow
+        title={title}
+        shortUrl={resolvedShortUrl || undefined}
+      />
+
+      {/* Mobile-only copy button between identity and navigation */}
+      {isMobile ? (
+        <LinkActionsCopyButton
+          shortUrl={resolvedShortUrl || undefined}
+          disabled={isDeleting}
+          fullWidth
+        />
+      ) : null}
+
+      {/* Row 3 — sibling-view navigation */}
       <Box sx={{ maxWidth: { sm: 520 }, width: "100%" }}>
         <LinkActionsViewSwitch
           linkId={linkId}

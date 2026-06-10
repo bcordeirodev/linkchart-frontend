@@ -21,7 +21,7 @@ export function LinkActionsTitleRow({
         variant="h6"
         component="h1"
         sx={{
-          fontSize: { xs: "1.25rem", sm: "1.375rem" },
+          fontSize: { xs: "1.375rem", sm: "1.5rem" },
           fontWeight: 600,
           letterSpacing: "-0.02em",
           lineHeight: 1.3,
