@@ -5,6 +5,18 @@ import { radiusTokens } from "@/lib/theme/designSystem";
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/material";
 
+/**
+ * Vertical gap between top-level sections on public pages.
+ * Use as the `rowGap`/`mt` between hero, social proof, how-it-works, FAQ, etc.
+ */
+export const PUBLIC_SECTION_GAP = { xs: 6, md: 7 } as const;
+
+/** Standard inner padding for bordered public panels/insets. */
+export const PUBLIC_INSET_PAD = { xs: 2.5, md: 3 } as const;
+
+/** Gap between stacked elements inside a single public card. */
+export const PUBLIC_CARD_GAP = { xs: 2, md: 2.5 } as const;
+
 /** Shared hairline border opacity for public pages (/shorter, /public-analytics). */
 export function publicHairline(
   theme: Theme,
