@@ -30,7 +30,7 @@ interface AudienceMetricsProps {
  * device types, browsers, OS, total clicks, return visitors, and avg session.
  *
  * The supplementary donut charts (Idioma, Plataforma, Tipo de Conexão)
- * are rendered separately by `AudienceExtraCharts`.
+ * live inside the AudienceChart sub-tabs (Languages, Systems, Quality).
  */
 export function AudienceMetrics({
   data,

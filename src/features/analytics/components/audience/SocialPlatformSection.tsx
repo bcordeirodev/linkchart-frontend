@@ -38,13 +38,18 @@ const PLATFORM_DISPLAY: Record<string, string> = {
 
 interface Props {
   platforms: SocialPlatformEntry[];
+  /**
+   * Whether to render the section heading. Pass `false` inside the Sources
+   * sub-tab, whose tab label already provides the context.
+   */
+  showTitle?: boolean;
 }
 
 /**
  * Breakdown bar chart of clicks by social platform (referer-identified).
  * Matches the visual style of BehaviorSection.
  */
-export function SocialPlatformSection({ platforms }: Props) {
+export function SocialPlatformSection({ platforms, showTitle = true }: Props) {
   const { t } = useTranslation("analytics");
   const theme = useTheme();
 
@@ -52,7 +57,9 @@ export function SocialPlatformSection({ platforms }: Props) {
 
   return (
     <Box>
-      <SectionDivider title={t("audience.socialPlatform.title")} />
+      {showTitle ? (
+        <SectionDivider title={t("audience.socialPlatform.title")} />
+      ) : null}
       <ChartCard
         title={t("audience.socialPlatform.subtitle")}
         subtitle={t("audience.socialPlatform.description")}

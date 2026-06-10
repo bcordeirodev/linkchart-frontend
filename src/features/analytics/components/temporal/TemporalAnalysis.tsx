@@ -13,9 +13,6 @@ import { useTemporalData } from "../../hooks/useTemporalData";
 import type { Segment } from "@/features/links/hooks/useAnalyticsFilters";
 import { TemporalChart } from "./TemporalChart";
 import { TemporalFilterBar } from "./TemporalFilterBar";
-import { HolidayImpactCard } from "./HolidayImpactCard";
-import { SeasonalDistributionChart } from "./SeasonalDistributionChart";
-import { ClickVelocityChart } from "./ClickVelocityChart";
 
 /** Props accepted by the {@link TemporalAnalysis} component. */
 interface TemporalAnalysisProps {
@@ -167,7 +164,8 @@ export function TemporalAnalysis({
             </Grid>
           </Box>
 
-          {/* Rich tabbed chart with advanced analytics */}
+          {/* Rich tabbed chart with advanced analytics — holiday, seasonal and
+               click-velocity datasets live inside the Distribution sub-tab */}
           <Box sx={{ mt: 2 }}>
             <TemporalChart
               hourlyData={data?.clicks_by_hour || []}
@@ -177,37 +175,14 @@ export function TemporalAnalysis({
               businessHoursAnalysis={data?.business_hours_analysis}
               advancedData={data?.advanced}
               viralRankByDay={data?.viral_rank_by_day}
+              holidayImpact={data?.holiday_impact}
+              seasonalDistribution={data?.seasonal_distribution}
+              clickVelocity={data?.click_velocity}
               segment={segment}
               activeTab={subTabIndex}
               onTabChange={onSubTabChange}
             />
           </Box>
-
-          {data?.holiday_impact?.top_holidays?.length ||
-          data?.seasonal_distribution?.length ? (
-            <Grid container spacing={3} sx={{ mt: 1 }}>
-              {data?.holiday_impact?.top_holidays?.length ? (
-                <Grid item xs={12} md={6}>
-                  <HolidayImpactCard data={data.holiday_impact} />
-                </Grid>
-              ) : null}
-              {data?.seasonal_distribution?.length ? (
-                <Grid item xs={12} md={6}>
-                  <SeasonalDistributionChart
-                    data={data.seasonal_distribution}
-                  />
-                </Grid>
-              ) : null}
-            </Grid>
-          ) : null}
-
-          {data?.click_velocity && (
-            <Grid container spacing={3} sx={{ mt: 1 }}>
-              <Grid item xs={12}>
-                <ClickVelocityChart data={data.click_velocity} />
-              </Grid>
-            </Grid>
-          )}
         </Box>
       </AnalyticsStateManager>
     </Box>
