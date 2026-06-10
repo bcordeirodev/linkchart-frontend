@@ -444,7 +444,7 @@ export function RealTimeHeatmapChart({
                   style={{ color: "var(--mui-palette-primary-main)" }}
                 />
                 <Typography
-                  variant="h6"
+                  variant="subtitle1"
                   sx={{
                     fontWeight: 600,
                     position: "relative",

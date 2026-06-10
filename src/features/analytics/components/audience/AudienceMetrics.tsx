@@ -124,7 +124,7 @@ export function AudienceMetrics({
 
       <Grid container spacing={3}>
         {metrics.map((metric) => (
-          <Grid item xs={12} sm={6} md={4} key={metric.id}>
+          <Grid item xs={6} sm={4} md={2} key={metric.id}>
             <MetricCard
               title={metric.title}
               value={metric.value}

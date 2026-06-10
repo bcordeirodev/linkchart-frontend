@@ -122,7 +122,7 @@ export function TemporalAnalysis({
 
           <Box sx={{ mb: 2 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid item xs={6} sm={6} md={3}>
                 <MetricCard
                   title={t("temporal.metrics.peakHour")}
                   value={peakHour}
@@ -131,7 +131,7 @@ export function TemporalAnalysis({
                   subtitle={t("temporal.metrics.peakHourSub")}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid item xs={6} sm={6} md={3}>
                 <MetricCard
                   title={t("temporal.metrics.peakDay")}
                   value={peakDay}
@@ -140,7 +140,7 @@ export function TemporalAnalysis({
                   subtitle={t("temporal.metrics.peakDaySub")}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid item xs={6} sm={6} md={3}>
                 <MetricCard
                   title={t("temporal.metrics.avgPerHour")}
                   value={stats?.averageHourlyClicks?.toString() || "0"}
@@ -149,7 +149,7 @@ export function TemporalAnalysis({
                   subtitle={t("temporal.metrics.clicksPerHour")}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid item xs={6} sm={6} md={3}>
                 <MetricCard
                   title={t("temporal.metrics.trend")}
                   value={trendValue}

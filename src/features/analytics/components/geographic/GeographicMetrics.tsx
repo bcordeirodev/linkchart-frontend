@@ -79,7 +79,7 @@ export function GeographicMetrics({
 
       <Grid container spacing={3} sx={{ ...animations.fadeIn }}>
         {metrics.map((metric) => (
-          <Grid item xs={12} sm={6} md={2.4} key={metric.id}>
+          <Grid item xs={6} sm={4} md={2.4} key={metric.id}>
             <Box sx={{ height: "100%", ...animations.cardHover }}>
               <MetricCard
                 title={metric.title}

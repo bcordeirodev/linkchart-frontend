@@ -50,7 +50,7 @@ export function CountryDistributionChart({
     >
       <CardContent>
         <Typography
-          variant="h6"
+          variant="subtitle1"
           sx={{
             fontWeight: 600,
             mb: 0.5,

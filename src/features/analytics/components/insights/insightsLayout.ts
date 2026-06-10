@@ -56,7 +56,7 @@ export const insightsChartRowSx = {
 export const insightsMetricRowSx = {
   display: "grid",
   gridTemplateColumns: {
-    xs: "1fr",
+    xs: "1fr 1fr",
     sm: "repeat(2, 1fr)",
     lg: "repeat(4, 1fr)",
   },
