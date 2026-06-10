@@ -11,6 +11,8 @@ import {
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
+
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import {
   LinkHeroCard,
@@ -32,6 +34,7 @@ interface PublicAnalyticsPageContentProps {
 function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
+  const reduced = usePrefersReducedMotion();
   const {
     linkData,
     analyticsData,
@@ -40,6 +43,12 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
     debugInfo,
     handleCreateLink,
   } = usePublicAnalytics({ slug });
+
+  /**
+   * Returns 0 when the user has requested reduced motion so all Fade elements
+   * appear immediately; otherwise returns the given staggered timeout in ms.
+   */
+  const fadeTimeout = (ms: number): number => (reduced ? 0 : ms);
 
   if (loading) {
     return <PublicAnalyticsSkeleton />;
@@ -71,7 +80,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
           }}
         >
           <Stack spacing={{ xs: 2.5, md: 3 }}>
-            <Fade in timeout={200}>
+            <Fade in timeout={fadeTimeout(120)}>
               <Box sx={{ textAlign: "center", mt: { xs: 1, md: 2 }, mb: 0.5 }}>
                 <Typography
                   component="h1"
@@ -100,7 +109,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
               </Box>
             </Fade>
 
-            <Fade in timeout={400}>
+            <Fade in timeout={fadeTimeout(240)}>
               <Box>
                 <LinkHeroCard
                   linkData={linkData}
@@ -110,7 +119,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
             </Fade>
 
             {hasClicks ? (
-              <Fade in timeout={600}>
+              <Fade in timeout={fadeTimeout(360)}>
                 <Box>
                   <PublicMetrics analyticsData={analyticsData} />
                 </Box>
@@ -130,7 +139,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
               />
             ) : null}
 
-            <Fade in timeout={800}>
+            <Fade in timeout={fadeTimeout(480)}>
               <Box>
                 <PublicCharts
                   analyticsData={analyticsData}
@@ -149,13 +158,13 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
               />
             ) : null}
 
-            <Fade in timeout={900}>
+            <Fade in timeout={fadeTimeout(480)}>
               <Box>
                 <LockedFeaturesTeaser />
               </Box>
             </Fade>
 
-            <Fade in timeout={1000}>
+            <Fade in timeout={fadeTimeout(600)}>
               <Box>
                 <PublicCtaBlock />
               </Box>
