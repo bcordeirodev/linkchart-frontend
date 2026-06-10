@@ -24,8 +24,8 @@ import { showErrorMessage } from "@/lib/store/messageSlice";
 import {
   getPublicBlockDescriptionSx,
   getPublicBlockTitleSx,
+  getPublicFocalSx,
   getPublicFormFieldSx,
-  getPublicFormShellSx,
 } from "@/lib/theme/publicPageStyles";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
 import { PublicBlockIcon } from "@/shared/ui/base";
@@ -162,7 +162,7 @@ export function URLShortenerForm({
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
-        sx={getPublicFormShellSx(theme)}
+        sx={{ ...getPublicFocalSx(theme), p: { xs: 3, md: 3.5 } }}
       >
         <Box
           sx={{

@@ -3,6 +3,8 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
+import { getPublicDisplaySx } from "@/lib/theme/publicPageStyles";
+
 interface ShorterHeroProps {
   state: "idle" | "success";
 }
@@ -26,11 +28,7 @@ export function ShorterHero({ state }: ShorterHeroProps) {
         <Typography
           component="h1"
           sx={{
-            fontSize: { xs: "1.5rem", md: "2rem" },
-            fontWeight: 800,
-            letterSpacing: "-0.03em",
-            lineHeight: 1.15,
-            color: theme.palette.text.primary,
+            ...getPublicDisplaySx(theme),
             mb: 0.5,
             mt: 1,
           }}
