@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useRef } from "react";
 import type React from "react";
-import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { Globe, Link2 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -28,17 +28,12 @@ import {
   getPublicFormShellSx,
 } from "@/lib/theme/publicPageStyles";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
-import { GradientButton, PublicBlockIcon } from "@/shared/ui/base";
+import { PublicBlockIcon } from "@/shared/ui/base";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 
-import {
-  buildPublicSlugAvailabilityLabels,
-  buildPublicUrlSafetyLabels,
-  FormFieldFeedback,
-  getSlugAvailabilityHelperNode,
-  getUrlSafetyHelperNode,
-  InlineStatusRow,
-} from "./forms/UrlSafetyIndicator";
+import { SlugAvailabilityHint } from "./forms/SlugAvailabilityHint";
+import { UrlSafetyHint } from "./forms/UrlSafetyHint";
+import { ShortenSubmitButton } from "./forms/ShortenSubmitButton";
 import {
   getUrlShortenerInputSx,
   getUrlShortenerLabelSx,
@@ -82,7 +77,7 @@ export function URLShortenerForm({
   });
 
   const { createPublicShortUrl, loading } = usePublicURLShortener();
-  const isLoading = loading || externalLoading;
+  const isLoading = !!(loading || externalLoading);
 
   const urlValue = watch("originalUrl");
   const slugValue = watch("customSlug");
@@ -145,9 +140,6 @@ export function URLShortenerForm({
       onError?.(msg);
     }
   };
-
-  const urlSafetyLabels = buildPublicUrlSafetyLabels(t);
-  const slugAvailabilityLabels = buildPublicSlugAvailabilityLabels(t);
 
   return (
     <motion.div
@@ -238,11 +230,9 @@ export function URLShortenerForm({
               >
                 {errors.originalUrl.message}
               </Typography>
-            ) : safetyStatus !== "idle" ? (
-              <FormFieldFeedback>
-                {getUrlSafetyHelperNode(safetyStatus, threats, urlSafetyLabels)}
-              </FormFieldFeedback>
-            ) : null}
+            ) : (
+              <UrlSafetyHint status={safetyStatus} threats={threats} />
+            )}
           </Box>
 
           {/* Slug field */}
@@ -314,69 +304,18 @@ export function URLShortenerForm({
               >
                 {errors.customSlug.message}
               </Typography>
-            ) : showSlugAvailabilityUI && slugAvailability !== "idle" ? (
-              <FormFieldFeedback>
-                {getSlugAvailabilityHelperNode(
-                  slugAvailability,
-                  slugAvailabilityLabels,
-                )}
-              </FormFieldFeedback>
-            ) : showSlugSuggestion ? (
-              <FormFieldFeedback>
-                <Typography
-                  component="span"
-                  sx={{
-                    fontSize: "0.75rem",
-                    color: alpha(theme.palette.text.primary, 0.45),
-                  }}
-                >
-                  {t("shorter.form.slugTabHint")}
-                </Typography>
-              </FormFieldFeedback>
-            ) : isResolvingSlugSuggestion ? (
-              <FormFieldFeedback>
-                <InlineStatusRow
-                  icon={
-                    <CircularProgress
-                      size={11}
-                      sx={{ color: alpha(theme.palette.text.primary, 0.35) }}
-                    />
-                  }
-                  label={t("shorter.form.slugSuggestionChecking")}
-                  color={alpha(theme.palette.text.primary, 0.45)}
-                />
-              </FormFieldFeedback>
-            ) : null}
+            ) : (
+              <SlugAvailabilityHint
+                slugAvailability={slugAvailability}
+                showAvailability={showSlugAvailabilityUI}
+                showSuggestion={showSlugSuggestion}
+                isResolvingSuggestion={isResolvingSlugSuggestion}
+              />
+            )}
           </Box>
         </Box>
 
-        <GradientButton
-          type="submit"
-          size="large"
-          loading={isLoading}
-          shimmerEffect
-          sx={{ width: "100%", minHeight: 52, fontWeight: 700 }}
-        >
-          {isLoading ? (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1.25,
-                justifyContent: "center",
-              }}
-            >
-              <CircularProgress
-                size={16}
-                thickness={5}
-                sx={{ color: alpha(theme.palette.common.white, 0.82) }}
-              />
-              {t("shorter.shortening")}
-            </Box>
-          ) : (
-            t("shorter.form.submitButton")
-          )}
-        </GradientButton>
+        <ShortenSubmitButton loading={isLoading} safetyStatus={safetyStatus} />
       </Box>
     </motion.div>
   );
