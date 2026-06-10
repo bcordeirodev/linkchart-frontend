@@ -179,6 +179,11 @@
       "upgradeTitle": "Quer histórico completo, alertas e gráficos detalhados?",
       "upgradeButton": "Crie uma conta grátis →"
     },
+    "emptyClicks": {
+      "title": "Seu link está no ar",
+      "description": "Os cliques aparecem aqui em tempo real. Compartilhe seu link para ver a analytics ganhar vida.",
+      "shareLabel": "Copiar link para compartilhar"
+    },
     "charts": {
       "title": "Gráficos de Analytics",
       "hourlyClicks": "Cliques por Hora",

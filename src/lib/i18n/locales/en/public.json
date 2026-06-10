@@ -179,6 +179,11 @@
       "upgradeTitle": "Want full history, alerts and detailed charts?",
       "upgradeButton": "Create a free account →"
     },
+    "emptyClicks": {
+      "title": "Your link is live",
+      "description": "Clicks appear here in real time. Share your link to watch the analytics come to life.",
+      "shareLabel": "Copy link to share"
+    },
     "charts": {
       "title": "Analytics Charts",
       "hourlyClicks": "Clicks by Hour",
