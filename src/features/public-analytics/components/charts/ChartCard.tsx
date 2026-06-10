@@ -14,6 +14,11 @@ interface PublicChartCardProps {
   /** Optional Lucide icon rendered left of the title. */
   icon?: ReactNode;
   /**
+   * Optional descriptive subtitle rendered below the title.
+   * Forwarded directly to `SharedChartCard`'s `subtitle` prop.
+   */
+  subtitle?: string;
+  /**
    * ApexCharts options object.
    * Passed to `ApexChartWrapper` which accepts `Record<string, unknown>`;
    * `ApexOptions` is a strict superset so the cast is safe.
@@ -47,6 +52,7 @@ interface PublicChartCardProps {
 export function PublicChartCard({
   title,
   icon,
+  subtitle,
   options,
   series,
   type,
@@ -55,7 +61,7 @@ export function PublicChartCard({
   const cardSx = getPublicChartCardOverrideSx(theme);
 
   return (
-    <SharedChartCard title={title} icon={icon} sx={cardSx}>
+    <SharedChartCard title={title} subtitle={subtitle} icon={icon} sx={cardSx}>
       <ApexChartWrapper
         type={type}
         size="compact"

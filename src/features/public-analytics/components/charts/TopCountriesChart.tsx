@@ -78,6 +78,7 @@ export function TopCountriesChart({ data }: TopCountriesChartProps) {
   return (
     <PublicChartCard
       title={t("publicAnalytics.charts.topCountries")}
+      subtitle={t("publicAnalytics.charts.topCountriesDesc")}
       icon={<Globe {...ICON_LG} />}
       type="bar"
       options={options}

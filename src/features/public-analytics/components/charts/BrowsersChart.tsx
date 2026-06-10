@@ -81,6 +81,7 @@ export function BrowsersChart({ data }: BrowsersChartProps) {
   return (
     <PublicChartCard
       title={t("publicAnalytics.charts.browsers")}
+      subtitle={t("publicAnalytics.charts.browsersDesc")}
       icon={<Monitor {...ICON_LG} />}
       type="donut"
       options={options}

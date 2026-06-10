@@ -82,6 +82,7 @@ export function DevicesChart({ data }: DevicesChartProps) {
   return (
     <PublicChartCard
       title={t("publicAnalytics.charts.devices")}
+      subtitle={t("publicAnalytics.charts.devicesDesc")}
       icon={<Smartphone {...ICON_LG} />}
       type="donut"
       options={options}

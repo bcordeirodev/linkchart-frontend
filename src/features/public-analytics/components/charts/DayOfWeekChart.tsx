@@ -95,6 +95,7 @@ export function DayOfWeekChart({ rawData }: DayOfWeekChartProps) {
   return (
     <PublicChartCard
       title={t("publicAnalytics.charts.dayOfWeek")}
+      subtitle={t("publicAnalytics.charts.dayOfWeekDesc")}
       icon={<Calendar {...ICON_LG} />}
       type="bar"
       options={options}
