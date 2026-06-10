@@ -118,7 +118,7 @@ export function BusinessInsights({
         }}
       >
         <Typography
-          variant="h6"
+          variant="subtitle1"
           gutterBottom
           sx={{
             fontWeight: 600,
@@ -202,7 +202,7 @@ export function BusinessInsights({
     <Box>
       {showTitle ? (
         <Typography
-          variant="h6"
+          variant="subtitle1"
           gutterBottom
           sx={{
             mb: 2,
@@ -221,9 +221,6 @@ export function BusinessInsights({
       <Stack spacing={2}>
         {organizedInsights.map((insight, index) => {
           const palette = getPriorityPalette(insight.priority);
-          const prevInsight = organizedInsights[index - 1];
-          const showCategoryDivider =
-            index > 0 && prevInsight && prevInsight.type !== insight.type;
 
           const recommendationText = resolveText(
             insight.recommendation_key,
@@ -233,36 +230,6 @@ export function BusinessInsights({
 
           return (
             <Box key={index}>
-              {showCategoryDivider ? (
-                <Box sx={{ mb: 2, mt: 1 }}>
-                  <Divider
-                    sx={{
-                      borderColor: "divider",
-                      "&::before, &::after": {
-                        borderColor: "divider",
-                      },
-                    }}
-                  >
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        px: 2,
-                        color: "text.secondary",
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      {t(`filters.insightTypeOptions.${insight.type}`, {
-                        defaultValue:
-                          insight.type.charAt(0).toUpperCase() +
-                          insight.type.slice(1),
-                      })}
-                    </Typography>
-                  </Divider>
-                </Box>
-              ) : null}
-
               <Card
                 sx={{
                   borderRadius: `${radiusTokens.lg}px`,
@@ -415,7 +382,7 @@ export function BusinessInsights({
         >
           <CardContent>
             <Typography
-              variant="h6"
+              variant="subtitle1"
               gutterBottom
               sx={{
                 fontWeight: 600,
