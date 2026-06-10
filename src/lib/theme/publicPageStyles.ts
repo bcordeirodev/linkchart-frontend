@@ -178,6 +178,38 @@ export function getPublicChipSx(theme: Theme): SxProps<Theme> {
   };
 }
 
+/**
+ * Focal surface for conversion points (shortener form, signup CTA).
+ * Emphasis border + soft primary glow; never a heavy drop shadow.
+ */
+export function getPublicFocalSx(theme: Theme): SxProps<Theme> {
+  const isDark = theme.palette.mode === "dark";
+  return {
+    ...getPublicPanelSx(theme),
+    border: `1px solid ${alpha(theme.palette.primary.main, isDark ? 0.32 : 0.3)}`,
+    bgcolor: alpha(theme.palette.primary.main, isDark ? 0.06 : 0.045),
+    boxShadow: `0 0 0 1px ${alpha(theme.palette.primary.main, 0.06)}, 0 18px 48px -28px ${alpha(
+      theme.palette.primary.main,
+      isDark ? 0.55 : 0.4,
+    )}`,
+  };
+}
+
+/**
+ * Hero/display heading style for public pages. Uses clamp() so the size
+ * scales smoothly across viewports instead of jumping at the md breakpoint.
+ */
+export function getPublicDisplaySx(theme: Theme): SxProps<Theme> {
+  const isDark = theme.palette.mode === "dark";
+  return {
+    fontSize: "clamp(1.625rem, 1.1rem + 2.4vw, 2.5rem)",
+    fontWeight: 800,
+    lineHeight: 1.12,
+    letterSpacing: "-0.02em",
+    color: alpha(theme.palette.text.primary, isDark ? 0.96 : 1),
+  };
+}
+
 /** Chart cards inside public analytics — soft border, no heavy shadow. */
 export function getPublicChartCardOverrideSx(theme: Theme): SxProps<Theme> {
   const isDark = theme.palette.mode === "dark";
