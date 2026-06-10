@@ -81,6 +81,7 @@ export function HourlyClicksChart({ data }: HourlyClicksChartProps) {
   return (
     <PublicChartCard
       title={t("publicAnalytics.charts.hourlyClicks")}
+      subtitle={t("publicAnalytics.charts.hourlyClicksDesc")}
       icon={<Clock {...ICON_LG} />}
       type="area"
       options={options}
