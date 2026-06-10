@@ -22,25 +22,9 @@ import { getPublicInsetSx } from "@/lib/theme/publicPageStyles";
 import { PublicAnalyticsSections } from "@/features/public-analytics";
 import { PublicLayout } from "@/shared/layout";
 import { ShorterSkeleton } from "@/shared/ui/feedback/skeletons/ShorterSkeleton";
+import { PublicBlobBackground } from "@/shared/ui/PublicBlobBackground";
 
 import { BenefitBadges } from "./BenefitBadges";
-
-const blobKeyframes = `
-  @keyframes floatA {
-    0%,100% { transform: translate(0,0) scale(1); }
-    33% { transform: translate(30px,-20px) scale(1.06); }
-    66% { transform: translate(-20px,15px) scale(0.96); }
-  }
-  @keyframes floatB {
-    0%,100% { transform: translate(0,0) scale(1); }
-    40% { transform: translate(-25px,20px) scale(1.04); }
-    70% { transform: translate(18px,-15px) scale(0.97); }
-  }
-  @keyframes floatC {
-    0%,100% { transform: translate(0,0) scale(1); }
-    50% { transform: translate(20px,-25px) scale(1.05); }
-  }
-`;
 
 function ShorterPageContent() {
   const theme = useTheme();
@@ -75,70 +59,8 @@ function ShorterPageContent() {
 
   return (
     <PublicLayout variant="shorter" chrome="minimal">
-      <style>{blobKeyframes}</style>
+      <PublicBlobBackground />
       <Box sx={{ position: "relative", minHeight: "100vh" }}>
-        <Box
-          sx={{
-            position: "fixed",
-            inset: 0,
-            pointerEvents: "none",
-            zIndex: 0,
-            background: `radial-gradient(circle at 20% 18%, ${alpha(theme.palette.primary.main, isDark ? 0.16 : 0.1)} 0%, transparent 55%),
-                         radial-gradient(circle at 78% 86%, ${alpha(theme.palette.secondary.main, isDark ? 0.12 : 0.08)} 0%, transparent 52%)`,
-          }}
-        />
-        <Box
-          sx={{
-            position: "fixed",
-            top: "-10%",
-            right: "-5%",
-            width: 520,
-            height: 520,
-            borderRadius: "50%",
-            pointerEvents: "none",
-            zIndex: 0,
-            background: `radial-gradient(circle, ${alpha(theme.palette.primary.main, isDark ? 0.18 : 0.13)} 0%, transparent 60%)`,
-            animation: "floatA 12s ease-in-out infinite",
-            "@media (prefers-reduced-motion: reduce)": {
-              animation: "none",
-            },
-          }}
-        />
-        <Box
-          sx={{
-            position: "fixed",
-            bottom: "-15%",
-            left: "-8%",
-            width: 440,
-            height: 440,
-            borderRadius: "50%",
-            pointerEvents: "none",
-            zIndex: 0,
-            background: `radial-gradient(circle, ${alpha(theme.palette.secondary.main, isDark ? 0.14 : 0.1)} 0%, transparent 60%)`,
-            animation: "floatB 16s ease-in-out infinite",
-            "@media (prefers-reduced-motion: reduce)": {
-              animation: "none",
-            },
-          }}
-        />
-        <Box
-          sx={{
-            position: "fixed",
-            top: "45%",
-            right: "-4%",
-            width: 300,
-            height: 300,
-            borderRadius: "50%",
-            pointerEvents: "none",
-            zIndex: 0,
-            background: `radial-gradient(circle, ${alpha(theme.palette.success.main, isDark ? 0.12 : 0.08)} 0%, transparent 60%)`,
-            animation: "floatC 20s ease-in-out infinite",
-            "@media (prefers-reduced-motion: reduce)": {
-              animation: "none",
-            },
-          }}
-        />
-
         <Container
           maxWidth={SHORTER_PAGE_CONTAINER_MAX_WIDTH}
           sx={{

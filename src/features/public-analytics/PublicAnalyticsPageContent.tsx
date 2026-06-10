@@ -8,7 +8,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -23,6 +22,7 @@ import {
 } from "@/features/public-analytics";
 import { PublicLayout } from "@/shared/layout";
 import { PublicAnalyticsSkeleton } from "@/shared/ui/feedback/skeletons";
+import { PublicBlobBackground } from "@/shared/ui/PublicBlobBackground";
 
 interface PublicAnalyticsPageContentProps {
   slug: string;
@@ -30,7 +30,6 @@ interface PublicAnalyticsPageContentProps {
 
 function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("public");
   const {
     linkData,
@@ -59,31 +58,8 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
 
   return (
     <PublicLayout variant="shorter" chrome="minimal">
+      <PublicBlobBackground />
       <Box sx={{ position: "relative", minHeight: "100vh" }}>
-        <Box
-          sx={{
-            position: "fixed",
-            inset: 0,
-            pointerEvents: "none",
-            zIndex: 0,
-            background: `radial-gradient(circle at 20% 18%, ${alpha(theme.palette.primary.main, isDark ? 0.16 : 0.1)} 0%, transparent 55%),
-                         radial-gradient(circle at 78% 86%, ${alpha(theme.palette.secondary.main, isDark ? 0.12 : 0.08)} 0%, transparent 52%)`,
-          }}
-        />
-        <Box
-          sx={{
-            position: "fixed",
-            top: "-10%",
-            right: "-5%",
-            width: 400,
-            height: 400,
-            borderRadius: "50%",
-            pointerEvents: "none",
-            zIndex: 0,
-            background: `radial-gradient(circle, ${alpha(theme.palette.primary.main, isDark ? 0.18 : 0.13)} 0%, transparent 60%)`,
-          }}
-        />
-
         <Container
           maxWidth="md"
           sx={{
