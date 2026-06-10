@@ -33,8 +33,9 @@ export interface AudienceLanguagesTabProps {
 /**
  * Renders the Languages tab content for the AudienceChart.
  *
- * Shows a pie chart of language distribution and a ranked list of the
- * top five languages. All data flows from props — no hooks inside.
+ * Two equal-width cards: donut of language distribution on the left and a
+ * ranked list of the top five languages on the right. The list stretches
+ * and centers its rows so both cards read as the same height with no dead gap.
  */
 export function AudienceLanguagesTab({
   languageChartData,
@@ -47,15 +48,23 @@ export function AudienceLanguagesTab({
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={8}>
-        <Card elevation={0} sx={outlinedCardSx}>
+      <Grid item xs={12} md={6}>
+        <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
           <CardContent>
             <Typography
-              variant="h6"
+              variant="subtitle1"
               gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                fontWeight: 600,
+              }}
             >
               <Globe {...ICON_MD} /> {t("audience.chart.languageDistribution")}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              {t("audience.chart.tabDescriptions.languages")}
             </Typography>
             <ApexChartWrapper
               type="donut"
@@ -65,13 +74,19 @@ export function AudienceLanguagesTab({
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={6}>
         <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
+          <CardContent
+            sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+          >
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ fontWeight: 600 }}
+            >
               {t("audience.chart.topLanguages")}
             </Typography>
-            <Stack spacing={2}>
+            <Stack spacing={1.5} sx={{ flexGrow: 1, justifyContent: "center" }}>
               {languages.slice(0, 5).map((language) => (
                 <Box
                   key={language.language}
@@ -79,7 +94,7 @@ export function AudienceLanguagesTab({
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    p: 1,
+                    p: 1.5,
                     ...itemRowSx,
                   }}
                 >
