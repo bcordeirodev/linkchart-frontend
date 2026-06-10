@@ -330,7 +330,11 @@ export function TemporalTrendsChart({
               }}
             >
               <CardContent>
-                <Typography variant="h6" gutterBottom>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  sx={{ fontWeight: 600 }}
+                >
                   {t("temporal.trends.growthAnalysis")}
                 </Typography>
                 <Grid container spacing={2}>

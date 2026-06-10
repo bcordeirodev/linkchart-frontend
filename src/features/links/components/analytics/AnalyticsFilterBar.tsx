@@ -97,9 +97,8 @@ export function AnalyticsFilterBar({
       sx={{
         px: 2,
         py: 1.25,
-        mb: 1.25,
+        mb: 2,
         bgcolor: "background.paper",
-        borderRadius: 2,
         border: `1px solid ${theme.palette.divider}`,
       }}
     >

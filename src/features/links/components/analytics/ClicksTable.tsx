@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import { useLinkClicks } from "@/features/links/hooks/useLinkClicks";
 import { useResponsive } from "@/lib/theme";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import DataTable from "@/shared/ui/data-display/DataTable";
 
@@ -630,71 +631,80 @@ export function ClicksTable({
         emptyMessage={t("analytics.clicksTable.emptyMessage")}
         minHeight={300}
       >
-        <DataTable<LinkClickItem>
-          columns={columns}
-          data={items}
-          manualPagination
-          manualSorting
-          manualFiltering
-          rowCount={total}
-          state={{
-            pagination,
-            sorting,
-            globalFilter,
-            isLoading: loading,
-            showProgressBars: loading,
+        <Box
+          sx={{
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: `${radiusTokens.lg}px`,
+            overflow: "hidden",
           }}
-          onPaginationChange={(updater) => {
-            const next =
-              typeof updater === "function" ? updater(pagination) : updater;
-            if (next.pageSize !== pagination.pageSize) {
-              setPerPage(next.pageSize);
-            } else {
-              setPage(next.pageIndex + 1);
-            }
-          }}
-          onSortingChange={(updater) => {
-            const next =
-              typeof updater === "function" ? updater(sorting) : updater;
-            const sort = next[0];
-            if (sort && SORTABLE_COLUMNS.has(sort.id)) {
-              setSort(sort.id, sort.desc ? "desc" : "asc");
-            }
-          }}
-          onGlobalFilterChange={setGlobalFilter}
-          enableRowSelection={false}
-          enableRowActions={false}
-          enableGrouping={false}
-          enableColumnFilters={false}
-          muiTablePaperProps={{
-            elevation: 0,
-            square: true,
-            className: "flex flex-col flex-auto h-full",
-            // MuiPaper defaults to overflow:hidden which clips the TableContainer's
-            // horizontal scrollbar. Setting overflow to unset (resolves to visible)
-            // allows the TableContainer's own overflow:auto to render its scrollbar.
-            sx: { overflow: "unset" },
-          }}
-          muiTableContainerProps={{
-            sx: { overflowX: "auto", WebkitOverflowScrolling: "touch" },
-          }}
-          muiPaginationProps={{
-            color: "secondary",
-            rowsPerPageOptions: [10, 25, 50, 100],
-            shape: "rounded",
-            variant: "outlined",
-            showRowsPerPage: true,
-          }}
-          muiSearchTextFieldProps={{
-            placeholder: t("analytics.clicksTable.searchPlaceholder"),
-            sx: {
-              minWidth: { xs: "auto", sm: "280px" },
-              flex: { xs: 1, sm: "none" },
-            },
-            variant: "outlined",
-            size: "small",
-          }}
-        />
+        >
+          <DataTable<LinkClickItem>
+            columns={columns}
+            data={items}
+            manualPagination
+            manualSorting
+            manualFiltering
+            rowCount={total}
+            state={{
+              pagination,
+              sorting,
+              globalFilter,
+              isLoading: loading,
+              showProgressBars: loading,
+            }}
+            onPaginationChange={(updater) => {
+              const next =
+                typeof updater === "function" ? updater(pagination) : updater;
+              if (next.pageSize !== pagination.pageSize) {
+                setPerPage(next.pageSize);
+              } else {
+                setPage(next.pageIndex + 1);
+              }
+            }}
+            onSortingChange={(updater) => {
+              const next =
+                typeof updater === "function" ? updater(sorting) : updater;
+              const sort = next[0];
+              if (sort && SORTABLE_COLUMNS.has(sort.id)) {
+                setSort(sort.id, sort.desc ? "desc" : "asc");
+              }
+            }}
+            onGlobalFilterChange={setGlobalFilter}
+            enableRowSelection={false}
+            enableRowActions={false}
+            enableGrouping={false}
+            enableColumnFilters={false}
+            muiTablePaperProps={{
+              elevation: 0,
+              square: true,
+              className: "flex flex-col flex-auto h-full",
+              // MuiPaper defaults to overflow:hidden which clips the TableContainer's
+              // horizontal scrollbar. Setting overflow to unset (resolves to visible)
+              // allows the TableContainer's own overflow:auto to render its scrollbar.
+              sx: { overflow: "unset" },
+            }}
+            muiTableContainerProps={{
+              sx: { overflowX: "auto", WebkitOverflowScrolling: "touch" },
+            }}
+            muiPaginationProps={{
+              color: "secondary",
+              rowsPerPageOptions: [10, 25, 50, 100],
+              shape: "rounded",
+              variant: "outlined",
+              showRowsPerPage: true,
+            }}
+            muiSearchTextFieldProps={{
+              placeholder: t("analytics.clicksTable.searchPlaceholder"),
+              sx: {
+                minWidth: { xs: "auto", sm: "280px" },
+                flex: { xs: 1, sm: "none" },
+              },
+              variant: "outlined",
+              size: "small",
+            }}
+          />
+        </Box>
       </AnalyticsStateManager>
     </Box>
   );

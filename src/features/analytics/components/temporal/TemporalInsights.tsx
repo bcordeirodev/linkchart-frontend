@@ -85,7 +85,7 @@ export function TemporalInsights({
     >
       <CardContent>
         <Typography
-          variant="h6"
+          variant="subtitle1"
           gutterBottom
           sx={{
             fontWeight: 600,

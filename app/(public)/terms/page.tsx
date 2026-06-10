@@ -1,19 +1,17 @@
 // app/(public)/terms/page.tsx
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
-
 import TermsPage from "@/page-components/public/TermsPage";
+import { resolveServerLanguage } from "@/lib/i18n/serverLanguage";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://linkcharts.com.br";
 
 /**
- * Generates language-aware metadata by reading the i18nextLng cookie server-side.
+ * Generates language-aware metadata via the server-side language resolver.
  *
  * @returns {Promise<Metadata>} Language-aware metadata for the Terms page
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const cookieStore = await cookies();
-  const isEn = (cookieStore.get("i18nextLng")?.value ?? "pt-BR") === "en";
+  const isEn = (await resolveServerLanguage()) === "en";
   return {
     title: isEn ? "Terms of Service" : "Termos de Serviço",
     description: isEn

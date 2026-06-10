@@ -1,24 +1,19 @@
 "use client";
-import { Box, Grid, Skeleton } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useAudienceData } from "@/features/analytics/hooks/useAudienceData";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { ResponsiveContainer } from "@/shared/ui/base/ResponsiveContainer";
 import { AudienceChart } from "./AudienceChart";
-import { AudienceExtraCharts } from "./AudienceExtraCharts";
-import { AudienceInsights } from "./AudienceInsights";
 import { AudienceMetrics } from "./AudienceMetrics";
-import { BehaviorSection } from "./BehaviorSection";
-import { QualitySection } from "./QualitySection";
-import { SocialPlatformSection } from "./SocialPlatformSection";
 
 import type { AudienceAnalysisProps } from "@/types/analytics";
 
 /**
  * Loading skeleton that mirrors the Audience tab layout:
- * 6 metric cards → tabbed main chart → behavior/social row →
- * quality → audience insights → 4 extra donut charts.
+ * 6 metric cards → tabbed main chart (8 sub-tabs hold every audience
+ * dataset, including quality, sources and the supplementary donuts).
  */
 function AudienceSkeleton() {
   return (
@@ -50,7 +45,7 @@ function AudienceSkeleton() {
       {/* Main tabbed chart — tall protagonist with tab indicators */}
       <Box sx={{ mb: 2 }}>
         <Box sx={{ display: "flex", gap: 1, mb: 1.5 }}>
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 8 }).map((_, i) => (
             <Skeleton
               key={i}
               variant="rounded"
@@ -64,71 +59,9 @@ function AudienceSkeleton() {
         <Skeleton
           variant="rounded"
           animation="wave"
-          height={380}
+          height={520}
           sx={{ borderRadius: 2 }}
         />
-      </Box>
-
-      {/* Behavior + Social side by side */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-          gap: 2,
-          mb: 2,
-        }}
-      >
-        <Skeleton
-          variant="rounded"
-          animation="wave"
-          height={260}
-          sx={{ borderRadius: 2 }}
-        />
-        <Skeleton
-          variant="rounded"
-          animation="wave"
-          height={260}
-          sx={{ borderRadius: 2 }}
-        />
-      </Box>
-
-      {/* Quality section */}
-      <Skeleton
-        variant="rounded"
-        animation="wave"
-        height={200}
-        sx={{ mb: 2, borderRadius: 2 }}
-      />
-
-      {/* Audience insights */}
-      <Skeleton
-        variant="rounded"
-        animation="wave"
-        height={180}
-        sx={{ mb: 2, borderRadius: 2 }}
-      />
-
-      {/* 4 extra donut charts (Idioma / Plataforma / Conexão / Fetch-Dest) */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            sm: "1fr 1fr",
-            md: "repeat(4, 1fr)",
-          },
-          gap: 2,
-        }}
-      >
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton
-            key={i}
-            variant="rounded"
-            animation="wave"
-            height={220}
-            sx={{ borderRadius: 2 }}
-          />
-        ))}
       </Box>
     </Box>
   );
@@ -213,107 +146,50 @@ export function AudienceAnalysis({
             </Box>
           ) : null}
 
-          {(() => {
-            const hasBehaviorData = !!(audienceData as AnyData)
-              ?.navigation_context_breakdown;
-            const hasSocialData =
-              ((audienceData as AnyData)?.social_platform_breakdown?.length ??
-                0) > 0;
-            const showSideBySide = hasBehaviorData && hasSocialData;
-            return (
-              <Grid container spacing={2}>
-                {/* 2. Main tabbed chart — protagonist */}
-                <Grid item xs={12}>
-                  <AudienceChart
-                    deviceBreakdown={deviceBreakdown}
-                    browserBreakdown={
-                      (audienceData as AnyData)?.browser_breakdown
-                    }
-                    osBreakdown={(audienceData as AnyData)?.os_breakdown}
-                    totalClicks={totalClicks}
-                    browsers={(audienceData as AnyData)?.browsers}
-                    operatingSystems={
-                      (audienceData as AnyData)?.operating_systems
-                    }
-                    devicePerformance={
-                      (audienceData as AnyData)?.device_performance
-                    }
-                    languages={(audienceData as AnyData)?.languages}
-                    renderingEngine={(() => {
-                      const re = (audienceData as AnyData)?.rendering_engine;
-                      return Array.isArray(re) ? re : re?.data;
-                    })()}
-                    activeTab={subTabIndex}
-                    onTabChange={onSubTabChange}
-                  />
-                </Grid>
-
-                {/* 3. Behavior / navigation context */}
-                {hasBehaviorData && (
-                  <Grid item xs={12} md={showSideBySide ? 6 : 12}>
-                    <BehaviorSection
-                      navigationContext={
-                        (audienceData as AnyData).navigation_context_breakdown
-                      }
-                    />
-                  </Grid>
-                )}
-
-                {/* 4. Social platforms */}
-                {hasSocialData && (
-                  <Grid item xs={12} md={showSideBySide ? 6 : 12}>
-                    <SocialPlatformSection
-                      platforms={
-                        (audienceData as AnyData).social_platform_breakdown
-                      }
-                    />
-                  </Grid>
-                )}
-
-                {/* 5. Quality section */}
-                {(audienceData as AnyData)?.quality_breakdown?.tiers !==
-                  undefined && (
-                  <Grid item xs={12}>
-                    <QualitySection
-                      quality={(audienceData as AnyData).quality_breakdown}
-                    />
-                  </Grid>
-                )}
-              </Grid>
-            );
-          })()}
-
-          {/* 6. Audience insights — secondary detail */}
-          <Box sx={{ mt: 3 }}>
-            <AudienceInsights
-              deviceBreakdown={deviceBreakdown}
-              browserBreakdown={(audienceData as AnyData)?.browser_breakdown}
-              totalClicks={totalClicks}
-              showAdvancedInsights={shouldUseHook}
-            />
-          </Box>
-
-          {/* 7. Supplementary donut charts (Idioma / Plataforma / Tipo de Conexão / Fetch-Dest) */}
-          <AudienceExtraCharts
+          {/* 2. Main tabbed chart — every audience dataset lives in a sub-tab */}
+          <AudienceChart
+            deviceBreakdown={deviceBreakdown}
+            browserBreakdown={(audienceData as AnyData)?.browser_breakdown}
+            osBreakdown={(audienceData as AnyData)?.os_breakdown}
+            totalClicks={totalClicks}
+            browsers={(audienceData as AnyData)?.browsers}
+            operatingSystems={(audienceData as AnyData)?.operating_systems}
+            devicePerformance={(audienceData as AnyData)?.device_performance}
+            languages={(audienceData as AnyData)?.languages}
+            renderingEngine={(() => {
+              const re = (audienceData as AnyData)?.rendering_engine;
+              return Array.isArray(re) ? re : re?.data;
+            })()}
+            quality={
+              (audienceData as AnyData)?.quality_breakdown?.tiers !== undefined
+                ? (audienceData as AnyData).quality_breakdown
+                : undefined
+            }
+            showAdvancedInsights={shouldUseHook}
+            navigationContext={
+              (audienceData as AnyData)?.navigation_context_breakdown
+            }
+            socialPlatforms={
+              (audienceData as AnyData)?.social_platform_breakdown
+            }
             languageBreakdown={
               (audienceData as AnyData)?.language_breakdown ??
-              (audienceData as AnyData)?.audience?.language_breakdown ??
-              []
+              (audienceData as AnyData)?.audience?.language_breakdown
             }
             platformBreakdown={
               (audienceData as AnyData)?.platform_breakdown ??
-              (audienceData as AnyData)?.audience?.platform_breakdown ??
-              []
+              (audienceData as AnyData)?.audience?.platform_breakdown
             }
             connectionBreakdown={
               (audienceData as AnyData)?.connection_type_breakdown ??
-              (audienceData as AnyData)?.audience?.connection_type_breakdown ??
-              []
+              (audienceData as AnyData)?.audience?.connection_type_breakdown
             }
             fetchDestBreakdown={
               (audienceData as AnyData)?.fetch_dest_breakdown ??
               (audienceData as AnyData)?.audience?.fetch_dest_breakdown
             }
+            activeTab={subTabIndex}
+            onTabChange={onSubTabChange}
           />
         </ResponsiveContainer>
       </AnalyticsStateManager>

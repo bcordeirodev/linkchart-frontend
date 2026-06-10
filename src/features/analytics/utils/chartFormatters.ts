@@ -468,19 +468,6 @@ export const formatPieChart = (
       dataLabels: {
         enabled: false,
       },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200,
-            },
-            legend: {
-              position: "bottom",
-            },
-          },
-        },
-      ],
       tooltip: {
         ...getTooltipConfig(isDark),
         y: {
@@ -488,10 +475,12 @@ export const formatPieChart = (
             `<span style="color: #1976d2; font-weight: 600;">${value.toLocaleString()}</span>`,
         },
       },
+      // No fixed legend height: with the global <600 px rule flipping the
+      // legend to `position: bottom`, a fixed height would consume the whole
+      // chart canvas and collapse the pie radius to ~0 on mobile.
       legend: {
         position: "right",
         offsetY: 0,
-        height: 230,
         labels: {
           colors: textColor,
           useSeriesColors: false,
