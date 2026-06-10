@@ -60,33 +60,17 @@ function GeographicSkeleton() {
         ))}
       </Box>
 
-      {/* Sub-tabs bordered container */}
-      <Box
-        sx={{
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 2,
-          p: { xs: 1.5, md: 2 },
-        }}
-      >
-        {/* Tab navigation */}
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1.5,
-            mb: 3,
-            pb: 1.5,
-            borderBottom: "1px solid",
-            borderColor: "divider",
-          }}
-        >
+      {/* Sub-tabs area — segmented control + content, no wrapper border */}
+      <Box>
+        {/* Segmented control */}
+        <Box sx={{ display: "flex", gap: 0.5, mb: 3 }}>
           {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton
               key={i}
               variant="rounded"
               animation="wave"
               width={110}
-              height={32}
+              height={36}
               sx={{ borderRadius: 1 }}
             />
           ))}
@@ -256,9 +240,7 @@ export function GeographicAnalysis({
           {/* 5 metric cards no topo, fora das sub-tabs */}
           <GeographicMetrics stats={stats} />
 
-          {/* Sub-tabs — shared bordered container groups the sub-tab nav +
-               content as a distinct hierarchical level, separate from the
-               metric cards above */}
+          {/* Sub-tabs — shared segmented control switches the content below */}
           <Box sx={{ mt: 2 }}>
             <AnalyticsSubTabs
               value={activeSubTab}
@@ -343,7 +325,6 @@ export function GeographicAnalysis({
               )}
             </AnalyticsSubTabs>
           </Box>
-          {/* closes sub-tabs bordered container */}
         </Box>
       </AnalyticsStateManager>
     </Box>

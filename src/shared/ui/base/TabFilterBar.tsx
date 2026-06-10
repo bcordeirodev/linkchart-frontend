@@ -110,8 +110,8 @@ export function TabFilterBar({
         attached
           ? {
               px: 2,
-              py: 1,
-              mb: 1.25,
+              py: 1.25,
+              mb: 2,
               bgcolor: "rgba(255,255,255,0.02)",
               borderRadius: "8px",
               border: "1px solid",

@@ -1,5 +1,5 @@
 "use client";
-import { Box, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Tab, Tabs, useTheme } from "@mui/material";
 
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 
@@ -30,11 +30,13 @@ interface AnalyticsSubTabsProps {
 }
 
 /**
- * Standard sub-tab navigation for analytics tabs (Temporal, Geographic,
- * Audience). Mirrors the main `LinkAnalyticsTabs` styling — leading icons,
- * selected-state background, scrollable on mobile / full-width on desktop —
- * and wraps nav + content in a bordered container so the sub-tab area reads
- * as one hierarchical level, distinct from the metric cards above it.
+ * Secondary navigation for analytics tabs (Temporal, Geographic, Audience).
+ *
+ * Rendered as a compact left-aligned **segmented control** (pill buttons on a
+ * subtle track) so it reads as a level below the main tab band — two stacked
+ * full-width tab bars would look like duplicated navigation. No wrapper
+ * border: the main tab panel already frames the content, and a second frame
+ * would run parallel to it as a double border.
  */
 export function AnalyticsSubTabs({
   value,
@@ -44,7 +46,6 @@ export function AnalyticsSubTabs({
   ariaLabel,
 }: AnalyticsSubTabsProps) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   /** Forwards MUI's numeric tab index to the `onChange` callback. */
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
@@ -52,30 +53,43 @@ export function AnalyticsSubTabs({
   };
 
   return (
-    <Box
-      sx={{
-        border: "1px solid",
-        borderColor: "divider",
-        borderRadius: `${radiusTokens.lg}px`,
-        p: { xs: 1.5, md: 2 },
-      }}
-    >
-      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+    <Box>
+      {/* Segmented control track — visually subordinate to the main tab band */}
+      <Box sx={{ mb: { xs: 2, md: 2.5 }, display: "flex" }}>
         <Tabs
           value={value}
           onChange={handleChange}
-          variant={isMobile ? "scrollable" : "fullWidth"}
+          variant="scrollable"
           scrollButtons="auto"
           allowScrollButtonsMobile
           aria-label={ariaLabel}
+          TabIndicatorProps={{ sx: { display: "none" } }}
           sx={{
+            minHeight: 0,
+            maxWidth: "100%",
+            p: 0.5,
+            backgroundColor:
+              theme.palette.mode === "dark"
+                ? "rgba(255,255,255,0.03)"
+                : "rgba(0,0,0,0.03)",
+            border: `1px solid ${theme.palette.divider}`,
+            borderRadius: `${radiusTokens.md}px`,
+            "& .MuiTabs-flexContainer": { gap: 0.5 },
             "& .MuiTab-root": {
               textTransform: "none",
-              minHeight: 48,
-              transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+              minHeight: 36,
+              minWidth: 0,
+              px: 1.5,
+              py: 0.75,
+              color: "text.secondary",
+              borderRadius: `${radiusTokens.sm + 2}px`,
+              transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+              "&:hover": {
+                color: "text.primary",
+              },
               "&.Mui-selected": {
                 backgroundColor: theme.palette.action.selected,
-                borderRadius: `${radiusTokens.md}px`,
+                color: "text.primary",
               },
             },
           }}
