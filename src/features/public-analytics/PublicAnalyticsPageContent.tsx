@@ -20,6 +20,7 @@ import {
   ErrorState,
   usePublicAnalytics,
 } from "@/features/public-analytics";
+import { LockedFeaturesTeaser } from "@/features/public-analytics/components/teaser/LockedFeaturesTeaser";
 import { PublicLayout } from "@/shared/layout";
 import { PublicAnalyticsSkeleton } from "@/shared/ui/feedback/skeletons";
 import { PublicBlobBackground } from "@/shared/ui/PublicBlobBackground";
@@ -147,6 +148,12 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
                 format="auto"
               />
             ) : null}
+
+            <Fade in timeout={900}>
+              <Box>
+                <LockedFeaturesTeaser />
+              </Box>
+            </Fade>
 
             <Fade in timeout={1000}>
               <Box>
