@@ -201,7 +201,7 @@
       "activeDays": "active days",
       "peakHourLabel": "peak hour",
       "noData": "Share your link to discover the best times for engagement!",
-      "periodSummary": "Period Summary:",
+      "periodSummary": "Period Summary",
       "morningPeriod": "Morning (6am-12pm)",
       "afternoonPeriod": "Afternoon (12pm-6pm)",
       "eveningPeriod": "Evening (6pm-midnight)",
@@ -218,7 +218,7 @@
       "comparison": "Comparison",
       "businessHoursLabel": "Business Hours",
       "afterHoursLabel": "After Hours",
-      "daysByEngagement": "Days by Engagement:",
+      "daysByEngagement": "Days by Engagement",
       "scheduleTip": "• {{hour}} is the peak hour with {{clicks}} clicks. Schedule important campaigns at this time.",
       "mostActiveDay": "• {{day}} is the most active day. Focus launches and promotions on this day.",
       "businessFocus": "• Your audience is active during business hours. Focus on B2B and professional content.",
@@ -571,21 +571,22 @@
     },
     "chart": {
       "title": "Audience Analysis",
-      "clicksChip": "{{n}} clicks",
       "tabs": {
         "devices": "Devices",
         "browsers": "Browsers",
         "systems": "Systems",
         "performance": "Performance",
         "languages": "Languages",
-        "renderingEngine": "Rendering Engine"
+        "renderingEngine": "Rendering Engine",
+        "quality": "Quality",
+        "sources": "Sources"
       },
       "tabDescriptions": {
         "devices": "Share of visits by device type (desktop, mobile, tablet). Use to decide whether content should prioritize responsive layouts or native app experiences.",
         "browsers": "Most-used browsers in your audience (Chrome, Safari, Firefox, etc.). Helps with compatibility decisions, polyfills, and UI testing priorities.",
         "systems": "Most-used operating systems (iOS, Android, Windows, macOS). Combined with device data, builds the full technical profile of your audience.",
         "performance": "Average response time and load performance by device type. Identify whether any segment has a degraded experience.",
-        "languages": "Languages detected in visitors' browser settings. Use to plan internationalization or create localized content versions.",
+        "languages": "Languages detected in visitors' browser settings, with each regional variant (en-US, en-GB) counted separately. Use to plan internationalization or create localized content versions.",
         "renderingEngine": "Browser rendering engine (Blink, WebKit, Gecko, etc.). Useful for diagnosing compatibility issues on less common browsers."
       },
       "stats": {
@@ -622,6 +623,7 @@
       "botRate": "Bot Rate",
       "botRateSubtitle": "of clicks are bots",
       "botAlert": "{{count}} bots detected",
+      "botClicksDetected": "{{count}} bot clicks detected",
       "fingerprint": "Header Consistency",
       "fingerprintSubtitle": "inconsistencies per click",
       "fingerprintScale": "0 = perfect · 3 = maximum suspicious",
@@ -663,15 +665,25 @@
       "unavailable": "This data is only available for recent clicks using enhanced tracking"
     },
     "extraCharts": {
-      "language": "Language",
-      "languageDescription": "Primary language detected from browser settings (Phase 1: Accept-Language / Sec-CH-UA).",
+      "language": "Languages — regions grouped",
+      "languageDescription": "Same dimension as the distribution above, but regional variants are grouped under their base language (en-US + en-GB → English). Totals can differ slightly from the chart above because only clicks enriched by Phase 1 tracking are counted here.",
       "platform": "Platform",
       "platformDescription": "Operating platform detected via Client Hints (Phase 1: Sec-CH-UA-Platform).",
       "connectionType": "Connection Type",
       "connectionTypeDescription": "ISP connection type classified from network data (Phase 2).",
       "others": "Others",
       "showTechnical": "Show technical data",
-      "hideTechnical": "Hide technical data"
+      "hideTechnical": "Hide technical data",
+      "connectionLabels": {
+        "residential": "Residential",
+        "mobile": "Mobile",
+        "cellular": "Cellular",
+        "datacenter": "Datacenter",
+        "broadband": "Broadband",
+        "wifi": "Wi-Fi",
+        "education": "Education",
+        "unknown": "Unknown"
+      }
     }
   },
   "performance": {

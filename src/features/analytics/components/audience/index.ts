@@ -7,13 +7,16 @@
 // Componentes principais
 export { AudienceAnalysis } from "./AudienceAnalysis";
 export { AudienceChart } from "./AudienceChart";
-export { AudienceExtraCharts } from "./AudienceExtraCharts";
 export { AudienceInsights } from "./AudienceInsights";
 export { AudienceMetrics } from "./AudienceMetrics";
 export { BehaviorSection } from "./BehaviorSection";
+export { ConnectionTypeCard } from "./ConnectionTypeCard";
 export { FetchDestChart } from "./FetchDestChart";
+export { LanguageBreakdownCard } from "./LanguageBreakdownCard";
 export { LanguageBreakdownChart } from "./LanguageBreakdownChart";
+export { PlatformBreakdownCard } from "./PlatformBreakdownCard";
 export { QualitySection } from "./QualitySection";
+export { SocialPlatformSection } from "./SocialPlatformSection";
 
 // Hook personalizado
 export { useAudienceData } from "../../hooks/useAudienceData";

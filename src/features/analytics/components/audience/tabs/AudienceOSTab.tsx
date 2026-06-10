@@ -33,8 +33,9 @@ export interface AudienceOSTabProps {
 /**
  * Renders the Operating Systems tab content for the AudienceChart.
  *
- * Shows a donut chart of OS distribution and a ranked list of the top
- * five operating systems. All data flows from props — no hooks inside.
+ * Two equal-width cards: donut of OS distribution on the left and a ranked
+ * list of the top five operating systems on the right. The list stretches
+ * and centers its rows so both cards read as the same height with no dead gap.
  */
 export function AudienceOSTab({
   osChartData,
@@ -47,15 +48,23 @@ export function AudienceOSTab({
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={8}>
-        <Card elevation={0} sx={outlinedCardSx}>
+      <Grid item xs={12} md={6}>
+        <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
           <CardContent>
             <Typography
-              variant="h6"
+              variant="subtitle1"
               gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                fontWeight: 600,
+              }}
             >
               <Monitor {...ICON_MD} /> {t("audience.chart.osDistribution")}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              {t("audience.chart.tabDescriptions.systems")}
             </Typography>
             <ApexChartWrapper
               type="donut"
@@ -65,13 +74,19 @@ export function AudienceOSTab({
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={6}>
         <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
+          <CardContent
+            sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+          >
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ fontWeight: 600 }}
+            >
               {t("audience.chart.topOS")}
             </Typography>
-            <Stack spacing={2}>
+            <Stack spacing={1.5} sx={{ flexGrow: 1, justifyContent: "center" }}>
               {operatingSystems.slice(0, 5).map((os) => (
                 <Box
                   key={`${os.os}-${os.version}`}
@@ -79,7 +94,7 @@ export function AudienceOSTab({
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    p: 1,
+                    p: 1.5,
                     ...itemRowSx,
                   }}
                 >

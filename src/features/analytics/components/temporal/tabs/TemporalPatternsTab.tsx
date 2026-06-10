@@ -1,19 +1,10 @@
 "use client";
 import { Clock } from "lucide-react";
 import { useMemo } from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Stack,
-  Divider,
-} from "@mui/material";
+import { Box, Typography, Grid, Stack, Divider } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { ICON_LG } from "@/lib/theme/iconDefaults";
-import { radiusTokens } from "@/lib/theme/designSystem";
 
 import {
   formatAreaChart,
@@ -249,50 +240,37 @@ export function TemporalPatternsTab({
               md={4}
               sx={{ display: "flex", flexDirection: "column", minWidth: 0 }}
             >
-              <Card
-                elevation={0}
-                sx={{
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: `${radiusTokens.lg}px`,
-                  flex: 1,
-                }}
-              >
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {t("temporal.chart.comparison")}
-                  </Typography>
-                  <Stack spacing={2}>
-                    <Box>
-                      <Typography variant="subtitle2" color="primary">
-                        {t("temporal.chart.weekdays")}
-                      </Typography>
-                      <Typography variant="body2">
-                        {weekendVsWeekday.weekday.clicks}{" "}
-                        {t("temporal.chart.clicks")}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {weekendVsWeekday.weekday.unique_visitors}{" "}
-                        {t("temporal.chart.uniqueVisitors")}
-                      </Typography>
-                    </Box>
-                    <Divider />
-                    <Box>
-                      <Typography variant="subtitle2" color="secondary">
-                        {t("temporal.chart.weekend")}
-                      </Typography>
-                      <Typography variant="body2">
-                        {weekendVsWeekday.weekend.clicks}{" "}
-                        {t("temporal.chart.clicks")}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {weekendVsWeekday.weekend.unique_visitors}{" "}
-                        {t("temporal.chart.uniqueVisitors")}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </CardContent>
-              </Card>
+              <ChartCard title={t("temporal.chart.comparison")}>
+                <Stack spacing={2}>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      {t("temporal.chart.weekdays")}
+                    </Typography>
+                    <Typography variant="body2">
+                      {weekendVsWeekday.weekday.clicks}{" "}
+                      {t("temporal.chart.clicks")}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {weekendVsWeekday.weekday.unique_visitors}{" "}
+                      {t("temporal.chart.uniqueVisitors")}
+                    </Typography>
+                  </Box>
+                  <Divider />
+                  <Box>
+                    <Typography variant="subtitle2" color="secondary">
+                      {t("temporal.chart.weekend")}
+                    </Typography>
+                    <Typography variant="body2">
+                      {weekendVsWeekday.weekend.clicks}{" "}
+                      {t("temporal.chart.clicks")}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {weekendVsWeekday.weekend.unique_visitors}{" "}
+                      {t("temporal.chart.uniqueVisitors")}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </ChartCard>
             </Grid>
           </Grid>
         </Box>
@@ -343,54 +321,39 @@ export function TemporalPatternsTab({
               md={4}
               sx={{ display: "flex", flexDirection: "column", minWidth: 0 }}
             >
-              <Card
-                elevation={0}
-                sx={{
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: `${radiusTokens.lg}px`,
-                  flex: 1,
-                }}
-              >
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {t("temporal.chart.engagementMetrics")}
-                  </Typography>
-                  <Stack spacing={2}>
-                    <Box>
-                      <Typography variant="subtitle2" color="primary">
-                        {t("temporal.chart.businessHoursLabel")}
-                      </Typography>
-                      <Typography variant="body2">
-                        {businessHoursAnalysis.business_hours.clicks}{" "}
-                        {t("temporal.chart.clicks")}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {businessHoursAnalysis.business_hours.percentage.toFixed(
-                          1,
-                        )}
-                        {t("temporal.chart.ofTotal")}
-                      </Typography>
-                    </Box>
-                    <Divider />
-                    <Box>
-                      <Typography variant="subtitle2" color="secondary">
-                        {t("temporal.chart.afterHoursLabel")}
-                      </Typography>
-                      <Typography variant="body2">
-                        {businessHoursAnalysis.after_hours.clicks}{" "}
-                        {t("temporal.chart.clicks")}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {businessHoursAnalysis.after_hours.percentage.toFixed(
-                          1,
-                        )}
-                        {t("temporal.chart.ofTotal")}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </CardContent>
-              </Card>
+              <ChartCard title={t("temporal.chart.engagementMetrics")}>
+                <Stack spacing={2}>
+                  <Box>
+                    <Typography variant="subtitle2" color="primary">
+                      {t("temporal.chart.businessHoursLabel")}
+                    </Typography>
+                    <Typography variant="body2">
+                      {businessHoursAnalysis.business_hours.clicks}{" "}
+                      {t("temporal.chart.clicks")}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {businessHoursAnalysis.business_hours.percentage.toFixed(
+                        1,
+                      )}
+                      {t("temporal.chart.ofTotal")}
+                    </Typography>
+                  </Box>
+                  <Divider />
+                  <Box>
+                    <Typography variant="subtitle2" color="secondary">
+                      {t("temporal.chart.afterHoursLabel")}
+                    </Typography>
+                    <Typography variant="body2">
+                      {businessHoursAnalysis.after_hours.clicks}{" "}
+                      {t("temporal.chart.clicks")}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {businessHoursAnalysis.after_hours.percentage.toFixed(1)}
+                      {t("temporal.chart.ofTotal")}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </ChartCard>
             </Grid>
           </Grid>
         </Box>

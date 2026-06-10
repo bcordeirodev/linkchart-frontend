@@ -1,10 +1,13 @@
 "use client";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useState, type SyntheticEvent } from "react";
+import { Activity, CalendarRange, Gauge, PieChart } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getStandardChartColors } from "@/lib/theme";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { AnalyticsSubTabs } from "@/shared/ui/navigation";
 
 import type {
   HourlyData,
@@ -38,6 +41,12 @@ interface TemporalChartProps {
   segment?: "all" | "weekday" | "weekend" | "business";
   /** Viral rank data for the Performance tab. */
   viralRankByDay?: TemporalData["viral_rank_by_day"];
+  /** Holiday impact data for the Distribution tab. */
+  holidayImpact?: TemporalData["holiday_impact"];
+  /** Seasonal distribution data for the Distribution tab. */
+  seasonalDistribution?: TemporalData["seasonal_distribution"];
+  /** Click velocity data for the Distribution tab. */
+  clickVelocity?: TemporalData["click_velocity"];
   /** Currently-active sub-tab index. When provided, the component is controlled. */
   activeTab?: number;
   /** Called when the user switches to a different sub-tab. */
@@ -60,6 +69,9 @@ export function TemporalChart({
   businessHoursAnalysis,
   advancedData,
   viralRankByDay,
+  holidayImpact,
+  seasonalDistribution,
+  clickVelocity,
   segment,
   activeTab: activeTabProp,
   onTabChange,
@@ -99,74 +111,86 @@ export function TemporalChart({
     segment === "weekday" ||
     segment === "weekend";
 
-  /** @param _event — synthetic React event (unused) @param newValue — selected tab index */
-  const handleTabChange = (_event: SyntheticEvent, newValue: number) => {
+  /** @param newValue — selected tab index */
+  const handleTabChange = (newValue: number) => {
     setLocalTab(newValue);
     onTabChange?.(newValue);
   };
 
   return (
     <Box sx={{ width: "100%", overflow: "hidden" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          <Tab label={t("temporal.chart.tabPatterns")} />
-          <Tab label={t("temporal.chart.tabTimeline")} />
-          <Tab label={t("temporal.chart.tabPerformance")} />
-          <Tab label={t("temporal.chart.tabDistribution")} />
-        </Tabs>
-      </Box>
+      <AnalyticsSubTabs
+        value={activeTab}
+        onChange={handleTabChange}
+        tabs={[
+          {
+            label: t("temporal.chart.tabPatterns"),
+            icon: <Activity {...ICON_SM} />,
+          },
+          {
+            label: t("temporal.chart.tabTimeline"),
+            icon: <CalendarRange {...ICON_SM} />,
+          },
+          {
+            label: t("temporal.chart.tabPerformance"),
+            icon: <Gauge {...ICON_SM} />,
+          },
+          {
+            label: t("temporal.chart.tabDistribution"),
+            icon: <PieChart {...ICON_SM} />,
+          },
+        ]}
+      >
+        {/* Tab 0 — Patterns */}
+        {activeTab === 0 && (
+          <TemporalPatternsTab
+            hourlyData={hourlyData}
+            weeklyData={weeklyData}
+            hourlyPatternsLocal={hourlyPatternsLocal}
+            weekendVsWeekday={weekendVsWeekday}
+            businessHoursAnalysis={businessHoursAnalysis}
+            showWeekendComparison={showWeekendComparison}
+            showBusinessComparison={showBusinessComparison}
+            isDark={isDark}
+            primaryColor={chartColors.primary.main}
+            secondaryColor={
+              chartColors.secondary?.main ?? chartColors.primary.main
+            }
+          />
+        )}
 
-      {/* Tab 0 — Patterns */}
-      {activeTab === 0 && (
-        <TemporalPatternsTab
-          hourlyData={hourlyData}
-          weeklyData={weeklyData}
-          hourlyPatternsLocal={hourlyPatternsLocal}
-          weekendVsWeekday={weekendVsWeekday}
-          businessHoursAnalysis={businessHoursAnalysis}
-          showWeekendComparison={showWeekendComparison}
-          showBusinessComparison={showBusinessComparison}
-          isDark={isDark}
-          primaryColor={chartColors.primary.main}
-          secondaryColor={
-            chartColors.secondary?.main ?? chartColors.primary.main
-          }
-        />
-      )}
+        {/* Tab 1 — Timeline */}
+        {activeTab === 1 && (
+          <TemporalTimelineTab
+            hasDailyTimeline={hasDailyTimeline}
+            hasHeatmap={hasHeatmap}
+            advancedData={advancedData}
+          />
+        )}
 
-      {/* Tab 1 — Timeline */}
-      {activeTab === 1 && (
-        <TemporalTimelineTab
-          hasDailyTimeline={hasDailyTimeline}
-          hasHeatmap={hasHeatmap}
-          advancedData={advancedData}
-        />
-      )}
+        {/* Tab 2 — Performance */}
+        {activeTab === 2 && (
+          <TemporalPerformanceTab
+            hasPeakAnalysis={hasPeakAnalysis}
+            hasTrends={!!hasTrends}
+            advancedData={advancedData}
+            viralRankByDay={viralRankByDay}
+            hasViralRank={hasViralRank}
+          />
+        )}
 
-      {/* Tab 2 — Performance */}
-      {activeTab === 2 && (
-        <TemporalPerformanceTab
-          hasPeakAnalysis={hasPeakAnalysis}
-          hasTrends={!!hasTrends}
-          advancedData={advancedData}
-          viralRankByDay={viralRankByDay}
-          hasViralRank={hasViralRank}
-        />
-      )}
-
-      {/* Tab 3 — Distribution */}
-      {activeTab === 3 && (
-        <TemporalDistributionTab
-          hasTimezones={hasTimezones}
-          hasDeviceByPeriod={hasDeviceByPeriod}
-          advancedData={advancedData}
-        />
-      )}
+        {/* Tab 3 — Distribution */}
+        {activeTab === 3 && (
+          <TemporalDistributionTab
+            hasTimezones={hasTimezones}
+            hasDeviceByPeriod={hasDeviceByPeriod}
+            advancedData={advancedData}
+            holidayImpact={holidayImpact}
+            seasonalDistribution={seasonalDistribution}
+            clickVelocity={clickVelocity}
+          />
+        )}
+      </AnalyticsSubTabs>
     </Box>
   );
 }

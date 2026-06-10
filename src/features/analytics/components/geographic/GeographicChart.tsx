@@ -89,7 +89,7 @@ export function GeographicChart({
           <Card sx={cardSx}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 sx={{
                   position: "relative",
                   zIndex: 1,
@@ -233,7 +233,7 @@ export function GeographicChart({
           <Card sx={cardSx}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 sx={{
                   position: "relative",
                   zIndex: 1,
@@ -344,7 +344,7 @@ export function GeographicChart({
         <Card sx={cardSx}>
           <CardContent>
             <Typography
-              variant="h6"
+              variant="subtitle1"
               sx={{
                 position: "relative",
                 zIndex: 1,

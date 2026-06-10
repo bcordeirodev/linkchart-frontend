@@ -233,6 +233,13 @@
       "performance": "Performance",
       "insights": "Insights"
     },
+    "tabDescriptions": {
+      "overview": "Resumo do desempenho do link: total de cliques, visitantes únicos, qualidade e os principais padrões de tráfego.",
+      "temporal": "Quando sua audiência clica: padrões por hora e dia da semana, linhas do tempo, performance e distribuições ao longo do tempo.",
+      "geographic": "De onde vêm seus cliques: países, regiões e cidades, com mapa, heatmap e rankings.",
+      "audience": "Quem clica no seu link: dispositivos, navegadores, sistemas, idiomas, qualidade do tráfego e origens.",
+      "insights": "Análises e recomendações automáticas geradas a partir dos padrões de clique do seu link."
+    },
     "clicksTable": {
       "title": "Cliques Recentes",
       "description": "Lista detalhada de cada acesso registrado: origem, localização, dispositivo, navegador e UTM.",

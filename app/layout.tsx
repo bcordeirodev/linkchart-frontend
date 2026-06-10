@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Inter } from "next/font/google";
 import Script from "next/script";
-import { cookies } from "next/headers";
-
 import { Providers } from "@/lib/providers/Providers";
+import { resolveServerLanguage } from "@/lib/i18n/serverLanguage";
 import { buildOrganizationSchema } from "@/lib/seo/structuredData";
 import { CookieConsentInit } from "@/shared/components/CookieConsentInit";
 import "@/styles/index.css";
@@ -68,8 +67,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const initialLang = cookieStore.get("i18nextLng")?.value ?? "pt-BR";
+  const initialLang = await resolveServerLanguage();
 
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
   const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID;

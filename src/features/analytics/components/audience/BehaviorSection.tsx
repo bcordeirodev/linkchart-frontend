@@ -1,23 +1,12 @@
 "use client";
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  LinearProgress,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Chip, LinearProgress, Stack, Typography } from "@mui/material";
 import { Info, Navigation } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
+import { SectionDivider } from "@/shared/ui/SectionDivider";
 import { getPhaseDataChipSx } from "./phaseDataChipSx";
 import type {
   NavigationContextEntry,
@@ -38,6 +27,11 @@ interface BehaviorSectionProps {
    * (`{ data, phase_available }`) and the legacy flat array.
    */
   navigationContext: NavigationContextBreakdown | NavigationContextEntry[];
+  /**
+   * Whether to render the section heading. Pass `false` inside the Sources
+   * sub-tab, whose tab label already provides the context.
+   */
+  showTitle?: boolean;
 }
 
 /**
@@ -63,21 +57,22 @@ function normalise(
  * selected range. The chart is still rendered so the user understands why
  * data may be sparse.
  */
-export function BehaviorSection({ navigationContext }: BehaviorSectionProps) {
+export function BehaviorSection({
+  navigationContext,
+  showTitle = true,
+}: BehaviorSectionProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
 
   const { data, phaseAvailable } = normalise(navigationContext);
 
   if (data.length === 0 && phaseAvailable) return null;
 
   return (
-    <Box sx={{ mb: 3 }}>
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-        {t("audience.behavior.title")}
-      </Typography>
+    <Box>
+      {showTitle ? (
+        <SectionDivider title={t("audience.behavior.title")} />
+      ) : null}
 
       {!phaseAvailable && (
         <Box sx={{ mb: 2 }}>
@@ -91,64 +86,53 @@ export function BehaviorSection({ navigationContext }: BehaviorSectionProps) {
         </Box>
       )}
 
-      <Card
-        sx={{ borderRadius: `${radiusTokens.lg}px`, boxShadow: elevation.xs }}
+      <ChartCard
+        title={t("audience.behavior.navigationContext")}
+        subtitle={t("audience.behavior.description")}
+        icon={<Navigation {...ICON_MD} />}
       >
-        <CardContent>
-          <Typography
-            variant="subtitle2"
-            sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}
-          >
-            <Navigation {...ICON_MD} />
-            {t("audience.behavior.navigationContext")}
+        {data.length === 0 ? (
+          <Typography variant="body2" color="text.secondary">
+            {t("audience.noData")}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {t("audience.behavior.description")}
-          </Typography>
-
-          {data.length === 0 ? (
-            <Typography variant="body2" color="text.secondary">
-              {t("audience.noData")}
-            </Typography>
-          ) : (
-            <Stack spacing={2}>
-              {data.map((entry) => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const label = (t as any)(
-                  `audience.behavior.contexts.${entry.context}`,
-                  { defaultValue: entry.context },
-                ) as string;
-                const color = CONTEXT_COLORS[entry.context] ?? "#94a3b8";
-                return (
-                  <Box key={entry.context}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        mb: 0.5,
-                      }}
-                    >
-                      <Typography variant="body2">{label}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {entry.clicks} ({entry.percentage.toFixed(1)}%)
-                      </Typography>
-                    </Box>
-                    <LinearProgress
-                      variant="determinate"
-                      value={entry.percentage}
-                      sx={{
-                        height: 8,
-                        borderRadius: 4,
-                        "& .MuiLinearProgress-bar": { backgroundColor: color },
-                      }}
-                    />
+        ) : (
+          <Stack spacing={2}>
+            {data.map((entry) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const label = (t as any)(
+                `audience.behavior.contexts.${entry.context}`,
+                { defaultValue: entry.context },
+              ) as string;
+              const color = CONTEXT_COLORS[entry.context] ?? "#94a3b8";
+              return (
+                <Box key={entry.context}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mb: 0.5,
+                    }}
+                  >
+                    <Typography variant="body2">{label}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {entry.clicks} ({entry.percentage.toFixed(1)}%)
+                    </Typography>
                   </Box>
-                );
-              })}
-            </Stack>
-          )}
-        </CardContent>
-      </Card>
+                  <LinearProgress
+                    variant="determinate"
+                    value={entry.percentage}
+                    sx={{
+                      height: 8,
+                      borderRadius: 4,
+                      "& .MuiLinearProgress-bar": { backgroundColor: color },
+                    }}
+                  />
+                </Box>
+              );
+            })}
+          </Stack>
+        )}
+      </ChartCard>
     </Box>
   );
 }
