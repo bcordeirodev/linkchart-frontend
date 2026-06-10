@@ -1,9 +1,9 @@
 "use client";
-import { Alert, Box, Chip, Tab, Tabs, Typography } from "@mui/material";
-import { Globe, Monitor, Smartphone, Zap } from "lucide-react";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { Alert, Box, Chip, Typography } from "@mui/material";
+import { Cpu, Globe, Languages, Monitor, Smartphone, Zap } from "lucide-react";
+import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
-import { useState, type SyntheticEvent } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Users } from "lucide-react";
 
@@ -14,6 +14,7 @@ import {
   motionTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
+import { AnalyticsSubTabs } from "@/shared/ui/navigation";
 
 import type {
   BrowserData,
@@ -154,91 +155,14 @@ export function AudienceChart({
     languages?.length ||
     renderingEngine?.length;
 
-  /** @param _event — synthetic React event (unused) @param newValue — selected tab index */
-  const handleTabChange = (_event: SyntheticEvent, newValue: number) => {
+  /** @param newValue — selected tab index */
+  const handleTabChange = (newValue: number) => {
     setLocalTab(newValue);
     onTabChange?.(newValue);
   };
 
-  return (
-    <Box
-      sx={{
-        p: 2,
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: `${radiusTokens.lg}px`,
-      }}
-    >
-      <Typography
-        variant="h6"
-        gutterBottom
-        sx={{
-          position: "relative",
-          zIndex: 1,
-          mb: 3,
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-        }}
-      >
-        <Users {...ICON_MD} /> {t("audience.chart.title")}
-        <Chip
-          label={t("audience.chart.clicksChip", { n: totalClicks })}
-          size="small"
-          color="primary"
-          variant="outlined"
-        />
-      </Typography>
-
-      {hasEnhancedData ? (
-        <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
-          <Tabs value={activeTab} onChange={handleTabChange}>
-            <Tab
-              label={
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Smartphone {...ICON_MD} /> {t("audience.chart.tabs.devices")}
-                </Box>
-              }
-            />
-            <Tab
-              label={
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Globe {...ICON_MD} /> {t("audience.chart.tabs.browsers")}
-                </Box>
-              }
-            />
-            <Tab
-              label={
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Monitor {...ICON_MD} /> {t("audience.chart.tabs.systems")}
-                </Box>
-              }
-            />
-            <Tab
-              label={
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Zap {...ICON_MD} /> {t("audience.chart.tabs.performance")}
-                </Box>
-              }
-            />
-            <Tab
-              label={
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Globe {...ICON_MD} /> {t("audience.chart.tabs.languages")}
-                </Box>
-              }
-            />
-            <Tab
-              label={
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Monitor {...ICON_MD} />{" "}
-                  {t("audience.chart.tabs.renderingEngine")}
-                </Box>
-              }
-            />
-          </Tabs>
-        </Box>
-      ) : null}
-
+  const tabContent = (
+    <>
       {/* Tab 0: Devices */}
       {(!hasEnhancedData || activeTab === 0) && (
         <AudienceDevicesTab
@@ -337,6 +261,69 @@ export function AudienceChart({
           </Alert>
         )
       ) : null}
+    </>
+  );
+
+  return (
+    <Box>
+      <Typography
+        variant="subtitle1"
+        gutterBottom
+        sx={{
+          position: "relative",
+          zIndex: 1,
+          mb: 2,
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          fontWeight: 600,
+        }}
+      >
+        <Users {...ICON_MD} /> {t("audience.chart.title")}
+        <Chip
+          label={t("audience.chart.clicksChip", { n: totalClicks })}
+          size="small"
+          color="primary"
+          variant="outlined"
+        />
+      </Typography>
+
+      {hasEnhancedData ? (
+        <AnalyticsSubTabs
+          value={activeTab}
+          onChange={handleTabChange}
+          tabs={[
+            {
+              label: t("audience.chart.tabs.devices"),
+              icon: <Smartphone {...ICON_SM} />,
+            },
+            {
+              label: t("audience.chart.tabs.browsers"),
+              icon: <Globe {...ICON_SM} />,
+            },
+            {
+              label: t("audience.chart.tabs.systems"),
+              icon: <Monitor {...ICON_SM} />,
+            },
+            {
+              label: t("audience.chart.tabs.performance"),
+              icon: <Zap {...ICON_SM} />,
+            },
+            {
+              label: t("audience.chart.tabs.languages"),
+              icon: <Languages {...ICON_SM} />,
+            },
+            {
+              label: t("audience.chart.tabs.renderingEngine"),
+              icon: <Cpu {...ICON_SM} />,
+            },
+          ]}
+        >
+          {tabContent}
+        </AnalyticsSubTabs>
+      ) : (
+        tabContent
+      )}
     </Box>
   );
 }
