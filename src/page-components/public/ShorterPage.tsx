@@ -1,37 +1,31 @@
 "use client";
-import { Alert, Box, Container, useTheme } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { Box, Container } from "@mui/material";
 import { memo, Suspense, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 
-import { AdSlot } from "@/shared/components/ads/AdSlot";
-import { URLShortenerForm } from "@/features/links/components/URLShortenerForm";
 import {
-  ShorterHero,
-  ShorterStats,
-  ShorterHowItWorks,
-  ShorterSubdomainPromo,
-  ShorterFaq,
-} from "@/features/shorter/components";
-import {
-  SHORTER_CONTENT_MAX_WIDTH,
   SHORTER_PAGE_CONTAINER_MAX_WIDTH,
 } from "@/features/shorter/constants";
 import { useShorter } from "@/features/shorter/hooks/useShorter";
-import { getPublicInsetSx } from "@/lib/theme/publicPageStyles";
-import { PublicAnalyticsSections } from "@/features/public-analytics";
 import { PublicLayout } from "@/shared/layout";
 import { ShorterSkeleton } from "@/shared/ui/feedback/skeletons/ShorterSkeleton";
 import { PublicBlobBackground } from "@/shared/ui/PublicBlobBackground";
 
-import { BenefitBadges } from "./BenefitBadges";
+import { ShorterLanding } from "./ShorterLanding";
+import { ShorterEmbeddedAnalytics } from "./ShorterEmbeddedAnalytics";
 
+/**
+ * Inner content for the `/shorter` page — reads the `?slug=` param and
+ * decides which branch to render.  Wrapped in `<Suspense>` by the exported
+ * default so `useSearchParams` never blocks SSR.
+ *
+ * Keeps all shared state (`useShorter`) and the analytics-slug tracking
+ * effect so neither child component needs to reach outside its own boundary.
+ */
 function ShorterPageContent() {
-  const theme = useTheme();
   const searchParams = useSearchParams();
   const analyticsSlug = searchParams.get("slug")?.trim() || null;
   const previousAnalyticsSlugRef = useRef<string | null>(analyticsSlug);
-  const isDark = theme.palette.mode === "dark";
 
   const {
     isRedirecting,
@@ -71,101 +65,19 @@ function ShorterPageContent() {
           }}
         >
           {showAnalytics && analyticsSlug ? (
-            <PublicAnalyticsSections
-              slug={analyticsSlug}
-              showPageHeading={false}
-            />
+            <ShorterEmbeddedAnalytics slug={analyticsSlug} />
           ) : null}
 
           {showLanding ? (
-            <>
-              <ShorterHero state={isRedirecting ? "success" : "idle"} />
-
-              {error ? (
-                <Alert
-                  severity="error"
-                  onClose={clearError}
-                  sx={{
-                    mb: 2,
-                    ...getPublicInsetSx(theme),
-                    maxWidth: SHORTER_CONTENT_MAX_WIDTH,
-                    mx: "auto",
-                    borderColor: alpha(
-                      theme.palette.error.main,
-                      isDark ? 0.42 : 0.35,
-                    ),
-                    bgcolor: alpha(
-                      theme.palette.error.main,
-                      isDark ? 0.14 : 0.08,
-                    ),
-                    color: theme.palette.text.primary,
-                    "& .MuiAlert-icon": {
-                      color: theme.palette.error.main,
-                    },
-                  }}
-                >
-                  {error}
-                </Alert>
-              ) : null}
-
-              <URLShortenerForm
-                key={formKey}
-                onSuccess={handleSuccess}
-                onError={handleError}
-                loading={isRedirecting}
-              />
-
-              <Box
-                sx={{
-                  maxWidth: SHORTER_CONTENT_MAX_WIDTH,
-                  mx: "auto",
-                }}
-              >
-                <AdSlot
-                  slot={
-                    process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BELOW_FORM ??
-                    ""
-                  }
-                  format="rectangle"
-                />
-              </Box>
-
-              <BenefitBadges
-                state={isRedirecting ? "success" : "idle"}
-                onReset={handleReset}
-              />
-
-              {!isRedirecting ? <ShorterSubdomainPromo /> : null}
-
-              <Box
-                sx={{
-                  mt: { xs: 6, md: 7 },
-                  maxWidth: SHORTER_CONTENT_MAX_WIDTH,
-                  mx: "auto",
-                }}
-              >
-                <ShorterStats />
-              </Box>
-
-              <Box
-                sx={{
-                  maxWidth: SHORTER_CONTENT_MAX_WIDTH,
-                  mx: "auto",
-                }}
-              >
-                <AdSlot
-                  slot={
-                    process.env
-                      .NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BETWEEN_SECTIONS ?? ""
-                  }
-                  format="auto"
-                />
-              </Box>
-
-              {!isRedirecting ? <ShorterHowItWorks /> : null}
-
-              {!isRedirecting ? <ShorterFaq /> : null}
-            </>
+            <ShorterLanding
+              isRedirecting={isRedirecting}
+              error={error}
+              formKey={formKey}
+              onSuccess={handleSuccess}
+              onError={handleError}
+              onClearError={clearError}
+              onReset={handleReset}
+            />
           ) : null}
         </Container>
       </Box>
@@ -173,6 +85,14 @@ function ShorterPageContent() {
   );
 }
 
+/**
+ * Public `/shorter` page component — thin container that renders the URL
+ * shortener landing or the embedded analytics depending on the `?slug=`
+ * query parameter.
+ *
+ * Wrapped in `<Suspense>` so the inner `useSearchParams()` call is safe for
+ * Next.js 15 SSR (no dynamic rendering waterfall).
+ */
 function ShorterPage() {
   return (
     <Suspense fallback={<ShorterSkeleton />}>
