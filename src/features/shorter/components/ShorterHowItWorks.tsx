@@ -50,7 +50,6 @@ export function ShorterHowItWorks() {
       component="section"
       aria-labelledby="shorter-how-it-works"
       sx={{
-        mt: { xs: 6, md: 8 },
         mb: 2,
         maxWidth: SHORTER_CONTENT_MAX_WIDTH,
         mx: "auto",

@@ -45,7 +45,6 @@ export function ShorterSubdomainPromo() {
     <Box
       sx={{
         ...getPublicInsetSx(theme),
-        mt: 2.5,
         maxWidth: SHORTER_CONTENT_MAX_WIDTH,
         mx: "auto",
         px: { xs: 2, md: 2.5 },
