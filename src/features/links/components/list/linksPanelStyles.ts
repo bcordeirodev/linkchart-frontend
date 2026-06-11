@@ -31,15 +31,31 @@ export function getLinksCardShadow(
     : `0 1px 4px ${alpha(ink, 0.045)}, 0 1px 2px ${alpha(ink, 0.03)}`;
 }
 
+/** Crisp 1px top-edge highlight — premium "glass edge" for /links surfaces. */
+export function getLinksTopHighlight(theme: Theme) {
+  const isDark = theme.palette.mode === "dark";
+  return `inset 0 1px 0 ${alpha(theme.palette.common.white, isDark ? 0.05 : 0.6)}`;
+}
+
+/** Faint top-light gradient giving panels subtle neutral depth (no color tint). */
+export function getLinksTopLightGradient(theme: Theme) {
+  const isDark = theme.palette.mode === "dark";
+  return `linear-gradient(180deg, ${alpha(
+    theme.palette.common.white,
+    isDark ? 0.035 : 0.4,
+  )} 0%, ${alpha(theme.palette.common.white, 0)} 22%)`;
+}
+
 /** Shell styles aligned with `MetricCardOptimized` (border, radius, shadow). */
 export function getLinksPanelSx(theme: Theme) {
   const borderColor = getLinksBorderColor(theme);
 
   return {
     backgroundColor: theme.palette.background.paper,
+    backgroundImage: getLinksTopLightGradient(theme),
     borderRadius: `${radiusTokens.lg}px`,
     border: `1px solid ${borderColor}`,
-    boxShadow: getLinksCardShadow(theme),
+    boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme)}`,
   };
 }
 
@@ -48,7 +64,7 @@ export function getLinksQuickCreatePanelSx(theme: Theme) {
   return {
     ...getLinksPanelSx(theme),
     border: `2px solid ${getLinksBorderColor(theme)}`,
-    boxShadow: getLinksCardShadow(theme, "hover"),
+    boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme, "hover")}`,
   };
 }
 
@@ -95,10 +111,11 @@ export function getLinkCardShellSx(theme: Theme) {
     backgroundColor: isDark
       ? alpha(theme.palette.common.black, 0.28)
       : alpha(theme.palette.common.black, 0.035),
-    boxShadow: getLinksCardShadow(theme),
+    backgroundImage: getLinksTopLightGradient(theme),
+    boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme)}`,
     transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}, border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {
-      boxShadow: getLinksCardShadow(theme, "hover"),
+      boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme, "hover")}`,
       borderColor: alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14),
     },
   };
