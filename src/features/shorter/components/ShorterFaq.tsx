@@ -3,13 +3,13 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { ChevronDown } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { motion } from "framer-motion";
+import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
 import {
-  getPublicInsetSx,
+  getPublicElevatedSx,
   getPublicSectionHeadingSx,
 } from "@/lib/theme/publicPageStyles";
 
@@ -25,12 +25,23 @@ interface FaqItem {
  * Complements the FAQPage JSON-LD schema so both crawlers and users
  * can read the same answers. Content is driven by i18n so it adapts
  * to pt-BR (default) and English automatically.
+ *
+ * Accessibility notes:
+ * - Each trigger is a `<button>` with `aria-expanded` and `aria-controls`.
+ * - Each answer panel is always present in the DOM (never conditionally
+ *   rendered) so `aria-controls` references a valid id at all times.
+ *   Framer-motion animates `height` between 0 and "auto" for the
+ *   show/hide effect without removing the element.
+ * - Panel ids are derived from a `useId()` base so they are stable across
+ *   SSR and client renders.
  */
 export function ShorterFaq() {
   const theme = useTheme();
   const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  /** Stable base id shared across all FAQ items in this instance. */
+  const baseId = useId();
 
   const items = t("shorter.faq.items", { returnObjects: true }) as FaqItem[];
 
@@ -45,7 +56,6 @@ export function ShorterFaq() {
       component="section"
       aria-labelledby="shorter-faq-heading"
       sx={{
-        mt: { xs: 6, md: 8 },
         mb: 2,
         maxWidth: SHORTER_CONTENT_MAX_WIDTH,
         mx: "auto",
@@ -62,11 +72,15 @@ export function ShorterFaq() {
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         {items.map((item, i) => {
           const isOpen = openIndex === i;
+          /** Stable trigger id: `{baseId}-q-{i}` */
+          const triggerId = `${baseId}-q-${i}`;
+          /** Stable panel id: `{baseId}-a-{i}` */
+          const panelId = `${baseId}-a-${i}`;
           return (
             <Box
               key={i}
               sx={{
-                ...getPublicInsetSx(theme),
+                ...getPublicElevatedSx(theme),
                 overflow: "hidden",
                 transition: "border-color 200ms ease, background 200ms ease",
                 ...(isOpen && {
@@ -79,13 +93,13 @@ export function ShorterFaq() {
                 }),
               }}
             >
-              {/* Question button */}
+              {/* Question trigger — real <button> for keyboard/AT support */}
               <Box
                 component="button"
-                onClick={() => handleToggle(i)}
+                id={triggerId}
                 aria-expanded={isOpen}
-                aria-controls={`faq-answer-${i}`}
-                id={`faq-question-${i}`}
+                aria-controls={panelId}
+                onClick={() => handleToggle(i)}
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -128,45 +142,47 @@ export function ShorterFaq() {
                 </Box>
               </Box>
 
-              {/* Answer */}
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    key={`faq-answer-${i}`}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ overflow: "hidden" }}
+              {/*
+               * Answer panel — always in the DOM so aria-controls is always
+               * valid.  Framer-motion drives height 0 ↔ "auto"; `overflow:
+               * hidden` clips the content during animation.
+               */}
+              <motion.div
+                id={panelId}
+                role="region"
+                aria-labelledby={triggerId}
+                aria-hidden={!isOpen}
+                initial={false}
+                animate={{
+                  height: isOpen ? "auto" : 0,
+                  opacity: isOpen ? 1 : 0,
+                }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                style={{ overflow: "hidden" }}
+              >
+                <Box
+                  sx={{
+                    px: { xs: 2, md: 2.5 },
+                    pb: { xs: 2, md: 2.25 },
+                    pt: 0,
+                  }}
+                >
+                  <Typography
+                    component="p"
+                    sx={{
+                      fontSize: "0.8125rem",
+                      lineHeight: 1.65,
+                      color: alpha(
+                        theme.palette.text.primary,
+                        isDark ? 0.72 : 0.75,
+                      ),
+                      m: 0,
+                    }}
                   >
-                    <Box
-                      id={`faq-answer-${i}`}
-                      role="region"
-                      aria-labelledby={`faq-question-${i}`}
-                      sx={{
-                        px: { xs: 2, md: 2.5 },
-                        pb: { xs: 2, md: 2.25 },
-                        pt: 0,
-                      }}
-                    >
-                      <Typography
-                        component="p"
-                        sx={{
-                          fontSize: "0.8125rem",
-                          lineHeight: 1.65,
-                          color: alpha(
-                            theme.palette.text.primary,
-                            isDark ? 0.72 : 0.75,
-                          ),
-                          m: 0,
-                        }}
-                      >
-                        {item.a}
-                      </Typography>
-                    </Box>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    {item.a}
+                  </Typography>
+                </Box>
+              </motion.div>
             </Box>
           );
         })}

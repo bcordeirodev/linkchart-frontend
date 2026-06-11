@@ -26,7 +26,7 @@
       "clicksTracked": "Cliques rastreados",
       "responseTime": "Tempo de Resposta",
       "uptime": "Uptime Garantido",
-      "sectionTitle": "Números que Impressionam"
+      "sectionTitle": "Usado por criadores"
     },
     "howItWorks": "Como Funciona",
     "steps": {
@@ -179,6 +179,11 @@
       "upgradeTitle": "Quer histórico completo, alertas e gráficos detalhados?",
       "upgradeButton": "Crie uma conta grátis →"
     },
+    "emptyClicks": {
+      "title": "Seu link está no ar",
+      "description": "Os cliques aparecem aqui em tempo real. Compartilhe seu link para ver a analytics ganhar vida.",
+      "shareLabel": "Copiar link para compartilhar"
+    },
     "charts": {
       "title": "Gráficos de Analytics",
       "hourlyClicks": "Cliques por Hora",
@@ -226,7 +231,16 @@
         "Analytics avançados por link",
         "Rastreamento de campanhas UTM",
         "Dashboard completo de performance"
-      ]
+      ],
+      "unlockTitle": "Isto é um preview gratuito",
+      "unlockBody": "Crie uma conta grátis para desbloquear heatmap geográfico, rastreio de UTM, inteligência de device e links ilimitados."
+    },
+    "teaser": {
+      "heading": "Desbloqueie a visão completa",
+      "geoTitle": "Heatmap geográfico",
+      "utmTitle": "Rastreio de campanhas UTM",
+      "deviceTitle": "Inteligência de device",
+      "lockedLabel": "Disponível com uma conta grátis"
     }
   },
   "redirect": {

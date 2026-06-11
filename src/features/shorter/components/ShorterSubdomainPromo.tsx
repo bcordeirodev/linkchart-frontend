@@ -11,6 +11,7 @@ import { ICON_SM } from "@/lib/theme/iconDefaults";
 import {
   getPublicBlockDescriptionSx,
   getPublicBlockTitleSx,
+  getPublicElevatedSx,
   getPublicInsetSx,
 } from "@/lib/theme/publicPageStyles";
 import { PublicBlockIcon } from "@/shared/ui/base";
@@ -44,8 +45,7 @@ export function ShorterSubdomainPromo() {
   return (
     <Box
       sx={{
-        ...getPublicInsetSx(theme),
-        mt: 2.5,
+        ...getPublicElevatedSx(theme),
         maxWidth: SHORTER_CONTENT_MAX_WIDTH,
         mx: "auto",
         px: { xs: 2, md: 2.5 },

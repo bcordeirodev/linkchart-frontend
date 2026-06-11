@@ -35,7 +35,7 @@ export function BenefitBadges({ state, onReset }: BenefitBadgesProps) {
   if (!isSuccess) {
     return (
       <Box sx={{ mt: 2.5, maxWidth: SHORTER_CONTENT_MAX_WIDTH, mx: "auto" }}>
-        <PublicCtaBlock />
+        <PublicCtaBlock variant="landing" />
       </Box>
     );
   }

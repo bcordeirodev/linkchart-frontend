@@ -1,75 +1,80 @@
 "use client";
-import {
-  Clock,
-  Calendar,
-  Globe,
-  Smartphone,
-  Monitor,
-  BarChart2,
-  TrendingUp,
-} from "lucide-react";
-import { Box, Typography, Grid } from "@mui/material";
+
+import { TrendingUp } from "lucide-react";
+import { Box, Grid, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import {
-  formatAreaChart,
-  formatBarChart,
-  formatPieChart,
-} from "@/features/analytics/utils/chartFormatters";
 import { createPresetAnimations } from "@/lib/theme";
-import { chartByType } from "@/lib/theme/colors";
-import {
-  getPublicChartCardOverrideSx,
-  getPublicInsetSx,
-} from "@/lib/theme/publicPageStyles";
-import { ICON_LG } from "@/lib/theme/iconDefaults";
-import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
-import type { Theme } from "@mui/material/styles";
+import { EmptyClicksEngagement } from "../states/EmptyClicksEngagement";
+
+import { BrowsersChart } from "./BrowsersChart";
+import { DayOfWeekChart } from "./DayOfWeekChart";
+import { DevicesChart } from "./DevicesChart";
+import { HourlyClicksChart } from "./HourlyClicksChart";
+import { TopCountriesChart } from "./TopCountriesChart";
 
 import type { PublicAnalyticsData } from "../../types";
 
 interface PublicChartsProps {
   analyticsData: PublicAnalyticsData;
+  /** Fully-resolved short URL passed to the zero-data engagement block. */
+  shortUrl: string;
 }
 
-export function PublicCharts({ analyticsData }: PublicChartsProps) {
+/**
+ * Renders the public-analytics chart grid or the empty-state engagement block.
+ *
+ * Each chart is self-contained (theme, series construction, i18n) — this
+ * component is responsible only for:
+ * - computing per-chart "has data" guards,
+ * - deciding which charts to show,
+ * - laying them out in a responsive MUI Grid,
+ * - delegating to `EmptyClicksEngagement` when no real data exists.
+ *
+ * `PublicChartsProps` is intentionally unchanged so both call sites
+ * (`PublicAnalyticsSections` and `PublicAnalyticsPageContent`) keep working.
+ */
+export function PublicCharts({ analyticsData, shortUrl }: PublicChartsProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
-  const isDark = theme.palette.mode === "dark";
   const animations = createPresetAnimations(theme);
   const { charts } = analyticsData;
+
+  const isDark = theme.palette.mode === "dark";
   const titleColor = alpha(theme.palette.text.primary, isDark ? 0.74 : 0.78);
   const titleAccent = alpha(theme.palette.primary.main, 0.6);
+
+  // ── Per-chart data guards ────────────────────────────────────────────────
 
   const hourData = (charts?.temporal?.clicks_by_hour ?? []).map((d) => ({
     hour: `${d.hour}h`,
     clicks: d.clicks,
   }));
-  // Pre-computed map avoids template-literal overload resolution crash in TS 5.8.
-  const DOW_KEYS = [
-    "publicAnalytics.charts.dow.0",
-    "publicAnalytics.charts.dow.1",
-    "publicAnalytics.charts.dow.2",
-    "publicAnalytics.charts.dow.3",
-    "publicAnalytics.charts.dow.4",
-    "publicAnalytics.charts.dow.5",
-    "publicAnalytics.charts.dow.6",
-  ] as const;
-  const dowData = (charts?.temporal?.clicks_by_day_of_week ?? []).map((d) => ({
-    day: t(DOW_KEYS[d.day as number] ?? DOW_KEYS[0], {
-      defaultValue: String(d.day),
-    }),
-    clicks: d.clicks,
-  }));
+
+  const dowRawData = charts?.temporal?.clicks_by_day_of_week ?? [];
+
+  const countryData = (charts?.geographic?.top_countries ?? []) as {
+    country: string;
+    clicks: number;
+  }[];
+
+  const deviceData = (charts?.audience?.device_breakdown ?? []) as {
+    device: string;
+    clicks: number;
+  }[];
+
+  const browserData = (charts?.audience?.browser_breakdown ?? []) as {
+    browser: string;
+    clicks: number;
+  }[];
 
   const hasHourData = hourData.some((d) => d.clicks > 0);
-  const hasDowData = dowData.some((d) => d.clicks > 0);
-  const hasDeviceData = (charts?.audience?.device_breakdown?.length ?? 0) > 0;
-  const hasBrowserData = (charts?.audience?.browser_breakdown?.length ?? 0) > 0;
-  const hasCountryData = (charts?.geographic?.top_countries?.length ?? 0) > 0;
+  const hasDowData = dowRawData.some((d) => d.clicks > 0);
+  const hasCountryData = countryData.length > 0;
+  const hasDeviceData = deviceData.length > 0;
+  const hasBrowserData = browserData.length > 0;
 
   const hasRealData =
     analyticsData.has_analytics &&
@@ -81,11 +86,25 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
       hasCountryData);
 
   if (!hasRealData) {
-    return <EmptyChartsState />;
+    return <EmptyClicksEngagement shortUrl={shortUrl} />;
   }
+
+  // ── Layout helpers ──────────────────────────────────────────────────────
+  //
+  // DOW and Countries sit side-by-side at md when both exist; each takes full
+  // width when the other is absent.
+  //
+  // Devices and Browsers use the same pattern but switch to stacked columns at
+  // sm (not md) so donuts don't get squeezed on 768 px tablets.
+
+  const dowMd = hasDowData && hasCountryData ? 6 : 12;
+  const countryMd = hasCountryData && hasDowData ? 6 : 12;
+  const deviceMd = hasDeviceData && hasBrowserData ? 6 : 12;
+  const browserMd = hasBrowserData && hasDeviceData ? 6 : 12;
 
   return (
     <Box sx={{ ...animations.fadeIn }}>
+      {/* Section label */}
       <Box
         sx={{
           display: "flex",
@@ -108,223 +127,41 @@ export function PublicCharts({ analyticsData }: PublicChartsProps) {
         </Typography>
       </Box>
 
-      <ChartsGrid
-        theme={theme}
-        t={t as (key: string) => string}
-        hourData={hasHourData ? hourData : undefined}
-        dowData={hasDowData ? dowData : undefined}
-        deviceData={
-          hasDeviceData
-            ? (charts?.audience?.device_breakdown as {
-                device: string;
-                clicks: number;
-              }[])
-            : undefined
-        }
-        browserData={
-          hasBrowserData
-            ? (charts?.audience?.browser_breakdown as {
-                browser: string;
-                clicks: number;
-              }[])
-            : undefined
-        }
-        countryData={
-          hasCountryData
-            ? (charts?.geographic?.top_countries as {
-                country: string;
-                clicks: number;
-              }[])
-            : undefined
-        }
-      />
-    </Box>
-  );
-}
+      {/* Chart grid */}
+      <Grid container spacing={{ xs: 1.5, md: 2 }}>
+        {/* Hourly — full-width row */}
+        {hasHourData ? (
+          <Grid item xs={12}>
+            <HourlyClicksChart data={hourData} />
+          </Grid>
+        ) : null}
 
-interface ChartsGridProps {
-  theme: Theme;
-  t: (key: string) => string;
-  hourData?: { hour: string; clicks: number }[];
-  dowData?: { day: string; clicks: number }[];
-  deviceData?: { device: string; clicks: number }[];
-  browserData?: { browser: string; clicks: number }[];
-  countryData?: { country: string; clicks: number }[];
-}
+        {/* Day of week + Top Countries — share a row at md */}
+        {hasDowData ? (
+          <Grid item xs={12} md={dowMd}>
+            <DayOfWeekChart rawData={dowRawData} />
+          </Grid>
+        ) : null}
 
-function ChartsGrid({
-  theme,
-  t,
-  hourData,
-  dowData,
-  deviceData,
-  browserData,
-  countryData,
-}: ChartsGridProps) {
-  const cardSx = getPublicChartCardOverrideSx(theme);
-  const isDark = theme.palette.mode === "dark";
-  return (
-    <Grid container spacing={{ xs: 1.5, md: 2 }}>
-      {hourData ? (
-        <Grid item xs={12}>
-          <ChartCard
-            title={t("publicAnalytics.charts.hourlyClicks")}
-            subtitle={t("publicAnalytics.charts.hourlyClicksDesc")}
-            icon={<Clock {...ICON_LG} />}
-            sx={cardSx}
-          >
-            <ApexChartWrapper
-              type="area"
-              size="compact"
-              {...formatAreaChart(
-                hourData as Record<string, unknown>[],
-                "hour",
-                "clicks",
-                chartByType.temporal.hourly,
-                isDark,
-              )}
-            />
-          </ChartCard>
-        </Grid>
-      ) : null}
+        {hasCountryData ? (
+          <Grid item xs={12} md={countryMd}>
+            <TopCountriesChart data={countryData} />
+          </Grid>
+        ) : null}
 
-      {dowData ? (
-        <Grid item xs={12} md={countryData ? 6 : 12}>
-          <ChartCard
-            title={t("publicAnalytics.charts.dayOfWeek")}
-            subtitle={t("publicAnalytics.charts.dayOfWeekDesc")}
-            icon={<Calendar {...ICON_LG} />}
-            sx={cardSx}
-          >
-            <ApexChartWrapper
-              type="bar"
-              size="compact"
-              {...formatBarChart(
-                dowData as Record<string, unknown>[],
-                "day",
-                "clicks",
-                chartByType.temporal.weekly,
-                false,
-                isDark,
-              )}
-            />
-          </ChartCard>
-        </Grid>
-      ) : null}
+        {/* Devices + Browsers — share a row at sm (not md) to avoid squeeze */}
+        {hasDeviceData ? (
+          <Grid item xs={12} sm={deviceMd} md={deviceMd}>
+            <DevicesChart data={deviceData} />
+          </Grid>
+        ) : null}
 
-      {countryData ? (
-        <Grid item xs={12} md={dowData ? 6 : 12}>
-          <ChartCard
-            title={t("publicAnalytics.charts.topCountries")}
-            subtitle={t("publicAnalytics.charts.topCountriesDesc")}
-            icon={<Globe {...ICON_LG} />}
-            sx={cardSx}
-          >
-            <ApexChartWrapper
-              type="bar"
-              size="compact"
-              {...formatBarChart(
-                countryData as Record<string, unknown>[],
-                "country",
-                "clicks",
-                chartByType.geographic.countries,
-                true,
-                isDark,
-              )}
-            />
-          </ChartCard>
-        </Grid>
-      ) : null}
-
-      {deviceData ? (
-        <Grid item xs={12} md={browserData ? 6 : 12}>
-          <ChartCard
-            title={t("publicAnalytics.charts.devices")}
-            subtitle={t("publicAnalytics.charts.devicesDesc")}
-            icon={<Smartphone {...ICON_LG} />}
-            sx={cardSx}
-          >
-            <ApexChartWrapper
-              type="donut"
-              size="compact"
-              {...formatPieChart(
-                deviceData as Record<string, unknown>[],
-                "device",
-                "clicks",
-                isDark,
-              )}
-            />
-          </ChartCard>
-        </Grid>
-      ) : null}
-
-      {browserData ? (
-        <Grid item xs={12} md={deviceData ? 6 : 12}>
-          <ChartCard
-            title={t("publicAnalytics.charts.browsers")}
-            subtitle={t("publicAnalytics.charts.browsersDesc")}
-            icon={<Monitor {...ICON_LG} />}
-            sx={cardSx}
-          >
-            <ApexChartWrapper
-              type="donut"
-              size="compact"
-              {...formatPieChart(
-                browserData as Record<string, unknown>[],
-                "browser",
-                "clicks",
-                isDark,
-              )}
-            />
-          </ChartCard>
-        </Grid>
-      ) : null}
-    </Grid>
-  );
-}
-
-function EmptyChartsState() {
-  const theme = useTheme();
-  const { t } = useTranslation("public");
-  const isDark = theme.palette.mode === "dark";
-  const iconColor = alpha(theme.palette.text.primary, isDark ? 0.18 : 0.22);
-  const titleColor = alpha(theme.palette.text.primary, isDark ? 0.68 : 0.62);
-  const subColor = alpha(theme.palette.text.primary, isDark ? 0.54 : 0.5);
-
-  return (
-    <Box
-      sx={{
-        ...getPublicInsetSx(theme),
-        py: { xs: 4, md: 5 },
-        px: 3,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 1.25,
-      }}
-    >
-      <BarChart2 size={28} color={iconColor} strokeWidth={1.5} />
-      <Typography
-        sx={{
-          fontSize: "0.875rem",
-          fontWeight: 500,
-          color: titleColor,
-          textAlign: "center",
-        }}
-      >
-        {t("publicAnalytics.charts.emptyText")}
-      </Typography>
-      <Typography
-        sx={{
-          fontSize: "0.75rem",
-          color: subColor,
-          textAlign: "center",
-          maxWidth: 340,
-          lineHeight: 1.6,
-        }}
-      >
-        {t("publicAnalytics.charts.emptySub")}
-      </Typography>
+        {hasBrowserData ? (
+          <Grid item xs={12} sm={browserMd} md={browserMd}>
+            <BrowsersChart data={browserData} />
+          </Grid>
+        ) : null}
+      </Grid>
     </Box>
   );
 }

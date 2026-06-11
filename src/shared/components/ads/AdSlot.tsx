@@ -112,8 +112,18 @@ export function AdSlot({ slot, format = "auto", className }: AdSlotProps) {
   // ── Production: skip render entirely when slot is missing ───────────────────
   if (!hasSlot) return null;
 
+  const minHeight = FORMAT_HEIGHT[format];
+
   return (
-    <Box sx={{ textAlign: "center", my: 2, overflow: "hidden", minHeight: 0 }}>
+    <Box
+      sx={{
+        textAlign: "center",
+        my: 2,
+        overflow: "hidden",
+        minHeight,
+        flexShrink: 0,
+      }}
+    >
       <ins
         className={`adsbygoogle${className ? ` ${className}` : ""}`}
         style={{ display: "block" }}

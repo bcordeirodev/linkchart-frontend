@@ -8,9 +8,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
+
+import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import {
@@ -21,8 +22,10 @@ import {
   ErrorState,
   usePublicAnalytics,
 } from "@/features/public-analytics";
+import { LockedFeaturesTeaser } from "@/features/public-analytics/components/teaser/LockedFeaturesTeaser";
 import { PublicLayout } from "@/shared/layout";
 import { PublicAnalyticsSkeleton } from "@/shared/ui/feedback/skeletons";
+import { PublicBlobBackground } from "@/shared/ui/PublicBlobBackground";
 
 interface PublicAnalyticsPageContentProps {
   slug: string;
@@ -30,8 +33,8 @@ interface PublicAnalyticsPageContentProps {
 
 function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("public");
+  const reduced = usePrefersReducedMotion();
   const {
     linkData,
     analyticsData,
@@ -40,6 +43,12 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
     debugInfo,
     handleCreateLink,
   } = usePublicAnalytics({ slug });
+
+  /**
+   * Returns 0 when the user has requested reduced motion so all Fade elements
+   * appear immediately; otherwise returns the given staggered timeout in ms.
+   */
+  const fadeTimeout = (ms: number): number => (reduced ? 0 : ms);
 
   if (loading) {
     return <PublicAnalyticsSkeleton />;
@@ -59,31 +68,8 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
 
   return (
     <PublicLayout variant="shorter" chrome="minimal">
+      <PublicBlobBackground />
       <Box sx={{ position: "relative", minHeight: "100vh" }}>
-        <Box
-          sx={{
-            position: "fixed",
-            inset: 0,
-            pointerEvents: "none",
-            zIndex: 0,
-            background: `radial-gradient(circle at 20% 18%, ${alpha(theme.palette.primary.main, isDark ? 0.16 : 0.1)} 0%, transparent 55%),
-                         radial-gradient(circle at 78% 86%, ${alpha(theme.palette.secondary.main, isDark ? 0.12 : 0.08)} 0%, transparent 52%)`,
-          }}
-        />
-        <Box
-          sx={{
-            position: "fixed",
-            top: "-10%",
-            right: "-5%",
-            width: 400,
-            height: 400,
-            borderRadius: "50%",
-            pointerEvents: "none",
-            zIndex: 0,
-            background: `radial-gradient(circle, ${alpha(theme.palette.primary.main, isDark ? 0.18 : 0.13)} 0%, transparent 60%)`,
-          }}
-        />
-
         <Container
           maxWidth="md"
           sx={{
@@ -94,7 +80,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
           }}
         >
           <Stack spacing={{ xs: 2.5, md: 3 }}>
-            <Fade in timeout={200}>
+            <Fade in timeout={fadeTimeout(120)}>
               <Box sx={{ textAlign: "center", mt: { xs: 1, md: 2 }, mb: 0.5 }}>
                 <Typography
                   component="h1"
@@ -123,7 +109,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
               </Box>
             </Fade>
 
-            <Fade in timeout={400}>
+            <Fade in timeout={fadeTimeout(240)}>
               <Box>
                 <LinkHeroCard
                   linkData={linkData}
@@ -133,7 +119,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
             </Fade>
 
             {hasClicks ? (
-              <Fade in timeout={600}>
+              <Fade in timeout={fadeTimeout(360)}>
                 <Box>
                   <PublicMetrics analyticsData={analyticsData} />
                 </Box>
@@ -153,9 +139,12 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
               />
             ) : null}
 
-            <Fade in timeout={800}>
+            <Fade in timeout={fadeTimeout(480)}>
               <Box>
-                <PublicCharts analyticsData={analyticsData} />
+                <PublicCharts
+                  analyticsData={analyticsData}
+                  shortUrl={linkData.short_url}
+                />
               </Box>
             </Fade>
 
@@ -169,7 +158,13 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
               />
             ) : null}
 
-            <Fade in timeout={1000}>
+            <Fade in timeout={fadeTimeout(480)}>
+              <Box>
+                <LockedFeaturesTeaser />
+              </Box>
+            </Fade>
+
+            <Fade in timeout={fadeTimeout(600)}>
               <Box>
                 <PublicCtaBlock />
               </Box>
