@@ -152,6 +152,7 @@ export function ShorterFaq() {
                 id={panelId}
                 role="region"
                 aria-labelledby={triggerId}
+                aria-hidden={!isOpen}
                 initial={false}
                 animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
                 transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
