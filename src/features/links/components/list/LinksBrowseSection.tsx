@@ -1,7 +1,7 @@
 "use client";
 
 import { Link2 } from "lucide-react";
-import { Box, Divider, Stack } from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
@@ -11,7 +11,6 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { LinkCardRich } from "./LinkCardRich";
 import { LinksEmptyState } from "./LinksEmptyState";
 import { LinksFilters } from "./LinksFilters";
-import { LinksListSectionHeading } from "./LinksListSectionHeading";
 import { LinksMobileCards } from "./LinksMobileCards";
 import { getLinksPanelSx } from "./linksPanelStyles";
 
@@ -36,6 +35,10 @@ interface LinksBrowseSectionProps {
 
 /**
  * Filters + link list in one card so users see filters apply to the list below.
+ *
+ * The big "Meus links" section title is intentionally omitted — the page-level
+ * `PageSectionHeading` already carries that heading.  Only the count/context
+ * caption (icon + description row) is rendered here.
  */
 export function LinksBrowseSection({
   searchTerm,
@@ -68,12 +71,29 @@ export function LinksBrowseSection({
       sx={getLinksPanelSx(theme)}
     >
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
-        <LinksListSectionHeading
-          icon={<Link2 {...ICON_MD} />}
-          title={t("list.sections.links")}
-          description={description}
-          iconSize={21}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            mb: 1.75,
+            color: "text.secondary",
+          }}
+        >
+          <Box
+            component="span"
+            sx={{ display: "inline-flex", flexShrink: 0, "& svg": { width: 21, height: 21 } }}
+          >
+            <Link2 {...ICON_MD} />
+          </Box>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ fontSize: "0.75rem", lineHeight: 1.4 }}
+          >
+            {description}
+          </Typography>
+        </Box>
 
         <LinksFilters
           embedded
