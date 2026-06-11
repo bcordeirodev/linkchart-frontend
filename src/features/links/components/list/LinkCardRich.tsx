@@ -113,10 +113,10 @@ export function LinkCardRich({
       await onDelete(String(link.id));
     } catch {
       dispatch(
-        showMessage({ message: "Erro ao excluir o link.", variant: "error" }),
+        showMessage({ message: t("actions.deleteError"), variant: "error" }),
       );
     }
-  }, [link.id, onDelete, dispatch]);
+  }, [link.id, onDelete, dispatch, t]);
 
   const handleDelete = useCallback(() => {
     setDeleteDialogOpen(true);
