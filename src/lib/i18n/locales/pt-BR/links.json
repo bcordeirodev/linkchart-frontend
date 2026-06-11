@@ -205,7 +205,9 @@
     "linksCreated": "Links Criados",
     "linksActive": "Links Funcionando",
     "totalClicksSubtitle": "Cliques Acumulados",
-    "clicksPerLink": "Cliques por Link"
+    "clicksPerLink": "Cliques por Link",
+    "trendTooltip": "Variação de cliques vs. o período anterior",
+    "trendNoData": "Sem dados de tendência ainda"
   },
   "status": {
     "active": "Ativo",
