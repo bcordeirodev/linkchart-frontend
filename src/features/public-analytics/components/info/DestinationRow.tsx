@@ -26,7 +26,10 @@ interface DestinationRowProps {
  * @remarks
  * Read-only; no clipboard action. The link opens in a new tab.
  */
-export function DestinationRow({ destinationUrl, headingId }: DestinationRowProps) {
+export function DestinationRow({
+  destinationUrl,
+  headingId,
+}: DestinationRowProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";

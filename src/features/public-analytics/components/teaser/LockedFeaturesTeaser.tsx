@@ -177,7 +177,10 @@ function FauxDeviceDonut({ colors }: { colors: string[] }) {
       </svg>
       <Stack spacing={0.75}>
         {["Mobile", "Desktop", "Tablet"].map((label, i) => (
-          <Box key={label} sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+          <Box
+            key={label}
+            sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+          >
             <Box
               sx={{
                 width: 8,
@@ -373,10 +376,7 @@ export const LockedFeaturesTeaser = memo(function LockedFeaturesTeaser() {
   ];
 
   return (
-    <Box
-      component="section"
-      aria-label={t("publicAnalytics.teaser.heading")}
-    >
+    <Box component="section" aria-label={t("publicAnalytics.teaser.heading")}>
       {/* Section heading */}
       <Typography
         component="p"
