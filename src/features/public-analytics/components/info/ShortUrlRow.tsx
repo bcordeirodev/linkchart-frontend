@@ -55,10 +55,7 @@ export function ShortUrlRow({
   };
 
   return (
-    <Box
-      component="section"
-      aria-labelledby={headingId}
-    >
+    <Box component="section" aria-labelledby={headingId}>
       <Typography
         id={headingId}
         component="h3"
@@ -113,4 +110,3 @@ export function ShortUrlRow({
     </Box>
   );
 }
-

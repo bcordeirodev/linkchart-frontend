@@ -12,9 +12,7 @@ import {
   ShorterSubdomainPromo,
   ShorterFaq,
 } from "@/features/shorter/components";
-import {
-  SHORTER_CONTENT_MAX_WIDTH,
-} from "@/features/shorter/constants";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
 import {
   getPublicInsetSx,
   PUBLIC_SECTION_GAP,
@@ -87,14 +85,8 @@ export function ShorterLanding({
             ...getPublicInsetSx(theme),
             maxWidth: SHORTER_CONTENT_MAX_WIDTH,
             mx: "auto",
-            borderColor: alpha(
-              theme.palette.error.main,
-              isDark ? 0.42 : 0.35,
-            ),
-            bgcolor: alpha(
-              theme.palette.error.main,
-              isDark ? 0.14 : 0.08,
-            ),
+            borderColor: alpha(theme.palette.error.main, isDark ? 0.42 : 0.35),
+            bgcolor: alpha(theme.palette.error.main, isDark ? 0.14 : 0.08),
             color: theme.palette.text.primary,
             "& .MuiAlert-icon": {
               color: theme.palette.error.main,
@@ -120,9 +112,7 @@ export function ShorterLanding({
         }}
       >
         <AdSlot
-          slot={
-            process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BELOW_FORM ?? ""
-          }
+          slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SHORTER_BELOW_FORM ?? ""}
           format="rectangle"
         />
       </Box>

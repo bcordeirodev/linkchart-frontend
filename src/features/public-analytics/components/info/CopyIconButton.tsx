@@ -49,15 +49,9 @@ export function CopyIconButton({
         flexShrink: 0,
         color: copied ? theme.palette.success.main : iconColor,
         border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.35 : 0.4)}`,
-        bgcolor: alpha(
-          theme.palette.background.paper,
-          isDark ? 0.5 : 0.86,
-        ),
+        bgcolor: alpha(theme.palette.background.paper, isDark ? 0.5 : 0.86),
         "&:hover": {
-          bgcolor: alpha(
-            theme.palette.background.paper,
-            isDark ? 0.65 : 0.94,
-          ),
+          bgcolor: alpha(theme.palette.background.paper, isDark ? 0.65 : 0.94),
         },
         "&.Mui-disabled": {
           opacity: 0.4,

@@ -34,7 +34,10 @@ export interface UrlSafetyHintProps {
  *
  * @param props - See {@link UrlSafetyHintProps}.
  */
-export function UrlSafetyHint({ status, threats }: UrlSafetyHintProps): ReactNode {
+export function UrlSafetyHint({
+  status,
+  threats,
+}: UrlSafetyHintProps): ReactNode {
   const { t } = useTranslation("public");
   const labels = buildPublicUrlSafetyLabels(t);
 

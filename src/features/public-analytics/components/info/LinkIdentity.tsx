@@ -48,10 +48,7 @@ export function LinkIdentity({ slug, title, headingId }: LinkIdentityProps) {
         sx={{
           color: iconColor,
           bgcolor: alpha(theme.palette.common.white, isDark ? 0.08 : 0.14),
-          borderColor: alpha(
-            theme.palette.common.white,
-            isDark ? 0.22 : 0.3,
-          ),
+          borderColor: alpha(theme.palette.common.white, isDark ? 0.22 : 0.3),
         }}
       />
       <Box sx={{ minWidth: 0 }}>
@@ -90,10 +87,7 @@ export function LinkIdentity({ slug, title, headingId }: LinkIdentityProps) {
               px: 0.75,
               py: 0.25,
               borderRadius: "999px",
-              bgcolor: alpha(
-                theme.palette.primary.main,
-                isDark ? 0.22 : 0.56,
-              ),
+              bgcolor: alpha(theme.palette.primary.main, isDark ? 0.22 : 0.56),
               color: alpha(theme.palette.common.white, 0.95),
               letterSpacing: "0.02em",
             }}

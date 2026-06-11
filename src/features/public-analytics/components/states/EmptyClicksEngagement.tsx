@@ -106,11 +106,7 @@ export function EmptyClicksEngagement({
         variant="contained"
         size="small"
         disabled={!shortUrl}
-        startIcon={
-          copied ? undefined : (
-            <Share2 {...ICON_MD} aria-hidden />
-          )
-        }
+        startIcon={copied ? undefined : <Share2 {...ICON_MD} aria-hidden />}
         onClick={() => copy(shortUrl)}
         sx={{
           fontWeight: 600,

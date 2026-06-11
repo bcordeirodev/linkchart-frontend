@@ -3,9 +3,7 @@ import { Box, Container } from "@mui/material";
 import { memo, Suspense, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 
-import {
-  SHORTER_PAGE_CONTAINER_MAX_WIDTH,
-} from "@/features/shorter/constants";
+import { SHORTER_PAGE_CONTAINER_MAX_WIDTH } from "@/features/shorter/constants";
 import { useShorter } from "@/features/shorter/hooks/useShorter";
 import { PublicLayout } from "@/shared/layout";
 import { ShorterSkeleton } from "@/shared/ui/feedback/skeletons/ShorterSkeleton";
