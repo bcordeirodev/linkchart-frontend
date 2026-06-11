@@ -167,18 +167,31 @@ export function getPublicChipSx(theme: Theme): SxProps<Theme> {
 
 /**
  * Focal surface for conversion points (shortener form, signup CTA).
- * Emphasis border + soft primary glow; never a heavy drop shadow.
+ *
+ * Instead of washing the whole panel in a flat blue tint, this keeps a neutral
+ * near-black panel and concentrates the accent as a soft glow at the TOP edge
+ * (behind the icon/title) that fades into the surface. A crisp 1px top highlight
+ * gives a premium "glass edge" and a soft grounded glow lifts the card. The
+ * result reads designed and gives depth, rather than a muddy full-box tint.
  */
 export function getPublicFocalSx(theme: Theme): SxProps<Theme> {
   const isDark = theme.palette.mode === "dark";
+  const primary = theme.palette.primary.main;
   return {
-    ...getPublicPanelSx(theme),
-    border: `1px solid ${alpha(theme.palette.primary.main, isDark ? 0.32 : 0.3)}`,
-    bgcolor: alpha(theme.palette.primary.main, isDark ? 0.06 : 0.045),
-    boxShadow: `0 0 0 1px ${alpha(theme.palette.primary.main, 0.06)}, 0 18px 48px -28px ${alpha(
-      theme.palette.primary.main,
-      isDark ? 0.55 : 0.4,
-    )}`,
+    borderRadius: `${radiusTokens.lg}px`,
+    border: `1px solid ${alpha(primary, isDark ? 0.2 : 0.24)}`,
+    backgroundColor: theme.palette.background.paper,
+    backgroundImage: `linear-gradient(180deg, ${alpha(
+      primary,
+      isDark ? 0.13 : 0.09,
+    )} 0%, ${alpha(primary, isDark ? 0.035 : 0.025)} 24%, ${alpha(
+      primary,
+      0,
+    )} 58%)`,
+    boxShadow: [
+      `inset 0 1px 0 ${alpha(theme.palette.common.white, isDark ? 0.06 : 0.6)}`,
+      `0 24px 64px -42px ${alpha(primary, isDark ? 0.5 : 0.32)}`,
+    ].join(", "),
   };
 }
 
