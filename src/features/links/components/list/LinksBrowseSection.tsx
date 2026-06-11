@@ -82,7 +82,11 @@ export function LinksBrowseSection({
         >
           <Box
             component="span"
-            sx={{ display: "inline-flex", flexShrink: 0, "& svg": { width: 21, height: 21 } }}
+            sx={{
+              display: "inline-flex",
+              flexShrink: 0,
+              "& svg": { width: 21, height: 21 },
+            }}
           >
             <Link2 {...ICON_MD} />
           </Box>
