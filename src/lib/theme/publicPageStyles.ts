@@ -53,6 +53,28 @@ export function getPublicInsetSx(
   };
 }
 
+/**
+ * Neutral "elevated" panel for secondary content cards (how-it-works steps,
+ * subdomain promo, FAQ rows, chart/metric cards). Shares the premium depth
+ * language of {@link getPublicFocalSx} — a 1px top-edge highlight plus a faint
+ * top-light gradient — but stays NEUTRAL (no blue accent), so it harmonizes
+ * with the focal conversion cards without competing for attention.
+ */
+export function getPublicElevatedSx(theme: Theme): SxProps<Theme> {
+  const isDark = theme.palette.mode === "dark";
+  return {
+    ...getPublicInsetSx(theme),
+    backgroundImage: `linear-gradient(180deg, ${alpha(
+      theme.palette.common.white,
+      isDark ? 0.04 : 0.5,
+    )} 0%, ${alpha(theme.palette.common.white, 0)} 22%)`,
+    boxShadow: `inset 0 1px 0 ${alpha(
+      theme.palette.common.white,
+      isDark ? 0.05 : 0.6,
+    )}`,
+  };
+}
+
 /** Metric cards grid on public analytics. */
 export function getPublicMetricCardSx(
   theme: Theme,
