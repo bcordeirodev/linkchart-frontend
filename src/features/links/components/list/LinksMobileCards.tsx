@@ -6,13 +6,12 @@
  * - Favicon, title, status chip and overflow menu in the header row
  * - Destination URL (truncated)
  * - Action zone: click-to-copy short-URL strip + Analytics button (one row, no duplication)
- * - Compact metrics footer (sparkline, trend %, clicks, date, health)
+ * - Compact metrics footer via LinkCardMetrics (variant="compact")
  *
  * Shell styles match the desktop card via `getLinkCardShellSx`.
  */
 
-import { Eye, Clock, Link2 } from "lucide-react";
-import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { Link2 } from "lucide-react";
 import {
   alpha,
   Box,
@@ -23,20 +22,16 @@ import {
   Stack,
   useTheme,
 } from "@mui/material";
-import { formatDistanceToNow } from "date-fns";
 import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkCardActionBar } from "./LinkCardActionBar";
 import { LinkActionsMenu } from "./LinkActionsMenu";
+import { LinkCardMetrics } from "./LinkCardMetrics";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 
-import {
-  formatLastClickLabel,
-  getDateFnsLocale,
-} from "../../utils/formatLastClick";
 import {
   getLinkStatus,
   getResolvedStatusColor,
@@ -50,19 +45,13 @@ import type {
   LinkResponse as Link,
 } from "@/types";
 
-import { LinkHealthBadge } from "./LinkHealthBadge";
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
-import { LinkSparkline } from "./LinkSparkline";
-import { LinkTrendBadge } from "./LinkTrendBadge";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
 import {
-  getLinkCardMetricsRowSx,
   getLinkCardShellSx,
   getNewlyCreatedHighlightSx,
   linkCardContentSx,
   linkCardListItemMb,
-  linkCardMetricInlineSx,
-  linkCardMetricValueSx,
 } from "./linksPanelStyles";
 
 const STATUS_LABEL_KEYS = {
@@ -103,27 +92,10 @@ const LinkMobileCard = memo(
     const theme = useTheme();
     const navigate = useNavigate();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const { t, i18n } = useTranslation("links");
-    const dateLocale = getDateFnsLocale(i18n.language);
+    const { t } = useTranslation("links");
 
     const shortUrl = useShortUrl(link.slug || link.custom_slug || "");
     const displayUrl = shortUrl.replace(/^https?:\/\//, "");
-
-    const getFormattedDate = () => {
-      try {
-        if (!link.created_at) return t("table.dateUnavailable");
-        const date = new Date(link.created_at);
-        if (isNaN(date.getTime())) return t("table.dateInvalid");
-        return formatDistanceToNow(date, {
-          addSuffix: true,
-          locale: dateLocale,
-        });
-      } catch {
-        return t("table.dateUnavailable");
-      }
-    };
-
-    const createdAt = getFormattedDate();
 
     const linkStatus = getLinkStatus(link);
     const statusColorKey = STATUS_MAP[linkStatus].color;
@@ -220,56 +192,8 @@ const LinkMobileCard = memo(
             sx={{ mb: 0.75 }}
           />
 
-          <Box sx={{ ...getLinkCardMetricsRowSx(theme), mt: 0.75, pt: 0.75 }}>
-            {!!meta?.sparkline?.length && (
-              <LinkSparkline
-                data={meta.sparkline}
-                trend={meta.trend?.percent_change}
-                height={20}
-                width={72}
-              />
-            )}
-
-            {meta?.trend ? <LinkTrendBadge trend={meta.trend} compact /> : null}
-
-            <Box sx={linkCardMetricInlineSx}>
-              <Eye {...ICON_SM} style={{ opacity: 0.4, flexShrink: 0 }} />
-              <Typography
-                variant="caption"
-                component="span"
-                sx={linkCardMetricValueSx}
-              >
-                {link.clicks || 0}
-              </Typography>
-            </Box>
-
-            {meta?.trend ? (
-              <Typography
-                variant="caption"
-                component="span"
-                sx={linkCardMetricValueSx}
-              >
-                {formatLastClickLabel(meta.trend.last_click_at, dateLocale, t)}
-              </Typography>
-            ) : null}
-
-            <Box sx={linkCardMetricInlineSx}>
-              <Clock {...ICON_SM} style={{ opacity: 0.4, flexShrink: 0 }} />
-              <Typography
-                variant="caption"
-                component="span"
-                sx={{
-                  ...linkCardMetricValueSx,
-                  color: "text.secondary",
-                  fontWeight: 500,
-                }}
-              >
-                {createdAt}
-              </Typography>
-            </Box>
-
-            <LinkHealthBadge health={meta?.health} />
-          </Box>
+          {/* 3 — Compact metrics footer (shared component) */}
+          <LinkCardMetrics link={link} meta={meta} variant="compact" />
         </CardContent>
 
         <DeleteConfirmDialog
