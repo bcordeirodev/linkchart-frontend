@@ -202,6 +202,8 @@
     "daysAgo_other": "há {{count}} dias",
     "countriesReached": "Países Alcançados",
     "clicksToday": "Cliques Hoje",
+    "links": "Links Criados",
+    "linksSubtitle": "no total",
     "linksCreated": "Links Criados",
     "linksActive": "Links Funcionando",
     "totalClicksSubtitle": "Cliques Acumulados",
