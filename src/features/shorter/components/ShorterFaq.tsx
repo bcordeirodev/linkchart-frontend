@@ -56,7 +56,6 @@ export function ShorterFaq() {
       component="section"
       aria-labelledby="shorter-faq-heading"
       sx={{
-        mt: { xs: 6, md: 8 },
         mb: 2,
         maxWidth: SHORTER_CONTENT_MAX_WIDTH,
         mx: "auto",

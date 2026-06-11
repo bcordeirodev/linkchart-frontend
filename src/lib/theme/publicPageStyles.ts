@@ -64,19 +64,6 @@ export function getPublicMetricCardSx(
   };
 }
 
-/** Form shell on /shorter (panel + subtle fill, no heavy shadow). */
-export function getPublicFormShellSx(theme: Theme): SxProps<Theme> {
-  const isDark = theme.palette.mode === "dark";
-
-  return {
-    ...getPublicPanelSx(theme),
-    border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.34 : 0.38)}`,
-    bgcolor: alpha(theme.palette.text.primary, isDark ? 0.045 : 0.055),
-    p: { xs: 3, md: 3.5 },
-    boxShadow: "none",
-  };
-}
-
 /** Input rows inside the shorter form. */
 export function getPublicFormFieldSx(theme: Theme): SxProps<Theme> {
   const isDark = theme.palette.mode === "dark";
