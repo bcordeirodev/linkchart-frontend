@@ -5,6 +5,18 @@ import { radiusTokens } from "@/lib/theme/designSystem";
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/material";
 
+/**
+ * Vertical gap between top-level sections on public pages.
+ * Use as the `rowGap`/`mt` between hero, social proof, how-it-works, FAQ, etc.
+ */
+export const PUBLIC_SECTION_GAP = { xs: 6, md: 7 } as const;
+
+/** Standard inner padding for bordered public panels/insets. */
+export const PUBLIC_INSET_PAD = { xs: 2.5, md: 3 } as const;
+
+/** Gap between stacked elements inside a single public card. */
+export const PUBLIC_CARD_GAP = { xs: 2, md: 2.5 } as const;
+
 /** Shared hairline border opacity for public pages (/shorter, /public-analytics). */
 export function publicHairline(
   theme: Theme,
@@ -41,6 +53,28 @@ export function getPublicInsetSx(
   };
 }
 
+/**
+ * Neutral "elevated" panel for secondary content cards (how-it-works steps,
+ * subdomain promo, FAQ rows, chart/metric cards). Shares the premium depth
+ * language of {@link getPublicFocalSx} — a 1px top-edge highlight plus a faint
+ * top-light gradient — but stays NEUTRAL (no blue accent), so it harmonizes
+ * with the focal conversion cards without competing for attention.
+ */
+export function getPublicElevatedSx(theme: Theme): SxProps<Theme> {
+  const isDark = theme.palette.mode === "dark";
+  return {
+    ...getPublicInsetSx(theme),
+    backgroundImage: `linear-gradient(180deg, ${alpha(
+      theme.palette.common.white,
+      isDark ? 0.04 : 0.5,
+    )} 0%, ${alpha(theme.palette.common.white, 0)} 22%)`,
+    boxShadow: `inset 0 1px 0 ${alpha(
+      theme.palette.common.white,
+      isDark ? 0.05 : 0.6,
+    )}`,
+  };
+}
+
 /** Metric cards grid on public analytics. */
 export function getPublicMetricCardSx(
   theme: Theme,
@@ -49,19 +83,6 @@ export function getPublicMetricCardSx(
   return {
     ...getPublicInsetSx(theme, accent ? { primaryTint: true } : undefined),
     p: { xs: "18px", md: "20px" },
-  };
-}
-
-/** Form shell on /shorter (panel + subtle fill, no heavy shadow). */
-export function getPublicFormShellSx(theme: Theme): SxProps<Theme> {
-  const isDark = theme.palette.mode === "dark";
-
-  return {
-    ...getPublicPanelSx(theme),
-    border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.34 : 0.38)}`,
-    bgcolor: alpha(theme.palette.text.primary, isDark ? 0.045 : 0.055),
-    p: { xs: 3, md: 3.5 },
-    boxShadow: "none",
   };
 }
 
@@ -163,6 +184,51 @@ export function getPublicChipSx(theme: Theme): SxProps<Theme> {
     py: 0.625,
     borderRadius: `${radiusTokens.sm}px`,
     boxShadow: "none",
+  };
+}
+
+/**
+ * Focal surface for conversion points (shortener form, signup CTA).
+ *
+ * Instead of washing the whole panel in a flat blue tint, this keeps a neutral
+ * near-black panel and concentrates the accent as a soft glow at the TOP edge
+ * (behind the icon/title) that fades into the surface. A crisp 1px top highlight
+ * gives a premium "glass edge" and a soft grounded glow lifts the card. The
+ * result reads designed and gives depth, rather than a muddy full-box tint.
+ */
+export function getPublicFocalSx(theme: Theme): SxProps<Theme> {
+  const isDark = theme.palette.mode === "dark";
+  const primary = theme.palette.primary.main;
+  return {
+    borderRadius: `${radiusTokens.lg}px`,
+    border: `1px solid ${alpha(primary, isDark ? 0.2 : 0.24)}`,
+    backgroundColor: theme.palette.background.paper,
+    backgroundImage: `linear-gradient(180deg, ${alpha(
+      primary,
+      isDark ? 0.13 : 0.09,
+    )} 0%, ${alpha(primary, isDark ? 0.035 : 0.025)} 24%, ${alpha(
+      primary,
+      0,
+    )} 58%)`,
+    boxShadow: [
+      `inset 0 1px 0 ${alpha(theme.palette.common.white, isDark ? 0.06 : 0.6)}`,
+      `0 24px 64px -42px ${alpha(primary, isDark ? 0.5 : 0.32)}`,
+    ].join(", "),
+  };
+}
+
+/**
+ * Hero/display heading style for public pages. Uses clamp() so the size
+ * scales smoothly across viewports instead of jumping at the md breakpoint.
+ */
+export function getPublicDisplaySx(theme: Theme): SxProps<Theme> {
+  const isDark = theme.palette.mode === "dark";
+  return {
+    fontSize: "clamp(1.625rem, 1.1rem + 2.4vw, 2.5rem)",
+    fontWeight: 800,
+    lineHeight: 1.12,
+    letterSpacing: "-0.02em",
+    color: alpha(theme.palette.text.primary, isDark ? 0.96 : 1),
   };
 }
 

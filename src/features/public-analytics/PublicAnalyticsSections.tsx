@@ -4,12 +4,14 @@ import { Box, Fade, Stack, Typography, useTheme } from "@mui/material";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import { PublicAnalyticsSkeleton } from "@/shared/ui/feedback/skeletons";
 
 import { PublicCharts } from "./components/charts/PublicCharts";
 import { LinkHeroCard } from "./components/info/LinkHeroCard";
 import { PublicCtaBlock } from "./components/info/PublicCtaBlock";
+import { LockedFeaturesTeaser } from "./components/teaser/LockedFeaturesTeaser";
 import { PublicMetrics } from "./components/metrics/PublicMetrics";
 import { ErrorState } from "./components/states/ErrorState";
 import { usePublicAnalytics } from "./hooks/usePublicAnalytics";
@@ -29,6 +31,7 @@ function PublicAnalyticsSections({
 }: PublicAnalyticsSectionsProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
+  const reduced = usePrefersReducedMotion();
   const {
     linkData,
     analyticsData,
@@ -37,6 +40,12 @@ function PublicAnalyticsSections({
     debugInfo,
     handleCreateLink,
   } = usePublicAnalytics({ slug });
+
+  /**
+   * Returns 0 when the user has requested reduced motion so all Fade elements
+   * appear immediately; otherwise returns the given staggered timeout in ms.
+   */
+  const fadeTimeout = (ms: number): number => (reduced ? 0 : ms);
 
   if (loading) {
     return (
@@ -59,7 +68,7 @@ function PublicAnalyticsSections({
   return (
     <Stack spacing={{ xs: 2.5, md: 3 }}>
       {showPageHeading ? (
-        <Fade in timeout={200}>
+        <Fade in timeout={fadeTimeout(120)}>
           <Box sx={{ textAlign: "center", mt: { xs: 1, md: 2 }, mb: 0.5 }}>
             <Typography
               component="h1"
@@ -89,20 +98,23 @@ function PublicAnalyticsSections({
         </Fade>
       ) : null}
 
-      <Fade in timeout={400}>
+      <Fade in timeout={fadeTimeout(240)}>
         <Box>
           <LinkHeroCard linkData={linkData} onCreateLink={handleCreateLink} />
         </Box>
       </Fade>
 
       {hasClicks ? (
-        <Fade in timeout={600}>
+        <Fade in timeout={fadeTimeout(360)}>
           <Box>
             <PublicMetrics analyticsData={analyticsData} />
           </Box>
         </Fade>
       ) : null}
 
+      {/* Only show ads on pages that have analytics data — avoids
+          "screens without publisher-content" AdSense policy violation
+          on zero-click links where the page is essentially empty. */}
       {hasClicks ? (
         <AdSlot
           slot={
@@ -112,9 +124,12 @@ function PublicAnalyticsSections({
         />
       ) : null}
 
-      <Fade in timeout={800}>
+      <Fade in timeout={fadeTimeout(480)}>
         <Box>
-          <PublicCharts analyticsData={analyticsData} />
+          <PublicCharts
+            analyticsData={analyticsData}
+            shortUrl={linkData.short_url}
+          />
         </Box>
       </Fade>
 
@@ -127,7 +142,13 @@ function PublicAnalyticsSections({
         />
       ) : null}
 
-      <Fade in timeout={1000}>
+      <Fade in timeout={fadeTimeout(480)}>
+        <Box>
+          <LockedFeaturesTeaser />
+        </Box>
+      </Fade>
+
+      <Fade in timeout={fadeTimeout(600)}>
         <Box>
           <PublicCtaBlock />
         </Box>

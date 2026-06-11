@@ -26,7 +26,7 @@
       "clicksTracked": "Clicks tracked",
       "responseTime": "Response Time",
       "uptime": "Uptime Guaranteed",
-      "sectionTitle": "Numbers That Impress"
+      "sectionTitle": "Trusted by creators"
     },
     "howItWorks": "How It Works",
     "steps": {
@@ -179,6 +179,11 @@
       "upgradeTitle": "Want full history, alerts and detailed charts?",
       "upgradeButton": "Create a free account →"
     },
+    "emptyClicks": {
+      "title": "Your link is live",
+      "description": "Clicks appear here in real time. Share your link to watch the analytics come to life.",
+      "shareLabel": "Copy link to share"
+    },
     "charts": {
       "title": "Analytics Charts",
       "hourlyClicks": "Clicks by Hour",
@@ -226,7 +231,16 @@
         "Advanced analytics per link",
         "UTM campaign tracking",
         "Full performance dashboard"
-      ]
+      ],
+      "unlockTitle": "This is a free preview",
+      "unlockBody": "Create a free account to unlock geographic heatmaps, UTM tracking, device intelligence, and unlimited links."
+    },
+    "teaser": {
+      "heading": "Unlock the full picture",
+      "geoTitle": "Geographic heatmap",
+      "utmTitle": "UTM campaign tracking",
+      "deviceTitle": "Device intelligence",
+      "lockedLabel": "Available with a free account"
     }
   },
   "redirect": {

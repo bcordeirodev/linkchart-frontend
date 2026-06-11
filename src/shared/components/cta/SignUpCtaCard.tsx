@@ -1,5 +1,6 @@
 "use client";
 import { Box, Button, Typography, useTheme } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
 import { alpha } from "@mui/material/styles";
 import { Check, UserPlus } from "lucide-react";
 import type { ReactNode } from "react";
@@ -32,6 +33,12 @@ interface SignUpCtaCardProps {
   id?: string;
   /** Ícone ao lado do título. Default: UserPlus */
   headerIcon?: ReactNode;
+  /**
+   * Optional sx overrides merged onto the outer container Box.
+   * Allows call sites to swap the surface style (e.g. focal glow) without
+   * forking the component.
+   */
+  sx?: SxProps<Theme>;
 }
 
 /**
@@ -54,6 +61,7 @@ export function SignUpCtaCard({
   onCtaClick,
   id,
   headerIcon,
+  sx,
 }: SignUpCtaCardProps) {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -103,30 +111,33 @@ export function SignUpCtaCard({
   return (
     <Box
       id={id}
-      sx={{
-        position: "relative",
-        ...getPublicInsetSx(theme),
-        p: { xs: "20px", md: "22px 26px" },
-        overflow: "hidden",
-        boxShadow: "none",
-        borderColor: alpha(theme.palette.divider, isDark ? 0.3 : 0.28),
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "1px",
-          background: `linear-gradient(90deg, transparent 0%, ${alpha(theme.palette.primary.main, isDark ? 0.22 : 0.16)} 50%, transparent 100%)`,
+      sx={[
+        {
+          position: "relative",
+          ...getPublicInsetSx(theme),
+          p: { xs: "20px", md: "22px 26px" },
+          overflow: "hidden",
+          boxShadow: "none",
+          borderColor: alpha(theme.palette.divider, isDark ? 0.3 : 0.28),
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "1px",
+            background: `linear-gradient(90deg, transparent 0%, ${alpha(theme.palette.primary.main, isDark ? 0.22 : 0.16)} 50%, transparent 100%)`,
+          },
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            background: `radial-gradient(circle at 84% 18%, ${alpha(theme.palette.secondary.main, isDark ? 0.05 : 0.03)} 0%, transparent 42%)`,
+          },
         },
-        "&::after": {
-          content: '""',
-          position: "absolute",
-          inset: 0,
-          pointerEvents: "none",
-          background: `radial-gradient(circle at 84% 18%, ${alpha(theme.palette.secondary.main, isDark ? 0.05 : 0.03)} 0%, transparent 42%)`,
-        },
-      }}
+        ...(Array.isArray(sx) ? sx : sx != null ? [sx] : []),
+      ]}
     >
       <Box
         sx={{
