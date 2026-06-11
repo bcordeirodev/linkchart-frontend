@@ -21,6 +21,17 @@ function updateConsentMode(categories: string[]) {
 }
 
 export const cookieConsentConfig: CookieConsentConfig = {
+  /*
+   * Position the consent prompt as a bottom bar so it never overlaps
+   * the page's focal form.  Using the library's own `guiOptions` keeps
+   * the positioning declarative and avoids fighting the CSS.
+   */
+  guiOptions: {
+    consentModal: {
+      layout: "bar",
+      position: "bottom",
+    },
+  },
   categories: {
     necessary: { enabled: true, readOnly: true },
     analytics: {},
