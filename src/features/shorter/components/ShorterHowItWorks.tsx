@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
 import {
   getPublicBlockTitleSx,
-  getPublicInsetSx,
+  getPublicElevatedSx,
   getPublicSectionHeadingSx,
 } from "@/lib/theme/publicPageStyles";
 import { PublicBlockIcon } from "@/shared/ui/base";
@@ -76,7 +76,7 @@ export function ShorterHowItWorks() {
             component="article"
             aria-labelledby={`shorter-step-${key}`}
             sx={{
-              ...getPublicInsetSx(theme),
+              ...getPublicElevatedSx(theme),
               textAlign: "center",
               px: 2.5,
               py: 3,

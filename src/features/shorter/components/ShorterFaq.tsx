@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
 import {
-  getPublicInsetSx,
+  getPublicElevatedSx,
   getPublicSectionHeadingSx,
 } from "@/lib/theme/publicPageStyles";
 
@@ -80,7 +80,7 @@ export function ShorterFaq() {
             <Box
               key={i}
               sx={{
-                ...getPublicInsetSx(theme),
+                ...getPublicElevatedSx(theme),
                 overflow: "hidden",
                 transition: "border-color 200ms ease, background 200ms ease",
                 ...(isOpen && {
