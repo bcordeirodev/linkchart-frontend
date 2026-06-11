@@ -73,14 +73,17 @@ export function LinkMetrics({
     (totalLinks > 0 ? Math.round(totalClicks / totalLinks) : 0);
   const avgDaily =
     timeframeDays > 0
-      ? Math.round(totalClicks / Math.max(0.001, timeframeDays)).toString()
+      ? formatCount(
+          Math.round(totalClicks / Math.max(0.001, timeframeDays)),
+          i18n.language,
+        )
       : "—";
 
   const singleLinkMetrics = [
     {
       id: "total_clicks",
       title: tA("metrics.totalClicks"),
-      value: totalClicks.toLocaleString(),
+      value: formatCount(totalClicks, i18n.language),
       icon: <TrendingUp {...ICON_LG} />,
       color: "info" as const,
       subtitle: t("metrics.totalClicksSubtitle"),
@@ -88,7 +91,7 @@ export function LinkMetrics({
     {
       id: "unique_visitors",
       title: tA("metrics.uniqueVisitors"),
-      value: (summary?.unique_visitors ?? 0).toLocaleString(),
+      value: formatCount(summary?.unique_visitors ?? 0, i18n.language),
       icon: <Users {...ICON_LG} />,
       color: "primary" as const,
       subtitle: undefined,
@@ -96,7 +99,7 @@ export function LinkMetrics({
     {
       id: "countries_reached",
       title: tA("metrics.countriesReached"),
-      value: (summary?.countries_reached ?? 0).toString(),
+      value: formatCount(summary?.countries_reached ?? 0, i18n.language),
       icon: <Globe {...ICON_LG} />,
       color: "secondary" as const,
       subtitle: undefined,
