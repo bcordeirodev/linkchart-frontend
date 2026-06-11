@@ -1,6 +1,7 @@
 export { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 export { LinkActionsMenu } from "./LinkActionsMenu";
 export { LinkCardActionBar } from "./LinkCardActionBar";
+export { LinkCardMetrics } from "./LinkCardMetrics";
 export { LinkCardRich } from "./LinkCardRich";
 export { LinkHealthBadge } from "./LinkHealthBadge";
 export { LinkPreviewThumb } from "./LinkPreviewThumb";
