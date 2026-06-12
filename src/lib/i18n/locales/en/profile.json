@@ -1,6 +1,7 @@
 {
   "title": "My profile",
   "subtitle": "Manage your account information and security.",
+  "loadError": "Failed to load your account data. Try signing in again.",
   "sections": {
     "personalInfo": "Personal Information",
     "security": "Security",
@@ -61,6 +62,9 @@
     "verifiedDesc": "Full access granted",
     "pendingVerification": "Pending Verification",
     "pendingVerificationDesc": "Verify your email for full access",
+    "resendVerification": "Resend verification email",
+    "resendSuccess": "Verification email sent. Check your inbox.",
+    "resendError": "Could not resend the email. Please try again shortly.",
     "dateUnavailable": "Date not available"
   },
   "subdomain": {
