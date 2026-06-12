@@ -46,7 +46,7 @@ function ProfilePage() {
       } catch (_error) {
         dispatch(
           showMessage({
-            message: t("form.saveFailed"),
+            message: t("loadError"),
             variant: "error",
           }),
         );
@@ -85,9 +85,7 @@ function ProfilePage() {
         auth={["user", "admin"]}
         fallback={<ProfileSkeleton />}
       >
-        <Alert severity="error">
-          Erro ao carregar dados do usuário. Tente fazer login novamente.
-        </Alert>
+        <Alert severity="error">{t("loadError")}</Alert>
       </AuthGuardRedirect>
     );
   }
@@ -133,7 +131,10 @@ function ProfilePage() {
             </Stack>
 
             <Box sx={{ minWidth: 0 }}>
-              <ProfileSidebar user={user} />
+              <ProfileSidebar
+                user={user}
+                showResendVerification={!auth0Loading && !auth0User}
+              />
             </Box>
           </Box>
         </Stack>

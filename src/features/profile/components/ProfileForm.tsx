@@ -26,6 +26,7 @@ import {
 import { ProfileSection, ProfileSectionHeader } from "./ProfileSection";
 
 import type { UserProfile } from "@/services";
+import type { FormEvent } from "react";
 
 interface ProfileFormData {
   name: string;
@@ -64,6 +65,12 @@ export function ProfileForm({
         email: user.email,
       });
       onUserUpdate(response.user);
+      dispatch(
+        showMessage({
+          message: t("form.saveSuccess"),
+          variant: "success",
+        }),
+      );
     } catch (error: unknown) {
       dispatch(
         showMessage({
@@ -91,9 +98,25 @@ export function ProfileForm({
     [user.name, formData.name],
   );
 
+  /** Submete o formulário via Enter ou clique no botão Save, respeitando o estado disabled. */
+  const handleSubmit = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (!saving && isFormValid && hasChanges) {
+        handleSave();
+      }
+    },
+    [saving, isFormValid, hasChanges, handleSave],
+  );
+
   return (
     <ProfileSection>
-      <Box sx={{ position: "relative" }}>
+      <Box
+        component="form"
+        noValidate
+        onSubmit={handleSubmit}
+        sx={{ position: "relative" }}
+      >
         {saving ? (
           <LoadingOverlay>
             <CircularProgress size={40} />
@@ -141,6 +164,7 @@ export function ProfileForm({
               onChange={(e) => handleInputChange("name", e.target.value)}
               fullWidth
               isEditing
+              slotProps={{ htmlInput: { maxLength: 255 } }}
             />
           </Box>
         </Box>
@@ -168,6 +192,7 @@ export function ProfileForm({
           <Button
             variant="contained"
             color="primary"
+            type="submit"
             startIcon={
               saving ? (
                 <CircularProgress size={18} color="inherit" />
@@ -175,7 +200,6 @@ export function ProfileForm({
                 <Save {...ICON_MD} />
               )
             }
-            onClick={handleSave}
             disabled={saving || !isFormValid || !hasChanges}
           >
             {t("form.saveButton")}
