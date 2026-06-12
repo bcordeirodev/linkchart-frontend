@@ -685,7 +685,33 @@ export function ClicksTable({
               sx: { overflow: "unset" },
             }}
             muiTableContainerProps={{
-              sx: { overflowX: "auto", WebkitOverflowScrolling: "touch" },
+              // Refined scrollbars on both axes — matches the app shell pattern
+              // in MainLayout (thin thumb on `divider`, paper track) so the
+              // table's horizontal + vertical scroll stop looking like raw
+              // browser defaults. scrollbar-* props cover Firefox.
+              sx: (theme) => ({
+                overflowX: "auto",
+                WebkitOverflowScrolling: "touch",
+                scrollbarWidth: "thin",
+                scrollbarColor: `${theme.palette.divider} ${theme.palette.background.paper}`,
+                "&::-webkit-scrollbar": {
+                  width: "8px",
+                  height: "8px",
+                },
+                "&::-webkit-scrollbar-track": {
+                  backgroundColor: theme.palette.background.paper,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: theme.palette.divider,
+                  borderRadius: "4px",
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.hover,
+                  },
+                },
+                "&::-webkit-scrollbar-corner": {
+                  backgroundColor: theme.palette.background.paper,
+                },
+              }),
             }}
             muiPaginationProps={{
               color: "secondary",
