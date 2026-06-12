@@ -6,13 +6,22 @@ import {
   Shield,
   BadgeCheck,
   AlertCircle,
+  RefreshCw,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
-import { Divider, Skeleton, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Divider,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 import { useProfileStats } from "../hooks/useProfileStats";
+import { useResendVerification } from "../hooks/useResendVerification";
 import {
   ProfileInfoRow,
   ProfileSection,
@@ -24,11 +33,17 @@ import type { UserProfile } from "@/services";
 
 interface ProfileSidebarProps {
   user: UserProfile;
+  /** Exibe a ação de reenviar verificação (false para contas OAuth, que já são tratadas como verificadas). */
+  showResendVerification?: boolean;
 }
 
-export function ProfileSidebar({ user }: ProfileSidebarProps) {
+export function ProfileSidebar({
+  user,
+  showResendVerification = false,
+}: ProfileSidebarProps) {
   const { t, i18n } = useTranslation("profile");
   const { data: stats, isLoading: statsLoading } = useProfileStats();
+  const { resend, isSending, isCoolingDown } = useResendVerification();
 
   const memberSince = user.created_at
     ? new Date(user.created_at).toLocaleDateString(i18n.language)
@@ -77,6 +92,26 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) {
               : t("sidebar.pendingVerificationDesc")
           }
         />
+        {!user.email_verified_at && showResendVerification ? (
+          <Button
+            variant="outlined"
+            color="inherit"
+            size="small"
+            fullWidth
+            onClick={resend}
+            disabled={isSending || isCoolingDown}
+            startIcon={
+              isSending ? (
+                <CircularProgress size={14} color="inherit" />
+              ) : (
+                <RefreshCw {...ICON_SM} />
+              )
+            }
+            sx={{ my: 1, borderColor: "divider", color: "text.secondary" }}
+          >
+            {t("sidebar.resendVerification")}
+          </Button>
+        ) : null}
         <ProfileInfoRow
           icon={<Calendar {...ICON_SM} />}
           label={t("sidebar.memberSince")}
