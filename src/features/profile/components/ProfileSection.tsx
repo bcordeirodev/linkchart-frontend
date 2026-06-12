@@ -21,20 +21,12 @@ export function ProfileSection({
   emphasized = false,
 }: ProfileSectionProps) {
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
   const accent = theme.palette.primary.main;
 
   const emphasizedSx = emphasized
     ? {
         position: "relative",
         overflow: "hidden",
-        borderColor: alpha(accent, isDark ? 0.3 : 0.22),
-        background: `linear-gradient(
-          145deg,
-          ${alpha(accent, isDark ? 0.1 : 0.06)} 0%,
-          ${theme.palette.background.paper} 52%
-        )`,
-        boxShadow: `inset 0 1px 0 ${alpha(accent, isDark ? 0.14 : 0.1)}`,
         "&::before": {
           content: '""',
           position: "absolute",
@@ -45,8 +37,8 @@ export function ProfileSection({
           borderRadius: "3px 0 0 3px",
           background: `linear-gradient(
             180deg,
-            ${alpha(accent, 0.55)} 0%,
-            ${alpha(accent, 0.28)} 100%
+            ${alpha(accent, 0.5)} 0%,
+            ${alpha(accent, 0.2)} 100%
           )`,
         },
       }
@@ -71,7 +63,7 @@ interface ProfileSectionHeaderProps {
   title: string;
   description?: ReactNode;
   action?: ReactNode;
-  /** Icon badge uses brand accent (featured sections). */
+  /** Icon badge gets a subtle neutral treatment (featured sections). */
   featured?: boolean;
 }
 
@@ -84,7 +76,6 @@ export function ProfileSectionHeader({
 }: ProfileSectionHeaderProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
-  const accent = theme.palette.primary.main;
 
   return (
     <>
@@ -122,9 +113,12 @@ export function ProfileSectionHeader({
                   ? {
                       p: 0.75,
                       borderRadius: `${radiusTokens.md}px`,
-                      color: accent,
-                      bgcolor: alpha(accent, isDark ? 0.14 : 0.1),
-                      border: `1px solid ${alpha(accent, isDark ? 0.22 : 0.16)}`,
+                      color: "common.white",
+                      bgcolor: alpha(
+                        theme.palette.common.white,
+                        isDark ? 0.06 : 0.04,
+                      ),
+                      border: `1px solid ${theme.palette.divider}`,
                     }
                   : { color: "text.secondary" }),
               }}
@@ -155,14 +149,7 @@ export function ProfileSectionHeader({
         </Box>
         {action ? <Box sx={{ flexShrink: 0 }}>{action}</Box> : null}
       </Box>
-      <Divider
-        sx={{
-          my: 2,
-          ...(featured
-            ? { borderColor: alpha(accent, isDark ? 0.18 : 0.12) }
-            : undefined),
-        }}
-      />
+      <Divider sx={{ my: 2 }} />
     </>
   );
 }
