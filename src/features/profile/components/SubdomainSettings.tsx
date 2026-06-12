@@ -74,10 +74,10 @@ function LinkExample({
           wordBreak: "break-all",
         }}
       >
-        <Box component="span" sx={{ fontWeight: 500, color: "text.secondary" }}>
+        <Box component="span" sx={{ fontWeight: 500, color: "text.primary" }}>
           {highlightPrefix}
         </Box>
-        <Box component="span" sx={{ color: "text.disabled" }}>
+        <Box component="span" sx={{ color: "text.secondary" }}>
           {rest}
         </Box>
       </Typography>
@@ -90,7 +90,7 @@ function LinkExample({
       component="div"
       sx={{
         fontFamily: "monospace",
-        color: "text.disabled",
+        color: "text.secondary",
         lineHeight: 1.9,
         wordBreak: "break-all",
       }}
@@ -264,7 +264,7 @@ export function SubdomainSettings() {
 
       {subdomain ? (
         <Stack spacing={2.5}>
-          <ProfileMutedBox label={t("subdomain.yourDomainLabel")}>
+          <ProfileMutedBox well label={t("subdomain.yourDomainLabel")}>
             <Box
               sx={{
                 display: "flex",
@@ -320,7 +320,7 @@ export function SubdomainSettings() {
             </Box>
           </ProfileMutedBox>
 
-          <ProfileMutedBox label={t("subdomain.linksLookLike")}>
+          <ProfileMutedBox well label={t("subdomain.linksLookLike")}>
             <Stack spacing={0.5}>
               {EXAMPLE_SLUGS.map((slug) => (
                 <LinkExample
@@ -355,7 +355,7 @@ export function SubdomainSettings() {
         </Stack>
       ) : (
         <Stack spacing={2.5}>
-          <ProfileMutedBox soft label={t("subdomain.previewLabel")}>
+          <ProfileMutedBox well label={t("subdomain.previewLabel")}>
             <Stack spacing={0.5}>
               {EXAMPLE_SLUGS.map((slug) => (
                 <LinkExample

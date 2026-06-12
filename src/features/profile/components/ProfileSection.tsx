@@ -161,6 +161,8 @@ interface ProfileMutedBoxProps {
   soft?: boolean;
   /** Subtle brand-tinted inset (featured subdomain previews). */
   accent?: boolean;
+  /** Dark code-well inset (page background) for monospace URL content. */
+  well?: boolean;
   sx?: SxProps<Theme>;
 }
 
@@ -170,28 +172,33 @@ export function ProfileMutedBox({
   children,
   soft = false,
   accent = false,
+  well = false,
   sx,
 }: ProfileMutedBoxProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const brand = theme.palette.primary.main;
 
-  const insetBg = accent
-    ? alpha(brand, isDark ? 0.08 : 0.05)
-    : soft
-      ? alpha(theme.palette.action.hover, 0.18)
-      : alpha(theme.palette.action.hover, 0.35);
+  const insetBg = well
+    ? alpha(theme.palette.common.black, isDark ? 0.22 : 0.03)
+    : accent
+      ? alpha(brand, isDark ? 0.08 : 0.05)
+      : soft
+        ? alpha(theme.palette.action.hover, 0.18)
+        : alpha(theme.palette.action.hover, 0.35);
 
-  const insetBorder = accent
-    ? alpha(brand, isDark ? 0.2 : 0.14)
-    : alpha(theme.palette.divider, soft ? 0.4 : 0.65);
+  const insetBorder = well
+    ? theme.palette.divider
+    : accent
+      ? alpha(brand, isDark ? 0.2 : 0.14)
+      : alpha(theme.palette.divider, soft ? 0.4 : 0.65);
 
   return (
     <Box sx={sx}>
       {label ? (
         <Typography
           variant="caption"
-          color="text.secondary"
+          color="text.primary"
           sx={{ display: "block", mb: 0.75, fontWeight: 600 }}
         >
           {label}
