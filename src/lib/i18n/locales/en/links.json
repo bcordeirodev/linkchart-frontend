@@ -38,6 +38,9 @@
       "success": "Link created!",
       "moreOptions": "Advanced options",
       "moreOptionsTooltip": "Open full link creation with title, UTM parameters, click limits and more"
+    },
+    "pagination": {
+      "showing": "Showing {{from}}–{{to}} of {{total}}"
     }
   },
   "table": {
