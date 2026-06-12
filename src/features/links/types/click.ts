@@ -17,7 +17,6 @@ export interface LinkClickItem {
   id: number;
   created_at: string | null;
   local_time: string | null;
-  ip: string | null;
   country: string | null;
   iso_code: string | null;
   state: string | null;
