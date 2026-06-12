@@ -131,7 +131,10 @@ function ProfilePage() {
             </Stack>
 
             <Box sx={{ minWidth: 0 }}>
-              <ProfileSidebar user={user} />
+              <ProfileSidebar
+                user={user}
+                showResendVerification={!auth0Loading && !auth0User}
+              />
             </Box>
           </Box>
         </Stack>
