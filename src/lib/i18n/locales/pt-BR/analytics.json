@@ -585,7 +585,7 @@
         "devices": "Proporção de visitas por tipo de dispositivo (desktop, mobile, tablet). Use para decidir se o conteúdo deve priorizar layouts responsivos ou apps nativos.",
         "browsers": "Navegadores mais usados pela sua audiência (Chrome, Safari, Firefox, etc.). Auxilia em decisões de compatibilidade, polyfills e testes de UI.",
         "systems": "Sistemas operacionais mais usados (iOS, Android, Windows, macOS). Combina com dados de dispositivo para traçar o perfil técnico completo da audiência.",
-        "performance": "Tempo médio de resposta e performance de carregamento por tipo de dispositivo. Identifique se algum segmento tem experiência degradada.",
+        "performance": "Tempo de resposta do servidor no redirecionamento, por tipo de dispositivo. Medido no servidor — não inclui o carregamento da página de destino.",
         "languages": "Idiomas detectados nas configurações do navegador dos visitantes, com cada variante regional (en-US, en-GB) contada separadamente. Use para planejar internacionalização ou criar versões localizadas do conteúdo.",
         "renderingEngine": "Motor de renderização do navegador (Blink, WebKit, Gecko, etc.). Útil para diagnóstico de bugs de compatibilidade em browsers menos comuns."
       },
