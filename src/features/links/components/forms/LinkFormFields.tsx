@@ -1,5 +1,5 @@
 "use client";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import {
   TextField,
   Switch,
@@ -23,10 +23,11 @@ import { useSubdomain } from "@/features/profile/hooks/useSubdomain";
 import { getShortUrlPrefixForSubdomain } from "@/lib/utils/shortUrl";
 
 import { useUrlSafetyCheck } from "../../hooks/useUrlSafetyCheck";
+
+import type { UrlSafetyStatus } from "../../hooks/useUrlSafetyCheck";
 import {
   buildSlugAvailabilityLabels,
   buildUrlSafetyLabels,
-  FormFieldFeedback,
   getSlugAvailabilityHelperNode,
   getUrlSafetyHelperNode,
 } from "./UrlSafetyIndicator";
@@ -54,6 +55,13 @@ interface LinkFormFieldsProps {
   titleSuggestion?: string | null;
   /** True while an available slug variant is being resolved. */
   isResolvingSlugSuggestion?: boolean;
+  /**
+   * Notifies the parent form whenever the Google Safe Browsing status of the
+   * URL field changes. Parents must use this to disable submission while the
+   * status is `"checking"` or `"unsafe"` (project rule: every URL goes
+   * through Safe Browsing before a link is created or edited).
+   */
+  onSafetyStatusChange?: (status: UrlSafetyStatus) => void;
 }
 
 /**
@@ -75,6 +83,7 @@ export function LinkFormFields({
   isLoadingMeta = false,
   titleSuggestion = null,
   isResolvingSlugSuggestion = false,
+  onSafetyStatusChange,
 }: LinkFormFieldsProps) {
   const { t } = useTranslation("links");
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -89,6 +98,10 @@ export function LinkFormFields({
   const slugAvailability = useSlugAvailability(slugValue?.trim() ?? "");
   const urlSafetyLabels = buildUrlSafetyLabels(t);
   const slugAvailabilityLabels = buildSlugAvailabilityLabels(t);
+
+  useEffect(() => {
+    onSafetyStatusChange?.(safetyStatus);
+  }, [safetyStatus, onSafetyStatusChange]);
 
   const urlIsUnsafe = !errors.original_url && safetyStatus === "unsafe";
 
