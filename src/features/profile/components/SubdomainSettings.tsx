@@ -110,12 +110,17 @@ function SubdomainStatusChip({
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const semantic = isDark ? semanticDark : semanticLight;
-  const brand = theme.palette.primary.main;
   const free = semantic.success;
 
-  const main = active ? brand : free.main;
-  const bg = active ? alpha(brand, isDark ? 0.14 : 0.1) : free.subtleBg;
-  const border = active ? alpha(brand, isDark ? 0.28 : 0.2) : free.border;
+  const main = active
+    ? isDark
+      ? theme.palette.common.white
+      : theme.palette.text.primary
+    : free.main;
+  const bg = active
+    ? alpha(theme.palette.common.white, isDark ? 0.08 : 0.04)
+    : free.subtleBg;
+  const border = active ? theme.palette.divider : free.border;
 
   return (
     <Chip
@@ -259,12 +264,13 @@ export function SubdomainSettings() {
 
       {subdomain ? (
         <Stack spacing={2.5}>
-          <ProfileMutedBox accent label={t("subdomain.yourDomainLabel")}>
+          <ProfileMutedBox label={t("subdomain.yourDomainLabel")}>
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: 0.5,
+                justifyContent: "space-between",
+                gap: 1,
                 flexWrap: "wrap",
               }}
             >
@@ -277,39 +283,44 @@ export function SubdomainSettings() {
                   fontFamily: "monospace",
                   fontWeight: 600,
                   fontSize: "0.95rem",
-                  color: "text.primary",
+                  color:
+                    theme.palette.mode === "dark"
+                      ? "common.white"
+                      : "text.primary",
                   wordBreak: "break-all",
                 }}
               >
-                {subdomain.full_url}
+                {subdomain.full_url.replace(/^https?:\/\//, "")}
               </Link>
-              <Tooltip
-                title={copied ? t("subdomain.copied") : t("subdomain.copy")}
-              >
-                <IconButton
-                  size="small"
-                  aria-label={t("subdomain.copy")}
-                  onClick={() => handleCopy(subdomain.full_url)}
+              <Box sx={{ display: "flex", gap: 0.25, flexShrink: 0 }}>
+                <Tooltip
+                  title={copied ? t("subdomain.copied") : t("subdomain.copy")}
                 >
-                  <ContentCopyIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t("subdomain.openInNew")}>
-                <IconButton
-                  size="small"
-                  component="a"
-                  href={subdomain.full_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={t("subdomain.openInNew")}
-                >
-                  <OpenInNewIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
+                  <IconButton
+                    size="small"
+                    aria-label={t("subdomain.copy")}
+                    onClick={() => handleCopy(subdomain.full_url)}
+                  >
+                    <ContentCopyIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={t("subdomain.openInNew")}>
+                  <IconButton
+                    size="small"
+                    component="a"
+                    href={subdomain.full_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t("subdomain.openInNew")}
+                  >
+                    <OpenInNewIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             </Box>
           </ProfileMutedBox>
 
-          <ProfileMutedBox accent label={t("subdomain.linksLookLike")}>
+          <ProfileMutedBox label={t("subdomain.linksLookLike")}>
             <Stack spacing={0.5}>
               {EXAMPLE_SLUGS.map((slug) => (
                 <LinkExample
@@ -344,7 +355,7 @@ export function SubdomainSettings() {
         </Stack>
       ) : (
         <Stack spacing={2.5}>
-          <ProfileMutedBox soft accent label={t("subdomain.previewLabel")}>
+          <ProfileMutedBox soft label={t("subdomain.previewLabel")}>
             <Stack spacing={0.5}>
               {EXAMPLE_SLUGS.map((slug) => (
                 <LinkExample
