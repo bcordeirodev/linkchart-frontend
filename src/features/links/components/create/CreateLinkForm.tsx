@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -20,6 +22,7 @@ import { useCreateLink } from "../../hooks/useLinks";
 import { useLinkFormMetaSuggestions } from "../../hooks/useLinkFormMetaSuggestions";
 
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
+import type { UrlSafetyStatus } from "../../hooks/useUrlSafetyCheck";
 import type { CreateLinkFormProps } from "../../types/forms";
 
 export function CreateLinkForm({
@@ -30,6 +33,11 @@ export function CreateLinkForm({
   const { t } = useTranslation("links");
   const mutation = useCreateLink();
   const copyShortUrlForLink = useCopyShortUrlForLink();
+  const [safetyStatus, setSafetyStatus] = useState<UrlSafetyStatus>("idle");
+  // Safe Browsing gate: never let an unsafe (or still-being-checked) URL
+  // through. "error" stays fail-open, matching the backend behavior.
+  const safetyBlocked =
+    safetyStatus === "checking" || safetyStatus === "unsafe";
 
   const {
     control,
@@ -75,6 +83,12 @@ export function CreateLinkForm({
   };
 
   const onSubmit = async (data: LinkFormData) => {
+    // The disabled submit button is UI-only; re-check here so programmatic
+    // submits (e.g. Enter key) can't bypass the Safe Browsing gate.
+    if (safetyBlocked) {
+      return;
+    }
+
     const payload = {
       ...data,
       expires_at: convertDateForSubmit(data.expires_at),
@@ -119,7 +133,7 @@ export function CreateLinkForm({
             onCancel={handleCancel}
             submitLabel={t("form.submit")}
             loading={mutation.isPending}
-            submitDisabled={!isValid}
+            submitDisabled={!isValid || safetyBlocked}
           />
         }
       >
@@ -131,6 +145,7 @@ export function CreateLinkForm({
           isResolvingSlugSuggestion={isResolvingSlugSuggestion}
           titleSuggestion={titleSuggestion}
           isLoadingMeta={isLoadingMeta}
+          onSafetyStatusChange={setSafetyStatus}
         />
       </LinkFormShell>
     </form>
