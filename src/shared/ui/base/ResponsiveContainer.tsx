@@ -10,6 +10,17 @@ import { responsiveSpacing } from "@/lib/theme";
 import type { ContainerProps } from "@mui/material";
 import type { ReactNode } from "react";
 
+/**
+ * Largura máxima do conteúdo das páginas (em px).
+ *
+ * O breakpoint `xl` do tema é 1920px, então `maxWidth="xl"` deixava o conteúdo
+ * encostar nas bordas em monitores 1080p. Capamos o default em 1440px para
+ * criar gutters laterais e manter o comprimento de linha legível — padrão de
+ * mercado em dashboards (Stripe, Linear, Vercel). Páginas que passam um
+ * `maxWidth` explícito (ex.: formulários com `maxWidth="md"`) não são afetadas.
+ */
+export const CONTENT_MAX_WIDTH = 1440;
+
 interface ResponsiveContainerProps extends Omit<ContainerProps, "children"> {
   children: ReactNode;
   /** Tipo de espaçamento baseado no contexto */
@@ -114,11 +125,17 @@ export function ResponsiveContainer({
       !hasMarginBottomInSx && { mb: customSpacing || containerSpacing.p }),
   };
 
+  // Quando o caller não especifica largura (default "xl" = 1920px no tema),
+  // capamos o conteúdo em CONTENT_MAX_WIDTH para criar gutters laterais.
+  // Qualquer maxWidth explícito (md, lg, false…) passa intacto.
+  const useContentCap = maxWidth === "xl";
+
   return (
     <Container
-      maxWidth={maxWidth}
+      maxWidth={useContentCap ? false : maxWidth}
       sx={{
         ...baseStyles,
+        ...(useContentCap && { maxWidth: CONTENT_MAX_WIDTH, mx: "auto" }),
         // Estilos customizados têm prioridade total
         ...sx,
       }}
