@@ -1,15 +1,18 @@
 import { defineConfig, devices } from "@playwright/test";
 
+/**
+ * Smoke-test configuration. Tests run against an ALREADY-RUNNING dev server
+ * (Docker on :3000 by default) — never boot next dev/build from the host,
+ * the shared .next cache corrupts the container (see project CLAUDE.md).
+ */
 export default defineConfig({
   testDir: "./e2e",
-  fullyParallel: false,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: 1,
-  reporter: "html",
+  timeout: 30_000,
+  fullyParallel: true,
+  reporter: [["list"]],
   use: {
-    baseURL: "http://localhost:3000",
-    trace: "on-first-retry",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
+    screenshot: "only-on-failure",
   },
   projects: [
     {
@@ -17,10 +20,4 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
 });
