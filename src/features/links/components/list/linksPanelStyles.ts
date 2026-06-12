@@ -124,6 +124,21 @@ export function getLinkCardShellSx(theme: Theme) {
 /** Vertical gap between cards in the browse list. */
 export const linkCardListItemMb = { xs: 2, sm: 2.25 } as const;
 
+/** Row density for the desktop browse list. */
+export type LinkCardDensity = "comfortable" | "compact";
+
+/**
+ * Vertical gap between desktop cards, tightened in `compact` density.
+ *
+ * @param density - the active list density.
+ * @returns a responsive MUI `mb` value.
+ */
+export function getLinkCardListItemMb(density: LinkCardDensity) {
+  return density === "compact"
+    ? ({ xs: 1, sm: 1.25 } as const)
+    : linkCardListItemMb;
+}
+
 /** Compact inset strip (short URL copy on mobile). */
 export function getLinkCardUrlBarSx(theme: Theme) {
   return {
@@ -217,6 +232,22 @@ export const linkCardContentSx = {
   px: { xs: 1.5, sm: 2 },
   py: { xs: 1, sm: 1.25 },
 } as const;
+
+/** Card inner padding, tightened in `compact` density. */
+const linkCardContentCompactSx = {
+  px: { xs: 1.25, sm: 1.5 },
+  py: { xs: 0.5, sm: 0.625 },
+} as const;
+
+/**
+ * Inner padding for a desktop link card, tightened in `compact` density.
+ *
+ * @param density - the active list density.
+ * @returns the responsive padding `sx` for {@link linkCardContentSx}.
+ */
+export function getLinkCardContentSx(density: LinkCardDensity) {
+  return density === "compact" ? linkCardContentCompactSx : linkCardContentSx;
+}
 
 /** Subtle inset for filter toolbar inside a links panel. */
 export function getLinksFilterInsetSx(theme: Theme) {

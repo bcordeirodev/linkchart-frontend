@@ -27,8 +27,9 @@ import { radiusTokens } from "@/lib/theme/designSystem";
 import {
   getLinkCardShellSx,
   getNewlyCreatedHighlightSx,
-  linkCardListItemMb,
-  linkCardContentSx,
+  getLinkCardListItemMb,
+  getLinkCardContentSx,
+  type LinkCardDensity,
 } from "./linksPanelStyles";
 
 const STATUS_LABEL_KEYS = {
@@ -43,6 +44,8 @@ interface LinkCardRichProps {
   meta?: LinkMeta;
   onDelete: (id: string) => Promise<void>;
   isHighlighted?: boolean;
+  /** Row density; `compact` tightens padding and hides the OG thumbnail. */
+  density?: LinkCardDensity;
 }
 
 /** OG preview thumbnail — fixed aspect, aligned with destination row. */
@@ -96,11 +99,14 @@ export function LinkCardRich({
   meta,
   onDelete,
   isHighlighted = false,
+  density = "comfortable",
 }: LinkCardRichProps) {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { t } = useTranslation("links");
+
+  const isCompact = density === "compact";
 
   const shortUrl = useShortUrl(link.slug);
   const displayUrl = shortUrl.replace(/^https?:\/\//, "");
@@ -132,12 +138,12 @@ export function LinkCardRich({
       id={`link-card-${link.id}`}
       animated={false}
       sx={{
-        mb: linkCardListItemMb,
+        mb: getLinkCardListItemMb(density),
         ...getLinkCardShellSx(theme),
         ...(isHighlighted ? getNewlyCreatedHighlightSx(theme) : {}),
       }}
     >
-      <Box sx={linkCardContentSx}>
+      <Box sx={getLinkCardContentSx(density)}>
         {/* 1 — Favicon + title + status + menu (one row) */}
         <Stack
           direction="row"
@@ -191,9 +197,9 @@ export function LinkCardRich({
           direction="row"
           alignItems="center"
           spacing={0.75}
-          sx={{ mt: 0.5, minWidth: 0 }}
+          sx={{ mt: isCompact ? 0.25 : 0.5, minWidth: 0 }}
         >
-          {meta?.preview?.og_image_url ? (
+          {!isCompact && meta?.preview?.og_image_url ? (
             <LinkOgPreview
               imageUrl={meta.preview.og_image_url}
               title={meta.preview.og_title}

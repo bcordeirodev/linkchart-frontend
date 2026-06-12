@@ -63,7 +63,12 @@
     "sortMostClicks": "Mais cliques",
     "clearFilters": "Limpar filtros",
     "mostTrend": "Maior tendência",
-    "lastActivity": "Última atividade"
+    "lastActivity": "Última atividade",
+    "density": {
+      "label": "Densidade da lista",
+      "comfortable": "Confortável",
+      "compact": "Compacto"
+    }
   },
   "actions": {
     "copyLink": "Copiar link",

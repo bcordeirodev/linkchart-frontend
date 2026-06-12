@@ -1,5 +1,5 @@
 "use client";
-import { Search, ArrowUpDown } from "lucide-react";
+import { Search, ArrowUpDown, Rows2, Rows4 } from "lucide-react";
 import { ICON_SM, ICON_LG } from "@/lib/theme/iconDefaults";
 import {
   Box,
@@ -11,11 +11,15 @@ import {
   Select,
   Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   useTheme,
 } from "@mui/material";
 import { debounce } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+import type { LinkDensity } from "@/features/links/hooks/useLinkDensity";
 
 import { getLinksFilterInsetSx, getLinksPanelSx } from "./linksPanelStyles";
 
@@ -28,6 +32,12 @@ interface LinksFiltersProps {
   onSortChange: (value: string) => void;
   /** When true, renders inside a parent card (no outer paper wrapper). */
   embedded?: boolean;
+  /** Active row density; required when `showDensityToggle` is true. */
+  density?: LinkDensity;
+  /** Called when the user picks a new density. */
+  onDensityChange?: (density: LinkDensity) => void;
+  /** Renders the comfortable/compact segmented control (desktop only). */
+  showDensityToggle?: boolean;
 }
 
 export function LinksFilters({
@@ -38,6 +48,9 @@ export function LinksFilters({
   sortBy,
   onSortChange,
   embedded = false,
+  density = "comfortable",
+  onDensityChange,
+  showDensityToggle = false,
 }: LinksFiltersProps) {
   const theme = useTheme();
   const { t } = useTranslation("links");
@@ -158,31 +171,81 @@ export function LinksFilters({
 
       <Divider />
 
-      {/* Linha 2: chips de status */}
-      <Stack
-        direction="row"
-        spacing={0.75}
-        flexWrap="wrap"
-        useFlexGap
-        sx={{ px: 2, py: 1.5 }}
+      {/* Linha 2: chips de status + densidade */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1.5,
+          px: 2,
+          py: 1.5,
+        }}
       >
-        {STATUS_CHIPS.map((chip) => (
-          <Chip
-            key={chip.value}
-            label={chip.label}
-            clickable
+        <Stack
+          direction="row"
+          spacing={0.75}
+          flexWrap="wrap"
+          useFlexGap
+          sx={{ flex: 1, minWidth: 0 }}
+        >
+          {STATUS_CHIPS.map((chip) => (
+            <Chip
+              key={chip.value}
+              label={chip.label}
+              clickable
+              size="small"
+              color={statusFilter === chip.value ? "primary" : "default"}
+              variant={statusFilter === chip.value ? "filled" : "outlined"}
+              onClick={() => onStatusChange(chip.value)}
+              sx={{
+                borderRadius: "6px",
+                fontWeight: statusFilter === chip.value ? 600 : 400,
+                fontSize: "0.75rem",
+              }}
+            />
+          ))}
+        </Stack>
+
+        {showDensityToggle ? (
+          <ToggleButtonGroup
+            value={density}
+            exclusive
             size="small"
-            color={statusFilter === chip.value ? "primary" : "default"}
-            variant={statusFilter === chip.value ? "filled" : "outlined"}
-            onClick={() => onStatusChange(chip.value)}
-            sx={{
-              borderRadius: "6px",
-              fontWeight: statusFilter === chip.value ? 600 : 400,
-              fontSize: "0.75rem",
+            onChange={(_, next: LinkDensity | null) => {
+              if (next) onDensityChange?.(next);
             }}
-          />
-        ))}
-      </Stack>
+            aria-label={t("filters.density.label")}
+            sx={{
+              flexShrink: 0,
+              "& .MuiToggleButton-root": {
+                px: 0.875,
+                py: 0.375,
+                border: `1px solid ${theme.palette.divider}`,
+                color: "text.secondary",
+                "&.Mui-selected": {
+                  color: "primary.main",
+                  bgcolor: "action.selected",
+                },
+              },
+            }}
+          >
+            <ToggleButton
+              value="comfortable"
+              aria-label={t("filters.density.comfortable")}
+              title={t("filters.density.comfortable")}
+            >
+              <Rows2 {...ICON_SM} />
+            </ToggleButton>
+            <ToggleButton
+              value="compact"
+              aria-label={t("filters.density.compact")}
+              title={t("filters.density.compact")}
+            >
+              <Rows4 {...ICON_SM} />
+            </ToggleButton>
+          </ToggleButtonGroup>
+        ) : null}
+      </Box>
     </Box>
   );
 }
