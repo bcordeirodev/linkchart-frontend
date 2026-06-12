@@ -1,13 +1,17 @@
 "use client";
 
 import { Link2 } from "lucide-react";
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Box, Divider, Pagination, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useLinkDensity } from "@/features/links/hooks/useLinkDensity";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+
+/** Links shown per page in the browse list (client-side pagination). */
+const PAGE_SIZE = 8;
 
 import { LinkCardRich } from "./LinkCardRich";
 import { LinksEmptyState } from "./LinksEmptyState";
@@ -66,6 +70,40 @@ export function LinksBrowseSection({
     ? t("list.sections.linksFiltered", { count })
     : t("list.sections.linksBrowseDescription", { count });
 
+  const [page, setPage] = useState(1);
+  const topRef = useRef<HTMLDivElement>(null);
+
+  const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
+
+  // Jump back to page 1 whenever the result set changes (search/filter/sort) or
+  // a freshly created link needs to be revealed at the top.
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, statusFilter, sortBy, highlightedLinkId]);
+
+  // Clamp the page if it falls out of range (e.g. after deleting the last item
+  // on the final page).
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
+  const pageLinks = useMemo(
+    () => sortedLinks.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [sortedLinks, page],
+  );
+
+  const handlePageChange = useCallback(
+    (_event: React.ChangeEvent<unknown>, next: number) => {
+      setPage(next);
+      topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    },
+    [],
+  );
+
+  const showPagination = count > PAGE_SIZE;
+  const rangeStart = (page - 1) * PAGE_SIZE + 1;
+  const rangeEnd = Math.min(page * PAGE_SIZE, count);
+
   return (
     <EnhancedPaper
       variant="outlined"
@@ -73,6 +111,7 @@ export function LinksBrowseSection({
       sx={getLinksPanelSx(theme)}
     >
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <Box ref={topRef} sx={{ scrollMarginTop: { xs: 64, sm: 80 } }} />
         <Box
           sx={{
             display: "flex",
@@ -121,27 +160,67 @@ export function LinksBrowseSection({
             hasActiveFilters={hasActiveFilters}
             onClearFilters={onClearFilters}
           />
-        ) : isMobile ? (
-          <LinksMobileCards
-            data={sortedLinks}
-            meta={meta}
-            loading={loading}
-            onDelete={onDelete}
-            highlightedLinkId={highlightedLinkId}
-          />
         ) : (
-          <Stack spacing={0}>
-            {sortedLinks.map((link) => (
-              <LinkCardRich
-                key={link.id}
-                link={link}
-                meta={meta[String(link.id)]}
+          <>
+            {isMobile ? (
+              <LinksMobileCards
+                data={pageLinks}
+                meta={meta}
+                loading={loading}
                 onDelete={onDelete}
-                isHighlighted={String(link.id) === highlightedLinkId}
-                density={density}
+                highlightedLinkId={highlightedLinkId}
               />
-            ))}
-          </Stack>
+            ) : (
+              <Stack spacing={0}>
+                {pageLinks.map((link) => (
+                  <LinkCardRich
+                    key={link.id}
+                    link={link}
+                    meta={meta[String(link.id)]}
+                    onDelete={onDelete}
+                    isHighlighted={String(link.id) === highlightedLinkId}
+                    density={density}
+                  />
+                ))}
+              </Stack>
+            )}
+
+            {showPagination ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 1.5,
+                  mt: 2,
+                  pt: 2,
+                  borderTop: `1px solid ${theme.palette.divider}`,
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem" }}
+                >
+                  {t("list.pagination.showing", {
+                    from: rangeStart,
+                    to: rangeEnd,
+                    total: count,
+                  })}
+                </Typography>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={handlePageChange}
+                  color="primary"
+                  shape="rounded"
+                  size="small"
+                  siblingCount={isMobile ? 0 : 1}
+                />
+              </Box>
+            ) : null}
+          </>
         )}
       </Box>
     </EnhancedPaper>
