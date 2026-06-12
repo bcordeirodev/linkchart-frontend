@@ -22,7 +22,10 @@ test("home page renders without errors", async ({ page }) => {
 });
 
 test("public shortener page renders the URL form", async ({ page }) => {
-  await page.goto("/shorter");
+  // NOTE: no pageerror assertion here — /shorter has a known SSR hydration
+  // error (pre-existing); restore the check once that bug is fixed.
+  const response = await page.goto("/shorter");
+  expect(response?.ok()).toBeTruthy();
   // MUI renders a named input for the URL field — use the name attribute for stability
   await expect(page.locator('input[name="originalUrl"]')).toBeVisible();
   await expect(page.getByRole("button").first()).toBeVisible();
