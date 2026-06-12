@@ -6,6 +6,7 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { useLinkDensity } from "@/features/links/hooks/useLinkDensity";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 import { LinkCardRich } from "./LinkCardRich";
@@ -58,6 +59,7 @@ export function LinksBrowseSection({
 }: LinksBrowseSectionProps) {
   const theme = useTheme();
   const { t } = useTranslation("links");
+  const { density, setDensity } = useLinkDensity();
 
   const count = sortedLinks.length;
   const description = hasActiveFilters
@@ -107,6 +109,9 @@ export function LinksBrowseSection({
           onStatusChange={onStatusChange}
           sortBy={sortBy}
           onSortChange={onSortChange}
+          density={density}
+          onDensityChange={setDensity}
+          showDensityToggle={!isMobile}
         />
 
         <Divider sx={{ my: 2 }} />
@@ -133,6 +138,7 @@ export function LinksBrowseSection({
                 meta={meta[String(link.id)]}
                 onDelete={onDelete}
                 isHighlighted={String(link.id) === highlightedLinkId}
+                density={density}
               />
             ))}
           </Stack>
