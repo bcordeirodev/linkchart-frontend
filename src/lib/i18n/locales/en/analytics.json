@@ -585,7 +585,7 @@
         "devices": "Share of visits by device type (desktop, mobile, tablet). Use to decide whether content should prioritize responsive layouts or native app experiences.",
         "browsers": "Most-used browsers in your audience (Chrome, Safari, Firefox, etc.). Helps with compatibility decisions, polyfills, and UI testing priorities.",
         "systems": "Most-used operating systems (iOS, Android, Windows, macOS). Combined with device data, builds the full technical profile of your audience.",
-        "performance": "Average response time and load performance by device type. Identify whether any segment has a degraded experience.",
+        "performance": "Server response time for the redirect, by device type. Measured server-side — it does not include the destination page load.",
         "languages": "Languages detected in visitors' browser settings, with each regional variant (en-US, en-GB) counted separately. Use to plan internationalization or create localized content versions.",
         "renderingEngine": "Browser rendering engine (Blink, WebKit, Gecko, etc.). Useful for diagnosing compatibility issues on less common browsers."
       },
