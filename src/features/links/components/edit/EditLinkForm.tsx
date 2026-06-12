@@ -26,6 +26,7 @@ import {
 import { useLinkFormMetaSuggestions } from "../../hooks/useLinkFormMetaSuggestions";
 
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
+import type { UrlSafetyStatus } from "../../hooks/useUrlSafetyCheck";
 import type { EditLinkFormProps } from "../../types/forms";
 
 export function EditLinkForm({
@@ -43,6 +44,11 @@ export function EditLinkForm({
   const [apiError, setApiError] = useState<string | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [ownedSlug, setOwnedSlug] = useState<string | null>(null);
+  const [safetyStatus, setSafetyStatus] = useState<UrlSafetyStatus>("idle");
+  // Safe Browsing gate: never let an unsafe (or still-being-checked) URL
+  // through. "error" stays fail-open, matching the backend behavior.
+  const safetyBlocked =
+    safetyStatus === "checking" || safetyStatus === "unsafe";
 
   const {
     control,
@@ -166,6 +172,12 @@ export function EditLinkForm({
   };
 
   const onSubmit = async (data: LinkFormData) => {
+    // The disabled submit button is UI-only; re-check here so programmatic
+    // submits (e.g. Enter key) can't bypass the Safe Browsing gate.
+    if (safetyBlocked) {
+      return;
+    }
+
     try {
       setLoading(true);
       setApiError(null);
@@ -268,6 +280,7 @@ export function EditLinkForm({
             onCancel={handleCancel}
             submitLabel={t("form.submitEdit")}
             loading={loading}
+            submitDisabled={safetyBlocked}
           />
         }
       >
@@ -279,6 +292,7 @@ export function EditLinkForm({
           isResolvingSlugSuggestion={isResolvingSlugSuggestion}
           titleSuggestion={titleSuggestion}
           isLoadingMeta={isLoadingMeta}
+          onSafetyStatusChange={setSafetyStatus}
         />
       </LinkFormShell>
     </form>
