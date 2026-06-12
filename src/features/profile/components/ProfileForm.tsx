@@ -147,8 +147,7 @@ export function ProfileForm({
               fontSize: "1.5rem",
               flexShrink: 0,
               boxShadow: "none",
-              border: 2,
-              borderColor: "divider",
+              border: "none",
               "&:hover": { transform: "none" },
             }}
           >
