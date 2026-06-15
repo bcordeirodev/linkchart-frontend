@@ -3,9 +3,10 @@ import type { MetadataRoute } from "next";
 /**
  * Sitemap for public indexable pages.
  *
- * The root URL (/) is intentionally excluded — it is an auth-aware JS redirect
- * (guest → /shorter, logged-in → /links) and carries no indexable content.
- * /shorter is the canonical homepage for SEO purposes.
+ * The root URL (/) is the canonical homepage: it renders the URL shortener
+ * landing with full server-side content. /shorter still serves the same
+ * landing for backwards compatibility but declares / as its canonical, so it
+ * is intentionally omitted here to avoid listing a non-canonical URL.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
@@ -13,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     {
-      url: `${appUrl}/shorter`,
+      url: `${appUrl}/`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 1,
