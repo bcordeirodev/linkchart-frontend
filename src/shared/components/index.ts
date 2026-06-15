@@ -22,7 +22,7 @@ export { default as FuseSvgIcon } from "../ui/icons/SvgIcon";
 export { default as FuseMessage } from "../ui/feedback/Message";
 
 // Routing components
-export { HomeRedirect } from "./routing/HomeRedirect";
+export { HomeLanding } from "./routing/HomeLanding";
 
 // CTA components
 export { SignUpCtaCard } from "./cta/SignUpCtaCard";
