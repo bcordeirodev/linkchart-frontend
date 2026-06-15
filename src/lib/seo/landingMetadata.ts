@@ -12,6 +12,11 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
  * strongest URL of the domain, so search authority is consolidated there and
  * `/shorter` declares it as its canonical to avoid duplicate-content splitting.
  *
+ * No `hreflang` alternates are emitted: the site uses Accept-Language dynamic
+ * serving on a single URL (no per-language paths), so language alternates would
+ * all point at the same URL — a no-op that Google ignores. pt-BR is the SEO
+ * target and the crawler default (see {@link resolveServerLanguage}).
+ *
  * @returns the resolved Next.js {@link Metadata} for the shortener landing.
  */
 export async function buildLandingMetadata(): Promise<Metadata> {
@@ -34,11 +39,6 @@ export async function buildLandingMetadata(): Promise<Metadata> {
     description,
     alternates: {
       canonical: canonicalUrl,
-      languages: {
-        en: canonicalUrl,
-        "pt-BR": canonicalUrl,
-        "x-default": canonicalUrl,
-      },
     },
     robots: {
       index: true,
