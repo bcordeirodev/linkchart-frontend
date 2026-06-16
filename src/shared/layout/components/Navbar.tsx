@@ -13,7 +13,6 @@ import {
   Avatar,
   Box,
   useTheme,
-  Chip,
   Divider,
   ListItemIcon,
   ListItemText,
@@ -249,12 +248,6 @@ export function Navbar({
                   <Typography variant="body2" color="text.secondary">
                     {user?.email}
                   </Typography>
-                  <Chip
-                    label={t("nav.proUser")}
-                    size="small"
-                    color="primary"
-                    sx={{ mt: 0.5, fontSize: "0.7rem" }}
-                  />
                 </Box>
               </Box>
             </Box>
