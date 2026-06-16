@@ -58,6 +58,12 @@ export interface DashboardSummary {
   links_with_traffic: number;
   /** Average clicks per day over the link's lifetime (backend-computed). */
   avg_daily_clicks?: number;
+  /**
+   * Signed percentage change in clicks vs the equally-sized window immediately
+   * before the current one. Null when there is no comparable prior window —
+   * the hero KPI then renders without a variation pill.
+   */
+  clicks_variation_pct?: number | null;
   conversion_rate?: number;
   growth_rate?: number;
   /** Viral rank from Redis velocity tracking (Phase 2) */

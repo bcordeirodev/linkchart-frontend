@@ -466,6 +466,7 @@ export function LinkDashboard({
           sparkline={(data?.temporal_data?.clicks_by_hour ?? []).map(
             (h) => h.clicks ?? 0,
           )}
+          trendPct={data?.summary?.clicks_variation_pct ?? null}
         />
 
         {/* Gráficos — seções em ordem fixa; Canais de Aquisição por último */}
