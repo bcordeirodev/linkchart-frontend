@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { resolveServerLanguage } from "@/lib/i18n/serverLanguage";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
 
 /**
- * Builds the language-aware metadata for the URL shortener landing.
+ * Builds the metadata for the URL shortener landing.
  *
  * Shared by the canonical homepage (`/`) and the legacy `/shorter` route so
  * both render identical `<title>`, description and structured signals. The
@@ -12,30 +11,29 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
  * strongest URL of the domain, so search authority is consolidated there and
  * `/shorter` declares it as its canonical to avoid duplicate-content splitting.
  *
- * No `hreflang` alternates are emitted: the site uses Accept-Language dynamic
- * serving on a single URL (no per-language paths), so language alternates would
- * all point at the same URL — a no-op that Google ignores. pt-BR is the SEO
- * target and the crawler default (see {@link resolveServerLanguage}).
+ * The metadata is static pt-BR — the SEO target and crawler default — so the
+ * pages stay cacheable (reading the request language would force dynamic
+ * rendering). The `title` uses `absolute` so the homepage carries the brand
+ * suffix too: title templates from the root layout do not apply to the root
+ * segment, so without this `/` would render the bare title.
  *
- * @returns the resolved Next.js {@link Metadata} for the shortener landing.
+ * No `hreflang` alternates are emitted: the site serves both languages on a
+ * single URL, so language alternates would all point at the same URL — a no-op
+ * Google ignores.
+ *
+ * @returns the Next.js {@link Metadata} for the shortener landing.
  */
-export async function buildLandingMetadata(): Promise<Metadata> {
-  const isEn = (await resolveServerLanguage()) === "en";
+export function buildLandingMetadata(): Metadata {
   const canonicalUrl = `${appUrl}/`;
 
-  const title = isEn
-    ? "Free URL Shortener with Real-Time Analytics"
-    : "Encurtador de Link Gratuito com Analytics em Tempo Real";
+  const title = "Encurtador de Link Gratuito com Analytics em Tempo Real";
   const fullTitle = `${title} | Link Charts`;
-  const description = isEn
-    ? "Shorten any URL for free, no sign-up required. Track clicks by country, device and UTM campaign. Free custom subdomain, QR Code and custom slug."
-    : "Encurte qualquer URL gratuitamente, sem cadastro. Rastreie cliques por país, dispositivo e campanha UTM. Subdomínio personalizado, QR Code e slug customizado grátis.";
-  const ogImageAlt = isEn
-    ? "Link Charts — URL Shortener with Analytics"
-    : "Link Charts — Encurtador de Link com Analytics";
+  const description =
+    "Encurte qualquer URL gratuitamente, sem cadastro. Rastreie cliques por país, dispositivo e campanha UTM. Subdomínio personalizado, QR Code e slug customizado grátis.";
+  const ogImageAlt = "Link Charts — Encurtador de Link com Analytics";
 
   return {
-    title,
+    title: { absolute: fullTitle },
     description,
     alternates: {
       canonical: canonicalUrl,
