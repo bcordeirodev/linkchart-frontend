@@ -86,6 +86,9 @@ export function detectAndApplyLanguage() {
     (navigator.language.startsWith("pt") ? "pt-BR" : "en");
   if (stored && stored !== i18n.language) {
     void i18n.changeLanguage(stored);
+    // SSR renders with the static pt-BR default; keep <html lang> in sync when
+    // the client reconciles to a different stored preference.
+    document.documentElement.lang = stored;
   }
 }
 

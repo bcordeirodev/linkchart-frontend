@@ -3,7 +3,6 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Providers } from "@/lib/providers/Providers";
-import { resolveServerLanguage } from "@/lib/i18n/serverLanguage";
 import { buildOrganizationSchema } from "@/lib/seo/structuredData";
 import { CookieConsentInit } from "@/shared/components/CookieConsentInit";
 import "@/styles/index.css";
@@ -62,12 +61,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const initialLang = await resolveServerLanguage();
+  // pt-BR is the SEO target and the static SSR default, so the public pages
+  // stay cacheable (reading the cookie/Accept-Language here would force every
+  // route to render dynamically with `no-store`). The client reconciles to the
+  // visitor's stored preference after hydration via `detectAndApplyLanguage()`.
+  const initialLang = "pt-BR";
 
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
   const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID;
