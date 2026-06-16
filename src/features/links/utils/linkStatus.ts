@@ -5,7 +5,7 @@ import type { LinkResponse } from "@/types";
 export type LinkStatus = "active" | "inactive" | "scheduled" | "expired";
 
 /** Resolves palette paths like `success.main` to a concrete color (required for `alpha()`). */
-export function resolvePaletteColor(theme: Theme, path: string): string {
+function resolvePaletteColor(theme: Theme, path: string): string {
   const [paletteKey, shade = "main"] = path.split(".");
   const palette = theme.palette[paletteKey as keyof typeof theme.palette];
 

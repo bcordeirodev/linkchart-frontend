@@ -9,17 +9,10 @@ import { API_CONFIG } from "@/lib/api/endpoints";
 import { linkService } from "@/services";
 import { i18n } from "@/lib/i18n";
 
-import type {
-  LinkCreateRequest,
-  LinkResponse,
-  LinkUpdateRequest,
-} from "@/types";
+import type { LinkCreateRequest, LinkResponse } from "@/types";
 
 interface LinkCreateRequestExtended
   extends LinkCreateRequest,
-    Record<string, unknown> {}
-interface LinkUpdateRequestExtended
-  extends LinkUpdateRequest,
     Record<string, unknown> {}
 
 /**
@@ -71,41 +64,6 @@ export function useCreateLink() {
     onError: () => {
       const msg = (i18n.t as (key: string, opts: object) => string)(
         "errors.createLink",
-        { ns: "links" },
-      );
-      dispatch(showMessage({ message: msg, variant: "error" }));
-    },
-  });
-}
-
-/**
- * Mutation: update an existing link by id.
- *
- * @endpoint `PUT /api/links/{id}` (via `linkService.update()`)
- * @invalidates `queryKeys.links.all()`
- *
- * @remarks
- * Variables shape: `{ id: string; data: LinkUpdateRequest }`.
- * On error, dispatches a generic toast via `messageSlice`.
- */
-export function useUpdateLink() {
-  const dispatch = useAppDispatch();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string;
-      data: LinkUpdateRequestExtended;
-    }) => linkService.update(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.links.all() });
-    },
-    onError: () => {
-      const msg = (i18n.t as (key: string, opts: object) => string)(
-        "errors.updateLink",
         { ns: "links" },
       );
       dispatch(showMessage({ message: msg, variant: "error" }));
