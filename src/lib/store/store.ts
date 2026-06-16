@@ -1,4 +1,4 @@
-import { configureStore, createSelector } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 
 import { dynamicMiddleware } from "./middleware";
 import rootReducer from "./rootReducer";
@@ -16,7 +16,7 @@ const middlewares: Middleware[] = [dynamicMiddleware];
  * and test isolation; the module-level `store` export is the singleton used by
  * the app at runtime.
  */
-export const makeStore = (preloadedState?: Partial<RootState>) => {
+const makeStore = (preloadedState?: Partial<RootState>) => {
   const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
@@ -40,7 +40,5 @@ export type AppThunk<ThunkReturnType = void> = ThunkAction<
 export type AppAction<R = Promise<void>> =
   | Action<string>
   | ThunkAction<R, RootState, unknown, Action<string>>;
-
-export const createAppSelector = createSelector.withTypes<RootState>();
 
 export default store;

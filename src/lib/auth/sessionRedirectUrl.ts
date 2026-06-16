@@ -224,20 +224,11 @@ export const resetSessionRedirectUrl = (): void => {
 };
 
 /**
- * Convenience predicate.
- *
- * @returns `true` when `getSessionRedirectUrl()` would resolve to a valid URL.
- */
-export const hasValidRedirectUrl = (): boolean => {
-  return getSessionRedirectUrl() !== null;
-};
-
-/**
  * Reads the full stored payload (`url`, `timestamp`, `origin`, `reason`).
  *
  * @returns the stored object or `null` when missing/expired.
  */
-export const getRedirectInfo = (): StoredRedirectData | null => {
+const getRedirectInfo = (): StoredRedirectData | null => {
   if (!isSessionStorageAvailable()) {
     return null;
   }
@@ -274,7 +265,7 @@ export const getRedirectInfo = (): StoredRedirectData | null => {
  * Called once on module load with a small `setTimeout` delay to avoid blocking
  * boot — keeps `sessionStorage` from accumulating stale entries.
  */
-export const cleanupExpiredRedirects = (): void => {
+const cleanupExpiredRedirects = (): void => {
   if (!isSessionStorageAvailable()) {
     return;
   }

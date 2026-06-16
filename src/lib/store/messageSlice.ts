@@ -222,119 +222,16 @@ declare module "./rootReducer" {
 }
 
 // Export actions
-export const { showMessage, hideMessage, clearMessages, removeMessage } =
-  messageSlice.actions;
+export const { showMessage, hideMessage } = messageSlice.actions;
 
 // Export selectors
-export const {
-  selectMessageState,
-  selectMessageOptions,
-  selectMessageQueue,
-  selectMessageCount,
-} = injectedSlice.selectors;
-
-/**
- * Action creator: enqueues a `success`-variant toast.
- *
- * @param message - text or rich `ReactNode` to display.
- */
-export const showSuccessMessage = (message: string | ReactNode) =>
-  showMessage({ variant: "success", message });
+export const { selectMessageState, selectMessageOptions, selectMessageQueue } =
+  injectedSlice.selectors;
 
 /**
  * Action creator: enqueues an `error`-variant toast.
  */
 export const showErrorMessage = (message: string | ReactNode) =>
   showMessage({ variant: "error", message });
-
-/**
- * Action creator: enqueues a `warning`-variant toast.
- */
-export const showWarningMessage = (message: string | ReactNode) =>
-  showMessage({ variant: "warning", message });
-
-/**
- * Action creator: enqueues an `info`-variant toast.
- */
-export const showInfoMessage = (message: string | ReactNode) =>
-  showMessage({ variant: "info", message });
-
-/**
- * Action creator: enqueues a toast with the mobile-tuned defaults
- * (top-center anchor, full-width, 6s auto-hide).
- */
-export const showMobileMessage = (
-  message: string | ReactNode,
-  variant: MessageVariant = "info",
-) =>
-  showMessage({
-    variant,
-    message,
-    isMobile: true,
-    anchorOrigin: { vertical: "top", horizontal: "center" },
-    fullWidth: true,
-    maxWidth: "100%",
-    autoHideDuration: 6000,
-  });
-
-/**
- * Action creator: enqueues a `success`-variant toast using the mobile-tuned
- * defaults from `showMobileMessage` (top-center, full-width, 6s auto-hide).
- */
-export const showMobileSuccessMessage = (message: string | ReactNode) =>
-  showMobileMessage(message, "success");
-
-/**
- * Action creator: enqueues an `error`-variant toast using the mobile-tuned
- * defaults from `showMobileMessage` (top-center, full-width, 6s auto-hide).
- */
-export const showMobileErrorMessage = (message: string | ReactNode) =>
-  showMobileMessage(message, "error");
-
-/**
- * Action creator: enqueues a `warning`-variant toast using the mobile-tuned
- * defaults from `showMobileMessage` (top-center, full-width, 6s auto-hide).
- */
-export const showMobileWarningMessage = (message: string | ReactNode) =>
-  showMobileMessage(message, "warning");
-
-/**
- * Action creator: enqueues an `info`-variant toast using the mobile-tuned
- * defaults from `showMobileMessage` (top-center, full-width, 6s auto-hide).
- */
-export const showMobileInfoMessage = (message: string | ReactNode) =>
-  showMobileMessage(message, "info");
-
-/**
- * Action creator: enqueues a toast with mobile or desktop defaults based on
- * the current viewport width (defaults to `window.innerWidth <= 768`).
- *
- * @param message - text or rich `ReactNode` to display.
- * @param variant - severity level (defaults to `"info"`).
- * @param isMobile - override for the responsive detection (testable seam).
- */
-export const showResponsiveMessage = (
-  message: string | ReactNode,
-  variant: MessageVariant = "info",
-  isMobile: boolean = window.innerWidth <= 768,
-) =>
-  showMessage({
-    variant,
-    message,
-    isMobile,
-    anchorOrigin: isMobile
-      ? { vertical: "top", horizontal: "center" }
-      : { vertical: "bottom", horizontal: "center" },
-    fullWidth: isMobile,
-    maxWidth: isMobile ? "100%" : "600px",
-    autoHideDuration: isMobile ? 6000 : 4000,
-  });
-
-// Compatibility exports
-export const fuseMessageSlice = messageSlice;
-export const selectFuseMessageState = selectMessageState;
-export const selectFuseMessageOptions = selectMessageOptions;
-
-export type MessageSliceType = typeof messageSlice;
 
 export default messageSlice.reducer;

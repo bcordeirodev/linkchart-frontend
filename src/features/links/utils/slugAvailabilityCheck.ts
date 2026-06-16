@@ -77,7 +77,7 @@ function fitsSlugPattern(slug: string, mode: SlugValidationMode): boolean {
 }
 
 /** Appends `-N` while keeping total length within the mode limit. */
-export function buildNumericSlugVariant(
+function buildNumericSlugVariant(
   baseSlug: string,
   n: number,
   mode: SlugValidationMode = "auth",
@@ -104,7 +104,7 @@ function randomSlugSuffix(length: number): string {
 }
 
 /** Keeps the slug prefix and adds a short random suffix, e.g. `meu-post-k3f9`. */
-export function buildRandomSlugVariant(
+function buildRandomSlugVariant(
   baseSlug: string,
   mode: SlugValidationMode = "auth",
 ): string {

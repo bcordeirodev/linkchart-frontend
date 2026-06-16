@@ -492,27 +492,3 @@ export const formatPieChart = (
     },
   };
 };
-
-/**
- * Limpa e formata URL para exibição
- */
-export const formatUrlForDisplay = (url: string): string => {
-  return (
-    url
-      ?.replace(/^https?:\/\//, "")
-      ?.replace(/^www\./, "")
-      ?.replace(/\.com\.br$/, "")
-      ?.replace(/\.com$/, "") || url
-  );
-};
-
-/**
- * Capitaliza primeira letra de uma string
- */
-export const capitalizeFirst = (str: string): string => {
-  if (!str) {
-    return "";
-  }
-
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
