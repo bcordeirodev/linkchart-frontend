@@ -13,7 +13,6 @@ export { BehaviorSection } from "./BehaviorSection";
 export { ConnectionTypeCard } from "./ConnectionTypeCard";
 export { FetchDestChart } from "./FetchDestChart";
 export { LanguageBreakdownCard } from "./LanguageBreakdownCard";
-export { LanguageBreakdownChart } from "./LanguageBreakdownChart";
 export { PlatformBreakdownCard } from "./PlatformBreakdownCard";
 export { QualitySection } from "./QualitySection";
 export { SocialPlatformSection } from "./SocialPlatformSection";
