@@ -102,7 +102,7 @@ export function usePublicAnalytics({
 
   const handleVisitLink = (): void => {
     if (linkData?.original_url) {
-      window.open(linkData.original_url, "_blank");
+      window.open(linkData.original_url, "_blank", "noopener,noreferrer");
     }
   };
 

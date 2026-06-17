@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
   const cookieHeader = request.headers.get("cookie") ?? "";
   const allCookieNames = cookieHeader
     .split(";")
-    .map((c) => c.trim().split("=")[0].trim())
+    .map((c) => c.trim().split("=")[0]?.trim() ?? "")
     .filter(Boolean);
 
   // Delete __session, __session__0, __session__1 … (v4 SDK chunks)
