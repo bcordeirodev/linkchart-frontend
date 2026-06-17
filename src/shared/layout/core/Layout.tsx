@@ -18,7 +18,7 @@
  * @since 2.0.0
  */
 
-import _ from "lodash";
+import { merge } from "lodash";
 import { useEffect, useMemo } from "react";
 
 import { usePathname } from "@/shared/hooks";
@@ -47,7 +47,7 @@ export function Layout(props: MainLayoutProps) {
    * Mescla configurações atuais com configurações forçadas
    */
   const layoutSetting = useMemo(
-    () => _.merge({}, currentLayoutSetting, forcedSettings),
+    () => merge({}, currentLayoutSetting, forcedSettings),
     [currentLayoutSetting, forcedSettings],
   );
 

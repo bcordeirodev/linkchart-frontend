@@ -5,14 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useCallback, useMemo, useState } from "react";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  FormLabel,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, CircularProgress, FormLabel, Stack } from "@mui/material";
 
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showMessage } from "@/lib/store/messageSlice";
@@ -155,10 +148,14 @@ export function ProfileForm({
           </StyledAvatar>
 
           <Box sx={{ flex: 1, width: "100%", minWidth: 0 }}>
-            <FormLabel sx={{ display: "block", mb: 0.75 }}>
+            <FormLabel
+              htmlFor="profile-name"
+              sx={{ display: "block", mb: 0.75 }}
+            >
               {t("form.displayName")}
             </FormLabel>
             <StyledTextField
+              id="profile-name"
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
               fullWidth

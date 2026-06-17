@@ -13,12 +13,26 @@ import { useTranslation } from "react-i18next";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AudienceData = Record<string, any>;
+import type {
+  AudienceResponse,
+  AudienceStats,
+} from "@/types/analytics/audience";
+
+/**
+ * Shape consumed by {@link AudienceMetrics}: the audience breakdowns nested
+ * under `audience` (so both the hook and legacy payloads resolve through the
+ * same `audience.*` reads) plus the client-derived aggregate `stats`.
+ */
+interface AudienceMetricsData {
+  /** Audience breakdowns container (device/browser/OS, return-visitor stats). */
+  audience?: AudienceResponse;
+  /** Aggregate stats derived client-side from the device breakdown. */
+  stats?: AudienceStats;
+}
 
 interface AudienceMetricsProps {
   /** Audience data object containing `audience` and `stats` sub-objects. */
-  data?: AudienceData;
+  data?: AudienceMetricsData;
   /** Whether to render a title above the metric cards. */
   showTitle?: boolean;
   /** Custom title text. Falls back to the i18n key `audience.metrics.title`. */
@@ -44,11 +58,16 @@ export function AudienceMetrics({
   const osTypes = data?.audience?.os_breakdown?.length || 0;
   const totalAudienceClicks =
     data?.audience?.device_breakdown?.reduce(
-      (sum: number, device: AudienceData) => sum + (device.clicks || 0),
+      (sum, device) => sum + (device.clicks || 0),
       0,
     ) || 0;
 
   const displayTitle = title ?? t("audience.metrics.title");
+
+  // Narrow once into a local so TypeScript carries the non-null guard into the
+  // metric value/subtitle expressions below (it cannot narrow a repeated
+  // optional-chain access path inline).
+  const returnVisitorStats = data?.audience?.return_visitor_stats;
 
   const metrics = [
     {
@@ -87,13 +106,13 @@ export function AudienceMetrics({
       id: "return_visitors",
       title: t("audience.metrics.returnVisitors"),
       value:
-        data?.audience?.return_visitor_stats != null
-          ? data.audience.return_visitor_stats.return_rate.toFixed(1) + "%"
+        returnVisitorStats != null
+          ? returnVisitorStats.return_rate.toFixed(1) + "%"
           : "--",
       icon: <Repeat {...ICON_LG} />,
       color: "success" as const,
       subtitle:
-        data?.audience?.return_visitor_stats != null
+        returnVisitorStats != null
           ? t("audience.metrics.returnVisitorsSubtitle")
           : t("audience.metrics.insufficientData"),
     },
@@ -101,14 +120,13 @@ export function AudienceMetrics({
       id: "avg_session",
       title: t("audience.metrics.avgSession"),
       value:
-        data?.audience?.return_visitor_stats != null
-          ? data.audience.return_visitor_stats.avg_session_clicks.toFixed(1) +
-            "x"
+        returnVisitorStats != null
+          ? returnVisitorStats.avg_session_clicks.toFixed(1) + "x"
           : "--",
       icon: <Clock {...ICON_LG} />,
       color: "info" as const,
       subtitle:
-        data?.audience?.return_visitor_stats != null
+        returnVisitorStats != null
           ? t("audience.metrics.avgSessionSubtitle")
           : t("audience.metrics.insufficientData"),
     },

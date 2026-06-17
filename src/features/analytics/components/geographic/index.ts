@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 
 export { GeographicAnalysis } from "./GeographicAnalysis";
 export { GeographicChart } from "./GeographicChart";
-export { GeographicChoropleth } from "./GeographicChoropleth";
 export { GeographicInsights } from "./GeographicInsights";
 export { GeographicMetrics } from "./GeographicMetrics";
 export { ContinentBreakdown } from "./ContinentBreakdown";
@@ -12,6 +11,16 @@ export const RealTimeHeatmapChart = dynamic(
   () =>
     import("./RealTimeHeatmapChart").then((m) => ({
       default: m.RealTimeHeatmapChart,
+    })),
+  { ssr: false, loading: () => null },
+);
+
+// react-simple-maps + d3-geo is ~100KB; lazy-load it (ssr:false) so it stays out
+// of the static analytics chunk, mirroring the RealTimeHeatmapChart pattern above.
+export const GeographicChoropleth = dynamic(
+  () =>
+    import("./GeographicChoropleth").then((m) => ({
+      default: m.GeographicChoropleth,
     })),
   { ssr: false, loading: () => null },
 );

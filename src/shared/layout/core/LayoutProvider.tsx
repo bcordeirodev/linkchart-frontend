@@ -18,7 +18,7 @@
  * @since 2.0.0
  */
 
-import _ from "lodash";
+import { isEqual, merge } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import useUser from "@/lib/auth/useUser";
@@ -56,7 +56,7 @@ const defaultLayoutSettings: LayoutSettingsConfigType = {
  */
 const getInitialLayoutSettings = (): LayoutSettingsConfigType => {
   // Usa diretamente as configurações do settingsConfig
-  return _.merge({}, defaultLayoutSettings, settingsConfig);
+  return merge({}, defaultLayoutSettings, settingsConfig);
 };
 
 /**
@@ -67,7 +67,7 @@ const generateLayoutSettings = (
   newSettings: PartialDeep<LayoutSettingsConfigType>,
 ): LayoutSettingsConfigType => {
   // Simplesmente mescla as configurações - sempre usa layout1
-  return _.merge({}, defaultSettings, newSettings);
+  return merge({}, defaultSettings, newSettings);
 };
 
 /**
@@ -97,10 +97,8 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
    * Calcula configurações baseadas no usuário
    */
   const calculateSettings = useCallback(() => {
-    const defaultSettings = _.merge({}, initialSettings);
-    return isGuest
-      ? defaultSettings
-      : _.merge({}, defaultSettings, userSettings);
+    const defaultSettings = merge({}, initialSettings);
+    return isGuest ? defaultSettings : merge({}, defaultSettings, userSettings);
   }, [isGuest, userSettings, initialSettings]);
 
   // Estado das configurações
@@ -114,7 +112,7 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
     const newSettings = calculateSettings();
 
     // Só atualiza se as configurações são diferentes
-    if (!_.isEqual(data, newSettings)) {
+    if (!isEqual(data, newSettings)) {
       setData(newSettings);
     }
   }, [calculateSettings, data]);
@@ -126,8 +124,8 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
     (newSettings: Partial<LayoutSettingsConfigType>) => {
       const updatedSettings = generateLayoutSettings(data, newSettings);
 
-      if (!_.isEqual(updatedSettings, data)) {
-        setData(_.merge({}, updatedSettings));
+      if (!isEqual(updatedSettings, data)) {
+        setData(merge({}, updatedSettings));
       }
 
       return updatedSettings;

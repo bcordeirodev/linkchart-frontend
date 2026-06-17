@@ -139,15 +139,15 @@ export function GeographicInsights({
             {countries.length > 0 && (
               <Typography variant="body2" color="text.secondary">
                 {t("geographic.insights.mainMarketRec", {
-                  country: countries[0].country,
-                  clicks: countries[0].clicks,
+                  country: countries[0]!.country,
+                  clicks: countries[0]!.clicks,
                 })}
               </Typography>
             )}
             {cities.length > 0 && (
               <Typography variant="body2" color="text.secondary">
                 {t("geographic.insights.topCityRec", {
-                  city: cities[0].city,
+                  city: cities[0]!.city,
                 })}
               </Typography>
             )}

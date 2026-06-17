@@ -5,11 +5,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
-import type { Dayjs } from "dayjs";
-import dayjs from "dayjs";
 
-import { useAppDispatch } from "@/lib/store/hooks";
-import { showErrorMessage } from "@/lib/store/messageSlice";
 import { linkService } from "@/services";
 import { LinkFormSkeleton } from "@/shared/ui/feedback/skeletons";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
@@ -24,6 +20,8 @@ import {
   defaultLinkFormValues,
 } from "../../components/forms/LinkFormSchema";
 import { useLinkFormMetaSuggestions } from "../../hooks/useLinkFormMetaSuggestions";
+import { useUpdateLink } from "../../hooks/useLinks";
+import { applyBackendFieldErrors } from "../../utils/applyBackendFieldErrors";
 
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
 import type { UrlSafetyStatus } from "../../hooks/useUrlSafetyCheck";
@@ -36,10 +34,9 @@ export function EditLinkForm({
 }: EditLinkFormProps) {
   const theme = useTheme();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const { t } = useTranslation("links");
   const { t: tCommon } = useTranslation("common");
-  const [loading, setLoading] = useState(false);
+  const updateMutation = useUpdateLink(linkId);
   const [fetchingData, setFetchingData] = useState(true);
   const [apiError, setApiError] = useState<string | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -78,9 +75,9 @@ export function EditLinkForm({
     excludeSlug: ownedSlug,
   });
 
-  const convertApiDateToDayjs = (
+  const convertApiDateToDate = (
     dateString: string | null | undefined,
-  ): Dayjs | null => {
+  ): Date | null => {
     if (!dateString) {
       return null;
     }
@@ -90,8 +87,8 @@ export function EditLinkForm({
 
       if (dateString.includes("/")) {
         const [datePart, timePart] = dateString.split(" ");
-        const [day, month, year] = datePart.split("/");
-        const dateIso = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+        const [day, month, year] = (datePart ?? "").split("/");
+        const dateIso = `${year}-${(month ?? "").padStart(2, "0")}-${(day ?? "").padStart(2, "0")}`;
         date = new Date(timePart ? `${dateIso}T${timePart}` : dateIso);
       } else {
         date = new Date(dateString);
@@ -101,7 +98,7 @@ export function EditLinkForm({
         return null;
       }
 
-      return dayjs(date);
+      return date;
     } catch {
       return null;
     }
@@ -121,8 +118,8 @@ export function EditLinkForm({
             custom_slug: linkData.custom_slug || linkData.slug || "",
             description: linkData.description || "",
             is_active: linkData.is_active ?? true,
-            expires_at: convertApiDateToDayjs(linkData.expires_at),
-            starts_in: convertApiDateToDayjs(linkData.starts_in),
+            expires_at: convertApiDateToDate(linkData.expires_at),
+            starts_in: convertApiDateToDate(linkData.starts_in),
             click_limit: linkData.click_limit || null,
             utm_source: linkData.utm_source || "",
             utm_medium: linkData.utm_medium || "",
@@ -152,23 +149,17 @@ export function EditLinkForm({
   }, [linkId, reset, t]);
 
   const convertDateForSubmit = (
-    dateValue: Dayjs | null | undefined,
+    dateValue: Date | null | undefined,
   ): string | undefined => {
     if (!dateValue) {
       return undefined;
     }
 
-    try {
-      if (dayjs.isDayjs(dateValue)) {
-        return dateValue.toISOString();
-      }
-
-      if (typeof dateValue === "string") {
-        return dateValue;
-      }
-    } catch {
-      return undefined;
+    if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
+      return dateValue.toISOString();
     }
+
+    return undefined;
   };
 
   const onSubmit = async (data: LinkFormData) => {
@@ -178,56 +169,32 @@ export function EditLinkForm({
       return;
     }
 
+    setApiError(null);
+
+    const payload = {
+      ...data,
+      expires_at: convertDateForSubmit(data.expires_at),
+      starts_in: convertDateForSubmit(data.starts_in),
+      utm_source: data.utm_source || undefined,
+      utm_medium: data.utm_medium || undefined,
+      utm_campaign: data.utm_campaign || undefined,
+      utm_term: data.utm_term || undefined,
+      utm_content: data.utm_content || undefined,
+    };
+
     try {
-      setLoading(true);
-      setApiError(null);
-
-      const payload = {
-        ...data,
-        expires_at: convertDateForSubmit(data.expires_at),
-        starts_in: convertDateForSubmit(data.starts_in),
-        utm_source: data.utm_source || undefined,
-        utm_medium: data.utm_medium || undefined,
-        utm_campaign: data.utm_campaign || undefined,
-        utm_term: data.utm_term || undefined,
-        utm_content: data.utm_content || undefined,
-      };
-
-      const response = await linkService.update(linkId, payload);
-
+      const response = await updateMutation.mutateAsync(payload);
       onSuccess?.(response);
-
       reset(data);
     } catch (error: unknown) {
-      if (
-        error &&
-        typeof error === "object" &&
-        "response" in error &&
-        (
-          error as {
-            response?: { data?: { errors?: Record<string, string[]> } };
-          }
-        ).response?.data?.errors
-      ) {
-        const backendErrors = (
-          error as { response: { data: { errors: Record<string, string[]> } } }
-        ).response.data.errors;
-        Object.keys(backendErrors).forEach((field) => {
-          setError(field as keyof LinkFormData, {
-            message: backendErrors[field][0],
-          });
-        });
-      } else {
+      // Map 422 field errors inline; only surface a generic inline alert when
+      // the failure wasn't a field-level validation error (the mutation's
+      // onError already raised a toast).
+      if (!applyBackendFieldErrors<LinkFormData>(error, setError)) {
         const errorMessage =
-          (error && typeof error === "object" && "message" in error
-            ? (error.message as string)
-            : null) || t("errors.unexpectedUpdate");
+          error instanceof Error ? error.message : t("errors.unexpectedUpdate");
         setApiError(errorMessage);
-
-        dispatch(showErrorMessage(errorMessage));
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -279,7 +246,7 @@ export function EditLinkForm({
           <LinkFormActionsFooter
             onCancel={handleCancel}
             submitLabel={t("form.submitEdit")}
-            loading={loading}
+            loading={updateMutation.isPending}
             submitDisabled={safetyBlocked}
           />
         }

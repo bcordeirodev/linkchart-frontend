@@ -45,6 +45,26 @@ export const chartByType = {
 } as const;
 
 /**
+ * Rampa sequencial azul (MUI blue) usada pelo heatmap hora×dia.
+ * Mantida separada de `chartByType.heatmap` porque é uma escala claro→escuro
+ * (single-hue) calibrada para a aparência histórica do gráfico, enquanto
+ * `chartByType.heatmap` é uma rampa escuro→claro de propósito geral.
+ * Ordenada por intensidade crescente de cliques.
+ */
+export const heatmapBlueScale = {
+  /** Célula vazia (0 cliques) — fundo neutro por tema. */
+  empty: { dark: "#1e2a3a", light: "#f0f4f8" },
+  /** 1–5 cliques. */
+  low: "#90caf9",
+  /** 6–15 cliques. */
+  medium: "#42a5f5",
+  /** 16–50 cliques — também usada como cor base da série. */
+  high: "#1976d2",
+  /** 51+ cliques. */
+  veryHigh: "#0d47a1",
+} as const;
+
+/**
  * Gradientes leves (ápice + claro) por cor base.
  */
 const gradients: Record<string, readonly [string, string]> = {
@@ -59,7 +79,7 @@ const gradients: Record<string, readonly [string, string]> = {
 };
 
 export function getChartColor(index: number): string {
-  return chartPalette[index % chartPalette.length];
+  return chartPalette[index % chartPalette.length]!;
 }
 
 export function getGradientColors(

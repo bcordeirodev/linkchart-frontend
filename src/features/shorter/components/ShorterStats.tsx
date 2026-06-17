@@ -1,7 +1,7 @@
 "use client";
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -42,7 +42,7 @@ export function ShorterStats() {
           return (
             <Box
               key={stat.value}
-              component={motion.div}
+              component={m.div}
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               transition={{

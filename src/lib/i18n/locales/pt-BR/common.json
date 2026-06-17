@@ -10,7 +10,9 @@
     "signOut": "Sair",
     "signOutDesc": "Até logo!",
     "menuTooltip": "{{name}} - Clique para abrir o menu",
-    "accountMenuAriaLabel": "menu da conta"
+    "accountMenuAriaLabel": "menu da conta",
+    "logoAriaLabel": "Página inicial do Link Charts",
+    "avatarAriaLabel": "Avatar de {{name}}"
   },
   "actions": {
     "save": "Salvar",

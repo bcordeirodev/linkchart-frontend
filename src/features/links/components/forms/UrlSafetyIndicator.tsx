@@ -9,7 +9,8 @@ import {
   ShieldOff,
   XCircle,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
+import type { TFunction } from "i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 
@@ -51,7 +52,7 @@ export function SuccessStatusChip({
 }): ReactNode {
   return (
     <Box
-      component={motion.span}
+      component={m.span}
       initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.22, ease: "easeOut" }}
@@ -227,8 +228,7 @@ export function FormFieldFeedback({
 }
 
 /** Builds URL safety labels from the `links` namespace. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function buildUrlSafetyLabels(t: any): UrlSafetyLabels {
+export function buildUrlSafetyLabels(t: TFunction<"links">): UrlSafetyLabels {
   return {
     checking: t("form.safety.checking") as string,
     safe: t("form.safety.safe") as string,
@@ -238,8 +238,9 @@ export function buildUrlSafetyLabels(t: any): UrlSafetyLabels {
 }
 
 /** Builds slug availability labels from the `links` namespace. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function buildSlugAvailabilityLabels(t: any): SlugAvailabilityLabels {
+export function buildSlugAvailabilityLabels(
+  t: TFunction<"links">,
+): SlugAvailabilityLabels {
   return {
     checking: t("form.slugAvailability.checking") as string,
     available: t("form.slugAvailability.available") as string,
@@ -248,8 +249,9 @@ export function buildSlugAvailabilityLabels(t: any): SlugAvailabilityLabels {
 }
 
 /** Builds URL safety labels from the `public` /shorter namespace. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function buildPublicUrlSafetyLabels(t: any): UrlSafetyLabels {
+export function buildPublicUrlSafetyLabels(
+  t: TFunction<"public">,
+): UrlSafetyLabels {
   return {
     checking: t("shorter.form.safety.checking") as string,
     safe: t("shorter.form.safety.safe") as string,
@@ -260,9 +262,8 @@ export function buildPublicUrlSafetyLabels(t: any): UrlSafetyLabels {
 }
 
 /** Builds slug availability labels from the `public` /shorter namespace. */
-
 export function buildPublicSlugAvailabilityLabels(
-  t: any,
+  t: TFunction<"public">,
 ): SlugAvailabilityLabels {
   return {
     checking: t("shorter.form.slugAvailability.checking") as string,

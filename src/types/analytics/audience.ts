@@ -303,6 +303,30 @@ export interface AudienceData {
 }
 
 /**
+ * Audience analytics response shape consumed by the Audience tab components.
+ *
+ * The components read data in two interchangeable shapes:
+ *  - **hook shape** — the breakdowns live at the top level (this is exactly
+ *    {@link AudienceData}, returned by `useAudienceData`);
+ *  - **legacy shape** — the same breakdowns are nested under an `audience`
+ *    object, accompanied by an `overview` summary.
+ *
+ * Modeling both as optional members of a single interface keeps the
+ * component reads type-safe without an `any` cast: a property access simply
+ * resolves to `T | undefined`, which the existing optional-chaining and
+ * fallback (`||`/`??`) guards already handle.
+ */
+export interface AudienceResponse extends Partial<AudienceData> {
+  /** Legacy nested container; mirrors the top-level {@link AudienceData} fields. */
+  audience?: AudienceData;
+  /** Legacy summary block carrying the aggregate click total. */
+  overview?: {
+    /** Total de cliques no período. */
+    total_clicks?: number;
+  };
+}
+
+/**
  * Estatísticas agregadas de audiência
  *
  * Campos removidos em fix/audience-remove-math-random:

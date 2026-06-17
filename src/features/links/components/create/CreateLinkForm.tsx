@@ -5,10 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
-import type { Dayjs } from "dayjs";
-import dayjs from "dayjs";
-
-import { ApiError } from "@/lib/api/client";
 
 import { LinkFormActionsFooter } from "../../components/forms/LinkFormActionsFooter";
 import { LinkFormFields } from "../../components/forms/LinkFormFields";
@@ -20,6 +16,7 @@ import {
 import { useCopyShortUrlForLink } from "../../hooks/useCopyShortUrlForLink";
 import { useCreateLink } from "../../hooks/useLinks";
 import { useLinkFormMetaSuggestions } from "../../hooks/useLinkFormMetaSuggestions";
+import { applyBackendFieldErrors } from "../../utils/applyBackendFieldErrors";
 
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
 import type { UrlSafetyStatus } from "../../hooks/useUrlSafetyCheck";
@@ -63,23 +60,17 @@ export function CreateLinkForm({
   } = useLinkFormMetaSuggestions({ control, setValue });
 
   const convertDateForSubmit = (
-    dateValue: Dayjs | null | undefined,
+    dateValue: Date | null | undefined,
   ): string | undefined => {
     if (!dateValue) {
       return undefined;
     }
 
-    try {
-      if (dayjs.isDayjs(dateValue)) {
-        return dateValue.toISOString();
-      }
-
-      if (typeof dateValue === "string") {
-        return dateValue;
-      }
-    } catch {
-      return undefined;
+    if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
+      return dateValue.toISOString();
     }
+
+    return undefined;
   };
 
   const onSubmit = async (data: LinkFormData) => {
@@ -106,14 +97,8 @@ export function CreateLinkForm({
       onSuccess?.(response);
       navigate("/links");
     } catch (error: unknown) {
-      if (error instanceof ApiError && error.details?.errors) {
-        const backendErrors = error.details.errors as Record<string, string[]>;
-        Object.keys(backendErrors).forEach((field) => {
-          setError(field as keyof LinkFormData, {
-            message: backendErrors[field][0],
-          });
-        });
-      }
+      // Map 422 field errors inline; the mutation's onError handles the toast.
+      applyBackendFieldErrors<LinkFormData>(error, setError);
     }
   };
 

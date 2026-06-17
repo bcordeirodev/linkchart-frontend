@@ -69,7 +69,7 @@ function ErrorLayout({
         defaultIntent: "warning",
       },
     };
-    return configs[errorType] ?? configs.generic;
+    return configs[errorType] ?? configs.generic!;
   }, [errorType, theme]);
 
   const handleGoBack = () => {

@@ -9,10 +9,18 @@ import { API_CONFIG } from "@/lib/api/endpoints";
 import { linkService } from "@/services";
 import { i18n } from "@/lib/i18n";
 
-import type { LinkCreateRequest, LinkResponse } from "@/types";
+import type {
+  LinkCreateRequest,
+  LinkResponse,
+  LinkUpdateRequest,
+} from "@/types";
 
 interface LinkCreateRequestExtended
   extends LinkCreateRequest,
+    Record<string, unknown> {}
+
+interface LinkUpdateRequestExtended
+  extends LinkUpdateRequest,
     Record<string, unknown> {}
 
 /**
@@ -64,6 +72,41 @@ export function useCreateLink() {
     onError: () => {
       const msg = (i18n.t as (key: string, opts: object) => string)(
         "errors.createLink",
+        { ns: "links" },
+      );
+      dispatch(showMessage({ message: msg, variant: "error" }));
+    },
+  });
+}
+
+/**
+ * Mutation: update an existing link owned by the authenticated user.
+ *
+ * @param id - canonical link id to update.
+ * @endpoint `PUT /api/links/{id}` (via `linkService.update()`)
+ * @invalidates `queryKeys.links.all()` and `queryKeys.links.detail(id)`
+ *
+ * @remarks
+ * Edits MUST go through this hook (never `linkService.update()` directly) so the
+ * links list (`staleTime` 2 min) and the link detail cache are invalidated and
+ * the UI doesn't serve pre-edit data on the next navigation. On error, dispatches
+ * a generic toast; callers may still `catch` to map 422 field errors via
+ * `applyBackendFieldErrors`.
+ */
+export function useUpdateLink(id: string) {
+  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: LinkUpdateRequestExtended) =>
+      linkService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.links.all() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.links.detail(id) });
+    },
+    onError: () => {
+      const msg = (i18n.t as (key: string, opts: object) => string)(
+        "errors.updateLink",
         { ns: "links" },
       );
       dispatch(showMessage({ message: msg, variant: "error" }));

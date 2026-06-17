@@ -3,7 +3,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { ChevronDown } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -147,7 +147,7 @@ export function ShorterFaq() {
                * valid.  Framer-motion drives height 0 ↔ "auto"; `overflow:
                * hidden` clips the content during animation.
                */}
-              <motion.div
+              <m.div
                 id={panelId}
                 role="region"
                 aria-labelledby={triggerId}
@@ -182,7 +182,7 @@ export function ShorterFaq() {
                     {item.a}
                   </Typography>
                 </Box>
-              </motion.div>
+              </m.div>
             </Box>
           );
         })}

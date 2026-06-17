@@ -470,6 +470,7 @@ export function RealTimeHeatmapChart({
                   <IconButton
                     onClick={onRefresh}
                     disabled={loading || !onRefresh}
+                    aria-label={t("geographic.heatmap.refresh")}
                   >
                     <RefreshCw {...ICON_MD} />
                   </IconButton>
@@ -481,7 +482,14 @@ export function RealTimeHeatmapChart({
                       : t("geographic.heatmap.fullscreen")
                   }
                 >
-                  <IconButton onClick={() => setIsFullscreen(!isFullscreen)}>
+                  <IconButton
+                    onClick={() => setIsFullscreen(!isFullscreen)}
+                    aria-label={
+                      isFullscreen
+                        ? t("geographic.heatmap.exitFullscreen")
+                        : t("geographic.heatmap.fullscreen")
+                    }
+                  >
                     <Maximize2 {...ICON_MD} />
                   </IconButton>
                 </Tooltip>

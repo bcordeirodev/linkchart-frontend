@@ -69,7 +69,7 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
     sorted.length > 0 ? Math.round(totalClicks / sorted.length) : 0;
   const maxDay = sorted.reduce(
     (best, d) => (d.clicks > best.clicks ? d : best),
-    sorted[0],
+    sorted[0]!,
   );
 
   const recent = sorted.slice(-7).reduce((s, d) => s + d.clicks, 0);

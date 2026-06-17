@@ -121,18 +121,3 @@ export type {
   InsightsApiResponse,
   InsightContext,
 } from "./insights";
-
-// Re-exports de tipos legados (compatibilidade)
-export type {
-  ClicksByDay,
-  ClicksByCountry,
-  ClicksByCity,
-  ClicksByDevice,
-  ClicksByUserAgent,
-  ClicksByReferer,
-  ClicksByCampaign,
-  ClicksGroupedByLinkAndDay,
-  TopLink,
-  LinksCreatedByDay,
-  LegacyTypeMigrationMap,
-} from "./legacy";

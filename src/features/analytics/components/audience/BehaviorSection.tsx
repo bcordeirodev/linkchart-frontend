@@ -4,6 +4,7 @@ import { Info, Navigation } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { tDynamic } from "@/i18n/tDynamic";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { SectionDivider } from "@/shared/ui/SectionDivider";
@@ -98,11 +99,11 @@ export function BehaviorSection({
         ) : (
           <Stack spacing={2}>
             {data.map((entry) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const label = (t as any)(
+              const label = tDynamic(
+                t,
                 `audience.behavior.contexts.${entry.context}`,
                 { defaultValue: entry.context },
-              ) as string;
+              );
               const color = CONTEXT_COLORS[entry.context] ?? "#94a3b8";
               return (
                 <Box key={entry.context}>

@@ -115,7 +115,7 @@ export function getContextColor(context: string): string {
 export function getMultiSeriesColors(count: number): string[] {
   const colors: string[] = [];
   for (let i = 0; i < count; i++) {
-    colors.push(chartColors.extended[i % chartColors.extended.length]);
+    colors.push(chartColors.extended[i % chartColors.extended.length]!);
   }
   return colors;
 }

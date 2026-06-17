@@ -35,7 +35,7 @@ function calculateStats(audienceData: AudienceData): AudienceStats {
   const totalClicks = devices.reduce((sum, device) => sum + device.clicks, 0);
   const primaryDevice = devices.reduce(
     (max, device) => (device.clicks > max.clicks ? device : max),
-    devices[0],
+    devices[0]!,
   );
 
   return {

@@ -91,12 +91,21 @@ export function Navbar({
         >
           {/* Logo Section */}
           <Box
+            component="button"
+            type="button"
             onClick={() => navigate("/links")}
+            aria-label={t("nav.logoAriaLabel")}
             sx={{
               display: "flex",
               alignItems: "center",
               cursor: "pointer",
               gap: 1.5,
+              p: 0,
+              border: "none",
+              background: "none",
+              font: "inherit",
+              color: "inherit",
+              textAlign: "left",
             }}
           >
             <AppLogo size={36} showText={false} />
@@ -164,6 +173,10 @@ export function Navbar({
                   >
                     <Avatar
                       src={user.photoURL}
+                      alt={user.displayName ?? ""}
+                      aria-label={t("nav.avatarAriaLabel", {
+                        name: user.displayName,
+                      })}
                       sx={{
                         width: 36,
                         height: 36,
@@ -232,6 +245,10 @@ export function Navbar({
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Avatar
                   src={user?.photoURL}
+                  alt={user?.displayName ?? ""}
+                  aria-label={t("nav.avatarAriaLabel", {
+                    name: user?.displayName,
+                  })}
                   sx={{
                     width: 48,
                     height: 48,

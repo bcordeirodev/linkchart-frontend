@@ -5,6 +5,8 @@ import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ApexOptions } from "apexcharts";
 
+import { tDynamic } from "@/i18n/tDynamic";
+
 import {
   elevationLightTokens,
   elevationTokens,
@@ -88,7 +90,7 @@ export function ContinentBreakdown({
       animations: { enabled: true, speed: 400 },
     },
     labels: continents.map((c) =>
-      t(`geographic.continents.${c.continent}` as any, {
+      tDynamic(t, `geographic.continents.${c.continent}`, {
         defaultValue: c.continent_name ?? c.continent,
       }),
     ),
@@ -199,7 +201,7 @@ export function ContinentBreakdown({
                       noWrap
                       sx={{ maxWidth: 120, fontWeight: isActive ? 700 : 400 }}
                     >
-                      {t(`geographic.continents.${c.continent}` as any, {
+                      {tDynamic(t, `geographic.continents.${c.continent}`, {
                         defaultValue: c.continent_name ?? c.continent,
                       })}
                     </Typography>

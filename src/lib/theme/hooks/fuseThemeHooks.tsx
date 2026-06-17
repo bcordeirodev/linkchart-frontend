@@ -5,7 +5,7 @@
  */
 
 import { createTheme } from "@mui/material/styles";
-import _ from "lodash";
+import { merge } from "lodash";
 
 import { useLayoutSettings } from "@/shared/layout/core";
 
@@ -38,7 +38,7 @@ const resolveTheme = (themeKey: string | FuseThemeType): FuseThemeType => {
 
   if (!theme) {
     // Tema não encontrado, usando tema padrão
-    return allThemes.default;
+    return allThemes.default!;
   }
 
   return theme;
@@ -55,7 +55,7 @@ const generateMuiTheme = (
   theme: FuseThemeType,
   direction: Direction,
 ): Theme => {
-  const mergedTheme = _.merge(
+  const mergedTheme = merge(
     {},
     defaultThemeOptions,
     theme,

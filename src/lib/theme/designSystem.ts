@@ -101,8 +101,14 @@ export const layoutSpacing = {
 // ========================================
 
 /**
- * Sistema de border radius padronizado
- * PADRÃO: 12px (theme.spacing(1.5))
+ * Sistema de border radius padronizado, expresso em **unidades de spacing do MUI**
+ * (multiplicadas por `theme.spacing()`), NÃO em pixels.
+ *
+ * @deprecated Use `radiusTokens` (SP2, valores em px) — a escala canônica de radius
+ * da aplicação. `borderRadiusTokens` contradiz `radiusTokens` (ex.: aqui `md = 1`
+ * → 8px via theme.spacing, lá `md = 8` direto em px) e não possui consumidores reais
+ * fora do barrel `lib/theme/index.ts`. Mantido apenas para compatibilidade; não
+ * adicionar novos usos. Será removido após confirmar que nada o importa.
  */
 export const borderRadiusTokens = {
   none: 0,
@@ -139,7 +145,12 @@ export type ColorIntensity = "subtle" | "medium" | "strong";
 // ========================================
 
 /**
- * Durações de animação padronizadas
+ * Durações de animação padronizadas (em milissegundos numéricos).
+ *
+ * @deprecated Use `motionTokens.duration` (SP2, strings tipo "180ms") — a escala de
+ * motion canônica e amplamente consumida. `animationDurations` é a escala legada
+ * (sem consumidores fora do barrel `lib/theme/index.ts`) e contradiz `motionTokens`
+ * tanto no formato quanto nos valores. Não adicionar novos usos.
  */
 export const animationDurations = {
   fast: 150, // ms
@@ -149,7 +160,11 @@ export const animationDurations = {
 } as const;
 
 /**
- * Easings padronizados
+ * Easings padronizados.
+ *
+ * @deprecated Use `motionTokens.easing` (SP2) — a escala de easing canônica e
+ * amplamente consumida. `animationEasings` é a escala legada (sem consumidores fora
+ * do barrel `lib/theme/index.ts`). Não adicionar novos usos.
  */
 export const animationEasings = {
   standard: "cubic-bezier(0.4, 0, 0.2, 1)",
@@ -369,7 +384,11 @@ export const applySpacing = (
 };
 
 /**
- * Helper para aplicar border radius padronizado
+ * Helper para aplicar border radius padronizado.
+ *
+ * @deprecated Baseado em `borderRadiusTokens` (unidades de spacing) — escala legada.
+ * Prefira aplicar `radiusTokens` (px) diretamente em `sx`. Sem consumidores reais
+ * fora do barrel `lib/theme/index.ts`.
  */
 export const applyBorderRadius = (
   theme: Theme,

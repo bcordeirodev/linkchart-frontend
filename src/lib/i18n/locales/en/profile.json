@@ -33,6 +33,8 @@
     "currentHelper": "Enter your current password to confirm the change.",
     "new": "New password",
     "confirm": "Confirm new password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
     "saveButton": "Update password",
     "saveSuccess": "Password updated successfully.",
     "successMessage": "Password changed successfully",
