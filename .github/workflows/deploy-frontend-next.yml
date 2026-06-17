@@ -90,10 +90,13 @@ jobs:
 
       - name: Write production secrets to server
         run: |
+          # Strip stray whitespace/newlines so a pasted trailing space can't
+          # corrupt the API key value in the server .env.
+          GSB_KEY=$(printf '%s' "${{ secrets.GOOGLE_SAFE_BROWSING_KEY }}" | tr -d '[:space:]')
           {
             echo "AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }}"
             echo "AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}"
-            echo "GOOGLE_SAFE_BROWSING_KEY=${{ secrets.GOOGLE_SAFE_BROWSING_KEY }}"
+            echo "GOOGLE_SAFE_BROWSING_KEY=$GSB_KEY"
           } | ssh root@${{ secrets.PRODUCTION_HOST }} "cat > /var/www/linkchart-frontend-next/.env"
 
       - name: Build and start container on server
