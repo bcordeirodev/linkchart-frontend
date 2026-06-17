@@ -186,7 +186,7 @@ export function TrafficQualityChart({ data, embedded = false }: Props) {
         }}
       >
         {sortedTiers.map((entry) => {
-          const color = TIER_COLORS[entry.tier] ?? TIER_COLORS.unknown;
+          const color = TIER_COLORS[entry.tier] ?? TIER_COLORS.unknown ?? "";
           const label = t(`insights.trafficQuality.tiers.${entry.tier}`, {
             defaultValue: entry.tier,
           });

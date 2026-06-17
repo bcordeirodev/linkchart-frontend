@@ -10,7 +10,9 @@
     "signOut": "Sign Out",
     "signOutDesc": "See you later!",
     "menuTooltip": "{{name}} - Click for menu",
-    "accountMenuAriaLabel": "account menu"
+    "accountMenuAriaLabel": "account menu",
+    "logoAriaLabel": "Link Charts home",
+    "avatarAriaLabel": "{{name}}'s avatar"
   },
   "actions": {
     "save": "Save",

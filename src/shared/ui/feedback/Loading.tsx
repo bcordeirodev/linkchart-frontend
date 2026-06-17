@@ -16,7 +16,7 @@ import {
   alpha,
   Fade,
 } from "@mui/material";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useState, useEffect } from "react";
 
 /**
@@ -52,7 +52,7 @@ function DotsLoader({
   return (
     <Box sx={{ display: "flex", gap: 0.5 }}>
       {[0, 1, 2].map((index) => (
-        <motion.div
+        <m.div
           key={index}
           animate={{
             scale: [1, 1.2, 1],
@@ -113,7 +113,7 @@ function LinearLoader({
         position: "relative",
       }}
     >
-      <motion.div
+      <m.div
         animate={{
           x: [-200, 200],
         }}
@@ -213,16 +213,16 @@ export function Loading({
   return (
     <Fade in={showLoading} timeout={300}>
       <Box sx={containerSx}>
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
         >
           {renderLoader()}
-        </motion.div>
+        </m.div>
 
         {text ? (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
@@ -237,7 +237,7 @@ export function Loading({
             >
               {text}
             </Typography>
-          </motion.div>
+          </m.div>
         ) : null}
       </Box>
     </Fade>

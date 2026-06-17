@@ -46,6 +46,9 @@ export function LinkActionsMenu({
         <IconButton
           size="small"
           onClick={handleOpen}
+          aria-label={t("table.actionsMenu")}
+          aria-haspopup="menu"
+          aria-expanded={Boolean(anchor)}
           sx={{
             color: "text.secondary",
             "&:hover": { color: "text.primary", bgcolor: "action.hover" },

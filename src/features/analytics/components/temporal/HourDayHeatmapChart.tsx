@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
+import { heatmapBlueScale } from "@/lib/theme/colors/chart";
 import type { HeatmapSeriesEntry } from "@/types/analytics/temporal";
 
 interface HourDayHeatmapChartProps {
@@ -27,7 +28,7 @@ export function HourDayHeatmapChart({ data }: HourDayHeatmapChartProps) {
       animations: { enabled: true, speed: 600 },
     },
     dataLabels: { enabled: false },
-    colors: ["#1976d2"],
+    colors: [heatmapBlueScale.high],
     plotOptions: {
       heatmap: {
         shadeIntensity: 0.8,
@@ -37,31 +38,33 @@ export function HourDayHeatmapChart({ data }: HourDayHeatmapChartProps) {
             {
               from: 0,
               to: 0,
-              color: isDark ? "#1e2a3a" : "#f0f4f8",
+              color: isDark
+                ? heatmapBlueScale.empty.dark
+                : heatmapBlueScale.empty.light,
               name: t("temporal.heatmap.colorScaleNone"),
             },
             {
               from: 1,
               to: 5,
-              color: "#90caf9",
+              color: heatmapBlueScale.low,
               name: t("temporal.heatmap.colorScaleLow"),
             },
             {
               from: 6,
               to: 15,
-              color: "#42a5f5",
+              color: heatmapBlueScale.medium,
               name: t("temporal.heatmap.colorScaleMedium"),
             },
             {
               from: 16,
               to: 50,
-              color: "#1976d2",
+              color: heatmapBlueScale.high,
               name: t("temporal.heatmap.colorScaleHigh"),
             },
             {
               from: 51,
               to: 99999,
-              color: "#0d47a1",
+              color: heatmapBlueScale.veryHigh,
               name: t("temporal.heatmap.colorScaleVeryHigh"),
             },
           ],

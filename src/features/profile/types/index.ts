@@ -6,7 +6,7 @@
  *  - Frontend-specific user types (UserProfile, UserPreferences, UserSession, UserActivity)
  *  - The UserModel factory used to populate a User with sensible defaults
  */
-import _ from "lodash";
+import { defaults } from "lodash";
 
 import type { User } from "@/types";
 import type { PartialDeep } from "type-fest";
@@ -106,7 +106,7 @@ function UserModel(data?: PartialDeep<User>): User {
   data = data || {};
 
   // Populate missing fields with defaults
-  return _.defaults(data, {
+  return defaults(data, {
     id: null,
     role: null,
     displayName: null,

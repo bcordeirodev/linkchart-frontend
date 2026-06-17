@@ -144,7 +144,7 @@ export function SessionDepthChart({
           val: number,
           { dataPointIndex }: { dataPointIndex: number },
         ) => {
-          const item = data.session_distribution[dataPointIndex];
+          const item = data.session_distribution[dataPointIndex]!;
           return `${item.frequency} ${t("insights.session.sessionsUnit")} (${val}%)`;
         },
       },

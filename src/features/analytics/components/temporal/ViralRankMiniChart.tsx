@@ -45,10 +45,6 @@ export function ViralRankMiniChart({ data }: Props) {
 
   // Show the chart when any data exists (including unranked pre-Phase 2 clicks).
   // Previously hidden when all days were 'cold' — now we also surface 'unranked' days.
-  const hasNonCold = useMemo(
-    () => data?.some((d) => d.peak_rank !== "cold") ?? false,
-    [data],
-  );
   const hasAnyData = useMemo(() => (data?.length ?? 0) > 0, [data]);
 
   const peakDay = useMemo(() => {
@@ -112,7 +108,7 @@ export function ViralRankMiniChart({ data }: Props) {
           formatter: (_: unknown, opts?: { dataPointIndex?: number }) => {
             const idx = opts?.dataPointIndex;
             if (idx === undefined || !data) return "";
-            const d = data[idx];
+            const d = data[idx]!;
             const rankLabel = t(`temporal.viralRank.ranks.${d.peak_rank}`);
             return `${d.date} · ${rankLabel}`;
           },

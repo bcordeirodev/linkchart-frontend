@@ -9,6 +9,12 @@ import { AudienceChart } from "./AudienceChart";
 import { AudienceMetrics } from "./AudienceMetrics";
 
 import type { AudienceAnalysisProps } from "@/types/analytics";
+import type {
+  AudienceResponse,
+  ConnectionTypeBreakdown,
+  LanguageBreakdown,
+  PlatformBreakdown,
+} from "@/types/analytics/audience";
 
 /**
  * Loading skeleton that mirrors the Audience tab layout:
@@ -67,8 +73,54 @@ function AudienceSkeleton() {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyData = Record<string, any>;
+/**
+ * Picks the language breakdown from the top-level field, falling back to the
+ * legacy nested `audience` container. The backend may return either the
+ * phase-aware object form or the legacy flat array; both are accepted by the
+ * downstream `LanguageBreakdownCard` (which normalises internally), so the
+ * value is forwarded as-is and typed to the card's union prop.
+ *
+ * @param data - The resolved audience response (hook or legacy shape).
+ * @returns The language breakdown in either shape, or `undefined`.
+ */
+function resolveLanguageBreakdown(
+  data: AudienceResponse | undefined,
+): LanguageBreakdown | undefined {
+  const value = data?.language_breakdown ?? data?.audience?.language_breakdown;
+  return value as LanguageBreakdown | undefined;
+}
+
+/**
+ * Picks the platform breakdown from the top-level field, falling back to the
+ * legacy nested `audience` container. Accepts both the phase-aware object form
+ * and the legacy flat array (handled downstream).
+ *
+ * @param data - The resolved audience response (hook or legacy shape).
+ * @returns The platform breakdown in either shape, or `undefined`.
+ */
+function resolvePlatformBreakdown(
+  data: AudienceResponse | undefined,
+): PlatformBreakdown | undefined {
+  const value = data?.platform_breakdown ?? data?.audience?.platform_breakdown;
+  return value as PlatformBreakdown | undefined;
+}
+
+/**
+ * Picks the connection-type breakdown from the top-level field, falling back to
+ * the legacy nested `audience` container. Accepts both the phase-aware object
+ * form and the legacy flat array (handled downstream).
+ *
+ * @param data - The resolved audience response (hook or legacy shape).
+ * @returns The connection-type breakdown in either shape, or `undefined`.
+ */
+function resolveConnectionBreakdown(
+  data: AudienceResponse | undefined,
+): ConnectionTypeBreakdown | undefined {
+  const value =
+    data?.connection_type_breakdown ??
+    data?.audience?.connection_type_breakdown;
+  return value as ConnectionTypeBreakdown | undefined;
+}
 
 interface LegacyAudienceAnalysisProps {
   data?: unknown;
@@ -116,15 +168,19 @@ export function AudienceAnalysis({
     excludeBots,
   });
 
-  const audienceData = shouldUseHook ? hookData : legacyData;
+  // Both the hook result (top-level breakdowns) and the legacy payload
+  // (breakdowns nested under `audience`) are covered by AudienceResponse, so
+  // every read below resolves to `T | undefined` and is handled by the
+  // existing optional-chaining / fallback guards — no `any` cast required.
+  const audienceData = (shouldUseHook ? hookData : legacyData) as
+    | AudienceResponse
+    | undefined;
   const deviceBreakdown =
-    (audienceData as AnyData)?.audience?.device_breakdown ||
-    (audienceData as AnyData)?.device_breakdown ||
+    audienceData?.audience?.device_breakdown ||
+    audienceData?.device_breakdown ||
     [];
   const totalClicks =
-    (audienceData as AnyData)?.overview?.total_clicks ||
-    stats?.totalClicks ||
-    0;
+    audienceData?.overview?.total_clicks || stats?.totalClicks || 0;
 
   return (
     <Box>
@@ -149,44 +205,31 @@ export function AudienceAnalysis({
           {/* 2. Main tabbed chart — every audience dataset lives in a sub-tab */}
           <AudienceChart
             deviceBreakdown={deviceBreakdown}
-            browserBreakdown={(audienceData as AnyData)?.browser_breakdown}
-            osBreakdown={(audienceData as AnyData)?.os_breakdown}
+            browserBreakdown={audienceData?.browser_breakdown}
+            osBreakdown={audienceData?.os_breakdown}
             totalClicks={totalClicks}
-            browsers={(audienceData as AnyData)?.browsers}
-            operatingSystems={(audienceData as AnyData)?.operating_systems}
-            devicePerformance={(audienceData as AnyData)?.device_performance}
-            languages={(audienceData as AnyData)?.languages}
+            browsers={audienceData?.browsers}
+            operatingSystems={audienceData?.operating_systems}
+            devicePerformance={audienceData?.device_performance}
+            languages={audienceData?.languages}
             renderingEngine={(() => {
-              const re = (audienceData as AnyData)?.rendering_engine;
+              const re = audienceData?.rendering_engine;
               return Array.isArray(re) ? re : re?.data;
             })()}
             quality={
-              (audienceData as AnyData)?.quality_breakdown?.tiers !== undefined
-                ? (audienceData as AnyData).quality_breakdown
+              audienceData?.quality_breakdown?.tiers !== undefined
+                ? audienceData?.quality_breakdown
                 : undefined
             }
             showAdvancedInsights={shouldUseHook}
-            navigationContext={
-              (audienceData as AnyData)?.navigation_context_breakdown
-            }
-            socialPlatforms={
-              (audienceData as AnyData)?.social_platform_breakdown
-            }
-            languageBreakdown={
-              (audienceData as AnyData)?.language_breakdown ??
-              (audienceData as AnyData)?.audience?.language_breakdown
-            }
-            platformBreakdown={
-              (audienceData as AnyData)?.platform_breakdown ??
-              (audienceData as AnyData)?.audience?.platform_breakdown
-            }
-            connectionBreakdown={
-              (audienceData as AnyData)?.connection_type_breakdown ??
-              (audienceData as AnyData)?.audience?.connection_type_breakdown
-            }
+            navigationContext={audienceData?.navigation_context_breakdown}
+            socialPlatforms={audienceData?.social_platform_breakdown}
+            languageBreakdown={resolveLanguageBreakdown(audienceData)}
+            platformBreakdown={resolvePlatformBreakdown(audienceData)}
+            connectionBreakdown={resolveConnectionBreakdown(audienceData)}
             fetchDestBreakdown={
-              (audienceData as AnyData)?.fetch_dest_breakdown ??
-              (audienceData as AnyData)?.audience?.fetch_dest_breakdown
+              audienceData?.fetch_dest_breakdown ??
+              audienceData?.audience?.fetch_dest_breakdown
             }
             activeTab={subTabIndex}
             onTabChange={onSubTabChange}

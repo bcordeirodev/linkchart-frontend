@@ -24,14 +24,12 @@ import { showMessage } from "@/lib/store/messageSlice";
 import { authService } from "@/services/auth.service";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
-// Base schema type (without translations)
-const _basePasswordSchema = z.object({
-  current_password: z.string().min(1),
-  new_password: z.string().min(8),
-  new_password_confirmation: z.string().min(1),
-});
-
-type PasswordChangeFormData = z.infer<typeof _basePasswordSchema>;
+/** Dados do formulário de alteração de senha. */
+interface PasswordChangeFormData {
+  current_password: string;
+  new_password: string;
+  new_password_confirmation: string;
+}
 
 /**
  * Formulário de alteração de senha
@@ -144,6 +142,7 @@ export function PasswordChangeForm() {
             {/* Senha Atual */}
             <TextField
               {...register("current_password")}
+              id="current-password"
               label={t("password.current")}
               type={showPasswords.current ? "text" : "password"}
               error={!!errors.current_password}
@@ -162,6 +161,12 @@ export function PasswordChangeForm() {
                       onClick={() => togglePasswordVisibility("current")}
                       edge="end"
                       size="small"
+                      aria-label={
+                        showPasswords.current
+                          ? t("password.hidePassword")
+                          : t("password.showPassword")
+                      }
+                      aria-pressed={showPasswords.current}
                       sx={{ color: "text.secondary" }}
                     >
                       {showPasswords.current ? (
@@ -178,6 +183,7 @@ export function PasswordChangeForm() {
             {/* Nova Senha */}
             <TextField
               {...register("new_password")}
+              id="new-password"
               label={t("password.new")}
               type={showPasswords.new ? "text" : "password"}
               error={!!errors.new_password}
@@ -196,6 +202,12 @@ export function PasswordChangeForm() {
                       onClick={() => togglePasswordVisibility("new")}
                       edge="end"
                       size="small"
+                      aria-label={
+                        showPasswords.new
+                          ? t("password.hidePassword")
+                          : t("password.showPassword")
+                      }
+                      aria-pressed={showPasswords.new}
                       sx={{ color: "text.secondary" }}
                     >
                       {showPasswords.new ? (
@@ -212,6 +224,7 @@ export function PasswordChangeForm() {
             {/* Confirmação da Nova Senha */}
             <TextField
               {...register("new_password_confirmation")}
+              id="new-password-confirmation"
               label={t("password.confirm")}
               type={showPasswords.confirm ? "text" : "password"}
               error={!!errors.new_password_confirmation}
@@ -230,6 +243,12 @@ export function PasswordChangeForm() {
                       onClick={() => togglePasswordVisibility("confirm")}
                       edge="end"
                       size="small"
+                      aria-label={
+                        showPasswords.confirm
+                          ? t("password.hidePassword")
+                          : t("password.showPassword")
+                      }
+                      aria-pressed={showPasswords.confirm}
                       sx={{ color: "text.secondary" }}
                     >
                       {showPasswords.confirm ? (

@@ -14,9 +14,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Controller, useWatch } from "react-hook-form";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import "dayjs/locale/en-gb";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers";
 
 import useThemeMediaQuery from "@/shared/hooks/useThemeMediaQuery";
 import { useSubdomain } from "@/features/profile/hooks/useSubdomain";
@@ -122,6 +120,7 @@ export function LinkFormFields({
         <Stack spacing={2}>
           <Box>
             <FormLabel
+              htmlFor="link-form-original-url"
               required
               error={!!errors.original_url || urlIsUnsafe}
               sx={{ display: "block", mb: 0.75 }}
@@ -134,6 +133,7 @@ export function LinkFormFields({
               render={({ field }) => (
                 <TextField
                   {...field}
+                  id="link-form-original-url"
                   fullWidth
                   placeholder={t("form.originalUrlPlaceholder")}
                   error={!!errors.original_url || urlIsUnsafe}
@@ -167,6 +167,7 @@ export function LinkFormFields({
 
           <Box>
             <FormLabel
+              htmlFor="link-form-custom-slug"
               error={!!errors.custom_slug}
               sx={{ display: "block", mb: 0.75 }}
             >
@@ -183,6 +184,7 @@ export function LinkFormFields({
                 return (
                   <TextField
                     {...field}
+                    id="link-form-custom-slug"
                     fullWidth
                     placeholder={
                       showSuggestion
@@ -251,6 +253,7 @@ export function LinkFormFields({
 
           <Box>
             <FormLabel
+              htmlFor="link-form-title"
               error={!!errors.title}
               sx={{ display: "block", mb: 0.75 }}
             >
@@ -266,6 +269,7 @@ export function LinkFormFields({
                 return (
                   <TextField
                     {...field}
+                    id="link-form-title"
                     fullWidth
                     placeholder={
                       showTitleSuggestion
@@ -290,6 +294,7 @@ export function LinkFormFields({
 
           <Box>
             <FormLabel
+              htmlFor="link-form-description"
               error={!!errors.description}
               sx={{ display: "block", mb: 0.75 }}
             >
@@ -301,6 +306,7 @@ export function LinkFormFields({
               render={({ field }) => (
                 <TextField
                   {...field}
+                  id="link-form-description"
                   fullWidth
                   multiline
                   rows={3}
@@ -323,6 +329,7 @@ export function LinkFormFields({
           <Grid item xs={12} md={6}>
             <Box>
               <FormLabel
+                htmlFor="link-form-click-limit"
                 error={!!errors.click_limit}
                 sx={{ display: "block", mb: 0.75 }}
               >
@@ -334,6 +341,7 @@ export function LinkFormFields({
                 render={({ field: { onChange, value, ...field } }) => (
                   <TextField
                     {...field}
+                    id="link-form-click-limit"
                     fullWidth
                     type="number"
                     placeholder={t("form.clickLimitPlaceholder")}
@@ -357,6 +365,7 @@ export function LinkFormFields({
           <Grid item xs={12} md={6}>
             <Box>
               <FormLabel
+                htmlFor="link-form-starts-in"
                 error={!!errors.starts_in}
                 sx={{ display: "block", mb: 0.75 }}
               >
@@ -366,24 +375,20 @@ export function LinkFormFields({
                 name="starts_in"
                 control={control}
                 render={({ field: { value, ...field } }) => (
-                  <LocalizationProvider
-                    dateAdapter={AdapterDayjs}
-                    adapterLocale="en-gb"
-                  >
-                    <DateTimePicker
-                      {...field}
-                      value={value ?? null}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: !!errors.starts_in,
-                          helperText:
-                            errors.starts_in?.message ||
-                            t("form.startDateHelper"),
-                        },
-                      }}
-                    />
-                  </LocalizationProvider>
+                  <DateTimePicker
+                    {...field}
+                    value={value ?? null}
+                    slotProps={{
+                      textField: {
+                        id: "link-form-starts-in",
+                        fullWidth: true,
+                        error: !!errors.starts_in,
+                        helperText:
+                          errors.starts_in?.message ||
+                          t("form.startDateHelper"),
+                      },
+                    }}
+                  />
                 )}
               />
             </Box>
@@ -392,6 +397,7 @@ export function LinkFormFields({
           <Grid item xs={12} md={6}>
             <Box>
               <FormLabel
+                htmlFor="link-form-expires-at"
                 error={!!errors.expires_at}
                 sx={{ display: "block", mb: 0.75 }}
               >
@@ -401,24 +407,20 @@ export function LinkFormFields({
                 name="expires_at"
                 control={control}
                 render={({ field: { value, ...field } }) => (
-                  <LocalizationProvider
-                    dateAdapter={AdapterDayjs}
-                    adapterLocale="en-gb"
-                  >
-                    <DateTimePicker
-                      {...field}
-                      value={value}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: !!errors.expires_at,
-                          helperText:
-                            errors.expires_at?.message ||
-                            t("form.expiresAtHelper"),
-                        },
-                      }}
-                    />
-                  </LocalizationProvider>
+                  <DateTimePicker
+                    {...field}
+                    value={value}
+                    slotProps={{
+                      textField: {
+                        id: "link-form-expires-at",
+                        fullWidth: true,
+                        error: !!errors.expires_at,
+                        helperText:
+                          errors.expires_at?.message ||
+                          t("form.expiresAtHelper"),
+                      },
+                    }}
+                  />
                 )}
               />
             </Box>
@@ -454,6 +456,7 @@ export function LinkFormFields({
           <Grid item xs={12} md={6}>
             <Box>
               <FormLabel
+                htmlFor="link-form-utm-source"
                 error={!!errors.utm_source}
                 sx={{ display: "block", mb: 0.75 }}
               >
@@ -465,6 +468,7 @@ export function LinkFormFields({
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    id="link-form-utm-source"
                     fullWidth
                     placeholder={t("form.utmSourcePlaceholder")}
                     error={!!errors.utm_source}
@@ -480,6 +484,7 @@ export function LinkFormFields({
           <Grid item xs={12} md={6}>
             <Box>
               <FormLabel
+                htmlFor="link-form-utm-medium"
                 error={!!errors.utm_medium}
                 sx={{ display: "block", mb: 0.75 }}
               >
@@ -491,6 +496,7 @@ export function LinkFormFields({
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    id="link-form-utm-medium"
                     fullWidth
                     placeholder={t("form.utmMediumPlaceholder")}
                     error={!!errors.utm_medium}
@@ -506,6 +512,7 @@ export function LinkFormFields({
           <Grid item xs={12} md={6}>
             <Box>
               <FormLabel
+                htmlFor="link-form-utm-campaign"
                 error={!!errors.utm_campaign}
                 sx={{ display: "block", mb: 0.75 }}
               >
@@ -517,6 +524,7 @@ export function LinkFormFields({
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    id="link-form-utm-campaign"
                     fullWidth
                     placeholder={t("form.utmCampaignPlaceholder")}
                     error={!!errors.utm_campaign}
@@ -533,6 +541,7 @@ export function LinkFormFields({
           <Grid item xs={12} md={6}>
             <Box>
               <FormLabel
+                htmlFor="link-form-utm-term"
                 error={!!errors.utm_term}
                 sx={{ display: "block", mb: 0.75 }}
               >
@@ -544,6 +553,7 @@ export function LinkFormFields({
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    id="link-form-utm-term"
                     fullWidth
                     placeholder={t("form.utmTermPlaceholder")}
                     error={!!errors.utm_term}
@@ -559,6 +569,7 @@ export function LinkFormFields({
           <Grid item xs={12}>
             <Box>
               <FormLabel
+                htmlFor="link-form-utm-content"
                 error={!!errors.utm_content}
                 sx={{ display: "block", mb: 0.75 }}
               >
@@ -570,6 +581,7 @@ export function LinkFormFields({
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    id="link-form-utm-content"
                     fullWidth
                     placeholder={t("form.utmContentPlaceholder")}
                     error={!!errors.utm_content}

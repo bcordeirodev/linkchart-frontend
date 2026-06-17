@@ -52,7 +52,7 @@ export function AudienceInsights({
     deviceBreakdown.length > 0
       ? deviceBreakdown.reduce(
           (max, device) => (device.clicks > max.clicks ? device : max),
-          deviceBreakdown[0],
+          deviceBreakdown[0]!,
         )
       : { device: "--", clicks: 0 };
 

@@ -2,6 +2,7 @@
 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { LazyMotion, domAnimation } from "framer-motion";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { enUS } from "date-fns/locale/en-US";
 import { ptBR } from "date-fns/locale/pt-BR";
@@ -58,7 +59,11 @@ export function Providers({ children, initialLang = "en" }: ProvidersProps) {
                       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                       style={{ zIndex: 99 }}
                     >
-                      {children}
+                      {/* strict: only the lightweight `m` component is allowed
+                          (full `motion` would defeat the lazy feature split). */}
+                      <LazyMotion features={domAnimation} strict>
+                        {children}
+                      </LazyMotion>
                     </SnackbarProvider>
                   </MainThemeProvider>
                 </LayoutProvider>

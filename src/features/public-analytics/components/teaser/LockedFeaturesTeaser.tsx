@@ -46,13 +46,13 @@ function FauxHeatmapGrid({ colors }: { colors: string[] }) {
     >
       {Array.from({ length: rows * cols }).map((_, i) => {
         const colorIdx = i % colors.length;
-        const intensity = intensities[i % intensities.length];
+        const intensity = intensities[i % intensities.length]!;
         return (
           <Box
             key={i}
             sx={{
               borderRadius: "2px",
-              bgcolor: alpha(colors[colorIdx], intensity),
+              bgcolor: alpha(colors[colorIdx] ?? "", intensity),
             }}
           />
         );
@@ -84,7 +84,7 @@ function FauxUtmBars({ colors }: { colors: string[] }) {
               flexShrink: 0,
               height: "6px",
               borderRadius: "3px",
-              bgcolor: alpha(colors[colorIdx], 0.25),
+              bgcolor: alpha(colors[colorIdx] ?? "", 0.25),
             }}
           />
           <Box
@@ -92,7 +92,7 @@ function FauxUtmBars({ colors }: { colors: string[] }) {
               flex: 1,
               height: "8px",
               borderRadius: "4px",
-              bgcolor: alpha(colors[colorIdx], 0.18),
+              bgcolor: alpha(colors[colorIdx] ?? "", 0.18),
               overflow: "hidden",
             }}
           >
@@ -196,7 +196,7 @@ function FauxDeviceDonut({ colors }: { colors: string[] }) {
                 width: 32,
                 height: "5px",
                 borderRadius: "3px",
-                bgcolor: alpha(colors[i], 0.3),
+                bgcolor: alpha(colors[i] ?? "", 0.3),
               }}
             />
           </Box>

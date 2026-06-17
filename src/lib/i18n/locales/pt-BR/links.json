@@ -50,6 +50,7 @@
     "status": "Status",
     "created": "Criado em",
     "actions": "Ações",
+    "actionsMenu": "Ações do link",
     "noResults": "Nenhum link corresponde à sua pesquisa.",
     "noFilterResultsDesc": "Tente remover ou ajustar os filtros aplicados.",
     "directSource": "Direto",

@@ -60,7 +60,7 @@ export const getShadowByIntensity = (
   };
 
   const shadowIndex = Math.min(shadowMap[intensity], theme.shadows.length - 1);
-  return theme.shadows[shadowIndex];
+  return theme.shadows[shadowIndex]!;
 };
 
 /**

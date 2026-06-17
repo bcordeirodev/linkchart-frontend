@@ -1,5 +1,4 @@
-import type { Dayjs } from "dayjs";
-import dayjs from "dayjs";
+import { addYears } from "date-fns";
 import { z } from "zod";
 
 type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
@@ -50,13 +49,13 @@ export function createLinkFormSchema(t: TranslateFn) {
         .or(z.literal("")),
 
       expires_at: z
-        .custom<Dayjs | null>((val) => {
-          return val === null || dayjs.isDayjs(val);
+        .custom<Date | null>((val) => {
+          return val === null || val instanceof Date;
         }, t("form.validation.dateInvalid"))
         .refine(
           (val) => {
             if (!val) return true;
-            return val.toDate() <= dayjs().add(5, "year").toDate();
+            return val <= addYears(new Date(), 5);
           },
           { message: t("form.validation.expiresMax") },
         )
@@ -64,8 +63,8 @@ export function createLinkFormSchema(t: TranslateFn) {
         .nullable(),
 
       starts_in: z
-        .custom<Dayjs | null>((val) => {
-          return val === null || dayjs.isDayjs(val);
+        .custom<Date | null>((val) => {
+          return val === null || val instanceof Date;
         }, t("form.validation.dateInvalid"))
         .optional()
         .nullable(),
@@ -109,7 +108,7 @@ export function createLinkFormSchema(t: TranslateFn) {
     .refine(
       (data) => {
         if (!data.starts_in || !data.expires_at) return true;
-        return data.starts_in.toDate() < data.expires_at.toDate();
+        return data.starts_in < data.expires_at;
       },
       {
         message: t("form.validation.startsBeforeExpires"),

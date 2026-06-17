@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       "@mui/material",
       "@mui/icons-material",
       "lucide-react",
+      "lodash",
     ],
   },
   // Proxy /api/* to backend. API_URL is a server-only runtime env var (not baked into

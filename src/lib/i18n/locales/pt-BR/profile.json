@@ -33,6 +33,8 @@
     "currentHelper": "Insira sua senha atual para confirmar a alteração.",
     "new": "Nova senha",
     "confirm": "Confirmar nova senha",
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Ocultar senha",
     "saveButton": "Atualizar senha",
     "saveSuccess": "Senha atualizada com sucesso.",
     "successMessage": "Senha alterada com sucesso",

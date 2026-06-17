@@ -1,5 +1,5 @@
 "use client";
-import _ from "lodash";
+import { isEqual } from "lodash";
 import { useMemo } from "react";
 
 import { useAuth } from "./AuthContext";
@@ -64,7 +64,7 @@ function useUser(): useUser {
       settings: newSettings,
     };
 
-    if (_.isEqual(user, newUser)) {
+    if (isEqual(user, newUser)) {
       return undefined;
     }
 

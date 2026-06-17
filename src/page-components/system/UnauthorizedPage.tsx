@@ -2,7 +2,7 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
@@ -44,7 +44,7 @@ function UnauthorizedPage() {
       }}
     >
       <Box sx={{ width: "100%", maxWidth: 1024, textAlign: "center" }}>
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.6 }}
           animate={{ opacity: 1, scale: 1, transition: { delay: 0.1 } }}
         >
@@ -97,8 +97,8 @@ function UnauthorizedPage() {
             />
             <circle cx="707.33457" cy="86.21811" r="4.42144" fill="#fff" />
           </Box>
-        </motion.div>
-        <motion.div
+        </m.div>
+        <m.div
           initial={{
             opacity: 0,
             y: 40,
@@ -122,8 +122,8 @@ function UnauthorizedPage() {
           >
             401
           </Typography>
-        </motion.div>
-        <motion.div
+        </m.div>
+        <m.div
           initial={{
             opacity: 0,
             y: 40,
@@ -147,8 +147,8 @@ function UnauthorizedPage() {
           >
             {t("unauthorized.description")}
           </Typography>
-        </motion.div>
-        <motion.div
+        </m.div>
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
           style={{
@@ -193,7 +193,7 @@ function UnauthorizedPage() {
               </Box>
             </>
           )}
-        </motion.div>
+        </m.div>
       </Box>
     </Box>
   );

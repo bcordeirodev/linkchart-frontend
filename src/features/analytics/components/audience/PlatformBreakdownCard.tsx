@@ -4,6 +4,7 @@ import { Info } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { tDynamic } from "@/i18n/tDynamic";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -118,8 +119,7 @@ export function PlatformBreakdownCard({
                     }}
                   >
                     <Typography variant="caption">
-                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                      {(t as any)(`audience.chMobile.${key}`)}
+                      {tDynamic(t, `audience.chMobile.${key}`)}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {pct}%

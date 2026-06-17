@@ -369,6 +369,7 @@ export function SubdomainSettings() {
 
           <Box>
             <FormLabel
+              htmlFor="subdomain-label"
               sx={{
                 display: "block",
                 mb: 0.75,
@@ -379,6 +380,7 @@ export function SubdomainSettings() {
               {t("subdomain.inputLabel")}
             </FormLabel>
             <TextField
+              id="subdomain-label"
               value={inputValue}
               onChange={(e) => handleInputChange(e.target.value)}
               placeholder={t("subdomain.inputPlaceholder")}

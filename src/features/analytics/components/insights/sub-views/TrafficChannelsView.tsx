@@ -110,7 +110,7 @@ export function TrafficChannelsView({
       theme: theme.palette.mode,
       y: {
         formatter: (val: number, { seriesIndex }: { seriesIndex: number }) => {
-          const channel = channels[seriesIndex];
+          const channel = channels[seriesIndex]!;
           return `${channel.clicks} (${val.toFixed(1)}%)`;
         },
       },
@@ -236,7 +236,8 @@ export function TrafficChannelDetailsView({
       <Stack spacing={1.25}>
         {channels.map((channel) => {
           const pct = safePercent(channel.percentage);
-          const color = channelColors[channel.channel] || channelColors.other;
+          const color =
+            channelColors[channel.channel] || channelColors.other || "";
 
           return (
             <Box key={channel.channel} sx={{ ...tileSx, p: 1.5 }}>

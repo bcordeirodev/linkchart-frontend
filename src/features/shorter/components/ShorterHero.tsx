@@ -1,6 +1,6 @@
 "use client";
 import { Box, Typography, useTheme } from "@mui/material";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
 import { getPublicDisplaySx } from "@/lib/theme/publicPageStyles";
@@ -24,7 +24,7 @@ export function ShorterHero({ state }: ShorterHeroProps) {
     <Box
       sx={{ textAlign: "center", mb: { xs: 4, md: 5 }, mt: { xs: 1, md: 2 } }}
     >
-      <motion.div {...fadeUp(0.1)}>
+      <m.div {...fadeUp(0.1)}>
         <Typography
           component="h1"
           sx={{
@@ -51,9 +51,9 @@ export function ShorterHero({ state }: ShorterHeroProps) {
             t("shorter.heroTitle")
           )}
         </Typography>
-      </motion.div>
+      </m.div>
 
-      <motion.div {...fadeUp(0.18)}>
+      <m.div {...fadeUp(0.18)}>
         <Typography
           sx={{
             fontSize: "0.9375rem",
@@ -65,7 +65,7 @@ export function ShorterHero({ state }: ShorterHeroProps) {
         >
           {isSuccess ? t("shorter.autoRedirect") : t("shorter.heroSubtitle")}
         </Typography>
-      </motion.div>
+      </m.div>
     </Box>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import _ from "lodash";
+import { defaults as applyDefaults } from "lodash";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -95,7 +95,7 @@ function DataTable<TData extends Record<string, any>>(
 
   const defaults = useMemo(
     () =>
-      _.defaults(rest, {
+      applyDefaults(rest, {
         columns: columns || [],
         initialState: {
           density: "spacious",

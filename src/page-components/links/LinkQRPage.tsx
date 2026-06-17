@@ -21,7 +21,6 @@ interface Props {
 
 function LinkQRPage({ id }: Props) {
   const navigate = useNavigate();
-  const { t } = useTranslation("links");
   const { t: tPublic } = useTranslation("public");
   const {
     data: rawLink,

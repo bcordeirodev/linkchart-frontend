@@ -75,7 +75,10 @@ function MainThemeProvider({ children }: MainThemeProviderProps) {
 
   // Cache otimizado baseado na direção do texto
   const cacheProviderValue = useMemo(
-    () => createCache(emotionCacheOptions[langDirection]),
+    () =>
+      createCache(
+        emotionCacheOptions[langDirection] ?? emotionCacheOptions.ltr!,
+      ),
     [langDirection],
   );
 

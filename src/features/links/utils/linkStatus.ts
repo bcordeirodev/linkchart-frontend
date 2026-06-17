@@ -38,8 +38,8 @@ function parseBackendDate(dateStr: string): Date | null {
   if (!dateStr) return null;
   if (dateStr.includes("/")) {
     const [datePart, timePart] = dateStr.split(" ");
-    const [day, month, year] = datePart.split("/");
-    const iso = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}T${timePart ?? "00:00:00"}`;
+    const [day, month, year] = (datePart ?? "").split("/");
+    const iso = `${year}-${(month ?? "").padStart(2, "0")}-${(day ?? "").padStart(2, "0")}T${timePart ?? "00:00:00"}`;
     const d = new Date(iso);
     return isNaN(d.getTime()) ? null : d;
   }

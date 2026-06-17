@@ -4,7 +4,7 @@ import type React from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { Globe, Link2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -149,7 +149,7 @@ export function URLShortenerForm({
   };
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 28 }}
       animate={{
         opacity: isLoading ? 0.7 : 1,
@@ -324,7 +324,7 @@ export function URLShortenerForm({
 
         <ShortenSubmitButton loading={isLoading} safetyStatus={safetyStatus} />
       </Box>
-    </motion.div>
+    </m.div>
   );
 }
 

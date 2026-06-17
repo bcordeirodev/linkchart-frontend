@@ -91,7 +91,7 @@ export function LinkAnalyticsTabsOptimized({
 
   /** Converts a MUI Tabs numeric index back to a named TabId. */
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    filters.setTab(TAB_IDS[newValue]);
+    filters.setTab(TAB_IDS[newValue] ?? "overview");
   };
 
   /** Ordered tab metadata used to render the nav row and the panel headers. */
@@ -142,7 +142,7 @@ export function LinkAnalyticsTabsOptimized({
   const tabPanel = (id: TabId, children: React.ReactNode) => {
     if (!visitedTabs.has(id)) return null;
     const index = TAB_IDS.indexOf(id);
-    const meta = tabLabels[index];
+    const meta = tabLabels[index]!;
     const HeaderIcon = meta.Icon;
     return (
       <Box
