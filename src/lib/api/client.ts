@@ -268,6 +268,7 @@ class ApiClient {
         method: "POST",
         headers,
         body: formData,
+        credentials: "include",
         signal: controller.signal,
       });
       clearTimeout(timer);
@@ -298,6 +299,9 @@ class ApiClient {
         method: init.method,
         headers,
         body,
+        // Send the httpOnly auth_token cookie (set by the backend on
+        // auth0-exchange) so requests authenticate without a JS-readable token.
+        credentials: "include",
         signal: controller.signal,
       });
       clearTimeout(timer);
@@ -400,7 +404,10 @@ class ApiClient {
 
   private async buildHeaders(
     custom?: HeadersInit,
-    auth = true,
+    // Retained for call-site compatibility. Authentication now travels via the
+    // httpOnly `auth_token` cookie (sent with `credentials: "include"`), so no
+    // Authorization header is built from client-readable storage.
+    _auth = true,
   ): Promise<Record<string, string>> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -413,42 +420,7 @@ class ApiClient {
       headers["Origin"] = window.location.origin;
     }
 
-    if (auth) {
-      const token = await this.readToken();
-
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-    }
-
     return headers;
-  }
-
-  private async readToken(): Promise<string | null> {
-    if (typeof window === "undefined") {
-      return null;
-    }
-
-    try {
-      const direct = localStorage.getItem("token");
-
-      if (direct) {
-        return direct;
-      }
-
-      const user = localStorage.getItem("user");
-
-      if (user) {
-        const parsed = JSON.parse(user) as {
-          token?: string;
-          accessToken?: string;
-        };
-        return parsed.token ?? parsed.accessToken ?? null;
-      }
-    } catch {
-      /* ignore */
-    }
-    return null;
   }
 }
 

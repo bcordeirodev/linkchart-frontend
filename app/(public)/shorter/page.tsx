@@ -3,6 +3,7 @@ import ShorterClientPage from "./ShorterClientPage";
 import {
   buildWebApplicationSchema,
   buildFaqSchemaPtBR,
+  serializeJsonLd,
 } from "@/lib/seo/structuredData";
 import { buildLandingMetadata } from "@/lib/seo/landingMetadata";
 
@@ -22,11 +23,11 @@ export default function ShorterPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(appSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
       <ShorterClientPage />
     </>

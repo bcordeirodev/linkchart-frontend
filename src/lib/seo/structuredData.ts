@@ -2,6 +2,22 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
 const CONTACT_EMAIL = "linkcharts@gmail.com";
 
 /**
+ * Serializes a JSON-LD object for safe injection via `dangerouslySetInnerHTML`.
+ *
+ * Escapes every `<` to its unicode escape (`<`) so that a `</script>`
+ * sequence (or any other HTML tag) embedded in user-controlled fields — e.g. a
+ * link slug — cannot break out of the `<script type="application/ld+json">`
+ * element and execute arbitrary markup. The output remains valid JSON that
+ * JSON-LD parsers decode back to the original characters.
+ *
+ * @param schema - the JSON-LD object to serialize
+ * @returns a JSON string safe to place inside a `<script>` tag
+ */
+export function serializeJsonLd(schema: unknown): string {
+  return JSON.stringify(schema).replace(/</g, "\\u003c");
+}
+
+/**
  * Schema.org for the URL shortener as a software product.
  *
  * `WebApplication` is preferred over `SoftwareApplication` here because the

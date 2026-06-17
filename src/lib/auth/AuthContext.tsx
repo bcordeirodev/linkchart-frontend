@@ -83,16 +83,17 @@ function redirectWithSocialLoginError(errorKey: string): void {
  * Top-level auth provider mounted near the root of the App Router tree.
  *
  * Uses the Auth0 `useUser()` hook (from `Auth0Provider` ancestor) to detect
- * the Auth0 session. When an Auth0 session is active but no backend JWT
- * exists in localStorage, it calls `POST /api/auth/auth0-exchange` to obtain
- * one. `ApiClient` continues to inject `localStorage.token` as the bearer
- * token on every API call — no change required downstream.
+ * the Auth0 session. When an Auth0 session is active, it validates the backend
+ * session with a cookie-authenticated `GET /api/me`; on 401 (no/expired backend
+ * cookie) it calls `POST /api/auth/auth0-exchange`, which sets a fresh httpOnly
+ * `auth_token` cookie. The JWT never touches `localStorage` — `ApiClient` sends
+ * the cookie via `credentials: "include"`, so it is not readable by JavaScript.
  *
  * @remarks
  * - `login()` redirects to `/auth/login` (Auth0 Universal Login).
- * - `logout()` clears localStorage and redirects to `/auth/logout`.
- * - On network errors during JWT validation, the cached localStorage user
- *   is kept (graceful degradation); only 401 clears the session.
+ * - `logout()` calls the backend (clears the cookie) and redirects to `/auth/logout`.
+ * - On network errors during validation, the cached (non-sensitive) user is
+ *   kept (graceful degradation); only 401 triggers a re-exchange/clear.
  */
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
@@ -136,7 +137,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const converted = convertUserDBToUser(loginResponse.user);
       if (pictureUrl) converted.photoURL = pictureUrl;
       setUser(converted);
-      localStorage.setItem("token", loginResponse.token);
+      // The backend JWT is NOT persisted in localStorage — it is delivered as
+      // an httpOnly cookie by /auth/auth0-exchange and sent automatically on
+      // every API call (XSS-safe). Only the non-sensitive user shape is cached
+      // here to avoid a UI flash on the next load.
       localStorage.setItem("user", JSON.stringify(converted));
     },
     [],
@@ -162,83 +166,62 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return;
         }
 
-        const token = localStorage.getItem("token");
         const storedUser = localStorage.getItem("user");
-
         const picture = auth0User.picture ?? undefined;
 
-        if (token && storedUser) {
-          // Hydrate from cache immediately so the UI doesn't flash.
+        // Hydrate from the (non-sensitive) cached user immediately so the UI
+        // doesn't flash while the backend session is validated.
+        if (storedUser) {
           try {
             const cached = JSON.parse(storedUser) as User;
-            // Keep the profile picture fresh from the Auth0 session.
             if (picture) cached.photoURL = picture;
             if (!cancelled) setUser(cached);
           } catch (parseErr) {
             console.error("[AuthContext] Cached user parse failed:", parseErr);
-            if (!cancelled) clearSession();
-            await exchangeAuth0Token(
-              picture,
-              auth0User.email ?? undefined,
-              auth0User.name ?? undefined,
-            );
-            return;
+            localStorage.removeItem("user");
           }
+        }
 
-          // Validate the backend JWT.
-          try {
-            await authService.getMe();
-          } catch (error) {
-            const isAuthError =
-              error &&
-              typeof error === "object" &&
-              "status" in error &&
-              (error as { status: number }).status === 401;
+        // Validate the backend session via the httpOnly auth_token cookie.
+        try {
+          const me = await authService.getMe();
+          const converted = convertUserDBToUser(me);
+          if (picture) converted.photoURL = picture;
+          if (!cancelled) {
+            setUser(converted);
+            localStorage.setItem("user", JSON.stringify(converted));
+          }
+        } catch (error) {
+          const isAuthError =
+            error &&
+            typeof error === "object" &&
+            "status" in error &&
+            (error as { status: number }).status === 401;
 
-            if (isAuthError) {
-              // Backend JWT expired — re-exchange with Auth0.
-              try {
-                await exchangeAuth0Token(
-                  picture,
-                  auth0User.email ?? undefined,
-                  auth0User.name ?? undefined,
-                );
-              } catch (exchangeErr) {
-                console.error(
-                  "[AuthContext] Token re-exchange failed:",
-                  exchangeErr,
-                );
-                if (
-                  exchangeErr instanceof ApiError &&
-                  exchangeErr.code === "auth0_userinfo_incomplete"
-                ) {
-                  redirectWithSocialLoginError("facebook_no_email");
-                  return;
-                }
-                if (!cancelled) clearSession();
+          if (isAuthError) {
+            // No valid backend cookie yet (first login or expired) — mint one.
+            try {
+              await exchangeAuth0Token(
+                picture,
+                auth0User.email ?? undefined,
+                auth0User.name ?? undefined,
+              );
+            } catch (exchangeErr) {
+              console.error(
+                "[AuthContext] Token exchange failed:",
+                exchangeErr,
+              );
+              if (
+                exchangeErr instanceof ApiError &&
+                exchangeErr.code === "auth0_userinfo_incomplete"
+              ) {
+                redirectWithSocialLoginError("facebook_no_email");
+                return;
               }
+              if (!cancelled) clearSession();
             }
-            // Network errors: keep cached user (graceful degradation).
           }
-        } else {
-          // Auth0 session active but no backend JWT — exchange now.
-          try {
-            await exchangeAuth0Token(
-              picture,
-              auth0User.email ?? undefined,
-              auth0User.name ?? undefined,
-            );
-          } catch (exchangeErr) {
-            console.error("[AuthContext] Token exchange failed:", exchangeErr);
-            if (
-              exchangeErr instanceof ApiError &&
-              exchangeErr.code === "auth0_userinfo_incomplete"
-            ) {
-              redirectWithSocialLoginError("facebook_no_email");
-              return;
-            }
-            if (!cancelled) clearSession();
-          }
+          // Network errors: keep the cached user (graceful degradation).
         }
       } catch (error) {
         console.error("Auth init error:", error);
@@ -280,12 +263,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const refreshUser = useCallback(async (): Promise<void> => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setUser(null);
-      return;
-    }
-
     try {
       const userDB = await authService.getMe();
       const converted = convertUserDBToUser(userDB);
