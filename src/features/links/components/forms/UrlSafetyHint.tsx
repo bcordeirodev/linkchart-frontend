@@ -27,10 +27,15 @@ export interface UrlSafetyHintProps {
  *
  * Delegates to {@link getUrlSafetyHelperNode} from `UrlSafetyIndicator` for
  * the actual visual rendering; this component adds the `FormFieldFeedback`
- * wrapper and the `public` i18n namespace label building, matching the
- * existing behaviour inline in `URLShortenerForm`.
+ * wrapper and the `public` i18n namespace label building.
  *
- * Returns null when `status === "idle"`.
+ * The public box stays silent on the happy path: the `checking` and `safe`
+ * states render nothing (we assume the overwhelming majority of URLs pass).
+ * Feedback only surfaces when the URL is actually blocked (`unsafe`). The
+ * `error` state (Safe Browsing unavailable) is also silent since it does not
+ * block submission and would only add noise.
+ *
+ * Returns null for every status except `"unsafe"`.
  *
  * @param props - See {@link UrlSafetyHintProps}.
  */
@@ -41,7 +46,7 @@ export function UrlSafetyHint({
   const { t } = useTranslation("public");
   const labels = buildPublicUrlSafetyLabels(t);
 
-  if (status === "idle") {
+  if (status !== "unsafe") {
     return null;
   }
 

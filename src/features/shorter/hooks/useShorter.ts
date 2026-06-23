@@ -14,8 +14,9 @@ import type { PublicLinkResponse } from "@/services/link-public.service";
  *
  * @remarks
  * No direct network calls — receives the `PublicLinkResponse` from `usePublicURLShortener` via `handleSuccess`.
- * `handleSuccess` writes `res.short_url` to the clipboard (best-effort, swallowed on failure) and schedules a 150 ms-delayed `navigate(...)` so the exit animation has time to play.
- * Authenticated users are sent to the private analytics dashboard (`/links/analytics/{id}`); guests stay on `/shorter?slug=…` with the public analytics stack.
+ * `handleSuccess` writes `res.short_url` to the clipboard (best-effort, swallowed on failure) and stores the created link in `createdLink`.
+ * Authenticated users are still sent to the private analytics dashboard (`/links/analytics/{id}`) after a 150 ms-delayed `navigate(...)` so the exit animation can play.
+ * Guests are **not** redirected — they stay on the landing and see the inline success card (`ShorterSuccessCard`) rendered from `createdLink`; viewing the public analytics is an explicit opt-in from there.
  * The pending nav timer is cleared on unmount and on `handleReset`.
  *
  * `formKey` is a monotonically-increasing counter that increments every time `handleReset` is
@@ -30,6 +31,9 @@ export function useShorter() {
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation("public");
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [createdLink, setCreatedLink] = useState<PublicLinkResponse | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [formKey, setFormKey] = useState(0);
   const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -46,25 +50,25 @@ export function useShorter() {
         setError(t("shorter.errors.invalidSlug"));
         return;
       }
+      // `isRedirecting` doubles as the landing's "success" flag: it swaps the
+      // hero/badges into success mode and (for guests) keeps the success card
+      // mounted. It stays true until `handleReset`.
       setIsRedirecting(true);
+      setCreatedLink(res);
 
       void publicLinkService.copyToClipboard(res.short_url);
 
-      // Short delay so the exit animation plays before navigation
+      // Guests stay on the landing and see the inline success card — no
+      // navigation. Only authenticated users are sent to the private dashboard,
+      // after a short delay so the exit animation plays first.
+      if (!isAuthenticated) return;
+
       navTimerRef.current = setTimeout(() => {
         try {
-          const destination = isAuthenticated
-            ? `/links/analytics/${res.id}`
-            : `/shorter?slug=${encodeURIComponent(res.slug)}`;
-          navigate(destination, {
+          navigate(`/links/analytics/${res.id}`, {
             replace: true,
             state: { fromShorter: true, newLink: true, linkData: res },
           });
-          // Always clear the redirecting flag once navigation is scheduled.
-          // For authenticated users the component unmounts anyway; for guests
-          // (who stay on the same /shorter route with ?slug=…) the state would
-          // otherwise persist and block the form if the user ever returns to
-          // the landing section without going through handleReset.
           setIsRedirecting(false);
         } catch (err) {
           console.error("Erro ao redirecionar:", err);
@@ -89,6 +93,7 @@ export function useShorter() {
       navTimerRef.current = null;
     }
     setIsRedirecting(false);
+    setCreatedLink(null);
     setError(null);
     // Increment formKey so URLShortenerForm is force-remounted, clearing all
     // internal useForm fields, slug suggestion state, and safety-check hooks.
@@ -105,6 +110,7 @@ export function useShorter() {
 
   return {
     isRedirecting,
+    createdLink,
     error,
     formKey,
     handleSuccess,
