@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useId } from "react";
-import { Box, Button, Divider, Stack, useTheme } from "@mui/material";
+import { Box, Button, Stack, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import useClipboard from "@/hooks/useClipboard";
@@ -9,7 +9,6 @@ import { radiusTokens } from "@/lib/theme/designSystem";
 import {
   getPublicPanelSx,
   PUBLIC_CARD_GAP,
-  publicHairline,
 } from "@/lib/theme/publicPageStyles";
 import { getShortUrl } from "@/lib/utils/shortUrl";
 
@@ -28,8 +27,11 @@ interface LinkHeroCardProps {
 /**
  * Hero card for /public-analytics/[slug].
  *
- * Composes `LinkIdentity`, `ShortUrlRow`, `DestinationRow`, a `Divider`,
- * and `BookmarkRow` inside the canonical `getPublicPanelSx` shell.
+ * Composes `LinkIdentity`, a hero `ShortUrlRow` paired tightly with its
+ * `DestinationRow` confirmation line, and a discreet `BookmarkRow` callout
+ * inside the canonical `getPublicPanelSx` shell. The card follows a clear
+ * single-hero hierarchy: the short URL is the protagonist, the destination is
+ * a quiet confirmation, and the save-this-page reminder is a supporting strip.
  *
  * Clipboard state is managed here so it can be passed down to the
  * presentational row components without them owning independent hook calls.
@@ -69,7 +71,6 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   }, []);
 
   /* ── Visual tokens ── */
-  const dividerColor = publicHairline(theme);
   const ctaTextColor = isDark
     ? theme.palette.common.white
     : "rgba(255,255,255,0.96)";
@@ -87,19 +88,20 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           headingId={cardHeadingId}
         />
 
-        <ShortUrlRow
-          shortUrl={shortUrl}
-          copied={copiedShort}
-          onCopy={() => copyShort(shortUrl)}
-          headingId={shortUrlHeadingId}
-        />
+        {/* Hero short URL + its destination read as one unit. */}
+        <Stack spacing={0.85}>
+          <ShortUrlRow
+            shortUrl={shortUrl}
+            copied={copiedShort}
+            onCopy={() => copyShort(shortUrl)}
+            headingId={shortUrlHeadingId}
+          />
 
-        <DestinationRow
-          destinationUrl={linkData.original_url}
-          headingId={destinationHeadingId}
-        />
-
-        <Divider sx={{ borderColor: dividerColor }} />
+          <DestinationRow
+            destinationUrl={linkData.original_url}
+            headingId={destinationHeadingId}
+          />
+        </Stack>
 
         <BookmarkRow
           analyticsUrl={analyticsUrl}

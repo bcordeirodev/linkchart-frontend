@@ -40,7 +40,10 @@ export interface SlugAvailabilityHintProps {
  * Below-field hint row for the custom-slug input in the public shortener form.
  *
  * Priority order (first matching condition wins):
- * 1. Availability check result (`showAvailability && slugAvailability !== "idle"`)
+ * 1. Availability check result — but only the error state (`taken`) is shown.
+ *    The public box stays silent while checking and when the slug is available
+ *    (we assume the overwhelming majority of slugs are free); feedback only
+ *    surfaces when the chosen slug is already in use.
  * 2. "Press Tab" suggestion nudge (`showSuggestion`)
  * 3. "Finding a slug…" spinner (`isResolvingSuggestion`)
  *
@@ -59,6 +62,11 @@ export function SlugAvailabilityHint({
   const labels = buildPublicSlugAvailabilityLabels(t);
 
   if (showAvailability && slugAvailability !== "idle") {
+    // Only surface the error state; `checking` and `available` are
+    // intentionally silent to keep the public shortener box quiet.
+    if (slugAvailability !== "taken") {
+      return null;
+    }
     return (
       <FormFieldFeedback>
         {getSlugAvailabilityHelperNode(slugAvailability, labels)}

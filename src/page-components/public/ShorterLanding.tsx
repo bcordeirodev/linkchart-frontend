@@ -11,6 +11,7 @@ import {
   ShorterHowItWorks,
   ShorterSubdomainPromo,
   ShorterFaq,
+  ShorterSuccessCard,
 } from "@/features/shorter/components";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
 import {
@@ -25,6 +26,11 @@ import { BenefitBadges } from "./BenefitBadges";
 export interface ShorterLandingProps {
   /** Whether the shortener is in the post-submit redirecting/success state. */
   isRedirecting: boolean;
+  /**
+   * The link a guest just created, or null. When present, the inline success
+   * card replaces the form so the flow stays on the landing.
+   */
+  createdLink: PublicLinkResponse | null;
   /** Current error message to display, or null when there is no error. */
   error: string | null;
   /**
@@ -61,6 +67,7 @@ export interface ShorterLandingProps {
  */
 export function ShorterLanding({
   isRedirecting,
+  createdLink,
   error,
   formKey,
   onSuccess,
@@ -97,12 +104,21 @@ export function ShorterLanding({
         </Alert>
       ) : null}
 
-      <URLShortenerForm
-        key={formKey}
-        onSuccess={onSuccess}
-        onError={onError}
-        loading={isRedirecting}
-      />
+      {createdLink ? (
+        <ShorterSuccessCard
+          shortUrl={createdLink.short_url}
+          destinationUrl={createdLink.original_url}
+          slug={createdLink.slug}
+          onReset={onReset}
+        />
+      ) : (
+        <URLShortenerForm
+          key={formKey}
+          onSuccess={onSuccess}
+          onError={onError}
+          loading={isRedirecting}
+        />
+      )}
 
       {/* Ad slot — immediately below the form */}
       <Box
@@ -117,11 +133,8 @@ export function ShorterLanding({
         />
       </Box>
 
-      {/* BenefitBadges: idle → signup CTA; success → achievement chips + reset */}
-      <BenefitBadges
-        state={isRedirecting ? "success" : "idle"}
-        onReset={onReset}
-      />
+      {/* Account CTA — present in every state (idle and post-success) */}
+      <BenefitBadges />
 
       {/* 2. Social-proof strip */}
       <Box

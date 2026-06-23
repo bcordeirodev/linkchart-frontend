@@ -185,14 +185,15 @@ export function SignUpCtaCard({
           variant="contained"
           onClick={handleClick}
           sx={{
-            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            /* Softer, cohesive blue gradient (no loud purple) + gentle glow. */
+            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
             color: alpha(theme.palette.common.white, isDark ? 0.88 : 0.94),
             fontWeight: 600,
             fontSize: "0.8125rem",
             px: 3,
             py: 1.25,
             borderRadius: "10px",
-            boxShadow: `0 2px 14px ${alpha(theme.palette.primary.main, 0.28)}`,
+            boxShadow: `0 1px 8px ${alpha(theme.palette.primary.main, 0.16)}`,
             whiteSpace: "nowrap",
             flexShrink: 0,
             alignSelf: { xs: "stretch", sm: "center" },
@@ -200,7 +201,7 @@ export function SignUpCtaCard({
               "transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease, color 180ms ease",
             "&:hover": {
               color: alpha(theme.palette.common.white, isDark ? 0.94 : 0.98),
-              boxShadow: `0 4px 20px ${alpha(theme.palette.primary.main, 0.42)}`,
+              boxShadow: `0 2px 12px ${alpha(theme.palette.primary.main, 0.22)}`,
               opacity: 0.92,
               transform: "translateY(-1px)",
             },

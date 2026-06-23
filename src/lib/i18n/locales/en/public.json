@@ -20,6 +20,8 @@
     "copySuccess": "Copied!",
     "shareButton": "Share",
     "createAnother": "Shorten another link",
+    "viewAnalytics": "View analytics",
+    "successCopiedHint": "We've copied it for you — just paste it anywhere.",
     "signUpCta": "Sign up for free to track your links",
     "stats": {
       "linksCreated": "Links created",
@@ -174,6 +176,7 @@
     "saveUrlBanner": {
       "title": "Save this page to track your analytics",
       "desc": "This is the only URL to access the public data for this link. Bookmark it or copy below.",
+      "descShort": "Save this page — it's the only access to this link's analytics.",
       "copied": "Copied!",
       "copy": "Copy",
       "upgradeTitle": "Want full history, alerts and detailed charts?",
@@ -211,9 +214,11 @@
     },
     "linkInfo": {
       "copy": "Copy",
+      "copied": "Copied!",
       "shortenAnother": "Shorten another link",
       "visitDestination": "Visit destination",
       "shortenedLink": "Short link",
+      "yourShortLink": "Your short link",
       "destination": "Destination",
       "analyticsPageUrl": "Public analytics page",
       "copyAnalyticsUrl": "Copy analytics page URL",
