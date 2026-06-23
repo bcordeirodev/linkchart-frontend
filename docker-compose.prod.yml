@@ -10,6 +10,9 @@ services:
         - NEXT_PUBLIC_ADSENSE_CLIENT
         - NEXT_PUBLIC_ADSENSE_PUBLISHER_ID=ca-pub-1396026257166470
         - NEXT_PUBLIC_SUBDOMAINS_ENABLED=true
+        # Grafana Faro RUM collector — non-secret (ships in the client bundle).
+        - NEXT_PUBLIC_FARO_URL=https://faro-collector-prod-sa-east-1.grafana.net/collect/01e9dc26e022b00b11c49c286fcdc03d
+        - NEXT_PUBLIC_FARO_APP_NAME=linkcharts-frontend
         # API_URL é build arg porque next.config.ts rewrites() é avaliado em build time
         - API_URL=http://linkchartapi:80
     container_name: linkcharts-frontend-next-prod
@@ -26,7 +29,7 @@ services:
       - HOSTNAME=0.0.0.0
       # Auth0 — server-side only, never baked into the bundle
       - APP_BASE_URL=https://linkcharts.com.br
-      - AUTH0_DOMAIN=dev-w4znncuexg628diu.us.auth0.com
+      - AUTH0_DOMAIN=login.linkcharts.com.br
       - AUTH0_CLIENT_ID=ynlcwMzBjCPt3qzTRLv4VyP5CkgSREzD
       - AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET}
       - AUTH0_SECRET=${AUTH0_SECRET}
