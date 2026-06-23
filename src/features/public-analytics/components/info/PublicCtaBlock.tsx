@@ -8,11 +8,9 @@ import { SignUpCtaCard } from "@/shared/components";
 /** Props for {@link PublicCtaBlock}. */
 interface PublicCtaBlockProps {
   /**
-   * Copy variant. `"analytics"` (default) uses the value-anchored
-   * "this is a free preview / unlock …" framing shown after a visitor sees
-   * their own link analytics. `"landing"` uses the neutral "create your free
-   * account" framing for the /shorter landing, where nothing has been
-   * previewed yet — so the analytics-preview wording would be out of context.
+   * Copy variant. `"analytics"` (default) uses account-oriented copy after a
+   * visitor sees public analytics. `"landing"` uses the neutral "create your
+   * free account" framing for the /shorter landing.
    */
   variant?: "analytics" | "landing";
 }
@@ -22,10 +20,8 @@ interface PublicCtaBlockProps {
  * exportada pelo feature `public-analytics` e o agrupamento por contexto
  * (i18n keys de `publicAnalytics.cta.*`).
  *
- * Renderiza o card com surface focal (glow primário). No contexto `analytics`
- * usa copy value-anchored (`unlockTitle` / `unlockBody`); no contexto
- * `landing` usa a copy neutra (`title` / `description`), evitando que o texto
- * de "preview" vaze para a /shorter onde nada foi pré-visualizado ainda.
+ * Renderiza o card com surface focal. No contexto `analytics` usa copy voltada
+ * para organização dos links; no contexto `landing` usa a copy neutra.
  */
 export function PublicCtaBlock({ variant = "analytics" }: PublicCtaBlockProps) {
   const { t } = useTranslation("public");

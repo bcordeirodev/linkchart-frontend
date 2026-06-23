@@ -1,6 +1,6 @@
 import { alpha } from "@mui/material/styles";
 
-import { radiusTokens } from "@/lib/theme/designSystem";
+import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/material";
@@ -48,18 +48,12 @@ export function getPublicInsetSx(
     border: `1px solid ${publicHairline(theme, "inset")}`,
     borderRadius: `${radiusTokens.md}px`,
     bgcolor: options?.primaryTint
-      ? alpha(theme.palette.primary.main, isDark ? 0.05 : 0.04)
+      ? alpha(theme.palette.primary.main, isDark ? 0.06 : 0.045)
       : alpha(theme.palette.text.primary, isDark ? 0.03 : 0.035),
   };
 }
 
-/**
- * Neutral "elevated" panel for secondary content cards (how-it-works steps,
- * subdomain promo, FAQ rows, chart/metric cards). Shares the premium depth
- * language of {@link getPublicFocalSx} — a 1px top-edge highlight plus a faint
- * top-light gradient — but stays NEUTRAL (no blue accent), so it harmonizes
- * with the focal conversion cards without competing for attention.
- */
+/** Neutral panel for secondary content cards on public pages. */
 export function getPublicElevatedSx(theme: Theme): SxProps<Theme> {
   const isDark = theme.palette.mode === "dark";
   return {
@@ -83,6 +77,7 @@ export function getPublicMetricCardSx(
   return {
     ...getPublicInsetSx(theme, accent ? { primaryTint: true } : undefined),
     p: { xs: "18px", md: "20px" },
+    minHeight: { xs: 116, md: 128 },
   };
 }
 
@@ -97,13 +92,15 @@ export function getPublicFormFieldSx(theme: Theme): SxProps<Theme> {
     display: "flex",
     alignItems: "center",
     gap: 1.5,
-    transition: "border-color 0.2s, background 0.2s",
+    minHeight: 54,
+    transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}, background ${motionTokens.duration.base} ${motionTokens.easing.default}, box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {
       borderColor: publicHairline(theme),
     },
     "&:focus-within": {
-      borderColor: alpha(theme.palette.primary.main, isDark ? 0.4 : 0.38),
+      borderColor: alpha(theme.palette.primary.main, isDark ? 0.46 : 0.42),
       bgcolor: alpha(theme.palette.primary.main, isDark ? 0.06 : 0.05),
+      boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, isDark ? 0.09 : 0.08)}`,
     },
   };
 }
@@ -190,11 +187,8 @@ export function getPublicChipSx(theme: Theme): SxProps<Theme> {
 /**
  * Focal surface for conversion points (shortener form, signup CTA).
  *
- * Instead of washing the whole panel in a flat blue tint, this keeps a neutral
- * near-black panel and concentrates the accent as a soft glow at the TOP edge
- * (behind the icon/title) that fades into the surface. A crisp 1px top highlight
- * gives a premium "glass edge" and a soft grounded glow lifts the card. The
- * result reads designed and gives depth, rather than a muddy full-box tint.
+ * Keeps conversion surfaces close to the base panel while adding a restrained
+ * primary tint for hierarchy.
  */
 export function getPublicFocalSx(theme: Theme): SxProps<Theme> {
   const isDark = theme.palette.mode === "dark";
@@ -210,10 +204,7 @@ export function getPublicFocalSx(theme: Theme): SxProps<Theme> {
       primary,
       0,
     )} 58%)`,
-    boxShadow: [
-      `inset 0 1px 0 ${alpha(theme.palette.common.white, isDark ? 0.06 : 0.6)}`,
-      `0 24px 64px -42px ${alpha(primary, isDark ? 0.5 : 0.32)}`,
-    ].join(", "),
+    boxShadow: "none",
   };
 }
 
@@ -224,7 +215,7 @@ export function getPublicFocalSx(theme: Theme): SxProps<Theme> {
 export function getPublicDisplaySx(theme: Theme): SxProps<Theme> {
   const isDark = theme.palette.mode === "dark";
   return {
-    fontSize: "clamp(1.625rem, 1.1rem + 2.4vw, 2.5rem)",
+    fontSize: "clamp(1.75rem, 1.05rem + 2.7vw, 2.75rem)",
     fontWeight: 800,
     lineHeight: 1.12,
     letterSpacing: "-0.02em",
@@ -242,6 +233,10 @@ export function getPublicChartCardOverrideSx(theme: Theme): SxProps<Theme> {
       border: `1px solid ${hairline}`,
       boxShadow: "none",
       borderRadius: `${radiusTokens.md}px`,
+      backgroundImage: `linear-gradient(180deg, ${alpha(
+        theme.palette.common.white,
+        isDark ? 0.025 : 0.38,
+      )} 0%, ${alpha(theme.palette.common.white, 0)} 34%)`,
       ...(isDark
         ? { bgcolor: alpha(theme.palette.text.primary, 0.03) }
         : { bgcolor: theme.palette.background.paper }),

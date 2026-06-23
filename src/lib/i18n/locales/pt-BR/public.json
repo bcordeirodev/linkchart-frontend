@@ -237,15 +237,14 @@
         "Rastreamento de campanhas UTM",
         "Dashboard completo de performance"
       ],
-      "unlockTitle": "Isto é um preview gratuito",
-      "unlockBody": "Crie uma conta grátis para desbloquear heatmap geográfico, rastreio de UTM, inteligência de device e links ilimitados."
+      "unlockTitle": "Organize seus links em uma conta gratuita",
+      "unlockBody": "Crie uma conta grátis para reunir histórico de cliques, mapa geográfico, rastreio de UTM, dispositivos e links ilimitados em um só painel."
     },
     "teaser": {
-      "heading": "Desbloqueie a visão completa",
+      "heading": "Mais contexto na conta gratuita",
       "geoTitle": "Heatmap geográfico",
       "utmTitle": "Rastreio de campanhas UTM",
-      "deviceTitle": "Inteligência de device",
-      "lockedLabel": "Disponível com uma conta grátis"
+      "deviceTitle": "Inteligência de device"
     }
   },
   "redirect": {

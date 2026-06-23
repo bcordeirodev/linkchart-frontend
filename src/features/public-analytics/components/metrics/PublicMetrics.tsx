@@ -100,7 +100,7 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
           component="p"
           aria-hidden="true"
           sx={{
-            fontSize: { xs: "3rem", md: "3.75rem" },
+            fontSize: { xs: "2.75rem", md: "3.25rem" },
             fontWeight: 800,
             color: alpha(theme.palette.primary.main, isDark ? 0.95 : 0.9),
             lineHeight: 1,

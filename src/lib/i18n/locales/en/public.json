@@ -237,15 +237,14 @@
         "UTM campaign tracking",
         "Full performance dashboard"
       ],
-      "unlockTitle": "This is a free preview",
-      "unlockBody": "Create a free account to unlock geographic heatmaps, UTM tracking, device intelligence, and unlimited links."
+      "unlockTitle": "Organize your links in a free account",
+      "unlockBody": "Create a free account to keep click history, geographic maps, UTM tracking, devices, and unlimited links in one dashboard."
     },
     "teaser": {
-      "heading": "Unlock the full picture",
+      "heading": "More context in a free account",
       "geoTitle": "Geographic heatmap",
       "utmTitle": "UTM campaign tracking",
-      "deviceTitle": "Device intelligence",
-      "lockedLabel": "Available with a free account"
+      "deviceTitle": "Device intelligence"
     }
   },
   "redirect": {

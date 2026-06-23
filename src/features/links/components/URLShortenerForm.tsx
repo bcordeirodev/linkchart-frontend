@@ -64,7 +64,7 @@ export function URLShortenerForm({
   const fieldSx = getPublicFormFieldSx(theme);
   const labelSx = getUrlShortenerLabelSx(theme);
   const inputSx = getUrlShortenerInputSx(theme);
-  const iconMuted = alpha(theme.palette.text.primary, isDark ? 0.44 : 0.38);
+  const iconMuted = alpha(theme.palette.text.primary, isDark ? 0.5 : 0.44);
   const {
     handleSubmit,
     register,
@@ -162,7 +162,7 @@ export function URLShortenerForm({
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
-        sx={{ ...getPublicFocalSx(theme), p: { xs: 3, md: 3.5 } }}
+        sx={{ ...getPublicFocalSx(theme), p: { xs: 2.5, sm: 3, md: 3.5 } }}
       >
         <Box
           sx={{
@@ -195,10 +195,10 @@ export function URLShortenerForm({
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr",
-              sm: "minmax(0, 6fr) minmax(0, 4fr)",
+              md: "minmax(0, 1.55fr) minmax(220px, 0.85fr)",
             },
-            gap: 1.5,
-            mb: 2,
+            gap: { xs: 1.35, md: 1.5 },
+            mb: 2.25,
             alignItems: "start",
           }}
         >

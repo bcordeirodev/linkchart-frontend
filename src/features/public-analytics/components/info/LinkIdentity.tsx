@@ -22,8 +22,7 @@ interface LinkIdentityProps {
 /**
  * Identity header row for the hero card: icon shell + slug heading + optional title.
  *
- * When `title` is absent a "Public analytics available" chip is shown instead,
- * preserving the original LinkHeroCard behaviour.
+ * When `title` is absent, a small availability note is shown instead.
  *
  * @remarks
  * The `domain` field present on `PublicLinkData` is intentionally NOT displayed
@@ -82,13 +81,7 @@ export function LinkIdentity({ slug, title, headingId }: LinkIdentityProps) {
             variant="caption"
             sx={{
               mt: 0.5,
-              display: "inline-flex",
-              alignItems: "center",
-              px: 0.75,
-              py: 0.25,
-              borderRadius: "999px",
-              bgcolor: alpha(theme.palette.primary.main, isDark ? 0.22 : 0.56),
-              color: alpha(theme.palette.common.white, 0.95),
+              color: alpha(theme.palette.text.primary, isDark ? 0.7 : 0.66),
               letterSpacing: "0.02em",
             }}
           >

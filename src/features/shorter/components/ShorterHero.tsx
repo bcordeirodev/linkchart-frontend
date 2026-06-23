@@ -22,7 +22,11 @@ export function ShorterHero({ state }: ShorterHeroProps) {
 
   return (
     <Box
-      sx={{ textAlign: "center", mb: { xs: 4, md: 5 }, mt: { xs: 1, md: 2 } }}
+      sx={{
+        textAlign: "center",
+        mb: { xs: 3.5, md: 4.5 },
+        mt: { xs: 1, md: 2 },
+      }}
     >
       <m.div {...fadeUp(0.1)}>
         <Typography

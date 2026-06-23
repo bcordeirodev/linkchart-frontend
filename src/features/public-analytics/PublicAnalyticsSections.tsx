@@ -4,6 +4,7 @@ import { Box, Fade, Stack, Typography, useTheme } from "@mui/material";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { getPublicDisplaySx } from "@/lib/theme/publicPageStyles";
 import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import { PublicAnalyticsSkeleton } from "@/shared/ui/feedback/skeletons";
@@ -73,11 +74,7 @@ function PublicAnalyticsSections({
             <Typography
               component="h1"
               sx={{
-                fontSize: { xs: "1.875rem", md: "2.5rem" },
-                fontWeight: 800,
-                letterSpacing: "-0.03em",
-                lineHeight: 1.15,
-                color: theme.palette.text.primary,
+                ...getPublicDisplaySx(theme),
                 mb: 0.75,
               }}
             >

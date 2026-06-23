@@ -48,7 +48,7 @@ export function BookmarkRow({
   const theme = useTheme();
   const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
-  const iconColor = alpha(theme.palette.primary.main, isDark ? 0.95 : 0.85);
+  const iconColor = alpha(theme.palette.text.primary, isDark ? 0.62 : 0.58);
 
   return (
     <Stack
@@ -60,8 +60,8 @@ export function BookmarkRow({
       sx={{
         p: { xs: 1.25, sm: 1.4 },
         borderRadius: `${radiusTokens.md}px`,
-        border: `1px solid ${alpha(theme.palette.primary.main, isDark ? 0.18 : 0.16)}`,
-        bgcolor: alpha(theme.palette.primary.main, isDark ? 0.06 : 0.05),
+        border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.22 : 0.24)}`,
+        bgcolor: alpha(theme.palette.text.primary, isDark ? 0.03 : 0.035),
       }}
     >
       <Box
@@ -75,7 +75,7 @@ export function BookmarkRow({
           height: 30,
           borderRadius: "50%",
           color: iconColor,
-          bgcolor: alpha(theme.palette.primary.main, isDark ? 0.16 : 0.12),
+          bgcolor: alpha(theme.palette.text.primary, isDark ? 0.06 : 0.05),
         }}
       >
         <Bookmark size={15} strokeWidth={2} />

@@ -125,6 +125,7 @@ export function ShorterLanding({
         sx={{
           maxWidth: SHORTER_CONTENT_MAX_WIDTH,
           mx: "auto",
+          mt: { xs: 2.25, md: 2.75 },
         }}
       >
         <AdSlot
@@ -134,7 +135,9 @@ export function ShorterLanding({
       </Box>
 
       {/* Account CTA — present in every state (idle and post-success) */}
-      <BenefitBadges />
+      <Box sx={{ mt: { xs: 2.25, md: 2.75 } }}>
+        <BenefitBadges />
+      </Box>
 
       {/* 2. Social-proof strip */}
       <Box
