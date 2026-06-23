@@ -27,6 +27,7 @@ function ShorterPageContent() {
 
   const {
     isRedirecting,
+    createdLink,
     error,
     formKey,
     handleSuccess,
@@ -69,6 +70,7 @@ function ShorterPageContent() {
           {showLanding ? (
             <ShorterLanding
               isRedirecting={isRedirecting}
+              createdLink={createdLink}
               error={error}
               formKey={formKey}
               onSuccess={handleSuccess}

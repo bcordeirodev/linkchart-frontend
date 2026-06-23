@@ -67,6 +67,14 @@ export function initI18n(lng: string = "en") {
     ns: ["common", "auth", "links", "analytics", "profile", "public", "legal"],
     supportedLngs: ["en", "pt-BR"],
     interpolation: { escapeValue: false },
+    // SSR determinism: resources are bundled inline, so initialise synchronously
+    // and without Suspense. This guarantees the first client render uses `lng`
+    // (the server's pt-BR) instead of momentarily falling back to `en` while an
+    // async init settles — which is what caused the SSR/client hydration
+    // mismatch. The post-hydration `detectAndApplyLanguage()` still reconciles
+    // to the visitor's stored preference.
+    initImmediate: false,
+    react: { useSuspense: false },
   });
 }
 

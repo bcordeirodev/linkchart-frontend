@@ -1,11 +1,11 @@
 "use client";
 
 import { Box, Stack, Typography, useTheme } from "@mui/material";
+import { Bookmark } from "lucide-react";
 import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { getPublicInsetSx } from "@/lib/theme/publicPageStyles";
 
 import { CopyIconButton } from "./CopyIconButton";
 
@@ -27,17 +27,17 @@ interface BookmarkRowProps {
 }
 
 /**
- * Bookmark row: title, description, and a bordered copy button for the
- * public analytics page URL.
+ * Discreet "save this page" callout: a bookmark icon, a one-line reminder that
+ * this URL is the only way back to the analytics, the (muted) URL itself, and a
+ * copy button.
  *
- * Encourages users to save or share this analytics page URL. The analytics
- * URL is set client-side by the parent (`LinkHeroCard`) on mount, so this
- * component is purely presentational — it renders a placeholder (`—`) until
- * the URL is available.
+ * Demoted from a full titled section to a quiet info strip so it supports —
+ * rather than competes with — the hero short-URL row above it. The reminder text
+ * still carries the important "only access" warning, just at a lighter weight.
  *
- * @remarks
- * Uses the same `CopyIconButton` pattern as `ShortUrlRow` for a consistent
- * copy affordance throughout the hero card.
+ * The analytics URL is set client-side by the parent (`LinkHeroCard`) on mount,
+ * so this component is purely presentational — it renders a placeholder (`—`)
+ * until the URL is available.
  */
 export function BookmarkRow({
   analyticsUrl,
@@ -48,82 +48,78 @@ export function BookmarkRow({
   const theme = useTheme();
   const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
+  const iconColor = alpha(theme.palette.primary.main, isDark ? 0.95 : 0.85);
 
   return (
-    <Box component="section" aria-labelledby={headingId}>
-      <Typography
-        id={headingId}
-        component="h3"
-        variant="subtitle2"
-        fontWeight={700}
+    <Stack
+      component="section"
+      aria-labelledby={headingId}
+      direction="row"
+      alignItems="center"
+      gap={1.25}
+      sx={{
+        p: { xs: 1.25, sm: 1.4 },
+        borderRadius: `${radiusTokens.md}px`,
+        border: `1px solid ${alpha(theme.palette.primary.main, isDark ? 0.18 : 0.16)}`,
+        bgcolor: alpha(theme.palette.primary.main, isDark ? 0.06 : 0.05),
+      }}
+    >
+      <Box
+        aria-hidden
         sx={{
-          mb: 0.5,
-          fontSize: "0.9375rem",
-          letterSpacing: "-0.01em",
-          color: theme.palette.text.primary,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          width: 30,
+          height: 30,
+          borderRadius: "50%",
+          color: iconColor,
+          bgcolor: alpha(theme.palette.primary.main, isDark ? 0.16 : 0.12),
         }}
       >
-        {t("publicAnalytics.saveUrlBanner.title")}
-      </Typography>
-      <Typography
-        component="p"
-        variant="body2"
-        color="text.secondary"
-        sx={{ mb: 1.5, lineHeight: 1.55 }}
-      >
-        {t("publicAnalytics.saveUrlBanner.desc")}
-      </Typography>
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        alignItems={{ xs: "stretch", sm: "center" }}
-        gap={0.75}
-        role="group"
-        aria-label={t("publicAnalytics.linkInfo.analyticsPageUrl")}
-        sx={{
-          ...getPublicInsetSx(theme),
-          p: { xs: 1, sm: 1.1 },
-          borderRadius: `${radiusTokens.sm}px`,
-        }}
-      >
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography
-            component="span"
-            variant="caption"
-            color="text.secondary"
-            sx={{
-              display: "block",
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.04em",
-              mb: 0.35,
-            }}
-          >
-            {t("publicAnalytics.linkInfo.analyticsPageUrl")}
-          </Typography>
-          <Typography
-            component="code"
-            sx={{
-              display: "block",
-              minWidth: 0,
-              fontFamily: "monospace",
-              fontSize: { xs: "0.75rem", sm: "0.8125rem" },
-              color: alpha(theme.palette.text.primary, isDark ? 0.8 : 0.84),
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              bgcolor: "transparent",
-            }}
-          >
-            {analyticsUrl || "—"}
-          </Typography>
-        </Box>
-        <CopyIconButton
-          copied={copied}
-          onClick={onCopy}
-          ariaLabel={t("publicAnalytics.linkInfo.copyAnalyticsUrl")}
-          disabled={!analyticsUrl}
-        />
-      </Stack>
-    </Box>
+        <Bookmark size={15} strokeWidth={2} />
+      </Box>
+
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Typography
+          id={headingId}
+          component="p"
+          sx={{
+            m: 0,
+            fontSize: "0.8125rem",
+            fontWeight: 600,
+            lineHeight: 1.35,
+            color: theme.palette.text.primary,
+          }}
+        >
+          {t("publicAnalytics.saveUrlBanner.descShort")}
+        </Typography>
+        <Typography
+          component="code"
+          sx={{
+            display: "block",
+            mt: 0.25,
+            minWidth: 0,
+            fontFamily: "monospace",
+            fontSize: { xs: "0.7rem", sm: "0.75rem" },
+            color: alpha(theme.palette.text.primary, isDark ? 0.55 : 0.6),
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            bgcolor: "transparent",
+          }}
+        >
+          {analyticsUrl || "—"}
+        </Typography>
+      </Box>
+
+      <CopyIconButton
+        copied={copied}
+        onClick={onCopy}
+        ariaLabel={t("publicAnalytics.linkInfo.copyAnalyticsUrl")}
+        disabled={!analyticsUrl}
+      />
+    </Stack>
   );
 }
