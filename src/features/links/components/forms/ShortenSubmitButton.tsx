@@ -1,8 +1,7 @@
 "use client";
 import type { ReactNode } from "react";
 import { Box, CircularProgress } from "@mui/material";
-import { alpha } from "@mui/material/styles";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { GradientButton } from "@/shared/ui/base";
@@ -54,7 +53,13 @@ export function ShortenSubmitButton({
       loading={loading}
       disabled={isDisabled}
       shimmerEffect
-      sx={{ width: "100%", minHeight: 52, fontWeight: 700 }}
+      sx={{
+        width: "100%",
+        minHeight: 54,
+        fontWeight: 800,
+        letterSpacing: "-0.01em",
+        borderRadius: 2,
+      }}
     >
       {loading ? (
         <Box

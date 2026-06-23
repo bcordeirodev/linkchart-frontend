@@ -54,15 +54,17 @@ export function DestinationRow({
         px: 1.25,
         py: 0.875,
         borderRadius: `${radiusTokens.md}px`,
-        /* Very soft full-width chip to set the destination apart quietly. */
-        border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.16 : 0.2)}`,
-        bgcolor: alpha(theme.palette.text.primary, isDark ? 0.025 : 0.03),
+        border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.2 : 0.24)}`,
+        bgcolor: alpha(theme.palette.text.primary, isDark ? 0.03 : 0.035),
       }}
     >
       <Globe
         {...ICON_SM}
         aria-hidden
-        style={{ color: theme.palette.primary.light, flexShrink: 0 }}
+        style={{
+          color: alpha(theme.palette.primary.light, isDark ? 0.9 : 0.78),
+          flexShrink: 0,
+        }}
       />
       <Typography
         id={headingId}
@@ -71,7 +73,7 @@ export function DestinationRow({
           flexShrink: 0,
           fontSize: "0.75rem",
           fontWeight: 600,
-          color: theme.palette.text.secondary,
+          color: alpha(theme.palette.text.primary, isDark ? 0.64 : 0.66),
         }}
       >
         {t("publicAnalytics.linkInfo.destination")}:
@@ -86,7 +88,7 @@ export function DestinationRow({
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
-          color: theme.palette.text.primary,
+          color: alpha(theme.palette.text.primary, isDark ? 0.88 : 0.9),
           fontFamily: "monospace",
           fontSize: "0.8125rem",
           "&:hover": { color: theme.palette.primary.light },

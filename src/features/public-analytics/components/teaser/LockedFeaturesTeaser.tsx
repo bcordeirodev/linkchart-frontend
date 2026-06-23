@@ -2,7 +2,6 @@
 
 import { Box, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { Lock } from "lucide-react";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -206,87 +205,20 @@ function FauxDeviceDonut({ colors }: { colors: string[] }) {
   );
 }
 
-// ─── Lock overlay ─────────────────────────────────────────────────────────────
-
-interface LockOverlayProps {
-  label: string;
-}
-
-/**
- * Absolute-positioned scrim with a lock icon and label, placed over the blurred
- * faux visual. The scrim text is real for screen readers; the visual behind is
- * aria-hidden.
- */
-function LockOverlay({ label }: LockOverlayProps) {
-  const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
-
-  return (
-    <Box
-      sx={{
-        position: "absolute",
-        inset: 0,
-        borderRadius: `${radiusTokens.md}px`,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 0.75,
-        background: isDark
-          ? `linear-gradient(160deg, ${alpha(theme.palette.background.paper, 0.55)} 0%, ${alpha(theme.palette.background.default, 0.72)} 100%)`
-          : `linear-gradient(160deg, ${alpha(theme.palette.background.paper, 0.6)} 0%, ${alpha(theme.palette.background.default, 0.8)} 100%)`,
-        backdropFilter: "blur(1px)",
-      }}
-    >
-      <Box
-        sx={{
-          width: 32,
-          height: 32,
-          borderRadius: "8px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          bgcolor: alpha(theme.palette.primary.main, isDark ? 0.18 : 0.12),
-          border: `1px solid ${alpha(theme.palette.primary.main, 0.32)}`,
-          color: theme.palette.primary.main,
-        }}
-      >
-        <Lock size={15} strokeWidth={2.2} />
-      </Box>
-      <Typography
-        variant="caption"
-        sx={{
-          fontSize: "0.6875rem",
-          fontWeight: 600,
-          letterSpacing: "0.03em",
-          color: alpha(theme.palette.text.primary, isDark ? 0.7 : 0.65),
-          textAlign: "center",
-          px: 1,
-          lineHeight: 1.35,
-        }}
-      >
-        {label}
-      </Typography>
-    </Box>
-  );
-}
-
 // ─── Single teaser card ───────────────────────────────────────────────────────
 
 type FauxVisualVariant = "geo" | "utm" | "device";
 
 interface TeaserCardProps {
   title: string;
-  lockedLabel: string;
   variant: FauxVisualVariant;
   colors: string[];
 }
 
 /**
- * Individual locked feature card showing a blurred faux visual, a lock overlay,
- * and an accessible title.
+ * Individual feature preview card with a decorative visual.
  */
-function TeaserCard({ title, lockedLabel, variant, colors }: TeaserCardProps) {
+function TeaserCard({ title, variant, colors }: TeaserCardProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const hairline = publicHairline(theme, "inset");
@@ -316,7 +248,7 @@ function TeaserCard({ title, lockedLabel, variant, colors }: TeaserCardProps) {
         {title}
       </Typography>
 
-      {/* Faux visual area with blur + overlay */}
+      {/* Faux visual area */}
       <Box
         sx={{
           position: "relative",
@@ -329,12 +261,11 @@ function TeaserCard({ title, lockedLabel, variant, colors }: TeaserCardProps) {
           p: 1.5,
         }}
       >
-        {/* Blurred decorative visual — aria-hidden, purely presentational */}
+        {/* Decorative visual — aria-hidden, purely presentational */}
         <Box
           sx={{
             width: "100%",
             height: "100%",
-            filter: "blur(6px)",
             pointerEvents: "none",
             userSelect: "none",
           }}
@@ -343,9 +274,6 @@ function TeaserCard({ title, lockedLabel, variant, colors }: TeaserCardProps) {
           {variant === "utm" && <FauxUtmBars colors={colors} />}
           {variant === "device" && <FauxDeviceDonut colors={colors} />}
         </Box>
-
-        {/* Lock scrim + label */}
-        <LockOverlay label={lockedLabel} />
       </Box>
     </Box>
   );
@@ -354,20 +282,18 @@ function TeaserCard({ title, lockedLabel, variant, colors }: TeaserCardProps) {
 // ─── Main exported component ──────────────────────────────────────────────────
 
 /**
- * Static teaser section showing 3 blurred, locked premium feature cards
- * (geographic heatmap, UTM campaign tracking, device intelligence).
+ * Static teaser section showing 3 free-account feature previews (geographic
+ * heatmap, UTM campaign tracking, device intelligence).
  *
  * No data fetching — all visuals are purely decorative and representative.
  * Reduced motion is respected: no entrance animations are used by default.
- * Blurred faux visuals are aria-hidden; all labels and titles are real text.
+ * Faux visuals are aria-hidden; all labels and titles are real text.
  */
 export const LockedFeaturesTeaser = memo(function LockedFeaturesTeaser() {
   const { t } = useTranslation("public");
   const theme = useTheme();
   const colors = getPublicChartPalette(theme);
   const isDark = theme.palette.mode === "dark";
-
-  const lockedLabel = t("publicAnalytics.teaser.lockedLabel");
 
   const cards: Array<{ key: FauxVisualVariant; title: string }> = [
     { key: "geo", title: t("publicAnalytics.teaser.geoTitle") },
@@ -392,12 +318,7 @@ export const LockedFeaturesTeaser = memo(function LockedFeaturesTeaser() {
       <Grid container spacing={PUBLIC_CARD_GAP}>
         {cards.map(({ key, title }) => (
           <Grid key={key} item xs={12} sm={4} md={4}>
-            <TeaserCard
-              title={title}
-              lockedLabel={lockedLabel}
-              variant={key}
-              colors={colors}
-            />
+            <TeaserCard title={title} variant={key} colors={colors} />
           </Grid>
         ))}
       </Grid>

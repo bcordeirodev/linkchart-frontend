@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import { ICON_XL, ICON_MD } from "@/lib/theme/iconDefaults";
 import {
-  getPublicFocalSx,
+  getPublicPanelSx,
   PUBLIC_INSET_PAD,
   PUBLIC_CARD_GAP,
 } from "@/lib/theme/publicPageStyles";
@@ -21,9 +21,8 @@ interface EmptyClicksEngagementProps {
 /**
  * Engagement empty-state shown when a link has zero clicks.
  *
- * Renders on the `getPublicFocalSx` focal surface (primary glow) so it reads
- * as a conversion point rather than a disabled placeholder. The component
- * provides a copy-to-clipboard CTA so visitors can immediately share the link.
+ * Renders a neutral panel with a copy-to-clipboard CTA so visitors can
+ * immediately share the link.
  *
  * @remarks
  * Clipboard state is managed internally via `useClipboard`; the component is
@@ -48,7 +47,7 @@ export function EmptyClicksEngagement({
   return (
     <Box
       sx={{
-        ...getPublicFocalSx(theme),
+        ...getPublicPanelSx(theme),
         px: PUBLIC_INSET_PAD,
         py: { xs: 3.5, md: 4 },
         display: "flex",
@@ -70,7 +69,7 @@ export function EmptyClicksEngagement({
           justifyContent: "center",
           flexShrink: 0,
           bgcolor: iconShellColor,
-          border: `1px solid ${alpha(theme.palette.primary.main, 0.28)}`,
+          border: `1px solid ${alpha(theme.palette.primary.main, 0.22)}`,
         }}
       >
         <Share2 {...ICON_XL} color={iconColor} />

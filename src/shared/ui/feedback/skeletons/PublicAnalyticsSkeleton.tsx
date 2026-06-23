@@ -10,6 +10,7 @@ import {
 import { alpha } from "@mui/material/styles";
 
 import {
+  getPublicFocalSx,
   getPublicInsetSx,
   getPublicMetricCardSx,
   getPublicPanelSx,
@@ -32,7 +33,7 @@ export function PublicAnalyticsSkeleton({
   const isDark = theme.palette.mode === "dark";
   const cardSx = getPublicMetricCardSx(theme);
   const accentCardSx = getPublicMetricCardSx(theme, true);
-  const heroCardSx = getPublicPanelSx(theme);
+  const heroCardSx = getPublicFocalSx(theme);
   const insetSx = getPublicInsetSx(theme);
   const chartCardSx = { ...getPublicInsetSx(theme), p: 2 } as const;
   const dividerColor = publicHairline(theme);
@@ -131,7 +132,7 @@ export function PublicAnalyticsSkeleton({
             height={44}
             sx={{
               borderRadius: "10px",
-              background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.45)}, ${alpha(theme.palette.secondary.main, 0.4)})`,
+              bgcolor: alpha(theme.palette.primary.main, isDark ? 0.22 : 0.16),
             }}
           />
         </Box>

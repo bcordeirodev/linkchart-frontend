@@ -23,8 +23,8 @@ export function getPublicChartTheme(
   options?: { reducedMotion?: boolean },
 ): ApexOptions {
   const isDark = theme.palette.mode === "dark";
-  const grid = alpha(theme.palette.divider, isDark ? 0.18 : 0.22);
-  const labelColor = alpha(theme.palette.text.primary, isDark ? 0.65 : 0.7);
+  const grid = alpha(theme.palette.divider, isDark ? 0.16 : 0.2);
+  const labelColor = alpha(theme.palette.text.primary, isDark ? 0.68 : 0.72);
 
   return {
     chart: {
@@ -35,13 +35,21 @@ export function getPublicChartTheme(
       background: "transparent",
     },
     colors: getPublicChartPalette(theme),
-    grid: { borderColor: grid, strokeDashArray: 4 },
+    grid: {
+      borderColor: grid,
+      strokeDashArray: 4,
+      padding: { left: 4, right: 8 },
+    },
     dataLabels: { enabled: false },
-    tooltip: { theme: isDark ? "dark" : "light" },
-    plotOptions: { bar: { borderRadius: 6, columnWidth: "55%" } },
+    tooltip: {
+      theme: isDark ? "dark" : "light",
+      marker: { show: true },
+      style: { fontSize: "12px" },
+    },
+    plotOptions: { bar: { borderRadius: 7, columnWidth: "52%" } },
     fill: {
       type: "gradient",
-      gradient: { shadeIntensity: 0.3, opacityFrom: 0.45, opacityTo: 0.05 },
+      gradient: { shadeIntensity: 0.22, opacityFrom: 0.42, opacityTo: 0.06 },
     },
     stroke: { curve: "smooth", width: 2 },
     legend: { labels: { colors: labelColor }, position: "bottom" },

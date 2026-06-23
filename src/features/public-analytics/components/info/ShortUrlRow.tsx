@@ -26,10 +26,8 @@ interface ShortUrlRowProps {
  * Hero short-URL row: label + monospace link (the single visual protagonist of
  * the card) + a labelled copy `Button`.
  *
- * This is the one action the user came for after shortening a link, so it gets
- * the strongest treatment in the card short of the gradient "shorten another"
- * CTA: a larger tinted surface, the boldest/largest URL, and an explicit
- * "Copiar" button (instead of a bare icon) to make the primary action obvious.
+ * This is the one action the user came for after shortening a link, so the URL
+ * keeps the strongest typography in the card without adding a colored surface.
  *
  * @remarks
  * Clipboard state is managed by the parent via `useClipboard`; this component
@@ -44,7 +42,12 @@ export function ShortUrlRow({
   const theme = useTheme();
   const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
-  const shortUrlColor = alpha(theme.palette.common.white, isDark ? 0.96 : 0.94);
+  const shortUrlColor = isDark
+    ? alpha(theme.palette.common.white, 0.96)
+    : theme.palette.primary.dark;
+  const buttonTextColor = isDark
+    ? alpha(theme.palette.common.white, 0.96)
+    : theme.palette.primary.dark;
 
   const sectionLabelSx = {
     display: "block",
@@ -72,9 +75,7 @@ export function ShortUrlRow({
         alignItems={{ xs: "stretch", sm: "center" }}
         gap={{ xs: 1, sm: 1.25 }}
         sx={{
-          ...getPublicInsetSx(theme, { primaryTint: true }),
-          /* Slightly stronger accent border so the hero stands apart. */
-          borderColor: alpha(theme.palette.primary.main, isDark ? 0.32 : 0.28),
+          ...getPublicInsetSx(theme),
           p: { xs: 1.5, sm: 1.75 },
         }}
       >
@@ -85,7 +86,6 @@ export function ShortUrlRow({
             minWidth: 0,
             m: 0,
             fontFamily: "monospace",
-            /* Short URL is the largest/boldest URL in the card */
             fontSize: { xs: "1rem", md: "1.0625rem" },
             fontWeight: 700,
             letterSpacing: "-0.01em",
@@ -123,17 +123,24 @@ export function ShortUrlRow({
             textTransform: "none",
             borderRadius: 1.5,
             whiteSpace: "nowrap",
-            color: alpha(theme.palette.common.white, isDark ? 0.96 : 0.94),
+            color: buttonTextColor,
             border: `1px solid ${alpha(
-              theme.palette.divider,
-              isDark ? 0.38 : 0.42,
+              isDark ? theme.palette.divider : theme.palette.primary.main,
+              isDark ? 0.38 : 0.24,
             )}`,
-            bgcolor: alpha(theme.palette.background.paper, isDark ? 0.55 : 0.9),
+            bgcolor: alpha(
+              isDark
+                ? theme.palette.background.paper
+                : theme.palette.primary.main,
+              isDark ? 0.55 : 0.08,
+            ),
             transition: "background-color 160ms ease, border-color 160ms ease",
             "&:hover": {
               bgcolor: alpha(
-                theme.palette.background.paper,
-                isDark ? 0.72 : 0.98,
+                isDark
+                  ? theme.palette.background.paper
+                  : theme.palette.primary.main,
+                isDark ? 0.72 : 0.12,
               ),
               borderColor: alpha(
                 theme.palette.primary.main,

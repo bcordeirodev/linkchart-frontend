@@ -9,12 +9,14 @@ import { useTranslation } from "react-i18next";
 import { DestinationRow } from "@/features/public-analytics/components/info/DestinationRow";
 import { ShortUrlRow } from "@/features/public-analytics/components/info/ShortUrlRow";
 import useClipboard from "@/hooks/useClipboard";
-import { ICON_LG, ICON_MD } from "@/lib/theme/iconDefaults";
+import { ICON_MD } from "@/lib/theme/iconDefaults";
 import {
+  getPublicBlockDescriptionSx,
+  getPublicBlockTitleSx,
   getPublicFocalSx,
-  PUBLIC_CARD_GAP,
 } from "@/lib/theme/publicPageStyles";
 import { getShortUrl } from "@/lib/utils/shortUrl";
+import { PublicBlockIcon } from "@/shared/ui/base";
 import { useNavigate } from "@/shared/hooks";
 
 import { SHORTER_CONTENT_MAX_WIDTH } from "../constants";
@@ -89,69 +91,45 @@ export function ShorterSuccessCard({
       component="article"
       aria-labelledby={cardHeadingId}
       sx={{
-        /* Same premium focal treatment as the form it replaces and the signup
-           CTA — a soft top glow + glass edge instead of a flat colored border.
-           The green check badge carries the success cue. */
         ...getPublicFocalSx(theme),
         maxWidth: SHORTER_CONTENT_MAX_WIDTH,
         mx: "auto",
+        overflow: "hidden",
       }}
     >
-      <Stack spacing={PUBLIC_CARD_GAP} sx={{ p: { xs: 2.5, md: 3 } }}>
-        {/* Success header: green check + "Link criado!" + share hint. */}
-        <Stack direction="row" alignItems="center" gap={1.25}>
-          <Box
-            aria-hidden
+      <Stack
+        spacing={{ xs: 2, md: 2.25 }}
+        sx={{ p: { xs: 2.5, sm: 3, md: 3.5 } }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 1.25,
+          }}
+        >
+          <PublicBlockIcon
+            icon={Check}
             sx={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              width: 38,
-              height: 38,
-              borderRadius: "50%",
-              color: theme.palette.success.main,
-              border: `1px solid ${alpha(
-                theme.palette.success.main,
-                isDark ? 0.5 : 0.45,
-              )}`,
-              bgcolor: alpha(theme.palette.success.main, isDark ? 0.16 : 0.12),
+              color: alpha(theme.palette.common.white, isDark ? 0.96 : 0.94),
             }}
-          >
-            <Check {...ICON_LG} />
-          </Box>
+          />
           <Box sx={{ minWidth: 0 }}>
             <Typography
               id={cardHeadingId}
               component="h2"
-              sx={{
-                m: 0,
-                fontSize: "1.0625rem",
-                fontWeight: 700,
-                letterSpacing: "-0.01em",
-                lineHeight: 1.2,
-                color: theme.palette.text.primary,
-              }}
+              sx={{ ...getPublicBlockTitleSx(theme), mb: 0.5 }}
             >
               {t("shorter.successTitle")}
             </Typography>
-            <Typography
-              component="p"
-              sx={{
-                m: 0,
-                mt: 0.25,
-                fontSize: "0.8125rem",
-                color: theme.palette.text.secondary,
-                lineHeight: 1.4,
-              }}
-            >
+            <Typography component="p" sx={getPublicBlockDescriptionSx(theme)}>
               {t("shorter.successCopiedHint")}
             </Typography>
           </Box>
-        </Stack>
+        </Box>
 
         {/* Hero short URL + its destination read as one unit. */}
-        <Stack spacing={0.85}>
+        <Stack spacing={1}>
           <ShortUrlRow
             shortUrl={resolvedShortUrl}
             copied={copied || autoCopied}
@@ -164,11 +142,10 @@ export function ShorterSuccessCard({
           />
         </Stack>
 
-        {/* Next steps. "View analytics" is the primary forward action (muted
-            navy fill); "shorten another" is a lighter blue-accented outline. */}
         <Stack
           direction={{ xs: "column", sm: "row" }}
           gap={{ xs: 1, sm: 1.25 }}
+          sx={{ pt: 0.25 }}
         >
           <Button
             variant="contained"
@@ -178,11 +155,16 @@ export function ShorterSuccessCard({
             onClick={handleViewAnalytics}
             startIcon={<BarChart3 {...ICON_MD} aria-hidden />}
             sx={{
-              /* Muted navy fill — clearly the primary action, but softer than
-                 the bright primary.main; brightens on hover. */
+              minHeight: 46,
+              fontWeight: 700,
+              letterSpacing: "-0.01em",
               bgcolor: theme.palette.primary.dark,
               color: alpha(theme.palette.common.white, 0.95),
-              "&:hover": { bgcolor: theme.palette.primary.main },
+              border: `1px solid ${alpha(theme.palette.primary.light, 0.22)}`,
+              "&:hover": {
+                bgcolor: theme.palette.primary.main,
+                borderColor: alpha(theme.palette.primary.light, 0.34),
+              },
             }}
           >
             {t("shorter.viewAnalytics")}
@@ -194,17 +176,24 @@ export function ShorterSuccessCard({
             onClick={onReset}
             startIcon={<RotateCcw {...ICON_MD} aria-hidden />}
             sx={{
-              /* White label on a blue-accented outline — distinct and inviting,
-                 but lighter than the filled primary "view analytics". */
+              minHeight: 46,
+              fontWeight: 700,
+              letterSpacing: "-0.01em",
               color: theme.palette.text.primary,
               borderColor: alpha(
                 theme.palette.primary.main,
-                isDark ? 0.65 : 0.5,
+                isDark ? 0.45 : 0.34,
               ),
-              bgcolor: alpha(theme.palette.primary.main, isDark ? 0.12 : 0.08),
+              bgcolor: "transparent",
               "&:hover": {
-                borderColor: theme.palette.primary.main,
-                bgcolor: alpha(theme.palette.primary.main, isDark ? 0.2 : 0.14),
+                borderColor: alpha(
+                  theme.palette.primary.main,
+                  isDark ? 0.62 : 0.48,
+                ),
+                bgcolor: alpha(
+                  theme.palette.primary.main,
+                  isDark ? 0.08 : 0.06,
+                ),
               },
             }}
           >

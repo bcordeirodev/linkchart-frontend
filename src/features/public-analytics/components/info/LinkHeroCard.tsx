@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useId } from "react";
 import { Box, Button, Stack, useTheme } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import useClipboard from "@/hooks/useClipboard";
-import { radiusTokens } from "@/lib/theme/designSystem";
 import {
-  getPublicPanelSx,
+  getPublicFocalSx,
   PUBLIC_CARD_GAP,
 } from "@/lib/theme/publicPageStyles";
 import { getShortUrl } from "@/lib/utils/shortUrl";
@@ -29,7 +29,7 @@ interface LinkHeroCardProps {
  *
  * Composes `LinkIdentity`, a hero `ShortUrlRow` paired tightly with its
  * `DestinationRow` confirmation line, and a discreet `BookmarkRow` callout
- * inside the canonical `getPublicPanelSx` shell. The card follows a clear
+ * inside the same focal shell used by the public shortener boxes. The card follows a clear
  * single-hero hierarchy: the short URL is the protagonist, the destination is
  * a quiet confirmation, and the save-this-page reminder is a supporting strip.
  *
@@ -47,7 +47,6 @@ interface LinkHeroCardProps {
 export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
-  const isDark = theme.palette.mode === "dark";
 
   /* ── Accessible heading IDs ── */
   const cardHeadingId = useId();
@@ -70,16 +69,11 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
     setAnalyticsUrl(window.location.href);
   }, []);
 
-  /* ── Visual tokens ── */
-  const ctaTextColor = isDark
-    ? theme.palette.common.white
-    : "rgba(255,255,255,0.96)";
-
   return (
     <Box
       component="article"
       aria-labelledby={cardHeadingId}
-      sx={getPublicPanelSx(theme)}
+      sx={getPublicFocalSx(theme)}
     >
       <Stack spacing={PUBLIC_CARD_GAP} sx={{ p: { xs: 2.5, md: 3 } }}>
         <LinkIdentity
@@ -116,19 +110,13 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           onClick={onCreateLink}
           sx={{
             py: 1.25,
-            fontWeight: 600,
-            borderRadius: `${radiusTokens.md}px`,
-            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            color: ctaTextColor,
-            boxShadow: `0 2px 14px rgba(0,0,0,${isDark ? 0.26 : 0.18})`,
-            transition:
-              "transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease",
+            fontWeight: 700,
+            borderRadius: 2,
+            bgcolor: theme.palette.primary.dark,
+            color: alpha(theme.palette.common.white, 0.96),
             "&:hover": {
-              boxShadow: `0 4px 20px rgba(0,0,0,${isDark ? 0.34 : 0.24})`,
-              opacity: 0.93,
-              transform: "translateY(-1px)",
+              bgcolor: theme.palette.primary.main,
             },
-            "&:active": { transform: "translateY(0)" },
           }}
         >
           {t("publicAnalytics.linkInfo.shortenAnother")}
