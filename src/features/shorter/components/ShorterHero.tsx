@@ -63,7 +63,7 @@ export function ShorterHero({ state }: ShorterHeroProps) {
             mx: "auto",
           }}
         >
-          {isSuccess ? t("shorter.autoRedirect") : t("shorter.heroSubtitle")}
+          {isSuccess ? t("shorter.successSubtitle") : t("shorter.heroSubtitle")}
         </Typography>
       </m.div>
     </Box>
