@@ -5,6 +5,7 @@ import Script from "next/script";
 import { Providers } from "@/lib/providers/Providers";
 import { buildOrganizationSchema } from "@/lib/seo/structuredData";
 import { CookieConsentInit } from "@/shared/components/CookieConsentInit";
+import FrontendObservability from "@/shared/observability/FrontendObservability";
 import "@/styles/index.css";
 import "@/styles/animations.css";
 import "@/styles/app-base.css";
@@ -78,6 +79,7 @@ export default function RootLayout({
   return (
     <html lang={initialLang} suppressHydrationWarning>
       <body className={inter.variable}>
+        <FrontendObservability />
         {/*
          * Consent Mode v2 defaults — must fire before any gtag/AdSense call.
          * `beforeInteractive` is injected by Next.js into the raw HTML outside
