@@ -20,6 +20,8 @@
     "@emotion/react": "^11.14.0",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.14.1",
+    "@grafana/faro-web-sdk": "^2.7.1",
+    "@grafana/faro-web-tracing": "^2.7.1",
     "@hookform/resolvers": "^3.6.0",
     "@mui/icons-material": "^6.5.0",
     "@mui/material": "^6.5.0",
