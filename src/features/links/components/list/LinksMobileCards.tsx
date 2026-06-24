@@ -23,6 +23,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { memo, useState } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
@@ -102,14 +103,33 @@ const LinkMobileCard = memo(
     const statusColorValue = getResolvedStatusColor(theme, linkStatus);
     const statusLabel = t(STATUS_LABEL_KEYS[linkStatus]);
 
+    /** Navigate to the link's analytics view (card body is the tap target). */
+    const goToAnalytics = () => navigate(`/links/analytics/${link.id}`);
+
+    /** Keyboard activation for the role="button" card. */
+    const handleCardKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        goToAnalytics();
+      }
+    };
+
     const truncateUrl = (url: string, maxLength = 48) =>
       url.length <= maxLength ? url : `${url.substring(0, maxLength)}…`;
 
     return (
       <Card
         id={`link-card-${link.id}`}
+        role="button"
+        tabIndex={0}
+        aria-label={t("actions.viewAnalyticsCard", {
+          title: link.title || t("list.noTitle"),
+        })}
+        onClick={goToAnalytics}
+        onKeyDown={handleCardKeyDown}
         sx={{
           mb: linkCardListItemMb,
+          cursor: "pointer",
           ...getLinkCardShellSx(theme),
           ...(isHighlighted ? getNewlyCreatedHighlightSx(theme) : {}),
         }}
@@ -156,17 +176,22 @@ const LinkMobileCard = memo(
                 "& .MuiChip-label": { px: 0.75 },
               }}
             />
-            <LinkActionsMenu
-              onEdit={() => {
-                if (onEdit) {
-                  onEdit(link);
-                } else {
-                  navigate(`/links/edit/${link.id}`);
-                }
-              }}
-              onQR={() => navigate(`/links/qr/${link.id}`)}
-              onDelete={() => setDeleteDialogOpen(true)}
-            />
+            <Box
+              onClick={(e) => e.stopPropagation()}
+              sx={{ flexShrink: 0, display: "inline-flex" }}
+            >
+              <LinkActionsMenu
+                onEdit={() => {
+                  if (onEdit) {
+                    onEdit(link);
+                  } else {
+                    navigate(`/links/edit/${link.id}`);
+                  }
+                }}
+                onQR={() => navigate(`/links/qr/${link.id}`)}
+                onDelete={() => setDeleteDialogOpen(true)}
+              />
+            </Box>
           </Stack>
 
           {/* 2 — Destination URL full width */}
@@ -185,26 +210,33 @@ const LinkMobileCard = memo(
             {truncateUrl(link.original_url)}
           </Typography>
 
-          <LinkCardActionBar
-            shortUrl={shortUrl}
-            displayUrl={displayUrl}
-            onAnalytics={() => navigate(`/links/analytics/${link.id}`)}
-            sx={{ mb: 0.75 }}
-          />
+          <Box onClick={(e) => e.stopPropagation()}>
+            <LinkCardActionBar
+              shortUrl={shortUrl}
+              displayUrl={displayUrl}
+              analyticsAccess="card"
+              onAnalytics={goToAnalytics}
+              sx={{ mb: 0.75 }}
+            />
+          </Box>
 
           {/* 3 — Compact metrics footer (shared component) */}
           <LinkCardMetrics link={link} meta={meta} variant="compact" />
         </CardContent>
 
-        <DeleteConfirmDialog
-          open={deleteDialogOpen}
-          shortUrl={shortUrl}
-          onConfirm={() => {
-            setDeleteDialogOpen(false);
-            if (onDelete) onDelete(String(link.id));
-          }}
-          onCancel={() => setDeleteDialogOpen(false)}
-        />
+        {/* Portaled Dialog still bubbles synthetic events through the React
+            tree, so stop them here to keep the card's onClick from firing. */}
+        <Box onClick={(e) => e.stopPropagation()}>
+          <DeleteConfirmDialog
+            open={deleteDialogOpen}
+            shortUrl={shortUrl}
+            onConfirm={() => {
+              setDeleteDialogOpen(false);
+              if (onDelete) onDelete(String(link.id));
+            }}
+            onCancel={() => setDeleteDialogOpen(false)}
+          />
+        </Box>
       </Card>
     );
   },

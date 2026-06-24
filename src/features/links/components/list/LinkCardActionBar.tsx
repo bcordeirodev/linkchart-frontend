@@ -17,6 +17,8 @@ import { getLinksBorderColor } from "./linksPanelStyles";
 import type { SxProps, Theme } from "@mui/material";
 
 const ACTION_HEIGHT = 36;
+/** Taller copy control on touch viewports (≥44px tap target) when analytics moves to the card body. */
+const ACTION_HEIGHT_TOUCH = { xs: 44, sm: ACTION_HEIGHT } as const;
 const ANALYTICS_MIN_WIDTH = { xs: 128, sm: 152 };
 
 interface LinkCardActionBarProps {
@@ -24,6 +26,13 @@ interface LinkCardActionBarProps {
   displayUrl?: string;
   onAnalytics: () => void;
   withTopBorder?: boolean;
+  /**
+   * How the user reaches analytics from this card.
+   * - `"inline"` (default, desktop): renders the Analytics button beside copy.
+   * - `"card"` (mobile): hides the Analytics button (the card body is tappable
+   *   instead) and lets the copy control fill the row at a ≥44px tap height.
+   */
+  analyticsAccess?: "inline" | "card";
   sx?: SxProps<Theme>;
 }
 
@@ -35,6 +44,7 @@ export function LinkCardActionBar({
   displayUrl: displayUrlProp,
   onAnalytics,
   withTopBorder = false,
+  analyticsAccess = "inline",
   sx,
 }: LinkCardActionBarProps) {
   const theme = useTheme();
@@ -98,8 +108,10 @@ export function LinkCardActionBar({
           sx={{
             flex: 1,
             minWidth: 0,
-            height: ACTION_HEIGHT,
-            minHeight: ACTION_HEIGHT,
+            height:
+              analyticsAccess === "card" ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
+            minHeight:
+              analyticsAccess === "card" ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
             borderRadius: `${radiusTokens.md}px`,
             textTransform: "none",
             justifyContent: "flex-start",
@@ -166,65 +178,70 @@ export function LinkCardActionBar({
         </Button>
       </Tooltip>
 
-      <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
-        <Box
-          sx={{
-            flexShrink: 0,
-            height: ACTION_HEIGHT,
-            display: "flex",
-            alignItems: "stretch",
-          }}
-        >
-          <Button
-            variant="outlined"
-            color="primary"
-            startIcon={<BarChart3 size={14} strokeWidth={2} />}
-            endIcon={<ChevronRight size={14} strokeWidth={2.5} />}
-            onClick={(e) => {
-              e.stopPropagation();
-              onAnalytics();
-            }}
+      {analyticsAccess === "inline" ? (
+        <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
+          <Box
             sx={{
+              flexShrink: 0,
               height: ACTION_HEIGHT,
-              minHeight: ACTION_HEIGHT,
-              minWidth: ANALYTICS_MIN_WIDTH,
-              width: { xs: ANALYTICS_MIN_WIDTH.xs, sm: ANALYTICS_MIN_WIDTH.sm },
-              boxSizing: "border-box",
-              borderRadius: `${radiusTokens.md}px`,
-              px: { xs: 1.5, sm: 2 },
-              py: 0,
-              fontSize: "0.875rem",
-              fontWeight: 600,
-              letterSpacing: "0.01em",
-              textTransform: "none",
-              lineHeight: 1.2,
-              whiteSpace: "nowrap",
-              border: "2px solid",
-              borderColor: alpha(primaryDark, isDark ? 0.5 : 0.32),
-              bgcolor: isDark ? alpha(primary, 0.58) : alpha(primary, 0.88),
-              color: alpha(theme.palette.common.white, 0.96),
-              boxShadow: isDark ? elevation.xs : elevationLightTokens.xs,
-              "& .MuiButton-startIcon": {
-                margin: 0,
-                mr: 0.5,
-              },
-              "& .MuiButton-endIcon": {
-                margin: 0,
-                ml: 0.375,
-                opacity: 0.9,
-                display: { xs: "none", sm: "inherit" },
-              },
-              "&:hover": {
-                borderColor: alpha(primaryDark, isDark ? 0.62 : 0.42),
-                bgcolor: isDark ? alpha(primary, 0.68) : primaryDark,
-                boxShadow: isDark ? elevation.sm : elevationLightTokens.sm,
-              },
+              display: "flex",
+              alignItems: "stretch",
             }}
           >
-            {t("actions.analytics")}
-          </Button>
-        </Box>
-      </Tooltip>
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<BarChart3 size={14} strokeWidth={2} />}
+              endIcon={<ChevronRight size={14} strokeWidth={2.5} />}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAnalytics();
+              }}
+              sx={{
+                height: ACTION_HEIGHT,
+                minHeight: ACTION_HEIGHT,
+                minWidth: ANALYTICS_MIN_WIDTH,
+                width: {
+                  xs: ANALYTICS_MIN_WIDTH.xs,
+                  sm: ANALYTICS_MIN_WIDTH.sm,
+                },
+                boxSizing: "border-box",
+                borderRadius: `${radiusTokens.md}px`,
+                px: { xs: 1.5, sm: 2 },
+                py: 0,
+                fontSize: "0.875rem",
+                fontWeight: 600,
+                letterSpacing: "0.01em",
+                textTransform: "none",
+                lineHeight: 1.2,
+                whiteSpace: "nowrap",
+                border: "2px solid",
+                borderColor: alpha(primaryDark, isDark ? 0.5 : 0.32),
+                bgcolor: isDark ? alpha(primary, 0.58) : alpha(primary, 0.88),
+                color: alpha(theme.palette.common.white, 0.96),
+                boxShadow: isDark ? elevation.xs : elevationLightTokens.xs,
+                "& .MuiButton-startIcon": {
+                  margin: 0,
+                  mr: 0.5,
+                },
+                "& .MuiButton-endIcon": {
+                  margin: 0,
+                  ml: 0.375,
+                  opacity: 0.9,
+                  display: { xs: "none", sm: "inherit" },
+                },
+                "&:hover": {
+                  borderColor: alpha(primaryDark, isDark ? 0.62 : 0.42),
+                  bgcolor: isDark ? alpha(primary, 0.68) : primaryDark,
+                  boxShadow: isDark ? elevation.sm : elevationLightTokens.sm,
+                },
+              }}
+            >
+              {t("actions.analytics")}
+            </Button>
+          </Box>
+        </Tooltip>
+      ) : null}
     </Stack>
   );
 }
