@@ -1,6 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
-import { CircularProgress, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,6 @@ import {
   buildPublicSlugAvailabilityLabels,
   FormFieldFeedback,
   getSlugAvailabilityHelperNode,
-  InlineStatusRow,
 } from "./UrlSafetyIndicator";
 
 export interface SlugAvailabilityHintProps {
@@ -29,11 +28,6 @@ export interface SlugAvailabilityHintProps {
    * yet typed into the slug field. When true, a "Tab to accept" nudge renders.
    */
   showSuggestion: boolean;
-  /**
-   * Whether the suggestion resolver is still working (debounce + API). Shows
-   * a "finding a slug…" spinner when true and `showSuggestion` is false.
-   */
-  isResolvingSuggestion: boolean;
 }
 
 /**
@@ -45,7 +39,10 @@ export interface SlugAvailabilityHintProps {
  *    (we assume the overwhelming majority of slugs are free); feedback only
  *    surfaces when the chosen slug is already in use.
  * 2. "Press Tab" suggestion nudge (`showSuggestion`)
- * 3. "Finding a slug…" spinner (`isResolvingSuggestion`)
+ *
+ * The resolving state ("finding a slug…") is shown as an in-input spinner in
+ * `URLShortenerForm`, not here — this avoids a below-field row appearing and
+ * disappearing, which previously shifted the form layout vertically.
  *
  * Returns null when none of the conditions are met.
  *
@@ -55,7 +52,6 @@ export function SlugAvailabilityHint({
   slugAvailability,
   showAvailability,
   showSuggestion,
-  isResolvingSuggestion,
 }: SlugAvailabilityHintProps): ReactNode {
   const theme = useTheme();
   const { t } = useTranslation("public");
@@ -86,23 +82,6 @@ export function SlugAvailabilityHint({
         >
           {t("shorter.form.slugTabHint")}
         </Typography>
-      </FormFieldFeedback>
-    );
-  }
-
-  if (isResolvingSuggestion) {
-    return (
-      <FormFieldFeedback>
-        <InlineStatusRow
-          icon={
-            <CircularProgress
-              size={11}
-              sx={{ color: alpha(theme.palette.text.primary, 0.35) }}
-            />
-          }
-          label={t("shorter.form.slugSuggestionChecking")}
-          color={alpha(theme.palette.text.primary, 0.45)}
-        />
       </FormFieldFeedback>
     );
   }
