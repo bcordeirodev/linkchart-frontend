@@ -23,7 +23,7 @@
     "oauth": {
       "title": "Segurança da conta",
       "subtitle": "Sua conta está vinculada a um provedor de login externo.",
-      "body": "Você entra com Google ou Facebook. A senha é gerenciada por esse provedor — não há senha local para alterar aqui. Para trocar credenciais, use as configurações de segurança da sua conta Google ou Facebook."
+      "body": "Você entra com o Google. A senha é gerenciada por esse provedor — não há senha local para alterar aqui. Para trocar credenciais, use as configurações de segurança da sua conta Google."
     }
   },
   "password": {
