@@ -10,7 +10,7 @@
 
 import { Eye, Clock } from "lucide-react";
 import { Box, Tooltip, Typography } from "@mui/material";
-import { format, formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { useTheme } from "@mui/material/styles";
 import { Children, Fragment, isValidElement, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
@@ -34,6 +34,12 @@ import {
   linkCardMetricSegmentSx,
   linkCardMetricValueSx,
 } from "./linksPanelStyles";
+
+/**
+ * Minimum absolute percent-change required to surface the trend badge on the
+ * mobile (compact) card. Keeps the card quiet for noise-level movement.
+ */
+const MOBILE_TREND_MIN_ABS_PERCENT = 5;
 
 // ─── Local helpers ──────────────────────────────────────────────────────────
 
@@ -234,67 +240,48 @@ export function LinkCardMetrics({
   }
 
   // ── Compact (mobile) segments ──────────────────────────────────────────────
-  const createdAtLabel = (() => {
-    try {
-      if (!link.created_at) return t("table.dateUnavailable");
-      const date = new Date(link.created_at);
-      if (isNaN(date.getTime())) return t("table.dateInvalid");
-      return formatDistanceToNow(date, { addSuffix: true, locale: dateLocale });
-    } catch {
-      return t("table.dateUnavailable");
-    }
-  })();
+  // Clean by default: clicks + last-click always; trend and health only when
+  // they carry a real signal. Sparkline and created-date are desktop-only.
+  const showTrend =
+    !!meta?.trend &&
+    meta.trend.current > 0 &&
+    Math.abs(meta.trend.percent_change) >= MOBILE_TREND_MIN_ABS_PERCENT;
+
+  const showHealthError = meta?.health?.status === "error";
 
   return (
     <Box sx={{ ...getLinkCardMetricsRowSx(theme), mt: 0.75, pt: 0.75, ...sx }}>
-      {!!meta?.sparkline?.length && (
-        <LinkSparkline
-          data={meta.sparkline}
-          trend={meta.trend?.percent_change}
-          height={20}
-          width={72}
-        />
-      )}
+      <MetricsRow dividerSx={dividerSx}>
+        <Box sx={linkCardMetricInlineSx}>
+          <Eye {...ICON_SM} style={{ opacity: 0.4, flexShrink: 0 }} />
+          <Typography
+            variant="caption"
+            component="span"
+            sx={linkCardMetricValueSx}
+          >
+            {formatCount(link.clicks, i18n.language)}
+          </Typography>
+        </Box>
 
-      {meta?.trend ? <LinkTrendBadge trend={meta.trend} compact /> : null}
+        <Box sx={linkCardMetricInlineSx}>
+          <Clock {...ICON_SM} style={{ opacity: 0.4, flexShrink: 0 }} />
+          <Typography
+            variant="caption"
+            component="span"
+            sx={{
+              ...linkCardMetricValueSx,
+              color: hasLastClick ? "text.secondary" : "text.disabled",
+              fontWeight: 500,
+            }}
+          >
+            {hasLastClick ? lastClickLabel : t("metrics.noClicks")}
+          </Typography>
+        </Box>
 
-      <Box sx={linkCardMetricInlineSx}>
-        <Eye {...ICON_SM} style={{ opacity: 0.4, flexShrink: 0 }} />
-        <Typography
-          variant="caption"
-          component="span"
-          sx={linkCardMetricValueSx}
-        >
-          {formatCount(link.clicks, i18n.language)}
-        </Typography>
-      </Box>
+        {showTrend ? <LinkTrendBadge trend={meta!.trend} compact /> : null}
 
-      {meta?.trend ? (
-        <Typography
-          variant="caption"
-          component="span"
-          sx={linkCardMetricValueSx}
-        >
-          {lastClickLabel}
-        </Typography>
-      ) : null}
-
-      <Box sx={linkCardMetricInlineSx}>
-        <Clock {...ICON_SM} style={{ opacity: 0.4, flexShrink: 0 }} />
-        <Typography
-          variant="caption"
-          component="span"
-          sx={{
-            ...linkCardMetricValueSx,
-            color: "text.secondary",
-            fontWeight: 500,
-          }}
-        >
-          {createdAtLabel}
-        </Typography>
-      </Box>
-
-      <LinkHealthBadge health={meta?.health} />
+        {showHealthError ? <LinkHealthBadge health={meta?.health} /> : null}
+      </MetricsRow>
     </Box>
   );
 }
