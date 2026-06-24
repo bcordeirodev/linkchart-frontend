@@ -57,7 +57,7 @@ export function SignUpCtaCard({
   description,
   features,
   ctaLabel,
-  ctaHref = "/auth/login",
+  ctaHref = "/auth/login?screen_hint=signup",
   onCtaClick,
   id,
   headerIcon,
