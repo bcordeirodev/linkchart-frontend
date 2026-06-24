@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useRef } from "react";
 import type React from "react";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { Globe, Link2 } from "lucide-react";
 import { m } from "framer-motion";
@@ -259,7 +259,7 @@ export function URLShortenerForm({
                 {t("shorter.form.optional")}
               </Box>
             </Typography>
-            <Box sx={fieldSx}>
+            <Box sx={fieldSx} aria-busy={isResolvingSlugSuggestion}>
               <Link2 {...ICON_SM} color={iconMuted} />
 
               <Box
@@ -299,6 +299,16 @@ export function URLShortenerForm({
                   }),
                 }}
               />
+              {isResolvingSlugSuggestion ? (
+                <CircularProgress
+                  size={14}
+                  aria-label={t("shorter.form.slugSuggestionChecking")}
+                  sx={{
+                    flexShrink: 0,
+                    color: alpha(theme.palette.text.primary, 0.35),
+                  }}
+                />
+              ) : null}
             </Box>
             {errors.customSlug ? (
               <Typography
@@ -316,7 +326,6 @@ export function URLShortenerForm({
                 slugAvailability={slugAvailability}
                 showAvailability={showSlugAvailabilityUI}
                 showSuggestion={showSlugSuggestion}
-                isResolvingSuggestion={isResolvingSlugSuggestion}
               />
             )}
           </Box>
