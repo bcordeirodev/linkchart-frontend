@@ -23,7 +23,7 @@
     "oauth": {
       "title": "Account security",
       "subtitle": "Your account is linked to an external sign-in provider.",
-      "body": "You sign in with Google or Facebook. Your password is managed by that provider — there is no local password to change here. To update credentials, use your Google or Facebook account security settings."
+      "body": "You sign in with Google. Your password is managed by that provider — there is no local password to change here. To update credentials, use your Google account security settings."
     }
   },
   "password": {
