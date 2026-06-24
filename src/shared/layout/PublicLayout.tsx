@@ -81,7 +81,7 @@ function ShorterHeaderActions() {
           <Button
             variant="contained"
             size="small"
-            onClick={() => navigate("/auth/login")}
+            onClick={() => navigate("/auth/login?screen_hint=signup")}
             sx={{
               fontSize: "0.75rem",
               fontWeight: 600,
@@ -208,7 +208,7 @@ function MinimalUtilityBar() {
             <Button
               variant="contained"
               size="small"
-              onClick={() => navigate("/auth/login")}
+              onClick={() => navigate("/auth/login?screen_hint=signup")}
               sx={{
                 fontSize: "0.75rem",
                 fontWeight: 600,
