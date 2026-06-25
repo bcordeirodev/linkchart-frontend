@@ -81,6 +81,7 @@ export const API_CONFIG = {
     PUBLIC: {
       SHORTEN: "/api/public/shorten",
       LINK_BY_SLUG: (slug: string) => `/api/public/link/${slug}`,
+      SUGGEST_SLUG: "/api/public/links/suggest-slug",
       ANALYTICS: (slug: string) => `/api/public/analytics/${slug}`,
     },
   },

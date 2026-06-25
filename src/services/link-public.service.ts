@@ -77,6 +77,23 @@ class PublicLinkService extends BaseService {
   }
 
   /**
+   * Resolves a single available slug for a target URL in one request.
+   *
+   * The backend derives a human-friendly base from the page's og:title (falling
+   * back to the URL path/host) and guarantees availability, replacing the old
+   * client-side loop that issued one round-trip per candidate.
+   *
+   * @param url - target URL (with or without scheme; the backend normalizes it).
+   * @returns a currently-available slug matching the public slug rules.
+   * @endpoint `GET /api/public/links/suggest-slug`
+   */
+  async suggestSlug(url: string): Promise<string> {
+    const path = `${API_CONFIG.ENDPOINTS.PUBLIC.SUGGEST_SLUG}?url=${encodeURIComponent(url)}`;
+    const { slug } = await this.get<{ slug: string }>(path);
+    return slug;
+  }
+
+  /**
    * Returns the public analytics payload for a link.
    *
    * @param slug - short slug.
