@@ -5,7 +5,6 @@ import {
   alpha,
   Box,
   Button,
-  CircularProgress,
   FormLabel,
   InputAdornment,
   TextField,
@@ -118,7 +117,7 @@ const formGridSx = {
     md: "minmax(0, 2fr) minmax(0, 1fr) 132px",
   },
   columnGap: 2,
-  rowGap: { xs: 2, md: 0.75 },
+  rowGap: { xs: 1.25, md: 0.75 },
   alignItems: "start",
 } as const;
 
@@ -237,7 +236,7 @@ export function LinksQuickCreate({
   const slugValue = watch("custom_slug");
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
 
-  const { ogTitle, isLoading: isLoadingMeta } = useUrlMeta(urlValue ?? "");
+  const { ogTitle } = useUrlMeta(urlValue ?? "");
   const baseSlugSuggestion = useMemo(() => {
     if (!urlValue) return null;
     if (ogTitle) {
@@ -249,12 +248,11 @@ export function LinksQuickCreate({
   const { availableSlug, status: slugSuggestionStatus } =
     useAvailableSlugSuggestion(!slugValue ? baseSlugSuggestion : null);
 
+  // The suggestion is ambient: a ready slug surfaces as ghost text the user can
+  // accept (or ignore). Resolution stays silent — no "searching…" state — so the
+  // field never flickers feedback while suggestions are being looked up.
   const showSlugSuggestion =
     !slugValue && slugSuggestionStatus === "ready" && !!availableSlug;
-  const isResolvingSlugSuggestion =
-    !slugValue &&
-    !!baseSlugSuggestion &&
-    (isLoadingMeta || slugSuggestionStatus === "resolving");
 
   const acceptSlugSuggestion = useCallback(() => {
     if (availableSlug) {
@@ -266,11 +264,15 @@ export function LinksQuickCreate({
   const urlIsChecking = safetyStatus === "checking";
 
   const urlSafetyLabels = buildUrlSafetyLabels(t);
-  const urlHelperText: ReactNode = errors.original_url?.message
-    ? errors.original_url.message
-    : safetyStatus !== "idle"
-      ? getUrlSafetyHelperNode(safetyStatus, threats, urlSafetyLabels)
-      : " ";
+  // Safety is silent by default: a confirmed-safe URL or an in-flight check shows
+  // nothing. The field speaks only to report a real problem — an invalid URL
+  // (zod) or an unsafe destination (in error tone). The submit guard below still
+  // blocks unsafe/checking regardless of what is shown here.
+  const urlHelperText: ReactNode =
+    errors.original_url?.message ??
+    (urlIsUnsafe
+      ? getUrlSafetyHelperNode("unsafe", threats, urlSafetyLabels)
+      : " ");
 
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
     async (data): Promise<void> => {
@@ -289,18 +291,9 @@ export function LinksQuickCreate({
 
   const inputRootSx = getInputRootSx(theme);
   const primary = theme.palette.primary.main;
-  const slugHelperText = (() => {
-    if (errors.custom_slug?.message) {
-      return errors.custom_slug.message;
-    }
-    if (showSlugSuggestion) {
-      return t("list.quickCreate.slugTabHint");
-    }
-    if (isResolvingSlugSuggestion) {
-      return t("list.quickCreate.slugSuggestionChecking");
-    }
-    return undefined;
-  })();
+  // Slug field stays silent unless the value is actually invalid. The suggestion
+  // affordance lives inline (ghost text + accept button), not in helper copy.
+  const slugHelperText = errors.custom_slug?.message;
 
   return (
     <EnhancedPaper
@@ -379,15 +372,6 @@ export function LinksQuickCreate({
                       />
                     </InputAdornment>
                   ),
-                  endAdornment: isLoadingMeta ? (
-                    <InputAdornment position="end">
-                      <CircularProgress
-                        size={14}
-                        thickness={5}
-                        sx={{ color: "text.disabled" }}
-                      />
-                    </InputAdornment>
-                  ) : undefined,
                 },
                 formHelperText: {
                   sx: {
@@ -403,9 +387,7 @@ export function LinksQuickCreate({
               placeholder={
                 showSlugSuggestion
                   ? availableSlug!
-                  : isResolvingSlugSuggestion && baseSlugSuggestion
-                    ? baseSlugSuggestion
-                    : t("list.quickCreate.slugPlaceholder")
+                  : t("list.quickCreate.slugPlaceholder")
               }
               onKeyDown={(e) => {
                 if (e.key === "Tab" && showSlugSuggestion) {
@@ -428,60 +410,47 @@ export function LinksQuickCreate({
                   sx: {
                     fontFamily: "monospace",
                     fontWeight: 500,
-                    ...((showSlugSuggestion || isResolvingSlugSuggestion) &&
-                    (availableSlug || baseSlugSuggestion)
+                    ...(showSlugSuggestion
                       ? {
                           "&::placeholder": {
-                            color: alpha(
-                              primary,
-                              showSlugSuggestion ? 0.55 : 0.35,
-                            ),
+                            color: alpha(primary, 0.55),
                             opacity: 1,
                           },
                         }
                       : undefined),
                   },
-                  endAdornment:
-                    isResolvingSlugSuggestion && !showSlugSuggestion ? (
-                      <InputAdornment position="end">
-                        <CircularProgress
-                          size={14}
-                          thickness={5}
-                          sx={{ color: "text.disabled" }}
-                        />
-                      </InputAdornment>
-                    ) : showSlugSuggestion ? (
-                      <InputAdornment position="end">
-                        <Box
-                          component="button"
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            acceptSlugSuggestion();
-                          }}
-                          sx={{
-                            border: "none",
-                            cursor: "pointer",
-                            font: "inherit",
-                            fontSize: "0.6875rem",
-                            fontWeight: 600,
-                            lineHeight: 1,
-                            py: 0.25,
-                            px: 0.625,
-                            borderRadius: `${radiusTokens.sm}px`,
-                            color: primary,
-                            bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
-                            transition: "background-color 120ms ease",
-                            "&:hover": {
-                              bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
-                            },
-                          }}
-                        >
-                          {t("list.quickCreate.slugAccept")}
-                        </Box>
-                      </InputAdornment>
-                    ) : undefined,
+                  endAdornment: showSlugSuggestion ? (
+                    <InputAdornment position="end">
+                      <Box
+                        component="button"
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          acceptSlugSuggestion();
+                        }}
+                        sx={{
+                          border: "none",
+                          cursor: "pointer",
+                          font: "inherit",
+                          fontSize: "0.6875rem",
+                          fontWeight: 600,
+                          lineHeight: 1,
+                          py: 0.25,
+                          px: 0.625,
+                          borderRadius: `${radiusTokens.sm}px`,
+                          color: primary,
+                          bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
+                          transition: "background-color 120ms ease",
+                          "&:hover": {
+                            bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
+                          },
+                        }}
+                      >
+                        {t("list.quickCreate.slugAccept")}
+                      </Box>
+                    </InputAdornment>
+                  ) : undefined,
                 },
                 formHelperText: {
                   sx: {
