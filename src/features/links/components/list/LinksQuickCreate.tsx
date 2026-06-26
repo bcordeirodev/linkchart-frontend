@@ -117,7 +117,7 @@ const formGridSx = {
     md: "minmax(0, 2fr) minmax(0, 1fr) 132px",
   },
   columnGap: 2,
-  rowGap: { xs: 1.25, md: 0.75 },
+  rowGap: { xs: 1, md: 0.75 },
   alignItems: "start",
 } as const;
 
@@ -306,6 +306,8 @@ export function LinksQuickCreate({
           icon={<Zap {...ICON_MD} />}
           title={t("list.quickCreate.label")}
           description={t("list.quickCreate.description")}
+          descriptionSx={{ display: { xs: "none", sm: "block" } }}
+          sx={{ mb: { xs: 1.25, sm: 1.75 } }}
           action={
             <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
               <Button
@@ -355,7 +357,7 @@ export function LinksQuickCreate({
               size="small"
               fullWidth
               error={!!errors.original_url || urlIsUnsafe}
-              helperText={urlHelperText}
+              helperText={urlHelperText === " " ? undefined : urlHelperText}
               disabled={isPending}
               sx={[
                 inputRootSx,
@@ -374,10 +376,7 @@ export function LinksQuickCreate({
                   ),
                 },
                 formHelperText: {
-                  sx: {
-                    display: { md: "none" },
-                    minHeight: urlHelperText === " " ? 0 : undefined,
-                  },
+                  sx: { display: { md: "none" } },
                 },
               }}
             />
