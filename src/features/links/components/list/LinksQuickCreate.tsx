@@ -26,10 +26,8 @@ import { z } from "zod";
 
 import { useCreateLink } from "@/features/links/hooks/useLinks";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
-import { useAvailableSlugSuggestion } from "@/features/links/hooks/useAvailableSlugSuggestion";
-import { useUrlMeta } from "@/features/links/hooks/useUrlMeta";
+import { usePublicSlugSuggestion } from "@/features/links/hooks/usePublicSlugSuggestion";
 import { RESERVED_SLUGS } from "@/features/links/utils/slugAvailabilityCheck";
-import { slugify, slugifyFromUrl } from "@/features/links/utils/slugify";
 import {
   buildUrlSafetyLabels,
   getUrlSafetyHelperNode,
@@ -236,17 +234,16 @@ export function LinksQuickCreate({
   const slugValue = watch("custom_slug");
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
 
-  const { ogTitle } = useUrlMeta(urlValue ?? "");
-  const baseSlugSuggestion = useMemo(() => {
-    if (!urlValue) return null;
-    if (ogTitle) {
-      const fromTitle = slugify(ogTitle);
-      if (fromTitle) return fromTitle;
-    }
-    return slugifyFromUrl(urlValue) || null;
-  }, [ogTitle, urlValue]);
-  const { availableSlug, status: slugSuggestionStatus } =
-    useAvailableSlugSuggestion(!slugValue ? baseSlugSuggestion : null);
+  // One server-side request resolves the slug: it derives the base from the
+  // page's og:title (falling back to the URL path/host) and checks global
+  // availability in a single call. Replaces the previous client-side approach,
+  // which computed two different bases (URL first, then og:title once it loaded
+  // asynchronously) and fired a cascade of availability checks — making the
+  // suggestion flip from one slug to another mid-resolution. The server check is
+  // also global (any link), matching the create's uniqueness rule, whereas the
+  // old client check only saw active public links.
+  const { slug: availableSlug, status: slugSuggestionStatus } =
+    usePublicSlugSuggestion(!slugValue ? urlValue ?? null : null);
 
   // The suggestion is ambient: a ready slug surfaces as ghost text the user can
   // accept (or ignore). Resolution stays silent — no "searching…" state — so the
