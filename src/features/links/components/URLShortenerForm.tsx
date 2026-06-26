@@ -12,7 +12,6 @@ import { usePublicSlugSuggestion } from "@/features/links/hooks/usePublicSlugSug
 import { usePublicURLShortener } from "@/features/links/hooks/usePublicURLShortener";
 import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
-import { useUrlMeta } from "@/features/links/hooks/useUrlMeta";
 import { PUBLIC_SLUG_PATTERN } from "@/features/links/utils/slugAvailabilityCheck";
 import { ApiError } from "@/lib/api/client";
 import { useAppDispatch } from "@/lib/store/hooks";
@@ -79,13 +78,14 @@ export function URLShortenerForm({
   const slugValue = watch("customSlug");
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
 
-  // og:title still drives the silently-filled `title` payload below. The slug is
-  // now resolved server-side in one request (see usePublicSlugSuggestion) instead
-  // of deriving a base client-side and looping candidates.
-  const { ogTitle } = useUrlMeta(urlValue ?? "");
-
-  const { slug: availableSlug, status: slugSuggestionStatus } =
-    usePublicSlugSuggestion(!slugValue?.trim() ? urlValue ?? null : null);
+  // One unauthenticated request resolves both the available slug and the page's
+  // og:title. ogTitle silently fills the `title` payload below regardless of the
+  // slug field; the slug ghost text only shows while that field is empty.
+  const {
+    slug: availableSlug,
+    ogTitle,
+    status: slugSuggestionStatus,
+  } = usePublicSlugSuggestion(urlValue ?? null);
 
   const showSlugSuggestion =
     !slugValue?.trim() && slugSuggestionStatus === "ready" && !!availableSlug;
