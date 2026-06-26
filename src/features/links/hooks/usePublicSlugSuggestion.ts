@@ -26,15 +26,17 @@ const DEBOUNCE_MS = 500;
  * - All failures are swallowed silently — callers treat `slug === null` as
  *   "no suggestion available".
  *
- * @param url - the target URL, or `null` to stay idle (e.g. while the slug field
- *   is already filled by the user).
- * @returns `{ slug, status }` where `slug` is null unless `status === "ready"`.
+ * @param url - the target URL, or `null` to stay idle.
+ * @returns `{ slug, ogTitle, status }` — `slug` is null unless `status === "ready"`;
+ *   `ogTitle` is the page title when available (independent of the slug field).
  */
 export function usePublicSlugSuggestion(url: string | null): {
   slug: string | null;
+  ogTitle: string | null;
   status: PublicSlugSuggestionStatus;
 } {
   const [slug, setSlug] = useState<string | null>(null);
+  const [ogTitle, setOgTitle] = useState<string | null>(null);
   const [status, setStatus] = useState<PublicSlugSuggestionStatus>("idle");
 
   useEffect(() => {
@@ -42,12 +44,14 @@ export function usePublicSlugSuggestion(url: string | null): {
 
     if (!formatted || !publicLinkService.validateUrl(formatted)) {
       setSlug(null);
+      setOgTitle(null);
       setStatus("idle");
       return;
     }
 
     let cancelled = false;
     setSlug(null);
+    setOgTitle(null);
     setStatus("resolving");
 
     const timer = setTimeout(async () => {
@@ -56,13 +60,15 @@ export function usePublicSlugSuggestion(url: string | null): {
         if (cancelled) {
           return;
         }
-        setSlug(resolved || null);
-        setStatus(resolved ? "ready" : "idle");
+        setSlug(resolved.slug || null);
+        setOgTitle(resolved.og_title ?? null);
+        setStatus(resolved.slug ? "ready" : "idle");
       } catch {
         if (cancelled) {
           return;
         }
         setSlug(null);
+        setOgTitle(null);
         setStatus("idle");
       }
     }, DEBOUNCE_MS);
@@ -73,5 +79,5 @@ export function usePublicSlugSuggestion(url: string | null): {
     };
   }, [url]);
 
-  return { slug, status };
+  return { slug, ogTitle, status };
 }
