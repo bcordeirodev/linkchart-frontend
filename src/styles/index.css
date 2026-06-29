@@ -79,6 +79,17 @@ body {
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.35);
 }
 
+/*
+ * The native <input>/<textarea> inside an MUI field must not draw its own focus
+ * outline — the field root already signals focus via the box-shadow above.
+ * Without this, the global :focus-visible rule double-borders the field: an
+ * inner outline hugs the text while the root ring sits outside the adornment.
+ */
+.MuiInputBase-input:focus,
+.MuiInputBase-input:focus-visible {
+  outline: none;
+}
+
 /* Manter acessibilidade para botões e outros elementos interativos */
 .MuiButton-root:focus-visible,
 .MuiIconButton-root:focus-visible,

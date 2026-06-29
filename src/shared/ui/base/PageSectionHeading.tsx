@@ -15,6 +15,8 @@ export interface PageSectionHeadingProps {
   /** Icon size in px; defaults to 18 (section) or 22 (page). */
   iconSize?: number;
   sx?: SxProps<Theme>;
+  /** Extra styles for the description line (e.g. hide on mobile). */
+  descriptionSx?: SxProps<Theme>;
 }
 
 /**
@@ -29,6 +31,7 @@ export function PageSectionHeading({
   titleVariant = "section",
   iconSize,
   sx,
+  descriptionSx,
 }: PageSectionHeadingProps) {
   const isPageTitle = titleVariant === "page";
   const resolvedIconSize = iconSize ?? (isPageTitle ? 22 : 18);
@@ -83,7 +86,12 @@ export function PageSectionHeading({
           <Typography
             variant="caption"
             color="text.secondary"
-            sx={{ fontSize: "0.75rem", lineHeight: 1.4, display: "block" }}
+            sx={{
+              fontSize: "0.75rem",
+              lineHeight: 1.4,
+              display: "block",
+              ...descriptionSx,
+            }}
           >
             {description}
           </Typography>

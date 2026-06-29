@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import type React from "react";
 import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -8,16 +8,11 @@ import { m } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { useAvailableSlugSuggestion } from "@/features/links/hooks/useAvailableSlugSuggestion";
+import { usePublicSlugSuggestion } from "@/features/links/hooks/usePublicSlugSuggestion";
 import { usePublicURLShortener } from "@/features/links/hooks/usePublicURLShortener";
 import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
-import { useUrlMeta } from "@/features/links/hooks/useUrlMeta";
 import { PUBLIC_SLUG_PATTERN } from "@/features/links/utils/slugAvailabilityCheck";
-import {
-  slugifyFromUrlPublic,
-  slugifyPublic,
-} from "@/features/links/utils/slugify";
 import { ApiError } from "@/lib/api/client";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showErrorMessage } from "@/lib/store/messageSlice";
@@ -83,32 +78,19 @@ export function URLShortenerForm({
   const slugValue = watch("customSlug");
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
 
-  const { ogTitle, isLoading: isLoadingMeta } = useUrlMeta(urlValue ?? "");
-
-  const baseSlugSuggestion = useMemo(() => {
-    if (!urlValue?.trim()) {
-      return null;
-    }
-    if (ogTitle) {
-      const fromTitle = slugifyPublic(ogTitle);
-      if (fromTitle) {
-        return fromTitle;
-      }
-    }
-    return slugifyFromUrlPublic(urlValue) || null;
-  }, [ogTitle, urlValue]);
-
-  const { availableSlug, status: slugSuggestionStatus } =
-    useAvailableSlugSuggestion(!slugValue?.trim() ? baseSlugSuggestion : null, {
-      mode: "public",
-    });
+  // One unauthenticated request resolves both the available slug and the page's
+  // og:title. ogTitle silently fills the `title` payload below regardless of the
+  // slug field; the slug ghost text only shows while that field is empty.
+  const {
+    slug: availableSlug,
+    ogTitle,
+    status: slugSuggestionStatus,
+  } = usePublicSlugSuggestion(urlValue ?? null);
 
   const showSlugSuggestion =
     !slugValue?.trim() && slugSuggestionStatus === "ready" && !!availableSlug;
   const isResolvingSlugSuggestion =
-    !slugValue?.trim() &&
-    !!baseSlugSuggestion &&
-    (isLoadingMeta || slugSuggestionStatus === "resolving");
+    !slugValue?.trim() && slugSuggestionStatus === "resolving";
 
   const slugAvailability = useSlugAvailability(
     slugValue?.trim() ?? "",
@@ -273,9 +255,7 @@ export function URLShortenerForm({
                 placeholder={
                   showSlugSuggestion
                     ? availableSlug!
-                    : isResolvingSlugSuggestion && baseSlugSuggestion
-                      ? baseSlugSuggestion
-                      : t("shorter.form.slugPlaceholder")
+                    : t("shorter.form.slugPlaceholder")
                 }
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                   if (e.key === "Tab" && showSlugSuggestion) {
@@ -288,12 +268,9 @@ export function URLShortenerForm({
                   ...(typeof inputSx === "object" && !Array.isArray(inputSx)
                     ? inputSx
                     : {}),
-                  ...((showSlugSuggestion || isResolvingSlugSuggestion) && {
+                  ...(showSlugSuggestion && {
                     "&::placeholder": {
-                      color: alpha(
-                        theme.palette.primary.main,
-                        showSlugSuggestion ? 0.55 : 0.35,
-                      ),
+                      color: alpha(theme.palette.primary.main, 0.55),
                       opacity: 1,
                     },
                   }),
