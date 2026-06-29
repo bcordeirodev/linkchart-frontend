@@ -30,6 +30,15 @@ export interface PublicLinkResponse {
 }
 
 /**
+ * Result of the public slug-suggestion endpoint: an available slug plus the
+ * page's og:title (so the public form can fill both from one request).
+ */
+export interface SlugSuggestionResponse {
+  slug: string;
+  og_title: string | null;
+}
+
+/**
  * Lightweight analytics payload exposed for public links.
  */
 export interface PublicAnalyticsResponse {
@@ -74,6 +83,24 @@ class PublicLinkService extends BaseService {
     return this.get<PublicLinkResponse>(
       API_CONFIG.ENDPOINTS.PUBLIC.LINK_BY_SLUG(slug),
     );
+  }
+
+  /**
+   * Resolves a single available slug for a target URL in one request, along with
+   * the page's og:title.
+   *
+   * The backend derives a human-friendly base from the page's og:title (falling
+   * back to the URL path/host) and guarantees availability, replacing the old
+   * client-side loop that issued one round-trip per candidate. Returning the
+   * og:title too lets the public form fill the title without a second request.
+   *
+   * @param url - target URL (with or without scheme; the backend normalizes it).
+   * @returns `{ slug, og_title }` — an available slug and the page title (or null).
+   * @endpoint `GET /api/public/links/suggest-slug`
+   */
+  async suggestSlug(url: string): Promise<SlugSuggestionResponse> {
+    const path = `${API_CONFIG.ENDPOINTS.PUBLIC.SUGGEST_SLUG}?url=${encodeURIComponent(url)}`;
+    return this.get<SlugSuggestionResponse>(path);
   }
 
   /**

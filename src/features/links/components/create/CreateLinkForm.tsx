@@ -15,7 +15,7 @@ import {
 } from "../../components/forms/LinkFormSchema";
 import { useCopyShortUrlForLink } from "../../hooks/useCopyShortUrlForLink";
 import { useCreateLink } from "../../hooks/useLinks";
-import { useLinkFormMetaSuggestions } from "../../hooks/useLinkFormMetaSuggestions";
+import { useCreateLinkMetaSuggestions } from "../../hooks/useCreateLinkMetaSuggestions";
 import { applyBackendFieldErrors } from "../../utils/applyBackendFieldErrors";
 
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
@@ -57,7 +57,7 @@ export function CreateLinkForm({
     isResolvingSlugSuggestion,
     titleSuggestion,
     isLoadingMeta,
-  } = useLinkFormMetaSuggestions({ control, setValue });
+  } = useCreateLinkMetaSuggestions({ control, setValue });
 
   const convertDateForSubmit = (
     dateValue: Date | null | undefined,

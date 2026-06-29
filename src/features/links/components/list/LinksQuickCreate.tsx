@@ -20,17 +20,15 @@ import {
   SlidersHorizontal,
   Zap,
 } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { useCreateLink } from "@/features/links/hooks/useLinks";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
-import { useAvailableSlugSuggestion } from "@/features/links/hooks/useAvailableSlugSuggestion";
-import { useUrlMeta } from "@/features/links/hooks/useUrlMeta";
+import { usePublicSlugSuggestion } from "@/features/links/hooks/usePublicSlugSuggestion";
 import { RESERVED_SLUGS } from "@/features/links/utils/slugAvailabilityCheck";
-import { slugify, slugifyFromUrl } from "@/features/links/utils/slugify";
 import {
   buildUrlSafetyLabels,
   getUrlSafetyHelperNode,
@@ -118,7 +116,7 @@ const formGridSx = {
     md: "minmax(0, 2fr) minmax(0, 1fr) 132px",
   },
   columnGap: 2,
-  rowGap: { xs: 2, md: 0.75 },
+  rowGap: { xs: 1, md: 0.75 },
   alignItems: "start",
 } as const;
 
@@ -237,24 +235,22 @@ export function LinksQuickCreate({
   const slugValue = watch("custom_slug");
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
 
-  const { ogTitle, isLoading: isLoadingMeta } = useUrlMeta(urlValue ?? "");
-  const baseSlugSuggestion = useMemo(() => {
-    if (!urlValue) return null;
-    if (ogTitle) {
-      const fromTitle = slugify(ogTitle);
-      if (fromTitle) return fromTitle;
-    }
-    return slugifyFromUrl(urlValue) || null;
-  }, [ogTitle, urlValue]);
-  const { availableSlug, status: slugSuggestionStatus } =
-    useAvailableSlugSuggestion(!slugValue ? baseSlugSuggestion : null);
+  // One server-side request resolves the slug: it derives the base from the
+  // page's og:title (falling back to the URL path/host) and checks global
+  // availability in a single call. Replaces the previous client-side approach,
+  // which computed two different bases (URL first, then og:title once it loaded
+  // asynchronously) and fired a cascade of availability checks — making the
+  // suggestion flip from one slug to another mid-resolution. The server check is
+  // also global (any link), matching the create's uniqueness rule, whereas the
+  // old client check only saw active public links.
+  const { slug: availableSlug, status: slugSuggestionStatus } =
+    usePublicSlugSuggestion(!slugValue ? urlValue ?? null : null);
 
+  // The suggestion is ambient: a ready slug surfaces as ghost text the user can
+  // accept (or ignore). Resolution stays silent — no "searching…" state — so the
+  // field never flickers feedback while suggestions are being looked up.
   const showSlugSuggestion =
     !slugValue && slugSuggestionStatus === "ready" && !!availableSlug;
-  const isResolvingSlugSuggestion =
-    !slugValue &&
-    !!baseSlugSuggestion &&
-    (isLoadingMeta || slugSuggestionStatus === "resolving");
 
   const acceptSlugSuggestion = useCallback(() => {
     if (availableSlug) {
@@ -266,41 +262,81 @@ export function LinksQuickCreate({
   const urlIsChecking = safetyStatus === "checking";
 
   const urlSafetyLabels = buildUrlSafetyLabels(t);
-  const urlHelperText: ReactNode = errors.original_url?.message
-    ? errors.original_url.message
-    : safetyStatus !== "idle"
-      ? getUrlSafetyHelperNode(safetyStatus, threats, urlSafetyLabels)
-      : " ";
+  // Safety is silent by default: a confirmed-safe URL or an in-flight check shows
+  // nothing. The field speaks only to report a real problem — an invalid URL
+  // (zod) or an unsafe destination (in error tone). The submit guard below still
+  // blocks unsafe/checking regardless of what is shown here.
+  const urlHelperText: ReactNode =
+    errors.original_url?.message ??
+    (urlIsUnsafe
+      ? getUrlSafetyHelperNode("unsafe", threats, urlSafetyLabels)
+      : " ");
+
+  // Extracted so a submit that arrived while the safety check was still running
+  // can be replayed once the check settles (see the queue effect below).
+  const pendingSubmitDataRef = useRef<QuickFormData | null>(null);
+  const [submitQueued, setSubmitQueued] = useState(false);
+
+  const createLink = useCallback(
+    async (data: QuickFormData): Promise<void> => {
+      try {
+        const created = await mutateAsync({
+          original_url: data.original_url,
+          custom_slug: data.custom_slug || undefined,
+        });
+        onLinkCreated?.(created);
+        setSucceeded(true);
+        reset();
+        setTimeout(() => setSucceeded(false), 2000);
+      } catch {
+        // The mutation's onError already dispatches an error toast; swallow the
+        // rejection so the queued (void) call can't become an unhandled one.
+      }
+    },
+    [mutateAsync, onLinkCreated, reset],
+  );
 
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
     async (data): Promise<void> => {
-      if (urlIsUnsafe || urlIsChecking) return;
-      const created = await mutateAsync({
-        original_url: data.original_url,
-        custom_slug: data.custom_slug || undefined,
-      });
-      onLinkCreated?.(created);
-      setSucceeded(true);
-      reset();
-      setTimeout(() => setSucceeded(false), 2000);
+      // Unsafe is a hard block. A still-running check queues the submit instead
+      // of greying the button — it fires automatically once the check settles,
+      // so the button never flickers disabled mid-check.
+      if (urlIsUnsafe) return;
+      if (urlIsChecking) {
+        pendingSubmitDataRef.current = data;
+        setSubmitQueued(true);
+        return;
+      }
+      await createLink(data);
     },
-    [mutateAsync, onLinkCreated, reset, urlIsUnsafe, urlIsChecking],
+    [urlIsUnsafe, urlIsChecking, createLink],
   );
+
+  // Flush a queued submit when the safety check settles: create on safe/error
+  // (error fails open, matching the submit gate), and drop on unsafe or when the
+  // URL is cleared/changed (back to idle).
+  useEffect(() => {
+    if (!submitQueued) {
+      return;
+    }
+    if (safetyStatus === "safe" || safetyStatus === "error") {
+      const data = pendingSubmitDataRef.current;
+      pendingSubmitDataRef.current = null;
+      setSubmitQueued(false);
+      if (data) {
+        void createLink(data);
+      }
+    } else if (safetyStatus === "unsafe" || safetyStatus === "idle") {
+      pendingSubmitDataRef.current = null;
+      setSubmitQueued(false);
+    }
+  }, [safetyStatus, submitQueued, createLink]);
 
   const inputRootSx = getInputRootSx(theme);
   const primary = theme.palette.primary.main;
-  const slugHelperText = (() => {
-    if (errors.custom_slug?.message) {
-      return errors.custom_slug.message;
-    }
-    if (showSlugSuggestion) {
-      return t("list.quickCreate.slugTabHint");
-    }
-    if (isResolvingSlugSuggestion) {
-      return t("list.quickCreate.slugSuggestionChecking");
-    }
-    return undefined;
-  })();
+  // Slug field stays silent unless the value is actually invalid. The suggestion
+  // affordance lives inline (ghost text + accept button), not in helper copy.
+  const slugHelperText = errors.custom_slug?.message;
 
   return (
     <EnhancedPaper
@@ -313,6 +349,8 @@ export function LinksQuickCreate({
           icon={<Zap {...ICON_MD} />}
           title={t("list.quickCreate.label")}
           description={t("list.quickCreate.description")}
+          descriptionSx={{ display: { xs: "none", sm: "block" } }}
+          sx={{ mb: { xs: 1.25, sm: 1.75 } }}
           action={
             <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
               <Button
@@ -362,7 +400,7 @@ export function LinksQuickCreate({
               size="small"
               fullWidth
               error={!!errors.original_url || urlIsUnsafe}
-              helperText={urlHelperText}
+              helperText={urlHelperText === " " ? undefined : urlHelperText}
               disabled={isPending}
               sx={[
                 inputRootSx,
@@ -379,21 +417,9 @@ export function LinksQuickCreate({
                       />
                     </InputAdornment>
                   ),
-                  endAdornment: isLoadingMeta ? (
-                    <InputAdornment position="end">
-                      <CircularProgress
-                        size={14}
-                        thickness={5}
-                        sx={{ color: "text.disabled" }}
-                      />
-                    </InputAdornment>
-                  ) : undefined,
                 },
                 formHelperText: {
-                  sx: {
-                    display: { md: "none" },
-                    minHeight: urlHelperText === " " ? 0 : undefined,
-                  },
+                  sx: { display: { md: "none" } },
                 },
               }}
             />
@@ -403,9 +429,7 @@ export function LinksQuickCreate({
               placeholder={
                 showSlugSuggestion
                   ? availableSlug!
-                  : isResolvingSlugSuggestion && baseSlugSuggestion
-                    ? baseSlugSuggestion
-                    : t("list.quickCreate.slugPlaceholder")
+                  : t("list.quickCreate.slugPlaceholder")
               }
               onKeyDown={(e) => {
                 if (e.key === "Tab" && showSlugSuggestion) {
@@ -428,60 +452,47 @@ export function LinksQuickCreate({
                   sx: {
                     fontFamily: "monospace",
                     fontWeight: 500,
-                    ...((showSlugSuggestion || isResolvingSlugSuggestion) &&
-                    (availableSlug || baseSlugSuggestion)
+                    ...(showSlugSuggestion
                       ? {
                           "&::placeholder": {
-                            color: alpha(
-                              primary,
-                              showSlugSuggestion ? 0.55 : 0.35,
-                            ),
+                            color: alpha(primary, 0.55),
                             opacity: 1,
                           },
                         }
                       : undefined),
                   },
-                  endAdornment:
-                    isResolvingSlugSuggestion && !showSlugSuggestion ? (
-                      <InputAdornment position="end">
-                        <CircularProgress
-                          size={14}
-                          thickness={5}
-                          sx={{ color: "text.disabled" }}
-                        />
-                      </InputAdornment>
-                    ) : showSlugSuggestion ? (
-                      <InputAdornment position="end">
-                        <Box
-                          component="button"
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            acceptSlugSuggestion();
-                          }}
-                          sx={{
-                            border: "none",
-                            cursor: "pointer",
-                            font: "inherit",
-                            fontSize: "0.6875rem",
-                            fontWeight: 600,
-                            lineHeight: 1,
-                            py: 0.25,
-                            px: 0.625,
-                            borderRadius: `${radiusTokens.sm}px`,
-                            color: primary,
-                            bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
-                            transition: "background-color 120ms ease",
-                            "&:hover": {
-                              bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
-                            },
-                          }}
-                        >
-                          {t("list.quickCreate.slugAccept")}
-                        </Box>
-                      </InputAdornment>
-                    ) : undefined,
+                  endAdornment: showSlugSuggestion ? (
+                    <InputAdornment position="end">
+                      <Box
+                        component="button"
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          acceptSlugSuggestion();
+                        }}
+                        sx={{
+                          border: "none",
+                          cursor: "pointer",
+                          font: "inherit",
+                          fontSize: "0.6875rem",
+                          fontWeight: 600,
+                          lineHeight: 1,
+                          py: 0.25,
+                          px: 0.625,
+                          borderRadius: `${radiusTokens.sm}px`,
+                          color: primary,
+                          bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
+                          transition: "background-color 120ms ease",
+                          "&:hover": {
+                            bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
+                          },
+                        }}
+                      >
+                        {t("list.quickCreate.slugAccept")}
+                      </Box>
+                    </InputAdornment>
+                  ) : undefined,
                 },
                 formHelperText: {
                   sx: {
@@ -499,9 +510,15 @@ export function LinksQuickCreate({
               variant="contained"
               color="primary"
               fullWidth
-              disabled={isPending || urlIsUnsafe || urlIsChecking}
+              disabled={isPending || urlIsUnsafe || submitQueued}
               startIcon={
-                succeeded ? <CheckCircle2 {...ICON_SM} /> : <Zap {...ICON_SM} />
+                succeeded ? (
+                  <CheckCircle2 {...ICON_SM} />
+                ) : isPending || submitQueued ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : (
+                  <Zap {...ICON_SM} />
+                )
               }
               sx={[
                 submitButtonSx,
