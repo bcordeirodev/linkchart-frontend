@@ -5,6 +5,7 @@ import {
   alpha,
   Box,
   Button,
+  CircularProgress,
   FormLabel,
   InputAdornment,
   TextField,
@@ -19,7 +20,7 @@ import {
   SlidersHorizontal,
   Zap,
 } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -271,20 +272,65 @@ export function LinksQuickCreate({
       ? getUrlSafetyHelperNode("unsafe", threats, urlSafetyLabels)
       : " ");
 
+  // Extracted so a submit that arrived while the safety check was still running
+  // can be replayed once the check settles (see the queue effect below).
+  const pendingSubmitDataRef = useRef<QuickFormData | null>(null);
+  const [submitQueued, setSubmitQueued] = useState(false);
+
+  const createLink = useCallback(
+    async (data: QuickFormData): Promise<void> => {
+      try {
+        const created = await mutateAsync({
+          original_url: data.original_url,
+          custom_slug: data.custom_slug || undefined,
+        });
+        onLinkCreated?.(created);
+        setSucceeded(true);
+        reset();
+        setTimeout(() => setSucceeded(false), 2000);
+      } catch {
+        // The mutation's onError already dispatches an error toast; swallow the
+        // rejection so the queued (void) call can't become an unhandled one.
+      }
+    },
+    [mutateAsync, onLinkCreated, reset],
+  );
+
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
     async (data): Promise<void> => {
-      if (urlIsUnsafe || urlIsChecking) return;
-      const created = await mutateAsync({
-        original_url: data.original_url,
-        custom_slug: data.custom_slug || undefined,
-      });
-      onLinkCreated?.(created);
-      setSucceeded(true);
-      reset();
-      setTimeout(() => setSucceeded(false), 2000);
+      // Unsafe is a hard block. A still-running check queues the submit instead
+      // of greying the button — it fires automatically once the check settles,
+      // so the button never flickers disabled mid-check.
+      if (urlIsUnsafe) return;
+      if (urlIsChecking) {
+        pendingSubmitDataRef.current = data;
+        setSubmitQueued(true);
+        return;
+      }
+      await createLink(data);
     },
-    [mutateAsync, onLinkCreated, reset, urlIsUnsafe, urlIsChecking],
+    [urlIsUnsafe, urlIsChecking, createLink],
   );
+
+  // Flush a queued submit when the safety check settles: create on safe/error
+  // (error fails open, matching the submit gate), and drop on unsafe or when the
+  // URL is cleared/changed (back to idle).
+  useEffect(() => {
+    if (!submitQueued) {
+      return;
+    }
+    if (safetyStatus === "safe" || safetyStatus === "error") {
+      const data = pendingSubmitDataRef.current;
+      pendingSubmitDataRef.current = null;
+      setSubmitQueued(false);
+      if (data) {
+        void createLink(data);
+      }
+    } else if (safetyStatus === "unsafe" || safetyStatus === "idle") {
+      pendingSubmitDataRef.current = null;
+      setSubmitQueued(false);
+    }
+  }, [safetyStatus, submitQueued, createLink]);
 
   const inputRootSx = getInputRootSx(theme);
   const primary = theme.palette.primary.main;
@@ -464,9 +510,15 @@ export function LinksQuickCreate({
               variant="contained"
               color="primary"
               fullWidth
-              disabled={isPending || urlIsUnsafe || urlIsChecking}
+              disabled={isPending || urlIsUnsafe || submitQueued}
               startIcon={
-                succeeded ? <CheckCircle2 {...ICON_SM} /> : <Zap {...ICON_SM} />
+                succeeded ? (
+                  <CheckCircle2 {...ICON_SM} />
+                ) : isPending || submitQueued ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : (
+                  <Zap {...ICON_SM} />
+                )
               }
               sx={[
                 submitButtonSx,
