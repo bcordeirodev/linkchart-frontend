@@ -223,7 +223,13 @@ export function getPublicDisplaySx(theme: Theme): SxProps<Theme> {
   };
 }
 
-/** Chart cards inside public analytics — soft border, no heavy shadow. */
+/**
+ * Chart cards inside public analytics — flat, soft border, no shadow.
+ *
+ * Drops the gradient overlay and aligns the surface to the same flat inset
+ * tint used by the metric tiles ({@link getPublicInsetSx}) so the chart boxes
+ * read as part of the same family rather than a distinct, glossier surface.
+ */
 export function getPublicChartCardOverrideSx(theme: Theme): SxProps<Theme> {
   const isDark = theme.palette.mode === "dark";
   const hairline = publicHairline(theme, "inset");
@@ -233,13 +239,8 @@ export function getPublicChartCardOverrideSx(theme: Theme): SxProps<Theme> {
       border: `1px solid ${hairline}`,
       boxShadow: "none",
       borderRadius: `${radiusTokens.md}px`,
-      backgroundImage: `linear-gradient(180deg, ${alpha(
-        theme.palette.common.white,
-        isDark ? 0.025 : 0.38,
-      )} 0%, ${alpha(theme.palette.common.white, 0)} 34%)`,
-      ...(isDark
-        ? { bgcolor: alpha(theme.palette.text.primary, 0.03) }
-        : { bgcolor: theme.palette.background.paper }),
+      backgroundImage: "none",
+      bgcolor: alpha(theme.palette.text.primary, isDark ? 0.03 : 0.035),
     },
     "& .MuiCardContent-root .MuiTypography-h5": {
       fontSize: "0.8125rem",

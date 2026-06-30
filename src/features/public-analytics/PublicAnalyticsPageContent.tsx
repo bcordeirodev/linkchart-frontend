@@ -72,10 +72,12 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
       <PublicBlobBackground />
       <Box sx={{ position: "relative", minHeight: "100vh" }}>
         <Container
-          maxWidth="md"
+          maxWidth={false}
           sx={{
             position: "relative",
             zIndex: 1,
+            maxWidth: 1080,
+            mx: "auto",
             pt: { xs: 7, md: 8 },
             pb: { xs: 6, md: 8 },
           }}
