@@ -3,14 +3,19 @@
 import { useState, useEffect, useId } from "react";
 import { Box, Button, Stack, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
+import { Share2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { useShareAPI } from "@/features/links/hooks/useShareAPI";
 import useClipboard from "@/hooks/useClipboard";
+import { ICON_MD } from "@/lib/theme/iconDefaults";
 import {
   getPublicFocalSx,
+  publicHairline,
   PUBLIC_CARD_GAP,
 } from "@/lib/theme/publicPageStyles";
 import { getShortUrl } from "@/lib/utils/shortUrl";
+import { WhatsAppIcon } from "@/shared/ui/icons";
 
 import type { PublicLinkData } from "../../types";
 
@@ -47,6 +52,8 @@ interface LinkHeroCardProps {
 export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
+  const { shareOrCopy } = useShareAPI();
+  const isDark = theme.palette.mode === "dark";
 
   /* ── Accessible heading IDs ── */
   const cardHeadingId = useId();
@@ -95,6 +102,64 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
             destinationUrl={linkData.original_url}
             headingId={destinationHeadingId}
           />
+        </Stack>
+
+        {/* Quick share — re-share this short link without leaving the page. */}
+        <Stack direction="row" gap={1}>
+          {[
+            {
+              key: "share",
+              label: t("publicAnalytics.linkInfo.share"),
+              icon: <Share2 {...ICON_MD} aria-hidden />,
+              onClick: () => shareOrCopy({ url: shortUrl }),
+            },
+            {
+              key: "whatsapp",
+              label: t("publicAnalytics.linkInfo.shareWhatsapp"),
+              icon: <WhatsAppIcon size={18} aria-hidden />,
+              onClick: () =>
+                window.open(
+                  `https://wa.me/?text=${encodeURIComponent(shortUrl)}`,
+                  "_blank",
+                  "noopener,noreferrer",
+                ),
+            },
+          ].map(({ key, label, icon, onClick }) => (
+            <Button
+              key={key}
+              onClick={onClick}
+              startIcon={icon}
+              sx={{
+                flex: 1,
+                minHeight: 42,
+                px: 2,
+                fontSize: "0.8125rem",
+                fontWeight: 700,
+                textTransform: "none",
+                letterSpacing: "-0.01em",
+                borderRadius: 2,
+                color: theme.palette.text.primary,
+                border: `1px solid ${publicHairline(theme, "inset")}`,
+                bgcolor: alpha(theme.palette.text.primary, 0.04),
+                transition:
+                  "background-color 160ms ease, border-color 160ms ease, transform 120ms ease",
+                "& .MuiButton-startIcon": { mr: 1 },
+                "&:hover": {
+                  bgcolor: alpha(
+                    theme.palette.primary.main,
+                    isDark ? 0.1 : 0.07,
+                  ),
+                  borderColor: alpha(
+                    theme.palette.primary.main,
+                    isDark ? 0.4 : 0.3,
+                  ),
+                },
+                "&:active": { transform: "translateY(1px)" },
+              }}
+            >
+              {label}
+            </Button>
+          ))}
         </Stack>
 
         <BookmarkRow

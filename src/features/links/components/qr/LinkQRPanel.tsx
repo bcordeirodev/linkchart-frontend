@@ -19,6 +19,7 @@ import { getLinkFormPanelSx } from "@/features/links/components/forms/linkFormPa
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { WhatsAppIcon } from "@/shared/ui/icons";
 
 import type { LinkResponse } from "@/types";
 
@@ -167,6 +168,23 @@ export function LinkQRPanel({
                 sx={{ flex: { xs: 1, sm: "initial" } }}
               >
                 {t("qr.copy")}
+              </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                size="small"
+                startIcon={<WhatsAppIcon size={18} aria-hidden />}
+                onClick={() =>
+                  window.open(
+                    `https://wa.me/?text=${encodeURIComponent(link.short_url)}`,
+                    "_blank",
+                    "noopener,noreferrer",
+                  )
+                }
+                disabled={!link.short_url}
+                sx={{ flex: { xs: 1, sm: "initial" } }}
+              >
+                {t("qr.shareWhatsapp")}
               </Button>
             </Stack>
           </Stack>

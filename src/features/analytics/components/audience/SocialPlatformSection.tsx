@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
+import { SocialBrandIcon } from "@/shared/ui/icons";
 import { SectionDivider } from "@/shared/ui/SectionDivider";
 
 interface SocialPlatformEntry {
@@ -75,13 +76,38 @@ export function SocialPlatformSection({ platforms, showTitle = true }: Props) {
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 1,
                     mb: 0.5,
                   }}
                 >
-                  <Typography variant="body2">
-                    {PLATFORM_DISPLAY[entry.platform] ?? entry.platform}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 0.875,
+                      minWidth: 0,
+                    }}
+                  >
+                    <Box
+                      component="span"
+                      sx={{
+                        display: "inline-flex",
+                        color,
+                        flexShrink: 0,
+                      }}
+                    >
+                      <SocialBrandIcon platform={entry.platform} size={16} />
+                    </Box>
+                    <Typography variant="body2" noWrap>
+                      {PLATFORM_DISPLAY[entry.platform] ?? entry.platform}
+                    </Typography>
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ flexShrink: 0 }}
+                  >
                     {entry.clicks} ({entry.percentage.toFixed(1)}%)
                   </Typography>
                 </Box>
