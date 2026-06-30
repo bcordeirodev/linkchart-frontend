@@ -22,6 +22,13 @@
     "createAnother": "Shorten another link",
     "viewAnalytics": "View analytics",
     "successCopiedHint": "We've copied it for you — just paste it anywhere.",
+    "statusLive": "Active · tracking clicks",
+    "qrLabel": "QR Code",
+    "qrHint": "Point your camera to open",
+    "qrAlt": "QR code for your short link",
+    "downloadQr": "Download QR",
+    "share": "Share",
+    "shareWhatsapp": "WhatsApp",
     "signUpCta": "Sign up for free to track your links",
     "stats": {
       "linksCreated": "Links created",
@@ -222,7 +229,9 @@
       "destination": "Destination",
       "analyticsPageUrl": "Public analytics page",
       "copyAnalyticsUrl": "Copy analytics page URL",
-      "publicAnalyticsAvailable": "Public analytics available"
+      "publicAnalyticsAvailable": "Public analytics available",
+      "share": "Share",
+      "shareWhatsapp": "WhatsApp"
     },
     "cta": {
       "title": "Create your free account",

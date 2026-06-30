@@ -1,14 +1,17 @@
-import { Box, Container, Skeleton, Stack } from "@mui/material";
+"use client";
+import { Box, Container, Skeleton, Stack, useTheme } from "@mui/material";
 
 import {
   SHORTER_CONTENT_MAX_WIDTH,
   SHORTER_PAGE_CONTAINER_MAX_WIDTH,
 } from "@/features/shorter/constants";
+import { radiusTokens } from "@/lib/theme/designSystem";
+import { getPublicFocalSx } from "@/lib/theme/publicPageStyles";
 import { PublicLayout } from "@/shared/layout";
 
-import { LinkFormSkeleton } from "./LinkFormSkeleton";
-
 export function ShorterSkeleton() {
+  const theme = useTheme();
+
   return (
     <PublicLayout variant="shorter" chrome="minimal">
       <Container
@@ -24,32 +27,107 @@ export function ShorterSkeleton() {
         <Box
           sx={{
             textAlign: "center",
-            mb: { xs: 4, md: 5 },
+            mb: { xs: 3.5, md: 4.5 },
             mt: { xs: 1, md: 2 },
           }}
         >
           <Skeleton
             variant="text"
             width={320}
-            height={56}
+            height={52}
             sx={{ mx: "auto", mb: 0.5 }}
           />
           <Skeleton
             variant="text"
-            width={320}
-            height={26}
-            sx={{ mx: "auto" }}
+            width={420}
+            height={22}
+            sx={{ mx: "auto", maxWidth: "90%" }}
           />
           <Skeleton
             variant="text"
-            width={260}
-            height={26}
-            sx={{ mx: "auto" }}
+            width={300}
+            height={22}
+            sx={{ mx: "auto", maxWidth: "70%" }}
           />
         </Box>
 
-        {/* URLShortenerForm */}
-        <LinkFormSkeleton />
+        {/* URLShortenerForm — mirrors the real focal box: icon+title header,
+            two-field grid, full-width submit button. */}
+        <Box sx={{ maxWidth: SHORTER_CONTENT_MAX_WIDTH, mx: "auto" }}>
+          <Box
+            sx={{ ...getPublicFocalSx(theme), p: { xs: 2.5, sm: 3, md: 3.5 } }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 1.25,
+                mb: 2.5,
+              }}
+            >
+              <Skeleton
+                variant="rounded"
+                width={36}
+                height={36}
+                sx={{ borderRadius: "10px", flexShrink: 0 }}
+              />
+              <Box sx={{ minWidth: 0, flex: 1 }}>
+                <Skeleton
+                  variant="text"
+                  width={170}
+                  height={22}
+                  sx={{ mb: 0.5 }}
+                />
+                <Skeleton variant="text" width="68%" height={18} />
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  md: "minmax(0, 1.55fr) minmax(220px, 0.85fr)",
+                },
+                gap: { xs: 1.35, md: 1.5 },
+                mb: 2.25,
+              }}
+            >
+              <Box>
+                <Skeleton
+                  variant="text"
+                  width={70}
+                  height={14}
+                  sx={{ mb: 0.75 }}
+                />
+                <Skeleton
+                  variant="rounded"
+                  height={54}
+                  sx={{ borderRadius: `${radiusTokens.md}px` }}
+                />
+              </Box>
+              <Box>
+                <Skeleton
+                  variant="text"
+                  width={90}
+                  height={14}
+                  sx={{ mb: 0.75 }}
+                />
+                <Skeleton
+                  variant="rounded"
+                  height={54}
+                  sx={{ borderRadius: `${radiusTokens.md}px` }}
+                />
+              </Box>
+            </Box>
+
+            <Skeleton
+              variant="rounded"
+              height={48}
+              sx={{ borderRadius: `${radiusTokens.md}px` }}
+            />
+          </Box>
+        </Box>
 
         {/* BenefitBadges idle state — SignUpCtaCard */}
         <Box sx={{ mt: 2.5, maxWidth: SHORTER_CONTENT_MAX_WIDTH, mx: "auto" }}>
