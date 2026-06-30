@@ -57,11 +57,10 @@ export function PublicAnalyticsSkeleton({
         </Box>
       ) : null}
 
-      {/* LinkHeroCard skeleton */}
+      {/* LinkHeroCard skeleton — radius inherits getPublicFocalSx (lg/12px). */}
       <Box
         sx={{
           ...heroCardSx,
-          borderRadius: "16px",
           overflow: "hidden",
         }}
       >
@@ -238,12 +237,11 @@ export function PublicAnalyticsSkeleton({
         </Grid>
       </Box>
 
-      {/* PublicCtaBlock */}
+      {/* PublicCtaBlock — radius inherits getPublicPanelSx (lg/12px). */}
       <Box
         sx={{
           ...getPublicPanelSx(theme),
           p: { xs: 2.5, md: 3 },
-          borderRadius: "14px",
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, mb: 2 }}>
@@ -281,8 +279,13 @@ export function PublicAnalyticsSkeleton({
   return (
     <PublicLayout variant="shorter" chrome="minimal">
       <Container
-        maxWidth="md"
-        sx={{ pt: { xs: 7, md: 8 }, pb: { xs: 6, md: 8 } }}
+        maxWidth={false}
+        sx={{
+          maxWidth: 1080,
+          mx: "auto",
+          pt: { xs: 7, md: 8 },
+          pb: { xs: 6, md: 8 },
+        }}
       >
         {content}
       </Container>

@@ -299,6 +299,7 @@
     "title": "QR Code",
     "download": "Download PNG",
     "copy": "Share link",
+    "shareWhatsapp": "WhatsApp",
     "description": "Scan to open the short link.",
     "originalUrl": "Original URL",
     "status": "Status",
