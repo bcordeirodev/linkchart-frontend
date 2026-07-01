@@ -21,6 +21,7 @@ import {
 import type { PublicLinkResponse } from "@/services/link-public.service";
 
 import { BenefitBadges } from "./BenefitBadges";
+import { PublicResourcesLinks } from "./PublicResourcesLinks";
 
 /** Props passed from ShorterPage to the landing variant. */
 export interface ShorterLandingProps {
@@ -183,6 +184,13 @@ export function ShorterLanding({
       {!isRedirecting ? (
         <Box sx={{ mt: PUBLIC_SECTION_GAP }}>
           <ShorterFaq />
+        </Box>
+      ) : null}
+
+      {/* 6. Guias e comparações — surfaces content pages + internal links */}
+      {!isRedirecting ? (
+        <Box sx={{ mt: PUBLIC_SECTION_GAP }}>
+          <PublicResourcesLinks />
         </Box>
       ) : null}
     </>
