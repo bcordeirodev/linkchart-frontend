@@ -1,12 +1,16 @@
 import type { MetadataRoute } from "next";
 
 /**
- * Sitemap for public indexable pages.
+ * Sitemap for public, indexable pages.
  *
- * The root URL (/) is the canonical homepage: it renders the URL shortener
- * landing with full server-side content. /shorter still serves the same
- * landing for backwards compatibility but declares / as its canonical, so it
- * is intentionally omitted here to avoid listing a non-canonical URL.
+ * Included: the homepage and the public marketing/content pages (comparisons,
+ * guides, legal). These are unique, indexable content and belong in the index.
+ *
+ * Deliberately excluded:
+ * - `/shorter` — serves the same landing as `/` but declares `/` as its
+ *   canonical, so listing it would point at a non-canonical URL.
+ * - `/public-analytics/[slug]` — per-link analytics pages are `noindex`
+ *   (thin, user-generated content); they must not be listed here.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
@@ -18,6 +22,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly",
       priority: 1,
+    },
+    // Marketing/content pages — index these (add new /comparar/* and /guia/* here).
+    {
+      url: `${appUrl}/comparar/bitly`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${appUrl}/guia/cliques-bot-vs-humano`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
     {
       url: `${appUrl}/support`,

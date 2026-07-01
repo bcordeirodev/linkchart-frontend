@@ -318,3 +318,60 @@ export function buildCompareBreadcrumbSchema(name: string, path: string) {
     ],
   };
 }
+
+/**
+ * `FAQPage` schema for the bot-detection guide (`/guia/cliques-bot-vs-humano`).
+ *
+ * pt-BR, matching the site's SEO target and the exact prompt patterns real
+ * users type into AI assistants ("como saber se os cliques são bots"). Targets
+ * a differentiator with very low competition (traffic-quality scoring), so
+ * strong AI-citation potential. The visible page renders the same Q&A via i18n.
+ */
+export function buildGuiaBotsFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Como saber se os cliques do meu link são reais ou de bots?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Link Charts pontua cada clique de 0 a 100 com base em sinais como IP de datacenter, ausência de cabeçalhos de navegador, cliques rápidos demais e contradições no dispositivo, e classifica cada um como orgânico, suspeito ou provável fraude — automaticamente.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "O que é tráfego de bot em links encurtados?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "É todo clique que não vem de uma pessoa: crawlers, scrapers, pré-visualizações automáticas e scripts. Ele infla a contagem de cliques sem representar interesse real.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Por que meu link tem muitos cliques mas pouca conversão?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Frequentemente é tráfego de bot ou de baixa qualidade inflando a contagem. Separar o orgânico do suspeito revela o número que realmente importa.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "O Link Charts detecta cliques falsos automaticamente?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. A detecção acontece em tempo real em cada clique, sem configuração, e o resultado aparece no dashboard gratuito como score de qualidade e faixa (orgânico, suspeito ou provável fraude).",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "O que significa o score de qualidade de um clique?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "É uma nota de 0 a 100 que resume o quão provável é que o clique tenha vindo de uma pessoa real. Quanto mais sinais de automação, menor o score.",
+        },
+      },
+    ],
+  };
+}

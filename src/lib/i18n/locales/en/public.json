@@ -376,5 +376,95 @@
       ]
     },
     "ctaTitle": "Shorten your first URL and watch the analytics in real time"
+  },
+  "guiaBots": {
+    "hero": {
+      "eyebrow": "Guide",
+      "title": "How to tell if your link's clicks are real or bots",
+      "subtitle": "Not every click is a person. Learn how to spot automated traffic — and how Link Charts does it for you.",
+      "verdict": "Bots inflate your numbers and hide who actually cares. Link Charts scores every click from 0 to 100 and separates organic traffic from suspicious traffic automatically."
+    },
+    "score": {
+      "sectionTitle": "The quality score, from 0 to 100",
+      "intro": "Every click starts at 100 points and loses points for each sign of automation. The result falls into one of three tiers:",
+      "tiers": [
+        {
+          "label": "Organic",
+          "range": "80–100",
+          "desc": "Behavior consistent with a real person."
+        },
+        {
+          "label": "Suspicious",
+          "range": "50–79",
+          "desc": "Some signs of automation — worth a look."
+        },
+        {
+          "label": "Likely fraud",
+          "range": "0–49",
+          "desc": "Multiple signs of a bot or automated click."
+        }
+      ],
+      "scoreExplain": "Known bots (crawlers, spiders, scrapers) get a 0 outright and land in likely fraud."
+    },
+    "signals": {
+      "sectionTitle": "The signals that give a bot away",
+      "intro": "A human click leaves a coherent trail. These are the signals that most often expose automation:",
+      "items": [
+        {
+          "title": "Datacenter IP",
+          "desc": "Clicks coming from servers and cloud — not residential or mobile networks — are a strong sign of automation."
+        },
+        {
+          "title": "Missing browser headers",
+          "desc": "Real browsers report language and platform. Bots often arrive without that information."
+        },
+        {
+          "title": "Clicks too fast",
+          "desc": "Several clicks on the same link within seconds point to a script, not a person."
+        },
+        {
+          "title": "Device contradictions",
+          "desc": "When what the browser claims doesn't add up — for example, it says mobile, but the signals point to desktop."
+        },
+        {
+          "title": "High-frequency sessions",
+          "desc": "Dozens of clicks in the same session fall outside a normal visitor's pattern."
+        },
+        {
+          "title": "Programmatic access",
+          "desc": "Arrivals via API or automation instead of a real click from an app or browser."
+        }
+      ]
+    },
+    "auto": {
+      "sectionTitle": "How Link Charts does this for you",
+      "body": "You don't have to investigate anything by hand. For every click, Link Charts evaluates these signals in real time, computes the quality score, and labels the click as organic, suspicious, or likely fraud. In the dashboard, you filter out suspicious traffic in one click and see your real numbers — for free."
+    },
+    "faq": {
+      "sectionTitle": "Frequently asked questions",
+      "items": [
+        {
+          "q": "How do I know if my link's clicks are real or from bots?",
+          "a": "Link Charts scores every click from 0 to 100 based on signals like datacenter IPs, missing browser headers, clicks that are too fast, and device contradictions, and labels each one as organic, suspicious, or likely fraud — automatically."
+        },
+        {
+          "q": "What is bot traffic on shortened links?",
+          "a": "It's any click that doesn't come from a person: crawlers, scrapers, automatic previews, and scripts. It inflates the click count without representing real interest."
+        },
+        {
+          "q": "Why does my link have many clicks but little conversion?",
+          "a": "It's often bot or low-quality traffic inflating the count. Separating organic from suspicious reveals the number that actually matters."
+        },
+        {
+          "q": "Does Link Charts detect fake clicks automatically?",
+          "a": "Yes. Detection happens in real time on every click, with no setup, and the result shows up in the free dashboard as a quality score and tier (organic, suspicious, or likely fraud)."
+        },
+        {
+          "q": "What does a click's quality score mean?",
+          "a": "It's a 0-to-100 rating that sums up how likely the click came from a real person. The more signs of automation, the lower the score."
+        }
+      ]
+    },
+    "ctaTitle": "See the real quality of your links' clicks — free"
   }
 }
