@@ -97,7 +97,7 @@
       "audience": "Audience",
       "performance": "Performance",
       "security": "Security",
-      "retention": "Retention",
+      "retention": "Recurrence",
       "engagement": "Engagement"
     },
     "actionableOnly": "Actionable only",
@@ -118,7 +118,7 @@
     "dayOfWeek": "Clicks by Day of Week",
     "deviceBreakdown": "Device Breakdown",
     "topCountries": "Top Countries",
-    "retentionAnalysis": "Retention Analysis",
+    "retentionAnalysis": "Recurrence Analysis",
     "trafficSource": "Traffic Source",
     "sessionDepth": "Session Depth",
     "timezoneDistribution": "Timezone Distribution",
@@ -761,12 +761,12 @@
       "autoUpdate": "Automatic updates active"
     },
     "retention": {
-      "title": "Retention Analysis",
+      "title": "Recurrence Analysis",
       "description": "Rate of visitors who returned to the link more than once. Above 20% indicates content with strong recurring-engagement and loyalty potential.",
-      "loading": "Loading retention analysis...",
-      "noData": "Insufficient data for retention analysis",
-      "retentionRate": "Retention Rate",
-      "retentionScore": "Retention Score",
+      "loading": "Loading recurrence analysis...",
+      "noData": "Insufficient data for recurrence analysis",
+      "retentionRate": "Recurrence Rate",
+      "retentionScore": "Recurrence Score",
       "returningVisitors": "Returning Visitors",
       "totalVisitors": "Total Visitors",
       "returningVisitorsSub": "returning visitors",
@@ -776,15 +776,15 @@
       "visitorDistribution": "Visitor Distribution",
       "returningLabel": "Returning Visitors",
       "newLabel": "New Visitors",
-      "retentionLabel": "Retention",
+      "retentionLabel": "Recurrence",
       "benchmarkComparison": "Benchmark Comparison",
       "benchmarkNote": "Benchmark based on the average industry rate for shortened links (20% returning visitors).",
       "industryBenchmark": "Industry benchmark: {{n}}%",
       "yourRate": "Your Rate",
       "avgBenchmark": "Average Benchmark",
-      "seriesName": "Retention Rate",
-      "insightsTitle": "Retention Insights",
-      "analysisPrefix": "Analysis: Your retention rate of {{rate}}% is",
+      "seriesName": "Recurrence Rate",
+      "insightsTitle": "Recurrence Insights",
+      "analysisPrefix": "Analysis: Your recurrence rate of {{rate}}% is",
       "analysisExcellent": "well above the industry average. Excellent work!",
       "analysisGood": "above the industry average. Good performance!",
       "analysisAverage": "at the industry average.",
@@ -793,7 +793,7 @@
       "recLow": "Consider implementing strategies like newsletters, push notifications or serialized content to increase visitor return.",
       "performanceChip": "Performance: {{label}}",
       "visitorsTooltip": "{{n}} visitors",
-      "retentionTooltip": "{{n}}% retention",
+      "retentionTooltip": "{{n}}% recurrence",
       "visitorDistributionDesc": "{{returning}} returning visitors out of {{total}} total unique visitors.",
       "analysisRaw": "Your return visitor rate is {{rate}}% ({{returning}} of {{total}} unique visitors). New visitors account for {{newPct}}%.",
       "quality": {
@@ -983,7 +983,7 @@
           "below": "below average"
         },
         "rate": {
-          "title": "Retention Rate"
+          "title": "Recurrence Rate"
         },
         "excellent": {
           "description": "Your return visitor rate is {{rate}}% ({{bench}}). Excellent! Your content is building loyalty.",
