@@ -339,14 +339,26 @@
           "lc": "Sim",
           "bitly": "Limitado"
         },
-        { "feature": "Origem de tráfego e UTM", "lc": "Sim", "bitly": "Sim" },
+        {
+          "feature": "Origem de tráfego e UTM",
+          "lc": "Sim",
+          "bitly": "Sim"
+        },
         {
           "feature": "Score de qualidade (bot vs humano)",
           "lc": "Sim",
           "bitly": "Não"
         },
-        { "feature": "Subdomínio personalizado", "lc": "Sim", "bitly": "Pago" },
-        { "feature": "QR Code", "lc": "Sim", "bitly": "Limitado" },
+        {
+          "feature": "Subdomínio personalizado",
+          "lc": "Sim",
+          "bitly": "Pago"
+        },
+        {
+          "feature": "QR Code",
+          "lc": "Sim",
+          "bitly": "Limitado"
+        },
         {
           "feature": "Página de analytics pública",
           "lc": "Sim",
@@ -482,5 +494,433 @@
       ]
     },
     "ctaTitle": "Veja a qualidade real dos cliques dos seus links — grátis"
+  },
+  "guiaVerCliques": {
+    "hero": {
+      "eyebrow": "Guia",
+      "title": "Como ver quantas pessoas clicaram no seu link",
+      "subtitle": "Encurtou um link e quer saber quantas pessoas clicaram? Veja onde acompanhar esse número em tempo real, de graça.",
+      "verdict": "O Link Charts mostra o total de cliques de cada link em um dashboard que atualiza em tempo real — e ainda revela de onde vieram, em qual dispositivo e a que horas. Sem custo."
+    },
+    "snapshot": {
+      "sectionTitle": "O que você vê no dashboard",
+      "intro": "Cada link tem seu próprio painel. No topo fica o número que importa — o total de cliques — e logo abaixo o detalhamento de quem clicou:",
+      "totalValue": "1.284",
+      "totalLabel": "Cliques no total",
+      "chips": [
+        {
+          "label": "País e cidade",
+          "value": "São Paulo, BR"
+        },
+        {
+          "label": "Dispositivo",
+          "value": "68% celular"
+        },
+        {
+          "label": "Horário de pico",
+          "value": "20h–22h"
+        },
+        {
+          "label": "Origem / UTM",
+          "value": "Instagram"
+        }
+      ],
+      "caption": "Números ilustrativos. No seu painel, cada valor reflete os cliques reais do seu link."
+    },
+    "steps": {
+      "sectionTitle": "Como acompanhar os cliques",
+      "intro": "Do encurtamento ao primeiro número na tela, são poucos passos:",
+      "items": [
+        {
+          "title": "Encurte o seu link",
+          "desc": "Cole a URL no Link Charts e gere o link curto. Não precisa de cadastro só para criar."
+        },
+        {
+          "title": "Crie uma conta grátis",
+          "desc": "Para salvar o link e guardar o histórico de cliques, crie uma conta gratuita — assim os números ficam disponíveis quando você voltar."
+        },
+        {
+          "title": "Compartilhe o link curto",
+          "desc": "Use o link no Instagram, WhatsApp, e-mail ou onde quiser. Cada acesso vira um clique contabilizado."
+        },
+        {
+          "title": "Abra o dashboard do link",
+          "desc": "Entre no painel do link para ver o total de cliques em tempo real e o detalhamento completo de quem clicou."
+        }
+      ]
+    },
+    "beyond": {
+      "sectionTitle": "Muito além do número total",
+      "body": "O total de cliques é só o começo. O Link Charts também mostra de qual país e cidade vieram os acessos, qual dispositivo e navegador foram usados, os horários de pico e a origem do tráfego (incluindo parâmetros UTM). É como ter um contador de cliques com analytics completo — de graça e sem instalar nada."
+    },
+    "faq": {
+      "sectionTitle": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "Como ver quantas pessoas clicaram no meu link?",
+          "a": "Encurte o link no Link Charts, crie uma conta gratuita para salvá-lo e abra o dashboard do link. O total de cliques aparece no topo do painel e atualiza em tempo real, junto com o detalhamento de quem clicou."
+        },
+        {
+          "q": "Dá para criar um contador de cliques grátis?",
+          "a": "Sim. O Link Charts funciona como um contador de cliques gratuito: cada link ganha um painel com o total de acessos em tempo real, sem custo e sem instalar nada."
+        },
+        {
+          "q": "Preciso de conta para ver os cliques do meu link?",
+          "a": "Para criar um link curto você não precisa de cadastro. Mas para salvar o link e acompanhar o histórico de cliques ao longo do tempo, é preciso criar uma conta gratuita."
+        },
+        {
+          "q": "Como saber de qual cidade vieram os cliques?",
+          "a": "No dashboard do link, o Link Charts mostra a geografia dos acessos por país e cidade. Assim você vê exatamente de onde as pessoas estão clicando no seu link."
+        },
+        {
+          "q": "Os cliques aparecem em tempo real?",
+          "a": "Sim. O total de cliques e o detalhamento (geografia, dispositivo, horário e origem) são atualizados em tempo real conforme as pessoas acessam o seu link."
+        }
+      ]
+    },
+    "ctaTitle": "Crie seu link e veja os cliques chegarem"
+  },
+  "guiaInstagram": {
+    "hero": {
+      "eyebrow": "Guia",
+      "title": "Como rastrear cliques de um link no Instagram",
+      "subtitle": "O Instagram não deixa clicar em links nas legendas. A saída é usar um link curto na bio ou no sticker dos Stories — e é ele que conta os cliques.",
+      "verdict": "Com um link curto do Link Charts você vê quantas pessoas clicaram, de onde vieram, em qual aparelho e de qual cidade. Em tempo real e de graça."
+    },
+    "flow": {
+      "sectionTitle": "Como funciona, em 3 passos",
+      "intro": "Do post ao dado: é o caminho que todo clique percorre quando você usa um link curto no Instagram.",
+      "steps": [
+        {
+          "number": "01",
+          "title": "Link na bio ou sticker no Stories",
+          "desc": "O Instagram só permite clicar no link da bio e no sticker de link dos Stories. É ali que o seu link entra."
+        },
+        {
+          "number": "02",
+          "title": "Link curto do Link Charts",
+          "desc": "Encurte o seu destino e use o link curto no lugar do original. É esse link que registra cada clique."
+        },
+        {
+          "number": "03",
+          "title": "Analytics: origem, dispositivo e cidade",
+          "desc": "Cada toque vira dado: de onde veio, em qual aparelho e de qual cidade — atualizado em tempo real."
+        }
+      ]
+    },
+    "why": {
+      "sectionTitle": "Por que você precisa de um link curto",
+      "body": "O Instagram não transforma em clique os links escritos nas legendas do feed — o texto aparece, mas ninguém consegue tocar nele. Os únicos lugares clicáveis são o link da bio e o sticker de link dos Stories. Colocando um link curto nesses espaços, você troca um endereço longo por algo limpo e, mais importante, ganha a contagem de cada clique. Sem o link curto, o Instagram mostra curtidas e visualizações, mas nunca quantas pessoas realmente foram até o seu site."
+    },
+    "metrics": {
+      "sectionTitle": "O que você enxerga em cada clique",
+      "intro": "O Instagram esconde o que acontece depois do toque. O link curto revela:",
+      "items": [
+        {
+          "title": "Quantas pessoas clicaram",
+          "desc": "A contagem real de cliques, separada das curtidas e visualizações — o número que mostra interesse de verdade."
+        },
+        {
+          "title": "De onde veio o clique",
+          "desc": "Se chegou pela bio, pelo sticker dos Stories ou de outra origem, você identifica o que mais converte."
+        },
+        {
+          "title": "Qual dispositivo",
+          "desc": "Celular ou computador, sistema e navegador de quem clicou — útil para saber como sua audiência acessa."
+        },
+        {
+          "title": "De qual cidade e país",
+          "desc": "A localização aproximada de cada clique, para entender onde está o público que responde ao seu conteúdo."
+        }
+      ]
+    },
+    "auto": {
+      "sectionTitle": "O Link Charts faz isso de graça",
+      "body": "Crie a conta, cole o link do seu site e pronto: você recebe um link curto para colocar na bio ou no sticker dos Stories. A partir daí, cada clique aparece no dashboard em tempo real — com origem, dispositivo e cidade — sem instalar nada e sem custo. É o mesmo link para o feed, os Stories e a bio."
+    },
+    "faq": {
+      "sectionTitle": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "Como rastrear os cliques de um link no Instagram?",
+          "a": "Encurte o link do seu destino com o Link Charts e use o link curto na bio ou no sticker de link dos Stories. Cada vez que alguém clicar, o Link Charts registra o clique e mostra origem, dispositivo e cidade no dashboard gratuito, em tempo real."
+        },
+        {
+          "q": "Como saber quantas pessoas clicaram no link da bio do Instagram?",
+          "a": "O Instagram não mostra isso, mas um link curto sim. Coloque o link curto do Link Charts na bio e a contagem de cliques aparece no dashboard, separada das curtidas e visualizações do post."
+        },
+        {
+          "q": "Dá para ver de onde vieram os cliques do Instagram?",
+          "a": "Sim. Para cada clique no seu link curto, o Link Charts registra a origem, o dispositivo (celular ou computador) e a cidade e país aproximados de quem clicou — tudo no painel de analytics gratuito."
+        },
+        {
+          "q": "Preciso pagar para rastrear links do Instagram?",
+          "a": "Não. Encurtar o link e acompanhar os cliques com origem, dispositivo e cidade é gratuito no Link Charts, com dashboard em tempo real e sem instalar nada."
+        },
+        {
+          "q": "O link curto funciona no sticker de link dos Stories?",
+          "a": "Sim. O link curto do Link Charts funciona tanto no link da bio quanto no sticker de link dos Stories, e é o mesmo link que contabiliza todos os cliques de qualquer um desses lugares."
+        }
+      ]
+    },
+    "ctaTitle": "Rastreie os cliques do seu link do Instagram — grátis"
+  },
+  "compareShortIo": {
+    "hero": {
+      "eyebrow": "Comparativo",
+      "title": "Link Charts vs Short.io",
+      "subtitle": "Dois encurtadores de URL com plano gratuito forte — qual entrega mais para o seu caso?",
+      "verdict": "O Short.io tem um free tier robusto, com domínios personalizados. O Link Charts se destaca no score de qualidade (bot vs humano), na página de analytics pública e no português nativo."
+    },
+    "table": {
+      "sectionTitle": "Comparação recurso a recurso",
+      "colFeature": "Recurso",
+      "colLinkCharts": "Link Charts",
+      "colRival": "Short.io (grátis)",
+      "highlightBadge": "Diferencial",
+      "disclaimer": "Detalhes do plano gratuito do Short.io são aproximados e podem mudar. Confira sempre as condições atuais no site oficial.",
+      "rows": [
+        {
+          "feature": "Preço",
+          "lc": "Gratuito",
+          "lcMark": "yes",
+          "rival": "Gratuito (generoso)",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Links no plano grátis",
+          "lc": "Sem limite prático",
+          "lcMark": "yes",
+          "rival": "~1.000 marcados",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Analytics em tempo real",
+          "lc": "Sim",
+          "lcMark": "yes",
+          "rival": "Sim",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Geografia (país e cidade)",
+          "lc": "Sim",
+          "lcMark": "yes",
+          "rival": "Sim",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Dispositivo e navegador",
+          "lc": "Sim",
+          "lcMark": "yes",
+          "rival": "Sim",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Score de qualidade (bot vs humano)",
+          "lc": "Sim",
+          "lcMark": "yes",
+          "rival": "Não",
+          "rivalMark": "no",
+          "emphasis": true
+        },
+        {
+          "feature": "Domínio personalizado",
+          "lc": "Subdomínio grátis",
+          "lcMark": "partial",
+          "rival": "Domínios personalizados (até 5)",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Página de analytics pública",
+          "lc": "Sim",
+          "lcMark": "yes",
+          "rival": "Não",
+          "rivalMark": "no"
+        },
+        {
+          "feature": "QR Code",
+          "lc": "Sim",
+          "lcMark": "yes",
+          "rival": "Sim",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Interface em português",
+          "lc": "Nativo",
+          "lcMark": "yes",
+          "rival": "Parcial",
+          "rivalMark": "partial"
+        }
+      ]
+    },
+    "choose": {
+      "sectionTitle": "Quando escolher cada um",
+      "linkChartsTitle": "Escolha o Link Charts se…",
+      "linkChartsBody": "Você quer saber se os cliques são reais (score de qualidade bot vs humano), compartilhar uma página de analytics pública e usar tudo em português nativo, sem pagar.",
+      "rivalTitle": "Escolha o Short.io se…",
+      "rivalBody": "Você precisa de vários domínios personalizados próprios já no plano gratuito e de um ecossistema maduro para gerenciar muitos domínios de marca."
+    },
+    "faq": {
+      "sectionTitle": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "Qual a melhor alternativa gratuita ao Short.io?",
+          "a": "Depende do que você prioriza. O Short.io tem um free tier forte com domínios personalizados; o Link Charts é uma ótima alternativa gratuita se você valoriza o score de qualidade que separa bots de humanos, uma página de analytics pública e a interface em português nativo."
+        },
+        {
+          "q": "Link Charts vs Short.io: qual tem o melhor plano grátis?",
+          "a": "Os dois são generosos. O Short.io oferece domínios personalizados (até 5) e cerca de 1.000 links marcados no plano gratuito. O Link Charts não impõe um limite prático de links e adiciona o score de qualidade de tráfego e a página de analytics pública, que o Short.io não tem."
+        },
+        {
+          "q": "O Short.io permite domínio personalizado de graça?",
+          "a": "Sim, e esse é um ponto forte do Short.io: o plano gratuito inclui domínios personalizados próprios. O Link Charts oferece subdomínio gratuito, mas não domínio de marca completo no nível gratuito — se domínio próprio é essencial, o Short.io leva vantagem aqui."
+        },
+        {
+          "q": "Como saber se os cliques do meu link são reais ou de bots?",
+          "a": "O Link Charts calcula um score de qualidade de tráfego (0–100) que classifica cada clique como orgânico, suspeito ou provável fraude. O Short.io não oferece esse recurso, então é onde o Link Charts se diferencia."
+        },
+        {
+          "q": "Qual encurtador tem interface em português?",
+          "a": "O Link Charts é nativo em português (pt-BR). O Short.io funciona bem no Brasil, mas a interface é apenas parcialmente traduzida, então o Link Charts oferece uma experiência mais completa em português."
+        }
+      ]
+    },
+    "ctaTitle": "Encurte sua primeira URL e veja o analytics em tempo real"
+  },
+  "compareDub": {
+    "hero": {
+      "eyebrow": "Comparativo",
+      "title": "Link Charts vs Dub",
+      "subtitle": "Um é feito para desenvolvedores, o outro para quem quer analytics sem complicação — qual é o seu?",
+      "verdict": "O Dub brilha para devs: é open-source, tem API robusta e domínios personalizados. O Link Charts leva vantagem em volume de links grátis, score de qualidade, uso sem cadastro e português nativo."
+    },
+    "table": {
+      "sectionTitle": "Comparação recurso a recurso",
+      "colFeature": "Recurso",
+      "colLinkCharts": "Link Charts",
+      "colRival": "Dub (grátis)",
+      "highlightBadge": "Diferencial",
+      "disclaimer": "Detalhes do plano gratuito do Dub são aproximados e podem mudar. Confira sempre as condições atuais no site oficial.",
+      "rows": [
+        {
+          "feature": "Preço",
+          "lc": "Gratuito",
+          "lcMark": "yes",
+          "rival": "Gratuito (open-source)",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Links no plano grátis",
+          "lc": "Sem limite prático",
+          "lcMark": "yes",
+          "rival": "~25/mês",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Analytics (geografia e dispositivo)",
+          "lc": "Sim",
+          "lcMark": "yes",
+          "rival": "Sim",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Score de qualidade (bot vs humano)",
+          "lc": "Sim",
+          "lcMark": "yes",
+          "rival": "Não",
+          "rivalMark": "no",
+          "emphasis": true
+        },
+        {
+          "feature": "Domínio personalizado",
+          "lc": "Subdomínio grátis",
+          "lcMark": "partial",
+          "rival": "Domínios personalizados",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "API para desenvolvedores",
+          "lc": "Não (foco no-code)",
+          "lcMark": "no",
+          "rival": "Sim (robusta)",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Open-source",
+          "lc": "Não",
+          "lcMark": "no",
+          "rival": "Sim",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Sem necessidade de cadastro",
+          "lc": "Sim",
+          "lcMark": "yes",
+          "rival": "Não",
+          "rivalMark": "no"
+        },
+        {
+          "feature": "Página de analytics pública",
+          "lc": "Sim",
+          "lcMark": "yes",
+          "rival": "Parcial",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Interface em português",
+          "lc": "Nativo",
+          "lcMark": "yes",
+          "rival": "Não",
+          "rivalMark": "no"
+        }
+      ]
+    },
+    "choose": {
+      "sectionTitle": "Quando escolher cada um",
+      "linkChartsTitle": "Escolha o Link Charts se…",
+      "linkChartsBody": "Você quer encurtar muitos links de graça, sem precisar criar conta, com score de qualidade que separa bots de humanos e tudo em português nativo — sem escrever uma linha de código.",
+      "rivalTitle": "Escolha o Dub se…",
+      "rivalBody": "Você é desenvolvedor e quer uma ferramenta open-source com API robusta para automação, além de domínios personalizados próprios no plano gratuito."
+    },
+    "faq": {
+      "sectionTitle": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "Dub vs Link Charts: qual é o melhor encurtador de URL?",
+          "a": "Depende do perfil. O Dub é excelente para desenvolvedores por ser open-source e ter uma API robusta. O Link Charts é melhor para quem quer analytics sem código: mais links grátis, uso sem cadastro, score de qualidade de tráfego e interface em português nativo."
+        },
+        {
+          "q": "Qual o melhor encurtador de URL open-source?",
+          "a": "O Dub é a principal opção open-source, com código aberto e API completa. O Link Charts não é open-source, então, se o código aberto é um requisito, o Dub leva vantagem. O Link Charts compensa em volume de links grátis, uso sem cadastro e detecção de bots."
+        },
+        {
+          "q": "O Dub é gratuito? Quantos links posso criar?",
+          "a": "O Dub tem um plano gratuito open-source, mas com um limite mensal de links (cerca de 25/mês). O Link Charts não impõe um limite prático de links no uso gratuito, o que ajuda quem cria muitos links curtos."
+        },
+        {
+          "q": "Preciso criar conta para encurtar um link?",
+          "a": "No Link Charts você pode encurtar uma URL sem cadastro. O Dub normalmente exige criar uma conta para usar. Se você quer rapidez sem login, o Link Charts leva vantagem; se quer um workspace com API, o Dub faz sentido."
+        },
+        {
+          "q": "Como saber se os cliques do meu link são reais ou de bots?",
+          "a": "O Link Charts calcula um score de qualidade de tráfego (0–100) que classifica cada clique como orgânico, suspeito ou provável fraude. O Dub não oferece esse recurso, então é onde o Link Charts se diferencia."
+        }
+      ]
+    },
+    "ctaTitle": "Encurte sua primeira URL e veja o analytics em tempo real"
+  },
+  "resources": {
+    "sectionTitle": "Guias e comparações",
+    "subtitle": "Aprenda a tirar mais do seu link — e veja como o Link Charts se compara.",
+    "guidesTitle": "Guias",
+    "comparisonsTitle": "Comparações",
+    "links": {
+      "guiaBots": "Cliques: bot ou humano?",
+      "guiaVerCliques": "Ver quantas pessoas clicaram",
+      "guiaInstagram": "Rastrear link no Instagram",
+      "compareBitly": "Link Charts vs Bitly",
+      "compareShortIo": "Link Charts vs Short.io",
+      "compareDub": "Link Charts vs Dub"
+    }
   }
 }

@@ -31,7 +31,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${appUrl}/comparar/short-io`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${appUrl}/comparar/dub`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${appUrl}/guia/cliques-bot-vs-humano`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${appUrl}/guia/como-ver-cliques-do-link`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${appUrl}/guia/rastrear-link-instagram`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.7,

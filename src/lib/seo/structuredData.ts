@@ -375,3 +375,224 @@ export function buildGuiaBotsFaqSchema() {
     ],
   };
 }
+
+/**
+ * `FAQPage` schema for the "see your clicks" guide
+ * (`/guia/como-ver-cliques-do-link`). pt-BR, matching the SEO target and the
+ * prompt patterns real users type into AI assistants ("como ver quantas pessoas
+ * clicaram no meu link", "como criar um contador de cliques grátis"). The
+ * visible page renders the same Q&A via i18n.
+ */
+export function buildGuiaVerCliquesFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Como ver quantas pessoas clicaram no meu link?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Encurte o link no Link Charts, crie uma conta gratuita para salvá-lo e abra o dashboard do link. O total de cliques aparece no topo do painel e atualiza em tempo real, junto com o detalhamento de quem clicou.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Dá para criar um contador de cliques grátis?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. O Link Charts funciona como um contador de cliques gratuito: cada link ganha um painel com o total de acessos em tempo real, sem custo e sem instalar nada.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Preciso de conta para ver os cliques do meu link?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Para criar um link curto você não precisa de cadastro. Mas para salvar o link e acompanhar o histórico de cliques ao longo do tempo, é preciso criar uma conta gratuita.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como saber de qual cidade vieram os cliques?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No dashboard do link, o Link Charts mostra a geografia dos acessos por país e cidade. Assim você vê exatamente de onde as pessoas estão clicando no seu link.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Os cliques aparecem em tempo real?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. O total de cliques e o detalhamento (geografia, dispositivo, horário e origem) são atualizados em tempo real conforme as pessoas acessam o seu link.",
+        },
+      },
+    ],
+  };
+}
+
+/**
+ * `FAQPage` schema for the Instagram tracking guide
+ * (`/guia/rastrear-link-instagram`). pt-BR, matching real prompts ("como
+ * rastrear cliques de link no Instagram", "quantas pessoas clicaram no link da
+ * bio"). The visible page renders the same Q&A via i18n.
+ */
+export function buildGuiaInstagramFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Como rastrear os cliques de um link no Instagram?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Encurte o link do seu destino com o Link Charts e use o link curto na bio ou no sticker de link dos Stories. Cada vez que alguém clicar, o Link Charts registra o clique e mostra origem, dispositivo e cidade no dashboard gratuito, em tempo real.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como saber quantas pessoas clicaram no link da bio do Instagram?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Instagram não mostra isso, mas um link curto sim. Coloque o link curto do Link Charts na bio e a contagem de cliques aparece no dashboard, separada das curtidas e visualizações do post.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Dá para ver de onde vieram os cliques do Instagram?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. Para cada clique no seu link curto, o Link Charts registra a origem, o dispositivo (celular ou computador) e a cidade e país aproximados de quem clicou — tudo no painel de analytics gratuito.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Preciso pagar para rastrear links do Instagram?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Não. Encurtar o link e acompanhar os cliques com origem, dispositivo e cidade é gratuito no Link Charts, com dashboard em tempo real e sem instalar nada.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "O link curto funciona no sticker de link dos Stories?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. O link curto do Link Charts funciona tanto no link da bio quanto no sticker de link dos Stories, e é o mesmo link que contabiliza todos os cliques de qualquer um desses lugares.",
+        },
+      },
+    ],
+  };
+}
+
+/**
+ * `FAQPage` schema for the "Link Charts vs Short.io" comparison
+ * (`/comparar/short-io`). pt-BR. Answers are honest — they acknowledge
+ * Short.io's strong free tier and custom domains — so the schema stays
+ * trustworthy as an AI-citation surface. The visible page renders the same Q&A.
+ */
+export function buildCompareShortIoFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Qual a melhor alternativa gratuita ao Short.io?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Depende do que você prioriza. O Short.io tem um free tier forte com domínios personalizados; o Link Charts é uma ótima alternativa gratuita se você valoriza o score de qualidade que separa bots de humanos, uma página de analytics pública e a interface em português nativo.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Link Charts vs Short.io: qual tem o melhor plano grátis?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Os dois são generosos. O Short.io oferece domínios personalizados (até 5) e cerca de 1.000 links marcados no plano gratuito. O Link Charts não impõe um limite prático de links e adiciona o score de qualidade de tráfego e a página de analytics pública, que o Short.io não tem.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "O Short.io permite domínio personalizado de graça?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim, e esse é um ponto forte do Short.io: o plano gratuito inclui domínios personalizados próprios. O Link Charts oferece subdomínio gratuito, mas não domínio de marca completo no nível gratuito — se domínio próprio é essencial, o Short.io leva vantagem aqui.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como saber se os cliques do meu link são reais ou de bots?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Link Charts calcula um score de qualidade de tráfego (0–100) que classifica cada clique como orgânico, suspeito ou provável fraude. O Short.io não oferece esse recurso, então é onde o Link Charts se diferencia.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Qual encurtador tem interface em português?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Link Charts é nativo em português (pt-BR). O Short.io funciona bem no Brasil, mas a interface é apenas parcialmente traduzida, então o Link Charts oferece uma experiência mais completa em português.",
+        },
+      },
+    ],
+  };
+}
+
+/**
+ * `FAQPage` schema for the "Link Charts vs Dub" comparison (`/comparar/dub`).
+ * pt-BR. Answers are honest — they acknowledge Dub's open-source nature and
+ * robust API — so the schema stays trustworthy as an AI-citation surface. The
+ * visible page renders the same Q&A via i18n.
+ */
+export function buildCompareDubFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Dub vs Link Charts: qual é o melhor encurtador de URL?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Depende do perfil. O Dub é excelente para desenvolvedores por ser open-source e ter uma API robusta. O Link Charts é melhor para quem quer analytics sem código: mais links grátis, uso sem cadastro, score de qualidade de tráfego e interface em português nativo.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Qual o melhor encurtador de URL open-source?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Dub é a principal opção open-source, com código aberto e API completa. O Link Charts não é open-source, então, se o código aberto é um requisito, o Dub leva vantagem. O Link Charts compensa em volume de links grátis, uso sem cadastro e detecção de bots.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "O Dub é gratuito? Quantos links posso criar?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Dub tem um plano gratuito open-source, mas com um limite mensal de links (cerca de 25/mês). O Link Charts não impõe um limite prático de links no uso gratuito, o que ajuda quem cria muitos links curtos.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Preciso criar conta para encurtar um link?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No Link Charts você pode encurtar uma URL sem cadastro. O Dub normalmente exige criar uma conta para usar. Se você quer rapidez sem login, o Link Charts leva vantagem; se quer um workspace com API, o Dub faz sentido.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como saber se os cliques do meu link são reais ou de bots?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Link Charts calcula um score de qualidade de tráfego (0–100) que classifica cada clique como orgânico, suspeito ou provável fraude. O Dub não oferece esse recurso, então é onde o Link Charts se diferencia.",
+        },
+      },
+    ],
+  };
+}

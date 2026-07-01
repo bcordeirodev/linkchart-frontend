@@ -314,28 +314,56 @@
       "highlightBadge": "Differentiator",
       "disclaimer": "Bitly features refer to the current free plan and are subject to change.",
       "rows": [
-        { "feature": "Price", "lc": "Free", "bitly": "Free (limited)" },
+        {
+          "feature": "Price",
+          "lc": "Free",
+          "bitly": "Free (limited)"
+        },
         {
           "feature": "Links per month (free)",
           "lc": "No practical limit",
           "bitly": "~5/month"
         },
-        { "feature": "Real-time analytics", "lc": "Yes", "bitly": "Partial" },
+        {
+          "feature": "Real-time analytics",
+          "lc": "Yes",
+          "bitly": "Partial"
+        },
         {
           "feature": "Geography (country and city)",
           "lc": "Yes",
           "bitly": "Limited"
         },
-        { "feature": "Device and browser", "lc": "Yes", "bitly": "Limited" },
-        { "feature": "Traffic source and UTM", "lc": "Yes", "bitly": "Yes" },
+        {
+          "feature": "Device and browser",
+          "lc": "Yes",
+          "bitly": "Limited"
+        },
+        {
+          "feature": "Traffic source and UTM",
+          "lc": "Yes",
+          "bitly": "Yes"
+        },
         {
           "feature": "Quality score (bot vs human)",
           "lc": "Yes",
           "bitly": "No"
         },
-        { "feature": "Custom subdomain", "lc": "Yes", "bitly": "Paid" },
-        { "feature": "QR code", "lc": "Yes", "bitly": "Limited" },
-        { "feature": "Public analytics page", "lc": "Yes", "bitly": "No" },
+        {
+          "feature": "Custom subdomain",
+          "lc": "Yes",
+          "bitly": "Paid"
+        },
+        {
+          "feature": "QR code",
+          "lc": "Yes",
+          "bitly": "Limited"
+        },
+        {
+          "feature": "Public analytics page",
+          "lc": "Yes",
+          "bitly": "No"
+        },
         {
           "feature": "Portuguese interface",
           "lc": "Native",
@@ -466,5 +494,433 @@
       ]
     },
     "ctaTitle": "See the real quality of your links' clicks — free"
+  },
+  "guiaVerCliques": {
+    "hero": {
+      "eyebrow": "Guide",
+      "title": "How to see how many people clicked your link",
+      "subtitle": "Shortened a link and want to know how many people clicked? Here's where to track that number in real time, for free.",
+      "verdict": "Link Charts shows the total clicks for each link in a dashboard that updates in real time — plus where they came from, on which device, and at what time. At no cost."
+    },
+    "snapshot": {
+      "sectionTitle": "What you see in the dashboard",
+      "intro": "Every link has its own panel. The number that matters — total clicks — sits at the top, with a breakdown of who clicked right below it:",
+      "totalValue": "1,284",
+      "totalLabel": "Total clicks",
+      "chips": [
+        {
+          "label": "Country & city",
+          "value": "São Paulo, BR"
+        },
+        {
+          "label": "Device",
+          "value": "68% mobile"
+        },
+        {
+          "label": "Peak time",
+          "value": "8–10 PM"
+        },
+        {
+          "label": "Source / UTM",
+          "value": "Instagram"
+        }
+      ],
+      "caption": "Illustrative numbers. In your own panel, every value reflects your link's real clicks."
+    },
+    "steps": {
+      "sectionTitle": "How to track your clicks",
+      "intro": "From shortening to the first number on screen, it's just a few steps:",
+      "items": [
+        {
+          "title": "Shorten your link",
+          "desc": "Paste the URL into Link Charts and generate the short link. No signup needed just to create one."
+        },
+        {
+          "title": "Create a free account",
+          "desc": "To save the link and keep its click history, create a free account — that way the numbers are there when you come back."
+        },
+        {
+          "title": "Share the short link",
+          "desc": "Use the link on Instagram, WhatsApp, email or anywhere. Every visit becomes a counted click."
+        },
+        {
+          "title": "Open the link's dashboard",
+          "desc": "Head into the link's panel to see total clicks in real time and the full breakdown of who clicked."
+        }
+      ]
+    },
+    "beyond": {
+      "sectionTitle": "Far beyond the total number",
+      "body": "Total clicks is just the start. Link Charts also shows which country and city the visits came from, which device and browser were used, peak hours, and the traffic source (including UTM parameters). It's like having a click counter with full analytics — free and with nothing to install."
+    },
+    "faq": {
+      "sectionTitle": "Frequently asked questions",
+      "items": [
+        {
+          "q": "How can I see how many people clicked my link?",
+          "a": "Shorten the link in Link Charts, create a free account to save it, and open the link's dashboard. Total clicks show at the top of the panel and update in real time, along with a breakdown of who clicked."
+        },
+        {
+          "q": "Can I create a free click counter?",
+          "a": "Yes. Link Charts works as a free click counter: every link gets a panel with real-time total clicks, at no cost and with nothing to install."
+        },
+        {
+          "q": "Do I need an account to see my link's clicks?",
+          "a": "You don't need to sign up to create a short link. But to save the link and track its click history over time, you'll need a free account."
+        },
+        {
+          "q": "How do I know which city the clicks came from?",
+          "a": "In the link's dashboard, Link Charts shows the geography of the visits by country and city. So you can see exactly where people are clicking your link from."
+        },
+        {
+          "q": "Do clicks show up in real time?",
+          "a": "Yes. The total clicks and the breakdown (geography, device, time, and source) are updated in real time as people access your link."
+        }
+      ]
+    },
+    "ctaTitle": "Create your link and watch the clicks roll in"
+  },
+  "guiaInstagram": {
+    "hero": {
+      "eyebrow": "Guide",
+      "title": "How to track clicks on an Instagram link",
+      "subtitle": "Instagram doesn't let people tap links in captions. The fix is a short link in your bio or in the Stories link sticker — and that link is what counts the clicks.",
+      "verdict": "With a Link Charts short link you see how many people clicked, where they came from, which device and which city. In real time and for free."
+    },
+    "flow": {
+      "sectionTitle": "How it works, in 3 steps",
+      "intro": "From the post to the data: the path every click takes when you use a short link on Instagram.",
+      "steps": [
+        {
+          "number": "01",
+          "title": "Link in bio or Stories sticker",
+          "desc": "Instagram only allows tapping the link in your bio and the Stories link sticker. That's where your link goes."
+        },
+        {
+          "number": "02",
+          "title": "Link Charts short link",
+          "desc": "Shorten your destination and use the short link instead of the original. That link is what records every click."
+        },
+        {
+          "number": "03",
+          "title": "Analytics: source, device and city",
+          "desc": "Every tap becomes data: where it came from, on which device and from which city — updated in real time."
+        }
+      ]
+    },
+    "why": {
+      "sectionTitle": "Why you need a short link",
+      "body": "Instagram doesn't turn links written in feed captions into clicks — the text shows up, but no one can tap it. The only clickable spots are the link in your bio and the Stories link sticker. By placing a short link in those spots, you swap a long URL for something clean and, more importantly, you gain a count of every click. Without the short link, Instagram shows likes and views, but never how many people actually visited your site."
+    },
+    "metrics": {
+      "sectionTitle": "What you see in each click",
+      "intro": "Instagram hides what happens after the tap. The short link reveals:",
+      "items": [
+        {
+          "title": "How many people clicked",
+          "desc": "The real click count, separate from likes and views — the number that shows genuine interest."
+        },
+        {
+          "title": "Where the click came from",
+          "desc": "Whether it arrived from the bio, the Stories sticker or another source, so you know what converts best."
+        },
+        {
+          "title": "Which device",
+          "desc": "Phone or computer, system and browser of who clicked — useful to understand how your audience browses."
+        },
+        {
+          "title": "Which city and country",
+          "desc": "The approximate location of each click, so you understand where the audience that responds to your content is."
+        }
+      ]
+    },
+    "auto": {
+      "sectionTitle": "Link Charts does this for free",
+      "body": "Create your account, paste your site's link and you're done: you get a short link to place in your bio or Stories sticker. From there, every click shows up in the dashboard in real time — with source, device and city — with nothing to install and no cost. It's the same link for the feed, Stories and bio."
+    },
+    "faq": {
+      "sectionTitle": "Frequently asked questions",
+      "items": [
+        {
+          "q": "How do I track clicks on an Instagram link?",
+          "a": "Shorten your destination link with Link Charts and use the short link in your bio or in the Stories link sticker. Every time someone clicks, Link Charts records the click and shows source, device and city in the free dashboard, in real time."
+        },
+        {
+          "q": "How do I know how many people clicked the link in my Instagram bio?",
+          "a": "Instagram doesn't show this, but a short link does. Put the Link Charts short link in your bio and the click count appears in the dashboard, separate from the post's likes and views."
+        },
+        {
+          "q": "Can I see where the Instagram clicks came from?",
+          "a": "Yes. For each click on your short link, Link Charts records the source, the device (phone or computer) and the approximate city and country of whoever clicked — all in the free analytics dashboard."
+        },
+        {
+          "q": "Do I need to pay to track Instagram links?",
+          "a": "No. Shortening the link and tracking clicks with source, device and city is free on Link Charts, with a real-time dashboard and nothing to install."
+        },
+        {
+          "q": "Does the short link work in the Stories link sticker?",
+          "a": "Yes. The Link Charts short link works in both the bio link and the Stories link sticker, and it's the same link that counts every click from either place."
+        }
+      ]
+    },
+    "ctaTitle": "Track the clicks on your Instagram link — free"
+  },
+  "compareShortIo": {
+    "hero": {
+      "eyebrow": "Comparison",
+      "title": "Link Charts vs Short.io",
+      "subtitle": "Two URL shorteners with a strong free tier — which one delivers more for your case?",
+      "verdict": "Short.io has a robust free tier, including custom domains. Link Charts stands out on the quality score (bot vs human), the public analytics page, and native Portuguese support."
+    },
+    "table": {
+      "sectionTitle": "Feature-by-feature comparison",
+      "colFeature": "Feature",
+      "colLinkCharts": "Link Charts",
+      "colRival": "Short.io (free)",
+      "highlightBadge": "Differentiator",
+      "disclaimer": "Short.io free-tier details are approximate and may change. Always check the current terms on the official site.",
+      "rows": [
+        {
+          "feature": "Price",
+          "lc": "Free",
+          "lcMark": "yes",
+          "rival": "Free (generous)",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Links on the free plan",
+          "lc": "No practical limit",
+          "lcMark": "yes",
+          "rival": "~1,000 branded",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Real-time analytics",
+          "lc": "Yes",
+          "lcMark": "yes",
+          "rival": "Yes",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Geography (country and city)",
+          "lc": "Yes",
+          "lcMark": "yes",
+          "rival": "Yes",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Device and browser",
+          "lc": "Yes",
+          "lcMark": "yes",
+          "rival": "Yes",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Quality score (bot vs human)",
+          "lc": "Yes",
+          "lcMark": "yes",
+          "rival": "No",
+          "rivalMark": "no",
+          "emphasis": true
+        },
+        {
+          "feature": "Custom domain",
+          "lc": "Free subdomain",
+          "lcMark": "partial",
+          "rival": "Custom domains (up to 5)",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Public analytics page",
+          "lc": "Yes",
+          "lcMark": "yes",
+          "rival": "No",
+          "rivalMark": "no"
+        },
+        {
+          "feature": "QR Code",
+          "lc": "Yes",
+          "lcMark": "yes",
+          "rival": "Yes",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Portuguese interface",
+          "lc": "Native",
+          "lcMark": "yes",
+          "rival": "Partial",
+          "rivalMark": "partial"
+        }
+      ]
+    },
+    "choose": {
+      "sectionTitle": "When to choose each",
+      "linkChartsTitle": "Choose Link Charts if…",
+      "linkChartsBody": "You want to know whether clicks are real (bot vs human quality score), share a public analytics page, and use everything in native Portuguese — for free.",
+      "rivalTitle": "Choose Short.io if…",
+      "rivalBody": "You need several of your own custom domains right on the free plan and a mature ecosystem for managing many branded domains."
+    },
+    "faq": {
+      "sectionTitle": "Frequently asked questions",
+      "items": [
+        {
+          "q": "What is the best free alternative to Short.io?",
+          "a": "It depends on your priorities. Short.io has a strong free tier with custom domains; Link Charts is a great free alternative if you value the quality score that separates bots from humans, a public analytics page, and a native Portuguese interface."
+        },
+        {
+          "q": "Link Charts vs Short.io: which has the better free plan?",
+          "a": "Both are generous. Short.io offers custom domains (up to 5) and around 1,000 branded links on the free plan. Link Charts imposes no practical link limit and adds the traffic quality score and public analytics page, which Short.io lacks."
+        },
+        {
+          "q": "Does Short.io allow a custom domain for free?",
+          "a": "Yes, and that is a strength of Short.io: the free plan includes your own custom domains. Link Charts offers a free subdomain but not a full branded domain on the free tier — if your own domain is essential, Short.io has the edge here."
+        },
+        {
+          "q": "How do I know if my link's clicks are real or from bots?",
+          "a": "Link Charts computes a traffic quality score (0–100) that classifies each click as organic, suspicious, or likely fraud. Short.io does not offer this, so it is where Link Charts differentiates itself."
+        },
+        {
+          "q": "Which shortener has a Portuguese interface?",
+          "a": "Link Charts is native in Portuguese (pt-BR). Short.io works well in Brazil, but its interface is only partially translated, so Link Charts offers a more complete Portuguese experience."
+        }
+      ]
+    },
+    "ctaTitle": "Shorten your first URL and watch the analytics in real time"
+  },
+  "compareDub": {
+    "hero": {
+      "eyebrow": "Comparison",
+      "title": "Link Charts vs Dub",
+      "subtitle": "One is built for developers, the other for anyone who wants analytics without the hassle — which is yours?",
+      "verdict": "Dub shines for developers: it is open-source, has a robust API, and custom domains. Link Charts has the edge on free-link volume, quality score, no-signup use, and native Portuguese."
+    },
+    "table": {
+      "sectionTitle": "Feature-by-feature comparison",
+      "colFeature": "Feature",
+      "colLinkCharts": "Link Charts",
+      "colRival": "Dub (free)",
+      "highlightBadge": "Differentiator",
+      "disclaimer": "Dub free-tier details are approximate and may change. Always check the current terms on the official site.",
+      "rows": [
+        {
+          "feature": "Price",
+          "lc": "Free",
+          "lcMark": "yes",
+          "rival": "Free (open-source)",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Links on the free plan",
+          "lc": "No practical limit",
+          "lcMark": "yes",
+          "rival": "~25/month",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Analytics (geography and device)",
+          "lc": "Yes",
+          "lcMark": "yes",
+          "rival": "Yes",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Quality score (bot vs human)",
+          "lc": "Yes",
+          "lcMark": "yes",
+          "rival": "No",
+          "rivalMark": "no",
+          "emphasis": true
+        },
+        {
+          "feature": "Custom domain",
+          "lc": "Free subdomain",
+          "lcMark": "partial",
+          "rival": "Custom domains",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Developer API",
+          "lc": "No (no-code focus)",
+          "lcMark": "no",
+          "rival": "Yes (robust)",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Open-source",
+          "lc": "No",
+          "lcMark": "no",
+          "rival": "Yes",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "No signup required",
+          "lc": "Yes",
+          "lcMark": "yes",
+          "rival": "No",
+          "rivalMark": "no"
+        },
+        {
+          "feature": "Public analytics page",
+          "lc": "Yes",
+          "lcMark": "yes",
+          "rival": "Partial",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Portuguese interface",
+          "lc": "Native",
+          "lcMark": "yes",
+          "rival": "No",
+          "rivalMark": "no"
+        }
+      ]
+    },
+    "choose": {
+      "sectionTitle": "When to choose each",
+      "linkChartsTitle": "Choose Link Charts if…",
+      "linkChartsBody": "You want to shorten many links for free, without creating an account, with a quality score that separates bots from humans and everything in native Portuguese — without writing a single line of code.",
+      "rivalTitle": "Choose Dub if…",
+      "rivalBody": "You are a developer and want an open-source tool with a robust API for automation, plus your own custom domains on the free plan."
+    },
+    "faq": {
+      "sectionTitle": "Frequently asked questions",
+      "items": [
+        {
+          "q": "Dub vs Link Charts: which is the better URL shortener?",
+          "a": "It depends on your profile. Dub is excellent for developers because it is open-source and has a robust API. Link Charts is better for those who want analytics without code: more free links, no-signup use, a traffic quality score, and a native Portuguese interface."
+        },
+        {
+          "q": "What is the best open-source URL shortener?",
+          "a": "Dub is the leading open-source option, with open code and a complete API. Link Charts is not open-source, so if open code is a requirement, Dub has the edge. Link Charts makes up for it with free-link volume, no-signup use, and bot detection."
+        },
+        {
+          "q": "Is Dub free? How many links can I create?",
+          "a": "Dub has an open-source free plan, but with a monthly link limit (around 25/month). Link Charts imposes no practical link limit on free use, which helps anyone creating many short links."
+        },
+        {
+          "q": "Do I need to create an account to shorten a link?",
+          "a": "With Link Charts you can shorten a URL without signing up. Dub usually requires creating an account to use it. If you want speed without a login, Link Charts has the edge; if you want a workspace with an API, Dub makes sense."
+        },
+        {
+          "q": "How do I know if my link's clicks are real or from bots?",
+          "a": "Link Charts computes a traffic quality score (0–100) that classifies each click as organic, suspicious, or likely fraud. Dub does not offer this, so it is where Link Charts differentiates itself."
+        }
+      ]
+    },
+    "ctaTitle": "Shorten your first URL and watch the analytics in real time"
+  },
+  "resources": {
+    "sectionTitle": "Guides and comparisons",
+    "subtitle": "Learn how to get more from your link — and see how Link Charts compares.",
+    "guidesTitle": "Guides",
+    "comparisonsTitle": "Comparisons",
+    "links": {
+      "guiaBots": "Clicks: bot or human?",
+      "guiaVerCliques": "See how many people clicked",
+      "guiaInstagram": "Track an Instagram link",
+      "compareBitly": "Link Charts vs Bitly",
+      "compareShortIo": "Link Charts vs Short.io",
+      "compareDub": "Link Charts vs Dub"
+    }
   }
 }
