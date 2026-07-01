@@ -97,7 +97,7 @@
       "audience": "Audiência",
       "performance": "Performance",
       "security": "Segurança",
-      "retention": "Retenção",
+      "retention": "Recorrência",
       "engagement": "Engajamento"
     },
     "actionableOnly": "Só acionáveis",
@@ -118,7 +118,7 @@
     "dayOfWeek": "Cliques por Dia da Semana",
     "deviceBreakdown": "Distribuição de Dispositivos",
     "topCountries": "Principais Países",
-    "retentionAnalysis": "Análise de Retenção",
+    "retentionAnalysis": "Análise de Recorrência",
     "trafficSource": "Fonte de Tráfego",
     "sessionDepth": "Profundidade de Sessão",
     "timezoneDistribution": "Distribuição por Fuso Horário",
@@ -761,12 +761,12 @@
       "autoUpdate": "Atualizações automáticas ativas"
     },
     "retention": {
-      "title": "Análise de Retenção",
+      "title": "Análise de Recorrência",
       "description": "Taxa de visitantes que retornaram ao link mais de uma vez. Acima de 20% indica conteúdo com alto potencial de recorrência e fidelização.",
-      "loading": "Carregando análise de retenção...",
-      "noData": "Dados insuficientes para análise de retenção",
-      "retentionRate": "Taxa de Retenção",
-      "retentionScore": "Score de Retenção",
+      "loading": "Carregando análise de recorrência...",
+      "noData": "Dados insuficientes para análise de recorrência",
+      "retentionRate": "Taxa de Recorrência",
+      "retentionScore": "Score de Recorrência",
       "returningVisitors": "Visitantes Recorrentes",
       "totalVisitors": "Total de Visitantes",
       "returningVisitorsSub": "visitantes recorrentes",
@@ -776,15 +776,15 @@
       "visitorDistribution": "Distribuição de Visitantes",
       "returningLabel": "Visitantes Recorrentes",
       "newLabel": "Novos Visitantes",
-      "retentionLabel": "Retenção",
+      "retentionLabel": "Recorrência",
       "benchmarkComparison": "Comparação com Benchmark",
       "benchmarkNote": "Benchmark baseado na taxa média da indústria de links encurtados (20% de visitantes recorrentes).",
       "industryBenchmark": "Benchmark da indústria: {{n}}%",
       "yourRate": "Sua Taxa",
       "avgBenchmark": "Benchmark Médio",
-      "seriesName": "Taxa de Retenção",
-      "insightsTitle": "Insights de Retenção",
-      "analysisPrefix": "Análise: Sua taxa de retenção de {{rate}}% está",
+      "seriesName": "Taxa de Recorrência",
+      "insightsTitle": "Insights de Recorrência",
+      "analysisPrefix": "Análise: Sua taxa de recorrência de {{rate}}% está",
       "analysisExcellent": "muito acima da média da indústria. Excelente trabalho!",
       "analysisGood": "acima da média da indústria. Bom desempenho!",
       "analysisAverage": "na média da indústria.",
@@ -793,7 +793,7 @@
       "recLow": "Considere implementar estratégias como newsletters, notificações push ou conteúdo serializado para aumentar o retorno de visitantes.",
       "performanceChip": "Performance: {{label}}",
       "visitorsTooltip": "{{n}} visitantes",
-      "retentionTooltip": "{{n}}% de retenção",
+      "retentionTooltip": "{{n}}% de recorrência",
       "visitorDistributionDesc": "{{returning}} visitantes recorrentes de um total de {{total}} visitantes únicos.",
       "analysisRaw": "Sua taxa de visitantes recorrentes é {{rate}}% ({{returning}} de {{total}} visitantes únicos). Novos visitantes representam {{newPct}}%.",
       "quality": {
@@ -983,7 +983,7 @@
           "below": "abaixo da média"
         },
         "rate": {
-          "title": "Taxa de Retenção"
+          "title": "Taxa de Recorrência"
         },
         "excellent": {
           "description": "Sua taxa de visitantes recorrentes é {{rate}}% ({{bench}}). Excelente! Seu conteúdo está gerando lealdade.",
