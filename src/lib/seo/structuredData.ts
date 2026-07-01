@@ -232,3 +232,89 @@ export function buildOrganizationSchema() {
     sameAs: ["https://github.com/bcordeirodev"],
   };
 }
+
+/**
+ * `FAQPage` schema for the "Link Charts vs Bitly" comparison page
+ * (`/comparar/bitly`).
+ *
+ * pt-BR is intentional: like the rest of the site's structured data, the schema
+ * mirrors the canonical Brazilian-market SEO target. The questions match the
+ * exact prompt patterns real users type into AI assistants ("alternativa ao
+ * Bitly", "como ver a cidade dos cliques"), maximizing AI-citation coverage.
+ * The visible page renders the same Q&A via i18n so crawlers and users read
+ * identical answers.
+ */
+export function buildCompareBitlyFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Qual a melhor alternativa gratuita ao Bitly?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Link Charts é uma alternativa gratuita ao Bitly com analytics mais completo no plano grátis: geografia por cidade, dispositivo, navegador e um score de qualidade que identifica tráfego de bot — tudo em tempo real e em português.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "O Bitly é realmente grátis?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Bitly tem um plano gratuito, mas ele é limitado (poucos links por mês e analytics básico). Para estatísticas detalhadas sem pagar, o Link Charts oferece mais no nível gratuito.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como ver de qual cidade vieram os cliques de um link?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No Link Charts, cada link curto mostra a geografia dos cliques (país e cidade), além de dispositivo e navegador, no painel de analytics em tempo real.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como saber se os cliques do meu link são reais ou de bots?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Link Charts calcula um score de qualidade de tráfego (0–100) que classifica cada clique como orgânico, suspeito ou provável fraude — um recurso que a maioria dos encurtadores de URL não oferece.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Dá para usar um subdomínio próprio no encurtador de URL?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. O Link Charts permite subdomínio personalizado, inclusive no uso gratuito, enquanto no Bitly domínios personalizados ficam nos planos pagos.",
+        },
+      },
+    ],
+  };
+}
+
+/**
+ * `BreadcrumbList` schema for a comparison page under `/comparar/{slug}`.
+ *
+ * Gives search and AI engines the page's place in the site hierarchy
+ * (Home → Comparações → {name}), which strengthens entity/context signals for
+ * citation. `name` is the human label of the leaf (e.g. "Link Charts vs Bitly").
+ *
+ * @param name - leaf breadcrumb label
+ * @param path - absolute path of the leaf page (e.g. "/comparar/bitly")
+ */
+export function buildCompareBreadcrumbSchema(name: string, path: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Início", item: APP_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name,
+        item: `${APP_URL}${path}`,
+      },
+    ],
+  };
+}

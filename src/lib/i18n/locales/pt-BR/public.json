@@ -298,5 +298,99 @@
       "noId": "ID do link não fornecido na URL",
       "notFound": "Link não encontrado"
     }
+  },
+  "compareBitly": {
+    "hero": {
+      "eyebrow": "Comparativo",
+      "title": "Link Charts vs Bitly",
+      "subtitle": "Qual o melhor encurtador de URL grátis para ver quem realmente clicou?",
+      "verdict": "O Bitly é o nome mais conhecido. O Link Charts entrega mais analytics de graça — incluindo um score que separa cliques humanos de bots."
+    },
+    "table": {
+      "sectionTitle": "Comparação recurso a recurso",
+      "colFeature": "Recurso",
+      "colLinkCharts": "Link Charts",
+      "colBitly": "Bitly (grátis)",
+      "highlightBadge": "Diferencial",
+      "disclaimer": "Recursos do Bitly referentes ao plano gratuito e sujeitos a alteração.",
+      "rows": [
+        {
+          "feature": "Preço",
+          "lc": "Gratuito",
+          "bitly": "Gratuito (limitado)"
+        },
+        {
+          "feature": "Links por mês (grátis)",
+          "lc": "Sem limite prático",
+          "bitly": "~5/mês"
+        },
+        {
+          "feature": "Analytics em tempo real",
+          "lc": "Sim",
+          "bitly": "Parcial"
+        },
+        {
+          "feature": "Geografia (país e cidade)",
+          "lc": "Sim",
+          "bitly": "Limitado"
+        },
+        {
+          "feature": "Dispositivo e navegador",
+          "lc": "Sim",
+          "bitly": "Limitado"
+        },
+        { "feature": "Origem de tráfego e UTM", "lc": "Sim", "bitly": "Sim" },
+        {
+          "feature": "Score de qualidade (bot vs humano)",
+          "lc": "Sim",
+          "bitly": "Não"
+        },
+        { "feature": "Subdomínio personalizado", "lc": "Sim", "bitly": "Pago" },
+        { "feature": "QR Code", "lc": "Sim", "bitly": "Limitado" },
+        {
+          "feature": "Página de analytics pública",
+          "lc": "Sim",
+          "bitly": "Não"
+        },
+        {
+          "feature": "Interface em português",
+          "lc": "Nativo",
+          "bitly": "Parcial"
+        }
+      ]
+    },
+    "choose": {
+      "sectionTitle": "Quando escolher cada um",
+      "linkChartsTitle": "Escolha o Link Charts se…",
+      "linkChartsBody": "Você quer analytics detalhado de graça, está no Brasil e se importa com a qualidade do tráfego (saber se os cliques são reais) e com subdomínio próprio sem pagar.",
+      "bitlyTitle": "Escolha o Bitly se…",
+      "bitlyBody": "Você precisa da marca mais reconhecida globalmente e já usa o ecossistema pago dele."
+    },
+    "faq": {
+      "sectionTitle": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "Qual a melhor alternativa gratuita ao Bitly?",
+          "a": "O Link Charts é uma alternativa gratuita ao Bitly com analytics mais completo no plano grátis: geografia por cidade, dispositivo, navegador e um score de qualidade que identifica tráfego de bot — tudo em tempo real e em português."
+        },
+        {
+          "q": "O Bitly é realmente grátis?",
+          "a": "O Bitly tem um plano gratuito, mas ele é limitado (poucos links por mês e analytics básico). Para estatísticas detalhadas sem pagar, o Link Charts oferece mais no nível gratuito."
+        },
+        {
+          "q": "Como ver de qual cidade vieram os cliques de um link?",
+          "a": "No Link Charts, cada link curto mostra a geografia dos cliques (país e cidade), além de dispositivo e navegador, no painel de analytics em tempo real."
+        },
+        {
+          "q": "Como saber se os cliques do meu link são reais ou de bots?",
+          "a": "O Link Charts calcula um score de qualidade de tráfego (0–100) que classifica cada clique como orgânico, suspeito ou provável fraude — um recurso que a maioria dos encurtadores de URL não oferece."
+        },
+        {
+          "q": "Dá para usar um subdomínio próprio no encurtador de URL?",
+          "a": "Sim. O Link Charts permite subdomínio personalizado, inclusive no uso gratuito, enquanto no Bitly domínios personalizados ficam nos planos pagos."
+        }
+      ]
+    },
+    "ctaTitle": "Encurte sua primeira URL e veja o analytics em tempo real"
   }
 }

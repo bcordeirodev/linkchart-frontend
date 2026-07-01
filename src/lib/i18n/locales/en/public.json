@@ -298,5 +298,83 @@
       "noId": "Link ID not provided in URL",
       "notFound": "Link not found"
     }
+  },
+  "compareBitly": {
+    "hero": {
+      "eyebrow": "Comparison",
+      "title": "Link Charts vs Bitly",
+      "subtitle": "Which free URL shortener actually shows you who clicked?",
+      "verdict": "Bitly is the better-known name. Link Charts gives you more analytics for free — including a score that separates human clicks from bots."
+    },
+    "table": {
+      "sectionTitle": "Feature-by-feature comparison",
+      "colFeature": "Feature",
+      "colLinkCharts": "Link Charts",
+      "colBitly": "Bitly (free)",
+      "highlightBadge": "Differentiator",
+      "disclaimer": "Bitly features refer to the current free plan and are subject to change.",
+      "rows": [
+        { "feature": "Price", "lc": "Free", "bitly": "Free (limited)" },
+        {
+          "feature": "Links per month (free)",
+          "lc": "No practical limit",
+          "bitly": "~5/month"
+        },
+        { "feature": "Real-time analytics", "lc": "Yes", "bitly": "Partial" },
+        {
+          "feature": "Geography (country and city)",
+          "lc": "Yes",
+          "bitly": "Limited"
+        },
+        { "feature": "Device and browser", "lc": "Yes", "bitly": "Limited" },
+        { "feature": "Traffic source and UTM", "lc": "Yes", "bitly": "Yes" },
+        {
+          "feature": "Quality score (bot vs human)",
+          "lc": "Yes",
+          "bitly": "No"
+        },
+        { "feature": "Custom subdomain", "lc": "Yes", "bitly": "Paid" },
+        { "feature": "QR code", "lc": "Yes", "bitly": "Limited" },
+        { "feature": "Public analytics page", "lc": "Yes", "bitly": "No" },
+        {
+          "feature": "Portuguese interface",
+          "lc": "Native",
+          "bitly": "Partial"
+        }
+      ]
+    },
+    "choose": {
+      "sectionTitle": "When to choose each one",
+      "linkChartsTitle": "Choose Link Charts if…",
+      "linkChartsBody": "You want detailed analytics for free, you're in Brazil, and you care about traffic quality (knowing whether clicks are real) and a custom subdomain without paying.",
+      "bitlyTitle": "Choose Bitly if…",
+      "bitlyBody": "You need the most globally recognized brand and already use its paid ecosystem."
+    },
+    "faq": {
+      "sectionTitle": "Frequently asked questions",
+      "items": [
+        {
+          "q": "What's the best free alternative to Bitly?",
+          "a": "Link Charts is a free alternative to Bitly with more complete analytics on the free plan: geography by city, device, browser, and a quality score that flags bot traffic — all in real time."
+        },
+        {
+          "q": "Is Bitly really free?",
+          "a": "Bitly has a free plan, but it's limited (few links per month and basic analytics). For detailed stats without paying, Link Charts offers more on the free tier."
+        },
+        {
+          "q": "How do I see which city a link's clicks came from?",
+          "a": "In Link Charts, every short link shows click geography (country and city), plus device and browser, in the real-time analytics panel."
+        },
+        {
+          "q": "How do I know if my link's clicks are real or from bots?",
+          "a": "Link Charts calculates a traffic quality score (0–100) that classifies each click as organic, suspicious, or likely fraud — a feature most URL shorteners don't offer."
+        },
+        {
+          "q": "Can I use my own subdomain with the URL shortener?",
+          "a": "Yes. Link Charts supports a custom subdomain, including on free usage, while Bitly keeps custom domains on paid plans."
+        }
+      ]
+    },
+    "ctaTitle": "Shorten your first URL and watch the analytics in real time"
   }
 }
