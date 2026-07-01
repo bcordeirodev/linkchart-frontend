@@ -82,16 +82,17 @@ export function initI18n(lng: string = "en") {
  * Reconciles the active i18n language with the user's stored preference.
  *
  * Called from a client effect after hydration. Reads the language from the
- * `i18nextLng` cookie, then `localStorage`, then `navigator.language` (mapping
- * `pt*` to `pt-BR`). When the preference differs from the current language,
- * triggers `i18n.changeLanguage()` to swap resources at runtime.
+ * `i18nextLng` cookie, then `localStorage`, and otherwise stays on the pt-BR
+ * default. `navigator.language` is intentionally NOT consulted: it made the
+ * page reconcile to English for any en-locale visitor — including Googlebot
+ * (en-US) — which rewrote `<html lang>` to `en` and swapped the visible copy to
+ * English while the static `<title>`/`<meta description>` stayed pt-BR. That
+ * mismatch diluted the pt-BR language signal (the target market). English is
+ * now strictly opt-in via the language toggle, which writes the cookie.
  */
 export function detectAndApplyLanguage() {
   const cookie = document.cookie.match(/(?:^|; )i18nextLng=([^;]*)/)?.[1];
-  const stored =
-    cookie ??
-    localStorage.getItem("i18nextLng") ??
-    (navigator.language.startsWith("pt") ? "pt-BR" : "en");
+  const stored = cookie ?? localStorage.getItem("i18nextLng") ?? "pt-BR";
   if (stored && stored !== i18n.language) {
     void i18n.changeLanguage(stored);
     // SSR renders with the static pt-BR default; keep <html lang> in sync when
