@@ -23,6 +23,11 @@ import { WhatsAppIcon } from "@/shared/ui/icons";
 
 import type { LinkResponse } from "@/types";
 
+/** WhatsApp brand green, used as the WhatsApp share button background. */
+const WHATSAPP_GREEN = "#25D366";
+/** Slightly darker WhatsApp green for the hover state. */
+const WHATSAPP_GREEN_HOVER = "#1EB257";
+
 interface LinkQRPanelProps {
   link: LinkResponse & { short_url: string };
   qrCodeDataUrl: string;
@@ -159,9 +164,10 @@ export function LinkQRPanel({
                 {t("qr.download")}
               </Button>
               <Button
-                variant="outlined"
-                color="inherit"
+                variant="contained"
+                color="primary"
                 size="small"
+                disableElevation
                 startIcon={<Share2 {...ICON_MD} />}
                 onClick={onShare}
                 disabled={!link.short_url}
@@ -170,9 +176,9 @@ export function LinkQRPanel({
                 {t("qr.copy")}
               </Button>
               <Button
-                variant="outlined"
-                color="inherit"
+                variant="contained"
                 size="small"
+                disableElevation
                 startIcon={<WhatsAppIcon size={18} aria-hidden />}
                 onClick={() =>
                   window.open(
@@ -182,7 +188,12 @@ export function LinkQRPanel({
                   )
                 }
                 disabled={!link.short_url}
-                sx={{ flex: { xs: 1, sm: "initial" } }}
+                sx={{
+                  flex: { xs: 1, sm: "initial" },
+                  color: theme.palette.common.white,
+                  bgcolor: WHATSAPP_GREEN,
+                  "&:hover": { bgcolor: WHATSAPP_GREEN_HOVER },
+                }}
               >
                 {t("qr.shareWhatsapp")}
               </Button>
