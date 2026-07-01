@@ -1,24 +1,29 @@
 "use client";
 
-import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
-import { alpha } from "@mui/material/styles";
-import { BarChart3, Check, RotateCcw, Share2 } from "lucide-react";
+import { Box, Button, Link, Stack, Typography, useTheme } from "@mui/material";
+import { alpha, lighten } from "@mui/material/styles";
+import { BarChart3, Check, Copy, Globe, RotateCcw, Share2 } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { DestinationRow } from "@/features/public-analytics/components/info/DestinationRow";
-import { ShortUrlRow } from "@/features/public-analytics/components/info/ShortUrlRow";
 import { useShareAPI } from "@/features/links/hooks/useShareAPI";
 import useClipboard from "@/hooks/useClipboard";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import {
   getPublicBlockDescriptionSx,
   getPublicBlockTitleSx,
   getPublicFocalSx,
+  getPublicInsetSx,
   publicHairline,
 } from "@/lib/theme/publicPageStyles";
+import {
+  ANALYTICS_HUE,
+  RESTART_HUE,
+  SHARE_HUE,
+  WHATSAPP_GREEN,
+  WHATSAPP_GREEN_HOVER,
+} from "@/lib/theme/publicActionColors";
 import { getShortUrl } from "@/lib/utils/shortUrl";
-import { radiusTokens } from "@/lib/theme/designSystem";
 import { PublicBlockIcon } from "@/shared/ui/base";
 import { WhatsAppIcon } from "@/shared/ui/icons";
 import { useNavigate } from "@/shared/hooks";
@@ -28,32 +33,18 @@ import { ShorterQrPanel } from "./ShorterQrPanel";
 
 /** Props for the inline success card shown after a guest shortens a link. */
 export interface ShorterSuccessCardProps {
-  /** The freshly-created link's resolved short URL (or bare slug). */
   shortUrl: string;
-  /** The original destination URL the short link points to. */
   destinationUrl: string;
-  /** The link slug — used to build the opt-in "view analytics" navigation. */
   slug: string;
-  /** Resets the landing back to the form so the user can shorten another link. */
   onReset: () => void;
 }
 
 /**
  * Inline success surface for the `/shorter` landing.
  *
- * Replaces the form (in place) once a guest creates a link, so the flow stays
- * on the landing instead of redirecting to the public-analytics screen.
- *
- * Layout reads top-to-bottom as the next steps a user takes: a live status pill
- * confirms the link is already active and tracking; the short URL is the hero
- * (copy is the primary action) paired with a scannable QR tile; quick share
- * actions sit below; and viewing analytics / shortening another are the closing
- * calls to action. The QR tile is the card's signature — it turns a text-only
- * confirmation into a tangible, ready-to-share artifact.
- *
- * Reuses the presentational `ShortUrlRow` / `DestinationRow` from the
- * public-analytics feature so the short-link treatment stays identical across
- * both contexts. Clipboard state is owned here via `useClipboard`.
+ * Vertical flow: confirm → copy link → scan/share → analytics.
+ * One inset holds URL + destination; QR and share actions sit below as
+ * optional next steps so the card reads clearly top-to-bottom.
  */
 export function ShorterSuccessCard({
   shortUrl,
@@ -70,70 +61,101 @@ export function ShorterSuccessCard({
   const resolvedShortUrl = getShortUrl(shortUrl);
   const { copy, copied } = useClipboard({ timeout: 1500 });
 
-  /*
-   * The short URL is auto-copied to the clipboard on creation (in `useShorter`),
-   * so the copy control lands in its "copied" state to make that obvious — then
-   * settles back to the idle "copy" affordance after a moment. A manual copy
-   * clears the seed and hands control back to the live clipboard flag.
-   */
   const [autoCopied, setAutoCopied] = useState(true);
   useEffect(() => {
     const id = setTimeout(() => setAutoCopied(false), 2600);
     return () => clearTimeout(id);
   }, []);
 
-  /** Copies the short URL and dismisses the initial auto-copied seed. */
   const handleCopy = (): void => {
     setAutoCopied(false);
     copy(resolvedShortUrl);
   };
 
   const cardHeadingId = useId();
-  const shortUrlHeadingId = useId();
-  const destinationHeadingId = useId();
+  const linkHeadingId = useId();
+  const isCopied = copied || autoCopied;
 
-  /** Opt-in navigation to the dedicated public analytics page for this link. */
   const handleViewAnalytics = (): void => {
     navigate(`/public-analytics/${encodeURIComponent(slug)}`);
   };
 
-  /** Native share sheet with clipboard fallback for the short URL. */
   const handleShare = (): void => {
     void shareOrCopy({ url: resolvedShortUrl });
   };
 
-  /** Opens WhatsApp pre-filled with the short URL. */
   const handleWhatsApp = (): void => {
     const href = `https://wa.me/?text=${encodeURIComponent(resolvedShortUrl)}`;
     window.open(href, "_blank", "noopener,noreferrer");
   };
 
-  /** Quiet, soft-tinted styling shared by the secondary share buttons. */
-  const shareButtonSx = {
+  const displayDestination = destinationUrl
+    .replace(/^https?:\/\//i, "")
+    .replace(/^www\./i, "")
+    .replace(/\/+$/, "");
+
+  /** Bare destination host, used to fetch its favicon. */
+  const destinationHost = (() => {
+    try {
+      return new URL(destinationUrl).hostname.replace(/^www\./i, "");
+    } catch {
+      return "";
+    }
+  })();
+
+  const shortUrlColor = isDark
+    ? alpha(theme.palette.common.white, 0.96)
+    : theme.palette.primary.dark;
+
+  const sectionLabelSx = {
+    display: "block",
+    fontSize: "0.71875rem",
+    fontWeight: 800,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase" as const,
+    lineHeight: 1.2,
+    color: alpha(theme.palette.text.primary, isDark ? 0.78 : 0.74),
+  };
+
+  /** Solid, white-on-color action (Copy = primary blue, WhatsApp = brand green). */
+  const solidActionSx = (bg: string, bgHover: string) => ({
     flex: 1,
-    minHeight: 42,
-    px: 2,
+    minHeight: 44,
+    px: 1.5,
+    borderRadius: 1.5,
     fontSize: "0.8125rem",
     fontWeight: 700,
     textTransform: "none" as const,
     letterSpacing: "-0.01em",
-    borderRadius: `${radiusTokens.md}px`,
-    color: theme.palette.text.primary,
-    border: `1px solid ${publicHairline(theme, "inset")}`,
-    bgcolor: alpha(theme.palette.text.primary, isDark ? 0.04 : 0.04),
-    transition:
-      "background-color 160ms ease, border-color 160ms ease, transform 120ms ease",
-    "& .MuiButton-startIcon": { mr: 1 },
-    "&:hover": {
-      bgcolor: alpha(theme.palette.primary.main, isDark ? 0.1 : 0.07),
-      borderColor: alpha(theme.palette.primary.main, isDark ? 0.4 : 0.3),
-    },
+    color: theme.palette.common.white,
+    bgcolor: bg,
+    border: "1px solid transparent",
+    transition: "background-color 160ms ease, transform 120ms ease",
+    "& .MuiButton-startIcon": { mr: 0.625 },
+    "&:hover": { bgcolor: bgHover },
     "&:active": { transform: "translateY(1px)" },
-    "&.Mui-focusVisible": {
-      borderColor: alpha(theme.palette.primary.main, 0.55),
-      boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, isDark ? 0.18 : 0.14)}`,
+    "&.Mui-disabled": {
+      opacity: 0.5,
+      color: alpha(theme.palette.common.white, 0.7),
     },
-  };
+  });
+
+  /**
+   * Solid coordinated-color action matching Copy/WhatsApp (white on color),
+   * but sized to its content so only the primary Copy button grows widest.
+   */
+  const colorActionSx = (base: string) => ({
+    ...solidActionSx(base, lighten(base, 0.1)),
+    flex: "0 0 auto",
+  });
+
+  /** Squares off an action into an icon-only button (spread after a base sx). */
+  const iconSquareSx = {
+    flex: "0 0 auto",
+    width: 48,
+    minWidth: 48,
+    px: 0,
+  } as const;
 
   return (
     <Box
@@ -148,234 +170,276 @@ export function ShorterSuccessCard({
     >
       <Stack
         spacing={{ xs: 2, md: 2.25 }}
-        sx={{ p: { xs: 2.5, sm: 3, md: 3.5 } }}
+        sx={{ p: { xs: 2, sm: 2.5, md: 3 } }}
       >
-        {/* Header: success + live status pill */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            flexWrap: "wrap",
-            gap: 1.25,
-          }}
-        >
+        {/* Header */}
+        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.25 }}>
           <PublicBlockIcon
             icon={Check}
             sx={{
               color: alpha(theme.palette.common.white, isDark ? 0.96 : 0.94),
             }}
           />
-          <Box sx={{ minWidth: 0, flex: 1 }}>
+          <Stack spacing={0.75} sx={{ minWidth: 0, flex: 1 }}>
             <Typography
               id={cardHeadingId}
               component="h2"
-              sx={{ ...getPublicBlockTitleSx(theme), mb: 0.5 }}
+              sx={getPublicBlockTitleSx(theme)}
             >
               {t("shorter.successTitle")}
             </Typography>
             <Typography component="p" sx={getPublicBlockDescriptionSx(theme)}>
               {t("shorter.successCopiedHint")}
             </Typography>
-          </Box>
-          <LiveStatusPill />
+          </Stack>
         </Box>
 
-        {/* Hero short URL + QR — the protagonist and its scannable twin. */}
+        {/* Left: link card + primary actions · Right: QR (spans both). */}
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column", sm: "row" },
-            alignItems: { xs: "stretch", sm: "center" },
-            gap: { xs: 2, sm: 2.5 },
+            alignItems: "stretch",
+            gap: { xs: 1.5, sm: 2 },
           }}
         >
-          <Stack spacing={1} sx={{ flex: 1, minWidth: 0 }}>
-            <ShortUrlRow
-              shortUrl={resolvedShortUrl}
-              copied={copied || autoCopied}
-              onCopy={handleCopy}
-              headingId={shortUrlHeadingId}
-            />
-            <DestinationRow
-              destinationUrl={destinationUrl}
-              headingId={destinationHeadingId}
-            />
-          </Stack>
-          <ShorterQrPanel shortUrl={resolvedShortUrl} slug={slug} />
+          <Box
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: { sm: "space-between" },
+              gap: { xs: 1.5, sm: 1.75 },
+            }}
+          >
+            {/* Short link + destination */}
+            <Box
+              component="section"
+              aria-labelledby={linkHeadingId}
+              sx={{
+                ...getPublicInsetSx(theme),
+                p: { xs: 1.75, sm: 2 },
+                display: "flex",
+                flexDirection: "column",
+                gap: 1.25,
+              }}
+            >
+              <Box sx={{ minWidth: 0 }}>
+                <Typography
+                  id={linkHeadingId}
+                  component="h3"
+                  variant="overline"
+                  color="text.secondary"
+                  sx={{ ...sectionLabelSx, fontSize: "0.6875rem", mb: 0.75 }}
+                >
+                  {t("publicAnalytics.linkInfo.yourShortLink")}
+                </Typography>
+                <Typography
+                  component="p"
+                  sx={{
+                    m: 0,
+                    minWidth: 0,
+                    fontFamily: "monospace",
+                    fontSize: { xs: "1rem", sm: "1.0625rem" },
+                    fontWeight: 700,
+                    letterSpacing: "-0.01em",
+                    color: shortUrlColor,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <Link
+                    href={resolvedShortUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    underline="hover"
+                    sx={{ color: "inherit", fontWeight: "inherit" }}
+                  >
+                    {resolvedShortUrl}
+                  </Link>
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.75,
+                  minWidth: 0,
+                  pt: 1.25,
+                  borderTop: `1px solid ${publicHairline(theme, "inset")}`,
+                }}
+              >
+                <DestinationFavicon host={destinationHost} />
+                <Link
+                  href={destinationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="hover"
+                  sx={{
+                    flex: 1,
+                    minWidth: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    fontFamily: "monospace",
+                    fontSize: "0.8125rem",
+                    lineHeight: 1.35,
+                    color: alpha(
+                      theme.palette.text.primary,
+                      isDark ? 0.72 : 0.7,
+                    ),
+                    "&:hover": { color: theme.palette.primary.light },
+                  }}
+                >
+                  {displayDestination}
+                </Link>
+              </Box>
+            </Box>
+
+            {/* One action row: copy · share · whatsapp · analytics · restart. */}
+            <Stack
+              direction="row"
+              useFlexGap
+              flexWrap="wrap"
+              alignItems="stretch"
+              spacing={1}
+            >
+              {/* Labelled actions first: copy (primary) · analytics · restart. */}
+              <Button
+                onClick={handleCopy}
+                disabled={!resolvedShortUrl}
+                startIcon={
+                  isCopied ? (
+                    <Check {...ICON_MD} aria-hidden />
+                  ) : (
+                    <Copy {...ICON_MD} aria-hidden />
+                  )
+                }
+                sx={solidActionSx(
+                  theme.palette.primary.dark,
+                  theme.palette.primary.main,
+                )}
+              >
+                {isCopied
+                  ? t("publicAnalytics.linkInfo.copied")
+                  : t("publicAnalytics.linkInfo.copy")}
+              </Button>
+              <Button
+                onClick={handleViewAnalytics}
+                startIcon={<BarChart3 {...ICON_MD} aria-hidden />}
+                sx={colorActionSx(ANALYTICS_HUE)}
+              >
+                {t("shorter.viewAnalytics")}
+              </Button>
+              <Button
+                onClick={onReset}
+                startIcon={<RotateCcw {...ICON_MD} aria-hidden />}
+                sx={colorActionSx(RESTART_HUE)}
+              >
+                {t("shorter.createAnother")}
+              </Button>
+              {/* Icon-only share actions last. */}
+              <Button
+                onClick={handleShare}
+                aria-label={t("shorter.share")}
+                title={t("shorter.share")}
+                sx={{ ...colorActionSx(SHARE_HUE), ...iconSquareSx }}
+              >
+                <Share2 {...ICON_MD} aria-hidden />
+              </Button>
+              <Button
+                onClick={handleWhatsApp}
+                aria-label={t("shorter.shareWhatsapp")}
+                title={t("shorter.shareWhatsapp")}
+                sx={{
+                  ...solidActionSx(WHATSAPP_GREEN, WHATSAPP_GREEN_HOVER),
+                  ...iconSquareSx,
+                }}
+              >
+                <WhatsAppIcon size={18} aria-hidden style={{ flexShrink: 0 }} />
+              </Button>
+            </Stack>
+          </Box>
+
+          {/* QR code — spans the height of the link card + actions. */}
+          <Box
+            sx={{
+              ...getPublicInsetSx(theme),
+              flexShrink: 0,
+              alignSelf: { xs: "stretch", sm: "auto" },
+              px: 2,
+              py: 1.75,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+            }}
+          >
+            <Typography
+              component="h3"
+              variant="overline"
+              color="text.secondary"
+              sx={{
+                ...sectionLabelSx,
+                fontSize: "0.6875rem",
+                mb: 0,
+                textAlign: "center",
+              }}
+            >
+              {t("shorter.qrLabel")}
+            </Typography>
+            <ShorterQrPanel shortUrl={resolvedShortUrl} slug={slug} />
+          </Box>
         </Box>
-
-        {/* Quick share — the most common next step. */}
-        <Stack direction="row" gap={1}>
-          <Button
-            onClick={handleShare}
-            startIcon={<Share2 {...ICON_MD} aria-hidden />}
-            sx={shareButtonSx}
-          >
-            {t("shorter.share")}
-          </Button>
-          <Button
-            onClick={handleWhatsApp}
-            startIcon={<WhatsAppIcon size={18} aria-hidden />}
-            sx={shareButtonSx}
-          >
-            {t("shorter.shareWhatsapp")}
-          </Button>
-        </Stack>
-
-        {/* Closing calls to action. */}
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          gap={{ xs: 1, sm: 1.25 }}
-          sx={{
-            pt: { xs: 1.75, sm: 2 },
-            borderTop: `1px solid ${publicHairline(theme, "inset")}`,
-          }}
-        >
-          <Button
-            variant="contained"
-            size="large"
-            fullWidth
-            disableElevation
-            onClick={handleViewAnalytics}
-            startIcon={<BarChart3 {...ICON_MD} aria-hidden />}
-            sx={{
-              minHeight: 48,
-              px: 2.5,
-              borderRadius: `${radiusTokens.md}px`,
-              fontSize: "0.875rem",
-              fontWeight: 700,
-              letterSpacing: "-0.01em",
-              bgcolor: theme.palette.primary.dark,
-              color: alpha(theme.palette.common.white, 0.95),
-              border: `1px solid ${alpha(theme.palette.primary.light, 0.22)}`,
-              boxShadow: `0 1px 2px ${alpha(theme.palette.common.black, isDark ? 0.4 : 0.18)}`,
-              transition:
-                "background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 120ms ease",
-              "& .MuiButton-startIcon": { mr: 1 },
-              "&:hover": {
-                bgcolor: theme.palette.primary.main,
-                borderColor: alpha(theme.palette.primary.light, 0.34),
-                boxShadow: `0 4px 12px ${alpha(theme.palette.primary.dark, isDark ? 0.5 : 0.28)}`,
-              },
-              "&:active": { transform: "translateY(1px)" },
-              "&.Mui-focusVisible": {
-                boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, isDark ? 0.3 : 0.22)}`,
-              },
-            }}
-          >
-            {t("shorter.viewAnalytics")}
-          </Button>
-          <Button
-            variant="outlined"
-            size="large"
-            fullWidth
-            onClick={onReset}
-            startIcon={<RotateCcw {...ICON_MD} aria-hidden />}
-            sx={{
-              minHeight: 48,
-              px: 2.5,
-              borderRadius: `${radiusTokens.md}px`,
-              fontSize: "0.875rem",
-              fontWeight: 700,
-              letterSpacing: "-0.01em",
-              color: theme.palette.text.primary,
-              borderColor: alpha(
-                theme.palette.primary.main,
-                isDark ? 0.45 : 0.34,
-              ),
-              bgcolor: "transparent",
-              transition:
-                "background-color 160ms ease, border-color 160ms ease, transform 120ms ease",
-              "& .MuiButton-startIcon": { mr: 1 },
-              "&:hover": {
-                borderColor: alpha(
-                  theme.palette.primary.main,
-                  isDark ? 0.62 : 0.48,
-                ),
-                bgcolor: alpha(
-                  theme.palette.primary.main,
-                  isDark ? 0.08 : 0.06,
-                ),
-              },
-              "&:active": { transform: "translateY(1px)" },
-              "&.Mui-focusVisible": {
-                borderColor: alpha(theme.palette.primary.main, 0.55),
-                boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, isDark ? 0.18 : 0.14)}`,
-              },
-            }}
-          >
-            {t("shorter.createAnother")}
-          </Button>
-        </Stack>
       </Stack>
     </Box>
   );
 }
 
 /**
- * Small "Active · tracking clicks" pill with a pulsing dot.
+ * Destination site favicon with a Globe fallback.
  *
- * Reinforces the product's core value the instant a link is created: it is
- * already live and already measuring. The pulse animation is disabled under
- * `prefers-reduced-motion`.
+ * Renders the destination host's favicon (via DuckDuckGo's privacy-friendly
+ * icon service) so the destination line carries the same at-a-glance brand cue
+ * modern link tools (e.g. Dub) show next to a short link. Falls back to a
+ * neutral globe glyph when the host is unknown or the icon fails to load.
  */
-function LiveStatusPill() {
+function DestinationFavicon({ host }: { host: string }) {
   const theme = useTheme();
-  const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
-  const accent = theme.palette.success.main;
+  const [failed, setFailed] = useState(false);
+
+  if (!host || failed) {
+    return (
+      <Globe
+        {...ICON_SM}
+        aria-hidden
+        style={{
+          color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.45),
+          flexShrink: 0,
+        }}
+      />
+    );
+  }
 
   return (
     <Box
+      component="img"
+      src={`https://icons.duckduckgo.com/ip3/${host}.ico`}
+      alt=""
+      aria-hidden
+      onError={() => setFailed(true)}
       sx={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 0.75,
+        width: 16,
+        height: 16,
         flexShrink: 0,
-        height: 26,
-        px: 1.125,
-        borderRadius: 999,
-        border: `1px solid ${alpha(accent, isDark ? 0.4 : 0.3)}`,
-        bgcolor: alpha(accent, isDark ? 0.16 : 0.1),
+        borderRadius: "3px",
+        objectFit: "contain",
       }}
-    >
-      <Box
-        sx={{
-          position: "relative",
-          width: 7,
-          height: 7,
-          borderRadius: "50%",
-          bgcolor: accent,
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            inset: 0,
-            borderRadius: "50%",
-            bgcolor: accent,
-            animation: "lcLivePulse 1800ms ease-out infinite",
-          },
-          "@keyframes lcLivePulse": {
-            "0%": { transform: "scale(1)", opacity: 0.6 },
-            "70%": { transform: "scale(2.6)", opacity: 0 },
-            "100%": { transform: "scale(2.6)", opacity: 0 },
-          },
-          "@media (prefers-reduced-motion: reduce)": {
-            "&::before": { animation: "none" },
-          },
-        }}
-      />
-      <Typography
-        component="span"
-        sx={{
-          fontSize: "0.6875rem",
-          fontWeight: 800,
-          letterSpacing: "0.01em",
-          whiteSpace: "nowrap",
-          color: isDark ? alpha(accent, 0.95) : theme.palette.success.dark,
-        }}
-      >
-        {t("shorter.statusLive")}
-      </Typography>
-    </Box>
+    />
   );
 }
