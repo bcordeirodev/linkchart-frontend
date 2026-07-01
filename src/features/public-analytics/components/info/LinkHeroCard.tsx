@@ -1,16 +1,23 @@
 "use client";
 
 import { useState, useEffect, useId } from "react";
-import { Box, Button, Stack, useTheme } from "@mui/material";
-import { alpha } from "@mui/material/styles";
-import { Share2 } from "lucide-react";
+import { Box, Button, Link, Stack, Typography, useTheme } from "@mui/material";
+import { alpha, lighten } from "@mui/material/styles";
+import { Check, Copy, Globe, RotateCcw, Share2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { useShareAPI } from "@/features/links/hooks/useShareAPI";
 import useClipboard from "@/hooks/useClipboard";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
+import {
+  RESTART_HUE,
+  SHARE_HUE,
+  WHATSAPP_GREEN,
+  WHATSAPP_GREEN_HOVER,
+} from "@/lib/theme/publicActionColors";
 import {
   getPublicFocalSx,
+  getPublicInsetSx,
   publicHairline,
   PUBLIC_CARD_GAP,
 } from "@/lib/theme/publicPageStyles";
@@ -20,9 +27,7 @@ import { WhatsAppIcon } from "@/shared/ui/icons";
 import type { PublicLinkData } from "../../types";
 
 import { BookmarkRow } from "./BookmarkRow";
-import { DestinationRow } from "./DestinationRow";
 import { LinkIdentity } from "./LinkIdentity";
-import { ShortUrlRow } from "./ShortUrlRow";
 
 interface LinkHeroCardProps {
   linkData: PublicLinkData;
@@ -32,22 +37,10 @@ interface LinkHeroCardProps {
 /**
  * Hero card for /public-analytics/[slug].
  *
- * Composes `LinkIdentity`, a hero `ShortUrlRow` paired tightly with its
- * `DestinationRow` confirmation line, and a discreet `BookmarkRow` callout
- * inside the same focal shell used by the public shortener boxes. The card follows a clear
- * single-hero hierarchy: the short URL is the protagonist, the destination is
- * a quiet confirmation, and the save-this-page reminder is a supporting strip.
- *
- * Clipboard state is managed here so it can be passed down to the
- * presentational row components without them owning independent hook calls.
- *
- * The `analyticsUrl` is set on mount via `window.location.href` (SSR-safe:
- * it remains `""` during server rendering and is populated client-side).
- *
- * @remarks
- * The `domain` field on `PublicLinkData` is not displayed — it has no
- * corresponding i18n key and was never rendered in the original component.
- * It remains on the type for future use.
+ * Mirrors the guest "link created" card (`/shorter`) so the two surfaces stay
+ * consistent: a single inset holds the short URL and its favicon-tagged
+ * destination, one action row groups copy/share/restart, and the page-only
+ * `BookmarkRow` reminder closes the card. Clipboard state is owned here.
  */
 export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   const theme = useTheme();
@@ -57,8 +50,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
 
   /* ── Accessible heading IDs ── */
   const cardHeadingId = useId();
-  const shortUrlHeadingId = useId();
-  const destinationHeadingId = useId();
+  const linkHeadingId = useId();
   const saveHeadingId = useId();
 
   /* ── Clipboard ── */
@@ -76,6 +68,83 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
     setAnalyticsUrl(window.location.href);
   }, []);
 
+  const displayDestination = linkData.original_url
+    .replace(/^https?:\/\//i, "")
+    .replace(/^www\./i, "")
+    .replace(/\/+$/, "");
+
+  /** Bare destination host, used to fetch its favicon. */
+  const destinationHost = (() => {
+    try {
+      return new URL(linkData.original_url).hostname.replace(/^www\./i, "");
+    } catch {
+      return "";
+    }
+  })();
+
+  const shortUrlColor = isDark
+    ? alpha(theme.palette.common.white, 0.96)
+    : theme.palette.primary.dark;
+
+  const sectionLabelSx = {
+    display: "block",
+    fontSize: "0.6875rem",
+    fontWeight: 800,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase" as const,
+    lineHeight: 1.2,
+    color: alpha(theme.palette.text.primary, isDark ? 0.78 : 0.74),
+  };
+
+  /** Solid, white-on-color action (matches the /shorter action row). */
+  const solidActionSx = (bg: string, bgHover: string) => ({
+    flex: 1,
+    minHeight: 44,
+    px: 1.5,
+    borderRadius: 1.5,
+    fontSize: "0.8125rem",
+    fontWeight: 700,
+    textTransform: "none" as const,
+    letterSpacing: "-0.01em",
+    color: theme.palette.common.white,
+    bgcolor: bg,
+    border: "1px solid transparent",
+    transition: "background-color 160ms ease, transform 120ms ease",
+    "& .MuiButton-startIcon": { mr: 0.625 },
+    "&:hover": { bgcolor: bgHover },
+    "&:active": { transform: "translateY(1px)" },
+    "&.Mui-disabled": {
+      opacity: 0.5,
+      color: alpha(theme.palette.common.white, 0.7),
+    },
+  });
+
+  /** Coordinated-color action sized to content (only Copy grows widest). */
+  const colorActionSx = (base: string) => ({
+    ...solidActionSx(base, lighten(base, 0.1)),
+    flex: "0 0 auto",
+  });
+
+  /** Squares off an action into an icon-only button (spread after a base sx). */
+  const iconSquareSx = {
+    flex: "0 0 auto",
+    width: 48,
+    minWidth: 48,
+    px: 0,
+  } as const;
+
+  const handleShare = (): void => {
+    void shareOrCopy({ url: shortUrl });
+  };
+
+  const handleWhatsApp = (): void => {
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(shortUrl)}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
+
   return (
     <Box
       component="article"
@@ -89,77 +158,142 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           headingId={cardHeadingId}
         />
 
-        {/* Hero short URL + its destination read as one unit. */}
-        <Stack spacing={0.85}>
-          <ShortUrlRow
-            shortUrl={shortUrl}
-            copied={copiedShort}
-            onCopy={() => copyShort(shortUrl)}
-            headingId={shortUrlHeadingId}
-          />
-
-          <DestinationRow
-            destinationUrl={linkData.original_url}
-            headingId={destinationHeadingId}
-          />
-        </Stack>
-
-        {/* Quick share — re-share this short link without leaving the page. */}
-        <Stack direction="row" gap={1}>
-          {[
-            {
-              key: "share",
-              label: t("publicAnalytics.linkInfo.share"),
-              icon: <Share2 {...ICON_MD} aria-hidden />,
-              onClick: () => shareOrCopy({ url: shortUrl }),
-            },
-            {
-              key: "whatsapp",
-              label: t("publicAnalytics.linkInfo.shareWhatsapp"),
-              icon: <WhatsAppIcon size={18} aria-hidden />,
-              onClick: () =>
-                window.open(
-                  `https://wa.me/?text=${encodeURIComponent(shortUrl)}`,
-                  "_blank",
-                  "noopener,noreferrer",
-                ),
-            },
-          ].map(({ key, label, icon, onClick }) => (
-            <Button
-              key={key}
-              onClick={onClick}
-              startIcon={icon}
+        {/* Short link + destination — one inset (mirrors /shorter). */}
+        <Box
+          component="section"
+          aria-labelledby={linkHeadingId}
+          sx={{
+            ...getPublicInsetSx(theme),
+            p: { xs: 1.75, sm: 2 },
+            display: "flex",
+            flexDirection: "column",
+            gap: 1.25,
+          }}
+        >
+          <Box sx={{ minWidth: 0 }}>
+            <Typography
+              id={linkHeadingId}
+              component="h3"
+              variant="overline"
+              color="text.secondary"
+              sx={{ ...sectionLabelSx, mb: 0.75 }}
+            >
+              {t("publicAnalytics.linkInfo.yourShortLink")}
+            </Typography>
+            <Typography
+              component="p"
               sx={{
-                flex: 1,
-                minHeight: 42,
-                px: 2,
-                fontSize: "0.8125rem",
+                m: 0,
+                minWidth: 0,
+                fontFamily: "monospace",
+                fontSize: { xs: "1rem", sm: "1.0625rem" },
                 fontWeight: 700,
-                textTransform: "none",
                 letterSpacing: "-0.01em",
-                borderRadius: 2,
-                color: theme.palette.text.primary,
-                border: `1px solid ${publicHairline(theme, "inset")}`,
-                bgcolor: alpha(theme.palette.text.primary, 0.04),
-                transition:
-                  "background-color 160ms ease, border-color 160ms ease, transform 120ms ease",
-                "& .MuiButton-startIcon": { mr: 1 },
-                "&:hover": {
-                  bgcolor: alpha(
-                    theme.palette.primary.main,
-                    isDark ? 0.1 : 0.07,
-                  ),
-                  borderColor: alpha(
-                    theme.palette.primary.main,
-                    isDark ? 0.4 : 0.3,
-                  ),
-                },
-                "&:active": { transform: "translateY(1px)" },
+                color: shortUrlColor,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
-              {label}
-            </Button>
-          ))}
+              <Link
+                href={shortUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="hover"
+                sx={{ color: "inherit", fontWeight: "inherit" }}
+              >
+                {shortUrl}
+              </Link>
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 0.75,
+              minWidth: 0,
+              pt: 1.25,
+              borderTop: `1px solid ${publicHairline(theme, "inset")}`,
+            }}
+          >
+            <DestinationFavicon host={destinationHost} />
+            <Link
+              href={linkData.original_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              underline="hover"
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                fontFamily: "monospace",
+                fontSize: "0.8125rem",
+                lineHeight: 1.35,
+                color: alpha(theme.palette.text.primary, isDark ? 0.72 : 0.7),
+                "&:hover": { color: theme.palette.primary.light },
+              }}
+            >
+              {displayDestination}
+            </Link>
+          </Box>
+        </Box>
+
+        {/* One action row: copy · restart · share · whatsapp. */}
+        <Stack
+          direction="row"
+          useFlexGap
+          flexWrap="wrap"
+          alignItems="stretch"
+          spacing={1}
+        >
+          <Button
+            onClick={() => copyShort(shortUrl)}
+            disabled={!shortUrl}
+            startIcon={
+              copiedShort ? (
+                <Check {...ICON_MD} aria-hidden />
+              ) : (
+                <Copy {...ICON_MD} aria-hidden />
+              )
+            }
+            sx={solidActionSx(
+              theme.palette.primary.dark,
+              theme.palette.primary.main,
+            )}
+          >
+            {copiedShort
+              ? t("publicAnalytics.linkInfo.copied")
+              : t("publicAnalytics.linkInfo.copy")}
+          </Button>
+          <Button
+            onClick={onCreateLink}
+            startIcon={<RotateCcw {...ICON_MD} aria-hidden />}
+            sx={colorActionSx(RESTART_HUE)}
+          >
+            {t("publicAnalytics.linkInfo.shortenAnother")}
+          </Button>
+          <Button
+            onClick={handleShare}
+            aria-label={t("publicAnalytics.linkInfo.share")}
+            title={t("publicAnalytics.linkInfo.share")}
+            sx={{ ...colorActionSx(SHARE_HUE), ...iconSquareSx }}
+          >
+            <Share2 {...ICON_MD} aria-hidden />
+          </Button>
+          <Button
+            onClick={handleWhatsApp}
+            aria-label={t("publicAnalytics.linkInfo.shareWhatsapp")}
+            title={t("publicAnalytics.linkInfo.shareWhatsapp")}
+            sx={{
+              ...solidActionSx(WHATSAPP_GREEN, WHATSAPP_GREEN_HOVER),
+              ...iconSquareSx,
+            }}
+          >
+            <WhatsAppIcon size={18} aria-hidden style={{ flexShrink: 0 }} />
+          </Button>
         </Stack>
 
         <BookmarkRow
@@ -168,25 +302,47 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           onCopy={() => copyAnalytics(analyticsUrl)}
           headingId={saveHeadingId}
         />
-
-        <Button
-          variant="contained"
-          fullWidth
-          onClick={onCreateLink}
-          sx={{
-            py: 1.25,
-            fontWeight: 700,
-            borderRadius: 2,
-            bgcolor: theme.palette.primary.dark,
-            color: alpha(theme.palette.common.white, 0.96),
-            "&:hover": {
-              bgcolor: theme.palette.primary.main,
-            },
-          }}
-        >
-          {t("publicAnalytics.linkInfo.shortenAnother")}
-        </Button>
       </Stack>
     </Box>
+  );
+}
+
+/**
+ * Destination site favicon with a Globe fallback (DuckDuckGo icon service),
+ * matching the guest success card's destination cue.
+ */
+function DestinationFavicon({ host }: { host: string }) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+  const [failed, setFailed] = useState(false);
+
+  if (!host || failed) {
+    return (
+      <Globe
+        {...ICON_SM}
+        aria-hidden
+        style={{
+          color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.45),
+          flexShrink: 0,
+        }}
+      />
+    );
+  }
+
+  return (
+    <Box
+      component="img"
+      src={`https://icons.duckduckgo.com/ip3/${host}.ico`}
+      alt=""
+      aria-hidden
+      onError={() => setFailed(true)}
+      sx={{
+        width: 16,
+        height: 16,
+        flexShrink: 0,
+        borderRadius: "3px",
+        objectFit: "contain",
+      }}
+    />
   );
 }
