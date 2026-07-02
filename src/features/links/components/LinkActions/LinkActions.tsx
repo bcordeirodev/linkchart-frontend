@@ -130,12 +130,13 @@ export function LinkActions({
     <Box
       component="header"
       sx={{
-        py: { xs: 1.5, sm: 1.75 },
-        mb: { xs: 2.5, sm: 3 },
+        pt: { xs: 0.75, sm: 1 },
+        pb: { xs: 1.5, sm: 1.75 },
+        mb: { xs: 2, sm: 2.5 },
         borderBottom: `1px solid ${theme.palette.divider}`,
         display: "flex",
         flexDirection: "column",
-        gap: { xs: 1.25, sm: 1.5 },
+        gap: { xs: 1, sm: 1.25 },
       }}
     >
       {/* Row 1 — utilities: back link left, copy + overflow right, one baseline */}

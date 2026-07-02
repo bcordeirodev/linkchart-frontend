@@ -5,6 +5,7 @@ import NextLink from "next/link";
 import { useTranslation } from "react-i18next";
 
 import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { radiusTokens } from "@/lib/theme/designSystem";
 
 /**
  * Back link rendered at the top of the LinkActions toolbar.
@@ -31,7 +32,7 @@ export function LinkActionsBackLink() {
         gap: 0.75,
         px: 1.25,
         py: 0.625,
-        borderRadius: 999,
+        borderRadius: `${radiusTokens.sm}px`,
         border: `1px solid ${theme.palette.divider}`,
         backgroundColor: "transparent",
         color: "text.secondary",
