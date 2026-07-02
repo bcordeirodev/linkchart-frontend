@@ -67,15 +67,28 @@ export function TemporalAnalysis({
 
   // Priorizar dados de peak_analysis do back-end quando disponíveis
   // Usar != null para rejeitar tanto null quanto undefined
+  const peakAnalysis = data?.advanced?.peak_analysis;
+
   const peakHour =
-    data?.advanced?.peak_analysis?.peak_hour != null
-      ? `${data.advanced.peak_analysis.peak_hour.toString().padStart(2, "0")}h`
+    peakAnalysis?.peak_hour != null
+      ? `${peakAnalysis.peak_hour.toString().padStart(2, "0")}h`
       : stats?.peakHour
         ? `${stats.peakHour}h`
         : "--";
 
-  const peakDay =
-    data?.advanced?.peak_analysis?.peak_day || stats?.peakDay || "N/A";
+  // `peak_day` is the ISO day NUMBER (1-7) — the display name lives in
+  // `peak_day_name`. Falling back through the number rendered "3" as a day.
+  const peakDay = peakAnalysis?.peak_day_name || stats?.peakDay || "N/A";
+
+  // Carry the peak click counts into the KPI subtitles — this row is now the
+  // single summary of peaks in the tab (the Performance sub-tab keeps only
+  // the rich analysis card).
+  const peakHourSubtitle = peakAnalysis?.peak_hour_clicks
+    ? `${peakAnalysis.peak_hour_clicks.toLocaleString()} ${t("temporal.peak.clicks")}`
+    : t("temporal.metrics.peakHourSub");
+  const peakDaySubtitle = peakAnalysis?.peak_day_clicks
+    ? `${peakAnalysis.peak_day_clicks.toLocaleString()} ${t("temporal.peak.clicks")}`
+    : t("temporal.metrics.peakDaySub");
 
   const trendValue =
     stats?.trendDirection === "up"
@@ -125,7 +138,7 @@ export function TemporalAnalysis({
                   value={peakHour}
                   icon={<Clock {...ICON_LG} />}
                   color="primary"
-                  subtitle={t("temporal.metrics.peakHourSub")}
+                  subtitle={peakHourSubtitle}
                 />
               </Grid>
               <Grid item xs={6} sm={6} md={3}>
@@ -134,7 +147,7 @@ export function TemporalAnalysis({
                   value={peakDay}
                   icon={<Calendar {...ICON_LG} />}
                   color="secondary"
-                  subtitle={t("temporal.metrics.peakDaySub")}
+                  subtitle={peakDaySubtitle}
                 />
               </Grid>
               <Grid item xs={6} sm={6} md={3}>
