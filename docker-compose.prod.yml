@@ -7,6 +7,7 @@ services:
         - NEXT_PUBLIC_APP_URL=https://linkcharts.com.br
         - NEXT_PUBLIC_REDIRECT_URL=https://redirect.linkcharts.com.br
         - NEXT_PUBLIC_GA_ID
+        - NEXT_PUBLIC_GOOGLE_ADS_ID=AW-18126255245
         - NEXT_PUBLIC_ADSENSE_CLIENT
         - NEXT_PUBLIC_ADSENSE_PUBLISHER_ID=ca-pub-1396026257166470
         - NEXT_PUBLIC_SUBDOMAINS_ENABLED=true
