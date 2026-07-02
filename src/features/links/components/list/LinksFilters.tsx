@@ -2,7 +2,6 @@
 import { Search, ArrowUpDown, Rows2, Rows4 } from "lucide-react";
 import { ICON_SM, ICON_LG } from "@/lib/theme/iconDefaults";
 import {
-  alpha,
   Box,
   Chip,
   Divider,
@@ -22,7 +21,7 @@ import { useTranslation } from "react-i18next";
 
 import type { LinkDensity } from "@/features/links/hooks/useLinkDensity";
 
-import { radiusTokens } from "@/lib/theme/designSystem";
+import { getSoftSelectedChipSx } from "@/lib/theme/softChip";
 
 import { getLinksFilterInsetSx, getLinksPanelSx } from "./linksPanelStyles";
 
@@ -191,46 +190,20 @@ export function LinksFilters({
           useFlexGap
           sx={{ flex: 1, minWidth: 0 }}
         >
-          {STATUS_CHIPS.map((chip) => {
-            const selected = statusFilter === chip.value;
-            const primary = theme.palette.primary.main;
-            const selectedFg =
-              theme.palette.mode === "dark"
-                ? theme.palette.primary.light
-                : primary;
-
-            return (
-              <Chip
-                key={chip.value}
-                label={chip.label}
-                clickable
-                size="small"
-                variant="outlined"
-                onClick={() => onStatusChange(chip.value)}
-                sx={{
-                  borderRadius: `${radiusTokens.sm}px`,
-                  fontWeight: selected ? 600 : 400,
-                  fontSize: "0.75rem",
-                  ...(selected
-                    ? {
-                        bgcolor: alpha(
-                          primary,
-                          theme.palette.mode === "dark" ? 0.16 : 0.1,
-                        ),
-                        color: selectedFg,
-                        borderColor: alpha(primary, 0.4),
-                        "&:hover": {
-                          bgcolor: alpha(
-                            primary,
-                            theme.palette.mode === "dark" ? 0.22 : 0.14,
-                          ),
-                        },
-                      }
-                    : {}),
-                }}
-              />
-            );
-          })}
+          {STATUS_CHIPS.map((chip) => (
+            <Chip
+              key={chip.value}
+              label={chip.label}
+              clickable
+              size="small"
+              variant="outlined"
+              onClick={() => onStatusChange(chip.value)}
+              sx={{
+                fontSize: "0.75rem",
+                ...getSoftSelectedChipSx(theme, statusFilter === chip.value),
+              }}
+            />
+          ))}
         </Stack>
 
         {showDensityToggle ? (

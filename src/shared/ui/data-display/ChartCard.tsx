@@ -45,7 +45,7 @@ export interface ChartCardProps {
 /**
  * Card container for charts — title row (optional icon + heading) + slot for the chart body.
  *
- * Uses `radiusTokens.lg`, a 1 px divider border and the `xs` elevation token (mode-aware).
+ * Uses `radiusTokens.md`, a 1 px divider border and the `xs` elevation token (mode-aware).
  * The outer `<Box>` adds `animations.cardHover` so the whole card lifts on hover, and the
  * body is wrapped in a short `<Fade>` to soften initial mount.
  *
@@ -86,7 +86,7 @@ export function ChartCard({
         sx={{
           height: "100%",
           width: "100%",
-          borderRadius: `${radiusTokens.lg}px`,
+          borderRadius: `${radiusTokens.md}px`,
           border: `1px solid ${theme.palette.divider}`,
           boxShadow:
             theme.palette.mode === "dark"

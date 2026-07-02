@@ -14,6 +14,8 @@ import {
 import { SlidersHorizontal, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { getSoftSelectedChipSx } from "@/lib/theme/softChip";
+
 /** A single selectable chip item within a filter group. */
 export interface FilterChipItem {
   /** Unique value for this option (used as React key and for equality checks). */
@@ -213,16 +215,18 @@ export function TabFilterBar({
                 key={item.value}
                 label={item.label}
                 size="small"
-                variant={item.selected ? "filled" : "outlined"}
-                color={
-                  item.selected
-                    ? group.type === "single"
-                      ? "primary"
-                      : "secondary"
-                    : "default"
-                }
+                variant="outlined"
                 onClick={item.onSelect}
-                sx={{ cursor: "pointer" }}
+                sx={{
+                  cursor: "pointer",
+                  ...getSoftSelectedChipSx(
+                    theme,
+                    item.selected,
+                    group.type === "multi"
+                      ? theme.palette.secondary.main
+                      : undefined,
+                  ),
+                }}
               />
             ))}
 
