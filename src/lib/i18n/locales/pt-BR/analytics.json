@@ -9,6 +9,12 @@
     "totalClicksLabel": "Cliques Totais",
     "realtime": "Tempo Real",
     "dataQuality": "Qualidade dos dados",
+    "dataQualityValues": {
+      "excellent": "excelente",
+      "good": "boa",
+      "fair": "razoável",
+      "poor": "baixa"
+    },
     "lastUpdate": "Última atualização",
     "metrics": {
       "title": "Métricas do Link"
