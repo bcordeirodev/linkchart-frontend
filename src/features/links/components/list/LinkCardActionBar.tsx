@@ -53,6 +53,13 @@ export function LinkCardActionBar({
 
   const displayUrl = displayUrlProp ?? shortUrl.replace(/^https?:\/\//, "");
 
+  // Split host/path prefix from the slug so the part the user actually chose
+  // (and scans for) reads strong while the repeated host stays dim.
+  const slashIndex = displayUrl.lastIndexOf("/");
+  const urlPrefix = slashIndex >= 0 ? displayUrl.slice(0, slashIndex + 1) : "";
+  const urlSlug =
+    slashIndex >= 0 ? displayUrl.slice(slashIndex + 1) : displayUrl;
+
   const handleCopy = (e: MouseEvent | KeyboardEvent) => {
     e.stopPropagation();
     copy(shortUrl);
@@ -156,7 +163,19 @@ export function LinkCardActionBar({
               color: alpha(theme.palette.text.primary, isDark ? 0.88 : 0.82),
             }}
           >
-            {displayUrl}
+            {urlPrefix ? (
+              <Box
+                component="span"
+                sx={{
+                  color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.45),
+                }}
+              >
+                {urlPrefix}
+              </Box>
+            ) : null}
+            <Box component="span" sx={{ fontWeight: 600 }}>
+              {urlSlug}
+            </Box>
           </Typography>
           <Typography
             component="span"

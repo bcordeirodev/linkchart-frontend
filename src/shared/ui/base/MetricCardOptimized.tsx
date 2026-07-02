@@ -46,7 +46,7 @@ export function MetricCardOptimized({
       sx={{
         height: "100%",
         backgroundColor: theme.palette.background.paper,
-        borderRadius: `${radiusTokens.lg}px`,
+        borderRadius: `${radiusTokens.md}px`,
         border: `1px solid ${theme.palette.divider}`,
         boxShadow:
           theme.palette.mode === "dark"
@@ -84,8 +84,9 @@ export function MetricCardOptimized({
             sx={{
               width: 28,
               height: 28,
-              borderRadius: "50%",
+              borderRadius: `${radiusTokens.sm}px`,
               bgcolor: alpha(selectedColor, 0.12),
+              border: `1px solid ${alpha(selectedColor, 0.2)}`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -97,13 +98,16 @@ export function MetricCardOptimized({
           </Box>
         </Box>
 
+        {/* The number reads in ink — the icon chip alone carries the card's
+            accent, so a row of KPIs doesn't turn into a rainbow. */}
         <Typography
           variant="h4"
           component="div"
           sx={{
-            fontWeight: 600,
+            fontWeight: 700,
+            letterSpacing: "-0.01em",
             fontVariantNumeric: "tabular-nums",
-            color: selectedColor,
+            color: "text.primary",
             mb: subtitle ? 0.5 : 0,
           }}
         >
