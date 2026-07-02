@@ -40,7 +40,7 @@
     }
   },
   "filters": {
-    "period": "Shortcuts",
+    "period": "Period",
     "dateFrom": "From",
     "dateTo": "To",
     "periods": {
