@@ -24,8 +24,8 @@ export function LinkActionsTitleRow({
         component="h1"
         sx={{
           fontSize: { xs: "1.375rem", sm: "1.5rem" },
-          fontWeight: 600,
-          letterSpacing: "-0.02em",
+          fontWeight: 700,
+          letterSpacing: "-0.01em",
           lineHeight: 1.3,
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -34,8 +34,12 @@ export function LinkActionsTitleRow({
       >
         {heading}
       </Typography>
+      {/* Desktop already shows the short URL inside the copy strip (top
+          right); repeating it under the title said the same thing twice.
+          On mobile the strip collapses to a plain button, so the URL line
+          is the only visible address and stays. */}
       {showUrlLine ? (
-        <Box sx={{ mt: 0.375 }}>
+        <Box sx={{ mt: 0.375, display: { xs: "block", sm: "none" } }}>
           <LinkActionsShortUrl url={shortUrl!} />
         </Box>
       ) : null}

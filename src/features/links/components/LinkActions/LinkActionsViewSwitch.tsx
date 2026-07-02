@@ -85,13 +85,13 @@ export function LinkActionsViewSwitch({
         },
         "& .MuiToggleButton-root": {
           flex: fullWidth ? 1 : "0 1 auto",
-          minHeight: 34,
-          minWidth: fullWidth ? 0 : 84,
+          minHeight: 36,
+          minWidth: fullWidth ? 0 : 92,
           textTransform: "none",
           fontWeight: 500,
-          fontSize: "0.75rem",
+          fontSize: "0.8125rem",
           py: 0.5,
-          px: { xs: 1, sm: 1.25 },
+          px: { xs: 1.25, sm: 1.5 },
           color: theme.palette.text.secondary,
           transition: theme.transitions.create(
             ["color", "background-color", "box-shadow"],
