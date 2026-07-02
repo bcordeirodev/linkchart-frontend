@@ -48,45 +48,55 @@ interface LinkCardRichProps {
   density?: LinkCardDensity;
 }
 
-/** OG preview thumbnail — fixed aspect, aligned with destination row. */
-function LinkOgPreview({
-  imageUrl,
-  title,
+/**
+ * Single visual anchor for the card — the OG image cropped square when the
+ * destination has one, otherwise the favicon centered on a quiet well. One
+ * image per card; title and destination stack beside it.
+ */
+function LinkIdentityThumb({
+  preview,
   theme,
 }: {
-  imageUrl: string;
-  title?: string | null;
+  preview?: LinkMeta["preview"];
   theme: Theme;
 }) {
+  const [imgError, setImgError] = useState(false);
+  const ogImageUrl = preview?.og_image_url;
+
   return (
     <Box
       sx={{
         width: 44,
-        height: 28,
+        height: 44,
         flexShrink: 0,
         borderRadius: `${radiusTokens.sm}px`,
         overflow: "hidden",
         border: `1px solid ${theme.palette.divider}`,
-        bgcolor: alpha(theme.palette.common.black, 0.04),
+        bgcolor:
+          theme.palette.mode === "dark"
+            ? alpha(theme.palette.common.white, 0.03)
+            : alpha(theme.palette.common.black, 0.03),
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
       }}
     >
-      <Box
-        component="img"
-        src={imageUrl}
-        alt={title ?? ""}
-        sx={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          display: "block",
-        }}
-        onError={(e) => {
-          (e.target as HTMLImageElement).style.display = "none";
-        }}
-      />
+      {ogImageUrl && !imgError ? (
+        <Box
+          component="img"
+          src={ogImageUrl}
+          alt=""
+          onError={() => setImgError(true)}
+          sx={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
+      ) : (
+        <LinkPreviewThumb preview={preview} size={22} />
+      )}
     </Box>
   );
 }
@@ -144,90 +154,100 @@ export function LinkCardRich({
       }}
     >
       <Box sx={getLinkCardContentSx(density)}>
-        {/* 1 — Favicon + title + status + menu (one row) */}
+        {/* 1+2 — Identity block: one thumb, title and destination beside it.
+            Compact density skips the thumb and inlines the favicon. */}
         <Stack
           direction="row"
           alignItems="center"
-          spacing={1}
+          spacing={isCompact ? 1 : 1.25}
           sx={{ minWidth: 0 }}
         >
-          <LinkPreviewThumb preview={meta?.preview} size={22} />
-          <Typography
-            variant="body2"
-            sx={{
-              fontWeight: 600,
-              fontSize: "0.875rem",
-              flex: 1,
-              minWidth: 0,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {link.title || link.slug || link.custom_slug || t("list.noTitle")}
-          </Typography>
-          {status !== "active" ? (
-            <Chip
-              size="small"
-              label={statusLabel}
-              sx={{
-                height: 20,
-                flexShrink: 0,
-                fontSize: "0.625rem",
-                fontWeight: 500,
-                bgcolor: alpha(statusColorValue, 0.12),
-                color: statusColorKey,
-                border: `1px solid ${alpha(statusColorValue, 0.22)}`,
-                "& .MuiChip-label": { px: 0.75 },
-              }}
-            />
-          ) : null}
-          <Box
-            onClick={(e) => e.stopPropagation()}
-            sx={{ flexShrink: 0, ml: 0.25 }}
-          >
-            <LinkActionsMenu
-              onEdit={() => navigate(`/links/edit/${link.id}`)}
-              onQR={() => navigate(`/links/qr/${link.id}`)}
-              onDelete={handleDelete}
-            />
-          </Box>
-        </Stack>
+          {isCompact ? (
+            <LinkPreviewThumb preview={meta?.preview} size={22} />
+          ) : (
+            <LinkIdentityThumb preview={meta?.preview} theme={theme} />
+          )}
 
-        {/* 2 — Destination full width from left edge */}
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={0.75}
-          sx={{ mt: isCompact ? 0.25 : 0.5, minWidth: 0 }}
-        >
-          {!isCompact && meta?.preview?.og_image_url ? (
-            <LinkOgPreview
-              imageUrl={meta.preview.og_image_url}
-              title={meta.preview.og_title}
-              theme={theme}
-            />
-          ) : null}
-          <ExternalLink
-            size={12}
-            strokeWidth={1.75}
-            style={{ flexShrink: 0, opacity: 0.4 }}
-          />
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{
-              flex: 1,
-              minWidth: 0,
-              fontSize: "0.75rem",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-            title={link.original_url}
-          >
-            {link.original_url}
-          </Typography>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={1}
+              sx={{ minWidth: 0 }}
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "0.875rem",
+                  flex: 1,
+                  minWidth: 0,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {link.title ||
+                  link.slug ||
+                  link.custom_slug ||
+                  t("list.noTitle")}
+              </Typography>
+              {status !== "active" ? (
+                <Chip
+                  size="small"
+                  label={statusLabel}
+                  sx={{
+                    height: 20,
+                    flexShrink: 0,
+                    fontSize: "0.625rem",
+                    fontWeight: 500,
+                    bgcolor: alpha(statusColorValue, 0.12),
+                    color: statusColorKey,
+                    border: `1px solid ${alpha(statusColorValue, 0.22)}`,
+                    "& .MuiChip-label": { px: 0.75 },
+                  }}
+                />
+              ) : null}
+              <Box
+                onClick={(e) => e.stopPropagation()}
+                sx={{ flexShrink: 0, ml: 0.25 }}
+              >
+                <LinkActionsMenu
+                  onEdit={() => navigate(`/links/edit/${link.id}`)}
+                  onQR={() => navigate(`/links/qr/${link.id}`)}
+                  onDelete={handleDelete}
+                />
+              </Box>
+            </Stack>
+
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={0.75}
+              sx={{ mt: isCompact ? 0.25 : 0.375, minWidth: 0 }}
+            >
+              <ExternalLink
+                size={12}
+                strokeWidth={1.75}
+                style={{ flexShrink: 0, opacity: 0.4 }}
+              />
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{
+                  flex: 1,
+                  minWidth: 0,
+                  fontSize: "0.75rem",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+                title={link.original_url}
+              >
+                {link.original_url}
+              </Typography>
+            </Stack>
+          </Box>
         </Stack>
 
         <LinkCardActionBar

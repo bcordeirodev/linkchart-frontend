@@ -38,7 +38,7 @@ export function PageSectionHeading({
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const isPageTitle = titleVariant === "page";
-  const resolvedIconSize = iconSize ?? (isPageTitle ? 20 : 18);
+  const resolvedIconSize = iconSize ?? (isPageTitle ? 22 : 18);
   const primary = theme.palette.primary.main;
 
   return (
@@ -76,9 +76,10 @@ export function PageSectionHeading({
               height: 40,
               flexShrink: 0,
               borderRadius: `${radiusTokens.md}px`,
-              bgcolor: alpha(primary, isDark ? 0.14 : 0.08),
-              border: `1px solid ${alpha(primary, isDark ? 0.24 : 0.16)}`,
-              color: isDark ? theme.palette.primary.light : primary,
+              // Solid-enough fill so the white glyph holds contrast in both
+              // themes (a 12% tint would swallow white in light mode).
+              bgcolor: alpha(primary, isDark ? 0.55 : 0.9),
+              color: theme.palette.common.white,
               "& svg": {
                 width: resolvedIconSize,
                 height: resolvedIconSize,

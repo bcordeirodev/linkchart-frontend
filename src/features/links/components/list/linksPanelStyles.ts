@@ -60,21 +60,13 @@ export function getLinksPanelSx(theme: Theme) {
 }
 
 /**
- * Quick-create panel — same shell as the browse panel plus a faint primary
- * wash from the top. It quietly marks the page's action zone without adding
- * another loud element.
+ * Quick-create panel — same neutral shell as the browse panel, slightly
+ * lifted shadow. The blue "Encurtar" CTA and the ⚡ icon already mark the
+ * action zone; a tinted panel on top of them read as too much.
  */
 export function getLinksQuickCreatePanelSx(theme: Theme) {
-  const isDark = theme.palette.mode === "dark";
-  const primary = theme.palette.primary.main;
-
   return {
     ...getLinksPanelSx(theme),
-    backgroundImage: `linear-gradient(180deg, ${alpha(
-      primary,
-      isDark ? 0.07 : 0.04,
-    )} 0%, ${alpha(primary, 0)} 55%)`,
-    borderColor: alpha(primary, isDark ? 0.18 : 0.14),
     boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme, "hover")}`,
   };
 }
