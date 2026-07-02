@@ -14,7 +14,6 @@ import {
 import {
   Clock,
   Calendar,
-  Star,
   Zap,
   Sunrise,
   Sun,
@@ -26,9 +25,6 @@ import {
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ICON_LG } from "@/lib/theme/iconDefaults";
-
-import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import type { PeakAnalysis, TemporalData } from "@/types";
 
 import { ViralRankMiniChart } from "./ViralRankMiniChart";
@@ -101,51 +97,14 @@ export function PeakAnalysisCard({
   };
 
   const period = getPeriodOfDay(peak_hour);
-  const performancePct =
-    peak_day_clicks > 0
-      ? `${((peak_hour_clicks / peak_day_clicks) * 100).toFixed(1)}%`
-      : "--";
 
   return (
     <Box>
       <Grid container spacing={3}>
-        {/* Cards de Métricas */}
-        <Grid item xs={12} sm={6} md={3}>
-          <MetricCard
-            title={t("temporal.peak.peakHour")}
-            value={formatHour(peak_hour)}
-            icon={<Clock {...ICON_LG} />}
-            color="primary"
-            subtitle={`${peak_hour_clicks.toLocaleString()} ${t("temporal.peak.clicks")}`}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <MetricCard
-            title={t("temporal.peak.peakDay")}
-            value={peak_day_name ?? "--"}
-            icon={<Calendar {...ICON_LG} />}
-            color="secondary"
-            subtitle={`${peak_day_clicks.toLocaleString()} ${t("temporal.peak.clicks")}`}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <MetricCard
-            title={t("temporal.peak.periodOfDay")}
-            value={period.label}
-            icon={period.icon}
-            color={period.color}
-            subtitle={t("temporal.peak.highestActivityPeriod")}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <MetricCard
-            title={t("temporal.peak.performance")}
-            value={performancePct}
-            icon={<Star {...ICON_LG} />}
-            color="success"
-            subtitle={t("temporal.peak.ofDailyActivity")}
-          />
-        </Grid>
+        {/* A fileira de MetricCards que vivia aqui repetia, com nomes
+            sinônimos, os KPIs do topo da aba (Pico de Hora / Pico de Dia).
+            O resumo mora nos KPIs da aba; este card guarda só a análise
+            rica (boxes de hora/dia, período e recomendações). */}
 
         {/* Viral Rank Mini Chart */}
         {viralRankByDay && viralRankByDay.length > 0 && (
