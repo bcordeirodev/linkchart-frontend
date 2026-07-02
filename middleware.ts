@@ -17,7 +17,11 @@ const CSP_REPORT_ONLY = [
   "img-src 'self' data: https:",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
-  "connect-src 'self' https://www.google-analytics.com",
+  // connect-src must list every XHR/beacon origin, or each one fires a
+  // report. Faro RUM beacons to the Grafana collector; GA4 posts to regional
+  // endpoints; AdSense/Ads open connections to the syndication/doubleclick/
+  // adtrafficquality hosts already trusted in script-src/frame-src.
+  "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://faro-collector-prod-sa-east-1.grafana.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google",
   "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://www.googlesyndication.com https://googleads.g.doubleclick.net",
   "frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://ep2.adtrafficquality.google https://www.google.com",
 ].join("; ");
