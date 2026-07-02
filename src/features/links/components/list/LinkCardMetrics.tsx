@@ -170,12 +170,29 @@ export function LinkCardMetrics({
         ? format(createdDate, "dd/MM/yyyy", { locale: dateLocale })
         : null;
 
+    // A flat all-zero sparkline carries no information — hide it so quiet
+    // links don't render a meaningless line.
+    const hasSparklineSignal = Boolean(
+      meta?.sparkline?.length && meta.sparkline.some((p) => p.clicks > 0),
+    );
+
     return (
       <Box sx={{ ...getLinkCardMetricsRowSx(theme), ...sx }}>
         <MetricsRow dividerSx={dividerSx}>
-          {meta?.sparkline?.length ? (
-            <LinkSparkline data={meta.sparkline} height={20} width={72} />
+          {hasSparklineSignal ? (
+            <LinkSparkline data={meta!.sparkline!} height={20} width={72} />
           ) : null}
+
+          {/* Clicks lead the row — it's the KPI the list is scanned for. */}
+          <InlineMetric label={t("metrics.clicksShort")}>
+            <Typography
+              variant="caption"
+              component="span"
+              sx={linkCardMetricValueSx}
+            >
+              {formatCount(link.clicks, i18n.language)}
+            </Typography>
+          </InlineMetric>
 
           {hasTrendSignal(meta?.trend) ? (
             <LinkTrendBadge trend={meta!.trend} compact />
@@ -198,16 +215,6 @@ export function LinkCardMetrics({
           {meta?.health?.status === "error" ? (
             <LinkHealthBadge health={meta.health} />
           ) : null}
-
-          <InlineMetric label={t("metrics.clicksShort")}>
-            <Typography
-              variant="caption"
-              component="span"
-              sx={linkCardMetricValueSx}
-            >
-              {formatCount(link.clicks, i18n.language)}
-            </Typography>
-          </InlineMetric>
 
           {createdLabel ? (
             <InlineMetric label={t("table.created")}>
