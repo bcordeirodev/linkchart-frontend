@@ -10,6 +10,9 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+
+import { radiusTokens } from "@/lib/theme/designSystem";
+import { getSoftSelectedChipSx } from "@/lib/theme/softChip";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { format, parse, parseISO } from "date-fns";
 import { useTranslation } from "react-i18next";
@@ -100,6 +103,7 @@ export function AnalyticsFilterBar({
         mb: 2,
         bgcolor: "background.paper",
         border: `1px solid ${theme.palette.divider}`,
+        borderRadius: `${radiusTokens.md}px`,
       }}
     >
       {/* Controls row */}
@@ -207,10 +211,12 @@ export function AnalyticsFilterBar({
               key={p}
               label={t(`filters.periods.${p}`)}
               size="small"
-              variant={period === p ? "filled" : "outlined"}
-              color={period === p ? "primary" : "default"}
+              variant="outlined"
               onClick={() => onPeriodChange(p)}
-              sx={{ cursor: "pointer" }}
+              sx={{
+                cursor: "pointer",
+                ...getSoftSelectedChipSx(theme, period === p),
+              }}
             />
           ))}
         </Stack>

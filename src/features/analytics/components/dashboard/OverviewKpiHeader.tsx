@@ -84,7 +84,7 @@ export function OverviewKpiHeader({
         sx={{
           p: { xs: 2.25, sm: 2.5 },
           border: `1px solid ${theme.palette.divider}`,
-          borderRadius: `${radiusTokens.lg}px`,
+          borderRadius: `${radiusTokens.md}px`,
           display: "flex",
           flexDirection: "column",
         }}
@@ -94,16 +94,21 @@ export function OverviewKpiHeader({
             sx={{
               width: 30,
               height: 30,
-              borderRadius: "50%",
+              borderRadius: `${radiusTokens.sm}px`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              bgcolor: alpha(theme.palette.info.main, 0.14),
-              color: theme.palette.info.main,
+              // Solid-enough fill for a white glyph in both themes — same
+              // chip language as the /links metric cards.
+              bgcolor: alpha(
+                theme.palette.info.main,
+                theme.palette.mode === "dark" ? 0.55 : 0.9,
+              ),
+              color: theme.palette.common.white,
               flexShrink: 0,
             }}
           >
-            <TrendingUp size={16} />
+            <TrendingUp size={17} />
           </Box>
           <Box sx={{ minWidth: 0 }}>
             <Typography
@@ -137,6 +142,8 @@ export function OverviewKpiHeader({
             {totalClicks.toLocaleString()}
           </Typography>
           {trendPct != null ? (
+            // A drop in clicks is information, not a failure — negative
+            // variation stays neutral; red is reserved for real problems.
             <Box
               component="span"
               sx={{
@@ -149,11 +156,11 @@ export function OverviewKpiHeader({
                 borderRadius: 999,
                 fontSize: "0.72rem",
                 fontWeight: 600,
-                color: trendPct >= 0 ? "success.main" : "error.main",
+                color: trendPct >= 0 ? "success.main" : "text.secondary",
                 bgcolor: alpha(
                   trendPct >= 0
                     ? theme.palette.success.main
-                    : theme.palette.error.main,
+                    : theme.palette.text.secondary,
                   0.12,
                 ),
               }}
@@ -180,7 +187,7 @@ export function OverviewKpiHeader({
             sx={{
               p: 1.75,
               border: `1px solid ${theme.palette.divider}`,
-              borderRadius: `${radiusTokens.lg}px`,
+              borderRadius: `${radiusTokens.md}px`,
               display: "flex",
               flexDirection: "column",
               gap: 1,
@@ -205,12 +212,15 @@ export function OverviewKpiHeader({
                 sx={{
                   width: 24,
                   height: 24,
-                  borderRadius: "50%",
+                  borderRadius: `${radiusTokens.sm}px`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  bgcolor: alpha(tile.color, 0.12),
-                  color: tile.color,
+                  bgcolor: alpha(
+                    tile.color,
+                    theme.palette.mode === "dark" ? 0.55 : 0.9,
+                  ),
+                  color: theme.palette.common.white,
                   flexShrink: 0,
                 }}
               >

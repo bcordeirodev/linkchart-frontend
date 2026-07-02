@@ -12,8 +12,10 @@ export function LinkActionsTitleRow({
   title,
   shortUrl,
 }: LinkActionsTitleRowProps) {
-  const heading = title || shortUrl || "";
-  const showUrlLine = Boolean(shortUrl && shortUrl !== heading);
+  // Untitled links fall back to the short URL — without the protocol, which
+  // is noise at heading size.
+  const heading = title || shortUrl?.replace(/^https?:\/\//, "") || "";
+  const showUrlLine = Boolean(shortUrl && title);
 
   return (
     <Box sx={{ minWidth: 0, flex: 1 }}>

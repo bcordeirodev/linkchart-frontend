@@ -69,6 +69,18 @@ export function LinkActionsCopyButton({
 
   const displayUrl = shortUrl?.replace(/^https?:\/\//, "") ?? "";
 
+  // Same identity split as the /links copy strip: dim host, strong slug.
+  const slashIndex = displayUrl.lastIndexOf("/");
+  const urlPrefix = slashIndex >= 0 ? displayUrl.slice(0, slashIndex + 1) : "";
+  const urlSlug =
+    slashIndex >= 0 ? displayUrl.slice(slashIndex + 1) : displayUrl;
+
+  const labelFg = copied
+    ? isDark
+      ? theme.palette.success.light
+      : theme.palette.success.dark
+    : theme.palette.text.secondary;
+
   return (
     <Tooltip title={copied ? t("actions.copySuccess") : shortUrl ?? ""}>
       <Box
@@ -92,22 +104,24 @@ export function LinkActionsCopyButton({
         }}
         sx={{
           display: "flex",
-          alignItems: "stretch",
+          alignItems: "center",
+          gap: 0.75,
+          px: 1.25,
           minWidth: { sm: 200 },
           maxWidth: { sm: 300 },
           width: { xs: "100%", sm: "auto" },
           height: STRIP_HEIGHT,
-          borderRadius: `${radiusTokens.md}px`,
+          borderRadius: `${radiusTokens.sm}px`,
           border: `1px solid ${
             copied
-              ? alpha(theme.palette.success.main, 0.4)
+              ? alpha(theme.palette.success.dark, isDark ? 0.46 : 0.36)
               : theme.palette.divider
           }`,
           bgcolor: copied
-            ? alpha(theme.palette.success.main, 0.05)
+            ? alpha(theme.palette.success.main, isDark ? 0.1 : 0.06)
             : isDark
               ? alpha(theme.palette.common.white, 0.03)
-              : alpha(theme.palette.common.black, 0.02),
+              : alpha(theme.palette.common.black, 0.025),
           cursor: disabled || !shortUrl ? "not-allowed" : "pointer",
           opacity: disabled || !shortUrl ? 0.5 : 1,
           overflow: "hidden",
@@ -116,11 +130,11 @@ export function LinkActionsCopyButton({
           pointerEvents: disabled || !shortUrl ? "none" : "auto",
           "&:hover": {
             borderColor: copied
-              ? alpha(theme.palette.success.main, 0.5)
-              : alpha(primary, 0.28),
+              ? alpha(theme.palette.success.dark, isDark ? 0.56 : 0.42)
+              : alpha(theme.palette.text.primary, isDark ? 0.22 : 0.18),
             bgcolor: copied
-              ? alpha(theme.palette.success.main, 0.08)
-              : alpha(primary, 0.04),
+              ? alpha(theme.palette.success.main, isDark ? 0.14 : 0.08)
+              : theme.palette.action.hover,
           },
           "&:focus-visible": {
             outline: `2px solid ${alpha(primary, 0.5)}`,
@@ -128,57 +142,52 @@ export function LinkActionsCopyButton({
           },
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 0.5,
-            px: 1,
-            flexShrink: 0,
-            bgcolor: copied ? theme.palette.success.main : primary,
-            borderRight: `1px solid ${
-              copied
-                ? alpha(theme.palette.success.dark, 0.35)
-                : alpha(theme.palette.primary.dark, 0.25)
-            }`,
-          }}
-        >
-          {copied ? (
-            <Check size={14} strokeWidth={2.5} color={copyFg} />
-          ) : (
-            <Copy size={14} strokeWidth={2} color={copyFg} />
-          )}
-          <Typography
-            variant="caption"
-            sx={{
-              fontWeight: 600,
-              fontSize: "0.6875rem",
-              color: copyFg,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {copied ? t("actions.copySuccess") : t("actions.copy")}
-          </Typography>
-        </Box>
+        {copied ? (
+          <Check size={14} strokeWidth={2.5} color={labelFg} />
+        ) : (
+          <Copy size={14} strokeWidth={2} color={labelFg} />
+        )}
         <Typography
           component="span"
           sx={{
             flex: 1,
-            display: "flex",
-            alignItems: "center",
-            px: 1,
             minWidth: 0,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
-            fontSize: "0.75rem",
-            fontFamily:
-              'ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace',
+            fontSize: "0.8125rem",
+            fontFamily: theme.typography.fontFamily,
+            fontVariantNumeric: "tabular-nums",
+            fontFeatureSettings: '"tnum"',
             fontWeight: 500,
-            color: copied ? "success.main" : "text.primary",
+            color: alpha(theme.palette.text.primary, isDark ? 0.88 : 0.82),
           }}
         >
-          {displayUrl}
+          {urlPrefix ? (
+            <Box
+              component="span"
+              sx={{
+                color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.45),
+              }}
+            >
+              {urlPrefix}
+            </Box>
+          ) : null}
+          <Box component="span" sx={{ fontWeight: 600 }}>
+            {urlSlug}
+          </Box>
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: 600,
+            fontSize: "0.75rem",
+            color: labelFg,
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+          }}
+        >
+          {copied ? t("actions.copySuccess") : t("actions.copy")}
         </Typography>
       </Box>
     </Tooltip>
