@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  alpha,
   Box,
   Chip,
   Divider,
@@ -79,6 +80,24 @@ export function AnalyticsFilterBar({
 
   const fmtDt = (d: Date) => format(d, "yyyy-MM-dd HH:mm:ss");
 
+  const isCustom = period === "custom";
+
+  // Compact pickers; a soft primary outline marks the pair as the active
+  // filter when a custom range is applied.
+  const customPickerSx = {
+    width: { xs: "100%", sm: 185 },
+    "& .MuiOutlinedInput-root": {
+      fontSize: "0.8125rem",
+      ...(isCustom
+        ? {
+            "& fieldset": {
+              borderColor: alpha(theme.palette.primary.main, 0.4),
+            },
+          }
+        : {}),
+    },
+  };
+
   /** Called when the "from" picker changes. Keeps existing dateTo if set. */
   const handleFromChange = (date: Date | null) => {
     if (!date) return;
@@ -106,88 +125,9 @@ export function AnalyticsFilterBar({
         borderRadius: `${radiusTokens.md}px`,
       }}
     >
-      {/* Controls row */}
+      {/* Controls row — presets first (the common case), custom range after */}
       <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1.5}>
-        {/* Date range pickers */}
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          alignItems={{ xs: "flex-start", sm: "center" }}
-          spacing={1}
-          flexWrap="wrap"
-          useFlexGap
-          sx={{ width: { xs: "100%", sm: "auto" } }}
-        >
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.05em",
-            }}
-          >
-            {t("filters.dateFrom")}
-          </Typography>
-          <DateTimePicker
-            value={toDate(dateFrom)}
-            onChange={handleFromChange}
-            maxDateTime={toDate(dateTo) ?? new Date()}
-            ampm={false}
-            slots={{ textField: TextField }}
-            slotProps={{
-              textField: {
-                size: "small",
-                // Full-width on mobile so the picker doesn't overflow
-                sx: { width: { xs: "100%", sm: 200 } },
-                inputProps: { "aria-label": t("filters.dateFrom") },
-              },
-              actionBar: { actions: [] },
-            }}
-          />
-          <Typography
-            variant="caption"
-            color="text.disabled"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            →
-          </Typography>
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.05em",
-            }}
-          >
-            {t("filters.dateTo")}
-          </Typography>
-          <DateTimePicker
-            value={toDate(dateTo)}
-            onChange={handleToChange}
-            minDateTime={toDate(dateFrom) ?? undefined}
-            maxDateTime={new Date()}
-            ampm={false}
-            slots={{ textField: TextField }}
-            slotProps={{
-              textField: {
-                size: "small",
-                // Full-width on mobile so the picker doesn't overflow
-                sx: { width: { xs: "100%", sm: 200 } },
-                inputProps: { "aria-label": t("filters.dateTo") },
-              },
-              actionBar: { actions: [] },
-            }}
-          />
-        </Stack>
-
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{ display: { xs: "none", sm: "block" } }}
-        />
-
-        {/* Shortcut chips */}
+        {/* Period preset chips */}
         <Stack
           direction="row"
           alignItems="center"
@@ -219,6 +159,72 @@ export function AnalyticsFilterBar({
               }}
             />
           ))}
+        </Stack>
+
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ display: { xs: "none", sm: "block" } }}
+        />
+
+        {/* Custom datetime range — lights up when it is the active filter */}
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          spacing={1}
+          flexWrap="wrap"
+          useFlexGap
+          sx={{ width: { xs: "100%", sm: "auto" } }}
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              color: isCustom ? "primary.main" : "text.secondary",
+            }}
+          >
+            {t("filters.periods.custom")}
+          </Typography>
+          <DateTimePicker
+            value={toDate(dateFrom)}
+            onChange={handleFromChange}
+            maxDateTime={toDate(dateTo) ?? new Date()}
+            ampm={false}
+            slots={{ textField: TextField }}
+            slotProps={{
+              textField: {
+                size: "small",
+                sx: customPickerSx,
+                inputProps: { "aria-label": t("filters.dateFrom") },
+              },
+              actionBar: { actions: [] },
+            }}
+          />
+          <Typography
+            variant="caption"
+            color="text.disabled"
+            sx={{ display: { xs: "none", sm: "block" } }}
+          >
+            →
+          </Typography>
+          <DateTimePicker
+            value={toDate(dateTo)}
+            onChange={handleToChange}
+            minDateTime={toDate(dateFrom) ?? undefined}
+            maxDateTime={new Date()}
+            ampm={false}
+            slots={{ textField: TextField }}
+            slotProps={{
+              textField: {
+                size: "small",
+                sx: customPickerSx,
+                inputProps: { "aria-label": t("filters.dateTo") },
+              },
+              actionBar: { actions: [] },
+            }}
+          />
         </Stack>
 
         <Divider

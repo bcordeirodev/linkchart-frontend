@@ -40,7 +40,7 @@
     }
   },
   "filters": {
-    "period": "Atalhos",
+    "period": "Período",
     "dateFrom": "De",
     "dateTo": "Até",
     "periods": {
