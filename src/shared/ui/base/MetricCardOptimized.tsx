@@ -82,16 +82,21 @@ export function MetricCardOptimized({
 
           <Box
             sx={{
-              width: 28,
-              height: 28,
+              width: 32,
+              height: 32,
               borderRadius: `${radiusTokens.sm}px`,
-              bgcolor: alpha(selectedColor, 0.12),
-              border: `1px solid ${alpha(selectedColor, 0.2)}`,
+              // Solid-enough fill so the white glyph holds contrast in both
+              // themes; the chip is the card's only accent.
+              bgcolor: alpha(
+                selectedColor,
+                theme.palette.mode === "dark" ? 0.55 : 0.9,
+              ),
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: selectedColor,
+              color: theme.palette.common.white,
               flexShrink: 0,
+              "& svg": { width: 20, height: 20 },
             }}
           >
             {icon}
