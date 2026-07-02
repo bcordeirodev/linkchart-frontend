@@ -74,7 +74,16 @@ export default function RootLayout({
   const initialLang = "pt-BR";
 
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
   const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID;
+
+  // GA4 and Google Ads both run on gtag.js: load the loader once (keyed on the
+  // first available id) and issue a `config` for each id that is present.
+  const gtagLoaderId = gaId || googleAdsId;
+  const gtagConfigLines = [gaId, googleAdsId]
+    .filter(Boolean)
+    .map((id) => `gtag('config','${id}');`)
+    .join("");
 
   return (
     <html lang={initialLang} suppressHydrationWarning>
@@ -92,18 +101,18 @@ export default function RootLayout({
             __html: `window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};window.gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});`,
           }}
         />
-        {gaId ? (
+        {gtagLoaderId ? (
           <>
             <Script
               id="gtm"
               strategy="afterInteractive"
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              src={`https://www.googletagmanager.com/gtag/js?id=${gtagLoaderId}`}
             />
             <Script
               id="gtag-config"
               strategy="afterInteractive"
               dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${gaId}');`,
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());${gtagConfigLines}`,
               }}
             />
           </>
