@@ -376,7 +376,7 @@ export function LinkDashboard({
   excludeBots,
 }: LinkDashboardProps) {
   const theme = useTheme();
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   const { data, stats, loading, error, refresh, isRealtime } = useDashboardData(
     {
@@ -512,9 +512,10 @@ export function LinkDashboard({
             }}
           >
             <Typography variant="caption" color="text.secondary">
-              {t("dashboard.dataQuality")}: {stats.dataQuality} •{" "}
+              {t("dashboard.dataQuality")}:{" "}
+              {t(`dashboard.dataQualityValues.${stats.dataQuality}`)} •{" "}
               {t("dashboard.lastUpdate")}:{" "}
-              {new Date(stats.lastUpdate).toLocaleTimeString()}
+              {new Date(stats.lastUpdate).toLocaleTimeString(i18n.language)}
               {isRealtime ? (
                 <>
                   {" • "}

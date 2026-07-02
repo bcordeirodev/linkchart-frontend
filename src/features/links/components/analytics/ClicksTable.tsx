@@ -154,19 +154,17 @@ type ChipColor =
   | "success"
   | "warning";
 
-/** Device cell — shows device type chip and OS below it. */
+/**
+ * Device cell — device type as quiet text with the OS below it.
+ *
+ * Every row has a device, so a chip here was pure noise; the chip survives
+ * only for bots, which are an actual signal worth catching while scanning.
+ */
 function DeviceCell({ row }: CellProps) {
   const click = row.original;
   const label =
     click.device ||
     (click.is_mobile ? "Mobile" : click.is_desktop ? "Desktop" : "—");
-  let color: ChipColor = "default";
-
-  if (click.is_bot) {
-    color = "warning";
-  } else if (click.is_mobile || click.is_tablet) {
-    color = "info";
-  }
 
   const osLabel = click.os
     ? click.os_version
@@ -176,12 +174,17 @@ function DeviceCell({ row }: CellProps) {
 
   return (
     <Stack spacing={0.25}>
-      <Chip
-        size="small"
-        color={color}
-        label={click.is_bot ? `Bot · ${label}` : label}
-        variant="outlined"
-      />
+      {click.is_bot ? (
+        <Chip
+          size="small"
+          color="warning"
+          label={`Bot · ${label}`}
+          variant="outlined"
+          sx={{ alignSelf: "flex-start" }}
+        />
+      ) : (
+        <Typography variant="body2">{label}</Typography>
+      )}
       {osLabel ? (
         <Typography variant="caption" color="text.secondary">
           {osLabel}
@@ -201,21 +204,30 @@ function BrowserCell({ row }: CellProps) {
   return <span>{ver ? `${browser} ${ver}` : browser}</span>;
 }
 
-/** Traffic source chip based on `click_source` (direct/social/search/email/referral/unknown). */
+/**
+ * Traffic source based on `click_source` (direct/social/search/email/referral).
+ *
+ * Direct/unknown is the default state and reads quiet; the named sources keep
+ * their semantic color as text — color only where it carries information.
+ */
 function SourceCell({ row }: CellProps) {
   const { t } = useTranslation("links");
   const source = row.original.click_source || "unknown";
   const color = CLICK_SOURCE_COLORS[source] ?? "default";
+  const isSignal = color !== "default";
 
   return (
-    <Chip
-      size="small"
-      color={color}
-      label={t(`analytics.clicksTable.sourceValues.${source}`, {
+    <Typography
+      variant="body2"
+      sx={{
+        color: isSignal ? `${color}.main` : "text.secondary",
+        fontWeight: isSignal ? 500 : 400,
+      }}
+    >
+      {t(`analytics.clicksTable.sourceValues.${source}`, {
         defaultValue: source,
       })}
-      variant="outlined"
-    />
+    </Typography>
   );
 }
 
@@ -225,7 +237,9 @@ function RefererCell({ row }: CellProps) {
 
   if (label === DIRECT_SOURCE_SENTINEL) {
     return (
-      <Chip size="small" label={t("table.directSource")} variant="outlined" />
+      <Typography variant="body2" color="text.secondary">
+        {t("table.directSource")}
+      </Typography>
     );
   }
 

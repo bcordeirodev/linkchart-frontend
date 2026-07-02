@@ -7,6 +7,7 @@ import type { ApexOptions } from "apexcharts";
 
 import { tDynamic } from "@/i18n/tDynamic";
 
+import { chartPalette } from "@/lib/theme/colors";
 import {
   elevationLightTokens,
   elevationTokens,
@@ -21,15 +22,9 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }) as any;
 
-const CONTINENT_COLORS = [
-  "#1565C0",
-  "#0288D1",
-  "#00897B",
-  "#558B2F",
-  "#F57F17",
-  "#6A1B9A",
-  "#AD1457",
-];
+// Same canonical series palette as every other chart (via ApexChartWrapper) —
+// a bespoke rainbow here made this donut look like a different product.
+const CONTINENT_COLORS = [...chartPalette];
 
 interface ContinentBreakdownProps {
   continents: ContinentData[];
