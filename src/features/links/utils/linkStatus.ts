@@ -26,9 +26,11 @@ export function getResolvedStatusColor(
   return resolvePaletteColor(theme, STATUS_MAP[status].color);
 }
 
+// "inactive" is a user choice, not a failure — keep it neutral so red stays
+// reserved for states that need attention (expired).
 export const STATUS_MAP: Record<LinkStatus, { color: string }> = {
   active: { color: "success.main" },
-  inactive: { color: "error.main" },
+  inactive: { color: "text.secondary" },
   scheduled: { color: "warning.main" },
   expired: { color: "error.main" },
 };

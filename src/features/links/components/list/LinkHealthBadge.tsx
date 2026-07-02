@@ -27,6 +27,12 @@ interface LinkHealthBadgeProps {
   health?: LinkHealth | null;
 }
 
+/**
+ * Destination-health badge for link cards.
+ *
+ * Renders only when the destination is known to be broken — "ok"/"unknown"
+ * carry no actionable signal and would just add noise to every card.
+ */
 export function LinkHealthBadge({ health }: LinkHealthBadgeProps) {
   const { t, i18n } = useTranslation("links");
   const dateLocale = i18n.language === "pt-BR" ? ptBR : enUS;
@@ -34,6 +40,10 @@ export function LinkHealthBadge({ health }: LinkHealthBadgeProps) {
   const status: LinkHealthStatus = health?.status ?? "unknown";
   const color = HEALTH_COLORS[status];
   const label = t(HEALTH_LABEL_KEYS[status]);
+
+  if (status !== "error") {
+    return null;
+  }
 
   const tooltipContent = (
     <Box>

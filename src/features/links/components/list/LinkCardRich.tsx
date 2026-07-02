@@ -166,20 +166,22 @@ export function LinkCardRich({
           >
             {link.title || link.slug || link.custom_slug || t("list.noTitle")}
           </Typography>
-          <Chip
-            size="small"
-            label={statusLabel}
-            sx={{
-              height: 20,
-              flexShrink: 0,
-              fontSize: "0.625rem",
-              fontWeight: 500,
-              bgcolor: alpha(statusColorValue, 0.12),
-              color: statusColorKey,
-              border: `1px solid ${alpha(statusColorValue, 0.22)}`,
-              "& .MuiChip-label": { px: 0.75 },
-            }}
-          />
+          {status !== "active" ? (
+            <Chip
+              size="small"
+              label={statusLabel}
+              sx={{
+                height: 20,
+                flexShrink: 0,
+                fontSize: "0.625rem",
+                fontWeight: 500,
+                bgcolor: alpha(statusColorValue, 0.12),
+                color: statusColorKey,
+                border: `1px solid ${alpha(statusColorValue, 0.22)}`,
+                "& .MuiChip-label": { px: 0.75 },
+              }}
+            />
+          ) : null}
           <Box
             onClick={(e) => e.stopPropagation()}
             sx={{ flexShrink: 0, ml: 0.25 }}

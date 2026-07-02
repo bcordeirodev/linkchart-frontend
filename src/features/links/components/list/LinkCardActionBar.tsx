@@ -7,11 +7,7 @@ import { useTranslation } from "react-i18next";
 import type { KeyboardEvent, MouseEvent } from "react";
 
 import useClipboard from "@/hooks/useClipboard";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import { getLinksBorderColor } from "./linksPanelStyles";
 
 import type { SxProps, Theme } from "@mui/material";
@@ -50,11 +46,8 @@ export function LinkCardActionBar({
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
-  const primaryDark = theme.palette.primary.dark;
-  const primaryLight = theme.palette.primary.light;
   const success = theme.palette.success.main;
   const successDark = theme.palette.success.dark;
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
   const { t } = useTranslation("links");
   const { copied, copy } = useClipboard({ timeout: 1500 });
 
@@ -65,16 +58,23 @@ export function LinkCardActionBar({
     copy(shortUrl);
   };
 
-  const copyFg = isDark ? theme.palette.common.white : primaryDark;
-  const copyBgIdle = isDark ? alpha(primaryLight, 0.08) : alpha(primary, 0.05);
+  // Quiet-by-default copy strip: neutral at rest, green only while "Copied".
+  const copyLabelFg = copied
+    ? isDark
+      ? theme.palette.success.light
+      : successDark
+    : theme.palette.text.secondary;
+  const copyBgIdle = isDark
+    ? alpha(theme.palette.common.white, 0.03)
+    : alpha(theme.palette.common.black, 0.025);
   const copyBgCopied = isDark ? alpha(success, 0.1) : alpha(success, 0.06);
-  const idleCopyShadow = isDark ? elevation.xs : elevationLightTokens.xs;
   const copyBorderIdle = copied
     ? alpha(successDark, isDark ? 0.46 : 0.36)
-    : alpha(primaryDark, isDark ? 0.42 : 0.3);
+    : getLinksBorderColor(theme);
   const copyBorderHover = copied
     ? alpha(successDark, isDark ? 0.56 : 0.42)
-    : alpha(primaryDark, isDark ? 0.5 : 0.36);
+    : alpha(theme.palette.text.primary, isDark ? 0.22 : 0.18);
+
   return (
     <Stack
       direction="row"
@@ -94,15 +94,15 @@ export function LinkCardActionBar({
       <Tooltip title={copied ? t("actions.copySuccess") : shortUrl}>
         <Button
           variant="outlined"
-          color={copied ? "success" : "primary"}
+          color={copied ? "success" : "inherit"}
           fullWidth
           aria-label={t("actions.copyLink")}
           onClick={handleCopy}
           startIcon={
             copied ? (
-              <Check size={15} strokeWidth={2.5} color={copyFg} />
+              <Check size={15} strokeWidth={2.5} color={copyLabelFg} />
             ) : (
-              <Copy size={15} strokeWidth={2} color={copyFg} />
+              <Copy size={15} strokeWidth={2} color={copyLabelFg} />
             )
           }
           sx={{
@@ -112,30 +112,28 @@ export function LinkCardActionBar({
               analyticsAccess === "card" ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
             minHeight:
               analyticsAccess === "card" ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
-            borderRadius: `${radiusTokens.md}px`,
+            borderRadius: `${radiusTokens.sm}px`,
             textTransform: "none",
             justifyContent: "flex-start",
             gap: 1.25,
             px: 1.5,
             py: 0,
-            border: "2px solid",
+            border: "1px solid",
             borderColor: copyBorderIdle,
             bgcolor: copied ? copyBgCopied : copyBgIdle,
-            boxShadow: copied
-              ? `0 1px 4px ${alpha(success, 0.2)}`
-              : idleCopyShadow,
+            boxShadow: "none",
             "& .MuiButton-startIcon": {
               margin: 0,
               mr: 0.625,
-              color: copyFg,
+              color: copyLabelFg,
             },
             "&:hover": {
-              border: "2px solid",
+              border: "1px solid",
               borderColor: copyBorderHover,
               bgcolor: copied
                 ? alpha(success, isDark ? 0.14 : 0.08)
-                : alpha(primary, isDark ? 0.14 : 0.08),
-              boxShadow: isDark ? elevation.sm : elevationLightTokens.sm,
+                : theme.palette.action.hover,
+              boxShadow: "none",
             },
           }}
         >
@@ -155,9 +153,7 @@ export function LinkCardActionBar({
               fontVariantNumeric: "tabular-nums",
               fontFeatureSettings: '"tnum"',
               fontWeight: 500,
-              color: copied
-                ? alpha(copyFg, 0.92)
-                : alpha(theme.palette.text.primary, isDark ? 0.88 : 0.82),
+              color: alpha(theme.palette.text.primary, isDark ? 0.88 : 0.82),
             }}
           >
             {displayUrl}
@@ -170,7 +166,7 @@ export function LinkCardActionBar({
               lineHeight: 1.25,
               letterSpacing: "0.02em",
               fontWeight: 600,
-              color: copyFg,
+              color: copyLabelFg,
             }}
           >
             {copied ? t("actions.copySuccess") : t("actions.copy")}
@@ -189,8 +185,9 @@ export function LinkCardActionBar({
             }}
           >
             <Button
-              variant="outlined"
+              variant="contained"
               color="primary"
+              disableElevation
               startIcon={<BarChart3 size={14} strokeWidth={2} />}
               endIcon={<ChevronRight size={14} strokeWidth={2.5} />}
               onClick={(e) => {
@@ -206,7 +203,7 @@ export function LinkCardActionBar({
                   sm: ANALYTICS_MIN_WIDTH.sm,
                 },
                 boxSizing: "border-box",
-                borderRadius: `${radiusTokens.md}px`,
+                borderRadius: `${radiusTokens.sm}px`,
                 px: { xs: 1.5, sm: 2 },
                 py: 0,
                 fontSize: "0.875rem",
@@ -215,11 +212,8 @@ export function LinkCardActionBar({
                 textTransform: "none",
                 lineHeight: 1.2,
                 whiteSpace: "nowrap",
-                border: "2px solid",
-                borderColor: alpha(primaryDark, isDark ? 0.5 : 0.32),
                 bgcolor: isDark ? alpha(primary, 0.58) : alpha(primary, 0.88),
                 color: alpha(theme.palette.common.white, 0.96),
-                boxShadow: isDark ? elevation.xs : elevationLightTokens.xs,
                 "& .MuiButton-startIcon": {
                   margin: 0,
                   mr: 0.5,
@@ -231,9 +225,9 @@ export function LinkCardActionBar({
                   display: { xs: "none", sm: "inherit" },
                 },
                 "&:hover": {
-                  borderColor: alpha(primaryDark, isDark ? 0.62 : 0.42),
-                  bgcolor: isDark ? alpha(primary, 0.68) : primaryDark,
-                  boxShadow: isDark ? elevation.sm : elevationLightTokens.sm,
+                  bgcolor: isDark
+                    ? alpha(primary, 0.68)
+                    : theme.palette.primary.dark,
                 },
               }}
             >

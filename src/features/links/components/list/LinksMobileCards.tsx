@@ -162,20 +162,22 @@ const LinkMobileCard = memo(
             >
               {link.title || t("list.noTitle")}
             </Typography>
-            <Chip
-              size="small"
-              label={statusLabel}
-              sx={{
-                height: 20,
-                fontSize: "0.625rem",
-                fontWeight: 500,
-                flexShrink: 0,
-                bgcolor: alpha(statusColorValue, 0.12),
-                color: statusColorKey,
-                border: `1px solid ${alpha(statusColorValue, 0.22)}`,
-                "& .MuiChip-label": { px: 0.75 },
-              }}
-            />
+            {linkStatus !== "active" ? (
+              <Chip
+                size="small"
+                label={statusLabel}
+                sx={{
+                  height: 20,
+                  fontSize: "0.625rem",
+                  fontWeight: 500,
+                  flexShrink: 0,
+                  bgcolor: alpha(statusColorValue, 0.12),
+                  color: statusColorKey,
+                  border: `1px solid ${alpha(statusColorValue, 0.22)}`,
+                  "& .MuiChip-label": { px: 0.75 },
+                }}
+              />
+            ) : null}
             <Box
               onClick={(e) => e.stopPropagation()}
               sx={{ flexShrink: 0, display: "inline-flex" }}
@@ -264,7 +266,7 @@ export const LinksMobileCards = memo(
           {[...Array(3)].map((_, index) => (
             <Card
               key={index}
-              sx={{ mb: 2, borderRadius: `${radiusTokens.lg}px` }}
+              sx={{ mb: 2, borderRadius: `${radiusTokens.md}px` }}
             >
               <CardContent sx={{ p: 3 }}>
                 <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>

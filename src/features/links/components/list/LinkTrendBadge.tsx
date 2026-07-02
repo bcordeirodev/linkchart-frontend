@@ -48,11 +48,9 @@ export function LinkTrendBadge({
   const { percent_change, current } = trend;
   const isPositive = percent_change > 0;
   const isNeutral = percent_change === 0;
-  const color = isPositive
-    ? "success.main"
-    : isNeutral
-      ? "text.secondary"
-      : "error.main";
+  // A drop in clicks is information, not a failure — declines stay neutral so
+  // red remains reserved for real problems (broken destination, limit hit).
+  const color = isPositive ? "success.main" : "text.secondary";
   const Icon = isPositive ? TrendingUp : isNeutral ? Minus : TrendingDown;
   const sign = isPositive ? "+" : "";
 

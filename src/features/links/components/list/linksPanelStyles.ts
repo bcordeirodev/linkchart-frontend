@@ -53,17 +53,28 @@ export function getLinksPanelSx(theme: Theme) {
   return {
     backgroundColor: theme.palette.background.paper,
     backgroundImage: getLinksTopLightGradient(theme),
-    borderRadius: `${radiusTokens.lg}px`,
+    borderRadius: `${radiusTokens.md}px`,
     border: `1px solid ${borderColor}`,
     boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme)}`,
   };
 }
 
-/** Quick-create panel — metric base with a thicker neutral border. */
+/**
+ * Quick-create panel — same shell as the browse panel plus a faint primary
+ * wash from the top. It quietly marks the page's action zone without adding
+ * another loud element.
+ */
 export function getLinksQuickCreatePanelSx(theme: Theme) {
+  const isDark = theme.palette.mode === "dark";
+  const primary = theme.palette.primary.main;
+
   return {
     ...getLinksPanelSx(theme),
-    border: `2px solid ${getLinksBorderColor(theme)}`,
+    backgroundImage: `linear-gradient(180deg, ${alpha(
+      primary,
+      isDark ? 0.07 : 0.04,
+    )} 0%, ${alpha(primary, 0)} 55%)`,
+    borderColor: alpha(primary, isDark ? 0.18 : 0.14),
     boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme, "hover")}`,
   };
 }
@@ -105,12 +116,12 @@ export function getLinkCardShellSx(theme: Theme) {
   const isDark = theme.palette.mode === "dark";
 
   return {
-    borderRadius: `${radiusTokens.lg}px`,
+    borderRadius: `${radiusTokens.md}px`,
     border: `1px solid ${getLinksBorderColor(theme)}`,
     overflow: "hidden" as const,
     backgroundColor: isDark
-      ? alpha(theme.palette.common.black, 0.28)
-      : alpha(theme.palette.common.black, 0.035),
+      ? alpha(theme.palette.common.black, 0.14)
+      : alpha(theme.palette.common.black, 0.02),
     backgroundImage: getLinksTopLightGradient(theme),
     boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme)}`,
     transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}, border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
@@ -252,7 +263,7 @@ export function getLinkCardContentSx(density: LinkCardDensity) {
 /** Subtle inset for filter toolbar inside a links panel. */
 export function getLinksFilterInsetSx(theme: Theme) {
   return {
-    borderRadius: `${radiusTokens.md}px`,
+    borderRadius: `${radiusTokens.sm}px`,
     border: `1px solid ${getLinksBorderColor(theme)}`,
     backgroundColor:
       theme.palette.mode === "dark"

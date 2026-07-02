@@ -1,6 +1,8 @@
 "use client";
 
-import { Box, Typography } from "@mui/material";
+import { alpha, Box, Typography, useTheme } from "@mui/material";
+
+import { radiusTokens } from "@/lib/theme/designSystem";
 
 import type { ReactNode } from "react";
 import type { SxProps, Theme } from "@mui/material";
@@ -33,8 +35,11 @@ export function PageSectionHeading({
   sx,
   descriptionSx,
 }: PageSectionHeadingProps) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const isPageTitle = titleVariant === "page";
-  const resolvedIconSize = iconSize ?? (isPageTitle ? 22 : 18);
+  const resolvedIconSize = iconSize ?? (isPageTitle ? 20 : 18);
+  const primary = theme.palette.primary.main;
 
   return (
     <Box
@@ -48,54 +53,91 @@ export function PageSectionHeading({
         ...sx,
       }}
     >
-      <Box sx={{ minWidth: 0, flex: 1 }}>
-        <Typography
-          variant="h6"
-          component={isPageTitle ? "h1" : "h2"}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1.25,
-            fontWeight: 600,
-            fontSize: isPageTitle
-              ? { xs: "1.375rem", sm: "1.5rem" }
-              : { xs: "1.0625rem", sm: "1.125rem" },
-            lineHeight: isPageTitle ? 1.3 : 1.35,
-            mb: description ? 0.375 : 0,
-          }}
-        >
-          {icon ? (
-            <Box
-              component="span"
-              sx={{
-                display: "inline-flex",
-                color: "text.secondary",
-                flexShrink: 0,
-                "& svg": {
-                  width: resolvedIconSize,
-                  height: resolvedIconSize,
-                },
-              }}
-            >
-              {icon}
-            </Box>
-          ) : null}
-          {title}
-        </Typography>
-        {description ? (
-          <Typography
-            variant="caption"
-            color="text.secondary"
+      <Box
+        sx={{
+          minWidth: 0,
+          flex: 1,
+          display: isPageTitle ? "flex" : "block",
+          alignItems: "center",
+          gap: 1.5,
+        }}
+      >
+        {/* Page titles carry the icon in a tinted chip — a single quiet accent
+            that anchors the page identity without adding another loud color. */}
+        {icon && isPageTitle ? (
+          <Box
+            component="span"
+            aria-hidden
             sx={{
-              fontSize: "0.75rem",
-              lineHeight: 1.4,
-              display: "block",
-              ...descriptionSx,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 40,
+              height: 40,
+              flexShrink: 0,
+              borderRadius: `${radiusTokens.md}px`,
+              bgcolor: alpha(primary, isDark ? 0.14 : 0.08),
+              border: `1px solid ${alpha(primary, isDark ? 0.24 : 0.16)}`,
+              color: isDark ? theme.palette.primary.light : primary,
+              "& svg": {
+                width: resolvedIconSize,
+                height: resolvedIconSize,
+              },
             }}
           >
-            {description}
-          </Typography>
+            {icon}
+          </Box>
         ) : null}
+        <Box sx={{ minWidth: 0 }}>
+          <Typography
+            variant="h6"
+            component={isPageTitle ? "h1" : "h2"}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.25,
+              fontWeight: isPageTitle ? 700 : 600,
+              letterSpacing: isPageTitle ? "-0.01em" : 0,
+              fontSize: isPageTitle
+                ? { xs: "1.375rem", sm: "1.5rem" }
+                : { xs: "1.0625rem", sm: "1.125rem" },
+              lineHeight: isPageTitle ? 1.3 : 1.35,
+              mb: description ? 0.375 : 0,
+            }}
+          >
+            {icon && !isPageTitle ? (
+              <Box
+                component="span"
+                sx={{
+                  display: "inline-flex",
+                  color: "text.secondary",
+                  flexShrink: 0,
+                  "& svg": {
+                    width: resolvedIconSize,
+                    height: resolvedIconSize,
+                  },
+                }}
+              >
+                {icon}
+              </Box>
+            ) : null}
+            {title}
+          </Typography>
+          {description ? (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{
+                fontSize: isPageTitle ? "0.8125rem" : "0.75rem",
+                lineHeight: 1.4,
+                display: "block",
+                ...descriptionSx,
+              }}
+            >
+              {description}
+            </Typography>
+          ) : null}
+        </Box>
       </Box>
       {action ? <Box sx={{ flexShrink: 0 }}>{action}</Box> : null}
     </Box>

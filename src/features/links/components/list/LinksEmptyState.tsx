@@ -47,7 +47,7 @@ export function LinksEmptyState({
         textAlign: "center",
         backgroundColor: theme.palette.background.paper,
         border: `1px dashed ${theme.palette.divider}`,
-        borderRadius: `${radiusTokens.lg}px`,
+        borderRadius: `${radiusTokens.md}px`,
         transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
       }}
     >

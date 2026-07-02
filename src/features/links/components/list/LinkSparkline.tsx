@@ -1,30 +1,30 @@
 "use client";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useMemo } from "react";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type { SparklinePoint } from "@/types";
 
 interface LinkSparklineProps {
   data: SparklinePoint[];
-  trend?: number;
   height?: number;
   width?: number | string;
 }
 
+/**
+ * Tiny click-history area chart for a link card.
+ *
+ * Rendered in a single muted hue regardless of trend direction — the curve
+ * shape already tells the story, and conditional red/green made quiet links
+ * read as broken.
+ */
 export function LinkSparkline({
   data,
-  trend = 0,
   height = 32,
   width = 120,
 }: LinkSparklineProps) {
   const theme = useTheme();
 
-  const color =
-    trend > 0
-      ? theme.palette.success.main
-      : trend < 0
-        ? theme.palette.error.main
-        : theme.palette.text.secondary;
+  const color = alpha(theme.palette.primary.main, 0.65);
 
   const series = useMemo(() => [{ data: data.map((d) => d.clicks) }], [data]);
 
