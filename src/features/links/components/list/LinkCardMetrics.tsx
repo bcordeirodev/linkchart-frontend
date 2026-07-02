@@ -36,10 +36,20 @@ import {
 } from "./linksPanelStyles";
 
 /**
- * Minimum absolute percent-change required to surface the trend badge on the
- * mobile (compact) card. Keeps the card quiet for noise-level movement.
+ * Minimum absolute percent-change required to surface the trend badge.
+ * Applies to both variants — links with no recent activity stay quiet instead
+ * of showing an alarming −100%.
  */
-const MOBILE_TREND_MIN_ABS_PERCENT = 5;
+const TREND_MIN_ABS_PERCENT = 5;
+
+/** Whether the trend carries a real signal worth surfacing on the card. */
+function hasTrendSignal(trend?: LinkMeta["trend"]): boolean {
+  return (
+    !!trend &&
+    trend.current > 0 &&
+    Math.abs(trend.percent_change) >= TREND_MIN_ABS_PERCENT
+  );
+}
 
 // ─── Local helpers ──────────────────────────────────────────────────────────
 
@@ -164,15 +174,12 @@ export function LinkCardMetrics({
       <Box sx={{ ...getLinkCardMetricsRowSx(theme), ...sx }}>
         <MetricsRow dividerSx={dividerSx}>
           {meta?.sparkline?.length ? (
-            <LinkSparkline
-              data={meta.sparkline}
-              trend={meta.trend?.percent_change}
-              height={20}
-              width={72}
-            />
+            <LinkSparkline data={meta.sparkline} height={20} width={72} />
           ) : null}
 
-          <LinkTrendBadge trend={meta?.trend} compact />
+          {hasTrendSignal(meta?.trend) ? (
+            <LinkTrendBadge trend={meta!.trend} compact />
+          ) : null}
 
           <InlineMetric label={t("metrics.lastClickShort")}>
             <Typography
@@ -188,7 +195,9 @@ export function LinkCardMetrics({
             </Typography>
           </InlineMetric>
 
-          <LinkHealthBadge health={meta?.health} />
+          {meta?.health?.status === "error" ? (
+            <LinkHealthBadge health={meta.health} />
+          ) : null}
 
           <InlineMetric label={t("metrics.clicksShort")}>
             <Typography
@@ -205,7 +214,11 @@ export function LinkCardMetrics({
               <Typography
                 variant="caption"
                 component="span"
-                sx={linkCardMetricValueSx}
+                sx={{
+                  ...linkCardMetricValueSx,
+                  color: "text.secondary",
+                  fontWeight: 500,
+                }}
               >
                 {createdLabel}
               </Typography>
@@ -240,14 +253,10 @@ export function LinkCardMetrics({
   }
 
   // ── Compact (mobile) segments ──────────────────────────────────────────────
-  // Clean by default: clicks + last-click always; trend and health only when
-  // they carry a real signal. Sparkline and created-date are desktop-only.
-  const showTrend =
-    !!meta?.trend &&
-    meta.trend.current > 0 &&
-    Math.abs(meta.trend.percent_change) >= MOBILE_TREND_MIN_ABS_PERCENT;
-
-  const showHealthError = meta?.health?.status === "error";
+  // Clean by default: clicks + last-click always; trend only when it carries a
+  // real signal (health gates itself). Sparkline and created-date are
+  // desktop-only.
+  const showTrend = hasTrendSignal(meta?.trend);
 
   return (
     <Box sx={{ ...getLinkCardMetricsRowSx(theme), mt: 0.75, pt: 0.75, ...sx }}>
@@ -280,7 +289,9 @@ export function LinkCardMetrics({
 
         {showTrend ? <LinkTrendBadge trend={meta!.trend} compact /> : null}
 
-        {showHealthError ? <LinkHealthBadge health={meta?.health} /> : null}
+        {meta?.health?.status === "error" ? (
+          <LinkHealthBadge health={meta.health} />
+        ) : null}
       </MetricsRow>
     </Box>
   );
