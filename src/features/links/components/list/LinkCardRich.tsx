@@ -168,63 +168,29 @@ export function LinkCardRich({
             <LinkIdentityThumb preview={meta?.preview} theme={theme} />
           )}
 
+          {/* Tight title+URL block — chip and menu live outside it so their
+              taller hit areas can't push the URL below the thumb's edge. */}
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={1}
-              sx={{ minWidth: 0 }}
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 600,
+                fontSize: "0.875rem",
+                lineHeight: 1.3,
+                minWidth: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
             >
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: "0.875rem",
-                  flex: 1,
-                  minWidth: 0,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {link.title ||
-                  link.slug ||
-                  link.custom_slug ||
-                  t("list.noTitle")}
-              </Typography>
-              {status !== "active" ? (
-                <Chip
-                  size="small"
-                  label={statusLabel}
-                  sx={{
-                    height: 20,
-                    flexShrink: 0,
-                    fontSize: "0.625rem",
-                    fontWeight: 500,
-                    bgcolor: alpha(statusColorValue, 0.12),
-                    color: statusColorKey,
-                    border: `1px solid ${alpha(statusColorValue, 0.22)}`,
-                    "& .MuiChip-label": { px: 0.75 },
-                  }}
-                />
-              ) : null}
-              <Box
-                onClick={(e) => e.stopPropagation()}
-                sx={{ flexShrink: 0, ml: 0.25 }}
-              >
-                <LinkActionsMenu
-                  onEdit={() => navigate(`/links/edit/${link.id}`)}
-                  onQR={() => navigate(`/links/qr/${link.id}`)}
-                  onDelete={handleDelete}
-                />
-              </Box>
-            </Stack>
+              {link.title || link.slug || link.custom_slug || t("list.noTitle")}
+            </Typography>
 
             <Stack
               direction="row"
               alignItems="center"
               spacing={0.75}
-              sx={{ mt: isCompact ? 0.25 : 0.375, minWidth: 0 }}
+              sx={{ mt: 0.25, minWidth: 0 }}
             >
               <ExternalLink
                 size={12}
@@ -247,6 +213,33 @@ export function LinkCardRich({
                 {link.original_url}
               </Typography>
             </Stack>
+          </Box>
+
+          {status !== "active" ? (
+            <Chip
+              size="small"
+              label={statusLabel}
+              sx={{
+                height: 20,
+                flexShrink: 0,
+                fontSize: "0.625rem",
+                fontWeight: 500,
+                bgcolor: alpha(statusColorValue, 0.12),
+                color: statusColorKey,
+                border: `1px solid ${alpha(statusColorValue, 0.22)}`,
+                "& .MuiChip-label": { px: 0.75 },
+              }}
+            />
+          ) : null}
+          <Box
+            onClick={(e) => e.stopPropagation()}
+            sx={{ flexShrink: 0, ml: 0.25 }}
+          >
+            <LinkActionsMenu
+              onEdit={() => navigate(`/links/edit/${link.id}`)}
+              onQR={() => navigate(`/links/qr/${link.id}`)}
+              onDelete={handleDelete}
+            />
           </Box>
         </Stack>
 
