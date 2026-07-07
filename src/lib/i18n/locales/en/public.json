@@ -1,7 +1,7 @@
 {
   "shorter": {
-    "heroTitle": "Free URL Shortener with Real-Time Analytics",
-    "heroSubtitle": "Free URL shortener with real-time analytics, free custom subdomain and QR code.",
+    "heroTitle": "Free URL Shortener",
+    "heroSubtitle": "Shorten URLs with <b>real-time analytics</b>, a <b>free custom subdomain</b> and QR code.",
     "linkCreated": "Link created successfully",
     "freeNoSignup": "100% free · no signup required",
     "readyToShare": "Ready to share!",
@@ -21,6 +21,7 @@
     "shareButton": "Share",
     "createAnother": "Shorten another link",
     "viewAnalytics": "View analytics",
+    "viewAnalyticsTooltip": "See how many people clicked, where they came from and on which device — in real time, for free.",
     "successCopiedHint": "We've copied it for you — just paste it anywhere.",
     "statusLive": "Active · tracking clicks",
     "qrLabel": "QR Code",

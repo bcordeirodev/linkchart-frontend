@@ -1,7 +1,7 @@
 {
   "shorter": {
-    "heroTitle": "Encurtador de Link Gratuito com Analytics em Tempo Real",
-    "heroSubtitle": "Encurtador de URL gratuito com analytics em tempo real, subdomínio personalizado grátis e QR Code.",
+    "heroTitle": "Encurtador de Link Gratuito",
+    "heroSubtitle": "Encurte URLs com <b>analytics em tempo real</b>, <b>subdomínio personalizado grátis</b> e QR Code.",
     "linkCreated": "Link criado com sucesso",
     "freeNoSignup": "100% gratuito · sem cadastro",
     "readyToShare": "Pronto para compartilhar!",
@@ -21,6 +21,7 @@
     "shareButton": "Compartilhar",
     "createAnother": "Encurtar outro link",
     "viewAnalytics": "Ver analytics",
+    "viewAnalyticsTooltip": "Veja quantas pessoas clicaram, de onde vieram e em qual dispositivo — em tempo real e de graça.",
     "successCopiedHint": "Já copiamos para você — é só colar onde quiser.",
     "statusLive": "Ativo · rastreando cliques",
     "qrLabel": "QR Code",

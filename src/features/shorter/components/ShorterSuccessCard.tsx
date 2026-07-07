@@ -1,6 +1,14 @@
 "use client";
 
-import { Box, Button, Link, Stack, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Link,
+  Stack,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { alpha, lighten } from "@mui/material/styles";
 import { BarChart3, Check, Copy, Globe, RotateCcw, Share2 } from "lucide-react";
 import { useEffect, useId, useState } from "react";
@@ -17,7 +25,8 @@ import {
   publicHairline,
 } from "@/lib/theme/publicPageStyles";
 import {
-  ANALYTICS_HUE,
+  ANALYTICS_GRADIENT_FROM,
+  ANALYTICS_GRADIENT_TO,
   RESTART_HUE,
   SHARE_HUE,
   WHATSAPP_GREEN,
@@ -148,6 +157,21 @@ export function ShorterSuccessCard({
     ...solidActionSx(base, lighten(base, 0.1)),
     flex: "0 0 auto",
   });
+
+  /**
+   * Blue→violet gradient fill for the analytics action — the only gradient in
+   * the row, so the headline feature reads one notch above its solid siblings.
+   */
+  const analyticsActionSx = {
+    ...colorActionSx(ANALYTICS_GRADIENT_FROM),
+    backgroundImage: `linear-gradient(90deg, ${ANALYTICS_GRADIENT_FROM}, ${ANALYTICS_GRADIENT_TO})`,
+    // Span the transparent 1px border too — with the default padding-box
+    // origin the gradient tiles into the border and its blue end bleeds
+    // into the left edge.
+    backgroundOrigin: "border-box",
+    transition: "filter 160ms ease, transform 120ms ease",
+    "&:hover": { filter: "brightness(1.12)" },
+  };
 
   /** Squares off an action into an icon-only button (spread after a base sx). */
   const iconSquareSx = {
@@ -327,13 +351,15 @@ export function ShorterSuccessCard({
                   ? t("publicAnalytics.linkInfo.copied")
                   : t("publicAnalytics.linkInfo.copy")}
               </Button>
-              <Button
-                onClick={handleViewAnalytics}
-                startIcon={<BarChart3 {...ICON_MD} aria-hidden />}
-                sx={colorActionSx(ANALYTICS_HUE)}
-              >
-                {t("shorter.viewAnalytics")}
-              </Button>
+              <Tooltip title={t("shorter.viewAnalyticsTooltip")} arrow>
+                <Button
+                  onClick={handleViewAnalytics}
+                  startIcon={<BarChart3 {...ICON_MD} aria-hidden />}
+                  sx={analyticsActionSx}
+                >
+                  {t("shorter.viewAnalytics")}
+                </Button>
+              </Tooltip>
               <Button
                 onClick={onReset}
                 startIcon={<RotateCcw {...ICON_MD} aria-hidden />}
