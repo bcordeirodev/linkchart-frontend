@@ -1,7 +1,8 @@
 "use client";
 import { Box, Typography, useTheme } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { m } from "framer-motion";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import { getPublicDisplaySx } from "@/lib/theme/publicPageStyles";
 
@@ -65,9 +66,24 @@ export function ShorterHero({ state }: ShorterHeroProps) {
             lineHeight: 1.65,
             maxWidth: 560,
             mx: "auto",
+            "& strong": {
+              fontWeight: 700,
+              color: alpha(
+                theme.palette.text.primary,
+                theme.palette.mode === "dark" ? 0.92 : 0.85,
+              ),
+            },
           }}
         >
-          {isSuccess ? t("shorter.successSubtitle") : t("shorter.heroSubtitle")}
+          {isSuccess ? (
+            t("shorter.successSubtitle")
+          ) : (
+            <Trans
+              i18nKey="shorter.heroSubtitle"
+              ns="public"
+              components={{ b: <strong /> }}
+            />
+          )}
         </Typography>
       </m.div>
     </Box>
