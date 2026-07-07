@@ -10,6 +10,7 @@ import {
 import { getAccessToken, useUser } from "@auth0/nextjs-auth0/client";
 
 import { ApiError } from "@/lib/api/client";
+import { trackAdConversion } from "@/lib/analytics/adConversions";
 import { authService } from "@/services";
 
 import type { LoginResponse, User, UserResponse } from "@/types";
@@ -137,6 +138,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const converted = convertUserDBToUser(loginResponse.user);
       if (pictureUrl) converted.photoURL = pictureUrl;
       setUser(converted);
+      // Fire the signup conversion exactly once, on the exchange that actually
+      // created the account. Returning users re-minting an expired cookie come
+      // back with `is_new` false, so the event never double-counts.
+      if (loginResponse.is_new) trackAdConversion("signup");
       // The backend JWT is NOT persisted in localStorage — it is delivered as
       // an httpOnly cookie by /auth/auth0-exchange and sent automatically on
       // every API call (XSS-safe). Only the non-sensitive user shape is cached

@@ -2,6 +2,7 @@
 import { useCallback, useState } from "react";
 
 import { publicLinkService } from "@/services/link-public.service";
+import { trackAdConversion } from "@/lib/analytics/adConversions";
 import { i18n } from "@/lib/i18n";
 
 import type { PublicLinkResponse } from "@/services/link-public.service";
@@ -62,6 +63,9 @@ export function usePublicURLShortener(): UsePublicURLShortenerReturn {
         });
 
         setShortened(result);
+        // Activation event: an (often ad-sourced) visitor shortened a link.
+        // Reported to Google Ads as the primary campaign conversion.
+        trackAdConversion("shorten");
         return result;
       } catch (err: unknown) {
         const errorMessage =
