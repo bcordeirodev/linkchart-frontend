@@ -43,8 +43,12 @@ export default function useClipboard(
       } catch (error) {
         const err =
           error instanceof Error ? error : new Error("Erro ao copiar");
+        // A blocked clipboard (NotAllowedError: permission denied, no user
+        // activation, insecure context) is an expected browser condition, not
+        // an application fault. Surface it through onError so the UI can react,
+        // but do NOT console.error it — Faro captures console.error as
+        // kind=exception, which would pollute RUM error metrics with noise.
         onError?.(err);
-        console.error("Erro ao copiar para clipboard:", err);
       }
     },
     [timeout, onSuccess, onError],
