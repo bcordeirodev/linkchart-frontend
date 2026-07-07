@@ -59,6 +59,12 @@ export interface LoginResponse {
   token: string;
   /** Dados do usuário */
   user: UserResponse;
+  /**
+   * `true` apenas quando esta requisição criou uma conta nova (primeiro login
+   * Auth0). Usado para disparar a conversão de cadastro uma única vez; ausente
+   * ou `false` em logins recorrentes.
+   */
+  is_new?: boolean;
 }
 
 /**
