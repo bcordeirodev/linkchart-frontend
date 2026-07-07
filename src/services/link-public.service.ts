@@ -174,26 +174,47 @@ class PublicLinkService extends BaseService {
    * This method exists for non-React code paths.
    */
   async copyToClipboard(text: string): Promise<boolean> {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
+    // Preferred async Clipboard API — requires a secure context and clipboard
+    // permission. When it is blocked (NotAllowedError: no user activation,
+    // permission denied, insecure context) fall through to the execCommand
+    // path instead of surfacing an error: a denied clipboard is an expected
+    // browser condition, not an application fault, and console.error here is
+    // captured by Faro as kind=exception, polluting RUM error metrics.
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
         await navigator.clipboard.writeText(text);
         return true;
-      } else {
-        // Fallback para navegadores sem suporte
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.position = "fixed";
-        textArea.style.left = "-999999px";
-        textArea.style.top = "-999999px";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        const result = document.execCommand("copy");
-        textArea.remove();
-        return result;
+      } catch {
+        // Fall through to the legacy fallback below.
       }
-    } catch (error) {
-      console.error("Erro ao copiar para área de transferência:", error);
+    }
+
+    return this.legacyCopy(text);
+  }
+
+  /**
+   * Legacy clipboard copy via a hidden textarea and `document.execCommand`.
+   *
+   * Fallback for non-secure contexts and browsers where the async Clipboard
+   * API is unavailable or was denied.
+   *
+   * @param text - text to copy.
+   * @returns `true` when the copy command succeeded, `false` otherwise (never throws).
+   */
+  private legacyCopy(text: string): boolean {
+    try {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const result = document.execCommand("copy");
+      textArea.remove();
+      return result;
+    } catch {
       return false;
     }
   }
