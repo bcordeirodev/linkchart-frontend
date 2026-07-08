@@ -15,5 +15,11 @@ The app is mobile-first. Follow these rules in every component and PR.
 6. **Full height** uses `dvh`/`svh`, not `vh`.
 7. **Tables** on phones: hide non-essential columns or use a card fallback; never
    force `minWidth` that causes horizontal scroll.
+8. **Tap targets ≥ 44px on touch.** The theme caps buttons/icon-buttons below 44px,
+   so bump interactive controls on phones with `sx={{ width: { xs: 44 }, height: { xs: 44 } }}`
+   (icon buttons) or `minHeight: { xs: 44, sm: ... }` (buttons/chips/tabs). Wire
+   toggle labels with `FormControlLabel` so the text is part of the hit area.
+9. **No hover-only data.** Chart/map details reachable only via `onMouseEnter` are
+   dead on touch — provide a tap/selected-state readout (see `GeographicChoropleth`).
 
-CI runs `e2e/mobile-responsive.spec.ts` at 375px and fails on horizontal overflow.
+CI runs `e2e/mobile-responsive.spec.ts` at 320px and 375px and fails on horizontal overflow.
