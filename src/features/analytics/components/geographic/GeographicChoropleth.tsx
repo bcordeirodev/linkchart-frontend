@@ -373,6 +373,29 @@ export function GeographicChoropleth({
           )}
         </Box>
 
+        {/* Tap-accessible readout: on touch the hover tooltip never fires, so
+            surface the selected country's numbers here (set on tap via handleClick). */}
+        {selectedNumericId && countryMap[selectedNumericId] ? (
+          <Box
+            sx={{
+              mt: 1.5,
+              display: "flex",
+              alignItems: "baseline",
+              gap: 1,
+              flexWrap: "wrap",
+            }}
+          >
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {countryMap[selectedNumericId].data.country}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {countryMap[selectedNumericId].data.clicks.toLocaleString()}{" "}
+              {t("geographic.choropleth.clicks")} ·{" "}
+              {countryMap[selectedNumericId].percentage}%
+            </Typography>
+          </Box>
+        ) : null}
+
         {/* Gradient legend */}
         <Box
           sx={{
