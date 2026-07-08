@@ -14,6 +14,12 @@ const PUBLIC_ROUTES = [
   "/privacy",
   "/terms",
   "/support",
+  "/guia/como-ver-cliques-do-link",
+  "/guia/rastrear-link-instagram",
+  "/guia/cliques-bot-vs-humano",
+  "/comparar/bitly",
+  "/comparar/dub",
+  "/comparar/short-io",
 ];
 
 for (const route of PUBLIC_ROUTES) {
