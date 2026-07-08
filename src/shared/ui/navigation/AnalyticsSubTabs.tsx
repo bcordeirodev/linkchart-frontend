@@ -77,7 +77,8 @@ export function AnalyticsSubTabs({
             "& .MuiTabs-flexContainer": { gap: 0.5 },
             "& .MuiTab-root": {
               textTransform: "none",
-              minHeight: 36,
+              // Comfortable tap height on phones; compact on desktop.
+              minHeight: { xs: 44, md: 36 },
               minWidth: 0,
               px: 1.5,
               py: 0.75,
