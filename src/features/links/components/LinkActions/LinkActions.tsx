@@ -110,8 +110,9 @@ export function LinkActions({
       disabled={isDeleting}
       size="small"
       sx={{
-        width: 34,
-        height: 34,
+        // 44px touch target on phones; compact 34px from sm up.
+        width: { xs: 44, sm: 34 },
+        height: { xs: 44, sm: 34 },
         color: "text.secondary",
         border: `1px solid ${theme.palette.divider}`,
         borderRadius: `${theme.shape.borderRadius}px`,

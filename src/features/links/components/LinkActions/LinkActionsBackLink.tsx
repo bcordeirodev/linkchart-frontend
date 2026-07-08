@@ -32,6 +32,8 @@ export function LinkActionsBackLink() {
         gap: 0.75,
         px: 1.25,
         py: 0.625,
+        // Ensure a comfortable vertical tap target on phones.
+        minHeight: { xs: 44, sm: "auto" },
         borderRadius: `${radiusTokens.sm}px`,
         border: `1px solid ${theme.palette.divider}`,
         backgroundColor: "transparent",
