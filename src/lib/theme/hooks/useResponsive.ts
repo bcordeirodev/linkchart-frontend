@@ -12,6 +12,7 @@ import useThemeMediaQuery from "@/shared/hooks/useThemeMediaQuery";
 export interface ResponsiveConfig {
   // Breakpoints principais
   isMobile: boolean;
+  isPhone: boolean;
   isTablet: boolean;
   isDesktop: boolean;
 
@@ -66,6 +67,7 @@ export function useResponsive(): ResponsiveConfig {
 
   // Breakpoints principais
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("md"));
+  const isPhone = useThemeMediaQuery((theme) => theme.breakpoints.down("sm"));
   const isTablet = useThemeMediaQuery((theme) =>
     theme.breakpoints.between("md", "lg"),
   );
@@ -100,6 +102,7 @@ export function useResponsive(): ResponsiveConfig {
   return {
     // Breakpoints principais
     isMobile,
+    isPhone,
     isTablet,
     isDesktop,
 
