@@ -38,7 +38,7 @@ function UnauthorizedPage() {
         alignItems: "center",
         justifyContent: "center",
         p: 2,
-        minHeight: "100vh",
+        minHeight: "100dvh",
         bgcolor: "background.default",
         color: "text.primary",
       }}

@@ -70,7 +70,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
   return (
     <PublicLayout variant="shorter" chrome="minimal">
       <PublicBlobBackground />
-      <Box sx={{ position: "relative", minHeight: "100vh" }}>
+      <Box sx={{ position: "relative", minHeight: "100dvh" }}>
         <Container
           maxWidth={false}
           sx={{
