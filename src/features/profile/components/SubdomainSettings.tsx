@@ -8,7 +8,6 @@ import {
   Checkbox,
   Chip,
   CircularProgress,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
@@ -35,6 +34,7 @@ import { useTranslation } from "react-i18next";
 import { semanticDark, semanticLight } from "@/lib/theme/colors";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { ResponsiveDialog } from "@/shared/ui/feedback";
 
 import { useSubdomain } from "../hooks/useSubdomain";
 import {
@@ -520,7 +520,7 @@ export function SubdomainSettings() {
         </Stack>
       )}
 
-      <Dialog
+      <ResponsiveDialog
         open={releaseDialogOpen}
         onClose={() => setReleaseDialogOpen(false)}
       >
@@ -539,7 +539,7 @@ export function SubdomainSettings() {
             {t("subdomain.releaseDialog.confirm")}
           </Button>
         </DialogActions>
-      </Dialog>
+      </ResponsiveDialog>
     </ProfileSection>
   );
 }
