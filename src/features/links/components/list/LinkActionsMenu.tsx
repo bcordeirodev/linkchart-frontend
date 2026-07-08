@@ -50,6 +50,10 @@ export function LinkActionsMenu({
           aria-haspopup="menu"
           aria-expanded={Boolean(anchor)}
           sx={{
+            // 44px touch target on phones (this menu sits on every list card);
+            // reverts to the compact small size on larger screens.
+            width: { xs: 44, sm: "auto" },
+            height: { xs: 44, sm: "auto" },
             color: "text.secondary",
             "&:hover": { color: "text.primary", bgcolor: "action.hover" },
           }}
