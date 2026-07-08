@@ -33,13 +33,13 @@ Leaflet/`material-react-table` já cobrem o necessário. Adicionar um segundo de
 O trabalho total foi decomposto. Cada peça terá seu próprio ciclo spec → plano →
 implementação. **Ordem acordada: 0 → B → A → C → D.**
 
-| # | Sub-projeto | Foco | Status |
-|---|-------------|------|--------|
-| **0** | **Fundação** (este doc) | Utilitários responsivos compartilhados + rede de teste anti-regressão | **em design** |
-| B | Público / marketing / auth | `/shorter`, `public-analytics`, login, páginas legais | roadmap |
-| A | Layout / navegação global | Navbar, Drawer, `MainLayout`/`PublicLayout`, footer, tipografia base | roadmap |
-| C | App autenticada (links) | Lista, criar/editar, QR, `LinkActions`, profile | roadmap |
-| D | Analytics / dashboards | ApexCharts, `material-react-table`, Leaflet/simple-maps | roadmap |
+| #     | Sub-projeto                | Foco                                                                  | Status        |
+| ----- | -------------------------- | --------------------------------------------------------------------- | ------------- |
+| **0** | **Fundação** (este doc)    | Utilitários responsivos compartilhados + rede de teste anti-regressão | **em design** |
+| B     | Público / marketing / auth | `/shorter`, `public-analytics`, login, páginas legais                 | roadmap       |
+| A     | Layout / navegação global  | Navbar, Drawer, `MainLayout`/`PublicLayout`, footer, tipografia base  | roadmap       |
+| C     | App autenticada (links)    | Lista, criar/editar, QR, `LinkActions`, profile                       | roadmap       |
+| D     | Analytics / dashboards     | ApexCharts, `material-react-table`, Leaflet/simple-maps               | roadmap       |
 
 Este documento especifica **apenas a Fundação (0)**. Os demais serão specados quando chegar
 a vez de cada um.
@@ -129,7 +129,7 @@ Cada unidade é isolada, com interface clara e testável de forma independente.
   `public-analytics/[slug]` de exemplo. (Rotas autenticadas ficam para o sub-projeto C, que
   cuidará do setup de auth no teste.)
 - **Checagem extra (best-effort):** alvos de toque — botões/ícones clicáveis com caixa
-  `< 44px` geram *warning* (não falha dura na Fundação; vira falha nos sub-projetos).
+  `< 44px` geram _warning_ (não falha dura na Fundação; vira falha nos sub-projetos).
 - **Onde:** `tests/e2e/mobile-responsive.spec.ts` (ou pasta equivalente já usada pelo Playwright).
 
 #### U7 — Documento de convenção mobile-first
@@ -171,12 +171,12 @@ convenção; o teste Playwright cresce (mais rotas) a cada sub-projeto.
 
 ## 6. Riscos & mitigação
 
-| Risco | Mitigação |
-|-------|-----------|
-| Mudar `useResponsive` quebra os 98 consumidores | API pública **imutável**; só otimizar interno e **adicionar** `isPhone`. |
-| `100dvh` com suporte irregular em browsers antigos | `dvh` tem suporte amplo (2023+); manter `vh` como fallback via `@supports` se necessário. |
-| Teste Playwright "flaky" por conteúdo assíncrono | Aguardar `networkidle`/seletores estáveis antes de medir; tolerância de ~1px no overflow. |
-| `ResponsiveDialog` conflitar com transições/`keepMounted` existentes | Wrapper repassa 100% das props; migração diálogo a diálogo com verificação visual. |
+| Risco                                                                | Mitigação                                                                                 |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Mudar `useResponsive` quebra os 98 consumidores                      | API pública **imutável**; só otimizar interno e **adicionar** `isPhone`.                  |
+| `100dvh` com suporte irregular em browsers antigos                   | `dvh` tem suporte amplo (2023+); manter `vh` como fallback via `@supports` se necessário. |
+| Teste Playwright "flaky" por conteúdo assíncrono                     | Aguardar `networkidle`/seletores estáveis antes de medir; tolerância de ~1px no overflow. |
+| `ResponsiveDialog` conflitar com transições/`keepMounted` existentes | Wrapper repassa 100% das props; migração diálogo a diálogo com verificação visual.        |
 
 ---
 
