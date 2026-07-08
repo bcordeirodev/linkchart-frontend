@@ -1,6 +1,5 @@
 "use client";
 import Box from "@mui/material/Box";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   MRT_GlobalFilterTextField,
   MRT_LinearProgressBar,
@@ -10,6 +9,7 @@ import {
   MRT_ToolbarInternalButtons,
 } from "material-react-table";
 
+import { useThemeMediaQuery } from "@/shared/hooks";
 import parseFromValuesOrFunc from "@/shared/ui/data-display/utils/parseFromValuesOrFunc";
 
 import type { MRT_RowData, MRT_TableInstance } from "material-react-table";
@@ -38,8 +38,8 @@ function DataTableTopToolbar<TData extends MRT_RowData>({
 
   const { isFullScreen, showGlobalFilter } = getState();
 
-  const isMobile = useMediaQuery("(max-width:720px)");
-  const isTablet = useMediaQuery("(max-width:1024px)");
+  const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isTablet = useThemeMediaQuery((theme) => theme.breakpoints.down("md"));
 
   const toolbarProps = parseFromValuesOrFunc(muiTopToolbarProps, { table });
 
