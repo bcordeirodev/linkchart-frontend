@@ -31,5 +31,16 @@ export default defineConfig({
         hasTouch: true,
       },
     },
+    {
+      // Narrowest common phone (iPhone SE / small Android). If the layout
+      // survives 320px it survives everything above it.
+      name: "mobile-small",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 320, height: 568 },
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
   ],
 });
