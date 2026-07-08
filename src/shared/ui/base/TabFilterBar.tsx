@@ -226,6 +226,9 @@ export function TabFilterBar({
                       ? theme.palette.secondary.main
                       : undefined,
                   ),
+                  // Larger tap target on phones.
+                  height: { xs: 34, sm: "auto" },
+                  "& .MuiChip-label": { px: { xs: 1.5, sm: 1.25 } },
                 }}
               />
             ))}
@@ -241,7 +244,12 @@ export function TabFilterBar({
                   size="small"
                   onClick={onClearAll}
                   aria-label={t("filters.clearAll")}
-                  sx={{ p: 0.25 }}
+                  sx={{
+                    p: 0.25,
+                    // Reach a usable hit area on touch (was ~22px).
+                    minWidth: { xs: 40, sm: "auto" },
+                    minHeight: { xs: 40, sm: "auto" },
+                  }}
                 >
                   <X size={14} />
                 </IconButton>
