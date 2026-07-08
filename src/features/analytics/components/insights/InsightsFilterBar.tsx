@@ -1,7 +1,7 @@
 // src/features/analytics/components/insights/InsightsFilterBar.tsx
 "use client";
 
-import { Stack, Switch, Typography } from "@mui/material";
+import { FormControlLabel, Switch, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { TabFilterBar } from "@/shared/ui/base/TabFilterBar";
@@ -82,22 +82,21 @@ export function InsightsFilterBar({
             onSelect: () => onPriorityChange(opt),
           })),
           addon: (
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={0.5}
-              sx={{ ml: 1 }}
-            >
-              <Switch
-                size="small"
-                checked={actionableOnly}
-                onChange={(e) => onActionableOnlyChange(e.target.checked)}
-                inputProps={{ "aria-label": t("filters.actionableOnly") }}
-              />
-              <Typography variant="caption" color="text.secondary">
-                {t("filters.actionableOnly")}
-              </Typography>
-            </Stack>
+            <FormControlLabel
+              sx={{ ml: 1, mr: 0 }}
+              control={
+                <Switch
+                  size="small"
+                  checked={actionableOnly}
+                  onChange={(e) => onActionableOnlyChange(e.target.checked)}
+                />
+              }
+              label={
+                <Typography variant="caption" color="text.secondary">
+                  {t("filters.actionableOnly")}
+                </Typography>
+              }
+            />
           ),
         },
         {
