@@ -61,7 +61,6 @@ export function TrafficChannelsView({
   const channelsPieOptions = {
     chart: {
       type: "donut" as const,
-      height: 350,
       toolbar: { show: false },
     },
     labels: channels.map((c) => formatChannelLabel(c.channel)),
@@ -122,7 +121,6 @@ export function TrafficChannelsView({
   const performanceBarOptions = {
     chart: {
       type: "bar" as const,
-      height: 300,
       toolbar: { show: false },
     },
     plotOptions: {

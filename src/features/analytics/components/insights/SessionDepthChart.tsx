@@ -97,7 +97,6 @@ export function SessionDepthChart({
   const distributionBarOptions = {
     chart: {
       type: "bar" as const,
-      height: 350,
       toolbar: { show: false },
     },
     plotOptions: {

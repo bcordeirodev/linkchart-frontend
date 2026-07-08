@@ -1,13 +1,14 @@
 "use client";
 import {
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
+import { ResponsiveDialog } from "@/shared/ui/feedback";
 
 interface DeleteConfirmDialogProps {
   open: boolean;
@@ -29,7 +30,7 @@ export function DeleteConfirmDialog({
   const { t: tCommon } = useTranslation("common");
 
   return (
-    <Dialog
+    <ResponsiveDialog
       open={open}
       onClose={onCancel}
       maxWidth="xs"
@@ -61,7 +62,7 @@ export function DeleteConfirmDialog({
           {tCommon("actions.delete")}
         </Button>
       </DialogActions>
-    </Dialog>
+    </ResponsiveDialog>
   );
 }
 
