@@ -32,7 +32,7 @@ function MainLayout({
     <Box
       className={className}
       sx={{
-        minHeight: "100vh",
+        minHeight: "100dvh",
         width: "100%",
         maxWidth: "100%",
         margin: 0,
@@ -71,7 +71,7 @@ function MainLayout({
           pt: showNavbar ? { xs: 7, sm: 8 } : 0,
           pb: 0,
           px: 0,
-          minHeight: showNavbar ? "calc(100vh - 64px)" : "100vh",
+          minHeight: showNavbar ? "calc(100dvh - 64px)" : "100dvh",
           "& > *": {
             width: "100%",
             minHeight: "inherit",
