@@ -49,7 +49,6 @@ export function RetentionAnalysisChart({
   const visitorsPieOptions = {
     chart: {
       type: "donut" as const,
-      height: 300,
       toolbar: { show: false },
     },
     labels: [
