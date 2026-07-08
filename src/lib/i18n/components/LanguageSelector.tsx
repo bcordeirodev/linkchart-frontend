@@ -69,8 +69,9 @@ export function LanguageSelector({ compact = false }: LanguageSelectorProps) {
                 aria-label={label}
                 aria-pressed={isActive}
                 sx={{
-                  width: 28,
-                  height: 28,
+                  // Larger tap target on touch devices (was a fixed 28px).
+                  width: { xs: 40, sm: 28 },
+                  height: { xs: 40, sm: 28 },
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -124,6 +125,8 @@ export function LanguageSelector({ compact = false }: LanguageSelectorProps) {
             }
             sx={{
               minWidth: 40,
+              // Taller tap target on touch (the small ButtonGroup is ~32px).
+              minHeight: { xs: 40, sm: 32 },
               px: 1,
               fontSize: "0.6875rem",
               fontWeight: 700,
