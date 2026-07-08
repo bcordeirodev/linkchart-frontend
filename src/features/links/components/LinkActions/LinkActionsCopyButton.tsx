@@ -58,6 +58,8 @@ export function LinkActionsCopyButton({
           textTransform: "none",
           fontWeight: 600,
           py: 0.875,
+          // Comfortable tap height on phones (full-width copy CTA).
+          minHeight: { xs: 44, sm: "auto" },
           color: copyFg,
           "& .MuiButton-startIcon": { color: copyFg },
         }}

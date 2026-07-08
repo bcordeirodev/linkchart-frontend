@@ -85,7 +85,7 @@ export function LinkActionsViewSwitch({
         },
         "& .MuiToggleButton-root": {
           flex: fullWidth ? 1 : "0 1 auto",
-          minHeight: 36,
+          minHeight: { xs: 44, sm: 36 },
           minWidth: fullWidth ? 0 : 92,
           textTransform: "none",
           fontWeight: 500,
@@ -117,6 +117,7 @@ export function LinkActionsViewSwitch({
         <ToggleButton
           key={id}
           value={id}
+          aria-label={t(`actions.${labelKey}`)}
           aria-current={currentView === id ? "page" : undefined}
         >
           <Box
@@ -131,7 +132,8 @@ export function LinkActionsViewSwitch({
             <Box
               component="span"
               sx={{
-                display: fullWidth ? "inline" : { xs: "none", sm: "inline" },
+                // Icon-only on phones (labels clip at 320px); labels from sm up.
+                display: { xs: "none", sm: "inline" },
                 whiteSpace: "nowrap",
               }}
             >
