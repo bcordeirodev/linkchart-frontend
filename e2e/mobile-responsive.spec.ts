@@ -6,7 +6,14 @@ import { test, expect } from "@playwright/test";
  * Routes needing auth or a real slug are covered later by sub-projects.
  */
 
-const PUBLIC_ROUTES = ["/", "/shorter", "/sign-in", "/privacy", "/terms", "/support"];
+const PUBLIC_ROUTES = [
+  "/",
+  "/shorter",
+  "/sign-in",
+  "/privacy",
+  "/terms",
+  "/support",
+];
 
 for (const route of PUBLIC_ROUTES) {
   test(`no horizontal overflow at 375px: ${route}`, async ({ page }) => {
@@ -18,6 +25,9 @@ for (const route of PUBLIC_ROUTES) {
       const el = document.documentElement;
       return el.scrollWidth - el.clientWidth;
     });
-    expect(overflow, `document overflows horizontally by ${overflow}px`).toBeLessThanOrEqual(1);
+    expect(
+      overflow,
+      `document overflows horizontally by ${overflow}px`,
+    ).toBeLessThanOrEqual(1);
   });
 }

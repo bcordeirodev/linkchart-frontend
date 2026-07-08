@@ -40,10 +40,12 @@
 ### Task 1: Playwright mobile regression net (375px)
 
 **Files:**
+
 - Modify: `playwright.config.ts`
 - Test: `e2e/mobile-responsive.spec.ts` (create)
 
 **Interfaces:**
+
 - Consumes: nothing.
 - Produces: a Playwright project named `mobile` and a spec asserting no horizontal overflow on public routes. Later tasks and sub-projects re-run `npx playwright test mobile-responsive`.
 
@@ -78,7 +80,14 @@ import { test, expect } from "@playwright/test";
  * Routes needing auth or a real slug are covered later by sub-projects.
  */
 
-const PUBLIC_ROUTES = ["/", "/shorter", "/sign-in", "/privacy", "/terms", "/support"];
+const PUBLIC_ROUTES = [
+  "/",
+  "/shorter",
+  "/sign-in",
+  "/privacy",
+  "/terms",
+  "/support",
+];
 
 for (const route of PUBLIC_ROUTES) {
   test(`no horizontal overflow at 375px: ${route}`, async ({ page }) => {
@@ -90,7 +99,10 @@ for (const route of PUBLIC_ROUTES) {
       const el = document.documentElement;
       return el.scrollWidth - el.clientWidth;
     });
-    expect(overflow, `document overflows horizontally by ${overflow}px`).toBeLessThanOrEqual(1);
+    expect(
+      overflow,
+      `document overflows horizontally by ${overflow}px`,
+    ).toBeLessThanOrEqual(1);
   });
 }
 ```
@@ -117,12 +129,14 @@ git commit -m "test(mobile): add 375px horizontal-overflow regression net"
 ### Task 2: ResponsiveDialog + migrate existing dialogs
 
 **Files:**
+
 - Create: `src/shared/ui/feedback/ResponsiveDialog.tsx`
 - Modify: `src/shared/ui/feedback/index.ts`
 - Modify: `src/features/links/components/list/DeleteConfirmDialog.tsx`
 - Modify: `src/features/profile/components/SubdomainSettings.tsx`
 
 **Interfaces:**
+
 - Consumes: MUI `Dialog`, `useThemeMediaQuery` from `@/shared/hooks`.
 - Produces: `ResponsiveDialog` — a drop-in for MUI `<Dialog>` that forces `fullScreen` when the viewport is `< sm`. Accepts all `DialogProps`. Signature: `function ResponsiveDialog(props: DialogProps): JSX.Element`.
 
@@ -160,7 +174,10 @@ Note: `{...props}` spreads AFTER `fullScreen={isPhone}`, so a caller that explic
 Read `src/shared/ui/feedback/index.ts`; add:
 
 ```ts
-export { ResponsiveDialog, default as ResponsiveDialogDefault } from "./ResponsiveDialog";
+export {
+  ResponsiveDialog,
+  default as ResponsiveDialogDefault,
+} from "./ResponsiveDialog";
 ```
 
 (If the barrel uses a different export style, match it — export at minimum the named `ResponsiveDialog`.)
@@ -168,6 +185,7 @@ export { ResponsiveDialog, default as ResponsiveDialogDefault } from "./Responsi
 - [ ] **Step 4: Migrate `DeleteConfirmDialog`**
 
 In `src/features/links/components/list/DeleteConfirmDialog.tsx`, replace the `Dialog` import/usage with `ResponsiveDialog`:
+
 - Remove `Dialog` from the `@mui/material` import (keep `DialogTitle`, `DialogContent`, etc.).
 - Import: `import { ResponsiveDialog } from "@/shared/ui/feedback";`
 - Change `<Dialog ...>` → `<ResponsiveDialog ...>` and the closing tag.
@@ -198,11 +216,13 @@ git commit -m "feat(mobile): add ResponsiveDialog and make dialogs fullscreen on
 ### Task 3: Chart-height discipline
 
 **Files:**
+
 - Modify: `src/features/analytics/components/insights/RetentionAnalysisChart.tsx:52`
 - Modify: `src/features/analytics/components/insights/SessionDepthChart.tsx:100`
 - Modify: `src/features/analytics/components/insights/sub-views/TrafficChannelsView.tsx:64,125`
 
 **Interfaces:**
+
 - Consumes: `ApexChartWrapper` `size?: "compact" | "standard" | "large"` prop → resolves via `useChartHeight` to a per-breakpoint height (xs smaller). Existing `height?: number` override stays but is reserved for genuine fixed-px cases.
 - Produces: nothing new; removes fixed heights so charts shrink on xs.
 
@@ -213,12 +233,14 @@ Read the four locations. Confirm each renders through `ApexChartWrapper` (or the
 - [ ] **Step 2: Replace fixed heights with `size`**
 
 For each, map the fixed height to the closest responsive `size` and pass `size` to `ApexChartWrapper` instead of `height`:
+
 - `height: 300` → `size="standard"` (standard md = 300).
 - `height: 350` → `size="standard"` (standard lg = 350; xs shrinks to 220).
 
 If a chart renders ApexCharts directly (not via wrapper), instead compute height with the hook: `const height = useChartHeight("standard");` and pass `height={height}`.
 
 Concrete edits:
+
 - `RetentionAnalysisChart.tsx:52` — remove `height: 300`; pass `size="standard"`.
 - `SessionDepthChart.tsx:100` — remove `height: 350`; pass `size="standard"`.
 - `TrafficChannelsView.tsx:64` (`350`) and `:125` (`300`) — pass `size="standard"`.
@@ -243,9 +265,11 @@ git commit -m "fix(mobile): route insight charts through responsive size instead
 ### Task 4: Consolidate breakpoints to the theme
 
 **Files:**
+
 - Modify: `src/shared/ui/data-display/DataTableTopToolbar.tsx:41-42`
 
 **Interfaces:**
+
 - Consumes: `useThemeMediaQuery` from `@/shared/hooks`.
 - Produces: nothing new; removes hardcoded-px media queries.
 
@@ -299,15 +323,18 @@ git commit -m "refactor(mobile): use theme breakpoints in data-table toolbar"
 ### Task 5: Slim `useResponsive` + add `isPhone`
 
 **Files:**
+
 - Modify: `src/lib/theme/hooks/useResponsive.ts`
 
 **Interfaces:**
+
 - Consumes: `useThemeMediaQuery`.
 - Produces: `ResponsiveConfig` gains `isPhone: boolean` (= `down("sm")`). All existing fields keep identical names/types/values.
 
 - [ ] **Step 1: Add `isPhone` to the interface and return value**
 
 In `useResponsive.ts`:
+
 - Add `isPhone: boolean;` to the `ResponsiveConfig` interface (near `isMobile`).
 - Add `const isPhone = useThemeMediaQuery((theme) => theme.breakpoints.down("sm"));`
 - Add `isPhone,` to the returned object.
@@ -342,6 +369,7 @@ git commit -m "feat(mobile): add isPhone breakpoint helper to useResponsive"
 ### Task 6: `dvh/svh` for full-height sections
 
 **Files:**
+
 - Modify: `src/shared/layout/MainLayout.tsx:35,74`
 - Modify: `src/shared/layout/PublicLayout.tsx:271,369`
 - Modify: `src/shared/layout/AuthLayout.tsx:77`
@@ -352,6 +380,7 @@ git commit -m "feat(mobile): add isPhone breakpoint helper to useResponsive"
 - Modify: `src/shared/ui/feedback/Loading.tsx:180`
 
 **Interfaces:**
+
 - Consumes: nothing.
 - Produces: full-height containers that respect mobile browser chrome. `RealTimeHeatmapChart.tsx:416` (`100vh` fullscreen) is intentionally left as-is.
 
@@ -387,9 +416,11 @@ git commit -m "fix(mobile): use dvh for full-height sections to respect browser 
 ### Task 7: Mobile-first convention doc
 
 **Files:**
+
 - Create: `docs/MOBILE.md`
 
 **Interfaces:**
+
 - Consumes: nothing.
 - Produces: the ruleset sub-projects B–D and future PRs follow.
 
