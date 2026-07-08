@@ -73,7 +73,11 @@ export function Footer() {
               transition: "color 160ms ease",
               background: "none",
               border: "none",
-              padding: 0,
+              // Comfortable tap target on phones (was padding:0 → ~16px tall).
+              display: "inline-flex",
+              alignItems: "center",
+              minHeight: 44,
+              px: 0.5,
               cursor: "pointer",
               fontFamily: "inherit",
             },

@@ -68,7 +68,9 @@ function MainLayout({
           height: "100%",
           position: "relative",
           overflow: "auto",
-          pt: showNavbar ? { xs: 7, sm: 8 } : 0,
+          // Match the fixed navbar height (Toolbar minHeight xs:64, md:72) so
+          // the top of the page isn't clipped under the AppBar on mobile.
+          pt: showNavbar ? { xs: 8, md: 9 } : 0,
           pb: 0,
           px: 0,
           minHeight: showNavbar ? "calc(100dvh - 64px)" : "100dvh",

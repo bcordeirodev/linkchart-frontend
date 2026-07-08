@@ -143,7 +143,7 @@ export function Navbar({
             <IconButton
               aria-label="open navigation"
               onClick={() => setDrawerOpen(true)}
-              sx={{ ml: 1 }}
+              sx={{ ml: 1, width: 44, height: 44 }}
             >
               <MenuIcon size={20} strokeWidth={1.5} />
             </IconButton>
@@ -164,6 +164,8 @@ export function Navbar({
                     aria-label={t("nav.accountMenuAriaLabel")}
                     onClick={handleProfileMenuOpen}
                     sx={{
+                      width: 44,
+                      height: 44,
                       borderRadius: `${radiusTokens.md}px`,
                       transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
                       "&:hover": {
