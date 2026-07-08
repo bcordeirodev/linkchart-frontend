@@ -74,7 +74,7 @@ function AuthLayout({
     <Box
       className={className}
       sx={{
-        minHeight: "100vh",
+        minHeight: "100dvh",
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
         background: theme.palette.background.default,

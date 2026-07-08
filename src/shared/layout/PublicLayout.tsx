@@ -268,7 +268,7 @@ function PublicLayout({
     <Box
       className={className}
       sx={{
-        minHeight: "100vh",
+        minHeight: "100dvh",
         width: "100%",
         maxWidth: "100%",
         margin: 0,
@@ -366,7 +366,7 @@ function PublicLayout({
           flexDirection: "column",
           width: "100%",
           minHeight:
-            renderHeader || renderFooter ? "calc(100vh - 120px)" : "100vh",
+            renderHeader || renderFooter ? "calc(100dvh - 120px)" : "100dvh",
         }}
       >
         {children}
