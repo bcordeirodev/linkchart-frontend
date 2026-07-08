@@ -45,7 +45,15 @@ export function PageSectionHeading({
     <Box
       sx={{
         display: "flex",
-        alignItems: action && isPageTitle ? "center" : "flex-start",
+        // Page headers with a back-link action stack on phones so the title and
+        // description get the full width (they cramp badly below ~360px otherwise);
+        // the action sits above the title (conventional back placement) via `order`.
+        flexDirection:
+          action && isPageTitle ? { xs: "column", sm: "row" } : "row",
+        alignItems:
+          action && isPageTitle
+            ? { xs: "flex-start", sm: "center" }
+            : "flex-start",
         justifyContent: "space-between",
         gap: 2,
         flexWrap: "wrap",
@@ -140,7 +148,17 @@ export function PageSectionHeading({
           ) : null}
         </Box>
       </Box>
-      {action ? <Box sx={{ flexShrink: 0 }}>{action}</Box> : null}
+      {action ? (
+        <Box
+          sx={{
+            flexShrink: 0,
+            // Above the title on phones, inline on the right from sm up.
+            order: action && isPageTitle ? { xs: -1, sm: 0 } : 0,
+          }}
+        >
+          {action}
+        </Box>
+      ) : null}
     </Box>
   );
 }
