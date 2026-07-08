@@ -17,8 +17,11 @@ const PUBLIC_ROUTES = [
 
 for (const route of PUBLIC_ROUTES) {
   test(`no horizontal overflow at 375px: ${route}`, async ({ page }) => {
-    const response = await page.goto(route, { waitUntil: "networkidle" });
+    const response = await page.goto(route, { waitUntil: "domcontentloaded" });
     expect(response?.ok()).toBeTruthy();
+    // Wait for the load event (not networkidle — GA/AdSense hold connections
+    // open and would flake the test) so layout has settled before measuring.
+    await page.waitForLoadState("load");
 
     // Allow a 1px rounding tolerance; anything wider is a real overflow.
     const overflow = await page.evaluate(() => {
