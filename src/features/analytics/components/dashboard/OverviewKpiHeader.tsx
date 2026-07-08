@@ -203,8 +203,15 @@ export function OverviewKpiHeader({
             >
               <Typography
                 variant="caption"
-                sx={{ color: "text.secondary", fontWeight: 500, minWidth: 0 }}
-                noWrap
+                sx={{
+                  color: "text.secondary",
+                  fontWeight: 500,
+                  minWidth: 0,
+                  // Let the label wrap on phones instead of truncating
+                  // ("Qualidade", "Média diária" were cut to "Qualida…").
+                  whiteSpace: { xs: "normal", sm: "nowrap" },
+                  lineHeight: 1.2,
+                }}
               >
                 {tile.label}
               </Typography>

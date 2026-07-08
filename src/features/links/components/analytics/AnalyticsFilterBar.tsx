@@ -6,6 +6,7 @@ import {
   Chip,
   Divider,
   Stack,
+  FormControlLabel,
   Switch,
   TextField,
   Typography,
@@ -156,6 +157,9 @@ export function AnalyticsFilterBar({
               sx={{
                 cursor: "pointer",
                 ...getSoftSelectedChipSx(theme, period === p),
+                // Larger tap target on phones for the primary period control.
+                height: { xs: 34, sm: "auto" },
+                "& .MuiChip-label": { px: { xs: 1.5, sm: 1.25 } },
               }}
             />
           ))}
@@ -233,23 +237,27 @@ export function AnalyticsFilterBar({
           sx={{ display: { xs: "none", sm: "block" } }}
         />
 
-        {/* Bot exclusion toggle */}
-        <Stack direction="row" alignItems="center" spacing={0.5}>
-          <Switch
-            size="small"
-            checked={excludeBots}
-            onChange={(e) => onExcludeBotsChange(e.target.checked)}
-            color="success"
-            inputProps={{ "aria-label": t("filters.excludeBots") }}
-          />
-          <Typography
-            variant="caption"
-            color={excludeBots ? "success.main" : "text.secondary"}
-            sx={{ fontWeight: excludeBots ? 600 : 400 }}
-          >
-            {t("filters.excludeBots")}
-          </Typography>
-        </Stack>
+        {/* Bot exclusion toggle — label is part of the tap target */}
+        <FormControlLabel
+          sx={{ ml: 0, mr: 0 }}
+          control={
+            <Switch
+              size="small"
+              checked={excludeBots}
+              onChange={(e) => onExcludeBotsChange(e.target.checked)}
+              color="success"
+            />
+          }
+          label={
+            <Typography
+              variant="caption"
+              color={excludeBots ? "success.main" : "text.secondary"}
+              sx={{ fontWeight: excludeBots ? 600 : 400 }}
+            >
+              {t("filters.excludeBots")}
+            </Typography>
+          }
+        />
       </Stack>
     </Box>
   );
