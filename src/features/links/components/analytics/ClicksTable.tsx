@@ -645,6 +645,15 @@ export function ClicksTable({
         emptyMessage={t("analytics.clicksTable.emptyMessage")}
         minHeight={300}
       >
+        {isMobile ? (
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: "block", mb: 0.75, px: 0.5 }}
+          >
+            {t("analytics.clicksTable.scrollHint")}
+          </Typography>
+        ) : null}
         <Box
           sx={{
             border: "1px solid",
