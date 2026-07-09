@@ -13,6 +13,7 @@ começar**. Dois problemas se somam:
 
 1. **A `/links` não é auto-explicativa.** Os blocos empilham sem deixar claro o propósito de
    cada um:
+
    - A faixa de métricas tem o título **"Métricas do Link"** (`metrics.title`), no singular —
      mas os números são **da conta inteira** (somatório de todos os links). O usuário lê como
      se fosse de um link específico.
@@ -51,11 +52,11 @@ Cada bloco passa a ter **título claro + uma linha curta dizendo o que é** (reg
 todo bloco de métrica/gráfico tem explicação visível). Reorganização de cima pra baixo em
 `src/page-components/links/LinkListPage.tsx`:
 
-| Bloco | Componente | Hoje (confuso) | Proposta |
-| --- | --- | --- | --- |
-| Métricas | `features/links/components/LinkMetrics.tsx` | **"Métricas do Link"** (parece de 1 link) | Título **"Visão geral da conta"** + descrição _"Somatório de todos os seus links"_ |
-| Criação | `features/links/components/list/LinksQuickCreate.tsx` | "Criação rápida" solta no meio | Título **"Encurtar novo link"** + descrição _"Cole uma URL longa e gere um link curto"_ |
-| Lista | `features/links/components/list/LinksBrowseSection.tsx` | Sem título de seção próprio | Título **"Seus links"** + contador/contexto já existente (`list.sections.*`) |
+| Bloco    | Componente                                              | Hoje (confuso)                            | Proposta                                                                                |
+| -------- | ------------------------------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------- |
+| Métricas | `features/links/components/LinkMetrics.tsx`             | **"Métricas do Link"** (parece de 1 link) | Título **"Visão geral da conta"** + descrição _"Somatório de todos os seus links"_      |
+| Criação  | `features/links/components/list/LinksQuickCreate.tsx`   | "Criação rápida" solta no meio            | Título **"Encurtar novo link"** + descrição _"Cole uma URL longa e gere um link curto"_ |
+| Lista    | `features/links/components/list/LinksBrowseSection.tsx` | Sem título de seção próprio               | Título **"Seus links"** + contador/contexto já existente (`list.sections.*`)            |
 
 ### 3.1 Renomear títulos/descrições (só i18n + props)
 
