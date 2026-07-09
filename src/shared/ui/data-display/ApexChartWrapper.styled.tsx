@@ -91,6 +91,7 @@ export const ErrorIcon = styled(Box)(({ theme }) => ({
   fontSize: "3rem",
   marginBottom: theme.spacing(2),
   color: theme.palette.error.main,
+  [theme.breakpoints.down("sm")]: { fontSize: "2.25rem" },
 }));
 
 export const ErrorTitle = styled(Typography)(({ theme }) => ({
@@ -157,6 +158,7 @@ export const NoDataIcon = styled(Box)(({ theme }) => ({
   fontSize: "4rem",
   marginBottom: theme.spacing(2),
   color: theme.palette.info.main,
+  [theme.breakpoints.down("sm")]: { fontSize: "2.75rem" },
 }));
 
 export const NoDataTitle = styled(Typography)(({ theme }) => ({
