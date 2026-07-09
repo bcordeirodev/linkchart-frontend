@@ -1,9 +1,7 @@
 "use client";
 
-import { Box, Collapse, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { ChevronDown } from "lucide-react";
-import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { PublicCtaBlock } from "@/features/public-analytics/components/info/PublicCtaBlock";
@@ -14,6 +12,9 @@ import {
   PUBLIC_SECTION_GAP,
 } from "@/lib/theme/publicPageStyles";
 import { PublicLayout } from "@/shared/layout";
+
+import { GuideFaq } from "./guide/GuideFaq";
+import { GuideHero } from "./guide/GuideHero";
 
 /** A quality-score tier (i18n-driven): label, numeric range, one-line meaning. */
 interface ScoreTier {
@@ -26,12 +27,6 @@ interface ScoreTier {
 interface Signal {
   title: string;
   desc: string;
-}
-
-/** A single FAQ entry (i18n-driven). */
-interface FaqItem {
-  q: string;
-  a: string;
 }
 
 /**
@@ -50,8 +45,6 @@ export function GuiaCliquesBotsPage() {
   const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const baseId = useId();
 
   const tiers = t("guiaBots.score.tiers", {
     returnObjects: true,
@@ -59,9 +52,6 @@ export function GuiaCliquesBotsPage() {
   const signals = t("guiaBots.signals.items", {
     returnObjects: true,
   }) as Signal[];
-  const faqItems = t("guiaBots.faq.items", {
-    returnObjects: true,
-  }) as FaqItem[];
 
   /** Tier colors, index-aligned with the i18n tiers array (organic, suspicious, fraud). */
   const tierColors = [
@@ -93,59 +83,7 @@ export function GuiaCliquesBotsPage() {
         }}
       >
         {/* ---- Hero ---- */}
-        <Box
-          component="header"
-          sx={{ textAlign: "center", maxWidth: 760, mx: "auto" }}
-        >
-          <Typography
-            component="p"
-            sx={{
-              display: "inline-block",
-              fontSize: "0.6875rem",
-              fontWeight: 700,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: primary,
-              mb: 1.5,
-            }}
-          >
-            {t("guiaBots.hero.eyebrow")}
-          </Typography>
-          <Typography
-            component="h1"
-            sx={{
-              fontSize: { xs: "1.75rem", md: "2.4rem" },
-              fontWeight: 800,
-              lineHeight: 1.15,
-              letterSpacing: "-0.02em",
-              color: theme.palette.text.primary,
-              mb: 1.5,
-            }}
-          >
-            {t("guiaBots.hero.title")}
-          </Typography>
-          <Typography
-            component="p"
-            sx={{
-              fontSize: { xs: "1rem", md: "1.1rem" },
-              fontWeight: 500,
-              color: theme.palette.text.secondary,
-              mb: 2,
-            }}
-          >
-            {t("guiaBots.hero.subtitle")}
-          </Typography>
-          <Typography
-            component="p"
-            sx={{
-              fontSize: "0.9375rem",
-              lineHeight: 1.6,
-              color: alpha(theme.palette.text.primary, isDark ? 0.7 : 0.72),
-            }}
-          >
-            {t("guiaBots.hero.verdict")}
-          </Typography>
-        </Box>
+        <GuideHero i18nKey="guiaBots" />
 
         {/* ---- Signature: quality-score meter ---- */}
         <Box component="section" aria-labelledby="guia-score-heading">
@@ -421,112 +359,7 @@ export function GuiaCliquesBotsPage() {
         </Box>
 
         {/* ---- FAQ ---- */}
-        <Box component="section" aria-labelledby="guia-faq-heading">
-          <Typography
-            id="guia-faq-heading"
-            component="h2"
-            sx={getPublicSectionHeadingSx(theme)}
-          >
-            {t("guiaBots.faq.sectionTitle")}
-          </Typography>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {Array.isArray(faqItems) &&
-              faqItems.map((item, i) => {
-                const isOpen = openFaq === i;
-                const triggerId = `${baseId}-gq-${i}`;
-                const panelId = `${baseId}-ga-${i}`;
-                return (
-                  <Box
-                    key={item.q}
-                    sx={{
-                      ...getPublicElevatedSx(theme),
-                      overflow: "hidden",
-                      ...(isOpen && {
-                        borderColor: alpha(primary, 0.32),
-                        boxShadow: `inset 3px 0 0 ${alpha(primary, isDark ? 0.5 : 0.4)}`,
-                      }),
-                    }}
-                  >
-                    <Box
-                      component="button"
-                      id={triggerId}
-                      aria-expanded={isOpen}
-                      aria-controls={panelId}
-                      onClick={() =>
-                        setOpenFaq((prev) => (prev === i ? null : i))
-                      }
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        width: "100%",
-                        px: { xs: 2, md: 2.5 },
-                        py: { xs: 1.75, md: 2 },
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        gap: 2,
-                        textAlign: "left",
-                        color: "inherit",
-                      }}
-                    >
-                      <Typography
-                        component="h3"
-                        sx={{
-                          fontSize: "0.875rem",
-                          fontWeight: 600,
-                          lineHeight: 1.5,
-                          color: theme.palette.text.primary,
-                          flex: 1,
-                          m: 0,
-                        }}
-                      >
-                        {item.q}
-                      </Typography>
-                      <Box
-                        sx={{
-                          flexShrink: 0,
-                          display: "flex",
-                          color: theme.palette.text.secondary,
-                          transition: "transform 220ms ease",
-                          transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                        }}
-                      >
-                        <ChevronDown size={18} />
-                      </Box>
-                    </Box>
-                    <Collapse in={isOpen} timeout={220}>
-                      <Box
-                        id={panelId}
-                        role="region"
-                        aria-labelledby={triggerId}
-                        sx={{
-                          px: { xs: 2, md: 2.5 },
-                          pb: { xs: 2, md: 2.25 },
-                          pt: 0,
-                        }}
-                      >
-                        <Typography
-                          component="p"
-                          sx={{
-                            fontSize: "0.8125rem",
-                            lineHeight: 1.65,
-                            color: alpha(
-                              theme.palette.text.primary,
-                              isDark ? 0.72 : 0.75,
-                            ),
-                            m: 0,
-                          }}
-                        >
-                          {item.a}
-                        </Typography>
-                      </Box>
-                    </Collapse>
-                  </Box>
-                );
-              })}
-          </Box>
-        </Box>
+        <GuideFaq i18nKey="guiaBots" />
 
         {/* ---- CTA ---- */}
         <Box>
