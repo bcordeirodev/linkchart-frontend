@@ -23,7 +23,6 @@ export * from "./components/analytics";
 
 // Hooks
 export * from "./hooks/useLinks";
-export * from "./hooks/useShareAPI";
 export * from "./hooks/useLinkAnalytics";
 export * from "./hooks/useShortUrl";
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LinkCreatePageContent from "@/pages/links/LinkCreatePage";
+import LinkCreatePageContent from "@/page-components/links/LinkCreatePage";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Create Link" };

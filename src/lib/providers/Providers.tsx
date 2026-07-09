@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 
 import { Auth0Provider } from "@auth0/nextjs-auth0/client";
 
-import { initI18n, detectAndApplyLanguage } from "@/i18n/config";
+import { initI18n, detectAndApplyLanguage } from "@/lib/i18n/config";
 import { AuthProvider } from "@/lib/auth/AuthContext";
 import { LayoutProvider } from "@/shared/layout/core";
 import { MainThemeProvider, applyGlobalStyles } from "@/lib/theme";

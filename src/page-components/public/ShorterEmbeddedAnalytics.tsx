@@ -1,4 +1,3 @@
-"use client";
 import { PublicAnalyticsSections } from "@/features/public-analytics";
 
 /** Props passed from ShorterPage to the embedded analytics variant. */

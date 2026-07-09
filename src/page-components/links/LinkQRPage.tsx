@@ -9,7 +9,7 @@ import { LinkActions } from "@/features/links";
 import { LinkQRPanel } from "@/features/links/components/qr";
 import { useLinkById } from "@/features/links/hooks/useLinks";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
-import { useShareAPI } from "@/features/links/hooks/useShareAPI";
+import { useShareAPI } from "@/shared/hooks/useShareAPI";
 import { QRCodeSkeleton } from "@/shared/ui/feedback/skeletons";
 import { ResponsiveContainer } from "@/shared/ui/base";
 

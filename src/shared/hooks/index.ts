@@ -8,6 +8,7 @@
 export { default as useDebounce } from "./useDebounce";
 export { default as useClipboard } from "./useClipboard";
 export { default as useThemeMediaQuery } from "./useThemeMediaQuery";
+export { useShareAPI } from "./useShareAPI";
 
 // Navigation Hooks
 export { useNavigate } from "./useNavigate";

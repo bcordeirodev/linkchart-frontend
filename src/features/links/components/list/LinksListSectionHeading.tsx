@@ -1,5 +1,3 @@
-"use client";
-
 export {
   PageSectionHeading as LinksListSectionHeading,
   type PageSectionHeadingProps as LinksListSectionHeadingProps,

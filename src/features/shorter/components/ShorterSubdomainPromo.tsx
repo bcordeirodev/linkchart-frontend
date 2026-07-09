@@ -5,7 +5,7 @@ import { alpha } from "@mui/material/styles";
 import { Globe, Link2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import {

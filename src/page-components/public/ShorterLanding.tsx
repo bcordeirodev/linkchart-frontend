@@ -13,7 +13,7 @@ import {
   ShorterFaq,
   ShorterSuccessCard,
 } from "@/features/shorter/components";
-import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 import {
   getPublicInsetSx,
   PUBLIC_SECTION_GAP,

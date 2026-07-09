@@ -10,7 +10,7 @@ import {
 import { getAccessToken, useUser } from "@auth0/nextjs-auth0/client";
 
 import { ApiError } from "@/lib/api/client";
-import { trackAdConversion } from "@/lib/analytics/adConversions";
+import { trackAdConversion } from "@/lib/telemetry/adConversions";
 import { authService } from "@/services";
 
 import type { LoginResponse, User, UserResponse } from "@/types";

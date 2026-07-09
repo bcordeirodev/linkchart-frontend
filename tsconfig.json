@@ -17,21 +17,9 @@
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./src/*"],
-      "@/pages/*": ["./src/page-components/*"],
-      "@/shared/*": ["./src/shared/*"],
       "@/features/*": ["./src/features/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/auth/*": ["./src/lib/auth/*"],
-      "@/analytics/*": ["./src/features/analytics/*"],
-      "@/links/*": ["./src/features/links/*"],
-      "@/ui/*": ["./src/shared/ui/*"],
-      "@/layout/*": ["./src/shared/layout/*"],
-      "@/hooks/*": ["./src/shared/hooks/*"],
-      "@/api/*": ["./src/lib/api/*"],
-      "@/theme/*": ["./src/lib/theme/*"],
-      "@/store/*": ["./src/lib/store/*"],
-      "@/utils/*": ["./src/lib/utils/*"],
-      "@/i18n/*": ["./src/lib/i18n/*"]
+      "@/shared/*": ["./src/shared/*"],
+      "@/lib/*": ["./src/lib/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
