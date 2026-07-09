@@ -24,11 +24,13 @@
 ## File Structure
 
 **Novos:**
+
 - `src/features/links/hooks/useOnboardingProgress.ts` — hook + helpers de `localStorage`; progresso derivado (`hasCreatedLink`, `hasSeenAnalytics`, `completed`, `visible`) + ações (`markAnalyticsSeen`, `dismiss`, `reopen`) e a função pura exportada `markAnalyticsOnboardingSeen()`.
 - `src/shared/ui/base/HelpHint.tsx` — "?" discreto com `Tooltip` (genérico, reutilizável).
 - `src/features/links/components/onboarding/FirstStepsChecklist.tsx` — card de primeiros passos.
 
 **Modificados:**
+
 - `src/lib/i18n/locales/pt-BR/links.json` e `src/lib/i18n/locales/en/links.json` — copy + chaves novas.
 - `src/page-components/links/LinkListPage.tsx` — heading de "Visão geral", wiring do checklist e do botão "Ajuda", esconder métricas em conta vazia.
 - `src/features/links/components/list/LinksBrowseSection.tsx` — renderizar heading de seção "Seus links".
@@ -42,10 +44,12 @@
 Elimina a duplicação "Meus links" (heading de página × seção da lista) e deixa cada bloco com nome próprio. Só edição de i18n; a renderização das seções vem nas tasks seguintes.
 
 **Files:**
+
 - Modify: `src/lib/i18n/locales/pt-BR/links.json`
 - Modify: `src/lib/i18n/locales/en/links.json`
 
 **Interfaces:**
+
 - Produces: chaves `list.sections.overview`, `list.sections.overviewDescription`, `list.sections.links`, `list.quickCreate.label`, `list.quickCreate.description` com os valores abaixo (consumidas pelas tasks 2, 3).
 
 - [ ] **Step 1: Atualizar copy pt-BR**
@@ -101,9 +105,11 @@ git commit -m "i18n(links): copy distinta por seção da /links"
 Dá um heading de seção às métricas (hoje elas aparecem sem título, `showTitle={false}`) e, numa conta sem links, remove o bloco de zeros para o olho ir direto ao "comece aqui".
 
 **Files:**
+
 - Modify: `src/page-components/links/LinkListPage.tsx:142-155`
 
 **Interfaces:**
+
 - Consumes: `list.sections.overview`, `list.sections.overviewDescription` (Task 1); `PageSectionHeading` via `LinksListSectionHeading` (já importado).
 - Produces: nenhum símbolo novo para outras tasks.
 
@@ -116,47 +122,48 @@ Em `LinkListPage.tsx`, substituir o bloco atual das métricas (o `<Box component
 Trocar o trecho (linhas ~144-153):
 
 ```tsx
-          <Box component="div">
-            <LinksListSectionHeading
-              icon={<BarChart3 {...ICON_MD} />}
-              title={t("list.heading")}
-              description={t("list.pageSubtitle")}
-              titleVariant="page"
-              sx={{ mb: { xs: 1.5, sm: 2 } }}
-            />
-            <LinkMetrics linksData={links} showTitle={false} />
-          </Box>
+<Box component="div">
+  <LinksListSectionHeading
+    icon={<BarChart3 {...ICON_MD} />}
+    title={t("list.heading")}
+    description={t("list.pageSubtitle")}
+    titleVariant="page"
+    sx={{ mb: { xs: 1.5, sm: 2 } }}
+  />
+  <LinkMetrics linksData={links} showTitle={false} />
+</Box>
 ```
 
 por:
 
 ```tsx
-          <Box component="div">
-            <LinksListSectionHeading
-              icon={<BarChart3 {...ICON_MD} />}
-              title={t("list.heading")}
-              description={t("list.pageSubtitle")}
-              titleVariant="page"
-              sx={{ mb: { xs: 1.5, sm: 2 } }}
-            />
-            {links.length > 0 ? (
-              <>
-                <LinksListSectionHeading
-                  title={t("list.sections.overview")}
-                  description={t("list.sections.overviewDescription")}
-                  titleVariant="section"
-                  sx={{ mb: { xs: 1, sm: 1.5 } }}
-                />
-                <LinkMetrics linksData={links} showTitle={false} />
-              </>
-            ) : null}
-          </Box>
+<Box component="div">
+  <LinksListSectionHeading
+    icon={<BarChart3 {...ICON_MD} />}
+    title={t("list.heading")}
+    description={t("list.pageSubtitle")}
+    titleVariant="page"
+    sx={{ mb: { xs: 1.5, sm: 2 } }}
+  />
+  {links.length > 0 ? (
+    <>
+      <LinksListSectionHeading
+        title={t("list.sections.overview")}
+        description={t("list.sections.overviewDescription")}
+        titleVariant="section"
+        sx={{ mb: { xs: 1, sm: 1.5 } }}
+      />
+      <LinkMetrics linksData={links} showTitle={false} />
+    </>
+  ) : null}
+</Box>
 ```
 
 - [ ] **Step 3: Rodar o app e verificar no browser**
 
 Run: `npm run dev` (se ainda não estiver rodando) e abrir `/links`.
 Expected:
+
 - Conta com links: heading de página "Meus links" seguido de "Visão geral da conta" + "Somatório de todos os seus links." acima dos cards de métrica.
 - Conta sem links (ou filtrar/apagar até zerar): o bloco de métricas some; a tela mostra o empty state da lista.
 - Checar 375px, light e dark: sem overflow horizontal, headings legíveis.
@@ -180,9 +187,11 @@ git commit -m "feat(links): heading de visão geral e ocultar métricas sem link
 Hoje `LinksBrowseSection` omite o título de seção de propósito (comentário nas linhas ~44-45) e só mostra a caption de contagem. Com o heading de página não sendo mais "a única" âncora, a seção passa a se anunciar como "Seus links".
 
 **Files:**
+
 - Modify: `src/features/links/components/list/LinksBrowseSection.tsx:44-45` (comentário) e o bloco de render do cabeçalho (~linhas 117-125, a `<Box>` com a caption).
 
 **Interfaces:**
+
 - Consumes: `list.sections.links` (Task 1); `LinksListSectionHeading` (importar de `./LinksListSectionHeading`).
 - Produces: nenhum símbolo novo.
 
@@ -201,12 +210,12 @@ import { LinksListSectionHeading } from "./LinksListSectionHeading";
 Localizar o `return (<EnhancedPaper ...><Box sx={{ p: ... }}>` e, logo após o `<Box ref={topRef} .../>`, inserir o heading de seção com a caption existente como `description`:
 
 ```tsx
-        <LinksListSectionHeading
-          title={t("list.sections.links")}
-          description={description}
-          titleVariant="section"
-          sx={{ mb: { xs: 1.25, sm: 1.75 } }}
-        />
+<LinksListSectionHeading
+  title={t("list.sections.links")}
+  description={description}
+  titleVariant="section"
+  sx={{ mb: { xs: 1.25, sm: 1.75 } }}
+/>
 ```
 
 Remover a `<Box>` antiga que renderizava apenas o ícone + `description` (o bloco de caption iniciado em ~linha 118 `sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.75 }}`), já que o heading agora carrega a `description`. Atualizar o comentário de doc (linhas ~44-45) para refletir que a seção passa a ter título próprio ("Seus links"), distinto do heading de página.
@@ -234,10 +243,12 @@ git commit -m "feat(links): título de seção Seus links na lista"
 Um "?" discreto e acessível que revela uma explicação curta. Base reutilizável para os tooltips da jornada.
 
 **Files:**
+
 - Create: `src/shared/ui/base/HelpHint.tsx`
 - Modify: `src/shared/ui/base/index.ts`
 
 **Interfaces:**
+
 - Produces: `HelpHint` (default + named) e `HelpHintProps { label: string; ariaLabel?: string; size?: number; icon?: ReactNode }`. Consumido nas tasks 5 e 6.
 
 - [ ] **Step 1: Invocar o skill `frontend-design`** antes de criar o componente.
@@ -321,12 +332,15 @@ git commit -m "feat(ui): componente HelpHint de ajuda contextual"
 Fonte de verdade do onboarding: deriva "criou link" do estado real e "viu analytics" de um flag em `localStorage`, gravado quando a página de analytics monta.
 
 **Files:**
+
 - Create: `src/features/links/hooks/useOnboardingProgress.ts`
 - Modify: `src/page-components/links/LinkAnalyticsPage.tsx`
 
 **Interfaces:**
+
 - Consumes: `useLinks()` de `@/features/links/hooks/useLinks` (retorna `{ links: LinkResponse[]; loading }`).
 - Produces:
+
   - `markAnalyticsOnboardingSeen(): void` — função pura que grava o flag (sem hooks).
   - `useOnboardingProgress(): OnboardingProgress` onde
     `OnboardingProgress = { hasCreatedLink: boolean; hasSeenAnalytics: boolean; completed: boolean; dismissed: boolean; visible: boolean; markAnalyticsSeen: () => void; dismiss: () => void; reopen: () => void }`.
@@ -467,16 +481,16 @@ export function useOnboardingProgress(): OnboardingProgress {
 Em `src/page-components/links/LinkAnalyticsPage.tsx`, adicionar o import e um `useEffect` que grava o flag no mount. Adicionar `useEffect` à linha de import de `react` (já importa `memo, useMemo, Suspense`):
 
 ```tsx
-import { memo, useMemo, useEffect, Suspense } from 'react'
-import { markAnalyticsOnboardingSeen } from '@/features/links/hooks/useOnboardingProgress'
+import { memo, useMemo, useEffect, Suspense } from "react";
+import { markAnalyticsOnboardingSeen } from "@/features/links/hooks/useOnboardingProgress";
 ```
 
 Dentro do componente `LinkAnalyticsPage`, após os hooks existentes e antes do early return `if (!id)`, adicionar:
 
 ```tsx
-  useEffect(() => {
-    markAnalyticsOnboardingSeen()
-  }, [])
+useEffect(() => {
+  markAnalyticsOnboardingSeen();
+}, []);
 ```
 
 - [ ] **Step 3: Verificar no browser**
@@ -502,11 +516,13 @@ git commit -m "feat(links): hook de progresso de onboarding + flag no analytics"
 O entregável visível do onboarding: card de primeiros passos, botão "Ajuda" para reabrir, e o `HelpHint` nos pontos-chave.
 
 **Files:**
+
 - Create: `src/features/links/components/onboarding/FirstStepsChecklist.tsx`
 - Modify: `src/page-components/links/LinkListPage.tsx`
 - Modify: `src/lib/i18n/locales/pt-BR/links.json` e `src/lib/i18n/locales/en/links.json`
 
 **Interfaces:**
+
 - Consumes: `useOnboardingProgress`/`OnboardingProgress` (Task 5); `HelpHint` (Task 4); `EnhancedPaper` (`@/shared/ui/base/EnhancedPaper`).
 - Produces: `FirstStepsChecklist` (named) e `FirstStepsChecklistProps { progress: OnboardingProgress; analyticsHref: string | null }`.
 
@@ -613,7 +629,11 @@ export function FirstStepsChecklist({
   ];
 
   return (
-    <EnhancedPaper variant="outlined" animated={false} sx={{ p: { xs: 2, sm: 2.5 } }}>
+    <EnhancedPaper
+      variant="outlined"
+      animated={false}
+      sx={{ p: { xs: 2, sm: 2.5 } }}
+    >
       <Stack
         direction="row"
         alignItems="flex-start"
@@ -671,11 +691,16 @@ export function FirstStepsChecklist({
                   cursor: "pointer",
                   "&:hover": { bgcolor: "action.hover" },
                 }),
-                ...(!item.enabled &&
-                  !item.done && { opacity: 0.55 }),
+                ...(!item.enabled && !item.done && { opacity: 0.55 }),
               }}
             >
-              <Box component="span" sx={{ display: "inline-flex", color: item.done ? "success.main" : "text.disabled" }}>
+              <Box
+                component="span"
+                sx={{
+                  display: "inline-flex",
+                  color: item.done ? "success.main" : "text.disabled",
+                }}
+              >
                 {item.done ? (
                   <CheckCircle2 width={18} height={18} />
                 ) : (
@@ -724,49 +749,50 @@ import { useOnboardingProgress } from "@/features/links/hooks/useOnboardingProgr
 Dentro do componente, após `const { links, loading } = useLinks();`, adicionar:
 
 ```tsx
-  const onboarding = useOnboardingProgress();
+const onboarding = useOnboardingProgress();
 ```
 
 Calcular o href de analytics do primeiro link visível (depois de `sortedLinks` existir):
 
 ```tsx
-  const analyticsHref =
-    sortedLinks.length > 0 ? `/links/analytics/${sortedLinks[0].id}` : null;
+const analyticsHref =
+  sortedLinks.length > 0 ? `/links/analytics/${sortedLinks[0].id}` : null;
 ```
 
 No heading de página, passar um `action` com o botão "Ajuda" — visível apenas quando o card está dispensado mas o onboarding não concluiu:
 
 ```tsx
-            <LinksListSectionHeading
-              icon={<BarChart3 {...ICON_MD} />}
-              title={t("list.heading")}
-              description={t("list.pageSubtitle")}
-              titleVariant="page"
-              sx={{ mb: { xs: 1.5, sm: 2 } }}
-              action={
-                !onboarding.visible && !onboarding.completed ? (
-                  <Button
-                    size="small"
-                    variant="text"
-                    startIcon={<HelpCircle width={16} height={16} />}
-                    onClick={onboarding.reopen}
-                  >
-                    {t("list.onboarding.help")}
-                  </Button>
-                ) : undefined
-              }
-            />
+<LinksListSectionHeading
+  icon={<BarChart3 {...ICON_MD} />}
+  title={t("list.heading")}
+  description={t("list.pageSubtitle")}
+  titleVariant="page"
+  sx={{ mb: { xs: 1.5, sm: 2 } }}
+  action={
+    !onboarding.visible && !onboarding.completed ? (
+      <Button
+        size="small"
+        variant="text"
+        startIcon={<HelpCircle width={16} height={16} />}
+        onClick={onboarding.reopen}
+      >
+        {t("list.onboarding.help")}
+      </Button>
+    ) : undefined
+  }
+/>
 ```
 
 E renderizar o card no topo do `Stack`, imediatamente após a abertura `<Stack ...>` e antes do `<Box component="div">` do heading:
 
 ```tsx
-          <FirstStepsChecklist progress={onboarding} analyticsHref={analyticsHref} />
+<FirstStepsChecklist progress={onboarding} analyticsHref={analyticsHref} />
 ```
 
 - [ ] **Step 6: Verificar a jornada completa no browser**
 
 Com `localStorage` limpo (DevTools → Application → Clear site data) e uma conta **sem links**:
+
 1. `/links` mostra o card "Primeiros passos" com as 2 tarefas desmarcadas; "Conheça o analytics" aparece travado ("Crie um link para desbloquear…").
 2. Criar um link → tarefa 1 marca (riscada) ao voltar para `/links`.
 3. Abrir o analytics do link → voltar para `/links`: tarefa 2 marca e o card **some**.
@@ -792,10 +818,12 @@ git commit -m "feat(links): card primeiros passos e botão de ajuda"
 Aplica os tooltips contextuais da jornada, reusando o `HelpHint` e as chaves `list.onboarding.hint*`.
 
 **Files:**
+
 - Modify: `src/features/links/components/list/LinksQuickCreate.tsx` (heading do box, ~linha 348-361)
 - Modify: `src/features/links/components/list/LinkCardActionBar.tsx` (ação de analytics do card)
 
 **Interfaces:**
+
 - Consumes: `HelpHint` (Task 4); `list.onboarding.hintQuickCreate`, `list.onboarding.hintAnalytics` (Task 6).
 - Produces: nenhum símbolo novo.
 
