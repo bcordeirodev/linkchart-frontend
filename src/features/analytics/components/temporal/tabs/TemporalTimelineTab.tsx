@@ -1,6 +1,8 @@
 "use client";
-import { Alert, Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
+import { AnalyticsEmptyState } from "@/shared/ui/base";
 
 import type { AdvancedTemporalData } from "@/types";
 
@@ -40,9 +42,7 @@ export function TemporalTimelineTab({
         <HourDayHeatmapChart data={advancedData.heatmap_data} />
       ) : null}
       {!hasDailyTimeline && !hasHeatmap ? (
-        <Alert severity="info">
-          <Typography variant="body2">{t("temporal.chart.noData")}</Typography>
-        </Alert>
+        <AnalyticsEmptyState title={t("temporal.chart.noData")} />
       ) : null}
     </Stack>
   );

@@ -31,6 +31,7 @@ export {
 // Data Display
 export { default as MetricCardOptimized } from "./MetricCardOptimized";
 export { default as EmptyState } from "./EmptyState";
+export { default as AnalyticsEmptyState } from "./AnalyticsEmptyState";
 
 // Form & Interaction
 export { default as GradientButton } from "./GradientButton";

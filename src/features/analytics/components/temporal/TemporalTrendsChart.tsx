@@ -13,6 +13,7 @@ import { TrendingUp, TrendingDown, LineChart } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { getStandardChartColors } from "@/lib/theme";
@@ -70,23 +71,11 @@ export function TemporalTrendsChart({
 
   if (!hasWeeklyData && !hasMonthlyData) {
     return (
-      <Box
-        sx={{
-          textAlign: "center",
-          py: 8,
-          color: "text.secondary",
-        }}
-      >
-        <LineChart
-          size={64}
-          strokeWidth={1.5}
-          style={{ opacity: 0.3, marginBottom: 16 }}
-        />
-        <Typography variant="h6">{t("temporal.trends.noData")}</Typography>
-        <Typography variant="body2" sx={{ mt: 1 }}>
-          {t("temporal.trends.noDataSub")}
-        </Typography>
-      </Box>
+      <AnalyticsEmptyState
+        icon={<LineChart size={48} strokeWidth={1.5} />}
+        title={t("temporal.trends.noData")}
+        description={t("temporal.trends.noDataSub")}
+      />
     );
   }
 

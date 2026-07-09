@@ -7,6 +7,7 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { getChartColor } from "@/lib/theme/colors";
+import { AnalyticsEmptyState } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import {
   INSIGHTS_BLOCK_PAD,
@@ -119,11 +120,7 @@ export function RetentionAnalysisChart({
   if (data.total_visitors === 0) {
     return (
       <EnhancedPaper>
-        <Box sx={{ p: 3, textAlign: "center" }}>
-          <Typography color="text.secondary">
-            {t("insights.retention.noData")}
-          </Typography>
-        </Box>
+        <AnalyticsEmptyState title={t("insights.retention.noData")} />
       </EnhancedPaper>
     );
   }

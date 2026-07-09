@@ -20,7 +20,6 @@ import {
   Card,
   CardContent,
   Chip,
-  Alert,
   Stack,
   Divider,
   Avatar,
@@ -38,6 +37,8 @@ import {
   motionTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
+import { AnalyticsEmptyState } from "@/shared/ui/base";
+
 import type { BusinessInsight } from "../../hooks/useInsightsData";
 
 interface HttpProtocolEntry {
@@ -108,32 +109,11 @@ export function BusinessInsights({
 
   if (!insights || insights.length === 0) {
     return (
-      <Alert
-        severity="info"
-        sx={{
-          borderRadius: `${radiusTokens.lg}px`,
-          "& .MuiAlert-icon": {
-            fontSize: "1.5rem",
-          },
-        }}
-      >
-        <Typography
-          variant="subtitle1"
-          gutterBottom
-          sx={{
-            fontWeight: 600,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <BarChart3 size={16} strokeWidth={1.5} />
-          {t("insights.unavailableTitle")}
-        </Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {t("insights.unavailableDesc")}
-        </Typography>
-      </Alert>
+      <AnalyticsEmptyState
+        icon={<BarChart3 size={48} strokeWidth={1.5} />}
+        title={t("insights.unavailableTitle")}
+        description={t("insights.unavailableDesc")}
+      />
     );
   }
 

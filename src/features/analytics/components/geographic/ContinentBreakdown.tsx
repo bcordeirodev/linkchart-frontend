@@ -15,6 +15,8 @@ import {
   radiusTokens,
 } from "@/lib/theme/designSystem";
 
+import { AnalyticsEmptyState } from "@/shared/ui/base";
+
 import type { ContinentData } from "@/types/analytics/geographic";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -67,11 +69,11 @@ export function ContinentBreakdown({
             <Globe size={16} strokeWidth={1.5} />
             {t("geographic.continents.title")}
           </Typography>
-          <Box sx={{ textAlign: "center", py: 4, color: "text.secondary" }}>
-            <Typography variant="body2">
-              {t("geographic.continents.empty")}
-            </Typography>
-          </Box>
+          <AnalyticsEmptyState
+            icon={<Globe size={32} strokeWidth={1.5} />}
+            title={t("geographic.continents.empty")}
+            compact
+          />
         </CardContent>
       </Card>
     );
