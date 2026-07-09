@@ -51,8 +51,7 @@
       "seeAnalyticsLocked": "Crie um link para desbloquear o analytics",
       "dismiss": "Dispensar",
       "help": "Ajuda",
-      "hintQuickCreate": "Cole qualquer URL longa aqui para gerar um link curto e rastreável.",
-      "hintAnalytics": "Abra o analytics de um link para ver cliques, países, dispositivos e mais."
+      "hintQuickCreate": "Cole qualquer URL longa aqui para gerar um link curto e rastreável."
     }
   },
   "table": {

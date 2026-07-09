@@ -47,9 +47,12 @@ export function FirstStepsChecklist({
     {
       key: "analytics",
       done: progress.hasSeenAnalytics,
-      label: progress.hasCreatedLink
-        ? t("list.onboarding.seeAnalytics")
-        : t("list.onboarding.seeAnalyticsLocked"),
+      // Show the "locked" copy only while the step is genuinely locked (no link
+      // yet and not already seen) — never struck-through together with "done".
+      label:
+        progress.hasSeenAnalytics || progress.hasCreatedLink
+          ? t("list.onboarding.seeAnalytics")
+          : t("list.onboarding.seeAnalyticsLocked"),
       href: analyticsHref,
       enabled: !progress.hasSeenAnalytics && analyticsHref != null,
     },
