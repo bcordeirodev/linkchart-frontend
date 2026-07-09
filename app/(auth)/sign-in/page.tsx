@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Box, CircularProgress } from "@mui/material";
-import SignInPageContent from "@/pages/auth/SignInPage";
+import SignInPageContent from "@/page-components/auth/SignInPage";
 
 export const metadata: Metadata = { title: "Sign In" };
 

@@ -1,5 +1,4 @@
 // src/shared/ui/base/AnalyticsTabSkeleton.tsx
-"use client";
 
 import { Box, Grid, Skeleton } from "@mui/material";
 

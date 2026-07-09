@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LinkAnalyticsPageContent from "@/pages/links/LinkAnalyticsPage";
+import LinkAnalyticsPageContent from "@/page-components/links/LinkAnalyticsPage";
 
 export const dynamic = "force-dynamic";
 

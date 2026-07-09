@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { getPublicInsetSx } from "@/lib/theme/publicPageStyles";
-import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 
 import { PublicLayout } from "@/shared/layout";
 

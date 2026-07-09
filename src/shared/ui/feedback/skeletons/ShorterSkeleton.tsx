@@ -1,13 +1,11 @@
 "use client";
 import { Box, Container, Skeleton, Stack, useTheme } from "@mui/material";
 
-import {
-  SHORTER_CONTENT_MAX_WIDTH,
-  SHORTER_PAGE_CONTAINER_MAX_WIDTH,
-} from "@/features/shorter/constants";
+import { SHORTER_PAGE_CONTAINER_MAX_WIDTH } from "@/features/shorter/constants";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { getPublicFocalSx } from "@/lib/theme/publicPageStyles";
 import { PublicLayout } from "@/shared/layout";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 
 export function ShorterSkeleton() {
   const theme = useTheme();

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ProfilePageContent from "@/pages/user/ProfilePage";
+import ProfilePageContent from "@/page-components/user/ProfilePage";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Profile Settings" };

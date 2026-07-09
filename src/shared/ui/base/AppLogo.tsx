@@ -1,4 +1,3 @@
-"use client";
 import { Box, Typography } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material";
 

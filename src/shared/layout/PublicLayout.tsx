@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import { useMainTheme } from "@/lib/theme";
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { LanguageSelector } from "@/i18n/components/LanguageSelector";
+import { LanguageSelector } from "@/lib/i18n/components/LanguageSelector";
 import { AppLogo } from "@/shared/ui/base";
 import { Footer } from "./components";
 
