@@ -1,7 +1,37 @@
+import { execSync } from "node:child_process";
+
 import type { NextConfig } from "next";
+
+import pkg from "./package.json";
+
+/**
+ * Build-time app version stamped into Faro RUM (`app.version`) so a frontend
+ * regression can be correlated to a release in Grafana — matching the backend's
+ * git-SHA `service.version`. Priority: explicit env (set by the deploy pipeline)
+ * → short git SHA (host build) → package.json version (Docker build without git).
+ */
+function resolveAppVersion(): string {
+  if (process.env.NEXT_PUBLIC_FARO_APP_VERSION) {
+    return process.env.NEXT_PUBLIC_FARO_APP_VERSION;
+  }
+  try {
+    return execSync("git rev-parse --short HEAD", {
+      stdio: ["ignore", "pipe", "ignore"],
+    })
+      .toString()
+      .trim();
+  } catch {
+    return pkg.version;
+  }
+}
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Exposed to the client bundle so FrontendObservability can stamp the release
+  // onto Faro RUM. See resolveAppVersion above.
+  env: {
+    NEXT_PUBLIC_FARO_APP_VERSION: resolveAppVersion(),
+  },
   transpilePackages: ["react-simple-maps"],
   experimental: {
     // Required for MUI with Next.js App Router
