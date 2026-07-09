@@ -5,7 +5,7 @@ import { alpha } from "@mui/material/styles";
 import { BarChart2, Link2, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 import {
   getPublicBlockTitleSx,
   getPublicElevatedSx,

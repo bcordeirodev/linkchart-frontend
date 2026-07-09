@@ -22,7 +22,7 @@ import {
   getPublicFocalSx,
   getPublicFormFieldSx,
 } from "@/lib/theme/publicPageStyles";
-import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 import { PublicBlockIcon } from "@/shared/ui/base";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 

@@ -7,7 +7,7 @@ import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { PublicCtaBlock } from "@/features/public-analytics/components/info/PublicCtaBlock";
-import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 import {
   getPublicElevatedSx,
   getPublicSectionHeadingSx,
