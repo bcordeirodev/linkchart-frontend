@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Checkbox,
-  Chip,
   CircularProgress,
   DialogActions,
   DialogContent,
@@ -23,7 +22,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -42,6 +41,7 @@ import {
   ProfileSection,
   ProfileSectionHeader,
 } from "./ProfileSection";
+import { LinkExample, SubdomainStatusChip } from "./SubdomainSettings.parts";
 
 const DOMAIN_SUFFIX = ".linkcharts.com.br";
 
@@ -54,91 +54,6 @@ function isValidSubdomainLabel(value: string): boolean {
 }
 
 const EXAMPLE_SLUGS = ["abc123", "promo-verao"] as const;
-
-function LinkExample({
-  url,
-  highlightPrefix,
-}: {
-  url: string;
-  highlightPrefix?: string;
-}) {
-  if (highlightPrefix && url.startsWith(highlightPrefix)) {
-    const rest = url.slice(highlightPrefix.length);
-    return (
-      <Typography
-        variant="caption"
-        component="div"
-        sx={{
-          fontFamily: "monospace",
-          lineHeight: 1.9,
-          wordBreak: "break-all",
-        }}
-      >
-        <Box component="span" sx={{ fontWeight: 500, color: "text.primary" }}>
-          {highlightPrefix}
-        </Box>
-        <Box component="span" sx={{ color: "text.secondary" }}>
-          {rest}
-        </Box>
-      </Typography>
-    );
-  }
-
-  return (
-    <Typography
-      variant="caption"
-      component="div"
-      sx={{
-        fontFamily: "monospace",
-        color: "text.secondary",
-        lineHeight: 1.9,
-        wordBreak: "break-all",
-      }}
-    >
-      {url}
-    </Typography>
-  );
-}
-
-function SubdomainStatusChip({
-  active,
-  label,
-}: {
-  active: boolean;
-  label: string;
-}) {
-  const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
-  const semantic = isDark ? semanticDark : semanticLight;
-  const free = semantic.success;
-
-  const main = active
-    ? isDark
-      ? theme.palette.common.white
-      : theme.palette.text.primary
-    : free.main;
-  const bg = active
-    ? alpha(theme.palette.common.white, isDark ? 0.08 : 0.04)
-    : free.subtleBg;
-  const border = active ? theme.palette.divider : free.border;
-
-  return (
-    <Chip
-      label={label}
-      size="small"
-      sx={{
-        height: 24,
-        fontWeight: 600,
-        fontSize: "0.6875rem",
-        letterSpacing: 0.2,
-        bgcolor: bg,
-        color: main,
-        border: `1px solid ${border}`,
-        "& .MuiChip-label": { px: 1.25 },
-      }}
-    />
-  );
-}
 
 export function SubdomainSettings() {
   const theme = useTheme();
