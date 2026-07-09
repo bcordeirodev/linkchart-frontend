@@ -697,7 +697,22 @@ export function RealTimeHeatmapChart({
         ) : null}
 
         {/* Mapa — ocupa todo o espaço restante após o header */}
-        <Box sx={{ flex: 1, minHeight: 0, position: "relative" }}>
+        <Box
+          sx={{
+            flex: 1,
+            minHeight: 0,
+            position: "relative",
+            // Enlarge Leaflet's default 30px zoom controls for touch.
+            "@media (pointer: coarse)": {
+              "& .leaflet-control-zoom a": {
+                width: 40,
+                height: 40,
+                lineHeight: "40px",
+                fontSize: "1.25rem",
+              },
+            },
+          }}
+        >
           <MapContainer
             center={getMapCenter()}
             zoom={4}
