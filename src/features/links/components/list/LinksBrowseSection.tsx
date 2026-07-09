@@ -1,12 +1,10 @@
 "use client";
 
-import { Link2 } from "lucide-react";
 import { Box, Divider, Pagination, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useLinkDensity } from "@/features/links/hooks/useLinkDensity";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
@@ -17,6 +15,7 @@ import { LinkCardRich } from "./LinkCardRich";
 import { LinksEmptyState } from "./LinksEmptyState";
 import { LinksFilters } from "./LinksFilters";
 import { LinksMobileCards } from "./LinksMobileCards";
+import { LinksListSectionHeading } from "./LinksListSectionHeading";
 import { getLinksPanelSx } from "./linksPanelStyles";
 
 import type { BatchMetaResponse, LinkResponse } from "@/types";
@@ -41,9 +40,9 @@ interface LinksBrowseSectionProps {
 /**
  * Filters + link list in one card so users see filters apply to the list below.
  *
- * The big "Meus links" section title is intentionally omitted — the page-level
- * `PageSectionHeading` already carries that heading.  Only the count/context
- * caption (icon + description row) is rendered here.
+ * The section announces itself as "Seus links" via `LinksListSectionHeading`,
+ * distinct from the page-level heading. The count/context caption is displayed
+ * as the heading's description.
  */
 export function LinksBrowseSection({
   searchTerm,
@@ -112,33 +111,12 @@ export function LinksBrowseSection({
     >
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
         <Box ref={topRef} sx={{ scrollMarginTop: { xs: 64, sm: 80 } }} />
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            mb: 1.75,
-            color: "text.secondary",
-          }}
-        >
-          <Box
-            component="span"
-            sx={{
-              display: "inline-flex",
-              flexShrink: 0,
-              "& svg": { width: 21, height: 21 },
-            }}
-          >
-            <Link2 {...ICON_MD} />
-          </Box>
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ fontSize: "0.75rem", lineHeight: 1.4 }}
-          >
-            {description}
-          </Typography>
-        </Box>
+        <LinksListSectionHeading
+          title={t("list.sections.links")}
+          description={description}
+          titleVariant="section"
+          sx={{ mb: { xs: 1.25, sm: 1.75 } }}
+        />
 
         <LinksFilters
           embedded

@@ -1,11 +1,12 @@
 "use client";
 
 import { Alert } from "@mui/material";
-import { memo, useMemo, Suspense } from "react";
+import { memo, useMemo, useEffect, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { LinkAnalyticsTabsOptimized } from "@/features/links/components/analytics/LinkAnalyticsTabs";
 import { LinkActions } from "@/features/links/components/LinkActions";
 import { useLinkAnalyticsOptimized } from "@/features/links/hooks/useLinkAnalytics";
+import { markAnalyticsOnboardingSeen } from "@/features/links/hooks/useOnboardingProgress";
 import { ResponsiveContainer } from "@/shared/ui/base";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
@@ -30,6 +31,12 @@ function LinkAnalyticsPage({ id }: Props) {
     }),
     [id],
   );
+
+  useEffect(() => {
+    if (id) {
+      markAnalyticsOnboardingSeen();
+    }
+  }, [id]);
 
   // Early return para casos de erro
   if (!id) {

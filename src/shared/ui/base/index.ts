@@ -35,6 +35,7 @@ export { default as AnalyticsEmptyState } from "./AnalyticsEmptyState";
 
 // Form & Interaction
 export { default as GradientButton } from "./GradientButton";
+export { HelpHint, type HelpHintProps } from "./HelpHint";
 
 // Typography & Content
 export { default as SafeTypography } from "./SafeTypography";
