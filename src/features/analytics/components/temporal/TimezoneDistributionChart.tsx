@@ -5,6 +5,7 @@ import { Globe } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { getStandardChartColors } from "@/lib/theme";
@@ -27,23 +28,11 @@ export function TimezoneDistributionChart({
 
   if (!timezoneAnalysis || timezoneAnalysis.length === 0) {
     return (
-      <Box
-        sx={{
-          textAlign: "center",
-          py: 8,
-          color: "text.secondary",
-        }}
-      >
-        <Globe
-          size={64}
-          strokeWidth={1.5}
-          style={{ opacity: 0.3, marginBottom: 16 }}
-        />
-        <Typography variant="h6">{t("temporal.timezone.noData")}</Typography>
-        <Typography variant="body2" sx={{ mt: 1 }}>
-          {t("temporal.timezone.noDataSub")}
-        </Typography>
-      </Box>
+      <AnalyticsEmptyState
+        icon={<Globe size={48} strokeWidth={1.5} />}
+        title={t("temporal.timezone.noData")}
+        description={t("temporal.timezone.noDataSub")}
+      />
     );
   }
 

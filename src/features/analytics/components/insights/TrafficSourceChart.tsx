@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { ICON_MD, ICON_LG } from "@/lib/theme/iconDefaults";
 import { chartPalette } from "@/lib/theme/colors";
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { AnalyticsEmptyState } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
@@ -83,11 +84,7 @@ export function TrafficSourceChart({
   if (data.sources.length === 0) {
     return (
       <EnhancedPaper>
-        <Box sx={{ p: 3, textAlign: "center" }}>
-          <Typography color="text.secondary">
-            {t("insights.traffic.noData")}
-          </Typography>
-        </Box>
+        <AnalyticsEmptyState title={t("insights.traffic.noData")} />
       </EnhancedPaper>
     );
   }

@@ -140,4 +140,7 @@ Sem suíte de testes no frontend. Gate:
 - Verificação visual no browser: abrir uma sub-tab sem dados em Audience e Temporal e
   confirmar que o bloco centralizado preenche o painel com altura consistente (sem
   quadradinho colado no topo, sem vazio exagerado) em light e dark.
+
+```
+
 ```

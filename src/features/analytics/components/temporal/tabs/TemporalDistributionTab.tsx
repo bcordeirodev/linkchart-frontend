@@ -1,6 +1,8 @@
 "use client";
-import { Alert, Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
+import { AnalyticsEmptyState } from "@/shared/ui/base";
 
 import type { AdvancedTemporalData, TemporalData } from "@/types";
 
@@ -85,9 +87,7 @@ export function TemporalDistributionTab({
         <ClickVelocityChart data={clickVelocity} />
       ) : null}
       {!hasAny ? (
-        <Alert severity="info">
-          <Typography variant="body2">{t("temporal.chart.noData")}</Typography>
-        </Alert>
+        <AnalyticsEmptyState title={t("temporal.chart.noData")} />
       ) : null}
     </Stack>
   );

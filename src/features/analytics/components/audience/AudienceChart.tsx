@@ -1,5 +1,5 @@
 "use client";
-import { Alert, Box, Button, Collapse, Typography } from "@mui/material";
+import { Box, Button, Collapse } from "@mui/material";
 import {
   ChevronDown,
   ChevronUp,
@@ -24,6 +24,7 @@ import {
   motionTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
+import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { AnalyticsSubTabs } from "@/shared/ui/navigation";
 
 import type {
@@ -266,9 +267,7 @@ export function AudienceChart({
             itemRowSx={itemRowSx}
           />
         ) : (
-          <Alert severity="info">
-            <Typography variant="body2">{t("audience.noData")}</Typography>
-          </Alert>
+          <AnalyticsEmptyState title={t("audience.noData")} />
         )
       ) : null}
 
@@ -284,9 +283,7 @@ export function AudienceChart({
               itemRowSx={itemRowSx}
             />
           ) : (
-            <Alert severity="info">
-              <Typography variant="body2">{t("audience.noData")}</Typography>
-            </Alert>
+            <AnalyticsEmptyState title={t("audience.noData")} />
           )}
           {platformBreakdown ? (
             <Box sx={supplementaryCardGridSx}>
@@ -308,9 +305,7 @@ export function AudienceChart({
             performanceBarColor={performanceBarColor}
           />
         ) : (
-          <Alert severity="info">
-            <Typography variant="body2">{t("audience.noData")}</Typography>
-          </Alert>
+          <AnalyticsEmptyState title={t("audience.noData")} />
         )
       ) : null}
 
@@ -326,9 +321,7 @@ export function AudienceChart({
               itemRowSx={itemRowSx}
             />
           ) : (
-            <Alert severity="info">
-              <Typography variant="body2">{t("audience.noData")}</Typography>
-            </Alert>
+            <AnalyticsEmptyState title={t("audience.noData")} />
           )}
           {languageBreakdown ? (
             <Box sx={supplementaryCardGridSx}>
@@ -349,9 +342,7 @@ export function AudienceChart({
             itemRowSx={itemRowSx}
           />
         ) : (
-          <Alert severity="info">
-            <Typography variant="body2">{t("audience.noData")}</Typography>
-          </Alert>
+          <AnalyticsEmptyState title={t("audience.noData")} />
         )
       ) : null}
 
@@ -372,9 +363,7 @@ export function AudienceChart({
             ) : null}
           </>
         ) : (
-          <Alert severity="info">
-            <Typography variant="body2">{t("audience.noData")}</Typography>
-          </Alert>
+          <AnalyticsEmptyState title={t("audience.noData")} />
         )
       ) : null}
 
@@ -434,9 +423,7 @@ export function AudienceChart({
             ) : null}
           </>
         ) : (
-          <Alert severity="info">
-            <Typography variant="body2">{t("audience.noData")}</Typography>
-          </Alert>
+          <AnalyticsEmptyState title={t("audience.noData")} />
         )
       ) : null}
 
