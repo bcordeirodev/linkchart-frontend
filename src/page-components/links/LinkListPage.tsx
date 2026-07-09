@@ -1,7 +1,7 @@
 "use client";
 
-import { BarChart3 } from "lucide-react";
-import { Box, Stack } from "@mui/material";
+import { BarChart3, HelpCircle } from "lucide-react";
+import { Box, Button, Stack } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,9 +11,11 @@ import {
   LinksListSectionHeading,
   LinksQuickCreate,
 } from "@/features/links/components/list";
+import { FirstStepsChecklist } from "@/features/links/components/onboarding/FirstStepsChecklist";
 import { useLinks, useDeleteLink } from "@/features/links/hooks/useLinks";
 import { useNewlyCreatedLinkHighlight } from "@/features/links/hooks/useNewlyCreatedLinkHighlight";
 import { useLinksMeta } from "@/features/links/hooks/useLinksMeta";
+import { useOnboardingProgress } from "@/features/links/hooks/useOnboardingProgress";
 import { getLinkStatus } from "@/features/links/utils/linkStatus";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useResponsive } from "@/lib/theme";
@@ -28,6 +30,7 @@ function LinkListPage() {
   const { isMobile } = useResponsive();
   const { t } = useTranslation("links");
   const { links, loading } = useLinks();
+  const onboarding = useOnboardingProgress();
   const { mutateAsync: deleteLinkMutation } = useDeleteLink();
   const deleteLink = (id: string): Promise<void> =>
     deleteLinkMutation(id).then(() => undefined);
@@ -102,6 +105,11 @@ function LinkListPage() {
     }
   }, [filteredLinks, sortBy, meta]);
 
+  const firstSortedLink = sortedLinks[0];
+  const analyticsHref = firstSortedLink
+    ? `/links/analytics/${firstSortedLink.id}`
+    : null;
+
   const visibleLinkIds = useMemo(
     () => sortedLinks.map((l) => String(l.id)),
     [sortedLinks],
@@ -141,6 +149,11 @@ function LinkListPage() {
     >
       <ResponsiveContainer variant="page">
         <Stack spacing={{ xs: 2.5, sm: 3 }} component="section">
+          <FirstStepsChecklist
+            progress={onboarding}
+            analyticsHref={analyticsHref}
+          />
+
           <Box component="div">
             <LinksListSectionHeading
               icon={<BarChart3 {...ICON_MD} />}
@@ -148,6 +161,18 @@ function LinkListPage() {
               description={t("list.pageSubtitle")}
               titleVariant="page"
               sx={{ mb: { xs: 1.5, sm: 2 } }}
+              action={
+                !onboarding.visible && !onboarding.completed ? (
+                  <Button
+                    size="small"
+                    variant="text"
+                    startIcon={<HelpCircle width={16} height={16} />}
+                    onClick={onboarding.reopen}
+                  >
+                    {t("list.onboarding.help")}
+                  </Button>
+                ) : undefined
+              }
             />
             {links.length > 0 ? (
               <>
