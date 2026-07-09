@@ -14,7 +14,7 @@ import { BarChart3, Check, Copy, Globe, RotateCcw, Share2 } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useShareAPI } from "@/features/links/hooks/useShareAPI";
+import { useShareAPI } from "@/shared/hooks/useShareAPI";
 import useClipboard from "@/shared/hooks/useClipboard";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import {
