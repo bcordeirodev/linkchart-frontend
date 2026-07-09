@@ -311,64 +311,87 @@
       "sectionTitle": "Comparação recurso a recurso",
       "colFeature": "Recurso",
       "colLinkCharts": "Link Charts",
-      "colBitly": "Bitly (grátis)",
+      "colRival": "Bitly (grátis)",
       "highlightBadge": "Diferencial",
       "disclaimer": "Recursos do Bitly referentes ao plano gratuito e sujeitos a alteração.",
       "rows": [
         {
           "feature": "Preço",
           "lc": "Gratuito",
-          "bitly": "Gratuito (limitado)"
+          "lcMark": "yes",
+          "rival": "Gratuito (limitado)",
+          "rivalMark": "partial"
         },
         {
           "feature": "Links por mês (grátis)",
           "lc": "Sem limite prático",
-          "bitly": "~5/mês"
+          "lcMark": "yes",
+          "rival": "~5/mês",
+          "rivalMark": "partial"
         },
         {
           "feature": "Analytics em tempo real",
           "lc": "Sim",
-          "bitly": "Parcial"
+          "lcMark": "yes",
+          "rival": "Parcial",
+          "rivalMark": "partial"
         },
         {
           "feature": "Geografia (país e cidade)",
           "lc": "Sim",
-          "bitly": "Limitado"
+          "lcMark": "yes",
+          "rival": "Limitado",
+          "rivalMark": "partial"
         },
         {
           "feature": "Dispositivo e navegador",
           "lc": "Sim",
-          "bitly": "Limitado"
+          "lcMark": "yes",
+          "rival": "Limitado",
+          "rivalMark": "partial"
         },
         {
           "feature": "Origem de tráfego e UTM",
           "lc": "Sim",
-          "bitly": "Sim"
+          "lcMark": "yes",
+          "rival": "Sim",
+          "rivalMark": "yes"
         },
         {
           "feature": "Score de qualidade (bot vs humano)",
           "lc": "Sim",
-          "bitly": "Não"
+          "lcMark": "yes",
+          "rival": "Não",
+          "rivalMark": "no",
+          "emphasis": true
         },
         {
           "feature": "Subdomínio personalizado",
           "lc": "Sim",
-          "bitly": "Pago"
+          "lcMark": "yes",
+          "rival": "Pago",
+          "rivalMark": "no"
         },
         {
           "feature": "QR Code",
           "lc": "Sim",
-          "bitly": "Limitado"
+          "lcMark": "yes",
+          "rival": "Limitado",
+          "rivalMark": "partial"
         },
         {
           "feature": "Página de analytics pública",
           "lc": "Sim",
-          "bitly": "Não"
+          "lcMark": "yes",
+          "rival": "Não",
+          "rivalMark": "no"
         },
         {
           "feature": "Interface em português",
           "lc": "Nativo",
-          "bitly": "Parcial"
+          "lcMark": "yes",
+          "rival": "Parcial",
+          "rivalMark": "partial"
         }
       ]
     },
@@ -376,8 +399,8 @@
       "sectionTitle": "Quando escolher cada um",
       "linkChartsTitle": "Escolha o Link Charts se…",
       "linkChartsBody": "Você quer analytics detalhado de graça, está no Brasil e se importa com a qualidade do tráfego (saber se os cliques são reais) e com subdomínio próprio sem pagar.",
-      "bitlyTitle": "Escolha o Bitly se…",
-      "bitlyBody": "Você precisa da marca mais reconhecida globalmente e já usa o ecossistema pago dele."
+      "rivalTitle": "Escolha o Bitly se…",
+      "rivalBody": "Você precisa da marca mais reconhecida globalmente e já usa o ecossistema pago dele."
     },
     "faq": {
       "sectionTitle": "Perguntas frequentes",
