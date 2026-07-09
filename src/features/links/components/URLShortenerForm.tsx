@@ -14,8 +14,7 @@ import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability"
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
 import { PUBLIC_SLUG_PATTERN } from "@/features/links/utils/slugAvailabilityCheck";
 import { ApiError } from "@/lib/api/client";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { showErrorMessage } from "@/lib/store/messageSlice";
+import { useMessage } from "@/lib/providers/MessageProvider";
 import {
   getPublicBlockDescriptionSx,
   getPublicBlockTitleSx,
@@ -54,7 +53,7 @@ export function URLShortenerForm({
 }: URLShortenerFormProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
   const { t } = useTranslation("public");
   const fieldSx = getPublicFormFieldSx(theme);
   const labelSx = getUrlShortenerLabelSx(theme);
@@ -125,7 +124,7 @@ export function URLShortenerForm({
         }
       }
       const msg = t("shorter.form.errorMessage");
-      dispatch(showErrorMessage(msg));
+      showMessage({ variant: "error", message: msg });
       onError?.(msg);
     }
   };

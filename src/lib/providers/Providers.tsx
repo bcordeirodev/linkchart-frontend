@@ -6,9 +6,7 @@ import { LazyMotion, domAnimation } from "framer-motion";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { enUS } from "date-fns/locale/en-US";
 import { ptBR } from "date-fns/locale/pt-BR";
-import { SnackbarProvider } from "notistack";
 import { useEffect, useMemo, useRef } from "react";
-import { Provider } from "react-redux";
 import { useTranslation } from "react-i18next";
 
 import { Auth0Provider } from "@auth0/nextjs-auth0/client";
@@ -18,7 +16,8 @@ import { AuthProvider } from "@/lib/auth/AuthContext";
 import { LayoutProvider } from "@/shared/layout/core";
 import { MainThemeProvider, applyGlobalStyles } from "@/lib/theme";
 import { queryClient } from "@/lib/query/client";
-import store from "@/lib/store/store";
+import { MessageProvider } from "@/lib/providers/MessageProvider";
+import { Message } from "@/shared/ui/feedback/Message";
 import AppContext from "@/lib/providers/AppContext";
 
 interface ProvidersProps {
@@ -50,25 +49,20 @@ export function Providers({ children, initialLang = "en" }: ProvidersProps) {
             dateAdapter={AdapterDateFns}
             adapterLocale={dateLocale}
           >
-            <Provider store={store}>
-              <AuthProvider>
-                <LayoutProvider>
-                  <MainThemeProvider>
-                    <SnackbarProvider
-                      maxSnack={5}
-                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                      style={{ zIndex: 99 }}
-                    >
-                      {/* strict: only the lightweight `m` component is allowed
-                          (full `motion` would defeat the lazy feature split). */}
-                      <LazyMotion features={domAnimation} strict>
-                        {children}
-                      </LazyMotion>
-                    </SnackbarProvider>
-                  </MainThemeProvider>
-                </LayoutProvider>
-              </AuthProvider>
-            </Provider>
+            <AuthProvider>
+              <LayoutProvider>
+                <MainThemeProvider>
+                  <MessageProvider>
+                    <Message />
+                    {/* strict: only the lightweight `m` component is allowed
+                        (full `motion` would defeat the lazy feature split). */}
+                    <LazyMotion features={domAnimation} strict>
+                      {children}
+                    </LazyMotion>
+                  </MessageProvider>
+                </MainThemeProvider>
+              </LayoutProvider>
+            </AuthProvider>
           </LocalizationProvider>
         </AppContext.Provider>
       </QueryClientProvider>

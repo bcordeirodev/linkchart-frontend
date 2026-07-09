@@ -12,8 +12,7 @@ import {
   STATUS_MAP,
 } from "@/features/links/utils/linkStatus";
 import type { LinkStatus } from "@/features/links/utils/linkStatus";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { showMessage } from "@/lib/store/messageSlice";
+import { useMessage } from "@/lib/providers/MessageProvider";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import type { LinkMeta, LinkResponse } from "@/types";
 
@@ -113,7 +112,7 @@ export function LinkCardRich({
 }: LinkCardRichProps) {
   const theme = useTheme();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
   const { t } = useTranslation("links");
 
   const isCompact = density === "compact";
@@ -128,11 +127,9 @@ export function LinkCardRich({
     try {
       await onDelete(String(link.id));
     } catch {
-      dispatch(
-        showMessage({ message: t("actions.deleteError"), variant: "error" }),
-      );
+      showMessage({ message: t("actions.deleteError"), variant: "error" });
     }
-  }, [link.id, onDelete, dispatch, t]);
+  }, [link.id, onDelete, showMessage, t]);
 
   const handleDelete = useCallback(() => {
     setDeleteDialogOpen(true);

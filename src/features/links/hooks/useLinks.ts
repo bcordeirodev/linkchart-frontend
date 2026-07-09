@@ -2,8 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useAppDispatch } from "@/lib/store/hooks";
-import { showMessage } from "@/lib/store/messageSlice";
+import { useMessage } from "@/lib/providers/MessageProvider";
 import { queryKeys } from "@/lib/query/keys";
 import { API_CONFIG } from "@/lib/api/endpoints";
 import { linkService } from "@/services";
@@ -58,10 +57,10 @@ export function useLinks() {
  * @invalidates `queryKeys.links.all()`
  *
  * @remarks
- * On error, dispatches a generic toast via `messageSlice`.
+ * On error, dispatches a generic toast via `MessageProvider`.
  */
 export function useCreateLink() {
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -74,7 +73,7 @@ export function useCreateLink() {
         "errors.createLink",
         { ns: "links" },
       );
-      dispatch(showMessage({ message: msg, variant: "error" }));
+      showMessage({ message: msg, variant: "error" });
     },
   });
 }
@@ -94,7 +93,7 @@ export function useCreateLink() {
  * `applyBackendFieldErrors`.
  */
 export function useUpdateLink(id: string) {
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -109,7 +108,7 @@ export function useUpdateLink(id: string) {
         "errors.updateLink",
         { ns: "links" },
       );
-      dispatch(showMessage({ message: msg, variant: "error" }));
+      showMessage({ message: msg, variant: "error" });
     },
   });
 }
@@ -121,10 +120,10 @@ export function useUpdateLink(id: string) {
  * @invalidates `queryKeys.links.all()`
  *
  * @remarks
- * On error, dispatches a generic toast via `messageSlice`.
+ * On error, dispatches a generic toast via `MessageProvider`.
  */
 export function useDeleteLink() {
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -137,7 +136,7 @@ export function useDeleteLink() {
         "errors.deleteLink",
         { ns: "links" },
       );
-      dispatch(showMessage({ message: msg, variant: "error" }));
+      showMessage({ message: msg, variant: "error" });
     },
   });
 }
@@ -154,7 +153,7 @@ export function useDeleteLink() {
  * `throwOnError: false` — error surfaces through `meta.onError` as a toast.
  */
 export function useLinkById(id: string) {
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
 
   return useQuery<LinkResponse>({
     queryKey: queryKeys.links.detail(id),
@@ -168,7 +167,7 @@ export function useLinkById(id: string) {
           "errors.fetchLink",
           { ns: "links" },
         );
-        dispatch(showMessage({ message: msg, variant: "error" }));
+        showMessage({ message: msg, variant: "error" });
       },
     },
   });

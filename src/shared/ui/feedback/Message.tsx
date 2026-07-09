@@ -23,13 +23,7 @@ import {
 import { memo } from "react";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import {
-  hideMessage,
-  selectMessageState,
-  selectMessageOptions,
-  selectMessageQueue,
-} from "@/lib/store/messageSlice";
+import { useMessage } from "@/lib/providers/MessageProvider";
 import {
   darkNeutral,
   elevationLightTokens,
@@ -42,7 +36,7 @@ import {
 } from "@/lib/theme";
 
 import type { LucideProps } from "lucide-react";
-import type { MessageVariant } from "@/lib/store/messageSlice";
+import type { MessageVariant } from "@/lib/providers/MessageProvider";
 import type { SlideProps } from "@mui/material";
 
 const variantIcons: Record<MessageVariant, React.ComponentType<LucideProps>> = {
@@ -66,16 +60,13 @@ function SlideDown(props: SlideProps) {
 SlideDown.displayName = "SlideDown";
 
 /**
- * Global Redux-driven toast/snackbar — accent-stripe surface with icon, message, optional action, and auto-hide progress bar.
+ * Global context-driven toast/snackbar — accent-stripe surface with icon, message, optional action, and auto-hide progress bar.
  *
- * Takes no props: state is pulled from `messageSlice` (`open`, `options`, `queue`). Variant (`success`/`error`/`warning`/`info`) selects the icon and the semantic tone (`semanticDark`/`semanticLight`); transition direction depends on `anchorOrigin.vertical`. The queue length is shown as a `+N` pill when more messages are pending. Render via Redux dispatch (`showMessage(...)`) — see `lib/store/messageSlice.ts`.
+ * Takes no props: state is pulled from `useMessage()` (`open`, `options`, `queue`). Variant (`success`/`error`/`warning`/`info`) selects the icon and the semantic tone (`semanticDark`/`semanticLight`); transition direction depends on `anchorOrigin.vertical`. The queue length is shown as a `+N` pill when more messages are pending. Trigger via `showMessage(...)` — see `lib/providers/MessageProvider.tsx`.
  */
 export function Message() {
   const theme = useTheme();
-  const dispatch = useAppDispatch();
-  const open = useAppSelector(selectMessageState);
-  const options = useAppSelector(selectMessageOptions);
-  const queue = useAppSelector(selectMessageQueue);
+  const { open, options, queue, hideMessage } = useMessage();
 
   const isDark = theme.palette.mode === "dark";
   const semantic = isDark ? semanticDark : semanticLight;
@@ -88,7 +79,7 @@ export function Message() {
   const SlideTransition =
     options.anchorOrigin.vertical === "top" ? SlideDown : SlideUp;
 
-  const handleClose = () => dispatch(hideMessage());
+  const handleClose = () => hideMessage();
 
   const hasAutoHide =
     typeof options.autoHideDuration === "number" &&

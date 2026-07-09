@@ -7,8 +7,7 @@ import { useCallback, useMemo, useState } from "react";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { Box, Button, CircularProgress, FormLabel, Stack } from "@mui/material";
 
-import { useAppDispatch } from "@/lib/store/hooks";
-import { showMessage } from "@/lib/store/messageSlice";
+import { useMessage } from "@/lib/providers/MessageProvider";
 import { profileService } from "@/services";
 
 import {
@@ -36,7 +35,7 @@ export function ProfileForm({
   onUserUpdate,
   photoURL,
 }: ProfileFormProps) {
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
   const { t } = useTranslation("profile");
   const [formData, setFormData] = useState<ProfileFormData>({
     name: user.name || "",
@@ -58,24 +57,19 @@ export function ProfileForm({
         email: user.email,
       });
       onUserUpdate(response.user);
-      dispatch(
-        showMessage({
-          message: t("form.saveSuccess"),
-          variant: "success",
-        }),
-      );
+      showMessage({
+        message: t("form.saveSuccess"),
+        variant: "success",
+      });
     } catch (error: unknown) {
-      dispatch(
-        showMessage({
-          message:
-            error instanceof Error ? error.message : t("form.saveFailed"),
-          variant: "error",
-        }),
-      );
+      showMessage({
+        message: error instanceof Error ? error.message : t("form.saveFailed"),
+        variant: "error",
+      });
     } finally {
       setSaving(false);
     }
-  }, [formData.name, user.email, dispatch, onUserUpdate, t]);
+  }, [formData.name, user.email, showMessage, onUserUpdate, t]);
 
   const handleReset = useCallback(() => {
     setFormData({ name: user.name || "" });
