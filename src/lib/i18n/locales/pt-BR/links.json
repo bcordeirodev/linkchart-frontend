@@ -11,11 +11,11 @@
       "createButton": "Criar seu primeiro link"
     },
     "sections": {
-      "overview": "Visão geral",
-      "overviewDescription": "Resumo da sua coleção de links.",
+      "overview": "Visão geral da conta",
+      "overviewDescription": "Somatório de todos os seus links.",
       "filters": "Busca e filtros",
       "filtersDescription": "Encontre links por texto, status ou ordene a lista.",
-      "links": "Meus links",
+      "links": "Seus links",
       "linksBrowseDescription_one": "{{count}} link — use busca e filtros abaixo para refinar",
       "linksBrowseDescription_other": "{{count}} links — use busca e filtros abaixo para refinar",
       "linksDescription_one": "{{count}} link na lista",
@@ -24,8 +24,8 @@
       "linksFiltered_other": "{{count}} links encontrados com os filtros atuais"
     },
     "quickCreate": {
-      "label": "Criação rápida",
-      "description": "Cole a URL de destino e encurte em segundos. O slug personalizado é opcional.",
+      "label": "Encurtar novo link",
+      "description": "Cole uma URL longa e gere um link curto.",
       "urlLabel": "URL de destino",
       "slugLabel": "Slug (opcional)",
       "urlPlaceholder": "https://exemplo.com/pagina",
