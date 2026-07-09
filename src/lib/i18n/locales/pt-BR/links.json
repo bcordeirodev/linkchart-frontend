@@ -262,6 +262,7 @@
       "clicksRegistered_other": "{{count}} cliques registrados",
       "loadingMessage": "Carregando cliques...",
       "emptyMessage": "Este link ainda não recebeu cliques.",
+      "scrollHint": "Deslize a tabela para ver mais colunas",
       "searchPlaceholder": "Buscar por país, cidade, IP, navegador...",
       "dateFormat": "dd/MM/yyyy 'às' HH:mm:ss",
       "date": "Data / Hora",

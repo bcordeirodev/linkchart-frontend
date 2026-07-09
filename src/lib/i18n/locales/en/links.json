@@ -262,6 +262,7 @@
       "clicksRegistered_other": "{{count}} clicks recorded",
       "loadingMessage": "Loading clicks...",
       "emptyMessage": "This link has not received any clicks yet.",
+      "scrollHint": "Swipe the table to see more columns",
       "searchPlaceholder": "Search by country, city, IP, browser...",
       "dateFormat": "MM/dd/yyyy 'at' HH:mm:ss",
       "date": "Date / Time",
