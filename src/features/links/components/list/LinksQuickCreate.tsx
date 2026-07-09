@@ -8,6 +8,7 @@ import {
   CircularProgress,
   FormLabel,
   InputAdornment,
+  Stack,
   TextField,
   Tooltip,
   Typography,
@@ -35,6 +36,7 @@ import {
 } from "@/features/links/components/forms/UrlSafetyIndicator";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { HelpHint } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
 
@@ -361,18 +363,21 @@ export function LinksQuickCreate({
           descriptionSx={{ display: { xs: "none", sm: "block" } }}
           sx={{ mb: { xs: 1.25, sm: 1.75 } }}
           action={
-            <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => navigate("/links/create")}
-                startIcon={<SlidersHorizontal size={13} strokeWidth={1.75} />}
-                endIcon={<ArrowUpRight size={12} strokeWidth={2} />}
-                sx={getAdvancedOptionsButtonSx(theme)}
-              >
-                {t("list.quickCreate.moreOptions")}
-              </Button>
-            </Tooltip>
+            <Stack direction="row" spacing={0.5} alignItems="center">
+              <HelpHint label={t("list.onboarding.hintQuickCreate")} />
+              <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => navigate("/links/create")}
+                  startIcon={<SlidersHorizontal size={13} strokeWidth={1.75} />}
+                  endIcon={<ArrowUpRight size={12} strokeWidth={2} />}
+                  sx={getAdvancedOptionsButtonSx(theme)}
+                >
+                  {t("list.quickCreate.moreOptions")}
+                </Button>
+              </Tooltip>
+            </Stack>
           }
         />
 

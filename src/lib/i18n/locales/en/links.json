@@ -11,11 +11,11 @@
       "createButton": "Create your first link"
     },
     "sections": {
-      "overview": "Overview",
-      "overviewDescription": "Summary of your link collection.",
+      "overview": "Account overview",
+      "overviewDescription": "Totals across all your links.",
       "filters": "Search & filters",
       "filtersDescription": "Find links by text or status, and sort the list.",
-      "links": "My links",
+      "links": "Your links",
       "linksBrowseDescription_one": "{{count}} link — use search and filters below to refine",
       "linksBrowseDescription_other": "{{count}} links — use search and filters below to refine",
       "linksDescription_one": "{{count}} link in your list",
@@ -24,8 +24,8 @@
       "linksFiltered_other": "{{count}} links matching current filters"
     },
     "quickCreate": {
-      "label": "Quick create",
-      "description": "Paste your destination URL and shorten in seconds. Custom slug is optional.",
+      "label": "Shorten a new link",
+      "description": "Paste a long URL and get a short link.",
       "urlLabel": "Destination URL",
       "slugLabel": "Slug (optional)",
       "urlPlaceholder": "https://example.com/page",
@@ -41,6 +41,17 @@
     },
     "pagination": {
       "showing": "Showing {{from}}–{{to}} of {{total}}"
+    },
+    "onboarding": {
+      "title": "Getting started",
+      "subtitle": "Two steps to start using Link Chart.",
+      "createLink": "Create your first link",
+      "createLinkDone": "Link created",
+      "seeAnalytics": "Explore a link's analytics",
+      "seeAnalyticsLocked": "Create a link to unlock analytics",
+      "dismiss": "Dismiss",
+      "help": "Help",
+      "hintQuickCreate": "Paste any long URL here to get a short, trackable link."
     }
   },
   "table": {
