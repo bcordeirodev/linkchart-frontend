@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
-import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 import {
   getPublicElevatedSx,
   getPublicSectionHeadingSx,

@@ -36,8 +36,8 @@ import { getShortUrl } from "@/lib/utils/shortUrl";
 import { PublicBlockIcon } from "@/shared/ui/base";
 import { WhatsAppIcon } from "@/shared/ui/icons";
 import { useNavigate } from "@/shared/hooks";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 
-import { SHORTER_CONTENT_MAX_WIDTH } from "../constants";
 import { ShorterQrPanel } from "./ShorterQrPanel";
 
 /** Props for the inline success card shown after a guest shortens a link. */

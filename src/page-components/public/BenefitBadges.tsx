@@ -2,7 +2,7 @@
 import { Box } from "@mui/material";
 
 import { PublicCtaBlock } from "@/features/public-analytics/components/info/PublicCtaBlock";
-import { SHORTER_CONTENT_MAX_WIDTH } from "@/features/shorter/constants";
+import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 
 /**
  * Below-form block for the `/shorter` landing.
