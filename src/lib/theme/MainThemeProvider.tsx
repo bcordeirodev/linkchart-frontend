@@ -1,7 +1,11 @@
 "use client";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import {
+  ThemeProvider,
+  createTheme,
+  responsiveFontSizes,
+} from "@mui/material/styles";
 import { useMemo } from "react";
 import rtlPlugin from "stylis-plugin-rtl";
 
@@ -84,12 +88,18 @@ function MainThemeProvider({ children }: MainThemeProviderProps) {
 
   // Criar tema Material-UI a partir do tema Fuse
   const muiTheme = useMemo(() => {
+    // Downscale headings on smaller screens (mobile-first); desktop keeps the
+    // full size defined in typographyScale. (The custom `display` variant is
+    // unused, so h1–h6 — MUI's default set — covers every real heading.)
+    const makeResponsive = (theme: ReturnType<typeof createTheme>) =>
+      responsiveFontSizes(theme);
+
     if (!mainTheme) {
       // MainTheme não encontrado, usando tema padrão
-      return createTheme();
+      return makeResponsive(createTheme());
     }
 
-    return createTheme(mainTheme);
+    return makeResponsive(createTheme(mainTheme));
   }, [mainTheme]);
 
   return (
