@@ -41,6 +41,18 @@
     },
     "pagination": {
       "showing": "Mostrando {{from}}–{{to}} de {{total}}"
+    },
+    "onboarding": {
+      "title": "Primeiros passos",
+      "subtitle": "Dois passos para começar a usar o Link Chart.",
+      "createLink": "Crie seu primeiro link",
+      "createLinkDone": "Link criado",
+      "seeAnalytics": "Conheça o analytics do link",
+      "seeAnalyticsLocked": "Crie um link para desbloquear o analytics",
+      "dismiss": "Dispensar",
+      "help": "Ajuda",
+      "hintQuickCreate": "Cole qualquer URL longa aqui para gerar um link curto e rastreável.",
+      "hintAnalytics": "Abra o analytics de um link para ver cliques, países, dispositivos e mais."
     }
   },
   "table": {

@@ -41,6 +41,18 @@
     },
     "pagination": {
       "showing": "Showing {{from}}–{{to}} of {{total}}"
+    },
+    "onboarding": {
+      "title": "Getting started",
+      "subtitle": "Two steps to start using Link Chart.",
+      "createLink": "Create your first link",
+      "createLinkDone": "Link created",
+      "seeAnalytics": "Explore a link's analytics",
+      "seeAnalyticsLocked": "Create a link to unlock analytics",
+      "dismiss": "Dismiss",
+      "help": "Help",
+      "hintQuickCreate": "Paste any long URL here to get a short, trackable link.",
+      "hintAnalytics": "Open a link's analytics to see clicks, countries, devices and more."
     }
   },
   "table": {
