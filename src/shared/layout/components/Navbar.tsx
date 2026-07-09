@@ -139,59 +139,63 @@ export function Navbar({
             </Box>
           </Box>
 
-          {isMobile ? (
-            <IconButton
-              aria-label="open navigation"
-              onClick={() => setDrawerOpen(true)}
-              sx={{ ml: 1, width: 44, height: 44 }}
-            >
-              <MenuIcon size={20} strokeWidth={1.5} />
-            </IconButton>
-          ) : null}
-
           {/* Right Section */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {user ? (
               <>
                 <LanguageSelector />
-                <Tooltip
-                  title={t("nav.menuTooltip", { name: user.displayName })}
-                  arrow
-                >
+                {isMobile ? (
+                  // On phones the Drawer is the single nav surface (identity +
+                  // links + sign out live there), so the avatar-menu is dropped
+                  // to avoid a duplicate navigation surface.
                   <IconButton
-                    size="large"
+                    aria-label={t("nav.openNavAriaLabel", "open navigation")}
+                    onClick={() => setDrawerOpen(true)}
                     edge="end"
-                    aria-label={t("nav.accountMenuAriaLabel")}
-                    onClick={handleProfileMenuOpen}
-                    sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: `${radiusTokens.md}px`,
-                      transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-                      "&:hover": {
-                        backgroundColor: theme.palette.action.hover,
-                      },
-                    }}
+                    sx={{ width: 44, height: 44 }}
                   >
-                    <Avatar
-                      src={user.photoURL}
-                      alt={user.displayName ?? ""}
-                      aria-label={t("nav.avatarAriaLabel", {
-                        name: user.displayName,
-                      })}
+                    <MenuIcon size={20} strokeWidth={1.5} />
+                  </IconButton>
+                ) : (
+                  <Tooltip
+                    title={t("nav.menuTooltip", { name: user.displayName })}
+                    arrow
+                  >
+                    <IconButton
+                      size="large"
+                      edge="end"
+                      aria-label={t("nav.accountMenuAriaLabel")}
+                      onClick={handleProfileMenuOpen}
                       sx={{
-                        width: 36,
-                        height: 36,
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
-                        fontSize: "0.875rem",
-                        fontWeight: 600,
+                        width: 44,
+                        height: 44,
+                        borderRadius: `${radiusTokens.md}px`,
+                        transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+                        "&:hover": {
+                          backgroundColor: theme.palette.action.hover,
+                        },
                       }}
                     >
-                      {user.displayName?.charAt(0).toUpperCase() ?? "U"}
-                    </Avatar>
-                  </IconButton>
-                </Tooltip>
+                      <Avatar
+                        src={user.photoURL}
+                        alt={user.displayName ?? ""}
+                        aria-label={t("nav.avatarAriaLabel", {
+                          name: user.displayName,
+                        })}
+                        sx={{
+                          width: 36,
+                          height: 36,
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                          fontSize: "0.875rem",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {user.displayName?.charAt(0).toUpperCase() ?? "U"}
+                      </Avatar>
+                    </IconButton>
+                  </Tooltip>
+                )}
               </>
             ) : null}
           </Box>
@@ -347,6 +351,47 @@ export function Navbar({
             textSx={{ fontSize: "1rem", color: theme.palette.text.primary }}
           />
         </Box>
+
+        {user ? (
+          <Box
+            sx={{
+              px: 3,
+              py: 2,
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              borderBottom: `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Avatar
+              src={user.photoURL}
+              alt={user.displayName ?? ""}
+              sx={{
+                width: 40,
+                height: 40,
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                fontSize: "0.9rem",
+                fontWeight: 600,
+              }}
+            >
+              {user.displayName?.charAt(0).toUpperCase() ?? "U"}
+            </Avatar>
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="subtitle2" fontWeight={600} noWrap>
+                {user.displayName ?? "User"}
+              </Typography>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                noWrap
+                sx={{ display: "block" }}
+              >
+                {user.email}
+              </Typography>
+            </Box>
+          </Box>
+        ) : null}
 
         <List sx={{ py: 1 }}>
           <ListItemButton
