@@ -4,7 +4,7 @@ import { Info } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { tDynamic } from "@/i18n/tDynamic";
+import { tDynamic } from "@/lib/i18n/tDynamic";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";

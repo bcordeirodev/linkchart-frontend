@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import useUser from "@/lib/auth/useUser";
 import { useAuth } from "@/lib/auth/AuthContext";
 import Loading from "@/shared/ui/feedback/Loading";
-import ShorterPage from "@/pages/public/ShorterPage";
+import ShorterPage from "@/page-components/public/ShorterPage";
 
 /**
  * Homepage body for `/`.

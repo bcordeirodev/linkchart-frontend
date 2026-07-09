@@ -5,7 +5,7 @@ import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ApexOptions } from "apexcharts";
 
-import { tDynamic } from "@/i18n/tDynamic";
+import { tDynamic } from "@/lib/i18n/tDynamic";
 
 import { chartPalette } from "@/lib/theme/colors";
 import {

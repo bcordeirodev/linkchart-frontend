@@ -33,7 +33,7 @@ import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import { useResponsive } from "@/lib/theme";
 import { AppIcon } from "@/shared/ui/icons";
 import { AppLogo } from "@/shared/ui/base";
-import { LanguageSelector } from "@/i18n/components/LanguageSelector";
+import { LanguageSelector } from "@/lib/i18n/components/LanguageSelector";
 
 interface NavbarProps {
   onMobileMenuToggle?: () => void;
