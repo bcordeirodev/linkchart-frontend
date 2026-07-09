@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import CompareBitlyPage from "@/page-components/public/CompareBitlyPage";
+import CompareCompetitorPage from "@/page-components/public/CompareCompetitorPage";
 import {
   buildCompareBitlyFaqSchema,
   buildCompareBreadcrumbSchema,
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
  * `/comparar/bitly` — server entry for the "Link Charts vs Bitly" comparison.
  *
  * Injects `FAQPage` and `BreadcrumbList` JSON-LD (the AI-citation surface) and
- * renders the client comparison UI (see {@link CompareBitlyPage}).
+ * renders the generalized client comparison UI (see {@link CompareCompetitorPage}).
  */
 export default function Page() {
   const faqSchema = buildCompareBitlyFaqSchema();
@@ -55,7 +55,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
       />
-      <CompareBitlyPage />
+      <CompareCompetitorPage i18nKey="compareBitly" />
     </>
   );
 }

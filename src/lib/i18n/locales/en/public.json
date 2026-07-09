@@ -311,64 +311,87 @@
       "sectionTitle": "Feature-by-feature comparison",
       "colFeature": "Feature",
       "colLinkCharts": "Link Charts",
-      "colBitly": "Bitly (free)",
+      "colRival": "Bitly (free)",
       "highlightBadge": "Differentiator",
       "disclaimer": "Bitly features refer to the current free plan and are subject to change.",
       "rows": [
         {
           "feature": "Price",
           "lc": "Free",
-          "bitly": "Free (limited)"
+          "lcMark": "yes",
+          "rival": "Free (limited)",
+          "rivalMark": "partial"
         },
         {
           "feature": "Links per month (free)",
           "lc": "No practical limit",
-          "bitly": "~5/month"
+          "lcMark": "yes",
+          "rival": "~5/month",
+          "rivalMark": "partial"
         },
         {
           "feature": "Real-time analytics",
           "lc": "Yes",
-          "bitly": "Partial"
+          "lcMark": "yes",
+          "rival": "Partial",
+          "rivalMark": "partial"
         },
         {
           "feature": "Geography (country and city)",
           "lc": "Yes",
-          "bitly": "Limited"
+          "lcMark": "yes",
+          "rival": "Limited",
+          "rivalMark": "partial"
         },
         {
           "feature": "Device and browser",
           "lc": "Yes",
-          "bitly": "Limited"
+          "lcMark": "yes",
+          "rival": "Limited",
+          "rivalMark": "partial"
         },
         {
           "feature": "Traffic source and UTM",
           "lc": "Yes",
-          "bitly": "Yes"
+          "lcMark": "yes",
+          "rival": "Yes",
+          "rivalMark": "yes"
         },
         {
           "feature": "Quality score (bot vs human)",
           "lc": "Yes",
-          "bitly": "No"
+          "lcMark": "yes",
+          "rival": "No",
+          "rivalMark": "no",
+          "emphasis": true
         },
         {
           "feature": "Custom subdomain",
           "lc": "Yes",
-          "bitly": "Paid"
+          "lcMark": "yes",
+          "rival": "Paid",
+          "rivalMark": "no"
         },
         {
           "feature": "QR code",
           "lc": "Yes",
-          "bitly": "Limited"
+          "lcMark": "yes",
+          "rival": "Limited",
+          "rivalMark": "partial"
         },
         {
           "feature": "Public analytics page",
           "lc": "Yes",
-          "bitly": "No"
+          "lcMark": "yes",
+          "rival": "No",
+          "rivalMark": "no"
         },
         {
           "feature": "Portuguese interface",
           "lc": "Native",
-          "bitly": "Partial"
+          "lcMark": "yes",
+          "rival": "Partial",
+          "rivalMark": "partial"
         }
       ]
     },
@@ -376,8 +399,8 @@
       "sectionTitle": "When to choose each one",
       "linkChartsTitle": "Choose Link Charts if…",
       "linkChartsBody": "You want detailed analytics for free, you're in Brazil, and you care about traffic quality (knowing whether clicks are real) and a custom subdomain without paying.",
-      "bitlyTitle": "Choose Bitly if…",
-      "bitlyBody": "You need the most globally recognized brand and already use its paid ecosystem."
+      "rivalTitle": "Choose Bitly if…",
+      "rivalBody": "You need the most globally recognized brand and already use its paid ecosystem."
     },
     "faq": {
       "sectionTitle": "Frequently asked questions",
