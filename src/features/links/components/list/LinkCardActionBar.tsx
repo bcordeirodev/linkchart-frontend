@@ -196,6 +196,7 @@ export function LinkCardActionBar({
       {analyticsAccess === "inline" ? (
         <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
           <Box
+            data-tour="analytics"
             sx={{
               flexShrink: 0,
               height: ACTION_HEIGHT,

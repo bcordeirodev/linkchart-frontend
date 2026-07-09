@@ -44,6 +44,7 @@ export function LinkActionsMenu({
     <>
       <Tooltip title={t("table.actions")}>
         <IconButton
+          data-tour="link-actions"
           size="small"
           onClick={handleOpen}
           aria-label={t("table.actionsMenu")}
