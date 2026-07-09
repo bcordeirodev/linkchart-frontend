@@ -75,11 +75,23 @@ export default async function PublicAnalyticsPage({ params }: Props) {
   }
   const apiUrl = process.env.API_URL ?? "http://localhost:8000";
 
-  const res = await fetch(`${apiUrl}/api/public/analytics/${slug}`, {
-    next: { revalidate: 300 },
-  }).catch(() => null);
-  const data = res?.ok ? await res.json() : null;
-  const clicks = data?.data?.total_clicks ?? 0;
+  // Prefetch both payloads server-side (the analytics endpoint is also fetched
+  // by generateMetadata — Next dedupes identical requests) and hand them to the
+  // client as React Query `initialData` so it doesn't refetch on first paint.
+  const [analyticsRes, linkRes] = await Promise.all([
+    fetch(`${apiUrl}/api/public/analytics/${slug}`, {
+      next: { revalidate: 300 },
+    }).catch(() => null),
+    fetch(`${apiUrl}/api/public/link/${slug}`, {
+      next: { revalidate: 300 },
+    }).catch(() => null),
+  ]);
+  const analyticsJson = analyticsRes?.ok ? await analyticsRes.json() : null;
+  const linkJson = linkRes?.ok ? await linkRes.json() : null;
+  const initialAnalyticsData = analyticsJson?.data ?? null;
+  const initialLinkData = linkJson?.data ?? null;
+
+  const clicks = initialAnalyticsData?.total_clicks ?? 0;
   const schema = buildAnalyticsPageSchema(slug, slug, clicks);
 
   const { PublicAnalyticsPageContent } = await import(
@@ -92,7 +104,11 @@ export default async function PublicAnalyticsPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }}
       />
-      <PublicAnalyticsPageContent slug={slug} />
+      <PublicAnalyticsPageContent
+        slug={slug}
+        initialLinkData={initialLinkData}
+        initialAnalyticsData={initialAnalyticsData}
+      />
     </>
   );
 }

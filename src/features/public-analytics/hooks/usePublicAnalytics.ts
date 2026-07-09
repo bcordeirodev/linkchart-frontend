@@ -18,6 +18,10 @@ import type {
 
 interface UsePublicAnalyticsProps {
   slug: string | undefined;
+  /** Server-prefetched payloads used as React Query `initialData` so the client
+   *  doesn't refetch on first paint (the RSC page already fetched these). */
+  initialLinkData?: PublicLinkData | null;
+  initialAnalyticsData?: PublicAnalyticsData | null;
 }
 
 interface UsePublicAnalyticsReturn
@@ -42,6 +46,8 @@ interface UsePublicAnalyticsReturn
  */
 export function usePublicAnalytics({
   slug,
+  initialLinkData,
+  initialAnalyticsData,
 }: UsePublicAnalyticsProps): UsePublicAnalyticsReturn {
   const navigate = useNavigate();
   const { t } = useTranslation("public");
@@ -54,6 +60,7 @@ export function usePublicAnalytics({
       ),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     enabled: !!slug,
+    initialData: initialLinkData ?? undefined,
   });
 
   const analyticsQuery = useQuery<PublicAnalyticsData>({
@@ -64,6 +71,7 @@ export function usePublicAnalytics({
       ),
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     enabled: !!slug,
+    initialData: initialAnalyticsData ?? undefined,
   });
 
   const linkData = linkQuery.data ?? null;
