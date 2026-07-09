@@ -29,6 +29,8 @@ import {
   ProfileStatGrid,
 } from "./ProfileSection";
 
+import { formatCount } from "@/lib/utils/formatNumber";
+
 import type { UserProfile } from "@/services";
 
 interface ProfileSidebarProps {
@@ -53,7 +55,7 @@ export function ProfileSidebar({
     statsLoading ? (
       <Skeleton variant="text" width={48} height={32} />
     ) : (
-      n.toLocaleString(i18n.language)
+      formatCount(n, i18n.language)
     );
 
   const statValueOptional = (value: string | number) =>
