@@ -42,15 +42,34 @@
       "showing": "Showing {{from}}–{{to}} of {{total}}"
     },
     "onboarding": {
-      "title": "Getting started",
-      "subtitle": "Two steps to start using Link Chart.",
-      "createLink": "Create your first link",
-      "createLinkDone": "Link created",
-      "seeAnalytics": "Explore a link's analytics",
-      "seeAnalyticsLocked": "Create a link to unlock analytics",
-      "dismiss": "Dismiss",
       "help": "Help",
       "hintQuickCreate": "Paste any long URL here to get a short, trackable link."
+    },
+    "tour": {
+      "next": "Next",
+      "prev": "Back",
+      "done": "Done",
+      "progress": "{{current}} of {{total}}",
+      "create": {
+        "title": "Shorten your first link",
+        "desc": "Paste a long URL here and click Shorten to create a short, trackable link."
+      },
+      "overview": {
+        "title": "Account overview",
+        "desc": "Track your numbers: links created, active, total clicks and average per link."
+      },
+      "list": {
+        "title": "Your saved links",
+        "desc": "All your links live here. Use search and filters to find them quickly."
+      },
+      "analytics": {
+        "title": "See the analytics",
+        "desc": "Open a link's analytics to view clicks, countries, devices and more."
+      },
+      "actions": {
+        "title": "Link actions",
+        "desc": "Edit the destination and slug, generate the QR code, or delete the link here."
+      }
     }
   },
   "table": {
