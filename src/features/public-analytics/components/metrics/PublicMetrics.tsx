@@ -5,6 +5,7 @@ import { MousePointerClick, Activity, CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { getPublicMetricCardSx } from "@/lib/theme/publicPageStyles";
+import { formatCount } from "@/lib/utils/formatNumber";
 import { useCountUp } from "@/shared/hooks/useCountUp";
 
 import type { PublicAnalyticsData } from "../../types";
@@ -108,7 +109,7 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
             fontFeatureSettings: '"tnum" 1, "lnum" 1',
           }}
         >
-          {animatedClicks.toLocaleString(i18n.language)}
+          {formatCount(animatedClicks, i18n.language)}
         </Typography>
         <Box
           component="span"
@@ -123,7 +124,7 @@ export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
             whiteSpace: "nowrap",
           }}
         >
-          {analyticsData.total_clicks.toLocaleString(i18n.language)}
+          {formatCount(analyticsData.total_clicks, i18n.language)}
         </Box>
         <Typography sx={subSx}>
           {t("publicAnalytics.metrics.sinceCreation")}
