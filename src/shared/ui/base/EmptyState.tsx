@@ -72,7 +72,7 @@ export function EmptyState({
     >
       <Box
         sx={{
-          fontSize: "3rem",
+          fontSize: { xs: "2.25rem", sm: "3rem" },
           mb: 2,
           opacity: 0.7,
         }}
