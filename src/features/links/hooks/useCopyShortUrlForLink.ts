@@ -6,8 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { SUBDOMAIN_QUERY_KEY } from "@/features/profile/hooks/useSubdomain";
 import type { SubdomainResponse } from "@/features/profile/types/subdomain";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { showMessage } from "@/lib/store/messageSlice";
+import { useMessage } from "@/lib/providers/MessageProvider";
 import { copyTextToClipboard, getShortUrlForLink } from "@/lib/utils/shortUrl";
 import type { LinkResponse } from "@/types";
 
@@ -21,7 +20,7 @@ type LinkShortUrlInput = Pick<
  */
 export function useCopyShortUrlForLink() {
   const queryClient = useQueryClient();
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
   const { t } = useTranslation("links");
 
   return useCallback(
@@ -38,16 +37,14 @@ export function useCopyShortUrlForLink() {
       const copied = await copyTextToClipboard(url);
 
       if (copied) {
-        dispatch(
-          showMessage({
-            message: t("actions.copySuccess"),
-            variant: "success",
-          }),
-        );
+        showMessage({
+          message: t("actions.copySuccess"),
+          variant: "success",
+        });
       }
 
       return copied;
     },
-    [dispatch, queryClient, t],
+    [showMessage, queryClient, t],
   );
 }

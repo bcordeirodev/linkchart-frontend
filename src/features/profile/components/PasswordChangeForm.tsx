@@ -19,8 +19,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useAppDispatch } from "@/lib/store/hooks";
-import { showMessage } from "@/lib/store/messageSlice";
+import { useMessage } from "@/lib/providers/MessageProvider";
 import { authService } from "@/services/auth.service";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
@@ -36,7 +35,7 @@ interface PasswordChangeFormData {
  * Utiliza Zod para validação e React Hook Form para gerenciamento
  */
 export function PasswordChangeForm() {
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
   const { t } = useTranslation("profile");
   const [showPasswords, setShowPasswords] = useState({
     current: false,
@@ -91,23 +90,19 @@ export function PasswordChangeForm() {
       try {
         await authService.changePassword(data);
         reset();
-        dispatch(
-          showMessage({
-            message: t("password.successMessage"),
-            variant: "success",
-          }),
-        );
+        showMessage({
+          message: t("password.successMessage"),
+          variant: "success",
+        });
       } catch (error: unknown) {
-        dispatch(
-          showMessage({
-            message:
-              error instanceof Error ? error.message : t("form.saveFailed"),
-            variant: "error",
-          }),
-        );
+        showMessage({
+          message:
+            error instanceof Error ? error.message : t("form.saveFailed"),
+          variant: "error",
+        });
       }
     },
-    [dispatch, reset, t],
+    [showMessage, reset, t],
   );
 
   return (
