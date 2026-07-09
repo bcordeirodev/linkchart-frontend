@@ -12,8 +12,7 @@ import { ProfileSidebar } from "@/features/profile/components/ProfileSidebar";
 import { SubdomainSettings } from "@/features/profile/components/SubdomainSettings";
 import { LinkActionsBackLink } from "@/features/links/components/LinkActions/LinkActionsBackLink";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { showMessage } from "@/lib/store/messageSlice";
+import { useMessage } from "@/lib/providers/MessageProvider";
 import { profileService } from "@/services";
 import { PageSectionHeading, ResponsiveContainer } from "@/shared/ui/base";
 import { ProfileSkeleton } from "@/shared/ui/feedback/skeletons";
@@ -28,7 +27,7 @@ import type { UserProfile } from "@/services";
  * Componentizada para melhor organização
  */
 function ProfilePage() {
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
   const { t } = useTranslation("profile");
   const { data: authUser } = useUser();
   const { user: auth0User, isLoading: auth0Loading } = useAuth0User();
@@ -44,19 +43,17 @@ function ProfilePage() {
         const response = await profileService.getCurrentUser();
         setUser(response.user);
       } catch (_error) {
-        dispatch(
-          showMessage({
-            message: t("loadError"),
-            variant: "error",
-          }),
-        );
+        showMessage({
+          message: t("loadError"),
+          variant: "error",
+        });
       } finally {
         setIsLoading(false);
       }
     } else if (!authUser) {
       setIsLoading(false);
     }
-  }, [authUser, user, dispatch, t]);
+  }, [authUser, user, showMessage, t]);
 
   // Carregar dados do perfil
   useEffect(() => {

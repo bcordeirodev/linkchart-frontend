@@ -4,8 +4,7 @@ import { Alert, Button, Box, CircularProgress } from "@mui/material";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useState, useEffect } from "react";
 
-import { useAppDispatch } from "@/lib/store/hooks";
-import { showErrorMessage } from "@/lib/store/messageSlice";
+import { useMessage } from "@/lib/providers/MessageProvider";
 import { authService } from "@/services";
 
 interface EmailVerificationBannerProps {
@@ -21,7 +20,7 @@ interface EmailVerificationBannerProps {
 export function EmailVerificationBanner({
   onVerificationStatusChange,
 }: EmailVerificationBannerProps) {
-  const dispatch = useAppDispatch();
+  const { showMessage } = useMessage();
   const [isVisible, setIsVisible] = useState(false);
   const [canResend, setCanResend] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -68,10 +67,13 @@ export function EmailVerificationBanner({
           2 * 60 * 1000,
         );
       } else {
-        dispatch(showErrorMessage(result.message));
+        showMessage({ variant: "error", message: result.message });
       }
     } catch {
-      dispatch(showErrorMessage("Erro ao reenviar email de verificação"));
+      showMessage({
+        variant: "error",
+        message: "Erro ao reenviar email de verificação",
+      });
     } finally {
       setIsResending(false);
     }
