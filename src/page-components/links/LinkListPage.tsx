@@ -149,7 +149,17 @@ function LinkListPage() {
               titleVariant="page"
               sx={{ mb: { xs: 1.5, sm: 2 } }}
             />
-            <LinkMetrics linksData={links} showTitle={false} />
+            {links.length > 0 ? (
+              <>
+                <LinksListSectionHeading
+                  title={t("list.sections.overview")}
+                  description={t("list.sections.overviewDescription")}
+                  titleVariant="section"
+                  sx={{ mb: { xs: 1, sm: 1.5 } }}
+                />
+                <LinkMetrics linksData={links} showTitle={false} />
+              </>
+            ) : null}
           </Box>
 
           <LinksQuickCreate onLinkCreated={handleLinkCreated} />
