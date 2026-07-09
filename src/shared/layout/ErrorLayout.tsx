@@ -227,7 +227,10 @@ function ErrorLayout({
                   size="large"
                   onClick={handleGoBack}
                   startIcon={<AppIcon intent="back" size={20} />}
-                  sx={{ minWidth: { xs: "100%", sm: 160 } }}
+                  sx={{
+                    minWidth: { xs: "100%", sm: 160 },
+                    minHeight: { xs: 44, sm: "auto" },
+                  }}
                 >
                   Voltar
                 </Button>
@@ -239,7 +242,10 @@ function ErrorLayout({
                   component={Link}
                   href="/"
                   startIcon={<AppIcon intent="link" size={20} />}
-                  sx={{ minWidth: { xs: "100%", sm: 160 } }}
+                  sx={{
+                    minWidth: { xs: "100%", sm: 160 },
+                    minHeight: { xs: 44, sm: "auto" },
+                  }}
                 >
                   Início
                 </Button>
