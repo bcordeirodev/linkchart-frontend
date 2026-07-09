@@ -16,4 +16,4 @@ export { default as ErrorBoundary } from "./ErrorBoundary";
 export { default as FuseUtils } from "./authUtils";
 
 // Number formatting
-export { formatCount } from "./formatNumber";
+export { formatCount, formatPercent, formatCompact } from "./formatNumber";
