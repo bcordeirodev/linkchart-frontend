@@ -585,7 +585,15 @@ export function RealTimeHeatmapChart({
                 />
               </Box>
 
-              <Stack direction="row" spacing={1}>
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{
+                  "& .MuiButton-root": {
+                    minHeight: { xs: 44, sm: "auto" },
+                  },
+                }}
+              >
                 <Button
                   size="small"
                   variant={mapStyle === "street" ? "contained" : "outlined"}
