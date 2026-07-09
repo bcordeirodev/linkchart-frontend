@@ -105,10 +105,10 @@ function LinkListPage() {
     }
   }, [filteredLinks, sortBy, meta]);
 
-  const firstSortedLink = sortedLinks[0];
-  const analyticsHref = firstSortedLink
-    ? `/links/analytics/${firstSortedLink.id}`
-    : null;
+  // Href points at the first link overall (not the filtered `sortedLinks`), so
+  // the onboarding analytics shortcut survives an active search/filter.
+  const firstLink = links[0];
+  const analyticsHref = firstLink ? `/links/analytics/${firstLink.id}` : null;
 
   const visibleLinkIds = useMemo(
     () => sortedLinks.map((l) => String(l.id)),
@@ -162,7 +162,7 @@ function LinkListPage() {
               titleVariant="page"
               sx={{ mb: { xs: 1.5, sm: 2 } }}
               action={
-                !onboarding.visible && !onboarding.completed ? (
+                onboarding.dismissed && !onboarding.completed ? (
                   <Button
                     size="small"
                     variant="text"

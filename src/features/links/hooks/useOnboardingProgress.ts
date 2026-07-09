@@ -86,10 +86,15 @@ export function useOnboardingProgress(): OnboardingProgress {
 
   const [hasSeenAnalytics, setHasSeenAnalytics] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  // Gates `visible` until localStorage is read on the client, so a returning
+  // user who already dismissed/completed onboarding never sees the card flash
+  // for one paint on a warm-cache navigation (when `loading` is already false).
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     setHasSeenAnalytics(readFlag(ANALYTICS_SEEN_KEY));
     setDismissed(readFlag(DISMISSED_KEY));
+    setHydrated(true);
   }, []);
 
   const markAnalyticsSeen = useCallback(() => {
@@ -108,7 +113,7 @@ export function useOnboardingProgress(): OnboardingProgress {
   }, []);
 
   const completed = hasCreatedLink && hasSeenAnalytics;
-  const visible = !completed && !dismissed;
+  const visible = hydrated && !completed && !dismissed;
 
   return {
     hasCreatedLink,

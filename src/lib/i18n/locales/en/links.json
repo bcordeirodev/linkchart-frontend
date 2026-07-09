@@ -51,8 +51,7 @@
       "seeAnalyticsLocked": "Create a link to unlock analytics",
       "dismiss": "Dismiss",
       "help": "Help",
-      "hintQuickCreate": "Paste any long URL here to get a short, trackable link.",
-      "hintAnalytics": "Open a link's analytics to see clicks, countries, devices and more."
+      "hintQuickCreate": "Paste any long URL here to get a short, trackable link."
     }
   },
   "table": {

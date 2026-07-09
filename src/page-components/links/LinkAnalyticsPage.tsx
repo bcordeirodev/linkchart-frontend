@@ -33,8 +33,10 @@ function LinkAnalyticsPage({ id }: Props) {
   );
 
   useEffect(() => {
-    markAnalyticsOnboardingSeen();
-  }, []);
+    if (id) {
+      markAnalyticsOnboardingSeen();
+    }
+  }, [id]);
 
   // Early return para casos de erro
   if (!id) {
