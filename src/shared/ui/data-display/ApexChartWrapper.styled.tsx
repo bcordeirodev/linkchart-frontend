@@ -1,4 +1,3 @@
-"use client";
 import { Box, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 

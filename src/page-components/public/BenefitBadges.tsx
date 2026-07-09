@@ -1,4 +1,3 @@
-"use client";
 import { Box } from "@mui/material";
 
 import { PublicCtaBlock } from "@/features/public-analytics/components/info/PublicCtaBlock";
