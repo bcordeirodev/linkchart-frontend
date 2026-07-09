@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ShorterClientPage from "./ShorterClientPage";
+import ShorterFeaturePage from "@/page-components/public/ShorterPage";
 import {
   buildWebApplicationSchema,
   buildFaqSchemaPtBR,
@@ -29,7 +29,7 @@ export default function ShorterPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
-      <ShorterClientPage />
+      <ShorterFeaturePage />
     </>
   );
 }
