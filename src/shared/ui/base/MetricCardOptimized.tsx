@@ -1,7 +1,16 @@
 "use client";
-import { Box, Typography, Card, CardContent, Divider } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Divider,
+  Stack,
+} from "@mui/material";
 import { useTheme, alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
+
+import { HelpHint } from "@/shared/ui/base/HelpHint";
 
 import {
   elevationLightTokens,
@@ -23,6 +32,7 @@ export function MetricCardOptimized({
   subtitle,
   icon,
   color = "primary",
+  hint,
   trend,
   sx,
   ...other
@@ -72,13 +82,21 @@ export function MetricCardOptimized({
             mb: 1,
           }}
         >
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontWeight: 500 }}
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={0.25}
+            sx={{ minWidth: 0 }}
           >
-            {title}
-          </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontWeight: 500 }}
+            >
+              {title}
+            </Typography>
+            {hint ? <HelpHint label={hint} size={13} /> : null}
+          </Stack>
 
           <Box
             sx={{

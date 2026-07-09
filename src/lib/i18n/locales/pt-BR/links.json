@@ -12,10 +12,9 @@
     },
     "sections": {
       "overview": "Visão geral da conta",
-      "overviewDescription": "Somatório de todos os seus links.",
       "filters": "Busca e filtros",
       "filtersDescription": "Encontre links por texto, status ou ordene a lista.",
-      "links": "Seus links",
+      "links": "Links cadastrados",
       "linksBrowseDescription_one": "{{count}} link — use busca e filtros abaixo para refinar",
       "linksBrowseDescription_other": "{{count}} links — use busca e filtros abaixo para refinar",
       "linksDescription_one": "{{count}} link na lista",
@@ -43,15 +42,34 @@
       "showing": "Mostrando {{from}}–{{to}} de {{total}}"
     },
     "onboarding": {
-      "title": "Primeiros passos",
-      "subtitle": "Dois passos para começar a usar o Link Chart.",
-      "createLink": "Crie seu primeiro link",
-      "createLinkDone": "Link criado",
-      "seeAnalytics": "Conheça o analytics do link",
-      "seeAnalyticsLocked": "Crie um link para desbloquear o analytics",
-      "dismiss": "Dispensar",
       "help": "Ajuda",
       "hintQuickCreate": "Cole qualquer URL longa aqui para gerar um link curto e rastreável."
+    },
+    "tour": {
+      "next": "Próximo",
+      "prev": "Voltar",
+      "done": "Concluir",
+      "progress": "{{current}} de {{total}}",
+      "create": {
+        "title": "Encurte seu primeiro link",
+        "desc": "Cole uma URL longa aqui e clique em Encurtar para criar um link curto e rastreável."
+      },
+      "overview": {
+        "title": "Visão geral da conta",
+        "desc": "Acompanhe seus números: links criados, ativos, total de cliques e média por link."
+      },
+      "list": {
+        "title": "Seus links cadastrados",
+        "desc": "Todos os seus links ficam aqui. Use a busca e os filtros para encontrar rapidamente."
+      },
+      "analytics": {
+        "title": "Veja o analytics",
+        "desc": "Abra o analytics de um link para ver cliques, países, dispositivos e muito mais."
+      },
+      "actions": {
+        "title": "Ações do link",
+        "desc": "Aqui você edita o destino e o slug, gera o QR Code ou exclui o link."
+      }
     }
   },
   "table": {
@@ -226,10 +244,14 @@
     "clicksToday": "Cliques Hoje",
     "links": "Links Criados",
     "linksSubtitle": "no total",
+    "linksHint": "Total de links que você já criou nesta conta.",
     "linksCreated": "Links Criados",
     "linksActive": "Links Funcionando",
+    "activeHint": "Links ativos e funcionando agora (fora expirados/inativos).",
     "totalClicksSubtitle": "Cliques Acumulados",
+    "totalClicksHint": "Soma de todos os cliques em todos os seus links.",
     "clicksPerLink": "Cliques por Link",
+    "avgClicksPerLinkHint": "Total de cliques dividido pelo número de links.",
     "trendTooltip": "Variação de cliques vs. o período anterior",
     "trendNoData": "Sem dados de tendência ainda"
   },
