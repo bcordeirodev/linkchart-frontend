@@ -6,7 +6,7 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import type { KeyboardEvent, MouseEvent } from "react";
 
-import useClipboard from "@/hooks/useClipboard";
+import useClipboard from "@/shared/hooks/useClipboard";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { getLinksBorderColor } from "./linksPanelStyles";
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LinkEditPageContent from "@/pages/links/LinkEditPage";
+import LinkEditPageContent from "@/page-components/links/LinkEditPage";
 
 export const dynamic = "force-dynamic";
 

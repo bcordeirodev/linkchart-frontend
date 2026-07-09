@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import NotFoundPageContent from "@/pages/system/NotFoundPage";
+import NotFoundPageContent from "@/page-components/system/NotFoundPage";
 export const metadata: Metadata = {
   title: "Page Not Found",
   robots: { index: false, follow: false },

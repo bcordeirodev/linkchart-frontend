@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LinkQRPageContent from "@/pages/links/LinkQRPage";
+import LinkQRPageContent from "@/page-components/links/LinkQRPage";
 
 export const dynamic = "force-dynamic";
 

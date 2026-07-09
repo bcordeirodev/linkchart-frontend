@@ -4,7 +4,7 @@ import { Info, Navigation } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { tDynamic } from "@/i18n/tDynamic";
+import { tDynamic } from "@/lib/i18n/tDynamic";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { SectionDivider } from "@/shared/ui/SectionDivider";
