@@ -94,6 +94,8 @@ export interface MetricCardProps extends BaseComponentProps {
   subtitle?: string;
   icon: ReactNode;
   color?: "primary" | "secondary" | "success" | "warning" | "error" | "info";
+  /** Optional short explanation shown via a HelpHint "?" next to the title. */
+  hint?: string;
   trend?: {
     value: number;
     isPositive: boolean;
