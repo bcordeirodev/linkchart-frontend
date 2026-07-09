@@ -1,7 +1,7 @@
 "use client";
 
 import { BarChart3, HelpCircle } from "lucide-react";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,11 +11,10 @@ import {
   LinksListSectionHeading,
   LinksQuickCreate,
 } from "@/features/links/components/list";
-import { FirstStepsChecklist } from "@/features/links/components/onboarding/FirstStepsChecklist";
+import { useLinksTour } from "@/features/links/onboarding/useLinksTour";
 import { useLinks, useDeleteLink } from "@/features/links/hooks/useLinks";
 import { useNewlyCreatedLinkHighlight } from "@/features/links/hooks/useNewlyCreatedLinkHighlight";
 import { useLinksMeta } from "@/features/links/hooks/useLinksMeta";
-import { useOnboardingProgress } from "@/features/links/hooks/useOnboardingProgress";
 import { getLinkStatus } from "@/features/links/utils/linkStatus";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useResponsive } from "@/lib/theme";
@@ -30,7 +29,7 @@ function LinkListPage() {
   const { isMobile } = useResponsive();
   const { t } = useTranslation("links");
   const { links, loading } = useLinks();
-  const onboarding = useOnboardingProgress();
+  const tour = useLinksTour({ ready: !loading && links.length > 0 });
   const { mutateAsync: deleteLinkMutation } = useDeleteLink();
   const deleteLink = (id: string): Promise<void> =>
     deleteLinkMutation(id).then(() => undefined);
@@ -105,11 +104,6 @@ function LinkListPage() {
     }
   }, [filteredLinks, sortBy, meta]);
 
-  // Href points at the first link overall (not the filtered `sortedLinks`), so
-  // the onboarding analytics shortcut survives an active search/filter.
-  const firstLink = links[0];
-  const analyticsHref = firstLink ? `/links/analytics/${firstLink.id}` : null;
-
   const visibleLinkIds = useMemo(
     () => sortedLinks.map((l) => String(l.id)),
     [sortedLinks],
@@ -149,11 +143,6 @@ function LinkListPage() {
     >
       <ResponsiveContainer variant="page">
         <Stack spacing={{ xs: 2.5, sm: 3 }} component="section">
-          <FirstStepsChecklist
-            progress={onboarding}
-            analyticsHref={analyticsHref}
-          />
-
           <Box component="div">
             <LinksListSectionHeading
               icon={<BarChart3 {...ICON_MD} />}
@@ -162,49 +151,58 @@ function LinkListPage() {
               titleVariant="page"
               sx={{ mb: { xs: 1.5, sm: 2 } }}
               action={
-                onboarding.dismissed && !onboarding.completed ? (
-                  <Button
-                    size="small"
-                    variant="text"
-                    startIcon={<HelpCircle width={16} height={16} />}
-                    onClick={onboarding.reopen}
-                  >
-                    {t("list.onboarding.help")}
-                  </Button>
-                ) : undefined
+                <Button
+                  size="small"
+                  variant="text"
+                  startIcon={<HelpCircle width={16} height={16} />}
+                  onClick={tour.start}
+                >
+                  {t("list.onboarding.help")}
+                </Button>
               }
             />
             {links.length > 0 ? (
-              <>
-                <LinksListSectionHeading
-                  title={t("list.sections.overview")}
-                  description={t("list.sections.overviewDescription")}
-                  titleVariant="section"
-                  sx={{ mb: { xs: 1, sm: 1.5 } }}
-                />
+              <Box data-tour="overview" sx={{ mt: { xs: 2, sm: 2.5 } }}>
+                <Typography
+                  variant="overline"
+                  component="h2"
+                  sx={{
+                    display: "block",
+                    color: "text.secondary",
+                    fontWeight: 600,
+                    letterSpacing: "0.08em",
+                    mb: { xs: 1, sm: 1.25 },
+                  }}
+                >
+                  {t("list.sections.overview")}
+                </Typography>
                 <LinkMetrics linksData={links} showTitle={false} />
-              </>
+              </Box>
             ) : null}
           </Box>
 
-          <LinksQuickCreate onLinkCreated={handleLinkCreated} />
+          <Box data-tour="quick-create">
+            <LinksQuickCreate onLinkCreated={handleLinkCreated} />
+          </Box>
 
-          <LinksBrowseSection
-            highlightedLinkId={highlightedLinkId}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            statusFilter={statusFilter}
-            onStatusChange={setStatusFilter}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-            sortedLinks={sortedLinks}
-            meta={meta}
-            loading={loading}
-            isMobile={isMobile}
-            hasActiveFilters={hasActiveFilters}
-            onClearFilters={handleClearFilters}
-            onDelete={deleteLink}
-          />
+          <Box data-tour="links-list">
+            <LinksBrowseSection
+              highlightedLinkId={highlightedLinkId}
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              statusFilter={statusFilter}
+              onStatusChange={setStatusFilter}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              sortedLinks={sortedLinks}
+              meta={meta}
+              loading={loading}
+              isMobile={isMobile}
+              hasActiveFilters={hasActiveFilters}
+              onClearFilters={handleClearFilters}
+              onDelete={deleteLink}
+            />
+          </Box>
         </Stack>
       </ResponsiveContainer>
     </AuthGuardRedirect>

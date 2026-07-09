@@ -122,6 +122,7 @@ export function LinkMetrics({
       icon: <Link2 {...ICON_LG} />,
       color: "primary" as const,
       subtitle: t("metrics.linksSubtitle"),
+      hint: t("metrics.linksHint"),
     },
     {
       id: "active_links",
@@ -130,6 +131,7 @@ export function LinkMetrics({
       icon: <CheckCircle {...ICON_LG} />,
       color: "success" as const,
       subtitle: t("metrics.linksActive"),
+      hint: t("metrics.activeHint"),
     },
     {
       id: "total_clicks_list",
@@ -138,6 +140,7 @@ export function LinkMetrics({
       icon: <TrendingUp {...ICON_LG} />,
       color: "info" as const,
       subtitle: t("metrics.totalClicksSubtitle"),
+      hint: t("metrics.totalClicksHint"),
     },
     {
       id: "avg_clicks_per_link",
@@ -146,6 +149,7 @@ export function LinkMetrics({
       icon: <BarChart3 {...ICON_LG} />,
       color: "warning" as const,
       subtitle: t("metrics.clicksPerLink"),
+      hint: t("metrics.avgClicksPerLinkHint"),
     },
   ];
 
@@ -169,6 +173,7 @@ export function LinkMetrics({
               icon={metric.icon}
               color={metric.color}
               subtitle={metric.subtitle}
+              hint={"hint" in metric ? metric.hint : undefined}
             />
           </Grid>
         ))}
@@ -193,6 +198,7 @@ export function LinkMetrics({
               icon={metric.icon}
               color={metric.color}
               subtitle={metric.subtitle}
+              hint={"hint" in metric ? metric.hint : undefined}
             />
           </Grid>
         ))}

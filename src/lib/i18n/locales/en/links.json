@@ -12,10 +12,9 @@
     },
     "sections": {
       "overview": "Account overview",
-      "overviewDescription": "Totals across all your links.",
       "filters": "Search & filters",
       "filtersDescription": "Find links by text or status, and sort the list.",
-      "links": "Your links",
+      "links": "Registered links",
       "linksBrowseDescription_one": "{{count}} link — use search and filters below to refine",
       "linksBrowseDescription_other": "{{count}} links — use search and filters below to refine",
       "linksDescription_one": "{{count}} link in your list",
@@ -43,15 +42,34 @@
       "showing": "Showing {{from}}–{{to}} of {{total}}"
     },
     "onboarding": {
-      "title": "Getting started",
-      "subtitle": "Two steps to start using Link Chart.",
-      "createLink": "Create your first link",
-      "createLinkDone": "Link created",
-      "seeAnalytics": "Explore a link's analytics",
-      "seeAnalyticsLocked": "Create a link to unlock analytics",
-      "dismiss": "Dismiss",
       "help": "Help",
       "hintQuickCreate": "Paste any long URL here to get a short, trackable link."
+    },
+    "tour": {
+      "next": "Next",
+      "prev": "Back",
+      "done": "Done",
+      "progress": "{{current}} of {{total}}",
+      "create": {
+        "title": "Shorten your first link",
+        "desc": "Paste a long URL here and click Shorten to create a short, trackable link."
+      },
+      "overview": {
+        "title": "Account overview",
+        "desc": "Track your numbers: links created, active, total clicks and average per link."
+      },
+      "list": {
+        "title": "Your saved links",
+        "desc": "All your links live here. Use search and filters to find them quickly."
+      },
+      "analytics": {
+        "title": "See the analytics",
+        "desc": "Open a link's analytics to view clicks, countries, devices and more."
+      },
+      "actions": {
+        "title": "Link actions",
+        "desc": "Edit the destination and slug, generate the QR code, or delete the link here."
+      }
     }
   },
   "table": {
@@ -226,10 +244,14 @@
     "clicksToday": "Clicks Today",
     "links": "Links Created",
     "linksSubtitle": "in total",
+    "linksHint": "Total number of links you've created in this account.",
     "linksCreated": "Links Created",
     "linksActive": "Links Working",
+    "activeHint": "Links active and working now (excluding expired/inactive).",
     "totalClicksSubtitle": "Accumulated Clicks",
+    "totalClicksHint": "Sum of all clicks across all your links.",
     "clicksPerLink": "Clicks Per Link",
+    "avgClicksPerLinkHint": "Total clicks divided by the number of links.",
     "trendTooltip": "Click change vs. the previous period",
     "trendNoData": "No trend data yet"
   },
