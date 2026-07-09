@@ -28,11 +28,21 @@ import { PublicLayout } from "@/shared/layout";
 import { PublicAnalyticsSkeleton } from "@/shared/ui/feedback/skeletons";
 import { PublicBlobBackground } from "@/shared/ui/PublicBlobBackground";
 
+import type { PublicLinkData, PublicAnalyticsData } from "./types";
+
 interface PublicAnalyticsPageContentProps {
   slug: string;
+  /** Server-prefetched payloads (from the RSC page) to seed React Query and
+   *  avoid a client refetch on first paint. */
+  initialLinkData?: PublicLinkData | null;
+  initialAnalyticsData?: PublicAnalyticsData | null;
 }
 
-function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
+function PublicAnalyticsPageContent({
+  slug,
+  initialLinkData,
+  initialAnalyticsData,
+}: PublicAnalyticsPageContentProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
   const reduced = usePrefersReducedMotion();
@@ -43,7 +53,7 @@ function PublicAnalyticsPageContent({ slug }: PublicAnalyticsPageContentProps) {
     error,
     debugInfo,
     handleCreateLink,
-  } = usePublicAnalytics({ slug });
+  } = usePublicAnalytics({ slug, initialLinkData, initialAnalyticsData });
 
   /**
    * Returns 0 when the user has requested reduced motion so all Fade elements
