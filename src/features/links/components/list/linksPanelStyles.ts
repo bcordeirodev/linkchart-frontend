@@ -14,6 +14,21 @@ export function getLinksBorderColor(theme: Theme) {
 }
 
 /**
+ * Borda interna do card de link — um passo mais presente que a hairline
+ * externa: sobre a superfície elevada (#18181B) a 0.12 quase some, e as
+ * divisões internas (rodapé de métricas, barra de ações, thumb) precisam
+ * ler como estrutura, não ruído.
+ *
+ * @param theme - tema MUI ativo.
+ * @returns cor de borda interna do card.
+ */
+export function getLinkCardInnerBorderColor(theme: Theme) {
+  const isDark = theme.palette.mode === "dark";
+
+  return alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14);
+}
+
+/**
  * Recipe único de superfície recuada (inset) da feature /links — nível 1 da
  * escala de elevação. Em dark, usa o tom do painel (`background.paper`):
  * dentro de um card elevado isso recua de verdade; sobre o próprio painel o
@@ -147,7 +162,9 @@ export function getLinkCardShellSx(theme: Theme) {
     animation: `${cardEnter} 280ms ${motionTokens.easing.default} backwards`,
     "@media (prefers-reduced-motion: reduce)": { animation: "none" },
     borderRadius: `${radiusTokens.md}px`,
-    border: `1px solid ${getLinksBorderColor(theme)}`,
+    // Borda do card um passo acima da hairline dos painéis — o card é o
+    // objeto principal da página e pode se afirmar.
+    border: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.14 : 0.12)}`,
     overflow: "hidden" as const,
     backgroundColor: isDark
       ? darkNeutral.elevated
@@ -239,7 +256,7 @@ export function getLinkCardMetricsRowSx(theme: Theme) {
     rowGap: 0.5,
     pt: 0.625,
     mt: 0.625,
-    borderTop: `1px solid ${getLinksBorderColor(theme)}`,
+    borderTop: `1px solid ${getLinkCardInnerBorderColor(theme)}`,
     minWidth: 0,
   };
 }
@@ -254,7 +271,7 @@ export function getLinkCardMetricDividerSx(theme: Theme) {
     alignSelf: "stretch",
     minHeight: LINK_CARD_METRIC_ROW_HEIGHT,
     mx: { xs: 1, sm: 1.25 },
-    bgcolor: getLinksBorderColor(theme),
+    bgcolor: getLinkCardInnerBorderColor(theme),
     flexShrink: 0,
   };
 }
