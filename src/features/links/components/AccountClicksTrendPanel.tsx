@@ -1,10 +1,11 @@
 "use client";
+import { Box, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
+import { getLinksPanelSx } from "@/features/links/components/list/linksPanelStyles";
 import { formatCount } from "@/lib/utils";
 import type { SparklinePoint } from "@/types";
 
@@ -86,6 +87,9 @@ export function AccountClicksTrendPanel({
 
   const options = useMemo(
     () => ({
+      // parentHeightOffset: o Apex reserva ~15px extras abaixo do gráfico por
+      // padrão — zerar mata o "respiro fantasma" dentro da caixa.
+      chart: { parentHeightOffset: 0 },
       stroke: { curve: "smooth" as const, width: 2 },
       fill: {
         type: "gradient",
@@ -107,7 +111,10 @@ export function AccountClicksTrendPanel({
         axisTicks: { show: false },
       },
       yaxis: { labels: { show: false } },
-      grid: { strokeDashArray: 3, padding: { left: 8, right: 12 } },
+      grid: {
+        strokeDashArray: 3,
+        padding: { top: -12, bottom: 0, left: 8, right: 12 },
+      },
       tooltip: {
         x: {
           formatter: (value: string) => formatShortDate(value, i18n.language),
@@ -123,19 +130,42 @@ export function AccountClicksTrendPanel({
   }
 
   return (
-    <ChartCard
-      title={t("metrics.trendChartTitle")}
-      subtitle={t("metrics.trendChartLabel", { count: data.length })}
-      height="auto"
-      sx={{ mt: { xs: 2, sm: 2.5 } }}
+    // Caixa própria no shell da feature (não o ChartCard genérico): título e
+    // caption colados no gráfico, paddings enxutos — sem faixas de respiro.
+    <Box
+      sx={{
+        ...getLinksPanelSx(theme),
+        mt: { xs: 2, sm: 2.5 },
+        px: { xs: 2, sm: 2.5 },
+        pt: { xs: 1.5, sm: 2 },
+        pb: 0.75,
+      }}
     >
+      <Typography
+        component="h3"
+        sx={{ fontSize: "0.875rem", fontWeight: 600, lineHeight: 1.4 }}
+      >
+        {t("metrics.trendChartTitle")}
+      </Typography>
+      <Typography
+        variant="caption"
+        sx={{
+          color: "text.secondary",
+          fontSize: "0.75rem",
+          lineHeight: 1.4,
+          display: "block",
+          mb: 1.25,
+        }}
+      >
+        {t("metrics.trendChartLabel", { count: data.length })}
+      </Typography>
       <ApexChartWrapper
         type="area"
-        height={150}
+        height={132}
         series={series}
         options={options}
       />
-    </ChartCard>
+    </Box>
   );
 }
 
