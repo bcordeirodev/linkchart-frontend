@@ -5,6 +5,7 @@
  */
 
 import type { ID, ISODateString } from "./common";
+import type { Tag } from "./tags";
 
 /**
  * Dados para criação de um novo link
@@ -24,8 +25,8 @@ export interface LinkCreateRequest {
   starts_in?: ISODateString;
   /** Limite de cliques (opcional) */
   click_limit?: number | null;
-  /** Tags para categorização (opcional) */
-  tags?: string[];
+  /** IDs das tags do usuário a associar ao link (máx. 5) */
+  tag_ids?: number[];
   /** Link ativo por padrão */
   is_active?: boolean;
   /** UTM Source (opcional) */
@@ -58,8 +59,12 @@ export interface LinkUpdateRequest {
   starts_in?: ISODateString;
   /** Limite de cliques */
   click_limit?: number | null;
-  /** Tags para categorização */
-  tags?: string[];
+  /**
+   * IDs das tags do usuário a associar ao link (máx. 5). Semântica de "sync"
+   * no backend: quando enviado, substitui completamente o conjunto de tags
+   * do link (não é um merge).
+   */
+  tag_ids?: number[];
   /** Status ativo/inativo */
   is_active?: boolean;
   /** UTM Source */
@@ -110,8 +115,8 @@ export interface LinkResponse {
   expires_at?: ISODateString | null;
   /** Data de início (opcional) */
   starts_in?: ISODateString | null;
-  /** Tags associadas */
-  tags?: string[];
+  /** Tags associadas ao link (id, name, color) */
+  tags?: Tag[];
   /** Último clique registrado */
   last_click_at?: ISODateString;
   /** Limite de cliques (opcional) */

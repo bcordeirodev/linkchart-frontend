@@ -10,6 +10,8 @@
  *
  * Sections:
  * - `links` — link CRUD + batch metadata.
+ * - `tags` — tag CRUD (mutations also invalidate `links.*` since link cards
+ *   embed the tag objects they're tagged with).
  * - `analytics` — per-link analytics tabs and the public analytics page.
  */
 export const queryKeys = {
@@ -18,6 +20,10 @@ export const queryKeys = {
     list: () => ["links", "list"] as const,
     detail: (id: string) => ["links", "detail", id] as const,
     meta: (ids: string[]) => ["links", "meta", [...ids].sort()] as const,
+  },
+  tags: {
+    all: () => ["tags"] as const,
+    list: () => ["tags", "list"] as const,
   },
   analytics: {
     dashboard: (id: string) => ["analytics", id, "dashboard"] as const,
