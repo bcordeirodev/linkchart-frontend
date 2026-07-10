@@ -1,5 +1,6 @@
 import { alpha, keyframes } from "@mui/material/styles";
 
+import { darkNeutral } from "@/lib/theme/colors";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 
 import type { Theme } from "@mui/material/styles";
@@ -10,6 +11,22 @@ export function getLinksBorderColor(theme: Theme) {
 
   // Softer neutral border to avoid the "heavy card" look in /links.
   return alpha(theme.palette.text.primary, isDark ? 0.12 : 0.1);
+}
+
+/**
+ * Recipe único de superfície recuada (inset) da feature /links — nível 1 da
+ * escala de elevação. Em dark, usa o tom do painel (`background.paper`):
+ * dentro de um card elevado isso recua de verdade; sobre o próprio painel o
+ * inset vira "border-only" (mesma cor, só a hairline delimita — menos ruído).
+ * Em light, um véu neutro. Usado por barra de copiar, url bar e filter inset.
+ *
+ * @param theme - tema MUI ativo.
+ * @returns cor de fundo do inset.
+ */
+export function getLinksInsetBg(theme: Theme) {
+  return theme.palette.mode === "dark"
+    ? theme.palette.background.paper
+    : alpha(theme.palette.common.black, 0.025);
 }
 
 /** Hairline shadow for /links cards — softer than `elevation*.xs`. */
@@ -103,7 +120,12 @@ export function getNewlyCreatedHighlightSx(theme: Theme) {
   };
 }
 
-/** Shell for desktop/mobile link cards in the browse list. */
+/**
+ * Shell dos cards de link (desktop e mobile) — nível 2 da escala de elevação.
+ * Em dark mode a elevação é luminância (card mais claro que painel e página),
+ * não sombra: fundo `darkNeutral.elevated`, hover um passo mais claro
+ * (`darkNeutral.input`), borda hairline única e sem drop shadow.
+ */
 export function getLinkCardShellSx(theme: Theme) {
   const isDark = theme.palette.mode === "dark";
 
@@ -112,13 +134,15 @@ export function getLinkCardShellSx(theme: Theme) {
     border: `1px solid ${getLinksBorderColor(theme)}`,
     overflow: "hidden" as const,
     backgroundColor: isDark
-      ? alpha(theme.palette.common.black, 0.14)
+      ? darkNeutral.elevated
       : alpha(theme.palette.common.black, 0.02),
     backgroundImage: getLinksTopLightGradient(theme),
-    boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme)}`,
-    transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}, border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+    boxShadow: getLinksTopHighlight(theme),
+    transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {
-      boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme, "hover")}`,
+      backgroundColor: isDark
+        ? darkNeutral.input
+        : alpha(theme.palette.common.black, 0.035),
       borderColor: alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14),
     },
   };
@@ -152,10 +176,7 @@ export function getLinkCardUrlBarSx(theme: Theme) {
     py: 0.5,
     borderRadius: `${radiusTokens.sm}px`,
     border: `1px solid ${getLinksBorderColor(theme)}`,
-    backgroundColor:
-      theme.palette.mode === "dark"
-        ? alpha(theme.palette.common.white, 0.03)
-        : alpha(theme.palette.common.black, 0.025),
+    backgroundColor: getLinksInsetBg(theme),
     minWidth: 0,
   };
 }
@@ -257,10 +278,7 @@ export function getLinksFilterInsetSx(theme: Theme) {
   return {
     borderRadius: `${radiusTokens.sm}px`,
     border: `1px solid ${getLinksBorderColor(theme)}`,
-    backgroundColor:
-      theme.palette.mode === "dark"
-        ? alpha(theme.palette.common.white, 0.03)
-        : alpha(theme.palette.common.black, 0.02),
+    backgroundColor: getLinksInsetBg(theme),
     overflow: "hidden" as const,
   };
 }
