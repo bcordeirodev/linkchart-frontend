@@ -23,7 +23,11 @@ import type { LinkDensity } from "@/features/links/hooks/useLinkDensity";
 
 import { getSoftSelectedChipSx } from "@/lib/theme/softChip";
 
-import { getLinksFilterInsetSx, getLinksPanelSx } from "./linksPanelStyles";
+import {
+  getLinksFilterInsetSx,
+  getLinksPanelSx,
+  getLinksBorderColor,
+} from "./linksPanelStyles";
 
 interface LinksFiltersProps {
   searchTerm: string;
@@ -220,7 +224,7 @@ export function LinksFilters({
               "& .MuiToggleButton-root": {
                 px: 0.875,
                 py: 0.375,
-                border: `1px solid ${theme.palette.divider}`,
+                border: `1px solid ${getLinksBorderColor(theme)}`,
                 color: "text.secondary",
                 "&.Mui-selected": {
                   color: "primary.main",

@@ -21,6 +21,7 @@ import {
   Chip,
   Stack,
   useTheme,
+  Skeleton,
 } from "@mui/material";
 import { memo, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
@@ -30,8 +31,6 @@ import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkCardActionBar } from "./LinkCardActionBar";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 import { LinkCardMetrics } from "./LinkCardMetrics";
-
-import { radiusTokens } from "@/lib/theme/designSystem";
 
 import {
   getLinkStatus,
@@ -258,82 +257,32 @@ export const LinksMobileCards = memo(
     meta,
     highlightedLinkId = null,
   }: LinksMobileCardsProps) => {
+    const theme = useTheme();
     const { t } = useTranslation("links");
 
     if (loading) {
       return (
-        <Box sx={{ p: 2 }}>
+        <Box>
           {[...Array(3)].map((_, index) => (
             <Card
               key={index}
-              sx={{ mb: 2, borderRadius: `${radiusTokens.md}px` }}
+              sx={{ mb: linkCardListItemMb, ...getLinkCardShellSx(theme) }}
             >
-              <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                  <Box
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: "50%",
-                      bgcolor: "grey.200",
-                      mr: 2,
-                    }}
-                  />
+              <CardContent sx={linkCardContentSx}>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  spacing={1}
+                  sx={{ mb: 1 }}
+                >
+                  <Skeleton variant="rounded" width={20} height={20} />
                   <Box sx={{ flex: 1 }}>
-                    <Box
-                      sx={{
-                        height: 20,
-                        bgcolor: "grey.200",
-                        borderRadius: `${radiusTokens.sm}px`,
-                        mb: 1,
-                      }}
-                    />
-                    <Box
-                      sx={{
-                        height: 16,
-                        bgcolor: "grey.100",
-                        borderRadius: `${radiusTokens.sm}px`,
-                        width: "70%",
-                      }}
-                    />
+                    <Skeleton height={18} width="60%" />
+                    <Skeleton height={14} width="85%" />
                   </Box>
-                </Box>
-                <Box
-                  sx={{
-                    height: 40,
-                    bgcolor: "grey.100",
-                    borderRadius: `${radiusTokens.md}px`,
-                    mb: 2,
-                  }}
-                />
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Box
-                    sx={{
-                      height: 24,
-                      bgcolor: "grey.200",
-                      borderRadius: `${radiusTokens.full}px`,
-                      width: 60,
-                    }}
-                  />
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    <Box
-                      sx={{
-                        width: 32,
-                        height: 32,
-                        bgcolor: "grey.200",
-                        borderRadius: "50%",
-                      }}
-                    />
-                    <Box
-                      sx={{
-                        width: 32,
-                        height: 32,
-                        bgcolor: "grey.200",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  </Box>
-                </Box>
+                </Stack>
+                <Skeleton variant="rounded" height={44} sx={{ mb: 1 }} />
+                <Skeleton height={16} width="70%" />
               </CardContent>
             </Card>
           ))}
