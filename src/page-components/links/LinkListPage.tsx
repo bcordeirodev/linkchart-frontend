@@ -1,11 +1,11 @@
 "use client";
 
 import { BarChart3, HelpCircle } from "lucide-react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { LinkMetrics } from "@/features/links/components/LinkMetrics";
+import { AccountOverviewPanel } from "@/features/links/components/AccountOverviewPanel";
 import {
   LinksBrowseSection,
   LinksListSectionHeading,
@@ -151,7 +151,9 @@ function LinkListPage() {
       {/* Cap acima do default (1440): com o grid de 2 colunas a largura extra
           vira aproveitamento real, não linhas quilométricas. */}
       <ResponsiveContainer variant="page" sx={{ maxWidth: 1600 }}>
-        <Stack spacing={{ xs: 2.5, sm: 3 }} component="section">
+        {/* Ritmo de seções: espaço entre painéis (32px sm+) maior que o
+            padding interno deles — hierarquia por espaço, não por borda. */}
+        <Stack spacing={{ xs: 3, sm: 4 }} component="section">
           <Box component="div">
             <LinksListSectionHeading
               icon={<BarChart3 {...ICON_MD} />}
@@ -171,21 +173,8 @@ function LinkListPage() {
               }
             />
             {links.length > 0 ? (
-              <Box data-tour="overview" sx={{ mt: { xs: 2, sm: 2.5 } }}>
-                <Typography
-                  variant="overline"
-                  component="h2"
-                  sx={{
-                    display: "block",
-                    color: "text.secondary",
-                    fontWeight: 600,
-                    letterSpacing: "0.08em",
-                    mb: { xs: 1, sm: 1.25 },
-                  }}
-                >
-                  {t("list.sections.overview")}
-                </Typography>
-                <LinkMetrics linksData={links} showTitle={false} meta={meta} />
+              <Box data-tour="overview" sx={{ mt: { xs: 2, sm: 3 } }}>
+                <AccountOverviewPanel links={links} meta={meta} />
               </Box>
             ) : null}
           </Box>
