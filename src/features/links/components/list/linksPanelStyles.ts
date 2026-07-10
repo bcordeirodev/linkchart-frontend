@@ -120,16 +120,32 @@ export function getNewlyCreatedHighlightSx(theme: Theme) {
   };
 }
 
+/** Entrada suave do card: fade + leve subida, uma vez, no mount. */
+const cardEnter = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+`;
+
 /**
  * Shell dos cards de link (desktop e mobile) — nível 2 da escala de elevação.
  * Em dark mode a elevação é luminância (card mais claro que painel e página),
  * não sombra: fundo `darkNeutral.elevated`, hover um passo mais claro
- * (`darkNeutral.input`), borda hairline única e sem drop shadow.
+ * (`darkNeutral.input`), borda hairline única e sem drop shadow. A animação
+ * de entrada suaviza o load da lista; o stagger vem do grid
+ * ({@link getLinksBrowseGridSx}).
  */
 export function getLinkCardShellSx(theme: Theme) {
   const isDark = theme.palette.mode === "dark";
 
   return {
+    animation: `${cardEnter} 280ms ${motionTokens.easing.default} backwards`,
+    "@media (prefers-reduced-motion: reduce)": { animation: "none" },
     borderRadius: `${radiusTokens.md}px`,
     border: `1px solid ${getLinksBorderColor(theme)}`,
     overflow: "hidden" as const,
@@ -150,6 +166,34 @@ export function getLinkCardShellSx(theme: Theme) {
 
 /** Vertical gap between cards in the browse list. */
 export const linkCardListItemMb = { xs: 2, sm: 2.25 } as const;
+
+/**
+ * Chip de cliques do card — pill azul que resume a métrica principal e serve
+ * de porta de entrada colorida para o analytics (padrão Dub/Bitly).
+ *
+ * @param theme - tema MUI ativo.
+ * @returns sx do `Chip` de cliques.
+ */
+export function getLinkClickChipSx(theme: Theme) {
+  const isDark = theme.palette.mode === "dark";
+  const primary = theme.palette.primary.main;
+
+  return {
+    height: 22,
+    flexShrink: 0,
+    fontSize: "0.6875rem",
+    fontWeight: 600,
+    fontVariantNumeric: "tabular-nums",
+    color: isDark ? theme.palette.primary.light : theme.palette.primary.dark,
+    bgcolor: alpha(primary, isDark ? 0.16 : 0.1),
+    border: `1px solid ${alpha(primary, 0.28)}`,
+    "& .MuiChip-icon": { color: "inherit", ml: 0.625 },
+    "& .MuiChip-label": { px: 0.75 },
+    "&:hover": {
+      bgcolor: alpha(primary, isDark ? 0.24 : 0.16),
+    },
+  };
+}
 
 /** Row density for the desktop browse list. */
 export type LinkCardDensity = "comfortable" | "compact";
@@ -172,6 +216,14 @@ export function getLinksBrowseGridSx(density: LinkCardDensity) {
         : "1fr",
     gap: density === "comfortable" ? 2 : 1.25,
     alignItems: "start",
+    // Stagger da animação de entrada dos cards (definida no shell) — só os 8
+    // primeiros (PAGE_SIZE) precisam de delay próprio.
+    ...Object.fromEntries(
+      Array.from({ length: 8 }, (_, i) => [
+        `& > *:nth-of-type(${i + 1})`,
+        { animationDelay: `${i * 45}ms` },
+      ]),
+    ),
   } as const;
 }
 

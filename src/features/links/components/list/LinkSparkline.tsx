@@ -24,7 +24,12 @@ export function LinkSparkline({
 }: LinkSparklineProps) {
   const theme = useTheme();
 
-  const color = alpha(theme.palette.primary.main, 0.65);
+  // Um passo mais vivo que o antigo 0.65 — o sparkline é o único elemento
+  // gráfico do card e pode carregar cor sem competir com o CTA.
+  const color =
+    theme.palette.mode === "dark"
+      ? alpha(theme.palette.primary.light, 0.95)
+      : alpha(theme.palette.primary.main, 0.85);
 
   const series = useMemo(() => [{ data: data.map((d) => d.clicks) }], [data]);
 
@@ -32,7 +37,10 @@ export function LinkSparkline({
     () => ({
       chart: { sparkline: { enabled: true }, animations: { enabled: false } },
       stroke: { curve: "smooth", width: 2 },
-      fill: { type: "gradient", gradient: { opacityFrom: 0.3, opacityTo: 0 } },
+      fill: {
+        type: "gradient",
+        gradient: { opacityFrom: 0.4, opacityTo: 0 },
+      },
       colors: [color],
       tooltip: { enabled: false },
       xaxis: { labels: { show: false }, axisBorder: { show: false } },

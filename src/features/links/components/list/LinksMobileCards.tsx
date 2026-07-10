@@ -11,7 +11,7 @@
  * Shell styles match the desktop card via `getLinkCardShellSx`.
  */
 
-import { Link2 } from "lucide-react";
+import { BarChart3, Link2 } from "lucide-react";
 import {
   alpha,
   Box,
@@ -47,8 +47,10 @@ import type {
 
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
+import { formatCompact } from "@/lib/utils";
 import {
   getLinkCardShellSx,
+  getLinkClickChipSx,
   getNewlyCreatedHighlightSx,
   linkCardContentSx,
   linkCardListItemMb,
@@ -92,7 +94,7 @@ const LinkMobileCard = memo(
     const theme = useTheme();
     const navigate = useNavigate();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const { t } = useTranslation("links");
+    const { t, i18n } = useTranslation("links");
 
     const shortUrl = useShortUrl(link.slug || link.custom_slug || "");
     const displayUrl = shortUrl.replace(/^https?:\/\//, "");
@@ -161,6 +163,13 @@ const LinkMobileCard = memo(
             >
               {link.title || meta?.preview?.og_title || t("list.noTitle")}
             </Typography>
+            {/* Chip de cliques — visual (o card inteiro já navega p/ analytics). */}
+            <Chip
+              size="small"
+              icon={<BarChart3 size={11} strokeWidth={2.25} />}
+              label={formatCompact(link.clicks || 0, i18n.language)}
+              sx={getLinkClickChipSx(theme)}
+            />
             {linkStatus !== "active" ? (
               <Chip
                 size="small"

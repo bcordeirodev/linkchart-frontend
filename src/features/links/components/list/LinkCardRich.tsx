@@ -1,5 +1,5 @@
 "use client";
-import { ExternalLink } from "lucide-react";
+import { BarChart3, ExternalLink } from "lucide-react";
 import { alpha, Box, Chip, Stack, Typography } from "@mui/material";
 import { useTheme, type Theme } from "@mui/material/styles";
 import { useCallback, useState } from "react";
@@ -13,6 +13,7 @@ import {
 } from "@/features/links/utils/linkStatus";
 import type { LinkStatus } from "@/features/links/utils/linkStatus";
 import { useMessage } from "@/lib/providers/MessageProvider";
+import { formatCompact } from "@/lib/utils";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import type { LinkMeta, LinkResponse } from "@/types";
 
@@ -25,6 +26,7 @@ import { useShortUrl } from "@/features/links/hooks/useShortUrl";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import {
   getLinkCardShellSx,
+  getLinkClickChipSx,
   getNewlyCreatedHighlightSx,
   getLinkCardContentSx,
   type LinkCardDensity,
@@ -64,8 +66,8 @@ function LinkIdentityThumb({
   return (
     <Box
       sx={{
-        width: 44,
-        height: 44,
+        width: 56,
+        height: 56,
         flexShrink: 0,
         borderRadius: `${radiusTokens.sm}px`,
         overflow: "hidden",
@@ -93,7 +95,7 @@ function LinkIdentityThumb({
           }}
         />
       ) : (
-        <LinkPreviewThumb preview={preview} size={22} />
+        <LinkPreviewThumb preview={preview} size={26} />
       )}
     </Box>
   );
@@ -112,7 +114,7 @@ export function LinkCardRich({
   const theme = useTheme();
   const navigate = useNavigate();
   const { showMessage } = useMessage();
-  const { t } = useTranslation("links");
+  const { t, i18n } = useTranslation("links");
 
   const isCompact = density === "compact";
 
@@ -214,6 +216,19 @@ export function LinkCardRich({
             </Stack>
           </Box>
 
+          {/* Chip de cliques — porta de entrada colorida para o analytics. */}
+          <Chip
+            size="small"
+            clickable
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/links/analytics/${link.id}`);
+            }}
+            icon={<BarChart3 size={12} strokeWidth={2.25} />}
+            label={formatCompact(link.clicks || 0, i18n.language)}
+            aria-label={t("actions.viewAnalytics", { ns: "common" })}
+            sx={getLinkClickChipSx(theme)}
+          />
           {status !== "active" ? (
             <Chip
               size="small"
