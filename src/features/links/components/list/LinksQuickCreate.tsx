@@ -360,16 +360,8 @@ export function LinksQuickCreate({
     >
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
         <LinksListSectionHeading
-          icon={
-            <Zap
-              {...ICON_MD}
-              color={
-                isDark
-                  ? theme.palette.primary.light
-                  : theme.palette.primary.main
-              }
-            />
-          }
+          icon={<Zap {...ICON_MD} />}
+          iconChip
           title={t("list.quickCreate.label")}
           description={t("list.quickCreate.description")}
           descriptionSx={{ display: { xs: "none", sm: "block" } }}
