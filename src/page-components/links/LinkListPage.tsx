@@ -141,7 +141,9 @@ function LinkListPage() {
       auth={["user", "admin"]}
       fallback={<LinkListSkeleton isMobile={isMobile} count={6} />}
     >
-      <ResponsiveContainer variant="page">
+      {/* Cap acima do default (1440): com o grid de 2 colunas a largura extra
+          vira aproveitamento real, não linhas quilométricas. */}
+      <ResponsiveContainer variant="page" sx={{ maxWidth: 1600 }}>
         <Stack spacing={{ xs: 2.5, sm: 3 }} component="section">
           <Box component="div">
             <LinksListSectionHeading

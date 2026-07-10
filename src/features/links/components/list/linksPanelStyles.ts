@@ -154,18 +154,6 @@ export const linkCardListItemMb = { xs: 2, sm: 2.25 } as const;
 /** Row density for the desktop browse list. */
 export type LinkCardDensity = "comfortable" | "compact";
 
-/**
- * Vertical gap between desktop cards, tightened in `compact` density.
- *
- * @param density - the active list density.
- * @returns a responsive MUI `mb` value.
- */
-export function getLinkCardListItemMb(density: LinkCardDensity) {
-  return density === "compact"
-    ? ({ xs: 1, sm: 1.25 } as const)
-    : linkCardListItemMb;
-}
-
 /** Compact inset strip (short URL copy on mobile). */
 export function getLinkCardUrlBarSx(theme: Theme) {
   return {
