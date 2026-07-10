@@ -1,5 +1,4 @@
 "use client";
-import { Box, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
@@ -12,12 +11,6 @@ import type { SparklinePoint } from "@/types";
 interface AccountClicksTrendPanelProps {
   /** Aggregated `{ date, clicks }` series, ascending by date — see `aggregateSparklines`. */
   data: SparklinePoint[];
-  /**
-   * `true` quando renderizado dentro de um painel que já fornece a moldura
-   * (ex.: `AccountOverviewPanel`): pula o `ChartCard` e usa um rótulo de
-   * seção compacto em vez de título de card.
-   */
-  bare?: boolean;
 }
 
 /**
@@ -66,7 +59,6 @@ function formatShortDate(isoDate: string | undefined, locale: string): string {
  */
 export function AccountClicksTrendPanel({
   data,
-  bare = false,
 }: AccountClicksTrendPanelProps) {
   const theme = useTheme();
   const { t, i18n } = useTranslation("links");
@@ -128,36 +120,6 @@ export function AccountClicksTrendPanel({
 
   if (!hasSignal) {
     return null;
-  }
-
-  if (bare) {
-    return (
-      <Box>
-        <Typography
-          sx={{ fontSize: "0.8125rem", fontWeight: 600, lineHeight: 1.4 }}
-        >
-          {t("metrics.trendChartTitle")}
-        </Typography>
-        <Typography
-          variant="caption"
-          sx={{
-            color: "text.secondary",
-            fontSize: "0.75rem",
-            lineHeight: 1.4,
-            display: "block",
-            mb: 1,
-          }}
-        >
-          {t("metrics.trendChartLabel", { count: data.length })}
-        </Typography>
-        <ApexChartWrapper
-          type="area"
-          height={150}
-          series={series}
-          options={options}
-        />
-      </Box>
-    );
   }
 
   return (
