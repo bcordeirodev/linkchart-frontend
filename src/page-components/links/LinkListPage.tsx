@@ -66,9 +66,12 @@ function LinkListPage() {
     });
   }, [links, searchTerm, statusFilter, tagFilter]);
 
+  // Meta batch sobre TODOS os links (não os filtrados): o gráfico agregado do
+  // overview promete "todos os links" e a chave de cache fica estável entre
+  // filtros. O slice respeita o cap de 50 ids do endpoint batch-meta.
   const linkIds = useMemo(
-    () => filteredLinks.map((l) => String(l.id)),
-    [filteredLinks],
+    () => links.slice(0, 50).map((l) => String(l.id)),
+    [links],
   );
   const { meta } = useLinksMeta(linkIds);
 
@@ -172,6 +175,7 @@ function LinkListPage() {
             />
             {links.length > 0 ? (
               <Box data-tour="overview" sx={{ mt: { xs: 2, sm: 2.5 } }}>
+                {/* Eyebrow padronizado: 11px/600, tracking 0.08em, respiro 12px. */}
                 <Typography
                   variant="overline"
                   component="h2"
@@ -179,8 +183,10 @@ function LinkListPage() {
                     display: "block",
                     color: "text.secondary",
                     fontWeight: 600,
+                    fontSize: "0.6875rem",
+                    lineHeight: 1.4,
                     letterSpacing: "0.08em",
-                    mb: { xs: 1, sm: 1.25 },
+                    mb: 1.5,
                   }}
                 >
                   {t("list.sections.overview")}

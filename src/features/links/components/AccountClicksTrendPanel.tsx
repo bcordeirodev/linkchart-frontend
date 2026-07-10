@@ -1,10 +1,11 @@
 "use client";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useMemo } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
+import { LinksListSectionHeading } from "@/features/links/components/list/LinksListSectionHeading";
 import { getLinksPanelSx } from "@/features/links/components/list/linksPanelStyles";
 import { formatCount } from "@/lib/utils";
 import type { SparklinePoint } from "@/types";
@@ -141,24 +142,13 @@ export function AccountClicksTrendPanel({
         pb: 0.75,
       }}
     >
-      <Typography
-        component="h3"
-        sx={{ fontSize: "0.875rem", fontWeight: 600, lineHeight: 1.4 }}
-      >
-        {t("metrics.trendChartTitle")}
-      </Typography>
-      <Typography
-        variant="caption"
-        sx={{
-          color: "text.secondary",
-          fontSize: "0.75rem",
-          lineHeight: 1.4,
-          display: "block",
-          mb: 1.25,
-        }}
-      >
-        {t("metrics.trendChartLabel", { count: data.length })}
-      </Typography>
+      {/* Mesmo heading dos demais painéis — uma escala tipográfica só. */}
+      <LinksListSectionHeading
+        title={t("metrics.trendChartTitle")}
+        description={t("metrics.trendChartLabel", { count: data.length })}
+        titleVariant="section"
+        sx={{ mb: { xs: 1.5, sm: 2 } }}
+      />
       <ApexChartWrapper
         type="area"
         height={132}
