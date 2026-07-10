@@ -9,13 +9,16 @@ import {
 } from "lucide-react";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { Grid, Box, Typography } from "@mui/material";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
+import { AccountClicksTrendPanel } from "@/features/links/components/AccountClicksTrendPanel";
 import { getLinkStatus } from "@/features/links/utils/linkStatus";
+import { aggregateSparklines } from "@/features/links/utils/overviewAggregation";
 import { formatCount } from "@/lib/utils";
-import type { LinkResponse } from "@/types";
+import type { BatchMetaResponse, LinkResponse } from "@/types";
 
 interface LinkMetricsSummary {
   total_links?: number;
@@ -37,6 +40,12 @@ interface DashboardMetricsProps {
   timeframeDays?: number;
   /** When true, renders Grid items without the Box+Grid container wrapper (caller owns the container) */
   noContainer?: boolean;
+  /**
+   * Batch link metadata (`useLinksMeta` response), used in `mode="list"` to
+   * render the aggregated click-trend chart under the metric cards. Optional
+   * — the "Overview vivo" chart simply doesn't render without it.
+   */
+  meta?: BatchMetaResponse;
   /** @deprecated mantido apenas para compatibilidade com consumidores legados */
   variant?: "compact" | "detailed";
 }
@@ -55,9 +64,17 @@ export function LinkMetrics({
   mode = "list",
   timeframeDays = 7,
   noContainer = false,
+  meta,
 }: DashboardMetricsProps) {
   const { t, i18n } = useTranslation("links");
   const { t: tA } = useTranslation("analytics");
+
+  // Only meaningful for the list-mode account overview — the chart panel
+  // renders nothing (and this stays an empty array) for single-link mode.
+  const aggregatedSparkline = useMemo(
+    () => (mode === "list" ? aggregateSparklines(meta ?? {}) : []),
+    [mode, meta],
+  );
 
   const titleText = title ?? t("metrics.title");
 
@@ -203,6 +220,10 @@ export function LinkMetrics({
           </Grid>
         ))}
       </Grid>
+
+      {mode === "list" ? (
+        <AccountClicksTrendPanel data={aggregatedSparkline} />
+      ) : null}
     </Box>
   );
 }
