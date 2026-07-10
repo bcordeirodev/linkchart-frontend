@@ -16,7 +16,11 @@ import { LinksEmptyState } from "./LinksEmptyState";
 import { LinksFilters } from "./LinksFilters";
 import { LinksMobileCards } from "./LinksMobileCards";
 import { LinksListSectionHeading } from "./LinksListSectionHeading";
-import { getLinksPanelSx, getLinksBorderColor } from "./linksPanelStyles";
+import {
+  getLinksPanelSx,
+  getLinksBorderColor,
+  getLinksBrowseGridSx,
+} from "./linksPanelStyles";
 
 import type { BatchMetaResponse, LinkResponse } from "@/types";
 
@@ -152,16 +156,7 @@ export function LinksBrowseSection({
               <>
                 {/* Mobile-first: 1 coluna é o estado natural; o auto-fill só abre
                     a 2ª coluna quando o painel comporta dois cards de ≥560px. */}
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns:
-                      density === "comfortable"
-                        ? "repeat(auto-fill, minmax(min(560px, 100%), 1fr))"
-                        : "1fr",
-                    gap: density === "comfortable" ? 2 : 1.25,
-                  }}
-                >
+                <Box sx={getLinksBrowseGridSx(density)}>
                   {pageLinks.map((link) => (
                     <LinkCardRich
                       key={link.id}

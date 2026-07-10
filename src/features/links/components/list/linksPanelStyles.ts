@@ -154,19 +154,25 @@ export const linkCardListItemMb = { xs: 2, sm: 2.25 } as const;
 /** Row density for the desktop browse list. */
 export type LinkCardDensity = "comfortable" | "compact";
 
-/** Compact inset strip (short URL copy on mobile). */
-export function getLinkCardUrlBarSx(theme: Theme) {
+/**
+ * Grid do browse list (desktop). Mobile-first: 1 coluna é o estado natural;
+ * o auto-fill só abre a 2ª coluna quando o painel comporta dois cards de
+ * ≥560px. `alignItems: "start"` evita que um card futuro de altura variável
+ * estique o vizinho da mesma linha.
+ *
+ * @param density - densidade ativa da lista.
+ * @returns sx do container do grid.
+ */
+export function getLinksBrowseGridSx(density: LinkCardDensity) {
   return {
-    display: "flex",
-    alignItems: "center",
-    gap: 0.75,
-    px: 1,
-    py: 0.5,
-    borderRadius: `${radiusTokens.sm}px`,
-    border: `1px solid ${getLinksBorderColor(theme)}`,
-    backgroundColor: getLinksInsetBg(theme),
-    minWidth: 0,
-  };
+    display: "grid",
+    gridTemplateColumns:
+      density === "comfortable"
+        ? "repeat(auto-fill, minmax(min(560px, 100%), 1fr))"
+        : "1fr",
+    gap: density === "comfortable" ? 2 : 1.25,
+    alignItems: "start",
+  } as const;
 }
 
 /** Footer metrics — single row with vertical dividers between segments. */
