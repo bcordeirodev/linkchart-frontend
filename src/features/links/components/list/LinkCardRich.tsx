@@ -178,7 +178,11 @@ export function LinkCardRich({
                 whiteSpace: "nowrap",
               }}
             >
-              {link.title || link.slug || link.custom_slug || t("list.noTitle")}
+              {link.title ||
+                meta?.preview?.og_title ||
+                link.slug ||
+                link.custom_slug ||
+                t("list.noTitle")}
             </Typography>
 
             <Stack
