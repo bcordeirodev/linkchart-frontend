@@ -77,6 +77,11 @@ export function createLinkFormSchema(t: TranslateFn) {
         .optional()
         .nullable(),
 
+      tag_ids: z
+        .array(z.number())
+        .max(5, t("form.validation.tagsMax"))
+        .optional(),
+
       is_active: z.boolean().default(true),
 
       utm_source: z
@@ -129,6 +134,7 @@ export const defaultLinkFormValues: Partial<LinkFormData> = {
   expires_at: null,
   starts_in: null,
   click_limit: null,
+  tag_ids: [],
   utm_source: "",
   utm_medium: "",
   utm_campaign: "",

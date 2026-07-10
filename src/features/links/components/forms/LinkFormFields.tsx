@@ -31,6 +31,7 @@ import {
 } from "./UrlSafetyIndicator";
 import { useSlugAvailability } from "../../hooks/useSlugAvailability";
 import { FormSection } from "./FormSection";
+import { LinkTagPicker } from "./LinkTagPicker";
 
 import type { LinkFormData } from "./LinkFormSchema";
 import type { Control, FieldErrors } from "react-hook-form";
@@ -316,6 +317,17 @@ export function LinkFormFields({
                 />
               )}
             />
+          </Box>
+
+          <Box>
+            <FormLabel
+              htmlFor="link-form-tags"
+              error={!!errors.tag_ids}
+              sx={{ display: "block", mb: 0.75 }}
+            >
+              {t("form.tags.label")}
+            </FormLabel>
+            <LinkTagPicker control={control} />
           </Box>
         </Stack>
       </FormSection>

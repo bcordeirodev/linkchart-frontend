@@ -148,6 +148,14 @@
     "descriptionPlaceholder": "Descreva o conteúdo do link (opcional)",
     "descriptionHelper": "Opcional — adicione mais contexto ao seu link",
     "advancedSettings": "Configurações Avançadas",
+    "tags": {
+      "label": "Tags (opcional)",
+      "placeholder": "Adicionar tags…",
+      "placeholderLimitReached": "Limite de 5 tags atingido",
+      "helper": "Selecione até 5 tags. Digite um nome novo e pressione Enter para criar uma tag.",
+      "creating": "Criando tag \"{{name}}\"…",
+      "noOptions": "Nenhuma tag encontrada — digite para criar uma nova."
+    },
     "sections": {
       "basic": "Básico",
       "advanced": "Avançado",
@@ -217,7 +225,14 @@
       "clickLimitMin": "Limite deve ser pelo menos 1",
       "clickLimitMax": "Limite máximo é 1.000.000",
       "utmMax": "{{field}} muito longo",
-      "startsBeforeExpires": "Data de início deve ser anterior à data de expiração"
+      "startsBeforeExpires": "Data de início deve ser anterior à data de expiração",
+      "tagsMax": "Um link pode ter no máximo 5 tags."
+    }
+  },
+  "tags": {
+    "overflow": "+{{count}}",
+    "filter": {
+      "all": "Todas as tags"
     }
   },
   "metrics": {
@@ -354,6 +369,9 @@
     "missingLinkId": "ID do link não fornecido",
     "missingLinkIdDetail": "O ID do link não foi fornecido na URL ou é inválido.",
     "unexpectedUpdate": "Erro inesperado ao atualizar link",
-    "shareApiUnavailable": "Web Share API não está disponível"
+    "shareApiUnavailable": "Web Share API não está disponível",
+    "createTag": "Erro ao criar tag",
+    "updateTag": "Erro ao atualizar tag",
+    "deleteTag": "Erro ao excluir tag"
   }
 }
