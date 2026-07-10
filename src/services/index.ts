@@ -14,6 +14,9 @@ export { default as AuthService } from "./auth.service";
 // Link services
 export { default as LinkService } from "./link.service";
 
+// Tag services
+export { default as TagService } from "./tag.service";
+
 // Profile services
 export { default as ProfileService } from "./profile.service";
 
@@ -25,9 +28,11 @@ import AnalyticsService from "./analytics.service";
 import AuthService from "./auth.service";
 import LinkService from "./link.service";
 import ProfileService from "./profile.service";
+import TagService from "./tag.service";
 
 export const authService = new AuthService();
 export const linkService = new LinkService();
+export const tagService = new TagService();
 export const profileService = new ProfileService();
 export const analyticsService = new AnalyticsService();
 

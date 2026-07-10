@@ -57,6 +57,9 @@ export type {
   LinksListResponse,
 } from "./links";
 
+// Re-exports de tipos de tags
+export type { Tag, TagCreateRequest, TagUpdateRequest } from "./tags";
+
 // Re-exports de tipos de gráficos
 export type {
   ChartType,
