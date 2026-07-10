@@ -34,7 +34,6 @@ import {
   getUrlSafetyHelperNode,
 } from "@/features/links/components/forms/UrlSafetyIndicator";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
-import { radiusTokens } from "@/lib/theme/designSystem";
 import { darkNeutral } from "@/lib/theme/colors";
 import { HelpHint } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
@@ -42,6 +41,7 @@ import { useNavigate } from "@/shared/hooks";
 
 import { LinksListSectionHeading } from "./LinksListSectionHeading";
 import {
+  linksRadius,
   getLinksBorderColor,
   getLinksQuickCreatePanelSx,
 } from "./linksPanelStyles";
@@ -76,7 +76,7 @@ const getInputRootSx = (theme: Theme) => {
       height: CONTROL_HEIGHT,
       // Radius sm: controles internos um degrau abaixo do painel (md) —
       // hierarquia de arredondamento em vez de tudo igualmente redondo.
-      borderRadius: `${radiusTokens.sm}px`,
+      borderRadius: `${linksRadius.control}px`,
       bgcolor: bg,
       "&:hover": { bgcolor: bg },
       "&.Mui-focused": { bgcolor: `${bg} !important` },
@@ -145,7 +145,7 @@ const submitButtonSx = {
   textTransform: "none",
   fontWeight: 600,
   minWidth: { md: 132 },
-  borderRadius: `${radiusTokens.sm}px`,
+  borderRadius: `${linksRadius.control}px`,
   whiteSpace: "nowrap",
   px: 2.5,
 };
@@ -164,7 +164,7 @@ const getAdvancedOptionsButtonSx = (theme: Theme) => {
     fontWeight: 500,
     fontSize: "0.75rem",
     lineHeight: 1.2,
-    borderRadius: `${radiusTokens.sm}px`,
+    borderRadius: `${linksRadius.control}px`,
     color: "text.secondary",
     borderColor,
     bgcolor: "transparent",
@@ -496,7 +496,7 @@ export function LinksQuickCreate({
                           lineHeight: 1,
                           py: 0.25,
                           px: 0.625,
-                          borderRadius: `${radiusTokens.sm}px`,
+                          borderRadius: `${linksRadius.control}px`,
                           color: primary,
                           bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
                           transition: "background-color 120ms ease",

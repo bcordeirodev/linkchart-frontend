@@ -7,8 +7,8 @@ import { useTranslation } from "react-i18next";
 import type { KeyboardEvent, MouseEvent } from "react";
 
 import useClipboard from "@/shared/hooks/useClipboard";
-import { radiusTokens } from "@/lib/theme/designSystem";
 import {
+  linksRadius,
   getLinkCardInnerBorderColor,
   getLinksInsetBg,
 } from "./linksPanelStyles";
@@ -116,7 +116,7 @@ export function LinkCardActionBar({
               analyticsAccess === "card" ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
             minHeight:
               analyticsAccess === "card" ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
-            borderRadius: `${radiusTokens.sm}px`,
+            borderRadius: `${linksRadius.control}px`,
             textTransform: "none",
             justifyContent: "flex-start",
             gap: 1.25,
@@ -218,7 +218,7 @@ export function LinkCardActionBar({
                   sm: ANALYTICS_MIN_WIDTH.sm,
                 },
                 boxSizing: "border-box",
-                borderRadius: `${radiusTokens.sm}px`,
+                borderRadius: `${linksRadius.control}px`,
                 px: { xs: 1.5, sm: 2 },
                 py: 0,
                 fontSize: "0.875rem",

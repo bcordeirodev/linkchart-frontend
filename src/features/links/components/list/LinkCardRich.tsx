@@ -23,8 +23,8 @@ import { LinkActionsMenu } from "./LinkActionsMenu";
 import { LinkCardMetrics } from "./LinkCardMetrics";
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
-import { radiusTokens } from "@/lib/theme/designSystem";
 import {
+  linksRadius,
   getLinkCardInnerBorderColor,
   getLinkCardShellSx,
   getLinkClickChipSx,
@@ -70,7 +70,7 @@ function LinkIdentityThumb({
         width: 56,
         height: 56,
         flexShrink: 0,
-        borderRadius: `${radiusTokens.sm}px`,
+        borderRadius: `${linksRadius.control}px`,
         overflow: "hidden",
         border: `1px solid ${getLinkCardInnerBorderColor(theme)}`,
         bgcolor:
@@ -237,6 +237,7 @@ export function LinkCardRich({
               sx={{
                 height: 20,
                 flexShrink: 0,
+                borderRadius: `${linksRadius.chip}px`,
                 fontSize: "0.625rem",
                 fontWeight: 500,
                 bgcolor: alpha(statusColorValue, 0.12),

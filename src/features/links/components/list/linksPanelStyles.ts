@@ -1,9 +1,21 @@
 import { alpha, darken, keyframes } from "@mui/material/styles";
 
 import { darkNeutral } from "@/lib/theme/colors";
-import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
+import { motionTokens } from "@/lib/theme/designSystem";
 
 import type { Theme } from "@mui/material/styles";
+
+/**
+ * Escala de arredondamento da feature /links — deliberadamente mais achatada
+ * que os `radiusTokens` globais (o usuário apontou "radius em excesso"):
+ * painéis e cards em 8px, controles/insets em 6px, chips em 6px (sem pílula).
+ */
+export const linksRadius = {
+  panel: 8,
+  card: 8,
+  control: 6,
+  chip: 6,
+} as const;
 
 /** Slightly stronger than `theme.palette.divider` for /links cards and panels. */
 export function getLinksBorderColor(theme: Theme) {
@@ -85,7 +97,7 @@ export function getLinksPanelSx(theme: Theme) {
   return {
     backgroundColor: theme.palette.background.paper,
     backgroundImage: getLinksTopLightGradient(theme),
-    borderRadius: `${radiusTokens.md}px`,
+    borderRadius: `${linksRadius.panel}px`,
     border: `1px solid ${borderColor}`,
     boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme)}`,
   };
@@ -161,7 +173,7 @@ export function getLinkCardShellSx(theme: Theme) {
   return {
     animation: `${cardEnter} 280ms ${motionTokens.easing.default} backwards`,
     "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-    borderRadius: `${radiusTokens.md}px`,
+    borderRadius: `${linksRadius.panel}px`,
     // Borda do card um passo acima da hairline dos painéis — o card é o
     // objeto principal da página e pode se afirmar.
     border: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.14 : 0.12)}`,
@@ -198,6 +210,7 @@ export function getLinkClickChipSx(theme: Theme) {
   return {
     height: 22,
     flexShrink: 0,
+    borderRadius: `${linksRadius.chip}px`,
     fontSize: "0.6875rem",
     fontWeight: 600,
     fontVariantNumeric: "tabular-nums",
@@ -234,6 +247,7 @@ export function getTagChipSx(theme: Theme, color: string) {
   return {
     height: 20,
     flexShrink: 0,
+    borderRadius: `${linksRadius.chip}px`,
     fontSize: "0.6875rem",
     fontWeight: 600,
     color: isDark ? theme.palette.common.white : darken(color, 0.35),
@@ -370,7 +384,7 @@ export function getLinkCardContentSx(density: LinkCardDensity) {
 /** Subtle inset for filter toolbar inside a links panel. */
 export function getLinksFilterInsetSx(theme: Theme) {
   return {
-    borderRadius: `${radiusTokens.sm}px`,
+    borderRadius: `${linksRadius.control}px`,
     border: `1px solid ${getLinksBorderColor(theme)}`,
     backgroundColor: getLinksInsetBg(theme),
     overflow: "hidden" as const,
