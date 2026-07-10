@@ -26,10 +26,10 @@ interface AccountClicksTrendPanelProps {
  * @param locale - BCP-47 UI locale, used for day/month ordering.
  * @returns a short formatted date, or the raw input when it doesn't parse.
  */
-function formatShortDate(isoDate: string | undefined, locale: string): string {
-  // O Apex chama o formatter com slots undefined em eixos de categoria com
-  // poucos pontos — devolver vazio evita crash sem mascarar dados reais.
-  if (!isoDate) {
+function formatShortDate(isoDate: unknown, locale: string): string {
+  // O Apex chama formatters com slots undefined (eixo de categoria com poucos
+  // pontos) e com índices numéricos (tooltip) — só strings seguem adiante.
+  if (typeof isoDate !== "string" || !isoDate) {
     return "";
   }
 
@@ -126,7 +126,13 @@ export function AccountClicksTrendPanel({
       },
       tooltip: {
         x: {
-          formatter: (value: string) => formatShortDate(value, i18n.language),
+          // Em eixo de categoria o tooltip recebe o índice 1-based do ponto,
+          // não a data — mapeia de volta para a categoria antes de formatar.
+          formatter: (value: string | number) =>
+            formatShortDate(
+              typeof value === "number" ? categories[value - 1] : value,
+              i18n.language,
+            ),
         },
         y: { formatter: (value: number) => formatCount(value, i18n.language) },
       },
