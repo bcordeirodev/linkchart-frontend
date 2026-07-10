@@ -160,7 +160,7 @@ const LinkMobileCard = memo(
                 whiteSpace: "nowrap",
               }}
             >
-              {link.title || t("list.noTitle")}
+              {link.title || meta?.preview?.og_title || t("list.noTitle")}
             </Typography>
             {linkStatus !== "active" ? (
               <Chip
