@@ -31,6 +31,7 @@ import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkCardActionBar } from "./LinkCardActionBar";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 import { LinkCardMetrics } from "./LinkCardMetrics";
+import { LinkTagChips } from "./LinkTagChips";
 
 import {
   getLinkStatus,
@@ -214,11 +215,13 @@ const LinkMobileCard = memo(
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
-              mb: 0.75,
+              mb: link.tags?.length ? 0.5 : 0.75,
             }}
           >
             {truncateUrl(link.original_url)}
           </Typography>
+
+          <LinkTagChips tags={link.tags} sx={{ mb: 0.75 }} />
 
           <Box onClick={(e) => e.stopPropagation()}>
             <LinkCardActionBar

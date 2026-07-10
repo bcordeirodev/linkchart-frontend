@@ -39,6 +39,10 @@ interface LinksBrowseSectionProps {
   onClearFilters: () => void;
   onDelete: (id: string) => Promise<void>;
   highlightedLinkId?: string | null;
+  /** Selected tag id filter, or `null` when no tag filter is active. */
+  tagFilter?: number | null;
+  /** Called when the user picks (or clears) a tag filter chip. */
+  onTagFilterChange?: (tagId: number | null) => void;
 }
 
 /**
@@ -63,6 +67,8 @@ export function LinksBrowseSection({
   onClearFilters,
   onDelete,
   highlightedLinkId = null,
+  tagFilter = null,
+  onTagFilterChange,
 }: LinksBrowseSectionProps) {
   const theme = useTheme();
   const { t } = useTranslation("links");
@@ -82,7 +88,7 @@ export function LinksBrowseSection({
   // a freshly created link needs to be revealed at the top.
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, statusFilter, sortBy, highlightedLinkId]);
+  }, [searchTerm, statusFilter, tagFilter, sortBy, highlightedLinkId]);
 
   // Clamp the page if it falls out of range (e.g. after deleting the last item
   // on the final page).
@@ -133,6 +139,8 @@ export function LinksBrowseSection({
           density={density}
           onDensityChange={setDensity}
           showDensityToggle={!isMobile}
+          tagFilter={tagFilter}
+          onTagFilterChange={onTagFilterChange}
         />
 
         <Divider sx={{ my: 2 }} />

@@ -1,4 +1,4 @@
-import { alpha, keyframes } from "@mui/material/styles";
+import { alpha, darken, keyframes } from "@mui/material/styles";
 
 import { darkNeutral } from "@/lib/theme/colors";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
@@ -211,6 +211,35 @@ export function getLinkClickChipSx(theme: Theme) {
     "&:hover": {
       bgcolor: alpha(primary, isDark ? 0.24 : 0.16),
     },
+  };
+}
+
+/**
+ * Tag chip — same pill shape as {@link getLinkClickChipSx}, tinted with the
+ * tag's own color instead of `primary`.
+ *
+ * Dark mode: chip text is always `common.white` over `alpha(color, 0.25)`
+ * background — a per-tag color is rarely light enough to read as text on a
+ * dark surface, so white is the one rule that always works. Light mode:
+ * a darkened shade of the color as text over a light tint of the same color,
+ * mirroring `getSoftSelectedChipSx`'s light-mode approach.
+ *
+ * @param theme - tema MUI ativo.
+ * @param color - hex color of the tag (from `TAG_COLOR_PALETTE` or user data).
+ * @returns sx do `Chip` de tag.
+ */
+export function getTagChipSx(theme: Theme, color: string) {
+  const isDark = theme.palette.mode === "dark";
+
+  return {
+    height: 20,
+    flexShrink: 0,
+    fontSize: "0.6875rem",
+    fontWeight: 600,
+    color: isDark ? theme.palette.common.white : darken(color, 0.35),
+    bgcolor: alpha(color, isDark ? 0.25 : 0.12),
+    border: `1px solid ${alpha(color, isDark ? 0.4 : 0.32)}`,
+    "& .MuiChip-label": { px: 0.75 },
   };
 }
 
