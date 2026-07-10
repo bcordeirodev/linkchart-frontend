@@ -8,7 +8,10 @@ import type { KeyboardEvent, MouseEvent } from "react";
 
 import useClipboard from "@/shared/hooks/useClipboard";
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { getLinksBorderColor, getLinksInsetBg } from "./linksPanelStyles";
+import {
+  getLinkCardInnerBorderColor,
+  getLinksInsetBg,
+} from "./linksPanelStyles";
 
 import type { SxProps, Theme } from "@mui/material";
 
@@ -86,7 +89,7 @@ export function LinkCardActionBar({
           ? {
               mt: 1,
               pt: 1,
-              borderTop: `1px solid ${getLinksBorderColor(theme)}`,
+              borderTop: `1px solid ${getLinkCardInnerBorderColor(theme)}`,
             }
           : undefined),
         ...sx,

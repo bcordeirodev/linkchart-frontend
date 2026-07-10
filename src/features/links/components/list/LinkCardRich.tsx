@@ -25,6 +25,7 @@ import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import {
+  getLinkCardInnerBorderColor,
   getLinkCardShellSx,
   getLinkClickChipSx,
   getNewlyCreatedHighlightSx,
@@ -71,10 +72,10 @@ function LinkIdentityThumb({
         flexShrink: 0,
         borderRadius: `${radiusTokens.sm}px`,
         overflow: "hidden",
-        border: `1px solid ${theme.palette.divider}`,
+        border: `1px solid ${getLinkCardInnerBorderColor(theme)}`,
         bgcolor:
           theme.palette.mode === "dark"
-            ? alpha(theme.palette.common.white, 0.03)
+            ? alpha(theme.palette.common.white, 0.05)
             : alpha(theme.palette.common.black, 0.03),
         display: "flex",
         alignItems: "center",
