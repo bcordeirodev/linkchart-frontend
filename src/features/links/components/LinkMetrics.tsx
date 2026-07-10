@@ -8,17 +8,14 @@ import {
   Globe,
 } from "lucide-react";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
-import { Grid, Box, Stack, Typography } from "@mui/material";
-import { useMemo } from "react";
+import { Grid, Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
-import { AccountClicksTrendPanel } from "@/features/links/components/AccountClicksTrendPanel";
 import { getLinkStatus } from "@/features/links/utils/linkStatus";
-import { aggregateSparklines } from "@/features/links/utils/overviewAggregation";
 import { formatCount } from "@/lib/utils";
-import type { BatchMetaResponse, LinkResponse } from "@/types";
+import type { LinkResponse } from "@/types";
 
 interface LinkMetricsSummary {
   total_links?: number;
@@ -40,12 +37,6 @@ interface DashboardMetricsProps {
   timeframeDays?: number;
   /** When true, renders Grid items without the Box+Grid container wrapper (caller owns the container) */
   noContainer?: boolean;
-  /**
-   * Batch link metadata (`useLinksMeta` response), used in `mode="list"` to
-   * render the aggregated click-trend chart under the metric cards. Optional
-   * — the "Overview vivo" chart simply doesn't render without it.
-   */
-  meta?: BatchMetaResponse;
   /** @deprecated mantido apenas para compatibilidade com consumidores legados */
   variant?: "compact" | "detailed";
 }
@@ -64,17 +55,9 @@ export function LinkMetrics({
   mode = "list",
   timeframeDays = 7,
   noContainer = false,
-  meta,
 }: DashboardMetricsProps) {
   const { t, i18n } = useTranslation("links");
   const { t: tA } = useTranslation("analytics");
-
-  // Only meaningful for the list-mode account overview — the chart panel
-  // renders nothing (and this stays an empty array) for single-link mode.
-  const aggregatedSparkline = useMemo(
-    () => (mode === "list" ? aggregateSparklines(meta ?? {}) : []),
-    [mode, meta],
-  );
 
   const titleText = title ?? t("metrics.title");
 
@@ -131,81 +114,46 @@ export function LinkMetrics({
     },
   ];
 
-  // Overview da conta: gráfico agregado em destaque primeiro, e abaixo os
-  // metric cards clássicos (ícone + valor + subtítulo, MetricCardOptimized).
-  if (mode === "list") {
-    const listMetrics = [
-      {
-        id: "total_links",
-        title: t("metrics.links"),
-        value: formatCount(totalLinks, i18n.language),
-        icon: <Link2 {...ICON_LG} />,
-        color: "primary" as const,
-        subtitle: t("metrics.linksSubtitle"),
-        hint: t("metrics.linksHint"),
-      },
-      {
-        id: "active_links",
-        title: t("status.active"),
-        value: formatCount(activeLinks, i18n.language),
-        icon: <CheckCircle {...ICON_LG} />,
-        color: "success" as const,
-        subtitle: t("metrics.linksActive"),
-        hint: t("metrics.activeHint"),
-      },
-      {
-        id: "total_clicks_list",
-        title: t("metrics.totalClicks"),
-        value: formatCount(totalClicks, i18n.language),
-        icon: <TrendingUp {...ICON_LG} />,
-        color: "info" as const,
-        subtitle: t("metrics.totalClicksSubtitle"),
-        hint: t("metrics.totalClicksHint"),
-      },
-      {
-        id: "avg_clicks_per_link",
-        title: t("metrics.avgClicksPerLink"),
-        value: formatCount(avgClicksPerLink, i18n.language),
-        icon: <BarChart3 {...ICON_LG} />,
-        color: "warning" as const,
-        subtitle: t("metrics.clicksPerLink"),
-        hint: t("metrics.avgClicksPerLinkHint"),
-      },
-    ];
+  const listMetrics = [
+    {
+      id: "total_links",
+      title: t("metrics.links"),
+      value: formatCount(totalLinks, i18n.language),
+      icon: <Link2 {...ICON_LG} />,
+      color: "primary" as const,
+      subtitle: t("metrics.linksSubtitle"),
+      hint: t("metrics.linksHint"),
+    },
+    {
+      id: "active_links",
+      title: t("status.active"),
+      value: formatCount(activeLinks, i18n.language),
+      icon: <CheckCircle {...ICON_LG} />,
+      color: "success" as const,
+      subtitle: t("metrics.linksActive"),
+      hint: t("metrics.activeHint"),
+    },
+    {
+      id: "total_clicks_list",
+      title: t("metrics.totalClicks"),
+      value: formatCount(totalClicks, i18n.language),
+      icon: <TrendingUp {...ICON_LG} />,
+      color: "info" as const,
+      subtitle: t("metrics.totalClicksSubtitle"),
+      hint: t("metrics.totalClicksHint"),
+    },
+    {
+      id: "avg_clicks_per_link",
+      title: t("metrics.avgClicksPerLink"),
+      value: formatCount(avgClicksPerLink, i18n.language),
+      icon: <BarChart3 {...ICON_LG} />,
+      color: "warning" as const,
+      subtitle: t("metrics.clicksPerLink"),
+      hint: t("metrics.avgClicksPerLinkHint"),
+    },
+  ];
 
-    return (
-      <Stack spacing={{ xs: 2, sm: 2.5 }}>
-        <AccountClicksTrendPanel data={aggregatedSparkline} />
-        {/* CSS grid puro (não MUI Grid): as margens negativas do Grid
-            desalinhavam a fileira em relação aos painéis vizinhos. */}
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
-              md: "repeat(4, 1fr)",
-            },
-            gap: { xs: 1.5, sm: 2 },
-          }}
-        >
-          {listMetrics.map((metric) => (
-            <MetricCard
-              key={metric.id}
-              title={metric.title}
-              value={metric.value}
-              icon={metric.icon}
-              color={metric.color}
-              subtitle={metric.subtitle}
-              hint={metric.hint}
-            />
-          ))}
-        </Box>
-      </Stack>
-    );
-  }
-
-  const metrics = singleLinkMetrics;
+  const metrics = mode === "single-link" ? singleLinkMetrics : listMetrics;
 
   if (noContainer) {
     return (
@@ -225,6 +173,7 @@ export function LinkMetrics({
               icon={metric.icon}
               color={metric.color}
               subtitle={metric.subtitle}
+              hint={"hint" in metric ? metric.hint : undefined}
             />
           </Grid>
         ))}
@@ -249,6 +198,7 @@ export function LinkMetrics({
               icon={metric.icon}
               color={metric.color}
               subtitle={metric.subtitle}
+              hint={"hint" in metric ? metric.hint : undefined}
             />
           </Grid>
         ))}
