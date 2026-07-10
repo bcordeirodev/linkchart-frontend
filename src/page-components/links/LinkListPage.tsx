@@ -35,9 +35,11 @@ function LinkListPage() {
     deleteLinkMutation(id).then(() => undefined);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [tagFilter, setTagFilter] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState("created_at");
 
-  const hasActiveFilters = Boolean(searchTerm) || statusFilter !== "all";
+  const hasActiveFilters =
+    Boolean(searchTerm) || statusFilter !== "all" || tagFilter !== null;
 
   const filteredLinks = useMemo(() => {
     return links.filter((link) => {
@@ -56,9 +58,13 @@ function LinkListPage() {
         (statusFilter === "scheduled" && status === "scheduled") ||
         (statusFilter === "expired" && status === "expired");
 
-      return matchesSearch && matchesStatus;
+      const matchesTag =
+        tagFilter === null ||
+        (link.tags?.some((tag) => tag.id === tagFilter) ?? false);
+
+      return matchesSearch && matchesStatus && matchesTag;
     });
-  }, [links, searchTerm, statusFilter]);
+  }, [links, searchTerm, statusFilter, tagFilter]);
 
   const linkIds = useMemo(
     () => filteredLinks.map((l) => String(l.id)),
@@ -122,6 +128,7 @@ function LinkListPage() {
   const handleClearFilters = () => {
     setSearchTerm("");
     setStatusFilter("all");
+    setTagFilter(null);
     setSortBy("created_at");
   };
 
@@ -196,6 +203,8 @@ function LinkListPage() {
               onStatusChange={setStatusFilter}
               sortBy={sortBy}
               onSortChange={setSortBy}
+              tagFilter={tagFilter}
+              onTagFilterChange={setTagFilter}
               sortedLinks={sortedLinks}
               meta={meta}
               loading={loading}
