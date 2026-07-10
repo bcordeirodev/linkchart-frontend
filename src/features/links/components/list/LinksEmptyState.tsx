@@ -6,6 +6,7 @@ import { useNavigate } from "@/shared/hooks";
 
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
+import { getLinksBorderColor } from "./linksPanelStyles";
 
 interface LinksEmptyStateProps {
   /** Há filtros ativos? Muda o copy + CTA. */
@@ -46,7 +47,7 @@ export function LinksEmptyState({
         alignItems: "center",
         textAlign: "center",
         backgroundColor: theme.palette.background.paper,
-        border: `1px dashed ${theme.palette.divider}`,
+        border: `1px dashed ${getLinksBorderColor(theme)}`,
         borderRadius: `${radiusTokens.md}px`,
         transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
       }}
@@ -57,7 +58,7 @@ export function LinksEmptyState({
           height: 56,
           borderRadius: `${radiusTokens.full}px`,
           backgroundColor: isDark ? darkNeutral.elevated : lightNeutral.surface,
-          border: `1px solid ${theme.palette.divider}`,
+          border: `1px solid ${getLinksBorderColor(theme)}`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

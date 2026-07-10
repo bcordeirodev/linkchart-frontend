@@ -36,6 +36,7 @@ import {
 } from "@/features/links/components/forms/UrlSafetyIndicator";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { darkNeutral } from "@/lib/theme/colors";
 import { HelpHint } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
@@ -64,7 +65,12 @@ type QuickFormData = {
 const CONTROL_HEIGHT = 40;
 
 const getInputRootSx = (theme: Theme) => {
-  const bg = theme.palette.background.default;
+  // Nível "input" da escala: em dark o campo é um passo mais claro que o
+  // painel (não mais escuro que ele); em light o cinza de página recua bem.
+  const bg =
+    theme.palette.mode === "dark"
+      ? darkNeutral.input
+      : theme.palette.background.default;
 
   return {
     "& .MuiOutlinedInput-root": {
