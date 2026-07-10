@@ -121,6 +121,7 @@ export function EditLinkForm({
             expires_at: convertApiDateToDate(linkData.expires_at),
             starts_in: convertApiDateToDate(linkData.starts_in),
             click_limit: linkData.click_limit || null,
+            tag_ids: linkData.tags?.map((tag) => tag.id) ?? [],
             utm_source: linkData.utm_source || "",
             utm_medium: linkData.utm_medium || "",
             utm_campaign: linkData.utm_campaign || "",
