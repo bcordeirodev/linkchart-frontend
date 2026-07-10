@@ -65,7 +65,7 @@ function MutedSparkline({ data }: { data: SparklinePoint[] }) {
   return (
     <ApexChartWrapper
       type="area"
-      height={44}
+      height={36}
       width="100%"
       series={series}
       options={options}
@@ -98,7 +98,6 @@ export function OverviewStatCard({
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        minHeight: 132,
         overflow: "hidden",
         borderRadius: `${linksRadius.panel}px`,
         border: `1px solid ${getLinksBorderColor(theme)}`,
@@ -108,7 +107,7 @@ export function OverviewStatCard({
         boxShadow: getLinksTopHighlight(theme),
       }}
     >
-      <Box sx={{ px: 2.5, pt: 2, pb: sparkline?.length ? 0.5 : 2 }}>
+      <Box sx={{ px: 2.25, pt: 1.75, pb: sparkline?.length ? 0.25 : 1.75 }}>
         <Typography
           sx={{
             fontSize: "0.8125rem",
@@ -121,7 +120,7 @@ export function OverviewStatCard({
         </Typography>
         <Typography
           sx={{
-            fontSize: "1.75rem",
+            fontSize: { xs: "1.375rem", sm: "1.5rem" },
             fontWeight: 700,
             lineHeight: 1.25,
             letterSpacing: "-0.02em",
