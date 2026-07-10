@@ -1,6 +1,5 @@
 import { alpha, darken, keyframes } from "@mui/material/styles";
 
-import { darkNeutral } from "@/lib/theme/colors";
 import { motionTokens } from "@/lib/theme/designSystem";
 
 import type { Theme } from "@mui/material/styles";
@@ -162,10 +161,10 @@ const cardEnter = keyframes`
 /**
  * Shell dos cards de link (desktop e mobile) — nível 2 da escala de elevação.
  * Em dark mode a elevação é luminância (card mais claro que painel e página),
- * não sombra: fundo `darkNeutral.elevated`, hover um passo mais claro
- * (`darkNeutral.input`), borda hairline única e sem drop shadow. A animação
- * de entrada suaviza o load da lista; o stagger vem do grid
- * ({@link getLinksBrowseGridSx}).
+ * não sombra: um véu translúcido `alpha(white, 0.035)` sobre o painel, hover
+ * um passo mais claro (`0.055`), borda hairline única e sem drop shadow nem
+ * gradiente. A animação de entrada suaviza o load da lista; o stagger vem do
+ * grid ({@link getLinksBrowseGridSx}).
  */
 export function getLinkCardShellSx(theme: Theme) {
   const isDark = theme.palette.mode === "dark";
@@ -178,15 +177,16 @@ export function getLinkCardShellSx(theme: Theme) {
     // objeto principal da página e pode se afirmar.
     border: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.14 : 0.12)}`,
     overflow: "hidden" as const,
+    // Véu translúcido (não cor sólida) e sem gradiente: o card eleva pela
+    // luminância do véu sobre o painel, com superfície limpa e uniforme.
     backgroundColor: isDark
-      ? darkNeutral.elevated
+      ? alpha(theme.palette.common.white, 0.035)
       : alpha(theme.palette.common.black, 0.02),
-    backgroundImage: getLinksTopLightGradient(theme),
     boxShadow: getLinksTopHighlight(theme),
     transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {
       backgroundColor: isDark
-        ? darkNeutral.input
+        ? alpha(theme.palette.common.white, 0.055)
         : alpha(theme.palette.common.black, 0.035),
       borderColor: alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14),
     },
