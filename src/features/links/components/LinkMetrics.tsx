@@ -179,19 +179,26 @@ export function LinkMetrics({
     return (
       <Stack spacing={{ xs: 2, sm: 2.5 }}>
         <AccountClicksTrendPanel data={aggregatedSparkline} />
-        <Grid container spacing={{ xs: 1.5, sm: 2 }}>
+        {/* CSS grid puro (não MUI Grid): as margens negativas do Grid
+            desalinhavam a fileira em relação aos painéis vizinhos. */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "repeat(2, 1fr)", md: "repeat(4, 1fr)" },
+            gap: { xs: 1.5, sm: 2 },
+          }}
+        >
           {listStats.map((stat) => (
-            <Grid item xs={6} md={3} key={stat.id}>
-              <OverviewStatCard
-                label={stat.label}
-                value={stat.value}
-                trendPercent={stat.trendPercent ?? null}
-                trendLabel={stat.trendLabel}
-                sparkline={stat.sparkline}
-              />
-            </Grid>
+            <OverviewStatCard
+              key={stat.id}
+              label={stat.label}
+              value={stat.value}
+              trendPercent={stat.trendPercent ?? null}
+              trendLabel={stat.trendLabel}
+              sparkline={stat.sparkline}
+            />
           ))}
-        </Grid>
+        </Box>
       </Stack>
     );
   }

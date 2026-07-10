@@ -65,7 +65,9 @@ export function AccountClicksTrendPanel({
   const theme = useTheme();
   const { t, i18n } = useTranslation("links");
 
-  const hasSignal = data.some((point) => point.clicks > 0);
+  // Só apresenta com dados de verdade: pelo menos 2 pontos no período e
+  // algum clique — área de 1 ponto renderiza quebrada e zero vira linha morta.
+  const hasSignal = data.length >= 2 && data.some((point) => point.clicks > 0);
 
   // Desaturated business blue, matching the primary hue used across /links —
   // no standalone chart accent color to keep the dark theme calm.
