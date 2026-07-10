@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Divider, Pagination, Stack, Typography } from "@mui/material";
+import { Box, Divider, Pagination, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -16,7 +16,7 @@ import { LinksEmptyState } from "./LinksEmptyState";
 import { LinksFilters } from "./LinksFilters";
 import { LinksMobileCards } from "./LinksMobileCards";
 import { LinksListSectionHeading } from "./LinksListSectionHeading";
-import { getLinksPanelSx } from "./linksPanelStyles";
+import { getLinksPanelSx, getLinksBorderColor } from "./linksPanelStyles";
 
 import type { BatchMetaResponse, LinkResponse } from "@/types";
 
@@ -149,18 +149,31 @@ export function LinksBrowseSection({
                 highlightedLinkId={highlightedLinkId}
               />
             ) : (
-              <Stack spacing={0}>
-                {pageLinks.map((link) => (
-                  <LinkCardRich
-                    key={link.id}
-                    link={link}
-                    meta={meta[String(link.id)]}
-                    onDelete={onDelete}
-                    isHighlighted={String(link.id) === highlightedLinkId}
-                    density={density}
-                  />
-                ))}
-              </Stack>
+              <>
+                {/* Mobile-first: 1 coluna é o estado natural; o auto-fill só abre
+                    a 2ª coluna quando o painel comporta dois cards de ≥560px. */}
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      density === "comfortable"
+                        ? "repeat(auto-fill, minmax(min(560px, 100%), 1fr))"
+                        : "1fr",
+                    gap: density === "comfortable" ? 2 : 1.25,
+                  }}
+                >
+                  {pageLinks.map((link) => (
+                    <LinkCardRich
+                      key={link.id}
+                      link={link}
+                      meta={meta[String(link.id)]}
+                      onDelete={onDelete}
+                      isHighlighted={String(link.id) === highlightedLinkId}
+                      density={density}
+                    />
+                  ))}
+                </Box>
+              </>
             )}
 
             {showPagination ? (
@@ -173,7 +186,7 @@ export function LinksBrowseSection({
                   gap: 1.5,
                   mt: 2,
                   pt: 2,
-                  borderTop: `1px solid ${theme.palette.divider}`,
+                  borderTop: `1px solid ${getLinksBorderColor(theme)}`,
                 }}
               >
                 <Typography

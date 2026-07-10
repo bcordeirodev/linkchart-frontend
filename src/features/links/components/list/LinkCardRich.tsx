@@ -26,7 +26,6 @@ import { radiusTokens } from "@/lib/theme/designSystem";
 import {
   getLinkCardShellSx,
   getNewlyCreatedHighlightSx,
-  getLinkCardListItemMb,
   getLinkCardContentSx,
   type LinkCardDensity,
 } from "./linksPanelStyles";
@@ -145,7 +144,6 @@ export function LinkCardRich({
       id={`link-card-${link.id}`}
       animated={false}
       sx={{
-        mb: getLinkCardListItemMb(density),
         ...getLinkCardShellSx(theme),
         ...(isHighlighted ? getNewlyCreatedHighlightSx(theme) : {}),
       }}
