@@ -184,8 +184,10 @@ export function getLinkClickChipSx(theme: Theme) {
     fontSize: "0.6875rem",
     fontWeight: 600,
     fontVariantNumeric: "tabular-nums",
-    color: isDark ? theme.palette.primary.light : theme.palette.primary.dark,
-    bgcolor: alpha(primary, isDark ? 0.16 : 0.1),
+    // Fonte branca (não primary.light) — chips coloridos precisam de texto
+    // branco em dark para leitura; regra vale p/ futuros chips de tag.
+    color: isDark ? theme.palette.common.white : theme.palette.primary.dark,
+    bgcolor: alpha(primary, isDark ? 0.2 : 0.1),
     border: `1px solid ${alpha(primary, 0.28)}`,
     "& .MuiChip-icon": { color: "inherit", ml: 0.625 },
     "& .MuiChip-label": { px: 0.75 },
