@@ -271,7 +271,8 @@
     "trendNoData": "Sem dados de tendência ainda",
     "trendChartTitle": "Cliques agregados",
     "trendChartLabel_one": "Soma de cliques de todos os links no último {{count}} dia",
-    "trendChartLabel_other": "Soma de cliques de todos os links nos últimos {{count}} dias"
+    "trendChartLabel_other": "Soma de cliques de todos os links nos últimos {{count}} dias",
+    "vsPrevWeek": "vs. semana anterior"
   },
   "status": {
     "active": "Ativo",

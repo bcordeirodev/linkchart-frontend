@@ -4,10 +4,24 @@ import { Box, Button, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 
+import { keyframes } from "@mui/material/styles";
+
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { linksRadius } from "./linksPanelStyles";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import { getLinksBorderColor } from "./linksPanelStyles";
+
+/** Fade + leve subida na troca lista→vazio (espelha a entrada dos cards). */
+const emptyStateEnter = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+`;
 
 interface LinksEmptyStateProps {
   /** Há filtros ativos? Muda o copy + CTA. */
@@ -40,6 +54,10 @@ export function LinksEmptyState({
   return (
     <Box
       sx={{
+        // Entrada suave: a troca lista→vazio ganha o mesmo fade dos cards,
+        // para o sumiço da lista não parecer um corte seco.
+        animation: `${emptyStateEnter} 240ms ${motionTokens.easing.default} backwards`,
+        "@media (prefers-reduced-motion: reduce)": { animation: "none" },
         mt: 2,
         py: { xs: 6, sm: 8 },
         px: { xs: 3, sm: 5 },

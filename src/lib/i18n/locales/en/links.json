@@ -271,7 +271,8 @@
     "trendNoData": "No trend data yet",
     "trendChartTitle": "Aggregated clicks",
     "trendChartLabel_one": "Sum of clicks across all links over the last {{count}} day",
-    "trendChartLabel_other": "Sum of clicks across all links over the last {{count}} days"
+    "trendChartLabel_other": "Sum of clicks across all links over the last {{count}} days",
+    "vsPrevWeek": "vs. previous week"
   },
   "status": {
     "active": "Active",

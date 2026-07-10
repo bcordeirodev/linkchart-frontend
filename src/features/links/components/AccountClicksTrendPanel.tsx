@@ -1,5 +1,5 @@
 "use client";
-import { Box } from "@mui/material";
+import { alpha, Box } from "@mui/material";
 import { useMemo } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
@@ -73,6 +73,7 @@ export function AccountClicksTrendPanel({
     theme.palette.mode === "dark"
       ? theme.palette.primary.light
       : theme.palette.primary.main;
+  const gridLine = alpha(theme.palette.text.primary, 0.07);
 
   const series = useMemo(
     () => [
@@ -91,10 +92,10 @@ export function AccountClicksTrendPanel({
       // parentHeightOffset: o Apex reserva ~15px extras abaixo do gráfico por
       // padrão — zerar mata o "respiro fantasma" dentro da caixa.
       chart: { parentHeightOffset: 0 },
-      stroke: { curve: "smooth" as const, width: 2 },
+      stroke: { curve: "smooth" as const, width: 2.5 },
       fill: {
         type: "gradient",
-        gradient: { opacityFrom: 0.35, opacityTo: 0.02 },
+        gradient: { opacityFrom: 0.45, opacityTo: 0.04 },
       },
       colors: [color],
       dataLabels: { enabled: false },
@@ -112,8 +113,13 @@ export function AccountClicksTrendPanel({
         axisTicks: { show: false },
       },
       yaxis: { labels: { show: false } },
+      // Grade nos dois eixos (como o dashboard de referência) — hairlines
+      // sólidas de baixíssimo alpha em vez de tracejado disperso.
       grid: {
-        strokeDashArray: 3,
+        borderColor: gridLine,
+        strokeDashArray: 0,
+        xaxis: { lines: { show: true } },
+        yaxis: { lines: { show: true } },
         padding: { top: -12, bottom: 0, left: 8, right: 12 },
       },
       tooltip: {
@@ -123,7 +129,7 @@ export function AccountClicksTrendPanel({
         y: { formatter: (value: number) => formatCount(value, i18n.language) },
       },
     }),
-    [color, categories, i18n.language],
+    [color, gridLine, categories, i18n.language],
   );
 
   if (!hasSignal) {
@@ -136,7 +142,6 @@ export function AccountClicksTrendPanel({
     <Box
       sx={{
         ...getLinksPanelSx(theme),
-        mt: { xs: 2, sm: 2.5 },
         px: { xs: 2, sm: 2.5 },
         pt: { xs: 1.5, sm: 2 },
         pb: 0.75,
@@ -151,7 +156,7 @@ export function AccountClicksTrendPanel({
       />
       <ApexChartWrapper
         type="area"
-        height={132}
+        height={220}
         series={series}
         options={options}
       />
