@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { LinksListSectionHeading } from "@/features/links/components/list/LinksListSectionHeading";
-import { getLinksPanelSx } from "@/features/links/components/list/linksPanelStyles";
+import { linksRadius } from "@/features/links/components/list/linksPanelStyles";
 import { formatCount } from "@/lib/utils";
 import type { SparklinePoint } from "@/types";
 
@@ -139,11 +139,16 @@ export function AccountClicksTrendPanel({
   }
 
   return (
-    // Caixa própria no shell da feature (não o ChartCard genérico): título e
-    // caption colados no gráfico, paddings enxutos — sem faixas de respiro.
+    // Mesmo tile quieto dos stat cards (véu sutil, sem borda/moldura) — o
+    // overview inteiro lê como um bloco de dados, distinto dos painéis de ação.
     <Box
       sx={{
-        ...getLinksPanelSx(theme),
+        borderRadius: `${linksRadius.card}px`,
+        backgroundColor:
+          theme.palette.mode === "dark"
+            ? alpha(theme.palette.common.white, 0.035)
+            : alpha(theme.palette.common.black, 0.03),
+        overflow: "hidden",
         px: { xs: 2, sm: 2.5 },
         pt: { xs: 1.5, sm: 2 },
         pb: 0.75,
