@@ -1,7 +1,7 @@
 "use client";
 
 import { BarChart3, HelpCircle } from "lucide-react";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -66,12 +66,9 @@ function LinkListPage() {
     });
   }, [links, searchTerm, statusFilter, tagFilter]);
 
-  // Meta batch sobre TODOS os links (não os filtrados): o gráfico agregado do
-  // overview promete "todos os links" e a chave de cache fica estável entre
-  // filtros. O slice respeita o cap de 50 ids do endpoint batch-meta.
   const linkIds = useMemo(
-    () => links.slice(0, 50).map((l) => String(l.id)),
-    [links],
+    () => filteredLinks.map((l) => String(l.id)),
+    [filteredLinks],
   );
   const { meta } = useLinksMeta(linkIds);
 
@@ -175,7 +172,20 @@ function LinkListPage() {
             />
             {links.length > 0 ? (
               <Box data-tour="overview" sx={{ mt: { xs: 2, sm: 2.5 } }}>
-                <LinkMetrics linksData={links} showTitle={false} meta={meta} />
+                <Typography
+                  variant="overline"
+                  component="h2"
+                  sx={{
+                    display: "block",
+                    color: "text.secondary",
+                    fontWeight: 600,
+                    letterSpacing: "0.08em",
+                    mb: { xs: 1, sm: 1.25 },
+                  }}
+                >
+                  {t("list.sections.overview")}
+                </Typography>
+                <LinkMetrics linksData={links} showTitle={false} />
               </Box>
             ) : null}
           </Box>

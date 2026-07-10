@@ -268,11 +268,7 @@
     "clicksPerLink": "Clicks Per Link",
     "avgClicksPerLinkHint": "Total clicks divided by the number of links.",
     "trendTooltip": "Click change vs. the previous period",
-    "trendNoData": "No trend data yet",
-    "trendChartTitle": "Aggregated clicks",
-    "trendChartLabel_one": "Sum of clicks across all links over the last {{count}} day",
-    "trendChartLabel_other": "Sum of clicks across all links over the last {{count}} days",
-    "vsPrevWeek": "vs. previous week"
+    "trendNoData": "No trend data yet"
   },
   "status": {
     "active": "Active",
