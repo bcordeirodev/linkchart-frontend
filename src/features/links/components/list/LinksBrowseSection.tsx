@@ -125,7 +125,7 @@ export function LinksBrowseSection({
           title={t("list.sections.links")}
           description={description}
           titleVariant="section"
-          sx={{ mb: { xs: 1.25, sm: 1.75 } }}
+          sx={{ mb: { xs: 1.5, sm: 2 } }}
         />
 
         <LinksFilters

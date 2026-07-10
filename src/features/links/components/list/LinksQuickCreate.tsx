@@ -365,7 +365,7 @@ export function LinksQuickCreate({
           title={t("list.quickCreate.label")}
           description={t("list.quickCreate.description")}
           descriptionSx={{ display: { xs: "none", sm: "block" } }}
-          sx={{ mb: { xs: 1.25, sm: 1.75 } }}
+          sx={{ mb: { xs: 1.5, sm: 2 } }}
           action={
             <Stack direction="row" spacing={0.5} alignItems="center">
               <HelpHint label={t("list.onboarding.hintQuickCreate")} />
