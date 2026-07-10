@@ -73,6 +73,13 @@ export function LinkCardActionBar({
       ? theme.palette.success.light
       : successDark
     : theme.palette.text.secondary;
+  // Ícone em branco quando ocioso (mais presente que o label cinza); mantém o
+  // verde no estado "copiado" para não perder o feedback de sucesso.
+  const copyIconColor = copied
+    ? copyLabelFg
+    : isDark
+      ? theme.palette.common.white
+      : theme.palette.text.primary;
   // Desktop ("inline"): linha limpa, sem caixa — o hover revela a ação.
   // Mobile ("card"): fundo inset (nível 1) mantém a affordance de toque.
   const copyBgIdle =
@@ -104,9 +111,9 @@ export function LinkCardActionBar({
           onClick={handleCopy}
           startIcon={
             copied ? (
-              <Check size={15} strokeWidth={2.5} color={copyLabelFg} />
+              <Check size={15} strokeWidth={2.5} color={copyIconColor} />
             ) : (
-              <Copy size={15} strokeWidth={2} color={copyLabelFg} />
+              <Copy size={15} strokeWidth={2} color={copyIconColor} />
             )
           }
           sx={{
@@ -128,7 +135,7 @@ export function LinkCardActionBar({
             "& .MuiButton-startIcon": {
               margin: 0,
               mr: 0.625,
-              color: copyLabelFg,
+              color: copyIconColor,
             },
             "&:hover": {
               border: "none",

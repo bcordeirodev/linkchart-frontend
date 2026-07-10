@@ -206,6 +206,7 @@ export const linkCardListItemMb = { xs: 2, sm: 2.25 } as const;
 export function getLinkClickChipSx(theme: Theme) {
   const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
+  const primaryDark = theme.palette.primary.dark;
 
   return {
     height: 22,
@@ -217,12 +218,14 @@ export function getLinkClickChipSx(theme: Theme) {
     // Fonte branca (não primary.light) — chips coloridos precisam de texto
     // branco em dark para leitura; regra vale p/ futuros chips de tag.
     color: isDark ? theme.palette.common.white : theme.palette.primary.dark,
-    bgcolor: alpha(primary, isDark ? 0.2 : 0.1),
-    border: `1px solid ${alpha(primary, 0.28)}`,
+    // Em dark o chip é um azul profundo (primary.dark) — tom mais escuro que
+    // se destaca sobre o véu claro do card sem "brilhar".
+    bgcolor: isDark ? alpha(primaryDark, 0.55) : alpha(primary, 0.1),
+    border: `1px solid ${alpha(primaryDark, isDark ? 0.55 : 0.28)}`,
     "& .MuiChip-icon": { color: "inherit", ml: 0.625 },
     "& .MuiChip-label": { px: 0.75 },
     "&:hover": {
-      bgcolor: alpha(primary, isDark ? 0.24 : 0.16),
+      bgcolor: isDark ? alpha(primaryDark, 0.7) : alpha(primary, 0.16),
     },
   };
 }
