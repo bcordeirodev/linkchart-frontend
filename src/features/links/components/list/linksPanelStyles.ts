@@ -12,7 +12,7 @@ import type { Theme } from "@mui/material/styles";
  */
 export const linksRadius = {
   panel: 8,
-  card: 8,
+  card: 6,
   control: 6,
   chip: 6,
 } as const;
@@ -173,7 +173,7 @@ export function getLinkCardShellSx(theme: Theme) {
   return {
     animation: `${cardEnter} 280ms ${motionTokens.easing.default} backwards`,
     "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-    borderRadius: `${linksRadius.panel}px`,
+    borderRadius: `${linksRadius.card}px`,
     // Borda do card um passo acima da hairline dos painéis — o card é o
     // objeto principal da página e pode se afirmar.
     border: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.14 : 0.12)}`,

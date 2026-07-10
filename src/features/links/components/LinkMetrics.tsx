@@ -1,20 +1,14 @@
 "use client";
-import {
-  TrendingUp,
-  Link2,
-  CheckCircle,
-  BarChart3,
-  Users,
-  Globe,
-} from "lucide-react";
+import { TrendingUp, BarChart3, Users, Globe } from "lucide-react";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
-import { Grid, Box, Typography } from "@mui/material";
+import { Grid, Box, Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 
 import { AccountClicksTrendPanel } from "@/features/links/components/AccountClicksTrendPanel";
+import { OverviewStatCard } from "@/features/links/components/OverviewStatCard";
 import { getLinkStatus } from "@/features/links/utils/linkStatus";
 import { aggregateSparklines } from "@/features/links/utils/overviewAggregation";
 import { formatCount } from "@/lib/utils";
@@ -76,6 +70,28 @@ export function LinkMetrics({
     [mode, meta],
   );
 
+  // Variação agregada do período: soma current/previous dos trends por link.
+  // `null` (sem base de comparação) oculta o badge — nunca inventa números.
+  const aggregateTrendPercent = useMemo(() => {
+    if (mode !== "list" || !meta) {
+      return null;
+    }
+    let current = 0;
+    let previous = 0;
+    let hasTrend = false;
+    for (const linkMeta of Object.values(meta)) {
+      if (linkMeta.trend) {
+        current += linkMeta.trend.current ?? 0;
+        previous += linkMeta.trend.previous ?? 0;
+        hasTrend = true;
+      }
+    }
+    if (!hasTrend || previous <= 0) {
+      return null;
+    }
+    return ((current - previous) / previous) * 100;
+  }, [mode, meta]);
+
   const titleText = title ?? t("metrics.title");
 
   const totalLinks = summary?.total_links ?? linksData.length;
@@ -131,46 +147,56 @@ export function LinkMetrics({
     },
   ];
 
-  const listMetrics = [
-    {
-      id: "total_links",
-      title: t("metrics.links"),
-      value: formatCount(totalLinks, i18n.language),
-      icon: <Link2 {...ICON_LG} />,
-      color: "primary" as const,
-      subtitle: t("metrics.linksSubtitle"),
-      hint: t("metrics.linksHint"),
-    },
-    {
-      id: "active_links",
-      title: t("status.active"),
-      value: formatCount(activeLinks, i18n.language),
-      icon: <CheckCircle {...ICON_LG} />,
-      color: "success" as const,
-      subtitle: t("metrics.linksActive"),
-      hint: t("metrics.activeHint"),
-    },
-    {
-      id: "total_clicks_list",
-      title: t("metrics.totalClicks"),
-      value: formatCount(totalClicks, i18n.language),
-      icon: <TrendingUp {...ICON_LG} />,
-      color: "info" as const,
-      subtitle: t("metrics.totalClicksSubtitle"),
-      hint: t("metrics.totalClicksHint"),
-    },
-    {
-      id: "avg_clicks_per_link",
-      title: t("metrics.avgClicksPerLink"),
-      value: formatCount(avgClicksPerLink, i18n.language),
-      icon: <BarChart3 {...ICON_LG} />,
-      color: "warning" as const,
-      subtitle: t("metrics.clicksPerLink"),
-      hint: t("metrics.avgClicksPerLinkHint"),
-    },
-  ];
+  // Overview da conta no padrão de referência: gráfico agregado em destaque
+  // primeiro, stats compactos abaixo (label + número + trend + mini-curva).
+  if (mode === "list") {
+    const listStats = [
+      {
+        id: "total_links",
+        label: t("metrics.links"),
+        value: formatCount(totalLinks, i18n.language),
+      },
+      {
+        id: "active_links",
+        label: t("status.active"),
+        value: formatCount(activeLinks, i18n.language),
+      },
+      {
+        id: "total_clicks",
+        label: t("metrics.totalClicks"),
+        value: formatCount(totalClicks, i18n.language),
+        trendPercent: aggregateTrendPercent,
+        trendLabel: t("metrics.vsPrevWeek"),
+        sparkline: aggregatedSparkline,
+      },
+      {
+        id: "avg_clicks_per_link",
+        label: t("metrics.avgClicksPerLink"),
+        value: formatCount(avgClicksPerLink, i18n.language),
+      },
+    ];
 
-  const metrics = mode === "single-link" ? singleLinkMetrics : listMetrics;
+    return (
+      <Stack spacing={{ xs: 2, sm: 2.5 }}>
+        <AccountClicksTrendPanel data={aggregatedSparkline} />
+        <Grid container spacing={{ xs: 1.5, sm: 2 }}>
+          {listStats.map((stat) => (
+            <Grid item xs={6} md={3} key={stat.id}>
+              <OverviewStatCard
+                label={stat.label}
+                value={stat.value}
+                trendPercent={stat.trendPercent ?? null}
+                trendLabel={stat.trendLabel}
+                sparkline={stat.sparkline}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </Stack>
+    );
+  }
+
+  const metrics = singleLinkMetrics;
 
   if (noContainer) {
     return (
@@ -190,7 +216,6 @@ export function LinkMetrics({
               icon={metric.icon}
               color={metric.color}
               subtitle={metric.subtitle}
-              hint={"hint" in metric ? metric.hint : undefined}
             />
           </Grid>
         ))}
@@ -215,15 +240,10 @@ export function LinkMetrics({
               icon={metric.icon}
               color={metric.color}
               subtitle={metric.subtitle}
-              hint={"hint" in metric ? metric.hint : undefined}
             />
           </Grid>
         ))}
       </Grid>
-
-      {mode === "list" ? (
-        <AccountClicksTrendPanel data={aggregatedSparkline} />
-      ) : null}
     </Box>
   );
 }

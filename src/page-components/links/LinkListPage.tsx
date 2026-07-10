@@ -1,7 +1,7 @@
 "use client";
 
 import { BarChart3, HelpCircle } from "lucide-react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -175,22 +175,6 @@ function LinkListPage() {
             />
             {links.length > 0 ? (
               <Box data-tour="overview" sx={{ mt: { xs: 2, sm: 2.5 } }}>
-                {/* Eyebrow padronizado: 11px/600, tracking 0.08em, respiro 12px. */}
-                <Typography
-                  variant="overline"
-                  component="h2"
-                  sx={{
-                    display: "block",
-                    color: "text.secondary",
-                    fontWeight: 600,
-                    fontSize: "0.6875rem",
-                    lineHeight: 1.4,
-                    letterSpacing: "0.08em",
-                    mb: 1.5,
-                  }}
-                >
-                  {t("list.sections.overview")}
-                </Typography>
                 <LinkMetrics linksData={links} showTitle={false} meta={meta} />
               </Box>
             ) : null}
