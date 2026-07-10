@@ -5,12 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import { useMemo } from "react";
 
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-import { darkNeutral } from "@/lib/theme/colors";
-import {
-  getLinksBorderColor,
-  getLinksTopHighlight,
-  linksRadius,
-} from "@/features/links/components/list/linksPanelStyles";
+import { linksRadius } from "@/features/links/components/list/linksPanelStyles";
 
 import type { SparklinePoint } from "@/types";
 
@@ -99,12 +94,13 @@ export function OverviewStatCard({
         flexDirection: "column",
         height: "100%",
         overflow: "hidden",
-        borderRadius: `${linksRadius.panel}px`,
-        border: `1px solid ${getLinksBorderColor(theme)}`,
+        borderRadius: `${linksRadius.card}px`,
+        // Tile quieto, não painel: os stats são leitura de dado — sem borda
+        // nem highlight, só um véu que os separa do fundo. A moldura fica
+        // reservada para as áreas de ação (gráfico, quick-create, lista).
         backgroundColor: isDark
-          ? darkNeutral.elevated
-          : theme.palette.background.paper,
-        boxShadow: getLinksTopHighlight(theme),
+          ? alpha(theme.palette.common.white, 0.035)
+          : alpha(theme.palette.common.black, 0.03),
       }}
     >
       <Box sx={{ px: 2.25, pt: 1.75, pb: sparkline?.length ? 0.25 : 1.75 }}>
