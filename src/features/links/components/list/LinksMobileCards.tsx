@@ -50,6 +50,7 @@ import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
 import { formatCompact } from "@/lib/utils";
 import {
+  linksRadius,
   getLinkCardShellSx,
   getLinkClickChipSx,
   getNewlyCreatedHighlightSx,
@@ -177,6 +178,7 @@ const LinkMobileCard = memo(
                 label={statusLabel}
                 sx={{
                   height: 20,
+                  borderRadius: `${linksRadius.chip}px`,
                   fontSize: "0.625rem",
                   fontWeight: 500,
                   flexShrink: 0,

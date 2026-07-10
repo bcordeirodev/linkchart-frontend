@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
+import { linksRadius } from "./linksPanelStyles";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import { getLinksBorderColor } from "./linksPanelStyles";
 
@@ -48,7 +49,7 @@ export function LinksEmptyState({
         textAlign: "center",
         backgroundColor: theme.palette.background.paper,
         border: `1px dashed ${getLinksBorderColor(theme)}`,
-        borderRadius: `${radiusTokens.md}px`,
+        borderRadius: `${linksRadius.panel}px`,
         transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
       }}
     >
