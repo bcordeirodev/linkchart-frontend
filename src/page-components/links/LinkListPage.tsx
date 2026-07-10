@@ -178,7 +178,7 @@ function LinkListPage() {
                 >
                   {t("list.sections.overview")}
                 </Typography>
-                <LinkMetrics linksData={links} showTitle={false} />
+                <LinkMetrics linksData={links} showTitle={false} meta={meta} />
               </Box>
             ) : null}
           </Box>
