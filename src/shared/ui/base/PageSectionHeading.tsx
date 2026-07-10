@@ -16,6 +16,12 @@ export interface PageSectionHeadingProps {
   titleVariant?: "page" | "section";
   /** Icon size in px; defaults to 18 (section) or 22 (page). */
   iconSize?: number;
+  /**
+   * Section headings only: renders the icon in the same tinted chip used by
+   * page titles (32px, glifo branco) em vez do glifo inline cinza, e centra
+   * verticalmente ícone, título e `action` no mesmo eixo.
+   */
+  iconChip?: boolean;
   sx?: SxProps<Theme>;
   /** Extra styles for the description line (e.g. hide on mobile). */
   descriptionSx?: SxProps<Theme>;
@@ -32,6 +38,7 @@ export function PageSectionHeading({
   action,
   titleVariant = "section",
   iconSize,
+  iconChip = false,
   sx,
   descriptionSx,
 }: PageSectionHeadingProps) {
@@ -40,6 +47,8 @@ export function PageSectionHeading({
   const isPageTitle = titleVariant === "page";
   const resolvedIconSize = iconSize ?? (isPageTitle ? 22 : 18);
   const primary = theme.palette.primary.main;
+  // Chip tintado: sempre em títulos de página; opt-in em seções (iconChip).
+  const showIconChip = Boolean(icon) && (isPageTitle || iconChip);
 
   return (
     <Box
@@ -53,7 +62,9 @@ export function PageSectionHeading({
         alignItems:
           action && isPageTitle
             ? { xs: "flex-start", sm: "center" }
-            : "flex-start",
+            : iconChip
+              ? "center"
+              : "flex-start",
         justifyContent: "space-between",
         gap: 2,
         flexWrap: "wrap",
@@ -65,14 +76,15 @@ export function PageSectionHeading({
         sx={{
           minWidth: 0,
           flex: 1,
-          display: isPageTitle ? "flex" : "block",
+          display: showIconChip ? "flex" : "block",
           alignItems: "center",
-          gap: 1.5,
+          gap: showIconChip && !isPageTitle ? 1.25 : 1.5,
         }}
       >
         {/* Page titles carry the icon in a tinted chip — a single quiet accent
-            that anchors the page identity without adding another loud color. */}
-        {icon && isPageTitle ? (
+            that anchors the page identity without adding another loud color.
+            Section headings opt in via `iconChip` (menor, radius sm). */}
+        {showIconChip ? (
           <Box
             component="span"
             aria-hidden
@@ -80,10 +92,10 @@ export function PageSectionHeading({
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              width: 40,
-              height: 40,
+              width: isPageTitle ? 40 : 32,
+              height: isPageTitle ? 40 : 32,
               flexShrink: 0,
-              borderRadius: `${radiusTokens.md}px`,
+              borderRadius: `${radiusTokens[isPageTitle ? "md" : "sm"]}px`,
               // Solid-enough fill so the white glyph holds contrast in both
               // themes (a 12% tint would swallow white in light mode).
               bgcolor: alpha(primary, isDark ? 0.55 : 0.9),
@@ -114,7 +126,7 @@ export function PageSectionHeading({
               mb: description ? 0.375 : 0,
             }}
           >
-            {icon && !isPageTitle ? (
+            {icon && !isPageTitle && !iconChip ? (
               <Box
                 component="span"
                 sx={{
