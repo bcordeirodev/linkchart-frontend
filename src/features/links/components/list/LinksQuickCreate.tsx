@@ -28,8 +28,10 @@ import { z } from "zod";
 import { useCreateLink } from "@/features/links/hooks/useLinks";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
 import { usePublicSlugSuggestion } from "@/features/links/hooks/usePublicSlugSuggestion";
+import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability";
 import { RESERVED_SLUGS } from "@/features/links/utils/slugAvailabilityCheck";
 import {
+  buildSlugAvailabilityLabels,
   buildUrlSafetyLabels,
   getUrlSafetyHelperNode,
 } from "@/features/links/components/forms/UrlSafetyIndicator";
@@ -260,11 +262,28 @@ export function LinksQuickCreate({
   const { slug: availableSlug, status: slugSuggestionStatus } =
     usePublicSlugSuggestion(!slugValue ? urlValue ?? null : null);
 
-  // The suggestion is ambient: a ready slug surfaces as ghost text the user can
-  // accept (or ignore). Resolution stays silent — no "searching…" state — so the
-  // field never flickers feedback while suggestions are being looked up.
+  // A ready slug surfaces as ghost text the user can accept (or ignore).
+  //
+  // Resolution used to be silent, on the theory that a "searching…" state would
+  // make the field flicker. In practice it read as broken: the server has to
+  // fetch the destination page to derive the slug from its og:title (~1s), so the
+  // field just sat there dead and the suggestion only landed after the user had
+  // already given up and tabbed away — which looked like "it only suggests on
+  // blur". A quiet spinner costs nothing and makes that second legible.
   const showSlugSuggestion =
     !slugValue && slugSuggestionStatus === "ready" && !!availableSlug;
+  const isResolvingSlug = !slugValue && slugSuggestionStatus === "resolving";
+
+  // A *suggested* slug is checked against the DB before it is offered (the
+  // server only ever suggests a free one). A slug the user types themselves is
+  // not — so it gets its own availability check, the same one the full create
+  // form uses. Without it, "already taken" only surfaced as a 422 on submit.
+  const typedSlug = slugValue?.trim() ?? "";
+  const slugAvailability = useSlugAvailability(typedSlug);
+  const slugAvailabilityLabels = buildSlugAvailabilityLabels(t);
+  const slugIsTaken = !!typedSlug && slugAvailability === "taken";
+  const slugIsChecking = !!typedSlug && slugAvailability === "checking";
+  const slugIsAvailable = !!typedSlug && slugAvailability === "available";
 
   const acceptSlugSuggestion = useCallback(() => {
     if (availableSlug) {
@@ -316,6 +335,8 @@ export function LinksQuickCreate({
       // of greying the button — it fires automatically once the check settles,
       // so the button never flickers disabled mid-check.
       if (urlIsUnsafe) return;
+      // A slug we already know is taken would just come back as a 422.
+      if (slugIsTaken) return;
       if (urlIsChecking) {
         pendingSubmitDataRef.current = data;
         setSubmitQueued(true);
@@ -323,7 +344,7 @@ export function LinksQuickCreate({
       }
       await createLink(data);
     },
-    [urlIsUnsafe, urlIsChecking, createLink],
+    [urlIsUnsafe, urlIsChecking, slugIsTaken, createLink],
   );
 
   // Flush a queued submit when the safety check settles: create on safe/error
@@ -348,9 +369,13 @@ export function LinksQuickCreate({
 
   const inputRootSx = getInputRootSx(theme);
   const primary = theme.palette.primary.main;
-  // Slug field stays silent unless the value is actually invalid. The suggestion
-  // affordance lives inline (ghost text + accept button), not in helper copy.
-  const slugHelperText = errors.custom_slug?.message;
+  // Only real problems get a helper row — a taken slug or a malformed one. The
+  // in-progress and all-clear states of the availability check live inside the
+  // field (spinner / check icon) so the helper row never appears and disappears
+  // under the input, which used to shift the whole form vertically.
+  const slugHelperText =
+    errors.custom_slug?.message ??
+    (slugIsTaken ? slugAvailabilityLabels.taken : undefined);
 
   return (
     <EnhancedPaper
@@ -451,12 +476,16 @@ export function LinksQuickCreate({
               }}
               size="small"
               fullWidth
-              error={!!errors.custom_slug}
+              error={!!errors.custom_slug || slugIsTaken}
               helperText={slugHelperText}
               disabled={isPending}
               sx={[
                 inputRootSx,
-                showSlugSuggestion && slugAcceptAdornmentSx,
+                (showSlugSuggestion ||
+                  isResolvingSlug ||
+                  slugIsChecking ||
+                  slugIsAvailable) &&
+                  slugAcceptAdornmentSx,
                 mdCell(1, 2),
                 { order: { xs: 2, md: "unset" } },
               ]}
@@ -477,38 +506,65 @@ export function LinksQuickCreate({
                         }
                       : undefined),
                   },
-                  endAdornment: showSlugSuggestion ? (
-                    <InputAdornment position="end">
-                      <Box
-                        component="button"
-                        type="button"
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          acceptSlugSuggestion();
-                        }}
-                        sx={{
-                          border: "none",
-                          cursor: "pointer",
-                          font: "inherit",
-                          fontSize: "0.6875rem",
-                          fontWeight: 600,
-                          lineHeight: 1,
-                          py: 0.25,
-                          px: 0.625,
-                          borderRadius: `${linksRadius.control}px`,
-                          color: primary,
-                          bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
-                          transition: "background-color 120ms ease",
-                          "&:hover": {
-                            bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
-                          },
-                        }}
-                      >
-                        {t("list.quickCreate.slugAccept")}
-                      </Box>
-                    </InputAdornment>
-                  ) : undefined,
+                  // One slot, four states — the indicator swaps in place so the
+                  // field never reflows. Suggestion path: resolving (spinner) →
+                  // ready («Usar»). Typed-slug path: checking the DB (spinner) →
+                  // free (check). A taken slug speaks in the helper row instead.
+                  endAdornment:
+                    isResolvingSlug || slugIsChecking ? (
+                      <InputAdornment position="end">
+                        <CircularProgress
+                          size={14}
+                          thickness={5}
+                          aria-label={
+                            slugIsChecking
+                              ? slugAvailabilityLabels.checking
+                              : t("list.quickCreate.slugSuggestionChecking")
+                          }
+                          sx={{ color: alpha(primary, 0.6) }}
+                        />
+                      </InputAdornment>
+                    ) : slugIsAvailable ? (
+                      <InputAdornment position="end">
+                        <CheckCircle2
+                          size={15}
+                          strokeWidth={2.25}
+                          aria-label={slugAvailabilityLabels.available}
+                          color={theme.palette.success.main}
+                        />
+                      </InputAdornment>
+                    ) : showSlugSuggestion ? (
+                      <InputAdornment position="end">
+                        <Box
+                          component="button"
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            acceptSlugSuggestion();
+                          }}
+                          sx={{
+                            border: "none",
+                            cursor: "pointer",
+                            font: "inherit",
+                            fontSize: "0.6875rem",
+                            fontWeight: 600,
+                            lineHeight: 1,
+                            py: 0.25,
+                            px: 0.625,
+                            borderRadius: `${linksRadius.control}px`,
+                            color: primary,
+                            bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
+                            transition: "background-color 120ms ease",
+                            "&:hover": {
+                              bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
+                            },
+                          }}
+                        >
+                          {t("list.quickCreate.slugAccept")}
+                        </Box>
+                      </InputAdornment>
+                    ) : undefined,
                 },
                 formHelperText: {
                   sx: {
@@ -526,7 +582,7 @@ export function LinksQuickCreate({
               variant="contained"
               color="primary"
               fullWidth
-              disabled={isPending || urlIsUnsafe || submitQueued}
+              disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
               startIcon={
                 succeeded ? (
                   <CheckCircle2 {...ICON_SM} />
