@@ -14,10 +14,8 @@ Painel analítico completo de um link encurtado autenticado. Cobre dashboard, di
 ### `components/dashboard/`
 
 - `LinkDashboard.tsx` — composição superior do dashboard de link individual.
-- `cards/LinkInfoCard.tsx` — bloco hero com URL, slug e meta.
-- `cards/TimeframeSelector.tsx` — switch de janela temporal.
-- `cards/TrafficQualityCard.tsx` — card de qualidade de tráfego.
-- `cards/ViralityCard.tsx` — card de viralização (compartilhamentos / impressões).
+- `cards/UtmSourceCard.tsx` — top fontes UTM.
+- `cards/SocialAppCard.tsx` — breakdown de apps sociais (IAB).
 - `charts/DayOfWeekChart.tsx` — distribuição por dia da semana.
 - `charts/DeviceBreakdownChart.tsx` — proporção de dispositivos.
 - `charts/HourlyClicksChart.tsx` — cliques por hora do dia.

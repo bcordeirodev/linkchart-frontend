@@ -29,12 +29,6 @@ export type Period = "1h" | "24h" | "7d" | "30d" | "90d" | "all" | "custom";
 /** Segment options for the Temporal tab filter. */
 export type Segment = "all" | "weekday" | "weekend" | "business";
 
-/** GroupBy options for the Temporal tab (frontend-only display control). */
-export type GroupBy = "hour" | "day" | "month";
-
-/** Level options for the Geographic tab (frontend-only display control). */
-export type GeoLevel = "country" | "state" | "city";
-
 /** Priority options for the Insights tab filter. */
 export type InsightPriority = "all" | "high" | "medium" | "low";
 
@@ -50,13 +44,10 @@ export interface AnalyticsFilters {
   tab: TabId;
 
   // Temporal
-  groupBy: GroupBy;
   segment: Segment;
 
   // Geographic
   continent: string | null;
-  minClicks: number;
-  geoLevel: GeoLevel;
   /** Index of the active geographic sub-tab (0=Overview, 1=Heatmap, 2=Rankings). URL-persisted so it survives RSC remounts triggered by filter changes. */
   geoSubTab: number;
   /** Index of the active temporal sub-tab (0=Patterns, 1=Timeline, 2=Performance, 3=Distribution). URL-persisted so it survives RSC remounts. */
@@ -74,11 +65,8 @@ export interface AnalyticsFilters {
   setDateRange: (from: string, to: string) => void;
   setExcludeBots: (v: boolean) => void;
   setTab: (v: TabId) => void;
-  setGroupBy: (v: GroupBy) => void;
   setSegment: (v: Segment) => void;
   setContinent: (v: string | null) => void;
-  setMinClicks: (v: number) => void;
-  setGeoLevel: (v: GeoLevel) => void;
   setGeoSubTab: (v: number) => void;
   setTemporalSubTab: (v: number) => void;
   setAudienceSubTab: (v: number) => void;
@@ -146,8 +134,8 @@ function resolveDates(period: Period): {
  * Instantiated once in `LinkAnalyticsTabs`. Tab components receive state as
  * props — no tab reads the URL directly.
  *
- * Defaults: period=all, excludeBots=true, groupBy=hour, segment=all,
- *   minClicks=1, geoLevel=country, priority=all, actionableOnly=false.
+ * Defaults: period=all, excludeBots=true, segment=all, priority=all,
+ *   actionableOnly=false.
  */
 export function useAnalyticsFilters(): AnalyticsFilters {
   const searchParams = useSearchParams();
@@ -163,14 +151,12 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     "all",
     "custom",
   ];
-  const GROUP_BYS: readonly GroupBy[] = ["hour", "day", "month"];
   const SEGMENTS: readonly Segment[] = [
     "all",
     "weekday",
     "weekend",
     "business",
   ];
-  const GEO_LEVELS: readonly GeoLevel[] = ["country", "state", "city"];
   const PRIORITIES: readonly InsightPriority[] = [
     "all",
     "high",
@@ -181,25 +167,12 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   const period = parseEnum<Period>(searchParams.get("period"), PERIODS, "all");
   // Default is true; "false" in URL explicitly disables it.
   const excludeBots = searchParams.get("bots") !== "false";
-  const groupBy = parseEnum<GroupBy>(
-    searchParams.get("groupBy"),
-    GROUP_BYS,
-    "hour",
-  );
   const segment = parseEnum<Segment>(
     searchParams.get("segment"),
     SEGMENTS,
     "all",
   );
   const continent = searchParams.get("continent") || null;
-  const rawMinClicks = parseInt(searchParams.get("minClicks") ?? "1", 10);
-  const minClicks =
-    Number.isFinite(rawMinClicks) && rawMinClicks >= 1 ? rawMinClicks : 1;
-  const geoLevel = parseEnum<GeoLevel>(
-    searchParams.get("geoLevel"),
-    GEO_LEVELS,
-    "country",
-  );
   const priority = parseEnum<InsightPriority>(
     searchParams.get("priority"),
     PRIORITIES,
@@ -305,11 +278,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     [setParam],
   );
 
-  const setGroupBy = useCallback(
-    (v: GroupBy) => setParam({ groupBy: v === "hour" ? null : v }),
-    [setParam],
-  );
-
   const setSegment = useCallback(
     (v: Segment) => setParam({ segment: v === "all" ? null : v }),
     [setParam],
@@ -317,16 +285,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
 
   const setContinent = useCallback(
     (v: string | null) => setParam({ continent: v }),
-    [setParam],
-  );
-
-  const setMinClicks = useCallback(
-    (v: number) => setParam({ minClicks: v <= 1 ? null : String(v) }),
-    [setParam],
-  );
-
-  const setGeoLevel = useCallback(
-    (v: GeoLevel) => setParam({ geoLevel: v === "country" ? null : v }),
     [setParam],
   );
 
@@ -367,11 +325,8 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     dateTo,
     excludeBots,
     tab,
-    groupBy,
     segment,
     continent,
-    minClicks,
-    geoLevel,
     priority,
     insightCategories,
     actionableOnly,
@@ -379,11 +334,8 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     setDateRange,
     setExcludeBots,
     setTab,
-    setGroupBy,
     setSegment,
     setContinent,
-    setMinClicks,
-    setGeoLevel,
     geoSubTab,
     setGeoSubTab,
     temporalSubTab,

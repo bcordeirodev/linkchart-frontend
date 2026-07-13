@@ -27,14 +27,11 @@ import {
   chartFlags,
   type ChartData,
 } from "./DashboardChartSection";
-import { LinkInfoCard } from "./cards";
 
 /** Props accepted by the {@link LinkDashboard} component. */
 interface LinkDashboardProps {
   /** Canonical id of the link to display analytics for. */
   linkId: string;
-  /** Whether to render the link info title card. Defaults to `true`. */
-  showTitle?: boolean;
   /** Whether to subscribe to realtime updates. Defaults to `false`. */
   enableRealtime?: boolean;
   /** Render in compact mode (reduced height, no charts). Defaults to `false`. */
@@ -52,10 +49,9 @@ interface LinkDashboardProps {
 }
 
 /**
- * Formats the traffic-quality summary into the same display string used by the
- * standalone TrafficQualityCard (`"{organic_percentage}%"`). Returns the
- * provided `noDataLabel` (e.g. "No data") when the quality block is absent, so
- * the hero header stays consistent with the rest of the dashboard.
+ * Formats the traffic-quality summary as a display string (`"{organic_percentage}%"`).
+ * Returns the provided `noDataLabel` (e.g. "No data") when the quality block is
+ * absent, so the hero header stays consistent with the rest of the dashboard.
  *
  * @param quality - The `summary.quality` block from the dashboard payload.
  * @param noDataLabel - Fallback label shown when quality data is unavailable.
@@ -78,7 +74,6 @@ function formatQuality(
  */
 export function LinkDashboard({
   linkId,
-  showTitle = true,
   enableRealtime = false,
   compact = false,
   chartsHeight,
@@ -154,13 +149,6 @@ export function LinkDashboard({
       compact={compact}
     >
       <Box>
-        {/* Informações do Link */}
-        {showTitle && data?.link_info ? (
-          <Box sx={{ mb: 2 }}>
-            <LinkInfoCard linkInfo={data.link_info} />
-          </Box>
-        ) : null}
-
         {/* Hero KPI header — total clicks + 4 compact tiles */}
         <OverviewKpiHeader
           totalClicks={data?.summary?.total_clicks ?? 0}

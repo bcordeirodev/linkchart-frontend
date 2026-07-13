@@ -421,8 +421,7 @@
     "subtabs": {
       "overview": "Overview",
       "heatmap": "Heatmap",
-      "rankings": "Rankings",
-      "insights": "Insights"
+      "rankings": "Rankings"
     },
     "chart": {
       "topCountries": "Top Countries",

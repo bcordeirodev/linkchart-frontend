@@ -421,8 +421,7 @@
     "subtabs": {
       "overview": "Visão geral",
       "heatmap": "Mapa de calor",
-      "rankings": "Rankings",
-      "insights": "Insights"
+      "rankings": "Rankings"
     },
     "chart": {
       "topCountries": "Top Países",

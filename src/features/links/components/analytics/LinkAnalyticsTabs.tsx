@@ -260,7 +260,6 @@ export function LinkAnalyticsTabsOptimized({
             "overview",
             <LinkDashboard
               linkId={linkId}
-              showTitle={false}
               enableRealtime={false}
               compact={false}
               dateFrom={filters.dateFrom}
