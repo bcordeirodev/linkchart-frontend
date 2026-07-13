@@ -138,7 +138,6 @@ export type {
   AudienceStats,
   AudienceAnalysisProps,
   AudienceChartProps,
-  AudienceInsightsProps,
   AudienceMetricsProps,
   UseAudienceDataOptions,
   UseAudienceDataReturn,

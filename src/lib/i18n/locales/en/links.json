@@ -322,7 +322,7 @@
       "browser": "Browser",
       "os": "Operating System",
       "source": "Source",
-      "referer": "Referrer",
+      "referer": "Came from",
       "utm": "UTM",
       "ip": "IP",
       "returnVisitor": "Returning",

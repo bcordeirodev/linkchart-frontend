@@ -436,13 +436,6 @@
       "continentsCoverage": "Cobertura global",
       "coverage": "Cobertura"
     },
-    "subtabs": {
-      "overview": "Visão geral",
-      "heatmap": "Mapa de calor",
-      "rankings": "Rankings",
-      "mapAndRanking": "Mapa e ranking",
-      "continentsCountries": "Continentes e países"
-    },
     "chart": {
       "topCountries": "Top Países",
       "topStates": "Top Estados/Regiões",
@@ -554,17 +547,11 @@
     "deviceTypes": "{{count}} tipos de dispositivos detectados",
     "linkSpecific": "Link Específico",
     "sections": {
-      "devices": "Aparelhos",
-      "browserSystemLanguage": "Navegador · Sistema · Idioma",
-      "qualityAndLoyalty": "Qualidade e fidelidade",
-      "technicalDetails": "Detalhes técnicos",
-      "technicalDetailsDesc": "Dados de engenharia: tempo de resposta do servidor, motor de renderização, tipo de conexão e sinais de dispositivo detectados via Client Hints."
+      "qualityAndLoyalty": "Qualidade e fidelidade"
     },
     "subtabs": {
       "profile": "Perfil",
-      "technical": "Detalhes técnicos",
-      "browserSystem": "Navegador e sistema",
-      "language": "Idioma"
+      "technical": "Detalhes técnicos"
     },
     "metrics": {
       "title": "Métricas de Audiência",
@@ -1079,7 +1066,6 @@
     "subtitle": "{{suspicious}} suspeitos · {{fraud}} fraude"
   },
   "sections": {
-    "acquisition": "Canais de Aquisição",
     "temporal": "Padrões Temporais",
     "audience": "Audiência"
   },
@@ -1094,9 +1080,7 @@
     },
     "subtabs": {
       "channelsAndSocial": "Canais e redes",
-      "social": "Redes sociais",
-      "campaigns": "Campanhas",
-      "context": "Contexto"
+      "campaigns": "Campanhas"
     },
     "channels": {
       "direct": "Direto",

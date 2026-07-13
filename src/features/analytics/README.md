@@ -11,43 +11,68 @@ Painel analítico completo de um link encurtado autenticado. Cobre dashboard, di
 
 ## Componentes principais
 
-### `components/dashboard/`
+A página tem **6 abas** e **9 sub-tabs**. Uma sub-tab só existe para separar
+_perguntas diferentes_ — não níveis de zoom da mesma pergunta.
+
+| Aba     | Sub-tabs                                            |
+| ------- | --------------------------------------------------- |
+| Resumo  | —                                                   |
+| Origem  | Canais e redes · Campanhas · Detalhes técnicos      |
+| Lugares | — (toggle Mapa/Lista/Calor dentro do card)          |
+| Público | Perfil · Qualidade e fidelidade · Detalhes técnicos |
+| Momento | Padrões · Linha do tempo · Picos e tendências       |
+| Cliques | —                                                   |
+
+### `components/dashboard/` (aba Resumo)
 
 - `LinkDashboard.tsx` — composição superior do dashboard de link individual.
-- `cards/UtmSourceCard.tsx` — top fontes UTM.
-- `cards/SocialAppCard.tsx` — breakdown de apps sociais (IAB).
-- `charts/DayOfWeekChart.tsx` — distribuição por dia da semana.
-- `charts/DeviceBreakdownChart.tsx` — proporção de dispositivos.
-- `charts/HourlyClicksChart.tsx` — cliques por hora do dia.
-- `charts/TopCountriesChart.tsx` — top N países.
+- `BusinessInsights.tsx` — o bloco "O que isso quer dizer", logo abaixo dos KPIs.
+  Os textos vêm do backend como **chaves i18n** (`title_key`), resolvidas em runtime —
+  por isso `insights.generators.*` parece órfão num grep e **não é**.
+- `cards/UtmSourceCard.tsx`, `cards/SocialAppCard.tsx` — renderizados **só** pela aba
+  Origem (sub-tab Campanhas). O dashboard não os duplica mais.
+- `charts/DayOfWeekChart.tsx`, `charts/DeviceBreakdownChart.tsx`,
+  `charts/HourlyClicksChart.tsx`, `charts/TopCountriesChart.tsx`.
 
-### `components/geographic/`
+### `components/origin/` (aba Origem)
 
-- `GeographicAnalysis.tsx` — orquestra a aba geográfica.
-- `GeographicChoropleth.tsx` — mapa coroplético mundial.
-- `RealTimeHeatmapChart.tsx` — heatmap por densidade.
-- `HeatmapMap.tsx`, `HeatmapControls.tsx` — Leaflet.
-- `ContinentBreakdown.tsx`, `CountryDistributionChart.tsx`, `GeographicMetrics.tsx`, `GeographicInsights.tsx`.
+- `OriginAnalysis.tsx` — orquestra a aba.
+- `ChannelsBreakdown.tsx` — única representação da divisão por canal.
+- `ChannelEngagementChart.tsx` — engajamento por canal (Detalhes técnicos).
 
-### `components/temporal/`
+### `components/geographic/` (aba Lugares)
 
-- `TemporalAnalysis.tsx` — orquestra a aba temporal.
-- `DailyTimelineChart.tsx`, `TemporalTrendsChart.tsx`, `HourDayHeatmapChart.tsx`.
-- `TimezoneDistributionChart.tsx`, `DeviceByPeriodChart.tsx`.
-- `HolidayImpactCard.tsx`, `PeakAnalysisCard.tsx`, `TemporalInsights.tsx`.
+- `GeographicAnalysis.tsx` — orquestra a aba. **Sem sub-tabs.**
+- `GeographicMapAndList.tsx` — um card, três modos: Mapa / Lista / Calor.
+- `GeographicChoropleth.tsx`, `GeographicChart.tsx`, `RealTimeHeatmapChart.tsx` —
+  os três modos. O heatmap só monta quando ativo (Leaflet é caro) e aceita `bare`
+  para renderizar sem moldura de card própria.
+- `ContinentBreakdown.tsx`, `GeographicInsights.tsx`, `GeographicFilterBar.tsx`.
 
-### `components/audience/`
+### `components/temporal/` (aba Momento)
 
-- `AudienceAnalysis.tsx` — orquestra a aba audiência.
-- `AudienceChart.tsx`, `LanguageBreakdownChart.tsx`.
-- `AudienceMetrics.tsx`, `AudienceInsights.tsx`.
-- `BehaviorSection.tsx`, `QualitySection.tsx`.
+- `TemporalAnalysis.tsx` / `TemporalChart.tsx` — orquestram a aba.
+- `tabs/TemporalPatternsTab.tsx`, `tabs/TemporalTimelineTab.tsx`,
+  `tabs/TemporalPeaksTab.tsx` — as 3 sub-tabs.
+- `DailyTimelineChart.tsx`, `TemporalTrendsChart.tsx`, `HourDayHeatmapChart.tsx`,
+  `TimezoneDistributionChart.tsx`, `DeviceByPeriodChart.tsx`,
+  `HolidayImpactCard.tsx`, `PeakAnalysisCard.tsx`, `ClickVelocityChart.tsx`.
+
+### `components/audience/` (aba Público)
+
+- `AudienceAnalysis.tsx` / `AudienceChart.tsx` — orquestram a aba.
+- `HorizontalBreakdownBars.tsx` — o mark padrão de distribuição categórica:
+  é gráfico e lista ao mesmo tempo, e não sofre em 360px como donut/pizza.
+- `tabs/` — os blocos de Perfil e de Detalhes técnicos.
+- `QualitySection.tsx`, `RetentionAnalysisChart.tsx`, `SessionDepthChart.tsx`.
+- `LanguageBreakdownCard.tsx` — idioma **com região** (pt-BR × pt-PT). Não é
+  duplicata do idioma em Perfil, que agrega por família (`aggregateFamily.ts`).
 
 ### `components/insights/`
 
-- `InsightsAnalysis.tsx` — orquestra a aba insights.
-- `BusinessInsights.tsx`, `RetentionAnalysisChart.tsx`, `SessionDepthChart.tsx`.
-- `TrafficQualityChart.tsx`, `TrafficSourceChart.tsx`.
+- `TrafficQualityChart.tsx`, `insightsLayout.ts` — resquícios da aba Insights,
+  que foi dissolvida: os insights subiram para o Resumo e as fontes de tráfego
+  viraram a aba Origem.
 
 ## Hooks de dados
 
