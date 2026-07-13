@@ -126,7 +126,11 @@ export function RetentionAnalysisChart({
   }
 
   return (
-    <EnhancedPaper animated={false} sx={{ height: "100%" }}>
+    // No `height: 100%`: a percentage height on a grid item resolves against
+    // the *row*, whose height is the taller sibling's — so it stretched this
+    // card past its own content and opened ~200px of dead space inside the
+    // border. The parent grid aligns to `start`; let the card be its own height.
+    <EnhancedPaper animated={false}>
       <Box sx={{ p: INSIGHTS_BLOCK_PAD }}>
         {showTitle ? (
           <Box sx={{ mb: 2 }}>
