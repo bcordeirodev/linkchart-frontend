@@ -375,20 +375,6 @@ export interface AudienceChartProps extends BaseConfigProps {
 }
 
 /**
- * Props para insights de audiência
- */
-export interface AudienceInsightsProps extends BaseTitleProps {
-  /** Dados de dispositivos */
-  deviceBreakdown: DeviceData[];
-  /** Dados de navegadores (opcional) */
-  browserBreakdown?: BrowserData[];
-  /** Total de cliques */
-  totalClicks: number;
-  /** Mostrar insights avançados (padrão: true) */
-  showAdvancedInsights?: boolean;
-}
-
-/**
  * Props para métricas de audiência
  */
 export interface AudienceMetricsProps extends BaseDataProps, BaseTitleProps {

@@ -21,31 +21,34 @@ import {
   elevationTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
-import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { SectionDivider } from "@/shared/ui/SectionDivider";
-import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
-import type {
-  ConnectionTypeBreakdown,
-  QualityBreakdown,
-} from "@/types/analytics/audience";
-import { ConnectionTypeCard } from "./ConnectionTypeCard";
+import type { QualityBreakdown, QualityTier } from "@/types/analytics/audience";
+
+import {
+  HorizontalBreakdownBars,
+  type HorizontalBreakdownItem,
+} from "./HorizontalBreakdownBars";
 import { getPhaseDataChipSx } from "./phaseDataChipSx";
 
 /**
- * First slice colors of `formatPieChart` — keeps the tier legend dots in
- * sync with the donut slices rendered above them.
+ * Fixed colors per quality tier — local to this component, not the shared
+ * chart palette (`normal`/`suspicious`/`likely_fraud` isn't a general-purpose
+ * series). `suspicious` was green in the original donut, which reads as
+ * "safe" for a tier literally named "suspicious" — semantically wrong and
+ * flipped to amber here since the fix is fully contained to this array. A
+ * proper semantic-color pass across quality/fraud UI (e.g. aligning with
+ * `quality_tier` chips elsewhere) is tracked separately and intentionally
+ * out of scope for this change.
  */
-const TIER_DONUT_COLORS = ["#1976d2", "#2e7d32", "#dc004e"];
+const TIER_BAR_COLORS: Record<QualityTier, string> = {
+  organic: "#1976d2",
+  suspicious: "#F59E0B",
+  likely_fraud: "#dc004e",
+};
 
 interface QualitySectionProps {
   quality: QualityBreakdown;
-  /**
-   * ISP connection type distribution. When provided, the section renders a
-   * balanced 2×2 grid: quality donut + connection donut on the first row,
-   * bot-rate + fingerprint stat cards on the second.
-   */
-  connectionBreakdown?: ConnectionTypeBreakdown;
   /**
    * Whether to render the section heading. Defaults to `true`; pass `false`
    * when the section lives inside the Quality sub-tab, whose tab label
@@ -55,19 +58,23 @@ interface QualitySectionProps {
 }
 
 /**
- * Traffic-quality section of the Audience tab: tier distribution donut,
- * optional ISP connection donut, bot-rate stat card and
- * fingerprint-consistency stat card — laid out in equal-width columns.
+ * Traffic-quality section of the Audience tab: a single horizontal-bar
+ * breakdown of the organic/suspicious/fraud tiers, plus bot-rate and
+ * fingerprint-consistency stat cards.
+ *
+ * The ISP connection-type breakdown that used to render alongside these
+ * (via `ConnectionTypeCard`) has moved to the "Detalhes técnicos" accordion
+ * — it's engineering-only data, not part of the at-a-glance quality read.
  */
 export function QualitySection({
   quality,
-  connectionBreakdown,
   showTitle = true,
 }: QualitySectionProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
+
+  const elevation =
+    theme.palette.mode === "dark" ? elevationTokens : elevationLightTokens;
 
   const cardSx = {
     borderRadius: `${radiusTokens.lg}px`,
@@ -78,10 +85,12 @@ export function QualitySection({
 
   const tStr = t as (k: string, opts?: Record<string, unknown>) => string;
 
-  const tierChartData = quality.tiers.map((tier) => ({
-    name: tStr(`audience.quality.tiers.${tier.tier}`),
+  const tierItems: HorizontalBreakdownItem[] = quality.tiers.map((tier) => ({
+    key: tier.tier,
+    label: tStr(`audience.quality.tiers.${tier.tier}`),
     value: tier.clicks,
     percentage: tier.percentage,
+    color: TIER_BAR_COLORS[tier.tier] ?? theme.palette.grey[500],
   }));
 
   const fingerprintColor =
@@ -208,79 +217,27 @@ export function QualitySection({
         </Alert>
       )}
 
-      <Grid container spacing={2}>
-        {/* Row 1 — quality tier donut + ISP connection donut, equal widths */}
-        <Grid item xs={12} md={6}>
-          <ChartCard
-            title={t("audience.quality.distribution")}
-            subtitle={t("audience.quality.description")}
-            icon={<ShieldCheck {...ICON_MD} />}
-          >
-            {quality.tiers.length > 0 ? (
-              <ApexChartWrapper
-                type="donut"
-                size="compact"
-                {...formatPieChart(tierChartData, "name", "value", isDark)}
-              />
-            ) : (
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                {t("audience.noData")}
-              </Typography>
-            )}
-            <Stack spacing={1} sx={{ mt: 1 }}>
-              {quality.tiers.map((tier, index) => (
-                <Box
-                  key={tier.tier}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Box
-                      sx={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        bgcolor: TIER_DONUT_COLORS[index] ?? "#94a3b8",
-                      }}
-                    />
-                    <Typography variant="caption">
-                      {tStr(`audience.quality.tiers.${tier.tier}`)}
-                    </Typography>
-                  </Box>
-                  <Typography variant="caption" sx={{ fontWeight: 600 }}>
-                    {tier.percentage.toFixed(1)}%
-                  </Typography>
-                </Box>
-              ))}
-            </Stack>
-          </ChartCard>
-        </Grid>
-
-        {connectionBreakdown ? (
-          <>
-            <Grid item xs={12} md={6}>
-              <ConnectionTypeCard breakdown={connectionBreakdown} />
-            </Grid>
-
-            {/* Row 2 — bot rate + fingerprint stat cards, equal widths */}
-            <Grid item xs={12} md={6}>
-              {botRateCard}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              {fingerprintCard}
-            </Grid>
-          </>
+      <ChartCard
+        title={t("audience.quality.distribution")}
+        subtitle={t("audience.quality.description")}
+        icon={<ShieldCheck {...ICON_MD} />}
+      >
+        {tierItems.length > 0 ? (
+          <HorizontalBreakdownBars items={tierItems} />
         ) : (
-          <Grid item xs={12} md={6}>
-            <Stack spacing={2} sx={{ height: "100%" }}>
-              <Box sx={{ flex: 1, minHeight: 120 }}>{botRateCard}</Box>
-              <Box sx={{ flex: 1, minHeight: 120 }}>{fingerprintCard}</Box>
-            </Stack>
-          </Grid>
+          <Typography variant="body2" color="text.secondary">
+            {t("audience.noData")}
+          </Typography>
         )}
+      </ChartCard>
+
+      <Grid container spacing={2} sx={{ mt: 0.5 }}>
+        <Grid item xs={12} md={6}>
+          {botRateCard}
+        </Grid>
+        <Grid item xs={12} md={6}>
+          {fingerprintCard}
+        </Grid>
       </Grid>
     </Box>
   );

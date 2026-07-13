@@ -126,10 +126,12 @@ export function useTemporalData({
   segment,
 }: UseTemporalDataOptions): UseTemporalDataReturn {
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: [
-      ...queryKeys.analytics.temporal(linkId),
-      { dateFrom, dateTo, excludeBots, segment },
-    ],
+    queryKey: queryKeys.analytics.temporal(linkId, {
+      dateFrom,
+      dateTo,
+      excludeBots,
+      segment,
+    }),
     queryFn: () => {
       const params = new URLSearchParams();
       if (dateFrom) params.set("date_from", dateFrom);

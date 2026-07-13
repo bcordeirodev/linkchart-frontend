@@ -12,6 +12,19 @@ import type { ChartOptions, ChartSeries } from "@/types";
 const CHART_FONT_FAMILY = "Inter, system-ui, sans-serif";
 
 /**
+ * Espaçamento da legenda, compartilhado por todos os formatters.
+ *
+ * O ApexCharts encosta o rótulo no marcador por padrão — "●Residencial", sem
+ * respiro —, e empilha os itens sem folga vertical. `markers.offsetX` negativo
+ * empurra a bolinha para a esquerda, abrindo o vão até o texto; `itemMargin`
+ * separa os itens entre si.
+ */
+const LEGEND_SPACING = {
+  markers: { offsetX: -4 },
+  itemMargin: { horizontal: 10, vertical: 4 },
+} as const;
+
+/**
  * Configuração de tooltip adaptável ao tema - melhorada
  */
 const getTooltipConfig = (isDark = false, clicksLabel = "clicks") => ({
@@ -133,6 +146,7 @@ const getTextConfig = (isDark = false) => {
       fontFamily: CHART_FONT_FAMILY,
       fontSize: "13px",
       fontWeight: "500",
+      ...LEGEND_SPACING,
     },
   };
 };
@@ -488,6 +502,7 @@ export const formatPieChart = (
         fontFamily: CHART_FONT_FAMILY,
         fontSize: "13px",
         fontWeight: "500",
+        ...LEGEND_SPACING,
       },
     },
   };

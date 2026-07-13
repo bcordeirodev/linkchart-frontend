@@ -3,7 +3,12 @@ import { API_ENDPOINTS } from "../lib/api/endpoints";
 
 import { BaseService } from "./base.service";
 
-import type { LoginResponse, UserResponse } from "@/types";
+import type {
+  LoginResponse,
+  OnboardingFlags,
+  OnboardingKey,
+  UserResponse,
+} from "@/types";
 
 interface LoginRequest extends Record<string, unknown> {
   email: string;
@@ -109,13 +114,48 @@ export default class AuthService extends BaseService {
   /**
    * Returns the currently authenticated user.
    *
-   * @returns the `UserResponse` for the JWT in `localStorage.token`.
+   * @returns the `UserResponse` for the session cookie.
    * @endpoint `GET /api/me`
+   *
+   * @remarks
+   * Unlike most endpoints, `/me` does not return the resource at the top level —
+   * it answers `{ success, user }` (then wrapped in `{ data }` by
+   * `NormalizeApiResponse`, which `ApiClient` unwraps). This method used to be
+   * typed as if it returned the user directly, so callers got the **envelope**:
+   * `user.id` was `undefined`, `String(undefined)` became the literal string
+   * `"undefined"`, and `name`/`email` were dropped entirely by `JSON.stringify`
+   * when cached. Unwrap here so callers get a real `UserResponse`.
    */
   async getMe(): Promise<UserResponse> {
-    return this.get<UserResponse>(API_ENDPOINTS.AUTH.ME, {
-      context: "get_me",
-    });
+    const response = await this.get<{ success?: boolean; user: UserResponse }>(
+      API_ENDPOINTS.AUTH.ME,
+      { context: "get_me" },
+    );
+
+    return response.user;
+  }
+
+  /**
+   * Records that the user dismissed an onboarding flag (e.g. the links tour).
+   *
+   * @param key - one of the keys the backend allowlists (`User::ONBOARDING_KEYS`);
+   *              an unknown key is rejected with 422.
+   * @returns the user's full onboarding map after the write.
+   * @endpoint `POST /api/onboarding/seen`
+   *
+   * @remarks
+   * The flag lives on the account rather than in `localStorage`, so a dismissed
+   * tour stays dismissed on a new browser, a new device or a private window.
+   * Idempotent — re-sending a key already seen is a no-op on the backend.
+   */
+  async markOnboardingSeen(key: OnboardingKey): Promise<OnboardingFlags> {
+    const response = await this.post<{ onboarding: OnboardingFlags }>(
+      API_ENDPOINTS.AUTH.ONBOARDING_SEEN,
+      { key },
+      { context: "mark_onboarding_seen" },
+    );
+
+    return response.onboarding;
   }
 
   /**

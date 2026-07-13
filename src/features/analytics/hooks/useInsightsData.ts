@@ -127,6 +127,19 @@ export interface InsightsData {
     retention?: RetentionData;
     session_depth?: SessionDepthData;
     traffic_sources?: TrafficSourceData;
+    /**
+     * Breakdown of clicks by navigation context (Sec-Fetch-* headers), as a
+     * sibling of `traffic_sources` — not nested inside it. Flat list, same
+     * shape as `TrafficSourceData.navigation_context` but populated by the
+     * backend at this top-level key (`InsightsAnalyticsService::getNavigationContextBreakdown`).
+     */
+    navigation_context?: NavigationContextEntry[];
+    /** Breakdown of clicks by HTTP protocol version (HTTP/1.1 vs HTTP/2). Nulls are coalesced to `"unknown"`. */
+    http_protocol?: Array<{
+      protocol: string;
+      clicks: number;
+      percentage: number;
+    }>;
     /** Quality tier breakdown from Phase 3 scoring */
     quality?: {
       avg_quality_score: number | null;
@@ -166,6 +179,12 @@ export interface UseInsightsDataOptions {
   minConfidence?: number;
   /** If non-empty, keep only insights whose `type` is in this list. */
   categories?: string[];
+  /**
+   * Set to `false` to skip the request entirely. Used by `LinkDashboard` in
+   * `compact` mode, which has no room to render insights and should not pay
+   * for the payload.
+   */
+  enabled?: boolean;
 }
 
 /** Return shape of `useInsightsData`. */
@@ -282,6 +301,7 @@ export function useInsightsData({
   excludeBots,
   minConfidence = 0.5,
   categories = [],
+  enabled = true,
 }: UseInsightsDataOptions): UseInsightsDataReturn {
   const {
     data: raw,
@@ -290,10 +310,11 @@ export function useInsightsData({
     refetch,
   } = useQuery({
     // minConfidence and categories are applied client-side — not part of the cache key
-    queryKey: [
-      ...queryKeys.analytics.insights(linkId),
-      { dateFrom, dateTo, excludeBots },
-    ],
+    queryKey: queryKeys.analytics.insights(linkId, {
+      dateFrom,
+      dateTo,
+      excludeBots,
+    }),
     queryFn: () => {
       const params = new URLSearchParams();
       if (dateFrom) params.set("date_from", dateFrom);
@@ -306,7 +327,7 @@ export function useInsightsData({
     },
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
-    enabled: !!linkId,
+    enabled: enabled && !!linkId,
   });
 
   const data = useMemo(

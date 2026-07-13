@@ -189,7 +189,6 @@ export function TemporalAnalysis({
               advancedData={data?.advanced}
               viralRankByDay={data?.viral_rank_by_day}
               holidayImpact={data?.holiday_impact}
-              seasonalDistribution={data?.seasonal_distribution}
               clickVelocity={data?.click_velocity}
               segment={segment}
               activeTab={subTabIndex}

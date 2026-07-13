@@ -73,7 +73,6 @@ export function TimezoneDistributionChart({
               options={{
                 chart: {
                   type: "bar",
-                  toolbar: { show: true },
                 },
                 colors: [chartColors.info.main],
                 plotOptions: {

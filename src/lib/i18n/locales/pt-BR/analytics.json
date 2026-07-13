@@ -37,6 +37,10 @@
     },
     "socialIab": {
       "phaseDisclaimer": "Dados de apps sociais disponíveis apenas para cliques recentes (rastreamento Fase 1)"
+    },
+    "whatThisMeans": {
+      "title": "O que isso quer dizer",
+      "description": "A leitura dos números acima, em português claro — e o que dá para fazer com ela."
     }
   },
   "filters": {
@@ -141,7 +145,8 @@
       "weekendVsWeekday": "Comparativo de volume entre fins de semana e dias úteis. Indica quando seu público é mais receptivo a conteúdo.",
       "businessHours": "Divisão de cliques dentro (9h–18h) e fora do horário comercial. Um volume alto fora desse intervalo sugere audiência de entretenimento ou consumo pessoal (B2C).",
       "peakAnalysis": "Análise detalhada do horário e dia de maior engajamento, com recomendações práticas de timing para lançamentos e campanhas.",
-      "temporalTrends": "Evolução semanal e mensal do volume de cliques. Identifique ciclos de crescimento, sazonalidade ou queda ao longo do tempo.",
+      "temporalTrendsWeekly": "Volume de cliques agregado por semana. Bom para ver crescimento ou queda recente, sem o ruído do dia a dia.",
+      "temporalTrendsMonthly": "Volume de cliques agregado por mês. Bom para ver sazonalidade e a tendência de longo prazo.",
       "dailyTimeline": "Histórico dia a dia de cliques e visitantes únicos. Arraste para selecionar um intervalo e aplicar zoom em um período específico.",
       "hourDayHeatmap": "Intensidade de cliques por combinação de hora do dia × dia da semana. Células mais escuras indicam maior concentração — use para encontrar o melhor momento de publicação.",
       "timezoneDistribution": "De onde vêm os visitantes pelo fuso horário detectado no navegador. Útil para alinhar o horário de publicações com regiões geográficas específicas.",
@@ -160,12 +165,20 @@
     }
   },
   "tabs": {
-    "overview": "Visão Geral",
-    "temporal": "Temporal",
-    "geographic": "Geográfico",
-    "audience": "Audiência",
-    "performance": "Performance",
-    "insights": "Insights"
+    "overview": "Resumo",
+    "origin": "Origem",
+    "places": "Lugares",
+    "audience": "Público",
+    "when": "Momento",
+    "clicks": "Cliques"
+  },
+  "tabDescriptions": {
+    "overview": "O desempenho do link em uma tela: quantos cliques, se está crescendo, e o que fazer com isso.",
+    "origin": "De onde vem o tráfego: canais, redes sociais, sites que linkaram e campanhas.",
+    "places": "Onde está seu público: países, estados e cidades.",
+    "audience": "Quem clica: aparelho, navegador, idioma e qualidade do tráfego.",
+    "when": "Quando clicam: horários, dias da semana e evolução ao longo do tempo.",
+    "clicks": "Cada acesso registrado, um por linha."
   },
   "temporal": {
     "title": "Análise Temporal",
@@ -195,9 +208,8 @@
     },
     "chart": {
       "tabPatterns": "Padrões",
-      "tabPerformance": "Performance",
-      "tabTimeline": "Timeline",
-      "tabDistribution": "Distribuição",
+      "tabTimeline": "Linha do tempo",
+      "tabPeaks": "Picos e tendências",
       "weekend": "Fim de Semana",
       "businessHours": "Horário Comercial",
       "peakHour": "Horário de pico:",
@@ -404,6 +416,12 @@
     "noData": "Nenhum dado geográfico ainda",
     "empty": "Dados geográficos indisponíveis",
     "countriesReached": "{{count}} países alcançados",
+    "mapListToggle": {
+      "ariaLabel": "Alternar entre mapa, lista e mapa de calor",
+      "map": "Mapa",
+      "list": "Lista",
+      "heat": "Calor"
+    },
     "metrics": {
       "title": "Métricas Geográficas",
       "countriesReached": "Países Alcançados",
@@ -417,12 +435,6 @@
       "continentsReached": "Continentes",
       "continentsCoverage": "Cobertura global",
       "coverage": "Cobertura"
-    },
-    "subtabs": {
-      "overview": "Visão geral",
-      "heatmap": "Mapa de calor",
-      "rankings": "Rankings",
-      "insights": "Insights"
     },
     "chart": {
       "topCountries": "Top Países",
@@ -466,7 +478,6 @@
       "countriesReached": "Países Alcançados",
       "uniqueCities": "Cidades Únicas",
       "locations": "Localizações",
-      "countryDistribution": "Distribuição por País",
       "marketInsights": "Insights de Mercado",
       "mainMarkets": "Mercados Principais",
       "topCities": "Cidades com Mais Engajamento",
@@ -474,7 +485,6 @@
       "mainMarketRec": "• {{country}} é seu mercado principal com {{clicks}} cliques. Considere criar conteúdo específico para este mercado.",
       "topCityRec": "• {{city}} é a cidade com mais engajamento. Explore oportunidades de marketing local nesta região.",
       "internationalRec": "• Seu conteúdo está alcançando {{count}} países diferentes. Considere estratégias de internacionalização.",
-      "pieSubtitle": "Os 8 principais países por participação nos cliques totais.",
       "marketSubtitle": "Principais mercados e recomendações estratégicas com base nos seus dados."
     },
     "heatmap": {
@@ -523,7 +533,13 @@
       "legendLow": "Baixo",
       "legendSizeNote": "· Tamanho proporcional ao volume",
       "showingLocations": "{{shown}} de {{total}} localiz. visíveis",
-      "cappedWarning": "Exibindo as 500 principais localidades. Algumas localidades podem estar omitidas."
+      "cappedWarning": "Exibindo as 500 principais localidades. Algumas localidades podem estar omitidas.",
+      "accordionTitle": "Mapa de calor por cidade",
+      "accordionDesc": "Intensidade de cliques por cidade em um mapa interativo. Mais pesado — carrega só quando aberto."
+    },
+    "subtabs": {
+      "heatmap": "Mapa de calor",
+      "world": "Mundo"
     }
   },
   "audience": {
@@ -534,6 +550,13 @@
     "empty": "Este link ainda não recebeu cliques com dados de dispositivos.",
     "deviceTypes": "{{count}} tipos de dispositivos detectados",
     "linkSpecific": "Link Específico",
+    "sections": {
+      "qualityAndLoyalty": "Qualidade e fidelidade"
+    },
+    "subtabs": {
+      "profile": "Perfil",
+      "technical": "Detalhes técnicos"
+    },
     "metrics": {
       "title": "Métricas de Audiência",
       "deviceTypes": "Tipos de Dispositivos",
@@ -592,7 +615,7 @@
         "browsers": "Navegadores mais usados pela sua audiência (Chrome, Safari, Firefox, etc.). Auxilia em decisões de compatibilidade, polyfills e testes de UI.",
         "systems": "Sistemas operacionais mais usados (iOS, Android, Windows, macOS). Combina com dados de dispositivo para traçar o perfil técnico completo da audiência.",
         "performance": "Tempo de resposta do servidor no redirecionamento, por tipo de dispositivo. Medido no servidor — não inclui o carregamento da página de destino.",
-        "languages": "Idiomas detectados nas configurações do navegador dos visitantes, com cada variante regional (en-US, en-GB) contada separadamente. Use para planejar internacionalização ou criar versões localizadas do conteúdo.",
+        "languages": "Idiomas detectados nas configurações do navegador da audiência, agrupados por idioma (ex.: variantes de inglês como en-US e en-GB contam juntas como \"Inglês\"). Use para planejar internacionalização ou criar versões localizadas do conteúdo.",
         "renderingEngine": "Motor de renderização do navegador (Blink, WebKit, Gecko, etc.). Útil para diagnóstico de bugs de compatibilidade em browsers menos comuns."
       },
       "stats": {
@@ -648,7 +671,11 @@
         "browser_referral": "Via link externo",
         "in_app_webview": "App (Instagram, WhatsApp…)",
         "api_programmatic": "Programático",
-        "unknown": "Desconhecido"
+        "preload": "Pré-carregado",
+        "unknown": "Desconhecido",
+        "cross-site": "Veio de outro site",
+        "none": "Acesso direto",
+        "same-origin": "Dentro do seu site"
       },
       "description": "Forma como cada visitante chegou ao link: diretamente pelo browser, via referral de outro site, por app mobile (webview) ou de forma programática. Ajuda a entender o contexto de uso do link."
     },
@@ -672,11 +699,11 @@
     },
     "extraCharts": {
       "language": "Idiomas — regiões agrupadas",
-      "languageDescription": "Mesma dimensão da distribuição acima, mas com as variantes regionais agrupadas no idioma base (en-US + en-GB → Inglês). Os totais podem diferir um pouco do gráfico acima porque aqui só entram cliques enriquecidos pelo rastreamento da Fase 1.",
+      "languageDescription": "Mesma dimensão da distribuição acima, mas com as variantes regionais agrupadas no idioma base (en-US + en-GB → Inglês). Os totais podem diferir um pouco do gráfico acima porque aqui só entram cliques com rastreamento avançado.",
       "platform": "Plataforma",
-      "platformDescription": "Plataforma do sistema operacional detectada via Client Hints (Fase 1: Sec-CH-UA-Platform).",
+      "platformDescription": "Plataforma do sistema operacional detectada via Client Hints do navegador (cabeçalho Sec-CH-UA-Platform).",
       "connectionType": "Tipo de Conexão",
-      "connectionTypeDescription": "Tipo de conexão ISP classificado a partir de dados de rede (Fase 2).",
+      "connectionTypeDescription": "Tipo de conexão ISP classificado a partir de dados de rede.",
       "others": "Outros",
       "showTechnical": "Ver dados técnicos",
       "hideTechnical": "Ocultar dados técnicos",
@@ -818,15 +845,15 @@
       "avgDepth": "Profundidade Média",
       "engagementScore": "Score de Engajamento",
       "powerUsers": "Power Users",
-      "maxClicks": "Máximo de Clicks",
-      "clicksPerSession": "clicks por sessão",
+      "maxClicks": "Máximo de cliques",
+      "clicksPerSession": "cliques por sessão",
       "scoreSub": "pontuação (0-100)",
       "powerUsersSub": "{{n}} usuários",
       "inSession": "em uma sessão",
       "sessionQuality": "Qualidade da Sessão: {{label}}",
       "engagementLevel": "Nível de Engajamento",
       "engagementBasis": "Baseado na profundidade média de sessão e distribuição de usuários",
-      "clickDistribution": "Distribuição de Clicks por Sessão",
+      "clickDistribution": "Distribuição de cliques por sessão",
       "engagementCurve": "Curva de Engajamento",
       "curveDesc": "Distribuição dos usuários por número de cliques por sessão.",
       "usersByClicks": "Usuários por nível de clicks",
@@ -848,7 +875,9 @@
         "average": "Médio",
         "low": "Baixo",
         "no_data": "Sem Dados"
-      }
+      },
+      "clickBucket_one": "{{count}} clique",
+      "clickBucket_other": "{{count}} cliques"
     },
     "traffic": {
       "title": "Análise de Fontes de Tráfego",
@@ -1000,6 +1029,11 @@
           "recommendation": "Implemente newsletters, notificações push ou conteúdo serializado."
         }
       }
+    },
+    "priority": {
+      "high": "Alta",
+      "medium": "Média",
+      "low": "Baixa"
     }
   },
   "linkInfo": {
@@ -1038,8 +1072,30 @@
     "subtitle": "{{suspicious}} suspeitos · {{fraud}} fraude"
   },
   "sections": {
-    "acquisition": "Canais de Aquisição",
     "temporal": "Padrões Temporais",
     "audience": "Audiência"
+  },
+  "origin": {
+    "loading": "Carregando análise de origem...",
+    "empty": "Este link ainda não possui dados suficientes sobre a origem do tráfego.",
+    "sections": {
+      "channels": "Canais",
+      "channelsDesc": "De onde vieram os cliques: acesso direto, redes sociais, buscadores ou outros sites que linkaram para você.",
+      "technicalDetails": "Detalhes técnicos",
+      "technicalDetailsDesc": "Dados de engenharia: como o navegador chegou até a página, tipo de requisição e profundidade média de sessão por canal."
+    },
+    "subtabs": {
+      "channelsAndSocial": "Canais e redes",
+      "campaigns": "Campanhas"
+    },
+    "channels": {
+      "direct": "Direto",
+      "social": "Social",
+      "search": "Busca",
+      "referral": "Referência",
+      "email": "E-mail",
+      "paid": "Pago",
+      "other": "Outro"
+    }
   }
 }

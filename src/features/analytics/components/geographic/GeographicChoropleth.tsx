@@ -1,23 +1,9 @@
 "use client";
 import { useState, useMemo, useCallback } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Paper,
-  alpha,
-} from "@mui/material";
+import { Box, Typography, Paper, alpha } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
-
-import {
-  elevationLightTokens,
-  elevationTokens,
-  motionTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
 
 import type { CountryData } from "@/types";
 
@@ -147,12 +133,25 @@ interface TooltipState {
   visible: boolean;
 }
 
+/** Props accepted by the {@link GeographicChoropleth} component. */
 interface GeographicChoroplethProps {
+  /** Top countries by click volume, used to shade the world map. */
   countries: CountryData[];
+  /** ISO alpha-2 code of the currently selected country, or `null`. */
   selectedCountry: string | null;
+  /** Called when a country is selected or cleared (click again to clear). */
   onCountrySelect: (isoCode: string | null) => void;
 }
 
+/**
+ * World choropleth of click volume by country.
+ *
+ * Renders bare — no `Card`/title chrome of its own — because the caller wraps
+ * it in a `ChartCard` that supplies the title and the description. It is only
+ * rendered at the top of the "Mundo" sub-tab, whose parent owns
+ * the shared card, header and view toggle. Keeps its own explanatory
+ * subtitle so the map is still self-explanatory in isolation.
+ */
 export function GeographicChoropleth({
   countries,
   selectedCountry,
@@ -246,193 +245,165 @@ export function GeographicChoropleth({
     [countryMap, selectedCountry, onCountrySelect],
   );
 
-  const cardSx = {
-    borderRadius: `${radiusTokens.lg}px`,
-    boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
-    mb: 3,
-    transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-    "&:hover": {
-      boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
-    },
-  } as const;
-
   return (
-    <Card sx={cardSx}>
-      <CardContent>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            fontWeight: 600,
-            mb: 0.5,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          {t("geographic.choropleth.title")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {t("geographic.choropleth.subtitle")}
-        </Typography>
-
-        {/* paddingTop 54% = 432/800 — container keeps the SVG aspect ratio so the full world is visible */}
+    <Box>
+      {/* paddingTop 54% = 432/800 — container keeps the SVG aspect ratio so the full world is visible */}
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          paddingTop: "54%",
+          overflow: "hidden",
+        }}
+      >
         <Box
           sx={{
-            position: "relative",
-            width: "100%",
-            paddingTop: "54%",
-            overflow: "hidden",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
           }}
         >
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-            }}
+          <ComposableMap
+            width={800}
+            height={432}
+            projectionConfig={{ scale: 112 }}
+            style={{ width: "100%", height: "100%", display: "block" }}
           >
-            <ComposableMap
-              width={800}
-              height={432}
-              projectionConfig={{ scale: 112 }}
-              style={{ width: "100%", height: "100%", display: "block" }}
-            >
-              <Geographies geography={GEO_URL}>
-                {({ geographies }) =>
-                  geographies.length === 0
-                    ? null
-                    : geographies.map((geo) => {
-                        const geoId =
-                          geo.id != null ? String(geo.id).padStart(3, "0") : "";
-                        if (!geoId) return null;
-                        const isSelected = selectedNumericId === geoId;
-                        const hasData = !!countryMap[geoId];
+            <Geographies geography={GEO_URL}>
+              {({ geographies }) =>
+                geographies.length === 0
+                  ? null
+                  : geographies.map((geo) => {
+                      const geoId =
+                        geo.id != null ? String(geo.id).padStart(3, "0") : "";
+                      if (!geoId) return null;
+                      const isSelected = selectedNumericId === geoId;
+                      const hasData = !!countryMap[geoId];
 
-                        return (
-                          <Geography
-                            key={geo.rsmKey}
-                            geography={geo}
-                            fill={getCountryColor(geoId)}
-                            stroke={
-                              isSelected
-                                ? theme.palette.primary.main
-                                : isDark
-                                  ? "#2a3045"
-                                  : "#c8d0e0"
-                            }
-                            strokeWidth={isSelected ? 2 : 0.5}
-                            style={{
-                              default: {
-                                outline: "none",
-                                cursor: hasData ? "pointer" : "default",
-                              },
-                              hover: {
-                                outline: "none",
-                                fill: hasData
-                                  ? alpha(theme.palette.primary.main, 0.9)
-                                  : undefined,
-                              },
-                              pressed: { outline: "none" },
-                            }}
-                            onMouseEnter={(evt) => handleMouseEnter(evt, geoId)}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => handleClick(geoId)}
-                          />
-                        );
-                      })
-                }
-              </Geographies>
-            </ComposableMap>
-          </Box>
-
-          {/* Tooltip */}
-          {tooltip.visible && (
-            <Paper
-              elevation={4}
-              sx={{
-                position: "absolute",
-                top: tooltip.y,
-                left: tooltip.x,
-                px: 1.5,
-                py: 1,
-                pointerEvents: "none",
-                zIndex: 10,
-                minWidth: 140,
-              }}
-            >
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                {tooltip.country}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {tooltip.clicks.toLocaleString()}{" "}
-                {t("geographic.choropleth.clicks")} · {tooltip.percentage}%
-              </Typography>
-            </Paper>
-          )}
+                      return (
+                        <Geography
+                          key={geo.rsmKey}
+                          geography={geo}
+                          fill={getCountryColor(geoId)}
+                          stroke={
+                            isSelected
+                              ? theme.palette.primary.main
+                              : isDark
+                                ? "#2a3045"
+                                : "#c8d0e0"
+                          }
+                          strokeWidth={isSelected ? 2 : 0.5}
+                          style={{
+                            default: {
+                              outline: "none",
+                              cursor: hasData ? "pointer" : "default",
+                            },
+                            hover: {
+                              outline: "none",
+                              fill: hasData
+                                ? alpha(theme.palette.primary.main, 0.9)
+                                : undefined,
+                            },
+                            pressed: { outline: "none" },
+                          }}
+                          onMouseEnter={(evt) => handleMouseEnter(evt, geoId)}
+                          onMouseLeave={handleMouseLeave}
+                          onClick={() => handleClick(geoId)}
+                        />
+                      );
+                    })
+              }
+            </Geographies>
+          </ComposableMap>
         </Box>
 
-        {/* Tap-accessible readout: on touch the hover tooltip never fires, so
-            surface the selected country's numbers here (set on tap via handleClick). */}
-        {selectedNumericId && countryMap[selectedNumericId] ? (
-          <Box
+        {/* Tooltip */}
+        {tooltip.visible && (
+          <Paper
+            elevation={4}
             sx={{
-              mt: 1.5,
-              display: "flex",
-              alignItems: "baseline",
-              gap: 1,
-              flexWrap: "wrap",
+              position: "absolute",
+              top: tooltip.y,
+              left: tooltip.x,
+              px: 1.5,
+              py: 1,
+              pointerEvents: "none",
+              zIndex: 10,
+              minWidth: 140,
             }}
           >
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {countryMap[selectedNumericId].data.country}
+              {tooltip.country}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              {countryMap[selectedNumericId].data.clicks.toLocaleString()}{" "}
-              {t("geographic.choropleth.clicks")} ·{" "}
-              {countryMap[selectedNumericId].percentage}%
+              {tooltip.clicks.toLocaleString()}{" "}
+              {t("geographic.choropleth.clicks")} · {tooltip.percentage}%
             </Typography>
-          </Box>
-        ) : null}
+          </Paper>
+        )}
+      </Box>
 
-        {/* Gradient legend */}
+      {/* Tap-accessible readout: on touch the hover tooltip never fires, so
+            surface the selected country's numbers here (set on tap via handleClick). */}
+      {selectedNumericId && countryMap[selectedNumericId] ? (
         <Box
           sx={{
+            mt: 1.5,
             display: "flex",
-            alignItems: "center",
+            alignItems: "baseline",
             gap: 1,
-            justifyContent: "flex-end",
-            mt: 1,
+            flexWrap: "wrap",
           }}
         >
-          <Typography variant="caption" color="text.secondary">
-            {t("geographic.choropleth.less")}
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            {countryMap[selectedNumericId].data.country}
           </Typography>
-          <Box
-            sx={{
-              width: 100,
-              height: 8,
-              borderRadius: 1,
-              background: `linear-gradient(to right, ${alpha(theme.palette.primary.main, 0.15)}, ${theme.palette.primary.main})`,
-            }}
-          />
           <Typography variant="caption" color="text.secondary">
-            {t("geographic.choropleth.more")}
+            {countryMap[selectedNumericId].data.clicks.toLocaleString()}{" "}
+            {t("geographic.choropleth.clicks")} ·{" "}
+            {countryMap[selectedNumericId].percentage}%
           </Typography>
         </Box>
+      ) : null}
 
-        {selectedCountry && (
-          <Typography
-            variant="caption"
-            color="primary"
-            sx={{ display: "block", mt: 0.5, textAlign: "right" }}
-          >
-            {t("geographic.choropleth.clickAgainToClear")}
-          </Typography>
-        )}
-      </CardContent>
-    </Card>
+      {/* Gradient legend */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          justifyContent: "flex-end",
+          mt: 1,
+        }}
+      >
+        <Typography variant="caption" color="text.secondary">
+          {t("geographic.choropleth.less")}
+        </Typography>
+        <Box
+          sx={{
+            width: 100,
+            height: 8,
+            borderRadius: 1,
+            background: `linear-gradient(to right, ${alpha(theme.palette.primary.main, 0.15)}, ${theme.palette.primary.main})`,
+          }}
+        />
+        <Typography variant="caption" color="text.secondary">
+          {t("geographic.choropleth.more")}
+        </Typography>
+      </Box>
+
+      {selectedCountry && (
+        <Typography
+          variant="caption"
+          color="primary"
+          sx={{ display: "block", mt: 0.5, textAlign: "right" }}
+        >
+          {t("geographic.choropleth.clickAgainToClear")}
+        </Typography>
+      )}
+    </Box>
   );
 }
 

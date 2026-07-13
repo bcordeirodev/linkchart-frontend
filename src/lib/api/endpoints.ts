@@ -67,6 +67,7 @@ export const API_CONFIG = {
       EMAIL_VERIFICATION_STATUS: "/api/email-verification-status",
       RESEND_VERIFICATION_EMAIL: "/api/resend-verification-email",
       AUTH0_EXCHANGE: "/api/auth/auth0-exchange",
+      ONBOARDING_SEEN: "/api/onboarding/seen",
     },
 
     // --- Per-link analytics dashboards (one endpoint per tab) ---
@@ -153,6 +154,7 @@ export const API_ENDPOINTS = {
     RESEND_VERIFICATION_EMAIL:
       API_CONFIG.ENDPOINTS.AUTH.RESEND_VERIFICATION_EMAIL,
     AUTH0_EXCHANGE: API_CONFIG.ENDPOINTS.AUTH.AUTH0_EXCHANGE,
+    ONBOARDING_SEEN: API_CONFIG.ENDPOINTS.AUTH.ONBOARDING_SEEN,
     PROFILE_STATS: API_CONFIG.ENDPOINTS.AUTH.PROFILE_STATS,
   },
 };

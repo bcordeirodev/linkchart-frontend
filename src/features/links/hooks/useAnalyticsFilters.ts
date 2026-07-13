@@ -7,19 +7,28 @@ import { format, startOfDay, subDays, subHours } from "date-fns";
 /** Named identifier for each analytics tab — used in URL params instead of numeric indices. */
 export type TabId =
   | "overview"
-  | "temporal"
-  | "geographic"
+  | "origin"
+  | "places"
   | "audience"
-  | "insights"
+  | "when"
   | "clicks";
 
-/** Ordered list of TabIds — index matches the numeric position expected by MUI Tabs. */
+/**
+ * Ordered list of TabIds — index matches the numeric position expected by MUI
+ * Tabs, and this array **is** the nav order on screen.
+ *
+ * The order is the reading order of the question "how is this link doing?":
+ * how many clicks (Resumo) → when they came (Momento) → who they were
+ * (Público) → where from, geographically (Lugares) → what sent them (Origem) →
+ * the raw log (Cliques). `tabLabels` in `LinkAnalyticsTabs` is a parallel
+ * array — reorder both together or the labels detach from the panels.
+ */
 export const TAB_IDS: readonly TabId[] = [
   "overview",
-  "temporal",
-  "geographic",
+  "when",
   "audience",
-  "insights",
+  "places",
+  "origin",
   "clicks",
 ];
 
@@ -28,15 +37,6 @@ export type Period = "1h" | "24h" | "7d" | "30d" | "90d" | "all" | "custom";
 
 /** Segment options for the Temporal tab filter. */
 export type Segment = "all" | "weekday" | "weekend" | "business";
-
-/** GroupBy options for the Temporal tab (frontend-only display control). */
-export type GroupBy = "hour" | "day" | "month";
-
-/** Level options for the Geographic tab (frontend-only display control). */
-export type GeoLevel = "country" | "state" | "city";
-
-/** Priority options for the Insights tab filter. */
-export type InsightPriority = "all" | "high" | "medium" | "low";
 
 /** Full filter state plus setters returned by `useAnalyticsFilters`. */
 export interface AnalyticsFilters {
@@ -50,41 +50,50 @@ export interface AnalyticsFilters {
   tab: TabId;
 
   // Temporal
-  groupBy: GroupBy;
   segment: Segment;
+  /** Index of the active temporal sub-tab (0=Padrões, 1=Linha do tempo, 2=Picos e tendências). URL-persisted so it survives RSC remounts triggered by filter changes. */
+  temporalSubTab: number;
 
   // Geographic
   continent: string | null;
-  minClicks: number;
-  geoLevel: GeoLevel;
-  /** Index of the active geographic sub-tab (0=Overview, 1=Heatmap, 2=Rankings). URL-persisted so it survives RSC remounts triggered by filter changes. */
+  /** Index of the active geographic sub-tab (0=Mapa de calor, 1=Mundo). URL-persisted so it survives RSC remounts. */
   geoSubTab: number;
-  /** Index of the active temporal sub-tab (0=Patterns, 1=Timeline, 2=Performance, 3=Distribution). URL-persisted so it survives RSC remounts. */
-  temporalSubTab: number;
-  /** Index of the active audience sub-tab (0=Devices, 1=Browsers, 2=Systems, 3=Performance, 4=Languages, 5=RenderingEngine, 6=Quality, 7=Sources). URL-persisted so it survives RSC remounts. */
-  audienceSubTab: number;
 
-  // Insights
-  priority: InsightPriority;
-  insightCategories: string[];
-  actionableOnly: boolean;
+  // Origin
+  /** Index of the active origin sub-tab (0=Canais e redes, 1=Campanhas, 2=Detalhes técnicos). URL-persisted so it survives RSC remounts. */
+  originSubTab: number;
+
+  // Audience
+  /** Index of the active audience sub-tab (0=Perfil, 1=Qualidade e fidelidade, 2=Detalhes técnicos). URL-persisted so it survives RSC remounts. */
+  audienceSubTab: number;
 
   // Setters
   setPeriod: (v: Period) => void;
   setDateRange: (from: string, to: string) => void;
   setExcludeBots: (v: boolean) => void;
   setTab: (v: TabId) => void;
-  setGroupBy: (v: GroupBy) => void;
   setSegment: (v: Segment) => void;
-  setContinent: (v: string | null) => void;
-  setMinClicks: (v: number) => void;
-  setGeoLevel: (v: GeoLevel) => void;
-  setGeoSubTab: (v: number) => void;
   setTemporalSubTab: (v: number) => void;
+  setContinent: (v: string | null) => void;
+  setGeoSubTab: (v: number) => void;
+  setOriginSubTab: (v: number) => void;
   setAudienceSubTab: (v: number) => void;
-  setPriority: (v: InsightPriority) => void;
-  setInsightCategories: (v: string[]) => void;
-  setActionableOnly: (v: boolean) => void;
+}
+
+/**
+ * Parses a sub-tab index URL param, clamping to `[0, maxIndex]`.
+ * Mirrors the numeric-index pattern used for every sub-tab param (`geoSubTab`,
+ * `temporalSubTab`, `originSubTab`, `audienceSubTab`) — out-of-range or
+ * non-numeric values fall back to `0` instead of throwing.
+ *
+ * @param raw - Raw string value read from `URLSearchParams.get(...)`.
+ * @param maxIndex - Highest valid index (inclusive) for the sub-tab's tab list.
+ */
+function parseSubTabIndex(raw: string | null, maxIndex: number): number {
+  const parsed = parseInt(raw ?? "0", 10);
+  return Number.isFinite(parsed) && parsed >= 0 && parsed <= maxIndex
+    ? parsed
+    : 0;
 }
 
 /**
@@ -146,8 +155,8 @@ function resolveDates(period: Period): {
  * Instantiated once in `LinkAnalyticsTabs`. Tab components receive state as
  * props — no tab reads the URL directly.
  *
- * Defaults: period=all, excludeBots=true, groupBy=hour, segment=all,
- *   minClicks=1, geoLevel=country, priority=all, actionableOnly=false.
+ * Defaults: period=all, excludeBots=true, segment=all, priority=all,
+ *   actionableOnly=false.
  */
 export function useAnalyticsFilters(): AnalyticsFilters {
   const searchParams = useSearchParams();
@@ -163,82 +172,36 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     "all",
     "custom",
   ];
-  const GROUP_BYS: readonly GroupBy[] = ["hour", "day", "month"];
   const SEGMENTS: readonly Segment[] = [
     "all",
     "weekday",
     "weekend",
     "business",
   ];
-  const GEO_LEVELS: readonly GeoLevel[] = ["country", "state", "city"];
-  const PRIORITIES: readonly InsightPriority[] = [
-    "all",
-    "high",
-    "medium",
-    "low",
-  ];
 
   const period = parseEnum<Period>(searchParams.get("period"), PERIODS, "all");
   // Default is true; "false" in URL explicitly disables it.
   const excludeBots = searchParams.get("bots") !== "false";
-  const groupBy = parseEnum<GroupBy>(
-    searchParams.get("groupBy"),
-    GROUP_BYS,
-    "hour",
-  );
   const segment = parseEnum<Segment>(
     searchParams.get("segment"),
     SEGMENTS,
     "all",
   );
   const continent = searchParams.get("continent") || null;
-  const rawMinClicks = parseInt(searchParams.get("minClicks") ?? "1", 10);
-  const minClicks =
-    Number.isFinite(rawMinClicks) && rawMinClicks >= 1 ? rawMinClicks : 1;
-  const geoLevel = parseEnum<GeoLevel>(
-    searchParams.get("geoLevel"),
-    GEO_LEVELS,
-    "country",
-  );
-  const priority = parseEnum<InsightPriority>(
-    searchParams.get("priority"),
-    PRIORITIES,
-    "all",
-  );
-  const insightCategories = searchParams.get("categories")
-    ? searchParams.get("categories")!.split(",").filter(Boolean)
-    : [];
-  const actionableOnly = searchParams.get("actionable") === "true";
 
   const tab = parseEnum<TabId>(searchParams.get("tab"), TAB_IDS, "overview");
 
-  const rawGeoSubTab = parseInt(searchParams.get("geoSubTab") ?? "0", 10);
-  const geoSubTab =
-    Number.isFinite(rawGeoSubTab) && rawGeoSubTab >= 0 && rawGeoSubTab <= 2
-      ? rawGeoSubTab
-      : 0;
-
-  const rawTemporalSubTab = parseInt(
-    searchParams.get("temporalSubTab") ?? "0",
-    10,
+  // Sub-tab indices — one per top-level tab that has its own secondary nav.
+  const geoSubTab = parseSubTabIndex(searchParams.get("geoSubTab"), 1);
+  const temporalSubTab = parseSubTabIndex(
+    searchParams.get("temporalSubTab"),
+    2,
   );
-  const temporalSubTab =
-    Number.isFinite(rawTemporalSubTab) &&
-    rawTemporalSubTab >= 0 &&
-    rawTemporalSubTab <= 3
-      ? rawTemporalSubTab
-      : 0;
-
-  const rawAudienceSubTab = parseInt(
-    searchParams.get("audienceSubTab") ?? "0",
-    10,
+  const originSubTab = parseSubTabIndex(searchParams.get("originSubTab"), 2);
+  const audienceSubTab = parseSubTabIndex(
+    searchParams.get("audienceSubTab"),
+    2,
   );
-  const audienceSubTab =
-    Number.isFinite(rawAudienceSubTab) &&
-    rawAudienceSubTab >= 0 &&
-    rawAudienceSubTab <= 7
-      ? rawAudienceSubTab
-      : 0;
 
   const customFrom = searchParams.get("date_from");
   const customTo = searchParams.get("date_to");
@@ -305,11 +268,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     [setParam],
   );
 
-  const setGroupBy = useCallback(
-    (v: GroupBy) => setParam({ groupBy: v === "hour" ? null : v }),
-    [setParam],
-  );
-
   const setSegment = useCallback(
     (v: Segment) => setParam({ segment: v === "all" ? null : v }),
     [setParam],
@@ -317,16 +275,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
 
   const setContinent = useCallback(
     (v: string | null) => setParam({ continent: v }),
-    [setParam],
-  );
-
-  const setMinClicks = useCallback(
-    (v: number) => setParam({ minClicks: v <= 1 ? null : String(v) }),
-    [setParam],
-  );
-
-  const setGeoLevel = useCallback(
-    (v: GeoLevel) => setParam({ geoLevel: v === "country" ? null : v }),
     [setParam],
   );
 
@@ -340,24 +288,13 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     [setParam],
   );
 
+  const setOriginSubTab = useCallback(
+    (v: number) => setParam({ originSubTab: v === 0 ? null : String(v) }),
+    [setParam],
+  );
+
   const setAudienceSubTab = useCallback(
     (v: number) => setParam({ audienceSubTab: v === 0 ? null : String(v) }),
-    [setParam],
-  );
-
-  const setPriority = useCallback(
-    (v: InsightPriority) => setParam({ priority: v === "all" ? null : v }),
-    [setParam],
-  );
-
-  const setInsightCategories = useCallback(
-    (v: string[]) =>
-      setParam({ categories: v.length > 0 ? v.join(",") : null }),
-    [setParam],
-  );
-
-  const setActionableOnly = useCallback(
-    (v: boolean) => setParam({ actionable: v ? "true" : null }),
     [setParam],
   );
 
@@ -367,32 +304,22 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     dateTo,
     excludeBots,
     tab,
-    groupBy,
     segment,
+    temporalSubTab,
     continent,
-    minClicks,
-    geoLevel,
-    priority,
-    insightCategories,
-    actionableOnly,
+    geoSubTab,
+    originSubTab,
+    audienceSubTab,
     setPeriod,
     setDateRange,
     setExcludeBots,
     setTab,
-    setGroupBy,
     setSegment,
-    setContinent,
-    setMinClicks,
-    setGeoLevel,
-    geoSubTab,
-    setGeoSubTab,
-    temporalSubTab,
     setTemporalSubTab,
-    audienceSubTab,
+    setContinent,
+    setGeoSubTab,
+    setOriginSubTab,
     setAudienceSubTab,
-    setPriority,
-    setInsightCategories,
-    setActionableOnly,
   };
 }
 
