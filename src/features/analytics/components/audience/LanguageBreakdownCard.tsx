@@ -11,6 +11,7 @@ import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import type { LanguageBreakdown } from "@/types/analytics/audience";
 
+import { languageDisplayName } from "./aggregateFamily";
 import { normaliseBreakdown } from "./normaliseBreakdown";
 
 /** Entry in the language breakdown array returned by the audience API. */
@@ -27,26 +28,6 @@ interface LanguageBreakdownCardProps {
    * Accepts both the new phase-aware shape and the legacy flat array.
    */
   breakdown: LanguageBreakdown | LanguageEntry[];
-}
-
-/**
- * Resolves a human-readable language name for a base language code
- * (`"en"` → "English" / "inglês") in the UI locale. Falls back to the
- * uppercased code when `Intl.DisplayNames` cannot resolve it.
- *
- * @param code - ISO 639-1 base language code (e.g. `"pt"`).
- * @param locale - BCP 47 locale of the current UI language.
- */
-function languageDisplayName(code: string, locale: string): string {
-  try {
-    const name = new Intl.DisplayNames([locale], { type: "language" }).of(code);
-    if (name && name !== code) {
-      return name.charAt(0).toUpperCase() + name.slice(1);
-    }
-  } catch {
-    // Unknown/invalid code — fall through to the raw code below.
-  }
-  return code.toUpperCase();
 }
 
 /**

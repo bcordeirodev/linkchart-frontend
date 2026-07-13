@@ -546,6 +546,13 @@
     "empty": "This link hasn't received clicks with device data yet.",
     "deviceTypes": "{{count}} device types detected",
     "linkSpecific": "Link Specific",
+    "sections": {
+      "devices": "Devices",
+      "browserSystemLanguage": "Browser · System · Language",
+      "qualityAndLoyalty": "Quality and loyalty",
+      "technicalDetails": "Technical details",
+      "technicalDetailsDesc": "Engineering-level data: server response time, rendering engine, connection type, and device signals detected via Client Hints."
+    },
     "metrics": {
       "title": "Audience Metrics",
       "deviceTypes": "Device Types",
@@ -604,7 +611,7 @@
         "browsers": "Most-used browsers in your audience (Chrome, Safari, Firefox, etc.). Helps with compatibility decisions, polyfills, and UI testing priorities.",
         "systems": "Most-used operating systems (iOS, Android, Windows, macOS). Combined with device data, builds the full technical profile of your audience.",
         "performance": "Server response time for the redirect, by device type. Measured server-side — it does not include the destination page load.",
-        "languages": "Languages detected in visitors' browser settings, with each regional variant (en-US, en-GB) counted separately. Use to plan internationalization or create localized content versions.",
+        "languages": "Languages detected in visitors' browser settings, grouped by language (e.g. English variants like en-US and en-GB count together as \"English\"). Use to plan internationalization or create localized content versions.",
         "renderingEngine": "Browser rendering engine (Blink, WebKit, Gecko, etc.). Useful for diagnosing compatibility issues on less common browsers."
       },
       "stats": {
@@ -684,11 +691,11 @@
     },
     "extraCharts": {
       "language": "Languages — regions grouped",
-      "languageDescription": "Same dimension as the distribution above, but regional variants are grouped under their base language (en-US + en-GB → English). Totals can differ slightly from the chart above because only clicks enriched by Phase 1 tracking are counted here.",
+      "languageDescription": "Same dimension as the distribution above, but regional variants are grouped under their base language (en-US + en-GB → English). Totals can differ slightly from the chart above because only clicks with enhanced tracking are counted here.",
       "platform": "Platform",
-      "platformDescription": "Operating platform detected via Client Hints (Phase 1: Sec-CH-UA-Platform).",
+      "platformDescription": "Operating platform detected via the browser's Client Hints (Sec-CH-UA-Platform header).",
       "connectionType": "Connection Type",
-      "connectionTypeDescription": "ISP connection type classified from network data (Phase 2).",
+      "connectionTypeDescription": "ISP connection type classified from network data.",
       "others": "Others",
       "showTechnical": "Show technical data",
       "hideTechnical": "Hide technical data",

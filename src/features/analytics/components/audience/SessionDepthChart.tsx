@@ -21,7 +21,7 @@ import {
   insightsMetricRowSx,
   insightsSectionHeadingSx,
   insightsTileSx,
-} from "./insightsLayout";
+} from "../insights/insightsLayout";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
