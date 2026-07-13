@@ -44,8 +44,6 @@ export interface UseGeographicDataOptions {
   excludeBots?: boolean;
   /** Filters results to a specific continent code (e.g. `"EU"`, `"NA"`). */
   continent?: string | null;
-  /** Server-side threshold to drop low-volume rows from the response (default `1`). */
-  minClicks?: number;
 }
 
 /** Return shape of `useGeographicData`. */
@@ -96,12 +94,11 @@ function calculateStats(meta: GeographicMeta): GeographicStats {
  * @param options.dateTo - ISO date string (yyyy-MM-dd) for the end of the period
  * @param options.excludeBots - when true, adds `exclude_bots=true` to the request
  * @param options.continent - continent code to filter results (e.g. `"EU"`, `"NA"`)
- * @param options.minClicks - server-side threshold sent as `min_clicks` to drop low-volume rows (default `1`)
  * @returns `{ data: GeographicData | null, meta, stats, loading, error, refresh, isRealtime }`
  *
  * @remarks
- * Cache key: `queryKeys.analytics.geographic(linkId)` + filter params for cache isolation.
- * Endpoint: `GET /api/analytics/link/{id}/geographic[?date_from=…&date_to=…&exclude_bots=true&continent=…&min_clicks=…]` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_GEOGRAPHIC`).
+ * Cache key: `queryKeys.analytics.geographic(linkId, filters)` — see `AnalyticsQueryFilters`.
+ * Endpoint: `GET /api/analytics/link/{id}/geographic[?date_from=…&date_to=…&exclude_bots=true&continent=…]` (constant: `API_CONFIG.ENDPOINTS.ANALYTICS_GEOGRAPHIC`).
  * Uses `rawEnvelope: true` because this endpoint returns `{ data, meta }` and the consumer needs both halves.
  * Returned `GeographicData` shape is defined in `src/types/analytics/geographic.ts`.
  */
@@ -113,7 +110,6 @@ export function useGeographicData({
   dateTo,
   excludeBots,
   continent,
-  minClicks = 1,
 }: UseGeographicDataOptions): UseGeographicDataReturn {
   const {
     data: raw,
@@ -122,18 +118,18 @@ export function useGeographicData({
     error,
     refetch,
   } = useQuery({
-    queryKey: [
-      ...queryKeys.analytics.geographic(linkId),
-      { dateFrom, dateTo, excludeBots, continent, minClicks },
-    ],
+    queryKey: queryKeys.analytics.geographic(linkId, {
+      dateFrom,
+      dateTo,
+      excludeBots,
+      continent,
+    }),
     queryFn: () => {
       const params = new URLSearchParams();
       if (dateFrom) params.set("date_from", dateFrom);
       if (dateTo) params.set("date_to", dateTo);
       if (excludeBots) params.set("exclude_bots", "true");
       if (continent) params.set("continent", continent);
-      if (minClicks && minClicks > 1)
-        params.set("min_clicks", String(minClicks));
       const qs = params.toString();
       return api.get<GeographicResponse>(
         `${API_CONFIG.ENDPOINTS.ANALYTICS_GEOGRAPHIC(linkId)}${qs ? `?${qs}` : ""}`,

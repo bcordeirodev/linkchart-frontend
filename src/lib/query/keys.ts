@@ -14,6 +14,23 @@
  *   embed the tag objects they're tagged with).
  * - `analytics` — per-link analytics tabs and the public analytics page.
  */
+
+/**
+ * Filters that participate in a cached analytics payload's identity.
+ *
+ * Every filter the server honours MUST appear here — one missing filter makes
+ * TanStack Query serve the previous filter's payload when the user switches,
+ * which surfaces as silently wrong numbers. Phase 3 adds `country`, `device`
+ * and `channel` to this shape.
+ */
+export interface AnalyticsQueryFilters {
+  dateFrom?: string | null;
+  dateTo?: string | null;
+  excludeBots?: boolean;
+  segment?: string;
+  continent?: string | null;
+}
+
 export const queryKeys = {
   links: {
     all: () => ["links"] as const,
@@ -26,11 +43,16 @@ export const queryKeys = {
     list: () => ["tags", "list"] as const,
   },
   analytics: {
-    dashboard: (id: string) => ["analytics", id, "dashboard"] as const,
-    temporal: (id: string) => ["analytics", id, "temporal"] as const,
-    geographic: (id: string) => ["analytics", id, "geographic"] as const,
-    audience: (id: string) => ["analytics", id, "audience"] as const,
-    insights: (id: string) => ["analytics", id, "insights"] as const,
+    dashboard: (id: string, f?: AnalyticsQueryFilters) =>
+      ["analytics", id, "dashboard", f ?? {}] as const,
+    temporal: (id: string, f?: AnalyticsQueryFilters) =>
+      ["analytics", id, "temporal", f ?? {}] as const,
+    geographic: (id: string, f?: AnalyticsQueryFilters) =>
+      ["analytics", id, "geographic", f ?? {}] as const,
+    audience: (id: string, f?: AnalyticsQueryFilters) =>
+      ["analytics", id, "audience", f ?? {}] as const,
+    insights: (id: string, f?: AnalyticsQueryFilters) =>
+      ["analytics", id, "insights", f ?? {}] as const,
     public: (slug: string) => ["analytics", "public", slug] as const,
     publicLink: (slug: string) => ["link", "public", slug] as const,
   },

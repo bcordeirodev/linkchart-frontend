@@ -63,10 +63,11 @@ export function useDashboardData({
     refetch,
     dataUpdatedAt,
   } = useQuery({
-    queryKey: [
-      ...queryKeys.analytics.dashboard(linkId ?? ""),
-      { dateFrom, dateTo, excludeBots },
-    ],
+    queryKey: queryKeys.analytics.dashboard(linkId ?? "", {
+      dateFrom,
+      dateTo,
+      excludeBots,
+    }),
     queryFn: async (): Promise<ApiResponse> => {
       const params = new URLSearchParams({ include_charts: "true" });
       if (dateFrom) params.set("date_from", dateFrom);
