@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 export { GeographicAnalysis } from "./GeographicAnalysis";
 export { GeographicInsights } from "./GeographicInsights";
 export { ContinentBreakdown } from "./ContinentBreakdown";
-export { CountryDistributionChart } from "./CountryDistributionChart";
 
 export const RealTimeHeatmapChart = dynamic(
   () =>

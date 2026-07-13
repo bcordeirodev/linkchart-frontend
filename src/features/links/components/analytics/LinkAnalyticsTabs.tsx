@@ -275,6 +275,8 @@ export function LinkAnalyticsTabsOptimized({
               dateFrom={filters.dateFrom}
               dateTo={filters.dateTo}
               excludeBots={filters.excludeBots}
+              subTabIndex={filters.originSubTab}
+              onSubTabChange={filters.setOriginSubTab}
             />,
           )}
 
@@ -288,6 +290,8 @@ export function LinkAnalyticsTabsOptimized({
               excludeBots={filters.excludeBots}
               continent={filters.continent}
               onContinentChange={filters.setContinent}
+              subTabIndex={filters.geoSubTab}
+              onSubTabChange={filters.setGeoSubTab}
             />,
           )}
 
@@ -298,9 +302,8 @@ export function LinkAnalyticsTabsOptimized({
               dateFrom={filters.dateFrom}
               dateTo={filters.dateTo}
               excludeBots={filters.excludeBots}
-              // TODO(fase2): removido na task que achata esta aba
-              subTabIndex={0}
-              onSubTabChange={() => {}}
+              subTabIndex={filters.audienceSubTab}
+              onSubTabChange={filters.setAudienceSubTab}
             />,
           )}
 
@@ -314,9 +317,8 @@ export function LinkAnalyticsTabsOptimized({
               excludeBots={filters.excludeBots}
               segment={filters.segment}
               onSegmentChange={filters.setSegment}
-              // TODO(fase2): removido na task que achata esta aba
-              subTabIndex={0}
-              onSubTabChange={() => {}}
+              subTabIndex={filters.temporalSubTab}
+              onSubTabChange={filters.setTemporalSubTab}
             />,
           )}
 

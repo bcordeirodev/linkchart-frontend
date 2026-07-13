@@ -1,5 +1,5 @@
 "use client";
-import { Box, Skeleton, Stack } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useAudienceData } from "@/features/analytics/hooks/useAudienceData";
@@ -17,40 +17,27 @@ import type {
 } from "@/types/analytics/audience";
 
 /**
- * Loading skeleton that mirrors the flattened Audience tab layout: three
- * stacked sections (Aparelhos → Navegador · Sistema · Idioma → Qualidade e
- * fidelidade) followed by a shorter "Detalhes técnicos" accordion bar.
+ * Loading skeleton that mirrors the sub-tabbed Audience tab layout: the
+ * segmented sub-tab control (Aparelhos / Navegador e sistema / Idioma /
+ * Qualidade / Detalhes técnicos) followed by a single content block (the
+ * shape of whichever sub-tab loads first).
  */
 function AudienceSkeleton() {
   return (
-    <Stack spacing={{ xs: 3, md: 4 }}>
-      {Array.from({ length: 3 }).map((_, i) => (
-        <Box key={i}>
-          <Skeleton
-            variant="rounded"
-            animation="wave"
-            height={24}
-            width={180}
-            sx={{ mb: 2, borderRadius: 1 }}
-          />
-          <Skeleton
-            variant="rounded"
-            animation="wave"
-            height={i === 0 ? 420 : 260}
-            sx={{ borderRadius: 2 }}
-          />
-        </Box>
-      ))}
-
-      {/* "Detalhes técnicos" accordion bar — collapsed, so only a thin
-          header-height skeleton is shown */}
+    <Box>
       <Skeleton
         variant="rounded"
         animation="wave"
-        height={56}
+        height={40}
+        sx={{ mb: 2, borderRadius: 2, maxWidth: 480 }}
+      />
+      <Skeleton
+        variant="rounded"
+        animation="wave"
+        height={340}
         sx={{ borderRadius: 2 }}
       />
-    </Stack>
+    </Box>
   );
 }
 
@@ -112,19 +99,27 @@ interface LegacyAudienceAnalysisProps {
   dateTo?: string | null;
   /** When `true`, bot traffic is excluded from all metrics. */
   excludeBots?: boolean;
+  /**
+   * Index of the currently active Audience sub-tab (0=Aparelhos, 1=Navegador
+   * e sistema, 2=Idioma, 3=Qualidade, 4=Detalhes técnicos). Forwarded
+   * unchanged to {@link AudienceChart}'s `activeTab` prop.
+   */
+  subTabIndex?: number;
+  /** Called when the user switches Audience sub-tab. Pair with `subTabIndex`. */
+  onSubTabChange?: (v: number) => void;
 }
 
 /**
- * "Público" tab — answers "who clicks my link?" in three flattened,
- * scrollable sections (not sub-tabs): Aparelhos → Navegador · Sistema ·
- * Idioma → Qualidade e fidelidade, plus a collapsed "Detalhes técnicos"
- * accordion. Combines two data sources:
+ * "Público" tab — answers "who clicks my link?" across five sub-tabs:
+ * Aparelhos → Navegador e sistema → Idioma → Qualidade → Detalhes técnicos.
+ * Combines two data sources:
  *
  * - {@link useAudienceData} for device/browser/OS/language/quality
  *   breakdowns (the bulk of the tab).
  * - {@link useInsightsData} for `analytics_data.retention` and
  *   `analytics_data.session_depth`, relocated here from the dissolved
- *   Insights tab and rendered inside "Qualidade e fidelidade".
+ *   Insights tab and rendered inside "Qualidade" (fidelity — retention and
+ *   session depth — lives alongside the traffic-quality breakdown there).
  *
  * Loading/error gate on both sources combined, matching the pattern already
  * used by `OriginAnalysis`.
@@ -135,6 +130,8 @@ export function AudienceAnalysis({
   dateFrom,
   dateTo,
   excludeBots,
+  subTabIndex,
+  onSubTabChange,
 }: LegacyAudienceAnalysisProps &
   Partial<Pick<AudienceAnalysisProps, "title">>) {
   const { t } = useTranslation("analytics");
@@ -229,6 +226,8 @@ export function AudienceAnalysis({
             retention={retention}
             sessionDepth={sessionDepth}
             insightsLoading={shouldUseHook ? insightsLoading : false}
+            activeTab={subTabIndex}
+            onTabChange={onSubTabChange}
           />
         </ResponsiveContainer>
       </AnalyticsStateManager>

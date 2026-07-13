@@ -1,6 +1,7 @@
 "use client";
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import type { KeyboardEvent } from "react";
 
 /** A single row rendered by {@link HorizontalBreakdownBars}. */
 export interface HorizontalBreakdownItem {
@@ -24,6 +25,18 @@ interface HorizontalBreakdownBarsProps {
   color?: string;
   /** Unit label appended after the raw value (e.g. "cliques"). Omitted by default. */
   valueSuffix?: string;
+  /**
+   * When provided, every row becomes an interactive control (button
+   * semantics, keyboard-activatable) and calls back with the clicked row's
+   * `key`. Used by `ContinentBreakdown` to double as a continent filter —
+   * omit for a purely read-only breakdown (the common case).
+   */
+  onItemClick?: (key: string) => void;
+  /**
+   * Key of the row currently active/selected, highlighted with a filled
+   * background and outline. Only meaningful when `onItemClick` is set.
+   */
+  selectedKey?: string | null;
 }
 
 /**
@@ -37,64 +50,110 @@ interface HorizontalBreakdownBarsProps {
  * It also degrades far better than a donut on narrow viewports: the label
  * truncates instead of the whole chart needing to shrink, so nothing
  * overflows at 360px.
+ *
+ * Rows are read-only by default. Passing `onItemClick` (e.g. from
+ * `ContinentBreakdown`, which doubles as a continent filter) turns each row
+ * into a keyboard-accessible button that highlights when its `key` matches
+ * `selectedKey`.
  */
 export function HorizontalBreakdownBars({
   items,
   color,
   valueSuffix,
+  onItemClick,
+  selectedKey,
 }: HorizontalBreakdownBarsProps) {
   const theme = useTheme();
   const fallbackColor = color ?? theme.palette.primary.main;
+  const interactive = !!onItemClick;
 
   return (
     <Stack spacing={1.5}>
-      {items.map((item) => (
-        <Box key={item.key}>
+      {items.map((item) => {
+        const isSelected = interactive && selectedKey === item.key;
+        return (
           <Box
+            key={item.key}
+            {...(interactive
+              ? {
+                  role: "button",
+                  tabIndex: 0,
+                  onClick: () => onItemClick(item.key),
+                  onKeyDown: (event: KeyboardEvent) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      onItemClick(item.key);
+                    }
+                  },
+                }
+              : {})}
             sx={{
-              display: "flex",
-              alignItems: "baseline",
-              gap: 1,
-              mb: 0.5,
-            }}
-          >
-            <Typography
-              variant="body2"
-              noWrap
-              sx={{ fontWeight: 600, minWidth: 0, flex: 1 }}
-            >
-              {item.label}
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ whiteSpace: "nowrap", flexShrink: 0, fontWeight: 600 }}
-            >
-              {item.value}
-              {valueSuffix ? ` ${valueSuffix}` : ""} ·{" "}
-              {item.percentage.toFixed(1)}%
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              height: 8,
-              borderRadius: 4,
-              bgcolor: theme.palette.action.hover,
-              overflow: "hidden",
+              ...(interactive
+                ? {
+                    cursor: "pointer",
+                    borderRadius: 1,
+                    p: 0.75,
+                    mx: -0.75,
+                    bgcolor: isSelected ? "action.selected" : "transparent",
+                    outline: isSelected
+                      ? `1px solid ${theme.palette.primary.main}40`
+                      : "none",
+                    "&:hover": { bgcolor: "action.hover" },
+                    transition: "background-color 0.15s",
+                  }
+                : {}),
             }}
           >
             <Box
               sx={{
-                width: `${Math.min(100, Math.max(0, item.percentage))}%`,
-                height: "100%",
-                borderRadius: 4,
-                bgcolor: item.color ?? fallbackColor,
-                transition: "width 0.4s ease",
+                display: "flex",
+                alignItems: "baseline",
+                gap: 1,
+                mb: 0.5,
               }}
-            />
+            >
+              <Typography
+                variant="body2"
+                noWrap
+                sx={{
+                  fontWeight: isSelected ? 700 : 600,
+                  minWidth: 0,
+                  flex: 1,
+                }}
+              >
+                {item.label}
+              </Typography>
+              <Typography
+                variant="body2"
+                color={isSelected ? "primary" : "text.secondary"}
+                sx={{ whiteSpace: "nowrap", flexShrink: 0, fontWeight: 600 }}
+              >
+                {item.value}
+                {valueSuffix ? ` ${valueSuffix}` : ""} ·{" "}
+                {item.percentage.toFixed(1)}%
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                height: 8,
+                borderRadius: 4,
+                bgcolor: theme.palette.action.hover,
+                overflow: "hidden",
+              }}
+            >
+              <Box
+                sx={{
+                  width: `${Math.min(100, Math.max(0, item.percentage))}%`,
+                  height: "100%",
+                  borderRadius: 4,
+                  bgcolor: item.color ?? fallbackColor,
+                  transition: "width 0.4s ease",
+                }}
+              />
+            </Box>
           </Box>
-        </Box>
-      ))}
+        );
+      })}
     </Stack>
   );
 }
