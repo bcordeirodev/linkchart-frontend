@@ -1,5 +1,5 @@
 "use client";
-import { Box, Chip, LinearProgress, Stack, Typography } from "@mui/material";
+import { Box, Chip, Typography } from "@mui/material";
 import { Info, Navigation } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
@@ -8,17 +8,37 @@ import { tDynamic } from "@/lib/i18n/tDynamic";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { SectionDivider } from "@/shared/ui/SectionDivider";
+import { HorizontalBreakdownBars } from "./HorizontalBreakdownBars";
 import { getPhaseDataChipSx } from "./phaseDataChipSx";
+
+import type { HorizontalBreakdownItem } from "./HorizontalBreakdownBars";
 import type {
   NavigationContextEntry,
   NavigationContextBreakdown,
 } from "@/types/analytics/audience";
 
+/**
+ * Accent colour per navigation context.
+ *
+ * Two generations of keys live here on purpose. The backend now sends the raw
+ * `Sec-Fetch-Site` values (`none`, `cross-site`, `same-origin`, `same-site`);
+ * the semantic ones below them are the older shape, still possible in payloads
+ * for clicks recorded before that change. The raw values were missing entirely,
+ * so every bar fell through to the grey default and the whole breakdown
+ * rendered in one colour.
+ */
 const CONTEXT_COLORS: Record<string, string> = {
+  // Current shape — raw Sec-Fetch-Site
+  none: "#22c55e", // typed the URL / bookmark → direct
+  "cross-site": "#3b82f6", // arrived from another site
+  "same-origin": "#a855f7", // navigated inside your own site
+  "same-site": "#06b6d4", // another host on the same registrable domain
+  // Legacy shape
   browser_direct: "#22c55e",
   browser_referral: "#3b82f6",
   in_app_webview: "#f59e0b",
   api_programmatic: "#ef4444",
+  preload: "#64748b",
   unknown: "#94a3b8",
 };
 
@@ -51,7 +71,13 @@ function normalise(
 }
 
 /**
- * Renders the navigation context bar chart for the Audience tab.
+ * Renders the navigation-context breakdown for the "Detalhes técnicos" sub-tab.
+ *
+ * Uses the shared {@link HorizontalBreakdownBars} mark. It used to roll its own
+ * `LinearProgress` rows, overriding only the *bar* colour — so the track kept
+ * MUI's default, which is a tint of `primary`. The result was a blue track
+ * under a coloured fill, which read as an inverted, half-filled bar. Every
+ * other breakdown on the page uses this mark; this one now does too.
  *
  * Shows a phase disclaimer when `phase_available` is false, indicating that
  * Phase 1 tracking (Sec-Fetch headers) was not active for most clicks in the
@@ -68,6 +94,16 @@ export function BehaviorSection({
   const { data, phaseAvailable } = normalise(navigationContext);
 
   if (data.length === 0 && phaseAvailable) return null;
+
+  const items: HorizontalBreakdownItem[] = data.map((entry) => ({
+    key: entry.context,
+    label: tDynamic(t, `audience.behavior.contexts.${entry.context}`, {
+      defaultValue: entry.context,
+    }),
+    value: entry.clicks,
+    percentage: entry.percentage,
+    color: CONTEXT_COLORS[entry.context] ?? "#94a3b8",
+  }));
 
   return (
     <Box>
@@ -97,41 +133,7 @@ export function BehaviorSection({
             {t("audience.noData")}
           </Typography>
         ) : (
-          <Stack spacing={2}>
-            {data.map((entry) => {
-              const label = tDynamic(
-                t,
-                `audience.behavior.contexts.${entry.context}`,
-                { defaultValue: entry.context },
-              );
-              const color = CONTEXT_COLORS[entry.context] ?? "#94a3b8";
-              return (
-                <Box key={entry.context}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 0.5,
-                    }}
-                  >
-                    <Typography variant="body2">{label}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {entry.clicks} ({entry.percentage.toFixed(1)}%)
-                    </Typography>
-                  </Box>
-                  <LinearProgress
-                    variant="determinate"
-                    value={entry.percentage}
-                    sx={{
-                      height: 8,
-                      borderRadius: 4,
-                      "& .MuiLinearProgress-bar": { backgroundColor: color },
-                    }}
-                  />
-                </Box>
-              );
-            })}
-          </Stack>
+          <HorizontalBreakdownBars items={items} />
         )}
       </ChartCard>
     </Box>
