@@ -33,7 +33,7 @@ Painel analítico completo de um link encurtado autenticado. Cobre dashboard, di
 
 - `TemporalAnalysis.tsx` — orquestra a aba temporal.
 - `DailyTimelineChart.tsx`, `TemporalTrendsChart.tsx`, `HourDayHeatmapChart.tsx`.
-- `SeasonalDistributionChart.tsx`, `TimezoneDistributionChart.tsx`, `DeviceByPeriodChart.tsx`.
+- `TimezoneDistributionChart.tsx`, `DeviceByPeriodChart.tsx`.
 - `HolidayImpactCard.tsx`, `PeakAnalysisCard.tsx`, `TemporalInsights.tsx`.
 
 ### `components/audience/`

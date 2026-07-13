@@ -87,7 +87,7 @@ export function TemporalTrendsChart({
           <Grid item xs={12} lg={6}>
             <ChartCard
               title={t("temporal.trends.weeklyTitle")}
-              subtitle={t("charts.descriptions.temporalTrends")}
+              subtitle={t("charts.descriptions.temporalTrendsWeekly")}
             >
               <ApexChartWrapper
                 type="area"
@@ -101,8 +101,7 @@ export function TemporalTrendsChart({
                 options={{
                   chart: {
                     type: "area",
-                    toolbar: { show: true },
-                    zoom: { enabled: true },
+                    zoom: { enabled: false },
                   },
                   colors: [chartColors.primary.main],
                   stroke: {
@@ -197,7 +196,7 @@ export function TemporalTrendsChart({
           <Grid item xs={12} lg={6}>
             <ChartCard
               title={t("temporal.trends.monthlyTitle")}
-              subtitle={t("charts.descriptions.temporalTrends")}
+              subtitle={t("charts.descriptions.temporalTrendsMonthly")}
             >
               <ApexChartWrapper
                 type="area"
@@ -211,8 +210,7 @@ export function TemporalTrendsChart({
                 options={{
                   chart: {
                     type: "area",
-                    toolbar: { show: true },
-                    zoom: { enabled: true },
+                    zoom: { enabled: false },
                   },
                   colors: [chartColors.secondary.main],
                   stroke: {
