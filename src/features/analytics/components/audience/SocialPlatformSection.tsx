@@ -1,6 +1,6 @@
 "use client";
 import { Share2 } from "lucide-react";
-import { Box, LinearProgress, Stack, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
@@ -8,6 +8,10 @@ import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { SocialBrandIcon } from "@/shared/ui/icons";
 import { SectionDivider } from "@/shared/ui/SectionDivider";
+
+import { HorizontalBreakdownBars } from "./HorizontalBreakdownBars";
+
+import type { HorizontalBreakdownItem } from "./HorizontalBreakdownBars";
 
 interface SocialPlatformEntry {
   platform: string;
@@ -47,14 +51,29 @@ interface Props {
 }
 
 /**
- * Breakdown bar chart of clicks by social platform (referer-identified).
- * Matches the visual style of BehaviorSection.
+ * Breakdown of clicks by social platform (referer-identified).
+ *
+ * Renders through the shared {@link HorizontalBreakdownBars} mark rather than
+ * its own `LinearProgress` rows. It used to roll its own, and MUI's default
+ * progress track is a tint of `primary` — a *blue* track under a blue fill,
+ * which reads as a half-filled bar. Sitting next to `ChannelsBreakdown` in the
+ * "Canais e redes" sub-tab, the two breakdowns would have disagreed on what an
+ * empty bar looks like. One mark, one look.
  */
 export function SocialPlatformSection({ platforms, showTitle = true }: Props) {
   const { t } = useTranslation("analytics");
   const theme = useTheme();
 
   if (platforms.length === 0) return null;
+
+  const items: HorizontalBreakdownItem[] = platforms.map((entry) => ({
+    key: entry.platform,
+    label: PLATFORM_DISPLAY[entry.platform] ?? entry.platform,
+    value: entry.clicks,
+    percentage: entry.percentage,
+    color: PLATFORM_COLORS[entry.platform] ?? theme.palette.primary.main,
+    icon: <SocialBrandIcon platform={entry.platform} size={16} />,
+  }));
 
   return (
     <Box>
@@ -66,66 +85,7 @@ export function SocialPlatformSection({ platforms, showTitle = true }: Props) {
         subtitle={t("audience.socialPlatform.description")}
         icon={<Share2 {...ICON_MD} />}
       >
-        <Stack spacing={2}>
-          {platforms.map((entry) => {
-            const color =
-              PLATFORM_COLORS[entry.platform] ?? theme.palette.primary.main;
-            return (
-              <Box key={entry.platform}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: 1,
-                    mb: 0.5,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 0.875,
-                      minWidth: 0,
-                    }}
-                  >
-                    <Box
-                      component="span"
-                      sx={{
-                        display: "inline-flex",
-                        color,
-                        flexShrink: 0,
-                      }}
-                    >
-                      <SocialBrandIcon platform={entry.platform} size={16} />
-                    </Box>
-                    <Typography variant="body2" noWrap>
-                      {PLATFORM_DISPLAY[entry.platform] ?? entry.platform}
-                    </Typography>
-                  </Box>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ flexShrink: 0 }}
-                  >
-                    {entry.clicks} ({entry.percentage.toFixed(1)}%)
-                  </Typography>
-                </Box>
-                <LinearProgress
-                  variant="determinate"
-                  value={entry.percentage}
-                  sx={{
-                    height: 8,
-                    borderRadius: 4,
-                    "& .MuiLinearProgress-bar": {
-                      backgroundColor: color,
-                    },
-                  }}
-                />
-              </Box>
-            );
-          })}
-        </Stack>
+        <HorizontalBreakdownBars items={items} />
       </ChartCard>
     </Box>
   );
