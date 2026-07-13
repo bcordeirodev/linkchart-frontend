@@ -290,10 +290,11 @@ export function useInsightsData({
     refetch,
   } = useQuery({
     // minConfidence and categories are applied client-side — not part of the cache key
-    queryKey: [
-      ...queryKeys.analytics.insights(linkId),
-      { dateFrom, dateTo, excludeBots },
-    ],
+    queryKey: queryKeys.analytics.insights(linkId, {
+      dateFrom,
+      dateTo,
+      excludeBots,
+    }),
     queryFn: () => {
       const params = new URLSearchParams();
       if (dateFrom) params.set("date_from", dateFrom);
