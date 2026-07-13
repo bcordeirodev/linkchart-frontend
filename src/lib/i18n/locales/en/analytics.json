@@ -1048,5 +1048,9 @@
     "acquisition": "Acquisition Channels",
     "temporal": "Traffic Patterns",
     "audience": "Audience"
+  },
+  "origin": {
+    "loading": "Loading origin analysis...",
+    "empty": "This link doesn't have enough traffic-origin data yet."
   }
 }

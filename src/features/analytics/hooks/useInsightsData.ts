@@ -127,6 +127,19 @@ export interface InsightsData {
     retention?: RetentionData;
     session_depth?: SessionDepthData;
     traffic_sources?: TrafficSourceData;
+    /**
+     * Breakdown of clicks by navigation context (Sec-Fetch-* headers), as a
+     * sibling of `traffic_sources` — not nested inside it. Flat list, same
+     * shape as `TrafficSourceData.navigation_context` but populated by the
+     * backend at this top-level key (`InsightsAnalyticsService::getNavigationContextBreakdown`).
+     */
+    navigation_context?: NavigationContextEntry[];
+    /** Breakdown of clicks by HTTP protocol version (HTTP/1.1 vs HTTP/2). Nulls are coalesced to `"unknown"`. */
+    http_protocol?: Array<{
+      protocol: string;
+      clicks: number;
+      percentage: number;
+    }>;
     /** Quality tier breakdown from Phase 3 scoring */
     quality?: {
       avg_quality_score: number | null;
