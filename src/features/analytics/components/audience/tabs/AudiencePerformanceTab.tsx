@@ -85,12 +85,11 @@ export function AudiencePerformanceTab({
         </Card>
       </Grid>
 
-      {/* No `height: 100%` on this one: the list is ~150px shorter than the
-          chart beside it, and stretching it to match left that much dead space
-          inside its border. The card now ends where its content ends. */}
       <Grid item xs={12} md={6}>
-        <Card elevation={0} sx={outlinedCardSx}>
-          <CardContent>
+        <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
+          <CardContent
+            sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+          >
             <Typography
               variant="subtitle1"
               gutterBottom
@@ -98,13 +97,25 @@ export function AudiencePerformanceTab({
             >
               {t("audience.chart.performanceDetails")}
             </Typography>
-            {/* Top-aligned, not centered: this card stretches to match the
-                chart beside it, and centering pushed the rows to the middle —
-                leaving a hole between the title and its own content. Slack
-                belongs at the bottom, where it reads as padding. */}
-            <Stack spacing={1.5} sx={{ mt: 0.5 }}>
+            {/* The list is ~150px shorter than the chart beside it, but both
+                cards must end on the same line — every other row on this tab
+                does. So the rows *absorb* the extra height (`flex: 1` each)
+                instead of the card carrying it as a hole: not under the title
+                (what `justifyContent: center` used to cause), not at the
+                bottom. Evenly taller rows read as deliberate spacing. */}
+            <Stack spacing={1.5} sx={{ flexGrow: 1, mt: 0.5 }}>
               {devicePerformance.map((perf) => (
-                <Box key={perf.device} sx={{ p: 1.5, ...itemRowSx }}>
+                <Box
+                  key={perf.device}
+                  sx={{
+                    p: 1.5,
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    ...itemRowSx,
+                  }}
+                >
                   <Typography
                     variant="subtitle2"
                     sx={{ mb: 0.5, fontWeight: 600 }}

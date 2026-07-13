@@ -86,10 +86,11 @@ export function AudienceRenderingEngineTab({
           </CardContent>
         </Card>
       </Grid>
-      {/* No `height: 100%` — see AudiencePerformanceTab. */}
       <Grid item xs={12} md={6}>
-        <Card elevation={0} sx={outlinedCardSx}>
-          <CardContent>
+        <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
+          <CardContent
+            sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+          >
             <Typography
               variant="subtitle1"
               gutterBottom
@@ -97,8 +98,9 @@ export function AudienceRenderingEngineTab({
             >
               {t("audience.chart.topEngines")}
             </Typography>
-            {/* Top-aligned, not centered — see AudiencePerformanceTab. */}
-            <Stack spacing={1.5} sx={{ mt: 0.5 }}>
+            {/* Rows absorb the height difference against the donut beside them
+                — see AudiencePerformanceTab. */}
+            <Stack spacing={1.5} sx={{ flexGrow: 1, mt: 0.5 }}>
               {renderingEngine.slice(0, 5).map((engine) => (
                 <Box
                   key={engine.engine}
@@ -107,6 +109,7 @@ export function AudienceRenderingEngineTab({
                     justifyContent: "space-between",
                     alignItems: "center",
                     p: 1.5,
+                    flex: 1,
                     ...itemRowSx,
                   }}
                 >
