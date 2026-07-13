@@ -105,7 +105,7 @@ Veja [CONTRIBUTING.md](CONTRIBUTING.md) — convenções de commit, branching, g
 
 ## Deploy
 
-- **Frontend:** linkcharts.com.br — pipeline em `.github/workflows/deploy-frontend-next.yml`.
+- **Frontend:** linkcharts.com.br — pipeline em `.github/workflows/release.yml` (deploy por tag `v*`, blue/green — ver `docs/DEPLOY.md` na raiz).
 - **Backend:** api.linkcharts.com.br — VPS Docker, repositório separado.
 - **Branch de deploy:** `main` (auto-deploy após merge + CI verde).
 - **Build artifact:** `output: standalone` (ver `next.config.ts`).
