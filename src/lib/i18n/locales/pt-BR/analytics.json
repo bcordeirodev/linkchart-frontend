@@ -557,6 +557,8 @@
       "technicalDetailsDesc": "Dados de engenharia: tempo de resposta do servidor, motor de renderização, tipo de conexão e sinais de dispositivo detectados via Client Hints."
     },
     "subtabs": {
+      "profile": "Perfil",
+      "technical": "Detalhes técnicos",
       "browserSystem": "Navegador e sistema",
       "language": "Idioma"
     },
