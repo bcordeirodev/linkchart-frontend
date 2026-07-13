@@ -6,8 +6,15 @@ import { publicLinkService } from "@/services/link-public.service";
 
 export type PublicSlugSuggestionStatus = "idle" | "resolving" | "ready";
 
-/** Debounce delay in ms before firing the slug suggestion request. */
-const DEBOUNCE_MS = 500;
+/**
+ * Debounce delay in ms before firing the slug suggestion request.
+ *
+ * Kept short on purpose: the request itself is slow (the server fetches the
+ * destination page to read its og:title, ~1s), so every ms spent waiting here is
+ * added straight onto a wait the user already feels. 300ms still coalesces a
+ * burst of typing into one call.
+ */
+const DEBOUNCE_MS = 300;
 
 /**
  * Resolves a single available slug for a URL via the public, unauthenticated
