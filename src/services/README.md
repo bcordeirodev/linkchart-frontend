@@ -12,7 +12,6 @@ Camada HTTP. Cada `*.service.ts` é uma classe extends `BaseService` que encapsu
 | `link.service.ts`        | `Http/Controllers/Links/LinkController`                           |
 | `link-meta.service.ts`   | `Http/Controllers/Links/LinkController` (action `batchMeta`)      |
 | `link-public.service.ts` | `Http/Controllers/Links/PublicLinkController` + analytics público |
-| `analytics.service.ts`   | `Http/Controllers/Analytics/AnalyticsController`                  |
 | `profile.service.ts`     | `Http/Controllers/Auth/AuthController` (`@profile`)               |
 
 ## Public methods (resumo)
@@ -22,10 +21,9 @@ Camada HTTP. Cada `*.service.ts` é uma classe extends `BaseService` que encapsu
 - `LinkService` — `save`, `update`, `all`, `findOne`, `remove`, `getAnalytics`, `getClicksList`.
 - `LinkMetaService` — `batchMeta`.
 - `PublicLinkService` — `createPublicLink`, `getLinkBySlug`, `getPublicAnalytics`, `validateUrl`, `formatUrl`, `getPublicAnalyticsUrl`, `copyToClipboard`.
-- `AnalyticsService` — `getAnalytics`, `getLinkAnalytics`, `getLinkGeographicData`, `getLinkInsights` (e demais por domínio — ver TSDoc da classe).
 - `ProfileService` — `getCurrentUser`, `updateProfile`.
 
-Singletons exportados pelo barrel `index.ts`: `authService`, `linkService`, `profileService`, `analyticsService`. (Não há mais re-export de `analyticsService` em outros lugares — consumidores devem importar daqui ou instanciar via `services/`.) `LinkMetaService` e `PublicLinkService` são instanciados por seus próprios módulos (`linkMetaService`, `publicLinkService`) — importar direto do arquivo do service.
+Singletons exportados pelo barrel `index.ts`: `authService`, `linkService`, `profileService`. `LinkMetaService` e `PublicLinkService` são instanciados por seus próprios módulos (`linkMetaService`, `publicLinkService`) — importar direto do arquivo do service. Não existe `AnalyticsService`: os hooks de `features/analytics/` chamam `api.get()` direto (`src/lib/api/client.ts`).
 
 ## Convenções
 
