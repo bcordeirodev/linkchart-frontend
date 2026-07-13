@@ -84,17 +84,9 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
 
   const commonOptions = {
     chart: {
-      toolbar: {
-        show: true,
-        tools: {
-          zoom: true,
-          reset: true,
-          download: false,
-          pan: false,
-          zoomin: false,
-          zoomout: false,
-        },
-      },
+      // No toolbar override here: `ApexChartWrapper` already forces
+      // `toolbar: { show: false }`, and re-enabling it puts zoom/pan/hamburger
+      // icons over the chart — noise on a read-only analytics page.
       animations: { enabled: true, speed: 600 },
     },
     stroke: { curve: "smooth" as const, width: 2 },

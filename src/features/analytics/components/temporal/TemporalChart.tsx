@@ -1,7 +1,7 @@
 "use client";
 import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Activity, CalendarRange, Gauge, PieChart } from "lucide-react";
+import { Activity, CalendarRange, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -20,9 +20,8 @@ import type {
 } from "@/types";
 
 import { TemporalPatternsTab } from "./tabs/TemporalPatternsTab";
+import { TemporalPeaksTab } from "./tabs/TemporalPeaksTab";
 import { TemporalTimelineTab } from "./tabs/TemporalTimelineTab";
-import { TemporalPerformanceTab } from "./tabs/TemporalPerformanceTab";
-import { TemporalDistributionTab } from "./tabs/TemporalDistributionTab";
 
 /** Props for the TemporalChart orchestrator. */
 interface TemporalChartProps {
@@ -39,13 +38,11 @@ interface TemporalChartProps {
    * Weekend vs Weekday pie is meaningless when `segment = 'weekday'`).
    */
   segment?: "all" | "weekday" | "weekend" | "business";
-  /** Viral rank data for the Performance tab. */
+  /** Viral rank data for the "Picos e tendências" sub-tab. */
   viralRankByDay?: TemporalData["viral_rank_by_day"];
-  /** Holiday impact data for the Distribution tab. */
+  /** Holiday impact data for the "Picos e tendências" sub-tab. */
   holidayImpact?: TemporalData["holiday_impact"];
-  /** Seasonal distribution data for the Distribution tab. */
-  seasonalDistribution?: TemporalData["seasonal_distribution"];
-  /** Click velocity data for the Distribution tab. */
+  /** Click velocity data for the "Picos e tendências" sub-tab. */
   clickVelocity?: TemporalData["click_velocity"];
   /** Currently-active sub-tab index. When provided, the component is controlled. */
   activeTab?: number;
@@ -54,12 +51,18 @@ interface TemporalChartProps {
 }
 
 /**
- * Renders temporal analytics charts grouped into 4 tabs:
- * Patterns, Timeline, Performance, and Distribution.
+ * Renders temporal analytics grouped into three sub-tabs: Padrões, Linha do
+ * tempo, and Picos e tendências.
  *
- * Manages tab state and derives all computed values from props, then
- * delegates rendering to focused tab components. No data fetching occurs
- * here — all data flows in from the parent via props.
+ * The last one merges two former sub-tabs. "Performance" was a misnomer — it
+ * held viral rank and engagement peaks, nothing about performance — and
+ * "Distribuição" was a bag of leftovers. Neither named a question a reader
+ * would ask; together they answer one: *when does this link spike, and where
+ * is it heading?*
+ *
+ * Manages tab state and derives all computed values from props, then delegates
+ * rendering to focused tab components. No data fetching occurs here — all data
+ * flows in from the parent via props.
  */
 export function TemporalChart({
   hourlyData,
@@ -70,7 +73,6 @@ export function TemporalChart({
   advancedData,
   viralRankByDay,
   holidayImpact,
-  seasonalDistribution,
   clickVelocity,
   segment,
   activeTab: activeTabProp,
@@ -122,6 +124,7 @@ export function TemporalChart({
       <AnalyticsSubTabs
         value={activeTab}
         onChange={handleTabChange}
+        ariaLabel={t("tabs.when")}
         tabs={[
           {
             label: t("temporal.chart.tabPatterns"),
@@ -132,12 +135,8 @@ export function TemporalChart({
             icon: <CalendarRange {...ICON_SM} />,
           },
           {
-            label: t("temporal.chart.tabPerformance"),
-            icon: <Gauge {...ICON_SM} />,
-          },
-          {
-            label: t("temporal.chart.tabDistribution"),
-            icon: <PieChart {...ICON_SM} />,
+            label: t("temporal.chart.tabPeaks"),
+            icon: <TrendingUp {...ICON_SM} />,
           },
         ]}
       >
@@ -168,25 +167,19 @@ export function TemporalChart({
           />
         )}
 
-        {/* Tab 2 — Performance */}
+        {/* Tab 2 — Picos e tendências: the former "Performance" (which was
+            never about performance — it was viral rank and peaks) merged with
+            "Distribuição" (a bag of leftovers). */}
         {activeTab === 2 && (
-          <TemporalPerformanceTab
+          <TemporalPeaksTab
             hasPeakAnalysis={hasPeakAnalysis}
             hasTrends={!!hasTrends}
-            advancedData={advancedData}
-            viralRankByDay={viralRankByDay}
             hasViralRank={hasViralRank}
-          />
-        )}
-
-        {/* Tab 3 — Distribution */}
-        {activeTab === 3 && (
-          <TemporalDistributionTab
             hasTimezones={hasTimezones}
             hasDeviceByPeriod={hasDeviceByPeriod}
             advancedData={advancedData}
+            viralRankByDay={viralRankByDay}
             holidayImpact={holidayImpact}
-            seasonalDistribution={seasonalDistribution}
             clickVelocity={clickVelocity}
           />
         )}

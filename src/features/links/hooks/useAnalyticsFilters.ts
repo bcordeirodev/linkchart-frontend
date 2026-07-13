@@ -42,7 +42,7 @@ export interface AnalyticsFilters {
 
   // Temporal
   segment: Segment;
-  /** Index of the active temporal sub-tab (0=Patterns, 1=Timeline, 2=Performance, 3=Distribution). URL-persisted so it survives RSC remounts triggered by filter changes. */
+  /** Index of the active temporal sub-tab (0=Padrões, 1=Linha do tempo, 2=Picos e tendências). URL-persisted so it survives RSC remounts triggered by filter changes. */
   temporalSubTab: number;
 
   // Geographic
@@ -183,7 +183,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   // "Lugares" has none: its three views are a toggle inside one card.
   const temporalSubTab = parseSubTabIndex(
     searchParams.get("temporalSubTab"),
-    3,
+    2,
   );
   const originSubTab = parseSubTabIndex(searchParams.get("originSubTab"), 2);
   const audienceSubTab = parseSubTabIndex(
