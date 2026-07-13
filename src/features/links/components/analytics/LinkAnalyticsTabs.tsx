@@ -13,10 +13,10 @@ import {
 import { alpha } from "@mui/material/styles";
 import {
   LayoutDashboard,
+  Share2,
   Globe,
-  Clock,
   Users,
-  Lightbulb,
+  Clock,
   MousePointer2,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -59,7 +59,7 @@ interface LinkAnalyticsTabsOptimizedProps {
  * all, preserving lazy loading on first access.
  *
  * ### URL-named tabs
- * The `tab` URL param uses named slugs (`?tab=temporal`) instead of numeric
+ * The `tab` URL param uses named slugs (`?tab=places`) instead of numeric
  * indices. Invalid or missing values fall back to `"overview"`.
  */
 export function LinkAnalyticsTabsOptimized({
@@ -68,7 +68,7 @@ export function LinkAnalyticsTabsOptimized({
 }: LinkAnalyticsTabsOptimizedProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { t } = useTranslation("links");
+  const { t } = useTranslation("analytics");
   const filters = useAnalyticsFilters();
 
   /** Numeric index of the active tab — required by MUI `<Tabs value>`. */
@@ -97,33 +97,33 @@ export function LinkAnalyticsTabsOptimized({
   /** Ordered tab metadata used to render the nav row and the panel headers. */
   const tabLabels = [
     {
-      label: t("analytics.tabs.overview"),
-      description: t("analytics.tabDescriptions.overview"),
+      label: t("tabs.overview"),
+      description: t("tabDescriptions.overview"),
       Icon: LayoutDashboard,
     },
     {
-      label: t("analytics.tabs.temporal"),
-      description: t("analytics.tabDescriptions.temporal"),
-      Icon: Clock,
+      label: t("tabs.origin"),
+      description: t("tabDescriptions.origin"),
+      Icon: Share2,
     },
     {
-      label: t("analytics.tabs.geographic"),
-      description: t("analytics.tabDescriptions.geographic"),
+      label: t("tabs.places"),
+      description: t("tabDescriptions.places"),
       Icon: Globe,
     },
     {
-      label: t("analytics.tabs.audience"),
-      description: t("analytics.tabDescriptions.audience"),
+      label: t("tabs.audience"),
+      description: t("tabDescriptions.audience"),
       Icon: Users,
     },
     {
-      label: t("analytics.tabs.insights"),
-      description: t("analytics.tabDescriptions.insights"),
-      Icon: Lightbulb,
+      label: t("tabs.when"),
+      description: t("tabDescriptions.when"),
+      Icon: Clock,
     },
     {
-      label: t("analytics.clicksTable.title"),
-      description: t("analytics.clicksTable.description"),
+      label: t("tabs.clicks"),
+      description: t("tabDescriptions.clicks"),
       Icon: MousePointer2,
     },
   ];
@@ -239,15 +239,15 @@ export function LinkAnalyticsTabsOptimized({
                 key={index}
                 id={`tab-${index}`}
                 aria-controls={`tabpanel-${TAB_IDS[index]}`}
-                label={
+                label={label}
+                icon={
                   <Box
                     component="span"
-                    sx={{ display: { xs: "none", sm: "block" } }}
+                    sx={{ display: { xs: "none", sm: "inline-flex" } }}
                   >
-                    {label}
+                    <Icon {...ICON_SM} />
                   </Box>
                 }
-                icon={<Icon {...ICON_SM} />}
                 iconPosition="start"
               />
             ))}
@@ -269,49 +269,8 @@ export function LinkAnalyticsTabsOptimized({
           )}
 
           {tabPanel(
-            "temporal",
-            <TemporalAnalysis
-              linkId={linkId}
-              enableRealtime={false}
-              dateFrom={filters.dateFrom}
-              dateTo={filters.dateTo}
-              excludeBots={filters.excludeBots}
-              segment={filters.segment}
-              onSegmentChange={filters.setSegment}
-              subTabIndex={filters.temporalSubTab}
-              onSubTabChange={filters.setTemporalSubTab}
-            />,
-          )}
-
-          {tabPanel(
-            "geographic",
-            <GeographicAnalysis
-              linkId={linkId}
-              enableRealtime={false}
-              dateFrom={filters.dateFrom}
-              dateTo={filters.dateTo}
-              excludeBots={filters.excludeBots}
-              continent={filters.continent}
-              onContinentChange={filters.setContinent}
-              subTabIndex={filters.geoSubTab}
-              onSubTabChange={filters.setGeoSubTab}
-            />,
-          )}
-
-          {tabPanel(
-            "audience",
-            <AudienceAnalysis
-              linkId={linkId}
-              dateFrom={filters.dateFrom}
-              dateTo={filters.dateTo}
-              excludeBots={filters.excludeBots}
-              subTabIndex={filters.audienceSubTab}
-              onSubTabChange={filters.setAudienceSubTab}
-            />,
-          )}
-
-          {tabPanel(
-            "insights",
+            // provisional: InsightsAnalysis becomes OriginAnalysis in Task 4
+            "origin",
             <InsightsAnalysis
               linkId={linkId}
               enableRealtime={false}
@@ -325,6 +284,51 @@ export function LinkAnalyticsTabsOptimized({
               onPriorityChange={filters.setPriority}
               onCategoriesChange={filters.setInsightCategories}
               onActionableOnlyChange={filters.setActionableOnly}
+            />,
+          )}
+
+          {tabPanel(
+            "places",
+            <GeographicAnalysis
+              linkId={linkId}
+              enableRealtime={false}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              continent={filters.continent}
+              onContinentChange={filters.setContinent}
+              // TODO(fase2): removido na task que achata esta aba
+              subTabIndex={0}
+              onSubTabChange={() => {}}
+            />,
+          )}
+
+          {tabPanel(
+            "audience",
+            <AudienceAnalysis
+              linkId={linkId}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              // TODO(fase2): removido na task que achata esta aba
+              subTabIndex={0}
+              onSubTabChange={() => {}}
+            />,
+          )}
+
+          {tabPanel(
+            "when",
+            <TemporalAnalysis
+              linkId={linkId}
+              enableRealtime={false}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              segment={filters.segment}
+              onSegmentChange={filters.setSegment}
+              // TODO(fase2): removido na task que achata esta aba
+              subTabIndex={0}
+              onSubTabChange={() => {}}
             />,
           )}
 

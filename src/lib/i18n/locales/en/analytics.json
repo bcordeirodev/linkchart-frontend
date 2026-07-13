@@ -160,12 +160,20 @@
     }
   },
   "tabs": {
-    "overview": "Overview",
-    "temporal": "Temporal",
-    "geographic": "Geographic",
+    "overview": "Summary",
+    "origin": "Sources",
+    "places": "Places",
     "audience": "Audience",
-    "performance": "Performance",
-    "insights": "Insights"
+    "when": "Timing",
+    "clicks": "Clicks"
+  },
+  "tabDescriptions": {
+    "overview": "Your link's performance on one screen: how many clicks, whether it's growing, and what to do about it.",
+    "origin": "Where the traffic comes from: channels, social networks, referring sites and campaigns.",
+    "places": "Where your audience is: countries, states and cities.",
+    "audience": "Who clicks: device, browser, language and traffic quality.",
+    "when": "When they click: hours, weekdays and how it evolves over time.",
+    "clicks": "Every recorded visit, one per row."
   },
   "temporal": {
     "title": "Temporal Analysis",
