@@ -413,9 +413,10 @@
     "empty": "Geographic data unavailable",
     "countriesReached": "{{count}} countries reached",
     "mapListToggle": {
-      "ariaLabel": "Switch between map and list",
+      "ariaLabel": "Switch between map, list and heat map",
       "map": "Map",
-      "list": "List"
+      "list": "List",
+      "heat": "Heat"
     },
     "metrics": {
       "title": "Geographic Metrics",

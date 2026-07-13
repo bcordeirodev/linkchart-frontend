@@ -70,6 +70,13 @@ interface HeatmapChartProps {
   showControls?: boolean;
   /** Mostrar estatísticas */
   showStats?: boolean;
+  /**
+   * Renderiza sem a moldura de `Card` (borda, sombra e raio) e sem o título
+   * interno. Use quando o gráfico já vive **dentro** de um card — como no
+   * modo "Calor" do `GeographicMapAndList` —, onde a moldura própria viraria
+   * uma borda dupla e o título, um título dentro do outro.
+   */
+  bare?: boolean;
 }
 
 /**
@@ -104,10 +111,31 @@ export function RealTimeHeatmapChart({
   title,
   showControls = true,
   showStats = true,
+  bare = false,
 }: HeatmapChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const displayTitle = title ?? t("geographic.heatmap.titleDefault");
+
+  /**
+   * Outer wrapper: a `Card` when standalone, a plain `Box` when embedded in a
+   * parent card (`bare`). Both accept `sx`, so every branch below renders the
+   * same element with the same `shellSx` — the chrome is decided once, here,
+   * instead of being repeated across the four early returns.
+   */
+  // Cast: `Box | Card` is not a callable JSX type, but both accept the only
+  // props used here (`sx` and children), so `typeof Box` describes the union.
+  const Shell = (bare ? Box : Card) as typeof Box;
+  const shellSx = bare
+    ? { height, overflow: "hidden" }
+    : {
+        height,
+        borderRadius: `${radiusTokens.lg}px`,
+        boxShadow:
+          theme.palette.mode === "dark"
+            ? elevationTokens.xs
+            : elevationLightTokens.xs,
+      };
 
   // Estados do mapa
   const [mapComponents, setMapComponents] = useState<SafeMapComponents>({
@@ -239,16 +267,7 @@ export function RealTimeHeatmapChart({
   // Estado de loading
   if (!isClient || !mapReady) {
     return (
-      <Card
-        sx={{
-          height,
-          borderRadius: `${radiusTokens.lg}px`,
-          boxShadow:
-            theme.palette.mode === "dark"
-              ? elevationTokens.xs
-              : elevationLightTokens.xs,
-        }}
-      >
+      <Shell sx={shellSx}>
         <CardContent
           sx={{
             height: "100%",
@@ -263,23 +282,14 @@ export function RealTimeHeatmapChart({
             {t("geographic.heatmap.mapLoading")}
           </Typography>
         </CardContent>
-      </Card>
+      </Shell>
     );
   }
 
   // Renderizar estado de erro
   if (mapError) {
     return (
-      <Card
-        sx={{
-          height,
-          borderRadius: `${radiusTokens.lg}px`,
-          boxShadow:
-            theme.palette.mode === "dark"
-              ? elevationTokens.xs
-              : elevationLightTokens.xs,
-        }}
-      >
+      <Shell sx={shellSx}>
         <CardContent
           sx={{
             height: "100%",
@@ -305,23 +315,14 @@ export function RealTimeHeatmapChart({
             {t("geographic.heatmap.reload")}
           </Button>
         </CardContent>
-      </Card>
+      </Shell>
     );
   }
 
   // Renderizar estado vazio
   if (!loading && (!data || data.length === 0)) {
     return (
-      <Card
-        sx={{
-          height,
-          borderRadius: `${radiusTokens.lg}px`,
-          boxShadow:
-            theme.palette.mode === "dark"
-              ? elevationTokens.xs
-              : elevationLightTokens.xs,
-        }}
-      >
+      <Shell sx={shellSx}>
         <CardContent
           sx={{
             height: "100%",
@@ -365,7 +366,7 @@ export function RealTimeHeatmapChart({
             />
           ) : null}
         </CardContent>
-      </Card>
+      </Shell>
     );
   }
 
@@ -373,16 +374,7 @@ export function RealTimeHeatmapChart({
 
   if (!MapContainer || !TileLayer || !CircleMarker || !Popup) {
     return (
-      <Card
-        sx={{
-          height,
-          borderRadius: `${radiusTokens.lg}px`,
-          boxShadow:
-            theme.palette.mode === "dark"
-              ? elevationTokens.xs
-              : elevationLightTokens.xs,
-        }}
-      >
+      <Shell sx={shellSx}>
         <CardContent
           sx={{
             height: "100%",
@@ -393,18 +385,25 @@ export function RealTimeHeatmapChart({
         >
           <CircularProgress />
         </CardContent>
-      </Card>
+      </Shell>
     );
   }
 
   return (
-    <Card
+    <Shell
       sx={{
-        borderRadius: `${radiusTokens.lg}px`,
-        boxShadow:
-          theme.palette.mode === "dark"
-            ? elevationTokens.xs
-            : elevationLightTokens.xs,
+        // Fullscreen keeps the Card chrome even when `bare` — detached from the
+        // parent card, it needs its own surface to sit on.
+        ...(bare && !isFullscreen
+          ? {}
+          : {
+              borderRadius: `${radiusTokens.lg}px`,
+              boxShadow:
+                theme.palette.mode === "dark"
+                  ? elevationTokens.xs
+                  : elevationLightTokens.xs,
+            }),
+        bgcolor: isFullscreen ? "background.paper" : undefined,
         overflow: "hidden",
         position: isFullscreen ? "fixed" : "relative",
         top: isFullscreen ? 0 : "auto",
@@ -439,21 +438,27 @@ export function RealTimeHeatmapChart({
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Globe
-                  {...ICON_MD}
-                  style={{ color: "var(--mui-palette-primary-main)" }}
-                />
-                <Typography
-                  variant="subtitle1"
-                  sx={{
-                    fontWeight: 600,
-                    position: "relative",
-                    zIndex: 1,
-                    mt: 1,
-                  }}
-                >
-                  {displayTitle}
-                </Typography>
+                {/* Embedded in a parent card, the title and its icon would sit
+                    under the card's own heading — a title inside a title. */}
+                {bare ? null : (
+                  <>
+                    <Globe
+                      {...ICON_MD}
+                      style={{ color: "var(--mui-palette-primary-main)" }}
+                    />
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 600,
+                        position: "relative",
+                        zIndex: 1,
+                        mt: 1,
+                      }}
+                    >
+                      {displayTitle}
+                    </Typography>
+                  </>
+                )}
                 {onRefresh ? (
                   <Chip
                     label={t("geographic.heatmap.realtime")}
@@ -827,6 +832,6 @@ export function RealTimeHeatmapChart({
           </MapContainer>
         </Box>
       </CardContent>
-    </Card>
+    </Shell>
   );
 }

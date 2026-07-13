@@ -9,9 +9,10 @@ import {
   ToggleButtonGroup,
   useTheme,
 } from "@mui/material";
-import { Globe, Map as MapIcon, List as ListIcon } from "lucide-react";
+import { Globe, Map as MapIcon, List as ListIcon, Flame } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { useResponsive } from "@/lib/theme";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import {
   elevationLightTokens,
@@ -20,13 +21,15 @@ import {
   radiusTokens,
 } from "@/lib/theme/designSystem";
 
-import type { CountryData, StateData, CityData } from "@/types";
+import type { CountryData, StateData, CityData, HeatmapPoint } from "@/types";
+import type { GeographicStats } from "../../hooks/useGeographicData";
 
 import { GeographicChart } from "./GeographicChart";
 import { GeographicChoropleth } from "./GeographicChoropleth";
+import { RealTimeHeatmapChart } from "./RealTimeHeatmapChart";
 
-/** The two interchangeable visualisations of the same "where is my audience?" question. */
-type GeoView = "map" | "list";
+/** The three interchangeable visualisations of the same "where is my audience?" question. */
+type GeoView = "map" | "list" | "heat";
 
 /** Props accepted by the {@link GeographicMapAndList} component. */
 interface GeographicMapAndListProps {
@@ -42,20 +45,36 @@ interface GeographicMapAndListProps {
   selectedCountry: string | null;
   /** Called when a country is selected or cleared, from either view. */
   onCountrySelect: (isoCode: string | null) => void;
+  /** City-level heat points. When empty, the "Calor" toggle is not offered. */
+  heatmapData: HeatmapPoint[];
+  /** Aggregate geo stats, forwarded to the heat view. */
+  stats?: GeographicStats | null;
+  /** Loading flag, forwarded to the heat view. */
+  loading?: boolean;
+  /** Error message, forwarded to the heat view. */
+  error?: string | null;
+  /** Retry callback, forwarded to the heat view. */
+  onRefresh?: () => void;
 }
 
 /**
- * Single card that answers "where is my audience?" with two interchangeable
- * visualisations of the same country/state/city data: a world choropleth
- * ({@link GeographicChoropleth}) and a ranked list with bar charts
- * ({@link GeographicChart}). A `ToggleButtonGroup` — styled after the view
- * switcher in `LinkActionsViewSwitch` — swaps between the two instead of
- * splitting them across separate sub-tabs: a map and a list of the same
- * countries answer one question two ways, so they do not need two screens.
+ * Single card that answers "where is my audience?" with three interchangeable
+ * visualisations of the same location data: a world choropleth
+ * ({@link GeographicChoropleth}), a ranked list with bar charts
+ * ({@link GeographicChart}), and a city-level heat map
+ * ({@link RealTimeHeatmapChart}). A `ToggleButtonGroup` — styled after the
+ * view switcher in `LinkActionsViewSwitch` — swaps between them.
  *
- * `selectedCountry`/`onCountrySelect` are lifted to the parent so a
- * selection made in either view (map click or list row click) is preserved
- * the next time the user toggles.
+ * They used to be separate sub-tabs, which forced the user to guess *which of
+ * the two maps* held the answer. They are one question ("where?") asked three
+ * ways, so they share one card and one screen.
+ *
+ * `selectedCountry`/`onCountrySelect` are lifted to the parent so a selection
+ * made in either view (map click or list row click) is preserved the next time
+ * the user toggles.
+ *
+ * The heat view is only offered when there are points to show, and only mounts
+ * while it is active — Leaflet and its tiles are never fetched otherwise.
  */
 export function GeographicMapAndList({
   countries,
@@ -64,11 +83,19 @@ export function GeographicMapAndList({
   totalClicks,
   selectedCountry,
   onCountrySelect,
+  heatmapData,
+  stats,
+  loading = false,
+  error = null,
+  onRefresh,
 }: GeographicMapAndListProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
+  const { isMobile } = useResponsive();
   const isDark = theme.palette.mode === "dark";
   const [view, setView] = useState<GeoView>("map");
+
+  const hasHeatmap = heatmapData.length > 0;
 
   /**
    * Handles the view toggle's change event. MUI's exclusive `ToggleButtonGroup`
@@ -215,6 +242,32 @@ export function GeographicMapAndList({
                 </Box>
               </Box>
             </ToggleButton>
+            {hasHeatmap ? (
+              <ToggleButton
+                value="heat"
+                aria-label={t("geographic.mapListToggle.heat")}
+              >
+                <Box
+                  component="span"
+                  sx={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                  }}
+                >
+                  <Flame {...ICON_SM} strokeWidth={1.75} />
+                  <Box
+                    component="span"
+                    sx={{
+                      display: { xs: "none", sm: "inline" },
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {t("geographic.mapListToggle.heat")}
+                  </Box>
+                </Box>
+              </ToggleButton>
+            ) : null}
           </ToggleButtonGroup>
         </Box>
 
@@ -224,7 +277,9 @@ export function GeographicMapAndList({
             selectedCountry={selectedCountry}
             onCountrySelect={onCountrySelect}
           />
-        ) : (
+        ) : null}
+
+        {view === "list" ? (
           <GeographicChart
             countries={countries}
             states={states}
@@ -233,7 +288,33 @@ export function GeographicMapAndList({
             selectedCountry={selectedCountry}
             onCountrySelect={onCountrySelect}
           />
-        )}
+        ) : null}
+
+        {/* Mounted only while the "Calor" view is active, so the Leaflet chunk
+            and the map tiles stay off the wire until the user asks for them.
+
+            The explicit pixel height is load-bearing: this chart collapsed to
+            0px on mobile once before, because a percentage height inside a
+            flex parent has nothing to resolve against. Do not swap it for
+            `height: "100%"`.
+
+            It sizes the whole widget, not the map — the heat map's own header
+            (controls, legend, min-clicks slider) eats ~250px on desktop and
+            more on mobile, where the controls wrap. Shrink these numbers and
+            the map, not the header, is what gets squeezed. */}
+        {view === "heat" && hasHeatmap ? (
+          <RealTimeHeatmapChart
+            bare
+            data={heatmapData}
+            loading={loading}
+            error={error}
+            onRefresh={onRefresh}
+            height={isMobile ? 960 : 700}
+            showControls
+            showStats={false}
+            stats={stats}
+          />
+        ) : null}
       </CardContent>
     </Card>
   );
