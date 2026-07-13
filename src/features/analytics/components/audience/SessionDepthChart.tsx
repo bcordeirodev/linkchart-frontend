@@ -118,9 +118,8 @@ export function SessionDepthChart({
       },
     },
     xaxis: {
-      categories: data.session_distribution.map(
-        (item) =>
-          `${item.clicks_count} click${item.clicks_count > 1 ? "s" : ""}`,
+      categories: data.session_distribution.map((item) =>
+        t("insights.session.clickBucket", { count: item.clicks_count }),
       ),
       labels: {
         style: {
@@ -177,7 +176,9 @@ export function SessionDepthChart({
   }
 
   return (
-    <EnhancedPaper animated={false} sx={{ height: "100%" }}>
+    // No `height: 100%` — see RetentionAnalysisChart: it stretches the card to
+    // the grid row's height instead of its own content.
+    <EnhancedPaper animated={false}>
       <Box sx={{ p: INSIGHTS_BLOCK_PAD }}>
         {showTitle ? (
           <Box sx={{ mb: 2 }}>
@@ -271,8 +272,9 @@ export function SessionDepthChart({
             {data.session_distribution.slice(0, 6).map((item, index) => (
               <Box key={index} sx={insightsTileSx(theme)}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                  {item.clicks_count} Click
-                  {item.clicks_count > 1 ? "s" : ""}
+                  {t("insights.session.clickBucket", {
+                    count: item.clicks_count,
+                  })}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {t("insights.session.usersCount", {

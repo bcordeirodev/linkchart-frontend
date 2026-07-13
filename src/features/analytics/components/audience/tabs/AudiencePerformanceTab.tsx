@@ -35,9 +35,9 @@ export interface AudiencePerformanceTabProps {
 /**
  * Renders the Device Performance tab content for the AudienceChart.
  *
- * Two equal-width cards: bar chart of average response times on the left
- * and the avg/min/max details list on the right. The list stretches and
- * centers its rows so both cards read as the same height with no dead gap.
+ * Two equal-width cards: bar chart of average response times on the left, and
+ * the avg/min/max details list on the right. The list is not a second reading
+ * of the chart — the bars only carry the average, so min/max are additive.
  */
 export function AudiencePerformanceTab({
   performanceChartData,
@@ -85,11 +85,12 @@ export function AudiencePerformanceTab({
         </Card>
       </Grid>
 
+      {/* No `height: 100%` on this one: the list is ~150px shorter than the
+          chart beside it, and stretching it to match left that much dead space
+          inside its border. The card now ends where its content ends. */}
       <Grid item xs={12} md={6}>
-        <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-          <CardContent
-            sx={{ display: "flex", flexDirection: "column", height: "100%" }}
-          >
+        <Card elevation={0} sx={outlinedCardSx}>
+          <CardContent>
             <Typography
               variant="subtitle1"
               gutterBottom
@@ -97,7 +98,11 @@ export function AudiencePerformanceTab({
             >
               {t("audience.chart.performanceDetails")}
             </Typography>
-            <Stack spacing={1.5} sx={{ flexGrow: 1, justifyContent: "center" }}>
+            {/* Top-aligned, not centered: this card stretches to match the
+                chart beside it, and centering pushed the rows to the middle —
+                leaving a hole between the title and its own content. Slack
+                belongs at the bottom, where it reads as padding. */}
+            <Stack spacing={1.5} sx={{ mt: 0.5 }}>
               {devicePerformance.map((perf) => (
                 <Box key={perf.device} sx={{ p: 1.5, ...itemRowSx }}>
                   <Typography

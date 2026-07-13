@@ -871,7 +871,9 @@
         "average": "Average",
         "low": "Low",
         "no_data": "No Data"
-      }
+      },
+      "clickBucket_one": "{{count}} click",
+      "clickBucket_other": "{{count}} clicks"
     },
     "traffic": {
       "title": "Traffic Source Analysis",

@@ -57,6 +57,30 @@ const tripleCardGridSx = {
   gap: 2,
 } as const;
 
+/**
+ * Two-column grid for retention × session depth.
+ *
+ * Only splits at `lg`, not `md`: each side carries a 3-KPI row plus a chart,
+ * and at ~470px per column (a 960px `md` viewport) the KPI cards start
+ * wrapping their own labels. Below that they stack.
+ *
+ * `alignItems: start` — session depth has one block more than retention (the
+ * per-bucket tiles), so stretching the pair to a shared height would open ~250px
+ * of dead space inside the retention card's border. Two cards of honest,
+ * different heights read better than one card padded out to match the other.
+ *
+ * @param twoColumns - `false` when only one of the two sections has data, so
+ *   the survivor spans the full width instead of sitting in a half-empty grid.
+ */
+function loyaltyGridSx(twoColumns: boolean) {
+  return {
+    display: "grid",
+    gridTemplateColumns: { xs: "1fr", lg: twoColumns ? "1fr 1fr" : "1fr" },
+    gap: 3,
+    alignItems: "start",
+  } as const;
+}
+
 /** Outlined, no-shadow card treatment shared by the "Detalhes técnicos" sub-tab. */
 const outlinedCardSx = {
   borderRadius: `${radiusTokens.lg}px`,
@@ -261,26 +285,37 @@ export function AudienceChart({
           </Stack>
         )}
 
-        {/* Sub-tab 1: Qualidade e fidelidade — quality tier bars, bot/
-            fingerprint stat cards, retention, session depth */}
+        {/* Sub-tab 1: Qualidade e fidelidade — quality tier bars and bot/
+            fingerprint stat cards on top; then retention and session depth
+            side by side.
+
+            Those two are not charts, they are whole sections (3 KPIs → chart →
+            insight). Stacked, they made the sub-tab a corridor: you had to
+            scroll past all of retention to reach session depth, and could
+            never see them together — even though they answer one question
+            between them ("do people come back, and do they engage?"). */}
         {visibleTab === 1 && hasQualitySection && (
-          <Stack spacing={2}>
+          <Stack spacing={3}>
             {quality ? (
               <QualitySection quality={quality} showTitle={false} />
             ) : null}
 
-            {retention ? (
-              <RetentionAnalysisChart
-                data={retention}
-                loading={insightsLoading}
-              />
-            ) : null}
+            {retention || sessionDepth ? (
+              <Box sx={loyaltyGridSx(!!retention && !!sessionDepth)}>
+                {retention ? (
+                  <RetentionAnalysisChart
+                    data={retention}
+                    loading={insightsLoading}
+                  />
+                ) : null}
 
-            {sessionDepth ? (
-              <SessionDepthChart
-                data={sessionDepth}
-                loading={insightsLoading}
-              />
+                {sessionDepth ? (
+                  <SessionDepthChart
+                    data={sessionDepth}
+                    loading={insightsLoading}
+                  />
+                ) : null}
+              </Box>
             ) : null}
           </Stack>
         )}
