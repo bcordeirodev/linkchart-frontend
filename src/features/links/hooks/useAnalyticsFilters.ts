@@ -29,9 +29,6 @@ export type Period = "1h" | "24h" | "7d" | "30d" | "90d" | "all" | "custom";
 /** Segment options for the Temporal tab filter. */
 export type Segment = "all" | "weekday" | "weekend" | "business";
 
-/** Priority options for the Insights tab filter. */
-export type InsightPriority = "all" | "high" | "medium" | "low";
-
 /** Full filter state plus setters returned by `useAnalyticsFilters`. */
 export interface AnalyticsFilters {
   // Global
@@ -49,11 +46,6 @@ export interface AnalyticsFilters {
   // Geographic
   continent: string | null;
 
-  // Insights
-  priority: InsightPriority;
-  insightCategories: string[];
-  actionableOnly: boolean;
-
   // Setters
   setPeriod: (v: Period) => void;
   setDateRange: (from: string, to: string) => void;
@@ -61,9 +53,6 @@ export interface AnalyticsFilters {
   setTab: (v: TabId) => void;
   setSegment: (v: Segment) => void;
   setContinent: (v: string | null) => void;
-  setPriority: (v: InsightPriority) => void;
-  setInsightCategories: (v: string[]) => void;
-  setActionableOnly: (v: boolean) => void;
 }
 
 /**
@@ -148,12 +137,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     "weekend",
     "business",
   ];
-  const PRIORITIES: readonly InsightPriority[] = [
-    "all",
-    "high",
-    "medium",
-    "low",
-  ];
 
   const period = parseEnum<Period>(searchParams.get("period"), PERIODS, "all");
   // Default is true; "false" in URL explicitly disables it.
@@ -164,15 +147,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     "all",
   );
   const continent = searchParams.get("continent") || null;
-  const priority = parseEnum<InsightPriority>(
-    searchParams.get("priority"),
-    PRIORITIES,
-    "all",
-  );
-  const insightCategories = searchParams.get("categories")
-    ? searchParams.get("categories")!.split(",").filter(Boolean)
-    : [];
-  const actionableOnly = searchParams.get("actionable") === "true";
 
   const tab = parseEnum<TabId>(searchParams.get("tab"), TAB_IDS, "overview");
 
@@ -251,22 +225,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     [setParam],
   );
 
-  const setPriority = useCallback(
-    (v: InsightPriority) => setParam({ priority: v === "all" ? null : v }),
-    [setParam],
-  );
-
-  const setInsightCategories = useCallback(
-    (v: string[]) =>
-      setParam({ categories: v.length > 0 ? v.join(",") : null }),
-    [setParam],
-  );
-
-  const setActionableOnly = useCallback(
-    (v: boolean) => setParam({ actionable: v ? "true" : null }),
-    [setParam],
-  );
-
   return {
     period,
     dateFrom,
@@ -275,18 +233,12 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     tab,
     segment,
     continent,
-    priority,
-    insightCategories,
-    actionableOnly,
     setPeriod,
     setDateRange,
     setExcludeBots,
     setTab,
     setSegment,
     setContinent,
-    setPriority,
-    setInsightCategories,
-    setActionableOnly,
   };
 }
 

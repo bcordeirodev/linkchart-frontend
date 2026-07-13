@@ -1048,5 +1048,9 @@
     "acquisition": "Canais de Aquisição",
     "temporal": "Padrões Temporais",
     "audience": "Audiência"
+  },
+  "origin": {
+    "loading": "Carregando análise de origem...",
+    "empty": "Este link ainda não possui dados suficientes sobre a origem do tráfego."
   }
 }

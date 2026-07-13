@@ -26,7 +26,7 @@ import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 
 import { AudienceAnalysis } from "@/features/analytics/components/audience/AudienceAnalysis";
 import { GeographicAnalysis } from "@/features/analytics/components/geographic/GeographicAnalysis";
-import { InsightsAnalysis } from "@/features/analytics/components/insights/InsightsAnalysis";
+import { OriginAnalysis } from "@/features/analytics/components/origin/OriginAnalysis";
 import { TemporalAnalysis } from "@/features/analytics/components/temporal";
 import { LinkDashboard } from "@/features/analytics/components/dashboard/LinkDashboard";
 
@@ -269,21 +269,12 @@ export function LinkAnalyticsTabsOptimized({
           )}
 
           {tabPanel(
-            // provisional: InsightsAnalysis becomes OriginAnalysis in Task 4
             "origin",
-            <InsightsAnalysis
+            <OriginAnalysis
               linkId={linkId}
-              enableRealtime={false}
-              maxInsights={10}
               dateFrom={filters.dateFrom}
               dateTo={filters.dateTo}
               excludeBots={filters.excludeBots}
-              priority={filters.priority}
-              insightCategories={filters.insightCategories}
-              actionableOnly={filters.actionableOnly}
-              onPriorityChange={filters.setPriority}
-              onCategoriesChange={filters.setInsightCategories}
-              onActionableOnlyChange={filters.setActionableOnly}
             />,
           )}
 
