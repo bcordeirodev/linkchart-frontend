@@ -179,6 +179,12 @@ export interface UseInsightsDataOptions {
   minConfidence?: number;
   /** If non-empty, keep only insights whose `type` is in this list. */
   categories?: string[];
+  /**
+   * Set to `false` to skip the request entirely. Used by `LinkDashboard` in
+   * `compact` mode, which has no room to render insights and should not pay
+   * for the payload.
+   */
+  enabled?: boolean;
 }
 
 /** Return shape of `useInsightsData`. */
@@ -295,6 +301,7 @@ export function useInsightsData({
   excludeBots,
   minConfidence = 0.5,
   categories = [],
+  enabled = true,
 }: UseInsightsDataOptions): UseInsightsDataReturn {
   const {
     data: raw,
@@ -320,7 +327,7 @@ export function useInsightsData({
     },
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
-    enabled: !!linkId,
+    enabled: enabled && !!linkId,
   });
 
   const data = useMemo(
