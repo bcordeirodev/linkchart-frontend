@@ -28,7 +28,28 @@ export interface User {
   photoURL?: string;
   /** Configurações do usuário */
   settings?: Record<string, unknown>;
+  /** Flags de onboarding já dispensadas (ver {@link OnboardingFlags}) */
+  onboarding?: OnboardingFlags;
+  /**
+   * Quando a conta foi criada. É por aqui que a lista sabe que o usuário é
+   * recém-cadastrado e que o link de exemplo ainda está a caminho.
+   */
+  created_at?: ISODateString;
 }
+
+/**
+ * Chaves de onboarding aceitas pelo backend (`User::ONBOARDING_KEYS`).
+ * Adicionar uma nova aqui exige adicioná-la também na allowlist do backend,
+ * senão o `POST /api/onboarding/seen` responde 422.
+ */
+export type OnboardingKey = "links.tour";
+
+/**
+ * Mapa de flags de onboarding dispensadas: chave → instante ISO-8601 em que o
+ * usuário dispensou. Vive na conta (não no `localStorage`), então o tour não
+ * volta a aparecer em outro browser ou dispositivo.
+ */
+export type OnboardingFlags = Partial<Record<OnboardingKey, string>>;
 
 /**
  * Resposta completa do usuário da API
@@ -46,6 +67,8 @@ export interface UserResponse {
   created_at: ISODateString;
   /** Data da última atualização */
   updated_at: ISODateString;
+  /** Flags de onboarding já dispensadas; `null` até o usuário dispensar a primeira */
+  onboarding?: OnboardingFlags | null;
 }
 
 /**

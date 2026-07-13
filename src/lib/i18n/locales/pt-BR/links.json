@@ -10,6 +10,14 @@
       "description": "Crie seu primeiro link encurtado e comece a rastrear os cliques.",
       "createButton": "Criar seu primeiro link"
     },
+    "demo": {
+      "badge": "Exemplo",
+      "badgeTooltip": "Link de demonstração criado com a sua conta. Os cliques dele são simulados, para você explorar o analytics antes de ter tráfego real.",
+      "seeding": {
+        "title": "Preparando seu link de exemplo",
+        "description": "Ele chega em instantes com cliques simulados, para você conhecer o analytics antes de ter tráfego real."
+      }
+    },
     "sections": {
       "overview": "Visão geral da conta",
       "filters": "Busca e filtros",
@@ -96,12 +104,7 @@
     "sortMostClicks": "Mais cliques",
     "clearFilters": "Limpar filtros",
     "mostTrend": "Maior tendência",
-    "lastActivity": "Última atividade",
-    "density": {
-      "label": "Densidade da lista",
-      "comfortable": "Confortável",
-      "compact": "Compacto"
-    }
+    "lastActivity": "Última atividade"
   },
   "actions": {
     "copyLink": "Copiar link",
@@ -319,7 +322,7 @@
       "browser": "Navegador",
       "os": "Sistema Operacional",
       "source": "Fonte",
-      "referer": "Referer",
+      "referer": "Veio de",
       "utm": "UTM",
       "ip": "IP",
       "returnVisitor": "Recorrente",

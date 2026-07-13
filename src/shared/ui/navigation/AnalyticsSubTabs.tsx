@@ -15,6 +15,30 @@ export interface AnalyticsSubTabItem {
   disabled?: boolean;
 }
 
+/**
+ * Clamps a sub-tab index onto a tab that actually has data.
+ *
+ * Sub-tab indices are persisted in the URL, and a tab is disabled when its
+ * dataset is empty — so a deep link (or a filter change that empties a dataset)
+ * can select a disabled tab. MUI happily renders it as *disabled and selected*
+ * at once, and the panel's `hasData` guard then renders nothing: a blank
+ * screen with no way back except clicking another tab.
+ *
+ * Falls back to the first enabled tab, or to `0` when every tab is empty (in
+ * which case the caller's own empty state takes over).
+ *
+ * @param index - Requested index, typically read from a URL search param.
+ * @param tabs - The same tab list handed to {@link AnalyticsSubTabs}.
+ */
+export function resolveEnabledSubTab(
+  index: number,
+  tabs: AnalyticsSubTabItem[],
+): number {
+  if (!tabs[index]?.disabled) return index;
+  const firstEnabled = tabs.findIndex((tab) => !tab.disabled);
+  return firstEnabled === -1 ? 0 : firstEnabled;
+}
+
 /** Props for the {@link AnalyticsSubTabs} component. */
 interface AnalyticsSubTabsProps {
   /** Index of the currently active sub-tab. */

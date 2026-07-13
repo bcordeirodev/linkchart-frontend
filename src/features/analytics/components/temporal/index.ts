@@ -10,7 +10,6 @@ export { HourDayHeatmapChart } from "./HourDayHeatmapChart";
 export { DailyTimelineChart } from "./DailyTimelineChart";
 export { DeviceByPeriodChart } from "./DeviceByPeriodChart";
 export { HolidayImpactCard } from "./HolidayImpactCard";
-export { SeasonalDistributionChart } from "./SeasonalDistributionChart";
 export { ClickVelocityChart } from "./ClickVelocityChart";
 
 // Hook específico

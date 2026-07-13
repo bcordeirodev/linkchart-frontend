@@ -13,10 +13,10 @@ import {
 import { alpha } from "@mui/material/styles";
 import {
   LayoutDashboard,
+  Share2,
   Globe,
-  Clock,
   Users,
-  Lightbulb,
+  Clock,
   MousePointer2,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -26,7 +26,7 @@ import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 
 import { AudienceAnalysis } from "@/features/analytics/components/audience/AudienceAnalysis";
 import { GeographicAnalysis } from "@/features/analytics/components/geographic/GeographicAnalysis";
-import { InsightsAnalysis } from "@/features/analytics/components/insights/InsightsAnalysis";
+import { OriginAnalysis } from "@/features/analytics/components/origin/OriginAnalysis";
 import { TemporalAnalysis } from "@/features/analytics/components/temporal";
 import { LinkDashboard } from "@/features/analytics/components/dashboard/LinkDashboard";
 
@@ -59,7 +59,7 @@ interface LinkAnalyticsTabsOptimizedProps {
  * all, preserving lazy loading on first access.
  *
  * ### URL-named tabs
- * The `tab` URL param uses named slugs (`?tab=temporal`) instead of numeric
+ * The `tab` URL param uses named slugs (`?tab=places`) instead of numeric
  * indices. Invalid or missing values fall back to `"overview"`.
  */
 export function LinkAnalyticsTabsOptimized({
@@ -68,7 +68,7 @@ export function LinkAnalyticsTabsOptimized({
 }: LinkAnalyticsTabsOptimizedProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { t } = useTranslation("links");
+  const { t } = useTranslation("analytics");
   const filters = useAnalyticsFilters();
 
   /** Numeric index of the active tab — required by MUI `<Tabs value>`. */
@@ -94,36 +94,42 @@ export function LinkAnalyticsTabsOptimized({
     filters.setTab(TAB_IDS[newValue] ?? "overview");
   };
 
-  /** Ordered tab metadata used to render the nav row and the panel headers. */
+  /**
+   * Ordered tab metadata used to render the nav row and the panel headers.
+   *
+   * **Parallel to `TAB_IDS`** — index `i` here describes `TAB_IDS[i]`. Reorder
+   * one and you must reorder the other, or every tab renders another tab's
+   * label and description.
+   */
   const tabLabels = [
     {
-      label: t("analytics.tabs.overview"),
-      description: t("analytics.tabDescriptions.overview"),
+      label: t("tabs.overview"),
+      description: t("tabDescriptions.overview"),
       Icon: LayoutDashboard,
     },
     {
-      label: t("analytics.tabs.temporal"),
-      description: t("analytics.tabDescriptions.temporal"),
+      label: t("tabs.when"),
+      description: t("tabDescriptions.when"),
       Icon: Clock,
     },
     {
-      label: t("analytics.tabs.geographic"),
-      description: t("analytics.tabDescriptions.geographic"),
-      Icon: Globe,
-    },
-    {
-      label: t("analytics.tabs.audience"),
-      description: t("analytics.tabDescriptions.audience"),
+      label: t("tabs.audience"),
+      description: t("tabDescriptions.audience"),
       Icon: Users,
     },
     {
-      label: t("analytics.tabs.insights"),
-      description: t("analytics.tabDescriptions.insights"),
-      Icon: Lightbulb,
+      label: t("tabs.places"),
+      description: t("tabDescriptions.places"),
+      Icon: Globe,
     },
     {
-      label: t("analytics.clicksTable.title"),
-      description: t("analytics.clicksTable.description"),
+      label: t("tabs.origin"),
+      description: t("tabDescriptions.origin"),
+      Icon: Share2,
+    },
+    {
+      label: t("tabs.clicks"),
+      description: t("tabDescriptions.clicks"),
       Icon: MousePointer2,
     },
   ];
@@ -239,15 +245,15 @@ export function LinkAnalyticsTabsOptimized({
                 key={index}
                 id={`tab-${index}`}
                 aria-controls={`tabpanel-${TAB_IDS[index]}`}
-                label={
+                label={label}
+                icon={
                   <Box
                     component="span"
-                    sx={{ display: { xs: "none", sm: "block" } }}
+                    sx={{ display: { xs: "none", sm: "inline-flex" } }}
                   >
-                    {label}
+                    <Icon {...ICON_SM} />
                   </Box>
                 }
-                icon={<Icon {...ICON_SM} />}
                 iconPosition="start"
               />
             ))}
@@ -260,7 +266,6 @@ export function LinkAnalyticsTabsOptimized({
             "overview",
             <LinkDashboard
               linkId={linkId}
-              showTitle={false}
               enableRealtime={false}
               compact={false}
               dateFrom={filters.dateFrom}
@@ -270,22 +275,19 @@ export function LinkAnalyticsTabsOptimized({
           )}
 
           {tabPanel(
-            "temporal",
-            <TemporalAnalysis
+            "origin",
+            <OriginAnalysis
               linkId={linkId}
-              enableRealtime={false}
               dateFrom={filters.dateFrom}
               dateTo={filters.dateTo}
               excludeBots={filters.excludeBots}
-              segment={filters.segment}
-              onSegmentChange={filters.setSegment}
-              subTabIndex={filters.temporalSubTab}
-              onSubTabChange={filters.setTemporalSubTab}
+              subTabIndex={filters.originSubTab}
+              onSubTabChange={filters.setOriginSubTab}
             />,
           )}
 
           {tabPanel(
-            "geographic",
+            "places",
             <GeographicAnalysis
               linkId={linkId}
               enableRealtime={false}
@@ -312,20 +314,17 @@ export function LinkAnalyticsTabsOptimized({
           )}
 
           {tabPanel(
-            "insights",
-            <InsightsAnalysis
+            "when",
+            <TemporalAnalysis
               linkId={linkId}
               enableRealtime={false}
-              maxInsights={10}
               dateFrom={filters.dateFrom}
               dateTo={filters.dateTo}
               excludeBots={filters.excludeBots}
-              priority={filters.priority}
-              insightCategories={filters.insightCategories}
-              actionableOnly={filters.actionableOnly}
-              onPriorityChange={filters.setPriority}
-              onCategoriesChange={filters.setInsightCategories}
-              onActionableOnlyChange={filters.setActionableOnly}
+              segment={filters.segment}
+              onSegmentChange={filters.setSegment}
+              subTabIndex={filters.temporalSubTab}
+              onSubTabChange={filters.setTemporalSubTab}
             />,
           )}
 

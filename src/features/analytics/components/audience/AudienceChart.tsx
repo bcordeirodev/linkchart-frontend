@@ -1,31 +1,15 @@
 "use client";
-import { Box, Button, Collapse } from "@mui/material";
-import {
-  ChevronDown,
-  ChevronUp,
-  Compass,
-  Cpu,
-  Globe,
-  Languages,
-  Monitor,
-  ShieldCheck,
-  Smartphone,
-  Zap,
-} from "lucide-react";
-import { ICON_SM } from "@/lib/theme/iconDefaults";
-import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
+import { Box, Stack } from "@mui/material";
+import { ShieldCheck, Smartphone, Wrench } from "lucide-react";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { chartByType } from "@/lib/theme/colors";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  motionTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import { AnalyticsEmptyState } from "@/shared/ui/base";
-import { AnalyticsSubTabs } from "@/shared/ui/navigation";
+import { AnalyticsSubTabs, resolveEnabledSubTab } from "@/shared/ui/navigation";
 
 import type {
   BrowserData,
@@ -36,22 +20,21 @@ import type {
 } from "@/types";
 import type {
   ConnectionTypeBreakdown,
-  FetchDestBreakdown,
   LanguageBreakdown,
-  NavigationContextBreakdown,
-  NavigationContextEntry,
   PlatformBreakdown,
   QualityBreakdown,
 } from "@/types/analytics/audience";
+import type {
+  RetentionData,
+  SessionDepthData,
+} from "@/features/analytics/hooks/useInsightsData";
 
-import { AudienceInsights } from "./AudienceInsights";
-import { BehaviorSection } from "./BehaviorSection";
 import { ConnectionTypeCard } from "./ConnectionTypeCard";
-import { FetchDestChart } from "./FetchDestChart";
 import { LanguageBreakdownCard } from "./LanguageBreakdownCard";
 import { PlatformBreakdownCard } from "./PlatformBreakdownCard";
 import { QualitySection } from "./QualitySection";
-import { SocialPlatformSection } from "./SocialPlatformSection";
+import { RetentionAnalysisChart } from "./RetentionAnalysisChart";
+import { SessionDepthChart } from "./SessionDepthChart";
 
 import { AudienceBrowsersTab } from "./tabs/AudienceBrowsersTab";
 import { AudienceDevicesTab } from "./tabs/AudienceDevicesTab";
@@ -60,23 +43,66 @@ import { AudienceOSTab } from "./tabs/AudienceOSTab";
 import { AudiencePerformanceTab } from "./tabs/AudiencePerformanceTab";
 import { AudienceRenderingEngineTab } from "./tabs/AudienceRenderingEngineTab";
 
-/** Half-width grid (full width on mobile) for supplementary cards in a tab. */
-const supplementaryCardGridSx = {
-  mt: 2,
+/** Two-across grid (single column on mobile) for the browser/system cards. */
+const twoCardGridSx = {
   display: "grid",
-  gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+  gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" },
   gap: 2,
+} as const;
+
+/** Three-across grid (single column on mobile) for the Client-Hints cards. */
+const tripleCardGridSx = {
+  display: "grid",
+  gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
+  gap: 2,
+} as const;
+
+/**
+ * Two-column grid for retention × session depth.
+ *
+ * Only splits at `lg`, not `md`: each side carries a 3-KPI row plus a chart,
+ * and at ~470px per column (a 960px `md` viewport) the KPI cards start
+ * wrapping their own labels. Below that they stack.
+ *
+ * `alignItems: start` — session depth has one block more than retention (the
+ * per-bucket tiles), so stretching the pair to a shared height would open ~250px
+ * of dead space inside the retention card's border. Two cards of honest,
+ * different heights read better than one card padded out to match the other.
+ *
+ * @param twoColumns - `false` when only one of the two sections has data, so
+ *   the survivor spans the full width instead of sitting in a half-empty grid.
+ */
+function loyaltyGridSx(twoColumns: boolean) {
+  return {
+    display: "grid",
+    gridTemplateColumns: { xs: "1fr", lg: twoColumns ? "1fr 1fr" : "1fr" },
+    gap: 3,
+    alignItems: "start",
+  } as const;
+}
+
+/** Outlined, no-shadow card treatment shared by the "Detalhes técnicos" sub-tab. */
+const outlinedCardSx = {
+  borderRadius: `${radiusTokens.lg}px`,
+} as const;
+
+/**
+ * Row item sx used by the two Grid+list tabs inside "Detalhes técnicos".
+ *
+ * The rows carry a surface, not just a radius. They stretch to fill the card's
+ * height (it has to end level with the chart beside it), and an invisible row
+ * that grows just produces a gap — the extra height has to land on something
+ * you can see for it to read as a row rather than as dead space.
+ */
+const itemRowSx = {
+  borderRadius: `${radiusTokens.md}px`,
+  bgcolor: "action.hover",
 } as const;
 
 /** Props for the AudienceChart component. */
 interface AudienceChartProps {
   deviceBreakdown: DeviceData[];
-  browserBreakdown?: unknown[];
-  osBreakdown?: unknown[];
   totalClicks: number;
-  height?: number;
-  showPieChart?: boolean;
-  showBarChart?: boolean;
   browsers?: BrowserData[];
   operatingSystems?: OSData[];
   devicePerformance?: DevicePerformanceData[];
@@ -86,60 +112,83 @@ interface AudienceChartProps {
     clicks: number;
     percentage: number;
   }>;
-  /** Traffic-quality breakdown rendered in the Quality sub-tab. */
+  /** Traffic-quality breakdown rendered in the "Qualidade e fidelidade" sub-tab. */
   quality?: QualityBreakdown;
-  /** Whether the device insights block shows the advanced sections. */
-  showAdvancedInsights?: boolean;
-  /** Navigation context data rendered in the Sources sub-tab. */
-  navigationContext?: NavigationContextBreakdown | NavigationContextEntry[];
-  /** Referer-identified social platform clicks for the Sources sub-tab. */
-  socialPlatforms?: Array<{
-    platform: string;
-    clicks: number;
-    percentage: number;
-  }>;
-  /** Browser language distribution rendered in the Languages sub-tab. */
+  /** Browser language distribution — Client-Hints/Accept-Language data, rendered in "Detalhes técnicos". */
   languageBreakdown?: LanguageBreakdown;
-  /** Client-Hints platform distribution rendered in the Systems sub-tab. */
+  /** Client-Hints platform distribution, rendered in "Detalhes técnicos". */
   platformBreakdown?: PlatformBreakdown;
-  /** ISP connection type distribution rendered in the Quality sub-tab. */
+  /** ISP connection type distribution, rendered in "Detalhes técnicos". */
   connectionBreakdown?: ConnectionTypeBreakdown;
-  /** Sec-Fetch-Dest technical breakdown for the Sources sub-tab. */
-  fetchDestBreakdown?: FetchDestBreakdown;
-  /** Currently-active sub-tab index. When provided, the component is controlled. */
+  /**
+   * Visitor retention data from the `/insights` payload
+   * (`analytics_data.retention`), rendered in "Qualidade e fidelidade".
+   * Relocated here from the dissolved Insights tab.
+   */
+  retention?: RetentionData;
+  /**
+   * Session click-depth histogram from the `/insights` payload
+   * (`analytics_data.session_depth`), rendered in "Qualidade e fidelidade".
+   * Relocated here from the dissolved Insights tab.
+   */
+  sessionDepth?: SessionDepthData;
+  /** Whether the `/insights` payload backing `retention`/`sessionDepth` is still loading. */
+  insightsLoading?: boolean;
+  /**
+   * Index of the currently active sub-tab (0=Perfil, 1=Qualidade e fidelidade,
+   * 2=Detalhes técnicos). When provided the component is controlled — mirrors
+   * `TemporalChart`'s `activeTab` prop.
+   */
   activeTab?: number;
   /** Called when the user switches to a different sub-tab. */
   onTabChange?: (v: number) => void;
 }
 
 /**
- * Orchestrates the audience analytics tabs.
+ * Renders the audience analytics as three sub-tabs — Perfil, Qualidade e
+ * fidelidade, Detalhes técnicos — using the same shared
+ * {@link AnalyticsSubTabs} control as `TemporalChart`.
  *
- * Manages the active tab state and derives chart-ready data from props,
- * then delegates rendering to focused tab components. No data fetching
- * occurs here — all data flows in from the parent via props.
+ * "Perfil" absorbed what used to be three sub-tabs (Aparelhos, Navegador e
+ * sistema, Idioma). All three answered the same question — *what did this
+ * person click with?* — and each held a single short card, so splitting them
+ * across three screens made the reader navigate to assemble one answer.
+ *
+ * Every categorical distribution renders as exactly one horizontal-bar list
+ * — value and percentage on the same row as the label — instead of the
+ * previous pie/donut chart *plus* a ranked list showing the identical
+ * numbers a second time. Browser, OS and language breakdowns are also
+ * aggregated by family on the client (`aggregateFamily`) before rendering:
+ * "Chrome 91.0"/"Chrome 90.0" collapse into one "Chrome" row, since a leaf
+ * reader doesn't need the point-release dimension.
+ *
+ * "Detalhes técnicos" (response time, rendering engine, connection type,
+ * Client-Hints platform/language) is a sub-tab like every other section
+ * here rather than a collapsed accordion — the previous accordion wrapper
+ * is unnecessary once the content already lives behind its own tab.
+ *
+ * The former "Origem" sub-tab (navigation context, social referers,
+ * fetch-dest) is intentionally absent — it now lives exclusively in the
+ * "Origem" top-level tab (`OriginAnalysis`); duplicating it here would
+ * recreate the redundancy this redesign removes.
+ *
+ * No data fetching occurs here — all data flows in from the parent via props.
  */
 export function AudienceChart({
   deviceBreakdown,
-  browserBreakdown: _browserBreakdown,
-  osBreakdown: _osBreakdown,
   totalClicks,
-  height: _height = 400,
-  showPieChart: _showPieChart = true,
-  showBarChart: _showBarChart = true,
   browsers,
   operatingSystems,
   devicePerformance,
   languages,
   renderingEngine,
   quality,
-  showAdvancedInsights = true,
-  navigationContext,
-  socialPlatforms,
   languageBreakdown,
   platformBreakdown,
   connectionBreakdown,
-  fetchDestBreakdown,
+  retention,
+  sessionDepth,
+  insightsLoading = false,
   activeTab: activeTabProp,
   onTabChange,
 }: AudienceChartProps) {
@@ -147,68 +196,19 @@ export function AudienceChart({
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
   const [localTab, setLocalTab] = useState(0);
-  const [showFetchDest, setShowFetchDest] = useState(false);
   const activeTab = activeTabProp !== undefined ? activeTabProp : localTab;
 
-  const hasSocialPlatforms = (socialPlatforms?.length ?? 0) > 0;
-  const hasSources =
-    !!navigationContext || hasSocialPlatforms || !!fetchDestBreakdown;
-
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
-  const _cardSx = {
-    borderRadius: `${radiusTokens.lg}px`,
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow: elevation.xs,
-    transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-  } as const;
-  const outlinedCardSx = {
-    borderRadius: `${radiusTokens.lg}px`,
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow: "none",
-  } as const;
-  const itemRowSx = {
-    bgcolor: theme.palette.background.paper,
-    borderRadius: `${radiusTokens.md}px`,
-    border: `1px solid ${theme.palette.divider}`,
-  } as const;
-
   const devicesPalette = chartByType.devices;
-  const deviceBarColor = devicesPalette.mobile;
   const performanceBarColor = devicesPalette.tablet;
 
-  // Derive chart-ready data from raw props once, at the orchestrator level.
-  const deviceChartData = deviceBreakdown.map((device) => ({
-    name: device.device,
-    value: device.clicks,
-    percentage: ((device.clicks / totalClicks) * 100).toFixed(1),
-  }));
-
-  const browserChartData =
-    browsers?.map((browser) => ({
-      name: `${browser.browser} ${browser.version || ""}`.trim(),
-      value: browser.clicks,
-      percentage: browser.percentage || 0,
-    })) || [];
-
-  const osChartData =
-    operatingSystems?.map((os) => ({
-      name: `${os.os} ${os.version || ""}`.trim(),
-      value: os.clicks,
-      percentage: os.percentage || 0,
-    })) || [];
-
+  // Derive chart-ready data for the two tabs that still keep their own
+  // bar/donut layout inside "Detalhes técnicos" — everything else computes
+  // its chart data internally now.
   const performanceChartData =
     devicePerformance?.map((perf) => ({
       name: perf.device,
       value: perf.avg_response_time,
       clicks: perf.total_clicks,
-    })) || [];
-
-  const languageChartData =
-    languages?.map((lang) => ({
-      name: lang.language,
-      value: lang.clicks,
-      percentage: lang.percentage,
     })) || [];
 
   const renderingEngineChartData =
@@ -218,12 +218,18 @@ export function AudienceChart({
       percentage: r.percentage,
     })) ?? [];
 
-  const hasEnhancedData =
-    browsers?.length ||
-    operatingSystems?.length ||
-    devicePerformance?.length ||
-    languages?.length ||
-    renderingEngine?.length;
+  // Sub-tab-level guards — a sub-tab is disabled when none of its datasets
+  // has data.
+  const hasBrowserSystem =
+    (browsers?.length ?? 0) > 0 || (operatingSystems?.length ?? 0) > 0;
+  const hasLanguages = (languages?.length ?? 0) > 0;
+  const hasQualitySection = !!quality || !!retention || !!sessionDepth;
+  const hasTechnicalDetails =
+    (devicePerformance?.length ?? 0) > 0 ||
+    (renderingEngine?.length ?? 0) > 0 ||
+    !!connectionBreakdown ||
+    !!platformBreakdown ||
+    !!languageBreakdown;
 
   /** @param newValue — selected tab index */
   const handleTabChange = (newValue: number) => {
@@ -231,273 +237,148 @@ export function AudienceChart({
     onTabChange?.(newValue);
   };
 
-  const tabContent = (
-    <>
-      {/* Tab 0: Devices — distribution charts + device-centric insights */}
-      {(!hasEnhancedData || activeTab === 0) && (
-        <>
-          <AudienceDevicesTab
-            deviceChartData={deviceChartData}
-            deviceBreakdown={deviceBreakdown}
-            totalClicks={totalClicks}
-            isDark={isDark}
-            itemRowSx={itemRowSx}
-            outlinedCardSx={outlinedCardSx}
-            deviceBarColor={deviceBarColor}
-          />
-          <Box sx={{ mt: 2 }}>
-            <AudienceInsights
-              deviceBreakdown={deviceBreakdown}
-              browserBreakdown={_browserBreakdown}
-              totalClicks={totalClicks}
-              showAdvancedInsights={showAdvancedInsights}
-            />
-          </Box>
-        </>
-      )}
+  const subTabs = [
+    {
+      label: t("audience.subtabs.profile"),
+      icon: <Smartphone {...ICON_SM} />,
+    },
+    {
+      label: t("audience.sections.qualityAndLoyalty"),
+      icon: <ShieldCheck {...ICON_SM} />,
+      disabled: !hasQualitySection,
+    },
+    {
+      label: t("audience.subtabs.technical"),
+      icon: <Wrench {...ICON_SM} />,
+      disabled: !hasTechnicalDetails,
+    },
+  ];
 
-      {/* Tab 1: Browsers */}
-      {hasEnhancedData && activeTab === 1 ? (
-        browsers?.length ? (
-          <AudienceBrowsersTab
-            browserChartData={browserChartData}
-            browsers={browsers}
-            isDark={isDark}
-            outlinedCardSx={outlinedCardSx}
-            itemRowSx={itemRowSx}
-          />
-        ) : (
-          <AnalyticsEmptyState title={t("audience.noData")} />
-        )
-      ) : null}
-
-      {/* Tab 2: Operating Systems — UA-derived list + Client-Hints platform donut */}
-      {hasEnhancedData && activeTab === 2 ? (
-        <>
-          {operatingSystems?.length ? (
-            <AudienceOSTab
-              osChartData={osChartData}
-              operatingSystems={operatingSystems}
-              isDark={isDark}
-              outlinedCardSx={outlinedCardSx}
-              itemRowSx={itemRowSx}
-            />
-          ) : (
-            <AnalyticsEmptyState title={t("audience.noData")} />
-          )}
-          {platformBreakdown ? (
-            <Box sx={supplementaryCardGridSx}>
-              <PlatformBreakdownCard breakdown={platformBreakdown} />
-            </Box>
-          ) : null}
-        </>
-      ) : null}
-
-      {/* Tab 3: Device Performance */}
-      {hasEnhancedData && activeTab === 3 ? (
-        devicePerformance?.length ? (
-          <AudiencePerformanceTab
-            performanceChartData={performanceChartData}
-            devicePerformance={devicePerformance}
-            isDark={isDark}
-            outlinedCardSx={outlinedCardSx}
-            itemRowSx={itemRowSx}
-            performanceBarColor={performanceBarColor}
-          />
-        ) : (
-          <AnalyticsEmptyState title={t("audience.noData")} />
-        )
-      ) : null}
-
-      {/* Tab 4: Languages — UA-derived list + Accept-Language donut */}
-      {hasEnhancedData && activeTab === 4 ? (
-        <>
-          {languages?.length ? (
-            <AudienceLanguagesTab
-              languageChartData={languageChartData}
-              languages={languages}
-              isDark={isDark}
-              outlinedCardSx={outlinedCardSx}
-              itemRowSx={itemRowSx}
-            />
-          ) : (
-            <AnalyticsEmptyState title={t("audience.noData")} />
-          )}
-          {languageBreakdown ? (
-            <Box sx={supplementaryCardGridSx}>
-              <LanguageBreakdownCard breakdown={languageBreakdown} />
-            </Box>
-          ) : null}
-        </>
-      ) : null}
-
-      {/* Tab 5: Rendering Engine */}
-      {hasEnhancedData && activeTab === 5 ? (
-        renderingEngine?.length ? (
-          <AudienceRenderingEngineTab
-            renderingEngineChartData={renderingEngineChartData}
-            renderingEngine={renderingEngine}
-            isDark={isDark}
-            outlinedCardSx={outlinedCardSx}
-            itemRowSx={itemRowSx}
-          />
-        ) : (
-          <AnalyticsEmptyState title={t("audience.noData")} />
-        )
-      ) : null}
-
-      {/* Tab 6: Traffic Quality — 2×2: tier/connection donuts + bot/fingerprint */}
-      {hasEnhancedData && activeTab === 6 ? (
-        quality || connectionBreakdown ? (
-          <>
-            {quality ? (
-              <QualitySection
-                quality={quality}
-                connectionBreakdown={connectionBreakdown}
-                showTitle={false}
-              />
-            ) : connectionBreakdown ? (
-              <Box sx={supplementaryCardGridSx}>
-                <ConnectionTypeCard breakdown={connectionBreakdown} />
-              </Box>
-            ) : null}
-          </>
-        ) : (
-          <AnalyticsEmptyState title={t("audience.noData")} />
-        )
-      ) : null}
-
-      {/* Tab 7: Sources — navigation context, social referers and fetch-dest */}
-      {hasEnhancedData && activeTab === 7 ? (
-        hasSources ? (
-          <>
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  md:
-                    navigationContext && hasSocialPlatforms ? "1fr 1fr" : "1fr",
-                },
-                gap: 2,
-              }}
-            >
-              {navigationContext ? (
-                <BehaviorSection
-                  navigationContext={navigationContext}
-                  showTitle={false}
-                />
-              ) : null}
-              {hasSocialPlatforms ? (
-                <SocialPlatformSection
-                  platforms={socialPlatforms!}
-                  showTitle={false}
-                />
-              ) : null}
-            </Box>
-
-            {/* Fetch-dest breakdown — collapsible technical detail */}
-            {fetchDestBreakdown ? (
-              <Box sx={{ mt: 2 }}>
-                <Button
-                  size="small"
-                  variant="text"
-                  endIcon={
-                    showFetchDest ? (
-                      <ChevronUp size={14} />
-                    ) : (
-                      <ChevronDown size={14} />
-                    )
-                  }
-                  onClick={() => setShowFetchDest((v) => !v)}
-                  sx={{ px: 0, minWidth: 0, mb: 1 }}
-                >
-                  {showFetchDest
-                    ? t("audience.extraCharts.hideTechnical")
-                    : t("audience.extraCharts.showTechnical")}
-                </Button>
-                <Collapse in={showFetchDest}>
-                  <FetchDestChart fetchDestBreakdown={fetchDestBreakdown} />
-                </Collapse>
-              </Box>
-            ) : null}
-          </>
-        ) : (
-          <AnalyticsEmptyState title={t("audience.noData")} />
-        )
-      ) : null}
-
-      {/* Legacy fallback (no sub-tabs): sections render stacked below devices */}
-      {!hasEnhancedData ? (
-        <>
-          {quality ? (
-            <Box sx={{ mt: 2 }}>
-              <QualitySection quality={quality} />
-            </Box>
-          ) : null}
-          {navigationContext ? (
-            <Box sx={{ mt: 2 }}>
-              <BehaviorSection navigationContext={navigationContext} />
-            </Box>
-          ) : null}
-          {hasSocialPlatforms ? (
-            <Box sx={{ mt: 2 }}>
-              <SocialPlatformSection platforms={socialPlatforms!} />
-            </Box>
-          ) : null}
-        </>
-      ) : null}
-    </>
-  );
+  // The index comes from the URL, so it can point at a sub-tab whose dataset is
+  // empty. Without this it would render disabled *and* selected, with a blank
+  // panel underneath.
+  const visibleTab = resolveEnabledSubTab(activeTab, subTabs);
 
   return (
-    <Box>
-      {hasEnhancedData ? (
-        <AnalyticsSubTabs
-          value={activeTab}
-          onChange={handleTabChange}
-          tabs={[
-            {
-              label: t("audience.chart.tabs.devices"),
-              icon: <Smartphone {...ICON_SM} />,
-            },
-            {
-              label: t("audience.chart.tabs.browsers"),
-              icon: <Globe {...ICON_SM} />,
-            },
-            {
-              label: t("audience.chart.tabs.systems"),
-              icon: <Monitor {...ICON_SM} />,
-            },
-            {
-              label: t("audience.chart.tabs.performance"),
-              icon: <Zap {...ICON_SM} />,
-            },
-            {
-              label: t("audience.chart.tabs.languages"),
-              icon: <Languages {...ICON_SM} />,
-            },
-            {
-              label: t("audience.chart.tabs.renderingEngine"),
-              icon: <Cpu {...ICON_SM} />,
-            },
-            {
-              label: t("audience.chart.tabs.quality"),
-              icon: <ShieldCheck {...ICON_SM} />,
-              disabled: !quality && !connectionBreakdown,
-            },
-            {
-              label: t("audience.chart.tabs.sources"),
-              icon: <Compass {...ICON_SM} />,
-              disabled: !hasSources,
-            },
-          ]}
-        >
-          {tabContent}
-        </AnalyticsSubTabs>
-      ) : (
-        tabContent
-      )}
+    <Box sx={{ width: "100%", overflow: "hidden" }}>
+      <AnalyticsSubTabs
+        value={visibleTab}
+        onChange={handleTabChange}
+        ariaLabel={t("tabs.audience")}
+        tabs={subTabs}
+      >
+        {/* Sub-tab 0: Perfil — device, browser, system and language are one
+            question ("what did this person click with?") cut four ways, not
+            four questions. They used to be three separate sub-tabs, each a
+            single short card. One screen, all four in horizontal bars. */}
+        {visibleTab === 0 && (
+          <Stack spacing={2}>
+            <AudienceDevicesTab
+              deviceBreakdown={deviceBreakdown}
+              totalClicks={totalClicks}
+            />
+
+            {hasBrowserSystem && (
+              <Box sx={twoCardGridSx}>
+                {browsers?.length ? (
+                  <AudienceBrowsersTab browsers={browsers} />
+                ) : null}
+                {operatingSystems?.length ? (
+                  <AudienceOSTab operatingSystems={operatingSystems} />
+                ) : null}
+              </Box>
+            )}
+
+            {hasLanguages && <AudienceLanguagesTab languages={languages!} />}
+          </Stack>
+        )}
+
+        {/* Sub-tab 1: Qualidade e fidelidade — quality tier bars and bot/
+            fingerprint stat cards on top; then retention and session depth
+            side by side.
+
+            Those two are not charts, they are whole sections (3 KPIs → chart →
+            insight). Stacked, they made the sub-tab a corridor: you had to
+            scroll past all of retention to reach session depth, and could
+            never see them together — even though they answer one question
+            between them ("do people come back, and do they engage?"). */}
+        {visibleTab === 1 && hasQualitySection && (
+          <Stack spacing={3}>
+            {quality ? (
+              <QualitySection quality={quality} showTitle={false} />
+            ) : null}
+
+            {retention || sessionDepth ? (
+              <Box sx={loyaltyGridSx(!!retention && !!sessionDepth)}>
+                {retention ? (
+                  <RetentionAnalysisChart
+                    data={retention}
+                    loading={insightsLoading}
+                  />
+                ) : null}
+
+                {sessionDepth ? (
+                  <SessionDepthChart
+                    data={sessionDepth}
+                    loading={insightsLoading}
+                  />
+                ) : null}
+              </Box>
+            ) : null}
+          </Stack>
+        )}
+
+        {/* Sub-tab 2: Detalhes técnicos — engineering-only data. Same name and
+            icon as Origem's last sub-tab, so the pattern is recognisable across
+            tabs. `LanguageBreakdownCard` lives here rather than next to
+            `AudienceLanguagesTab` in Perfil: it is not the same metric, it is
+            language *with region* (pt-BR vs pt-PT), while Perfil aggregates by
+            language family. */}
+        {visibleTab === 2 && hasTechnicalDetails && (
+          <Stack spacing={3}>
+            {devicePerformance?.length ? (
+              <AudiencePerformanceTab
+                performanceChartData={performanceChartData}
+                devicePerformance={devicePerformance}
+                isDark={isDark}
+                outlinedCardSx={outlinedCardSx}
+                itemRowSx={itemRowSx}
+                performanceBarColor={performanceBarColor}
+              />
+            ) : (
+              <AnalyticsEmptyState title={t("audience.noData")} />
+            )}
+
+            {renderingEngine?.length ? (
+              <AudienceRenderingEngineTab
+                renderingEngineChartData={renderingEngineChartData}
+                renderingEngine={renderingEngine}
+                isDark={isDark}
+                outlinedCardSx={outlinedCardSx}
+                itemRowSx={itemRowSx}
+              />
+            ) : (
+              <AnalyticsEmptyState title={t("audience.noData")} />
+            )}
+
+            {connectionBreakdown || platformBreakdown || languageBreakdown ? (
+              <Box sx={tripleCardGridSx}>
+                {connectionBreakdown ? (
+                  <ConnectionTypeCard breakdown={connectionBreakdown} />
+                ) : null}
+                {platformBreakdown ? (
+                  <PlatformBreakdownCard breakdown={platformBreakdown} />
+                ) : null}
+                {languageBreakdown ? (
+                  <LanguageBreakdownCard breakdown={languageBreakdown} />
+                ) : null}
+              </Box>
+            ) : null}
+          </Stack>
+        )}
+      </AnalyticsSubTabs>
     </Box>
   );
 }
+
+export default AudienceChart;

@@ -37,6 +37,10 @@
     },
     "socialIab": {
       "phaseDisclaimer": "Social in-app data only available for recent clicks (Phase 1 tracking)"
+    },
+    "whatThisMeans": {
+      "title": "What this means",
+      "description": "The numbers above, read back in plain language — and what you can do about them."
     }
   },
   "filters": {
@@ -141,7 +145,8 @@
       "weekendVsWeekday": "Volume comparison between weekends and weekdays. Shows when your audience is most receptive to content.",
       "businessHours": "Clicks split between business hours (9am–6pm) and outside them. High volume outside this window suggests entertainment or personal consumption (B2C) content.",
       "peakAnalysis": "Detailed analysis of the highest-engagement hour and day, with practical timing recommendations for launches and campaigns.",
-      "temporalTrends": "Weekly and monthly click volume trend over time. Identify growth cycles, seasonality, or decline.",
+      "temporalTrendsWeekly": "Click volume aggregated by week. Good for spotting recent growth or decline, without the day-to-day noise.",
+      "temporalTrendsMonthly": "Click volume aggregated by month. Good for spotting seasonality and the long-term trend.",
       "dailyTimeline": "Day-by-day history of clicks and unique visitors. Drag to select a time range and zoom into a specific period.",
       "hourDayHeatmap": "Click intensity by hour of day × day of week combination. Darker cells = higher concentration — use to find the best time to publish.",
       "timezoneDistribution": "Where visitors come from by the timezone detected in their browser. Useful for aligning post schedules with specific geographic regions.",
@@ -160,12 +165,20 @@
     }
   },
   "tabs": {
-    "overview": "Overview",
-    "temporal": "Temporal",
-    "geographic": "Geographic",
+    "overview": "Summary",
+    "origin": "Sources",
+    "places": "Places",
     "audience": "Audience",
-    "performance": "Performance",
-    "insights": "Insights"
+    "when": "Timing",
+    "clicks": "Clicks"
+  },
+  "tabDescriptions": {
+    "overview": "Your link's performance on one screen: how many clicks, whether it's growing, and what to do about it.",
+    "origin": "Where the traffic comes from: channels, social networks, referring sites and campaigns.",
+    "places": "Where your audience is: countries, states and cities.",
+    "audience": "Who clicks: device, browser, language and traffic quality.",
+    "when": "When they click: hours, weekdays and how it evolves over time.",
+    "clicks": "Every recorded visit, one per row."
   },
   "temporal": {
     "title": "Temporal Analysis",
@@ -195,9 +208,8 @@
     },
     "chart": {
       "tabPatterns": "Patterns",
-      "tabPerformance": "Performance",
       "tabTimeline": "Timeline",
-      "tabDistribution": "Distribution",
+      "tabPeaks": "Peaks & trends",
       "weekend": "Weekend",
       "businessHours": "Business Hours",
       "peakHour": "Peak hour:",
@@ -404,6 +416,12 @@
     "noData": "No geographic data yet",
     "empty": "Geographic data unavailable",
     "countriesReached": "{{count}} countries reached",
+    "mapListToggle": {
+      "ariaLabel": "Switch between map, list and heat map",
+      "map": "Map",
+      "list": "List",
+      "heat": "Heat"
+    },
     "metrics": {
       "title": "Geographic Metrics",
       "countriesReached": "Countries Reached",
@@ -417,12 +435,6 @@
       "continentsReached": "Continents",
       "continentsCoverage": "Global coverage",
       "coverage": "Coverage"
-    },
-    "subtabs": {
-      "overview": "Overview",
-      "heatmap": "Heatmap",
-      "rankings": "Rankings",
-      "insights": "Insights"
     },
     "chart": {
       "topCountries": "Top Countries",
@@ -466,7 +478,6 @@
       "countriesReached": "Countries Reached",
       "uniqueCities": "Unique Cities",
       "locations": "Locations",
-      "countryDistribution": "Distribution by Country",
       "marketInsights": "Market Insights",
       "mainMarkets": "Main Markets",
       "topCities": "Top Engaged Cities",
@@ -474,7 +485,6 @@
       "mainMarketRec": "• {{country}} is your main market with {{clicks}} clicks. Consider creating content specific to this market.",
       "topCityRec": "• {{city}} is the city with the most engagement. Explore local marketing opportunities in this region.",
       "internationalRec": "• Your content is reaching {{count}} different countries. Consider internationalization strategies.",
-      "pieSubtitle": "Top 8 countries by share of total clicks.",
       "marketSubtitle": "Main markets and strategic recommendations based on your data."
     },
     "heatmap": {
@@ -523,7 +533,13 @@
       "legendLow": "Low",
       "legendSizeNote": "· Size proportional to volume",
       "showingLocations": "{{shown}} of {{total}} locations visible",
-      "cappedWarning": "Showing top 500 locations. Some locations may be omitted."
+      "cappedWarning": "Showing top 500 locations. Some locations may be omitted.",
+      "accordionTitle": "City heat map",
+      "accordionDesc": "Click intensity by city on an interactive map. Heavier — loads only when opened."
+    },
+    "subtabs": {
+      "heatmap": "Heat map",
+      "world": "World"
     }
   },
   "audience": {
@@ -534,6 +550,13 @@
     "empty": "This link hasn't received clicks with device data yet.",
     "deviceTypes": "{{count}} device types detected",
     "linkSpecific": "Link Specific",
+    "sections": {
+      "qualityAndLoyalty": "Quality and loyalty"
+    },
+    "subtabs": {
+      "profile": "Profile",
+      "technical": "Technical details"
+    },
     "metrics": {
       "title": "Audience Metrics",
       "deviceTypes": "Device Types",
@@ -592,7 +615,7 @@
         "browsers": "Most-used browsers in your audience (Chrome, Safari, Firefox, etc.). Helps with compatibility decisions, polyfills, and UI testing priorities.",
         "systems": "Most-used operating systems (iOS, Android, Windows, macOS). Combined with device data, builds the full technical profile of your audience.",
         "performance": "Server response time for the redirect, by device type. Measured server-side — it does not include the destination page load.",
-        "languages": "Languages detected in visitors' browser settings, with each regional variant (en-US, en-GB) counted separately. Use to plan internationalization or create localized content versions.",
+        "languages": "Languages detected in visitors' browser settings, grouped by language (e.g. English variants like en-US and en-GB count together as \"English\"). Use to plan internationalization or create localized content versions.",
         "renderingEngine": "Browser rendering engine (Blink, WebKit, Gecko, etc.). Useful for diagnosing compatibility issues on less common browsers."
       },
       "stats": {
@@ -648,7 +671,11 @@
         "browser_referral": "Via external link",
         "in_app_webview": "In-app (Instagram, WhatsApp…)",
         "api_programmatic": "Programmatic",
-        "unknown": "Unknown"
+        "preload": "Pre-loaded",
+        "unknown": "Unknown",
+        "cross-site": "From another site",
+        "none": "Direct visit",
+        "same-origin": "Within your site"
       },
       "description": "How each visitor arrived at the link: directly via browser, via referral from another site, via mobile app (webview), or programmatically. Helps understand how the link is being used."
     },
@@ -672,11 +699,11 @@
     },
     "extraCharts": {
       "language": "Languages — regions grouped",
-      "languageDescription": "Same dimension as the distribution above, but regional variants are grouped under their base language (en-US + en-GB → English). Totals can differ slightly from the chart above because only clicks enriched by Phase 1 tracking are counted here.",
+      "languageDescription": "Same dimension as the distribution above, but regional variants are grouped under their base language (en-US + en-GB → English). Totals can differ slightly from the chart above because only clicks with enhanced tracking are counted here.",
       "platform": "Platform",
-      "platformDescription": "Operating platform detected via Client Hints (Phase 1: Sec-CH-UA-Platform).",
+      "platformDescription": "Operating platform detected via the browser's Client Hints (Sec-CH-UA-Platform header).",
       "connectionType": "Connection Type",
-      "connectionTypeDescription": "ISP connection type classified from network data (Phase 2).",
+      "connectionTypeDescription": "ISP connection type classified from network data.",
       "others": "Others",
       "showTechnical": "Show technical data",
       "hideTechnical": "Hide technical data",
@@ -848,7 +875,9 @@
         "average": "Average",
         "low": "Low",
         "no_data": "No Data"
-      }
+      },
+      "clickBucket_one": "{{count}} click",
+      "clickBucket_other": "{{count}} clicks"
     },
     "traffic": {
       "title": "Traffic Source Analysis",
@@ -1000,6 +1029,11 @@
           "recommendation": "Implement newsletters, push notifications, or serialized content."
         }
       }
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
     }
   },
   "linkInfo": {
@@ -1038,8 +1072,30 @@
     "subtitle": "{{suspicious}} suspicious · {{fraud}} fraud"
   },
   "sections": {
-    "acquisition": "Acquisition Channels",
     "temporal": "Traffic Patterns",
     "audience": "Audience"
+  },
+  "origin": {
+    "loading": "Loading origin analysis...",
+    "empty": "This link doesn't have enough traffic-origin data yet.",
+    "sections": {
+      "channels": "Channels",
+      "channelsDesc": "Where clicks came from: direct access, social media, search engines, or other sites linking to you.",
+      "technicalDetails": "Technical details",
+      "technicalDetailsDesc": "Engineering-level data: how the browser reached the page, the request type, and average session depth per channel."
+    },
+    "subtabs": {
+      "channelsAndSocial": "Channels & networks",
+      "campaigns": "Campaigns"
+    },
+    "channels": {
+      "direct": "Direct",
+      "social": "Social",
+      "search": "Search",
+      "referral": "Referral",
+      "email": "Email",
+      "paid": "Paid",
+      "other": "Other"
+    }
   }
 }

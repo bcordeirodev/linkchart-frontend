@@ -72,10 +72,11 @@ export function useAudienceData({
   excludeBots,
 }: UseAudienceDataOptions): UseAudienceDataReturn {
   const { data, isLoading, isPlaceholderData, error, refetch } = useQuery({
-    queryKey: [
-      ...queryKeys.analytics.audience(linkId),
-      { dateFrom, dateTo, excludeBots },
-    ],
+    queryKey: queryKeys.analytics.audience(linkId, {
+      dateFrom,
+      dateTo,
+      excludeBots,
+    }),
     queryFn: () => {
       const params = new URLSearchParams();
       if (dateFrom) params.set("date_from", dateFrom);

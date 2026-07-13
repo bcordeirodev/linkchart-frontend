@@ -3,10 +3,10 @@ import { Box, Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useAudienceData } from "@/features/analytics/hooks/useAudienceData";
+import { useInsightsData } from "@/features/analytics/hooks/useInsightsData";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { ResponsiveContainer } from "@/shared/ui/base/ResponsiveContainer";
 import { AudienceChart } from "./AudienceChart";
-import { AudienceMetrics } from "./AudienceMetrics";
 
 import type { AudienceAnalysisProps } from "@/types/analytics";
 import type {
@@ -17,58 +17,26 @@ import type {
 } from "@/types/analytics/audience";
 
 /**
- * Loading skeleton that mirrors the Audience tab layout:
- * 6 metric cards → tabbed main chart (8 sub-tabs hold every audience
- * dataset, including quality, sources and the supplementary donuts).
+ * Loading skeleton that mirrors the sub-tabbed Audience tab layout: the
+ * segmented sub-tab control (Aparelhos / Navegador e sistema / Idioma /
+ * Qualidade / Detalhes técnicos) followed by a single content block (the
+ * shape of whichever sub-tab loads first).
  */
 function AudienceSkeleton() {
   return (
     <Box>
-      {/* 6 metric cards — 2 per row xs, 3 per row sm, 6 per row md */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr 1fr",
-            sm: "repeat(3, 1fr)",
-            md: "repeat(6, 1fr)",
-          },
-          gap: 2,
-          mb: 3,
-        }}
-      >
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton
-            key={i}
-            variant="rounded"
-            animation="wave"
-            height={120}
-            sx={{ borderRadius: 2 }}
-          />
-        ))}
-      </Box>
-
-      {/* Main tabbed chart — tall protagonist with tab indicators */}
-      <Box sx={{ mb: 2 }}>
-        <Box sx={{ display: "flex", gap: 1, mb: 1.5 }}>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton
-              key={i}
-              variant="rounded"
-              animation="wave"
-              width={82}
-              height={30}
-              sx={{ borderRadius: 1 }}
-            />
-          ))}
-        </Box>
-        <Skeleton
-          variant="rounded"
-          animation="wave"
-          height={520}
-          sx={{ borderRadius: 2 }}
-        />
-      </Box>
+      <Skeleton
+        variant="rounded"
+        animation="wave"
+        height={40}
+        sx={{ mb: 2, borderRadius: 2, maxWidth: 480 }}
+      />
+      <Skeleton
+        variant="rounded"
+        animation="wave"
+        height={340}
+        sx={{ borderRadius: 2 }}
+      />
     </Box>
   );
 }
@@ -131,14 +99,30 @@ interface LegacyAudienceAnalysisProps {
   dateTo?: string | null;
   /** When `true`, bot traffic is excluded from all metrics. */
   excludeBots?: boolean;
-  /** Currently-active audience sub-tab index (0–5). */
+  /**
+   * Index of the currently active Audience sub-tab (0=Aparelhos, 1=Navegador
+   * e sistema, 2=Idioma, 3=Qualidade, 4=Detalhes técnicos). Forwarded
+   * unchanged to {@link AudienceChart}'s `activeTab` prop.
+   */
   subTabIndex?: number;
-  /** Called when the user switches audience sub-tab. */
+  /** Called when the user switches Audience sub-tab. Pair with `subTabIndex`. */
   onSubTabChange?: (v: number) => void;
 }
 
 /**
- * Componente de análise de audiência com dados de dispositivos, navegadores e sistemas operacionais
+ * "Público" tab — answers "who clicks my link?" across five sub-tabs:
+ * Aparelhos → Navegador e sistema → Idioma → Qualidade → Detalhes técnicos.
+ * Combines two data sources:
+ *
+ * - {@link useAudienceData} for device/browser/OS/language/quality
+ *   breakdowns (the bulk of the tab).
+ * - {@link useInsightsData} for `analytics_data.retention` and
+ *   `analytics_data.session_depth`, relocated here from the dissolved
+ *   Insights tab and rendered inside "Qualidade" (fidelity — retention and
+ *   session depth — lives alongside the traffic-quality breakdown there).
+ *
+ * Loading/error gate on both sources combined, matching the pattern already
+ * used by `OriginAnalysis`.
  */
 export function AudienceAnalysis({
   data: legacyData,
@@ -156,9 +140,9 @@ export function AudienceAnalysis({
   const {
     data: hookData,
     stats,
-    loading,
-    error,
-    refresh,
+    loading: audienceLoading,
+    error: audienceError,
+    refresh: refreshAudience,
   } = useAudienceData({
     linkId,
     enableRealtime: shouldUseHook,
@@ -167,6 +151,13 @@ export function AudienceAnalysis({
     dateTo,
     excludeBots,
   });
+
+  const {
+    data: insightsData,
+    loading: insightsLoading,
+    error: insightsError,
+    refresh: refreshInsights,
+  } = useInsightsData({ linkId, dateFrom, dateTo, excludeBots });
 
   // Both the hook result (top-level breakdowns) and the legacy payload
   // (breakdowns nested under `audience`) are covered by AudienceResponse, so
@@ -182,31 +173,39 @@ export function AudienceAnalysis({
   const totalClicks =
     audienceData?.overview?.total_clicks || stats?.totalClicks || 0;
 
+  // The legacy `data` prop never carries an insights payload — retention and
+  // session-depth are only sourced from the hook.
+  const retention = shouldUseHook
+    ? insightsData?.analytics_data?.retention
+    : undefined;
+  const sessionDepth = shouldUseHook
+    ? insightsData?.analytics_data?.session_depth
+    : undefined;
+
+  const loading = shouldUseHook ? audienceLoading || insightsLoading : false;
+  const error = shouldUseHook ? audienceError ?? insightsError : null;
+
+  /** Refetches both data sources backing this tab. */
+  const handleRefresh = () => {
+    refreshAudience();
+    refreshInsights();
+  };
+
   return (
     <Box>
       <AnalyticsStateManager
-        loading={shouldUseHook ? loading : false}
-        error={shouldUseHook && error ? error : null}
+        loading={loading}
+        error={error}
         hasData={!!deviceBreakdown?.length}
         skeleton={<AudienceSkeleton />}
-        onRetry={refresh}
+        onRetry={handleRefresh}
         loadingMessage={t("audience.loading")}
         emptyMessage={t("audience.empty")}
         minHeight={300}
       >
         <ResponsiveContainer style={{ padding: 0 }}>
-          {/* 1. Metric cards */}
-          {shouldUseHook && stats ? (
-            <Box sx={{ mb: 2 }}>
-              <AudienceMetrics data={{ audience: audienceData, stats }} />
-            </Box>
-          ) : null}
-
-          {/* 2. Main tabbed chart — every audience dataset lives in a sub-tab */}
           <AudienceChart
             deviceBreakdown={deviceBreakdown}
-            browserBreakdown={audienceData?.browser_breakdown}
-            osBreakdown={audienceData?.os_breakdown}
             totalClicks={totalClicks}
             browsers={audienceData?.browsers}
             operatingSystems={audienceData?.operating_systems}
@@ -221,16 +220,12 @@ export function AudienceAnalysis({
                 ? audienceData?.quality_breakdown
                 : undefined
             }
-            showAdvancedInsights={shouldUseHook}
-            navigationContext={audienceData?.navigation_context_breakdown}
-            socialPlatforms={audienceData?.social_platform_breakdown}
             languageBreakdown={resolveLanguageBreakdown(audienceData)}
             platformBreakdown={resolvePlatformBreakdown(audienceData)}
             connectionBreakdown={resolveConnectionBreakdown(audienceData)}
-            fetchDestBreakdown={
-              audienceData?.fetch_dest_breakdown ??
-              audienceData?.audience?.fetch_dest_breakdown
-            }
+            retention={retention}
+            sessionDepth={sessionDepth}
+            insightsLoading={shouldUseHook ? insightsLoading : false}
             activeTab={subTabIndex}
             onTabChange={onSubTabChange}
           />

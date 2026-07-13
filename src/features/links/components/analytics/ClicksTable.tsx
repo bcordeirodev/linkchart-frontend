@@ -233,6 +233,12 @@ export function ClicksTable({
             enableRowActions={false}
             enableGrouping={false}
             enableColumnFilters={false}
+            // This is a read-only log, not a spreadsheet. The per-header "⋮"
+            // menu and the reorder/pin affordances behind it are noise here —
+            // `DataTable` turns ordering and pinning on by default.
+            enableColumnActions={false}
+            enableColumnOrdering={false}
+            enableColumnPinning={false}
             muiTablePaperProps={{
               elevation: 0,
               square: true,
