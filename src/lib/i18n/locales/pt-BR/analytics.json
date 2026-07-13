@@ -536,6 +536,10 @@
       "cappedWarning": "Exibindo as 500 principais localidades. Algumas localidades podem estar omitidas.",
       "accordionTitle": "Mapa de calor por cidade",
       "accordionDesc": "Intensidade de cliques por cidade em um mapa interativo. Mais pesado — carrega só quando aberto."
+    },
+    "subtabs": {
+      "heatmap": "Mapa de calor",
+      "world": "Mundo"
     }
   },
   "audience": {

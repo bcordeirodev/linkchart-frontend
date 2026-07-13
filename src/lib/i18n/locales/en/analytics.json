@@ -536,6 +536,10 @@
       "cappedWarning": "Showing top 500 locations. Some locations may be omitted.",
       "accordionTitle": "City heat map",
       "accordionDesc": "Click intensity by city on an interactive map. Heavier — loads only when opened."
+    },
+    "subtabs": {
+      "heatmap": "Heat map",
+      "world": "World"
     }
   },
   "audience": {

@@ -1,14 +1,25 @@
 "use client";
-import { Box, Typography, Divider, Grid, Chip } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { Globe, Building2, Map } from "lucide-react";
+import { Box, Chip } from "@mui/material";
+import { Building2, Globe, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
 import { chartByType } from "@/lib/theme/colors";
-import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
+import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { AnalyticsEmptyState } from "@/shared/ui/base";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
+import { HorizontalBreakdownBars } from "../audience/HorizontalBreakdownBars";
+
+import type { HorizontalBreakdownItem } from "../audience/HorizontalBreakdownBars";
 import type { CountryData, StateData, CityData } from "@/types";
+
+/** Countries and states sit side by side on desktop; cities span the full width. */
+const twoColGridSx = {
+  display: "grid",
+  gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" },
+  gap: 3,
+  alignItems: "start",
+} as const;
 
 /** Props accepted by the {@link GeographicChart} component. */
 interface GeographicChartProps {
@@ -18,7 +29,7 @@ interface GeographicChartProps {
   states: StateData[];
   /** Top cities by click volume. */
   cities: CityData[];
-  /** Total clicks used to compute per-country/state percentages. */
+  /** Total clicks used to compute percentages. */
   totalClicks: number;
   /** ISO alpha-2 code of the currently selected country, or `null`. */
   selectedCountry: string | null;
@@ -31,13 +42,31 @@ interface GeographicChartProps {
 }
 
 /**
- * Ranked list view of geographic data — top countries, states and cities,
- * each with a bar chart plus a detailed row list.
+ * Converts a 2-letter ISO country code into its flag emoji.
  *
- * Renders bare — no `Card` chrome of its own — because it is only ever
- * embedded as the "Lista" view inside {@link GeographicMapAndList}, which
- * owns the shared card, header and view toggle. Each section keeps its own
- * subtitle so it stays self-explanatory in isolation.
+ * @param countryCode - ISO alpha-2 code (e.g. `"BR"`). Anything else yields `""`.
+ */
+function getFlagEmoji(countryCode: string): string {
+  if (!countryCode || countryCode.length !== 2) return "";
+  const codePoints = countryCode
+    .toUpperCase()
+    .split("")
+    .map((char) => 127397 + char.charCodeAt(0));
+  return String.fromCodePoint(...codePoints);
+}
+
+/**
+ * Top countries, states and cities — the rankings that read under the heat map.
+ *
+ * Each section is **one** horizontal-bar list, not a bar chart plus a second
+ * list repeating the same numbers underneath it. That is what it used to be:
+ * "United States 350" appeared twice per section, once as a bar and once as a
+ * row, so a reader scrolled past the same three facts twice. The bars carry the
+ * label, the value and the percentage on one line — they are the chart and the
+ * table at once — which is the same mark the Público tab uses.
+ *
+ * Country rows are clickable: selecting one filters the states list to that
+ * country and drives the choropleth's selection on the "Mundo" sub-tab.
  */
 export function GeographicChart({
   countries,
@@ -49,365 +78,132 @@ export function GeographicChart({
   hideCountries = false,
   hideStates = false,
 }: GeographicChartProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
 
-  const showCountries = !hideCountries;
-  const showStates = !hideStates;
+  /** Share of the total, guarding the zero-clicks case. */
+  const pct = (clicks: number) =>
+    totalClicks > 0 ? (clicks / totalClicks) * 100 : 0;
+
+  const selectedCountryName =
+    countries.find((c) => c.iso_code === selectedCountry)?.country ?? "";
 
   const filteredStates = selectedCountry
     ? states.filter(
-        (s) =>
-          s.country?.toLowerCase() ===
-          (
-            countries.find((c) => c.iso_code === selectedCountry)?.country ?? ""
-          ).toLowerCase(),
+        (s) => s.country?.toLowerCase() === selectedCountryName.toLowerCase(),
       )
     : states;
 
-  const getPercentage = (clicks: number) => {
-    return totalClicks > 0 ? ((clicks / totalClicks) * 100).toFixed(1) : "0.0";
-  };
+  const countryItems: HorizontalBreakdownItem[] = countries
+    .slice(0, 10)
+    .map((c) => ({
+      key: c.iso_code,
+      label: c.country,
+      value: c.clicks,
+      percentage: pct(c.clicks),
+      color: chartByType.geographic.countries,
+      icon: <span aria-hidden>{getFlagEmoji(c.iso_code)}</span>,
+    }));
 
-  const getFlagEmoji = (countryCode: string) => {
-    // Função simples para converter código do país em emoji da bandeira
-    if (!countryCode || countryCode.length !== 2) {
-      return "";
-    }
+  const stateItems: HorizontalBreakdownItem[] = filteredStates
+    .slice(0, 10)
+    .map((s) => ({
+      key: `${s.country}-${s.state}`,
+      label: `${s.state_name || s.state} · ${s.country}`,
+      value: s.clicks,
+      percentage: pct(s.clicks),
+      color: chartByType.geographic.states,
+    }));
 
-    const codePoints = countryCode
-      .toUpperCase()
-      .split("")
-      .map((char) => 127397 + char.charCodeAt(0));
-
-    return String.fromCodePoint(...codePoints);
-  };
+  const cityItems: HorizontalBreakdownItem[] = cities.slice(0, 10).map((c) => ({
+    key: `${c.country}-${c.state}-${c.city}`,
+    label: [
+      c.state ? `${c.city}, ${c.state}` : c.city,
+      c.most_common_postal_code ? `ZIP ${c.most_common_postal_code}` : null,
+      c.country,
+    ]
+      .filter(Boolean)
+      .join(" · "),
+    value: c.clicks,
+    percentage: pct(c.clicks),
+    color: chartByType.geographic.cities,
+  }));
 
   return (
-    <Grid container spacing={{ xs: 2, md: 3 }}>
-      {/* Top Países */}
-      {showCountries && (
-        <Grid item xs={12} md={6}>
-          <Box>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                position: "relative",
-                zIndex: 1,
-                mt: 1,
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <Globe size={16} strokeWidth={1.5} />
-              {t("geographic.chart.topCountries")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              {t("geographic.chart.countriesSubtitle")}
-            </Typography>
-
-            {countries.length > 0 ? (
-              <>
-                {/* Gráfico de barras */}
-                <Box sx={{ mb: 3 }}>
-                  <ApexChartWrapper
-                    type="bar"
-                    size="standard"
-                    {...formatBarChart(
-                      countries.slice(0, 8) as Record<string, unknown>[],
-                      "country",
-                      "clicks",
-                      chartByType.geographic.countries,
-                      true,
-                      isDark,
-                    )}
-                  />
-                </Box>
-
-                {/* Lista detalhada */}
-                <Box>
-                  {countries.slice(0, 10).map((country, index) => {
-                    const isSelected = selectedCountry === country.iso_code;
-                    return (
-                      <Box
-                        key={country.country}
-                        onClick={() =>
-                          onCountrySelect(isSelected ? null : country.iso_code)
-                        }
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          py: 1,
-                          px: 0.5,
-                          borderRadius: 1,
-                          cursor: "pointer",
-                          bgcolor: isSelected
-                            ? "action.selected"
-                            : "transparent",
-                          borderBottom:
-                            index < countries.length - 1
-                              ? `1px solid ${theme.palette.divider}`
-                              : "none",
-                          "&:hover": {
-                            bgcolor: isSelected
-                              ? "action.selected"
-                              : "action.hover",
-                          },
-                          transition: "background-color 0.15s",
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                          }}
-                        >
-                          <Typography variant="h6">
-                            {getFlagEmoji(country.iso_code)}
-                          </Typography>
-                          <Box>
-                            <Typography
-                              variant="body2"
-                              sx={{ fontWeight: isSelected ? 700 : 500 }}
-                            >
-                              {country.country}
-                            </Typography>
-                            {country.currency ? (
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                              >
-                                {country.currency}
-                              </Typography>
-                            ) : null}
-                          </Box>
-                        </Box>
-                        <Box sx={{ textAlign: "right" }}>
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            {country.clicks} {t("geographic.chart.clicks")}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {getPercentage(country.clicks)}%
-                          </Typography>
-                        </Box>
-                      </Box>
-                    );
-                  })}
-                </Box>
-              </>
+    <Box>
+      <Box sx={twoColGridSx}>
+        {!hideCountries && (
+          <ChartCard
+            title={t("geographic.chart.topCountries")}
+            subtitle={t("geographic.chart.countriesSubtitle")}
+            icon={<Globe {...ICON_MD} />}
+          >
+            {countryItems.length > 0 ? (
+              <HorizontalBreakdownBars
+                items={countryItems}
+                valueSuffix={t("geographic.chart.clicks")}
+                onItemClick={(key) =>
+                  onCountrySelect(selectedCountry === key ? null : key)
+                }
+                selectedKey={selectedCountry}
+              />
             ) : (
-              <Box
-                sx={{
-                  textAlign: "center",
-                  py: 4,
-                  color: "text.secondary",
-                }}
-              >
-                <Typography variant="h6" gutterBottom>
-                  <Map size={24} strokeWidth={1.5} />
-                </Typography>
-                <Typography>{t("geographic.chart.noCountriesData")}</Typography>
-              </Box>
+              <AnalyticsEmptyState
+                title={t("geographic.chart.noCountriesData")}
+              />
             )}
-          </Box>
-        </Grid>
-      )}
+          </ChartCard>
+        )}
 
-      {/* Top Estados */}
-      {showStates && (
-        <Grid item xs={12} md={6}>
-          <Box>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                position: "relative",
-                zIndex: 1,
-                mt: 1,
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <Building2 size={16} strokeWidth={1.5} />
-              {t("geographic.chart.topStates")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              {t("geographic.chart.statesSubtitle")}
-            </Typography>
-
-            {selectedCountry && (
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
-              >
+        {!hideStates && (
+          <ChartCard
+            title={t("geographic.chart.topStates")}
+            subtitle={t("geographic.chart.statesSubtitle")}
+            icon={<Building2 {...ICON_MD} />}
+            action={
+              selectedCountry ? (
                 <Chip
                   size="small"
                   label={`${getFlagEmoji(selectedCountry)} ${
-                    countries.find((c) => c.iso_code === selectedCountry)
-                      ?.country ?? selectedCountry
+                    selectedCountryName || selectedCountry
                   }`}
                   onDelete={() => onCountrySelect(null)}
                   color="primary"
                   variant="outlined"
                 />
-              </Box>
-            )}
-
-            {filteredStates.length > 0 ? (
-              <>
-                {/* Gráfico de barras */}
-                <Box sx={{ mb: 3 }}>
-                  <ApexChartWrapper
-                    type="bar"
-                    size="standard"
-                    {...formatBarChart(
-                      filteredStates.slice(0, 8).map((state) => ({
-                        ...state,
-                        label: `${state.state_name || state.state}, ${state.country}`,
-                      })),
-                      "label",
-                      "clicks",
-                      chartByType.geographic.states,
-                      true,
-                      isDark,
-                    )}
-                  />
-                </Box>
-
-                {/* Lista detalhada */}
-                <Box>
-                  {filteredStates.slice(0, 10).map((state, index) => (
-                    <Box
-                      key={`${state.country}-${state.state}`}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        py: 1,
-                        borderBottom:
-                          index < filteredStates.length - 1
-                            ? `1px solid ${theme.palette.divider}`
-                            : "none",
-                      }}
-                    >
-                      <Box>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {state.state_name || state.state}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {state.country}
-                        </Typography>
-                      </Box>
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {state.clicks} {t("geographic.chart.clicks")}
-                      </Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </>
-            ) : (
-              <Box
-                sx={{
-                  textAlign: "center",
-                  py: 4,
-                  color: "text.secondary",
-                }}
-              >
-                <Typography variant="h6" gutterBottom>
-                  <Building2 size={24} strokeWidth={1.5} />
-                </Typography>
-                <Typography>{t("geographic.chart.noStatesData")}</Typography>
-              </Box>
-            )}
-          </Box>
-        </Grid>
-      )}
-
-      {/* Divider between the countries/states row and the full-width cities section —
-          replaces the visual boundary the individual Cards used to provide before
-          this list was folded into GeographicMapAndList's single shared card. */}
-      {(showCountries || showStates) && (
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-      )}
-
-      {/* Top Cidades */}
-      <Grid item xs={12}>
-        <Box>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              position: "relative",
-              zIndex: 1,
-              mt: 1,
-              fontWeight: 600,
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
+              ) : undefined
+            }
           >
-            <Building2 size={16} strokeWidth={1.5} />
-            {t("geographic.chart.topCities")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {t("geographic.chart.citiesSubtitle")}
-          </Typography>
+            {stateItems.length > 0 ? (
+              <HorizontalBreakdownBars
+                items={stateItems}
+                valueSuffix={t("geographic.chart.clicks")}
+              />
+            ) : (
+              <AnalyticsEmptyState title={t("geographic.chart.noStatesData")} />
+            )}
+          </ChartCard>
+        )}
+      </Box>
 
-          {cities.length > 0 ? (
-            <Box>
-              {cities.slice(0, 10).map((city, index) => (
-                <Box
-                  key={`${city.country}-${city.state}-${city.city}`}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    py: 1,
-                    borderBottom:
-                      index < cities.length - 1
-                        ? `1px solid ${theme.palette.divider}`
-                        : "none",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                      {city.state ? `${city.city}, ${city.state}` : city.city}
-                      {city.most_common_postal_code
-                        ? ` · ZIP ${city.most_common_postal_code}`
-                        : ""}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {city.country}
-                    </Typography>
-                  </Box>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    {city.clicks} {t("geographic.chart.clicks")}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
+      <Box sx={{ mt: 3 }}>
+        <ChartCard
+          title={t("geographic.chart.topCities")}
+          subtitle={t("geographic.chart.citiesSubtitle")}
+          icon={<MapPin {...ICON_MD} />}
+        >
+          {cityItems.length > 0 ? (
+            <HorizontalBreakdownBars
+              items={cityItems}
+              valueSuffix={t("geographic.chart.clicks")}
+            />
           ) : (
-            <Box
-              sx={{
-                textAlign: "center",
-                py: 4,
-                color: "text.secondary",
-              }}
-            >
-              <Typography variant="h6" gutterBottom>
-                <Building2 size={24} strokeWidth={1.5} />
-              </Typography>
-              <Typography>{t("geographic.chart.noCitiesData")}</Typography>
-            </Box>
+            <AnalyticsEmptyState title={t("geographic.chart.noCitiesData")} />
           )}
-        </Box>
-      </Grid>
-    </Grid>
+        </ChartCard>
+      </Box>
+    </Box>
   );
 }
+
+/** Alias kept for the barrel's named export. */
+export default GeographicChart;

@@ -72,9 +72,9 @@ interface HeatmapChartProps {
   showStats?: boolean;
   /**
    * Renderiza sem a moldura de `Card` (borda, sombra e raio) e sem o título
-   * interno. Use quando o gráfico já vive **dentro** de um card — como no
-   * modo "Calor" do `GeographicMapAndList` —, onde a moldura própria viraria
-   * uma borda dupla e o título, um título dentro do outro.
+   * interno. Use quando o gráfico já vive **dentro** de outro card, onde a
+   * moldura própria viraria uma borda dupla e o título, um título dentro do
+   * outro. Na aba Lugares ele é standalone, então `bare` fica em `false`.
    */
   bare?: boolean;
 }
