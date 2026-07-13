@@ -1,4 +1,4 @@
-import { alpha, lighten } from "@mui/material/styles";
+import { alpha, darken } from "@mui/material/styles";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 
@@ -24,8 +24,11 @@ export function getSoftSelectedChipSx(
 ) {
   const isDark = theme.palette.mode === "dark";
   const color = accent ?? theme.palette.primary.main;
-  // Text needs to be lighter than the tint in dark mode to stay readable.
-  const selectedFg = isDark ? lighten(color, 0.35) : color;
+  // Em dark a fonte é branca: um tom clareado do accent sobre um tint do mesmo
+  // accent nunca separa o suficiente para ler bem — é a mesma matiz nos dois
+  // planos. Em light, um tom escurecido do accent sobre o tint claro. Mesma
+  // regra dos chips de clique e de tag.
+  const selectedFg = isDark ? theme.palette.common.white : darken(color, 0.3);
 
   return {
     borderRadius: `${radiusTokens.sm}px`,

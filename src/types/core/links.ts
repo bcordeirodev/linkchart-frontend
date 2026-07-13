@@ -107,6 +107,12 @@ export interface LinkResponse {
   is_expired: boolean;
   /** Link ativo e não expirado (computado pelo backend) */
   is_active_valid: boolean;
+  /**
+   * Link de exemplo semeado no cadastro (`SeedDemoLinkJob`). Os cliques dele são
+   * sintéticos — a UI precisa rotulá-lo para o usuário novo não ler aquele
+   * analytics como tráfego real.
+   */
+  is_demo?: boolean;
   /** Data de criação */
   created_at: ISODateString;
   /** Data da última atualização */

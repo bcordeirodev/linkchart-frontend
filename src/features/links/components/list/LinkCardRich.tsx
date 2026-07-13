@@ -1,6 +1,6 @@
 "use client";
-import { BarChart3, ExternalLink } from "lucide-react";
-import { alpha, Box, Chip, Stack, Typography } from "@mui/material";
+import { ExternalLink } from "lucide-react";
+import { alpha, Box, Chip, Stack, Tooltip, Typography } from "@mui/material";
 import { useTheme, type Theme } from "@mui/material/styles";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,7 +13,6 @@ import {
 } from "@/features/links/utils/linkStatus";
 import type { LinkStatus } from "@/features/links/utils/linkStatus";
 import { useMessage } from "@/lib/providers/MessageProvider";
-import { formatCompact } from "@/lib/utils";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import type { LinkMeta, LinkResponse } from "@/types";
 
@@ -25,12 +24,11 @@ import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
 import {
   linksRadius,
+  getDemoChipSx,
   getLinkCardInnerBorderColor,
   getLinkCardShellSx,
-  getLinkClickChipSx,
   getNewlyCreatedHighlightSx,
-  getLinkCardContentSx,
-  type LinkCardDensity,
+  linkCardContentSx,
 } from "./linksPanelStyles";
 
 const STATUS_LABEL_KEYS = {
@@ -45,8 +43,6 @@ interface LinkCardRichProps {
   meta?: LinkMeta;
   onDelete: (id: string) => Promise<void>;
   isHighlighted?: boolean;
-  /** Row density; `compact` tightens padding and hides the OG thumbnail. */
-  density?: LinkCardDensity;
 }
 
 /**
@@ -110,14 +106,11 @@ export function LinkCardRich({
   meta,
   onDelete,
   isHighlighted = false,
-  density = "comfortable",
 }: LinkCardRichProps) {
   const theme = useTheme();
   const navigate = useNavigate();
   const { showMessage } = useMessage();
-  const { t, i18n } = useTranslation("links");
-
-  const isCompact = density === "compact";
+  const { t } = useTranslation("links");
 
   const shortUrl = useShortUrl(link.slug);
   const displayUrl = shortUrl.replace(/^https?:\/\//, "");
@@ -151,20 +144,15 @@ export function LinkCardRich({
         ...(isHighlighted ? getNewlyCreatedHighlightSx(theme) : {}),
       }}
     >
-      <Box sx={getLinkCardContentSx(density)}>
-        {/* 1+2 — Identity block: one thumb, title and destination beside it.
-            Compact density skips the thumb and inlines the favicon. */}
+      <Box sx={linkCardContentSx}>
+        {/* 1+2 — Identity block: one thumb, title and destination beside it. */}
         <Stack
           direction="row"
           alignItems="center"
-          spacing={isCompact ? 1 : 1.25}
+          spacing={1.25}
           sx={{ minWidth: 0 }}
         >
-          {isCompact ? (
-            <LinkPreviewThumb preview={meta?.preview} size={22} />
-          ) : (
-            <LinkIdentityThumb preview={meta?.preview} theme={theme} />
-          )}
+          <LinkIdentityThumb preview={meta?.preview} theme={theme} />
 
           {/* Tight title+URL block — chip and menu live outside it so their
               taller hit areas can't push the URL below the thumb's edge. */}
@@ -217,19 +205,18 @@ export function LinkCardRich({
             </Stack>
           </Box>
 
-          {/* Chip de cliques — porta de entrada colorida para o analytics. */}
-          <Chip
-            size="small"
-            clickable
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/links/analytics/${link.id}`);
-            }}
-            icon={<BarChart3 size={12} strokeWidth={2.25} />}
-            label={formatCompact(link.clicks || 0, i18n.language)}
-            aria-label={t("actions.viewAnalytics", { ns: "common" })}
-            sx={getLinkClickChipSx(theme)}
-          />
+          {/* Sem chip de cliques aqui: a contagem já aparece — exata, não
+              comprimida — no rodapé de métricas, e o CTA Analytics do action bar
+              já é a porta de entrada do analytics. O chip repetia os dois. */}
+          {link.is_demo ? (
+            <Tooltip title={t("list.demo.badgeTooltip")} arrow>
+              <Chip
+                size="small"
+                label={t("list.demo.badge")}
+                sx={getDemoChipSx(theme)}
+              />
+            </Tooltip>
+          ) : null}
           {status !== "active" ? (
             <Chip
               size="small"
