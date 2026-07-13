@@ -286,9 +286,15 @@ export function OriginAnalysis({
             <Stack spacing={3}>
               {hasNavigationContext || hasFetchDest ? (
                 <Box sx={twoColGridSx(hasNavigationContext && hasFetchDest)}>
+                  {/* `showTitle={false}`: the section divider it renders by
+                      default ("Como Chegaram") pushed this card 37px below its
+                      neighbour, which has no divider — the two cards are the
+                      same height but started on different lines. The sub-tab
+                      label and the card's own title already say what this is. */}
                   {hasNavigationContext ? (
                     <BehaviorSection
                       navigationContext={navigationContextEntries}
+                      showTitle={false}
                     />
                   ) : null}
                   {hasFetchDest ? (

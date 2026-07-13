@@ -3,23 +3,14 @@
  * UtmSourceCard — shows top UTM source values for a link.
  */
 import { Tag } from "lucide-react";
-import {
-  Box,
-  Card,
-  CardContent,
-  LinearProgress,
-  Typography,
-} from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import { HorizontalBreakdownBars } from "@/features/analytics/components/audience/HorizontalBreakdownBars";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  motionTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
+
+import type { HorizontalBreakdownItem } from "@/features/analytics/components/audience/HorizontalBreakdownBars";
 
 interface UtmSourceEntry {
   source: string;
@@ -32,72 +23,43 @@ interface Props {
 }
 
 /**
- * Card showing top UTM source values for the link.
- * Renders nothing when data is empty (no UTM-tagged clicks).
+ * Card showing top UTM source values for the link, in the Origem tab's
+ * "Campanhas" sub-tab. Renders nothing when data is empty (no UTM-tagged
+ * clicks), which is why it is easy to miss in development — the dev database
+ * has no UTM rows at all.
+ *
+ * Renders through {@link ChartCard} and the shared
+ * {@link HorizontalBreakdownBars} mark. It used to roll its own
+ * `LinearProgress` rows with no track override, so the unfilled part of every
+ * bar was MUI's default tint of `primary` — a blue track under a blue fill,
+ * which reads as a half-filled bar. Same defect the other breakdowns had.
  */
 export function UtmSourceCard({ data }: Props) {
   const { t } = useTranslation("analytics");
-  const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
 
   if (!data || data.length === 0) return null;
 
+  const items: HorizontalBreakdownItem[] = data.map((entry) => ({
+    key: entry.source,
+    label: entry.source,
+    value: entry.clicks,
+    percentage: entry.percentage,
+  }));
+
   return (
-    <Card
-      sx={{
-        width: "100%",
-        borderRadius: `${radiusTokens.lg}px`,
-        border: `1px solid ${theme.palette.divider}`,
-        boxShadow: elevation.xs,
-        transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-        "&:hover": {
-          boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
-        },
-      }}
+    <ChartCard
+      title={t("dashboard.utmSource.title")}
+      subtitle={t("dashboard.utmSource.description")}
+      icon={<Tag {...ICON_MD} />}
     >
-      <CardContent>
-        <Typography
-          variant="subtitle2"
-          sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}
-        >
-          <Tag {...ICON_MD} />
-          {t("dashboard.utmSource.title")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {t("dashboard.utmSource.description")}
-        </Typography>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-          {data.map((entry) => (
-            <Box key={entry.source}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mb: 0.5,
-                }}
-              >
-                <Typography variant="body2">{entry.source}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {entry.clicks} ({entry.percentage.toFixed(1)}%)
-                </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={entry.percentage}
-                sx={{ height: 6, borderRadius: 3 }}
-              />
-            </Box>
-          ))}
-        </Box>
-        <Typography
-          variant="caption"
-          color="text.disabled"
-          sx={{ mt: 1.5, display: "block" }}
-        >
-          {t("dashboard.utmSource.topLabel")}
-        </Typography>
-      </CardContent>
-    </Card>
+      <HorizontalBreakdownBars items={items} />
+      <Typography
+        variant="caption"
+        color="text.disabled"
+        sx={{ mt: 1.5, display: "block" }}
+      >
+        {t("dashboard.utmSource.topLabel")}
+      </Typography>
+    </ChartCard>
   );
 }

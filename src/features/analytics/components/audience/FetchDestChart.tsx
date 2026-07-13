@@ -1,25 +1,18 @@
 "use client";
 
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  LinearProgress,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { Info } from "lucide-react";
+import { Box, Chip, Typography } from "@mui/material";
+import { Code2, Info } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
-import type { FetchDestBreakdown } from "@/types/analytics/audience";
+import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
+
+import { HorizontalBreakdownBars } from "./HorizontalBreakdownBars";
 import { getPhaseDataChipSx } from "./phaseDataChipSx";
+
+import type { HorizontalBreakdownItem } from "./HorizontalBreakdownBars";
+import type { FetchDestBreakdown } from "@/types/analytics/audience";
 
 interface FetchDestChartProps {
   /** Fetch-dest breakdown data from the audience API. */
@@ -40,31 +33,37 @@ const FETCH_DEST_COLORS: Record<string, string> = {
 };
 
 /**
- * Renders a bar-chart-style breakdown of the Sec-Fetch-Dest header values
- * collected for a link (Phase 1 tracking).
+ * Breakdown of the Sec-Fetch-Dest header values collected for a link (Phase 1
+ * tracking) — how the browser initiated each click request.
+ *
+ * Renders through {@link ChartCard} and the shared
+ * {@link HorizontalBreakdownBars} mark, like every other breakdown on the page.
+ * It used to hang its title *above* a bare `Card` while its neighbour put the
+ * title inside one, so the two read as different kinds of block sitting side by
+ * side; and its rows were `LinearProgress` with only the bar colour overridden,
+ * leaving MUI's default blue track under a coloured fill.
  *
  * Displays a phase disclaimer chip when Phase 1 data is not yet meaningfully
- * available for this link (fewer than 5% of clicks have `fetch_dest` set).
- * The chart is always shown alongside the disclaimer so the user understands
- * why data may be empty.
+ * available for this link (fewer than 5% of clicks have `fetch_dest` set). The
+ * chart is always shown alongside the disclaimer so the user understands why
+ * data may be empty.
  */
 export function FetchDestChart({ fetchDestBreakdown }: FetchDestChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
 
   const { data, phase1_available } = fetchDestBreakdown;
 
+  const items: HorizontalBreakdownItem[] = data.map((entry) => ({
+    key: entry.fetch_dest,
+    label: entry.fetch_dest,
+    value: entry.clicks,
+    percentage: entry.percentage,
+    color: FETCH_DEST_COLORS[entry.fetch_dest] ?? theme.palette.primary.main,
+  }));
+
   return (
     <Box>
-      <Typography variant="h6" sx={{ mb: 0.75, fontWeight: 600 }}>
-        {t("audience.fetchDest.title")}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        {t("audience.fetchDest.description")}
-      </Typography>
-
       {!phase1_available && (
         <Box sx={{ mb: 2 }}>
           <Chip
@@ -77,62 +76,19 @@ export function FetchDestChart({ fetchDestBreakdown }: FetchDestChartProps) {
         </Box>
       )}
 
-      <Card
-        sx={{
-          borderRadius: `${radiusTokens.lg}px`,
-          boxShadow: elevation.xs,
-          border: `1px solid ${theme.palette.divider}`,
-        }}
+      <ChartCard
+        title={t("audience.fetchDest.title")}
+        subtitle={t("audience.fetchDest.description")}
+        icon={<Code2 {...ICON_MD} />}
       >
-        <CardContent>
-          {data.length === 0 ? (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ py: 2, textAlign: "center" }}
-            >
-              {t("audience.noData")}
-            </Typography>
-          ) : (
-            <Stack spacing={2}>
-              {data.map((entry) => {
-                const color =
-                  FETCH_DEST_COLORS[entry.fetch_dest] ??
-                  theme.palette.primary.main;
-                return (
-                  <Box key={entry.fetch_dest}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        mb: 0.5,
-                      }}
-                    >
-                      <Typography variant="body2">
-                        {entry.fetch_dest}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {entry.clicks} ({entry.percentage.toFixed(1)}%)
-                      </Typography>
-                    </Box>
-                    <LinearProgress
-                      variant="determinate"
-                      value={entry.percentage}
-                      sx={{
-                        height: 8,
-                        borderRadius: 4,
-                        "& .MuiLinearProgress-bar": {
-                          backgroundColor: color,
-                        },
-                      }}
-                    />
-                  </Box>
-                );
-              })}
-            </Stack>
-          )}
-        </CardContent>
-      </Card>
+        {items.length === 0 ? (
+          <Typography variant="body2" color="text.secondary">
+            {t("audience.noData")}
+          </Typography>
+        ) : (
+          <HorizontalBreakdownBars items={items} />
+        )}
+      </ChartCard>
     </Box>
   );
 }
