@@ -18,7 +18,7 @@ _perguntas diferentes_ — não níveis de zoom da mesma pergunta.
 | ------- | --------------------------------------------------- |
 | Resumo  | —                                                   |
 | Origem  | Canais e redes · Campanhas · Detalhes técnicos      |
-| Lugares | — (toggle Mapa/Lista/Calor dentro do card)          |
+| Lugares | Mapa de calor · Mundo                               |
 | Público | Perfil · Qualidade e fidelidade · Detalhes técnicos |
 | Momento | Padrões · Linha do tempo · Picos e tendências       |
 | Cliques | —                                                   |
@@ -42,10 +42,11 @@ _perguntas diferentes_ — não níveis de zoom da mesma pergunta.
 
 ### `components/geographic/` (aba Lugares)
 
-- `GeographicAnalysis.tsx` — orquestra a aba. **Sem sub-tabs.**
-- `GeographicMapAndList.tsx` — um card, três modos: Mapa / Lista / Calor.
-- `GeographicChoropleth.tsx`, `GeographicChart.tsx`, `RealTimeHeatmapChart.tsx` —
-  os três modos. O heatmap só monta quando ativo (Leaflet é caro) e aceita `bare`
+- `GeographicAnalysis.tsx` — orquestra a aba.
+- Sub-tabs: **Mapa de calor** (heatmap + Top Países/Estados/Cidades) e **Mundo**
+  (coroplético + continentes + recomendações).
+- `GeographicChoropleth.tsx`, `GeographicChart.tsx`, `RealTimeHeatmapChart.tsx`.
+  O heatmap só monta quando sua sub-tab está ativa (Leaflet é caro) e aceita `bare`
   para renderizar sem moldura de card própria.
 - `ContinentBreakdown.tsx`, `GeographicInsights.tsx`, `GeographicFilterBar.tsx`.
 

@@ -94,7 +94,13 @@ export function LinkAnalyticsTabsOptimized({
     filters.setTab(TAB_IDS[newValue] ?? "overview");
   };
 
-  /** Ordered tab metadata used to render the nav row and the panel headers. */
+  /**
+   * Ordered tab metadata used to render the nav row and the panel headers.
+   *
+   * **Parallel to `TAB_IDS`** — index `i` here describes `TAB_IDS[i]`. Reorder
+   * one and you must reorder the other, or every tab renders another tab's
+   * label and description.
+   */
   const tabLabels = [
     {
       label: t("tabs.overview"),
@@ -102,14 +108,9 @@ export function LinkAnalyticsTabsOptimized({
       Icon: LayoutDashboard,
     },
     {
-      label: t("tabs.origin"),
-      description: t("tabDescriptions.origin"),
-      Icon: Share2,
-    },
-    {
-      label: t("tabs.places"),
-      description: t("tabDescriptions.places"),
-      Icon: Globe,
+      label: t("tabs.when"),
+      description: t("tabDescriptions.when"),
+      Icon: Clock,
     },
     {
       label: t("tabs.audience"),
@@ -117,9 +118,14 @@ export function LinkAnalyticsTabsOptimized({
       Icon: Users,
     },
     {
-      label: t("tabs.when"),
-      description: t("tabDescriptions.when"),
-      Icon: Clock,
+      label: t("tabs.places"),
+      description: t("tabDescriptions.places"),
+      Icon: Globe,
+    },
+    {
+      label: t("tabs.origin"),
+      description: t("tabDescriptions.origin"),
+      Icon: Share2,
     },
     {
       label: t("tabs.clicks"),
@@ -290,6 +296,8 @@ export function LinkAnalyticsTabsOptimized({
               excludeBots={filters.excludeBots}
               continent={filters.continent}
               onContinentChange={filters.setContinent}
+              subTabIndex={filters.geoSubTab}
+              onSubTabChange={filters.setGeoSubTab}
             />,
           )}
 

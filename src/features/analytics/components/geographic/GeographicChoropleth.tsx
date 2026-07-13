@@ -146,8 +146,9 @@ interface GeographicChoroplethProps {
 /**
  * World choropleth of click volume by country.
  *
- * Renders bare — no `Card`/title chrome of its own — because it is only ever
- * embedded as the "Mapa" view inside {@link GeographicMapAndList}, which owns
+ * Renders bare — no `Card`/title chrome of its own — because the caller wraps
+ * it in a `ChartCard` that supplies the title and the description. It is only
+ * rendered at the top of the "Mundo" sub-tab, whose parent owns
  * the shared card, header and view toggle. Keeps its own explanatory
  * subtitle so the map is still self-explanatory in isolation.
  */
@@ -246,10 +247,6 @@ export function GeographicChoropleth({
 
   return (
     <Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        {t("geographic.choropleth.subtitle")}
-      </Typography>
-
       {/* paddingTop 54% = 432/800 — container keeps the SVG aspect ratio so the full world is visible */}
       <Box
         sx={{

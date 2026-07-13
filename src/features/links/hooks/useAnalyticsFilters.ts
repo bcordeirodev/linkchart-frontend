@@ -13,13 +13,22 @@ export type TabId =
   | "when"
   | "clicks";
 
-/** Ordered list of TabIds — index matches the numeric position expected by MUI Tabs. */
+/**
+ * Ordered list of TabIds — index matches the numeric position expected by MUI
+ * Tabs, and this array **is** the nav order on screen.
+ *
+ * The order is the reading order of the question "how is this link doing?":
+ * how many clicks (Resumo) → when they came (Momento) → who they were
+ * (Público) → where from, geographically (Lugares) → what sent them (Origem) →
+ * the raw log (Cliques). `tabLabels` in `LinkAnalyticsTabs` is a parallel
+ * array — reorder both together or the labels detach from the panels.
+ */
 export const TAB_IDS: readonly TabId[] = [
   "overview",
-  "origin",
-  "places",
-  "audience",
   "when",
+  "audience",
+  "places",
+  "origin",
   "clicks",
 ];
 
@@ -47,6 +56,8 @@ export interface AnalyticsFilters {
 
   // Geographic
   continent: string | null;
+  /** Index of the active geographic sub-tab (0=Mapa de calor, 1=Mundo). URL-persisted so it survives RSC remounts. */
+  geoSubTab: number;
 
   // Origin
   /** Index of the active origin sub-tab (0=Canais e redes, 1=Campanhas, 2=Detalhes técnicos). URL-persisted so it survives RSC remounts. */
@@ -64,14 +75,15 @@ export interface AnalyticsFilters {
   setSegment: (v: Segment) => void;
   setTemporalSubTab: (v: number) => void;
   setContinent: (v: string | null) => void;
+  setGeoSubTab: (v: number) => void;
   setOriginSubTab: (v: number) => void;
   setAudienceSubTab: (v: number) => void;
 }
 
 /**
  * Parses a sub-tab index URL param, clamping to `[0, maxIndex]`.
- * Mirrors the numeric-index pattern used for every sub-tab param
- * (`temporalSubTab`, `originSubTab`, `audienceSubTab`) — out-of-range or
+ * Mirrors the numeric-index pattern used for every sub-tab param (`geoSubTab`,
+ * `temporalSubTab`, `originSubTab`, `audienceSubTab`) — out-of-range or
  * non-numeric values fall back to `0` instead of throwing.
  *
  * @param raw - Raw string value read from `URLSearchParams.get(...)`.
@@ -180,7 +192,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   const tab = parseEnum<TabId>(searchParams.get("tab"), TAB_IDS, "overview");
 
   // Sub-tab indices — one per top-level tab that has its own secondary nav.
-  // "Lugares" has none: its three views are a toggle inside one card.
+  const geoSubTab = parseSubTabIndex(searchParams.get("geoSubTab"), 1);
   const temporalSubTab = parseSubTabIndex(
     searchParams.get("temporalSubTab"),
     2,
@@ -266,6 +278,11 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     [setParam],
   );
 
+  const setGeoSubTab = useCallback(
+    (v: number) => setParam({ geoSubTab: v === 0 ? null : String(v) }),
+    [setParam],
+  );
+
   const setTemporalSubTab = useCallback(
     (v: number) => setParam({ temporalSubTab: v === 0 ? null : String(v) }),
     [setParam],
@@ -290,6 +307,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     segment,
     temporalSubTab,
     continent,
+    geoSubTab,
     originSubTab,
     audienceSubTab,
     setPeriod,
@@ -299,6 +317,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     setSegment,
     setTemporalSubTab,
     setContinent,
+    setGeoSubTab,
     setOriginSubTab,
     setAudienceSubTab,
   };
