@@ -20,10 +20,15 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { LinkDensity } from "@/features/links/hooks/useLinkDensity";
+import { useTags } from "@/features/links/hooks/useTags";
 
 import { getSoftSelectedChipSx } from "@/lib/theme/softChip";
 
-import { getLinksFilterInsetSx, getLinksPanelSx } from "./linksPanelStyles";
+import {
+  getLinksFilterInsetSx,
+  getLinksPanelSx,
+  getLinksBorderColor,
+} from "./linksPanelStyles";
 
 interface LinksFiltersProps {
   searchTerm: string;
@@ -40,6 +45,10 @@ interface LinksFiltersProps {
   onDensityChange?: (density: LinkDensity) => void;
   /** Renders the comfortable/compact segmented control (desktop only). */
   showDensityToggle?: boolean;
+  /** Selected tag id filter, or `null` when no tag filter is active. */
+  tagFilter?: number | null;
+  /** Called when the user picks (or clears) a tag filter chip. */
+  onTagFilterChange?: (tagId: number | null) => void;
 }
 
 export function LinksFilters({
@@ -53,10 +62,14 @@ export function LinksFilters({
   density = "comfortable",
   onDensityChange,
   showDensityToggle = false,
+  tagFilter = null,
+  onTagFilterChange,
 }: LinksFiltersProps) {
   const theme = useTheme();
   const { t } = useTranslation("links");
   const [localSearch, setLocalSearch] = useState(searchTerm);
+  // Tag filter row only renders once the user has created at least one tag.
+  const { data: userTags = [] } = useTags();
 
   const STATUS_CHIPS = [
     { value: "all", label: t("filters.all") },
@@ -220,7 +233,7 @@ export function LinksFilters({
               "& .MuiToggleButton-root": {
                 px: 0.875,
                 py: 0.375,
-                border: `1px solid ${theme.palette.divider}`,
+                border: `1px solid ${getLinksBorderColor(theme)}`,
                 color: "text.secondary",
                 "&.Mui-selected": {
                   color: "primary.main",
@@ -246,6 +259,53 @@ export function LinksFilters({
           </ToggleButtonGroup>
         ) : null}
       </Box>
+
+      {/* Linha 3: filtro por tag — só aparece quando o usuário já tem tags. */}
+      {userTags.length > 0 ? (
+        <>
+          <Divider />
+          <Stack
+            direction="row"
+            spacing={0.75}
+            flexWrap="wrap"
+            useFlexGap
+            alignItems="center"
+            sx={{ px: 2, py: 1.5 }}
+          >
+            <Chip
+              label={t("tags.filter.all")}
+              clickable
+              size="small"
+              variant="outlined"
+              onClick={() => onTagFilterChange?.(null)}
+              sx={{
+                fontSize: "0.75rem",
+                ...getSoftSelectedChipSx(theme, tagFilter === null),
+              }}
+            />
+            {userTags.map((tag) => (
+              <Chip
+                key={tag.id}
+                label={tag.name}
+                clickable
+                size="small"
+                variant="outlined"
+                onClick={() =>
+                  onTagFilterChange?.(tagFilter === tag.id ? null : tag.id)
+                }
+                sx={{
+                  fontSize: "0.75rem",
+                  ...getSoftSelectedChipSx(
+                    theme,
+                    tagFilter === tag.id,
+                    tag.color,
+                  ),
+                }}
+              />
+            ))}
+          </Stack>
+        </>
+      ) : null}
     </Box>
   );
 }

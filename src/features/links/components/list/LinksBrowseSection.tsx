@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Divider, Pagination, Stack, Typography } from "@mui/material";
+import { Box, Divider, Pagination, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -16,7 +16,11 @@ import { LinksEmptyState } from "./LinksEmptyState";
 import { LinksFilters } from "./LinksFilters";
 import { LinksMobileCards } from "./LinksMobileCards";
 import { LinksListSectionHeading } from "./LinksListSectionHeading";
-import { getLinksPanelSx } from "./linksPanelStyles";
+import {
+  getLinksPanelSx,
+  getLinksBorderColor,
+  getLinksBrowseGridSx,
+} from "./linksPanelStyles";
 
 import type { BatchMetaResponse, LinkResponse } from "@/types";
 
@@ -35,6 +39,10 @@ interface LinksBrowseSectionProps {
   onClearFilters: () => void;
   onDelete: (id: string) => Promise<void>;
   highlightedLinkId?: string | null;
+  /** Selected tag id filter, or `null` when no tag filter is active. */
+  tagFilter?: number | null;
+  /** Called when the user picks (or clears) a tag filter chip. */
+  onTagFilterChange?: (tagId: number | null) => void;
 }
 
 /**
@@ -59,6 +67,8 @@ export function LinksBrowseSection({
   onClearFilters,
   onDelete,
   highlightedLinkId = null,
+  tagFilter = null,
+  onTagFilterChange,
 }: LinksBrowseSectionProps) {
   const theme = useTheme();
   const { t } = useTranslation("links");
@@ -78,7 +88,7 @@ export function LinksBrowseSection({
   // a freshly created link needs to be revealed at the top.
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, statusFilter, sortBy, highlightedLinkId]);
+  }, [searchTerm, statusFilter, tagFilter, sortBy, highlightedLinkId]);
 
   // Clamp the page if it falls out of range (e.g. after deleting the last item
   // on the final page).
@@ -115,7 +125,7 @@ export function LinksBrowseSection({
           title={t("list.sections.links")}
           description={description}
           titleVariant="section"
-          sx={{ mb: { xs: 1.25, sm: 1.75 } }}
+          sx={{ mb: { xs: 1.5, sm: 2 } }}
         />
 
         <LinksFilters
@@ -129,6 +139,8 @@ export function LinksBrowseSection({
           density={density}
           onDensityChange={setDensity}
           showDensityToggle={!isMobile}
+          tagFilter={tagFilter}
+          onTagFilterChange={onTagFilterChange}
         />
 
         <Divider sx={{ my: 2 }} />
@@ -149,18 +161,22 @@ export function LinksBrowseSection({
                 highlightedLinkId={highlightedLinkId}
               />
             ) : (
-              <Stack spacing={0}>
-                {pageLinks.map((link) => (
-                  <LinkCardRich
-                    key={link.id}
-                    link={link}
-                    meta={meta[String(link.id)]}
-                    onDelete={onDelete}
-                    isHighlighted={String(link.id) === highlightedLinkId}
-                    density={density}
-                  />
-                ))}
-              </Stack>
+              <>
+                {/* Mobile-first: 1 coluna é o estado natural; o auto-fill só abre
+                    a 2ª coluna quando o painel comporta dois cards de ≥560px. */}
+                <Box sx={getLinksBrowseGridSx(density)}>
+                  {pageLinks.map((link) => (
+                    <LinkCardRich
+                      key={link.id}
+                      link={link}
+                      meta={meta[String(link.id)]}
+                      onDelete={onDelete}
+                      isHighlighted={String(link.id) === highlightedLinkId}
+                      density={density}
+                    />
+                  ))}
+                </Box>
+              </>
             )}
 
             {showPagination ? (
@@ -173,7 +189,7 @@ export function LinksBrowseSection({
                   gap: 1.5,
                   mt: 2,
                   pt: 2,
-                  borderTop: `1px solid ${theme.palette.divider}`,
+                  borderTop: `1px solid ${getLinksBorderColor(theme)}`,
                 }}
               >
                 <Typography

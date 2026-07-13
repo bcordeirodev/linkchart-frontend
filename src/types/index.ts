@@ -57,6 +57,11 @@ export type {
   LinkFilters,
   LinksListResponse,
 
+  // Tipos de tags
+  Tag,
+  TagCreateRequest,
+  TagUpdateRequest,
+
   // Tipos de gráficos
   ChartType,
   ChartPoint,

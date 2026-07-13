@@ -36,6 +36,10 @@ export const API_CONFIG = {
     UPDATE_LINK: (id: string) => `/api/links/${id}`,
     DELETE_LINK: (id: string) => `/api/links/${id}`,
 
+    // --- Tags (authenticated CRUD) ---
+    TAGS: "/api/tags",
+    TAG: (id: string) => `/api/tags/${id}`,
+
     // --- Link meta (sparkline, trend, preview, health, url-meta) ---
     LINKS_BATCH_META: "/api/links/batch-meta",
     LINK_URL_META: "/api/links/url-meta",

@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormLabel,
   InputAdornment,
   Stack,
   TextField,
@@ -35,13 +34,14 @@ import {
   getUrlSafetyHelperNode,
 } from "@/features/links/components/forms/UrlSafetyIndicator";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
-import { radiusTokens } from "@/lib/theme/designSystem";
+import { darkNeutral } from "@/lib/theme/colors";
 import { HelpHint } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
 
 import { LinksListSectionHeading } from "./LinksListSectionHeading";
 import {
+  linksRadius,
   getLinksBorderColor,
   getLinksQuickCreatePanelSx,
 } from "./linksPanelStyles";
@@ -64,12 +64,19 @@ type QuickFormData = {
 const CONTROL_HEIGHT = 40;
 
 const getInputRootSx = (theme: Theme) => {
-  const bg = theme.palette.background.default;
+  // Nível "input" da escala: em dark o campo é um passo mais claro que o
+  // painel (não mais escuro que ele); em light o cinza de página recua bem.
+  const bg =
+    theme.palette.mode === "dark"
+      ? darkNeutral.input
+      : theme.palette.background.default;
 
   return {
     "& .MuiOutlinedInput-root": {
       height: CONTROL_HEIGHT,
-      borderRadius: `${radiusTokens.md}px`,
+      // Radius sm: controles internos um degrau abaixo do painel (md) —
+      // hierarquia de arredondamento em vez de tudo igualmente redondo.
+      borderRadius: `${linksRadius.control}px`,
       bgcolor: bg,
       "&:hover": { bgcolor: bg },
       "&.Mui-focused": { bgcolor: `${bg} !important` },
@@ -110,7 +117,11 @@ const slugAcceptAdornmentSx = {
   },
 } as const;
 
-/** One grid for all breakpoints — avoids duplicate `register()` on hidden fields. */
+/**
+ * One grid for all breakpoints — avoids duplicate `register()` on hidden
+ * fields. Uma linha só de controles (placeholders carregam o significado;
+ * labels viram aria-label) + linha de helper que só existe quando há mensagem.
+ */
 const formGridSx = {
   display: "grid",
   gridTemplateColumns: {
@@ -118,7 +129,7 @@ const formGridSx = {
     md: "minmax(0, 2fr) minmax(0, 1fr) 132px",
   },
   columnGap: 2,
-  rowGap: { xs: 1, md: 0.75 },
+  rowGap: { xs: 1.25, md: 0.75 },
   alignItems: "start",
 } as const;
 
@@ -128,12 +139,13 @@ const mdCell = (row: number, col: number) => ({
 });
 
 const submitButtonSx = {
-  height: CONTROL_HEIGHT,
-  minHeight: CONTROL_HEIGHT,
+  // ≥44px de alvo de toque no mobile; alinhado aos inputs (40) no desktop.
+  height: { xs: 44, md: CONTROL_HEIGHT },
+  minHeight: { xs: 44, md: CONTROL_HEIGHT },
   textTransform: "none",
   fontWeight: 600,
   minWidth: { md: 132 },
-  borderRadius: `${radiusTokens.md}px`,
+  borderRadius: `${linksRadius.control}px`,
   whiteSpace: "nowrap",
   px: 2.5,
 };
@@ -152,7 +164,7 @@ const getAdvancedOptionsButtonSx = (theme: Theme) => {
     fontWeight: 500,
     fontSize: "0.75rem",
     lineHeight: 1.2,
-    borderRadius: `${radiusTokens.sm}px`,
+    borderRadius: `${linksRadius.control}px`,
     color: "text.secondary",
     borderColor,
     bgcolor: "transparent",
@@ -348,20 +360,12 @@ export function LinksQuickCreate({
     >
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
         <LinksListSectionHeading
-          icon={
-            <Zap
-              {...ICON_MD}
-              color={
-                isDark
-                  ? theme.palette.primary.light
-                  : theme.palette.primary.main
-              }
-            />
-          }
+          icon={<Zap {...ICON_MD} />}
+          iconChip
           title={t("list.quickCreate.label")}
           description={t("list.quickCreate.description")}
           descriptionSx={{ display: { xs: "none", sm: "block" } }}
-          sx={{ mb: { xs: 1.25, sm: 1.75 } }}
+          sx={{ mb: { xs: 1.5, sm: 2 } }}
           action={
             <Stack direction="row" spacing={0.5} alignItems="center">
               <HelpHint label={t("list.onboarding.hintQuickCreate")} />
@@ -370,11 +374,28 @@ export function LinksQuickCreate({
                   variant="outlined"
                   size="small"
                   onClick={() => navigate("/links/create")}
+                  aria-label={t("list.quickCreate.moreOptions")}
                   startIcon={<SlidersHorizontal size={13} strokeWidth={1.75} />}
                   endIcon={<ArrowUpRight size={12} strokeWidth={2} />}
-                  sx={getAdvancedOptionsButtonSx(theme)}
+                  sx={[
+                    getAdvancedOptionsButtonSx(theme),
+                    {
+                      // xs: só o ícone — deixa o título do header em uma linha.
+                      "& .MuiButton-startIcon": {
+                        mr: { xs: 0, sm: 0.375 },
+                      },
+                      "& .MuiButton-endIcon": {
+                        display: { xs: "none", sm: "inline-flex" },
+                      },
+                    },
+                  ]}
                 >
-                  {t("list.quickCreate.moreOptions")}
+                  <Box
+                    component="span"
+                    sx={{ display: { xs: "none", sm: "inline" } }}
+                  >
+                    {t("list.quickCreate.moreOptions")}
+                  </Box>
                 </Button>
               </Tooltip>
             </Stack>
@@ -383,31 +404,6 @@ export function LinksQuickCreate({
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
           <Box sx={formGridSx}>
-            <FormLabel
-              sx={{
-                ...mdCell(1, 1),
-                display: "block",
-                lineHeight: 1.25,
-                order: { xs: 1, md: "unset" },
-              }}
-            >
-              {t("list.quickCreate.urlLabel")}
-            </FormLabel>
-            <FormLabel
-              sx={{
-                ...mdCell(1, 2),
-                display: "block",
-                lineHeight: 1.25,
-                order: { xs: 4, md: "unset" },
-              }}
-            >
-              {t("list.quickCreate.slugLabel")}
-            </FormLabel>
-            <Box
-              aria-hidden
-              sx={{ ...mdCell(1, 3), display: { xs: "none", md: "block" } }}
-            />
-
             <TextField
               {...register("original_url")}
               placeholder={t("list.quickCreate.urlPlaceholder")}
@@ -418,10 +414,13 @@ export function LinksQuickCreate({
               disabled={isPending}
               sx={[
                 inputRootSx,
-                mdCell(2, 1),
-                { order: { xs: 2, md: "unset" } },
+                mdCell(1, 1),
+                { order: { xs: 1, md: "unset" } },
               ]}
               slotProps={{
+                htmlInput: {
+                  "aria-label": t("list.quickCreate.urlLabel"),
+                },
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
@@ -458,10 +457,13 @@ export function LinksQuickCreate({
               sx={[
                 inputRootSx,
                 showSlugSuggestion && slugAcceptAdornmentSx,
-                mdCell(2, 2),
-                { order: { xs: 5, md: "unset" } },
+                mdCell(1, 2),
+                { order: { xs: 2, md: "unset" } },
               ]}
               slotProps={{
+                htmlInput: {
+                  "aria-label": t("list.quickCreate.slugLabel"),
+                },
                 input: {
                   sx: {
                     fontFamily: "monospace",
@@ -494,7 +496,7 @@ export function LinksQuickCreate({
                           lineHeight: 1,
                           py: 0.25,
                           px: 0.625,
-                          borderRadius: `${radiusTokens.sm}px`,
+                          borderRadius: `${linksRadius.control}px`,
                           color: primary,
                           bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
                           transition: "background-color 120ms ease",
@@ -536,8 +538,8 @@ export function LinksQuickCreate({
               }
               sx={[
                 submitButtonSx,
-                mdCell(2, 3),
-                { order: { xs: 6, md: "unset" } },
+                mdCell(1, 3),
+                { order: { xs: 3, md: "unset" } },
               ]}
             >
               {succeeded
@@ -545,14 +547,15 @@ export function LinksQuickCreate({
                 : t("list.quickCreate.submit")}
             </Button>
 
-            <Box
-              sx={{
-                ...mdCell(3, 1),
-                minWidth: 0,
-                display: { xs: "none", md: "block" },
-              }}
-            >
-              {urlHelperText !== " " ? (
+            {/* Helpers desktop: linha 2 só materializa quando há mensagem. */}
+            {urlHelperText !== " " ? (
+              <Box
+                sx={{
+                  ...mdCell(2, 1),
+                  minWidth: 0,
+                  display: { xs: "none", md: "block" },
+                }}
+              >
                 <Typography
                   variant="caption"
                   component="div"
@@ -564,32 +567,21 @@ export function LinksQuickCreate({
                 >
                   {urlHelperText}
                 </Typography>
-              ) : null}
-            </Box>
-            <Box
-              sx={{
-                ...mdCell(3, 2),
-                minWidth: 0,
-                display: { xs: "none", md: "block" },
-              }}
-            >
-              {errors.custom_slug?.message ? (
+              </Box>
+            ) : null}
+            {slugHelperText ? (
+              <Box
+                sx={{
+                  ...mdCell(2, 2),
+                  minWidth: 0,
+                  display: { xs: "none", md: "block" },
+                }}
+              >
                 <Typography variant="caption" color="error">
-                  {errors.custom_slug.message}
-                </Typography>
-              ) : slugHelperText ? (
-                <Typography
-                  variant="caption"
-                  sx={{ color: "text.secondary", lineHeight: 1.45 }}
-                >
                   {slugHelperText}
                 </Typography>
-              ) : null}
-            </Box>
-            <Box
-              aria-hidden
-              sx={{ ...mdCell(3, 3), display: { xs: "none", md: "block" } }}
-            />
+              </Box>
+            ) : null}
           </Box>
         </Box>
       </Box>
