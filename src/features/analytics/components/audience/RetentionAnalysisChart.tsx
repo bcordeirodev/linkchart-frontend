@@ -13,7 +13,7 @@ import {
   INSIGHTS_BLOCK_PAD,
   insightsChartPanelSx,
   insightsMetricRowSx,
-} from "./insightsLayout";
+} from "../insights/insightsLayout";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type { RetentionData } from "../../hooks/useInsightsData";

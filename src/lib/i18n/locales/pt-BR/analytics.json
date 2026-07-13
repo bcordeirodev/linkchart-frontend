@@ -546,6 +546,13 @@
     "empty": "Este link ainda não recebeu cliques com dados de dispositivos.",
     "deviceTypes": "{{count}} tipos de dispositivos detectados",
     "linkSpecific": "Link Específico",
+    "sections": {
+      "devices": "Aparelhos",
+      "browserSystemLanguage": "Navegador · Sistema · Idioma",
+      "qualityAndLoyalty": "Qualidade e fidelidade",
+      "technicalDetails": "Detalhes técnicos",
+      "technicalDetailsDesc": "Dados de engenharia: tempo de resposta do servidor, motor de renderização, tipo de conexão e sinais de dispositivo detectados via Client Hints."
+    },
     "metrics": {
       "title": "Métricas de Audiência",
       "deviceTypes": "Tipos de Dispositivos",
@@ -604,7 +611,7 @@
         "browsers": "Navegadores mais usados pela sua audiência (Chrome, Safari, Firefox, etc.). Auxilia em decisões de compatibilidade, polyfills e testes de UI.",
         "systems": "Sistemas operacionais mais usados (iOS, Android, Windows, macOS). Combina com dados de dispositivo para traçar o perfil técnico completo da audiência.",
         "performance": "Tempo de resposta do servidor no redirecionamento, por tipo de dispositivo. Medido no servidor — não inclui o carregamento da página de destino.",
-        "languages": "Idiomas detectados nas configurações do navegador dos visitantes, com cada variante regional (en-US, en-GB) contada separadamente. Use para planejar internacionalização ou criar versões localizadas do conteúdo.",
+        "languages": "Idiomas detectados nas configurações do navegador da audiência, agrupados por idioma (ex.: variantes de inglês como en-US e en-GB contam juntas como \"Inglês\"). Use para planejar internacionalização ou criar versões localizadas do conteúdo.",
         "renderingEngine": "Motor de renderização do navegador (Blink, WebKit, Gecko, etc.). Útil para diagnóstico de bugs de compatibilidade em browsers menos comuns."
       },
       "stats": {
@@ -684,11 +691,11 @@
     },
     "extraCharts": {
       "language": "Idiomas — regiões agrupadas",
-      "languageDescription": "Mesma dimensão da distribuição acima, mas com as variantes regionais agrupadas no idioma base (en-US + en-GB → Inglês). Os totais podem diferir um pouco do gráfico acima porque aqui só entram cliques enriquecidos pelo rastreamento da Fase 1.",
+      "languageDescription": "Mesma dimensão da distribuição acima, mas com as variantes regionais agrupadas no idioma base (en-US + en-GB → Inglês). Os totais podem diferir um pouco do gráfico acima porque aqui só entram cliques com rastreamento avançado.",
       "platform": "Plataforma",
-      "platformDescription": "Plataforma do sistema operacional detectada via Client Hints (Fase 1: Sec-CH-UA-Platform).",
+      "platformDescription": "Plataforma do sistema operacional detectada via Client Hints do navegador (cabeçalho Sec-CH-UA-Platform).",
       "connectionType": "Tipo de Conexão",
-      "connectionTypeDescription": "Tipo de conexão ISP classificado a partir de dados de rede (Fase 2).",
+      "connectionTypeDescription": "Tipo de conexão ISP classificado a partir de dados de rede.",
       "others": "Outros",
       "showTechnical": "Ver dados técnicos",
       "hideTechnical": "Ocultar dados técnicos",
