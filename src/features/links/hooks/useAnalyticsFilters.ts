@@ -7,19 +7,19 @@ import { format, startOfDay, subDays, subHours } from "date-fns";
 /** Named identifier for each analytics tab — used in URL params instead of numeric indices. */
 export type TabId =
   | "overview"
-  | "temporal"
-  | "geographic"
+  | "origin"
+  | "places"
   | "audience"
-  | "insights"
+  | "when"
   | "clicks";
 
 /** Ordered list of TabIds — index matches the numeric position expected by MUI Tabs. */
 export const TAB_IDS: readonly TabId[] = [
   "overview",
-  "temporal",
-  "geographic",
+  "origin",
+  "places",
   "audience",
-  "insights",
+  "when",
   "clicks",
 ];
 
@@ -48,12 +48,6 @@ export interface AnalyticsFilters {
 
   // Geographic
   continent: string | null;
-  /** Index of the active geographic sub-tab (0=Overview, 1=Heatmap, 2=Rankings). URL-persisted so it survives RSC remounts triggered by filter changes. */
-  geoSubTab: number;
-  /** Index of the active temporal sub-tab (0=Patterns, 1=Timeline, 2=Performance, 3=Distribution). URL-persisted so it survives RSC remounts. */
-  temporalSubTab: number;
-  /** Index of the active audience sub-tab (0=Devices, 1=Browsers, 2=Systems, 3=Performance, 4=Languages, 5=RenderingEngine, 6=Quality, 7=Sources). URL-persisted so it survives RSC remounts. */
-  audienceSubTab: number;
 
   // Insights
   priority: InsightPriority;
@@ -67,9 +61,6 @@ export interface AnalyticsFilters {
   setTab: (v: TabId) => void;
   setSegment: (v: Segment) => void;
   setContinent: (v: string | null) => void;
-  setGeoSubTab: (v: number) => void;
-  setTemporalSubTab: (v: number) => void;
-  setAudienceSubTab: (v: number) => void;
   setPriority: (v: InsightPriority) => void;
   setInsightCategories: (v: string[]) => void;
   setActionableOnly: (v: boolean) => void;
@@ -185,34 +176,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
 
   const tab = parseEnum<TabId>(searchParams.get("tab"), TAB_IDS, "overview");
 
-  const rawGeoSubTab = parseInt(searchParams.get("geoSubTab") ?? "0", 10);
-  const geoSubTab =
-    Number.isFinite(rawGeoSubTab) && rawGeoSubTab >= 0 && rawGeoSubTab <= 2
-      ? rawGeoSubTab
-      : 0;
-
-  const rawTemporalSubTab = parseInt(
-    searchParams.get("temporalSubTab") ?? "0",
-    10,
-  );
-  const temporalSubTab =
-    Number.isFinite(rawTemporalSubTab) &&
-    rawTemporalSubTab >= 0 &&
-    rawTemporalSubTab <= 3
-      ? rawTemporalSubTab
-      : 0;
-
-  const rawAudienceSubTab = parseInt(
-    searchParams.get("audienceSubTab") ?? "0",
-    10,
-  );
-  const audienceSubTab =
-    Number.isFinite(rawAudienceSubTab) &&
-    rawAudienceSubTab >= 0 &&
-    rawAudienceSubTab <= 7
-      ? rawAudienceSubTab
-      : 0;
-
   const customFrom = searchParams.get("date_from");
   const customTo = searchParams.get("date_to");
 
@@ -288,21 +251,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     [setParam],
   );
 
-  const setGeoSubTab = useCallback(
-    (v: number) => setParam({ geoSubTab: v === 0 ? null : String(v) }),
-    [setParam],
-  );
-
-  const setTemporalSubTab = useCallback(
-    (v: number) => setParam({ temporalSubTab: v === 0 ? null : String(v) }),
-    [setParam],
-  );
-
-  const setAudienceSubTab = useCallback(
-    (v: number) => setParam({ audienceSubTab: v === 0 ? null : String(v) }),
-    [setParam],
-  );
-
   const setPriority = useCallback(
     (v: InsightPriority) => setParam({ priority: v === "all" ? null : v }),
     [setParam],
@@ -336,12 +284,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     setTab,
     setSegment,
     setContinent,
-    geoSubTab,
-    setGeoSubTab,
-    temporalSubTab,
-    setTemporalSubTab,
-    audienceSubTab,
-    setAudienceSubTab,
     setPriority,
     setInsightCategories,
     setActionableOnly,

@@ -160,12 +160,20 @@
     }
   },
   "tabs": {
-    "overview": "Visão Geral",
-    "temporal": "Temporal",
-    "geographic": "Geográfico",
-    "audience": "Audiência",
-    "performance": "Performance",
-    "insights": "Insights"
+    "overview": "Resumo",
+    "origin": "Origem",
+    "places": "Lugares",
+    "audience": "Público",
+    "when": "Momento",
+    "clicks": "Cliques"
+  },
+  "tabDescriptions": {
+    "overview": "O desempenho do link em uma tela: quantos cliques, se está crescendo, e o que fazer com isso.",
+    "origin": "De onde vem o tráfego: canais, redes sociais, sites que linkaram e campanhas.",
+    "places": "Onde está seu público: países, estados e cidades.",
+    "audience": "Quem clica: aparelho, navegador, idioma e qualidade do tráfego.",
+    "when": "Quando clicam: horários, dias da semana e evolução ao longo do tempo.",
+    "clicks": "Cada acesso registrado, um por linha."
   },
   "temporal": {
     "title": "Análise Temporal",
