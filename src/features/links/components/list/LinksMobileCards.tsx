@@ -11,7 +11,7 @@
  * Shell styles match the desktop card via `getLinkCardShellSx`.
  */
 
-import { BarChart3, Link2 } from "lucide-react";
+import { Link2 } from "lucide-react";
 import {
   alpha,
   Box,
@@ -20,6 +20,7 @@ import {
   Typography,
   Chip,
   Stack,
+  Tooltip,
   useTheme,
   Skeleton,
 } from "@mui/material";
@@ -48,12 +49,12 @@ import type {
 
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
-import { formatCompact } from "@/lib/utils";
 import {
   linksRadius,
+  getDemoChipSx,
   getLinkCardShellSx,
-  getLinkClickChipSx,
   getNewlyCreatedHighlightSx,
+  getStaggeredEntranceSx,
   linkCardContentSx,
   linkCardListItemMb,
 } from "./linksPanelStyles";
@@ -96,7 +97,7 @@ const LinkMobileCard = memo(
     const theme = useTheme();
     const navigate = useNavigate();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const { t, i18n } = useTranslation("links");
+    const { t } = useTranslation("links");
 
     const shortUrl = useShortUrl(link.slug || link.custom_slug || "");
     const displayUrl = shortUrl.replace(/^https?:\/\//, "");
@@ -165,13 +166,17 @@ const LinkMobileCard = memo(
             >
               {link.title || meta?.preview?.og_title || t("list.noTitle")}
             </Typography>
-            {/* Chip de cliques — visual (o card inteiro já navega p/ analytics). */}
-            <Chip
-              size="small"
-              icon={<BarChart3 size={11} strokeWidth={2.25} />}
-              label={formatCompact(link.clicks || 0, i18n.language)}
-              sx={getLinkClickChipSx(theme)}
-            />
+            {/* Sem chip de cliques: a contagem exata já está no rodapé de
+                métricas deste mesmo card. */}
+            {link.is_demo ? (
+              <Tooltip title={t("list.demo.badgeTooltip")} arrow>
+                <Chip
+                  size="small"
+                  label={t("list.demo.badge")}
+                  sx={getDemoChipSx(theme)}
+                />
+              </Tooltip>
+            ) : null}
             {linkStatus !== "active" ? (
               <Chip
                 size="small"
@@ -323,7 +328,9 @@ export const LinksMobileCards = memo(
     }
 
     return (
-      <Box>
+      // Mesmo escalonamento de entrada do grid desktop: sem ele os cards do
+      // mobile entravam todos no mesmo frame, num bloco só.
+      <Box sx={getStaggeredEntranceSx(data.length)}>
         {data.map((link) => (
           <LinkMobileCard
             key={link.id}

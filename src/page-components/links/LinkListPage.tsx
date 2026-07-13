@@ -12,6 +12,7 @@ import {
   LinksQuickCreate,
 } from "@/features/links/components/list";
 import { useLinksTour } from "@/features/links/onboarding/useLinksTour";
+import { useDemoLinkSeeding } from "@/features/links/hooks/useDemoLinkSeeding";
 import { useLinks, useDeleteLink } from "@/features/links/hooks/useLinks";
 import { useNewlyCreatedLinkHighlight } from "@/features/links/hooks/useNewlyCreatedLinkHighlight";
 import { useLinksMeta } from "@/features/links/hooks/useLinksMeta";
@@ -29,7 +30,17 @@ function LinkListPage() {
   const { isMobile } = useResponsive();
   const { t } = useTranslation("links");
   const { links, loading } = useLinks();
-  const tour = useLinksTour({ ready: !loading && links.length > 0 });
+  const { isSeedingDemo } = useDemoLinkSeeding(links, loading);
+
+  // O tour é atrelado à chegada do link de exemplo, não só ao fim do loading:
+  // dois dos cinco passos ("veja o analytics", "ações do link") apontam para
+  // âncoras que vivem *dentro* de um card de link. Rodar antes do card existir
+  // faria esses passos apontarem para o nada. Para um cadastro novo, o primeiro
+  // card é justamente o link de exemplo — então o tour espera o seed terminar e
+  // abre em cima dele.
+  const tour = useLinksTour({
+    ready: !loading && !isSeedingDemo && links.length > 0,
+  });
   const { mutateAsync: deleteLinkMutation } = useDeleteLink();
   const deleteLink = (id: string): Promise<void> =>
     deleteLinkMutation(id).then(() => undefined);
@@ -37,6 +48,16 @@ function LinkListPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [tagFilter, setTagFilter] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState("created_at");
+
+  // O link de exemplo não conta na visão geral da conta. Ele traz 1.247 cliques
+  // sintéticos: somados aqui, dominavam "Total de cliques" e "Média por link" e
+  // faziam os números da conta descreverem dados que o usuário nunca gerou. Ele
+  // segue aparecendo na lista (com o selo "Exemplo") — só não entra na conta.
+  // Mesma regra que o backend já aplica nas métricas dele (`is_demo = false`).
+  const realLinks = useMemo(
+    () => links.filter((link) => !link.is_demo),
+    [links],
+  );
 
   const hasActiveFilters =
     Boolean(searchTerm) || statusFilter !== "all" || tagFilter !== null;
@@ -170,6 +191,12 @@ function LinkListPage() {
                 </Button>
               }
             />
+            {/* Gate em `links`, não em `realLinks`: o passo 2 do tour aponta para
+                a âncora `overview`, e um cadastro novo só tem o link de exemplo.
+                Gatilhar por `realLinks` esconderia o bloco justo para quem está
+                fazendo o tour, e o passo apontaria para o nada. Quem só tem o
+                exemplo vê zeros aqui — o que é verdade: ele não criou link nenhum
+                nem recebeu clique real. */}
             {links.length > 0 ? (
               <Box data-tour="overview" sx={{ mt: { xs: 2, sm: 2.5 } }}>
                 <Typography
@@ -185,7 +212,7 @@ function LinkListPage() {
                 >
                   {t("list.sections.overview")}
                 </Typography>
-                <LinkMetrics linksData={links} showTitle={false} />
+                <LinkMetrics linksData={realLinks} showTitle={false} />
               </Box>
             ) : null}
           </Box>
@@ -212,6 +239,7 @@ function LinkListPage() {
               hasActiveFilters={hasActiveFilters}
               onClearFilters={handleClearFilters}
               onDelete={deleteLink}
+              isSeedingDemo={isSeedingDemo}
             />
           </Box>
         </Stack>

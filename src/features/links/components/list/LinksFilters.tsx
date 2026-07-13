@@ -1,5 +1,5 @@
 "use client";
-import { Search, ArrowUpDown, Rows2, Rows4 } from "lucide-react";
+import { Search, ArrowUpDown } from "lucide-react";
 import { ICON_SM, ICON_LG } from "@/lib/theme/iconDefaults";
 import {
   Box,
@@ -11,24 +11,17 @@ import {
   Select,
   Stack,
   TextField,
-  ToggleButton,
-  ToggleButtonGroup,
   useTheme,
 } from "@mui/material";
 import { debounce } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { LinkDensity } from "@/features/links/hooks/useLinkDensity";
 import { useTags } from "@/features/links/hooks/useTags";
 
 import { getSoftSelectedChipSx } from "@/lib/theme/softChip";
 
-import {
-  getLinksFilterInsetSx,
-  getLinksPanelSx,
-  getLinksBorderColor,
-} from "./linksPanelStyles";
+import { getLinksFilterInsetSx, getLinksPanelSx } from "./linksPanelStyles";
 
 interface LinksFiltersProps {
   searchTerm: string;
@@ -39,12 +32,6 @@ interface LinksFiltersProps {
   onSortChange: (value: string) => void;
   /** When true, renders inside a parent card (no outer paper wrapper). */
   embedded?: boolean;
-  /** Active row density; required when `showDensityToggle` is true. */
-  density?: LinkDensity;
-  /** Called when the user picks a new density. */
-  onDensityChange?: (density: LinkDensity) => void;
-  /** Renders the comfortable/compact segmented control (desktop only). */
-  showDensityToggle?: boolean;
   /** Selected tag id filter, or `null` when no tag filter is active. */
   tagFilter?: number | null;
   /** Called when the user picks (or clears) a tag filter chip. */
@@ -59,9 +46,6 @@ export function LinksFilters({
   sortBy,
   onSortChange,
   embedded = false,
-  density = "comfortable",
-  onDensityChange,
-  showDensityToggle = false,
   tagFilter = null,
   onTagFilterChange,
 }: LinksFiltersProps) {
@@ -186,7 +170,7 @@ export function LinksFilters({
 
       <Divider />
 
-      {/* Linha 2: chips de status + densidade */}
+      {/* Linha 2: chips de status */}
       <Box
         sx={{
           display: "flex",
@@ -218,46 +202,6 @@ export function LinksFilters({
             />
           ))}
         </Stack>
-
-        {showDensityToggle ? (
-          <ToggleButtonGroup
-            value={density}
-            exclusive
-            size="small"
-            onChange={(_, next: LinkDensity | null) => {
-              if (next) onDensityChange?.(next);
-            }}
-            aria-label={t("filters.density.label")}
-            sx={{
-              flexShrink: 0,
-              "& .MuiToggleButton-root": {
-                px: 0.875,
-                py: 0.375,
-                border: `1px solid ${getLinksBorderColor(theme)}`,
-                color: "text.secondary",
-                "&.Mui-selected": {
-                  color: "primary.main",
-                  bgcolor: "action.selected",
-                },
-              },
-            }}
-          >
-            <ToggleButton
-              value="comfortable"
-              aria-label={t("filters.density.comfortable")}
-              title={t("filters.density.comfortable")}
-            >
-              <Rows2 {...ICON_SM} />
-            </ToggleButton>
-            <ToggleButton
-              value="compact"
-              aria-label={t("filters.density.compact")}
-              title={t("filters.density.compact")}
-            >
-              <Rows4 {...ICON_SM} />
-            </ToggleButton>
-          </ToggleButtonGroup>
-        ) : null}
       </Box>
 
       {/* Linha 3: filtro por tag — só aparece quando o usuário já tem tags. */}

@@ -197,42 +197,35 @@ export function getLinkCardShellSx(theme: Theme) {
 export const linkCardListItemMb = { xs: 2, sm: 2.25 } as const;
 
 /**
- * Chip de cliques do card — pill azul que resume a métrica principal e serve
- * de porta de entrada colorida para o analytics (padrão Dub/Bitly).
+ * Selo "Exemplo" do link de demonstração semeado no cadastro.
+ *
+ * Neutro de propósito: ele informa a *procedência* do link, não um status, e não
+ * pode competir por atenção com os chips de status coloridos. Em dark a fonte é
+ * branca, seguindo a mesma regra dos demais chips.
  *
  * @param theme - tema MUI ativo.
- * @returns sx do `Chip` de cliques.
+ * @returns sx do `Chip` de exemplo.
  */
-export function getLinkClickChipSx(theme: Theme) {
+export function getDemoChipSx(theme: Theme) {
   const isDark = theme.palette.mode === "dark";
-  const primary = theme.palette.primary.main;
-  const primaryDark = theme.palette.primary.dark;
+  const ink = theme.palette.text.primary;
 
   return {
-    height: 22,
+    height: 20,
     flexShrink: 0,
     borderRadius: `${linksRadius.chip}px`,
-    fontSize: "0.6875rem",
+    fontSize: "0.625rem",
     fontWeight: 600,
-    fontVariantNumeric: "tabular-nums",
-    // Fonte branca (não primary.light) — chips coloridos precisam de texto
-    // branco em dark para leitura; regra vale p/ futuros chips de tag.
-    color: isDark ? theme.palette.common.white : theme.palette.primary.dark,
-    // Em dark o chip é um azul profundo (primary.dark) — tom mais escuro que
-    // se destaca sobre o véu claro do card sem "brilhar".
-    bgcolor: isDark ? alpha(primaryDark, 0.55) : alpha(primary, 0.1),
-    border: `1px solid ${alpha(primaryDark, isDark ? 0.55 : 0.28)}`,
-    "& .MuiChip-icon": { color: "inherit", ml: 0.625 },
+    letterSpacing: "0.02em",
+    color: isDark ? theme.palette.common.white : theme.palette.text.secondary,
+    bgcolor: alpha(ink, isDark ? 0.1 : 0.06),
+    border: `1px solid ${alpha(ink, isDark ? 0.2 : 0.14)}`,
     "& .MuiChip-label": { px: 0.75 },
-    "&:hover": {
-      bgcolor: isDark ? alpha(primaryDark, 0.7) : alpha(primary, 0.16),
-    },
   };
 }
 
 /**
- * Tag chip — same pill shape as {@link getLinkClickChipSx}, tinted with the
- * tag's own color instead of `primary`.
+ * Tag chip — pill de tag, tingido com a cor da própria tag.
  *
  * Dark mode: chip text is always `common.white` over `alpha(color, 0.25)`
  * background — a per-tag color is rarely light enough to read as text on a
@@ -260,8 +253,26 @@ export function getTagChipSx(theme: Theme, color: string) {
   };
 }
 
-/** Row density for the desktop browse list. */
-export type LinkCardDensity = "comfortable" | "compact";
+/** Defasagem (ms) entre a entrada de um card e a do card seguinte. */
+const CARD_ENTER_STAGGER_MS = 45;
+
+/**
+ * Escalona a entrada dos cards: cada filho direto ganha um `animation-delay`
+ * crescente, de modo que a lista cascateia em vez de aparecer num bloco só. A
+ * animação em si mora no shell do card ({@link getLinkCardShellSx}); aqui só
+ * se distribui o atraso. Vale para o grid (desktop) e para a lista (mobile).
+ *
+ * @param count - quantos filhos escalonar (na prática, o PAGE_SIZE da lista).
+ * @returns sx com um `animation-delay` por filho.
+ */
+export function getStaggeredEntranceSx(count: number) {
+  return Object.fromEntries(
+    Array.from({ length: count }, (_, i) => [
+      `& > *:nth-of-type(${i + 1})`,
+      { animationDelay: `${i * CARD_ENTER_STAGGER_MS}ms` },
+    ]),
+  );
+}
 
 /**
  * Grid do browse list (desktop). Mobile-first: 1 coluna é o estado natural;
@@ -269,26 +280,16 @@ export type LinkCardDensity = "comfortable" | "compact";
  * ≥560px. `alignItems: "start"` evita que um card futuro de altura variável
  * estique o vizinho da mesma linha.
  *
- * @param density - densidade ativa da lista.
+ * @param staggerCount - quantos cards escalonar na entrada (PAGE_SIZE da lista).
  * @returns sx do container do grid.
  */
-export function getLinksBrowseGridSx(density: LinkCardDensity) {
+export function getLinksBrowseGridSx(staggerCount: number) {
   return {
     display: "grid",
-    gridTemplateColumns:
-      density === "comfortable"
-        ? "repeat(auto-fill, minmax(min(560px, 100%), 1fr))"
-        : "1fr",
-    gap: density === "comfortable" ? 2 : 1.25,
+    gridTemplateColumns: "repeat(auto-fill, minmax(min(560px, 100%), 1fr))",
+    gap: 2,
     alignItems: "start",
-    // Stagger da animação de entrada dos cards (definida no shell) — só os 8
-    // primeiros (PAGE_SIZE) precisam de delay próprio.
-    ...Object.fromEntries(
-      Array.from({ length: 8 }, (_, i) => [
-        `& > *:nth-of-type(${i + 1})`,
-        { animationDelay: `${i * 45}ms` },
-      ]),
-    ),
+    ...getStaggeredEntranceSx(staggerCount),
   } as const;
 }
 
@@ -367,22 +368,6 @@ export const linkCardContentSx = {
   px: { xs: 1.5, sm: 2 },
   py: { xs: 1, sm: 1.25 },
 } as const;
-
-/** Card inner padding, tightened in `compact` density. */
-const linkCardContentCompactSx = {
-  px: { xs: 1.25, sm: 1.5 },
-  py: { xs: 0.5, sm: 0.625 },
-} as const;
-
-/**
- * Inner padding for a desktop link card, tightened in `compact` density.
- *
- * @param density - the active list density.
- * @returns the responsive padding `sx` for {@link linkCardContentSx}.
- */
-export function getLinkCardContentSx(density: LinkCardDensity) {
-  return density === "compact" ? linkCardContentCompactSx : linkCardContentSx;
-}
 
 /** Subtle inset for filter toolbar inside a links panel. */
 export function getLinksFilterInsetSx(theme: Theme) {
