@@ -290,8 +290,6 @@ export function LinkAnalyticsTabsOptimized({
               excludeBots={filters.excludeBots}
               continent={filters.continent}
               onContinentChange={filters.setContinent}
-              subTabIndex={filters.geoSubTab}
-              onSubTabChange={filters.setGeoSubTab}
             />,
           )}
 

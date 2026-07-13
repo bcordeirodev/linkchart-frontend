@@ -413,9 +413,10 @@
     "empty": "Dados geográficos indisponíveis",
     "countriesReached": "{{count}} países alcançados",
     "mapListToggle": {
-      "ariaLabel": "Alternar entre mapa e lista",
+      "ariaLabel": "Alternar entre mapa, lista e mapa de calor",
       "map": "Mapa",
-      "list": "Lista"
+      "list": "Lista",
+      "heat": "Calor"
     },
     "metrics": {
       "title": "Métricas Geográficas",

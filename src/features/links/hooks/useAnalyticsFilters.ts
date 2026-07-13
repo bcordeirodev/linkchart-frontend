@@ -47,11 +47,9 @@ export interface AnalyticsFilters {
 
   // Geographic
   continent: string | null;
-  /** Index of the active geographic sub-tab (0=Mapa e ranking, 1=Continentes e países, 2=Mapa de calor). URL-persisted so it survives RSC remounts. */
-  geoSubTab: number;
 
   // Origin
-  /** Index of the active origin sub-tab (0=Canais, 1=Redes sociais, 2=Campanhas, 3=Contexto). URL-persisted so it survives RSC remounts. */
+  /** Index of the active origin sub-tab (0=Canais e redes, 1=Campanhas, 2=Detalhes técnicos). URL-persisted so it survives RSC remounts. */
   originSubTab: number;
 
   // Audience
@@ -66,15 +64,14 @@ export interface AnalyticsFilters {
   setSegment: (v: Segment) => void;
   setTemporalSubTab: (v: number) => void;
   setContinent: (v: string | null) => void;
-  setGeoSubTab: (v: number) => void;
   setOriginSubTab: (v: number) => void;
   setAudienceSubTab: (v: number) => void;
 }
 
 /**
  * Parses a sub-tab index URL param, clamping to `[0, maxIndex]`.
- * Mirrors the numeric-index pattern used for every sub-tab param (`geoSubTab`,
- * `temporalSubTab`, `originSubTab`, `audienceSubTab`) — out-of-range or
+ * Mirrors the numeric-index pattern used for every sub-tab param
+ * (`temporalSubTab`, `originSubTab`, `audienceSubTab`) — out-of-range or
  * non-numeric values fall back to `0` instead of throwing.
  *
  * @param raw - Raw string value read from `URLSearchParams.get(...)`.
@@ -183,12 +180,12 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   const tab = parseEnum<TabId>(searchParams.get("tab"), TAB_IDS, "overview");
 
   // Sub-tab indices — one per top-level tab that has its own secondary nav.
-  const geoSubTab = parseSubTabIndex(searchParams.get("geoSubTab"), 2);
+  // "Lugares" has none: its three views are a toggle inside one card.
   const temporalSubTab = parseSubTabIndex(
     searchParams.get("temporalSubTab"),
     3,
   );
-  const originSubTab = parseSubTabIndex(searchParams.get("originSubTab"), 3);
+  const originSubTab = parseSubTabIndex(searchParams.get("originSubTab"), 2);
   const audienceSubTab = parseSubTabIndex(
     searchParams.get("audienceSubTab"),
     4,
@@ -269,11 +266,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     [setParam],
   );
 
-  const setGeoSubTab = useCallback(
-    (v: number) => setParam({ geoSubTab: v === 0 ? null : String(v) }),
-    [setParam],
-  );
-
   const setTemporalSubTab = useCallback(
     (v: number) => setParam({ temporalSubTab: v === 0 ? null : String(v) }),
     [setParam],
@@ -298,7 +290,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     segment,
     temporalSubTab,
     continent,
-    geoSubTab,
     originSubTab,
     audienceSubTab,
     setPeriod,
@@ -308,7 +299,6 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     setSegment,
     setTemporalSubTab,
     setContinent,
-    setGeoSubTab,
     setOriginSubTab,
     setAudienceSubTab,
   };
