@@ -37,6 +37,10 @@
     },
     "socialIab": {
       "phaseDisclaimer": "Dados de apps sociais disponíveis apenas para cliques recentes (rastreamento Fase 1)"
+    },
+    "whatThisMeans": {
+      "title": "O que isso quer dizer",
+      "description": "A leitura dos números acima, em português claro — e o que dá para fazer com ela."
     }
   },
   "filters": {
@@ -1032,6 +1036,11 @@
           "recommendation": "Implemente newsletters, notificações push ou conteúdo serializado."
         }
       }
+    },
+    "priority": {
+      "high": "Alta",
+      "medium": "Média",
+      "low": "Baixa"
     }
   },
   "linkInfo": {

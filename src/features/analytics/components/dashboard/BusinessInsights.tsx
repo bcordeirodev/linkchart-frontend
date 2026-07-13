@@ -265,16 +265,19 @@ export function BusinessInsights({
 
                         <Chip
                           icon={getPriorityIcon(insight.priority)}
-                          label={insight.priority.toUpperCase()}
+                          label={t(`insights.priority.${insight.priority}`)}
                           size="small"
                           sx={{
                             backgroundColor: alpha(palette.main, 0.12),
-                            color: palette.main,
+                            // White in dark mode: the label used to be
+                            // `palette.main` over a 12% tint of `palette.main`
+                            // — the same hue on itself, which barely reads.
+                            color: isDark ? "common.white" : palette.dark,
                             fontWeight: 600,
                             fontSize: "0.75rem",
                             border: `1px solid ${alpha(palette.main, 0.3)}`,
                             "& .MuiChip-icon": {
-                              color: palette.main,
+                              color: isDark ? "common.white" : palette.dark,
                               fontSize: "1rem",
                             },
                           }}

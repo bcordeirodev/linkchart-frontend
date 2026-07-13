@@ -10,7 +10,6 @@ import { SectionDivider } from "@/shared/ui/SectionDivider";
 
 import type { DashboardData } from "@/types/analytics/dashboard";
 
-import { UtmSourceCard, SocialAppCard } from "./cards";
 import {
   DayOfWeekChart,
   DeviceBreakdownChart,
@@ -40,7 +39,7 @@ export interface ChartData {
   socialIab?: NonNullable<DashboardData["summary"]>["social_iab"];
 }
 
-type DashboardChartSectionId = "temporal" | "audience" | "acquisition";
+type DashboardChartSectionId = "temporal" | "audience";
 
 /** Props accepted by the {@link DashboardChartSection} component. */
 interface DashboardChartSectionProps {
@@ -79,7 +78,13 @@ export function chartFlags(chartData: ChartData) {
 
 /**
  * Renders one dashboard chart section inside its own Grid container so section
- * order stays stable (Temporal → Audience → Acquisition last).
+ * order stays stable (Temporal → Audience).
+ *
+ * The "Aquisição" section (UTM + social-app cards) used to live here too. It
+ * now lives only in the Origem tab's "Campanhas" sub-tab — rendering it in both
+ * places was the same data twice, which is what this redesign exists to remove.
+ * `chartFlags` still exposes `hasUtm`/`hasSocial`/`hasAcquisition` because the
+ * Origem tab reads them.
  */
 export const DashboardChartSection = React.memo(function DashboardChartSection({
   chartData,
@@ -97,22 +102,14 @@ export const DashboardChartSection = React.memo(function DashboardChartSection({
     hasTemporal,
     hasGeographic,
     hasDevice,
-    hasUtm,
-    hasSocial,
     hasAudience,
-    hasAcquisition,
   } = flags;
 
   if (section === "temporal" && !hasTemporal) return null;
   if (section === "audience" && !hasAudience) return null;
-  if (section === "acquisition" && !hasAcquisition) return null;
 
   const sectionTitle =
-    section === "temporal"
-      ? t("sections.temporal")
-      : section === "audience"
-        ? t("sections.audience")
-        : t("sections.acquisition");
+    section === "temporal" ? t("sections.temporal") : t("sections.audience");
 
   const chartCells: { key: string; node: ReactNode }[] = [];
 
@@ -158,18 +155,6 @@ export const DashboardChartSection = React.memo(function DashboardChartSection({
           height={height}
         />
       ),
-    });
-  }
-  if (section === "acquisition" && hasUtm) {
-    chartCells.push({
-      key: "utm",
-      node: <UtmSourceCard data={chartData.utmTopSources!} />,
-    });
-  }
-  if (section === "acquisition" && hasSocial) {
-    chartCells.push({
-      key: "social",
-      node: <SocialAppCard data={chartData.socialIab!} />,
     });
   }
 

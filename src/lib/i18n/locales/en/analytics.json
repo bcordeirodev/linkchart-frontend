@@ -37,6 +37,10 @@
     },
     "socialIab": {
       "phaseDisclaimer": "Social in-app data only available for recent clicks (Phase 1 tracking)"
+    },
+    "whatThisMeans": {
+      "title": "What this means",
+      "description": "The numbers above, read back in plain language — and what you can do about them."
     }
   },
   "filters": {
@@ -1032,6 +1036,11 @@
           "recommendation": "Implement newsletters, push notifications, or serialized content."
         }
       }
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
     }
   },
   "linkInfo": {

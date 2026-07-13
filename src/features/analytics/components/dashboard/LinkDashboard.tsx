@@ -14,12 +14,15 @@ import { Circle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { useDashboardData } from "@/features/analytics/hooks/useDashboardData";
+import { useInsightsData } from "@/features/analytics/hooks/useInsightsData";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { EmptyState } from "@/shared/ui/base/EmptyState";
+import { SectionDivider } from "@/shared/ui/SectionDivider";
 
 import type { DashboardSummary } from "@/types/analytics/dashboard";
 
+import { BusinessInsights } from "./BusinessInsights";
 import { OverviewKpiHeader } from "./OverviewKpiHeader";
 import { OverviewSkeleton } from "./OverviewSkeleton";
 import {
@@ -96,6 +99,24 @@ export function LinkDashboard({
     },
   );
 
+  // The `/insights` payload survived the death of the Insights tab: its
+  // plain-language reading of the numbers is what a non-expert actually came
+  // for, so it moved up here. Skipped entirely in `compact` mode (the tile on
+  // the links list has no room for it).
+  const { data: insightsData } = useInsightsData({
+    linkId,
+    dateFrom,
+    dateTo,
+    excludeBots,
+    enabled: !compact,
+  });
+
+  /** The three highest-priority insights — `BusinessInsights` sorts by priority itself. */
+  const topInsights = useMemo(
+    () => insightsData?.insights ?? [],
+    [insightsData],
+  );
+
   /**
    * Pre-maps raw DashboardData into the shapes expected by each chart component.
    * Memoized so the transformation only re-runs when `data` actually changes,
@@ -169,7 +190,32 @@ export function LinkDashboard({
           trendPct={data?.summary?.clicks_variation_pct ?? null}
         />
 
-        {/* Gráficos — seções em ordem fixa; Canais de Aquisição por último */}
+        {/* "O que isso quer dizer" — the plain-language reading of the numbers
+            above. It used to sit at the bottom of the longest tab in the app,
+            where a non-expert would never reach it. It is the page's promise,
+            so it goes right under the headline metrics, capped at the three
+            highest-priority items (BusinessInsights sorts by priority). */}
+        {!compact && topInsights.length > 0 ? (
+          <Box sx={{ mt: { xs: 2, md: 3 } }}>
+            <SectionDivider title={t("dashboard.whatThisMeans.title")} />
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mb: 1.5, mt: -0.5 }}
+            >
+              {t("dashboard.whatThisMeans.description")}
+            </Typography>
+            <BusinessInsights
+              insights={topInsights}
+              showTitle={false}
+              maxItems={3}
+            />
+          </Box>
+        ) : null}
+
+        {/* Gráficos — seções em ordem fixa. "Aquisição" (UTM) saiu daqui: vive
+            na aba Origem, sub-tab Campanhas. Nos dois lugares seria duplicação
+            — exatamente o que este redesenho existe para matar. */}
         {!compact && showCharts && chartData ? (
           chartFlags(chartData).hasAny ? (
             <Stack spacing={3} sx={{ mt: { xs: 2, md: 3 } }}>
@@ -182,11 +228,6 @@ export function LinkDashboard({
                 chartData={chartData}
                 height={chartsHeight}
                 section="audience"
-              />
-              <DashboardChartSection
-                chartData={chartData}
-                height={chartsHeight}
-                section="acquisition"
               />
             </Stack>
           ) : (

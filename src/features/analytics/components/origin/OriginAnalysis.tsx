@@ -9,7 +9,7 @@ import { useDashboardData } from "@/features/analytics/hooks/useDashboardData";
 import { useInsightsData } from "@/features/analytics/hooks/useInsightsData";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
-import { AnalyticsSubTabs } from "@/shared/ui/navigation";
+import { AnalyticsSubTabs, resolveEnabledSubTab } from "@/shared/ui/navigation";
 
 import { BehaviorSection } from "../audience/BehaviorSection";
 import { FetchDestChart } from "../audience/FetchDestChart";
@@ -103,10 +103,9 @@ interface OriginAnalysisProps {
  * - {@link useAudienceData} for `social_platform_breakdown` and
  *   `fetch_dest_breakdown`.
  * - {@link useDashboardData} for `summary.utm_top_sources` and
- *   `summary.social_iab`, which `UtmSourceCard`/`SocialAppCard` still only
- *   accept in this shape (they are relocated here from the dashboard's
- *   "acquisition" section, which keeps rendering them too until the
- *   duplicate is removed in a later task).
+ *   `summary.social_iab`, which `UtmSourceCard`/`SocialAppCard` accept in this
+ *   shape. They live *only* here now — the dashboard's "acquisition" section
+ *   that used to render them too is gone.
  *
  * Every child component owns its own title + description, so this
  * orchestrator adds no redundant section headers beyond the sub-tab label
@@ -135,7 +134,7 @@ export function OriginAnalysis({
   const activeSubTab = subTabIndex ?? localSubTab;
 
   /**
-   * Handles sub-tab changes (Canais / Redes sociais / Campanhas / Contexto).
+   * Handles sub-tab changes (Canais e redes / Campanhas / Detalhes técnicos).
    *
    * In controlled mode (`onSubTabChange` provided) the caller owns the state
    * (typically writing to URL search params); otherwise local state is
@@ -216,6 +215,29 @@ export function OriginAnalysis({
     refreshDashboard();
   };
 
+  const subTabs = [
+    {
+      label: t("origin.subtabs.channelsAndSocial"),
+      icon: <Radio {...ICON_SM} />,
+      disabled: !hasChannels && !hasSocial,
+    },
+    {
+      label: t("origin.subtabs.campaigns"),
+      icon: <Megaphone {...ICON_SM} />,
+      disabled: !hasCampaigns,
+    },
+    {
+      label: t("origin.sections.technicalDetails"),
+      icon: <Wrench {...ICON_SM} />,
+      disabled: !hasContext,
+    },
+  ];
+
+  // The index comes from the URL, so it can point at a sub-tab whose dataset is
+  // empty (deep link, or a filter that emptied it). Without this, that sub-tab
+  // renders disabled *and* selected, and its panel renders nothing at all.
+  const visibleSubTab = resolveEnabledSubTab(activeSubTab, subTabs);
+
   return (
     <Box>
       <AnalyticsStateManager
@@ -229,31 +251,15 @@ export function OriginAnalysis({
         minHeight={300}
       >
         <AnalyticsSubTabs
-          value={activeSubTab}
+          value={visibleSubTab}
           onChange={handleSubTabChange}
           ariaLabel={t("tabs.origin")}
-          tabs={[
-            {
-              label: t("origin.subtabs.channelsAndSocial"),
-              icon: <Radio {...ICON_SM} />,
-              disabled: !hasChannels && !hasSocial,
-            },
-            {
-              label: t("origin.subtabs.campaigns"),
-              icon: <Megaphone {...ICON_SM} />,
-              disabled: !hasCampaigns,
-            },
-            {
-              label: t("origin.sections.technicalDetails"),
-              icon: <Wrench {...ICON_SM} />,
-              disabled: !hasContext,
-            },
-          ]}
+          tabs={subTabs}
         >
           {/* Sub-tab 0: Canais e redes — the per-platform social breakdown is
               the natural zoom of the `social` channel, not a separate
               question, so both live on one screen. */}
-          {activeSubTab === 0 && (hasChannels || hasSocial) ? (
+          {visibleSubTab === 0 && (hasChannels || hasSocial) ? (
             <Stack spacing={3}>
               {hasChannels ? <ChannelsBreakdown channels={channels} /> : null}
               {hasSocial ? (
@@ -264,7 +270,7 @@ export function OriginAnalysis({
 
           {/* Sub-tab 1: Campanhas (UTM) — relocated from the dashboard's
               acquisition section */}
-          {activeSubTab === 1 && hasCampaigns ? (
+          {visibleSubTab === 1 && hasCampaigns ? (
             <Box sx={twoColGridSx(hasUtm && hasSocialIab)}>
               {hasUtm ? <UtmSourceCard data={utmTopSources} /> : null}
               {hasSocialIab ? <SocialAppCard data={socialIab} /> : null}
@@ -276,7 +282,7 @@ export function OriginAnalysis({
               *how* traffic arrived, not *how much*, which sub-tab 0 already
               answers. Same name and icon as Público's last sub-tab, so the
               pattern is recognisable across tabs. */}
-          {activeSubTab === 2 && hasContext ? (
+          {visibleSubTab === 2 && hasContext ? (
             <Stack spacing={3}>
               {hasNavigationContext || hasFetchDest ? (
                 <Box sx={twoColGridSx(hasNavigationContext && hasFetchDest)}>

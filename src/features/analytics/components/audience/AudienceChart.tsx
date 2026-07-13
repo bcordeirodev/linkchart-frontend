@@ -9,7 +9,7 @@ import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { chartByType } from "@/lib/theme/colors";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { AnalyticsEmptyState } from "@/shared/ui/base";
-import { AnalyticsSubTabs } from "@/shared/ui/navigation";
+import { AnalyticsSubTabs, resolveEnabledSubTab } from "@/shared/ui/navigation";
 
 import type {
   BrowserData,
@@ -205,34 +205,41 @@ export function AudienceChart({
     onTabChange?.(newValue);
   };
 
+  const subTabs = [
+    {
+      label: t("audience.subtabs.profile"),
+      icon: <Smartphone {...ICON_SM} />,
+    },
+    {
+      label: t("audience.sections.qualityAndLoyalty"),
+      icon: <ShieldCheck {...ICON_SM} />,
+      disabled: !hasQualitySection,
+    },
+    {
+      label: t("audience.subtabs.technical"),
+      icon: <Wrench {...ICON_SM} />,
+      disabled: !hasTechnicalDetails,
+    },
+  ];
+
+  // The index comes from the URL, so it can point at a sub-tab whose dataset is
+  // empty. Without this it would render disabled *and* selected, with a blank
+  // panel underneath.
+  const visibleTab = resolveEnabledSubTab(activeTab, subTabs);
+
   return (
     <Box sx={{ width: "100%", overflow: "hidden" }}>
       <AnalyticsSubTabs
-        value={activeTab}
+        value={visibleTab}
         onChange={handleTabChange}
         ariaLabel={t("tabs.audience")}
-        tabs={[
-          {
-            label: t("audience.subtabs.profile"),
-            icon: <Smartphone {...ICON_SM} />,
-          },
-          {
-            label: t("audience.sections.qualityAndLoyalty"),
-            icon: <ShieldCheck {...ICON_SM} />,
-            disabled: !hasQualitySection,
-          },
-          {
-            label: t("audience.subtabs.technical"),
-            icon: <Wrench {...ICON_SM} />,
-            disabled: !hasTechnicalDetails,
-          },
-        ]}
+        tabs={subTabs}
       >
         {/* Sub-tab 0: Perfil — device, browser, system and language are one
             question ("what did this person click with?") cut four ways, not
             four questions. They used to be three separate sub-tabs, each a
             single short card. One screen, all four in horizontal bars. */}
-        {activeTab === 0 && (
+        {visibleTab === 0 && (
           <Stack spacing={2}>
             <AudienceDevicesTab
               deviceBreakdown={deviceBreakdown}
@@ -256,7 +263,7 @@ export function AudienceChart({
 
         {/* Sub-tab 1: Qualidade e fidelidade — quality tier bars, bot/
             fingerprint stat cards, retention, session depth */}
-        {activeTab === 1 && hasQualitySection && (
+        {visibleTab === 1 && hasQualitySection && (
           <Stack spacing={2}>
             {quality ? (
               <QualitySection quality={quality} showTitle={false} />
@@ -284,7 +291,7 @@ export function AudienceChart({
             `AudienceLanguagesTab` in Perfil: it is not the same metric, it is
             language *with region* (pt-BR vs pt-PT), while Perfil aggregates by
             language family. */}
-        {activeTab === 2 && hasTechnicalDetails && (
+        {visibleTab === 2 && hasTechnicalDetails && (
           <Stack spacing={3}>
             {devicePerformance?.length ? (
               <AudiencePerformanceTab
