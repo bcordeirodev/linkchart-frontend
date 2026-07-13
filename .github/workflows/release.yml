@@ -130,12 +130,15 @@ jobs:
       # Envia SO os artefatos de deploy. O codigo-fonte nao vai mais para o
       # servidor: quem roda e a imagem. Isso evita a armadilha de alguem editar
       # um arquivo no droplet e nao entender por que nada muda.
+      # Dois rsync de proposito: um arquivo listado individualmente e copiado
+      # ACHATADO no destino (scripts/deploy.sh viraria /path/deploy.sh). Para
+      # preservar `scripts/`, o diretorio precisa ser sincronizado como diretorio.
       - name: Enviar compose + script de deploy
         run: |
-          rsync -az \
-            docker-compose.prod.yml \
-            scripts/deploy.sh \
+          rsync -az docker-compose.prod.yml \
             root@${{ env.DEPLOY_HOST }}:${{ env.PROJECT_PATH }}/
+          rsync -az scripts/ \
+            root@${{ env.DEPLOY_HOST }}:${{ env.PROJECT_PATH }}/scripts/
 
       - name: Escrever os secrets de runtime no servidor
         run: |
