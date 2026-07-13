@@ -288,9 +288,6 @@ export function LinkAnalyticsTabsOptimized({
               excludeBots={filters.excludeBots}
               continent={filters.continent}
               onContinentChange={filters.setContinent}
-              // TODO(fase2): removido na task que achata esta aba
-              subTabIndex={0}
-              onSubTabChange={() => {}}
             />,
           )}
 

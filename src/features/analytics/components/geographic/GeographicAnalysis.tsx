@@ -1,29 +1,23 @@
 "use client";
 import { useState } from "react";
-import { Map, BarChart3, Layers } from "lucide-react";
-import { Box, Grid, Skeleton } from "@mui/material";
+import { Box, Skeleton, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useResponsive } from "@/lib/theme";
 
-import { ICON_SM } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
-import { AnalyticsSubTabs } from "@/shared/ui/navigation";
 import { useGeographicData } from "../../hooks/useGeographicData";
 
 import { ContinentBreakdown } from "./ContinentBreakdown";
 import { CountryDistributionChart } from "./CountryDistributionChart";
-import { GeographicChart } from "./GeographicChart";
-import { GeographicChoropleth } from "./GeographicChoropleth";
 import { GeographicFilterBar } from "./GeographicFilterBar";
 import { GeographicInsights } from "./GeographicInsights";
-import { GeographicMetrics } from "./GeographicMetrics";
-import { RealTimeHeatmapChart } from "./index";
+import { GeographicMapAndList, RealTimeHeatmapChart } from "./index";
 
 /**
- * Loading skeleton that mirrors the Geographic tab layout:
- * filter bar → 5 metric cards → bordered sub-tabs container
- * (tab nav + choropleth/sidebar + insights).
+ * Loading skeleton that mirrors the flattened Geographic tab layout:
+ * filter bar → map/list card → continent + country breakdown row →
+ * recommendations → city heat map.
  */
 function GeographicSkeleton() {
   return (
@@ -36,86 +30,61 @@ function GeographicSkeleton() {
         sx={{ mb: 2, borderRadius: 2 }}
       />
 
-      {/* 5 metric cards */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr 1fr",
-            sm: "repeat(3, 1fr)",
-            md: "repeat(5, 1fr)",
-          },
-          gap: 2,
-          mb: 2,
-        }}
-      >
-        {Array.from({ length: 5 }).map((_, i) => (
+      <Stack spacing={{ xs: 3, md: 4 }}>
+        {/* Mapa/Lista — header + toggle + map area */}
+        <Box>
           <Skeleton
-            key={i}
             variant="rounded"
             animation="wave"
-            height={120}
+            height={40}
+            sx={{ mb: 2, borderRadius: 2, maxWidth: 320 }}
+          />
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            height={360}
             sx={{ borderRadius: 2 }}
           />
-        ))}
-      </Box>
-
-      {/* Sub-tabs area — segmented control + content, no wrapper border */}
-      <Box>
-        {/* Segmented control */}
-        <Box sx={{ display: "flex", gap: 0.5, mb: 3 }}>
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton
-              key={i}
-              variant="rounded"
-              animation="wave"
-              width={110}
-              height={36}
-              sx={{ borderRadius: 1 }}
-            />
-          ))}
         </Box>
 
-        {/* Choropleth (8/12) + continent/country sidebar (4/12) */}
+        {/* Continentes + países */}
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "2fr 1fr" },
-            gap: 3,
+            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+            gap: { xs: 2, md: 3 },
           }}
         >
           <Skeleton
             variant="rounded"
             animation="wave"
-            height={400}
+            height={220}
             sx={{ borderRadius: 2 }}
           />
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-            <Skeleton
-              variant="rounded"
-              animation="wave"
-              height={190}
-              sx={{ borderRadius: 2 }}
-            />
-            <Skeleton
-              variant="rounded"
-              animation="wave"
-              height={190}
-              sx={{ borderRadius: 2 }}
-            />
-          </Box>
-        </Box>
-
-        {/* Geographic insights table */}
-        <Box sx={{ mt: 3 }}>
           <Skeleton
             variant="rounded"
             animation="wave"
-            height={230}
+            height={220}
             sx={{ borderRadius: 2 }}
           />
         </Box>
-      </Box>
+
+        {/* Recomendações */}
+        <Skeleton
+          variant="rounded"
+          animation="wave"
+          height={230}
+          sx={{ borderRadius: 2 }}
+        />
+
+        {/* Mapa de calor por cidade */}
+        <Skeleton
+          variant="rounded"
+          animation="wave"
+          height={400}
+          sx={{ borderRadius: 2 }}
+        />
+      </Stack>
     </Box>
   );
 }
@@ -136,30 +105,19 @@ interface GeographicAnalysisProps {
   continent?: string | null;
   /** Callback to propagate `continent` changes to the parent (enables filter bar). */
   onContinentChange?: (v: string | null) => void;
-  /**
-   * Index of the currently active sub-tab (0 = Overview, 1 = Heatmap, 2 = Rankings).
-   *
-   * When provided the component operates in **controlled mode** and the caller
-   * is responsible for persisting this value (e.g. in URL search params) so it
-   * survives RSC-triggered remounts on filter changes.  When omitted the
-   * component falls back to an internal `useState`.
-   */
-  subTabIndex?: number;
-  /** Called when the user selects a different sub-tab. Pair with `subTabIndex`. */
-  onSubTabChange?: (v: number) => void;
 }
 
 /**
- * Componente de análise geográfica com mapa, rankings e breakdown por continente.
+ * "Lugares" tab — answers "where is my audience?" in stacked, scrollable
+ * sections (not sub-tabs): Mapa/Lista → Continentes e países →
+ * Recomendações → Mapa de calor por cidade.
  *
  * Renders an optional {@link GeographicFilterBar} when `onContinentChange` is
  * provided.
  *
- * Sub-tab state can be managed externally via `subTabIndex` + `onSubTabChange`
- * (controlled mode, recommended) or internally via `useState` (uncontrolled
- * fallback).  The controlled mode is required when the parent persists state in
- * the URL so the selected sub-tab survives RSC-triggered remounts on filter
- * changes.
+ * The city heat map ({@link RealTimeHeatmapChart}) is deliberately last —
+ * it is the heaviest section (Leaflet + tile layers) and, from Phase 3
+ * onward, moves behind the "Advanced" mode toggle.
  */
 export function GeographicAnalysis({
   linkId,
@@ -169,16 +127,9 @@ export function GeographicAnalysis({
   excludeBots,
   continent,
   onContinentChange,
-  subTabIndex,
-  onSubTabChange,
 }: GeographicAnalysisProps) {
   const { t } = useTranslation("analytics");
   const { isMobile } = useResponsive();
-
-  // Uncontrolled fallback — used only when `subTabIndex` is not provided.
-  const [localSubTab, setLocalSubTab] = useState(0);
-  /** The active sub-tab index: controlled (URL-persisted) when provided, otherwise local. */
-  const activeSubTab = subTabIndex ?? localSubTab;
 
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
@@ -192,29 +143,11 @@ export function GeographicAnalysis({
     refreshInterval: 30000,
   });
 
-  /**
-   * Handles sub-tab changes (Overview / Heatmap / Rankings).
-   *
-   * In controlled mode (`onSubTabChange` provided) the caller owns the state
-   * (typically writing to URL search params).  In uncontrolled mode the local
-   * state is updated directly.
-   *
-   * @param newValue - The index of the newly selected tab.
-   */
-  const handleSubTabChange = (newValue: number) => {
-    if (onSubTabChange) {
-      onSubTabChange(newValue);
-    } else {
-      setLocalSubTab(newValue);
-    }
-  };
-
-  const hasHeatmapData = (data?.heatmap_data?.length ?? 0) > 0;
-  const hasRankings =
-    (data?.top_countries?.length ?? 0) > 0 ||
-    (data?.top_states?.length ?? 0) > 0 ||
-    (data?.top_cities?.length ?? 0) > 0;
-  const hasContinents = (data?.continents?.length ?? 0) > 0;
+  // CountryDistributionChart renders `null` when there are no countries, so the
+  // continent/country row collapses to a single column instead of leaving an
+  // empty grid cell next to ContinentBreakdown (which always renders — it has
+  // its own empty state).
+  const hasCountryDist = (data?.top_countries?.length ?? 0) > 0;
 
   return (
     <Box>
@@ -237,94 +170,63 @@ export function GeographicAnalysis({
             />
           )}
 
-          {/* 5 metric cards no topo, fora das sub-tabs */}
-          <GeographicMetrics stats={stats} />
+          <Stack
+            spacing={{ xs: 3, md: 4 }}
+            sx={{ mt: onContinentChange ? 2 : 0 }}
+          >
+            {/* 1. Mapa e lista — mesma pergunta, duas visualizações */}
+            <GeographicMapAndList
+              countries={data?.top_countries || []}
+              states={data?.top_states || []}
+              cities={data?.top_cities || []}
+              totalClicks={stats?.totalClicks || 0}
+              selectedCountry={selectedCountry}
+              onCountrySelect={setSelectedCountry}
+            />
 
-          {/* Sub-tabs — shared segmented control switches the content below */}
-          <Box sx={{ mt: 2 }}>
-            <AnalyticsSubTabs
-              value={activeSubTab}
-              onChange={handleSubTabChange}
-              tabs={[
-                {
-                  label: t("geographic.subtabs.overview"),
-                  icon: <Layers {...ICON_SM} />,
-                  disabled: !hasContinents && !hasRankings,
+            {/* 2. Continentes e países */}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  md: hasCountryDist ? "1fr 1fr" : "1fr",
                 },
-                {
-                  label: t("geographic.subtabs.heatmap"),
-                  icon: <Map {...ICON_SM} />,
-                  disabled: !hasHeatmapData,
-                },
-                {
-                  label: t("geographic.subtabs.rankings"),
-                  icon: <BarChart3 {...ICON_SM} />,
-                  disabled: !hasRankings,
-                },
-              ]}
+                gap: { xs: 2, md: 3 },
+              }}
             >
-              {/* Sub-tab 0: Visão geral */}
-              {activeSubTab === 0 && (
-                <Grid container spacing={{ xs: 2, md: 3 }}>
-                  <Grid item xs={12} md={8}>
-                    <GeographicChoropleth
-                      countries={data?.top_countries || []}
-                      selectedCountry={selectedCountry}
-                      onCountrySelect={setSelectedCountry}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <Box
-                      sx={{ display: "flex", flexDirection: "column", gap: 3 }}
-                    >
-                      <ContinentBreakdown
-                        continents={data?.continents || []}
-                        activeContinentCode={continent ?? null}
-                      />
-                      <CountryDistributionChart
-                        countries={data?.top_countries || []}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <GeographicInsights
-                      countries={data?.top_countries || []}
-                      states={data?.top_states || []}
-                      cities={data?.top_cities || []}
-                      totalCountries={stats?.totalCountries}
-                    />
-                  </Grid>
-                </Grid>
-              )}
+              <ContinentBreakdown
+                continents={data?.continents || []}
+                activeContinentCode={continent ?? null}
+              />
+              <CountryDistributionChart countries={data?.top_countries || []} />
+            </Box>
 
-              {/* Sub-tab 1: Mapa de calor — height is capped on mobile to avoid consuming the full viewport */}
-              {activeSubTab === 1 && hasHeatmapData && (
-                <RealTimeHeatmapChart
-                  data={data?.heatmap_data || []}
-                  loading={loading}
-                  error={error}
-                  onRefresh={refresh}
-                  height={isMobile ? 380 : 700}
-                  title={t("geographic.subtabs.heatmap")}
-                  showControls
-                  showStats={false}
-                  stats={stats}
-                />
-              )}
+            {/* 3. Recomendações */}
+            <GeographicInsights
+              countries={data?.top_countries || []}
+              states={data?.top_states || []}
+              cities={data?.top_cities || []}
+              totalCountries={stats?.totalCountries}
+            />
 
-              {/* Sub-tab 2: Rankings */}
-              {activeSubTab === 2 && (
-                <GeographicChart
-                  countries={data?.top_countries || []}
-                  states={data?.top_states || []}
-                  cities={data?.top_cities || []}
-                  totalClicks={stats?.totalClicks || 0}
-                  selectedCountry={selectedCountry}
-                  onCountrySelect={setSelectedCountry}
-                />
-              )}
-            </AnalyticsSubTabs>
-          </Box>
+            {/* 4. Mapa de calor por cidade — mais pesado, sempre por último.
+                Height is capped on mobile, but tall enough to clear the
+                header block (title + banner + filter + legend), which alone
+                runs ~520-530px at phone widths — a shorter cap leaves zero
+                room for the actual map and collapses it to invisible. */}
+            <RealTimeHeatmapChart
+              data={data?.heatmap_data || []}
+              loading={loading}
+              error={error}
+              onRefresh={refresh}
+              height={isMobile ? 760 : 700}
+              title={t("geographic.heatmap.titleDefault")}
+              showControls
+              showStats={false}
+              stats={stats}
+            />
+          </Stack>
         </Box>
       </AnalyticsStateManager>
     </Box>
