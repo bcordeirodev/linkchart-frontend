@@ -1,0 +1,46 @@
+name: CI
+
+# Gate de qualidade em PR e push. NUNCA faz deploy — quem publica é o
+# release.yml, disparado por tag `v*`.
+#
+# O `npm run build` NAO roda aqui de proposito: quem prova que o projeto
+# compila e o build da imagem Docker no release.yml. Antes, o build rodava
+# duas vezes (uma no CI, descartada, e outra no droplet de producao).
+
+on:
+  pull_request:
+  push:
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Type-check + Lint + Format
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
