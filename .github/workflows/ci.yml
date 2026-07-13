@@ -44,3 +44,9 @@ jobs:
 
       - name: Format check
         run: npm run format:check
+
+      # Impede que uma NEXT_PUBLIC_* lida pelo codigo compile vazia em producao
+      # por falta de ARG no Dockerfile — o Docker descarta a build-arg em
+      # silencio, e o bug e invisivel em dev.
+      - name: Guard — build args do Dockerfile
+        run: ./scripts/check-build-args.sh
