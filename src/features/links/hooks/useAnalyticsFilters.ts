@@ -53,7 +53,7 @@ export interface AnalyticsFilters {
   originSubTab: number;
 
   // Audience
-  /** Index of the active audience sub-tab (0=Aparelhos, 1=Navegador e sistema, 2=Idioma, 3=Qualidade, 4=Detalhes técnicos). URL-persisted so it survives RSC remounts. */
+  /** Index of the active audience sub-tab (0=Perfil, 1=Qualidade e fidelidade, 2=Detalhes técnicos). URL-persisted so it survives RSC remounts. */
   audienceSubTab: number;
 
   // Setters
@@ -188,7 +188,7 @@ export function useAnalyticsFilters(): AnalyticsFilters {
   const originSubTab = parseSubTabIndex(searchParams.get("originSubTab"), 2);
   const audienceSubTab = parseSubTabIndex(
     searchParams.get("audienceSubTab"),
-    4,
+    2,
   );
 
   const customFrom = searchParams.get("date_from");

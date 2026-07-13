@@ -557,6 +557,8 @@
       "technicalDetailsDesc": "Engineering-level data: server response time, rendering engine, connection type, and device signals detected via Client Hints."
     },
     "subtabs": {
+      "profile": "Profile",
+      "technical": "Technical details",
       "browserSystem": "Browser and system",
       "language": "Language"
     },

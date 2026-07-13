@@ -1,13 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Box, Stack } from "@mui/material";
-import {
-  Languages as LanguagesIcon,
-  Monitor,
-  ShieldCheck,
-  Smartphone,
-  Wrench,
-} from "lucide-react";
+import { ShieldCheck, Smartphone, Wrench } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
@@ -109,9 +103,9 @@ interface AudienceChartProps {
   /** Whether the `/insights` payload backing `retention`/`sessionDepth` is still loading. */
   insightsLoading?: boolean;
   /**
-   * Index of the currently active sub-tab (0=Aparelhos, 1=Navegador e
-   * sistema, 2=Idioma, 3=Qualidade, 4=Detalhes técnicos). When provided the
-   * component is controlled — mirrors `TemporalChart`'s `activeTab` prop.
+   * Index of the currently active sub-tab (0=Perfil, 1=Qualidade e fidelidade,
+   * 2=Detalhes técnicos). When provided the component is controlled — mirrors
+   * `TemporalChart`'s `activeTab` prop.
    */
   activeTab?: number;
   /** Called when the user switches to a different sub-tab. */
@@ -119,9 +113,14 @@ interface AudienceChartProps {
 }
 
 /**
- * Renders the audience analytics as five sub-tabs — Aparelhos, Navegador e
- * sistema, Idioma, Qualidade, Detalhes técnicos — using the same shared
+ * Renders the audience analytics as three sub-tabs — Perfil, Qualidade e
+ * fidelidade, Detalhes técnicos — using the same shared
  * {@link AnalyticsSubTabs} control as `TemporalChart`.
+ *
+ * "Perfil" absorbed what used to be three sub-tabs (Aparelhos, Navegador e
+ * sistema, Idioma). All three answered the same question — *what did this
+ * person click with?* — and each held a single short card, so splitting them
+ * across three screens made the reader navigate to assemble one answer.
  *
  * Every categorical distribution renders as exactly one horizontal-bar list
  * — value and percentage on the same row as the label — instead of the
@@ -214,18 +213,8 @@ export function AudienceChart({
         ariaLabel={t("tabs.audience")}
         tabs={[
           {
-            label: t("audience.sections.devices"),
+            label: t("audience.subtabs.profile"),
             icon: <Smartphone {...ICON_SM} />,
-          },
-          {
-            label: t("audience.subtabs.browserSystem"),
-            icon: <Monitor {...ICON_SM} />,
-            disabled: !hasBrowserSystem,
-          },
-          {
-            label: t("audience.subtabs.language"),
-            icon: <LanguagesIcon {...ICON_SM} />,
-            disabled: !hasLanguages,
           },
           {
             label: t("audience.sections.qualityAndLoyalty"),
@@ -233,42 +222,41 @@ export function AudienceChart({
             disabled: !hasQualitySection,
           },
           {
-            label: t("audience.sections.technicalDetails"),
+            label: t("audience.subtabs.technical"),
             icon: <Wrench {...ICON_SM} />,
             disabled: !hasTechnicalDetails,
           },
         ]}
       >
-        {/* Sub-tab 0: Aparelhos — single horizontal-bar breakdown, value + % */}
+        {/* Sub-tab 0: Perfil — device, browser, system and language are one
+            question ("what did this person click with?") cut four ways, not
+            four questions. They used to be three separate sub-tabs, each a
+            single short card. One screen, all four in horizontal bars. */}
         {activeTab === 0 && (
-          <AudienceDevicesTab
-            deviceBreakdown={deviceBreakdown}
-            totalClicks={totalClicks}
-          />
+          <Stack spacing={2}>
+            <AudienceDevicesTab
+              deviceBreakdown={deviceBreakdown}
+              totalClicks={totalClicks}
+            />
+
+            {hasBrowserSystem && (
+              <Box sx={twoCardGridSx}>
+                {browsers?.length ? (
+                  <AudienceBrowsersTab browsers={browsers} />
+                ) : null}
+                {operatingSystems?.length ? (
+                  <AudienceOSTab operatingSystems={operatingSystems} />
+                ) : null}
+              </Box>
+            )}
+
+            {hasLanguages && <AudienceLanguagesTab languages={languages!} />}
+          </Stack>
         )}
 
-        {/* Sub-tab 1: Navegador e sistema — two compact cards, each a
-            family-aggregated horizontal-bar list; side by side on desktop,
-            stacked on mobile. */}
-        {activeTab === 1 && hasBrowserSystem && (
-          <Box sx={twoCardGridSx}>
-            {browsers?.length ? (
-              <AudienceBrowsersTab browsers={browsers} />
-            ) : null}
-            {operatingSystems?.length ? (
-              <AudienceOSTab operatingSystems={operatingSystems} />
-            ) : null}
-          </Box>
-        )}
-
-        {/* Sub-tab 2: Idioma */}
-        {activeTab === 2 && hasLanguages && (
-          <AudienceLanguagesTab languages={languages!} />
-        )}
-
-        {/* Sub-tab 3: Qualidade e fidelidade — quality tier bars, bot/
+        {/* Sub-tab 1: Qualidade e fidelidade — quality tier bars, bot/
             fingerprint stat cards, retention, session depth */}
-        {activeTab === 3 && hasQualitySection && (
+        {activeTab === 1 && hasQualitySection && (
           <Stack spacing={2}>
             {quality ? (
               <QualitySection quality={quality} showTitle={false} />
@@ -290,10 +278,13 @@ export function AudienceChart({
           </Stack>
         )}
 
-        {/* Sub-tab 4: Detalhes técnicos — engineering-only data. No longer
-            an accordion: once it lives behind its own sub-tab, the extra
-            collapse/expand affordance is redundant. */}
-        {activeTab === 4 && hasTechnicalDetails && (
+        {/* Sub-tab 2: Detalhes técnicos — engineering-only data. Same name and
+            icon as Origem's last sub-tab, so the pattern is recognisable across
+            tabs. `LanguageBreakdownCard` lives here rather than next to
+            `AudienceLanguagesTab` in Perfil: it is not the same metric, it is
+            language *with region* (pt-BR vs pt-PT), while Perfil aggregates by
+            language family. */}
+        {activeTab === 2 && hasTechnicalDetails && (
           <Stack spacing={3}>
             {devicePerformance?.length ? (
               <AudiencePerformanceTab
