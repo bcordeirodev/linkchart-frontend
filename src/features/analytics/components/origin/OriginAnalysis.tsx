@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Box, Skeleton, Stack } from "@mui/material";
-import { Compass, Megaphone, Radio, Share2 } from "lucide-react";
+import { Megaphone, Radio, Wrench } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { useAudienceData } from "@/features/analytics/hooks/useAudienceData";
@@ -62,8 +62,8 @@ interface OriginAnalysisProps {
   /** When `true`, bot traffic is excluded from all metrics. */
   excludeBots?: boolean;
   /**
-   * Index of the currently active sub-tab (0=Canais, 1=Redes sociais,
-   * 2=Campanhas, 3=Contexto).
+   * Index of the currently active sub-tab (0=Canais e redes, 1=Campanhas,
+   * 2=Detalhes técnicos).
    *
    * When provided the component operates in **controlled mode** and the
    * caller is responsible for persisting this value (e.g. in URL search
@@ -76,8 +76,13 @@ interface OriginAnalysisProps {
 }
 
 /**
- * "Origem" tab — answers "where does the traffic come from?" across four
- * sub-tabs: Canais → Redes sociais → Campanhas (UTM) → Contexto.
+ * "Origem" tab — answers "where does the traffic come from?" across three
+ * sub-tabs: Canais e redes → Campanhas (UTM) → Detalhes técnicos.
+ *
+ * A sub-tab exists to separate *different questions*, not different zoom
+ * levels of the same one. "Which channel brings traffic?" and "which social
+ * network, inside that channel?" are one question at two zooms, so they share
+ * a screen; "did my campaign work?" is a different question and keeps its own.
  *
  * Each of the four channels (direct/social/search/referral) previously
  * appeared five times on this tab — four KPI cards, a channel-distribution
@@ -229,14 +234,9 @@ export function OriginAnalysis({
           ariaLabel={t("tabs.origin")}
           tabs={[
             {
-              label: t("origin.sections.channels"),
+              label: t("origin.subtabs.channelsAndSocial"),
               icon: <Radio {...ICON_SM} />,
-              disabled: !hasChannels,
-            },
-            {
-              label: t("origin.subtabs.social"),
-              icon: <Share2 {...ICON_SM} />,
-              disabled: !hasSocial,
+              disabled: !hasChannels && !hasSocial,
             },
             {
               label: t("origin.subtabs.campaigns"),
@@ -244,36 +244,39 @@ export function OriginAnalysis({
               disabled: !hasCampaigns,
             },
             {
-              label: t("origin.subtabs.context"),
-              icon: <Compass {...ICON_SM} />,
+              label: t("origin.sections.technicalDetails"),
+              icon: <Wrench {...ICON_SM} />,
               disabled: !hasContext,
             },
           ]}
         >
-          {/* Sub-tab 0: Canais — the only representation of channel share */}
-          {activeSubTab === 0 && hasChannels ? (
-            <ChannelsBreakdown channels={channels} />
+          {/* Sub-tab 0: Canais e redes — the per-platform social breakdown is
+              the natural zoom of the `social` channel, not a separate
+              question, so both live on one screen. */}
+          {activeSubTab === 0 && (hasChannels || hasSocial) ? (
+            <Stack spacing={3}>
+              {hasChannels ? <ChannelsBreakdown channels={channels} /> : null}
+              {hasSocial ? (
+                <SocialPlatformSection platforms={socialPlatforms} />
+              ) : null}
+            </Stack>
           ) : null}
 
-          {/* Sub-tab 1: Redes sociais */}
-          {activeSubTab === 1 && hasSocial ? (
-            <SocialPlatformSection platforms={socialPlatforms} />
-          ) : null}
-
-          {/* Sub-tab 2: Campanhas (UTM) — relocated from the dashboard's
+          {/* Sub-tab 1: Campanhas (UTM) — relocated from the dashboard's
               acquisition section */}
-          {activeSubTab === 2 && hasCampaigns ? (
+          {activeSubTab === 1 && hasCampaigns ? (
             <Box sx={twoColGridSx(hasUtm && hasSocialIab)}>
               {hasUtm ? <UtmSourceCard data={utmTopSources} /> : null}
               {hasSocialIab ? <SocialAppCard data={socialIab} /> : null}
             </Box>
           ) : null}
 
-          {/* Sub-tab 3: Contexto — engineering-only data: navigation context,
-              request type and per-channel engagement all describe *how*
-              traffic arrived, not *how much*, which the other sub-tabs
-              already answer. */}
-          {activeSubTab === 3 && hasContext ? (
+          {/* Sub-tab 2: Detalhes técnicos — engineering-only data: navigation
+              context, request type and per-channel engagement all describe
+              *how* traffic arrived, not *how much*, which sub-tab 0 already
+              answers. Same name and icon as Público's last sub-tab, so the
+              pattern is recognisable across tabs. */}
+          {activeSubTab === 2 && hasContext ? (
             <Stack spacing={3}>
               {hasNavigationContext || hasFetchDest ? (
                 <Box sx={twoColGridSx(hasNavigationContext && hasFetchDest)}>

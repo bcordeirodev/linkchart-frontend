@@ -1,7 +1,7 @@
 "use client";
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import type { KeyboardEvent } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 
 /** A single row rendered by {@link HorizontalBreakdownBars}. */
 export interface HorizontalBreakdownItem {
@@ -15,6 +15,11 @@ export interface HorizontalBreakdownItem {
   percentage: number;
   /** Optional per-row fill color; falls back to the `color` prop, then `theme.palette.primary.main`. */
   color?: string;
+  /**
+   * Optional leading glyph rendered before the label (e.g. a social platform's
+   * brand mark). Inherits the row's fill color, so callers do not colour it.
+   */
+  icon?: ReactNode;
 }
 
 /** Props for {@link HorizontalBreakdownBars}. */
@@ -107,11 +112,26 @@ export function HorizontalBreakdownBars({
             <Box
               sx={{
                 display: "flex",
-                alignItems: "baseline",
+                // `center`, not `baseline`: rows may carry a leading brand icon,
+                // which baseline alignment would push off the text's line.
+                alignItems: "center",
                 gap: 1,
                 mb: 0.5,
               }}
             >
+              {item.icon ? (
+                <Box
+                  component="span"
+                  sx={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    flexShrink: 0,
+                    color: item.color ?? fallbackColor,
+                  }}
+                >
+                  {item.icon}
+                </Box>
+              ) : null}
               <Typography
                 variant="body2"
                 noWrap

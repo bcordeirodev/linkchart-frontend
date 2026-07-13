@@ -1081,6 +1081,7 @@
       "technicalDetailsDesc": "Dados de engenharia: como o navegador chegou até a página, tipo de requisição e profundidade média de sessão por canal."
     },
     "subtabs": {
+      "channelsAndSocial": "Canais e redes",
       "social": "Redes sociais",
       "campaigns": "Campanhas",
       "context": "Contexto"

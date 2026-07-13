@@ -1081,6 +1081,7 @@
       "technicalDetailsDesc": "Engineering-level data: how the browser reached the page, the request type, and average session depth per channel."
     },
     "subtabs": {
+      "channelsAndSocial": "Channels & networks",
       "social": "Social media",
       "campaigns": "Campaigns",
       "context": "Context"
