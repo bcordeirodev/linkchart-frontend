@@ -1,4 +1,4 @@
-name: Release frontend
+name: Release (frontend)
 
 # Deploy INTENCIONAL: dispara por tag `v*` ou manualmente. Push em `main` roda
 # apenas o ci.yml — merge deixou de significar deploy.
