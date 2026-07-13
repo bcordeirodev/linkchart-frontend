@@ -1,4 +1,4 @@
-name: CI
+name: CI (frontend)
 
 # Gate de qualidade em PR e push. NUNCA faz deploy — quem publica é o
 # release.yml, disparado por tag `v*`.
