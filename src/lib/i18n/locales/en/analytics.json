@@ -434,7 +434,9 @@
     "subtabs": {
       "overview": "Overview",
       "heatmap": "Heatmap",
-      "rankings": "Rankings"
+      "rankings": "Rankings",
+      "mapAndRanking": "Map and ranking",
+      "continentsCountries": "Continents and countries"
     },
     "chart": {
       "topCountries": "Top Countries",
@@ -478,7 +480,6 @@
       "countriesReached": "Countries Reached",
       "uniqueCities": "Unique Cities",
       "locations": "Locations",
-      "countryDistribution": "Distribution by Country",
       "marketInsights": "Market Insights",
       "mainMarkets": "Main Markets",
       "topCities": "Top Engaged Cities",
@@ -486,7 +487,6 @@
       "mainMarketRec": "• {{country}} is your main market with {{clicks}} clicks. Consider creating content specific to this market.",
       "topCityRec": "• {{city}} is the city with the most engagement. Explore local marketing opportunities in this region.",
       "internationalRec": "• Your content is reaching {{count}} different countries. Consider internationalization strategies.",
-      "pieSubtitle": "Top 8 countries by share of total clicks.",
       "marketSubtitle": "Main markets and strategic recommendations based on your data."
     },
     "heatmap": {
@@ -535,7 +535,9 @@
       "legendLow": "Low",
       "legendSizeNote": "· Size proportional to volume",
       "showingLocations": "{{shown}} of {{total}} locations visible",
-      "cappedWarning": "Showing top 500 locations. Some locations may be omitted."
+      "cappedWarning": "Showing top 500 locations. Some locations may be omitted.",
+      "accordionTitle": "City heat map",
+      "accordionDesc": "Click intensity by city on an interactive map. Heavier — loads only when opened."
     }
   },
   "audience": {
@@ -552,6 +554,10 @@
       "qualityAndLoyalty": "Quality and loyalty",
       "technicalDetails": "Technical details",
       "technicalDetailsDesc": "Engineering-level data: server response time, rendering engine, connection type, and device signals detected via Client Hints."
+    },
+    "subtabs": {
+      "browserSystem": "Browser and system",
+      "language": "Language"
     },
     "metrics": {
       "title": "Audience Metrics",
@@ -667,7 +673,11 @@
         "browser_referral": "Via external link",
         "in_app_webview": "In-app (Instagram, WhatsApp…)",
         "api_programmatic": "Programmatic",
-        "unknown": "Unknown"
+        "preload": "Pre-loaded",
+        "unknown": "Unknown",
+        "cross-site": "From another site",
+        "none": "Direct visit",
+        "same-origin": "Within your site"
       },
       "description": "How each visitor arrived at the link: directly via browser, via referral from another site, via mobile app (webview), or programmatically. Helps understand how the link is being used."
     },
@@ -1063,6 +1073,26 @@
   },
   "origin": {
     "loading": "Loading origin analysis...",
-    "empty": "This link doesn't have enough traffic-origin data yet."
+    "empty": "This link doesn't have enough traffic-origin data yet.",
+    "sections": {
+      "channels": "Channels",
+      "channelsDesc": "Where clicks came from: direct access, social media, search engines, or other sites linking to you.",
+      "technicalDetails": "Technical details",
+      "technicalDetailsDesc": "Engineering-level data: how the browser reached the page, the request type, and average session depth per channel."
+    },
+    "subtabs": {
+      "social": "Social media",
+      "campaigns": "Campaigns",
+      "context": "Context"
+    },
+    "channels": {
+      "direct": "Direct",
+      "social": "Social",
+      "search": "Search",
+      "referral": "Referral",
+      "email": "Email",
+      "paid": "Paid",
+      "other": "Other"
+    }
   }
 }

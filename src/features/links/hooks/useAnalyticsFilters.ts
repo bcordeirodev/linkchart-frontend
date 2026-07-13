@@ -42,9 +42,21 @@ export interface AnalyticsFilters {
 
   // Temporal
   segment: Segment;
+  /** Index of the active temporal sub-tab (0=Patterns, 1=Timeline, 2=Performance, 3=Distribution). URL-persisted so it survives RSC remounts triggered by filter changes. */
+  temporalSubTab: number;
 
   // Geographic
   continent: string | null;
+  /** Index of the active geographic sub-tab (0=Mapa e ranking, 1=Continentes e países, 2=Mapa de calor). URL-persisted so it survives RSC remounts. */
+  geoSubTab: number;
+
+  // Origin
+  /** Index of the active origin sub-tab (0=Canais, 1=Redes sociais, 2=Campanhas, 3=Contexto). URL-persisted so it survives RSC remounts. */
+  originSubTab: number;
+
+  // Audience
+  /** Index of the active audience sub-tab (0=Aparelhos, 1=Navegador e sistema, 2=Idioma, 3=Qualidade, 4=Detalhes técnicos). URL-persisted so it survives RSC remounts. */
+  audienceSubTab: number;
 
   // Setters
   setPeriod: (v: Period) => void;
@@ -52,7 +64,27 @@ export interface AnalyticsFilters {
   setExcludeBots: (v: boolean) => void;
   setTab: (v: TabId) => void;
   setSegment: (v: Segment) => void;
+  setTemporalSubTab: (v: number) => void;
   setContinent: (v: string | null) => void;
+  setGeoSubTab: (v: number) => void;
+  setOriginSubTab: (v: number) => void;
+  setAudienceSubTab: (v: number) => void;
+}
+
+/**
+ * Parses a sub-tab index URL param, clamping to `[0, maxIndex]`.
+ * Mirrors the numeric-index pattern used for every sub-tab param (`geoSubTab`,
+ * `temporalSubTab`, `originSubTab`, `audienceSubTab`) — out-of-range or
+ * non-numeric values fall back to `0` instead of throwing.
+ *
+ * @param raw - Raw string value read from `URLSearchParams.get(...)`.
+ * @param maxIndex - Highest valid index (inclusive) for the sub-tab's tab list.
+ */
+function parseSubTabIndex(raw: string | null, maxIndex: number): number {
+  const parsed = parseInt(raw ?? "0", 10);
+  return Number.isFinite(parsed) && parsed >= 0 && parsed <= maxIndex
+    ? parsed
+    : 0;
 }
 
 /**
@@ -150,6 +182,18 @@ export function useAnalyticsFilters(): AnalyticsFilters {
 
   const tab = parseEnum<TabId>(searchParams.get("tab"), TAB_IDS, "overview");
 
+  // Sub-tab indices — one per top-level tab that has its own secondary nav.
+  const geoSubTab = parseSubTabIndex(searchParams.get("geoSubTab"), 2);
+  const temporalSubTab = parseSubTabIndex(
+    searchParams.get("temporalSubTab"),
+    3,
+  );
+  const originSubTab = parseSubTabIndex(searchParams.get("originSubTab"), 3);
+  const audienceSubTab = parseSubTabIndex(
+    searchParams.get("audienceSubTab"),
+    4,
+  );
+
   const customFrom = searchParams.get("date_from");
   const customTo = searchParams.get("date_to");
 
@@ -225,6 +269,26 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     [setParam],
   );
 
+  const setGeoSubTab = useCallback(
+    (v: number) => setParam({ geoSubTab: v === 0 ? null : String(v) }),
+    [setParam],
+  );
+
+  const setTemporalSubTab = useCallback(
+    (v: number) => setParam({ temporalSubTab: v === 0 ? null : String(v) }),
+    [setParam],
+  );
+
+  const setOriginSubTab = useCallback(
+    (v: number) => setParam({ originSubTab: v === 0 ? null : String(v) }),
+    [setParam],
+  );
+
+  const setAudienceSubTab = useCallback(
+    (v: number) => setParam({ audienceSubTab: v === 0 ? null : String(v) }),
+    [setParam],
+  );
+
   return {
     period,
     dateFrom,
@@ -232,13 +296,21 @@ export function useAnalyticsFilters(): AnalyticsFilters {
     excludeBots,
     tab,
     segment,
+    temporalSubTab,
     continent,
+    geoSubTab,
+    originSubTab,
+    audienceSubTab,
     setPeriod,
     setDateRange,
     setExcludeBots,
     setTab,
     setSegment,
+    setTemporalSubTab,
     setContinent,
+    setGeoSubTab,
+    setOriginSubTab,
+    setAudienceSubTab,
   };
 }
 

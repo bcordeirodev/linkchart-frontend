@@ -1,17 +1,22 @@
 "use client";
+import { useState } from "react";
 import { Box, Skeleton, Stack } from "@mui/material";
+import { Compass, Megaphone, Radio, Share2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { useAudienceData } from "@/features/analytics/hooks/useAudienceData";
 import { useDashboardData } from "@/features/analytics/hooks/useDashboardData";
 import { useInsightsData } from "@/features/analytics/hooks/useInsightsData";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
+import { AnalyticsSubTabs } from "@/shared/ui/navigation";
 
 import { BehaviorSection } from "../audience/BehaviorSection";
 import { FetchDestChart } from "../audience/FetchDestChart";
 import { SocialPlatformSection } from "../audience/SocialPlatformSection";
 import { UtmSourceCard, SocialAppCard } from "../dashboard/cards";
-import { TrafficSourceChart } from "../insights/TrafficSourceChart";
+import { ChannelEngagementChart } from "./ChannelEngagementChart";
+import { ChannelsBreakdown } from "./ChannelsBreakdown";
 
 /** Grid used for the two-card rows (Campanhas, Contexto de navegação). */
 function twoColGridSx(twoColumns: boolean) {
@@ -23,77 +28,26 @@ function twoColGridSx(twoColumns: boolean) {
 }
 
 /**
- * Loading skeleton that mirrors the Origin tab layout: channels chart block
- * (KPI row + wide chart) → social platforms block → campaigns two-card row →
- * navigation-context two-card row.
+ * Loading skeleton that mirrors the sub-tabbed Origin tab layout: the
+ * segmented sub-tab control followed by a single content block (the shape of
+ * whichever sub-tab loads first).
  */
 function OriginSkeleton() {
   return (
-    <Stack spacing={4}>
-      <Box>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: { xs: "1fr 1fr", sm: "repeat(4, 1fr)" },
-            gap: 2,
-            mb: 2,
-          }}
-        >
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton
-              key={i}
-              variant="rounded"
-              animation="wave"
-              height={110}
-              sx={{ borderRadius: 2 }}
-            />
-          ))}
-        </Box>
-        <Skeleton
-          variant="rounded"
-          animation="wave"
-          height={280}
-          sx={{ borderRadius: 2 }}
-        />
-      </Box>
-
+    <Box>
+      <Skeleton
+        variant="rounded"
+        animation="wave"
+        height={40}
+        sx={{ mb: 2, borderRadius: 2, maxWidth: 420 }}
+      />
       <Skeleton
         variant="rounded"
         animation="wave"
         height={220}
         sx={{ borderRadius: 2 }}
       />
-
-      <Box sx={twoColGridSx(true)}>
-        <Skeleton
-          variant="rounded"
-          animation="wave"
-          height={200}
-          sx={{ borderRadius: 2 }}
-        />
-        <Skeleton
-          variant="rounded"
-          animation="wave"
-          height={200}
-          sx={{ borderRadius: 2 }}
-        />
-      </Box>
-
-      <Box sx={twoColGridSx(true)}>
-        <Skeleton
-          variant="rounded"
-          animation="wave"
-          height={220}
-          sx={{ borderRadius: 2 }}
-        />
-        <Skeleton
-          variant="rounded"
-          animation="wave"
-          height={220}
-          sx={{ borderRadius: 2 }}
-        />
-      </Box>
-    </Stack>
+    </Box>
   );
 }
 
@@ -107,15 +61,39 @@ interface OriginAnalysisProps {
   dateTo?: string | null;
   /** When `true`, bot traffic is excluded from all metrics. */
   excludeBots?: boolean;
+  /**
+   * Index of the currently active sub-tab (0=Canais, 1=Redes sociais,
+   * 2=Campanhas, 3=Contexto).
+   *
+   * When provided the component operates in **controlled mode** and the
+   * caller is responsible for persisting this value (e.g. in URL search
+   * params) so it survives RSC-triggered remounts on filter changes. When
+   * omitted the component falls back to an internal `useState`.
+   */
+  subTabIndex?: number;
+  /** Called when the user selects a different sub-tab. Pair with `subTabIndex`. */
+  onSubTabChange?: (v: number) => void;
 }
 
 /**
- * "Origem" tab — answers "where does the traffic come from?" in stacked,
- * scrollable sections (not sub-tabs): Canais → Redes sociais → Campanhas
- * (UTM) → Contexto de navegação.
+ * "Origem" tab — answers "where does the traffic come from?" across four
+ * sub-tabs: Canais → Redes sociais → Campanhas (UTM) → Contexto.
+ *
+ * Each of the four channels (direct/social/search/referral) previously
+ * appeared five times on this tab — four KPI cards, a channel-distribution
+ * donut, an "Engajamento por Canal" bar chart, a "Performance Detalhada por
+ * Canal" list and a "Top 5 Fontes Individuais" list, all showing the same
+ * numbers. `ChannelsBreakdown` is now the *only* representation of channel
+ * share, in the "Canais" sub-tab; per-channel engagement (average session
+ * depth) moved into "Contexto" via `ChannelEngagementChart` since it is an
+ * engineering-flavoured number, not a headline metric. The "Fonte
+ * Principal"/"Diversidade"/low-diversity-alert/individual-sources/
+ * strategic-recommendations content that used to live in the deleted
+ * `TrafficSourceChart` is intentionally not rendered anywhere else — it
+ * duplicated (or was a finer-grained cut of) the channel data above.
  *
  * Combines three data sources:
- * - {@link useInsightsData} for `analytics_data.traffic_sources` (channels)
+ * - {@link useInsightsData} for `analytics_data.traffic_sources.channels`
  *   and the top-level `analytics_data.navigation_context` block.
  * - {@link useAudienceData} for `social_platform_breakdown` and
  *   `fetch_dest_breakdown`.
@@ -126,11 +104,12 @@ interface OriginAnalysisProps {
  *   duplicate is removed in a later task).
  *
  * Every child component owns its own title + description, so this
- * orchestrator adds no redundant section headers — each block is
- * self-explanatory, matching the pattern already used by `GeographicAnalysis`.
+ * orchestrator adds no redundant section headers beyond the sub-tab label
+ * itself — each block is self-explanatory, matching the pattern already
+ * used by `GeographicAnalysis`/`AudienceChart`.
  *
  * Loading/error gate on the two required sources (insights + audience); the
- * campaigns row is a progressive enhancement that appears once the
+ * campaigns sub-tab is a progressive enhancement that appears once the
  * dashboard fetch resolves, exactly like `UtmSourceCard`/`SocialAppCard`
  * already behave inside the dashboard's acquisition section (they render
  * `null` until their data is ready).
@@ -140,8 +119,32 @@ export function OriginAnalysis({
   dateFrom,
   dateTo,
   excludeBots,
+  subTabIndex,
+  onSubTabChange,
 }: OriginAnalysisProps) {
   const { t } = useTranslation("analytics");
+
+  // Uncontrolled fallback — used only when `subTabIndex` is not provided.
+  const [localSubTab, setLocalSubTab] = useState(0);
+  /** The active sub-tab index: controlled (URL-persisted) when provided, otherwise local. */
+  const activeSubTab = subTabIndex ?? localSubTab;
+
+  /**
+   * Handles sub-tab changes (Canais / Redes sociais / Campanhas / Contexto).
+   *
+   * In controlled mode (`onSubTabChange` provided) the caller owns the state
+   * (typically writing to URL search params); otherwise local state is
+   * updated directly.
+   *
+   * @param newValue - The index of the newly selected sub-tab.
+   */
+  const handleSubTabChange = (newValue: number) => {
+    if (onSubTabChange) {
+      onSubTabChange(newValue);
+    } else {
+      setLocalSubTab(newValue);
+    }
+  };
 
   const {
     data: insightsData,
@@ -171,7 +174,8 @@ export function OriginAnalysis({
     excludeBots,
   });
 
-  const trafficSources = insightsData?.analytics_data?.traffic_sources;
+  const channels =
+    insightsData?.analytics_data?.traffic_sources?.channels ?? [];
   const navigationContextEntries =
     insightsData?.analytics_data?.navigation_context ?? [];
   const socialPlatforms = audienceData?.social_platform_breakdown ?? [];
@@ -179,7 +183,7 @@ export function OriginAnalysis({
   const utmTopSources = dashboardData?.summary?.utm_top_sources;
   const socialIab = dashboardData?.summary?.social_iab;
 
-  const hasChannels = (trafficSources?.sources?.length ?? 0) > 0;
+  const hasChannels = channels.length > 0;
   const hasSocial = socialPlatforms.length > 0;
   const hasUtm = (utmTopSources?.length ?? 0) > 0;
   // Mirrors DashboardChartSection's `hasSocial` flag: render the card either
@@ -190,10 +194,13 @@ export function OriginAnalysis({
   const hasCampaigns = hasUtm || hasSocialIab;
   const hasNavigationContext = navigationContextEntries.length > 0;
   const hasFetchDest = !!fetchDestBreakdown;
-  const hasNavigationSection = hasNavigationContext || hasFetchDest;
+  // "Contexto" bundles navigation-context, fetch-dest and per-channel
+  // engagement — the same three engineering-flavoured datasets that used to
+  // live together in the "Detalhes técnicos" accordion before sub-tabs came
+  // back; only the wrapper changed from a collapsed accordion to a sub-tab.
+  const hasContext = hasNavigationContext || hasFetchDest || hasChannels;
 
-  const hasData =
-    hasChannels || hasSocial || hasCampaigns || hasNavigationSection;
+  const hasData = hasChannels || hasSocial || hasCampaigns || hasContext;
   const loading = insightsLoading || audienceLoading;
   const error = insightsError || audienceError;
 
@@ -216,35 +223,77 @@ export function OriginAnalysis({
         emptyMessage={t("origin.empty")}
         minHeight={300}
       >
-        <Stack spacing={4} sx={{ "& > *": { minWidth: 0 } }}>
-          {/* 1. Canais — already orchestrates channels + individual sources */}
-          {hasChannels ? <TrafficSourceChart data={trafficSources!} /> : null}
+        <AnalyticsSubTabs
+          value={activeSubTab}
+          onChange={handleSubTabChange}
+          ariaLabel={t("tabs.origin")}
+          tabs={[
+            {
+              label: t("origin.sections.channels"),
+              icon: <Radio {...ICON_SM} />,
+              disabled: !hasChannels,
+            },
+            {
+              label: t("origin.subtabs.social"),
+              icon: <Share2 {...ICON_SM} />,
+              disabled: !hasSocial,
+            },
+            {
+              label: t("origin.subtabs.campaigns"),
+              icon: <Megaphone {...ICON_SM} />,
+              disabled: !hasCampaigns,
+            },
+            {
+              label: t("origin.subtabs.context"),
+              icon: <Compass {...ICON_SM} />,
+              disabled: !hasContext,
+            },
+          ]}
+        >
+          {/* Sub-tab 0: Canais — the only representation of channel share */}
+          {activeSubTab === 0 && hasChannels ? (
+            <ChannelsBreakdown channels={channels} />
+          ) : null}
 
-          {/* 2. Redes sociais */}
-          {hasSocial ? (
+          {/* Sub-tab 1: Redes sociais */}
+          {activeSubTab === 1 && hasSocial ? (
             <SocialPlatformSection platforms={socialPlatforms} />
           ) : null}
 
-          {/* 3. Campanhas (UTM) — relocated from the dashboard's acquisition section */}
-          {hasCampaigns ? (
+          {/* Sub-tab 2: Campanhas (UTM) — relocated from the dashboard's
+              acquisition section */}
+          {activeSubTab === 2 && hasCampaigns ? (
             <Box sx={twoColGridSx(hasUtm && hasSocialIab)}>
               {hasUtm ? <UtmSourceCard data={utmTopSources} /> : null}
               {hasSocialIab ? <SocialAppCard data={socialIab} /> : null}
             </Box>
           ) : null}
 
-          {/* 4. Contexto de navegação */}
-          {hasNavigationSection ? (
-            <Box sx={twoColGridSx(hasNavigationContext && hasFetchDest)}>
-              {hasNavigationContext ? (
-                <BehaviorSection navigationContext={navigationContextEntries} />
+          {/* Sub-tab 3: Contexto — engineering-only data: navigation context,
+              request type and per-channel engagement all describe *how*
+              traffic arrived, not *how much*, which the other sub-tabs
+              already answer. */}
+          {activeSubTab === 3 && hasContext ? (
+            <Stack spacing={3}>
+              {hasNavigationContext || hasFetchDest ? (
+                <Box sx={twoColGridSx(hasNavigationContext && hasFetchDest)}>
+                  {hasNavigationContext ? (
+                    <BehaviorSection
+                      navigationContext={navigationContextEntries}
+                    />
+                  ) : null}
+                  {hasFetchDest ? (
+                    <FetchDestChart fetchDestBreakdown={fetchDestBreakdown!} />
+                  ) : null}
+                </Box>
               ) : null}
-              {hasFetchDest ? (
-                <FetchDestChart fetchDestBreakdown={fetchDestBreakdown!} />
+
+              {hasChannels ? (
+                <ChannelEngagementChart channels={channels} />
               ) : null}
-            </Box>
+            </Stack>
           ) : null}
-        </Stack>
+        </AnalyticsSubTabs>
       </AnalyticsStateManager>
     </Box>
   );
