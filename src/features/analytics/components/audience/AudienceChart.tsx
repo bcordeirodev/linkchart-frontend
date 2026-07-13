@@ -86,9 +86,17 @@ const outlinedCardSx = {
   borderRadius: `${radiusTokens.lg}px`,
 } as const;
 
-/** Row item sx used by the two Grid+list tabs inside "Detalhes técnicos". */
+/**
+ * Row item sx used by the two Grid+list tabs inside "Detalhes técnicos".
+ *
+ * The rows carry a surface, not just a radius. They stretch to fill the card's
+ * height (it has to end level with the chart beside it), and an invisible row
+ * that grows just produces a gap — the extra height has to land on something
+ * you can see for it to read as a row rather than as dead space.
+ */
 const itemRowSx = {
   borderRadius: `${radiusTokens.md}px`,
+  bgcolor: "action.hover",
 } as const;
 
 /** Props for the AudienceChart component. */
