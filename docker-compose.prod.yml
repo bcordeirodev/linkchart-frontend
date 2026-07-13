@@ -1,34 +1,35 @@
-version: "3.8"
+# Compose de producao do frontend.
+#
+# A imagem vem PRONTA do GHCR (construida no CI) — nao ha bloco `build:`.
+# O droplet e 2 vCPU / 3,8 GB e nao deve compilar nada enquanto serve trafego.
+# As build args (NEXT_PUBLIC_*) agora vivem em .github/workflows/release.yml.
+#
+# Variaveis obrigatorias (injetadas por scripts/deploy.sh):
+#   IMAGE_TAG  tag da imagem no GHCR (SHA curto do commit)
+#   COLOR      blue | green — identifica o container
+#   APP_PORT   3000 (blue) | 3001 (green) — porta publicada no host
+#
+# A cor ativa e definida por /etc/nginx/conf.d/upstreams.conf no host.
+
 services:
   frontend-next:
-    build:
-      context: .
-      args:
-        - NEXT_PUBLIC_APP_URL=https://linkcharts.com.br
-        - NEXT_PUBLIC_REDIRECT_URL=https://redirect.linkcharts.com.br
-        - NEXT_PUBLIC_GA_ID
-        - NEXT_PUBLIC_GOOGLE_ADS_ID=AW-18126255245
-        - NEXT_PUBLIC_ADSENSE_CLIENT
-        - NEXT_PUBLIC_ADSENSE_PUBLISHER_ID=ca-pub-1396026257166470
-        - NEXT_PUBLIC_SUBDOMAINS_ENABLED=true
-        # Grafana Faro RUM collector — non-secret (ships in the client bundle).
-        - NEXT_PUBLIC_FARO_URL=https://faro-collector-prod-sa-east-1.grafana.net/collect/01e9dc26e022b00b11c49c286fcdc03d
-        - NEXT_PUBLIC_FARO_APP_NAME=linkcharts-frontend
-        # API_URL é build arg porque next.config.ts rewrites() é avaliado em build time
-        - API_URL=http://linkchartapi:80
-    container_name: linkcharts-frontend-next-prod
+    image: ghcr.io/bcordeirodev/linkchart-frontend:${IMAGE_TAG:?IMAGE_TAG obrigatorio}
+    container_name: linkcharts-frontend-${COLOR:?COLOR obrigatorio}
     restart: always
     ports:
-      - "3000:3000"
+      # Publica so em 127.0.0.1: quem termina TLS e serve a internet e o nginx
+      # do host. Antes era 0.0.0.0:3000, exposto na internet sem necessidade.
+      - "127.0.0.1:${APP_PORT:?APP_PORT obrigatorio}:3000"
     networks:
-      - frontend-net
+      # Rede externa compartilhada com o backend: e ela que da o DNS de
+      # `linkchartapi`, usado por API_URL. Sem ela o frontend nao fala com a API.
       - linkcharts-network
     environment:
       - NODE_ENV=production
       - API_URL=http://linkchartapi:80
       - GOOGLE_SAFE_BROWSING_KEY
       - HOSTNAME=0.0.0.0
-      # Auth0 — server-side only, never baked into the bundle
+      # Auth0 — server-side only, nunca vai para o bundle do cliente
       - APP_BASE_URL=https://linkcharts.com.br
       - AUTH0_DOMAIN=login.linkcharts.com.br
       - AUTH0_CLIENT_ID=ynlcwMzBjCPt3qzTRLv4VyP5CkgSREzD
@@ -43,10 +44,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 30s
+      start_period: 20s
 
 networks:
-  frontend-net:
-    driver: bridge
   linkcharts-network:
     external: true
