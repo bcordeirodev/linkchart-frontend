@@ -23,7 +23,7 @@ gh workflow run "Release (frontend)" -f ref=v1.2.2
 gh workflow run "Release (backend)"  -f ref=v2.0.0
 ```
 
-**Regra de ouro:** *merge* é integrar. *Tag* é publicar. São coisas diferentes agora.
+**Regra de ouro:** _merge_ é integrar. _Tag_ é publicar. São coisas diferentes agora.
 
 ---
 
@@ -47,7 +47,7 @@ GitHub entra no servidor por SSH
 
 Três problemas, um dentro do outro:
 
-**a) O servidor era desligado antes de construir a imagem.** O `down` vinha *antes* do `build`. Não existia motivo para isso — era só a ordem em que o script tinha sido escrito. O site ficava morto durante toda a compilação.
+**a) O servidor era desligado antes de construir a imagem.** O `down` vinha _antes_ do `build`. Não existia motivo para isso — era só a ordem em que o script tinha sido escrito. O site ficava morto durante toda a compilação.
 
 **b) A imagem era construída no próprio servidor de produção.** Seu droplet tem **2 CPUs e 3,8 GB de RAM**, e estava atendendo usuários ao mesmo tempo. Um build de Next.js lá levava **5m44s**. O mesmo build, no runner do GitHub (4 CPUs, 16 GB), leva **2m03s**. Você pagava o triplo de downtime para usar a máquina mais fraca que tinha.
 
@@ -132,7 +132,7 @@ upstream frontend_app { server 127.0.0.1:3000; }   # ← blue
 upstream backend_app  { server 127.0.0.1:8000; }   # ← blue
 ```
 
-Todos os sites do nginx apontam para esses *nomes* (`frontend_app`, `backend_app`), nunca para uma porta fixa. **Esse arquivo é a única fonte de verdade sobre qual cor está ativa.**
+Todos os sites do nginx apontam para esses _nomes_ (`frontend_app`, `backend_app`), nunca para uma porta fixa. **Esse arquivo é a única fonte de verdade sobre qual cor está ativa.**
 
 Trocar a cor é literalmente trocar um número e mandar o nginx reler:
 
@@ -141,9 +141,10 @@ sed -i 's/:3000/:3001/' upstreams.conf   # aponta pro green
 nginx -s reload                          # ← graceful!
 ```
 
-O `reload` do nginx é **graceful**: ele não corta as conexões que já estão em andamento. Os processos antigos terminam de atender quem já estava sendo atendido, e só os *novos* pedidos vão para a cor nova. Ninguém leva um tapa na cara no meio de um download.
+O `reload` do nginx é **graceful**: ele não corta as conexões que já estão em andamento. Os processos antigos terminam de atender quem já estava sendo atendido, e só os _novos_ pedidos vão para a cor nova. Ninguém leva um tapa na cara no meio de um download.
 
 > **Quer ver qual cor está no ar agora?**
+>
 > ```bash
 > ssh root@134.209.33.182 'cat /etc/nginx/conf.d/upstreams.conf'
 > ```
@@ -154,10 +155,10 @@ O `reload` do nginx é **graceful**: ele não corta as conexões que já estão 
 
 Antes, um único workflow fazia tudo: testava **e** deployava. Isso mistura duas perguntas muito diferentes:
 
-| Pergunta | Quando importa | Deve ser |
-|---|---|---|
-| "Esse código está correto?" | **toda vez** que você escreve código | automático, rápido, sem consequência |
-| "Esse código deve ir para os usuários?" | **quando você decide** | intencional, com um ato explícito |
+| Pergunta                                | Quando importa                       | Deve ser                             |
+| --------------------------------------- | ------------------------------------ | ------------------------------------ |
+| "Esse código está correto?"             | **toda vez** que você escreve código | automático, rápido, sem consequência |
+| "Esse código deve ir para os usuários?" | **quando você decide**               | intencional, com um ato explícito    |
 
 Agora são dois workflows separados:
 
@@ -212,6 +213,7 @@ git push origin v1.2.3       # ← isto dispara build + deploy
 ```
 
 **Como numerar as tags?** Use [semver](https://semver.org) de forma simples:
+
 - `v1.2.3` → `v1.2.4` — correção de bug
 - `v1.2.3` → `v1.3.0` — funcionalidade nova
 - `v1.2.3` → `v2.0.0` — mudança grande/estrutural
@@ -248,7 +250,7 @@ gh workflow run "Release (frontend)" -f ref=main
 
 **Por quê:** no blue/green, a migration roda **enquanto o código antigo ainda está servindo usuários**. Se você apagar uma coluna que a v1 ainda usa, a v1 quebra na hora — e ela é quem está atendendo.
 
-**O que fazer** (chama-se *expand/contract*):
+**O que fazer** (chama-se _expand/contract_):
 
 ```
 ❌ ERRADO — em um único release:
@@ -262,7 +264,7 @@ gh workflow run "Release (frontend)" -f ref=main
                → deploy, tudo funciona
 ```
 
-**A boa notícia: você já faz isso.** Analisei suas 34 migrations — **nenhuma** delas tem `dropColumn`, `renameColumn` ou `drop table` no `up()`. As únicas 3 que usam `->change()` estão *alargando* coisas (deixar um campo nullable, aumentar um varchar), o que nunca quebra código antigo. Essa regra não muda nada no seu jeito de trabalhar; ela só impede um acidente futuro.
+**A boa notícia: você já faz isso.** Analisei suas 34 migrations — **nenhuma** delas tem `dropColumn`, `renameColumn` ou `drop table` no `up()`. As únicas 3 que usam `->change()` estão _alargando_ coisas (deixar um campo nullable, aumentar um varchar), o que nunca quebra código antigo. Essa regra não muda nada no seu jeito de trabalhar; ela só impede um acidente futuro.
 
 **Se você tentar quebrar a regra, o CI te barra:**
 
@@ -299,6 +301,7 @@ E o mais cruel: **em desenvolvimento funcionava perfeitamente** (o `next build` 
 # frontend-next/Dockerfile
 ARG NEXT_PUBLIC_ALGUMA_COISA
 ```
+
 ```yaml
 # frontend-next/.github/workflows/release.yml
 build-args: |
@@ -337,57 +340,63 @@ Ninguém te avisa. O Postgres sobe feliz, com um banco vazio. Por isso o `deploy
 
 ### Frontend (`frontend-next/`)
 
-| Arquivo | Papel |
-|---|---|
-| `.github/workflows/ci.yml` | Gate de qualidade em PR/push. **Nunca deploya.** |
-| `.github/workflows/release.yml` | Tag `v*` → constrói a imagem → GHCR → deploy |
-| `docker-compose.prod.yml` | Consome a imagem pronta; porta parametrizada por cor |
-| `scripts/deploy.sh` | O cutover blue/green (3000 ↔ 3001) |
-| `scripts/check-build-args.sh` | Guard da Regra 2 |
+| Arquivo                         | Papel                                                |
+| ------------------------------- | ---------------------------------------------------- |
+| `.github/workflows/ci.yml`      | Gate de qualidade em PR/push. **Nunca deploya.**     |
+| `.github/workflows/release.yml` | Tag `v*` → constrói a imagem → GHCR → deploy         |
+| `docker-compose.prod.yml`       | Consome a imagem pronta; porta parametrizada por cor |
+| `scripts/deploy.sh`             | O cutover blue/green (3000 ↔ 3001)                  |
+| `scripts/check-build-args.sh`   | Guard da Regra 2                                     |
 
 ### Backend (`backend/`)
 
-| Arquivo | Papel |
-|---|---|
-| `.github/workflows/ci.yml` | Testes (SQLite **e** Postgres), Pint, guard de migrations |
-| `.github/workflows/release.yml` | Tag `v*` → imagem → GHCR → deploy |
-| `docker-compose.infra.yml` | **Postgres, Redis, Alloy.** Sobe uma vez. **Deploy nunca toca.** |
-| `docker-compose.app.yml` | Web (nginx+php-fpm). **Blue/green** (8000 ↔ 8001) |
-| `docker-compose.worker.yml` | Filas + scheduler. **Instância única** |
-| `scripts/deploy.sh` | O cutover blue/green |
-| `scripts/inject-env.sh` | Injeta os secrets no `.env.production` |
-| `tests/Unit/MigrationSafetyTest.php` | Guard da Regra 1 |
+| Arquivo                              | Papel                                                            |
+| ------------------------------------ | ---------------------------------------------------------------- |
+| `.github/workflows/ci.yml`           | Testes (SQLite **e** Postgres), Pint, guard de migrations        |
+| `.github/workflows/release.yml`      | Tag `v*` → imagem → GHCR → deploy                                |
+| `docker-compose.infra.yml`           | **Postgres, Redis, Alloy.** Sobe uma vez. **Deploy nunca toca.** |
+| `docker-compose.app.yml`             | Web (nginx+php-fpm). **Blue/green** (8000 ↔ 8001)               |
+| `docker-compose.worker.yml`          | Filas + scheduler. **Instância única**                           |
+| `scripts/deploy.sh`                  | O cutover blue/green                                             |
+| `scripts/inject-env.sh`              | Injeta os secrets no `.env.production`                           |
+| `tests/Unit/MigrationSafetyTest.php` | Guard da Regra 1                                                 |
 
 ### Por que o worker ficou num container separado?
 
 Porque no blue/green existem, por alguns segundos, **duas cores da web no ar ao mesmo tempo**. Se as filas e o scheduler morassem dentro do container web, você teria **dois schedulers rodando em paralelo** — e o `LinkHealthCheckJob` (de hora em hora) e o `clicks:anonymize-ips` (diário) poderiam **disparar em duplicidade**.
 
-Com o worker separado, o blue/green se aplica só à web (que é *stateless* e não liga de ter duas cópias), e o worker é recriado de forma simples. Durante a troca, os jobs apenas **esperam no Redis** — nenhum usuário percebe.
+Com o worker separado, o blue/green se aplica só à web (que é _stateless_ e não liga de ter duas cópias), e o worker é recriado de forma simples. Durante a troca, os jobs apenas **esperam no Redis** — nenhum usuário percebe.
 
 ---
 
 ## 7. Diagnóstico rápido
 
 **Qual cor está no ar?**
+
 ```bash
 ssh root@134.209.33.182 'cat /etc/nginx/conf.d/upstreams.conf'
 ```
 
 **O que está rodando?**
+
 ```bash
 ssh root@134.209.33.182 'docker ps --filter name=linkchart --format "{{.Names}}\t{{.Status}}"'
 ```
+
 Você deve ver: uma cor do backend, uma do frontend, **um** worker, e a infra (db/redis/alloy) com **uptime longo** — se o Postgres tiver reiniciado junto com um deploy, algo está errado.
 
 **O deploy falhou. O site caiu?**
 Provavelmente **não** — esse é o ponto do blue/green. Confirme:
+
 ```bash
 curl -o /dev/null -w "%{http_code}\n" https://linkcharts.com.br/api/health
 curl -o /dev/null -w "%{http_code}\n" https://api.linkcharts.com.br/health
 ```
+
 Se der `200`, a cor antiga está servindo. Leia o log do Actions com calma, corrija, e crie uma tag nova. Sem pressa, sem incêndio.
 
 **Emergência: voltar para a versão anterior agora**
+
 ```bash
 gh workflow run "Release (backend)" -f ref=v2.0.0
 ```
@@ -396,16 +405,16 @@ gh workflow run "Release (backend)" -f ref=v2.0.0
 
 ## 8. Resumo do que mudou
 
-| | Antes | Agora |
-|---|---|---|
-| Downtime (frontend) | ~5 min | **0s** |
-| Downtime (backend **+ banco**) | ~2,5 min | **0s** |
-| Onde a imagem é construída | no servidor de produção 😬 | no runner do GitHub |
-| Trabalho do droplet | build de ~6 min | `pull` + troca (~35s) |
-| Deploy dispara | **todo push em `main`** | tag `v*` (ou botão) |
-| Release quebrado | **site fora do ar** | aborta; site nem pisca |
-| Rollback | reverter commit + rebuild | deploy da tag anterior |
-| Banco durante o deploy | **reiniciado junto** | intocado |
-| CI em PR do frontend | **nenhum** | type-check, lint, format, guard |
+|                                | Antes                      | Agora                           |
+| ------------------------------ | -------------------------- | ------------------------------- |
+| Downtime (frontend)            | ~5 min                     | **0s**                          |
+| Downtime (backend **+ banco**) | ~2,5 min                   | **0s**                          |
+| Onde a imagem é construída     | no servidor de produção 😬 | no runner do GitHub             |
+| Trabalho do droplet            | build de ~6 min            | `pull` + troca (~35s)           |
+| Deploy dispara                 | **todo push em `main`**    | tag `v*` (ou botão)             |
+| Release quebrado               | **site fora do ar**        | aborta; site nem pisca          |
+| Rollback                       | reverter commit + rebuild  | deploy da tag anterior          |
+| Banco durante o deploy         | **reiniciado junto**       | intocado                        |
+| CI em PR do frontend           | **nenhum**                 | type-check, lint, format, guard |
 
 Medido em produção: **634 amostras** durante os deploys do frontend e **401** durante os do backend (API, site e redirect ao mesmo tempo) — **todas HTTP 200**.
