@@ -3,11 +3,13 @@
  * Tom: adulto/negócios, alto contraste informacional, zero neon.
  */
 
+// Neutros com leve tom slate (azul dessaturado) — profundidade de dashboard
+// premium sem sair do "adulto/negócios"; cinza puro lia frio e chapado.
 export const darkNeutral = {
-  bg: "#0A0A0B",
-  surface: "#111113",
-  elevated: "#18181B",
-  input: "#1C1C1F",
+  bg: "#0B0D12",
+  surface: "#12141B",
+  elevated: "#181B23",
+  input: "#1D2028",
   border: {
     subtle: "rgba(255, 255, 255, 0.06)",
     default: "rgba(255, 255, 255, 0.10)",

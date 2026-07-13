@@ -25,6 +25,7 @@ import type { LinkMeta, LinkResponse } from "@/types";
 
 import { LinkHealthBadge } from "./LinkHealthBadge";
 import { LinkSparkline } from "./LinkSparkline";
+import { LinkTagChips } from "./LinkTagChips";
 import { LinkTrendBadge } from "./LinkTrendBadge";
 import {
   getLinkCardMetricDividerSx,
@@ -120,10 +121,11 @@ export interface LinkCardMetricsProps {
   meta?: LinkMeta;
   /**
    * `"rich"` — full desktop set: sparkline · trend · last-click · health ·
-   * clicks · created-at · limit (if set).
+   * clicks · created-at · limit (if set) · tag chips on their own line.
    *
    * `"compact"` — mobile subset: sparkline · trend · clicks · last-click ·
-   * created-at · health.
+   * created-at · health. Tags are rendered separately by the mobile card
+   * (under the destination line), not by this variant.
    *
    * @default "rich"
    */
@@ -139,8 +141,10 @@ export interface LinkCardMetricsProps {
  * Shared metrics footer row for link cards.
  *
  * Renders different segment sets depending on `variant`:
- * - `"rich"` matches the former desktop inline MetricsRow.
- * - `"compact"` matches the former mobile hand-rolled row.
+ * - `"rich"` matches the former desktop inline MetricsRow, plus a
+ *   {@link LinkTagChips} line when the link has tags.
+ * - `"compact"` matches the former mobile hand-rolled row (no tags — the
+ *   mobile card renders those separately under the destination line).
  *
  * Clicks (and the click-limit in the rich variant) are formatted via
  * `formatCount(value, i18n.language)` on both variants — fixing the previously
@@ -177,85 +181,91 @@ export function LinkCardMetrics({
     );
 
     return (
-      <Box sx={{ ...getLinkCardMetricsRowSx(theme), ...sx }}>
-        <MetricsRow dividerSx={dividerSx}>
-          {hasSparklineSignal ? (
-            <LinkSparkline data={meta!.sparkline!} height={20} width={72} />
-          ) : null}
+      <>
+        <Box sx={{ ...getLinkCardMetricsRowSx(theme), ...sx }}>
+          <MetricsRow dividerSx={dividerSx}>
+            {hasSparklineSignal ? (
+              <LinkSparkline data={meta!.sparkline!} height={20} width={72} />
+            ) : null}
 
-          {/* Clicks lead the row — it's the KPI the list is scanned for. */}
-          <InlineMetric label={t("metrics.clicksShort")}>
-            <Typography
-              variant="caption"
-              component="span"
-              sx={linkCardMetricValueSx}
-            >
-              {formatCount(link.clicks, i18n.language)}
-            </Typography>
-          </InlineMetric>
+            {/* Clicks lead the row — it's the KPI the list is scanned for. */}
+            <InlineMetric label={t("metrics.clicksShort")}>
+              <Typography
+                variant="caption"
+                component="span"
+                sx={linkCardMetricValueSx}
+              >
+                {formatCount(link.clicks, i18n.language)}
+              </Typography>
+            </InlineMetric>
 
-          {hasTrendSignal(meta?.trend) ? (
-            <LinkTrendBadge trend={meta!.trend} compact />
-          ) : null}
+            {hasTrendSignal(meta?.trend) ? (
+              <LinkTrendBadge trend={meta!.trend} compact />
+            ) : null}
 
-          <InlineMetric label={t("metrics.lastClickShort")}>
-            <Typography
-              variant="caption"
-              component="span"
-              sx={{
-                ...linkCardMetricValueSx,
-                color: hasLastClick ? "text.primary" : "text.disabled",
-                fontWeight: hasLastClick ? 600 : 500,
-              }}
-            >
-              {lastClickLabel}
-            </Typography>
-          </InlineMetric>
-
-          {meta?.health?.status === "error" ? (
-            <LinkHealthBadge health={meta.health} />
-          ) : null}
-
-          {createdLabel ? (
-            <InlineMetric label={t("table.created")}>
+            <InlineMetric label={t("metrics.lastClickShort")}>
               <Typography
                 variant="caption"
                 component="span"
                 sx={{
                   ...linkCardMetricValueSx,
-                  color: "text.secondary",
-                  fontWeight: 500,
+                  color: hasLastClick ? "text.primary" : "text.disabled",
+                  fontWeight: hasLastClick ? 600 : 500,
                 }}
               >
-                {createdLabel}
+                {lastClickLabel}
               </Typography>
             </InlineMetric>
-          ) : null}
 
-          {link.click_limit ? (
-            <Tooltip
-              title={`${t("table.clickLimit")}: ${formatCount(link.click_limit, i18n.language)}`}
-            >
-              <InlineMetric label={t("table.clickLimit")}>
+            {meta?.health?.status === "error" ? (
+              <LinkHealthBadge health={meta.health} />
+            ) : null}
+
+            {createdLabel ? (
+              <InlineMetric label={t("table.created")}>
                 <Typography
                   variant="caption"
                   component="span"
                   sx={{
                     ...linkCardMetricValueSx,
-                    color:
-                      link.clicks >= link.click_limit
-                        ? "error.main"
-                        : "text.primary",
+                    color: "text.secondary",
+                    fontWeight: 500,
                   }}
                 >
-                  {formatCount(link.clicks, i18n.language)}/
-                  {formatCount(link.click_limit, i18n.language)}
+                  {createdLabel}
                 </Typography>
               </InlineMetric>
-            </Tooltip>
-          ) : null}
-        </MetricsRow>
-      </Box>
+            ) : null}
+
+            {link.click_limit ? (
+              <Tooltip
+                title={`${t("table.clickLimit")}: ${formatCount(link.click_limit, i18n.language)}`}
+              >
+                <InlineMetric label={t("table.clickLimit")}>
+                  <Typography
+                    variant="caption"
+                    component="span"
+                    sx={{
+                      ...linkCardMetricValueSx,
+                      color:
+                        link.clicks >= link.click_limit
+                          ? "error.main"
+                          : "text.primary",
+                    }}
+                  >
+                    {formatCount(link.clicks, i18n.language)}/
+                    {formatCount(link.click_limit, i18n.language)}
+                  </Typography>
+                </InlineMetric>
+              </Tooltip>
+            ) : null}
+          </MetricsRow>
+        </Box>
+
+        {/* Tag chips get their own line below the primary KPI row so they
+            never compete with clicks/trend/last-click for scan priority. */}
+        <LinkTagChips tags={link.tags} sx={{ mt: 0.5 }} />
+      </>
     );
   }
 

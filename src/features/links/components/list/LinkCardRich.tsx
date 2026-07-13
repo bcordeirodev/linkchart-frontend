@@ -1,5 +1,5 @@
 "use client";
-import { ExternalLink } from "lucide-react";
+import { BarChart3, ExternalLink } from "lucide-react";
 import { alpha, Box, Chip, Stack, Typography } from "@mui/material";
 import { useTheme, type Theme } from "@mui/material/styles";
 import { useCallback, useState } from "react";
@@ -13,6 +13,7 @@ import {
 } from "@/features/links/utils/linkStatus";
 import type { LinkStatus } from "@/features/links/utils/linkStatus";
 import { useMessage } from "@/lib/providers/MessageProvider";
+import { formatCompact } from "@/lib/utils";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import type { LinkMeta, LinkResponse } from "@/types";
 
@@ -22,11 +23,12 @@ import { LinkActionsMenu } from "./LinkActionsMenu";
 import { LinkCardMetrics } from "./LinkCardMetrics";
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
-import { radiusTokens } from "@/lib/theme/designSystem";
 import {
+  linksRadius,
+  getLinkCardInnerBorderColor,
   getLinkCardShellSx,
+  getLinkClickChipSx,
   getNewlyCreatedHighlightSx,
-  getLinkCardListItemMb,
   getLinkCardContentSx,
   type LinkCardDensity,
 } from "./linksPanelStyles";
@@ -65,15 +67,15 @@ function LinkIdentityThumb({
   return (
     <Box
       sx={{
-        width: 44,
-        height: 44,
+        width: 56,
+        height: 56,
         flexShrink: 0,
-        borderRadius: `${radiusTokens.sm}px`,
+        borderRadius: `${linksRadius.control}px`,
         overflow: "hidden",
-        border: `1px solid ${theme.palette.divider}`,
+        border: `1px solid ${getLinkCardInnerBorderColor(theme)}`,
         bgcolor:
           theme.palette.mode === "dark"
-            ? alpha(theme.palette.common.white, 0.03)
+            ? alpha(theme.palette.common.white, 0.05)
             : alpha(theme.palette.common.black, 0.03),
         display: "flex",
         alignItems: "center",
@@ -94,7 +96,7 @@ function LinkIdentityThumb({
           }}
         />
       ) : (
-        <LinkPreviewThumb preview={preview} size={22} />
+        <LinkPreviewThumb preview={preview} size={26} />
       )}
     </Box>
   );
@@ -113,7 +115,7 @@ export function LinkCardRich({
   const theme = useTheme();
   const navigate = useNavigate();
   const { showMessage } = useMessage();
-  const { t } = useTranslation("links");
+  const { t, i18n } = useTranslation("links");
 
   const isCompact = density === "compact";
 
@@ -145,7 +147,6 @@ export function LinkCardRich({
       id={`link-card-${link.id}`}
       animated={false}
       sx={{
-        mb: getLinkCardListItemMb(density),
         ...getLinkCardShellSx(theme),
         ...(isHighlighted ? getNewlyCreatedHighlightSx(theme) : {}),
       }}
@@ -180,7 +181,11 @@ export function LinkCardRich({
                 whiteSpace: "nowrap",
               }}
             >
-              {link.title || link.slug || link.custom_slug || t("list.noTitle")}
+              {link.title ||
+                meta?.preview?.og_title ||
+                link.slug ||
+                link.custom_slug ||
+                t("list.noTitle")}
             </Typography>
 
             <Stack
@@ -212,6 +217,19 @@ export function LinkCardRich({
             </Stack>
           </Box>
 
+          {/* Chip de cliques — porta de entrada colorida para o analytics. */}
+          <Chip
+            size="small"
+            clickable
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/links/analytics/${link.id}`);
+            }}
+            icon={<BarChart3 size={12} strokeWidth={2.25} />}
+            label={formatCompact(link.clicks || 0, i18n.language)}
+            aria-label={t("actions.viewAnalytics", { ns: "common" })}
+            sx={getLinkClickChipSx(theme)}
+          />
           {status !== "active" ? (
             <Chip
               size="small"
@@ -219,6 +237,7 @@ export function LinkCardRich({
               sx={{
                 height: 20,
                 flexShrink: 0,
+                borderRadius: `${linksRadius.chip}px`,
                 fontSize: "0.625rem",
                 fontWeight: 500,
                 bgcolor: alpha(statusColorValue, 0.12),

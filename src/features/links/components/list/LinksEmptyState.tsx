@@ -4,8 +4,24 @@ import { Box, Button, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 
+import { keyframes } from "@mui/material/styles";
+
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
+import { linksRadius } from "./linksPanelStyles";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
+import { getLinksBorderColor } from "./linksPanelStyles";
+
+/** Fade + leve subida na troca lista→vazio (espelha a entrada dos cards). */
+const emptyStateEnter = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+`;
 
 interface LinksEmptyStateProps {
   /** Há filtros ativos? Muda o copy + CTA. */
@@ -38,6 +54,10 @@ export function LinksEmptyState({
   return (
     <Box
       sx={{
+        // Entrada suave: a troca lista→vazio ganha o mesmo fade dos cards,
+        // para o sumiço da lista não parecer um corte seco.
+        animation: `${emptyStateEnter} 240ms ${motionTokens.easing.default} backwards`,
+        "@media (prefers-reduced-motion: reduce)": { animation: "none" },
         mt: 2,
         py: { xs: 6, sm: 8 },
         px: { xs: 3, sm: 5 },
@@ -46,8 +66,8 @@ export function LinksEmptyState({
         alignItems: "center",
         textAlign: "center",
         backgroundColor: theme.palette.background.paper,
-        border: `1px dashed ${theme.palette.divider}`,
-        borderRadius: `${radiusTokens.md}px`,
+        border: `1px dashed ${getLinksBorderColor(theme)}`,
+        borderRadius: `${linksRadius.panel}px`,
         transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
       }}
     >
@@ -57,7 +77,7 @@ export function LinksEmptyState({
           height: 56,
           borderRadius: `${radiusTokens.full}px`,
           backgroundColor: isDark ? darkNeutral.elevated : lightNeutral.surface,
-          border: `1px solid ${theme.palette.divider}`,
+          border: `1px solid ${getLinksBorderColor(theme)}`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

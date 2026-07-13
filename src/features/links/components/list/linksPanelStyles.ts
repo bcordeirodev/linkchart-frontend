@@ -1,8 +1,20 @@
-import { alpha, keyframes } from "@mui/material/styles";
+import { alpha, darken, keyframes } from "@mui/material/styles";
 
-import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
+import { motionTokens } from "@/lib/theme/designSystem";
 
 import type { Theme } from "@mui/material/styles";
+
+/**
+ * Escala de arredondamento da feature /links — deliberadamente mais achatada
+ * que os `radiusTokens` globais (o usuário apontou "radius em excesso"):
+ * painéis e cards em 8px, controles/insets em 6px, chips em 6px (sem pílula).
+ */
+export const linksRadius = {
+  panel: 8,
+  card: 6,
+  control: 6,
+  chip: 6,
+} as const;
 
 /** Slightly stronger than `theme.palette.divider` for /links cards and panels. */
 export function getLinksBorderColor(theme: Theme) {
@@ -10,6 +22,37 @@ export function getLinksBorderColor(theme: Theme) {
 
   // Softer neutral border to avoid the "heavy card" look in /links.
   return alpha(theme.palette.text.primary, isDark ? 0.12 : 0.1);
+}
+
+/**
+ * Borda interna do card de link — um passo mais presente que a hairline
+ * externa: sobre a superfície elevada (#18181B) a 0.12 quase some, e as
+ * divisões internas (rodapé de métricas, barra de ações, thumb) precisam
+ * ler como estrutura, não ruído.
+ *
+ * @param theme - tema MUI ativo.
+ * @returns cor de borda interna do card.
+ */
+export function getLinkCardInnerBorderColor(theme: Theme) {
+  const isDark = theme.palette.mode === "dark";
+
+  return alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14);
+}
+
+/**
+ * Recipe único de superfície recuada (inset) da feature /links — nível 1 da
+ * escala de elevação. Em dark, usa o tom do painel (`background.paper`):
+ * dentro de um card elevado isso recua de verdade; sobre o próprio painel o
+ * inset vira "border-only" (mesma cor, só a hairline delimita — menos ruído).
+ * Em light, um véu neutro. Usado por barra de copiar, url bar e filter inset.
+ *
+ * @param theme - tema MUI ativo.
+ * @returns cor de fundo do inset.
+ */
+export function getLinksInsetBg(theme: Theme) {
+  return theme.palette.mode === "dark"
+    ? theme.palette.background.paper
+    : alpha(theme.palette.common.black, 0.025);
 }
 
 /** Hairline shadow for /links cards — softer than `elevation*.xs`. */
@@ -53,7 +96,7 @@ export function getLinksPanelSx(theme: Theme) {
   return {
     backgroundColor: theme.palette.background.paper,
     backgroundImage: getLinksTopLightGradient(theme),
-    borderRadius: `${radiusTokens.md}px`,
+    borderRadius: `${linksRadius.panel}px`,
     border: `1px solid ${borderColor}`,
     boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme)}`,
   };
@@ -103,22 +146,48 @@ export function getNewlyCreatedHighlightSx(theme: Theme) {
   };
 }
 
-/** Shell for desktop/mobile link cards in the browse list. */
+/** Entrada suave do card: fade + leve subida, uma vez, no mount. */
+const cardEnter = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+`;
+
+/**
+ * Shell dos cards de link (desktop e mobile) — nível 2 da escala de elevação.
+ * Em dark mode a elevação é luminância (card mais claro que painel e página),
+ * não sombra: um véu translúcido `alpha(white, 0.035)` sobre o painel, hover
+ * um passo mais claro (`0.055`), borda hairline única e sem drop shadow nem
+ * gradiente. A animação de entrada suaviza o load da lista; o stagger vem do
+ * grid ({@link getLinksBrowseGridSx}).
+ */
 export function getLinkCardShellSx(theme: Theme) {
   const isDark = theme.palette.mode === "dark";
 
   return {
-    borderRadius: `${radiusTokens.md}px`,
-    border: `1px solid ${getLinksBorderColor(theme)}`,
+    animation: `${cardEnter} 280ms ${motionTokens.easing.default} backwards`,
+    "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+    borderRadius: `${linksRadius.card}px`,
+    // Borda do card um passo acima da hairline dos painéis — o card é o
+    // objeto principal da página e pode se afirmar.
+    border: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.14 : 0.12)}`,
     overflow: "hidden" as const,
+    // Véu translúcido (não cor sólida) e sem gradiente: o card eleva pela
+    // luminância do véu sobre o painel, com superfície limpa e uniforme.
     backgroundColor: isDark
-      ? alpha(theme.palette.common.black, 0.14)
+      ? alpha(theme.palette.common.white, 0.035)
       : alpha(theme.palette.common.black, 0.02),
-    backgroundImage: getLinksTopLightGradient(theme),
-    boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme)}`,
-    transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}, border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+    boxShadow: getLinksTopHighlight(theme),
+    transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {
-      boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme, "hover")}`,
+      backgroundColor: isDark
+        ? alpha(theme.palette.common.white, 0.055)
+        : alpha(theme.palette.common.black, 0.035),
       borderColor: alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14),
     },
   };
@@ -127,37 +196,100 @@ export function getLinkCardShellSx(theme: Theme) {
 /** Vertical gap between cards in the browse list. */
 export const linkCardListItemMb = { xs: 2, sm: 2.25 } as const;
 
+/**
+ * Chip de cliques do card — pill azul que resume a métrica principal e serve
+ * de porta de entrada colorida para o analytics (padrão Dub/Bitly).
+ *
+ * @param theme - tema MUI ativo.
+ * @returns sx do `Chip` de cliques.
+ */
+export function getLinkClickChipSx(theme: Theme) {
+  const isDark = theme.palette.mode === "dark";
+  const primary = theme.palette.primary.main;
+  const primaryDark = theme.palette.primary.dark;
+
+  return {
+    height: 22,
+    flexShrink: 0,
+    borderRadius: `${linksRadius.chip}px`,
+    fontSize: "0.6875rem",
+    fontWeight: 600,
+    fontVariantNumeric: "tabular-nums",
+    // Fonte branca (não primary.light) — chips coloridos precisam de texto
+    // branco em dark para leitura; regra vale p/ futuros chips de tag.
+    color: isDark ? theme.palette.common.white : theme.palette.primary.dark,
+    // Em dark o chip é um azul profundo (primary.dark) — tom mais escuro que
+    // se destaca sobre o véu claro do card sem "brilhar".
+    bgcolor: isDark ? alpha(primaryDark, 0.55) : alpha(primary, 0.1),
+    border: `1px solid ${alpha(primaryDark, isDark ? 0.55 : 0.28)}`,
+    "& .MuiChip-icon": { color: "inherit", ml: 0.625 },
+    "& .MuiChip-label": { px: 0.75 },
+    "&:hover": {
+      bgcolor: isDark ? alpha(primaryDark, 0.7) : alpha(primary, 0.16),
+    },
+  };
+}
+
+/**
+ * Tag chip — same pill shape as {@link getLinkClickChipSx}, tinted with the
+ * tag's own color instead of `primary`.
+ *
+ * Dark mode: chip text is always `common.white` over `alpha(color, 0.25)`
+ * background — a per-tag color is rarely light enough to read as text on a
+ * dark surface, so white is the one rule that always works. Light mode:
+ * a darkened shade of the color as text over a light tint of the same color,
+ * mirroring `getSoftSelectedChipSx`'s light-mode approach.
+ *
+ * @param theme - tema MUI ativo.
+ * @param color - hex color of the tag (from `TAG_COLOR_PALETTE` or user data).
+ * @returns sx do `Chip` de tag.
+ */
+export function getTagChipSx(theme: Theme, color: string) {
+  const isDark = theme.palette.mode === "dark";
+
+  return {
+    height: 20,
+    flexShrink: 0,
+    borderRadius: `${linksRadius.chip}px`,
+    fontSize: "0.6875rem",
+    fontWeight: 600,
+    color: isDark ? theme.palette.common.white : darken(color, 0.35),
+    bgcolor: alpha(color, isDark ? 0.25 : 0.12),
+    border: `1px solid ${alpha(color, isDark ? 0.4 : 0.32)}`,
+    "& .MuiChip-label": { px: 0.75 },
+  };
+}
+
 /** Row density for the desktop browse list. */
 export type LinkCardDensity = "comfortable" | "compact";
 
 /**
- * Vertical gap between desktop cards, tightened in `compact` density.
+ * Grid do browse list (desktop). Mobile-first: 1 coluna é o estado natural;
+ * o auto-fill só abre a 2ª coluna quando o painel comporta dois cards de
+ * ≥560px. `alignItems: "start"` evita que um card futuro de altura variável
+ * estique o vizinho da mesma linha.
  *
- * @param density - the active list density.
- * @returns a responsive MUI `mb` value.
+ * @param density - densidade ativa da lista.
+ * @returns sx do container do grid.
  */
-export function getLinkCardListItemMb(density: LinkCardDensity) {
-  return density === "compact"
-    ? ({ xs: 1, sm: 1.25 } as const)
-    : linkCardListItemMb;
-}
-
-/** Compact inset strip (short URL copy on mobile). */
-export function getLinkCardUrlBarSx(theme: Theme) {
+export function getLinksBrowseGridSx(density: LinkCardDensity) {
   return {
-    display: "flex",
-    alignItems: "center",
-    gap: 0.75,
-    px: 1,
-    py: 0.5,
-    borderRadius: `${radiusTokens.sm}px`,
-    border: `1px solid ${getLinksBorderColor(theme)}`,
-    backgroundColor:
-      theme.palette.mode === "dark"
-        ? alpha(theme.palette.common.white, 0.03)
-        : alpha(theme.palette.common.black, 0.025),
-    minWidth: 0,
-  };
+    display: "grid",
+    gridTemplateColumns:
+      density === "comfortable"
+        ? "repeat(auto-fill, minmax(min(560px, 100%), 1fr))"
+        : "1fr",
+    gap: density === "comfortable" ? 2 : 1.25,
+    alignItems: "start",
+    // Stagger da animação de entrada dos cards (definida no shell) — só os 8
+    // primeiros (PAGE_SIZE) precisam de delay próprio.
+    ...Object.fromEntries(
+      Array.from({ length: 8 }, (_, i) => [
+        `& > *:nth-of-type(${i + 1})`,
+        { animationDelay: `${i * 45}ms` },
+      ]),
+    ),
+  } as const;
 }
 
 /** Footer metrics — single row with vertical dividers between segments. */
@@ -170,7 +302,7 @@ export function getLinkCardMetricsRowSx(theme: Theme) {
     rowGap: 0.5,
     pt: 0.625,
     mt: 0.625,
-    borderTop: `1px solid ${getLinksBorderColor(theme)}`,
+    borderTop: `1px solid ${getLinkCardInnerBorderColor(theme)}`,
     minWidth: 0,
   };
 }
@@ -185,7 +317,7 @@ export function getLinkCardMetricDividerSx(theme: Theme) {
     alignSelf: "stretch",
     minHeight: LINK_CARD_METRIC_ROW_HEIGHT,
     mx: { xs: 1, sm: 1.25 },
-    bgcolor: getLinksBorderColor(theme),
+    bgcolor: getLinkCardInnerBorderColor(theme),
     flexShrink: 0,
   };
 }
@@ -255,12 +387,9 @@ export function getLinkCardContentSx(density: LinkCardDensity) {
 /** Subtle inset for filter toolbar inside a links panel. */
 export function getLinksFilterInsetSx(theme: Theme) {
   return {
-    borderRadius: `${radiusTokens.sm}px`,
+    borderRadius: `${linksRadius.control}px`,
     border: `1px solid ${getLinksBorderColor(theme)}`,
-    backgroundColor:
-      theme.palette.mode === "dark"
-        ? alpha(theme.palette.common.white, 0.03)
-        : alpha(theme.palette.common.black, 0.02),
+    backgroundColor: getLinksInsetBg(theme),
     overflow: "hidden" as const,
   };
 }
