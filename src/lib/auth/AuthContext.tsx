@@ -13,7 +13,7 @@ import { ApiError } from "@/lib/api/client";
 import { trackAdConversion } from "@/lib/telemetry/adConversions";
 import { authService } from "@/services";
 
-import type { LoginResponse, User, UserResponse } from "@/types";
+import type { LoginResponse, OnboardingKey, User, UserResponse } from "@/types";
 import type { ReactNode } from "react";
 
 interface AuthContextType {
@@ -25,6 +25,8 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateUser: (updates: Partial<User>) => Promise<User | undefined>;
   refreshUser: () => Promise<void>;
+  /** Records that the user dismissed an onboarding flag (e.g. the links tour). */
+  markOnboardingSeen: (key: OnboardingKey) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,6 +52,11 @@ function convertUserDBToUser(userDB: UserResponse): User {
       layout: { style: "layout1", config: {} },
       direction: "ltr",
     },
+    // Carried through so the tour can be dismissed per account (not per browser)
+    // and so the links list can tell a brand-new signup — whose demo link is
+    // still being seeded — from a user who simply deleted all their links.
+    onboarding: userDB.onboarding ?? undefined,
+    created_at: userDB.created_at,
   };
 }
 
@@ -307,6 +314,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
     [user],
   );
 
+  const markOnboardingSeen = useCallback(
+    async (key: OnboardingKey): Promise<void> => {
+      if (!user || user.onboarding?.[key]) return;
+
+      // Update local state before the request settles: the tour is dismissed the
+      // moment the user closes it, and must not flash back while the POST is in
+      // flight. Writing the cache too keeps it dismissed across a reload even if
+      // the request never lands.
+      const next: User = {
+        ...user,
+        onboarding: {
+          ...(user.onboarding ?? {}),
+          [key]: new Date().toISOString(),
+        },
+      };
+      setUser(next);
+      localStorage.setItem("user", JSON.stringify(next));
+
+      try {
+        await authService.markOnboardingSeen(key);
+      } catch (error) {
+        // Best-effort. The flag is not worth a toast: this browser already has
+        // it suppressed, and the next dismissal re-sends it. The only cost of a
+        // lost write is the tour reappearing on a *different* browser.
+        console.error("[AuthContext] Onboarding flag not persisted:", error);
+      }
+    },
+    [user],
+  );
+
   const value = useMemo<AuthContextType>(
     () => ({
       user,
@@ -316,8 +353,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
       logout,
       updateUser,
       refreshUser,
+      markOnboardingSeen,
     }),
-    [user, isLoading, auth0Loading, login, logout, updateUser, refreshUser],
+    [
+      user,
+      isLoading,
+      auth0Loading,
+      login,
+      logout,
+      updateUser,
+      refreshUser,
+      markOnboardingSeen,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

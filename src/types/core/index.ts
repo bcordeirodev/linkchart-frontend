@@ -45,6 +45,8 @@ export type {
   LoginRequest,
   RegisterRequest,
   UpdateProfileRequest,
+  OnboardingKey,
+  OnboardingFlags,
 } from "./auth";
 
 // Re-exports de tipos de links
