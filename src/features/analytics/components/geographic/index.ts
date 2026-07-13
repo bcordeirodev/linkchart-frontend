@@ -1,9 +1,7 @@
 import dynamic from "next/dynamic";
 
 export { GeographicAnalysis } from "./GeographicAnalysis";
-export { GeographicChart } from "./GeographicChart";
 export { GeographicInsights } from "./GeographicInsights";
-export { GeographicMetrics } from "./GeographicMetrics";
 export { ContinentBreakdown } from "./ContinentBreakdown";
 export { CountryDistributionChart } from "./CountryDistributionChart";
 
@@ -15,12 +13,14 @@ export const RealTimeHeatmapChart = dynamic(
   { ssr: false, loading: () => null },
 );
 
-// react-simple-maps + d3-geo is ~100KB; lazy-load it (ssr:false) so it stays out
-// of the static analytics chunk, mirroring the RealTimeHeatmapChart pattern above.
-export const GeographicChoropleth = dynamic(
+// Bundles the world choropleth (react-simple-maps + d3-geo, ~100KB) together
+// with the ranked-list view behind a single toggle. Lazy-loaded (ssr:false)
+// so the heavy map lib stays out of the static analytics chunk, mirroring
+// the RealTimeHeatmapChart pattern above.
+export const GeographicMapAndList = dynamic(
   () =>
-    import("./GeographicChoropleth").then((m) => ({
-      default: m.GeographicChoropleth,
+    import("./GeographicMapAndList").then((m) => ({
+      default: m.GeographicMapAndList,
     })),
   { ssr: false, loading: () => null },
 );

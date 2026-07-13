@@ -412,6 +412,11 @@
     "noData": "Nenhum dado geográfico ainda",
     "empty": "Dados geográficos indisponíveis",
     "countriesReached": "{{count}} países alcançados",
+    "mapListToggle": {
+      "ariaLabel": "Alternar entre mapa e lista",
+      "map": "Mapa",
+      "list": "Lista"
+    },
     "metrics": {
       "title": "Métricas Geográficas",
       "countriesReached": "Países Alcançados",

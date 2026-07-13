@@ -412,6 +412,11 @@
     "noData": "No geographic data yet",
     "empty": "Geographic data unavailable",
     "countriesReached": "{{count}} countries reached",
+    "mapListToggle": {
+      "ariaLabel": "Switch between map and list",
+      "map": "Map",
+      "list": "List"
+    },
     "metrics": {
       "title": "Geographic Metrics",
       "countriesReached": "Countries Reached",

@@ -148,8 +148,20 @@ export function ContinentBreakdown({
           {t("geographic.continents.subtitle")}
         </Typography>
 
-        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-          <Box sx={{ flex: "0 0 120px" }}>
+        {/* Stacks below 360px+ (donut centered on top, legend full-width below) so
+            continent names never fight the chart for horizontal space; sits side
+            by side from `sm` up where there is room for both. */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            gap: 2,
+            alignItems: { xs: "stretch", sm: "center" },
+          }}
+        >
+          <Box
+            sx={{ flex: "0 0 120px", alignSelf: { xs: "center", sm: "auto" } }}
+          >
             <ReactApexChart
               type="donut"
               series={series}
@@ -159,7 +171,13 @@ export function ContinentBreakdown({
           </Box>
 
           <Box
-            sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.5 }}
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: 0.5,
+            }}
           >
             {continents.map((c, i) => {
               const isActive = activeContinentCode === c.continent;
@@ -182,7 +200,13 @@ export function ContinentBreakdown({
                   }}
                 >
                   <Box
-                    sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 0.75,
+                      minWidth: 0,
+                      flex: 1,
+                    }}
                   >
                     <Box
                       sx={{
@@ -193,10 +217,14 @@ export function ContinentBreakdown({
                         flexShrink: 0,
                       }}
                     />
+                    {/* No fixed maxWidth — the label takes whatever the flex row has
+                        left after the swatch and percentage, so long names like
+                        "América do Norte" render in full instead of clipping at an
+                        arbitrary 120px regardless of the card's actual width. */}
                     <Typography
                       variant="caption"
                       noWrap
-                      sx={{ maxWidth: 120, fontWeight: isActive ? 700 : 400 }}
+                      sx={{ minWidth: 0, fontWeight: isActive ? 700 : 400 }}
                     >
                       {tDynamic(t, `geographic.continents.${c.continent}`, {
                         defaultValue: c.continent_name ?? c.continent,
@@ -206,7 +234,7 @@ export function ContinentBreakdown({
                   <Typography
                     variant="caption"
                     color={isActive ? "primary" : "text.secondary"}
-                    sx={{ fontWeight: 600 }}
+                    sx={{ fontWeight: 600, flexShrink: 0 }}
                   >
                     {c.percentage?.toFixed(1) ?? "0"}%
                   </Typography>
