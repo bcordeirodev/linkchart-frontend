@@ -5,38 +5,47 @@ import { driver, type Driver } from "driver.js";
 import { useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import { useAuth } from "@/lib/auth/AuthContext";
+
 import "driver.js/dist/driver.css";
 import "./linksTour.css";
 
-const TOUR_DONE_KEY = "onboarding.links.tourDone";
+/** Backend onboarding key for this tour (see `User::ONBOARDING_KEYS`). */
+const TOUR_FLAG = "links.tour" as const;
 
 /**
- * Reads the "tour already seen" flag in an SSR-safe way.
+ * Key the tour used before dismissal moved to the user's account.
  *
- * @returns `true` when the tour was completed/dismissed before.
+ * Still read once, so someone who already dismissed the tour on this browser is
+ * not shown it again just because the server has never heard of them. The value
+ * is promoted to the account on the next visit and the key is then dropped.
  */
-function readTourDone(): boolean {
+const LEGACY_TOUR_DONE_KEY = "onboarding.links.tourDone";
+
+/**
+ * Whether this browser holds the pre-account "tour seen" flag.
+ *
+ * @returns `true` when the legacy localStorage flag is set.
+ */
+function readLegacyTourDone(): boolean {
   if (typeof window === "undefined") {
     return false;
   }
   try {
-    return window.localStorage.getItem(TOUR_DONE_KEY) === "1";
+    return window.localStorage.getItem(LEGACY_TOUR_DONE_KEY) === "1";
   } catch {
     return false;
   }
 }
 
 /**
- * Persists that the tour was seen, ignoring quota/private-mode errors.
+ * Drops the legacy flag once it has been promoted to the user's account.
  */
-function markTourDone(): void {
-  if (typeof window === "undefined") {
-    return;
-  }
+function clearLegacyTourDone(): void {
   try {
-    window.localStorage.setItem(TOUR_DONE_KEY, "1");
+    window.localStorage.removeItem(LEGACY_TOUR_DONE_KEY);
   } catch {
-    /* ignore */
+    /* private mode / quota — the account flag is the source of truth anyway */
   }
 }
 
@@ -57,13 +66,20 @@ interface UseLinksTour {
  * relaunched via the "Ajuda" button. Popover colors are driven from the live MUI
  * theme through CSS variables so it matches light and dark.
  *
+ * Dismissal is stored on the user's account (`onboarding["links.tour"]`), not in
+ * `localStorage`, so the tour does not replay on a new browser, a new device or
+ * a private window.
+ *
  * @param args.ready Gate that defers the auto-run until anchors exist in the DOM.
  * @returns `{ start }` to trigger the tour on demand.
  */
 export function useLinksTour({ ready }: UseLinksTourArgs): UseLinksTour {
   const { t } = useTranslation("links");
   const theme = useTheme();
+  const { user, isLoading: authLoading, markOnboardingSeen } = useAuth();
   const driverRef = useRef<Driver | null>(null);
+
+  const seen = Boolean(user?.onboarding?.[TOUR_FLAG]);
 
   const applyThemeVars = useCallback(() => {
     const root = document.documentElement;
@@ -88,7 +104,7 @@ export function useLinksTour({ ready }: UseLinksTourArgs): UseLinksTour {
       doneBtnText: t("list.tour.done"),
       progressText: t("list.tour.progress"),
       onDestroyed: () => {
-        markTourDone();
+        void markOnboardingSeen(TOUR_FLAG);
       },
       steps: [
         {
@@ -131,16 +147,30 @@ export function useLinksTour({ ready }: UseLinksTourArgs): UseLinksTour {
 
     driverRef.current = instance;
     instance.drive();
-  }, [applyThemeVars, t]);
+  }, [applyThemeVars, markOnboardingSeen, t]);
 
-  // Auto-run once on the first ready render.
+  // One-off migration: someone who dismissed the tour before it moved to the
+  // account still carries the old localStorage flag. Promote it instead of
+  // replaying the tour at them, then drop the key.
   useEffect(() => {
-    if (!ready || readTourDone()) {
+    if (authLoading || !user || seen || !readLegacyTourDone()) {
+      return;
+    }
+    void markOnboardingSeen(TOUR_FLAG).then(clearLegacyTourDone);
+  }, [authLoading, user, seen, markOnboardingSeen]);
+
+  // Auto-run once, on the first visit of a user who has never dismissed it.
+  //
+  // Gated on the account being resolved: firing while `/api/me` is still in
+  // flight would flash the tour at a user who already dismissed it, since
+  // `seen` only becomes true once the user lands.
+  useEffect(() => {
+    if (!ready || authLoading || !user || seen || readLegacyTourDone()) {
       return;
     }
     const id = window.setTimeout(() => start(), 500);
     return () => window.clearTimeout(id);
-  }, [ready, start]);
+  }, [ready, authLoading, user, seen, start]);
 
   // Tear down any live tour on unmount.
   useEffect(() => {

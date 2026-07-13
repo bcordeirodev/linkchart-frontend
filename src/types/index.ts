@@ -44,6 +44,8 @@ export type {
   // Tipos de autenticação
   User,
   UserResponse,
+  OnboardingKey,
+  OnboardingFlags,
   LoginResponse,
   LoginRequest,
   RegisterRequest,
