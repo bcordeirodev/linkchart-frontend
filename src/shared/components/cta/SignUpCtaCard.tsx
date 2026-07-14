@@ -25,7 +25,7 @@ interface SignUpCtaCardProps {
   features: string[];
   /** Texto do botão principal */
   ctaLabel: string;
-  /** Rota de destino do botão. Default: `/sign-up` */
+  /** Rota de destino do botão. Default: `/auth/login?screen_hint=signup` (Auth0 Universal Login, tela de cadastro). */
   ctaHref?: string;
   /** Handler customizado; quando definido, ignora `ctaHref` */
   onCtaClick?: () => void;
