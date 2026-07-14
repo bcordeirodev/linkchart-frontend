@@ -18,6 +18,10 @@ interface AuthLayoutProps {
   title?: string;
   subtitle?: string;
   variant?: "signin" | "signup" | "forgot" | "reset" | "verify";
+  /** Overrides the side panel headline. Falls back to the variant's built-in copy. */
+  sideTitle?: string;
+  /** Overrides the side panel subheadline. Falls back to the variant's built-in copy. */
+  sideSubtitle?: string;
   showSideSection?: boolean;
   footerLinks?: {
     text: string;
@@ -32,6 +36,8 @@ function AuthLayout({
   title,
   subtitle,
   variant = "signin",
+  sideTitle,
+  sideSubtitle,
   showSideSection = true,
   footerLinks = [],
   className,
@@ -67,8 +73,14 @@ function AuthLayout({
         sideSubtitle: "Estamos verificando seu email para ativar sua conta.",
       },
     };
-    return configs[variant];
-  }, [variant]);
+
+    const config = configs[variant];
+
+    return {
+      sideTitle: sideTitle ?? config.sideTitle,
+      sideSubtitle: sideSubtitle ?? config.sideSubtitle,
+    };
+  }, [variant, sideTitle, sideSubtitle]);
 
   return (
     <Box
