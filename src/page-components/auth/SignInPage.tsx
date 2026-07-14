@@ -100,6 +100,8 @@ function SignInPage() {
       <AuthLayout
         title={t("signIn.title")}
         subtitle={t("signIn.subtitle")}
+        sideTitle={t("signIn.sideTitle")}
+        sideSubtitle={t("signIn.sideSubtitle")}
         variant="signin"
       >
         <Stack spacing={2}>
@@ -162,28 +164,6 @@ function SignInPage() {
           >
             {t("signIn.emailButton")}
           </Button>
-
-          {/* Sign-up link */}
-          <Typography
-            variant="body2"
-            align="center"
-            sx={{ color: theme.palette.text.secondary, pt: 1 }}
-          >
-            {t("signIn.noAccount")}{" "}
-            <Typography
-              component="a"
-              href="/auth/login?screen_hint=signup&returnTo=/sign-in"
-              variant="body2"
-              sx={{
-                color: theme.palette.primary.main,
-                fontWeight: 600,
-                textDecoration: "none",
-                "&:hover": { textDecoration: "underline" },
-              }}
-            >
-              {t("signIn.signUpLink")}
-            </Typography>
-          </Typography>
         </Stack>
       </AuthLayout>
     </AuthGuardRedirect>
