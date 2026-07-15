@@ -520,164 +520,169 @@ export function LinksQuickCreate({
               {t("list.quickCreate.shortLinkLabel")}
             </Typography>
 
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.75,
-                flexGrow: 1,
-                minWidth: { xs: "100%", sm: 320 },
-              }}
-            >
-              {hasSubdomains ? (
-                <>
-                  <Box sx={{ flexShrink: 0, minWidth: 128 }}>
-                    <SubdomainSelect
-                      value={subdomainId}
-                      onChange={setSubdomainId}
-                      size="small"
-                      aria-label={t("list.quickCreate.subdomainLabel")}
-                    />
-                  </Box>
-                  <Typography
-                    component="span"
-                    sx={{
-                      fontFamily: "monospace",
-                      fontSize: "0.8125rem",
-                      color: "text.secondary",
-                      whiteSpace: "nowrap",
-                      flexShrink: 0,
-                      display: { xs: "none", sm: "block" },
-                    }}
-                  >
-                    {domainSuffix}
-                  </Typography>
-                </>
-              ) : (
-                <Typography
-                  component="span"
-                  sx={{
-                    fontFamily: "monospace",
-                    fontSize: "0.8125rem",
-                    color: "text.secondary",
-                    whiteSpace: "nowrap",
-                    flexShrink: 0,
-                  }}
-                >
-                  {defaultHost}
-                </Typography>
-              )}
-
-              <Typography
-                component="span"
-                sx={{ color: "text.disabled", flexShrink: 0, fontWeight: 500 }}
-              >
-                /
-              </Typography>
-
-              <TextField
-                {...register("custom_slug")}
-                placeholder={
-                  showSlugSuggestion
-                    ? availableSlug!
-                    : t("list.quickCreate.slugPlaceholder")
+            <TextField
+              {...register("custom_slug")}
+              placeholder={
+                showSlugSuggestion
+                  ? availableSlug!
+                  : t("list.quickCreate.slugPlaceholder")
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Tab" && showSlugSuggestion) {
+                  acceptSlugSuggestion();
                 }
-                onKeyDown={(e) => {
-                  if (e.key === "Tab" && showSlugSuggestion) {
-                    acceptSlugSuggestion();
-                  }
-                }}
-                size="small"
-                fullWidth
-                error={!!errors.custom_slug || slugIsTaken}
-                disabled={isPending}
-                sx={[
-                  inputRootSx,
-                  (showSlugSuggestion ||
-                    isResolvingSlug ||
-                    slugIsChecking ||
-                    slugIsAvailable) &&
-                    slugAcceptAdornmentSx,
-                  { flexGrow: 1, minWidth: 0 },
-                ]}
-                slotProps={{
-                  htmlInput: { "aria-label": t("list.quickCreate.slugLabel") },
-                  input: {
-                    sx: {
-                      fontFamily: "monospace",
-                      fontWeight: 500,
-                      ...(showSlugSuggestion
-                        ? {
-                            "&::placeholder": {
-                              color: alpha(primary, 0.55),
-                              opacity: 1,
-                            },
-                          }
-                        : undefined),
-                    },
-                    // Um slot, quatro estados — o indicador troca no lugar para
-                    // o campo nunca "pular": resolvendo (spinner) → pronto
-                    // («Usar»); digitando (spinner) → livre (check). Um nome já
-                    // tomado fala na linha de mensagem abaixo.
-                    endAdornment:
-                      isResolvingSlug || slugIsChecking ? (
-                        <InputAdornment position="end">
-                          <CircularProgress
-                            size={14}
-                            thickness={5}
-                            aria-label={
-                              slugIsChecking
-                                ? slugAvailabilityLabels.checking
-                                : t("list.quickCreate.slugSuggestionChecking")
-                            }
-                            sx={{ color: alpha(primary, 0.6) }}
-                          />
-                        </InputAdornment>
-                      ) : slugIsAvailable ? (
-                        <InputAdornment position="end">
-                          <CheckCircle2
-                            size={15}
-                            strokeWidth={2.25}
-                            aria-label={slugAvailabilityLabels.available}
-                            color={theme.palette.success.main}
-                          />
-                        </InputAdornment>
-                      ) : showSlugSuggestion ? (
-                        <InputAdornment position="end">
-                          <Box
-                            component="button"
-                            type="button"
-                            onMouseDown={(e) => e.preventDefault()}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              acceptSlugSuggestion();
-                            }}
+              }}
+              size="small"
+              fullWidth
+              error={!!errors.custom_slug || slugIsTaken}
+              disabled={isPending}
+              sx={[
+                inputRootSx,
+                (showSlugSuggestion ||
+                  isResolvingSlug ||
+                  slugIsChecking ||
+                  slugIsAvailable) &&
+                  slugAcceptAdornmentSx,
+                { flexGrow: 1, minWidth: { xs: "100%", sm: 340 } },
+              ]}
+              slotProps={{
+                htmlInput: { "aria-label": t("list.quickCreate.slugLabel") },
+                input: {
+                  sx: {
+                    fontFamily: "monospace",
+                    fontWeight: 500,
+                    ...(showSlugSuggestion
+                      ? {
+                          "&::placeholder": {
+                            color: alpha(primary, 0.55),
+                            opacity: 1,
+                          },
+                        }
+                      : undefined),
+                  },
+                  // Domínio (seletor + sufixo) como addon À ESQUERDA, dentro
+                  // da MESMA borda do campo — o grupo lê como um componente
+                  // só: [ bruno ▾ .linkcharts.com.br / nome ].
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
+                      sx={{
+                        mr: 0.75,
+                        pr: 0.75,
+                        height: "auto",
+                        maxHeight: "unset",
+                        borderRight: `1px solid ${getLinksBorderColor(theme)}`,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 0.25,
+                          maxWidth: { xs: 132, sm: 240 },
+                        }}
+                      >
+                        {hasSubdomains ? (
+                          <>
+                            <SubdomainSelect
+                              value={subdomainId}
+                              onChange={setSubdomainId}
+                              size="small"
+                              variant="embedded"
+                              fullWidth={false}
+                              aria-label={t("list.quickCreate.subdomainLabel")}
+                            />
+                            <Typography
+                              component="span"
+                              sx={{
+                                fontFamily: "monospace",
+                                fontSize: "0.8125rem",
+                                color: "text.secondary",
+                                whiteSpace: "nowrap",
+                                display: { xs: "none", sm: "inline" },
+                              }}
+                            >
+                              {domainSuffix}/
+                            </Typography>
+                          </>
+                        ) : (
+                          <Typography
+                            component="span"
+                            noWrap
                             sx={{
-                              border: "none",
-                              cursor: "pointer",
-                              font: "inherit",
-                              fontSize: "0.6875rem",
-                              fontWeight: 600,
-                              lineHeight: 1,
-                              py: 0.25,
-                              px: 0.625,
-                              borderRadius: `${linksRadius.control}px`,
-                              color: primary,
-                              bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
-                              transition: "background-color 120ms ease",
-                              "&:hover": {
-                                bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
-                              },
+                              fontFamily: "monospace",
+                              fontSize: "0.8125rem",
+                              color: "text.secondary",
                             }}
                           >
-                            {t("list.quickCreate.slugAccept")}
-                          </Box>
-                        </InputAdornment>
-                      ) : undefined,
-                  },
-                }}
-              />
-            </Box>
+                            {defaultHost}/
+                          </Typography>
+                        )}
+                      </Box>
+                    </InputAdornment>
+                  ),
+                  // Um slot, quatro estados — o indicador troca no lugar para
+                  // o campo nunca "pular": resolvendo (spinner) → pronto
+                  // («Usar»); digitando (spinner) → livre (check). Um nome já
+                  // tomado fala na linha de mensagem abaixo.
+                  endAdornment:
+                    isResolvingSlug || slugIsChecking ? (
+                      <InputAdornment position="end">
+                        <CircularProgress
+                          size={14}
+                          thickness={5}
+                          aria-label={
+                            slugIsChecking
+                              ? slugAvailabilityLabels.checking
+                              : t("list.quickCreate.slugSuggestionChecking")
+                          }
+                          sx={{ color: alpha(primary, 0.6) }}
+                        />
+                      </InputAdornment>
+                    ) : slugIsAvailable ? (
+                      <InputAdornment position="end">
+                        <CheckCircle2
+                          size={15}
+                          strokeWidth={2.25}
+                          aria-label={slugAvailabilityLabels.available}
+                          color={theme.palette.success.main}
+                        />
+                      </InputAdornment>
+                    ) : showSlugSuggestion ? (
+                      <InputAdornment position="end">
+                        <Box
+                          component="button"
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            acceptSlugSuggestion();
+                          }}
+                          sx={{
+                            border: "none",
+                            cursor: "pointer",
+                            font: "inherit",
+                            fontSize: "0.6875rem",
+                            fontWeight: 600,
+                            lineHeight: 1,
+                            py: 0.25,
+                            px: 0.625,
+                            borderRadius: `${linksRadius.control}px`,
+                            color: primary,
+                            bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
+                            transition: "background-color 120ms ease",
+                            "&:hover": {
+                              bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
+                            },
+                          }}
+                        >
+                          {t("list.quickCreate.slugAccept")}
+                        </Box>
+                      </InputAdornment>
+                    ) : undefined,
+                },
+              }}
+            />
           </Box>
 
           {/* Linha de mensagens — só materializa quando há erro de URL ou nome. */}
