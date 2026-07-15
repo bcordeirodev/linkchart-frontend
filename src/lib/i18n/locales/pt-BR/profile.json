@@ -110,5 +110,11 @@
     "exampleSlug": "suaempresa",
     "formatHint": "3–63 caracteres: letras minúsculas, números e hífens (não no início nem no fim).",
     "previewLabel": "Pré-visualização"
+  },
+  "subdomainCard": {
+    "title": "Endereços personalizados",
+    "description": "Troque o domínio padrão por um endereço com a sua marca nos links que você cria.",
+    "example": "ex.: suamarca.linkcharts.com.br/promo",
+    "cta": "Gerenciar endereços"
   }
 }

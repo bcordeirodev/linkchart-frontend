@@ -1,0 +1,45 @@
+{
+  "title": "Custom addresses",
+  "subtitle_one": "{{count}} of {{max}} address in use",
+  "subtitle_other": "{{count}} of {{max}} addresses in use",
+  "subtitleLoading": "Loading your addresses…",
+  "intro": "A custom address swaps the default domain for something that carries your brand — for example, yourbrand.linkcharts.com.br/promo instead of the default link. You can create more than one and choose which to use when you shorten each link.",
+  "list": {
+    "heading": "Your addresses",
+    "empty": "You haven't created a custom address yet.",
+    "claimedAt": "Created on {{date}}",
+    "copy": "Copy address",
+    "copied": "Copied!",
+    "openInNew": "Open in new tab",
+    "release": "Release",
+    "releaseDialog": {
+      "title": "Release this address?",
+      "body": "Links created with this address will stop opening. You can claim the same name again later if it's still free.",
+      "cancel": "Cancel",
+      "confirm": "Release"
+    }
+  },
+  "claim": {
+    "heading": "Create a new address",
+    "inputLabel": "Address name",
+    "inputPlaceholder": "mycompany",
+    "formatHint": "3–63 characters: lowercase letters, numbers, and hyphens (not at the start or end).",
+    "checking": "Checking...",
+    "available": "Available",
+    "unavailable": "Already taken",
+    "validation": {
+      "format": "Use only lowercase letters, numbers, and hyphens (minimum 3 characters). Cannot start or end with a hyphen.",
+      "unavailable": "This address is already taken."
+    },
+    "responsibility": {
+      "text": "By creating this address you confirm you are responsible for all content accessed through it and that you will not violate trademarks or third-party rights.",
+      "checkbox": "I have read and accept the terms above"
+    },
+    "submit": "Create address",
+    "errors": {
+      "limitReached": "You've reached your account's custom address limit.",
+      "generic": "Could not create the address. Please try again."
+    },
+    "limitReachedNotice": "You've reached your account's custom address limit. Release an existing address to create another."
+  }
+}
