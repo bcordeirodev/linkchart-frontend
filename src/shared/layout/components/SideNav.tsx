@@ -76,6 +76,23 @@ function persistCollapsedState(collapsed: boolean): void {
 }
 
 /**
+ * Indica se `route` é a rota atual, respeitando a fronteira de segmento.
+ *
+ * Usa a mesma regra do `middleware.ts` (`pathname === route` ou começa com
+ * `${route}/`) para não marcar `/reports` como ativo em `/reports-export`.
+ *
+ * @param pathname - caminho atual (`usePathname()`), possivelmente nulo.
+ * @param route - rota do item de navegação.
+ * @returns `true` se o item representa a rota atual.
+ */
+function isRouteActive(pathname: string | null, route: string): boolean {
+  if (!pathname) {
+    return false;
+  }
+  return pathname === route || pathname.startsWith(`${route}/`);
+}
+
+/**
  * Calcula o `sx` de uma linha da sidebar conforme seu `tone` e estado ativo.
  *
  * Todas as linhas reservam 3px de `borderLeft` transparente (mesmo as que
@@ -242,7 +259,7 @@ export function SideNav() {
   const [collapsed, setCollapsed] = useState(false);
   const isDark = theme.palette.mode === "dark";
   const navItems = getVisibleNavItems();
-  const isProfileActive = pathname?.startsWith("/profile") ?? false;
+  const isProfileActive = isRouteActive(pathname, "/profile");
 
   // Lê a preferência persistida só no efeito (não no estado inicial) para
   // que o primeiro render no cliente bata com o SSR (sempre expandido).
@@ -292,7 +309,7 @@ export function SideNav() {
             label={t(`nav.${item.key}`)}
             icon={<AppIcon intent={item.icon} size={20} />}
             collapsed={collapsed}
-            active={pathname?.startsWith(item.route) ?? false}
+            active={isRouteActive(pathname, item.route)}
             onClick={() => navigate(item.route)}
           />
         ))}
