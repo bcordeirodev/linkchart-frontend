@@ -67,6 +67,7 @@ export interface LinksMeta {
   per_page: number;
   total: number;
   last_page: number;
+}
 
 export const queryKeys = {
   links: {
