@@ -3,6 +3,10 @@
   "appTagline": "Plataforma de Analytics",
   "nav": {
     "myLinks": "Meus Links",
+    "reports": "Relatórios",
+    "reportsDesc": "Estatísticas de todos os seus links",
+    "subdomains": "Subdomínios",
+    "subdomainsDesc": "Seus endereços personalizados",
     "signIn": "Entrar",
     "signUp": "Criar conta",
     "profile": "Configurações de Perfil",

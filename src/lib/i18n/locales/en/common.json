@@ -3,6 +3,10 @@
   "appTagline": "Analytics Platform",
   "nav": {
     "myLinks": "My Links",
+    "reports": "Reports",
+    "reportsDesc": "Analytics across all your links",
+    "subdomains": "Subdomains",
+    "subdomainsDesc": "Your custom addresses",
     "signIn": "Sign In",
     "signUp": "Create account",
     "profile": "Profile Settings",
