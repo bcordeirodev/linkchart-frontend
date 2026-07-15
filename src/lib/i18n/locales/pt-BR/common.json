@@ -1,6 +1,6 @@
 {
   "appName": "Link Charts",
-  "appTagline": "Plataforma de Analytics",
+  "appTagline": "Plataforma de Estatísticas",
   "nav": {
     "myLinks": "Meus Links",
     "signIn": "Entrar",
@@ -28,7 +28,7 @@
     "confirm": "Confirmar",
     "retry": "Tentar Novamente",
     "refresh": "Atualizar",
-    "viewAnalytics": "Ver analytics",
+    "viewAnalytics": "Ver estatísticas",
     "qrCode": "Código QR"
   },
   "chart": {

@@ -1,7 +1,7 @@
 {
   "list": {
     "pageTitle": "Gerenciar Links",
-    "pageSubtitle": "Crie, edite e monitore seus links encurtados",
+    "pageSubtitle": "Crie links curtos e veja quantas pessoas clicaram neles.",
     "heading": "Meus links",
     "createNew": "Novo Link",
     "noTitle": "Link sem título",
@@ -12,19 +12,19 @@
     },
     "demo": {
       "badge": "Exemplo",
-      "badgeTooltip": "Link de demonstração criado com a sua conta. Os cliques dele são simulados, para você explorar o analytics antes de ter tráfego real.",
+      "badgeTooltip": "Link de demonstração criado com a sua conta. Os cliques dele são simulados, para você explorar as estatísticas antes de ter tráfego real.",
       "seeding": {
         "title": "Preparando seu link de exemplo",
-        "description": "Ele chega em instantes com cliques simulados, para você conhecer o analytics antes de ter tráfego real."
+        "description": "Ele chega em instantes com cliques simulados, para você conhecer as estatísticas antes de ter tráfego real."
       }
     },
     "sections": {
       "overview": "Visão geral da conta",
       "filters": "Busca e filtros",
       "filtersDescription": "Encontre links por texto, status ou ordene a lista.",
-      "links": "Links cadastrados",
-      "linksBrowseDescription_one": "{{count}} link — use busca e filtros abaixo para refinar",
-      "linksBrowseDescription_other": "{{count}} links — use busca e filtros abaixo para refinar",
+      "links": "Seus links",
+      "linksBrowseDescription_one": "{{count}} link — use a busca e os filtros abaixo",
+      "linksBrowseDescription_other": "{{count}} links — use a busca e os filtros abaixo",
       "linksDescription_one": "{{count}} link na lista",
       "linksDescription_other": "{{count}} links na lista",
       "linksFiltered_one": "{{count}} link encontrado com os filtros atuais",
@@ -32,26 +32,29 @@
     },
     "quickCreate": {
       "label": "Encurtar novo link",
-      "description": "Cole uma URL longa e gere um link curto.",
-      "urlLabel": "URL de destino",
-      "slugLabel": "Slug (opcional)",
+      "description": "Cole um link longo e receba um link curto para compartilhar.",
+      "urlLabel": "Link que você quer encurtar",
+      "slugLabel": "Nome personalizado (opcional)",
       "urlPlaceholder": "https://exemplo.com/pagina",
-      "slugPlaceholder": "meu-link",
-      "slugTabHint": "Tab ou Usar preenchem o slug sugerido",
-      "slugSuggestionChecking": "Verificando sugestão de slug disponível…",
-      "slugSuggestionUnavailable": "Nenhum slug disponível a partir desta página",
+      "slugPlaceholder": "nome-do-link",
+      "previewLabel": "Seu link curto ficará assim:",
+      "previewAutoName": "código-automático",
+      "previewAutoHint": "Sem um nome personalizado, geramos um código aleatório para você.",
+      "slugTabHint": "Tab ou Usar preenchem o nome sugerido",
+      "slugSuggestionChecking": "Procurando um nome disponível…",
+      "slugSuggestionUnavailable": "Nenhum nome disponível a partir desta página",
       "slugAccept": "Usar",
       "submit": "Encurtar",
       "success": "Link criado!",
       "moreOptions": "Opções avançadas",
-      "moreOptionsTooltip": "Abrir criação completa com título, UTM, limite de cliques e mais"
+      "moreOptionsTooltip": "Abrir a criação completa: título, agendamento, limite de cliques e mais"
     },
     "pagination": {
       "showing": "Mostrando {{from}}–{{to}} de {{total}}"
     },
     "onboarding": {
       "help": "Ajuda",
-      "hintQuickCreate": "Cole qualquer URL longa aqui para gerar um link curto e rastreável."
+      "hintQuickCreate": "Cole aqui qualquer link longo para transformá-lo num link curto."
     },
     "tour": {
       "next": "Próximo",
@@ -60,7 +63,7 @@
       "progress": "{{current}} de {{total}}",
       "create": {
         "title": "Encurte seu primeiro link",
-        "desc": "Cole uma URL longa aqui e clique em Encurtar para criar um link curto e rastreável."
+        "desc": "Cole um link longo aqui e clique em Encurtar para criar seu link curto."
       },
       "overview": {
         "title": "Visão geral da conta",
@@ -71,12 +74,12 @@
         "desc": "Todos os seus links ficam aqui. Use a busca e os filtros para encontrar rapidamente."
       },
       "analytics": {
-        "title": "Veja o analytics",
-        "desc": "Abra o analytics de um link para ver cliques, países, dispositivos e muito mais."
+        "title": "Veja as estatísticas",
+        "desc": "Abra as estatísticas de um link para ver cliques, países, dispositivos e muito mais."
       },
       "actions": {
         "title": "Ações do link",
-        "desc": "Aqui você edita o destino e o slug, gera o QR Code ou exclui o link."
+        "desc": "Aqui você edita o link, gera o QR Code ou exclui."
       }
     }
   },
@@ -96,21 +99,21 @@
     "dateInvalid": "Data inválida"
   },
   "filters": {
-    "search": "Buscar por título, URL ou slug...",
+    "search": "Buscar pelo nome ou endereço do link…",
     "status": "Status",
     "all": "Todos",
     "sortBy": "Ordenar por",
     "sortNewest": "Mais recentes",
     "sortMostClicks": "Mais cliques",
     "clearFilters": "Limpar filtros",
-    "mostTrend": "Maior tendência",
-    "lastActivity": "Última atividade"
+    "mostTrend": "Em alta",
+    "lastActivity": "Clicado por último"
   },
   "actions": {
     "copyLink": "Copiar link",
     "copySuccess": "Link copiado!",
-    "analytics": "Analytics",
-    "viewAnalyticsCard": "Ver analytics de {{title}}",
+    "analytics": "Estatísticas",
+    "viewAnalyticsCard": "Ver estatísticas de {{title}}",
     "deleteConfirm": "Excluir este link?",
     "deleteConfirmDesc": "Esta ação não pode ser desfeita. Todos os dados de cliques serão perdidos.",
     "activate": "Ativar",
@@ -247,7 +250,7 @@
     "avgClicksDay": "Média de Cliques / Dia",
     "avgClicksPerLink": "Média de Cliques / Link",
     "lastClick": "Último clique",
-    "lastClickShort": "Último",
+    "lastClickShort": "Último clique",
     "clicksShort": "Cliques",
     "neverClicked": "Nunca",
     "noClicks": "sem cliques ainda",
@@ -277,16 +280,22 @@
     "active": "Ativo",
     "inactive": "Inativo",
     "expired": "Expirado",
-    "scheduled": "Agendado"
+    "scheduled": "Agendado",
+    "tooltip": {
+      "active": "Funcionando e redirecionando normalmente.",
+      "inactive": "Desligado por você — não redireciona.",
+      "scheduled": "Vai começar a funcionar na data agendada.",
+      "expired": "Passou da validade — não redireciona mais."
+    }
   },
   "health": {
     "ok": "Saudável",
     "error": "Erro",
     "unknown": "Não verificado",
     "tooltip": {
-      "ok": "A URL de destino está funcionando",
-      "error": "A URL de destino não está acessível",
-      "unknown": "A URL ainda não foi verificada",
+      "ok": "O link de destino está abrindo normalmente",
+      "error": "O link de destino não está abrindo",
+      "unknown": "O link ainda não foi verificado",
       "checked_ago": "Verificado {{time}}"
     }
   },
