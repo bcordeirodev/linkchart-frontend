@@ -120,20 +120,22 @@ export abstract class BaseService {
    * JSON body (e.g. the password/confirmation required by account deletion).
    *
    * @param endpoint - relative path (e.g. `/api/links/{id}`).
-   * @param data - optional JSON-serializable payload sent as the request body.
-   * @param options - optional `fallback` returned on error and `context` tag for debugging.
+   * @param options - optional `data` (JSON body, e.g. the password/confirmation
+   *   required by account deletion), `fallback` returned on error, and `context`
+   *   tag for debugging. Keeping the body inside `options` preserves the original
+   *   two-argument call shape used by existing callers.
    * @returns the unwrapped response body of type `T`.
    */
   protected async delete<T>(
     endpoint: string,
-    data?: unknown,
     options?: {
+      data?: unknown;
       fallback?: T;
       context?: string;
     },
   ): Promise<T> {
     try {
-      const response = await api.delete<T>(endpoint, data);
+      const response = await api.delete<T>(endpoint, options?.data);
       this.logSuccess("DELETE", endpoint);
       return response;
     } catch (error) {
