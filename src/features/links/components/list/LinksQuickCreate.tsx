@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  FormLabel,
   InputAdornment,
   Stack,
   TextField,
@@ -29,6 +30,8 @@ import { useCreateLink } from "@/features/links/hooks/useLinks";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
 import { usePublicSlugSuggestion } from "@/features/links/hooks/usePublicSlugSuggestion";
 import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability";
+import { useSubdomain } from "@/features/profile/hooks/useSubdomain";
+import { getShortUrlPrefixForSubdomain } from "@/lib/utils/shortUrl";
 import { RESERVED_SLUGS } from "@/features/links/utils/slugAvailabilityCheck";
 import {
   buildSlugAvailabilityLabels,
@@ -45,6 +48,8 @@ import { LinksListSectionHeading } from "./LinksListSectionHeading";
 import {
   linksRadius,
   getLinksBorderColor,
+  getLinkCardInnerBorderColor,
+  getLinksInsetBg,
   getLinksQuickCreatePanelSx,
 } from "./linksPanelStyles";
 
@@ -120,9 +125,12 @@ const slugAcceptAdornmentSx = {
 } as const;
 
 /**
- * One grid for all breakpoints — avoids duplicate `register()` on hidden
- * fields. Uma linha só de controles (placeholders carregam o significado;
- * labels viram aria-label) + linha de helper que só existe quando há mensagem.
+ * Field grid: three labeled cells on one row (link · custom name · submit).
+ * Each cell stacks its own `FormLabel` above its control, so the row reads as
+ * a proper form instead of bare inputs floating in space. `alignItems: start`
+ * keeps every control's top edge on the same axis; the submit cell carries an
+ * invisible label spacer so its button lines up with the two inputs below their
+ * labels. On mobile the three cells stack in DOM order.
  */
 const formGridSx = {
   display: "grid",
@@ -131,14 +139,22 @@ const formGridSx = {
     md: "minmax(0, 2fr) minmax(0, 1fr) 132px",
   },
   columnGap: 2,
-  rowGap: { xs: 1.25, md: 0.75 },
+  rowGap: { xs: 1.75, md: 0 },
   alignItems: "start",
 } as const;
 
-const mdCell = (row: number, col: number) => ({
-  gridRow: { md: row },
-  gridColumn: { md: col },
-});
+/** Small field label above each quick-create control. */
+const fieldLabelSx = {
+  display: "block",
+  mb: 0.75,
+  fontSize: "0.75rem",
+  fontWeight: 600,
+  lineHeight: 1.3,
+  letterSpacing: "0.01em",
+  color: "text.secondary",
+  // Neutral even while the input inside the cell is focused.
+  "&.Mui-focused": { color: "text.secondary" },
+} as const;
 
 const submitButtonSx = {
   // ≥44px de alvo de toque no mobile; alinhado aos inputs (40) no desktop.
@@ -209,6 +225,7 @@ export function LinksQuickCreate({
   const { t } = useTranslation("links");
   const navigate = useNavigate();
   const { mutateAsync, isPending } = useCreateLink();
+  const { subdomain } = useSubdomain();
   const [succeeded, setSucceeded] = useState(false);
 
   const schema = useMemo(
@@ -312,10 +329,19 @@ export function LinksQuickCreate({
 
   const createLink = useCallback(
     async (data: QuickFormData): Promise<void> => {
+      // The smart suggestion is the default: when the user hasn't typed a name,
+      // submit the very slug the preview is showing (the resolved suggestion), so
+      // the saved link matches the preview instead of getting a fresh random slug
+      // from the backend. A typed name always wins; a not-yet-ready suggestion
+      // (the submit was queued below) falls through to a backend random, which is
+      // honest because in that state the preview was only showing the placeholder.
+      const typed = data.custom_slug?.trim();
+      const effectiveSlug =
+        typed || (slugSuggestionStatus === "ready" ? availableSlug : null);
       try {
         const created = await mutateAsync({
           original_url: data.original_url,
-          custom_slug: data.custom_slug || undefined,
+          custom_slug: effectiveSlug || undefined,
         });
         onLinkCreated?.(created);
         setSucceeded(true);
@@ -326,7 +352,7 @@ export function LinksQuickCreate({
         // rejection so the queued (void) call can't become an unhandled one.
       }
     },
-    [mutateAsync, onLinkCreated, reset],
+    [mutateAsync, onLinkCreated, reset, availableSlug, slugSuggestionStatus],
   );
 
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
@@ -337,35 +363,52 @@ export function LinksQuickCreate({
       if (urlIsUnsafe) return;
       // A slug we already know is taken would just come back as a 422.
       if (slugIsTaken) return;
-      if (urlIsChecking) {
+      // Two things can make a click wait, both via the same queue: a still-running
+      // safety check, or — when the user is relying on the suggestion — a slug
+      // that hasn't resolved yet. Queuing (instead of greying the button) lets the
+      // submit fire the moment both settle, and guarantees we commit the resolved
+      // suggestion rather than racing it to a backend random.
+      const awaitingSuggestion =
+        !data.custom_slug?.trim() && slugSuggestionStatus === "resolving";
+      if (urlIsChecking || awaitingSuggestion) {
         pendingSubmitDataRef.current = data;
         setSubmitQueued(true);
         return;
       }
       await createLink(data);
     },
-    [urlIsUnsafe, urlIsChecking, slugIsTaken, createLink],
+    [urlIsUnsafe, urlIsChecking, slugIsTaken, slugSuggestionStatus, createLink],
   );
 
-  // Flush a queued submit when the safety check settles: create on safe/error
-  // (error fails open, matching the submit gate), and drop on unsafe or when the
-  // URL is cleared/changed (back to idle).
+  // Flush a queued submit once BOTH gates settle: the safety check finished
+  // (safe/error — error fails open, matching the submit gate) and any suggestion
+  // the submit depends on has landed. Drop it on an unsafe verdict or a
+  // cleared/changed URL (safety back to idle).
   useEffect(() => {
     if (!submitQueued) {
       return;
     }
-    if (safetyStatus === "safe" || safetyStatus === "error") {
-      const data = pendingSubmitDataRef.current;
+    if (safetyStatus === "unsafe" || safetyStatus === "idle") {
+      pendingSubmitDataRef.current = null;
+      setSubmitQueued(false);
+      return;
+    }
+    const data = pendingSubmitDataRef.current;
+    const awaitingSuggestion =
+      !!data &&
+      !data.custom_slug?.trim() &&
+      slugSuggestionStatus === "resolving";
+    if (
+      (safetyStatus === "safe" || safetyStatus === "error") &&
+      !awaitingSuggestion
+    ) {
       pendingSubmitDataRef.current = null;
       setSubmitQueued(false);
       if (data) {
         void createLink(data);
       }
-    } else if (safetyStatus === "unsafe" || safetyStatus === "idle") {
-      pendingSubmitDataRef.current = null;
-      setSubmitQueued(false);
     }
-  }, [safetyStatus, submitQueued, createLink]);
+  }, [safetyStatus, slugSuggestionStatus, submitQueued, createLink]);
 
   const inputRootSx = getInputRootSx(theme);
   const primary = theme.palette.primary.main;
@@ -376,6 +419,24 @@ export function LinksQuickCreate({
   const slugHelperText =
     errors.custom_slug?.message ??
     (slugIsTaken ? slugAvailabilityLabels.taken : undefined);
+
+  // Live preview of the resulting short URL. It turns the abstract "custom name"
+  // field into something concrete — the beginner sees exactly what they're
+  // building (host + final part) as they type, without ever meeting the word
+  // "slug". Host is stripped of its protocol to read like the copied URL does.
+  const previewPrefix = getShortUrlPrefixForSubdomain(
+    subdomain?.status === "active" ? subdomain : null,
+  ).replace(/^https?:\/\//, "");
+  const typedFinal = slugValue?.trim() ?? "";
+  // The preview must show only what submitting *now* would actually produce.
+  // A server suggestion is NOT it: unless the user accepts it (which fills the
+  // field, becoming `typedFinal`), an empty name submits as `undefined` and the
+  // backend mints a random code. Showing the suggestion here promised a URL the
+  // user wouldn't get. So an empty field previews a generic auto-code marker in
+  // the quiet placeholder tone; only a real typed/accepted name reads in accent.
+  const previewFinalIsPlaceholder = !typedFinal;
+  const previewFinal = typedFinal || t("list.quickCreate.previewAutoName");
+  const showPreview = Boolean(urlValue?.trim());
 
   return (
     <EnhancedPaper
@@ -429,216 +490,293 @@ export function LinksQuickCreate({
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
           <Box sx={formGridSx}>
-            <TextField
-              {...register("original_url")}
-              placeholder={t("list.quickCreate.urlPlaceholder")}
-              size="small"
-              fullWidth
-              error={!!errors.original_url || urlIsUnsafe}
-              helperText={urlHelperText === " " ? undefined : urlHelperText}
-              disabled={isPending}
-              sx={[
-                inputRootSx,
-                mdCell(1, 1),
-                { order: { xs: 1, md: "unset" } },
-              ]}
-              slotProps={{
-                htmlInput: {
-                  "aria-label": t("list.quickCreate.urlLabel"),
-                },
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Link2
-                        {...ICON_SM}
-                        color={theme.palette.text.secondary}
-                      />
-                    </InputAdornment>
-                  ),
-                },
-                formHelperText: {
-                  sx: { display: { md: "none" } },
-                },
-              }}
-            />
+            <Box>
+              <FormLabel htmlFor="quick-create-url" sx={fieldLabelSx}>
+                {t("list.quickCreate.urlLabel")}
+              </FormLabel>
+              <TextField
+                id="quick-create-url"
+                {...register("original_url")}
+                placeholder={t("list.quickCreate.urlPlaceholder")}
+                size="small"
+                fullWidth
+                error={!!errors.original_url || urlIsUnsafe}
+                helperText={urlHelperText === " " ? undefined : urlHelperText}
+                disabled={isPending}
+                sx={inputRootSx}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Link2
+                          {...ICON_SM}
+                          color={theme.palette.text.secondary}
+                        />
+                      </InputAdornment>
+                    ),
+                  },
+                  formHelperText: {
+                    sx: {
+                      color: "text.secondary",
+                      fontSize: "0.72rem",
+                      lineHeight: 1.4,
+                    },
+                  },
+                }}
+              />
+            </Box>
 
-            <TextField
-              {...register("custom_slug")}
-              placeholder={
-                showSlugSuggestion
-                  ? availableSlug!
-                  : t("list.quickCreate.slugPlaceholder")
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Tab" && showSlugSuggestion) {
-                  acceptSlugSuggestion();
+            <Box>
+              <FormLabel htmlFor="quick-create-name" sx={fieldLabelSx}>
+                {t("list.quickCreate.slugLabel")}
+              </FormLabel>
+              <TextField
+                id="quick-create-name"
+                {...register("custom_slug")}
+                placeholder={
+                  showSlugSuggestion
+                    ? availableSlug!
+                    : t("list.quickCreate.slugPlaceholder")
                 }
-              }}
-              size="small"
-              fullWidth
-              error={!!errors.custom_slug || slugIsTaken}
-              helperText={slugHelperText}
-              disabled={isPending}
-              sx={[
-                inputRootSx,
-                (showSlugSuggestion ||
-                  isResolvingSlug ||
-                  slugIsChecking ||
-                  slugIsAvailable) &&
-                  slugAcceptAdornmentSx,
-                mdCell(1, 2),
-                { order: { xs: 2, md: "unset" } },
-              ]}
-              slotProps={{
-                htmlInput: {
-                  "aria-label": t("list.quickCreate.slugLabel"),
-                },
-                input: {
-                  sx: {
-                    fontFamily: "monospace",
-                    fontWeight: 500,
-                    ...(showSlugSuggestion
-                      ? {
-                          "&::placeholder": {
-                            color: alpha(primary, 0.55),
-                            opacity: 1,
-                          },
-                        }
-                      : undefined),
-                  },
-                  // One slot, four states — the indicator swaps in place so the
-                  // field never reflows. Suggestion path: resolving (spinner) →
-                  // ready («Usar»). Typed-slug path: checking the DB (spinner) →
-                  // free (check). A taken slug speaks in the helper row instead.
-                  endAdornment:
-                    isResolvingSlug || slugIsChecking ? (
-                      <InputAdornment position="end">
-                        <CircularProgress
-                          size={14}
-                          thickness={5}
-                          aria-label={
-                            slugIsChecking
-                              ? slugAvailabilityLabels.checking
-                              : t("list.quickCreate.slugSuggestionChecking")
-                          }
-                          sx={{ color: alpha(primary, 0.6) }}
-                        />
-                      </InputAdornment>
-                    ) : slugIsAvailable ? (
-                      <InputAdornment position="end">
-                        <CheckCircle2
-                          size={15}
-                          strokeWidth={2.25}
-                          aria-label={slugAvailabilityLabels.available}
-                          color={theme.palette.success.main}
-                        />
-                      </InputAdornment>
-                    ) : showSlugSuggestion ? (
-                      <InputAdornment position="end">
-                        <Box
-                          component="button"
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            acceptSlugSuggestion();
-                          }}
-                          sx={{
-                            border: "none",
-                            cursor: "pointer",
-                            font: "inherit",
-                            fontSize: "0.6875rem",
-                            fontWeight: 600,
-                            lineHeight: 1,
-                            py: 0.25,
-                            px: 0.625,
-                            borderRadius: `${linksRadius.control}px`,
-                            color: primary,
-                            bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
-                            transition: "background-color 120ms ease",
-                            "&:hover": {
-                              bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
+                onKeyDown={(e) => {
+                  if (e.key === "Tab" && showSlugSuggestion) {
+                    acceptSlugSuggestion();
+                  }
+                }}
+                size="small"
+                fullWidth
+                error={!!errors.custom_slug || slugIsTaken}
+                helperText={slugHelperText}
+                disabled={isPending}
+                sx={[
+                  inputRootSx,
+                  (showSlugSuggestion ||
+                    isResolvingSlug ||
+                    slugIsChecking ||
+                    slugIsAvailable) &&
+                    slugAcceptAdornmentSx,
+                ]}
+                slotProps={{
+                  input: {
+                    sx: {
+                      fontFamily: "monospace",
+                      fontWeight: 500,
+                      ...(showSlugSuggestion
+                        ? {
+                            "&::placeholder": {
+                              color: alpha(primary, 0.55),
+                              opacity: 1,
                             },
-                          }}
-                        >
-                          {t("list.quickCreate.slugAccept")}
-                        </Box>
-                      </InputAdornment>
-                    ) : undefined,
-                },
-                formHelperText: {
-                  sx: {
-                    display: { md: "none" },
-                    color: "text.secondary",
-                    fontSize: "0.75rem",
-                    lineHeight: 1.45,
+                          }
+                        : undefined),
+                    },
+                    // One slot, four states — the indicator swaps in place so the
+                    // field never reflows. Suggestion path: resolving (spinner) →
+                    // ready («Usar»). Typed-slug path: checking the DB (spinner) →
+                    // free (check). A taken slug speaks in the helper row instead.
+                    endAdornment:
+                      isResolvingSlug || slugIsChecking ? (
+                        <InputAdornment position="end">
+                          <CircularProgress
+                            size={14}
+                            thickness={5}
+                            aria-label={
+                              slugIsChecking
+                                ? slugAvailabilityLabels.checking
+                                : t("list.quickCreate.slugSuggestionChecking")
+                            }
+                            sx={{ color: alpha(primary, 0.6) }}
+                          />
+                        </InputAdornment>
+                      ) : slugIsAvailable ? (
+                        <InputAdornment position="end">
+                          <CheckCircle2
+                            size={15}
+                            strokeWidth={2.25}
+                            aria-label={slugAvailabilityLabels.available}
+                            color={theme.palette.success.main}
+                          />
+                        </InputAdornment>
+                      ) : showSlugSuggestion ? (
+                        <InputAdornment position="end">
+                          <Box
+                            component="button"
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              acceptSlugSuggestion();
+                            }}
+                            sx={{
+                              border: "none",
+                              cursor: "pointer",
+                              font: "inherit",
+                              fontSize: "0.6875rem",
+                              fontWeight: 600,
+                              lineHeight: 1,
+                              py: 0.25,
+                              px: 0.625,
+                              borderRadius: `${linksRadius.control}px`,
+                              color: primary,
+                              bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
+                              transition: "background-color 120ms ease",
+                              "&:hover": {
+                                bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
+                              },
+                            }}
+                          >
+                            {t("list.quickCreate.slugAccept")}
+                          </Box>
+                        </InputAdornment>
+                      ) : undefined,
                   },
-                },
-              }}
-            />
+                  formHelperText: {
+                    sx: {
+                      color: "text.secondary",
+                      fontSize: "0.72rem",
+                      lineHeight: 1.4,
+                    },
+                  },
+                }}
+              />
+            </Box>
 
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
-              startIcon={
-                succeeded ? (
-                  <CheckCircle2 {...ICON_SM} />
-                ) : isPending || submitQueued ? (
-                  <CircularProgress size={16} color="inherit" />
-                ) : (
-                  <Zap {...ICON_SM} />
-                )
-              }
-              sx={[
-                submitButtonSx,
-                mdCell(1, 3),
-                { order: { xs: 3, md: "unset" } },
-              ]}
-            >
-              {succeeded
-                ? t("list.quickCreate.success")
-                : t("list.quickCreate.submit")}
-            </Button>
-
-            {/* Helpers desktop: linha 2 só materializa quando há mensagem. */}
-            {urlHelperText !== " " ? (
-              <Box
+            <Box>
+              <FormLabel
+                aria-hidden
                 sx={{
-                  ...mdCell(2, 1),
-                  minWidth: 0,
+                  ...fieldLabelSx,
+                  minHeight: "1.3em",
                   display: { xs: "none", md: "block" },
                 }}
               >
+                {" "}
+              </FormLabel>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                disabled={
+                  isPending || urlIsUnsafe || submitQueued || slugIsTaken
+                }
+                startIcon={
+                  succeeded ? (
+                    <CheckCircle2 {...ICON_SM} />
+                  ) : isPending || submitQueued ? (
+                    <CircularProgress size={16} color="inherit" />
+                  ) : (
+                    <Zap {...ICON_SM} />
+                  )
+                }
+                sx={submitButtonSx}
+              >
+                {succeeded
+                  ? t("list.quickCreate.success")
+                  : t("list.quickCreate.submit")}
+              </Button>
+            </Box>
+          </Box>
+
+          {/* Prévia ao vivo como bloco de resultado: superfície neutra suave +
+              chip de ícone preenchido (ícone branco, como o ⚡ do cabeçalho) dão
+              presença de "painel de resultado" sem tingir o fundo. A cor do
+              estado (destaque vs. discreto) carrega a distinção
+              comprometido/automático. */}
+          {showPreview ? (
+            <Box
+              sx={{
+                mt: { xs: 2, md: 2.5 },
+                p: { xs: 1.5, sm: 1.75 },
+                borderRadius: `${linksRadius.control}px`,
+                border: `1px solid ${getLinkCardInnerBorderColor(theme)}`,
+                backgroundColor: getLinksInsetBg(theme),
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 1.25,
+              }}
+            >
+              <Box
+                aria-hidden
+                sx={{
+                  width: 30,
+                  height: 30,
+                  mt: 0.125,
+                  flexShrink: 0,
+                  borderRadius: `${linksRadius.control}px`,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: theme.palette.common.white,
+                  bgcolor: primary,
+                }}
+              >
+                <Link2 size={15} strokeWidth={2} />
+              </Box>
+              <Box sx={{ minWidth: 0, flex: 1 }}>
                 <Typography
                   variant="caption"
-                  component="div"
-                  color={
-                    errors.original_url || urlIsUnsafe
-                      ? "error"
-                      : "text.secondary"
-                  }
+                  sx={{
+                    display: "block",
+                    color: "text.secondary",
+                    fontSize: "0.6875rem",
+                    fontWeight: 500,
+                    mb: 0.375,
+                  }}
                 >
-                  {urlHelperText}
+                  {t("list.quickCreate.previewLabel")}
                 </Typography>
+                <Box
+                  component="span"
+                  sx={{
+                    display: "block",
+                    fontFamily: "monospace",
+                    fontSize: "0.8125rem",
+                    lineHeight: 1.45,
+                    wordBreak: "break-all",
+                  }}
+                >
+                  <Box component="span" sx={{ color: "text.secondary" }}>
+                    {previewPrefix}
+                  </Box>
+                  <Box
+                    component="span"
+                    sx={{
+                      // Placeholder marker reads tentative (italic, quiet, not
+                      // mono-bold) so it never looks like a committed slug; a
+                      // real typed/accepted name reads solid in the accent tone.
+                      fontStyle: previewFinalIsPlaceholder
+                        ? "italic"
+                        : "normal",
+                      fontWeight: previewFinalIsPlaceholder ? 500 : 700,
+                      color: previewFinalIsPlaceholder
+                        ? "text.disabled"
+                        : "primary.main",
+                    }}
+                  >
+                    {previewFinal}
+                  </Box>
+                </Box>
+
+                {/* While the name is empty, spell out that the shown ending is a
+                    stand-in for a random code — not the suggestion, not final. */}
+                {previewFinalIsPlaceholder ? (
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      display: "block",
+                      mt: 0.625,
+                      color: "text.secondary",
+                      fontSize: "0.6875rem",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {t("list.quickCreate.previewAutoHint")}
+                  </Typography>
+                ) : null}
               </Box>
-            ) : null}
-            {slugHelperText ? (
-              <Box
-                sx={{
-                  ...mdCell(2, 2),
-                  minWidth: 0,
-                  display: { xs: "none", md: "block" },
-                }}
-              >
-                <Typography variant="caption" color="error">
-                  {slugHelperText}
-                </Typography>
-              </Box>
-            ) : null}
-          </Box>
+            </Box>
+          ) : null}
         </Box>
       </Box>
     </EnhancedPaper>
