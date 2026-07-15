@@ -40,7 +40,13 @@ const SECURITY_HEADERS: Record<string, string> = {
  * URL prefixes that require an authenticated Auth0 session. These map to the
  * App Router `(app)` route group (route groups don't appear in the URL).
  */
-const PROTECTED_PREFIXES = ["/links", "/profile", "/analytics"];
+const PROTECTED_PREFIXES = [
+  "/links",
+  "/profile",
+  "/analytics",
+  "/reports",
+  "/subdomains",
+];
 
 /**
  * Whether the pathname belongs to a protected `(app)` route.

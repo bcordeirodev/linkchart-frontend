@@ -35,6 +35,8 @@ import { AppIcon } from "@/shared/ui/icons";
 import { AppLogo } from "@/shared/ui/base";
 import { LanguageSelector } from "@/lib/i18n/components/LanguageSelector";
 
+import { getVisibleNavItems } from "./navItems";
+
 interface NavbarProps {
   onMobileMenuToggle?: () => void;
   isMobile?: boolean;
@@ -53,6 +55,7 @@ export function Navbar({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isDark = theme.palette.mode === "dark";
+  const navItems = getVisibleNavItems();
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -394,18 +397,26 @@ export function Navbar({
         ) : null}
 
         <List sx={{ py: 1 }}>
-          <ListItemButton
-            onClick={() => {
-              navigate("/links");
-              setDrawerOpen(false);
-            }}
-            sx={{ px: 3, py: 1.5, borderRadius: `${radiusTokens.sm}px`, mx: 1 }}
-          >
-            <ListItemIcon sx={{ minWidth: 36 }}>
-              <AppIcon intent="link" size={20} />
-            </ListItemIcon>
-            <ListItemText primary={t("nav.myLinks")} />
-          </ListItemButton>
+          {navItems.map((item) => (
+            <ListItemButton
+              key={item.key}
+              onClick={() => {
+                navigate(item.route);
+                setDrawerOpen(false);
+              }}
+              sx={{
+                px: 3,
+                py: 1.5,
+                borderRadius: `${radiusTokens.sm}px`,
+                mx: 1,
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <AppIcon intent={item.icon} size={20} />
+              </ListItemIcon>
+              <ListItemText primary={t(`nav.${item.key}`)} />
+            </ListItemButton>
+          ))}
 
           <ListItemButton
             onClick={() => {
