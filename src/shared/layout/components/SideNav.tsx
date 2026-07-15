@@ -1,17 +1,20 @@
 "use client";
 /**
- * Barra lateral fixa e colapsável — navegação primária no desktop.
+ * Barra lateral de altura total — navegação primária no desktop.
  *
- * Vive entre o `Navbar` (AppBar fixo) e o `Footer` no `MainLayout`, como um
- * irmão flex não-rolável ao lado de `<main>`: como o contêiner da linha não
- * tem scroll próprio, a barra permanece parada enquanto o conteúdo rola, sem
- * exigir `position: fixed`/`sticky` nem cálculo manual de z-index — e por
- * construção nunca sobrepõe o header (a linha começa abaixo dele) nem o
- * footer (a linha termina antes dele, como irmãos empilhados no flex column
- * do `MainLayout`).
+ * Vive como irmão do bloco `Navbar + <main> + Footer` no `MainLayout`, os
+ * dois como colunas de uma linha flex que ocupa `100dvh`: por isso a sidebar
+ * se estende do topo ao fundo do viewport (não apenas entre header e
+ * footer), sem exigir `position: fixed`/`sticky` nem cálculo manual de
+ * z-index. Header e footer nunca ficam por baixo dela porque vivem na coluna
+ * irmã, à direita.
+ *
+ * O colapso (ícone+rótulo vs. apenas ícones) é controlado externamente pelo
+ * `MainLayout` via prop `collapsed` — o botão que alterna esse estado agora
+ * mora no `Navbar` (ícone de hambúrguer no header), não mais aqui dentro.
  */
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 
 import {
   Box,
@@ -30,6 +33,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import { useNavigate, usePathname } from "@/shared/hooks";
+import { AppLogo } from "@/shared/ui/base";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { getVisibleNavItems } from "./navItems";
@@ -37,43 +41,13 @@ import { getVisibleNavItems } from "./navItems";
 import type { Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
 
-/** Chave de `localStorage` que persiste a preferência de colapso da sidebar. */
-const SIDENAV_COLLAPSED_STORAGE_KEY = "sidenav:collapsed";
-
 /** Largura (px) da sidebar expandida (ícone + rótulo). */
 const EXPANDED_WIDTH = 240;
 /** Largura (px) da sidebar colapsada (apenas ícones). */
 const COLLAPSED_WIDTH = 72;
 
 /** Paleta de cor de uma linha da sidebar. */
-type SideNavRowTone = "default" | "danger" | "muted";
-
-/**
- * Lê a preferência de colapso persistida em `localStorage`.
- *
- * @returns `true` se o usuário colapsou a sidebar em uma sessão anterior;
- * `false` (padrão expandido) em SSR ou na primeira visita — garante que o
- * primeiro paint no cliente bata com o HTML gerado no servidor, evitando
- * mismatch de hidratação.
- */
-function readStoredCollapsedState(): boolean {
-  if (typeof window === "undefined") {
-    return false;
-  }
-  return window.localStorage.getItem(SIDENAV_COLLAPSED_STORAGE_KEY) === "true";
-}
-
-/**
- * Persiste a preferência de colapso em `localStorage`.
- *
- * @param collapsed - novo estado de colapso a ser salvo.
- */
-function persistCollapsedState(collapsed: boolean): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-  window.localStorage.setItem(SIDENAV_COLLAPSED_STORAGE_KEY, String(collapsed));
-}
+type SideNavRowTone = "default" | "danger";
 
 /**
  * Indica se `route` é a rota atual, respeitando a fronteira de segmento.
@@ -96,12 +70,12 @@ function isRouteActive(pathname: string | null, route: string): boolean {
  * Calcula o `sx` de uma linha da sidebar conforme seu `tone` e estado ativo.
  *
  * Todas as linhas reservam 3px de `borderLeft` transparente (mesmo as que
- * nunca ficam "ativas", como Sair e o toggle de colapso) para que o ícone
- * fique sempre alinhado no mesmo x, independente do tone — só a cor do
- * indicador muda. Itens `default` ativos ganham a barra esquerda + fundo
- * tintado na cor primária (o mesmo idioma do sublinhado ativo do `Navbar`
- * horizontal, adaptado para orientação vertical); `danger` (Sair) e `muted`
- * (toggle) nunca participam do destaque de rota ativa.
+ * nunca ficam "ativas", como Sair) para que o ícone fique sempre alinhado no
+ * mesmo x, independente do tone — só a cor do indicador muda. Itens
+ * `default` ativos ganham a barra esquerda + fundo tintado na cor primária
+ * (o mesmo idioma do sublinhado ativo do `Navbar` horizontal, adaptado para
+ * orientação vertical); `danger` (Sair) nunca participa do destaque de rota
+ * ativa.
  *
  * @param theme - tema MUI atual (para cores e modo claro/escuro).
  * @param tone - paleta de cor da linha.
@@ -119,17 +93,6 @@ function getSideNavRowSx(theme: Theme, tone: SideNavRowTone, active: boolean) {
       ...base,
       color: theme.palette.error.main,
       "&:hover": { backgroundColor: theme.palette.action.hover },
-    };
-  }
-
-  if (tone === "muted") {
-    return {
-      ...base,
-      color: theme.palette.text.secondary,
-      "&:hover": {
-        backgroundColor: theme.palette.action.hover,
-        color: theme.palette.text.primary,
-      },
     };
   }
 
@@ -164,11 +127,11 @@ interface SideNavRowProps {
 }
 
 /**
- * Uma linha da sidebar (item de navegação, Perfil, Sair ou o toggle de
- * colapso). Sempre mostra o ícone; o rótulo só é renderizado como texto
- * quando a sidebar está expandida — quando colapsada, o rótulo vira o
- * `title` de um `Tooltip` para a linha continuar identificável ao passar o
- * mouse, e um `aria-label` garante o nome acessível do botão nos dois modos.
+ * Uma linha da sidebar (item de navegação, Perfil ou Sair). Sempre mostra o
+ * ícone; o rótulo só é renderizado como texto quando a sidebar está
+ * expandida — quando colapsada, o rótulo vira o `title` de um `Tooltip`
+ * para a linha continuar identificável ao passar o mouse, e um
+ * `aria-label` garante o nome acessível do botão nos dois modos.
  */
 function SideNavRow({
   icon,
@@ -235,46 +198,39 @@ function SideNavRow({
   );
 }
 
+interface SideNavProps {
+  /**
+   * Estado de colapso controlado pelo `MainLayout` (persistido em
+   * `localStorage` por ele). A sidebar em si não guarda esse estado.
+   */
+  collapsed: boolean;
+}
+
 /**
- * Sidebar fixa e colapsável de navegação primária, visível apenas em telas
+ * Sidebar de altura total e navegação primária, visível apenas em telas
  * `md+` (o mobile continua usando o hambúrguer + Drawer do `Navbar`, sem
  * nenhuma alteração).
  *
- * Renderiza os destinos de `getVisibleNavItems()` no topo, e Perfil/Sair no
- * rodapé — reaproveitando a mesma navegação e o mesmo logout do `Navbar`. Um
- * botão de colapso ao final alterna entre o modo completo (ícone + rótulo) e
- * o modo apenas-ícones (com tooltip ao passar o mouse), persistindo a
- * escolha em `localStorage` (`sidenav:collapsed`) para sobreviver a reloads.
+ * Renderiza uma linha de marca (logo, navega para `/links`) no topo, os
+ * destinos de `getVisibleNavItems()` em seguida, e Perfil/Sair no rodapé —
+ * reaproveitando a mesma navegação e o mesmo logout do `Navbar`. O colapso
+ * (ícone + rótulo vs. apenas ícones) é 100% controlado pelo pai via prop
+ * `collapsed`; o botão que alterna esse estado vive no `Navbar`.
  *
+ * @param props.collapsed - se `true`, renderiza a variante apenas-ícones.
  * @returns o elemento da sidebar, ou `null` enquanto não há usuário
  * autenticado (mesmo guard usado pela navegação do `Navbar`).
  */
-export function SideNav() {
+export function SideNav({ collapsed }: SideNavProps) {
   const theme = useTheme();
   const navigate = useNavigate();
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const { t } = useTranslation("common");
 
-  const [collapsed, setCollapsed] = useState(false);
   const isDark = theme.palette.mode === "dark";
   const navItems = getVisibleNavItems();
   const isProfileActive = isRouteActive(pathname, "/profile");
-
-  // Lê a preferência persistida só no efeito (não no estado inicial) para
-  // que o primeiro render no cliente bata com o SSR (sempre expandido).
-  useEffect(() => {
-    setCollapsed(readStoredCollapsedState());
-  }, []);
-
-  /** Alterna o colapso da sidebar e persiste a escolha em `localStorage`. */
-  const toggleCollapsed = useCallback(() => {
-    setCollapsed((previous) => {
-      const next = !previous;
-      persistCollapsedState(next);
-      return next;
-    });
-  }, []);
 
   /** Efetua logout a partir da sidebar (mesma ação do menu do `Navbar`). */
   const handleLogout = useCallback(() => {
@@ -302,6 +258,36 @@ export function SideNav() {
         transition: `width ${motionTokens.duration.slow} ${motionTokens.easing.default}`,
       }}
     >
+      {/* Brand row — mesma altura do Toolbar do Navbar (64/72px) para que a
+          borda inferior continue a borda do header na linha do meio. */}
+      <Box
+        component="button"
+        type="button"
+        onClick={() => navigate("/links")}
+        aria-label={t("nav.logoAriaLabel")}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: collapsed ? "center" : "flex-start",
+          flexShrink: 0,
+          minHeight: { xs: 64, md: 72 },
+          px: collapsed ? 1.5 : 2.5,
+          border: "none",
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          background: "none",
+          cursor: "pointer",
+          font: "inherit",
+          color: "inherit",
+          textAlign: "left",
+        }}
+      >
+        <AppLogo
+          size={28}
+          showText={!collapsed}
+          textSx={{ fontSize: "1rem", color: theme.palette.text.primary }}
+        />
+      </Box>
+
       <List sx={{ py: 1, flexGrow: 1 }}>
         {navItems.map((item) => (
           <SideNavRow
@@ -331,23 +317,6 @@ export function SideNav() {
           collapsed={collapsed}
           tone="danger"
           onClick={handleLogout}
-        />
-      </List>
-
-      <Divider sx={{ borderColor: theme.palette.divider }} />
-
-      <List sx={{ py: 1 }}>
-        <SideNavRow
-          label={collapsed ? t("nav.expandSidebar") : t("nav.collapseSidebar")}
-          icon={
-            <AppIcon
-              name={collapsed ? "navigation.next" : "navigation.prev"}
-              size={20}
-            />
-          }
-          collapsed={collapsed}
-          tone="muted"
-          onClick={toggleCollapsed}
         />
       </List>
     </Box>
