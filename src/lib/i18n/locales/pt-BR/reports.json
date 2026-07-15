@@ -1,0 +1,53 @@
+{
+  "title": "Relatórios",
+  "subtitle": "Estatísticas de todos os seus links em um só lugar",
+  "export": {
+    "button": "Exportar CSV",
+    "error": "Não foi possível exportar. Tente novamente."
+  },
+  "filters": {
+    "period": "Período",
+    "last7": "Últimos 7 dias",
+    "last30": "Últimos 30 dias",
+    "last90": "Últimos 90 dias"
+  },
+  "kpis": {
+    "totalClicks": "Cliques no período",
+    "uniqueVisitors": "Visitantes únicos",
+    "activeLinks": "Links ativos",
+    "avgPerDay": "Média por dia",
+    "variation": "Variação vs. período anterior"
+  },
+  "timeseries": {
+    "title": "Cliques por dia",
+    "subtitle": "Total de cliques por dia em todos os seus links",
+    "seriesName": "Cliques",
+    "clicksLabel": "cliques"
+  },
+  "topLinks": {
+    "title": "Links mais clicados",
+    "subtitle": "Seus links com mais cliques no período",
+    "viewStats": "Ver estatísticas",
+    "columns": {
+      "link": "Link",
+      "clicks": "Cliques",
+      "visitors": "Visitantes"
+    },
+    "clicksCount_one": "{{count}} clique",
+    "clicksCount_other": "{{count}} cliques",
+    "visitorsCount_one": "{{count}} visitante",
+    "visitorsCount_other": "{{count}} visitantes"
+  },
+  "breakdown": {
+    "title": "De onde vêm seus cliques",
+    "subtitle": "Distribuição dos cliques pela dimensão escolhida",
+    "dimensions": {
+      "country": "País",
+      "device": "Dispositivo",
+      "browser": "Navegador",
+      "navigation_context": "Origem da navegação",
+      "quality_tier": "Qualidade do tráfego"
+    }
+  },
+  "empty": "Você ainda não tem cliques no período selecionado."
+}

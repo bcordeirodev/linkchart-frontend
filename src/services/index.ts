@@ -20,6 +20,9 @@ export { default as TagService } from "./tag.service";
 // Profile services
 export { default as ProfileService } from "./profile.service";
 
+// Reports services (aggregated, multi-link)
+export { default as ReportsService, reportsService } from "./reports.service";
+
 // Service instances (singletons)
 import AuthService from "./auth.service";
 import LinkService from "./link.service";
