@@ -30,7 +30,6 @@ import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/lib/auth/AuthContext";
-import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import { useNavigate, usePathname } from "@/shared/hooks";
 import { AppLogo } from "@/shared/ui/base";
@@ -96,24 +95,24 @@ function getSideNavRowSx(theme: Theme, tone: SideNavRowTone, active: boolean) {
     };
   }
 
+  // Destaque do item ativo é NEUTRO (pílula clara), não azul: a fonte nunca
+  // fica colorida — o ativo se distingue por um leve fundo tintado + peso 600.
+  // Inativo parte de um tom claro; hover acende para o text.primary cheio.
   return {
     ...base,
-    borderLeftColor: active ? theme.palette.primary.main : "transparent",
+    borderLeftColor: "transparent",
     backgroundColor: active
-      ? alpha(theme.palette.primary.main, isDark ? 0.16 : 0.1)
+      ? alpha(theme.palette.text.primary, isDark ? 0.09 : 0.06)
       : "transparent",
-    // Itens inativos partem de um tom claro (mais legível que text.secondary)
-    // e acendem para o text.primary cheio no hover; o ativo mantém a cor de
-    // destaque nos dois estados.
     color: active
-      ? theme.palette.primary.main
-      : alpha(theme.palette.text.primary, isDark ? 0.82 : 0.78),
+      ? theme.palette.text.primary
+      : alpha(theme.palette.text.primary, isDark ? 0.72 : 0.7),
     fontWeight: active ? 600 : 500,
     "&:hover": {
       backgroundColor: active
-        ? alpha(theme.palette.primary.main, isDark ? 0.22 : 0.16)
-        : theme.palette.action.hover,
-      color: active ? theme.palette.primary.main : theme.palette.text.primary,
+        ? alpha(theme.palette.text.primary, isDark ? 0.12 : 0.09)
+        : alpha(theme.palette.text.primary, isDark ? 0.06 : 0.05),
+      color: theme.palette.text.primary,
     },
   };
 }
@@ -259,8 +258,10 @@ export function SideNav({ collapsed }: SideNavProps) {
         height: "100%",
         overflowX: "hidden",
         overflowY: "auto",
-        backgroundColor: isDark ? darkNeutral.surface : lightNeutral.surface,
-        borderRight: `1px solid ${theme.palette.divider}`,
+        // Mesmo fundo do container — a sidebar não é uma "surface" separada;
+        // só uma borda hairline a distingue do conteúdo.
+        backgroundColor: theme.palette.background.default,
+        borderRight: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
         transition: `width ${motionTokens.duration.slow} ${motionTokens.easing.default}`,
       }}
     >
@@ -276,10 +277,15 @@ export function SideNav({ collapsed }: SideNavProps) {
           alignItems: "center",
           justifyContent: collapsed ? "center" : "flex-start",
           flexShrink: 0,
-          minHeight: { xs: 64, md: 72 },
+          // +1px vs. o header por design: o AppBar tem altura automática e soma
+          // a borda POR FORA (73px total no md), enquanto esta linha usa
+          // minHeight + border-box (borda POR DENTRO). Igualar o minHeight ao
+          // Toolbar deixaria a borda 1px acima — daí 65/73 aqui, para as duas
+          // bordas caírem exatamente na mesma linha.
+          minHeight: { xs: 65, md: 73 },
           px: collapsed ? 1.5 : 2.5,
           border: "none",
-          borderBottom: `1px solid ${theme.palette.divider}`,
+          borderBottom: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
           background: "none",
           cursor: "pointer",
           font: "inherit",
@@ -307,7 +313,11 @@ export function SideNav({ collapsed }: SideNavProps) {
         ))}
       </List>
 
-      <Divider sx={{ borderColor: theme.palette.divider }} />
+      <Divider
+        sx={{
+          borderColor: alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08),
+        }}
+      />
 
       <List sx={{ py: 1 }}>
         <SideNavRow

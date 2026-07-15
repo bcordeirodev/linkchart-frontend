@@ -12,6 +12,7 @@
  */
 
 import {
+  alpha,
   AppBar,
   Toolbar,
   Typography,
@@ -36,7 +37,6 @@ import { Menu as MenuIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/lib/auth/AuthContext";
-import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import { useResponsive } from "@/lib/theme";
 import { AppIcon } from "@/shared/ui/icons";
@@ -94,13 +94,13 @@ export function Navbar({
         position="static"
         elevation={0}
         sx={{
-          backgroundColor: isDark ? darkNeutral.surface : lightNeutral.surface,
+          // Header compartilha o fundo do container principal — sem "surface"
+          // própria — para que sidebar, header, conteúdo e footer leiam como
+          // uma única superfície. Separação só por uma borda hairline.
+          backgroundColor: theme.palette.background.default,
           backgroundImage: "none",
-          // Header é uma faixa reta no topo da coluna direita: sem cantos
-          // arredondados (o default de Paper/AppBar arredondava e "quebrava"
-          // o encontro com a sidebar e a borda inferior).
           borderRadius: 0,
-          borderBottom: `1px solid ${theme.palette.divider}`,
+          borderBottom: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
           boxShadow: "none",
           color: theme.palette.text.primary,
           transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
@@ -111,98 +111,99 @@ export function Navbar({
             px: { xs: 2, sm: 3, md: 4 },
             py: 1,
             minHeight: { xs: 64, md: 72 },
-            // Mobile: logo à esquerda, controles à direita (space-between).
-            // Desktop: sem logo aqui (mora na sidebar) — os controles (toggle,
-            // idioma, avatar) ficam à ESQUERDA, junto da sidebar.
-            justifyContent: { xs: "space-between", md: "flex-start" },
+            // Split: à ESQUERDA só o ícone ☰ (desktop) / logo (mobile); à
+            // DIREITA idioma + avatar.
+            justifyContent: "space-between",
           }}
         >
-          {/* Logo Section — só no mobile: no desktop (md+) a marca mora na
-              linha de topo da sidebar, à esquerda do header. */}
-          <Box
-            component="button"
-            type="button"
-            onClick={() => navigate("/links")}
-            aria-label={t("nav.logoAriaLabel")}
-            sx={{
-              display: { xs: "flex", md: "none" },
-              alignItems: "center",
-              cursor: "pointer",
-              gap: 1.5,
-              p: 0,
-              border: "none",
-              background: "none",
-              font: "inherit",
-              color: "inherit",
-              textAlign: "left",
-            }}
-          >
-            <AppLogo size={36} showText={false} />
-            <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{
-                  fontWeight: 600,
-                  color: theme.palette.text.primary,
-                  fontSize: "1.125rem",
-                  letterSpacing: "-0.025em",
-                  lineHeight: 1.2,
-                }}
-              >
-                Link Charts
-              </Typography>
-              <Typography
-                variant="caption"
-                suppressHydrationWarning
-                sx={{
-                  color: theme.palette.text.secondary,
-                  fontSize: "0.6875rem",
-                  fontWeight: 500,
-                  letterSpacing: "0.05em",
-                  textTransform: "uppercase",
-                }}
-              >
-                {t("appTagline")}
-              </Typography>
+          {/* ESQUERDA — só o ícone ☰ no desktop; no mobile, o logo. */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            {/* Logo — só mobile (no desktop a marca mora na sidebar). */}
+            <Box
+              component="button"
+              type="button"
+              onClick={() => navigate("/links")}
+              aria-label={t("nav.logoAriaLabel")}
+              sx={{
+                display: { xs: "flex", md: "none" },
+                alignItems: "center",
+                cursor: "pointer",
+                gap: 1.5,
+                p: 0,
+                border: "none",
+                background: "none",
+                font: "inherit",
+                color: "inherit",
+                textAlign: "left",
+              }}
+            >
+              <AppLogo size={36} showText={false} />
+              <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{
+                    fontWeight: 600,
+                    color: theme.palette.text.primary,
+                    fontSize: "1.125rem",
+                    letterSpacing: "-0.025em",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  Link Charts
+                </Typography>
+                <Typography
+                  variant="caption"
+                  suppressHydrationWarning
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    fontSize: "0.6875rem",
+                    fontWeight: 500,
+                    letterSpacing: "0.05em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {t("appTagline")}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-
-          {/* Right Section */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {/* Toggle ☰ da sidebar — só desktop (md+); no mobile a navegação
+                é o Drawer aberto pelo hambúrguer à direita. */}
             {user ? (
-              <>
-                {/* Toggle da sidebar — só desktop (md+); no mobile a
-                    navegação é o Drawer aberto pelo hambúrguer abaixo. */}
-                <Tooltip
-                  title={
+              <Tooltip
+                title={
+                  collapsed ? t("nav.expandSidebar") : t("nav.collapseSidebar")
+                }
+                arrow
+              >
+                <IconButton
+                  aria-label={
                     collapsed
                       ? t("nav.expandSidebar")
                       : t("nav.collapseSidebar")
                   }
-                  arrow
+                  onClick={onToggleSidebar}
+                  sx={{
+                    display: { xs: "none", md: "inline-flex" },
+                    width: 44,
+                    height: 44,
+                    borderRadius: `${radiusTokens.md}px`,
+                    transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+                    "&:hover": {
+                      backgroundColor: theme.palette.action.hover,
+                    },
+                  }}
                 >
-                  <IconButton
-                    aria-label={
-                      collapsed
-                        ? t("nav.expandSidebar")
-                        : t("nav.collapseSidebar")
-                    }
-                    onClick={onToggleSidebar}
-                    sx={{
-                      display: { xs: "none", md: "inline-flex" },
-                      width: 44,
-                      height: 44,
-                      borderRadius: `${radiusTokens.md}px`,
-                      transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-                      "&:hover": {
-                        backgroundColor: theme.palette.action.hover,
-                      },
-                    }}
-                  >
-                    <MenuIcon size={20} strokeWidth={1.5} />
-                  </IconButton>
-                </Tooltip>
+                  <MenuIcon size={20} strokeWidth={1.5} />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+          </Box>
+
+          {/* DIREITA — idioma + avatar (ou hambúrguer no mobile). */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {user ? (
+              <>
                 <LanguageSelector />
                 {isMobile ? (
                   // On phones the Drawer is the single nav surface (identity +

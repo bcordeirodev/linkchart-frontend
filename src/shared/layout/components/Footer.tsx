@@ -32,7 +32,7 @@ export function Footer() {
         mt: "auto",
         px: { xs: 2, sm: 3, md: 4 },
         py: { xs: 2, sm: 2.25 },
-        borderTop: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+        borderTop: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
       }}
     >
       <Box
