@@ -5,6 +5,7 @@ import { UserCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { DangerZone } from "@/features/profile/components/DangerZone";
 import { OAuthSecurityCard } from "@/features/profile/components/OAuthSecurityCard";
 import { PasswordChangeForm } from "@/features/profile/components/PasswordChangeForm";
 import { ProfileForm } from "@/features/profile/components/ProfileForm";
@@ -125,6 +126,10 @@ function ProfilePage() {
                 photoURL={authUser?.photoURL}
               />
               {usesOAuthLogin ? <OAuthSecurityCard /> : <PasswordChangeForm />}
+              <DangerZone
+                usesOAuthLogin={usesOAuthLogin}
+                userEmail={user.email}
+              />
             </Stack>
 
             <Box sx={{ minWidth: 0 }}>
