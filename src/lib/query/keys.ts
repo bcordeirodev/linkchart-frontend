@@ -31,6 +31,16 @@ export interface AnalyticsQueryFilters {
   continent?: string | null;
 }
 
+/**
+ * Filters shared by every `/api/reports/*` endpoint (aggregated, multi-link).
+ * Narrower than {@link AnalyticsQueryFilters} — reports have no `segment`/`continent`.
+ */
+export interface ReportsQueryFilters {
+  dateFrom?: string | null;
+  dateTo?: string | null;
+  excludeBots?: boolean;
+}
+
 export const queryKeys = {
   links: {
     all: () => ["links"] as const,
@@ -55,5 +65,15 @@ export const queryKeys = {
       ["analytics", id, "insights", f ?? {}] as const,
     public: (slug: string) => ["analytics", "public", slug] as const,
     publicLink: (slug: string) => ["link", "public", slug] as const,
+  },
+  reports: {
+    summary: (f?: ReportsQueryFilters) =>
+      ["reports", "summary", f ?? {}] as const,
+    timeseries: (f?: ReportsQueryFilters) =>
+      ["reports", "timeseries", f ?? {}] as const,
+    topLinks: (f?: ReportsQueryFilters, limit?: number) =>
+      ["reports", "top-links", f ?? {}, limit ?? 10] as const,
+    breakdown: (dimension: string, f?: ReportsQueryFilters) =>
+      ["reports", "breakdown", dimension, f ?? {}] as const,
   },
 };
