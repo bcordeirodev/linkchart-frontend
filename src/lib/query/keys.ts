@@ -13,6 +13,8 @@
  * - `tags` — tag CRUD (mutations also invalidate `links.*` since link cards
  *   embed the tag objects they're tagged with).
  * - `analytics` — per-link analytics tabs and the public analytics page.
+ * - `subdomains` — the authenticated user's custom subdomains (plural, N per
+ *   user); claim/release mutations invalidate `subdomains.all()`.
  */
 
 /**
@@ -75,5 +77,8 @@ export const queryKeys = {
       ["reports", "top-links", f ?? {}, limit ?? 10] as const,
     breakdown: (dimension: string, f?: ReportsQueryFilters) =>
       ["reports", "breakdown", dimension, f ?? {}] as const,
+  },
+  subdomains: {
+    all: () => ["subdomains"] as const,
   },
 };

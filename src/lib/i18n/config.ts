@@ -10,6 +10,7 @@ import enLinks from "./locales/en/links.json";
 import enProfile from "./locales/en/profile.json";
 import enPublic from "./locales/en/public.json";
 import enReports from "./locales/en/reports.json";
+import enSubdomains from "./locales/en/subdomains.json";
 import ptBRAnalytics from "./locales/pt-BR/analytics.json";
 import ptBRAuth from "./locales/pt-BR/auth.json";
 import ptBRCommon from "./locales/pt-BR/common.json";
@@ -18,6 +19,7 @@ import ptBRLinks from "./locales/pt-BR/links.json";
 import ptBRProfile from "./locales/pt-BR/profile.json";
 import ptBRPublic from "./locales/pt-BR/public.json";
 import ptBRReports from "./locales/pt-BR/reports.json";
+import ptBRSubdomains from "./locales/pt-BR/subdomains.json";
 
 const resources = {
   en: {
@@ -29,6 +31,7 @@ const resources = {
     public: enPublic,
     legal: enLegal,
     reports: enReports,
+    subdomains: enSubdomains,
   },
   "pt-BR": {
     common: ptBRCommon,
@@ -39,6 +42,7 @@ const resources = {
     public: ptBRPublic,
     legal: ptBRLegal,
     reports: ptBRReports,
+    subdomains: ptBRSubdomains,
   },
 };
 
@@ -77,6 +81,7 @@ export function initI18n(lng: string = "en") {
       "public",
       "legal",
       "reports",
+      "subdomains",
     ],
     supportedLngs: ["en", "pt-BR"],
     interpolation: { escapeValue: false },

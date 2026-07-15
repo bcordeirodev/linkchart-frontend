@@ -35,6 +35,7 @@
       "description": "Paste a long URL and get a short link.",
       "urlLabel": "Destination URL",
       "slugLabel": "Slug (optional)",
+      "subdomainLabel": "Address",
       "urlPlaceholder": "https://example.com/page",
       "slugPlaceholder": "my-link",
       "slugTabHint": "Tab or Use fills in the suggested slug",
@@ -137,6 +138,10 @@
     "customSlug": "Custom slug (optional)",
     "customSlugPlaceholder": "my-slug",
     "customSlugHelper": "Only letters, numbers and hyphens. Leave blank to auto-generate.",
+    "subdomainSelect": {
+      "label": "Link address",
+      "defaultOption": "Default domain (linkcharts.com.br)"
+    },
     "slugTabHint": "Tab to accept suggestion",
     "slugSuggestionChecking": "Checking slug suggestion…",
     "titleTabHint": "Tab to accept suggested title",

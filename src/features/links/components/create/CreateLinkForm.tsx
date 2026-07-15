@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
+import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainSelection";
 
 import { LinkFormActionsFooter } from "../../components/forms/LinkFormActionsFooter";
 import { LinkFormFields } from "../../components/forms/LinkFormFields";
@@ -30,6 +31,8 @@ export function CreateLinkForm({
   const { t } = useTranslation("links");
   const mutation = useCreateLink();
   const copyShortUrlForLink = useCopyShortUrlForLink();
+  const { subdomainId, setSubdomainId, subdomainIdField } =
+    useSubdomainSelection();
   const [safetyStatus, setSafetyStatus] = useState<UrlSafetyStatus>("idle");
   // Safe Browsing gate: never let an unsafe (or still-being-checked) URL
   // through. "error" stays fail-open, matching the backend behavior.
@@ -89,6 +92,13 @@ export function CreateLinkForm({
       utm_campaign: data.utm_campaign || undefined,
       utm_term: data.utm_term || undefined,
       utm_content: data.utm_content || undefined,
+      // `subdomainIdField` is `{ subdomain_id }` once the subdomains list has
+      // loaded (and the feature is on), or `undefined` while still loading —
+      // spreading `undefined` omits the key entirely instead of sending an
+      // explicit `null`, which the backend would read as "force the default
+      // domain" rather than "use the user's oldest active subdomain". See
+      // `useSubdomainSelection` for the full rationale.
+      ...subdomainIdField,
     };
 
     try {
@@ -131,6 +141,8 @@ export function CreateLinkForm({
           titleSuggestion={titleSuggestion}
           isLoadingMeta={isLoadingMeta}
           onSafetyStatusChange={setSafetyStatus}
+          subdomainId={subdomainId}
+          onSubdomainIdChange={setSubdomainId}
         />
       </LinkFormShell>
     </form>

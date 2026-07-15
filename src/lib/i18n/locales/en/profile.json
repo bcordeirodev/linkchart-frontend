@@ -133,5 +133,11 @@
       "pt-BR": "Português (Brasil)",
       "en": "English"
     }
+  },
+  "subdomainCard": {
+    "title": "Custom addresses",
+    "description": "Swap the default domain for an address that carries your brand on the links you create.",
+    "example": "e.g.: yourbrand.linkcharts.com.br/promo",
+    "cta": "Manage addresses"
   }
 }
