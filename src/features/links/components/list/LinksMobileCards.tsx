@@ -17,6 +17,7 @@ import {
   Box,
   Card,
   CardContent,
+  Checkbox,
   Typography,
   Chip,
   Stack,
@@ -73,6 +74,14 @@ interface LinksMobileCardsProps {
   onEdit?: (link: Link) => void;
   meta?: BatchMetaResponse;
   highlightedLinkId?: string | null;
+  /** True while the browse list is in multi-select mode — swaps tap-to-open for tap-to-select. */
+  selectionMode?: boolean;
+  /** Currently selected link ids (as strings), used to render each card's checkbox state. */
+  selectedIds?: string[];
+  /** Toggles a card's selection; called with `String(link.id)`. */
+  onToggleSelect?: (id: string) => void;
+  /** True once the 50-link selection cap is reached — disables checkboxes for not-yet-selected cards. */
+  selectionMaxReached?: boolean;
 }
 
 interface LinkMobileCardProps {
@@ -81,6 +90,10 @@ interface LinkMobileCardProps {
   onEdit?: (link: Link) => void;
   meta?: LinkMeta;
   isHighlighted?: boolean;
+  selectionMode?: boolean;
+  selected?: boolean;
+  onToggleSelect?: (id: string) => void;
+  selectionDisabled?: boolean;
 }
 
 /**
@@ -93,13 +106,17 @@ const LinkMobileCard = memo(
     onEdit,
     meta,
     isHighlighted = false,
+    selectionMode = false,
+    selected = false,
+    onToggleSelect,
+    selectionDisabled = false,
   }: LinkMobileCardProps) => {
     const theme = useTheme();
     const navigate = useNavigate();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { t } = useTranslation("links");
 
-    const shortUrl = useShortUrl(link.slug || link.custom_slug || "");
+    const shortUrl = useShortUrl(link);
     const displayUrl = shortUrl.replace(/^https?:\/\//, "");
 
     const linkStatus = getLinkStatus(link);
@@ -110,11 +127,20 @@ const LinkMobileCard = memo(
     /** Navigate to the link's analytics view (card body is the tap target). */
     const goToAnalytics = () => navigate(`/links/analytics/${link.id}`);
 
-    /** Keyboard activation for the role="button" card. */
+    /** Card body tap target: toggles selection in selection mode, opens analytics otherwise. */
+    const handleCardActivate = () => {
+      if (selectionMode) {
+        onToggleSelect?.(String(link.id));
+        return;
+      }
+      goToAnalytics();
+    };
+
+    /** Keyboard activation mirrors the tap target above. */
     const handleCardKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        goToAnalytics();
+        handleCardActivate();
       }
     };
 
@@ -124,12 +150,17 @@ const LinkMobileCard = memo(
     return (
       <Card
         id={`link-card-${link.id}`}
-        role="button"
+        role={selectionMode ? "checkbox" : "button"}
+        aria-checked={selectionMode ? selected : undefined}
         tabIndex={0}
-        aria-label={t("actions.viewAnalyticsCard", {
-          title: link.title || t("list.noTitle"),
-        })}
-        onClick={goToAnalytics}
+        aria-label={
+          selectionMode
+            ? t("bulk.selectLink", { title: link.title || t("list.noTitle") })
+            : t("actions.viewAnalyticsCard", {
+                title: link.title || t("list.noTitle"),
+              })
+        }
+        onClick={handleCardActivate}
         onKeyDown={handleCardKeyDown}
         sx={{
           mb: linkCardListItemMb,
@@ -151,7 +182,17 @@ const LinkMobileCard = memo(
             spacing={0.75}
             sx={{ mb: 0.375, minWidth: 0 }}
           >
-            <LinkPreviewThumb preview={meta?.preview} size={20} />
+            {selectionMode ? (
+              <Checkbox
+                checked={selected}
+                disabled={!selected && selectionDisabled}
+                onChange={() => onToggleSelect?.(String(link.id))}
+                onClick={(e) => e.stopPropagation()}
+                sx={{ flexShrink: 0, p: 1.125 }}
+              />
+            ) : (
+              <LinkPreviewThumb preview={meta?.preview} size={20} />
+            )}
             <Typography
               variant="body2"
               sx={{
@@ -275,6 +316,10 @@ export const LinksMobileCards = memo(
     onEdit,
     meta,
     highlightedLinkId = null,
+    selectionMode = false,
+    selectedIds = [],
+    onToggleSelect,
+    selectionMaxReached = false,
   }: LinksMobileCardsProps) => {
     const theme = useTheme();
     const { t } = useTranslation("links");
@@ -331,16 +376,25 @@ export const LinksMobileCards = memo(
       // Mesmo escalonamento de entrada do grid desktop: sem ele os cards do
       // mobile entravam todos no mesmo frame, num bloco só.
       <Box sx={getStaggeredEntranceSx(data.length)}>
-        {data.map((link) => (
-          <LinkMobileCard
-            key={link.id}
-            link={link}
-            meta={meta?.[String(link.id)]}
-            onDelete={onDelete}
-            onEdit={onEdit}
-            isHighlighted={String(link.id) === highlightedLinkId}
-          />
-        ))}
+        {data.map((link) => {
+          const idStr = String(link.id);
+          const selected = selectedIds.includes(idStr);
+
+          return (
+            <LinkMobileCard
+              key={link.id}
+              link={link}
+              meta={meta?.[idStr]}
+              onDelete={onDelete}
+              onEdit={onEdit}
+              isHighlighted={idStr === highlightedLinkId}
+              selectionMode={selectionMode}
+              selected={selected}
+              onToggleSelect={onToggleSelect}
+              selectionDisabled={!selected && selectionMaxReached}
+            />
+          );
+        })}
       </Box>
     );
   },

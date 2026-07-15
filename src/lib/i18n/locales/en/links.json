@@ -1,7 +1,7 @@
 {
   "list": {
     "pageTitle": "Manage Links",
-    "pageSubtitle": "Create, edit and monitor your shortened links",
+    "pageSubtitle": "Create short links and see how many people clicked them.",
     "heading": "My links",
     "createNew": "New Link",
     "noTitle": "Untitled link",
@@ -22,9 +22,9 @@
       "overview": "Account overview",
       "filters": "Search & filters",
       "filtersDescription": "Find links by text or status, and sort the list.",
-      "links": "Registered links",
-      "linksBrowseDescription_one": "{{count}} link — use search and filters below to refine",
-      "linksBrowseDescription_other": "{{count}} links — use search and filters below to refine",
+      "links": "Your links",
+      "linksBrowseDescription_one": "{{count}} link — use the search and filters below",
+      "linksBrowseDescription_other": "{{count}} links — use the search and filters below",
       "linksDescription_one": "{{count}} link in your list",
       "linksDescription_other": "{{count}} links in your list",
       "linksFiltered_one": "{{count}} link matching current filters",
@@ -32,26 +32,31 @@
     },
     "quickCreate": {
       "label": "Shorten a new link",
-      "description": "Paste a long URL and get a short link.",
-      "urlLabel": "Destination URL",
-      "slugLabel": "Slug (optional)",
+      "description": "Paste a long link and get a short link to share.",
+      "urlLabel": "Link you want to shorten",
+      "slugLabel": "Custom name (optional)",
+      "subdomainLabel": "Address",
+      "shortLinkLabel": "Short link",
       "urlPlaceholder": "https://example.com/page",
-      "slugPlaceholder": "my-link",
-      "slugTabHint": "Tab or Use fills in the suggested slug",
-      "slugSuggestionChecking": "Checking for an available slug suggestion…",
-      "slugSuggestionUnavailable": "No available slug could be suggested from this page",
+      "slugPlaceholder": "link-name",
+      "previewLabel": "Your short link will look like this:",
+      "previewAutoName": "auto-code",
+      "previewAutoHint": "Without a custom name, we generate a random code for you.",
+      "slugTabHint": "Tab or Use fills in the suggested name",
+      "slugSuggestionChecking": "Looking for an available name…",
+      "slugSuggestionUnavailable": "No available name could be suggested from this page",
       "slugAccept": "Use",
       "submit": "Shorten",
       "success": "Link created!",
       "moreOptions": "Advanced options",
-      "moreOptionsTooltip": "Open full link creation with title, UTM parameters, click limits and more"
+      "moreOptionsTooltip": "Open full link creation: title, scheduling, click limits and more"
     },
     "pagination": {
       "showing": "Showing {{from}}–{{to}} of {{total}}"
     },
     "onboarding": {
       "help": "Help",
-      "hintQuickCreate": "Paste any long URL here to get a short, trackable link."
+      "hintQuickCreate": "Paste any long link here to turn it into a short link."
     },
     "tour": {
       "next": "Next",
@@ -60,7 +65,7 @@
       "progress": "{{current}} of {{total}}",
       "create": {
         "title": "Shorten your first link",
-        "desc": "Paste a long URL here and click Shorten to create a short, trackable link."
+        "desc": "Paste a long link here and click Shorten to create your short link."
       },
       "overview": {
         "title": "Account overview",
@@ -76,7 +81,7 @@
       },
       "actions": {
         "title": "Link actions",
-        "desc": "Edit the destination and slug, generate the QR code, or delete the link here."
+        "desc": "Edit the link, generate the QR code, or delete it here."
       }
     }
   },
@@ -96,15 +101,15 @@
     "dateInvalid": "Invalid date"
   },
   "filters": {
-    "search": "Search by title, URL or slug...",
+    "search": "Search by link name or address…",
     "status": "Status",
     "all": "All",
     "sortBy": "Sort by",
     "sortNewest": "Newest first",
     "sortMostClicks": "Most clicks",
     "clearFilters": "Clear filters",
-    "mostTrend": "Most trending",
-    "lastActivity": "Last activity"
+    "mostTrend": "Trending",
+    "lastActivity": "Last clicked"
   },
   "actions": {
     "copyLink": "Copy link",
@@ -137,6 +142,10 @@
     "customSlug": "Custom slug (optional)",
     "customSlugPlaceholder": "my-slug",
     "customSlugHelper": "Only letters, numbers and hyphens. Leave blank to auto-generate.",
+    "subdomainSelect": {
+      "label": "Link address",
+      "defaultOption": "Default domain (linkcharts.com.br)"
+    },
     "slugTabHint": "Tab to accept suggestion",
     "slugSuggestionChecking": "Checking slug suggestion…",
     "titleTabHint": "Tab to accept suggested title",
@@ -232,6 +241,32 @@
       "tagsMax": "A link can have at most 5 tags."
     }
   },
+  "bulk": {
+    "toolbarLabel": "Bulk actions",
+    "select": "Select",
+    "cancel": "Cancel",
+    "selectAllVisible": "Select all on this page",
+    "selectLink": "Select {{title}}",
+    "selectedCount_one": "{{count}} selected",
+    "selectedCount_other": "{{count}} selected",
+    "maxReached": "50-per-action limit reached",
+    "maxReachedTooltip": "Limit of 50 links per bulk action",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "delete": "Delete",
+    "confirmTitle_one": "Delete {{count}} link?",
+    "confirmTitle_other": "Delete {{count}} links?",
+    "confirmBody_one": "This cannot be undone. The short link will stop working and its click data will be lost.",
+    "confirmBody_other": "This cannot be undone. The short links will stop working and their click data will be lost.",
+    "successActivate_one": "{{count}} link activated",
+    "successActivate_other": "{{count}} links activated",
+    "successDeactivate_one": "{{count}} link deactivated",
+    "successDeactivate_other": "{{count}} links deactivated",
+    "successDelete_one": "{{count}} link deleted",
+    "successDelete_other": "{{count}} links deleted",
+    "partial": "Some items could not be changed.",
+    "error": "Failed to run the bulk action. Please try again."
+  },
   "tags": {
     "overflow": "+{{count}}",
     "filter": {
@@ -247,7 +282,7 @@
     "avgClicksDay": "Avg. Clicks / Day",
     "avgClicksPerLink": "Avg. Clicks / Link",
     "lastClick": "Last click",
-    "lastClickShort": "Last",
+    "lastClickShort": "Last click",
     "clicksShort": "Clicks",
     "neverClicked": "Never",
     "noClicks": "no clicks yet",
@@ -277,16 +312,22 @@
     "active": "Active",
     "inactive": "Inactive",
     "expired": "Expired",
-    "scheduled": "Scheduled"
+    "scheduled": "Scheduled",
+    "tooltip": {
+      "active": "Working and redirecting normally.",
+      "inactive": "Turned off by you — it doesn't redirect.",
+      "scheduled": "Will start working on the scheduled date.",
+      "expired": "Past its expiry date — it no longer redirects."
+    }
   },
   "health": {
     "ok": "Healthy",
     "error": "Error",
     "unknown": "Not verified",
     "tooltip": {
-      "ok": "The destination URL is reachable",
-      "error": "The destination URL is not accessible",
-      "unknown": "This URL has not been checked yet",
+      "ok": "The destination link opens normally",
+      "error": "The destination link isn't opening",
+      "unknown": "This link hasn't been checked yet",
       "checked_ago": "Checked {{time}} ago"
     }
   },

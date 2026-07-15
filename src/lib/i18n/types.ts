@@ -7,6 +7,8 @@ import type enLegal from "./locales/en/legal.json";
 import type enLinks from "./locales/en/links.json";
 import type enProfile from "./locales/en/profile.json";
 import type enPublic from "./locales/en/public.json";
+import type enReports from "./locales/en/reports.json";
+import type enSubdomains from "./locales/en/subdomains.json";
 
 declare module "i18next" {
   interface CustomTypeOptions {
@@ -19,6 +21,8 @@ declare module "i18next" {
       profile: typeof enProfile;
       public: typeof enPublic;
       legal: typeof enLegal;
+      reports: typeof enReports;
+      subdomains: typeof enSubdomains;
     };
   }
 }

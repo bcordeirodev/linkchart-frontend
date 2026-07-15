@@ -41,6 +41,7 @@ export function EditLinkForm({
   const [apiError, setApiError] = useState<string | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [ownedSlug, setOwnedSlug] = useState<string | null>(null);
+  const [existingShortUrl, setExistingShortUrl] = useState<string>("");
   const [safetyStatus, setSafetyStatus] = useState<UrlSafetyStatus>("idle");
   // Safe Browsing gate: never let an unsafe (or still-being-checked) URL
   // through. "error" stays fail-open, matching the backend behavior.
@@ -131,6 +132,7 @@ export function EditLinkForm({
 
           reset(formValues);
           setOwnedSlug(formValues.custom_slug?.trim() || null);
+          setExistingShortUrl(linkData.short_url ?? "");
         } else {
           throw new Error(t("errors.linkNotFound"));
         }
@@ -261,6 +263,7 @@ export function EditLinkForm({
           titleSuggestion={titleSuggestion}
           isLoadingMeta={isLoadingMeta}
           onSafetyStatusChange={setSafetyStatus}
+          existingShortUrl={existingShortUrl}
         />
       </LinkFormShell>
     </form>

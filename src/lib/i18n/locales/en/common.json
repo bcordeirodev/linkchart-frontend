@@ -3,6 +3,10 @@
   "appTagline": "Analytics Platform",
   "nav": {
     "myLinks": "My Links",
+    "reports": "Reports",
+    "reportsDesc": "Analytics across all your links",
+    "subdomains": "Subdomains",
+    "subdomainsDesc": "Your custom addresses",
     "signIn": "Sign In",
     "signUp": "Create account",
     "profile": "Profile Settings",
@@ -12,7 +16,10 @@
     "menuTooltip": "{{name}} - Click for menu",
     "accountMenuAriaLabel": "account menu",
     "logoAriaLabel": "Link Charts home",
-    "avatarAriaLabel": "{{name}}'s avatar"
+    "avatarAriaLabel": "{{name}}'s avatar",
+    "sidebarAriaLabel": "primary navigation",
+    "collapseSidebar": "Collapse menu",
+    "expandSidebar": "Expand menu"
   },
   "actions": {
     "save": "Save",

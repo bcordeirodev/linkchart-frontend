@@ -1,0 +1,80 @@
+{
+  "title": "Reports",
+  "subtitle": "Analytics for all your links in one place",
+  "export": {
+    "button": "Export CSV",
+    "error": "Couldn't export. Please try again."
+  },
+  "filters": {
+    "period": "Period",
+    "last7": "Last 7 days",
+    "last30": "Last 30 days",
+    "last90": "Last 90 days"
+  },
+  "kpis": {
+    "totalClicks": "Clicks in period",
+    "uniqueVisitors": "Unique visitors",
+    "activeLinks": "Active links",
+    "avgPerDay": "Average per day",
+    "variation": "Variation vs. previous period"
+  },
+  "timeseries": {
+    "title": "Clicks per day",
+    "subtitle": "Total clicks per day across all of your links",
+    "seriesName": "Clicks",
+    "clicksLabel": "clicks"
+  },
+  "topLinks": {
+    "title": "Top clicked links",
+    "subtitle": "Your links with the most clicks in the period",
+    "viewStats": "View analytics",
+    "columns": {
+      "link": "Link",
+      "clicks": "Clicks",
+      "visitors": "Visitors"
+    },
+    "clicksCount_one": "{{count}} click",
+    "clicksCount_other": "{{count}} clicks",
+    "visitorsCount_one": "{{count}} visitor",
+    "visitorsCount_other": "{{count}} visitors"
+  },
+  "breakdown": {
+    "title": "Where your clicks come from",
+    "subtitle": "Click distribution across the selected dimension",
+    "dimensions": {
+      "country": "Country",
+      "device": "Device",
+      "browser": "Browser",
+      "navigation_context": "Navigation source",
+      "quality_tier": "Traffic quality"
+    }
+  },
+  "linkPerformance": {
+    "title": "Link performance",
+    "subtitle": "Your links ranked by clicks, with trend vs. the previous period and share of the total",
+    "columns": {
+      "link": "Link",
+      "clicks": "Clicks",
+      "variation": "Trend",
+      "share": "Share"
+    }
+  },
+  "insights": {
+    "title": "Portfolio insights",
+    "subtitle": "Highlights computed across all of your links in the selected period",
+    "bestPerformingLink": {
+      "label": "Best performing link"
+    },
+    "fastestGrowingLink": {
+      "label": "Fastest growing link"
+    },
+    "top3Concentration": {
+      "label": "Concentration (top 3 links)"
+    },
+    "accountGrowth": {
+      "label": "Account growth"
+    },
+    "noData": "Not enough data"
+  },
+  "empty": "You don't have any clicks in the selected period yet."
+}

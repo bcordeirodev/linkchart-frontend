@@ -1,9 +1,18 @@
 "use client";
 /**
  * Componente de navegação principal — POV sóbrio (SP2)
+ *
+ * `position: "static"`: o header vive na coluna à direita da sidebar dentro
+ * do `MainLayout` (linha flex `[SideNav | coluna direita]`), não mais
+ * flutuando com `position: fixed` sobre a página inteira — por isso ocupa
+ * espaço normal no fluxo da coluna, sem precisar de padding-top compensando
+ * a altura do Toolbar em nenhum outro lugar. No desktop (`md+`) o logo some
+ * daqui (mora na sidebar) e um botão de hambúrguer alterna o colapso da
+ * sidebar; no mobile nada muda — logo + hambúrguer abrindo o Drawer.
  */
 
 import {
+  alpha,
   AppBar,
   Toolbar,
   Typography,
@@ -28,20 +37,31 @@ import { Menu as MenuIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/lib/auth/AuthContext";
-import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import { useResponsive } from "@/lib/theme";
 import { AppIcon } from "@/shared/ui/icons";
 import { AppLogo } from "@/shared/ui/base";
 import { LanguageSelector } from "@/lib/i18n/components/LanguageSelector";
 
+import { getVisibleNavItems } from "./navItems";
+
 interface NavbarProps {
   onMobileMenuToggle?: () => void;
   isMobile?: boolean;
+  /** Estado de colapso da sidebar desktop, controlado pelo `MainLayout`. */
+  collapsed: boolean;
+  /**
+   * Alterna o colapso da sidebar desktop. Acionado pelo ícone de hambúrguer
+   * renderizado aqui (visível só em `md+`); a própria sidebar não tem mais
+   * botão de colapso interno.
+   */
+  onToggleSidebar: () => void;
 }
 
 export function Navbar({
   onMobileMenuToggle: _onMobileMenuToggle,
+  collapsed,
+  onToggleSidebar,
 }: NavbarProps) {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -53,6 +73,7 @@ export function Navbar({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isDark = theme.palette.mode === "dark";
+  const navItems = getVisibleNavItems();
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -70,12 +91,16 @@ export function Navbar({
   return (
     <>
       <AppBar
-        position="fixed"
+        position="static"
         elevation={0}
         sx={{
-          backgroundColor: isDark ? darkNeutral.surface : lightNeutral.surface,
+          // Header compartilha o fundo do container principal — sem "surface"
+          // própria — para que sidebar, header, conteúdo e footer leiam como
+          // uma única superfície. Separação só por uma borda hairline.
+          backgroundColor: theme.palette.background.default,
           backgroundImage: "none",
-          borderBottom: `1px solid ${theme.palette.divider}`,
+          borderRadius: 0,
+          borderBottom: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
           boxShadow: "none",
           color: theme.palette.text.primary,
           transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
@@ -86,60 +111,96 @@ export function Navbar({
             px: { xs: 2, sm: 3, md: 4 },
             py: 1,
             minHeight: { xs: 64, md: 72 },
+            // Split: à ESQUERDA só o ícone ☰ (desktop) / logo (mobile); à
+            // DIREITA idioma + avatar.
             justifyContent: "space-between",
           }}
         >
-          {/* Logo Section */}
-          <Box
-            component="button"
-            type="button"
-            onClick={() => navigate("/links")}
-            aria-label={t("nav.logoAriaLabel")}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-              gap: 1.5,
-              p: 0,
-              border: "none",
-              background: "none",
-              font: "inherit",
-              color: "inherit",
-              textAlign: "left",
-            }}
-          >
-            <AppLogo size={36} showText={false} />
-            <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{
-                  fontWeight: 600,
-                  color: theme.palette.text.primary,
-                  fontSize: "1.125rem",
-                  letterSpacing: "-0.025em",
-                  lineHeight: 1.2,
-                }}
-              >
-                Link Charts
-              </Typography>
-              <Typography
-                variant="caption"
-                suppressHydrationWarning
-                sx={{
-                  color: theme.palette.text.secondary,
-                  fontSize: "0.6875rem",
-                  fontWeight: 500,
-                  letterSpacing: "0.05em",
-                  textTransform: "uppercase",
-                }}
-              >
-                {t("appTagline")}
-              </Typography>
+          {/* ESQUERDA — só o ícone ☰ no desktop; no mobile, o logo. */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            {/* Logo — só mobile (no desktop a marca mora na sidebar). */}
+            <Box
+              component="button"
+              type="button"
+              onClick={() => navigate("/links")}
+              aria-label={t("nav.logoAriaLabel")}
+              sx={{
+                display: { xs: "flex", md: "none" },
+                alignItems: "center",
+                cursor: "pointer",
+                gap: 1.5,
+                p: 0,
+                border: "none",
+                background: "none",
+                font: "inherit",
+                color: "inherit",
+                textAlign: "left",
+              }}
+            >
+              <AppLogo size={36} showText={false} />
+              <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{
+                    fontWeight: 600,
+                    color: theme.palette.text.primary,
+                    fontSize: "1.125rem",
+                    letterSpacing: "-0.025em",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  Link Charts
+                </Typography>
+                <Typography
+                  variant="caption"
+                  suppressHydrationWarning
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    fontSize: "0.6875rem",
+                    fontWeight: 500,
+                    letterSpacing: "0.05em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {t("appTagline")}
+                </Typography>
+              </Box>
             </Box>
+            {/* Toggle ☰ da sidebar — só desktop (md+); no mobile a navegação
+                é o Drawer aberto pelo hambúrguer à direita. */}
+            {user ? (
+              <Tooltip
+                title={
+                  collapsed ? t("nav.expandSidebar") : t("nav.collapseSidebar")
+                }
+                arrow
+              >
+                <IconButton
+                  aria-label={
+                    collapsed
+                      ? t("nav.expandSidebar")
+                      : t("nav.collapseSidebar")
+                  }
+                  onClick={onToggleSidebar}
+                  sx={{
+                    display: { xs: "none", md: "inline-flex" },
+                    width: 44,
+                    height: 44,
+                    borderRadius: `${radiusTokens.md}px`,
+                    transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+                    "&:hover": {
+                      backgroundColor: theme.palette.action.hover,
+                    },
+                  }}
+                >
+                  <MenuIcon size={20} strokeWidth={1.5} />
+                </IconButton>
+              </Tooltip>
+            ) : null}
           </Box>
 
-          {/* Right Section */}
+          {/* DIREITA — idioma + avatar (ou hambúrguer no mobile). */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {user ? (
               <>
@@ -394,18 +455,26 @@ export function Navbar({
         ) : null}
 
         <List sx={{ py: 1 }}>
-          <ListItemButton
-            onClick={() => {
-              navigate("/links");
-              setDrawerOpen(false);
-            }}
-            sx={{ px: 3, py: 1.5, borderRadius: `${radiusTokens.sm}px`, mx: 1 }}
-          >
-            <ListItemIcon sx={{ minWidth: 36 }}>
-              <AppIcon intent="link" size={20} />
-            </ListItemIcon>
-            <ListItemText primary={t("nav.myLinks")} />
-          </ListItemButton>
+          {navItems.map((item) => (
+            <ListItemButton
+              key={item.key}
+              onClick={() => {
+                navigate(item.route);
+                setDrawerOpen(false);
+              }}
+              sx={{
+                px: 3,
+                py: 1.5,
+                borderRadius: `${radiusTokens.sm}px`,
+                mx: 1,
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <AppIcon intent={item.icon} size={20} />
+              </ListItemIcon>
+              <ListItemText primary={t(`nav.${item.key}`)} />
+            </ListItemButton>
+          ))}
 
           <ListItemButton
             onClick={() => {

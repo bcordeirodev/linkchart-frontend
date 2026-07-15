@@ -1,0 +1,45 @@
+{
+  "title": "Endereços personalizados",
+  "subtitle_one": "{{count}} de {{max}} endereço em uso",
+  "subtitle_other": "{{count}} de {{max}} endereços em uso",
+  "subtitleLoading": "Carregando seus endereços…",
+  "intro": "Um endereço personalizado troca o domínio padrão por algo com a sua marca — por exemplo, suamarca.linkcharts.com.br/promo em vez do link padrão. Você pode criar mais de um e escolher qual usar ao encurtar cada link.",
+  "list": {
+    "heading": "Seus endereços",
+    "empty": "Você ainda não criou nenhum endereço personalizado.",
+    "claimedAt": "Criado em {{date}}",
+    "copy": "Copiar endereço",
+    "copied": "Copiado!",
+    "openInNew": "Abrir em nova aba",
+    "release": "Liberar",
+    "releaseDialog": {
+      "title": "Liberar este endereço?",
+      "body": "Links criados com este endereço deixarão de abrir. Você pode reivindicar o mesmo nome novamente mais tarde, se ele ainda estiver livre.",
+      "cancel": "Cancelar",
+      "confirm": "Liberar"
+    }
+  },
+  "claim": {
+    "heading": "Criar novo endereço",
+    "inputLabel": "Nome do endereço",
+    "inputPlaceholder": "minhaempresa",
+    "formatHint": "3–63 caracteres: letras minúsculas, números e hífens (não no início nem no fim).",
+    "checking": "Verificando...",
+    "available": "Disponível",
+    "unavailable": "Já utilizado",
+    "validation": {
+      "format": "Use apenas letras minúsculas, números e hífens (mínimo 3 caracteres). Não pode começar ou terminar com hífen.",
+      "unavailable": "Este endereço já está em uso."
+    },
+    "responsibility": {
+      "text": "Ao criar este endereço você confirma que é responsável por todo conteúdo acessado através dele e que não violará marcas registradas ou direitos de terceiros.",
+      "checkbox": "Li e aceito os termos acima"
+    },
+    "submit": "Criar endereço",
+    "errors": {
+      "limitReached": "Você atingiu o limite de endereços personalizados da sua conta.",
+      "generic": "Não foi possível criar o endereço. Tente novamente."
+    },
+    "limitReachedNotice": "Você atingiu o limite de endereços personalizados da sua conta. Libere um endereço existente para criar outro."
+  }
+}
