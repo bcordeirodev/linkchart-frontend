@@ -6,8 +6,10 @@
 
 export { SubdomainList } from "./components/SubdomainList";
 export { SubdomainClaimForm } from "./components/SubdomainClaimForm";
+export { SubdomainSelect } from "./components/SubdomainSelect";
 
 export { useSubdomains } from "./hooks/useSubdomains";
+export { useSubdomainSelection } from "./hooks/useSubdomainSelection";
 
 export { MAX_SUBDOMAINS_PER_USER } from "./constants";
 

@@ -112,7 +112,7 @@ export function LinkCardRich({
   const { showMessage } = useMessage();
   const { t } = useTranslation("links");
 
-  const shortUrl = useShortUrl(link.slug);
+  const shortUrl = useShortUrl(link);
   const displayUrl = shortUrl.replace(/^https?:\/\//, "");
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

@@ -99,7 +99,7 @@ const LinkMobileCard = memo(
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { t } = useTranslation("links");
 
-    const shortUrl = useShortUrl(link.slug || link.custom_slug || "");
+    const shortUrl = useShortUrl(link);
     const displayUrl = shortUrl.replace(/^https?:\/\//, "");
 
     const linkStatus = getLinkStatus(link);

@@ -74,6 +74,7 @@ function LinkEditPage({ id }: Props) {
               linkId={id}
               currentView="edit"
               slug={link.slug || link.custom_slug}
+              shortUrl={link.short_url}
               title={link.title}
               onDeleteSuccess={handleDeleteSuccess}
             />

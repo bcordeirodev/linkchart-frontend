@@ -63,36 +63,45 @@ export function getSubdomainDomainSuffix(): string {
   return ".linkcharts.com.br";
 }
 
-type ActiveSubdomain = {
-  full_url: string;
-  status: "active" | "inactive";
-};
+/**
+ * Minimal shape of a subdomain that can be picked while DRAFTING a link —
+ * one item from `useSubdomains()` (`SubdomainItem`), or `null`/`undefined`
+ * for the default domain. Not for existing links: those must read
+ * `link.short_url` instead (see `getShortUrlForLink`) — with multiple
+ * subdomains per user, "currently selected in the form" and "domain this
+ * link was actually created with" are no longer the same thing.
+ */
+type SelectableSubdomain = { fullUrl: string };
 
 /**
- * Prefix for slug inputs: custom subdomain base when active, otherwise `/r/`.
+ * Prefix for the slug input while DRAFTING a link: base of the subdomain
+ * currently selected in `SubdomainSelect`, or `/r/` when none is selected
+ * (or the user has no subdomains).
  */
 export function getShortUrlPrefixForSubdomain(
-  subdomain?: ActiveSubdomain | null,
+  subdomain?: SelectableSubdomain | null,
 ): string {
-  if (subdomain?.status === "active" && subdomain.full_url) {
-    return `${subdomain.full_url.replace(/\/$/, "")}/`;
+  if (subdomain?.fullUrl) {
+    return `${subdomain.fullUrl.replace(/\/$/, "")}/`;
   }
   return getShortUrlPrefix();
 }
 
 /**
- * Builds the public short URL for a slug, using a custom subdomain when active.
+ * Builds the short URL preview for a slug while DRAFTING a link, using
+ * whichever subdomain is currently selected in `SubdomainSelect` (or the
+ * default domain when none is selected).
  */
 export function buildShortUrlForSlug(
   slug: string,
-  subdomain?: ActiveSubdomain | null,
+  subdomain?: SelectableSubdomain | null,
 ): string {
   if (!slug?.trim()) {
     return "";
   }
 
-  if (subdomain?.status === "active" && subdomain.full_url) {
-    return `${subdomain.full_url.replace(/\/$/, "")}/${slug}`;
+  if (subdomain?.fullUrl) {
+    return `${subdomain.fullUrl.replace(/\/$/, "")}/${slug}`;
   }
 
   return getShortUrl(slug);
@@ -105,23 +114,50 @@ type LinkShortUrlFields = {
 };
 
 /**
- * Resolves the short URL to copy/share for a link record (subdomain-aware).
+ * Resolves the short URL to copy/share/display for an EXISTING link.
+ *
+ * Always trusts `link.short_url` — computed server-side from the link's own
+ * immutable `short_domain`, recorded once at creation — rather than the
+ * viewer's currently active subdomain(s). With multiple subdomains per user,
+ * "the account's current subdomain" and "the domain this particular link was
+ * created with" can differ (a link keeps its domain even after the owner
+ * claims or releases others), so only the link's own recorded value is ever
+ * correct to show.
  */
-export function getShortUrlForLink(
-  link: LinkShortUrlFields,
-  subdomain?: ActiveSubdomain | null,
-): string {
-  const slug = (link.custom_slug || link.slug || "").trim();
-
-  if (subdomain?.status === "active") {
-    return buildShortUrlForSlug(slug, subdomain);
-  }
-
+export function getShortUrlForLink(link: LinkShortUrlFields): string {
   if (link.short_url) {
-    return getShortUrl(link.short_url);
+    return link.short_url;
   }
 
+  const slug = (link.custom_slug || link.slug || "").trim();
   return buildShortUrlForSlug(slug, null);
+}
+
+/**
+ * Derives the display prefix (everything before the slug, trailing slash
+ * included) from an EXISTING link's own `short_url` — for the edit form,
+ * where the domain is immutable and shown as read-only text next to the slug
+ * input rather than picked via `SubdomainSelect`.
+ *
+ * Strips only the last path segment (the slug itself), so it correctly
+ * preserves an intermediate path when present (e.g. local dev's
+ * `http://localhost:8000/r/abc123` → `http://localhost:8000/r/`) as well as
+ * a bare custom-subdomain or production redirect host with no extra path
+ * (e.g. `https://acme.linkcharts.com.br/abc123` → `https://acme.linkcharts.com.br/`).
+ *
+ * @param shortUrl - the link's own `short_url` (e.g. `link.short_url`).
+ * @returns the prefix ending in `/`, or the default redirect prefix if `shortUrl` can't be parsed.
+ */
+export function getShortUrlPrefixFromShortUrl(shortUrl: string): string {
+  try {
+    const parsed = new URL(shortUrl);
+    const segments = parsed.pathname.split("/").filter(Boolean);
+    segments.pop();
+    const path = segments.length > 0 ? `/${segments.join("/")}` : "";
+    return `${parsed.origin}${path}/`;
+  } catch {
+    return getShortUrlPrefix();
+  }
 }
 
 /** Writes text to the clipboard; returns false when unavailable or denied. */

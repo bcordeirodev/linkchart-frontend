@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
+import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainSelection";
 
 import { LinkFormActionsFooter } from "../../components/forms/LinkFormActionsFooter";
 import { LinkFormFields } from "../../components/forms/LinkFormFields";
@@ -30,6 +31,7 @@ export function CreateLinkForm({
   const { t } = useTranslation("links");
   const mutation = useCreateLink();
   const copyShortUrlForLink = useCopyShortUrlForLink();
+  const { subdomainId, setSubdomainId } = useSubdomainSelection();
   const [safetyStatus, setSafetyStatus] = useState<UrlSafetyStatus>("idle");
   // Safe Browsing gate: never let an unsafe (or still-being-checked) URL
   // through. "error" stays fail-open, matching the backend behavior.
@@ -89,6 +91,12 @@ export function CreateLinkForm({
       utm_campaign: data.utm_campaign || undefined,
       utm_term: data.utm_term || undefined,
       utm_content: data.utm_content || undefined,
+      // `useSubdomainSelection()` initializes `subdomainId` to the account's
+      // oldest active subdomain (or `null` with none held), mirroring the
+      // backend's own default — so sending it explicitly here matches what
+      // omitting the field would resolve to anyway, while still letting the
+      // user override it via `SubdomainSelect`.
+      subdomain_id: subdomainId,
     };
 
     try {
@@ -131,6 +139,8 @@ export function CreateLinkForm({
           titleSuggestion={titleSuggestion}
           isLoadingMeta={isLoadingMeta}
           onSafetyStatusChange={setSafetyStatus}
+          subdomainId={subdomainId}
+          onSubdomainIdChange={setSubdomainId}
         />
       </LinkFormShell>
     </form>
