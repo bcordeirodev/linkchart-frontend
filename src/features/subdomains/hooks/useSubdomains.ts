@@ -17,6 +17,11 @@ const AVAILABILITY_DEBOUNCE_MS = 300;
  * Manages the authenticated user's subdomains (plural — up to
  * `MAX_SUBDOMAINS_PER_USER`).
  *
+ * The underlying query is gated on `NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true"`
+ * (`enabled` option below): when the flag is off, `GET /api/subdomains` never
+ * fires, `subdomains` stays `[]`, and `isLoading` reads `false` immediately
+ * (there's nothing to wait for).
+ *
  * Provides:
  * - `subdomains` — active subdomains, oldest first (mirrors the backend's
  *   default-pick order for link creation)
@@ -41,6 +46,11 @@ export function useSubdomains() {
     queryKey: queryKeys.subdomains.all(),
     queryFn: () => subdomainService.list(),
     staleTime: 60 * 1000,
+    // Skip the request entirely when the feature is off — matches how every
+    // other consumer (`SubdomainSelect`, `LinkFormFields`, `ProfilePage`)
+    // gates on this same flag, so a disabled build never fires `GET
+    // /api/subdomains` just to render nothing.
+    enabled: process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true",
   });
 
   const [availability, setAvailability] =
