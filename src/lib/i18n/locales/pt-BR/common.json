@@ -3,6 +3,10 @@
   "appTagline": "Plataforma de Estatísticas",
   "nav": {
     "myLinks": "Meus Links",
+    "reports": "Relatórios",
+    "reportsDesc": "Estatísticas de todos os seus links",
+    "subdomains": "Subdomínios",
+    "subdomainsDesc": "Seus endereços personalizados",
     "signIn": "Entrar",
     "signUp": "Criar conta",
     "profile": "Configurações de Perfil",
@@ -12,7 +16,10 @@
     "menuTooltip": "{{name}} - Clique para abrir o menu",
     "accountMenuAriaLabel": "menu da conta",
     "logoAriaLabel": "Página inicial do Link Charts",
-    "avatarAriaLabel": "Avatar de {{name}}"
+    "avatarAriaLabel": "Avatar de {{name}}",
+    "sidebarAriaLabel": "navegação principal",
+    "collapseSidebar": "Recolher menu",
+    "expandSidebar": "Expandir menu"
   },
   "actions": {
     "save": "Salvar",
