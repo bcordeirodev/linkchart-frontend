@@ -89,6 +89,15 @@ export const API_CONFIG = {
       SUGGEST_SLUG: "/api/public/links/suggest-slug",
       ANALYTICS: (slug: string) => `/api/public/analytics/${slug}`,
     },
+
+    // --- REPORTS: aggregated multi-link reports (`/reports` page) ---
+    REPORTS: {
+      SUMMARY: "/api/reports/summary",
+      TIMESERIES: "/api/reports/timeseries",
+      TOP_LINKS: "/api/reports/top-links",
+      BREAKDOWN: "/api/reports/breakdown",
+      EXPORT_CLICKS: "/api/reports/export/clicks",
+    },
   },
 
   CACHE: {
