@@ -9,6 +9,7 @@ import enLegal from "./locales/en/legal.json";
 import enLinks from "./locales/en/links.json";
 import enProfile from "./locales/en/profile.json";
 import enPublic from "./locales/en/public.json";
+import enSubdomains from "./locales/en/subdomains.json";
 import ptBRAnalytics from "./locales/pt-BR/analytics.json";
 import ptBRAuth from "./locales/pt-BR/auth.json";
 import ptBRCommon from "./locales/pt-BR/common.json";
@@ -16,6 +17,7 @@ import ptBRLegal from "./locales/pt-BR/legal.json";
 import ptBRLinks from "./locales/pt-BR/links.json";
 import ptBRProfile from "./locales/pt-BR/profile.json";
 import ptBRPublic from "./locales/pt-BR/public.json";
+import ptBRSubdomains from "./locales/pt-BR/subdomains.json";
 
 const resources = {
   en: {
@@ -26,6 +28,7 @@ const resources = {
     profile: enProfile,
     public: enPublic,
     legal: enLegal,
+    subdomains: enSubdomains,
   },
   "pt-BR": {
     common: ptBRCommon,
@@ -35,6 +38,7 @@ const resources = {
     profile: ptBRProfile,
     public: ptBRPublic,
     legal: ptBRLegal,
+    subdomains: ptBRSubdomains,
   },
 };
 
@@ -64,7 +68,16 @@ export function initI18n(lng: string = "en") {
     resources,
     fallbackLng: "en",
     defaultNS: "common",
-    ns: ["common", "auth", "links", "analytics", "profile", "public", "legal"],
+    ns: [
+      "common",
+      "auth",
+      "links",
+      "analytics",
+      "profile",
+      "public",
+      "legal",
+      "subdomains",
+    ],
     supportedLngs: ["en", "pt-BR"],
     interpolation: { escapeValue: false },
     // SSR determinism: resources are bundled inline, so initialise synchronously

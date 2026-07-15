@@ -37,6 +37,32 @@ export const getShortUrl = (slugOrUrl: string): string => {
  */
 export const getShortUrlPrefix = (): string => `${REDIRECT_BASE}/`;
 
+/**
+ * Apex domain suffix for custom subdomains (e.g. `".linkcharts.com.br"`),
+ * derived from `NEXT_PUBLIC_APP_URL`'s hostname so production doesn't hardcode
+ * it. Falls back to the production apex when the env var is missing or points
+ * at `localhost` (there's no real wildcard DNS in local dev to preview
+ * against, so the fallback keeps the claim form's example URL meaningful).
+ *
+ * @returns the domain suffix including the leading dot.
+ */
+export function getSubdomainDomainSuffix(): string {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  if (appUrl) {
+    try {
+      const hostname = new URL(appUrl).hostname;
+      if (hostname && hostname !== "localhost") {
+        return `.${hostname}`;
+      }
+    } catch {
+      // fall through to the default below
+    }
+  }
+
+  return ".linkcharts.com.br";
+}
+
 type ActiveSubdomain = {
   full_url: string;
   status: "active" | "inactive";
