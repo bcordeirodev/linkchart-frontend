@@ -98,3 +98,11 @@ export interface ReportsFilters {
   /** When true, excludes bot clicks from every aggregation. */
   excludeBots?: boolean;
 }
+
+/**
+ * Period presets offered by `ReportsDateFilter`. Unlike the per-link
+ * `Period` type in `useAnalyticsFilters`, Reports only offers 7/30/90 days —
+ * no `1h`/`24h`/`all`/`custom` — since it's a periodic-review page, not a
+ * live-incident one.
+ */
+export type ReportsPeriod = "7d" | "30d" | "90d";
