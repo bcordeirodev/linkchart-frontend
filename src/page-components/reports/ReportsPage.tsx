@@ -25,14 +25,12 @@ import { InsightsPanel } from "@/features/reports/components/InsightsPanel";
 import { LinkPerformanceTable } from "@/features/reports/components/LinkPerformanceTable";
 import { ReportsDateFilter } from "@/features/reports/components/ReportsDateFilter";
 import { ReportsKpiHeader } from "@/features/reports/components/ReportsKpiHeader";
-import { TopLinksTable } from "@/features/reports/components/TopLinksTable";
 import {
   useBreakdown,
   useLinkPerformance,
   useReportsInsights,
   useReportsSummary,
   useReportsTimeseries,
-  useTopLinks,
 } from "@/features/reports/hooks/useReports";
 import { resolveReportsPeriod } from "@/features/reports/utils/resolveReportsPeriod";
 import AuthGuardRedirect from "@/lib/auth/AuthGuardRedirect";
@@ -136,7 +134,6 @@ export default function ReportsPage() {
   const summaryQuery = useReportsSummary(filters);
   const insightsQuery = useReportsInsights(filters);
   const timeseriesQuery = useReportsTimeseries(filters);
-  const topLinksQuery = useTopLinks(filters, 10);
   const breakdownQuery = useBreakdown(dimension, filters);
   const linkPerformanceQuery = useLinkPerformance(filters, 10);
 
@@ -267,9 +264,9 @@ export default function ReportsPage() {
             }}
           >
             <AnalyticsStateManager
-              loading={topLinksQuery.isLoading}
-              error={toErrorMessage(topLinksQuery.error)}
-              hasData={(topLinksQuery.data?.length ?? 0) > 0}
+              loading={linkPerformanceQuery.isLoading}
+              error={toErrorMessage(linkPerformanceQuery.error)}
+              hasData={(linkPerformanceQuery.data?.length ?? 0) > 0}
               emptyMessage={t("empty")}
               skeleton={
                 <Skeleton
@@ -279,8 +276,8 @@ export default function ReportsPage() {
                 />
               }
             >
-              <TopLinksTable
-                data={topLinksQuery.data ?? []}
+              <LinkPerformanceTable
+                data={linkPerformanceQuery.data ?? []}
                 isMobile={isMobile}
               />
             </AnalyticsStateManager>
@@ -305,25 +302,6 @@ export default function ReportsPage() {
               />
             </AnalyticsStateManager>
           </Box>
-
-          <AnalyticsStateManager
-            loading={linkPerformanceQuery.isLoading}
-            error={toErrorMessage(linkPerformanceQuery.error)}
-            hasData={(linkPerformanceQuery.data?.length ?? 0) > 0}
-            emptyMessage={t("empty")}
-            skeleton={
-              <Skeleton
-                variant="rounded"
-                height={360}
-                sx={{ borderRadius: `${radiusTokens.md}px` }}
-              />
-            }
-          >
-            <LinkPerformanceTable
-              data={linkPerformanceQuery.data ?? []}
-              isMobile={isMobile}
-            />
-          </AnalyticsStateManager>
         </Stack>
       </ResponsiveContainer>
     </AuthGuardRedirect>

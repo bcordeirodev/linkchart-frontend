@@ -28,6 +28,7 @@ import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
+import { useNavigate } from "@/shared/hooks";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import {
@@ -95,6 +96,7 @@ export function LinkPerformanceTable({
 }: LinkPerformanceTableProps) {
   const theme = useTheme();
   const { t } = useTranslation("reports");
+  const navigate = useNavigate();
 
   return (
     <ChartCard
@@ -108,7 +110,14 @@ export function LinkPerformanceTable({
             <Card
               key={row.link_id}
               variant="outlined"
-              sx={{ p: 1.5, borderRadius: `${radiusTokens.sm}px` }}
+              onClick={() => navigate(`/links/analytics/${row.link_id}`)}
+              sx={{
+                p: 1.5,
+                borderRadius: `${radiusTokens.sm}px`,
+                cursor: "pointer",
+                transition: "border-color 140ms ease",
+                "&:hover": { borderColor: theme.palette.primary.main },
+              }}
             >
               <Typography variant="body2" sx={{ fontWeight: 600 }} noWrap>
                 {row.title || shortLabel(row)}
@@ -160,7 +169,12 @@ export function LinkPerformanceTable({
             </TableHead>
             <TableBody>
               {data.map((row) => (
-                <TableRow key={row.link_id} hover>
+                <TableRow
+                  key={row.link_id}
+                  hover
+                  onClick={() => navigate(`/links/analytics/${row.link_id}`)}
+                  sx={{ cursor: "pointer" }}
+                >
                   <TableCell sx={{ maxWidth: 260 }}>
                     <Typography variant="body2" sx={{ fontWeight: 600 }} noWrap>
                       {row.title || shortLabel(row)}
