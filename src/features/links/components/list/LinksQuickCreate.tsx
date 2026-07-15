@@ -39,7 +39,10 @@ import { SubdomainSelect } from "@/features/subdomains/components/SubdomainSelec
 import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainSelection";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { darkNeutral } from "@/lib/theme/colors";
-import { getShortUrlPrefixForSubdomain } from "@/lib/utils/shortUrl";
+import {
+  getShortUrlPrefix,
+  getSubdomainDomainSuffix,
+} from "@/lib/utils/shortUrl";
 import { HelpHint } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
@@ -122,36 +125,6 @@ const slugAcceptAdornmentSx = {
   },
 } as const;
 
-/**
- * One grid for all breakpoints — avoids duplicate `register()` on hidden
- * fields. Uma linha só de controles (placeholders carregam o significado;
- * labels viram aria-label) + linha de helper que só existe quando há mensagem.
- */
-/**
- * Grade dos controles em uma linha. Com subdomínio, o seletor de domínio entra
- * como célula própria entre a URL e o nome (formam juntos `domínio/nome`), em
- * vez de flutuar numa linha separada acima — mantém tudo alinhado numa fileira
- * só no desktop. No mobile as células empilham na ordem do DOM.
- */
-const getFormGridSx = (hasSubdomains: boolean) =>
-  ({
-    display: "grid",
-    gridTemplateColumns: {
-      xs: "1fr",
-      md: hasSubdomains
-        ? "minmax(0, 1.7fr) 168px minmax(0, 1fr) 132px"
-        : "minmax(0, 2fr) minmax(0, 1fr) 132px",
-    },
-    columnGap: 2,
-    rowGap: { xs: 1.25, md: 0.75 },
-    alignItems: "start",
-  }) as const;
-
-const mdCell = (row: number, col: number) => ({
-  gridRow: { md: row },
-  gridColumn: { md: col },
-});
-
 const submitButtonSx = {
   // ≥44px de alvo de toque no mobile; alinhado aos inputs (40) no desktop.
   height: { xs: 44, md: CONTROL_HEIGHT },
@@ -222,13 +195,8 @@ export function LinksQuickCreate({
   const navigate = useNavigate();
   const { mutateAsync, isPending } = useCreateLink();
   const [succeeded, setSucceeded] = useState(false);
-  const {
-    subdomains,
-    subdomainId,
-    setSubdomainId,
-    selected: selectedSubdomain,
-    subdomainIdField,
-  } = useSubdomainSelection();
+  const { subdomains, subdomainId, setSubdomainId, subdomainIdField } =
+    useSubdomainSelection();
   // Only shown/considered once the flag is on AND the account actually holds
   // a subdomain — otherwise quick-create stays exactly as it was: no domain
   // prefix, no extra control, one less thing to look at for the common case.
@@ -237,9 +205,13 @@ export function LinksQuickCreate({
   const hasSubdomains =
     process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" &&
     subdomains.length > 0;
-  const shortUrlPrefix = hasSubdomains
-    ? getShortUrlPrefixForSubdomain(selectedSubdomain)
-    : null;
+  // Domínio do construtor do link curto: com subdomínios, o seletor cuida do
+  // domínio e só emendamos o sufixo constante ao lado; sem subdomínios,
+  // mostramos o host padrão inteiro. Nunca um prefixo truncado dentro do campo.
+  const domainSuffix = getSubdomainDomainSuffix();
+  const defaultHost = getShortUrlPrefix()
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "");
 
   const schema = useMemo(
     () =>
@@ -465,24 +437,25 @@ export function LinksQuickCreate({
         />
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-          <Box sx={getFormGridSx(hasSubdomains)}>
+          {/* Fileira 1 — o link longo (o que se cola) + a ação principal. */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { sm: "center" },
+              gap: { xs: 1.25, sm: 1.5 },
+            }}
+          >
             <TextField
               {...register("original_url")}
               placeholder={t("list.quickCreate.urlPlaceholder")}
               size="small"
               fullWidth
               error={!!errors.original_url || urlIsUnsafe}
-              helperText={urlHelperText === " " ? undefined : urlHelperText}
               disabled={isPending}
-              sx={[
-                inputRootSx,
-                mdCell(1, 1),
-                { order: { xs: 1, md: "unset" } },
-              ]}
+              sx={[inputRootSx, { flexGrow: 1, minWidth: 0 }]}
               slotProps={{
-                htmlInput: {
-                  "aria-label": t("list.quickCreate.urlLabel"),
-                },
+                htmlInput: { "aria-label": t("list.quickCreate.urlLabel") },
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
@@ -493,161 +466,6 @@ export function LinksQuickCreate({
                     </InputAdornment>
                   ),
                 },
-                formHelperText: {
-                  sx: { display: { md: "none" } },
-                },
-              }}
-            />
-
-            {hasSubdomains ? (
-              <Box
-                sx={{
-                  ...mdCell(1, 2),
-                  order: { xs: 2, md: "unset" },
-                }}
-              >
-                <SubdomainSelect
-                  value={subdomainId}
-                  onChange={setSubdomainId}
-                  size="small"
-                  aria-label={t("list.quickCreate.subdomainLabel")}
-                />
-              </Box>
-            ) : null}
-
-            <TextField
-              {...register("custom_slug")}
-              placeholder={
-                showSlugSuggestion
-                  ? availableSlug!
-                  : t("list.quickCreate.slugPlaceholder")
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Tab" && showSlugSuggestion) {
-                  acceptSlugSuggestion();
-                }
-              }}
-              size="small"
-              fullWidth
-              error={!!errors.custom_slug || slugIsTaken}
-              helperText={slugHelperText}
-              disabled={isPending}
-              sx={[
-                inputRootSx,
-                (showSlugSuggestion ||
-                  isResolvingSlug ||
-                  slugIsChecking ||
-                  slugIsAvailable) &&
-                  slugAcceptAdornmentSx,
-                mdCell(1, hasSubdomains ? 3 : 2),
-                { order: { xs: hasSubdomains ? 3 : 2, md: "unset" } },
-              ]}
-              slotProps={{
-                htmlInput: {
-                  "aria-label": t("list.quickCreate.slugLabel"),
-                },
-                input: {
-                  sx: {
-                    fontFamily: "monospace",
-                    fontWeight: 500,
-                    ...(showSlugSuggestion
-                      ? {
-                          "&::placeholder": {
-                            color: alpha(primary, 0.55),
-                            opacity: 1,
-                          },
-                        }
-                      : undefined),
-                  },
-                  // Only rendered once the account holds a subdomain — it's the
-                  // live preview of the resulting short URL, so it must track
-                  // `subdomainId` (see `shortUrlPrefix` above) instead of always
-                  // assuming the default domain.
-                  startAdornment: shortUrlPrefix ? (
-                    <InputAdornment position="start">
-                      <Typography
-                        variant="body2"
-                        noWrap
-                        sx={{
-                          fontFamily: "monospace",
-                          color: "text.secondary",
-                          pr: 0.5,
-                          maxWidth: 120,
-                          fontSize: "0.75rem",
-                        }}
-                      >
-                        {shortUrlPrefix}
-                      </Typography>
-                    </InputAdornment>
-                  ) : undefined,
-                  // One slot, four states — the indicator swaps in place so the
-                  // field never reflows. Suggestion path: resolving (spinner) →
-                  // ready («Usar»). Typed-slug path: checking the DB (spinner) →
-                  // free (check). A taken slug speaks in the helper row instead.
-                  endAdornment:
-                    isResolvingSlug || slugIsChecking ? (
-                      <InputAdornment position="end">
-                        <CircularProgress
-                          size={14}
-                          thickness={5}
-                          aria-label={
-                            slugIsChecking
-                              ? slugAvailabilityLabels.checking
-                              : t("list.quickCreate.slugSuggestionChecking")
-                          }
-                          sx={{ color: alpha(primary, 0.6) }}
-                        />
-                      </InputAdornment>
-                    ) : slugIsAvailable ? (
-                      <InputAdornment position="end">
-                        <CheckCircle2
-                          size={15}
-                          strokeWidth={2.25}
-                          aria-label={slugAvailabilityLabels.available}
-                          color={theme.palette.success.main}
-                        />
-                      </InputAdornment>
-                    ) : showSlugSuggestion ? (
-                      <InputAdornment position="end">
-                        <Box
-                          component="button"
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            acceptSlugSuggestion();
-                          }}
-                          sx={{
-                            border: "none",
-                            cursor: "pointer",
-                            font: "inherit",
-                            fontSize: "0.6875rem",
-                            fontWeight: 600,
-                            lineHeight: 1,
-                            py: 0.25,
-                            px: 0.625,
-                            borderRadius: `${linksRadius.control}px`,
-                            color: primary,
-                            bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
-                            transition: "background-color 120ms ease",
-                            "&:hover": {
-                              bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
-                            },
-                          }}
-                        >
-                          {t("list.quickCreate.slugAccept")}
-                        </Box>
-                      </InputAdornment>
-                    ) : undefined,
-                },
-                formHelperText: {
-                  sx: {
-                    display: { md: "none" },
-                    color: "text.secondary",
-                    fontSize: "0.75rem",
-                    lineHeight: 1.45,
-                  },
-                },
               }}
             />
 
@@ -655,7 +473,6 @@ export function LinksQuickCreate({
               type="submit"
               variant="contained"
               color="primary"
-              fullWidth
               disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
               startIcon={
                 succeeded ? (
@@ -668,24 +485,212 @@ export function LinksQuickCreate({
               }
               sx={[
                 submitButtonSx,
-                mdCell(1, hasSubdomains ? 4 : 3),
-                { order: { xs: hasSubdomains ? 4 : 3, md: "unset" } },
+                { flexShrink: 0, width: { xs: "100%", sm: "auto" } },
               ]}
             >
               {succeeded
                 ? t("list.quickCreate.success")
                 : t("list.quickCreate.submit")}
             </Button>
+          </Box>
 
-            {/* Helpers desktop: linha 2 só materializa quando há mensagem. */}
-            {urlHelperText !== " " ? (
-              <Box
-                sx={{
-                  ...mdCell(2, 1),
-                  minWidth: 0,
-                  display: { xs: "none", md: "block" },
-                }}
+          {/* Fileira 2 — construtor do link curto: domínio · / · nome. O
+              domínio aparece inteiro (seletor + sufixo, ou host padrão), nunca
+              truncado dentro do campo de nome. */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+              rowGap: 1,
+              columnGap: 1.25,
+              mt: 1.75,
+            }}
+          >
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                fontWeight: 600,
+                letterSpacing: "0.02em",
+                textTransform: "uppercase",
+                flexShrink: 0,
+              }}
+            >
+              {t("list.quickCreate.shortLinkLabel")}
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.75,
+                flexGrow: 1,
+                minWidth: { xs: "100%", sm: 320 },
+              }}
+            >
+              {hasSubdomains ? (
+                <>
+                  <Box sx={{ flexShrink: 0, minWidth: 128 }}>
+                    <SubdomainSelect
+                      value={subdomainId}
+                      onChange={setSubdomainId}
+                      size="small"
+                      aria-label={t("list.quickCreate.subdomainLabel")}
+                    />
+                  </Box>
+                  <Typography
+                    component="span"
+                    sx={{
+                      fontFamily: "monospace",
+                      fontSize: "0.8125rem",
+                      color: "text.secondary",
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                      display: { xs: "none", sm: "block" },
+                    }}
+                  >
+                    {domainSuffix}
+                  </Typography>
+                </>
+              ) : (
+                <Typography
+                  component="span"
+                  sx={{
+                    fontFamily: "monospace",
+                    fontSize: "0.8125rem",
+                    color: "text.secondary",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                  }}
+                >
+                  {defaultHost}
+                </Typography>
+              )}
+
+              <Typography
+                component="span"
+                sx={{ color: "text.disabled", flexShrink: 0, fontWeight: 500 }}
               >
+                /
+              </Typography>
+
+              <TextField
+                {...register("custom_slug")}
+                placeholder={
+                  showSlugSuggestion
+                    ? availableSlug!
+                    : t("list.quickCreate.slugPlaceholder")
+                }
+                onKeyDown={(e) => {
+                  if (e.key === "Tab" && showSlugSuggestion) {
+                    acceptSlugSuggestion();
+                  }
+                }}
+                size="small"
+                fullWidth
+                error={!!errors.custom_slug || slugIsTaken}
+                disabled={isPending}
+                sx={[
+                  inputRootSx,
+                  (showSlugSuggestion ||
+                    isResolvingSlug ||
+                    slugIsChecking ||
+                    slugIsAvailable) &&
+                    slugAcceptAdornmentSx,
+                  { flexGrow: 1, minWidth: 0 },
+                ]}
+                slotProps={{
+                  htmlInput: { "aria-label": t("list.quickCreate.slugLabel") },
+                  input: {
+                    sx: {
+                      fontFamily: "monospace",
+                      fontWeight: 500,
+                      ...(showSlugSuggestion
+                        ? {
+                            "&::placeholder": {
+                              color: alpha(primary, 0.55),
+                              opacity: 1,
+                            },
+                          }
+                        : undefined),
+                    },
+                    // Um slot, quatro estados — o indicador troca no lugar para
+                    // o campo nunca "pular": resolvendo (spinner) → pronto
+                    // («Usar»); digitando (spinner) → livre (check). Um nome já
+                    // tomado fala na linha de mensagem abaixo.
+                    endAdornment:
+                      isResolvingSlug || slugIsChecking ? (
+                        <InputAdornment position="end">
+                          <CircularProgress
+                            size={14}
+                            thickness={5}
+                            aria-label={
+                              slugIsChecking
+                                ? slugAvailabilityLabels.checking
+                                : t("list.quickCreate.slugSuggestionChecking")
+                            }
+                            sx={{ color: alpha(primary, 0.6) }}
+                          />
+                        </InputAdornment>
+                      ) : slugIsAvailable ? (
+                        <InputAdornment position="end">
+                          <CheckCircle2
+                            size={15}
+                            strokeWidth={2.25}
+                            aria-label={slugAvailabilityLabels.available}
+                            color={theme.palette.success.main}
+                          />
+                        </InputAdornment>
+                      ) : showSlugSuggestion ? (
+                        <InputAdornment position="end">
+                          <Box
+                            component="button"
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              acceptSlugSuggestion();
+                            }}
+                            sx={{
+                              border: "none",
+                              cursor: "pointer",
+                              font: "inherit",
+                              fontSize: "0.6875rem",
+                              fontWeight: 600,
+                              lineHeight: 1,
+                              py: 0.25,
+                              px: 0.625,
+                              borderRadius: `${linksRadius.control}px`,
+                              color: primary,
+                              bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
+                              transition: "background-color 120ms ease",
+                              "&:hover": {
+                                bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
+                              },
+                            }}
+                          >
+                            {t("list.quickCreate.slugAccept")}
+                          </Box>
+                        </InputAdornment>
+                      ) : undefined,
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+
+          {/* Linha de mensagens — só materializa quando há erro de URL ou nome. */}
+          {urlHelperText !== " " || slugHelperText ? (
+            <Box
+              sx={{
+                mt: 1,
+                display: "flex",
+                flexDirection: "column",
+                gap: 0.25,
+              }}
+            >
+              {urlHelperText !== " " ? (
                 <Typography
                   variant="caption"
                   component="div"
@@ -697,22 +702,14 @@ export function LinksQuickCreate({
                 >
                   {urlHelperText}
                 </Typography>
-              </Box>
-            ) : null}
-            {slugHelperText ? (
-              <Box
-                sx={{
-                  ...mdCell(2, hasSubdomains ? 3 : 2),
-                  minWidth: 0,
-                  display: { xs: "none", md: "block" },
-                }}
-              >
+              ) : null}
+              {slugHelperText ? (
                 <Typography variant="caption" color="error">
                   {slugHelperText}
                 </Typography>
-              </Box>
-            ) : null}
-          </Box>
+              ) : null}
+            </Box>
+          ) : null}
         </Box>
       </Box>
     </EnhancedPaper>

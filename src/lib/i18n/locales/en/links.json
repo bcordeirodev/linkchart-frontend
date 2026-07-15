@@ -36,6 +36,7 @@
       "urlLabel": "Link you want to shorten",
       "slugLabel": "Custom name (optional)",
       "subdomainLabel": "Address",
+      "shortLinkLabel": "Short link",
       "urlPlaceholder": "https://example.com/page",
       "slugPlaceholder": "link-name",
       "previewLabel": "Your short link will look like this:",
