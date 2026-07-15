@@ -121,7 +121,8 @@ export default class ProfileService extends BaseService {
    * @endpoint `DELETE /api/account` — no response body on success (204).
    */
   async deleteAccount(payload: DeleteAccountRequest): Promise<void> {
-    return this.delete<void>(API_ENDPOINTS.AUTH.ACCOUNT, payload, {
+    return this.delete<void>(API_ENDPOINTS.AUTH.ACCOUNT, {
+      data: payload,
       context: "delete_account",
     });
   }
