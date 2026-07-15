@@ -20,6 +20,13 @@ export interface SubdomainSelectProps {
   id?: string;
   fullWidth?: boolean;
   /**
+   * Visual variant. `"outlined"` (default) is the standalone bordered control.
+   * `"embedded"` drops the border/underline and background so the select can
+   * sit INSIDE another bordered container (e.g. as the domain addon of the
+   * quick-create "short link" input group) and read as one component.
+   */
+  variant?: "outlined" | "embedded";
+  /**
    * Accessible name for contexts with no visible label sitting above the
    * control (e.g. the quick-create row, which labels fields via placeholder
    * + aria-label rather than `<FormLabel>`).
@@ -44,10 +51,12 @@ export function SubdomainSelect({
   size = "medium",
   id,
   fullWidth = true,
+  variant = "outlined",
   "aria-label": ariaLabel,
 }: SubdomainSelectProps) {
   const { t } = useTranslation("links");
   const { subdomains, isLoading } = useSubdomains();
+  const embedded = variant === "embedded";
 
   if (process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED !== "true") {
     return null;
@@ -64,13 +73,37 @@ export function SubdomainSelect({
   };
 
   return (
-    <FormControl size={size} fullWidth={fullWidth}>
+    <FormControl
+      size={size}
+      fullWidth={fullWidth}
+      variant={embedded ? "standard" : "outlined"}
+    >
       <Select
         id={id}
         value={selectValue}
         onChange={handleChange}
         disabled={isLoading}
+        variant={embedded ? "standard" : "outlined"}
+        disableUnderline={embedded}
         inputProps={ariaLabel ? { "aria-label": ariaLabel } : undefined}
+        sx={
+          embedded
+            ? {
+                // Sem borda/fundo: o select é só o "addon" de domínio dentro
+                // do input group; herda a tipografia mono do prefixo ao lado.
+                "& .MuiSelect-select": {
+                  py: 0,
+                  pl: 0,
+                  pr: "20px !important",
+                  fontFamily: "monospace",
+                  fontSize: "0.8125rem",
+                  fontWeight: 600,
+                  minHeight: "unset",
+                },
+                "&:before, &:after": { display: "none" },
+              }
+            : undefined
+        }
       >
         <MenuItem value={DEFAULT_DOMAIN_VALUE}>
           {t("form.subdomainSelect.defaultOption")}
