@@ -1,6 +1,11 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 
 import { useMessage } from "@/lib/providers/MessageProvider";
 import { queryKeys } from "@/lib/query/keys";
@@ -8,6 +13,8 @@ import { API_CONFIG } from "@/lib/api/endpoints";
 import { linkService } from "@/services";
 import { i18n } from "@/lib/i18n";
 
+import type { LinksSearchParams } from "@/lib/query/keys";
+import type { LinksSearchResponse } from "@/services/link.service";
 import type {
   LinkCreateRequest,
   LinkResponse,
@@ -48,6 +55,32 @@ export function useLinks() {
     loading,
     error: error ? (error as Error).message : null,
   };
+}
+
+/**
+ * Server-side paginated/filtered/sorted search over the authenticated user's links.
+ *
+ * @param params - `{page, perPage, q?, status?, sort?, order?}` — see `LinksSearchParams`.
+ * @returns the TanStack Query result; `data` is `{data: LinkResponse[], meta: LinksMeta}` when resolved.
+ *
+ * @remarks
+ * Cache key: `queryKeys.links.search(params)` → `["links", "list", params]`. The
+ * `["links"]` prefix is preserved so `useCreateLink`/`useUpdateLink`/`useDeleteLink`
+ * (which invalidate `queryKeys.links.all()`) still invalidate every cached
+ * page/filter combination of this query.
+ *
+ * `placeholderData: keepPreviousData` keeps the previous page's results on screen
+ * while a new page/filter/sort combination is in flight, so pagination and
+ * filtering don't flash an empty list between requests — callers should use
+ * `isFetching` (not `isLoading`) to show a subtle "updating" state.
+ */
+export function useLinksSearch(params: LinksSearchParams) {
+  return useQuery<LinksSearchResponse>({
+    queryKey: queryKeys.links.search(params),
+    queryFn: () => linkService.search(params),
+    placeholderData: keepPreviousData,
+    staleTime: API_CONFIG.CACHE.LINKS_TTL,
+  });
 }
 
 /**
