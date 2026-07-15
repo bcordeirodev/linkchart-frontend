@@ -7,6 +7,10 @@ import type {
   LinkClicksListParams,
   LinkClicksListResponse,
 } from "@/features/links/types/click";
+import type {
+  LinkBulkAction,
+  LinkBulkActionResult,
+} from "@/features/links/types/link";
 import type { LinksMeta, LinksSearchParams } from "@/lib/query/keys";
 import type {
   LinkCreateRequest,
@@ -150,6 +154,26 @@ export default class LinkService extends BaseService {
   }
 
   /**
+   * Runs an activate/deactivate/delete action over up to 50 links at once.
+   *
+   * @param action - `"activate" | "deactivate" | "delete"`.
+   * @param ids - numeric link ids (max 50; ids the user doesn't own are silently skipped).
+   * @returns `{affected, requested}` — `affected` may be lower than `requested`
+   * when some ids didn't belong to the caller.
+   * @endpoint `POST /api/links/bulk-action`
+   */
+  async bulkAction(
+    action: LinkBulkAction["action"],
+    ids: number[],
+  ): Promise<LinkBulkActionResult> {
+    return this.post<LinkBulkActionResult>(
+      API_CONFIG.ENDPOINTS.LINKS_BULK_ACTION,
+      { action, ids },
+      { context: "bulk_action_links" },
+    );
+  }
+
+  /**
    * Returns the legacy analytics payload for a link (by id, despite the parameter name).
    *
    * @param slug - link id passed straight into the route.
@@ -203,6 +227,7 @@ export const all = linkService.all.bind(linkService);
 export const search = linkService.search.bind(linkService);
 export const findOne = linkService.findOne.bind(linkService);
 export const remove = linkService.remove.bind(linkService);
+export const bulkAction = linkService.bulkAction.bind(linkService);
 export const getAnalytics = linkService.getAnalytics.bind(linkService);
 export const getClicksList = linkService.getClicksList.bind(linkService);
 

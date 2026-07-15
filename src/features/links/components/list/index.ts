@@ -1,3 +1,4 @@
+export { BulkActionsBar } from "./BulkActionsBar";
 export { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 export { LinkActionsMenu } from "./LinkActionsMenu";
 export { LinkCardActionBar } from "./LinkCardActionBar";

@@ -35,6 +35,7 @@ export const API_CONFIG = {
     CREATE_LINK: "/api/links",
     UPDATE_LINK: (id: string) => `/api/links/${id}`,
     DELETE_LINK: (id: string) => `/api/links/${id}`,
+    LINKS_BULK_ACTION: "/api/links/bulk-action",
 
     // --- Tags (authenticated CRUD) ---
     TAGS: "/api/tags",

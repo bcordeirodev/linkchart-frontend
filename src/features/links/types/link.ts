@@ -41,7 +41,20 @@ export interface LinkAnalytics {
   }[];
 }
 
+/**
+ * Body of `POST /api/links/bulk-action`. `ids` are capped at 50 per request
+ * (backend rejects more with 422); ids the caller doesn't own are silently
+ * ignored server-side (never surfaced as an error, so ownership isn't leaked).
+ */
 export interface LinkBulkAction {
   action: "activate" | "deactivate" | "delete";
-  link_ids: number[];
+  ids: number[];
+}
+
+/** Response of `POST /api/links/bulk-action` (already unwrapped from `{data}`). */
+export interface LinkBulkActionResult {
+  /** How many of the requested ids actually belonged to the user and were changed. */
+  affected: number;
+  /** How many ids were sent in the request. */
+  requested: number;
 }
