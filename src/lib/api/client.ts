@@ -199,13 +199,19 @@ class ApiClient {
   }
 
   /**
-   * Performs a `DELETE` request.
+   * Performs a `DELETE` request, optionally with a JSON body.
    *
    * @param endpoint - relative path.
+   * @param body - optional JSON-serializable payload (e.g. a password/confirmation
+   * for account deletion). Most `DELETE` calls omit this.
    * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
    */
-  async delete<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-    return this.request<T>({ method: "DELETE", ...options }, endpoint);
+  async delete<T>(
+    endpoint: string,
+    body?: unknown,
+    options: RequestOptions = {},
+  ): Promise<T> {
+    return this.request<T>({ method: "DELETE", body, ...options }, endpoint);
   }
 
   /**
