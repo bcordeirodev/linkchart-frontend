@@ -8,6 +8,7 @@ import {
   Toolbar,
   Typography,
   IconButton,
+  Button,
   Menu,
   MenuItem,
   Avatar,
@@ -22,7 +23,7 @@ import {
   ListItemButton,
 } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "@/shared/hooks";
+import { useNavigate, usePathname } from "@/shared/hooks";
 import { Menu as MenuIcon } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
@@ -35,6 +36,8 @@ import { AppIcon } from "@/shared/ui/icons";
 import { AppLogo } from "@/shared/ui/base";
 import { LanguageSelector } from "@/lib/i18n/components/LanguageSelector";
 
+import { getVisibleNavItems } from "./navItems";
+
 interface NavbarProps {
   onMobileMenuToggle?: () => void;
   isMobile?: boolean;
@@ -45,6 +48,7 @@ export function Navbar({
 }: NavbarProps) {
   const theme = useTheme();
   const navigate = useNavigate();
+  const pathname = usePathname();
   const { user, logout } = useAuth();
 
   const { t } = useTranslation("common");
@@ -53,6 +57,7 @@ export function Navbar({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isDark = theme.palette.mode === "dark";
+  const navItems = getVisibleNavItems();
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -138,6 +143,58 @@ export function Navbar({
               </Typography>
             </Box>
           </Box>
+
+          {/* Navegação principal — desktop */}
+          {user ? (
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                alignItems: "center",
+                gap: 0.5,
+                ml: 3,
+                flexGrow: 1,
+              }}
+            >
+              {navItems.map((item) => {
+                const isActive = pathname?.startsWith(item.route) ?? false;
+                return (
+                  <Button
+                    key={item.key}
+                    onClick={() => navigate(item.route)}
+                    startIcon={<AppIcon intent={item.icon} size={18} />}
+                    aria-current={isActive ? "page" : undefined}
+                    sx={{
+                      color: isActive
+                        ? theme.palette.primary.main
+                        : theme.palette.text.secondary,
+                      fontWeight: isActive ? 600 : 500,
+                      fontSize: "0.875rem",
+                      textTransform: "none",
+                      px: 1.5,
+                      py: 1,
+                      borderRadius: `${radiusTokens.sm}px ${radiusTokens.sm}px 0 0`,
+                      borderBottom: "2px solid",
+                      borderBottomColor: isActive
+                        ? theme.palette.primary.main
+                        : "transparent",
+                      transition: ["color", "background-color", "border-color"]
+                        .map(
+                          (prop) =>
+                            `${prop} ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+                        )
+                        .join(", "),
+                      "&:hover": {
+                        backgroundColor: theme.palette.action.hover,
+                        color: theme.palette.text.primary,
+                      },
+                    }}
+                  >
+                    {t(`nav.${item.key}`)}
+                  </Button>
+                );
+              })}
+            </Box>
+          ) : null}
 
           {/* Right Section */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -394,18 +451,26 @@ export function Navbar({
         ) : null}
 
         <List sx={{ py: 1 }}>
-          <ListItemButton
-            onClick={() => {
-              navigate("/links");
-              setDrawerOpen(false);
-            }}
-            sx={{ px: 3, py: 1.5, borderRadius: `${radiusTokens.sm}px`, mx: 1 }}
-          >
-            <ListItemIcon sx={{ minWidth: 36 }}>
-              <AppIcon intent="link" size={20} />
-            </ListItemIcon>
-            <ListItemText primary={t("nav.myLinks")} />
-          </ListItemButton>
+          {navItems.map((item) => (
+            <ListItemButton
+              key={item.key}
+              onClick={() => {
+                navigate(item.route);
+                setDrawerOpen(false);
+              }}
+              sx={{
+                px: 3,
+                py: 1.5,
+                borderRadius: `${radiusTokens.sm}px`,
+                mx: 1,
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <AppIcon intent={item.icon} size={20} />
+              </ListItemIcon>
+              <ListItemText primary={t(`nav.${item.key}`)} />
+            </ListItemButton>
+          ))}
 
           <ListItemButton
             onClick={() => {
