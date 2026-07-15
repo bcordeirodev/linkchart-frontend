@@ -1,26 +1,71 @@
 "use client";
 import { useUser as useAuth0User } from "@auth0/nextjs-auth0/client";
-import { Alert, Box, Stack } from "@mui/material";
+import { Alert, Box, Button, Stack, Typography } from "@mui/material";
 import { UserCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { DangerZone } from "@/features/profile/components/DangerZone";
 import { OAuthSecurityCard } from "@/features/profile/components/OAuthSecurityCard";
 import { PasswordChangeForm } from "@/features/profile/components/PasswordChangeForm";
+import { PreferencesCard } from "@/features/profile/components/PreferencesCard";
 import { ProfileForm } from "@/features/profile/components/ProfileForm";
+import {
+  ProfileSection,
+  ProfileSectionHeader,
+} from "@/features/profile/components/ProfileSection";
 import { ProfileSidebar } from "@/features/profile/components/ProfileSidebar";
-import { SubdomainSettings } from "@/features/profile/components/SubdomainSettings";
 import { LinkActionsBackLink } from "@/features/links/components/LinkActions/LinkActionsBackLink";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useMessage } from "@/lib/providers/MessageProvider";
 import { profileService } from "@/services";
 import { PageSectionHeading, ResponsiveContainer } from "@/shared/ui/base";
 import { ProfileSkeleton } from "@/shared/ui/feedback/skeletons";
+import { AppIcon } from "@/shared/ui/icons";
+import { useNavigate } from "@/shared/hooks";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
 import useUser from "../../lib/auth/useUser";
 
 import type { UserProfile } from "@/services";
+
+/**
+ * Compact card linking to the standalone `/subdomains` module. Replaces the
+ * inline `SubdomainSettings` section now that subdomains support N per user
+ * and get their own management page — the profile page only teases the
+ * feature and hands off navigation.
+ */
+function SubdomainLinkCard() {
+  const { t } = useTranslation("profile");
+  const navigate = useNavigate();
+
+  return (
+    <ProfileSection>
+      <ProfileSectionHeader
+        icon={<AppIcon intent="subdomain" size={18} />}
+        title={t("subdomainCard.title")}
+        description={t("subdomainCard.description")}
+        action={
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => navigate("/subdomains")}
+            sx={{ minHeight: 36 }}
+          >
+            {t("subdomainCard.cta")}
+          </Button>
+        }
+      />
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ fontFamily: "monospace" }}
+      >
+        {t("subdomainCard.example")}
+      </Typography>
+    </ProfileSection>
+  );
+}
 
 /**
  * Página de perfil do usuário refatorada
@@ -117,7 +162,7 @@ function ProfilePage() {
           >
             <Stack spacing={{ xs: 2, sm: 3 }} sx={{ minWidth: 0 }}>
               {process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" ? (
-                <SubdomainSettings />
+                <SubdomainLinkCard />
               ) : null}
               <ProfileForm
                 user={user}
@@ -125,13 +170,20 @@ function ProfilePage() {
                 photoURL={authUser?.photoURL}
               />
               {usesOAuthLogin ? <OAuthSecurityCard /> : <PasswordChangeForm />}
+              <DangerZone
+                usesOAuthLogin={usesOAuthLogin}
+                userEmail={user.email}
+              />
             </Stack>
 
             <Box sx={{ minWidth: 0 }}>
-              <ProfileSidebar
-                user={user}
-                showResendVerification={!auth0Loading && !auth0User}
-              />
+              <Stack spacing={{ xs: 2, sm: 3 }}>
+                <ProfileSidebar
+                  user={user}
+                  showResendVerification={!auth0Loading && !auth0User}
+                />
+                <PreferencesCard />
+              </Stack>
             </Box>
           </Box>
         </Stack>

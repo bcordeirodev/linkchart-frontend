@@ -1,11 +1,8 @@
 "use client";
 
 import { useCallback } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
-import { SUBDOMAIN_QUERY_KEY } from "@/features/profile/hooks/useSubdomain";
-import type { SubdomainResponse } from "@/features/profile/types/subdomain";
 import { useMessage } from "@/lib/providers/MessageProvider";
 import { copyTextToClipboard, getShortUrlForLink } from "@/lib/utils/shortUrl";
 import type { LinkResponse } from "@/types";
@@ -16,19 +13,19 @@ type LinkShortUrlInput = Pick<
 >;
 
 /**
- * Copies a link's public short URL (subdomain-aware) and shows a success toast.
+ * Copies a link's public short URL and shows a success toast.
+ *
+ * Always uses the link's own recorded `short_url` (its immutable domain) —
+ * see `getShortUrlForLink` for why that must not depend on the account's
+ * currently active subdomain.
  */
 export function useCopyShortUrlForLink() {
-  const queryClient = useQueryClient();
   const { showMessage } = useMessage();
   const { t } = useTranslation("links");
 
   return useCallback(
     async (link: LinkShortUrlInput) => {
-      const subdomain =
-        queryClient.getQueryData<SubdomainResponse>(SUBDOMAIN_QUERY_KEY) ??
-        null;
-      const url = getShortUrlForLink(link, subdomain);
+      const url = getShortUrlForLink(link);
 
       if (!url) {
         return false;
@@ -45,6 +42,6 @@ export function useCopyShortUrlForLink() {
 
       return copied;
     },
-    [showMessage, queryClient, t],
+    [showMessage, t],
   );
 }

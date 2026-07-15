@@ -1,6 +1,14 @@
 "use client";
 import { ExternalLink } from "lucide-react";
-import { alpha, Box, Chip, Stack, Tooltip, Typography } from "@mui/material";
+import {
+  alpha,
+  Box,
+  Checkbox,
+  Chip,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useTheme, type Theme } from "@mui/material/styles";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -43,6 +51,14 @@ interface LinkCardRichProps {
   meta?: LinkMeta;
   onDelete: (id: string) => Promise<void>;
   isHighlighted?: boolean;
+  /** True while the browse list is in multi-select mode — shows the selection checkbox. */
+  selectionMode?: boolean;
+  /** Whether this card is currently selected (only meaningful when `selectionMode` is true). */
+  selected?: boolean;
+  /** Toggles this card's selection; called with `String(link.id)`. */
+  onToggleSelect?: (id: string) => void;
+  /** True when the 50-link selection cap is reached and this card isn't already selected — disables the checkbox. */
+  selectionDisabled?: boolean;
 }
 
 /**
@@ -106,13 +122,17 @@ export function LinkCardRich({
   meta,
   onDelete,
   isHighlighted = false,
+  selectionMode = false,
+  selected = false,
+  onToggleSelect,
+  selectionDisabled = false,
 }: LinkCardRichProps) {
   const theme = useTheme();
   const navigate = useNavigate();
   const { showMessage } = useMessage();
   const { t } = useTranslation("links");
 
-  const shortUrl = useShortUrl(link.slug);
+  const shortUrl = useShortUrl(link);
   const displayUrl = shortUrl.replace(/^https?:\/\//, "");
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -152,6 +172,21 @@ export function LinkCardRich({
           spacing={1.25}
           sx={{ minWidth: 0 }}
         >
+          {selectionMode ? (
+            <Checkbox
+              checked={selected}
+              disabled={!selected && selectionDisabled}
+              onChange={() => onToggleSelect?.(String(link.id))}
+              onClick={(e) => e.stopPropagation()}
+              inputProps={{
+                "aria-label": t("bulk.selectLink", {
+                  title: link.title || t("list.noTitle"),
+                }),
+              }}
+              sx={{ flexShrink: 0, p: 1 }}
+            />
+          ) : null}
+
           <LinkIdentityThumb preview={meta?.preview} theme={theme} />
 
           {/* Tight title+URL block — chip and menu live outside it so their
@@ -218,21 +253,23 @@ export function LinkCardRich({
             </Tooltip>
           ) : null}
           {status !== "active" ? (
-            <Chip
-              size="small"
-              label={statusLabel}
-              sx={{
-                height: 20,
-                flexShrink: 0,
-                borderRadius: `${linksRadius.chip}px`,
-                fontSize: "0.625rem",
-                fontWeight: 500,
-                bgcolor: alpha(statusColorValue, 0.12),
-                color: statusColorKey,
-                border: `1px solid ${alpha(statusColorValue, 0.22)}`,
-                "& .MuiChip-label": { px: 0.75 },
-              }}
-            />
+            <Tooltip title={t(`status.tooltip.${status}`)} arrow>
+              <Chip
+                size="small"
+                label={statusLabel}
+                sx={{
+                  height: 20,
+                  flexShrink: 0,
+                  borderRadius: `${linksRadius.chip}px`,
+                  fontSize: "0.625rem",
+                  fontWeight: 500,
+                  bgcolor: alpha(statusColorValue, 0.12),
+                  color: statusColorKey,
+                  border: `1px solid ${alpha(statusColorValue, 0.22)}`,
+                  "& .MuiChip-label": { px: 0.75 },
+                }}
+              />
+            </Tooltip>
           ) : null}
           <Box
             onClick={(e) => e.stopPropagation()}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Alert, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
@@ -8,7 +8,6 @@ import { useNavigate } from "@/shared/hooks";
 import { LinkActions } from "@/features/links";
 import { LinkQRPanel } from "@/features/links/components/qr";
 import { useLinkById } from "@/features/links/hooks/useLinks";
-import { useShortUrl } from "@/features/links/hooks/useShortUrl";
 import { useShareAPI } from "@/shared/hooks/useShareAPI";
 import { QRCodeSkeleton } from "@/shared/ui/feedback/skeletons";
 import { ResponsiveContainer } from "@/shared/ui/base";
@@ -32,14 +31,11 @@ function LinkQRPage({ id }: Props) {
   const [qrError, setQrError] = useState<string | null>(null);
 
   const slug = rawLink?.slug || rawLink?.custom_slug || "";
-  const shortUrl = useShortUrl(slug);
-
-  const linkInfo = useMemo(() => {
-    if (!rawLink) {
-      return null;
-    }
-    return { ...rawLink, short_url: shortUrl || rawLink.short_url };
-  }, [rawLink, shortUrl]);
+  // Trust the link's own recorded `short_url` (immutable domain, set at
+  // creation) as-is — it already reflects whichever subdomain (if any) this
+  // link was created with, which can differ from the account's other
+  // subdomains.
+  const linkInfo = rawLink ?? null;
 
   const error = fetchError ? (fetchError as Error).message : qrError;
 
@@ -142,6 +138,7 @@ function LinkQRPage({ id }: Props) {
             linkId={id}
             currentView="qr"
             slug={slug}
+            shortUrl={linkInfo.short_url}
             title={linkInfo.title || linkInfo.original_url}
             onDeleteSuccess={handleDeleteSuccess}
           />

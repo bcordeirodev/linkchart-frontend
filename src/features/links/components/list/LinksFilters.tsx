@@ -55,19 +55,24 @@ export function LinksFilters({
   // Tag filter row only renders once the user has created at least one tag.
   const { data: userTags = [] } = useTags();
 
+  // "scheduled" (starts_in no futuro) não tem equivalente no filtro `status`
+  // do servidor (`active|inactive|expired` — ver GET /api/links?status=), então
+  // o chip foi removido daqui. O badge de status "Agendado" no card continua
+  // existindo (getLinkStatus roda por link, client-side, independente deste
+  // filtro) — só deixou de ser um critério de busca server-side.
   const STATUS_CHIPS = [
     { value: "all", label: t("filters.all") },
     { value: "active", label: t("status.active") },
     { value: "inactive", label: t("status.inactive") },
-    { value: "scheduled", label: t("status.scheduled") },
     { value: "expired", label: t("status.expired") },
   ];
 
+  // `trend` e `last_activity` exigiam agregação client-side sobre a lista
+  // inteira (tendência/último clique de todos os links) — sem equivalente no
+  // `sort` server-side (`created_at|clicks|title`), foram removidos do select.
   const SORT_OPTIONS = [
     { value: "created_at", label: t("filters.sortNewest") },
     { value: "clicks", label: t("filters.sortMostClicks") },
-    { value: "trend", label: t("filters.mostTrend") },
-    { value: "last_activity", label: t("filters.lastActivity") },
   ];
 
   const debouncedSearch = useMemo(

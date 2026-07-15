@@ -15,7 +15,6 @@ import { useTranslation } from "react-i18next";
 
 import { DeleteConfirmDialog } from "@/features/links/components/list/DeleteConfirmDialog";
 import { useDeleteLink } from "@/features/links/hooks/useLinks";
-import { useShortUrl } from "@/features/links/hooks/useShortUrl";
 import { getShortUrl } from "@/lib/utils/shortUrl";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useNavigate } from "@/shared/hooks";
@@ -53,18 +52,20 @@ export function LinkActions({
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const slugForHook = slug ?? "";
-  const subdomainAwareUrl = useShortUrl(slugForHook);
-
+  // `shortUrlProp` is the link's own recorded `short_url` (immutable domain,
+  // set at creation) — always prefer it over rebuilding from `slug`, which
+  // used to derive a URL from whichever subdomain is *currently* active on
+  // the account. With multiple subdomains per user those can differ from the
+  // domain this particular link actually has.
   const resolvedShortUrl = useMemo(() => {
-    if (slug) {
-      return subdomainAwareUrl;
-    }
     if (shortUrlProp) {
-      return getShortUrl(shortUrlProp);
+      return shortUrlProp;
+    }
+    if (slug) {
+      return getShortUrl(slug);
     }
     return "";
-  }, [slug, subdomainAwareUrl, shortUrlProp]);
+  }, [slug, shortUrlProp]);
 
   const isDeleting = deleteLink.isPending;
 

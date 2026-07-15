@@ -39,6 +39,14 @@ export interface LinkCreateRequest {
   utm_term?: string;
   /** UTM Content (opcional) */
   utm_content?: string;
+  /**
+   * Subdomínio a usar no link (opcional). `undefined`/campo ausente → usa o
+   * subdomínio ativo mais antigo do usuário, se houver (comportamento
+   * padrão). `null` explícito → força o domínio padrão. Um id → precisa ser
+   * um subdomínio ativo do próprio usuário (senão 422 `SUBDOMAIN_INVALID`).
+   * Imutável após a criação do link.
+   */
+  subdomain_id?: number | null;
 }
 
 /**

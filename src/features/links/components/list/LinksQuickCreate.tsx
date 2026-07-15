@@ -35,8 +35,14 @@ import {
   buildUrlSafetyLabels,
   getUrlSafetyHelperNode,
 } from "@/features/links/components/forms/UrlSafetyIndicator";
+import { SubdomainSelect } from "@/features/subdomains/components/SubdomainSelect";
+import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainSelection";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { darkNeutral } from "@/lib/theme/colors";
+import {
+  getShortUrlPrefix,
+  getSubdomainDomainSuffix,
+} from "@/lib/utils/shortUrl";
 import { HelpHint } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
@@ -119,27 +125,6 @@ const slugAcceptAdornmentSx = {
   },
 } as const;
 
-/**
- * One grid for all breakpoints — avoids duplicate `register()` on hidden
- * fields. Uma linha só de controles (placeholders carregam o significado;
- * labels viram aria-label) + linha de helper que só existe quando há mensagem.
- */
-const formGridSx = {
-  display: "grid",
-  gridTemplateColumns: {
-    xs: "1fr",
-    md: "minmax(0, 2fr) minmax(0, 1fr) 132px",
-  },
-  columnGap: 2,
-  rowGap: { xs: 1.25, md: 0.75 },
-  alignItems: "start",
-} as const;
-
-const mdCell = (row: number, col: number) => ({
-  gridRow: { md: row },
-  gridColumn: { md: col },
-});
-
 const submitButtonSx = {
   // ≥44px de alvo de toque no mobile; alinhado aos inputs (40) no desktop.
   height: { xs: 44, md: CONTROL_HEIGHT },
@@ -210,6 +195,23 @@ export function LinksQuickCreate({
   const navigate = useNavigate();
   const { mutateAsync, isPending } = useCreateLink();
   const [succeeded, setSucceeded] = useState(false);
+  const { subdomains, subdomainId, setSubdomainId, subdomainIdField } =
+    useSubdomainSelection();
+  // Only shown/considered once the flag is on AND the account actually holds
+  // a subdomain — otherwise quick-create stays exactly as it was: no domain
+  // prefix, no extra control, one less thing to look at for the common case.
+  // Mirrors `SubdomainSelect`'s own hide condition so the label next to it
+  // never renders above an empty control.
+  const hasSubdomains =
+    process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" &&
+    subdomains.length > 0;
+  // Domínio do construtor do link curto: com subdomínios, o seletor cuida do
+  // domínio e só emendamos o sufixo constante ao lado; sem subdomínios,
+  // mostramos o host padrão inteiro. Nunca um prefixo truncado dentro do campo.
+  const domainSuffix = getSubdomainDomainSuffix();
+  const defaultHost = getShortUrlPrefix()
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "");
 
   const schema = useMemo(
     () =>
@@ -316,6 +318,13 @@ export function LinksQuickCreate({
         const created = await mutateAsync({
           original_url: data.original_url,
           custom_slug: data.custom_slug || undefined,
+          // `subdomainIdField` is `{ subdomain_id }` once the subdomains list
+          // has loaded (and the feature is on), or `undefined` while still
+          // loading — spreading `undefined` omits the key entirely instead of
+          // sending an explicit `null`, which the backend would read as
+          // "force the default domain" rather than "use the user's oldest
+          // active subdomain". See `useSubdomainSelection` for the rationale.
+          ...subdomainIdField,
         });
         onLinkCreated?.(created);
         setSucceeded(true);
@@ -326,7 +335,7 @@ export function LinksQuickCreate({
         // rejection so the queued (void) call can't become an unhandled one.
       }
     },
-    [mutateAsync, onLinkCreated, reset],
+    [mutateAsync, onLinkCreated, reset, subdomainIdField],
   );
 
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
@@ -428,24 +437,25 @@ export function LinksQuickCreate({
         />
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-          <Box sx={formGridSx}>
+          {/* Fileira 1 — o link longo (o que se cola) + a ação principal. */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { sm: "center" },
+              gap: { xs: 1.25, sm: 1.5 },
+            }}
+          >
             <TextField
               {...register("original_url")}
               placeholder={t("list.quickCreate.urlPlaceholder")}
               size="small"
               fullWidth
               error={!!errors.original_url || urlIsUnsafe}
-              helperText={urlHelperText === " " ? undefined : urlHelperText}
               disabled={isPending}
-              sx={[
-                inputRootSx,
-                mdCell(1, 1),
-                { order: { xs: 1, md: "unset" } },
-              ]}
+              sx={[inputRootSx, { flexGrow: 1, minWidth: 0 }]}
               slotProps={{
-                htmlInput: {
-                  "aria-label": t("list.quickCreate.urlLabel"),
-                },
+                htmlInput: { "aria-label": t("list.quickCreate.urlLabel") },
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
@@ -456,11 +466,59 @@ export function LinksQuickCreate({
                     </InputAdornment>
                   ),
                 },
-                formHelperText: {
-                  sx: { display: { md: "none" } },
-                },
               }}
             />
+
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
+              startIcon={
+                succeeded ? (
+                  <CheckCircle2 {...ICON_SM} />
+                ) : isPending || submitQueued ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : (
+                  <Zap {...ICON_SM} />
+                )
+              }
+              sx={[
+                submitButtonSx,
+                { flexShrink: 0, width: { xs: "100%", sm: "auto" } },
+              ]}
+            >
+              {succeeded
+                ? t("list.quickCreate.success")
+                : t("list.quickCreate.submit")}
+            </Button>
+          </Box>
+
+          {/* Fileira 2 — construtor do link curto: domínio · / · nome. O
+              domínio aparece inteiro (seletor + sufixo, ou host padrão), nunca
+              truncado dentro do campo de nome. */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+              rowGap: 1,
+              columnGap: 1.25,
+              mt: 1.75,
+            }}
+          >
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                fontWeight: 600,
+                letterSpacing: "0.02em",
+                textTransform: "uppercase",
+                flexShrink: 0,
+              }}
+            >
+              {t("list.quickCreate.shortLinkLabel")}
+            </Typography>
 
             <TextField
               {...register("custom_slug")}
@@ -477,7 +535,6 @@ export function LinksQuickCreate({
               size="small"
               fullWidth
               error={!!errors.custom_slug || slugIsTaken}
-              helperText={slugHelperText}
               disabled={isPending}
               sx={[
                 inputRootSx,
@@ -486,13 +543,10 @@ export function LinksQuickCreate({
                   slugIsChecking ||
                   slugIsAvailable) &&
                   slugAcceptAdornmentSx,
-                mdCell(1, 2),
-                { order: { xs: 2, md: "unset" } },
+                { flexGrow: 1, minWidth: { xs: "100%", sm: 340 } },
               ]}
               slotProps={{
-                htmlInput: {
-                  "aria-label": t("list.quickCreate.slugLabel"),
-                },
+                htmlInput: { "aria-label": t("list.quickCreate.slugLabel") },
                 input: {
                   sx: {
                     fontFamily: "monospace",
@@ -506,10 +560,75 @@ export function LinksQuickCreate({
                         }
                       : undefined),
                   },
-                  // One slot, four states — the indicator swaps in place so the
-                  // field never reflows. Suggestion path: resolving (spinner) →
-                  // ready («Usar»). Typed-slug path: checking the DB (spinner) →
-                  // free (check). A taken slug speaks in the helper row instead.
+                  // Domínio (seletor + sufixo) como addon À ESQUERDA, dentro
+                  // da MESMA borda do campo — o grupo lê como um componente
+                  // só: [ bruno ▾ .linkcharts.com.br / nome ].
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
+                      sx={{
+                        mr: 0.75,
+                        pr: 0.75,
+                        height: "auto",
+                        maxHeight: "unset",
+                        borderRight: `1px solid ${getLinksBorderColor(theme)}`,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 0.25,
+                          // Largura de conteúdo: o addon acompanha o domínio
+                          // selecionado (bruno / bcordeiro / discord) sem cortar;
+                          // o campo de nome fica com o espaço restante.
+                          flexShrink: 0,
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {hasSubdomains ? (
+                          <>
+                            <SubdomainSelect
+                              value={subdomainId}
+                              onChange={setSubdomainId}
+                              size="small"
+                              variant="embedded"
+                              fullWidth={false}
+                              aria-label={t("list.quickCreate.subdomainLabel")}
+                            />
+                            <Typography
+                              component="span"
+                              sx={{
+                                fontFamily: "monospace",
+                                fontSize: "0.8125rem",
+                                color: "text.secondary",
+                                whiteSpace: "nowrap",
+                                display: { xs: "none", sm: "inline" },
+                              }}
+                            >
+                              {domainSuffix}/
+                            </Typography>
+                          </>
+                        ) : (
+                          <Typography
+                            component="span"
+                            noWrap
+                            sx={{
+                              fontFamily: "monospace",
+                              fontSize: "0.8125rem",
+                              color: "text.secondary",
+                            }}
+                          >
+                            {defaultHost}/
+                          </Typography>
+                        )}
+                      </Box>
+                    </InputAdornment>
+                  ),
+                  // Um slot, quatro estados — o indicador troca no lugar para
+                  // o campo nunca "pular": resolvendo (spinner) → pronto
+                  // («Usar»); digitando (spinner) → livre (check). Um nome já
+                  // tomado fala na linha de mensagem abaixo.
                   endAdornment:
                     isResolvingSlug || slugIsChecking ? (
                       <InputAdornment position="end">
@@ -566,52 +685,21 @@ export function LinksQuickCreate({
                       </InputAdornment>
                     ) : undefined,
                 },
-                formHelperText: {
-                  sx: {
-                    display: { md: "none" },
-                    color: "text.secondary",
-                    fontSize: "0.75rem",
-                    lineHeight: 1.45,
-                  },
-                },
               }}
             />
+          </Box>
 
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
-              startIcon={
-                succeeded ? (
-                  <CheckCircle2 {...ICON_SM} />
-                ) : isPending || submitQueued ? (
-                  <CircularProgress size={16} color="inherit" />
-                ) : (
-                  <Zap {...ICON_SM} />
-                )
-              }
-              sx={[
-                submitButtonSx,
-                mdCell(1, 3),
-                { order: { xs: 3, md: "unset" } },
-              ]}
+          {/* Linha de mensagens — só materializa quando há erro de URL ou nome. */}
+          {urlHelperText !== " " || slugHelperText ? (
+            <Box
+              sx={{
+                mt: 1,
+                display: "flex",
+                flexDirection: "column",
+                gap: 0.25,
+              }}
             >
-              {succeeded
-                ? t("list.quickCreate.success")
-                : t("list.quickCreate.submit")}
-            </Button>
-
-            {/* Helpers desktop: linha 2 só materializa quando há mensagem. */}
-            {urlHelperText !== " " ? (
-              <Box
-                sx={{
-                  ...mdCell(2, 1),
-                  minWidth: 0,
-                  display: { xs: "none", md: "block" },
-                }}
-              >
+              {urlHelperText !== " " ? (
                 <Typography
                   variant="caption"
                   component="div"
@@ -623,22 +711,14 @@ export function LinksQuickCreate({
                 >
                   {urlHelperText}
                 </Typography>
-              </Box>
-            ) : null}
-            {slugHelperText ? (
-              <Box
-                sx={{
-                  ...mdCell(2, 2),
-                  minWidth: 0,
-                  display: { xs: "none", md: "block" },
-                }}
-              >
+              ) : null}
+              {slugHelperText ? (
                 <Typography variant="caption" color="error">
                   {slugHelperText}
                 </Typography>
-              </Box>
-            ) : null}
-          </Box>
+              ) : null}
+            </Box>
+          ) : null}
         </Box>
       </Box>
     </EnhancedPaper>

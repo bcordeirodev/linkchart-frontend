@@ -13,6 +13,8 @@
  * - `tags` — tag CRUD (mutations also invalidate `links.*` since link cards
  *   embed the tag objects they're tagged with).
  * - `analytics` — per-link analytics tabs and the public analytics page.
+ * - `subdomains` — the authenticated user's custom subdomains (plural, N per
+ *   user); claim/release mutations invalidate `subdomains.all()`.
  */
 
 /**
@@ -31,10 +33,54 @@ export interface AnalyticsQueryFilters {
   continent?: string | null;
 }
 
+/**
+ * Filters shared by every `/api/reports/*` endpoint (aggregated, multi-link).
+ * Narrower than {@link AnalyticsQueryFilters} — reports have no `segment`/`continent`.
+ */
+export interface ReportsQueryFilters {
+  dateFrom?: string | null;
+  dateTo?: string | null;
+  excludeBots?: boolean;
+}
+
+/**
+ * Server-side search/filter/sort/pagination params for `GET /api/links`.
+ *
+ * Every field the backend honours MUST appear here — the same reasoning as
+ * {@link AnalyticsQueryFilters}: a filter missing from this shape would make
+ * TanStack Query treat two different requests as the same cache entry.
+ */
+export interface LinksSearchParams {
+  page: number;
+  perPage: number;
+  /** Free-text search over title, original URL and slug (case-insensitive). */
+  q?: string;
+  /** Omit (or leave `undefined`) for "all statuses". */
+  status?: "active" | "inactive" | "expired";
+  sort?: "created_at" | "clicks" | "title";
+  order?: "asc" | "desc";
+}
+
+/** Pagination metadata returned alongside `data` by the paginated links search. */
+export interface LinksMeta {
+  current_page: number;
+  per_page: number;
+  total: number;
+  last_page: number;
+}
+
 export const queryKeys = {
   links: {
     all: () => ["links"] as const,
     list: () => ["links", "list"] as const,
+    /**
+     * Server-side paginated/filtered links search.
+     *
+     * Keeps the `["links", "list", ...]` prefix so `queryClient.invalidateQueries({
+     * queryKey: queryKeys.links.all() })` (used by `useCreateLink`/`useUpdateLink`/
+     * `useDeleteLink`) still matches every cached page/filter combination.
+     */
+    search: (params: LinksSearchParams) => ["links", "list", params] as const,
     detail: (id: string) => ["links", "detail", id] as const,
     meta: (ids: string[]) => ["links", "meta", [...ids].sort()] as const,
   },
@@ -55,5 +101,22 @@ export const queryKeys = {
       ["analytics", id, "insights", f ?? {}] as const,
     public: (slug: string) => ["analytics", "public", slug] as const,
     publicLink: (slug: string) => ["link", "public", slug] as const,
+  },
+  reports: {
+    summary: (f?: ReportsQueryFilters) =>
+      ["reports", "summary", f ?? {}] as const,
+    timeseries: (f?: ReportsQueryFilters) =>
+      ["reports", "timeseries", f ?? {}] as const,
+    topLinks: (f?: ReportsQueryFilters, limit?: number) =>
+      ["reports", "top-links", f ?? {}, limit ?? 10] as const,
+    breakdown: (dimension: string, f?: ReportsQueryFilters) =>
+      ["reports", "breakdown", dimension, f ?? {}] as const,
+    linkPerformance: (f?: ReportsQueryFilters, limit?: number) =>
+      ["reports", "link-performance", f ?? {}, limit ?? 10] as const,
+    insights: (f?: ReportsQueryFilters) =>
+      ["reports", "insights", f ?? {}] as const,
+  },
+  subdomains: {
+    all: () => ["subdomains"] as const,
   },
 };
