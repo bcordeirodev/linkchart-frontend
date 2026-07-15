@@ -230,6 +230,32 @@
       "tagsMax": "Um link pode ter no máximo 5 tags."
     }
   },
+  "bulk": {
+    "toolbarLabel": "Ações em massa",
+    "select": "Selecionar",
+    "cancel": "Cancelar",
+    "selectAllVisible": "Selecionar todos nesta página",
+    "selectLink": "Selecionar {{title}}",
+    "selectedCount_one": "{{count}} selecionado",
+    "selectedCount_other": "{{count}} selecionados",
+    "maxReached": "Limite de 50 por ação atingido",
+    "maxReachedTooltip": "Limite de 50 links por ação em massa",
+    "activate": "Ativar",
+    "deactivate": "Desativar",
+    "delete": "Excluir",
+    "confirmTitle_one": "Excluir {{count}} link?",
+    "confirmTitle_other": "Excluir {{count}} links?",
+    "confirmBody_one": "Esta ação não pode ser desfeita. O endereço curto deixará de funcionar e os dados de cliques serão perdidos.",
+    "confirmBody_other": "Esta ação não pode ser desfeita. Os endereços curtos deixarão de funcionar e os dados de cliques serão perdidos.",
+    "successActivate_one": "{{count}} link ativado",
+    "successActivate_other": "{{count}} links ativados",
+    "successDeactivate_one": "{{count}} link desativado",
+    "successDeactivate_other": "{{count}} links desativados",
+    "successDelete_one": "{{count}} link excluído",
+    "successDelete_other": "{{count}} links excluídos",
+    "partial": "Alguns itens não puderam ser alterados.",
+    "error": "Erro ao executar a ação em massa. Tente novamente."
+  },
   "tags": {
     "overflow": "+{{count}}",
     "filter": {

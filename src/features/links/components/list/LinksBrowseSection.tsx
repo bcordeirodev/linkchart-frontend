@@ -1,12 +1,25 @@
 "use client";
 
-import { Box, Divider, Pagination, Skeleton, Typography } from "@mui/material";
+import { CheckSquare } from "lucide-react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Divider,
+  Pagination,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useBulkActions } from "@/features/links/hooks/useBulkActions";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
+import { BulkActionsBar } from "./BulkActionsBar";
 import { LinkCardRich } from "./LinkCardRich";
 import { LinksDemoSeedingState } from "./LinksDemoSeedingState";
 import { LinksEmptyState } from "./LinksEmptyState";
@@ -133,12 +146,65 @@ export function LinksBrowseSection({
   const theme = useTheme();
   const { t } = useTranslation("links");
 
+  const {
+    selectedIds,
+    toggle: toggleSelected,
+    clear: clearSelection,
+    selectAllVisible,
+    run: runBulkAction,
+    isRunning: bulkActionRunning,
+    isMaxReached: bulkMaxReached,
+  } = useBulkActions();
+  const [selectionMode, setSelectionMode] = useState(false);
+
   const count = links.length;
   const description = hasActiveFilters
     ? t("list.sections.linksFiltered", { count: paginationMeta.total })
     : t("list.sections.linksBrowseDescription", {
         count: paginationMeta.total,
       });
+
+  const visibleIds = useMemo(() => links.map((l) => String(l.id)), [links]);
+  const allVisibleSelected =
+    visibleIds.length > 0 && visibleIds.every((id) => selectedIds.includes(id));
+  const someVisibleSelected = visibleIds.some((id) => selectedIds.includes(id));
+
+  /** Enters/exits selection mode; leaving it always drops the current selection. */
+  const handleToggleSelectionMode = useCallback(() => {
+    setSelectionMode((prev) => {
+      if (prev) {
+        clearSelection();
+      }
+      return !prev;
+    });
+  }, [clearSelection]);
+
+  /** Selects (or clears) every link on the current page — see `useBulkActions.selectAllVisible`. */
+  const handleSelectAllVisibleToggle = useCallback(() => {
+    if (allVisibleSelected) {
+      clearSelection();
+    } else {
+      selectAllVisible(visibleIds);
+    }
+  }, [allVisibleSelected, clearSelection, selectAllVisible, visibleIds]);
+
+  const handleBulkActivate = useCallback(() => {
+    void runBulkAction("activate");
+  }, [runBulkAction]);
+
+  const handleBulkDeactivate = useCallback(() => {
+    void runBulkAction("deactivate");
+  }, [runBulkAction]);
+
+  const handleBulkDelete = useCallback(() => {
+    void runBulkAction("delete");
+  }, [runBulkAction]);
+
+  /** Exits selection mode from the bulk actions bar's cancel/close control. */
+  const handleBulkCancel = useCallback(() => {
+    clearSelection();
+    setSelectionMode(false);
+  }, [clearSelection]);
 
   const topRef = useRef<HTMLDivElement>(null);
 
@@ -188,6 +254,19 @@ export function LinksBrowseSection({
           description={description}
           titleVariant="section"
           sx={{ mb: { xs: 1.5, sm: 2 } }}
+          action={
+            count > 0 || selectionMode ? (
+              <Button
+                size="small"
+                variant="text"
+                startIcon={<CheckSquare {...ICON_SM} />}
+                onClick={handleToggleSelectionMode}
+                sx={{ minHeight: 44 }}
+              >
+                {selectionMode ? t("bulk.cancel") : t("bulk.select")}
+              </Button>
+            ) : undefined
+          }
         />
         <LinksFilters
           embedded
@@ -200,6 +279,41 @@ export function LinksBrowseSection({
           tagFilter={tagFilter}
           onTagFilterChange={onTagFilterChange}
         />
+
+        {selectionMode && count > 0 ? (
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={0.5}
+            sx={{ mt: 1.5 }}
+          >
+            <Checkbox
+              size="small"
+              checked={allVisibleSelected}
+              indeterminate={someVisibleSelected && !allVisibleSelected}
+              onChange={handleSelectAllVisibleToggle}
+              inputProps={{ "aria-label": t("bulk.selectAllVisible") }}
+            />
+            <Typography variant="body2" color="text.secondary">
+              {t("bulk.selectAllVisible")}
+            </Typography>
+          </Stack>
+        ) : null}
+
+        {selectedIds.length > 0 ? (
+          <Box sx={{ mt: 2 }}>
+            <BulkActionsBar
+              selectedCount={selectedIds.length}
+              isMobile={isMobile}
+              isRunning={bulkActionRunning}
+              isMaxReached={bulkMaxReached}
+              onActivate={handleBulkActivate}
+              onDeactivate={handleBulkDeactivate}
+              onConfirmDelete={handleBulkDelete}
+              onCancel={handleBulkCancel}
+            />
+          </Box>
+        ) : null}
 
         <Divider sx={{ my: 2 }} />
         {/* `key` remonta esta região quando o conjunto visível muda, e só então
@@ -235,23 +349,41 @@ export function LinksBrowseSection({
               meta={linkMeta}
               onDelete={onDelete}
               highlightedLinkId={highlightedLinkId}
+              selectionMode={selectionMode}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleSelected}
+              selectionMaxReached={bulkMaxReached}
             />
           ) : (
             /* Mobile-first: 1 coluna é o estado natural; o auto-fill só abre
                a 2ª coluna quando o painel comporta dois cards de ≥560px. */
             <Box sx={getLinksBrowseGridSx(LINKS_PAGE_SIZE)}>
-              {links.map((link) => (
-                <LinkCardRich
-                  key={link.id}
-                  link={link}
-                  meta={linkMeta[String(link.id)]}
-                  onDelete={onDelete}
-                  isHighlighted={String(link.id) === highlightedLinkId}
-                />
-              ))}
+              {links.map((link) => {
+                const idStr = String(link.id);
+                const selected = selectedIds.includes(idStr);
+
+                return (
+                  <LinkCardRich
+                    key={link.id}
+                    link={link}
+                    meta={linkMeta[idStr]}
+                    onDelete={onDelete}
+                    isHighlighted={idStr === highlightedLinkId}
+                    selectionMode={selectionMode}
+                    selected={selected}
+                    onToggleSelect={toggleSelected}
+                    selectionDisabled={!selected && bulkMaxReached}
+                  />
+                );
+              })}
             </Box>
           )}
         </Box>
+        {isMobile && selectedIds.length > 0 ? (
+          // O BulkActionsBar fica `position: fixed` no mobile — este espaçador
+          // evita que ele cubra o último card/rodapé de paginação.
+          <Box sx={{ height: 88 }} />
+        ) : null}
         {showPagination ? (
           <Box
             sx={{
