@@ -4,7 +4,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 
-import { Box, useTheme } from "@mui/material";
+import { alpha, Box, useTheme } from "@mui/material";
 
 import { useResponsive } from "@/lib/theme";
 import { motionTokens } from "@/lib/theme/designSystem";
@@ -69,6 +69,7 @@ function MainLayout({
   className,
 }: MainLayoutProps) {
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const { isMobile } = useResponsive();
   const [collapsed, setCollapsed] = useState(false);
 
@@ -105,19 +106,6 @@ function MainLayout({
         flexDirection: "row",
         overflow: "hidden",
         transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-        "&::-webkit-scrollbar": {
-          width: "8px",
-        },
-        "&::-webkit-scrollbar-track": {
-          backgroundColor: theme.palette.background.paper,
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: theme.palette.divider,
-          borderRadius: "4px",
-          "&:hover": {
-            backgroundColor: theme.palette.action.hover,
-          },
-        },
       }}
     >
       {showNavbar ? <SideNav collapsed={collapsed} /> : null}
@@ -151,6 +139,34 @@ function MainLayout({
             overflow: "auto",
             pb: 0,
             px: 0,
+            // Scrollbar do conteúdo principal alinhada ao tema (o Box raiz é
+            // overflow:hidden, então a estilização precisa viver aqui, no
+            // único elemento que realmente rola). Firefox via scrollbar-*,
+            // WebKit via ::-webkit-scrollbar.
+            scrollbarWidth: "thin",
+            scrollbarColor: `${alpha(theme.palette.text.primary, isDark ? 0.22 : 0.28)} transparent`,
+            "&::-webkit-scrollbar": {
+              width: "10px",
+              height: "10px",
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: "transparent",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: alpha(
+                theme.palette.text.primary,
+                isDark ? 0.2 : 0.26,
+              ),
+              borderRadius: "8px",
+              border: `2px solid ${theme.palette.background.default}`,
+              backgroundClip: "content-box",
+              "&:hover": {
+                backgroundColor: alpha(
+                  theme.palette.text.primary,
+                  isDark ? 0.34 : 0.4,
+                ),
+              },
+            },
             "& > *": {
               width: "100%",
               minHeight: "inherit",
