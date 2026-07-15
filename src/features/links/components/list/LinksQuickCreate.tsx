@@ -218,6 +218,7 @@ export function LinksQuickCreate({
     subdomainId,
     setSubdomainId,
     selected: selectedSubdomain,
+    subdomainIdField,
   } = useSubdomainSelection();
   // Only shown/considered once the flag is on AND the account actually holds
   // a subdomain — otherwise quick-create stays exactly as it was: no domain
@@ -336,10 +337,13 @@ export function LinksQuickCreate({
         const created = await mutateAsync({
           original_url: data.original_url,
           custom_slug: data.custom_slug || undefined,
-          // `useSubdomainSelection()` defaults this to the account's oldest
-          // active subdomain (or `null` with none held) — same default the
-          // backend applies when the field is omitted.
-          subdomain_id: subdomainId,
+          // `subdomainIdField` is `{ subdomain_id }` once the subdomains list
+          // has loaded (and the feature is on), or `undefined` while still
+          // loading — spreading `undefined` omits the key entirely instead of
+          // sending an explicit `null`, which the backend would read as
+          // "force the default domain" rather than "use the user's oldest
+          // active subdomain". See `useSubdomainSelection` for the rationale.
+          ...subdomainIdField,
         });
         onLinkCreated?.(created);
         setSucceeded(true);
@@ -350,7 +354,7 @@ export function LinksQuickCreate({
         // rejection so the queued (void) call can't become an unhandled one.
       }
     },
-    [mutateAsync, onLinkCreated, reset, subdomainId],
+    [mutateAsync, onLinkCreated, reset, subdomainIdField],
   );
 
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
