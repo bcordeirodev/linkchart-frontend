@@ -5,8 +5,10 @@ import { UserCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { DangerZone } from "@/features/profile/components/DangerZone";
 import { OAuthSecurityCard } from "@/features/profile/components/OAuthSecurityCard";
 import { PasswordChangeForm } from "@/features/profile/components/PasswordChangeForm";
+import { PreferencesCard } from "@/features/profile/components/PreferencesCard";
 import { ProfileForm } from "@/features/profile/components/ProfileForm";
 import { ProfileSidebar } from "@/features/profile/components/ProfileSidebar";
 import { SubdomainSettings } from "@/features/profile/components/SubdomainSettings";
@@ -125,13 +127,20 @@ function ProfilePage() {
                 photoURL={authUser?.photoURL}
               />
               {usesOAuthLogin ? <OAuthSecurityCard /> : <PasswordChangeForm />}
+              <DangerZone
+                usesOAuthLogin={usesOAuthLogin}
+                userEmail={user.email}
+              />
             </Stack>
 
             <Box sx={{ minWidth: 0 }}>
-              <ProfileSidebar
-                user={user}
-                showResendVerification={!auth0Loading && !auth0User}
-              />
+              <Stack spacing={{ xs: 2, sm: 3 }}>
+                <ProfileSidebar
+                  user={user}
+                  showResendVerification={!auth0Loading && !auth0User}
+                />
+                <PreferencesCard />
+              </Stack>
             </Box>
           </Box>
         </Stack>

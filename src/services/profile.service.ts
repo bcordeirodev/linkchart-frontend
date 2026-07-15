@@ -43,6 +43,18 @@ export interface ProfileStats {
 }
 
 /**
+ * Body accepted by `DELETE /api/account`.
+ *
+ * Local accounts (with a password) must send `password`; Auth0 accounts
+ * (`password === null`) must send `confirmation` equal to the account email.
+ * Exactly one of the two is required, depending on `usesOAuthLogin`.
+ */
+export interface DeleteAccountRequest extends Record<string, unknown> {
+  password?: string;
+  confirmation?: string;
+}
+
+/**
  * REST client for `/api/me` and `/api/profile` (profile read/update).
  *
  * Wraps `BaseService` and inherits envelope unwrap + JWT injection from `ApiClient`.
@@ -95,6 +107,23 @@ export default class ProfileService extends BaseService {
   async getStats(): Promise<ProfileStats> {
     return this.get<ProfileStats>(API_ENDPOINTS.AUTH.PROFILE_STATS, {
       context: "get_profile_stats",
+    });
+  }
+
+  /**
+   * Permanently deletes the authenticated user's account and all owned data
+   * (links, clicks, subdomains).
+   *
+   * @param payload - `{password}` for local accounts, `{confirmation}` (must
+   * equal the account email) for Auth0 accounts.
+   * @throws {ApiError} with `code` `INVALID_PASSWORD` or `INVALID_CONFIRMATION`
+   * (HTTP 422) when the confirmation does not match.
+   * @endpoint `DELETE /api/account` — no response body on success (204).
+   */
+  async deleteAccount(payload: DeleteAccountRequest): Promise<void> {
+    return this.delete<void>(API_ENDPOINTS.AUTH.ACCOUNT, {
+      data: payload,
+      context: "delete_account",
     });
   }
 }

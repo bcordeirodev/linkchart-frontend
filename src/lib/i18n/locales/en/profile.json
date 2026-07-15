@@ -110,5 +110,28 @@
     "exampleSlug": "yourcompany",
     "formatHint": "3–63 characters: lowercase letters, numbers, and hyphens (not at the start or end).",
     "previewLabel": "Preview"
+  },
+  "dangerZone": {
+    "title": "Delete account",
+    "description": "This deletes your account, all your links, and your analytics. This action cannot be undone.",
+    "button": "Delete account",
+    "dialogTitle": "Are you sure?",
+    "passwordLabel": "Enter your password to confirm",
+    "emailLabel": "Enter your email to confirm",
+    "confirm": "Permanently delete my account",
+    "cancel": "Cancel",
+    "errors": {
+      "INVALID_PASSWORD": "Incorrect password.",
+      "INVALID_CONFIRMATION": "The email you entered does not match."
+    },
+    "success": "Your account has been deleted."
+  },
+  "preferences": {
+    "title": "Preferences",
+    "language": "Language",
+    "languages": {
+      "pt-BR": "Português (Brasil)",
+      "en": "English"
+    }
   }
 }
