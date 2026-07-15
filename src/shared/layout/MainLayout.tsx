@@ -7,7 +7,7 @@ import { Box, useTheme } from "@mui/material";
 import { useResponsive } from "@/lib/theme";
 import { motionTokens } from "@/lib/theme/designSystem";
 
-import { Navbar, Footer } from "./components";
+import { Navbar, Footer, SideNav } from "./components";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -16,6 +16,18 @@ interface MainLayoutProps {
   className?: string;
 }
 
+/**
+ * Casca (shell) principal da aplicação autenticada.
+ *
+ * Estrutura: `Navbar` (AppBar fixo, full-width) no topo → uma linha flex
+ * horizontal com `SideNav` (desktop `md+`) + `<main>` preenchendo o espaço
+ * restante → `Footer` (full-width) ao final. A linha do meio não tem scroll
+ * próprio (`overflow: hidden`); só `<main>` rola internamente — por isso a
+ * sidebar permanece parada ao lado do conteúdo sem precisar de
+ * `position: fixed`/`sticky`, e nunca sobrepõe o header (a linha começa
+ * abaixo dele, compensada pelo mesmo `pt` que já existia) nem o footer (a
+ * linha termina antes dele, como irmão seguinte no flex column).
+ */
 function MainLayout({
   children,
   navbar = true,
@@ -61,30 +73,43 @@ function MainLayout({
       {showNavbar ? <Navbar isMobile={isMobile} /> : null}
 
       <Box
-        component="main"
         sx={{
+          display: "flex",
+          flexDirection: "row",
           flexGrow: 1,
+          minHeight: 0,
           width: "100%",
-          height: "100%",
-          position: "relative",
-          overflow: "auto",
+          overflow: "hidden",
           // Match the fixed navbar height (Toolbar minHeight xs:64, md:72) so
-          // the top of the page isn't clipped under the AppBar on mobile.
+          // the sidebar and the top of the page aren't clipped under the AppBar.
           pt: showNavbar ? { xs: 8, md: 9 } : 0,
-          pb: 0,
-          px: 0,
-          minHeight: showNavbar ? "calc(100dvh - 64px)" : "100dvh",
-          "& > *": {
-            width: "100%",
-            minHeight: "inherit",
-            boxSizing: "border-box",
-          },
-          "& > * > *": {
-            margin: 0,
-          },
         }}
       >
-        {children}
+        {showNavbar ? <SideNav /> : null}
+
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            minWidth: 0,
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            overflow: "auto",
+            pb: 0,
+            px: 0,
+            "& > *": {
+              width: "100%",
+              minHeight: "inherit",
+              boxSizing: "border-box",
+            },
+            "& > * > *": {
+              margin: 0,
+            },
+          }}
+        >
+          {children}
+        </Box>
       </Box>
 
       {showFooter ? <Footer /> : null}
