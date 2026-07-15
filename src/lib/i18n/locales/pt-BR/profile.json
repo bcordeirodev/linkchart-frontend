@@ -110,5 +110,28 @@
     "exampleSlug": "suaempresa",
     "formatHint": "3–63 caracteres: letras minúsculas, números e hífens (não no início nem no fim).",
     "previewLabel": "Pré-visualização"
+  },
+  "dangerZone": {
+    "title": "Excluir conta",
+    "description": "Isso apaga sua conta, todos os seus links e suas estatísticas. Essa ação não pode ser desfeita.",
+    "button": "Excluir conta",
+    "dialogTitle": "Tem certeza?",
+    "passwordLabel": "Digite sua senha para confirmar",
+    "emailLabel": "Digite seu email para confirmar",
+    "confirm": "Excluir minha conta definitivamente",
+    "cancel": "Cancelar",
+    "errors": {
+      "INVALID_PASSWORD": "Senha incorreta.",
+      "INVALID_CONFIRMATION": "O email digitado não confere."
+    },
+    "success": "Sua conta foi excluída."
+  },
+  "preferences": {
+    "title": "Preferências",
+    "language": "Idioma",
+    "languages": {
+      "pt-BR": "Português (Brasil)",
+      "en": "English"
+    }
   }
 }
