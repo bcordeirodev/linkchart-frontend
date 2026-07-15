@@ -2,7 +2,7 @@
 
 import { BarChart3, HelpCircle } from "lucide-react";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { LinkMetrics } from "@/features/links/components/LinkMetrics";
@@ -10,13 +10,17 @@ import {
   LinksBrowseSection,
   LinksListSectionHeading,
   LinksQuickCreate,
+  LINKS_PAGE_SIZE,
 } from "@/features/links/components/list";
 import { useLinksTour } from "@/features/links/onboarding/useLinksTour";
 import { useDemoLinkSeeding } from "@/features/links/hooks/useDemoLinkSeeding";
-import { useLinks, useDeleteLink } from "@/features/links/hooks/useLinks";
+import {
+  useLinks,
+  useLinksSearch,
+  useDeleteLink,
+} from "@/features/links/hooks/useLinks";
 import { useNewlyCreatedLinkHighlight } from "@/features/links/hooks/useNewlyCreatedLinkHighlight";
 import { useLinksMeta } from "@/features/links/hooks/useLinksMeta";
-import { getLinkStatus } from "@/features/links/utils/linkStatus";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useResponsive } from "@/lib/theme";
 import { ResponsiveContainer } from "@/shared/ui/base";
@@ -24,11 +28,33 @@ import { LinkListSkeleton } from "@/shared/ui/feedback/skeletons";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
 
+import type { LinksMeta, LinksSearchParams } from "@/lib/query/keys";
 import type { LinkResponse } from "@/types";
+
+/** Server-supported status filter values (mirrors `LinksSearchParams["status"]` plus the "all" sentinel). */
+type StatusFilterValue = "all" | "active" | "inactive" | "expired";
+
+/** Server-supported sort values, after `trend`/`last_activity` were dropped (no backend equivalent). */
+type SortByValue = "created_at" | "clicks";
+
+/** Fallback pagination metadata shown before the first server response resolves. */
+function buildPlaceholderMeta(page: number): LinksMeta {
+  return {
+    current_page: page,
+    per_page: LINKS_PAGE_SIZE,
+    total: 0,
+    last_page: 1,
+  };
+}
 
 function LinkListPage() {
   const { isMobile } = useResponsive();
   const { t } = useTranslation("links");
+
+  // `useLinks()` (full, unfiltered list) stays: it's the only source for the
+  // account-wide overview metrics, the demo-seeding poll and the tour's
+  // readiness gate — none of which can be answered from a single paginated
+  // page of results. The browse list below is fed by `useLinksSearch` instead.
   const { links, loading } = useLinks();
   const { isSeedingDemo } = useDemoLinkSeeding(links, loading);
 
@@ -44,10 +70,12 @@ function LinkListPage() {
   const { mutateAsync: deleteLinkMutation } = useDeleteLink();
   const deleteLink = (id: string): Promise<void> =>
     deleteLinkMutation(id).then(() => undefined);
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilterValue>("all");
   const [tagFilter, setTagFilter] = useState<number | null>(null);
-  const [sortBy, setSortBy] = useState("created_at");
+  const [sortBy, setSortBy] = useState<SortByValue>("created_at");
+  const [page, setPage] = useState(1);
 
   // O link de exemplo não conta na visão geral da conta. Ele traz 1.247 cliques
   // sintéticos: somados aqui, dominavam "Total de cliques" e "Média por link" e
@@ -62,81 +90,67 @@ function LinkListPage() {
   const hasActiveFilters =
     Boolean(searchTerm) || statusFilter !== "all" || tagFilter !== null;
 
-  const filteredLinks = useMemo(() => {
-    return links.filter((link) => {
-      const matchesSearch =
-        link.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        link.original_url.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (link.slug || link.custom_slug)
-          ?.toLowerCase()
-          .includes(searchTerm.toLowerCase());
+  const searchParams: LinksSearchParams = useMemo(
+    () => ({
+      page,
+      perPage: LINKS_PAGE_SIZE,
+      q: searchTerm || undefined,
+      status: statusFilter === "all" ? undefined : statusFilter,
+      sort: sortBy,
+      order: "desc",
+    }),
+    [page, searchTerm, statusFilter, sortBy],
+  );
 
-      const status = getLinkStatus(link);
-      const matchesStatus =
-        statusFilter === "all" ||
-        (statusFilter === "active" && status === "active") ||
-        (statusFilter === "inactive" && status === "inactive") ||
-        (statusFilter === "scheduled" && status === "scheduled") ||
-        (statusFilter === "expired" && status === "expired");
+  const {
+    data: searchResult,
+    isLoading: searchLoading,
+    isFetching: searchFetching,
+  } = useLinksSearch(searchParams);
 
-      const matchesTag =
-        tagFilter === null ||
-        (link.tags?.some((tag) => tag.id === tagFilter) ?? false);
+  const pageLinks = useMemo(() => searchResult?.data ?? [], [searchResult]);
+  const paginationMeta = searchResult?.meta ?? buildPlaceholderMeta(page);
 
-      return matchesSearch && matchesStatus && matchesTag;
-    });
-  }, [links, searchTerm, statusFilter, tagFilter]);
+  // Filtro de tag: sem equivalente no contrato do servidor (YAGNI até um
+  // consumidor precisar) — segue client-side, restrito à página atual já
+  // paginada pelo backend. `paginationMeta.total` continua sendo a contagem
+  // do servidor (sem o filtro de tag aplicado); é uma imprecisão aceita
+  // enquanto tags não entram na busca server-side.
+  const visibleLinks = useMemo(
+    () =>
+      tagFilter === null
+        ? pageLinks
+        : pageLinks.filter(
+            (link) => link.tags?.some((tag) => tag.id === tagFilter) ?? false,
+          ),
+    [pageLinks, tagFilter],
+  );
 
   const linkIds = useMemo(
-    () => filteredLinks.map((l) => String(l.id)),
-    [filteredLinks],
+    () => visibleLinks.map((l) => String(l.id)),
+    [visibleLinks],
   );
-  const { meta } = useLinksMeta(linkIds);
+  const { meta: linkMeta } = useLinksMeta(linkIds);
 
-  const sortedLinks = useMemo(() => {
-    const sorted = [...filteredLinks];
-    switch (sortBy) {
-      case "clicks":
-        return sorted.sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
-      case "trend":
-        return sorted.sort(
-          (a, b) =>
-            (meta[String(b.id)]?.trend?.percent_change ?? 0) -
-            (meta[String(a.id)]?.trend?.percent_change ?? 0),
-        );
-      case "last_activity":
-        return sorted.sort((a, b) => {
-          const aLast = meta[String(a.id)]?.trend?.last_click_at;
-          const bLast = meta[String(b.id)]?.trend?.last_click_at;
-
-          if (!aLast && !bLast) {
-            return 0;
-          }
-
-          if (!aLast) {
-            return 1;
-          }
-
-          if (!bLast) {
-            return -1;
-          }
-
-          return new Date(bLast).getTime() - new Date(aLast).getTime();
-        });
-      default:
-        return sorted.sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        );
-    }
-  }, [filteredLinks, sortBy, meta]);
-
-  const visibleLinkIds = useMemo(
-    () => sortedLinks.map((l) => String(l.id)),
-    [sortedLinks],
-  );
   const { highlightedLinkId, highlightLink } =
-    useNewlyCreatedLinkHighlight(visibleLinkIds);
+    useNewlyCreatedLinkHighlight(linkIds);
+
+  // Volta para a página 1 sempre que busca/filtro/ordenação mudam (o resultado
+  // é outro conjunto) ou quando um link recém-criado precisa ser revelado —
+  // `handleLinkCreated` já força `sortBy` para "created_at", mas se o usuário já
+  // estava nessa ordenação (ordenação inalterada) só a mudança de
+  // `highlightedLinkId` dispara o reset.
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, statusFilter, tagFilter, sortBy, highlightedLinkId]);
+
+  // Sem isto, apagar o último link de uma página final deixaria `page` maior
+  // que `meta.last_page` e a lista renderizaria vazia até uma ação manual.
+  useEffect(() => {
+    if (searchResult && page > searchResult.meta.last_page) {
+      setPage(Math.max(1, searchResult.meta.last_page));
+    }
+  }, [searchResult, page]);
 
   const handleLinkCreated = useCallback(
     (link: LinkResponse) => {
@@ -227,14 +241,20 @@ function LinkListPage() {
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
               statusFilter={statusFilter}
-              onStatusChange={setStatusFilter}
+              onStatusChange={(value) =>
+                setStatusFilter(value as StatusFilterValue)
+              }
               sortBy={sortBy}
-              onSortChange={setSortBy}
+              onSortChange={(value) => setSortBy(value as SortByValue)}
               tagFilter={tagFilter}
               onTagFilterChange={setTagFilter}
-              sortedLinks={sortedLinks}
-              meta={meta}
-              loading={loading}
+              links={visibleLinks}
+              paginationMeta={paginationMeta}
+              page={page}
+              onPageChange={setPage}
+              linkMeta={linkMeta}
+              loading={searchLoading}
+              isFetching={searchFetching}
               isMobile={isMobile}
               hasActiveFilters={hasActiveFilters}
               onClearFilters={handleClearFilters}

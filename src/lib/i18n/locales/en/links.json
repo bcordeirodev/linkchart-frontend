@@ -103,9 +103,7 @@
     "sortBy": "Sort by",
     "sortNewest": "Newest first",
     "sortMostClicks": "Most clicks",
-    "clearFilters": "Clear filters",
-    "mostTrend": "Most trending",
-    "lastActivity": "Last activity"
+    "clearFilters": "Clear filters"
   },
   "actions": {
     "copyLink": "Copy link",
@@ -236,6 +234,32 @@
       "startsBeforeExpires": "Start date must be before expiry date",
       "tagsMax": "A link can have at most 5 tags."
     }
+  },
+  "bulk": {
+    "toolbarLabel": "Bulk actions",
+    "select": "Select",
+    "cancel": "Cancel",
+    "selectAllVisible": "Select all on this page",
+    "selectLink": "Select {{title}}",
+    "selectedCount_one": "{{count}} selected",
+    "selectedCount_other": "{{count}} selected",
+    "maxReached": "50-per-action limit reached",
+    "maxReachedTooltip": "Limit of 50 links per bulk action",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "delete": "Delete",
+    "confirmTitle_one": "Delete {{count}} link?",
+    "confirmTitle_other": "Delete {{count}} links?",
+    "confirmBody_one": "This cannot be undone. The short link will stop working and its click data will be lost.",
+    "confirmBody_other": "This cannot be undone. The short links will stop working and their click data will be lost.",
+    "successActivate_one": "{{count}} link activated",
+    "successActivate_other": "{{count}} links activated",
+    "successDeactivate_one": "{{count}} link deactivated",
+    "successDeactivate_other": "{{count}} links deactivated",
+    "successDelete_one": "{{count}} link deleted",
+    "successDelete_other": "{{count}} links deleted",
+    "partial": "Some items could not be changed.",
+    "error": "Failed to run the bulk action. Please try again."
   },
   "tags": {
     "overflow": "+{{count}}",
