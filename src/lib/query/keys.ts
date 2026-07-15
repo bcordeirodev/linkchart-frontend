@@ -31,10 +31,44 @@ export interface AnalyticsQueryFilters {
   continent?: string | null;
 }
 
+/**
+ * Server-side search/filter/sort/pagination params for `GET /api/links`.
+ *
+ * Every field the backend honours MUST appear here — the same reasoning as
+ * {@link AnalyticsQueryFilters}: a filter missing from this shape would make
+ * TanStack Query treat two different requests as the same cache entry.
+ */
+export interface LinksSearchParams {
+  page: number;
+  perPage: number;
+  /** Free-text search over title, original URL and slug (case-insensitive). */
+  q?: string;
+  /** Omit (or leave `undefined`) for "all statuses". */
+  status?: "active" | "inactive" | "expired";
+  sort?: "created_at" | "clicks" | "title";
+  order?: "asc" | "desc";
+}
+
+/** Pagination metadata returned alongside `data` by the paginated links search. */
+export interface LinksMeta {
+  current_page: number;
+  per_page: number;
+  total: number;
+  last_page: number;
+}
+
 export const queryKeys = {
   links: {
     all: () => ["links"] as const,
     list: () => ["links", "list"] as const,
+    /**
+     * Server-side paginated/filtered links search.
+     *
+     * Keeps the `["links", "list", ...]` prefix so `queryClient.invalidateQueries({
+     * queryKey: queryKeys.links.all() })` (used by `useCreateLink`/`useUpdateLink`/
+     * `useDeleteLink`) still matches every cached page/filter combination.
+     */
+    search: (params: LinksSearchParams) => ["links", "list", params] as const,
     detail: (id: string) => ["links", "detail", id] as const,
     meta: (ids: string[]) => ["links", "meta", [...ids].sort()] as const,
   },

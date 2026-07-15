@@ -7,6 +7,7 @@ import type {
   LinkClicksListParams,
   LinkClicksListResponse,
 } from "@/features/links/types/click";
+import type { LinksMeta, LinksSearchParams } from "@/lib/query/keys";
 import type {
   LinkCreateRequest,
   LinkResponse,
@@ -20,6 +21,17 @@ interface LinkCreateRequestExtended
 interface LinkUpdateRequestExtended
   extends LinkUpdateRequest,
     Record<string, unknown> {}
+
+/**
+ * Envelope returned by the server-side paginated/filtered links search.
+ *
+ * @remarks Mirrors `LinkClicksListResponse` — `data` + `meta`, no extra
+ * `links.{first,last,...}` navigation block (unlike the legacy `LinksListResponse`).
+ */
+export interface LinksSearchResponse {
+  data: LinkResponse[];
+  meta: LinksMeta;
+}
 
 /**
  * REST client for `/api/links` (authenticated CRUD) and the per-link
@@ -75,6 +87,34 @@ export default class LinkService extends BaseService {
   async all(): Promise<LinkResponse[]> {
     return this.get<LinkResponse[]>(API_CONFIG.ENDPOINTS.LINKS, {
       context: "get_all_links",
+    });
+  }
+
+  /**
+   * Server-side paginated/filtered/sorted search over the user's links.
+   *
+   * @param params - page/perPage plus optional `q`, `status`, `sort`, `order`.
+   * @returns the raw `{data, meta}` envelope (pagination metadata preserved).
+   * @endpoint `GET /api/links?page=…&per_page=…&q=…&status=…&sort=…&order=…`
+   *
+   * @remarks
+   * Uses `api.get` directly with `rawEnvelope: true` — same pattern as
+   * `getClicksList` — because the caller needs `meta.{current_page,total,last_page}`
+   * alongside `data`, which the envelope-unwrapping `BaseService.get` would discard.
+   * Sending `?page=` opts into the paginated response shape; the plain `all()`
+   * call above (no query params) keeps receiving the legacy full-array response.
+   */
+  async search(params: LinksSearchParams): Promise<LinksSearchResponse> {
+    return api.get<LinksSearchResponse>(API_CONFIG.ENDPOINTS.LINKS, {
+      rawEnvelope: true,
+      query: {
+        page: params.page,
+        per_page: params.perPage,
+        q: params.q,
+        status: params.status,
+        sort: params.sort,
+        order: params.order,
+      },
     });
   }
 
@@ -160,6 +200,7 @@ const linkService = new LinkService();
 export const save = linkService.save.bind(linkService);
 export const update = linkService.update.bind(linkService);
 export const all = linkService.all.bind(linkService);
+export const search = linkService.search.bind(linkService);
 export const findOne = linkService.findOne.bind(linkService);
 export const remove = linkService.remove.bind(linkService);
 export const getAnalytics = linkService.getAnalytics.bind(linkService);

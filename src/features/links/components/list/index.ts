@@ -8,7 +8,7 @@ export { LinkPreviewThumb } from "./LinkPreviewThumb";
 export { LinkSparkline } from "./LinkSparkline";
 export { LinkTrendBadge } from "./LinkTrendBadge";
 export { LinksEmptyState } from "./LinksEmptyState";
-export { LinksBrowseSection } from "./LinksBrowseSection";
+export { LinksBrowseSection, LINKS_PAGE_SIZE } from "./LinksBrowseSection";
 export { LinksFilters } from "./LinksFilters";
 export { LinksListSectionHeading } from "./LinksListSectionHeading";
 export { LinksMobileCards } from "./LinksMobileCards";

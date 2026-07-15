@@ -102,9 +102,7 @@
     "sortBy": "Sort by",
     "sortNewest": "Newest first",
     "sortMostClicks": "Most clicks",
-    "clearFilters": "Clear filters",
-    "mostTrend": "Most trending",
-    "lastActivity": "Last activity"
+    "clearFilters": "Clear filters"
   },
   "actions": {
     "copyLink": "Copy link",
