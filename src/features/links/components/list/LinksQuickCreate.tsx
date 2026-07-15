@@ -127,16 +127,25 @@ const slugAcceptAdornmentSx = {
  * fields. Uma linha só de controles (placeholders carregam o significado;
  * labels viram aria-label) + linha de helper que só existe quando há mensagem.
  */
-const formGridSx = {
-  display: "grid",
-  gridTemplateColumns: {
-    xs: "1fr",
-    md: "minmax(0, 2fr) minmax(0, 1fr) 132px",
-  },
-  columnGap: 2,
-  rowGap: { xs: 1.25, md: 0.75 },
-  alignItems: "start",
-} as const;
+/**
+ * Grade dos controles em uma linha. Com subdomínio, o seletor de domínio entra
+ * como célula própria entre a URL e o nome (formam juntos `domínio/nome`), em
+ * vez de flutuar numa linha separada acima — mantém tudo alinhado numa fileira
+ * só no desktop. No mobile as células empilham na ordem do DOM.
+ */
+const getFormGridSx = (hasSubdomains: boolean) =>
+  ({
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "1fr",
+      md: hasSubdomains
+        ? "minmax(0, 1.7fr) 168px minmax(0, 1fr) 132px"
+        : "minmax(0, 2fr) minmax(0, 1fr) 132px",
+    },
+    columnGap: 2,
+    rowGap: { xs: 1.25, md: 0.75 },
+    alignItems: "start",
+  }) as const;
 
 const mdCell = (row: number, col: number) => ({
   gridRow: { md: row },
@@ -456,34 +465,7 @@ export function LinksQuickCreate({
         />
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-          {hasSubdomains ? (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                mb: { xs: 1.25, md: 1 },
-              }}
-            >
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ flexShrink: 0 }}
-              >
-                {t("list.quickCreate.subdomainLabel")}
-              </Typography>
-              <Box sx={{ maxWidth: 220 }}>
-                <SubdomainSelect
-                  value={subdomainId}
-                  onChange={setSubdomainId}
-                  size="small"
-                  aria-label={t("list.quickCreate.subdomainLabel")}
-                />
-              </Box>
-            </Box>
-          ) : null}
-
-          <Box sx={formGridSx}>
+          <Box sx={getFormGridSx(hasSubdomains)}>
             <TextField
               {...register("original_url")}
               placeholder={t("list.quickCreate.urlPlaceholder")}
@@ -517,6 +499,22 @@ export function LinksQuickCreate({
               }}
             />
 
+            {hasSubdomains ? (
+              <Box
+                sx={{
+                  ...mdCell(1, 2),
+                  order: { xs: 2, md: "unset" },
+                }}
+              >
+                <SubdomainSelect
+                  value={subdomainId}
+                  onChange={setSubdomainId}
+                  size="small"
+                  aria-label={t("list.quickCreate.subdomainLabel")}
+                />
+              </Box>
+            ) : null}
+
             <TextField
               {...register("custom_slug")}
               placeholder={
@@ -541,8 +539,8 @@ export function LinksQuickCreate({
                   slugIsChecking ||
                   slugIsAvailable) &&
                   slugAcceptAdornmentSx,
-                mdCell(1, 2),
-                { order: { xs: 2, md: "unset" } },
+                mdCell(1, hasSubdomains ? 3 : 2),
+                { order: { xs: hasSubdomains ? 3 : 2, md: "unset" } },
               ]}
               slotProps={{
                 htmlInput: {
@@ -670,8 +668,8 @@ export function LinksQuickCreate({
               }
               sx={[
                 submitButtonSx,
-                mdCell(1, 3),
-                { order: { xs: 3, md: "unset" } },
+                mdCell(1, hasSubdomains ? 4 : 3),
+                { order: { xs: hasSubdomains ? 4 : 3, md: "unset" } },
               ]}
             >
               {succeeded
@@ -704,7 +702,7 @@ export function LinksQuickCreate({
             {slugHelperText ? (
               <Box
                 sx={{
-                  ...mdCell(2, 2),
+                  ...mdCell(2, hasSubdomains ? 3 : 2),
                   minWidth: 0,
                   display: { xs: "none", md: "block" },
                 }}

@@ -96,6 +96,10 @@ export function Navbar({
         sx={{
           backgroundColor: isDark ? darkNeutral.surface : lightNeutral.surface,
           backgroundImage: "none",
+          // Header é uma faixa reta no topo da coluna direita: sem cantos
+          // arredondados (o default de Paper/AppBar arredondava e "quebrava"
+          // o encontro com a sidebar e a borda inferior).
+          borderRadius: 0,
           borderBottom: `1px solid ${theme.palette.divider}`,
           boxShadow: "none",
           color: theme.palette.text.primary,
@@ -107,7 +111,10 @@ export function Navbar({
             px: { xs: 2, sm: 3, md: 4 },
             py: 1,
             minHeight: { xs: 64, md: 72 },
-            justifyContent: "space-between",
+            // Mobile: logo à esquerda, controles à direita (space-between).
+            // Desktop: sem logo aqui (mora na sidebar) — os controles (toggle,
+            // idioma, avatar) ficam à ESQUERDA, junto da sidebar.
+            justifyContent: { xs: "space-between", md: "flex-start" },
           }}
         >
           {/* Logo Section — só no mobile: no desktop (md+) a marca mora na

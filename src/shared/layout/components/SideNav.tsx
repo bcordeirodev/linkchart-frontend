@@ -102,12 +102,18 @@ function getSideNavRowSx(theme: Theme, tone: SideNavRowTone, active: boolean) {
     backgroundColor: active
       ? alpha(theme.palette.primary.main, isDark ? 0.16 : 0.1)
       : "transparent",
-    color: active ? theme.palette.primary.main : theme.palette.text.secondary,
+    // Itens inativos partem de um tom claro (mais legível que text.secondary)
+    // e acendem para o text.primary cheio no hover; o ativo mantém a cor de
+    // destaque nos dois estados.
+    color: active
+      ? theme.palette.primary.main
+      : alpha(theme.palette.text.primary, isDark ? 0.82 : 0.78),
     fontWeight: active ? 600 : 500,
     "&:hover": {
       backgroundColor: active
         ? alpha(theme.palette.primary.main, isDark ? 0.22 : 0.16)
         : theme.palette.action.hover,
+      color: active ? theme.palette.primary.main : theme.palette.text.primary,
     },
   };
 }
