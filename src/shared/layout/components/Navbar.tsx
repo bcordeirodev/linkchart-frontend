@@ -8,7 +8,6 @@ import {
   Toolbar,
   Typography,
   IconButton,
-  Button,
   Menu,
   MenuItem,
   Avatar,
@@ -23,7 +22,7 @@ import {
   ListItemButton,
 } from "@mui/material";
 import { useState } from "react";
-import { useNavigate, usePathname } from "@/shared/hooks";
+import { useNavigate } from "@/shared/hooks";
 import { Menu as MenuIcon } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
@@ -48,7 +47,6 @@ export function Navbar({
 }: NavbarProps) {
   const theme = useTheme();
   const navigate = useNavigate();
-  const pathname = usePathname();
   const { user, logout } = useAuth();
 
   const { t } = useTranslation("common");
@@ -143,58 +141,6 @@ export function Navbar({
               </Typography>
             </Box>
           </Box>
-
-          {/* Navegação principal — desktop */}
-          {user ? (
-            <Box
-              sx={{
-                display: { xs: "none", md: "flex" },
-                alignItems: "center",
-                gap: 0.5,
-                ml: 3,
-                flexGrow: 1,
-              }}
-            >
-              {navItems.map((item) => {
-                const isActive = pathname?.startsWith(item.route) ?? false;
-                return (
-                  <Button
-                    key={item.key}
-                    onClick={() => navigate(item.route)}
-                    startIcon={<AppIcon intent={item.icon} size={18} />}
-                    aria-current={isActive ? "page" : undefined}
-                    sx={{
-                      color: isActive
-                        ? theme.palette.primary.main
-                        : theme.palette.text.secondary,
-                      fontWeight: isActive ? 600 : 500,
-                      fontSize: "0.875rem",
-                      textTransform: "none",
-                      px: 1.5,
-                      py: 1,
-                      borderRadius: `${radiusTokens.sm}px ${radiusTokens.sm}px 0 0`,
-                      borderBottom: "2px solid",
-                      borderBottomColor: isActive
-                        ? theme.palette.primary.main
-                        : "transparent",
-                      transition: ["color", "background-color", "border-color"]
-                        .map(
-                          (prop) =>
-                            `${prop} ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-                        )
-                        .join(", "),
-                      "&:hover": {
-                        backgroundColor: theme.palette.action.hover,
-                        color: theme.palette.text.primary,
-                      },
-                    }}
-                  >
-                    {t(`nav.${item.key}`)}
-                  </Button>
-                );
-              })}
-            </Box>
-          ) : null}
 
           {/* Right Section */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
