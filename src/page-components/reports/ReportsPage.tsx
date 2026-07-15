@@ -21,11 +21,15 @@ import { useTranslation } from "react-i18next";
 
 import { BreakdownChart } from "@/features/reports/components/BreakdownChart";
 import { ClicksTimeseriesChart } from "@/features/reports/components/ClicksTimeseriesChart";
+import { InsightsPanel } from "@/features/reports/components/InsightsPanel";
+import { LinkPerformanceTable } from "@/features/reports/components/LinkPerformanceTable";
 import { ReportsDateFilter } from "@/features/reports/components/ReportsDateFilter";
 import { ReportsKpiHeader } from "@/features/reports/components/ReportsKpiHeader";
 import { TopLinksTable } from "@/features/reports/components/TopLinksTable";
 import {
   useBreakdown,
+  useLinkPerformance,
+  useReportsInsights,
   useReportsSummary,
   useReportsTimeseries,
   useTopLinks,
@@ -130,9 +134,11 @@ export default function ReportsPage() {
   );
 
   const summaryQuery = useReportsSummary(filters);
+  const insightsQuery = useReportsInsights(filters);
   const timeseriesQuery = useReportsTimeseries(filters);
   const topLinksQuery = useTopLinks(filters, 10);
   const breakdownQuery = useBreakdown(dimension, filters);
+  const linkPerformanceQuery = useLinkPerformance(filters, 10);
 
   /**
    * Downloads the CSV export for the active filters, surfacing a toast on
@@ -181,6 +187,35 @@ export default function ReportsPage() {
           />
 
           <ReportsDateFilter period={period} onPeriodChange={setPeriod} />
+
+          {insightsQuery.isError ? (
+            <Alert severity="error">
+              {toErrorMessage(insightsQuery.error)}
+            </Alert>
+          ) : insightsQuery.isLoading ? (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "repeat(2, 1fr)",
+                  lg: "repeat(4, 1fr)",
+                },
+                gap: 1.5,
+              }}
+            >
+              {[0, 1, 2, 3].map((i) => (
+                <Skeleton
+                  key={i}
+                  variant="rounded"
+                  height={92}
+                  sx={{ borderRadius: `${radiusTokens.md}px` }}
+                />
+              ))}
+            </Box>
+          ) : (
+            <InsightsPanel data={insightsQuery.data ?? []} />
+          )}
 
           {summaryQuery.isError ? (
             <Alert severity="error">{toErrorMessage(summaryQuery.error)}</Alert>
@@ -270,6 +305,25 @@ export default function ReportsPage() {
               />
             </AnalyticsStateManager>
           </Box>
+
+          <AnalyticsStateManager
+            loading={linkPerformanceQuery.isLoading}
+            error={toErrorMessage(linkPerformanceQuery.error)}
+            hasData={(linkPerformanceQuery.data?.length ?? 0) > 0}
+            emptyMessage={t("empty")}
+            skeleton={
+              <Skeleton
+                variant="rounded"
+                height={360}
+                sx={{ borderRadius: `${radiusTokens.md}px` }}
+              />
+            }
+          >
+            <LinkPerformanceTable
+              data={linkPerformanceQuery.data ?? []}
+              isMobile={isMobile}
+            />
+          </AnalyticsStateManager>
         </Stack>
       </ResponsiveContainer>
     </AuthGuardRedirect>

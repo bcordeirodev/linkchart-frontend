@@ -13,8 +13,10 @@ import { reportsService } from "@/services/reports.service";
 
 import type {
   BreakdownRow,
+  LinkPerformanceRow,
   ReportsBreakdownDimension,
   ReportsFilters,
+  ReportsInsight,
   ReportsSummary,
   TimeseriesPoint,
   TopLinkRow,
@@ -102,6 +104,48 @@ export function useBreakdown(
   return useQuery({
     queryKey: queryKeys.reports.breakdown(dimension, filters),
     queryFn: () => reportsService.getBreakdown(dimension, filters),
+    staleTime: 60_000,
+  });
+}
+
+/**
+ * Portfolio leaderboard — the user's own links ranked by clicks in the
+ * selected period, each with the variation vs. the previous period of equal
+ * length and its share of total clicks — powers `LinkPerformanceTable`.
+ *
+ * @param filters - shared date range + exclude-bots filter.
+ * @param limit - max rows to return (default `10`; backend caps at 50).
+ * @returns a TanStack Query result wrapping an array of {@link LinkPerformanceRow}.
+ *
+ * @remarks Endpoint: `GET /api/reports/link-performance?limit=`.
+ */
+export function useLinkPerformance(
+  filters: ReportsFilters,
+  limit = 10,
+): UseQueryResult<LinkPerformanceRow[]> {
+  return useQuery({
+    queryKey: queryKeys.reports.linkPerformance(filters, limit),
+    queryFn: () => reportsService.getLinkPerformance(filters, limit),
+    staleTime: 60_000,
+  });
+}
+
+/**
+ * Portfolio-level (account-wide) computed insights — best performing link,
+ * fastest growing link, top-3 traffic concentration and overall account
+ * growth vs. the previous period — powers `InsightsPanel`.
+ *
+ * @param filters - shared date range + exclude-bots filter.
+ * @returns a TanStack Query result wrapping an array of {@link ReportsInsight}.
+ *
+ * @remarks Endpoint: `GET /api/reports/insights`.
+ */
+export function useReportsInsights(
+  filters: ReportsFilters,
+): UseQueryResult<ReportsInsight[]> {
+  return useQuery({
+    queryKey: queryKeys.reports.insights(filters),
+    queryFn: () => reportsService.getInsights(filters),
     staleTime: 60_000,
   });
 }
