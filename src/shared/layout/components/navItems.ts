@@ -1,6 +1,13 @@
 import type { IconIntent } from "@/shared/ui/icons";
 
 /**
+ * Chaves i18n válidas em `common:nav.<key>` para os itens de navegação
+ * principal. Mantida como união literal (em vez de `string`) para que
+ * `` t(`nav.${key}`) `` continue type-checked pelo i18next tipado.
+ */
+export type NavItemKey = "myLinks" | "reports" | "subdomains";
+
+/**
  * Item de navegação principal, renderizado tanto no AppBar (desktop) quanto
  * no Drawer (mobile) do `Navbar`.
  *
@@ -8,7 +15,7 @@ import type { IconIntent } from "@/shared/ui/icons";
  * (descrição, usada nas páginas scaffold). `icon` é o intent do `AppIcon`.
  */
 export interface NavItem {
-  key: string;
+  key: NavItemKey;
   route: string;
   icon: IconIntent;
   /** Item só aparece se a feature flag correspondente estiver ativa. */
