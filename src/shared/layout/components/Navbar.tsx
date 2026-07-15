@@ -1,6 +1,14 @@
 "use client";
 /**
  * Componente de navegação principal — POV sóbrio (SP2)
+ *
+ * `position: "static"`: o header vive na coluna à direita da sidebar dentro
+ * do `MainLayout` (linha flex `[SideNav | coluna direita]`), não mais
+ * flutuando com `position: fixed` sobre a página inteira — por isso ocupa
+ * espaço normal no fluxo da coluna, sem precisar de padding-top compensando
+ * a altura do Toolbar em nenhum outro lugar. No desktop (`md+`) o logo some
+ * daqui (mora na sidebar) e um botão de hambúrguer alterna o colapso da
+ * sidebar; no mobile nada muda — logo + hambúrguer abrindo o Drawer.
  */
 
 import {
@@ -40,10 +48,20 @@ import { getVisibleNavItems } from "./navItems";
 interface NavbarProps {
   onMobileMenuToggle?: () => void;
   isMobile?: boolean;
+  /** Estado de colapso da sidebar desktop, controlado pelo `MainLayout`. */
+  collapsed: boolean;
+  /**
+   * Alterna o colapso da sidebar desktop. Acionado pelo ícone de hambúrguer
+   * renderizado aqui (visível só em `md+`); a própria sidebar não tem mais
+   * botão de colapso interno.
+   */
+  onToggleSidebar: () => void;
 }
 
 export function Navbar({
   onMobileMenuToggle: _onMobileMenuToggle,
+  collapsed,
+  onToggleSidebar,
 }: NavbarProps) {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -73,7 +91,7 @@ export function Navbar({
   return (
     <>
       <AppBar
-        position="fixed"
+        position="static"
         elevation={0}
         sx={{
           backgroundColor: isDark ? darkNeutral.surface : lightNeutral.surface,
@@ -92,14 +110,15 @@ export function Navbar({
             justifyContent: "space-between",
           }}
         >
-          {/* Logo Section */}
+          {/* Logo Section — só no mobile: no desktop (md+) a marca mora na
+              linha de topo da sidebar, à esquerda do header. */}
           <Box
             component="button"
             type="button"
             onClick={() => navigate("/links")}
             aria-label={t("nav.logoAriaLabel")}
             sx={{
-              display: "flex",
+              display: { xs: "flex", md: "none" },
               alignItems: "center",
               cursor: "pointer",
               gap: 1.5,
@@ -146,6 +165,37 @@ export function Navbar({
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {user ? (
               <>
+                {/* Toggle da sidebar — só desktop (md+); no mobile a
+                    navegação é o Drawer aberto pelo hambúrguer abaixo. */}
+                <Tooltip
+                  title={
+                    collapsed
+                      ? t("nav.expandSidebar")
+                      : t("nav.collapseSidebar")
+                  }
+                  arrow
+                >
+                  <IconButton
+                    aria-label={
+                      collapsed
+                        ? t("nav.expandSidebar")
+                        : t("nav.collapseSidebar")
+                    }
+                    onClick={onToggleSidebar}
+                    sx={{
+                      display: { xs: "none", md: "inline-flex" },
+                      width: 44,
+                      height: 44,
+                      borderRadius: `${radiusTokens.md}px`,
+                      transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+                      "&:hover": {
+                        backgroundColor: theme.palette.action.hover,
+                      },
+                    }}
+                  >
+                    <MenuIcon size={20} strokeWidth={1.5} />
+                  </IconButton>
+                </Tooltip>
                 <LanguageSelector />
                 {isMobile ? (
                   // On phones the Drawer is the single nav surface (identity +
