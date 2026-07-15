@@ -36,6 +36,7 @@
       "urlLabel": "Link que você quer encurtar",
       "slugLabel": "Nome personalizado (opcional)",
       "subdomainLabel": "Endereço",
+      "shortLinkLabel": "Link curto",
       "urlPlaceholder": "https://exemplo.com/pagina",
       "slugPlaceholder": "nome-do-link",
       "previewLabel": "Seu link curto ficará assim:",
