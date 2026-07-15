@@ -35,8 +35,11 @@ import {
   buildUrlSafetyLabels,
   getUrlSafetyHelperNode,
 } from "@/features/links/components/forms/UrlSafetyIndicator";
+import { SubdomainSelect } from "@/features/subdomains/components/SubdomainSelect";
+import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainSelection";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { darkNeutral } from "@/lib/theme/colors";
+import { getShortUrlPrefixForSubdomain } from "@/lib/utils/shortUrl";
 import { HelpHint } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
@@ -210,6 +213,23 @@ export function LinksQuickCreate({
   const navigate = useNavigate();
   const { mutateAsync, isPending } = useCreateLink();
   const [succeeded, setSucceeded] = useState(false);
+  const {
+    subdomains,
+    subdomainId,
+    setSubdomainId,
+    selected: selectedSubdomain,
+  } = useSubdomainSelection();
+  // Only shown/considered once the flag is on AND the account actually holds
+  // a subdomain — otherwise quick-create stays exactly as it was: no domain
+  // prefix, no extra control, one less thing to look at for the common case.
+  // Mirrors `SubdomainSelect`'s own hide condition so the label next to it
+  // never renders above an empty control.
+  const hasSubdomains =
+    process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" &&
+    subdomains.length > 0;
+  const shortUrlPrefix = hasSubdomains
+    ? getShortUrlPrefixForSubdomain(selectedSubdomain)
+    : null;
 
   const schema = useMemo(
     () =>
@@ -316,6 +336,10 @@ export function LinksQuickCreate({
         const created = await mutateAsync({
           original_url: data.original_url,
           custom_slug: data.custom_slug || undefined,
+          // `useSubdomainSelection()` defaults this to the account's oldest
+          // active subdomain (or `null` with none held) — same default the
+          // backend applies when the field is omitted.
+          subdomain_id: subdomainId,
         });
         onLinkCreated?.(created);
         setSucceeded(true);
@@ -326,7 +350,7 @@ export function LinksQuickCreate({
         // rejection so the queued (void) call can't become an unhandled one.
       }
     },
-    [mutateAsync, onLinkCreated, reset],
+    [mutateAsync, onLinkCreated, reset, subdomainId],
   );
 
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
@@ -428,6 +452,33 @@ export function LinksQuickCreate({
         />
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+          {hasSubdomains ? (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                mb: { xs: 1.25, md: 1 },
+              }}
+            >
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ flexShrink: 0 }}
+              >
+                {t("list.quickCreate.subdomainLabel")}
+              </Typography>
+              <Box sx={{ maxWidth: 220 }}>
+                <SubdomainSelect
+                  value={subdomainId}
+                  onChange={setSubdomainId}
+                  size="small"
+                  aria-label={t("list.quickCreate.subdomainLabel")}
+                />
+              </Box>
+            </Box>
+          ) : null}
+
           <Box sx={formGridSx}>
             <TextField
               {...register("original_url")}
@@ -506,6 +557,27 @@ export function LinksQuickCreate({
                         }
                       : undefined),
                   },
+                  // Only rendered once the account holds a subdomain — it's the
+                  // live preview of the resulting short URL, so it must track
+                  // `subdomainId` (see `shortUrlPrefix` above) instead of always
+                  // assuming the default domain.
+                  startAdornment: shortUrlPrefix ? (
+                    <InputAdornment position="start">
+                      <Typography
+                        variant="body2"
+                        noWrap
+                        sx={{
+                          fontFamily: "monospace",
+                          color: "text.secondary",
+                          pr: 0.5,
+                          maxWidth: 120,
+                          fontSize: "0.75rem",
+                        }}
+                      >
+                        {shortUrlPrefix}
+                      </Typography>
+                    </InputAdornment>
+                  ) : undefined,
                   // One slot, four states — the indicator swaps in place so the
                   // field never reflows. Suggestion path: resolving (spinner) →
                   // ready («Usar»). Typed-slug path: checking the DB (spinner) →

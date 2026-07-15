@@ -17,8 +17,12 @@ import { Controller, useWatch } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers";
 
 import useThemeMediaQuery from "@/shared/hooks/useThemeMediaQuery";
-import { useSubdomain } from "@/features/profile/hooks/useSubdomain";
-import { getShortUrlPrefixForSubdomain } from "@/lib/utils/shortUrl";
+import { SubdomainSelect } from "@/features/subdomains/components/SubdomainSelect";
+import { useSubdomains } from "@/features/subdomains/hooks/useSubdomains";
+import {
+  getShortUrlPrefixForSubdomain,
+  getShortUrlPrefixFromShortUrl,
+} from "@/lib/utils/shortUrl";
 
 import { useUrlSafetyCheck } from "../../hooks/useUrlSafetyCheck";
 
@@ -61,6 +65,20 @@ interface LinkFormFieldsProps {
    * through Safe Browsing before a link is created or edited).
    */
   onSafetyStatusChange?: (status: UrlSafetyStatus) => void;
+  /**
+   * Create only: id of the subdomain selected for the link about to be
+   * created (`null` = default domain). Drives both the `SubdomainSelect`
+   * control and the slug field's prefix preview. Ignored in edit mode — the
+   * domain is immutable once a link exists.
+   */
+  subdomainId?: number | null;
+  /** Create only: called when the user changes the subdomain selection. */
+  onSubdomainIdChange?: (id: number | null) => void;
+  /**
+   * Edit only: the link's own recorded `short_url`, used to display (as
+   * read-only text) the domain it was created with. Ignored in create mode.
+   */
+  existingShortUrl?: string;
 }
 
 /**
@@ -77,19 +95,37 @@ interface LinkFormFieldsProps {
 export function LinkFormFields({
   control,
   errors,
-  isEdit: _isEdit = false,
+  isEdit = false,
   slugSuggestion,
   isLoadingMeta = false,
   titleSuggestion = null,
   isResolvingSlugSuggestion = false,
   onSafetyStatusChange,
+  subdomainId = null,
+  onSubdomainIdChange,
+  existingShortUrl,
 }: LinkFormFieldsProps) {
   const { t } = useTranslation("links");
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("sm"));
-  const { subdomain } = useSubdomain();
-  const shortUrlPrefix = getShortUrlPrefixForSubdomain(
-    subdomain?.status === "active" ? subdomain : null,
-  );
+
+  // Create: the prefix follows whichever subdomain is currently selected in
+  // `SubdomainSelect`. Edit: the domain is immutable, so it's derived from
+  // the link's own recorded `short_url` instead of any live selection.
+  const { subdomains, isLoading: isLoadingSubdomains } = useSubdomains();
+  const selectedSubdomain = !isEdit
+    ? subdomains.find((item) => item.id === subdomainId) ?? null
+    : null;
+  const shortUrlPrefix = isEdit
+    ? existingShortUrl
+      ? getShortUrlPrefixFromShortUrl(existingShortUrl)
+      : getShortUrlPrefixForSubdomain(null)
+    : getShortUrlPrefixForSubdomain(selectedSubdomain);
+  // Mirrors `SubdomainSelect`'s own hide condition so the external
+  // `<FormLabel>` never renders above an empty control.
+  const showSubdomainSelector =
+    !isEdit &&
+    process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" &&
+    (isLoadingSubdomains || subdomains.length > 0);
 
   const urlValue = useWatch({ control, name: "original_url" });
   const slugValue = useWatch({ control, name: "custom_slug" });
@@ -165,6 +201,22 @@ export function LinkFormFields({
               )}
             />
           </Box>
+
+          {showSubdomainSelector ? (
+            <Box>
+              <FormLabel
+                htmlFor="link-form-subdomain"
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("form.subdomainSelect.label")}
+              </FormLabel>
+              <SubdomainSelect
+                id="link-form-subdomain"
+                value={subdomainId}
+                onChange={(id) => onSubdomainIdChange?.(id)}
+              />
+            </Box>
+          ) : null}
 
           <Box>
             <FormLabel

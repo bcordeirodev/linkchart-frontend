@@ -117,7 +117,7 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
               size="small"
               aria-label={t("list.copy")}
               onClick={handleCopy}
-              sx={{ width: 36, height: 36 }}
+              sx={{ width: { xs: 44, sm: 36 }, height: { xs: 44, sm: 36 } }}
             >
               <ContentCopyIcon fontSize="small" />
             </IconButton>
@@ -130,7 +130,7 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t("list.openInNew")}
-              sx={{ width: 36, height: 36 }}
+              sx={{ width: { xs: 44, sm: 36 }, height: { xs: 44, sm: 36 } }}
             >
               <OpenInNewIcon fontSize="small" />
             </IconButton>
@@ -142,7 +142,7 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
             onClick={() => onRelease(item)}
             disabled={isReleasing}
             sx={{
-              minHeight: 36,
+              minHeight: { xs: 44, sm: 36 },
               borderColor: "divider",
               color: "text.secondary",
               whiteSpace: "nowrap",

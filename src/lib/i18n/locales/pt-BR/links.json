@@ -35,6 +35,7 @@
       "description": "Cole uma URL longa e gere um link curto.",
       "urlLabel": "URL de destino",
       "slugLabel": "Slug (opcional)",
+      "subdomainLabel": "Endereço",
       "urlPlaceholder": "https://exemplo.com/pagina",
       "slugPlaceholder": "meu-link",
       "slugTabHint": "Tab ou Usar preenchem o slug sugerido",
@@ -137,6 +138,10 @@
     "customSlug": "Slug personalizado (opcional)",
     "customSlugPlaceholder": "meu-slug",
     "customSlugHelper": "Apenas letras, números e hífens. Deixe em branco para gerar automaticamente.",
+    "subdomainSelect": {
+      "label": "Endereço do link",
+      "defaultOption": "Domínio padrão (linkcharts.com.br)"
+    },
     "slugTabHint": "Tab para aceitar a sugestão",
     "slugSuggestionChecking": "Verificando sugestão de slug…",
     "titleTabHint": "Tab para aceitar o título sugerido",
