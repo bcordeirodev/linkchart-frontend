@@ -190,29 +190,6 @@ export function LinkDashboard({
           trendPct={data?.summary?.clicks_variation_pct ?? null}
         />
 
-        {/* "O que isso quer dizer" — the plain-language reading of the numbers
-            above. It used to sit at the bottom of the longest tab in the app,
-            where a non-expert would never reach it. It is the page's promise,
-            so it goes right under the headline metrics, capped at the three
-            highest-priority items (BusinessInsights sorts by priority). */}
-        {!compact && topInsights.length > 0 ? (
-          <Box sx={{ mt: { xs: 2, md: 3 } }}>
-            <SectionDivider title={t("dashboard.whatThisMeans.title")} />
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mb: 1.5, mt: -0.5 }}
-            >
-              {t("dashboard.whatThisMeans.description")}
-            </Typography>
-            <BusinessInsights
-              insights={topInsights}
-              showTitle={false}
-              maxItems={3}
-            />
-          </Box>
-        ) : null}
-
         {/* Gráficos — seções em ordem fixa. "Aquisição" (UTM) saiu daqui: vive
             na aba Origem, sub-tab Campanhas. Nos dois lugares seria duplicação
             — exatamente o que este redesenho existe para matar. */}
@@ -240,6 +217,29 @@ export function LinkDashboard({
               />
             </Box>
           )
+        ) : null}
+
+        {/* "O que isso quer dizer" — the plain-language reading of the numbers.
+            It sits below the main charts so the reader first sees the metrics
+            and the visualizations, then the plain-language interpretation that
+            ties them together. Capped at the three highest-priority items
+            (BusinessInsights sorts by priority). */}
+        {!compact && topInsights.length > 0 ? (
+          <Box sx={{ mt: { xs: 2, md: 3 } }}>
+            <SectionDivider title={t("dashboard.whatThisMeans.title")} />
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mb: 1.5, mt: -0.5 }}
+            >
+              {t("dashboard.whatThisMeans.description")}
+            </Typography>
+            <BusinessInsights
+              insights={topInsights}
+              showTitle={false}
+              maxItems={3}
+            />
+          </Box>
         ) : null}
 
         {/* Footer - Informações de Qualidade */}

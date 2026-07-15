@@ -1,26 +1,26 @@
 {
   "shorter": {
     "heroTitle": "Encurtador de Link Gratuito",
-    "heroSubtitle": "Encurte URLs com <b>analytics em tempo real</b>, <b>subdomínio personalizado grátis</b> e QR Code.",
+    "heroSubtitle": "Encurte URLs com <b>estatísticas em tempo real</b>, <b>subdomínio personalizado grátis</b> e QR Code.",
     "linkCreated": "Link criado com sucesso",
     "freeNoSignup": "100% gratuito · sem cadastro",
     "readyToShare": "Pronto para compartilhar!",
     "readyToSharePrefix": "Pronto para",
     "readyToShareSuffix": "compartilhar!",
-    "autoRedirect": "Seu link já está ativo. Abrindo analytics automaticamente.",
+    "autoRedirect": "Seu link já está ativo. Abrindo estatísticas automaticamente.",
     "formPlaceholder": "Cole sua URL longa aqui...",
     "shortenButton": "Encurtar",
     "shortening": "Encurtando...",
     "successTitle": "Link criado!",
     "successSubtitle": "Copie e compartilhe onde quiser",
-    "redirectingAnalytics": "Redirecionando para analytics detalhados em 3s...",
+    "redirectingAnalytics": "Redirecionando para estatísticas detalhadas em 3s...",
     "copiedToClipboard": "Copiado",
     "copyAgain": "Copiar novamente",
     "copyButton": "Copiar link",
     "copySuccess": "Copiado!",
     "shareButton": "Compartilhar",
     "createAnother": "Encurtar outro link",
-    "viewAnalytics": "Ver analytics",
+    "viewAnalytics": "Ver estatísticas",
     "viewAnalyticsTooltip": "Veja quantas pessoas clicaram, de onde vieram e em qual dispositivo — em tempo real e de graça.",
     "successCopiedHint": "Já copiamos para você — é só colar onde quiser.",
     "statusLive": "Ativo · rastreando cliques",
@@ -50,7 +50,7 @@
       },
       "track": {
         "title": "Compartilhe e analise",
-        "desc": "Copie o link, compartilhe onde quiser e acompanhe cliques em tempo real na página de analytics."
+        "desc": "Copie o link, compartilhe onde quiser e acompanhe cliques em tempo real na página de estatísticas."
       }
     },
     "form": {
@@ -104,7 +104,7 @@
       "items": [
         {
           "q": "Como contar quantas vezes um link foi clicado gratuitamente?",
-          "a": "Link Charts mostra o total de cliques de cada link no painel de analytics em tempo real. Acesse o dashboard gratuito para ver o contador de cliques, distribuição geográfica e breakdown por dispositivo — sem nenhum custo."
+          "a": "Link Charts mostra o total de cliques de cada link no painel de estatísticas em tempo real. Acesse o dashboard gratuito para ver o contador de cliques, distribuição geográfica e breakdown por dispositivo — sem nenhum custo."
         },
         {
           "q": "Como encurtar link para o WhatsApp?",
@@ -112,11 +112,11 @@
         },
         {
           "q": "Existe encurtador de link gratuito sem cadastro?",
-          "a": "Sim. O Link Charts permite encurtar links gratuitamente sem criar conta. Para salvar seus links e acessar analytics detalhados de cada um, basta criar uma conta gratuita."
+          "a": "Sim. O Link Charts permite encurtar links gratuitamente sem criar conta. Para salvar seus links e acessar estatísticas detalhadas de cada um, basta criar uma conta gratuita."
         },
         {
           "q": "Qual a melhor alternativa gratuita ao Bitly?",
-          "a": "Depende do que você precisa. O Link Charts foca em analytics avançado gratuito: rastreamento geográfico por país e cidade, breakdown por dispositivo e navegador, UTM, subdomínio personalizado e QR Code — recursos que no Bitly exigem plano pago."
+          "a": "Depende do que você precisa. O Link Charts foca em estatísticas avançadas gratuitas: rastreamento geográfico por país e cidade, breakdown por dispositivo e navegador, UTM, subdomínio personalizado e QR Code — recursos que no Bitly exigem plano pago."
         },
         {
           "q": "Como criar um contador de cliques para meus links?",
@@ -124,7 +124,7 @@
         },
         {
           "q": "Como ver de qual país vieram os cliques no meu link?",
-          "a": "O analytics de cada link no Link Charts inclui mapa de calor geográfico com detalhamento por país, estado e cidade. Acesse a aba Geográfico no dashboard do link para visualizar de onde vieram os visitantes."
+          "a": "As estatísticas de cada link no Link Charts incluem mapa de calor geográfico com detalhamento por país, estado e cidade. Acesse a aba Geográfico no dashboard do link para visualizar de onde vieram os visitantes."
         },
         {
           "q": "Posso ter subdomínio personalizado gratuito para meus links?",
@@ -147,17 +147,17 @@
           "a": "Links encurtados ficam ativos indefinidamente. Você também pode definir uma data de expiração ou um limite de cliques para que o link seja desativado automaticamente quando atingir o critério definido."
         },
         {
-          "q": "É possível ver analytics de um link sem fazer login?",
-          "a": "Sim. Cada link encurtado tem uma página pública de analytics acessível sem login. Você pode compartilhar o link de analytics para que qualquer pessoa acompanhe os dados de cliques, país de origem e dispositivos em tempo real."
+          "q": "É possível ver estatísticas de um link sem fazer login?",
+          "a": "Sim. Cada link encurtado tem uma página pública de estatísticas acessível sem login. Você pode compartilhar o link de estatísticas para que qualquer pessoa acompanhe os dados de cliques, país de origem e dispositivos em tempo real."
         }
       ]
     }
   },
   "publicAnalytics": {
-    "title": "Analytics do Link",
-    "subtitle": "Analytics público de",
+    "title": "Estatísticas do Link",
+    "subtitle": "Estatísticas públicas de",
     "pageSubtitle": "Performance, estatísticas geográficas e insights do público deste link em tempo real.",
-    "noData": "Nenhum dado de analytics disponível ainda.",
+    "noData": "Nenhum dado de estatísticas disponível ainda.",
     "signUpCta": "Quer isso para seus links?",
     "signUpButton": "Criar conta gratuita",
     "createLink": "Criar Link",
@@ -165,7 +165,7 @@
     "error": {
       "slugMissing": "Slug do link não fornecido",
       "invalidLinkData": "Dados do link inválidos",
-      "invalidAnalyticsData": "Dados de analytics inválidos",
+      "invalidAnalyticsData": "Dados de estatísticas inválidos",
       "loadFailed": "Erro ao carregar dados do link"
     },
     "metrics": {
@@ -176,15 +176,15 @@
       "inactive": "Inativo",
       "operational": "link operacional",
       "createdAt": "Criado em",
-      "analyticsLabel": "Analytics",
+      "analyticsLabel": "Estatísticas",
       "available": "Disponível",
       "noData": "Sem dados",
       "dataCollected": "dados coletados"
     },
     "saveUrlBanner": {
-      "title": "Salve esta página para acompanhar seus analytics",
+      "title": "Salve esta página para acompanhar suas estatísticas",
       "desc": "Esta é a única URL de acesso aos dados públicos deste link. Adicione-a aos favoritos ou copie abaixo.",
-      "descShort": "Salve esta página — é o único acesso aos analytics deste link.",
+      "descShort": "Salve esta página — é o único acesso às estatísticas deste link.",
       "copied": "Copiado!",
       "copy": "Copiar",
       "upgradeTitle": "Quer histórico completo, alertas e gráficos detalhados?",
@@ -192,11 +192,11 @@
     },
     "emptyClicks": {
       "title": "Seu link está no ar",
-      "description": "Os cliques aparecem aqui em tempo real. Compartilhe seu link para ver a analytics ganhar vida.",
+      "description": "Os cliques aparecem aqui em tempo real. Compartilhe seu link para ver as estatísticas ganharem vida.",
       "shareLabel": "Copiar link para compartilhar"
     },
     "charts": {
-      "title": "Gráficos de Analytics",
+      "title": "Gráficos de Estatísticas",
       "hourlyClicks": "Cliques por Hora",
       "dayOfWeek": "Cliques por Dia da Semana",
       "topCountries": "Top Países",
@@ -228,27 +228,27 @@
       "shortenedLink": "Link curto",
       "yourShortLink": "Seu link curto",
       "destination": "Destino",
-      "analyticsPageUrl": "Página de analytics",
-      "copyAnalyticsUrl": "Copiar URL da página de analytics",
-      "publicAnalyticsAvailable": "Analytics públicos disponíveis",
+      "analyticsPageUrl": "Página de estatísticas",
+      "copyAnalyticsUrl": "Copiar URL da página de estatísticas",
+      "publicAnalyticsAvailable": "Estatísticas públicas disponíveis",
       "share": "Compartilhar",
       "shareWhatsapp": "WhatsApp"
     },
     "cta": {
       "title": "Crie sua conta gratuita",
-      "description": "Acesse analytics completos com histórico de cliques, mapa de países, dispositivos e horários de pico. Gerencie todos os seus links em um painel próprio — com QR Code e slug personalizado em cada um.",
+      "description": "Acesse estatísticas completas com histórico de cliques, mapa de países, dispositivos e horários de pico. Gerencie todos os seus links em um painel próprio — com QR Code e slug personalizado em cada um.",
       "button": "Criar conta grátis",
       "features": [
         "Grátis para sempre",
         "QR Code incluso",
         "Subdomínio personalizado grátis",
-        "Analytics em tempo real",
-        "Analytics avançados por link",
+        "Estatísticas em tempo real",
+        "Estatísticas avançadas por link",
         "Rastreamento de campanhas UTM",
         "Dashboard completo de performance"
       ],
-      "unlockTitle": "Crie links com analytics como este — grátis",
-      "unlockBody": "Você está vendo o analytics público de um link. Crie sua conta gratuita e tenha os mesmos dados nos seus links: histórico de cliques, mapa geográfico, dispositivos e rastreio de UTM."
+      "unlockTitle": "Crie links com estatísticas como estas — grátis",
+      "unlockBody": "Você está vendo as estatísticas públicas de um link. Crie sua conta gratuita e tenha os mesmos dados nos seus links: histórico de cliques, mapa geográfico, dispositivos e rastreio de UTM."
     },
     "teaser": {
       "heading": "Mais contexto na conta gratuita",
@@ -275,7 +275,7 @@
   },
   "benefits": {
     "title": "Por que usar o Link Charts?",
-    "analytics": "Analytics em tempo real",
+    "analytics": "Estatísticas em tempo real",
     "analyticsDesc": "Rastreie cliques, localizações, dispositivos e mais.",
     "custom": "Links curtos personalizados",
     "customDesc": "Use seus próprios slugs para links com sua marca.",
@@ -283,7 +283,7 @@
     "qrDesc": "Cada link recebe um código QR automaticamente.",
     "active": "Link ativo e funcionando",
     "shortenAnother": "🔗 Encurtar outro link",
-    "realtimeAnalytics": "Analytics em tempo real",
+    "realtimeAnalytics": "Estatísticas em tempo real",
     "freeQr": "QR Code grátis",
     "noExpiration": "Sem expiração",
     "customSlug": "Slug personalizado",
@@ -305,7 +305,7 @@
       "eyebrow": "Comparativo",
       "title": "Link Charts vs Bitly",
       "subtitle": "Qual o melhor encurtador de URL grátis para ver quem realmente clicou?",
-      "verdict": "O Bitly é o nome mais conhecido. O Link Charts entrega mais analytics de graça — incluindo um score que separa cliques humanos de bots."
+      "verdict": "O Bitly é o nome mais conhecido. O Link Charts entrega mais estatísticas de graça — incluindo um score que separa cliques humanos de bots."
     },
     "table": {
       "sectionTitle": "Comparação recurso a recurso",
@@ -330,7 +330,7 @@
           "rivalMark": "partial"
         },
         {
-          "feature": "Analytics em tempo real",
+          "feature": "Estatísticas em tempo real",
           "lc": "Sim",
           "lcMark": "yes",
           "rival": "Parcial",
@@ -380,7 +380,7 @@
           "rivalMark": "partial"
         },
         {
-          "feature": "Página de analytics pública",
+          "feature": "Página de estatísticas pública",
           "lc": "Sim",
           "lcMark": "yes",
           "rival": "Não",
@@ -398,7 +398,7 @@
     "choose": {
       "sectionTitle": "Quando escolher cada um",
       "linkChartsTitle": "Escolha o Link Charts se…",
-      "linkChartsBody": "Você quer analytics detalhado de graça, está no Brasil e se importa com a qualidade do tráfego (saber se os cliques são reais) e com subdomínio próprio sem pagar.",
+      "linkChartsBody": "Você quer estatísticas detalhadas de graça, está no Brasil e se importa com a qualidade do tráfego (saber se os cliques são reais) e com subdomínio próprio sem pagar.",
       "rivalTitle": "Escolha o Bitly se…",
       "rivalBody": "Você precisa da marca mais reconhecida globalmente e já usa o ecossistema pago dele."
     },
@@ -407,15 +407,15 @@
       "items": [
         {
           "q": "Qual a melhor alternativa gratuita ao Bitly?",
-          "a": "O Link Charts é uma alternativa gratuita ao Bitly com analytics mais completo no plano grátis: geografia por cidade, dispositivo, navegador e um score de qualidade que identifica tráfego de bot — tudo em tempo real e em português."
+          "a": "O Link Charts é uma alternativa gratuita ao Bitly com estatísticas mais completas no plano grátis: geografia por cidade, dispositivo, navegador e um score de qualidade que identifica tráfego de bot — tudo em tempo real e em português."
         },
         {
           "q": "O Bitly é realmente grátis?",
-          "a": "O Bitly tem um plano gratuito, mas ele é limitado (poucos links por mês e analytics básico). Para estatísticas detalhadas sem pagar, o Link Charts oferece mais no nível gratuito."
+          "a": "O Bitly tem um plano gratuito, mas ele é limitado (poucos links por mês e estatísticas básicas). Para estatísticas detalhadas sem pagar, o Link Charts oferece mais no nível gratuito."
         },
         {
           "q": "Como ver de qual cidade vieram os cliques de um link?",
-          "a": "No Link Charts, cada link curto mostra a geografia dos cliques (país e cidade), além de dispositivo e navegador, no painel de analytics em tempo real."
+          "a": "No Link Charts, cada link curto mostra a geografia dos cliques (país e cidade), além de dispositivo e navegador, no painel de estatísticas em tempo real."
         },
         {
           "q": "Como saber se os cliques do meu link são reais ou de bots?",
@@ -427,7 +427,7 @@
         }
       ]
     },
-    "ctaTitle": "Encurte sua primeira URL e veja o analytics em tempo real"
+    "ctaTitle": "Encurte sua primeira URL e veja as estatísticas em tempo real"
   },
   "guiaBots": {
     "hero": {
@@ -575,7 +575,7 @@
     },
     "beyond": {
       "sectionTitle": "Muito além do número total",
-      "body": "O total de cliques é só o começo. O Link Charts também mostra de qual país e cidade vieram os acessos, qual dispositivo e navegador foram usados, os horários de pico e a origem do tráfego (incluindo parâmetros UTM). É como ter um contador de cliques com analytics completo — de graça e sem instalar nada."
+      "body": "O total de cliques é só o começo. O Link Charts também mostra de qual país e cidade vieram os acessos, qual dispositivo e navegador foram usados, os horários de pico e a origem do tráfego (incluindo parâmetros UTM). É como ter um contador de cliques com estatísticas completas — de graça e sem instalar nada."
     },
     "faq": {
       "sectionTitle": "Perguntas frequentes",
@@ -627,7 +627,7 @@
         },
         {
           "number": "03",
-          "title": "Analytics: origem, dispositivo e cidade",
+          "title": "Estatísticas: origem, dispositivo e cidade",
           "desc": "Cada toque vira dado: de onde veio, em qual aparelho e de qual cidade — atualizado em tempo real."
         }
       ]
@@ -675,7 +675,7 @@
         },
         {
           "q": "Dá para ver de onde vieram os cliques do Instagram?",
-          "a": "Sim. Para cada clique no seu link curto, o Link Charts registra a origem, o dispositivo (celular ou computador) e a cidade e país aproximados de quem clicou — tudo no painel de analytics gratuito."
+          "a": "Sim. Para cada clique no seu link curto, o Link Charts registra a origem, o dispositivo (celular ou computador) e a cidade e país aproximados de quem clicou — tudo no painel de estatísticas gratuito."
         },
         {
           "q": "Preciso pagar para rastrear links do Instagram?",
@@ -694,7 +694,7 @@
       "eyebrow": "Comparativo",
       "title": "Link Charts vs Short.io",
       "subtitle": "Dois encurtadores de URL com plano gratuito forte — qual entrega mais para o seu caso?",
-      "verdict": "O Short.io tem um free tier robusto, com domínios personalizados. O Link Charts se destaca no score de qualidade (bot vs humano), na página de analytics pública e no português nativo."
+      "verdict": "O Short.io tem um free tier robusto, com domínios personalizados. O Link Charts se destaca no score de qualidade (bot vs humano), na página de estatísticas pública e no português nativo."
     },
     "table": {
       "sectionTitle": "Comparação recurso a recurso",
@@ -719,7 +719,7 @@
           "rivalMark": "partial"
         },
         {
-          "feature": "Analytics em tempo real",
+          "feature": "Estatísticas em tempo real",
           "lc": "Sim",
           "lcMark": "yes",
           "rival": "Sim",
@@ -755,7 +755,7 @@
           "rivalMark": "yes"
         },
         {
-          "feature": "Página de analytics pública",
+          "feature": "Página de estatísticas pública",
           "lc": "Sim",
           "lcMark": "yes",
           "rival": "Não",
@@ -780,7 +780,7 @@
     "choose": {
       "sectionTitle": "Quando escolher cada um",
       "linkChartsTitle": "Escolha o Link Charts se…",
-      "linkChartsBody": "Você quer saber se os cliques são reais (score de qualidade bot vs humano), compartilhar uma página de analytics pública e usar tudo em português nativo, sem pagar.",
+      "linkChartsBody": "Você quer saber se os cliques são reais (score de qualidade bot vs humano), compartilhar uma página de estatísticas pública e usar tudo em português nativo, sem pagar.",
       "rivalTitle": "Escolha o Short.io se…",
       "rivalBody": "Você precisa de vários domínios personalizados próprios já no plano gratuito e de um ecossistema maduro para gerenciar muitos domínios de marca."
     },
@@ -789,11 +789,11 @@
       "items": [
         {
           "q": "Qual a melhor alternativa gratuita ao Short.io?",
-          "a": "Depende do que você prioriza. O Short.io tem um free tier forte com domínios personalizados; o Link Charts é uma ótima alternativa gratuita se você valoriza o score de qualidade que separa bots de humanos, uma página de analytics pública e a interface em português nativo."
+          "a": "Depende do que você prioriza. O Short.io tem um free tier forte com domínios personalizados; o Link Charts é uma ótima alternativa gratuita se você valoriza o score de qualidade que separa bots de humanos, uma página de estatísticas pública e a interface em português nativo."
         },
         {
           "q": "Link Charts vs Short.io: qual tem o melhor plano grátis?",
-          "a": "Os dois são generosos. O Short.io oferece domínios personalizados (até 5) e cerca de 1.000 links marcados no plano gratuito. O Link Charts não impõe um limite prático de links e adiciona o score de qualidade de tráfego e a página de analytics pública, que o Short.io não tem."
+          "a": "Os dois são generosos. O Short.io oferece domínios personalizados (até 5) e cerca de 1.000 links marcados no plano gratuito. O Link Charts não impõe um limite prático de links e adiciona o score de qualidade de tráfego e a página de estatísticas pública, que o Short.io não tem."
         },
         {
           "q": "O Short.io permite domínio personalizado de graça?",
@@ -809,13 +809,13 @@
         }
       ]
     },
-    "ctaTitle": "Encurte sua primeira URL e veja o analytics em tempo real"
+    "ctaTitle": "Encurte sua primeira URL e veja as estatísticas em tempo real"
   },
   "compareDub": {
     "hero": {
       "eyebrow": "Comparativo",
       "title": "Link Charts vs Dub",
-      "subtitle": "Um é feito para desenvolvedores, o outro para quem quer analytics sem complicação — qual é o seu?",
+      "subtitle": "Um é feito para desenvolvedores, o outro para quem quer estatísticas sem complicação — qual é o seu?",
       "verdict": "O Dub brilha para devs: é open-source, tem API robusta e domínios personalizados. O Link Charts leva vantagem em volume de links grátis, score de qualidade, uso sem cadastro e português nativo."
     },
     "table": {
@@ -841,7 +841,7 @@
           "rivalMark": "partial"
         },
         {
-          "feature": "Analytics (geografia e dispositivo)",
+          "feature": "Estatísticas (geografia e dispositivo)",
           "lc": "Sim",
           "lcMark": "yes",
           "rival": "Sim",
@@ -884,7 +884,7 @@
           "rivalMark": "no"
         },
         {
-          "feature": "Página de analytics pública",
+          "feature": "Página de estatísticas pública",
           "lc": "Sim",
           "lcMark": "yes",
           "rival": "Parcial",
@@ -911,7 +911,7 @@
       "items": [
         {
           "q": "Dub vs Link Charts: qual é o melhor encurtador de URL?",
-          "a": "Depende do perfil. O Dub é excelente para desenvolvedores por ser open-source e ter uma API robusta. O Link Charts é melhor para quem quer analytics sem código: mais links grátis, uso sem cadastro, score de qualidade de tráfego e interface em português nativo."
+          "a": "Depende do perfil. O Dub é excelente para desenvolvedores por ser open-source e ter uma API robusta. O Link Charts é melhor para quem quer estatísticas sem código: mais links grátis, uso sem cadastro, score de qualidade de tráfego e interface em português nativo."
         },
         {
           "q": "Qual o melhor encurtador de URL open-source?",
@@ -931,7 +931,7 @@
         }
       ]
     },
-    "ctaTitle": "Encurte sua primeira URL e veja o analytics em tempo real"
+    "ctaTitle": "Encurte sua primeira URL e veja as estatísticas em tempo real"
   },
   "resources": {
     "sectionTitle": "Guias e comparações",

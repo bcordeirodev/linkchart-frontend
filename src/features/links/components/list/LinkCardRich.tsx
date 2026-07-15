@@ -253,21 +253,23 @@ export function LinkCardRich({
             </Tooltip>
           ) : null}
           {status !== "active" ? (
-            <Chip
-              size="small"
-              label={statusLabel}
-              sx={{
-                height: 20,
-                flexShrink: 0,
-                borderRadius: `${linksRadius.chip}px`,
-                fontSize: "0.625rem",
-                fontWeight: 500,
-                bgcolor: alpha(statusColorValue, 0.12),
-                color: statusColorKey,
-                border: `1px solid ${alpha(statusColorValue, 0.22)}`,
-                "& .MuiChip-label": { px: 0.75 },
-              }}
-            />
+            <Tooltip title={t(`status.tooltip.${status}`)} arrow>
+              <Chip
+                size="small"
+                label={statusLabel}
+                sx={{
+                  height: 20,
+                  flexShrink: 0,
+                  borderRadius: `${linksRadius.chip}px`,
+                  fontSize: "0.625rem",
+                  fontWeight: 500,
+                  bgcolor: alpha(statusColorValue, 0.12),
+                  color: statusColorKey,
+                  border: `1px solid ${alpha(statusColorValue, 0.22)}`,
+                  "& .MuiChip-label": { px: 0.75 },
+                }}
+              />
+            </Tooltip>
           ) : null}
           <Box
             onClick={(e) => e.stopPropagation()}

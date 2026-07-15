@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type React from "react";
 import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -100,34 +100,96 @@ export function URLShortenerForm({
   const ogTitleRef = useRef<string | null>(null);
   ogTitleRef.current = ogTitle;
 
-  const onSubmit = async (formData: IFormData) => {
-    // Defense-in-depth safety gate: never create a link while the URL is being
-    // checked or has been flagged unsafe. The disabled submit button is UI-only
-    // (removable via devtools); this guard is the real enforcement.
-    if (safetyStatus === "checking" || safetyStatus === "unsafe") {
+  // A submit can arrive before its gates settle — the safety check may still be
+  // running, or the slug suggestion the user is relying on may not have resolved.
+  // Rather than a dead click, the submit is parked here and replayed once both
+  // settle (see the flush effect), so we always commit the resolved suggestion
+  // instead of racing it to a backend random.
+  const pendingSubmitRef = useRef<IFormData | null>(null);
+  const [submitQueued, setSubmitQueued] = useState(false);
+
+  const doCreate = useCallback(
+    async (formData: IFormData): Promise<void> => {
+      // The smart suggestion is the default: when the user didn't type a name,
+      // commit the very slug the preview showed (the resolved suggestion), so the
+      // created link matches the preview instead of a fresh backend random.
+      const typed = formData.customSlug.trim();
+      const effectiveSlug =
+        typed || (slugSuggestionStatus === "ready" ? availableSlug : null);
+      try {
+        const result = await createPublicShortUrl({
+          original_url: formData.originalUrl,
+          custom_slug: effectiveSlug || undefined,
+          title: ogTitleRef.current ?? undefined,
+        });
+        onSuccess?.(result);
+      } catch (err) {
+        if (err instanceof ApiError && err.details?.errors) {
+          const fieldErrors = err.details.errors as Record<string, string[]>;
+          if (fieldErrors.custom_slug) {
+            setError("customSlug", { message: fieldErrors.custom_slug[0] });
+            return;
+          }
+        }
+        const msg = t("shorter.form.errorMessage");
+        showMessage({ variant: "error", message: msg });
+        onError?.(msg);
+      }
+    },
+    [
+      createPublicShortUrl,
+      onSuccess,
+      onError,
+      setError,
+      showMessage,
+      t,
+      availableSlug,
+      slugSuggestionStatus,
+    ],
+  );
+
+  const onSubmit = (formData: IFormData): void => {
+    // Unsafe is a hard block (defense-in-depth beyond the disabled button). A
+    // still-running safety check, or a suggestion the user depends on that hasn't
+    // resolved, queues the submit to fire once both settle.
+    if (safetyStatus === "unsafe") {
       return;
     }
-
-    try {
-      const result = await createPublicShortUrl({
-        original_url: formData.originalUrl,
-        custom_slug: formData.customSlug.trim() || undefined,
-        title: ogTitleRef.current ?? undefined,
-      });
-      onSuccess?.(result);
-    } catch (err) {
-      if (err instanceof ApiError && err.details?.errors) {
-        const fieldErrors = err.details.errors as Record<string, string[]>;
-        if (fieldErrors.custom_slug) {
-          setError("customSlug", { message: fieldErrors.custom_slug[0] });
-          return;
-        }
-      }
-      const msg = t("shorter.form.errorMessage");
-      showMessage({ variant: "error", message: msg });
-      onError?.(msg);
+    const awaitingSuggestion =
+      !formData.customSlug.trim() && slugSuggestionStatus === "resolving";
+    if (safetyStatus === "checking" || awaitingSuggestion) {
+      pendingSubmitRef.current = formData;
+      setSubmitQueued(true);
+      return;
     }
+    void doCreate(formData);
   };
+
+  // Flush a queued submit once both gates settle: the safety check finished
+  // (anything but "checking" — "error" fails open) and any suggestion the submit
+  // depends on has landed. Drop it on an unsafe verdict or a cleared URL.
+  useEffect(() => {
+    if (!submitQueued) {
+      return;
+    }
+    if (safetyStatus === "unsafe" || safetyStatus === "idle") {
+      pendingSubmitRef.current = null;
+      setSubmitQueued(false);
+      return;
+    }
+    const formData = pendingSubmitRef.current;
+    const awaitingSuggestion =
+      !!formData &&
+      !formData.customSlug.trim() &&
+      slugSuggestionStatus === "resolving";
+    if (safetyStatus !== "checking" && !awaitingSuggestion) {
+      pendingSubmitRef.current = null;
+      setSubmitQueued(false);
+      if (formData) {
+        void doCreate(formData);
+      }
+    }
+  }, [safetyStatus, slugSuggestionStatus, submitQueued, doCreate]);
 
   return (
     <m.div
@@ -307,7 +369,10 @@ export function URLShortenerForm({
           </Box>
         </Box>
 
-        <ShortenSubmitButton loading={isLoading} safetyStatus={safetyStatus} />
+        <ShortenSubmitButton
+          loading={isLoading || submitQueued}
+          safetyStatus={safetyStatus}
+        />
       </Box>
     </m.div>
   );
