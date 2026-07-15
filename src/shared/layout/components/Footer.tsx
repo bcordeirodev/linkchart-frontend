@@ -31,7 +31,7 @@ export function Footer() {
         zIndex: 2,
         mt: "auto",
         px: { xs: 2, sm: 3, md: 4 },
-        py: { xs: 2, sm: 2.25 },
+        py: { xs: 1, sm: 0.75 },
         borderTop: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
       }}
     >
@@ -73,10 +73,11 @@ export function Footer() {
               transition: "color 160ms ease",
               background: "none",
               border: "none",
-              // Comfortable tap target on phones (was padding:0 → ~16px tall).
+              // Alvo de toque confortável no mobile; compacto no desktop para
+              // o rodapé não ficar alto demais.
               display: "inline-flex",
               alignItems: "center",
-              minHeight: 44,
+              minHeight: { xs: 40, sm: 28 },
               px: 0.5,
               cursor: "pointer",
               fontFamily: "inherit",

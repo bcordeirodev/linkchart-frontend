@@ -579,7 +579,11 @@ export function LinksQuickCreate({
                           display: "flex",
                           alignItems: "center",
                           gap: 0.25,
-                          maxWidth: { xs: 132, sm: 240 },
+                          // Largura de conteúdo: o addon acompanha o domínio
+                          // selecionado (bruno / bcordeiro / discord) sem cortar;
+                          // o campo de nome fica com o espaço restante.
+                          flexShrink: 0,
+                          whiteSpace: "nowrap",
                         }}
                       >
                         {hasSubdomains ? (
