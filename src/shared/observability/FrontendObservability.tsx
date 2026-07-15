@@ -1,18 +1,17 @@
-"use client";
+'use client'
 
 import {
   getWebInstrumentations,
   initializeFaro,
-  isInternalFaroOnGlobalObject,
-} from "@grafana/faro-web-sdk";
-import { TracingInstrumentation } from "@grafana/faro-web-tracing";
-import { useEffect } from "react";
+  isInternalFaroOnGlobalObject
+} from '@grafana/faro-web-sdk'
+import { TracingInstrumentation } from '@grafana/faro-web-tracing'
+import { useEffect } from 'react'
 
-import type { BeforeSendHook } from "@grafana/faro-web-sdk";
+import type { BeforeSendHook } from '@grafana/faro-web-sdk'
 
 /** Object keys whose values are always redacted (case-insensitive match). */
-const SENSITIVE_KEY =
-  /(authorization|token|password|secret|api[_-]?key|email)/i;
+const SENSITIVE_KEY = /(authorization|token|password|secret|api[_-]?key|email)/i
 
 /**
  * Drops query strings and redacts sensitive keys from a Faro payload before it
@@ -25,32 +24,32 @@ const SENSITIVE_KEY =
 const scrubPii: BeforeSendHook = (item) => {
   try {
     const walk = (node: unknown, depth: number): void => {
-      if (depth > 6 || node === null || typeof node !== "object") {
-        return;
+      if (depth > 6 || node === null || typeof node !== 'object') {
+        return
       }
       for (const [key, value] of Object.entries(
-        node as Record<string, unknown>,
+        node as Record<string, unknown>
       )) {
-        if (typeof value === "string") {
+        if (typeof value === 'string') {
           if (SENSITIVE_KEY.test(key)) {
-            (node as Record<string, unknown>)[key] = "[redacted]";
-          } else if (/^https?:\/\//i.test(value) && value.includes("?")) {
-            (node as Record<string, unknown>)[key] = value.slice(
+            ;(node as Record<string, unknown>)[key] = '[redacted]'
+          } else if (/^https?:\/\//i.test(value) && value.includes('?')) {
+            ;(node as Record<string, unknown>)[key] = value.slice(
               0,
-              value.indexOf("?"),
-            );
+              value.indexOf('?')
+            )
           }
-        } else if (typeof value === "object") {
-          walk(value, depth + 1);
+        } else if (typeof value === 'object') {
+          walk(value, depth + 1)
         }
       }
-    };
-    walk((item as { payload?: unknown }).payload, 0);
+    }
+    walk((item as { payload?: unknown }).payload, 0)
   } catch {
     // fail open — never drop telemetry because of a scrub error
   }
-  return item;
-};
+  return item
+}
 
 /**
  * Initializes Grafana Faro exactly once on the client, inside an effect so the
@@ -73,33 +72,33 @@ const scrubPii: BeforeSendHook = (item) => {
 export default function FrontendObservability(): null {
   useEffect(() => {
     if (isInternalFaroOnGlobalObject()) {
-      return;
+      return
     }
 
-    const url = process.env.NEXT_PUBLIC_FARO_URL;
+    const url = process.env.NEXT_PUBLIC_FARO_URL
     if (!url) {
-      return;
+      return
     }
 
     try {
       initializeFaro({
         url,
         app: {
-          name: process.env.NEXT_PUBLIC_FARO_APP_NAME ?? "linkcharts-frontend",
-          version: process.env.NEXT_PUBLIC_FARO_APP_VERSION ?? "0.1.0",
+          name: process.env.NEXT_PUBLIC_FARO_APP_NAME ?? 'linkcharts-frontend',
+          version: process.env.NEXT_PUBLIC_FARO_APP_VERSION ?? '0.1.0',
           environment:
-            process.env.NEXT_PUBLIC_FARO_ENVIRONMENT ?? process.env.NODE_ENV,
+            process.env.NEXT_PUBLIC_FARO_ENVIRONMENT ?? process.env.NODE_ENV
         },
         beforeSend: scrubPii,
         instrumentations: [
           ...getWebInstrumentations(),
-          new TracingInstrumentation(),
-        ],
-      });
+          new TracingInstrumentation()
+        ]
+      })
     } catch {
-      console.warn("Uma falha ocorreu ao iniciar o Faro!");
+      console.warn('Uma falha ocorreu ao iniciar o Faro!')
     }
-  }, []);
+  }, [])
 
-  return null;
+  return null
 }

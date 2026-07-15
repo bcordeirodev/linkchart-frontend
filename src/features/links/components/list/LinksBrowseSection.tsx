@@ -1,50 +1,50 @@
-"use client";
+'use client'
 
-import { Box, Divider, Pagination, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Box, Divider, Pagination, Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import EnhancedPaper from '@/shared/ui/base/EnhancedPaper'
 
 /** Links shown per page in the browse list (client-side pagination). */
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 8
 
-import { LinkCardRich } from "./LinkCardRich";
-import { LinksDemoSeedingState } from "./LinksDemoSeedingState";
-import { LinksEmptyState } from "./LinksEmptyState";
-import { LinksFilters } from "./LinksFilters";
-import { LinksMobileCards } from "./LinksMobileCards";
-import { LinksListSectionHeading } from "./LinksListSectionHeading";
+import { LinkCardRich } from './LinkCardRich'
+import { LinksDemoSeedingState } from './LinksDemoSeedingState'
+import { LinksEmptyState } from './LinksEmptyState'
+import { LinksFilters } from './LinksFilters'
+import { LinksMobileCards } from './LinksMobileCards'
+import { LinksListSectionHeading } from './LinksListSectionHeading'
 import {
   getLinksPanelSx,
   getLinksBorderColor,
-  getLinksBrowseGridSx,
-} from "./linksPanelStyles";
+  getLinksBrowseGridSx
+} from './linksPanelStyles'
 
-import type { BatchMetaResponse, LinkResponse } from "@/types";
+import type { BatchMetaResponse, LinkResponse } from '@/types'
 
 interface LinksBrowseSectionProps {
-  searchTerm: string;
-  onSearchChange: (value: string) => void;
-  statusFilter: string;
-  onStatusChange: (value: string) => void;
-  sortBy: string;
-  onSortChange: (value: string) => void;
-  sortedLinks: LinkResponse[];
-  meta: BatchMetaResponse;
-  loading: boolean;
-  isMobile: boolean;
-  hasActiveFilters: boolean;
-  onClearFilters: () => void;
-  onDelete: (id: string) => Promise<void>;
-  highlightedLinkId?: string | null;
+  searchTerm: string
+  onSearchChange: (value: string) => void
+  statusFilter: string
+  onStatusChange: (value: string) => void
+  sortBy: string
+  onSortChange: (value: string) => void
+  sortedLinks: LinkResponse[]
+  meta: BatchMetaResponse
+  loading: boolean
+  isMobile: boolean
+  hasActiveFilters: boolean
+  onClearFilters: () => void
+  onDelete: (id: string) => Promise<void>
+  highlightedLinkId?: string | null
   /** Selected tag id filter, or `null` when no tag filter is active. */
-  tagFilter?: number | null;
+  tagFilter?: number | null
   /** Called when the user picks (or clears) a tag filter chip. */
-  onTagFilterChange?: (tagId: number | null) => void;
+  onTagFilterChange?: (tagId: number | null) => void
   /** True while a new user's demo link is still being seeded server-side. */
-  isSeedingDemo?: boolean;
+  isSeedingDemo?: boolean
 }
 
 /**
@@ -71,49 +71,49 @@ export function LinksBrowseSection({
   highlightedLinkId = null,
   tagFilter = null,
   onTagFilterChange,
-  isSeedingDemo = false,
+  isSeedingDemo = false
 }: LinksBrowseSectionProps) {
-  const theme = useTheme();
-  const { t } = useTranslation("links");
+  const theme = useTheme()
+  const { t } = useTranslation('links')
 
-  const count = sortedLinks.length;
+  const count = sortedLinks.length
   const description = hasActiveFilters
-    ? t("list.sections.linksFiltered", { count })
-    : t("list.sections.linksBrowseDescription", { count });
+    ? t('list.sections.linksFiltered', { count })
+    : t('list.sections.linksBrowseDescription', { count })
 
-  const [page, setPage] = useState(1);
-  const topRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(1)
+  const topRef = useRef<HTMLDivElement>(null)
 
-  const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE))
 
   // Jump back to page 1 whenever the result set changes (search/filter/sort) or
   // a freshly created link needs to be revealed at the top.
   useEffect(() => {
-    setPage(1);
-  }, [searchTerm, statusFilter, tagFilter, sortBy, highlightedLinkId]);
+    setPage(1)
+  }, [searchTerm, statusFilter, tagFilter, sortBy, highlightedLinkId])
 
   // Clamp the page if it falls out of range (e.g. after deleting the last item
   // on the final page).
   useEffect(() => {
-    if (page > totalPages) setPage(totalPages);
-  }, [page, totalPages]);
+    if (page > totalPages) setPage(totalPages)
+  }, [page, totalPages])
 
   const pageLinks = useMemo(
     () => sortedLinks.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-    [sortedLinks, page],
-  );
+    [sortedLinks, page]
+  )
 
   const handlePageChange = useCallback(
     (_event: React.ChangeEvent<unknown>, next: number) => {
-      setPage(next);
-      topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setPage(next)
+      topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     },
-    [],
-  );
+    []
+  )
 
-  const showPagination = count > PAGE_SIZE;
-  const rangeStart = (page - 1) * PAGE_SIZE + 1;
-  const rangeEnd = Math.min(page * PAGE_SIZE, count);
+  const showPagination = count > PAGE_SIZE
+  const rangeStart = (page - 1) * PAGE_SIZE + 1
+  const rangeEnd = Math.min(page * PAGE_SIZE, count)
 
   // A entrada suave dos cards é uma animação de *mount* (ver getLinkCardShellSx)
   // e os cards são keyed por link.id — quem sobrevive a um filtro nunca remonta,
@@ -127,20 +127,20 @@ export function LinksBrowseSection({
   // de criar um link) redistribuiria as cartas sozinho. Um link recém-criado
   // continua entrando animado — o card dele monta pela primeira vez de qualquer
   // forma.
-  const resultsKey = `${searchTerm}|${statusFilter}|${tagFilter ?? ""}|${sortBy}|${page}`;
+  const resultsKey = `${searchTerm}|${statusFilter}|${tagFilter ?? ''}|${sortBy}|${page}`
 
   return (
     <EnhancedPaper
-      variant="outlined"
+      variant='outlined'
       animated={false}
       sx={getLinksPanelSx(theme)}
     >
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
         <Box ref={topRef} sx={{ scrollMarginTop: { xs: 64, sm: 80 } }} />
         <LinksListSectionHeading
-          title={t("list.sections.links")}
+          title={t('list.sections.links')}
           description={description}
-          titleVariant="section"
+          titleVariant='section'
           sx={{ mb: { xs: 1.5, sm: 2 } }}
         />
         <LinksFilters
@@ -198,41 +198,41 @@ export function LinksBrowseSection({
         {showPagination ? (
           <Box
             sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              alignItems: "center",
-              justifyContent: "space-between",
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: 'center',
+              justifyContent: 'space-between',
               gap: 1.5,
               mt: 2,
               pt: 2,
-              borderTop: `1px solid ${getLinksBorderColor(theme)}`,
+              borderTop: `1px solid ${getLinksBorderColor(theme)}`
             }}
           >
             <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ fontSize: "0.75rem" }}
+              variant='caption'
+              color='text.secondary'
+              sx={{ fontSize: '0.75rem' }}
             >
-              {t("list.pagination.showing", {
+              {t('list.pagination.showing', {
                 from: rangeStart,
                 to: rangeEnd,
-                total: count,
+                total: count
               })}
             </Typography>
             <Pagination
               count={totalPages}
               page={page}
               onChange={handlePageChange}
-              color="primary"
-              shape="rounded"
-              size="small"
+              color='primary'
+              shape='rounded'
+              size='small'
               siblingCount={isMobile ? 0 : 1}
             />
           </Box>
         ) : null}
       </Box>
     </EnhancedPaper>
-  );
+  )
 }
 
-export default LinksBrowseSection;
+export default LinksBrowseSection
