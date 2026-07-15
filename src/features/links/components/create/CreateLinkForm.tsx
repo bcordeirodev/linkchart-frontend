@@ -83,8 +83,17 @@ export function CreateLinkForm({
       return;
     }
 
+    // The smart suggestion is the default: when the user left the name field
+    // empty, commit the resolved suggestion (the ghost the field was showing) so
+    // the created link matches it, instead of letting the backend mint a
+    // different random slug. `slugSuggestion` is already non-null only when it has
+    // resolved and the field is empty; a typed name always wins.
+    const typedSlug = (data.custom_slug ?? "").trim();
+    const effectiveSlug = typedSlug || slugSuggestion || undefined;
+
     const payload = {
       ...data,
+      custom_slug: effectiveSlug,
       expires_at: convertDateForSubmit(data.expires_at),
       starts_in: convertDateForSubmit(data.starts_in),
       utm_source: data.utm_source || undefined,
