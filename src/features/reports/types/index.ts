@@ -106,3 +106,71 @@ export interface ReportsFilters {
  * live-incident one.
  */
 export type ReportsPeriod = "7d" | "30d" | "90d";
+
+/**
+ * One row of the portfolio leaderboard — a link ranked by clicks, with its
+ * trend vs. the previous period of equal length and its share of the user's
+ * total clicks. Unlike {@link TopLinkRow} (clicks + unique visitors only),
+ * this answers a portfolio-level question per-link analytics can't: which of
+ * my links is trending, and how much of my traffic does each one represent?
+ *
+ * @remarks Endpoint: `GET /api/reports/link-performance`.
+ */
+export interface LinkPerformanceRow {
+  link_id: number;
+  /** User-facing title; `null` when the link has none set. */
+  title: string | null;
+  slug: string;
+  /** Custom short domain, or `null` when the link uses the default domain. */
+  short_domain: string | null;
+  /** Clicks in the selected period. */
+  clicks: number;
+  /**
+   * Percentage change vs. the immediately preceding period of equal length.
+   * `null` when that previous period had zero clicks for this link — there
+   * is no meaningful baseline to compare against.
+   */
+  variation_pct: number | null;
+  /**
+   * This link's share of the user's TOTAL clicks in the period (0-100, one
+   * decimal) — not just among the returned rows.
+   */
+  share_pct: number;
+}
+
+/**
+ * Machine-readable identifier for one portfolio insight. Frontend-only —
+ * used to map each `ReportsInsight.key` to a localized label + icon in
+ * `InsightsPanel`. Must stay in sync with the keys
+ * `ReportsAnalyticsService::getInsights()` returns.
+ */
+export type ReportsInsightKey =
+  | "best_performing_link"
+  | "fastest_growing_link"
+  | "top3_concentration"
+  | "account_growth";
+
+/**
+ * One computed, account-wide business insight for the `/reports` page.
+ *
+ * The server sends raw, language-agnostic values only — no sentences —
+ * `InsightsPanel` maps `key` to a localized label + icon and formats `value`
+ * (appending `unit` when present). `meta` carries insight-specific extra data
+ * that doesn't fit the generic `value`/`unit` shape (e.g. the supporting
+ * click count for `best_performing_link`).
+ *
+ * @remarks Endpoint: `GET /api/reports/insights`.
+ */
+export interface ReportsInsight {
+  key: ReportsInsightKey;
+  /**
+   * The headline value — a link name for the two link-identifying insights,
+   * a number for the two percentage ones. `null` when the insight cannot be
+   * computed (e.g. no clicks in the period, or no comparable baseline).
+   */
+  value: string | number | null;
+  /** Unit suffix for numeric values (currently always `"%"` or `null`). */
+  unit: string | null;
+  /** Insight-specific supporting data (e.g. `{ clicks, slug, link_id }`), or `null`. */
+  meta: Record<string, unknown> | null;
+}

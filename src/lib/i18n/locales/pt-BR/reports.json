@@ -49,5 +49,32 @@
       "quality_tier": "Qualidade do tráfego"
     }
   },
+  "linkPerformance": {
+    "title": "Desempenho dos links",
+    "subtitle": "Ranking dos seus links por cliques, com variação vs. o período anterior e participação no total",
+    "columns": {
+      "link": "Link",
+      "clicks": "Cliques",
+      "variation": "Variação",
+      "share": "Participação"
+    }
+  },
+  "insights": {
+    "title": "Insights do portfólio",
+    "subtitle": "Destaques calculados a partir de todos os seus links no período selecionado",
+    "bestPerformingLink": {
+      "label": "Link com melhor desempenho"
+    },
+    "fastestGrowingLink": {
+      "label": "Link que mais cresceu"
+    },
+    "top3Concentration": {
+      "label": "Concentração (top 3 links)"
+    },
+    "accountGrowth": {
+      "label": "Crescimento da conta"
+    },
+    "noData": "Sem dados suficientes"
+  },
   "empty": "Você ainda não tem cliques no período selecionado."
 }

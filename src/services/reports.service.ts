@@ -4,8 +4,10 @@ import { BaseService } from "@/services/base.service";
 
 import type {
   BreakdownRow,
+  LinkPerformanceRow,
   ReportsBreakdownDimension,
   ReportsFilters,
+  ReportsInsight,
   ReportsSummary,
   TimeseriesPoint,
   TopLinkRow,
@@ -140,6 +142,48 @@ export default class ReportsService extends BaseService {
 
     return this.get<BreakdownRow[]>(endpoint, {
       context: "reports_breakdown",
+    });
+  }
+
+  /**
+   * The user's own links ranked by clicks in the selected period, each with
+   * the variation vs. the previous period of equal length and its share of
+   * total clicks — the portfolio leaderboard powering `LinkPerformanceTable`.
+   *
+   * @param filters - shared date range + exclude-bots filter.
+   * @param limit - max rows to return (default `10`; backend caps at 50).
+   * @endpoint `GET /api/reports/link-performance?limit=`
+   */
+  async getLinkPerformance(
+    filters: ReportsFilters,
+    limit = 10,
+  ): Promise<LinkPerformanceRow[]> {
+    const endpoint = withQuery(
+      API_CONFIG.ENDPOINTS.REPORTS.LINK_PERFORMANCE,
+      buildReportsQuery(filters, { limit }),
+    );
+
+    return this.get<LinkPerformanceRow[]>(endpoint, {
+      context: "reports_link_performance",
+    });
+  }
+
+  /**
+   * Portfolio-level (account-wide) computed insights — best performing link,
+   * fastest growing link, top-3 traffic concentration and overall account
+   * growth — for the selected period. Powers `InsightsPanel`.
+   *
+   * @param filters - shared date range + exclude-bots filter.
+   * @endpoint `GET /api/reports/insights`
+   */
+  async getInsights(filters: ReportsFilters): Promise<ReportsInsight[]> {
+    const endpoint = withQuery(
+      API_CONFIG.ENDPOINTS.REPORTS.INSIGHTS,
+      buildReportsQuery(filters),
+    );
+
+    return this.get<ReportsInsight[]>(endpoint, {
+      context: "reports_insights",
     });
   }
 

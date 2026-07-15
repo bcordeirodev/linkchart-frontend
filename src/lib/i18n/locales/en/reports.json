@@ -49,5 +49,32 @@
       "quality_tier": "Traffic quality"
     }
   },
+  "linkPerformance": {
+    "title": "Link performance",
+    "subtitle": "Your links ranked by clicks, with trend vs. the previous period and share of the total",
+    "columns": {
+      "link": "Link",
+      "clicks": "Clicks",
+      "variation": "Trend",
+      "share": "Share"
+    }
+  },
+  "insights": {
+    "title": "Portfolio insights",
+    "subtitle": "Highlights computed across all of your links in the selected period",
+    "bestPerformingLink": {
+      "label": "Best performing link"
+    },
+    "fastestGrowingLink": {
+      "label": "Fastest growing link"
+    },
+    "top3Concentration": {
+      "label": "Concentration (top 3 links)"
+    },
+    "accountGrowth": {
+      "label": "Account growth"
+    },
+    "noData": "Not enough data"
+  },
   "empty": "You don't have any clicks in the selected period yet."
 }

@@ -111,6 +111,10 @@ export const queryKeys = {
       ["reports", "top-links", f ?? {}, limit ?? 10] as const,
     breakdown: (dimension: string, f?: ReportsQueryFilters) =>
       ["reports", "breakdown", dimension, f ?? {}] as const,
+    linkPerformance: (f?: ReportsQueryFilters, limit?: number) =>
+      ["reports", "link-performance", f ?? {}, limit ?? 10] as const,
+    insights: (f?: ReportsQueryFilters) =>
+      ["reports", "insights", f ?? {}] as const,
   },
   subdomains: {
     all: () => ["subdomains"] as const,

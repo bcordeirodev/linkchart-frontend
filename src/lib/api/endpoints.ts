@@ -98,6 +98,8 @@ export const API_CONFIG = {
       TIMESERIES: "/api/reports/timeseries",
       TOP_LINKS: "/api/reports/top-links",
       BREAKDOWN: "/api/reports/breakdown",
+      LINK_PERFORMANCE: "/api/reports/link-performance",
+      INSIGHTS: "/api/reports/insights",
       EXPORT_CLICKS: "/api/reports/export/clicks",
     },
   },
