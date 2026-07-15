@@ -370,6 +370,10 @@ export const IconIntents = {
   analytics: AppIcons.analytics.analytics,
   chart: AppIcons.analytics.chart,
   trending: AppIcons.analytics.trending,
+  reports: AppIcons.analytics.chart,
+
+  // Custom domains
+  subdomain: AppIcons.content.url,
 
   // Status
   success: AppIcons.status.success,
