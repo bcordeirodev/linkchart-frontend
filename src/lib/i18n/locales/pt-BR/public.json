@@ -84,12 +84,12 @@
     },
     "upgrade": {
       "title": "Obtenha mais com uma conta gratuita",
-      "description": "Rastreie cliques, reivindique um subdomínio personalizado grátis (ex.: sua-marca.linkcharts.com.br) e gerencie todos os seus links em um só lugar.",
+      "description": "Rastreie cliques, reivindique até 3 subdomínios personalizados grátis (ex.: sua-marca.linkcharts.com.br) e acompanhe relatórios de todos os seus links em um só lugar.",
       "button": "Criar conta gratuita"
     },
     "subdomainPromo": {
-      "title": "Subdomínio personalizado grátis",
-      "description": "Incluído na conta gratuita — sem custo extra. Seus links passam a usar a sua marca na URL.",
+      "title": "Até 3 subdomínios personalizados grátis",
+      "description": "Incluídos na conta gratuita — até 3 endereços com a sua marca na URL, sem custo extra.",
       "previewLabel": "Exemplo",
       "exampleLabel": "sua-marca",
       "exampleSlug": "promo"
@@ -241,9 +241,10 @@
       "features": [
         "Grátis para sempre",
         "QR Code incluso",
-        "Subdomínio personalizado grátis",
+        "Até 3 subdomínios grátis",
         "Estatísticas em tempo real",
         "Estatísticas avançadas por link",
+        "Relatórios do portfólio de links",
         "Rastreamento de campanhas UTM",
         "Dashboard completo de performance"
       ],
@@ -290,7 +291,7 @@
     "geoLocation": "Geolocalização de cliques",
     "utmCampaigns": "Campanhas UTM",
     "fullDashboard": "Dashboard completo",
-    "freeSubdomain": "Subdomínio personalizado grátis"
+    "freeSubdomain": "Até 3 subdomínios grátis"
   },
   "qr": {
     "errors": {
