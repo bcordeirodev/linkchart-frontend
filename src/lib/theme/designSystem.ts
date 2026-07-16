@@ -85,7 +85,7 @@ export const layoutSpacing = {
   page: {
     xs: spacingTokens.md, // 12px - Compacto em mobile
     sm: spacingTokens.lg, // 16px
-    md: spacingTokens.xxl, // 24px
+    md: spacingTokens.lg, // 16px (era 24px — desktop estava com padding em excesso)
   },
 
   // Grid spacing - REDUZIDO

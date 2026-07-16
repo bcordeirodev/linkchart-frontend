@@ -110,7 +110,7 @@ export function Navbar({
           sx={{
             px: { xs: 2, sm: 3, md: 4 },
             py: 1,
-            minHeight: { xs: 64, md: 72 },
+            minHeight: { xs: 64, md: 60 },
             // Split: à ESQUERDA só o ícone ☰ (desktop) / logo (mobile); à
             // DIREITA idioma + avatar.
             justifyContent: "space-between",

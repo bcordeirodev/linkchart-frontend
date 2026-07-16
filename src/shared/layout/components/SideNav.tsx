@@ -157,12 +157,13 @@ function SideNavRow({
         tone === "default" && active ? ("page" as const) : undefined
       }
       sx={{
-        mx: 1,
-        px: collapsed ? 1.5 : 2,
+        // Sem margem horizontal: o realce de hover/foco/ativo ocupa 100% da
+        // largura da sidebar (full-bleed, de borda a borda), com raio 0 — o
+        // conteúdo (ícone+rótulo) continua recuado pelo px interno.
+        mx: 0,
+        px: collapsed ? 1.5 : 2.5,
         py: 1.1,
-        // Indicador de hover/foco/ativo quase reto (1px), alinhado ao visual
-        // "sharp" da superfície unificada.
-        borderRadius: "1px",
+        borderRadius: 0,
         justifyContent: collapsed ? "center" : "flex-start",
         transition: ["background-color", "color", "border-color"]
           .map(
@@ -283,11 +284,11 @@ export function SideNav({ collapsed }: SideNavProps) {
           justifyContent: collapsed ? "center" : "flex-start",
           flexShrink: 0,
           // +1px vs. o header por design: o AppBar tem altura automática e soma
-          // a borda POR FORA (73px total no md), enquanto esta linha usa
+          // a borda POR FORA (Toolbar minHeight + 1), enquanto esta linha usa
           // minHeight + border-box (borda POR DENTRO). Igualar o minHeight ao
-          // Toolbar deixaria a borda 1px acima — daí 65/73 aqui, para as duas
-          // bordas caírem exatamente na mesma linha.
-          minHeight: { xs: 65, md: 73 },
+          // Toolbar deixaria a borda 1px acima — daí Toolbar+1 aqui (64→65,
+          // 60→61), para as duas bordas caírem exatamente na mesma linha.
+          minHeight: { xs: 65, md: 61 },
           px: collapsed ? 1.5 : 2.5,
           border: "none",
           borderBottom: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
