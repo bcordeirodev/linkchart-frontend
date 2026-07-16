@@ -3,7 +3,7 @@
   "appTagline": "Plataforma de Estatísticas",
   "nav": {
     "myLinks": "Meus Links",
-    "newLink": "Novo link",
+    "shortenUrl": "Encurtar URL",
     "reports": "Relatórios",
     "reportsDesc": "Estatísticas de todos os seus links",
     "subdomains": "Subdomínios",
