@@ -25,7 +25,6 @@ import type { LinkMeta, LinkResponse } from "@/types";
 
 import { LinkHealthBadge } from "./LinkHealthBadge";
 import { LinkSparkline } from "./LinkSparkline";
-import { LinkTagChips } from "./LinkTagChips";
 import { LinkTrendBadge } from "./LinkTrendBadge";
 import {
   getLinkCardMetricDividerSx,
@@ -141,8 +140,8 @@ export interface LinkCardMetricsProps {
  * Shared metrics footer row for link cards.
  *
  * Renders different segment sets depending on `variant`:
- * - `"rich"` matches the former desktop inline MetricsRow, plus a
- *   {@link LinkTagChips} line when the link has tags.
+ * - `"rich"` matches the former desktop inline MetricsRow (tags live in the
+ *   card's title row, not here — see `LinkCardRich`).
  * - `"compact"` matches the former mobile hand-rolled row (no tags — the
  *   mobile card renders those separately under the destination line).
  *
@@ -261,10 +260,6 @@ export function LinkCardMetrics({
             ) : null}
           </MetricsRow>
         </Box>
-
-        {/* Tag chips get their own line below the primary KPI row so they
-            never compete with clicks/trend/last-click for scan priority. */}
-        <LinkTagChips tags={link.tags} sx={{ mt: 0.5 }} />
       </>
     );
   }

@@ -29,6 +29,7 @@ import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 import { LinkCardMetrics } from "./LinkCardMetrics";
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
+import { LinkTagChips } from "./LinkTagChips";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
 import {
   linksRadius,
@@ -192,24 +193,45 @@ export function LinkCardRich({
           {/* Tight title+URL block — chip and menu live outside it so their
               taller hit areas can't push the URL below the thumb's edge. */}
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: 600,
-                fontSize: "0.875rem",
-                lineHeight: 1.3,
-                minWidth: 0,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
+            {/* Tag chips vivem na linha do título (não no rodapé de métricas):
+                tag é identidade/organização do link, então fica junto do nome.
+                Alinhados à direita: o título ocupa o espaço restante (flex: 1)
+                e trunca em "…" antes de empurrar os chips; os chips não
+                quebram linha e cada um trunca individualmente via maxWidth. */}
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={0.75}
+              sx={{ minWidth: 0 }}
             >
-              {link.title ||
-                meta?.preview?.og_title ||
-                link.slug ||
-                link.custom_slug ||
-                t("list.noTitle")}
-            </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  flex: 1,
+                  fontWeight: 600,
+                  fontSize: "0.875rem",
+                  lineHeight: 1.3,
+                  minWidth: 0,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {link.title ||
+                  meta?.preview?.og_title ||
+                  link.slug ||
+                  link.custom_slug ||
+                  t("list.noTitle")}
+              </Typography>
+              <LinkTagChips
+                tags={link.tags}
+                sx={{
+                  flexShrink: 0,
+                  flexWrap: "nowrap",
+                  "& .MuiChip-root": { maxWidth: 110 },
+                }}
+              />
+            </Stack>
 
             <Stack
               direction="row"
