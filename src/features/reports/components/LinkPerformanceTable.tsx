@@ -12,6 +12,7 @@
  */
 
 import {
+  Box,
   Card,
   Stack,
   Table,
@@ -22,7 +23,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { Trophy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -31,6 +32,7 @@ import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { useNavigate } from "@/shared/hooks";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
+import { LinkSparkline } from "@/features/reports/components/LinkSparkline";
 import {
   formatSignedPct,
   getVariationPillSx,
@@ -140,6 +142,7 @@ export function LinkPerformanceTable({
                   {t("topLinks.clicksCount", { count: row.clicks })} ·{" "}
                   {row.share_pct}%
                 </Typography>
+                <LinkSparkline data={row.spark} width={72} height={22} />
                 <VariationPill pct={row.variation_pct} />
               </Stack>
             </Card>
@@ -156,6 +159,9 @@ export function LinkPerformanceTable({
             <TableHead>
               <TableRow>
                 <TableCell>{t("linkPerformance.columns.link")}</TableCell>
+                <TableCell align="center" sx={{ width: 112 }}>
+                  {t("linkPerformance.columns.trend")}
+                </TableCell>
                 <TableCell align="right">
                   {t("linkPerformance.columns.clicks")}
                 </TableCell>
@@ -188,6 +194,11 @@ export function LinkPerformanceTable({
                       {shortLabel(row)}
                     </Typography>
                   </TableCell>
+                  <TableCell align="center">
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <LinkSparkline data={row.spark} />
+                    </Box>
+                  </TableCell>
                   <TableCell
                     align="right"
                     sx={{ fontVariantNumeric: "tabular-nums" }}
@@ -202,6 +213,26 @@ export function LinkPerformanceTable({
                     sx={{ fontVariantNumeric: "tabular-nums" }}
                   >
                     {row.share_pct}%
+                    <Box
+                      sx={{
+                        mt: 0.5,
+                        ml: "auto",
+                        width: 64,
+                        height: 4,
+                        borderRadius: 2,
+                        bgcolor: alpha(theme.palette.primary.main, 0.15),
+                        overflow: "hidden",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: `${Math.min(100, row.share_pct)}%`,
+                          height: "100%",
+                          borderRadius: 2,
+                          bgcolor: theme.palette.primary.main,
+                        }}
+                      />
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
