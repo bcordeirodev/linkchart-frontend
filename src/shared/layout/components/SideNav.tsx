@@ -316,6 +316,7 @@ export function SideNav({ collapsed }: SideNavProps) {
         >
           <Button
             variant="contained"
+            color="primary"
             disableElevation
             onClick={() => navigate("/links")}
             aria-label={t("nav.newLink")}
