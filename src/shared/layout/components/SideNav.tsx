@@ -18,6 +18,7 @@ import { useCallback } from "react";
 
 import {
   Box,
+  Button,
   Divider,
   List,
   ListItemButton,
@@ -102,16 +103,16 @@ function getSideNavRowSx(theme: Theme, tone: SideNavRowTone, active: boolean) {
     ...base,
     borderLeftColor: "transparent",
     backgroundColor: active
-      ? alpha(theme.palette.text.primary, isDark ? 0.09 : 0.06)
+      ? alpha(theme.palette.text.primary, isDark ? 0.08 : 0.05)
       : "transparent",
-    color: active
-      ? theme.palette.text.primary
-      : alpha(theme.palette.text.primary, isDark ? 0.72 : 0.7),
+    // Cores limpas do tema (não alpha da text.primary, que embaça o rótulo):
+    // inativo = secondary, ativo/hover = primary.
+    color: active ? theme.palette.text.primary : theme.palette.text.secondary,
     fontWeight: active ? 600 : 500,
     "&:hover": {
       backgroundColor: active
-        ? alpha(theme.palette.text.primary, isDark ? 0.12 : 0.09)
-        : alpha(theme.palette.text.primary, isDark ? 0.06 : 0.05),
+        ? alpha(theme.palette.text.primary, isDark ? 0.11 : 0.08)
+        : alpha(theme.palette.text.primary, isDark ? 0.05 : 0.04),
       color: theme.palette.text.primary,
     },
   };
@@ -158,8 +159,10 @@ function SideNavRow({
       sx={{
         mx: 1,
         px: collapsed ? 1.5 : 2,
-        py: 1.25,
-        borderRadius: `${radiusTokens.sm}px`,
+        py: 1.1,
+        // Indicador de hover/foco/ativo quase reto (1px), alinhado ao visual
+        // "sharp" da superfície unificada.
+        borderRadius: "1px",
         justifyContent: collapsed ? "center" : "flex-start",
         transition: ["background-color", "color", "border-color"]
           .map(
@@ -185,6 +188,8 @@ function SideNavRow({
           primaryTypographyProps={{
             fontSize: "0.875rem",
             fontWeight: "inherit",
+            letterSpacing: "0.01em",
+            lineHeight: 1.4,
             noWrap: true,
           }}
         />
@@ -298,6 +303,47 @@ export function SideNav({ collapsed }: SideNavProps) {
           showText={!collapsed}
           textSx={{ fontSize: "1rem", color: theme.palette.text.primary }}
         />
+      </Box>
+
+      {/* CTA primária — ação principal do app (criar link). Colapsa para só
+          o ícone "+" com tooltip quando a sidebar está recolhida. */}
+      <Box sx={{ px: 1.5, pt: 1.5, pb: 0.5 }}>
+        <Tooltip
+          title={t("nav.newLink")}
+          placement="right"
+          arrow
+          disableHoverListener={!collapsed}
+        >
+          <Button
+            variant="contained"
+            disableElevation
+            onClick={() => navigate("/links")}
+            aria-label={t("nav.newLink")}
+            startIcon={
+              collapsed ? undefined : <AppIcon intent="create" size={18} />
+            }
+            sx={{
+              width: "100%",
+              minWidth: 0,
+              py: 0.9,
+              px: collapsed ? 0 : 2,
+              borderRadius: `${radiusTokens.sm}px`,
+              textTransform: "none",
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              letterSpacing: "0.01em",
+              boxShadow: "none",
+              justifyContent: "center",
+              "& .MuiButton-startIcon": { mr: 0.75 },
+            }}
+          >
+            {collapsed ? (
+              <AppIcon intent="create" size={20} />
+            ) : (
+              t("nav.newLink")
+            )}
+          </Button>
+        </Tooltip>
       </Box>
 
       <List sx={{ py: 1, flexGrow: 1 }}>

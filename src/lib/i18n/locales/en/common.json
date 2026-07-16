@@ -3,6 +3,7 @@
   "appTagline": "Analytics Platform",
   "nav": {
     "myLinks": "My Links",
+    "newLink": "New link",
     "reports": "Reports",
     "reportsDesc": "Analytics across all your links",
     "subdomains": "Subdomains",
