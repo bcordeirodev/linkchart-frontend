@@ -14,6 +14,7 @@ import { PieChart, Rocket, TrendingUp, Trophy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { useNavigate } from "@/shared/hooks";
 
 import { formatSignedPct } from "@/features/reports/utils/variationPillStyles";
 
@@ -89,8 +90,11 @@ function metaNumber(
 function InsightCard({ insight }: { insight: ReportsInsight }) {
   const theme = useTheme();
   const { t } = useTranslation("reports");
+  const navigate = useNavigate();
   const isDark = theme.palette.mode === "dark";
   const color = insightColor(theme, insight.key);
+  const linkId = metaNumber(insight.meta, "link_id");
+  const clickable = linkId !== null;
 
   let value: string;
   let caption: string | null = null;
@@ -124,6 +128,11 @@ function InsightCard({ insight }: { insight: ReportsInsight }) {
 
   return (
     <Card
+      onClick={
+        clickable ? () => navigate(`/links/analytics/${linkId}`) : undefined
+      }
+      role={clickable ? "button" : undefined}
+      aria-label={clickable ? t("insights.viewLink") : undefined}
       sx={{
         p: 1.75,
         border: `1px solid ${theme.palette.divider}`,
@@ -132,6 +141,11 @@ function InsightCard({ insight }: { insight: ReportsInsight }) {
         flexDirection: "column",
         gap: 1,
         minWidth: 0,
+        ...(clickable && {
+          cursor: "pointer",
+          transition: "border-color 140ms ease",
+          "&:hover": { borderColor: theme.palette.primary.main },
+        }),
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
