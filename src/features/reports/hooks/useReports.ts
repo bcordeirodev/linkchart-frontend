@@ -18,7 +18,7 @@ import type {
   ReportsFilters,
   ReportsInsight,
   ReportsSummary,
-  TimeseriesPoint,
+  ReportsTimeseries,
   TopLinkRow,
 } from "@/features/reports/types";
 import type { UseQueryResult } from "@tanstack/react-query";
@@ -48,16 +48,16 @@ export function useReportsSummary(
 
 /**
  * Daily click counts across all of the user's links in the selected period —
- * powers `ClicksTimeseriesChart`.
+ * powers `ReportsOverviewHero`.
  *
  * @param filters - shared date range + exclude-bots filter.
- * @returns a TanStack Query result wrapping an array of {@link TimeseriesPoint}.
+ * @returns a TanStack Query result wrapping {@link ReportsTimeseries}.
  *
  * @remarks Endpoint: `GET /api/reports/timeseries`.
  */
 export function useReportsTimeseries(
   filters: ReportsFilters,
-): UseQueryResult<TimeseriesPoint[]> {
+): UseQueryResult<ReportsTimeseries> {
   return useQuery({
     queryKey: queryKeys.reports.timeseries(filters),
     queryFn: () => reportsService.getTimeseries(filters),
@@ -89,7 +89,7 @@ export function useTopLinks(
 /**
  * Click distribution across one dimension (country, device, browser,
  * navigation context or quality tier) in the selected period — powers
- * `BreakdownChart`.
+ * `BreakdownBars`.
  *
  * @param dimension - which column to group by.
  * @param filters - shared date range + exclude-bots filter.

@@ -6,5 +6,10 @@
 // Hooks
 export * from "./hooks/useReports";
 
+// Components
+export { ReportsOverviewHero } from "./components/ReportsOverviewHero";
+export { BreakdownBars } from "./components/BreakdownBars";
+export { LinkSparkline } from "./components/LinkSparkline";
+
 // Types
 export * from "./types";

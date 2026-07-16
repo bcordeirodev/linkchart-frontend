@@ -1,10 +1,13 @@
 "use client";
 /**
  * `/reports` — aggregated analytics across every non-demo link the
- * authenticated user owns: KPIs, a daily-clicks trend, a top-links ranking,
- * a selectable dimension breakdown, and a CSV export of the underlying
- * clicks. Sibling to the per-link dashboard at `/links/analytics/[id]`, but
- * scoped to the whole account instead of a single link.
+ * authenticated user owns: a comparative overview hero (KPIs fused with the
+ * daily trend chart, active vs. previous window), account-wide insights, a
+ * portfolio leaderboard with per-link sparklines, and a selectable dimension
+ * breakdown in ranked bars, plus a CSV export of the underlying clicks. The
+ * period filter supports 7/30/90-day presets and a custom date range.
+ * Sibling to the per-link dashboard at `/links/analytics/[id]`, but scoped to
+ * the whole account instead of a single link.
  */
 
 import { useMemo, useState } from "react";
@@ -19,12 +22,11 @@ import {
 import { Download } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { BreakdownChart } from "@/features/reports/components/BreakdownChart";
-import { ClicksTimeseriesChart } from "@/features/reports/components/ClicksTimeseriesChart";
+import { BreakdownBars } from "@/features/reports/components/BreakdownBars";
 import { InsightsPanel } from "@/features/reports/components/InsightsPanel";
 import { LinkPerformanceTable } from "@/features/reports/components/LinkPerformanceTable";
 import { ReportsDateFilter } from "@/features/reports/components/ReportsDateFilter";
-import { ReportsKpiHeader } from "@/features/reports/components/ReportsKpiHeader";
+import { ReportsOverviewHero } from "@/features/reports/components/ReportsOverviewHero";
 import {
   useBreakdown,
   useLinkPerformance,
@@ -43,6 +45,7 @@ import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 
 import type {
   ReportsBreakdownDimension,
+  ReportsCustomRange,
   ReportsFilters,
   ReportsPeriod,
 } from "@/features/reports/types";
@@ -50,7 +53,7 @@ import type {
 /**
  * Page-shaped loading placeholder shown while `AuthGuardRedirect` resolves
  * the session — mirrors the final layout's proportions (header, filter row,
- * KPI grid, chart) so there is no visible reflow once real content swaps in.
+ * hero) so there is no visible reflow once real content swaps in.
  */
 function ReportsPageSkeleton() {
   return (
@@ -65,27 +68,9 @@ function ReportsPageSkeleton() {
           height={56}
           sx={{ borderRadius: `${radiusTokens.md}px` }}
         />
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "1.45fr 1fr" },
-            gap: { xs: 2, md: 1.75 },
-          }}
-        >
-          <Skeleton
-            variant="rounded"
-            height={140}
-            sx={{ borderRadius: `${radiusTokens.md}px` }}
-          />
-          <Skeleton
-            variant="rounded"
-            height={140}
-            sx={{ borderRadius: `${radiusTokens.md}px` }}
-          />
-        </Box>
         <Skeleton
           variant="rounded"
-          height={340}
+          height={480}
           sx={{ borderRadius: `${radiusTokens.md}px` }}
         />
       </Stack>
@@ -105,13 +90,15 @@ function toErrorMessage(error: unknown): string | null {
 }
 
 /**
- * Aggregated reports page: KPI header, daily-clicks trend, top-links
- * ranking, a selectable dimension breakdown, and a CSV export button.
+ * Aggregated reports page: a comparative overview hero (KPIs fused with the
+ * daily trend, active vs. previous window), account-wide insights, a
+ * portfolio leaderboard with per-link sparklines, a selectable dimension
+ * breakdown in ranked bars, and a CSV export button.
  *
- * Filters (period + breakdown dimension) live as local component state, not
- * the URL — unlike the per-link analytics tabs (`useAnalyticsFilters`), this
- * page has no sub-tabs to keep in sync across navigations, so URL
- * persistence would add complexity with no real benefit.
+ * Filters (period + custom range + breakdown dimension) live as local
+ * component state, not the URL — unlike the per-link analytics tabs
+ * (`useAnalyticsFilters`), this page has no sub-tabs to keep in sync across
+ * navigations, so URL persistence would add complexity with no real benefit.
  */
 export default function ReportsPage() {
   const { isMobile } = useResponsive();
@@ -119,6 +106,10 @@ export default function ReportsPage() {
   const { showMessage } = useMessage();
 
   const [period, setPeriod] = useState<ReportsPeriod>("30d");
+  const [customRange, setCustomRange] = useState<ReportsCustomRange>({
+    from: null,
+    to: null,
+  });
   const [dimension, setDimension] =
     useState<ReportsBreakdownDimension>("country");
   const [exporting, setExporting] = useState(false);
@@ -127,8 +118,8 @@ export default function ReportsPage() {
   // excluded here, no UI toggle exposed (unlike the per-link tabs, which
   // let the user opt back in for raw traffic auditing).
   const filters: ReportsFilters = useMemo(
-    () => ({ ...resolveReportsPeriod(period), excludeBots: true }),
-    [period],
+    () => ({ ...resolveReportsPeriod(period, customRange), excludeBots: true }),
+    [period, customRange],
   );
 
   const summaryQuery = useReportsSummary(filters);
@@ -183,7 +174,34 @@ export default function ReportsPage() {
             }
           />
 
-          <ReportsDateFilter period={period} onPeriodChange={setPeriod} />
+          <ReportsDateFilter
+            period={period}
+            onPeriodChange={setPeriod}
+            customRange={customRange}
+            onCustomRangeChange={setCustomRange}
+          />
+
+          <AnalyticsStateManager
+            loading={summaryQuery.isLoading || timeseriesQuery.isLoading}
+            error={
+              toErrorMessage(summaryQuery.error) ??
+              toErrorMessage(timeseriesQuery.error)
+            }
+            hasData={(timeseriesQuery.data?.series.length ?? 0) > 0}
+            emptyMessage={t("empty")}
+            skeleton={
+              <Skeleton
+                variant="rounded"
+                height={480}
+                sx={{ borderRadius: `${radiusTokens.md}px` }}
+              />
+            }
+          >
+            <ReportsOverviewHero
+              summary={summaryQuery.data ?? null}
+              timeseries={timeseriesQuery.data ?? null}
+            />
+          </AnalyticsStateManager>
 
           {insightsQuery.isError ? (
             <Alert severity="error">
@@ -213,47 +231,6 @@ export default function ReportsPage() {
           ) : (
             <InsightsPanel data={insightsQuery.data ?? []} />
           )}
-
-          {summaryQuery.isError ? (
-            <Alert severity="error">{toErrorMessage(summaryQuery.error)}</Alert>
-          ) : summaryQuery.isLoading ? (
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: { xs: "1fr", md: "1.45fr 1fr" },
-                gap: { xs: 2, md: 1.75 },
-              }}
-            >
-              <Skeleton
-                variant="rounded"
-                height={140}
-                sx={{ borderRadius: `${radiusTokens.md}px` }}
-              />
-              <Skeleton
-                variant="rounded"
-                height={140}
-                sx={{ borderRadius: `${radiusTokens.md}px` }}
-              />
-            </Box>
-          ) : (
-            <ReportsKpiHeader summary={summaryQuery.data ?? null} />
-          )}
-
-          <AnalyticsStateManager
-            loading={timeseriesQuery.isLoading}
-            error={toErrorMessage(timeseriesQuery.error)}
-            hasData={(timeseriesQuery.data?.length ?? 0) > 0}
-            emptyMessage={t("empty")}
-            skeleton={
-              <Skeleton
-                variant="rounded"
-                height={340}
-                sx={{ borderRadius: `${radiusTokens.md}px` }}
-              />
-            }
-          >
-            <ClicksTimeseriesChart data={timeseriesQuery.data ?? []} />
-          </AnalyticsStateManager>
 
           <Box
             sx={{
@@ -295,7 +272,7 @@ export default function ReportsPage() {
                 />
               }
             >
-              <BreakdownChart
+              <BreakdownBars
                 data={breakdownQuery.data ?? []}
                 dimension={dimension}
                 onDimensionChange={setDimension}

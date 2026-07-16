@@ -9,7 +9,7 @@ import type {
   ReportsFilters,
   ReportsInsight,
   ReportsSummary,
-  TimeseriesPoint,
+  ReportsTimeseries,
   TopLinkRow,
 } from "@/features/reports/types";
 
@@ -86,20 +86,35 @@ export default class ReportsService extends BaseService {
   }
 
   /**
-   * Daily click counts across all of the user's links in the selected period.
+   * Daily clicks + unique visitors for the active window, plus the previous
+   * window's daily clicks (the dashed comparison overlay).
+   *
+   * Tolerates the legacy flat-array payload (backend not yet redeployed):
+   * a plain array is wrapped as `{series, previous: []}` with
+   * `unique_visitors` defaulted to 0, so the page renders without the
+   * overlay instead of crashing.
    *
    * @param filters - shared date range + exclude-bots filter.
    * @endpoint `GET /api/reports/timeseries`
    */
-  async getTimeseries(filters: ReportsFilters): Promise<TimeseriesPoint[]> {
+  async getTimeseries(filters: ReportsFilters): Promise<ReportsTimeseries> {
     const endpoint = withQuery(
       API_CONFIG.ENDPOINTS.REPORTS.TIMESERIES,
       buildReportsQuery(filters),
     );
 
-    return this.get<TimeseriesPoint[]>(endpoint, {
-      context: "reports_timeseries",
-    });
+    const raw = await this.get<
+      ReportsTimeseries | Array<{ date: string; clicks: number }>
+    >(endpoint, { context: "reports_timeseries" });
+
+    if (Array.isArray(raw)) {
+      return {
+        series: raw.map((p) => ({ ...p, unique_visitors: 0 })),
+        previous: [],
+      };
+    }
+
+    return raw;
   }
 
   /**

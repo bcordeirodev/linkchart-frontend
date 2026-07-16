@@ -34,15 +34,38 @@ export interface ReportsSummary {
 }
 
 /**
- * One point of the daily clicks timeseries.
+ * One point of the daily series for the ACTIVE window.
  *
- * @remarks Endpoint: `GET /api/reports/timeseries`.
+ * @remarks Endpoint: `GET /api/reports/timeseries` (campo `series`).
  */
 export interface TimeseriesPoint {
   /** Calendar date in `YYYY-MM-DD` format. */
   date: string;
-  /** Clicks recorded on that date. */
+  /** Clicks recorded on that date (0 when none — the backend zero-fills). */
   clicks: number;
+  /** Distinct visitors (by IP) on that date. */
+  unique_visitors: number;
+}
+
+/**
+ * One point of the PREVIOUS window's daily series — the dashed overlay in
+ * the overview chart. Aligned by index with {@link TimeseriesPoint} entries
+ * (both zero-filled to the same length by the backend).
+ */
+export interface PreviousTimeseriesPoint {
+  /** Calendar date in `YYYY-MM-DD` format (belongs to the previous window). */
+  date: string;
+  clicks: number;
+}
+
+/**
+ * Full timeseries payload: active window series + previous window overlay.
+ *
+ * @remarks Endpoint: `GET /api/reports/timeseries`.
+ */
+export interface ReportsTimeseries {
+  series: TimeseriesPoint[];
+  previous: PreviousTimeseriesPoint[];
 }
 
 /**
@@ -67,8 +90,11 @@ export interface TopLinkRow {
  */
 export type ReportsBreakdownDimension =
   | "country"
+  | "city"
   | "device"
+  | "os"
   | "browser"
+  | "social_platform"
   | "navigation_context"
   | "quality_tier";
 
@@ -101,11 +127,20 @@ export interface ReportsFilters {
 
 /**
  * Period presets offered by `ReportsDateFilter`. Unlike the per-link
- * `Period` type in `useAnalyticsFilters`, Reports only offers 7/30/90 days —
- * no `1h`/`24h`/`all`/`custom` — since it's a periodic-review page, not a
- * live-incident one.
+ * `Period` type in `useAnalyticsFilters`, Reports only offers 7/30/90 days
+ * plus `"custom"` — since it's a periodic-review page, not a live-incident
+ * one.
  */
-export type ReportsPeriod = "7d" | "30d" | "90d";
+export type ReportsPeriod = "7d" | "30d" | "90d" | "custom";
+
+/**
+ * Custom date range picked by the user when `ReportsPeriod` is `"custom"` —
+ * plain `yyyy-MM-dd` strings straight from the native date inputs.
+ */
+export interface ReportsCustomRange {
+  from: string | null;
+  to: string | null;
+}
 
 /**
  * One row of the portfolio leaderboard — a link ranked by clicks, with its
@@ -136,6 +171,11 @@ export interface LinkPerformanceRow {
    * decimal) — not just among the returned rows.
    */
   share_pct: number;
+  /**
+   * Daily clicks for this link across the window — one entry per calendar
+   * day, zero-filled, same length for every row. Powers the row sparkline.
+   */
+  spark: number[];
 }
 
 /**
