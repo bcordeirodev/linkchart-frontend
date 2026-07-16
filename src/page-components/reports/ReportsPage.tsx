@@ -187,7 +187,9 @@ export default function ReportsPage() {
               toErrorMessage(summaryQuery.error) ??
               toErrorMessage(timeseriesQuery.error)
             }
-            hasData={(timeseriesQuery.data?.series.length ?? 0) > 0}
+            hasData={
+              timeseriesQuery.data?.series.some((p) => p.clicks > 0) ?? false
+            }
             emptyMessage={t("empty")}
             skeleton={
               <Skeleton

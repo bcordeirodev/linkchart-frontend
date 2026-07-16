@@ -69,7 +69,7 @@
     "columns": {
       "link": "Link",
       "clicks": "Clicks",
-      "variation": "Trend",
+      "variation": "Change",
       "share": "Share",
       "trend": "Trend"
     }
