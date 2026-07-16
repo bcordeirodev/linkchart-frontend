@@ -42,7 +42,7 @@ import type { Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
 
 /** Largura (px) da sidebar expandida (ícone + rótulo). */
-const EXPANDED_WIDTH = 240;
+const EXPANDED_WIDTH = 280;
 /** Largura (px) da sidebar colapsada (apenas ícones). */
 const COLLAPSED_WIDTH = 72;
 
@@ -69,13 +69,10 @@ function isRouteActive(pathname: string | null, route: string): boolean {
 /**
  * Calcula o `sx` de uma linha da sidebar conforme seu `tone` e estado ativo.
  *
- * Todas as linhas reservam 3px de `borderLeft` transparente (mesmo as que
- * nunca ficam "ativas", como Sair) para que o ícone fique sempre alinhado no
- * mesmo x, independente do tone — só a cor do indicador muda. Itens
- * `default` ativos ganham a barra esquerda + fundo tintado na cor primária
- * (o mesmo idioma do sublinhado ativo do `Navbar` horizontal, adaptado para
- * orientação vertical); `danger` (Sair) nunca participa do destaque de rota
- * ativa.
+ * Sem indicador de borda esquerda: o destaque de hover/foco/ativo é uma
+ * pílula arredondada recuada das bordas da sidebar (mesma linguagem do
+ * tema de referência) — só o fundo e o peso da fonte distinguem o estado.
+ * `danger` (Sair) nunca participa do destaque de rota ativa.
  *
  * @param theme - tema MUI atual (para cores e modo claro/escuro).
  * @param tone - paleta de cor da linha.
@@ -84,13 +81,9 @@ function isRouteActive(pathname: string | null, route: string): boolean {
  */
 function getSideNavRowSx(theme: Theme, tone: SideNavRowTone, active: boolean) {
   const isDark = theme.palette.mode === "dark";
-  const base = {
-    borderLeft: "3px solid transparent",
-  };
 
   if (tone === "danger") {
     return {
-      ...base,
       color: theme.palette.error.main,
       "&:hover": { backgroundColor: theme.palette.action.hover },
     };
@@ -100,8 +93,6 @@ function getSideNavRowSx(theme: Theme, tone: SideNavRowTone, active: boolean) {
   // fica colorida — o ativo se distingue por um leve fundo tintado + peso 600.
   // Inativo parte de um tom claro; hover acende para o text.primary cheio.
   return {
-    ...base,
-    borderLeftColor: "transparent",
     backgroundColor: active
       ? alpha(theme.palette.text.primary, isDark ? 0.08 : 0.05)
       : "transparent",
@@ -157,15 +148,17 @@ function SideNavRow({
         tone === "default" && active ? ("page" as const) : undefined
       }
       sx={{
-        // Sem margem horizontal: o realce de hover/foco/ativo ocupa 100% da
-        // largura da sidebar (full-bleed, de borda a borda), com raio 0 — o
-        // conteúdo (ícone+rótulo) continua recuado pelo px interno.
-        mx: 0,
-        px: collapsed ? 1.5 : 2.5,
-        py: 1.1,
-        borderRadius: 0,
+        // Métricas da pílula (referência Fuse): linha de 40px de altura fixa,
+        // recuada 12px das bordas da sidebar, raio 8px e 4px de respiro entre
+        // linhas — o realce nunca encosta nas bordas.
+        mx: 1.5,
+        mb: 0.5,
+        px: 1.5,
+        py: 0,
+        minHeight: 40,
+        borderRadius: `${radiusTokens.md}px`,
         justifyContent: collapsed ? "center" : "flex-start",
-        transition: ["background-color", "color", "border-color"]
+        transition: ["background-color", "color"]
           .map(
             (prop) =>
               `${prop} ${motionTokens.duration.base} ${motionTokens.easing.default}`,
@@ -187,10 +180,9 @@ function SideNavRow({
         <ListItemText
           primary={label}
           primaryTypographyProps={{
-            fontSize: "0.875rem",
+            fontSize: "0.8125rem",
             fontWeight: "inherit",
-            letterSpacing: "0.01em",
-            lineHeight: 1.4,
+            lineHeight: 1.5,
             noWrap: true,
           }}
         />
@@ -306,11 +298,12 @@ export function SideNav({ collapsed }: SideNavProps) {
         />
       </Box>
 
-      {/* CTA primária — ação principal do app (criar link). Colapsa para só
-          o ícone "+" com tooltip quando a sidebar está recolhida. */}
+      {/* CTA primária — ação principal do app (encurtar URL). Leva direto ao
+          formulário de criação; colapsa para só o ícone "+" com tooltip
+          quando a sidebar está recolhida. */}
       <Box sx={{ px: 1.5, pt: 1.5, pb: 0.5 }}>
         <Tooltip
-          title={t("nav.newLink")}
+          title={t("nav.shortenUrl")}
           placement="right"
           arrow
           disableHoverListener={!collapsed}
@@ -319,8 +312,8 @@ export function SideNav({ collapsed }: SideNavProps) {
             variant="contained"
             color="primary"
             disableElevation
-            onClick={() => navigate("/links")}
-            aria-label={t("nav.newLink")}
+            onClick={() => navigate("/links/create")}
+            aria-label={t("nav.shortenUrl")}
             startIcon={
               collapsed ? undefined : <AppIcon intent="create" size={18} />
             }
@@ -342,7 +335,7 @@ export function SideNav({ collapsed }: SideNavProps) {
             {collapsed ? (
               <AppIcon intent="create" size={20} />
             ) : (
-              t("nav.newLink")
+              t("nav.shortenUrl")
             )}
           </Button>
         </Tooltip>
