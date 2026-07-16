@@ -125,13 +125,22 @@ export function BulkActionsBar({
             ) : null}
           </Stack>
 
-          <Stack direction="row" spacing={1} sx={{ "& > button": { flex: 1 } }}>
+          {/* No mobile os botões esticam para alvos de toque largos (thumb
+              reach); no desktop ficam compactos e a ação destrutiva (Excluir)
+              é empurrada para a direita (ml:auto), separada dos toggles seguros
+              para reduzir clique acidental. */}
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={isMobile ? { "& > button": { flex: 1 } } : undefined}
+          >
             <Button
               size="small"
               variant="outlined"
               disabled={isRunning}
               onClick={onActivate}
-              sx={{ minHeight: 44 }}
+              sx={{ minHeight: isMobile ? 44 : 38 }}
             >
               {t("bulk.activate")}
             </Button>
@@ -140,7 +149,7 @@ export function BulkActionsBar({
               variant="outlined"
               disabled={isRunning}
               onClick={onDeactivate}
-              sx={{ minHeight: 44 }}
+              sx={{ minHeight: isMobile ? 44 : 38 }}
             >
               {t("bulk.deactivate")}
             </Button>
@@ -151,7 +160,10 @@ export function BulkActionsBar({
               disabled={isRunning}
               onClick={() => setConfirmOpen(true)}
               startIcon={<Trash2 size={16} strokeWidth={1.75} />}
-              sx={{ minHeight: 44 }}
+              sx={{
+                minHeight: isMobile ? 44 : 38,
+                ml: isMobile ? undefined : "auto",
+              }}
             >
               {t("bulk.delete")}
             </Button>
