@@ -9,7 +9,10 @@
     "period": "Período",
     "last7": "Últimos 7 dias",
     "last30": "Últimos 30 dias",
-    "last90": "Últimos 90 dias"
+    "last90": "Últimos 90 dias",
+    "custom": "Personalizado",
+    "from": "De",
+    "to": "Até"
   },
   "kpis": {
     "totalClicks": "Cliques no período",
@@ -17,6 +20,14 @@
     "activeLinks": "Links ativos",
     "avgPerDay": "Média por dia",
     "variation": "Variação vs. período anterior"
+  },
+  "overview": {
+    "title": "Visão geral",
+    "subtitle": "Total do período e evolução diária comparada ao período anterior",
+    "metricClicks": "Cliques",
+    "metricVisitors": "Visitantes únicos",
+    "previousPeriod": "Período anterior",
+    "metricToggleLabel": "Métrica do gráfico"
   },
   "timeseries": {
     "title": "Cliques por dia",
@@ -46,7 +57,10 @@
       "device": "Dispositivo",
       "browser": "Navegador",
       "navigation_context": "Origem da navegação",
-      "quality_tier": "Qualidade do tráfego"
+      "quality_tier": "Qualidade do tráfego",
+      "city": "Cidade",
+      "os": "Sistema operacional",
+      "social_platform": "Plataforma social"
     }
   },
   "linkPerformance": {
@@ -56,7 +70,8 @@
       "link": "Link",
       "clicks": "Cliques",
       "variation": "Variação",
-      "share": "Participação"
+      "share": "Participação",
+      "trend": "Tendência"
     }
   },
   "insights": {
@@ -74,7 +89,8 @@
     "accountGrowth": {
       "label": "Crescimento da conta"
     },
-    "noData": "Sem dados suficientes"
+    "noData": "Sem dados suficientes",
+    "viewLink": "Ver estatísticas do link"
   },
   "empty": "Você ainda não tem cliques no período selecionado."
 }

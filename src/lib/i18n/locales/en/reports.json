@@ -9,7 +9,10 @@
     "period": "Period",
     "last7": "Last 7 days",
     "last30": "Last 30 days",
-    "last90": "Last 90 days"
+    "last90": "Last 90 days",
+    "custom": "Custom",
+    "from": "From",
+    "to": "To"
   },
   "kpis": {
     "totalClicks": "Clicks in period",
@@ -17,6 +20,14 @@
     "activeLinks": "Active links",
     "avgPerDay": "Average per day",
     "variation": "Variation vs. previous period"
+  },
+  "overview": {
+    "title": "Overview",
+    "subtitle": "Period total and daily trend compared to the previous period",
+    "metricClicks": "Clicks",
+    "metricVisitors": "Unique visitors",
+    "previousPeriod": "Previous period",
+    "metricToggleLabel": "Chart metric"
   },
   "timeseries": {
     "title": "Clicks per day",
@@ -46,7 +57,10 @@
       "device": "Device",
       "browser": "Browser",
       "navigation_context": "Navigation source",
-      "quality_tier": "Traffic quality"
+      "quality_tier": "Traffic quality",
+      "city": "City",
+      "os": "Operating system",
+      "social_platform": "Social platform"
     }
   },
   "linkPerformance": {
@@ -56,7 +70,8 @@
       "link": "Link",
       "clicks": "Clicks",
       "variation": "Trend",
-      "share": "Share"
+      "share": "Share",
+      "trend": "Trend"
     }
   },
   "insights": {
@@ -74,7 +89,8 @@
     "accountGrowth": {
       "label": "Account growth"
     },
-    "noData": "Not enough data"
+    "noData": "Not enough data",
+    "viewLink": "View link analytics"
   },
   "empty": "You don't have any clicks in the selected period yet."
 }
