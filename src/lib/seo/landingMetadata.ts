@@ -29,7 +29,7 @@ export function buildLandingMetadata(): Metadata {
   const title = "Encurtador de Link Gratuito com Analytics em Tempo Real";
   const fullTitle = `${title} | Link Charts`;
   const description =
-    "Encurte qualquer URL gratuitamente, sem cadastro. Rastreie cliques por país, dispositivo e campanha UTM. Subdomínio personalizado, QR Code e slug customizado grátis.";
+    "Encurte qualquer URL gratuitamente, sem cadastro. Rastreie cliques por país, dispositivo e campanha UTM. Até 3 subdomínios personalizados, QR Code e relatórios de todos os seus links — grátis.";
   const ogImageAlt = "Link Charts — Encurtador de Link com Analytics";
 
   return {

@@ -84,12 +84,12 @@
     },
     "upgrade": {
       "title": "Get more with a free account",
-      "description": "Track clicks, claim a free custom subdomain (e.g. your-brand.linkcharts.com.br) and manage all your links in one place.",
+      "description": "Track clicks, claim up to 3 free custom subdomains (e.g. your-brand.linkcharts.com.br) and follow reports across all your links in one place.",
       "button": "Create free account"
     },
     "subdomainPromo": {
-      "title": "Free custom subdomain",
-      "description": "Included with your free account — no extra cost. Your short links use your brand in the URL.",
+      "title": "Up to 3 free custom subdomains",
+      "description": "Included with your free account — up to 3 addresses with your brand in the URL, no extra cost.",
       "previewLabel": "Example",
       "exampleLabel": "your-brand",
       "exampleSlug": "promo"
@@ -241,9 +241,10 @@
       "features": [
         "Free forever",
         "QR Code included",
-        "Free custom subdomain",
+        "Up to 3 free subdomains",
         "Real-time analytics",
         "Advanced analytics per link",
+        "Portfolio reports dashboard",
         "UTM campaign tracking",
         "Full performance dashboard"
       ],
@@ -290,7 +291,7 @@
     "geoLocation": "Click geolocation",
     "utmCampaigns": "UTM campaigns",
     "fullDashboard": "Full analytics dashboard",
-    "freeSubdomain": "Free custom subdomain"
+    "freeSubdomain": "Up to 3 free subdomains"
   },
   "qr": {
     "errors": {

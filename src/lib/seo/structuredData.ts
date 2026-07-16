@@ -30,7 +30,7 @@ export function buildWebApplicationSchema() {
     "@type": "WebApplication",
     name: "Link Charts",
     description:
-      "Link Charts is a free URL shortener with real-time analytics. Track link clicks by geography, device, browser and UTM campaign — no account required. Free accounts include a custom subdomain, QR code and public analytics page per link.",
+      "Link Charts is a free URL shortener with real-time analytics. Track link clicks by geography, device, browser and UTM campaign — no account required. Free accounts include up to 3 custom subdomains, a portfolio reports dashboard, a QR code and a public analytics page per link.",
     url: APP_URL,
     applicationCategory: "UtilityApplication",
     applicationSubCategory: "URL Shortener",
@@ -44,10 +44,12 @@ export function buildWebApplicationSchema() {
       "Geographic analytics by country, region and city",
       "Device, browser and OS breakdown",
       "Custom slug for branded short links",
-      "Free custom subdomain for branded short links (e.g. your-brand.linkcharts.com.br)",
+      "Up to 3 free custom subdomains for branded short links (e.g. your-brand.linkcharts.com.br)",
       "Free QR code automatically generated for every link",
       "UTM campaign parameter tracking",
       "Public shareable analytics page per link",
+      "Portfolio reports dashboard aggregating clicks and top links across your account",
+      "Bulk link management with search, filters and multi-select actions",
       "Link expiration date and click limit controls",
       "Google Safe Browsing URL safety verification",
       "WhatsApp-compatible short links",
@@ -165,7 +167,7 @@ export function buildFaqSchemaPtBR() {
         name: "Posso ter subdomínio personalizado gratuito para meus links?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Sim. Ao criar uma conta gratuita no Link Charts, você pode definir um subdomínio personalizado (por exemplo: seunome.linkcharts.com.br) para todos os seus links encurtados, sem custo adicional.",
+          text: "Sim. Ao criar uma conta gratuita no Link Charts, você pode definir até 3 subdomínios personalizados (por exemplo: seunome.linkcharts.com.br) para os seus links encurtados, sem custo adicional.",
         },
       },
       {
@@ -286,7 +288,7 @@ export function buildCompareBitlyFaqSchema() {
         name: "Dá para usar um subdomínio próprio no encurtador de URL?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Sim. O Link Charts permite subdomínio personalizado, inclusive no uso gratuito, enquanto no Bitly domínios personalizados ficam nos planos pagos.",
+          text: "Sim. O Link Charts permite até 3 subdomínios personalizados, inclusive no uso gratuito, enquanto no Bitly domínios personalizados ficam nos planos pagos.",
         },
       },
     ],

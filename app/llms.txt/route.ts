@@ -13,14 +13,17 @@ export function GET(): Response {
 
   const body = `# Link Charts
 
-> Link Charts é um encurtador de URL gratuito com analytics avançado em tempo real. Além de links curtos, entrega estatísticas de cliques por geografia, dispositivo, navegador, origem de tráfego, evolução temporal e um score de qualidade que separa tráfego orgânico de suspeito. Foco no mercado brasileiro (pt-BR).
+> Link Charts é um encurtador de URL gratuito com analytics avançado em tempo real. Além de links curtos, entrega estatísticas de cliques por geografia, dispositivo, navegador, origem de tráfego, evolução temporal e um score de qualidade que separa tráfego orgânico de suspeito. Também reúne relatórios de portfólio (visão agregada de toda a conta), até 3 subdomínios personalizados por conta e gerenciamento de links em massa. Foco no mercado brasileiro (pt-BR).
 
 ## O que o produto faz
 - Encurta URLs longas em links curtos rastreáveis
-- Analytics avançado: geografia, dispositivos, temporal, audiência e qualidade de tráfego
+- Analytics avançado por link: geografia, dispositivos, temporal, audiência e qualidade de tráfego
+- Relatórios de portfólio: visão agregada de cliques, tendências e melhores links de toda a conta
 - Preview em redes sociais (Open Graph) para cada link
 - Páginas de analytics públicas e compartilháveis por link
-- Subdomínios personalizados
+- Até 3 subdomínios personalizados por conta (URLs com a sua marca)
+- Gerenciamento de links em massa: busca, filtros e ações em lote
+- Conta gratuita com exclusão self-service dos dados (LGPD)
 
 ## Páginas principais
 - [Encurtador (home)](${appUrl}/): criar links curtos gratuitos com analytics em tempo real
