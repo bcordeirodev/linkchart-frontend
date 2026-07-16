@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
+  Button,
   TextField,
   Switch,
   FormControlLabel,
@@ -36,6 +37,7 @@ import {
 import { useSlugAvailability } from "../../hooks/useSlugAvailability";
 import { FormSection } from "./FormSection";
 import { LinkTagPicker } from "./LinkTagPicker";
+import { ManageTagsDialog } from "./ManageTagsDialog";
 
 import type { LinkFormData } from "./LinkFormSchema";
 import type { Control, FieldErrors } from "react-hook-form";
@@ -107,6 +109,9 @@ export function LinkFormFields({
 }: LinkFormFieldsProps) {
   const { t } = useTranslation("links");
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("sm"));
+  // Dialog de gestão de tags (renomear/recolorir/excluir) — aberto pelo
+  // botão "Gerenciar" ao lado do label do campo Tags.
+  const [manageTagsOpen, setManageTagsOpen] = useState(false);
 
   // Create: the prefix follows whichever subdomain is currently selected in
   // `SubdomainSelect`. Edit: the domain is immutable, so it's derived from
@@ -372,14 +377,41 @@ export function LinkFormFields({
           </Box>
 
           <Box>
-            <FormLabel
-              htmlFor="link-form-tags"
-              error={!!errors.tag_ids}
-              sx={{ display: "block", mb: 0.75 }}
+            {/* Label + "Gerenciar": o dialog é a única porta para renomear,
+                recolorir ou excluir tags (a criação é inline no picker). */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                mb: 0.75,
+              }}
             >
-              {t("form.tags.label")}
-            </FormLabel>
+              <FormLabel htmlFor="link-form-tags" error={!!errors.tag_ids}>
+                {t("form.tags.label")}
+              </FormLabel>
+              <Button
+                size="small"
+                onClick={() => setManageTagsOpen(true)}
+                sx={{
+                  minWidth: 0,
+                  py: 0,
+                  px: 0.5,
+                  fontSize: "0.75rem",
+                  fontWeight: 500,
+                  textTransform: "none",
+                  color: "text.secondary",
+                  "&:hover": { color: "primary.main", background: "none" },
+                }}
+              >
+                {t("form.tags.manage.open")}
+              </Button>
+            </Box>
             <LinkTagPicker control={control} />
+            <ManageTagsDialog
+              open={manageTagsOpen}
+              onClose={() => setManageTagsOpen(false)}
+            />
           </Box>
         </Stack>
       </FormSection>

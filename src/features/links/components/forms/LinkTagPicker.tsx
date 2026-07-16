@@ -144,7 +144,9 @@ export function LinkTagPicker({ control }: LinkTagPickerProps) {
                   fieldState.error?.message ||
                   (pendingName
                     ? t("form.tags.creating", { name: pendingName })
-                    : t("form.tags.helper"))
+                    : !isLoading && tags.length === 0
+                      ? t("form.tags.helperEmpty")
+                      : t("form.tags.helper"))
                 }
                 InputProps={{
                   ...params.InputProps,

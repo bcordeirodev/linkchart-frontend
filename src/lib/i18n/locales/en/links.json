@@ -166,7 +166,19 @@
       "placeholderLimitReached": "5-tag limit reached",
       "helper": "Select up to 5 tags. Type a new name and press Enter to create a tag.",
       "creating": "Creating tag \"{{name}}\"…",
-      "noOptions": "No tags found — type to create a new one."
+      "noOptions": "No tags found — type to create a new one.",
+      "helperEmpty": "You don't have any tags yet — type a name and press Enter to create your first one.",
+      "manage": {
+        "open": "Manage",
+        "title": "Manage tags",
+        "description": "Rename, recolor or delete tags — changes apply to all your links.",
+        "empty": "You don't have any tags yet. Type a name in the tags field and press Enter to create one.",
+        "nameLabel": "Tag name",
+        "editAria": "Edit tag {{name}}",
+        "deleteAria": "Delete tag {{name}}",
+        "deleteConfirm": "Delete \"{{name}}\"? It will be removed from all your links.",
+        "colorAria": "Use color {{color}}"
+      }
     },
     "sections": {
       "basic": "Basic",

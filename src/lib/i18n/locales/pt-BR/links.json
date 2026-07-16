@@ -166,7 +166,19 @@
       "placeholderLimitReached": "Limite de 5 tags atingido",
       "helper": "Selecione até 5 tags. Digite um nome novo e pressione Enter para criar uma tag.",
       "creating": "Criando tag \"{{name}}\"…",
-      "noOptions": "Nenhuma tag encontrada — digite para criar uma nova."
+      "noOptions": "Nenhuma tag encontrada — digite para criar uma nova.",
+      "helperEmpty": "Você ainda não tem tags — digite um nome e pressione Enter para criar a primeira.",
+      "manage": {
+        "open": "Gerenciar",
+        "title": "Gerenciar tags",
+        "description": "Renomeie, mude a cor ou exclua tags — as mudanças valem para todos os links.",
+        "empty": "Você ainda não tem tags. Digite um nome no campo de tags e pressione Enter para criar.",
+        "nameLabel": "Nome da tag",
+        "editAria": "Editar tag {{name}}",
+        "deleteAria": "Excluir tag {{name}}",
+        "deleteConfirm": "Excluir \"{{name}}\"? Ela será removida de todos os links.",
+        "colorAria": "Usar a cor {{color}}"
+      }
     },
     "sections": {
       "basic": "Básico",
