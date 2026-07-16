@@ -106,14 +106,13 @@ function buildHeroChart(
         lineCap: "round",
       },
       fill: {
-        type: showPrevious ? ["gradient", "solid"] : "gradient",
-        opacity: showPrevious ? [0.45, 0] : 0.45,
+        type: "gradient",
         gradient: {
           shade: "light",
           type: "vertical",
           shadeIntensity: 0.25,
-          opacityFrom: 0.45,
-          opacityTo: 0.05,
+          opacityFrom: showPrevious ? [0.45, 0] : 0.45,
+          opacityTo: showPrevious ? [0.05, 0] : 0.05,
           stops: [0, 100],
         },
       },
