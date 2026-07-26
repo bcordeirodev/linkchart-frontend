@@ -32,6 +32,16 @@ interface LinkCardActionBarProps {
    *   instead) and lets the copy control fill the row at a ≥44px tap height.
    */
   analyticsAccess?: "inline" | "card";
+  /**
+   * Whether this link has anything to show in the dashboard yet.
+   *
+   * A link with zero clicks opens an empty dashboard, so the CTA is dropped and
+   * the copy strip takes the whole row — for a link nobody has clicked, sharing
+   * it *is* the next step. The CTA reappears with the first click.
+   *
+   * @default true
+   */
+  showAnalytics?: boolean;
   sx?: SxProps<Theme>;
 }
 
@@ -44,6 +54,7 @@ export function LinkCardActionBar({
   onAnalytics,
   withTopBorder = false,
   analyticsAccess = "inline",
+  showAnalytics = true,
   sx,
 }: LinkCardActionBarProps) {
   const theme = useTheme();
@@ -195,7 +206,7 @@ export function LinkCardActionBar({
         </Button>
       </Tooltip>
 
-      {analyticsAccess === "inline" ? (
+      {analyticsAccess === "inline" && showAnalytics ? (
         <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
           <Box
             data-tour="analytics"

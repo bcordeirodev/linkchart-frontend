@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { Control, UseFormSetValue } from "react-hook-form";
 import { useWatch } from "react-hook-form";
 
@@ -44,18 +44,41 @@ export function useCreateLinkMetaSuggestions({
     status,
   } = usePublicSlugSuggestion(urlValue ?? null);
 
+  // The title we last filled in ourselves. While the field still holds it, the
+  // field is ours to update — so pointing the form at a different URL replaces
+  // the title too. Without this the auto-filled title outlived the URL it came
+  // from: it was only ever written into an *empty* field, and filling it made
+  // the condition false forever.
+  const autoTitleRef = useRef<string | null>(null);
+  const currentTitle = titleValue?.trim() ?? "";
+  const titleIsOurs = !currentTitle || currentTitle === autoTitleRef.current;
+  const resolvedTitle = ogTitle?.trim() || null;
+
   const titleSuggestion =
-    ogTitle?.trim() && !titleValue?.trim() ? ogTitle.trim() : null;
+    titleIsOurs && resolvedTitle && resolvedTitle !== currentTitle
+      ? resolvedTitle
+      : null;
 
   useEffect(() => {
     if (!titleSuggestion) {
       return;
     }
+    autoTitleRef.current = titleSuggestion;
     setValue("title", titleSuggestion, {
       shouldValidate: false,
       shouldDirty: false,
     });
   }, [titleSuggestion, setValue]);
+
+  // Clear our own title while a new destination resolves, so a title read from
+  // the previous page never sits under the new URL.
+  useEffect(() => {
+    if (status !== "resolving" || !titleIsOurs || !currentTitle) {
+      return;
+    }
+    autoTitleRef.current = null;
+    setValue("title", "", { shouldValidate: false, shouldDirty: false });
+  }, [status, titleIsOurs, currentTitle, setValue]);
 
   return {
     slugSuggestion:

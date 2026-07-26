@@ -25,6 +25,8 @@ import {
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
+import { getWeekdayLabel } from "@/features/analytics/utils/weekday";
+
 import type { PeakAnalysis, TemporalData } from "@/types";
 
 import { ViralRankMiniChart } from "./ViralRankMiniChart";
@@ -43,8 +45,18 @@ export function PeakAnalysisCard({
   viralRankByDay,
 }: PeakAnalysisCardProps) {
   const { t } = useTranslation("analytics");
-  const { peak_hour, peak_day_name, peak_hour_clicks, peak_day_clicks } =
-    peakAnalysis;
+  const {
+    peak_hour,
+    peak_day,
+    peak_day_name,
+    peak_hour_clicks,
+    peak_day_clicks,
+  } = peakAnalysis;
+
+  // `peak_day_name` arrives hardcoded in Portuguese from the API; the ISO
+  // `peak_day` number is what can actually be localized. The name is kept only
+  // as a last-resort fallback for payloads without the number.
+  const peakDayLabel = getWeekdayLabel(peak_day, t, peak_day_name ?? "--");
 
   const [showRecs, setShowRecs] = useState(false);
 
@@ -220,7 +232,7 @@ export function PeakAnalysisCard({
                         variant="h5"
                         sx={{ mb: 0.5, fontWeight: 600 }}
                       >
-                        {peak_day_name ?? "--"}
+                        {peakDayLabel}
                       </Typography>
                       <Typography variant="body2">
                         {t("temporal.peak.clicksThisDay", {
@@ -276,7 +288,7 @@ export function PeakAnalysisCard({
                       <Stack spacing={0.5}>
                         <Typography variant="body2">
                           {t("temporal.peak.schedulePostsFor", {
-                            day: peak_day_name ?? "--",
+                            day: peakDayLabel,
                             hour: formatHour(peak_hour),
                           })}
                         </Typography>

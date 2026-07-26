@@ -28,6 +28,7 @@ import type {
   UseDashboardDataOptions,
   UseDashboardDataReturn,
 } from "@/types/analytics/dashboard";
+import { useAnalyticsPanelActive } from "@/features/analytics/context/AnalyticsPanelActiveContext";
 
 /**
  * Fetches the dashboard payload for a given link, with optional polling.
@@ -56,6 +57,8 @@ export function useDashboardData({
   dateTo,
   excludeBots = false,
 }: UseDashboardDataOptions = {}): UseDashboardDataReturn {
+  const panelActive = useAnalyticsPanelActive();
+
   const {
     data: rawData,
     isLoading,
@@ -81,7 +84,10 @@ export function useDashboardData({
       const response = await api.get<ApiResponse>(fullEndpoint);
 
       if (!response) {
-        throw new Error("Dados do dashboard não encontrados");
+        // Developer-facing on purpose: this hook has no translator, and the
+        // string used to be Portuguese prose that reached English users
+        // verbatim. `LinkDashboard` renders a localized message instead.
+        throw new Error("Dashboard payload missing");
       }
 
       return response;
@@ -89,7 +95,9 @@ export function useDashboardData({
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     refetchIntervalInBackground: false,
-    enabled: !!linkId,
+    // A hidden analytics tab keeps its cached data but stops fetching —
+    // see `AnalyticsPanelActiveContext`. Outside the tabs this is always true.
+    enabled: !!linkId && panelActive,
   });
 
   const data = useMemo(
@@ -109,7 +117,7 @@ export function useDashboardData({
     error: error
       ? error instanceof Error
         ? error.message
-        : "Erro ao carregar dados do dashboard"
+        : "Dashboard request failed"
       : null,
     // Wrap refetch so the return shape matches UseDashboardDataReturn's `() => Promise<void>`
     refresh: () => refetch().then(() => undefined),

@@ -32,6 +32,12 @@ export interface LinkActionsProps {
   slug?: string;
   shortUrl?: string;
   title?: string;
+  /**
+   * Click count, when the page already has it. Forwarded to the view switch,
+   * which disables the Analytics tab while the link has no clicks to show.
+   * Leave undefined when unknown — the tab then stays enabled.
+   */
+  clicks?: number;
   onDeleteSuccess?: () => void;
 }
 
@@ -41,6 +47,7 @@ export function LinkActions({
   slug,
   shortUrl: shortUrlProp,
   title,
+  clicks,
   onDeleteSuccess,
 }: LinkActionsProps) {
   const theme = useTheme();
@@ -183,6 +190,7 @@ export function LinkActions({
           linkId={linkId}
           currentView={currentView}
           fullWidth={isMobile}
+          clicks={clicks}
         />
       </Box>
 

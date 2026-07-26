@@ -8,6 +8,7 @@ import { Calendar } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
+import { localizeWeekdayRows } from "@/features/analytics/utils/weekday";
 import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { chartByType } from "@/lib/theme/colors";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -31,12 +32,14 @@ export function DayOfWeekChart({ data, height }: DayOfWeekChartProps) {
       subtitle={t("charts.descriptions.dayOfWeek")}
       icon={<Calendar {...ICON_LG} />}
     >
+      {/* The API's own `day_name` is hardcoded Portuguese — the category axis
+          is labelled from the ISO day number instead. */}
       <ApexChartWrapper
         type="bar"
         height={height}
         size="standard"
         {...formatBarChart(
-          data,
+          localizeWeekdayRows(data, t),
           "day_name",
           "clicks",
           chartByType.temporal.weekly,

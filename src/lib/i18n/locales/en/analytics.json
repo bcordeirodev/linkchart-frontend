@@ -5,7 +5,7 @@
     "subtitle": "Detailed performance analysis for link {{url}}",
     "missingId": "Link ID not provided in URL",
     "loading": "Loading link dashboard...",
-    "empty": "Link dashboard unavailable",
+    "empty": "No clicks yet. Share your link to start seeing data here.",
     "totalClicksLabel": "Total Clicks",
     "realtime": "Real Time",
     "dataQuality": "Data quality",
@@ -41,7 +41,8 @@
     "whatThisMeans": {
       "title": "What this means",
       "description": "The numbers above, read back in plain language — and what you can do about them."
-    }
+    },
+    "loadError": "Couldn't load this link's dashboard. Try again."
   },
   "filters": {
     "period": "Period",
@@ -407,6 +408,15 @@
         "spring": "Spring",
         "fall": "Autumn"
       }
+    },
+    "weekdayNames": {
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday",
+      "7": "Sunday"
     }
   },
   "geographic": {

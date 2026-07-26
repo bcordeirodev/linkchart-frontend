@@ -157,14 +157,24 @@ export function LinkDashboard({
     };
   }, [data]);
 
+  // A link with no clicks still gets a complete payload back — every field
+  // simply reads zero. `!!data` was therefore always true once the request
+  // succeeded, which made the empty state unreachable and left a link nobody
+  // has clicked showing a full wall of zeroed charts. The click count is what
+  // actually decides whether there is anything to show.
+  const hasClicks = (data?.summary?.total_clicks ?? 0) > 0;
+
   return (
     <AnalyticsStateManager
       loading={loading}
       error={error}
-      hasData={!!data}
+      hasData={!!data && hasClicks}
       skeleton={compact ? undefined : <OverviewSkeleton />}
       onRetry={refresh}
       loadingMessage={t("dashboard.loading")}
+      // The hook's own error strings are developer-facing; what the user reads
+      // is this, translated, with the retry button beside it.
+      errorMessage={t("dashboard.loadError")}
       emptyMessage={t("dashboard.empty")}
       minHeight={compact ? 200 : 400}
       compact={compact}
