@@ -76,6 +76,7 @@ function LinkEditPage({ id }: Props) {
               slug={link.slug || link.custom_slug}
               shortUrl={link.short_url}
               title={link.title}
+              clicks={link.clicks}
               onDeleteSuccess={handleDeleteSuccess}
             />
           ) : null}

@@ -151,6 +151,11 @@ export function LinkCardRich({
     setDeleteDialogOpen(true);
   }, []);
 
+  // Sem clique não há dashboard: o CTA Analytics só aparece a partir do
+  // primeiro. Enquanto isso a faixa de copiar ocupa a linha inteira — o passo
+  // seguinte de um link sem tráfego é divulgá-lo, não analisá-lo.
+  const hasClicks = (link.clicks ?? 0) > 0;
+
   const status = getLinkStatus(link);
   const statusColorKey = STATUS_MAP[status].color;
   const statusColorValue = getResolvedStatusColor(theme, status);
@@ -309,6 +314,7 @@ export function LinkCardRich({
           shortUrl={shortUrl}
           displayUrl={displayUrl}
           withTopBorder
+          showAnalytics={hasClicks}
           onAnalytics={() => navigate(`/links/analytics/${link.id}`)}
         />
 

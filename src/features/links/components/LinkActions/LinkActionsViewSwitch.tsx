@@ -1,5 +1,11 @@
 "use client";
-import { Box, ToggleButton, ToggleButtonGroup, useTheme } from "@mui/material";
+import {
+  Box,
+  ToggleButton,
+  ToggleButtonGroup,
+  Tooltip,
+  useTheme,
+} from "@mui/material";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { BarChart3, Pencil, QrCode } from "lucide-react";
@@ -16,6 +22,15 @@ interface LinkActionsViewSwitchProps {
   linkId: string;
   currentView: LinkView;
   fullWidth?: boolean;
+  /**
+   * Number of clicks the link has, when known.
+   *
+   * With zero clicks the Analytics tab leads to an empty dashboard, so it is
+   * disabled (and explains itself on hover) — same rule the `/links` cards
+   * apply to their Analytics CTA. `undefined` means "not loaded yet": the tab
+   * stays enabled rather than flickering disabled while data arrives.
+   */
+  clicks?: number;
 }
 
 const VIEWS: {
@@ -36,6 +51,7 @@ export function LinkActionsViewSwitch({
   linkId,
   currentView,
   fullWidth = false,
+  clicks,
 }: LinkActionsViewSwitchProps) {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -113,35 +129,64 @@ export function LinkActionsViewSwitch({
         },
       }}
     >
-      {VIEWS.map(({ id, icon: Icon, labelKey }) => (
-        <ToggleButton
-          key={id}
-          value={id}
-          aria-label={t(`actions.${labelKey}`)}
-          aria-current={currentView === id ? "page" : undefined}
-        >
-          <Box
-            component="span"
-            sx={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 0.5,
-            }}
+      {VIEWS.map(({ id, icon: Icon, labelKey }) => {
+        // Never disable the view the user is already on — landing on
+        // `/links/analytics/{id}` by direct URL must not leave the control with
+        // its selected tab greyed out.
+        const disabled =
+          id === "analytics" &&
+          clicks !== undefined &&
+          clicks <= 0 &&
+          currentView !== "analytics";
+
+        return (
+          <ToggleButton
+            key={id}
+            value={id}
+            disabled={disabled}
+            aria-label={t(`actions.${labelKey}`)}
+            aria-current={currentView === id ? "page" : undefined}
+            sx={
+              disabled
+                ? {
+                    // MUI kills pointer events on a disabled button, which also
+                    // kills the hover that explains *why* it is disabled.
+                    "&.Mui-disabled": {
+                      pointerEvents: "auto",
+                      cursor: "not-allowed",
+                    },
+                  }
+                : undefined
+            }
           >
-            <Icon {...ICON_SM} strokeWidth={1.75} />
-            <Box
-              component="span"
-              sx={{
-                // Icon-only on phones (labels clip at 320px); labels from sm up.
-                display: { xs: "none", sm: "inline" },
-                whiteSpace: "nowrap",
-              }}
+            <Tooltip
+              title={disabled ? t("actions.analyticsDisabledTooltip") : ""}
+              arrow
             >
-              {t(`actions.${labelKey}`)}
-            </Box>
-          </Box>
-        </ToggleButton>
-      ))}
+              <Box
+                component="span"
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                }}
+              >
+                <Icon {...ICON_SM} strokeWidth={1.75} />
+                <Box
+                  component="span"
+                  sx={{
+                    // Icon-only on phones (labels clip at 320px); labels from sm up.
+                    display: { xs: "none", sm: "inline" },
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {t(`actions.${labelKey}`)}
+                </Box>
+              </Box>
+            </Tooltip>
+          </ToggleButton>
+        );
+      })}
     </ToggleButtonGroup>
   );
 }
