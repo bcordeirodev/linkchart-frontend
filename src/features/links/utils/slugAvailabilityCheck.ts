@@ -176,6 +176,64 @@ export async function checkSlugAvailabilityOnce(
   }
 }
 
+/**
+ * Strips a trailing collision token so an alternative can be built from the
+ * *meaning* of the slug rather than stacked onto a previous attempt —
+ * `meu-post-k3f9` → `meu-post`, never `meu-post-k3f9-a7b2`.
+ *
+ * Only a 4-character alphanumeric tail is treated as a token, matching what
+ * this module and the backend's `SlugSuggestionService` both generate. A real
+ * word of the same length (`meu-post-blog`) is left alone — worst case the
+ * alternative keeps a word it could have dropped, which is harmless.
+ *
+ * @param slug - slug that may carry a `-token` tail.
+ * @returns the slug without its collision token.
+ */
+export function stripSlugCollisionToken(slug: string): string {
+  const stripped = slug.replace(/-[a-z0-9]{4}$/i, "");
+  return stripped.length >= 3 ? stripped : slug;
+}
+
+/**
+ * Resolves a *different* available slug built on the same base — what "another
+ * name" asks for when the suggestion does not fit.
+ *
+ * Deliberately client-side: the server always answers with the same slug for
+ * the same URL (that is what makes suggestions stable), so asking it again
+ * would return the name the user just rejected.
+ *
+ * @param currentSlug - the slug being replaced; never returned again.
+ * @param mode - slug rules to respect (`auth` for the app forms).
+ * @returns an available slug different from `currentSlug`, or `null` if none
+ *   could be verified (caller keeps what it had).
+ */
+export async function resolveAlternativeSlug(
+  currentSlug: string,
+  mode: SlugValidationMode = "auth",
+): Promise<string | null> {
+  const base = normalizeSlugForMode(stripSlugCollisionToken(currentSlug), mode);
+  if (!base) {
+    return null;
+  }
+
+  const current = currentSlug.trim().toLowerCase();
+
+  for (let i = 0; i < MAX_RANDOM_ATTEMPTS; i++) {
+    const candidate = buildRandomSlugVariant(base, mode);
+    if (
+      candidate.toLowerCase() === current ||
+      !fitsSlugPattern(candidate, mode)
+    ) {
+      continue;
+    }
+    if ((await checkSlugAvailabilityOnce(candidate, mode)) === "available") {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
 export type ResolveAvailableSlugOptions = {
   excludeSlug?: string | null;
   mode?: SlugValidationMode;
