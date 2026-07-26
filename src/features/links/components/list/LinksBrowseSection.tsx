@@ -158,10 +158,18 @@ export function LinksBrowseSection({
   const [selectionMode, setSelectionMode] = useState(false);
 
   const count = links.length;
+
+  // O filtro de tag é o único aplicado no cliente, sobre a página já paginada
+  // pelo servidor — então `paginationMeta` descreve outro conjunto. Enquanto ele
+  // estiver ativo, contagem e faixa passam a falar do que está de fato na tela;
+  // sem isso a seção dizia "35 links" logo acima de "nenhum link encontrado".
+  const tagFilterActive = tagFilter !== null;
+  const totalShown = tagFilterActive ? count : paginationMeta.total;
+
   const description = hasActiveFilters
-    ? t("list.sections.linksFiltered", { count: paginationMeta.total })
+    ? t("list.sections.linksFiltered", { count: totalShown })
     : t("list.sections.linksBrowseDescription", {
-        count: paginationMeta.total,
+        count: totalShown,
       });
 
   const visibleIds = useMemo(() => links.map((l) => String(l.id)), [links]);
@@ -209,7 +217,12 @@ export function LinksBrowseSection({
   const topRef = useRef<HTMLDivElement>(null);
 
   const totalPages = Math.max(1, paginationMeta.last_page);
-  const showPagination = totalPages > 1;
+  // Paginar enquanto o filtro de tag roda no cliente levaria para páginas do
+  // servidor que o filtro pode esvaziar por completo — a lista fica restrita ao
+  // que está em mãos até a tag virar filtro server-side.
+  const showPagination = totalPages > 1 && !tagFilterActive;
+  // Só lidos dentro do bloco de paginação, que não renderiza com o filtro de
+  // tag ativo — por isso seguem falando do conjunto do servidor.
   const rangeStart =
     paginationMeta.total === 0
       ? 0

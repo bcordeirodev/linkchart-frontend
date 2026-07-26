@@ -9,6 +9,7 @@ import { ICON_LG } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
+import { getWeekdayLabel } from "../../utils/weekday";
 import { useTemporalData } from "../../hooks/useTemporalData";
 import type { Segment } from "@/features/links/hooks/useAnalyticsFilters";
 import { TemporalChart } from "./TemporalChart";
@@ -76,9 +77,13 @@ export function TemporalAnalysis({
         ? `${stats.peakHour}h`
         : "--";
 
-  // `peak_day` is the ISO day NUMBER (1-7) — the display name lives in
-  // `peak_day_name`. Falling back through the number rendered "3" as a day.
-  const peakDay = peakAnalysis?.peak_day_name || stats?.peakDay || "N/A";
+  // `peak_day` is the ISO day NUMBER (1-7) and is what gets localized —
+  // `peak_day_name` comes back hardcoded in Portuguese, so it serves only as a
+  // fallback. Falling back through the raw number rendered "3" as a day.
+  const peakDay =
+    peakAnalysis?.peak_day != null
+      ? getWeekdayLabel(peakAnalysis.peak_day, t)
+      : peakAnalysis?.peak_day_name || stats?.peakDay || "N/A";
 
   // Carry the peak click counts into the KPI subtitles — this row is now the
   // single summary of peaks in the tab (the Performance sub-tab keeps only

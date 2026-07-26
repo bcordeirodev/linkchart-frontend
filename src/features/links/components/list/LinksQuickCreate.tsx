@@ -26,28 +26,24 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { useCreateLink } from "@/features/links/hooks/useLinks";
+import { useSlugSuggestionField } from "@/features/links/hooks/useSlugSuggestionField";
 import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
-import { usePublicSlugSuggestion } from "@/features/links/hooks/usePublicSlugSuggestion";
-import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability";
 import { RESERVED_SLUGS } from "@/features/links/utils/slugAvailabilityCheck";
 import {
   buildSlugAvailabilityLabels,
   buildUrlSafetyLabels,
   getUrlSafetyHelperNode,
 } from "@/features/links/components/forms/UrlSafetyIndicator";
-import { SubdomainSelect } from "@/features/subdomains/components/SubdomainSelect";
 import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainSelection";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { darkNeutral } from "@/lib/theme/colors";
-import {
-  getShortUrlPrefix,
-  getSubdomainDomainSuffix,
-} from "@/lib/utils/shortUrl";
+import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
 import { HelpHint } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
 
 import { LinksListSectionHeading } from "./LinksListSectionHeading";
+import { QuickCreateLinkStrip } from "./QuickCreateLinkStrip";
 import {
   linksRadius,
   getLinksBorderColor,
@@ -69,7 +65,7 @@ type QuickFormData = {
 };
 
 /** Matches MUI medium button height for a single control row. */
-const CONTROL_HEIGHT = 40;
+const CONTROL_HEIGHT = 44;
 
 const getInputRootSx = (theme: Theme) => {
   // Nível "input" da escala: em dark o campo é um passo mais claro que o
@@ -86,6 +82,7 @@ const getInputRootSx = (theme: Theme) => {
       // hierarquia de arredondamento em vez de tudo igualmente redondo.
       borderRadius: `${linksRadius.control}px`,
       bgcolor: bg,
+      fontSize: "0.9375rem",
       "&:hover": { bgcolor: bg },
       "&.Mui-focused": { bgcolor: `${bg} !important` },
       "& input": {
@@ -105,33 +102,13 @@ const getInputRootSx = (theme: Theme) => {
   };
 };
 
-/** Extra styles when slug field shows the «Usar» accept control. */
-const slugAcceptAdornmentSx = {
-  "& .MuiOutlinedInput-root": {
-    height: CONTROL_HEIGHT,
-    minHeight: CONTROL_HEIGHT,
-    alignItems: "center",
-    pr: 1.25,
-    "& .MuiOutlinedInput-input": {
-      pr: "6px",
-    },
-  },
-  "& .MuiInputAdornment-positionEnd": {
-    height: "auto",
-    maxHeight: 24,
-    ml: 0.75,
-    mr: 0.5,
-    flexShrink: 0,
-  },
-} as const;
-
 const submitButtonSx = {
-  // ≥44px de alvo de toque no mobile; alinhado aos inputs (40) no desktop.
-  height: { xs: 44, md: CONTROL_HEIGHT },
-  minHeight: { xs: 44, md: CONTROL_HEIGHT },
+  height: CONTROL_HEIGHT,
+  minHeight: CONTROL_HEIGHT,
   textTransform: "none",
   fontWeight: 600,
-  minWidth: { md: 132 },
+  fontSize: "0.9375rem",
+  minWidth: { md: 140 },
   borderRadius: `${linksRadius.control}px`,
   whiteSpace: "nowrap",
   px: 2.5,
@@ -185,12 +162,20 @@ const getAdvancedOptionsButtonSx = (theme: Theme) => {
 
 /**
  * Inline quick-create form at the top of the links list page.
+ *
+ * Two rows, one idea: the destination goes in the top row, and the bottom row
+ * *is* the short link being made — domain, slash and an editable name that
+ * fills itself in from the destination page's title. After a successful create
+ * that same row becomes the finished link with copy and open, so the thing the
+ * user came for never disappears into the list below.
+ *
+ * The name field's ownership rules (when a suggestion may overwrite it, when it
+ * must not) live in {@link useSlugSuggestionField}.
  */
 export function LinksQuickCreate({
   onLinkCreated,
 }: LinksQuickCreateProps = {}) {
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("links");
   const navigate = useNavigate();
   const { mutateAsync, isPending } = useCreateLink();
@@ -200,18 +185,17 @@ export function LinksQuickCreate({
   // Only shown/considered once the flag is on AND the account actually holds
   // a subdomain — otherwise quick-create stays exactly as it was: no domain
   // prefix, no extra control, one less thing to look at for the common case.
-  // Mirrors `SubdomainSelect`'s own hide condition so the label next to it
-  // never renders above an empty control.
   const hasSubdomains =
     process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" &&
     subdomains.length > 0;
-  // Domínio do construtor do link curto: com subdomínios, o seletor cuida do
-  // domínio e só emendamos o sufixo constante ao lado; sem subdomínios,
-  // mostramos o host padrão inteiro. Nunca um prefixo truncado dentro do campo.
-  const domainSuffix = getSubdomainDomainSuffix();
+  // `NEXT_PUBLIC_REDIRECT_URL` still carries the legacy `/r` segment in local
+  // dev; production already points at a bare redirect host. The preview drops
+  // it either way, and what it shows still resolves — `routes/web.php` serves
+  // the clean `/{slug}` alias alongside `/r/{slug}`.
   const defaultHost = getShortUrlPrefix()
     .replace(/^https?:\/\//, "")
-    .replace(/\/$/, "");
+    .replace(/\/$/, "")
+    .replace(/\/r$/, "");
 
   const schema = useMemo(
     () =>
@@ -250,48 +234,31 @@ export function LinksQuickCreate({
   });
 
   const urlValue = watch("original_url");
-  const slugValue = watch("custom_slug");
+  const slugValue = watch("custom_slug") ?? "";
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
 
-  // One server-side request resolves the slug: it derives the base from the
-  // page's og:title (falling back to the URL path/host) and checks global
-  // availability in a single call. Replaces the previous client-side approach,
-  // which computed two different bases (URL first, then og:title once it loaded
-  // asynchronously) and fired a cascade of availability checks — making the
-  // suggestion flip from one slug to another mid-resolution. The server check is
-  // also global (any link), matching the create's uniqueness rule, whereas the
-  // old client check only saw active public links.
-  const { slug: availableSlug, status: slugSuggestionStatus } =
-    usePublicSlugSuggestion(!slugValue ? urlValue ?? null : null);
+  // Programmatic writes skip validation: they are either a slug the server
+  // already vetted or an empty field, and running zod on them would surface
+  // errors for a value the user never typed.
+  const writeSlug = useCallback(
+    (next: string) => {
+      setValue("custom_slug", next, { shouldValidate: false });
+    },
+    [setValue],
+  );
 
-  // A ready slug surfaces as ghost text the user can accept (or ignore).
-  //
-  // Resolution used to be silent, on the theory that a "searching…" state would
-  // make the field flicker. In practice it read as broken: the server has to
-  // fetch the destination page to derive the slug from its og:title (~1s), so the
-  // field just sat there dead and the suggestion only landed after the user had
-  // already given up and tabbed away — which looked like "it only suggests on
-  // blur". A quiet spinner costs nothing and makes that second legible.
-  const showSlugSuggestion =
-    !slugValue && slugSuggestionStatus === "ready" && !!availableSlug;
-  const isResolvingSlug = !slugValue && slugSuggestionStatus === "resolving";
+  const slugField = useSlugSuggestionField({
+    url: urlValue ?? "",
+    value: slugValue,
+    onChange: writeSlug,
+  });
 
-  // A *suggested* slug is checked against the DB before it is offered (the
-  // server only ever suggests a free one). A slug the user types themselves is
-  // not — so it gets its own availability check, the same one the full create
-  // form uses. Without it, "already taken" only surfaced as a 422 on submit.
-  const typedSlug = slugValue?.trim() ?? "";
-  const slugAvailability = useSlugAvailability(typedSlug);
+  // Destructured so `createLink` can depend on the stable callback rather than
+  // on the hook's return object, which is a new identity every render.
+  const { reset: resetSlugField } = slugField;
+
   const slugAvailabilityLabels = buildSlugAvailabilityLabels(t);
-  const slugIsTaken = !!typedSlug && slugAvailability === "taken";
-  const slugIsChecking = !!typedSlug && slugAvailability === "checking";
-  const slugIsAvailable = !!typedSlug && slugAvailability === "available";
-
-  const acceptSlugSuggestion = useCallback(() => {
-    if (availableSlug) {
-      setValue("custom_slug", availableSlug, { shouldValidate: true });
-    }
-  }, [availableSlug, setValue]);
+  const slugIsTaken = slugField.state === "taken";
 
   const urlIsUnsafe = safetyStatus === "unsafe";
   const urlIsChecking = safetyStatus === "checking";
@@ -305,7 +272,7 @@ export function LinksQuickCreate({
     errors.original_url?.message ??
     (urlIsUnsafe
       ? getUrlSafetyHelperNode("unsafe", threats, urlSafetyLabels)
-      : " ");
+      : null);
 
   // Extracted so a submit that arrived while the safety check was still running
   // can be replayed once the check settles (see the queue effect below).
@@ -315,7 +282,7 @@ export function LinksQuickCreate({
   const createLink = useCallback(
     async (data: QuickFormData): Promise<void> => {
       try {
-        const created = await mutateAsync({
+        const link = await mutateAsync({
           original_url: data.original_url,
           custom_slug: data.custom_slug || undefined,
           // `subdomainIdField` is `{ subdomain_id }` once the subdomains list
@@ -326,16 +293,21 @@ export function LinksQuickCreate({
           // active subdomain". See `useSubdomainSelection` for the rationale.
           ...subdomainIdField,
         });
-        onLinkCreated?.(created);
-        setSucceeded(true);
+        // Everything the user needs after a create already happens in the list:
+        // `useNewlyCreatedLinkHighlight` sorts the new link to the top, scrolls
+        // its card into view, pulses it, and copies the short URL to the
+        // clipboard. The box only has to get out of the way.
+        onLinkCreated?.(link);
         reset();
+        resetSlugField();
+        setSucceeded(true);
         setTimeout(() => setSucceeded(false), 2000);
       } catch {
         // The mutation's onError already dispatches an error toast; swallow the
         // rejection so the queued (void) call can't become an unhandled one.
       }
     },
-    [mutateAsync, onLinkCreated, reset, subdomainIdField],
+    [mutateAsync, onLinkCreated, reset, resetSlugField, subdomainIdField],
   );
 
   const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
@@ -377,14 +349,24 @@ export function LinksQuickCreate({
   }, [safetyStatus, submitQueued, createLink]);
 
   const inputRootSx = getInputRootSx(theme);
-  const primary = theme.palette.primary.main;
-  // Only real problems get a helper row — a taken slug or a malformed one. The
-  // in-progress and all-clear states of the availability check live inside the
-  // field (spinner / check icon) so the helper row never appears and disappears
-  // under the input, which used to shift the whole form vertically.
-  const slugHelperText =
-    errors.custom_slug?.message ??
-    (slugIsTaken ? slugAvailabilityLabels.taken : undefined);
+  const slugRegister = register("custom_slug");
+  const slugHasError = !!errors.custom_slug || slugIsTaken;
+
+  // Only real problems get a message — plus the one quiet note that explains
+  // what happens when the name is left blank on purpose.
+  const slugMessage: { text: string; tone: "error" | "muted" } | null = errors
+    .custom_slug?.message
+    ? { text: errors.custom_slug.message, tone: "error" }
+    : slugIsTaken
+      ? { text: slugAvailabilityLabels.taken, tone: "error" }
+      : slugField.state === "autoCode"
+        ? { text: t("list.quickCreate.previewAutoHint"), tone: "muted" }
+        : slugField.state === "unavailable"
+          ? {
+              text: t("list.quickCreate.slugSuggestionUnavailable"),
+              tone: "muted",
+            }
+          : null;
 
   return (
     <EnhancedPaper
@@ -437,7 +419,7 @@ export function LinksQuickCreate({
         />
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-          {/* Fileira 1 — o link longo (o que se cola) + a ação principal. */}
+          {/* Fileira 1 — o destino: o que se cola, e a ação principal. */}
           <Box
             sx={{
               display: "flex",
@@ -494,203 +476,45 @@ export function LinksQuickCreate({
             </Button>
           </Box>
 
-          {/* Fileira 2 — construtor do link curto: domínio · / · nome. O
-              domínio aparece inteiro (seletor + sufixo, ou host padrão), nunca
-              truncado dentro do campo de nome. */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              flexWrap: "wrap",
-              rowGap: 1,
-              columnGap: 1.25,
-              mt: 1.75,
-            }}
-          >
+          {/* Fileira 2 — o link curto propriamente dito. */}
+          <Box sx={{ mt: 1.5 }}>
             <Typography
               variant="caption"
+              component="div"
               sx={{
                 color: "text.secondary",
                 fontWeight: 600,
                 letterSpacing: "0.02em",
                 textTransform: "uppercase",
-                flexShrink: 0,
+                mb: 0.625,
               }}
             >
               {t("list.quickCreate.shortLinkLabel")}
             </Typography>
 
-            <TextField
-              {...register("custom_slug")}
-              placeholder={
-                showSlugSuggestion
-                  ? availableSlug!
-                  : t("list.quickCreate.slugPlaceholder")
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Tab" && showSlugSuggestion) {
-                  acceptSlugSuggestion();
-                }
+            <QuickCreateLinkStrip
+              name={slugRegister.name}
+              inputRef={slugRegister.ref}
+              value={slugValue}
+              onChange={(e) => {
+                slugField.markEdited();
+                void slugRegister.onChange(e);
               }}
-              size="small"
-              fullWidth
-              error={!!errors.custom_slug || slugIsTaken}
+              onBlur={slugRegister.onBlur}
+              state={slugField.state}
+              onRequestAnother={slugField.requestAnother}
+              canRequestAnother={slugField.canRequestAnother}
+              hasSubdomains={hasSubdomains}
+              subdomainId={subdomainId}
+              onSubdomainChange={setSubdomainId}
+              defaultHost={defaultHost}
               disabled={isPending}
-              sx={[
-                inputRootSx,
-                (showSlugSuggestion ||
-                  isResolvingSlug ||
-                  slugIsChecking ||
-                  slugIsAvailable) &&
-                  slugAcceptAdornmentSx,
-                { flexGrow: 1, minWidth: { xs: "100%", sm: 340 } },
-              ]}
-              slotProps={{
-                htmlInput: { "aria-label": t("list.quickCreate.slugLabel") },
-                input: {
-                  sx: {
-                    fontFamily: "monospace",
-                    fontWeight: 500,
-                    ...(showSlugSuggestion
-                      ? {
-                          "&::placeholder": {
-                            color: alpha(primary, 0.55),
-                            opacity: 1,
-                          },
-                        }
-                      : undefined),
-                  },
-                  // Domínio (seletor + sufixo) como addon À ESQUERDA, dentro
-                  // da MESMA borda do campo — o grupo lê como um componente
-                  // só: [ bruno ▾ .linkcharts.com.br / nome ].
-                  startAdornment: (
-                    <InputAdornment
-                      position="start"
-                      sx={{
-                        mr: 0.75,
-                        pr: 0.75,
-                        height: "auto",
-                        maxHeight: "unset",
-                        borderRight: `1px solid ${getLinksBorderColor(theme)}`,
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 0.25,
-                          // Largura de conteúdo: o addon acompanha o domínio
-                          // selecionado (bruno / bcordeiro / discord) sem cortar;
-                          // o campo de nome fica com o espaço restante.
-                          flexShrink: 0,
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {hasSubdomains ? (
-                          <>
-                            <SubdomainSelect
-                              value={subdomainId}
-                              onChange={setSubdomainId}
-                              size="small"
-                              variant="embedded"
-                              fullWidth={false}
-                              aria-label={t("list.quickCreate.subdomainLabel")}
-                            />
-                            <Typography
-                              component="span"
-                              sx={{
-                                fontFamily: "monospace",
-                                fontSize: "0.8125rem",
-                                color: "text.secondary",
-                                whiteSpace: "nowrap",
-                                display: { xs: "none", sm: "inline" },
-                              }}
-                            >
-                              {domainSuffix}/
-                            </Typography>
-                          </>
-                        ) : (
-                          <Typography
-                            component="span"
-                            noWrap
-                            sx={{
-                              fontFamily: "monospace",
-                              fontSize: "0.8125rem",
-                              color: "text.secondary",
-                            }}
-                          >
-                            {defaultHost}/
-                          </Typography>
-                        )}
-                      </Box>
-                    </InputAdornment>
-                  ),
-                  // Um slot, quatro estados — o indicador troca no lugar para
-                  // o campo nunca "pular": resolvendo (spinner) → pronto
-                  // («Usar»); digitando (spinner) → livre (check). Um nome já
-                  // tomado fala na linha de mensagem abaixo.
-                  endAdornment:
-                    isResolvingSlug || slugIsChecking ? (
-                      <InputAdornment position="end">
-                        <CircularProgress
-                          size={14}
-                          thickness={5}
-                          aria-label={
-                            slugIsChecking
-                              ? slugAvailabilityLabels.checking
-                              : t("list.quickCreate.slugSuggestionChecking")
-                          }
-                          sx={{ color: alpha(primary, 0.6) }}
-                        />
-                      </InputAdornment>
-                    ) : slugIsAvailable ? (
-                      <InputAdornment position="end">
-                        <CheckCircle2
-                          size={15}
-                          strokeWidth={2.25}
-                          aria-label={slugAvailabilityLabels.available}
-                          color={theme.palette.success.main}
-                        />
-                      </InputAdornment>
-                    ) : showSlugSuggestion ? (
-                      <InputAdornment position="end">
-                        <Box
-                          component="button"
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            acceptSlugSuggestion();
-                          }}
-                          sx={{
-                            border: "none",
-                            cursor: "pointer",
-                            font: "inherit",
-                            fontSize: "0.6875rem",
-                            fontWeight: 600,
-                            lineHeight: 1,
-                            py: 0.25,
-                            px: 0.625,
-                            borderRadius: `${linksRadius.control}px`,
-                            color: primary,
-                            bgcolor: alpha(primary, isDark ? 0.12 : 0.08),
-                            transition: "background-color 120ms ease",
-                            "&:hover": {
-                              bgcolor: alpha(primary, isDark ? 0.2 : 0.14),
-                            },
-                          }}
-                        >
-                          {t("list.quickCreate.slugAccept")}
-                        </Box>
-                      </InputAdornment>
-                    ) : undefined,
-                },
-              }}
+              error={slugHasError}
             />
           </Box>
 
-          {/* Linha de mensagens — só materializa quando há erro de URL ou nome. */}
-          {urlHelperText !== " " || slugHelperText ? (
+          {/* Linha de mensagens — materializa só quando há algo a dizer. */}
+          {urlHelperText || slugMessage ? (
             <Box
               sx={{
                 mt: 1,
@@ -699,22 +523,20 @@ export function LinksQuickCreate({
                 gap: 0.25,
               }}
             >
-              {urlHelperText !== " " ? (
+              {urlHelperText ? (
+                <Typography variant="caption" component="div" color="error">
+                  {urlHelperText}
+                </Typography>
+              ) : null}
+              {slugMessage ? (
                 <Typography
                   variant="caption"
                   component="div"
                   color={
-                    errors.original_url || urlIsUnsafe
-                      ? "error"
-                      : "text.secondary"
+                    slugMessage.tone === "error" ? "error" : "text.secondary"
                   }
                 >
-                  {urlHelperText}
-                </Typography>
-              ) : null}
-              {slugHelperText ? (
-                <Typography variant="caption" color="error">
-                  {slugHelperText}
+                  {slugMessage.text}
                 </Typography>
               ) : null}
             </Box>

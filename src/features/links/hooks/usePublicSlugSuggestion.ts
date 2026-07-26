@@ -4,7 +4,19 @@ import { useEffect, useState } from "react";
 
 import { publicLinkService } from "@/services/link-public.service";
 
-export type PublicSlugSuggestionStatus = "idle" | "resolving" | "ready";
+/**
+ * `idle` — nothing to resolve (no URL, or not a URL yet).
+ * `resolving` — request in flight (or waiting out the debounce).
+ * `ready` — a slug came back.
+ * `unavailable` — the request finished without a usable slug (or failed).
+ *   Kept distinct from `idle` so the UI can say so instead of going quiet and
+ *   looking like it never tried.
+ */
+export type PublicSlugSuggestionStatus =
+  | "idle"
+  | "resolving"
+  | "ready"
+  | "unavailable";
 
 /**
  * Debounce delay in ms before firing the slug suggestion request.
@@ -28,10 +40,11 @@ const DEBOUNCE_MS = 300;
  *
  * Behaviour:
  * - Only fires when `url` parses as an `http(s)` URL (scheme is added if missing).
- * - 500 ms debounce after the URL stabilises; a newer URL cancels the pending call.
+ * - {@link DEBOUNCE_MS} debounce after the URL stabilises; a newer URL cancels
+ *   the pending call.
  * - In-flight results for a stale URL are discarded via a `cancelled` flag.
- * - All failures are swallowed silently — callers treat `slug === null` as
- *   "no suggestion available".
+ * - Failures do not throw — they settle on `status: "unavailable"` with a null
+ *   slug, which callers can surface as "no name could be derived".
  *
  * @param url - the target URL, or `null` to stay idle.
  * @returns `{ slug, ogTitle, status }` — `slug` is null unless `status === "ready"`;
@@ -69,14 +82,14 @@ export function usePublicSlugSuggestion(url: string | null): {
         }
         setSlug(resolved.slug || null);
         setOgTitle(resolved.og_title ?? null);
-        setStatus(resolved.slug ? "ready" : "idle");
+        setStatus(resolved.slug ? "ready" : "unavailable");
       } catch {
         if (cancelled) {
           return;
         }
         setSlug(null);
         setOgTitle(null);
-        setStatus("idle");
+        setStatus("unavailable");
       }
     }, DEBOUNCE_MS);
 

@@ -39,17 +39,16 @@
       "shortLinkLabel": "Short link",
       "urlPlaceholder": "https://example.com/page",
       "slugPlaceholder": "link-name",
-      "previewLabel": "Your short link will look like this:",
       "previewAutoName": "auto-code",
       "previewAutoHint": "Without a custom name, we generate a random code for you.",
-      "slugTabHint": "Tab or Use fills in the suggested name",
       "slugSuggestionChecking": "Looking for an available name…",
       "slugSuggestionUnavailable": "No available name could be suggested from this page",
-      "slugAccept": "Use",
       "submit": "Shorten",
-      "success": "Link created!",
       "moreOptions": "Advanced options",
-      "moreOptionsTooltip": "Open full link creation: title, scheduling, click limits and more"
+      "moreOptionsTooltip": "Open full link creation: title, scheduling, click limits and more",
+      "slugAnother": "Another",
+      "slugAnotherTooltip": "Generate another name for this link",
+      "success": "Link created!"
     },
     "pagination": {
       "showing": "Showing {{from}}–{{to}} of {{total}}"
@@ -128,7 +127,8 @@
     "deleteError": "Error deleting link. Please try again.",
     "back": "Back to links",
     "more": "More actions",
-    "viewSwitch": "Switch view"
+    "viewSwitch": "Switch view",
+    "analyticsDisabledTooltip": "No clicks yet — stats appear after the first click"
   },
   "form": {
     "createTitle": "Create New Link",
@@ -143,8 +143,7 @@
     "customSlugPlaceholder": "my-slug",
     "customSlugHelper": "Only letters, numbers and hyphens. Leave blank to auto-generate.",
     "subdomainSelect": {
-      "label": "Link address",
-      "defaultOption": "Default domain (linkcharts.com.br)"
+      "label": "Link address"
     },
     "slugTabHint": "Tab to accept suggestion",
     "slugSuggestionChecking": "Checking slug suggestion…",
@@ -397,7 +396,8 @@
         "suspicious": "Suspicious",
         "likelyFraud": "Likely Fraud",
         "nullTooltip": "Recorded before quality scoring was implemented"
-      }
+      },
+      "errorMessage": "Couldn't load the clicks. Try again."
     }
   },
   "qr": {

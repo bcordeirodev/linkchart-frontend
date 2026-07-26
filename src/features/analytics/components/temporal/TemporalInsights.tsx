@@ -3,6 +3,10 @@ import { Card, CardContent, Typography, Stack, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import {
+  getWeekdayLabel,
+  isWeekendDay,
+} from "@/features/analytics/utils/weekday";
+import {
   elevationLightTokens,
   elevationTokens,
   radiusTokens,
@@ -49,10 +53,12 @@ export function TemporalInsights({
     hourlyData[0] || { hour: 0, clicks: 0, label: "00:00" },
   );
 
-  // Encontrar pico de dia
+  // Encontrar pico de dia. O fallback não carrega nome: ele só existe para o
+  // reduce não estourar com a lista vazia, e nesse caso `clicks` é 0, então o
+  // bloco que renderiza o nome nem chega a montar.
   const peakDay = weeklyData.reduce(
     (prev, current) => (current.clicks > prev.clicks ? current : prev),
-    weeklyData[0] || { day: 0, clicks: 0, day_name: "Segunda-feira" },
+    weeklyData[0] || { day: 0, clicks: 0, day_name: "" },
   );
 
   // Análise de horário comercial (9h às 17h)
@@ -61,9 +67,11 @@ export function TemporalInsights({
     .reduce((sum, item) => sum + item.clicks, 0);
   const isBusinessHoursActive = businessHoursClicks > hourlyTotal * 0.4;
 
-  // Análise de fim de semana (sábado e domingo)
+  // Análise de fim de semana (sábado e domingo). O backend numera os dias em
+  // ISO — 1=Segunda … 7=Domingo — então `5 || 6`, que era o filtro aqui, somava
+  // Sexta e Sábado e nunca contava Domingo.
   const weekendClicks = weeklyData
-    .filter((item) => item.day === 5 || item.day === 6) // Sábado e Domingo
+    .filter((item) => isWeekendDay(item.day))
     .reduce((sum, item) => sum + item.clicks, 0);
   const isWeekendActive = weekendClicks > weeklyTotal * 0.3;
 
@@ -115,7 +123,10 @@ export function TemporalInsights({
 
           {peakDay.clicks > 0 && (
             <Typography variant="body2">
-              • <strong>{peakDay.day_name}</strong>{" "}
+              •{" "}
+              <strong>
+                {getWeekdayLabel(peakDay.day, t, peakDay.day_name)}
+              </strong>{" "}
               {t("temporal.insights.peakDayTip", { clicks: peakDay.clicks })}
             </Typography>
           )}

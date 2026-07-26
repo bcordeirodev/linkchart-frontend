@@ -5,7 +5,7 @@
     "subtitle": "Análise detalhada do desempenho do link {{url}}",
     "missingId": "ID do link não fornecido na URL",
     "loading": "Carregando dashboard do link...",
-    "empty": "Dashboard do link indisponível",
+    "empty": "Nenhum clique ainda. Compartilhe seu link para começar a ver dados aqui.",
     "totalClicksLabel": "Cliques Totais",
     "realtime": "Tempo Real",
     "dataQuality": "Qualidade dos dados",
@@ -41,7 +41,8 @@
     "whatThisMeans": {
       "title": "O que isso quer dizer",
       "description": "A leitura dos números acima, em português claro — e o que dá para fazer com ela."
-    }
+    },
+    "loadError": "Não foi possível carregar o dashboard deste link. Tente novamente."
   },
   "filters": {
     "period": "Período",
@@ -407,6 +408,15 @@
         "spring": "Primavera",
         "fall": "Outono"
       }
+    },
+    "weekdayNames": {
+      "1": "Segunda",
+      "2": "Terça",
+      "3": "Quarta",
+      "4": "Quinta",
+      "5": "Sexta",
+      "6": "Sábado",
+      "7": "Domingo"
     }
   },
   "geographic": {

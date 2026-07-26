@@ -140,6 +140,7 @@ function LinkQRPage({ id }: Props) {
             slug={slug}
             shortUrl={linkInfo.short_url}
             title={linkInfo.title || linkInfo.original_url}
+            clicks={linkInfo.clicks}
             onDeleteSuccess={handleDeleteSuccess}
           />
 

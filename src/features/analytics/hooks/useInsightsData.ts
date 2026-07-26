@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
 import { queryKeys } from "@/lib/query/keys";
 import { API_CONFIG } from "@/lib/api/endpoints";
+import { useAnalyticsPanelActive } from "@/features/analytics/context/AnalyticsPanelActiveContext";
 
 /** Single AI-generated business insight returned by the insights endpoint. */
 export interface BusinessInsight {
@@ -303,6 +304,8 @@ export function useInsightsData({
   categories = [],
   enabled = true,
 }: UseInsightsDataOptions): UseInsightsDataReturn {
+  const panelActive = useAnalyticsPanelActive();
+
   const {
     data: raw,
     isLoading,
@@ -327,7 +330,9 @@ export function useInsightsData({
     },
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
-    enabled: enabled && !!linkId,
+    // A hidden analytics tab keeps its cached data but stops fetching —
+    // see `AnalyticsPanelActiveContext`. Outside the tabs this is always true.
+    enabled: enabled && !!linkId && panelActive,
   });
 
   const data = useMemo(
