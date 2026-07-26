@@ -11,6 +11,7 @@ import {
   formatBarChart,
   formatPieChart,
 } from "@/features/analytics/utils/chartFormatters";
+import { localizeWeekdayRows } from "@/features/analytics/utils/weekday";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
@@ -76,9 +77,14 @@ export function TemporalPatternsTab({
     [weeklyData],
   );
 
+  // Localized here rather than at render: the API's `day_name` is hardcoded
+  // Portuguese, so the chart's category axis has to be built from the ISO day.
   const sortedWeeklyByClicks = useMemo(
-    () => weeklyData.slice().sort((a, b) => b.clicks - a.clicks),
-    [weeklyData],
+    () =>
+      localizeWeekdayRows(weeklyData, t)
+        .slice()
+        .sort((a, b) => b.clicks - a.clicks),
+    [weeklyData, t],
   );
 
   return (

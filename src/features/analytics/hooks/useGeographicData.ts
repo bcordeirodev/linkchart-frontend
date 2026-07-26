@@ -12,6 +12,7 @@ import type {
   GeographicMeta,
   GeographicResponse,
 } from "@/types/analytics/geographic";
+import { useAnalyticsPanelActive } from "@/features/analytics/context/AnalyticsPanelActiveContext";
 
 /** Summary stats derived from `GeographicMeta` (country/state/city counts plus a coarse coverage ratio). */
 export interface GeographicStats {
@@ -111,6 +112,8 @@ export function useGeographicData({
   excludeBots,
   continent,
 }: UseGeographicDataOptions): UseGeographicDataReturn {
+  const panelActive = useAnalyticsPanelActive();
+
   const {
     data: raw,
     isLoading,
@@ -138,7 +141,9 @@ export function useGeographicData({
     },
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
-    enabled: !!linkId,
+    // A hidden analytics tab keeps its cached data but stops fetching —
+    // see `AnalyticsPanelActiveContext`. Outside the tabs this is always true.
+    enabled: !!linkId && panelActive,
     // Keeps the previous dataset visible while a filter-change fetch is in flight so
     // AnalyticsStateManager never goes into its loading state between filter changes.
     //

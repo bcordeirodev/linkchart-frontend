@@ -68,8 +68,13 @@ function LinkListPage() {
     ready: !loading && !isSeedingDemo && links.length > 0,
   });
   const { mutateAsync: deleteLinkMutation } = useDeleteLink();
-  const deleteLink = (id: string): Promise<void> =>
-    deleteLinkMutation(id).then(() => undefined);
+  // Memoized because it travels down to `LinksMobileCards`, which is `memo`'d —
+  // a new function identity on every render made that memo a no-op and
+  // re-rendered the whole card list.
+  const deleteLink = useCallback(
+    (id: string): Promise<void> => deleteLinkMutation(id).then(() => undefined),
+    [deleteLinkMutation],
+  );
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilterValue>("all");
@@ -135,14 +140,16 @@ function LinkListPage() {
   const { highlightedLinkId, highlightLink } =
     useNewlyCreatedLinkHighlight(linkIds);
 
-  // Volta para a página 1 sempre que busca/filtro/ordenação mudam (o resultado
-  // é outro conjunto) ou quando um link recém-criado precisa ser revelado —
-  // `handleLinkCreated` já força `sortBy` para "created_at", mas se o usuário já
-  // estava nessa ordenação (ordenação inalterada) só a mudança de
-  // `highlightedLinkId` dispara o reset.
+  // Volta para a página 1 sempre que busca/filtro/ordenação mudam — o resultado
+  // é outro conjunto.
+  //
+  // `highlightedLinkId` NÃO entra aqui: ele muda duas vezes por criação (ao
+  // destacar e ao limpar, 4,5s depois), e o segundo disparo arrastava de volta
+  // para a página 1 quem tivesse navegado nesse meio tempo. O reset da criação
+  // mora em `handleLinkCreated`, onde acontece uma vez só.
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, statusFilter, tagFilter, sortBy, highlightedLinkId]);
+  }, [searchTerm, statusFilter, tagFilter, sortBy]);
 
   // Sem isto, apagar o último link de uma página final deixaria `page` maior
   // que `meta.last_page` e a lista renderizaria vazia até uma ação manual.
@@ -155,17 +162,20 @@ function LinkListPage() {
   const handleLinkCreated = useCallback(
     (link: LinkResponse) => {
       setSortBy("created_at");
+      // Explicit: the new link lives on page 1, and the sort above only resets
+      // the page when it actually changes.
+      setPage(1);
       highlightLink(link);
     },
     [highlightLink],
   );
 
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     setSearchTerm("");
     setStatusFilter("all");
     setTagFilter(null);
     setSortBy("created_at");
-  };
+  }, []);
 
   if (loading) {
     return (

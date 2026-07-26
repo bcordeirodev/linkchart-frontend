@@ -24,6 +24,7 @@ import { useTranslation } from "react-i18next";
 import { motionTokens } from "@/lib/theme/designSystem";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 
+import { AnalyticsPanelActiveProvider } from "@/features/analytics/context/AnalyticsPanelActiveContext";
 import { AudienceAnalysis } from "@/features/analytics/components/audience/AudienceAnalysis";
 import { GeographicAnalysis } from "@/features/analytics/components/geographic/GeographicAnalysis";
 import { OriginAnalysis } from "@/features/analytics/components/origin/OriginAnalysis";
@@ -150,12 +151,13 @@ export function LinkAnalyticsTabsOptimized({
     const index = TAB_IDS.indexOf(id);
     const meta = tabLabels[index]!;
     const HeaderIcon = meta.Icon;
+    const isActive = filters.tab === id;
     return (
       <Box
         role="tabpanel"
         id={`tabpanel-${id}`}
         aria-labelledby={`tab-${index}`}
-        sx={{ display: filters.tab === id ? "block" : "none" }}
+        sx={{ display: isActive ? "block" : "none" }}
       >
         {/* Standard tab header — names the active panel and explains it */}
         <Box sx={{ mb: 2 }}>
@@ -174,7 +176,12 @@ export function LinkAnalyticsTabsOptimized({
             {meta.description}
           </Typography>
         </Box>
-        {children}
+        {/* Mounted-but-hidden panels keep their cached data and stop fetching:
+            without this, changing the period refetched every tab the user had
+            ever opened, all at once, to render one of them. */}
+        <AnalyticsPanelActiveProvider active={isActive}>
+          {children}
+        </AnalyticsPanelActiveProvider>
       </Box>
     );
   };
