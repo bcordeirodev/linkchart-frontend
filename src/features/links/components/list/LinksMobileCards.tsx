@@ -5,8 +5,12 @@
  * Optimised card list for narrow viewports. Each card shows:
  * - Favicon, title, status chip and overflow menu in the header row
  * - Destination URL (truncated)
- * - Action zone: click-to-copy short-URL strip + Analytics button (one row, no duplication)
+ * - Action zone: click-to-copy short-URL strip (analytics lives on the card body tap)
  * - Compact metrics footer via LinkCardMetrics (variant="compact")
+ *
+ * The card body only opens analytics once the link has at least one click —
+ * mirroring the desktop CTA, which is hidden until then. Copy and the overflow
+ * menu stay available either way.
  *
  * Shell styles match the desktop card via `getLinkCardShellSx`.
  */
@@ -124,6 +128,13 @@ const LinkMobileCard = memo(
     const statusColorValue = getResolvedStatusColor(theme, linkStatus);
     const statusLabel = t(STATUS_LABEL_KEYS[linkStatus]);
 
+    // No mobile o corpo do card *é* o botão de estatísticas (não há CTA na
+    // linha de ações). Sem clique não há dashboard, então o card deixa de ser
+    // alvo de toque — mesma regra do CTA no desktop, sem levar ninguém para uma
+    // tela vazia. Copiar e o menu de ações seguem funcionando.
+    const hasClicks = (link.clicks ?? 0) > 0;
+    const isInteractive = selectionMode || hasClicks;
+
     /** Navigate to the link's analytics view (card body is the tap target). */
     const goToAnalytics = () => navigate(`/links/analytics/${link.id}`);
 
@@ -133,7 +144,9 @@ const LinkMobileCard = memo(
         onToggleSelect?.(String(link.id));
         return;
       }
-      goToAnalytics();
+      if (hasClicks) {
+        goToAnalytics();
+      }
     };
 
     /** Keyboard activation mirrors the tap target above. */
@@ -150,21 +163,23 @@ const LinkMobileCard = memo(
     return (
       <Card
         id={`link-card-${link.id}`}
-        role={selectionMode ? "checkbox" : "button"}
+        role={selectionMode ? "checkbox" : hasClicks ? "button" : undefined}
         aria-checked={selectionMode ? selected : undefined}
-        tabIndex={0}
+        tabIndex={isInteractive ? 0 : undefined}
         aria-label={
           selectionMode
             ? t("bulk.selectLink", { title: link.title || t("list.noTitle") })
-            : t("actions.viewAnalyticsCard", {
-                title: link.title || t("list.noTitle"),
-              })
+            : hasClicks
+              ? t("actions.viewAnalyticsCard", {
+                  title: link.title || t("list.noTitle"),
+                })
+              : undefined
         }
-        onClick={handleCardActivate}
-        onKeyDown={handleCardKeyDown}
+        onClick={isInteractive ? handleCardActivate : undefined}
+        onKeyDown={isInteractive ? handleCardKeyDown : undefined}
         sx={{
           mb: linkCardListItemMb,
-          cursor: "pointer",
+          cursor: isInteractive ? "pointer" : "default",
           ...getLinkCardShellSx(theme),
           ...(isHighlighted ? getNewlyCreatedHighlightSx(theme) : {}),
         }}

@@ -39,17 +39,16 @@
       "shortLinkLabel": "Link curto",
       "urlPlaceholder": "https://exemplo.com/pagina",
       "slugPlaceholder": "nome-do-link",
-      "previewLabel": "Seu link curto ficará assim:",
       "previewAutoName": "código-automático",
       "previewAutoHint": "Sem um nome personalizado, geramos um código aleatório para você.",
-      "slugTabHint": "Tab ou Usar preenchem o nome sugerido",
       "slugSuggestionChecking": "Procurando um nome disponível…",
       "slugSuggestionUnavailable": "Nenhum nome disponível a partir desta página",
-      "slugAccept": "Usar",
       "submit": "Encurtar",
-      "success": "Link criado!",
       "moreOptions": "Opções avançadas",
-      "moreOptionsTooltip": "Abrir a criação completa: título, agendamento, limite de cliques e mais"
+      "moreOptionsTooltip": "Abrir a criação completa: título, agendamento, limite de cliques e mais",
+      "slugAnother": "Outro",
+      "slugAnotherTooltip": "Gerar outro nome para este link",
+      "success": "Link criado!"
     },
     "pagination": {
       "showing": "Mostrando {{from}}–{{to}} de {{total}}"
@@ -128,7 +127,8 @@
     "deleteError": "Erro ao excluir link. Tente novamente.",
     "back": "Voltar para links",
     "more": "Mais ações",
-    "viewSwitch": "Trocar visualização"
+    "viewSwitch": "Trocar visualização",
+    "analyticsDisabledTooltip": "Sem cliques ainda — as estatísticas aparecem depois do primeiro clique"
   },
   "form": {
     "createTitle": "Criar Novo Link",
@@ -143,8 +143,7 @@
     "customSlugPlaceholder": "meu-slug",
     "customSlugHelper": "Apenas letras, números e hífens. Deixe em branco para gerar automaticamente.",
     "subdomainSelect": {
-      "label": "Endereço do link",
-      "defaultOption": "Domínio padrão (linkcharts.com.br)"
+      "label": "Endereço do link"
     },
     "slugTabHint": "Tab para aceitar a sugestão",
     "slugSuggestionChecking": "Verificando sugestão de slug…",
@@ -397,7 +396,8 @@
         "suspicious": "Suspeito",
         "likelyFraud": "Provável Fraude",
         "nullTooltip": "Registrado antes da implementação do sistema de qualidade"
-      }
+      },
+      "errorMessage": "Não foi possível carregar os cliques. Tente novamente."
     }
   },
   "qr": {

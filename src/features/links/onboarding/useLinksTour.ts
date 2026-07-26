@@ -94,6 +94,53 @@ export function useLinksTour({ ready }: UseLinksTourArgs): UseLinksTour {
     applyThemeVars();
     driverRef.current?.destroy();
 
+    // Not every anchor is always on screen: the Analytics CTA only renders for
+    // links that already have clicks, and it never renders on mobile (the card
+    // body is the tap target there). driver.js turns a missing element into a
+    // floating, unanchored popover — a tip pointing at nothing. Dropping those
+    // steps keeps the tour honest about what it can actually show.
+    const steps = [
+      {
+        element: '[data-tour="quick-create"]',
+        popover: {
+          title: t("list.tour.create.title"),
+          description: t("list.tour.create.desc"),
+        },
+      },
+      {
+        element: '[data-tour="overview"]',
+        popover: {
+          title: t("list.tour.overview.title"),
+          description: t("list.tour.overview.desc"),
+        },
+      },
+      {
+        element: '[data-tour="links-list"]',
+        popover: {
+          title: t("list.tour.list.title"),
+          description: t("list.tour.list.desc"),
+        },
+      },
+      {
+        element: '[data-tour="analytics"]',
+        popover: {
+          title: t("list.tour.analytics.title"),
+          description: t("list.tour.analytics.desc"),
+        },
+      },
+      {
+        element: '[data-tour="link-actions"]',
+        popover: {
+          title: t("list.tour.actions.title"),
+          description: t("list.tour.actions.desc"),
+        },
+      },
+    ].filter((step) => document.querySelector(step.element) !== null);
+
+    if (steps.length === 0) {
+      return;
+    }
+
     const instance = driver({
       showProgress: true,
       allowClose: true,
@@ -106,43 +153,7 @@ export function useLinksTour({ ready }: UseLinksTourArgs): UseLinksTour {
       onDestroyed: () => {
         void markOnboardingSeen(TOUR_FLAG);
       },
-      steps: [
-        {
-          element: '[data-tour="quick-create"]',
-          popover: {
-            title: t("list.tour.create.title"),
-            description: t("list.tour.create.desc"),
-          },
-        },
-        {
-          element: '[data-tour="overview"]',
-          popover: {
-            title: t("list.tour.overview.title"),
-            description: t("list.tour.overview.desc"),
-          },
-        },
-        {
-          element: '[data-tour="links-list"]',
-          popover: {
-            title: t("list.tour.list.title"),
-            description: t("list.tour.list.desc"),
-          },
-        },
-        {
-          element: '[data-tour="analytics"]',
-          popover: {
-            title: t("list.tour.analytics.title"),
-            description: t("list.tour.analytics.desc"),
-          },
-        },
-        {
-          element: '[data-tour="link-actions"]',
-          popover: {
-            title: t("list.tour.actions.title"),
-            description: t("list.tour.actions.desc"),
-          },
-        },
-      ],
+      steps,
     });
 
     driverRef.current = instance;
