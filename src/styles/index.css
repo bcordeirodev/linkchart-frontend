@@ -90,6 +90,18 @@ body {
   outline: none;
 }
 
+/*
+ * Same contract for a bare <input> that is styled as part of a surrounding
+ * field (the quick-create short-link strip): the container draws the ring via
+ * :focus-within, the input draws nothing. This has to live here rather than in
+ * the component's `sx` — Emotion emits into `@layer mui`, and the unlayered
+ * :focus-visible rule above outranks every layered rule no matter how specific.
+ */
+[data-inline-field-input]:focus,
+[data-inline-field-input]:focus-visible {
+  outline: none;
+}
+
 /* Manter acessibilidade para botões e outros elementos interativos */
 .MuiButton-root:focus-visible,
 .MuiIconButton-root:focus-visible,

@@ -24,6 +24,11 @@ export type SlugAvailabilityStatus =
  * Endpoint: `GET /api/public/links/{slug}` (via `publicLinkService.getLinkBySlug()`).
  * Treats HTTP 404 as `"available"` and any other `ApiError` as `"idle"` (network/unknown error — don't block the form).
  * Debounced 500 ms after the last `slug` change; invalid slugs short-circuit to `"idle"` without a request.
+ *
+ * `"checking"` is entered as soon as the slug looks valid, *before* the debounce
+ * elapses. It used to be set only when the request fired, which left the field
+ * showing the previous verdict — a stale green check on a name that had already
+ * been edited — for half a second on every keystroke.
  */
 export function useSlugAvailability(
   slug: string,
@@ -40,10 +45,10 @@ export function useSlugAvailability(
     }
 
     let cancelled = false;
+    setStatus("checking");
 
     const timer = setTimeout(async () => {
       if (cancelled) return;
-      setStatus("checking");
       const result = await checkSlugAvailabilityOnce(slug, mode);
       if (cancelled) return;
       setStatus(

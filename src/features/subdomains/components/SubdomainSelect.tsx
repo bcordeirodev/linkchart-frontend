@@ -1,7 +1,8 @@
 "use client";
 
 import { FormControl, MenuItem, Select } from "@mui/material";
-import { useTranslation } from "react-i18next";
+
+import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
 
 import { useSubdomains } from "../hooks/useSubdomains";
 
@@ -9,6 +10,16 @@ import type { SelectChangeEvent } from "@mui/material";
 
 /** Sentinel `Select` value for "use the default domain" (`subdomain_id: null`). */
 const DEFAULT_DOMAIN_VALUE = "__default__";
+
+/**
+ * Strips scheme and trailing slash so a URL reads as a bare host.
+ *
+ * @param url - absolute URL (or host) to display.
+ * @returns the host, e.g. `acme.linkcharts.com.br`.
+ */
+function toHost(url: string): string {
+  return url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+}
 
 export interface SubdomainSelectProps {
   /** Selected subdomain id, or `null` for the default domain. */
@@ -35,8 +46,10 @@ export interface SubdomainSelectProps {
 }
 
 /**
- * Domain picker shown at link creation: "Default domain" plus one option per
- * active subdomain the user holds. Follows the project's external-label
+ * Domain picker shown at link creation: the default host plus one option per
+ * active subdomain the user holds, each labelled by the host it produces.
+ * Because every option is a complete host, callers must not append a domain
+ * suffix beside it. Follows the project's external-label
  * convention — this component renders only the control, no `<FormLabel>`;
  * callers that want a visible label render one above it (see
  * `LinkFormFields.tsx`).
@@ -54,7 +67,6 @@ export function SubdomainSelect({
   variant = "outlined",
   "aria-label": ariaLabel,
 }: SubdomainSelectProps) {
-  const { t } = useTranslation("links");
   const { subdomains, isLoading } = useSubdomains();
   const embedded = variant === "embedded";
 
@@ -105,12 +117,17 @@ export function SubdomainSelect({
             : undefined
         }
       >
+        {/* Every option is the host it produces — the default one included.
+            "Domínio padrão (linkcharts.com.br)" said the same thing at three
+            times the width, and mixing it with bare labels like `acme` made the
+            list read as two different kinds of thing. Hosts are also derived,
+            never hardcoded, so dev and production each show their own. */}
         <MenuItem value={DEFAULT_DOMAIN_VALUE}>
-          {t("form.subdomainSelect.defaultOption")}
+          {toHost(getShortUrlPrefix())}
         </MenuItem>
         {subdomains.map((item) => (
           <MenuItem key={item.id} value={String(item.id)}>
-            {item.subdomain}
+            {toHost(item.fullUrl)}
           </MenuItem>
         ))}
       </Select>
