@@ -8,6 +8,7 @@ import type {
   LinkClicksListParams,
   LinkClicksMeta,
 } from "../types/click";
+import { useAnalyticsPanelActive } from "@/features/analytics/context/AnalyticsPanelActiveContext";
 
 interface UseLinkClicksOptions {
   linkId: string;
@@ -65,6 +66,8 @@ export function useLinkClicks({
   dateTo,
   excludeBots = false,
 }: UseLinkClicksOptions): UseLinkClicksReturn {
+  const panelActive = useAnalyticsPanelActive();
+
   const [items, setItems] = useState<LinkClickItem[]>([]);
   const [meta, setMeta] = useState<LinkClicksMeta | null>(null);
   const [loading, setLoading] = useState(false);
@@ -96,7 +99,10 @@ export function useLinkClicks({
   }, [dateFrom, dateTo, excludeBots]);
 
   const fetchClicks = useCallback(async () => {
-    if (!linkId) {
+    // Same rule as the TanStack analytics hooks: a tab sitting hidden behind
+    // `display: none` must not re-request on every filter change. This hook
+    // fetches by hand, so the gate is explicit here.
+    if (!linkId || !panelActive) {
       return;
     }
 
@@ -128,8 +134,9 @@ export function useLinkClicks({
         return;
       }
 
+      // Developer-facing: `ClicksTable` renders a localized message instead.
       const message =
-        err instanceof Error ? err.message : "Erro ao carregar cliques";
+        err instanceof Error ? err.message : "Clicks request failed";
       setError(message);
       setItems([]);
       setMeta(null);
@@ -148,6 +155,7 @@ export function useLinkClicks({
     dateFrom,
     dateTo,
     excludeBots,
+    panelActive,
   ]);
 
   useEffect(() => {

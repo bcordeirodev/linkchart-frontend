@@ -178,6 +178,8 @@ export function ClicksTable({
         onRetry={refresh}
         loadingMessage={t("analytics.clicksTable.loadingMessage")}
         emptyMessage={t("analytics.clicksTable.emptyMessage")}
+        // The hook's own error text is developer-facing; the user reads this.
+        errorMessage={t("analytics.clicksTable.errorMessage")}
         minHeight={300}
       >
         {isMobile ? (

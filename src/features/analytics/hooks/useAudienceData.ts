@@ -13,6 +13,7 @@ import type {
   UseAudienceDataOptions,
   UseAudienceDataReturn,
 } from "@/types/analytics";
+import { useAnalyticsPanelActive } from "@/features/analytics/context/AnalyticsPanelActiveContext";
 
 /**
  * Derives summary stats (primary device/browser, total clicks) from the raw
@@ -71,6 +72,8 @@ export function useAudienceData({
   dateTo,
   excludeBots,
 }: UseAudienceDataOptions): UseAudienceDataReturn {
+  const panelActive = useAnalyticsPanelActive();
+
   const { data, isLoading, isPlaceholderData, error, refetch } = useQuery({
     queryKey: queryKeys.analytics.audience(linkId, {
       dateFrom,
@@ -89,7 +92,9 @@ export function useAudienceData({
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     refetchIntervalInBackground: false,
-    enabled: !!linkId,
+    // A hidden analytics tab keeps its cached data but stops fetching —
+    // see `AnalyticsPanelActiveContext`. Outside the tabs this is always true.
+    enabled: !!linkId && panelActive,
     // Keeps the previous dataset visible while a filter-change fetch is in flight so
     // AnalyticsStateManager never enters its loading state between filter changes.
     //

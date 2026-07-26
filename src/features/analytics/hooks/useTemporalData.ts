@@ -8,6 +8,7 @@ import { queryKeys } from "@/lib/query/keys";
 import { API_CONFIG } from "@/lib/api/endpoints";
 
 import type { TemporalData } from "@/types/analytics";
+import { useAnalyticsPanelActive } from "@/features/analytics/context/AnalyticsPanelActiveContext";
 
 /** Summary stats derived from `TemporalData` (peak hour/day, hourly average, coarse trend direction). */
 export interface TemporalStats {
@@ -62,9 +63,13 @@ function calculateStats(temporalData: TemporalData): TemporalStats {
     hourlyData[0] || { hour: "0", clicks: 0 },
   );
 
+  // Empty fallback rather than a day name: this hook has no translator, and a
+  // hardcoded "Segunda" would surface untranslated. Consumers already treat an
+  // empty `peakDay` as "no data" — and they prefer the ISO `peak_day` number,
+  // which they can localize themselves (see `getWeekdayLabel`).
   const peakDayData = dailyData.reduce(
     (prev, current) => (current.clicks > prev.clicks ? current : prev),
-    dailyData[0] || { day_name: "Segunda", clicks: 0 },
+    dailyData[0] || { day_name: "", clicks: 0 },
   );
 
   const totalClicks = hourlyData.reduce((sum, item) => sum + item.clicks, 0);
@@ -125,6 +130,8 @@ export function useTemporalData({
   excludeBots,
   segment,
 }: UseTemporalDataOptions): UseTemporalDataReturn {
+  const panelActive = useAnalyticsPanelActive();
+
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: queryKeys.analytics.temporal(linkId, {
       dateFrom,
@@ -146,7 +153,9 @@ export function useTemporalData({
     staleTime: API_CONFIG.CACHE.ANALYTICS_TTL,
     refetchInterval: enableRealtime ? refreshInterval : false,
     refetchIntervalInBackground: false,
-    enabled: !!linkId,
+    // A hidden analytics tab keeps its cached data but stops fetching —
+    // see `AnalyticsPanelActiveContext`. Outside the tabs this is always true.
+    enabled: !!linkId && panelActive,
   });
 
   const stats = useMemo(() => (data ? calculateStats(data) : null), [data]);
