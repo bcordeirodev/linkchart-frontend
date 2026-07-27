@@ -72,7 +72,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     notFound();
   }
 
-  const canonicalUrl = `${appUrl}/@${handle}`;
+  // Subdomain-first: quando a página tem subdomínio associado, o backend
+  // devolve `url` ABSOLUTA (a raiz do subdomínio) — essa é a URL canônica,
+  // e esta rota /@{handle} vira apenas um fallback técnico não-canônico.
+  // Sem subdomínio (página legada), o canonical continua sendo /@{handle}.
+  const canonicalUrl = data.url?.startsWith("http")
+    ? data.url
+    : `${appUrl}/@${handle}`;
   const description =
     data.bio || `Confira os links de @${handle} no Link Charts.`;
 

@@ -48,6 +48,13 @@ export interface BioPageData {
    * missing key the same as `null`.
    */
   avatar_url?: string | null;
+  /**
+   * Canonical public URL computed by the backend: the subdomain's root
+   * (absolute, e.g. `https://bruno.linkcharts.com.br`) when the page has an
+   * associated subdomain, or the relative `/@{handle}` path for a legacy
+   * page without one. Optional so older cached responses still type-check.
+   */
+  url?: string;
   /** Ordered list of link buttons. */
   items: BioLinkItem[];
 }
