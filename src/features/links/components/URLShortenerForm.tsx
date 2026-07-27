@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import type React from "react";
 import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -8,10 +8,10 @@ import { m } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { useLinkCreationOrchestration } from "@/features/links/hooks/useLinkCreationOrchestration";
 import { usePublicSlugSuggestion } from "@/features/links/hooks/usePublicSlugSuggestion";
 import { usePublicURLShortener } from "@/features/links/hooks/usePublicURLShortener";
 import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability";
-import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
 import { PUBLIC_SLUG_PATTERN } from "@/features/links/utils/slugAvailabilityCheck";
 import { ApiError } from "@/lib/api/client";
 import { useMessage } from "@/lib/providers/MessageProvider";
@@ -77,12 +77,10 @@ export function URLShortenerForm({
     defaultValues: { originalUrl: initialUrl ?? "", customSlug: "" },
   });
 
-  const { createPublicShortUrl, loading } = usePublicURLShortener();
-  const isLoading = !!(loading || externalLoading);
+  const { createPublicShortUrl } = usePublicURLShortener();
 
   const urlValue = watch("originalUrl");
   const slugValue = watch("customSlug");
-  const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
 
   // One unauthenticated request resolves both the available slug and the page's
   // og:title. ogTitle silently fills the `title` payload below regardless of the
@@ -107,30 +105,39 @@ export function URLShortenerForm({
   const ogTitleRef = useRef<string | null>(null);
   ogTitleRef.current = ogTitle;
 
-  // A submit can arrive before its gates settle — the safety check may still be
-  // running, or the slug suggestion the user is relying on may not have resolved.
-  // Rather than a dead click, the submit is parked here and replayed once both
-  // settle (see the flush effect), so we always commit the resolved suggestion
-  // instead of racing it to a backend random.
-  const pendingSubmitRef = useRef<IFormData | null>(null);
-  const [submitQueued, setSubmitQueued] = useState(false);
-
   const doCreate = useCallback(
-    async (formData: IFormData): Promise<void> => {
+    (formData: IFormData) => {
       // The smart suggestion is the default: when the user didn't type a name,
       // commit the very slug the preview showed (the resolved suggestion), so the
       // created link matches the preview instead of a fresh backend random.
       const typed = formData.customSlug.trim();
       const effectiveSlug =
         typed || (slugSuggestionStatus === "ready" ? availableSlug : null);
-      try {
-        const result = await createPublicShortUrl({
-          original_url: formData.originalUrl,
-          custom_slug: effectiveSlug || undefined,
-          title: ogTitleRef.current ?? undefined,
-        });
+      return createPublicShortUrl({
+        original_url: formData.originalUrl,
+        custom_slug: effectiveSlug || undefined,
+        title: ogTitleRef.current ?? undefined,
+      });
+    },
+    [createPublicShortUrl, availableSlug, slugSuggestionStatus],
+  );
+
+  // Centralized Safe Browsing gate + queue-while-settling behaviour (shared
+  // with the quick-create and full create forms) — see
+  // `useLinkCreationOrchestration`. This surface additionally waits out a
+  // slug suggestion the empty-name submit depends on, so the created link
+  // matches the preview instead of racing it to a fresh backend random.
+  const { safetyStatus, threats, isSubmitting, submitQueued, guardedSubmit } =
+    useLinkCreationOrchestration<IFormData, PublicLinkResponse>({
+      strategy: "public",
+      url: urlValue ?? "",
+      create: doCreate,
+      queueWhileSettling: true,
+      isExtraSettling: isResolvingSlugSuggestion,
+      onSuccess: (result) => {
         onSuccess?.(result);
-      } catch (err) {
+      },
+      onError: (err) => {
         if (err instanceof ApiError && err.details?.errors) {
           const fieldErrors = err.details.errors as Record<string, string[]>;
           if (fieldErrors.custom_slug) {
@@ -141,62 +148,10 @@ export function URLShortenerForm({
         const msg = t("shorter.form.errorMessage");
         showMessage({ variant: "error", message: msg });
         onError?.(msg);
-      }
-    },
-    [
-      createPublicShortUrl,
-      onSuccess,
-      onError,
-      setError,
-      showMessage,
-      t,
-      availableSlug,
-      slugSuggestionStatus,
-    ],
-  );
+      },
+    });
 
-  const onSubmit = (formData: IFormData): void => {
-    // Unsafe is a hard block (defense-in-depth beyond the disabled button). A
-    // still-running safety check, or a suggestion the user depends on that hasn't
-    // resolved, queues the submit to fire once both settle.
-    if (safetyStatus === "unsafe") {
-      return;
-    }
-    const awaitingSuggestion =
-      !formData.customSlug.trim() && slugSuggestionStatus === "resolving";
-    if (safetyStatus === "checking" || awaitingSuggestion) {
-      pendingSubmitRef.current = formData;
-      setSubmitQueued(true);
-      return;
-    }
-    void doCreate(formData);
-  };
-
-  // Flush a queued submit once both gates settle: the safety check finished
-  // (anything but "checking" — "error" fails open) and any suggestion the submit
-  // depends on has landed. Drop it on an unsafe verdict or a cleared URL.
-  useEffect(() => {
-    if (!submitQueued) {
-      return;
-    }
-    if (safetyStatus === "unsafe" || safetyStatus === "idle") {
-      pendingSubmitRef.current = null;
-      setSubmitQueued(false);
-      return;
-    }
-    const formData = pendingSubmitRef.current;
-    const awaitingSuggestion =
-      !!formData &&
-      !formData.customSlug.trim() &&
-      slugSuggestionStatus === "resolving";
-    if (safetyStatus !== "checking" && !awaitingSuggestion) {
-      pendingSubmitRef.current = null;
-      setSubmitQueued(false);
-      if (formData) {
-        void doCreate(formData);
-      }
-    }
-  }, [safetyStatus, slugSuggestionStatus, submitQueued, doCreate]);
+  const isLoading = !!(isSubmitting || externalLoading);
 
   return (
     <m.div
@@ -211,7 +166,7 @@ export function URLShortenerForm({
     >
       <Box
         component="form"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(guardedSubmit)}
         sx={{ ...getPublicFocalSx(theme), p: { xs: 2.5, sm: 3, md: 3.5 } }}
       >
         <Box

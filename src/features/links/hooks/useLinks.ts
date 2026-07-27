@@ -183,25 +183,16 @@ export function useDeleteLink() {
  * @remarks
  * Cache key: `queryKeys.links.detail(id)` → `["links", "detail", id]`.
  * Endpoint: `GET /api/links/{id}` (via `linkService.findOne()`).
- * `throwOnError: false` — error surfaces through `meta.onError` as a toast.
+ * `throwOnError: false` — the query error surfaces via the returned `error`
+ * field instead of throwing during render; callers render their own error
+ * state from it.
  */
 export function useLinkById(id: string) {
-  const { showMessage } = useMessage();
-
   return useQuery<LinkResponse>({
     queryKey: queryKeys.links.detail(id),
     queryFn: () => linkService.findOne(id),
     staleTime: API_CONFIG.CACHE.LINKS_TTL,
     enabled: !!id,
     throwOnError: false,
-    meta: {
-      onError: () => {
-        const msg = (i18n.t as (key: string, opts: object) => string)(
-          "errors.fetchLink",
-          { ns: "links" },
-        );
-        showMessage({ message: msg, variant: "error" });
-      },
-    },
   });
 }

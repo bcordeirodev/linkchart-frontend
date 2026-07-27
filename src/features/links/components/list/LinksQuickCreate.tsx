@@ -20,14 +20,14 @@ import {
   SlidersHorizontal,
   Zap,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { useCallback, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
+import { useLinkCreationOrchestration } from "@/features/links/hooks/useLinkCreationOrchestration";
 import { useCreateLink } from "@/features/links/hooks/useLinks";
 import { useSlugSuggestionField } from "@/features/links/hooks/useSlugSuggestionField";
-import { useUrlSafetyCheck } from "@/features/links/hooks/useUrlSafetyCheck";
 import { RESERVED_SLUGS } from "@/features/links/utils/slugAvailabilityCheck";
 import {
   buildSlugAvailabilityLabels,
@@ -235,7 +235,6 @@ export function LinksQuickCreate({
 
   const urlValue = watch("original_url");
   const slugValue = watch("custom_slug") ?? "";
-  const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
 
   // Programmatic writes skip validation: they are either a slug the server
   // already vetted or an empty field, and running zod on them would surface
@@ -260,93 +259,65 @@ export function LinksQuickCreate({
   const slugAvailabilityLabels = buildSlugAvailabilityLabels(t);
   const slugIsTaken = slugField.state === "taken";
 
-  const urlIsUnsafe = safetyStatus === "unsafe";
-  const urlIsChecking = safetyStatus === "checking";
-
   const urlSafetyLabels = buildUrlSafetyLabels(t);
+
+  const createLink = useCallback(
+    (data: QuickFormData): Promise<LinkResponse> =>
+      mutateAsync({
+        original_url: data.original_url,
+        custom_slug: data.custom_slug || undefined,
+        // `subdomainIdField` is `{ subdomain_id }` once the subdomains list
+        // has loaded (and the feature is on), or `undefined` while still
+        // loading — spreading `undefined` omits the key entirely instead of
+        // sending an explicit `null`, which the backend would read as
+        // "force the default domain" rather than "use the user's oldest
+        // active subdomain". See `useSubdomainSelection` for the rationale.
+        ...subdomainIdField,
+      }),
+    [mutateAsync, subdomainIdField],
+  );
+
+  // Centralized Safe Browsing gate + queue-while-checking behaviour (shared
+  // with the public shortener and the full create form) — see
+  // `useLinkCreationOrchestration`. A slug already known to be taken is an
+  // extra hard block here: submitting it would just come back as a 422.
+  const {
+    threats,
+    isUnsafe: urlIsUnsafe,
+    submitQueued,
+    guardedSubmit,
+  } = useLinkCreationOrchestration<QuickFormData, LinkResponse>({
+    strategy: "authenticated",
+    url: urlValue ?? "",
+    create: createLink,
+    queueWhileSettling: true,
+    isExtraBlocked: slugIsTaken,
+    onSuccess: (link) => {
+      // Everything the user needs after a create already happens in the list:
+      // `useNewlyCreatedLinkHighlight` sorts the new link to the top, scrolls
+      // its card into view, pulses it, and copies the short URL to the
+      // clipboard. The box only has to get out of the way.
+      onLinkCreated?.(link);
+      reset();
+      resetSlugField();
+      setSucceeded(true);
+      setTimeout(() => setSucceeded(false), 2000);
+    },
+    // No `onError`: the mutation's own `onError` (in `useCreateLink`) already
+    // dispatches the error toast, so a create failure here is a silent no-op —
+    // matching this surface's behaviour before the extraction.
+  });
+
   // Safety is silent by default: a confirmed-safe URL or an in-flight check shows
   // nothing. The field speaks only to report a real problem — an invalid URL
-  // (zod) or an unsafe destination (in error tone). The submit guard below still
-  // blocks unsafe/checking regardless of what is shown here.
+  // (zod) or an unsafe destination (in error tone). The submit guard inside
+  // `useLinkCreationOrchestration` still blocks unsafe/checking regardless of
+  // what is shown here.
   const urlHelperText: ReactNode =
     errors.original_url?.message ??
     (urlIsUnsafe
       ? getUrlSafetyHelperNode("unsafe", threats, urlSafetyLabels)
       : null);
-
-  // Extracted so a submit that arrived while the safety check was still running
-  // can be replayed once the check settles (see the queue effect below).
-  const pendingSubmitDataRef = useRef<QuickFormData | null>(null);
-  const [submitQueued, setSubmitQueued] = useState(false);
-
-  const createLink = useCallback(
-    async (data: QuickFormData): Promise<void> => {
-      try {
-        const link = await mutateAsync({
-          original_url: data.original_url,
-          custom_slug: data.custom_slug || undefined,
-          // `subdomainIdField` is `{ subdomain_id }` once the subdomains list
-          // has loaded (and the feature is on), or `undefined` while still
-          // loading — spreading `undefined` omits the key entirely instead of
-          // sending an explicit `null`, which the backend would read as
-          // "force the default domain" rather than "use the user's oldest
-          // active subdomain". See `useSubdomainSelection` for the rationale.
-          ...subdomainIdField,
-        });
-        // Everything the user needs after a create already happens in the list:
-        // `useNewlyCreatedLinkHighlight` sorts the new link to the top, scrolls
-        // its card into view, pulses it, and copies the short URL to the
-        // clipboard. The box only has to get out of the way.
-        onLinkCreated?.(link);
-        reset();
-        resetSlugField();
-        setSucceeded(true);
-        setTimeout(() => setSucceeded(false), 2000);
-      } catch {
-        // The mutation's onError already dispatches an error toast; swallow the
-        // rejection so the queued (void) call can't become an unhandled one.
-      }
-    },
-    [mutateAsync, onLinkCreated, reset, resetSlugField, subdomainIdField],
-  );
-
-  const onSubmit = useCallback<SubmitHandler<QuickFormData>>(
-    async (data): Promise<void> => {
-      // Unsafe is a hard block. A still-running check queues the submit instead
-      // of greying the button — it fires automatically once the check settles,
-      // so the button never flickers disabled mid-check.
-      if (urlIsUnsafe) return;
-      // A slug we already know is taken would just come back as a 422.
-      if (slugIsTaken) return;
-      if (urlIsChecking) {
-        pendingSubmitDataRef.current = data;
-        setSubmitQueued(true);
-        return;
-      }
-      await createLink(data);
-    },
-    [urlIsUnsafe, urlIsChecking, slugIsTaken, createLink],
-  );
-
-  // Flush a queued submit when the safety check settles: create on safe/error
-  // (error fails open, matching the submit gate), and drop on unsafe or when the
-  // URL is cleared/changed (back to idle).
-  useEffect(() => {
-    if (!submitQueued) {
-      return;
-    }
-    if (safetyStatus === "safe" || safetyStatus === "error") {
-      const data = pendingSubmitDataRef.current;
-      pendingSubmitDataRef.current = null;
-      setSubmitQueued(false);
-      if (data) {
-        void createLink(data);
-      }
-    } else if (safetyStatus === "unsafe" || safetyStatus === "idle") {
-      pendingSubmitDataRef.current = null;
-      setSubmitQueued(false);
-    }
-  }, [safetyStatus, submitQueued, createLink]);
 
   const inputRootSx = getInputRootSx(theme);
   const slugRegister = register("custom_slug");
@@ -418,7 +389,7 @@ export function LinksQuickCreate({
           }
         />
 
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Box component="form" onSubmit={handleSubmit(guardedSubmit)} noValidate>
           {/* Fileira 1 — o destino: o que se cola, e a ação principal. */}
           <Box
             sx={{
