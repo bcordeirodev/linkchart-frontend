@@ -97,7 +97,8 @@
     "errors": {
       "invalidUrl": "URL inválida",
       "shortenFailed": "Erro ao encurtar a URL. Tente novamente.",
-      "invalidSlug": "Erro: link criado mas sem slug válido"
+      "invalidSlug": "Erro: link criado mas sem slug válido",
+      "redirectFailed": "O link foi criado, mas não foi possível abrir a sua lista de links. Acesse \"Meus links\" para ver as estatísticas."
     },
     "faq": {
       "sectionTitle": "Perguntas Frequentes",
