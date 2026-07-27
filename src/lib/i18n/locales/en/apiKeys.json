@@ -1,0 +1,65 @@
+{
+  "title": "API keys",
+  "subtitle_one": "{{count}} of {{max}} key in use",
+  "subtitle_other": "{{count}} of {{max}} keys in use",
+  "subtitleLoading": "Loading your keys…",
+  "intro": "API keys let you create links and check stats straight from your code, without opening the dashboard. Each key is an independent Bearer token: name it after where it will be used and revoke it when you no longer need it.",
+  "list": {
+    "heading": "Your keys",
+    "createdAt": "Created on {{date}}",
+    "lastUsed": "Last used {{relative}}",
+    "neverUsed": "Never used",
+    "revoke": "Revoke",
+    "revokeDialog": {
+      "title": "Revoke this key?",
+      "body": "Integrations and scripts using this key will stop working immediately. This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Revoke key"
+    },
+    "empty": {
+      "title": "You don't have any API keys yet",
+      "body": "Create your first key in the form below to integrate Link Charts with your code: shorten links and track stats from any script, bot, or system."
+    }
+  },
+  "create": {
+    "heading": "Create new key",
+    "nameLabel": "Key name",
+    "namePlaceholder": "e.g. reports script",
+    "nameHint": "Just for you to identify where the key is used. Maximum of {{max}} characters.",
+    "submit": "Create key",
+    "validation": {
+      "required": "Give the key a name.",
+      "maxLength": "The name can have at most {{max}} characters."
+    },
+    "errors": {
+      "limitReached": "You reached the limit of {{max}} keys. Revoke an existing key to create another.",
+      "rateLimited": "Too many attempts in a row. Wait a minute and try again.",
+      "generic": "Could not create the key. Try again."
+    },
+    "limitReachedNotice": "You reached the limit of {{max}} API keys. Revoke an existing key to create another."
+  },
+  "tokenDialog": {
+    "title": "Key created",
+    "intro": "This is your \"{{name}}\" key. Copy it and store it somewhere safe — for security, it will not be shown again.",
+    "copy": "Copy key",
+    "copied": "Copied!",
+    "warning": "Save it now: this is the only time the full key is shown. If you lose it, revoke this one and create another.",
+    "confirm": "I saved my key"
+  },
+  "usage": {
+    "heading": "How to use the API",
+    "intro": "Every call carries the key in the Authorization header as a Bearer token. With it you create short links and check click stats from anywhere: an automation script, a bot, a CRM or spreadsheet integration.",
+    "keepSecret": "Treat the key like a password: don't commit it to Git or expose it in code that runs in the browser.",
+    "placeholderToken": "YOUR_API_KEY",
+    "copy": "Copy command",
+    "copied": "Copied!",
+    "createExample": {
+      "title": "Create a link",
+      "description": "POST to /api/v1/links with the destination URL. The response includes the link id and the short URL."
+    },
+    "statsExample": {
+      "title": "Check stats",
+      "description": "GET /api/v1/links/{id}/stats returns the link's clicks — use the id returned on creation."
+    }
+  }
+}

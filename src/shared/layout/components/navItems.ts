@@ -5,7 +5,7 @@ import type { IconIntent } from "@/shared/ui/icons";
  * principal. Mantida como união literal (em vez de `string`) para que
  * `` t(`nav.${key}`) `` continue type-checked pelo i18next tipado.
  */
-export type NavItemKey = "myLinks" | "reports" | "subdomains";
+export type NavItemKey = "myLinks" | "reports" | "subdomains" | "apiKeys";
 
 /**
  * Item de navegação principal, renderizado tanto no AppBar (desktop) quanto
@@ -35,6 +35,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: "subdomain",
     flag: "subdomains",
   },
+  { key: "apiKeys", route: "/api-keys", icon: "apiKeys" },
 ];
 
 /**

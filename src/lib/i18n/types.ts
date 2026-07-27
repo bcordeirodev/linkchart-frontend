@@ -1,6 +1,7 @@
 import "i18next";
 
 import type enAnalytics from "./locales/en/analytics.json";
+import type enApiKeys from "./locales/en/apiKeys.json";
 import type enAuth from "./locales/en/auth.json";
 import type enCommon from "./locales/en/common.json";
 import type enLegal from "./locales/en/legal.json";
@@ -19,6 +20,7 @@ declare module "i18next" {
       auth: typeof enAuth;
       links: typeof enLinks;
       analytics: typeof enAnalytics;
+      apiKeys: typeof enApiKeys;
       profile: typeof enProfile;
       public: typeof enPublic;
       legal: typeof enLegal;

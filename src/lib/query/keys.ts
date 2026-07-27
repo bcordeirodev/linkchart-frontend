@@ -15,6 +15,9 @@
  * - `analytics` — per-link analytics tabs and the public analytics page.
  * - `subdomains` — the authenticated user's custom subdomains (plural, N per
  *   user); claim/release mutations invalidate `subdomains.all()`.
+ * - `apiKeys` — the authenticated user's API keys (masked previews only —
+ *   full tokens never enter the cache); create/revoke mutations invalidate
+ *   `apiKeys.all()`.
  */
 
 /**
@@ -118,5 +121,16 @@ export const queryKeys = {
   },
   subdomains: {
     all: () => ["subdomains"] as const,
+  },
+  apiKeys: {
+    all: () => ["api-keys"] as const,
+  },
+  profile: {
+    /**
+     * Authenticated user's profile entity (`GET /api/me`). Single source of
+     * truth for the profile — `useUpdateProfile` seeds/invalidates this key so
+     * every consumer re-renders with fresh data after a save.
+     */
+    me: () => ["profile", "me"] as const,
   },
 };

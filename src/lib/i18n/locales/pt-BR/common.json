@@ -8,6 +8,8 @@
     "reportsDesc": "Estatísticas de todos os seus links",
     "subdomains": "Endereços personalizados",
     "subdomainsDesc": "Seus endereços personalizados",
+    "apiKeys": "Chaves de API",
+    "apiKeysDesc": "Crie e revogue chaves para usar a API",
     "signIn": "Entrar",
     "signUp": "Criar conta",
     "profile": "Meu perfil",
@@ -109,5 +111,13 @@
   },
   "resources": {
     "readAlso": "Leia também"
+  },
+  "errors": {
+    "title": "Algo deu errado",
+    "description": "Ocorreu um erro inesperado. Tente novamente — se o problema continuar, fale com o suporte.",
+    "supportCode": "Código para o suporte: {{code}}",
+    "retry": "Tentar novamente",
+    "reload": "Recarregar página",
+    "devDetails": "Detalhes do erro (desenvolvimento)"
   }
 }

@@ -8,6 +8,8 @@
     "reportsDesc": "Analytics across all your links",
     "subdomains": "Custom addresses",
     "subdomainsDesc": "Your custom addresses",
+    "apiKeys": "API keys",
+    "apiKeysDesc": "Create and revoke keys for the API",
     "signIn": "Sign In",
     "signUp": "Create account",
     "profile": "My profile",
@@ -109,5 +111,13 @@
   },
   "resources": {
     "readAlso": "Read next"
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Try again — if the problem persists, contact support.",
+    "supportCode": "Support code: {{code}}",
+    "retry": "Try again",
+    "reload": "Reload page",
+    "devDetails": "Error details (development)"
   }
 }
