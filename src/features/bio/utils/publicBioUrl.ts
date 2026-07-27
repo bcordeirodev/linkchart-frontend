@@ -17,18 +17,6 @@ function resolveAppOrigin(): string {
 }
 
 /**
- * Builds the absolute public URL for a bio page handle, e.g.
- * `https://linkcharts.com.br/@acme`.
- *
- * @param handle - the page's handle, without the leading `@`.
- * @returns the absolute URL, or `""` when `handle` is empty.
- */
-export function getPublicBioUrl(handle: string): string {
-  if (!handle) return "";
-  return `${resolveAppOrigin()}/@${handle}`;
-}
-
-/**
  * Host + `@` prefix shown next to the handle input while editing, e.g.
  * `"linkcharts.com.br/@"`.
  */

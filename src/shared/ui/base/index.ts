@@ -7,18 +7,10 @@
 export { AppLogo } from "./AppLogo";
 
 // Layout & Structure
-export { default as TabPanel } from "./TabPanel";
-export { default as TabDescription } from "./TabDescription";
 export { default as EnhancedPaper } from "./EnhancedPaper";
 
 // Novos componentes unificados
-export {
-  ResponsiveContainer,
-  PageContainer,
-  SectionContainer,
-  FormContainer,
-} from "./ResponsiveContainer";
-export { default as PageHeader } from "./PageHeader";
+export { ResponsiveContainer } from "./ResponsiveContainer";
 export {
   PageSectionHeading,
   type PageSectionHeadingProps,
@@ -37,12 +29,5 @@ export { default as AnalyticsEmptyState } from "./AnalyticsEmptyState";
 export { default as GradientButton } from "./GradientButton";
 export { HelpHint, type HelpHintProps } from "./HelpHint";
 
-// Typography & Content
-export { default as SafeTypography } from "./SafeTypography";
-
 // Re-export types
-export type {
-  TabPanelProps,
-  MetricCardProps,
-  BaseComponentProps,
-} from "../components";
+export type { MetricCardProps, BaseComponentProps } from "../components";

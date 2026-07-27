@@ -45,12 +45,3 @@ export type {
 } from "./types";
 
 export type { LayoutSettingsContextType } from "./LayoutSettingsContext";
-
-// ========================================
-// 🔄 COMPATIBILITY EXPORTS
-// ========================================
-// Para compatibilidade com código existente que usa FuseSettings
-export { LayoutProvider as FuseSettingsProvider } from "./LayoutProvider";
-export { Layout as FuseLayout } from "./Layout";
-export type { LayoutSettingsConfigType as FuseSettingsConfigType } from "./types";
-export type { LayoutThemesType as FuseThemesType } from "./types";

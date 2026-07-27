@@ -3,7 +3,7 @@
  * Container responsivo que unifica todos os padrões de espaçamento da aplicação
  */
 
-import { Container, Box } from "@mui/material";
+import { Container } from "@mui/material";
 
 import { responsiveSpacing } from "@/lib/theme";
 
@@ -143,50 +143,6 @@ export function ResponsiveContainer({
     >
       {children}
     </Container>
-  );
-}
-
-/**
- * Convenience wrapper: `ResponsiveContainer` with `variant="page"` (top-level page padding).
- */
-export function PageContainer({
-  children,
-  ...props
-}: Omit<ResponsiveContainerProps, "variant">) {
-  return (
-    <ResponsiveContainer variant="page" {...props}>
-      {children}
-    </ResponsiveContainer>
-  );
-}
-
-/**
- * Convenience wrapper: `ResponsiveContainer` with `variant="section"` and `withMarginBottom`.
- *
- * Wraps children in a `<Box sx={{ width: "100%" }}>` for predictable fluid widths.
- */
-export function SectionContainer({
-  children,
-  ...props
-}: Omit<ResponsiveContainerProps, "variant">) {
-  return (
-    <ResponsiveContainer variant="section" withMarginBottom {...props}>
-      <Box sx={{ width: "100%" }}>{children}</Box>
-    </ResponsiveContainer>
-  );
-}
-
-/**
- * Convenience wrapper: `ResponsiveContainer` with `variant="form"` and `maxWidth="md"`.
- */
-export function FormContainer({
-  children,
-  ...props
-}: Omit<ResponsiveContainerProps, "variant">) {
-  return (
-    <ResponsiveContainer variant="form" maxWidth="md" {...props}>
-      {children}
-    </ResponsiveContainer>
   );
 }
 

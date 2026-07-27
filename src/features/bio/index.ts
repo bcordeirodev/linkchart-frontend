@@ -21,7 +21,6 @@ export {
   AVATAR_ACCEPT_ATTR,
 } from "./constants";
 export {
-  getPublicBioUrl,
   getPublicBioUrlPrefix,
   resolvePublicPageUrl,
 } from "./utils/publicBioUrl";

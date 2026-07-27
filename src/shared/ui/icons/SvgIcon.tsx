@@ -168,7 +168,4 @@ export const SvgIcon = forwardRef<SVGSVGElement, SvgIconProps>((props, ref) => {
 
 SvgIcon.displayName = "SvgIcon";
 
-// Compatibility exports
-export const FuseSvgIcon = SvgIcon;
-
 export default SvgIcon;

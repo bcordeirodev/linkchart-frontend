@@ -28,8 +28,7 @@ const AVAILABILITY_DEBOUNCE_MS = 300;
  * - `isLoading` — true while fetching the initial list
  * - `claim(name)` — mutation to claim an additional label
  * - `release(id)` — mutation to release one specific subdomain by id
- * - `checkAvailability(name)` — debounced availability check (shared with the
- *   legacy single-subdomain endpoint)
+ * - `checkAvailability(name)` — debounced availability check
  * - `availability` / `isCheckingAvailability` — result of the last check
  * - `limitReached` — true once the account holds `MAX_SUBDOMAINS_PER_USER`
  *   active subdomains (hides the claim form pre-emptively; the backend still

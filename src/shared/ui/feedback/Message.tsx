@@ -248,6 +248,4 @@ export function Message() {
   );
 }
 
-export const FuseMessage = Message;
-
 export default memo(Message);
