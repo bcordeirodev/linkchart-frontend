@@ -97,7 +97,8 @@
     "errors": {
       "invalidUrl": "Invalid URL",
       "shortenFailed": "Failed to shorten the URL. Please try again.",
-      "invalidSlug": "Error: link created but slug is invalid"
+      "invalidSlug": "Error: link created but slug is invalid",
+      "redirectFailed": "Your link was created, but we couldn't open your links list. Go to \"My Links\" to see its analytics."
     },
     "faq": {
       "sectionTitle": "Frequently Asked Questions",

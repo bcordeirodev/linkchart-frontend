@@ -15,7 +15,8 @@ import type { PublicLinkResponse } from "@/services/link-public.service";
  * @remarks
  * No direct network calls — receives the `PublicLinkResponse` from `usePublicURLShortener` via `handleSuccess`.
  * `handleSuccess` writes `res.short_url` to the clipboard (best-effort, swallowed on failure) and stores the created link in `createdLink`.
- * Authenticated users are still sent to the private analytics dashboard (`/links/analytics/{id}`) after a 150 ms-delayed `navigate(...)` so the exit animation can play.
+ * Authenticated users are sent to the links list (`/links`) after a 150 ms-delayed `navigate(...)` so the exit animation can play.
+ * `/links` (not `/links/analytics/{id}`) because a just-created link has zero clicks and the analytics page is useless without them (its view switch disables itself) — the list's default `created_at desc` sort surfaces the new link at the top of page 1, the same post-create flow `CreateLinkForm` uses. No `state` payload is passed: the App Router `useNavigate` shim ignores it by design.
  * Guests are **not** redirected — they stay on the landing and see the inline success card (`ShorterSuccessCard`) rendered from `createdLink`; viewing the public analytics is an explicit opt-in from there.
  * The pending nav timer is cleared on unmount and on `handleReset`.
  *
@@ -59,20 +60,19 @@ export function useShorter() {
       void publicLinkService.copyToClipboard(res.short_url);
 
       // Guests stay on the landing and see the inline success card — no
-      // navigation. Only authenticated users are sent to the private dashboard,
-      // after a short delay so the exit animation plays first.
+      // navigation. Only authenticated users are sent to their links list,
+      // after a short delay so the exit animation plays first. The new link
+      // shows up at the top there (default `created_at desc` sort) — same
+      // landing spot as the in-app create flow.
       if (!isAuthenticated) return;
 
       navTimerRef.current = setTimeout(() => {
         try {
-          navigate(`/links/analytics/${res.id}`, {
-            replace: true,
-            state: { fromShorter: true, newLink: true, linkData: res },
-          });
+          navigate("/links", { replace: true });
           setIsRedirecting(false);
         } catch (err) {
           console.error("Erro ao redirecionar:", err);
-          setError("Erro ao redirecionar para analytics");
+          setError(t("shorter.errors.redirectFailed"));
           setIsRedirecting(false);
         }
       }, 150);
