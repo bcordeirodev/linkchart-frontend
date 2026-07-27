@@ -97,6 +97,12 @@ function ShorterHeaderActions() {
   );
 }
 
+/**
+ * Utility bar flutuante do chrome "minimal": logo à esquerda, idioma + ações
+ * de auth à direita. Em xs todas as ações permanecem visíveis ("Entrar" e
+ * "Criar conta"); o espaço é ganho compactando paddings, nunca escondendo uma
+ * porta de entrada. Alvos de toque têm min-height 36px no mobile.
+ */
 function MinimalUtilityBar() {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -189,11 +195,14 @@ function MinimalUtilityBar() {
               onClick={() => navigate("/sign-in")}
               underline="none"
               sx={{
-                display: { xs: "none", sm: "inline-flex" },
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: { xs: 36, sm: "unset" },
                 fontSize: "0.8125rem",
                 fontWeight: 500,
                 color: alpha(theme.palette.text.primary, isDark ? 0.7 : 0.78),
-                px: 1,
+                px: { xs: 0.75, sm: 1 },
                 py: 0.5,
                 borderRadius: "6px",
                 background: "transparent",
@@ -212,8 +221,10 @@ function MinimalUtilityBar() {
               sx={{
                 fontSize: "0.75rem",
                 fontWeight: 600,
-                px: 1.75,
+                px: { xs: 1.25, sm: 1.75 },
                 py: 0.5,
+                minHeight: { xs: 36, sm: "unset" },
+                whiteSpace: "nowrap",
                 boxShadow: "none",
                 "&:hover": { boxShadow: "none", opacity: 0.9 },
               }}
