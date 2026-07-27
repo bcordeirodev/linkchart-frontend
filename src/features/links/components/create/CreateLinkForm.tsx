@@ -76,6 +76,11 @@ export function CreateLinkForm({
     return undefined;
   };
 
+  /**
+   * Validates the Safe Browsing gate, commits the effective slug, creates the
+   * link, copies its short URL and lands on `/links?created={id}` so the list
+   * page highlights the new link (the param is stripped there after firing).
+   */
   const onSubmit = async (data: LinkFormData) => {
     // The disabled submit button is UI-only; re-check here so programmatic
     // submits (e.g. Enter key) can't bypass the Safe Browsing gate.
@@ -114,7 +119,7 @@ export function CreateLinkForm({
       const response = await mutation.mutateAsync(payload);
       await copyShortUrlForLink(response);
       onSuccess?.(response);
-      navigate("/links");
+      navigate(`/links?created=${encodeURIComponent(String(response.id))}`);
     } catch (error: unknown) {
       // Map 422 field errors inline; the mutation's onError handles the toast.
       applyBackendFieldErrors<LinkFormData>(error, setError);

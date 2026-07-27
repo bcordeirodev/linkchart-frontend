@@ -2,7 +2,8 @@
 
 import { BarChart3, HelpCircle } from "lucide-react";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { LinkMetrics } from "@/features/links/components/LinkMetrics";
@@ -47,9 +48,20 @@ function buildPlaceholderMeta(page: number): LinksMeta {
   };
 }
 
-function LinkListPage() {
+/**
+ * `/links` page content — link list, account overview and quick-create.
+ *
+ * Reads `?created={id}` (set by the create flows that navigate here:
+ * `CreateLinkForm` and the landing shortener) to trigger the newly-created
+ * link highlight, then strips the param from the URL. Lives under the
+ * `<Suspense>` boundary in {@link LinkListPage} because of `useSearchParams`.
+ */
+function LinkListPageContent() {
   const { isMobile } = useResponsive();
   const { t } = useTranslation("links");
+  const router = useRouter();
+  const pathname = usePathname();
+  const urlSearchParams = useSearchParams();
 
   // `useLinks()` (full, unfiltered list) stays: it's the only source for the
   // account-wide overview metrics, the demo-seeding poll and the tour's
@@ -137,8 +149,35 @@ function LinkListPage() {
   );
   const { meta: linkMeta } = useLinksMeta(linkIds);
 
-  const { highlightedLinkId, highlightLink } =
+  const { highlightedLinkId, highlightLink, highlightLinkById } =
     useNewlyCreatedLinkHighlight(linkIds);
+
+  // Cross-page highlight: create flows that *navigate* here (`/links/create`
+  // form, landing shortener) arrive as `/links?created={id}`. Trigger the same
+  // path as the in-page quick-create (newest-first sort, page 1, highlight) —
+  // minus the clipboard copy, which those flows already did before navigating.
+  // The param is stripped right away via `router.replace` (client-side, other
+  // params preserved) so refresh/back doesn't re-highlight. If the list data
+  // hasn't caught up with the new id yet, the highlight hook simply waits for
+  // it (see `useNewlyCreatedLinkHighlight`) — no timers, no errors.
+  useEffect(() => {
+    const createdId = urlSearchParams.get("created");
+
+    if (!createdId) {
+      return;
+    }
+
+    setSortBy("created_at");
+    setPage(1);
+    highlightLinkById(createdId);
+
+    const nextParams = new URLSearchParams(urlSearchParams.toString());
+    nextParams.delete("created");
+    const query = nextParams.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
+    });
+  }, [urlSearchParams, pathname, router, highlightLinkById]);
 
   // Volta para a página 1 sempre que busca/filtro/ordenação mudam — o resultado
   // é outro conjunto.
@@ -275,6 +314,20 @@ function LinkListPage() {
         </Stack>
       </ResponsiveContainer>
     </AuthGuardRedirect>
+  );
+}
+
+/**
+ * `/links` page — wraps {@link LinkListPageContent} in `<Suspense>` because it
+ * calls `useSearchParams()` (the `?created={id}` cross-page highlight), which
+ * Next.js 15 requires under a Suspense boundary. Same convention as
+ * `LinkAnalyticsPage`.
+ */
+function LinkListPage() {
+  return (
+    <Suspense>
+      <LinkListPageContent />
+    </Suspense>
   );
 }
 
