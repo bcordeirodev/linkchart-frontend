@@ -13,9 +13,19 @@ export {
   useReorderBioItems,
 } from "./hooks/useBioItems";
 export { useHandleAvailability } from "./hooks/useHandleAvailability";
+export { useUploadBioAvatar, useRemoveBioAvatar } from "./hooks/useBioAvatar";
 
-export { MAX_BIO_ITEMS } from "./constants";
-export { getPublicBioUrl, getPublicBioUrlPrefix } from "./utils/publicBioUrl";
+export {
+  MAX_BIO_ITEMS,
+  AVATAR_MAX_SIZE_BYTES,
+  AVATAR_ACCEPTED_TYPES,
+  AVATAR_ACCEPT_ATTR,
+} from "./constants";
+export {
+  getPublicBioUrl,
+  getPublicBioUrlPrefix,
+  resolvePublicPageUrl,
+} from "./utils/publicBioUrl";
 
 export type {
   BioItem,

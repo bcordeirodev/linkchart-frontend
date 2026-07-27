@@ -63,7 +63,12 @@ export default function BioPublicPage({ data }: BioPublicPageProps) {
           pt: { xs: 6, sm: 8 },
         }}
       >
-        <BioAvatar initial={initial} palette={palette} />
+        <BioAvatar
+          initial={initial}
+          palette={palette}
+          avatarUrl={data.avatar_url}
+          displayName={data.title.trim() || data.handle}
+        />
 
         <Typography
           component="h1"

@@ -25,6 +25,7 @@ import { radiusTokens } from "@/lib/theme/designSystem";
 import { BIO_DESCRIPTION_MAX_LENGTH } from "../constants";
 import { sanitizeHandleInput } from "../utils/handleAvailabilityCheck";
 import { getPublicBioUrlPrefix } from "../utils/publicBioUrl";
+import { BioAddressSelect } from "./BioAddressSelect";
 
 import type { HandleAvailabilityStatus } from "../hooks/useHandleAvailability";
 import type { BioPageFormData } from "../utils/bioPageFormSchema";
@@ -89,6 +90,7 @@ export function BioPageFormFields({
   const theme = useTheme();
   const { t } = useTranslation("bio");
   const bioValue = useWatch({ control, name: "bio" }) ?? "";
+  const handleValue = useWatch({ control, name: "handle" }) ?? "";
   const urlPrefix = getPublicBioUrlPrefix();
 
   return (
@@ -147,6 +149,18 @@ export function BioPageFormFields({
           <HandleAvailabilityHint status={handleAvailability} />
         ) : null}
       </Box>
+
+      <Controller
+        name="subdomainId"
+        control={control}
+        render={({ field }) => (
+          <BioAddressSelect
+            value={field.value}
+            onChange={field.onChange}
+            handle={handleValue}
+          />
+        )}
+      />
 
       <Box>
         <FormLabel

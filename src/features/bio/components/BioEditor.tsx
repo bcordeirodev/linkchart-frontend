@@ -24,7 +24,8 @@ import {
   bioPageFormSchema,
   defaultBioPageFormValues,
 } from "../utils/bioPageFormSchema";
-import { getPublicBioUrl } from "../utils/publicBioUrl";
+import { resolvePublicPageUrl } from "../utils/publicBioUrl";
+import { BioAvatarField } from "./BioAvatarField";
 import { BioCreateIntro } from "./BioCreateIntro";
 import { BioItemsSection } from "./BioItemsSection";
 import { BioPageFormFields } from "./BioPageFormFields";
@@ -42,6 +43,7 @@ function mapPageToFormValues(page: BioPage): BioPageFormData {
     bio: page.bio ?? "",
     theme: page.theme,
     isActive: page.isActive,
+    subdomainId: page.subdomainId,
   };
 }
 
@@ -105,6 +107,7 @@ export function BioEditor() {
         bio: values.bio,
         theme: values.theme,
         isActive: mode === "edit" ? values.isActive : undefined,
+        subdomainId: values.subdomainId,
       });
       showMessage({
         message: t(mode === "create" ? "form.createdToast" : "form.savedToast"),
@@ -131,6 +134,7 @@ export function BioEditor() {
       bio={bioValue || ""}
       theme={themeValue || "dark"}
       items={page?.items ?? []}
+      avatarUrl={page?.avatarUrl}
     />
   );
 
@@ -146,7 +150,10 @@ export function BioEditor() {
       <Stack spacing={3} sx={{ flex: 1, minWidth: 0, width: "100%" }}>
         {mode === "create" ? <BioCreateIntro /> : null}
         {mode === "edit" && page ? (
-          <BioPublicUrlBar url={getPublicBioUrl(page.handle)} />
+          <>
+            <BioAvatarField page={page} />
+            <BioPublicUrlBar url={resolvePublicPageUrl(page.url)} />
+          </>
         ) : null}
 
         {isMobile ? (

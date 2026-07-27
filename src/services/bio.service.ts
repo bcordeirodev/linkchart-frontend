@@ -28,6 +28,10 @@ interface RawBioItem {
 /**
  * Raw shape of the bio page as returned by `GET /api/bio` / `PUT /api/bio`
  * (snake_case, straight off the Laravel resource).
+ *
+ * `avatar_url` is marked optional rather than `string | null` — defensive
+ * against the management endpoints not (yet) echoing it back on every
+ * response; `mapBioPage` defaults a missing key to `null`.
  */
 interface RawBioPage {
   id: number;
@@ -36,6 +40,9 @@ interface RawBioPage {
   bio: string | null;
   theme: BioTheme;
   is_active: boolean;
+  subdomain_id: number | null;
+  url: string;
+  avatar_url?: string | null;
   items: RawBioItem[];
 }
 
@@ -65,6 +72,9 @@ function mapBioPage(raw: RawBioPage): BioPage {
     bio: raw.bio,
     theme: raw.theme,
     isActive: raw.is_active,
+    subdomainId: raw.subdomain_id,
+    url: raw.url,
+    avatarUrl: raw.avatar_url ?? null,
     items: [...raw.items]
       .sort((a, b) => a.position - b.position)
       .map(mapBioItem),
@@ -113,8 +123,34 @@ export class BioService extends BaseService {
     if (input.isActive !== undefined) {
       body.is_active = input.isActive;
     }
+    if (input.subdomainId !== undefined) {
+      body.subdomain_id = input.subdomainId;
+    }
 
     const raw = await this.put<RawBioPage>("/api/bio", body);
+    return mapBioPage(raw);
+  }
+
+  /**
+   * Uploads (or replaces) the bio page's avatar image.
+   *
+   * @param file - the image, already checked client-side by
+   * `validateAvatarFile` (type + size) — the backend re-validates type,
+   * size, and minimum 100x100 dimensions regardless, returning 422 with a
+   * field-level message under `error.details.errors.avatar` on failure.
+   * @throws `ApiError` on 422 (invalid file) or when the user has no bio
+   * page yet to attach the avatar to.
+   */
+  async uploadAvatar(file: File): Promise<BioPage> {
+    const formData = new FormData();
+    formData.append("avatar", file);
+    const raw = await this.upload<RawBioPage>("/api/bio/avatar", formData);
+    return mapBioPage(raw);
+  }
+
+  /** Removes the bio page's avatar image, reverting the public page to its title/handle initial. */
+  async removeAvatar(): Promise<BioPage> {
+    const raw = await this.delete<RawBioPage>("/api/bio/avatar");
     return mapBioPage(raw);
   }
 

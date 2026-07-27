@@ -39,3 +39,19 @@ export function getPublicBioUrlPrefix(): string {
     return "linkcharts.com.br/@";
   }
 }
+
+/**
+ * Resolves the backend's `BioPage.url` field to an absolute address the
+ * browser can open. The backend returns either an absolute origin URL
+ * (`https://acme.linkcharts.com.br`, when a subdomain is associated) or a
+ * path relative to this app's own origin (`/@handle`, the default address)
+ * — this composes the relative case with `resolveAppOrigin()` so callers
+ * never need to branch on the shape themselves.
+ *
+ * @param url - the raw `url` field from `GET`/`PUT /api/bio`.
+ * @returns the absolute URL, or `""` when `url` is empty.
+ */
+export function resolvePublicPageUrl(url: string): string {
+  if (!url) return "";
+  return /^https?:\/\//.test(url) ? url : `${resolveAppOrigin()}${url}`;
+}

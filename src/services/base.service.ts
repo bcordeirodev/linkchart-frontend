@@ -116,6 +116,38 @@ export abstract class BaseService {
   }
 
   /**
+   * Performs a `multipart/form-data` upload via the shared `ApiClient`.
+   *
+   * @param endpoint - relative path (e.g. `/api/bio/avatar`).
+   * @param formData - browser `FormData` payload; the client lets `fetch`
+   *   set the multipart boundary itself.
+   * @param options - optional `fallback` returned on error and `context` tag for debugging.
+   * @returns the unwrapped response body of type `T`.
+   */
+  protected async upload<T>(
+    endpoint: string,
+    formData: FormData,
+    options?: {
+      fallback?: T;
+      context?: string;
+    },
+  ): Promise<T> {
+    try {
+      const response = await api.upload<T>(endpoint, formData);
+      this.logSuccess("POST", endpoint);
+      return response;
+    } catch (error) {
+      return this.handleError(
+        "POST",
+        endpoint,
+        error,
+        options?.fallback,
+        options?.context,
+      );
+    }
+  }
+
+  /**
    * Performs a `DELETE` request via the shared `ApiClient`, optionally with a
    * JSON body (e.g. the password/confirmation required by account deletion).
    *

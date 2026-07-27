@@ -3,6 +3,8 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import { getAvatarInitial } from "../utils/avatarInitial";
+
 import type { BioItem, BioTheme } from "../types";
 
 /**
@@ -45,12 +47,6 @@ const THEME_PALETTES: Record<BioTheme, BioThemePalette> = {
   },
 };
 
-/** Picks a stable 1–2 letter avatar initial from the page title, or "?" when empty. */
-function getAvatarInitial(title: string): string {
-  const trimmed = title.trim();
-  return trimmed ? trimmed[0]!.toUpperCase() : "?";
-}
-
 export interface BioPreviewPhoneProps {
   handle: string;
   title: string;
@@ -58,6 +54,13 @@ export interface BioPreviewPhoneProps {
   theme: BioTheme;
   /** Full item list; only `isActive` items render, in `position` order. */
   items: BioItem[];
+  /**
+   * Uploaded avatar URL, or `null`/`undefined` to fall back to the title's
+   * initial. Not part of the watched form — comes straight from `page` in
+   * `BioEditor`, since avatar upload is its own immediate mutation, not a
+   * submitted form field.
+   */
+  avatarUrl?: string | null;
 }
 
 /**
@@ -73,6 +76,7 @@ export function BioPreviewPhone({
   bio,
   theme,
   items,
+  avatarUrl,
 }: BioPreviewPhoneProps) {
   const { t } = useTranslation("bio");
   const palette = THEME_PALETTES[theme];
@@ -135,16 +139,30 @@ export function BioPreviewPhone({
               width: 64,
               height: 64,
               borderRadius: "50%",
+              overflow: "hidden",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: "1.5rem",
               fontWeight: 700,
               color: palette.accentContrast,
-              background: `linear-gradient(135deg, ${palette.accent} 0%, ${palette.accent}99 100%)`,
+              background: avatarUrl
+                ? undefined
+                : `linear-gradient(135deg, ${palette.accent} 0%, ${palette.accent}99 100%)`,
             }}
           >
-            {getAvatarInitial(displayTitle)}
+            {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={avatarUrl}
+                alt=""
+                width={64}
+                height={64}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              getAvatarInitial(displayTitle)
+            )}
           </Box>
 
           <Box sx={{ minWidth: 0, width: "100%" }}>

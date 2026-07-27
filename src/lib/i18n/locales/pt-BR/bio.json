@@ -10,6 +10,31 @@
     "publicUrlCopy": "Copiar endereço",
     "publicUrlCopied": "Copiado!",
     "publicUrlOpen": "Abrir em nova aba",
+    "avatar": {
+      "label": "Foto de perfil",
+      "hint": "JPEG, PNG ou WEBP, até 2MB.",
+      "uploadAction": "Enviar foto",
+      "removeAction": "Remover foto",
+      "uploadedToast": "Foto atualizada!",
+      "removedToast": "Foto removida!",
+      "removeDialog": {
+        "title": "Remover foto de perfil?",
+        "body": "Sua página volta a mostrar a inicial do título no lugar da foto.",
+        "cancel": "Cancelar",
+        "confirm": "Remover"
+      },
+      "errors": {
+        "invalidType": "Envie uma imagem JPEG, PNG ou WEBP.",
+        "tooLarge": "A imagem deve ter no máximo 2MB.",
+        "uploadGeneric": "Não foi possível enviar a foto. Tente novamente.",
+        "removeGeneric": "Não foi possível remover a foto. Tente novamente."
+      }
+    },
+    "address": {
+      "label": "Endereço da página",
+      "hint": "Escolha o domínio onde sua página fica publicada.",
+      "createCta": "Crie um endereço personalizado"
+    },
     "handle": {
       "label": "Endereço",
       "placeholder": "seunome",
