@@ -35,92 +35,116 @@ function getAvatarInitial(title: string, handle: string): string {
  * come entirely from {@link getBioPalette}, driven by `data.theme` (the page
  * owner's choice), not the visitor's app preference — most visitors arrive
  * from Instagram/WhatsApp and never see the app chrome at all.
+ *
+ * Two page-scoped visual details (selected-text color, scrollbar theming)
+ * target pseudo-elements/at-rules `sx` can't express, so they ship as a
+ * plain `<style>` tag scoped to `.bio-page` — a Server Component can render
+ * one with zero client JS, and the `html:has(.bio-page)` scrollbar rule
+ * keeps the theming off every other route without touching the app's global
+ * stylesheet (which this page doesn't own).
  */
 export default function BioPublicPage({ data }: BioPublicPageProps) {
   const palette = getBioPalette(data.theme);
   const initial = getAvatarInitial(data.title, data.handle);
 
   return (
-    <Box
-      sx={{
-        minHeight: "100dvh",
-        width: "100%",
-        bgcolor: palette.background,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        px: 2.5,
-      }}
-    >
+    <>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+.bio-page ::selection { background: ${palette.selectionBg}; }
+html:has(.bio-page) { scrollbar-width: thin; scrollbar-color: ${palette.scrollbarThumb} transparent; }
+html:has(.bio-page)::-webkit-scrollbar { width: 8px; }
+html:has(.bio-page)::-webkit-scrollbar-track { background: transparent; }
+html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrollbarThumb}; border-radius: 999px; }
+`,
+        }}
+      />
       <Box
+        className="bio-page"
         sx={{
+          minHeight: "100dvh",
           width: "100%",
-          maxWidth: 480,
-          flex: "1 1 auto",
+          bgcolor: palette.background,
+          backgroundImage: palette.backgroundImage,
+          backgroundRepeat: "no-repeat",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          pt: { xs: 6, sm: 8 },
+          px: 3,
         }}
       >
-        <BioAvatar
-          initial={initial}
-          palette={palette}
-          avatarUrl={data.avatar_url}
-          displayName={data.title.trim() || data.handle}
-        />
-
-        <Typography
-          component="h1"
+        <Box
           sx={{
-            mt: 2.5,
-            fontSize: "clamp(1.375rem, 1.1rem + 1vw, 1.625rem)",
-            fontWeight: 800,
-            lineHeight: 1.25,
-            letterSpacing: "-0.02em",
-            color: palette.textPrimary,
-            textAlign: "center",
-            wordBreak: "break-word",
+            width: "100%",
+            maxWidth: 480,
+            flex: "1 1 auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            pt: { xs: 5.5, sm: 7 },
           }}
         >
-          {data.title}
-        </Typography>
+          <BioAvatar
+            initial={initial}
+            palette={palette}
+            avatarUrl={data.avatar_url}
+            displayName={data.title.trim() || data.handle}
+          />
 
-        {data.bio ? (
           <Typography
+            component="h1"
             sx={{
-              mt: 1,
-              fontSize: "0.9375rem",
-              lineHeight: 1.5,
-              color: palette.textSecondary,
+              mt: 2.5,
+              fontSize: "clamp(1.5rem, 1.2rem + 1.4vw, 1.875rem)",
+              fontWeight: 800,
+              lineHeight: 1.2,
+              letterSpacing: "-0.02em",
+              color: palette.textPrimary,
               textAlign: "center",
-              display: "-webkit-box",
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
+              wordBreak: "break-word",
             }}
           >
-            {data.bio}
+            {data.title}
           </Typography>
-        ) : null}
 
-        {data.items.length > 0 ? (
-          <Stack spacing={1.5} sx={{ width: "100%", mt: 4 }}>
-            {data.items.map((item) => (
-              <BioLinkButton
-                key={item.id}
-                label={item.label}
-                url={item.url}
-                palette={palette}
-              />
-            ))}
-          </Stack>
-        ) : null}
-      </Box>
+          {data.bio ? (
+            <Typography
+              sx={{
+                mt: 1,
+                maxWidth: "34ch",
+                fontSize: "0.9375rem",
+                lineHeight: 1.55,
+                color: palette.textSecondary,
+                textAlign: "center",
+                display: "-webkit-box",
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {data.bio}
+            </Typography>
+          ) : null}
 
-      <Box sx={{ py: { xs: 4, sm: 5 } }}>
-        <BioFooterBadge palette={palette} />
+          {data.items.length > 0 ? (
+            <Stack spacing={1.5} sx={{ width: "100%", mt: 4.5 }}>
+              {data.items.map((item) => (
+                <BioLinkButton
+                  key={item.id}
+                  label={item.label}
+                  url={item.url}
+                  palette={palette}
+                />
+              ))}
+            </Stack>
+          ) : null}
+        </Box>
+
+        <Box sx={{ py: { xs: 5, sm: 6 } }}>
+          <BioFooterBadge palette={palette} />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }

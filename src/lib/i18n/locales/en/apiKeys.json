@@ -55,7 +55,7 @@
     "copied": "Copied!",
     "createExample": {
       "title": "Create a link",
-      "description": "POST to /api/v1/links with the destination URL. The response includes the link id and the short URL."
+      "description": "POST to /api/v1/links with the destination URL. The response includes the link id and the short URL. Optional: subdomain_id picks which of your custom addresses the link uses — omit the field for your default address; null forces the main domain."
     },
     "statsExample": {
       "title": "Check stats",

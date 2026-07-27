@@ -7,7 +7,8 @@ import { darkNeutral } from "@/lib/theme/colors/dark";
  *
  * The page blocks on a single upstream fetch; this streams a skeleton
  * immediately instead of a blank tab while it resolves. Shaped like the
- * final page (avatar circle, two text lines, three button bars) so there's
+ * final page (avatar circle, two text lines, three button bars) — including
+ * the avatar's responsive size (see `BioAvatar`'s `AVATAR_SIZE`) — so there's
  * no layout jump on hydration.
  *
  * Always renders in the dark palette — the page's payload (and therefore its
@@ -35,25 +36,29 @@ export default function BioLoading() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        px: 2.5,
-        pt: { xs: 6, sm: 8 },
+        px: 3,
+        pt: { xs: 5.5, sm: 7 },
       }}
     >
       <Box sx={{ width: "100%", maxWidth: 480 }}>
         <Box
           sx={{
             ...pulseSx,
-            width: 88,
-            height: 88,
+            width: { xs: 108, sm: 116 },
+            height: { xs: 108, sm: 116 },
             borderRadius: "50%",
             mx: "auto",
           }}
         />
-        <Box sx={{ ...pulseSx, width: "60%", height: 22, mx: "auto", mt: 3 }} />
+        <Box
+          sx={{ ...pulseSx, width: "60%", height: 24, mx: "auto", mt: 2.5 }}
+        />
         <Box
           sx={{ ...pulseSx, width: "85%", height: 16, mx: "auto", mt: 1.5 }}
         />
-        <Box sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 1.5 }}>
+        <Box
+          sx={{ mt: 4.5, display: "flex", flexDirection: "column", gap: 1.5 }}
+        >
           {[0, 1, 2].map((index) => (
             <Box key={index} sx={{ ...pulseSx, height: 52, width: "100%" }} />
           ))}
