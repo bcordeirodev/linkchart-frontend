@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import {
   buildAnalyticsPageSchema,
@@ -17,6 +18,57 @@ interface Props {
  */
 const SLUG_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
+/**
+ * Builds the localized copy set consumed by {@link generateMetadata}.
+ *
+ * pt-BR is the default on purpose: these pages are the product's viral loop —
+ * shared to a Brazilian audience (mostly via WhatsApp), and neither social
+ * scrapers nor first-time visitors carry the `i18nextLng` cookie, so the
+ * cookieless path is exactly the one that feeds the OG preview. English is
+ * strictly opt-in via the same cookie the client-side language toggle writes.
+ *
+ * @param isEn - whether the `i18nextLng` cookie resolved to English.
+ * @param slug - public link slug, already validated against `SLUG_PATTERN`.
+ * @param clicks - total tracked clicks reported by the public analytics API.
+ * @returns localized strings for the page title/description, Open Graph and
+ *   Twitter Card metadata.
+ */
+function buildMetaCopy(isEn: boolean, slug: string, clicks: number) {
+  if (isEn) {
+    const clickLabel = clicks === 1 ? "click" : "clicks";
+    return {
+      title: `${slug} — Link Analytics`,
+      description: `Public analytics for the link "${slug}". ${clicks} total ${clickLabel} tracked.`,
+      ogTitle: `${slug} — Link Analytics | Link Charts`,
+      twitterDescription: `${clicks} ${clickLabel} tracked for this link.`,
+      ogImageAlt: "Link Charts Analytics",
+    };
+  }
+  const clickLabel = clicks === 1 ? "clique registrado" : "cliques registrados";
+  return {
+    title: `${slug} — Estatísticas do Link`,
+    description: `Estatísticas públicas do link "${slug}". ${clicks} ${clickLabel} no total.`,
+    ogTitle: `${slug} — Estatísticas do Link | Link Charts`,
+    twitterDescription: `${clicks} ${clickLabel} neste link.`,
+    ogImageAlt: "Estatísticas do Link Charts",
+  };
+}
+
+/**
+ * Generates language-aware metadata (title/description, Open Graph and Twitter
+ * Card) for a public analytics page by reading the `i18nextLng` cookie
+ * server-side — the same cookie `detectAndApplyLanguage()` reads client-side,
+ * so SSR metadata and hydrated copy agree on the language. Mirrors the
+ * cookie-based pattern of `app/(auth)/sign-in/page.tsx`; pt-BR is the default
+ * for the cookieless case (OG scrapers and cold opens of shared links).
+ *
+ * The analytics fetch keeps `revalidate: 300` (deduped with the page render)
+ * and the route stays `noindex, follow` — per-slug pages are thin content and
+ * must not compete with the home and /shorter pages in the index.
+ *
+ * @param props - route props carrying the `slug` params promise.
+ * @returns the resolved Next.js {@link Metadata} for the page.
+ */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   if (!SLUG_PATTERN.test(slug)) {
@@ -30,16 +82,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const data = res?.ok ? await res.json() : null;
   const clicks = data?.data?.total_clicks ?? 0;
+
+  const cookieStore = await cookies();
+  const isEn = cookieStore.get("i18nextLng")?.value === "en";
+  const copy = buildMetaCopy(isEn, slug, clicks);
+
   const ogImage = {
     url: `${appUrl}/og-default.png`,
     width: 1200,
     height: 630,
-    alt: "Link Charts Analytics",
+    alt: copy.ogImageAlt,
   };
 
   return {
-    title: `${slug} — Link Analytics`,
-    description: `Public analytics for the link "${slug}". ${clicks} total clicks tracked.`,
+    title: copy.title,
+    description: copy.description,
     alternates: {
       canonical: `${appUrl}/public-analytics/${slug}`,
     },
@@ -53,16 +110,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       googleBot: { index: false, follow: true },
     },
     openGraph: {
-      title: `${slug} — Link Analytics | Link Charts`,
-      description: `Public analytics for the link "${slug}". ${clicks} total clicks tracked.`,
+      title: copy.ogTitle,
+      description: copy.description,
       type: "website",
       url: `${appUrl}/public-analytics/${slug}`,
       images: [ogImage],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${slug} — Link Analytics`,
-      description: `${clicks} clicks tracked for this link.`,
+      title: copy.title,
+      description: copy.twitterDescription,
       images: [`${appUrl}/og-default.png`],
     },
   };
