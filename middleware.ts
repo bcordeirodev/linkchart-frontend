@@ -69,6 +69,75 @@ function isProtectedPath(pathname: string): boolean {
 const BIO_PRETTY_URL_PATTERN = /^\/@([^/]+)$/;
 
 /**
+ * Label format accepted as a bio-page subdomain: lowercase alphanumerics
+ * with internal hyphens, 3–30 characters total. Mirrors `HANDLE_PATTERN` in
+ * `/b/[handle]/page.tsx` and the backend's subdomain claim validation — a
+ * subdomain and a bio handle are independent identifiers, but both are
+ * validated against the same shape.
+ */
+const BIO_SUBDOMAIN_PATTERN = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
+
+/**
+ * Root domain the app is served from, derived from `NEXT_PUBLIC_APP_URL`'s
+ * hostname (production: `linkcharts.com.br`). Falls back to the production
+ * apex when the env var is missing or unparsable — mirrors the same
+ * fallback used by `src/features/bio/utils/publicBioUrl.ts` for the same
+ * variable.
+ */
+function resolveRootDomain(): string {
+  const raw = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
+  try {
+    return new URL(raw).hostname;
+  } catch {
+    return "linkcharts.com.br";
+  }
+}
+
+/**
+ * Extracts a bio-page subdomain label from a request's hostname, or `null`
+ * when the host isn't one.
+ *
+ * Two root domains are accepted: {@link resolveRootDomain} (production:
+ * `linkcharts.com.br`) and, unconditionally, `localhost` — so
+ * `{sub}.localhost` works in dev even on a checkout where
+ * `NEXT_PUBLIC_APP_URL` isn't pointed at localhost for some reason. (In the
+ * common case `NEXT_PUBLIC_APP_URL=http://localhost:3000`, both candidates
+ * are the same value and this is a no-op duplicate.) The `www` label is
+ * excluded — it is not a creator's bio subdomain — and the remaining label
+ * must satisfy {@link BIO_SUBDOMAIN_PATTERN}.
+ *
+ * @param hostname - the request's hostname, already port-stripped (see
+ *   {@link getRequestHostname}).
+ */
+function extractBioSubdomain(hostname: string): string | null {
+  const host = hostname.toLowerCase();
+  const roots = new Set([resolveRootDomain(), "localhost"]);
+
+  for (const root of roots) {
+    if (!root || host === root || !host.endsWith(`.${root}`)) continue;
+    const label = host.slice(0, -(root.length + 1));
+    if (label !== "www" && BIO_SUBDOMAIN_PATTERN.test(label)) {
+      return label;
+    }
+  }
+  return null;
+}
+
+/**
+ * Reads the request's hostname (no port) straight from the `Host` header,
+ * rather than `request.nextUrl.hostname`. In this project's dockerized dev
+ * server (bound to `0.0.0.0` so it's reachable from the host machine),
+ * `nextUrl.hostname` resolves to the bind address `0.0.0.0` instead of the
+ * `Host` header the browser actually sent — reading the header directly
+ * sidesteps that and is also what a reverse proxy in front of production
+ * would forward faithfully either way.
+ */
+function getRequestHostname(request: NextRequest): string {
+  const hostHeader = request.headers.get("host") ?? "";
+  return hostHeader.split(":")[0] ?? "";
+}
+
+/**
  * Extracts all __txn_* cookie names from the Cookie header.
  * These are Auth0 transaction cookies created per login attempt.
  */
@@ -81,7 +150,10 @@ function getStaleTransactionCookies(cookieHeader: string): string[] {
 
 /**
  * Merged middleware: Auth0 handles /auth/* routes; security headers are
- * applied to every non-redirect response so they reach all app pages.
+ * applied to every non-redirect response so they reach all app pages. Host
+ * detection for subdomain-hosted bio pages runs first, ahead of every
+ * path-based rule below, because it keys off the request's Host header
+ * rather than its pathname.
  *
  * On /auth/login, stale __txn_* cookies from abandoned flows are deleted
  * before a new one is issued. Without this cleanup they accumulate and grow
@@ -91,6 +163,28 @@ function getStaleTransactionCookies(cookieHeader: string): string[] {
  */
 export async function middleware(request: NextRequest) {
   const response = await auth0.middleware(request);
+
+  // The user's own subdomain IS their bio page: a visitor opening
+  // `{sub}.linkcharts.com.br` (dev: `{sub}.localhost:3000`) should see the
+  // bio page rendered AT that host, address bar intact — never a redirect
+  // to `/@{sub}` on the main domain. Only the bare root path qualifies: any
+  // other path on a subdomain host is left untouched (in production Nginx
+  // doesn't even route it here; in dev the app resolves it normally).
+  if (request.nextUrl.pathname === "/") {
+    const subdomain = extractBioSubdomain(getRequestHostname(request));
+    if (subdomain) {
+      const rewriteUrl = request.nextUrl.clone();
+      rewriteUrl.pathname = `/s/${subdomain}`;
+      const rewritten = NextResponse.rewrite(rewriteUrl);
+      response.cookies.getAll().forEach((cookie) => {
+        rewritten.cookies.set(cookie);
+      });
+      Object.entries(SECURITY_HEADERS).forEach(([key, value]) => {
+        rewritten.headers.set(key, value);
+      });
+      return rewritten;
+    }
+  }
 
   // Public bio pages are shared as `/@{handle}` (the pretty URL creators put
   // on Instagram/WhatsApp) but rendered by the real route `/b/{handle}` — `@`
@@ -153,9 +247,12 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // Match all routes except static files and public assets used in OG
-    // metadata. This already covers `/@{handle}` — the negative lookahead
-    // only excludes the four static paths above, so nothing extra is needed
-    // for the bio rewrite to see those requests.
+    // metadata. This already covers both `/` (subdomain host rewrite) and
+    // `/@{handle}` (pretty URL rewrite) — the negative lookahead only
+    // excludes the four static paths above, so nothing extra is needed for
+    // either rewrite to see its requests. No host-based filtering here:
+    // Next.js matchers only test the pathname, and `extractBioSubdomain`
+    // itself decides whether a given request's Host qualifies.
     "/((?!_next/static|_next/image|favicon\\.ico|og-default\\.png).*)",
   ],
 };
