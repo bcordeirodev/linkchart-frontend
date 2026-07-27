@@ -977,17 +977,20 @@
     "ctaTitle": "Shorten your first URL and watch the analytics in real time"
   },
   "resources": {
-    "sectionTitle": "Guides and comparisons",
+    "sectionTitle": "Guides, tools and comparisons",
     "subtitle": "Learn how to get more from your link — and see how Link Charts compares.",
     "guidesTitle": "Guides",
     "comparisonsTitle": "Comparisons",
+    "toolsTitle": "Tools",
     "links": {
       "guiaBots": "Clicks: bot or human?",
       "guiaVerCliques": "See how many people clicked",
       "guiaInstagram": "Track an Instagram link",
       "compareBitly": "Link Charts vs Bitly",
       "compareShortIo": "Link Charts vs Short.io",
-      "compareDub": "Link Charts vs Dub"
+      "compareDub": "Link Charts vs Dub",
+      "toolUtm": "UTM generator",
+      "toolChecker": "Check a suspicious link"
     }
   }
 }

@@ -32,6 +32,12 @@ const COMPARISONS: readonly ResourceLink[] = [
   { href: "/comparar/dub", key: "compareDub" },
 ];
 
+/** Tools group — free standalone tool pages (UTM generator, link checker). */
+const TOOLS: readonly ResourceLink[] = [
+  { href: "/ferramentas/gerador-utm", key: "toolUtm" },
+  { href: "/ferramentas/verificar-link", key: "toolChecker" },
+];
+
 /** Props for {@link PublicResourcesLinks}. */
 interface PublicResourcesLinksProps {
   /**
@@ -52,11 +58,11 @@ interface PublicResourcesLinksProps {
  * `readAlso` variant, the "Leia também" cross-links block at the end of each
  * guide/comparison page.
  *
- * Surfaces the guide and comparison pages so users can discover them from the
- * main page and, just as importantly, so those pages are internally linked
- * (no orphan pages) — which helps them get crawled and indexed. Copy is
- * i18n-driven; the routes are static. Reuses the public design system so it
- * reads as native to the landing.
+ * Surfaces the guide, comparison and free-tool pages so users can discover
+ * them from the main page and, just as importantly, so those pages are
+ * internally linked (no orphan pages) — which helps them get crawled and
+ * indexed. Copy is i18n-driven; the routes are static. Reuses the public
+ * design system so it reads as native to the landing.
  *
  * @param props - see {@link PublicResourcesLinksProps}
  */
@@ -79,6 +85,7 @@ export function PublicResourcesLinks({
 
   const guides = withoutCurrent(GUIDES);
   const comparisons = withoutCurrent(COMPARISONS);
+  const tools = withoutCurrent(TOOLS);
 
   /** Renders one titled group of resource links. */
   const renderGroup = (title: string, links: readonly ResourceLink[]) => (
@@ -158,12 +165,17 @@ export function PublicResourcesLinks({
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "1fr 1fr",
+            md: "repeat(3, 1fr)",
+          },
           gap: { xs: 1.5, md: 2 },
         }}
       >
         {renderGroup(t("resources.guidesTitle"), guides)}
         {renderGroup(t("resources.comparisonsTitle"), comparisons)}
+        {renderGroup(t("resources.toolsTitle"), tools)}
       </Box>
     </Box>
   );
