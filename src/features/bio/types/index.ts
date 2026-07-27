@@ -80,7 +80,14 @@ export interface BioPage {
  * both creates the page (first save) and edits it (every save after).
  */
 export interface BioPageUpsertInput {
-  handle: string;
+  /**
+   * Optional and never sent by `BioEditor` (subdomain-first — the form
+   * collects an address, not a handle). Omitted on create, the backend
+   * derives one from the associated subdomain's label (adding a numeric
+   * suffix on collision); omitted on update, the current handle is left
+   * untouched. Still accepted when provided, for any other API caller.
+   */
+  handle?: string;
   title: string;
   bio?: string | null;
   theme?: BioTheme;
@@ -90,11 +97,10 @@ export interface BioPageUpsertInput {
    */
   isActive?: boolean;
   /**
-   * Id of the active subdomain to publish this page at, `null` to detach
-   * back to the default `/@{handle}` address, or omitted to leave the
-   * current association untouched. The editor's address selector always
-   * has a definite value once hydrated, so in practice every save from
-   * `BioEditor` sends this explicitly.
+   * Id of the active subdomain to publish this page at. Required in
+   * practice — `PUT /api/bio` rejects a missing/`null` value unconditionally
+   * (subdomain-first) — but stays `number | null` here to also describe a
+   * legacy page's still-unset value before its owner picks one.
    */
   subdomainId?: number | null;
 }

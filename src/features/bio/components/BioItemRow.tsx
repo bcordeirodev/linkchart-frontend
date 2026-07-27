@@ -22,6 +22,7 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { useUpdateBioItem } from "../hooks/useBioItems";
+import { getUrlHost } from "../utils/linkHost";
 
 import type { BioItem } from "../types";
 
@@ -181,19 +182,41 @@ export function BioItemRow({
               />
             </Box>
           )}
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{
-              display: "block",
-              mt: 0.25,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
+          <Stack
+            direction="row"
+            spacing={0.75}
+            alignItems="center"
+            sx={{ mt: 0.25, minWidth: 0 }}
           >
-            {item.url}
-          </Typography>
+            {/* Which domain this button actually opens at — items can come
+                from any of the user's active subdomains (or the default
+                domain), so this isn't always the same across rows. */}
+            <Chip
+              size="small"
+              variant="outlined"
+              label={getUrlHost(item.url)}
+              sx={{
+                height: 20,
+                fontSize: "0.6875rem",
+                fontFamily: "monospace",
+                flexShrink: 0,
+                "& .MuiChip-label": { px: 0.75 },
+              }}
+            />
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{
+                minWidth: 0,
+                flex: 1,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {item.url}
+            </Typography>
+          </Stack>
         </Box>
 
         <Chip

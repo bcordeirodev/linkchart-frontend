@@ -91,163 +91,226 @@ export function BioPreviewPhone({
   return (
     <Box
       sx={{
+        position: "relative",
         width: "100%",
         maxWidth: 300,
         mx: "auto",
-        borderRadius: "36px",
-        border: "8px solid",
-        borderColor: "common.black",
-        bgcolor: "common.black",
-        boxShadow: "0 20px 45px -20px rgba(0,0,0,0.5)",
-        overflow: "hidden",
       }}
     >
-      {/* Dynamic-island style notch — purely decorative, anchors the "phone" read. */}
+      {/* Side button nubs — purely decorative (aria-hidden), sit just outside
+          the casing like a real device's power/volume keys. A small,
+          restrained detail that keeps the "phone" read convincing without
+          touching the palette. */}
       <Box
+        aria-hidden
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          pt: 0.75,
-          pb: 0.25,
-          bgcolor: palette.background,
+          position: "absolute",
+          left: -2,
+          top: "22%",
+          width: 3,
+          height: 32,
+          borderRadius: "2px 0 0 2px",
+          bgcolor: "common.black",
         }}
-      >
-        <Box
-          sx={{
-            width: 72,
-            height: 18,
-            borderRadius: "999px",
-            bgcolor: "common.black",
-          }}
-        />
-      </Box>
+      />
+      <Box
+        aria-hidden
+        sx={{
+          position: "absolute",
+          left: -2,
+          top: "32%",
+          width: 3,
+          height: 52,
+          borderRadius: "2px 0 0 2px",
+          bgcolor: "common.black",
+        }}
+      />
+      <Box
+        aria-hidden
+        sx={{
+          position: "absolute",
+          right: -2,
+          top: "26%",
+          width: 3,
+          height: 68,
+          borderRadius: "0 2px 2px 0",
+          bgcolor: "common.black",
+        }}
+      />
 
       <Box
         sx={{
-          bgcolor: palette.background,
-          minHeight: 420,
-          maxHeight: 560,
-          overflowY: "auto",
-          px: 2.5,
-          py: 3.5,
+          position: "relative",
+          borderRadius: "36px",
+          border: "8px solid",
+          borderColor: "common.black",
+          bgcolor: "common.black",
+          boxShadow:
+            "0 20px 45px -20px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.06)",
+          overflow: "hidden",
         }}
       >
-        <Stack spacing={2.5} alignItems="center" sx={{ textAlign: "center" }}>
+        {/* Dynamic-island style notch — purely decorative, anchors the "phone" read. */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            pt: 0.75,
+            pb: 0.25,
+            bgcolor: palette.background,
+          }}
+        >
+          <Box
+            sx={{
+              width: 72,
+              height: 18,
+              borderRadius: "999px",
+              bgcolor: "common.black",
+            }}
+          />
+        </Box>
+
+        <Box
+          sx={{
+            position: "relative",
+            bgcolor: palette.background,
+            minHeight: 420,
+            maxHeight: 560,
+            overflowY: "auto",
+            px: 2.5,
+            py: 3.5,
+          }}
+        >
+          {/* Faint diagonal sheen — reads as a glass reflection over the
+              screen, glued to the scroll container so it stays put while
+              content scrolls beneath it. */}
           <Box
             aria-hidden
             sx={{
-              width: 64,
-              height: 64,
-              borderRadius: "50%",
-              overflow: "hidden",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "1.5rem",
-              fontWeight: 700,
-              color: palette.accentContrast,
-              background: avatarUrl
-                ? undefined
-                : `linear-gradient(135deg, ${palette.accent} 0%, ${palette.accent}99 100%)`,
+              position: "absolute",
+              inset: 0,
+              pointerEvents: "none",
+              background:
+                "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 35%)",
             }}
-          >
-            {avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={avatarUrl}
-                alt=""
-                width={64}
-                height={64}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            ) : (
-              getAvatarInitial(displayTitle)
-            )}
-          </Box>
-
-          <Box sx={{ minWidth: 0, width: "100%" }}>
-            <Typography
+          />
+          <Stack spacing={2.5} alignItems="center" sx={{ textAlign: "center" }}>
+            <Box
+              aria-hidden
               sx={{
+                width: 64,
+                height: 64,
+                borderRadius: "50%",
+                overflow: "hidden",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "1.5rem",
                 fontWeight: 700,
-                fontSize: "1.0625rem",
-                lineHeight: 1.3,
-                color: palette.text,
-                wordBreak: "break-word",
+                color: palette.accentContrast,
+                background: avatarUrl
+                  ? undefined
+                  : `linear-gradient(135deg, ${palette.accent} 0%, ${palette.accent}99 100%)`,
               }}
             >
-              {displayTitle}
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "0.8125rem",
-                color: palette.textMuted,
-                mt: 0.25,
-              }}
-            >
-              @{displayHandle}
-            </Typography>
-            {displayBio ? (
+              {avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={avatarUrl}
+                  alt=""
+                  width={64}
+                  height={64}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                getAvatarInitial(displayTitle)
+              )}
+            </Box>
+
+            <Box sx={{ minWidth: 0, width: "100%" }}>
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  fontSize: "1.0625rem",
+                  lineHeight: 1.3,
+                  color: palette.text,
+                  wordBreak: "break-word",
+                }}
+              >
+                {displayTitle}
+              </Typography>
               <Typography
                 sx={{
                   fontSize: "0.8125rem",
-                  lineHeight: 1.5,
                   color: palette.textMuted,
-                  mt: 1,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-wrap",
+                  mt: 0.25,
                 }}
               >
-                {displayBio}
+                @{displayHandle}
               </Typography>
-            ) : null}
-          </Box>
-
-          <Stack spacing={1.25} sx={{ width: "100%", mt: 1 }}>
-            {activeItems.length === 0 ? (
-              <Typography
-                sx={{
-                  fontSize: "0.75rem",
-                  color: palette.textMuted,
-                  fontStyle: "italic",
-                  py: 2,
-                }}
-              >
-                {t("preview.noItems")}
-              </Typography>
-            ) : (
-              activeItems.map((item) => (
-                <Box
-                  key={item.id}
+              {displayBio ? (
+                <Typography
                   sx={{
-                    width: "100%",
-                    borderRadius: "14px",
-                    border: `1px solid ${palette.surfaceBorder}`,
-                    bgcolor: palette.surface,
-                    color: palette.text,
                     fontSize: "0.8125rem",
-                    fontWeight: 600,
-                    py: 1.375,
-                    px: 2,
+                    lineHeight: 1.5,
+                    color: palette.textMuted,
+                    mt: 1,
                     wordBreak: "break-word",
+                    whiteSpace: "pre-wrap",
                   }}
                 >
-                  {item.label?.trim() || item.url}
-                </Box>
-              ))
-            )}
-          </Stack>
+                  {displayBio}
+                </Typography>
+              ) : null}
+            </Box>
 
-          <Typography
-            sx={{
-              fontSize: "0.6875rem",
-              color: palette.textMuted,
-              opacity: 0.7,
-              pt: 1,
-            }}
-          >
-            {t("preview.watermark")}
-          </Typography>
-        </Stack>
+            <Stack spacing={1.25} sx={{ width: "100%", mt: 1 }}>
+              {activeItems.length === 0 ? (
+                <Typography
+                  sx={{
+                    fontSize: "0.75rem",
+                    color: palette.textMuted,
+                    fontStyle: "italic",
+                    py: 2,
+                  }}
+                >
+                  {t("preview.noItems")}
+                </Typography>
+              ) : (
+                activeItems.map((item) => (
+                  <Box
+                    key={item.id}
+                    sx={{
+                      width: "100%",
+                      borderRadius: "14px",
+                      border: `1px solid ${palette.surfaceBorder}`,
+                      bgcolor: palette.surface,
+                      color: palette.text,
+                      fontSize: "0.8125rem",
+                      fontWeight: 600,
+                      py: 1.375,
+                      px: 2,
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {item.label?.trim() || item.url}
+                  </Box>
+                ))
+              )}
+            </Stack>
+
+            <Typography
+              sx={{
+                fontSize: "0.6875rem",
+                color: palette.textMuted,
+                opacity: 0.7,
+                pt: 1,
+              }}
+            >
+              {t("preview.watermark")}
+            </Typography>
+          </Stack>
+        </Box>
       </Box>
     </Box>
   );

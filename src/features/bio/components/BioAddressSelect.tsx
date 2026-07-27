@@ -15,12 +15,10 @@ import { useTranslation } from "react-i18next";
 
 import { useSubdomains } from "@/features/subdomains/hooks/useSubdomains";
 
-import { getPublicBioUrlPrefix } from "../utils/publicBioUrl";
-
 import type { SelectChangeEvent } from "@mui/material";
 
-/** Sentinel `Select` value for "publish at the default `/@{handle}` address" (`subdomainId: null`). */
-const DEFAULT_VALUE = "__default__";
+/** Sentinel `Select` value for "nothing picked yet" (`subdomainId: null`, still invalid on submit). */
+const UNSET_VALUE = "";
 
 /** Strips scheme and trailing slash so a URL reads as a bare host. */
 function toHost(url: string): string {
@@ -28,49 +26,47 @@ function toHost(url: string): string {
 }
 
 export interface BioAddressSelectProps {
-  /** Selected subdomain id, or `null` for the default `/@{handle}` address. */
+  /** Selected subdomain id, or `null` when nothing has been picked yet. */
   value: number | null;
-  /** Called with the newly selected id, or `null` for the default address. */
+  /** Called with the newly selected id. Never called with `null` — there is no "unpick" option once one is chosen. */
   onChange: (id: number | null) => void;
-  /** Current handle draft, used to render the default option's full address. */
-  handle: string;
+  /** Validation message from `bioPageFormSchema`'s `subdomainId` rule, or `undefined` when valid/untouched. */
+  error?: string;
 }
 
 /**
- * Address picker for where the bio page is published: the default
- * `linkcharts.com.br/@{handle}` plus one option per active subdomain the
- * user holds (each becomes the page's root, no `/@{handle}` suffix — see
- * `BioPageService::computeUrl()`).
+ * Required address picker for where the bio page is published: one option
+ * per active subdomain the user holds, each becoming the page's root (no
+ * `/@{handle}` suffix — see `BioPageService::computeUrl()`). Subdomain-first:
+ * the backend rejects `subdomain_id: null` unconditionally on `PUT /api/bio`,
+ * so unlike the link-creation domain picker there is no "default domain"
+ * option here — a bio page cannot exist without an associated subdomain.
  *
  * Deliberately its own component rather than a reuse of
- * `@/features/subdomains/components/SubdomainSelect`: that control's option
- * labels assume a slug gets appended after the domain (the link-creation
- * case), whereas here a subdomain replaces the address entirely — the two
- * read the same list (`useSubdomains`, imported read-only) but can't share
- * label logic.
+ * `@/features/subdomains/components/SubdomainSelect`: that control still
+ * offers the default-domain option (link creation doesn't require a
+ * subdomain) and is itself gated behind `NEXT_PUBLIC_SUBDOMAINS_ENABLED`.
+ * This component intentionally does NOT check that flag — a bio page's
+ * dependency on a subdomain is a hard backend rule, not a feature-flagged
+ * nicety, so hiding the (required) control here would leave the form
+ * impossible to submit with no visible explanation. Both components read
+ * the same list (`useSubdomains`, imported read-only) but can't share label
+ * logic.
  *
- * Renders nothing when the subdomains feature flag is off (mirrors
- * `SubdomainSelect`'s own gate). When the flag is on but the user holds no
- * active subdomain, shows a discreet, disabled-reading line with the
- * default address plus a link to `/subdomains` instead of a dropdown with
- * nothing to pick — a disabled `Select` here would only add visual weight
- * for a choice that doesn't exist yet.
+ * When the user holds no active subdomain yet, shows a prompt to create one
+ * (linking to `/subdomains`) instead of a dropdown with nothing to pick —
+ * the caller (`BioSubdomainGate`) normally intercepts this case before the
+ * form ever renders, so in practice this branch only shows for an existing
+ * (legacy, pre-subdomain-first) page whose owner has since released their
+ * only subdomain.
  */
 export function BioAddressSelect({
   value,
   onChange,
-  handle,
+  error,
 }: BioAddressSelectProps) {
   const { t } = useTranslation("bio");
   const { subdomains, isLoading } = useSubdomains();
-
-  if (process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED !== "true") {
-    return null;
-  }
-
-  const defaultLabel = `${getPublicBioUrlPrefix()}${
-    handle.trim() || t("form.handle.placeholder")
-  }`;
 
   if (isLoading) {
     return (
@@ -89,12 +85,8 @@ export function BioAddressSelect({
         <FormLabel sx={{ display: "block", mb: 0.75 }}>
           {t("form.address.label")}
         </FormLabel>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ fontFamily: "monospace" }}
-        >
-          {defaultLabel}
+        <Typography variant="body2" color="text.secondary">
+          {t("form.address.emptyHint")}
         </Typography>
         <MuiLink
           component={NextLink}
@@ -108,11 +100,11 @@ export function BioAddressSelect({
     );
   }
 
-  const selectValue = value === null ? DEFAULT_VALUE : String(value);
+  const selectValue = value === null ? UNSET_VALUE : String(value);
 
   const handleChange = (event: SelectChangeEvent) => {
     const raw = event.target.value;
-    onChange(raw === DEFAULT_VALUE ? null : Number(raw));
+    if (raw) onChange(Number(raw));
   };
 
   return (
@@ -123,13 +115,25 @@ export function BioAddressSelect({
       >
         {t("form.address.label")}
       </FormLabel>
-      <FormControl fullWidth size="small">
+      <FormControl fullWidth size="small" error={!!error}>
         <Select
           id="bio-address-select"
           value={selectValue}
           onChange={handleChange}
+          displayEmpty
+          renderValue={(selected) =>
+            selected ? (
+              toHost(
+                subdomains.find((item) => String(item.id) === selected)
+                  ?.fullUrl ?? "",
+              )
+            ) : (
+              <Box component="span" sx={{ color: "text.disabled" }}>
+                {t("form.address.placeholder")}
+              </Box>
+            )
+          }
         >
-          <MenuItem value={DEFAULT_VALUE}>{defaultLabel}</MenuItem>
           {subdomains.map((item) => (
             <MenuItem key={item.id} value={String(item.id)}>
               {toHost(item.fullUrl)}
@@ -139,10 +143,10 @@ export function BioAddressSelect({
       </FormControl>
       <Typography
         variant="caption"
-        color="text.secondary"
+        color={error ? "error" : "text.secondary"}
         sx={{ display: "block", mt: 0.75 }}
       >
-        {t("form.address.hint")}
+        {error ?? t("form.address.hint")}
       </Typography>
     </Box>
   );
