@@ -1,12 +1,11 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, Button, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 
-import { linkService } from "@/services";
 import { LinkFormSkeleton } from "@/shared/ui/feedback/skeletons";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { getLinkFormPanelSx } from "@/features/links/components/forms/linkFormPanelStyles";
@@ -20,7 +19,7 @@ import {
   defaultLinkFormValues,
 } from "../../components/forms/LinkFormSchema";
 import { useLinkFormMetaSuggestions } from "../../hooks/useLinkFormMetaSuggestions";
-import { useUpdateLink } from "../../hooks/useLinks";
+import { useLinkById, useUpdateLink } from "../../hooks/useLinks";
 import { applyBackendFieldErrors } from "../../utils/applyBackendFieldErrors";
 
 import type { LinkFormData } from "../../components/forms/LinkFormSchema";
@@ -37,9 +36,22 @@ export function EditLinkForm({
   const { t } = useTranslation("links");
   const { t: tCommon } = useTranslation("common");
   const updateMutation = useUpdateLink(linkId);
-  const [fetchingData, setFetchingData] = useState(true);
+  // Fonte de dados do link: o cache `["links", "detail", id]` — a MESMA key que
+  // `useUpdateLink` invalida no onSuccess. Chamar `linkService.findOne` direto
+  // (como antes) deixava este form fora do ciclo de invalidação.
+  const linkQuery = useLinkById(linkId);
+  const { data: linkData } = linkQuery;
+  const fetchingData = linkQuery.isLoading;
+  const loadFailed = linkQuery.isError || (!linkQuery.isPending && !linkData);
+  const loadErrorMessage = linkQuery.isError
+    ? linkQuery.error instanceof Error
+      ? linkQuery.error.message
+      : null
+    : loadFailed
+      ? t("errors.linkNotFound")
+      : null;
+  // `apiError` agora é exclusivo de erros de submit (o erro de load vem da query).
   const [apiError, setApiError] = useState<string | null>(null);
-  const [loadFailed, setLoadFailed] = useState(false);
   const [ownedSlug, setOwnedSlug] = useState<string | null>(null);
   const [existingShortUrl, setExistingShortUrl] = useState<string>("");
   // `has_password` do link carregado; atualizado localmente após salvar uma
@@ -108,56 +120,44 @@ export function EditLinkForm({
     }
   };
 
+  // Hidrata o form UMA vez por linkId a partir do cache. O guard evita que um
+  // refetch em background (ex.: invalidação pós-save de `useUpdateLink`)
+  // sobrescreva edições em andamento com um `reset` — pós-save quem reseta é o
+  // próprio onSubmit, preservando o comportamento anterior.
+  const hydratedLinkIdRef = useRef<string | null>(null);
+
   useEffect(() => {
-    const fetchLinkData = async () => {
-      try {
-        setFetchingData(true);
-        setLoadFailed(false);
-        const linkData = await linkService.findOne(linkId);
+    if (!linkData || hydratedLinkIdRef.current === linkId) {
+      return;
+    }
+    hydratedLinkIdRef.current = linkId;
 
-        if (linkData) {
-          const formValues: LinkFormData = {
-            original_url: linkData.original_url || "",
-            title: linkData.title || "",
-            custom_slug: linkData.custom_slug || linkData.slug || "",
-            description: linkData.description || "",
-            is_active: linkData.is_active ?? true,
-            expires_at: convertApiDateToDate(linkData.expires_at),
-            starts_in: convertApiDateToDate(linkData.starts_in),
-            click_limit: linkData.click_limit || null,
-            tag_ids: linkData.tags?.map((tag) => tag.id) ?? [],
-            // Write-only no backend: o campo nunca é pré-populado. "keep"
-            // garante que, sem ação do usuário, `password` não vai no payload.
-            password: "",
-            password_mode: "keep",
-            utm_source: linkData.utm_source || "",
-            utm_medium: linkData.utm_medium || "",
-            utm_campaign: linkData.utm_campaign || "",
-            utm_term: linkData.utm_term || "",
-            utm_content: linkData.utm_content || "",
-          };
-
-          reset(formValues);
-          setOwnedSlug(formValues.custom_slug?.trim() || null);
-          setExistingShortUrl(linkData.short_url ?? "");
-          setHasPassword(Boolean(linkData.has_password));
-        } else {
-          throw new Error(t("errors.linkNotFound"));
-        }
-      } catch (error: unknown) {
-        setApiError(
-          error instanceof Error ? error.message : t("errors.loadLink"),
-        );
-        setLoadFailed(true);
-      } finally {
-        setFetchingData(false);
-      }
+    const formValues: LinkFormData = {
+      original_url: linkData.original_url || "",
+      title: linkData.title || "",
+      custom_slug: linkData.custom_slug || linkData.slug || "",
+      description: linkData.description || "",
+      is_active: linkData.is_active ?? true,
+      expires_at: convertApiDateToDate(linkData.expires_at),
+      starts_in: convertApiDateToDate(linkData.starts_in),
+      click_limit: linkData.click_limit || null,
+      tag_ids: linkData.tags?.map((tag) => tag.id) ?? [],
+      // Write-only no backend: o campo nunca é pré-populado. "keep"
+      // garante que, sem ação do usuário, `password` não vai no payload.
+      password: "",
+      password_mode: "keep",
+      utm_source: linkData.utm_source || "",
+      utm_medium: linkData.utm_medium || "",
+      utm_campaign: linkData.utm_campaign || "",
+      utm_term: linkData.utm_term || "",
+      utm_content: linkData.utm_content || "",
     };
 
-    if (linkId) {
-      fetchLinkData();
-    }
-  }, [linkId, reset, t]);
+    reset(formValues);
+    setOwnedSlug(formValues.custom_slug?.trim() || null);
+    setExistingShortUrl(linkData.short_url ?? "");
+    setHasPassword(Boolean(linkData.has_password));
+  }, [linkData, linkId, reset]);
 
   const convertDateForSubmit = (
     dateValue: Date | null | undefined,
@@ -262,7 +262,7 @@ export function EditLinkForm({
             {t("form.loadErrorTitle")}
           </Typography>
           <Typography variant="body2">
-            {apiError || t("form.loadErrorDesc")}
+            {loadErrorMessage || t("form.loadErrorDesc")}
           </Typography>
         </Alert>
       </EnhancedPaper>

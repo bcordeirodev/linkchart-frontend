@@ -53,6 +53,7 @@ function PublicAnalyticsPageContent({
     error,
     debugInfo,
     handleCreateLink,
+    handleRetry,
   } = usePublicAnalytics({ slug, initialLinkData, initialAnalyticsData });
 
   /**
@@ -71,6 +72,7 @@ function PublicAnalyticsPageContent({
         error={error || t("publicAnalytics.error.loadFailed")}
         debugInfo={debugInfo}
         onCreateLink={handleCreateLink}
+        onRetry={handleRetry}
       />
     );
   }

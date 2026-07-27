@@ -50,4 +50,9 @@ export interface PublicAnalyticsActions {
   handleCopyLink: () => Promise<void>;
   handleCreateLink: () => void;
   handleVisitLink: () => void;
+  /**
+   * Refetches both public queries (link + analytics) after a failure.
+   * Wired to the "try again" button in `ErrorState`.
+   */
+  handleRetry: () => void;
 }

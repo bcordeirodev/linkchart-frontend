@@ -40,6 +40,7 @@ function PublicAnalyticsSections({
     error,
     debugInfo,
     handleCreateLink,
+    handleRetry,
   } = usePublicAnalytics({ slug });
 
   /**
@@ -60,6 +61,7 @@ function PublicAnalyticsSections({
         error={error || t("publicAnalytics.error.loadFailed")}
         debugInfo={debugInfo}
         onCreateLink={handleCreateLink}
+        onRetry={handleRetry}
       />
     );
   }
