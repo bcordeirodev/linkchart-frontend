@@ -61,6 +61,7 @@ import {
   Users,
   Settings,
   Shield,
+  KeyRound,
   Eye,
   EyeOff,
   LogOut,
@@ -215,6 +216,7 @@ export const AppIcons = {
     users: Users,
     settings: Settings,
     security: Shield,
+    apiKey: KeyRound,
     show: Eye,
     hide: EyeOff,
     login: LogIn,
@@ -374,6 +376,9 @@ export const IconIntents = {
 
   // Custom domains
   subdomain: AppIcons.content.url,
+
+  // API keys
+  apiKeys: AppIcons.user.apiKey,
 
   // Status
   success: AppIcons.status.success,
