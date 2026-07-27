@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,7 @@ import {
   defaultLinkFormValues,
 } from "../../components/forms/LinkFormSchema";
 import { useCopyShortUrlForLink } from "../../hooks/useCopyShortUrlForLink";
+import { useLinkCreationOrchestration } from "../../hooks/useLinkCreationOrchestration";
 import { useCreateLink } from "../../hooks/useLinks";
 import { useCreateLinkMetaSuggestions } from "../../hooks/useCreateLinkMetaSuggestions";
 import { applyBackendFieldErrors } from "../../utils/applyBackendFieldErrors";
@@ -34,10 +35,6 @@ export function CreateLinkForm({
   const { subdomainId, setSubdomainId, subdomainIdField } =
     useSubdomainSelection();
   const [safetyStatus, setSafetyStatus] = useState<UrlSafetyStatus>("idle");
-  // Safe Browsing gate: never let an unsafe (or still-being-checked) URL
-  // through. "error" stays fail-open, matching the backend behavior.
-  const safetyBlocked =
-    safetyStatus === "checking" || safetyStatus === "unsafe";
 
   const {
     control,
@@ -77,61 +74,80 @@ export function CreateLinkForm({
   };
 
   /**
-   * Validates the Safe Browsing gate, commits the effective slug, creates the
-   * link, copies its short URL and lands on `/links?created={id}` so the list
-   * page highlights the new link (the param is stripped there after firing).
+   * Turns a submitted form value into the API's create payload: commits the
+   * effective slug (typed value wins, otherwise the resolved suggestion —
+   * `slugSuggestion` is only non-null once resolved and the field is empty),
+   * strips the form-only `password_mode` discriminator, omits `password`
+   * entirely when blank (write-only field; `""` is reserved for the update
+   * flow's "remove password"), and folds in dates/UTMs/subdomain.
    */
-  const onSubmit = async (data: LinkFormData) => {
-    // The disabled submit button is UI-only; re-check here so programmatic
-    // submits (e.g. Enter key) can't bypass the Safe Browsing gate.
-    if (safetyBlocked) {
-      return;
-    }
+  const buildPayload = useCallback(
+    (data: LinkFormData) => {
+      const typedSlug = (data.custom_slug ?? "").trim();
+      const effectiveSlug = typedSlug || slugSuggestion || undefined;
 
-    // The smart suggestion is the default: when the user left the name field
-    // empty, commit the resolved suggestion (the ghost the field was showing) so
-    // the created link matches it, instead of letting the backend mint a
-    // different random slug. `slugSuggestion` is already non-null only when it has
-    // resolved and the field is empty; a typed name always wins.
-    const typedSlug = (data.custom_slug ?? "").trim();
-    const effectiveSlug = typedSlug || slugSuggestion || undefined;
+      const { password, password_mode: _passwordMode, ...formData } = data;
 
-    // `password` is write-only and optional: an empty field means "no
-    // password", so it is omitted entirely instead of sending `""` (which the
-    // backend's update semantics reserve for removal). `password_mode` is a
-    // form-only discriminator and never reaches the API.
-    const { password, password_mode: _passwordMode, ...formData } = data;
+      return {
+        ...formData,
+        ...(password ? { password } : {}),
+        custom_slug: effectiveSlug,
+        expires_at: convertDateForSubmit(data.expires_at),
+        starts_in: convertDateForSubmit(data.starts_in),
+        utm_source: data.utm_source || undefined,
+        utm_medium: data.utm_medium || undefined,
+        utm_campaign: data.utm_campaign || undefined,
+        utm_term: data.utm_term || undefined,
+        utm_content: data.utm_content || undefined,
+        // `subdomainIdField` is `{ subdomain_id }` once the subdomains list has
+        // loaded (and the feature is on), or `undefined` while still loading —
+        // spreading `undefined` omits the key entirely instead of sending an
+        // explicit `null`, which the backend would read as "force the default
+        // domain" rather than "use the user's oldest active subdomain". See
+        // `useSubdomainSelection` for the full rationale.
+        ...subdomainIdField,
+      };
+    },
+    [slugSuggestion, subdomainIdField],
+  );
 
-    const payload = {
-      ...formData,
-      ...(password ? { password } : {}),
-      custom_slug: effectiveSlug,
-      expires_at: convertDateForSubmit(data.expires_at),
-      starts_in: convertDateForSubmit(data.starts_in),
-      utm_source: data.utm_source || undefined,
-      utm_medium: data.utm_medium || undefined,
-      utm_campaign: data.utm_campaign || undefined,
-      utm_term: data.utm_term || undefined,
-      utm_content: data.utm_content || undefined,
-      // `subdomainIdField` is `{ subdomain_id }` once the subdomains list has
-      // loaded (and the feature is on), or `undefined` while still loading —
-      // spreading `undefined` omits the key entirely instead of sending an
-      // explicit `null`, which the backend would read as "force the default
-      // domain" rather than "use the user's oldest active subdomain". See
-      // `useSubdomainSelection` for the full rationale.
-      ...subdomainIdField,
-    };
-
-    try {
-      const response = await mutation.mutateAsync(payload);
+  const createLink = useCallback(
+    async (data: LinkFormData) => {
+      const response = await mutation.mutateAsync(buildPayload(data));
       await copyShortUrlForLink(response);
+      return response;
+    },
+    [mutation, buildPayload, copyShortUrlForLink],
+  );
+
+  // Centralized Safe Browsing gate (shared with the public shortener and the
+  // list page's quick-create) — see `useLinkCreationOrchestration`. The
+  // actual debounced check still runs once, inside `LinkFormFields` (shared
+  // with the edit form), and is bubbled up here via `onSafetyStatusChange`
+  // below rather than re-run a second time against the same URL.
+  const { isBlocked, isSettling, guardedSubmit } = useLinkCreationOrchestration<
+    LinkFormData,
+    Awaited<ReturnType<typeof createLink>>
+  >({
+    strategy: "authenticated",
+    externalSafety: { status: safetyStatus, threats: [] },
+    create: createLink,
+    onSuccess: (response) => {
       onSuccess?.(response);
+      // Lands on `/links?created={id}` so the list page highlights the new
+      // link (the param is stripped there after firing).
       navigate(`/links?created=${encodeURIComponent(String(response.id))}`);
-    } catch (error: unknown) {
+    },
+    onError: (error) => {
       // Map 422 field errors inline; the mutation's onError handles the toast.
       applyBackendFieldErrors<LinkFormData>(error, setError);
-    }
-  };
+    },
+  });
+
+  // "error" (a failed safety check) stays fail-open, matching the backend
+  // behavior — only an explicit "unsafe" verdict or a check still in flight
+  // disables the submit button.
+  const safetyBlocked = isBlocked || isSettling;
 
   const handleCancel = () => {
     if (showBackButton) {
@@ -142,7 +158,7 @@ export function CreateLinkForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(guardedSubmit)}>
       <LinkFormShell
         footer={
           <LinkFormActionsFooter
