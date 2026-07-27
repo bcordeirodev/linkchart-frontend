@@ -69,48 +69,6 @@
     "resendError": "Could not resend the email. Please try again shortly.",
     "dateUnavailable": "Date not available"
   },
-  "subdomain": {
-    "title": "Custom Subdomain",
-    "description": "Set up a custom subdomain to use as the base for your shortened links. Future links will use this URL.",
-    "inputLabel": "Your subdomain",
-    "inputPlaceholder": "mycompany",
-    "activeLabel": "Active subdomain",
-    "claimButton": "Claim",
-    "releaseButton": "Release subdomain",
-    "checking": "Checking...",
-    "available": "Available",
-    "unavailable": "Already taken",
-    "copy": "Copy URL",
-    "copied": "Copied!",
-    "openInNew": "Open in new tab",
-    "claimError": "Could not claim the subdomain. Please try again.",
-    "releaseError": "Could not release the subdomain. Please try again.",
-    "validation": {
-      "format": "Use only lowercase letters, numbers, and hyphens (minimum 3 characters). Cannot start or end with a hyphen.",
-      "unavailable": "This subdomain is already taken."
-    },
-    "releaseDialog": {
-      "title": "Release subdomain?",
-      "body": "After releasing, future links will use the default domain. Existing links are not affected and will continue to work normally.",
-      "cancel": "Cancel",
-      "confirm": "Release"
-    },
-    "chip": {
-      "free": "Free",
-      "active": "Active"
-    },
-    "freeNote": "Included at no extra cost on your account.",
-    "responsibility": {
-      "text": "By claiming this subdomain you confirm you are responsible for all content accessed through it and that you will not violate trademarks or third-party rights.",
-      "checkbox": "I have read and accept the terms above"
-    },
-    "yourDomainLabel": "Your subdomain",
-    "linksLookLike": "Your links will look like this:",
-    "exampleDesc": "With your subdomain, links take this format:",
-    "exampleSlug": "yourcompany",
-    "formatHint": "3–63 characters: lowercase letters, numbers, and hyphens (not at the start or end).",
-    "previewLabel": "Preview"
-  },
   "dangerZone": {
     "title": "Delete account",
     "description": "This deletes your account, all your links, and your analytics. This action cannot be undone.",

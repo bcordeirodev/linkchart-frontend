@@ -7,8 +7,8 @@ import { useCallback, useMemo, useState } from "react";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { Box, Button, CircularProgress, FormLabel, Stack } from "@mui/material";
 
+import { useUpdateProfile } from "@/features/profile/hooks/useProfile";
 import { useMessage } from "@/lib/providers/MessageProvider";
-import { profileService } from "@/services";
 
 import {
   LoadingOverlay,
@@ -26,22 +26,30 @@ interface ProfileFormData {
 
 interface ProfileFormProps {
   user: UserProfile;
-  onUserUpdate: (user: UserProfile) => void;
   photoURL?: string;
 }
 
-export function ProfileForm({
-  user,
-  onUserUpdate,
-  photoURL,
-}: ProfileFormProps) {
+/**
+ * Formulário de dados pessoais do perfil (nome + avatar).
+ *
+ * @remarks
+ * Salva via `useUpdateProfile()` — nunca `profileService` direto — para que o
+ * cache `["profile", "me"]` seja atualizado/invalidado e todos os consumidores
+ * de `useProfile()` (página, sidebar) re-renderizem com o dado fresco. Por isso
+ * não existe mais callback `onUserUpdate`: a prop `user` chega atualizada via
+ * cache após o save.
+ */
+export function ProfileForm({ user, photoURL }: ProfileFormProps) {
   const { showMessage } = useMessage();
   const { t } = useTranslation("profile");
+  const updateProfile = useUpdateProfile();
   const [formData, setFormData] = useState<ProfileFormData>({
     name: user.name || "",
   });
-  const [saving, setSaving] = useState(false);
+  const saving = updateProfile.isPending;
+  const { mutateAsync: updateProfileAsync } = updateProfile;
 
+  /** Atualiza um campo controlado do formulário. */
   const handleInputChange = useCallback(
     (field: keyof ProfileFormData, value: string) => {
       setFormData((prev) => ({ ...prev, [field]: value }));
@@ -49,14 +57,13 @@ export function ProfileForm({
     [],
   );
 
+  /** Persiste o nome via mutação (o cache do perfil é atualizado no onSuccess). */
   const handleSave = useCallback(async () => {
-    setSaving(true);
     try {
-      const response = await profileService.updateProfile({
+      await updateProfileAsync({
         name: formData.name,
         email: user.email,
       });
-      onUserUpdate(response.user);
       showMessage({
         message: t("form.saveSuccess"),
         variant: "success",
@@ -66,10 +73,8 @@ export function ProfileForm({
         message: error instanceof Error ? error.message : t("form.saveFailed"),
         variant: "error",
       });
-    } finally {
-      setSaving(false);
     }
-  }, [formData.name, user.email, showMessage, onUserUpdate, t]);
+  }, [formData.name, user.email, updateProfileAsync, showMessage, t]);
 
   const handleReset = useCallback(() => {
     setFormData({ name: user.name || "" });

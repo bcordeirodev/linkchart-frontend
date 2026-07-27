@@ -71,16 +71,11 @@ export class ApiError extends Error {
   }
 }
 
-// Alias legado — muitos arquivos ainda importam `FetchApiError`.
-export { ApiError as FetchApiError };
-
 interface RequestOptions {
   /** Headers extras. */
   headers?: HeadersInit;
   /** Query-string em objeto. */
   query?: Record<string, unknown>;
-  /** Se false, não envia o Authorization. Default: true. */
-  auth?: boolean;
   /** Desabilita unwrap do envelope {data} (quando você precisa de {data, meta}). */
   rawEnvelope?: boolean;
 }
@@ -146,7 +141,7 @@ class ApiClient {
    * Performs a `GET` request and returns the unwrapped response body.
    *
    * @param endpoint - relative path (e.g. `/api/links`).
-   * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
+   * @param options - per-request `query`, `headers`, `rawEnvelope`.
    * @returns the unwrapped response body of type `T`.
    */
   async get<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
@@ -158,7 +153,7 @@ class ApiClient {
    *
    * @param endpoint - relative path.
    * @param body - JSON-serializable payload.
-   * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
+   * @param options - per-request `query`, `headers`, `rawEnvelope`.
    */
   async post<T>(
     endpoint: string,
@@ -173,7 +168,7 @@ class ApiClient {
    *
    * @param endpoint - relative path.
    * @param body - JSON-serializable payload.
-   * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
+   * @param options - per-request `query`, `headers`, `rawEnvelope`.
    */
   async put<T>(
     endpoint: string,
@@ -188,7 +183,7 @@ class ApiClient {
    *
    * @param endpoint - relative path.
    * @param body - JSON-serializable payload.
-   * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
+   * @param options - per-request `query`, `headers`, `rawEnvelope`.
    */
   async patch<T>(
     endpoint: string,
@@ -204,7 +199,7 @@ class ApiClient {
    * @param endpoint - relative path.
    * @param body - optional JSON-serializable payload (e.g. a password/confirmation
    * for account deletion). Most `DELETE` calls omit this.
-   * @param options - per-request `query`, `headers`, `auth`, `rawEnvelope`.
+   * @param options - per-request `query`, `headers`, `rawEnvelope`.
    */
   async delete<T>(
     endpoint: string,
@@ -265,7 +260,7 @@ class ApiClient {
     options: RequestOptions = {},
   ): Promise<T> {
     const url = this.buildUrl(endpoint);
-    const headers = await this.buildHeaders(options.headers, options.auth);
+    const headers = await this.buildHeaders(options.headers);
     delete headers["Content-Type"]; // boundary automático
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeout);
@@ -289,7 +284,7 @@ class ApiClient {
     endpoint: string,
   ): Promise<T> {
     const url = this.buildUrl(endpoint, init.query);
-    const headers = await this.buildHeaders(init.headers, init.auth);
+    const headers = await this.buildHeaders(init.headers);
 
     let body: BodyInit | null = null;
 
@@ -408,32 +403,22 @@ class ApiClient {
     return qs ? `${path}?${qs}` : path;
   }
 
+  // Authentication travels via the httpOnly `auth_token` cookie (sent with
+  // `credentials: "include"`), so no Authorization header is built from
+  // client-readable storage.
   private async buildHeaders(
     custom?: HeadersInit,
-    // Retained for call-site compatibility. Authentication now travels via the
-    // httpOnly `auth_token` cookie (sent with `credentials: "include"`), so no
-    // Authorization header is built from client-readable storage.
-    _auth = true,
   ): Promise<Record<string, string>> {
-    const headers: Record<string, string> = {
+    return {
       "Content-Type": "application/json",
       Accept: "application/json",
       ...this.globalHeaders,
       ...(custom as Record<string, string> | undefined),
     };
-
-    if (typeof window !== "undefined" && window.location) {
-      headers["Origin"] = window.location.origin;
-    }
-
-    return headers;
   }
 }
 
 export const api = new ApiClient();
-export const apiClient = api;
-export const apiService = api;
-export default api;
 
 // Compat: tipo ApiResponse<T> antigo. Usado só por código legado; novos módulos
 // tipam o retorno diretamente (o cliente já fez o unwrap).
