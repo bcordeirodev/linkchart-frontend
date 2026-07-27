@@ -1,0 +1,211 @@
+{
+  "utm": {
+    "hero": {
+      "eyebrow": "Free tool",
+      "title": "UTM generator",
+      "subtitle": "Build trackable links with utm_source, utm_medium and utm_campaign in seconds — no spreadsheet, no typos.",
+      "verdict": "Fill in the fields below and copy the finished URL. Then shorten the link on Link Charts and follow each campaign's clicks in free analytics."
+    },
+    "form": {
+      "sectionTitle": "Build your link",
+      "urlLabel": "Destination URL",
+      "urlPlaceholder": "https://yoursite.com/page",
+      "urlHelp": "The page that opens when someone clicks the link.",
+      "presetsLabel": "Start from a preset:",
+      "fields": {
+        "source": {
+          "label": "Source (utm_source)",
+          "placeholder": "instagram",
+          "help": "Where the click comes from: instagram, whatsapp, google…"
+        },
+        "medium": {
+          "label": "Medium (utm_medium)",
+          "placeholder": "bio",
+          "help": "The channel type: bio, stories, email, cpc…"
+        },
+        "campaign": {
+          "label": "Campaign (utm_campaign)",
+          "placeholder": "july-launch",
+          "help": "The name of the push: black-friday, june-promo…"
+        },
+        "term": {
+          "label": "Term (utm_term)",
+          "placeholder": "running-shoes",
+          "help": "Optional: the paid-ad keyword."
+        },
+        "content": {
+          "label": "Content (utm_content)",
+          "placeholder": "blue-button",
+          "help": "Optional: tells versions of the same link apart."
+        }
+      },
+      "optionalBadge": "optional",
+      "tip": "Use lowercase letters and hyphens, without spaces or accents — \"black-friday\" instead of \"Black Friday\". That keeps reports from splitting the same campaign into several rows."
+    },
+    "presets": {
+      "instagramBio": "Instagram · bio",
+      "instagramStories": "Instagram · Stories",
+      "whatsapp": "WhatsApp · message",
+      "email": "Email · newsletter",
+      "youtube": "YouTube · description"
+    },
+    "result": {
+      "sectionTitle": "Your URL with UTM",
+      "empty": "Fill in the destination URL above to see the assembled link here, live.",
+      "invalidUrl": "Enter a valid URL (e.g. https://yoursite.com) to build the link.",
+      "copy": "Copy URL",
+      "copied": "Copied!",
+      "shortenTitle": "Link too long?",
+      "shortenBody": "Shorten this URL on Link Charts and follow each campaign's clicks — source, city and device — in free analytics.",
+      "shortenButton": "Shorten with free analytics"
+    },
+    "params": {
+      "sectionTitle": "What each parameter means",
+      "intro": "UTM parameters are tags appended to the end of a URL. They don't change the destination page — they only tell your measurement tools where each click came from.",
+      "items": [
+        {
+          "name": "utm_source",
+          "title": "Where the click came from",
+          "desc": "Identifies the site or app the visitor came from: instagram, whatsapp, google, newsletter."
+        },
+        {
+          "name": "utm_medium",
+          "title": "The channel type",
+          "desc": "Groups similar sources together: social, email, cpc (paid ads), bio, stories."
+        },
+        {
+          "name": "utm_campaign",
+          "title": "The name of the push",
+          "desc": "Ties every link of the same campaign together: black-friday, course-launch, june-promo."
+        },
+        {
+          "name": "utm_term",
+          "title": "The keyword",
+          "desc": "Records the search term in paid ads. Optional outside Google Ads."
+        },
+        {
+          "name": "utm_content",
+          "title": "The link variation",
+          "desc": "Tells two links pointing to the same place apart: top-button vs. footer-link."
+        }
+      ]
+    },
+    "faq": {
+      "sectionTitle": "Frequently asked questions",
+      "items": [
+        {
+          "q": "Does UTM change the destination page?",
+          "a": "No. UTM parameters travel in the URL, but the site opens normally. They are only read by measurement tools — like Link Charts analytics, GA4 or Meta Ads."
+        },
+        {
+          "q": "Do I need to fill in all five parameters?",
+          "a": "No. In practice, utm_source, utm_medium and utm_campaign cover most cases. utm_term and utm_content are useful for paid ads and A/B tests."
+        },
+        {
+          "q": "Why shorten a link with UTM?",
+          "a": "URLs with UTM get long — bad for an Instagram bio or WhatsApp messages. By shortening on Link Charts you share a clean link and still see each campaign's clicks in real time."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Shorten your UTM links",
+      "description": "Create your free account, shorten the URL you just built and see clicks by source, city and device in real time.",
+      "features": [
+        "Unlimited free links",
+        "Real-time analytics",
+        "QR Code for every link"
+      ],
+      "button": "Create free account"
+    }
+  },
+  "checker": {
+    "hero": {
+      "eyebrow": "Free tool",
+      "title": "Suspicious link checker",
+      "subtitle": "Got a strange link on WhatsApp, by SMS or email? Paste it here and see whether it appears on Google's scam and malware lists before clicking.",
+      "verdict": "The check queries Google Safe Browsing — the same database Chrome uses to block dangerous pages — and returns a clear verdict in seconds."
+    },
+    "form": {
+      "sectionTitle": "Check a link now",
+      "urlLabel": "Link to check",
+      "placeholder": "https://example.com/promo",
+      "button": "Check link",
+      "checking": "Checking…",
+      "invalidUrl": "Enter a valid URL, starting with http:// or https://."
+    },
+    "verdict": {
+      "safeTitle": "No threats found",
+      "safeBody": "This link does not currently appear on Google Safe Browsing's phishing and malware lists. Stay alert: very recent scams may not be catalogued yet.",
+      "suspiciousTitle": "Suspicious link",
+      "suspiciousBody": "This link appears on Google's lists associated with unwanted software or harmful applications. Avoid downloading files or entering personal data.",
+      "dangerousTitle": "Dangerous link",
+      "dangerousBody": "This link appears on Google's lists associated with phishing or malware. Don't open it, don't type passwords and don't enter card or payment details.",
+      "threatsLabel": "Threats found:",
+      "checkedUrlLabel": "Checked link:"
+    },
+    "errors": {
+      "network": "The check could not be completed right now. Check your connection and try again.",
+      "rateLimited": "Too many checks in a row. Wait a minute and try again."
+    },
+    "scams": {
+      "sectionTitle": "Most common link scams in Brazil",
+      "intro": "Most scams arrive through a link — on WhatsApp, by SMS or email. These are the patterns that repeat the most:",
+      "items": [
+        {
+          "title": "Fake WhatsApp giveaway",
+          "desc": "\"Win a freebie\", \"exclusive coupon\" or a famous brand's anniversary. The link leads to a form that steals your data and asks you to share it with your contacts."
+        },
+        {
+          "title": "Bank and Pix phishing",
+          "desc": "A message posing as your bank asking you to \"update your registration\" or \"cancel a Pix\". The page imitates the real site to capture your password and app code."
+        },
+        {
+          "title": "Held package at the post office",
+          "desc": "An SMS saying a package is being held and charging a small \"release fee\". The payment goes straight to the scammer."
+        },
+        {
+          "title": "Shortened link hiding the destination",
+          "desc": "URL shorteners are also used to mask fake pages. When in doubt, check the link here before opening — and beware of urgency: \"today only\", \"last hours\"."
+        }
+      ],
+      "protectTitle": "How to protect yourself",
+      "protectItems": [
+        "Be wary of urgency and prizes you never asked for",
+        "Check the site address letter by letter before typing any password",
+        "Banks never ask for passwords, tokens or payments through a link",
+        "When in doubt, type the site address directly into the browser"
+      ]
+    },
+    "disclaimer": {
+      "title": "Important",
+      "body": "This check queries public threat lists and is a good first filter, but it is not a guarantee: newly created scams may not be catalogued yet. Link Charts does not store the links you check."
+    },
+    "faq": {
+      "sectionTitle": "Frequently asked questions",
+      "items": [
+        {
+          "q": "How do I know if a link is safe before clicking?",
+          "a": "Paste the link into the checker above. It queries Google Safe Browsing, the same phishing and malware database used by Chrome and Firefox. If the verdict is dangerous, don't open it."
+        },
+        {
+          "q": "I clicked a scam link. Now what?",
+          "a": "Don't type anything on the page and close the tab. If you entered a password or card details, change the password immediately and notify your bank. If you downloaded a file, run an antivirus scan."
+        },
+        {
+          "q": "Does the checker store the links I paste?",
+          "a": "No. The link is sent only to be checked against Google Safe Browsing's database and is not stored by Link Charts."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Safe links by default",
+      "description": "Every link shortened on Link Charts goes through this check automatically at creation — and you also follow clicks in free analytics.",
+      "features": [
+        "Automatic safety check",
+        "Real-time analytics",
+        "Free links and QR Codes"
+      ],
+      "button": "Create free account"
+    }
+  }
+}

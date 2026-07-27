@@ -60,6 +60,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    // Free standalone tools — indexable SEO/funnel pages.
+    {
+      url: `${appUrl}/ferramentas/gerador-utm`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${appUrl}/ferramentas/verificar-link`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
     {
       url: `${appUrl}/support`,
       lastModified: now,
