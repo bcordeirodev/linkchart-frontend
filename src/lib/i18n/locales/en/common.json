@@ -3,6 +3,8 @@
   "appTagline": "Analytics Platform",
   "nav": {
     "myLinks": "My links",
+    "bio": "Bio page",
+    "bioDesc": "Your link-in-bio page",
     "shortenUrl": "Shorten URL",
     "reports": "Reports",
     "reportsDesc": "Analytics across all your links",

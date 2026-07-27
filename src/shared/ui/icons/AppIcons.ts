@@ -51,6 +51,7 @@ import {
   Image,
   FileText,
   Link2,
+  IdCard,
   Globe,
   Monitor,
   Smartphone,
@@ -379,6 +380,9 @@ export const IconIntents = {
 
   // API keys
   apiKeys: AppIcons.user.apiKey,
+
+  // Página bio (link-in-bio)
+  bio: IdCard,
 
   // Status
   success: AppIcons.status.success,

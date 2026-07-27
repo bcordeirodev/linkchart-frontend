@@ -3,6 +3,8 @@
   "appTagline": "Plataforma de Estatísticas",
   "nav": {
     "myLinks": "Meus links",
+    "bio": "Página bio",
+    "bioDesc": "Sua página de links para a bio do Instagram",
     "shortenUrl": "Encurtar URL",
     "reports": "Relatórios",
     "reportsDesc": "Estatísticas de todos os seus links",

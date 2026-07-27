@@ -18,6 +18,10 @@
  * - `apiKeys` — the authenticated user's API keys (masked previews only —
  *   full tokens never enter the cache); create/revoke mutations invalidate
  *   `apiKeys.all()`.
+ * - `bio` — the authenticated user's link-in-bio page. The API nests items
+ *   inside the page payload (no separate items list endpoint), so every item
+ *   mutation (add/update/remove/reorder) invalidates the same `bio.page()`
+ *   key as the page form itself.
  */
 
 /**
@@ -132,5 +136,13 @@ export const queryKeys = {
      * every consumer re-renders with fresh data after a save.
      */
     me: () => ["profile", "me"] as const,
+  },
+  bio: {
+    /**
+     * The authenticated user's bio page, including its items
+     * (`GET /api/bio` → `{data: null | BioPage}`). `null` data means the user
+     * has not created a page yet.
+     */
+    page: () => ["bio", "page"] as const,
   },
 };

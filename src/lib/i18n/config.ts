@@ -5,6 +5,7 @@ import { initReactI18next } from "react-i18next";
 import enAnalytics from "./locales/en/analytics.json";
 import enApiKeys from "./locales/en/apiKeys.json";
 import enAuth from "./locales/en/auth.json";
+import enBio from "./locales/en/bio.json";
 import enCommon from "./locales/en/common.json";
 import enLegal from "./locales/en/legal.json";
 import enLinks from "./locales/en/links.json";
@@ -16,6 +17,7 @@ import enTools from "./locales/en/tools.json";
 import ptBRAnalytics from "./locales/pt-BR/analytics.json";
 import ptBRApiKeys from "./locales/pt-BR/apiKeys.json";
 import ptBRAuth from "./locales/pt-BR/auth.json";
+import ptBRBio from "./locales/pt-BR/bio.json";
 import ptBRCommon from "./locales/pt-BR/common.json";
 import ptBRLegal from "./locales/pt-BR/legal.json";
 import ptBRLinks from "./locales/pt-BR/links.json";
@@ -38,6 +40,7 @@ const resources = {
     reports: enReports,
     subdomains: enSubdomains,
     tools: enTools,
+    bio: enBio,
   },
   "pt-BR": {
     common: ptBRCommon,
@@ -51,6 +54,7 @@ const resources = {
     reports: ptBRReports,
     subdomains: ptBRSubdomains,
     tools: ptBRTools,
+    bio: ptBRBio,
   },
 };
 
@@ -92,6 +96,7 @@ export function initI18n(lng: string = "en") {
       "reports",
       "subdomains",
       "tools",
+      "bio",
     ],
     supportedLngs: ["en", "pt-BR"],
     interpolation: { escapeValue: false },
