@@ -25,3 +25,25 @@ export const TITLE_MAX_LENGTH = 100;
 
 /** Hard cap for the bio/description field, enforced by both form and API. */
 export const BIO_DESCRIPTION_MAX_LENGTH = 280;
+
+/**
+ * Mirrors `UploadBioAvatarRequest::rules()` (`max:2048` — Laravel's `max`
+ * for files is in kilobytes) on the backend. Drives the client-side
+ * pre-upload check in `avatarValidation.ts` so an oversized file never
+ * leaves the browser; the backend's own 422 remains the source of truth.
+ */
+export const AVATAR_MAX_SIZE_BYTES = 2 * 1024 * 1024;
+
+/**
+ * Mirrors `UploadBioAvatarRequest::rules()` (`mimes:jpeg,png,webp`). Used
+ * both for the client-side type check and the file input's `accept`
+ * attribute.
+ */
+export const AVATAR_ACCEPTED_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+] as const;
+
+/** `accept` attribute value for the avatar `<input type="file">`. */
+export const AVATAR_ACCEPT_ATTR = AVATAR_ACCEPTED_TYPES.join(",");

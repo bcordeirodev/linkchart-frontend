@@ -10,6 +10,31 @@
     "publicUrlCopy": "Copy address",
     "publicUrlCopied": "Copied!",
     "publicUrlOpen": "Open in new tab",
+    "avatar": {
+      "label": "Profile photo",
+      "hint": "JPEG, PNG or WEBP, up to 2MB.",
+      "uploadAction": "Upload photo",
+      "removeAction": "Remove photo",
+      "uploadedToast": "Photo updated!",
+      "removedToast": "Photo removed!",
+      "removeDialog": {
+        "title": "Remove profile photo?",
+        "body": "Your page goes back to showing the title's initial instead of the photo.",
+        "cancel": "Cancel",
+        "confirm": "Remove"
+      },
+      "errors": {
+        "invalidType": "Upload a JPEG, PNG or WEBP image.",
+        "tooLarge": "The image must be at most 2MB.",
+        "uploadGeneric": "We couldn't upload the photo. Please try again.",
+        "removeGeneric": "We couldn't remove the photo. Please try again."
+      }
+    },
+    "address": {
+      "label": "Page address",
+      "hint": "Choose the domain your page gets published at.",
+      "createCta": "Create a custom address"
+    },
     "handle": {
       "label": "Handle",
       "placeholder": "yourname",

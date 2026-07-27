@@ -51,6 +51,26 @@ export interface BioPage {
   theme: BioTheme;
   /** Whether the published page is reachable at all ("page is live"). */
   isActive: boolean;
+  /**
+   * Id of the active `UserSubdomain` this page is published at, or `null`
+   * when it lives at the default `/@{handle}` address. Set/cleared via the
+   * same `PUT /api/bio` upsert — see `BioPageUpsertInput.subdomainId`.
+   */
+  subdomainId: number | null;
+  /**
+   * Server-computed shareable address: the associated subdomain's root
+   * (absolute, e.g. `https://acme.linkcharts.com.br`) when `subdomainId` is
+   * set, otherwise a path relative to this app's own origin (`/@{handle}`).
+   * Compose the relative case with `resolvePublicPageUrl` rather than
+   * branching on the shape at each call site.
+   */
+  url: string;
+  /**
+   * Publicly-servable URL of the uploaded avatar image, or `null` when the
+   * page still falls back to the title/handle initial. Set via
+   * `POST /api/bio/avatar`, cleared via `DELETE /api/bio/avatar`.
+   */
+  avatarUrl: string | null;
   /** Items in display order (already sorted by `position` in the service). */
   items: BioItem[];
 }
@@ -69,6 +89,14 @@ export interface BioPageUpsertInput {
    * active) — only sent once an existing page's toggle is touched.
    */
   isActive?: boolean;
+  /**
+   * Id of the active subdomain to publish this page at, `null` to detach
+   * back to the default `/@{handle}` address, or omitted to leave the
+   * current association untouched. The editor's address selector always
+   * has a definite value once hydrated, so in practice every save from
+   * `BioEditor` sends this explicitly.
+   */
+  subdomainId?: number | null;
 }
 
 /** Payload for `POST /api/bio/items` — adds one existing link as a button. */

@@ -36,6 +36,18 @@ export interface BioPageData {
   bio: string;
   /** Visual theme for the page chrome. */
   theme: BioTheme;
+  /**
+   * Publicly-servable URL of the creator's uploaded avatar, or `null` when
+   * they haven't uploaded one — the page falls back to the title's initial
+   * in that case. Named `avatar_url` (not camelCased) like every other
+   * field here: this module reads the backend's JSON response directly with
+   * no mapping layer (see `fetchBioData` in `app/(public)/b/[handle]/page.tsx`),
+   * unlike `features/bio/services/bio.service.ts`, which does map to
+   * camelCase for the authenticated editor. Optional (not just nullable) so
+   * a backend response that predates this field still type-checks; treat a
+   * missing key the same as `null`.
+   */
+  avatar_url?: string | null;
   /** Ordered list of link buttons. */
   items: BioLinkItem[];
 }

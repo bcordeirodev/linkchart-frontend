@@ -18,6 +18,8 @@ export interface BioPageFormData {
   theme: BioTheme;
   /** Edit mode only; ignored by the service on create (backend defaults to active). */
   isActive: boolean;
+  /** Selected address: `null` = default `/@{handle}`, otherwise an active subdomain id. */
+  subdomainId: number | null;
 }
 
 /** Blank starting point for the "no page yet" (create) state. */
@@ -27,6 +29,7 @@ export const defaultBioPageFormValues: BioPageFormData = {
   bio: "",
   theme: "dark",
   isActive: true,
+  subdomainId: null,
 };
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
@@ -60,5 +63,6 @@ export function bioPageFormSchema(t: Translate) {
       .default(""),
     theme: z.enum(["dark", "light"]),
     isActive: z.boolean(),
+    subdomainId: z.number().nullable(),
   });
 }

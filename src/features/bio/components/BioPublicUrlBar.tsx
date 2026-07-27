@@ -10,13 +10,18 @@ import { useTranslation } from "react-i18next";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 export interface BioPublicUrlBarProps {
-  /** Absolute public URL of the persisted page (`getPublicBioUrl(page.handle)`). */
+  /**
+   * Absolute public URL of the persisted page — the backend's own `url`
+   * field (`resolvePublicPageUrl(page.url)`), which already accounts for
+   * whether the page is published at the default `/@{handle}` address or an
+   * associated subdomain's root.
+   */
   url: string;
 }
 
 /**
  * Read-only row showing the published bio page's public URL with copy/open
- * actions. Always reflects the last SAVED handle — never the form's
+ * actions. Always reflects the last SAVED handle/address — never the form's
  * in-progress draft — since the public URL only changes once the form is
  * submitted.
  */

@@ -6,22 +6,44 @@ import type { BioPalette } from "./bioPalette";
 const AVATAR_SIZE = 88;
 
 interface BioAvatarProps {
-  /** First character of the page title, already uppercased. */
+  /** First character of the page title, already uppercased. Ignored when `avatarUrl` is set. */
   initial: string;
   /** Resolved color set for the page's theme. */
   palette: BioPalette;
+  /**
+   * Uploaded avatar URL, or `null`/`undefined` to fall back to `initial`.
+   * Same-infra as the rest of the app (backend storage disk), so this is a
+   * plain `<img>` rather than `next/image` — no remote-domain config to
+   * maintain for a URL that always points at this product's own backend.
+   */
+  avatarUrl?: string | null;
+  /**
+   * The creator's display name, used to build a meaningful `alt` text
+   * (`"Foto de perfil de {name}"`) when `avatarUrl` is set — this is the
+   * page's one real photo, not decorative chrome, so it gets a description
+   * rather than `alt=""`. Hardcoded pt-BR like the rest of this public page
+   * (see `BioFooterBadge`): no established language preference for a
+   * stranger's page.
+   */
+  displayName: string;
 }
 
 /**
- * Circular avatar showing the initial letter of the creator's display name.
+ * Circular avatar showing either the creator's uploaded photo or, absent
+ * one, the initial letter of their display name.
  *
- * There's no photo upload in the bio contract yet, so the initial-letter
- * gradient circle acts as the page's signature visual — a soft glow (same
- * gradient, low opacity, blurred) sits behind it so the avatar reads as the
+ * A soft glow (the same gradient used for the initial-letter fallback, low
+ * opacity, blurred) always sits behind the circle — kept even with a real
+ * photo so the frame stays consistent and the avatar keeps reading as the
  * one deliberately "designed" element on an otherwise plain, content-first
  * page.
  */
-export default function BioAvatar({ initial, palette }: BioAvatarProps) {
+export default function BioAvatar({
+  initial,
+  palette,
+  avatarUrl,
+  displayName,
+}: BioAvatarProps) {
   return (
     <Box
       sx={{
@@ -47,25 +69,37 @@ export default function BioAvatar({ initial, palette }: BioAvatarProps) {
           width: AVATAR_SIZE,
           height: AVATAR_SIZE,
           borderRadius: "50%",
-          background: palette.avatarGradient,
+          overflow: "hidden",
+          background: avatarUrl ? undefined : palette.avatarGradient,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           boxShadow: "0 8px 24px -8px rgba(0, 0, 0, 0.45)",
         }}
       >
-        <Box
-          component="span"
-          sx={{
-            fontSize: "2.25rem",
-            fontWeight: 800,
-            lineHeight: 1,
-            color: "#FFFFFF",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          {initial}
-        </Box>
+        {avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={avatarUrl}
+            alt={`Foto de perfil de ${displayName}`}
+            width={AVATAR_SIZE}
+            height={AVATAR_SIZE}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          <Box
+            component="span"
+            sx={{
+              fontSize: "2.25rem",
+              fontWeight: 800,
+              lineHeight: 1,
+              color: "#FFFFFF",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            {initial}
+          </Box>
+        )}
       </Box>
     </Box>
   );
