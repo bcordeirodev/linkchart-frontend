@@ -306,8 +306,30 @@
     "hero": {
       "eyebrow": "Comparison",
       "title": "Link Charts vs Bitly",
-      "subtitle": "Which free URL shortener actually shows you who clicked?",
-      "verdict": "Bitly is the better-known name. Link Charts gives you more analytics for free — including a score that separates human clicks from bots."
+      "subtitle": "Bitly's free plan changed in 2025. See what each URL shortener gives you today without paying.",
+      "verdict": "Bitly is the better-known name, but since February 2025 its free plan shows ads before the redirect and creates at most 5 links per month. Link Charts keeps redirects ad-free, creation unlimited, and full analytics free — including a score that separates human clicks from bots."
+    },
+    "changes": {
+      "sectionTitle": "What changed at Bitly in 2025",
+      "intro": "Free-plan users felt three concrete changes — and they explain why so many people started looking for an alternative:",
+      "items": [
+        {
+          "tag": "Since Feb 2025",
+          "title": "Ads on free links",
+          "desc": "Free-plan links now show an ad page (interstitial) before the destination — including old links created before the change."
+        },
+        {
+          "tag": "Free plan",
+          "title": "5 links per month",
+          "desc": "The free plan now creates up to 5 links, 2 QR codes, and 3 custom back-halves per month, and analytics is limited to click counts."
+        },
+        {
+          "tag": "US$ 8–29/mo",
+          "title": "Basic features moved to paid plans",
+          "desc": "Detailed analytics requires the Core plan (US$ 8/month billed annually, 100 links/month, 30–90 days of retention). Custom domains only start at Growth (~US$ 29/month)."
+        }
+      ],
+      "note": "Source: Bitly's public pricing pages and official blog, checked in July 2026."
     },
     "table": {
       "sectionTitle": "Feature-by-feature comparison",
@@ -315,49 +337,57 @@
       "colLinkCharts": "Link Charts",
       "colRival": "Bitly (free)",
       "highlightBadge": "Differentiator",
-      "disclaimer": "Bitly features refer to the current free plan and are subject to change.",
+      "disclaimer": "Bitly data refers to the free plan and public pricing as of July 2026; subject to change.",
       "rows": [
         {
           "feature": "Price",
           "lc": "Free",
           "lcMark": "yes",
-          "rival": "Free (limited)",
+          "rival": "Limited free; paid from US$ 8/mo",
           "rivalMark": "partial"
         },
         {
           "feature": "Links per month (free)",
-          "lc": "No practical limit",
+          "lc": "No limit",
           "lcMark": "yes",
-          "rival": "~5/month",
+          "rival": "5/month",
           "rivalMark": "partial"
         },
         {
-          "feature": "Real-time analytics",
-          "lc": "Yes",
+          "feature": "Ad-free redirect",
+          "lc": "Always",
           "lcMark": "yes",
-          "rival": "Partial",
+          "rival": "Interstitial on free since Feb 2025",
+          "rivalMark": "no",
+          "emphasis": true
+        },
+        {
+          "feature": "Real-time analytics",
+          "lc": "Yes, free",
+          "lcMark": "yes",
+          "rival": "Click counts only on free",
           "rivalMark": "partial"
         },
         {
           "feature": "Geography (country and city)",
           "lc": "Yes",
           "lcMark": "yes",
-          "rival": "Limited",
-          "rivalMark": "partial"
+          "rival": "Paid plans only",
+          "rivalMark": "no"
         },
         {
           "feature": "Device and browser",
           "lc": "Yes",
           "lcMark": "yes",
-          "rival": "Limited",
-          "rivalMark": "partial"
+          "rival": "Paid plans only",
+          "rivalMark": "no"
         },
         {
           "feature": "Traffic source and UTM",
           "lc": "Yes",
           "lcMark": "yes",
-          "rival": "Yes",
-          "rivalMark": "yes"
+          "rival": "Paid plans only",
+          "rivalMark": "no"
         },
         {
           "feature": "Quality score (bot vs human)",
@@ -368,17 +398,24 @@
           "emphasis": true
         },
         {
-          "feature": "Custom subdomain",
-          "lc": "Yes",
+          "feature": "Custom back-half (slug)",
+          "lc": "No limit",
           "lcMark": "yes",
-          "rival": "Paid",
+          "rival": "3/month on free",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Custom subdomain",
+          "lc": "Up to 3, free",
+          "lcMark": "yes",
+          "rival": "Growth only (~US$ 29/mo)",
           "rivalMark": "no"
         },
         {
           "feature": "QR code",
-          "lc": "Yes",
+          "lc": "Free",
           "lcMark": "yes",
-          "rival": "Limited",
+          "rival": "2/month on free",
           "rivalMark": "partial"
         },
         {
@@ -400,20 +437,24 @@
     "choose": {
       "sectionTitle": "When to choose each one",
       "linkChartsTitle": "Choose Link Charts if…",
-      "linkChartsBody": "You want detailed analytics for free, you're in Brazil, and you care about traffic quality (knowing whether clicks are real) and a custom subdomain without paying.",
+      "linkChartsBody": "You want detailed analytics for free with no monthly cap, you won't accept an ad between the click and the destination, and you care about traffic quality (knowing whether clicks are real) and a custom subdomain without paying.",
       "rivalTitle": "Choose Bitly if…",
-      "rivalBody": "You need the most globally recognized brand and already use its paid ecosystem."
+      "rivalBody": "You already pay for a Core or Growth plan, rely on the Bitly ecosystem's integrations, and need the most globally recognized brand."
     },
     "faq": {
       "sectionTitle": "Frequently asked questions",
       "items": [
         {
           "q": "What's the best free alternative to Bitly?",
-          "a": "Link Charts is a free alternative to Bitly with more complete analytics on the free plan: geography by city, device, browser, and a quality score that flags bot traffic — all in real time."
+          "a": "Link Charts is a free alternative to Bitly with more complete analytics on the free plan: geography by city, device, browser, traffic source, and a quality score that flags bot traffic — all in real time, with ad-free redirects."
         },
         {
           "q": "Is Bitly really free?",
-          "a": "Bitly has a free plan, but it's limited (few links per month and basic analytics). For detailed stats without paying, Link Charts offers more on the free tier."
+          "a": "Bitly has a free plan, but today it creates up to 5 links and 2 QR codes per month, shows only click counts, and since February 2025 it displays ads before the redirect — including on old links. Detailed analytics starts on the Core plan (US$ 8/month billed annually)."
+        },
+        {
+          "q": "Does Bitly put ads on my links?",
+          "a": "On the free plan, yes. Since February 2025, free Bitly links can show an ad page (interstitial) before reaching the destination, and the change also applied to links created before that date. Link Charts redirects never show ads."
         },
         {
           "q": "How do I see which city a link's clicks came from?",
@@ -425,11 +466,11 @@
         },
         {
           "q": "Can I use my own subdomain with the URL shortener?",
-          "a": "Yes. Link Charts supports a custom subdomain, including on free usage, while Bitly keeps custom domains on paid plans."
+          "a": "Yes. Link Charts supports up to 3 custom subdomains, including on free usage, while at Bitly custom domains only start on the Growth plan (~US$ 29/month)."
         }
       ]
     },
-    "ctaTitle": "Shorten your first URL and watch the analytics in real time"
+    "ctaTitle": "Shorten your first URL — ad-free, no monthly cap, with real-time analytics"
   },
   "guiaBots": {
     "hero": {

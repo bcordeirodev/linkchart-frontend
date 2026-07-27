@@ -12,21 +12,22 @@ const path = "/comparar/bitly";
 
 /**
  * Static pt-BR metadata (the SEO target). Kept static so the page stays
- * cacheable; visible content reconciles language client-side via i18n. This1
+ * cacheable; visible content reconciles language client-side via i18n. This
  * page is intentionally indexable — unlike per-slug analytics pages — because
  * it is unique, commercial-intent marketing content targeting "alternativa ao
- * Bitly" / "encurtador de URL vs" queries.
+ * Bitly" / "encurtador de URL vs" queries — searches that spiked after the
+ * February 2025 changes to Bitly's free plan (interstitial ads, 5 links/month).
  */
 export const metadata: Metadata = {
-  title: "Link Charts vs Bitly: melhor encurtador de URL grátis? (2026)",
+  title: "Alternativa ao Bitly: comparação Link Charts vs Bitly (2026)",
   description:
-    "Comparamos Link Charts e Bitly em analytics, plano gratuito e recursos. Veja qual encurtador de URL entrega mais estatísticas de cliques de graça.",
+    "Desde fevereiro de 2025 o plano grátis do Bitly exibe anúncios e cria só 5 links/mês. Compare com o Link Charts: estatísticas completas grátis e redirecionamento sem anúncio.",
   alternates: { canonical: `${appUrl}${path}` },
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Link Charts vs Bitly: melhor encurtador de URL grátis?",
+    title: "Alternativa ao Bitly: comparação Link Charts vs Bitly (2026)",
     description:
-      "Qual encurtador de URL entrega mais analytics de graça? Comparação recurso a recurso entre Link Charts e Bitly.",
+      "O que mudou no plano grátis do Bitly em 2025 — e qual encurtador de URL entrega mais estatísticas de graça. Comparação recurso a recurso.",
     type: "article",
     url: `${appUrl}${path}`,
     images: [{ url: `${appUrl}/og-default.png`, width: 1200, height: 630 }],

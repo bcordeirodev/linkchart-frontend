@@ -306,8 +306,30 @@
     "hero": {
       "eyebrow": "Comparativo",
       "title": "Link Charts vs Bitly",
-      "subtitle": "Qual o melhor encurtador de URL grátis para ver quem realmente clicou?",
-      "verdict": "O Bitly é o nome mais conhecido. O Link Charts entrega mais estatísticas de graça — incluindo um score que separa cliques humanos de bots."
+      "subtitle": "O plano gratuito do Bitly mudou em 2025. Veja o que cada encurtador de URL entrega hoje sem pagar.",
+      "verdict": "O Bitly é o nome mais conhecido, mas desde fevereiro de 2025 o plano gratuito exibe anúncios antes do redirecionamento e cria no máximo 5 links por mês. O Link Charts mantém redirecionamento sem anúncio, criação sem limite mensal e estatísticas completas de graça — incluindo um score que separa cliques humanos de bots."
+    },
+    "changes": {
+      "sectionTitle": "O que mudou no Bitly em 2025",
+      "intro": "Quem usa o plano gratuito do Bitly sentiu três mudanças concretas — e elas explicam por que tanta gente passou a procurar alternativa:",
+      "items": [
+        {
+          "tag": "Desde fev/2025",
+          "title": "Anúncios em links gratuitos",
+          "desc": "Links do plano gratuito passaram a exibir uma página de anúncio (interstitial) antes do destino — inclusive links antigos, criados antes da mudança."
+        },
+        {
+          "tag": "Plano grátis",
+          "title": "5 links por mês",
+          "desc": "O plano gratuito hoje cria até 5 links, 2 QR codes e 3 nomes personalizados por mês, e as estatísticas se limitam à contagem de cliques."
+        },
+        {
+          "tag": "US$ 8–29/mês",
+          "title": "Recursos básicos viraram pagos",
+          "desc": "Estatísticas detalhadas exigem o plano Core (US$ 8/mês no anual, 100 links/mês, retenção de 30 a 90 dias). Domínio próprio, só a partir do Growth (~US$ 29/mês)."
+        }
+      ],
+      "note": "Fonte: páginas de planos e blog oficial do Bitly, conferidos em julho de 2026."
     },
     "table": {
       "sectionTitle": "Comparação recurso a recurso",
@@ -315,49 +337,57 @@
       "colLinkCharts": "Link Charts",
       "colRival": "Bitly (grátis)",
       "highlightBadge": "Diferencial",
-      "disclaimer": "Recursos do Bitly referentes ao plano gratuito e sujeitos a alteração.",
+      "disclaimer": "Dados do Bitly referentes ao plano gratuito e aos preços públicos em julho de 2026; sujeitos a alteração.",
       "rows": [
         {
           "feature": "Preço",
           "lc": "Gratuito",
           "lcMark": "yes",
-          "rival": "Gratuito (limitado)",
+          "rival": "Grátis limitado; pago desde US$ 8/mês",
           "rivalMark": "partial"
         },
         {
           "feature": "Links por mês (grátis)",
-          "lc": "Sem limite prático",
+          "lc": "Sem limite",
           "lcMark": "yes",
-          "rival": "~5/mês",
+          "rival": "5/mês",
           "rivalMark": "partial"
         },
         {
-          "feature": "Estatísticas em tempo real",
-          "lc": "Sim",
+          "feature": "Redirecionamento sem anúncios",
+          "lc": "Sempre",
           "lcMark": "yes",
-          "rival": "Parcial",
+          "rival": "Interstitial no grátis desde fev/2025",
+          "rivalMark": "no",
+          "emphasis": true
+        },
+        {
+          "feature": "Estatísticas em tempo real",
+          "lc": "Sim, grátis",
+          "lcMark": "yes",
+          "rival": "Só contagem de cliques no grátis",
           "rivalMark": "partial"
         },
         {
           "feature": "Geografia (país e cidade)",
           "lc": "Sim",
           "lcMark": "yes",
-          "rival": "Limitado",
-          "rivalMark": "partial"
+          "rival": "Só nos planos pagos",
+          "rivalMark": "no"
         },
         {
           "feature": "Dispositivo e navegador",
           "lc": "Sim",
           "lcMark": "yes",
-          "rival": "Limitado",
-          "rivalMark": "partial"
+          "rival": "Só nos planos pagos",
+          "rivalMark": "no"
         },
         {
           "feature": "Origem de tráfego e UTM",
           "lc": "Sim",
           "lcMark": "yes",
-          "rival": "Sim",
-          "rivalMark": "yes"
+          "rival": "Só nos planos pagos",
+          "rivalMark": "no"
         },
         {
           "feature": "Score de qualidade (bot vs humano)",
@@ -368,17 +398,24 @@
           "emphasis": true
         },
         {
-          "feature": "Subdomínio personalizado",
-          "lc": "Sim",
+          "feature": "Nome personalizado no link",
+          "lc": "Sem limite",
           "lcMark": "yes",
-          "rival": "Pago",
+          "rival": "3/mês no grátis",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Subdomínio personalizado",
+          "lc": "Até 3, grátis",
+          "lcMark": "yes",
+          "rival": "Só no Growth (~US$ 29/mês)",
           "rivalMark": "no"
         },
         {
           "feature": "QR Code",
-          "lc": "Sim",
+          "lc": "Grátis",
           "lcMark": "yes",
-          "rival": "Limitado",
+          "rival": "2/mês no grátis",
           "rivalMark": "partial"
         },
         {
@@ -400,20 +437,24 @@
     "choose": {
       "sectionTitle": "Quando escolher cada um",
       "linkChartsTitle": "Escolha o Link Charts se…",
-      "linkChartsBody": "Você quer estatísticas detalhadas de graça, está no Brasil e se importa com a qualidade do tráfego (saber se os cliques são reais) e com subdomínio próprio sem pagar.",
+      "linkChartsBody": "Você quer estatísticas detalhadas de graça e sem limite mensal, não aceita anúncio entre o clique e o destino, e se importa com a qualidade do tráfego (saber se os cliques são reais) e com subdomínio próprio sem pagar.",
       "rivalTitle": "Escolha o Bitly se…",
-      "rivalBody": "Você precisa da marca mais reconhecida globalmente e já usa o ecossistema pago dele."
+      "rivalBody": "Você já paga um plano Core ou Growth, depende das integrações do ecossistema Bitly e precisa da marca mais reconhecida globalmente."
     },
     "faq": {
       "sectionTitle": "Perguntas frequentes",
       "items": [
         {
           "q": "Qual a melhor alternativa gratuita ao Bitly?",
-          "a": "O Link Charts é uma alternativa gratuita ao Bitly com estatísticas mais completas no plano grátis: geografia por cidade, dispositivo, navegador e um score de qualidade que identifica tráfego de bot — tudo em tempo real e em português."
+          "a": "O Link Charts é uma alternativa gratuita ao Bitly com estatísticas mais completas no plano grátis: geografia por cidade, dispositivo, navegador, origem de tráfego e um score de qualidade que identifica tráfego de bot — tudo em tempo real, sem anúncios no redirecionamento e em português."
         },
         {
           "q": "O Bitly é realmente grátis?",
-          "a": "O Bitly tem um plano gratuito, mas ele é limitado (poucos links por mês e estatísticas básicas). Para estatísticas detalhadas sem pagar, o Link Charts oferece mais no nível gratuito."
+          "a": "O Bitly tem plano gratuito, mas hoje ele cria até 5 links e 2 QR codes por mês, mostra apenas a contagem de cliques e, desde fevereiro de 2025, exibe anúncios antes do redirecionamento — inclusive em links antigos. Estatísticas detalhadas começam no plano Core (US$ 8/mês no anual)."
+        },
+        {
+          "q": "O Bitly coloca anúncios nos meus links?",
+          "a": "No plano gratuito, sim. Desde fevereiro de 2025, links gratuitos do Bitly podem exibir uma página de anúncio (interstitial) antes de levar ao destino, e a mudança valeu também para links criados antes dessa data. No Link Charts, o redirecionamento nunca exibe anúncio."
         },
         {
           "q": "Como ver de qual cidade vieram os cliques de um link?",
@@ -425,11 +466,11 @@
         },
         {
           "q": "Dá para usar um subdomínio próprio no encurtador de URL?",
-          "a": "Sim. O Link Charts permite subdomínio personalizado, inclusive no uso gratuito, enquanto no Bitly domínios personalizados ficam nos planos pagos."
+          "a": "Sim. O Link Charts permite até 3 subdomínios personalizados, inclusive no uso gratuito, enquanto no Bitly domínio próprio está disponível a partir do plano Growth (~US$ 29/mês)."
         }
       ]
     },
-    "ctaTitle": "Encurte sua primeira URL e veja as estatísticas em tempo real"
+    "ctaTitle": "Encurte sua primeira URL — sem anúncio, sem limite mensal e com estatísticas em tempo real"
   },
   "guiaBots": {
     "hero": {
