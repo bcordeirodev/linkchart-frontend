@@ -1,0 +1,99 @@
+{
+  "title": "Bio page",
+  "subtitle": "A page with your most important links to paste into your Instagram or TikTok bio.",
+  "intro": {
+    "title": "A page just for your bio",
+    "description": "Bring your most important links together on a page that looks like you. Paste the address into your Instagram bio, TikTok, or anywhere else — no need to squeeze everything into one link."
+  },
+  "form": {
+    "publicUrlLabel": "Your page",
+    "publicUrlCopy": "Copy address",
+    "publicUrlCopied": "Copied!",
+    "publicUrlOpen": "Open in new tab",
+    "handle": {
+      "label": "Handle",
+      "placeholder": "yourname",
+      "hint": "3–30 characters: lowercase letters, numbers and hyphens (not at the start or end).",
+      "checking": "Checking...",
+      "available": "Available",
+      "taken": "This handle is already taken"
+    },
+    "title": {
+      "label": "Title",
+      "placeholder": "Your name or your brand's name"
+    },
+    "bio": {
+      "label": "Bio",
+      "placeholder": "Say in a few words what people will find here.",
+      "counter": "{{count}}/{{max}} characters"
+    },
+    "theme": {
+      "label": "Theme",
+      "dark": "Dark",
+      "light": "Light"
+    },
+    "isActive": {
+      "label": "Page is live",
+      "onHint": "Anyone with the address can view your page.",
+      "offHint": "The page goes offline — the address stops working until you turn it back on."
+    },
+    "createSubmit": "Create page",
+    "saveSubmit": "Save changes",
+    "createdToast": "Page created!",
+    "savedToast": "Changes saved!",
+    "errors": {
+      "handleTooShort": "Use at least 3 characters.",
+      "handleTooLong": "Use at most 30 characters.",
+      "handleFormat": "Use only lowercase letters, numbers and hyphens. It can't start or end with a hyphen.",
+      "titleRequired": "Choose a title for the page.",
+      "titleTooLong": "Use at most 100 characters.",
+      "bioTooLong": "Use at most 280 characters.",
+      "saveGeneric": "We couldn't save your page. Please try again."
+    }
+  },
+  "preview": {
+    "placeholderTitle": "Your name",
+    "placeholderHandle": "yourname",
+    "noItems": "Your links will show up here.",
+    "watermark": "Link Chart",
+    "showAction": "Show preview",
+    "hideAction": "Hide preview"
+  },
+  "items": {
+    "heading_one": "{{count}} of {{max}} link",
+    "heading_other": "{{count}} of {{max}} links",
+    "add": "Add link",
+    "empty": "You haven't added any links to your page yet.",
+    "limitReachedNotice": "You've reached the 20-link limit for this page. Remove an existing link to add another.",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "saveLabel": "Save",
+    "cancelLabel": "Cancel",
+    "unlabeled": "No label",
+    "clicksCount_one": "{{count}} click",
+    "clicksCount_other": "{{count}} clicks",
+    "active": "Active on the page",
+    "inactive": "Hidden on the page",
+    "remove": "Remove",
+    "removeDialog": {
+      "title": "Remove this link from the page?",
+      "body": "It will stop showing on your bio page. You can add it back anytime.",
+      "cancel": "Cancel",
+      "confirm": "Remove"
+    },
+    "addDialog": {
+      "title": "Add link",
+      "searchPlaceholder": "Search by title or address",
+      "noLinksAtAll": "You haven't created any links yet.",
+      "createLinkCta": "Create a link",
+      "noResults": "No links found.",
+      "addAction": "Add to page"
+    },
+    "errors": {
+      "addGeneric": "We couldn't add this link. Please try again.",
+      "updateGeneric": "We couldn't save that change. Please try again.",
+      "removeGeneric": "We couldn't remove this link. Please try again.",
+      "reorderGeneric": "We couldn't reorder your links. Please try again."
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "title": "Página bio",
+  "subtitle": "Uma página com seus links mais importantes para colar na bio do Instagram, TikTok ou onde quiser.",
+  "intro": {
+    "title": "Uma página só para sua bio",
+    "description": "Reúna seus links mais importantes em uma página com a sua cara. Cole o endereço na bio do Instagram, TikTok ou onde quiser — sem precisar caber tudo em um link só."
+  },
+  "form": {
+    "publicUrlLabel": "Sua página",
+    "publicUrlCopy": "Copiar endereço",
+    "publicUrlCopied": "Copiado!",
+    "publicUrlOpen": "Abrir em nova aba",
+    "handle": {
+      "label": "Endereço",
+      "placeholder": "seunome",
+      "hint": "3–30 caracteres: letras minúsculas, números e hífens (não no início nem no fim).",
+      "checking": "Verificando...",
+      "available": "Disponível",
+      "taken": "Este endereço já está em uso"
+    },
+    "title": {
+      "label": "Título",
+      "placeholder": "Seu nome ou o nome da sua marca"
+    },
+    "bio": {
+      "label": "Bio",
+      "placeholder": "Conte em poucas palavras o que as pessoas vão encontrar aqui.",
+      "counter": "{{count}}/{{max}} caracteres"
+    },
+    "theme": {
+      "label": "Tema",
+      "dark": "Escuro",
+      "light": "Claro"
+    },
+    "isActive": {
+      "label": "Página no ar",
+      "onHint": "Qualquer pessoa com o endereço consegue acessar sua página.",
+      "offHint": "A página fica fora do ar — o endereço deixa de funcionar até você reativar."
+    },
+    "createSubmit": "Criar página",
+    "saveSubmit": "Salvar alterações",
+    "createdToast": "Página criada!",
+    "savedToast": "Alterações salvas!",
+    "errors": {
+      "handleTooShort": "Use pelo menos 3 caracteres.",
+      "handleTooLong": "Use no máximo 30 caracteres.",
+      "handleFormat": "Use apenas letras minúsculas, números e hífens. Não pode começar nem terminar com hífen.",
+      "titleRequired": "Escolha um título para a página.",
+      "titleTooLong": "Use no máximo 100 caracteres.",
+      "bioTooLong": "Use no máximo 280 caracteres.",
+      "saveGeneric": "Não foi possível salvar sua página. Tente novamente."
+    }
+  },
+  "preview": {
+    "placeholderTitle": "Seu nome",
+    "placeholderHandle": "seunome",
+    "noItems": "Seus links aparecerão aqui.",
+    "watermark": "Link Chart",
+    "showAction": "Ver preview",
+    "hideAction": "Ocultar preview"
+  },
+  "items": {
+    "heading_one": "{{count}} de {{max}} link",
+    "heading_other": "{{count}} de {{max}} links",
+    "add": "Adicionar link",
+    "empty": "Você ainda não adicionou nenhum link à sua página.",
+    "limitReachedNotice": "Você atingiu o limite de 20 links nesta página. Remova um link existente para adicionar outro.",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
+    "saveLabel": "Salvar",
+    "cancelLabel": "Cancelar",
+    "unlabeled": "Sem rótulo",
+    "clicksCount_one": "{{count}} clique",
+    "clicksCount_other": "{{count}} cliques",
+    "active": "Ativo na página",
+    "inactive": "Oculto na página",
+    "remove": "Remover",
+    "removeDialog": {
+      "title": "Remover este link da página?",
+      "body": "Ele deixa de aparecer na sua página bio. Você pode adicioná-lo de volta quando quiser.",
+      "cancel": "Cancelar",
+      "confirm": "Remover"
+    },
+    "addDialog": {
+      "title": "Adicionar link",
+      "searchPlaceholder": "Buscar por título ou endereço",
+      "noLinksAtAll": "Você ainda não criou nenhum link.",
+      "createLinkCta": "Criar um link",
+      "noResults": "Nenhum link encontrado.",
+      "addAction": "Adicionar à página"
+    },
+    "errors": {
+      "addGeneric": "Não foi possível adicionar este link. Tente novamente.",
+      "updateGeneric": "Não foi possível salvar a alteração. Tente novamente.",
+      "removeGeneric": "Não foi possível remover este link. Tente novamente.",
+      "reorderGeneric": "Não foi possível reordenar os links. Tente novamente."
+    }
+  }
+}

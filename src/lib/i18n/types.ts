@@ -3,6 +3,7 @@ import "i18next";
 import type enAnalytics from "./locales/en/analytics.json";
 import type enApiKeys from "./locales/en/apiKeys.json";
 import type enAuth from "./locales/en/auth.json";
+import type enBio from "./locales/en/bio.json";
 import type enCommon from "./locales/en/common.json";
 import type enLegal from "./locales/en/legal.json";
 import type enLinks from "./locales/en/links.json";
@@ -27,6 +28,7 @@ declare module "i18next" {
       reports: typeof enReports;
       subdomains: typeof enSubdomains;
       tools: typeof enTools;
+      bio: typeof enBio;
     };
   }
 }
