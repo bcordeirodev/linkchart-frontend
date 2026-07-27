@@ -7,7 +7,7 @@ Frontend Next.js 15 do Link Charts (linkcharts.com.br) — encurtador de URL com
 - Next.js 15 (App Router, Server Components, Turbopack em dev)
 - React 19 · TypeScript strict
 - MUI 6 + Emotion (sem Tailwind, sem CSS Modules)
-- TanStack Query v5 (estado de servidor) · Redux Toolkit (apenas notificações)
+- TanStack Query v5 (estado de servidor) · React Context para estado global de UI (`MessageProvider` para notificações — Redux foi removido, ver ADR 0008)
 - React Hook Form + Zod
 - i18next (`pt-BR`, `en`)
 - Playwright para E2E
@@ -44,13 +44,13 @@ frontend-next/
 ├── app/                  # App Router (rotas + layouts + middleware)
 │   ├── (app)/            # Rotas autenticadas (links, analytics, profile)
 │   ├── (auth)/           # Login, signup, reset, verificação de email
-│   ├── (public)/         # Shorter, public-analytics, redirect, legais
+│   ├── (public)/         # Shorter, public-analytics, comparar, guia, legais
 │   └── api/              # API routes do front (health, check-url)
 ├── src/
-│   ├── features/         # Domínios (analytics, links, profile, public-analytics, redirect, shorter) — README em cada
+│   ├── features/         # Domínios (analytics, links, profile, public-analytics, reports, shorter, subdomains) — README em cada
 │   ├── page-components/  # Composições por rota
 │   ├── services/         # Camada HTTP (extends BaseService)
-│   ├── lib/              # Infra: api, query, store, auth, theme, i18n, providers
+│   ├── lib/              # Infra: api, query, auth, providers, theme, i18n, consent, seo, telemetry, utils
 │   ├── shared/           # UI / hooks / layouts cross-feature
 │   ├── styles/           # CSS global
 │   └── types/            # Tipos compartilhados (core, analytics)
@@ -69,8 +69,9 @@ Mais detalhe por módulo:
 - [`src/features/links/`](src/features/links/README.md)
 - [`src/features/profile/`](src/features/profile/README.md)
 - [`src/features/public-analytics/`](src/features/public-analytics/README.md)
-- [`src/features/redirect/`](src/features/redirect/README.md)
+- [`src/features/reports/`](src/features/reports/README.md)
 - [`src/features/shorter/`](src/features/shorter/README.md)
+- [`src/features/subdomains/`](src/features/subdomains/README.md)
 - [`src/page-components/`](src/page-components/README.md)
 - [`src/services/`](src/services/README.md)
 - [`src/lib/`](src/lib/README.md)
@@ -95,6 +96,11 @@ Veja [CONTRIBUTING.md](CONTRIBUTING.md) — convenções de commit, branching, g
 | `npm run test:e2e`     | Playwright em modo headless                         |
 | `npm run test:e2e:ui`  | Playwright em modo UI                               |
 
+## Testes
+
+- **E2E (Playwright):** specs em `e2e/` (`smoke`, `auth`, `authed-responsive`, `mobile-responsive`), com setup de sessão em `e2e/auth.setup.ts` + `e2e/global-setup.ts`. Rodar com `npm run test:e2e` (headless) ou `npm run test:e2e:ui`.
+- **Unitários:** não há runner de testes unitários configurado — o gate local é `npm run quality` + a suite E2E.
+
 ## Documentação avançada
 
 - [`CLAUDE.md`](../CLAUDE.md) (raiz do monorepo) — referência canônica de arquitetura.
@@ -105,9 +111,9 @@ Veja [CONTRIBUTING.md](CONTRIBUTING.md) — convenções de commit, branching, g
 
 ## Deploy
 
-- **Frontend:** linkcharts.com.br — pipeline em `.github/workflows/release.yml` (deploy por tag `v*`, blue/green — ver `docs/DEPLOY.md` na raiz).
+- **Frontend:** linkcharts.com.br — pipeline em `.github/workflows/release.yml` (deploy por tag `v*`, blue/green — ver `docs/DEPLOY.md` na raiz do workspace).
 - **Backend:** api.linkcharts.com.br — VPS Docker, repositório separado.
-- **Branch de deploy:** `main` (auto-deploy após merge + CI verde).
+- **Merge em `main` NÃO deploya:** só roda o CI (`.github/workflows/ci.yml`). Publicar é um ato explícito — criar e pushar uma tag `v*`.
 - **Build artifact:** `output: standalone` (ver `next.config.ts`).
 
 Ambientes:

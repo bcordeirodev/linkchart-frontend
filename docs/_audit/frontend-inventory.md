@@ -1,5 +1,7 @@
 # Frontend Inventory — `frontend-next/`
 
+> ⚠️ **Snapshot de 2026-05-10 — NÃO reflete o estado atual.** Cita, por exemplo, os aliases `@/store/*` e o `lib/store/` (Redux Toolkit), já removidos do projeto (ver ADR 0008), além de features que mudaram desde então. Mantido como histórico — não usar como referência de arquitetura vigente.
+
 > Snapshot date: 2026-05-10. Source: read-only inspection of `src/`, `app/`, and config files.
 > Purpose: capture every domain unit exposed by the codebase, name what consumes it, and surface refactor opportunities. **No code changes are made by this document.**
 

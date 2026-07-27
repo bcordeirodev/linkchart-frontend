@@ -77,7 +77,7 @@ import { ApiClient } from "@/lib/api/client";
 import { Loading } from "../../../shared/ui/feedback/Loading";
 ```
 
-Aliases disponíveis: `@/`, `@/features/*`, `@/lib/*`, `@/shared/*`, `@/auth/*`, `@/analytics/*`, `@/links/*`, `@/ui/*`, `@/layout/*`, `@/hooks/*`, `@/api/*`, `@/theme/*`, `@/store/*`, `@/utils/*`, `@/i18n/*`, `@/pages/*`.
+Aliases disponíveis (ver `tsconfig.json`): `@/*`, `@/features/*`, `@/shared/*`, `@/lib/*`.
 
 ### i18n
 
@@ -94,8 +94,17 @@ Aliases disponíveis: `@/`, `@/features/*`, `@/lib/*`, `@/shared/*`, `@/auth/*`,
 ### Estado
 
 - **Estado de servidor:** TanStack Query. Hooks em `src/features/<nome>/hooks/`. Chaves de cache canônicas em `src/lib/query/keys.ts` — sempre importar.
-- **Estado de UI global:** Redux (`src/lib/store/messageSlice.ts` para notificações). Não criar slices novos sem alinhamento.
+- **Estado de UI global:** React Context. Notificações via `useMessage()` de `src/lib/providers/MessageProvider.tsx` (`showMessage`/`hideMessage`). **Redux foi removido do projeto** (ver ADR 0008) — não reintroduzir; não criar novos contexts globais sem alinhamento.
 - **Estado local:** `useState`/`useReducer` mesmo.
+
+### TSDoc (obrigatório)
+
+**Toda função nova em `frontend-next/` — exportada ou helper interno — precisa de um bloco TSDoc `/** ... \*/`.** Espelho da regra do backend ("PHPDoc is mandatory on every new public method" — ver `backend/CONTRIBUTING.md`).
+
+- Vale para funções, hooks, componentes, métodos de service e utils — incluindo helpers internos não exportados.
+- Documente o propósito e o que não é óbvio pela assinatura: efeitos colaterais, endpoint chamado, chave de cache usada/invalidada, semântica de parâmetros (`@param`/`@returns` quando agregam), decisões não triviais (`@remarks`).
+- Exemplos de referência no próprio repo: `src/features/reports/hooks/useReports.ts`, `src/services/reports.service.ts`, `src/lib/providers/MessageProvider.tsx`.
+- PR com função nova sem TSDoc não passa em review.
 
 ### HTTP
 
@@ -127,9 +136,8 @@ Não merge: PR com mudança de comportamento e doc desatualizada.
 
 Não toque sem combinar com alguém da equipe e sem testes manuais explícitos:
 
-- `app/(public)/r/[slug]/page.tsx` — fluxo de redirect.
-- `src/features/redirect/components/RedirectDynamic.tsx`.
-- `middleware.ts` (apenas headers de segurança).
-- `src/lib/auth/components/EmailVerificationGuard.tsx`.
+- `middleware.ts` — headers de segurança (CSP report-only, etc.).
+- `src/lib/auth/AuthContext.tsx` e `src/lib/auth/AuthGuardRedirect.tsx` — guarda de auth no layout (ver ADR 0006).
+- O fluxo de redirect (`/r/{slug}`) **não vive mais no frontend** — é 100% backend (ver ADR 0005). Não recriar rota `/r/` aqui.
 
 Spec completo em [`CLAUDE.md`](../CLAUDE.md) — seção "Pontos críticos / dívidas técnicas".
