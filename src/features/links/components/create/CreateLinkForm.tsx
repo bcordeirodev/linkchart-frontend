@@ -96,8 +96,15 @@ export function CreateLinkForm({
     const typedSlug = (data.custom_slug ?? "").trim();
     const effectiveSlug = typedSlug || slugSuggestion || undefined;
 
+    // `password` is write-only and optional: an empty field means "no
+    // password", so it is omitted entirely instead of sending `""` (which the
+    // backend's update semantics reserve for removal). `password_mode` is a
+    // form-only discriminator and never reaches the API.
+    const { password, password_mode: _passwordMode, ...formData } = data;
+
     const payload = {
-      ...data,
+      ...formData,
+      ...(password ? { password } : {}),
       custom_slug: effectiveSlug,
       expires_at: convertDateForSubmit(data.expires_at),
       starts_in: convertDateForSubmit(data.starts_in),

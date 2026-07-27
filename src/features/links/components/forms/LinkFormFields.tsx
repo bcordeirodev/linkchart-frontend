@@ -36,6 +36,7 @@ import {
 } from "./UrlSafetyIndicator";
 import { useSlugAvailability } from "../../hooks/useSlugAvailability";
 import { FormSection } from "./FormSection";
+import { LinkPasswordField } from "./LinkPasswordField";
 import { LinkTagPicker } from "./LinkTagPicker";
 import { ManageTagsDialog } from "./ManageTagsDialog";
 
@@ -81,6 +82,13 @@ interface LinkFormFieldsProps {
    * read-only text) the domain it was created with. Ignored in create mode.
    */
   existingShortUrl?: string;
+  /**
+   * Edit only: whether the link is currently password-protected
+   * (`has_password` from the API). Switches the password control to its
+   * protected state (change/remove) and opens the advanced section by
+   * default so the protection is visible on load. Ignored in create mode.
+   */
+  hasPassword?: boolean;
 }
 
 /**
@@ -106,6 +114,7 @@ export function LinkFormFields({
   subdomainId = null,
   onSubdomainIdChange,
   existingShortUrl,
+  hasPassword = false,
 }: LinkFormFieldsProps) {
   const { t } = useTranslation("links");
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -420,6 +429,9 @@ export function LinkFormFields({
         label={t("form.sections.advanced")}
         caption={t("form.sections.advancedCaption")}
         collapsible
+        // Um link protegido não pode esconder a própria proteção: a seção já
+        // abre aberta para o estado "protegido" (trocar/remover) ficar visível.
+        defaultOpen={isEdit && hasPassword}
       >
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
@@ -520,6 +532,15 @@ export function LinkFormFields({
                 )}
               />
             </Box>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <LinkPasswordField
+              control={control}
+              errors={errors}
+              isEdit={isEdit}
+              hasPassword={hasPassword}
+            />
           </Grid>
 
           <Grid item xs={12} md={6}>

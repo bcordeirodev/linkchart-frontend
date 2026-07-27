@@ -37,6 +37,7 @@ import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkCardActionBar } from "./LinkCardActionBar";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 import { LinkCardMetrics } from "./LinkCardMetrics";
+import { LinkPasswordBadge } from "./LinkPasswordBadge";
 import { LinkTagChips } from "./LinkTagChips";
 
 import {
@@ -224,6 +225,7 @@ const LinkMobileCard = memo(
             </Typography>
             {/* Sem chip de cliques: a contagem exata já está no rodapé de
                 métricas deste mesmo card. */}
+            <LinkPasswordBadge hasPassword={link.has_password} />
             {link.is_demo ? (
               <Tooltip title={t("list.demo.badgeTooltip")} arrow>
                 <Chip

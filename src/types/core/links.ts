@@ -27,6 +27,12 @@ export interface LinkCreateRequest {
   click_limit?: number | null;
   /** IDs das tags do usuário a associar ao link (máx. 5) */
   tag_ids?: number[];
+  /**
+   * Senha de acesso do link (opcional, write-only, 4–72 caracteres). Quando
+   * enviada, visitantes precisam informá-la antes do redirecionamento. Nunca
+   * volta em respostas — a leitura é feita via `has_password`.
+   */
+  password?: string;
   /** Link ativo por padrão */
   is_active?: boolean;
   /** UTM Source (opcional) */
@@ -73,6 +79,13 @@ export interface LinkUpdateRequest {
    * do link (não é um merge).
    */
   tag_ids?: number[];
+  /**
+   * Senha de acesso do link (write-only, 4–72 caracteres). Semântica do
+   * backend no update: string não vazia ⇒ define/troca a senha; `null` (ou
+   * `""`) ⇒ remove a senha; campo AUSENTE ⇒ mantém a senha como está. Por
+   * isso o campo só deve entrar no payload quando o usuário agiu.
+   */
+  password?: string | null;
   /** Status ativo/inativo */
   is_active?: boolean;
   /** UTM Source */
@@ -115,6 +128,13 @@ export interface LinkResponse {
   is_expired: boolean;
   /** Link ativo e não expirado (computado pelo backend) */
   is_active_valid: boolean;
+  /**
+   * Indica se o link exige senha para redirecionar. O hash em si nunca é
+   * serializado — este boolean é a única leitura possível do estado. Sempre
+   * presente nas respostas atuais do backend; opcional aqui por
+   * retrocompatibilidade com payloads em cache.
+   */
+  has_password?: boolean;
   /**
    * Link de exemplo semeado no cadastro (`SeedDemoLinkJob`). Os cliques dele são
    * sintéticos — a UI precisa rotulá-lo para o usuário novo não ler aquele

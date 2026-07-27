@@ -5,6 +5,7 @@
     "heading": "My links",
     "createNew": "New Link",
     "noTitle": "Untitled link",
+    "passwordBadgeTooltip": "Password-protected — visitors must enter the password to access it",
     "empty": {
       "title": "No links yet",
       "description": "Create your first shortened link and start tracking clicks.",
@@ -182,7 +183,7 @@
     "sections": {
       "basic": "Basic",
       "advanced": "Advanced",
-      "advancedCaption": "Optional — click limit, dates and status",
+      "advancedCaption": "Optional — password, click limit, dates and status",
       "utm": "UTM Parameters",
       "utmCaption": "Optional — measure where clicks come from"
     },
@@ -192,6 +193,20 @@
     "startDate": "Start date",
     "startDateHelper": "When the link will become active",
     "activeLabel": "Active link",
+    "password": "Access password",
+    "passwordPlaceholder": "At least 4 characters",
+    "passwordHelper": "Optional — visitors will need to enter this password before opening the link",
+    "passwordChangeHelper": "Type the new password — leave blank to keep the current one",
+    "passwordShow": "Show password",
+    "passwordHide": "Hide password",
+    "passwordProtected": {
+      "title": "This link is password-protected",
+      "change": "Change password",
+      "remove": "Remove password",
+      "removePending": "The password will be removed when you save",
+      "undoRemove": "Undo",
+      "keepCurrent": "Keep current password"
+    },
     "utmTitle": "UTM Parameters",
     "utmInfo": "UTM parameters are tags added to your URL that let you track exactly where your visitors came from.",
     "utmSourceLabel": "UTM Source",
@@ -247,6 +262,8 @@
       "clickLimitInt": "Limit must be an integer",
       "clickLimitMin": "Limit must be at least 1",
       "clickLimitMax": "Maximum limit is 1,000,000",
+      "passwordMin": "Password must be at least 4 characters",
+      "passwordMax": "Password cannot be longer than 72 characters",
       "utmMax": "{{field}} too long",
       "startsBeforeExpires": "Start date must be before expiry date",
       "tagsMax": "A link can have at most 5 tags."
@@ -343,13 +360,6 @@
     }
   },
   "analytics": {
-    "tabDescriptions": {
-      "overview": "Summary of the link's performance: total clicks, unique visitors, quality and the main traffic patterns.",
-      "temporal": "When your audience clicks: hourly and weekday patterns, timelines, performance and distributions over time.",
-      "geographic": "Where your clicks come from: countries, regions and cities, with map, heatmap and rankings.",
-      "audience": "Who clicks your link: devices, browsers, systems, languages, traffic quality and sources.",
-      "insights": "Automatic analyses and recommendations generated from your link's click patterns."
-    },
     "clicksTable": {
       "title": "Recent Clicks",
       "description": "Detailed list of each recorded access: origin, location, device, browser and UTM.",

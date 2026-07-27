@@ -6,6 +6,7 @@
 // Shared Form Components
 export * from "./FormSection";
 export * from "./LinkFormFields";
+export * from "./LinkPasswordField";
 export * from "./UrlSafetyIndicator";
 
 // Public shortener micro-components
