@@ -7,7 +7,8 @@ import * as CookieConsent from "@/lib/consent/cookieconsent.esm.js";
 
 /**
  * Rodapé minimalista compartilhado entre layouts públicos e autenticados.
- * 1 linha: copyright à esquerda, links à direita.
+ * 2 linhas discretas: em cima, guias e comparações agrupados por rótulos
+ * pequenos; embaixo, copyright à esquerda e links legais à direita.
  * Inclui botão de gerenciamento de cookies (LGPD art. 18 — revogação fácil).
  */
 export function Footer() {
@@ -23,6 +24,48 @@ export function Footer() {
     CookieConsent.showPreferences();
   }
 
+  /**
+   * Estilo compartilhado dos itens interativos do rodapé (links e botões):
+   * mesma tipografia discreta nas duas linhas, com alvo de toque confortável
+   * no mobile e altura compacta no desktop.
+   */
+  const interactiveSx = {
+    "& a, & button": {
+      fontSize: "0.75rem",
+      color: linkColor,
+      textDecoration: "none",
+      transition: "color 160ms ease",
+      background: "none",
+      border: "none",
+      display: "inline-flex",
+      alignItems: "center",
+      minHeight: { xs: 40, sm: 28 },
+      px: 0.5,
+      cursor: "pointer",
+      fontFamily: "inherit",
+    },
+    "& a:hover, & button:hover": { color: linkHover },
+  } as const;
+
+  /** Cluster de links com rótulo: inline no desktop, empilhado e centrado no mobile. */
+  const groupSx = {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    columnGap: { xs: 1.5, sm: 2 },
+    rowGap: 0.25,
+  } as const;
+
+  /** Rótulo não interativo do cluster (eyebrow minúsculo, mais apagado que os links). */
+  const groupLabelSx = {
+    fontSize: "0.6875rem",
+    fontWeight: 700,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    color: alpha(theme.palette.text.primary, isDark ? 0.35 : 0.42),
+  } as const;
+
   return (
     <Box
       component="footer"
@@ -31,7 +74,7 @@ export function Footer() {
         zIndex: 2,
         mt: "auto",
         px: { xs: 2, sm: 3, md: 4 },
-        py: { xs: 1, sm: 0.75 },
+        py: { xs: 1.5, sm: 1.25 },
         borderTop: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
       }}
     >
@@ -40,57 +83,85 @@ export function Footer() {
           maxWidth: 1100,
           mx: "auto",
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: { xs: 1, sm: 2 },
-          textAlign: "center",
+          flexDirection: "column",
+          gap: { xs: 1.25, sm: 0.5 },
         }}
       >
-        <Typography
-          sx={{
-            fontSize: "0.75rem",
-            color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6),
-            letterSpacing: "0.01em",
-          }}
-        >
-          © {currentYear} {t("appName")}
-        </Typography>
-
+        {/* Linha 1 — guias e comparações (conteúdo SEO linkado de todo o site) */}
         <Box
           component="nav"
-          aria-label={t("footer.cookiesNavAriaLabel")}
+          aria-label={t("footer.resourcesNavAriaLabel")}
           sx={{
             display: "flex",
+            flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            gap: { xs: 1.5, sm: 2.25 },
-            "& a, & button": {
-              fontSize: "0.75rem",
-              color: linkColor,
-              textDecoration: "none",
-              transition: "color 160ms ease",
-              background: "none",
-              border: "none",
-              // Alvo de toque confortável no mobile; compacto no desktop para
-              // o rodapé não ficar alto demais.
-              display: "inline-flex",
-              alignItems: "center",
-              minHeight: { xs: 40, sm: 28 },
-              px: 0.5,
-              cursor: "pointer",
-              fontFamily: "inherit",
-            },
-            "& a:hover, & button:hover": { color: linkHover },
+            justifyContent: "space-between",
+            gap: { xs: 0.75, md: 2 },
+            ...interactiveSx,
           }}
         >
-          <a href="/privacy">{t("footer.privacy")}</a>
-          <a href="/terms">{t("footer.terms")}</a>
-          <a href="/support">{t("footer.support")}</a>
-          <button type="button" onClick={handleManageCookies}>
-            {t("footer.cookies")}
-          </button>
+          <Box sx={groupSx}>
+            <Typography component="span" sx={groupLabelSx}>
+              {t("footer.guidesLabel")}
+            </Typography>
+            <a href="/guia/cliques-bot-vs-humano">{t("footer.guideBots")}</a>
+            <a href="/guia/como-ver-cliques-do-link">
+              {t("footer.guideSeeClicks")}
+            </a>
+            <a href="/guia/rastrear-link-instagram">
+              {t("footer.guideInstagram")}
+            </a>
+          </Box>
+          <Box sx={groupSx}>
+            <Typography component="span" sx={groupLabelSx}>
+              {t("footer.comparisonsLabel")}
+            </Typography>
+            <a href="/comparar/bitly">{t("footer.compareBitly")}</a>
+            <a href="/comparar/dub">{t("footer.compareDub")}</a>
+            <a href="/comparar/short-io">{t("footer.compareShortIo")}</a>
+          </Box>
+        </Box>
+
+        {/* Linha 2 — copyright + links legais */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: { xs: 1, sm: 2 },
+            textAlign: "center",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "0.75rem",
+              color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6),
+              letterSpacing: "0.01em",
+            }}
+          >
+            © {currentYear} {t("appName")}
+          </Typography>
+
+          <Box
+            component="nav"
+            aria-label={t("footer.cookiesNavAriaLabel")}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: { xs: 1.5, sm: 2.25 },
+              ...interactiveSx,
+            }}
+          >
+            <a href="/privacy">{t("footer.privacy")}</a>
+            <a href="/terms">{t("footer.terms")}</a>
+            <a href="/support">{t("footer.support")}</a>
+            <button type="button" onClick={handleManageCookies}>
+              {t("footer.cookies")}
+            </button>
+          </Box>
         </Box>
       </Box>
     </Box>

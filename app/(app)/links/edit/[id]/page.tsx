@@ -3,7 +3,7 @@ import LinkEditPageContent from "@/page-components/links/LinkEditPage";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = { title: "Edit Link" };
+export const metadata: Metadata = { title: "Editar link" };
 
 interface Props {
   params: Promise<{ id: string }>;

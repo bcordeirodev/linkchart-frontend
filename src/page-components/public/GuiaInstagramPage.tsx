@@ -16,6 +16,7 @@ import { PublicLayout } from "@/shared/layout";
 
 import { GuideFaq } from "./guide/GuideFaq";
 import { GuideHero } from "./guide/GuideHero";
+import { PublicResourcesLinks } from "./PublicResourcesLinks";
 
 /** A step in the Instagram tracking flow (i18n-driven): number label, title, one-line meaning. */
 interface FlowStep {
@@ -384,6 +385,12 @@ export function GuiaInstagramPage() {
           </Typography>
           <PublicCtaBlock variant="landing" />
         </Box>
+
+        {/* ---- Leia também: cross-links para os outros guias/comparações ---- */}
+        <PublicResourcesLinks
+          variant="readAlso"
+          excludeHref="/guia/rastrear-link-instagram"
+        />
       </Box>
     </PublicLayout>
   );

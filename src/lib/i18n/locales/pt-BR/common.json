@@ -2,15 +2,15 @@
   "appName": "Link Charts",
   "appTagline": "Plataforma de Estatísticas",
   "nav": {
-    "myLinks": "Meus Links",
+    "myLinks": "Meus links",
     "shortenUrl": "Encurtar URL",
     "reports": "Relatórios",
     "reportsDesc": "Estatísticas de todos os seus links",
-    "subdomains": "Subdomínios",
+    "subdomains": "Endereços personalizados",
     "subdomainsDesc": "Seus endereços personalizados",
     "signIn": "Entrar",
     "signUp": "Criar conta",
-    "profile": "Configurações de Perfil",
+    "profile": "Meu perfil",
     "profileDesc": "Gerenciar sua conta",
     "signOut": "Sair",
     "signOutDesc": "Até logo!",
@@ -93,6 +93,18 @@
     "terms": "Termos",
     "support": "Suporte",
     "cookies": "Gerenciar cookies",
-    "cookiesNavAriaLabel": "links do rodapé"
+    "cookiesNavAriaLabel": "links do rodapé",
+    "resourcesNavAriaLabel": "guias e comparações",
+    "guidesLabel": "Guias",
+    "comparisonsLabel": "Comparações",
+    "guideBots": "Cliques: bot ou humano?",
+    "guideSeeClicks": "Ver quantas pessoas clicaram",
+    "guideInstagram": "Rastrear link no Instagram",
+    "compareBitly": "Bitly",
+    "compareDub": "Dub",
+    "compareShortIo": "Short.io"
+  },
+  "resources": {
+    "readAlso": "Leia também"
   }
 }

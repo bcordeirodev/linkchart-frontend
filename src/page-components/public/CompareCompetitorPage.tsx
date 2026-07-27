@@ -15,6 +15,8 @@ import {
 } from "@/lib/theme/publicPageStyles";
 import { PublicLayout } from "@/shared/layout";
 
+import { PublicResourcesLinks } from "./PublicResourcesLinks";
+
 /**
  * Visual verdict for a comparison cell — drives which icon renders next to the
  * value. `yes` = the feature is fully covered, `partial` = limited/conditional,
@@ -48,6 +50,16 @@ interface CompareCompetitorPageProps {
   /** i18n namespace key holding this comparison's copy (e.g. "compareShortIo"). */
   i18nKey: string;
 }
+
+/**
+ * Maps each comparison's i18n key to its route, so the "Leia também" block can
+ * exclude the page currently being viewed from its own cross-links.
+ */
+const COMPARE_ROUTES: Record<string, string> = {
+  compareBitly: "/comparar/bitly",
+  compareDub: "/comparar/dub",
+  compareShortIo: "/comparar/short-io",
+};
 
 /**
  * Renders the mark icon for a comparison cell.
@@ -571,6 +583,12 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
           </Typography>
           <PublicCtaBlock variant="landing" />
         </Box>
+
+        {/* ---- Leia também: cross-links para os outros guias/comparações ---- */}
+        <PublicResourcesLinks
+          variant="readAlso"
+          excludeHref={COMPARE_ROUTES[i18nKey]}
+        />
       </Box>
     </PublicLayout>
   );

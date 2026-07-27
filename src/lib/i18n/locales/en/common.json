@@ -2,15 +2,15 @@
   "appName": "Link Charts",
   "appTagline": "Analytics Platform",
   "nav": {
-    "myLinks": "My Links",
+    "myLinks": "My links",
     "shortenUrl": "Shorten URL",
     "reports": "Reports",
     "reportsDesc": "Analytics across all your links",
-    "subdomains": "Subdomains",
+    "subdomains": "Custom addresses",
     "subdomainsDesc": "Your custom addresses",
     "signIn": "Sign In",
     "signUp": "Create account",
-    "profile": "Profile Settings",
+    "profile": "My profile",
     "profileDesc": "Manage your account",
     "signOut": "Sign Out",
     "signOutDesc": "See you later!",
@@ -93,6 +93,18 @@
     "terms": "Terms",
     "support": "Support",
     "cookies": "Manage cookies",
-    "cookiesNavAriaLabel": "footer links"
+    "cookiesNavAriaLabel": "footer links",
+    "resourcesNavAriaLabel": "guides and comparisons",
+    "guidesLabel": "Guides",
+    "comparisonsLabel": "Comparisons",
+    "guideBots": "Clicks: bot or human?",
+    "guideSeeClicks": "See how many people clicked",
+    "guideInstagram": "Track an Instagram link",
+    "compareBitly": "Bitly",
+    "compareDub": "Dub",
+    "compareShortIo": "Short.io"
+  },
+  "resources": {
+    "readAlso": "Read next"
   }
 }

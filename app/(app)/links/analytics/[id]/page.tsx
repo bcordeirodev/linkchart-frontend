@@ -3,7 +3,7 @@ import LinkAnalyticsPageContent from "@/page-components/links/LinkAnalyticsPage"
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = { title: "Link Analytics" };
+export const metadata: Metadata = { title: "Estatísticas do link" };
 
 interface Props {
   params: Promise<{ id: string }>;

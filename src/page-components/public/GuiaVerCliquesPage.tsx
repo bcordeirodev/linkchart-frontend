@@ -15,6 +15,7 @@ import { PublicLayout } from "@/shared/layout";
 
 import { GuideFaq } from "./guide/GuideFaq";
 import { GuideHero } from "./guide/GuideHero";
+import { PublicResourcesLinks } from "./PublicResourcesLinks";
 
 /** A dashboard metric chip (i18n-driven): short label + illustrative value. */
 interface MetricChip {
@@ -348,6 +349,12 @@ export function GuiaVerCliquesPage() {
           </Typography>
           <PublicCtaBlock variant="landing" />
         </Box>
+
+        {/* ---- Leia também: cross-links para os outros guias/comparações ---- */}
+        <PublicResourcesLinks
+          variant="readAlso"
+          excludeHref="/guia/como-ver-cliques-do-link"
+        />
       </Box>
     </PublicLayout>
   );

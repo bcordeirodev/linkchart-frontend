@@ -3,7 +3,7 @@ import LinkQRPageContent from "@/page-components/links/LinkQRPage";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = { title: "QR Code" };
+export const metadata: Metadata = { title: "QR Code do link" };
 
 interface Props {
   params: Promise<{ id: string }>;
