@@ -1,0 +1,211 @@
+{
+  "utm": {
+    "hero": {
+      "eyebrow": "Ferramenta gratuita",
+      "title": "Gerador de UTM",
+      "subtitle": "Monte links rastreáveis com utm_source, utm_medium e utm_campaign em segundos — sem planilha e sem erro de digitação.",
+      "verdict": "Preencha os campos abaixo e copie a URL pronta. Depois, encurte o link no Link Charts e acompanhe os cliques de cada campanha em estatísticas gratuitas."
+    },
+    "form": {
+      "sectionTitle": "Monte seu link",
+      "urlLabel": "URL de destino",
+      "urlPlaceholder": "https://seusite.com.br/pagina",
+      "urlHelp": "A página que abre quando alguém clica no link.",
+      "presetsLabel": "Comece com um preset:",
+      "fields": {
+        "source": {
+          "label": "Origem (utm_source)",
+          "placeholder": "instagram",
+          "help": "De onde vem o clique: instagram, whatsapp, google…"
+        },
+        "medium": {
+          "label": "Meio (utm_medium)",
+          "placeholder": "bio",
+          "help": "O tipo de canal: bio, stories, email, cpc…"
+        },
+        "campaign": {
+          "label": "Campanha (utm_campaign)",
+          "placeholder": "lancamento-julho",
+          "help": "O nome da ação: black-friday, promo-junho…"
+        },
+        "term": {
+          "label": "Termo (utm_term)",
+          "placeholder": "tenis-corrida",
+          "help": "Opcional: a palavra-chave do anúncio pago."
+        },
+        "content": {
+          "label": "Conteúdo (utm_content)",
+          "placeholder": "botao-azul",
+          "help": "Opcional: diferencia versões do mesmo link."
+        }
+      },
+      "optionalBadge": "opcional",
+      "tip": "Use letras minúsculas e hífens, sem espaços nem acentos — \"black-friday\" em vez de \"Black Friday\". Assim os relatórios não dividem a mesma campanha em várias linhas."
+    },
+    "presets": {
+      "instagramBio": "Instagram · bio",
+      "instagramStories": "Instagram · Stories",
+      "whatsapp": "WhatsApp · mensagem",
+      "email": "E-mail · newsletter",
+      "youtube": "YouTube · descrição"
+    },
+    "result": {
+      "sectionTitle": "Sua URL com UTM",
+      "empty": "Preencha a URL de destino acima para ver o link montado aqui, em tempo real.",
+      "invalidUrl": "Digite uma URL válida (ex.: https://seusite.com.br) para montar o link.",
+      "copy": "Copiar URL",
+      "copied": "Copiada!",
+      "shortenTitle": "Link comprido demais?",
+      "shortenBody": "Encurte esta URL no Link Charts e acompanhe os cliques de cada campanha — origem, cidade e dispositivo — em estatísticas gratuitas.",
+      "shortenButton": "Encurtar com estatísticas grátis"
+    },
+    "params": {
+      "sectionTitle": "O que significa cada parâmetro",
+      "intro": "Parâmetros UTM são etiquetas adicionadas ao final de uma URL. Elas não mudam a página de destino — apenas contam às suas ferramentas de medição de onde veio cada clique.",
+      "items": [
+        {
+          "name": "utm_source",
+          "title": "A origem do clique",
+          "desc": "Identifica o site ou app de onde a pessoa veio: instagram, whatsapp, google, newsletter."
+        },
+        {
+          "name": "utm_medium",
+          "title": "O tipo de canal",
+          "desc": "Agrupa origens parecidas: social, email, cpc (anúncio pago), bio, stories."
+        },
+        {
+          "name": "utm_campaign",
+          "title": "O nome da ação",
+          "desc": "Amarra todos os links de uma mesma campanha: black-friday, lancamento-curso, promo-junho."
+        },
+        {
+          "name": "utm_term",
+          "title": "A palavra-chave",
+          "desc": "Registra o termo pesquisado em anúncios pagos. Opcional fora do Google Ads."
+        },
+        {
+          "name": "utm_content",
+          "title": "A variação do link",
+          "desc": "Diferencia dois links que apontam para o mesmo lugar: botao-topo vs. link-rodape."
+        }
+      ]
+    },
+    "faq": {
+      "sectionTitle": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "UTM muda a página de destino?",
+          "a": "Não. Os parâmetros UTM viajam na URL, mas o site abre normalmente. Eles só são lidos pelas ferramentas de medição — como as estatísticas do Link Charts, o GA4 ou o Meta Ads."
+        },
+        {
+          "q": "Preciso preencher os cinco parâmetros?",
+          "a": "Não. Na prática, utm_source, utm_medium e utm_campaign resolvem a maioria dos casos. utm_term e utm_content são úteis em anúncios pagos e testes A/B."
+        },
+        {
+          "q": "Por que encurtar um link com UTM?",
+          "a": "URLs com UTM ficam longas — ruins para a bio do Instagram e mensagens de WhatsApp. Encurtando no Link Charts, você compartilha um link limpo e ainda vê os cliques de cada campanha em tempo real."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Encurte seus links com UTM",
+      "description": "Crie sua conta gratuita, encurte a URL que acabou de montar e veja os cliques por origem, cidade e dispositivo em tempo real.",
+      "features": [
+        "Links ilimitados grátis",
+        "Estatísticas em tempo real",
+        "QR Code de cada link"
+      ],
+      "button": "Criar conta grátis"
+    }
+  },
+  "checker": {
+    "hero": {
+      "eyebrow": "Ferramenta gratuita",
+      "title": "Verificador de link suspeito",
+      "subtitle": "Recebeu um link estranho no WhatsApp, por SMS ou e-mail? Cole aqui e veja se ele aparece nas listas de golpe e malware do Google antes de clicar.",
+      "verdict": "A verificação consulta o Google Safe Browsing — a mesma base que o Chrome usa para bloquear páginas perigosas — e devolve um veredito claro em segundos."
+    },
+    "form": {
+      "sectionTitle": "Verifique um link agora",
+      "urlLabel": "Link para verificar",
+      "placeholder": "https://exemplo.com.br/promocao",
+      "button": "Verificar link",
+      "checking": "Verificando…",
+      "invalidUrl": "Digite uma URL válida, começando com http:// ou https://."
+    },
+    "verdict": {
+      "safeTitle": "Nenhuma ameaça encontrada",
+      "safeBody": "Este link não aparece nas listas de phishing e malware do Google Safe Browsing neste momento. Continue atento: golpes muito novos podem ainda não ter sido catalogados.",
+      "suspiciousTitle": "Link suspeito",
+      "suspiciousBody": "Este link aparece nas listas do Google associado a software indesejado ou aplicações prejudiciais. Evite baixar arquivos ou informar dados pessoais.",
+      "dangerousTitle": "Link perigoso",
+      "dangerousBody": "Este link aparece nas listas do Google associado a phishing ou malware. Não abra, não digite senhas e não informe dados de cartão ou Pix.",
+      "threatsLabel": "Ameaças encontradas:",
+      "checkedUrlLabel": "Link verificado:"
+    },
+    "errors": {
+      "network": "Não foi possível concluir a verificação agora. Confira sua conexão e tente de novo.",
+      "rateLimited": "Muitas verificações em sequência. Aguarde um minuto e tente novamente."
+    },
+    "scams": {
+      "sectionTitle": "Golpes de link mais comuns no Brasil",
+      "intro": "A maioria dos golpes chega por link — no WhatsApp, por SMS ou e-mail. Estes são os padrões que mais se repetem:",
+      "items": [
+        {
+          "title": "Falsa promoção no WhatsApp",
+          "desc": "\"Ganhe um brinde\", \"cupom exclusivo\" ou aniversário de marca famosa. O link leva a um formulário que rouba seus dados e pede para compartilhar com os contatos."
+        },
+        {
+          "title": "Phishing bancário e de Pix",
+          "desc": "Mensagem se passando por banco pedindo para \"regularizar o cadastro\" ou \"cancelar um Pix\". A página imita o site real para capturar senha e código do app."
+        },
+        {
+          "title": "Encomenda retida nos Correios",
+          "desc": "SMS avisando que um pacote está retido e cobrando uma pequena \"taxa de liberação\". O boleto ou Pix vai direto para o golpista."
+        },
+        {
+          "title": "Link encurtado que esconde o destino",
+          "desc": "Encurtadores também são usados para mascarar páginas falsas. Na dúvida, verifique o link aqui antes de abrir — e desconfie de urgência: \"só hoje\", \"últimas horas\"."
+        }
+      ],
+      "protectTitle": "Como se proteger",
+      "protectItems": [
+        "Desconfie de urgência e de prêmios que você não pediu",
+        "Confira o endereço do site letra por letra antes de digitar qualquer senha",
+        "Bancos não pedem senha, token ou Pix por link",
+        "Na dúvida, digite o endereço do site direto no navegador"
+      ]
+    },
+    "disclaimer": {
+      "title": "Importante",
+      "body": "Esta verificação consulta listas públicas de ameaças e é um bom primeiro filtro, mas não é garantia: golpes recém-criados podem ainda não estar catalogados. O Link Charts não armazena os links verificados."
+    },
+    "faq": {
+      "sectionTitle": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "Como saber se um link é seguro antes de clicar?",
+          "a": "Cole o link no verificador acima. Ele consulta o Google Safe Browsing, a mesma base de phishing e malware usada pelo Chrome e pelo Firefox. Se o veredito for perigoso, não abra."
+        },
+        {
+          "q": "Cliquei em um link de golpe. E agora?",
+          "a": "Não digite nada na página e feche a aba. Se você informou senha ou dados de cartão, troque a senha imediatamente e avise o banco. Se baixou algum arquivo, rode um antivírus."
+        },
+        {
+          "q": "O verificador guarda os links que eu colo?",
+          "a": "Não. O link é enviado apenas para consulta na base do Google Safe Browsing e não fica armazenado pelo Link Charts."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Links seguros por padrão",
+      "description": "Todo link encurtado no Link Charts passa por esta verificação automaticamente na criação — e você ainda acompanha os cliques em estatísticas gratuitas.",
+      "features": [
+        "Verificação automática de segurança",
+        "Estatísticas em tempo real",
+        "Links e QR Codes grátis"
+      ],
+      "button": "Criar conta grátis"
+    }
+  }
+}
