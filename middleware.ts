@@ -58,6 +58,17 @@ function isProtectedPath(pathname: string): boolean {
 }
 
 /**
+ * Matches the public bio "pretty URL" — a single path segment `/@{handle}`
+ * (e.g. `/@creator`, never `/@creator/anything`). `@` can't be a real route
+ * segment in the App Router (it's reserved for parallel-route slots), so the
+ * actual page lives at `/b/{handle}` and this pattern is only used to rewrite
+ * the pretty URL to it. Handle format itself is validated again, more
+ * strictly, by the `/b/[handle]` route — this only needs to recognize the
+ * shape well enough to rewrite.
+ */
+const BIO_PRETTY_URL_PATTERN = /^\/@([^/]+)$/;
+
+/**
  * Extracts all __txn_* cookie names from the Cookie header.
  * These are Auth0 transaction cookies created per login attempt.
  */
@@ -80,6 +91,27 @@ function getStaleTransactionCookies(cookieHeader: string): string[] {
  */
 export async function middleware(request: NextRequest) {
   const response = await auth0.middleware(request);
+
+  // Public bio pages are shared as `/@{handle}` (the pretty URL creators put
+  // on Instagram/WhatsApp) but rendered by the real route `/b/{handle}` — `@`
+  // can't be a literal route segment in the App Router. Rewrite here so the
+  // address bar keeps showing `/@{handle}` while Next.js serves `/b/{handle}`
+  // internally. Cookies set upstream by `auth0.middleware` (session refresh)
+  // and the security headers below are carried over onto the rewritten
+  // response so nothing about auth/session handling changes for this route.
+  const bioMatch = BIO_PRETTY_URL_PATTERN.exec(request.nextUrl.pathname);
+  if (bioMatch) {
+    const rewriteUrl = request.nextUrl.clone();
+    rewriteUrl.pathname = `/b/${bioMatch[1]}`;
+    const rewritten = NextResponse.rewrite(rewriteUrl);
+    response.cookies.getAll().forEach((cookie) => {
+      rewritten.cookies.set(cookie);
+    });
+    Object.entries(SECURITY_HEADERS).forEach(([key, value]) => {
+      rewritten.headers.set(key, value);
+    });
+    return rewritten;
+  }
 
   // Server-side gate for protected (app) routes: redirect guests to /sign-in
   // BEFORE any page HTML is produced, instead of leaking a 200 shell and
@@ -120,7 +152,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match all routes except static files and public assets used in OG metadata
+    // Match all routes except static files and public assets used in OG
+    // metadata. This already covers `/@{handle}` — the negative lookahead
+    // only excludes the four static paths above, so nothing extra is needed
+    // for the bio rewrite to see those requests.
     "/((?!_next/static|_next/image|favicon\\.ico|og-default\\.png).*)",
   ],
 };
