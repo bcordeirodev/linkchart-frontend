@@ -208,10 +208,7 @@ export function BioEditor() {
         {mode === "edit" && page ? (
           <>
             <BioAvatarField page={page} />
-            <BioPublicUrlBar
-              url={resolvePublicPageUrl(page.url)}
-              handle={page.handle}
-            />
+            <BioPublicUrlBar url={resolvePublicPageUrl(page.url)} />
           </>
         ) : null}
 

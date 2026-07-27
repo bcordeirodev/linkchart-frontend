@@ -25,7 +25,6 @@
     "publicUrlCopy": "Copiar endereço",
     "publicUrlCopied": "Copiado!",
     "publicUrlOpen": "Abrir em nova aba",
-    "publicUrlSecondary": "também acessível em {{url}}",
     "avatar": {
       "label": "Foto de perfil",
       "hint": "JPEG, PNG ou WEBP, até 2MB.",
