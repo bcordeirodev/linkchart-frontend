@@ -1,6 +1,6 @@
 # Arquitetura geral
 
-Browser → Next.js (App Router) → ApiClient → Laravel API → PostgreSQL/Redis. O front é stateless (sem DB próprio) e proxia toda chamada de domínio para o backend via `/api/*` rewrites configurados em `next.config.ts`. Server Components renderizam a casca da página e podem fazer fetch server-side (ex: `generateMetadata` em `/r/[slug]`); Client Components usam TanStack Query (servidor) e Redux (UI) sobre o `ApiClient`.
+Browser → Next.js (App Router) → ApiClient → Laravel API → PostgreSQL/Redis. O front é stateless (sem DB próprio) e proxia toda chamada de domínio para o backend via `/api/*` rewrites configurados em `next.config.ts`. Server Components renderizam a casca da página e podem fazer fetch server-side (ex: `generateMetadata` em `/public-analytics/[slug]`); Client Components usam TanStack Query (estado de servidor) e contexts React (estado de UI — ex: `MessageProvider` para notificações) sobre o `ApiClient`.
 
 ```mermaid
 flowchart LR
@@ -11,7 +11,7 @@ flowchart LR
     CC[Client Components]
     AC[ApiClient]
     RQ[TanStack Query]
-    R[Redux: messageSlice]
+    CTX[Contexts: MessageProvider etc.]
   end
   subgraph Back["backend (api.linkcharts.com.br)"]
     L[Laravel 12 API]
@@ -25,7 +25,7 @@ flowchart LR
   App --> CC
   SC -.->|server fetch via rewrites| AC
   CC --> RQ
-  CC --> R
+  CC --> CTX
   RQ --> AC
   AC -->|/api/* via rewrites| L
   L --> PG

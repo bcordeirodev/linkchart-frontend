@@ -1,6 +1,6 @@
 # 0003 — Redux para UI / TanStack Query para estado de servidor
 
-- Status: Accepted
+- Status: Superseded by [0008](0008-remocao-do-redux-contexts-para-estado-de-ui.md)
 - Data: 2026-05-10
 - Autores: equipe Link Charts
 

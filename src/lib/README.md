@@ -14,18 +14,13 @@ HTTP client (`ApiClient`) e catálogo de endpoints (`endpoints.ts`). É a única
 
 TanStack Query: `client.ts` (factory + defaults) e `keys.ts` (factory canônica de chaves de cache). Sempre importar chaves daqui — nunca inline.
 
-### `lib/store/`
-
-Redux Toolkit. Hoje contém `messageSlice` (notificações globais), middleware, root reducer e o store. Hooks tipados em `hooks.ts` (`useAppDispatch`, `useAppSelector`). Estado de servidor não vive aqui — fica em React Query.
-
 ### `lib/auth/`
 
-- `AuthContext.tsx` — `AuthProvider` + `useAuth`.
-- `AuthGuardRedirect.tsx` — guarda de redirecionamento (consumido pelos layouts).
+- `AuthContext.tsx` — `AuthProvider` + `useAuth`. **ZONA CRÍTICA.**
+- `AuthGuardRedirect.tsx` — guarda de redirecionamento (consumido pelos layouts/page-components — auth no layout, não no middleware; ver ADR 0006).
 - `useUser.tsx` — wrapper conveniente (`data`, `isGuest`, `signOut`, etc.).
-- `components/EmailVerificationGuard.tsx` — guarda do grupo `(app)`. **ZONA CRÍTICA.** Não migrar para `middleware.ts`.
-- `forms/` — formulários de auth genéricos compartilhados (`AuthJsForm`, `authFieldStyles`, `signinErrors`).
-- Helpers: `authApi.ts`, `authRoles.ts`, `sessionRedirectUrl.ts`.
+- Helpers: `authRoles.ts`, `sessionRedirectUrl.ts`.
+- `lib/auth0.ts` (arquivo irmão) — cliente Auth0 usado pelo `middleware.ts`.
 
 ### `lib/i18n/`
 
@@ -41,16 +36,17 @@ Utilitários genéricos: `ErrorBoundary`, `authUtils`, `shortUrl`. Função gen�
 
 ### `lib/providers/`
 
-- `Providers.tsx` — composição única dos providers (Query, Redux, Auth, Theme, i18n, Snackbar). Importado pelo root layout.
+- `Providers.tsx` — composição única dos providers. Importado pelo root layout. Ordem atual (de fora para dentro): `Auth0Provider` → `QueryClientProvider` → `AppContext.Provider` → `LocalizationProvider` (date-fns) → `AuthProvider` → `LayoutProvider` → `MainThemeProvider` → `MessageProvider` (+ `<Message />`) → `LazyMotion`.
+- `MessageProvider.tsx` — provider de notificações globais (toast) baseado em `useReducer` + Context; hook `useMessage()` expõe `showMessage`/`hideMessage`. Substituiu o antigo `messageSlice` do Redux Toolkit (removido — ver ADR 0008 e `.superpowers/sdd/redux-removal-report.md`).
 - `AppContext.ts` — contexto de aplicação compartilhado (movido para cá em R-MED-6 — antes ficava solto em `lib/`).
 
 ### `lib/seo/`
 
 `structuredData.ts` — helpers de JSON-LD para metadata de páginas.
 
-### `lib/ads/`
+### `lib/telemetry/`
 
-Componentes e config de Google Ads. Slot config em `config/adsConfig.ts`, hook em `hooks/useGoogleAds.ts`.
+`adConversions.ts` — disparo de conversões do Google Ads (`gtag`).
 
 ### `lib/consent/`
 
@@ -58,7 +54,7 @@ Cookie consent (vanilla-cookieconsent embarcado). `cookieconsent.esm.js` é vend
 
 ## Pontos de atenção
 
-- Ordem de providers em `Providers.tsx` importa: Query → Redux → Auth → Theme → i18n → Snackbar. Não reordenar sem entender consequências.
-- `i18n` é inicializado via `useEffect` no provider (cliente). Strings server-rendered usam o idioma padrão.
+- Ordem de providers em `Providers.tsx` importa: Auth0 → Query → AppContext → Localization → Auth → Layout → Theme → Message. Não reordenar sem entender consequências (ex.: `MessageProvider`/`<Message />` precisam estar dentro do theme).
+- `i18n` é inicializado sincronamente no primeiro render de `Providers.tsx` (`initI18n(initialLang)` com ref guard); `detectAndApplyLanguage()` roda em `useEffect`.
 - Theme: dark/light mode é orquestrado pelo `MainThemeProvider`. Não criar themes paralelos.
 - Não criar arquivos novos no root de `lib/` — toda nova adição precisa caber em uma subpasta nominal (criar uma se necessário, com nome explícito).
