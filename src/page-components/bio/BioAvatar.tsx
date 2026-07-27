@@ -2,8 +2,15 @@ import { Box } from "@mui/material";
 
 import type { BioPalette } from "./bioPalette";
 
-/** Diameter of the avatar circle, in pixels. */
-const AVATAR_SIZE = 88;
+/**
+ * Diameter of the avatar circle, in pixels, by breakpoint. Mobile gets the
+ * larger value on purpose — 95%+ of traffic is a phone screen reached from
+ * Instagram/WhatsApp, so the avatar is the page's hero there, not an
+ * afterthought that only gets room to breathe on desktop.
+ */
+const AVATAR_SIZE = { xs: 108, sm: 116 };
+/** Largest size in {@link AVATAR_SIZE}, used as the `<img>` intrinsic hint. */
+const AVATAR_SIZE_MAX = 116;
 
 interface BioAvatarProps {
   /** First character of the page title, already uppercased. Ignored when `avatarUrl` is set. */
@@ -36,7 +43,9 @@ interface BioAvatarProps {
  * opacity, blurred) always sits behind the circle — kept even with a real
  * photo so the frame stays consistent and the avatar keeps reading as the
  * one deliberately "designed" element on an otherwise plain, content-first
- * page.
+ * page. This close-range glow is deliberately paired with a second, much
+ * softer page-level wash (`BioPublicPage`'s `backgroundImage`) — near light
+ * and far ambient light, rather than one flat halo.
  */
 export default function BioAvatar({
   initial,
@@ -57,10 +66,10 @@ export default function BioAvatar({
         aria-hidden
         sx={{
           position: "absolute",
-          inset: -18,
+          inset: { xs: -20, sm: -22 },
           borderRadius: "50%",
           background: palette.avatarGlow,
-          filter: "blur(22px)",
+          filter: { xs: "blur(24px)", sm: "blur(26px)" },
         }}
       />
       <Box
@@ -82,15 +91,15 @@ export default function BioAvatar({
           <img
             src={avatarUrl}
             alt={`Foto de perfil de ${displayName}`}
-            width={AVATAR_SIZE}
-            height={AVATAR_SIZE}
+            width={AVATAR_SIZE_MAX}
+            height={AVATAR_SIZE_MAX}
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         ) : (
           <Box
             component="span"
             sx={{
-              fontSize: "2.25rem",
+              fontSize: { xs: "2.625rem", sm: "2.875rem" },
               fontWeight: 800,
               lineHeight: 1,
               color: "#FFFFFF",

@@ -39,7 +39,21 @@ export const cookieConsentConfig: CookieConsentConfig = {
   },
   language: {
     default: "pt",
-    autoDetect: "browser",
+    // "document" reads `<html lang>`, which the app always SSRs as pt-BR
+    // (see `initialLang` in `app/layout.tsx`) and only ever rewrites to "en"
+    // when a visitor explicitly opts in via the language toggle
+    // (`detectAndApplyLanguage()` in `src/lib/i18n/config.ts`).
+    //
+    // The previous value, "browser", instead reads `navigator.language`
+    // directly — the exact signal `detectAndApplyLanguage()` deliberately
+    // stopped consulting (see its own doc comment) because it flips any
+    // en-locale visitor to English even though the product's default is
+    // pt-BR and English is meant to be strictly opt-in. That mismatch is
+    // why the cookie banner rendered in English on first visit (most
+    // visibly on public bio pages, reached cold from Instagram/WhatsApp by
+    // visitors who never touched the in-app language toggle) while the rest
+    // of the UI correctly stayed pt-BR.
+    autoDetect: "document",
     translations: {
       pt: {
         consentModal: {
