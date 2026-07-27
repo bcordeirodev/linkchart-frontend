@@ -114,6 +114,15 @@ export function usePublicAnalytics({
     }
   };
 
+  /**
+   * Refetches both queries so the user can recover from a transient failure
+   * (network hiccup, cold backend) without leaving the page.
+   */
+  const handleRetry = (): void => {
+    void linkQuery.refetch();
+    void analyticsQuery.refetch();
+  };
+
   return {
     linkData,
     analyticsData,
@@ -123,5 +132,6 @@ export function usePublicAnalytics({
     handleCopyLink,
     handleCreateLink,
     handleVisitLink,
+    handleRetry,
   };
 }

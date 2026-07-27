@@ -19,24 +19,30 @@ import { PublicLayout } from "@/shared/layout";
 
 interface ErrorStateProps {
   error: string;
+  /** Detalhe técnico exibido apenas em desenvolvimento (nunca em produção). */
   debugInfo?: string;
   onCreateLink: () => void;
+  /** Refaz o fetch dos dados públicos (retry do TanStack Query). */
+  onRetry: () => void;
 }
 
 /**
  * ❌ ERROR STATE
  *
- * Estado de erro para Basic Analytics
- * Oferece ações de recuperação e debug info
+ * Estado de erro para Basic Analytics.
+ * Oferece "tentar novamente" (refetch) como recuperação primária e o caminho
+ * para criar um link como saída; debug info só aparece em desenvolvimento.
  */
 export function ErrorState({
   error,
   debugInfo,
   onCreateLink,
+  onRetry,
 }: ErrorStateProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("public");
+  const { t: tCommon } = useTranslation("common");
   return (
     <PublicLayout variant="shorter" chrome="minimal">
       <Container
@@ -60,15 +66,15 @@ export function ErrorState({
           action={
             <Button
               color="inherit"
-              onClick={onCreateLink}
+              onClick={onRetry}
               sx={{ fontWeight: 600, opacity: 0.9 }}
             >
-              {t("publicAnalytics.createLink")}
+              {tCommon("errors.retry")}
             </Button>
           }
         >
           {error}
-          {debugInfo ? (
+          {process.env.NODE_ENV === "development" && debugInfo ? (
             <Typography
               component="div"
               sx={{

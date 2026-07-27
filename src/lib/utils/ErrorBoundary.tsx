@@ -1,3 +1,4 @@
+"use client";
 /**
  * Error Boundary para captura de erros React
  */
@@ -8,13 +9,13 @@ import {
   Typography,
   Button,
   Paper,
-  Alert,
   Accordion,
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
 import { ICON_MD, ICON_XL } from "@/lib/theme/iconDefaults";
 import { Component } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { ErrorInfo, ReactNode } from "react";
 
@@ -38,7 +39,13 @@ interface ErrorBoundaryState {
 }
 
 /**
- * Componente de interface de erro
+ * Componente de interface de erro.
+ *
+ * Copy vem do namespace `common` (`errors.*`) — `useTranslation` funciona aqui
+ * mesmo fora de qualquer provider porque o app inicializa o singleton do
+ * i18next de forma síncrona (`initI18n()` em `Providers`) e não usa
+ * `I18nextProvider` de contexto. O `errorId` aparece pequeno/discreto como
+ * código de suporte; stack e mensagem crua só em desenvolvimento.
  */
 function ErrorFallback({
   error,
@@ -53,6 +60,7 @@ function ErrorFallback({
   onRetry: () => void;
   fallbackMessage?: string;
 }) {
+  const { t } = useTranslation("common");
   const isDevelopment = process.env.NODE_ENV === "development";
 
   return (
@@ -84,30 +92,37 @@ function ErrorFallback({
         />
 
         <Typography variant="h5" gutterBottom color="error">
-          Oops! Algo deu errado
+          {t("errors.title")}
         </Typography>
 
         <Typography variant="body1" color="text.secondary" paragraph>
-          {fallbackMessage ||
-            "Ocorreu um erro inesperado. Nossa equipe foi notificada e está trabalhando para resolver o problema."}
+          {fallbackMessage || t("errors.description")}
         </Typography>
 
-        <Alert severity="info" sx={{ mb: 3, textAlign: "left" }}>
-          <Typography variant="body2">
-            <strong>ID do Erro:</strong> {errorId}
-            <br />
-            <strong>Horário:</strong> {new Date().toLocaleString()}
-          </Typography>
-        </Alert>
+        <Typography
+          variant="caption"
+          color="text.disabled"
+          sx={{ display: "block", mb: 3 }}
+        >
+          {t("errors.supportCode", { code: errorId })}
+        </Typography>
 
-        <Box sx={{ display: "flex", gap: 2, justifyContent: "center", mb: 3 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 2,
+            justifyContent: "center",
+            mb: 3,
+          }}
+        >
           <Button
             variant="contained"
             startIcon={<RefreshCw {...ICON_MD} />}
             onClick={onRetry}
             color="primary"
           >
-            Tentar Novamente
+            {t("errors.retry")}
           </Button>
 
           <Button
@@ -115,7 +130,7 @@ function ErrorFallback({
             onClick={() => window.location.reload()}
             color="secondary"
           >
-            Recarregar Página
+            {t("errors.reload")}
           </Button>
         </Box>
 
@@ -125,7 +140,7 @@ function ErrorFallback({
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Bug {...ICON_MD} />
                 <Typography variant="subtitle2">
-                  Detalhes do Erro (Desenvolvimento)
+                  {t("errors.devDetails")}
                 </Typography>
               </Box>
             </AccordionSummary>
