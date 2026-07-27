@@ -1,10 +1,12 @@
 "use client";
+import { useCallback } from "react";
 import { Alert, Box } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useTheme } from "@mui/material";
 
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import { URLShortenerForm } from "@/features/links/components/URLShortenerForm";
+import { useShortenerPrefill } from "@/features/shorter/hooks/useShortenerPrefill";
 import {
   ShorterHero,
   ShorterStats,
@@ -65,6 +67,12 @@ export interface ShorterLandingProps {
  *
  * Rendered only when no `?slug=` query parameter is present. All stateful
  * behaviour is delegated to the parent `ShorterPage` container via props.
+ *
+ * Also the funnel landing spot for `/?url=<long-url>` deep links (UTM
+ * generator CTA): `useShortenerPrefill` validates the param and pre-fills the
+ * form's URL field — pre-fill only, never auto-submit. The hook calls
+ * `useSearchParams`, which is safe here because this component only renders
+ * under the `<Suspense>` boundary in `ShorterPage`.
  */
 export function ShorterLanding({
   isRedirecting,
@@ -78,6 +86,16 @@ export function ShorterLanding({
 }: ShorterLandingProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
+  const { prefillUrl, clearPrefill, formAnchorRef } = useShortenerPrefill();
+
+  /**
+   * Resets the shortener and forgets the `?url=` prefill, so the remounted
+   * form (via `formKey`) starts blank instead of re-applying the deep link.
+   */
+  const handleReset = useCallback(() => {
+    clearPrefill();
+    onReset();
+  }, [clearPrefill, onReset]);
 
   return (
     <>
@@ -105,21 +123,26 @@ export function ShorterLanding({
         </Alert>
       ) : null}
 
-      {createdLink ? (
-        <ShorterSuccessCard
-          shortUrl={createdLink.short_url}
-          destinationUrl={createdLink.original_url}
-          slug={createdLink.slug}
-          onReset={onReset}
-        />
-      ) : (
-        <URLShortenerForm
-          key={formKey}
-          onSuccess={onSuccess}
-          onError={onError}
-          loading={isRedirecting}
-        />
-      )}
+      {/* Anchor for the `?url=` prefill: scrolled into view (only when needed)
+          by `useShortenerPrefill` so the pre-filled field is always visible. */}
+      <Box ref={formAnchorRef}>
+        {createdLink ? (
+          <ShorterSuccessCard
+            shortUrl={createdLink.short_url}
+            destinationUrl={createdLink.original_url}
+            slug={createdLink.slug}
+            onReset={handleReset}
+          />
+        ) : (
+          <URLShortenerForm
+            key={formKey}
+            onSuccess={onSuccess}
+            onError={onError}
+            loading={isRedirecting}
+            initialUrl={prefillUrl ?? undefined}
+          />
+        )}
+      </Box>
 
       {/* Ad slot — immediately below the form */}
       <Box

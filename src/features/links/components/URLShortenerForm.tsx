@@ -44,12 +44,19 @@ interface URLShortenerFormProps {
   onSuccess?: (result: PublicLinkResponse) => void;
   onError?: (error: string) => void;
   loading?: boolean;
+  /**
+   * Pre-fills the URL field on mount (pre-fill only — never auto-submits).
+   * Callers must pass an already-validated absolute http(s) URL; the landing
+   * derives it from the `?url=` query param via `useShortenerPrefill`.
+   */
+  initialUrl?: string;
 }
 
 export function URLShortenerForm({
   onSuccess,
   onError,
   loading: externalLoading,
+  initialUrl,
 }: URLShortenerFormProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
@@ -67,7 +74,7 @@ export function URLShortenerForm({
     setError,
     formState: { errors },
   } = useForm<IFormData>({
-    defaultValues: { originalUrl: "", customSlug: "" },
+    defaultValues: { originalUrl: initialUrl ?? "", customSlug: "" },
   });
 
   const { createPublicShortUrl, loading } = usePublicURLShortener();
