@@ -52,6 +52,14 @@ export default function BioPublicPage({ data }: BioPublicPageProps) {
       <style
         dangerouslySetInnerHTML={{
           __html: `
+/* Reset autossuficiente: esta página é aberta fria (Instagram/WhatsApp) e
+   NÃO pode depender do CssBaseline/hidratação dos providers do app — sem
+   isto o body mantém margin 8px + content-box (padding estoura o viewport
+   com scroll horizontal) e a fonte cai na serifa default do browser. */
+html:has(.bio-page) { overflow-x: clip; }
+html:has(.bio-page) body { margin: 0; }
+.bio-page, .bio-page *, .bio-page *::before, .bio-page *::after { box-sizing: border-box; }
+.bio-page { font-family: var(--font-inter, "Inter"), ui-sans-serif, system-ui, -apple-system, sans-serif; }
 .bio-page ::selection { background: ${palette.selectionBg}; }
 html:has(.bio-page) { scrollbar-width: thin; scrollbar-color: ${palette.scrollbarThumb} transparent; }
 html:has(.bio-page)::-webkit-scrollbar { width: 8px; }
