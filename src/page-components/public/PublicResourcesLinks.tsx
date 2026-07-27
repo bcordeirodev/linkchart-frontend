@@ -32,23 +32,53 @@ const COMPARISONS: readonly ResourceLink[] = [
   { href: "/comparar/dub", key: "compareDub" },
 ];
 
+/** Props for {@link PublicResourcesLinks}. */
+interface PublicResourcesLinksProps {
+  /**
+   * Visual mode. `"landing"` (default) renders the full homepage section with
+   * title and subtitle; `"readAlso"` renders the compact end-of-guide block
+   * headed by "Leia também", for cross-linking between guides/comparisons.
+   */
+  variant?: "landing" | "readAlso";
+  /**
+   * Route of the page currently being viewed. When set, that link is omitted
+   * so the block never links to itself (used by the `readAlso` variant).
+   */
+  excludeHref?: string;
+}
+
 /**
- * "Guias e comparações" section for the homepage/landing.
+ * "Guias e comparações" section for the homepage/landing — and, via the
+ * `readAlso` variant, the "Leia também" cross-links block at the end of each
+ * guide/comparison page.
  *
  * Surfaces the guide and comparison pages so users can discover them from the
  * main page and, just as importantly, so those pages are internally linked
  * (no orphan pages) — which helps them get crawled and indexed. Copy is
  * i18n-driven; the routes are static. Reuses the public design system so it
  * reads as native to the landing.
+ *
+ * @param props - see {@link PublicResourcesLinksProps}
  */
-export function PublicResourcesLinks() {
+export function PublicResourcesLinks({
+  variant = "landing",
+  excludeHref,
+}: PublicResourcesLinksProps = {}) {
   const theme = useTheme();
   const { t } = useTranslation("public");
+  const { t: tCommon } = useTranslation("common");
   const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
   // Link labels are looked up with a dynamic key; i18next keys are statically
   // typed, so widen the lookup locally without weakening the rest of the app.
   const tstr = t as unknown as (key: string) => string;
+
+  /** Drops the current page's own link so the block never self-references. */
+  const withoutCurrent = (links: readonly ResourceLink[]) =>
+    excludeHref ? links.filter((link) => link.href !== excludeHref) : links;
+
+  const guides = withoutCurrent(GUIDES);
+  const comparisons = withoutCurrent(COMPARISONS);
 
   /** Renders one titled group of resource links. */
   const renderGroup = (title: string, links: readonly ResourceLink[]) => (
@@ -108,19 +138,23 @@ export function PublicResourcesLinks() {
         component="h2"
         sx={getPublicSectionHeadingSx(theme)}
       >
-        {t("resources.sectionTitle")}
+        {variant === "readAlso"
+          ? tCommon("resources.readAlso")
+          : t("resources.sectionTitle")}
       </Typography>
-      <Typography
-        component="p"
-        sx={{
-          fontSize: "0.9375rem",
-          lineHeight: 1.6,
-          color: theme.palette.text.secondary,
-          mb: 2.5,
-        }}
-      >
-        {t("resources.subtitle")}
-      </Typography>
+      {variant === "landing" && (
+        <Typography
+          component="p"
+          sx={{
+            fontSize: "0.9375rem",
+            lineHeight: 1.6,
+            color: theme.palette.text.secondary,
+            mb: 2.5,
+          }}
+        >
+          {t("resources.subtitle")}
+        </Typography>
+      )}
       <Box
         sx={{
           display: "grid",
@@ -128,8 +162,8 @@ export function PublicResourcesLinks() {
           gap: { xs: 1.5, md: 2 },
         }}
       >
-        {renderGroup(t("resources.guidesTitle"), GUIDES)}
-        {renderGroup(t("resources.comparisonsTitle"), COMPARISONS)}
+        {renderGroup(t("resources.guidesTitle"), guides)}
+        {renderGroup(t("resources.comparisonsTitle"), comparisons)}
       </Box>
     </Box>
   );

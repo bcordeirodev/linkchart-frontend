@@ -15,6 +15,7 @@ import { PublicLayout } from "@/shared/layout";
 
 import { GuideFaq } from "./guide/GuideFaq";
 import { GuideHero } from "./guide/GuideHero";
+import { PublicResourcesLinks } from "./PublicResourcesLinks";
 
 /** A quality-score tier (i18n-driven): label, numeric range, one-line meaning. */
 interface ScoreTier {
@@ -377,6 +378,12 @@ export function GuiaCliquesBotsPage() {
           </Typography>
           <PublicCtaBlock variant="landing" />
         </Box>
+
+        {/* ---- Leia também: cross-links para os outros guias/comparações ---- */}
+        <PublicResourcesLinks
+          variant="readAlso"
+          excludeHref="/guia/cliques-bot-vs-humano"
+        />
       </Box>
     </PublicLayout>
   );

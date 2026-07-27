@@ -343,14 +343,6 @@
     }
   },
   "analytics": {
-    "tabs": {
-      "overview": "Visão Geral",
-      "temporal": "Temporal",
-      "geographic": "Geográfico",
-      "audience": "Audiência",
-      "performance": "Performance",
-      "insights": "Insights"
-    },
     "tabDescriptions": {
       "overview": "Resumo do desempenho do link: total de cliques, visitantes únicos, qualidade e os principais padrões de tráfego.",
       "temporal": "Quando sua audiência clica: padrões por hora e dia da semana, linhas do tempo, performance e distribuições ao longo do tempo.",
