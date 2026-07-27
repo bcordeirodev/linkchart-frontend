@@ -1,1 +1,5 @@
 .superpowers/
+# Generated GeoJSON data asset (converted from world-atlas TopoJSON) — kept
+# minified on purpose; pretty-printing would multiply its size for no benefit.
+public/geo/
+

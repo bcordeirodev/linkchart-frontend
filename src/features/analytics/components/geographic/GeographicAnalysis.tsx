@@ -16,8 +16,8 @@ import { GeographicChart } from "./GeographicChart";
 import { GeographicFilterBar } from "./GeographicFilterBar";
 import { GeographicInsights } from "./GeographicInsights";
 // Both come from the barrel, where they are `dynamic(..., { ssr: false })`:
-// Leaflet and react-simple-maps are the two heavy libs on this tab and must
-// stay out of the static chunk.
+// both are Leaflet views (heat map + choropleth), kept out of the static
+// analytics chunk so the tab pays for the map engine only once it's opened.
 import { GeographicChoropleth, RealTimeHeatmapChart } from "./index";
 
 /**

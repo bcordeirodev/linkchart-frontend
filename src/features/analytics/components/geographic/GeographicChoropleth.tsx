@@ -1,16 +1,54 @@
 "use client";
-import { useState, useMemo, useCallback } from "react";
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import type {
+  LatLngBoundsExpression,
+  LeafletMouseEvent,
+  Map as LeafletMap,
+  Path as LeafletPath,
+  PathOptions,
+} from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { Box, Typography, Paper, alpha } from "@mui/material";
+import type { Theme } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import type {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  Geometry,
+} from "geojson";
+import { GeoJSON, MapContainer } from "react-leaflet";
 import { useTranslation } from "react-i18next";
 
 import type { CountryData } from "@/types";
 
-const GEO_URL =
-  "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+/**
+ * Local, CSP-friendly world topology — country polygons converted from
+ * `world-atlas@2/countries-110m.json` (Natural Earth, public domain) to plain
+ * GeoJSON so Leaflet can consume it without a runtime TopoJSON decoder.
+ * Served from `public/geo/`, same origin, so no `connect-src` CSP exception
+ * is needed (unlike the previous `cdn.jsdelivr.net` fetch). Regenerate with
+ * `topojson-client`'s `feature()` if the upstream dataset changes; only the
+ * `id` (ISO numeric) and `geometry` survive the conversion — `properties`
+ * are stripped since this component only needs the id.
+ */
+const WORLD_GEOJSON_URL = "/geo/countries-110m.geojson";
 
-// ISO alpha-2 → ISO numeric (geo.id in world-atlas TopoJSON)
+/**
+ * World extent the map fits to — excludes deep Antarctica, mirroring the
+ * crop the previous `ComposableMap` (800×432, scale 112) produced. There is
+ * no exact equivalent: Leaflet only renders Web Mercator, while the old map
+ * used `react-simple-maps`' default Equal Earth projection, so land masses
+ * near the poles (Greenland, Antarctica, Russia) are visually larger here
+ * than before. This is an inherent trade-off of consolidating onto Leaflet.
+ */
+const WORLD_BOUNDS: LatLngBoundsExpression = [
+  [-58, -180],
+  [83, 180],
+];
+
+// ISO alpha-2 → ISO numeric (geo.id in world-atlas TopoJSON/GeoJSON)
 const ISO2_TO_NUMERIC: Record<string, string> = {
   AF: "004",
   AL: "008",
@@ -143,6 +181,67 @@ interface GeographicChoroplethProps {
   onCountrySelect: (isoCode: string | null) => void;
 }
 
+/** Per-feature lookup entry: the matched click data plus its % share of total. */
+interface CountryLookupEntry {
+  data: CountryData;
+  percentage: string;
+}
+
+/**
+ * Everything the imperative Leaflet event handlers in `onEachFeature` need
+ * to compute up-to-date styling. `onEachFeature` runs once per feature when
+ * the GeoJSON layer is created — Leaflet never re-invokes it on prop
+ * changes — so the handlers read this snapshot through `latestRef` instead
+ * of closing over render-scoped values directly, which would otherwise go
+ * stale after the first render (e.g. a click on another country, a theme
+ * toggle, or refreshed click counts).
+ */
+interface StyleContext {
+  countryMap: Record<string, CountryLookupEntry>;
+  maxClicks: number;
+  selectedNumericId: string | null;
+  selectedCountry: string | null;
+  onCountrySelect: (isoCode: string | null) => void;
+  theme: Theme;
+  isDark: boolean;
+}
+
+/**
+ * Computes the fill/stroke for a single country polygon — the single source
+ * of truth shared by the reactive `style` prop (re-run by react-leaflet
+ * whenever it changes identity) and the imperative hover-revert in
+ * `onEachFeature` (see {@link StyleContext}). Mirrors the original
+ * `getCountryColor`/inline style formula exactly: an alpha-blended
+ * `primary.main` scaled by click share for countries with data, a flat
+ * neutral fallback otherwise.
+ */
+function styleForGeoId(geoId: string, ctx: StyleContext): PathOptions {
+  const entry = geoId ? ctx.countryMap[geoId] : undefined;
+  const isSelected = !!geoId && ctx.selectedNumericId === geoId;
+  const fillColor = entry
+    ? alpha(
+        ctx.theme.palette.primary.main,
+        0.15 + (entry.data.clicks / ctx.maxClicks) * 0.85,
+      )
+    : ctx.isDark
+      ? "#1e2433"
+      : "#e8ecf3";
+
+  return {
+    fillColor,
+    fillOpacity: 1,
+    color: isSelected
+      ? ctx.theme.palette.primary.main
+      : ctx.isDark
+        ? "#2a3045"
+        : "#c8d0e0",
+    weight: isSelected ? 2 : 0.5,
+    // Countries without click data get no hover/click handling — same as
+    // the original, which left `cursor: default` and no-op handlers on them.
+    interactive: !!entry,
+  };
+}
+
 /**
  * World choropleth of click volume by country.
  *
@@ -151,6 +250,14 @@ interface GeographicChoroplethProps {
  * rendered at the top of the "Mundo" sub-tab, whose parent owns
  * the shared card, header and view toggle. Keeps its own explanatory
  * subtitle so the map is still self-explanatory in isolation.
+ *
+ * Built on the same Leaflet engine as `RealTimeHeatmapChart` (the heat map on
+ * the "Mapa de calor" sub-tab) instead of `react-simple-maps`, so the tab
+ * only ever loads one mapping stack. The country polygons are a GeoJSON
+ * layer with no base tile layer underneath — there is no imagery to load,
+ * only vector shapes styled exactly like the old SVG paths — and panning/
+ * zooming are fully disabled so the interaction model matches the static SVG
+ * map it replaces.
  */
 export function GeographicChoropleth({
   countries,
@@ -161,6 +268,12 @@ export function GeographicChoropleth({
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
 
+  const mapRef = useRef<LeafletMap | null>(null);
+  const [geoData, setGeoData] = useState<FeatureCollection<
+    Geometry,
+    GeoJsonProperties
+  > | null>(null);
+
   const [tooltip, setTooltip] = useState<TooltipState>({
     x: 0,
     y: 0,
@@ -170,10 +283,35 @@ export function GeographicChoropleth({
     visible: false,
   });
 
+  // Loads the local country topology once. Errors are swallowed on purpose:
+  // the previous CDN-backed map had no error state either — a failed load
+  // just left the map showing no country shapes.
+  useEffect(() => {
+    let cancelled = false;
+    fetch(WORLD_GEOJSON_URL)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to load world geometry: ${res.status}`);
+        }
+        return res.json() as Promise<
+          FeatureCollection<Geometry, GeoJsonProperties>
+        >;
+      })
+      .then((data) => {
+        if (!cancelled) setGeoData(data);
+      })
+      .catch(() => {
+        // Silent by design — see comment above.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Lookup: numeric geo ID → country data + percentage
   const countryMap = useMemo(() => {
     const totalClicks = countries.reduce((sum, c) => sum + c.clicks, 0);
-    const map: Record<string, { data: CountryData; percentage: string }> = {};
+    const map: Record<string, CountryLookupEntry> = {};
     countries.forEach((c) => {
       const numericId = ISO2_TO_NUMERIC[c.iso_code?.toUpperCase()];
       if (numericId) {
@@ -203,51 +341,139 @@ export function GeographicChoropleth({
     return ISO2_TO_NUMERIC[selectedCountry.toUpperCase()] ?? null;
   }, [selectedCountry]);
 
-  const getCountryColor = useCallback(
-    (geoId: string) => {
-      const entry = countryMap[geoId];
-      if (!entry) return isDark ? "#1e2433" : "#e8ecf3";
-      const intensity = entry.data.clicks / maxClicks;
-      return alpha(theme.palette.primary.main, 0.15 + intensity * 0.85);
-    },
-    [countryMap, maxClicks, theme, isDark],
-  );
+  // Always-fresh snapshot for the event handlers bound once in
+  // `onEachFeature` (see {@link StyleContext}).
+  const latestRef = useRef<StyleContext>({
+    countryMap,
+    maxClicks,
+    selectedNumericId,
+    selectedCountry,
+    onCountrySelect,
+    theme,
+    isDark,
+  });
+  latestRef.current = {
+    countryMap,
+    maxClicks,
+    selectedNumericId,
+    selectedCountry,
+    onCountrySelect,
+    theme,
+    isDark,
+  };
 
-  const handleMouseEnter = useCallback(
-    (evt: React.MouseEvent<SVGPathElement>, geoId: string) => {
-      const entry = countryMap[geoId];
-      if (!entry) return;
-      const svgEl = (evt.currentTarget as SVGElement).closest("svg");
-      const rect = svgEl?.getBoundingClientRect();
+  const updateTooltip = useCallback(
+    (evt: LeafletMouseEvent, entry: CountryLookupEntry) => {
+      // `containerPoint` is already relative to the map container's
+      // top-left corner — the Leaflet equivalent of the original's manual
+      // `clientX - svgRect.left` offset.
       setTooltip({
-        x: evt.clientX - (rect?.left ?? 0) + 8,
-        y: Math.max(4, evt.clientY - (rect?.top ?? 0) - 32),
+        x: evt.containerPoint.x + 8,
+        y: Math.max(4, evt.containerPoint.y - 32),
         country: entry.data.country,
         clicks: entry.data.clicks,
         percentage: entry.percentage,
         visible: true,
       });
     },
-    [countryMap],
+    [],
   );
 
-  const handleMouseLeave = useCallback(() => {
-    setTooltip((prev) => ({ ...prev, visible: false }));
-  }, []);
-
-  const handleClick = useCallback(
-    (geoId: string) => {
-      const entry = countryMap[geoId];
-      if (!entry) return;
-      const isoCode = entry.data.iso_code;
-      onCountrySelect(selectedCountry === isoCode ? null : isoCode);
+  // Reactive per-feature style — react-leaflet calls `layer.setStyle(style)`
+  // whenever this function's identity changes, and Leaflet's GeoJSON
+  // re-evaluates it per feature, so selection, click-count updates and
+  // theme changes all repaint without remounting the layer.
+  const style = useCallback(
+    (feature?: Feature<Geometry, GeoJsonProperties>): PathOptions => {
+      const geoId =
+        feature?.id != null ? String(feature.id).padStart(3, "0") : "";
+      return styleForGeoId(geoId, {
+        countryMap,
+        maxClicks,
+        selectedNumericId,
+        selectedCountry,
+        onCountrySelect,
+        theme,
+        isDark,
+      });
     },
-    [countryMap, selectedCountry, onCountrySelect],
+    [
+      countryMap,
+      maxClicks,
+      selectedNumericId,
+      selectedCountry,
+      onCountrySelect,
+      theme,
+      isDark,
+    ],
   );
+
+  const onEachFeature = useCallback(
+    (feature: Feature<Geometry, GeoJsonProperties>, layer: LeafletPath) => {
+      const geoId =
+        feature.id != null ? String(feature.id).padStart(3, "0") : "";
+      if (!geoId) return;
+
+      layer.on("mouseover", (evt: LeafletMouseEvent) => {
+        const ctx = latestRef.current;
+        const entry = ctx.countryMap[geoId];
+        if (!entry) return;
+        layer.setStyle({
+          fillColor: alpha(ctx.theme.palette.primary.main, 0.9),
+          fillOpacity: 1,
+        });
+        updateTooltip(evt, entry);
+      });
+
+      layer.on("mousemove", (evt: LeafletMouseEvent) => {
+        const entry = latestRef.current.countryMap[geoId];
+        if (!entry) return;
+        updateTooltip(evt, entry);
+      });
+
+      layer.on("mouseout", () => {
+        const ctx = latestRef.current;
+        if (!ctx.countryMap[geoId]) return;
+        layer.setStyle(styleForGeoId(geoId, ctx));
+        setTooltip((prev) => ({ ...prev, visible: false }));
+      });
+
+      layer.on("click", () => {
+        const ctx = latestRef.current;
+        const entry = ctx.countryMap[geoId];
+        if (!entry) return;
+        ctx.onCountrySelect(
+          ctx.selectedCountry === entry.data.iso_code
+            ? null
+            : entry.data.iso_code,
+        );
+      });
+    },
+    [updateTooltip],
+  );
+
+  // Keeps the world fit to the card's actual width across breakpoints. The
+  // old SVG map did this continuously via CSS (`width: 100%` + viewBox);
+  // Leaflet needs an explicit refit since it isn't a scalable vector by
+  // default and panning/zooming are disabled (see MapContainer props below).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !geoData) return undefined;
+    const container = map.getContainer();
+    const refit = () => {
+      map.invalidateSize();
+      map.fitBounds(WORLD_BOUNDS, { animate: false });
+    };
+    refit();
+    const resizeObserver = new ResizeObserver(refit);
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, [geoData]);
 
   return (
     <Box>
-      {/* paddingTop 54% = 432/800 — container keeps the SVG aspect ratio so the full world is visible */}
+      {/* paddingTop 54% = 432/800 — container keeps the same aspect ratio the
+          old SVG map used so the full world is visible in the same footprint. */}
       <Box
         sx={{
           position: "relative",
@@ -265,58 +491,32 @@ export function GeographicChoropleth({
             bottom: 0,
           }}
         >
-          <ComposableMap
-            width={800}
-            height={432}
-            projectionConfig={{ scale: 112 }}
-            style={{ width: "100%", height: "100%", display: "block" }}
-          >
-            <Geographies geography={GEO_URL}>
-              {({ geographies }) =>
-                geographies.length === 0
-                  ? null
-                  : geographies.map((geo) => {
-                      const geoId =
-                        geo.id != null ? String(geo.id).padStart(3, "0") : "";
-                      if (!geoId) return null;
-                      const isSelected = selectedNumericId === geoId;
-                      const hasData = !!countryMap[geoId];
-
-                      return (
-                        <Geography
-                          key={geo.rsmKey}
-                          geography={geo}
-                          fill={getCountryColor(geoId)}
-                          stroke={
-                            isSelected
-                              ? theme.palette.primary.main
-                              : isDark
-                                ? "#2a3045"
-                                : "#c8d0e0"
-                          }
-                          strokeWidth={isSelected ? 2 : 0.5}
-                          style={{
-                            default: {
-                              outline: "none",
-                              cursor: hasData ? "pointer" : "default",
-                            },
-                            hover: {
-                              outline: "none",
-                              fill: hasData
-                                ? alpha(theme.palette.primary.main, 0.9)
-                                : undefined,
-                            },
-                            pressed: { outline: "none" },
-                          }}
-                          onMouseEnter={(evt) => handleMouseEnter(evt, geoId)}
-                          onMouseLeave={handleMouseLeave}
-                          onClick={() => handleClick(geoId)}
-                        />
-                      );
-                    })
-              }
-            </Geographies>
-          </ComposableMap>
+          {geoData ? (
+            <MapContainer
+              ref={mapRef}
+              bounds={WORLD_BOUNDS}
+              zoomSnap={0}
+              zoomControl={false}
+              dragging={false}
+              scrollWheelZoom={false}
+              doubleClickZoom={false}
+              touchZoom={false}
+              boxZoom={false}
+              keyboard={false}
+              attributionControl={false}
+              style={{
+                width: "100%",
+                height: "100%",
+                background: "transparent",
+              }}
+            >
+              <GeoJSON
+                data={geoData}
+                style={style}
+                onEachFeature={onEachFeature}
+              />
+            </MapContainer>
+          ) : null}
         </Box>
 
         {/* Tooltip */}

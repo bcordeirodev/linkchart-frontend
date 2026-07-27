@@ -13,10 +13,11 @@ export const RealTimeHeatmapChart = dynamic(
   { ssr: false, loading: () => null },
 );
 
-// The world choropleth pulls react-simple-maps + d3-geo (~100KB). Lazy-loaded
-// (ssr:false) so the heavy map lib stays out of the static analytics chunk,
-// mirroring the RealTimeHeatmapChart pattern above. It only ever renders on the
-// "Mundo" sub-tab, so most sessions never pay for it.
+// The world choropleth is a Leaflet GeoJSON layer — the same engine as
+// RealTimeHeatmapChart above, so the tab never loads two separate mapping
+// stacks. Lazy-loaded (ssr:false) so Leaflet stays out of the static
+// analytics chunk; it only ever renders on the "Mundo" sub-tab, so most
+// sessions never pay for it.
 export const GeographicChoropleth = dynamic(
   () =>
     import("./GeographicChoropleth").then((m) => ({

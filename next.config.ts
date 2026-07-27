@@ -32,7 +32,6 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_FARO_APP_VERSION: resolveAppVersion(),
   },
-  transpilePackages: ["react-simple-maps"],
   experimental: {
     // Required for MUI with Next.js App Router
     optimizePackageImports: [
