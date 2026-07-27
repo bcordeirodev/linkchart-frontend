@@ -28,6 +28,7 @@ import { LinkCardActionBar } from "./LinkCardActionBar";
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { LinkActionsMenu } from "./LinkActionsMenu";
 import { LinkCardMetrics } from "./LinkCardMetrics";
+import { LinkPasswordBadge } from "./LinkPasswordBadge";
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { LinkTagChips } from "./LinkTagChips";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
@@ -270,6 +271,7 @@ export function LinkCardRich({
           {/* Sem chip de cliques aqui: a contagem já aparece — exata, não
               comprimida — no rodapé de métricas, e o CTA Analytics do action bar
               já é a porta de entrada do analytics. O chip repetia os dois. */}
+          <LinkPasswordBadge hasPassword={link.has_password} />
           {link.is_demo ? (
             <Tooltip title={t("list.demo.badgeTooltip")} arrow>
               <Chip

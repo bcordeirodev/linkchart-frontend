@@ -5,6 +5,7 @@
     "heading": "Meus links",
     "createNew": "Novo Link",
     "noTitle": "Link sem título",
+    "passwordBadgeTooltip": "Protegido por senha — o visitante precisa informá-la para acessar",
     "empty": {
       "title": "Nenhum link ainda",
       "description": "Crie seu primeiro link encurtado e comece a rastrear os cliques.",
@@ -182,7 +183,7 @@
     "sections": {
       "basic": "Básico",
       "advanced": "Avançado",
-      "advancedCaption": "Opcional — limite de cliques, datas e status",
+      "advancedCaption": "Opcional — senha, limite de cliques, datas e status",
       "utm": "Parâmetros UTM",
       "utmCaption": "Opcional — meça de onde vêm os cliques"
     },
@@ -192,6 +193,20 @@
     "startDate": "Data de Início",
     "startDateHelper": "Quando o Link será Iniciado",
     "activeLabel": "Link Ativo",
+    "password": "Senha de acesso",
+    "passwordPlaceholder": "Mínimo de 4 caracteres",
+    "passwordHelper": "Opcional — visitantes precisarão digitar esta senha antes de abrir o link",
+    "passwordChangeHelper": "Digite a nova senha — deixe em branco para manter a atual",
+    "passwordShow": "Mostrar senha",
+    "passwordHide": "Ocultar senha",
+    "passwordProtected": {
+      "title": "Este link está protegido por senha",
+      "change": "Trocar senha",
+      "remove": "Remover senha",
+      "removePending": "A senha será removida quando você salvar",
+      "undoRemove": "Desfazer",
+      "keepCurrent": "Manter senha atual"
+    },
     "utmTitle": "Parâmetros UTM",
     "utmInfo": "São marcações adicionadas ao link que permitem saber exatamente de onde vieram seus visitantes.",
     "utmSourceLabel": "UTM Source",
@@ -247,6 +262,8 @@
       "clickLimitInt": "Limite deve ser um número inteiro",
       "clickLimitMin": "Limite deve ser pelo menos 1",
       "clickLimitMax": "Limite máximo é 1.000.000",
+      "passwordMin": "Senha deve ter pelo menos 4 caracteres",
+      "passwordMax": "Senha não pode ter mais de 72 caracteres",
       "utmMax": "{{field}} muito longo",
       "startsBeforeExpires": "Data de início deve ser anterior à data de expiração",
       "tagsMax": "Um link pode ter no máximo 5 tags."
@@ -343,13 +360,6 @@
     }
   },
   "analytics": {
-    "tabDescriptions": {
-      "overview": "Resumo do desempenho do link: total de cliques, visitantes únicos, qualidade e os principais padrões de tráfego.",
-      "temporal": "Quando sua audiência clica: padrões por hora e dia da semana, linhas do tempo, performance e distribuições ao longo do tempo.",
-      "geographic": "De onde vêm seus cliques: países, regiões e cidades, com mapa, heatmap e rankings.",
-      "audience": "Quem clica no seu link: dispositivos, navegadores, sistemas, idiomas, qualidade do tráfego e origens.",
-      "insights": "Análises e recomendações automáticas geradas a partir dos padrões de clique do seu link."
-    },
     "clicksTable": {
       "title": "Cliques Recentes",
       "description": "Lista detalhada de cada acesso registrado: origem, localização, dispositivo, navegador e UTM.",

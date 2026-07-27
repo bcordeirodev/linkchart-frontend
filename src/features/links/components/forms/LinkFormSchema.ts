@@ -77,6 +77,20 @@ export function createLinkFormSchema(t: TranslateFn) {
         .optional()
         .nullable(),
 
+      // Espelha a validação do backend (4–72). `""` = campo não preenchido —
+      // o form omite a senha do payload nesse caso (semântica "ausente").
+      password: z
+        .string()
+        .min(4, t("form.validation.passwordMin"))
+        .max(72, t("form.validation.passwordMax"))
+        .optional()
+        .or(z.literal("")),
+
+      // Só relevante no edit de um link já protegido: "keep" (não mexer),
+      // "set" (trocar — usa o valor de `password`) ou "remove" (submit manda
+      // `password: null`). No create é ignorado.
+      password_mode: z.enum(["keep", "set", "remove"]).optional(),
+
       tag_ids: z
         .array(z.number())
         .max(5, t("form.validation.tagsMax"))
@@ -134,6 +148,8 @@ export const defaultLinkFormValues: Partial<LinkFormData> = {
   expires_at: null,
   starts_in: null,
   click_limit: null,
+  password: "",
+  password_mode: "keep",
   tag_ids: [],
   utm_source: "",
   utm_medium: "",

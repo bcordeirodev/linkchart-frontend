@@ -5,6 +5,7 @@ export { LinkCardActionBar } from "./LinkCardActionBar";
 export { LinkCardMetrics } from "./LinkCardMetrics";
 export { LinkCardRich } from "./LinkCardRich";
 export { LinkHealthBadge } from "./LinkHealthBadge";
+export { LinkPasswordBadge } from "./LinkPasswordBadge";
 export { LinkPreviewThumb } from "./LinkPreviewThumb";
 export { LinkSparkline } from "./LinkSparkline";
 export { LinkTrendBadge } from "./LinkTrendBadge";

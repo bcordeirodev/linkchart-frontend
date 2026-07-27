@@ -42,6 +42,9 @@ export function EditLinkForm({
   const [loadFailed, setLoadFailed] = useState(false);
   const [ownedSlug, setOwnedSlug] = useState<string | null>(null);
   const [existingShortUrl, setExistingShortUrl] = useState<string>("");
+  // `has_password` do link carregado; atualizado localmente após salvar uma
+  // troca/remoção para o estado "protegido" do form refletir o resultado.
+  const [hasPassword, setHasPassword] = useState(false);
   const [safetyStatus, setSafetyStatus] = useState<UrlSafetyStatus>("idle");
   // Safe Browsing gate: never let an unsafe (or still-being-checked) URL
   // through. "error" stays fail-open, matching the backend behavior.
@@ -123,6 +126,10 @@ export function EditLinkForm({
             starts_in: convertApiDateToDate(linkData.starts_in),
             click_limit: linkData.click_limit || null,
             tag_ids: linkData.tags?.map((tag) => tag.id) ?? [],
+            // Write-only no backend: o campo nunca é pré-populado. "keep"
+            // garante que, sem ação do usuário, `password` não vai no payload.
+            password: "",
+            password_mode: "keep",
             utm_source: linkData.utm_source || "",
             utm_medium: linkData.utm_medium || "",
             utm_campaign: linkData.utm_campaign || "",
@@ -133,6 +140,7 @@ export function EditLinkForm({
           reset(formValues);
           setOwnedSlug(formValues.custom_slug?.trim() || null);
           setExistingShortUrl(linkData.short_url ?? "");
+          setHasPassword(Boolean(linkData.has_password));
         } else {
           throw new Error(t("errors.linkNotFound"));
         }
@@ -174,8 +182,23 @@ export function EditLinkForm({
 
     setApiError(null);
 
+    // Semântica do backend para `password` no update: valor ⇒ troca; `null`
+    // ⇒ remove; campo AUSENTE ⇒ mantém. "remove" vira `password: null`;
+    // um valor digitado (em "set" ou num link sem senha) vira troca/definição;
+    // qualquer outro caso omite o campo por completo. `password_mode` é
+    // estado do form e nunca vai no payload.
+    const { password, password_mode, ...formData } = data;
+    const isRemovingPassword = hasPassword && password_mode === "remove";
+    const isSettingPassword = !isRemovingPassword && Boolean(password);
+    const passwordPayload = isRemovingPassword
+      ? { password: null }
+      : isSettingPassword
+        ? { password }
+        : {};
+
     const payload = {
-      ...data,
+      ...formData,
+      ...passwordPayload,
       expires_at: convertDateForSubmit(data.expires_at),
       starts_in: convertDateForSubmit(data.starts_in),
       utm_source: data.utm_source || undefined,
@@ -188,7 +211,14 @@ export function EditLinkForm({
     try {
       const response = await updateMutation.mutateAsync(payload);
       onSuccess?.(response);
-      reset(data);
+      // O input de senha nunca guarda o valor salvo — o form volta ao estado
+      // "keep" e o flag local passa a refletir o resultado do save.
+      if (isRemovingPassword) {
+        setHasPassword(false);
+      } else if (isSettingPassword) {
+        setHasPassword(true);
+      }
+      reset({ ...data, password: "", password_mode: "keep" });
     } catch (error: unknown) {
       // Map 422 field errors inline; only surface a generic inline alert when
       // the failure wasn't a field-level validation error (the mutation's
@@ -264,6 +294,7 @@ export function EditLinkForm({
           isLoadingMeta={isLoadingMeta}
           onSafetyStatusChange={setSafetyStatus}
           existingShortUrl={existingShortUrl}
+          hasPassword={hasPassword}
         />
       </LinkFormShell>
     </form>
