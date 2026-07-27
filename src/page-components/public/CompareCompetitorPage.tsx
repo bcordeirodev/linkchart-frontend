@@ -27,8 +27,8 @@ type Mark = "yes" | "partial" | "no";
 
 /**
  * A single comparison row's copy (i18n-driven). Each column carries its own
- * mark, so neither side is forced to always "win". `emphasis` (true only on the
- * traffic-quality differentiator row) highlights that row.
+ * mark, so neither side is forced to always "win". `emphasis` highlights the
+ * signature differentiator rows (e.g. traffic-quality score, ad-free redirect).
  */
 interface CompareRow {
   feature: string;
@@ -43,6 +43,18 @@ interface CompareRow {
 interface FaqItem {
   q: string;
   a: string;
+}
+
+/**
+ * A single dated policy/pricing change for the optional "what changed at
+ * {competitor}" section (i18n-driven). `tag` is a short factual anchor rendered
+ * as a chip above the title — a date ("Desde fev/2025") or a scope ("Plano
+ * grátis") — so the structure encodes verifiable facts, not decoration.
+ */
+interface ChangeItem {
+  tag?: string;
+  title: string;
+  desc: string;
 }
 
 /** Props for {@link CompareCompetitorPage}. */
@@ -75,15 +87,18 @@ function MarkIcon({ mark, color }: { mark: Mark; color: string }) {
 }
 
 /**
- * Generalized "Link Charts vs {competitor}" comparison landing.
+ * Generalized "Link Charts vs {competitor}" comparison landing, shared by the
+ * Bitly, Dub and Short.io pages.
  *
- * A data-driven sibling of the Bitly page, built for competitors with strong
- * free tiers (Short.io, Dub) where an honest comparison must show Link Charts
- * tying or losing some rows. Unlike the Bitly page — where the Link Charts
- * column is always a full "yes" — here every cell renders its own i18n-driven
- * mark on BOTH columns, so the table reads as balanced rather than a fake sweep.
- * The traffic-quality-score row (i18n `emphasis: true`) still gets the highlight
- * badge as the signature differentiator.
+ * Built for honest comparisons: every cell renders its own i18n-driven mark on
+ * BOTH columns, so ties and losses show and the table reads as balanced rather
+ * than a fake sweep. Rows flagged `emphasis: true` in i18n get the highlight
+ * badge as signature differentiators.
+ *
+ * Sections are driven entirely by the `${i18nKey}.*` resource shape. The
+ * `changes` block ("what changed at {competitor}") is OPTIONAL per comparison:
+ * it renders only when `${i18nKey}.changes.items` resolves to an array, so
+ * comparisons without that key (Dub, Short.io) are unaffected.
  *
  * All visible copy is read from `${i18nKey}.*` (pt-BR default, en fallback); the
  * matching `FAQPage` JSON-LD is injected by the server page so crawlers and
@@ -108,8 +123,28 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
       returnObjects: true,
     });
 
+  /**
+   * Resolves an optional i18n string: i18next echoes the key back when a
+   * translation is missing, so a value equal to its own key means "absent".
+   *
+   * @param key - namespace-relative resource key
+   * @returns the translated string, or `null` when the key is not defined
+   */
+  const topt = (key: string): string | null => {
+    const value = tstr(key);
+    return value === key ? null : value;
+  };
+
   const rows = tobj<CompareRow[]>(`${i18nKey}.table.rows`);
   const faqItems = tobj<FaqItem[]>(`${i18nKey}.faq.items`);
+
+  // Optional "what changed at {competitor}" block — present only for
+  // comparisons that define `${i18nKey}.changes` (currently Bitly). A missing
+  // key resolves to the key string itself, never an array.
+  const changesRaw = tobj<ChangeItem[] | string>(`${i18nKey}.changes.items`);
+  const changeItems = Array.isArray(changesRaw) ? changesRaw : null;
+  const changesIntro = topt(`${i18nKey}.changes.intro`);
+  const changesNote = topt(`${i18nKey}.changes.note`);
 
   /** Subtle brand tint for the Link Charts column (no fake winning). */
   const lcTint = alpha(primary, isDark ? 0.08 : 0.06);
@@ -185,6 +220,104 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
             {tstr(`${i18nKey}.hero.verdict`)}
           </Typography>
         </Box>
+
+        {/* ---- Optional: dated "what changed at {competitor}" context ---- */}
+        {changeItems && (
+          <Box component="section" aria-labelledby="compare-changes-heading">
+            <Typography
+              id="compare-changes-heading"
+              component="h2"
+              sx={getPublicSectionHeadingSx(theme)}
+            >
+              {tstr(`${i18nKey}.changes.sectionTitle`)}
+            </Typography>
+            {changesIntro && (
+              <Typography
+                component="p"
+                sx={{
+                  mb: 2,
+                  fontSize: "0.875rem",
+                  lineHeight: 1.6,
+                  color: theme.palette.text.secondary,
+                }}
+              >
+                {changesIntro}
+              </Typography>
+            )}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
+                gap: { xs: 1.5, md: 2 },
+              }}
+            >
+              {changeItems.map((item) => (
+                <Box
+                  key={item.title}
+                  sx={{ ...getPublicElevatedSx(theme), p: { xs: 2, md: 2.5 } }}
+                >
+                  {item.tag && (
+                    <Typography
+                      component="span"
+                      sx={{
+                        display: "inline-block",
+                        mb: 1,
+                        px: 0.75,
+                        py: 0.125,
+                        borderRadius: 1,
+                        fontSize: "0.625rem",
+                        fontWeight: 700,
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
+                        color: primary,
+                        bgcolor: alpha(primary, 0.14),
+                      }}
+                    >
+                      {item.tag}
+                    </Typography>
+                  )}
+                  <Typography
+                    component="h3"
+                    sx={{
+                      fontSize: "0.9375rem",
+                      fontWeight: 700,
+                      color: theme.palette.text.primary,
+                      mb: 0.75,
+                    }}
+                  >
+                    {item.title}
+                  </Typography>
+                  <Typography
+                    component="p"
+                    sx={{
+                      fontSize: "0.8125rem",
+                      lineHeight: 1.6,
+                      color: alpha(
+                        theme.palette.text.primary,
+                        isDark ? 0.72 : 0.75,
+                      ),
+                      m: 0,
+                    }}
+                  >
+                    {item.desc}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+            {changesNote && (
+              <Typography
+                component="p"
+                sx={{
+                  mt: 1.25,
+                  fontSize: "0.75rem",
+                  color: theme.palette.text.disabled,
+                }}
+              >
+                {changesNote}
+              </Typography>
+            )}
+          </Box>
+        )}
 
         {/* ---- Signature: feature-by-feature table ---- */}
         <Box component="section" aria-labelledby="compare-table-heading">
