@@ -55,11 +55,15 @@
     "copied": "Copied!",
     "createExample": {
       "title": "Create a link",
-      "description": "POST to /api/v1/links with the destination URL. The response includes the link id and the short URL. Optional: subdomain_id picks which of your custom addresses the link uses — omit the field for your default address; null forces the main domain."
+      "description": "POST to /api/v1/links with the destination URL. The response includes the link id and the short URL."
     },
     "statsExample": {
       "title": "Check stats",
       "description": "GET /api/v1/links/{id}/stats returns the link's clicks — use the id returned on creation."
+    },
+    "subdomainExample": {
+      "title": "Create a link on a custom address",
+      "description": "Send subdomain_id to pick which of your custom addresses the link uses. Omit the field for your default address; send null to use the main domain."
     }
   }
 }

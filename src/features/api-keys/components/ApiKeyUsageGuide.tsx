@@ -93,8 +93,9 @@ function CurlExample({ title, description, command }: CurlExampleProps) {
 
 /**
  * Didactic "how to use" section of the `/api-keys` page: a short explanation
- * of the Bearer flow, a keep-it-secret note, and two ready-to-paste `curl`
- * examples (create a link, read its stats) against the public `/api/v1` API.
+ * of the Bearer flow, a keep-it-secret note, and three ready-to-paste `curl`
+ * examples (create a link, create it on a custom address via `subdomain_id`,
+ * read its stats) against the public `/api/v1` API.
  * Commands are built here — not in i18n files — so the endpoints stay in one
  * place; only the token placeholder is localized.
  */
@@ -108,6 +109,13 @@ export function ApiKeyUsageGuide() {
     `  -H "Authorization: Bearer ${tokenPlaceholder}" \\`,
     `  -H "Content-Type: application/json" \\`,
     `  -d '{"original_url": "https://exemplo.com/campanha"}'`,
+  ].join("\n");
+
+  const subdomainCommand = [
+    `curl -X POST ${PUBLIC_API_BASE_URL}/api/v1/links \\`,
+    `  -H "Authorization: Bearer ${tokenPlaceholder}" \\`,
+    `  -H "Content-Type: application/json" \\`,
+    `  -d '{"original_url": "https://exemplo.com/campanha", "subdomain_id": 3}'`,
   ].join("\n");
 
   const statsCommand = [
@@ -131,6 +139,11 @@ export function ApiKeyUsageGuide() {
         title={t("usage.createExample.title")}
         description={t("usage.createExample.description")}
         command={createLinkCommand}
+      />
+      <CurlExample
+        title={t("usage.subdomainExample.title")}
+        description={t("usage.subdomainExample.description")}
+        command={subdomainCommand}
       />
       <CurlExample
         title={t("usage.statsExample.title")}
