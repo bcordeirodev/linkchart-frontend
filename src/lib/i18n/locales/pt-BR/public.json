@@ -977,17 +977,20 @@
     "ctaTitle": "Encurte sua primeira URL e veja as estatísticas em tempo real"
   },
   "resources": {
-    "sectionTitle": "Guias e comparações",
+    "sectionTitle": "Guias, ferramentas e comparações",
     "subtitle": "Aprenda a tirar mais do seu link — e veja como o Link Charts se compara.",
     "guidesTitle": "Guias",
     "comparisonsTitle": "Comparações",
+    "toolsTitle": "Ferramentas",
     "links": {
       "guiaBots": "Cliques: bot ou humano?",
       "guiaVerCliques": "Ver quantas pessoas clicaram",
       "guiaInstagram": "Rastrear link no Instagram",
       "compareBitly": "Link Charts vs Bitly",
       "compareShortIo": "Link Charts vs Short.io",
-      "compareDub": "Link Charts vs Dub"
+      "compareDub": "Link Charts vs Dub",
+      "toolUtm": "Gerador de UTM",
+      "toolChecker": "Verificar link suspeito"
     }
   }
 }

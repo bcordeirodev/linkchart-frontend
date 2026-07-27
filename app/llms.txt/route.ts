@@ -30,6 +30,10 @@ export function GET(): Response {
 - [Shorter](${appUrl}/shorter): ferramenta de encurtamento
 - [Suporte](${appUrl}/support): ajuda e contato
 
+## Ferramentas gratuitas
+- [Gerador de UTM](${appUrl}/ferramentas/gerador-utm): monta URLs rastreáveis com utm_source, utm_medium e utm_campaign, prontas para encurtar e medir
+- [Verificador de link suspeito](${appUrl}/ferramentas/verificar-link): checa se um link aparece nas listas de phishing e malware do Google Safe Browsing antes do clique
+
 ## Legal
 - [Política de Privacidade](${appUrl}/privacy)
 - [Termos de Uso](${appUrl}/terms)
