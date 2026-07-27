@@ -114,6 +114,13 @@ export function Footer() {
           </Box>
           <Box sx={groupSx}>
             <Typography component="span" sx={groupLabelSx}>
+              {t("footer.toolsLabel")}
+            </Typography>
+            <a href="/ferramentas/gerador-utm">{t("footer.toolUtm")}</a>
+            <a href="/ferramentas/verificar-link">{t("footer.toolChecker")}</a>
+          </Box>
+          <Box sx={groupSx}>
+            <Typography component="span" sx={groupLabelSx}>
               {t("footer.comparisonsLabel")}
             </Typography>
             <a href="/comparar/bitly">{t("footer.compareBitly")}</a>
