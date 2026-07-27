@@ -398,9 +398,13 @@ export function ToolsUtmGeneratorPage() {
                   {t("utm.result.shortenBody")}
                 </Typography>
               </Box>
+              {/* With a valid built URL the CTA closes the funnel: it carries
+                  the assembled link to the landing shortener via `?url=`
+                  (validated + pre-filled by `useShortenerPrefill`, never
+                  auto-submitted). Without one it stays a plain link to `/`. */}
               <Button
                 component={NextLink}
-                href="/"
+                href={builtUrl ? `/?url=${encodeURIComponent(builtUrl)}` : "/"}
                 variant="outlined"
                 startIcon={<Link2 {...ICON_MD} />}
                 sx={{ fontWeight: 600, flexShrink: 0, whiteSpace: "nowrap" }}
