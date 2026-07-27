@@ -34,10 +34,9 @@ function mapSubdomainRecord(raw: RawSubdomainRecord): SubdomainItem {
  * All methods require an authenticated session (Bearer token in ApiClient).
  *
  * @remarks
- * `checkAvailability` still talks to the legacy singular `/api/subdomain/check`
- * endpoint and is shared with `useSubdomains()`. Everything else uses the
- * plural `/api/subdomains` endpoints (N subdomains per user, limit enforced
- * server-side).
+ * All methods use the plural `/api/subdomains` endpoints (N subdomains per
+ * user, limit enforced server-side). The legacy singular `/api/subdomain/*`
+ * endpoints were removed from the backend after this service migrated.
  */
 export class SubdomainService extends BaseService {
   constructor() {
@@ -87,7 +86,7 @@ export class SubdomainService extends BaseService {
    */
   async checkAvailability(name: string): Promise<SubdomainAvailability> {
     return this.get<SubdomainAvailability>(
-      `/api/subdomain/check?name=${encodeURIComponent(name)}`,
+      `/api/subdomains/check?name=${encodeURIComponent(name)}`,
     );
   }
 }

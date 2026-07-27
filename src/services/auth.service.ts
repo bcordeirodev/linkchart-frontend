@@ -339,19 +339,3 @@ export const changePassword = authService.changePassword.bind(authService);
 
 // Export da instância do serviço
 export { authService };
-
-// export function update(id: string, body: IWordUpdate) {
-// 	return apiService.patch<IWordResponse>(`word/${id}`, body);
-// }
-
-// export function all() {
-// 	return apiService.get<{ data: IWordResponse[] }>('word');
-// }
-
-// export function findOne(id: string) {
-// 	return apiService.get<{ data: IWordResponse }>(`word/${id}`);
-// }
-
-// export function remove(id: number) {
-// 	return apiService.get(`word/${id}`);
-// }

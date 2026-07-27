@@ -6,8 +6,7 @@ Subdomínios custom do usuário autenticado (`meunome.linkcharts.com.br`): reivi
 
 ## Domínio espelhado no backend
 
-- Endpoints plurais `/api/subdomains` (N por usuário, limite enforçado server-side) — `GET` (lista), `POST` (claim), `DELETE /api/subdomains/{id}` (release).
-- Endpoints singulares legados `/api/subdomain` (um por usuário) — mantidos no service para compat; `GET /api/subdomain/check?name=` continua sendo o check de disponibilidade.
+- Endpoints plurais `/api/subdomains` (N por usuário, limite enforçado server-side) — `GET` (lista), `POST` (claim), `DELETE /api/subdomains/{id}` (release), `GET /api/subdomains/check?name=` (disponibilidade). Os endpoints singulares legados `/api/subdomain` foram removidos do backend depois que `checkAvailability` (o último caller) migrou para o plural.
 - `UserSubdomain::findByUserCached` — o backend usa o subdomínio ativo **mais antigo** como default quando `subdomain_id` é omitido; o frontend espelha essa ordem.
 
 ## Componentes principais
@@ -23,7 +22,7 @@ Subdomínios custom do usuário autenticado (`meunome.linkcharts.com.br`): reivi
 | Hook                                | Type                                            | Cache key                    | Endpoint constant / path                                                                                            |
 | ----------------------------------- | ----------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `useSubdomains()`                   | `useQuery` (gated no flag) + 2 `useMutation`    | `queryKeys.subdomains.all()` | `GET /api/subdomains`; claim `POST /api/subdomains`; release `DELETE /api/subdomains/{id}` (via `subdomainService`) |
-| `useSubdomains().checkAvailability` | `useState` + debounce 300ms (sem RQ)            | keyless                      | `GET /api/subdomain/check?name=` (via `subdomainService.checkAvailability()`)                                       |
+| `useSubdomains().checkAvailability` | `useState` + debounce 300ms (sem RQ)            | keyless                      | `GET /api/subdomains/check?name=` (via `subdomainService.checkAvailability()`)                                      |
 | `useSubdomainSelection()`           | wrapper de `useSubdomains()` + `useState` local | (reusa `subdomains.all()`)   | n/a — devolve `subdomainIdField` para o payload de criação de link                                                  |
 
 Claim e release invalidam `queryKeys.subdomains.all()` no `onSuccess` — todos os consumidores (página `/subdomains`, `SubdomainSelect`) sincronizam sem round trip extra.
