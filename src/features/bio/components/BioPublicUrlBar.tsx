@@ -9,26 +9,42 @@ import { useTranslation } from "react-i18next";
 
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
+import { getPublicBioUrl } from "../utils/publicBioUrl";
+
 export interface BioPublicUrlBarProps {
   /**
    * Absolute public URL of the persisted page — the backend's own `url`
-   * field (`resolvePublicPageUrl(page.url)`), which already accounts for
-   * whether the page is published at the default `/@{handle}` address or an
-   * associated subdomain's root.
+   * field (`resolvePublicPageUrl(page.url)`), which is the subdomain's root
+   * for every page created (or re-saved) after the subdomain-first change,
+   * and still `/@{handle}` for a legacy page that hasn't picked an address
+   * yet.
    */
   url: string;
+  /**
+   * The page's handle — server-derived on create, or kept as-is on update
+   * (see `BioPageUpsertInput.handle`), never edited from this form. Used to
+   * compute the secondary `/@{handle}` address, still reachable even once a
+   * subdomain is the primary one; shown only when it differs from `url`
+   * (i.e. whenever a subdomain IS associated — a legacy page's `url` already
+   * IS the `/@{handle}` address, so no second line is needed there).
+   */
+  handle: string;
 }
 
 /**
  * Read-only row showing the published bio page's public URL with copy/open
- * actions. Always reflects the last SAVED handle/address — never the form's
- * in-progress draft — since the public URL only changes once the form is
- * submitted.
+ * actions, plus — once a subdomain is the primary address — a discreet
+ * secondary caption for the still-working `/@{handle}` fallback. Always
+ * reflects the last SAVED handle/address — never the form's in-progress
+ * draft — since the public URL only changes once the form is submitted.
  */
-export function BioPublicUrlBar({ url }: BioPublicUrlBarProps) {
+export function BioPublicUrlBar({ url, handle }: BioPublicUrlBarProps) {
   const theme = useTheme();
   const { t } = useTranslation("bio");
   const [copied, setCopied] = useState(false);
+
+  const secondaryUrl = getPublicBioUrl(handle);
+  const showSecondary = !!secondaryUrl && secondaryUrl !== url;
 
   const handleCopy = async () => {
     try {
@@ -77,6 +93,17 @@ export function BioPublicUrlBar({ url }: BioPublicUrlBarProps) {
           >
             {url.replace(/^https?:\/\//, "")}
           </Link>
+          {showSecondary ? (
+            <Typography
+              variant="caption"
+              color="text.disabled"
+              sx={{ display: "block", mt: 0.375 }}
+            >
+              {t("form.publicUrlSecondary", {
+                url: secondaryUrl.replace(/^https?:\/\//, ""),
+              })}
+            </Typography>
+          ) : null}
         </Box>
 
         <Box

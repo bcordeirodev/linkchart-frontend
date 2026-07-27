@@ -5,11 +5,27 @@
     "title": "Uma página só para sua bio",
     "description": "Reúna seus links mais importantes em uma página com a sua cara. Cole o endereço na bio do Instagram, TikTok ou onde quiser — sem precisar caber tudo em um link só."
   },
+  "gate": {
+    "title": "Sua página de links, no seu endereço",
+    "description": "Escolha um endereço personalizado — algo como seunome.linkcharts.com.br — e publique sua página bio nele. Você precisa de um endereço antes de criar a página.",
+    "exampleBio": "Fotografia, viagens e recomendações",
+    "exampleItems": {
+      "site": "Meu site",
+      "instagram": "Instagram",
+      "shop": "Loja"
+    },
+    "cta": "Criar meu endereço"
+  },
+  "legacyBanner": "Escolha o endereço da sua página para continuar.",
+  "sections": {
+    "profile": "Perfil"
+  },
   "form": {
     "publicUrlLabel": "Sua página",
     "publicUrlCopy": "Copiar endereço",
     "publicUrlCopied": "Copiado!",
     "publicUrlOpen": "Abrir em nova aba",
+    "publicUrlSecondary": "também acessível em {{url}}",
     "avatar": {
       "label": "Foto de perfil",
       "hint": "JPEG, PNG ou WEBP, até 2MB.",
@@ -32,16 +48,10 @@
     },
     "address": {
       "label": "Endereço da página",
-      "hint": "Escolha o domínio onde sua página fica publicada.",
+      "hint": "É o endereço onde sua página fica publicada.",
+      "placeholder": "Selecione um endereço",
+      "emptyHint": "Você precisa de um endereço personalizado para publicar sua página.",
       "createCta": "Crie um endereço personalizado"
-    },
-    "handle": {
-      "label": "Endereço",
-      "placeholder": "seunome",
-      "hint": "3–30 caracteres: letras minúsculas, números e hífens (não no início nem no fim).",
-      "checking": "Verificando...",
-      "available": "Disponível",
-      "taken": "Este endereço já está em uso"
     },
     "title": {
       "label": "Título",
@@ -64,12 +74,12 @@
     },
     "createSubmit": "Criar página",
     "saveSubmit": "Salvar alterações",
+    "saveSubmitSaving": "Salvando…",
+    "saveSubmitSaved": "Salvo",
     "createdToast": "Página criada!",
     "savedToast": "Alterações salvas!",
     "errors": {
-      "handleTooShort": "Use pelo menos 3 caracteres.",
-      "handleTooLong": "Use no máximo 30 caracteres.",
-      "handleFormat": "Use apenas letras minúsculas, números e hífens. Não pode começar nem terminar com hífen.",
+      "subdomainRequired": "Escolha um endereço para publicar sua página.",
       "titleRequired": "Escolha um título para a página.",
       "titleTooLong": "Use no máximo 100 caracteres.",
       "bioTooLong": "Use no máximo 280 caracteres.",

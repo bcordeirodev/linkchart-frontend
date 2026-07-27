@@ -5,11 +5,27 @@
     "title": "A page just for your bio",
     "description": "Bring your most important links together on a page that looks like you. Paste the address into your Instagram bio, TikTok, or anywhere else — no need to squeeze everything into one link."
   },
+  "gate": {
+    "title": "Your links page, on your own address",
+    "description": "Choose a custom address — something like yourname.linkcharts.com.br — and publish your bio page there. You need an address before you can create the page.",
+    "exampleBio": "Photography, travel tips and recommendations",
+    "exampleItems": {
+      "site": "My website",
+      "instagram": "Instagram",
+      "shop": "Shop"
+    },
+    "cta": "Create my address"
+  },
+  "legacyBanner": "Choose your page's address to continue.",
+  "sections": {
+    "profile": "Profile"
+  },
   "form": {
     "publicUrlLabel": "Your page",
     "publicUrlCopy": "Copy address",
     "publicUrlCopied": "Copied!",
     "publicUrlOpen": "Open in new tab",
+    "publicUrlSecondary": "also reachable at {{url}}",
     "avatar": {
       "label": "Profile photo",
       "hint": "JPEG, PNG or WEBP, up to 2MB.",
@@ -32,16 +48,10 @@
     },
     "address": {
       "label": "Page address",
-      "hint": "Choose the domain your page gets published at.",
+      "hint": "This is where your page gets published.",
+      "placeholder": "Select an address",
+      "emptyHint": "You need a custom address to publish your page.",
       "createCta": "Create a custom address"
-    },
-    "handle": {
-      "label": "Handle",
-      "placeholder": "yourname",
-      "hint": "3–30 characters: lowercase letters, numbers and hyphens (not at the start or end).",
-      "checking": "Checking...",
-      "available": "Available",
-      "taken": "This handle is already taken"
     },
     "title": {
       "label": "Title",
@@ -64,12 +74,12 @@
     },
     "createSubmit": "Create page",
     "saveSubmit": "Save changes",
+    "saveSubmitSaving": "Saving…",
+    "saveSubmitSaved": "Saved",
     "createdToast": "Page created!",
     "savedToast": "Changes saved!",
     "errors": {
-      "handleTooShort": "Use at least 3 characters.",
-      "handleTooLong": "Use at most 30 characters.",
-      "handleFormat": "Use only lowercase letters, numbers and hyphens. It can't start or end with a hyphen.",
+      "subdomainRequired": "Choose an address to publish your page.",
       "titleRequired": "Choose a title for the page.",
       "titleTooLong": "Use at most 100 characters.",
       "bioTooLong": "Use at most 280 characters.",

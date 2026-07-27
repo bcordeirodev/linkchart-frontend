@@ -2,32 +2,22 @@
 
 import {
   Box,
-  CircularProgress,
   FormControlLabel,
   FormLabel,
-  InputAdornment,
   Stack,
   Switch,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import TextField from "@mui/material/TextField";
 import { Controller, useWatch } from "react-hook-form";
 import type { Control, FieldErrors } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { radiusTokens } from "@/lib/theme/designSystem";
-
 import { BIO_DESCRIPTION_MAX_LENGTH } from "../constants";
-import { sanitizeHandleInput } from "../utils/handleAvailabilityCheck";
-import { getPublicBioUrlPrefix } from "../utils/publicBioUrl";
 import { BioAddressSelect } from "./BioAddressSelect";
 
-import type { HandleAvailabilityStatus } from "../hooks/useHandleAvailability";
 import type { BioPageFormData } from "../utils/bioPageFormSchema";
 
 export interface BioPageFormFieldsProps {
@@ -35,121 +25,34 @@ export interface BioPageFormFieldsProps {
   errors: FieldErrors<BioPageFormData>;
   /** Whether the `isActive` ("page is live") toggle renders — edit mode only. */
   mode: "create" | "edit";
-  handleAvailability: HandleAvailabilityStatus;
-}
-
-/** Below-field hint for the handle's live availability check. */
-function HandleAvailabilityHint({
-  status,
-}: {
-  status: HandleAvailabilityStatus;
-}) {
-  const { t } = useTranslation("bio");
-
-  if (status === "idle") return null;
-
-  return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mt: 0.75 }}>
-      {status === "checking" ? (
-        <CircularProgress size={14} />
-      ) : status === "available" ? (
-        <CheckCircleOutlineIcon
-          fontSize="small"
-          sx={{ color: "text.secondary" }}
-        />
-      ) : (
-        <ErrorOutlineIcon fontSize="small" color="error" />
-      )}
-      <Typography
-        variant="caption"
-        color={status === "taken" ? "error" : "text.secondary"}
-      >
-        {status === "checking"
-          ? t("form.handle.checking")
-          : status === "available"
-            ? t("form.handle.available")
-            : t("form.handle.taken")}
-      </Typography>
-    </Box>
-  );
 }
 
 /**
- * Editable fields for the bio page editor: handle, title, bio (with a
- * 280-char counter) and public-page theme — plus the "page is live" toggle
- * once a page already exists. Deliberately just the field UI: form
- * ownership (`useForm`, submit, mutation) lives in `BioEditor`, and this
- * component's `control`/`errors` are watched live by `BioPreviewPhone` too.
+ * Editable fields for the bio page editor: required address (subdomain),
+ * title, bio (with a 280-char counter) and public-page theme — plus the
+ * "page is live" toggle once a page already exists. Deliberately just the
+ * field UI: form ownership (`useForm`, submit, mutation) lives in
+ * `BioEditor`, and this component's `control`/`errors` are watched live by
+ * `BioPreviewPhone` too.
+ *
+ * No handle field: subdomain-first, the address IS the page's identity, so
+ * the handle is never collected here — the backend derives (create) or
+ * keeps (update) it, and the resulting value is shown read-only as
+ * `BioPublicUrlBar`'s secondary `/@{handle}` caption instead.
  */
 export function BioPageFormFields({
   control,
   errors,
   mode,
-  handleAvailability,
 }: BioPageFormFieldsProps) {
-  const theme = useTheme();
   const { t } = useTranslation("bio");
   const bioValue = useWatch({ control, name: "bio" }) ?? "";
-  const handleValue = useWatch({ control, name: "handle" }) ?? "";
-  const urlPrefix = getPublicBioUrlPrefix();
 
   return (
     <Stack spacing={2.5}>
-      <Box>
-        <FormLabel
-          htmlFor="bio-handle-input"
-          sx={{ display: "block", mb: 0.75 }}
-        >
-          {t("form.handle.label")}
-        </FormLabel>
-        <Controller
-          name="handle"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              id="bio-handle-input"
-              onChange={(e) =>
-                field.onChange(sanitizeHandleInput(e.target.value))
-              }
-              fullWidth
-              size="small"
-              error={!!errors.handle}
-              helperText={errors.handle?.message ?? t("form.handle.hint")}
-              placeholder={t("form.handle.placeholder")}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontFamily: "monospace",
-                          color: "text.secondary",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {urlPrefix}
-                      </Typography>
-                    </InputAdornment>
-                  ),
-                  sx: { fontFamily: "monospace", fontWeight: 500 },
-                },
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: `${radiusTokens.md}px`,
-                  bgcolor: theme.palette.background.default,
-                },
-              }}
-            />
-          )}
-        />
-        {!errors.handle ? (
-          <HandleAvailabilityHint status={handleAvailability} />
-        ) : null}
-      </Box>
-
+      {/* Subdomain-first: the address is where the page's identity actually
+          lives, so it leads the form — everything else describes the page
+          that lives at that address. */}
       <Controller
         name="subdomainId"
         control={control}
@@ -157,7 +60,7 @@ export function BioPageFormFields({
           <BioAddressSelect
             value={field.value}
             onChange={field.onChange}
-            handle={handleValue}
+            error={errors.subdomainId?.message}
           />
         )}
       />

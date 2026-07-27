@@ -12,7 +12,6 @@ export {
   useRemoveBioItem,
   useReorderBioItems,
 } from "./hooks/useBioItems";
-export { useHandleAvailability } from "./hooks/useHandleAvailability";
 export { useUploadBioAvatar, useRemoveBioAvatar } from "./hooks/useBioAvatar";
 
 export {

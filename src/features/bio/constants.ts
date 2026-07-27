@@ -9,17 +9,6 @@
  */
 export const MAX_BIO_ITEMS = 20;
 
-/** Server-enforced handle length, mirrored client-side for instant feedback. */
-export const HANDLE_MIN_LENGTH = 3;
-export const HANDLE_MAX_LENGTH = 30;
-
-/**
- * `^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$` — lowercase letters, digits and
- * hyphens; must start and end with an alphanumeric char. Total length works
- * out to 3–30 (`1 + [1,28] + 1`), matching `HANDLE_MIN_LENGTH`/`HANDLE_MAX_LENGTH`.
- */
-export const HANDLE_PATTERN = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
-
 /** Soft client-side cap for the page title — the API has no documented limit. */
 export const TITLE_MAX_LENGTH = 100;
 

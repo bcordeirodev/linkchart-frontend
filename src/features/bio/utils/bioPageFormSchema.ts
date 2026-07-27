@@ -1,30 +1,32 @@
 import { z } from "zod";
 
-import {
-  BIO_DESCRIPTION_MAX_LENGTH,
-  HANDLE_MAX_LENGTH,
-  HANDLE_MIN_LENGTH,
-  HANDLE_PATTERN,
-  TITLE_MAX_LENGTH,
-} from "../constants";
+import { BIO_DESCRIPTION_MAX_LENGTH, TITLE_MAX_LENGTH } from "../constants";
 
 import type { BioTheme } from "../types";
 
-/** Shape of the bio page editor form — one form for both create and edit. */
+/**
+ * Shape of the bio page editor form — one form for both create and edit.
+ *
+ * No `handle` field: subdomain-first, the address (`subdomainId`) IS the
+ * page's identity, so the form never collects a handle. On create, the
+ * backend derives one from the subdomain's label (adding a numeric suffix
+ * on collision); on update, omitting it leaves the current one untouched.
+ * The derived/current handle is still shown, read-only, as the secondary
+ * `/@{handle}` caption in `BioPublicUrlBar` — sourced from `page.handle`
+ * (the server's response), never from this form.
+ */
 export interface BioPageFormData {
-  handle: string;
   title: string;
   bio: string;
   theme: BioTheme;
   /** Edit mode only; ignored by the service on create (backend defaults to active). */
   isActive: boolean;
-  /** Selected address: `null` = default `/@{handle}`, otherwise an active subdomain id. */
+  /** Selected address: an active subdomain id. Required — see `subdomainId`'s schema rule below. */
   subdomainId: number | null;
 }
 
 /** Blank starting point for the "no page yet" (create) state. */
 export const defaultBioPageFormValues: BioPageFormData = {
-  handle: "",
   title: "",
   bio: "",
   theme: "dark",
@@ -36,21 +38,12 @@ type Translate = (key: string, options?: Record<string, unknown>) => string;
 
 /**
  * Builds the zod schema for the bio page form, translated via the `bio`
- * i18n namespace. Mirrors the server's own handle rule
- * (`^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$`, 3–30 chars) so most invalid handles
- * are caught before a round trip — reserved words and "already taken" still
- * only ever come back from the server (422).
+ * i18n namespace.
  *
  * @param t - translation function scoped to the `bio` namespace.
  */
 export function bioPageFormSchema(t: Translate) {
   return z.object({
-    handle: z
-      .string()
-      .trim()
-      .min(HANDLE_MIN_LENGTH, t("form.errors.handleTooShort"))
-      .max(HANDLE_MAX_LENGTH, t("form.errors.handleTooLong"))
-      .regex(HANDLE_PATTERN, t("form.errors.handleFormat")),
     title: z
       .string()
       .trim()
@@ -63,6 +56,16 @@ export function bioPageFormSchema(t: Translate) {
       .default(""),
     theme: z.enum(["dark", "light"]),
     isActive: z.boolean(),
-    subdomainId: z.number().nullable(),
+    // Subdomain-first: the backend rejects `subdomain_id: null` unconditionally
+    // (see `PUT /api/bio`), so the address is a required pick, not an optional
+    // one. Kept `.nullable()` (rather than plain `z.number()`) so the type
+    // stays `number | null` — matching the legacy page's unset default — with
+    // the `refine` doing the actual "must be chosen" enforcement.
+    subdomainId: z
+      .number()
+      .nullable()
+      .refine((value): value is number => value !== null, {
+        message: t("form.errors.subdomainRequired"),
+      }),
   });
 }

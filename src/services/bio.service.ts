@@ -111,15 +111,24 @@ export class BioService extends BaseService {
    * Creates or updates the authenticated user's bio page (upsert — the same
    * request both creates it on the first save and edits it afterwards).
    *
-   * @throws `ApiError` on 422 (handle taken/reserved/invalid format).
+   * `handle` is omitted from the request body whenever `input.handle` is
+   * `undefined` — which is every call from `BioEditor` (subdomain-first: the
+   * form collects an address, not a handle). The backend then derives a
+   * handle from the subdomain's label on create, or leaves the current one
+   * untouched on update.
+   *
+   * @throws `ApiError` on 422 (missing/invalid subdomain, or an explicitly
+   * passed handle that's taken/reserved/malformed).
    */
   async upsertPage(input: BioPageUpsertInput): Promise<BioPage> {
     const body: Record<string, unknown> = {
-      handle: input.handle,
       title: input.title,
       bio: input.bio?.trim() ? input.bio.trim() : null,
       theme: input.theme ?? "dark",
     };
+    if (input.handle !== undefined) {
+      body.handle = input.handle;
+    }
     if (input.isActive !== undefined) {
       body.is_active = input.isActive;
     }
@@ -157,7 +166,11 @@ export class BioService extends BaseService {
   /**
    * Checks whether a candidate handle is free to claim.
    *
-   * @param handle - lowercase candidate matching `HANDLE_PATTERN`.
+   * Unused by `BioEditor` since the subdomain-first change (the form no
+   * longer collects a handle — see `BioPageUpsertInput.handle`); kept for
+   * any other caller that still lets a user pick one explicitly.
+   *
+   * @param handle - lowercase candidate handle.
    */
   async checkHandleAvailability(
     handle: string,
