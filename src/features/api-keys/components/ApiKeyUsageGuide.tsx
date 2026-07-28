@@ -1,14 +1,26 @@
 "use client";
 
-import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import NextLink from "next/link";
+import {
+  Box,
+  IconButton,
+  Link,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useTranslation } from "react-i18next";
 
+import { useSubdomains } from "@/features/subdomains/hooks/useSubdomains";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import useClipboard from "@/shared/hooks/useClipboard";
 
 import { PUBLIC_API_BASE_URL } from "../constants";
+
+import { ApiKeyEndpointMap } from "./ApiKeyEndpointMap";
+import { ApiKeyErrorsGuide } from "./ApiKeyErrorsGuide";
 
 interface CurlExampleProps {
   title: string;
@@ -92,12 +104,72 @@ function CurlExample({ title, description, command }: CurlExampleProps) {
 }
 
 /**
- * Didactic "how to use" section of the `/api-keys` page: a short explanation
- * of the Bearer flow, a keep-it-secret note, and three ready-to-paste `curl`
- * examples (create a link, create it on a custom address via `subdomain_id`,
- * read its stats) against the public `/api/v1` API.
- * Commands are built here — not in i18n files — so the endpoints stay in one
- * place; only the token placeholder is localized.
+ * "Create a link on a custom address" example, personalized with the user's
+ * REAL default address (the page is authenticated — no fictional ids or
+ * labels to decipher). With no address claimed yet, the example gives way to
+ * a short hint linking to the claim page, so the copy never teaches a field
+ * the account cannot use. Hidden entirely while the subdomains feature flag
+ * is off — a CTA to a disabled feature would be a dead end.
+ */
+function SubdomainCurlExample({
+  tokenPlaceholder,
+}: {
+  tokenPlaceholder: string;
+}) {
+  const { t } = useTranslation("apiKeys");
+  const { subdomains, isLoading } = useSubdomains();
+
+  if (process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED !== "true" || isLoading) {
+    return null;
+  }
+
+  const address = subdomains[0] ?? null;
+
+  if (!address) {
+    return (
+      <Box>
+        <Typography variant="subtitle2" component="h3" sx={{ mb: 0.25 }}>
+          {t("usage.subdomainExample.title")}
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ fontSize: "0.8125rem" }}
+        >
+          {t("usage.subdomainExample.noAddress")}{" "}
+          <Link component={NextLink} href="/subdomains">
+            {t("usage.subdomainExample.noAddressCta")}
+          </Link>
+        </Typography>
+      </Box>
+    );
+  }
+
+  const command = [
+    `curl -X POST ${PUBLIC_API_BASE_URL}/api/v1/links \\`,
+    `  -H "Authorization: Bearer ${tokenPlaceholder}" \\`,
+    `  -H "Content-Type: application/json" \\`,
+    `  -d '{"original_url": "https://exemplo.com/campanha", "subdomain": "${address.subdomain}"}'`,
+  ].join("\n");
+
+  return (
+    <CurlExample
+      title={t("usage.subdomainExample.title")}
+      description={t("usage.subdomainExample.description", {
+        host: address.fullUrl.replace(/^https?:\/\//, ""),
+      })}
+      command={command}
+    />
+  );
+}
+
+/**
+ * Didactic "how to use" section of the `/api-keys` page, in consultation
+ * order: Bearer intro + secrecy + rate-limit notes, the endpoint map (what
+ * exists), three quickstart `curl` examples (create a link, create it on the
+ * user's own custom address, read stats) and the error contract. Commands are
+ * built here — not in i18n files — so the endpoints stay in one place; only
+ * the token placeholder is localized.
  */
 export function ApiKeyUsageGuide() {
   const { t } = useTranslation("apiKeys");
@@ -109,13 +181,6 @@ export function ApiKeyUsageGuide() {
     `  -H "Authorization: Bearer ${tokenPlaceholder}" \\`,
     `  -H "Content-Type: application/json" \\`,
     `  -d '{"original_url": "https://exemplo.com/campanha"}'`,
-  ].join("\n");
-
-  const subdomainCommand = [
-    `curl -X POST ${PUBLIC_API_BASE_URL}/api/v1/links \\`,
-    `  -H "Authorization: Bearer ${tokenPlaceholder}" \\`,
-    `  -H "Content-Type: application/json" \\`,
-    `  -d '{"original_url": "https://exemplo.com/campanha", "subdomain_id": 3}'`,
   ].join("\n");
 
   const statsCommand = [
@@ -134,22 +199,25 @@ export function ApiKeyUsageGuide() {
       <Typography variant="caption" color="text.secondary">
         {t("usage.keepSecret")}
       </Typography>
+      <Typography variant="caption" color="text.secondary">
+        {t("usage.rateLimit")}
+      </Typography>
+
+      <ApiKeyEndpointMap />
 
       <CurlExample
         title={t("usage.createExample.title")}
         description={t("usage.createExample.description")}
         command={createLinkCommand}
       />
-      <CurlExample
-        title={t("usage.subdomainExample.title")}
-        description={t("usage.subdomainExample.description")}
-        command={subdomainCommand}
-      />
+      <SubdomainCurlExample tokenPlaceholder={tokenPlaceholder} />
       <CurlExample
         title={t("usage.statsExample.title")}
         description={t("usage.statsExample.description")}
         command={statsCommand}
       />
+
+      <ApiKeyErrorsGuide />
     </Stack>
   );
 }
