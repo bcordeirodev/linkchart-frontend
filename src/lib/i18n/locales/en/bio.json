@@ -128,6 +128,8 @@
       "updateGeneric": "We couldn't save that change. Please try again.",
       "removeGeneric": "We couldn't remove this link. Please try again.",
       "reorderGeneric": "We couldn't reorder your links. Please try again."
-    }
+    },
+    "viewStats": "View stats",
+    "hiddenBadge": "Hidden"
   }
 }
