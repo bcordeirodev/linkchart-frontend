@@ -34,6 +34,12 @@ export interface BioItem {
   url: string;
   /** Total clicks recorded against the underlying link. */
   clicks: number;
+  /**
+   * Favicon of the destination page, from the link's async-fetched preview
+   * (`link_previews.favicon_url`). `null` until the preview job has run —
+   * the row falls back to the label's initial.
+   */
+  faviconUrl: string | null;
 }
 
 /**

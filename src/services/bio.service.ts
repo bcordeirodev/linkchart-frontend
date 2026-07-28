@@ -23,6 +23,8 @@ interface RawBioItem {
   is_active: boolean;
   url: string;
   clicks: number;
+  /** Destination favicon from the link's async preview; null until fetched. */
+  favicon_url?: string | null;
 }
 
 /**
@@ -56,6 +58,7 @@ function mapBioItem(raw: RawBioItem): BioItem {
     isActive: raw.is_active,
     url: raw.url,
     clicks: raw.clicks,
+    faviconUrl: raw.favicon_url ?? null,
   };
 }
 

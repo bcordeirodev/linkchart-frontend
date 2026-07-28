@@ -29,6 +29,7 @@ function buildExampleItems(t: (key: string) => string): BioItem[] {
       isActive: true,
       url: "#",
       clicks: 0,
+      faviconUrl: null,
     },
     {
       id: -2,
@@ -38,6 +39,7 @@ function buildExampleItems(t: (key: string) => string): BioItem[] {
       isActive: true,
       url: "#",
       clicks: 0,
+      faviconUrl: null,
     },
     {
       id: -3,
@@ -47,6 +49,7 @@ function buildExampleItems(t: (key: string) => string): BioItem[] {
       isActive: true,
       url: "#",
       clicks: 0,
+      faviconUrl: null,
     },
   ];
 }
