@@ -50,20 +50,51 @@
     "heading": "Como usar a API",
     "intro": "Toda chamada leva a chave no header Authorization, como Bearer token. Com ela você cria links encurtados e consulta as estatísticas de cliques de qualquer lugar: um script de automação, um bot, uma integração com CRM ou planilha.",
     "keepSecret": "Trate a chave como uma senha: não versione no Git nem exponha em código que roda no navegador.",
+    "rateLimit": "Limite de uso: 60 requisições por minuto por chave. As respostas trazem o header X-RateLimit-Remaining para você se programar.",
     "placeholderToken": "SUA_CHAVE_DE_API",
     "copy": "Copiar comando",
     "copied": "Copiado!",
+    "endpoints": {
+      "heading": "Endpoints disponíveis",
+      "columns": {
+        "endpoint": "Endpoint",
+        "purpose": "Para que serve"
+      },
+      "items": {
+        "create": "Criar um link encurtado",
+        "list": "Listar seus links (paginado: ?page e ?per_page, máx. 50)",
+        "show": "Detalhes de um link",
+        "stats": "Estatísticas de cliques de um link",
+        "subdomains": "Listar seus endereços personalizados"
+      },
+      "note": "Por enquanto a API não edita nem apaga links — para isso, use o painel."
+    },
     "createExample": {
       "title": "Criar um link",
       "description": "POST em /api/v1/links com a URL de destino. A resposta traz o id do link e a URL curta."
     },
-    "statsExample": {
-      "title": "Consultar estatísticas",
-      "description": "GET em /api/v1/links/{id}/stats devolve os cliques do link — use o id retornado na criação."
-    },
     "subdomainExample": {
       "title": "Criar link num endereço personalizado",
-      "description": "Envie subdomain_id para escolher qual dos seus endereços personalizados assina o link. Sem o campo, vale o seu endereço padrão; com null, o link sai no domínio principal."
+      "description": "Envie subdomain com o nome de um dos seus endereços — este exemplo já vem com o seu ({{host}}). Sem o campo, o link sai no seu endereço padrão; com null, no domínio principal.",
+      "noAddress": "Você ainda não tem endereços personalizados. Crie o seu e este exemplo aparece aqui já preenchido com ele.",
+      "noAddressCta": "Criar endereço personalizado"
+    },
+    "statsExample": {
+      "title": "Consultar estatísticas",
+      "description": "GET em /api/v1/links/{id}/stats devolve os cliques do link — o id vem da resposta de criação ou de GET /api/v1/links."
+    },
+    "errors": {
+      "heading": "Erros",
+      "intro": "Todo erro volta no envelope {\"error\": {\"code\", \"message\"}}. O code é estável para tratar no código; a message explica em texto. Os que você pode encontrar:",
+      "items": {
+        "unauthenticated": "401 UNAUTHENTICATED — chave ausente, inválida ou revogada.",
+        "validation": "422 VALIDATION_FAILED — algum campo inválido; details.fields aponta qual.",
+        "invalidSubdomain": "422 INVALID_SUBDOMAIN — o subdomain enviado não é um endereço ativo da sua conta.",
+        "notFound": "404 NOT_FOUND — o link não existe ou não é seu.",
+        "rateLimited": "429 TOO_MANY_REQUESTS — passou de 60 requisições por minuto; aguarde o Retry-After."
+      },
+      "safetyNote": "URLs de destino identificadas como perigosas (phishing/malware) são recusadas com 422 — a mesma proteção do painel."
     }
-  }
+  },
+  "subtitle_zero": "{{count}} de {{max}} chaves em uso"
 }

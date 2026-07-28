@@ -48,22 +48,52 @@
   },
   "usage": {
     "heading": "How to use the API",
-    "intro": "Every call carries the key in the Authorization header as a Bearer token. With it you create short links and check click stats from anywhere: an automation script, a bot, a CRM or spreadsheet integration.",
+    "intro": "Every call carries the key in the Authorization header, as a Bearer token. With it you create short links and read click statistics from anywhere: an automation script, a bot, a CRM or spreadsheet integration.",
     "keepSecret": "Treat the key like a password: don't commit it to Git or expose it in code that runs in the browser.",
+    "rateLimit": "Usage limit: 60 requests per minute per key. Responses include the X-RateLimit-Remaining header so you can pace yourself.",
     "placeholderToken": "YOUR_API_KEY",
     "copy": "Copy command",
     "copied": "Copied!",
+    "endpoints": {
+      "heading": "Available endpoints",
+      "columns": {
+        "endpoint": "Endpoint",
+        "purpose": "What it does"
+      },
+      "items": {
+        "create": "Create a short link",
+        "list": "List your links (paginated: ?page and ?per_page, max 50)",
+        "show": "One link's details",
+        "stats": "One link's click statistics",
+        "subdomains": "List your custom addresses"
+      },
+      "note": "The API can't edit or delete links yet — use the dashboard for that."
+    },
     "createExample": {
       "title": "Create a link",
       "description": "POST to /api/v1/links with the destination URL. The response includes the link id and the short URL."
     },
-    "statsExample": {
-      "title": "Check stats",
-      "description": "GET /api/v1/links/{id}/stats returns the link's clicks — use the id returned on creation."
-    },
     "subdomainExample": {
       "title": "Create a link on a custom address",
-      "description": "Send subdomain_id to pick which of your custom addresses the link uses. Omit the field for your default address; send null to use the main domain."
+      "description": "Send subdomain with one of your address names — this example is pre-filled with yours ({{host}}). Omit the field for your default address; send null for the main domain.",
+      "noAddress": "You don't have a custom address yet. Claim yours and this example will show up here pre-filled with it.",
+      "noAddressCta": "Claim a custom address"
+    },
+    "statsExample": {
+      "title": "Read statistics",
+      "description": "GET /api/v1/links/{id}/stats returns the link's clicks — the id comes from the create response or from GET /api/v1/links."
+    },
+    "errors": {
+      "heading": "Errors",
+      "intro": "Every error comes in the {\"error\": {\"code\", \"message\"}} envelope. The code is stable for handling in code; the message explains in plain text. The ones you may hit:",
+      "items": {
+        "unauthenticated": "401 UNAUTHENTICATED — key missing, invalid or revoked.",
+        "validation": "422 VALIDATION_FAILED — some field is invalid; details.fields points to which.",
+        "invalidSubdomain": "422 INVALID_SUBDOMAIN — the subdomain sent is not an active address of your account.",
+        "notFound": "404 NOT_FOUND — the link does not exist or is not yours.",
+        "rateLimited": "429 TOO_MANY_REQUESTS — over 60 requests per minute; wait for Retry-After."
+      },
+      "safetyNote": "Destination URLs flagged as dangerous (phishing/malware) are rejected with 422 — the same protection as the dashboard."
     }
   }
 }
