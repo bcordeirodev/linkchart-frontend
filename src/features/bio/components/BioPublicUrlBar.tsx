@@ -1,10 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { Box, IconButton, Link, Tooltip, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import {
+  Box,
+  IconButton,
+  Link,
+  Popover,
+  Skeleton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import QrCode2Icon from "@mui/icons-material/QrCode2";
 import { useTranslation } from "react-i18next";
 
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
@@ -31,6 +40,36 @@ export function BioPublicUrlBar({ url }: BioPublicUrlBarProps) {
   const theme = useTheme();
   const { t } = useTranslation("bio");
   const [copied, setCopied] = useState(false);
+  const [qrAnchor, setQrAnchor] = useState<HTMLElement | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+
+  // QR gerado sob demanda na primeira abertura do popover (import dinâmico —
+  // a lib fica fora do bundle da página até alguém pedir o QR), mesmo padrão
+  // do ShorterQrPanel.
+  useEffect(() => {
+    if (!qrAnchor || qrDataUrl) {
+      return;
+    }
+    let cancelled = false;
+    void import("qrcode").then((QRCode) =>
+      QRCode.default
+        .toDataURL(url, {
+          width: 176,
+          margin: 1,
+          color: { dark: "#0B0B0F", light: "#FFFFFF" },
+          errorCorrectionLevel: "M",
+        })
+        .then((dataUrl) => {
+          if (!cancelled) setQrDataUrl(dataUrl);
+        })
+        .catch(() => {
+          /* popover mantém o skeleton */
+        }),
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [qrAnchor, qrDataUrl, url]);
 
   const handleCopy = async () => {
     try {
@@ -101,6 +140,47 @@ export function BioPublicUrlBar({ url }: BioPublicUrlBarProps) {
               <ContentCopyIcon fontSize="small" />
             </IconButton>
           </Tooltip>
+          <Tooltip title={t("form.publicUrlQr")}>
+            <IconButton
+              size="small"
+              aria-label={t("form.publicUrlQr")}
+              onClick={(e) => setQrAnchor(e.currentTarget)}
+              sx={{ width: { xs: 44, sm: 36 }, height: { xs: 44, sm: 36 } }}
+            >
+              <QrCode2Icon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Popover
+            open={!!qrAnchor}
+            anchorEl={qrAnchor}
+            onClose={() => setQrAnchor(null)}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <Box sx={{ p: 1.5, textAlign: "center" }}>
+              {qrDataUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element -- data URI local, sem otimização a fazer
+                <img
+                  src={qrDataUrl}
+                  alt={t("form.publicUrlQrAlt", {
+                    url: url.replace(/^https?:\/\//, ""),
+                  })}
+                  width={176}
+                  height={176}
+                  style={{ display: "block", borderRadius: 8 }}
+                />
+              ) : (
+                <Skeleton variant="rounded" width={176} height={176} />
+              )}
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: "block", mt: 0.75 }}
+              >
+                {url.replace(/^https?:\/\//, "")}
+              </Typography>
+            </Box>
+          </Popover>
           <Tooltip title={t("form.publicUrlOpen")}>
             <IconButton
               size="small"

@@ -18,7 +18,12 @@
   },
   "legacyBanner": "Choose your page's address to continue.",
   "sections": {
-    "profile": "Profile"
+    "identity": "Identity",
+    "identityHint": "How you introduce yourself at the top of the page: photo, name and description.",
+    "publishing": "Address and publishing",
+    "publishingHint": "Where the page lives and whether it's visible to visitors.",
+    "appearance": "Appearance",
+    "appearanceHint": "The look your visitors see."
   },
   "form": {
     "publicUrlLabel": "Your page",
@@ -83,7 +88,9 @@
       "titleTooLong": "Use at most 100 characters.",
       "bioTooLong": "Use at most 280 characters.",
       "saveGeneric": "We couldn't save your page. Please try again."
-    }
+    },
+    "publicUrlQr": "Page QR code",
+    "publicUrlQrAlt": "QR code that opens {{url}}"
   },
   "preview": {
     "placeholderTitle": "Your name",
@@ -91,7 +98,8 @@
     "noItems": "Your links will show up here.",
     "watermark": "Link Chart",
     "showAction": "Show preview",
-    "hideAction": "Hide preview"
+    "hideAction": "Hide preview",
+    "liveBadge": "Live preview"
   },
   "items": {
     "heading_one": "{{count}} of {{max}} link",

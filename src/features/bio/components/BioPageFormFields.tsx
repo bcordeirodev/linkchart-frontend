@@ -19,52 +19,30 @@ import { BIO_DESCRIPTION_MAX_LENGTH } from "../constants";
 import { BioAddressSelect } from "./BioAddressSelect";
 
 import type { BioPageFormData } from "../utils/bioPageFormSchema";
+import type { BioTheme } from "../types";
 
-export interface BioPageFormFieldsProps {
+/**
+ * Shared contract of every field-group component in this file: the form is
+ * owned by `BioEditor` (`useForm`, submit, mutation); these components only
+ * render controlled field UI and are watched live by `BioPreviewPhone`.
+ */
+interface FieldGroupProps {
   control: Control<BioPageFormData>;
   errors: FieldErrors<BioPageFormData>;
-  /** Whether the `isActive` ("page is live") toggle renders — edit mode only. */
-  mode: "create" | "edit";
 }
 
 /**
- * Editable fields for the bio page editor: required address (subdomain),
- * title, bio (with a 280-char counter) and public-page theme — plus the
- * "page is live" toggle once a page already exists. Deliberately just the
- * field UI: form ownership (`useForm`, submit, mutation) lives in
- * `BioEditor`, and this component's `control`/`errors` are watched live by
- * `BioPreviewPhone` too.
- *
- * No handle field: subdomain-first, the address IS the page's identity, so
- * the handle is never collected here — the backend derives (create) or
- * keeps (update) it, and the resulting value is shown read-only as
- * `BioPublicUrlBar`'s secondary `/@{handle}` caption instead.
+ * "Identidade" fields — title and bio, in the order they appear at the top
+ * of the published page. The bio counter turns to the error color past the
+ * 280-char limit instead of blocking typing, so the person sees how far
+ * over they are.
  */
-export function BioPageFormFields({
-  control,
-  errors,
-  mode,
-}: BioPageFormFieldsProps) {
+export function BioIdentityFields({ control, errors }: FieldGroupProps) {
   const { t } = useTranslation("bio");
   const bioValue = useWatch({ control, name: "bio" }) ?? "";
 
   return (
     <Stack spacing={2.5}>
-      {/* Subdomain-first: the address is where the page's identity actually
-          lives, so it leads the form — everything else describes the page
-          that lives at that address. */}
-      <Controller
-        name="subdomainId"
-        control={control}
-        render={({ field }) => (
-          <BioAddressSelect
-            value={field.value}
-            onChange={field.onChange}
-            error={errors.subdomainId?.message}
-          />
-        )}
-      />
-
       <Box>
         <FormLabel
           htmlFor="bio-title-input"
@@ -126,64 +104,182 @@ export function BioPageFormFields({
           })}
         </Typography>
       </Box>
+    </Stack>
+  );
+}
 
-      <Box>
-        <FormLabel sx={{ display: "block", mb: 0.75 }}>
-          {t("form.theme.label")}
-        </FormLabel>
-        <Controller
-          name="theme"
-          control={control}
-          render={({ field }) => (
-            <ToggleButtonGroup
-              exclusive
-              size="small"
-              value={field.value}
-              onChange={(_e, value) => {
-                if (value) field.onChange(value);
-              }}
-              aria-label={t("form.theme.label")}
-            >
-              <ToggleButton value="dark">{t("form.theme.dark")}</ToggleButton>
-              <ToggleButton value="light">{t("form.theme.light")}</ToggleButton>
-            </ToggleButtonGroup>
-          )}
-        />
-      </Box>
+export interface BioPublishingFieldsProps extends FieldGroupProps {
+  /** Whether the `isActive` ("page is live") toggle renders — edit mode only. */
+  mode: "create" | "edit";
+}
+
+/**
+ * "Endereço e publicação" fields — the required address (subdomain-first:
+ * the address IS the page's identity) and, once the page exists, the "page
+ * is live" toggle. The read-only public URL bar is rendered by `BioEditor`
+ * in the same card, right below this group.
+ */
+export function BioPublishingFields({
+  control,
+  errors,
+  mode,
+}: BioPublishingFieldsProps) {
+  const { t } = useTranslation("bio");
+
+  return (
+    <Stack spacing={2.5}>
+      <Controller
+        name="subdomainId"
+        control={control}
+        render={({ field }) => (
+          <BioAddressSelect
+            value={field.value}
+            onChange={field.onChange}
+            error={errors.subdomainId?.message}
+          />
+        )}
+      />
 
       {mode === "edit" ? (
-        <Box>
-          <Controller
-            name="isActive"
-            control={control}
-            render={({ field }) => (
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={field.value}
-                    onChange={(e) => field.onChange(e.target.checked)}
-                  />
-                }
-                label={
-                  <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {t("form.isActive.label")}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {field.value
-                        ? t("form.isActive.onHint")
-                        : t("form.isActive.offHint")}
-                    </Typography>
-                  </Box>
-                }
-                sx={{ m: 0, gap: 1 }}
-              />
-            )}
-          />
-        </Box>
+        <Controller
+          name="isActive"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={field.value}
+                  onChange={(e) => field.onChange(e.target.checked)}
+                />
+              }
+              label={
+                <Box>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    {t("form.isActive.label")}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {field.value
+                      ? t("form.isActive.onHint")
+                      : t("form.isActive.offHint")}
+                  </Typography>
+                </Box>
+              }
+              sx={{ m: 0, gap: 1 }}
+            />
+          )}
+        />
       ) : null}
     </Stack>
   );
 }
 
-export default BioPageFormFields;
+/**
+ * One theme option inside {@link BioThemePicker}: a miniature of the public
+ * page (background, avatar dot, two link-button bars) so choosing a theme
+ * means seeing it, not decoding the words "dark"/"light".
+ */
+function ThemeThumbnail({ theme }: { theme: BioTheme }) {
+  const isDark = theme === "dark";
+
+  return (
+    <Box
+      aria-hidden
+      sx={{
+        width: 72,
+        height: 52,
+        borderRadius: 1,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 0.5,
+        bgcolor: isDark ? "#10131A" : "#FFFFFF",
+        border: "1px solid",
+        borderColor: isDark ? "grey.800" : "grey.300",
+      }}
+    >
+      <Box
+        sx={{
+          width: 12,
+          height: 12,
+          borderRadius: "50%",
+          bgcolor: isDark ? "grey.600" : "grey.400",
+        }}
+      />
+      {[0, 1].map((i) => (
+        <Box
+          key={i}
+          sx={{
+            width: 44,
+            height: 7,
+            borderRadius: 3.5,
+            bgcolor: isDark ? "grey.800" : "grey.200",
+            border: "1px solid",
+            borderColor: isDark ? "grey.700" : "grey.300",
+          }}
+        />
+      ))}
+    </Box>
+  );
+}
+
+/**
+ * "Aparência" field — theme choice as two clickable page miniatures.
+ * `ToggleButtonGroup` keeps the radio-like keyboard/AT semantics the old
+ * text toggle had; the thumbnails only change what sighted users see.
+ */
+export function BioThemePicker({ control }: Pick<FieldGroupProps, "control">) {
+  const { t } = useTranslation("bio");
+
+  return (
+    <Box>
+      <FormLabel sx={{ display: "block", mb: 0.75 }}>
+        {t("form.theme.label")}
+      </FormLabel>
+      <Controller
+        name="theme"
+        control={control}
+        render={({ field }) => (
+          <ToggleButtonGroup
+            exclusive
+            value={field.value}
+            onChange={(_e, value) => {
+              if (value) field.onChange(value);
+            }}
+            aria-label={t("form.theme.label")}
+            sx={{
+              gap: 1.25,
+              "& .MuiToggleButtonGroup-grouped": {
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: 1.5,
+              },
+            }}
+          >
+            {(["dark", "light"] as const).map((themeOption) => (
+              <ToggleButton
+                key={themeOption}
+                value={themeOption}
+                sx={{
+                  flexDirection: "column",
+                  gap: 0.75,
+                  p: 1.25,
+                  textTransform: "none",
+                  "&.Mui-selected": {
+                    borderColor: "primary.main",
+                    bgcolor: "action.selected",
+                  },
+                }}
+              >
+                <ThemeThumbnail theme={themeOption} />
+                <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                  {t(`form.theme.${themeOption}`)}
+                </Typography>
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        )}
+      />
+    </Box>
+  );
+}
