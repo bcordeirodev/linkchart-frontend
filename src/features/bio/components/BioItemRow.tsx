@@ -237,7 +237,7 @@ export function BioItemRow({
                 whiteSpace: "nowrap",
               }}
             >
-              {item.url}
+              {item.url.replace(/^https?:\/\//, "")}
             </Typography>
           </Box>
         </Stack>

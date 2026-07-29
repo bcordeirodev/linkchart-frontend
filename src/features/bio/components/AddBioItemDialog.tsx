@@ -5,7 +5,6 @@ import {
   Alert,
   Box,
   Button,
-  Chip,
   CircularProgress,
   DialogContent,
   DialogTitle,
@@ -27,7 +26,6 @@ import { ResponsiveDialog } from "@/shared/ui/feedback";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { useAddBioItem } from "../hooks/useBioItems";
-import { getUrlHost } from "../utils/linkHost";
 
 import type { ID, LinkResponse } from "@/types";
 
@@ -181,41 +179,21 @@ export function AddBioItemDialog({
                   >
                     {link.title?.trim() || link.slug}
                   </Typography>
-                  <Stack
-                    direction="row"
-                    spacing={0.75}
-                    alignItems="center"
-                    sx={{ mt: 0.25, minWidth: 0 }}
+                  {/* Uma linha só: a URL curta sem esquema já diz o domínio e
+                      o slug — sem chip, sem duplicar informação. */}
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{
+                      display: "block",
+                      mt: 0.25,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
                   >
-                    {/* Which domain this link actually opens at — candidates
-                        can come from any of the user's active subdomains (or
-                        the default domain). */}
-                    <Chip
-                      size="small"
-                      variant="outlined"
-                      label={getUrlHost(link.short_url)}
-                      sx={{
-                        height: 20,
-                        fontSize: "0.6875rem",
-                        fontFamily: "monospace",
-                        flexShrink: 0,
-                        "& .MuiChip-label": { px: 0.75 },
-                      }}
-                    />
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{
-                        minWidth: 0,
-                        flex: 1,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {link.short_url}
-                    </Typography>
-                  </Stack>
+                    {link.short_url.replace(/^https?:\/\//, "")}
+                  </Typography>
                 </Box>
                 <IconButton
                   size="small"
