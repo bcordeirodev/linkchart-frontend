@@ -41,7 +41,8 @@ export interface BioItemRowProps {
 
 /**
  * One row in the bio page's item list, in three zones: identity (destination
- * favicon with initial fallback, editable label, host + short URL), the
+ * favicon in a bordered tile with initial fallback, editable label, short
+ * URL), the
  * clicks chip — which IS the reference to the underlying link's analytics
  * page, strong blue like every analytics CTA in the app — and the controls
  * (reorder, active toggle, remove). Inactive items dim their identity zone
@@ -120,6 +121,9 @@ export function BioItemRow({
             transition: "opacity 120ms",
           }}
         >
+          {/* Tile com borda: favicons costumam ser PNG/ICO transparentes e,
+              soltos, "vazam" no fundo escuro do card. A borda + respiro
+              internos dão contorno a qualquer ícone, claro ou escuro. */}
           <Avatar
             variant="rounded"
             src={item.faviconUrl ?? undefined}
@@ -129,9 +133,12 @@ export function BioItemRow({
               height: 32,
               fontSize: "0.8rem",
               fontWeight: 700,
-              bgcolor: "action.selected",
+              bgcolor: "background.default",
               color: "text.secondary",
+              border: "1px solid",
+              borderColor: "divider",
               flexShrink: 0,
+              "& .MuiAvatar-img": { objectFit: "contain", p: "5px" },
             }}
           >
             {initial}
@@ -217,41 +224,21 @@ export function BioItemRow({
                 ) : null}
               </Box>
             )}
-            <Stack
-              direction="row"
-              spacing={0.75}
-              alignItems="center"
-              sx={{ mt: 0.25, minWidth: 0 }}
+            {/* A própria URL curta já diz o domínio (que pode variar entre
+                linhas) — dispensa chip de host separado. */}
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{
+                display: "block",
+                mt: 0.25,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
             >
-              {/* Which domain this button actually opens at — items can come
-                  from any of the user's active subdomains (or the default
-                  domain), so this isn't always the same across rows. */}
-              <Chip
-                size="small"
-                variant="outlined"
-                label={host}
-                sx={{
-                  height: 20,
-                  fontSize: "0.6875rem",
-                  fontFamily: "monospace",
-                  flexShrink: 0,
-                  "& .MuiChip-label": { px: 0.75 },
-                }}
-              />
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{
-                  minWidth: 0,
-                  flex: 1,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {item.url}
-              </Typography>
-            </Stack>
+              {item.url}
+            </Typography>
           </Box>
         </Stack>
 
