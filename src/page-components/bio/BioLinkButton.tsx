@@ -7,6 +7,11 @@ interface BioLinkButtonProps {
   label: string;
   /** Destination URL — a Link Charts short link; the redirect owns tracking. */
   url: string;
+  /**
+   * Destination favicon (preview pipeline), or null/undefined when not
+   * fetched yet — the button then renders as a plain pill, no placeholder.
+   */
+  faviconUrl?: string | null;
   /** Resolved color set for the page's theme. */
   palette: BioPalette;
 }
@@ -36,6 +41,7 @@ interface BioLinkButtonProps {
 export default function BioLinkButton({
   label,
   url,
+  faviconUrl,
   palette,
 }: BioLinkButtonProps) {
   return (
@@ -89,6 +95,40 @@ export default function BioLinkButton({
         },
       }}
     >
+      {/* Favicon do destino à esquerda + espaçador simétrico à direita: o
+          label continua opticamente centrado no pill, com ou sem ícone. O
+          tile segue o padrão do editor (borda + respiro) para o ícone não
+          "vazar" sobre o fundo do botão. */}
+      {faviconUrl ? (
+        <Box
+          component="span"
+          aria-hidden
+          sx={{
+            width: 26,
+            height: 26,
+            mr: 1.5,
+            flexShrink: 0,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "8px",
+            border: `1px solid ${palette.buttonBorder}`,
+            backgroundColor: palette.background,
+            overflow: "hidden",
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- favicon externo minúsculo; next/image exigiria domínios remotos liberados para todo destino possível */}
+          <img
+            src={faviconUrl}
+            alt=""
+            width={16}
+            height={16}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            style={{ objectFit: "contain" }}
+          />
+        </Box>
+      ) : null}
       <Box
         component="span"
         sx={{
@@ -98,10 +138,19 @@ export default function BioLinkButton({
           overflow: "hidden",
           textOverflow: "ellipsis",
           maxWidth: "100%",
+          minWidth: 0,
+          flex: "1 1 auto",
         }}
       >
         {label}
       </Box>
+      {faviconUrl ? (
+        <Box
+          component="span"
+          aria-hidden
+          sx={{ width: 26, mr: 0, ml: 1.5, flexShrink: 0 }}
+        />
+      ) : null}
     </Box>
   );
 }

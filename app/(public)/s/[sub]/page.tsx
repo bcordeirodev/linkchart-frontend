@@ -88,7 +88,8 @@ async function fetchBioDataBySubdomain(
 ): Promise<BioPageData | null> {
   const apiUrl = process.env.API_URL ?? "http://localhost:8000";
   const res = await fetch(`${apiUrl}/api/public/bio/by-subdomain/${sub}`, {
-    next: { revalidate: 300 },
+    // Tag por label do subdominio — mesma revalidacao sob demanda do /b.
+    next: { revalidate: 300, tags: [`bio-sub:${sub}`] },
   }).catch(() => null);
 
   if (!res?.ok) {

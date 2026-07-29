@@ -5,6 +5,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { i18n } from "@/lib/i18n";
 import { useMessage } from "@/lib/providers/MessageProvider";
 import { queryKeys } from "@/lib/query/keys";
+
+import { revalidatePublicBio } from "../utils/revalidatePublicBio";
 import { bioService } from "@/services/bio.service";
 
 import type {
@@ -39,6 +41,9 @@ export function useAddBioItem() {
     mutationFn: (input: BioItemCreateInput) => bioService.addItem(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.bio.page() });
+      revalidatePublicBio(
+        queryClient.getQueryData<BioPage>(queryKeys.bio.page()),
+      );
     },
     onError: () => {
       showMessage({ message: t("items.errors.addGeneric"), variant: "error" });
@@ -61,6 +66,9 @@ export function useUpdateBioItem() {
       bioService.updateItem(id, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.bio.page() });
+      revalidatePublicBio(
+        queryClient.getQueryData<BioPage>(queryKeys.bio.page()),
+      );
     },
     onError: () => {
       showMessage({
@@ -85,6 +93,9 @@ export function useRemoveBioItem() {
     mutationFn: (id: number) => bioService.removeItem(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.bio.page() });
+      revalidatePublicBio(
+        queryClient.getQueryData<BioPage>(queryKeys.bio.page()),
+      );
     },
     onError: () => {
       showMessage({
@@ -142,6 +153,11 @@ export function useReorderBioItems() {
         message: t("items.errors.reorderGeneric"),
         variant: "error",
       });
+    },
+    onSuccess: () => {
+      revalidatePublicBio(
+        queryClient.getQueryData<BioPage>(queryKeys.bio.page()),
+      );
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.bio.page() });

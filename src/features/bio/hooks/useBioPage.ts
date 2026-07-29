@@ -5,6 +5,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { i18n } from "@/lib/i18n";
 import { useMessage } from "@/lib/providers/MessageProvider";
 import { queryKeys } from "@/lib/query/keys";
+
+import { revalidatePublicBio } from "../utils/revalidatePublicBio";
 import { bioService } from "@/services/bio.service";
 
 import type { BioPage, BioPageUpsertInput } from "../types";
@@ -57,6 +59,7 @@ export function useUpsertBioPage() {
     mutationFn: (input: BioPageUpsertInput) => bioService.upsertPage(input),
     onSuccess: (page) => {
       queryClient.setQueryData(queryKeys.bio.page(), page);
+      revalidatePublicBio(page);
     },
     onError: () => {
       const msg = (i18n.t as (key: string, opts: object) => string)(

@@ -36,7 +36,9 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
 async function fetchBioData(handle: string): Promise<BioPageData | null> {
   const apiUrl = process.env.API_URL ?? "http://localhost:8000";
   const res = await fetch(`${apiUrl}/api/public/bio/${handle}`, {
-    next: { revalidate: 300 },
+    // Tag por handle: o editor fura este cache na hora do save via
+    // POST /api/bio/revalidate — visitante segue servido do cache.
+    next: { revalidate: 300, tags: [`bio-handle:${handle}`] },
   }).catch(() => null);
 
   if (!res?.ok) {
