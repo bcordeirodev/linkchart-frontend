@@ -12,10 +12,10 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 export interface BioPublicUrlBarProps {
   /**
    * Absolute public URL of the persisted page — the backend's own `url`
-   * field (`resolvePublicPageUrl(page.url)`), which is the subdomain's root
-   * for every page created (or re-saved) after the subdomain-first change,
-   * and still `/@{handle}` for a legacy page that hasn't picked an address
-   * yet.
+   * field (`resolvePublicPageUrl(page.url)`). The caller only renders this
+   * bar for pages with a bound address, so this is always the subdomain's
+   * root URL — never the technical `/@{handle}` fallback, which the product
+   * does not surface anywhere.
    */
   url: string;
 }

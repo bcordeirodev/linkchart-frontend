@@ -142,7 +142,7 @@ export function BioSubdomainGate() {
         >
           <Box sx={{ maxWidth: 260, width: "100%" }}>
             <BioPreviewPhone
-              handle={placeholderHandle}
+              address={`${placeholderHandle}.${host}`}
               title={t("preview.placeholderTitle")}
               bio={t("gate.exampleBio")}
               theme="dark"
@@ -173,7 +173,7 @@ export function BioSubdomainGate() {
         }}
       >
         <BioPreviewPhone
-          handle={placeholderHandle}
+          address={`${placeholderHandle}.${host}`}
           title={t("preview.placeholderTitle")}
           bio={t("gate.exampleBio")}
           theme="dark"

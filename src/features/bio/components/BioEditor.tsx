@@ -113,12 +113,12 @@ export function BioEditor() {
 
   // Watched live so `BioPreviewPhone` re-renders on every keystroke — all
   // called unconditionally, before any early return, per Rules of Hooks.
-  // No `handleValue` watch: there is no handle field anymore (see
-  // `BioPageFormData`) — the preview's `@handle` line reads `page?.handle`
-  // directly below, falling back to its own placeholder pre-creation.
+  // `subdomainId` is watched so the preview's address line follows the
+  // "Endereço da página" select in real time, before saving.
   const titleValue = useWatch({ control, name: "title" });
   const bioValue = useWatch({ control, name: "bio" });
   const themeValue = useWatch({ control, name: "theme" });
+  const subdomainIdValue = useWatch({ control, name: "subdomainId" });
 
   const [previewOpen, setPreviewOpen] = useState(false);
 
@@ -175,9 +175,19 @@ export function BioEditor() {
 
   const isSaving = isSubmitting || upsertPage.isPending;
 
+  // Address shown in the preview: the live form selection wins; a bound page
+  // falls back to its saved absolute URL. Legacy pages with no address show
+  // nothing — the product has no "@handle" to fall back to.
+  const selectedSubdomain = subdomains.find((s) => s.id === subdomainIdValue);
+  const previewAddress = selectedSubdomain
+    ? selectedSubdomain.fullUrl.replace(/^https?:\/\//, "")
+    : page?.url?.startsWith("http")
+      ? page.url.replace(/^https?:\/\//, "")
+      : "";
+
   const previewNode = (
     <BioPreviewPhone
-      handle={page?.handle || ""}
+      address={previewAddress}
       title={titleValue || ""}
       bio={bioValue || ""}
       theme={themeValue || "dark"}
@@ -208,7 +218,11 @@ export function BioEditor() {
         {mode === "edit" && page ? (
           <>
             <BioAvatarField page={page} />
-            <BioPublicUrlBar url={resolvePublicPageUrl(page.url)} />
+            {/* Só para página com endereço vinculado: o fallback técnico
+                /@handle não é uma URL que o produto apresenta. */}
+            {page.subdomainId !== null ? (
+              <BioPublicUrlBar url={resolvePublicPageUrl(page.url)} />
+            ) : null}
           </>
         ) : null}
 

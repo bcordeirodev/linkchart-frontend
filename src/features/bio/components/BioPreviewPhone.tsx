@@ -48,7 +48,12 @@ const THEME_PALETTES: Record<BioTheme, BioThemePalette> = {
 };
 
 export interface BioPreviewPhoneProps {
-  handle: string;
+  /**
+   * Host the page lives at (e.g. "acme.linkcharts.com.br"), shown under the
+   * title exactly as the visitor will see it. Empty string hides the line —
+   * a legacy page that hasn't picked an address yet has no URL to show.
+   */
+  address: string;
   title: string;
   bio: string;
   theme: BioTheme;
@@ -64,14 +69,14 @@ export interface BioPreviewPhoneProps {
 }
 
 /**
- * Live, non-interactive mock of the published `/@{handle}` page inside a
- * phone frame. Reflects the form's current values on every keystroke —
+ * Live, non-interactive mock of the published bio page — at its own
+ * subdomain address, never an "@handle" — inside a phone frame. Reflects the form's current values on every keystroke —
  * deliberately NOT pixel-identical to the real public page (that page is
  * owned by a different part of the app); it exists to give instant visual
  * feedback on theme, copy and item order while editing.
  */
 export function BioPreviewPhone({
-  handle,
+  address,
   title,
   bio,
   theme,
@@ -85,7 +90,6 @@ export function BioPreviewPhone({
     .sort((a, b) => a.position - b.position);
 
   const displayTitle = title.trim() || t("preview.placeholderTitle");
-  const displayHandle = handle.trim() || t("preview.placeholderHandle");
   const displayBio = bio.trim();
 
   return (
@@ -239,15 +243,18 @@ export function BioPreviewPhone({
               >
                 {displayTitle}
               </Typography>
-              <Typography
-                sx={{
-                  fontSize: "0.8125rem",
-                  color: palette.textMuted,
-                  mt: 0.25,
-                }}
-              >
-                @{displayHandle}
-              </Typography>
+              {address ? (
+                <Typography
+                  sx={{
+                    fontSize: "0.8125rem",
+                    color: palette.textMuted,
+                    mt: 0.25,
+                    wordBreak: "break-all",
+                  }}
+                >
+                  {address}
+                </Typography>
+              ) : null}
               {displayBio ? (
                 <Typography
                   sx={{
