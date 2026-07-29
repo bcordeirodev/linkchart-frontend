@@ -18,7 +18,12 @@
   },
   "legacyBanner": "Escolha o endereço da sua página para continuar.",
   "sections": {
-    "profile": "Perfil"
+    "identity": "Identidade",
+    "identityHint": "Como você se apresenta no topo da página: foto, nome e descrição.",
+    "publishing": "Endereço e publicação",
+    "publishingHint": "Onde a página vive e se ela está visível para quem acessar.",
+    "appearance": "Aparência",
+    "appearanceHint": "O visual que os seus visitantes veem."
   },
   "form": {
     "publicUrlLabel": "Sua página",
@@ -83,7 +88,9 @@
       "titleTooLong": "Use no máximo 100 caracteres.",
       "bioTooLong": "Use no máximo 280 caracteres.",
       "saveGeneric": "Não foi possível salvar sua página. Tente novamente."
-    }
+    },
+    "publicUrlQr": "QR code da página",
+    "publicUrlQrAlt": "QR code que abre {{url}}"
   },
   "preview": {
     "placeholderTitle": "Seu nome",
@@ -91,7 +98,8 @@
     "noItems": "Seus links aparecerão aqui.",
     "watermark": "Link Chart",
     "showAction": "Ver preview",
-    "hideAction": "Ocultar preview"
+    "hideAction": "Ocultar preview",
+    "liveBadge": "Pré-visualização ao vivo"
   },
   "items": {
     "heading_one": "{{count}} de {{max}} link",

@@ -8,7 +8,6 @@ import {
   Box,
   Button,
   CircularProgress,
-  Divider,
   Skeleton,
   Stack,
   Typography,
@@ -27,10 +26,16 @@ import {
   defaultBioPageFormValues,
 } from "../utils/bioPageFormSchema";
 import { resolvePublicPageUrl } from "../utils/publicBioUrl";
+import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+
 import { BioAvatarField } from "./BioAvatarField";
 import { BioCreateIntro } from "./BioCreateIntro";
 import { BioItemsSection } from "./BioItemsSection";
-import { BioPageFormFields } from "./BioPageFormFields";
+import {
+  BioIdentityFields,
+  BioPublishingFields,
+  BioThemePicker,
+} from "./BioPageFormFields";
 import { BioPreviewPhone } from "./BioPreviewPhone";
 import { BioPublicUrlBar } from "./BioPublicUrlBar";
 import { BioSubdomainGate } from "./BioSubdomainGate";
@@ -186,14 +191,54 @@ export function BioEditor() {
       : "";
 
   const previewNode = (
-    <BioPreviewPhone
-      address={previewAddress}
-      title={titleValue || ""}
-      bio={bioValue || ""}
-      theme={themeValue || "dark"}
-      items={page?.items ?? []}
-      avatarUrl={page?.avatarUrl}
-    />
+    <Stack spacing={1} alignItems="center">
+      <Stack direction="row" spacing={0.75} alignItems="center">
+        <Box
+          sx={{
+            width: 7,
+            height: 7,
+            borderRadius: "50%",
+            bgcolor: "success.main",
+          }}
+        />
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ fontWeight: 600, letterSpacing: 0.2 }}
+        >
+          {t("preview.liveBadge")}
+        </Typography>
+      </Stack>
+      <BioPreviewPhone
+        address={previewAddress}
+        title={titleValue || ""}
+        bio={bioValue || ""}
+        theme={themeValue || "dark"}
+        items={page?.items ?? []}
+        avatarUrl={page?.avatarUrl}
+      />
+    </Stack>
+  );
+
+  /**
+   * One intention card of the editor: heading + one-line hint, then the
+   * card's fields. Groups what the person is deciding (identity, address &
+   * publishing, appearance, links) instead of one flat field column.
+   */
+  const card = (heading: string, hint: string, children: React.ReactNode) => (
+    <EnhancedPaper variant="outlined" sx={{ mb: 0 }}>
+      <Stack spacing={2} sx={{ p: { xs: 2, sm: 2.5 } }}>
+        <Box>
+          <Typography variant="subtitle2" component="h2">
+            {heading}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {hint}
+          </Typography>
+        </Box>
+        {children}
+      </Stack>
+    </EnhancedPaper>
   );
 
   return (
@@ -215,87 +260,95 @@ export function BioEditor() {
           <Alert severity="info">{t("legacyBanner")}</Alert>
         ) : null}
 
-        {mode === "edit" && page ? (
-          <>
-            <BioAvatarField page={page} />
-            {/* Só para página com endereço vinculado: o fallback técnico
-                /@handle não é uma URL que o produto apresenta. */}
-            {page.subdomainId !== null ? (
-              <BioPublicUrlBar url={resolvePublicPageUrl(page.url)} />
-            ) : null}
-          </>
+        {isMobile ? (
+          <Button
+            variant="text"
+            size="small"
+            startIcon={
+              <AppIcon intent={previewOpen ? "collapse" : "expand"} size={16} />
+            }
+            onClick={() => setPreviewOpen((v) => !v)}
+            sx={{ alignSelf: "flex-start" }}
+          >
+            {t(previewOpen ? "preview.hideAction" : "preview.showAction")}
+          </Button>
+        ) : null}
+        {isMobile && previewOpen ? (
+          <Box sx={{ maxWidth: 300, mx: "auto", width: "100%" }}>
+            {previewNode}
+          </Box>
         ) : null}
 
-        <Divider />
+        <form onSubmit={onSubmit} noValidate>
+          <Stack spacing={{ xs: 2.5, sm: 3 }}>
+            {card(
+              t("sections.identity"),
+              t("sections.identityHint"),
+              <>
+                {mode === "edit" && page ? (
+                  <BioAvatarField page={page} />
+                ) : null}
+                <BioIdentityFields control={control} errors={errors} />
+              </>,
+            )}
 
-        <Stack spacing={2.5}>
-          <Typography variant="subtitle2" component="h2">
-            {t("sections.profile")}
-          </Typography>
-
-          {isMobile ? (
-            <Button
-              variant="text"
-              size="small"
-              startIcon={
-                <AppIcon
-                  intent={previewOpen ? "collapse" : "expand"}
-                  size={16}
+            {card(
+              t("sections.publishing"),
+              t("sections.publishingHint"),
+              <>
+                <BioPublishingFields
+                  control={control}
+                  errors={errors}
+                  mode={mode}
                 />
-              }
-              onClick={() => setPreviewOpen((v) => !v)}
-              sx={{ alignSelf: "flex-start" }}
-            >
-              {t(previewOpen ? "preview.hideAction" : "preview.showAction")}
-            </Button>
-          ) : null}
-          {isMobile && previewOpen ? (
-            <Box sx={{ maxWidth: 300, mx: "auto", width: "100%" }}>
-              {previewNode}
-            </Box>
-          ) : null}
+                {/* Só para página com endereço vinculado: o fallback técnico
+                    /@handle não é uma URL que o produto apresenta. */}
+                {mode === "edit" && page && page.subdomainId !== null ? (
+                  <BioPublicUrlBar url={resolvePublicPageUrl(page.url)} />
+                ) : null}
+              </>,
+            )}
 
-          <form onSubmit={onSubmit} noValidate>
-            <Stack spacing={3}>
-              <BioPageFormFields
-                control={control}
-                errors={errors}
-                mode={mode}
-              />
-              <Box>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={isSaving}
-                  startIcon={
-                    isSaving ? (
-                      <CircularProgress size={16} color="inherit" />
-                    ) : justSaved ? (
-                      <AppIcon intent="success" size={16} />
-                    ) : undefined
-                  }
-                  sx={{ minHeight: 44, minWidth: 176 }}
-                >
-                  {isSaving
-                    ? t("form.saveSubmitSaving")
-                    : justSaved
-                      ? t("form.saveSubmitSaved")
-                      : t(
-                          mode === "create"
-                            ? "form.createSubmit"
-                            : "form.saveSubmit",
-                        )}
-                </Button>
-              </Box>
-            </Stack>
-          </form>
-        </Stack>
+            {card(
+              t("sections.appearance"),
+              t("sections.appearanceHint"),
+              <BioThemePicker control={control} />,
+            )}
+
+            <Box>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={isSaving}
+                startIcon={
+                  isSaving ? (
+                    <CircularProgress size={16} color="inherit" />
+                  ) : justSaved ? (
+                    <AppIcon intent="success" size={16} />
+                  ) : undefined
+                }
+                sx={{ minHeight: 44, minWidth: 176 }}
+              >
+                {isSaving
+                  ? t("form.saveSubmitSaving")
+                  : justSaved
+                    ? t("form.saveSubmitSaved")
+                    : t(
+                        mode === "create"
+                          ? "form.createSubmit"
+                          : "form.saveSubmit",
+                      )}
+              </Button>
+            </Box>
+          </Stack>
+        </form>
 
         {mode === "edit" && page ? (
-          <>
-            <Divider />
-            <BioItemsSection page={page} />
-          </>
+          <EnhancedPaper variant="outlined" sx={{ mb: 0 }}>
+            <Box sx={{ p: { xs: 2, sm: 2.5 } }}>
+              <BioItemsSection page={page} />
+            </Box>
+          </EnhancedPaper>
         ) : null}
       </Stack>
 
