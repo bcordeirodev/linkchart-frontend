@@ -1,17 +1,25 @@
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { Box } from "@mui/material";
 
 import type { BioPalette } from "./bioPalette";
 
 interface BioLinkButtonProps {
-  /** Button label, shown centered, wrapping up to two lines before truncating. */
+  /** Button label — the row's first line, bold, truncating at one line. */
   label: string;
   /** Destination URL — a Link Charts short link; the redirect owns tracking. */
   url: string;
   /**
    * Destination favicon (preview pipeline), or null/undefined when not
-   * fetched yet — the button then renders as a plain pill, no placeholder.
+   * fetched yet — the tile then falls back to the label's initial, so every
+   * row keeps the same anchor and rhythm.
    */
   faviconUrl?: string | null;
+  /**
+   * Host of the final destination ("github.com") — the row's second line,
+   * the trust signal no generic link-in-bio shows. Omitted line when absent
+   * (older cached payloads).
+   */
+  destinationHost?: string | null;
   /** Resolved color set for the page's theme. */
   palette: BioPalette;
 }
@@ -24,13 +32,12 @@ interface BioLinkButtonProps {
  * interaction state below is pure CSS (`sx`'s `&:hover`/`&:active`/
  * `&:focus-visible`), so this stays a zero-JS anchor.
  *
- * Sized for thumbs first: 52px is a floor, comfortably above the 48px
- * minimum touch target, with a generous 16px radius so the stack reads as
- * soft pills rather than boxy list rows. Labels wrap up to two lines
- * (`-webkit-line-clamp`) instead of truncating at one — a button that needs
- * the extra line just grows taller by itself; the 12px gap between buttons
- * (set by the caller's `Stack spacing`) stays constant either way, so the
- * stack's rhythm never looks broken, just occasionally uneven.
+ * Row anatomy, left to right: a 38px favicon tile (initial fallback), the
+ * text block — label above, destination host below, the "where does this
+ * click take me" answer — and an outward arrow that nudges on hover. Rows
+ * are left-aligned on purpose: two lines of real information read as a
+ * card, and centered pills are exactly the template look this page moves
+ * away from.
  *
  * Hover/focus reuse the avatar's gradient as a border that "lights up" via
  * the standard double-background clip trick (`backgroundOrigin: border-box`
@@ -42,8 +49,11 @@ export default function BioLinkButton({
   label,
   url,
   faviconUrl,
+  destinationHost,
   palette,
 }: BioLinkButtonProps) {
+  const initial = (label.trim()[0] ?? "•").toUpperCase();
+
   return (
     <Box
       component="a"
@@ -51,19 +61,15 @@ export default function BioLinkButton({
       sx={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        minHeight: 52,
-        py: 1.25,
-        px: 3,
+        gap: 1.75,
+        minHeight: 64,
+        py: 1.5,
+        px: 2,
         borderRadius: "16px",
         backgroundColor: palette.buttonBg,
         border: `1px solid ${palette.buttonBorder}`,
         color: palette.textPrimary,
         textDecoration: "none",
-        fontSize: "0.9375rem",
-        fontWeight: 600,
-        letterSpacing: "-0.01em",
-        textAlign: "center",
         WebkitTapHighlightColor: "transparent",
         transition:
           "transform 160ms ease, box-shadow 200ms ease, background-color 160ms ease, border-color 160ms ease",
@@ -81,6 +87,10 @@ export default function BioLinkButton({
           "@media (prefers-reduced-motion: no-preference)": {
             transform: "translateY(-1px)",
           },
+          "& [data-bio-arrow]": {
+            opacity: 1,
+            transform: "translate(2px, -2px)",
+          },
         },
         "&:focus-visible": {
           outline: `2px solid ${palette.focusRing}`,
@@ -95,62 +105,92 @@ export default function BioLinkButton({
         },
       }}
     >
-      {/* Favicon do destino à esquerda + espaçador simétrico à direita: o
-          label continua opticamente centrado no pill, com ou sem ícone. O
-          tile segue o padrão do editor (borda + respiro) para o ícone não
-          "vazar" sobre o fundo do botão. */}
-      {faviconUrl ? (
-        <Box
-          component="span"
-          aria-hidden
-          sx={{
-            width: 26,
-            height: 26,
-            mr: 1.5,
-            flexShrink: 0,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "8px",
-            border: `1px solid ${palette.buttonBorder}`,
-            backgroundColor: palette.background,
-            overflow: "hidden",
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element -- favicon externo minúsculo; next/image exigiria domínios remotos liberados para todo destino possível */}
+      {/* Tile do favicon com fallback de inicial: toda linha tem a mesma
+          âncora visual, com ou sem preview buscado. */}
+      <Box
+        component="span"
+        aria-hidden
+        sx={{
+          width: 38,
+          height: 38,
+          flexShrink: 0,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: "11px",
+          border: `1px solid ${palette.buttonBorder}`,
+          backgroundColor: palette.background,
+          overflow: "hidden",
+          fontSize: "0.9rem",
+          fontWeight: 700,
+          color: palette.textSecondary,
+        }}
+      >
+        {faviconUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element -- favicon externo minúsculo; next/image exigiria liberar todo domínio possível
           <img
             src={faviconUrl}
             alt=""
-            width={16}
-            height={16}
+            width={20}
+            height={20}
             loading="lazy"
             referrerPolicy="no-referrer"
             style={{ objectFit: "contain" }}
           />
-        </Box>
-      ) : null}
-      <Box
-        component="span"
-        sx={{
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          maxWidth: "100%",
-          minWidth: 0,
-          flex: "1 1 auto",
-        }}
-      >
-        {label}
+        ) : (
+          initial
+        )}
       </Box>
-      {faviconUrl ? (
+
+      <Box component="span" sx={{ minWidth: 0, flex: "1 1 auto" }}>
         <Box
           component="span"
-          aria-hidden
-          sx={{ width: 26, mr: 0, ml: 1.5, flexShrink: 0 }}
-        />
-      ) : null}
+          sx={{
+            display: "block",
+            fontSize: "0.9375rem",
+            fontWeight: 600,
+            letterSpacing: "-0.01em",
+            lineHeight: 1.35,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {label}
+        </Box>
+        {destinationHost ? (
+          <Box
+            component="span"
+            sx={{
+              display: "block",
+              mt: 0.25,
+              fontSize: "0.78rem",
+              fontWeight: 500,
+              color: palette.textSecondary,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {destinationHost}
+          </Box>
+        ) : null}
+      </Box>
+
+      <ArrowOutwardIcon
+        data-bio-arrow
+        aria-hidden
+        sx={{
+          fontSize: 18,
+          flexShrink: 0,
+          color: palette.textSecondary,
+          opacity: 0.45,
+          transition: "opacity 160ms ease, transform 160ms ease",
+          "@media (prefers-reduced-motion: reduce)": {
+            transition: "opacity 160ms ease",
+          },
+        }}
+      />
     </Box>
   );
 }

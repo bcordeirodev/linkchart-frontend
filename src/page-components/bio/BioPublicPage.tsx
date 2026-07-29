@@ -157,6 +157,7 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
                     label={item.label}
                     url={item.url}
                     faviconUrl={item.favicon_url ?? null}
+                    destinationHost={item.destination_host ?? null}
                     palette={palette}
                   />
                 </Box>
