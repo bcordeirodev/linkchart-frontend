@@ -156,20 +156,27 @@ const inputComponents = {
       legend: { fontSize: "0.75em" },
       input: { padding: "5px 11px" },
       adornedStart: { paddingLeft: "11px!important" },
+      // Altura fixa SÓ para input de linha única: um multiline (textarea da
+      // bio, por ex.) precisa crescer com o conteúdo — sem a exceção, o
+      // container fica em 32px, o textarea de 3 linhas vaza por cima da
+      // borda e o placeholder "atravessa" o outline.
       sizeSmall: (_: { theme: Theme }) => ({
         height: 32,
         minHeight: 32,
         borderRadius: radiusTokens.md,
+        "&.MuiInputBase-multiline": { height: "auto", lineHeight: 1.5 },
       }),
       sizeMedium: (_: { theme: Theme }) => ({
         height: 36,
         minHeight: 36,
         borderRadius: radiusTokens.md,
+        "&.MuiInputBase-multiline": { height: "auto", lineHeight: 1.5 },
       }),
       sizeLarge: (_: { theme: Theme }) => ({
         height: 40,
         minHeight: 40,
         borderRadius: radiusTokens.md,
+        "&.MuiInputBase-multiline": { height: "auto", lineHeight: 1.5 },
       }),
     },
   },
