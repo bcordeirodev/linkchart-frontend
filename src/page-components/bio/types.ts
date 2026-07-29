@@ -31,6 +31,13 @@ export interface BioLinkItem {
    * cached payloads may lack the key; both read as "no favicon yet".
    */
   favicon_url?: string | null;
+  /**
+   * Host of the FINAL destination (original URL, `www.` stripped) — the
+   * button's second line: "this click goes to github.com". Path and query
+   * stay private by design; only the host is public (the click reveals it
+   * anyway). Optional for older cached payloads.
+   */
+  destination_host?: string | null;
 }
 
 /** Payload returned by `GET /api/public/bio/{handle}`. */
