@@ -65,6 +65,12 @@ html:has(.bio-page) { scrollbar-width: thin; scrollbar-color: ${palette.scrollba
 html:has(.bio-page)::-webkit-scrollbar { width: 8px; }
 html:has(.bio-page)::-webkit-scrollbar-track { background: transparent; }
 html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrollbarThumb}; border-radius: 999px; }
+/* Entrada em cascata, CSS puro (Server Component, zero JS): avatar/título
+   primeiro, cada botão 45ms depois do anterior via --i. Quem prefere menos
+   movimento vê a página pronta, sem animação. */
+@keyframes bio-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.bio-page [data-bio-rise] { animation: bio-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--i, 0) * 45ms); }
+@media (prefers-reduced-motion: reduce) { .bio-page [data-bio-rise] { animation: none; } }
 `,
         }}
       />
@@ -93,15 +99,19 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
             pt: { xs: 5.5, sm: 7 },
           }}
         >
-          <BioAvatar
-            initial={initial}
-            palette={palette}
-            avatarUrl={data.avatar_url}
-            displayName={data.title.trim() || data.handle}
-          />
+          <Box data-bio-rise style={{ "--i": 0 } as React.CSSProperties}>
+            <BioAvatar
+              initial={initial}
+              palette={palette}
+              avatarUrl={data.avatar_url}
+              displayName={data.title.trim() || data.handle}
+            />
+          </Box>
 
           <Typography
             component="h1"
+            data-bio-rise
+            style={{ "--i": 1 } as React.CSSProperties}
             sx={{
               mt: 2.5,
               fontSize: "clamp(1.5rem, 1.2rem + 1.4vw, 1.875rem)",
@@ -137,13 +147,19 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
 
           {data.items.length > 0 ? (
             <Stack spacing={1.5} sx={{ width: "100%", mt: 4.5 }}>
-              {data.items.map((item) => (
-                <BioLinkButton
+              {data.items.map((item, index) => (
+                <Box
                   key={item.id}
-                  label={item.label}
-                  url={item.url}
-                  palette={palette}
-                />
+                  data-bio-rise
+                  style={{ "--i": index + 2 } as React.CSSProperties}
+                >
+                  <BioLinkButton
+                    label={item.label}
+                    url={item.url}
+                    faviconUrl={item.favicon_url ?? null}
+                    palette={palette}
+                  />
+                </Box>
               ))}
             </Stack>
           ) : null}

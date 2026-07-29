@@ -24,6 +24,13 @@ export interface BioLinkItem {
    * page never needs client-side tracking JavaScript.
    */
   url: string;
+  /**
+   * Favicon of the final destination, fetched asynchronously by the preview
+   * pipeline. Rendered as a small tile inside the button — the visitor sees
+   * where the click leads before tapping. Optional AND nullable: older
+   * cached payloads may lack the key; both read as "no favicon yet".
+   */
+  favicon_url?: string | null;
 }
 
 /** Payload returned by `GET /api/public/bio/{handle}`. */
