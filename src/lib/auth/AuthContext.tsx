@@ -11,6 +11,7 @@ import { getAccessToken, useUser } from "@auth0/nextjs-auth0/client";
 
 import { ApiError } from "@/lib/api/client";
 import { trackAdConversion } from "@/lib/telemetry/adConversions";
+import { readFirstTouch } from "@/lib/telemetry/firstTouch";
 import { authService } from "@/services";
 
 import type { LoginResponse, OnboardingKey, User, UserResponse } from "@/types";
@@ -137,10 +138,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     ): Promise<void> => {
       const accessToken = await getAccessToken();
 
+      // First-touch da primeira visita (cookie lc_first_touch). O backend só
+      // persiste quando o exchange CRIA a conta, então enviar em todo login é
+      // inofensivo — e garante que o cadastro carregue a origem original.
       const loginResponse: LoginResponse = await authService.auth0Exchange(
         accessToken,
         emailHint,
         nameHint,
+        readFirstTouch(),
       );
       const converted = convertUserDBToUser(loginResponse.user);
       if (pictureUrl) converted.photoURL = pictureUrl;

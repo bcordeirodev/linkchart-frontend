@@ -3,6 +3,8 @@ import { API_ENDPOINTS } from "../lib/api/endpoints";
 
 import { BaseService } from "./base.service";
 
+import type { FirstTouchAttribution } from "@/lib/telemetry/firstTouch";
+
 import type {
   LoginResponse,
   OnboardingFlags,
@@ -67,9 +69,15 @@ export default class AuthService extends BaseService {
    * scopes. They come from the Auth0 session's ID-token claims (`auth0User`)
    * and are therefore trustworthy.
    *
+   * `attribution` carries the first-touch payload captured on the visitor's
+   * first page load (see `@/lib/telemetry/firstTouch`). The backend persists
+   * it only when this exchange CREATES the account, so sending it on every
+   * login is harmless.
+   *
    * @param accessToken - Auth0 access token from GET /auth/access-token.
    * @param emailHint  - Email from the Auth0 session user object (fallback).
    * @param nameHint   - Name from the Auth0 session user object (fallback).
+   * @param attribution - First-touch attribution payload, when captured.
    * @returns the `LoginResponse` envelope including `token` and `user`.
    * @endpoint `POST /api/auth/auth0-exchange`
    */
@@ -77,6 +85,7 @@ export default class AuthService extends BaseService {
     accessToken: string,
     emailHint?: string,
     nameHint?: string,
+    attribution?: FirstTouchAttribution,
   ): Promise<LoginResponse> {
     this.validateRequired({ accessToken }, ["accessToken"]);
 
@@ -86,6 +95,7 @@ export default class AuthService extends BaseService {
         access_token: accessToken,
         ...(emailHint ? { email_hint: emailHint } : {}),
         ...(nameHint ? { name_hint: nameHint } : {}),
+        ...(attribution ? { attribution } : {}),
       },
       { context: "auth0_exchange" },
     );
