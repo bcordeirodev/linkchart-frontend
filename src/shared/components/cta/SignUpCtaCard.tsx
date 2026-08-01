@@ -5,6 +5,7 @@ import { alpha } from "@mui/material/styles";
 import { Check, UserPlus } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { isAuth0HandlerRoute } from "@/lib/auth/authNavigation";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import {
   getPublicBlockDescriptionSx,
@@ -70,6 +71,12 @@ export function SignUpCtaCard({
   const handleClick = () => {
     if (onCtaClick) {
       onCtaClick();
+      return;
+    }
+    // Rotas do SDK Auth0 são route handlers (302) — navegação de documento
+    // completo evita o par de GETs que o router.push gera nelas.
+    if (isAuth0HandlerRoute(ctaHref)) {
+      window.location.assign(ctaHref);
       return;
     }
     navigate(ctaHref);
