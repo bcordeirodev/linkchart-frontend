@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Auth0Provider } from "@auth0/nextjs-auth0/client";
 
 import { initI18n, detectAndApplyLanguage } from "@/lib/i18n/config";
+import { captureFirstTouch } from "@/lib/telemetry/firstTouch";
 import { AuthProvider } from "@/lib/auth/AuthContext";
 import { LayoutProvider } from "@/shared/layout/core";
 import { MainThemeProvider, applyGlobalStyles } from "@/lib/theme";
@@ -39,6 +40,9 @@ export function Providers({ children, initialLang = "en" }: ProvidersProps) {
   useEffect(() => {
     applyGlobalStyles();
     detectAndApplyLanguage();
+    // Grava a origem da primeira visita (gclid/utm/referrer) antes de qualquer
+    // navegação SPA descartar a query string — consumida no auth0-exchange.
+    captureFirstTouch();
   }, []);
 
   return (
