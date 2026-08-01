@@ -2,6 +2,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "@/shared/hooks";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { redirectToAuth0Login } from "@/lib/auth/authNavigation";
 import { publicLinkService } from "@/services/link-public.service";
 import { useTranslation } from "react-i18next";
 
@@ -102,13 +103,10 @@ export function useShorter() {
     setFormKey((k) => k + 1);
   }, []);
 
-  /** Navigates to Auth0 signup screen. */
-  const handleSignUp = useCallback(
-    () => navigate("/auth/login?screen_hint=signup"),
-    [navigate],
-  );
-  /** Navigates to Auth0 login screen. */
-  const handleLogin = useCallback(() => navigate("/auth/login"), [navigate]);
+  /** Navigates to Auth0 signup screen (full document navigation — route handler). */
+  const handleSignUp = useCallback(() => redirectToAuth0Login("signup"), []);
+  /** Navigates to Auth0 login screen (full document navigation — route handler). */
+  const handleLogin = useCallback(() => redirectToAuth0Login(), []);
 
   return {
     isRedirecting,

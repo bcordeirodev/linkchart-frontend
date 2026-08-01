@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { useMainTheme } from "@/lib/theme";
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { redirectToAuth0Login } from "@/lib/auth/authNavigation";
 import { LanguageSelector } from "@/lib/i18n/components/LanguageSelector";
 import { AppLogo } from "@/shared/ui/base";
 import { Footer } from "./components";
@@ -81,7 +82,7 @@ function ShorterHeaderActions() {
           <Button
             variant="contained"
             size="small"
-            onClick={() => navigate("/auth/login?screen_hint=signup")}
+            onClick={() => redirectToAuth0Login("signup")}
             sx={{
               fontSize: "0.75rem",
               fontWeight: 600,
@@ -217,7 +218,7 @@ function MinimalUtilityBar() {
             <Button
               variant="contained"
               size="small"
-              onClick={() => navigate("/auth/login?screen_hint=signup")}
+              onClick={() => redirectToAuth0Login("signup")}
               sx={{
                 fontSize: "0.75rem",
                 fontWeight: 600,
