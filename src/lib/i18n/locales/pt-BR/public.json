@@ -1,7 +1,7 @@
 {
   "shorter": {
     "heroTitle": "Encurtador de Link Gratuito",
-    "heroSubtitle": "Encurte URLs com <b>estatísticas em tempo real</b>, <b>subdomínio personalizado grátis</b> e QR Code.",
+    "heroSubtitle": "Encurte links de <b>WhatsApp</b>, Instagram e qualquer URL com <b>estatísticas em tempo real</b>, subdomínio grátis e QR Code.",
     "linkCreated": "Link criado com sucesso",
     "freeNoSignup": "100% gratuito · sem cadastro",
     "readyToShare": "Pronto para compartilhar!",
@@ -997,7 +997,93 @@
       "compareShortIo": "Link Charts vs Short.io",
       "compareDub": "Link Charts vs Dub",
       "toolUtm": "Gerador de UTM",
-      "toolChecker": "Verificar link suspeito"
+      "toolChecker": "Verificar link suspeito",
+      "guiaWhatsapp": "Link curto para WhatsApp"
     }
+  },
+  "guiaWhatsapp": {
+    "hero": {
+      "eyebrow": "Guia",
+      "title": "Link curto para WhatsApp com estatísticas de cliques",
+      "subtitle": "Divulgar o wa.me gigante passa pouca confiança, expõe o número no endereço e não conta nada. Um link curto resolve os três: fica com a cara do seu negócio e registra cada clique.",
+      "verdict": "Com um link curto do Link Charts você divulga o WhatsApp do atendimento ou o convite do grupo e vê quantas pessoas clicaram, em qual horário, de qual cidade e aparelho. Grátis e sem instalar nada."
+    },
+    "flow": {
+      "sectionTitle": "Como funciona, em 3 passos",
+      "intro": "Do wa.me ao dado: o caminho que o clique percorre quando você divulga seu WhatsApp com um link curto.",
+      "steps": [
+        {
+          "number": "01",
+          "title": "Copie o link do seu WhatsApp",
+          "desc": "Use o wa.me do atendimento (com mensagem pronta, se quiser) ou o link de convite do grupo (chat.whatsapp.com)."
+        },
+        {
+          "number": "02",
+          "title": "Encurte com um nome seu",
+          "desc": "Cole no Link Charts e personalize o final do link — /orcamentos ou /grupo-vip diz muito mais que um código aleatório."
+        },
+        {
+          "number": "03",
+          "title": "Divulgue e acompanhe",
+          "desc": "Use o link no Instagram, em panfletos e anúncios. Cada toque vira dado: horário, cidade e aparelho, em tempo real."
+        }
+      ]
+    },
+    "why": {
+      "sectionTitle": "Por que não divulgar o wa.me direto",
+      "body": "O link padrão do WhatsApp funciona, mas esconde tudo: você nunca sabe quantas pessoas tocaram nele, de onde vieram nem qual divulgação trouxe cada contato. Ele ainda expõe o número de telefone no próprio endereço e não carrega a sua marca. O link curto resolve os três pontos: esconde o número, leva o seu nome e transforma cada clique em estatística — para você descobrir se o público chega pelo Instagram, pelo panfleto ou pelo anúncio."
+    },
+    "metrics": {
+      "sectionTitle": "O que você enxerga em cada clique",
+      "intro": "O WhatsApp não conta quantas pessoas chegaram até você. O link curto conta:",
+      "items": [
+        {
+          "title": "Quantas pessoas clicaram",
+          "desc": "A contagem real de toques no seu link, dia a dia — o termômetro de cada divulgação."
+        },
+        {
+          "title": "Horário de pico",
+          "desc": "Descubra em quais horários seu público mais clica, para postar e anunciar na hora certa."
+        },
+        {
+          "title": "Cidade e região",
+          "desc": "Veja de onde vêm os interessados — essencial para negócio local, entrega e eventos."
+        },
+        {
+          "title": "Cliques reais vs. robôs",
+          "desc": "O Link Charts separa cliques humanos de robôs e scanners, para o número que você acompanha ser o que importa."
+        }
+      ]
+    },
+    "auto": {
+      "sectionTitle": "O Link Charts faz isso de graça",
+      "body": "Cole o link do seu WhatsApp, personalize o final e pronto — nem precisa de conta para começar. Criando a conta gratuita, você guarda todos os links num painel só, com estatísticas em tempo real, QR Code pronto para imprimir e até subdomínio com a sua marca."
+    },
+    "faq": {
+      "sectionTitle": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "Dá para criar um link curto para grupo de WhatsApp?",
+          "a": "Sim. Cole o link de convite do grupo (chat.whatsapp.com) no Link Charts e divulgue o link curto. Você acompanha quantas pessoas tocaram no convite — e, com a conta gratuita, pode editar o destino depois, apontando para um grupo novo sem trocar o link divulgado."
+        },
+        {
+          "q": "O link curto para WhatsApp expira?",
+          "a": "Não. O link continua funcionando sem prazo de validade e sem limite de cliques no plano gratuito."
+        },
+        {
+          "q": "Como saber quantas pessoas entraram no grupo pelo link?",
+          "a": "O link curto conta quantas pessoas tocaram no convite e abriram o WhatsApp. A entrada no grupo acontece dentro do aplicativo, mas a contagem de cliques é o melhor termômetro de cada divulgação — com horário, cidade e aparelho de cada toque."
+        },
+        {
+          "q": "Preciso pagar ou criar conta para encurtar link de WhatsApp?",
+          "a": "Não. Encurtar é grátis e sem cadastro. A conta gratuita adiciona o painel completo: histórico, edição de destino, QR Code e estatísticas de todos os seus links."
+        },
+        {
+          "q": "Funciona com wa.me, api.whatsapp.com e link de grupo?",
+          "a": "Sim, com todos: wa.me (com ou sem mensagem pronta), api.whatsapp.com e convites de grupo chat.whatsapp.com. O Link Charts encurta qualquer um deles e conta os cliques do mesmo jeito."
+        }
+      ]
+    },
+    "ctaTitle": "Pronto para divulgar seu WhatsApp com dados?"
   }
 }

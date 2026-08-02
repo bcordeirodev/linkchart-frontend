@@ -6,4 +6,8 @@
  * distributes into a union of real translation keys instead of a generic
  * `${string}.hero.title` pattern, which i18next's strict key typing rejects.
  */
-export type GuideI18nKey = "guiaVerCliques" | "guiaInstagram" | "guiaBots";
+export type GuideI18nKey =
+  | "guiaVerCliques"
+  | "guiaInstagram"
+  | "guiaBots"
+  | "guiaWhatsapp";

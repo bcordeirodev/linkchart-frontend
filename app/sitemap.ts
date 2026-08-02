@@ -60,6 +60,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    {
+      url: `${appUrl}/guia/link-curto-para-whatsapp`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
     // Free standalone tools — indexable SEO/funnel pages.
     {
       url: `${appUrl}/ferramentas/gerador-utm`,
