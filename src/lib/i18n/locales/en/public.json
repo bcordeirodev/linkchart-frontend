@@ -152,6 +152,13 @@
           "a": "Yes. Each shortened link has a public analytics page accessible without login. Share the analytics link so anyone can follow the click data, country of origin, and device breakdown in real time."
         }
       ]
+    },
+    "recent": {
+      "title": "Your recent links",
+      "subtitle": "Created in this browser. Tap stats to follow each one's clicks.",
+      "viewStats": "Stats",
+      "keepCta": "Create a free account to keep these links and manage them in your own dashboard.",
+      "keepCtaButton": "Create free account"
     }
   },
   "publicAnalytics": {

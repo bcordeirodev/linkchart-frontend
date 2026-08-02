@@ -14,6 +14,7 @@ import {
   ShorterSubdomainPromo,
   ShorterFaq,
   ShorterSuccessCard,
+  ShorterRecentLinks,
 } from "@/features/shorter/components";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 import {
@@ -161,6 +162,11 @@ export function ShorterLanding({
       {/* Account CTA — present in every state (idle and post-success) */}
       <Box sx={{ mt: { xs: 2.25, md: 2.75 } }}>
         <BenefitBadges />
+      </Box>
+
+      {/* Links recentes do visitante (guest-only; some quando não há histórico) */}
+      <Box sx={{ mt: { xs: 2.25, md: 2.75 } }}>
+        <ShorterRecentLinks refreshToken={createdLink?.slug ?? null} />
       </Box>
 
       {/* 2. Social-proof strip */}

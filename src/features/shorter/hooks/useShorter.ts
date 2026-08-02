@@ -3,6 +3,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "@/shared/hooks";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { redirectToAuth0Login } from "@/lib/auth/authNavigation";
+import { recordGuestLink } from "./useRecentGuestLinks";
 import { publicLinkService } from "@/services/link-public.service";
 import { useTranslation } from "react-i18next";
 
@@ -65,7 +66,16 @@ export function useShorter() {
       // after a short delay so the exit animation plays first. The
       // `?created={id}` param makes the list highlight the new link on
       // arrival — same landing spot as the in-app create flow.
-      if (!isAuthenticated) return;
+      if (!isAuthenticated) {
+        // Guarda o link no navegador do visitante: alimenta a lista "seus
+        // links recentes" (acesso às estatísticas públicas + gancho de conta).
+        recordGuestLink({
+          slug: res.slug,
+          short_url: res.short_url,
+          original_url: res.original_url,
+        });
+        return;
+      }
 
       navTimerRef.current = setTimeout(() => {
         try {
