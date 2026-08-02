@@ -8,6 +8,8 @@ import { useMessage } from "@/lib/providers/MessageProvider";
 import { queryKeys } from "@/lib/query/keys";
 import { bioService } from "@/services/bio.service";
 
+import { createAvatarThumbnail } from "../utils/avatarThumbnail";
+
 import type { BioPage } from "../types";
 
 /** Translates a `bio` namespace key — shared by both mutations below. */
@@ -58,7 +60,13 @@ export function useUploadBioAvatar() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (file: File) => bioService.uploadAvatar(file),
+    // The square thumbnail rides along in the same multipart request: the
+    // original becomes the Open Graph image (WhatsApp preview), the thumb
+    // feeds the page's small avatar circle. Generation failing is fine —
+    // `createAvatarThumbnail` resolves null and the upload proceeds
+    // original-only.
+    mutationFn: async (file: File) =>
+      bioService.uploadAvatar(file, await createAvatarThumbnail(file)),
     onSuccess: (page: BioPage) => {
       queryClient.setQueryData(queryKeys.bio.page(), page);
       showMessage({

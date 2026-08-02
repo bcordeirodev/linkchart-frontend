@@ -64,6 +64,9 @@ export function BioAvatarField({ page }: BioAvatarFieldProps) {
 
   const isBusy = uploadAvatar.isPending || removeAvatar.isPending;
   const fallbackGradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`;
+  // Círculo pequeno → thumb quando existe; presença de avatar continua
+  // decidida por avatarUrl (avatares antigos não têm thumb).
+  const previewUrl = page.avatarThumbUrl ?? page.avatarUrl;
 
   /**
    * Validates the picked file client-side (type + size) before ever
@@ -132,13 +135,13 @@ export function BioAvatarField({ page }: BioAvatarFieldProps) {
             fontSize: "1.75rem",
             fontWeight: 700,
             color: "common.white",
-            background: page.avatarUrl ? undefined : fallbackGradient,
+            background: previewUrl ? undefined : fallbackGradient,
           }}
         >
-          {page.avatarUrl ? (
+          {previewUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={page.avatarUrl}
+              src={previewUrl}
               alt=""
               width={PREVIEW_SIZE}
               height={PREVIEW_SIZE}

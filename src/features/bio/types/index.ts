@@ -77,6 +77,14 @@ export interface BioPage {
    * `POST /api/bio/avatar`, cleared via `DELETE /api/bio/avatar`.
    */
   avatarUrl: string | null;
+  /**
+   * Publicly-servable URL of the square thumbnail generated client-side at
+   * upload time (`createAvatarThumbnail`), or `null` for avatars uploaded
+   * before thumbnails existed (or when generation failed and the upload
+   * proceeded original-only). Consumers rendering the small circle should
+   * prefer this and fall back to `avatarUrl`.
+   */
+  avatarThumbUrl: string | null;
   /** Items in display order (already sorted by `position` in the service). */
   items: BioItem[];
 }

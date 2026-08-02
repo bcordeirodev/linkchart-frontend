@@ -63,6 +63,14 @@ export interface BioPageData {
    */
   avatar_url?: string | null;
   /**
+   * Square thumbnail generated client-side at upload time — the page's
+   * avatar circle renders this (crisper at ~116px, lighter to load) and
+   * falls back to `avatar_url` for avatars uploaded before thumbnails
+   * existed. `bioMetadata` deliberately keeps the ORIGINAL as the Open
+   * Graph image — WhatsApp/Instagram previews want the full photo.
+   */
+  avatar_thumb_url?: string | null;
+  /**
    * Canonical public URL computed by the backend: the subdomain's root
    * (absolute, e.g. `https://bruno.linkcharts.com.br`) when the page has an
    * associated subdomain, or the relative `/@{handle}` path for a legacy

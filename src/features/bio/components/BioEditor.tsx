@@ -215,7 +215,7 @@ export function BioEditor() {
         bio={bioValue || ""}
         theme={themeValue || "dark"}
         items={page?.items ?? []}
-        avatarUrl={page?.avatarUrl}
+        avatarUrl={page?.avatarThumbUrl ?? page?.avatarUrl}
       />
     </Stack>
   );
