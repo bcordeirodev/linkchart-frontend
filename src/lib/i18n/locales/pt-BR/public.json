@@ -152,6 +152,13 @@
           "a": "Sim. Cada link encurtado tem uma página pública de estatísticas acessível sem login. Você pode compartilhar o link de estatísticas para que qualquer pessoa acompanhe os dados de cliques, país de origem e dispositivos em tempo real."
         }
       ]
+    },
+    "recent": {
+      "title": "Seus links recentes",
+      "subtitle": "Criados neste navegador. Toque em estatísticas para acompanhar os cliques de cada um.",
+      "viewStats": "Estatísticas",
+      "keepCta": "Crie uma conta gratuita para não perder estes links e gerenciá-los num painel só seu.",
+      "keepCtaButton": "Criar conta grátis"
     }
   },
   "publicAnalytics": {
