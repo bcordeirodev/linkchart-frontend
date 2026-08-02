@@ -107,7 +107,10 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
             <BioAvatar
               initial={initial}
               palette={palette}
-              avatarUrl={data.avatar_url}
+              // Thumb quando existe (nítida no círculo de ~116px, mais leve);
+              // original como fallback p/ avatares anteriores à miniatura. O
+              // og:image (bioMetadata) segue usando o ORIGINAL de propósito.
+              avatarUrl={data.avatar_thumb_url ?? data.avatar_url}
               displayName={data.title.trim() || data.handle}
             />
           </Box>
@@ -132,17 +135,21 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
 
           {/* Sem line-clamp: o campo já é limitado a 280 caracteres na origem,
               e cortar a bio no meio (feedback 2026-08-02) mutila a apresentação
-              da pessoa. 44ch mantém linhas confortáveis de ler. */}
+              da pessoa. 46ch mantém linhas confortáveis de ler. */}
           {data.bio ? (
             <Typography
               sx={{
                 mt: 1.25,
-                maxWidth: "44ch",
-                fontSize: "0.9375rem",
-                lineHeight: 1.6,
+                maxWidth: "46ch",
+                fontSize: "0.875rem",
+                lineHeight: 1.65,
                 color: palette.textSecondary,
                 textAlign: "center",
                 overflowWrap: "break-word",
+                // Quebras balanceadas: sem linhas órfãs curtas no fim do
+                // parágrafo (progressive enhancement; ignorado onde não há
+                // suporte).
+                textWrap: "pretty",
               }}
             >
               {data.bio}

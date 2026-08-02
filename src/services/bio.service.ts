@@ -45,6 +45,7 @@ interface RawBioPage {
   subdomain_id: number | null;
   url: string;
   avatar_url?: string | null;
+  avatar_thumb_url?: string | null;
   items: RawBioItem[];
 }
 
@@ -78,6 +79,7 @@ function mapBioPage(raw: RawBioPage): BioPage {
     subdomainId: raw.subdomain_id,
     url: raw.url,
     avatarUrl: raw.avatar_url ?? null,
+    avatarThumbUrl: raw.avatar_thumb_url ?? null,
     items: [...raw.items]
       .sort((a, b) => a.position - b.position)
       .map(mapBioItem),
@@ -150,12 +152,19 @@ export class BioService extends BaseService {
    * `validateAvatarFile` (type + size) — the backend re-validates type,
    * size, and minimum 100x100 dimensions regardless, returning 422 with a
    * field-level message under `error.details.errors.avatar` on failure.
+   * @param thumb - optional square thumbnail generated client-side by
+   * `createAvatarThumbnail` — the original stays the Open Graph image while
+   * the thumbnail feeds the page's small avatar circle. `null` uploads the
+   * original only (the backend clears any previous thumbnail).
    * @throws `ApiError` on 422 (invalid file) or when the user has no bio
    * page yet to attach the avatar to.
    */
-  async uploadAvatar(file: File): Promise<BioPage> {
+  async uploadAvatar(file: File, thumb?: File | null): Promise<BioPage> {
     const formData = new FormData();
     formData.append("avatar", file);
+    if (thumb) {
+      formData.append("avatar_thumb", thumb);
+    }
     const raw = await this.upload<RawBioPage>("/api/bio/avatar", formData);
     return mapBioPage(raw);
   }
