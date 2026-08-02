@@ -88,15 +88,19 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
           px: 3,
         }}
       >
+        {/* `my: "auto"` (e não flex-grow): página curta fica opticamente
+            centrada entre o topo e o badge — sem o vazio gigante embaixo dos
+            itens — e página longa flui normalmente, sem risco de clipe que o
+            justify-content: center teria com overflow. */}
         <Box
           sx={{
             width: "100%",
             maxWidth: 480,
-            flex: "1 1 auto",
+            my: "auto",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            pt: { xs: 5.5, sm: 7 },
+            py: { xs: 4, sm: 5 },
           }}
         >
           <Box data-bio-rise style={{ "--i": 0 } as React.CSSProperties}>
@@ -126,19 +130,19 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
             {data.title}
           </Typography>
 
+          {/* Sem line-clamp: o campo já é limitado a 280 caracteres na origem,
+              e cortar a bio no meio (feedback 2026-08-02) mutila a apresentação
+              da pessoa. 44ch mantém linhas confortáveis de ler. */}
           {data.bio ? (
             <Typography
               sx={{
-                mt: 1,
-                maxWidth: "34ch",
+                mt: 1.25,
+                maxWidth: "44ch",
                 fontSize: "0.9375rem",
-                lineHeight: 1.55,
+                lineHeight: 1.6,
                 color: palette.textSecondary,
                 textAlign: "center",
-                display: "-webkit-box",
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
+                overflowWrap: "break-word",
               }}
             >
               {data.bio}
@@ -146,7 +150,7 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
           ) : null}
 
           {data.items.length > 0 ? (
-            <Stack spacing={1.5} sx={{ width: "100%", mt: 4.5 }}>
+            <Stack spacing={1.5} sx={{ width: "100%", mt: 4 }}>
               {data.items.map((item, index) => (
                 <Box
                   key={item.id}
@@ -166,7 +170,7 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
           ) : null}
         </Box>
 
-        <Box sx={{ py: { xs: 5, sm: 6 } }}>
+        <Box sx={{ flexShrink: 0, pb: { xs: 3.5, sm: 4 } }}>
           <BioFooterBadge palette={palette} />
         </Box>
       </Box>

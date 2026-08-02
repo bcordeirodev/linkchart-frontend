@@ -53,6 +53,11 @@ export default function BioLinkButton({
   palette,
 }: BioLinkButtonProps) {
   const initial = (label.trim()[0] ?? "•").toUpperCase();
+  // Host exibido sempre limpo: minúsculo e sem "www." — é selo de confiança,
+  // não URL técnica.
+  const displayHost = destinationHost
+    ? destinationHost.toLowerCase().replace(/^www\./, "")
+    : null;
 
   return (
     <Box
@@ -158,13 +163,13 @@ export default function BioLinkButton({
         >
           {label}
         </Box>
-        {destinationHost ? (
+        {displayHost ? (
           <Box
             component="span"
             sx={{
               display: "block",
               mt: 0.25,
-              fontSize: "0.78rem",
+              fontSize: "0.8125rem",
               fontWeight: 500,
               color: palette.textSecondary,
               overflow: "hidden",
@@ -172,7 +177,7 @@ export default function BioLinkButton({
               whiteSpace: "nowrap",
             }}
           >
-            {destinationHost}
+            {displayHost}
           </Box>
         ) : null}
       </Box>
