@@ -171,15 +171,26 @@ async function assertCanonicalHost(sub: string): Promise<void> {
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { sub } = await params;
+
+  // Soft-404 do App Router (streaming devolve 200 mesmo com notFound() —
+  // vercel/next.js#45801/#76474): retorna noindex em vez de lançar, para o
+  // HTML 200 da UI de não-encontrado nunca ser indexado (subdomínios sem bio
+  // são a superfície mais exposta a crawler aqui). O notFound() da page cuida
+  // da UI.
+  const NOT_FOUND_METADATA: Metadata = {
+    title: "Página não encontrada",
+    robots: { index: false, follow: false },
+  };
+
   if (!SUBDOMAIN_PATTERN.test(sub)) {
-    notFound();
+    return NOT_FOUND_METADATA;
   }
 
   await assertCanonicalHost(sub);
 
   const data = await fetchBioDataBySubdomain(sub);
   if (!data) {
-    notFound();
+    return NOT_FOUND_METADATA;
   }
 
   const canonicalUrl = getSubdomainOrigin(sub);
