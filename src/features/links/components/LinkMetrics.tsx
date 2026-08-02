@@ -126,7 +126,10 @@ export function LinkMetrics({
     },
     {
       id: "active_links",
-      title: t("status.active"),
+      // Chave própria ("Links ativos"), não `status.active`: o chip de status
+      // precisa do singular "Ativo", mas como título de card ele lia como se a
+      // conta inteira fosse uma coisa só "Ativo".
+      title: t("metrics.activeLinks"),
       value: formatCount(activeLinks, i18n.language),
       icon: <CheckCircle {...ICON_LG} />,
       color: "success" as const,
@@ -139,7 +142,9 @@ export function LinkMetrics({
       value: formatCount(totalClicks, i18n.language),
       icon: <TrendingUp {...ICON_LG} />,
       color: "info" as const,
-      subtitle: t("metrics.totalClicksSubtitle"),
+      // `totalClicksAllLinks`, não `totalClicksSubtitle`: aquele é compartilhado
+      // com o dashboard de UM link, onde "somando todos os seus links" mentiria.
+      subtitle: t("metrics.totalClicksAllLinks"),
       hint: t("metrics.totalClicksHint"),
     },
     {
@@ -154,6 +159,11 @@ export function LinkMetrics({
   ];
 
   const metrics = mode === "single-link" ? singleLinkMetrics : listMetrics;
+
+  // Mobile-first: no modo lista os 4 cards viram grade 2×2 no celular — 4 cards
+  // empilhados empurravam o quick-create e a lista ~2 telas para baixo. O modo
+  // single-link (dashboard de analytics) mantém a pilha de 1 coluna.
+  const gridItemXs = mode === "list" ? 6 : 12;
 
   if (noContainer) {
     return (
@@ -189,9 +199,9 @@ export function LinkMetrics({
         </Typography>
       ) : null}
 
-      <Grid container spacing={3}>
+      <Grid container spacing={{ xs: 1.5, sm: 3 }}>
         {metrics.map((metric) => (
-          <Grid item xs={12} sm={6} md={3} key={metric.id}>
+          <Grid item xs={gridItemXs} sm={6} md={3} key={metric.id}>
             <MetricCard
               title={metric.title}
               value={metric.value}

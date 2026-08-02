@@ -351,11 +351,18 @@ export function LinksQuickCreate({
           iconChip
           title={t("list.quickCreate.label")}
           description={t("list.quickCreate.description")}
-          descriptionSx={{ display: { xs: "none", sm: "block" } }}
           sx={{ mb: { xs: 1.5, sm: 2 } }}
           action={
             <Stack direction="row" spacing={0.5} alignItems="center">
-              <HelpHint label={t("list.onboarding.hintQuickCreate")} />
+              {/* Oculto no xs: a descrição do header (agora visível no celular)
+                  já diz a mesma coisa, e o "?" extra quebrava o título em duas
+                  linhas ao lado do botão "Mais opções". */}
+              <Box
+                component="span"
+                sx={{ display: { xs: "none", sm: "inline-flex" } }}
+              >
+                <HelpHint label={t("list.onboarding.hintQuickCreate")} />
+              </Box>
               <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
                 <Button
                   variant="outlined"
@@ -367,9 +374,8 @@ export function LinksQuickCreate({
                   sx={[
                     getAdvancedOptionsButtonSx(theme),
                     {
-                      // xs: só o ícone — deixa o título do header em uma linha.
                       "& .MuiButton-startIcon": {
-                        mr: { xs: 0, sm: 0.375 },
+                        mr: 0.375,
                       },
                       "& .MuiButton-endIcon": {
                         display: { xs: "none", sm: "inline-flex" },
@@ -377,11 +383,20 @@ export function LinksQuickCreate({
                     },
                   ]}
                 >
+                  {/* Rótulo sempre visível: no toque não existe hover, e um
+                      ícone de sliders sozinho não diz nada a quem é leigo.
+                      No xs entra a versão curta para caber ao lado do título. */}
                   <Box
                     component="span"
                     sx={{ display: { xs: "none", sm: "inline" } }}
                   >
                     {t("list.quickCreate.moreOptions")}
+                  </Box>
+                  <Box
+                    component="span"
+                    sx={{ display: { xs: "inline", sm: "none" } }}
+                  >
+                    {t("list.quickCreate.moreOptionsShort")}
                   </Box>
                 </Button>
               </Tooltip>

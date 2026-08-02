@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, HelpCircle } from "lucide-react";
+import { HelpCircle, Link2 } from "lucide-react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
@@ -237,8 +237,10 @@ function LinkListPageContent() {
       <ResponsiveContainer variant="page" sx={{ maxWidth: 1600 }}>
         <Stack spacing={{ xs: 2.5, sm: 3 }} component="section">
           <Box component="div">
+            {/* Link2, não BarChart3: o chip do título identifica a página "Meus
+                links" — gráfico é a iconografia das páginas de estatísticas. */}
             <LinksListSectionHeading
-              icon={<BarChart3 {...ICON_MD} />}
+              icon={<Link2 {...ICON_MD} />}
               title={t("list.heading")}
               description={t("list.pageSubtitle")}
               titleVariant="page"

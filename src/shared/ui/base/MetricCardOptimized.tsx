@@ -91,17 +91,30 @@ export function MetricCardOptimized({
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ fontWeight: 500 }}
+              sx={{
+                fontWeight: 500,
+                fontSize: { xs: "0.8125rem", sm: "0.875rem" },
+              }}
             >
               {title}
             </Typography>
-            {hint ? <HelpHint label={hint} size={13} /> : null}
+            {hint ? (
+              // Oculto no xs: tooltip é affordance de hover e, no card de
+              // meia-largura, o "?" é o que empurra o título para 2 linhas —
+              // o subtitle já explica a métrica em texto corrido.
+              <Box
+                component="span"
+                sx={{ display: { xs: "none", sm: "inline-flex" } }}
+              >
+                <HelpHint label={hint} size={13} />
+              </Box>
+            ) : null}
           </Stack>
 
           <Box
             sx={{
-              width: 32,
-              height: 32,
+              width: { xs: 28, sm: 32 },
+              height: { xs: 28, sm: 32 },
               borderRadius: `${radiusTokens.sm}px`,
               // Solid-enough fill so the white glyph holds contrast in both
               // themes; the chip is the card's only accent.
@@ -114,7 +127,10 @@ export function MetricCardOptimized({
               justifyContent: "center",
               color: theme.palette.common.white,
               flexShrink: 0,
-              "& svg": { width: 20, height: 20 },
+              "& svg": {
+                width: { xs: 18, sm: 20 },
+                height: { xs: 18, sm: 20 },
+              },
             }}
           >
             {icon}
@@ -132,6 +148,9 @@ export function MetricCardOptimized({
             fontVariantNumeric: "tabular-nums",
             color: "text.primary",
             mb: subtitle ? 0.5 : 0,
+            // Escala mobile-first: 34px num card de meia-largura (grade 2×2 do
+            // /links) estoura; 24px preserva a hierarquia sem dominar o card.
+            fontSize: { xs: "1.5rem", sm: "2.125rem" },
           }}
         >
           {value}
