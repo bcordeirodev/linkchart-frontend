@@ -5,6 +5,7 @@ import Script from "next/script";
 import { Providers } from "@/lib/providers/Providers";
 import { buildOrganizationSchema } from "@/lib/seo/structuredData";
 import { CookieConsentInit } from "@/shared/components/CookieConsentInit";
+import { MarketingScripts } from "@/shared/components/MarketingScripts";
 import FrontendObservability from "@/shared/observability/FrontendObservability";
 import "@/styles/index.css";
 import "@/styles/animations.css";
@@ -77,14 +78,6 @@ export default function RootLayout({
   const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
   const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID;
 
-  // GA4 and Google Ads both run on gtag.js: load the loader once (keyed on the
-  // first available id) and issue a `config` for each id that is present.
-  const gtagLoaderId = gaId || googleAdsId;
-  const gtagConfigLines = [gaId, googleAdsId]
-    .filter(Boolean)
-    .map((id) => `gtag('config','${id}');`)
-    .join("");
-
   return (
     <html lang={initialLang} suppressHydrationWarning>
       <body className={inter.variable}>
@@ -101,36 +94,17 @@ export default function RootLayout({
             __html: `window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};window.gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});`,
           }}
         />
-        {gtagLoaderId ? (
-          <>
-            <Script
-              id="gtm"
-              strategy="afterInteractive"
-              src={`https://www.googletagmanager.com/gtag/js?id=${gtagLoaderId}`}
-            />
-            <Script
-              id="gtag-config"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());${gtagConfigLines}`,
-              }}
-            />
-          </>
-        ) : null}
         {/*
-         * AdSense — uses a native <script async> instead of Next.js <Script>
-         * intentionally: <Script> appends a `data-nscript` attribute that
-         * AdSense's own validation rejects with a console warning.
-         * A native <script async> in a Server Component is hoisted to <head>
-         * by React and does not receive any framework-specific attributes.
+         * gtag (GA4/Ads) + AdSense live behind a client-side gate that skips
+         * them on personal bio surfaces (/@handle, /b, /s and bio
+         * subdomains) — see MarketingScripts. Faro RUM above is deliberately
+         * NOT gated: operational telemetry covers every route.
          */}
-        {adsenseId ? (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
-            crossOrigin="anonymous"
-          />
-        ) : null}
+        <MarketingScripts
+          gaId={gaId}
+          googleAdsId={googleAdsId}
+          adsenseId={adsenseId}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
