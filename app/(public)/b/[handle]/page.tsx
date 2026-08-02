@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import BioPublicPage from "@/page-components/bio/BioPublicPage";
+import { buildBioPageMetadata } from "@/page-components/bio/bioMetadata";
 
 import type { BioApiResponse, BioPageData } from "@/page-components/bio/types";
 
@@ -81,35 +82,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonicalUrl = data.url?.startsWith("http")
     ? data.url
     : `${appUrl}/@${handle}`;
-  const description =
-    data.bio || `Confira os links de @${handle} no Link Charts.`;
 
-  return {
-    title: `${data.title} — Link Charts Bio`,
-    description,
-    alternates: { canonical: canonicalUrl },
-    robots: { index: true, follow: true },
-    openGraph: {
-      type: "profile",
-      title: `${data.title} — Link Charts Bio`,
-      description,
-      url: canonicalUrl,
-      images: [
-        {
-          url: `${appUrl}/og-default.png`,
-          width: 1200,
-          height: 630,
-          alt: "Link Charts",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${data.title} — Link Charts Bio`,
-      description,
-      images: [`${appUrl}/og-default.png`],
-    },
-  };
+  return buildBioPageMetadata(data, canonicalUrl);
 }
 
 /**
