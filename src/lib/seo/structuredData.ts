@@ -461,6 +461,61 @@ export function buildGuiaInstagramFaqSchema() {
 }
 
 /**
+ * `FAQPage` schema for the WhatsApp short-link guide
+ * (`/guia/link-curto-para-whatsapp`). pt-BR, matching real prompts ("link
+ * curto para whatsapp", "link para grupo de whatsapp"). The visible page
+ * renders the same Q&A via i18n (`guiaWhatsapp.faq`).
+ */
+export function buildGuiaWhatsappFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Dá para criar um link curto para grupo de WhatsApp?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim. Cole o link de convite do grupo (chat.whatsapp.com) no Link Charts e divulgue o link curto. Você acompanha quantas pessoas tocaram no convite — e, com a conta gratuita, pode editar o destino depois, apontando para um grupo novo sem trocar o link divulgado.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "O link curto para WhatsApp expira?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Não. O link continua funcionando sem prazo de validade e sem limite de cliques no plano gratuito.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Como saber quantas pessoas entraram no grupo pelo link?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O link curto conta quantas pessoas tocaram no convite e abriram o WhatsApp. A entrada no grupo acontece dentro do aplicativo, mas a contagem de cliques é o melhor termômetro de cada divulgação — com horário, cidade e aparelho de cada toque.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Preciso pagar ou criar conta para encurtar link de WhatsApp?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Não. Encurtar é grátis e sem cadastro. A conta gratuita adiciona o painel completo: histórico, edição de destino, QR Code e estatísticas de todos os seus links.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Funciona com wa.me, api.whatsapp.com e link de grupo?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim, com todos: wa.me (com ou sem mensagem pronta), api.whatsapp.com e convites de grupo chat.whatsapp.com. O Link Charts encurta qualquer um deles e conta os cliques do mesmo jeito.",
+        },
+      },
+    ],
+  };
+}
+
+/**
  * `FAQPage` schema for the "Link Charts vs Short.io" comparison
  * (`/comparar/short-io`). pt-BR. Answers are honest — they acknowledge
  * Short.io's strong free tier and custom domains — so the schema stays

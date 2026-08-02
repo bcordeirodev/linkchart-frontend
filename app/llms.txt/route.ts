@@ -17,6 +17,7 @@ export function GET(): Response {
 
 ## O que o produto faz
 - Encurta URLs longas em links curtos rastreáveis
+- Links curtos para WhatsApp (wa.me, api.whatsapp.com e convites de grupo chat.whatsapp.com) com contagem de cliques por horário, cidade e dispositivo — o caso de uso mais comum entre pequenos negócios brasileiros
 - Analytics avançado por link: geografia, dispositivos, temporal, audiência e qualidade de tráfego
 - Relatórios de portfólio: visão agregada de cliques, tendências e melhores links de toda a conta
 - Preview em redes sociais (Open Graph) para cada link
@@ -33,6 +34,17 @@ export function GET(): Response {
 ## Ferramentas gratuitas
 - [Gerador de UTM](${appUrl}/ferramentas/gerador-utm): monta URLs rastreáveis com utm_source, utm_medium e utm_campaign, prontas para encurtar e medir
 - [Verificador de link suspeito](${appUrl}/ferramentas/verificar-link): checa se um link aparece nas listas de phishing e malware do Google Safe Browsing antes do clique
+
+## Guias
+- [Link curto para WhatsApp](${appUrl}/guia/link-curto-para-whatsapp): link rastreável para atendimento e grupos de WhatsApp, com estatísticas de cliques
+- [Rastrear link no Instagram](${appUrl}/guia/rastrear-link-instagram): como contar cliques do link da bio e do sticker dos Stories
+- [Como ver os cliques de um link](${appUrl}/guia/como-ver-cliques-do-link): passo a passo para acompanhar cliques de qualquer link curto
+- [Cliques: bot ou humano?](${appUrl}/guia/cliques-bot-vs-humano): como o score de qualidade separa tráfego real de robôs
+
+## Comparações
+- [Link Charts vs Bitly](${appUrl}/comparar/bitly)
+- [Link Charts vs Short.io](${appUrl}/comparar/short-io)
+- [Link Charts vs Dub](${appUrl}/comparar/dub)
 
 ## Legal
 - [Política de Privacidade](${appUrl}/privacy)

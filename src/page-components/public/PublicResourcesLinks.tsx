@@ -23,6 +23,7 @@ const GUIDES: readonly ResourceLink[] = [
   { href: "/guia/cliques-bot-vs-humano", key: "guiaBots" },
   { href: "/guia/como-ver-cliques-do-link", key: "guiaVerCliques" },
   { href: "/guia/rastrear-link-instagram", key: "guiaInstagram" },
+  { href: "/guia/link-curto-para-whatsapp", key: "guiaWhatsapp" },
 ];
 
 /** Comparisons group — competitor comparison pages. */
