@@ -62,14 +62,17 @@ export default function BioAvatar({
         mx: "auto",
       }}
     >
+      {/* Glow contido (raio menor, blur maior): luz de proximidade sutil em
+          vez do balão difuso que o spread largo criava atrás da foto. */}
       <Box
         aria-hidden
         sx={{
           position: "absolute",
-          inset: { xs: -20, sm: -22 },
+          inset: { xs: -10, sm: -12 },
           borderRadius: "50%",
           background: palette.avatarGlow,
-          filter: { xs: "blur(24px)", sm: "blur(26px)" },
+          filter: { xs: "blur(30px)", sm: "blur(32px)" },
+          opacity: 0.75,
         }}
       />
       <Box
@@ -83,6 +86,8 @@ export default function BioAvatar({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          // Anel fino separa a foto do glow e dá o acabamento de perfil.
+          border: `1px solid ${palette.buttonBorder}`,
           boxShadow: "0 8px 24px -8px rgba(0, 0, 0, 0.45)",
         }}
       >
