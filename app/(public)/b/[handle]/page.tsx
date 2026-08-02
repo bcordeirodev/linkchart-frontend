@@ -66,13 +66,23 @@ async function fetchBioData(handle: string): Promise<BioPageData | null> {
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params;
+
+  // Soft-404 do App Router (streaming devolve 200 mesmo com notFound() —
+  // vercel/next.js#45801/#76474): quando a página não existe, este metadata
+  // RETORNA noindex em vez de lançar, garantindo que o HTML 200 da UI de
+  // não-encontrado nunca seja indexado. O notFound() da page cuida da UI.
+  const NOT_FOUND_METADATA: Metadata = {
+    title: "Página não encontrada",
+    robots: { index: false, follow: false },
+  };
+
   if (!HANDLE_PATTERN.test(handle)) {
-    notFound();
+    return NOT_FOUND_METADATA;
   }
 
   const data = await fetchBioData(handle);
   if (!data) {
-    notFound();
+    return NOT_FOUND_METADATA;
   }
 
   // Subdomain-first: quando a página tem subdomínio associado, o backend
