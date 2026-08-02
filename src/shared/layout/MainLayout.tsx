@@ -180,7 +180,10 @@ function MainLayout({
           {children}
         </Box>
 
-        {showFooter ? <Footer /> : null}
+        {/* Compact: este footer vive FORA do <main> com scroll, então fica
+            permanentemente visível — a variante cheia (links de aquisição)
+            ocupava ~32% do viewport mobile. */}
+        {showFooter ? <Footer variant="compact" /> : null}
       </Box>
     </Box>
   );
