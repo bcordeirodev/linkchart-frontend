@@ -34,15 +34,15 @@
     "stats": {
       "linksCreated": "Links criados",
       "clicksTracked": "Cliques rastreados",
-      "responseTime": "Tempo de Resposta",
-      "uptime": "Uptime Garantido",
+      "responseTime": "Tempo de resposta",
+      "uptime": "Do tempo no ar",
       "sectionTitle": "Usado por criadores"
     },
-    "howItWorks": "Como Funciona",
+    "howItWorks": "Como funciona",
     "steps": {
       "paste": {
-        "title": "Cole a URL",
-        "desc": "Informe o link longo no formulário. Opcional: escolha um slug personalizado."
+        "title": "Cole o link",
+        "desc": "Informe o link longo no formulário. Opcional: escolha um nome personalizado."
       },
       "shorten": {
         "title": "Encurte na hora",
@@ -55,31 +55,31 @@
     },
     "form": {
       "boxTitle": "Criar link curto",
-      "boxSubtitle": "Cole a URL de destino abaixo. Slug personalizado é opcional.",
-      "urlLabel": "URL Original",
-      "urlPlaceholder": "Cole a URL aqui... (ex: https://exemplo.com/pagina-longa)",
-      "urlRequired": "A URL é obrigatória",
-      "urlInvalid": "Insira uma URL válida",
+      "boxSubtitle": "Cole o link que você quer encurtar. Se quiser, dê um nome personalizado a ele.",
+      "urlLabel": "Link que você quer encurtar",
+      "urlPlaceholder": "Cole seu link aqui…",
+      "urlRequired": "Cole o link que você quer encurtar",
+      "urlInvalid": "Este link não parece válido — confira se copiou o endereço completo",
       "titleLabel": "Título",
       "optional": "opcional",
       "titlePlaceholder": "Nome para identificar o link",
-      "slugLabel": "Slug",
+      "slugLabel": "Nome personalizado",
       "slugPlaceholder": "meu-link",
       "slugInvalid": "3–50 caracteres: letras minúsculas, números e hífens",
-      "submitButton": "⚡ Encurtar Agora",
-      "errorMessage": "Erro ao encurtar a URL. Tente novamente.",
-      "slugSuggestionChecking": "Verificando sugestão de slug…",
+      "submitButton": "⚡ Encurtar agora",
+      "errorMessage": "Não conseguimos encurtar este link. Tente novamente.",
+      "slugSuggestionChecking": "Procurando um nome disponível…",
       "slugTabHint": "Tab para aceitar a sugestão",
       "safety": {
         "checking": "Verificando segurança...",
-        "safe": "URL verificada · sem ameaças detectadas",
-        "unsafe": "URL bloqueada: {{threats}}",
+        "safe": "Link verificado · sem ameaças detectadas",
+        "unsafe": "Link bloqueado por segurança: {{threats}}",
         "error": "Verificação de segurança indisponível"
       },
       "slugAvailability": {
-        "checking": "Verificando disponibilidade do slug…",
-        "available": "Slug disponível · pronto para usar",
-        "taken": "Este slug já está em uso"
+        "checking": "Verificando se o nome está livre…",
+        "available": "Nome disponível · pronto para usar",
+        "taken": "Este nome já está em uso — tente outro"
       }
     },
     "upgrade": {
@@ -95,13 +95,13 @@
       "exampleSlug": "promo"
     },
     "errors": {
-      "invalidUrl": "URL inválida",
-      "shortenFailed": "Erro ao encurtar a URL. Tente novamente.",
+      "invalidUrl": "Link inválido",
+      "shortenFailed": "Não conseguimos encurtar este link. Tente novamente.",
       "invalidSlug": "Erro: link criado mas sem slug válido",
       "redirectFailed": "O link foi criado, mas não foi possível abrir a sua lista de links. Acesse \"Meus links\" para ver as estatísticas."
     },
     "faq": {
-      "sectionTitle": "Perguntas Frequentes",
+      "sectionTitle": "Perguntas frequentes",
       "items": [
         {
           "q": "Como contar quantas vezes um link foi clicado gratuitamente?",
@@ -244,7 +244,7 @@
     },
     "cta": {
       "title": "Crie sua conta gratuita",
-      "description": "Acesse estatísticas completas com histórico de cliques, mapa de países, dispositivos e horários de pico. Gerencie todos os seus links em um painel próprio — com QR Code e slug personalizado em cada um.",
+      "description": "Acesse estatísticas completas com histórico de cliques, mapa de países, dispositivos e horários de pico. Gerencie todos os seus links em um painel próprio — com QR Code e nome personalizado em cada um.",
       "button": "Criar conta grátis",
       "features": [
         "Grátis para sempre",
@@ -252,9 +252,9 @@
         "Até 3 subdomínios grátis",
         "Estatísticas em tempo real",
         "Estatísticas avançadas por link",
-        "Relatórios do portfólio de links",
+        "Relatórios de todos os seus links",
         "Rastreamento de campanhas UTM",
-        "Dashboard completo de performance"
+        "Painel completo de desempenho"
       ],
       "unlockTitle": "Crie links com estatísticas como estas — grátis",
       "unlockBody": "Você está vendo as estatísticas públicas de um link. Crie sua conta gratuita e tenha os mesmos dados nos seus links: histórico de cliques, mapa geográfico, dispositivos e rastreio de UTM."
