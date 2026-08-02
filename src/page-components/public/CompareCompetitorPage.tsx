@@ -204,21 +204,40 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
               fontSize: { xs: "1rem", md: "1.15rem" },
               fontWeight: 500,
               color: theme.palette.text.secondary,
-              mb: 2,
             }}
           >
             {tstr(`${i18nKey}.hero.subtitle`)}
           </Typography>
-          <Typography
-            component="p"
+
+          {/* Cartão de veredicto: a conclusão direta da comparação, destacada —
+              mesma hierarquia do GuideHero (um subtítulo só; a resposta vira
+              callout, não um segundo parágrafo cinza). */}
+          <Box
             sx={{
-              fontSize: "0.9375rem",
-              lineHeight: 1.6,
-              color: alpha(theme.palette.text.primary, isDark ? 0.7 : 0.72),
+              mt: { xs: 2.5, md: 3 },
+              mx: "auto",
+              maxWidth: 620,
+              textAlign: "left",
+              px: { xs: 2, md: 2.5 },
+              py: { xs: 1.75, md: 2 },
+              borderRadius: 2,
+              border: `1px solid ${alpha(primary, isDark ? 0.3 : 0.24)}`,
+              borderLeft: `3px solid ${primary}`,
+              bgcolor: alpha(primary, isDark ? 0.09 : 0.05),
             }}
           >
-            {tstr(`${i18nKey}.hero.verdict`)}
-          </Typography>
+            <Typography
+              component="p"
+              sx={{
+                fontSize: "0.9375rem",
+                lineHeight: 1.65,
+                color: alpha(theme.palette.text.primary, isDark ? 0.88 : 0.9),
+                m: 0,
+              }}
+            >
+              {tstr(`${i18nKey}.hero.verdict`)}
+            </Typography>
+          </Box>
         </Box>
 
         {/* ---- Optional: dated "what changed at {competitor}" context ---- */}
