@@ -34,15 +34,15 @@
     "stats": {
       "linksCreated": "Links created",
       "clicksTracked": "Clicks tracked",
-      "responseTime": "Response Time",
-      "uptime": "Uptime Guaranteed",
+      "responseTime": "Response time",
+      "uptime": "Uptime",
       "sectionTitle": "Trusted by creators"
     },
-    "howItWorks": "How It Works",
+    "howItWorks": "How it works",
     "steps": {
       "paste": {
-        "title": "Paste your URL",
-        "desc": "Enter the long link in the form. Optional: pick a custom slug."
+        "title": "Paste your link",
+        "desc": "Enter the long link in the form. Optional: pick a custom name."
       },
       "shorten": {
         "title": "Shorten instantly",
@@ -55,31 +55,31 @@
     },
     "form": {
       "boxTitle": "Create a short link",
-      "boxSubtitle": "Paste your destination URL below. Custom slug is optional.",
-      "urlLabel": "Original URL",
-      "urlPlaceholder": "Paste the URL here... (e.g. https://example.com/long-page)",
-      "urlRequired": "URL is required",
-      "urlInvalid": "Enter a valid URL",
+      "boxSubtitle": "Paste the link you want to shorten. Optionally, give it a custom name.",
+      "urlLabel": "Link you want to shorten",
+      "urlPlaceholder": "Paste your link here…",
+      "urlRequired": "Paste the link you want to shorten",
+      "urlInvalid": "This link doesn't look valid — check that you copied the full address",
       "titleLabel": "Title",
       "optional": "optional",
       "titlePlaceholder": "Name to identify the link",
-      "slugLabel": "Slug",
+      "slugLabel": "Custom name",
       "slugPlaceholder": "my-link",
       "slugInvalid": "3–50 characters: lowercase letters, numbers and hyphens",
-      "submitButton": "⚡ Shorten Now",
-      "errorMessage": "Error shortening URL. Please try again.",
-      "slugSuggestionChecking": "Checking slug suggestion…",
+      "submitButton": "⚡ Shorten now",
+      "errorMessage": "We couldn't shorten this link. Please try again.",
+      "slugSuggestionChecking": "Looking for an available name…",
       "slugTabHint": "Tab to accept suggestion",
       "safety": {
         "checking": "Checking security...",
-        "safe": "URL verified · no threats detected",
-        "unsafe": "Blocked URL: {{threats}}",
+        "safe": "Link verified · no threats detected",
+        "unsafe": "Link blocked for safety: {{threats}}",
         "error": "Security check unavailable"
       },
       "slugAvailability": {
-        "checking": "Checking slug availability…",
-        "available": "Slug available · ready to use",
-        "taken": "This slug is already in use"
+        "checking": "Checking if the name is free…",
+        "available": "Name available · ready to use",
+        "taken": "This name is already taken — try another"
       }
     },
     "upgrade": {
@@ -95,13 +95,13 @@
       "exampleSlug": "promo"
     },
     "errors": {
-      "invalidUrl": "Invalid URL",
-      "shortenFailed": "Failed to shorten the URL. Please try again.",
+      "invalidUrl": "Invalid link",
+      "shortenFailed": "We couldn't shorten this link. Please try again.",
       "invalidSlug": "Error: link created but slug is invalid",
       "redirectFailed": "Your link was created, but we couldn't open your links list. Go to \"My Links\" to see its analytics."
     },
     "faq": {
-      "sectionTitle": "Frequently Asked Questions",
+      "sectionTitle": "Frequently asked questions",
       "items": [
         {
           "q": "How do I count how many times a link was clicked for free?",
@@ -244,7 +244,7 @@
     },
     "cta": {
       "title": "Create your free account",
-      "description": "Access full analytics with click history, country map, devices and peak hours. Manage all your links in your own dashboard — with QR Code and custom slug on each one.",
+      "description": "Access full analytics with click history, country map, devices and peak hours. Manage all your links in your own dashboard — with QR Code and a custom name on each one.",
       "button": "Create free account",
       "features": [
         "Free forever",
@@ -252,7 +252,7 @@
         "Up to 3 free subdomains",
         "Real-time analytics",
         "Advanced analytics per link",
-        "Portfolio reports dashboard",
+        "Reports across all your links",
         "UTM campaign tracking",
         "Full performance dashboard"
       ],
