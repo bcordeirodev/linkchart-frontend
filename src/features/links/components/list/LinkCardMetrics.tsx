@@ -8,7 +8,6 @@
  * number formatting with the active UI locale.
  */
 
-import { Eye, Clock } from "lucide-react";
 import { Box, Tooltip, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { useTheme } from "@mui/material/styles";
@@ -20,7 +19,6 @@ import {
   getDateFnsLocale,
 } from "@/features/links/utils/formatLastClick";
 import { formatCount } from "@/lib/utils";
-import { ICON_SM } from "@/lib/theme/iconDefaults";
 import type { LinkMeta, LinkResponse } from "@/types";
 
 import { LinkHealthBadge } from "./LinkHealthBadge";
@@ -267,37 +265,56 @@ export function LinkCardMetrics({
   // ── Compact (mobile) segments ──────────────────────────────────────────────
   // Clean by default: clicks + last-click always; trend only when it carries a
   // real signal (health gates itself). Sparkline and created-date are
-  // desktop-only.
+  // desktop-only. Rótulos de texto ("Cliques", "Último clique") no lugar dos
+  // ícones de olho/relógio: no toque não há hover/tooltip para socorrer quem
+  // não decifra o glifo — e olho sugere "visualizações", não cliques.
   const showTrend = hasTrendSignal(meta?.trend);
+  const hasAnyClicks = (link.clicks ?? 0) > 0;
 
   return (
     <Box sx={{ ...getLinkCardMetricsRowSx(theme), mt: 0.75, pt: 0.75, ...sx }}>
       <MetricsRow dividerSx={dividerSx}>
-        <Box sx={linkCardMetricInlineSx}>
-          <Eye {...ICON_SM} style={{ opacity: 0.4, flexShrink: 0 }} />
-          <Typography
-            variant="caption"
-            component="span"
-            sx={linkCardMetricValueSx}
-          >
-            {formatCount(link.clicks, i18n.language)}
-          </Typography>
-        </Box>
-
-        <Box sx={linkCardMetricInlineSx}>
-          <Clock {...ICON_SM} style={{ opacity: 0.4, flexShrink: 0 }} />
+        {hasAnyClicks ? (
+          <InlineMetric label={t("metrics.clicksShort")}>
+            <Typography
+              variant="caption"
+              component="span"
+              sx={linkCardMetricValueSx}
+            >
+              {formatCount(link.clicks, i18n.language)}
+            </Typography>
+          </InlineMetric>
+        ) : (
+          // Zero cliques vira uma frase só: "Cliques 0 · sem cliques ainda"
+          // dizia a mesma coisa duas vezes.
           <Typography
             variant="caption"
             component="span"
             sx={{
               ...linkCardMetricValueSx,
-              color: hasLastClick ? "text.secondary" : "text.disabled",
+              color: "text.disabled",
               fontWeight: 500,
             }}
           >
-            {hasLastClick ? lastClickLabel : t("metrics.noClicks")}
+            {t("metrics.noClicks")}
           </Typography>
-        </Box>
+        )}
+
+        {hasAnyClicks && hasLastClick ? (
+          <InlineMetric label={t("metrics.lastClickShort")}>
+            <Typography
+              variant="caption"
+              component="span"
+              sx={{
+                ...linkCardMetricValueSx,
+                color: "text.secondary",
+                fontWeight: 500,
+              }}
+            >
+              {lastClickLabel}
+            </Typography>
+          </InlineMetric>
+        ) : null}
 
         {showTrend ? <LinkTrendBadge trend={meta!.trend} compact /> : null}
 

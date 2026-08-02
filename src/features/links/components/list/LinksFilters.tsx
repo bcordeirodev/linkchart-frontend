@@ -11,6 +11,7 @@ import {
   Select,
   Stack,
   TextField,
+  Typography,
   useTheme,
 } from "@mui/material";
 import { debounce } from "lodash";
@@ -86,6 +87,19 @@ export function LinksFilters({
   const shellSx = embedded
     ? getLinksFilterInsetSx(theme)
     : { ...getLinksPanelSx(theme), mb: 0, overflow: "hidden" as const };
+
+  // Rótulo curto à esquerda de cada fileira de chips ("Status", "Tags") — sem
+  // ele, quem chega pela primeira vez vê "Todos / Ativo / Inativo / Expirado"
+  // sem saber do que a fileira fala.
+  const rowLabelSx = {
+    fontWeight: 600,
+    fontSize: "0.6875rem",
+    letterSpacing: "0.06em",
+    textTransform: "uppercase" as const,
+    color: "text.secondary",
+    flexShrink: 0,
+    mr: 0.5,
+  };
 
   return (
     <Box sx={shellSx}>
@@ -185,6 +199,9 @@ export function LinksFilters({
           py: 1.5,
         }}
       >
+        <Typography component="span" sx={rowLabelSx}>
+          {t("filters.status")}
+        </Typography>
         <Stack
           direction="row"
           spacing={0.75}
@@ -221,6 +238,9 @@ export function LinksFilters({
             alignItems="center"
             sx={{ px: 2, py: 1.5 }}
           >
+            <Typography component="span" sx={rowLabelSx}>
+              {t("tags.filter.label")}
+            </Typography>
             <Chip
               label={t("tags.filter.all")}
               clickable
