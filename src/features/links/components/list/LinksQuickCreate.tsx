@@ -36,13 +36,17 @@ import {
 } from "@/features/links/components/forms/UrlSafetyIndicator";
 import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainSelection";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
-import { darkNeutral } from "@/lib/theme/colors";
 import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
+import { typographyScale } from "@/lib/theme";
 import { HelpHint, SectionLabel } from "@/shared/ui/base";
 import { useNavigate } from "@/shared/hooks";
 
 import { QuickCreateLinkStrip } from "./QuickCreateLinkStrip";
-import { linksRadius, getLinksBorderColor } from "./linksPanelStyles";
+import {
+  linksRadius,
+  getLinksBorderColor,
+  getLinksControlFillBg,
+} from "./linksPanelStyles";
 
 import type { LinkResponse } from "@/types";
 import type { Theme } from "@mui/material/styles";
@@ -58,16 +62,21 @@ type QuickFormData = {
   custom_slug?: string;
 };
 
-/** Matches MUI medium button height for a single control row. */
-const CONTROL_HEIGHT = 44;
+/**
+ * Altura única do grupo "hero" do quick-create — URL input, botão Encurtar e
+ * o composto de link curto abaixo compartilham esta mesma altura (antes
+ * 44/44/46, uma inconsistência de 2px que fazia o conjunto ler como duas
+ * fileiras desalinhadas em vez de um único grupo de controles desenhado).
+ */
+const CONTROL_HEIGHT = 48;
 
 const getInputRootSx = (theme: Theme) => {
-  // Nível "input" da escala: em dark o campo é um passo mais claro que o
-  // painel (não mais escuro que ele); em light o cinza de página recua bem.
-  const bg =
-    theme.palette.mode === "dark"
-      ? darkNeutral.input
-      : theme.palette.background.default;
+  // Segue a mesma "gramática translúcida" dos cards (ver
+  // `getLinksControlFillBg`/`getLinkCardShellSx`/`MuiCard`): um véu sutil em
+  // vez do preenchimento sólido `darkNeutral.input` que antes destoava do
+  // resto da seção, agora sem caixa ao redor.
+  const bg = getLinksControlFillBg(theme);
+  const borderColor = getLinksBorderColor(theme);
 
   return {
     "& .MuiOutlinedInput-root": {
@@ -79,6 +88,12 @@ const getInputRootSx = (theme: Theme) => {
       fontSize: "0.9375rem",
       "&:hover": { bgcolor: bg },
       "&.Mui-focused": { bgcolor: `${bg} !important` },
+      // Estado de repouso alinhado à borda do composto de link curto logo
+      // abaixo (mesma função, mesma cor) — hover/foco continuam no
+      // comportamento padrão do MUI (secondary, ver `MuiTextField.defaultProps`).
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor,
+      },
       "& input": {
         py: 0,
         height: "100%",
@@ -454,15 +469,20 @@ export function LinksQuickCreate({
           </Button>
         </Box>
 
-        {/* Fileira 2 — o link curto propriamente dito. */}
+        {/* Fileira 2 — o link curto propriamente dito. Rótulo em mono caps,
+            mesma família/tamanho do prefixo "/" do SectionLabel — o composto
+            abaixo é o "momento de marca" da página, então o rótulo que o
+            introduz fala a mesma língua tipográfica em vez de usar a caption
+            padrão (Inter) do resto do formulário. */}
         <Box sx={{ mt: 1.5 }}>
           <Typography
-            variant="caption"
             component="div"
             sx={{
+              fontFamily: typographyScale.code.fontFamily,
+              fontSize: "0.6875rem",
               color: "text.secondary",
-              fontWeight: 600,
-              letterSpacing: "0.02em",
+              fontWeight: 500,
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
               mb: 0.625,
             }}

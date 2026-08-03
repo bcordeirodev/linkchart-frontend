@@ -3,6 +3,8 @@
  * Configurações essenciais do Material-UI organizadas por categoria
  */
 
+import { alpha } from "@mui/material/styles";
+
 import type { Theme } from "@mui/material/styles/createTheme";
 import {
   typographyScale,
@@ -267,10 +269,21 @@ const surfaceComponents = {
   MuiCard: {
     styleOverrides: {
       // Mesmo princípio de hairline do MuiPaper acima — Card não deve
-      // depender de `elevation`/shadow para parecer "elevado".
+      // depender de `elevation`/shadow para parecer "elevado". O fundo é um
+      // véu translúcido, não a cor sólida de `background.paper`: sobre o
+      // fundo quase-preto (#030405) da página, um preenchimento cinza opaco
+      // lia "pesado" — a hairline já demarca a superfície, o véu só precisa
+      // dar uma leve diferença de luminância. Only `MuiCard` muda aqui — o
+      // token global `background.paper` continua intocado, e superfícies
+      // flutuantes (Dialog/Popover/Menu/Drawer/Autocomplete, ver abaixo) não
+      // usam este slot: elas dependem de opacidade total para não se
+      // "fundirem" com o conteúdo por trás.
       root: ({ theme }: { theme: Theme }) => ({
         borderRadius: radiusTokens.lg,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor:
+          theme.palette.mode === "dark"
+            ? alpha(theme.palette.common.white, 0.03)
+            : alpha(theme.palette.common.black, 0.02),
         boxShadow: "none",
         border: `1px solid ${theme.palette.divider}`,
         transition: `all ${motionTokens.duration.slow} ${motionTokens.easing.default}`,
