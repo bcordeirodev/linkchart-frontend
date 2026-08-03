@@ -138,3 +138,47 @@
 .animate-pulse {
   animation: pulse 2s ease-in-out infinite;
 }
+
+/* Page-load orquestrado (spec 2026-08-03): um reveal por tela, CSS-only */
+@keyframes lc-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.reveal {
+  animation: lc-reveal 0.35s ease-out both;
+}
+.reveal-1 {
+  animation-delay: 60ms;
+}
+.reveal-2 {
+  animation-delay: 120ms;
+}
+.reveal-3 {
+  animation-delay: 180ms;
+}
+.reveal-4 {
+  animation-delay: 240ms;
+}
+.reveal-5 {
+  animation-delay: 300ms;
+}
+.reveal-6 {
+  animation-delay: 360ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-1,
+  .reveal-2,
+  .reveal-3,
+  .reveal-4,
+  .reveal-5,
+  .reveal-6 {
+    animation: none;
+  }
+}
