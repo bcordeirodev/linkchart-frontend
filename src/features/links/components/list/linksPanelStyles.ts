@@ -44,19 +44,29 @@ export function getLinkCardInnerBorderColor(theme: Theme) {
 }
 
 /**
- * Recipe único de superfície recuada (inset) da feature /links — nível 1 da
- * escala de elevação. Em dark, usa o tom do painel (`background.paper`):
- * dentro de um card elevado isso recua de verdade; sobre o próprio painel o
- * inset vira "border-only" (mesma cor, só a hairline delimita — menos ruído).
- * Em light, um véu neutro. Usado por barra de copiar, url bar e filter inset.
+ * Superfície recuada (inset) dentro de um card de link — hoje só o fundo do
+ * controle de copiar no card mobile (`LinkCardActionBar`, `analyticsAccess
+ * === "card"`). Precisa ler como um recuo *dentro* do card, não como um
+ * retângulo mais claro colado por cima dele — por isso segue a mesma
+ * gramática translúcida de `getLinkCardShellSx`/`MuiCard`, só um passo mais
+ * forte (o recuo tem que se destacar do próprio card, que já é translúcido):
+ * `alpha(white, 0.05)` em dark (card shell = 0.03), `alpha(black, 0.035)` em
+ * light (card shell = 0.02) — mesma proporção de reforço nos dois modos.
+ *
+ * Antes retornava `background.paper` sólido (dark) / um véu quase-preto
+ * (light); com o card shell agora translúcido, o preenchimento sólido
+ * passou a ler mais CLARO que o card ao redor — um recuo deveria ler mais
+ * escuro/recolhido, não mais claro.
  *
  * @param theme - tema MUI ativo.
  * @returns cor de fundo do inset.
  */
 export function getLinksInsetBg(theme: Theme) {
-  return theme.palette.mode === "dark"
-    ? theme.palette.background.paper
-    : alpha(theme.palette.common.black, 0.025);
+  const isDark = theme.palette.mode === "dark";
+
+  return isDark
+    ? alpha(theme.palette.common.white, 0.05)
+    : alpha(theme.palette.common.black, 0.035);
 }
 
 /**

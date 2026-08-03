@@ -70,6 +70,30 @@ type QuickFormData = {
  */
 const CONTROL_HEIGHT = 48;
 
+/**
+ * Opaque stand-in for `getLinksControlFillBg`'s translucent fill, used ONLY
+ * by the `-webkit-autofill` paint trick below — never as the field's visible
+ * background. Chrome/Safari paint their own autofill tint (yellow) *behind*
+ * whatever background the input declares, and the standard way to hide that
+ * tint is `box-shadow: 0 0 0 100px <color> inset`; that trick only works
+ * with a fully opaque color; at ~3% alpha the yellow bleeds straight
+ * through it.
+ *
+ * Precomputed by flattening `getLinksControlFillBg`'s overlay
+ * (`alpha(white, 0.03)` dark / `alpha(black, 0.02)` light) over
+ * `theme.palette.background.default` (`darkNeutral.bg` `#030405` /
+ * `lightNeutral.bg` `#FAFAFA`) — standard `src*alpha + dst*(1-alpha)` per
+ * channel:
+ * - dark: `255*0.03 + 3*0.97 ≈ 11`, `255*0.03 + 4*0.97 ≈ 12`,
+ *   `255*0.03 + 5*0.97 ≈ 13` → `rgb(11,12,13)` = `#0B0C0D`.
+ * - light: `0*0.02 + 250*0.98 = 245` (all channels, `#FAFAFA` is neutral
+ *   gray) → `rgb(245,245,245)` = `#F5F5F5`.
+ *
+ * Recompute this pair if `getLinksControlFillBg`'s alpha values or either
+ * background color ever change.
+ */
+const AUTOFILL_OPAQUE_BG = { dark: "#0B0C0D", light: "#F5F5F5" } as const;
+
 const getInputRootSx = (theme: Theme) => {
   // Segue a mesma "gramática translúcida" dos cards (ver
   // `getLinksControlFillBg`/`getLinkCardShellSx`/`MuiCard`): um véu sutil em
@@ -77,6 +101,10 @@ const getInputRootSx = (theme: Theme) => {
   // resto da seção, agora sem caixa ao redor.
   const bg = getLinksControlFillBg(theme);
   const borderColor = getLinksBorderColor(theme);
+  const autofillBg =
+    theme.palette.mode === "dark"
+      ? AUTOFILL_OPAQUE_BG.dark
+      : AUTOFILL_OPAQUE_BG.light;
 
   return {
     "& .MuiOutlinedInput-root": {
@@ -100,7 +128,9 @@ const getInputRootSx = (theme: Theme) => {
         boxSizing: "border-box",
       },
       "& input:-webkit-autofill": {
-        WebkitBoxShadow: `0 0 0 100px ${bg} inset`,
+        // Opaque `autofillBg`, not the translucent `bg` — see
+        // `AUTOFILL_OPAQUE_BG` above.
+        WebkitBoxShadow: `0 0 0 100px ${autofillBg} inset`,
         WebkitTextFillColor: theme.palette.text.primary,
       },
     },
