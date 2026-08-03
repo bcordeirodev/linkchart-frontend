@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Stack, Typography } from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { darkNeutral } from "@/lib/theme/colors/dark";
@@ -100,6 +101,25 @@ export function BioPreviewPhone({
   const displayTitle = title.trim() || t("preview.placeholderTitle");
   const displayBio = bio.trim();
 
+  // `muiTheme` — the ADMIN APP's own light/dark mode (`useTheme()`), NOT the
+  // `theme` prop above (the published page's own dark/light content theme,
+  // a page-owner choice). Only the frame's outer silhouette reads this —
+  // the phone's screen content stays keyed to the `theme` prop, untouched.
+  const muiTheme = useTheme();
+  const isAppDark = muiTheme.palette.mode === "dark";
+  // Gate fix (2026-08-03): the frame's 8px black bezel had no edge of its
+  // own against the page background — invisible once the app's dark bg
+  // became near-black (`#030405`, same ballpark as the bezel's `common.
+  // black`). A `boxShadow` ring (not `border` — the bezel already owns that
+  // property) traces the frame's existing `36px` border-radius from just
+  // outside it, so the device silhouette reads without touching the bezel
+  // color or the screen content. `common.white`/`common.black` (not
+  // `text.primary`) to match the coordinator's explicit ask; 0.16 dark /
+  // 0.12 light mirrors this file's other light-vs-dark alpha ratios.
+  const frameRingColor = isAppDark
+    ? alpha(muiTheme.palette.common.white, 0.16)
+    : alpha(muiTheme.palette.common.black, 0.12);
+
   return (
     <Box
       sx={{
@@ -157,8 +177,7 @@ export function BioPreviewPhone({
           border: "8px solid",
           borderColor: "common.black",
           bgcolor: "common.black",
-          boxShadow:
-            "0 20px 45px -20px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.06)",
+          boxShadow: `0 0 0 1px ${frameRingColor}, 0 20px 45px -20px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.06)`,
           overflow: "hidden",
         }}
       >
