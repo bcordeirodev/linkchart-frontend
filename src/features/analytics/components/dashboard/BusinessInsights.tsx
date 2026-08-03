@@ -1,19 +1,5 @@
 "use client";
-import {
-  TrendingUp,
-  MonitorSmartphone,
-  AlertCircle,
-  Info,
-  CheckCircle,
-  Clock,
-  BarChart3,
-  MapPin,
-  Lightbulb,
-  Repeat2,
-  Globe,
-  Activity,
-  Wrench,
-} from "lucide-react";
+import { AlertCircle, Info, CheckCircle, BarChart3 } from "lucide-react";
 import {
   Box,
   Typography,
@@ -22,7 +8,6 @@ import {
   Chip,
   Stack,
   Divider,
-  Avatar,
   LinearProgress,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -31,12 +16,7 @@ import { useTranslation } from "react-i18next";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 
-import {
-  elevationLightTokens,
-  elevationTokens,
-  motionTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import { AnalyticsEmptyState } from "@/shared/ui/base";
 
 import type { BusinessInsight } from "../../hooks/useInsightsData";
@@ -62,9 +42,13 @@ interface BusinessInsightsProps {
 /**
  * Renders AI-generated business insights as priority-sorted cards.
  *
- * Displays each insight with a colour-coded priority badge (high/medium/low),
- * a category icon, and optional HTTP protocol usage bars. When the `insights`
- * array is empty an info Alert is shown instead.
+ * Displays each insight with a colour-coded priority badge (high/medium/low)
+ * and optional HTTP protocol usage bars. When the `insights` array is empty
+ * an info Alert is shown instead. Visual gate fix (2026-08-03): dropped the
+ * per-category `Avatar` icon-chip beside every title (redundant with the
+ * priority `Chip` and the category tag at the bottom of the card) and moved
+ * both cards in this file off an opaque `background.paper` fill onto the
+ * translucent surface grammar shared with `/links` (`getLinkCardShellSx`).
  */
 export function BusinessInsights({
   insights,
@@ -75,6 +59,14 @@ export function BusinessInsights({
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
+  // Translucent card fill — same alpha formula as `getLinkCardShellSx`
+  // (`src/features/links/components/list/linksPanelStyles.ts`): a subtle
+  // veil over the page background rather than an opaque `background.paper`
+  // slab, so these callouts read as part of the page instead of a stacked
+  // surface competing with the rest of the redesign's card grammar.
+  const insightSurfaceBg = isDark
+    ? alpha(theme.palette.common.white, 0.03)
+    : alpha(theme.palette.common.black, 0.02);
 
   /**
    * Resolves insight text by preferring an i18n key (with optional interpolation
@@ -116,22 +108,6 @@ export function BusinessInsights({
       />
     );
   }
-
-  const getInsightIcon = (type: string) => {
-    const iconMap: Record<string, React.ReactNode> = {
-      geographic: <MapPin {...ICON_MD} />,
-      audience: <MonitorSmartphone {...ICON_MD} />,
-      temporal: <Clock {...ICON_MD} />,
-      performance: <BarChart3 {...ICON_MD} />,
-      security: <AlertCircle {...ICON_MD} />,
-      retention: <Repeat2 {...ICON_MD} />,
-      traffic_source: <Globe {...ICON_MD} />,
-      engagement: <Activity {...ICON_MD} />,
-      conversion: <TrendingUp {...ICON_MD} />,
-      optimization: <Wrench {...ICON_MD} />,
-    };
-    return iconMap[type] ?? <Info {...ICON_MD} />;
-  };
 
   const getPriorityPalette = (priority: string) => {
     const palette = {
@@ -188,12 +164,8 @@ export function BusinessInsights({
             mb: 2,
             fontWeight: 600,
             color: "text.primary",
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
           }}
         >
-          <Lightbulb size={16} strokeWidth={1.5} />
           {t("insights.title")}
         </Typography>
       ) : null}
@@ -210,140 +182,125 @@ export function BusinessInsights({
 
           return (
             <Box key={index}>
+              {/* Translucent-surface callout, not an opaque `Card` — same
+                  alpha-fill grammar as the /links card shell
+                  (`getLinkCardShellSx`): `alpha(white, 0.03)` dark /
+                  `alpha(black, 0.02)` light, hairline border, no shadow. The
+                  severity accent lives entirely in the left border — that's
+                  the one piece of "information" color this component keeps. */}
               <Card
+                elevation={0}
                 sx={{
                   borderRadius: `${radiusTokens.lg}px`,
-                  backgroundColor: "background.paper",
-                  border: `1px solid`,
-                  borderColor: "divider",
+                  backgroundColor: insightSurfaceBg,
+                  border: `1px solid ${theme.palette.divider}`,
                   borderLeft: `3px solid ${palette.main}`,
-                  boxShadow: isDark
-                    ? elevationTokens.xs
-                    : elevationLightTokens.xs,
-                  transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+                  transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
                   "&:hover": {
-                    boxShadow: isDark
-                      ? elevationTokens.sm
-                      : elevationLightTokens.sm,
+                    borderColor: theme.palette.text.primary,
                   },
                 }}
               >
                 <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
-                  <Stack direction="row" alignItems="flex-start" spacing={2}>
-                    <Avatar
-                      sx={{
-                        width: 36,
-                        height: 36,
-                        backgroundColor: alpha(palette.main, 0.12),
-                        color: palette.main,
-                        borderRadius: `${radiusTokens.md}px`,
-                      }}
+                  <Box sx={{ minWidth: 0 }}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={1}
+                      sx={{ mb: 1 }}
                     >
-                      {getInsightIcon(insight.type)}
-                    </Avatar>
-
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing={1}
-                        sx={{ mb: 1 }}
-                      >
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            fontWeight: 600,
-                            color: "text.primary",
-                          }}
-                        >
-                          {resolveText(
-                            insight.title_key,
-                            insight.title_params,
-                            insight.title,
-                          )}
-                        </Typography>
-
-                        <Chip
-                          icon={getPriorityIcon(insight.priority)}
-                          label={t(`insights.priority.${insight.priority}`)}
-                          size="small"
-                          sx={{
-                            backgroundColor: alpha(palette.main, 0.12),
-                            // White in dark mode: the label used to be
-                            // `palette.main` over a 12% tint of `palette.main`
-                            // — the same hue on itself, which barely reads.
-                            color: isDark ? "common.white" : palette.dark,
-                            fontWeight: 600,
-                            fontSize: "0.75rem",
-                            border: `1px solid ${alpha(palette.main, 0.3)}`,
-                            "& .MuiChip-icon": {
-                              color: isDark ? "common.white" : palette.dark,
-                              fontSize: "1rem",
-                            },
-                          }}
-                        />
-                      </Stack>
-
                       <Typography
-                        variant="body2"
+                        variant="h6"
                         sx={{
-                          lineHeight: 1.6,
-                          color: "text.secondary",
-                          mb: recommendationText ? 1.5 : 2,
+                          fontWeight: 600,
+                          color: "text.primary",
                         }}
                       >
                         {resolveText(
-                          insight.description_key,
-                          insight.description_params,
-                          insight.description,
+                          insight.title_key,
+                          insight.title_params,
+                          insight.title,
                         )}
                       </Typography>
 
-                      {recommendationText ? (
-                        <Box
-                          sx={{
-                            bgcolor: alpha(palette.main, 0.06),
-                            borderLeft: `3px solid ${palette.main}`,
-                            borderRadius: `${radiusTokens.md}px`,
-                            p: 1.5,
-                            mb: 2,
-                          }}
-                        >
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: 500,
-                              color: palette.dark ?? palette.main,
-                            }}
-                          >
-                            {recommendationText}
-                          </Typography>
-                        </Box>
-                      ) : null}
-
-                      <Divider sx={{ my: 1 }} />
-
-                      <Typography
-                        variant="caption"
+                      <Chip
+                        icon={getPriorityIcon(insight.priority)}
+                        label={t(`insights.priority.${insight.priority}`)}
+                        size="small"
                         sx={{
-                          color: palette.main,
+                          backgroundColor: alpha(palette.main, 0.12),
+                          // White in dark mode: the label used to be
+                          // `palette.main` over a 12% tint of `palette.main`
+                          // — the same hue on itself, which barely reads.
+                          color: isDark ? "common.white" : palette.dark,
                           fontWeight: 600,
-                          textTransform: "uppercase",
-                          letterSpacing: 0.5,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 0.5,
+                          fontSize: "0.75rem",
+                          border: `1px solid ${alpha(palette.main, 0.3)}`,
+                          "& .MuiChip-icon": {
+                            color: isDark ? "common.white" : palette.dark,
+                            fontSize: "1rem",
+                          },
+                        }}
+                      />
+                    </Stack>
+
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        lineHeight: 1.6,
+                        color: "text.secondary",
+                        mb: recommendationText ? 1.5 : 2,
+                      }}
+                    >
+                      {resolveText(
+                        insight.description_key,
+                        insight.description_params,
+                        insight.description,
+                      )}
+                    </Typography>
+
+                    {recommendationText ? (
+                      <Box
+                        sx={{
+                          bgcolor: alpha(palette.main, 0.06),
+                          borderLeft: `3px solid ${palette.main}`,
+                          borderRadius: `${radiusTokens.md}px`,
+                          p: 1.5,
+                          mb: 2,
                         }}
                       >
-                        <TrendingUp size={12} strokeWidth={1.5} />
-                        {t(`filters.insightTypeOptions.${insight.type}`, {
-                          defaultValue:
-                            insight.type.charAt(0).toUpperCase() +
-                            insight.type.slice(1),
-                        })}
-                      </Typography>
-                    </Box>
-                  </Stack>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 500,
+                            color: palette.dark ?? palette.main,
+                          }}
+                        >
+                          {recommendationText}
+                        </Typography>
+                      </Box>
+                    ) : null}
+
+                    <Divider sx={{ my: 1 }} />
+
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        fontFamily:
+                          "var(--font-jetbrains-mono), ui-monospace, monospace",
+                        color: palette.main,
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                      }}
+                    >
+                      {t(`filters.insightTypeOptions.${insight.type}`, {
+                        defaultValue:
+                          insight.type.charAt(0).toUpperCase() +
+                          insight.type.slice(1),
+                      })}
+                    </Typography>
+                  </Box>
                 </CardContent>
               </Card>
             </Box>
@@ -354,27 +311,20 @@ export function BusinessInsights({
       {/* Protocolo HTTP */}
       {httpProtocol && httpProtocol.length > 0 ? (
         <Card
+          elevation={0}
           sx={{
             mt: 3,
             borderRadius: `${radiusTokens.lg}px`,
-            backgroundColor: "background.paper",
-            border: `1px solid`,
-            borderColor: "divider",
-            boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
+            backgroundColor: insightSurfaceBg,
+            border: `1px solid ${theme.palette.divider}`,
           }}
         >
           <CardContent>
             <Typography
               variant="subtitle1"
               gutterBottom
-              sx={{
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
+              sx={{ fontWeight: 600 }}
             >
-              <BarChart3 size={16} strokeWidth={1.5} />
               {t("insights.httpProtocolTitle")}
             </Typography>
 
