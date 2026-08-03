@@ -483,6 +483,27 @@ export const radiusTokens = {
 } as const;
 
 // ========================================
+// 🪟 SURFACE OVERLAY (SP2)
+// ========================================
+
+/**
+ * Alpha do véu translúcido dos cards in-page "instrumento técnico" — fonte
+ * única para o `MuiCard` global (`muiComponents.ts`) e todo helper
+ * `get*CardSx`/`getLinkCardShellSx` por feature (links, subdomínios,
+ * api-keys, perfil, bio). Mudar aqui propaga para todos os consumidores.
+ *
+ * Ajustado de `0.03`/`0.02` para `0.045`/`0.03` (gate 2026-08-03, rodada 5):
+ * o valor original lia fraco demais contra o fundo quase-preto da página
+ * (`darkNeutral.bg` `#030405`) — mantém a mesma razão dark:light (~1.5×).
+ */
+export const surfaceOverlayTokens = {
+  card: {
+    dark: 0.045,
+    light: 0.03,
+  },
+} as const;
+
+// ========================================
 // 🌓 ELEVATION (SP2)
 // ========================================
 
