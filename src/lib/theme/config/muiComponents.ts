@@ -288,17 +288,36 @@ const surfaceComponents = {
       }),
     },
   },
+  // Superfícies flutuantes (Dialog, Popover, Menu): a regra "hairline em vez
+  // de sombra" do MuiPaper/MuiCard acima vale para superfícies IN-PAGE
+  // (Card, Paper inline). Dialog/Popover/Menu flutuam sobre conteúdo
+  // arbitrário da página e dependem de sombra real para não se "fundir" com
+  // o que está atrás — por isso reaplicam `boxShadow` explicitamente aqui,
+  // no mesmo nível de elevação que o MUI usava por padrão antes do
+  // `boxShadow: "none"` global (Dialog=24, Popover/Menu=8). A hairline
+  // border continua vindo de graça do `MuiPaper.styleOverrides.root`.
   MuiDialog: {
     styleOverrides: {
-      paper: (_: { theme: Theme }) => ({
+      paper: ({ theme }: { theme: Theme }) => ({
         borderRadius: radiusTokens.lg,
+        boxShadow: theme.shadows[24],
       }),
     },
   },
   MuiPopover: {
     styleOverrides: {
-      paper: (_: { theme: Theme }) => ({
+      paper: ({ theme }: { theme: Theme }) => ({
         borderRadius: radiusTokens.md,
+        boxShadow: theme.shadows[8],
+      }),
+    },
+  },
+  MuiMenu: {
+    styleOverrides: {
+      // `Menu` compõe `Popover` internamente, mas resolve overrides pelo
+      // próprio slot `MuiMenu-paper` — precisa do próprio boxShadow.
+      paper: ({ theme }: { theme: Theme }) => ({
+        boxShadow: theme.shadows[8],
       }),
     },
   },
@@ -360,7 +379,24 @@ const utilityComponents = {
     styleOverrides: { root: { width: 36, height: 36 } },
   },
   MuiDrawer: {
-    styleOverrides: { paper: {} },
+    styleOverrides: {
+      // Só a variante `temporary` flutua sobre o conteúdo (overlay mobile) e
+      // precisa de sombra real para não se "fundir" com o que está atrás —
+      // mesmo nível de elevação (16) que o MUI aplicava por padrão antes do
+      // `boxShadow: "none"` global do MuiPaper. `permanent`/`persistent` já
+      // fazem parte do layout estático (sidebar desktop) e ficam só com a
+      // hairline border herdada do MuiPaper, sem sombra.
+      paper: ({
+        theme,
+        ownerState,
+      }: {
+        theme: Theme;
+        ownerState: { variant?: string };
+      }) => ({
+        boxShadow:
+          ownerState.variant === "temporary" ? theme.shadows[16] : "none",
+      }),
+    },
   },
   MuiFormHelperText: {
     styleOverrides: { root: {} },
@@ -394,7 +430,15 @@ const highPriorityComponents = {
     styleOverrides: { root: { zIndex: zIndexTokens.popover } },
   },
   MuiAutocomplete: {
-    styleOverrides: { popper: { zIndex: zIndexTokens.popover } },
+    styleOverrides: {
+      popper: { zIndex: zIndexTokens.popover },
+      // O paper do dropdown flutua sobre a página e não define elevation
+      // própria (fica na default do MUI, 1) — reaplicado aqui pelo mesmo
+      // motivo do Dialog/Popover/Menu/Drawer acima.
+      paper: ({ theme }: { theme: Theme }) => ({
+        boxShadow: theme.shadows[1],
+      }),
+    },
   },
 };
 
