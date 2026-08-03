@@ -9,6 +9,7 @@ import type { Theme } from "@mui/material/styles/createTheme";
 import {
   typographyScale,
   radiusTokens,
+  surfaceOverlayTokens,
   motionTokens,
   zIndexTokens,
 } from "../designSystem";
@@ -282,8 +283,11 @@ const surfaceComponents = {
         borderRadius: radiusTokens.lg,
         backgroundColor:
           theme.palette.mode === "dark"
-            ? alpha(theme.palette.common.white, 0.03)
-            : alpha(theme.palette.common.black, 0.02),
+            ? alpha(theme.palette.common.white, surfaceOverlayTokens.card.dark)
+            : alpha(
+                theme.palette.common.black,
+                surfaceOverlayTokens.card.light,
+              ),
         boxShadow: "none",
         border: `1px solid ${theme.palette.divider}`,
         transition: `all ${motionTokens.duration.slow} ${motionTokens.easing.default}`,

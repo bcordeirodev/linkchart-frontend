@@ -39,6 +39,7 @@ import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
 import { typographyScale } from "@/lib/theme";
 import { HelpHint, SectionLabel } from "@/shared/ui/base";
+import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
 
 import { QuickCreateLinkStrip } from "./QuickCreateLinkStrip";
@@ -46,6 +47,7 @@ import {
   linksRadius,
   getLinksBorderColor,
   getLinksControlFillBg,
+  getLinksCardSx,
 } from "./linksPanelStyles";
 
 import type { LinkResponse } from "@/types";
@@ -436,140 +438,159 @@ export function LinksQuickCreate({
         {t("list.quickCreate.label")}
       </SectionLabel>
 
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{ mt: 0.5, mb: { xs: 1.5, sm: 2 } }}
+      {/* Nível 1: o cluster inteiro (descrição + controles) volta para dentro
+          de um card translúcido com hairline — o SectionLabel fica FORA,
+          ancorando a seção; "organizar bem os blocos" (gate) pede um
+          container visível em vez do formulário solto direto no fundo da
+          página, mesmo tratamento que /subdomains usa (`getLinksCardSx` é o
+          equivalente local de `getSubdomainCardSx`). */}
+      <EnhancedPaper
+        variant="outlined"
+        animated={false}
+        sx={{
+          mt: { xs: 1.5, sm: 2 },
+          p: { xs: 2.5, sm: 3 },
+          ...getLinksCardSx(theme),
+        }}
       >
-        {t("list.quickCreate.description")}
-      </Typography>
-
-      <Box component="form" onSubmit={handleSubmit(guardedSubmit)} noValidate>
-        {/* Fileira 1 — o destino: o que se cola, e a ação principal. */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            alignItems: { sm: "center" },
-            gap: { xs: 1.25, sm: 1.5 },
-          }}
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mb: { xs: 1.5, sm: 2 } }}
         >
-          <TextField
-            {...register("original_url")}
-            placeholder={t("list.quickCreate.urlPlaceholder")}
-            size="small"
-            fullWidth
-            error={!!errors.original_url || urlIsUnsafe}
-            disabled={isPending}
-            sx={[inputRootSx, { flexGrow: 1, minWidth: 0 }]}
-            slotProps={{
-              htmlInput: { "aria-label": t("list.quickCreate.urlLabel") },
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Link2 {...ICON_SM} color={theme.palette.text.secondary} />
-                  </InputAdornment>
-                ),
-              },
+          {t("list.quickCreate.description")}
+        </Typography>
+
+        <Box component="form" onSubmit={handleSubmit(guardedSubmit)} noValidate>
+          {/* Fileira 1 — o destino: o que se cola, e a ação principal. */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { sm: "center" },
+              gap: { xs: 1.25, sm: 1.5 },
             }}
-          />
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
-            startIcon={
-              succeeded ? (
-                <CheckCircle2 {...ICON_SM} />
-              ) : isPending || submitQueued ? (
-                <CircularProgress size={16} color="inherit" />
-              ) : (
-                <Zap {...ICON_SM} />
-              )
-            }
-            sx={[
-              submitButtonSx,
-              { flexShrink: 0, width: { xs: "100%", sm: "auto" } },
-            ]}
           >
-            {succeeded
-              ? t("list.quickCreate.success")
-              : t("list.quickCreate.submit")}
-          </Button>
-        </Box>
+            <TextField
+              {...register("original_url")}
+              placeholder={t("list.quickCreate.urlPlaceholder")}
+              size="small"
+              fullWidth
+              error={!!errors.original_url || urlIsUnsafe}
+              disabled={isPending}
+              sx={[inputRootSx, { flexGrow: 1, minWidth: 0 }]}
+              slotProps={{
+                htmlInput: { "aria-label": t("list.quickCreate.urlLabel") },
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Link2
+                        {...ICON_SM}
+                        color={theme.palette.text.secondary}
+                      />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
 
-        {/* Fileira 2 — o link curto propriamente dito. Rótulo em mono caps,
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
+              startIcon={
+                succeeded ? (
+                  <CheckCircle2 {...ICON_SM} />
+                ) : isPending || submitQueued ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : (
+                  <Zap {...ICON_SM} />
+                )
+              }
+              sx={[
+                submitButtonSx,
+                { flexShrink: 0, width: { xs: "100%", sm: "auto" } },
+              ]}
+            >
+              {succeeded
+                ? t("list.quickCreate.success")
+                : t("list.quickCreate.submit")}
+            </Button>
+          </Box>
+
+          {/* Fileira 2 — o link curto propriamente dito. Rótulo em mono caps,
             mesma família/tamanho do prefixo "/" do SectionLabel — o composto
             abaixo é o "momento de marca" da página, então o rótulo que o
             introduz fala a mesma língua tipográfica em vez de usar a caption
             padrão (Inter) do resto do formulário. */}
-        <Box sx={{ mt: 1.5 }}>
-          <Typography
-            component="div"
-            sx={{
-              fontFamily: typographyScale.code.fontFamily,
-              fontSize: "0.6875rem",
-              color: "text.secondary",
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              mb: 0.625,
-            }}
-          >
-            {t("list.quickCreate.shortLinkLabel")}
-          </Typography>
+          <Box sx={{ mt: 1.5 }}>
+            <Typography
+              component="div"
+              sx={{
+                fontFamily: typographyScale.code.fontFamily,
+                fontSize: "0.6875rem",
+                color: "text.secondary",
+                fontWeight: 500,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                mb: 0.625,
+              }}
+            >
+              {t("list.quickCreate.shortLinkLabel")}
+            </Typography>
 
-          <QuickCreateLinkStrip
-            name={slugRegister.name}
-            inputRef={slugRegister.ref}
-            value={slugValue}
-            onChange={(e) => {
-              slugField.markEdited();
-              void slugRegister.onChange(e);
-            }}
-            onBlur={slugRegister.onBlur}
-            state={slugField.state}
-            onRequestAnother={slugField.requestAnother}
-            canRequestAnother={slugField.canRequestAnother}
-            hasSubdomains={hasSubdomains}
-            subdomainId={subdomainId}
-            onSubdomainChange={setSubdomainId}
-            defaultHost={defaultHost}
-            disabled={isPending}
-            error={slugHasError}
-          />
-        </Box>
-
-        {/* Linha de mensagens — materializa só quando há algo a dizer. */}
-        {urlHelperText || slugMessage ? (
-          <Box
-            sx={{
-              mt: 1,
-              display: "flex",
-              flexDirection: "column",
-              gap: 0.25,
-            }}
-          >
-            {urlHelperText ? (
-              <Typography variant="caption" component="div" color="error">
-                {urlHelperText}
-              </Typography>
-            ) : null}
-            {slugMessage ? (
-              <Typography
-                variant="caption"
-                component="div"
-                color={
-                  slugMessage.tone === "error" ? "error" : "text.secondary"
-                }
-              >
-                {slugMessage.text}
-              </Typography>
-            ) : null}
+            <QuickCreateLinkStrip
+              name={slugRegister.name}
+              inputRef={slugRegister.ref}
+              value={slugValue}
+              onChange={(e) => {
+                slugField.markEdited();
+                void slugRegister.onChange(e);
+              }}
+              onBlur={slugRegister.onBlur}
+              state={slugField.state}
+              onRequestAnother={slugField.requestAnother}
+              canRequestAnother={slugField.canRequestAnother}
+              hasSubdomains={hasSubdomains}
+              subdomainId={subdomainId}
+              onSubdomainChange={setSubdomainId}
+              defaultHost={defaultHost}
+              disabled={isPending}
+              error={slugHasError}
+            />
           </Box>
-        ) : null}
-      </Box>
+
+          {/* Linha de mensagens — materializa só quando há algo a dizer. */}
+          {urlHelperText || slugMessage ? (
+            <Box
+              sx={{
+                mt: 1,
+                display: "flex",
+                flexDirection: "column",
+                gap: 0.25,
+              }}
+            >
+              {urlHelperText ? (
+                <Typography variant="caption" component="div" color="error">
+                  {urlHelperText}
+                </Typography>
+              ) : null}
+              {slugMessage ? (
+                <Typography
+                  variant="caption"
+                  component="div"
+                  color={
+                    slugMessage.tone === "error" ? "error" : "text.secondary"
+                  }
+                >
+                  {slugMessage.text}
+                </Typography>
+              ) : null}
+            </Box>
+          ) : null}
+        </Box>
+      </EnhancedPaper>
     </Box>
   );
 }

@@ -95,7 +95,10 @@ export function LinkMetrics({
         </Typography>
       ) : null}
 
-      <OverviewMetricRow metrics={listMetrics} />
+      {/* size="md": a fileira não deve ocupar tanta altura vertical nesta
+          página — ver o prop no OverviewMetricRow. Analytics/relatórios/
+          perfil continuam em "lg" (default). */}
+      <OverviewMetricRow metrics={listMetrics} size="md" />
     </Box>
   );
 }

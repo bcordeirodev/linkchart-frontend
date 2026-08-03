@@ -28,6 +28,7 @@ export {
   // Tokens SP2
   typographyScale,
   radiusTokens,
+  surfaceOverlayTokens,
   elevationTokens,
   elevationLightTokens,
   motionTokens,

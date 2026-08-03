@@ -1,6 +1,10 @@
 import { alpha, darken, keyframes } from "@mui/material/styles";
 
-import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
+import {
+  motionTokens,
+  radiusTokens,
+  surfaceOverlayTokens,
+} from "@/lib/theme/designSystem";
 
 import type { Theme } from "@mui/material/styles";
 
@@ -50,8 +54,10 @@ export function getLinkCardInnerBorderColor(theme: Theme) {
  * retângulo mais claro colado por cima dele — por isso segue a mesma
  * gramática translúcida de `getLinkCardShellSx`/`MuiCard`, só um passo mais
  * forte (o recuo tem que se destacar do próprio card, que já é translúcido):
- * `alpha(white, 0.05)` em dark (card shell = 0.03), `alpha(black, 0.035)` em
- * light (card shell = 0.02) — mesma proporção de reforço nos dois modos.
+ * `alpha(white, 0.05)` em dark (card shell — `surfaceOverlayTokens.card.dark`
+ * — = `0.045`), `alpha(black, 0.035)` em light (card shell = `0.03`) — valor
+ * próprio, não derivado do token compartilhado (é "um passo acima" dele, não
+ * o mesmo véu).
  *
  * Antes retornava `background.paper` sólido (dark) / um véu quase-preto
  * (light); com o card shell agora translúcido, o preenchimento sólido
@@ -71,11 +77,14 @@ export function getLinksInsetBg(theme: Theme) {
 
 /**
  * Preenchimento translúcido para as superfícies de controle do quick-create
- * (URL input, composto de link curto) — mesma fórmula de véu sutil usada
- * pelos cards (`getLinkCardShellSx`) e pelo `MuiCard` global, para que o
- * grupo de controles "hero" harmonize com a seção sem caixa ao redor em vez
- * de usar um preenchimento sólido/opaco (`darkNeutral.input`) que competia
- * com o resto da grade de superfícies do redesign.
+ * (URL input, composto de link curto) — véu sutil em vez do preenchimento
+ * sólido/opaco (`darkNeutral.input`) que antes competia com o resto da
+ * grade de superfícies do redesign. Deliberadamente um valor mais baixo que
+ * `surfaceOverlayTokens.card` (o véu do card que agora envolve o cluster de
+ * quick-create, ver `LinksQuickCreate`): os dois véus brancos/pretos
+ * empilham (input sobre card), então o input ainda lê mais claro/presente
+ * que o card ao redor mesmo com um alpha nominal menor — não precisa (nem
+ * deve) igualar o token do card.
  *
  * @param theme - tema MUI ativo.
  * @returns cor de fundo translúcida.
@@ -86,6 +95,30 @@ export function getLinksControlFillBg(theme: Theme) {
   return isDark
     ? alpha(theme.palette.common.white, 0.03)
     : alpha(theme.palette.common.black, 0.02);
+}
+
+/**
+ * Translucent fill for a standalone level-1 card on `/links` (currently: the
+ * quick-create cluster's wrapping `EnhancedPaper`) — same `surfaceOverlayTokens`
+ * formula as the global `MuiCard` override and the sibling per-feature
+ * helpers `getSubdomainCardSx`/`getApiKeyCardSx`/`getProfileCardSx`/
+ * `getBioCardSx`, applied via `EnhancedPaper`'s `sx` prop since
+ * `EnhancedPaper` itself defaults to the solid `background.paper` fill.
+ *
+ * Returns a plain object (not `SxProps<Theme>`) so call sites can safely
+ * spread it into another `sx` object literal, matching the sibling helpers.
+ *
+ * @param theme - tema MUI ativo.
+ * @returns `sx` fragment overriding just the background color.
+ */
+export function getLinksCardSx(theme: Theme): { backgroundColor: string } {
+  const isDark = theme.palette.mode === "dark";
+
+  return {
+    backgroundColor: isDark
+      ? alpha(theme.palette.common.white, surfaceOverlayTokens.card.dark)
+      : alpha(theme.palette.common.black, surfaceOverlayTokens.card.light),
+  };
 }
 
 /** Hairline shadow for /links cards — softer than `elevation*.xs`. */
@@ -200,8 +233,8 @@ export function getLinkCardShellSx(theme: Theme) {
     border: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.14 : 0.12)}`,
     overflow: "hidden" as const,
     backgroundColor: isDark
-      ? alpha(theme.palette.common.white, 0.03)
-      : alpha(theme.palette.common.black, 0.02),
+      ? alpha(theme.palette.common.white, surfaceOverlayTokens.card.dark)
+      : alpha(theme.palette.common.black, surfaceOverlayTokens.card.light),
     transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {
       borderColor: alpha(theme.palette.text.primary, isDark ? 0.22 : 0.2),

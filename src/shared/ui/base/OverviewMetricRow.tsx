@@ -32,6 +32,17 @@ export interface OverviewMetric {
 export interface OverviewMetricRowProps {
   /** Métricas a exibir, na ordem recebida. */
   metrics: OverviewMetric[];
+  /**
+   * Densidade visual da fileira. `"lg"` (default) é a escala original —
+   * valor em `h2`/tabular-nums a `2.5rem` (xs) / `3rem` (sm+), com os
+   * paddings/gaps de sempre. `"md"` é ~25% mais compacto (`2rem`/`2.25rem`)
+   * com paddings proporcionalmente menores, para telas onde a fileira de
+   * métricas não deve ocupar tanta altura — hoje só `/links`
+   * (`LinkMetrics`). Callers existentes (analytics, relatórios, perfil,
+   * `OverviewKpiHeader`) não passam esta prop e continuam em `"lg"`,
+   * pixel-idênticos a antes.
+   */
+  size?: "md" | "lg";
 }
 
 /**
@@ -67,12 +78,17 @@ export interface OverviewMetricRowProps {
  * `label`/`caption` chegam já traduzidos via props.
  *
  * @param props.metrics Métricas a renderizar, na ordem recebida.
+ * @param props.size Densidade visual — `"md"` (compacto) ou `"lg"` (default, escala original).
  * @returns Linha (coluna no mobile) de métricas sem card/ícone.
  */
-export function OverviewMetricRow({ metrics }: OverviewMetricRowProps) {
+export function OverviewMetricRow({
+  metrics,
+  size = "lg",
+}: OverviewMetricRowProps) {
   const theme = useTheme();
   const hairline = `1px solid ${theme.palette.divider}`;
   const isDense = metrics.length >= 5;
+  const isCompact = size === "md";
 
   return (
     <Box
@@ -92,7 +108,7 @@ export function OverviewMetricRow({ metrics }: OverviewMetricRowProps) {
             sx={{
               flex: 1,
               minWidth: 0,
-              py: 2,
+              py: isCompact ? 1.25 : 2,
               pl: { xs: 0, sm: isFirst ? 0 : gutter },
               pr: { xs: 0, sm: isLast ? 0 : gutter },
               borderTop: isFirst ? "none" : { xs: hairline, sm: "none" },
@@ -101,7 +117,11 @@ export function OverviewMetricRow({ metrics }: OverviewMetricRowProps) {
           >
             <Typography
               variant="body2"
-              sx={{ color: "text.secondary", fontWeight: 500, mb: 0.5 }}
+              sx={{
+                color: "text.secondary",
+                fontWeight: 500,
+                mb: isCompact ? 0.25 : 0.5,
+              }}
             >
               {metric.label}
             </Typography>
@@ -110,13 +130,20 @@ export function OverviewMetricRow({ metrics }: OverviewMetricRowProps) {
               component="p"
               sx={{
                 fontVariantNumeric: "tabular-nums",
-                fontSize: {
-                  xs: "2.5rem",
-                  sm: isDense ? "2rem" : "3rem",
-                  md: "3rem",
-                },
+                fontSize: isCompact
+                  ? { xs: "2rem", sm: "2.25rem" }
+                  : {
+                      xs: "2.5rem",
+                      sm: isDense ? "2rem" : "3rem",
+                      md: "3rem",
+                    },
                 lineHeight: 1.1,
-                mb: metric.caption || metric.sparkline ? 0.5 : 0,
+                mb:
+                  metric.caption || metric.sparkline
+                    ? isCompact
+                      ? 0.25
+                      : 0.5
+                    : 0,
                 overflowWrap: "anywhere",
                 color: metric.valueColor,
               }}
@@ -129,7 +156,7 @@ export function OverviewMetricRow({ metrics }: OverviewMetricRowProps) {
               </Typography>
             ) : null}
             {metric.sparkline ? (
-              <Box sx={{ mt: 1 }}>{metric.sparkline}</Box>
+              <Box sx={{ mt: isCompact ? 0.75 : 1 }}>{metric.sparkline}</Box>
             ) : null}
           </Box>
         );
