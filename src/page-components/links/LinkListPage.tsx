@@ -263,7 +263,9 @@ function LinkListPageContent() {
             {links.length > 0 ? (
               <Box data-tour="overview" sx={{ mt: { xs: 2, sm: 2.5 } }}>
                 <Box sx={{ mb: { xs: 1, sm: 1.25 } }}>
-                  <SectionLabel>{t("list.sections.overview")}</SectionLabel>
+                  <SectionLabel headingLevel={2}>
+                    {t("list.sections.overview")}
+                  </SectionLabel>
                 </Box>
                 <LinkMetrics linksData={realLinks} showTitle={false} />
               </Box>
