@@ -15,6 +15,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useTranslation } from "react-i18next";
 
+import { typographyScale } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import useClipboard from "@/shared/hooks/useClipboard";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
@@ -84,7 +85,7 @@ export function ApiKeyTokenDialog({
           <Box
             component="code"
             sx={{
-              fontFamily: "monospace",
+              fontFamily: typographyScale.code.fontFamily,
               fontSize: "0.8125rem",
               lineHeight: 1.6,
               wordBreak: "break-all",

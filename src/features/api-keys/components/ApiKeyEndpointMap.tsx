@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import { typographyScale } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
 
 /**
@@ -75,7 +76,10 @@ export function ApiKeyEndpointMap() {
                 <TableCell sx={{ whiteSpace: "nowrap" }}>
                   <Typography
                     component="code"
-                    sx={{ fontFamily: "monospace", fontSize: "0.78rem" }}
+                    sx={{
+                      fontFamily: typographyScale.code.fontFamily,
+                      fontSize: "0.78rem",
+                    }}
                   >
                     <Box
                       component="span"

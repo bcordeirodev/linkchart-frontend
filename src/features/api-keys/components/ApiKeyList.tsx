@@ -13,13 +13,18 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { KeyRound } from "lucide-react";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { typographyScale } from "@/lib/theme";
+import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
+import { AppIcon } from "@/shared/ui/icons";
 
 import { useApiKeys } from "../hooks/useApiKeys";
+import { getApiKeyCardSx } from "../utils/cardSurface";
 import { formatRelativeTime, formatShortDate } from "../utils/dates";
 
 import type { ApiKeyItem } from "../types";
@@ -37,6 +42,8 @@ interface ApiKeyCardProps {
  * is useless as a credential.
  */
 function ApiKeyCard({ item, onRevoke, isRevoking }: ApiKeyCardProps) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const { t, i18n } = useTranslation("apiKeys");
 
   const lastUsedLabel = item.lastUsedAt
@@ -46,9 +53,28 @@ function ApiKeyCard({ item, onRevoke, isRevoking }: ApiKeyCardProps) {
     : t("list.neverUsed");
 
   return (
-    <EnhancedPaper variant="outlined" sx={{ mb: 0 }}>
+    <EnhancedPaper
+      variant="outlined"
+      animated={false}
+      sx={{
+        ...getApiKeyCardSx(theme),
+        mb: 0,
+        transition: `background-color ${theme.transitions.duration.short}ms ${theme.transitions.easing.easeInOut}, border-color ${theme.transitions.duration.short}ms ${theme.transitions.easing.easeInOut}`,
+        // Leve banho de primary no hover em vez de só escurecer/clarear a
+        // borda — sinaliza "esta linha tem ações" (revogar), mesmo padrão
+        // adotado pelas linhas de endereço em /subdomains.
+        "&:hover": {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            isDark ? 0.05 : 0.04,
+          ),
+          borderColor: alpha(theme.palette.primary.main, isDark ? 0.3 : 0.25),
+        },
+      }}
+    >
       <Box
         sx={{
+          minHeight: 72,
           p: { xs: 1.75, sm: 2 },
           display: "flex",
           alignItems: "center",
@@ -69,7 +95,7 @@ function ApiKeyCard({ item, onRevoke, isRevoking }: ApiKeyCardProps) {
             <Typography
               component="code"
               sx={{
-                fontFamily: "monospace",
+                fontFamily: typographyScale.code.fontFamily,
                 fontSize: "0.75rem",
                 color: "text.secondary",
                 bgcolor: "action.hover",
@@ -124,6 +150,8 @@ function ApiKeyCard({ item, onRevoke, isRevoking }: ApiKeyCardProps) {
  * pointing at the create form below when there are no keys yet.
  */
 export function ApiKeyList() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("apiKeys");
   const { apiKeys, isLoading, revoke, isRevoking, revokingId } = useApiKeys();
 
@@ -146,7 +174,7 @@ export function ApiKeyList() {
 
   if (isLoading) {
     return (
-      <Stack spacing={1.5}>
+      <Stack spacing={2.5}>
         <Skeleton variant="rounded" height={72} />
         <Skeleton variant="rounded" height={72} />
       </Stack>
@@ -157,13 +185,31 @@ export function ApiKeyList() {
     return (
       <EnhancedPaper
         variant="outlined"
-        sx={{ p: { xs: 2.5, sm: 3 }, textAlign: "center" }}
+        animated={false}
+        sx={{
+          ...getApiKeyCardSx(theme),
+          p: { xs: 3, sm: 4 },
+          textAlign: "center",
+        }}
       >
         <Box
-          aria-hidden
-          sx={{ color: "text.disabled", mb: 1, "& svg": { display: "inline" } }}
+          sx={{
+            width: 48,
+            height: 48,
+            mx: "auto",
+            mb: 1.5,
+            borderRadius: `${radiusTokens.full}px`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: isDark
+              ? darkNeutral.elevated
+              : lightNeutral.surface,
+            border: `1px solid ${theme.palette.divider}`,
+            color: "text.secondary",
+          }}
         >
-          <KeyRound size={28} strokeWidth={1.5} />
+          <AppIcon intent="apiKeys" size={22} aria-hidden />
         </Box>
         <Typography variant="subtitle2" component="h3" sx={{ mb: 0.5 }}>
           {t("list.empty.title")}
@@ -181,7 +227,7 @@ export function ApiKeyList() {
 
   return (
     <>
-      <Stack spacing={1.5}>
+      <Stack spacing={2.5}>
         {apiKeys.map((item) => (
           <ApiKeyCard
             key={item.id}
@@ -199,7 +245,11 @@ export function ApiKeyList() {
         <DialogTitle>{t("list.revokeDialog.title")}</DialogTitle>
         <DialogContent>
           <DialogContentText
-            sx={{ fontFamily: "monospace", fontWeight: 600, mb: 1 }}
+            sx={{
+              fontFamily: typographyScale.code.fontFamily,
+              fontWeight: 600,
+              mb: 1,
+            }}
           >
             {pendingRevoke?.name} {pendingRevoke?.tokenPreview}
           </DialogContentText>
