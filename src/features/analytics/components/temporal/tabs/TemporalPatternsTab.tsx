@@ -117,6 +117,7 @@ export function TemporalPatternsTab({
                       "name",
                       "value",
                       false,
+                      { clicksLabel: t("temporal.viralRank.clicksUnit") },
                     )}
                   />
                 </ChartCard>
@@ -137,6 +138,7 @@ export function TemporalPatternsTab({
                       "day_name",
                       "clicks",
                       false,
+                      { clicksLabel: t("temporal.viralRank.clicksUnit") },
                     )}
                   />
                 </ChartCard>
@@ -163,6 +165,7 @@ export function TemporalPatternsTab({
               })),
               "hour",
               "clicks",
+              { clicksLabel: t("temporal.viralRank.clicksUnit") },
             )}
             size="standard"
           />
@@ -300,6 +303,7 @@ export function TemporalPatternsTab({
                     "name",
                     "value",
                     false,
+                    { clicksLabel: t("temporal.viralRank.clicksUnit") },
                   )}
                   size="standard"
                 />

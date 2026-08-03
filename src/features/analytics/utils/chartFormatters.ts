@@ -1,3 +1,5 @@
+import { darkNeutral } from "@/lib/theme/colors/dark";
+
 import type { ChartSeries } from "@/types";
 
 /**
@@ -106,6 +108,27 @@ export const formatBarChart = (
 };
 
 /**
+ * Cor do texto dos data labels de {@link formatHorizontalStackedBar}.
+ *
+ * `dataVizPalette` é azul-dominante e desaturado por design (ver
+ * `dataViz.ts`) — os tons mais claros da paleta (`secondary` #73AFDE,
+ * `quaternary` #A8BEDC) dão ~1.7–1.9:1 de contraste contra o branco padrão
+ * do Apex, praticamente ilegível. `darkNeutral.bg` (o quase-preto canônico
+ * do app) contra os 5 tons da paleta fica entre 4.19:1 (`tertiary`, o mais
+ * escuro) e 10.81:1 (`quaternary`) — acima do mínimo de 3:1 para texto
+ * grande/negrito em todos os casos, sem precisar de uma cor por série.
+ */
+const STACKED_BAR_LABEL_COLOR = darkNeutral.bg;
+
+/**
+ * Abaixo deste percentual, o data label é suprimido (formatter devolve
+ * string vazia): segmentos finos numa barra multi-categoria colidem os
+ * números uns nos outros antes mesmo do problema de contraste. O tooltip
+ * continua sendo a fonte precisa do valor exato em qualquer segmento.
+ */
+const STACKED_BAR_LABEL_MIN_PCT = 8;
+
+/**
  * Formata uma distribuição categórica (dispositivos, idiomas, plataformas,
  * fim de semana vs dia de semana…) como uma única barra horizontal
  * empilhada — o substituto direto do donut/pizza morto pelo redesign
@@ -114,7 +137,10 @@ export const formatBarChart = (
  * que produz o efeito de barra de progresso segmentada com legenda embaixo.
  *
  * Sem parâmetro de cor: as séries assumem `dataVizPalette` (cíclico) via
- * base do tema — a mesma paleta que qualquer outro gráfico do app.
+ * base do tema — a mesma paleta que qualquer outro gráfico do app. Os data
+ * labels usam `STACKED_BAR_LABEL_COLOR` (contraste legível contra qualquer
+ * tom da paleta) e são suprimidos abaixo de `STACKED_BAR_LABEL_MIN_PCT`
+ * (segmento fino demais para exibir o número sem colidir com o vizinho).
  *
  * @param data - Linhas categóricas já filtradas/agrupadas pelo chamador.
  * @param labelKey - Chave de `data` usada como nome da série (rótulo da categoria).
@@ -161,8 +187,12 @@ export const formatHorizontalStackedBar = (
       xaxis: { categories: [rowLabel] },
       dataLabels: {
         enabled: true,
-        formatter: (val: number) =>
-          total > 0 ? `${Math.round((val / total) * 100)}%` : "0%",
+        style: { colors: [STACKED_BAR_LABEL_COLOR] },
+        formatter: (val: number) => {
+          if (total <= 0) return "0%";
+          const pct = (val / total) * 100;
+          return pct < STACKED_BAR_LABEL_MIN_PCT ? "" : `${Math.round(pct)}%`;
+        },
       },
       legend: { show: true, position: "bottom" },
       tooltip: {

@@ -8,9 +8,7 @@ import { AnalyticsEmptyState, OverviewMetricRow } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import {
   INSIGHTS_BLOCK_PAD,
-  insightsChartPanelSx,
   insightsSectionHeadingSx,
-  insightsTileSx,
 } from "../insights/insightsLayout";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
@@ -133,7 +131,7 @@ export function SessionDepthChart({
 
   if (loading) {
     return (
-      <EnhancedPaper>
+      <EnhancedPaper variant="outlined">
         <Box sx={{ p: 3, textAlign: "center" }}>
           <Typography>{t("insights.session.loading")}</Typography>
         </Box>
@@ -143,16 +141,30 @@ export function SessionDepthChart({
 
   if (data.session_distribution.length === 0) {
     return (
-      <EnhancedPaper>
+      <EnhancedPaper variant="outlined">
         <AnalyticsEmptyState title={t("insights.session.noData")} />
       </EnhancedPaper>
     );
   }
 
+  // Section separator between the bare sub-blocks below — a single top
+  // hairline, not a bordered box. `insightsChartPanelSx`/`insightsTileSx`
+  // (bg + border + shadow) used to wrap each of these sections and every
+  // tile on top of the card's own border, stacking three surfaces; the card
+  // itself is now the only surface and everything inside it is plain
+  // content, divided by spacing + a hairline.
+  const sectionDividerSx = {
+    pt: 3,
+    borderTop: `1px solid ${theme.palette.divider}`,
+  } as const;
+
   return (
     // No `height: 100%` — see RetentionAnalysisChart: it stretches the card to
     // the grid row's height instead of its own content.
-    <EnhancedPaper animated={false}>
+    //
+    // `variant="outlined"` — a single hairline card, no fill/shadow layered
+    // on top. This is the ONE surface for the whole component now.
+    <EnhancedPaper variant="outlined" animated={false}>
       <Box sx={{ p: INSIGHTS_BLOCK_PAD }}>
         {showTitle ? (
           <Box sx={{ mb: 2 }}>
@@ -190,8 +202,8 @@ export function SessionDepthChart({
           />
         </Box>
 
-        {/* Distribution Histogram */}
-        <Box sx={{ ...insightsChartPanelSx(theme), mb: 3 }}>
+        {/* Distribution Histogram — bare block, no nested card */}
+        <Box sx={{ ...sectionDividerSx, mb: 3 }}>
           <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
             {t("insights.session.clickDistribution")}
           </Typography>
@@ -206,8 +218,8 @@ export function SessionDepthChart({
           />
         </Box>
 
-        {/* Distribution Detail tiles */}
-        <Box sx={{ mb: 3 }}>
+        {/* Distribution Detail tiles — bare block, boxless tiles */}
+        <Box sx={{ ...sectionDividerSx, mb: 3 }}>
           <Typography variant="subtitle1" sx={insightsSectionHeadingSx}>
             {t("insights.session.distributionDetails")}
           </Typography>
@@ -223,7 +235,7 @@ export function SessionDepthChart({
             }}
           >
             {data.session_distribution.slice(0, 6).map((item, index) => (
-              <Box key={index} sx={insightsTileSx(theme)}>
+              <Box key={index}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                   {t("insights.session.clickBucket", {
                     count: item.clicks_count,
@@ -247,8 +259,8 @@ export function SessionDepthChart({
           </Box>
         </Box>
 
-        {/* Insights panel */}
-        <Box sx={insightsChartPanelSx(theme)}>
+        {/* Insights panel — bare block, no nested card */}
+        <Box sx={sectionDividerSx}>
           <Stack spacing={1.5}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {t("insights.session.sessionInsights")}

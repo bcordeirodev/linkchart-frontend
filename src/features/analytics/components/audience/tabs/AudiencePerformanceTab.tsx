@@ -77,7 +77,9 @@ export function AudiencePerformanceTab({
           </Typography>
           <ApexChartWrapper
             type="bar"
-            {...formatBarChart(performanceChartData, "name", "value", false)}
+            {...formatBarChart(performanceChartData, "name", "value", false, {
+              clicksLabel: t("temporal.viralRank.clicksUnit"),
+            })}
             size="standard"
           />
         </CardContent>

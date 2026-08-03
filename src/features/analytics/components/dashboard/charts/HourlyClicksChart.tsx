@@ -33,7 +33,9 @@ export function HourlyClicksChart({ data, height }: HourlyClicksChartProps) {
         type="area"
         height={height}
         size="standard"
-        {...formatAreaChart(data, "hour", "clicks")}
+        {...formatAreaChart(data, "hour", "clicks", {
+          clicksLabel: t("temporal.viralRank.clicksUnit"),
+        })}
       />
     </ChartCard>
   );
