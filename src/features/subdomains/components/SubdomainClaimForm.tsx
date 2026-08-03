@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next";
 
 import { ApiError } from "@/lib/api/client";
 import { getSubdomainDomainSuffix } from "@/lib/utils/shortUrl";
+import { typographyScale } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
 
 import { useSubdomains } from "../hooks/useSubdomains";
@@ -121,7 +122,7 @@ export function SubdomainClaimForm() {
                   <Typography
                     variant="body2"
                     sx={{
-                      fontFamily: "monospace",
+                      fontFamily: typographyScale.code.fontFamily,
                       color: "text.secondary",
                       whiteSpace: "nowrap",
                     }}
@@ -130,7 +131,10 @@ export function SubdomainClaimForm() {
                   </Typography>
                 </InputAdornment>
               ),
-              sx: { fontFamily: "monospace", fontWeight: 500 },
+              sx: {
+                fontFamily: typographyScale.code.fontFamily,
+                fontWeight: 500,
+              },
             },
           }}
           sx={{

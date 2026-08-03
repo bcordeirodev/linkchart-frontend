@@ -2,6 +2,7 @@
 
 import { FormControl, MenuItem, Select } from "@mui/material";
 
+import { typographyScale } from "@/lib/theme";
 import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
 
 import { useSubdomains } from "../hooks/useSubdomains";
@@ -107,7 +108,7 @@ export function SubdomainSelect({
                   py: 0,
                   pl: 0,
                   pr: "20px !important",
-                  fontFamily: "monospace",
+                  fontFamily: typographyScale.code.fontFamily,
                   fontSize: "0.8125rem",
                   fontWeight: 600,
                   minHeight: "unset",

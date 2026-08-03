@@ -16,17 +16,39 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useTranslation } from "react-i18next";
 
+import { typographyScale } from "@/lib/theme";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 import { useSubdomains } from "../hooks/useSubdomains";
 
+import type { Theme } from "@mui/material/styles";
 import type { SubdomainItem } from "../types";
+
+/**
+ * Translucent fill for this feature's in-page hairline cards (the address
+ * row, the empty-list placeholder) — same formula as the global `MuiCard`
+ * override (`alpha(white, 0.03)` dark / `alpha(black, 0.02)` light), applied
+ * here via `EnhancedPaper`'s `sx` prop since `EnhancedPaper` itself defaults
+ * to the solid `background.paper` fill. "Instrumento técnico" surface rule:
+ * in-page cards read as a light veil over the page background, not an
+ * opaque panel; the release confirmation dialog stays opaque (floating
+ * surface, not covered by this helper).
+ */
+function getSubdomainCardSx(theme: Theme): { backgroundColor: string } {
+  const isDark = theme.palette.mode === "dark";
+
+  return {
+    backgroundColor: isDark
+      ? alpha(theme.palette.common.white, 0.03)
+      : alpha(theme.palette.common.black, 0.02),
+  };
+}
 
 /** Formats an ISO timestamp as a short localized date (e.g. "12 jul 2026"). */
 function formatClaimedAt(iso: string, locale: string): string {
@@ -64,7 +86,11 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
   };
 
   return (
-    <EnhancedPaper variant="outlined" sx={{ mb: 0 }}>
+    <EnhancedPaper
+      variant="outlined"
+      animated={false}
+      sx={{ ...getSubdomainCardSx(theme), mb: 0 }}
+    >
       <Box
         sx={{
           p: { xs: 1.75, sm: 2 },
@@ -82,7 +108,7 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
             rel="noopener noreferrer"
             underline="hover"
             sx={{
-              fontFamily: "monospace",
+              fontFamily: typographyScale.code.fontFamily,
               fontWeight: 600,
               fontSize: "0.95rem",
               color:
@@ -164,6 +190,7 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
  * the domain they were assigned, but it becomes unreachable).
  */
 export function SubdomainList() {
+  const theme = useTheme();
   const { t } = useTranslation("subdomains");
   const { subdomains, isLoading, release, isReleasing, releasingId } =
     useSubdomains();
@@ -196,7 +223,12 @@ export function SubdomainList() {
     return (
       <EnhancedPaper
         variant="outlined"
-        sx={{ p: { xs: 2.5, sm: 3 }, textAlign: "center" }}
+        animated={false}
+        sx={{
+          ...getSubdomainCardSx(theme),
+          p: { xs: 2.5, sm: 3 },
+          textAlign: "center",
+        }}
       >
         <Typography variant="body2" color="text.secondary">
           {t("list.empty")}
@@ -225,7 +257,11 @@ export function SubdomainList() {
         <DialogTitle>{t("list.releaseDialog.title")}</DialogTitle>
         <DialogContent>
           <DialogContentText
-            sx={{ fontFamily: "monospace", fontWeight: 600, mb: 1 }}
+            sx={{
+              fontFamily: typographyScale.code.fontFamily,
+              fontWeight: 600,
+              mb: 1,
+            }}
           >
             {pendingRelease?.fullUrl.replace(/^https?:\/\//, "")}
           </DialogContentText>
