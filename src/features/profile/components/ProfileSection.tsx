@@ -9,7 +9,6 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { getProfileCardSx } from "../utils/cardSurface";
 
 import type { ReactNode } from "react";
-import type { SxProps, Theme } from "@mui/material";
 
 interface ProfileSectionProps {
   children: ReactNode;
@@ -41,7 +40,6 @@ export function ProfileSection({ children }: ProfileSectionProps) {
 
 interface ProfileMutedBoxProps {
   children: ReactNode;
-  sx?: SxProps<Theme>;
 }
 
 /**
@@ -50,7 +48,7 @@ interface ProfileMutedBoxProps {
  * a subtle background one step darker/lighter than the card so the note
  * reads as a distinct block without becoming its own bordered card.
  */
-export function ProfileMutedBox({ children, sx }: ProfileMutedBoxProps) {
+export function ProfileMutedBox({ children }: ProfileMutedBoxProps) {
   const theme = useTheme();
 
   return (
@@ -60,7 +58,6 @@ export function ProfileMutedBox({ children, sx }: ProfileMutedBoxProps) {
         borderRadius: `${radiusTokens.md}px`,
         bgcolor: theme.palette.action.hover,
         border: `1px solid ${theme.palette.divider}`,
-        ...sx,
       }}
     >
       {children}

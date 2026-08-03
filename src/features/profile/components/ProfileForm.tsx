@@ -155,17 +155,14 @@ export function ProfileForm({ user, photoURL }: ProfileFormProps) {
               {!photoURL && formData.name?.[0]?.toUpperCase()}
             </StyledAvatar>
 
-            <Box
-              sx={{
-                flex: 1,
-                width: "100%",
-                minWidth: 0,
-                textAlign: { xs: "center", sm: "left" },
-              }}
-            >
+            <Box sx={{ flex: 1, width: "100%", minWidth: 0 }}>
               <FormLabel
                 htmlFor="profile-name"
-                sx={{ display: "block", mb: 0.75 }}
+                sx={{
+                  display: "block",
+                  mb: 0.75,
+                  textAlign: { xs: "center", sm: "left" },
+                }}
               >
                 {t("form.displayName")}
               </FormLabel>
@@ -177,7 +174,11 @@ export function ProfileForm({ user, photoURL }: ProfileFormProps) {
                 isEditing
                 slotProps={{ htmlInput: { maxLength: 255 } }}
               />
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 1, textAlign: { xs: "center", sm: "left" } }}
+              >
                 {user.email}
               </Typography>
             </Box>
