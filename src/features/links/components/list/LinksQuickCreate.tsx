@@ -35,7 +35,7 @@ import {
   getUrlSafetyHelperNode,
 } from "@/features/links/components/forms/UrlSafetyIndicator";
 import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainSelection";
-import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { darkNeutral } from "@/lib/theme/colors";
 import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
 import { HelpHint } from "@/shared/ui/base";
@@ -347,8 +347,6 @@ export function LinksQuickCreate({
     >
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
         <LinksListSectionHeading
-          icon={<Zap {...ICON_MD} />}
-          iconChip
           title={t("list.quickCreate.label")}
           description={t("list.quickCreate.description")}
           sx={{ mb: { xs: 1.5, sm: 2 } }}

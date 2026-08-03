@@ -1,19 +1,23 @@
 import { alpha, darken, keyframes } from "@mui/material/styles";
 
-import { motionTokens } from "@/lib/theme/designSystem";
+import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 
 import type { Theme } from "@mui/material/styles";
 
 /**
- * Escala de arredondamento da feature /links — deliberadamente mais achatada
- * que os `radiusTokens` globais (o usuário apontou "radius em excesso"):
- * painéis e cards em 8px, controles/insets em 6px, chips em 6px (sem pílula).
+ * Escala de arredondamento da feature /links — alias nomeado sobre os
+ * `radiusTokens` globais (deixa os call sites auto-descritivos: `panel`,
+ * `card`, `control`, `chip`, em vez de números soltos). Antes do redesign
+ * "instrumento técnico" divergia de propósito dos tokens globais; agora fica
+ * alinhado 1:1 — containers (`panel`/`card`) em `lg`, controles em `md`,
+ * elementos pequenos (`chip`) em `sm` — para não voltar a colidir com a
+ * escala única de raio da aplicação.
  */
 export const linksRadius = {
-  panel: 8,
-  card: 6,
-  control: 6,
-  chip: 6,
+  panel: radiusTokens.lg,
+  card: radiusTokens.lg,
+  control: radiusTokens.md,
+  chip: radiusTokens.sm,
 } as const;
 
 /** Slightly stronger than `theme.palette.divider` for /links cards and panels. */
@@ -74,44 +78,31 @@ export function getLinksCardShadow(
     : `0 1px 4px ${alpha(ink, 0.045)}, 0 1px 2px ${alpha(ink, 0.03)}`;
 }
 
-/** Crisp 1px top-edge highlight — premium "glass edge" for /links surfaces. */
-export function getLinksTopHighlight(theme: Theme) {
-  const isDark = theme.palette.mode === "dark";
-  return `inset 0 1px 0 ${alpha(theme.palette.common.white, isDark ? 0.05 : 0.6)}`;
-}
-
-/** Faint top-light gradient giving panels subtle neutral depth (no color tint). */
-export function getLinksTopLightGradient(theme: Theme) {
-  const isDark = theme.palette.mode === "dark";
-  return `linear-gradient(180deg, ${alpha(
-    theme.palette.common.white,
-    isDark ? 0.035 : 0.4,
-  )} 0%, ${alpha(theme.palette.common.white, 0)} 22%)`;
-}
-
-/** Shell styles aligned with `MetricCardOptimized` (border, radius, shadow). */
+/**
+ * Hairline shell for /links panels (browse toolbar, quick-create, sticky
+ * bulk bar) — flat `background.paper` + 1px border, no shadow and no
+ * gradient. Part of the "instrumento técnico" surface grammar: exactly one
+ * raised level between the page background and a card, signalled by the
+ * hairline alone (see `radiusTokens`/`linksRadius`).
+ */
 export function getLinksPanelSx(theme: Theme) {
   const borderColor = getLinksBorderColor(theme);
 
   return {
     backgroundColor: theme.palette.background.paper,
-    backgroundImage: getLinksTopLightGradient(theme),
     borderRadius: `${linksRadius.panel}px`,
     border: `1px solid ${borderColor}`,
-    boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme)}`,
   };
 }
 
 /**
- * Quick-create panel — same neutral shell as the browse panel, slightly
- * lifted shadow. The blue "Encurtar" CTA and the ⚡ icon already mark the
- * action zone; a tinted panel on top of them read as too much.
+ * Quick-create panel — identical hairline shell to the browse panel. Kept as
+ * its own named export for call-site clarity; no extra shadow now that
+ * surfaces don't signal depth via elevation — the blue "Encurtar" CTA and the
+ * ⚡ icon already mark the action zone.
  */
 export function getLinksQuickCreatePanelSx(theme: Theme) {
-  return {
-    ...getLinksPanelSx(theme),
-    boxShadow: `${getLinksTopHighlight(theme)}, ${getLinksCardShadow(theme, "hover")}`,
-  };
+  return getLinksPanelSx(theme);
 }
 
 /** Expanding ring pulse after quick-create (visible outside the card). */
@@ -159,12 +150,14 @@ const cardEnter = keyframes`
 `;
 
 /**
- * Shell dos cards de link (desktop e mobile) — nível 2 da escala de elevação.
- * Em dark mode a elevação é luminância (card mais claro que painel e página),
- * não sombra: um véu translúcido `alpha(white, 0.035)` sobre o painel, hover
- * um passo mais claro (`0.055`), borda hairline única e sem drop shadow nem
- * gradiente. A animação de entrada suaviza o load da lista; o stagger vem do
- * grid ({@link getLinksBrowseGridSx}).
+ * Shell dos cards de link (desktop e mobile) — nível 1 da escala de
+ * superfícies ("instrumento técnico"): `background.paper` liso, borda
+ * hairline única, sem drop shadow, sem véu/gradiente de elevação por cinza.
+ * O card fica direto sobre o fundo da página (o painel externo que o envolvia
+ * foi achatado para nível 0 — ver `LinksBrowseSection`), então a hairline é o
+ * único sinal de que ele é um objeto separado. Hover só reforça a borda, sem
+ * mudar o fundo. A animação de entrada suaviza o load da lista; o stagger vem
+ * do grid ({@link getLinksBrowseGridSx}).
  */
 export function getLinkCardShellSx(theme: Theme) {
   const isDark = theme.palette.mode === "dark";
@@ -177,18 +170,10 @@ export function getLinkCardShellSx(theme: Theme) {
     // objeto principal da página e pode se afirmar.
     border: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.14 : 0.12)}`,
     overflow: "hidden" as const,
-    // Véu translúcido (não cor sólida) e sem gradiente: o card eleva pela
-    // luminância do véu sobre o painel, com superfície limpa e uniforme.
-    backgroundColor: isDark
-      ? alpha(theme.palette.common.white, 0.035)
-      : alpha(theme.palette.common.black, 0.02),
-    boxShadow: getLinksTopHighlight(theme),
-    transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+    backgroundColor: theme.palette.background.paper,
+    transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {
-      backgroundColor: isDark
-        ? alpha(theme.palette.common.white, 0.055)
-        : alpha(theme.palette.common.black, 0.035),
-      borderColor: alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14),
+      borderColor: alpha(theme.palette.text.primary, isDark ? 0.22 : 0.2),
     },
   };
 }
