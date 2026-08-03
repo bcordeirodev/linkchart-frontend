@@ -90,29 +90,7 @@ export function ProfileSidebar({
   return (
     <Stack spacing={{ xs: 3, sm: 4 }}>
       <Stack spacing={1.25}>
-        <SectionLabel
-          headingLevel={2}
-          action={
-            !isVerified && showResendVerification ? (
-              <Button
-                variant="text"
-                size="small"
-                onClick={resend}
-                disabled={isSending || isCoolingDown}
-                startIcon={
-                  isSending ? (
-                    <CircularProgress size={14} color="inherit" />
-                  ) : (
-                    <RefreshCw {...ICON_SM} />
-                  )
-                }
-                sx={{ minHeight: 44 }}
-              >
-                {t("sidebar.resendVerification")}
-              </Button>
-            ) : undefined
-          }
-        >
+        <SectionLabel headingLevel={2}>
           {t("sidebar.accountStatus")}
         </SectionLabel>
         <ProfileSection>
@@ -138,6 +116,29 @@ export function ProfileSidebar({
                   ? t("sidebar.verifiedDesc")
                   : t("sidebar.pendingVerificationDesc")}
               </Typography>
+              {!isVerified && showResendVerification ? (
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  size="small"
+                  onClick={resend}
+                  disabled={isSending || isCoolingDown}
+                  startIcon={
+                    isSending ? (
+                      <CircularProgress size={14} color="inherit" />
+                    ) : (
+                      <RefreshCw {...ICON_SM} />
+                    )
+                  }
+                  sx={{
+                    mt: 1.5,
+                    borderColor: "divider",
+                    color: "text.secondary",
+                  }}
+                >
+                  {t("sidebar.resendVerification")}
+                </Button>
+              ) : null}
             </Box>
             <ProfileMetaRow
               label={t("sidebar.memberSince")}

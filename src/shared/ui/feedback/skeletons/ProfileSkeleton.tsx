@@ -1,11 +1,24 @@
 import { Box, Stack, Skeleton } from "@mui/material";
 
-import { ResponsiveContainer, EnhancedPaper } from "@/shared/ui/base";
+import { ResponsiveContainer } from "@/shared/ui/base";
 
+/**
+ * Loading placeholder for `/profile`, shown by `AuthGuardRedirect`'s
+ * `fallback` and by `ProfilePage` itself while `useProfile()` resolves.
+ *
+ * "Instrumento técnico" (2026-08-03): matches the page's own stacked
+ * full-width layout (`maxWidth="md"`, single column) — this used to mirror
+ * a 2-column grid (main settings column + a "sidebar"), which caused a
+ * visible layout snap once the real content replaced it after the redesign
+ * flattened `ProfilePage` to stacked sections. One rounded block per
+ * section, roughly sized to that section's real content, no card chrome
+ * (the loading state doesn't need the translucent/hairline card styling —
+ * only the real, populated cards do).
+ */
 export function ProfileSkeleton() {
   return (
-    <ResponsiveContainer variant="page">
-      <Stack spacing={{ xs: 2.5, sm: 3 }} sx={{ width: "100%" }}>
+    <ResponsiveContainer maxWidth="md" sx={{ py: { xs: 2, md: 4 } }}>
+      <Stack spacing={{ xs: 3, sm: 4 }}>
         <Box
           sx={{
             display: "flex",
@@ -15,7 +28,7 @@ export function ProfileSkeleton() {
           }}
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Skeleton variant="text" width={160} height={32} sx={{ mb: 0.5 }} />
+            <Skeleton variant="text" width={160} height={40} sx={{ mb: 0.5 }} />
             <Skeleton variant="text" width={280} height={18} />
           </Box>
           <Skeleton
@@ -26,119 +39,11 @@ export function ProfileSkeleton() {
           />
         </Box>
 
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              md: "minmax(0, 2fr) minmax(0, 1fr)",
-            },
-            gap: { xs: 2, sm: 3 },
-            width: "100%",
-          }}
-        >
-          <Stack spacing={{ xs: 2, sm: 3 }}>
-            <EnhancedPaper variant="glass">
-              <Box sx={{ p: 3 }}>
-                <Skeleton
-                  variant="text"
-                  width={200}
-                  height={32}
-                  sx={{ mb: 3 }}
-                />
-                <Stack spacing={2.5}>
-                  <Skeleton variant="rounded" height={56} />
-                  <Skeleton variant="rounded" height={56} />
-                  <Skeleton variant="rounded" height={56} />
-                </Stack>
-                <Box
-                  sx={{
-                    mt: 3,
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    gap: 2,
-                  }}
-                >
-                  <Skeleton variant="rounded" width={100} height={40} />
-                  <Skeleton variant="rounded" width={120} height={40} />
-                </Box>
-              </Box>
-            </EnhancedPaper>
-
-            <EnhancedPaper variant="glass">
-              <Box sx={{ p: 3 }}>
-                <Skeleton
-                  variant="text"
-                  width={180}
-                  height={32}
-                  sx={{ mb: 3 }}
-                />
-                <Stack spacing={2.5}>
-                  <Skeleton variant="rounded" height={56} />
-                  <Skeleton variant="rounded" height={56} />
-                  <Skeleton variant="rounded" height={56} />
-                </Stack>
-                <Box
-                  sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}
-                >
-                  <Skeleton variant="rounded" width={150} height={40} />
-                </Box>
-              </Box>
-            </EnhancedPaper>
-          </Stack>
-
-          <EnhancedPaper variant="glass">
-            <Box sx={{ p: 3 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  mb: 3,
-                }}
-              >
-                <Skeleton
-                  variant="circular"
-                  width={120}
-                  height={120}
-                  sx={{ mb: 2 }}
-                />
-                <Skeleton variant="text" width={150} height={32} />
-                <Skeleton variant="text" width={200} height={20} />
-              </Box>
-
-              <Stack spacing={2}>
-                <Box>
-                  <Skeleton
-                    variant="text"
-                    width="40%"
-                    height={20}
-                    sx={{ mb: 0.5 }}
-                  />
-                  <Skeleton variant="text" width="90%" height={24} />
-                </Box>
-                <Box>
-                  <Skeleton
-                    variant="text"
-                    width="40%"
-                    height={20}
-                    sx={{ mb: 0.5 }}
-                  />
-                  <Skeleton variant="text" width="70%" height={24} />
-                </Box>
-                <Box>
-                  <Skeleton
-                    variant="text"
-                    width="40%"
-                    height={20}
-                    sx={{ mb: 0.5 }}
-                  />
-                  <Skeleton variant="text" width="80%" height={24} />
-                </Box>
-              </Stack>
-            </Box>
-          </EnhancedPaper>
-        </Box>
+        <Skeleton variant="rounded" height={220} />
+        <Skeleton variant="rounded" height={180} />
+        <Skeleton variant="rounded" height={220} />
+        <Skeleton variant="rounded" height={90} />
+        <Skeleton variant="rounded" height={110} />
       </Stack>
     </ResponsiveContainer>
   );
