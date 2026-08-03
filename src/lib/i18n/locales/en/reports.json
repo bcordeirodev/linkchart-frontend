@@ -36,18 +36,8 @@
     "clicksLabel": "clicks"
   },
   "topLinks": {
-    "title": "Top clicked links",
-    "subtitle": "Your links with the most clicks in the period",
-    "viewStats": "View analytics",
-    "columns": {
-      "link": "Link",
-      "clicks": "Clicks",
-      "visitors": "Visitors"
-    },
     "clicksCount_one": "{{count}} click",
-    "clicksCount_other": "{{count}} clicks",
-    "visitorsCount_one": "{{count}} visitor",
-    "visitorsCount_other": "{{count}} visitors"
+    "clicksCount_other": "{{count}} clicks"
   },
   "breakdown": {
     "title": "Where your clicks come from",

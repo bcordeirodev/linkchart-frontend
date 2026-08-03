@@ -9,17 +9,16 @@
  */
 
 import { Box, Card, Typography } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
-import { PieChart, Rocket, TrendingUp, Trophy } from "lucide-react";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { useNavigate } from "@/shared/hooks";
+import { SectionLabel } from "@/shared/ui/base/SectionLabel";
 
 import { formatSignedPct } from "@/features/reports/utils/variationPillStyles";
 
 import type { Theme } from "@mui/material/styles";
-import type { ReactNode } from "react";
 import type {
   ReportsInsight,
   ReportsInsightKey,
@@ -30,14 +29,6 @@ interface InsightsPanelProps {
   /** Portfolio insights for the selected period, in the backend's fixed order. */
   data: ReportsInsight[];
 }
-
-/** Icon shown per insight `key`. */
-const INSIGHT_ICON: Record<ReportsInsightKey, ReactNode> = {
-  best_performing_link: <Trophy size={17} />,
-  fastest_growing_link: <Rocket size={17} />,
-  top3_concentration: <PieChart size={17} />,
-  account_growth: <TrendingUp size={17} />,
-};
 
 /**
  * Maps each dimension to its full i18n label key (avoids a template-literal
@@ -57,7 +48,7 @@ const INSIGHT_LABEL_KEY: Record<
   account_growth: "insights.accountGrowth.label",
 };
 
-/** Tint color per insight `key`, for the icon square background. */
+/** Accent color per insight `key`, used as the card's left-border stripe. */
 function insightColor(theme: Theme, key: ReportsInsightKey): string {
   switch (key) {
     case "best_performing_link":
@@ -83,15 +74,16 @@ function metaNumber(
 }
 
 /**
- * One compact insight card: icon square, localized label, headline value,
- * and — for the two link-identifying insights — a supporting caption pulled
- * from `meta` (clicks for the best link, trend for the fastest-growing one).
+ * One compact insight card: localized label, headline value, a left-border
+ * accent stripe (the one categorical color this card keeps — no icon-chip,
+ * per the "instrumento técnico" redesign), and — for the two
+ * link-identifying insights — a supporting caption pulled from `meta`
+ * (clicks for the best link, trend for the fastest-growing one).
  */
 function InsightCard({ insight }: { insight: ReportsInsight }) {
   const theme = useTheme();
   const { t } = useTranslation("reports");
   const navigate = useNavigate();
-  const isDark = theme.palette.mode === "dark";
   const color = insightColor(theme, insight.key);
   const linkId = metaNumber(insight.meta, "link_id");
   const clickable = linkId !== null;
@@ -136,6 +128,7 @@ function InsightCard({ insight }: { insight: ReportsInsight }) {
       sx={{
         p: 1.75,
         border: `1px solid ${theme.palette.divider}`,
+        borderLeft: `3px solid ${color}`,
         borderRadius: `${radiusTokens.md}px`,
         display: "flex",
         flexDirection: "column",
@@ -148,29 +141,12 @@ function InsightCard({ insight }: { insight: ReportsInsight }) {
         }),
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box
-          sx={{
-            width: 28,
-            height: 28,
-            borderRadius: `${radiusTokens.sm}px`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            bgcolor: alpha(color, isDark ? 0.55 : 0.9),
-            color: theme.palette.common.white,
-            flexShrink: 0,
-          }}
-        >
-          {INSIGHT_ICON[insight.key]}
-        </Box>
-        <Typography
-          variant="caption"
-          sx={{ color: "text.secondary", fontWeight: 500, lineHeight: 1.2 }}
-        >
-          {t(INSIGHT_LABEL_KEY[insight.key])}
-        </Typography>
-      </Box>
+      <Typography
+        variant="caption"
+        sx={{ color: "text.secondary", fontWeight: 500, lineHeight: 1.2 }}
+      >
+        {t(INSIGHT_LABEL_KEY[insight.key])}
+      </Typography>
 
       <Typography
         variant="body1"
@@ -206,10 +182,12 @@ export function InsightsPanel({ data }: InsightsPanelProps) {
 
   return (
     <Box>
-      <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.25 }}>
-        {t("insights.title")}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+      <SectionLabel headingLevel={2}>{t("insights.title")}</SectionLabel>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mb: 1.5, mt: { xs: 1.5, sm: 2 } }}
+      >
         {t("insights.subtitle")}
       </Typography>
       <Box

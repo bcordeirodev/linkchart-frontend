@@ -5,10 +5,12 @@
  * immediately preceding period of equal length and this link's share of the
  * user's total clicks.
  *
- * Unlike `TopLinksTable` (clicks + unique visitors, a per-period snapshot),
- * this answers a portfolio-level question per-link analytics can't: which of
- * my links is trending up or down right now, and how much of my total
- * traffic does each one represent?
+ * The only links ranking on this page — answers a portfolio-level question
+ * per-link analytics can't: which of my links is trending up or down right
+ * now, and how much of my total traffic does each one represent? (A separate
+ * `TopLinksTable`, clicks + unique visitors only, no variation/share, was
+ * removed as dead code in the "instrumento técnico" reskin: it had already
+ * lost its only caller in a July 2026 refactor.)
  */
 
 import {
@@ -24,11 +26,10 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
-import { Trophy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { typographyScale } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { useNavigate } from "@/shared/hooks";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
@@ -55,11 +56,17 @@ interface LinkPerformanceTableProps {
 
 /**
  * Builds the short-URL display label — `short_domain/slug` when a custom
- * domain is set, `/slug` otherwise. Mirrors `TopLinksTable`'s helper.
+ * domain is set, `/slug` otherwise.
  */
 function shortLabel(row: LinkPerformanceRow): string {
   return row.short_domain ? `${row.short_domain}/${row.slug}` : `/${row.slug}`;
 }
+
+/** Mono treatment for the short-URL label — matches the app-wide slug/URL convention. */
+const shortLabelSx = {
+  fontFamily: typographyScale.code.fontFamily,
+  fontSize: "0.75rem",
+} as const;
 
 /** Renders a variation value as a colored pill — "▲ 12%" / "▼ 5%" / "—". */
 function VariationPill({ pct }: { pct: number | null }) {
@@ -89,8 +96,7 @@ function VariationPill({ pct }: { pct: number | null }) {
 /**
  * The user's own links ranked by clicks in the active period, each with a
  * trend pill and its share of total clicks. Renders a plain MUI `<Table>` on
- * tablet/desktop and a stacked card list on mobile — same pattern as
- * `TopLinksTable`.
+ * tablet/desktop and a stacked card list on mobile.
  */
 export function LinkPerformanceTable({
   data,
@@ -104,7 +110,6 @@ export function LinkPerformanceTable({
     <ChartCard
       title={t("linkPerformance.title")}
       subtitle={t("linkPerformance.subtitle")}
-      icon={<Trophy {...ICON_LG} />}
     >
       {isMobile ? (
         <Stack spacing={1.25}>
@@ -127,7 +132,7 @@ export function LinkPerformanceTable({
               <Typography
                 variant="caption"
                 color="text.secondary"
-                sx={{ display: "block", mb: 1 }}
+                sx={{ display: "block", mb: 1, ...shortLabelSx }}
                 noWrap
               >
                 {shortLabel(row)}
@@ -188,7 +193,7 @@ export function LinkPerformanceTable({
                     <Typography
                       variant="caption"
                       color="text.secondary"
-                      sx={{ display: "block" }}
+                      sx={{ display: "block", ...shortLabelSx }}
                       noWrap
                     >
                       {shortLabel(row)}

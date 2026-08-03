@@ -96,7 +96,6 @@ export const API_CONFIG = {
     REPORTS: {
       SUMMARY: "/api/reports/summary",
       TIMESERIES: "/api/reports/timeseries",
-      TOP_LINKS: "/api/reports/top-links",
       BREAKDOWN: "/api/reports/breakdown",
       LINK_PERFORMANCE: "/api/reports/link-performance",
       INSIGHTS: "/api/reports/insights",

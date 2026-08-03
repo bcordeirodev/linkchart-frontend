@@ -36,18 +36,8 @@
     "clicksLabel": "cliques"
   },
   "topLinks": {
-    "title": "Links mais clicados",
-    "subtitle": "Seus links com mais cliques no período",
-    "viewStats": "Ver estatísticas",
-    "columns": {
-      "link": "Link",
-      "clicks": "Cliques",
-      "visitors": "Visitantes"
-    },
     "clicksCount_one": "{{count}} clique",
-    "clicksCount_other": "{{count}} cliques",
-    "visitorsCount_one": "{{count}} visitante",
-    "visitorsCount_other": "{{count}} visitantes"
+    "clicksCount_other": "{{count}} cliques"
   },
   "breakdown": {
     "title": "De onde vêm seus cliques",
