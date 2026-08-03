@@ -13,7 +13,6 @@ import {
   useTheme,
 } from "@mui/material";
 
-import { radiusTokens } from "@/lib/theme/designSystem";
 import { getSoftSelectedChipSx } from "@/lib/theme/softChip";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { format, parse, parseISO } from "date-fns";
@@ -66,6 +65,10 @@ function toDate(iso: string | null): Date | null {
  * Clicking a preset sets the period and resolves the datetime range.
  * Editing the pickers directly switches to period="custom" and stores
  * datetime strings in "yyyy-MM-dd HH:mm:ss" format.
+ *
+ * Level 0 — boxless, no card/border of its own (the "instrumento técnico"
+ * redesign, 2026-08-03); the individual pickers/chips/switch keep their own
+ * control-level chrome, which is allowed at level 0.
  */
 export function AnalyticsFilterBar({
   period,
@@ -116,16 +119,10 @@ export function AnalyticsFilterBar({
   };
 
   return (
-    <Box
-      sx={{
-        px: 2,
-        py: 1.25,
-        mb: 2,
-        bgcolor: "background.paper",
-        border: `1px solid ${theme.palette.divider}`,
-        borderRadius: `${radiusTokens.md}px`,
-      }}
-    >
+    // Level 0 — no card of its own. `LinkAnalyticsTabsOptimized` supplies the
+    // single hairline that separates this control row from the tab strip
+    // below (same "toolbar is boxless" rule as the /links search/sort row).
+    <Box sx={{ mb: 2 }}>
       {/* Controls row — presets first (the common case), custom range after */}
       <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1.5}>
         {/* Period preset chips */}

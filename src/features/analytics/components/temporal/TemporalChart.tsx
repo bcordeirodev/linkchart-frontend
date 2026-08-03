@@ -1,11 +1,9 @@
 "use client";
 import { Box } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { Activity, CalendarRange, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { getStandardChartColors } from "@/lib/theme";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { AnalyticsSubTabs } from "@/shared/ui/navigation";
 
@@ -78,13 +76,9 @@ export function TemporalChart({
   activeTab: activeTabProp,
   onTabChange,
 }: TemporalChartProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
   const [localTab, setLocalTab] = useState(0);
   const activeTab = activeTabProp !== undefined ? activeTabProp : localTab;
-
-  const chartColors = getStandardChartColors(theme);
 
   // ── data availability flags ──────────────────────────────────────────────
   const hasHeatmap = (advancedData?.heatmap_data?.length ?? 0) > 0;
@@ -150,11 +144,6 @@ export function TemporalChart({
             businessHoursAnalysis={businessHoursAnalysis}
             showWeekendComparison={showWeekendComparison}
             showBusinessComparison={showBusinessComparison}
-            isDark={isDark}
-            primaryColor={chartColors.primary.main}
-            secondaryColor={
-              chartColors.secondary?.main ?? chartColors.primary.main
-            }
           />
         )}
 

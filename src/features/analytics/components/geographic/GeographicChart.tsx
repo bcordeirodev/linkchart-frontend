@@ -1,10 +1,8 @@
 "use client";
 import { Box, Chip } from "@mui/material";
-import { Building2, Globe, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { chartByType } from "@/lib/theme/colors";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { dataVizPalette } from "@/lib/theme/dataViz";
 import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
@@ -100,7 +98,7 @@ export function GeographicChart({
       label: c.country,
       value: c.clicks,
       percentage: pct(c.clicks),
-      color: chartByType.geographic.countries,
+      color: dataVizPalette.primary,
       icon: <span aria-hidden>{getFlagEmoji(c.iso_code)}</span>,
     }));
 
@@ -111,7 +109,7 @@ export function GeographicChart({
       label: `${s.state_name || s.state} · ${s.country}`,
       value: s.clicks,
       percentage: pct(s.clicks),
-      color: chartByType.geographic.states,
+      color: dataVizPalette.secondary,
     }));
 
   const cityItems: HorizontalBreakdownItem[] = cities.slice(0, 10).map((c) => ({
@@ -125,7 +123,7 @@ export function GeographicChart({
       .join(" · "),
     value: c.clicks,
     percentage: pct(c.clicks),
-    color: chartByType.geographic.cities,
+    color: dataVizPalette.tertiary,
   }));
 
   return (
@@ -135,7 +133,6 @@ export function GeographicChart({
           <ChartCard
             title={t("geographic.chart.topCountries")}
             subtitle={t("geographic.chart.countriesSubtitle")}
-            icon={<Globe {...ICON_MD} />}
           >
             {countryItems.length > 0 ? (
               <HorizontalBreakdownBars
@@ -158,7 +155,6 @@ export function GeographicChart({
           <ChartCard
             title={t("geographic.chart.topStates")}
             subtitle={t("geographic.chart.statesSubtitle")}
-            icon={<Building2 {...ICON_MD} />}
             action={
               selectedCountry ? (
                 <Chip
@@ -189,7 +185,6 @@ export function GeographicChart({
         <ChartCard
           title={t("geographic.chart.topCities")}
           subtitle={t("geographic.chart.citiesSubtitle")}
-          icon={<MapPin {...ICON_MD} />}
         >
           {cityItems.length > 0 ? (
             <HorizontalBreakdownBars

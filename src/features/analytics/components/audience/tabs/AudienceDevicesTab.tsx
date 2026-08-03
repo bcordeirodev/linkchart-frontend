@@ -1,9 +1,7 @@
 "use client";
-import { Smartphone } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { ICON_MD } from "@/lib/theme/iconDefaults";
-import { chartByType, getChartColor } from "@/lib/theme/colors";
+import { dataVizPalette } from "@/lib/theme/dataViz";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import type { DeviceData } from "@/types";
 
@@ -21,19 +19,6 @@ export interface AudienceDevicesTabProps {
 }
 
 /**
- * Maps a device-type label to its semantic palette color (mirrors the
- * mapping already used by `DeviceBreakdownChart`), falling back to the
- * generic chart palette for unrecognised device names.
- *
- * @param device - Raw device label (e.g. `"Mobile"`).
- * @param fallbackIndex - Palette index used when the label isn't recognised.
- */
-function resolveDeviceColor(device: string, fallbackIndex: number): string {
-  const key = device?.toLowerCase().trim() as keyof typeof chartByType.devices;
-  return chartByType.devices[key] ?? getChartColor(fallbackIndex);
-}
-
-/**
  * Renders the "Aparelhos" (Devices) card for the Audience tab: a single
  * horizontal-bar breakdown of mobile / desktop / tablet share, with value
  * and percentage on every row.
@@ -48,13 +33,14 @@ export function AudienceDevicesTab({
 }: AudienceDevicesTabProps) {
   const { t } = useTranslation("analytics");
 
+  const paletteTones = Object.values(dataVizPalette);
   const items: HorizontalBreakdownItem[] = deviceBreakdown.map(
     (device, index) => ({
       key: device.device,
       label: device.device,
       value: device.clicks,
       percentage: totalClicks > 0 ? (device.clicks / totalClicks) * 100 : 0,
-      color: resolveDeviceColor(device.device, index),
+      color: paletteTones[index % paletteTones.length],
     }),
   );
 
@@ -62,7 +48,6 @@ export function AudienceDevicesTab({
     <ChartCard
       title={t("audience.chart.deviceDistribution")}
       subtitle={t("audience.chart.deviceDistributionDesc")}
-      icon={<Smartphone {...ICON_MD} />}
     >
       <HorizontalBreakdownBars items={items} />
     </ChartCard>

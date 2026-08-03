@@ -22,7 +22,6 @@ export {
 export { SectionLabel, type SectionLabelProps } from "./SectionLabel";
 
 // Data Display
-export { default as MetricCardOptimized } from "./MetricCardOptimized";
 export {
   OverviewMetricRow,
   type OverviewMetric,

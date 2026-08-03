@@ -1,11 +1,10 @@
 "use client";
 import { Alert } from "@mui/material";
 import { Info } from "lucide-react";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
+import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
@@ -41,14 +40,12 @@ interface ConnectionTypeCardProps {
 }
 
 /**
- * Donut chart of the ISP connection type classified from network data
- * (Phase 2). Datacenter-heavy traffic is a strong bot/fraud signal, which is
- * why this card lives in the Quality sub-tab.
+ * Horizontal stacked bar of the ISP connection type classified from network
+ * data (Phase 2). Datacenter-heavy traffic is a strong bot/fraud signal,
+ * which is why this card lives in the Quality sub-tab.
  */
 export function ConnectionTypeCard({ breakdown }: ConnectionTypeCardProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
 
   const conn = normaliseBreakdown<ConnectionEntry>(breakdown);
   if (conn.data.length === 0) return null;
@@ -76,9 +73,9 @@ export function ConnectionTypeCard({ breakdown }: ConnectionTypeCardProps) {
         </Alert>
       )}
       <ApexChartWrapper
-        type="donut"
+        type="bar"
         size="compact"
-        {...formatPieChart(chartData, "name", "value", isDark)}
+        {...formatHorizontalStackedBar(chartData, "name", "value")}
       />
     </ChartCard>
   );

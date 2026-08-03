@@ -9,7 +9,7 @@
  * @since 2.0.0
  */
 
-// Utilitários de cores - usado em MetricCardOptimized
+// Utilitários de cores
 export * from "./colorUtils";
 
 // Utilitários específicos para cores de gráficos

@@ -18,7 +18,7 @@ import { useInsightsData } from "@/features/analytics/hooks/useInsightsData";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { EmptyState } from "@/shared/ui/base/EmptyState";
-import { SectionDivider } from "@/shared/ui/SectionDivider";
+import { SectionLabel } from "@/shared/ui/base/SectionLabel";
 
 import type { DashboardSummary } from "@/types/analytics/dashboard";
 
@@ -236,11 +236,13 @@ export function LinkDashboard({
             (BusinessInsights sorts by priority). */}
         {!compact && topInsights.length > 0 ? (
           <Box sx={{ mt: { xs: 2, md: 3 } }}>
-            <SectionDivider title={t("dashboard.whatThisMeans.title")} />
+            <SectionLabel headingLevel={2}>
+              {t("dashboard.whatThisMeans.title")}
+            </SectionLabel>
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ mb: 1.5, mt: -0.5 }}
+              sx={{ mb: 1.5, mt: { xs: 1.5, sm: 2 } }}
             >
               {t("dashboard.whatThisMeans.description")}
             </Typography>

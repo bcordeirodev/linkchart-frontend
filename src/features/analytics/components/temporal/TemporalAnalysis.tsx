@@ -1,14 +1,11 @@
 "use client";
 import { useMemo } from "react";
-import { Clock, TrendingUp, Calendar, Activity } from "lucide-react";
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
-
-import { ICON_LG } from "@/lib/theme/iconDefaults";
 
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
-import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
+import { OverviewMetricRow } from "@/shared/ui/base/OverviewMetricRow";
 import { getWeekdayLabel } from "../../utils/weekday";
 import { useTemporalData } from "../../hooks/useTemporalData";
 import type { Segment } from "@/features/links/hooks/useAnalyticsFilters";
@@ -136,50 +133,30 @@ export function TemporalAnalysis({
           )}
 
           <Box sx={{ mb: 2 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={6} sm={6} md={3}>
-                <MetricCard
-                  title={t("temporal.metrics.peakHour")}
-                  value={peakHour}
-                  icon={<Clock {...ICON_LG} />}
-                  color="primary"
-                  subtitle={peakHourSubtitle}
-                />
-              </Grid>
-              <Grid item xs={6} sm={6} md={3}>
-                <MetricCard
-                  title={t("temporal.metrics.peakDay")}
-                  value={peakDay}
-                  icon={<Calendar {...ICON_LG} />}
-                  color="secondary"
-                  subtitle={peakDaySubtitle}
-                />
-              </Grid>
-              <Grid item xs={6} sm={6} md={3}>
-                <MetricCard
-                  title={t("temporal.metrics.avgPerHour")}
-                  value={stats?.averageHourlyClicks?.toString() || "0"}
-                  icon={<Activity {...ICON_LG} />}
-                  color="info"
-                  subtitle={t("temporal.metrics.clicksPerHour")}
-                />
-              </Grid>
-              <Grid item xs={6} sm={6} md={3}>
-                <MetricCard
-                  title={t("temporal.metrics.trend")}
-                  value={trendValue}
-                  icon={<TrendingUp {...ICON_LG} />}
-                  color={
-                    stats?.trendDirection === "up"
-                      ? "success"
-                      : stats?.trendDirection === "down"
-                        ? "error"
-                        : "warning"
-                  }
-                  subtitle={t("temporal.metrics.currentTrend")}
-                />
-              </Grid>
-            </Grid>
+            <OverviewMetricRow
+              metrics={[
+                {
+                  label: t("temporal.metrics.peakHour"),
+                  value: peakHour,
+                  caption: peakHourSubtitle,
+                },
+                {
+                  label: t("temporal.metrics.peakDay"),
+                  value: peakDay,
+                  caption: peakDaySubtitle,
+                },
+                {
+                  label: t("temporal.metrics.avgPerHour"),
+                  value: stats?.averageHourlyClicks?.toString() || "0",
+                  caption: t("temporal.metrics.clicksPerHour"),
+                },
+                {
+                  label: t("temporal.metrics.trend"),
+                  value: trendValue,
+                  caption: t("temporal.metrics.currentTrend"),
+                },
+              ]}
+            />
           </Box>
 
           {/* Rich tabbed chart with advanced analytics — holiday, seasonal and

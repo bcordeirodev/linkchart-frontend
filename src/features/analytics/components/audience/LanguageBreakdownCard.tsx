@@ -1,11 +1,10 @@
 "use client";
 import { Alert } from "@mui/material";
 import { Info } from "lucide-react";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
+import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
@@ -31,8 +30,8 @@ interface LanguageBreakdownCardProps {
 }
 
 /**
- * Donut chart of visitor languages with regional variants grouped under
- * their base language (en-US + en-GB → English), using the Phase-1
+ * Horizontal stacked bar of visitor languages with regional variants grouped
+ * under their base language (en-US + en-GB → English), using the Phase-1
  * pre-parsed `primary_language` column. Complements the per-variant
  * distribution chart above it in the Languages sub-tab — the card
  * description explains why totals may differ between the two.
@@ -40,9 +39,7 @@ interface LanguageBreakdownCardProps {
 export function LanguageBreakdownCard({
   breakdown,
 }: LanguageBreakdownCardProps) {
-  const theme = useTheme();
   const { t, i18n } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
 
   const lang = normaliseBreakdown<LanguageEntry>(breakdown);
   if (lang.data.length === 0) return null;
@@ -84,9 +81,9 @@ export function LanguageBreakdownCard({
         </Alert>
       )}
       <ApexChartWrapper
-        type="donut"
+        type="bar"
         size="compact"
-        {...formatPieChart(chartData, "name", "value", isDark)}
+        {...formatHorizontalStackedBar(chartData, "name", "value")}
       />
     </ChartCard>
   );

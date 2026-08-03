@@ -72,11 +72,10 @@ export function ViralRankMiniChart({ data }: Props) {
 
   const options = useMemo(
     () => ({
-      chart: {
-        type: "bar" as const,
-        toolbar: { show: false },
-        background: "transparent",
-      },
+      // `distributed: true` + a per-bar `colors` array is the one legitimate
+      // exception to "colors come from the base theme" here: `RANK_COLORS`
+      // is a semantic severity ramp (cold→warming→trending→viral), not
+      // decorative series variety. Everything else below is structural.
       plotOptions: {
         bar: { borderRadius: 3, columnWidth: "60%", distributed: true },
       },
@@ -88,17 +87,7 @@ export function ViralRankMiniChart({ data }: Props) {
           const parts = d.date.split("-");
           return `${parts[2]}/${parts[1]}`;
         }),
-        labels: {
-          style: { colors: theme.palette.text.secondary, fontSize: "11px" },
-        },
-        axisBorder: { show: false },
-        axisTicks: { show: false },
       },
-      yaxis: {
-        labels: { style: { colors: theme.palette.text.secondary } },
-      },
-      grid: { borderColor: theme.palette.divider },
-      theme: { mode: isDark ? ("dark" as const) : ("light" as const) },
       tooltip: {
         y: {
           formatter: (val: number) =>
@@ -116,7 +105,7 @@ export function ViralRankMiniChart({ data }: Props) {
       },
       legend: { show: false },
     }),
-    [data, theme, t, isDark],
+    [data, t],
   );
 
   if (!hasAnyData) return null;

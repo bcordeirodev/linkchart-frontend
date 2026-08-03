@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
-import { Lightbulb, Target, TrendingUp, Trophy } from "lucide-react";
 
 import {
   elevationLightTokens,
@@ -20,6 +19,7 @@ import {
   radiusTokens,
 } from "@/lib/theme/designSystem";
 
+/** Props accepted by the {@link GeographicInsights} component. */
 interface GeographicInsightsProps {
   countries: {
     country: string;
@@ -37,6 +37,19 @@ interface GeographicInsightsProps {
   totalCountries?: number;
 }
 
+/**
+ * Closes out the "Lugares" tab (heat-map sub-tab) with market-facing
+ * takeaways derived straight from the country/state/city rankings that read
+ * above it: the top markets, the top cities, and a short list of strategic
+ * recommendations (invest in the leading market, watch the leading city,
+ * consider localizing once enough countries are represented). Renders
+ * nothing when there is no country or city data to summarize.
+ *
+ * @param props.countries - Top countries by click volume (already sorted by the caller).
+ * @param props.states - State-level breakdown; accepted for API symmetry with the caller but not read directly (only country/city drive this card's content).
+ * @param props.cities - Top cities by click volume (already sorted by the caller).
+ * @param props.totalCountries - Total distinct countries in the dataset, used for the "consider localizing" threshold; falls back to `countries.length` when omitted.
+ */
 export function GeographicInsights({
   countries,
   states: _states,
@@ -66,12 +79,8 @@ export function GeographicInsights({
           sx={{
             fontWeight: 600,
             mb: 0.5,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
           }}
         >
-          <Lightbulb size={16} strokeWidth={1.5} />
           {t("geographic.insights.marketInsights")}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -80,12 +89,7 @@ export function GeographicInsights({
 
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-            <Typography
-              variant="subtitle2"
-              gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
-            >
-              <Target size={16} strokeWidth={1.5} />
+            <Typography variant="subtitle2" gutterBottom>
               {t("geographic.insights.mainMarkets")}
             </Typography>
             <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
@@ -102,12 +106,7 @@ export function GeographicInsights({
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <Typography
-              variant="subtitle2"
-              gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
-            >
-              <Trophy size={16} strokeWidth={1.5} />
+            <Typography variant="subtitle2" gutterBottom>
               {t("geographic.insights.topCities")}
             </Typography>
             <Stack direction="row" spacing={1} flexWrap="wrap">
@@ -127,12 +126,7 @@ export function GeographicInsights({
         <Divider sx={{ my: 2 }} />
 
         <Box>
-          <Typography
-            variant="subtitle2"
-            gutterBottom
-            sx={{ display: "flex", alignItems: "center", gap: 1 }}
-          >
-            <TrendingUp size={16} strokeWidth={1.5} />
+          <Typography variant="subtitle2" gutterBottom>
             {t("geographic.insights.strategicRecs")}
           </Typography>
           <Stack spacing={1}>

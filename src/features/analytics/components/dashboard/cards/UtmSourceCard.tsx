@@ -2,12 +2,10 @@
 /**
  * UtmSourceCard — shows top UTM source values for a link.
  */
-import { Tag } from "lucide-react";
 import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { HorizontalBreakdownBars } from "@/features/analytics/components/audience/HorizontalBreakdownBars";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import type { HorizontalBreakdownItem } from "@/features/analytics/components/audience/HorizontalBreakdownBars";
@@ -50,7 +48,6 @@ export function UtmSourceCard({ data }: Props) {
     <ChartCard
       title={t("dashboard.utmSource.title")}
       subtitle={t("dashboard.utmSource.description")}
-      icon={<Tag {...ICON_MD} />}
     >
       <HorizontalBreakdownBars items={items} />
       <Typography

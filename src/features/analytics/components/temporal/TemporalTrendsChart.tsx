@@ -10,13 +10,11 @@ import {
 } from "@mui/material";
 import { TrendingUp, TrendingDown, LineChart } from "lucide-react";
 
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-import { getStandardChartColors } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import type {
   WeeklyTrendEntry,
@@ -35,10 +33,7 @@ export function TemporalTrendsChart({
   weeklyTrends,
   monthlyTrends,
 }: TemporalTrendsChartProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
-  const chartColors = getStandardChartColors(theme);
 
   const weeklyData = [...weeklyTrends]
     .sort((a, b) => a.week.localeCompare(b.week))
@@ -99,55 +94,16 @@ export function TemporalTrendsChart({
                   },
                 ]}
                 options={{
-                  chart: {
-                    type: "area",
-                    zoom: { enabled: false },
-                  },
-                  colors: [chartColors.primary.main],
-                  stroke: {
-                    curve: "smooth",
-                    width: 3,
-                  },
-                  fill: {
-                    type: "gradient",
-                    gradient: {
-                      shadeIntensity: 1,
-                      opacityFrom: 0.6,
-                      opacityTo: 0.1,
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  xaxis: {
-                    type: "category",
-                    labels: {
-                      style: {
-                        colors: isDark
-                          ? "rgba(255, 255, 255, 0.85)"
-                          : "rgba(0, 0, 0, 0.75)",
-                      },
-                    },
-                  },
+                  chart: { zoom: { enabled: false } },
+                  xaxis: { type: "category" },
                   yaxis: {
                     labels: {
-                      style: {
-                        colors: isDark
-                          ? "rgba(255, 255, 255, 0.85)"
-                          : "rgba(0, 0, 0, 0.75)",
-                      },
                       formatter(val: number) {
                         return val.toLocaleString();
                       },
                     },
                   },
-                  grid: {
-                    borderColor: isDark
-                      ? "rgba(255, 255, 255, 0.1)"
-                      : "rgba(0, 0, 0, 0.1)",
-                  },
                   tooltip: {
-                    theme: isDark ? "dark" : "light",
                     y: {
                       formatter(val: number) {
                         return `${val.toLocaleString()} ${t("temporal.trends.seriesName").toLowerCase()}`;
@@ -208,55 +164,16 @@ export function TemporalTrendsChart({
                   },
                 ]}
                 options={{
-                  chart: {
-                    type: "area",
-                    zoom: { enabled: false },
-                  },
-                  colors: [chartColors.secondary.main],
-                  stroke: {
-                    curve: "smooth",
-                    width: 3,
-                  },
-                  fill: {
-                    type: "gradient",
-                    gradient: {
-                      shadeIntensity: 1,
-                      opacityFrom: 0.6,
-                      opacityTo: 0.1,
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  xaxis: {
-                    type: "category",
-                    labels: {
-                      style: {
-                        colors: isDark
-                          ? "rgba(255, 255, 255, 0.85)"
-                          : "rgba(0, 0, 0, 0.75)",
-                      },
-                    },
-                  },
+                  chart: { zoom: { enabled: false } },
+                  xaxis: { type: "category" },
                   yaxis: {
                     labels: {
-                      style: {
-                        colors: isDark
-                          ? "rgba(255, 255, 255, 0.85)"
-                          : "rgba(0, 0, 0, 0.75)",
-                      },
                       formatter(val: number) {
                         return val.toLocaleString();
                       },
                     },
                   },
-                  grid: {
-                    borderColor: isDark
-                      ? "rgba(255, 255, 255, 0.1)"
-                      : "rgba(0, 0, 0, 0.1)",
-                  },
                   tooltip: {
-                    theme: isDark ? "dark" : "light",
                     y: {
                       formatter(val: number) {
                         return `${val.toLocaleString()} ${t("temporal.trends.seriesName").toLowerCase()}`;

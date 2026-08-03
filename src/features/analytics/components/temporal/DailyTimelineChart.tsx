@@ -1,10 +1,8 @@
 "use client";
 import { Alert, Box, Grid, Chip, Stack, Typography } from "@mui/material";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { getStandardChartColors } from "@/lib/theme";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type {
@@ -49,10 +47,7 @@ function normalise(data: DailyTimelineEntry[] | DailyTimeline): {
  * MUI `Alert` is rendered above the charts directing users to the date filter.
  */
 export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
-  const theme = useTheme();
   const { t, i18n } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
-  const chartColors = getStandardChartColors(theme);
 
   const { entries, capped } = normalise(data);
 
@@ -77,38 +72,18 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
   const trend =
     previous > 0 ? Math.round(((recent - previous) / previous) * 100) : 0;
 
-  const labelStyle = {
-    colors: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-    fontSize: "11px" as const,
-  };
-
+  // Structural options only — colors, grid, fonts and tooltip theme all come
+  // from `ApexChartWrapper`'s shared base theme; only orientation-neutral
+  // behavior (datetime axis, date formatting) is genuinely per-chart here.
   const commonOptions = {
-    chart: {
-      // No toolbar override here: `ApexChartWrapper` already forces
-      // `toolbar: { show: false }`, and re-enabling it puts zoom/pan/hamburger
-      // icons over the chart — noise on a read-only analytics page.
-      animations: { enabled: true, speed: 600 },
-    },
-    stroke: { curve: "smooth" as const, width: 2 },
-    fill: {
-      type: "gradient",
-      gradient: { shadeIntensity: 1, opacityFrom: 0.5, opacityTo: 0.05 },
-    },
-    dataLabels: { enabled: false },
     xaxis: {
       type: "datetime" as const,
-      labels: { style: labelStyle, datetimeUTC: false },
+      labels: { datetimeUTC: false },
     },
     yaxis: {
-      labels: {
-        style: labelStyle,
-        formatter: (v: number) => v.toLocaleString(),
-      },
+      labels: { formatter: (v: number) => v.toLocaleString() },
     },
-    grid: {
-      borderColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
-    },
-    tooltip: { theme: isDark ? "dark" : "light", x: { format: "dd/MM/yyyy" } },
+    tooltip: { x: { format: "dd/MM/yyyy" } },
     markers: { size: 0, hover: { size: 5 } },
   };
 
@@ -188,7 +163,7 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
               series={[
                 { name: t("temporal.timeline.clicks"), data: clickSeries },
               ]}
-              options={{ ...commonOptions, colors: [chartColors.primary.main] }}
+              options={commonOptions}
             />
           </ChartCard>
         </Grid>
@@ -203,10 +178,7 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
               series={[
                 { name: t("temporal.timeline.unique"), data: uniqueSeries },
               ]}
-              options={{
-                ...commonOptions,
-                colors: [chartColors.secondary.main],
-              }}
+              options={commonOptions}
             />
           </ChartCard>
         </Grid>

@@ -30,7 +30,6 @@ export function ChannelEngagementChart({
 }: ChannelEngagementChartProps) {
   const { t } = useTranslation("analytics");
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
 
   if (channels.length === 0) return null;
 
@@ -56,15 +55,9 @@ export function ChannelEngagementChart({
         </Typography>
         <ApexChartWrapper
           type="bar"
-          {...formatBarChart(
-            chartData,
-            "name",
-            "value",
-            theme.palette.primary.main,
-            false,
-            isDark,
-            { series: t("insights.traffic.seriesName") },
-          )}
+          {...formatBarChart(chartData, "name", "value", false, {
+            series: t("insights.traffic.seriesName"),
+          })}
           size="standard"
         />
         <Typography

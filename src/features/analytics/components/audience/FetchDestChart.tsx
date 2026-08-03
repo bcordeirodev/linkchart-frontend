@@ -1,11 +1,10 @@
 "use client";
 
 import { Box, Chip, Typography } from "@mui/material";
-import { Code2, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import { HorizontalBreakdownBars } from "./HorizontalBreakdownBars";
@@ -79,7 +78,6 @@ export function FetchDestChart({ fetchDestBreakdown }: FetchDestChartProps) {
       <ChartCard
         title={t("audience.fetchDest.title")}
         subtitle={t("audience.fetchDest.description")}
-        icon={<Code2 {...ICON_MD} />}
       >
         {items.length === 0 ? (
           <Typography variant="body2" color="text.secondary">

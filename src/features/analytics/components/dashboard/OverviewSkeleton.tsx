@@ -3,49 +3,34 @@
 import { Box, Skeleton, Stack } from "@mui/material";
 
 /**
- * Loading skeleton that mirrors the Overview tab layout:
- * link info card → 6 metric cards (3-col) →
- * 3 chart sections (Temporal / Audience / Acquisition),
- * each with a divider label and two side-by-side charts.
+ * Loading skeleton that mirrors the Overview tab layout: a bare metric row
+ * (five hairline-separated numbers, no card) → 2 chart sections (Temporal /
+ * Audience), each with a divider label and two side-by-side charts.
  */
 export function OverviewSkeleton() {
   return (
     <Box>
-      {/* Link info card */}
-      <Skeleton
-        variant="rounded"
-        animation="wave"
-        height={72}
-        sx={{ mb: 2, borderRadius: 2 }}
-      />
-
-      {/* 6 metric cards — xs: 2 cols, sm: 2 cols, md: 3 cols */}
+      {/* Metric row — 5 hairline-separated numbers, no card/icon-chip,
+          mirroring OverviewMetricRow's own layout. */}
       <Box
         sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr 1fr",
-            sm: "repeat(2, 1fr)",
-            md: "repeat(3, 1fr)",
-          },
-          gap: { xs: 2, md: 3 },
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          gap: { xs: 2, sm: 3 },
           mb: { xs: 2, md: 3 },
         }}
       >
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton
-            key={i}
-            variant="rounded"
-            animation="wave"
-            height={120}
-            sx={{ borderRadius: 2 }}
-          />
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Box key={i} sx={{ flex: 1, minWidth: 0 }}>
+            <Skeleton variant="text" animation="wave" width="60%" height={20} />
+            <Skeleton variant="text" animation="wave" width="80%" height={44} />
+          </Box>
         ))}
       </Box>
 
-      {/* 3 chart sections: Temporal, Audience, Acquisition */}
+      {/* 2 chart sections: Temporal, Audience */}
       <Stack spacing={3}>
-        {Array.from({ length: 3 }).map((_, sectionIdx) => (
+        {Array.from({ length: 2 }).map((_, sectionIdx) => (
           <Box key={sectionIdx}>
             {/* Section divider with overline label */}
             <Box

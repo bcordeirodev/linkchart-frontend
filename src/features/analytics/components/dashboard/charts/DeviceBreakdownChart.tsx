@@ -3,13 +3,9 @@
  * 📱 DEVICE BREAKDOWN CHART - Gráfico de Dispositivos
  */
 
-import { useTheme } from "@mui/material/styles";
-import { Smartphone } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
-import { ICON_LG } from "@/lib/theme/iconDefaults";
-import { chartByType, getChartColor } from "@/lib/theme/colors";
+import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
@@ -21,51 +17,33 @@ interface DeviceBreakdownChartProps {
 }
 
 /**
- * Mapeia o nome do device para a cor semântica em chartByType.devices.
- * Faz fallback pela paleta genérica quando o nome não for reconhecido.
+ * "Distribuição de Dispositivos" — a single horizontal stacked bar (one
+ * segment per device) replacing the former donut. Colors come from the
+ * shared `dataVizPalette` via `ApexChartWrapper`'s base theme; no per-device
+ * color mapping is applied anymore, so the legend below the bar is what
+ * identifies each segment.
  */
-function resolveDeviceColor(device: string, fallbackIndex: number): string {
-  const key = device?.toLowerCase().trim() as keyof typeof chartByType.devices;
-  return chartByType.devices[key] ?? getChartColor(fallbackIndex);
-}
-
 export function DeviceBreakdownChart({
   data,
   height,
 }: DeviceBreakdownChartProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
 
-  const pieProps = formatPieChart(
-    data.map((item) => ({
-      device: item.device,
-      clicks: item.clicks,
-    })),
-    "device",
-    "clicks",
-    isDark,
-  );
-
-  const colors = data.map((item, index) =>
-    resolveDeviceColor(item.device, index),
-  );
+  const chartData = data.map((item) => ({
+    device: item.device,
+    clicks: item.clicks,
+  }));
 
   return (
     <ChartCard
       title={t("charts.deviceBreakdown")}
       subtitle={t("charts.descriptions.deviceBreakdown")}
-      icon={<Smartphone {...ICON_LG} />}
     >
       <ApexChartWrapper
-        type="donut"
+        type="bar"
         height={height}
         size="standard"
-        series={pieProps.series}
-        options={{
-          ...pieProps.options,
-          colors,
-        }}
+        {...formatHorizontalStackedBar(chartData, "device", "clicks")}
       />
     </ChartCard>
   );

@@ -1,9 +1,7 @@
 "use client";
-import { Monitor } from "lucide-react";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTranslation } from "react-i18next";
 
-import { getChartColor } from "@/lib/theme/colors";
+import { dataVizPalette } from "@/lib/theme/dataViz";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import type { OSData } from "@/types";
 
@@ -27,6 +25,7 @@ export interface AudienceOSTabProps {
 export function AudienceOSTab({ operatingSystems }: AudienceOSTabProps) {
   const { t } = useTranslation("analytics");
 
+  const paletteTones = Object.values(dataVizPalette);
   const families = aggregateOSByFamily(
     operatingSystems,
     t("audience.extraCharts.others"),
@@ -36,14 +35,13 @@ export function AudienceOSTab({ operatingSystems }: AudienceOSTabProps) {
     label: family.label,
     value: family.clicks,
     percentage: family.percentage,
-    color: getChartColor(index),
+    color: paletteTones[index % paletteTones.length],
   }));
 
   return (
     <ChartCard
       title={t("audience.chart.osDistribution")}
       subtitle={t("audience.chart.tabDescriptions.systems")}
-      icon={<Monitor {...ICON_MD} />}
     >
       <HorizontalBreakdownBars items={items} />
     </ChartCard>

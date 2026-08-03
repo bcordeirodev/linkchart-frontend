@@ -1,13 +1,11 @@
 "use client";
-import { Share2 } from "lucide-react";
 import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { SectionLabel } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { SocialBrandIcon } from "@/shared/ui/icons";
-import { SectionDivider } from "@/shared/ui/SectionDivider";
 
 import { HorizontalBreakdownBars } from "./HorizontalBreakdownBars";
 
@@ -78,12 +76,15 @@ export function SocialPlatformSection({ platforms, showTitle = true }: Props) {
   return (
     <Box>
       {showTitle ? (
-        <SectionDivider title={t("audience.socialPlatform.title")} />
+        <Box sx={{ mb: 2 }}>
+          <SectionLabel headingLevel={2}>
+            {t("audience.socialPlatform.title")}
+          </SectionLabel>
+        </Box>
       ) : null}
       <ChartCard
         title={t("audience.socialPlatform.subtitle")}
         subtitle={t("audience.socialPlatform.description")}
-        icon={<Share2 {...ICON_MD} />}
       >
         <HorizontalBreakdownBars items={items} />
       </ChartCard>

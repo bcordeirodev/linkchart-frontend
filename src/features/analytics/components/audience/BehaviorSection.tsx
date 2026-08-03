@@ -1,13 +1,12 @@
 "use client";
 import { Box, Chip, Typography } from "@mui/material";
-import { Info, Navigation } from "lucide-react";
+import { Info } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { tDynamic } from "@/lib/i18n/tDynamic";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { SectionLabel } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
-import { SectionDivider } from "@/shared/ui/SectionDivider";
 import { HorizontalBreakdownBars } from "./HorizontalBreakdownBars";
 import { getPhaseDataChipSx } from "./phaseDataChipSx";
 
@@ -108,7 +107,11 @@ export function BehaviorSection({
   return (
     <Box>
       {showTitle ? (
-        <SectionDivider title={t("audience.behavior.title")} />
+        <Box sx={{ mb: 2 }}>
+          <SectionLabel headingLevel={2}>
+            {t("audience.behavior.title")}
+          </SectionLabel>
+        </Box>
       ) : null}
 
       {!phaseAvailable && (
@@ -126,7 +129,6 @@ export function BehaviorSection({
       <ChartCard
         title={t("audience.behavior.navigationContext")}
         subtitle={t("audience.behavior.description")}
-        icon={<Navigation {...ICON_MD} />}
       >
         {data.length === 0 ? (
           <Typography variant="body2" color="text.secondary">
