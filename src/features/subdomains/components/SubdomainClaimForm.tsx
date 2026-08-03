@@ -228,26 +228,25 @@ export function SubdomainClaimForm() {
         </Alert>
       ) : null}
 
-      <Box>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClaim}
-          disabled={
-            isClaiming ||
-            isCheckingAvailability ||
-            !availability?.available ||
-            inputValue.length < 3 ||
-            !termsAccepted
-          }
-          sx={{ minHeight: 44 }}
-        >
-          {isClaiming ? (
-            <CircularProgress size={16} sx={{ mr: 1 }} color="inherit" />
-          ) : null}
-          {t("claim.submit")}
-        </Button>
-      </Box>
+      <Button
+        variant="contained"
+        color="primary"
+        fullWidth
+        onClick={handleClaim}
+        disabled={
+          isClaiming ||
+          isCheckingAvailability ||
+          !availability?.available ||
+          inputValue.length < 3 ||
+          !termsAccepted
+        }
+        sx={{ minHeight: 44 }}
+      >
+        {isClaiming ? (
+          <CircularProgress size={16} sx={{ mr: 1 }} color="inherit" />
+        ) : null}
+        {t("claim.submit")}
+      </Button>
     </Stack>
   );
 }
