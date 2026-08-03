@@ -3,6 +3,9 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import { darkNeutral } from "@/lib/theme/colors/dark";
+import { lightNeutral } from "@/lib/theme/colors/light";
+
 import { getAvatarInitial } from "../utils/avatarInitial";
 
 import type { BioItem, BioTheme } from "../types";
@@ -28,7 +31,12 @@ const BRAND_ACCENT = "#4E82E6";
 
 const THEME_PALETTES: Record<BioTheme, BioThemePalette> = {
   dark: {
-    background: "#0B0D12",
+    // `darkNeutral.bg` — not a re-hardcoded hex — so this frame's background
+    // never drifts from the app's own dark page background again (it did
+    // once: this literally was `"#0B0D12"` until the "instrumento técnico"
+    // redesign moved the app's dark bg to `#030405` and left this file's
+    // copy stale).
+    background: darkNeutral.bg,
     surface: "#181B23",
     surfaceBorder: "rgba(255, 255, 255, 0.12)",
     text: "rgba(255, 255, 255, 0.95)",
@@ -37,7 +45,7 @@ const THEME_PALETTES: Record<BioTheme, BioThemePalette> = {
     accentContrast: "#FFFFFF",
   },
   light: {
-    background: "#FAFAFA",
+    background: lightNeutral.bg,
     surface: "#FFFFFF",
     surfaceBorder: "rgba(0, 0, 0, 0.1)",
     text: "rgba(0, 0, 0, 0.92)",

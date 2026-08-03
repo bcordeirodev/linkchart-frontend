@@ -12,14 +12,17 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { useSubdomains } from "@/features/subdomains/hooks/useSubdomains";
 import { useMessage } from "@/lib/providers/MessageProvider";
 import useThemeMediaQuery from "@/shared/hooks/useThemeMediaQuery";
+import { SectionLabel } from "@/shared/ui/base";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { useBioPage, useUpsertBioPage } from "../hooks/useBioPage";
+import { getBioCardSx } from "../utils/cardSurface";
 import { applyBioFieldErrors } from "../utils/applyBioFieldErrors";
 import {
   bioPageFormSchema,
@@ -73,6 +76,7 @@ function mapPageToFormValues(page: BioPage): BioPageFormData {
  */
 export function BioEditor() {
   const { t } = useTranslation("bio");
+  const theme = useTheme();
   const { showMessage } = useMessage();
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("md"));
 
@@ -175,7 +179,11 @@ export function BioEditor() {
   }
 
   if (isGated) {
-    return <BioSubdomainGate />;
+    return (
+      <Box className="reveal reveal-2">
+        <BioSubdomainGate />
+      </Box>
+    );
   }
 
   const isSaving = isSubmitting || upsertPage.isPending;
@@ -221,24 +229,33 @@ export function BioEditor() {
   );
 
   /**
-   * One intention card of the editor: heading + one-line hint, then the
-   * card's fields. Groups what the person is deciding (identity, address &
-   * publishing, appearance, links) instead of one flat field column.
+   * One field-group section of the editor: a `/ LABEL` {@link SectionLabel}
+   * (`headingLevel={2}` — replaces the old ad hoc `subtitle2` heading and
+   * keeps the section in the screen-reader heading list), a one-line hint
+   * below it, then a translucent hairline card ({@link getBioCardSx}) holding
+   * the section's fields. Groups what the person is deciding (identity,
+   * address & publishing, appearance) instead of one flat field column.
    */
-  const card = (heading: string, hint: string, children: React.ReactNode) => (
-    <EnhancedPaper variant="outlined" sx={{ mb: 0 }}>
-      <Stack spacing={2} sx={{ p: { xs: 2, sm: 2.5 } }}>
-        <Box>
-          <Typography variant="subtitle2" component="h2">
-            {heading}
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {hint}
-          </Typography>
-        </Box>
-        {children}
-      </Stack>
-    </EnhancedPaper>
+  const section = (
+    heading: string,
+    hint: string,
+    children: React.ReactNode,
+  ) => (
+    <Stack spacing={1.25}>
+      <SectionLabel headingLevel={2}>{heading}</SectionLabel>
+      <Typography variant="body2" color="text.secondary">
+        {hint}
+      </Typography>
+      <EnhancedPaper
+        variant="outlined"
+        animated={false}
+        sx={{ ...getBioCardSx(theme), mb: 0 }}
+      >
+        <Stack spacing={2} sx={{ p: { xs: 2, sm: 2.5 } }}>
+          {children}
+        </Stack>
+      </EnhancedPaper>
+    </Stack>
   );
 
   return (
@@ -254,34 +271,39 @@ export function BioEditor() {
         spacing={{ xs: 3, sm: 3.5 }}
         sx={{ flex: 1, minWidth: 0, width: "100%" }}
       >
-        {mode === "create" ? <BioCreateIntro /> : null}
+        <Stack spacing={2} className="reveal reveal-2">
+          {mode === "create" ? <BioCreateIntro /> : null}
 
-        {isLegacyWithoutSubdomain ? (
-          <Alert severity="info">{t("legacyBanner")}</Alert>
-        ) : null}
+          {isLegacyWithoutSubdomain ? (
+            <Alert severity="info">{t("legacyBanner")}</Alert>
+          ) : null}
 
-        {isMobile ? (
-          <Button
-            variant="text"
-            size="small"
-            startIcon={
-              <AppIcon intent={previewOpen ? "collapse" : "expand"} size={16} />
-            }
-            onClick={() => setPreviewOpen((v) => !v)}
-            sx={{ alignSelf: "flex-start" }}
-          >
-            {t(previewOpen ? "preview.hideAction" : "preview.showAction")}
-          </Button>
-        ) : null}
-        {isMobile && previewOpen ? (
-          <Box sx={{ maxWidth: 300, mx: "auto", width: "100%" }}>
-            {previewNode}
-          </Box>
-        ) : null}
+          {isMobile ? (
+            <Button
+              variant="text"
+              size="small"
+              startIcon={
+                <AppIcon
+                  intent={previewOpen ? "collapse" : "expand"}
+                  size={16}
+                />
+              }
+              onClick={() => setPreviewOpen((v) => !v)}
+              sx={{ alignSelf: "flex-start" }}
+            >
+              {t(previewOpen ? "preview.hideAction" : "preview.showAction")}
+            </Button>
+          ) : null}
+          {isMobile && previewOpen ? (
+            <Box sx={{ maxWidth: 300, mx: "auto", width: "100%" }}>
+              {previewNode}
+            </Box>
+          ) : null}
+        </Stack>
 
-        <form onSubmit={onSubmit} noValidate>
+        <form onSubmit={onSubmit} noValidate className="reveal reveal-3">
           <Stack spacing={{ xs: 2.5, sm: 3 }}>
-            {card(
+            {section(
               t("sections.identity"),
               t("sections.identityHint"),
               <>
@@ -292,7 +314,7 @@ export function BioEditor() {
               </>,
             )}
 
-            {card(
+            {section(
               t("sections.publishing"),
               t("sections.publishingHint"),
               <>
@@ -302,14 +324,16 @@ export function BioEditor() {
                   mode={mode}
                 />
                 {/* Só para página com endereço vinculado: o fallback técnico
-                    /@handle não é uma URL que o produto apresenta. */}
+                    /@handle não é uma URL que o produto apresenta. Sem card
+                    próprio — já vive dentro do card desta seção (evita card
+                    dentro de card). */}
                 {mode === "edit" && page && page.subdomainId !== null ? (
                   <BioPublicUrlBar url={resolvePublicPageUrl(page.url)} />
                 ) : null}
               </>,
             )}
 
-            {card(
+            {section(
               t("sections.appearance"),
               t("sections.appearanceHint"),
               <BioThemePicker control={control} />,
@@ -343,17 +367,19 @@ export function BioEditor() {
           </Stack>
         </form>
 
+        {/* Sem card próprio nesta camada — `BioItemsSection` já é a lista de
+            cards (uma por link) com o próprio `SectionLabel`; um invólucro
+            aqui seria card dentro de card. */}
         {mode === "edit" && page ? (
-          <EnhancedPaper variant="outlined" sx={{ mb: 0 }}>
-            <Box sx={{ p: { xs: 2, sm: 2.5 } }}>
-              <BioItemsSection page={page} />
-            </Box>
-          </EnhancedPaper>
+          <Box className="reveal reveal-4">
+            <BioItemsSection page={page} />
+          </Box>
         ) : null}
       </Stack>
 
       {!isMobile ? (
         <Box
+          className="reveal reveal-2"
           sx={{
             width: 320,
             flexShrink: 0,

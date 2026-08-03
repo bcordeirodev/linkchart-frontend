@@ -18,12 +18,15 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { typographyScale } from "@/lib/theme";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { useUpdateBioItem } from "../hooks/useBioItems";
+import { getBioCardSx } from "../utils/cardSurface";
 import { getUrlHost } from "../utils/linkHost";
 
 import type { BioItem } from "../types";
@@ -65,6 +68,7 @@ export function BioItemRow({
   isReordering,
 }: BioItemRowProps) {
   const { t } = useTranslation("bio");
+  const theme = useTheme();
   const updateItem = useUpdateBioItem();
 
   const [isEditingLabel, setIsEditingLabel] = useState(false);
@@ -100,7 +104,11 @@ export function BioItemRow({
   const initial = (item.label?.trim() || host)[0]?.toUpperCase() ?? "?";
 
   return (
-    <EnhancedPaper variant="outlined" sx={{ mb: 0 }}>
+    <EnhancedPaper
+      variant="outlined"
+      animated={false}
+      sx={{ ...getBioCardSx(theme), mb: 0 }}
+    >
       <Box
         sx={{
           p: { xs: 1.5, sm: 1.75 },
@@ -225,7 +233,9 @@ export function BioItemRow({
               </Box>
             )}
             {/* A própria URL curta já diz o domínio (que pode variar entre
-                linhas) — dispensa chip de host separado. */}
+                linhas) — dispensa chip de host separado. Mono: é a URL curta
+                do produto, mesmo tratamento de LinkPerformanceTable/
+                QuickCreateLinkStrip. */}
             <Typography
               variant="caption"
               color="text.secondary"
@@ -235,6 +245,7 @@ export function BioItemRow({
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
+                fontFamily: typographyScale.code.fontFamily,
               }}
             >
               {item.url.replace(/^https?:\/\//, "")}

@@ -5,6 +5,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { typographyScale } from "@/lib/theme";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { getPublicBioUrlPrefix } from "../utils/publicBioUrl";
@@ -147,7 +148,7 @@ export function BioSubdomainGate() {
       <Stack spacing={2.5} sx={{ flex: 1, minWidth: 0, width: "100%" }}>
         <Box
           sx={{
-            fontFamily: "monospace",
+            fontFamily: typographyScale.code.fontFamily,
             fontSize: { xs: "1.375rem", sm: "1.625rem" },
             fontWeight: 700,
             lineHeight: 1.25,
