@@ -57,6 +57,7 @@ export function ChannelEngagementChart({
           type="bar"
           {...formatBarChart(chartData, "name", "value", false, {
             series: t("insights.traffic.seriesName"),
+            clicksLabel: t("temporal.viralRank.clicksUnit"),
           })}
           size="standard"
         />

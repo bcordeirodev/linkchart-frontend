@@ -44,6 +44,7 @@ export function TopCountriesChart({
           "country",
           "clicks",
           true, // horizontal bars
+          { clicksLabel: t("temporal.viralRank.clicksUnit") },
         )}
       />
     </ChartCard>

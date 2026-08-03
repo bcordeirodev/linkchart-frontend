@@ -41,6 +41,7 @@ export function DayOfWeekChart({ data, height }: DayOfWeekChartProps) {
           "day_name",
           "clicks",
           false, // vertical bars
+          { clicksLabel: t("temporal.viralRank.clicksUnit") },
         )}
       />
     </ChartCard>

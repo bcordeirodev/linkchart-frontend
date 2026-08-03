@@ -7,10 +7,7 @@ import { useTranslation } from "react-i18next";
 import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
 import { AnalyticsEmptyState, OverviewMetricRow } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
-import {
-  INSIGHTS_BLOCK_PAD,
-  insightsChartPanelSx,
-} from "../insights/insightsLayout";
+import { INSIGHTS_BLOCK_PAD } from "../insights/insightsLayout";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type { RetentionData } from "../../hooks/useInsightsData";
 
@@ -57,7 +54,7 @@ export function RetentionAnalysisChart({
 
   if (loading) {
     return (
-      <EnhancedPaper>
+      <EnhancedPaper variant="outlined">
         <Box sx={{ p: 3, textAlign: "center" }}>
           <Typography>{t("insights.retention.loading")}</Typography>
         </Box>
@@ -67,18 +64,31 @@ export function RetentionAnalysisChart({
 
   if (data.total_visitors === 0) {
     return (
-      <EnhancedPaper>
+      <EnhancedPaper variant="outlined">
         <AnalyticsEmptyState title={t("insights.retention.noData")} />
       </EnhancedPaper>
     );
   }
+
+  // Section separator between the bare sub-blocks below — a single top
+  // hairline, not a bordered box. `insightsChartPanelSx` (bg + border +
+  // shadow) used to wrap each of these sections on top of the card's own
+  // border, stacking two surfaces; the card itself is now the only surface
+  // and these blocks are plain content, divided by spacing + one hairline.
+  const sectionDividerSx = {
+    pt: 3,
+    borderTop: `1px solid ${theme.palette.divider}`,
+  } as const;
 
   return (
     // No `height: 100%`: a percentage height on a grid item resolves against
     // the *row*, whose height is the taller sibling's — so it stretched this
     // card past its own content and opened ~200px of dead space inside the
     // border. The parent grid aligns to `start`; let the card be its own height.
-    <EnhancedPaper animated={false}>
+    //
+    // `variant="outlined"` — a single hairline card, no fill/shadow layered
+    // on top. This is the ONE surface for the whole component now.
+    <EnhancedPaper variant="outlined" animated={false}>
       <Box sx={{ p: INSIGHTS_BLOCK_PAD }}>
         {showTitle ? (
           <Box sx={{ mb: 2 }}>
@@ -114,8 +124,8 @@ export function RetentionAnalysisChart({
           />
         </Box>
 
-        {/* Visitor Distribution */}
-        <Box sx={{ ...insightsChartPanelSx(theme), mb: 3 }}>
+        {/* Visitor Distribution — bare block, no nested card */}
+        <Box sx={{ ...sectionDividerSx, mb: 3 }}>
           <Typography
             variant="subtitle1"
             gutterBottom
@@ -141,8 +151,8 @@ export function RetentionAnalysisChart({
           />
         </Box>
 
-        {/* Insights panel */}
-        <Box sx={insightsChartPanelSx(theme)}>
+        {/* Insights panel — bare block, no nested card */}
+        <Box sx={sectionDividerSx}>
           <Stack spacing={1.5}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {t("insights.retention.insightsTitle")}

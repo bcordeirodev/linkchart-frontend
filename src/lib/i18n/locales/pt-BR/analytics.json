@@ -1060,7 +1060,6 @@
     "avgSessionDuration": "Sessão Média",
     "peakHour": "Hora de Pico",
     "topDevice": "Dispositivo Principal",
-    "vsPreviousPeriod": "Vs. Período Anterior",
     "quality": "Qualidade",
     "noData": "Sem dados"
   },

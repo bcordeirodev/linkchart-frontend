@@ -35,4 +35,4 @@ export { default as GradientButton } from "./GradientButton";
 export { HelpHint, type HelpHintProps } from "./HelpHint";
 
 // Re-export types
-export type { MetricCardProps, BaseComponentProps } from "../components";
+export type { BaseComponentProps } from "../components";
