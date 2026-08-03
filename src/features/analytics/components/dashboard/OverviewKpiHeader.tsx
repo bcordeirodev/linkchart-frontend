@@ -46,13 +46,33 @@ export function OverviewKpiHeader({
   const { t } = useTranslation("analytics");
   const { t: tl } = useTranslation("links");
 
+  // Visual gate fix (2026-08-03, item 4): the neutral-arrow argument below
+  // lost — Bruno's call is that the trend direction IS the information, and
+  // burying it in a same-color arrow made the KPI row read as "numbers with
+  // no verdict". Restored the semantic color the fleet had neutralized:
+  // green (`success.main`) trending up, red (`error.main`) trending down,
+  // default text color when there's no period to compare against (`null`)
+  // or the period is exactly flat (`0`) — a flat trend isn't bad news, so it
+  // doesn't borrow the "down" color either.
+  const trendColor =
+    trendPct == null || trendPct === 0
+      ? undefined
+      : trendPct > 0
+        ? "success.main"
+        : "error.main";
+
   const totalClicksCaption =
-    trendPct != null
-      ? // A drop in clicks is information, not a failure — the arrow just
-        // reports direction, it never turns red (red is reserved for real
-        // problems elsewhere in the app).
-        `${trendPct >= 0 ? "▲" : "▼"} ${Math.abs(trendPct)}% · ${tl("metrics.totalClicksSubtitle")}`
-      : tl("metrics.totalClicksSubtitle");
+    trendPct != null ? (
+      <>
+        <Box
+          component="span"
+          sx={{ color: trendColor, fontWeight: 600 }}
+        >{`${trendPct >= 0 ? "▲" : "▼"} ${Math.abs(trendPct)}%`}</Box>
+        {` · ${tl("metrics.totalClicksSubtitle")}`}
+      </>
+    ) : (
+      tl("metrics.totalClicksSubtitle")
+    );
 
   const metrics: OverviewMetric[] = [
     {

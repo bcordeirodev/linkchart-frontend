@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -56,6 +57,19 @@ export function ClicksTable({
 }: ClicksTableProps) {
   const { isMobile } = useResponsive();
   const { t } = useTranslation("links");
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+  // Same alpha-fill formula as the /links card shell (`getLinkCardShellSx`)
+  // and the dashboard's `BusinessInsights` cards — the table surface used to
+  // fall through to `DataTable`'s shared `mrtTheme` default
+  // (`theme.palette.background.paper`, opaque), which read as the one
+  // leftover solid card on an otherwise translucent page. Overridden here
+  // rather than in `DataTable` itself: that component is a generic
+  // cross-feature primitive used by tables that legitimately want an opaque
+  // surface, so the translucent fill is scoped to this one table.
+  const translucentTableBg = isDark
+    ? alpha(theme.palette.common.white, 0.03)
+    : alpha(theme.palette.common.black, 0.02);
   const {
     items,
     meta,
@@ -241,14 +255,29 @@ export function ClicksTable({
             enableColumnActions={false}
             enableColumnOrdering={false}
             enableColumnPinning={false}
+            // Overrides `DataTable`'s shared `mrtTheme` default
+            // (`theme.palette.background.paper`, opaque) with the
+            // translucent surface — see `translucentTableBg` above. Pinned
+            // rows/columns and the header menu stay opaque on purpose: they
+            // sit *over* scrolling content, and a translucent fill there
+            // would let rows show through underneath them.
+            mrtTheme={() => ({
+              baseBackgroundColor: translucentTableBg,
+              menuBackgroundColor: theme.palette.background.paper,
+              pinnedRowBackgroundColor: theme.palette.background.paper,
+              pinnedColumnBackgroundColor: theme.palette.background.paper,
+            })}
             muiTablePaperProps={{
               elevation: 0,
               square: true,
               className: "flex flex-col flex-auto h-full",
-              // MuiPaper defaults to overflow:hidden which clips the TableContainer's
-              // horizontal scrollbar. Setting overflow to unset (resolves to visible)
-              // allows the TableContainer's own overflow:auto to render its scrollbar.
-              sx: { overflow: "unset" },
+              sx: {
+                // MuiPaper defaults to overflow:hidden which clips the TableContainer's
+                // horizontal scrollbar. Setting overflow to unset (resolves to visible)
+                // allows the TableContainer's own overflow:auto to render its scrollbar.
+                overflow: "unset",
+                backgroundColor: translucentTableBg,
+              },
             }}
             muiTableContainerProps={{
               // Refined scrollbars on both axes — matches the app shell pattern

@@ -33,9 +33,15 @@ export interface SectionLabelProps {
 
 /**
  * Micro-label de seção da linguagem "instrumento técnico": caps em
- * JetBrains Mono 11px com prefixo "/" opcional, seguido de uma hairline
+ * JetBrains Mono 13px (`0.8125rem` — bump do gate visual de 2026-08-03: o
+ * tamanho original de 11px lia pequeno demais nas 6 abas de analytics;
+ * 13px alinha com a escala de `body2` no resto do app sem deixar de ler
+ * como label, já que caps + mono + `letterSpacing` continuam distinguindo
+ * do corpo de texto) com prefixo "/" opcional, seguido de uma hairline
  * horizontal que preenche o restante da linha. É o padrão de nível 0
  * (sem caixa) para ancorar seções de página/painel — ex.: `/ VISÃO GERAL`.
+ * Primitiva compartilhada: a mudança de tamanho é global (/links e
+ * analytics), de propósito.
  *
  * Puramente apresentacional: não busca dados nem contém lógica de negócio;
  * o texto chega já traduzido via `children`. Visualmente é sempre um
@@ -68,7 +74,7 @@ export function SectionLabel({
         sx={{
           fontFamily:
             "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: "11px",
+          fontSize: "0.8125rem",
           fontWeight: 500,
           letterSpacing: "0.08em",
           textTransform: "uppercase",

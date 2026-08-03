@@ -99,6 +99,18 @@ export function TemporalAnalysis({
         ? t("temporal.metrics.declining")
         : t("temporal.metrics.stable");
 
+  // Visual gate fix (2026-08-03, item 4): restores the success/error/warning
+  // mapping the old `MetricCard`'s `color` prop had before the redesign
+  // flattened this tile to plain text. Same 3-way split as before — "stable"
+  // reads as `warning` (amber), not neutral: a flat trend was never colored
+  // gray here, only "up"/"down" get the unambiguous green/red.
+  const trendColor =
+    stats?.trendDirection === "up"
+      ? "success.main"
+      : stats?.trendDirection === "down"
+        ? "error.main"
+        : "warning.main";
+
   // The backend always returns all 7 days (with 0 clicks for segment-excluded days).
   // Filter to only the days that are relevant to the active segment so the
   // summary chart does not render empty bars for Sat/Sun (weekday filter) or
@@ -153,6 +165,7 @@ export function TemporalAnalysis({
                 {
                   label: t("temporal.metrics.trend"),
                   value: trendValue,
+                  valueColor: trendColor,
                   caption: t("temporal.metrics.currentTrend"),
                 },
               ]}

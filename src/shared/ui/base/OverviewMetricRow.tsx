@@ -9,8 +9,22 @@ export interface OverviewMetric {
   label: string;
   /** Valor já formatado para exibição (ex.: `"1.204"` ou `1204`). */
   value: string | number;
-  /** Texto de apoio opcional abaixo do valor (ex.: período, variação). */
-  caption?: string;
+  /**
+   * Cor opcional do `value` (ex.: `"success.main"`, `"error.main"`,
+   * `"warning.main"`) — para métricas onde o próprio número/palavra carrega
+   * semântica (ex.: direção de tendência). Omitido: cor padrão do tema
+   * (`text.primary`, herdada do variant `h2`). Gate visual de 2026-08-03
+   * (item 4): restaura a cor semântica que existia antes do redesign nos
+   * indicadores de tendência do Resumo e do Momento.
+   */
+  valueColor?: string;
+  /**
+   * Texto de apoio opcional abaixo do valor (ex.: período, variação).
+   * Aceita `ReactNode` (não só `string`) para permitir que o chamador colora
+   * só um trecho (ex.: a seta ▲/▼ de uma variação percentual) sem mudar a
+   * cor do resto da legenda.
+   */
+  caption?: ReactNode;
   /** Sparkline ou outro elemento gráfico discreto, renderizado abaixo da caption. */
   sparkline?: ReactNode;
 }
@@ -104,6 +118,7 @@ export function OverviewMetricRow({ metrics }: OverviewMetricRowProps) {
                 lineHeight: 1.1,
                 mb: metric.caption || metric.sparkline ? 0.5 : 0,
                 overflowWrap: "anywhere",
+                color: metric.valueColor,
               }}
             >
               {metric.value}
