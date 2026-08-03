@@ -19,9 +19,15 @@ export {
   PublicBlockIcon,
   type PublicBlockIconVariant,
 } from "./PublicBlockIcon";
+export { SectionLabel, type SectionLabelProps } from "./SectionLabel";
 
 // Data Display
 export { default as MetricCardOptimized } from "./MetricCardOptimized";
+export {
+  OverviewMetricRow,
+  type OverviewMetric,
+  type OverviewMetricRowProps,
+} from "./OverviewMetricRow";
 export { default as EmptyState } from "./EmptyState";
 export { default as AnalyticsEmptyState } from "./AnalyticsEmptyState";
 
