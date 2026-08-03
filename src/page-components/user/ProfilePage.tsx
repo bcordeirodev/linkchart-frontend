@@ -1,7 +1,6 @@
 "use client";
 import { useUser as useAuth0User } from "@auth0/nextjs-auth0/client";
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
-import { UserCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -10,18 +9,18 @@ import { OAuthSecurityCard } from "@/features/profile/components/OAuthSecurityCa
 import { PasswordChangeForm } from "@/features/profile/components/PasswordChangeForm";
 import { PreferencesCard } from "@/features/profile/components/PreferencesCard";
 import { ProfileForm } from "@/features/profile/components/ProfileForm";
-import {
-  ProfileSection,
-  ProfileSectionHeader,
-} from "@/features/profile/components/ProfileSection";
+import { ProfileSection } from "@/features/profile/components/ProfileSection";
 import { ProfileSidebar } from "@/features/profile/components/ProfileSidebar";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { LinkActionsBackLink } from "@/features/links/components/LinkActions/LinkActionsBackLink";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useMessage } from "@/lib/providers/MessageProvider";
-import { PageSectionHeading, ResponsiveContainer } from "@/shared/ui/base";
+import { typographyScale } from "@/lib/theme";
+import {
+  PageSectionHeading,
+  ResponsiveContainer,
+  SectionLabel,
+} from "@/shared/ui/base";
 import { ProfileSkeleton } from "@/shared/ui/feedback/skeletons";
-import { AppIcon } from "@/shared/ui/icons";
 import { useNavigate } from "@/shared/hooks";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
@@ -32,17 +31,20 @@ import useUser from "../../lib/auth/useUser";
  * profile's old inline subdomain settings section (removed) now that
  * subdomains support N per user and get their own management page — the
  * profile page only teases the feature and hands off navigation.
+ *
+ * "Instrumento técnico" (2026-08-03): dropped the `AppIcon` next to the
+ * title (now a plain `SectionLabel`, CTA moved to its `action` slot); the
+ * example address migrated from a hardcoded `"monospace"` literal to
+ * `typographyScale.code.fontFamily`.
  */
 function SubdomainLinkCard() {
   const { t } = useTranslation("profile");
   const navigate = useNavigate();
 
   return (
-    <ProfileSection>
-      <ProfileSectionHeader
-        icon={<AppIcon intent="subdomain" size={18} />}
-        title={t("subdomainCard.title")}
-        description={t("subdomainCard.description")}
+    <Stack spacing={1.25}>
+      <SectionLabel
+        headingLevel={2}
         action={
           <Button
             variant="outlined"
@@ -53,15 +55,22 @@ function SubdomainLinkCard() {
             {t("subdomainCard.cta")}
           </Button>
         }
-      />
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{ fontFamily: "monospace" }}
       >
-        {t("subdomainCard.example")}
-      </Typography>
-    </ProfileSection>
+        {t("subdomainCard.title")}
+      </SectionLabel>
+      <ProfileSection>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+          {t("subdomainCard.description")}
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ fontFamily: typographyScale.code.fontFamily }}
+        >
+          {t("subdomainCard.example")}
+        </Typography>
+      </ProfileSection>
+    </Stack>
   );
 }
 
@@ -74,6 +83,18 @@ function SubdomainLinkCard() {
  * `useState` local. `ProfileForm` salva via `useUpdateProfile`, que escreve de
  * volta na mesma key, então esta página re-renderiza com o dado fresco sem
  * callback de sincronização manual.
+ *
+ * "Instrumento técnico" (2026-08-03): a antiga grade de 2 colunas (coluna
+ * principal + "sidebar" de status/atividade/idioma) virou seções
+ * empilhadas full-width — a mesma lição aplicada em `/subdomains` e
+ * `/api-keys` (Bruno: "prefiro o fluxo vertical de seções full-width" —
+ * ver progress.md do ciclo). Ordem: `<h1>` → Informações pessoais →
+ * Status da conta + Atividade → Segurança (OAuth ou senha) → Preferências
+ * (+ endereço personalizado, se habilitado) → Zona de perigo, cada bloco
+ * seu próprio passo de `reveal`. O título perdeu o ícone `UserCircle`
+ * (`PageSectionHeading` sem `icon`). Zero mudança de comportamento: estados
+ * de loading/erro, fluxos de salvar/senha/OAuth/exclusão de conta
+ * intocados — só composição e tipografia mudaram.
  */
 function ProfilePage() {
   const { showMessage } = useMessage();
@@ -122,53 +143,46 @@ function ProfilePage() {
 
   return (
     <AuthGuardRedirect auth={["user", "admin"]} fallback={<ProfileSkeleton />}>
-      <ResponsiveContainer variant="page">
-        <Stack
-          spacing={{ xs: 2.5, sm: 3 }}
-          component="section"
-          sx={{ width: "100%" }}
-        >
-          <PageSectionHeading
-            icon={<UserCircle {...ICON_MD} />}
-            title={t("title")}
-            description={t("subtitle")}
-            titleVariant="page"
-            action={<LinkActionsBackLink />}
-          />
+      <ResponsiveContainer maxWidth="md" sx={{ py: { xs: 2, md: 4 } }}>
+        <Stack spacing={{ xs: 3, sm: 4 }}>
+          <Box className="reveal reveal-1">
+            <PageSectionHeading
+              title={t("title")}
+              description={t("subtitle")}
+              titleVariant="page"
+              action={<LinkActionsBackLink />}
+            />
+          </Box>
 
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                md: "minmax(0, 2fr) minmax(0, 1fr)",
-              },
-              gap: { xs: 2, sm: 3 },
-              width: "100%",
-              alignItems: "start",
-            }}
-          >
-            <Stack spacing={{ xs: 2, sm: 3 }} sx={{ minWidth: 0 }}>
+          <Box className="reveal reveal-2">
+            <ProfileForm user={user} photoURL={authUser?.photoURL} />
+          </Box>
+
+          <Box className="reveal reveal-3">
+            <ProfileSidebar
+              user={user}
+              showResendVerification={!auth0Loading && !auth0User}
+            />
+          </Box>
+
+          <Box className="reveal reveal-4">
+            {usesOAuthLogin ? <OAuthSecurityCard /> : <PasswordChangeForm />}
+          </Box>
+
+          <Box className="reveal reveal-5">
+            <Stack spacing={{ xs: 3, sm: 4 }}>
+              <PreferencesCard />
               {process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" ? (
                 <SubdomainLinkCard />
               ) : null}
-              <ProfileForm user={user} photoURL={authUser?.photoURL} />
-              {usesOAuthLogin ? <OAuthSecurityCard /> : <PasswordChangeForm />}
-              <DangerZone
-                usesOAuthLogin={usesOAuthLogin}
-                userEmail={user.email}
-              />
             </Stack>
+          </Box>
 
-            <Box sx={{ minWidth: 0 }}>
-              <Stack spacing={{ xs: 2, sm: 3 }}>
-                <ProfileSidebar
-                  user={user}
-                  showResendVerification={!auth0Loading && !auth0User}
-                />
-                <PreferencesCard />
-              </Stack>
-            </Box>
+          <Box className="reveal reveal-6">
+            <DangerZone
+              usesOAuthLogin={usesOAuthLogin}
+              userEmail={user.email}
+            />
           </Box>
         </Stack>
       </ResponsiveContainer>

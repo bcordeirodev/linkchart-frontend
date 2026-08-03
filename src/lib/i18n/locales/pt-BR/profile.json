@@ -3,20 +3,13 @@
   "subtitle": "Gerencie as informações da sua conta e segurança.",
   "loadError": "Erro ao carregar os dados da sua conta. Tente fazer login novamente.",
   "sections": {
-    "personalInfo": "Informações Pessoais",
-    "security": "Segurança",
-    "preferences": "Preferências",
-    "dangerZone": "Zona de Perigo"
+    "personalInfo": "Informações Pessoais"
   },
   "form": {
     "displayName": "Nome de exibição",
-    "email": "Endereço de e-mail",
-    "emailHelper": "O e-mail não pode ser alterado.",
     "saveButton": "Salvar alterações",
     "saveSuccess": "Perfil atualizado com sucesso.",
     "saveFailed": "Não foi possível salvar as alterações. Tente novamente.",
-    "verifiedBadge": "Verificado",
-    "pendingBadge": "Pendente",
     "resetButton": "Resetar"
   },
   "security": {
@@ -30,13 +23,11 @@
     "title": "Alterar Senha",
     "subtitle": "Mantenha sua conta segura alterando sua senha regularmente.",
     "current": "Senha atual",
-    "currentHelper": "Insira sua senha atual para confirmar a alteração.",
     "new": "Nova senha",
     "confirm": "Confirmar nova senha",
     "showPassword": "Mostrar senha",
     "hidePassword": "Ocultar senha",
     "saveButton": "Atualizar senha",
-    "saveSuccess": "Senha atualizada com sucesso.",
     "successMessage": "Senha alterada com sucesso",
     "errors": {
       "wrongCurrent": "A senha atual está incorreta.",

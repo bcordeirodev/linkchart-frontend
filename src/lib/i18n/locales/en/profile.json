@@ -3,20 +3,13 @@
   "subtitle": "Manage your account information and security.",
   "loadError": "Failed to load your account data. Try signing in again.",
   "sections": {
-    "personalInfo": "Personal Information",
-    "security": "Security",
-    "preferences": "Preferences",
-    "dangerZone": "Danger Zone"
+    "personalInfo": "Personal Information"
   },
   "form": {
     "displayName": "Display name",
-    "email": "Email address",
-    "emailHelper": "Email cannot be changed.",
     "saveButton": "Save changes",
     "saveSuccess": "Profile updated successfully.",
     "saveFailed": "Could not save changes. Please try again.",
-    "verifiedBadge": "Verified",
-    "pendingBadge": "Pending",
     "resetButton": "Reset"
   },
   "security": {
@@ -30,13 +23,11 @@
     "title": "Change Password",
     "subtitle": "Keep your account secure by changing your password regularly.",
     "current": "Current password",
-    "currentHelper": "Enter your current password to confirm the change.",
     "new": "New password",
     "confirm": "Confirm new password",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "saveButton": "Update password",
-    "saveSuccess": "Password updated successfully.",
     "successMessage": "Password changed successfully",
     "errors": {
       "wrongCurrent": "Current password is incorrect.",

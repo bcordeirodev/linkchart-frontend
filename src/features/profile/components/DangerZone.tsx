@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { AlertTriangle, ShieldAlert, Trash2 } from "lucide-react";
+import { AlertTriangle, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   Box,
@@ -12,7 +12,9 @@ import {
   DialogContentText,
   DialogTitle,
   FormLabel,
+  Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 
@@ -22,9 +24,10 @@ import { useMessage } from "@/lib/providers/MessageProvider";
 import { profileService } from "@/services";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { SectionLabel } from "@/shared/ui/base";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
 
-import { ProfileSectionHeader } from "./ProfileSection";
+import { getProfileCardSx } from "../utils/cardSurface";
 
 /** 422 error codes `DELETE /api/account` can return, mapped 1:1 to `dangerZone.errors.*`. */
 type DeleteAccountErrorCode = "INVALID_PASSWORD" | "INVALID_CONFIRMATION";
@@ -44,8 +47,7 @@ interface DangerZoneProps {
 }
 
 /**
- * Destructive "delete account" section, rendered as the last card of the
- * profile page's main column.
+ * Destructive "delete account" section, rendered last on the profile page.
  *
  * Opens a confirmation dialog that asks for the account password (local
  * accounts) or a retyped email (Auth0 accounts, which have no local
@@ -53,6 +55,14 @@ interface DangerZoneProps {
  * which also performs the redirect away from the app. A 422 response is
  * mapped to an inline, translated error inside the dialog instead of a toast,
  * so the user can immediately retry without losing their place.
+ *
+ * "Instrumento técnico" (2026-08-03): the heading moved from an icon+title
+ * `ProfileSectionHeader` to a plain `SectionLabel` above the card — this is
+ * the one section where the semantic red accent stays (per the redesign's
+ * own carve-out for destructive actions): the card keeps its translucent
+ * `getProfileCardSx` fill but overrides the border to `error.main`, same as
+ * before. The confirmation dialog (a floating surface, not a page section)
+ * is untouched, including its `AlertTriangle` title icon.
  */
 export function DangerZone({ usesOAuthLogin, userEmail }: DangerZoneProps) {
   const { t } = useTranslation("profile");
@@ -113,22 +123,23 @@ export function DangerZone({ usesOAuthLogin, userEmail }: DangerZoneProps) {
 
   return (
     <>
-      <EnhancedPaper
-        variant="outlined"
-        animated={false}
-        sx={{
-          borderColor: alpha(
-            theme.palette.error.main,
-            theme.palette.mode === "dark" ? 0.35 : 0.3,
-          ),
-        }}
-      >
-        <Box sx={{ p: { xs: 2, sm: 3 } }}>
-          <ProfileSectionHeader
-            icon={<ShieldAlert {...ICON_MD} />}
-            title={t("dangerZone.title")}
-            description={t("dangerZone.description")}
-          />
+      <Stack spacing={1.25}>
+        <SectionLabel headingLevel={2}>{t("dangerZone.title")}</SectionLabel>
+        <EnhancedPaper
+          variant="outlined"
+          animated={false}
+          sx={{
+            ...getProfileCardSx(theme),
+            p: { xs: 2.5, sm: 3 },
+            borderColor: alpha(
+              theme.palette.error.main,
+              theme.palette.mode === "dark" ? 0.35 : 0.3,
+            ),
+          }}
+        >
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {t("dangerZone.description")}
+          </Typography>
           <Button
             variant="outlined"
             color="error"
@@ -137,8 +148,8 @@ export function DangerZone({ usesOAuthLogin, userEmail }: DangerZoneProps) {
           >
             {t("dangerZone.button")}
           </Button>
-        </Box>
-      </EnhancedPaper>
+        </EnhancedPaper>
+      </Stack>
 
       <ResponsiveDialog
         open={open}
