@@ -14,6 +14,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 import { useSubdomains } from "@/features/subdomains/hooks/useSubdomains";
+import { typographyScale } from "@/lib/theme";
 
 import type { SelectChangeEvent } from "@mui/material";
 
@@ -123,10 +124,15 @@ export function BioAddressSelect({
           displayEmpty
           renderValue={(selected) =>
             selected ? (
-              toHost(
-                subdomains.find((item) => String(item.id) === selected)
-                  ?.fullUrl ?? "",
-              )
+              <Box
+                component="span"
+                sx={{ fontFamily: typographyScale.code.fontFamily }}
+              >
+                {toHost(
+                  subdomains.find((item) => String(item.id) === selected)
+                    ?.fullUrl ?? "",
+                )}
+              </Box>
             ) : (
               <Box component="span" sx={{ color: "text.disabled" }}>
                 {t("form.address.placeholder")}
@@ -135,7 +141,11 @@ export function BioAddressSelect({
           }
         >
           {subdomains.map((item) => (
-            <MenuItem key={item.id} value={String(item.id)}>
+            <MenuItem
+              key={item.id}
+              value={String(item.id)}
+              sx={{ fontFamily: typographyScale.code.fontFamily }}
+            >
               {toHost(item.fullUrl)}
             </MenuItem>
           ))}

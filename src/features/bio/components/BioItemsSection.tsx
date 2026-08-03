@@ -11,14 +11,17 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { SectionLabel } from "@/shared/ui/base";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { MAX_BIO_ITEMS } from "../constants";
 import { useRemoveBioItem, useReorderBioItems } from "../hooks/useBioItems";
+import { getBioCardSx } from "../utils/cardSurface";
 import { AddBioItemDialog } from "./AddBioItemDialog";
 import { BioItemRow } from "./BioItemRow";
 
@@ -46,6 +49,7 @@ function swapOrder(
  */
 export function BioItemsSection({ page }: BioItemsSectionProps) {
   const { t } = useTranslation("bio");
+  const theme = useTheme();
   const reorderItems = useReorderBioItems();
   const removeItem = useRemoveBioItem();
 
@@ -72,26 +76,22 @@ export function BioItemsSection({ page }: BioItemsSectionProps) {
 
   return (
     <Stack spacing={1.5}>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        flexWrap="wrap"
-        gap={1}
+      <SectionLabel
+        headingLevel={2}
+        action={
+          <Button
+            size="small"
+            variant="outlined"
+            startIcon={<AppIcon intent="create" size={16} />}
+            onClick={() => setIsAddOpen(true)}
+            disabled={limitReached}
+          >
+            {t("items.add")}
+          </Button>
+        }
       >
-        <Typography variant="subtitle2" component="h2">
-          {t("items.heading", { count: items.length, max: MAX_BIO_ITEMS })}
-        </Typography>
-        <Button
-          size="small"
-          variant="outlined"
-          startIcon={<AppIcon intent="create" size={16} />}
-          onClick={() => setIsAddOpen(true)}
-          disabled={limitReached}
-        >
-          {t("items.add")}
-        </Button>
-      </Stack>
+        {t("items.heading", { count: items.length, max: MAX_BIO_ITEMS })}
+      </SectionLabel>
 
       {limitReached ? (
         <Alert severity="info">{t("items.limitReachedNotice")}</Alert>
@@ -100,7 +100,12 @@ export function BioItemsSection({ page }: BioItemsSectionProps) {
       {items.length === 0 ? (
         <EnhancedPaper
           variant="outlined"
-          sx={{ p: { xs: 2.5, sm: 3 }, textAlign: "center" }}
+          animated={false}
+          sx={{
+            ...getBioCardSx(theme),
+            p: { xs: 2.5, sm: 3 },
+            textAlign: "center",
+          }}
         >
           <Typography variant="body2" color="text.secondary">
             {t("items.empty")}

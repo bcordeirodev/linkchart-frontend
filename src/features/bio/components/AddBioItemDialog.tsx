@@ -22,6 +22,7 @@ import NextLink from "next/link";
 import { useTranslation } from "react-i18next";
 
 import { useLinks } from "@/features/links/hooks/useLinks";
+import { typographyScale } from "@/lib/theme";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
 import { AppIcon } from "@/shared/ui/icons";
 
@@ -180,7 +181,8 @@ export function AddBioItemDialog({
                     {link.title?.trim() || link.slug}
                   </Typography>
                   {/* Uma linha só: a URL curta sem esquema já diz o domínio e
-                      o slug — sem chip, sem duplicar informação. */}
+                      o slug — sem chip, sem duplicar informação. Mono: mesma
+                      URL curta do produto tratada em BioItemRow. */}
                   <Typography
                     variant="caption"
                     color="text.secondary"
@@ -190,6 +192,7 @@ export function AddBioItemDialog({
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
+                      fontFamily: typographyScale.code.fontFamily,
                     }}
                   >
                     {link.short_url.replace(/^https?:\/\//, "")}
