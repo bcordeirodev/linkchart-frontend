@@ -32,13 +32,19 @@ import { typographyScale } from "@/lib/theme";
 import {
   linksRadius,
   getLinksBorderColor,
-  getLinksInsetBg,
+  getLinksControlFillBg,
 } from "./linksPanelStyles";
 
 import type { ChangeEvent, FocusEvent, Ref } from "react";
 
-/** Taller than a form control on purpose — this is the result, not a field. */
-const STRIP_HEIGHT = { xs: 52, sm: 46 } as const;
+/**
+ * Same height as the URL input and the Encurtar button above it (see
+ * `CONTROL_HEIGHT` in `LinksQuickCreate`) — the three controls read as one
+ * designed hero cluster instead of two mismatched rows. `xs` stays `"auto"`:
+ * on phones the strip wraps host and name onto their own lines, which a
+ * fixed height would clip.
+ */
+const STRIP_HEIGHT = { xs: "auto", sm: 48 } as const;
 
 interface QuickCreateLinkStripProps {
   /** Slug field value. */
@@ -101,6 +107,11 @@ export function QuickCreateLinkStrip({
     whiteSpace: "nowrap",
   } as const;
 
+  // O "/" separador ecoa o prefixo do SectionLabel (mesma cor primary.main)
+  // — a mesma marca visual amarrando o composto "link curto" ao resto da
+  // linguagem "instrumento técnico" da página.
+  const slashSx = { ...domainSx, color: "primary.main" } as const;
+
   return (
     <Box
       sx={{
@@ -115,11 +126,11 @@ export function QuickCreateLinkStrip({
         columnGap: 0.75,
         px: { xs: 1.25, sm: 1.25 },
         py: { xs: 0.875, sm: 0 },
-        height: { xs: "auto", sm: STRIP_HEIGHT.sm },
+        height: STRIP_HEIGHT,
         minWidth: 0,
         borderRadius: `${linksRadius.control}px`,
         border: `1px solid ${borderColor}`,
-        bgcolor: getLinksInsetBg(theme),
+        bgcolor: getLinksControlFillBg(theme),
         transition: theme.transitions.create(["border-color", "box-shadow"], {
           duration: 150,
         }),
@@ -167,13 +178,16 @@ export function QuickCreateLinkStrip({
             {/* The select carries the whole host, so only the separator is
                 left to draw. Appending a domain suffix here would double it
                 (`linkcharts.com.br.linkcharts.com.br`) on the default option. */}
-            <Typography component="span" sx={domainSx}>
+            <Typography component="span" sx={slashSx}>
               /
             </Typography>
           </>
         ) : (
           <Typography component="span" noWrap sx={domainSx}>
-            {defaultHost}/
+            {defaultHost}
+            <Box component="span" sx={slashSx}>
+              /
+            </Box>
           </Typography>
         )}
       </Box>

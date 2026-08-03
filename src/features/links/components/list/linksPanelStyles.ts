@@ -59,6 +59,25 @@ export function getLinksInsetBg(theme: Theme) {
     : alpha(theme.palette.common.black, 0.025);
 }
 
+/**
+ * Preenchimento translúcido para as superfícies de controle do quick-create
+ * (URL input, composto de link curto) — mesma fórmula de véu sutil usada
+ * pelos cards (`getLinkCardShellSx`) e pelo `MuiCard` global, para que o
+ * grupo de controles "hero" harmonize com a seção sem caixa ao redor em vez
+ * de usar um preenchimento sólido/opaco (`darkNeutral.input`) que competia
+ * com o resto da grade de superfícies do redesign.
+ *
+ * @param theme - tema MUI ativo.
+ * @returns cor de fundo translúcida.
+ */
+export function getLinksControlFillBg(theme: Theme) {
+  const isDark = theme.palette.mode === "dark";
+
+  return isDark
+    ? alpha(theme.palette.common.white, 0.03)
+    : alpha(theme.palette.common.black, 0.02);
+}
+
 /** Hairline shadow for /links cards — softer than `elevation*.xs`. */
 export function getLinksCardShadow(
   theme: Theme,
@@ -147,13 +166,17 @@ const cardEnter = keyframes`
 
 /**
  * Shell dos cards de link (desktop e mobile) — nível 1 da escala de
- * superfícies ("instrumento técnico"): `background.paper` liso, borda
- * hairline única, sem drop shadow, sem véu/gradiente de elevação por cinza.
- * O card fica direto sobre o fundo da página (o painel externo que o envolvia
- * foi achatado para nível 0 — ver `LinksBrowseSection`), então a hairline é o
- * único sinal de que ele é um objeto separado. Hover só reforça a borda, sem
- * mudar o fundo. A animação de entrada suaviza o load da lista; o stagger vem
- * do grid ({@link getLinksBrowseGridSx}).
+ * superfícies ("instrumento técnico"): véu translúcido (não a cor sólida de
+ * `background.paper`) + borda hairline única, sem drop shadow. Sobre o fundo
+ * quase-preto da página (`#030405`), um preenchimento cinza opaco lia
+ * "pesado" — o véu é sutil o bastante para a hairline continuar sendo o
+ * sinal primário de que o card é um objeto separado (não elevação por
+ * cinza: o véu não simula sombra/profundidade, só calibra o peso visual do
+ * preenchimento). O card fica direto sobre o fundo da página (o painel
+ * externo que o envolvia foi achatado para nível 0 — ver
+ * `LinksBrowseSection`). Hover só reforça a borda, sem mudar o fundo. A
+ * animação de entrada suaviza o load da lista; o stagger vem do grid
+ * ({@link getLinksBrowseGridSx}).
  */
 export function getLinkCardShellSx(theme: Theme) {
   const isDark = theme.palette.mode === "dark";
@@ -166,7 +189,9 @@ export function getLinkCardShellSx(theme: Theme) {
     // objeto principal da página e pode se afirmar.
     border: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.14 : 0.12)}`,
     overflow: "hidden" as const,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: isDark
+      ? alpha(theme.palette.common.white, 0.03)
+      : alpha(theme.palette.common.black, 0.02),
     transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {
       borderColor: alpha(theme.palette.text.primary, isDark ? 0.22 : 0.2),
