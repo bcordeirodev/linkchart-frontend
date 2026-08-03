@@ -3,11 +3,12 @@ import { Box, Collapse, Typography } from "@mui/material";
 import { useCallback, useId, useState } from "react";
 
 import { AppIcon } from "@/shared/ui/icons";
+import { SectionLabel } from "@/shared/ui/base";
 
 interface FormSectionProps {
   /** Uppercase section label, e.g. "Básico". */
   label: string;
-  /** One-line summary shown next to the label when the section is collapsed. */
+  /** One-line summary shown below the label (e.g. "Opcional — senha, ..."). */
   caption?: string;
   /** Renders a chevron and makes the header a click target. Default `false`. */
   collapsible?: boolean;
@@ -15,15 +16,23 @@ interface FormSectionProps {
   defaultOpen?: boolean;
   /** Section content. */
   children: React.ReactNode;
-  /** When `true`, drops the top divider (used for the first section). */
+  /** When `true`, drops the top spacing (used for the first section). */
   isFirst?: boolean;
 }
 
 /**
- * Renders a quiet section header (uppercase label + optional caption) above a
- * group of form fields. When `collapsible`, a chevron toggle expands/collapses
- * the children. Replaces the previous `Chip("Mostrar"/"Ocultar")` pattern used
- * across `LinkFormFields`.
+ * Renders a `SectionLabel` header (`/ LABEL` caps mono + hairline, "instrumento
+ * técnico" grammar) above a group of form fields, with an optional hint line
+ * and a chevron toggle when `collapsible`. Replaces the earlier ad hoc
+ * `Typography variant="overline"` + top-divider treatment — same field-group
+ * anchor role `SectionLabel` already plays on `/links`, `/bio` and the
+ * analytics/reports pages post-redesign, just reused here for in-form
+ * sections instead of page/panel sections.
+ *
+ * When `collapsible`, the entire label row (including the trailing hairline)
+ * is the click/tap target — same full-row toggle affordance the previous
+ * implementation had — with the chevron rendered in `SectionLabel`'s `action`
+ * slot instead of a separate trailing icon.
  */
 export function FormSection({
   label,
@@ -55,15 +64,22 @@ export function FormSection({
     [collapsible],
   );
 
-  return (
+  const chevron = collapsible ? (
     <Box
+      aria-hidden
       sx={{
-        pt: isFirst ? 0 : 2,
-        mt: isFirst ? 0 : 1,
-        borderTop: isFirst ? 0 : 1,
-        borderColor: "divider",
+        color: "text.secondary",
+        display: "flex",
+        transform: open ? "rotate(180deg)" : "rotate(0deg)",
+        transition: "transform 150ms ease",
       }}
     >
+      <AppIcon intent="expand" size={18} />
+    </Box>
+  ) : null;
+
+  return (
+    <Box sx={{ pt: isFirst ? 0 : 2.5 }}>
       <Box
         role={collapsible ? "button" : undefined}
         tabIndex={collapsible ? 0 : undefined}
@@ -72,57 +88,19 @@ export function FormSection({
         onClick={handleToggle}
         onKeyDown={handleKeyDown}
         sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
           cursor: collapsible ? "pointer" : "default",
           userSelect: "none",
-          py: 0.5,
         }}
       >
-        <Typography
-          variant="overline"
-          sx={{
-            color: (theme) =>
-              theme.palette.mode === "dark"
-                ? theme.palette.grey[100]
-                : theme.palette.text.primary,
-            fontWeight: 600,
-            fontSize: "0.72rem",
-            letterSpacing: "0.08em",
-            lineHeight: 1.6,
-          }}
-        >
+        <SectionLabel headingLevel={2} action={chevron}>
           {label}
-        </Typography>
-        {caption ? (
-          <Typography
-            variant="caption"
-            sx={{
-              color: (theme) =>
-                theme.palette.mode === "dark"
-                  ? theme.palette.grey[300]
-                  : theme.palette.text.secondary,
-              flex: 1,
-            }}
-          >
-            — {caption}
-          </Typography>
-        ) : null}
-        {collapsible ? (
-          <Box
-            sx={{
-              ml: "auto",
-              color: "text.secondary",
-              transform: open ? "rotate(180deg)" : "rotate(0deg)",
-              transition: "transform 150ms ease",
-              display: "flex",
-            }}
-          >
-            <AppIcon intent="expand" size={18} />
-          </Box>
-        ) : null}
+        </SectionLabel>
       </Box>
+      {caption ? (
+        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.75 }}>
+          {caption}
+        </Typography>
+      ) : null}
 
       {collapsible ? (
         <Collapse in={open} timeout="auto" unmountOnExit>
@@ -131,7 +109,7 @@ export function FormSection({
           </Box>
         </Collapse>
       ) : (
-        <Box sx={{ pt: 1 }}>{children}</Box>
+        <Box sx={{ pt: 1.5 }}>{children}</Box>
       )}
     </Box>
   );

@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import type { KeyboardEvent, MouseEvent } from "react";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import { radiusTokens } from "@/lib/theme/designSystem";
+import { radiusTokens, typographyScale } from "@/lib/theme/designSystem";
 import useClipboard from "@/shared/hooks/useClipboard";
 
 const STRIP_HEIGHT = 34;
@@ -158,7 +158,7 @@ export function LinkActionsCopyButton({
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
             fontSize: "0.8125rem",
-            fontFamily: theme.typography.fontFamily,
+            fontFamily: typographyScale.code.fontFamily,
             fontVariantNumeric: "tabular-nums",
             fontFeatureSettings: '"tnum"',
             fontWeight: 500,

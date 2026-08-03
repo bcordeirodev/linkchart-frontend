@@ -19,6 +19,7 @@ import { getLinkFormPanelSx } from "@/features/links/components/forms/linkFormPa
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { SectionLabel } from "@/shared/ui/base";
 import { WhatsAppIcon } from "@/shared/ui/icons";
 
 import type { LinkResponse } from "@/types";
@@ -36,6 +37,7 @@ interface LinkQRPanelProps {
   onShare: () => void;
 }
 
+/** Label/value row for the QR panel's metadata block (original URL, status, created date). */
 function MetaRow({ label, children }: { label: string; children: ReactNode }) {
   return (
     <Box
@@ -64,6 +66,12 @@ function MetaRow({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
+/**
+ * `/links/qr/[id]` content panel: QR image, download/share/WhatsApp actions,
+ * and a short metadata block (original URL, status, created date). Level-1
+ * hairline shell (`getLinkFormPanelSx`, shared with `LinkFormShell`) and a
+ * `SectionLabel` header — same panel/section grammar as the create/edit form.
+ */
 export function LinkQRPanel({
   link,
   qrCodeDataUrl,
@@ -91,22 +99,11 @@ export function LinkQRPanel({
       sx={getLinkFormPanelSx(theme)}
     >
       <Box sx={{ px: { xs: 2, sm: 2.5 }, py: { xs: 2, sm: 2.5 } }}>
-        <Typography
-          variant="overline"
-          sx={{
-            display: "block",
-            color: "text.secondary",
-            fontWeight: 600,
-            letterSpacing: 0.6,
-            mb: 0.5,
-          }}
-        >
-          {t("qr.title")}
-        </Typography>
+        <SectionLabel headingLevel={2}>{t("qr.title")}</SectionLabel>
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ mb: 2.5, lineHeight: 1.55 }}
+          sx={{ mt: 0.75, mb: 2.5, lineHeight: 1.55 }}
         >
           {t("qr.description")}
         </Typography>

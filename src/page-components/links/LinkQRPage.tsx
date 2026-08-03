@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Alert, Stack } from "@mui/material";
+import { Alert, Box, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 
@@ -104,7 +104,9 @@ function LinkQRPage({ id }: Props) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]} fallback={<QRCodeSkeleton />}>
         <ResponsiveContainer variant="form" maxWidth="md">
-          <Alert severity="error">{tPublic("qr.errors.noId")}</Alert>
+          <Alert severity="error" className="reveal reveal-1">
+            {tPublic("qr.errors.noId")}
+          </Alert>
         </ResponsiveContainer>
       </AuthGuardRedirect>
     );
@@ -122,7 +124,7 @@ function LinkQRPage({ id }: Props) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]} fallback={<QRCodeSkeleton />}>
         <ResponsiveContainer variant="form" maxWidth="md">
-          <Alert severity="error">
+          <Alert severity="error" className="reveal reveal-1">
             {error || tPublic("qr.errors.notFound")}
           </Alert>
         </ResponsiveContainer>
@@ -134,23 +136,27 @@ function LinkQRPage({ id }: Props) {
     <AuthGuardRedirect auth={["user", "admin"]} fallback={<QRCodeSkeleton />}>
       <ResponsiveContainer variant="form" maxWidth="md">
         <Stack spacing={{ xs: 2, sm: 2.5 }} component="section">
-          <LinkActions
-            linkId={id}
-            currentView="qr"
-            slug={slug}
-            shortUrl={linkInfo.short_url}
-            title={linkInfo.title || linkInfo.original_url}
-            clicks={linkInfo.clicks}
-            onDeleteSuccess={handleDeleteSuccess}
-          />
+          <Box className="reveal reveal-1">
+            <LinkActions
+              linkId={id}
+              currentView="qr"
+              slug={slug}
+              shortUrl={linkInfo.short_url}
+              title={linkInfo.title || linkInfo.original_url}
+              clicks={linkInfo.clicks}
+              onDeleteSuccess={handleDeleteSuccess}
+            />
+          </Box>
 
-          <LinkQRPanel
-            link={linkInfo}
-            qrCodeDataUrl={qrCodeDataUrl}
-            qrLoading={!qrCodeDataUrl && !qrError}
-            onDownload={handleDownloadQR}
-            onShare={handleShareQR}
-          />
+          <Box className="reveal reveal-2">
+            <LinkQRPanel
+              link={linkInfo}
+              qrCodeDataUrl={qrCodeDataUrl}
+              qrLoading={!qrCodeDataUrl && !qrError}
+              onDownload={handleDownloadQR}
+              onShare={handleShareQR}
+            />
+          </Box>
         </Stack>
       </ResponsiveContainer>
     </AuthGuardRedirect>

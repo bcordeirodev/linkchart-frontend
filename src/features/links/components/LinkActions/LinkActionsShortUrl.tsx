@@ -3,6 +3,8 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
+import { typographyScale } from "@/lib/theme";
+
 const PROTOCOL_PREFIX = /^https?:\/\//;
 
 interface LinkActionsShortUrlProps {
@@ -12,9 +14,13 @@ interface LinkActionsShortUrlProps {
 }
 
 /**
- * Short URL line — dim host/path prefix, strong slug. Same identity
- * treatment as the copy strips in the /links cards and the page header,
- * in the theme face (the earlier monospace read as a different voice).
+ * Short URL line — dim host/path prefix, strong slug, JetBrains Mono
+ * (`typographyScale.code.fontFamily`). Same identity treatment as the copy
+ * strips in the /links cards and quick-create — "instrumento técnico"
+ * redesign (2026-08-03) restores mono here: a prior pass had moved this one
+ * spot to the body face for visual consistency with its neighbors, but the
+ * redesign's rule has no exception for URLs/slugs, so this now matches the
+ * rest of the app instead of being the one outlier.
  */
 export function LinkActionsShortUrl({
   url,
@@ -37,6 +43,7 @@ export function LinkActionsShortUrl({
       component="p"
       sx={{
         m: 0,
+        fontFamily: typographyScale.code.fontFamily,
         fontSize:
           variant === "caption"
             ? "0.75rem"
