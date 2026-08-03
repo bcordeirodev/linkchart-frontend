@@ -1,15 +1,18 @@
 "use client";
 
+import NextLink from "next/link";
 import {
   Box,
   FormControlLabel,
   FormLabel,
+  Link as MuiLink,
   Stack,
   Switch,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import { Controller, useWatch } from "react-hook-form";
 import type { Control, FieldErrors } from "react-hook-form";
@@ -114,10 +117,54 @@ export interface BioPublishingFieldsProps extends FieldGroupProps {
 }
 
 /**
- * "Endereço e publicação" fields — the required address (subdomain-first:
- * the address IS the page's identity) and, once the page exists, the "page
- * is live" toggle. The read-only public URL bar is rendered by `BioEditor`
- * in the same card, right below this group.
+ * Accent-border callout tying the bio page to the "custom addresses"
+ * (subdomains) feature: the page's address IS one of the user's custom
+ * addresses, managed at `/subdomains` and shared with their short links.
+ * Rendered in both create and edit modes because the relationship is new to
+ * everyone, not just first-time visitors. Same visual recipe as the verdict
+ * callout in `GuideHero`/`CompareCompetitorPage` (thin tinted border, 3px
+ * accent on the left, primary-tinted background).
+ */
+function BioAddressCallout() {
+  const { t } = useTranslation("bio");
+
+  return (
+    <Box
+      sx={(theme) => ({
+        px: 2,
+        py: 1.5,
+        borderRadius: 2,
+        border: `1px solid ${alpha(
+          theme.palette.primary.main,
+          theme.palette.mode === "dark" ? 0.3 : 0.24,
+        )}`,
+        borderLeft: `3px solid ${theme.palette.primary.main}`,
+        bgcolor: alpha(
+          theme.palette.primary.main,
+          theme.palette.mode === "dark" ? 0.09 : 0.05,
+        ),
+      })}
+    >
+      <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
+        {t("form.addressCallout.text")}
+      </Typography>
+      <MuiLink
+        component={NextLink}
+        href="/subdomains"
+        variant="body2"
+        sx={{ display: "inline-block", mt: 0.75, fontWeight: 600 }}
+      >
+        {t("form.addressCallout.manageCta")}
+      </MuiLink>
+    </Box>
+  );
+}
+
+/**
+ * "Endereço e publicação" fields — the custom-address callout, the required
+ * address (subdomain-first: the address IS the page's identity) and, once
+ * the page exists, the "page is live" toggle. The read-only public URL bar
+ * is rendered by `BioEditor` in the same card, right below this group.
  */
 export function BioPublishingFields({
   control,
@@ -128,6 +175,8 @@ export function BioPublishingFields({
 
   return (
     <Stack spacing={2.5}>
+      <BioAddressCallout />
+
       <Controller
         name="subdomainId"
         control={control}

@@ -55,6 +55,53 @@ function buildExampleItems(t: (key: string) => string): BioItem[] {
 }
 
 /**
+ * Ordered "how it works" walk for the gate: claim an address, build the
+ * page, paste the address into a social bio. A genuine sequence (each step
+ * depends on the previous one), which is what earns the numbered markers.
+ */
+function GateSteps() {
+  const { t } = useTranslation("bio");
+  const stepKeys = ["claim", "build", "share"] as const;
+
+  return (
+    <Stack spacing={1.25} component="ol" sx={{ m: 0, p: 0, listStyle: "none" }}>
+      {stepKeys.map((key, index) => (
+        <Stack
+          key={key}
+          component="li"
+          direction="row"
+          spacing={1.25}
+          alignItems="center"
+        >
+          <Box
+            aria-hidden
+            sx={{
+              width: 22,
+              height: 22,
+              borderRadius: "50%",
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "0.6875rem",
+              fontWeight: 700,
+              color: "primary.main",
+              border: "1px solid",
+              borderColor: "primary.main",
+            }}
+          >
+            {index + 1}
+          </Box>
+          <Typography variant="body2" color="text.secondary">
+            {t(`gate.steps.${key}`)}
+          </Typography>
+        </Stack>
+      ))}
+    </Stack>
+  );
+}
+
+/**
  * Entry gate for the bio editor: replaces the create form entirely for a
  * user who holds no active subdomain yet, rather than showing a disabled
  * form with no clear way forward.
@@ -131,6 +178,8 @@ export function BioSubdomainGate() {
             {t("gate.description")}
           </Typography>
         </Box>
+
+        <GateSteps />
 
         <Box
           sx={{

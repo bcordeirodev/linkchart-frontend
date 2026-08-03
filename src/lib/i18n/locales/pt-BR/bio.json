@@ -7,7 +7,12 @@
   },
   "gate": {
     "title": "Sua página de links, no seu endereço",
-    "description": "Escolha um endereço personalizado — algo como seunome.linkcharts.com.br — e publique sua página bio nele. Você precisa de um endereço antes de criar a página.",
+    "description": "A página bio é publicada em um endereço personalizado seu — algo como seunome.linkcharts.com.br. Você ainda não tem um endereço: crie o primeiro para publicar sua página. Ele também vale para os seus links encurtados.",
+    "steps": {
+      "claim": "Crie seu endereço personalizado",
+      "build": "Monte a página com seus links",
+      "share": "Cole o endereço na bio do Instagram ou TikTok"
+    },
     "exampleBio": "Fotografia, viagens e recomendações",
     "exampleItems": {
       "site": "Meu site",
@@ -21,7 +26,7 @@
     "identity": "Identidade",
     "identityHint": "Como você se apresenta no topo da página: foto, nome e descrição.",
     "publishing": "Endereço e publicação",
-    "publishingHint": "Onde a página vive e se ela está visível para quem acessar.",
+    "publishingHint": "A página é publicada em um endereço personalizado seu — ex.: seunome.linkcharts.com.br.",
     "appearance": "Aparência",
     "appearanceHint": "O visual que os seus visitantes veem."
   },
@@ -50,9 +55,13 @@
         "removeGeneric": "Não foi possível remover a foto. Tente novamente."
       }
     },
+    "addressCallout": {
+      "text": "Sua página bio vive no seu endereço personalizado — o mesmo endereço que você cria e gerencia em Endereços personalizados e que também pode usar nos seus links encurtados.",
+      "manageCta": "Gerenciar endereços personalizados"
+    },
     "address": {
       "label": "Endereço da página",
-      "hint": "É o endereço onde sua página fica publicada.",
+      "hint": "Trocar o endereço muda o link público da sua página.",
       "placeholder": "Selecione um endereço",
       "emptyHint": "Você precisa de um endereço personalizado para publicar sua página.",
       "createCta": "Crie um endereço personalizado"
