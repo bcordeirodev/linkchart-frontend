@@ -73,7 +73,10 @@ function isPlainObject(value: unknown): value is PlainObject {
 /**
  * Recursive object merge used internally by `mergeApexOptions`.
  * Keys present on both sides merge recursively when both values are plain
- * objects; otherwise the key from `overrides` wins outright.
+ * objects; otherwise the key from `overrides` wins outright — except an
+ * `undefined` override value, which is ignored so the `base` value survives
+ * (same convention as lodash's `merge`). An explicit `null` override is not
+ * special-cased: it is assigned as-is and replaces the base value.
  */
 function deepMergeObjects(
   base: PlainObject,
@@ -84,6 +87,12 @@ function deepMergeObjects(
   for (const key of Object.keys(overrides)) {
     const baseValue = base[key];
     const overrideValue = overrides[key];
+
+    if (overrideValue === undefined) {
+      // An override key explicitly set to `undefined` (e.g. `chart: cond ? {...} : undefined`)
+      // must not erase the base value — skip it and keep `baseValue` (already in `result` via the spread above).
+      continue;
+    }
 
     result[key] =
       isPlainObject(baseValue) && isPlainObject(overrideValue)
@@ -105,6 +114,13 @@ function deepMergeObjects(
  * one from `base` entirely. Arrays are never concatenated or merged
  * item-by-item: a caller passing `colors: [...]` fully replaces the base
  * palette, it never blends with it.
+ *
+ * `undefined` vs `null` on the override side are handled differently: a key
+ * with an `undefined` override value is ignored entirely, so the `base`
+ * value passes through untouched (this lets callers write conditional
+ * options like `{ chart: cond ? {...} : undefined }` without accidentally
+ * wiping out the base config). An explicit `null` override, by contrast, is
+ * treated as a deliberate value and is assigned as-is, replacing `base`.
  *
  * @param base Base options — typically `buildApexBaseOptions(theme)`.
  * @param overrides Per-chart options passed by the caller; they win on conflict.
