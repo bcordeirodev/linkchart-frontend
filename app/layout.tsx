@@ -25,7 +25,9 @@ const spaceGrotesk = Space_Grotesk({
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["400", "500"],
+  // 600 added 2026-08-03 (visual gate item 1) for `SectionLabel`'s bold —
+  // the mono micro-label needed "um leve destaque" beyond the regular 500.
+  weight: ["400", "500", "600"],
   variable: "--font-jetbrains-mono",
 });
 

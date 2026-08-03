@@ -37,11 +37,14 @@ export interface SectionLabelProps {
  * tamanho original de 11px lia pequeno demais nas 6 abas de analytics;
  * 13px alinha com a escala de `body2` no resto do app sem deixar de ler
  * como label, já que caps + mono + `letterSpacing` continuam distinguindo
- * do corpo de texto) com prefixo "/" opcional, seguido de uma hairline
- * horizontal que preenche o restante da linha. É o padrão de nível 0
- * (sem caixa) para ancorar seções de página/painel — ex.: `/ VISÃO GERAL`.
- * Primitiva compartilhada: a mudança de tamanho é global (/links e
- * analytics), de propósito.
+ * do corpo de texto), `fontWeight: 600` (segundo bump do mesmo gate — 500
+ * ficou "sem destaque" no tamanho novo; 600 é peso real, não uma cor mais
+ * escura fingindo negrito, por isso `app/layout.tsx` passou a carregar
+ * JetBrains Mono também em `600`, não só `400`/`500`) com prefixo "/"
+ * opcional, seguido de uma hairline horizontal que preenche o restante da
+ * linha. É o padrão de nível 0 (sem caixa) para ancorar seções de
+ * página/painel — ex.: `/ VISÃO GERAL`. Primitiva compartilhada: as duas
+ * mudanças (tamanho e peso) são globais (/links e analytics), de propósito.
  *
  * Puramente apresentacional: não busca dados nem contém lógica de negócio;
  * o texto chega já traduzido via `children`. Visualmente é sempre um
@@ -75,7 +78,7 @@ export function SectionLabel({
           fontFamily:
             "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace",
           fontSize: "0.8125rem",
-          fontWeight: 500,
+          fontWeight: 600,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
           color: "text.secondary",
