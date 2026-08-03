@@ -16,6 +16,14 @@ import {
 // ========================================
 
 /**
+ * Pilha de fontes usada nos headings de destaque (display, h1-h4). Recai em
+ * Inter e nas fontes de sistema quando `--font-space-grotesk` não foi
+ * injetada (ex.: ambiente de teste sem `next/font`).
+ */
+const displayFontFamily =
+  "var(--font-space-grotesk), Inter, ui-sans-serif, system-ui, sans-serif";
+
+/**
  * Configurações de tipografia otimizadas
  */
 export const typography = {
@@ -24,11 +32,15 @@ export const typography = {
   fontWeightMedium: 500,
   fontWeightBold: 600,
   fontSize: 14,
-  display: typographyScale.display,
-  h1: typographyScale.h1,
-  h2: typographyScale.h2,
-  h3: typographyScale.h3,
-  h4: typographyScale.h4,
+  display: {
+    ...typographyScale.display,
+    fontFamily: displayFontFamily,
+    fontWeight: 700,
+  },
+  h1: { ...typographyScale.h1, fontFamily: displayFontFamily, fontWeight: 700 },
+  h2: { ...typographyScale.h2, fontFamily: displayFontFamily, fontWeight: 700 },
+  h3: { ...typographyScale.h3, fontFamily: displayFontFamily },
+  h4: { ...typographyScale.h4, fontFamily: displayFontFamily },
   h5: typographyScale.h5,
   h6: typographyScale.h6,
   body1: typographyScale.body,

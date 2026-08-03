@@ -495,7 +495,8 @@ export const typographyScale = {
     fontSize: "0.8125rem",
     lineHeight: 1.54,
     fontWeight: 400,
-    fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+    fontFamily:
+      "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace",
   },
 } as const;
 
