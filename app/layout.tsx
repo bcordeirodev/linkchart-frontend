@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import { Inter } from "next/font/google";
+import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { Providers } from "@/lib/providers/Providers";
 import { buildOrganizationSchema } from "@/lib/seo/structuredData";
@@ -15,6 +15,18 @@ import "@/styles/splash-screen.css";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-space-grotesk",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-jetbrains-mono",
 });
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://linkcharts.com.br";
@@ -80,7 +92,9 @@ export default function RootLayout({
 
   return (
     <html lang={initialLang} suppressHydrationWarning>
-      <body className={inter.variable}>
+      <body
+        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      >
         <FrontendObservability />
         {/*
          * Consent Mode v2 defaults — must fire before any gtag/AdSense call.
