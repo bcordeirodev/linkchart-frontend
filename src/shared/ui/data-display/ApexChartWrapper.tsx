@@ -6,11 +6,16 @@ import dynamic from "next/dynamic";
 import React, { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
-import { chartPalette } from "@/lib/theme/colors";
+import {
+  buildApexBaseOptions,
+  mergeApexOptions,
+} from "@/lib/theme/apexBaseTheme";
 import {
   useChartHeight,
   type ChartSize,
 } from "@/lib/theme/hooks/useChartHeight";
+
+import type { ApexOptions } from "apexcharts";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -60,7 +65,7 @@ interface ApexChartWrapperProps {
  *
  * Uses `next/dynamic` with `ssr: false` so the ApexCharts ESM bundle is never loaded on the server.
  * Renders one of four states: no-data placeholder (when `series` has no usable points), error placeholder with derived stats, loading spinner, or the chart itself.
- * Auto-injects `chartPalette`, `theme.palette.mode`, `theme.palette.text.secondary` (foreColor), `theme.typography.fontFamily`, and an `xs`-breakpoint responsive block (legend bottom, no toolbar).
+ * Auto-injects the shared data-viz base theme (`buildApexBaseOptions` — palette, stroke, grid, mono axes/tooltip/legend), plus `theme.palette.mode`, `theme.palette.text.secondary` (foreColor), and an `xs`-breakpoint responsive block (legend bottom, no toolbar). Per-chart `options` passed by callers are deep-merged on top via `mergeApexOptions` and win on conflict.
  */
 
 const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
@@ -76,10 +81,6 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
   const height = useChartHeight(size, heightProp);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Use the theme's font family so charts always match the app's typography
-  const fontFamily =
-    theme.typography.fontFamily ?? "Inter, system-ui, sans-serif";
 
   // Verificar se há dados válidos
   const hasValidData = series && Array.isArray(series) && series.length > 0;
@@ -242,6 +243,13 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
     );
   }
 
+  // Base do tema (paleta, stroke, grid, eixos/tooltip/legend em mono) mesclada
+  // com os overrides pontuais da tela — overrides vencem em qualquer conflito.
+  const mergedOptions = mergeApexOptions(
+    buildApexBaseOptions(theme),
+    options as ApexOptions,
+  );
+
   // Renderizar o gráfico diretamente (Next.js - sem SSR)
   return (
     <ChartContainer>
@@ -250,23 +258,17 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
         height={height}
         width={width}
         options={{
-          colors: [...chartPalette],
-          ...options,
+          ...mergedOptions,
           chart: {
-            ...((options.chart as object) || {}),
+            ...mergedOptions.chart,
             type,
             background: "transparent",
             foreColor: theme.palette.text.secondary,
-            fontFamily,
-            toolbar: {
-              show: false,
-              ...((options.chart as Record<string, unknown>)?.toolbar || {}),
-            },
             events: {
               mounted: () => {
                 handleChartLoad();
               },
-              ...((options.chart as Record<string, unknown>)?.events || {}),
+              ...(mergedOptions.chart?.events ?? {}),
             },
             animations: {
               enabled: true,
@@ -276,13 +278,9 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
                 enabled: true,
                 delay: 150,
               },
-              ...((options.chart as Record<string, unknown>)?.animations || {}),
+              ...(mergedOptions.chart?.animations ?? {}),
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
-          },
-          grid: {
-            borderColor: theme.palette.divider,
-            ...((options.grid as object) || {}),
           },
           theme: {
             mode: theme.palette.mode,
@@ -300,8 +298,8 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
                 },
               },
             },
-            ...(Array.isArray((options as Record<string, unknown>).responsive)
-              ? ((options as Record<string, unknown>).responsive as object[])
+            ...(Array.isArray(mergedOptions.responsive)
+              ? mergedOptions.responsive
               : []),
           ],
         }}
