@@ -97,30 +97,6 @@ export const layoutSpacing = {
 } as const;
 
 // ========================================
-// 🔲 BORDER RADIUS SYSTEM
-// ========================================
-
-/**
- * Sistema de border radius padronizado, expresso em **unidades de spacing do MUI**
- * (multiplicadas por `theme.spacing()`), NÃO em pixels.
- *
- * @deprecated Use `radiusTokens` (SP2, valores em px) — a escala canônica de radius
- * da aplicação. `borderRadiusTokens` contradiz `radiusTokens` (ex.: aqui `md = 1`
- * → 8px via theme.spacing, lá `md = 8` direto em px) e não possui consumidores reais
- * fora do barrel `lib/theme/index.ts`. Mantido apenas para compatibilidade; não
- * adicionar novos usos. Será removido após confirmar que nada o importa.
- */
-export const borderRadiusTokens = {
-  none: 0,
-  sm: 0.5, // 4px
-  md: 1, // 8px
-  lg: 1.5, // 12px - PADRÃO UNIVERSAL
-  xl: 2, // 16px
-  xxl: 3, // 24px
-  full: "50%",
-} as const;
-
-// ========================================
 // 🎨 COLOR VARIANTS
 // ========================================
 
@@ -250,9 +226,9 @@ export const createDesignTokens = (theme: Theme) => {
     // ========================================
     borderRadius: {
       ...Object.fromEntries(
-        Object.entries(borderRadiusTokens).map(([key, value]) => [
+        Object.entries(radiusTokens).map(([key, value]) => [
           key,
-          typeof value === "number" ? theme.spacing(value) : value,
+          typeof value === "number" ? `${value}px` : value,
         ]),
       ),
     },
@@ -384,23 +360,6 @@ export const applySpacing = (
 };
 
 /**
- * Helper para aplicar border radius padronizado.
- *
- * @deprecated Baseado em `borderRadiusTokens` (unidades de spacing) — escala legada.
- * Prefira aplicar `radiusTokens` (px) diretamente em `sx`. Sem consumidores reais
- * fora do barrel `lib/theme/index.ts`.
- */
-export const applyBorderRadius = (
-  theme: Theme,
-  size: keyof typeof borderRadiusTokens = "lg",
-): SxProps => {
-  const value = borderRadiusTokens[size];
-  return {
-    borderRadius: typeof value === "number" ? theme.spacing(value) : value,
-  };
-};
-
-/**
  * Helper para criar variações de cor
  */
 export const createColorVariation = (
@@ -504,11 +463,21 @@ export const typographyScale = {
 // 📐 RADIUS SCALE (SP2)
 // ========================================
 
+/**
+ * Escala canônica de border radius da aplicação, em px. Única fonte de
+ * verdade — `borderRadiusTokens` (unidades de spacing) foi removido por
+ * contradizer esta escala.
+ *
+ * Recalibrada para a estética "instrumento técnico" (redesign 2026-08):
+ * `lg` é o raio padrão de containers (cards, painéis, modais); `md` é o
+ * padrão de controles (botões, inputs); `sm` cobre elementos pequenos
+ * (chips inline, badges).
+ */
 export const radiusTokens = {
   none: 0,
-  sm: 4,
-  md: 8, // default da app
-  lg: 12,
+  sm: 6, // elementos pequenos
+  md: 8, // controles — botões, inputs (default da app)
+  lg: 10, // containers — cards, painéis, modais
   xl: 16,
   full: 9999,
 } as const;

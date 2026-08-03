@@ -5,14 +5,22 @@
 
 // Neutros com leve tom slate (azul dessaturado) — profundidade de dashboard
 // premium sem sair do "adulto/negócios"; cinza puro lia frio e chapado.
+//
+// `bg` foi recalibrado um passo mais profundo (redesign "instrumento técnico",
+// 2026-08): era #0B0D12 (HSL ~223°, 24%, 5.7%), escurecido para ~1.7% de
+// luminância mantendo matiz/saturação — o canvas fica quase preto e a
+// elevação de `surface`/`elevated` passa a vir do hairline (`border.default`),
+// não de um cinza mais claro. `border.default` foi recalibrado para um alpha
+// mais baixo (0.10 → 0.08) para que a borda continue lendo como hairline de
+// baixo contraste mesmo com o fundo mais escuro.
 export const darkNeutral = {
-  bg: "#0B0D12",
+  bg: "#030405",
   surface: "#12141B",
   elevated: "#181B23",
   input: "#1D2028",
   border: {
     subtle: "rgba(255, 255, 255, 0.06)",
-    default: "rgba(255, 255, 255, 0.10)",
+    default: "rgba(255, 255, 255, 0.08)",
     strong: "rgba(255, 255, 255, 0.16)",
   },
   text: {

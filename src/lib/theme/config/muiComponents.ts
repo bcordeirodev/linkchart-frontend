@@ -254,17 +254,25 @@ const inputComponents = {
 const surfaceComponents = {
   MuiPaper: {
     styleOverrides: {
-      root: (_: { theme: Theme }) => ({
+      // Elevação por hairline, não por sombra ou fundo mais claro: borda 1px
+      // de baixo contraste (`divider`) é o único sinal de profundidade.
+      root: ({ theme }: { theme: Theme }) => ({
         backgroundImage: "none",
-        borderRadius: radiusTokens.md,
+        borderRadius: radiusTokens.lg,
+        boxShadow: "none",
+        border: `1px solid ${theme.palette.divider}`,
       }),
     },
   },
   MuiCard: {
     styleOverrides: {
+      // Mesmo princípio de hairline do MuiPaper acima — Card não deve
+      // depender de `elevation`/shadow para parecer "elevado".
       root: ({ theme }: { theme: Theme }) => ({
         borderRadius: radiusTokens.lg,
         backgroundColor: theme.palette.background.paper,
+        boxShadow: "none",
+        border: `1px solid ${theme.palette.divider}`,
         transition: `all ${motionTokens.duration.slow} ${motionTokens.easing.default}`,
       }),
     },
