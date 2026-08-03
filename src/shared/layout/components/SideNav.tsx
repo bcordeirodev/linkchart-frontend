@@ -89,21 +89,20 @@ function getSideNavRowSx(theme: Theme, tone: SideNavRowTone, active: boolean) {
     };
   }
 
-  // Destaque do item ativo é NEUTRO (pílula clara), não azul: a fonte nunca
-  // fica colorida — o ativo se distingue por um leve fundo tintado + peso 600.
-  // Inativo parte de um tom claro; hover acende para o text.primary cheio.
+  // Destaque do item ativo é uma tinta sutil da cor de marca (não mais um
+  // cinza neutro): o rótulo continua legível/neutro (text.primary, peso 600)
+  // — só o fundo da pílula carrega a cor. Inativo fica transparente; hover
+  // usa o `action.hover` padrão do MUI para não competir com o tom ativo.
   return {
     backgroundColor: active
-      ? alpha(theme.palette.text.primary, isDark ? 0.08 : 0.05)
+      ? alpha(theme.palette.primary.main, isDark ? 0.16 : 0.1)
       : "transparent",
-    // Cores limpas do tema (não alpha da text.primary, que embaça o rótulo):
-    // inativo = secondary, ativo/hover = primary.
     color: active ? theme.palette.text.primary : theme.palette.text.secondary,
     fontWeight: active ? 600 : 500,
     "&:hover": {
       backgroundColor: active
-        ? alpha(theme.palette.text.primary, isDark ? 0.11 : 0.08)
-        : alpha(theme.palette.text.primary, isDark ? 0.05 : 0.04),
+        ? alpha(theme.palette.primary.main, isDark ? 0.22 : 0.16)
+        : theme.palette.action.hover,
       color: theme.palette.text.primary,
     },
   };
@@ -231,7 +230,6 @@ export function SideNav({ collapsed }: SideNavProps) {
   const { user, logout } = useAuth();
   const { t } = useTranslation("common");
 
-  const isDark = theme.palette.mode === "dark";
   const navItems = getVisibleNavItems();
   const isProfileActive = isRouteActive(pathname, "/profile");
 
@@ -259,7 +257,7 @@ export function SideNav({ collapsed }: SideNavProps) {
         // Mesmo fundo do container — a sidebar não é uma "surface" separada;
         // só uma borda hairline a distingue do conteúdo.
         backgroundColor: theme.palette.background.default,
-        borderRight: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
+        borderRight: `1px solid ${theme.palette.divider}`,
         transition: `width ${motionTokens.duration.slow} ${motionTokens.easing.default}`,
       }}
     >
@@ -283,7 +281,7 @@ export function SideNav({ collapsed }: SideNavProps) {
           minHeight: { xs: 65, md: 61 },
           px: collapsed ? 1.5 : 2.5,
           border: "none",
-          borderBottom: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
+          borderBottom: `1px solid ${theme.palette.divider}`,
           background: "none",
           cursor: "pointer",
           font: "inherit",
@@ -322,7 +320,7 @@ export function SideNav({ collapsed }: SideNavProps) {
               minWidth: 0,
               py: 0.9,
               px: collapsed ? 0 : 2,
-              borderRadius: `${radiusTokens.sm}px`,
+              borderRadius: `${radiusTokens.md}px`,
               textTransform: "none",
               fontSize: "0.875rem",
               fontWeight: 600,
@@ -354,11 +352,7 @@ export function SideNav({ collapsed }: SideNavProps) {
         ))}
       </List>
 
-      <Divider
-        sx={{
-          borderColor: alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08),
-        }}
-      />
+      <Divider />
 
       <List sx={{ py: 1 }}>
         <SideNavRow
