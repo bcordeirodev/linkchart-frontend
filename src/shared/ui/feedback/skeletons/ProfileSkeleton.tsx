@@ -29,33 +29,34 @@ function SkeletonSection({ height }: { height: number }) {
  * Loading placeholder for `/profile`, shown by `AuthGuardRedirect`'s
  * `fallback` and by `ProfilePage` itself while `useProfile()` resolves.
  *
- * "Instrumento técnico" (2026-08-03): matches the page's own stacked
- * full-width layout (`maxWidth="md"`, single column) — this used to mirror
- * a 2-column grid (main settings column + a "sidebar"), which caused a
- * visible layout snap once the real content replaced it after the redesign
- * flattened `ProfilePage` to stacked sections.
+ * "Instrumento técnico" (2026-08-03), round 2: mirrors the page's
+ * **current** main+side grid (`gridTemplateColumns: {xs:"1fr",
+ * lg:"minmax(0,7fr) minmax(0,5fr)"}`) — the exact same breakpoint object
+ * `ProfilePage` itself uses, not a hand-tuned approximation, precisely to
+ * avoid reintroducing the shape-change bug class an earlier round of this
+ * skeleton had (a hardcoded `direction="row"` that didn't match a
+ * responsive real component). A prior single-column version of both this
+ * skeleton and the real page were rejected at the visual gate ("ficou
+ * pobre em informação") in favor of this two-column composition, so the
+ * skeleton follows the page back.
  *
- * Review fix (same day): the first version of this rewrite still collapsed
- * multiple real section cards into one flat block (one 180px block for
- * BOTH `ProfileSidebar` cards, one 220px block standing in for
- * `PasswordChangeForm`'s real ~560px) — a *more* pronounced snap for
- * local-account users than the pre-redesign skeleton had. Now renders one
- * {@link SkeletonSection} per real section, in the same order as
- * `ProfilePage`, each with its own label-row stub (mirroring
+ * One {@link SkeletonSection} per real section, in the same column and
+ * order as `ProfilePage`, each with its own label-row stub (mirroring
  * `SectionLabel`'s label+hairline shape) — count and order matter more
- * than exact pixels here, but heights are still ballparked from each
- * section's real content: `ProfileForm` (avatar + one field + button row,
- * ~340), account status (~180), activity (two metric rows, ~220),
- * security (~560 — sized for the local-password `PasswordChangeForm` case,
- * since it's ~4x taller than the Auth0 `OAuthSecurityCard` alternative and
- * this component can't know the account's login method before `useUser`/
- * `useProfile` resolve), preferences (~110), the optional custom-address
- * teaser (~140, only when `NEXT_PUBLIC_SUBDOMAINS_ENABLED` is set — same
- * env read `ProfilePage` itself gates on), and the danger zone (~140).
+ * than exact pixels, but heights are still ballparked from each section's
+ * real content. LEFT: `ProfileForm` (avatar + one field + button row,
+ * ~340), security (~560 — sized for the local-password
+ * `PasswordChangeForm` case, since it's ~4x taller than the Auth0
+ * `OAuthSecurityCard` alternative and this component can't know the
+ * account's login method before `useUser`/`useProfile` resolve),
+ * preferences (~110), danger zone (~140). RIGHT: account status (~180),
+ * activity (two metric rows, ~220), the optional custom-address teaser
+ * (~140, only when `NEXT_PUBLIC_SUBDOMAINS_ENABLED` is set — same env read
+ * `ProfilePage` itself gates on).
  */
 export function ProfileSkeleton() {
   return (
-    <ResponsiveContainer maxWidth="md" sx={{ py: { xs: 2, md: 4 } }}>
+    <ResponsiveContainer variant="page">
       <Stack spacing={{ xs: 3, sm: 4 }}>
         <Box
           sx={{
@@ -77,15 +78,31 @@ export function ProfileSkeleton() {
           />
         </Box>
 
-        <SkeletonSection height={340} />
-        <SkeletonSection height={180} />
-        <SkeletonSection height={220} />
-        <SkeletonSection height={560} />
-        <SkeletonSection height={110} />
-        {process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" ? (
-          <SkeletonSection height={140} />
-        ) : null}
-        <SkeletonSection height={140} />
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              lg: "minmax(0, 7fr) minmax(0, 5fr)",
+            },
+            gap: { xs: 3, sm: 4 },
+            alignItems: "start",
+          }}
+        >
+          <Stack spacing={{ xs: 3, sm: 4 }}>
+            <SkeletonSection height={340} />
+            <SkeletonSection height={560} />
+            <SkeletonSection height={110} />
+            <SkeletonSection height={140} />
+          </Stack>
+          <Stack spacing={{ xs: 3, sm: 4 }}>
+            <SkeletonSection height={180} />
+            <SkeletonSection height={220} />
+            {process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" ? (
+              <SkeletonSection height={140} />
+            ) : null}
+          </Stack>
+        </Box>
       </Stack>
     </ResponsiveContainer>
   );
