@@ -234,7 +234,14 @@ function LinkListPageContent() {
       {/* Cap acima do default (1440): com o grid de 2 colunas a largura extra
           vira aproveitamento real, não linhas quilométricas. */}
       <ResponsiveContainer variant="page" sx={{ maxWidth: 1600 }}>
-        <Stack spacing={{ xs: 2.5, sm: 3 }} component="section">
+        {/* Espaçamento único entre as 4 seções de topo (spacing(5)=40px em
+            sm+, spacing(4)=32px em xs) — antes cada seção somava seu próprio
+            mt/mb ao gap do Stack, e os 3 intervalos visíveis (título→visão
+            geral, visão geral→encurtar, encurtar→lista) ficavam com alturas
+            diferentes. Agora o Stack é a única fonte do espaçamento entre
+            seções; o espaçamento interno de cada seção (label→conteúdo)
+            continua próprio, menor. */}
+        <Stack spacing={{ xs: 4, sm: 5 }} component="section">
           <Box component="div" className="reveal reveal-1">
             {/* Sem ícone-chip ao lado do título (redesign "instrumento
                 técnico"): a hierarquia do heading já identifica a página. */}
@@ -242,7 +249,6 @@ function LinkListPageContent() {
               title={t("list.heading")}
               description={t("list.pageSubtitle")}
               titleVariant="page"
-              sx={{ mb: { xs: 1.5, sm: 2 } }}
               action={
                 <Button
                   size="small"
@@ -254,29 +260,30 @@ function LinkListPageContent() {
                 </Button>
               }
             />
-            {/* Gate em `links`, não em `realLinks`: o passo 2 do tour aponta para
-                a âncora `overview`, e um cadastro novo só tem o link de exemplo.
-                Gatilhar por `realLinks` esconderia o bloco justo para quem está
-                fazendo o tour, e o passo apontaria para o nada. Quem só tem o
-                exemplo vê zeros aqui — o que é verdade: ele não criou link nenhum
-                nem recebeu clique real. */}
-            {links.length > 0 ? (
-              <Box data-tour="overview" sx={{ mt: { xs: 2, sm: 2.5 } }}>
-                <Box sx={{ mb: { xs: 1, sm: 1.25 } }}>
-                  <SectionLabel headingLevel={2}>
-                    {t("list.sections.overview")}
-                  </SectionLabel>
-                </Box>
-                <LinkMetrics linksData={realLinks} showTitle={false} />
-              </Box>
-            ) : null}
           </Box>
 
-          <Box data-tour="quick-create" className="reveal reveal-2">
+          {/* Gate em `links`, não em `realLinks`: o passo 2 do tour aponta para
+              a âncora `overview`, e um cadastro novo só tem o link de exemplo.
+              Gatilhar por `realLinks` esconderia o bloco justo para quem está
+              fazendo o tour, e o passo apontaria para o nada. Quem só tem o
+              exemplo vê zeros aqui — o que é verdade: ele não criou link nenhum
+              nem recebeu clique real. */}
+          {links.length > 0 ? (
+            <Box data-tour="overview" className="reveal reveal-2">
+              <SectionLabel headingLevel={2}>
+                {t("list.sections.overview")}
+              </SectionLabel>
+              <Box sx={{ mt: { xs: 1.5, sm: 2 } }}>
+                <LinkMetrics linksData={realLinks} showTitle={false} />
+              </Box>
+            </Box>
+          ) : null}
+
+          <Box data-tour="quick-create" className="reveal reveal-3">
             <LinksQuickCreate onLinkCreated={handleLinkCreated} />
           </Box>
 
-          <Box data-tour="links-list" className="reveal reveal-3">
+          <Box data-tour="links-list" className="reveal reveal-4">
             <LinksBrowseSection
               highlightedLinkId={highlightedLinkId}
               searchTerm={searchTerm}

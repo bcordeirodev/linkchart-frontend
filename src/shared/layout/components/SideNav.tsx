@@ -251,9 +251,20 @@ export function SideNav({ collapsed }: SideNavProps) {
         flexDirection: "column",
         flexShrink: 0,
         width: collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH,
+        // Trava o limite superior no mesmo valor de `width`: sem isto, o item
+        // ativo (pílula tintada + ícone, únicos elementos coloridos daqui)
+        // podia deixar um fiapo de cor vazar 1-2px além da borda direita
+        // durante a transição de largura — `overflowX: hidden` sozinho não
+        // bastava porque o navegador arredonda a caixa de recorte e a de
+        // pintura em frames diferentes da mesma animação. `contain: "paint"`
+        // fixa a sidebar como fronteira de pintura própria: nada dela (nem um
+        // resquício de borda arredondada) pode aparecer fora da sua caixa,
+        // independente do frame da transição.
+        maxWidth: collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH,
         height: "100%",
         overflowX: "hidden",
         overflowY: "auto",
+        contain: "paint",
         // Mesmo fundo do container — a sidebar não é uma "surface" separada;
         // só uma borda hairline a distingue do conteúdo.
         backgroundColor: theme.palette.background.default,

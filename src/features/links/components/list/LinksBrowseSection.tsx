@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 
 import { useBulkActions } from "@/features/links/hooks/useBulkActions";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { SectionLabel } from "@/shared/ui/base";
 
 import { BulkActionsBar } from "./BulkActionsBar";
 import { LinkCardRich } from "./LinkCardRich";
@@ -24,7 +25,6 @@ import { LinksDemoSeedingState } from "./LinksDemoSeedingState";
 import { LinksEmptyState } from "./LinksEmptyState";
 import { LinksFilters } from "./LinksFilters";
 import { LinksMobileCards } from "./LinksMobileCards";
-import { LinksListSectionHeading } from "./LinksListSectionHeading";
 import {
   getLinksBorderColor,
   getLinksBrowseGridSx,
@@ -110,9 +110,9 @@ function BrowseSectionSkeleton({ isMobile }: { isMobile: boolean }) {
  * are the only elevated surfaces here, so this section doesn't wrap them in
  * its own panel (that would be a card inside a card).
  *
- * The section announces itself as "Seus links" via `LinksListSectionHeading`,
- * distinct from the page-level heading. The count/context caption is displayed
- * as the heading's description.
+ * The section announces itself as "/ SEUS LINKS" via `SectionLabel`, distinct
+ * from the page-level heading. The count/context caption sits directly below
+ * the label row.
  *
  * @remarks
  * Pagination, search, status filter and sort are server-side (`useLinksSearch`,
@@ -260,13 +260,12 @@ export function LinksBrowseSection({
     // esta seção foi achatado — os cards de link logo abaixo (nível 1,
     // hairline) já são a única superfície elevada, e um painel por trás deles
     // seria "card dentro de card" (ver linksPanelStyles.getLinkCardShellSx).
-    <Box sx={{ p: { xs: 2, sm: 3 } }}>
+    // Sem padding horizontal própria: o conteúdo compartilha o mesmo gutter
+    // de página do título e das outras seções (ver LinkListPage).
+    <Box>
       <Box ref={topRef} sx={{ scrollMarginTop: { xs: 64, sm: 80 } }} />
-      <LinksListSectionHeading
-        title={t("list.sections.links")}
-        description={description}
-        titleVariant="section"
-        sx={{ mb: { xs: 1.5, sm: 2 } }}
+      <SectionLabel
+        headingLevel={2}
         action={
           count > 0 || selectionMode ? (
             <Button
@@ -280,9 +279,18 @@ export function LinksBrowseSection({
             </Button>
           ) : undefined
         }
-      />
+      >
+        {t("list.sections.links")}
+      </SectionLabel>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mt: 0.5, mb: { xs: 1.5, sm: 2 } }}
+      >
+        {description}
+      </Typography>
+
       <LinksFilters
-        embedded
         searchTerm={searchTerm}
         onSearchChange={onSearchChange}
         statusFilter={statusFilter}

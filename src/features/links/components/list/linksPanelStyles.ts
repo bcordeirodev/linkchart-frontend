@@ -79,11 +79,17 @@ export function getLinksCardShadow(
 }
 
 /**
- * Hairline shell for /links panels (browse toolbar, quick-create, sticky
- * bulk bar) — flat `background.paper` + 1px border, no shadow and no
- * gradient. Part of the "instrumento técnico" surface grammar: exactly one
- * raised level between the page background and a card, signalled by the
- * hairline alone (see `radiusTokens`/`linksRadius`).
+ * Hairline shell for /links panels that are genuinely level-1 surfaces (the
+ * sticky bulk-actions bar on desktop, the create/edit form panel) — flat
+ * `background.paper` + 1px border, no shadow and no gradient. Part of the
+ * "instrumento técnico" surface grammar: exactly one raised level between the
+ * page background and a card, signalled by the hairline alone (see
+ * `radiusTokens`/`linksRadius`).
+ *
+ * The browse toolbar and quick-create section used to wrap themselves in
+ * this same shell too, but both were flattened to level 0 (bare background,
+ * `SectionLabel` instead of a bordered panel) — see `LinksBrowseSection` and
+ * `LinksQuickCreate`.
  */
 export function getLinksPanelSx(theme: Theme) {
   const borderColor = getLinksBorderColor(theme);
@@ -93,16 +99,6 @@ export function getLinksPanelSx(theme: Theme) {
     borderRadius: `${linksRadius.panel}px`,
     border: `1px solid ${borderColor}`,
   };
-}
-
-/**
- * Quick-create panel — identical hairline shell to the browse panel. Kept as
- * its own named export for call-site clarity; no extra shadow now that
- * surfaces don't signal depth via elevation — the blue "Encurtar" CTA and the
- * ⚡ icon already mark the action zone.
- */
-export function getLinksQuickCreatePanelSx(theme: Theme) {
-  return getLinksPanelSx(theme);
 }
 
 /** Expanding ring pulse after quick-create (visible outside the card). */
@@ -353,13 +349,3 @@ export const linkCardContentSx = {
   px: { xs: 1.5, sm: 2 },
   py: { xs: 1, sm: 1.25 },
 } as const;
-
-/** Subtle inset for filter toolbar inside a links panel. */
-export function getLinksFilterInsetSx(theme: Theme) {
-  return {
-    borderRadius: `${linksRadius.control}px`,
-    border: `1px solid ${getLinksBorderColor(theme)}`,
-    backgroundColor: getLinksInsetBg(theme),
-    overflow: "hidden" as const,
-  };
-}

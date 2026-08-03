@@ -22,6 +22,13 @@ export interface SectionLabelProps {
    * labels que nunca foram heading (ex.: rótulo inline de um grupo de chips).
    */
   headingLevel?: 2 | 3;
+  /**
+   * Controle opcional renderizado no fim da linha, depois da hairline (ex.:
+   * "Opções avançadas", "Selecionar vários") — o equivalente ao `action` de
+   * `PageSectionHeading` para seções que migraram para `SectionLabel`.
+   * Omitido (default): a hairline preenche a linha inteira até a borda.
+   */
+  action?: ReactNode;
 }
 
 /**
@@ -41,12 +48,14 @@ export interface SectionLabelProps {
  * @param props.children Texto do label, já traduzido pelo chamador.
  * @param props.slash Se o prefixo "/" é renderizado antes do label. Default `true`.
  * @param props.headingLevel Nível de heading (2 ou 3) a expor via ARIA. Omitido por padrão.
- * @returns Linha com o label caps mono seguido de uma hairline horizontal.
+ * @param props.action Controle opcional no fim da linha, depois da hairline.
+ * @returns Linha com o label caps mono seguido de uma hairline horizontal (e, se houver, a `action`).
  */
 export function SectionLabel({
   children,
   slash = true,
   headingLevel,
+  action,
 }: SectionLabelProps) {
   const theme = useTheme();
 
@@ -81,6 +90,7 @@ export function SectionLabel({
           borderTop: `1px solid ${theme.palette.divider}`,
         }}
       />
+      {action ? <Box sx={{ flexShrink: 0 }}>{action}</Box> : null}
     </Box>
   );
 }
