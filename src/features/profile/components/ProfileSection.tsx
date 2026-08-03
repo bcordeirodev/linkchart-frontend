@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { typographyScale } from "@/lib/theme";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 import { getProfileCardSx } from "../utils/cardSurface";
@@ -70,6 +71,13 @@ interface ProfileMetaRowProps {
   value: ReactNode;
   /** Renders a top hairline instead of the default none (stacks rows inside one card). */
   divider?: boolean;
+  /**
+   * Renders `value` in the theme's monospace face with tabular numerals —
+   * for values that read as *data* rather than prose (e.g. the account's
+   * "member since" date in the two-column round of the redesign, per
+   * Bruno's gate note that a flat prose line under-served that value).
+   */
+  mono?: boolean;
 }
 
 /**
@@ -81,6 +89,7 @@ export function ProfileMetaRow({
   label,
   value,
   divider = false,
+  mono = false,
 }: ProfileMetaRowProps) {
   return (
     <Box
@@ -93,7 +102,19 @@ export function ProfileMetaRow({
       <Typography variant="caption" color="text.secondary" display="block">
         {label}
       </Typography>
-      <Typography variant="body2" sx={{ fontWeight: 500, mt: 0.25 }}>
+      <Typography
+        variant="body2"
+        sx={{
+          fontWeight: 600,
+          mt: 0.25,
+          ...(mono
+            ? {
+                fontFamily: typographyScale.code.fontFamily,
+                fontVariantNumeric: "tabular-nums",
+              }
+            : undefined),
+        }}
+      >
         {value}
       </Typography>
     </Box>

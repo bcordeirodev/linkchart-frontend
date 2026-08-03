@@ -10,7 +10,10 @@ import { PasswordChangeForm } from "@/features/profile/components/PasswordChange
 import { PreferencesCard } from "@/features/profile/components/PreferencesCard";
 import { ProfileForm } from "@/features/profile/components/ProfileForm";
 import { ProfileSection } from "@/features/profile/components/ProfileSection";
-import { ProfileSidebar } from "@/features/profile/components/ProfileSidebar";
+import {
+  ProfileAccountStatus,
+  ProfileActivity,
+} from "@/features/profile/components/ProfileSidebar";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { LinkActionsBackLink } from "@/features/links/components/LinkActions/LinkActionsBackLink";
 import { useMessage } from "@/lib/providers/MessageProvider";
@@ -89,17 +92,33 @@ function SubdomainLinkCard() {
  * volta na mesma key, então esta página re-renderiza com o dado fresco sem
  * callback de sincronização manual.
  *
- * "Instrumento técnico" (2026-08-03): a antiga grade de 2 colunas (coluna
- * principal + "sidebar" de status/atividade/idioma) virou seções
- * empilhadas full-width — a mesma lição aplicada em `/subdomains` e
- * `/api-keys` (Bruno: "prefiro o fluxo vertical de seções full-width" —
- * ver progress.md do ciclo). Ordem: `<h1>` → Informações pessoais →
- * Status da conta + Atividade → Segurança (OAuth ou senha) → Preferências
- * (+ endereço personalizado, se habilitado) → Zona de perigo, cada bloco
- * seu próprio passo de `reveal`. O título perdeu o ícone `UserCircle`
- * (`PageSectionHeading` sem `icon`). Zero mudança de comportamento: estados
- * de loading/erro, fluxos de salvar/senha/OAuth/exclusão de conta
- * intocados — só composição e tipografia mudaram.
+ * "Instrumento técnico" (2026-08-03), round 2: main + side composition at
+ * `lg`+ (stacks to a single column below `lg`) — round 1's single-column
+ * stacked flow (the pattern that worked for `/subdomains` and `/api-keys`)
+ * was rejected at the visual gate: "o design horizontal não se encaixou
+ * bem e parece que a página ficou pobre em informação". Unlike
+ * `/subdomains` (one homogeneous list + one action — genuinely thin, a
+ * single column is the honest shape) `/profile` is a mix of independent
+ * groups — a form, a security card, preferences, account metadata, usage
+ * metrics, a danger zone — with a natural primary/secondary split, so
+ * flattening it lost the density the original two-column layout earned.
+ * LEFT (`7fr`, the primary settings flow): Informações pessoais →
+ * Segurança (OAuth ou senha) → Preferências → Zona de perigo (sempre por
+ * último, acento vermelho mantido). RIGHT (`5fr`, secondary/informational):
+ * Status da conta → Atividade (now the page's density anchor — big
+ * Space Grotesk numbers via `OverviewMetricRow`, not prose) → endereço
+ * personalizado (teaser, se habilitado). `reveal` steps are numbered by
+ * grid *row* rather than linear reading order, so both columns' first
+ * cards fade in together, then both seconds, etc. — `reveal-1` (title) →
+ * `reveal-2` (Informações pessoais | Status da conta) → `reveal-3`
+ * (Segurança | Atividade) → `reveal-4` (Preferências | endereço
+ * personalizado) → `reveal-5` (Zona de perigo, sem par na direita).
+ * Container widened back from `maxWidth="md"` to the page-default cap
+ * (1440px via `ResponsiveContainer`'s own `CONTENT_MAX_WIDTH`) — a 900px
+ * column was fine for one settings form, not for two side by side. Zero
+ * mudança de comportamento: estados de loading/erro,
+ * fluxos de salvar/senha/OAuth/exclusão de conta intocados — só
+ * composição e tipografia mudaram.
  */
 function ProfilePage() {
   const { showMessage } = useMessage();
@@ -146,9 +165,12 @@ function ProfilePage() {
     );
   }
 
+  const showSubdomainTeaser =
+    process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true";
+
   return (
     <AuthGuardRedirect auth={["user", "admin"]} fallback={<ProfileSkeleton />}>
-      <ResponsiveContainer maxWidth="md" sx={{ py: { xs: 2, md: 4 } }}>
+      <ResponsiveContainer variant="page">
         <Stack spacing={{ xs: 3, sm: 4 }}>
           <Box className="reveal reveal-1">
             <PageSectionHeading
@@ -159,35 +181,55 @@ function ProfilePage() {
             />
           </Box>
 
-          <Box className="reveal reveal-2">
-            <ProfileForm user={user} photoURL={authUser?.photoURL} />
-          </Box>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                lg: "minmax(0, 7fr) minmax(0, 5fr)",
+              },
+              gap: { xs: 3, sm: 4 },
+              alignItems: "start",
+            }}
+          >
+            <Stack spacing={{ xs: 3, sm: 4 }} sx={{ minWidth: 0 }}>
+              <Box className="reveal reveal-2">
+                <ProfileForm user={user} photoURL={authUser?.photoURL} />
+              </Box>
+              <Box className="reveal reveal-3">
+                {usesOAuthLogin ? (
+                  <OAuthSecurityCard />
+                ) : (
+                  <PasswordChangeForm />
+                )}
+              </Box>
+              <Box className="reveal reveal-4">
+                <PreferencesCard />
+              </Box>
+              <Box className="reveal reveal-5">
+                <DangerZone
+                  usesOAuthLogin={usesOAuthLogin}
+                  userEmail={user.email}
+                />
+              </Box>
+            </Stack>
 
-          <Box className="reveal reveal-3">
-            <ProfileSidebar
-              user={user}
-              showResendVerification={!auth0Loading && !auth0User}
-            />
-          </Box>
-
-          <Box className="reveal reveal-4">
-            {usesOAuthLogin ? <OAuthSecurityCard /> : <PasswordChangeForm />}
-          </Box>
-
-          <Box className="reveal reveal-5">
-            <Stack spacing={{ xs: 3, sm: 4 }}>
-              <PreferencesCard />
-              {process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true" ? (
-                <SubdomainLinkCard />
+            <Stack spacing={{ xs: 3, sm: 4 }} sx={{ minWidth: 0 }}>
+              <Box className="reveal reveal-2">
+                <ProfileAccountStatus
+                  user={user}
+                  showResendVerification={!auth0Loading && !auth0User}
+                />
+              </Box>
+              <Box className="reveal reveal-3">
+                <ProfileActivity />
+              </Box>
+              {showSubdomainTeaser ? (
+                <Box className="reveal reveal-4">
+                  <SubdomainLinkCard />
+                </Box>
               ) : null}
             </Stack>
-          </Box>
-
-          <Box className="reveal reveal-6">
-            <DangerZone
-              usesOAuthLogin={usesOAuthLogin}
-              userEmail={user.email}
-            />
           </Box>
         </Stack>
       </ResponsiveContainer>
