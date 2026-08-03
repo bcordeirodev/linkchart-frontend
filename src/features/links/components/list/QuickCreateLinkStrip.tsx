@@ -27,6 +27,7 @@ import { useTranslation } from "react-i18next";
 
 import type { SlugFieldState } from "@/features/links/hooks/useSlugSuggestionField";
 import { SubdomainSelect } from "@/features/subdomains/components/SubdomainSelect";
+import { typographyScale } from "@/lib/theme";
 
 import {
   linksRadius,
@@ -94,7 +95,7 @@ export function QuickCreateLinkStrip({
   const busy = state === "resolving" || state === "checking";
 
   const domainSx = {
-    fontFamily: "monospace",
+    fontFamily: typographyScale.code.fontFamily,
     fontSize: "0.8125rem",
     color: "text.secondary",
     whiteSpace: "nowrap",
@@ -218,7 +219,7 @@ export function QuickCreateLinkStrip({
             background: "transparent",
             padding: 0,
             height: { xs: 28, sm: "100%" },
-            fontFamily: "monospace",
+            fontFamily: typographyScale.code.fontFamily,
             fontSize: "0.9375rem",
             fontWeight: 600,
             letterSpacing: "0.01em",

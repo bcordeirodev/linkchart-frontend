@@ -1,7 +1,7 @@
 "use client";
 
-import { HelpCircle, Link2 } from "lucide-react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { HelpCircle } from "lucide-react";
+import { Box, Button, Stack } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,9 +22,8 @@ import {
 } from "@/features/links/hooks/useLinks";
 import { useNewlyCreatedLinkHighlight } from "@/features/links/hooks/useNewlyCreatedLinkHighlight";
 import { useLinksMeta } from "@/features/links/hooks/useLinksMeta";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useResponsive } from "@/lib/theme";
-import { ResponsiveContainer } from "@/shared/ui/base";
+import { ResponsiveContainer, SectionLabel } from "@/shared/ui/base";
 import { LinkListSkeleton } from "@/shared/ui/feedback/skeletons";
 
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
@@ -236,11 +235,10 @@ function LinkListPageContent() {
           vira aproveitamento real, não linhas quilométricas. */}
       <ResponsiveContainer variant="page" sx={{ maxWidth: 1600 }}>
         <Stack spacing={{ xs: 2.5, sm: 3 }} component="section">
-          <Box component="div">
-            {/* Link2, não BarChart3: o chip do título identifica a página "Meus
-                links" — gráfico é a iconografia das páginas de estatísticas. */}
+          <Box component="div" className="reveal reveal-1">
+            {/* Sem ícone-chip ao lado do título (redesign "instrumento
+                técnico"): a hierarquia do heading já identifica a página. */}
             <LinksListSectionHeading
-              icon={<Link2 {...ICON_MD} />}
               title={t("list.heading")}
               description={t("list.pageSubtitle")}
               titleVariant="page"
@@ -264,29 +262,19 @@ function LinkListPageContent() {
                 nem recebeu clique real. */}
             {links.length > 0 ? (
               <Box data-tour="overview" sx={{ mt: { xs: 2, sm: 2.5 } }}>
-                <Typography
-                  variant="overline"
-                  component="h2"
-                  sx={{
-                    display: "block",
-                    color: "text.secondary",
-                    fontWeight: 600,
-                    letterSpacing: "0.08em",
-                    mb: { xs: 1, sm: 1.25 },
-                  }}
-                >
-                  {t("list.sections.overview")}
-                </Typography>
+                <Box sx={{ mb: { xs: 1, sm: 1.25 } }}>
+                  <SectionLabel>{t("list.sections.overview")}</SectionLabel>
+                </Box>
                 <LinkMetrics linksData={realLinks} showTitle={false} />
               </Box>
             ) : null}
           </Box>
 
-          <Box data-tour="quick-create">
+          <Box data-tour="quick-create" className="reveal reveal-2">
             <LinksQuickCreate onLinkCreated={handleLinkCreated} />
           </Box>
 
-          <Box data-tour="links-list">
+          <Box data-tour="links-list" className="reveal reveal-3">
             <LinksBrowseSection
               highlightedLinkId={highlightedLinkId}
               searchTerm={searchTerm}

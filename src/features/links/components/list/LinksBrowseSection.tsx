@@ -17,7 +17,6 @@ import { useTranslation } from "react-i18next";
 
 import { useBulkActions } from "@/features/links/hooks/useBulkActions";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
-import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 import { BulkActionsBar } from "./BulkActionsBar";
 import { LinkCardRich } from "./LinkCardRich";
@@ -27,7 +26,6 @@ import { LinksFilters } from "./LinksFilters";
 import { LinksMobileCards } from "./LinksMobileCards";
 import { LinksListSectionHeading } from "./LinksListSectionHeading";
 import {
-  getLinksPanelSx,
   getLinksBorderColor,
   getLinksBrowseGridSx,
   getLinkCardShellSx,
@@ -107,7 +105,10 @@ function BrowseSectionSkeleton({ isMobile }: { isMobile: boolean }) {
 }
 
 /**
- * Filters + link list in one card so users see filters apply to the list below.
+ * Filters + link list in one section, so users see filters apply to the list
+ * below. Rendered on a bare (level 0) background — the individual link cards
+ * are the only elevated surfaces here, so this section doesn't wrap them in
+ * its own panel (that would be a card inside a card).
  *
  * The section announces itself as "Seus links" via `LinksListSectionHeading`,
  * distinct from the page-level heading. The count/context caption is displayed
@@ -255,186 +256,184 @@ export function LinksBrowseSection({
   const resultsKey = `${searchTerm}|${statusFilter}|${tagFilter ?? ""}|${sortBy}|${page}`;
 
   return (
-    <EnhancedPaper
-      variant="outlined"
-      animated={false}
-      sx={getLinksPanelSx(theme)}
-    >
-      <Box sx={{ p: { xs: 2, sm: 3 } }}>
-        <Box ref={topRef} sx={{ scrollMarginTop: { xs: 64, sm: 80 } }} />
-        <LinksListSectionHeading
-          title={t("list.sections.links")}
-          description={description}
-          titleVariant="section"
-          sx={{ mb: { xs: 1.5, sm: 2 } }}
-          action={
-            count > 0 || selectionMode ? (
-              <Button
-                size="small"
-                variant="text"
-                startIcon={<CheckSquare {...ICON_SM} />}
-                onClick={handleToggleSelectionMode}
-                sx={{ minHeight: 44 }}
-              >
-                {selectionMode ? t("bulk.cancel") : t("bulk.select")}
-              </Button>
-            ) : undefined
-          }
-        />
-        <LinksFilters
-          embedded
-          searchTerm={searchTerm}
-          onSearchChange={onSearchChange}
-          statusFilter={statusFilter}
-          onStatusChange={onStatusChange}
-          sortBy={sortBy}
-          onSortChange={onSortChange}
-          tagFilter={tagFilter}
-          onTagFilterChange={onTagFilterChange}
-        />
-
-        {selectionMode && count > 0 ? (
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={0.5}
-            sx={{ mt: 1.5 }}
-          >
-            <Checkbox
+    // Nível 0 (fundo solto, sem borda/sombra própria): o painel que envolvia
+    // esta seção foi achatado — os cards de link logo abaixo (nível 1,
+    // hairline) já são a única superfície elevada, e um painel por trás deles
+    // seria "card dentro de card" (ver linksPanelStyles.getLinkCardShellSx).
+    <Box sx={{ p: { xs: 2, sm: 3 } }}>
+      <Box ref={topRef} sx={{ scrollMarginTop: { xs: 64, sm: 80 } }} />
+      <LinksListSectionHeading
+        title={t("list.sections.links")}
+        description={description}
+        titleVariant="section"
+        sx={{ mb: { xs: 1.5, sm: 2 } }}
+        action={
+          count > 0 || selectionMode ? (
+            <Button
               size="small"
-              checked={allVisibleSelected}
-              indeterminate={someVisibleSelected && !allVisibleSelected}
-              onChange={handleSelectAllVisibleToggle}
-              inputProps={{ "aria-label": t("bulk.selectAllVisible") }}
-            />
-            <Typography variant="body2" color="text.secondary">
-              {t("bulk.selectAllVisible")}
-            </Typography>
-          </Stack>
-        ) : null}
+              variant="text"
+              startIcon={<CheckSquare {...ICON_SM} />}
+              onClick={handleToggleSelectionMode}
+              sx={{ minHeight: 44 }}
+            >
+              {selectionMode ? t("bulk.cancel") : t("bulk.select")}
+            </Button>
+          ) : undefined
+        }
+      />
+      <LinksFilters
+        embedded
+        searchTerm={searchTerm}
+        onSearchChange={onSearchChange}
+        statusFilter={statusFilter}
+        onStatusChange={onStatusChange}
+        sortBy={sortBy}
+        onSortChange={onSortChange}
+        tagFilter={tagFilter}
+        onTagFilterChange={onTagFilterChange}
+      />
 
-        {selectedIds.length > 0 ? (
-          <Box sx={{ mt: 2 }}>
-            <BulkActionsBar
-              selectedCount={selectedIds.length}
-              isMobile={isMobile}
-              isRunning={bulkActionRunning}
-              isMaxReached={bulkMaxReached}
-              onActivate={handleBulkActivate}
-              onDeactivate={handleBulkDeactivate}
-              onConfirmDelete={handleBulkDelete}
-              onCancel={handleBulkCancel}
-            />
-          </Box>
-        ) : null}
+      {selectionMode && count > 0 ? (
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={0.5}
+          sx={{ mt: 1.5 }}
+        >
+          <Checkbox
+            size="small"
+            checked={allVisibleSelected}
+            indeterminate={someVisibleSelected && !allVisibleSelected}
+            onChange={handleSelectAllVisibleToggle}
+            inputProps={{ "aria-label": t("bulk.selectAllVisible") }}
+          />
+          <Typography variant="body2" color="text.secondary">
+            {t("bulk.selectAllVisible")}
+          </Typography>
+        </Stack>
+      ) : null}
 
-        <Divider sx={{ my: 2 }} />
-        {/* `key` remonta esta região quando o conjunto visível muda, e só então
+      {selectedIds.length > 0 ? (
+        <Box sx={{ mt: 2 }}>
+          <BulkActionsBar
+            selectedCount={selectedIds.length}
+            isMobile={isMobile}
+            isRunning={bulkActionRunning}
+            isMaxReached={bulkMaxReached}
+            onActivate={handleBulkActivate}
+            onDeactivate={handleBulkDeactivate}
+            onConfirmDelete={handleBulkDelete}
+            onCancel={handleBulkCancel}
+          />
+        </Box>
+      ) : null}
+
+      <Divider sx={{ my: 2 }} />
+      {/* `key` remonta esta região quando o conjunto visível muda, e só então
             — é o que faz a lista e o estado vazio reentrarem com o mesmo fade
             escalonado do primeiro load. A paginação fica de fora de propósito:
             ela é chrome fixo e não deve piscar a cada busca. `opacity`+`pointerEvents`
             dão o feedback de "atualizando" durante um refetch em background
             (`isFetching`) sem esconder a página anterior — é o efeito prático de
             `placeholderData: keepPreviousData` em `useLinksSearch`. */}
+      <Box
+        key={resultsKey}
+        sx={{
+          opacity: isFetching && !loading ? 0.6 : 1,
+          pointerEvents: isFetching && !loading ? "none" : "auto",
+          transition: "opacity 150ms ease",
+        }}
+      >
+        {loading ? (
+          <BrowseSectionSkeleton isMobile={isMobile} />
+        ) : count === 0 && isSeedingDemo ? (
+          // Um cadastro novo cai aqui antes de o SeedDemoLinkJob terminar. Sem
+          // isto, ele veria o convite a criar o primeiro link e, segundos
+          // depois, um link que não criou apareceria do nada.
+          <LinksDemoSeedingState />
+        ) : count === 0 ? (
+          <LinksEmptyState
+            hasActiveFilters={hasActiveFilters}
+            onClearFilters={onClearFilters}
+          />
+        ) : isMobile ? (
+          <LinksMobileCards
+            data={links}
+            meta={linkMeta}
+            onDelete={onDelete}
+            highlightedLinkId={highlightedLinkId}
+            selectionMode={selectionMode}
+            selectedIds={selectedIds}
+            onToggleSelect={toggleSelected}
+            selectionMaxReached={bulkMaxReached}
+          />
+        ) : (
+          /* Mobile-first: 1 coluna é o estado natural; o auto-fill só abre
+               a 2ª coluna quando o painel comporta dois cards de ≥560px. */
+          <Box sx={getLinksBrowseGridSx(LINKS_PAGE_SIZE)}>
+            {links.map((link) => {
+              const idStr = String(link.id);
+              const selected = selectedIds.includes(idStr);
+
+              return (
+                <LinkCardRich
+                  key={link.id}
+                  link={link}
+                  meta={linkMeta[idStr]}
+                  onDelete={onDelete}
+                  isHighlighted={idStr === highlightedLinkId}
+                  selectionMode={selectionMode}
+                  selected={selected}
+                  onToggleSelect={toggleSelected}
+                  selectionDisabled={!selected && bulkMaxReached}
+                />
+              );
+            })}
+          </Box>
+        )}
+      </Box>
+      {isMobile && selectedIds.length > 0 ? (
+        // O BulkActionsBar fica `position: fixed` no mobile — este espaçador
+        // evita que ele cubra o último card/rodapé de paginação.
+        <Box sx={{ height: 88 }} />
+      ) : null}
+      {showPagination ? (
         <Box
-          key={resultsKey}
           sx={{
-            opacity: isFetching && !loading ? 0.6 : 1,
-            pointerEvents: isFetching && !loading ? "none" : "auto",
-            transition: "opacity 150ms ease",
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 1.5,
+            mt: 2,
+            pt: 2,
+            borderTop: `1px solid ${getLinksBorderColor(theme)}`,
           }}
         >
-          {loading ? (
-            <BrowseSectionSkeleton isMobile={isMobile} />
-          ) : count === 0 && isSeedingDemo ? (
-            // Um cadastro novo cai aqui antes de o SeedDemoLinkJob terminar. Sem
-            // isto, ele veria o convite a criar o primeiro link e, segundos
-            // depois, um link que não criou apareceria do nada.
-            <LinksDemoSeedingState />
-          ) : count === 0 ? (
-            <LinksEmptyState
-              hasActiveFilters={hasActiveFilters}
-              onClearFilters={onClearFilters}
-            />
-          ) : isMobile ? (
-            <LinksMobileCards
-              data={links}
-              meta={linkMeta}
-              onDelete={onDelete}
-              highlightedLinkId={highlightedLinkId}
-              selectionMode={selectionMode}
-              selectedIds={selectedIds}
-              onToggleSelect={toggleSelected}
-              selectionMaxReached={bulkMaxReached}
-            />
-          ) : (
-            /* Mobile-first: 1 coluna é o estado natural; o auto-fill só abre
-               a 2ª coluna quando o painel comporta dois cards de ≥560px. */
-            <Box sx={getLinksBrowseGridSx(LINKS_PAGE_SIZE)}>
-              {links.map((link) => {
-                const idStr = String(link.id);
-                const selected = selectedIds.includes(idStr);
-
-                return (
-                  <LinkCardRich
-                    key={link.id}
-                    link={link}
-                    meta={linkMeta[idStr]}
-                    onDelete={onDelete}
-                    isHighlighted={idStr === highlightedLinkId}
-                    selectionMode={selectionMode}
-                    selected={selected}
-                    onToggleSelect={toggleSelected}
-                    selectionDisabled={!selected && bulkMaxReached}
-                  />
-                );
-              })}
-            </Box>
-          )}
-        </Box>
-        {isMobile && selectedIds.length > 0 ? (
-          // O BulkActionsBar fica `position: fixed` no mobile — este espaçador
-          // evita que ele cubra o último card/rodapé de paginação.
-          <Box sx={{ height: 88 }} />
-        ) : null}
-        {showPagination ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 1.5,
-              mt: 2,
-              pt: 2,
-              borderTop: `1px solid ${getLinksBorderColor(theme)}`,
-            }}
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ fontSize: "0.75rem" }}
           >
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ fontSize: "0.75rem" }}
-            >
-              {t("list.pagination.showing", {
-                from: rangeStart,
-                to: rangeEnd,
-                total: paginationMeta.total,
-              })}
-            </Typography>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              disabled={isFetching}
-              color="primary"
-              shape="rounded"
-              size="small"
-              siblingCount={isMobile ? 0 : 1}
-            />
-          </Box>
-        ) : null}
-      </Box>
-    </EnhancedPaper>
+            {t("list.pagination.showing", {
+              from: rangeStart,
+              to: rangeEnd,
+              total: paginationMeta.total,
+            })}
+          </Typography>
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handlePageChange}
+            disabled={isFetching}
+            color="primary"
+            shape="rounded"
+            size="small"
+            siblingCount={isMobile ? 0 : 1}
+          />
+        </Box>
+      ) : null}
+    </Box>
   );
 }
 
