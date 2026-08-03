@@ -245,8 +245,10 @@ const ApexChartWrapper: React.FC<ApexChartWrapperProps> = ({
 
   // Base do tema (paleta, stroke, grid, eixos/tooltip/legend em mono) mesclada
   // com os overrides pontuais da tela — overrides vencem em qualquer conflito.
+  // `type` é passado para que o fill saia sólido em tudo que não for "area"
+  // (barras nunca devem renderizar com o gradiente 18%→0 da área).
   const mergedOptions = mergeApexOptions(
-    buildApexBaseOptions(theme),
+    buildApexBaseOptions(theme, type),
     options as ApexOptions,
   );
 

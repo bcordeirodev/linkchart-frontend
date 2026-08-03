@@ -11,12 +11,57 @@ import type { ApexOptions } from "apexcharts";
 
 import { dataVizPalette } from "@/lib/theme/dataViz";
 
+/** The chart-kind literal ApexCharts itself uses for `chart.type` (e.g. `"area"`, `"bar"`, `"donut"`). */
+type ApexChartKind = NonNullable<ApexOptions["chart"]>["type"];
+
+/**
+ * `fill` block used by `buildApexBaseOptions`.
+ *
+ * The 18%→0 gradient wash is reserved for **area** charts — that is its only
+ * purpose (a subtle fill under the line). Every other chart kind — bar/column
+ * (horizontal or not, stacked or not), line, donut/pie, radialBar, scatter,
+ * bubble, heatmap, treemap — and the case where the caller doesn't tell us
+ * the kind at all, gets a **solid** fill at full opacity. This is what keeps
+ * bars solid by default everywhere without any screen having to opt out
+ * manually: the gradient only turns on when `chartType` is explicitly `"area"`.
+ */
+function buildFillOptions(
+  chartType: ApexChartKind | undefined,
+): ApexOptions["fill"] {
+  if (chartType === "area") {
+    return {
+      type: "gradient",
+      gradient: {
+        shadeIntensity: 0,
+        opacityFrom: 0.18,
+        opacityTo: 0,
+        stops: [0, 95],
+      },
+    };
+  }
+
+  return { type: "solid", opacity: 1 };
+}
+
 /**
  * Opções base de todos os gráficos ApexCharts do app (spec 2026-08-03).
  * Linhas 2px, grid só horizontal quase invisível, eixos em mono 11px,
- * área 18%→0, barras raio 2, tooltip dark com números em mono.
+ * barras raio 2, tooltip dark com números em mono.
+ *
+ * `fill` depende de `chartType` (ver `buildFillOptions`): gradiente 18%→0
+ * somente quando `chartType === "area"`; qualquer outro tipo — ou a
+ * ausência de `chartType` — usa fill sólido a 100% de opacidade, para que
+ * barras (e fatias de donut/pie, enquanto existirem) nunca fiquem
+ * translúcidas.
+ *
+ * @param theme Tema MUI ativo — usado para tipografia, divider e paleta.
+ * @param chartType Tipo efetivo do gráfico (`chart.type`/prop `type` do
+ * `ApexChartWrapper`). Opcional; quando omitido, o fill cai no caso sólido.
  */
-export function buildApexBaseOptions(theme: Theme): ApexOptions {
+export function buildApexBaseOptions(
+  theme: Theme,
+  chartType?: ApexChartKind,
+): ApexOptions {
   const mono = "var(--font-jetbrains-mono), ui-monospace, monospace";
   return {
     chart: {
@@ -32,15 +77,7 @@ export function buildApexBaseOptions(theme: Theme): ApexOptions {
       yaxis: { lines: { show: true } },
     },
     dataLabels: { enabled: false },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shadeIntensity: 0,
-        opacityFrom: 0.18,
-        opacityTo: 0,
-        stops: [0, 95],
-      },
-    },
+    fill: buildFillOptions(chartType),
     plotOptions: { bar: { borderRadius: 2, columnWidth: "45%" } },
     xaxis: {
       labels: { style: { fontFamily: mono, fontSize: "11px" } },
