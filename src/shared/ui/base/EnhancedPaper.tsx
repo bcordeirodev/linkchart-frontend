@@ -43,16 +43,23 @@ function EnhancedPaper({
   const elevation = isDark ? elevationTokens : elevationLightTokens;
 
   const variantStyles = {
+    // `glass`/`elevated` são deliberadamente shadow-only (identidade própria,
+    // anterior ao redesign "instrumento técnico"): `border: "none"` anula a
+    // hairline global do `MuiPaper` para essas duas variantes, evitando que
+    // sombra + borda apareçam empilhadas sem intenção.
     glass: {
       backgroundColor: theme.palette.background.paper,
       borderRadius: `${radiusTokens.md}px`,
       boxShadow: elevation.xs,
+      border: "none",
     },
     elevated: {
       backgroundColor: theme.palette.background.paper,
       borderRadius: `${radiusTokens.lg}px`,
       boxShadow: elevation.sm,
+      border: "none",
     },
+    // `outlined` já é hairline-only e explícito — sem sombra, sem mudança.
     outlined: {
       backgroundColor: theme.palette.background.paper,
       border: `1px solid ${theme.palette.divider}`,
