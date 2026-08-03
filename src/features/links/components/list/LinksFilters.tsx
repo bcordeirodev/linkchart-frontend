@@ -4,7 +4,6 @@ import { ICON_SM, ICON_LG } from "@/lib/theme/iconDefaults";
 import {
   Box,
   Chip,
-  Divider,
   FormControl,
   InputAdornment,
   MenuItem,
@@ -22,7 +21,7 @@ import { useTags } from "@/features/links/hooks/useTags";
 
 import { getSoftSelectedChipSx } from "@/lib/theme/softChip";
 
-import { getLinksFilterInsetSx, getLinksPanelSx } from "./linksPanelStyles";
+import { linksRadius } from "./linksPanelStyles";
 
 interface LinksFiltersProps {
   searchTerm: string;
@@ -31,14 +30,23 @@ interface LinksFiltersProps {
   onStatusChange: (value: string) => void;
   sortBy: string;
   onSortChange: (value: string) => void;
-  /** When true, renders inside a parent card (no outer paper wrapper). */
-  embedded?: boolean;
   /** Selected tag id filter, or `null` when no tag filter is active. */
   tagFilter?: number | null;
   /** Called when the user picks (or clears) a tag filter chip. */
   onTagFilterChange?: (tagId: number | null) => void;
 }
 
+/**
+ * Boxless search/sort/status/tag toolbar for the browse-list section.
+ *
+ * Level 0 — no wrapping panel. The "instrumento técnico" redesign flattened
+ * the bordered inset box this used to live in (a card-on-card against the
+ * card grid it sits above); the search field and sort select keep their own
+ * default outlined control chrome (that's control-level chrome, not section
+ * elevation), and the status/tag chip rows sit inline with no box around
+ * them. `LinksBrowseSection` supplies the single hairline that separates this
+ * toolbar from the card grid below.
+ */
 export function LinksFilters({
   searchTerm,
   onSearchChange,
@@ -46,7 +54,6 @@ export function LinksFilters({
   onStatusChange,
   sortBy,
   onSortChange,
-  embedded = false,
   tagFilter = null,
   onTagFilterChange,
 }: LinksFiltersProps) {
@@ -84,10 +91,6 @@ export function LinksFilters({
   useEffect(() => () => debouncedSearch.cancel(), [debouncedSearch]);
   useEffect(() => setLocalSearch(searchTerm), [searchTerm]);
 
-  const shellSx = embedded
-    ? getLinksFilterInsetSx(theme)
-    : { ...getLinksPanelSx(theme), mb: 0, overflow: "hidden" as const };
-
   // Rótulo curto à esquerda de cada fileira de chips ("Status", "Tags") — sem
   // ele, quem chega pela primeira vez vê "Todos / Ativo / Inativo / Expirado"
   // sem saber do que a fileira fala.
@@ -101,15 +104,21 @@ export function LinksFilters({
     mr: 0.5,
   };
 
+  const controlSx = {
+    borderRadius: `${linksRadius.control}px`,
+    fontSize: "0.875rem",
+  };
+
   return (
-    <Box sx={shellSx}>
-      {/* Linha 1: busca + ordenação */}
+    <Box>
+      {/* Linha 1: busca + ordenação — dois controles independentes, cada um
+          com sua própria borda (chrome de controle, permitido em nível 0). */}
       <Box
         sx={{
           display: "flex",
-          gap: 0,
+          gap: 1.5,
           flexDirection: { xs: "column", sm: "row" },
-          alignItems: "stretch",
+          alignItems: { sm: "center" },
         }}
       >
         <TextField
@@ -125,13 +134,8 @@ export function LinksFilters({
           sx={{
             flex: 1,
             "& .MuiOutlinedInput-root": {
-              borderRadius: 0,
-              border: "none",
-              "& fieldset": { border: "none" },
-              "&:hover fieldset": { border: "none" },
-              "&.Mui-focused fieldset": { border: "none" },
-              fontSize: "0.875rem",
-              minHeight: 48,
+              ...controlSx,
+              minHeight: 44,
             },
           }}
           InputProps={{
@@ -141,16 +145,6 @@ export function LinksFilters({
               </InputAdornment>
             ),
           }}
-        />
-
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{ display: { xs: "none", sm: "block" } }}
-        />
-        <Divider
-          orientation="horizontal"
-          sx={{ display: { xs: "block", sm: "none" } }}
         />
 
         <FormControl size="small" sx={{ minWidth: 180, flexShrink: 0 }}>
@@ -167,16 +161,7 @@ export function LinksFilters({
                 </Box>
               );
             }}
-            sx={{
-              borderRadius: 0,
-              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
-              "&:hover .MuiOutlinedInput-notchedOutline": { border: "none" },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-              fontSize: "0.875rem",
-              minHeight: 48,
-            }}
+            sx={{ ...controlSx, minHeight: 44 }}
           >
             {SORT_OPTIONS.map((opt) => (
               <MenuItem key={opt.value} value={opt.value}>
@@ -187,18 +172,8 @@ export function LinksFilters({
         </FormControl>
       </Box>
 
-      <Divider />
-
       {/* Linha 2: chips de status */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 1.5,
-          px: 2,
-          py: 1.5,
-        }}
-      >
+      <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mt: 1.5 }}>
         <Typography component="span" sx={rowLabelSx}>
           {t("filters.status")}
         </Typography>
@@ -224,56 +199,53 @@ export function LinksFilters({
             />
           ))}
         </Stack>
-      </Box>
+      </Stack>
 
       {/* Linha 3: filtro por tag — só aparece quando o usuário já tem tags. */}
       {userTags.length > 0 ? (
-        <>
-          <Divider />
-          <Stack
-            direction="row"
-            spacing={0.75}
-            flexWrap="wrap"
-            useFlexGap
-            alignItems="center"
-            sx={{ px: 2, py: 1.5 }}
-          >
-            <Typography component="span" sx={rowLabelSx}>
-              {t("tags.filter.label")}
-            </Typography>
+        <Stack
+          direction="row"
+          spacing={0.75}
+          flexWrap="wrap"
+          useFlexGap
+          alignItems="center"
+          sx={{ mt: 1.5 }}
+        >
+          <Typography component="span" sx={rowLabelSx}>
+            {t("tags.filter.label")}
+          </Typography>
+          <Chip
+            label={t("tags.filter.all")}
+            clickable
+            size="small"
+            variant="outlined"
+            onClick={() => onTagFilterChange?.(null)}
+            sx={{
+              fontSize: "0.75rem",
+              ...getSoftSelectedChipSx(theme, tagFilter === null),
+            }}
+          />
+          {userTags.map((tag) => (
             <Chip
-              label={t("tags.filter.all")}
+              key={tag.id}
+              label={tag.name}
               clickable
               size="small"
               variant="outlined"
-              onClick={() => onTagFilterChange?.(null)}
+              onClick={() =>
+                onTagFilterChange?.(tagFilter === tag.id ? null : tag.id)
+              }
               sx={{
                 fontSize: "0.75rem",
-                ...getSoftSelectedChipSx(theme, tagFilter === null),
+                ...getSoftSelectedChipSx(
+                  theme,
+                  tagFilter === tag.id,
+                  tag.color,
+                ),
               }}
             />
-            {userTags.map((tag) => (
-              <Chip
-                key={tag.id}
-                label={tag.name}
-                clickable
-                size="small"
-                variant="outlined"
-                onClick={() =>
-                  onTagFilterChange?.(tagFilter === tag.id ? null : tag.id)
-                }
-                sx={{
-                  fontSize: "0.75rem",
-                  ...getSoftSelectedChipSx(
-                    theme,
-                    tagFilter === tag.id,
-                    tag.color,
-                  ),
-                }}
-              />
-            ))}
-          </Stack>
-        </>
+          ))}
+        </Stack>
       ) : null}
     </Box>
   );

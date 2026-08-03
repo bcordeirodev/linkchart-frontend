@@ -38,17 +38,11 @@ import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainS
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { darkNeutral } from "@/lib/theme/colors";
 import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
-import { HelpHint } from "@/shared/ui/base";
-import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { HelpHint, SectionLabel } from "@/shared/ui/base";
 import { useNavigate } from "@/shared/hooks";
 
-import { LinksListSectionHeading } from "./LinksListSectionHeading";
 import { QuickCreateLinkStrip } from "./QuickCreateLinkStrip";
-import {
-  linksRadius,
-  getLinksBorderColor,
-  getLinksQuickCreatePanelSx,
-} from "./linksPanelStyles";
+import { linksRadius, getLinksBorderColor } from "./linksPanelStyles";
 
 import type { LinkResponse } from "@/types";
 import type { Theme } from "@mui/material/styles";
@@ -340,194 +334,193 @@ export function LinksQuickCreate({
           : null;
 
   return (
-    <EnhancedPaper
-      variant="outlined"
-      animated={false}
-      sx={{ mb: 0, ...getLinksQuickCreatePanelSx(theme) }}
-    >
-      <Box sx={{ p: { xs: 2, sm: 3 } }}>
-        <LinksListSectionHeading
-          title={t("list.quickCreate.label")}
-          description={t("list.quickCreate.description")}
-          sx={{ mb: { xs: 1.5, sm: 2 } }}
-          action={
-            <Stack direction="row" spacing={0.5} alignItems="center">
-              {/* Oculto no xs: a descrição do header (agora visível no celular)
-                  já diz a mesma coisa, e o "?" extra quebrava o título em duas
-                  linhas ao lado do botão "Mais opções". */}
-              <Box
-                component="span"
-                sx={{ display: { xs: "none", sm: "inline-flex" } }}
-              >
-                <HelpHint label={t("list.onboarding.hintQuickCreate")} />
-              </Box>
-              <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={() => navigate("/links/create")}
-                  aria-label={t("list.quickCreate.moreOptions")}
-                  startIcon={<SlidersHorizontal size={13} strokeWidth={1.75} />}
-                  endIcon={<ArrowUpRight size={12} strokeWidth={2} />}
-                  sx={[
-                    getAdvancedOptionsButtonSx(theme),
-                    {
-                      "& .MuiButton-startIcon": {
-                        mr: 0.375,
-                      },
-                      "& .MuiButton-endIcon": {
-                        display: { xs: "none", sm: "inline-flex" },
-                      },
+    <Box>
+      <SectionLabel
+        headingLevel={2}
+        action={
+          <Stack direction="row" spacing={0.5} alignItems="center">
+            {/* Oculto no xs: a descrição (visível no celular) já diz a mesma
+                coisa, e o "?" extra quebrava a linha da action ao lado do
+                botão "Mais opções". */}
+            <Box
+              component="span"
+              sx={{ display: { xs: "none", sm: "inline-flex" } }}
+            >
+              <HelpHint label={t("list.onboarding.hintQuickCreate")} />
+            </Box>
+            <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => navigate("/links/create")}
+                aria-label={t("list.quickCreate.moreOptions")}
+                startIcon={<SlidersHorizontal size={13} strokeWidth={1.75} />}
+                endIcon={<ArrowUpRight size={12} strokeWidth={2} />}
+                sx={[
+                  getAdvancedOptionsButtonSx(theme),
+                  {
+                    "& .MuiButton-startIcon": {
+                      mr: 0.375,
                     },
-                  ]}
+                    "& .MuiButton-endIcon": {
+                      display: { xs: "none", sm: "inline-flex" },
+                    },
+                  },
+                ]}
+              >
+                {/* Rótulo sempre visível: no toque não existe hover, e um
+                    ícone de sliders sozinho não diz nada a quem é leigo.
+                    No xs entra a versão curta para caber ao lado do título. */}
+                <Box
+                  component="span"
+                  sx={{ display: { xs: "none", sm: "inline" } }}
                 >
-                  {/* Rótulo sempre visível: no toque não existe hover, e um
-                      ícone de sliders sozinho não diz nada a quem é leigo.
-                      No xs entra a versão curta para caber ao lado do título. */}
-                  <Box
-                    component="span"
-                    sx={{ display: { xs: "none", sm: "inline" } }}
-                  >
-                    {t("list.quickCreate.moreOptions")}
-                  </Box>
-                  <Box
-                    component="span"
-                    sx={{ display: { xs: "inline", sm: "none" } }}
-                  >
-                    {t("list.quickCreate.moreOptionsShort")}
-                  </Box>
-                </Button>
-              </Tooltip>
-            </Stack>
-          }
-        />
+                  {t("list.quickCreate.moreOptions")}
+                </Box>
+                <Box
+                  component="span"
+                  sx={{ display: { xs: "inline", sm: "none" } }}
+                >
+                  {t("list.quickCreate.moreOptionsShort")}
+                </Box>
+              </Button>
+            </Tooltip>
+          </Stack>
+        }
+      >
+        {t("list.quickCreate.label")}
+      </SectionLabel>
 
-        <Box component="form" onSubmit={handleSubmit(guardedSubmit)} noValidate>
-          {/* Fileira 1 — o destino: o que se cola, e a ação principal. */}
-          <Box
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mt: 0.5, mb: { xs: 1.5, sm: 2 } }}
+      >
+        {t("list.quickCreate.description")}
+      </Typography>
+
+      <Box component="form" onSubmit={handleSubmit(guardedSubmit)} noValidate>
+        {/* Fileira 1 — o destino: o que se cola, e a ação principal. */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { sm: "center" },
+            gap: { xs: 1.25, sm: 1.5 },
+          }}
+        >
+          <TextField
+            {...register("original_url")}
+            placeholder={t("list.quickCreate.urlPlaceholder")}
+            size="small"
+            fullWidth
+            error={!!errors.original_url || urlIsUnsafe}
+            disabled={isPending}
+            sx={[inputRootSx, { flexGrow: 1, minWidth: 0 }]}
+            slotProps={{
+              htmlInput: { "aria-label": t("list.quickCreate.urlLabel") },
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Link2 {...ICON_SM} color={theme.palette.text.secondary} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
+            startIcon={
+              succeeded ? (
+                <CheckCircle2 {...ICON_SM} />
+              ) : isPending || submitQueued ? (
+                <CircularProgress size={16} color="inherit" />
+              ) : (
+                <Zap {...ICON_SM} />
+              )
+            }
+            sx={[
+              submitButtonSx,
+              { flexShrink: 0, width: { xs: "100%", sm: "auto" } },
+            ]}
+          >
+            {succeeded
+              ? t("list.quickCreate.success")
+              : t("list.quickCreate.submit")}
+          </Button>
+        </Box>
+
+        {/* Fileira 2 — o link curto propriamente dito. */}
+        <Box sx={{ mt: 1.5 }}>
+          <Typography
+            variant="caption"
+            component="div"
             sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              alignItems: { sm: "center" },
-              gap: { xs: 1.25, sm: 1.5 },
+              color: "text.secondary",
+              fontWeight: 600,
+              letterSpacing: "0.02em",
+              textTransform: "uppercase",
+              mb: 0.625,
             }}
           >
-            <TextField
-              {...register("original_url")}
-              placeholder={t("list.quickCreate.urlPlaceholder")}
-              size="small"
-              fullWidth
-              error={!!errors.original_url || urlIsUnsafe}
-              disabled={isPending}
-              sx={[inputRootSx, { flexGrow: 1, minWidth: 0 }]}
-              slotProps={{
-                htmlInput: { "aria-label": t("list.quickCreate.urlLabel") },
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Link2
-                        {...ICON_SM}
-                        color={theme.palette.text.secondary}
-                      />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
+            {t("list.quickCreate.shortLinkLabel")}
+          </Typography>
 
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
-              startIcon={
-                succeeded ? (
-                  <CheckCircle2 {...ICON_SM} />
-                ) : isPending || submitQueued ? (
-                  <CircularProgress size={16} color="inherit" />
-                ) : (
-                  <Zap {...ICON_SM} />
-                )
-              }
-              sx={[
-                submitButtonSx,
-                { flexShrink: 0, width: { xs: "100%", sm: "auto" } },
-              ]}
-            >
-              {succeeded
-                ? t("list.quickCreate.success")
-                : t("list.quickCreate.submit")}
-            </Button>
-          </Box>
-
-          {/* Fileira 2 — o link curto propriamente dito. */}
-          <Box sx={{ mt: 1.5 }}>
-            <Typography
-              variant="caption"
-              component="div"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 600,
-                letterSpacing: "0.02em",
-                textTransform: "uppercase",
-                mb: 0.625,
-              }}
-            >
-              {t("list.quickCreate.shortLinkLabel")}
-            </Typography>
-
-            <QuickCreateLinkStrip
-              name={slugRegister.name}
-              inputRef={slugRegister.ref}
-              value={slugValue}
-              onChange={(e) => {
-                slugField.markEdited();
-                void slugRegister.onChange(e);
-              }}
-              onBlur={slugRegister.onBlur}
-              state={slugField.state}
-              onRequestAnother={slugField.requestAnother}
-              canRequestAnother={slugField.canRequestAnother}
-              hasSubdomains={hasSubdomains}
-              subdomainId={subdomainId}
-              onSubdomainChange={setSubdomainId}
-              defaultHost={defaultHost}
-              disabled={isPending}
-              error={slugHasError}
-            />
-          </Box>
-
-          {/* Linha de mensagens — materializa só quando há algo a dizer. */}
-          {urlHelperText || slugMessage ? (
-            <Box
-              sx={{
-                mt: 1,
-                display: "flex",
-                flexDirection: "column",
-                gap: 0.25,
-              }}
-            >
-              {urlHelperText ? (
-                <Typography variant="caption" component="div" color="error">
-                  {urlHelperText}
-                </Typography>
-              ) : null}
-              {slugMessage ? (
-                <Typography
-                  variant="caption"
-                  component="div"
-                  color={
-                    slugMessage.tone === "error" ? "error" : "text.secondary"
-                  }
-                >
-                  {slugMessage.text}
-                </Typography>
-              ) : null}
-            </Box>
-          ) : null}
+          <QuickCreateLinkStrip
+            name={slugRegister.name}
+            inputRef={slugRegister.ref}
+            value={slugValue}
+            onChange={(e) => {
+              slugField.markEdited();
+              void slugRegister.onChange(e);
+            }}
+            onBlur={slugRegister.onBlur}
+            state={slugField.state}
+            onRequestAnother={slugField.requestAnother}
+            canRequestAnother={slugField.canRequestAnother}
+            hasSubdomains={hasSubdomains}
+            subdomainId={subdomainId}
+            onSubdomainChange={setSubdomainId}
+            defaultHost={defaultHost}
+            disabled={isPending}
+            error={slugHasError}
+          />
         </Box>
+
+        {/* Linha de mensagens — materializa só quando há algo a dizer. */}
+        {urlHelperText || slugMessage ? (
+          <Box
+            sx={{
+              mt: 1,
+              display: "flex",
+              flexDirection: "column",
+              gap: 0.25,
+            }}
+          >
+            {urlHelperText ? (
+              <Typography variant="caption" component="div" color="error">
+                {urlHelperText}
+              </Typography>
+            ) : null}
+            {slugMessage ? (
+              <Typography
+                variant="caption"
+                component="div"
+                color={
+                  slugMessage.tone === "error" ? "error" : "text.secondary"
+                }
+              >
+                {slugMessage.text}
+              </Typography>
+            ) : null}
+          </Box>
+        ) : null}
       </Box>
-    </EnhancedPaper>
+    </Box>
   );
 }
 
