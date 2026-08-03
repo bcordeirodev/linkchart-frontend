@@ -11,10 +11,9 @@ Relatórios agregados **multi-link** do usuário autenticado (página `/reports`
 
 ## Componentes principais
 
-- `ReportsOverviewHero.tsx` — hero da página: um único card fundindo o strip de KPIs (total de cliques + pílula de variação, visitantes únicos, links ativos, média/dia) com o gráfico de tendência diária (janela ativa em área sólida, janela anterior tracejada, toggle cliques/visitantes).
+- `ReportsOverviewHero.tsx` — hero da página: um único card fundindo o strip de KPIs (`OverviewMetricRow`: total de cliques com tendência colorida na caption, visitantes únicos, links ativos, média/dia) com o gráfico de tendência diária (janela ativa em área sólida, janela anterior tracejada, toggle cliques/visitantes).
 - `ReportsDateFilter.tsx` — filtro de período: presets 7/30/90 dias + "custom" com dois inputs de data nativos.
-- `TopLinksTable.tsx` — ranking dos links mais clicados no período (tabela no desktop, cards empilhados no mobile).
-- `LinkPerformanceTable.tsx` — leaderboard de portfólio: cada link com variação vs. o período anterior de mesma duração e share do tráfego total.
+- `LinkPerformanceTable.tsx` — leaderboard de portfólio: cada link com variação vs. o período anterior de mesma duração e share do tráfego total. Único ranking de links da página — o antigo `TopLinksTable.tsx` (clicks + unique visitors, sem variação/share) foi removido em 15/07/2026 (`72762621`, "consolida ranking de links"), mas ficou como código morto até a reskin de 2026-08-03 (Task 10) apagar o componente, o hook `useTopLinks`, o tipo `TopLinkRow`, o endpoint `REPORTS.TOP_LINKS`/`queryKeys.reports.topLinks` e as chaves i18n exclusivas — zero consumidor real desde aquele commit.
 - `LinkSparkline.tsx` — sparkline SVG puro (um `<polyline>`) para as linhas do leaderboard — sem ApexCharts de propósito (dez instâncias Apex numa tabela custam caro demais).
 - `BreakdownBars.tsx` — barras horizontais ranqueadas da distribuição de cliques por uma dimensão selecionável (substituiu o donut anterior).
 - `InsightsPanel.tsx` — cards de insight de portfólio: melhor link, link em crescimento mais rápido, concentração top-3, crescimento geral da conta.
@@ -29,7 +28,6 @@ Todos em `hooks/useReports.ts`, `useQuery` com `staleTime` de 60s (espelha o TTL
 | ------------------------------------ | --------------------------------------------- | ----------------------------------------------------------------------- |
 | `useReportsSummary(filters)`         | `queryKeys.reports.summary(f)`                | `API_CONFIG.ENDPOINTS.REPORTS.SUMMARY` (`GET /api/reports/summary`)     |
 | `useReportsTimeseries(filters)`      | `queryKeys.reports.timeseries(f)`             | `REPORTS.TIMESERIES` (`GET /api/reports/timeseries`)                    |
-| `useTopLinks(filters, limit)`        | `queryKeys.reports.topLinks(f, limit)`        | `REPORTS.TOP_LINKS` (`GET /api/reports/top-links?limit=`)               |
 | `useBreakdown(dimension, filters)`   | `queryKeys.reports.breakdown(dim, f)`         | `REPORTS.BREAKDOWN` (`GET /api/reports/breakdown?dimension=`)           |
 | `useLinkPerformance(filters, limit)` | `queryKeys.reports.linkPerformance(f, limit)` | `REPORTS.LINK_PERFORMANCE` (`GET /api/reports/link-performance?limit=`) |
 | `useReportsInsights(filters)`        | `queryKeys.reports.insights(f)`               | `REPORTS.INSIGHTS` (`GET /api/reports/insights`)                        |

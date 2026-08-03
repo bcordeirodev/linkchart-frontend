@@ -19,7 +19,6 @@ import type {
   ReportsInsight,
   ReportsSummary,
   ReportsTimeseries,
-  TopLinkRow,
 } from "@/features/reports/types";
 import type { UseQueryResult } from "@tanstack/react-query";
 
@@ -61,27 +60,6 @@ export function useReportsTimeseries(
   return useQuery({
     queryKey: queryKeys.reports.timeseries(filters),
     queryFn: () => reportsService.getTimeseries(filters),
-    staleTime: 60_000,
-  });
-}
-
-/**
- * The user's most-clicked links in the selected period, ranked descending —
- * powers `TopLinksTable`.
- *
- * @param filters - shared date range + exclude-bots filter.
- * @param limit - max rows to return (default `10`; backend caps at 50).
- * @returns a TanStack Query result wrapping an array of {@link TopLinkRow}.
- *
- * @remarks Endpoint: `GET /api/reports/top-links?limit=`.
- */
-export function useTopLinks(
-  filters: ReportsFilters,
-  limit = 10,
-): UseQueryResult<TopLinkRow[]> {
-  return useQuery({
-    queryKey: queryKeys.reports.topLinks(filters, limit),
-    queryFn: () => reportsService.getTopLinks(filters, limit),
     staleTime: 60_000,
   });
 }

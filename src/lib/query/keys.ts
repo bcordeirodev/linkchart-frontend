@@ -114,8 +114,6 @@ export const queryKeys = {
       ["reports", "summary", f ?? {}] as const,
     timeseries: (f?: ReportsQueryFilters) =>
       ["reports", "timeseries", f ?? {}] as const,
-    topLinks: (f?: ReportsQueryFilters, limit?: number) =>
-      ["reports", "top-links", f ?? {}, limit ?? 10] as const,
     breakdown: (dimension: string, f?: ReportsQueryFilters) =>
       ["reports", "breakdown", dimension, f ?? {}] as const,
     linkPerformance: (f?: ReportsQueryFilters, limit?: number) =>

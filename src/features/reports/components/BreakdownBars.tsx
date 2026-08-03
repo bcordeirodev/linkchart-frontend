@@ -18,10 +18,8 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
-import { BarChart3 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import type { SelectChangeEvent } from "@mui/material";
@@ -104,7 +102,6 @@ export function BreakdownBars({
     <ChartCard
       title={t("breakdown.title")}
       subtitle={t("breakdown.subtitle")}
-      icon={<BarChart3 {...ICON_LG} />}
       action={
         <FormControl size="small" sx={{ minWidth: { xs: "100%", sm: 200 } }}>
           <Select

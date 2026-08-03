@@ -151,90 +151,99 @@ export default function ReportsPage() {
     >
       <ResponsiveContainer variant="page" sx={{ maxWidth: 1600 }}>
         <Stack spacing={{ xs: 2.5, sm: 3 }} component="section">
-          <PageSectionHeading
-            title={t("title")}
-            description={t("subtitle")}
-            titleVariant="page"
-            action={
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={handleExport}
-                disabled={exporting}
-                startIcon={
-                  exporting ? (
-                    <CircularProgress size={16} color="inherit" />
-                  ) : (
-                    <Download size={16} />
-                  )
-                }
-              >
-                {t("export.button")}
-              </Button>
-            }
-          />
-
-          <ReportsDateFilter
-            period={period}
-            onPeriodChange={setPeriod}
-            customRange={customRange}
-            onCustomRangeChange={setCustomRange}
-          />
-
-          <AnalyticsStateManager
-            loading={summaryQuery.isLoading || timeseriesQuery.isLoading}
-            error={
-              toErrorMessage(summaryQuery.error) ??
-              toErrorMessage(timeseriesQuery.error)
-            }
-            hasData={
-              timeseriesQuery.data?.series.some((p) => p.clicks > 0) ?? false
-            }
-            emptyMessage={t("empty")}
-            skeleton={
-              <Skeleton
-                variant="rounded"
-                height={480}
-                sx={{ borderRadius: `${radiusTokens.md}px` }}
-              />
-            }
-          >
-            <ReportsOverviewHero
-              summary={summaryQuery.data ?? null}
-              timeseries={timeseriesQuery.data ?? null}
+          <Box className="reveal reveal-1">
+            <PageSectionHeading
+              title={t("title")}
+              description={t("subtitle")}
+              titleVariant="page"
+              action={
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleExport}
+                  disabled={exporting}
+                  startIcon={
+                    exporting ? (
+                      <CircularProgress size={16} color="inherit" />
+                    ) : (
+                      <Download size={16} />
+                    )
+                  }
+                >
+                  {t("export.button")}
+                </Button>
+              }
             />
-          </AnalyticsStateManager>
+          </Box>
 
-          {insightsQuery.isError ? (
-            <Alert severity="error">
-              {toErrorMessage(insightsQuery.error)}
-            </Alert>
-          ) : insightsQuery.isLoading ? (
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  sm: "repeat(2, 1fr)",
-                  lg: "repeat(4, 1fr)",
-                },
-                gap: 1.5,
-              }}
-            >
-              {[0, 1, 2, 3].map((i) => (
+          <Box className="reveal reveal-2">
+            <ReportsDateFilter
+              period={period}
+              onPeriodChange={setPeriod}
+              customRange={customRange}
+              onCustomRangeChange={setCustomRange}
+            />
+          </Box>
+
+          <Box className="reveal reveal-3">
+            <AnalyticsStateManager
+              loading={summaryQuery.isLoading || timeseriesQuery.isLoading}
+              error={
+                toErrorMessage(summaryQuery.error) ??
+                toErrorMessage(timeseriesQuery.error)
+              }
+              hasData={
+                timeseriesQuery.data?.series.some((p) => p.clicks > 0) ?? false
+              }
+              emptyMessage={t("empty")}
+              skeleton={
                 <Skeleton
-                  key={i}
                   variant="rounded"
-                  height={92}
+                  height={480}
                   sx={{ borderRadius: `${radiusTokens.md}px` }}
                 />
-              ))}
-            </Box>
-          ) : (
-            <InsightsPanel data={insightsQuery.data ?? []} />
-          )}
+              }
+            >
+              <ReportsOverviewHero
+                summary={summaryQuery.data ?? null}
+                timeseries={timeseriesQuery.data ?? null}
+              />
+            </AnalyticsStateManager>
+          </Box>
+
+          <Box className="reveal reveal-4">
+            {insightsQuery.isError ? (
+              <Alert severity="error">
+                {toErrorMessage(insightsQuery.error)}
+              </Alert>
+            ) : insightsQuery.isLoading ? (
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "repeat(2, 1fr)",
+                    lg: "repeat(4, 1fr)",
+                  },
+                  gap: 1.5,
+                }}
+              >
+                {[0, 1, 2, 3].map((i) => (
+                  <Skeleton
+                    key={i}
+                    variant="rounded"
+                    height={92}
+                    sx={{ borderRadius: `${radiusTokens.md}px` }}
+                  />
+                ))}
+              </Box>
+            ) : (
+              <InsightsPanel data={insightsQuery.data ?? []} />
+            )}
+          </Box>
 
           <Box
+            className="reveal reveal-5"
             sx={{
               display: "grid",
               gridTemplateColumns: { xs: "1fr", lg: "3fr 2fr" },

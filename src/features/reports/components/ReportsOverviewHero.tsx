@@ -1,14 +1,15 @@
 "use client";
 /**
- * Hero block of the `/reports` page — ONE card fusing the period KPIs (a
- * stat strip: dominant total-clicks figure + variation pill, followed by
- * unique visitors / active links / avg-per-day) with the daily trend chart
- * (active window as a solid area, previous window as a dashed line overlay,
- * and a clicks/visitors metric toggle).
+ * Hero block of the `/reports` page — ONE card fusing the period KPIs (an
+ * `OverviewMetricRow` stat strip: total clicks with a colored trend caption,
+ * unique visitors, active links, avg-per-day — bare numbers + hairlines, no
+ * card/icon-chip, per the "instrumento técnico" redesign) with the daily
+ * trend chart (active window as a solid area, previous window as a dashed
+ * line overlay, and a clicks/visitors metric toggle).
  *
  * Replaces the old `ReportsKpiHeader` + standalone `ClicksTimeseriesChart`
- * pair: fusing them gives the page a single visual protagonist and makes the
- * `variation_pct` pill physically adjacent to the curve that explains it.
+ * pair: fusing them gives the page a single visual protagonist and keeps the
+ * `variation_pct` trend physically adjacent to the curve that explains it.
  */
 
 import { useState } from "react";
@@ -25,13 +26,12 @@ import { useTranslation } from "react-i18next";
 
 import { chartByType } from "@/lib/theme/colors";
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { OverviewMetricRow } from "@/shared/ui/base";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
-import {
-  formatSignedPct,
-  getVariationPillSx,
-} from "@/features/reports/utils/variationPillStyles";
+import { formatSignedPct } from "@/features/reports/utils/variationPillStyles";
 
+import type { OverviewMetric as OverviewMetricItem } from "@/shared/ui/base";
 import type {
   ReportsSummary,
   ReportsTimeseries,
@@ -171,19 +171,38 @@ export function ReportsOverviewHero({
 
   const totalClicks = summary?.total_clicks ?? 0;
   const variationPct = summary?.variation_pct ?? null;
-  const variationSx = getVariationPillSx(
-    theme,
-    variationPct === null ? null : variationPct >= 0,
-  );
 
-  const secondaryStats = [
+  // Trend color mirrors `OverviewKpiHeader`'s convention (Task 9's restored
+  // semantic trend colors, Bruno's call): green trending up, red trending
+  // down, default text color when there's no baseline to compare against
+  // (`null`) or the period is exactly flat (`0`) — a flat trend isn't bad
+  // news, so it doesn't borrow the "down" color either.
+  const trendColor =
+    variationPct === null || variationPct === 0
+      ? undefined
+      : variationPct > 0
+        ? "success.main"
+        : "error.main";
+
+  const heroMetrics: OverviewMetricItem[] = [
     {
-      key: "uniqueVisitors",
+      label: t("kpis.totalClicks"),
+      value: totalClicks.toLocaleString(),
+      caption: (
+        <Box
+          component="span"
+          title={t("kpis.variation")}
+          sx={{ color: trendColor, fontWeight: 600 }}
+        >
+          {formatSignedPct(variationPct)}
+        </Box>
+      ),
+    },
+    {
       label: t("kpis.uniqueVisitors"),
       value: (summary?.unique_visitors ?? 0).toLocaleString(),
     },
     {
-      key: "activeLinks",
       label: t("kpis.activeLinks"),
       value:
         (summary?.total_links ?? 0) > 0
@@ -191,7 +210,6 @@ export function ReportsOverviewHero({
           : (summary?.active_links ?? 0).toLocaleString(),
     },
     {
-      key: "avgPerDay",
       label: t("kpis.avgPerDay"),
       value: (summary?.avg_clicks_per_day ?? 0).toLocaleString(undefined, {
         maximumFractionDigits: 1,
@@ -229,106 +247,7 @@ export function ReportsOverviewHero({
           {t("overview.subtitle")}
         </Typography>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: { xs: "stretch", md: "center" },
-            gap: { xs: 2, md: 4 },
-          }}
-        >
-          {/* Hero stat */}
-          <Box>
-            <Typography
-              variant="caption"
-              sx={{ color: "text.secondary", fontWeight: 500 }}
-            >
-              {t("kpis.totalClicks")}
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "flex-end",
-                gap: 1.25,
-                flexWrap: "wrap",
-              }}
-            >
-              <Typography
-                component="div"
-                sx={{
-                  fontSize: { xs: "2.2rem", sm: "2.6rem" },
-                  fontWeight: 700,
-                  lineHeight: 1.05,
-                  letterSpacing: "-0.02em",
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                {totalClicks.toLocaleString()}
-              </Typography>
-              <Box
-                component="span"
-                title={t("kpis.variation")}
-                sx={{
-                  mb: 0.5,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  px: 1,
-                  py: 0.375,
-                  borderRadius: 999,
-                  fontSize: "0.72rem",
-                  fontWeight: 600,
-                  ...variationSx,
-                }}
-              >
-                {formatSignedPct(variationPct)}
-              </Box>
-            </Box>
-          </Box>
-
-          <Divider
-            orientation="vertical"
-            flexItem
-            sx={{ display: { xs: "none", md: "block" } }}
-          />
-
-          {/* Secondary stats */}
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "repeat(3, 1fr)",
-                md: "repeat(3, auto)",
-              },
-              gap: { xs: 1.5, md: 4 },
-            }}
-          >
-            {secondaryStats.map((stat) => (
-              <Box key={stat.key} sx={{ minWidth: 0 }}>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: "text.secondary",
-                    fontWeight: 500,
-                    display: "block",
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {stat.label}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "1.2rem",
-                    fontWeight: 600,
-                    fontVariantNumeric: "tabular-nums",
-                  }}
-                >
-                  {stat.value}
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-        </Box>
+        <OverviewMetricRow metrics={heroMetrics} />
       </Box>
 
       <Divider />

@@ -69,22 +69,6 @@ export interface ReportsTimeseries {
 }
 
 /**
- * One row of the top-links ranking.
- *
- * @remarks Endpoint: `GET /api/reports/top-links`.
- */
-export interface TopLinkRow {
-  link_id: number;
-  /** User-facing title; `null` when the link has none set. */
-  title: string | null;
-  slug: string;
-  /** Custom short domain, or `null` when the link uses the default domain. */
-  short_domain: string | null;
-  clicks: number;
-  unique_visitors: number;
-}
-
-/**
  * Dimensions accepted by `GET /api/reports/breakdown?dimension=`.
  * Must stay in sync with the backend whitelist in `ReportsAnalyticsService::DIMENSIONS`.
  */
@@ -145,9 +129,9 @@ export interface ReportsCustomRange {
 /**
  * One row of the portfolio leaderboard — a link ranked by clicks, with its
  * trend vs. the previous period of equal length and its share of the user's
- * total clicks. Unlike {@link TopLinkRow} (clicks + unique visitors only),
- * this answers a portfolio-level question per-link analytics can't: which of
- * my links is trending, and how much of my traffic does each one represent?
+ * total clicks. Answers a portfolio-level question per-link analytics can't:
+ * which of my links is trending, and how much of my traffic does each one
+ * represent?
  *
  * @remarks Endpoint: `GET /api/reports/link-performance`.
  */

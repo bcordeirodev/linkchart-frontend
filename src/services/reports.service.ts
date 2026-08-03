@@ -10,7 +10,6 @@ import type {
   ReportsInsight,
   ReportsSummary,
   ReportsTimeseries,
-  TopLinkRow,
 } from "@/features/reports/types";
 
 /**
@@ -115,27 +114,6 @@ export default class ReportsService extends BaseService {
     }
 
     return raw;
-  }
-
-  /**
-   * The user's most-clicked links in the selected period, ranked descending.
-   *
-   * @param filters - shared date range + exclude-bots filter.
-   * @param limit - max rows to return (default `10`; backend caps at 50).
-   * @endpoint `GET /api/reports/top-links?limit=`
-   */
-  async getTopLinks(
-    filters: ReportsFilters,
-    limit = 10,
-  ): Promise<TopLinkRow[]> {
-    const endpoint = withQuery(
-      API_CONFIG.ENDPOINTS.REPORTS.TOP_LINKS,
-      buildReportsQuery(filters, { limit }),
-    );
-
-    return this.get<TopLinkRow[]>(endpoint, {
-      context: "reports_top_links",
-    });
   }
 
   /**
