@@ -20,6 +20,7 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 import useThemeMediaQuery from "@/shared/hooks/useThemeMediaQuery";
 import { SubdomainSelect } from "@/features/subdomains/components/SubdomainSelect";
 import { useSubdomains } from "@/features/subdomains/hooks/useSubdomains";
+import { typographyScale } from "@/lib/theme";
 import {
   getShortUrlPrefixForSubdomain,
   getShortUrlPrefixFromShortUrl,
@@ -287,7 +288,7 @@ export function LinkFormFields({
                             variant="body2"
                             noWrap
                             sx={{
-                              fontFamily: "monospace",
+                              fontFamily: typographyScale.code.fontFamily,
                               color: "text.secondary",
                               pr: 0.5,
                               maxWidth: isMobile ? 140 : 280,
@@ -310,7 +311,9 @@ export function LinkFormFields({
                         ) : undefined,
                     }}
                     sx={{
-                      "& .MuiInputBase-input": { fontFamily: "monospace" },
+                      "& .MuiInputBase-input": {
+                        fontFamily: typographyScale.code.fontFamily,
+                      },
                     }}
                   />
                 );

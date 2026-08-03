@@ -28,6 +28,8 @@ import { Eye, EyeOff, Lock } from "lucide-react";
 import { useController } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { radiusTokens } from "@/lib/theme/designSystem";
+
 import type { Control, FieldErrors } from "react-hook-form";
 import type { LinkFormData } from "./LinkFormSchema";
 
@@ -112,7 +114,7 @@ export function LinkPasswordField({
             gap: 0.75,
             px: 1.25,
             py: 1,
-            borderRadius: 1,
+            borderRadius: `${radiusTokens.sm}px`,
             border: `1px solid ${theme.palette.divider}`,
             bgcolor: "action.hover",
           }}
@@ -165,7 +167,7 @@ export function LinkPasswordField({
             gap: 0.75,
             px: 1.25,
             py: 1,
-            borderRadius: 1,
+            borderRadius: `${radiusTokens.sm}px`,
             border: `1px solid ${alpha(theme.palette.warning.main, 0.4)}`,
             bgcolor: alpha(theme.palette.warning.main, 0.08),
           }}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Stack, Button } from "@mui/material";
+import { Alert, Box, Stack, Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
 
@@ -39,7 +39,7 @@ function LinkEditPage({ id }: Props) {
         fallback={<LinkFormSkeleton isEdit />}
       >
         <ResponsiveContainer variant="form" maxWidth="md">
-          <Stack spacing={{ xs: 2, sm: 2.5 }}>
+          <Stack spacing={{ xs: 2, sm: 2.5 }} className="reveal reveal-1">
             <Alert
               severity="error"
               action={
@@ -70,18 +70,22 @@ function LinkEditPage({ id }: Props) {
       <ResponsiveContainer variant="form" maxWidth="md">
         <Stack spacing={{ xs: 2, sm: 2.5 }}>
           {!linkHeaderLoading && link ? (
-            <LinkActions
-              linkId={id}
-              currentView="edit"
-              slug={link.slug || link.custom_slug}
-              shortUrl={link.short_url}
-              title={link.title}
-              clicks={link.clicks}
-              onDeleteSuccess={handleDeleteSuccess}
-            />
+            <Box className="reveal reveal-1">
+              <LinkActions
+                linkId={id}
+                currentView="edit"
+                slug={link.slug || link.custom_slug}
+                shortUrl={link.short_url}
+                title={link.title}
+                clicks={link.clicks}
+                onDeleteSuccess={handleDeleteSuccess}
+              />
+            </Box>
           ) : null}
 
-          <EditLinkForm linkId={id} />
+          <Box className="reveal reveal-2">
+            <EditLinkForm linkId={id} />
+          </Box>
         </Stack>
       </ResponsiveContainer>
     </AuthGuardRedirect>
