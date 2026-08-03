@@ -72,6 +72,13 @@ export {
 } from "./colors";
 
 // ========================================
+// 📊 DATA VIZ (paleta + tema base ApexCharts)
+// ========================================
+export { dataVizPalette } from "./dataViz";
+export type { DataVizPalette } from "./dataViz";
+export { buildApexBaseOptions, mergeApexOptions } from "./apexBaseTheme";
+
+// ========================================
 // ⚙️ CONFIGURATIONS ESSENCIAIS
 // ========================================
 export {
