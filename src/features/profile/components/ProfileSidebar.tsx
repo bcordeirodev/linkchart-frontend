@@ -33,20 +33,39 @@ interface ProfileSidebarProps {
  * "this month") while `useProfileStats` is loading — `OverviewMetricRow`'s
  * own `value` prop is typed `string | number` (no `ReactNode`), so it can't
  * host a `Skeleton` itself; this stands in for the whole block instead.
+ *
+ * Review fix (same day): the real `OverviewMetricRow` switches from a
+ * stacked column (each metric full-width) to a horizontal row at `sm`
+ * (`flexDirection: {xs:"column", sm:"row"}`), and its value uses the
+ * `h2` type scale (`fontSize` 2.5rem on mobile, 3rem from `sm` up —
+ * roughly 40px/48px tall with its `lineHeight`). The first version of this
+ * skeleton hardcoded `direction="row"` regardless of viewport, so on
+ * mobile it showed small side-by-side placeholders that then reflowed into
+ * tall stacked numbers once the real data replaced it — a shape change,
+ * not just a size change. Now mirrors both the responsive direction and
+ * the approximate value height at each breakpoint.
  */
 function ProfileActivitySkeleton() {
+  const valueSx = { height: { xs: 40, sm: 48 } };
+
   return (
     <Stack spacing={2.5}>
-      <Stack direction="row" spacing={3}>
-        <Skeleton variant="text" width={56} height={44} />
-        <Skeleton variant="text" width={56} height={44} />
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={{ xs: 1.5, sm: 3 }}
+      >
+        <Skeleton variant="text" width={64} sx={valueSx} />
+        <Skeleton variant="text" width={64} sx={valueSx} />
       </Stack>
       <Box>
         <Skeleton variant="text" width={96} height={20} sx={{ mb: 1 }} />
-        <Stack direction="row" spacing={1.5}>
-          <Skeleton variant="text" width={44} height={36} />
-          <Skeleton variant="text" width={44} height={36} />
-          <Skeleton variant="text" width={44} height={36} />
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1.5, sm: 1.5 }}
+        >
+          <Skeleton variant="text" width={48} sx={valueSx} />
+          <Skeleton variant="text" width={48} sx={valueSx} />
+          <Skeleton variant="text" width={48} sx={valueSx} />
         </Stack>
       </Box>
     </Stack>

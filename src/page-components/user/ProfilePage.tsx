@@ -33,9 +33,20 @@ import useUser from "../../lib/auth/useUser";
  * profile page only teases the feature and hands off navigation.
  *
  * "Instrumento técnico" (2026-08-03): dropped the `AppIcon` next to the
- * title (now a plain `SectionLabel`, CTA moved to its `action` slot); the
- * example address migrated from a hardcoded `"monospace"` literal to
- * `typographyScale.code.fontFamily`.
+ * title (now a plain `SectionLabel`); the example address migrated from a
+ * hardcoded `"monospace"` literal to `typographyScale.code.fontFamily`.
+ *
+ * Review fix (same day): the CTA originally lived in `SectionLabel`'s
+ * `action` slot, but `t("subdomainCard.title")` ("Endereços
+ * personalizados", ~24 chars) plus a 2-word button in that `nowrap` row
+ * risked the same overflow class the resend-verification button was fixed
+ * for on this same page — at ~360-375px viewport width the two could
+ * collide since neither the label nor the action can shrink. Fixed by
+ * moving the CTA into the card body instead (below the description),
+ * mirroring the resend fix, rather than loosening the shared
+ * `SectionLabel` (which `/links`, `/bio`, `/subdomains` and `/api-keys`
+ * also rely on for their own action slots — safer to keep that primitive
+ * untouched than to risk a regression there).
  */
 function SubdomainLinkCard() {
   const { t } = useTranslation("profile");
@@ -43,21 +54,7 @@ function SubdomainLinkCard() {
 
   return (
     <Stack spacing={1.25}>
-      <SectionLabel
-        headingLevel={2}
-        action={
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => navigate("/subdomains")}
-            sx={{ minHeight: 36 }}
-          >
-            {t("subdomainCard.cta")}
-          </Button>
-        }
-      >
-        {t("subdomainCard.title")}
-      </SectionLabel>
+      <SectionLabel headingLevel={2}>{t("subdomainCard.title")}</SectionLabel>
       <ProfileSection>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
           {t("subdomainCard.description")}
@@ -65,10 +62,18 @@ function SubdomainLinkCard() {
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ fontFamily: typographyScale.code.fontFamily }}
+          sx={{ fontFamily: typographyScale.code.fontFamily, mb: 2 }}
         >
           {t("subdomainCard.example")}
         </Typography>
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => navigate("/subdomains")}
+          sx={{ minHeight: 36 }}
+        >
+          {t("subdomainCard.cta")}
+        </Button>
       </ProfileSection>
     </Stack>
   );
