@@ -12,7 +12,6 @@
  */
 
 import {
-  alpha,
   AppBar,
   Toolbar,
   Typography,
@@ -72,7 +71,6 @@ export function Navbar({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
-  const isDark = theme.palette.mode === "dark";
   const navItems = getVisibleNavItems();
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -100,7 +98,7 @@ export function Navbar({
           backgroundColor: theme.palette.background.default,
           backgroundImage: "none",
           borderRadius: 0,
-          borderBottom: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.08)}`,
+          borderBottom: `1px solid ${theme.palette.divider}`,
           boxShadow: "none",
           color: theme.palette.text.primary,
           transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
@@ -465,7 +463,7 @@ export function Navbar({
               sx={{
                 px: 3,
                 py: 1.5,
-                borderRadius: `${radiusTokens.sm}px`,
+                borderRadius: `${radiusTokens.md}px`,
                 mx: 1,
               }}
             >
@@ -481,7 +479,7 @@ export function Navbar({
               navigate("/profile");
               setDrawerOpen(false);
             }}
-            sx={{ px: 3, py: 1.5, borderRadius: `${radiusTokens.sm}px`, mx: 1 }}
+            sx={{ px: 3, py: 1.5, borderRadius: `${radiusTokens.md}px`, mx: 1 }}
           >
             <ListItemIcon sx={{ minWidth: 36 }}>
               <AppIcon intent="profile" size={20} />
@@ -499,7 +497,7 @@ export function Navbar({
             sx={{
               px: 3,
               py: 1.5,
-              borderRadius: `${radiusTokens.sm}px`,
+              borderRadius: `${radiusTokens.md}px`,
               mx: 1,
               color: "error.main",
             }}
