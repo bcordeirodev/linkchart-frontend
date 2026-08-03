@@ -6,7 +6,6 @@ import { useCallback, useEffect, useState } from "react";
 
 import { alpha, Box, useTheme } from "@mui/material";
 
-import { useResponsive } from "@/lib/theme";
 import { motionTokens } from "@/lib/theme/designSystem";
 
 import { Navbar, Footer, SideNav } from "./components";
@@ -70,7 +69,6 @@ function MainLayout({
 }: MainLayoutProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
-  const { isMobile } = useResponsive();
   const [collapsed, setCollapsed] = useState(false);
 
   const showNavbar = navbar;
@@ -122,7 +120,6 @@ function MainLayout({
       >
         {showNavbar ? (
           <Navbar
-            isMobile={isMobile}
             collapsed={collapsed}
             onToggleSidebar={toggleSidebarCollapsed}
           />

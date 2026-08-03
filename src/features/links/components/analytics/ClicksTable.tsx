@@ -261,12 +261,35 @@ export function ClicksTable({
             // rows/columns and the header menu stay opaque on purpose: they
             // sit *over* scrolling content, and a translucent fill there
             // would let rows show through underneath them.
+            //
+            // `table.options.mrtTheme.baseBackgroundColor` is what both
+            // `DataTableTopToolbar` (this app's custom top toolbar) and MRT's
+            // own built-in bottom toolbar/pagination bar read for their
+            // background, so this one override already makes toolbar + body
+            // + footer one continuous surface — verified in a live render
+            // (top toolbar, table `Paper`, sticky `<thead>`, and the bottom
+            // pagination bar all resolved to the same computed
+            // `rgba(255,255,255,0.03)`). `muiTopToolbarProps` below is a
+            // belt-and-suspenders explicit pin on top of that (same value,
+            // same variable) — not needed to fix a currently-visible seam,
+            // but keeps the top toolbar's background from ever silently
+            // diverging from `mrtTheme` if a future MRT upgrade changes how
+            // that's read. `muiBottomToolbarProps` is deliberately NOT
+            // touched here: `DataTable`'s own default supplies its layout
+            // `className` ("flex items-center min-h-14 h-14"), and `Object
+            // .defaults`-style prop merging replaces that whole key instead
+            // of merging into it — passing a partial override here would
+            // silently drop the className. Its background already matches
+            // via `mrtTheme` regardless.
             mrtTheme={() => ({
               baseBackgroundColor: translucentTableBg,
               menuBackgroundColor: theme.palette.background.paper,
               pinnedRowBackgroundColor: theme.palette.background.paper,
               pinnedColumnBackgroundColor: theme.palette.background.paper,
             })}
+            muiTopToolbarProps={{
+              sx: { backgroundColor: translucentTableBg },
+            }}
             muiTablePaperProps={{
               elevation: 0,
               square: true,

@@ -9,6 +9,20 @@
  * a altura do Toolbar em nenhum outro lugar. No desktop (`md+`) o logo some
  * daqui (mora na sidebar) e um botão de hambúrguer alterna o colapso da
  * sidebar; no mobile nada muda — logo + hambúrguer abrindo o Drawer.
+ *
+ * **Todo gate de mobile-vs-desktop aqui é só CSS** (`sx={{ display: {xs,
+ * md} }}`), nunca `useMediaQuery`/`useResponsive()` escolhendo qual JSX
+ * renderizar — ver o gate visual de 2026-08-03 (item 2): o botão da
+ * DIREITA (avatar/menu vs. hambúrguer/Drawer) usava `isMobile` de
+ * `useResponsive()` para decidir qual dos dois renderizar, e esse hook não
+ * tem `noSsr`/`ssrMatchMedia` configurado em lugar nenhum do app — o valor
+ * inicial é sempre `false` no server E no primeiro paint do cliente,
+ * então todo mundo via o gatilho de DESKTOP (avatar) por um instante,
+ * mesmo no celular, até o listener real do `matchMedia` assentar e trocar
+ * para o hambúrguer — o "menu renderizando 2x" que o Bruno viu. Os dois
+ * botões agora sempre existem no DOM (server e cliente concordam desde o
+ * primeiro frame) e a CSS escolhe qual aparece, o mesmo padrão que o
+ * logo/botão de colapso abaixo já usava.
  */
 
 import {
@@ -37,7 +51,6 @@ import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/lib/auth/AuthContext";
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
-import { useResponsive } from "@/lib/theme";
 import { AppIcon } from "@/shared/ui/icons";
 import { AppLogo } from "@/shared/ui/base";
 import { LanguageSelector } from "@/lib/i18n/components/LanguageSelector";
@@ -46,7 +59,6 @@ import { getVisibleNavItems } from "./navItems";
 
 interface NavbarProps {
   onMobileMenuToggle?: () => void;
-  isMobile?: boolean;
   /** Estado de colapso da sidebar desktop, controlado pelo `MainLayout`. */
   collapsed: boolean;
   /**
@@ -67,7 +79,6 @@ export function Navbar({
   const { user, logout } = useAuth();
 
   const { t } = useTranslation("common");
-  const { isMobile } = useResponsive();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
@@ -198,63 +209,69 @@ export function Navbar({
             ) : null}
           </Box>
 
-          {/* DIREITA — idioma + avatar (ou hambúrguer no mobile). */}
+          {/* DIREITA — idioma + avatar (desktop) / hambúrguer (mobile).
+              Os dois botões ficam sempre no DOM; só a `display` responsiva
+              decide qual aparece — nenhuma escolha em JS/`useMediaQuery`
+              (ver o comentário no topo do arquivo). No mobile o Drawer é a
+              única superfície de navegação (identidade + links + sair vivem
+              lá), por isso o avatar-menu fica oculto (não removido) nessa
+              faixa — evita uma segunda superfície de navegação redundante
+              sem reintroduzir o problema de renderização condicional. */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {user ? (
               <>
                 <LanguageSelector />
-                {isMobile ? (
-                  // On phones the Drawer is the single nav surface (identity +
-                  // links + sign out live there), so the avatar-menu is dropped
-                  // to avoid a duplicate navigation surface.
+                <IconButton
+                  aria-label={t("nav.openNavAriaLabel", "open navigation")}
+                  onClick={() => setDrawerOpen(true)}
+                  edge="end"
+                  sx={{
+                    display: { xs: "inline-flex", md: "none" },
+                    width: 44,
+                    height: 44,
+                  }}
+                >
+                  <MenuIcon size={20} strokeWidth={1.5} />
+                </IconButton>
+                <Tooltip
+                  title={t("nav.menuTooltip", { name: user.displayName })}
+                  arrow
+                >
                   <IconButton
-                    aria-label={t("nav.openNavAriaLabel", "open navigation")}
-                    onClick={() => setDrawerOpen(true)}
+                    size="large"
                     edge="end"
-                    sx={{ width: 44, height: 44 }}
+                    aria-label={t("nav.accountMenuAriaLabel")}
+                    onClick={handleProfileMenuOpen}
+                    sx={{
+                      display: { xs: "none", md: "inline-flex" },
+                      width: 44,
+                      height: 44,
+                      borderRadius: `${radiusTokens.md}px`,
+                      transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+                      "&:hover": {
+                        backgroundColor: theme.palette.action.hover,
+                      },
+                    }}
                   >
-                    <MenuIcon size={20} strokeWidth={1.5} />
-                  </IconButton>
-                ) : (
-                  <Tooltip
-                    title={t("nav.menuTooltip", { name: user.displayName })}
-                    arrow
-                  >
-                    <IconButton
-                      size="large"
-                      edge="end"
-                      aria-label={t("nav.accountMenuAriaLabel")}
-                      onClick={handleProfileMenuOpen}
+                    <Avatar
+                      src={user.photoURL}
+                      alt={user.displayName ?? ""}
+                      aria-label={t("nav.avatarAriaLabel", {
+                        name: user.displayName,
+                      })}
                       sx={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: `${radiusTokens.md}px`,
-                        transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-                        "&:hover": {
-                          backgroundColor: theme.palette.action.hover,
-                        },
+                        width: 36,
+                        height: 36,
+                        backgroundColor: theme.palette.primary.main,
+                        color: theme.palette.primary.contrastText,
+                        fontSize: "0.875rem",
+                        fontWeight: 600,
                       }}
                     >
-                      <Avatar
-                        src={user.photoURL}
-                        alt={user.displayName ?? ""}
-                        aria-label={t("nav.avatarAriaLabel", {
-                          name: user.displayName,
-                        })}
-                        sx={{
-                          width: 36,
-                          height: 36,
-                          backgroundColor: theme.palette.primary.main,
-                          color: theme.palette.primary.contrastText,
-                          fontSize: "0.875rem",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {user.displayName?.charAt(0).toUpperCase() ?? "U"}
-                      </Avatar>
-                    </IconButton>
-                  </Tooltip>
-                )}
+                      {user.displayName?.charAt(0).toUpperCase() ?? "U"}
+                    </Avatar>
+                  </IconButton>
+                </Tooltip>
               </>
             ) : null}
           </Box>
