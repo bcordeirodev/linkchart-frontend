@@ -1,14 +1,14 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock, Save, Eye, EyeOff, Info } from "lucide-react";
+import { Save, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import {
   Box,
   Button,
   CircularProgress,
-  Divider,
+  FormLabel,
   IconButton,
   InputAdornment,
   Stack,
@@ -21,7 +21,9 @@ import { z } from "zod";
 
 import { useMessage } from "@/lib/providers/MessageProvider";
 import { authService } from "@/services/auth.service";
-import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { SectionLabel } from "@/shared/ui/base";
+
+import { ProfileMutedBox, ProfileSection } from "./ProfileSection";
 
 /** Dados do formulário de alteração de senha. */
 interface PasswordChangeFormData {
@@ -31,8 +33,18 @@ interface PasswordChangeFormData {
 }
 
 /**
- * Formulário de alteração de senha
- * Utiliza Zod para validação e React Hook Form para gerenciamento
+ * Formulário de alteração de senha do perfil (contas locais — usuários
+ * Auth0 recebem `OAuthSecurityCard` no lugar). Usa Zod para validação e
+ * React Hook Form para gerenciamento.
+ *
+ * "Instrumento técnico" (2026-08-03): título antigo (`h6` + `Divider`) virou
+ * `SectionLabel` acima do card; os 3 campos passaram do `label` interno do
+ * MUI para `FormLabel` externo (mesmo padrão de `ProfileForm`/`DangerZone`
+ * nesta página); o adorno decorativo `Lock` foi removido dos 3 campos — só
+ * o botão mostrar/ocultar senha (`Eye`/`EyeOff`) permanece, por ser
+ * funcional, não decorativo; a caixa de dicas de segurança trocou o fundo
+ * azul hardcoded por `ProfileMutedBox` (o inset neutro padrão da página) e
+ * perdeu o ícone `Info` ao lado do título.
  */
 export function PasswordChangeForm() {
   const { showMessage } = useMessage();
@@ -105,210 +117,129 @@ export function PasswordChangeForm() {
     [showMessage, reset, t],
   );
 
-  return (
-    <EnhancedPaper>
-      <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
-        <Stack spacing={{ xs: 2, sm: 3 }}>
-          <Box>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 700,
-                mb: 1,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              {t("password.title")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t("password.subtitle")}
-            </Typography>
-          </Box>
+  /** Toggle de visibilidade compartilhado pelos 3 campos de senha. */
+  const visibilityAdornment = (field: keyof typeof showPasswords) => (
+    <InputAdornment position="end">
+      <IconButton
+        onClick={() => togglePasswordVisibility(field)}
+        edge="end"
+        size="small"
+        aria-label={
+          showPasswords[field]
+            ? t("password.hidePassword")
+            : t("password.showPassword")
+        }
+        aria-pressed={showPasswords[field]}
+        sx={{ color: "text.secondary" }}
+      >
+        {showPasswords[field] ? <EyeOff {...ICON_SM} /> : <Eye {...ICON_SM} />}
+      </IconButton>
+    </InputAdornment>
+  );
 
-          <Divider />
+  return (
+    <Stack spacing={1.25}>
+      <SectionLabel headingLevel={2}>{t("password.title")}</SectionLabel>
+      <ProfileSection>
+        <Stack spacing={2.5}>
+          <Typography variant="body2" color="text.secondary">
+            {t("password.subtitle")}
+          </Typography>
 
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}
-            sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+            sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
           >
-            {/* Senha Atual */}
-            <TextField
-              {...register("current_password")}
-              id="current-password"
-              label={t("password.current")}
-              type={showPasswords.current ? "text" : "password"}
-              error={!!errors.current_password}
-              helperText={errors.current_password?.message}
-              fullWidth
-              disabled={isSubmitting}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Lock {...ICON_MD} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => togglePasswordVisibility("current")}
-                      edge="end"
-                      size="small"
-                      aria-label={
-                        showPasswords.current
-                          ? t("password.hidePassword")
-                          : t("password.showPassword")
-                      }
-                      aria-pressed={showPasswords.current}
-                      sx={{ color: "text.secondary" }}
-                    >
-                      {showPasswords.current ? (
-                        <EyeOff {...ICON_MD} />
-                      ) : (
-                        <Eye {...ICON_MD} />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <Box>
+              <FormLabel
+                htmlFor="current-password"
+                error={!!errors.current_password}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("password.current")}
+              </FormLabel>
+              <TextField
+                {...register("current_password")}
+                id="current-password"
+                type={showPasswords.current ? "text" : "password"}
+                error={!!errors.current_password}
+                helperText={errors.current_password?.message ?? " "}
+                fullWidth
+                disabled={isSubmitting}
+                slotProps={{
+                  input: { endAdornment: visibilityAdornment("current") },
+                }}
+              />
+            </Box>
 
-            {/* Nova Senha */}
-            <TextField
-              {...register("new_password")}
-              id="new-password"
-              label={t("password.new")}
-              type={showPasswords.new ? "text" : "password"}
-              error={!!errors.new_password}
-              helperText={errors.new_password?.message}
-              fullWidth
-              disabled={isSubmitting}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Lock {...ICON_MD} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => togglePasswordVisibility("new")}
-                      edge="end"
-                      size="small"
-                      aria-label={
-                        showPasswords.new
-                          ? t("password.hidePassword")
-                          : t("password.showPassword")
-                      }
-                      aria-pressed={showPasswords.new}
-                      sx={{ color: "text.secondary" }}
-                    >
-                      {showPasswords.new ? (
-                        <EyeOff {...ICON_MD} />
-                      ) : (
-                        <Eye {...ICON_MD} />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <Box>
+              <FormLabel
+                htmlFor="new-password"
+                error={!!errors.new_password}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("password.new")}
+              </FormLabel>
+              <TextField
+                {...register("new_password")}
+                id="new-password"
+                type={showPasswords.new ? "text" : "password"}
+                error={!!errors.new_password}
+                helperText={errors.new_password?.message ?? " "}
+                fullWidth
+                disabled={isSubmitting}
+                slotProps={{
+                  input: { endAdornment: visibilityAdornment("new") },
+                }}
+              />
+            </Box>
 
-            {/* Confirmação da Nova Senha */}
-            <TextField
-              {...register("new_password_confirmation")}
-              id="new-password-confirmation"
-              label={t("password.confirm")}
-              type={showPasswords.confirm ? "text" : "password"}
-              error={!!errors.new_password_confirmation}
-              helperText={errors.new_password_confirmation?.message}
-              fullWidth
-              disabled={isSubmitting}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Lock {...ICON_MD} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => togglePasswordVisibility("confirm")}
-                      edge="end"
-                      size="small"
-                      aria-label={
-                        showPasswords.confirm
-                          ? t("password.hidePassword")
-                          : t("password.showPassword")
-                      }
-                      aria-pressed={showPasswords.confirm}
-                      sx={{ color: "text.secondary" }}
-                    >
-                      {showPasswords.confirm ? (
-                        <EyeOff {...ICON_MD} />
-                      ) : (
-                        <Eye {...ICON_MD} />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <Box>
+              <FormLabel
+                htmlFor="new-password-confirmation"
+                error={!!errors.new_password_confirmation}
+                sx={{ display: "block", mb: 0.75 }}
+              >
+                {t("password.confirm")}
+              </FormLabel>
+              <TextField
+                {...register("new_password_confirmation")}
+                id="new-password-confirmation"
+                type={showPasswords.confirm ? "text" : "password"}
+                error={!!errors.new_password_confirmation}
+                helperText={errors.new_password_confirmation?.message ?? " "}
+                fullWidth
+                disabled={isSubmitting}
+                slotProps={{
+                  input: { endAdornment: visibilityAdornment("confirm") },
+                }}
+              />
+            </Box>
 
-            {/* Botão de Submissão */}
             <Button
               type="submit"
               variant="contained"
-              size="large"
               disabled={!isValid || isSubmitting}
               startIcon={
                 isSubmitting ? (
-                  <CircularProgress size={20} color="inherit" />
+                  <CircularProgress size={18} color="inherit" />
                 ) : (
                   <Save {...ICON_MD} />
                 )
               }
-              sx={{
-                alignSelf: "flex-start",
-                px: 4,
-                py: 1.5,
-                borderRadius: 2,
-              }}
+              sx={{ alignSelf: "flex-start" }}
             >
               {t("password.saveButton")}
             </Button>
           </Box>
 
-          {/* Dicas de Segurança */}
-          <Box
-            sx={{
-              p: 3,
-              backgroundColor: (theme) =>
-                theme.palette.mode === "dark"
-                  ? "rgba(33, 150, 243, 0.08)"
-                  : "rgba(33, 150, 243, 0.04)",
-              borderRadius: 2,
-              border: "1px solid",
-              borderColor: (theme) =>
-                theme.palette.mode === "dark"
-                  ? "rgba(33, 150, 243, 0.3)"
-                  : "rgba(33, 150, 243, 0.2)",
-            }}
-          >
+          <ProfileMutedBox>
             <Typography
-              variant="subtitle2"
-              sx={{
-                fontWeight: 600,
-                mb: 1,
-                color: "primary.main",
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
+              variant="caption"
+              color="text.primary"
+              sx={{ display: "block", mb: 0.75, fontWeight: 600 }}
             >
-              <Info {...ICON_MD} />
               {t("password.securityTip.title")}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -318,10 +249,10 @@ export function PasswordChangeForm() {
               <br />
               {t("password.securityTip.tip3")}
             </Typography>
-          </Box>
+          </ProfileMutedBox>
         </Stack>
-      </Box>
-    </EnhancedPaper>
+      </ProfileSection>
+    </Stack>
   );
 }
 

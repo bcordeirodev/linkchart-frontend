@@ -1,38 +1,39 @@
 "use client";
 
-import { KeyRound, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Stack, Typography } from "@mui/material";
 
-import { ICON_MD } from "@/lib/theme/iconDefaults";
-import { Typography } from "@mui/material";
+import { SectionLabel } from "@/shared/ui/base";
 
-import {
-  ProfileMutedBox,
-  ProfileSection,
-  ProfileSectionHeader,
-} from "./ProfileSection";
+import { ProfileMutedBox, ProfileSection } from "./ProfileSection";
 
+/**
+ * Read-only security explainer for Auth0 (Google) accounts — replaces
+ * `PasswordChangeForm` when `usesOAuthLogin` is true, since those accounts
+ * have no local password to change.
+ *
+ * "Instrumento técnico" (2026-08-03): dropped the `ShieldCheck`/`KeyRound`
+ * decorative icons (title icon-chip and inline body icon) — the section
+ * heading is a `SectionLabel`, and the note reads fine as plain text inside
+ * `ProfileMutedBox`.
+ */
 export function OAuthSecurityCard() {
   const { t } = useTranslation("profile");
 
   return (
-    <ProfileSection>
-      <ProfileSectionHeader
-        icon={<ShieldCheck {...ICON_MD} />}
-        title={t("security.oauth.title")}
-        description={t("security.oauth.subtitle")}
-      />
-      <ProfileMutedBox>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}
-        >
-          <KeyRound {...ICON_MD} style={{ flexShrink: 0, marginTop: 2 }} />
-          {t("security.oauth.body")}
+    <Stack spacing={1.25}>
+      <SectionLabel headingLevel={2}>{t("security.oauth.title")}</SectionLabel>
+      <ProfileSection>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          {t("security.oauth.subtitle")}
         </Typography>
-      </ProfileMutedBox>
-    </ProfileSection>
+        <ProfileMutedBox>
+          <Typography variant="body2" color="text.secondary">
+            {t("security.oauth.body")}
+          </Typography>
+        </ProfileMutedBox>
+      </ProfileSection>
+    </Stack>
   );
 }
 
