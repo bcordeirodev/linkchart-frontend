@@ -7,7 +7,12 @@
   },
   "gate": {
     "title": "Your links page, on your own address",
-    "description": "Choose a custom address — something like yourname.linkcharts.com.br — and publish your bio page there. You need an address before you can create the page.",
+    "description": "Your bio page is published on a custom address of your own — something like yourname.linkcharts.com.br. You don't have an address yet: create your first one to publish your page. It also works for your short links.",
+    "steps": {
+      "claim": "Create your custom address",
+      "build": "Build the page with your links",
+      "share": "Paste the address into your Instagram or TikTok bio"
+    },
     "exampleBio": "Photography, travel tips and recommendations",
     "exampleItems": {
       "site": "My website",
@@ -21,7 +26,7 @@
     "identity": "Identity",
     "identityHint": "How you introduce yourself at the top of the page: photo, name and description.",
     "publishing": "Address and publishing",
-    "publishingHint": "Where the page lives and whether it's visible to visitors.",
+    "publishingHint": "The page is published on a custom address of your own — e.g. yourname.linkcharts.com.br.",
     "appearance": "Appearance",
     "appearanceHint": "The look your visitors see."
   },
@@ -50,9 +55,13 @@
         "removeGeneric": "We couldn't remove the photo. Please try again."
       }
     },
+    "addressCallout": {
+      "text": "Your bio page lives on your custom address — the same address you create and manage under Custom addresses, and can also use for your short links.",
+      "manageCta": "Manage custom addresses"
+    },
     "address": {
       "label": "Page address",
-      "hint": "This is where your page gets published.",
+      "hint": "Changing the address changes your page's public link.",
       "placeholder": "Select an address",
       "emptyHint": "You need a custom address to publish your page.",
       "createCta": "Create a custom address"

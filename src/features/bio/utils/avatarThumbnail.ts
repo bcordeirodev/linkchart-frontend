@@ -7,7 +7,7 @@
  * remains the Open Graph image, where WhatsApp/Instagram want the full
  * photo.
  */
-export const AVATAR_THUMB_SIZE = 512;
+const AVATAR_THUMB_SIZE = 512;
 
 /**
  * Mirror of the backend's `avatar_thumb` `max:1024` rule
