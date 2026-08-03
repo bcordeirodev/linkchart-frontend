@@ -1,20 +1,16 @@
 "use client";
-import { Repeat2, TrendingUp, Users, Lightbulb } from "lucide-react";
 import { Box, Typography, Stack } from "@mui/material";
 
-import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { getChartColor } from "@/lib/theme/colors";
-import { AnalyticsEmptyState } from "@/shared/ui/base";
+import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
+import { AnalyticsEmptyState, OverviewMetricRow } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import {
   INSIGHTS_BLOCK_PAD,
   insightsChartPanelSx,
-  insightsMetricRowSx,
 } from "../insights/insightsLayout";
-import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type { RetentionData } from "../../hooks/useInsightsData";
 
@@ -27,8 +23,8 @@ interface RetentionAnalysisChartProps {
 }
 
 /**
- * Visualises visitor retention as a donut chart (return vs. new visitors)
- * and a summary card with raw numbers.
+ * Visualises visitor retention as a horizontal stacked bar (return vs. new
+ * visitors) and a summary row with raw numbers.
  *
  * Removed fabricated displays: `retention_score` gauge and `benchmark_comparison` chip.
  * Rates from the API are [0.0, 1.0] decimals; they are multiplied by 100 for display.
@@ -47,65 +43,17 @@ export function RetentionAnalysisChart({
   const returnPct = Math.round(data.return_visitor_rate * 100 * 10) / 10;
   const newPct = Math.round(data.new_visitor_rate * 100 * 10) / 10;
 
-  const visitorsPieOptions = {
-    chart: {
-      type: "donut" as const,
-      toolbar: { show: false },
-    },
-    labels: [
-      t("insights.retention.returningLabel"),
-      t("insights.retention.newLabel"),
+  const visitorsBarChart = formatHorizontalStackedBar(
+    [
+      {
+        name: t("insights.retention.returningLabel"),
+        value: data.return_visitors,
+      },
+      { name: t("insights.retention.newLabel"), value: data.new_visitors },
     ],
-    colors: [getChartColor(1), getChartColor(0)],
-    dataLabels: {
-      enabled: true,
-      formatter: (val: number) => `${val.toFixed(1)}%`,
-    },
-    legend: {
-      position: "bottom" as const,
-      labels: {
-        colors: theme.palette.text.primary,
-      },
-    },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: "60%",
-          labels: {
-            show: true,
-            name: {
-              show: true,
-              fontSize: "16px",
-              color: theme.palette.text.primary,
-            },
-            value: {
-              show: true,
-              fontSize: "24px",
-              fontWeight: "bold",
-              color: theme.palette.text.primary,
-              formatter: (val: string) => `${val}%`,
-            },
-            total: {
-              show: true,
-              label: t("insights.retention.retentionLabel"),
-              fontSize: "14px",
-              color: theme.palette.text.secondary,
-              formatter: () => `${returnPct}%`,
-            },
-          },
-        },
-      },
-    },
-    tooltip: {
-      theme: theme.palette.mode,
-      y: {
-        formatter: (val: number) =>
-          t("insights.retention.visitorsTooltip", { n: val }),
-      },
-    },
-  };
-
-  const visitorsPieData = [data.return_visitors, data.new_visitors];
+    "name",
+    "value",
+  );
 
   if (loading) {
     return (
@@ -134,19 +82,7 @@ export function RetentionAnalysisChart({
       <Box sx={{ p: INSIGHTS_BLOCK_PAD }}>
         {showTitle ? (
           <Box sx={{ mb: 2 }}>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                fontWeight: 600,
-              }}
-            >
-              <Repeat2
-                {...ICON_LG}
-                style={{ color: "var(--mui-palette-primary-main)" }}
-              />
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {displayTitle}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
@@ -156,37 +92,29 @@ export function RetentionAnalysisChart({
         ) : null}
 
         {/* Real Metrics */}
-        <Box
-          sx={{
-            ...insightsMetricRowSx,
-            mb: 3,
-            gridTemplateColumns: { xs: "1fr 1fr", sm: "repeat(3, 1fr)" },
-          }}
-        >
-          <MetricCard
-            title={t("insights.retention.retentionRate")}
-            value={`${returnPct}%`}
-            icon={<Repeat2 {...ICON_LG} />}
-            color="success"
-            subtitle={t("insights.retention.returningVisitorsSub")}
-          />
-          <MetricCard
-            title={t("insights.retention.returningVisitors")}
-            value={data.return_visitors}
-            icon={<Users {...ICON_LG} />}
-            color="primary"
-            subtitle={t("insights.retention.loyalUsers")}
-          />
-          <MetricCard
-            title={t("insights.retention.totalVisitors")}
-            value={data.total_visitors}
-            icon={<TrendingUp {...ICON_LG} />}
-            color="secondary"
-            subtitle={t("insights.retention.uniqueVisitors")}
+        <Box sx={{ mb: 3 }}>
+          <OverviewMetricRow
+            metrics={[
+              {
+                label: t("insights.retention.retentionRate"),
+                value: `${returnPct}%`,
+                caption: t("insights.retention.returningVisitorsSub"),
+              },
+              {
+                label: t("insights.retention.returningVisitors"),
+                value: data.return_visitors,
+                caption: t("insights.retention.loyalUsers"),
+              },
+              {
+                label: t("insights.retention.totalVisitors"),
+                value: data.total_visitors,
+                caption: t("insights.retention.uniqueVisitors"),
+              },
+            ]}
           />
         </Box>
 
-        {/* Visitor Distribution Donut */}
+        {/* Visitor Distribution */}
         <Box sx={{ ...insightsChartPanelSx(theme), mb: 3 }}>
           <Typography
             variant="subtitle1"
@@ -206,9 +134,9 @@ export function RetentionAnalysisChart({
             })}
           </Typography>
           <ApexChartWrapper
-            options={visitorsPieOptions}
-            series={visitorsPieData}
-            type="donut"
+            options={visitorsBarChart.options}
+            series={visitorsBarChart.series}
+            type="bar"
             size="standard"
           />
         </Box>
@@ -216,16 +144,7 @@ export function RetentionAnalysisChart({
         {/* Insights panel */}
         <Box sx={insightsChartPanelSx(theme)}>
           <Stack spacing={1.5}>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                fontWeight: 600,
-              }}
-            >
-              <Lightbulb size={16} strokeWidth={1.5} />
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {t("insights.retention.insightsTitle")}
             </Typography>
 

@@ -1,9 +1,7 @@
 "use client";
-import { Globe } from "lucide-react";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTranslation } from "react-i18next";
 
-import { getChartColor } from "@/lib/theme/colors";
+import { dataVizPalette } from "@/lib/theme/dataViz";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import type { LanguageData } from "@/types";
 
@@ -27,6 +25,7 @@ export interface AudienceLanguagesTabProps {
 export function AudienceLanguagesTab({ languages }: AudienceLanguagesTabProps) {
   const { t, i18n } = useTranslation("analytics");
 
+  const paletteTones = Object.values(dataVizPalette);
   const families = aggregateLanguagesByFamily(
     languages,
     i18n.language,
@@ -37,14 +36,13 @@ export function AudienceLanguagesTab({ languages }: AudienceLanguagesTabProps) {
     label: family.label,
     value: family.clicks,
     percentage: family.percentage,
-    color: getChartColor(index),
+    color: paletteTones[index % paletteTones.length],
   }));
 
   return (
     <ChartCard
       title={t("audience.chart.languageDistribution")}
       subtitle={t("audience.chart.tabDescriptions.languages")}
-      icon={<Globe {...ICON_MD} />}
     >
       <HorizontalBreakdownBars items={items} />
     </ChartCard>

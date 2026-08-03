@@ -22,7 +22,8 @@ import {
 import { useTranslation } from "react-i18next";
 
 import { motionTokens } from "@/lib/theme/designSystem";
-import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { SectionLabel } from "@/shared/ui/base";
 
 import { AnalyticsPanelActiveProvider } from "@/features/analytics/context/AnalyticsPanelActiveContext";
 import { AudienceAnalysis } from "@/features/analytics/components/audience/AudienceAnalysis";
@@ -136,8 +137,8 @@ export function LinkAnalyticsTabsOptimized({
   ];
 
   /**
-   * Renders a tab's content panel with the standard header (icon + title +
-   * description) above the tab component.
+   * Renders a tab's content panel with the standard header (a `/ LABEL`
+   * {@link SectionLabel} + description) above the tab component.
    *
    * The panel is only added to the DOM on the first visit (`visitedTabs.has(id)`).
    * Once mounted it persists across tab switches via `display` toggling, keeping
@@ -150,7 +151,6 @@ export function LinkAnalyticsTabsOptimized({
     if (!visitedTabs.has(id)) return null;
     const index = TAB_IDS.indexOf(id);
     const meta = tabLabels[index]!;
-    const HeaderIcon = meta.Icon;
     const isActive = filters.tab === id;
     return (
       <Box
@@ -159,20 +159,16 @@ export function LinkAnalyticsTabsOptimized({
         aria-labelledby={`tab-${index}`}
         sx={{ display: isActive ? "block" : "none" }}
       >
-        {/* Standard tab header — names the active panel and explains it */}
+        {/* Standard tab header — names the active panel and explains it.
+            No icon beside the label: the redesign kills title icon-chips,
+            and the Tab strip above already carries the icon as a nav cue. */}
         <Box sx={{ mb: 2 }}>
+          <SectionLabel headingLevel={2}>{meta.label}</SectionLabel>
           <Typography
-            variant="subtitle1"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              fontWeight: 600,
-            }}
+            variant="body2"
+            color="text.secondary"
+            sx={{ mt: { xs: 1.5, sm: 2 } }}
           >
-            <HeaderIcon {...ICON_MD} /> {meta.label}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             {meta.description}
           </Typography>
         </Box>
@@ -199,152 +195,145 @@ export function LinkAnalyticsTabsOptimized({
         onExcludeBotsChange={filters.setExcludeBots}
       />
 
-      {/* Tab nav + active panel share one bordered container so the content
-           visibly belongs to the selected tab (same pattern as the sub-tabs) */}
-      <Box sx={{ border: `1px solid ${theme.palette.divider}` }}>
-        {/* Nav strip — paper band attached to the panel below. No horizontal
-             padding: the selected tab's fill must reach the container edges. */}
-        <Box
+      {/* Tab nav — level 0, no card of its own. A single hairline below the
+           strip is what separates it from the active panel's content, same
+           gutter as the rest of the page. */}
+      <Box sx={{ borderBottom: `1px solid ${theme.palette.divider}` }}>
+        <Tabs
+          value={tabIndex}
+          onChange={handleTabChange}
+          variant={isMobile ? "scrollable" : "fullWidth"}
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+          TabIndicatorProps={{
+            sx: {
+              height: 3,
+              borderTopLeftRadius: 3,
+              borderTopRightRadius: 3,
+            },
+          }}
           sx={{
-            backgroundColor: theme.palette.background.paper,
-            borderBottom: `1px solid ${theme.palette.divider}`,
+            "& .MuiTab-root": {
+              textTransform: "none",
+              minHeight: 52,
+              color: "text.secondary",
+              transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+              "&:hover": {
+                color: "text.primary",
+                backgroundColor: theme.palette.action.hover,
+              },
+              "&.Mui-focusVisible": {
+                backgroundColor: theme.palette.action.hover,
+              },
+              "&.Mui-selected": {
+                color: theme.palette.common.white,
+                backgroundColor: alpha(theme.palette.primary.main, 0.22),
+              },
+              "&.Mui-selected:hover": {
+                color: theme.palette.common.white,
+                backgroundColor: alpha(theme.palette.primary.main, 0.3),
+              },
+            },
           }}
         >
-          <Tabs
-            value={tabIndex}
-            onChange={handleTabChange}
-            variant={isMobile ? "scrollable" : "fullWidth"}
-            scrollButtons="auto"
-            allowScrollButtonsMobile
-            TabIndicatorProps={{
-              sx: {
-                height: 3,
-                borderTopLeftRadius: 3,
-                borderTopRightRadius: 3,
-              },
-            }}
-            sx={{
-              "& .MuiTab-root": {
-                textTransform: "none",
-                minHeight: 52,
-                color: "text.secondary",
-                transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-                "&:hover": {
-                  color: "text.primary",
-                  backgroundColor: theme.palette.action.hover,
-                },
-                "&.Mui-focusVisible": {
-                  backgroundColor: theme.palette.action.hover,
-                },
-                "&.Mui-selected": {
-                  color: theme.palette.common.white,
-                  backgroundColor: alpha(theme.palette.primary.main, 0.22),
-                },
-                "&.Mui-selected:hover": {
-                  color: theme.palette.common.white,
-                  backgroundColor: alpha(theme.palette.primary.main, 0.3),
-                },
-              },
-            }}
-          >
-            {tabLabels.map(({ label, Icon }, index) => (
-              <Tab
-                key={index}
-                id={`tab-${index}`}
-                aria-controls={`tabpanel-${TAB_IDS[index]}`}
-                label={label}
-                icon={
-                  <Box
-                    component="span"
-                    sx={{ display: { xs: "none", sm: "inline-flex" } }}
-                  >
-                    <Icon {...ICON_SM} />
-                  </Box>
-                }
-                iconPosition="start"
-              />
-            ))}
-          </Tabs>
-        </Box>
+          {tabLabels.map(({ label, Icon }, index) => (
+            <Tab
+              key={index}
+              id={`tab-${index}`}
+              aria-controls={`tabpanel-${TAB_IDS[index]}`}
+              label={label}
+              icon={
+                <Box
+                  component="span"
+                  sx={{ display: { xs: "none", sm: "inline-flex" } }}
+                >
+                  <Icon {...ICON_SM} />
+                </Box>
+              }
+              iconPosition="start"
+            />
+          ))}
+        </Tabs>
+      </Box>
 
-        {/* Tab panels — mount-once, hidden via display:none when inactive */}
-        <Box sx={{ p: { xs: 1.5, md: 2.5 } }}>
-          {tabPanel(
-            "overview",
-            <LinkDashboard
-              linkId={linkId}
-              enableRealtime={false}
-              compact={false}
-              dateFrom={filters.dateFrom}
-              dateTo={filters.dateTo}
-              excludeBots={filters.excludeBots}
-            />,
-          )}
+      {/* Tab panels — mount-once, hidden via display:none when inactive.
+           Same gutter as the tab nav above — no extra card padding. */}
+      <Box sx={{ mt: { xs: 2, md: 3 } }}>
+        {tabPanel(
+          "overview",
+          <LinkDashboard
+            linkId={linkId}
+            enableRealtime={false}
+            compact={false}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
+          />,
+        )}
 
-          {tabPanel(
-            "origin",
-            <OriginAnalysis
-              linkId={linkId}
-              dateFrom={filters.dateFrom}
-              dateTo={filters.dateTo}
-              excludeBots={filters.excludeBots}
-              subTabIndex={filters.originSubTab}
-              onSubTabChange={filters.setOriginSubTab}
-            />,
-          )}
+        {tabPanel(
+          "origin",
+          <OriginAnalysis
+            linkId={linkId}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
+            subTabIndex={filters.originSubTab}
+            onSubTabChange={filters.setOriginSubTab}
+          />,
+        )}
 
-          {tabPanel(
-            "places",
-            <GeographicAnalysis
-              linkId={linkId}
-              enableRealtime={false}
-              dateFrom={filters.dateFrom}
-              dateTo={filters.dateTo}
-              excludeBots={filters.excludeBots}
-              continent={filters.continent}
-              onContinentChange={filters.setContinent}
-              subTabIndex={filters.geoSubTab}
-              onSubTabChange={filters.setGeoSubTab}
-            />,
-          )}
+        {tabPanel(
+          "places",
+          <GeographicAnalysis
+            linkId={linkId}
+            enableRealtime={false}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
+            continent={filters.continent}
+            onContinentChange={filters.setContinent}
+            subTabIndex={filters.geoSubTab}
+            onSubTabChange={filters.setGeoSubTab}
+          />,
+        )}
 
-          {tabPanel(
-            "audience",
-            <AudienceAnalysis
-              linkId={linkId}
-              dateFrom={filters.dateFrom}
-              dateTo={filters.dateTo}
-              excludeBots={filters.excludeBots}
-              subTabIndex={filters.audienceSubTab}
-              onSubTabChange={filters.setAudienceSubTab}
-            />,
-          )}
+        {tabPanel(
+          "audience",
+          <AudienceAnalysis
+            linkId={linkId}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
+            subTabIndex={filters.audienceSubTab}
+            onSubTabChange={filters.setAudienceSubTab}
+          />,
+        )}
 
-          {tabPanel(
-            "when",
-            <TemporalAnalysis
-              linkId={linkId}
-              enableRealtime={false}
-              dateFrom={filters.dateFrom}
-              dateTo={filters.dateTo}
-              excludeBots={filters.excludeBots}
-              segment={filters.segment}
-              onSegmentChange={filters.setSegment}
-              subTabIndex={filters.temporalSubTab}
-              onSubTabChange={filters.setTemporalSubTab}
-            />,
-          )}
+        {tabPanel(
+          "when",
+          <TemporalAnalysis
+            linkId={linkId}
+            enableRealtime={false}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
+            segment={filters.segment}
+            onSegmentChange={filters.setSegment}
+            subTabIndex={filters.temporalSubTab}
+            onSubTabChange={filters.setTemporalSubTab}
+          />,
+        )}
 
-          {tabPanel(
-            "clicks",
-            <ClicksTable
-              linkId={linkId}
-              dateFrom={filters.dateFrom}
-              dateTo={filters.dateTo}
-              excludeBots={filters.excludeBots}
-            />,
-          )}
-        </Box>
+        {tabPanel(
+          "clicks",
+          <ClicksTable
+            linkId={linkId}
+            dateFrom={filters.dateFrom}
+            dateTo={filters.dateTo}
+            excludeBots={filters.excludeBots}
+          />,
+        )}
       </Box>
     </Box>
   );

@@ -21,14 +21,13 @@ export function HourDayHeatmapChart({ data }: HourDayHeatmapChartProps) {
     return null;
   }
 
+  // `heatmapBlueScale` is a genuine sequential intensity scale (empty → low →
+  // medium → high → very high), not decorative series variety — it is kept
+  // as the one legitimate exception to "colors come from the base theme"
+  // here, the same way a semantic severity ramp would be. Everything else
+  // (axis label styling, grid, tooltip theme, legend colors) is stripped so
+  // the shared base theme shows through.
   const options = {
-    chart: {
-      type: "heatmap",
-      toolbar: { show: false },
-      animations: { enabled: true, speed: 600 },
-    },
-    dataLabels: { enabled: false },
-    colors: [heatmapBlueScale.high],
     plotOptions: {
       heatmap: {
         shadeIntensity: 0.8,
@@ -73,40 +72,15 @@ export function HourDayHeatmapChart({ data }: HourDayHeatmapChartProps) {
     },
     xaxis: {
       type: "category",
-      labels: {
-        style: {
-          colors: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-          fontSize: "10px",
-        },
-        rotate: -45,
-      },
-    },
-    yaxis: {
-      labels: {
-        style: {
-          colors: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-          fontSize: "11px",
-          fontWeight: "500",
-        },
-      },
-    },
-    grid: {
-      borderColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
+      labels: { rotate: -45 },
     },
     tooltip: {
-      theme: isDark ? "dark" : "light",
       y: {
         formatter: (val: number) =>
           `${val} ${val === 1 ? t("temporal.heatmap.clickSingular") : t("temporal.heatmap.clickPlural")}`,
       },
     },
-    legend: {
-      show: true,
-      position: "bottom" as const,
-      labels: {
-        colors: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-      },
-    },
+    legend: { show: true, position: "bottom" as const },
   };
 
   return (

@@ -1,6 +1,5 @@
 "use client";
 import { Box, Typography, Chip, Divider } from "@mui/material";
-import CelebrationIcon from "@mui/icons-material/Celebration";
 import { useTranslation } from "react-i18next";
 
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
@@ -37,7 +36,6 @@ export function HolidayImpactCard({ data }: Props) {
         defaultValue: "Impacto de Feriados",
       })}
       subtitle={t("temporal.holiday.description")}
-      icon={<CelebrationIcon sx={{ fontSize: 18 }} color="primary" />}
     >
       <Box sx={{ pt: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>

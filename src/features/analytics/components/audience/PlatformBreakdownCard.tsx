@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { tDynamic } from "@/lib/i18n/tDynamic";
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
+import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
@@ -31,7 +31,7 @@ interface PlatformBreakdownCardProps {
 }
 
 /**
- * Donut chart of the operating platform detected via Client Hints
+ * Horizontal stacked bar of the operating platform detected via Client Hints
  * (Sec-CH-UA-Platform, Phase 1), with the companion `ch_is_mobile` signal
  * when available. Lives in the Systems sub-tab, complementing the
  * user-agent-derived OS list.
@@ -41,7 +41,6 @@ export function PlatformBreakdownCard({
 }: PlatformBreakdownCardProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
 
   const platform = normaliseBreakdown<PlatformEntry>(breakdown);
 
@@ -73,9 +72,9 @@ export function PlatformBreakdownCard({
         </Alert>
       )}
       <ApexChartWrapper
-        type="donut"
+        type="bar"
         size="compact"
-        {...formatPieChart(chartData, "name", "value", isDark)}
+        {...formatHorizontalStackedBar(chartData, "name", "value")}
       />
 
       {/* ch_is_mobile companion signal */}

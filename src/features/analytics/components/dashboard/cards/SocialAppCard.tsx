@@ -2,12 +2,10 @@
 /**
  * SocialAppCard — shows share of clicks from mobile in-app browsers.
  */
-import { Smartphone } from "lucide-react";
 import { Alert, Box, Card, CardContent, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import {
   elevationLightTokens,
   elevationTokens,
@@ -66,11 +64,7 @@ export function SocialAppCard({ data }: Props) {
         }}
       >
         <CardContent>
-          <Typography
-            variant="subtitle2"
-            sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}
-          >
-            <Smartphone {...ICON_MD} />
+          <Typography variant="subtitle2" sx={{ mb: 1 }}>
             {t("dashboard.socialApp.title")}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
@@ -103,11 +97,7 @@ export function SocialAppCard({ data }: Props) {
       }}
     >
       <CardContent>
-        <Typography
-          variant="subtitle2"
-          sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}
-        >
-          <Smartphone {...ICON_MD} />
+        <Typography variant="subtitle2" sx={{ mb: 1 }}>
           {t("dashboard.socialApp.title")}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>

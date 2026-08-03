@@ -2,13 +2,12 @@
 import { Box, Grid, Typography, Stack, LinearProgress } from "@mui/material";
 import { Globe } from "lucide-react";
 
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-import { getStandardChartColors } from "@/lib/theme";
+import { dataVizPalette } from "@/lib/theme/dataViz";
 import type { TimezoneAnalysis } from "@/types";
 
 interface TimezoneDistributionChartProps {
@@ -21,10 +20,7 @@ interface TimezoneDistributionChartProps {
 export function TimezoneDistributionChart({
   timezoneAnalysis,
 }: TimezoneDistributionChartProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
-  const chartColors = getStandardChartColors(theme);
 
   if (!timezoneAnalysis || timezoneAnalysis.length === 0) {
     return (
@@ -71,10 +67,6 @@ export function TimezoneDistributionChart({
                 },
               ]}
               options={{
-                chart: {
-                  type: "bar",
-                },
-                colors: [chartColors.info.main],
                 plotOptions: {
                   bar: {
                     borderRadius: 6,
@@ -90,38 +82,11 @@ export function TimezoneDistributionChart({
                     return val.toLocaleString();
                   },
                   offsetX: 30,
-                  style: {
-                    fontSize: "12px",
-                    colors: [isDark ? "#fff" : "#333"],
-                  },
                 },
                 xaxis: {
                   categories: chartData.map((d) => d.x),
-                  labels: {
-                    style: {
-                      colors: isDark
-                        ? "rgba(255, 255, 255, 0.85)"
-                        : "rgba(0, 0, 0, 0.75)",
-                    },
-                  },
-                },
-                yaxis: {
-                  labels: {
-                    style: {
-                      colors: isDark
-                        ? "rgba(255, 255, 255, 0.85)"
-                        : "rgba(0, 0, 0, 0.75)",
-                      fontSize: "11px",
-                    },
-                  },
-                },
-                grid: {
-                  borderColor: isDark
-                    ? "rgba(255, 255, 255, 0.1)"
-                    : "rgba(0, 0, 0, 0.1)",
                 },
                 tooltip: {
-                  theme: isDark ? "dark" : "light",
                   y: {
                     formatter(val: number, opts?: { dataPointIndex?: number }) {
                       const dataPointIndex = opts?.dataPointIndex;
@@ -182,14 +147,10 @@ export function TimezoneDistributionChart({
                       bgcolor: "action.hover",
                       "& .MuiLinearProgress-bar": {
                         borderRadius: 3,
-                        bgcolor:
-                          index === 0
-                            ? chartColors.success.main
-                            : index === 1
-                              ? chartColors.info.main
-                              : index === 2
-                                ? chartColors.warning.main
-                                : chartColors.primary.main,
+                        // One flat tone for every row — a per-rank rainbow
+                        // (success/info/warning) implied a meaning ("top 3")
+                        // that isn't real; the numbering already says that.
+                        bgcolor: dataVizPalette.primary,
                       },
                     }}
                   />

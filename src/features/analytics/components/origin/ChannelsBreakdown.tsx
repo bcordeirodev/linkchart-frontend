@@ -1,10 +1,8 @@
 "use client";
-import { Radio } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { tDynamic } from "@/lib/i18n/tDynamic";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import type { TrafficChannel } from "@/features/analytics/hooks/useInsightsData";
@@ -57,7 +55,6 @@ export function ChannelsBreakdown({ channels }: ChannelsBreakdownProps) {
     <ChartCard
       title={t("origin.sections.channels")}
       subtitle={t("origin.sections.channelsDesc")}
-      icon={<Radio {...ICON_MD} />}
     >
       <HorizontalBreakdownBars items={items} />
     </ChartCard>

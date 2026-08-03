@@ -5,7 +5,7 @@ import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { tDynamic } from "@/lib/i18n/tDynamic";
-import { chartPalette } from "@/lib/theme/colors";
+import { dataVizPalette } from "@/lib/theme/dataViz";
 import {
   elevationLightTokens,
   elevationTokens,
@@ -21,9 +21,11 @@ import {
   type HorizontalBreakdownItem,
 } from "../audience/HorizontalBreakdownBars";
 
-// Same canonical series palette as every other chart (via ApexChartWrapper) —
-// a bespoke rainbow here made this card look like a different product.
-const CONTINENT_COLORS = [...chartPalette];
+// Same canonical dataViz palette as every other chart (via ApexChartWrapper) —
+// a bespoke rainbow here made this card look like a different product. Cycles
+// through the 5 blue-dominant tones, same as before with the 8-tone
+// `chartPalette` it replaces.
+const CONTINENT_COLORS = Object.values(dataVizPalette);
 
 /** Props for {@link ContinentBreakdown}. */
 interface ContinentBreakdownProps {
@@ -80,12 +82,8 @@ export function ContinentBreakdown({
             sx={{
               fontWeight: 600,
               mb: 2,
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
             }}
           >
-            <Globe size={16} strokeWidth={1.5} />
             {t("geographic.continents.title")}
           </Typography>
           <AnalyticsEmptyState
@@ -126,12 +124,8 @@ export function ContinentBreakdown({
           sx={{
             fontWeight: 600,
             mb: 0.5,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
           }}
         >
-          <Globe size={16} strokeWidth={1.5} />
           {t("geographic.continents.title")}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>

@@ -52,17 +52,6 @@ export const insightsChartRowSx = {
   gap: 2,
 } as const;
 
-/** Metric cards row (up to 4 columns) without MUI Grid negative margins. */
-export const insightsMetricRowSx = {
-  display: "grid",
-  gridTemplateColumns: {
-    xs: "1fr 1fr",
-    sm: "repeat(2, 1fr)",
-    lg: "repeat(4, 1fr)",
-  },
-  gap: 2,
-} as const;
-
 /** Grouped block inside a traffic/insights paper (channels, sources, etc.). */
 export function insightsSectionBlockSx(theme: Theme) {
   return {

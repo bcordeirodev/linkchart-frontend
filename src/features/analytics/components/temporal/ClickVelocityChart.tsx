@@ -57,51 +57,16 @@ export function ClickVelocityChart({ data }: ClickVelocityChartProps) {
 
   const options = useMemo(
     () => ({
-      chart: {
-        type: "bar" as const,
-        toolbar: { show: false },
-        background: "transparent",
-      },
       plotOptions: {
-        bar: {
-          horizontal: true,
-          borderRadius: 4,
-          barHeight: "55%",
-          distributed: false,
-        },
+        bar: { horizontal: true, borderRadius: 4, barHeight: "55%" },
       },
       dataLabels: {
         enabled: true,
         formatter: (val: number) =>
           totalCount > 0 ? `${((val / totalCount) * 100).toFixed(1)}%` : "0%",
-        style: {
-          fontSize: "11px",
-          colors: [isDark ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0.7)"],
-        },
       },
-      colors: [theme.palette.primary.main],
-      xaxis: {
-        categories: bucketLabels,
-        labels: {
-          style: {
-            colors: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-            fontSize: "11px",
-          },
-        },
-      },
-      yaxis: {
-        labels: {
-          style: {
-            colors: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-            fontSize: "12px",
-          },
-        },
-      },
-      grid: {
-        borderColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
-      },
+      xaxis: { categories: bucketLabels },
       tooltip: {
-        theme: isDark ? ("dark" as const) : ("light" as const),
         y: {
           formatter: (val: number) =>
             `${val.toLocaleString()} ${t("temporal.chart.clicks")}`,
@@ -109,7 +74,7 @@ export function ClickVelocityChart({ data }: ClickVelocityChartProps) {
       },
       legend: { show: false },
     }),
-    [bucketLabels, totalCount, isDark, theme, t],
+    [bucketLabels, totalCount, t],
   );
 
   const series = useMemo(

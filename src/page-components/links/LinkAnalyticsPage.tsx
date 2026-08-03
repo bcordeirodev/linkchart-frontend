@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 import { memo, useMemo, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { LinkAnalyticsTabsOptimized } from "@/features/links/components/analytics/LinkAnalyticsTabs";
@@ -45,17 +45,21 @@ function LinkAnalyticsPage({ id }: Props) {
   return (
     <AuthGuardRedirect auth={["user", "admin"]}>
       <ResponsiveContainer variant="page">
-        <LinkActions
-          linkId={id}
-          currentView="analytics"
-          slug={linkInfo?.slug}
-          shortUrl={linkInfo?.short_url}
-          title={linkInfo?.title}
-        />
+        <Box className="reveal reveal-1">
+          <LinkActions
+            linkId={id}
+            currentView="analytics"
+            slug={linkInfo?.slug}
+            shortUrl={linkInfo?.short_url}
+            title={linkInfo?.title}
+          />
+        </Box>
 
-        <Suspense>
-          <LinkAnalyticsTabsOptimized {...tabsProps} />
-        </Suspense>
+        <Box className="reveal reveal-2">
+          <Suspense>
+            <LinkAnalyticsTabsOptimized {...tabsProps} />
+          </Suspense>
+        </Box>
       </ResponsiveContainer>
     </AuthGuardRedirect>
   );

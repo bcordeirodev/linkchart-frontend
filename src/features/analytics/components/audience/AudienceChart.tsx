@@ -2,11 +2,9 @@
 import { useState } from "react";
 import { Box, Stack } from "@mui/material";
 import { ShieldCheck, Smartphone, Wrench } from "lucide-react";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_SM } from "@/lib/theme/iconDefaults";
-import { chartByType } from "@/lib/theme/colors";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { AnalyticsSubTabs, resolveEnabledSubTab } from "@/shared/ui/navigation";
@@ -192,14 +190,9 @@ export function AudienceChart({
   activeTab: activeTabProp,
   onTabChange,
 }: AudienceChartProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
   const [localTab, setLocalTab] = useState(0);
   const activeTab = activeTabProp !== undefined ? activeTabProp : localTab;
-
-  const devicesPalette = chartByType.devices;
-  const performanceBarColor = devicesPalette.tablet;
 
   // Derive chart-ready data for the two tabs that still keep their own
   // bar/donut layout inside "Detalhes técnicos" — everything else computes
@@ -340,10 +333,8 @@ export function AudienceChart({
               <AudiencePerformanceTab
                 performanceChartData={performanceChartData}
                 devicePerformance={devicePerformance}
-                isDark={isDark}
                 outlinedCardSx={outlinedCardSx}
                 itemRowSx={itemRowSx}
-                performanceBarColor={performanceBarColor}
               />
             ) : (
               <AnalyticsEmptyState title={t("audience.noData")} />
@@ -353,7 +344,6 @@ export function AudienceChart({
               <AudienceRenderingEngineTab
                 renderingEngineChartData={renderingEngineChartData}
                 renderingEngine={renderingEngine}
-                isDark={isDark}
                 outlinedCardSx={outlinedCardSx}
                 itemRowSx={itemRowSx}
               />

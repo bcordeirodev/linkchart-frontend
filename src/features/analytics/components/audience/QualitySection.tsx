@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Info, ShieldCheck, ShieldAlert, Bot } from "lucide-react";
+import { Info, ShieldAlert, Bot } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
@@ -21,8 +21,8 @@ import {
   elevationTokens,
   radiusTokens,
 } from "@/lib/theme/designSystem";
+import { SectionLabel } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
-import { SectionDivider } from "@/shared/ui/SectionDivider";
 import type { QualityBreakdown, QualityTier } from "@/types/analytics/audience";
 
 import {
@@ -199,7 +199,11 @@ export function QualitySection({
   return (
     <Box>
       {showTitle ? (
-        <SectionDivider title={t("audience.quality.title")} />
+        <Box sx={{ mb: 2 }}>
+          <SectionLabel headingLevel={2}>
+            {t("audience.quality.title")}
+          </SectionLabel>
+        </Box>
       ) : null}
 
       {"phase_available" in quality && !quality.phase_available && (
@@ -220,7 +224,6 @@ export function QualitySection({
       <ChartCard
         title={t("audience.quality.distribution")}
         subtitle={t("audience.quality.description")}
-        icon={<ShieldCheck {...ICON_MD} />}
       >
         {tierItems.length > 0 ? (
           <HorizontalBreakdownBars items={tierItems} />

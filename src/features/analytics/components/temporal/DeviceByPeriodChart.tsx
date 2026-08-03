@@ -1,11 +1,11 @@
 "use client";
 import { Box, Grid, Typography, Stack } from "@mui/material";
 import { Monitor, Smartphone, Tablet } from "lucide-react";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
+import { dataVizPalette } from "@/lib/theme/dataViz";
 import type { DeviceByPeriodEntry } from "@/types/analytics/temporal";
 
 interface DeviceByPeriodChartProps {
@@ -13,9 +13,7 @@ interface DeviceByPeriodChartProps {
 }
 
 export function DeviceByPeriodChart({ data }: DeviceByPeriodChartProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
 
   if (!data || data.length === 0) {
     return null;
@@ -45,47 +43,22 @@ export function DeviceByPeriodChart({ data }: DeviceByPeriodChartProps) {
   const grandTotal =
     totalByDevice.desktop + totalByDevice.mobile + totalByDevice.tablet;
 
-  const labelStyle = {
-    colors: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-    fontSize: "11px" as const,
-  };
-
   const options = {
-    chart: {
-      type: "bar" as const,
-      stacked: true,
-      toolbar: { show: false },
-      animations: { enabled: true, speed: 600 },
-    },
+    chart: { stacked: true },
     plotOptions: {
       bar: { borderRadius: 4, columnWidth: "55%" },
     },
-    dataLabels: { enabled: false },
-    colors: ["#1976d2", "#43a047", "#fb8c00"],
-    xaxis: {
-      categories,
-      labels: { style: labelStyle },
-    },
+    xaxis: { categories },
     yaxis: {
-      labels: {
-        style: labelStyle,
-        formatter: (v: number) => v.toLocaleString(),
-      },
-    },
-    grid: {
-      borderColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+      labels: { formatter: (v: number) => v.toLocaleString() },
     },
     tooltip: {
-      theme: isDark ? "dark" : "light",
       y: {
         formatter: (v: number) =>
           `${v.toLocaleString()} ${t("temporal.chart.clicks")}`,
       },
     },
-    legend: {
-      position: "top" as const,
-      labels: { colors: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)" },
-    },
+    legend: { position: "top" as const },
   };
 
   const series = [
@@ -97,23 +70,26 @@ export function DeviceByPeriodChart({ data }: DeviceByPeriodChartProps) {
   const pct = (n: number) =>
     grandTotal > 0 ? `${((n / grandTotal) * 100).toFixed(1)}%` : "0%";
 
+  // Same order as `series` above — the base theme colors stacked-bar series
+  // by array position (primary/secondary/tertiary), so these three tones
+  // match the actual bar segments the reader sees.
   const deviceRows = [
     {
       label: t("temporal.devicePeriod.desktop"),
       icon: <Monitor size={18} />,
-      color: "#1976d2",
+      color: dataVizPalette.primary,
       count: totalByDevice.desktop,
     },
     {
       label: t("temporal.devicePeriod.mobile"),
       icon: <Smartphone size={18} />,
-      color: "#43a047",
+      color: dataVizPalette.secondary,
       count: totalByDevice.mobile,
     },
     {
       label: t("temporal.devicePeriod.tablet"),
       icon: <Tablet size={18} />,
-      color: "#fb8c00",
+      color: dataVizPalette.tertiary,
       count: totalByDevice.tablet,
     },
   ];

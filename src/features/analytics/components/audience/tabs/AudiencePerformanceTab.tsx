@@ -1,7 +1,5 @@
 "use client";
 import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
-import { Zap } from "lucide-react";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
@@ -40,14 +38,10 @@ export interface AudiencePerformanceTabProps {
   performanceChartData: PerformanceChartItem[];
   /** Raw device performance entries for the details list. */
   devicePerformance: DevicePerformanceData[];
-  /** Whether the theme is in dark mode. */
-  isDark: boolean;
   /** Outlined card sx (no shadow). */
   outlinedCardSx: Record<string, unknown>;
   /** Row item sx for list rows. */
   itemRowSx: Record<string, unknown>;
-  /** Bar color for the performance chart. */
-  performanceBarColor: string;
 }
 
 /**
@@ -66,10 +60,8 @@ export interface AudiencePerformanceTabProps {
 export function AudiencePerformanceTab({
   performanceChartData,
   devicePerformance,
-  isDark,
   outlinedCardSx,
   itemRowSx,
-  performanceBarColor,
 }: AudiencePerformanceTabProps) {
   const { t } = useTranslation("analytics");
 
@@ -77,31 +69,15 @@ export function AudiencePerformanceTab({
     <Box sx={twoColGridSx}>
       <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
         <CardContent>
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              fontWeight: 600,
-            }}
-          >
-            <Zap {...ICON_MD} /> {t("audience.chart.devicePerformance")}
+          <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
+            {t("audience.chart.devicePerformance")}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
             {t("audience.chart.tabDescriptions.performance")}
           </Typography>
           <ApexChartWrapper
             type="bar"
-            {...formatBarChart(
-              performanceChartData,
-              "name",
-              "value",
-              performanceBarColor,
-              false,
-              isDark,
-            )}
+            {...formatBarChart(performanceChartData, "name", "value", false)}
             size="standard"
           />
         </CardContent>

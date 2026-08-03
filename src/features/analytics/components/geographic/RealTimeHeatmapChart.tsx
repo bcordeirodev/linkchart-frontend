@@ -6,7 +6,6 @@
 import {
   RefreshCw,
   Maximize2,
-  Globe,
   Info,
   Zap,
   MapPin,
@@ -438,26 +437,20 @@ export function RealTimeHeatmapChart({
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                {/* Embedded in a parent card, the title and its icon would sit
-                    under the card's own heading — a title inside a title. */}
+                {/* Embedded in a parent card, the title would sit under the
+                    card's own heading — a title inside a title. */}
                 {bare ? null : (
-                  <>
-                    <Globe
-                      {...ICON_MD}
-                      style={{ color: "var(--mui-palette-primary-main)" }}
-                    />
-                    <Typography
-                      variant="subtitle1"
-                      sx={{
-                        fontWeight: 600,
-                        position: "relative",
-                        zIndex: 1,
-                        mt: 1,
-                      }}
-                    >
-                      {displayTitle}
-                    </Typography>
-                  </>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontWeight: 600,
+                      position: "relative",
+                      zIndex: 1,
+                      mt: 1,
+                    }}
+                  >
+                    {displayTitle}
+                  </Typography>
                 )}
                 {onRefresh ? (
                   <Chip

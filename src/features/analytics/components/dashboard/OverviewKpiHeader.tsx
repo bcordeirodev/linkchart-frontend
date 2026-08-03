@@ -1,10 +1,11 @@
 "use client";
-import { Box, Card, Typography } from "@mui/material";
-import { useTheme, alpha } from "@mui/material/styles";
-import { TrendingUp, Users, Globe, BarChart3, ShieldCheck } from "lucide-react";
+import { Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { radiusTokens } from "@/lib/theme/designSystem";
+import { OverviewMetricRow } from "@/shared/ui/base";
+
+import type { OverviewMetric } from "@/shared/ui/base";
 
 /** Props accepted by the {@link OverviewKpiHeader} component. */
 interface OverviewKpiHeaderProps {
@@ -25,10 +26,12 @@ interface OverviewKpiHeaderProps {
 }
 
 /**
- * Overview KPI header — Option A: a dominant "hero" metric (total clicks) with a
- * sparkline and optional trend pill on the left, and four compact KPI tiles on
- * the right. Presentational only; LinkDashboard maps the dashboard payload into
- * these resolved props.
+ * Overview KPI header — "instrumento técnico" redesign (2026-08-03): five bare
+ * numbers (total clicks, unique visitors, countries, avg daily, quality) in a
+ * single {@link OverviewMetricRow}, hairline-separated, no card/icon-chip.
+ * Total clicks keeps its compact area sparkline and, when available, the
+ * period-over-period trend folded into its caption. Presentational only —
+ * `LinkDashboard` maps the dashboard payload into these resolved props.
  */
 export function OverviewKpiHeader({
   totalClicks,
@@ -43,213 +46,40 @@ export function OverviewKpiHeader({
   const { t } = useTranslation("analytics");
   const { t: tl } = useTranslation("links");
 
-  const tiles = [
+  const totalClicksCaption =
+    trendPct != null
+      ? // A drop in clicks is information, not a failure — the arrow just
+        // reports direction, it never turns red (red is reserved for real
+        // problems elsewhere in the app).
+        `${trendPct >= 0 ? "▲" : "▼"} ${Math.abs(trendPct)}% · ${tl("metrics.totalClicksSubtitle")}`
+      : tl("metrics.totalClicksSubtitle");
+
+  const metrics: OverviewMetric[] = [
+    {
+      label: t("metrics.totalClicks"),
+      value: totalClicks.toLocaleString(),
+      caption: totalClicksCaption,
+      sparkline: <Sparkline data={sparkline} color={theme.palette.info.main} />,
+    },
     {
       label: t("metrics.uniqueVisitors"),
       value: uniqueVisitors.toLocaleString(),
-      icon: <Users size={14} />,
-      color: theme.palette.primary.main,
     },
     {
       label: t("metrics.countriesReached"),
       value: countries.toString(),
-      icon: <Globe size={14} />,
-      color: theme.palette.secondary.main,
     },
     {
       label: t("metrics.avgDailyClicks"),
       value: avgDaily ?? t("metrics.noData"),
-      icon: <BarChart3 size={14} />,
-      color: theme.palette.warning.main,
     },
     {
       label: t("metrics.quality"),
       value: qualityLabel,
-      icon: <ShieldCheck size={14} />,
-      color: theme.palette.success.main,
     },
   ];
 
-  return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: { xs: "1fr", md: "1.45fr 1fr" },
-        gap: { xs: 2, md: 1.75 },
-        mb: 2,
-      }}
-    >
-      {/* Hero — total clicks */}
-      <Card
-        sx={{
-          p: { xs: 2.25, sm: 2.5 },
-          border: `1px solid ${theme.palette.divider}`,
-          borderRadius: `${radiusTokens.md}px`,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, mb: 1.5 }}>
-          <Box
-            sx={{
-              width: 30,
-              height: 30,
-              borderRadius: `${radiusTokens.sm}px`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              // Solid-enough fill for a white glyph in both themes — same
-              // chip language as the /links metric cards.
-              bgcolor: alpha(
-                theme.palette.info.main,
-                theme.palette.mode === "dark" ? 0.55 : 0.9,
-              ),
-              color: theme.palette.common.white,
-              flexShrink: 0,
-            }}
-          >
-            <TrendingUp size={17} />
-          </Box>
-          <Box sx={{ minWidth: 0 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: 500,
-                color: "text.secondary",
-                lineHeight: 1.2,
-              }}
-            >
-              {t("metrics.totalClicks")}
-            </Typography>
-            <Typography variant="caption" sx={{ color: "text.disabled" }}>
-              {tl("metrics.totalClicksSubtitle")}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Box sx={{ display: "flex", alignItems: "flex-end", gap: 1.25 }}>
-          <Typography
-            component="div"
-            sx={{
-              fontSize: { xs: "2.2rem", sm: "2.6rem" },
-              fontWeight: 700,
-              lineHeight: 1,
-              letterSpacing: "-0.02em",
-              fontVariantNumeric: "tabular-nums",
-              color: "text.primary",
-            }}
-          >
-            {totalClicks.toLocaleString()}
-          </Typography>
-          {trendPct != null ? (
-            // A drop in clicks is information, not a failure — negative
-            // variation stays neutral; red is reserved for real problems.
-            <Box
-              component="span"
-              sx={{
-                mb: 0.75,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 0.5,
-                px: 1,
-                py: 0.375,
-                borderRadius: 999,
-                fontSize: "0.72rem",
-                fontWeight: 600,
-                color: trendPct >= 0 ? "success.main" : "text.secondary",
-                bgcolor: alpha(
-                  trendPct >= 0
-                    ? theme.palette.success.main
-                    : theme.palette.text.secondary,
-                  0.12,
-                ),
-              }}
-            >
-              {trendPct >= 0 ? "▲" : "▼"} {Math.abs(trendPct)}%
-            </Box>
-          ) : null}
-        </Box>
-
-        <Sparkline data={sparkline} color={theme.palette.info.main} />
-      </Card>
-
-      {/* 2×2 compact KPI tiles */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 1.5,
-        }}
-      >
-        {tiles.map((tile) => (
-          <Card
-            key={tile.label}
-            sx={{
-              p: 1.75,
-              border: `1px solid ${theme.palette.divider}`,
-              borderRadius: `${radiusTokens.md}px`,
-              display: "flex",
-              flexDirection: "column",
-              gap: 1,
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 0.5,
-              }}
-            >
-              <Typography
-                variant="caption"
-                sx={{
-                  color: "text.secondary",
-                  fontWeight: 500,
-                  minWidth: 0,
-                  // Let the label wrap on phones instead of truncating
-                  // ("Qualidade", "Média diária" were cut to "Qualida…").
-                  whiteSpace: { xs: "normal", sm: "nowrap" },
-                  lineHeight: 1.2,
-                }}
-              >
-                {tile.label}
-              </Typography>
-              <Box
-                sx={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: `${radiusTokens.sm}px`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  bgcolor: alpha(
-                    tile.color,
-                    theme.palette.mode === "dark" ? 0.55 : 0.9,
-                  ),
-                  color: theme.palette.common.white,
-                  flexShrink: 0,
-                }}
-              >
-                {tile.icon}
-              </Box>
-            </Box>
-            <Typography
-              sx={{
-                fontSize: "1.3rem",
-                fontWeight: 600,
-                lineHeight: 1,
-                fontVariantNumeric: "tabular-nums",
-                color: "text.primary",
-              }}
-            >
-              {tile.value}
-            </Typography>
-          </Card>
-        ))}
-      </Box>
-    </Box>
-  );
+  return <OverviewMetricRow metrics={metrics} />;
 }
 
 /** Props accepted by the internal {@link Sparkline} helper. */
@@ -263,23 +93,23 @@ interface SparklineProps {
 /**
  * Lightweight area sparkline rendered as an inline SVG. Scales to the container
  * width via `preserveAspectRatio="none"`; renders an empty spacer when there is
- * no data so the hero card keeps a stable height.
+ * no data so the metric row keeps a stable height.
  */
 function Sparkline({ data, color }: SparklineProps) {
-  if (!data.length) return <Box sx={{ mt: 2, height: 48 }} />;
+  if (!data.length) return <Box sx={{ height: 40 }} />;
   const max = Math.max(...data, 1);
   const step = 320 / Math.max(1, data.length - 1);
   const pts = data.map(
-    (v, i) => `${(i * step).toFixed(1)},${(48 - (v / max) * 42).toFixed(1)}`,
+    (v, i) => `${(i * step).toFixed(1)},${(40 - (v / max) * 36).toFixed(1)}`,
   );
   const line = `M${pts.join(" L")}`;
-  const area = `${line} L320,48 L0,48 Z`;
+  const area = `${line} L320,40 L0,40 Z`;
   return (
-    <Box sx={{ mt: 2 }} aria-hidden="true">
+    <Box aria-hidden="true">
       <svg
         width="100%"
-        height="48"
-        viewBox="0 0 320 48"
+        height="40"
+        viewBox="0 0 320 40"
         preserveAspectRatio="none"
         focusable="false"
       >

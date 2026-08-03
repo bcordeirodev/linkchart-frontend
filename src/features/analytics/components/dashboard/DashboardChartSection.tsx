@@ -6,7 +6,7 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { createPresetAnimations } from "@/lib/theme";
-import { SectionDivider } from "@/shared/ui/SectionDivider";
+import { SectionLabel } from "@/shared/ui/base";
 
 import type { DashboardData } from "@/types/analytics/dashboard";
 
@@ -162,7 +162,7 @@ export const DashboardChartSection = React.memo(function DashboardChartSection({
 
   return (
     <Stack spacing={{ xs: 2, md: 3 }}>
-      <SectionDivider title={sectionTitle} mb={0} />
+      <SectionLabel headingLevel={2}>{sectionTitle}</SectionLabel>
 
       <Box
         sx={{

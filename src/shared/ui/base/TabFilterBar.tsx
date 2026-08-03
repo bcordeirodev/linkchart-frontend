@@ -51,9 +51,9 @@ interface TabFilterBarProps {
    */
   onClearAll?: () => void;
   /**
-   * Render as a slim strip without the "FILTERS" header block or its divider.
-   * The clear-all (×) affordance moves to the end of the chips row.
-   * Defaults to `false`.
+   * Render as a boxless, level-0 control row — no card/border of its own —
+   * without the "FILTERS" header block or its divider. The clear-all (×)
+   * affordance moves to the end of the chips row. Defaults to `false`.
    */
   attached?: boolean;
 }
@@ -111,13 +111,10 @@ export function TabFilterBar({
       sx={
         attached
           ? {
-              px: 2,
-              py: 1.25,
+              // Level 0 — no card of its own. The caller supplies whatever
+              // hairline separates this control row from the content below
+              // (same "toolbar is boxless" rule as the /links search/sort row).
               mb: 2,
-              bgcolor: "rgba(255,255,255,0.02)",
-              borderRadius: "8px",
-              border: "1px solid",
-              borderColor: "divider",
             }
           : {
               display: "flex",

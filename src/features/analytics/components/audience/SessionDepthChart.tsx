@@ -1,28 +1,17 @@
 "use client";
-import {
-  MousePointer2,
-  TrendingUp,
-  Star,
-  BarChart3,
-  Lightbulb,
-} from "lucide-react";
 import { Box, Typography, Stack } from "@mui/material";
 
-import { ICON_LG } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { getChartColor } from "@/lib/theme/colors";
-import { AnalyticsEmptyState } from "@/shared/ui/base";
+import { AnalyticsEmptyState, OverviewMetricRow } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import {
   INSIGHTS_BLOCK_PAD,
   insightsChartPanelSx,
-  insightsMetricRowSx,
   insightsSectionHeadingSx,
   insightsTileSx,
 } from "../insights/insightsLayout";
-import { MetricCardOptimized as MetricCard } from "@/shared/ui/base/MetricCardOptimized";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
 /**
@@ -94,12 +83,11 @@ export function SessionDepthChart({
       ? Math.round((data.power_users_count / totalSessions) * 100 * 10) / 10
       : 0;
 
-  // Bar chart: click distribution histogram
+  // Bar chart: click distribution histogram. Only structural options are set
+  // here — no colors/grid/tooltip.theme/axis-label styling — so the shared
+  // base theme from `ApexChartWrapper` (dataVizPalette, mono axes, dark
+  // tooltip) shows through unmodified.
   const distributionBarOptions = {
-    chart: {
-      type: "bar" as const,
-      toolbar: { show: false },
-    },
     plotOptions: {
       bar: {
         borderRadius: 4,
@@ -112,32 +100,18 @@ export function SessionDepthChart({
       enabled: true,
       formatter: (val: number) => `${val}%`,
       offsetY: -20,
-      style: {
-        fontSize: "12px",
-        colors: [theme.palette.text.primary],
-      },
     },
     xaxis: {
       categories: data.session_distribution.map((item) =>
         t("insights.session.clickBucket", { count: item.clicks_count }),
       ),
-      labels: {
-        style: {
-          colors: theme.palette.text.primary,
-        },
-      },
     },
     yaxis: {
       labels: {
-        style: {
-          colors: theme.palette.text.primary,
-        },
         formatter: (val: number) => `${val}%`,
       },
     },
-    colors: [getChartColor(0)],
     tooltip: {
-      theme: theme.palette.mode,
       y: {
         formatter: (
           val: number,
@@ -182,19 +156,7 @@ export function SessionDepthChart({
       <Box sx={{ p: INSIGHTS_BLOCK_PAD }}>
         {showTitle ? (
           <Box sx={{ mb: 2 }}>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                fontWeight: 600,
-              }}
-            >
-              <MousePointer2
-                {...ICON_LG}
-                style={{ color: "var(--mui-palette-primary-main)" }}
-              />
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {displayTitle}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
@@ -204,35 +166,27 @@ export function SessionDepthChart({
         ) : null}
 
         {/* Real Metrics — no fabricated scores */}
-        <Box
-          sx={{
-            ...insightsMetricRowSx,
-            mb: 3,
-            gridTemplateColumns: { xs: "1fr 1fr", sm: "repeat(3, 1fr)" },
-          }}
-        >
-          <MetricCard
-            title={t("insights.session.avgDepth")}
-            value={data.avg_session_clicks}
-            icon={<MousePointer2 {...ICON_LG} />}
-            color="primary"
-            subtitle={t("insights.session.clicksPerSession")}
-          />
-          <MetricCard
-            title={t("insights.session.powerUsers")}
-            value={`${powerUsersPct}%`}
-            icon={<Star {...ICON_LG} />}
-            color="warning"
-            subtitle={t("insights.session.powerUsersSub", {
-              n: data.power_users_count,
-            })}
-          />
-          <MetricCard
-            title={t("insights.session.maxClicks")}
-            value={data.max_session_depth}
-            icon={<TrendingUp {...ICON_LG} />}
-            color="info"
-            subtitle={t("insights.session.inSession")}
+        <Box sx={{ mb: 3 }}>
+          <OverviewMetricRow
+            metrics={[
+              {
+                label: t("insights.session.avgDepth"),
+                value: data.avg_session_clicks,
+                caption: t("insights.session.clicksPerSession"),
+              },
+              {
+                label: t("insights.session.powerUsers"),
+                value: `${powerUsersPct}%`,
+                caption: t("insights.session.powerUsersSub", {
+                  n: data.power_users_count,
+                }),
+              },
+              {
+                label: t("insights.session.maxClicks"),
+                value: data.max_session_depth,
+                caption: t("insights.session.inSession"),
+              },
+            ]}
           />
         </Box>
 
@@ -255,7 +209,6 @@ export function SessionDepthChart({
         {/* Distribution Detail tiles */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle1" sx={insightsSectionHeadingSx}>
-            <BarChart3 size={16} strokeWidth={1.5} />
             {t("insights.session.distributionDetails")}
           </Typography>
           <Box
@@ -297,16 +250,7 @@ export function SessionDepthChart({
         {/* Insights panel */}
         <Box sx={insightsChartPanelSx(theme)}>
           <Stack spacing={1.5}>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                fontWeight: 600,
-              }}
-            >
-              <Lightbulb size={16} strokeWidth={1.5} />
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {t("insights.session.sessionInsights")}
             </Typography>
 

@@ -1,10 +1,8 @@
 "use client";
 import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
-import { Monitor } from "lucide-react";
-import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTranslation } from "react-i18next";
 
-import { formatPieChart } from "@/features/analytics/utils/chartFormatters";
+import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
 /**
@@ -39,8 +37,6 @@ export interface AudienceRenderingEngineTabProps {
   renderingEngineChartData: RenderingEngineChartItem[];
   /** Raw rendering engine entries for the ranked list. */
   renderingEngine: RenderingEngineEntry[];
-  /** Whether the theme is in dark mode. */
-  isDark: boolean;
   /** Outlined card sx (no shadow). */
   outlinedCardSx: Record<string, unknown>;
   /** Row item sx for list rows. */
@@ -50,8 +46,8 @@ export interface AudienceRenderingEngineTabProps {
 /**
  * Renders the Rendering Engine tab content for the AudienceChart.
  *
- * Two equal-width cards: donut of rendering engine distribution on the left and
- * a ranked list of the top engines on the right.
+ * Two equal-width cards: horizontal stacked bar of rendering engine
+ * distribution on the left and a ranked list of the top engines on the right.
  *
  * Laid out with CSS grid, not MUI's `Grid container spacing`. That one fakes
  * gaps with a negative margin on the container plus padding on the items — and
@@ -62,7 +58,6 @@ export interface AudienceRenderingEngineTabProps {
 export function AudienceRenderingEngineTab({
   renderingEngineChartData,
   renderingEngine,
-  isDark,
   outlinedCardSx,
   itemRowSx,
 }: AudienceRenderingEngineTabProps) {
@@ -72,29 +67,18 @@ export function AudienceRenderingEngineTab({
     <Box sx={twoColGridSx}>
       <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
         <CardContent>
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              fontWeight: 600,
-            }}
-          >
-            <Monitor {...ICON_MD} />{" "}
+          <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
             {t("audience.chart.renderingEngineDistribution")}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
             {t("audience.chart.tabDescriptions.renderingEngine")}
           </Typography>
           <ApexChartWrapper
-            type="donut"
-            {...formatPieChart(
+            type="bar"
+            {...formatHorizontalStackedBar(
               renderingEngineChartData,
               "name",
               "value",
-              isDark,
             )}
             size="standard"
           />

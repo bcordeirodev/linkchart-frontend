@@ -1,15 +1,12 @@
 "use client";
-import { Clock } from "lucide-react";
 import { useMemo } from "react";
 import { Box, Typography, Grid, Stack, Divider } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { ICON_LG } from "@/lib/theme/iconDefaults";
-
 import {
   formatAreaChart,
   formatBarChart,
-  formatPieChart,
+  formatHorizontalStackedBar,
 } from "@/features/analytics/utils/chartFormatters";
 import { localizeWeekdayRows } from "@/features/analytics/utils/weekday";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
@@ -39,12 +36,6 @@ export interface TemporalPatternsTabProps {
   showWeekendComparison: boolean;
   /** Whether to show the business hours comparison chart. */
   showBusinessComparison: boolean;
-  /** Whether the theme is in dark mode. */
-  isDark: boolean;
-  /** Primary chart color. */
-  primaryColor: string;
-  /** Secondary chart color. */
-  secondaryColor: string;
 }
 
 /**
@@ -52,7 +43,11 @@ export interface TemporalPatternsTabProps {
  *
  * Shows the period summary bar charts, the pattern analysis insights card,
  * local-time area chart, and the optional weekend/business-hours comparisons.
- * All data is received via props — no hooks.
+ * All data is received via props — no hooks. Every chart's series color comes
+ * from `ApexChartWrapper`'s shared base theme (`dataVizPalette`) — no local
+ * override — and the former "Fim de semana vs dia de semana" pie is a single
+ * horizontal stacked bar, matching every other categorical breakdown in the
+ * redesigned app.
  */
 export function TemporalPatternsTab({
   hourlyData,
@@ -62,9 +57,6 @@ export function TemporalPatternsTab({
   businessHoursAnalysis,
   showWeekendComparison,
   showBusinessComparison,
-  isDark,
-  primaryColor,
-  secondaryColor,
 }: TemporalPatternsTabProps) {
   const { t } = useTranslation("analytics");
 
@@ -124,9 +116,7 @@ export function TemporalPatternsTab({
                       ],
                       "name",
                       "value",
-                      primaryColor,
                       false,
-                      isDark,
                     )}
                   />
                 </ChartCard>
@@ -146,9 +136,7 @@ export function TemporalPatternsTab({
                       sortedWeeklyByClicks,
                       "day_name",
                       "clicks",
-                      secondaryColor,
                       false,
-                      isDark,
                     )}
                   />
                 </ChartCard>
@@ -163,7 +151,6 @@ export function TemporalPatternsTab({
         <ChartCard
           title={t("temporal.chart.localTimePatterns")}
           subtitle={t("charts.descriptions.localTimePatterns")}
-          icon={<Clock {...ICON_LG} />}
         >
           <ApexChartWrapper
             type="area"
@@ -176,8 +163,6 @@ export function TemporalPatternsTab({
               })),
               "hour",
               "clicks",
-              primaryColor,
-              isDark,
             )}
             size="standard"
           />
@@ -210,7 +195,9 @@ export function TemporalPatternsTab({
         </ChartCard>
       )}
 
-      {/* Weekend vs Weekday — hidden when weekday/weekend segment is active */}
+      {/* Weekend vs Weekday — hidden when weekday/weekend segment is active.
+          Was a pie; donuts/pies are dead in this redesign, so it is now a
+          single horizontal stacked bar (weekday segment vs weekend segment). */}
       {weekendVsWeekday && showWeekendComparison && (
         <Box>
           <Grid container spacing={3}>
@@ -220,8 +207,8 @@ export function TemporalPatternsTab({
                 subtitle={t("charts.descriptions.weekendVsWeekday")}
               >
                 <ApexChartWrapper
-                  type="pie"
-                  {...formatPieChart(
+                  type="bar"
+                  {...formatHorizontalStackedBar(
                     [
                       {
                         name: t("temporal.chart.weekdays"),
@@ -234,7 +221,6 @@ export function TemporalPatternsTab({
                     ],
                     "name",
                     "value",
-                    isDark,
                   )}
                   size="standard"
                 />
@@ -313,9 +299,7 @@ export function TemporalPatternsTab({
                     ],
                     "name",
                     "value",
-                    primaryColor,
                     false,
-                    isDark,
                   )}
                   size="standard"
                 />

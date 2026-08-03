@@ -5,7 +5,7 @@ import { Flame, Globe2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { useResponsive } from "@/lib/theme";
-import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { AnalyticsSubTabs, resolveEnabledSubTab } from "@/shared/ui/navigation";
@@ -234,7 +234,6 @@ export function GeographicAnalysis({
                   <ChartCard
                     title={t("geographic.choropleth.title")}
                     subtitle={t("geographic.choropleth.subtitle")}
-                    icon={<Globe2 {...ICON_MD} />}
                   >
                     <GeographicChoropleth
                       countries={data?.top_countries || []}

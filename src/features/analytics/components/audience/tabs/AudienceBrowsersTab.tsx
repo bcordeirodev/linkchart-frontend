@@ -1,8 +1,7 @@
 "use client";
-import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { getChartColor } from "@/lib/theme/colors";
+import { dataVizPalette } from "@/lib/theme/dataViz";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import type { BrowserData } from "@/types";
 
@@ -27,6 +26,7 @@ export interface AudienceBrowsersTabProps {
 export function AudienceBrowsersTab({ browsers }: AudienceBrowsersTabProps) {
   const { t } = useTranslation("analytics");
 
+  const paletteTones = Object.values(dataVizPalette);
   const families = aggregateBrowsersByFamily(
     browsers,
     t("audience.extraCharts.others"),
@@ -36,14 +36,13 @@ export function AudienceBrowsersTab({ browsers }: AudienceBrowsersTabProps) {
     label: family.label,
     value: family.clicks,
     percentage: family.percentage,
-    color: getChartColor(index),
+    color: paletteTones[index % paletteTones.length],
   }));
 
   return (
     <ChartCard
       title={t("audience.chart.browserMarketShare")}
       subtitle={t("audience.chart.tabDescriptions.browsers")}
-      icon={<Globe size={16} strokeWidth={1.5} />}
     >
       <HorizontalBreakdownBars items={items} />
     </ChartCard>
