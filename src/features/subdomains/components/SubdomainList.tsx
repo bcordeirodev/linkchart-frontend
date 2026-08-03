@@ -22,33 +22,16 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useTranslation } from "react-i18next";
 
 import { typographyScale } from "@/lib/theme";
+import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+import { AppIcon } from "@/shared/ui/icons";
 
 import { useSubdomains } from "../hooks/useSubdomains";
+import { getSubdomainCardSx } from "../utils/cardSurface";
 
-import type { Theme } from "@mui/material/styles";
 import type { SubdomainItem } from "../types";
-
-/**
- * Translucent fill for this feature's in-page hairline cards (the address
- * row, the empty-list placeholder) — same formula as the global `MuiCard`
- * override (`alpha(white, 0.03)` dark / `alpha(black, 0.02)` light), applied
- * here via `EnhancedPaper`'s `sx` prop since `EnhancedPaper` itself defaults
- * to the solid `background.paper` fill. "Instrumento técnico" surface rule:
- * in-page cards read as a light veil over the page background, not an
- * opaque panel; the release confirmation dialog stays opaque (floating
- * surface, not covered by this helper).
- */
-function getSubdomainCardSx(theme: Theme): { backgroundColor: string } {
-  const isDark = theme.palette.mode === "dark";
-
-  return {
-    backgroundColor: isDark
-      ? alpha(theme.palette.common.white, 0.03)
-      : alpha(theme.palette.common.black, 0.02),
-  };
-}
 
 /** Formats an ISO timestamp as a short localized date (e.g. "12 jul 2026"). */
 function formatClaimedAt(iso: string, locale: string): string {
@@ -85,14 +68,31 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
     }
   };
 
+  const isDark = theme.palette.mode === "dark";
+
   return (
     <EnhancedPaper
       variant="outlined"
       animated={false}
-      sx={{ ...getSubdomainCardSx(theme), mb: 0 }}
+      sx={{
+        ...getSubdomainCardSx(theme),
+        mb: 0,
+        transition: `background-color ${theme.transitions.duration.short}ms ${theme.transitions.easing.easeInOut}, border-color ${theme.transitions.duration.short}ms ${theme.transitions.easing.easeInOut}`,
+        // Ganho de presença do gate: um leve banho de primary no hover em vez
+        // de só escurecer/clarear a borda — sinaliza "esta linha tem ações"
+        // sem depender de sombra.
+        "&:hover": {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            isDark ? 0.05 : 0.04,
+          ),
+          borderColor: alpha(theme.palette.primary.main, isDark ? 0.3 : 0.25),
+        },
+      }}
     >
       <Box
         sx={{
+          minHeight: 72,
           p: { xs: 1.75, sm: 2 },
           display: "flex",
           alignItems: "center",
@@ -110,9 +110,8 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
             sx={{
               fontFamily: typographyScale.code.fontFamily,
               fontWeight: 600,
-              fontSize: "0.95rem",
-              color:
-                theme.palette.mode === "dark" ? "common.white" : "text.primary",
+              fontSize: "1rem",
+              color: isDark ? "common.white" : "text.primary",
               wordBreak: "break-all",
               display: "block",
             }}
@@ -122,7 +121,7 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
           <Typography
             variant="caption"
             color="text.secondary"
-            sx={{ display: "block", mt: 0.25 }}
+            sx={{ display: "block", mt: 0.375 }}
           >
             {t("list.claimedAt", {
               date: formatClaimedAt(item.createdAt, i18n.language),
@@ -191,6 +190,7 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
  */
 export function SubdomainList() {
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("subdomains");
   const { subdomains, isLoading, release, isReleasing, releasingId } =
     useSubdomains();
@@ -212,7 +212,7 @@ export function SubdomainList() {
 
   if (isLoading) {
     return (
-      <Stack spacing={1.5}>
+      <Stack spacing={2.5}>
         <Skeleton variant="rounded" height={72} />
         <Skeleton variant="rounded" height={72} />
       </Stack>
@@ -226,10 +226,29 @@ export function SubdomainList() {
         animated={false}
         sx={{
           ...getSubdomainCardSx(theme),
-          p: { xs: 2.5, sm: 3 },
+          p: { xs: 3, sm: 4 },
           textAlign: "center",
         }}
       >
+        <Box
+          sx={{
+            width: 48,
+            height: 48,
+            mx: "auto",
+            mb: 1.5,
+            borderRadius: `${radiusTokens.full}px`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: isDark
+              ? darkNeutral.elevated
+              : lightNeutral.surface,
+            border: `1px solid ${theme.palette.divider}`,
+            color: "text.secondary",
+          }}
+        >
+          <AppIcon intent="subdomain" size={22} aria-hidden />
+        </Box>
         <Typography variant="body2" color="text.secondary">
           {t("list.empty")}
         </Typography>
@@ -239,7 +258,7 @@ export function SubdomainList() {
 
   return (
     <>
-      <Stack spacing={1.5}>
+      <Stack spacing={2.5}>
         {subdomains.map((item) => (
           <SubdomainCard
             key={item.id}

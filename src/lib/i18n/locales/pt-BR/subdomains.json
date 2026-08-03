@@ -4,6 +4,9 @@
   "subtitle_other": "{{count}} de {{max}} endereços em uso",
   "subtitleLoading": "Carregando seus endereços…",
   "intro": "Um endereço personalizado troca o domínio padrão por algo com a sua marca — por exemplo, suamarca.linkcharts.com.br/promo em vez do link padrão. Você pode criar mais de um e escolher qual usar ao encurtar cada link.",
+  "quota": {
+    "caption": "endereços em uso"
+  },
   "list": {
     "heading": "Seus endereços",
     "empty": "Você ainda não criou nenhum endereço personalizado.",

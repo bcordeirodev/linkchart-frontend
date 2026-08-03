@@ -4,6 +4,9 @@
   "subtitle_other": "{{count}} of {{max}} addresses in use",
   "subtitleLoading": "Loading your addresses…",
   "intro": "A custom address swaps the default domain for something that carries your brand — for example, yourbrand.linkcharts.com.br/promo instead of the default link. You can create more than one and choose which to use when you shorten each link.",
+  "quota": {
+    "caption": "addresses in use"
+  },
   "list": {
     "heading": "Your addresses",
     "empty": "You haven't created a custom address yet.",
