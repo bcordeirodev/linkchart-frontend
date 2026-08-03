@@ -14,8 +14,10 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useTranslation } from "react-i18next";
 
 import { useSubdomains } from "@/features/subdomains/hooks/useSubdomains";
+import { typographyScale } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import useClipboard from "@/shared/hooks/useClipboard";
+import { SectionLabel } from "@/shared/ui/base";
 
 import { PUBLIC_API_BASE_URL } from "../constants";
 
@@ -68,7 +70,7 @@ function CurlExample({ title, description, command }: CurlExampleProps) {
             p: { xs: 1.5, sm: 2 },
             pr: 7,
             overflowX: "auto",
-            fontFamily: "monospace",
+            fontFamily: typographyScale.code.fontFamily,
             fontSize: "0.78rem",
             lineHeight: 1.7,
             whiteSpace: "pre",
@@ -190,9 +192,7 @@ export function ApiKeyUsageGuide() {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="subtitle2" component="h2">
-        {t("usage.heading")}
-      </Typography>
+      <SectionLabel headingLevel={2}>{t("usage.heading")}</SectionLabel>
       <Typography variant="body2" color="text.secondary">
         {t("usage.intro")}
       </Typography>

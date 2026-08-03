@@ -4,6 +4,9 @@
   "subtitle_other": "{{count}} de {{max}} chaves em uso",
   "subtitleLoading": "Carregando suas chaves…",
   "intro": "Chaves de API permitem criar links e consultar estatísticas direto do seu código, sem abrir o painel. Cada chave é um token Bearer independente: dê um nome que identifique onde ela será usada e revogue quando deixar de precisar.",
+  "quota": {
+    "caption": "chaves em uso"
+  },
   "list": {
     "heading": "Suas chaves",
     "createdAt": "Criada em {{date}}",

@@ -4,6 +4,9 @@
   "subtitle_other": "{{count}} of {{max}} keys in use",
   "subtitleLoading": "Loading your keys…",
   "intro": "API keys let you create links and check stats straight from your code, without opening the dashboard. Each key is an independent Bearer token: name it after where it will be used and revoke it when you no longer need it.",
+  "quota": {
+    "caption": "keys in use"
+  },
   "list": {
     "heading": "Your keys",
     "createdAt": "Created on {{date}}",
