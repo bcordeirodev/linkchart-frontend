@@ -11,9 +11,9 @@ Subdomínios custom do usuário autenticado (`meunome.linkcharts.com.br`): reivi
 
 ## Componentes principais
 
-- `SubdomainClaimForm.tsx` — formulário de claim com validação da regra de label do backend (lowercase, dígitos, hífens; 3–63 chars; sem hífen nas pontas) e check de disponibilidade debounced. Sem card próprio — quem embrulha em `EnhancedPaper` é a página (`SubdomainsPage`), na coluna de criação.
+- `SubdomainClaimForm.tsx` — formulário de claim com validação da regra de label do backend (lowercase, dígitos, hífens; 3–63 chars; sem hífen nas pontas) e check de disponibilidade debounced. Sem card próprio — quem embrulha em `EnhancedPaper` é a página (`SubdomainsPage`), na seção "/ Criar novo endereço".
 - `SubdomainList.tsx` — lista dos subdomínios ativos da conta com ação de liberar (release) por id; cada endereço é um card hairline translúcido (`getSubdomainCardSx`) com hover em tom de primary.
-- `SubdomainQuotaMeter.tsx` — âncora de cota no topo da coluna de endereços: contagem atual em Space Grotesk + `/ max` + faixa de `max` segmentos preenchidos. Puramente apresentacional; reusa as chaves `subtitle`/`subtitleLoading` como `aria-label` do grupo (o conteúdo visual é `aria-hidden`).
+- `SubdomainQuotaMeter.tsx` — âncora de cota no topo da seção de endereços: contagem atual em Space Grotesk + `/ max` + faixa de `max` segmentos preenchidos. Puramente apresentacional; reusa as chaves `subtitle`/`subtitleLoading` como `aria-label` do grupo (o conteúdo visual é `aria-hidden`).
 - `SubdomainSelect.tsx` — `Select` de subdomínio para a criação de link; valor sentinela para "usar o domínio padrão" (`subdomain_id: null`).
 
 `utils/cardSurface.ts` — `getSubdomainCardSx(theme)`, o preenchimento translúcido (`alpha(white,0.03)` dark / `alpha(black,0.02)` light) compartilhado pelos cards in-page da feature (linhas de endereço, placeholder vazio, card do formulário de claim) — mesma fórmula do `MuiCard` global e do equivalente em `features/bio`.
@@ -32,7 +32,7 @@ Claim e release invalidam `queryKeys.subdomains.all()` no `onSuccess` — todos 
 
 ## Rotas que consomem
 
-- `app/(app)/subdomains/page.tsx` → `src/page-components/subdomains/SubdomainsPage.tsx` — gestão: título+intro full-width, depois um grid de duas colunas a partir de `lg` (7/12 lista + quota meter, 5/12 card de criação; empilha em uma coluna abaixo de `lg`).
+- `app/(app)/subdomains/page.tsx` → `src/page-components/subdomains/SubdomainsPage.tsx` — gestão, apresentação horizontal empilhada (`maxWidth="md"`, 900px): título+intro → quota meter → `/ Seus endereços` + lista → `/ Criar novo endereço` + card do formulário, cada bloco full-width.
 - Formulários de criação de link (`features/links`): `LinkFormFields`, `CreateLinkForm`, `QuickCreateLinkStrip`, `LinksQuickCreate` consomem `SubdomainSelect`/`useSubdomainSelection`; `src/lib/utils/shortUrl.ts` monta a URL curta com o host do subdomínio.
 
 ## Pontos de atenção

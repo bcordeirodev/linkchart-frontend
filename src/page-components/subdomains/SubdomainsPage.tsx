@@ -23,27 +23,23 @@ import {
  * actions and a claim form for adding another, hidden once the limit is
  * reached.
  *
- * "Instrumento técnico" redesign (2026-08-03), recomposed after the first
- * gate pass read as anemic (grammar applied "by subtraction" — thin rows and
- * a floating form left-packed against the page's near-black background,
- * width unused). This version gives the page a spatial thesis instead of a
- * single narrow column:
+ * "Instrumento técnico" redesign (2026-08-03), round 3. Round 2 tried a
+ * `7fr/5fr` side-by-side grid (addresses left, create form right) to fix
+ * round 1's "anemic" gate verdict — Bruno's follow-up asked for the
+ * horizontal stacked presentation back (each section full-width, one below
+ * the other), so the grid is gone, but every other round-2 improvement
+ * stays: {@link SubdomainQuotaMeter} as the quota anchor, the 72px address
+ * rows with hover + 1rem mono, the create form as a level-1 translucent
+ * card, the richer empty state, and the airier spacing. The page now reads
+ * top to bottom as: `<h1>` + intro → quota meter → `/ Seus endereços` +
+ * list → `/ Criar novo endereço` + form card — each block full-width and
+ * its own `reveal` stagger step.
  *
- * - The page title + intro stay full-width above everything (unchanged
- *   content, no `maxWidth="md"` cap anymore — the container now uses its
- *   default 1440px cap, so the two-column body below actually has width to
- *   compose with).
- * - A `7fr/5fr` CSS grid below that (stacks to one column under `lg`):
- *   left = the addresses (quota anchor + list), right = the create-address
- *   card. Each column keeps its own `reveal` stagger step.
- * - The old "2 de 3 endereços em uso" caption — previously a plain subtitle
- *   under the `<h1>` — is now {@link SubdomainQuotaMeter}, a compact metric
- *   anchoring the top of the addresses column instead of a sentence anyone
- *   could miss.
- * - The claim form gained a level-1 translucent card (same
- *   {@link getSubdomainCardSx} formula as each address row) — "interactive
- *   content legitimately gets a card" per the gate's ruling, reversing the
- *   first pass's "boxless is also valid" call for this specific section.
+ * Container width went back to `maxWidth="md"` (900px, the pre-redesign
+ * value): a stacked composition of address rows and a single-column form
+ * reads as a comfortable measure at 900px, not as under-used width the way
+ * a wide dashboard does — the extra room only mattered for the round-2
+ * grid's two side-by-side columns, which no longer exist.
  *
  * Both sub-sections still use the `/ LABEL` {@link SectionLabel} in place of
  * the old ad hoc `subtitle2` headings, each with `headingLevel={2}` so the
@@ -62,68 +58,53 @@ export default function SubdomainsPage() {
       auth={["user", "admin"]}
       fallback={<Skeleton variant="rounded" height={400} />}
     >
-      <ResponsiveContainer sx={{ py: { xs: 2, md: 4 } }}>
+      <ResponsiveContainer maxWidth="md" sx={{ py: { xs: 2, md: 4 } }}>
         <Stack spacing={{ xs: 3, sm: 4 }}>
           <Box className="reveal reveal-1">
             <PageSectionHeading title={t("title")} titleVariant="page" />
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mt: 1.5, maxWidth: 680 }}
-            >
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
               {t("intro")}
             </Typography>
           </Box>
 
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", lg: "7fr 5fr" },
-              gap: { xs: 3, lg: 4 },
-              alignItems: "start",
-            }}
-          >
-            {/* Left column — quota anchor + the address list. */}
-            <Box className="reveal reveal-2">
-              <Stack spacing={2.5}>
-                <SubdomainQuotaMeter
-                  count={subdomains.length}
-                  max={maxSubdomains}
-                  loading={isLoading}
-                />
-                <Stack spacing={1.25}>
-                  <SectionLabel headingLevel={2}>
-                    {t("list.heading")}
-                  </SectionLabel>
-                  <SubdomainList />
-                </Stack>
+          <Box className="reveal reveal-2">
+            <Stack spacing={2.5}>
+              <SubdomainQuotaMeter
+                count={subdomains.length}
+                max={maxSubdomains}
+                loading={isLoading}
+              />
+              <Stack spacing={1.25}>
+                <SectionLabel headingLevel={2}>
+                  {t("list.heading")}
+                </SectionLabel>
+                <SubdomainList />
               </Stack>
-            </Box>
+            </Stack>
+          </Box>
 
-            {/* Right column — the create-address card, or the limit notice. */}
-            <Box className="reveal reveal-3">
-              {isLoading ? (
-                <Skeleton variant="rounded" height={320} />
-              ) : limitReached ? (
-                <Alert severity="info">{t("claim.limitReachedNotice")}</Alert>
-              ) : (
-                <Stack spacing={1.25}>
-                  <SectionLabel headingLevel={2}>
-                    {t("claim.heading")}
-                  </SectionLabel>
-                  <EnhancedPaper
-                    variant="outlined"
-                    animated={false}
-                    sx={{
-                      ...getSubdomainCardSx(theme),
-                      p: { xs: 2.5, sm: 3 },
-                    }}
-                  >
-                    <SubdomainClaimForm />
-                  </EnhancedPaper>
-                </Stack>
-              )}
-            </Box>
+          <Box className="reveal reveal-3">
+            {isLoading ? (
+              <Skeleton variant="rounded" height={320} />
+            ) : limitReached ? (
+              <Alert severity="info">{t("claim.limitReachedNotice")}</Alert>
+            ) : (
+              <Stack spacing={1.25}>
+                <SectionLabel headingLevel={2}>
+                  {t("claim.heading")}
+                </SectionLabel>
+                <EnhancedPaper
+                  variant="outlined"
+                  animated={false}
+                  sx={{
+                    ...getSubdomainCardSx(theme),
+                    p: { xs: 2.5, sm: 3 },
+                  }}
+                >
+                  <SubdomainClaimForm />
+                </EnhancedPaper>
+              </Stack>
+            )}
           </Box>
         </Stack>
       </ResponsiveContainer>
