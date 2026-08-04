@@ -252,10 +252,17 @@ export function TabFilterBar({
       sx={[
         attached
           ? {
-              // Level 0 — no card of its own. The caller supplies whatever
-              // hairline separates this control row from the content below
-              // (same "toolbar is boxless" rule as the /links search/sort row).
-              mb: 2,
+              // No card of its own. The caller supplies whatever hairline
+              // separates this control row from the content below (same
+              // "toolbar is boxless" rule as the /links search/sort row).
+              //
+              // Deliberately tighter than the level-2 sub-tab row's own 16/20px
+              // bottom gutter: a filter belongs to the content it narrows, so
+              // the gap *under* it must read as smaller than the gap above it.
+              // With both at ~16px the two rows read as one stack of equally
+              // spaced bands instead of "navigation, then its filter, then the
+              // filtered thing".
+              mb: 1.5,
             }
           : {
               display: "flex",
@@ -326,11 +333,28 @@ export function TabFilterBar({
       )}
 
       {/* Filter groups — one segmented control per group */}
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1.5}>
+      <Stack
+        direction="row"
+        flexWrap="wrap"
+        alignItems="center"
+        columnGap={1.5}
+        rowGap={1}
+      >
         {groups.map((group, idx) => (
           <Box
             key={idx}
-            sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              flexWrap: "wrap",
+              // A flex item defaults to `min-width: auto`, i.e. it refuses to
+              // shrink below its content — so this wrapper inflated to the
+              // control's max-content width and the control's own
+              // `maxWidth: "100%"` then resolved against *that*, letting the
+              // row run past the viewport edge instead of wrapping inside it.
+              minWidth: 0,
+            }}
           >
             <FilterGroupControl group={group} theme={theme} variant={variant} />
             {group.addon}

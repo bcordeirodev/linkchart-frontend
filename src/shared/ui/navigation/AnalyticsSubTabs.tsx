@@ -66,8 +66,15 @@ interface AnalyticsSubTabsProps {
  * The active pill is a **neutral** white-alpha fill (`action.selected`), never
  * the primary accent: primary is reserved for the level-1 tab underline and
  * the level-3 active filter border/tint, so each level owns one unmistakable
- * cue. No wrapper border beyond the track: the main tab panel already frames
- * the content, and a second frame would run parallel to it as a double border.
+ * cue. The track is a fill and nothing else — no border, no elevation: the
+ * main tab panel already frames the content, and an outlined track read as a
+ * loose fragment of a card wedged between the level-1 hairline and the panel.
+ *
+ * The row **wraps** rather than scrolls. Only the level-1 band may scroll on a
+ * narrow phone; a level-2 row of two or three views has to show all of them,
+ * and a scrolled one hid its last view off the right edge on every tab whose
+ * labels ran long (Momento, Público, Origem at 390px). Icons drop below `sm`,
+ * the same rule the level-1 band follows, which buys back most of the width.
  */
 export function AnalyticsSubTabs({
   value,
@@ -90,29 +97,46 @@ export function AnalyticsSubTabs({
         <Tabs
           value={value}
           onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          allowScrollButtonsMobile
           aria-label={ariaLabel}
           TabIndicatorProps={{ sx: { display: "none" } }}
           sx={{
             minHeight: 0,
             maxWidth: "100%",
             p: 0.5,
+            // Track without a frame. It used to carry a 1px `divider` border
+            // *and* a fill, which read as a stray fragment of a card sitting
+            // between the level-1 hairline above it and the panel below —
+            // three horizontal frames in ~80px. The fill alone still groups
+            // the pills into one switch; it is raised from .03 to .05 so it
+            // survives losing the border, and stays under the level-0 strip's
+            // `action.hover` (.08) so it keeps reading as the quieter level.
             backgroundColor:
               theme.palette.mode === "dark"
-                ? "rgba(255,255,255,0.03)"
-                : "rgba(0,0,0,0.03)",
-            border: `1px solid ${theme.palette.divider}`,
+                ? "rgba(255,255,255,0.05)"
+                : "rgba(0,0,0,0.04)",
             borderRadius: `${radiusTokens.md}px`,
-            "& .MuiTabs-flexContainer": { gap: 0.5 },
+            // Wraps to a second line instead of scrolling. `variant="scrollable"`
+            // turned every row that did not fit into a scroll strip with the
+            // last view hidden off-edge — at 390px that was Momento, Público
+            // and Origem, i.e. most of the screen's sub-navigation. Scroll is
+            // only acceptable for the level-1 band, which has six entries and
+            // sits above the fold; a level-2 row of two or three views must
+            // show all of them.
+            "& .MuiTabs-scroller": { overflow: "visible" },
+            "& .MuiTabs-flexContainer": {
+              flexWrap: "wrap",
+              columnGap: 0.5,
+              rowGap: 0.5,
+            },
             "& .MuiTab-root": {
               textTransform: "none",
-              // Comfortable tap height on phones; compact on desktop.
-              minHeight: { xs: 44, md: 36 },
+              // One step under the level-0 strip (40) and one over the
+              // level-3 filters (32); 40 on phones keeps the tap target
+              // comfortable now that rows can wrap onto two lines.
+              minHeight: { xs: 40, md: 36 },
               minWidth: 0,
               px: 1.5,
-              py: 0.75,
+              py: 0.5,
               // One step down from the level-1 tab band, same type scale as
               // the level-0 period strip and level-3 filters.
               fontSize: "0.8125rem",
@@ -128,6 +152,13 @@ export function AnalyticsSubTabs({
                 color: "text.primary",
                 fontWeight: 600,
               },
+            },
+            // Same rule the level-1 band already follows: the icon is a
+            // desktop affordance. Dropping it below `sm` buys ~24px per view
+            // and is what keeps a three-view row down to two lines on a phone
+            // instead of three.
+            "& .MuiTab-iconWrapper": {
+              display: { xs: "none", sm: "inline-flex" },
             },
           }}
         >

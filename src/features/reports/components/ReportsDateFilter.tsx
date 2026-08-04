@@ -33,7 +33,16 @@ interface ReportsDateFilterProps {
 /** Ordered list of the presets this filter offers. */
 const PERIODS: readonly ReportsPeriod[] = ["7d", "30d", "90d", "custom"];
 
-/** Maps each preset to its full i18n label key. */
+/**
+ * Maps each preset to its full i18n label key.
+ *
+ * The labels read "7 dias"/"30 dias"/"90 dias", not "Últimos 7 dias" — the
+ * exact wording `/links/analytics/[id]`'s period strip uses for the same
+ * presets. Two screens open with the same control; they should not name its
+ * options differently. The long form also made the four presets 448px wide,
+ * which on a 390px phone pushed "Personalizado" clean off the right edge of
+ * the card with no way to reach it.
+ */
 const PERIOD_LABEL_KEY: Record<
   ReportsPeriod,
   "filters.last7" | "filters.last30" | "filters.last90" | "filters.custom"
