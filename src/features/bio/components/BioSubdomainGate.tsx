@@ -206,6 +206,7 @@ export function BioSubdomainGate() {
             component={NextLink}
             href="/subdomains"
             variant="contained"
+            color="primary"
             size="large"
             startIcon={<AppIcon intent="subdomain" size={18} />}
             sx={{ minHeight: 44, width: { xs: "100%", sm: "auto" } }}

@@ -40,6 +40,7 @@
       "hint": "JPEG, PNG or WEBP, up to 2MB.",
       "uploadAction": "Upload photo",
       "removeAction": "Remove photo",
+      "viewFullSize": "View photo at full size",
       "uploadedToast": "Photo updated!",
       "removedToast": "Photo removed!",
       "removeDialog": {
@@ -47,6 +48,11 @@
         "body": "Your page goes back to showing the title's initial instead of the photo.",
         "cancel": "Cancel",
         "confirm": "Remove"
+      },
+      "previewDialog": {
+        "title": "Profile photo at full size",
+        "close": "Close",
+        "alt": "Profile photo of {{title}}, full size"
       },
       "errors": {
         "invalidType": "Upload a JPEG, PNG or WEBP image.",
