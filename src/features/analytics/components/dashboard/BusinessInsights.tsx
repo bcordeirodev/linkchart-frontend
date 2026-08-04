@@ -16,7 +16,11 @@ import { useTranslation } from "react-i18next";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 
-import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
+import {
+  motionTokens,
+  radiusTokens,
+  typographyScale,
+} from "@/lib/theme/designSystem";
 import { AnalyticsEmptyState, getCardSurfaceSx } from "@/shared/ui/base";
 
 import type { BusinessInsight } from "../../hooks/useInsightsData";
@@ -283,8 +287,7 @@ export function BusinessInsights({
                     <Typography
                       variant="caption"
                       sx={{
-                        fontFamily:
-                          "var(--font-jetbrains-mono), ui-monospace, monospace",
+                        fontFamily: typographyScale.code.fontFamily,
                         color: palette.main,
                         fontWeight: 600,
                         textTransform: "uppercase",

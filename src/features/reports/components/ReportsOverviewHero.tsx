@@ -24,7 +24,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { chartByType } from "@/lib/theme/colors";
+import { dataVizPalette } from "@/lib/theme/dataViz";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { OverviewMetricRow } from "@/shared/ui/base";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -61,13 +61,6 @@ function buildHeroChart(
   isDark: boolean,
   labels: { current: string; previous: string },
 ) {
-  const accent = chartByType.temporal.daily;
-  const mutedStroke = isDark
-    ? "rgba(255, 255, 255, 0.35)"
-    : "rgba(0, 0, 0, 0.3)";
-  const textColor = isDark ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)";
-  const gridColor = isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)";
-
   const current = timeseries.series.map((p) =>
     metric === "clicks" ? p.clicks : p.unique_visitors,
   );
@@ -90,6 +83,15 @@ function buildHeroChart(
       : []),
   ];
 
+  // Series colors: the base theme's palette already covers the single-series
+  // case (first tone = `dataVizPalette.primary`). The two-series overlay is
+  // the one case that needs an explicit choice — `muted` is the tone the
+  // palette reserves for comparison/baseline series (see `dataViz.ts`), which
+  // is exactly what the dashed previous-period line is.
+  const colors = showPrevious
+    ? [dataVizPalette.primary, dataVizPalette.muted]
+    : undefined;
+
   return {
     series,
     options: {
@@ -98,40 +100,27 @@ function buildHeroChart(
         toolbar: { show: false },
         animations: { enabled: true, easing: "easeinout", speed: 600 },
       },
-      colors: [accent, mutedStroke],
+      colors,
       stroke: {
-        curve: "smooth",
-        width: showPrevious ? [3, 2] : [3],
         dashArray: showPrevious ? [0, 6] : [0],
-        lineCap: "round",
       },
+      // Same gradient the base theme uses for every area chart (18%→0) —
+      // only the per-series array is local, to keep the previous-period
+      // overlay a bare dashed line with no wash under it.
       fill: {
-        type: "gradient",
         gradient: {
-          shade: "light",
-          type: "vertical",
-          shadeIntensity: 0.25,
-          opacityFrom: showPrevious ? [0.45, 0] : 0.45,
-          opacityTo: showPrevious ? [0.05, 0] : 0.05,
-          stops: [0, 100],
+          opacityFrom: showPrevious ? [0.18, 0] : 0.18,
+          opacityTo: showPrevious ? [0, 0] : 0,
         },
       },
       dataLabels: { enabled: false },
       markers: { size: 0, hover: { size: 6 } },
-      grid: {
-        borderColor: gridColor,
-        strokeDashArray: 2,
-        xaxis: { lines: { show: false } },
-        yaxis: { lines: { show: true } },
-      },
       legend: {
         show: showPrevious,
-        labels: { colors: textColor, useSeriesColors: false },
       },
       xaxis: {
         categories,
         labels: {
-          style: { colors: textColor },
           rotate: 0,
           hideOverlappingLabels: true,
         },
@@ -141,7 +130,6 @@ function buildHeroChart(
       },
       yaxis: {
         labels: {
-          style: { colors: textColor },
           formatter: (value: number) => value.toLocaleString(),
         },
       },

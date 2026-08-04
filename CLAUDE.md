@@ -21,4 +21,5 @@ Identidade visual "instrumento técnico" (spec 2026-08-03). Toda UI nova DEVE:
   chips coloridos com fonte branca no dark.
 - Motion: um page-load orquestrado por tela (classes reveal/reveal-N, CSS-only,
   respeita prefers-reduced-motion). Sem micro-interações espalhadas.
-  </frontend_aesthetics>
+
+</frontend_aesthetics>

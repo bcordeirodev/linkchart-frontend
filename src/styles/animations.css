@@ -168,17 +168,13 @@
 .reveal-5 {
   animation-delay: 300ms;
 }
-.reveal-6 {
-  animation-delay: 360ms;
-}
 @media (prefers-reduced-motion: reduce) {
   .reveal,
   .reveal-1,
   .reveal-2,
   .reveal-3,
   .reveal-4,
-  .reveal-5,
-  .reveal-6 {
+  .reveal-5 {
     animation: none;
   }
 }
