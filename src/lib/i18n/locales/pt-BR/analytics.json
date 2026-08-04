@@ -864,7 +864,7 @@
       "clickDistribution": "Distribuição de cliques por sessão",
       "engagementCurve": "Curva de Engajamento",
       "curveDesc": "Distribuição dos usuários por número de cliques por sessão.",
-      "usersByClicks": "Usuários por nível de clicks",
+      "usersByClicks": "Usuários por nível de cliques",
       "distributionDetails": "Detalhes da Distribuição",
       "sessionInsights": "Insights de Engajamento",
       "analysisText": "Seus usuários clicam em média {{avg}} vezes por sessão, com {{power}}% sendo power users (5+ clicks). A qualidade da sessão está classificada como {{quality}}.",

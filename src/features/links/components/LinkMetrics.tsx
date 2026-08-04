@@ -28,10 +28,10 @@ interface DashboardMetricsProps {
  * "instrumento técnico" redesign.
  *
  * This component used to also have a `mode="single-link"` branch rendering
- * per-link KPIs (`MetricCardOptimized` cards) for the analytics dashboard —
- * removed: it had zero callers (the analytics dashboard's KPI row is
- * `OverviewKpiHeader`, which never imported this component) and duplicated
- * that component's job. `LinkListPage.tsx` is this component's only consumer.
+ * per-link KPI cards for the analytics dashboard — removed: it had zero
+ * callers (the analytics dashboard's KPI row is `OverviewKpiHeader`, which
+ * never imported this component) and duplicated that component's job.
+ * `LinkListPage.tsx` is this component's only consumer.
  *
  * `showTitle`/`title` props (and the `metrics.title` i18n key they rendered)
  * were removed in the task-17 sweep: `LinkListPage` — the sole caller — has
