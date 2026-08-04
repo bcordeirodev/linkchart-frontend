@@ -1,9 +1,9 @@
 "use client";
 import { useCallback, useRef } from "react";
 import type React from "react";
-import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
-import { alpha } from "@mui/material/styles";
-import { Globe, Link2 } from "lucide-react";
+import { Box, InputAdornment, TextField, Typography } from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
+import { Link2 } from "lucide-react";
 import { m } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -15,22 +15,19 @@ import { useSlugAvailability } from "@/features/links/hooks/useSlugAvailability"
 import { PUBLIC_SLUG_PATTERN } from "@/features/links/utils/slugAvailabilityCheck";
 import { ApiError } from "@/lib/api/client";
 import { useMessage } from "@/lib/providers/MessageProvider";
-import {
-  getPublicBlockDescriptionSx,
-  getPublicBlockTitleSx,
-  getPublicFocalSx,
-  getPublicFormFieldSx,
-} from "@/lib/theme/publicPageStyles";
+import { ICON_MD } from "@/lib/theme/iconDefaults";
+import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
-import { PublicBlockIcon } from "@/shared/ui/base";
-import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { getCardSurfaceSx } from "@/shared/ui/base";
+import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
+import { PublicShortLinkStrip } from "./forms/PublicShortLinkStrip";
 import { SlugAvailabilityHint } from "./forms/SlugAvailabilityHint";
 import { UrlSafetyHint } from "./forms/UrlSafetyHint";
 import { ShortenSubmitButton } from "./forms/ShortenSubmitButton";
 import {
-  getUrlShortenerInputSx,
-  getUrlShortenerLabelSx,
+  getPublicShortenerFieldSx,
+  publicGroupLabelSx,
 } from "./urlShortenerFormStyles";
 
 import type { PublicLinkResponse } from "@/services/link-public.service";
@@ -39,6 +36,13 @@ interface IFormData {
   originalUrl: string;
   customSlug: string;
 }
+
+/**
+ * Reserves the helper row under the short-link group so the card does not grow
+ * and shrink as hints (Tab-to-accept, "name taken", a pattern error) come and
+ * go. One line of 0.75rem text plus its top margin.
+ */
+const HELPER_ROW_MIN_HEIGHT = 22;
 
 interface URLShortenerFormProps {
   onSuccess?: (result: PublicLinkResponse) => void;
@@ -52,6 +56,33 @@ interface URLShortenerFormProps {
   initialUrl?: string;
 }
 
+/**
+ * The guest shortener — the product's front door on the acquisition page.
+ *
+ * Reads top to bottom as one argument, the same way the logged-in
+ * quick-create does (`list/LinksQuickCreate.tsx`, the reference for this
+ * surface): a heading and a single line that says what you get, the
+ * destination field — the only thing that has to be filled in — with the
+ * action beside it, and then the short link itself as an input group
+ * (`{@link PublicShortLinkStrip}`): domain addon, the `/` glyph, and an
+ * editable name that fills itself in from the destination page's title.
+ *
+ * What changed in the 2026-08-04 pass, and why:
+ * - The icon-chip beside the heading is gone (the app-wide banned pattern),
+ *   and the heading now renders through a real display variant.
+ * - The card is a hairline `EnhancedPaper` over the page background instead
+ *   of `getPublicFocalSx`'s navy gradient wash.
+ * - The two caps Inter labels ("LINK QUE VOCÊ QUER ENCURTAR *" / "NOME
+ *   PERSONALIZADO opcional") are gone. The destination field carries its
+ *   label as an `aria-label` only — the heading's value line already says
+ *   what to paste — and the name field became the strip's mono micro-label.
+ * - The full-width gradient CTA became a contained-primary button sized to
+ *   the destination row beside it.
+ *
+ * Behaviour is untouched: same endpoint, same Safe Browsing gate (via
+ * `useLinkCreationOrchestration` + {@link ShortenSubmitButton}), same slug
+ * suggestion race handling, same field validation and error mapping.
+ */
 export function URLShortenerForm({
   onSuccess,
   onError,
@@ -59,13 +90,8 @@ export function URLShortenerForm({
   initialUrl,
 }: URLShortenerFormProps) {
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
   const { showMessage } = useMessage();
   const { t } = useTranslation("public");
-  const fieldSx = getPublicFormFieldSx(theme);
-  const labelSx = getUrlShortenerLabelSx(theme);
-  const inputSx = getUrlShortenerInputSx(theme);
-  const iconMuted = alpha(theme.palette.text.primary, isDark ? 0.5 : 0.44);
   const {
     handleSubmit,
     register,
@@ -81,6 +107,15 @@ export function URLShortenerForm({
 
   const urlValue = watch("originalUrl");
   const slugValue = watch("customSlug");
+
+  // `NEXT_PUBLIC_REDIRECT_URL` still carries the legacy `/r` segment in local
+  // dev; production already points at a bare redirect host. The addon drops it
+  // either way, and what it shows still resolves — `routes/web.php` serves the
+  // clean `/{slug}` alias alongside `/r/{slug}`.
+  const defaultHost = getShortUrlPrefix()
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "")
+    .replace(/\/r$/, "");
 
   // One unauthenticated request resolves both the available slug and the page's
   // og:title. ogTitle silently fills the `title` payload below regardless of the
@@ -152,6 +187,12 @@ export function URLShortenerForm({
     });
 
   const isLoading = !!(isSubmitting || externalLoading);
+  const slugRegister = register("customSlug", {
+    pattern: {
+      value: PUBLIC_SLUG_PATTERN,
+      message: t("shorter.form.slugInvalid"),
+    },
+  });
 
   return (
     <m.div
@@ -164,122 +205,142 @@ export function URLShortenerForm({
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       style={{ maxWidth: SHORTER_CONTENT_MAX_WIDTH, margin: "0 auto" }}
     >
-      <Box
-        component="form"
-        onSubmit={handleSubmit(guardedSubmit)}
-        sx={{ ...getPublicFocalSx(theme), p: { xs: 2.5, sm: 3, md: 3.5 } }}
+      <EnhancedPaper
+        variant="outlined"
+        animated={false}
+        sx={{ p: { xs: 2, sm: 2.5, md: 3 }, ...getCardSurfaceSx(theme) }}
       >
-        <Box
+        {/* The card's own heading is the section heading — no icon-chip beside
+            it, and `variant="h3"` is what puts it in the display face
+            (`component` alone would leave it in MUI's default body type). */}
+        <Typography
+          variant="h3"
+          component="h2"
           sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 1.25,
-            mb: 2.5,
+            fontSize: { xs: "1.125rem", sm: "1.25rem" },
+            lineHeight: 1.3,
+            letterSpacing: "-0.01em",
           }}
         >
-          <PublicBlockIcon
-            icon={Link2}
+          {t("shorter.form.boxTitle")}
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mt: 0.5, maxWidth: "72ch" }}
+        >
+          {t("shorter.form.boxSubtitle")}
+        </Typography>
+
+        <Box
+          component="form"
+          onSubmit={handleSubmit(guardedSubmit)}
+          noValidate
+          sx={{ mt: { xs: 2, sm: 2.25 } }}
+        >
+          {/* Row 1 — the destination: what you paste, and the action. */}
+          <Box
             sx={{
-              color: alpha(theme.palette.common.white, isDark ? 0.96 : 0.94),
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { sm: "center" },
+              gap: { xs: 1.25, sm: 1.5 },
             }}
-          />
-          <Box sx={{ minWidth: 0 }}>
-            <Typography
-              component="h2"
-              sx={{ ...getPublicBlockTitleSx(theme), mb: 0.5 }}
-            >
-              {t("shorter.form.boxTitle")}
-            </Typography>
-            <Typography sx={getPublicBlockDescriptionSx(theme)}>
-              {t("shorter.form.boxSubtitle")}
-            </Typography>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              md: "minmax(0, 1.55fr) minmax(220px, 0.85fr)",
-            },
-            gap: { xs: 1.35, md: 1.5 },
-            mb: 2.25,
-            alignItems: "start",
-          }}
-        >
-          {/* URL field */}
-          <Box>
-            <Typography sx={labelSx}>
-              {t("shorter.form.urlLabel")}{" "}
-              <Box component="span" sx={{ color: theme.palette.primary.main }}>
-                *
-              </Box>
-            </Typography>
-            <Box sx={fieldSx}>
-              <Globe {...ICON_SM} color={iconMuted} />
-              <Box
-                component="input"
-                {...register("originalUrl", {
-                  required: t("shorter.form.urlRequired"),
-                  pattern: {
-                    value:
-                      /^(https?:\/\/)?[\w.-]+(\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
-                    message: t("shorter.form.urlInvalid"),
-                  },
-                })}
-                placeholder={t("shorter.form.urlPlaceholder")}
-                sx={inputSx}
-              />
-            </Box>
-            {errors.originalUrl ? (
-              <Typography
-                sx={{
-                  fontSize: "0.75rem",
-                  color: alpha(theme.palette.error.main, isDark ? 0.92 : 0.94),
-                  mt: 0.5,
-                  pl: 0.5,
-                }}
-              >
-                {errors.originalUrl.message}
-              </Typography>
-            ) : (
-              <UrlSafetyHint status={safetyStatus} threats={threats} />
-            )}
+          >
+            <TextField
+              {...register("originalUrl", {
+                required: t("shorter.form.urlRequired"),
+                pattern: {
+                  value:
+                    /^(https?:\/\/)?[\w.-]+(\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
+                  message: t("shorter.form.urlInvalid"),
+                },
+              })}
+              placeholder={t("shorter.form.urlPlaceholder")}
+              size="small"
+              fullWidth
+              error={!!errors.originalUrl}
+              sx={[
+                getPublicShortenerFieldSx(theme),
+                { flexGrow: 1, minWidth: 0 },
+              ]}
+              slotProps={{
+                // The field's visible caps label is gone; the accessible name
+                // is not. Same string, same i18n key.
+                htmlInput: { "aria-label": t("shorter.form.urlLabel") },
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Link2
+                        {...ICON_MD}
+                        color={theme.palette.text.secondary}
+                      />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+
+            <ShortenSubmitButton
+              loading={isLoading || submitQueued}
+              safetyStatus={safetyStatus}
+            />
           </Box>
 
-          {/* Slug field */}
-          <Box>
-            <Typography sx={labelSx}>
+          {/* The destination's own message sits against the destination field:
+              a validation error, or the Safe Browsing verdict. Only
+              materialises when there is something to say. */}
+          {errors.originalUrl ? (
+            <Typography
+              variant="caption"
+              component="div"
+              color="error"
+              sx={{ mt: 0.5 }}
+            >
+              {errors.originalUrl.message}
+            </Typography>
+          ) : (
+            <UrlSafetyHint status={safetyStatus} threats={threats} />
+          )}
+
+          {/* Row 2 — the short link itself: group label, the input group
+              `[ host | / name ]`, and one helper line. */}
+          <Box sx={{ mt: { xs: 1.75, sm: 2 } }}>
+            <Typography component="span" sx={publicGroupLabelSx}>
               {t("shorter.form.slugLabel")}{" "}
               <Box
                 component="span"
                 sx={{
-                  fontSize: "0.625rem",
-                  fontWeight: 400,
+                  // Sentence case against the caps label: "opcional" is an
+                  // aside about the field, not part of its name.
                   textTransform: "none",
+                  fontWeight: 500,
                   letterSpacing: 0,
-                  color: alpha(theme.palette.text.primary, 0.35),
+                  color: alpha(theme.palette.text.primary, 0.38),
                 }}
               >
                 {t("shorter.form.optional")}
               </Box>
             </Typography>
-            <Box sx={fieldSx} aria-busy={isResolvingSlugSuggestion}>
-              <Link2 {...ICON_SM} color={iconMuted} />
-
-              <Box
-                component="input"
-                {...register("customSlug", {
-                  pattern: {
-                    value: PUBLIC_SLUG_PATTERN,
-                    message: t("shorter.form.slugInvalid"),
-                  },
-                })}
+            <Box sx={{ mt: 0.5 }}>
+              <PublicShortLinkStrip
+                name={slugRegister.name}
+                inputRef={slugRegister.ref}
+                value={slugValue ?? ""}
+                onChange={slugRegister.onChange}
+                onBlur={slugRegister.onBlur}
+                defaultHost={defaultHost}
                 placeholder={
                   showSlugSuggestion
                     ? availableSlug!
                     : t("shorter.form.slugPlaceholder")
                 }
+                suggestionActive={showSlugSuggestion}
+                inputAriaLabel={t("shorter.form.slugLabel")}
+                ariaLabel={t("shorter.form.slugLabel")}
+                busy={isResolvingSlugSuggestion}
+                busyLabel={t("shorter.form.slugSuggestionChecking")}
+                error={!!errors.customSlug}
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                   if (e.key === "Tab" && showSlugSuggestion) {
                     setValue("customSlug", availableSlug!, {
@@ -287,55 +348,32 @@ export function URLShortenerForm({
                     });
                   }
                 }}
-                sx={{
-                  ...(typeof inputSx === "object" && !Array.isArray(inputSx)
-                    ? inputSx
-                    : {}),
-                  ...(showSlugSuggestion && {
-                    "&::placeholder": {
-                      color: alpha(theme.palette.primary.main, 0.55),
-                      opacity: 1,
-                    },
-                  }),
-                }}
               />
-              {isResolvingSlugSuggestion ? (
-                <CircularProgress
-                  size={14}
-                  aria-label={t("shorter.form.slugSuggestionChecking")}
-                  sx={{
-                    flexShrink: 0,
-                    color: alpha(theme.palette.text.primary, 0.35),
-                  }}
-                />
-              ) : null}
             </Box>
-            {errors.customSlug ? (
-              <Typography
-                sx={{
-                  fontSize: "0.75rem",
-                  color: alpha(theme.palette.error.main, isDark ? 0.92 : 0.94),
-                  mt: 0.5,
-                  pl: 0.5,
-                }}
-              >
-                {errors.customSlug.message}
-              </Typography>
-            ) : (
-              <SlugAvailabilityHint
-                slugAvailability={slugAvailability}
-                showAvailability={showSlugAvailabilityUI}
-                showSuggestion={showSlugSuggestion}
-              />
-            )}
+            {/* One helper slot, three possible tenants — a pattern error, a
+                "name taken" verdict, or the Tab-to-accept nudge. The row keeps
+                its height either way so nothing below it shifts. */}
+            <Box sx={{ minHeight: HELPER_ROW_MIN_HEIGHT }}>
+              {errors.customSlug ? (
+                <Typography
+                  variant="caption"
+                  component="div"
+                  color="error"
+                  sx={{ mt: 0.5 }}
+                >
+                  {errors.customSlug.message}
+                </Typography>
+              ) : (
+                <SlugAvailabilityHint
+                  slugAvailability={slugAvailability}
+                  showAvailability={showSlugAvailabilityUI}
+                  showSuggestion={showSlugSuggestion}
+                />
+              )}
+            </Box>
           </Box>
         </Box>
-
-        <ShortenSubmitButton
-          loading={isLoading || submitQueued}
-          safetyStatus={safetyStatus}
-        />
-      </Box>
+      </EnhancedPaper>
     </m.div>
   );
 }

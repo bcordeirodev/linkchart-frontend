@@ -1,14 +1,26 @@
 "use client";
-import { Box, Container, Skeleton, Stack, useTheme } from "@mui/material";
+import { Box, Container, Skeleton, useTheme } from "@mui/material";
 
 import { SHORTER_PAGE_CONTAINER_MAX_WIDTH } from "@/features/shorter/constants";
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { getPublicFocalSx } from "@/lib/theme/publicPageStyles";
+import { publicHairline } from "@/lib/theme/publicPageStyles";
 import { PublicLayout } from "@/shared/layout";
+import { getCardSurfaceSx } from "@/shared/ui/base";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 
 export function ShorterSkeleton() {
   const theme = useTheme();
+
+  /**
+   * Same hairline + translucent veil the real form and CTA cards now use, so
+   * the fallback does not flash a different surface (previously the focal
+   * gradient wash) before the page resolves.
+   */
+  const cardShellSx = {
+    borderRadius: `${radiusTokens.lg}px`,
+    border: `1px solid ${publicHairline(theme)}`,
+    ...getCardSurfaceSx(theme),
+  };
 
   return (
     <PublicLayout variant="shorter" chrome="minimal">
@@ -49,113 +61,88 @@ export function ShorterSkeleton() {
           />
         </Box>
 
-        {/* URLShortenerForm — mirrors the real focal box: icon+title header,
-            two-field grid, full-width submit button. */}
+        {/* URLShortenerForm — mirrors the real card: bare title + value line,
+            the 52px destination row with the action beside it, then the
+            short-link group under its micro-label. */}
         <Box sx={{ maxWidth: SHORTER_CONTENT_MAX_WIDTH, mx: "auto" }}>
-          <Box
-            sx={{ ...getPublicFocalSx(theme), p: { xs: 2.5, sm: 3, md: 3.5 } }}
-          >
+          <Box sx={{ ...cardShellSx, p: { xs: 2, sm: 2.5, md: 3 } }}>
+            <Skeleton variant="text" width={170} height={26} />
+            <Skeleton
+              variant="text"
+              width="68%"
+              height={18}
+              sx={{ mb: 2.25 }}
+            />
+
             <Box
               sx={{
                 display: "flex",
-                alignItems: "flex-start",
-                gap: 1.25,
-                mb: 2.5,
+                flexDirection: { xs: "column", sm: "row" },
+                alignItems: { sm: "center" },
+                gap: { xs: 1.25, sm: 1.5 },
               }}
             >
               <Skeleton
                 variant="rounded"
-                width={36}
-                height={36}
-                sx={{ borderRadius: "10px", flexShrink: 0 }}
+                height={52}
+                sx={{ flexGrow: 1, borderRadius: `${radiusTokens.md}px` }}
               />
-              <Box sx={{ minWidth: 0, flex: 1 }}>
-                <Skeleton
-                  variant="text"
-                  width={170}
-                  height={22}
-                  sx={{ mb: 0.5 }}
-                />
-                <Skeleton variant="text" width="68%" height={18} />
-              </Box>
+              <Skeleton
+                variant="rounded"
+                height={52}
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: "100%", sm: 168 },
+                  borderRadius: `${radiusTokens.md}px`,
+                }}
+              />
             </Box>
 
+            <Box sx={{ mt: { xs: 1.75, sm: 2 } }}>
+              <Skeleton
+                variant="text"
+                width={150}
+                height={14}
+                sx={{ mb: 0.5 }}
+              />
+              <Skeleton
+                variant="rounded"
+                height={44}
+                sx={{ borderRadius: `${radiusTokens.md}px` }}
+              />
+            </Box>
+          </Box>
+        </Box>
+
+        {/* BenefitBadges idle state — SignUpCtaCard: title + description, then
+            the two-column list of checked features. */}
+        <Box sx={{ mt: 2.5, maxWidth: SHORTER_CONTENT_MAX_WIDTH, mx: "auto" }}>
+          <Box sx={{ ...cardShellSx, p: { xs: "20px", md: "22px 26px" } }}>
+            <Skeleton variant="text" width={220} height={26} sx={{ mb: 0.5 }} />
+            <Skeleton
+              variant="text"
+              width="80%"
+              height={20}
+              sx={{ mb: 2.25 }}
+            />
             <Box
               sx={{
                 display: "grid",
                 gridTemplateColumns: {
                   xs: "1fr",
-                  md: "minmax(0, 1.55fr) minmax(220px, 0.85fr)",
+                  sm: "repeat(2, minmax(0, 1fr))",
                 },
-                gap: { xs: 1.35, md: 1.5 },
-                mb: 2.25,
+                columnGap: { sm: 3 },
+                rowGap: 0.875,
+                borderTop: "1px solid",
+                borderColor: "divider",
+                pt: 1.75,
               }}
             >
-              <Box>
-                <Skeleton
-                  variant="text"
-                  width={70}
-                  height={14}
-                  sx={{ mb: 0.75 }}
-                />
-                <Skeleton
-                  variant="rounded"
-                  height={54}
-                  sx={{ borderRadius: `${radiusTokens.md}px` }}
-                />
-              </Box>
-              <Box>
-                <Skeleton
-                  variant="text"
-                  width={90}
-                  height={14}
-                  sx={{ mb: 0.75 }}
-                />
-                <Skeleton
-                  variant="rounded"
-                  height={54}
-                  sx={{ borderRadius: `${radiusTokens.md}px` }}
-                />
-              </Box>
-            </Box>
-
-            <Skeleton
-              variant="rounded"
-              height={48}
-              sx={{ borderRadius: `${radiusTokens.md}px` }}
-            />
-          </Box>
-        </Box>
-
-        {/* BenefitBadges idle state — SignUpCtaCard */}
-        <Box sx={{ mt: 2.5, maxWidth: SHORTER_CONTENT_MAX_WIDTH, mx: "auto" }}>
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: "divider",
-              borderRadius: "12px",
-              p: 3,
-            }}
-          >
-            <Skeleton variant="text" width={220} height={28} sx={{ mb: 1 }} />
-            <Skeleton variant="text" width="80%" height={20} sx={{ mb: 2 }} />
-            <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 2.5 }}>
-              {[100, 120, 90, 110, 130, 95, 115].map((w, i) => (
-                <Skeleton
-                  key={i}
-                  variant="rounded"
-                  width={w}
-                  height={28}
-                  sx={{ borderRadius: "8px" }}
-                />
+              {[62, 58, 70, 66, 74, 68, 72, 64].map((w, i) => (
+                <Skeleton key={i} variant="text" width={`${w}%`} height={20} />
               ))}
-            </Stack>
-            <Skeleton
-              variant="rounded"
-              width={160}
-              height={40}
-              sx={{ borderRadius: "8px" }}
-            />
+            </Box>
           </Box>
         </Box>
 
