@@ -37,7 +37,6 @@ import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainS
 import { typographyScale } from "@/lib/theme";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
-import { SectionLabel } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
 
@@ -66,12 +65,12 @@ type QuickFormData = {
 /**
  * Altura da fileira do destino — o campo de URL e o botão "Encurtar"
  * compartilham este número, então a ação nunca fica menor que o convite.
- * 54px dá ao campo presença de controle-herói (é o único lugar da página
+ * 52px dá ao campo presença de controle-herói (é o único lugar da página
  * onde se cola algo) sem virar um banner; o grupo do link curto logo abaixo
- * fica um degrau menor (`GROUP_HEIGHT = 46` em {@link QuickCreateLinkStrip}),
+ * fica um degrau menor (`GROUP_HEIGHT = 44` em {@link QuickCreateLinkStrip}),
  * que é o que faz a leitura ser input-first.
  */
-const CONTROL_HEIGHT = 54;
+const CONTROL_HEIGHT = 52;
 
 /**
  * Opaque stand-in for `getLinksControlFillBg`'s translucent fill, used ONLY
@@ -203,9 +202,21 @@ const submitButtonSx = {
   px: 2.5,
 };
 
+/**
+ * "Opções avançadas" — a saída lateral do card, no alto à direita, alinhada
+ * com o título.
+ *
+ * Botão de texto, sem borda: dentro do card ele divide a linha com o `h2` e
+ * fica a poucos pixels do "Encurtar", que é a ação de verdade — uma segunda
+ * caixa contornada ali viraria um par de botões competindo. Fora do card (na
+ * antiga linha de `SectionLabel`, agora removida) a borda fazia sentido,
+ * porque ele estava sozinho sobre o fundo da página.
+ *
+ * @param theme - tema MUI ativo.
+ * @returns `sx` do botão de opções avançadas.
+ */
 const getAdvancedOptionsButtonSx = (theme: Theme) => {
   const isDark = theme.palette.mode === "dark";
-  const borderColor = getLinksBorderColor(theme);
   const ink = theme.palette.text.primary;
 
   return {
@@ -219,17 +230,15 @@ const getAdvancedOptionsButtonSx = (theme: Theme) => {
     lineHeight: 1.2,
     borderRadius: `${linksRadius.control}px`,
     color: "text.secondary",
-    borderColor,
     bgcolor: "transparent",
     px: 0.875,
     py: 0.25,
     minHeight: 26,
     whiteSpace: "nowrap",
     boxShadow: "none",
-    transition: theme.transitions.create(
-      ["background-color", "border-color", "color"],
-      { duration: 150 },
-    ),
+    transition: theme.transitions.create(["background-color", "color"], {
+      duration: 150,
+    }),
     "& .MuiButton-startIcon": {
       marginRight: 0.375,
       marginLeft: -0.125,
@@ -243,7 +252,6 @@ const getAdvancedOptionsButtonSx = (theme: Theme) => {
     "&:hover": {
       color: "text.primary",
       bgcolor: alpha(ink, isDark ? 0.06 : 0.04),
-      borderColor: alpha(ink, isDark ? 0.28 : 0.2),
       boxShadow: "none",
     },
   };
@@ -260,9 +268,11 @@ const getAdvancedOptionsButtonSx = (theme: Theme) => {
  * happens if the name is left blank, and yields its slot to an error when there
  * is one.
  *
- * The caps `SectionLabel` above the card anchors the section (and carries the
- * "Opções avançadas" action); the card's own `h3` is the human title. Two
- * different jobs, deliberately worded so they do not say the same thing twice.
+ * There is no caps `SectionLabel` row above the card: the card's own title is
+ * the section heading (rendered `component="h2"`, matching the
+ * `headingLevel={2}` the other sections expose), and the card's hairline is
+ * what delimits the section. "Opções avançadas" lives in the card's header
+ * row, top-right, aligned with that title.
  *
  * After a successful create nothing is shown here: `useNewlyCreatedLinkHighlight`
  * sorts the new link to the top of the list, scrolls to it, pulses it and copies
@@ -454,77 +464,32 @@ export function LinksQuickCreate({
         : "text.disabled";
 
   return (
-    <Box>
-      <SectionLabel
-        headingLevel={2}
-        action={
-          // O "?" que ficava aqui repetia palavra por palavra o que a linha
-          // de valor dentro do card agora diz em voz alta — uma dica escondida
-          // atrás de hover para explicar o que já está escrito é trabalho
-          // dobrado. Sobra a única ação real da seção.
-          <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => navigate("/links/create")}
-              aria-label={t("list.quickCreate.moreOptions")}
-              startIcon={<SlidersHorizontal size={13} strokeWidth={1.75} />}
-              endIcon={<ArrowUpRight size={12} strokeWidth={2} />}
-              sx={[
-                getAdvancedOptionsButtonSx(theme),
-                {
-                  "& .MuiButton-startIcon": {
-                    mr: 0.375,
-                  },
-                  "& .MuiButton-endIcon": {
-                    display: { xs: "none", sm: "inline-flex" },
-                  },
-                },
-              ]}
-            >
-              {/* Rótulo sempre visível: no toque não existe hover, e um
-                  ícone de sliders sozinho não diz nada a quem é leigo.
-                  No xs entra a versão curta para caber ao lado do título. */}
-              <Box
-                component="span"
-                sx={{ display: { xs: "none", sm: "inline" } }}
-              >
-                {t("list.quickCreate.moreOptions")}
-              </Box>
-              <Box
-                component="span"
-                sx={{ display: { xs: "inline", sm: "none" } }}
-              >
-                {t("list.quickCreate.moreOptionsShort")}
-              </Box>
-            </Button>
-          </Tooltip>
-        }
-      >
-        {t("list.quickCreate.label")}
-      </SectionLabel>
-
-      {/* Nível 1: o cluster inteiro (título, copy e controles) dentro de um
-          card translúcido com hairline — o SectionLabel fica FORA, ancorando
-          a seção, mesmo tratamento que /subdomains usa (`getLinksCardSx` é o
-          equivalente local de `getSubdomainCardSx`). */}
-      <EnhancedPaper
-        variant="outlined"
-        animated={false}
-        sx={{
-          mt: { xs: 1.5, sm: 2 },
-          p: { xs: 2.5, sm: 3 },
-          ...getLinksCardSx(theme),
-        }}
-      >
-        {/* Título humano do card. O caps mono lá em cima nomeia a seção para
-            quem varre a página; aqui embaixo é onde a porta de entrada do
-            produto diz, em Space Grotesk e em voz de gente, o que se ganha
-            usando ela. */}
+    // Nível 1: o card é a seção inteira. Não há mais linha de `SectionLabel`
+    // acima dele — o título aqui dentro (`component="h2"`) é o heading da
+    // seção, no mesmo nível que os `headingLevel={2}` das outras faixas da
+    // página, e a hairline do próprio card já a delimita. A âncora do tour
+    // (`data-tour="quick-create"`) e o stagger (`reveal-3`) moram no `Box` de
+    // `LinkListPage`, que envolve este retorno e não foi tocado; o gap para a
+    // seção anterior vem do `Stack` daquela página, então este card não
+    // carrega `mt` próprio.
+    <EnhancedPaper
+      variant="outlined"
+      animated={false}
+      sx={{
+        p: { xs: 2, sm: 2.25 },
+        ...getLinksCardSx(theme),
+      }}
+    >
+      {/* Cabeçalho do card: o título e, alinhada ao topo dele, a saída para
+          a criação completa. `alignItems: flex-start` mantém o botão na
+          altura da PRIMEIRA linha do título quando ele quebra no celular. */}
+      <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
         <Typography
           variant="h3"
-          component="h3"
+          component="h2"
           sx={{
+            flex: 1,
+            minWidth: 0,
             fontSize: { xs: "1.125rem", sm: "1.25rem" },
             lineHeight: 1.3,
             letterSpacing: "-0.01em",
@@ -532,140 +497,181 @@ export function LinksQuickCreate({
         >
           {t("list.quickCreate.title")}
         </Typography>
-        {/* Uma linha só, e ela vende o resultado — não repete o título nem
-            descreve o formulário. `maxWidth` em ch para a medida de leitura
-            não esticar até 1600px no desktop largo. */}
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ mt: 0.75, maxWidth: "72ch" }}
-        >
-          {t("list.quickCreate.description")}
-        </Typography>
-
-        <Box
-          component="form"
-          onSubmit={handleSubmit(guardedSubmit)}
-          noValidate
-          sx={{ mt: { xs: 2, sm: 2.5 } }}
-        >
-          {/* Fileira 1 — o destino: o que se cola, e a ação principal. */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              alignItems: { sm: "center" },
-              gap: { xs: 1.25, sm: 1.5 },
-            }}
-          >
-            <TextField
-              {...register("original_url")}
-              placeholder={t("list.quickCreate.urlPlaceholder")}
-              size="small"
-              fullWidth
-              error={!!errors.original_url || urlIsUnsafe}
-              disabled={isPending}
-              sx={[inputRootSx, { flexGrow: 1, minWidth: 0 }]}
-              slotProps={{
-                htmlInput: { "aria-label": t("list.quickCreate.urlLabel") },
-                input: {
-                  startAdornment: (
-                    // ICON_MD (18) e não ICON_SM: num campo de 54px o ícone
-                    // de 16 ficava perdido na altura. Os ícones do botão ao
-                    // lado seguem em ICON_SM — lá eles acompanham texto.
-                    <InputAdornment position="start">
-                      <Link2
-                        {...ICON_MD}
-                        color={theme.palette.text.secondary}
-                      />
-                    </InputAdornment>
-                  ),
+        <Tooltip title={t("list.quickCreate.moreOptionsTooltip")} arrow>
+          <Button
+            variant="text"
+            size="small"
+            onClick={() => navigate("/links/create")}
+            aria-label={t("list.quickCreate.moreOptions")}
+            startIcon={<SlidersHorizontal size={13} strokeWidth={1.75} />}
+            endIcon={<ArrowUpRight size={12} strokeWidth={2} />}
+            sx={[
+              getAdvancedOptionsButtonSx(theme),
+              {
+                flexShrink: 0,
+                // Alinha a caixa do botão (26px) com a primeira linha do
+                // título (~26px em sm) sem depender de baseline.
+                mt: 0.125,
+                mr: -0.875,
+                "& .MuiButton-startIcon": {
+                  mr: 0.375,
                 },
-              }}
-            />
-
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
-              startIcon={
-                succeeded ? (
-                  <CheckCircle2 {...ICON_SM} />
-                ) : isPending || submitQueued ? (
-                  <CircularProgress size={16} color="inherit" />
-                ) : (
-                  <Zap {...ICON_SM} />
-                )
-              }
-              sx={[
-                submitButtonSx,
-                { flexShrink: 0, width: { xs: "100%", sm: "auto" } },
-              ]}
+                "& .MuiButton-endIcon": {
+                  display: { xs: "none", sm: "inline-flex" },
+                },
+              },
+            ]}
+          >
+            {/* Rótulo sempre visível: no toque não existe hover, e um
+                ícone de sliders sozinho não diz nada a quem é leigo.
+                No xs entra a versão curta para caber ao lado do título. */}
+            <Box
+              component="span"
+              sx={{ display: { xs: "none", sm: "inline" } }}
             >
-              {succeeded
-                ? t("list.quickCreate.success")
-                : t("list.quickCreate.submit")}
-            </Button>
-          </Box>
+              {t("list.quickCreate.moreOptions")}
+            </Box>
+            <Box
+              component="span"
+              sx={{ display: { xs: "inline", sm: "none" } }}
+            >
+              {t("list.quickCreate.moreOptionsShort")}
+            </Box>
+          </Button>
+        </Tooltip>
+      </Box>
 
-          {/* Erro do destino mora colado ao campo do destino — antes as duas
+      {/* Uma linha só, e ela vende o resultado — não repete o título nem
+          descreve o formulário. Ocupa a largura toda (fica ABAIXO da linha do
+          botão, não espremida ao lado dele); `maxWidth` em ch para a medida de
+          leitura não esticar até 1600px no desktop largo. */}
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mt: 0.5, maxWidth: "72ch" }}
+      >
+        {t("list.quickCreate.description")}
+      </Typography>
+
+      <Box
+        component="form"
+        onSubmit={handleSubmit(guardedSubmit)}
+        noValidate
+        sx={{ mt: 1.75 }}
+      >
+        {/* Fileira 1 — o destino: o que se cola, e a ação principal. */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { sm: "center" },
+            gap: { xs: 1.25, sm: 1.5 },
+          }}
+        >
+          <TextField
+            {...register("original_url")}
+            placeholder={t("list.quickCreate.urlPlaceholder")}
+            size="small"
+            fullWidth
+            error={!!errors.original_url || urlIsUnsafe}
+            disabled={isPending}
+            sx={[inputRootSx, { flexGrow: 1, minWidth: 0 }]}
+            slotProps={{
+              htmlInput: { "aria-label": t("list.quickCreate.urlLabel") },
+              input: {
+                startAdornment: (
+                  // ICON_MD (18) e não ICON_SM: num campo de 52px o ícone
+                  // de 16 ficava perdido na altura. Os ícones do botão ao
+                  // lado seguem em ICON_SM — lá eles acompanham texto.
+                  <InputAdornment position="start">
+                    <Link2 {...ICON_MD} color={theme.palette.text.secondary} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isPending || urlIsUnsafe || submitQueued || slugIsTaken}
+            startIcon={
+              succeeded ? (
+                <CheckCircle2 {...ICON_SM} />
+              ) : isPending || submitQueued ? (
+                <CircularProgress size={16} color="inherit" />
+              ) : (
+                <Zap {...ICON_SM} />
+              )
+            }
+            sx={[
+              submitButtonSx,
+              { flexShrink: 0, width: { xs: "100%", sm: "auto" } },
+            ]}
+          >
+            {succeeded
+              ? t("list.quickCreate.success")
+              : t("list.quickCreate.submit")}
+          </Button>
+        </Box>
+
+        {/* Erro do destino mora colado ao campo do destino — antes as duas
               mensagens (URL e nome) se acumulavam numa pilha só no rodapé do
               card, longe do campo que cada uma acusava. Só materializa quando
               há algo a dizer, então em repouso não ocupa altura. */}
-          {urlHelperText ? (
-            <Typography
-              variant="caption"
-              component="div"
-              color="error"
-              sx={{ mt: 0.75 }}
-            >
-              {urlHelperText}
-            </Typography>
-          ) : null}
+        {urlHelperText ? (
+          <Typography
+            variant="caption"
+            component="div"
+            color="error"
+            sx={{ mt: 0.5 }}
+          >
+            {urlHelperText}
+          </Typography>
+        ) : null}
 
-          {/* Fileira 2 — o link curto propriamente dito: rótulo do grupo, o
+        {/* Fileira 2 — o link curto propriamente dito: rótulo do grupo, o
               input group `[ domínio | / nome ]` e a linha de ajuda. O rótulo
               caps voltou (o gate leu a versão sem ele como empobrecida) e
               `ariaLabel` mantém o grupo nomeado para o leitor de tela. */}
-          <Box sx={{ mt: { xs: 2, sm: 2.5 } }}>
-            <Typography component="span" sx={groupLabelSx}>
-              {t("list.quickCreate.shortLinkLabel")}
-            </Typography>
-            <Box sx={{ mt: 0.75 }}>
-              <QuickCreateLinkStrip
-                name={slugRegister.name}
-                inputRef={slugRegister.ref}
-                value={slugValue}
-                onChange={(e) => {
-                  slugField.markEdited();
-                  void slugRegister.onChange(e);
-                }}
-                onBlur={slugRegister.onBlur}
-                state={slugField.state}
-                onRequestAnother={slugField.requestAnother}
-                canRequestAnother={slugField.canRequestAnother}
-                hasSubdomains={hasSubdomains}
-                subdomainId={subdomainId}
-                onSubdomainChange={setSubdomainId}
-                defaultHost={defaultHost}
-                disabled={isPending}
-                error={slugHasError}
-                ariaLabel={t("list.quickCreate.shortLinkLabel")}
-              />
-            </Box>
-            <Typography
-              variant="caption"
-              component="div"
-              color={slugHelperColor}
-              sx={{ mt: 0.75 }}
-            >
-              {slugHelper.text}
-            </Typography>
+        <Box sx={{ mt: 1.75 }}>
+          <Typography component="span" sx={groupLabelSx}>
+            {t("list.quickCreate.shortLinkLabel")}
+          </Typography>
+          <Box sx={{ mt: 0.5 }}>
+            <QuickCreateLinkStrip
+              name={slugRegister.name}
+              inputRef={slugRegister.ref}
+              value={slugValue}
+              onChange={(e) => {
+                slugField.markEdited();
+                void slugRegister.onChange(e);
+              }}
+              onBlur={slugRegister.onBlur}
+              state={slugField.state}
+              onRequestAnother={slugField.requestAnother}
+              canRequestAnother={slugField.canRequestAnother}
+              hasSubdomains={hasSubdomains}
+              subdomainId={subdomainId}
+              onSubdomainChange={setSubdomainId}
+              defaultHost={defaultHost}
+              disabled={isPending}
+              error={slugHasError}
+              ariaLabel={t("list.quickCreate.shortLinkLabel")}
+            />
           </Box>
+          <Typography
+            variant="caption"
+            component="div"
+            color={slugHelperColor}
+            sx={{ mt: 0.5 }}
+          >
+            {slugHelper.text}
+          </Typography>
         </Box>
-      </EnhancedPaper>
-    </Box>
+      </Box>
+    </EnhancedPaper>
   );
 }
 
