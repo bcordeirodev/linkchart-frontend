@@ -32,7 +32,9 @@
       "linksFiltered_other": "{{count}} links encontrados com os filtros atuais"
     },
     "quickCreate": {
-      "label": "Encurtar novo link",
+      "label": "Novo link",
+      "title": "Encurte um link e acompanhe os cliques",
+      "description": "Cole o endereço longo abaixo — o link curto sai na hora, com estatísticas de cliques, países e dispositivos.",
       "urlLabel": "Link que você quer encurtar",
       "slugLabel": "Nome personalizado (opcional)",
       "subdomainLabel": "Endereço",
@@ -40,7 +42,7 @@
       "urlPlaceholder": "https://exemplo.com/pagina",
       "slugPlaceholder": "nome-do-link",
       "previewAutoName": "código-automático",
-      "previewAutoHint": "Sem um nome personalizado, geramos um código aleatório para você.",
+      "slugBlankHint": "Deixe em branco para gerar um código automático.",
       "slugSuggestionChecking": "Procurando um nome disponível…",
       "slugSuggestionUnavailable": "Nenhum nome disponível a partir desta página",
       "submit": "Encurtar",
@@ -55,8 +57,7 @@
       "showing": "Mostrando {{from}}–{{to}} de {{total}}"
     },
     "onboarding": {
-      "help": "Ajuda",
-      "hintQuickCreate": "Cole aqui qualquer link longo para transformá-lo num link curto."
+      "help": "Ajuda"
     },
     "tour": {
       "next": "Próximo",
