@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 
 import { dataVizPalette } from "@/lib/theme/dataViz";
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { OverviewMetricRow } from "@/shared/ui/base";
+import { getFilterSegmentSx, OverviewMetricRow } from "@/shared/ui/base";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
 import { formatSignedPct } from "@/features/reports/utils/variationPillStyles";
@@ -243,11 +243,17 @@ export function ReportsOverviewHero({
       {/* Chart + metric toggle */}
       <Box sx={{ p: { xs: 1.5, sm: 2 }, pt: { xs: 1.5, sm: 1.5 } }}>
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 0.5 }}>
+          {/* Level 3 — this narrows what the chart plots, so it wears the same
+              trackless outlined grammar as the analytics tab filters instead
+              of MUI's default toggle group. It was already in the right place
+              (panel header, right-aligned, beside the chart it controls); only
+              its treatment was off-system. */}
           <ToggleButtonGroup
             size="small"
             exclusive
             value={metric}
             aria-label={t("overview.metricToggleLabel")}
+            sx={getFilterSegmentSx(theme, 32)}
             onChange={(_, next: OverviewMetric | null) => {
               if (next) {
                 setMetric(next);
