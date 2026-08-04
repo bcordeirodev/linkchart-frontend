@@ -16,16 +16,14 @@ import { useTranslation } from "react-i18next";
 
 import { useShareAPI } from "@/shared/hooks/useShareAPI";
 import useClipboard from "@/shared/hooks/useClipboard";
+import { radiusTokens, typographyScale } from "@/lib/theme";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import {
   getPublicBlockDescriptionSx,
-  getPublicBlockTitleSx,
-  getPublicFocalSx,
   getPublicInsetSx,
   publicHairline,
 } from "@/lib/theme/publicPageStyles";
 import {
-  ANALYTICS_GRADIENT_FROM,
   ANALYTICS_GRADIENT_TO,
   RESTART_HUE,
   SHARE_HUE,
@@ -33,7 +31,7 @@ import {
   WHATSAPP_GREEN_HOVER,
 } from "@/lib/theme/publicActionColors";
 import { getShortUrl } from "@/lib/utils/shortUrl";
-import { PublicBlockIcon } from "@/shared/ui/base";
+import { getCardSurfaceSx } from "@/shared/ui/base";
 import { WhatsAppIcon } from "@/shared/ui/icons";
 import { useNavigate } from "@/shared/hooks";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
@@ -116,14 +114,21 @@ export function ShorterSuccessCard({
     ? alpha(theme.palette.common.white, 0.96)
     : theme.palette.primary.dark;
 
+  /**
+   * Micro-label inside the card ("SEU LINK CURTO", "QR CODE") — caps in
+   * JetBrains Mono, the same group-label grammar the shortener form above uses.
+   * Previously 0.71875rem Inter at weight 800, which read as a second, louder
+   * heading competing with the card's own title.
+   */
   const sectionLabelSx = {
     display: "block",
-    fontSize: "0.71875rem",
-    fontWeight: 800,
+    fontFamily: typographyScale.code.fontFamily,
+    fontSize: "0.6875rem",
+    fontWeight: 600,
     letterSpacing: "0.08em",
     textTransform: "uppercase" as const,
     lineHeight: 1.2,
-    color: alpha(theme.palette.text.primary, isDark ? 0.78 : 0.74),
+    color: theme.palette.text.secondary,
   };
 
   /** Solid, white-on-color action (Copy = primary blue, WhatsApp = brand green). */
@@ -159,16 +164,13 @@ export function ShorterSuccessCard({
   });
 
   /**
-   * Blue→violet gradient fill for the analytics action — the only gradient in
-   * the row, so the headline feature reads one notch above its solid siblings.
+   * Analytics action — the headline feature, so it stays the strongest blue in
+   * the row, but as a solid royal-blue fill (`ANALYTICS_GRADIENT_TO`) rather
+   * than the old violet→blue gradient. Saturation is what ranks it above its
+   * siblings now; the gradient was the last one left on the page.
    */
   const analyticsActionSx = {
-    ...colorActionSx(ANALYTICS_GRADIENT_FROM),
-    backgroundImage: `linear-gradient(90deg, ${ANALYTICS_GRADIENT_FROM}, ${ANALYTICS_GRADIENT_TO})`,
-    // Span the transparent 1px border too — with the default padding-box
-    // origin the gradient tiles into the border and its blue end bleeds
-    // into the left edge.
-    backgroundOrigin: "border-box",
+    ...colorActionSx(ANALYTICS_GRADIENT_TO),
     transition: "filter 160ms ease, transform 120ms ease",
     "&:hover": { filter: "brightness(1.12)" },
   };
@@ -186,7 +188,12 @@ export function ShorterSuccessCard({
       component="article"
       aria-labelledby={cardHeadingId}
       sx={{
-        ...getPublicFocalSx(theme),
+        // Same hairline + translucent veil as the form it replaces, so the
+        // surface does not change character between "about to shorten" and
+        // "shortened" — it was a primary-tinted gradient wash before.
+        borderRadius: `${radiusTokens.lg}px`,
+        border: `1px solid ${publicHairline(theme)}`,
+        ...getCardSurfaceSx(theme),
         maxWidth: SHORTER_CONTENT_MAX_WIDTH,
         mx: "auto",
         overflow: "hidden",
@@ -196,27 +203,25 @@ export function ShorterSuccessCard({
         spacing={{ xs: 2, md: 2.25 }}
         sx={{ p: { xs: 2, sm: 2.5, md: 3 } }}
       >
-        {/* Header */}
-        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.25 }}>
-          <PublicBlockIcon
-            icon={Check}
+        {/* Header — no icon-chip beside the title (the banned pattern); the
+            heading opens the card on its own, in the display face. */}
+        <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+          <Typography
+            id={cardHeadingId}
+            variant="h3"
+            component="h2"
             sx={{
-              color: alpha(theme.palette.common.white, isDark ? 0.96 : 0.94),
+              fontSize: { xs: "1.125rem", sm: "1.25rem" },
+              lineHeight: 1.3,
+              letterSpacing: "-0.01em",
             }}
-          />
-          <Stack spacing={0.75} sx={{ minWidth: 0, flex: 1 }}>
-            <Typography
-              id={cardHeadingId}
-              component="h2"
-              sx={getPublicBlockTitleSx(theme)}
-            >
-              {t("shorter.successTitle")}
-            </Typography>
-            <Typography component="p" sx={getPublicBlockDescriptionSx(theme)}>
-              {t("shorter.successCopiedHint")}
-            </Typography>
-          </Stack>
-        </Box>
+          >
+            {t("shorter.successTitle")}
+          </Typography>
+          <Typography component="p" sx={getPublicBlockDescriptionSx(theme)}>
+            {t("shorter.successCopiedHint")}
+          </Typography>
+        </Stack>
 
         {/* Left: link card + primary actions · Right: QR (spans both). */}
         <Box
@@ -264,7 +269,7 @@ export function ShorterSuccessCard({
                   sx={{
                     m: 0,
                     minWidth: 0,
-                    fontFamily: "monospace",
+                    fontFamily: typographyScale.code.fontFamily,
                     fontSize: { xs: "1rem", sm: "1.0625rem" },
                     fontWeight: 700,
                     letterSpacing: "-0.01em",
@@ -308,7 +313,7 @@ export function ShorterSuccessCard({
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
-                    fontFamily: "monospace",
+                    fontFamily: typographyScale.code.fontFamily,
                     fontSize: "0.8125rem",
                     lineHeight: 1.35,
                     color: alpha(

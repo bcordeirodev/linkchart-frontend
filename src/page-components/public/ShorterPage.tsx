@@ -7,7 +7,6 @@ import { SHORTER_PAGE_CONTAINER_MAX_WIDTH } from "@/features/shorter/constants";
 import { useShorter } from "@/features/shorter/hooks/useShorter";
 import { PublicLayout } from "@/shared/layout";
 import { ShorterSkeleton } from "@/shared/ui/feedback/skeletons/ShorterSkeleton";
-import { PublicBlobBackground } from "@/shared/ui/PublicBlobBackground";
 
 import { ShorterLanding } from "./ShorterLanding";
 import { ShorterEmbeddedAnalytics } from "./ShorterEmbeddedAnalytics";
@@ -51,8 +50,15 @@ function ShorterPageContent() {
   }, [analyticsSlug, handleReset]);
 
   return (
+    // No `PublicBlobBackground` here: the acquisition page sits directly on the
+    // near-black page background, the same as every logged-in screen. The three
+    // floating radial blobs (blue top-right, violet bottom-left and a green
+    // "success" glow mid-right) were the page's most generic tell — ambient
+    // colour doing no work, and a green wash on a surface where green means
+    // exactly one thing (success). Surfaces now read through the translucent
+    // veil + hairline grammar instead. `/public-analytics` still renders the
+    // component, so it is intentionally left in place.
     <PublicLayout variant="shorter" chrome="minimal">
-      <PublicBlobBackground />
       <Box sx={{ position: "relative", minHeight: "100dvh" }}>
         <Container
           maxWidth={SHORTER_PAGE_CONTAINER_MAX_WIDTH}

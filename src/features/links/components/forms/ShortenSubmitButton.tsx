@@ -1,17 +1,20 @@
 "use client";
 import type { ReactNode } from "react";
-import { Box, CircularProgress } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
+import { Button, CircularProgress } from "@mui/material";
+import { Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { GradientButton } from "@/shared/ui/base";
+import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { linksRadius } from "@/features/links/components/list/linksPanelStyles";
+import { PUBLIC_CONTROL_HEIGHT } from "@/features/links/components/urlShortenerFormStyles";
+
 import type { UrlSafetyStatus } from "@/features/links/hooks/useUrlSafetyCheck";
 
 export interface ShortenSubmitButtonProps {
   /**
    * True while the form submission is in flight (from `usePublicURLShortener`
    * or the optional external `loading` prop forwarded by the parent page).
-   * Triggers shimmer animation and loading label.
+   * Swaps the zap glyph for a spinner and the label for the loading copy.
    */
   loading: boolean;
   /**
@@ -25,13 +28,24 @@ export interface ShortenSubmitButtonProps {
 }
 
 /**
- * Full-width submit button for the public URL shortener form.
+ * Submit button for the public URL shortener form.
  *
  * The safety gate is enforced here: the button is disabled whenever
  * `safetyStatus` is `"checking"` or `"unsafe"`, preventing form submission
  * while a Google Safe Browsing check is pending or has flagged the URL as
- * dangerous. This mirrors the inline disabled logic that was previously
- * inlined in `URLShortenerForm`.
+ * dangerous.
+ *
+ * Visually it is the plain contained-primary button the rest of the product
+ * uses, sized to the 52px destination row it sits beside — previously it was
+ * a full-width `GradientButton` with a shimmer sweep and an emoji in its
+ * label, the loudest "template" element on the acquisition page and the only
+ * gradient CTA left in the app. The zap survives as a lucide glyph, so the
+ * energy cue is drawn in the same icon set as everything else instead of
+ * being a font-rendered emoji that changes shape per platform.
+ *
+ * Full-width on phones, where it sits under the URL field and a
+ * shrink-to-fit button would read as an afterthought; from `sm` up it sizes to
+ * its label and sits beside the field, matching the destination row's height.
  *
  * @param props - See {@link ShortenSubmitButtonProps}.
  */
@@ -39,7 +53,6 @@ export function ShortenSubmitButton({
   loading,
   safetyStatus,
 }: ShortenSubmitButtonProps): ReactNode {
-  const theme = useTheme();
   const { t } = useTranslation("public");
 
   const safetyBlocked =
@@ -47,39 +60,32 @@ export function ShortenSubmitButton({
   const isDisabled = loading || safetyBlocked;
 
   return (
-    <GradientButton
+    <Button
       type="submit"
-      size="large"
-      loading={loading}
+      variant="contained"
+      color="primary"
       disabled={isDisabled}
-      shimmerEffect
+      startIcon={
+        loading ? (
+          <CircularProgress size={16} color="inherit" />
+        ) : (
+          <Zap {...ICON_SM} />
+        )
+      }
       sx={{
-        width: "100%",
-        minHeight: 54,
-        fontWeight: 800,
-        letterSpacing: "-0.01em",
-        borderRadius: 2,
+        height: PUBLIC_CONTROL_HEIGHT,
+        minHeight: PUBLIC_CONTROL_HEIGHT,
+        borderRadius: `${linksRadius.control}px`,
+        textTransform: "none",
+        fontWeight: 600,
+        fontSize: "0.9375rem",
+        px: 2.5,
+        whiteSpace: "nowrap",
+        flexShrink: 0,
+        width: { xs: "100%", sm: "auto" },
       }}
     >
-      {loading ? (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1.25,
-            justifyContent: "center",
-          }}
-        >
-          <CircularProgress
-            size={16}
-            thickness={5}
-            sx={{ color: alpha(theme.palette.common.white, 0.82) }}
-          />
-          {t("shorter.shortening")}
-        </Box>
-      ) : (
-        t("shorter.form.submitButton")
-      )}
-    </GradientButton>
+      {loading ? t("shorter.shortening") : t("shorter.form.submitButton")}
+    </Button>
   );
 }
