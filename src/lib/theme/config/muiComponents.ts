@@ -344,23 +344,36 @@ const surfaceComponents = {
  * Configurações de navegação e controles
  */
 const navigationComponents = {
+  // Level-1 underline grammar (2026-08-04): a selected tab used to get a
+  // navy background fill here — the same "filled pill" language the L2
+  // sub-tabs and L3 filter segments also use, which made three different
+  // roles (section nav / view switch / data filter) read as one three-deep
+  // drill-down. The active state is now carried by weight + text.primary +
+  // MUI's own default 2px `primary` indicator (`Tabs`' `indicatorColor`
+  // defaults to `"primary"` and the indicator's default height is already
+  // 2px — nothing to override there). Primary stays reserved for that
+  // underline and for the L3 filter's border/tint; no level fills a tab or
+  // segment with a solid/tinted primary background anymore.
   MuiTab: {
     styleOverrides: {
       root: ({ theme }: { theme: Theme }) => ({
         textTransform: "none",
-        transition: `all ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+        color: theme.palette.text.secondary,
+        transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+        "&:hover": {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.action.hover,
+        },
+        "&.Mui-focusVisible": {
+          backgroundColor: theme.palette.action.hover,
+        },
         "&.Mui-selected": {
-          color: theme.palette.primary.main,
-          backgroundColor:
-            theme.palette.mode === "dark"
-              ? "rgba(91, 141, 239, 0.10)"
-              : "rgba(44, 90, 160, 0.06)",
-          "&:hover": {
-            backgroundColor:
-              theme.palette.mode === "dark"
-                ? "rgba(91, 141, 239, 0.14)"
-                : "rgba(44, 90, 160, 0.08)",
-          },
+          color: theme.palette.text.primary,
+          fontWeight: 600,
+          backgroundColor: "transparent",
+        },
+        "&.Mui-selected:hover": {
+          backgroundColor: theme.palette.action.hover,
         },
       }),
     },

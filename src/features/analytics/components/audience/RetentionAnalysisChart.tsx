@@ -101,7 +101,21 @@ export function RetentionAnalysisChart({
           </Box>
         ) : null}
 
-        {/* Real Metrics */}
+        {/* Real Metrics.
+            `returningVisitors` reads "Recorrentes"/"Returning" rather than
+            "Visitantes Recorrentes"/"Returning Visitors": at this card's
+            width in the `lg`+ two-column retention/session grid, the longer
+            phrase was the only label of the three that wrapped to 2 lines,
+            pushing its value below the shared baseline of its siblings
+            ("Taxa de Recorrência", "Total de Visitantes"). Content-specific
+            fix (shorter label), not a primitive change — `OverviewMetricRow`
+            has 11 other call sites whose labels already fit on one line, so
+            reserving 2-line height in the primitive would only add dead
+            space above every one of them. Same category of fix as the
+            "7 dias" period-preset and "Alta/Baixa" trend-label compactions
+            elsewhere in the analytics screen. Single consumer of this key
+            (confirmed via grep) — the bar chart's own "Returning" segment
+            label (`returningLabel`) is a separate key, unaffected. */}
         <Box sx={{ mb: 3 }}>
           <OverviewMetricRow
             size="md"

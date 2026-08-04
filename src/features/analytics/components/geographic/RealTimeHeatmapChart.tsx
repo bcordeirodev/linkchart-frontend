@@ -26,11 +26,14 @@ import {
   Tooltip,
   Alert,
   Slider,
+  ToggleButton,
+  ToggleButtonGroup,
   useTheme,
 } from "@mui/material";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { getFilterSegmentSx } from "@/shared/ui/base";
 import { chartByType } from "@/lib/theme/colors/chart";
 import {
   elevationLightTokens,
@@ -583,37 +586,34 @@ export function RealTimeHeatmapChart({
                 />
               </Box>
 
-              <Stack
-                direction="row"
-                spacing={1}
-                sx={{
-                  "& .MuiButton-root": {
-                    minHeight: { xs: 44, sm: "auto" },
-                  },
+              {/* Level 3 — this switches the tile layer under the markers, so
+                  it wears the same trackless outlined grammar as the other
+                  analytics tab filters instead of MUI's filled `contained`
+                  Button. It already lived in the right place (panel header,
+                  beside the content it controls); only its treatment was a
+                  fourth, off-system grammar (filled-button active state). */}
+              <ToggleButtonGroup
+                size="small"
+                exclusive
+                value={mapStyle}
+                aria-label={t("geographic.heatmap.styleGroupLabel")}
+                sx={getFilterSegmentSx(theme, 32)}
+                onChange={(_, next: "street" | "satellite" | "dark" | null) => {
+                  if (next) {
+                    setMapStyle(next);
+                  }
                 }}
               >
-                <Button
-                  size="small"
-                  variant={mapStyle === "street" ? "contained" : "outlined"}
-                  onClick={() => setMapStyle("street")}
-                >
+                <ToggleButton value="street">
                   {t("geographic.heatmap.styleStreet")}
-                </Button>
-                <Button
-                  size="small"
-                  variant={mapStyle === "satellite" ? "contained" : "outlined"}
-                  onClick={() => setMapStyle("satellite")}
-                >
+                </ToggleButton>
+                <ToggleButton value="satellite">
                   {t("geographic.heatmap.styleSatellite")}
-                </Button>
-                <Button
-                  size="small"
-                  variant={mapStyle === "dark" ? "contained" : "outlined"}
-                  onClick={() => setMapStyle("dark")}
-                >
+                </ToggleButton>
+                <ToggleButton value="dark">
                   {t("geographic.heatmap.styleDark")}
-                </Button>
-              </Stack>
+                </ToggleButton>
+              </ToggleButtonGroup>
             </Box>
 
             {/* Legenda de intensidade + contagem de localizações */}
