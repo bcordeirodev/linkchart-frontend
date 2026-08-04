@@ -1,6 +1,6 @@
 import { alpha } from "@mui/material/styles";
 
-import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
 
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/material";
@@ -78,30 +78,6 @@ export function getPublicMetricCardSx(
     ...getPublicInsetSx(theme, accent ? { primaryTint: true } : undefined),
     p: { xs: "18px", md: "20px" },
     minHeight: { xs: 116, md: 128 },
-  };
-}
-
-/** Input rows inside the shorter form. */
-export function getPublicFormFieldSx(theme: Theme): SxProps<Theme> {
-  const isDark = theme.palette.mode === "dark";
-
-  return {
-    ...getPublicInsetSx(theme),
-    px: 2,
-    py: 1.5,
-    display: "flex",
-    alignItems: "center",
-    gap: 1.5,
-    minHeight: 54,
-    transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}, background ${motionTokens.duration.base} ${motionTokens.easing.default}, box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-    "&:hover": {
-      borderColor: publicHairline(theme),
-    },
-    "&:focus-within": {
-      borderColor: alpha(theme.palette.primary.main, isDark ? 0.46 : 0.42),
-      bgcolor: alpha(theme.palette.primary.main, isDark ? 0.06 : 0.05),
-      boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, isDark ? 0.09 : 0.08)}`,
-    },
   };
 }
 
@@ -211,12 +187,26 @@ export function getPublicFocalSx(theme: Theme): SxProps<Theme> {
 /**
  * Hero/display heading style for public pages. Uses clamp() so the size
  * scales smoothly across viewports instead of jumping at the md breakpoint.
+ *
+ * `fontFamily` is sourced from `theme.typography.h1` — i.e. the same
+ * `displayFontFamily` (Space Grotesk) the theme already declares for every
+ * display heading — and NOT from a literal font stack repeated here. Public
+ * heroes render `<Typography component="h1" sx={getPublicDisplaySx(theme)}>`,
+ * and `component` only swaps the DOM tag: without an explicit `variant` MUI
+ * still applies `body1`, so the brand display face was silently dropped and
+ * the H1 came out in Inter. Reading the family off the theme fixes every
+ * consumer of this helper at once and keeps a single source of truth.
+ *
+ * Weight is 700, not 800: `app/layout.tsx` loads Space Grotesk at 400/500/700
+ * only, so 800 asked the browser to synthesise a bolder face — a smeared,
+ * faux-bold headline instead of the real cut.
  */
 export function getPublicDisplaySx(theme: Theme): SxProps<Theme> {
   const isDark = theme.palette.mode === "dark";
   return {
+    fontFamily: theme.typography.h1.fontFamily,
     fontSize: "clamp(1.75rem, 1.05rem + 2.7vw, 2.75rem)",
-    fontWeight: 800,
+    fontWeight: 700,
     lineHeight: 1.12,
     letterSpacing: "-0.02em",
     color: alpha(theme.palette.text.primary, isDark ? 0.96 : 1),

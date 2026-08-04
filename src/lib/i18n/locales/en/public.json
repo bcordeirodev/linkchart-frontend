@@ -66,7 +66,7 @@
       "slugLabel": "Custom name",
       "slugPlaceholder": "my-link",
       "slugInvalid": "3–50 characters: lowercase letters, numbers and hyphens",
-      "submitButton": "⚡ Shorten now",
+      "submitButton": "Shorten now",
       "errorMessage": "We couldn't shorten this link. Please try again.",
       "slugSuggestionChecking": "Looking for an available name…",
       "slugTabHint": "Tab to accept suggestion",

@@ -30,7 +30,13 @@ export function ShorterHero({ state }: ShorterHeroProps) {
       }}
     >
       <m.div {...fadeUp(0.1)}>
+        {/* `variant="h1"` is load-bearing, not decoration: `component` alone
+            only swaps the DOM tag, leaving MUI's default `body1` typography
+            (Inter) on the page's most important heading. The variant selects
+            the theme's display face; `getPublicDisplaySx` then re-states it
+            for safety and layers the responsive clamp on top. */}
         <Typography
+          variant="h1"
           component="h1"
           sx={{
             ...getPublicDisplaySx(theme),
@@ -41,14 +47,10 @@ export function ShorterHero({ state }: ShorterHeroProps) {
           {isSuccess ? (
             <>
               {t("shorter.readyToSharePrefix")}{" "}
-              <Box
-                component="span"
-                sx={{
-                  background: `linear-gradient(90deg, ${theme.palette.primary.light}, ${theme.palette.primary.main}, ${theme.palette.success.main})`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
+              {/* Solid accent, not a blue→green text gradient: the display
+                  face carries the emphasis, and a clipped three-stop gradient
+                  was the loudest remaining "template" tell on the page. */}
+              <Box component="span" sx={{ color: theme.palette.primary.main }}>
                 {t("shorter.readyToShareSuffix")}
               </Box>
             </>
