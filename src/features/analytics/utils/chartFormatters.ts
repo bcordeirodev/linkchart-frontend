@@ -67,12 +67,14 @@ function barPlotOptions(horizontal: boolean) {
  * {@link formatHorizontalStackedBar}).
  *
  * `dataVizPalette` é azul-dominante e desaturado por design (ver
- * `dataViz.ts`) — os tons mais claros da paleta (`secondary` #73AFDE,
- * `quaternary` #A8BEDC) dão ~1.7–1.9:1 de contraste contra o texto claro
- * padrão do Apex (`chart.foreColor`, herdado de `theme.palette.text
- * .secondary`), praticamente ilegível — e mesmo o `primary` da paleta fica
- * em 3.71:1, abaixo do mínimo de 4.5:1. `darkNeutral.bg` (o quase-preto
- * canônico do app) contra os 5 tons da paleta fica entre 4.19:1 (`tertiary`,
+ * `dataViz.ts`). O padrão do Apex quando nenhuma `dataLabels.style.colors`
+ * é passada não é branco opaco — é `chart.foreColor`, herdado de
+ * `theme.palette.text.secondary` (`rgba(255, 255, 255, 0.68)` no tema
+ * dark), um branco translúcido que se mistura com o preenchimento da barra
+ * embaixo dele. Contra qualquer um dos 5 tons da paleta esse blend fica bem
+ * abaixo do mínimo de 4.5:1 — pior ainda nos tons mais claros (`secondary`
+ * #73AFDE, `quaternary` #A8BEDC). `darkNeutral.bg` (o quase-preto canônico
+ * do app), opaco, contra os 5 tons da paleta fica entre 4.19:1 (`tertiary`,
  * o mais escuro) e 10.81:1 (`quaternary`) — acima do mínimo de 3:1 para
  * texto grande/negrito em todos os casos, sem precisar de uma cor por série.
  */
