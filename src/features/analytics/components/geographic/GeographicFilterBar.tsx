@@ -26,7 +26,13 @@ const CONTINENT_OPTIONS = [
  * Controls one dimension: `continent` — backend filter that limits data to
  * clicks from a specific continent. `null` means all continents.
  *
- * Delegates rendering to {@link TabFilterBar} for consistent styling across tabs.
+ * Delegates rendering to {@link TabFilterBar} in its `"filter"` (level-3)
+ * grammar — trackless outlined segments with a primary border/tint on the
+ * active one. Critical here: this row sits directly beside the level-2
+ * heat-map/world sub-tabs, and in the tracked-pill styling both were two
+ * adjacent, near-identical pill rows with nothing to say which one navigated
+ * and which one filtered.
+ *
  * Renders a clear-all (×) button when a continent is selected.
  */
 export function GeographicFilterBar({
@@ -38,6 +44,7 @@ export function GeographicFilterBar({
   return (
     <TabFilterBar
       attached
+      variant="filter"
       groups={[
         {
           label: t("filters.continent"),

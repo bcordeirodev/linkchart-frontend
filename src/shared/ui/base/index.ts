@@ -9,7 +9,7 @@ export { AppLogo } from "./AppLogo";
 // Layout & Structure
 export { default as EnhancedPaper } from "./EnhancedPaper";
 export { getCardSurfaceSx } from "./cardSurface";
-export { getSegmentedControlSx } from "./segmentedControl";
+export { getFilterSegmentSx, getSegmentedControlSx } from "./segmentedControl";
 
 // Novos componentes unificados
 export { ResponsiveContainer } from "./ResponsiveContainer";
