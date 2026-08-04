@@ -12,7 +12,7 @@ Edição de perfil do usuário autenticado: dados básicos, alteração de senha
 
 - `components/ProfileForm.tsx` — formulário de dados básicos (nome, email).
 - `components/PasswordChangeForm.tsx` — alteração de senha com confirmação.
-- `components/ProfileSidebar.tsx` — menu lateral com seções.
+- `components/ProfileSidebar.tsx` — apesar do nome, não é mais um menu lateral: exporta `ProfileAccountStatus` (chip de verificação + "membro desde") e `ProfileActivity`, a coluna direita do layout de duas colunas de `/profile` ("instrumento técnico").
 - `components/Profile.styled.tsx` — Emotion styles compartilhados pela página.
 
 ## Hooks de dados

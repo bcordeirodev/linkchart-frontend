@@ -1,5 +1,5 @@
 "use client";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { OverviewMetricRow } from "@/shared/ui/base/OverviewMetricRow";
@@ -19,8 +19,6 @@ interface LinkMetricsSummary {
 interface DashboardMetricsProps {
   summary?: LinkMetricsSummary;
   linksData?: LinkResponse[];
-  showTitle?: boolean;
-  title?: string;
 }
 
 /**
@@ -34,16 +32,16 @@ interface DashboardMetricsProps {
  * removed: it had zero callers (the analytics dashboard's KPI row is
  * `OverviewKpiHeader`, which never imported this component) and duplicated
  * that component's job. `LinkListPage.tsx` is this component's only consumer.
+ *
+ * `showTitle`/`title` props (and the `metrics.title` i18n key they rendered)
+ * were removed in the task-17 sweep: `LinkListPage` — the sole caller — has
+ * always passed `showTitle={false}`, so the title never actually rendered.
  */
 export function LinkMetrics({
   summary,
   linksData = [],
-  showTitle = false,
-  title,
 }: DashboardMetricsProps) {
   const { t, i18n } = useTranslation("links");
-
-  const titleText = title ?? t("metrics.title");
 
   const totalLinks = summary?.total_links ?? linksData.length;
   const activeLinks =
@@ -89,12 +87,6 @@ export function LinkMetrics({
 
   return (
     <Box sx={{ mb: 0 }}>
-      {showTitle ? (
-        <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-          {titleText}
-        </Typography>
-      ) : null}
-
       {/* size="md": a fileira não deve ocupar tanta altura vertical nesta
           página — ver o prop no OverviewMetricRow. Analytics/relatórios/
           perfil continuam em "lg" (default). */}

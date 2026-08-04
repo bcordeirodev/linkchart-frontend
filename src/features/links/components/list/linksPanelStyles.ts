@@ -101,30 +101,6 @@ export function getLinksControlFillBg(theme: Theme) {
     : alpha(theme.palette.common.black, 0.02);
 }
 
-/**
- * Translucent fill for a standalone level-1 card on `/links` (currently: the
- * quick-create cluster's wrapping `EnhancedPaper`) — same `surfaceOverlayTokens`
- * formula as the global `MuiCard` override and the sibling per-feature
- * helpers `getSubdomainCardSx`/`getApiKeyCardSx`/`getProfileCardSx`/
- * `getBioCardSx`, applied via `EnhancedPaper`'s `sx` prop since
- * `EnhancedPaper` itself defaults to the solid `background.paper` fill.
- *
- * Returns a plain object (not `SxProps<Theme>`) so call sites can safely
- * spread it into another `sx` object literal, matching the sibling helpers.
- *
- * @param theme - tema MUI ativo.
- * @returns `sx` fragment overriding just the background color.
- */
-export function getLinksCardSx(theme: Theme): { backgroundColor: string } {
-  const isDark = theme.palette.mode === "dark";
-
-  return {
-    backgroundColor: isDark
-      ? alpha(theme.palette.common.white, surfaceOverlayTokens.card.dark)
-      : alpha(theme.palette.common.black, surfaceOverlayTokens.card.light),
-  };
-}
-
 /** Hairline shadow for /links cards — softer than `elevation*.xs`. */
 export function getLinksCardShadow(
   theme: Theme,

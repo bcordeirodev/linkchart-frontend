@@ -10,6 +10,7 @@ import type { Theme } from "@mui/material/styles";
 import type { ApexOptions } from "apexcharts";
 
 import { dataVizPalette } from "@/lib/theme/dataViz";
+import { typographyScale } from "@/lib/theme/designSystem";
 
 /** The chart-kind literal ApexCharts itself uses for `chart.type` (e.g. `"area"`, `"bar"`, `"donut"`). */
 type ApexChartKind = NonNullable<ApexOptions["chart"]>["type"];
@@ -62,7 +63,7 @@ export function buildApexBaseOptions(
   theme: Theme,
   chartType?: ApexChartKind,
 ): ApexOptions {
-  const mono = "var(--font-jetbrains-mono), ui-monospace, monospace";
+  const mono = typographyScale.code.fontFamily;
   return {
     chart: {
       toolbar: { show: false },

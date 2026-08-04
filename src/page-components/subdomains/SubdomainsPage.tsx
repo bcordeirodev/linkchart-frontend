@@ -9,9 +9,9 @@ import { SubdomainClaimForm } from "@/features/subdomains/components/SubdomainCl
 import { SubdomainList } from "@/features/subdomains/components/SubdomainList";
 import { SubdomainQuotaMeter } from "@/features/subdomains/components/SubdomainQuotaMeter";
 import { useSubdomains } from "@/features/subdomains/hooks/useSubdomains";
-import { getSubdomainCardSx } from "@/features/subdomains/utils/cardSurface";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import {
+  getCardSurfaceSx,
   PageSectionHeading,
   ResponsiveContainer,
   SectionLabel,
@@ -97,7 +97,7 @@ export default function SubdomainsPage() {
                   variant="outlined"
                   animated={false}
                   sx={{
-                    ...getSubdomainCardSx(theme),
+                    ...getCardSurfaceSx(theme),
                     p: { xs: 2.5, sm: 3 },
                   }}
                 >

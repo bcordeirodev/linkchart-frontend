@@ -13,9 +13,13 @@ import { LinkFormSkeleton } from "@/shared/ui/feedback/skeletons";
 import AuthGuardRedirect from "../../lib/auth/AuthGuardRedirect";
 
 /**
- * 📝 Página de Edição de Link - REFATORADA
- * Segue padrões arquiteturais: < 100 linhas, carrega dados iniciais
- * Estrutura: PageBreadcrumb → Actions → LinkForm.
+ * Página de edição de link — sem `PageHeader`/breadcrumb próprio:
+ * `LinkActions` é o único chrome (back navigation, título, URL curta, view
+ * switcher e o overflow menu de excluir), seguido do formulário
+ * `EditLinkForm`. Mostra um `Alert` com botão de voltar quando `id` está
+ * ausente (link direto malformado); enquanto os dados do link carregam,
+ * `LinkActions` fica oculto e só `EditLinkForm` (com seu próprio skeleton)
+ * é exibido.
  */
 interface Props {
   id: string;

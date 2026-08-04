@@ -37,6 +37,7 @@ import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainS
 import { typographyScale } from "@/lib/theme";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
 import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
+import { getCardSurfaceSx } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
 
@@ -45,7 +46,6 @@ import {
   linksRadius,
   getLinksBorderColor,
   getLinksControlFillBg,
-  getLinksCardSx,
 } from "./linksPanelStyles";
 
 import type { LinkResponse } from "@/types";
@@ -477,7 +477,7 @@ export function LinksQuickCreate({
       animated={false}
       sx={{
         p: { xs: 2, sm: 2.25 },
-        ...getLinksCardSx(theme),
+        ...getCardSurfaceSx(theme),
       }}
     >
       {/* Cabeçalho do card: o título e, alinhada ao topo dele, a saída para

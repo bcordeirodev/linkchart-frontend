@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 
 import { useBulkActions } from "@/features/links/hooks/useBulkActions";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
-import { SectionLabel } from "@/shared/ui/base";
+import { getCardSurfaceSx, SectionLabel } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 import { BulkActionsBar } from "./BulkActionsBar";
@@ -29,7 +29,6 @@ import {
   getLinksBorderColor,
   getLinksBrowseGridSx,
   getLinkCardShellSx,
-  getLinksCardSx,
 } from "./linksPanelStyles";
 
 import type { LinksMeta } from "@/lib/query/keys";
@@ -296,13 +295,13 @@ export function LinksBrowseSection({
       </Typography>
 
       {/* Nível 1: mesmo tratamento do card de quick-create/`/subdomains` —
-          véu translúcido (`getLinksCardSx`) + hairline (`EnhancedPaper
+          véu translúcido (`getCardSurfaceSx`) + hairline (`EnhancedPaper
           variant="outlined"`). Envolve só o toolbar de filtros; seleção em
           massa e o grid de cards ficam fora dele. */}
       <EnhancedPaper
         variant="outlined"
         animated={false}
-        sx={{ p: 2, ...getLinksCardSx(theme) }}
+        sx={{ p: 2, ...getCardSurfaceSx(theme) }}
       >
         <LinksFilters
           searchTerm={searchTerm}

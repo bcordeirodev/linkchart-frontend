@@ -17,7 +17,7 @@ import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
-import { AnalyticsEmptyState } from "@/shared/ui/base";
+import { AnalyticsEmptyState, getCardSurfaceSx } from "@/shared/ui/base";
 
 import type { BusinessInsight } from "../../hooks/useInsightsData";
 
@@ -59,14 +59,12 @@ export function BusinessInsights({
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
-  // Translucent card fill — same alpha formula as `getLinkCardShellSx`
-  // (`src/features/links/components/list/linksPanelStyles.ts`): a subtle
-  // veil over the page background rather than an opaque `background.paper`
-  // slab, so these callouts read as part of the page instead of a stacked
-  // surface competing with the rest of the redesign's card grammar.
-  const insightSurfaceBg = isDark
-    ? alpha(theme.palette.common.white, 0.03)
-    : alpha(theme.palette.common.black, 0.02);
+  // Translucent card fill — same `getCardSurfaceSx` formula shared by every
+  // in-page card in the app: a subtle veil over the page background rather
+  // than an opaque `background.paper` slab, so these callouts read as part
+  // of the page instead of a stacked surface competing with the rest of the
+  // redesign's card grammar.
+  const insightSurfaceBg = getCardSurfaceSx(theme).backgroundColor;
 
   /**
    * Resolves insight text by preferring an i18n key (with optional interpolation
@@ -183,11 +181,10 @@ export function BusinessInsights({
           return (
             <Box key={index}>
               {/* Translucent-surface callout, not an opaque `Card` — same
-                  alpha-fill grammar as the /links card shell
-                  (`getLinkCardShellSx`): `alpha(white, 0.03)` dark /
-                  `alpha(black, 0.02)` light, hairline border, no shadow. The
-                  severity accent lives entirely in the left border — that's
-                  the one piece of "information" color this component keeps. */}
+                  `getCardSurfaceSx` fill shared by every in-page card, hairline
+                  border, no shadow. The severity accent lives entirely in the
+                  left border — that's the one piece of "information" color
+                  this component keeps. */}
               <Card
                 elevation={0}
                 sx={{

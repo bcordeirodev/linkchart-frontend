@@ -41,6 +41,13 @@ export interface OverviewMetricRowProps {
    * (`LinkMetrics`). Callers existentes (analytics, relatórios, perfil,
    * `OverviewKpiHeader`) não passam esta prop e continuam em `"lg"`,
    * pixel-idênticos a antes.
+   *
+   * **Latente:** o `fontSize` do modo `"md"` (compacto) não considera
+   * `isDense` (5+ métricas) — só o `"lg"` reduz a faixa `sm` de `3rem` para
+   * `2rem` nesse caso (ver o bloco "Densidade automática" abaixo). Hoje isso
+   * não importa porque o único caller de `size="md"` (`LinkMetrics`) nunca
+   * passa 5+ métricas; se um segundo caller compacto e denso aparecer, o
+   * `fontSize` do `isCompact` precisa do mesmo tratamento condicional.
    */
   size?: "md" | "lg";
 }
@@ -104,7 +111,7 @@ export function OverviewMetricRow({
 
         return (
           <Box
-            key={metric.label}
+            key={`${index}-${metric.label}`}
             sx={{
               flex: 1,
               minWidth: 0,

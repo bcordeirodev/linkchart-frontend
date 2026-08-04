@@ -10,7 +10,7 @@ Componentes, hooks e layouts que **cruzam features**. Se um componente é usado 
 
 Componentes visuais reutilizáveis, organizados por papel:
 
-- `base/` — primitivas estendendo MUI (`PageHeader`, `EmptyState`, `MetricCardOptimized`, `EnhancedPaper`, `GradientButton`, `TabPanel`, `SafeTypography`, `ResponsiveContainer`, `ChartCard`, `AppLogo`, `AnalyticsStateManager`, `TabDescription`).
+- `base/` — primitivas estendendo MUI (`EnhancedPaper`, `EmptyState`, `AnalyticsEmptyState`, `GradientButton`, `ResponsiveContainer`, `AppLogo`, `AnalyticsStateManager`, `PageSectionHeading`, `SectionLabel`, `OverviewMetricRow`, `cardSurface.ts`/`getCardSurfaceSx`).
 - `data-display/` — `DataTable` (material-react-table), `DataTableTopToolbar`, `ApexChartWrapper`, `ChartCard`. **Usar o ApexChartWrapper, não importar `react-apexcharts` diretamente.**
 - `feedback/` — `Loading`, `Message`, `EmailVerificationBanner`, `skeletons/*`.
 - `icons/` — wrappers de `lucide-react` (`AppIcon`, `AppIcons`) e `SvgIcon` para SVG arbitrário.
