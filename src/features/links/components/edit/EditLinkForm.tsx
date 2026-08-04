@@ -295,6 +295,7 @@ export function EditLinkForm({
           onSafetyStatusChange={setSafetyStatus}
           existingShortUrl={existingShortUrl}
           hasPassword={hasPassword}
+          ownedSlug={ownedSlug}
         />
       </LinkFormShell>
     </form>

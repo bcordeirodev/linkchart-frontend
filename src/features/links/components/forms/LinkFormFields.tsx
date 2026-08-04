@@ -90,6 +90,15 @@ interface LinkFormFieldsProps {
    * default so the protection is visible on load. Ignored in create mode.
    */
   hasPassword?: boolean;
+  /**
+   * Edit only: the slug the link already has, as loaded (before any edits in
+   * this session). Passed straight into `useSlugAvailability` so the live
+   * availability check treats this value as available instead of flagging
+   * the link's own slug as taken — the lookup it calls has no way to know
+   * "this match IS the link being edited" on its own. Ignored in create mode
+   * (there is no owned slug yet).
+   */
+  ownedSlug?: string | null;
 }
 
 /**
@@ -116,6 +125,7 @@ export function LinkFormFields({
   onSubdomainIdChange,
   existingShortUrl,
   hasPassword = false,
+  ownedSlug = null,
 }: LinkFormFieldsProps) {
   const { t } = useTranslation("links");
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -145,7 +155,11 @@ export function LinkFormFields({
   const urlValue = useWatch({ control, name: "original_url" });
   const slugValue = useWatch({ control, name: "custom_slug" });
   const { status: safetyStatus, threats } = useUrlSafetyCheck(urlValue ?? "");
-  const slugAvailability = useSlugAvailability(slugValue?.trim() ?? "");
+  const slugAvailability = useSlugAvailability(
+    slugValue?.trim() ?? "",
+    "auth",
+    ownedSlug,
+  );
   const urlSafetyLabels = buildUrlSafetyLabels(t);
   const slugAvailabilityLabels = buildSlugAvailabilityLabels(t);
 
