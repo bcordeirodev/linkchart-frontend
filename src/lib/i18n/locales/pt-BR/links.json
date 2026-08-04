@@ -120,6 +120,8 @@
     "deleteConfirmDesc": "Esta ação não pode ser desfeita. Todos os dados de cliques serão perdidos.",
     "activate": "Ativar",
     "deactivate": "Desativar",
+    "activateSuccess": "Link ativado",
+    "deactivateSuccess": "Link desativado",
     "list": "Listagem",
     "edit": "Editar",
     "copy": "Copiar",

@@ -29,7 +29,7 @@ import {
   useTheme,
   Skeleton,
 } from "@mui/material";
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/shared/hooks";
@@ -46,6 +46,7 @@ import {
   STATUS_MAP,
 } from "../../utils/linkStatus";
 import type { LinkStatus } from "../../utils/linkStatus";
+import { useToggleLinkActive } from "../../hooks/useLinks";
 
 import type {
   BatchMetaResponse,
@@ -120,6 +121,7 @@ const LinkMobileCard = memo(
     const navigate = useNavigate();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { t } = useTranslation("links");
+    const toggleActiveMutation = useToggleLinkActive();
 
     const shortUrl = useShortUrl(link);
     const displayUrl = shortUrl.replace(/^https?:\/\//, "");
@@ -128,6 +130,20 @@ const LinkMobileCard = memo(
     const statusColorKey = STATUS_MAP[linkStatus].color;
     const statusColorValue = getResolvedStatusColor(theme, linkStatus);
     const statusLabel = t(STATUS_LABEL_KEYS[linkStatus]);
+
+    /**
+     * Flips `is_active` via `useToggleLinkActive`. Runs immediately, no
+     * confirmation dialog — unlike delete, toggling is reversible.
+     * `useCallback` mirrors the desktop card (`LinkCardRich`); this component
+     * is itself `memo`'d, so a stable reference avoids passing a new function
+     * into `LinkActionsMenu` every render.
+     */
+    const handleToggleActive = useCallback(() => {
+      toggleActiveMutation.mutate({
+        id: String(link.id),
+        isActive: !link.is_active,
+      });
+    }, [toggleActiveMutation, link.id, link.is_active]);
 
     // No mobile o corpo do card *é* o botão de estatísticas (não há CTA na
     // linha de ações). Sem clique não há dashboard, então o card deixa de ser
@@ -266,6 +282,9 @@ const LinkMobileCard = memo(
                 }}
                 onQR={() => navigate(`/links/qr/${link.id}`)}
                 onDelete={() => setDeleteDialogOpen(true)}
+                isActive={link.is_active}
+                onToggleActive={handleToggleActive}
+                toggleActiveDisabled={toggleActiveMutation.isPending}
               />
             </Box>
           </Stack>

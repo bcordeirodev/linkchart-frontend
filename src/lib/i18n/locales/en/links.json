@@ -120,6 +120,8 @@
     "deleteConfirmDesc": "This action cannot be undone. All click data will be lost.",
     "activate": "Activate",
     "deactivate": "Deactivate",
+    "activateSuccess": "Link activated",
+    "deactivateSuccess": "Link deactivated",
     "list": "List",
     "edit": "Edit",
     "copy": "Copy",
