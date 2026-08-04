@@ -146,6 +146,7 @@ export function TemporalAnalysis({
 
           <Box sx={{ mb: 2 }}>
             <OverviewMetricRow
+              size="md"
               metrics={[
                 {
                   label: t("temporal.metrics.peakHour"),

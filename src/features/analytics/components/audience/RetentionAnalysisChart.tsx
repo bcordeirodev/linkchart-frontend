@@ -104,6 +104,7 @@ export function RetentionAnalysisChart({
         {/* Real Metrics */}
         <Box sx={{ mb: 3 }}>
           <OverviewMetricRow
+            size="md"
             metrics={[
               {
                 label: t("insights.retention.retentionRate"),
