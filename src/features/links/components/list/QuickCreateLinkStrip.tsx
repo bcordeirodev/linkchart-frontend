@@ -9,9 +9,13 @@
  * domain, a slash, and the name as a real, editable value. Reading it tells you
  * exactly what you are about to get; typing in it changes that link.
  *
- * The strip is deliberately not styled as an input. It carries a quiet inset
- * surface and only lights up its border on focus, so at rest it reads as a URL
- * and not as one more thing to fill in.
+ * It is composed as a real **input group**: one bordered control split into two
+ * segments — a tinted, read-only domain addon on the left (plain host text, or
+ * the subdomain picker when the account holds one) and the editable name on the
+ * right, joined by a hairline. The `/` sits at the head of the editable
+ * segment in `primary.main`, so the product's brand glyph is what separates
+ * the two halves instead of a neutral piece of punctuation floating in a row of
+ * loose boxes.
  */
 
 import {
@@ -22,26 +26,29 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Check, CornerDownRight, RefreshCw } from "lucide-react";
+import { Check, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import type { SlugFieldState } from "@/features/links/hooks/useSlugSuggestionField";
 import { SubdomainSelect } from "@/features/subdomains/components/SubdomainSelect";
 import { typographyScale } from "@/lib/theme";
 
-import { linksRadius, getLinksControlFillBg } from "./linksPanelStyles";
+import {
+  linksRadius,
+  getLinksControlFillBg,
+  getLinksInsetBg,
+} from "./linksPanelStyles";
 
 import type { ChangeEvent, FocusEvent, Ref } from "react";
 
 /**
  * Deliberately a step shorter than the URL input/Encurtar button row above
- * it (`CONTROL_HEIGHT = 48` in `LinksQuickCreate`) — the strip is the
- * *result*, not another field to fill in, so the hierarchy should read
- * input-first: a taller, more assertive row 1, a slightly lighter row 2
- * underneath. `xs` stays `"auto"`: on phones the strip wraps host and name
- * onto their own lines, which a fixed height would clip.
+ * it (`CONTROL_HEIGHT = 54` in `LinksQuickCreate`) — the destination field is
+ * the invitation, this group is the result adjusting itself to it, so the
+ * hierarchy reads input-first. `xs` stays `"auto"`: on phones the domain addon
+ * becomes a band of its own above the name, which a fixed height would clip.
  */
-const STRIP_HEIGHT = { xs: "auto", sm: 40 } as const;
+const GROUP_HEIGHT = { xs: "auto", sm: 46 } as const;
 
 interface QuickCreateLinkStripProps {
   /** Slug field value. */
@@ -66,16 +73,17 @@ interface QuickCreateLinkStripProps {
   /** Red border when the name is taken or malformed. */
   error?: boolean;
   /**
-   * Accessible group name for the whole strip. The caller used to put a
-   * visible "LINK CURTO" caps label above the strip; that label is gone
-   * (the `↳ domain / slug` composite is self-evident visually), but screen
-   * readers still need a name for the group — pass the same string here.
+   * Accessible group name. The caller renders a visible caps micro-label
+   * ("LINK CURTO") above the group; that label sits outside this component,
+   * so the group still needs its own accessible name — pass the same string
+   * here.
    */
   ariaLabel?: string;
 }
 
 /**
- * Editable preview of the short link being created: `domain / name`.
+ * Editable preview of the short link being created, as an input group:
+ * `[ domain addon | / name ]`.
  */
 export function QuickCreateLinkStrip({
   value,
@@ -101,10 +109,14 @@ export function QuickCreateLinkStrip({
   const primary = theme.palette.primary.main;
   // Subtler than `getLinksBorderColor` (the URL input's own border, one row
   // up) on purpose — the global hairline token, one step lower-contrast, so
-  // the strip recedes slightly behind the input at rest. Error/focus states
-  // stay at full strength (semantic colors, not part of the "quiet at rest"
-  // rule).
+  // the group recedes slightly behind the destination field at rest.
+  // Error/focus states stay at full strength (semantic colors, not part of the
+  // "quiet at rest" rule).
   const borderColor = error ? theme.palette.error.main : theme.palette.divider;
+  // Divisória interna do grupo: sempre neutra, mesmo em erro — a borda externa
+  // já carrega o vermelho, e repeti-lo aqui dentro faria o controle inteiro
+  // gritar em vez de sinalizar.
+  const segmentBorder = `1px solid ${theme.palette.divider}`;
 
   const busy = state === "resolving" || state === "checking";
 
@@ -117,8 +129,15 @@ export function QuickCreateLinkStrip({
 
   // O "/" separador ecoa o prefixo do SectionLabel (mesma cor primary.main)
   // — a mesma marca visual amarrando o composto "link curto" ao resto da
-  // linguagem "instrumento técnico" da página.
-  const slashSx = { ...domainSx, color: "primary.main" } as const;
+  // linguagem "instrumento técnico" da página. Aqui ele também é a junta do
+  // input group: abre o segmento editável logo depois da hairline do addon.
+  const slashSx = {
+    ...domainSx,
+    color: "primary.main",
+    fontSize: "0.9375rem",
+    fontWeight: 600,
+    flexShrink: 0,
+  } as const;
 
   return (
     <Box
@@ -126,27 +145,29 @@ export function QuickCreateLinkStrip({
       aria-label={ariaLabel}
       sx={{
         display: "flex",
-        // Phones stack: host on its own line, name full width underneath. Side
-        // by side, a production host (`redirect.linkcharts.com.br/`) eats 211
-        // of 390 CSS pixels and leaves the name field about 19px wide — which
-        // local dev never shows, because `localhost:8000/` is half the length.
+        // Phones stack: the domain addon becomes a band on top, name full width
+        // underneath. Side by side, a production host
+        // (`redirect.linkcharts.com.br/`) eats 211 of 390 CSS pixels and leaves
+        // the name field about 19px wide — which local dev never shows, because
+        // `localhost:8000/` is half the length.
         flexDirection: { xs: "column", sm: "row" },
-        alignItems: { xs: "stretch", sm: "center" },
-        rowGap: 0.25,
-        columnGap: 0.75,
-        px: { xs: 1.25, sm: 1.25 },
-        py: { xs: 0.875, sm: 0 },
-        height: STRIP_HEIGHT,
+        alignItems: "stretch",
+        height: GROUP_HEIGHT,
         minWidth: 0,
         borderRadius: `${linksRadius.control}px`,
         border: `1px solid ${borderColor}`,
         bgcolor: getLinksControlFillBg(theme),
+        // Segments are flush with the group's rounded corners — the addon's
+        // own square corners get clipped instead of poking out of the radius.
+        overflow: "hidden",
         transition: theme.transitions.create(["border-color", "box-shadow"], {
           duration: 150,
         }),
-        // The strip is the focus target, not the bare input inside it — same
+        // The group is the focus target, not the bare input inside it — same
         // contract `src/styles/index.css` sets for MUI fields, where the root
-        // draws the ring and the inner input draws nothing.
+        // draws the ring and the inner input draws nothing. Same ring formula
+        // as the destination field one row up (`getInputRootSx`), so both
+        // controls answer the keyboard the same way.
         "&:focus-within": {
           borderColor: error ? theme.palette.error.main : primary,
           boxShadow: `0 0 0 3px ${alpha(error ? theme.palette.error.main : primary, 0.35)}`,
@@ -158,52 +179,45 @@ export function QuickCreateLinkStrip({
         opacity: disabled ? 0.6 : 1,
       }}
     >
-      {/* Domain — never truncated: a half-shown host is worse than a narrow
-          name field, because the host is what makes the link trustworthy. */}
+      {/* Addon de domínio — o prefixo fixo do grupo. Tingido um passo acima do
+          preenchimento do controle e fechado por uma hairline: é a metade que
+          não se digita. Nunca truncado: um host pela metade é pior que um campo
+          de nome estreito, porque o host é o que torna o link confiável. */}
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
-          gap: 0.25,
           flexShrink: 0,
           minWidth: 0,
+          px: 1.25,
+          py: { xs: 0.75, sm: 0 },
+          bgcolor: getLinksInsetBg(theme),
+          borderRight: { sm: segmentBorder },
+          borderBottom: { xs: segmentBorder, sm: "none" },
         }}
       >
-        <CornerDownRight
-          size={14}
-          strokeWidth={2}
-          aria-hidden
-          style={{ flexShrink: 0, opacity: 0.4, marginRight: 6 }}
-        />
         {hasSubdomains ? (
-          <>
-            <SubdomainSelect
-              value={subdomainId}
-              onChange={onSubdomainChange}
-              size="small"
-              variant="embedded"
-              fullWidth={false}
-              aria-label={t("list.quickCreate.subdomainLabel")}
-            />
-            {/* The select carries the whole host, so only the separator is
-                left to draw. Appending a domain suffix here would double it
-                (`linkcharts.com.br.linkcharts.com.br`) on the default option. */}
-            <Typography component="span" sx={slashSx}>
-              /
-            </Typography>
-          </>
+          // The select carries the whole host — appending a domain suffix
+          // beside it would double it (`linkcharts.com.br.linkcharts.com.br`)
+          // on the default option.
+          <SubdomainSelect
+            value={subdomainId}
+            onChange={onSubdomainChange}
+            size="small"
+            variant="embedded"
+            fullWidth={false}
+            aria-label={t("list.quickCreate.subdomainLabel")}
+          />
         ) : (
           <Typography component="span" noWrap sx={domainSx}>
             {defaultHost}
-            <Box component="span" sx={slashSx}>
-              /
-            </Box>
           </Typography>
         )}
       </Box>
 
-      {/* Name + indicators travel together, so stacking on phones moves them as
-          one line instead of leaving the spinner orphaned beside the host. */}
+      {/* Segmento editável: "/" + nome + indicadores. Viajam juntos, então
+          empilhar no celular move a linha inteira em vez de deixar o spinner
+          órfão ao lado do host. */}
       <Box
         sx={{
           display: "flex",
@@ -211,8 +225,14 @@ export function QuickCreateLinkStrip({
           gap: 0.5,
           flex: 1,
           minWidth: 0,
+          px: 1.25,
+          py: { xs: 0.75, sm: 0 },
         }}
       >
+        <Typography component="span" sx={slashSx}>
+          /
+        </Typography>
+
         {/* The name. Bigger and heavier than the domain — it is the part the
             user owns and the part they scan for. */}
         <Box
@@ -263,7 +283,7 @@ export function QuickCreateLinkStrip({
         {/* One slot on the right, three possible tenants — spinner while a name
           is being resolved or verified, a check once a typed name is free, and
           the "another name" control the rest of the time. They never stack, so
-          the strip's width never jumps. */}
+          the group's width never jumps. */}
         <Box
           sx={{
             display: "flex",

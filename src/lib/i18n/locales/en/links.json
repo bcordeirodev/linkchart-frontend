@@ -32,7 +32,9 @@
       "linksFiltered_other": "{{count}} links matching current filters"
     },
     "quickCreate": {
-      "label": "Shorten a new link",
+      "label": "New link",
+      "title": "Shorten a link and track every click",
+      "description": "Paste the long address below — your short link is ready instantly, with analytics for clicks, countries and devices.",
       "urlLabel": "Link you want to shorten",
       "slugLabel": "Custom name (optional)",
       "subdomainLabel": "Address",
@@ -40,7 +42,7 @@
       "urlPlaceholder": "https://example.com/page",
       "slugPlaceholder": "link-name",
       "previewAutoName": "auto-code",
-      "previewAutoHint": "Without a custom name, we generate a random code for you.",
+      "slugBlankHint": "Leave it blank to generate an automatic code.",
       "slugSuggestionChecking": "Looking for an available name…",
       "slugSuggestionUnavailable": "No available name could be suggested from this page",
       "submit": "Shorten",
@@ -55,8 +57,7 @@
       "showing": "Showing {{from}}–{{to}} of {{total}}"
     },
     "onboarding": {
-      "help": "Help",
-      "hintQuickCreate": "Paste any long link here to turn it into a short link."
+      "help": "Help"
     },
     "tour": {
       "next": "Next",
