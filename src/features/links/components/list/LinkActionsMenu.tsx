@@ -9,7 +9,14 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
-import { MoreVertical, Pencil, QrCode, Trash2 } from "lucide-react";
+import {
+  MoreVertical,
+  Pencil,
+  Power,
+  PowerOff,
+  QrCode,
+  Trash2,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ICON_SM, ICON_MD } from "@/lib/theme/iconDefaults";
 
@@ -17,24 +24,45 @@ interface LinkActionsMenuProps {
   onEdit: () => void;
   onQR: () => void;
   onDelete: () => void;
+  /**
+   * Current `is_active` value for this link — picks the toggle item's label/icon
+   * ("Desativar"/`PowerOff` when active, "Ativar"/`Power` when inactive) and the
+   * direction `onToggleActive` is expected to move the link in.
+   */
+  isActive: boolean;
+  /** Runs the activate/deactivate mutation (the label already reflects the direction). */
+  onToggleActive: () => void;
+  /** True while the toggle mutation is in flight — disables the item to avoid a duplicate request. */
+  toggleActiveDisabled?: boolean;
 }
 
+/**
+ * Overflow menu for a single link card/row: edit, QR code, activate/deactivate
+ * and delete. Shared by the desktop (`LinkCardRich`) and mobile
+ * (`LinksMobileCards`) card variants so both list views expose the same actions.
+ */
 export function LinkActionsMenu({
   onEdit,
   onQR,
   onDelete,
+  isActive,
+  onToggleActive,
+  toggleActiveDisabled = false,
 }: LinkActionsMenuProps) {
   const [anchor, setAnchor] = useState<null | HTMLElement>(null);
   const { t: tCommon } = useTranslation("common");
   const { t } = useTranslation("links");
 
+  /** Opens the menu anchored to the triggering icon button; stops the click from also activating the card underneath it. */
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setAnchor(e.currentTarget);
   };
 
+  /** Closes the menu without running any action. */
   const handleClose = () => setAnchor(null);
 
+  /** Closes the menu, then runs the selected item's action. */
   const run = (action: () => void) => {
     handleClose();
     action();
@@ -81,6 +109,18 @@ export function LinkActionsMenu({
             <QrCode {...ICON_SM} />
           </ListItemIcon>
           <ListItemText>{tCommon("actions.qrCode")}</ListItemText>
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => run(onToggleActive)}
+          disabled={toggleActiveDisabled}
+        >
+          <ListItemIcon>
+            {isActive ? <PowerOff {...ICON_SM} /> : <Power {...ICON_SM} />}
+          </ListItemIcon>
+          <ListItemText>
+            {isActive ? t("actions.deactivate") : t("actions.activate")}
+          </ListItemText>
         </MenuItem>
 
         <Divider />
