@@ -175,6 +175,56 @@ export function useDeleteLink() {
 }
 
 /**
+ * Variables for {@link useToggleLinkActive}: the link id plus the *next*
+ * desired `is_active` value (not the current one), so callers just pass the
+ * flipped boolean instead of re-deriving direction from the mutation result.
+ */
+interface ToggleLinkActiveVariables {
+  id: string;
+  isActive: boolean;
+}
+
+/**
+ * Mutation: single-link activate/deactivate — the per-card overflow menu's
+ * equivalent of {@link useBulkActions}' `"activate"`/`"deactivate"` bulk action.
+ *
+ * @endpoint `PUT /api/links/{id}` (via `linkService.update()`, `{is_active}` only)
+ * @invalidates `queryKeys.links.all()`
+ *
+ * @remarks
+ * Same partial-update endpoint `EditLinkForm`'s `is_active` switch already
+ * uses — the backend DTO only ever touches fields present in the request
+ * body, so sending just `{is_active}` can't clobber the link's other fields.
+ * On success shows an activate/deactivate-specific toast (mirrors
+ * `useBulkActions`' per-action success copy, just without the count); on
+ * error a generic toast, same wording as `useUpdateLink`.
+ */
+export function useToggleLinkActive() {
+  const { showMessage } = useMessage();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, isActive }: ToggleLinkActiveVariables) =>
+      linkService.update(id, { is_active: isActive }),
+    onSuccess: (_link, { isActive }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.links.all() });
+      const msg = (i18n.t as (key: string, opts: object) => string)(
+        isActive ? "actions.activateSuccess" : "actions.deactivateSuccess",
+        { ns: "links" },
+      );
+      showMessage({ message: msg, variant: "success" });
+    },
+    onError: () => {
+      const msg = (i18n.t as (key: string, opts: object) => string)(
+        "errors.updateLink",
+        { ns: "links" },
+      );
+      showMessage({ message: msg, variant: "error" });
+    },
+  });
+}
+
+/**
  * Fetches a single link by id.
  *
  * @param id - canonical link id; the query stays disabled when falsy

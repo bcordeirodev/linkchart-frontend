@@ -32,6 +32,7 @@ import { LinkPasswordBadge } from "./LinkPasswordBadge";
 import { LinkPreviewThumb } from "./LinkPreviewThumb";
 import { LinkTagChips } from "./LinkTagChips";
 import { useShortUrl } from "@/features/links/hooks/useShortUrl";
+import { useToggleLinkActive } from "@/features/links/hooks/useLinks";
 import {
   linksRadius,
   getDemoChipSx,
@@ -138,6 +139,7 @@ export function LinkCardRich({
   const displayUrl = shortUrl.replace(/^https?:\/\//, "");
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const toggleActiveMutation = useToggleLinkActive();
 
   const handleConfirmDelete = useCallback(async () => {
     setDeleteDialogOpen(false);
@@ -151,6 +153,17 @@ export function LinkCardRich({
   const handleDelete = useCallback(() => {
     setDeleteDialogOpen(true);
   }, []);
+
+  /**
+   * Flips `is_active` via `useToggleLinkActive`. Runs immediately, no
+   * confirmation dialog: unlike delete, toggling is reversible.
+   */
+  const handleToggleActive = useCallback(() => {
+    toggleActiveMutation.mutate({
+      id: String(link.id),
+      isActive: !link.is_active,
+    });
+  }, [toggleActiveMutation, link.id, link.is_active]);
 
   // Sem clique não há dashboard: o CTA Analytics só aparece a partir do
   // primeiro. Enquanto isso a faixa de copiar ocupa a linha inteira — o passo
@@ -308,6 +321,9 @@ export function LinkCardRich({
               onEdit={() => navigate(`/links/edit/${link.id}`)}
               onQR={() => navigate(`/links/qr/${link.id}`)}
               onDelete={handleDelete}
+              isActive={link.is_active}
+              onToggleActive={handleToggleActive}
+              toggleActiveDisabled={toggleActiveMutation.isPending}
             />
           </Box>
         </Stack>
