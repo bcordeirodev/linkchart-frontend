@@ -22,11 +22,11 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { typographyScale } from "@/lib/theme";
+import { getCardSurfaceSx } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { useUpdateBioItem } from "../hooks/useBioItems";
-import { getBioCardSx } from "../utils/cardSurface";
 import { getUrlHost } from "../utils/linkHost";
 
 import type { BioItem } from "../types";
@@ -107,7 +107,7 @@ export function BioItemRow({
     <EnhancedPaper
       variant="outlined"
       animated={false}
-      sx={{ ...getBioCardSx(theme), mb: 0 }}
+      sx={{ ...getCardSurfaceSx(theme), mb: 0 }}
     >
       <Box
         sx={{

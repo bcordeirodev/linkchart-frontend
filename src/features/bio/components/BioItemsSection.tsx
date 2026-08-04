@@ -15,13 +15,12 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
-import { SectionLabel } from "@/shared/ui/base";
+import { getCardSurfaceSx, SectionLabel } from "@/shared/ui/base";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { MAX_BIO_ITEMS } from "../constants";
 import { useRemoveBioItem, useReorderBioItems } from "../hooks/useBioItems";
-import { getBioCardSx } from "../utils/cardSurface";
 import { AddBioItemDialog } from "./AddBioItemDialog";
 import { BioItemRow } from "./BioItemRow";
 
@@ -102,7 +101,7 @@ export function BioItemsSection({ page }: BioItemsSectionProps) {
           variant="outlined"
           animated={false}
           sx={{
-            ...getBioCardSx(theme),
+            ...getCardSurfaceSx(theme),
             p: { xs: 2.5, sm: 3 },
             textAlign: "center",
           }}

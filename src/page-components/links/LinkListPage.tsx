@@ -274,7 +274,7 @@ function LinkListPageContent() {
                 {t("list.sections.overview")}
               </SectionLabel>
               <Box sx={{ mt: { xs: 1.5, sm: 2 } }}>
-                <LinkMetrics linksData={realLinks} showTitle={false} />
+                <LinkMetrics linksData={realLinks} />
               </Box>
             </Box>
           ) : null}

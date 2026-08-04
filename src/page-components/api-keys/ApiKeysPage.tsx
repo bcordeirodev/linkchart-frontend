@@ -9,10 +9,10 @@ import { ApiKeyList } from "@/features/api-keys/components/ApiKeyList";
 import { ApiKeyQuotaMeter } from "@/features/api-keys/components/ApiKeyQuotaMeter";
 import { ApiKeyUsageGuide } from "@/features/api-keys/components/ApiKeyUsageGuide";
 import { useApiKeys } from "@/features/api-keys/hooks/useApiKeys";
-import { getApiKeyCardSx } from "@/features/api-keys/utils/cardSurface";
 import AuthGuardRedirect from "@/lib/auth/AuthGuardRedirect";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import {
+  getCardSurfaceSx,
   PageSectionHeading,
   ResponsiveContainer,
   SectionLabel,
@@ -86,7 +86,7 @@ export default function ApiKeysPage() {
                   variant="outlined"
                   animated={false}
                   sx={{
-                    ...getApiKeyCardSx(theme),
+                    ...getCardSurfaceSx(theme),
                     p: { xs: 2.5, sm: 3 },
                   }}
                 >

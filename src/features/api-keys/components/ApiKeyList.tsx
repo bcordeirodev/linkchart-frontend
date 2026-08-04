@@ -19,12 +19,12 @@ import { useTranslation } from "react-i18next";
 import { typographyScale } from "@/lib/theme";
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { getCardSurfaceSx } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { useApiKeys } from "../hooks/useApiKeys";
-import { getApiKeyCardSx } from "../utils/cardSurface";
 import { formatRelativeTime, formatShortDate } from "../utils/dates";
 
 import type { ApiKeyItem } from "../types";
@@ -57,7 +57,7 @@ function ApiKeyCard({ item, onRevoke, isRevoking }: ApiKeyCardProps) {
       variant="outlined"
       animated={false}
       sx={{
-        ...getApiKeyCardSx(theme),
+        ...getCardSurfaceSx(theme),
         mb: 0,
         transition: `background-color ${theme.transitions.duration.short}ms ${theme.transitions.easing.easeInOut}, border-color ${theme.transitions.duration.short}ms ${theme.transitions.easing.easeInOut}`,
         // Leve banho de primary no hover em vez de só escurecer/clarear a
@@ -187,7 +187,7 @@ export function ApiKeyList() {
         variant="outlined"
         animated={false}
         sx={{
-          ...getApiKeyCardSx(theme),
+          ...getCardSurfaceSx(theme),
           p: { xs: 3, sm: 4 },
           textAlign: "center",
         }}

@@ -98,6 +98,5 @@
       },
       "safetyNote": "URLs de destino identificadas como perigosas (phishing/malware) são recusadas com 422 — a mesma proteção do painel."
     }
-  },
-  "subtitle_zero": "{{count}} de {{max}} chaves em uso"
+  }
 }

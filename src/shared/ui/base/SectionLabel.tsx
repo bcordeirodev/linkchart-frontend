@@ -2,6 +2,8 @@
 
 import { Box, Typography, useTheme } from "@mui/material";
 
+import { typographyScale } from "@/lib/theme/designSystem";
+
 import type { ReactNode } from "react";
 
 export interface SectionLabelProps {
@@ -52,7 +54,9 @@ export interface SectionLabelProps {
  * heading do tema) — quando o chamador precisa que a seção continue
  * navegável pela heading-list de um leitor de tela, `headingLevel` expõe o
  * papel via ARIA (`role="heading"` + `aria-level`) sem alterar a marcação
- * visual.
+ * visual. O prefixo "/" tem `aria-hidden` — é puramente decorativo, e sem o
+ * atributo o nome acessível do heading começaria com "/" em vez do texto do
+ * label.
  *
  * @param props.children Texto do label, já traduzido pelo chamador.
  * @param props.slash Se o prefixo "/" é renderizado antes do label. Default `true`.
@@ -75,8 +79,7 @@ export function SectionLabel({
         role={headingLevel ? "heading" : undefined}
         aria-level={headingLevel}
         sx={{
-          fontFamily:
-            "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace",
+          fontFamily: typographyScale.code.fontFamily,
           fontSize: "0.875rem",
           fontWeight: 600,
           letterSpacing: "0.08em",
@@ -86,7 +89,7 @@ export function SectionLabel({
         }}
       >
         {slash ? (
-          <Box component="span" sx={{ color: "primary.main" }}>
+          <Box component="span" aria-hidden sx={{ color: "primary.main" }}>
             {"/ "}
           </Box>
         ) : null}

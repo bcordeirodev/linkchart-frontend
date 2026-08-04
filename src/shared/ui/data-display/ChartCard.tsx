@@ -14,11 +14,7 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { createPresetAnimations } from "@/lib/theme";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
 
 import type { SxProps, Theme } from "@mui/material";
 import type { ReactNode } from "react";
@@ -45,9 +41,11 @@ export interface ChartCardProps {
 /**
  * Card container for charts — title row (optional icon + heading) + slot for the chart body.
  *
- * Uses `radiusTokens.md`, a 1 px divider border and the `xs` elevation token (mode-aware).
- * The outer `<Box>` adds `animations.cardHover` so the whole card lifts on hover, and the
- * body is wrapped in a short `<Fade>` to soften initial mount.
+ * Uses `radiusTokens.md` and a 1 px divider border — no `boxShadow` of its own: the global
+ * `MuiCard` override (`lib/theme/config/muiComponents.ts`) already supplies the hairline +
+ * translucent-veil surface grammar (`boxShadow: "none"`), so a local elevation token here
+ * would only double up on it. The outer `<Box>` adds `animations.cardHover` so the whole card
+ * lifts on hover, and the body is wrapped in a short `<Fade>` to soften initial mount.
  *
  * @example
  * ```tsx
@@ -88,10 +86,6 @@ export function ChartCard({
           width: "100%",
           borderRadius: `${radiusTokens.md}px`,
           border: `1px solid ${theme.palette.divider}`,
-          boxShadow:
-            theme.palette.mode === "dark"
-              ? elevationTokens.xs
-              : elevationLightTokens.xs,
         }}
       >
         <CardContent>

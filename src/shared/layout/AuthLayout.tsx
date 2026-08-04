@@ -3,10 +3,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 
-import { AppLogo } from "@/shared/ui/base";
+import { AppLogo, getCardSurfaceSx } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
-
-import { getAuthCardSx } from "./utils/cardSurface";
 
 import type { ReactNode } from "react";
 
@@ -78,7 +76,7 @@ function AuthLayout({
         variant="outlined"
         animated={false}
         sx={{
-          ...getAuthCardSx(theme),
+          ...getCardSurfaceSx(theme),
           width: "100%",
           maxWidth: 440,
           p: { xs: 3, sm: 5 },

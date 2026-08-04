@@ -25,11 +25,11 @@ import { typographyScale } from "@/lib/theme";
 import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
+import { getCardSurfaceSx } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { useSubdomains } from "../hooks/useSubdomains";
-import { getSubdomainCardSx } from "../utils/cardSurface";
 
 import type { SubdomainItem } from "../types";
 
@@ -75,7 +75,7 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
       variant="outlined"
       animated={false}
       sx={{
-        ...getSubdomainCardSx(theme),
+        ...getCardSurfaceSx(theme),
         mb: 0,
         transition: `background-color ${theme.transitions.duration.short}ms ${theme.transitions.easing.easeInOut}, border-color ${theme.transitions.duration.short}ms ${theme.transitions.easing.easeInOut}`,
         // Ganho de presença do gate: um leve banho de primary no hover em vez
@@ -225,7 +225,7 @@ export function SubdomainList() {
         variant="outlined"
         animated={false}
         sx={{
-          ...getSubdomainCardSx(theme),
+          ...getCardSurfaceSx(theme),
           p: { xs: 3, sm: 4 },
           textAlign: "center",
         }}

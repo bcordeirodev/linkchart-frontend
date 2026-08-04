@@ -24,10 +24,8 @@ import { useMessage } from "@/lib/providers/MessageProvider";
 import { profileService } from "@/services";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
-import { SectionLabel } from "@/shared/ui/base";
+import { getCardSurfaceSx, SectionLabel } from "@/shared/ui/base";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
-
-import { getProfileCardSx } from "../utils/cardSurface";
 
 /** 422 error codes `DELETE /api/account` can return, mapped 1:1 to `dangerZone.errors.*`. */
 type DeleteAccountErrorCode = "INVALID_PASSWORD" | "INVALID_CONFIRMATION";
@@ -60,7 +58,7 @@ interface DangerZoneProps {
  * `ProfileSectionHeader` to a plain `SectionLabel` above the card — this is
  * the one section where the semantic red accent stays (per the redesign's
  * own carve-out for destructive actions): the card keeps its translucent
- * `getProfileCardSx` fill but overrides the border to `error.main`, same as
+ * `getCardSurfaceSx` fill but overrides the border to `error.main`, same as
  * before. The confirmation dialog (a floating surface, not a page section)
  * is untouched, including its `AlertTriangle` title icon.
  */
@@ -129,7 +127,7 @@ export function DangerZone({ usesOAuthLogin, userEmail }: DangerZoneProps) {
           variant="outlined"
           animated={false}
           sx={{
-            ...getProfileCardSx(theme),
+            ...getCardSurfaceSx(theme),
             p: { xs: 2.5, sm: 3 },
             borderColor: alpha(
               theme.palette.error.main,

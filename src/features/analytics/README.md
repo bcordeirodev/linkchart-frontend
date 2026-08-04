@@ -71,9 +71,13 @@ _perguntas diferentes_ — não níveis de zoom da mesma pergunta.
 
 ### `components/insights/`
 
-- `TrafficQualityChart.tsx`, `insightsLayout.ts` — resquícios da aba Insights,
-  que foi dissolvida: os insights subiram para o Resumo e as fontes de tráfego
-  viraram a aba Origem.
+- `insightsLayout.ts` — resquício da aba Insights que foi dissolvida (os
+  insights subiram para o Resumo e as fontes de tráfego viraram a aba
+  Origem), mas ainda em uso: `INSIGHTS_BLOCK_PAD`/`insightsChartPanelSx`/
+  `insightsTileSx`/`insightsSectionHeadingSx` seguem consumidos por
+  `RetentionAnalysisChart.tsx` e `SessionDepthChart.tsx` (aba Público).
+  `TrafficQualityChart.tsx`, o outro resquício da mesma aba, foi removido no
+  fechamento (task 17): zero renders no repo.
 
 ## Hooks de dados
 

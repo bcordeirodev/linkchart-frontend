@@ -5,9 +5,8 @@ import { useTheme } from "@mui/material/styles";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { typographyScale } from "@/lib/theme";
+import { getCardSurfaceSx } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
-
-import { getProfileCardSx } from "../utils/cardSurface";
 
 import type { ReactNode } from "react";
 
@@ -17,12 +16,12 @@ interface ProfileSectionProps {
 
 /**
  * Card shell shared by every profile settings section — a translucent,
- * hairline-bordered surface (`getProfileCardSx`, same `alpha(white,0.03)`
- * dark / `alpha(black,0.02)` light formula as the sibling `/subdomains` and
- * `/api-keys` cards), `animated={false}` since these are static settings
- * panels, not interactive list rows. Pair with a `SectionLabel` rendered
- * *above* it (outside the card) for the "/ LABEL" section heading — the
- * card itself carries no title, matching the pattern established across the
+ * hairline-bordered surface (`getCardSurfaceSx`, the same `surfaceOverlayTokens
+ * .card` formula as the sibling `/subdomains`, `/api-keys` and `/bio`
+ * cards), `animated={false}` since these are static settings panels, not
+ * interactive list rows. Pair with a `SectionLabel` rendered *above* it
+ * (outside the card) for the "/ LABEL" section heading — the card itself
+ * carries no title, matching the pattern established across the
  * "instrumento técnico" redesign.
  */
 export function ProfileSection({ children }: ProfileSectionProps) {
@@ -32,7 +31,7 @@ export function ProfileSection({ children }: ProfileSectionProps) {
     <EnhancedPaper
       variant="outlined"
       animated={false}
-      sx={{ ...getProfileCardSx(theme), p: { xs: 2.5, sm: 3 } }}
+      sx={{ ...getCardSurfaceSx(theme), p: { xs: 2.5, sm: 3 } }}
     >
       {children}
     </EnhancedPaper>

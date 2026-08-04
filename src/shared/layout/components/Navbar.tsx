@@ -58,7 +58,6 @@ import { LanguageSelector } from "@/lib/i18n/components/LanguageSelector";
 import { getVisibleNavItems } from "./navItems";
 
 interface NavbarProps {
-  onMobileMenuToggle?: () => void;
   /** Estado de colapso da sidebar desktop, controlado pelo `MainLayout`. */
   collapsed: boolean;
   /**
@@ -69,11 +68,7 @@ interface NavbarProps {
   onToggleSidebar: () => void;
 }
 
-export function Navbar({
-  onMobileMenuToggle: _onMobileMenuToggle,
-  collapsed,
-  onToggleSidebar,
-}: NavbarProps) {
+export function Navbar({ collapsed, onToggleSidebar }: NavbarProps) {
   const theme = useTheme();
   const navigate = useNavigate();
   const { user, logout } = useAuth();

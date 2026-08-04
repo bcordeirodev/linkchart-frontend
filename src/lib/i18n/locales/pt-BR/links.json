@@ -303,7 +303,6 @@
     }
   },
   "metrics": {
-    "title": "Métricas do Link",
     "clicksCount_one": "{{count}} clique",
     "clicksCount_other": "{{count}} cliques",
     "totalClicks": "Total de cliques",

@@ -12,11 +12,11 @@ Subdomínios custom do usuário autenticado (`meunome.linkcharts.com.br`): reivi
 ## Componentes principais
 
 - `SubdomainClaimForm.tsx` — formulário de claim com validação da regra de label do backend (lowercase, dígitos, hífens; 3–63 chars; sem hífen nas pontas) e check de disponibilidade debounced. Sem card próprio — quem embrulha em `EnhancedPaper` é a página (`SubdomainsPage`), na seção "/ Criar novo endereço".
-- `SubdomainList.tsx` — lista dos subdomínios ativos da conta com ação de liberar (release) por id; cada endereço é um card hairline translúcido (`getSubdomainCardSx`) com hover em tom de primary.
+- `SubdomainList.tsx` — lista dos subdomínios ativos da conta com ação de liberar (release) por id; cada endereço é um card hairline translúcido (`getCardSurfaceSx`) com hover em tom de primary.
 - `SubdomainQuotaMeter.tsx` — âncora de cota no topo da seção de endereços: contagem atual em Space Grotesk + `/ max` + faixa de `max` segmentos preenchidos. Puramente apresentacional; reusa as chaves `subtitle`/`subtitleLoading` como `aria-label` do grupo (o conteúdo visual é `aria-hidden`).
 - `SubdomainSelect.tsx` — `Select` de subdomínio para a criação de link; valor sentinela para "usar o domínio padrão" (`subdomain_id: null`).
 
-`utils/cardSurface.ts` — `getSubdomainCardSx(theme)`, o preenchimento translúcido (`alpha(white,0.03)` dark / `alpha(black,0.02)` light) compartilhado pelos cards in-page da feature (linhas de endereço, placeholder vazio, card do formulário de claim) — mesma fórmula do `MuiCard` global e do equivalente em `features/bio`.
+O preenchimento translúcido dos cards in-page da feature (linhas de endereço, placeholder vazio, card do formulário de claim) vem de `getCardSurfaceSx(theme)` (`shared/ui/base/cardSurface.ts`) — helper único compartilhado por todas as features desde a consolidação de 2026-08-04 (antes, cada feature tinha sua própria cópia `get*CardSx`); mesma fórmula do `MuiCard` global.
 
 `constants.ts` — `MAX_SUBDOMAINS_PER_USER = 3`, espelho manual do default de `config('app.max_subdomains_per_user')` do backend (não há endpoint que exponha o limite). Mudou lá → atualizar aqui; um mismatch só degrada UX, o 422 `SUBDOMAIN_LIMIT_REACHED` do backend continua sendo a fonte de verdade.
 

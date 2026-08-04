@@ -18,11 +18,10 @@ import { useTranslation } from "react-i18next";
 import { useSubdomains } from "@/features/subdomains/hooks/useSubdomains";
 import { useMessage } from "@/lib/providers/MessageProvider";
 import useThemeMediaQuery from "@/shared/hooks/useThemeMediaQuery";
-import { SectionLabel } from "@/shared/ui/base";
+import { getCardSurfaceSx, SectionLabel } from "@/shared/ui/base";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { useBioPage, useUpsertBioPage } from "../hooks/useBioPage";
-import { getBioCardSx } from "../utils/cardSurface";
 import { applyBioFieldErrors } from "../utils/applyBioFieldErrors";
 import {
   bioPageFormSchema,
@@ -232,7 +231,7 @@ export function BioEditor() {
    * One field-group section of the editor: a `/ LABEL` {@link SectionLabel}
    * (`headingLevel={2}` — replaces the old ad hoc `subtitle2` heading and
    * keeps the section in the screen-reader heading list), a one-line hint
-   * below it, then a translucent hairline card ({@link getBioCardSx}) holding
+   * below it, then a translucent hairline card ({@link getCardSurfaceSx}) holding
    * the section's fields. Groups what the person is deciding (identity,
    * address & publishing, appearance) instead of one flat field column.
    */
@@ -249,7 +248,7 @@ export function BioEditor() {
       <EnhancedPaper
         variant="outlined"
         animated={false}
-        sx={{ ...getBioCardSx(theme), mb: 0 }}
+        sx={{ ...getCardSurfaceSx(theme), mb: 0 }}
       >
         <Stack spacing={2} sx={{ p: { xs: 2, sm: 2.5 } }}>
           {children}

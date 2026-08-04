@@ -1,13 +1,14 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useLinkClicks } from "@/features/links/hooks/useLinkClicks";
 import { useResponsive } from "@/lib/theme";
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { getCardSurfaceSx } from "@/shared/ui/base";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import DataTable from "@/shared/ui/data-display/DataTable";
 
@@ -58,18 +59,16 @@ export function ClicksTable({
   const { isMobile } = useResponsive();
   const { t } = useTranslation("links");
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
-  // Same alpha-fill formula as the /links card shell (`getLinkCardShellSx`)
-  // and the dashboard's `BusinessInsights` cards — the table surface used to
-  // fall through to `DataTable`'s shared `mrtTheme` default
+  // Same translucent-fill formula as every other in-page card
+  // (`getCardSurfaceSx`, shared with the `/links` card shell and the
+  // dashboard's `BusinessInsights` cards) — the table surface used to fall
+  // through to `DataTable`'s shared `mrtTheme` default
   // (`theme.palette.background.paper`, opaque), which read as the one
   // leftover solid card on an otherwise translucent page. Overridden here
   // rather than in `DataTable` itself: that component is a generic
   // cross-feature primitive used by tables that legitimately want an opaque
   // surface, so the translucent fill is scoped to this one table.
-  const translucentTableBg = isDark
-    ? alpha(theme.palette.common.white, 0.03)
-    : alpha(theme.palette.common.black, 0.02);
+  const translucentTableBg = getCardSurfaceSx(theme).backgroundColor;
   const {
     items,
     meta,
