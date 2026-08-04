@@ -43,12 +43,12 @@ import type { ChangeEvent, FocusEvent, Ref } from "react";
 
 /**
  * Deliberately a step shorter than the URL input/Encurtar button row above
- * it (`CONTROL_HEIGHT = 54` in `LinksQuickCreate`) — the destination field is
+ * it (`CONTROL_HEIGHT = 52` in `LinksQuickCreate`) — the destination field is
  * the invitation, this group is the result adjusting itself to it, so the
  * hierarchy reads input-first. `xs` stays `"auto"`: on phones the domain addon
  * becomes a band of its own above the name, which a fixed height would clip.
  */
-const GROUP_HEIGHT = { xs: "auto", sm: 46 } as const;
+const GROUP_HEIGHT = { xs: "auto", sm: 44 } as const;
 
 interface QuickCreateLinkStripProps {
   /** Slug field value. */

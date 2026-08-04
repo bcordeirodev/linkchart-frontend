@@ -32,7 +32,6 @@
       "linksFiltered_other": "{{count}} links encontrados com os filtros atuais"
     },
     "quickCreate": {
-      "label": "Novo link",
       "title": "Encurte um link e acompanhe os cliques",
       "description": "Cole o endereço longo abaixo — o link curto sai na hora, com estatísticas de cliques, países e dispositivos.",
       "urlLabel": "Link que você quer encurtar",
