@@ -197,8 +197,8 @@
       "peakDaySub": "Most Active Day",
       "clicksPerHour": "Clicks Per Hour",
       "currentTrend": "Current Direction",
-      "trending": "Growing",
-      "declining": "Declining",
+      "trending": "Up",
+      "declining": "Down",
       "stable": "Stable"
     },
     "period": {

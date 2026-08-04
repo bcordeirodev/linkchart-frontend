@@ -37,17 +37,16 @@ export interface OverviewMetricRowProps {
    * valor em `h2`/tabular-nums a `2.5rem` (xs) / `3rem` (sm+), com os
    * paddings/gaps de sempre. `"md"` é ~25% mais compacto (`2rem`/`2.25rem`)
    * com paddings proporcionalmente menores, para telas onde a fileira de
-   * métricas não deve ocupar tanta altura — hoje só `/links`
-   * (`LinkMetrics`). Callers existentes (analytics, relatórios, perfil,
-   * `OverviewKpiHeader`) não passam esta prop e continuam em `"lg"`,
-   * pixel-idênticos a antes.
+   * métricas não deve ocupar tanta altura — `/links` (`LinkMetrics`) e, desde
+   * 2026-08-04, todas as fileiras do analytics (`OverviewKpiHeader`,
+   * `TemporalAnalysis`, retenção e sessão). Relatórios e perfil não passam
+   * esta prop e continuam em `"lg"`, pixel-idênticos a antes.
    *
-   * **Latente:** o `fontSize` do modo `"md"` (compacto) não considera
-   * `isDense` (5+ métricas) — só o `"lg"` reduz a faixa `sm` de `3rem` para
-   * `2rem` nesse caso (ver o bloco "Densidade automática" abaixo). Hoje isso
-   * não importa porque o único caller de `size="md"` (`LinkMetrics`) nunca
-   * passa 5+ métricas; se um segundo caller compacto e denso aparecer, o
-   * `fontSize` do `isCompact` precisa do mesmo tratamento condicional.
+   * **Ambos os modos respeitam a densidade automática de 5+ métricas**
+   * descrita abaixo. O `"md"` só passou a respeitá-la em 2026-08-04, quando
+   * o `OverviewKpiHeader` (5 métricas) virou o primeiro caller compacto
+   * **e** denso e transformou em bug real o que até então era uma lacuna
+   * conhecida e inofensiva.
    */
   size?: "md" | "lg";
 }
@@ -71,15 +70,15 @@ export interface OverviewMetricRowProps {
  * que o layout já virou linha (`sm`) mas ainda não ganhou a folga do `md`
  * (900px). Com `flex: 1` e `fontSize: "3rem"`, cada coluna fica com
  * ~80–130px e o número (sem espaço para quebrar) vaza da própria coluna.
- * Quando `metrics.length >= 5`, o `fontSize` do `sm` cai para `"2rem"` (o
- * `xs` — empilhado, largura cheia — e o `md` — com folga de sobra — não
- * mudam) e o gutter horizontal entre colunas cai de `3` para `1.5`, only at
- * that breakpoint. Callers com 3–4 métricas (`/links`, retenção, sessão)
- * têm `isDense = false` e continuam recebendo exatamente o mesmo objeto de
- * estilo de antes — zero mudança visual. `2rem` (32px) fica abaixo do
- * salto de 3x sobre a caption de 13px nessa faixa estreita específica; é a
- * troca deliberada (legibilidade sem vazar > proporção idealizada) só para
- * o caso denso, não uma mudança da regra geral.
+ * Quando `metrics.length >= 5`, o `fontSize` do `sm` cai um degrau (`3rem`
+ * → `2rem` no `"lg"`, `2.25rem` → `1.75rem` no `"md"`) e o gutter horizontal
+ * entre colunas cai de `3` para `1.5`, only at that breakpoint. O `xs`
+ * (empilhado, largura cheia) e o `md`+ (com folga de sobra) não mudam.
+ * Callers com 3–4 métricas têm `isDense = false` e continuam recebendo
+ * exatamente o mesmo objeto de estilo de antes — zero mudança visual. O
+ * valor reduzido fica abaixo do salto de 3x sobre a caption de 13px nessa
+ * faixa estreita específica; é a troca deliberada (legibilidade sem vazar >
+ * proporção idealizada) só para o caso denso, não uma mudança da regra geral.
  *
  * Puramente apresentacional: não busca dados nem contém lógica de negócio;
  * `label`/`caption` chegam já traduzidos via props.
@@ -138,7 +137,11 @@ export function OverviewMetricRow({
               sx={{
                 fontVariantNumeric: "tabular-nums",
                 fontSize: isCompact
-                  ? { xs: "2rem", sm: "2.25rem" }
+                  ? {
+                      xs: "2rem",
+                      sm: isDense ? "1.75rem" : "2.25rem",
+                      md: "2.25rem",
+                    }
                   : {
                       xs: "2.5rem",
                       sm: isDense ? "2rem" : "3rem",

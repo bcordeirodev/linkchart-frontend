@@ -180,6 +180,7 @@ export function SessionDepthChart({
         {/* Real Metrics — no fabricated scores */}
         <Box sx={{ mb: 3 }}>
           <OverviewMetricRow
+            size="md"
             metrics={[
               {
                 label: t("insights.session.avgDepth"),

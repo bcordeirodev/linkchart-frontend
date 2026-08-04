@@ -99,7 +99,7 @@ export function OverviewKpiHeader({
     },
   ];
 
-  return <OverviewMetricRow metrics={metrics} />;
+  return <OverviewMetricRow metrics={metrics} size="md" />;
 }
 
 /** Props accepted by the internal {@link Sparkline} helper. */

@@ -20,9 +20,10 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import visuallyHidden from "@mui/utils/visuallyHidden";
+
 import { motionTokens } from "@/lib/theme/designSystem";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
-import { SectionLabel } from "@/shared/ui/base";
 
 import { AnalyticsPanelActiveProvider } from "@/features/analytics/context/AnalyticsPanelActiveContext";
 import { AudienceAnalysis } from "@/features/analytics/components/audience/AudienceAnalysis";
@@ -136,8 +137,9 @@ export function LinkAnalyticsTabsOptimized({
   ];
 
   /**
-   * Renders a tab's content panel with the standard header (a `/ LABEL`
-   * {@link SectionLabel} + description) above the tab component.
+   * Renders a tab's content panel with its header (a visually hidden `h2`
+   * naming the section, plus the visible one-line explanation) above the tab
+   * component.
    *
    * The panel is only added to the DOM on the first visit (`visitedTabs.has(id)`).
    * Once mounted it persists across tab switches via `display` toggling, keeping
@@ -158,16 +160,28 @@ export function LinkAnalyticsTabsOptimized({
         aria-labelledby={`tab-${index}`}
         sx={{ display: isActive ? "block" : "none" }}
       >
-        {/* Standard tab header — names the active panel and explains it.
-            No icon beside the label: the redesign kills title icon-chips,
-            and the Tab strip above already carries the icon as a nav cue. */}
-        <Box sx={{ mb: 2 }}>
-          <SectionLabel headingLevel={2}>{meta.label}</SectionLabel>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mt: { xs: 1.5, sm: 2 } }}
-          >
+        {/* Tab header — explanation only. The visible `/ RESUMO` label that
+            used to sit here echoed the active tab word for word, one line
+            under a tab strip that already says "Resumo" in bold with a primary
+            underline. Under the level-1 grammar THE TAB *IS* the section
+            title, so the echo was pure duplication; the sentence below it is
+            the only part that adds anything.
+
+            The heading itself stays for assistive tech: an `h2` carrying the
+            section name, visually hidden. Dropping it outright would break the
+            h1 → h2 outline and leave each panel unnamed in a screen reader's
+            heading list — the tab strip is `role="tab"`, not a heading, so it
+            cannot stand in.
+
+            Rhythm: the sentence belongs to the tab above it, so it sits closer
+            to the tab bar (12/16px) than to the content it introduces
+            (20/24px) — the same "a thing sits nearer what it belongs to" rule
+            the level-3 filter gutters follow. */}
+        <Box sx={{ mb: { xs: 2.5, md: 3 } }}>
+          <Typography variant="h2" component="h2" sx={visuallyHidden}>
+            {meta.label}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
             {meta.description}
           </Typography>
         </Box>
@@ -269,7 +283,7 @@ export function LinkAnalyticsTabsOptimized({
 
       {/* Tab panels — mount-once, hidden via display:none when inactive.
            Same gutter as the tab nav above — no extra card padding. */}
-      <Box sx={{ mt: { xs: 2, md: 3 } }}>
+      <Box sx={{ mt: { xs: 1.5, md: 2 } }}>
         {tabPanel(
           "overview",
           <LinkDashboard
