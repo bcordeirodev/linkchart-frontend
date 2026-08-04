@@ -22,7 +22,6 @@ import { useTranslation } from "react-i18next";
 
 import visuallyHidden from "@mui/utils/visuallyHidden";
 
-import { motionTokens } from "@/lib/theme/designSystem";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 
 import { AnalyticsPanelActiveProvider } from "@/features/analytics/context/AnalyticsPanelActiveContext";
@@ -226,38 +225,16 @@ export function LinkAnalyticsTabsOptimized({
             },
           }}
           sx={{
+            // Level 1 — the strongest level, and the only one carrying the
+            // primary accent, via the tab indicator underline. Color, hover,
+            // and the (no longer filled) selected state all come from the
+            // global `MuiTab` override in `theme/config/muiComponents.ts` —
+            // it was moved there 2026-08-04 so every tab in the app shares
+            // this grammar instead of only this screen cancelling a
+            // navy-fill override locally. Only the L1-specific scale (52px,
+            // one step above the L2 sub-tabs' 36/40) stays here.
             "& .MuiTab-root": {
-              textTransform: "none",
               minHeight: 52,
-              color: "text.secondary",
-              transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-              "&:hover": {
-                color: "text.primary",
-                backgroundColor: theme.palette.action.hover,
-              },
-              "&.Mui-focusVisible": {
-                backgroundColor: theme.palette.action.hover,
-              },
-              // Level 1 — the strongest level, and the only one carrying the
-              // primary accent as an underline. The filled navy block this
-              // replaced made the tab band the heaviest thing on the page and,
-              // worse, made it the *same* grammar as the pill rows below it:
-              // three stacked filled controls read as one three-deep drill-down
-              // when in fact they are section / view / filter. Weight + the
-              // 2px primary indicator carry the active state now.
-              // `backgroundColor: transparent` is load-bearing: the global
-              // `MuiTab` override in `theme/config/muiComponents.ts` tints
-              // every selected tab navy, and that override — not this file —
-              // was the source of the filled block. Cancelled here rather than
-              // in the theme so no other screen's tabs change appearance.
-              "&.Mui-selected": {
-                color: theme.palette.text.primary,
-                fontWeight: 600,
-                backgroundColor: "transparent",
-              },
-              "&.Mui-selected:hover": {
-                backgroundColor: theme.palette.action.hover,
-              },
             },
           }}
         >
