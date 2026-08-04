@@ -5,7 +5,6 @@ import {
   Box,
   Button,
   Checkbox,
-  Divider,
   Pagination,
   Skeleton,
   Stack,
@@ -18,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { useBulkActions } from "@/features/links/hooks/useBulkActions";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { SectionLabel } from "@/shared/ui/base";
+import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 
 import { BulkActionsBar } from "./BulkActionsBar";
 import { LinkCardRich } from "./LinkCardRich";
@@ -29,6 +29,7 @@ import {
   getLinksBorderColor,
   getLinksBrowseGridSx,
   getLinkCardShellSx,
+  getLinksCardSx,
 } from "./linksPanelStyles";
 
 import type { LinksMeta } from "@/lib/query/keys";
@@ -106,9 +107,13 @@ function BrowseSectionSkeleton({ isMobile }: { isMobile: boolean }) {
 
 /**
  * Filters + link list in one section, so users see filters apply to the list
- * below. Rendered on a bare (level 0) background — the individual link cards
- * are the only elevated surfaces here, so this section doesn't wrap them in
- * its own panel (that would be a card inside a card).
+ * below. The section itself is level 0 (bare background) — only two things
+ * inside it get a defined level-1 card: the filter toolbar (its own
+ * `EnhancedPaper`, translucent fill + hairline, matching quick-create and
+ * `/subdomains`) and the individual link cards further down. The toolbar's
+ * card wraps *only* `LinksFilters` — the selection-mode checkbox row and
+ * `BulkActionsBar` stay outside it, between the card and the grid, so they
+ * are not mistaken for filter controls.
  *
  * The section announces itself as "/ SEUS LINKS" via `SectionLabel`, distinct
  * from the page-level heading. The count/context caption sits directly below
@@ -290,16 +295,26 @@ export function LinksBrowseSection({
         {description}
       </Typography>
 
-      <LinksFilters
-        searchTerm={searchTerm}
-        onSearchChange={onSearchChange}
-        statusFilter={statusFilter}
-        onStatusChange={onStatusChange}
-        sortBy={sortBy}
-        onSortChange={onSortChange}
-        tagFilter={tagFilter}
-        onTagFilterChange={onTagFilterChange}
-      />
+      {/* Nível 1: mesmo tratamento do card de quick-create/`/subdomains` —
+          véu translúcido (`getLinksCardSx`) + hairline (`EnhancedPaper
+          variant="outlined"`). Envolve só o toolbar de filtros; seleção em
+          massa e o grid de cards ficam fora dele. */}
+      <EnhancedPaper
+        variant="outlined"
+        animated={false}
+        sx={{ p: { xs: 2, sm: 2.5 }, ...getLinksCardSx(theme) }}
+      >
+        <LinksFilters
+          searchTerm={searchTerm}
+          onSearchChange={onSearchChange}
+          statusFilter={statusFilter}
+          onStatusChange={onStatusChange}
+          sortBy={sortBy}
+          onSortChange={onSortChange}
+          tagFilter={tagFilter}
+          onTagFilterChange={onTagFilterChange}
+        />
+      </EnhancedPaper>
 
       {selectionMode && count > 0 ? (
         <Stack
@@ -336,17 +351,21 @@ export function LinksBrowseSection({
         </Box>
       ) : null}
 
-      <Divider sx={{ my: 2 }} />
-      {/* `key` remonta esta região quando o conjunto visível muda, e só então
-            — é o que faz a lista e o estado vazio reentrarem com o mesmo fade
-            escalonado do primeiro load. A paginação fica de fora de propósito:
-            ela é chrome fixo e não deve piscar a cada busca. `opacity`+`pointerEvents`
-            dão o feedback de "atualizando" durante um refetch em background
-            (`isFetching`) sem esconder a página anterior — é o efeito prático de
-            `placeholderData: keepPreviousData` em `useLinksSearch`. */}
+      {/* Sem `<Divider>` aqui: era uma segunda hairline logo abaixo da borda
+          própria do card de filtros, uma redundância visual (duas linhas
+          paralelas quase coladas) — o `mt` abaixo já separa o grid do card
+          sem precisar de uma segunda linha.
+          `key` remonta esta região quando o conjunto visível muda, e só então
+          — é o que faz a lista e o estado vazio reentrarem com o mesmo fade
+          escalonado do primeiro load. A paginação fica de fora de propósito:
+          ela é chrome fixo e não deve piscar a cada busca. `opacity`+`pointerEvents`
+          dão o feedback de "atualizando" durante um refetch em background
+          (`isFetching`) sem esconder a página anterior — é o efeito prático de
+          `placeholderData: keepPreviousData` em `useLinksSearch`. */}
       <Box
         key={resultsKey}
         sx={{
+          mt: { xs: 1.5, sm: 2 },
           opacity: isFetching && !loading ? 0.6 : 1,
           pointerEvents: isFetching && !loading ? "none" : "auto",
           transition: "opacity 150ms ease",
