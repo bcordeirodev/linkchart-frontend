@@ -101,7 +101,12 @@ function SignInPage() {
 
   return (
     <AuthGuardRedirect auth={authRoles.onlyGuest}>
-      <AuthLayout title={t("signIn.title")} subtitle={t("signIn.subtitle")}>
+      <AuthLayout
+        title={t("signIn.title")}
+        subtitle={t("signIn.subtitle")}
+        promoTitle={t("signIn.promoTitle")}
+        promoSubtitle={t("signIn.promoSubtitle")}
+      >
         <Stack spacing={2.5}>
           {socialError === "facebook_no_email" && (
             <Alert
