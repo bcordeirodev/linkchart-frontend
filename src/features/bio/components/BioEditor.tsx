@@ -342,6 +342,7 @@ export function BioEditor() {
               <Button
                 type="submit"
                 variant="contained"
+                color="primary"
                 disabled={isSaving}
                 startIcon={
                   isSaving ? (
