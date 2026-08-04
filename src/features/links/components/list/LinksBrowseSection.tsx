@@ -302,7 +302,7 @@ export function LinksBrowseSection({
       <EnhancedPaper
         variant="outlined"
         animated={false}
-        sx={{ p: { xs: 2, sm: 2.5 }, ...getLinksCardSx(theme) }}
+        sx={{ p: 2, ...getLinksCardSx(theme) }}
       >
         <LinksFilters
           searchTerm={searchTerm}
