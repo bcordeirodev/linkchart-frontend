@@ -33,7 +33,6 @@
     },
     "quickCreate": {
       "label": "Shorten a new link",
-      "description": "Paste a long link and get a short link to share.",
       "urlLabel": "Link you want to shorten",
       "slugLabel": "Custom name (optional)",
       "subdomainLabel": "Address",

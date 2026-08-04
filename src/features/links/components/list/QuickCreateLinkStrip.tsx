@@ -29,22 +29,19 @@ import type { SlugFieldState } from "@/features/links/hooks/useSlugSuggestionFie
 import { SubdomainSelect } from "@/features/subdomains/components/SubdomainSelect";
 import { typographyScale } from "@/lib/theme";
 
-import {
-  linksRadius,
-  getLinksBorderColor,
-  getLinksControlFillBg,
-} from "./linksPanelStyles";
+import { linksRadius, getLinksControlFillBg } from "./linksPanelStyles";
 
 import type { ChangeEvent, FocusEvent, Ref } from "react";
 
 /**
- * Same height as the URL input and the Encurtar button above it (see
- * `CONTROL_HEIGHT` in `LinksQuickCreate`) — the three controls read as one
- * designed hero cluster instead of two mismatched rows. `xs` stays `"auto"`:
- * on phones the strip wraps host and name onto their own lines, which a
- * fixed height would clip.
+ * Deliberately a step shorter than the URL input/Encurtar button row above
+ * it (`CONTROL_HEIGHT = 48` in `LinksQuickCreate`) — the strip is the
+ * *result*, not another field to fill in, so the hierarchy should read
+ * input-first: a taller, more assertive row 1, a slightly lighter row 2
+ * underneath. `xs` stays `"auto"`: on phones the strip wraps host and name
+ * onto their own lines, which a fixed height would clip.
  */
-const STRIP_HEIGHT = { xs: "auto", sm: 48 } as const;
+const STRIP_HEIGHT = { xs: "auto", sm: 40 } as const;
 
 interface QuickCreateLinkStripProps {
   /** Slug field value. */
@@ -68,6 +65,13 @@ interface QuickCreateLinkStripProps {
   disabled?: boolean;
   /** Red border when the name is taken or malformed. */
   error?: boolean;
+  /**
+   * Accessible group name for the whole strip. The caller used to put a
+   * visible "LINK CURTO" caps label above the strip; that label is gone
+   * (the `↳ domain / slug` composite is self-evident visually), but screen
+   * readers still need a name for the group — pass the same string here.
+   */
+  ariaLabel?: string;
 }
 
 /**
@@ -88,15 +92,19 @@ export function QuickCreateLinkStrip({
   defaultHost,
   disabled = false,
   error = false,
+  ariaLabel,
 }: QuickCreateLinkStripProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("links");
 
   const primary = theme.palette.primary.main;
-  const borderColor = error
-    ? theme.palette.error.main
-    : getLinksBorderColor(theme);
+  // Subtler than `getLinksBorderColor` (the URL input's own border, one row
+  // up) on purpose — the global hairline token, one step lower-contrast, so
+  // the strip recedes slightly behind the input at rest. Error/focus states
+  // stay at full strength (semantic colors, not part of the "quiet at rest"
+  // rule).
+  const borderColor = error ? theme.palette.error.main : theme.palette.divider;
 
   const busy = state === "resolving" || state === "checking";
 
@@ -114,6 +122,8 @@ export function QuickCreateLinkStrip({
 
   return (
     <Box
+      role="group"
+      aria-label={ariaLabel}
       sx={{
         display: "flex",
         // Phones stack: host on its own line, name full width underneath. Side

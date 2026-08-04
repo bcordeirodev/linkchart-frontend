@@ -37,7 +37,6 @@ import {
 import { useSubdomainSelection } from "@/features/subdomains/hooks/useSubdomainSelection";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { getShortUrlPrefix } from "@/lib/utils/shortUrl";
-import { typographyScale } from "@/lib/theme";
 import { HelpHint, SectionLabel } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { useNavigate } from "@/shared/hooks";
@@ -386,9 +385,9 @@ export function LinksQuickCreate({
         headingLevel={2}
         action={
           <Stack direction="row" spacing={0.5} alignItems="center">
-            {/* Oculto no xs: a descrição (visível no celular) já diz a mesma
-                coisa, e o "?" extra quebrava a linha da action ao lado do
-                botão "Mais opções". */}
+            {/* Oculto no xs: o "?" extra quebrava a linha da action em duas
+                ao lado do botão "Mais opções" num espaço já apertado no
+                celular. */}
             <Box
               component="span"
               sx={{ display: { xs: "none", sm: "inline-flex" } }}
@@ -438,29 +437,25 @@ export function LinksQuickCreate({
         {t("list.quickCreate.label")}
       </SectionLabel>
 
-      {/* Nível 1: o cluster inteiro (descrição + controles) volta para dentro
-          de um card translúcido com hairline — o SectionLabel fica FORA,
-          ancorando a seção; "organizar bem os blocos" (gate) pede um
-          container visível em vez do formulário solto direto no fundo da
-          página, mesmo tratamento que /subdomains usa (`getLinksCardSx` é o
-          equivalente local de `getSubdomainCardSx`). */}
+      {/* Nível 1: o cluster inteiro (controles) volta para dentro de um card
+          translúcido com hairline — o SectionLabel fica FORA, ancorando a
+          seção; "organizar bem os blocos" (gate) pede um container visível
+          em vez do formulário solto direto no fundo da página, mesmo
+          tratamento que /subdomains usa (`getLinksCardSx` é o equivalente
+          local de `getSubdomainCardSx`). Padding `p:2` — igual ao card do
+          strip de filtros — e sem a linha de descrição: o placeholder do
+          input + a tooltip "?" do SectionLabel (ver `action` acima) já
+          comunicam o que este bloco faz, e o gate pediu um bloco compacto
+          ("ocupe menos altura de tela"). */}
       <EnhancedPaper
         variant="outlined"
         animated={false}
         sx={{
           mt: { xs: 1.5, sm: 2 },
-          p: { xs: 2.5, sm: 3 },
+          p: 2,
           ...getLinksCardSx(theme),
         }}
       >
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ mb: { xs: 1.5, sm: 2 } }}
-        >
-          {t("list.quickCreate.description")}
-        </Typography>
-
         <Box component="form" onSubmit={handleSubmit(guardedSubmit)} noValidate>
           {/* Fileira 1 — o destino: o que se cola, e a ação principal. */}
           <Box
@@ -519,27 +514,12 @@ export function LinksQuickCreate({
             </Button>
           </Box>
 
-          {/* Fileira 2 — o link curto propriamente dito. Rótulo em mono caps,
-            mesma família/tamanho do prefixo "/" do SectionLabel — o composto
-            abaixo é o "momento de marca" da página, então o rótulo que o
-            introduz fala a mesma língua tipográfica em vez de usar a caption
-            padrão (Inter) do resto do formulário. */}
+          {/* Fileira 2 — o link curto propriamente dito. Sem rótulo caps
+              visível ("LINK CURTO" morreu aqui, como STATUS/TAGS morreram
+              no strip de filtros): o composto `↳ domínio / slug` é
+              autoexplicativo. `ariaLabel` mantém o nome acessível para
+              leitor de tela no lugar do rótulo visual. */}
           <Box sx={{ mt: 1.5 }}>
-            <Typography
-              component="div"
-              sx={{
-                fontFamily: typographyScale.code.fontFamily,
-                fontSize: "0.6875rem",
-                color: "text.secondary",
-                fontWeight: 500,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                mb: 0.625,
-              }}
-            >
-              {t("list.quickCreate.shortLinkLabel")}
-            </Typography>
-
             <QuickCreateLinkStrip
               name={slugRegister.name}
               inputRef={slugRegister.ref}
@@ -558,6 +538,7 @@ export function LinksQuickCreate({
               defaultHost={defaultHost}
               disabled={isPending}
               error={slugHasError}
+              ariaLabel={t("list.quickCreate.shortLinkLabel")}
             />
           </Box>
 

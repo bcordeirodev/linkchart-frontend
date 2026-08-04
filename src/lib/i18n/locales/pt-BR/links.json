@@ -33,7 +33,6 @@
     },
     "quickCreate": {
       "label": "Encurtar novo link",
-      "description": "Cole um link longo e receba um link curto para compartilhar.",
       "urlLabel": "Link que você quer encurtar",
       "slugLabel": "Nome personalizado (opcional)",
       "subdomainLabel": "Endereço",
