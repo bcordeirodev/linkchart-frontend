@@ -62,11 +62,49 @@ function barPlotOptions(horizontal: boolean) {
 }
 
 /**
+ * Cor do texto dos data labels de barra sobre a própria barra preenchida
+ * (usada por {@link formatBarChart} no modo horizontal e por
+ * {@link formatHorizontalStackedBar}).
+ *
+ * `dataVizPalette` é azul-dominante e desaturado por design (ver
+ * `dataViz.ts`) — os tons mais claros da paleta (`secondary` #73AFDE,
+ * `quaternary` #A8BEDC) dão ~1.7–1.9:1 de contraste contra o texto claro
+ * padrão do Apex (`chart.foreColor`, herdado de `theme.palette.text
+ * .secondary`), praticamente ilegível — e mesmo o `primary` da paleta fica
+ * em 3.71:1, abaixo do mínimo de 4.5:1. `darkNeutral.bg` (o quase-preto
+ * canônico do app) contra os 5 tons da paleta fica entre 4.19:1 (`tertiary`,
+ * o mais escuro) e 10.81:1 (`quaternary`) — acima do mínimo de 3:1 para
+ * texto grande/negrito em todos os casos, sem precisar de uma cor por série.
+ */
+const BAR_LABEL_TEXT_COLOR = darkNeutral.bg;
+
+/**
+ * Abaixo deste percentual (do total da série), o data label é suprimido
+ * (formatter devolve string vazia): segmentos/barras finas colidem os
+ * números uns nos outros ou ficam ilegíveis antes mesmo do problema de
+ * contraste. O tooltip continua sendo a fonte precisa do valor exato em
+ * qualquer segmento/barra.
+ */
+const BAR_LABEL_MIN_PCT = 8;
+
+/**
  * Formata dados para gráfico de barras (vertical ou horizontal).
  *
  * Sem parâmetro de cor: a série assume `dataVizPalette.primary` via base do
  * tema. `horizontal` é estrutural (decide orientação + eixo de categoria) —
  * a única diferença visual permitida entre os dois modos.
+ *
+ * Data labels: no modo vertical, `offsetY: -20` já posiciona o número acima
+ * da coluna, sobre o fundo do gráfico (não sobre o preenchimento azul) — o
+ * texto claro padrão do Apex (`chart.foreColor`) já é legível ali, sem
+ * ajuste. No modo horizontal não há esse deslocamento: para a barra mais
+ * longa (tipicamente a primeira de uma lista ordenada, ex.:
+ * `TopCountriesChart`), o Apex não tem espaço para desenhar o label depois
+ * do fim da barra e o desenha **dentro** dela, sobre o preenchimento azul —
+ * daí o mesmo tratamento de {@link formatHorizontalStackedBar}:
+ * `BAR_LABEL_TEXT_COLOR` (contraste legível contra a paleta) e supressão
+ * abaixo de `BAR_LABEL_MIN_PCT` do total da série (barra fina demais para um
+ * número legível).
  */
 export const formatBarChart = (
   data: Record<string, unknown>[],
@@ -87,14 +125,27 @@ export const formatBarChart = (
       y: Number(item[yKey] || 0),
     }));
 
+  const total = processedData.reduce((sum, item) => sum + item.y, 0);
+
   return {
     series: [{ name: seriesName, data: processedData }],
     options: {
       plotOptions: barPlotOptions(horizontal),
       dataLabels: {
         enabled: true,
-        ...(horizontal ? {} : { offsetY: -20 }),
-        formatter: (val: number) => val.toLocaleString(),
+        ...(horizontal
+          ? { style: { colors: [BAR_LABEL_TEXT_COLOR] } }
+          : { offsetY: -20 }),
+        formatter: (val: number) => {
+          if (
+            horizontal &&
+            total > 0 &&
+            (val / total) * 100 < BAR_LABEL_MIN_PCT
+          ) {
+            return "";
+          }
+          return val.toLocaleString();
+        },
       },
       xaxis: { type: horizontal ? "numeric" : "category" },
       tooltip: {
@@ -108,27 +159,6 @@ export const formatBarChart = (
 };
 
 /**
- * Cor do texto dos data labels de {@link formatHorizontalStackedBar}.
- *
- * `dataVizPalette` é azul-dominante e desaturado por design (ver
- * `dataViz.ts`) — os tons mais claros da paleta (`secondary` #73AFDE,
- * `quaternary` #A8BEDC) dão ~1.7–1.9:1 de contraste contra o branco padrão
- * do Apex, praticamente ilegível. `darkNeutral.bg` (o quase-preto canônico
- * do app) contra os 5 tons da paleta fica entre 4.19:1 (`tertiary`, o mais
- * escuro) e 10.81:1 (`quaternary`) — acima do mínimo de 3:1 para texto
- * grande/negrito em todos os casos, sem precisar de uma cor por série.
- */
-const STACKED_BAR_LABEL_COLOR = darkNeutral.bg;
-
-/**
- * Abaixo deste percentual, o data label é suprimido (formatter devolve
- * string vazia): segmentos finos numa barra multi-categoria colidem os
- * números uns nos outros antes mesmo do problema de contraste. O tooltip
- * continua sendo a fonte precisa do valor exato em qualquer segmento.
- */
-const STACKED_BAR_LABEL_MIN_PCT = 8;
-
-/**
  * Formata uma distribuição categórica (dispositivos, idiomas, plataformas,
  * fim de semana vs dia de semana…) como uma única barra horizontal
  * empilhada — o substituto direto do donut/pizza morto pelo redesign
@@ -138,8 +168,8 @@ const STACKED_BAR_LABEL_MIN_PCT = 8;
  *
  * Sem parâmetro de cor: as séries assumem `dataVizPalette` (cíclico) via
  * base do tema — a mesma paleta que qualquer outro gráfico do app. Os data
- * labels usam `STACKED_BAR_LABEL_COLOR` (contraste legível contra qualquer
- * tom da paleta) e são suprimidos abaixo de `STACKED_BAR_LABEL_MIN_PCT`
+ * labels usam `BAR_LABEL_TEXT_COLOR` (contraste legível contra qualquer
+ * tom da paleta) e são suprimidos abaixo de `BAR_LABEL_MIN_PCT`
  * (segmento fino demais para exibir o número sem colidir com o vizinho).
  *
  * @param data - Linhas categóricas já filtradas/agrupadas pelo chamador.
@@ -187,11 +217,11 @@ export const formatHorizontalStackedBar = (
       xaxis: { categories: [rowLabel] },
       dataLabels: {
         enabled: true,
-        style: { colors: [STACKED_BAR_LABEL_COLOR] },
+        style: { colors: [BAR_LABEL_TEXT_COLOR] },
         formatter: (val: number) => {
           if (total <= 0) return "0%";
           const pct = (val / total) * 100;
-          return pct < STACKED_BAR_LABEL_MIN_PCT ? "" : `${Math.round(pct)}%`;
+          return pct < BAR_LABEL_MIN_PCT ? "" : `${Math.round(pct)}%`;
         },
       },
       legend: { show: true, position: "bottom" },
