@@ -94,13 +94,27 @@ export function getSegmentedControlSx(theme: Theme, height = 40) {
  * `primary.light`: a pastel tone of the same hue on a tint of that hue is the
  * low-contrast combination the project bans for colored chips in dark mode.
  *
+ * ### Wraps, never scrolls
+ * A filter row that does not fit lays its remaining segments onto a second
+ * line with a tight row gap. It must not become a scroll strip: the first
+ * draft of this helper pinned the group to a hard `height` and set
+ * `overflowX: "auto"`, and per CSS a non-`visible` `overflow-x` forces
+ * `overflow-y` to compute to `auto` as well — so a 36px-tall box ended up
+ * holding 100px of 47px-tall segments (MUI's own `ToggleButton` padding wins
+ * over `minHeight`). Every filter row was clipped top and bottom at every
+ * viewport, and on a phone the wrapped segments — "Horário comercial",
+ * "Oceania" — were invisible and unreachable behind a 36px window. Hence:
+ * `minHeight` on the group, an exact `height` forced onto the segments, and
+ * no `overflow` at all.
+ *
  * @param theme - Active MUI theme.
- * @param height - Segment height in px. Defaults to `36` — one step below the
- * `40` of the L0 strip, so a filter row never out-weighs the period strip.
+ * @param height - Segment height in px. Defaults to `32` — one step below the
+ * level-2 sub-tabs (36) and two below the level-0 strip (40), so a filter row
+ * never out-weighs the navigation above it.
  * @returns `sx` for the `ToggleButtonGroup` — segments are styled via nested
  * selectors.
  */
-export function getFilterSegmentSx(theme: Theme, height = 36) {
+export function getFilterSegmentSx(theme: Theme, height = 32) {
   const radius = `${radiusTokens.sm}px`;
   const activeTint = alpha(
     theme.palette.primary.main,
@@ -108,14 +122,21 @@ export function getFilterSegmentSx(theme: Theme, height = 36) {
   );
 
   return {
-    gap: 0.75,
-    height,
-    flexShrink: 0,
+    columnGap: 0.75,
+    rowGap: 0.75,
+    // `minHeight`, never `height`: the group has to be free to grow to two
+    // lines. See the "wraps, never scrolls" note above.
+    minHeight: height,
     flexWrap: "wrap" as const,
-    // Same defensive containment as the tracked strip: a long filter row on a
-    // narrow phone scrolls inside itself instead of widening the page.
+    alignItems: "center",
+    alignContent: "flex-start",
+    // `minWidth: 0` lets the group shrink inside a flex parent instead of
+    // forcing its max-content width on it — without it, `maxWidth: "100%"`
+    // resolves against the *inflated* parent and the row runs off-screen
+    // (this is what pushed `/reports`' "Personalizado" preset past the right
+    // edge of a 390px phone, where nothing could reach it).
+    minWidth: 0,
     maxWidth: "100%",
-    overflowX: "auto",
     backgroundColor: "transparent",
     // MUI rounds only the outer edges of a grouped ToggleButtonGroup and drops
     // the inner borders, which is exactly the *tracked* look this grammar is
@@ -136,7 +157,12 @@ export function getFilterSegmentSx(theme: Theme, height = 36) {
       },
     },
     "& .MuiToggleButton-root": {
+      // Exact box, not a floor: MUI's `ToggleButton` ships 11px of vertical
+      // padding, which silently turns a 32px `minHeight` into a 47px control.
+      height,
       minHeight: height,
+      py: 0,
+      lineHeight: 1.2,
       textTransform: "none",
       fontWeight: 500,
       fontSize: "0.8125rem",
