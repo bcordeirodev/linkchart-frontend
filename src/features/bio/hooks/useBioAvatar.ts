@@ -9,6 +9,7 @@ import { queryKeys } from "@/lib/query/keys";
 import { bioService } from "@/services/bio.service";
 
 import { createAvatarThumbnail } from "../utils/avatarThumbnail";
+import { revalidatePublicBio } from "../utils/revalidatePublicBio";
 
 import type { BioPage } from "../types";
 
@@ -54,6 +55,10 @@ function resolveAvatarErrorMessage(
  * avatar to). On success, seeds `queryKeys.bio.page()` directly with the
  * server's response (same pattern as `useUpsertBioPage`) so the preview and
  * public-URL bar pick up the new `avatarUrl` without an extra round trip.
+ * Also fires `revalidatePublicBio` — every other bio mutation already did;
+ * this one and `useRemoveBioAvatar` were the only two that didn't, leaving a
+ * fresh photo invisible on the public page for up to 300s (ISR) until the
+ * cache expired on its own.
  */
 export function useUploadBioAvatar() {
   const { showMessage } = useMessage();
@@ -69,6 +74,7 @@ export function useUploadBioAvatar() {
       bioService.uploadAvatar(file, await createAvatarThumbnail(file)),
     onSuccess: (page: BioPage) => {
       queryClient.setQueryData(queryKeys.bio.page(), page);
+      revalidatePublicBio(page);
       showMessage({
         message: t("form.avatar.uploadedToast"),
         variant: "success",
@@ -91,6 +97,11 @@ export function useUploadBioAvatar() {
  * back to its title/handle initial.
  *
  * @endpoint `DELETE /api/bio/avatar` (via `bioService.removeAvatar()`)
+ *
+ * @remarks
+ * Fires `revalidatePublicBio` on success like every other bio mutation —
+ * see `useUploadBioAvatar`'s remarks for why this matters (a removed photo
+ * otherwise lingers on the public page for up to 300s).
  */
 export function useRemoveBioAvatar() {
   const { showMessage } = useMessage();
@@ -100,6 +111,7 @@ export function useRemoveBioAvatar() {
     mutationFn: () => bioService.removeAvatar(),
     onSuccess: (page: BioPage) => {
       queryClient.setQueryData(queryKeys.bio.page(), page);
+      revalidatePublicBio(page);
       showMessage({
         message: t("form.avatar.removedToast"),
         variant: "success",

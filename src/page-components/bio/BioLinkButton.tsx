@@ -1,6 +1,8 @@
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { Box } from "@mui/material";
 
+import { BioItemFavicon } from "./BioItemFavicon";
+
 import type { BioPalette } from "./bioPalette";
 
 interface BioLinkButtonProps {
@@ -111,41 +113,14 @@ export default function BioLinkButton({
       }}
     >
       {/* Tile do favicon com fallback de inicial: toda linha tem a mesma
-          âncora visual, com ou sem preview buscado. */}
-      <Box
-        component="span"
-        aria-hidden
-        sx={{
-          width: 38,
-          height: 38,
-          flexShrink: 0,
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderRadius: "11px",
-          border: `1px solid ${palette.buttonBorder}`,
-          backgroundColor: palette.background,
-          overflow: "hidden",
-          fontSize: "0.9rem",
-          fontWeight: 700,
-          color: palette.textSecondary,
-        }}
-      >
-        {faviconUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element -- favicon externo minúsculo; next/image exigiria liberar todo domínio possível
-          <img
-            src={faviconUrl}
-            alt=""
-            width={20}
-            height={20}
-            loading="lazy"
-            referrerPolicy="no-referrer"
-            style={{ objectFit: "contain" }}
-          />
-        ) : (
-          initial
-        )}
-      </Box>
+          âncora visual, com ou sem preview buscado. Componente próprio (ver
+          BioItemFavicon) para isolar o único pedaço client-side (onError)
+          desta linha, que continua um Server Component zero-JS. */}
+      <BioItemFavicon
+        faviconUrl={faviconUrl}
+        initial={initial}
+        palette={palette}
+      />
 
       <Box component="span" sx={{ minWidth: 0, flex: "1 1 auto" }}>
         <Box

@@ -40,6 +40,7 @@
       "hint": "JPEG, PNG ou WEBP, até 2MB.",
       "uploadAction": "Enviar foto",
       "removeAction": "Remover foto",
+      "viewFullSize": "Ver foto em tamanho real",
       "uploadedToast": "Foto atualizada!",
       "removedToast": "Foto removida!",
       "removeDialog": {
@@ -47,6 +48,11 @@
         "body": "Sua página volta a mostrar a inicial do título no lugar da foto.",
         "cancel": "Cancelar",
         "confirm": "Remover"
+      },
+      "previewDialog": {
+        "title": "Foto de perfil em tamanho real",
+        "close": "Fechar",
+        "alt": "Foto de perfil de {{title}}, em tamanho real"
       },
       "errors": {
         "invalidType": "Envie uma imagem JPEG, PNG ou WEBP.",
