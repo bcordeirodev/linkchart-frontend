@@ -1,86 +1,44 @@
 "use client";
-import { Box, Typography, alpha, Paper } from "@mui/material";
-import { useMemo } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 
 import { AppLogo } from "@/shared/ui/base";
-import { useResponsive } from "@/lib/theme";
-import { Link } from "@/shared/components";
-import {
-  elevationTokens,
-  elevationLightTokens,
-} from "@/lib/theme/designSystem";
+import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
+
+import { getAuthCardSx } from "./utils/cardSurface";
 
 import type { ReactNode } from "react";
 
 interface AuthLayoutProps {
   children: ReactNode;
+  /** Door heading, rendered as the page's single `<h1>`. */
   title?: string;
+  /** Short line under the heading explaining how to continue. */
   subtitle?: string;
-  variant?: "signin" | "signup" | "forgot" | "reset" | "verify";
-  /** Overrides the side panel headline. Falls back to the variant's built-in copy. */
-  sideTitle?: string;
-  /** Overrides the side panel subheadline. Falls back to the variant's built-in copy. */
-  sideSubtitle?: string;
-  showSideSection?: boolean;
-  footerLinks?: {
-    text: string;
-    linkText: string;
-    href: string;
-  }[];
   className?: string;
 }
 
-function AuthLayout({
-  children,
-  title,
-  subtitle,
-  variant = "signin",
-  sideTitle,
-  sideSubtitle,
-  showSideSection = true,
-  footerLinks = [],
-  className,
-}: AuthLayoutProps) {
-  const { isMobile } = useResponsive();
+/**
+ * Centered single-door shell for `/sign-in` — the app's only unauthenticated
+ * entry point. Logo, heading, subtitle and the door's CTAs (`children`) sit
+ * inside one hairline-bordered card floating on the app's near-black page
+ * background; there is no side marketing panel.
+ *
+ * Historically this component also drove a 45/55 split with a promotional
+ * side panel plus a `variant` prop (`signin`/`signup`/`forgot`/`reset`/
+ * `verify`) selecting one of five headline pairs. Every one of those other
+ * variants was dead: `/sign-in` is the only route under `app/(auth)/` — the
+ * app fully delegates sign-up, password reset and email verification to
+ * Auth0's hosted Universal Login (see `SignInPage`'s doc comment) and never
+ * built its own screens for them. Removed alongside the `showSideSection`/
+ * `sideTitle`/`sideSubtitle`/`footerLinks` props (same reason: exactly one
+ * caller, and it never passed `footerLinks`). A single centered card is also
+ * the more deliberate read for a front door that should feel like "quiet
+ * confidence", not a two-pane marketing split.
+ */
+function AuthLayout({ children, title, subtitle, className }: AuthLayoutProps) {
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
-
-  const variantConfig = useMemo(() => {
-    const configs = {
-      signin: {
-        sideTitle: "Bem-vindo de volta!",
-        sideSubtitle:
-          "Acesse sua conta e continue gerenciando seus links de forma inteligente.",
-      },
-      signup: {
-        sideTitle: "Junte-se a nós!",
-        sideSubtitle:
-          "Crie sua conta e comece a encurtar e gerenciar seus links hoje mesmo.",
-      },
-      forgot: {
-        sideTitle: "Recuperar Senha",
-        sideSubtitle:
-          "Não se preocupe, vamos ajudá-lo a recuperar o acesso à sua conta.",
-      },
-      reset: {
-        sideTitle: "Nova Senha",
-        sideSubtitle: "Defina uma nova senha segura para sua conta.",
-      },
-      verify: {
-        sideTitle: "Verificação de Email",
-        sideSubtitle: "Estamos verificando seu email para ativar sua conta.",
-      },
-    };
-
-    const config = configs[variant];
-
-    return {
-      sideTitle: sideTitle ?? config.sideTitle,
-      sideSubtitle: sideSubtitle ?? config.sideSubtitle,
-    };
-  }, [variant, sideTitle, sideSubtitle]);
 
   return (
     <Box
@@ -88,200 +46,55 @@ function AuthLayout({
       sx={{
         minHeight: "100dvh",
         display: "flex",
-        flexDirection: { xs: "column", md: "row" },
+        alignItems: "center",
+        justifyContent: "center",
+        p: { xs: 2, sm: 3 },
         background: theme.palette.background.default,
-        overflow: "hidden",
       }}
     >
-      {/* Seção do Formulário */}
-      <Box
+      <EnhancedPaper
+        variant="outlined"
+        animated={false}
         sx={{
-          flex: { xs: 1, md: showSideSection ? "0 0 45%" : 1 },
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          p: { xs: 2, sm: 3 },
-          position: "relative",
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: `radial-gradient(ellipse at top left, ${alpha(theme.palette.primary.main, 0.1)} 0%, transparent 50%)`,
-            pointerEvents: "none",
-          },
+          ...getAuthCardSx(theme),
+          width: "100%",
+          maxWidth: 440,
+          p: { xs: 3, sm: 5 },
         }}
       >
-        <Paper
-          elevation={0}
-          sx={{
-            width: "100%",
-            maxWidth: 480,
-            p: { xs: 3, sm: 4, md: 5 },
-            background: theme.palette.background.paper,
-            border: `1px solid ${theme.palette.divider}`,
-            borderRadius: 3,
-            position: "relative",
-            overflow: "hidden",
-            boxShadow: elevation.lg,
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: "1px",
-              background: `linear-gradient(90deg, transparent 0%, ${alpha(theme.palette.primary.main, 0.5)} 50%, transparent 100%)`,
-            },
-          }}
-        >
-          {/* Logo e Brand */}
-          <Box sx={{ mb: 3, textAlign: "center" }}>
-            <Box
-              sx={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                mb: 2,
-              }}
-            >
-              <AppLogo
-                size={48}
-                textSx={{
-                  fontSize: "1.5rem",
-                  color: theme.palette.text.primary,
-                }}
-              />
-            </Box>
-
-            {title ? (
-              <Typography
-                variant="h4"
-                sx={{
-                  fontWeight: 600,
-                  color: theme.palette.text.primary,
-                  mb: 0.75,
-                  fontSize: { xs: "1.375rem", sm: "1.625rem" },
-                  lineHeight: 1.3,
-                }}
-              >
-                {title}
-              </Typography>
-            ) : null}
-
-            {subtitle ? (
-              <Typography
-                variant="body1"
-                sx={{
-                  color: theme.palette.text.secondary,
-                  fontSize: "0.9375rem",
-                  lineHeight: 1.6,
-                }}
-              >
-                {subtitle}
-              </Typography>
-            ) : null}
-          </Box>
-
-          {/* Formulário */}
-          <Box>
-            {children}
-
-            {footerLinks.length > 0 && (
-              <Box
-                sx={{
-                  mt: 3,
-                  pt: 2,
-                  borderTop: `1px solid ${theme.palette.divider}`,
-                  textAlign: "center",
-                }}
-              >
-                {footerLinks.map((link) => (
-                  <Typography
-                    key={link.href}
-                    variant="body2"
-                    sx={{ color: theme.palette.text.secondary }}
-                  >
-                    {link.text}{" "}
-                    <Link
-                      to={link.href}
-                      sx={{
-                        color: theme.palette.primary.main,
-                        fontWeight: 600,
-                        textDecoration: "none",
-                        transition: "all 0.2s ease",
-                        "&:hover": {
-                          color: theme.palette.primary.dark,
-                          textDecoration: "underline",
-                        },
-                      }}
-                    >
-                      {link.linkText}
-                    </Link>
-                  </Typography>
-                ))}
-              </Box>
-            )}
-          </Box>
-        </Paper>
-      </Box>
-
-      {/* Seção Lateral (apenas desktop) */}
-      {showSideSection && !isMobile ? (
-        <Box
-          sx={{
-            flex: { xs: 0, md: "0 0 55%" },
-            display: { xs: "none", md: "flex" },
-            alignItems: "center",
-            justifyContent: "center",
-            p: 6,
-            position: "relative",
-            background: theme.palette.background.paper,
-            overflow: "hidden",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: `radial-gradient(ellipse at center, ${alpha(theme.palette.primary.main, 0.08)} 0%, transparent 70%)`,
-              pointerEvents: "none",
-            },
-          }}
-        >
-          <Box sx={{ textAlign: "center", zIndex: 10, maxWidth: 600 }}>
-            <Typography
-              variant="h1"
-              sx={{
-                fontSize: { xs: "3rem", md: "4rem", lg: "4.5rem" },
-                fontWeight: 900,
-                lineHeight: 1.1,
-                mb: 3,
+        <Box className="reveal reveal-1" sx={{ textAlign: "center", mb: 4 }}>
+          <Box sx={{ display: "inline-flex", mb: 3 }}>
+            <AppLogo
+              size={40}
+              textSx={{
+                fontSize: "1.25rem",
                 color: theme.palette.text.primary,
               }}
-            >
-              {variantConfig.sideTitle}
-            </Typography>
-
-            <Typography
-              variant="h5"
-              sx={{
-                color: theme.palette.text.secondary,
-                lineHeight: 1.6,
-                mb: 6,
-                fontWeight: 400,
-                maxWidth: 500,
-                mx: "auto",
-              }}
-            >
-              {variantConfig.sideSubtitle}
-            </Typography>
+            />
           </Box>
+
+          {title ? (
+            <Typography
+              variant="h2"
+              component="h1"
+              sx={{ color: theme.palette.text.primary, mb: 1 }}
+            >
+              {title}
+            </Typography>
+          ) : null}
+
+          {subtitle ? (
+            <Typography
+              variant="body1"
+              sx={{ color: theme.palette.text.secondary }}
+            >
+              {subtitle}
+            </Typography>
+          ) : null}
         </Box>
-      ) : null}
+
+        <Box className="reveal reveal-2">{children}</Box>
+      </EnhancedPaper>
     </Box>
   );
 }

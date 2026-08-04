@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { AuthLayout } from "@/shared/layout";
 import AuthGuardRedirect from "@/lib/auth/AuthGuardRedirect";
 import authRoles from "@/lib/auth/authRoles";
+import { radiusTokens } from "@/lib/theme";
 
 /** Google "G" logo in official brand colors. */
 function GoogleLogo({ size = 20 }: { size?: number }) {
@@ -49,6 +50,14 @@ function GoogleLogo({ size = 20 }: { size?: number }) {
  * Social buttons pass `connection=<id>` to bypass the Universal Login
  * screen for direct OAuth flows. "Sign in" opens the Universal Login
  * page and supports all configured connections (email/password, etc.).
+ *
+ * Rendered through `AuthLayout`'s single centered door card — no dashboard
+ * chrome (no `PageSectionHeading`/`SectionLabel`) since this is the
+ * unauthenticated front door, not an in-app page. `color="primary"` on the
+ * "Continuar com e-mail" button is deliberate: the global `MuiButton`
+ * default is `color="inherit"` (renders a neutral gray), and this is the
+ * page's one strong-blue CTA, same rule the nav's "Novo link" button
+ * follows.
  */
 function SignInPage() {
   const { t } = useTranslation("auth");
@@ -64,6 +73,12 @@ function SignInPage() {
   }, []);
   const isDark = theme.palette.mode === "dark";
 
+  // Google's own button spec calls for a light, neutral surface even inside
+  // a dark app shell (recognizability trumps the app's own palette here) —
+  // a translucent white veil in dark mode, solid white in light mode. Radius
+  // and height come from the global `MuiButton`/`sizeLarge` overrides, same
+  // as every other button in the app; only the brand-specific colors are
+  // set here.
   const socialBg = isDark ? "rgba(255,255,255,0.08)" : "#fff";
   const socialBorder = isDark
     ? alpha(theme.palette.divider, 0.5)
@@ -73,43 +88,26 @@ function SignInPage() {
   const socialHoverBorder = isDark
     ? alpha(theme.palette.divider, 0.8)
     : "rgba(0,0,0,0.2)";
-  const socialBoxShadow = isDark
-    ? "none"
-    : "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)";
 
   const socialSx = {
     backgroundColor: socialBg,
     borderColor: socialBorder,
     color: socialText,
-    fontWeight: 600,
-    fontSize: "0.9375rem",
-    textTransform: "none",
-    py: 1.375,
-    borderRadius: "10px",
-    boxShadow: socialBoxShadow,
-    transition: "background-color 150ms ease, box-shadow 150ms ease",
     "&:hover": {
       backgroundColor: socialHoverBg,
       borderColor: socialHoverBorder,
-      boxShadow: isDark ? "none" : "0 2px 6px rgba(0,0,0,0.12)",
     },
   } as const;
 
   return (
     <AuthGuardRedirect auth={authRoles.onlyGuest}>
-      <AuthLayout
-        title={t("signIn.title")}
-        subtitle={t("signIn.subtitle")}
-        sideTitle={t("signIn.sideTitle")}
-        sideSubtitle={t("signIn.sideSubtitle")}
-        variant="signin"
-      >
-        <Stack spacing={2}>
+      <AuthLayout title={t("signIn.title")} subtitle={t("signIn.subtitle")}>
+        <Stack spacing={2.5}>
           {socialError === "facebook_no_email" && (
             <Alert
               severity="error"
               onClose={() => setSocialError(null)}
-              sx={{ borderRadius: "10px" }}
+              sx={{ borderRadius: `${radiusTokens.md}px` }}
             >
               {t("signIn.errors.facebookNoEmail")}
             </Alert>
@@ -129,9 +127,7 @@ function SignInPage() {
           </Button>
 
           {/* Divider */}
-          <Box
-            sx={{ display: "flex", alignItems: "center", gap: 1.5, py: 0.75 }}
-          >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
             <Divider sx={{ flex: 1 }} />
             <Typography
               variant="caption"
@@ -152,15 +148,9 @@ function SignInPage() {
             component="a"
             href="/auth/login?returnTo=/sign-in"
             variant="contained"
+            color="primary"
             size="large"
             fullWidth
-            sx={{
-              fontWeight: 600,
-              fontSize: "0.9375rem",
-              textTransform: "none",
-              py: 1.375,
-              borderRadius: "10px",
-            }}
           >
             {t("signIn.emailButton")}
           </Button>
