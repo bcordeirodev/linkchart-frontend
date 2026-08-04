@@ -157,13 +157,28 @@ function* slugCandidateSequence(
 /**
  * Single request: is this slug free for an active link?
  * `GET /api/public/link/{slug}` — 404 means available.
+ *
+ * @param slug - candidate slug to check.
+ * @param mode - slug rules to validate against before issuing the request.
+ * @param excludeSlug - the slug a link *already owns* (edit mode). When
+ *   `slug` matches it (case-insensitively), the check short-circuits to
+ *   `"available"` without any request — this endpoint has no concept of
+ *   "who is asking", so a link's own currently-active slug would otherwise
+ *   always resolve as `"taken"` against itself. Mirrors the exclusion already
+ *   used by {@link resolveAvailableSlug} for the suggestion flow.
+ * @returns `"invalid"` (fails the pattern), `"available"`, or `"taken"`.
  */
 export async function checkSlugAvailabilityOnce(
   slug: string,
   mode: SlugValidationMode = "auth",
+  excludeSlug?: string | null,
 ): Promise<SlugAvailabilityResult> {
   if (!slug || !fitsSlugPattern(slug, mode)) {
     return "invalid";
+  }
+
+  if (isExcludedSlug(slug, excludeSlug)) {
+    return "available";
   }
 
   try {
