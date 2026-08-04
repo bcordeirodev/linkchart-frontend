@@ -1,45 +1,52 @@
 // src/shared/ui/base/TabFilterBar.tsx
 "use client";
 
-import type { ReactNode } from "react";
+import type { ReactNode, MouseEvent } from "react";
 import {
   Box,
-  Chip,
   Divider,
   IconButton,
   Stack,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
   useTheme,
 } from "@mui/material";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { getSoftSelectedChipSx } from "@/lib/theme/softChip";
+import { getSegmentedControlSx } from "./segmentedControl";
+
+import type { Theme } from "@mui/material/styles";
 
 /** A single selectable chip item within a filter group. */
 export interface FilterChipItem {
   /** Unique value for this option (used as React key and for equality checks). */
   value: string;
-  /** Display label shown inside the chip. */
+  /** Display label shown inside the segment. */
   label: string;
-  /** Whether this chip is currently selected. */
+  /** Whether this segment is currently selected. */
   selected: boolean;
-  /** Called when the user clicks this chip. */
+  /** Called when the user selects this segment. */
   onSelect: () => void;
 }
 
-/** A labelled row of filter chips, optionally followed by an inline addon node. */
+/** A group of segmented-control options, optionally followed by an inline addon node. */
 export interface FilterGroup {
-  /** Short label rendered to the left of the chips (uppercase caption). */
+  /**
+   * Descriptive label for this group — rendered as the `aria-label` of its
+   * `ToggleButtonGroup` (not visible copy; the segmented control's selected
+   * pill speaks for itself, same "instrument strip" rule as `/links`).
+   */
   label: string;
   /**
    * Selection mode.
-   * - `"single"` — exactly one item selected at a time; active chips use `color="primary"`.
-   * - `"multi"` — multiple items can be selected; active chips use `color="secondary"`.
+   * - `"single"` — exactly one item selected at a time (`ToggleButtonGroup exclusive`).
+   * - `"multi"` — multiple items can be selected at once.
    */
   type: "single" | "multi";
   items: FilterChipItem[];
-  /** Extra node rendered after the chips — e.g. a Switch for a boolean toggle. */
+  /** Extra node rendered after the segmented control — e.g. a Switch for a boolean toggle. */
   addon?: ReactNode;
 }
 
@@ -53,7 +60,7 @@ interface TabFilterBarProps {
   /**
    * Render as a boxless, level-0 control row — no card/border of its own —
    * without the "FILTERS" header block or its divider. The clear-all (×)
-   * affordance moves to the end of the chips row. Defaults to `false`.
+   * affordance moves to the end of the segmented control(s). Defaults to `false`.
    */
   attached?: boolean;
 }
@@ -76,14 +83,109 @@ function countActiveFilters(groups: FilterGroup[]): number {
 }
 
 /**
- * Standardised filter bar for analytics tabs (Temporal, Geographic, Insights).
+ * Renders one {@link FilterGroup} as an attached-pill `ToggleButtonGroup` —
+ * the same segmented-control language as `/links`' STATUS filter
+ * (`getSegmentedControlSx`) — instead of a row of individually outlined,
+ * soft-tinted `Chip`s.
  *
- * Renders a header row (icon + "Filtros" label + active badge + clear button),
- * a Divider, and one row per {@link FilterGroup}.
+ * `"single"` groups map directly onto `ToggleButtonGroup exclusive`: the
+ * selected value is whichever item has `selected: true` (or `null` — no
+ * segment lit — when none do), and a click resolves the clicked item's own
+ * `onSelect`. `"multi"` groups pass the full array of currently-selected
+ * values to `ToggleButtonGroup`; on change, every item whose membership in
+ * the new array differs from its current `selected` gets its `onSelect`
+ * called — in practice exactly the one segment the user just clicked.
+ *
+ * @param group - The group to render.
+ * @param theme - Active MUI theme (for {@link getSegmentedControlSx}).
+ */
+function FilterGroupControl({
+  group,
+  theme,
+}: {
+  group: FilterGroup;
+  theme: Theme;
+}) {
+  if (group.type === "single") {
+    const selectedValue = group.items.find((i) => i.selected)?.value ?? null;
+
+    const handleChange = (
+      _event: MouseEvent<HTMLElement>,
+      next: string | null,
+    ) => {
+      if (next === null) return;
+      group.items.find((i) => i.value === next)?.onSelect();
+    };
+
+    return (
+      <ToggleButtonGroup
+        exclusive
+        value={selectedValue}
+        onChange={handleChange}
+        aria-label={group.label}
+        sx={getSegmentedControlSx(theme)}
+      >
+        {group.items.map((item) => (
+          <ToggleButton key={item.value} value={item.value}>
+            {item.label}
+          </ToggleButton>
+        ))}
+      </ToggleButtonGroup>
+    );
+  }
+
+  // "multi" — every currently-selected value; a click flips exactly the
+  // clicked segment's own `onSelect`, since MUI hands back the *whole* next
+  // array rather than which single value toggled.
+  const selectedValues = group.items
+    .filter((i) => i.selected)
+    .map((i) => i.value);
+
+  const handleMultiChange = (
+    _event: MouseEvent<HTMLElement>,
+    next: string[],
+  ) => {
+    group.items.forEach((item) => {
+      if (next.includes(item.value) !== item.selected) {
+        item.onSelect();
+      }
+    });
+  };
+
+  return (
+    <ToggleButtonGroup
+      value={selectedValues}
+      onChange={handleMultiChange}
+      aria-label={group.label}
+      sx={getSegmentedControlSx(theme)}
+    >
+      {group.items.map((item) => (
+        <ToggleButton key={item.value} value={item.value}>
+          {item.label}
+        </ToggleButton>
+      ))}
+    </ToggleButtonGroup>
+  );
+}
+
+/**
+ * Standardised filter bar for analytics tabs (Temporal, Geographic) and the
+ * reports date filter.
+ *
+ * In `attached` mode (every current consumer) it's a boxless row of
+ * segmented `ToggleButtonGroup` controls, one per {@link FilterGroup} — the
+ * same attached-pill language `/links`' `LinksFilters` STATUS control uses,
+ * aligned 2026-08-04 in the post-cycle pass that brought the analytics
+ * screen up to that standard (was: outlined, soft-tinted `Chip` rows with a
+ * visible caps label per group). In the (currently unused by any consumer)
+ * full/non-attached mode it additionally renders the "Filtros" header row
+ * with an active-count badge and clear-all button, above the same segmented
+ * groups.
  *
  * @example
  * ```tsx
  * <TabFilterBar
+ *   attached
  *   groups={[{
  *     label: t("filters.segment"),
  *     type: "single",
@@ -183,76 +285,35 @@ export function TabFilterBar({
         </>
       )}
 
-      {/* Filter groups */}
-      <Stack spacing={1}>
+      {/* Filter groups — one segmented control per group */}
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1.5}>
         {groups.map((group, idx) => (
-          <Stack
+          <Box
             key={idx}
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            flexWrap="wrap"
-            useFlexGap
+            sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
           >
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                minWidth: 90,
-              }}
-            >
-              {group.label}
-            </Typography>
-
-            {group.items.map((item) => (
-              <Chip
-                key={item.value}
-                label={item.label}
-                size="small"
-                variant="outlined"
-                onClick={item.onSelect}
-                sx={{
-                  cursor: "pointer",
-                  ...getSoftSelectedChipSx(
-                    theme,
-                    item.selected,
-                    group.type === "multi"
-                      ? theme.palette.secondary.main
-                      : undefined,
-                  ),
-                  // Larger tap target on phones.
-                  height: { xs: 34, sm: "auto" },
-                  "& .MuiChip-label": { px: { xs: 1.5, sm: 1.25 } },
-                }}
-              />
-            ))}
-
+            <FilterGroupControl group={group} theme={theme} />
             {group.addon}
-
-            {/* Clear-all affordance moves inline at the end of chips in attached mode */}
-            {attached &&
-              idx === groups.length - 1 &&
-              onClearAll &&
-              activeCount > 0 && (
-                <IconButton
-                  size="small"
-                  onClick={onClearAll}
-                  aria-label={t("filters.clearAll")}
-                  sx={{
-                    p: 0.25,
-                    // Reach a usable hit area on touch (was ~22px).
-                    minWidth: { xs: 40, sm: "auto" },
-                    minHeight: { xs: 40, sm: "auto" },
-                  }}
-                >
-                  <X size={14} />
-                </IconButton>
-              )}
-          </Stack>
+          </Box>
         ))}
+
+        {/* Clear-all affordance, inline at the end of the groups row — only
+            in attached mode; non-attached mode already has it in the header. */}
+        {attached && onClearAll && activeCount > 0 && (
+          <IconButton
+            size="small"
+            onClick={onClearAll}
+            aria-label={t("filters.clearAll")}
+            sx={{
+              p: 0.25,
+              // Reach a usable hit area on touch (was ~22px).
+              minWidth: { xs: 40, sm: "auto" },
+              minHeight: { xs: 40, sm: "auto" },
+            }}
+          >
+            <X size={14} />
+          </IconButton>
+        )}
       </Stack>
     </Box>
   );
