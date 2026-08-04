@@ -56,11 +56,18 @@ interface AnalyticsSubTabsProps {
 /**
  * Secondary navigation for analytics tabs (Temporal, Geographic, Audience).
  *
- * Rendered as a compact left-aligned **segmented control** (pill buttons on a
- * subtle track) so it reads as a level below the main tab band — two stacked
- * full-width tab bars would look like duplicated navigation. No wrapper
- * border: the main tab panel already frames the content, and a second frame
- * would run parallel to it as a double border.
+ * **Level 2 of the screen's three control grammars.** Rendered as a compact
+ * left-aligned segmented control — pill buttons on a subtle *track* — so it
+ * reads as a level below the main tab band (two stacked full-width tab bars
+ * would look like duplicated navigation) while staying clearly apart from the
+ * level-3 filter strips it often sits beside, which are trackless outlined
+ * segments (`getFilterSegmentSx`).
+ *
+ * The active pill is a **neutral** white-alpha fill (`action.selected`), never
+ * the primary accent: primary is reserved for the level-1 tab underline and
+ * the level-3 active filter border/tint, so each level owns one unmistakable
+ * cue. No wrapper border beyond the track: the main tab panel already frames
+ * the content, and a second frame would run parallel to it as a double border.
  */
 export function AnalyticsSubTabs({
   value,
@@ -106,6 +113,10 @@ export function AnalyticsSubTabs({
               minWidth: 0,
               px: 1.5,
               py: 0.75,
+              // One step down from the level-1 tab band, same type scale as
+              // the level-0 period strip and level-3 filters.
+              fontSize: "0.8125rem",
+              fontWeight: 500,
               color: "text.secondary",
               borderRadius: `${radiusTokens.sm + 2}px`,
               transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}, color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
@@ -115,6 +126,7 @@ export function AnalyticsSubTabs({
               "&.Mui-selected": {
                 backgroundColor: theme.palette.action.selected,
                 color: "text.primary",
+                fontWeight: 600,
               },
             },
           }}

@@ -10,7 +10,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import {
   LayoutDashboard,
   Share2,
@@ -207,9 +206,9 @@ export function LinkAnalyticsTabsOptimized({
           allowScrollButtonsMobile
           TabIndicatorProps={{
             sx: {
-              height: 3,
-              borderTopLeftRadius: 3,
-              borderTopRightRadius: 3,
+              height: 2,
+              borderTopLeftRadius: 2,
+              borderTopRightRadius: 2,
             },
           }}
           sx={{
@@ -225,13 +224,25 @@ export function LinkAnalyticsTabsOptimized({
               "&.Mui-focusVisible": {
                 backgroundColor: theme.palette.action.hover,
               },
+              // Level 1 — the strongest level, and the only one carrying the
+              // primary accent as an underline. The filled navy block this
+              // replaced made the tab band the heaviest thing on the page and,
+              // worse, made it the *same* grammar as the pill rows below it:
+              // three stacked filled controls read as one three-deep drill-down
+              // when in fact they are section / view / filter. Weight + the
+              // 2px primary indicator carry the active state now.
+              // `backgroundColor: transparent` is load-bearing: the global
+              // `MuiTab` override in `theme/config/muiComponents.ts` tints
+              // every selected tab navy, and that override — not this file —
+              // was the source of the filled block. Cancelled here rather than
+              // in the theme so no other screen's tabs change appearance.
               "&.Mui-selected": {
-                color: theme.palette.common.white,
-                backgroundColor: alpha(theme.palette.primary.main, 0.22),
+                color: theme.palette.text.primary,
+                fontWeight: 600,
+                backgroundColor: "transparent",
               },
               "&.Mui-selected:hover": {
-                color: theme.palette.common.white,
-                backgroundColor: alpha(theme.palette.primary.main, 0.3),
+                backgroundColor: theme.palette.action.hover,
               },
             },
           }}

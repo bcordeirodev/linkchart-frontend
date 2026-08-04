@@ -21,27 +21,28 @@ import { GeographicInsights } from "./GeographicInsights";
 import { GeographicChoropleth, RealTimeHeatmapChart } from "./index";
 
 /**
- * Loading skeleton that mirrors the sub-tabbed Geographic tab layout: filter
- * bar → segmented sub-tab control → a single content block (the shape of
- * whichever sub-tab loads first).
+ * Loading skeleton that mirrors the sub-tabbed Geographic tab layout:
+ * segmented sub-tab control → continent filter bar → a single content block
+ * (the shape of whichever sub-tab loads first). Order matches the rendered
+ * tab — navigation first, then the filter — so nothing shifts on load.
  */
 function GeographicSkeleton() {
   return (
     <Box>
-      {/* Continent filter bar */}
+      {/* Level-2 segmented sub-tab control */}
       <Skeleton
         variant="rounded"
         animation="wave"
-        height={52}
-        sx={{ mb: 2, borderRadius: 2 }}
+        height={44}
+        sx={{ mb: 2, borderRadius: 2, maxWidth: 420 }}
       />
 
-      {/* Segmented sub-tab control */}
+      {/* Level-3 continent filter bar */}
       <Skeleton
         variant="rounded"
         animation="wave"
-        height={40}
-        sx={{ mb: 2, borderRadius: 2, maxWidth: 420 }}
+        height={36}
+        sx={{ mb: 2, borderRadius: 2, maxWidth: 560 }}
       />
 
       <Skeleton
@@ -95,8 +96,9 @@ interface GeographicAnalysisProps {
  * The heat map only mounts while its sub-tab is active — Leaflet and its map
  * tiles are never fetched while the user is on "Mundo".
  *
- * Renders an optional {@link GeographicFilterBar} above the sub-tabs when
- * `onContinentChange` is provided.
+ * Renders an optional {@link GeographicFilterBar} below the sub-tabs when
+ * `onContinentChange` is provided — navigation first, then the filter that
+ * scopes whichever view is open.
  */
 export function GeographicAnalysis({
   linkId,
@@ -171,86 +173,91 @@ export function GeographicAnalysis({
         minHeight={300}
       >
         <Box>
-          {/* Filter bar — only rendered when parent supplies the callback */}
-          {onContinentChange && (
-            <GeographicFilterBar
-              continent={continent ?? null}
-              onContinentChange={onContinentChange}
-            />
-          )}
+          <AnalyticsSubTabs
+            value={visibleSubTab}
+            onChange={handleSubTabChange}
+            ariaLabel={t("tabs.places")}
+            tabs={subTabs}
+          >
+            {/* Level-3 continent filter, *below* the level-2 view switch and
+                  immediately above the content it scopes — navigation first,
+                  then filtering. It used to sit above the sub-tabs, which put
+                  two adjacent, near-identical pill rows at the top of the tab
+                  with nothing saying which one moved you and which one narrowed
+                  the data. `continent` reaches the backend query, so it scopes
+                  both sub-tabs equally and belongs to neither in particular.
+                  Only rendered when the parent supplies the callback. */}
+            {onContinentChange && (
+              <GeographicFilterBar
+                continent={continent ?? null}
+                onContinentChange={onContinentChange}
+              />
+            )}
 
-          <Box sx={{ mt: onContinentChange ? 2 : 0 }}>
-            <AnalyticsSubTabs
-              value={visibleSubTab}
-              onChange={handleSubTabChange}
-              ariaLabel={t("tabs.places")}
-              tabs={subTabs}
-            >
-              {/* Sub-tab 0: the city heat map leads — it is the most concrete
+            {/* Sub-tab 0: the city heat map leads — it is the most concrete
                   answer to "where are they?" — with the country/state/city
                   rankings reading underneath it. Only mounts while active, so
                   Leaflet and its tiles stay off the wire on the other sub-tab. */}
-              {visibleSubTab === 0 && hasHeatmap ? (
-                <Stack spacing={{ xs: 3, md: 4 }}>
-                  <RealTimeHeatmapChart
-                    data={data?.heatmap_data || []}
-                    loading={loading}
-                    error={error}
-                    onRefresh={refresh}
-                    height={isMobile ? 960 : 700}
-                    showControls
-                    showStats={false}
-                    stats={stats}
-                  />
+            {visibleSubTab === 0 && hasHeatmap ? (
+              <Stack spacing={{ xs: 3, md: 4 }}>
+                <RealTimeHeatmapChart
+                  data={data?.heatmap_data || []}
+                  loading={loading}
+                  error={error}
+                  onRefresh={refresh}
+                  height={isMobile ? 960 : 700}
+                  showControls
+                  showStats={false}
+                  stats={stats}
+                />
 
-                  <GeographicChart
+                <GeographicChart
+                  countries={data?.top_countries || []}
+                  states={data?.top_states || []}
+                  cities={data?.top_cities || []}
+                  totalClicks={stats?.totalClicks || 0}
+                  selectedCountry={selectedCountry}
+                  onCountrySelect={setSelectedCountry}
+                />
+
+                {/* The recommendations are drawn from the very rankings above
+                      them, so they close this screen rather than hiding behind
+                      the other sub-tab. */}
+                <GeographicInsights
+                  countries={data?.top_countries || []}
+                  states={data?.top_states || []}
+                  cities={data?.top_cities || []}
+                  totalCountries={stats?.totalCountries}
+                />
+              </Stack>
+            ) : null}
+
+            {/* Sub-tab 1: the world view — the choropleth and the continent
+                  breakdown, which doubles as the continent filter. */}
+            {visibleSubTab === 1 ? (
+              <Stack spacing={{ xs: 3, md: 4 }}>
+                {/* The choropleth renders bare (no chrome of its own) — it
+                      used to sit inside the deleted toggle card. Standalone it
+                      needs a surface and a title, like every other block. */}
+                <ChartCard
+                  title={t("geographic.choropleth.title")}
+                  subtitle={t("geographic.choropleth.subtitle")}
+                >
+                  <GeographicChoropleth
                     countries={data?.top_countries || []}
-                    states={data?.top_states || []}
-                    cities={data?.top_cities || []}
-                    totalClicks={stats?.totalClicks || 0}
                     selectedCountry={selectedCountry}
                     onCountrySelect={setSelectedCountry}
                   />
+                </ChartCard>
 
-                  {/* The recommendations are drawn from the very rankings above
-                      them, so they close this screen rather than hiding behind
-                      the other sub-tab. */}
-                  <GeographicInsights
-                    countries={data?.top_countries || []}
-                    states={data?.top_states || []}
-                    cities={data?.top_cities || []}
-                    totalCountries={stats?.totalCountries}
-                  />
-                </Stack>
-              ) : null}
-
-              {/* Sub-tab 1: the world view — the choropleth and the continent
-                  breakdown, which doubles as the continent filter. */}
-              {visibleSubTab === 1 ? (
-                <Stack spacing={{ xs: 3, md: 4 }}>
-                  {/* The choropleth renders bare (no chrome of its own) — it
-                      used to sit inside the deleted toggle card. Standalone it
-                      needs a surface and a title, like every other block. */}
-                  <ChartCard
-                    title={t("geographic.choropleth.title")}
-                    subtitle={t("geographic.choropleth.subtitle")}
-                  >
-                    <GeographicChoropleth
-                      countries={data?.top_countries || []}
-                      selectedCountry={selectedCountry}
-                      onCountrySelect={setSelectedCountry}
-                    />
-                  </ChartCard>
-
-                  <ContinentBreakdown
-                    continents={data?.continents || []}
-                    activeContinentCode={continent ?? null}
-                    onContinentSelect={onContinentChange}
-                  />
-                </Stack>
-              ) : null}
-            </AnalyticsSubTabs>
-          </Box>
+                <ContinentBreakdown
+                  continents={data?.continents || []}
+                  activeContinentCode={continent ?? null}
+                  onContinentSelect={onContinentChange}
+                />
+              </Stack>
+            ) : null}
+          </AnalyticsSubTabs>
         </Box>
       </AnalyticsStateManager>
     </Box>

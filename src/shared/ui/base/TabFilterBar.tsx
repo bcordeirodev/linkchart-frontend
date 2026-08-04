@@ -15,9 +15,21 @@ import {
 import { SlidersHorizontal, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { getSegmentedControlSx } from "./segmentedControl";
+import { getFilterSegmentSx, getSegmentedControlSx } from "./segmentedControl";
 
-import type { Theme } from "@mui/material/styles";
+import type { SxProps, Theme } from "@mui/material/styles";
+
+/**
+ * Which of the screen's control grammars this bar renders in.
+ *
+ * - `"segmented"` — tracked pill strip ({@link getSegmentedControlSx}), the
+ *   level-0 language of the period strip. Reads as a global scope switch.
+ * - `"filter"` — trackless outlined segments ({@link getFilterSegmentSx}), the
+ *   level-3 language. Reads as "this narrows the data below", and is the one
+ *   variant that must never be confused with the level-2 sub-tab views it
+ *   sits next to.
+ */
+export type TabFilterBarVariant = "segmented" | "filter";
 
 /** A single selectable chip item within a filter group. */
 export interface FilterChipItem {
@@ -63,6 +75,17 @@ interface TabFilterBarProps {
    * affordance moves to the end of the segmented control(s). Defaults to `false`.
    */
   attached?: boolean;
+  /**
+   * Control grammar to render in — see {@link TabFilterBarVariant}. Defaults
+   * to `"segmented"` (the level-0 period-strip language).
+   */
+  variant?: TabFilterBarVariant;
+  /**
+   * Layout overrides merged into the root box — in practice only to cancel the
+   * default bottom gutter (`sx={{ mb: 0 }}`) when the caller supplies its own
+   * spacing, e.g. `/reports`' period strip inside its level-0 card.
+   */
+  sx?: SxProps<Theme>;
 }
 
 /**
@@ -98,14 +121,22 @@ function countActiveFilters(groups: FilterGroup[]): number {
  *
  * @param group - The group to render.
  * @param theme - Active MUI theme (for {@link getSegmentedControlSx}).
+ * @param variant - Control grammar; see {@link TabFilterBarVariant}.
  */
 function FilterGroupControl({
   group,
   theme,
+  variant,
 }: {
   group: FilterGroup;
   theme: Theme;
+  variant: TabFilterBarVariant;
 }) {
+  const controlSx =
+    variant === "filter"
+      ? getFilterSegmentSx(theme)
+      : getSegmentedControlSx(theme);
+
   if (group.type === "single") {
     const selectedValue = group.items.find((i) => i.selected)?.value ?? null;
 
@@ -123,7 +154,7 @@ function FilterGroupControl({
         value={selectedValue}
         onChange={handleChange}
         aria-label={group.label}
-        sx={getSegmentedControlSx(theme)}
+        sx={controlSx}
       >
         {group.items.map((item) => (
           <ToggleButton key={item.value} value={item.value}>
@@ -157,7 +188,7 @@ function FilterGroupControl({
       value={selectedValues}
       onChange={handleMultiChange}
       aria-label={group.label}
-      sx={getSegmentedControlSx(theme)}
+      sx={controlSx}
     >
       {group.items.map((item) => (
         <ToggleButton key={item.value} value={item.value}>
@@ -182,6 +213,12 @@ function FilterGroupControl({
  * with an active-count badge and clear-all button, above the same segmented
  * groups.
  *
+ * `variant` picks which of the screen's control grammars the groups render
+ * in — `"segmented"` (default, level-0 period strip) or `"filter"` (level-3,
+ * trackless outlined segments). The analytics tab filters pass `"filter"` so
+ * they stop looking identical to the level-2 sub-tab rows they sit beside;
+ * `/reports`' period filter keeps the default.
+ *
  * @example
  * ```tsx
  * <TabFilterBar
@@ -203,6 +240,8 @@ export function TabFilterBar({
   groups,
   onClearAll,
   attached = false,
+  variant = "segmented",
+  sx,
 }: TabFilterBarProps) {
   const { t } = useTranslation("analytics");
   const theme = useTheme();
@@ -210,7 +249,7 @@ export function TabFilterBar({
 
   return (
     <Box
-      sx={
+      sx={[
         attached
           ? {
               // Level 0 — no card of its own. The caller supplies whatever
@@ -228,8 +267,9 @@ export function TabFilterBar({
               bgcolor: "background.paper",
               borderRadius: 2,
               border: `1px solid ${theme.palette.divider}`,
-            }
-      }
+            },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
     >
       {/* Header row — only shown in full (non-attached) mode */}
       {!attached && (
@@ -292,7 +332,7 @@ export function TabFilterBar({
             key={idx}
             sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
           >
-            <FilterGroupControl group={group} theme={theme} />
+            <FilterGroupControl group={group} theme={theme} variant={variant} />
             {group.addon}
           </Box>
         ))}
