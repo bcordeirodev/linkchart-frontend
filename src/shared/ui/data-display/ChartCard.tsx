@@ -41,11 +41,14 @@ export interface ChartCardProps {
 /**
  * Card container for charts — title row (optional icon + heading) + slot for the chart body.
  *
- * Uses `radiusTokens.md` and a 1 px divider border — no `boxShadow` of its own: the global
- * `MuiCard` override (`lib/theme/config/muiComponents.ts`) already supplies the hairline +
- * translucent-veil surface grammar (`boxShadow: "none"`), so a local elevation token here
- * would only double up on it. The outer `<Box>` adds `animations.cardHover` so the whole card
- * lifts on hover, and the body is wrapped in a short `<Fade>` to soften initial mount.
+ * Uses `radiusTokens.md` and a 1 px divider border — no `boxShadow` of its own. This is an
+ * intentional visual change (2026-08-04 closure sweep): the component used to set an explicit
+ * `boxShadow: elevationTokens.xs` here, which *did* render (an `sx` prop on `Card` wins over the
+ * global `MuiCard` `styleOverrides.root` on MUI 6, so the two were not equivalent) — a subtle
+ * drop shadow stacked on top of the hairline border. Removed to match the "instrumento técnico"
+ * surface grammar of hairline-only elevation, no shadow, everywhere else in the app. The outer
+ * `<Box>` adds `animations.cardHover` so the whole card lifts on hover, and the body is wrapped
+ * in a short `<Fade>` to soften initial mount.
  *
  * @example
  * ```tsx

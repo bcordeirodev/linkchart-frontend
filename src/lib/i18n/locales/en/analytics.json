@@ -914,7 +914,6 @@
       "uniqueVisitors": "{{n}} unique visitors",
       "session": "Session: {{n}} clicks",
       "sessionDepthFmt": "{{n}} clicks/session",
-      "clicksCount": "{{n}} clicks",
       "time": "Time: {{n}}s",
       "navigationContext": "Navigation Context",
       "contextClicks": "{{n}} clicks ({{pct}}%)",
@@ -941,23 +940,6 @@
       "highSocialTraffic": "High social traffic detected. Consider diversifying with SEO and email marketing.",
       "highDirectTraffic": "Very direct traffic. Explore social media campaigns to expand reach.",
       "lowSourceDiversity": "Low source diversity. Consider multiple channels to reduce dependency risks."
-    },
-    "trafficQuality": {
-      "title": "Traffic Quality",
-      "description": "Click classification into organic, suspicious, and fraud based on device fingerprint and behavioral patterns. Score 0–100; above 70 is considered healthy.",
-      "tooltipNote": "Score calculated from headers, behavior, and fingerprint consistency. No external APIs used.",
-      "avgScore": "Avg score: {{score}}",
-      "avgScoreLabel": "Average score",
-      "scoreScale": "scale 0–100",
-      "organicShareLabel": "Organic traffic",
-      "organicShareHint": "share of clicks classified as organic",
-      "tierScore": "score {{n}}",
-      "tiers": {
-        "organic": "Organic",
-        "suspicious": "Suspicious",
-        "likely_fraud": "Fraud",
-        "unknown": "Unscored"
-      }
     },
     "generators": {
       "engagement": {
