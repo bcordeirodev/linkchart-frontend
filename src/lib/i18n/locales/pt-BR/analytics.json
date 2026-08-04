@@ -49,12 +49,12 @@
     "dateFrom": "De",
     "dateTo": "Até",
     "periods": {
-      "1h": "1 hora",
-      "24h": "24 horas",
+      "1h": "1h",
+      "24h": "24h",
       "7d": "7 dias",
       "30d": "30 dias",
       "90d": "90 dias",
-      "all": "Todo período",
+      "all": "Tudo",
       "custom": "Personalizado"
     },
     "excludeBots": "Excluir bots",

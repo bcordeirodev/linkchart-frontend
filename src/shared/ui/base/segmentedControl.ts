@@ -19,25 +19,38 @@ import type { Theme } from "@mui/material/styles";
  * its own inline copy (the approved reference implementation is not
  * refactored to depend on this file, to keep its blast radius at zero).
  *
+ * ### Wraps, never scrolls
+ * This used to pin a hard `height` and contain a too-wide strip with
+ * `overflowX: "auto"`. That hid content rather than containing it: the 6-way
+ * period control ran 88px past its box on a 390px phone, so "Tudo" — the
+ * widest-reaching preset of the six — could only be reached by dragging a
+ * strip that gives no hint it scrolls. A control the user cannot see is a
+ * control the user does not have. The track now grows to a second line
+ * instead, the same rule the level-2 sub-tabs and level-3 filters follow;
+ * only the level-1 tab band may scroll.
+ *
  * @param theme - Active MUI theme.
- * @param height - Track height in px. Defaults to `40`, the shared control
- * height every instrument in a strip like this one uses.
+ * @param height - Track height in px, as a floor rather than a fixed box.
+ * Defaults to `40`, the shared control height every instrument in a strip
+ * like this one uses.
  * @returns `sx` for the `ToggleButtonGroup` (track) — the segments
  * (`.MuiToggleButton-root`) are styled via a nested selector.
  */
 export function getSegmentedControlSx(theme: Theme, height = 40) {
   return {
-    gap: 0.375,
+    columnGap: 0.375,
+    rowGap: 0.375,
     p: 0.375,
-    height,
-    flexShrink: 0,
-    // Defensive: a strip with many segments (e.g. the 6-way period control)
-    // can get tight on a narrow phone. `maxWidth` + `overflowX` contain any
-    // overflow to a scroll *inside* the group instead of pushing the page
-    // itself wider — normally invisible, since groups fit without scrolling
-    // on every viewport this was checked against.
+    // `minHeight`, never `height`: the track has to be free to grow to a
+    // second line. See the "wraps, never scrolls" note above.
+    minHeight: height,
+    flexWrap: "wrap" as const,
+    alignItems: "center",
+    // `minWidth: 0` (and no `flexShrink: 0`) lets the track shrink inside its
+    // flex parent instead of forcing its max-content width on it — that is
+    // what allows `maxWidth: "100%"` to bite and the segments to wrap.
+    minWidth: 0,
     maxWidth: "100%",
-    overflowX: "auto",
     backgroundColor: theme.palette.action.hover,
     borderRadius: `${radiusTokens.md}px`,
     "& .MuiToggleButtonGroup-grouped": {
@@ -47,7 +60,17 @@ export function getSegmentedControlSx(theme: Theme, height = 40) {
       "&:not(:first-of-type)": { marginLeft: 0, borderLeft: 0 },
     },
     "& .MuiToggleButton-root": {
+      // Exact box, not a floor. MUI's `ToggleButton` ships 11px of vertical
+      // padding, so a bare `minHeight: 34` actually measures 45 — the fixed
+      // `height` this track used to carry was the only thing hiding that.
+      // Dropping it for `minHeight` (so the track can wrap) exposed the real
+      // segment and pushed every strip from 40px to 51px, `/reports`
+      // included. Pin the height and zero the padding, same as
+      // {@link getFilterSegmentSx}.
+      height: height - 6,
       minHeight: height - 6,
+      py: 0,
+      lineHeight: 1.2,
       textTransform: "none",
       fontWeight: 500,
       fontSize: "0.8125rem",
