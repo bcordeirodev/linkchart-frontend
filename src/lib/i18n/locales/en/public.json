@@ -280,7 +280,8 @@
   "unauthorized": {
     "title": "Access denied",
     "description": "You don't have permission to view this page.",
-    "signInButton": "Sign in"
+    "signInButton": "Sign in",
+    "homeButton": "Home"
   },
   "benefits": {
     "title": "Why use Link Charts?",
