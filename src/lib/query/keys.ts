@@ -21,8 +21,13 @@
  * - `bio` — the authenticated user's link-in-bio page. The API nests items
  *   inside the page payload (no separate items list endpoint), so every item
  *   mutation (add/update/remove/reorder) invalidates the same `bio.page()`
- *   key as the page form itself.
+ *   key as the page form itself. Add/update/remove additionally invalidate
+ *   `bio.performanceAll()` (every `performance(period)` entry) since each
+ *   can change the items ranked by `GET /api/bio/performance`; reorder does
+ *   not, since that endpoint ranks by clicks, never by position.
  */
+
+import type { BioPerformancePeriod } from "@/features/bio/types";
 
 /**
  * Filters that participate in a cached analytics payload's identity.
@@ -142,5 +147,23 @@ export const queryKeys = {
      * has not created a page yet.
      */
     page: () => ["bio", "page"] as const,
+    /**
+     * Click ranking across every item on the authenticated user's bio page
+     * for one period (`GET /api/bio/performance?period=`). Keyed by period
+     * so switching the panel's segmented control reads/refetches a distinct
+     * cache entry per window instead of clobbering the previous one.
+     */
+    performance: (period: BioPerformancePeriod) =>
+      ["bio", "performance", period] as const,
+    /**
+     * Prefix shared by every `performance(period)` key — invalidate this
+     * (not one specific period) from item mutations that add/remove/relabel
+     * an item, since any of the 4 period caches could now show a stale
+     * title/display/platform or be missing a brand-new item entirely.
+     * Reordering items does NOT invalidate this: `GET /api/bio/performance`
+     * ranks by clicks, never by position, so a reorder has nothing in this
+     * response to go stale.
+     */
+    performanceAll: () => ["bio", "performance"] as const,
   },
 };

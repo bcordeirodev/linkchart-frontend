@@ -8,6 +8,10 @@ import {
   Chip,
   CircularProgress,
   IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Stack,
   Switch,
   TextField,
@@ -24,7 +28,12 @@ import { useTranslation } from "react-i18next";
 import { typographyScale } from "@/lib/theme";
 import { getCardSurfaceSx } from "@/shared/ui/base";
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
-import { AppIcon } from "@/shared/ui/icons";
+import {
+  AppIcon,
+  SOCIAL_PLATFORM_KEYS,
+  SocialPlatformIcon,
+  type SocialPlatformKey,
+} from "@/shared/ui/icons";
 
 import { useUpdateBioItem } from "../hooks/useBioItems";
 import { getUrlHost } from "../utils/linkHost";
@@ -52,6 +61,15 @@ export interface BioItemRowProps {
  * and gain a small "hidden" badge so the OFF state is readable at a glance,
  * not only from the switch position.
  *
+ * A social-icon item (`item.display === "icon"`) gets one addition in the
+ * controls zone: a small platform-glyph button, first in that cluster, that
+ * opens a menu of the 8 whitelisted platforms — picking one updates
+ * `socialPlatform` in place. Everything else in this row (label edit,
+ * reorder, active toggle, remove, the clicks chip) already operates on the
+ * item generically and needed no icon-specific change; there's no equivalent
+ * control to change the item's underlying link — that's a remove-then-add,
+ * same as for a plain item.
+ *
  * Label editing and the active toggle each own their mutation locally —
  * reordering and removal are lifted to `BioItemsSection` since they need to
  * reason about the whole list (neighbour positions / the confirmation
@@ -73,6 +91,8 @@ export function BioItemRow({
 
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [labelDraft, setLabelDraft] = useState(item.label ?? "");
+  const [platformMenuAnchor, setPlatformMenuAnchor] =
+    useState<HTMLElement | null>(null);
 
   const startEditingLabel = () => {
     setLabelDraft(item.label ?? "");
@@ -94,6 +114,19 @@ export function BioItemRow({
       await updateItem.mutateAsync({
         id: item.id,
         input: { isActive: checked },
+      });
+    } catch {
+      // Toast already shown by useUpdateBioItem's onError.
+    }
+  };
+
+  const changePlatform = async (platform: SocialPlatformKey) => {
+    setPlatformMenuAnchor(null);
+    if (platform === item.socialPlatform) return;
+    try {
+      await updateItem.mutateAsync({
+        id: item.id,
+        input: { display: "icon", socialPlatform: platform },
       });
     } catch {
       // Toast already shown by useUpdateBioItem's onError.
@@ -262,6 +295,23 @@ export function BioItemRow({
             justifyContent: { xs: "space-between", sm: "flex-end" },
           }}
         >
+          {item.display === "icon" ? (
+            <Tooltip title={t("items.icon.changePlatform")}>
+              <IconButton
+                size="small"
+                aria-label={t("items.icon.changePlatform")}
+                aria-haspopup="menu"
+                aria-expanded={!!platformMenuAnchor}
+                onClick={(e) => setPlatformMenuAnchor(e.currentTarget)}
+              >
+                <SocialPlatformIcon
+                  platform={item.socialPlatform ?? "website"}
+                  size={16}
+                />
+              </IconButton>
+            </Tooltip>
+          ) : null}
+
           <Tooltip title={t("items.viewStats")}>
             <Chip
               component={NextLink}
@@ -318,6 +368,27 @@ export function BioItemRow({
           </IconButton>
         </Stack>
       </Box>
+
+      {item.display === "icon" ? (
+        <Menu
+          anchorEl={platformMenuAnchor}
+          open={!!platformMenuAnchor}
+          onClose={() => setPlatformMenuAnchor(null)}
+        >
+          {SOCIAL_PLATFORM_KEYS.map((platform) => (
+            <MenuItem
+              key={platform}
+              selected={platform === item.socialPlatform}
+              onClick={() => void changePlatform(platform)}
+            >
+              <ListItemIcon>
+                <SocialPlatformIcon platform={platform} size={16} />
+              </ListItemIcon>
+              <ListItemText>{t(`socialPlatforms.${platform}`)}</ListItemText>
+            </MenuItem>
+          ))}
+        </Menu>
+      ) : null}
     </EnhancedPaper>
   );
 }

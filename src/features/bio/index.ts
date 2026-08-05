@@ -13,6 +13,7 @@ export {
   useReorderBioItems,
 } from "./hooks/useBioItems";
 export { useUploadBioAvatar, useRemoveBioAvatar } from "./hooks/useBioAvatar";
+export { useBioPerformance } from "./hooks/useBioPerformance";
 
 export {
   MAX_BIO_ITEMS,
@@ -27,10 +28,14 @@ export {
 
 export type {
   BioItem,
+  BioItemDisplay,
   BioPage,
   BioTheme,
   BioPageUpsertInput,
   BioItemCreateInput,
   BioItemUpdateInput,
+  BioPerformance,
+  BioPerformanceItem,
+  BioPerformancePeriod,
   HandleAvailabilityResult,
 } from "./types";
