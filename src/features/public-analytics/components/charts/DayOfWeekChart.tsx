@@ -6,6 +6,7 @@ import { getPublicChartAnimations } from "@/lib/theme/publicChartTheme";
 import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 
 import { PublicChartCard } from "./ChartCard";
+import { integerTickAmount } from "./integerTicks";
 
 /**
  * Pre-computed DOW i18n key array.
@@ -58,9 +59,12 @@ export function DayOfWeekChart({ rawData }: DayOfWeekChartProps) {
     },
   ];
 
+  const maxClicks = rawData.reduce((max, d) => Math.max(max, d.clicks), 0);
+
   const options = {
     chart: { animations: getPublicChartAnimations(reducedMotion) },
     xaxis: { type: "category" as const },
+    yaxis: { ...integerTickAmount(maxClicks) },
   };
 
   return (

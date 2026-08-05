@@ -6,6 +6,7 @@ import { getPublicChartAnimations } from "@/lib/theme/publicChartTheme";
 import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 
 import { PublicChartCard } from "./ChartCard";
+import { integerTickAmount } from "./integerTicks";
 
 interface HourlyClicksChartProps {
   /** Pre-mapped hourly data with `hour` label and `clicks` count. */
@@ -32,6 +33,8 @@ export function HourlyClicksChart({ data }: HourlyClicksChartProps) {
     },
   ];
 
+  const maxClicks = data.reduce((max, d) => Math.max(max, d.clicks), 0);
+
   const options = {
     chart: { animations: getPublicChartAnimations(reducedMotion) },
     xaxis: {
@@ -39,6 +42,7 @@ export function HourlyClicksChart({ data }: HourlyClicksChartProps) {
       tickAmount: 8,
       labels: { rotate: 0 },
     },
+    yaxis: { ...integerTickAmount(maxClicks) },
     markers: { size: 0, hover: { size: 5 } },
   };
 
