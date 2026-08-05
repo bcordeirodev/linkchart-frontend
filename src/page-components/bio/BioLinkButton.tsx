@@ -1,7 +1,10 @@
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { Box } from "@mui/material";
 
+import { radiusTokens } from "@/lib/theme/designSystem";
+
 import { BioItemFavicon } from "./BioItemFavicon";
+import { BIO_FONT_MONO } from "./bioPalette";
 
 import type { BioPalette } from "./bioPalette";
 
@@ -36,16 +39,23 @@ interface BioLinkButtonProps {
  *
  * Row anatomy, left to right: a 38px favicon tile (initial fallback), the
  * text block — label above, destination host below, the "where does this
- * click take me" answer — and an outward arrow that nudges on hover. Rows
- * are left-aligned on purpose: two lines of real information read as a
+ * click take me" answer — and an outward arrow marking the row as external.
+ * Rows are left-aligned on purpose: two lines of real information read as a
  * card, and centered pills are exactly the template look this page moves
  * away from.
  *
- * Hover/focus reuse the avatar's gradient as a border that "lights up" via
- * the standard double-background clip trick (`backgroundOrigin: border-box`
- * + `backgroundClip: padding-box, border-box`) — the same accent as the
- * signature avatar glow, spent a second time on purpose so the page reads
- * as one system, not scattered decoration.
+ * The row is the page's card grammar, verbatim: a translucent veil
+ * (`palette.surface`, the app's shared `surfaceOverlayTokens.card` alpha)
+ * over the flat canvas, raised by a 1px hairline, cornered with the app's
+ * container radius (`radiusTokens.lg`). Hover and active step the *same two*
+ * properties one notch (veil → `surfaceHover`, hairline → `hairlineStrong`)
+ * instead of the violet-blue gradient border and colored drop-glow this row
+ * carried until 2026-08-04 — an instrument reacts, it doesn't light up.
+ *
+ * The destination host is set in JetBrains Mono: the product's mono is
+ * reserved for technical text (slugs, URLs, chart axes), and a host is
+ * exactly that — it also makes the trust signal visually distinct from the
+ * creator's own label above it.
  */
 export default function BioLinkButton({
   label,
@@ -72,43 +82,25 @@ export default function BioLinkButton({
         minHeight: 64,
         py: 1.5,
         px: 2,
-        borderRadius: "16px",
-        backgroundColor: palette.buttonBg,
-        border: `1px solid ${palette.buttonBorder}`,
+        borderRadius: `${radiusTokens.lg}px`,
+        backgroundColor: palette.surface,
+        border: `1px solid ${palette.hairline}`,
         color: palette.textPrimary,
         textDecoration: "none",
         WebkitTapHighlightColor: "transparent",
-        transition:
-          "transform 160ms ease, box-shadow 200ms ease, background-color 160ms ease, border-color 160ms ease",
-        "@media (prefers-reduced-motion: reduce)": {
-          transition:
-            "box-shadow 200ms ease, background-color 160ms ease, border-color 160ms ease",
-        },
+        transition: "background-color 160ms ease, border-color 160ms ease",
         "&:hover": {
-          backgroundColor: palette.buttonBgHover,
-          borderColor: "transparent",
-          backgroundImage: `linear-gradient(${palette.buttonBgHover}, ${palette.buttonBgHover}), ${palette.avatarGradient}`,
-          backgroundOrigin: "border-box",
-          backgroundClip: "padding-box, border-box",
-          boxShadow: `0 10px 24px -12px ${palette.interactiveGlow}`,
-          "@media (prefers-reduced-motion: no-preference)": {
-            transform: "translateY(-1px)",
-          },
-          "& [data-bio-arrow]": {
-            opacity: 1,
-            transform: "translate(2px, -2px)",
-          },
+          backgroundColor: palette.surfaceHover,
+          borderColor: palette.hairlineStrong,
+          "& [data-bio-arrow]": { opacity: 0.85 },
         },
         "&:focus-visible": {
           outline: `2px solid ${palette.focusRing}`,
           outlineOffset: 2,
         },
         "&:active": {
-          backgroundColor: palette.buttonBgHover,
-          boxShadow: `0 4px 14px -10px ${palette.interactiveGlow}`,
-          "@media (prefers-reduced-motion: no-preference)": {
-            transform: "translateY(0) scale(0.985)",
-          },
+          backgroundColor: palette.surfaceHover,
+          borderColor: palette.hairlineStrong,
         },
       }}
     >
@@ -143,9 +135,12 @@ export default function BioLinkButton({
             component="span"
             sx={{
               display: "block",
-              mt: 0.25,
-              fontSize: "0.8125rem",
-              fontWeight: 500,
+              mt: 0.375,
+              fontFamily: BIO_FONT_MONO,
+              fontSize: "0.75rem",
+              fontWeight: 400,
+              lineHeight: 1.3,
+              letterSpacing: "0.01em",
               color: palette.textSecondary,
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -165,10 +160,7 @@ export default function BioLinkButton({
           flexShrink: 0,
           color: palette.textSecondary,
           opacity: 0.45,
-          transition: "opacity 160ms ease, transform 160ms ease",
-          "@media (prefers-reduced-motion: reduce)": {
-            transition: "opacity 160ms ease",
-          },
+          transition: "opacity 160ms ease",
         }}
       />
     </Box>
