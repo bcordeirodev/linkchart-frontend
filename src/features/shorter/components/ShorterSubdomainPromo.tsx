@@ -2,11 +2,11 @@
 
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { Globe, Link2 } from "lucide-react";
+import { Link2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
-import { radiusTokens } from "@/lib/theme/designSystem";
+import { radiusTokens, typographyScale } from "@/lib/theme/designSystem";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import {
   getPublicBlockDescriptionSx,
@@ -14,7 +14,6 @@ import {
   getPublicElevatedSx,
   getPublicInsetSx,
 } from "@/lib/theme/publicPageStyles";
-import { PublicBlockIcon } from "@/shared/ui/base";
 
 const PROTOCOL = "https://";
 const DOMAIN_SUFFIX = ".linkcharts.com.br";
@@ -22,6 +21,11 @@ const DOMAIN_SUFFIX = ".linkcharts.com.br";
 /**
  * Destaque do subdomínio gratuito na página /shorter (estado idle).
  * Complementa o SignUpCtaCard com um preview visual da URL branded.
+ *
+ * Title and description stand on their own translucent+hairline surface
+ * without a leading icon square: a decorative icon beside a title is the
+ * icon-chip anti-pattern the "instrumento técnico" spec bans, and this card
+ * already carries enough hierarchy from the surface + the URL preview tile.
  */
 export function ShorterSubdomainPromo() {
   const theme = useTheme();
@@ -36,10 +40,6 @@ export function ShorterSubdomainPromo() {
   const brightUrlColor = alpha(
     theme.palette.text.primary,
     isDark ? 0.95 : 0.92,
-  );
-  const blockIconColor = alpha(
-    theme.palette.common.white,
-    isDark ? 0.96 : 0.94,
   );
 
   return (
@@ -75,29 +75,18 @@ export function ShorterSubdomainPromo() {
         overflow: "hidden",
       }}
     >
-      <Box
-        sx={{
-          flex: 1,
-          minWidth: 0,
-          display: "flex",
-          alignItems: "flex-start",
-          gap: 1.25,
-        }}
-      >
-        <PublicBlockIcon icon={Globe} sx={{ color: blockIconColor }} />
-        <Box sx={{ minWidth: 0 }}>
-          <Typography
-            component="h2"
-            sx={{ ...getPublicBlockTitleSx(theme), mb: 0.5 }}
-          >
-            {t("shorter.subdomainPromo.title")}
-          </Typography>
-          <Typography
-            sx={{ ...getPublicBlockDescriptionSx(theme), maxWidth: 480 }}
-          >
-            {t("shorter.subdomainPromo.description")}
-          </Typography>
-        </Box>
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Typography
+          component="h2"
+          sx={{ ...getPublicBlockTitleSx(theme), mb: 0.5 }}
+        >
+          {t("shorter.subdomainPromo.title")}
+        </Typography>
+        <Typography
+          sx={{ ...getPublicBlockDescriptionSx(theme), maxWidth: 480 }}
+        >
+          {t("shorter.subdomainPromo.description")}
+        </Typography>
       </Box>
 
       <Box
@@ -133,7 +122,7 @@ export function ShorterSubdomainPromo() {
           sx={{
             m: 0,
             minWidth: 0,
-            fontFamily: "monospace",
+            fontFamily: typographyScale.code.fontFamily,
             fontSize: { xs: "0.8125rem", sm: "0.875rem" },
             letterSpacing: "-0.01em",
             lineHeight: 1.45,
