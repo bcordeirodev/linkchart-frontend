@@ -69,7 +69,11 @@ function FauxHeatmapGrid({ colors }: { colors: string[] }) {
 
 /**
  * Renders decorative horizontal bars to represent UTM campaign data.
- * Purely presentational — aria-hidden.
+ *
+ * The five rows spread evenly across the full frame height so the drawn
+ * content starts and ends on the same lines as the heatmap grid next to it —
+ * the three previews share one vertical grammar. Purely presentational —
+ * aria-hidden.
  */
 function FauxUtmBars({ colors }: { colors: string[] }) {
   const bars = [
@@ -81,7 +85,10 @@ function FauxUtmBars({ colors }: { colors: string[] }) {
   ];
 
   return (
-    <Stack aria-hidden="true" spacing={0.75} sx={{ width: "100%", pt: 0.5 }}>
+    <Stack
+      aria-hidden="true"
+      sx={{ width: "100%", height: "100%", justifyContent: "space-between" }}
+    >
       {bars.map(({ label, width, colorIdx }) => (
         <Box key={label} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Box
@@ -122,7 +129,10 @@ function FauxUtmBars({ colors }: { colors: string[] }) {
  *
  * Was a donut. The real device chart on this page is a horizontal stacked bar
  * now, and a preview that shows a shape the product no longer draws is a
- * promise it cannot keep. Purely presentational — aria-hidden.
+ * promise it cannot keep. The layout mirrors the real chart's anatomy — bar
+ * centered in the plot zone, legend pinned to the bottom edge and centered —
+ * so the drawn content fills the frame like the previews beside it. Purely
+ * presentational — aria-hidden.
  */
 function FauxDeviceBars({ colors }: { colors: string[] }) {
   const segments = [
@@ -132,29 +142,40 @@ function FauxDeviceBars({ colors }: { colors: string[] }) {
   ];
 
   return (
-    <Stack
-      aria-hidden="true"
-      spacing={1.25}
-      sx={{ width: "100%", justifyContent: "center", height: "100%" }}
-    >
+    <Stack aria-hidden="true" sx={{ width: "100%", height: "100%" }}>
       <Box
         sx={{
+          flex: 1,
           display: "flex",
+          alignItems: "center",
           width: "100%",
-          height: 14,
-          borderRadius: "3px",
-          overflow: "hidden",
         }}
       >
-        {segments.map(({ label, pct, colorIdx }) => (
-          <Box
-            key={label}
-            sx={{ width: `${pct}%`, bgcolor: colors[colorIdx] }}
-          />
-        ))}
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: 14,
+            borderRadius: "3px",
+            overflow: "hidden",
+          }}
+        >
+          {segments.map(({ label, pct, colorIdx }) => (
+            <Box
+              key={label}
+              sx={{ width: `${pct}%`, bgcolor: colors[colorIdx] }}
+            />
+          ))}
+        </Box>
       </Box>
 
-      <Stack direction="row" flexWrap="wrap" useFlexGap gap={1.25}>
+      <Stack
+        direction="row"
+        flexWrap="wrap"
+        useFlexGap
+        gap={1.25}
+        sx={{ justifyContent: "center" }}
+      >
         {segments.map(({ label, colorIdx }) => (
           <Box
             key={label}
@@ -229,12 +250,14 @@ function TeaserCard({ title, variant, colors }: TeaserCardProps) {
         {title}
       </Typography>
 
-      {/* Faux visual area */}
+      {/* Faux visual area — fixed height, pinned to the card's bottom edge
+          (mt: auto), so the three previews stay aligned as a row even when a
+          neighbouring card's title wraps to two lines. */}
       <Box
         sx={{
           position: "relative",
-          flex: 1,
-          minHeight: 96,
+          height: 112,
+          mt: "auto",
           borderRadius: `${radiusTokens.md}px`,
           border: `1px solid ${hairline}`,
           bgcolor: alpha(theme.palette.text.primary, isDark ? 0.03 : 0.025),
