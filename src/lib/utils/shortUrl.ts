@@ -1,10 +1,12 @@
 /**
- * Base origin for short links (`/r/{slug}`); reads `NEXT_PUBLIC_REDIRECT_URL`
- * with a local-dev fallback. Trailing slashes are stripped.
+ * Base origin for short links (`/{slug}` — the backend's clean-URL alias,
+ * same handler and tracking as the internal `/r/{slug}` route); reads
+ * `NEXT_PUBLIC_REDIRECT_URL` with a local-dev fallback. Trailing slashes are
+ * stripped.
  */
 const REDIRECT_BASE =
   process.env.NEXT_PUBLIC_REDIRECT_URL?.replace(/\/$/, "") ??
-  "http://localhost:8000/r";
+  "http://localhost:8000";
 
 /**
  * Builds the public short URL displayed in the UI and copied to the clipboard.
@@ -30,7 +32,7 @@ export const getShortUrl = (slugOrUrl: string): string => {
 
 /**
  * Returns the canonical prefix shown in the UI for short URLs (e.g.
- * `"http://localhost:8000/r/"`). Useful as a `startAdornment` next to a slug
+ * `"http://localhost:8000/"`). Useful as a `startAdornment` next to a slug
  * input so the user sees the full URL being composed.
  *
  * @returns the redirect base with a trailing slash.
@@ -140,9 +142,9 @@ export function getShortUrlForLink(link: LinkShortUrlFields): string {
  * input rather than picked via `SubdomainSelect`.
  *
  * Strips only the last path segment (the slug itself), so it correctly
- * preserves an intermediate path when present (e.g. local dev's
+ * preserves an intermediate path when present (e.g. a legacy
  * `http://localhost:8000/r/abc123` → `http://localhost:8000/r/`) as well as
- * a bare custom-subdomain or production redirect host with no extra path
+ * a bare custom-subdomain or clean redirect host with no extra path
  * (e.g. `https://acme.linkcharts.com.br/abc123` → `https://acme.linkcharts.com.br/`).
  *
  * @param shortUrl - the link's own `short_url` (e.g. `link.short_url`).
