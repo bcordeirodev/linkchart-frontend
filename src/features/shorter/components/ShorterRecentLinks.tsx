@@ -179,6 +179,7 @@ export function ShorterRecentLinks({ refreshToken }: ShorterRecentLinksProps) {
         </Typography>
         <Button
           variant="contained"
+          color="primary"
           size="small"
           onClick={() => redirectToAuth0Login("signup")}
           sx={{

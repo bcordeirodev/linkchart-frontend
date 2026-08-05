@@ -307,7 +307,7 @@ export const LockedFeaturesTeaser = memo(function LockedFeaturesTeaser() {
   return (
     <Stack
       component="section"
-      spacing={{ xs: 2, md: 2.5 }}
+      spacing={{ mt: 2, pt: 2 }}
       aria-label={t("publicAnalytics.teaser.heading")}
     >
       <SectionLabel headingLevel={2}>

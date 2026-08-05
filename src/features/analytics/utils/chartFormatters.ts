@@ -128,6 +128,7 @@ export const formatBarChart = (
     }));
 
   const total = processedData.reduce((sum, item) => sum + item.y, 0);
+  const maxY = processedData.reduce((max, item) => Math.max(max, item.y), 0);
 
   return {
     series: [{ name: seriesName, data: processedData }],
@@ -149,7 +150,14 @@ export const formatBarChart = (
           return val.toLocaleString();
         },
       },
-      xaxis: { type: horizontal ? "numeric" : "category" },
+      xaxis: {
+        type: horizontal ? "numeric" : "category",
+        // Com máximo pequeno (< 5) o Apex divide o eixo numérico em ticks
+        // fracionários que, arredondados, viram rótulos duplicados
+        // ("0 1 1 2 2"). Travar o número de ticks no próprio máximo produz
+        // só inteiros (0, 1, 2). Com dados maiores o auto-tick já é inteiro.
+        ...(horizontal && maxY > 0 && maxY < 5 ? { tickAmount: maxY } : {}),
+      },
       tooltip: {
         y: {
           formatter: (value: number) =>
@@ -173,6 +181,14 @@ export const formatBarChart = (
  * labels usam `BAR_LABEL_TEXT_COLOR` (contraste legível contra qualquer
  * tom da paleta) e são suprimidos abaixo de `BAR_LABEL_MIN_PCT`
  * (segmento fino demais para exibir o número sem colidir com o vizinho).
+ *
+ * O eixo X é travado em `max: total`: sem isso o Apex arredonda o máximo
+ * para o próximo tick "bonito" (1.251 → 1.500) e a barra — que soma
+ * exatamente o total — para antes da borda direita do plot, deixando um
+ * vão morto. Uma composição 100% deve varrer o plot de ponta a ponta.
+ * Com o máximo travado os ticks numéricos virariam frações feias e não
+ * dizem nada que os `%` dos segmentos e o tooltip já não digam — ficam
+ * ocultos.
  *
  * @param data - Linhas categóricas já filtradas/agrupadas pelo chamador.
  * @param labelKey - Chave de `data` usada como nome da série (rótulo da categoria).
@@ -216,7 +232,11 @@ export const formatHorizontalStackedBar = (
       plotOptions: {
         bar: { horizontal: true, barHeight: "45%", borderRadius: 2 },
       },
-      xaxis: { categories: [rowLabel] },
+      xaxis: {
+        categories: [rowLabel],
+        labels: { show: false },
+        ...(total > 0 ? { min: 0, max: total } : {}),
+      },
       dataLabels: {
         enabled: true,
         style: { colors: [BAR_LABEL_TEXT_COLOR] },
@@ -226,7 +246,7 @@ export const formatHorizontalStackedBar = (
           return pct < BAR_LABEL_MIN_PCT ? "" : `${Math.round(pct)}%`;
         },
       },
-      legend: { show: true, position: "bottom" },
+      legend: { show: true, showForSingleSeries: true, position: "bottom" },
       tooltip: {
         y: { formatter: (val: number) => val.toLocaleString() },
       },
