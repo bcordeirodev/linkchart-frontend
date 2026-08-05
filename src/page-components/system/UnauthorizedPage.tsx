@@ -105,6 +105,7 @@ function UnauthorizedPage() {
           {isAuthenticated ? (
             <Button
               variant="contained"
+              color="primary"
               onClick={() => navigate("/")}
               sx={{ minWidth: 120 }}
             >
@@ -113,7 +114,11 @@ function UnauthorizedPage() {
           ) : (
             <>
               <Link to="/sign-in">
-                <Button variant="contained" sx={{ minWidth: 120 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ minWidth: 120 }}
+                >
                   {t("unauthorized.signInButton")}
                 </Button>
               </Link>
