@@ -33,7 +33,7 @@ import {
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { getFilterSegmentSx } from "@/shared/ui/base";
+import { getSegmentedControlSx } from "@/shared/ui/base";
 import { chartByType } from "@/lib/theme/colors/chart";
 import {
   elevationLightTokens,
@@ -586,18 +586,21 @@ export function RealTimeHeatmapChart({
                 />
               </Box>
 
-              {/* Level 3 — this switches the tile layer under the markers, so
-                  it wears the same trackless outlined grammar as the other
-                  analytics tab filters instead of MUI's filled `contained`
-                  Button. It already lived in the right place (panel header,
-                  beside the content it controls); only its treatment was a
-                  fourth, off-system grammar (filled-button active state). */}
+              {/* Tracked segmented control — the same primitive as the
+                  Analytics/Editar/QR view switcher on the link pages, and for
+                  the same reason: Ruas/Satélite/Escuro swaps the base layer
+                  the same markers are drawn on, it does not narrow the data.
+                  It briefly wore the trackless outlined grammar of the level-3
+                  filters, which reads as "this changes what you are counting"
+                  and put it in the same visual class as the continent filter
+                  sitting a few pixels away. A view switch belongs in a track:
+                  the pill that looks pressed in is the layer you are on. */}
               <ToggleButtonGroup
                 size="small"
                 exclusive
                 value={mapStyle}
                 aria-label={t("geographic.heatmap.styleGroupLabel")}
-                sx={getFilterSegmentSx(theme, 32)}
+                sx={getSegmentedControlSx(theme)}
                 onChange={(_, next: "street" | "satellite" | "dark" | null) => {
                   if (next) {
                     setMapStyle(next);
