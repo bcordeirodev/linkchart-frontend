@@ -17,7 +17,9 @@ const PUBLIC_ROUTES = [
   "/guia/como-ver-cliques-do-link",
   "/guia/rastrear-link-instagram",
   "/guia/cliques-bot-vs-humano",
+  "/guia/alternativa-ao-bitly",
   "/comparar/bitly",
+  "/comparar/linktree",
   "/comparar/dub",
   "/comparar/short-io",
 ];

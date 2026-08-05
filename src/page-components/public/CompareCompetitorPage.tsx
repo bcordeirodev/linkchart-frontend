@@ -2,31 +2,24 @@
 
 import { Box, Collapse, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { Check, ChevronDown, Minus, X } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { PublicCtaBlock } from "@/features/public-analytics/components/info/PublicCtaBlock";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
-import { typographyScale } from "@/lib/theme";
 import {
   getPublicDisplaySx,
   getPublicElevatedSx,
   getPublicSectionHeadingSx,
-  publicHairline,
   PUBLIC_SECTION_GAP,
 } from "@/lib/theme/publicPageStyles";
 import { PublicLayout } from "@/shared/layout";
 
+import { CompareTable } from "./compare/CompareTable";
 import { PublicResourcesLinks } from "./PublicResourcesLinks";
 
-/**
- * Visual verdict for a comparison cell — drives which icon renders next to the
- * value. `yes` = the feature is fully covered, `partial` = limited/conditional,
- * `no` = not available. Unlike the Bitly page, marks are data-driven per column
- * (both Link Charts and the rival can be any value) so honest ties/losses show.
- */
-type Mark = "yes" | "partial" | "no";
+import type { Mark } from "./compare/CompareTable";
 
 /**
  * A single comparison row's copy (i18n-driven). Each column carries its own
@@ -74,29 +67,18 @@ const COMPARE_ROUTES: Record<string, string> = {
   compareBitly: "/comparar/bitly",
   compareDub: "/comparar/dub",
   compareShortIo: "/comparar/short-io",
+  compareLinktree: "/comparar/linktree",
 };
 
 /**
- * Renders the mark icon for a comparison cell.
- *
- * @param mark - the visual verdict for the cell
- * @param color - resolved icon color
- */
-function MarkIcon({ mark, color }: { mark: Mark; color: string }) {
-  const props = { size: 15, color, strokeWidth: 2.5 };
-  if (mark === "yes") return <Check {...props} />;
-  if (mark === "no") return <X {...props} />;
-  return <Minus {...props} />;
-}
-
-/**
  * Generalized "Link Charts vs {competitor}" comparison landing, shared by the
- * Bitly, Dub and Short.io pages.
+ * Bitly, Dub, Short.io and Linktree pages.
  *
  * Built for honest comparisons: every cell renders its own i18n-driven mark on
  * BOTH columns, so ties and losses show and the table reads as balanced rather
  * than a fake sweep. Rows flagged `emphasis: true` in i18n get the highlight
- * badge as signature differentiators.
+ * badge as signature differentiators. The table itself is
+ * {@link CompareTable}, shared with the `/guia/*` roundups.
  *
  * Sections are driven entirely by the `${i18nKey}.*` resource shape. The
  * `changes` block ("what changed at {competitor}") is OPTIONAL per comparison:
@@ -149,10 +131,8 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
   const changesIntro = topt(`${i18nKey}.changes.intro`);
   const changesNote = topt(`${i18nKey}.changes.note`);
 
-  /** Subtle brand tint for the Link Charts column (no fake winning). */
+  /** Subtle brand tint for the Link Charts side (no fake winning). */
   const lcTint = alpha(primary, isDark ? 0.08 : 0.06);
-  const lcColor = primary;
-  const mutedIcon = alpha(theme.palette.text.primary, isDark ? 0.45 : 0.5);
 
   return (
     <PublicLayout variant="simple" chrome="minimal">
@@ -355,203 +335,24 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
             {tstr(`${i18nKey}.table.sectionTitle`)}
           </Typography>
 
-          <Box sx={{ ...getPublicElevatedSx(theme), overflow: "hidden", p: 0 }}>
-            {/* Header row */}
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "1.5fr 1fr 1fr",
-                alignItems: "stretch",
-              }}
-            >
-              <Box sx={{ px: { xs: 1.5, md: 2.5 }, py: 1.5 }} />
-              <Box
-                sx={{
-                  px: { xs: 1, md: 2 },
-                  py: 1.5,
-                  textAlign: "center",
-                  bgcolor: lcTint,
-                  borderBottom: `2px solid ${alpha(primary, 0.5)}`,
-                }}
-              >
-                <Typography
-                  component="span"
-                  sx={{
-                    fontSize: { xs: "0.8125rem", md: "0.9375rem" },
-                    fontWeight: 800,
-                    color: primary,
-                  }}
-                >
-                  {tstr(`${i18nKey}.table.colLinkCharts`)}
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  px: { xs: 1, md: 2 },
-                  py: 1.5,
-                  textAlign: "center",
-                  borderBottom: `1px solid ${publicHairline(theme)}`,
-                }}
-              >
-                <Typography
-                  component="span"
-                  sx={{
-                    fontSize: { xs: "0.8125rem", md: "0.9375rem" },
-                    fontWeight: 600,
-                    color: theme.palette.text.secondary,
-                  }}
-                >
-                  {tstr(`${i18nKey}.table.colRival`)}
-                </Typography>
-              </Box>
-            </Box>
-
-            {/* Data rows */}
-            {Array.isArray(rows) &&
-              rows.map((row) => {
-                const emphasis = row.emphasis === true;
-                const lcMark: Mark = row.lcMark ?? "yes";
-                const rivalMark: Mark = row.rivalMark ?? "partial";
-                return (
-                  <Box
-                    key={row.feature}
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "1.5fr 1fr 1fr",
-                      alignItems: "center",
-                      borderTop: `1px solid ${publicHairline(theme)}`,
-                      ...(emphasis && {
-                        bgcolor: alpha(primary, isDark ? 0.05 : 0.035),
-                      }),
-                    }}
-                  >
-                    {/* Feature label */}
-                    <Box
-                      sx={{
-                        px: { xs: 1.5, md: 2.5 },
-                        py: { xs: 1.25, md: 1.5 },
-                      }}
-                    >
-                      <Typography
-                        component="span"
-                        sx={{
-                          fontSize: { xs: "0.75rem", md: "0.8125rem" },
-                          fontWeight: emphasis ? 700 : 500,
-                          lineHeight: 1.35,
-                          color: theme.palette.text.primary,
-                        }}
-                      >
-                        {row.feature}
-                      </Typography>
-                      {emphasis && (
-                        <Typography
-                          component="span"
-                          sx={{
-                            display: "inline-block",
-                            ml: 1,
-                            px: 0.75,
-                            py: 0.125,
-                            borderRadius: 1,
-                            fontSize: "0.625rem",
-                            fontWeight: 700,
-                            letterSpacing: "0.04em",
-                            textTransform: "uppercase",
-                            color: primary,
-                            bgcolor: alpha(primary, 0.14),
-                            verticalAlign: "middle",
-                          }}
-                        >
-                          {tstr(`${i18nKey}.table.highlightBadge`)}
-                        </Typography>
-                      )}
-                    </Box>
-
-                    {/* Link Charts value (subtle brand tint, honest mark) */}
-                    <Box
-                      sx={{
-                        px: { xs: 1, md: 2 },
-                        py: { xs: 1.25, md: 1.5 },
-                        height: "100%",
-                        bgcolor: lcTint,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 0.75,
-                      }}
-                    >
-                      <MarkIcon
-                        mark={lcMark}
-                        color={lcMark === "yes" ? lcColor : mutedIcon}
-                      />
-                      {/* Mono + tabular-nums: every cell in this column is a
-                          spec-sheet value (price, quota or yes/no), not prose —
-                          same convention as the app's other data tables (e.g.
-                          `LinkPerformanceTable`'s short-URL column). */}
-                      <Typography
-                        component="span"
-                        sx={{
-                          fontFamily: typographyScale.code.fontFamily,
-                          fontVariantNumeric: "tabular-nums",
-                          fontSize: { xs: "0.75rem", md: "0.8125rem" },
-                          fontWeight: lcMark === "yes" ? 700 : 500,
-                          color:
-                            lcMark === "yes"
-                              ? theme.palette.text.primary
-                              : theme.palette.text.secondary,
-                          textAlign: "center",
-                        }}
-                      >
-                        {row.lc}
-                      </Typography>
-                    </Box>
-
-                    {/* Rival value (honest mark) */}
-                    <Box
-                      sx={{
-                        px: { xs: 1, md: 2 },
-                        py: { xs: 1.25, md: 1.5 },
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 0.75,
-                      }}
-                    >
-                      <MarkIcon
-                        mark={rivalMark}
-                        color={rivalMark === "yes" ? lcColor : mutedIcon}
-                      />
-                      <Typography
-                        component="span"
-                        sx={{
-                          fontFamily: typographyScale.code.fontFamily,
-                          fontVariantNumeric: "tabular-nums",
-                          fontSize: { xs: "0.75rem", md: "0.8125rem" },
-                          fontWeight: rivalMark === "yes" ? 700 : 500,
-                          color:
-                            rivalMark === "yes"
-                              ? theme.palette.text.primary
-                              : theme.palette.text.secondary,
-                          textAlign: "center",
-                        }}
-                      >
-                        {row.rival}
-                      </Typography>
-                    </Box>
-                  </Box>
-                );
-              })}
-          </Box>
-
-          <Typography
-            component="p"
-            sx={{
-              mt: 1.25,
-              fontSize: "0.75rem",
-              color: theme.palette.text.disabled,
-            }}
-          >
-            {tstr(`${i18nKey}.table.disclaimer`)}
-          </Typography>
+          {Array.isArray(rows) && (
+            <CompareTable
+              columns={[
+                { label: tstr(`${i18nKey}.table.colLinkCharts`), accent: true },
+                { label: tstr(`${i18nKey}.table.colRival`) },
+              ]}
+              rows={rows.map((row) => ({
+                label: row.feature,
+                cells: [
+                  { value: row.lc, mark: row.lcMark ?? "yes" },
+                  { value: row.rival, mark: row.rivalMark ?? "partial" },
+                ],
+                emphasis: row.emphasis === true,
+              }))}
+              emphasisBadge={tstr(`${i18nKey}.table.highlightBadge`)}
+              disclaimer={tstr(`${i18nKey}.table.disclaimer`)}
+            />
+          )}
         </Box>
 
         {/* ---- When to choose ---- */}

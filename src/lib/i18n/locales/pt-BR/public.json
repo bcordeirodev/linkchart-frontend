@@ -452,8 +452,8 @@
       "sectionTitle": "Perguntas frequentes",
       "items": [
         {
-          "q": "Qual a melhor alternativa gratuita ao Bitly?",
-          "a": "O Link Charts é uma alternativa gratuita ao Bitly com estatísticas mais completas no plano grátis: geografia por cidade, dispositivo, navegador, origem de tráfego e um score de qualidade que identifica tráfego de bot — tudo em tempo real, sem anúncios no redirecionamento e em português."
+          "q": "Link Charts ou Bitly: qual compensa mais no plano grátis?",
+          "a": "No plano gratuito, o Link Charts entrega mais estatísticas: geografia por cidade, dispositivo, navegador, origem de tráfego e um score de qualidade que identifica tráfego de bot — tudo em tempo real, sem anúncio no redirecionamento e em português. O grátis do Bitly cria 5 links por mês e mostra só a contagem de cliques, mas leva vantagem em reconhecimento de marca e integrações."
         },
         {
           "q": "O Bitly é realmente grátis?",
@@ -478,6 +478,161 @@
       ]
     },
     "ctaTitle": "Encurte sua primeira URL — sem anúncio, sem limite mensal e com estatísticas em tempo real"
+  },
+  "compareLinktree": {
+    "hero": {
+      "eyebrow": "Comparativo",
+      "title": "Link Charts vs Linktree",
+      "subtitle": "Duas formas de reunir todos os seus links em uma página só. Veja o que cada plano gratuito entrega hoje.",
+      "verdict": "O Linktree tem mais temas prontos e vende produtos direto na página. Em troca, o plano gratuito limita as estatísticas aos últimos 28 dias, e o ranking de links mais clicados, a localização e o dispositivo só aparecem a partir do Pro; o botão do Linktree fica fixo no rodapé da página e o endereço próprio só existe no Premium. O Link Charts serve a página bio no seu próprio subdomínio (suamarca.linkcharts.com.br) e conta os cliques item a item — com país, cidade, dispositivo e horário — de graça. O rodapé traz uma marca discreta do Link Charts, igual em todas as páginas: aqui ela não é moeda de troca por assinatura."
+    },
+    "changes": {
+      "sectionTitle": "O plano grátis do Linktree em detalhe",
+      "intro": "O grátis do Linktree é generoso na quantidade de links e restrito no resto. Três pontos aparecem em toda comparação:",
+      "items": [
+        {
+          "tag": "Plano grátis",
+          "title": "A marca fica no rodapé",
+          "desc": "A central de ajuda do Linktree diz que o logo no rodapé do perfil e no QR code só sai com um plano Pro ou Premium. No grátis, a marca é fixa na sua página."
+        },
+        {
+          "tag": "Só no Premium",
+          "title": "Endereço próprio no plano mais caro",
+          "desc": "Domínio personalizado existe apenas no Premium, o plano mais caro (US$ 35/mês na cobrança mensal). Nos planos abaixo dele, a página fica no endereço linktr.ee/seunome."
+        },
+        {
+          "tag": "Desde nov/2025",
+          "title": "Todos os planos ficaram mais caros",
+          "desc": "Em 13 de novembro de 2025 o Linktree reajustou a tabela: Starter de US$ 5 para US$ 8, Pro de US$ 9 para US$ 15 e Premium de US$ 24 para US$ 35 por mês."
+        }
+      ],
+      "note": "Fontes: central de ajuda do Linktree (remoção do logo), consultada em agosto de 2026, e rastreadores públicos de preço que registraram o reajuste de 13 de novembro de 2025. A tabela oficial do Linktree é exibida em moeda local e varia por região — confira o valor no site antes de assinar."
+    },
+    "table": {
+      "sectionTitle": "Comparação recurso a recurso",
+      "colLinkCharts": "Link Charts",
+      "colRival": "Linktree (grátis)",
+      "highlightBadge": "Diferencial",
+      "disclaimer": "Recursos do plano gratuito conferidos na central de ajuda do Linktree em agosto de 2026; os valores em dólar vêm de rastreadores públicos de preço, já que a tabela oficial é exibida em moeda local por região. Sujeito a alteração.",
+      "rows": [
+        {
+          "feature": "Preço da página bio",
+          "lc": "Gratuito",
+          "lcMark": "yes",
+          "rival": "Grátis limitado; pago desde US$ 8/mês",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Links na página (grátis)",
+          "lc": "Até 20 itens",
+          "lcMark": "partial",
+          "rival": "Sem limite",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Endereço da página",
+          "lc": "suamarca.linkcharts.com.br",
+          "lcMark": "yes",
+          "rival": "linktr.ee/seunome",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Endereço próprio no grátis",
+          "lc": "Até 3 subdomínios",
+          "lcMark": "yes",
+          "rival": "Só no Premium (US$ 35/mês)",
+          "rivalMark": "no",
+          "emphasis": true
+        },
+        {
+          "feature": "Detalhe de cliques por link",
+          "lc": "Item a item, sem prazo",
+          "lcMark": "yes",
+          "rival": "Ranking de mais clicados só a partir do Pro; grátis vê 28 dias",
+          "rivalMark": "no",
+          "emphasis": true
+        },
+        {
+          "feature": "Geografia dos cliques (país e cidade)",
+          "lc": "Sim, grátis",
+          "lcMark": "yes",
+          "rival": "Só nos planos pagos",
+          "rivalMark": "no"
+        },
+        {
+          "feature": "Dispositivo e horário do clique",
+          "lc": "Sim, grátis",
+          "lcMark": "yes",
+          "rival": "Só nos planos pagos",
+          "rivalMark": "no"
+        },
+        {
+          "feature": "Marca no rodapé da página",
+          "lc": "Discreta, sem plano que remova",
+          "lcMark": "partial",
+          "rival": "Logo do Linktree; sai só no Pro ou Premium",
+          "rivalMark": "no"
+        },
+        {
+          "feature": "QR Code",
+          "lc": "Grátis",
+          "lcMark": "yes",
+          "rival": "Grátis, com logo do Linktree",
+          "rivalMark": "partial"
+        },
+        {
+          "feature": "Temas e templates prontos",
+          "lc": "Poucos",
+          "lcMark": "partial",
+          "rival": "Vários",
+          "rivalMark": "yes"
+        },
+        {
+          "feature": "Venda de produtos na página",
+          "lc": "Não oferece",
+          "lcMark": "no",
+          "rival": "Sim, taxa de 12% no grátis",
+          "rivalMark": "partial"
+        }
+      ]
+    },
+    "choose": {
+      "sectionTitle": "Quando escolher cada um",
+      "linkChartsTitle": "Escolha o Link Charts se…",
+      "linkChartsBody": "Você quer saber quantos cliques cada item da bio recebeu, com país, cidade, dispositivo e horário, sem pagar por isso e sem janela de 28 dias; quer a página no seu próprio subdomínio; e aceita uma marca discreta do Link Charts no rodapé, igual em todas as páginas.",
+      "rivalTitle": "Escolha o Linktree se…",
+      "rivalBody": "Você quer muitos temas e templates prontos, monta a página em minutos sem pensar em endereço, ou vende produtos digitais direto na página — lembrando que a taxa é de 12% no plano gratuito."
+    },
+    "faq": {
+      "sectionTitle": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "Qual a melhor alternativa gratuita ao Linktree?",
+          "a": "O Link Charts é uma alternativa gratuita ao Linktree para link na bio: a página fica no seu próprio subdomínio (suamarca.linkcharts.com.br) e mostra quantos cliques cada item recebeu, com país, cidade, dispositivo e horário em tempo real, sem janela de retenção. O rodapé traz uma marca discreta do Link Charts, igual em todas as páginas."
+        },
+        {
+          "q": "O Linktree é grátis mesmo?",
+          "a": "O plano gratuito do Linktree cria links ilimitados, gera QR code e dá o endereço linktr.ee/seunome. Em compensação, as estatísticas do grátis cobrem os últimos 28 dias e os totais de visualizações e cliques — o ranking de mais clicados, a localização e o dispositivo começam nos planos pagos, segundo a central de ajuda do Linktree; a marca do Linktree fica fixa no rodapé; e vendas de produtos digitais pagam taxa de 12%."
+        },
+        {
+          "q": "Como tirar a marca do Linktree da minha página?",
+          "a": "Só assinando. A central de ajuda do Linktree afirma que o logo no rodapé do perfil e no QR code é removível apenas nos planos Pro ou Premium. A página bio do Link Charts também tem uma marca no rodapé — uma faixa discreta com o nome do produto —, mas ela é igual em todas as páginas e nunca vira item de plano pago: não existe assinatura que a remova."
+        },
+        {
+          "q": "Como saber quantos cliques cada link da bio recebeu?",
+          "a": "No Link Charts, cada item da página bio tem contagem própria de cliques e abre um painel com país, cidade, dispositivo e horário, de graça. No Linktree, a central de ajuda coloca o painel de mais clicados e os dados de localização e dispositivo a partir do plano Pro; no grátis, os insights ficam limitados aos últimos 28 dias."
+        },
+        {
+          "q": "Dá para usar um endereço próprio na página de links?",
+          "a": "Sim. O Link Charts entrega a página bio em até 3 subdomínios personalizados, grátis — por exemplo suamarca.linkcharts.com.br. No Linktree, domínio personalizado só existe no plano Premium (US$ 35/mês na cobrança mensal)."
+        },
+        {
+          "q": "O que o Linktree faz melhor que o Link Charts?",
+          "a": "Duas coisas: o Linktree tem muito mais temas e templates visuais prontos, e vende produtos digitais direto na página (com taxa de 12% no grátis e 0% no Premium). O Link Charts não tem loja e oferece menos opções de tema — a força dele está nas estatísticas por item e no endereço próprio de graça."
+        }
+      ]
+    },
+    "ctaTitle": "Monte sua página bio grátis — no seu subdomínio, com cliques item a item e sem janela de 28 dias"
   },
   "guiaBots": {
     "hero": {
@@ -996,9 +1151,11 @@
       "compareBitly": "Link Charts vs Bitly",
       "compareShortIo": "Link Charts vs Short.io",
       "compareDub": "Link Charts vs Dub",
+      "compareLinktree": "Link Charts vs Linktree",
       "toolUtm": "Gerador de UTM",
       "toolChecker": "Verificar link suspeito",
-      "guiaWhatsapp": "Link curto para WhatsApp"
+      "guiaWhatsapp": "Link curto para WhatsApp",
+      "guiaAlternativaBitly": "Alternativa ao Bitly grátis"
     }
   },
   "guiaWhatsapp": {
@@ -1085,5 +1242,198 @@
       ]
     },
     "ctaTitle": "Pronto para divulgar seu WhatsApp com dados?"
+  },
+  "guiaAlternativaBitly": {
+    "hero": {
+      "eyebrow": "Guia",
+      "title": "Alternativa ao Bitly grátis: as melhores opções em 2026",
+      "subtitle": "Desde fevereiro de 2025, a própria Bitly avisa que links do plano gratuito podem exibir uma página de pré-visualização com anúncio antes do destino — e o grátis cria no máximo 5 links por mês. Comparamos as opções que sobraram, com a fonte e a data de cada número.",
+      "verdict": "Para quem quer estatísticas de verdade sem pagar, o Link Charts é a alternativa mais completa: links sem limite mensal, redirecionamento sem anúncio e relatórios de país, cidade, dispositivo e origem no plano gratuito. Para só encurtar rápido e sem conta, TinyURL e encurtador.dev resolvem — mas o TinyURL não mostra cliques sem o plano pago."
+    },
+    "disclosure": {
+      "sectionTitle": "Antes da lista: quem escreveu isto",
+      "body": "O Link Charts é um dos encurtadores comparados aqui — e aparece em primeiro lugar. Em vez de esconder isso, deixamos explícito: os critérios estão publicados abaixo e cada afirmação sobre os concorrentes veio da página oficial do próprio serviço, conferida em agosto de 2026. Onde não conseguimos confirmar um dado, dizemos isso na própria linha."
+    },
+    "criteria": {
+      "sectionTitle": "Os quatro critérios que usamos",
+      "intro": "Um encurtador gratuito se decide em quatro perguntas. Elas valem para qualquer serviço da lista:",
+      "items": [
+        {
+          "title": "Quantos links no plano gratuito",
+          "desc": "É o primeiro teto que aparece. No Bitly são 5 links por mês; as outras opções da lista não divulgam limite mensal."
+        },
+        {
+          "title": "Redirecionamento sem anúncio",
+          "desc": "Se o visitante vê uma tela de propaganda antes de chegar ao destino. Cada tela extra entre o clique e o seu conteúdo custa gente no caminho."
+        },
+        {
+          "title": "Estatísticas incluídas de graça",
+          "desc": "Contar cliques é o mínimo. O que separa as opções é ter país, cidade, dispositivo e origem do tráfego sem plano pago."
+        },
+        {
+          "title": "Cadastro e custo real",
+          "desc": "Se dá para usar sem criar conta e a partir de qual recurso o serviço passa a cobrar."
+        }
+      ]
+    },
+    "options": {
+      "sectionTitle": "As alternativas, uma a uma",
+      "intro": "Quatro opções gratuitas, com o que cada uma faz bem e onde cada uma trava.",
+      "prosLabel": "A favor",
+      "consLabel": "Limitações",
+      "items": [
+        {
+          "number": "01",
+          "name": "Link Charts",
+          "tagline": "Encurtador brasileiro com estatísticas completas no plano gratuito.",
+          "pros": [
+            "Links sem limite mensal e redirecionamento direto, sem página de anúncio.",
+            "País, cidade, dispositivo, navegador, origem de tráfego e horário de pico inclusos no grátis.",
+            "Score de qualidade que separa cliques humanos de robôs — recurso que não encontramos nos planos gratuitos das outras opções desta lista, na checagem de agosto de 2026.",
+            "Encurta sem cadastro; a conta gratuita acrescenta painel, QR Code e até 3 subdomínios com a sua marca."
+          ],
+          "cons": [
+            "Serviço novo e pequeno perto do Bitly: quase nenhum reconhecimento de marca fora do Brasil.",
+            "Interface e suporte pensados em português — quem precisa de um nome global reconhecido pode preferir outro."
+          ],
+          "note": "Divulgação: este site é do Link Charts. Os critérios estão acima; confira e decida por conta própria."
+        },
+        {
+          "number": "02",
+          "name": "TinyURL",
+          "tagline": "O caminho mais curto para encurtar sem criar conta.",
+          "pros": [
+            "Gratuito e sem cadastro, com a opção de escolher o final do link.",
+            "Interface mínima: cola, encurta, copia."
+          ],
+          "cons": [
+            "Não mostra cliques no plano gratuito — o rastreamento fica no plano Pro, anunciado a partir de US$ 9,99 por mês no próprio blog da TinyURL; rastreadores de preço listam valor maior na cobrança mensal (checagem de agosto de 2026).",
+            "Sem quebra por país, cidade, dispositivo ou origem sem pagar."
+          ]
+        },
+        {
+          "number": "03",
+          "name": "encurtador.dev",
+          "tagline": "Brasileiro, sem cadastro e com página de estatísticas aberta.",
+          "pros": [
+            "Gratuito e sem conta, sem limite de links divulgado no próprio site.",
+            "Tem página de estatísticas pública: cole o link curto e veja os números, sem login."
+          ],
+          "cons": [
+            "Sem conta, não existe painel reunindo o histórico de todos os seus links num lugar só.",
+            "As promessas de infraestrutura (99,99% de disponibilidade) são do próprio site, sem auditoria independente."
+          ]
+        },
+        {
+          "number": "04",
+          "name": "encurtador.com.br",
+          "tagline": "Brasileiro, com contador de cliques e conta gratuita opcional.",
+          "pros": [
+            "Gratuito, com contador de cliques, e a própria página promete criar quantos links você quiser.",
+            "Conta gratuita opcional para organizar os links criados."
+          ],
+          "cons": [
+            "A divisão entre grátis e Premium não fica clara: recursos como UTM, pixels de rastreamento e API aparecem como pagos.",
+            "Não conseguimos ler os termos completos — a página bloqueou nosso acesso automatizado em agosto de 2026."
+          ]
+        }
+      ],
+      "sourcesNote": "Fontes: páginas oficiais de planos do Bitly e do TinyURL e as páginas públicas do encurtador.dev e do encurtador.com.br, conferidas em agosto de 2026. A página de planos e termos do encurtador.com.br bloqueou nosso acesso automatizado — o que consta aqui vem do que o site exibe publicamente. Preços em dólar são os anunciados por cada serviço."
+    },
+    "table": {
+      "sectionTitle": "Comparação rápida",
+      "colOption": "Opção",
+      "colAnalytics": "Estatísticas no grátis",
+      "colSignup": "Usa sem cadastro",
+      "disclaimer": "Planos gratuitos e preços públicos de cada serviço, conferidos em agosto de 2026. A coluna “usa sem cadastro” reflete o que cada site oferece publicamente: o plano gratuito do Bitly é atrelado a uma conta — a cota de 5 links por mês é contada por conta —, enquanto os demais encurtam sem login. Sujeitos a alteração.",
+      "rows": [
+        {
+          "option": "Link Charts",
+          "analytics": "Completas",
+          "analyticsMark": "yes",
+          "signup": "Sim",
+          "signupMark": "yes",
+          "emphasis": true
+        },
+        {
+          "option": "Bitly (grátis)",
+          "analytics": "Só contagem",
+          "analyticsMark": "partial",
+          "signup": "Não",
+          "signupMark": "no"
+        },
+        {
+          "option": "TinyURL (grátis)",
+          "analytics": "Nenhuma",
+          "analyticsMark": "no",
+          "signup": "Sim",
+          "signupMark": "yes"
+        },
+        {
+          "option": "encurtador.dev",
+          "analytics": "Básicas",
+          "analyticsMark": "partial",
+          "signup": "Sim",
+          "signupMark": "yes"
+        },
+        {
+          "option": "encurtador.com.br",
+          "analytics": "Cliques",
+          "analyticsMark": "partial",
+          "signup": "Sim",
+          "signupMark": "yes"
+        }
+      ]
+    },
+    "bitly": {
+      "sectionTitle": "O que mudou no Bitly",
+      "intro": "Três mudanças concretas no plano gratuito explicam a procura por alternativa:",
+      "items": [
+        {
+          "tag": "Desde fev/2025",
+          "title": "Anúncio antes do destino",
+          "desc": "Pelo aviso da própria empresa, links do plano gratuito passaram a poder exibir uma página de pré-visualização com anúncio antes de levar o visitante ao destino — inclusive links criados anos antes, sem nenhuma ação de quem os criou."
+        },
+        {
+          "tag": "Plano grátis",
+          "title": "5 links por mês",
+          "desc": "O limite atual é de 5 links curtos, 2 QR Codes e 3 finais personalizados por mês. Acima disso, só com plano pago."
+        },
+        {
+          "tag": "Plano grátis",
+          "title": "Estatísticas só de contagem",
+          "desc": "O grátis mostra o total de cliques e scans, sem quebra por país, cidade, dispositivo ou origem. Domínio próprio começa no plano Growth (US$ 29/mês no anual)."
+        }
+      ],
+      "note": "Fontes: página oficial de planos e blog da Bitly, conferidos em agosto de 2026; o aviso da empresa sobre a página de pré-visualização é de fevereiro de 2025, na redação divulgada na época — o artigo de suporte sobre anúncios não abriu para nossa checagem.",
+      "crossLinkIntro": "Esta página é uma lista de opções. Se você quer o confronto direto, recurso a recurso, com o Bitly:",
+      "crossLinkLabel": "Comparação detalhada: Link Charts vs Bitly"
+    },
+    "faq": {
+      "sectionTitle": "Perguntas frequentes",
+      "items": [
+        {
+          "q": "Qual a melhor alternativa gratuita ao Bitly em 2026?",
+          "a": "Depende do que você precisa. Para ter estatísticas detalhadas sem pagar, o Link Charts é a opção mais completa da lista: links sem limite mensal, redirecionamento sem anúncio e relatórios de país, cidade, dispositivo e origem no plano gratuito. Para só encurtar rápido e sem conta, TinyURL e encurtador.dev resolvem — mas o TinyURL não mostra cliques sem o plano pago."
+        },
+        {
+          "q": "Por que o Bitly começou a mostrar anúncios nos links?",
+          "a": "Em fevereiro de 2025 a Bitly avisou que links do plano gratuito podem passar por uma página de pré-visualização com anúncio antes do destino. O aviso valeu inclusive para links antigos, criados anos antes, sem nenhuma ação de quem os criou."
+        },
+        {
+          "q": "Quantos links o plano grátis do Bitly permite hoje?",
+          "a": "Cinco links curtos por mês, além de 2 QR Codes e 3 finais personalizados, segundo a página oficial de planos conferida em agosto de 2026. As estatísticas do plano gratuito se limitam à contagem de cliques e scans, sem quebra por país, cidade ou dispositivo."
+        },
+        {
+          "q": "Existe encurtador de link grátis com estatísticas de verdade?",
+          "a": "Sim. O Link Charts inclui país e cidade, dispositivo, navegador, origem de tráfego e evolução por horário no plano gratuito, além de um score que separa cliques humanos de robôs. O encurtador.dev também mostra cliques sem cadastro, em versão mais básica."
+        },
+        {
+          "q": "Dá para migrar os links que já estão no Bitly?",
+          "a": "Os links bit.ly já divulgados continuam apontando para o Bitly — não existe transferência de propriedade entre encurtadores. O caminho prático é criar os links novos na alternativa escolhida e trocar o endereço onde você ainda controla a divulgação: bio, anúncios e materiais novos. Por isso vale escolher com calma agora."
+        }
+      ]
+    },
+    "ctaTitle": "Crie seu primeiro link curto e veja as estatísticas em tempo real"
   }
 }

@@ -6,6 +6,12 @@
  * limit ever changes, update this value too — a mismatch only degrades the
  * UX (the add button hides a step late, or is blocked one step early); the
  * backend's own 422 remains the source of truth for enforcement.
+ *
+ * This number is also PUBLISHED: `/comparar/linktree` states it in the
+ * comparison table ("Até 20 itens" / "Up to 20 items", in both locales of
+ * `public.json`). Changing the cap without updating that copy turns an
+ * indexed page — one that feeds `FAQPage` JSON-LD — into a false claim about
+ * our own product, so update the two locale strings in the same change.
  */
 export const MAX_BIO_ITEMS = 20;
 

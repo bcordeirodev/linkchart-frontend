@@ -14,18 +14,23 @@ const path = "/comparar/bitly";
  * Static pt-BR metadata (the SEO target). Kept static so the page stays
  * cacheable; visible content reconciles language client-side via i18n. This
  * page is intentionally indexable — unlike per-slug analytics pages — because
- * it is unique, commercial-intent marketing content targeting "alternativa ao
+ * it is unique, commercial-intent marketing content targeting "Link Charts vs
  * Bitly" / "encurtador de URL vs" queries — searches that spiked after the
  * February 2025 changes to Bitly's free plan (interstitial ads, 5 links/month).
+ *
+ * The title leads with the head-to-head, NOT with "Alternativa ao Bitly": that
+ * listicle intent belongs to `/guia/alternativa-ao-bitly`, and two indexed
+ * titles sharing the same prefix put the two pages in each other's way on the
+ * SERP. Keep the prefixes distinct.
  */
 export const metadata: Metadata = {
-  title: "Alternativa ao Bitly: comparação Link Charts vs Bitly (2026)",
+  title: "Link Charts vs Bitly: comparação do plano grátis (2026)",
   description:
     "Desde fevereiro de 2025 o plano grátis do Bitly exibe anúncios e cria só 5 links/mês. Compare com o Link Charts: estatísticas completas grátis e redirecionamento sem anúncio.",
   alternates: { canonical: `${appUrl}${path}` },
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Alternativa ao Bitly: comparação Link Charts vs Bitly (2026)",
+    title: "Link Charts vs Bitly: comparação do plano grátis (2026)",
     description:
       "O que mudou no plano grátis do Bitly em 2025 — e qual encurtador de URL entrega mais estatísticas de graça. Comparação recurso a recurso.",
     type: "article",

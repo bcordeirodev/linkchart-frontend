@@ -10,4 +10,5 @@ export type GuideI18nKey =
   | "guiaVerCliques"
   | "guiaInstagram"
   | "guiaBots"
-  | "guiaWhatsapp";
+  | "guiaWhatsapp"
+  | "guiaAlternativaBitly";
