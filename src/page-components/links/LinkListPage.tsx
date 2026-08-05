@@ -63,21 +63,14 @@ function LinkListPageContent() {
   const urlSearchParams = useSearchParams();
 
   // `useLinks()` (full, unfiltered list) stays: it's the only source for the
-  // account-wide overview metrics, the demo-seeding poll and the tour's
-  // readiness gate — none of which can be answered from a single paginated
-  // page of results. The browse list below is fed by `useLinksSearch` instead.
+  // account-wide overview metrics and the demo-seeding poll — neither can be
+  // answered from a single paginated page of results. The browse list below is
+  // fed by `useLinksSearch` instead.
   const { links, loading } = useLinks();
   const { isSeedingDemo } = useDemoLinkSeeding(links, loading);
 
-  // O tour é atrelado à chegada do link de exemplo, não só ao fim do loading:
-  // dois dos cinco passos ("veja o analytics", "ações do link") apontam para
-  // âncoras que vivem *dentro* de um card de link. Rodar antes do card existir
-  // faria esses passos apontarem para o nada. Para um cadastro novo, o primeiro
-  // card é justamente o link de exemplo — então o tour espera o seed terminar e
-  // abre em cima dele.
-  const tour = useLinksTour({
-    ready: !loading && !isSeedingDemo && links.length > 0,
-  });
+  // Tour só por demanda: abre exclusivamente pelo botão "Ajuda" do header.
+  const tour = useLinksTour();
   const { mutateAsync: deleteLinkMutation } = useDeleteLink();
   // Memoized because it travels down to `LinksMobileCards`, which is `memo`'d —
   // a new function identity on every render made that memo a no-op and
