@@ -8,9 +8,12 @@ import { useTranslation } from "react-i18next";
 
 import { PublicCtaBlock } from "@/features/public-analytics/components/info/PublicCtaBlock";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
+import { typographyScale } from "@/lib/theme";
 import {
+  getPublicDisplaySx,
   getPublicElevatedSx,
   getPublicSectionHeadingSx,
+  publicHairline,
   PUBLIC_SECTION_GAP,
 } from "@/lib/theme/publicPageStyles";
 import { PublicLayout } from "@/shared/layout";
@@ -185,14 +188,18 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
           >
             {tstr(`${i18nKey}.hero.eyebrow`)}
           </Typography>
+          {/* `variant="h1"` is load-bearing, not decoration: `component` alone
+              only swaps the DOM tag, leaving MUI's default `body1` typography
+              (Inter) on the page's most important heading. The variant selects
+              the theme's Space Grotesk display face; `getPublicDisplaySx` then
+              re-states it for safety and layers the responsive clamp on top —
+              same fix already applied to the /shorter and /public-analytics
+              heroes. */}
           <Typography
+            variant="h1"
             component="h1"
             sx={{
-              fontSize: { xs: "1.9rem", md: "2.6rem" },
-              fontWeight: 800,
-              lineHeight: 1.1,
-              letterSpacing: "-0.02em",
-              color: theme.palette.text.primary,
+              ...getPublicDisplaySx(theme),
               mb: 1.5,
             }}
           >
@@ -383,7 +390,7 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
                   px: { xs: 1, md: 2 },
                   py: 1.5,
                   textAlign: "center",
-                  borderBottom: `1px solid ${theme.palette.divider}`,
+                  borderBottom: `1px solid ${publicHairline(theme)}`,
                 }}
               >
                 <Typography
@@ -412,7 +419,7 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
                       display: "grid",
                       gridTemplateColumns: "1.5fr 1fr 1fr",
                       alignItems: "center",
-                      borderTop: `1px solid ${theme.palette.divider}`,
+                      borderTop: `1px solid ${publicHairline(theme)}`,
                       ...(emphasis && {
                         bgcolor: alpha(primary, isDark ? 0.05 : 0.035),
                       }),
@@ -476,9 +483,15 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
                         mark={lcMark}
                         color={lcMark === "yes" ? lcColor : mutedIcon}
                       />
+                      {/* Mono + tabular-nums: every cell in this column is a
+                          spec-sheet value (price, quota or yes/no), not prose —
+                          same convention as the app's other data tables (e.g.
+                          `LinkPerformanceTable`'s short-URL column). */}
                       <Typography
                         component="span"
                         sx={{
+                          fontFamily: typographyScale.code.fontFamily,
+                          fontVariantNumeric: "tabular-nums",
                           fontSize: { xs: "0.75rem", md: "0.8125rem" },
                           fontWeight: lcMark === "yes" ? 700 : 500,
                           color:
@@ -510,6 +523,8 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
                       <Typography
                         component="span"
                         sx={{
+                          fontFamily: typographyScale.code.fontFamily,
+                          fontVariantNumeric: "tabular-nums",
                           fontSize: { xs: "0.75rem", md: "0.8125rem" },
                           fontWeight: rivalMark === "yes" ? 700 : 500,
                           color:
