@@ -47,3 +47,28 @@ for (const route of [...STATIC_ROUTES, ...perLinkRoutes()]) {
     ).toBeLessThanOrEqual(1);
   });
 }
+
+/**
+ * The links tour must never auto-start on login/first visit (auto-run removed
+ * 2026-08-05) — it opens ONLY through the header "Ajuda"/"Help" button. Guards
+ * both halves: silence on load, and the button still driving the tour. The
+ * click half only runs where the button is visible (the header action may be
+ * hidden on narrow phones).
+ */
+test("links tour opens only via the help button", async ({ page }) => {
+  await page.goto("/links", { waitUntil: "load" });
+  expect(new URL(page.url()).pathname, "redirected to sign-in").not.toBe(
+    "/sign-in",
+  );
+
+  // The removed auto-run fired 500ms after the anchors mounted; wait 3× that
+  // to prove nothing opens on its own.
+  await page.waitForTimeout(1500);
+  await expect(page.locator(".driver-popover")).toHaveCount(0);
+
+  const help = page.getByRole("button", { name: /ajuda|help/i }).first();
+  if (await help.isVisible()) {
+    await help.click();
+    await expect(page.locator(".driver-popover")).toBeVisible();
+  }
+});

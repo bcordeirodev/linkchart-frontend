@@ -13,47 +13,6 @@ import "./linksTour.css";
 /** Backend onboarding key for this tour (see `User::ONBOARDING_KEYS`). */
 const TOUR_FLAG = "links.tour" as const;
 
-/**
- * Key the tour used before dismissal moved to the user's account.
- *
- * Still read once, so someone who already dismissed the tour on this browser is
- * not shown it again just because the server has never heard of them. The value
- * is promoted to the account on the next visit and the key is then dropped.
- */
-const LEGACY_TOUR_DONE_KEY = "onboarding.links.tourDone";
-
-/**
- * Whether this browser holds the pre-account "tour seen" flag.
- *
- * @returns `true` when the legacy localStorage flag is set.
- */
-function readLegacyTourDone(): boolean {
-  if (typeof window === "undefined") {
-    return false;
-  }
-  try {
-    return window.localStorage.getItem(LEGACY_TOUR_DONE_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Drops the legacy flag once it has been promoted to the user's account.
- */
-function clearLegacyTourDone(): void {
-  try {
-    window.localStorage.removeItem(LEGACY_TOUR_DONE_KEY);
-  } catch {
-    /* private mode / quota — the account flag is the source of truth anyway */
-  }
-}
-
-interface UseLinksTourArgs {
-  /** True once the page content (and the tour anchors) are mounted. */
-  ready: boolean;
-}
-
 interface UseLinksTour {
   /** Starts the guided tour from the first step. */
   start: () => void;
@@ -62,24 +21,21 @@ interface UseLinksTour {
 /**
  * Sequential guided tour for the `/links` page, built on driver.js. Highlights
  * the key actions in order (encurtar → visão geral → lista → analytics → ações),
- * one floating tip at a time. Runs automatically on the first visit and can be
- * relaunched via the "Ajuda" button. Popover colors are driven from the live MUI
- * theme through CSS variables so it matches light and dark.
+ * one floating tip at a time. Runs ONLY when the user asks for it via the
+ * "Ajuda" button — it never auto-starts on login/first visit (removed
+ * 2026-08-05 by request). Popover colors are driven from the live MUI theme
+ * through CSS variables so it matches light and dark.
  *
- * Dismissal is stored on the user's account (`onboarding["links.tour"]`), not in
- * `localStorage`, so the tour does not replay on a new browser, a new device or
- * a private window.
+ * Dismissal is still recorded on the user's account
+ * (`onboarding["links.tour"]`) so the product keeps knowing who has seen it.
  *
- * @param args.ready Gate that defers the auto-run until anchors exist in the DOM.
  * @returns `{ start }` to trigger the tour on demand.
  */
-export function useLinksTour({ ready }: UseLinksTourArgs): UseLinksTour {
+export function useLinksTour(): UseLinksTour {
   const { t } = useTranslation("links");
   const theme = useTheme();
-  const { user, isLoading: authLoading, markOnboardingSeen } = useAuth();
+  const { markOnboardingSeen } = useAuth();
   const driverRef = useRef<Driver | null>(null);
-
-  const seen = Boolean(user?.onboarding?.[TOUR_FLAG]);
 
   const applyThemeVars = useCallback(() => {
     const root = document.documentElement;
@@ -159,29 +115,6 @@ export function useLinksTour({ ready }: UseLinksTourArgs): UseLinksTour {
     driverRef.current = instance;
     instance.drive();
   }, [applyThemeVars, markOnboardingSeen, t]);
-
-  // One-off migration: someone who dismissed the tour before it moved to the
-  // account still carries the old localStorage flag. Promote it instead of
-  // replaying the tour at them, then drop the key.
-  useEffect(() => {
-    if (authLoading || !user || seen || !readLegacyTourDone()) {
-      return;
-    }
-    void markOnboardingSeen(TOUR_FLAG).then(clearLegacyTourDone);
-  }, [authLoading, user, seen, markOnboardingSeen]);
-
-  // Auto-run once, on the first visit of a user who has never dismissed it.
-  //
-  // Gated on the account being resolved: firing while `/api/me` is still in
-  // flight would flash the tour at a user who already dismissed it, since
-  // `seen` only becomes true once the user lands.
-  useEffect(() => {
-    if (!ready || authLoading || !user || seen || readLegacyTourDone()) {
-      return;
-    }
-    const id = window.setTimeout(() => start(), 500);
-    return () => window.clearTimeout(id);
-  }, [ready, authLoading, user, seen, start]);
 
   // Tear down any live tour on unmount.
   useEffect(() => {
