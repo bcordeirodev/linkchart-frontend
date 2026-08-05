@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { PublicCtaBlock } from "@/features/public-analytics/components/info/PublicCtaBlock";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
+import { typographyScale } from "@/lib/theme";
 import {
   getPublicElevatedSx,
   getPublicSectionHeadingSx,
@@ -128,7 +129,9 @@ export function GuiaCliquesBotsPage() {
                 />
               ))}
             </Box>
-            {/* Scale ticks */}
+            {/* Scale ticks — a chart axis, so the numerals render in the
+                monospace face like every other technical readout, not the
+                body typeface. */}
             <Box
               sx={{
                 display: "flex",
@@ -141,6 +144,7 @@ export function GuiaCliquesBotsPage() {
                   key={tick}
                   component="span"
                   sx={{
+                    fontFamily: typographyScale.code.fontFamily,
                     fontSize: "0.6875rem",
                     fontWeight: 600,
                     color: theme.palette.text.disabled,
@@ -197,6 +201,10 @@ export function GuiaCliquesBotsPage() {
                         <Typography
                           component="span"
                           sx={{
+                            // Same monospace treatment as the meter's own axis
+                            // ticks above — a score range is technical readout,
+                            // not prose.
+                            fontFamily: typographyScale.code.fontFamily,
                             fontSize: "0.75rem",
                             fontWeight: 600,
                             color: theme.palette.text.secondary,
@@ -335,12 +343,16 @@ export function GuiaCliquesBotsPage() {
             bgcolor: alpha(primary, isDark ? 0.06 : 0.04),
           }}
         >
+          {/* `variant="h3"` brings in the Space Grotesk display face (see
+              GuideHero for the full rationale); `component` alone would leave
+              this heading in the default body typeface. */}
           <Typography
             id="guia-auto-heading"
+            variant="h3"
             component="h2"
             sx={{
               fontSize: { xs: "1.15rem", md: "1.35rem" },
-              fontWeight: 800,
+              fontWeight: 700,
               color: theme.palette.text.primary,
               mb: 1,
             }}
@@ -353,6 +365,7 @@ export function GuiaCliquesBotsPage() {
               fontSize: "0.9375rem",
               lineHeight: 1.65,
               color: alpha(theme.palette.text.primary, isDark ? 0.8 : 0.82),
+              maxWidth: 680,
             }}
           >
             {t("guiaBots.auto.body")}

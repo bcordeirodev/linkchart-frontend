@@ -107,8 +107,14 @@ export function GuiaVerCliquesPage() {
               <Typography
                 component="p"
                 sx={{
+                  // The page's one "número grande" — reads the display face off
+                  // `theme.typography.h1`, the same source `getPublicDisplaySx`
+                  // uses, instead of a literal font stack. Weight is 700, not
+                  // 800: Space Grotesk is only loaded at 400/500/700
+                  // (`app/layout.tsx`), so 800 would synthesise a faux-bold cut.
+                  fontFamily: theme.typography.h1.fontFamily,
                   fontSize: { xs: "3.25rem", md: "4.25rem" },
-                  fontWeight: 800,
+                  fontWeight: 700,
                   lineHeight: 1,
                   letterSpacing: "-0.03em",
                   color: primary,
@@ -306,12 +312,16 @@ export function GuiaVerCliquesPage() {
             bgcolor: alpha(primary, isDark ? 0.06 : 0.04),
           }}
         >
+          {/* `variant="h3"` brings in the Space Grotesk display face (see
+              GuideHero for the full rationale); `component` alone would leave
+              this heading in the default body typeface. */}
           <Typography
             id="guia-beyond-heading"
+            variant="h3"
             component="h2"
             sx={{
               fontSize: { xs: "1.15rem", md: "1.35rem" },
-              fontWeight: 800,
+              fontWeight: 700,
               color: theme.palette.text.primary,
               mb: 1,
             }}
@@ -324,6 +334,7 @@ export function GuiaVerCliquesPage() {
               fontSize: "0.9375rem",
               lineHeight: 1.65,
               color: alpha(theme.palette.text.primary, isDark ? 0.8 : 0.82),
+              maxWidth: 680,
             }}
           >
             {t("guiaVerCliques.beyond.body")}
