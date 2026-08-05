@@ -20,6 +20,8 @@ import type { BioItem, BioTheme } from "../types";
  */
 interface BioThemePalette {
   background: string;
+  /** Halo mono-azul do canvas — espelha o `glow` da página pública (2026-08-05). */
+  glow: string;
   surface: string;
   surfaceBorder: string;
   text: string;
@@ -39,6 +41,7 @@ const THEME_PALETTES: Record<BioTheme, BioThemePalette> = {
     // redesign moved the app's dark bg to `#030405` and left this file's
     // copy stale).
     background: darkNeutral.bg,
+    glow: "rgba(78, 130, 230, 0.08)",
     surface: "#181B23",
     surfaceBorder: "rgba(255, 255, 255, 0.12)",
     text: "rgba(255, 255, 255, 0.95)",
@@ -48,6 +51,7 @@ const THEME_PALETTES: Record<BioTheme, BioThemePalette> = {
   },
   light: {
     background: lightNeutral.bg,
+    glow: "rgba(78, 130, 230, 0.05)",
     surface: "#FFFFFF",
     surfaceBorder: "rgba(0, 0, 0, 0.1)",
     text: "rgba(0, 0, 0, 0.92)",
@@ -218,6 +222,9 @@ export function BioPreviewPhone({
           sx={{
             position: "relative",
             bgcolor: palette.background,
+            // Mesmo halo do topo da página publicada, na escala da telinha.
+            backgroundImage: `radial-gradient(280px 200px at 50% -40px, ${palette.glow}, transparent 70%)`,
+            backgroundRepeat: "no-repeat",
             minHeight: 420,
             maxHeight: 560,
             overflowY: "auto",

@@ -10,9 +10,9 @@ import type { BioPalette } from "./bioPalette";
  * Instagram/WhatsApp, so the avatar is the page's hero there, not an
  * afterthought that only gets room to breathe on desktop.
  */
-const AVATAR_SIZE = { xs: 108, sm: 116 };
+const AVATAR_SIZE = { xs: 120, sm: 132 };
 /** Largest size in {@link AVATAR_SIZE}, used as the `<img>` intrinsic hint. */
-const AVATAR_SIZE_MAX = 116;
+const AVATAR_SIZE_MAX = 132;
 
 interface BioAvatarProps {
   /** First character of the page title, already uppercased. Ignored when `avatarUrl` is set. */
