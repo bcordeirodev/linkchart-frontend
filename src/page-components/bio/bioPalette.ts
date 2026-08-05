@@ -16,8 +16,9 @@
  * the avatar fallback, the page's radial wash and every hover glow) is gone
  * with the 2026-08-04 "instrumento técnico" pass: "gradiente radial roxo
  * sobre dark" is named in the redesign spec as the AI-template tell this
- * product is moving away from. Depth now comes from a hairline over a flat
- * canvas, never from a glow.
+ * product is moving away from. Depth comes from a hairline over the canvas;
+ * the only wash is a restrained mono-blue halo (`glow`/`glowSoft`), brought
+ * back on 2026-08-05 by owner request — the fully flat canvas read as broken.
  */
 import { alpha } from "@mui/material/styles";
 
@@ -50,8 +51,18 @@ export const BIO_FONT_MONO = typographyScale.code.fontFamily;
 
 /** Fully resolved color set a bio page component needs to render itself. */
 export interface BioPalette {
-  /** Page canvas — flat, no wash, no gradient. */
+  /** Page canvas base color. */
   background: string;
+  /**
+   * Halo radial do topo do canvas, atrás do avatar — o único wash da página.
+   * Mono-azul (o primary do produto) em alpha baixíssimo: reintroduzido em
+   * 2026-08-05 a pedido do dono do produto (o canvas 100% chapado lia como
+   * inacabado, "background quebrado"), SEM voltar ao gradiente violeta de
+   * template que a spec do redesign aposentou.
+   */
+  glow: string;
+  /** Versão mais fraca do {@link glow}, ancorada no fim da página — dá um "chão" ao vazio final. */
+  glowSoft: string;
   /** Primary text color (title, item labels). */
   textPrimary: string;
   /** Secondary/muted text (bio copy, destination host, footer stamp). */
@@ -108,6 +119,8 @@ export function getBioPalette(theme: BioTheme): BioPalette {
   if (theme === "light") {
     return {
       background: lightNeutral.bg,
+      glow: alpha(lightPrimary.main, 0.05),
+      glowSoft: alpha(lightPrimary.main, 0.03),
       textPrimary: lightNeutral.text.primary,
       textSecondary: lightNeutral.text.secondary,
       surface: alpha("#000000", surfaceOverlayTokens.card.light),
@@ -124,6 +137,8 @@ export function getBioPalette(theme: BioTheme): BioPalette {
 
   return {
     background: darkNeutral.bg,
+    glow: alpha(darkPrimary.main, 0.08),
+    glowSoft: alpha(darkPrimary.main, 0.045),
     textPrimary: darkNeutral.text.primary,
     textSecondary: darkNeutral.text.secondary,
     surface: alpha("#FFFFFF", surfaceOverlayTokens.card.dark),

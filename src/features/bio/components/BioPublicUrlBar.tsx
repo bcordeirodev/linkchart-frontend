@@ -122,7 +122,10 @@ export function BioPublicUrlBar({ url }: BioPublicUrlBarProps) {
             display: "block",
           }}
         >
-          {url.replace(/^https?:\/\//, "")}
+          {/* Protocolo visível de propósito (pedido 2026-08-05): com o
+              https:// na frente fica óbvio que isto é a URL pública da
+              página, não um campo de texto qualquer. */}
+          {url}
         </Link>
       </Box>
 

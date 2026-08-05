@@ -99,9 +99,13 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
         sx={{
           minHeight: "100dvh",
           width: "100%",
-          // Canvas chapado, de propósito: a profundidade da página vem do
-          // hairline de cada elemento, nunca de um wash/glow de fundo.
           bgcolor: palette.background,
+          // Dois halos mono-azul quase imperceptíveis: um atrás do avatar e
+          // um "chão" no fim da página — o canvas 100% chapado lia como
+          // inacabado (feedback do dono, 2026-08-05). A profundidade dos
+          // ELEMENTOS continua vindo do hairline, nunca deste wash.
+          backgroundImage: `radial-gradient(640px 440px at 50% -80px, ${palette.glow}, transparent 70%), radial-gradient(560px 340px at 50% calc(100% + 140px), ${palette.glowSoft}, transparent 70%)`,
+          backgroundRepeat: "no-repeat",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
