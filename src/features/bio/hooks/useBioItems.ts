@@ -22,16 +22,18 @@ function t(key: string): string {
 }
 
 /**
- * Mutation: add an existing link as a button on the bio page.
+ * Mutation: add an existing link — as a plain button or, with `input.display
+ * === "icon"`, a social icon — to the bio page.
  *
  * @endpoint `POST /api/bio/items` (via `bioService.addItem()`)
- * @invalidates `queryKeys.bio.page()`
+ * @invalidates `queryKeys.bio.page()`, `queryKeys.bio.performanceAll()`
  *
  * @remarks
- * On error, dispatches a generic toast. `AddBioItemDialog` still `catch`es
- * the rejected `mutateAsync` itself to special-case the 20-item cap (422)
- * with an inline message, matching the codebase's existing
- * toast-plus-inline-detail pattern (see `useCreateLink`/`CreateLinkForm`).
+ * On error, dispatches a generic toast. `AddBioItemDialog`/`AddBioIconDialog`
+ * still `catch` the rejected `mutateAsync` themselves (inside `BioLinkPicker`)
+ * to special-case the 20-item cap (422) with an inline message, matching the
+ * codebase's existing toast-plus-inline-detail pattern (see
+ * `useCreateLink`/`CreateLinkForm`).
  */
 export function useAddBioItem() {
   const { showMessage } = useMessage();
@@ -41,6 +43,11 @@ export function useAddBioItem() {
     mutationFn: (input: BioItemCreateInput) => bioService.addItem(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.bio.page() });
+      // A brand-new item (0 clicks) should show up in the performance panel's
+      // ranking without waiting out its 30s staleTime.
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.bio.performanceAll(),
+      });
       revalidatePublicBio(
         queryClient.getQueryData<BioPage>(queryKeys.bio.page()),
       );
@@ -52,10 +59,11 @@ export function useAddBioItem() {
 }
 
 /**
- * Mutation: rename an item or toggle whether it shows on the published page.
+ * Mutation: rename an item, toggle whether it shows on the published page,
+ * or (for a social icon) change its platform.
  *
  * @endpoint `PUT /api/bio/items/{id}` (via `bioService.updateItem()`)
- * @invalidates `queryKeys.bio.page()`
+ * @invalidates `queryKeys.bio.page()`, `queryKeys.bio.performanceAll()`
  */
 export function useUpdateBioItem() {
   const { showMessage } = useMessage();
@@ -66,6 +74,11 @@ export function useUpdateBioItem() {
       bioService.updateItem(id, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.bio.page() });
+      // A relabel or platform change would otherwise leave the performance
+      // panel's ranking showing the item's previous title/platform.
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.bio.performanceAll(),
+      });
       revalidatePublicBio(
         queryClient.getQueryData<BioPage>(queryKeys.bio.page()),
       );
@@ -83,7 +96,7 @@ export function useUpdateBioItem() {
  * Mutation: permanently remove an item from the page.
  *
  * @endpoint `DELETE /api/bio/items/{id}` (via `bioService.removeItem()`)
- * @invalidates `queryKeys.bio.page()`
+ * @invalidates `queryKeys.bio.page()`, `queryKeys.bio.performanceAll()`
  */
 export function useRemoveBioItem() {
   const { showMessage } = useMessage();
@@ -93,6 +106,10 @@ export function useRemoveBioItem() {
     mutationFn: (id: number) => bioService.removeItem(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.bio.page() });
+      // The removed item must stop appearing in the performance ranking.
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.bio.performanceAll(),
+      });
       revalidatePublicBio(
         queryClient.getQueryData<BioPage>(queryKeys.bio.page()),
       );

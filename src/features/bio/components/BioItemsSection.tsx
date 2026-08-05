@@ -8,10 +8,15 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { AtSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
@@ -21,6 +26,7 @@ import { AppIcon } from "@/shared/ui/icons";
 
 import { MAX_BIO_ITEMS } from "../constants";
 import { useRemoveBioItem, useReorderBioItems } from "../hooks/useBioItems";
+import { AddBioIconDialog } from "./AddBioIconDialog";
 import { AddBioItemDialog } from "./AddBioItemDialog";
 import { BioItemRow } from "./BioItemRow";
 
@@ -43,8 +49,17 @@ function swapOrder(
 }
 
 /**
- * Manages the bio page's items: reorderable list (up/down buttons), add
- * dialog gated by `MAX_BIO_ITEMS`, and remove-with-confirmation.
+ * Manages the bio page's items: reorderable list (up/down buttons), the
+ * add-item entry points (gated by `MAX_BIO_ITEMS`, shared by plain links and
+ * social icons alike), and remove-with-confirmation.
+ *
+ * The header action is one "Adicionar" button revealing a two-option menu
+ * (plain link vs. social icon) rather than two side-by-side buttons — two
+ * full buttons in `SectionLabel`'s action slot roughly doubles its width,
+ * which on a narrow phone competes with the heading text for a row that has
+ * no wrap behavior of its own (`SectionLabel` is a single non-wrapping flex
+ * row). A single split button keeps that slot's width exactly what it was
+ * before this feature, on every viewport.
  */
 export function BioItemsSection({ page }: BioItemsSectionProps) {
   const { t } = useTranslation("bio");
@@ -52,11 +67,14 @@ export function BioItemsSection({ page }: BioItemsSectionProps) {
   const reorderItems = useReorderBioItems();
   const removeItem = useRemoveBioItem();
 
+  const [addMenuAnchor, setAddMenuAnchor] = useState<HTMLElement | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isAddIconOpen, setIsAddIconOpen] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<BioItem | null>(null);
 
   const items = page.items;
   const limitReached = items.length >= MAX_BIO_ITEMS;
+  const existingLinkIds = items.map((item) => item.linkId);
 
   const handleMove = (index: number, direction: 1 | -1) => {
     if (reorderItems.isPending) return;
@@ -73,20 +91,59 @@ export function BioItemsSection({ page }: BioItemsSectionProps) {
     }
   };
 
+  const closeAddMenu = () => setAddMenuAnchor(null);
+
   return (
     <Stack spacing={1.5}>
       <SectionLabel
         headingLevel={2}
         action={
-          <Button
-            size="small"
-            variant="outlined"
-            startIcon={<AppIcon intent="create" size={16} />}
-            onClick={() => setIsAddOpen(true)}
-            disabled={limitReached}
-          >
-            {t("items.add")}
-          </Button>
+          <>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<AppIcon intent="create" size={16} />}
+              endIcon={<AppIcon intent="expand" size={14} />}
+              onClick={(e) => setAddMenuAnchor(e.currentTarget)}
+              disabled={limitReached}
+              aria-haspopup="menu"
+              aria-expanded={!!addMenuAnchor}
+            >
+              {t("items.add")}
+            </Button>
+            <Menu
+              anchorEl={addMenuAnchor}
+              open={!!addMenuAnchor}
+              onClose={closeAddMenu}
+            >
+              <MenuItem
+                onClick={() => {
+                  closeAddMenu();
+                  setIsAddOpen(true);
+                }}
+              >
+                <ListItemIcon>
+                  <AppIcon intent="link" size={16} />
+                </ListItemIcon>
+                <ListItemText>
+                  {t("items.addDialog.menuLinkOption")}
+                </ListItemText>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  closeAddMenu();
+                  setIsAddIconOpen(true);
+                }}
+              >
+                <ListItemIcon>
+                  <AtSign size={16} aria-hidden />
+                </ListItemIcon>
+                <ListItemText>
+                  {t("items.icon.addDialog.menuIconOption")}
+                </ListItemText>
+              </MenuItem>
+            </Menu>
+          </>
         }
       >
         {t("items.heading", { count: items.length, max: MAX_BIO_ITEMS })}
@@ -130,7 +187,14 @@ export function BioItemsSection({ page }: BioItemsSectionProps) {
       <AddBioItemDialog
         open={isAddOpen}
         onClose={() => setIsAddOpen(false)}
-        existingLinkIds={items.map((item) => item.linkId)}
+        existingLinkIds={existingLinkIds}
+        limitReached={limitReached}
+      />
+
+      <AddBioIconDialog
+        open={isAddIconOpen}
+        onClose={() => setIsAddIconOpen(false)}
+        existingLinkIds={existingLinkIds}
         limitReached={limitReached}
       />
 

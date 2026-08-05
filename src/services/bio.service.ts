@@ -6,14 +6,23 @@ import type {
   BioItemUpdateInput,
   BioPage,
   BioPageUpsertInput,
+  BioPerformance,
+  BioPerformanceItem,
+  BioPerformancePeriod,
   BioTheme,
   HandleAvailabilityResult,
 } from "@/features/bio/types";
+import type { SocialPlatformKey } from "@/shared/ui/icons";
 import type { ID } from "@/types";
 
 /**
  * Raw shape of one item as returned nested inside `GET /api/bio`
  * (snake_case, straight off the Laravel resource).
+ *
+ * `display`/`social_platform` are marked optional rather than required —
+ * defensive against a cached/stale response predating the fields, same
+ * reasoning as `favicon_url` below; `mapBioItem` defaults a missing
+ * `display` to `"item"`.
  */
 interface RawBioItem {
   id: number;
@@ -25,6 +34,23 @@ interface RawBioItem {
   clicks: number;
   /** Destination favicon from the link's async preview; null until fetched. */
   favicon_url?: string | null;
+  display?: "item" | "icon";
+  social_platform?: SocialPlatformKey | null;
+}
+
+/** Raw shape of one ranked row in `GET /api/bio/performance`'s `items` array. */
+interface RawBioPerformanceItem {
+  item_id: number;
+  title: string;
+  display: "item" | "icon";
+  social_platform: SocialPlatformKey | null;
+  clicks: number;
+}
+
+/** Raw shape of the `GET /api/bio/performance` response body's `data`. */
+interface RawBioPerformance {
+  total_clicks: number;
+  items: RawBioPerformanceItem[];
 }
 
 /**
@@ -60,6 +86,27 @@ function mapBioItem(raw: RawBioItem): BioItem {
     url: raw.url,
     clicks: raw.clicks,
     faviconUrl: raw.favicon_url ?? null,
+    display: raw.display ?? "item",
+    socialPlatform: raw.social_platform ?? null,
+  };
+}
+
+/** Maps one raw ranking row to the camelCase `BioPerformanceItem` shape. */
+function mapBioPerformanceItem(raw: RawBioPerformanceItem): BioPerformanceItem {
+  return {
+    itemId: raw.item_id,
+    title: raw.title,
+    display: raw.display,
+    socialPlatform: raw.social_platform,
+    clicks: raw.clicks,
+  };
+}
+
+/** Maps the raw `GET /api/bio/performance` payload to the camelCase `BioPerformance` shape. */
+function mapBioPerformance(raw: RawBioPerformance): BioPerformance {
+  return {
+    totalClicks: raw.total_clicks,
+    items: raw.items.map(mapBioPerformanceItem),
   };
 }
 
@@ -193,23 +240,34 @@ export class BioService extends BaseService {
   }
 
   /**
-   * Adds an existing link as a button on the bio page.
+   * Adds an existing link as a button — or, when `input.display === "icon"`,
+   * a social icon — on the bio page.
    *
-   * @throws `ApiError` on 422 when the page already holds `MAX_BIO_ITEMS`.
+   * @throws `ApiError` on 422 when the page already holds `MAX_BIO_ITEMS`, or
+   * when `display: "icon"` is sent without a whitelisted `socialPlatform`.
    */
   async addItem(input: BioItemCreateInput): Promise<BioItem> {
     const raw = await this.post<RawBioItem>("/api/bio/items", {
       link_id: input.linkId,
       label: input.label,
+      display: input.display,
+      social_platform: input.socialPlatform,
     });
     return mapBioItem(raw);
   }
 
-  /** Partially updates one item (label and/or active state). */
+  /**
+   * Partially updates one item (label, active state, and/or display/platform).
+   *
+   * @throws `ApiError` on 422 when `display: "icon"` is sent in the same
+   * request without a whitelisted `socialPlatform`.
+   */
   async updateItem(id: number, input: BioItemUpdateInput): Promise<BioItem> {
     const raw = await this.put<RawBioItem>(`/api/bio/items/${id}`, {
       label: input.label,
       is_active: input.isActive,
+      display: input.display,
+      social_platform: input.socialPlatform,
     });
     return mapBioItem(raw);
   }
@@ -226,6 +284,29 @@ export class BioService extends BaseService {
    */
   async reorderItems(ids: number[]): Promise<void> {
     await this.put<void>("/api/bio/items-order", { ids });
+  }
+
+  /**
+   * Fetches the authenticated user's click ranking across every item on
+   * their bio page (`GET /api/bio/performance?period=`).
+   *
+   * Deliberately does NOT swallow errors behind a fallback the way
+   * `getPage()` does — `null` isn't a meaningful response shape for this
+   * endpoint, and `BioPerformancePanel` needs a real rejection (surfaced by
+   * `useBioPerformance`'s `isError`) to tell "0 clicks" apart from "could not
+   * load" (e.g. this endpoint 404ing while its backend branch is unmerged) —
+   * the two render different, deliberately low-key states rather than one
+   * being mistaken for the other.
+   *
+   * @param period - time window; the backend defaults to `"30d"` when
+   * omitted, but every caller here always passes one explicitly.
+   * @throws `ApiError` on any failure, including 404/network errors.
+   */
+  async getPerformance(period: BioPerformancePeriod): Promise<BioPerformance> {
+    const raw = await this.get<RawBioPerformance>(
+      `/api/bio/performance?period=${period}`,
+    );
+    return mapBioPerformance(raw);
   }
 }
 

@@ -140,6 +140,7 @@
     },
     "addDialog": {
       "title": "Adicionar link",
+      "menuLinkOption": "Link",
       "searchPlaceholder": "Buscar por título ou endereço",
       "noLinksAtAll": "Você ainda não criou nenhum link.",
       "createLinkCta": "Criar um link",
@@ -153,6 +154,38 @@
       "reorderGeneric": "Não foi possível reordenar os links. Tente novamente."
     },
     "viewStats": "Ver estatísticas",
-    "hiddenBadge": "Oculto"
+    "hiddenBadge": "Oculto",
+    "icon": {
+      "addDialog": {
+        "title": "Adicionar ícone social",
+        "menuIconOption": "Ícone social",
+        "hint": "Escolha a rede social e qual dos seus links o ícone vai abrir."
+      },
+      "platformLabel": "Rede social",
+      "changePlatform": "Trocar rede social"
+    }
+  },
+  "socialPlatforms": {
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "youtube": "YouTube",
+    "x": "X (Twitter)",
+    "whatsapp": "WhatsApp",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "website": "Site"
+  },
+  "performance": {
+    "heading": "Desempenho",
+    "totalClicksLabel": "Cliques totais",
+    "periodLabel": "Período",
+    "periods": {
+      "7d": "7 dias",
+      "30d": "30 dias",
+      "90d": "90 dias",
+      "all": "Tudo"
+    },
+    "empty": "Nenhum clique registrado neste período ainda.",
+    "unavailable": "O painel de desempenho não está disponível no momento."
   }
 }
