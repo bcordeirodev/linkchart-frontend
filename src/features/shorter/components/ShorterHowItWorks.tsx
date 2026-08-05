@@ -2,7 +2,6 @@
 
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { BarChart2, Link2, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
@@ -11,18 +10,22 @@ import {
   getPublicElevatedSx,
   getPublicSectionHeadingSx,
 } from "@/lib/theme/publicPageStyles";
-import { PublicBlockIcon } from "@/shared/ui/base";
 
 type StepKey = "paste" | "shorten" | "track";
 
-const STEPS: Array<{ key: StepKey; icon: typeof Link2; step: string }> = [
-  { key: "paste", icon: Link2, step: "01" },
-  { key: "shorten", icon: Zap, step: "02" },
-  { key: "track", icon: BarChart2, step: "03" },
+const STEPS: Array<{ key: StepKey; step: string }> = [
+  { key: "paste", step: "01" },
+  { key: "shorten", step: "02" },
+  { key: "track", step: "03" },
 ];
 
 /**
  * Three-step explainer for /shorter — placed directly below the shortener form.
+ *
+ * Each card carries only the "01"/"02"/"03" numbered marker, not a per-step
+ * icon: a decorative icon square beside a title is the icon-chip anti-pattern
+ * the "instrumento técnico" spec bans, while the numbers stay because this is
+ * a genuine ordered sequence rather than a set of unordered feature cards.
  */
 export function ShorterHowItWorks() {
   const theme = useTheme();
@@ -70,7 +73,7 @@ export function ShorterHowItWorks() {
           gap: { xs: 2, sm: 2.5 },
         }}
       >
-        {STEPS.map(({ key, icon, step }) => (
+        {STEPS.map(({ key, step }) => (
           <Box
             key={key}
             component="article"
@@ -90,7 +93,6 @@ export function ShorterHowItWorks() {
               },
             }}
           >
-            <PublicBlockIcon icon={icon} variant="step" />
             <Typography
               component="span"
               sx={{

@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/lib/auth/AuthContext";
 import { redirectToAuth0Login } from "@/lib/auth/authNavigation";
+import { typographyScale } from "@/lib/theme";
 import { ICON_SM } from "@/lib/theme/iconDefaults";
 import { getPublicInsetSx, publicHairline } from "@/lib/theme/publicPageStyles";
 import { getShortUrl } from "@/lib/utils/shortUrl";
@@ -108,7 +109,7 @@ export function ShorterRecentLinks({ refreshToken }: ShorterRecentLinksProps) {
                 underline="hover"
                 sx={{
                   display: "block",
-                  fontFamily: "monospace",
+                  fontFamily: typographyScale.code.fontFamily,
                   fontSize: "0.8125rem",
                   fontWeight: 700,
                   color: theme.palette.text.primary,

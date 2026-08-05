@@ -90,7 +90,6 @@
     "subdomainPromo": {
       "title": "Até 3 subdomínios personalizados grátis",
       "description": "Incluídos na conta gratuita — até 3 endereços com a sua marca na URL, sem custo extra.",
-      "previewLabel": "Exemplo",
       "exampleLabel": "sua-marca",
       "exampleSlug": "promo"
     },
