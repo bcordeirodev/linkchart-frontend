@@ -90,7 +90,6 @@
     "subdomainPromo": {
       "title": "Up to 3 free custom subdomains",
       "description": "Included with your free account — up to 3 addresses with your brand in the URL, no extra cost.",
-      "previewLabel": "Example",
       "exampleLabel": "your-brand",
       "exampleSlug": "promo"
     },
