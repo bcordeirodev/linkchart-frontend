@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Box } from "@mui/material";
 import { Globe } from "lucide-react";
 
+import { radiusTokens } from "@/lib/theme/designSystem";
+
 import type { BioPalette } from "./bioPalette";
 
 export interface BioItemFaviconProps {
@@ -50,8 +52,11 @@ export function BioItemFavicon({
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: "11px",
-        border: `1px solid ${palette.buttonBorder}`,
+        // Raio de controle (8px) sob o raio de container da linha (10px), e
+        // fill = canvas da página: o tile lê como um recuo DENTRO do véu da
+        // linha, não como um retângulo mais claro colado por cima dela.
+        borderRadius: `${radiusTokens.md}px`,
+        border: `1px solid ${palette.hairline}`,
         backgroundColor: palette.background,
         overflow: "hidden",
         fontSize: "0.9rem",

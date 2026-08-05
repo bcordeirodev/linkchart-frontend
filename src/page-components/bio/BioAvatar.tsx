@@ -1,5 +1,7 @@
 import { Box } from "@mui/material";
 
+import { BIO_FONT_DISPLAY } from "./bioPalette";
+
 import type { BioPalette } from "./bioPalette";
 
 /**
@@ -39,13 +41,18 @@ interface BioAvatarProps {
  * Circular avatar showing either the creator's uploaded photo or, absent
  * one, the initial letter of their display name.
  *
- * A soft glow (the same gradient used for the initial-letter fallback, low
- * opacity, blurred) always sits behind the circle — kept even with a real
- * photo so the frame stays consistent and the avatar keeps reading as the
- * one deliberately "designed" element on an otherwise plain, content-first
- * page. This close-range glow is deliberately paired with a second, much
- * softer page-level wash (`BioPublicPage`'s `backgroundImage`) — near light
- * and far ambient light, rather than one flat halo.
+ * One circle, one hairline ring, nothing behind it. The blurred violet-blue
+ * halo that used to sit under this element — and the violet→blue gradient
+ * that filled the initial-letter fallback — were the page's loudest
+ * AI-template tells (the redesign spec names "gradiente radial roxo sobre
+ * dark" specifically) and are gone as of 2026-08-04.
+ *
+ * The fallback is now the same surface every other raised element on the
+ * page uses (translucent veil + hairline) with the monogram in Space Grotesk
+ * on the product's primary blue — the page's only accent, spent here and on
+ * the focus ring. Keeping the ring identical in both states means the frame
+ * reads the same whether or not a photo was uploaded, instead of a photo
+ * being framed and a fallback being a colored blob.
  */
 export default function BioAvatar({
   initial,
@@ -56,65 +63,44 @@ export default function BioAvatar({
   return (
     <Box
       sx={{
-        position: "relative",
         width: AVATAR_SIZE,
         height: AVATAR_SIZE,
         mx: "auto",
+        borderRadius: "50%",
+        overflow: "hidden",
+        backgroundColor: avatarUrl ? undefined : palette.surface,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        // Elevação por borda, nunca por sombra ou cinza mais claro: a mesma
+        // hairline dos itens e dos ícones, aqui fechando o círculo.
+        border: `1px solid ${palette.hairline}`,
       }}
     >
-      {/* Glow contido (raio menor, blur maior): luz de proximidade sutil em
-          vez do balão difuso que o spread largo criava atrás da foto. */}
-      <Box
-        aria-hidden
-        sx={{
-          position: "absolute",
-          inset: { xs: -10, sm: -12 },
-          borderRadius: "50%",
-          background: palette.avatarGlow,
-          filter: { xs: "blur(30px)", sm: "blur(32px)" },
-          opacity: 0.75,
-        }}
-      />
-      <Box
-        sx={{
-          position: "relative",
-          width: AVATAR_SIZE,
-          height: AVATAR_SIZE,
-          borderRadius: "50%",
-          overflow: "hidden",
-          background: avatarUrl ? undefined : palette.avatarGradient,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          // Anel fino separa a foto do glow e dá o acabamento de perfil.
-          border: `1px solid ${palette.buttonBorder}`,
-          boxShadow: "0 8px 24px -8px rgba(0, 0, 0, 0.45)",
-        }}
-      >
-        {avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={avatarUrl}
-            alt={`Foto de perfil de ${displayName}`}
-            width={AVATAR_SIZE_MAX}
-            height={AVATAR_SIZE_MAX}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        ) : (
-          <Box
-            component="span"
-            sx={{
-              fontSize: { xs: "2.625rem", sm: "2.875rem" },
-              fontWeight: 800,
-              lineHeight: 1,
-              color: "#FFFFFF",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            {initial}
-          </Box>
-        )}
-      </Box>
+      {avatarUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={avatarUrl}
+          alt={`Foto de perfil de ${displayName}`}
+          width={AVATAR_SIZE_MAX}
+          height={AVATAR_SIZE_MAX}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
+      ) : (
+        <Box
+          component="span"
+          sx={{
+            fontFamily: BIO_FONT_DISPLAY,
+            fontSize: { xs: "2.625rem", sm: "2.875rem" },
+            fontWeight: 700,
+            lineHeight: 1,
+            color: palette.accent,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          {initial}
+        </Box>
+      )}
     </Box>
   );
 }

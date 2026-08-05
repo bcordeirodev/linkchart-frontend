@@ -1,5 +1,8 @@
 import { Box } from "@mui/material";
-import { Link2 } from "lucide-react";
+
+import { radiusTokens } from "@/lib/theme/designSystem";
+
+import { BIO_FONT_MONO } from "./bioPalette";
 
 import type { BioPalette } from "./bioPalette";
 
@@ -9,7 +12,7 @@ interface BioFooterBadgeProps {
 }
 
 /**
- * "Made with Link Charts" badge — the product's viral loop.
+ * "Feito com Link Charts" badge — the product's viral loop.
  *
  * Always rendered, never conditional on plan/tier: every bio page links back
  * to the homepage so a visitor who lands on someone else's page can find the
@@ -18,11 +21,13 @@ interface BioFooterBadgeProps {
  * targets a Brazilian audience first; see `not-found.tsx` in this route for
  * the same reasoning.
  *
- * Deliberately quieter than the link buttons: a filled chip (not a bare
- * outline) so it reads as a real, tappable pill rather than an afterthought,
- * but with no gradient border of its own — that accent is spent once, on the
- * primary links, so the badge stays the calm anchor at the bottom of the
- * page instead of competing with the CTAs above it.
+ * Dressed as a maker's mark, not a CTA: mono caps at the page's smallest
+ * type size, in the same veil + hairline pill every other element uses. It
+ * stays legible and tappable (the acquisition link has to work) while
+ * reading as the instrument's stamp at the bottom of the page rather than a
+ * fifth button competing with the creator's own links. The decorative link
+ * icon it used to carry is gone — in this language an icon has to be
+ * functional (navigation, buttons, empty states), and here it was neither.
  */
 export default function BioFooterBadge({ palette }: BioFooterBadgeProps) {
   return (
@@ -32,32 +37,26 @@ export default function BioFooterBadge({ palette }: BioFooterBadgeProps) {
       sx={{
         display: "inline-flex",
         alignItems: "center",
-        gap: 0.75,
         mx: "auto",
-        px: 2,
+        px: 1.75,
         py: 0.875,
-        borderRadius: "999px",
-        bgcolor: palette.buttonBg,
-        border: `1px solid ${palette.buttonBorder}`,
+        borderRadius: `${radiusTokens.full}px`,
+        backgroundColor: palette.surface,
+        border: `1px solid ${palette.hairline}`,
         color: palette.textSecondary,
         textDecoration: "none",
+        fontFamily: BIO_FONT_MONO,
         fontSize: "0.75rem",
-        fontWeight: 600,
-        letterSpacing: "0.01em",
+        fontWeight: 500,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
         WebkitTapHighlightColor: "transparent",
         transition:
-          "color 160ms ease, background-color 160ms ease, box-shadow 200ms ease, transform 160ms ease",
-        "@media (prefers-reduced-motion: reduce)": {
-          transition:
-            "color 160ms ease, background-color 160ms ease, box-shadow 200ms ease",
-        },
+          "color 160ms ease, background-color 160ms ease, border-color 160ms ease",
         "&:hover": {
           color: palette.textPrimary,
-          bgcolor: palette.buttonBgHover,
-          boxShadow: `0 8px 20px -14px ${palette.interactiveGlow}`,
-          "@media (prefers-reduced-motion: no-preference)": {
-            transform: "translateY(-1px)",
-          },
+          backgroundColor: palette.surfaceHover,
+          borderColor: palette.hairlineStrong,
         },
         "&:focus-visible": {
           outline: `2px solid ${palette.focusRing}`,
@@ -65,7 +64,6 @@ export default function BioFooterBadge({ palette }: BioFooterBadgeProps) {
         },
       }}
     >
-      <Link2 size={14} aria-hidden />
       Feito com Link Charts
     </Box>
   );
