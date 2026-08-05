@@ -85,7 +85,7 @@ export interface SocialPlatformIconProps {
  * platforms (`SOCIAL_PLATFORM_KEYS`). Used on both sides of the bio feature's
  * ownership split — the public page's icon row (`BioSocialIconsRow`) and the
  * editor's icon-item affordances (`BioItemRow`'s platform badge,
- * `AddBioIconDialog`'s platform select, `BioPerformancePanel`'s ranked list)
+ * `AddBioIconDialog`'s platform select, `BioItemsSection`'s rows)
  * — so the two never drift onto different glyphs for the same platform key.
  *
  * Every glyph inherits `currentColor`, matching the rest of this icon

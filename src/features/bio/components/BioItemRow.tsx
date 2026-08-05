@@ -42,6 +42,13 @@ import type { BioItem } from "../types";
 
 export interface BioItemRowProps {
   item: BioItem;
+  /**
+   * Click count shown in the chip — resolved by `BioItemsSection` for its
+   * currently-selected period (from `GET /api/bio/performance`), falling
+   * back to the item's all-time count. A prop, not `item.clicks` read here,
+   * because the period selector lives on the section, not the row.
+   */
+  clicks: number;
   isFirst: boolean;
   isLast: boolean;
   onMoveUp: () => void;
@@ -54,12 +61,12 @@ export interface BioItemRowProps {
 /**
  * One row in the bio page's item list, in three zones: identity (destination
  * favicon in a bordered tile with initial fallback, editable label, short
- * URL), the
- * clicks chip — which IS the reference to the underlying link's analytics
- * page, strong blue like every analytics CTA in the app — and the controls
- * (reorder, active toggle, remove). Inactive items dim their identity zone
- * and gain a small "hidden" badge so the OFF state is readable at a glance,
- * not only from the switch position.
+ * URL), the clicks chip — count scoped to the period selected in
+ * `BioItemsSection`'s strip (see the `clicks` prop), and ALSO the reference
+ * to the underlying link's analytics page, strong blue like every analytics
+ * CTA in the app — and the controls (reorder, active toggle, remove).
+ * Inactive items dim their identity zone and gain a small "hidden" badge so
+ * the OFF state is readable at a glance, not only from the switch position.
  *
  * A social-icon item (`item.display === "icon"`) gets one addition in the
  * controls zone: a small platform-glyph button, first in that cluster, that
@@ -78,6 +85,7 @@ export interface BioItemRowProps {
  */
 export function BioItemRow({
   item,
+  clicks,
   isFirst,
   isLast,
   onMoveUp,
@@ -320,7 +328,7 @@ export function BioItemRow({
               color="primary"
               size="small"
               icon={<AppIcon intent="analytics" size={14} />}
-              label={t("items.clicksCount", { count: item.clicks })}
+              label={t("items.clicksCount", { count: clicks })}
               aria-label={t("items.viewStats")}
               sx={{
                 fontWeight: 600,

@@ -292,7 +292,7 @@ export class BioService extends BaseService {
    *
    * Deliberately does NOT swallow errors behind a fallback the way
    * `getPage()` does — `null` isn't a meaningful response shape for this
-   * endpoint, and `BioPerformancePanel` needs a real rejection (surfaced by
+   * endpoint, and `BioItemsSection` needs a real rejection (surfaced by
    * `useBioPerformance`'s `isError`) to tell "0 clicks" apart from "could not
    * load" (e.g. this endpoint 404ing while its backend branch is unmerged) —
    * the two render different, deliberately low-key states rather than one

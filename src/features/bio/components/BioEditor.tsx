@@ -33,7 +33,6 @@ import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
 import { BioAvatarField } from "./BioAvatarField";
 import { BioCreateIntro } from "./BioCreateIntro";
 import { BioItemsSection } from "./BioItemsSection";
-import { BioPerformancePanel } from "./BioPerformancePanel";
 import {
   BioIdentityFields,
   BioPublishingFields,
@@ -370,21 +369,12 @@ export function BioEditor() {
 
         {/* Sem card próprio nesta camada — `BioItemsSection` já é a lista de
             cards (uma por link) com o próprio `SectionLabel`; um invólucro
-            aqui seria card dentro de card. */}
+            aqui seria card dentro de card. A seção também absorveu o antigo
+            painel `/ DESEMPENHO` (total de cliques + filtro de período):
+            eram os mesmos links listados duas vezes. */}
         {mode === "edit" && page ? (
           <Box className="reveal reveal-4">
             <BioItemsSection page={page} />
-          </Box>
-        ) : null}
-
-        {/* Painel de desempenho: mesma regra de "sem card próprio" acima —
-            é auto-suficiente (busca os próprios dados via
-            `useBioPerformance`), por isso não recebe `page` como prop.
-            `reveal-5` (não `-4`): entra um passo depois de `BioItemsSection`
-            em vez de simultâneo a ele. */}
-        {mode === "edit" && page ? (
-          <Box className="reveal reveal-5">
-            <BioPerformancePanel />
           </Box>
         ) : null}
       </Stack>
