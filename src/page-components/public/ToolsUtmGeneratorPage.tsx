@@ -13,7 +13,8 @@ import { Check, Copy, Link2 } from "lucide-react";
 import NextLink from "next/link";
 import { useTranslation } from "react-i18next";
 
-import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
+import { typographyScale } from "@/lib/theme/designSystem";
+import { ICON_MD } from "@/lib/theme/iconDefaults";
 import {
   getPublicElevatedSx,
   getPublicFocalSx,
@@ -42,6 +43,23 @@ interface ParamItem {
   title: string;
   desc: string;
 }
+
+/**
+ * Control height for the destination URL + UTM text fields, matching the
+ * app's public-form grammar (44-48px tap targets, not the dashboard's
+ * compact 36px default).
+ */
+const CONTROL_HEIGHT = 44;
+
+/**
+ * `sx` applied to every text field on this page: fixes the `OutlinedInput`
+ * root at {@link CONTROL_HEIGHT} and re-centers the input text inside it
+ * (the theme's default input padding assumes the shorter dashboard height).
+ */
+const controlHeightSx = {
+  "& .MuiOutlinedInput-root": { height: CONTROL_HEIGHT },
+  "& input": { height: "100%", boxSizing: "border-box", py: 0 },
+} as const;
 
 /**
  * `/ferramentas/gerador-utm` — free UTM link generator.
@@ -146,6 +164,7 @@ export function ToolsUtmGeneratorPage() {
                 placeholder={t("utm.form.urlPlaceholder")}
                 value={url}
                 onChange={(event) => setUrl(event.target.value)}
+                sx={controlHeightSx}
               />
               <Typography component="p" sx={helpSx}>
                 {t("utm.form.urlHelp")}
@@ -254,6 +273,7 @@ export function ToolsUtmGeneratorPage() {
                       placeholder={t(`utm.form.fields.${key}.placeholder`)}
                       value={fields[key]}
                       onChange={(event) => setField(key, event.target.value)}
+                      sx={controlHeightSx}
                     />
                     <Typography component="p" sx={helpSx}>
                       {t(`utm.form.fields.${key}.help`)}
@@ -302,7 +322,7 @@ export function ToolsUtmGeneratorPage() {
               sx={{
                 ...getPublicInsetSx(theme),
                 p: { xs: 1.75, md: 2 },
-                fontFamily: "monospace",
+                fontFamily: typographyScale.code.fontFamily,
                 fontSize: { xs: "0.8125rem", md: "0.875rem" },
                 lineHeight: 1.7,
                 wordBreak: "break-all",
@@ -356,7 +376,7 @@ export function ToolsUtmGeneratorPage() {
                 startIcon={
                   copied ? <Check {...ICON_MD} /> : <Copy {...ICON_MD} />
                 }
-                sx={{ fontWeight: 600 }}
+                sx={{ fontWeight: 600, minHeight: CONTROL_HEIGHT }}
               >
                 {copied ? t("utm.result.copied") : t("utm.result.copy")}
               </Button>
@@ -407,7 +427,12 @@ export function ToolsUtmGeneratorPage() {
                 href={builtUrl ? `/?url=${encodeURIComponent(builtUrl)}` : "/"}
                 variant="outlined"
                 startIcon={<Link2 {...ICON_MD} />}
-                sx={{ fontWeight: 600, flexShrink: 0, whiteSpace: "nowrap" }}
+                sx={{
+                  fontWeight: 600,
+                  flexShrink: 0,
+                  whiteSpace: "nowrap",
+                  minHeight: CONTROL_HEIGHT,
+                }}
               >
                 {t("utm.result.shortenButton")}
               </Button>
@@ -453,7 +478,7 @@ export function ToolsUtmGeneratorPage() {
                     component="span"
                     sx={{
                       display: "inline-block",
-                      fontFamily: "monospace",
+                      fontFamily: typographyScale.code.fontFamily,
                       fontSize: "0.75rem",
                       fontWeight: 700,
                       color: primary,
@@ -501,12 +526,14 @@ export function ToolsUtmGeneratorPage() {
         <ToolsFaq i18nKey="utm" />
 
         {/* ---- CTA ---- */}
+        {/* No `headerIcon`: the icon-chip beside the title is the pattern the
+            "instrumento técnico" language banned on `/` and `/shorter`
+            (2026-08-04) — the title now opens this card alone here too. */}
         <SignUpCtaCard
           title={t("utm.cta.title")}
           description={t("utm.cta.description")}
           features={t("utm.cta.features", { returnObjects: true }) as string[]}
           ctaLabel={t("utm.cta.button")}
-          headerIcon={<Link2 {...ICON_SM} />}
           sx={getPublicFocalSx(theme)}
         />
       </Box>
