@@ -4,6 +4,8 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { getPublicDisplaySx } from "@/lib/theme/publicPageStyles";
+
 import type { GuideI18nKey } from "./types";
 
 /** Props for {@link GuideHero}. */
@@ -51,16 +53,18 @@ export function GuideHero({ i18nKey }: GuideHeroProps) {
       >
         {t(`${i18nKey}.hero.eyebrow`)}
       </Typography>
+      {/* `variant="h1"` is load-bearing, not decoration: `component` alone only
+          swaps the DOM tag, leaving MUI's default `body1` typography (Inter)
+          on the page's actual heading. Same recipe as every other public hero
+          (ShorterHero, ToolsHero, CompareCompetitorPage,
+          PublicAnalyticsPageContent): `getPublicDisplaySx` resolves the
+          Space Grotesk family from `theme.typography.h1` and uses weight 700,
+          not 800 — `app/layout.tsx` loads Space Grotesk at 400/500/700 only,
+          so 800 would ask the browser to synthesise a bolder face. */}
       <Typography
+        variant="h1"
         component="h1"
-        sx={{
-          fontSize: { xs: "1.75rem", md: "2.4rem" },
-          fontWeight: 800,
-          lineHeight: 1.15,
-          letterSpacing: "-0.02em",
-          color: theme.palette.text.primary,
-          mb: 1.5,
-        }}
+        sx={{ ...getPublicDisplaySx(theme), mb: 1.5 }}
       >
         {t(`${i18nKey}.hero.title`)}
       </Typography>
