@@ -24,11 +24,13 @@ const GUIDES: readonly ResourceLink[] = [
   { href: "/guia/como-ver-cliques-do-link", key: "guiaVerCliques" },
   { href: "/guia/rastrear-link-instagram", key: "guiaInstagram" },
   { href: "/guia/link-curto-para-whatsapp", key: "guiaWhatsapp" },
+  { href: "/guia/alternativa-ao-bitly", key: "guiaAlternativaBitly" },
 ];
 
 /** Comparisons group — competitor comparison pages. */
 const COMPARISONS: readonly ResourceLink[] = [
   { href: "/comparar/bitly", key: "compareBitly" },
+  { href: "/comparar/linktree", key: "compareLinktree" },
   { href: "/comparar/short-io", key: "compareShortIo" },
   { href: "/comparar/dub", key: "compareDub" },
 ];

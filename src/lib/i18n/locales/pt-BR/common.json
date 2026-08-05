@@ -104,12 +104,15 @@
     "guideBots": "Cliques: bot ou humano?",
     "guideSeeClicks": "Ver quantas pessoas clicaram",
     "guideInstagram": "Rastrear link no Instagram",
+    "guideWhatsapp": "Link curto para WhatsApp",
+    "guideBitlyAlternative": "Alternativa ao Bitly",
     "toolsLabel": "Ferramentas",
     "toolUtm": "Gerador de UTM",
     "toolChecker": "Verificar link suspeito",
     "compareBitly": "Bitly",
     "compareDub": "Dub",
-    "compareShortIo": "Short.io"
+    "compareShortIo": "Short.io",
+    "compareLinktree": "Linktree"
   },
   "resources": {
     "readAlso": "Leia também"

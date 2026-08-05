@@ -143,6 +143,12 @@ export function Footer({ variant = "full" }: FooterProps) {
               <a href="/guia/rastrear-link-instagram">
                 {t("footer.guideInstagram")}
               </a>
+              <a href="/guia/link-curto-para-whatsapp">
+                {t("footer.guideWhatsapp")}
+              </a>
+              <a href="/guia/alternativa-ao-bitly">
+                {t("footer.guideBitlyAlternative")}
+              </a>
             </Box>
             <Box sx={groupSx}>
               <Typography component="span" sx={groupLabelSx}>
@@ -158,6 +164,7 @@ export function Footer({ variant = "full" }: FooterProps) {
                 {t("footer.comparisonsLabel")}
               </Typography>
               <a href="/comparar/bitly">{t("footer.compareBitly")}</a>
+              <a href="/comparar/linktree">{t("footer.compareLinktree")}</a>
               <a href="/comparar/dub">{t("footer.compareDub")}</a>
               <a href="/comparar/short-io">{t("footer.compareShortIo")}</a>
             </Box>

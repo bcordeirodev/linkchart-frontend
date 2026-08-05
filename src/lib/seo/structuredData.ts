@@ -107,11 +107,17 @@ export function buildAnalyticsPageSchema(
 }
 
 /**
- * FAQPage schema in Brazilian Portuguese for /shorter.
+ * FAQPage schema in Brazilian Portuguese for / and /shorter.
  *
  * Questions are sourced from real Google Search queries targeting Brazilian
  * users searching for URL shorteners and link click counters. Plain text only —
  * no markdown, no HTML entities.
+ *
+ * Deliberately does NOT carry "Qual a melhor alternativa gratuita ao Bitly?":
+ * Google's structured-data guidelines disallow the same FAQ question and answer
+ * appearing on several pages of a site, and that intent belongs to
+ * `/guia/alternativa-ao-bitly` (see {@link buildGuiaAlternativaBitlyFaqSchema}),
+ * the page that owns the listicle. Keep it there, not here.
  */
 export function buildFaqSchemaPtBR() {
   return {
@@ -140,14 +146,6 @@ export function buildFaqSchemaPtBR() {
         acceptedAnswer: {
           "@type": "Answer",
           text: "Sim. Link Charts permite encurtar links gratuitamente sem criar conta. Para salvar seus links e acessar analytics detalhados, basta criar uma conta gratuita.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Qual a melhor alternativa gratuita ao Bitly?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Depende do que você precisa. O Link Charts foca em analytics avançado gratuito: rastreamento geográfico por país e cidade, breakdown por dispositivo e navegador, UTM, subdomínio personalizado e QR Code — recursos que no Bitly exigem plano pago.",
         },
       },
       {
@@ -256,6 +254,32 @@ export function buildCompareBitlyFaqSchema() {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: ptBrPublic.compareBitly.faq.items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+}
+
+/**
+ * `FAQPage` schema for the "Link Charts vs Linktree" comparison page
+ * (`/comparar/linktree`) — the bio-page (link in bio) surface.
+ *
+ * pt-BR for the same reason as the other comparisons: it mirrors the Brazilian
+ * SEO target and the exact prompts people type into AI assistants ("alternativa
+ * ao Linktree", "tirar a marca do Linktree", "link na bio com estatísticas").
+ * The Q&A is derived from the locale entries the visible page renders
+ * (`public.json: compareLinktree.faq.items`), so crawlers and users read the
+ * same answers and the two cannot drift apart.
+ */
+export function buildCompareLinktreeFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: ptBrPublic.compareLinktree.faq.items.map((item) => ({
       "@type": "Question",
       name: item.q,
       acceptedAnswer: {
@@ -512,6 +536,33 @@ export function buildGuiaWhatsappFaqSchema() {
         },
       },
     ],
+  };
+}
+
+/**
+ * `FAQPage` schema for the free-Bitly-alternatives listicle
+ * (`/guia/alternativa-ao-bitly`).
+ *
+ * pt-BR, matching the exact prompts people type into search and AI assistants
+ * ("alternativa ao Bitly grátis", "encurtador melhor que Bitly"). Unlike the
+ * older guide schemas, the Q&A is derived from the locale entries the visible
+ * page renders (`public.json: guiaAlternativaBitly.faq.items`) — same technique
+ * as {@link buildCompareBitlyFaqSchema} — so the answers crawlers read and the
+ * answers users read cannot drift apart. That matters more here than elsewhere:
+ * the page makes dated, sourced claims about competitors.
+ */
+export function buildGuiaAlternativaBitlyFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: ptBrPublic.guiaAlternativaBitly.faq.items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
   };
 }
 
