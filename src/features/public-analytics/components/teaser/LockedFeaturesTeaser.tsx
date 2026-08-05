@@ -314,14 +314,19 @@ export const LockedFeaturesTeaser = memo(function LockedFeaturesTeaser() {
         {t("publicAnalytics.teaser.heading")}
       </SectionLabel>
 
-      {/* Card grid: 3-up from tablet, 1-up on mobile */}
-      <Grid container spacing={PUBLIC_CARD_GAP}>
-        {cards.map(({ key, title }) => (
-          <Grid key={key} item xs={12} sm={4} md={4}>
-            <TeaserCard title={title} variant={key} colors={TEASER_COLORS} />
-          </Grid>
-        ))}
-      </Grid>
+      {/* Card grid: 3-up from tablet, 1-up on mobile. The Box isolates the
+          Grid from Stack's child `margin: 0` reset, which would cancel the
+          container's negative margins and shift every card one gutter to the
+          right. */}
+      <Box>
+        <Grid container spacing={PUBLIC_CARD_GAP}>
+          {cards.map(({ key, title }) => (
+            <Grid key={key} item xs={12} sm={4} md={4}>
+              <TeaserCard title={title} variant={key} colors={TEASER_COLORS} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </Stack>
   );
 });
