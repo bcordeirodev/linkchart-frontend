@@ -102,23 +102,24 @@ export function RetentionAnalysisChart({
         ) : null}
 
         {/* Real Metrics.
-            `returningVisitors` reads "Recorrentes"/"Returning" rather than
-            "Visitantes Recorrentes"/"Returning Visitors": at this card's
-            width in the `lg`+ two-column retention/session grid, the longer
-            phrase was the only label of the three that wrapped to 2 lines,
-            pushing its value below the shared baseline of its siblings
-            ("Taxa de Recorrência", "Total de Visitantes"). Content-specific
-            fix (shorter label), not a primitive change — `OverviewMetricRow`
-            has 11 other call sites whose labels already fit on one line, so
-            reserving 2-line height in the primitive would only add dead
-            space above every one of them. Same category of fix as the
-            "7 dias" period-preset and "Alta/Baixa" trend-label compactions
-            elsewhere in the analytics screen. Single consumer of this key
-            (confirmed via grep) — the bar chart's own "Returning" segment
-            label (`returningLabel`) is a separate key, unaffected. */}
+            `labelLines={2}`: at this card's width in the `lg`+ two-column
+            retention/session grid, "Visitantes Recorrentes" is the one label
+            of the three long enough to wrap, and the wrap pushed its number a
+            line below "Taxa de Recorrência" and "Total de Visitantes" — three
+            numbers meant to be read across, sitting at two heights. Reserving
+            the second line in every column of the row is what pins them to one
+            baseline; the label keeps its full name instead of being clipped to
+            "Recorrentes", which read as a different metric from the
+            "Visitantes Recorrentes" the bar chart right below it labels.
+            `SessionDepthChart`, the sibling card in this same grid row, gets
+            the same reservation so the two cards' numbers stay level with each
+            other, not just within themselves. Opt-in prop: the other 10 call
+            sites of `OverviewMetricRow` have single-line labels and are
+            untouched. */}
         <Box sx={{ mb: 3 }}>
           <OverviewMetricRow
             size="md"
+            labelLines={2}
             metrics={[
               {
                 label: t("insights.retention.retentionRate"),

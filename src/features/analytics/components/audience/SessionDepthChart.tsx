@@ -177,10 +177,15 @@ export function SessionDepthChart({
           </Box>
         ) : null}
 
-        {/* Real Metrics — no fabricated scores */}
+        {/* Real Metrics — no fabricated scores.
+            `labelLines={2}` mirrors `RetentionAnalysisChart`, the card this
+            one sits beside in the loyalty grid: both rows reserve the same
+            label height, so the two cards' numbers land on the same line as
+            each other whether or not a label wraps at a given width. */}
         <Box sx={{ mb: 3 }}>
           <OverviewMetricRow
             size="md"
+            labelLines={2}
             metrics={[
               {
                 label: t("insights.session.avgDepth"),

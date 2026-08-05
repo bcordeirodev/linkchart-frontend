@@ -49,6 +49,22 @@ export interface OverviewMetricRowProps {
    * conhecida e inofensiva.
    */
   size?: "md" | "lg";
+  /**
+   * Quantas linhas de altura o rótulo reserva. `1` (default) deixa o rótulo
+   * ocupar só o que precisa — o comportamento de sempre, e o certo quando
+   * todos os rótulos da fileira cabem em uma linha.
+   *
+   * `2` reserva duas linhas em **todas** as colunas da fileira, de `sm` para
+   * cima. Numa fileira estreita (ex.: um card de meia largura com 3 métricas)
+   * basta um rótulo quebrar para o número dele descer uma linha e sair da
+   * baseline dos vizinhos — o que faz a fileira parecer desalinhada, não
+   * densa. Com a altura reservada, quebrar ou não quebrar deixa de mover o
+   * número. No `xs` a fileira já é uma coluna empilhada e nada é reservado.
+   *
+   * Opt-in de propósito: os callers cujos rótulos cabem em uma linha não
+   * devem ganhar uma linha de espaço morto acima de cada número.
+   */
+  labelLines?: 1 | 2;
 }
 
 /**
@@ -85,16 +101,30 @@ export interface OverviewMetricRowProps {
  *
  * @param props.metrics Métricas a renderizar, na ordem recebida.
  * @param props.size Densidade visual — `"md"` (compacto) ou `"lg"` (default, escala original).
+ * @param props.labelLines Linhas de altura reservadas para o rótulo — `2` mantém
+ * os números na mesma baseline quando algum rótulo quebra.
  * @returns Linha (coluna no mobile) de métricas sem card/ícone.
  */
 export function OverviewMetricRow({
   metrics,
   size = "lg",
+  labelLines = 1,
 }: OverviewMetricRowProps) {
   const theme = useTheme();
   const hairline = `1px solid ${theme.palette.divider}`;
   const isDense = metrics.length >= 5;
   const isCompact = size === "md";
+  // `em`, não px: resolve contra o próprio `font-size` do rótulo (`body2`,
+  // cujo `line-height` é 1.54 no `typographyScale.bodySm`), então continua
+  // valendo se a escala tipográfica mudar. Só duas linhas de rótulo é o
+  // caso real hoje; um `labelLines` maior seguiria a mesma conta.
+  //
+  // Só a partir de `sm`: abaixo disso a fileira vira coluna empilhada, cada
+  // métrica ocupa a largura toda (nenhum rótulo quebra) e não existe baseline
+  // compartilhada para proteger — reservar a segunda linha ali seria só
+  // espaço morto acima de cada número, no viewport que menos tem altura.
+  const labelMinHeight =
+    labelLines > 1 ? { xs: "auto", sm: `${labelLines * 1.54}em` } : undefined;
 
   return (
     <Box
@@ -127,6 +157,7 @@ export function OverviewMetricRow({
                 color: "text.secondary",
                 fontWeight: 500,
                 mb: isCompact ? 0.25 : 0.5,
+                minHeight: labelMinHeight,
               }}
             >
               {metric.label}
