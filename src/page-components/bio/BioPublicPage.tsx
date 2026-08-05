@@ -1,10 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material";
 
+import { motionTokens } from "@/lib/theme/designSystem";
+
 import BioAvatar from "./BioAvatar";
 import BioFooterBadge from "./BioFooterBadge";
 import BioLinkButton from "./BioLinkButton";
 import { BioSocialIconsRow } from "./BioSocialIconsRow";
-import { getBioPalette } from "./bioPalette";
+import { BIO_FONT_DISPLAY, getBioPalette } from "./bioPalette";
 
 import type { BioPageData } from "./types";
 
@@ -35,7 +37,11 @@ function getAvatarInitial(title: string, handle: string): string {
  * Deliberately ignores the app's global MUI theme/dark-light toggle: colors
  * come entirely from {@link getBioPalette}, driven by `data.theme` (the page
  * owner's choice), not the visitor's app preference — most visitors arrive
- * from Instagram/WhatsApp and never see the app chrome at all.
+ * from Instagram/WhatsApp and never see the app chrome at all. Both themes
+ * render the same "instrumento técnico" grammar, each on its own neutral
+ * ramp: a flat canvas (no wash, no radial glow), elements raised by a 1px
+ * hairline over a translucent veil, the title in Space Grotesk and every
+ * destination host in JetBrains Mono.
  *
  * Two page-scoped visual details (selected-text color, scrollbar theming)
  * target pseudo-elements/at-rules `sx` can't express, so they ship as a
@@ -64,8 +70,12 @@ export default function BioPublicPage({ data }: BioPublicPageProps) {
    NÃO pode depender do CssBaseline/hidratação dos providers do app — sem
    isto o body mantém margin 8px + content-box (padding estoura o viewport
    com scroll horizontal) e a fonte cai na serifa default do browser. */
-html:has(.bio-page) { overflow-x: clip; }
-html:has(.bio-page) body { margin: 0; }
+html:has(.bio-page) { overflow-x: clip; color-scheme: ${palette.colorScheme}; }
+/* Fundo no <body>, não só no container: só o background do body propaga para
+   o canvas do browser (área de overscroll, tint da barra de status no iOS).
+   Sem isto, uma página de tema claro ganha bordas escuras no rubber-band —
+   o body herda o tema do APP, não o do dono da página. */
+html:has(.bio-page) body { margin: 0; background-color: ${palette.background}; }
 .bio-page, .bio-page *, .bio-page *::before, .bio-page *::after { box-sizing: border-box; }
 .bio-page { font-family: var(--font-inter, "Inter"), ui-sans-serif, system-ui, -apple-system, sans-serif; }
 .bio-page ::selection { background: ${palette.selectionBg}; }
@@ -74,10 +84,12 @@ html:has(.bio-page)::-webkit-scrollbar { width: 8px; }
 html:has(.bio-page)::-webkit-scrollbar-track { background: transparent; }
 html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrollbarThumb}; border-radius: 999px; }
 /* Entrada em cascata, CSS puro (Server Component, zero JS): avatar/título
-   primeiro, cada botão 45ms depois do anterior via --i. Quem prefere menos
-   movimento vê a página pronta, sem animação. */
+   primeiro, cada botão 45ms depois do anterior via --i. É o ÚNICO motion da
+   página — o page-load orquestrado da linguagem "instrumento técnico", em vez
+   de micro-interações espalhadas. Duração e easing saem dos motionTokens do
+   app. Quem prefere menos movimento vê a página pronta, sem animação. */
 @keyframes bio-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-.bio-page [data-bio-rise] { animation: bio-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--i, 0) * 45ms); }
+.bio-page [data-bio-rise] { animation: bio-rise ${motionTokens.duration.slower} ${motionTokens.easing.out} both; animation-delay: calc(var(--i, 0) * 45ms); }
 @media (prefers-reduced-motion: reduce) { .bio-page [data-bio-rise] { animation: none; } }
 `,
         }}
@@ -87,9 +99,9 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
         sx={{
           minHeight: "100dvh",
           width: "100%",
+          // Canvas chapado, de propósito: a profundidade da página vem do
+          // hairline de cada elemento, nunca de um wash/glow de fundo.
           bgcolor: palette.background,
-          backgroundImage: palette.backgroundImage,
-          backgroundRepeat: "no-repeat",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -129,8 +141,11 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
             style={{ "--i": 1 } as React.CSSProperties}
             sx={{
               mt: 2.5,
+              // Space Grotesk 700: a voz de heading do produto. O peso 800
+              // anterior era sintético — a fonte é carregada em 400/500/700.
+              fontFamily: BIO_FONT_DISPLAY,
               fontSize: "clamp(1.5rem, 1.2rem + 1.4vw, 1.875rem)",
-              fontWeight: 800,
+              fontWeight: 700,
               lineHeight: 1.2,
               letterSpacing: "-0.02em",
               color: palette.textPrimary,

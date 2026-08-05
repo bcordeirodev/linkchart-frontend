@@ -1,93 +1,104 @@
 /**
- * Local color tokens for the public bio page.
+ * Local design tokens (color + brand font stacks) for the public bio page.
  *
  * The page deliberately does NOT read `useTheme()` / the app's light-dark
  * toggle: `theme` here comes from the bio payload (the page owner's choice),
  * not from the visitor's app preference — a logged-out visitor from
- * Instagram never sees the app chrome at all. Every value below is pulled
- * from the existing design system (`src/lib/theme/colors/*` and
- * `publicActionColors.ts`) — no new colors are introduced; the "new" fields
- * (background wash, selection, scrollbar, glow, focus ring) are all alpha
- * derivations of the same two hexes (`ANALYTICS_GRADIENT_FROM/TO`) already
- * used for the avatar, so every accent on the page reads as one signature
- * rather than several unrelated ones.
+ * Instagram never sees the app chrome at all. Both branches are first-class:
+ * `dark` renders the "instrumento técnico" near-black grammar, `light`
+ * renders its exact light-mode equivalent (light canvas, dark text, the same
+ * hairline/veil roles resolved from the light neutrals).
+ *
+ * Every value is pulled from the app's own design system
+ * (`src/lib/theme/colors/*`, `surfaceOverlayTokens`) — the page introduces no
+ * color of its own. The single accent is the product's primary blue; the
+ * violet→blue gradient this module used to carry (`ANALYTICS_GRADIENT_*`, in
+ * the avatar fallback, the page's radial wash and every hover glow) is gone
+ * with the 2026-08-04 "instrumento técnico" pass: "gradiente radial roxo
+ * sobre dark" is named in the redesign spec as the AI-template tell this
+ * product is moving away from. Depth now comes from a hairline over a flat
+ * canvas, never from a glow.
  */
 import { alpha } from "@mui/material/styles";
 
-import { darkNeutral } from "@/lib/theme/colors/dark";
-import { lightNeutral } from "@/lib/theme/colors/light";
+import { darkNeutral, darkPrimary } from "@/lib/theme/colors/dark";
+import { lightNeutral, lightPrimary } from "@/lib/theme/colors/light";
 import {
-  ANALYTICS_GRADIENT_FROM,
-  ANALYTICS_GRADIENT_TO,
-} from "@/lib/theme/publicActionColors";
+  surfaceOverlayTokens,
+  typographyScale,
+} from "@/lib/theme/designSystem";
 
 import type { BioTheme } from "./types";
 
-/** Fully resolved color set a bio page component needs to render itself. */
-export interface BioPalette {
-  /** Page background (flat fallback painted under `backgroundImage`). */
-  background: string;
-  /** Primary text color (title, button labels). */
-  textPrimary: string;
-  /** Secondary/muted text color (bio copy, footer badge). */
-  textSecondary: string;
-  /** Link-button resting background. */
-  buttonBg: string;
-  /** Link-button hover/active background. */
-  buttonBgHover: string;
-  /** Link-button border. */
-  buttonBorder: string;
-  /** Avatar initial gradient — same in both themes, it's the page's signature. */
-  avatarGradient: string;
-  /** Soft ambient glow rendered close behind the avatar. */
-  avatarGlow: string;
-  /**
-   * Full-page `background-image`: a brand-tinted radial wash anchored above
-   * the avatar plus a barely-there vertical tonal shift (surface → base
-   * color). Layered *under* {@link avatarGlow}, which stays a tighter,
-   * brighter accent right behind the circle — near light + far ambient,
-   * so dark and light both read as deliberately lit rather than flat-filled.
-   */
-  backgroundImage: string;
-  /** Brand-tinted highlight for selected text (`::selection`). */
-  selectionBg: string;
-  /** Brand-tinted, page-scoped scrollbar thumb color. */
-  scrollbarThumb: string;
-  /** Soft brand-tinted glow behind interactive elements on hover (box-shadow). */
-  interactiveGlow: string;
-  /** Brand-tinted keyboard focus ring, strong enough to read on both themes. */
-  focusRing: string;
-}
-
-const AVATAR_GRADIENT = `linear-gradient(135deg, ${ANALYTICS_GRADIENT_FROM} 0%, ${ANALYTICS_GRADIENT_TO} 100%)`;
+/**
+ * Display stack (Space Grotesk) for the page's two "voice" glyphs: the `<h1>`
+ * title and the avatar's initial-letter fallback. Same string the app's MUI
+ * theme uses for headings (`lib/theme/config/muiComponents.ts`), repeated
+ * here rather than imported because this page renders outside the MUI theme
+ * on purpose (see the module docstring) and that constant is private to the
+ * theme config.
+ */
+export const BIO_FONT_DISPLAY =
+  "var(--font-space-grotesk), Inter, ui-sans-serif, system-ui, sans-serif";
 
 /**
- * Builds the shared multi-layer `background-image` value for a theme: two
- * brand-hued radial washes (violet upper-left of center, blue upper-right)
- * over a subtle top-to-base tonal gradient. CSS paints the first-listed
- * layer on top, so the radials sit above the tonal wash and let it show
- * through their transparent edges.
- *
- * @param glowFromAlpha - opacity of the violet radial (`ANALYTICS_GRADIENT_FROM`).
- * @param glowToAlpha - opacity of the blue radial (`ANALYTICS_GRADIENT_TO`).
- * @param tonalFrom - top color of the base tonal wash (a lighter/elevated neutral).
- * @param tonalTo - color the tonal wash settles into (the page's flat background).
+ * Mono stack (JetBrains Mono) for the page's technical text — each item's
+ * destination host and the footer stamp. Sourced from the app's single mono
+ * token so the bio page can never drift from the rest of the product.
  */
-function buildBackgroundImage(
-  glowFromAlpha: number,
-  glowToAlpha: number,
-  tonalFrom: string,
-  tonalTo: string,
-): string {
-  return [
-    `radial-gradient(120% 55% at 50% -12%, ${alpha(ANALYTICS_GRADIENT_FROM, glowFromAlpha)} 0%, transparent 62%)`,
-    `radial-gradient(70% 38% at 84% -4%, ${alpha(ANALYTICS_GRADIENT_TO, glowToAlpha)} 0%, transparent 58%)`,
-    `linear-gradient(180deg, ${tonalFrom} 0%, ${tonalTo} 38%)`,
-  ].join(", ");
+export const BIO_FONT_MONO = typographyScale.code.fontFamily;
+
+/** Fully resolved color set a bio page component needs to render itself. */
+export interface BioPalette {
+  /** Page canvas — flat, no wash, no gradient. */
+  background: string;
+  /** Primary text color (title, item labels). */
+  textPrimary: string;
+  /** Secondary/muted text (bio copy, destination host, footer stamp). */
+  textSecondary: string;
+  /**
+   * Translucent veil shared by every raised element (item rows, social icon
+   * circles, the avatar's fallback disc) — the app's card surface, same
+   * `surfaceOverlayTokens.card` alpha every in-page card uses. A veil over
+   * the canvas, never an opaque lighter grey.
+   */
+  surface: string;
+  /** {@link surface} one step stronger — hover/active state only. */
+  surfaceHover: string;
+  /** Low-contrast 1px border. This is what creates elevation on this page. */
+  hairline: string;
+  /** {@link hairline} one step stronger — hover/active state only. */
+  hairlineStrong: string;
+  /**
+   * The page's only accent: the product's primary blue. Spent on the avatar
+   * monogram and the keyboard focus ring, nothing else.
+   */
+  accent: string;
+  /** Accent-tinted highlight for selected text (`::selection`). */
+  selectionBg: string;
+  /** Neutral, page-scoped scrollbar thumb color. */
+  scrollbarThumb: string;
+  /** Keyboard focus ring — the accent at full strength, on both themes. */
+  focusRing: string;
+  /**
+   * Value for the page-scoped CSS `color-scheme`. The page opts out of the
+   * app's theme provider, so without this the browser would still paint its
+   * own chrome (native scrollbars, form controls, the iOS status-bar tint it
+   * samples from the canvas) for the *visitor's* preference — a light bio
+   * page could end up with dark native scrollbars and vice versa.
+   */
+  colorScheme: "light" | "dark";
 }
 
 /**
  * Resolves the color set for a given bio page theme.
+ *
+ * The two branches are deliberately symmetric: same roles, same order, each
+ * resolved from its own neutral ramp. `surfaceHover` is the one value with no
+ * shared token — it is ~1.7× the card veil in both themes (the same "one step
+ * above the card" derivation `getLinksInsetBg` uses in `/links`), because a
+ * hover state has to separate itself from a surface that is already
+ * translucent.
  *
  * @param theme - `"dark"` (product default) or `"light"`, as chosen by the
  *   page owner.
@@ -99,21 +110,15 @@ export function getBioPalette(theme: BioTheme): BioPalette {
       background: lightNeutral.bg,
       textPrimary: lightNeutral.text.primary,
       textSecondary: lightNeutral.text.secondary,
-      buttonBg: lightNeutral.surface,
-      buttonBgHover: lightNeutral.input,
-      buttonBorder: lightNeutral.border.default,
-      avatarGradient: AVATAR_GRADIENT,
-      avatarGlow: alpha(ANALYTICS_GRADIENT_TO, 0.28),
-      backgroundImage: buildBackgroundImage(
-        0.1,
-        0.07,
-        lightNeutral.surface,
-        lightNeutral.bg,
-      ),
-      selectionBg: alpha(ANALYTICS_GRADIENT_TO, 0.25),
-      scrollbarThumb: alpha(ANALYTICS_GRADIENT_TO, 0.35),
-      interactiveGlow: alpha(ANALYTICS_GRADIENT_TO, 0.2),
-      focusRing: alpha(ANALYTICS_GRADIENT_TO, 0.6),
+      surface: alpha("#000000", surfaceOverlayTokens.card.light),
+      surfaceHover: alpha("#000000", 0.055),
+      hairline: lightNeutral.border.default,
+      hairlineStrong: lightNeutral.border.strong,
+      accent: lightPrimary.main,
+      selectionBg: alpha(lightPrimary.main, 0.2),
+      scrollbarThumb: lightNeutral.border.strong,
+      focusRing: lightPrimary.main,
+      colorScheme: "light",
     };
   }
 
@@ -121,20 +126,14 @@ export function getBioPalette(theme: BioTheme): BioPalette {
     background: darkNeutral.bg,
     textPrimary: darkNeutral.text.primary,
     textSecondary: darkNeutral.text.secondary,
-    buttonBg: darkNeutral.surface,
-    buttonBgHover: darkNeutral.elevated,
-    buttonBorder: darkNeutral.border.default,
-    avatarGradient: AVATAR_GRADIENT,
-    avatarGlow: alpha(ANALYTICS_GRADIENT_TO, 0.35),
-    backgroundImage: buildBackgroundImage(
-      0.18,
-      0.12,
-      darkNeutral.elevated,
-      darkNeutral.bg,
-    ),
-    selectionBg: alpha(ANALYTICS_GRADIENT_TO, 0.35),
-    scrollbarThumb: alpha(ANALYTICS_GRADIENT_TO, 0.45),
-    interactiveGlow: alpha(ANALYTICS_GRADIENT_TO, 0.3),
-    focusRing: alpha(ANALYTICS_GRADIENT_TO, 0.6),
+    surface: alpha("#FFFFFF", surfaceOverlayTokens.card.dark),
+    surfaceHover: alpha("#FFFFFF", 0.075),
+    hairline: darkNeutral.border.default,
+    hairlineStrong: darkNeutral.border.strong,
+    accent: darkPrimary.main,
+    selectionBg: alpha(darkPrimary.main, 0.32),
+    scrollbarThumb: darkNeutral.border.strong,
+    focusRing: darkPrimary.main,
+    colorScheme: "dark",
   };
 }

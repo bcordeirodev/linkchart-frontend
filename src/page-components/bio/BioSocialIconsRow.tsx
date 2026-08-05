@@ -28,13 +28,14 @@ export interface BioSocialIconsRowProps {
  * Zero client JS, same as `BioLinkButton` — every interaction state below is
  * pure CSS.
  *
- * Hover/focus reuse `BioLinkButton`'s exact recipe (the gradient-border
- * reveal via the double-background clip trick, the same glow/translate on
- * hover, the same focus ring) scaled down to a 44px circle — the same accent
- * spent a third time (avatar, link buttons, now icons) so the page reads as
- * one system. The glyph's own color never changes on interaction — only the
- * circle's chrome does — matching how `BioLinkButton`'s outward arrow stays
- * one constant color throughout.
+ * Surface and interaction states are `BioLinkButton`'s exact recipe scaled
+ * down to a 44px circle — translucent veil + hairline at rest, both stepped
+ * one notch on hover/active, the same focus ring — so the row reads as the
+ * same system as the items below it. (Before 2026-08-04 this shared the old
+ * gradient-border reveal and colored glow instead; the recipe changed, the
+ * "identical to a link button" rule did not.) The glyph's own color never
+ * changes on interaction — only the circle's chrome does — matching how
+ * `BioLinkButton`'s outward arrow stays one constant color throughout.
  *
  * Renders nothing when `items` is empty, so callers can include it
  * unconditionally without an extra length check.
@@ -74,38 +75,23 @@ export function BioSocialIconsRow({ items, palette }: BioSocialIconsRowProps) {
             alignItems: "center",
             justifyContent: "center",
             borderRadius: "50%",
-            backgroundColor: palette.buttonBg,
-            border: `1px solid ${palette.buttonBorder}`,
+            backgroundColor: palette.surface,
+            border: `1px solid ${palette.hairline}`,
             color: palette.textSecondary,
             textDecoration: "none",
             WebkitTapHighlightColor: "transparent",
-            transition:
-              "transform 160ms ease, box-shadow 200ms ease, background-color 160ms ease, border-color 160ms ease",
-            "@media (prefers-reduced-motion: reduce)": {
-              transition:
-                "box-shadow 200ms ease, background-color 160ms ease, border-color 160ms ease",
-            },
+            transition: "background-color 160ms ease, border-color 160ms ease",
             "&:hover": {
-              backgroundColor: palette.buttonBgHover,
-              borderColor: "transparent",
-              backgroundImage: `linear-gradient(${palette.buttonBgHover}, ${palette.buttonBgHover}), ${palette.avatarGradient}`,
-              backgroundOrigin: "border-box",
-              backgroundClip: "padding-box, border-box",
-              boxShadow: `0 10px 24px -12px ${palette.interactiveGlow}`,
-              "@media (prefers-reduced-motion: no-preference)": {
-                transform: "translateY(-1px)",
-              },
+              backgroundColor: palette.surfaceHover,
+              borderColor: palette.hairlineStrong,
             },
             "&:focus-visible": {
               outline: `2px solid ${palette.focusRing}`,
               outlineOffset: 2,
             },
             "&:active": {
-              backgroundColor: palette.buttonBgHover,
-              boxShadow: `0 4px 14px -10px ${palette.interactiveGlow}`,
-              "@media (prefers-reduced-motion: no-preference)": {
-                transform: "translateY(0) scale(0.96)",
-              },
+              backgroundColor: palette.surfaceHover,
+              borderColor: palette.hairlineStrong,
             },
           }}
         >
