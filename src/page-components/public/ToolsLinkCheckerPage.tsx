@@ -20,6 +20,7 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { typographyScale } from "@/lib/theme/designSystem";
 import { ICON_MD, ICON_SM, ICON_XL } from "@/lib/theme/iconDefaults";
 import {
   getPublicElevatedSx,
@@ -51,6 +52,23 @@ interface VerdictPresentation {
   titleKey: "safeTitle" | "suspiciousTitle" | "dangerousTitle";
   bodyKey: "safeBody" | "suspiciousBody" | "dangerousBody";
 }
+
+/**
+ * Control height for the URL field, matching the app's public-form grammar
+ * (44-48px tap targets, not the dashboard's compact 36px default). The submit
+ * button shares it so the row stays visually level.
+ */
+const CONTROL_HEIGHT = 44;
+
+/**
+ * `sx` applied to the URL text field: fixes the `OutlinedInput` root at
+ * {@link CONTROL_HEIGHT} and re-centers the input text inside it (the
+ * theme's default input padding assumes the shorter dashboard height).
+ */
+const controlHeightSx = {
+  "& .MuiOutlinedInput-root": { height: CONTROL_HEIGHT },
+  "& input": { height: "100%", boxSizing: "border-box", py: 0 },
+} as const;
 
 /** Static per-verdict icon + copy mapping (colors come from the theme at render). */
 const VERDICT_PRESENTATION: Record<LinkVerdict, VerdictPresentation> = {
@@ -248,7 +266,10 @@ export function ToolsLinkCheckerPage() {
                 }}
               >
                 {t("checker.verdict.checkedUrlLabel")}{" "}
-                <Box component="span" sx={{ fontFamily: "monospace" }}>
+                <Box
+                  component="span"
+                  sx={{ fontFamily: typographyScale.code.fontFamily }}
+                >
                   {state.checkedUrl}
                 </Box>
               </Typography>
@@ -324,6 +345,7 @@ export function ToolsLinkCheckerPage() {
                   value={inputUrl}
                   onChange={(event) => setInputUrl(event.target.value)}
                   error={isInvalid}
+                  sx={controlHeightSx}
                 />
                 <Button
                   type="submit"
@@ -341,6 +363,7 @@ export function ToolsLinkCheckerPage() {
                     flexShrink: 0,
                     whiteSpace: "nowrap",
                     px: 3,
+                    minHeight: CONTROL_HEIGHT,
                   }}
                 >
                   {isChecking
@@ -531,6 +554,9 @@ export function ToolsLinkCheckerPage() {
         <ToolsFaq i18nKey="checker" />
 
         {/* ---- CTA ---- */}
+        {/* No `headerIcon`: the icon-chip beside the title is the pattern the
+            "instrumento técnico" language banned on `/` and `/shorter`
+            (2026-08-04) — the title now opens this card alone here too. */}
         <SignUpCtaCard
           title={t("checker.cta.title")}
           description={t("checker.cta.description")}
@@ -538,7 +564,6 @@ export function ToolsLinkCheckerPage() {
             t("checker.cta.features", { returnObjects: true }) as string[]
           }
           ctaLabel={t("checker.cta.button")}
-          headerIcon={<ShieldCheck {...ICON_SM} />}
           sx={getPublicFocalSx(theme)}
         />
       </Box>
