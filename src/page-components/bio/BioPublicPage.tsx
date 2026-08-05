@@ -3,6 +3,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import BioAvatar from "./BioAvatar";
 import BioFooterBadge from "./BioFooterBadge";
 import BioLinkButton from "./BioLinkButton";
+import { BioSocialIconsRow } from "./BioSocialIconsRow";
 import { getBioPalette } from "./bioPalette";
 
 import type { BioPageData } from "./types";
@@ -46,6 +47,13 @@ function getAvatarInitial(title: string, handle: string): string {
 export default function BioPublicPage({ data }: BioPublicPageProps) {
   const palette = getBioPalette(data.theme);
   const initial = getAvatarInitial(data.title, data.handle);
+
+  // Split once, up front: icons render in their own row above the button
+  // list, never inside it. `display` is optional (older cached payloads
+  // predate the field), so anything other than an explicit `"icon"` renders
+  // as a button — the pre-existing behavior for every item today.
+  const iconItems = data.items.filter((item) => item.display === "icon");
+  const linkItems = data.items.filter((item) => item.display !== "icon");
 
   return (
     <>
@@ -156,9 +164,11 @@ html:has(.bio-page)::-webkit-scrollbar-thumb { background-color: ${palette.scrol
             </Typography>
           ) : null}
 
-          {data.items.length > 0 ? (
+          <BioSocialIconsRow items={iconItems} palette={palette} />
+
+          {linkItems.length > 0 ? (
             <Stack spacing={1.5} sx={{ width: "100%", mt: 4 }}>
-              {data.items.map((item, index) => (
+              {linkItems.map((item, index) => (
                 <Box
                   key={item.id}
                   data-bio-rise

@@ -31,6 +31,8 @@ function buildExampleItems(t: (key: string) => string): BioItem[] {
       url: "#",
       clicks: 0,
       faviconUrl: null,
+      display: "item",
+      socialPlatform: null,
     },
     {
       id: -2,
@@ -41,6 +43,8 @@ function buildExampleItems(t: (key: string) => string): BioItem[] {
       url: "#",
       clicks: 0,
       faviconUrl: null,
+      display: "item",
+      socialPlatform: null,
     },
     {
       id: -3,
@@ -51,6 +55,8 @@ function buildExampleItems(t: (key: string) => string): BioItem[] {
       url: "#",
       clicks: 0,
       faviconUrl: null,
+      display: "item",
+      socialPlatform: null,
     },
   ];
 }

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { darkNeutral } from "@/lib/theme/colors/dark";
 import { lightNeutral } from "@/lib/theme/colors/light";
+import { SocialPlatformIcon } from "@/shared/ui/icons";
 
 import { getAvatarInitial } from "../utils/avatarInitial";
 
@@ -83,6 +84,14 @@ export interface BioPreviewPhoneProps {
  * deliberately NOT pixel-identical to the real public page (that page is
  * owned by a different part of the app); it exists to give instant visual
  * feedback on theme, copy and item order while editing.
+ *
+ * Mirrors the real public page's one structural decision that isn't just
+ * theming: `display: "icon"` items render as a small centered row of round
+ * glyphs above the item list, never inside it — same split, same position
+ * (under the bio text), a local re-implementation rather than reusing
+ * `BioSocialIconsRow` (that component depends on `page-components/bio`'s
+ * richer `BioPalette`, which this file deliberately does not import — see
+ * the module docstring above `THEME_PALETTES`).
  */
 export function BioPreviewPhone({
   address,
@@ -97,6 +106,10 @@ export function BioPreviewPhone({
   const activeItems = [...items]
     .filter((item) => item.isActive)
     .sort((a, b) => a.position - b.position);
+  // Same split as the real public page (`BioPublicPage`): icons render in
+  // their own row above the button list, never inside it.
+  const iconItems = activeItems.filter((item) => item.display === "icon");
+  const linkItems = activeItems.filter((item) => item.display !== "icon");
 
   const displayTitle = title.trim() || t("preview.placeholderTitle");
   const displayBio = bio.trim();
@@ -299,6 +312,42 @@ export function BioPreviewPhone({
             </Box>
 
             <Stack spacing={1.25} sx={{ width: "100%", mt: 1 }}>
+              {/* Same split as the real public page: icons render in their
+                  own centered row, above the item buttons — never mixed
+                  into that list, and never mistaken for "no items" below. */}
+              {iconItems.length > 0 ? (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  justifyContent="center"
+                  flexWrap="wrap"
+                >
+                  {iconItems.map((item) => (
+                    <Box
+                      key={item.id}
+                      aria-hidden
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        flexShrink: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "50%",
+                        border: `1px solid ${palette.surfaceBorder}`,
+                        bgcolor: palette.surface,
+                        color: palette.text,
+                      }}
+                    >
+                      <SocialPlatformIcon
+                        platform={item.socialPlatform ?? "website"}
+                        size={16}
+                      />
+                    </Box>
+                  ))}
+                </Stack>
+              ) : null}
+
               {activeItems.length === 0 ? (
                 <Typography
                   sx={{
@@ -311,7 +360,7 @@ export function BioPreviewPhone({
                   {t("preview.noItems")}
                 </Typography>
               ) : (
-                activeItems.map((item) => (
+                linkItems.map((item) => (
                   <Box
                     key={item.id}
                     sx={{

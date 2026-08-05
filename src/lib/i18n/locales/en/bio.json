@@ -140,6 +140,7 @@
     },
     "addDialog": {
       "title": "Add link",
+      "menuLinkOption": "Link",
       "searchPlaceholder": "Search by title or address",
       "noLinksAtAll": "You haven't created any links yet.",
       "createLinkCta": "Create a link",
@@ -153,6 +154,38 @@
       "reorderGeneric": "We couldn't reorder your links. Please try again."
     },
     "viewStats": "View stats",
-    "hiddenBadge": "Hidden"
+    "hiddenBadge": "Hidden",
+    "icon": {
+      "addDialog": {
+        "title": "Add social icon",
+        "menuIconOption": "Social icon",
+        "hint": "Choose the social network and which of your links the icon opens."
+      },
+      "platformLabel": "Social network",
+      "changePlatform": "Change social network"
+    }
+  },
+  "socialPlatforms": {
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "youtube": "YouTube",
+    "x": "X (Twitter)",
+    "whatsapp": "WhatsApp",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "website": "Website"
+  },
+  "performance": {
+    "heading": "Performance",
+    "totalClicksLabel": "Total clicks",
+    "periodLabel": "Period",
+    "periods": {
+      "7d": "7 days",
+      "30d": "30 days",
+      "90d": "90 days",
+      "all": "All time"
+    },
+    "empty": "No clicks recorded in this period yet.",
+    "unavailable": "Performance data isn't available right now."
   }
 }

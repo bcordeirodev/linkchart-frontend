@@ -1,34 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  InputAdornment,
-  List,
-  ListItem,
-  Skeleton,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import NextLink from "next/link";
+import { Alert, DialogContent, DialogTitle } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { useLinks } from "@/features/links/hooks/useLinks";
-import { typographyScale } from "@/lib/theme";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
-import { AppIcon } from "@/shared/ui/icons";
 
 import { useAddBioItem } from "../hooks/useBioItems";
+import { BioLinkPicker } from "./BioLinkPicker";
 
-import type { ID, LinkResponse } from "@/types";
+import type { ID } from "@/types";
 
 export interface AddBioItemDialogProps {
   open: boolean;
@@ -39,19 +19,12 @@ export interface AddBioItemDialogProps {
   limitReached: boolean;
 }
 
-/** Case-insensitive match over a link's title, slug and short URL. */
-function matchesSearch(link: LinkResponse, query: string): boolean {
-  if (!query.trim()) return true;
-  const haystack =
-    `${link.title ?? ""} ${link.slug} ${link.short_url}`.toLowerCase();
-  return haystack.includes(query.trim().toLowerCase());
-}
-
 /**
- * Dialog to add one of the authenticated user's existing links as a bio
- * page button. Reuses `useLinks()` (read-only, `@/features/links/hooks`) for
- * the candidate list — never lists a link already on the page, and disables
- * every add action once `limitReached`.
+ * Dialog to add one of the authenticated user's existing links as a plain
+ * bio page button (`display: "item"`, the default — see `AddBioIconDialog`
+ * for the social-icon counterpart). Search/list/empty-state UI lives in
+ * `BioLinkPicker`; this component only supplies the title chrome and the
+ * `useAddBioItem` mutation `BioLinkPicker` calls per pick.
  */
 export function AddBioItemDialog({
   open,
@@ -60,42 +33,10 @@ export function AddBioItemDialog({
   limitReached,
 }: AddBioItemDialogProps) {
   const { t } = useTranslation("bio");
-  const { links, loading } = useLinks();
   const addItem = useAddBioItem();
 
-  const [query, setQuery] = useState("");
-  const [pendingLinkId, setPendingLinkId] = useState<ID | null>(null);
-  const [dialogError, setDialogError] = useState<string | null>(null);
-
-  const existingIdSet = useMemo(
-    () => new Set(existingLinkIds.map(String)),
-    [existingLinkIds],
-  );
-
-  const candidates = links
-    .filter((link) => !existingIdSet.has(String(link.id)))
-    .filter((link) => matchesSearch(link, query));
-
-  const handleAdd = async (link: LinkResponse) => {
-    setDialogError(null);
-    setPendingLinkId(link.id);
-    try {
-      await addItem.mutateAsync({ linkId: link.id });
-    } catch {
-      setDialogError(t("items.errors.addGeneric"));
-    } finally {
-      setPendingLinkId(null);
-    }
-  };
-
-  const handleClose = () => {
-    setQuery("");
-    setDialogError(null);
-    onClose();
-  };
-
   return (
-    <ResponsiveDialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <ResponsiveDialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t("items.addDialog.title")}</DialogTitle>
       <DialogContent
         sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
@@ -103,118 +44,12 @@ export function AddBioItemDialog({
         {limitReached ? (
           <Alert severity="info">{t("items.limitReachedNotice")}</Alert>
         ) : null}
-        {dialogError ? <Alert severity="error">{dialogError}</Alert> : null}
 
-        <TextField
-          size="small"
-          fullWidth
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t("items.addDialog.searchPlaceholder")}
-          disabled={limitReached}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
-                </InputAdornment>
-              ),
-            },
-          }}
+        <BioLinkPicker
+          existingLinkIds={existingLinkIds}
+          limitReached={limitReached}
+          onPick={(link) => addItem.mutateAsync({ linkId: link.id })}
         />
-
-        {loading ? (
-          <Stack spacing={1}>
-            <Skeleton variant="rounded" height={56} />
-            <Skeleton variant="rounded" height={56} />
-          </Stack>
-        ) : links.length === 0 ? (
-          <Box sx={{ textAlign: "center", py: 3 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-              {t("items.addDialog.noLinksAtAll")}
-            </Typography>
-            <Button
-              component={NextLink}
-              href="/links/create"
-              variant="outlined"
-              size="small"
-            >
-              {t("items.addDialog.createLinkCta")}
-            </Button>
-          </Box>
-        ) : candidates.length === 0 ? (
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ textAlign: "center", py: 3 }}
-          >
-            {t("items.addDialog.noResults")}
-          </Typography>
-        ) : (
-          <List disablePadding sx={{ maxHeight: 360, overflowY: "auto" }}>
-            {candidates.map((link) => (
-              <ListItem
-                key={String(link.id)}
-                disablePadding
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 1,
-                  py: 1,
-                  px: 0.5,
-                  borderBottom: "1px solid",
-                  borderColor: "divider",
-                  "&:last-of-type": { borderBottom: "none" },
-                }}
-              >
-                <Box sx={{ minWidth: 0, flex: 1 }}>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontWeight: 600,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {link.title?.trim() || link.slug}
-                  </Typography>
-                  {/* Uma linha só: a URL curta sem esquema já diz o domínio e
-                      o slug — sem chip, sem duplicar informação. Mono: mesma
-                      URL curta do produto tratada em BioItemRow. */}
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{
-                      display: "block",
-                      mt: 0.25,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      fontFamily: typographyScale.code.fontFamily,
-                    }}
-                  >
-                    {link.short_url.replace(/^https?:\/\//, "")}
-                  </Typography>
-                </Box>
-                <IconButton
-                  size="small"
-                  color="primary"
-                  aria-label={t("items.addDialog.addAction")}
-                  onClick={() => void handleAdd(link)}
-                  disabled={limitReached || addItem.isPending}
-                >
-                  {pendingLinkId === link.id ? (
-                    <CircularProgress size={18} />
-                  ) : (
-                    <AppIcon intent="create" size={18} />
-                  )}
-                </IconButton>
-              </ListItem>
-            ))}
-          </List>
-        )}
       </DialogContent>
     </ResponsiveDialog>
   );
