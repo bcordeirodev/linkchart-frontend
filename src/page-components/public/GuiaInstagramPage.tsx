@@ -2,11 +2,12 @@
 
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { ArrowRight, BarChart3, Instagram, Link2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { PublicCtaBlock } from "@/features/public-analytics/components/info/PublicCtaBlock";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
+import { typographyScale } from "@/lib/theme";
 import {
   getPublicElevatedSx,
   getPublicSectionHeadingSx,
@@ -54,9 +55,6 @@ export function GuiaInstagramPage() {
   const metrics = t("guiaInstagram.metrics.items", {
     returnObjects: true,
   }) as MetricItem[];
-
-  /** Lucide icons, index-aligned with the i18n steps array (bio/Stories, short link, analytics). */
-  const stepIcons = [Instagram, Link2, BarChart3];
 
   return (
     <PublicLayout variant="simple" chrome="minimal">
@@ -110,7 +108,6 @@ export function GuiaInstagramPage() {
           >
             {Array.isArray(steps) &&
               steps.map((step, i) => {
-                const Icon = stepIcons[i] ?? Link2;
                 const isLast = i === steps.length - 1;
                 return (
                   <Box
@@ -132,54 +129,32 @@ export function GuiaInstagramPage() {
                         gap: 1,
                       }}
                     >
-                      <Box
+                      {/* No icon-chip beside the step title — the banned
+                          decorative pattern. The number alone marks the
+                          sequence, in the monospace face like the app's other
+                          technical indices (zero-padded "01/02/03" reads as a
+                          counter, not a display headline). */}
+                      <Typography
+                        component="span"
+                        aria-hidden
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          gap: 1,
+                          fontFamily: typographyScale.code.fontFamily,
+                          fontSize: "1.375rem",
+                          fontWeight: 600,
+                          color: alpha(primary, isDark ? 0.6 : 0.55),
+                          fontVariantNumeric: "tabular-nums",
+                          lineHeight: 1,
                         }}
                       >
-                        <Box
-                          aria-hidden
-                          sx={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: "10px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
-                            color: primary,
-                            bgcolor: alpha(primary, isDark ? 0.14 : 0.1),
-                            border: `1px solid ${alpha(primary, 0.28)}`,
-                          }}
-                        >
-                          <Icon size={20} strokeWidth={2} />
-                        </Box>
-                        <Typography
-                          component="span"
-                          aria-hidden
-                          sx={{
-                            fontSize: "1.25rem",
-                            fontWeight: 800,
-                            letterSpacing: "-0.02em",
-                            color: alpha(primary, isDark ? 0.55 : 0.5),
-                            fontVariantNumeric: "tabular-nums",
-                            lineHeight: 1,
-                          }}
-                        >
-                          {step.number}
-                        </Typography>
-                      </Box>
+                        {step.number}
+                      </Typography>
                       <Typography
                         component="h3"
                         sx={{
                           fontSize: "0.9375rem",
                           fontWeight: 700,
                           color: theme.palette.text.primary,
-                          mt: 0.5,
-                          mb: 0,
+                          m: 0,
                         }}
                       >
                         {step.title}
@@ -238,6 +213,7 @@ export function GuiaInstagramPage() {
                 fontSize: "0.9375rem",
                 lineHeight: 1.7,
                 color: alpha(theme.palette.text.primary, isDark ? 0.8 : 0.82),
+                maxWidth: 680,
                 m: 0,
               }}
             >
@@ -342,12 +318,16 @@ export function GuiaInstagramPage() {
             bgcolor: alpha(primary, isDark ? 0.06 : 0.04),
           }}
         >
+          {/* `variant="h3"` brings in the Space Grotesk display face (see
+              GuideHero for the full rationale); `component` alone would leave
+              this heading in the default body typeface. */}
           <Typography
             id="guia-auto-heading"
+            variant="h3"
             component="h2"
             sx={{
               fontSize: { xs: "1.15rem", md: "1.35rem" },
-              fontWeight: 800,
+              fontWeight: 700,
               color: theme.palette.text.primary,
               mb: 1,
             }}
@@ -360,6 +340,7 @@ export function GuiaInstagramPage() {
               fontSize: "0.9375rem",
               lineHeight: 1.65,
               color: alpha(theme.palette.text.primary, isDark ? 0.8 : 0.82),
+              maxWidth: 680,
             }}
           >
             {t("guiaInstagram.auto.body")}
