@@ -7,6 +7,7 @@ import { getPublicChartAnimations } from "@/lib/theme/publicChartTheme";
 import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 
 import { PublicChartCard } from "./ChartCard";
+import { integerTickAmount } from "./integerTicks";
 
 interface TopCountriesChartProps {
   /** Country data slice — country name + click count. */
@@ -34,6 +35,8 @@ export function TopCountriesChart({ data }: TopCountriesChartProps) {
     },
   ];
 
+  const maxClicks = data.reduce((max, d) => Math.max(max, d.clicks), 0);
+
   const options = {
     chart: { animations: getPublicChartAnimations(reducedMotion) },
     plotOptions: { bar: { horizontal: true, barHeight: "60%" } },
@@ -46,7 +49,7 @@ export function TopCountriesChart({ data }: TopCountriesChartProps) {
       },
       formatter: (val: number) => val.toString(),
     },
-    xaxis: { type: "numeric" as const },
+    xaxis: { type: "numeric" as const, ...integerTickAmount(maxClicks) },
   };
 
   return (
