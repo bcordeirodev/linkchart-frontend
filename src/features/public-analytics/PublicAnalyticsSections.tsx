@@ -5,6 +5,7 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getPublicDisplaySx } from "@/lib/theme/publicPageStyles";
+import { getShortUrl } from "@/lib/utils/shortUrl";
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import { PublicAnalyticsSkeleton } from "@/shared/ui/feedback/skeletons";
 
@@ -121,7 +122,7 @@ function PublicAnalyticsSections({
       <Box className="reveal reveal-4">
         <PublicCharts
           analyticsData={analyticsData}
-          shortUrl={linkData.short_url}
+          shortUrl={getShortUrl(linkData.short_url)}
         />
       </Box>
 
