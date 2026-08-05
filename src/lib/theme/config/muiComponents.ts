@@ -344,16 +344,30 @@ const surfaceComponents = {
  * Configurações de navegação e controles
  */
 const navigationComponents = {
+  // The level-1 underline itself. `Tabs` defaults to a 2px `primary`
+  // indicator, but with square corners — so the cycle-1 screens each
+  // re-declared the same rounded bar through their own `TabIndicatorProps`,
+  // and a tab band added anywhere else in the app silently got a slightly
+  // different underline. Declaring it once here makes the underline part of
+  // the grammar instead of a per-screen detail; the L2 sub-tabs, which carry
+  // no underline at all, keep hiding it via their own `TabIndicatorProps`.
+  MuiTabs: {
+    styleOverrides: {
+      indicator: {
+        height: 2,
+        borderTopLeftRadius: 2,
+        borderTopRightRadius: 2,
+      },
+    },
+  },
   // Level-1 underline grammar (2026-08-04): a selected tab used to get a
   // navy background fill here — the same "filled pill" language the L2
   // sub-tabs and L3 filter segments also use, which made three different
   // roles (section nav / view switch / data filter) read as one three-deep
   // drill-down. The active state is now carried by weight + text.primary +
-  // MUI's own default 2px `primary` indicator (`Tabs`' `indicatorColor`
-  // defaults to `"primary"` and the indicator's default height is already
-  // 2px — nothing to override there). Primary stays reserved for that
-  // underline and for the L3 filter's border/tint; no level fills a tab or
-  // segment with a solid/tinted primary background anymore.
+  // the `MuiTabs` indicator above. Primary stays reserved for that underline
+  // and for the L3 filter's border/tint; no level fills a tab or segment
+  // with a solid/tinted primary background anymore.
   MuiTab: {
     styleOverrides: {
       root: ({ theme }: { theme: Theme }) => ({

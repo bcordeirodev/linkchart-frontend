@@ -217,22 +217,15 @@ export function LinkAnalyticsTabsOptimized({
           variant={isMobile ? "scrollable" : "fullWidth"}
           scrollButtons="auto"
           allowScrollButtonsMobile
-          TabIndicatorProps={{
-            sx: {
-              height: 2,
-              borderTopLeftRadius: 2,
-              borderTopRightRadius: 2,
-            },
-          }}
           sx={{
             // Level 1 — the strongest level, and the only one carrying the
             // primary accent, via the tab indicator underline. Color, hover,
-            // and the (no longer filled) selected state all come from the
-            // global `MuiTab` override in `theme/config/muiComponents.ts` —
-            // it was moved there 2026-08-04 so every tab in the app shares
-            // this grammar instead of only this screen cancelling a
-            // navy-fill override locally. Only the L1-specific scale (52px,
-            // one step above the L2 sub-tabs' 36/40) stays here.
+            // the (no longer filled) selected state *and* the rounded 2px
+            // indicator all come from the global `MuiTab`/`MuiTabs` overrides
+            // in `theme/config/muiComponents.ts` — they were moved there so
+            // every tab in the app shares this grammar instead of this screen
+            // re-declaring it locally. Only the L1-specific scale (52px, one
+            // step above the L2 sub-tabs' 36/40) stays here.
             "& .MuiTab-root": {
               minHeight: 52,
             },

@@ -147,7 +147,14 @@ export function AnalyticsSubTabs({
               "&:hover": {
                 color: "text.primary",
               },
-              "&.Mui-selected": {
+              // `&.Mui-selected:hover` is spelled out, not left to inherit:
+              // the global `MuiTab` override carries its own
+              // `&.Mui-selected:hover` (the level-1 neutral hover fill) at
+              // the same specificity as this rule, so which one wins would
+              // otherwise come down to stylesheet insertion order. Pinning it
+              // here keeps the level-2 pill reading as one steady neutral
+              // fill under the cursor instead of dimming to `action.hover`.
+              "&.Mui-selected, &.Mui-selected:hover": {
                 backgroundColor: theme.palette.action.selected,
                 color: "text.primary",
                 fontWeight: 600,
