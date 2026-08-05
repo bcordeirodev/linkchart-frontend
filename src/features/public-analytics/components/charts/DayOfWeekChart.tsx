@@ -1,12 +1,8 @@
 "use client";
 
-import { Calendar } from "lucide-react";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { chartByType } from "@/lib/theme/colors";
-import { ICON_LG } from "@/lib/theme/iconDefaults";
-import { getPublicChartTheme } from "@/lib/theme/publicChartTheme";
+import { getPublicChartAnimations } from "@/lib/theme/publicChartTheme";
 import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 
 import { PublicChartCard } from "./ChartCard";
@@ -38,16 +34,15 @@ interface DayOfWeekChartProps {
  * Vertical bar chart showing click volume by day of the week.
  *
  * Translates numeric day indices to locale-aware abbreviations using the
- * pre-computed `DOW_KEYS` array, then deep-merges the public base theme with
- * bar-specific overrides (rounded bars, column width).
+ * pre-computed `DOW_KEYS` array. The only option left is the category axis:
+ * bar radius (2), column width (45%), solid fill and colour now come from the
+ * shared base theme, which is what makes these columns read as the same bars
+ * as the logged-in dashboard's — the old override rounded them to 6 and
+ * painted them `chartByType.temporal.weekly` green.
  */
 export function DayOfWeekChart({ rawData }: DayOfWeekChartProps) {
-  const theme = useTheme();
   const { t } = useTranslation("public");
   const reducedMotion = usePrefersReducedMotion();
-
-  const base = getPublicChartTheme(theme, { reducedMotion });
-  const color = chartByType.temporal.weekly;
 
   const data = rawData.map((d) => ({
     x: t(DOW_KEYS[d.day as number] ?? DOW_KEYS[0], {
@@ -64,31 +59,7 @@ export function DayOfWeekChart({ rawData }: DayOfWeekChartProps) {
   ];
 
   const options = {
-    ...base,
-    colors: [color],
-    chart: {
-      ...base.chart,
-      type: "bar" as const,
-    },
-    fill: {
-      type: "solid",
-      opacity: 1,
-    },
-    stroke: {
-      show: true,
-      width: 1,
-      colors: ["transparent"],
-    },
-    plotOptions: {
-      ...base.plotOptions,
-      bar: {
-        ...base.plotOptions?.bar,
-        horizontal: false,
-        borderRadius: 6,
-        columnWidth: "60%",
-      },
-    },
-    dataLabels: { enabled: false },
+    chart: { animations: getPublicChartAnimations(reducedMotion) },
     xaxis: { type: "category" as const },
   };
 
@@ -96,7 +67,6 @@ export function DayOfWeekChart({ rawData }: DayOfWeekChartProps) {
     <PublicChartCard
       title={t("publicAnalytics.charts.dayOfWeek")}
       subtitle={t("publicAnalytics.charts.dayOfWeekDesc")}
-      icon={<Calendar {...ICON_LG} />}
       type="bar"
       options={options}
       series={series}

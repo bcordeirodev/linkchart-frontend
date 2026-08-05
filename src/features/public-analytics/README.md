@@ -11,12 +11,12 @@ Página pública (sem auth) que exibe métricas resumidas e charts sumarizados d
 ## Componentes principais
 
 - `PublicAnalyticsPageContent.tsx` — layout completo da página (hero + métricas + charts + CTA).
-- `components/info/LinkHeroCard.tsx` — bloco superior com URL, slug e descrição.
-- `components/info/AnalyticsInfo.tsx` — explicação curta de quais métricas estão sendo exibidas.
+- `PublicAnalyticsSections.tsx` — mesmo corpo sem `PublicLayout`, para embutir em `/shorter?slug=…`.
+- `components/info/LinkHeroCard.tsx` — bloco superior com slug, URL curta, destino e ações.
 - `components/info/PublicCtaBlock.tsx` — bloco de chamada para conversão.
-- `components/metrics/PublicMetrics.tsx` — métricas em destaque (cliques, países, dispositivos).
+- `components/metrics/PublicMetrics.tsx` — fileira de métricas (`OverviewMetricRow`: cliques, status, criação).
 - `components/charts/PublicCharts.tsx` — charts sumarizados (subset do dashboard autenticado).
-- `components/states/LoadingState.tsx`, `ErrorState.tsx` — estados de UI.
+- `components/states/EmptyClicksEngagement.tsx`, `ErrorState.tsx` — estados de UI. O carregamento usa `PublicAnalyticsSkeleton` (`shared/ui/feedback/skeletons`).
 
 ## Hooks de dados
 

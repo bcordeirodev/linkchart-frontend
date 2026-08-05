@@ -1,11 +1,10 @@
 "use client";
 
-import { Box, Fade, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getPublicDisplaySx } from "@/lib/theme/publicPageStyles";
-import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import { PublicAnalyticsSkeleton } from "@/shared/ui/feedback/skeletons";
 
@@ -25,6 +24,9 @@ interface PublicAnalyticsSectionsProps {
 
 /**
  * Analytics body without `PublicLayout` — for embedding in /shorter?slug=….
+ *
+ * Mirrors `PublicAnalyticsPageContent` section for section, including the
+ * CSS-only `reveal`/`reveal-N` page-load sequence.
  */
 function PublicAnalyticsSections({
   slug,
@@ -32,7 +34,6 @@ function PublicAnalyticsSections({
 }: PublicAnalyticsSectionsProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
-  const reduced = usePrefersReducedMotion();
   const {
     linkData,
     analyticsData,
@@ -42,12 +43,6 @@ function PublicAnalyticsSections({
     handleCreateLink,
     handleRetry,
   } = usePublicAnalytics({ slug });
-
-  /**
-   * Returns 0 when the user has requested reduced motion so all Fade elements
-   * appear immediately; otherwise returns the given staggered timeout in ms.
-   */
-  const fadeTimeout = (ms: number): number => (reduced ? 0 : ms);
 
   if (loading) {
     return (
@@ -71,44 +66,44 @@ function PublicAnalyticsSections({
   return (
     <Stack spacing={{ xs: 2.5, md: 3 }}>
       {showPageHeading ? (
-        <Fade in timeout={fadeTimeout(120)}>
-          <Box sx={{ textAlign: "center", mt: { xs: 1, md: 2 }, mb: 0.5 }}>
-            <Typography
-              component="h1"
-              sx={{
-                ...getPublicDisplaySx(theme),
-                mb: 0.75,
-              }}
-            >
-              {t("publicAnalytics.title")}
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "0.875rem",
-                color: theme.palette.text.secondary,
-                lineHeight: 1.6,
-                maxWidth: 460,
-                mx: "auto",
-              }}
-            >
-              {t("publicAnalytics.pageSubtitle")}
-            </Typography>
-          </Box>
-        </Fade>
+        <Box
+          className="reveal reveal-1"
+          sx={{ textAlign: "center", mt: { xs: 1, md: 2 }, mb: 0.5 }}
+        >
+          {/* `variant="h1"` alongside `component="h1"` — see the note in
+              `PublicAnalyticsPageContent`. */}
+          <Typography
+            variant="h1"
+            component="h1"
+            sx={{
+              ...getPublicDisplaySx(theme),
+              mb: 0.75,
+            }}
+          >
+            {t("publicAnalytics.title")}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "0.875rem",
+              color: theme.palette.text.secondary,
+              lineHeight: 1.6,
+              maxWidth: 460,
+              mx: "auto",
+            }}
+          >
+            {t("publicAnalytics.pageSubtitle")}
+          </Typography>
+        </Box>
       ) : null}
 
-      <Fade in timeout={fadeTimeout(240)}>
-        <Box>
-          <LinkHeroCard linkData={linkData} onCreateLink={handleCreateLink} />
-        </Box>
-      </Fade>
+      <Box className="reveal reveal-2">
+        <LinkHeroCard linkData={linkData} onCreateLink={handleCreateLink} />
+      </Box>
 
       {hasClicks ? (
-        <Fade in timeout={fadeTimeout(360)}>
-          <Box>
-            <PublicMetrics analyticsData={analyticsData} />
-          </Box>
-        </Fade>
+        <Box className="reveal reveal-3">
+          <PublicMetrics analyticsData={analyticsData} />
+        </Box>
       ) : null}
 
       {/* Only show ads on pages that have analytics data — avoids
@@ -123,14 +118,12 @@ function PublicAnalyticsSections({
         />
       ) : null}
 
-      <Fade in timeout={fadeTimeout(480)}>
-        <Box>
-          <PublicCharts
-            analyticsData={analyticsData}
-            shortUrl={linkData.short_url}
-          />
-        </Box>
-      </Fade>
+      <Box className="reveal reveal-4">
+        <PublicCharts
+          analyticsData={analyticsData}
+          shortUrl={linkData.short_url}
+        />
+      </Box>
 
       {hasClicks ? (
         <AdSlot
@@ -141,17 +134,13 @@ function PublicAnalyticsSections({
         />
       ) : null}
 
-      <Fade in timeout={fadeTimeout(480)}>
-        <Box>
-          <LockedFeaturesTeaser />
-        </Box>
-      </Fade>
+      <Box className="reveal reveal-5">
+        <LockedFeaturesTeaser />
+      </Box>
 
-      <Fade in timeout={fadeTimeout(600)}>
-        <Box>
-          <PublicCtaBlock />
-        </Box>
-      </Fade>
+      <Box className="reveal reveal-5">
+        <PublicCtaBlock />
+      </Box>
     </Stack>
   );
 }
