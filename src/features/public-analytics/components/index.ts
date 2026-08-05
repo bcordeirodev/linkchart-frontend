@@ -9,7 +9,6 @@ export { PublicMetrics } from "./metrics/PublicMetrics";
 export { PublicCharts } from "./charts/PublicCharts";
 
 // States
-export { LoadingState } from "./states/LoadingState";
 export { ErrorState } from "./states/ErrorState";
 
 // Teaser

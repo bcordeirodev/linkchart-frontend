@@ -5,15 +5,22 @@ import { alpha } from "@mui/material/styles";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { getPublicChartPalette } from "@/lib/theme/publicChartTheme";
+import { dataVizPalette } from "@/lib/theme/dataViz";
 import {
   PUBLIC_CARD_GAP,
   PUBLIC_INSET_PAD,
-  getPublicPanelSx,
-  getPublicSectionHeadingSx,
   publicHairline,
 } from "@/lib/theme/publicPageStyles";
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { getCardSurfaceSx, SectionLabel } from "@/shared/ui/base";
+
+/**
+ * The five data-viz tones, in series order — the same colours the real charts
+ * on this page draw with, so the previews promise what the account delivers.
+ * The old palette pulled `warning` and `success` in, which are reserved for
+ * meaning (a warning, a healthy link), never for a series.
+ */
+const TEASER_COLORS = Object.values(dataVizPalette);
 
 // ─── Faux visual helpers ──────────────────────────────────────────────────────
 
@@ -101,7 +108,6 @@ function FauxUtmBars({ colors }: { colors: string[] }) {
                 height: "100%",
                 borderRadius: "4px",
                 bgcolor: colors[colorIdx],
-                opacity: 0.85,
               }}
             />
           </Box>
@@ -112,96 +118,69 @@ function FauxUtmBars({ colors }: { colors: string[] }) {
 }
 
 /**
- * Renders a decorative donut chart to represent device split.
- * Purely presentational — aria-hidden.
+ * Renders a decorative segmented bar to represent the device split.
+ *
+ * Was a donut. The real device chart on this page is a horizontal stacked bar
+ * now, and a preview that shows a shape the product no longer draws is a
+ * promise it cannot keep. Purely presentational — aria-hidden.
  */
-function FauxDeviceDonut({ colors }: { colors: string[] }) {
+function FauxDeviceBars({ colors }: { colors: string[] }) {
   const segments = [
-    { pct: 58, color: colors[0] },
-    { pct: 30, color: colors[1] },
-    { pct: 12, color: colors[2] },
+    { label: "Mobile", pct: 58, colorIdx: 0 },
+    { label: "Desktop", pct: 30, colorIdx: 1 },
+    { label: "Tablet", pct: 12, colorIdx: 2 },
   ];
 
-  const size = 72;
-  const cx = size / 2;
-  const cy = size / 2;
-  const r = 26;
-  const strokeWidth = 10;
-  const circumference = 2 * Math.PI * r;
-
-  let offset = -circumference * 0.25; // start at 12 o'clock
-
   return (
-    <Box
+    <Stack
       aria-hidden="true"
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 2,
-        width: "100%",
-        height: "100%",
-      }}
+      spacing={1.25}
+      sx={{ width: "100%", justifyContent: "center", height: "100%" }}
     >
-      <svg width={size} height={size} style={{ overflow: "visible" }}>
-        <circle
-          cx={cx}
-          cy={cy}
-          r={r}
-          fill="none"
-          stroke="rgba(255,255,255,0.06)"
-          strokeWidth={strokeWidth}
-        />
-        {segments.map(({ pct, color }, i) => {
-          const dash = (pct / 100) * circumference;
-          const gap = circumference - dash;
-          const el = (
-            <circle
-              key={i}
-              cx={cx}
-              cy={cy}
-              r={r}
-              fill="none"
-              stroke={color}
-              strokeWidth={strokeWidth}
-              strokeDasharray={`${dash} ${gap}`}
-              strokeDashoffset={-offset}
-              strokeLinecap="round"
-              opacity={0.85}
-            />
-          );
-          offset -= dash;
-          return el;
-        })}
-      </svg>
-      <Stack spacing={0.75}>
-        {["Mobile", "Desktop", "Tablet"].map((label, i) => (
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          height: 14,
+          borderRadius: "3px",
+          overflow: "hidden",
+        }}
+      >
+        {segments.map(({ label, pct, colorIdx }) => (
           <Box
             key={label}
-            sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+            sx={{ width: `${pct}%`, bgcolor: colors[colorIdx] }}
+          />
+        ))}
+      </Box>
+
+      <Stack direction="row" flexWrap="wrap" useFlexGap gap={1.25}>
+        {segments.map(({ label, colorIdx }) => (
+          <Box
+            key={label}
+            sx={{ display: "flex", alignItems: "center", gap: 0.625 }}
           >
             <Box
               sx={{
                 width: 8,
                 height: 8,
-                borderRadius: "50%",
-                bgcolor: colors[i],
-                opacity: 0.85,
+                borderRadius: "2px",
+                bgcolor: colors[colorIdx],
                 flexShrink: 0,
               }}
             />
             <Box
               sx={{
-                width: 32,
+                width: 34,
                 height: "5px",
                 borderRadius: "3px",
-                bgcolor: alpha(colors[i] ?? "", 0.3),
+                bgcolor: alpha(colors[colorIdx] ?? "", 0.3),
               }}
             />
           </Box>
         ))}
       </Stack>
-    </Box>
+    </Stack>
   );
 }
 
@@ -226,7 +205,9 @@ function TeaserCard({ title, variant, colors }: TeaserCardProps) {
   return (
     <Box
       sx={{
-        ...getPublicPanelSx(theme),
+        borderRadius: `${radiusTokens.lg}px`,
+        border: `1px solid ${publicHairline(theme)}`,
+        ...getCardSurfaceSx(theme),
         p: PUBLIC_INSET_PAD,
         overflow: "hidden",
         height: "100%",
@@ -272,7 +253,7 @@ function TeaserCard({ title, variant, colors }: TeaserCardProps) {
         >
           {variant === "geo" && <FauxHeatmapGrid colors={colors} />}
           {variant === "utm" && <FauxUtmBars colors={colors} />}
-          {variant === "device" && <FauxDeviceDonut colors={colors} />}
+          {variant === "device" && <FauxDeviceBars colors={colors} />}
         </Box>
       </Box>
     </Box>
@@ -285,15 +266,14 @@ function TeaserCard({ title, variant, colors }: TeaserCardProps) {
  * Static teaser section showing 3 free-account feature previews (geographic
  * heatmap, UTM campaign tracking, device intelligence).
  *
- * No data fetching — all visuals are purely decorative and representative.
- * Reduced motion is respected: no entrance animations are used by default.
- * Faux visuals are aria-hidden; all labels and titles are real text.
+ * Anchored by `SectionLabel`, like every other section in the app — it used to
+ * open with a centered caps line tinted primary, a header shape that exists
+ * nowhere else. No data fetching: all visuals are decorative, drawn in the
+ * data-viz palette, and aria-hidden; every label and title is real text.
+ * Reduced motion is respected — nothing here animates on its own.
  */
 export const LockedFeaturesTeaser = memo(function LockedFeaturesTeaser() {
   const { t } = useTranslation("public");
-  const theme = useTheme();
-  const colors = getPublicChartPalette(theme);
-  const isDark = theme.palette.mode === "dark";
 
   const cards: Array<{ key: FauxVisualVariant; title: string }> = [
     { key: "geo", title: t("publicAnalytics.teaser.geoTitle") },
@@ -302,26 +282,23 @@ export const LockedFeaturesTeaser = memo(function LockedFeaturesTeaser() {
   ];
 
   return (
-    <Box component="section" aria-label={t("publicAnalytics.teaser.heading")}>
-      {/* Section heading */}
-      <Typography
-        component="p"
-        sx={{
-          ...getPublicSectionHeadingSx(theme),
-          color: alpha(theme.palette.primary.main, isDark ? 0.72 : 0.65),
-        }}
-      >
+    <Stack
+      component="section"
+      spacing={{ xs: 2, md: 2.5 }}
+      aria-label={t("publicAnalytics.teaser.heading")}
+    >
+      <SectionLabel headingLevel={2}>
         {t("publicAnalytics.teaser.heading")}
-      </Typography>
+      </SectionLabel>
 
-      {/* Card grid: 3-up on desktop, 3-up at tablet, 1-up on mobile */}
+      {/* Card grid: 3-up from tablet, 1-up on mobile */}
       <Grid container spacing={PUBLIC_CARD_GAP}>
         {cards.map(({ key, title }) => (
           <Grid key={key} item xs={12} sm={4} md={4}>
-            <TeaserCard title={title} variant={key} colors={colors} />
+            <TeaserCard title={title} variant={key} colors={TEASER_COLORS} />
           </Grid>
         ))}
       </Grid>
-    </Box>
+    </Stack>
   );
 });

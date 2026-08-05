@@ -1,18 +1,10 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Fade,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getPublicDisplaySx } from "@/lib/theme/publicPageStyles";
-import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 
 import { AdSlot } from "@/shared/components/ads/AdSlot";
 import {
@@ -38,6 +30,16 @@ interface PublicAnalyticsPageContentProps {
   initialAnalyticsData?: PublicAnalyticsData | null;
 }
 
+/**
+ * Standalone `/public-analytics/[slug]` page body.
+ *
+ * Entrance motion is the app's single orchestrated page load: the CSS-only
+ * `reveal`/`reveal-N` classes from `styles/animations.css`, which already opt
+ * out under `prefers-reduced-motion`. It replaced a stack of MUI `<Fade>`
+ * wrappers with hand-passed timeouts — same effect, one mechanism, and the
+ * same one every logged-in page uses. The ad slots are deliberately left out
+ * of the sequence: nothing this page owns should animate a third-party frame.
+ */
 function PublicAnalyticsPageContent({
   slug,
   initialLinkData,
@@ -45,7 +47,6 @@ function PublicAnalyticsPageContent({
 }: PublicAnalyticsPageContentProps) {
   const theme = useTheme();
   const { t } = useTranslation("public");
-  const reduced = usePrefersReducedMotion();
   const {
     linkData,
     analyticsData,
@@ -55,12 +56,6 @@ function PublicAnalyticsPageContent({
     handleCreateLink,
     handleRetry,
   } = usePublicAnalytics({ slug, initialLinkData, initialAnalyticsData });
-
-  /**
-   * Returns 0 when the user has requested reduced motion so all Fade elements
-   * appear immediately; otherwise returns the given staggered timeout in ms.
-   */
-  const fadeTimeout = (ms: number): number => (reduced ? 0 : ms);
 
   if (loading) {
     return <PublicAnalyticsSkeleton />;
@@ -95,46 +90,47 @@ function PublicAnalyticsPageContent({
           }}
         >
           <Stack spacing={{ xs: 2.5, md: 3 }}>
-            <Fade in timeout={fadeTimeout(120)}>
-              <Box sx={{ textAlign: "center", mt: { xs: 1, md: 2 }, mb: 0.5 }}>
-                <Typography
-                  component="h1"
-                  sx={{
-                    ...getPublicDisplaySx(theme),
-                    mb: 0.75,
-                  }}
-                >
-                  {t("publicAnalytics.title")}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "0.875rem",
-                    color: theme.palette.text.secondary,
-                    lineHeight: 1.6,
-                    maxWidth: 460,
-                    mx: "auto",
-                  }}
-                >
-                  {t("publicAnalytics.pageSubtitle")}
-                </Typography>
-              </Box>
-            </Fade>
+            <Box
+              className="reveal reveal-1"
+              sx={{ textAlign: "center", mt: { xs: 1, md: 2 }, mb: 0.5 }}
+            >
+              {/* `variant="h1"` is load-bearing: `component` alone only swaps
+                  the DOM tag and leaves MUI's default `body1` (Inter) on the
+                  page's most important heading. Same pairing as `ShorterHero`. */}
+              <Typography
+                variant="h1"
+                component="h1"
+                sx={{
+                  ...getPublicDisplaySx(theme),
+                  mb: 0.75,
+                }}
+              >
+                {t("publicAnalytics.title")}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "0.875rem",
+                  color: theme.palette.text.secondary,
+                  lineHeight: 1.6,
+                  maxWidth: 460,
+                  mx: "auto",
+                }}
+              >
+                {t("publicAnalytics.pageSubtitle")}
+              </Typography>
+            </Box>
 
-            <Fade in timeout={fadeTimeout(240)}>
-              <Box>
-                <LinkHeroCard
-                  linkData={linkData}
-                  onCreateLink={handleCreateLink}
-                />
-              </Box>
-            </Fade>
+            <Box className="reveal reveal-2">
+              <LinkHeroCard
+                linkData={linkData}
+                onCreateLink={handleCreateLink}
+              />
+            </Box>
 
             {hasClicks ? (
-              <Fade in timeout={fadeTimeout(360)}>
-                <Box>
-                  <PublicMetrics analyticsData={analyticsData} />
-                </Box>
-              </Fade>
+              <Box className="reveal reveal-3">
+                <PublicMetrics analyticsData={analyticsData} />
+              </Box>
             ) : null}
 
             {/* Only show ads on pages that have analytics data — avoids
@@ -150,14 +146,12 @@ function PublicAnalyticsPageContent({
               />
             ) : null}
 
-            <Fade in timeout={fadeTimeout(480)}>
-              <Box>
-                <PublicCharts
-                  analyticsData={analyticsData}
-                  shortUrl={linkData.short_url}
-                />
-              </Box>
-            </Fade>
+            <Box className="reveal reveal-4">
+              <PublicCharts
+                analyticsData={analyticsData}
+                shortUrl={linkData.short_url}
+              />
+            </Box>
 
             {hasClicks ? (
               <AdSlot
@@ -169,17 +163,13 @@ function PublicAnalyticsPageContent({
               />
             ) : null}
 
-            <Fade in timeout={fadeTimeout(480)}>
-              <Box>
-                <LockedFeaturesTeaser />
-              </Box>
-            </Fade>
+            <Box className="reveal reveal-5">
+              <LockedFeaturesTeaser />
+            </Box>
 
-            <Fade in timeout={fadeTimeout(600)}>
-              <Box>
-                <PublicCtaBlock />
-              </Box>
-            </Fade>
+            <Box className="reveal reveal-5">
+              <PublicCtaBlock />
+            </Box>
           </Stack>
         </Container>
       </Box>
