@@ -12,6 +12,8 @@ export interface UserProfile {
   name: string;
   email: string;
   email_verified_at?: string;
+  /** Opt-in do resumo semanal de cliques por e-mail (toggle em Preferências). */
+  weekly_digest_enabled?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -22,6 +24,8 @@ export interface UserProfile {
 export interface UpdateProfileRequest extends Record<string, unknown> {
   name?: string;
   email?: string;
+  /** Liga/desliga o resumo semanal de cliques por e-mail. */
+  weekly_digest_enabled?: boolean;
 }
 
 /**

@@ -350,6 +350,7 @@ export function ToolsLinkCheckerPage() {
                 <Button
                   type="submit"
                   variant="contained"
+                  color="primary"
                   disabled={isChecking}
                   startIcon={
                     isChecking ? (

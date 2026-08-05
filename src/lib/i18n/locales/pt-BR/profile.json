@@ -81,6 +81,13 @@
     "languages": {
       "pt-BR": "Português (Brasil)",
       "en": "English"
+    },
+    "weeklyDigest": {
+      "label": "Resumo semanal por e-mail",
+      "description": "Toda segunda de manhã: o total de cliques da sua semana, a variação e o link mais clicado.",
+      "enabled": "Resumo semanal ativado",
+      "disabled": "Resumo semanal desativado",
+      "error": "Não foi possível salvar sua preferência. Tente novamente."
     }
   },
   "subdomainCard": {

@@ -367,6 +367,7 @@ export function ToolsUtmGeneratorPage() {
             >
               <Button
                 variant="contained"
+                color="primary"
                 disabled={!builtUrl}
                 onClick={() => {
                   if (builtUrl) {

@@ -81,6 +81,13 @@
     "languages": {
       "pt-BR": "Português (Brasil)",
       "en": "English"
+    },
+    "weeklyDigest": {
+      "label": "Weekly email digest",
+      "description": "Every Monday morning: your week's total clicks, the trend and your top link.",
+      "enabled": "Weekly digest enabled",
+      "disabled": "Weekly digest disabled",
+      "error": "Couldn't save your preference. Try again."
     }
   },
   "subdomainCard": {
