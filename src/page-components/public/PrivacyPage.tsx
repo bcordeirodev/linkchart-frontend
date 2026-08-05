@@ -3,6 +3,7 @@
 import { Trans, useTranslation } from "react-i18next";
 import { Box, Container, Divider, Link, Typography } from "@mui/material";
 
+import { typographyScale } from "@/lib/theme/designSystem";
 import { PublicLayout } from "@/shared/layout";
 
 const sectionSx = { mb: 4 };
@@ -67,12 +68,30 @@ export default function PrivacyPage() {
     <PublicLayout chrome="minimal" variant="simple">
       <Container
         maxWidth="md"
-        sx={{ pt: { xs: 7, md: 8 }, pb: { xs: 6, md: 8 } }}
+        sx={{
+          pt: { xs: 7, md: 8 },
+          pb: { xs: 6, md: 8 },
+          // Comfortable prose measure — `Container`'s own `maxWidth="md"`
+          // (960px) is a page-gutter width, not a reading width; capping in
+          // `ch` (not px) keeps the line length ~70 characters regardless of
+          // the body font's actual size.
+          maxWidth: "70ch",
+        }}
       >
-        <Typography variant="h4" fontWeight={800} gutterBottom>
+        {/*
+          700, not 800: `app/layout.tsx` loads Space Grotesk at 400/500/700
+          only, so 800 asks the browser to synthesise a faux-bold instead of
+          rendering the real cut (same gotcha documented on
+          `getPublicDisplaySx` in publicPageStyles.ts).
+        */}
+        <Typography variant="h4" fontWeight={700} gutterBottom>
           {t("privacy.title")}
         </Typography>
-        <Typography variant="body2" color="text.disabled" sx={{ mb: 4 }}>
+        <Typography
+          variant="body2"
+          color="text.disabled"
+          sx={{ mb: 4, fontFamily: typographyScale.code.fontFamily }}
+        >
           {t("privacy.effectiveDate")}
         </Typography>
         <Divider sx={{ mb: 4 }} />
@@ -261,7 +280,7 @@ export default function PrivacyPage() {
                       sx={{
                         py: 1,
                         pr: 2,
-                        fontFamily: "monospace",
+                        fontFamily: typographyScale.code.fontFamily,
                         fontSize: "0.8rem",
                       }}
                     >
