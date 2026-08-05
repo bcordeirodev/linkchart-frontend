@@ -32,8 +32,5 @@ export {
 export { default as EmptyState } from "./EmptyState";
 export { default as AnalyticsEmptyState } from "./AnalyticsEmptyState";
 
-// Form & Interaction
-export { default as GradientButton } from "./GradientButton";
-
 // Re-export types
 export type { BaseComponentProps } from "../components";
