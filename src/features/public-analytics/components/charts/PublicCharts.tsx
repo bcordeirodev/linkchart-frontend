@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid, Stack } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { SectionLabel } from "@/shared/ui/base";
@@ -102,40 +102,45 @@ export function PublicCharts({ analyticsData, shortUrl }: PublicChartsProps) {
         {t("publicAnalytics.charts.title")}
       </SectionLabel>
 
-      <Grid container spacing={{ xs: 1.5, md: 2 }}>
-        {/* Hourly — full-width row */}
-        {hasHourData ? (
-          <Grid item xs={12}>
-            <HourlyClicksChart data={hourData} />
-          </Grid>
-        ) : null}
+      {/* Box isolates the Grid from Stack's child `margin: 0` reset, which
+          would cancel the container's negative margins and shift every card
+          one gutter to the right. */}
+      <Box>
+        <Grid container spacing={{ xs: 1.5, md: 2 }}>
+          {/* Hourly — full-width row */}
+          {hasHourData ? (
+            <Grid item xs={12}>
+              <HourlyClicksChart data={hourData} />
+            </Grid>
+          ) : null}
 
-        {/* Day of week + Top Countries — share a row at md */}
-        {hasDowData ? (
-          <Grid item xs={12} md={dowMd}>
-            <DayOfWeekChart rawData={dowRawData} />
-          </Grid>
-        ) : null}
+          {/* Day of week + Top Countries — share a row at md */}
+          {hasDowData ? (
+            <Grid item xs={12} md={dowMd}>
+              <DayOfWeekChart rawData={dowRawData} />
+            </Grid>
+          ) : null}
 
-        {hasCountryData ? (
-          <Grid item xs={12} md={countryMd}>
-            <TopCountriesChart data={countryData} />
-          </Grid>
-        ) : null}
+          {hasCountryData ? (
+            <Grid item xs={12} md={countryMd}>
+              <TopCountriesChart data={countryData} />
+            </Grid>
+          ) : null}
 
-        {/* Devices + Browsers — share a row from sm */}
-        {hasDeviceData ? (
-          <Grid item xs={12} sm={deviceMd} md={deviceMd}>
-            <DevicesChart data={deviceData} />
-          </Grid>
-        ) : null}
+          {/* Devices + Browsers — share a row from sm */}
+          {hasDeviceData ? (
+            <Grid item xs={12} sm={deviceMd} md={deviceMd}>
+              <DevicesChart data={deviceData} />
+            </Grid>
+          ) : null}
 
-        {hasBrowserData ? (
-          <Grid item xs={12} sm={browserMd} md={browserMd}>
-            <BrowsersChart data={browserData} />
-          </Grid>
-        ) : null}
-      </Grid>
+          {hasBrowserData ? (
+            <Grid item xs={12} sm={browserMd} md={browserMd}>
+              <BrowsersChart data={browserData} />
+            </Grid>
+          ) : null}
+        </Grid>
+      </Box>
     </Stack>
   );
 }
