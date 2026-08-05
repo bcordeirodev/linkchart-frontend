@@ -42,7 +42,13 @@ export interface BioItem {
   isActive: boolean;
   /** Absolute short URL the button opens (already resolved by the API). */
   url: string;
-  /** Total clicks recorded against the underlying link. */
+  /**
+   * All-time clicks of the underlying link, counted from the `clicks` table
+   * with demo links excluded — the same source (and therefore the same
+   * number) as `GET /api/bio/performance`'s `"all"` window, NEVER the
+   * denormalized `links.clicks` counter, which can drift. Used by the item
+   * list as the chips' fallback while a period fetch is in flight.
+   */
   clicks: number;
   /**
    * Favicon of the destination page, from the link's async-fetched preview

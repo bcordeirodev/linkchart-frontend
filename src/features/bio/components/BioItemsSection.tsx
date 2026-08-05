@@ -13,6 +13,8 @@ import {
   Menu,
   MenuItem,
   Stack,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -20,21 +22,30 @@ import { AtSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
-import { getCardSurfaceSx, SectionLabel } from "@/shared/ui/base";
+import {
+  getCardSurfaceSx,
+  getFilterSegmentSx,
+  OverviewMetricRow,
+  SectionLabel,
+} from "@/shared/ui/base";
 import { ResponsiveDialog } from "@/shared/ui/feedback";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { MAX_BIO_ITEMS } from "../constants";
+import { useBioPerformance } from "../hooks/useBioPerformance";
 import { useRemoveBioItem, useReorderBioItems } from "../hooks/useBioItems";
 import { AddBioIconDialog } from "./AddBioIconDialog";
 import { AddBioItemDialog } from "./AddBioItemDialog";
 import { BioItemRow } from "./BioItemRow";
 
-import type { BioItem, BioPage } from "../types";
+import type { BioItem, BioPage, BioPerformancePeriod } from "../types";
 
 export interface BioItemsSectionProps {
   page: BioPage;
 }
+
+/** Every selectable value of the section's period control, in display order. */
+const PERIODS: BioPerformancePeriod[] = ["7d", "30d", "90d", "all"];
 
 /** Swaps the positions of the items at `index` and `index + direction`, returning the new id order. */
 function swapOrder(
@@ -60,6 +71,22 @@ function swapOrder(
  * no wrap behavior of its own (`SectionLabel` is a single non-wrapping flex
  * row). A single split button keeps that slot's width exactly what it was
  * before this feature, on every viewport.
+ *
+ * This section is ALSO the page's performance view (2026-08-05): the former
+ * `/ DESEMPENHO` panel below it repeated the same links a second time just to
+ * attach a click count to each — one list, period-filterable, replaces both.
+ * A strip above the list holds the total-clicks metric plus the period
+ * segmented control, and each row's clicks chip shows the count within the
+ * selected period, all from `GET /api/bio/performance` (`useBioPerformance`)
+ * — the `clicks` table, demo-excluded; the one source of truth for every
+ * click number on this screen. The management payload's all-time
+ * `item.clicks` (same source, "all" window) is only the fallback while a
+ * fetch is in flight or after an error, so the chips never blank out.
+ *
+ * The strip degrades quietly: if the performance query errors, metric and
+ * period control simply don't render and the chips stay on their all-time
+ * fallback — the list itself must never look broken because a secondary
+ * aggregate failed.
  */
 export function BioItemsSection({ page }: BioItemsSectionProps) {
   const { t } = useTranslation("bio");
@@ -72,9 +99,27 @@ export function BioItemsSection({ page }: BioItemsSectionProps) {
   const [isAddIconOpen, setIsAddIconOpen] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<BioItem | null>(null);
 
+  // "all" (not the old panel's "30d") is the default on purpose: the chips'
+  // historical meaning was the link's all-time clicks, and the management
+  // payload ships exactly that — so the first paint is already correct and
+  // the strip's total converges to the same numbers without a flip.
+  const [period, setPeriod] = useState<BioPerformancePeriod>("all");
+  const { performance, isError: isPerformanceError } =
+    useBioPerformance(period);
+
   const items = page.items;
   const limitReached = items.length >= MAX_BIO_ITEMS;
   const existingLinkIds = items.map((item) => item.linkId);
+
+  const clicksByItemId = new Map(
+    (performance?.items ?? []).map((row) => [row.itemId, row.clicks]),
+  );
+  /** Period-scoped count for a row's chip; all-time fallback pre-fetch/on error. */
+  const clicksFor = (item: BioItem) =>
+    clicksByItemId.get(item.id) ?? item.clicks;
+  const totalClicks =
+    performance?.totalClicks ??
+    items.reduce((sum, item) => sum + item.clicks, 0);
 
   const handleMove = (index: number, direction: 1 | -1) => {
     if (reorderItems.isPending) return;
@@ -153,6 +198,41 @@ export function BioItemsSection({ page }: BioItemsSectionProps) {
         <Alert severity="info">{t("items.limitReachedNotice")}</Alert>
       ) : null}
 
+      {items.length > 0 && !isPerformanceError ? (
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={1.5}
+          alignItems={{ xs: "flex-start", sm: "flex-end" }}
+          justifyContent="space-between"
+        >
+          <OverviewMetricRow
+            size="md"
+            metrics={[
+              {
+                label: t("performance.totalClicksLabel"),
+                value: totalClicks.toLocaleString(),
+              },
+            ]}
+          />
+          <ToggleButtonGroup
+            size="small"
+            exclusive
+            value={period}
+            aria-label={t("performance.periodLabel")}
+            sx={getFilterSegmentSx(theme, 32)}
+            onChange={(_, next: BioPerformancePeriod | null) => {
+              if (next) setPeriod(next);
+            }}
+          >
+            {PERIODS.map((value) => (
+              <ToggleButton key={value} value={value}>
+                {t(`performance.periods.${value}`)}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </Stack>
+      ) : null}
+
       {items.length === 0 ? (
         <EnhancedPaper
           variant="outlined"
@@ -173,6 +253,7 @@ export function BioItemsSection({ page }: BioItemsSectionProps) {
             <BioItemRow
               key={item.id}
               item={item}
+              clicks={clicksFor(item)}
               isFirst={index === 0}
               isLast={index === items.length - 1}
               onMoveUp={() => handleMove(index, -1)}
