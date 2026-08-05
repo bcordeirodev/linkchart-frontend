@@ -7,7 +7,14 @@
  * workstream. If the bio feature grows beyond this single public page (e.g. an
  * authenticated editor), promote these to `src/features/bio/types/` at that
  * point instead of importing across ownership boundaries.
+ *
+ * `SocialPlatformKey` is the one exception imported across that boundary
+ * (from `@/shared/ui/icons`, not from `features/bio`): it types the glyph
+ * lookup in `SocialPlatformIcon`, a presentational primitive both this page
+ * and the editor already treat as neutral shared ground, the same way both
+ * sides independently import MUI/`shared/ui/base` components.
  */
+import type { SocialPlatformKey } from "@/shared/ui/icons";
 
 /** Visual theme selected by the page owner. `dark` is the product default. */
 export type BioTheme = "dark" | "light";
@@ -38,6 +45,20 @@ export interface BioLinkItem {
    * anyway). Optional for older cached payloads.
    */
   destination_host?: string | null;
+  /**
+   * Whether this item renders as a full-width button (`"item"`, default) or
+   * a small round icon in the social icons row above the items list
+   * (`"icon"`). Optional so an older cached payload (predating this field)
+   * still type-checks and falls back to `"item"` — see
+   * `BioPublicPage`'s split of `data.items` into icon vs. link groups.
+   */
+  display?: "item" | "icon";
+  /**
+   * Which of the 8 whitelisted platforms this icon represents, non-null only
+   * when `display === "icon"`. Optional/nullable for the same
+   * older-cached-payload reason as `display`.
+   */
+  social_platform?: SocialPlatformKey | null;
 }
 
 /** Payload returned by `GET /api/public/bio/{handle}`. */

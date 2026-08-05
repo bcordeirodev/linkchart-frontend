@@ -1,3 +1,4 @@
+import type { SocialPlatformKey } from "@/shared/ui/icons";
 import type { ID } from "@/types";
 
 /**
@@ -7,6 +8,15 @@ import type { ID } from "@/types";
  * dashboard.
  */
 export type BioTheme = "dark" | "light";
+
+/**
+ * How one bio item renders on the public page: a full-width tappable button
+ * (`"item"`, the original/default shape) or a small round icon in the social
+ * icons row above the items list (`"icon"`). Mirrors `BioPageItem::DISPLAY_*`
+ * on the backend. See {@link BioItem.socialPlatform} for the field this
+ * unlocks.
+ */
+export type BioItemDisplay = "item" | "icon";
 
 /**
  * One link surfaced as a button on the bio page.
@@ -40,6 +50,21 @@ export interface BioItem {
    * the row falls back to the label's initial.
    */
   faviconUrl: string | null;
+  /**
+   * Whether this item renders as a full button or a small icon on the
+   * public page. Server always resolves this — legacy rows created before
+   * the field existed default to `"item"` — so it is never `null`/`undefined`
+   * here, unlike {@link socialPlatform}.
+   */
+  display: BioItemDisplay;
+  /**
+   * Which of the 8 whitelisted platforms this icon represents
+   * (`SOCIAL_PLATFORM_KEYS`). Non-null only when `display === "icon"` — the
+   * server nulls it out server-side the moment an item switches back to
+   * `"item"`, so callers can treat `null` as "not an icon" without also
+   * checking `display`.
+   */
+  socialPlatform: SocialPlatformKey | null;
 }
 
 /**
@@ -119,16 +144,66 @@ export interface BioPageUpsertInput {
   subdomainId?: number | null;
 }
 
-/** Payload for `POST /api/bio/items` — adds one existing link as a button. */
+/**
+ * Payload for `POST /api/bio/items` — adds one existing link as a button (or
+ * an icon, when `display` is set).
+ */
 export interface BioItemCreateInput {
   linkId: ID;
   label?: string;
+  /** Omitted (or `"item"`) creates a normal button; `"icon"` requires `socialPlatform`. */
+  display?: BioItemDisplay;
+  /** Required by the backend when `display === "icon"` (422 otherwise); ignored/omitted for `"item"`. */
+  socialPlatform?: SocialPlatformKey;
 }
 
-/** Payload for `PUT /api/bio/items/{id}` — partial update of one item. */
+/**
+ * Payload for `PUT /api/bio/items/{id}` — partial update of one item. There
+ * is no `linkId` field: the backend never lets an existing item's underlying
+ * link change — repointing an item means removing it and adding a new one
+ * (see `useRemoveBioItem`/`useAddBioItem`).
+ */
 export interface BioItemUpdateInput {
   label?: string;
   isActive?: boolean;
+  /**
+   * Switching to `"icon"` in the same request requires `socialPlatform` too
+   * (422 otherwise). Switching to `"item"` always clears the server's stored
+   * `social_platform`, even if this request doesn't mention the field.
+   * Omitted entirely: leaves the item's current display/platform untouched
+   * (e.g. a label-only or active-only edit).
+   */
+  display?: BioItemDisplay;
+  /** New platform for an item that is (or is becoming, in the same request) `"icon"`. */
+  socialPlatform?: SocialPlatformKey;
+}
+
+/** One item's ranking row in `GET /api/bio/performance` — see {@link BioPerformance}. */
+export interface BioPerformanceItem {
+  /** The bio-item row's id (`BioItem.id`), not the underlying link's id. */
+  itemId: number;
+  /** The item's resolved label — named `title` by this endpoint's contract, not a different field from `BioItem.label`. */
+  title: string;
+  display: BioItemDisplay;
+  socialPlatform: SocialPlatformKey | null;
+  /** Clicks recorded against this item's underlying link within the selected {@link BioPerformancePeriod}. */
+  clicks: number;
+}
+
+/** Time window for `GET /api/bio/performance?period=`. `"30d"` is the backend's default when the param is omitted. */
+export type BioPerformancePeriod = "7d" | "30d" | "90d" | "all";
+
+/**
+ * Response of `GET /api/bio/performance` — every item on the page (active
+ * and inactive), ranked by clicks descending within the selected period.
+ * `{ totalClicks: 0, items: [] }` is a normal, non-error response for a page
+ * with no items yet or zero clicks in the window — never treat an empty
+ * result as a failure.
+ */
+export interface BioPerformance {
+  /** Sum of `items[].clicks` in this same response — not an independent counter. */
+  totalClicks: number;
+  items: BioPerformanceItem[];
 }
 
 /** Result of a handle-availability check (`GET /api/bio/handle-available`). */
