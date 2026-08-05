@@ -1,72 +1,69 @@
 "use client";
 
-import { useTheme } from "@mui/material/styles";
-import { getPublicChartCardOverrideSx } from "@/lib/theme/publicPageStyles";
 import { ChartCard as SharedChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-
-import type { ReactNode } from "react";
-import type { ApexOptions } from "apexcharts";
 
 interface PublicChartCardProps {
   /** Chart title shown in the card header. */
   title: string;
-  /** Optional Lucide icon rendered left of the title. */
-  icon?: ReactNode;
   /**
-   * Optional descriptive subtitle rendered below the title.
-   * Forwarded directly to `SharedChartCard`'s `subtitle` prop.
+   * Descriptive subtitle rendered below the title. Required: every chart in
+   * the product carries a visible explanation of what it shows.
    */
-  subtitle?: string;
+  subtitle: string;
   /**
-   * ApexCharts options object.
-   * Passed to `ApexChartWrapper` which accepts `Record<string, unknown>`;
-   * `ApexOptions` is a strict superset so the cast is safe.
+   * ApexCharts options for this chart — only what is structural (orientation,
+   * stacking, axis type, markers). Colour, stroke, grid, fonts, tooltip and
+   * legend come from the shared base theme injected by `ApexChartWrapper`.
+   *
+   * Typed as `Record<string, unknown>` (not `ApexOptions`) to match
+   * `ApexChartWrapper`'s own prop and the `@/features/analytics` formatters,
+   * so no call site needs a cast.
    */
-  options: ApexOptions;
-  /**
-   * Series data.
-   * Numeric array for donut/pie charts, `{ name, data[] }` objects for area/bar.
-   */
-  series: ApexOptions["series"];
+  options: Record<string, unknown>;
+  /** Series data — numeric array for stacked bars, `{ name, data[] }` for area/bar. */
+  series: unknown[];
   /** Chart type forwarded to ApexChartWrapper. */
-  type: "area" | "bar" | "donut";
+  type: "area" | "bar";
 }
 
 /**
- * Thin wrapper combining the shared `ChartCard` shell with `ApexChartWrapper`,
- * automatically applying `getPublicChartCardOverrideSx` so every public-analytics
- * chart renders with the correct border, no shadow, and muted title styling.
+ * Thin wrapper combining the shared `ChartCard` shell with `ApexChartWrapper`.
+ *
+ * It passes **no `sx` override**. The card used to receive
+ * `getPublicChartCardOverrideSx`, which repainted border, radius and fill —
+ * the exact values `SharedChartCard` and the global `MuiCard` override already
+ * produce (hairline + translucent veil + no shadow). Dropping it is what makes
+ * a public chart card and a logged-in chart card the same object.
+ *
+ * There is no `icon` prop anymore either: a decorative glyph next to a chart
+ * title is the banned pattern in the "instrumento técnico" language.
  *
  * @example
  * ```tsx
  * <PublicChartCard
- *   title="Clicks by Hour"
- *   icon={<Clock size={16} />}
+ *   title={t("publicAnalytics.charts.hourlyClicks")}
+ *   subtitle={t("publicAnalytics.charts.hourlyClicksDesc")}
  *   type="area"
- *   options={mergedOptions}
+ *   options={options}
  *   series={series}
  * />
  * ```
  */
 export function PublicChartCard({
   title,
-  icon,
   subtitle,
   options,
   series,
   type,
 }: PublicChartCardProps) {
-  const theme = useTheme();
-  const cardSx = getPublicChartCardOverrideSx(theme);
-
   return (
-    <SharedChartCard title={title} subtitle={subtitle} icon={icon} sx={cardSx}>
+    <SharedChartCard title={title} subtitle={subtitle}>
       <ApexChartWrapper
         type={type}
         size="compact"
-        options={options as Record<string, unknown>}
-        series={(series ?? []) as unknown[]}
+        options={options}
+        series={series}
       />
     </SharedChartCard>
   );

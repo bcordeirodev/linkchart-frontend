@@ -1,12 +1,9 @@
 "use client";
 
-import { Globe } from "lucide-react";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { chartByType } from "@/lib/theme/colors";
-import { ICON_LG } from "@/lib/theme/iconDefaults";
-import { getPublicChartTheme } from "@/lib/theme/publicChartTheme";
+import { darkNeutral } from "@/lib/theme/colors/dark";
+import { getPublicChartAnimations } from "@/lib/theme/publicChartTheme";
 import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 
 import { PublicChartCard } from "./ChartCard";
@@ -19,17 +16,16 @@ interface TopCountriesChartProps {
 /**
  * Horizontal bar chart displaying the top countries by click count.
  *
- * Uses `plotOptions.bar.horizontal: true` so country labels render on the
- * Y-axis (more readable with long country names). The base theme's
- * `plotOptions.bar.borderRadius` is preserved via explicit spread.
+ * `horizontal: true` puts the country names on the Y axis, where long names
+ * fit. The in-bar value labels are drawn in `darkNeutral.bg` rather than
+ * white: they sit on top of the bar fill, and the data-viz palette is light
+ * enough that white-on-blue falls under the contrast floor — the same reason
+ * `@/features/analytics`'s bar formatter uses that colour. Everything else
+ * (solid blue fill, radius, grid, axes) is inherited.
  */
 export function TopCountriesChart({ data }: TopCountriesChartProps) {
-  const theme = useTheme();
   const { t } = useTranslation("public");
   const reducedMotion = usePrefersReducedMotion();
-
-  const base = getPublicChartTheme(theme, { reducedMotion });
-  const color = chartByType.geographic.countries;
 
   const series = [
     {
@@ -39,36 +35,14 @@ export function TopCountriesChart({ data }: TopCountriesChartProps) {
   ];
 
   const options = {
-    ...base,
-    colors: [color],
-    chart: {
-      ...base.chart,
-      type: "bar" as const,
-    },
-    fill: {
-      type: "solid",
-      opacity: 1,
-    },
-    stroke: {
-      show: true,
-      width: 1,
-      colors: ["transparent"],
-    },
-    plotOptions: {
-      ...base.plotOptions,
-      bar: {
-        ...base.plotOptions?.bar,
-        horizontal: true,
-        borderRadius: 4,
-        barHeight: "60%",
-      },
-    },
+    chart: { animations: getPublicChartAnimations(reducedMotion) },
+    plotOptions: { bar: { horizontal: true, barHeight: "60%" } },
     dataLabels: {
       enabled: true,
       style: {
-        colors: ["#fff"],
+        colors: [darkNeutral.bg],
         fontSize: "11px",
-        fontWeight: "bold",
+        fontWeight: 700,
       },
       formatter: (val: number) => val.toString(),
     },
@@ -79,7 +53,6 @@ export function TopCountriesChart({ data }: TopCountriesChartProps) {
     <PublicChartCard
       title={t("publicAnalytics.charts.topCountries")}
       subtitle={t("publicAnalytics.charts.topCountriesDesc")}
-      icon={<Globe {...ICON_LG} />}
       type="bar"
       options={options}
       series={series}

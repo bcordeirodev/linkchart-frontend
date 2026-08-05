@@ -1,12 +1,8 @@
 "use client";
 
-import { Clock } from "lucide-react";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { chartByType } from "@/lib/theme/colors";
-import { ICON_LG } from "@/lib/theme/iconDefaults";
-import { getPublicChartTheme } from "@/lib/theme/publicChartTheme";
+import { getPublicChartAnimations } from "@/lib/theme/publicChartTheme";
 import { usePrefersReducedMotion } from "@/lib/theme/usePrefersReducedMotion";
 
 import { PublicChartCard } from "./ChartCard";
@@ -19,18 +15,15 @@ interface HourlyClicksChartProps {
 /**
  * Area chart showing click distribution across the 24 hours of the day.
  *
- * Deep-merges the public chart base theme (palette, gradient fill, smooth
- * stroke, animations) with area-specific overrides. The `fill` gradient
- * is preserved from the base and overridden only at the colour/opacity level
- * so the area shape and base chart settings are never clobbered.
+ * Passes only what is structural to a 24-point hourly series: the category
+ * axis (thinned to 8 ticks so the labels don't collide inside a compact card)
+ * and hover-only markers. Colour, the 18%→0 area gradient, stroke, grid and
+ * tooltip all come from the shared base theme — the old local override painted
+ * this chart amber (`chartByType.temporal.hourly`), a hue reserved for warnings.
  */
 export function HourlyClicksChart({ data }: HourlyClicksChartProps) {
-  const theme = useTheme();
   const { t } = useTranslation("public");
   const reducedMotion = usePrefersReducedMotion();
-
-  const base = getPublicChartTheme(theme, { reducedMotion });
-  const color = chartByType.temporal.hourly;
 
   const series = [
     {
@@ -40,49 +33,19 @@ export function HourlyClicksChart({ data }: HourlyClicksChartProps) {
   ];
 
   const options = {
-    ...base,
-    colors: [color],
-    chart: {
-      ...base.chart,
-      type: "area" as const,
-    },
-    fill: {
-      ...base.fill,
-      type: "gradient",
-      gradient: {
-        ...((base.fill as { gradient?: Record<string, unknown> })?.gradient ??
-          {}),
-        gradientToColors: [color],
-        shadeIntensity: 0.25,
-        opacityFrom: 0.6,
-        opacityTo: 0.08,
-      },
-    },
-    stroke: {
-      ...base.stroke,
-      width: 2.5,
-      curve: "smooth" as const,
-    },
-    plotOptions: {
-      ...base.plotOptions,
-    },
+    chart: { animations: getPublicChartAnimations(reducedMotion) },
     xaxis: {
       type: "category" as const,
       tickAmount: 8,
-      labels: {
-        rotate: 0,
-        style: { fontSize: "11px" },
-      },
+      labels: { rotate: 0 },
     },
     markers: { size: 0, hover: { size: 5 } },
-    dataLabels: { enabled: false },
   };
 
   return (
     <PublicChartCard
       title={t("publicAnalytics.charts.hourlyClicks")}
       subtitle={t("publicAnalytics.charts.hourlyClicksDesc")}
-      icon={<Clock {...ICON_LG} />}
       type="area"
       options={options}
       series={series}
