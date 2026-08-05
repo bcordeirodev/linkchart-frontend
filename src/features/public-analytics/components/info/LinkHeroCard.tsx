@@ -2,26 +2,22 @@
 
 import { useState, useEffect, useId } from "react";
 import { Box, Button, Link, Stack, Typography, useTheme } from "@mui/material";
-import { alpha, lighten } from "@mui/material/styles";
+import { alpha } from "@mui/material/styles";
 import { Check, Copy, Globe, RotateCcw, Share2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { useShareAPI } from "@/shared/hooks/useShareAPI";
 import useClipboard from "@/shared/hooks/useClipboard";
+import { radiusTokens, typographyScale } from "@/lib/theme";
 import { ICON_MD, ICON_SM } from "@/lib/theme/iconDefaults";
+import { WHATSAPP_GREEN } from "@/lib/theme/publicActionColors";
 import {
-  RESTART_HUE,
-  SHARE_HUE,
-  WHATSAPP_GREEN,
-  WHATSAPP_GREEN_HOVER,
-} from "@/lib/theme/publicActionColors";
-import {
-  getPublicFocalSx,
   getPublicInsetSx,
   publicHairline,
   PUBLIC_CARD_GAP,
 } from "@/lib/theme/publicPageStyles";
 import { getShortUrl } from "@/lib/utils/shortUrl";
+import { getCardSurfaceSx } from "@/shared/ui/base";
 import { WhatsAppIcon } from "@/shared/ui/icons";
 
 import type { PublicLinkData } from "../../types";
@@ -34,13 +30,29 @@ interface LinkHeroCardProps {
   onCreateLink: () => void;
 }
 
+/** Shared height of every control in the action row (also the icon-button side). */
+const ACTION_HEIGHT = 44;
+
 /**
  * Hero card for /public-analytics/[slug].
  *
- * Mirrors the guest "link created" card (`/shorter`) so the two surfaces stay
- * consistent: a single inset holds the short URL and its favicon-tagged
- * destination, one action row groups copy/share/restart, and the page-only
- * `BookmarkRow` reminder closes the card. Clipboard state is owned here.
+ * The card is a hairline over the translucent card veil ({@link getCardSurfaceSx}) —
+ * the same surface as every in-page card in the app. It used to be
+ * `getPublicFocalSx`, a primary-tinted gradient wash: on a page whose job is to
+ * present data, the container was the loudest thing on screen.
+ *
+ * Inside: the slug identity, one inset holding the short URL and its
+ * favicon-tagged destination (the mono box is the point of the page and is
+ * kept), a single action row, and the page-only `BookmarkRow` reminder.
+ *
+ * The action row has one filled button. `Copiar` is the action a visitor came
+ * for, so it is the only solid primary; `Encurtar outro link` is an outlined
+ * hairline; share and WhatsApp are square icon buttons in that same quiet
+ * grammar. Before, all four were solid blocks in four different hues (blue,
+ * navy, teal, green), which read as four equally urgent choices. WhatsApp keeps
+ * its brand green — in the glyph, not as a block.
+ *
+ * Clipboard state is owned here.
  */
 export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
   const theme = useTheme();
@@ -86,52 +98,67 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
     ? alpha(theme.palette.common.white, 0.96)
     : theme.palette.primary.dark;
 
-  const sectionLabelSx = {
+  /**
+   * Field label inside the card ("SEU LINK CURTO") — mono caps at label size.
+   * A field caption, not a section anchor, so it stays quiet: no `/` prefix
+   * and no hairline rule (that dress belongs to `SectionLabel`).
+   */
+  const fieldLabelSx = {
     display: "block",
+    fontFamily: typographyScale.code.fontFamily,
     fontSize: "0.6875rem",
-    fontWeight: 800,
+    fontWeight: 600,
     letterSpacing: "0.08em",
     textTransform: "uppercase" as const,
     lineHeight: 1.2,
-    color: alpha(theme.palette.text.primary, isDark ? 0.78 : 0.74),
+    color: theme.palette.text.secondary,
   };
 
-  /** Solid, white-on-color action (matches the /shorter action row). */
-  const solidActionSx = (bg: string, bgHover: string) => ({
-    flex: 1,
-    minHeight: 44,
-    px: 1.5,
-    borderRadius: 1.5,
+  /** Geometry every action in the row shares. */
+  const actionBaseSx = {
+    minHeight: ACTION_HEIGHT,
+    borderRadius: `${radiusTokens.md}px`,
     fontSize: "0.8125rem",
-    fontWeight: 700,
+    fontWeight: 600,
     textTransform: "none" as const,
     letterSpacing: "-0.01em",
-    color: theme.palette.common.white,
-    bgcolor: bg,
-    border: "1px solid transparent",
-    transition: "background-color 160ms ease, transform 120ms ease",
-    "& .MuiButton-startIcon": { mr: 0.625 },
-    "&:hover": { bgcolor: bgHover },
-    "&:active": { transform: "translateY(1px)" },
-    "&.Mui-disabled": {
-      opacity: 0.5,
-      color: alpha(theme.palette.common.white, 0.7),
+    boxShadow: "none",
+    "& .MuiButton-startIcon": { mr: 0.75 },
+  };
+
+  /**
+   * The row's single filled action. Full width on phones so the row breaks
+   * into "the action" and "everything else" instead of stranding the two icon
+   * buttons on a line of their own.
+   */
+  const primaryActionSx = {
+    ...actionBaseSx,
+    flex: { xs: "1 1 100%", sm: 1 },
+    minWidth: 132,
+    px: 2,
+    "&:hover": { boxShadow: "none" },
+  };
+
+  /** Hairline action — present, not competing. */
+  const quietActionSx = {
+    ...actionBaseSx,
+    flex: "0 0 auto",
+    px: 1.75,
+    color: theme.palette.text.primary,
+    borderColor: publicHairline(theme),
+    "&:hover": {
+      borderColor: theme.palette.text.disabled,
+      bgcolor: alpha(theme.palette.text.primary, isDark ? 0.06 : 0.04),
     },
-  });
+  };
 
-  /** Coordinated-color action sized to content (only Copy grows widest). */
-  const colorActionSx = (base: string) => ({
-    ...solidActionSx(base, lighten(base, 0.1)),
-    flex: "0 0 auto",
-  });
-
-  /** Squares off an action into an icon-only button (spread after a base sx). */
-  const iconSquareSx = {
-    flex: "0 0 auto",
-    width: 48,
-    minWidth: 48,
+  /** Same quiet grammar, squared off for an icon-only action. */
+  const quietIconActionSx = {
+    ...quietActionSx,
+    width: ACTION_HEIGHT,
+    minWidth: ACTION_HEIGHT,
     px: 0,
-  } as const;
+  };
 
   const handleShare = (): void => {
     void shareOrCopy({ url: shortUrl });
@@ -149,7 +176,12 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
     <Box
       component="article"
       aria-labelledby={cardHeadingId}
-      sx={getPublicFocalSx(theme)}
+      sx={{
+        borderRadius: `${radiusTokens.lg}px`,
+        border: `1px solid ${publicHairline(theme)}`,
+        ...getCardSurfaceSx(theme),
+        overflow: "hidden",
+      }}
     >
       <Stack spacing={PUBLIC_CARD_GAP} sx={{ p: { xs: 2.5, md: 3 } }}>
         <LinkIdentity
@@ -176,7 +208,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
               component="h3"
               variant="overline"
               color="text.secondary"
-              sx={{ ...sectionLabelSx, mb: 0.75 }}
+              sx={{ ...fieldLabelSx, mb: 0.75 }}
             >
               {t("publicAnalytics.linkInfo.yourShortLink")}
             </Typography>
@@ -185,7 +217,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
               sx={{
                 m: 0,
                 minWidth: 0,
-                fontFamily: "monospace",
+                fontFamily: typographyScale.code.fontFamily,
                 fontSize: { xs: "1rem", sm: "1.0625rem" },
                 fontWeight: 700,
                 letterSpacing: "-0.01em",
@@ -229,7 +261,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
-                fontFamily: "monospace",
+                fontFamily: typographyScale.code.fontFamily,
                 fontSize: "0.8125rem",
                 lineHeight: 1.35,
                 color: alpha(theme.palette.text.primary, isDark ? 0.72 : 0.7),
@@ -241,7 +273,7 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           </Box>
         </Box>
 
-        {/* One action row: copy · restart · share · whatsapp. */}
+        {/* One action row: copy · shorten another · share · whatsapp. */}
         <Stack
           direction="row"
           useFlexGap
@@ -250,6 +282,8 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
           spacing={1}
         >
           <Button
+            variant="contained"
+            color="primary"
             onClick={() => copyShort(shortUrl)}
             disabled={!shortUrl}
             startIcon={
@@ -259,38 +293,35 @@ export function LinkHeroCard({ linkData, onCreateLink }: LinkHeroCardProps) {
                 <Copy {...ICON_MD} aria-hidden />
               )
             }
-            sx={solidActionSx(
-              theme.palette.primary.dark,
-              theme.palette.primary.main,
-            )}
+            sx={primaryActionSx}
           >
             {copiedShort
               ? t("publicAnalytics.linkInfo.copied")
               : t("publicAnalytics.linkInfo.copy")}
           </Button>
           <Button
+            variant="outlined"
             onClick={onCreateLink}
             startIcon={<RotateCcw {...ICON_MD} aria-hidden />}
-            sx={colorActionSx(RESTART_HUE)}
+            sx={quietActionSx}
           >
             {t("publicAnalytics.linkInfo.shortenAnother")}
           </Button>
           <Button
+            variant="outlined"
             onClick={handleShare}
             aria-label={t("publicAnalytics.linkInfo.share")}
             title={t("publicAnalytics.linkInfo.share")}
-            sx={{ ...colorActionSx(SHARE_HUE), ...iconSquareSx }}
+            sx={quietIconActionSx}
           >
             <Share2 {...ICON_MD} aria-hidden />
           </Button>
           <Button
+            variant="outlined"
             onClick={handleWhatsApp}
             aria-label={t("publicAnalytics.linkInfo.shareWhatsapp")}
             title={t("publicAnalytics.linkInfo.shareWhatsapp")}
-            sx={{
-              ...solidActionSx(WHATSAPP_GREEN, WHATSAPP_GREEN_HOVER),
-              ...iconSquareSx,
-            }}
+            sx={{ ...quietIconActionSx, color: WHATSAPP_GREEN }}
           >
             <WhatsAppIcon size={18} aria-hidden style={{ flexShrink: 0 }} />
           </Button>

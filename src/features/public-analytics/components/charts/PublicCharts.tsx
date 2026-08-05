@@ -1,11 +1,9 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Box, Grid, Typography } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
+import { Grid, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { createPresetAnimations } from "@/lib/theme";
+import { SectionLabel } from "@/shared/ui/base";
 
 import { EmptyClicksEngagement } from "../states/EmptyClicksEngagement";
 
@@ -26,25 +24,23 @@ interface PublicChartsProps {
 /**
  * Renders the public-analytics chart grid or the empty-state engagement block.
  *
- * Each chart is self-contained (theme, series construction, i18n) — this
- * component is responsible only for:
+ * Each chart is self-contained (series construction, i18n) — this component is
+ * responsible only for:
  * - computing per-chart "has data" guards,
  * - deciding which charts to show,
  * - laying them out in a responsive MUI Grid,
  * - delegating to `EmptyClicksEngagement` when no real data exists.
  *
+ * The section is anchored by `SectionLabel` (mono caps with the `/` prefix),
+ * the same header the logged-in dashboard's chart sections use — it replaces a
+ * caps line with a `TrendingUp` glyph beside it.
+ *
  * `PublicChartsProps` is intentionally unchanged so both call sites
  * (`PublicAnalyticsSections` and `PublicAnalyticsPageContent`) keep working.
  */
 export function PublicCharts({ analyticsData, shortUrl }: PublicChartsProps) {
-  const theme = useTheme();
   const { t } = useTranslation("public");
-  const animations = createPresetAnimations(theme);
   const { charts } = analyticsData;
-
-  const isDark = theme.palette.mode === "dark";
-  const titleColor = alpha(theme.palette.text.primary, isDark ? 0.74 : 0.78);
-  const titleAccent = alpha(theme.palette.primary.main, 0.6);
 
   // ── Per-chart data guards ────────────────────────────────────────────────
 
@@ -92,10 +88,8 @@ export function PublicCharts({ analyticsData, shortUrl }: PublicChartsProps) {
   // ── Layout helpers ──────────────────────────────────────────────────────
   //
   // DOW and Countries sit side-by-side at md when both exist; each takes full
-  // width when the other is absent.
-  //
-  // Devices and Browsers use the same pattern but switch to stacked columns at
-  // sm (not md) so donuts don't get squeezed on 768 px tablets.
+  // width when the other is absent. Devices and Browsers use the same pattern
+  // but pair up from sm, since a stacked bar reads fine at tablet width.
 
   const dowMd = hasDowData && hasCountryData ? 6 : 12;
   const countryMd = hasCountryData && hasDowData ? 6 : 12;
@@ -103,31 +97,11 @@ export function PublicCharts({ analyticsData, shortUrl }: PublicChartsProps) {
   const browserMd = hasBrowserData && hasDeviceData ? 6 : 12;
 
   return (
-    <Box sx={{ ...animations.fadeIn }}>
-      {/* Section label */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-          mb: 2,
-        }}
-      >
-        <TrendingUp size={15} strokeWidth={1.75} color={titleAccent} />
-        <Typography
-          sx={{
-            fontSize: "0.8125rem",
-            fontWeight: 600,
-            color: titleColor,
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-          }}
-        >
-          {t("publicAnalytics.charts.title")}
-        </Typography>
-      </Box>
+    <Stack spacing={{ xs: 2, md: 2.5 }}>
+      <SectionLabel headingLevel={2}>
+        {t("publicAnalytics.charts.title")}
+      </SectionLabel>
 
-      {/* Chart grid */}
       <Grid container spacing={{ xs: 1.5, md: 2 }}>
         {/* Hourly — full-width row */}
         {hasHourData ? (
@@ -149,7 +123,7 @@ export function PublicCharts({ analyticsData, shortUrl }: PublicChartsProps) {
           </Grid>
         ) : null}
 
-        {/* Devices + Browsers — share a row at sm (not md) to avoid squeeze */}
+        {/* Devices + Browsers — share a row from sm */}
         {hasDeviceData ? (
           <Grid item xs={12} sm={deviceMd} md={deviceMd}>
             <DevicesChart data={deviceData} />
@@ -162,6 +136,6 @@ export function PublicCharts({ analyticsData, shortUrl }: PublicChartsProps) {
           </Grid>
         ) : null}
       </Grid>
-    </Box>
+    </Stack>
   );
 }

@@ -1,57 +1,32 @@
-import { alpha } from "@mui/material/styles";
-
-import type { Theme } from "@mui/material/styles";
-import type { ApexOptions } from "apexcharts";
-
-/** Accessible categorical palette derived from the MUI theme (no red/green-only pairs). */
-export function getPublicChartPalette(theme: Theme): string[] {
-  return [
-    theme.palette.primary.main,
-    theme.palette.secondary.main,
-    theme.palette.info.main,
-    theme.palette.warning.main,
-    theme.palette.success.main,
-  ];
-}
+/**
+ * O que a página pública de estatísticas ainda acrescenta aos gráficos —
+ * e só isso.
+ *
+ * Antes deste arquivo carregava um tema inteiro (paleta própria com laranja e
+ * verde, fill em gradiente para todo tipo de gráfico, barras com raio 7,
+ * grid tracejado, tooltip, legenda). Tudo isso agora vem de
+ * `buildApexBaseOptions` (`@/lib/theme/apexBaseTheme`), injetado por
+ * `ApexChartWrapper` em **todos** os gráficos do app — logado e público. Um
+ * "tema público" paralelo só conseguia divergir do resto do produto, que é
+ * exatamente o que o redesign "instrumento técnico" existe para acabar.
+ *
+ * Sobrou uma única responsabilidade que a base não tem como conhecer: se o
+ * visitante pediu movimento reduzido. As páginas públicas leem isso via
+ * `usePrefersReducedMotion` e repassam aqui.
+ */
 
 /**
- * Base ApexCharts options shared by every public-analytics chart.
- * Each chart deep-merges its specifics (series, type-specific plotOptions) on top.
+ * Bloco `chart.animations` dos gráficos públicos.
+ *
+ * `ApexChartWrapper` monta `animations` com seus defaults e faz spread das
+ * opções da tela por cima, então devolver `{ enabled: false }` desliga a
+ * animação de entrada do gráfico sem mexer em mais nada.
+ *
+ * @param reducedMotion `true` quando o visitante pede movimento reduzido.
+ * @returns Fragmento para `chart.animations` do ApexCharts.
  */
-export function getPublicChartTheme(
-  theme: Theme,
-  options?: { reducedMotion?: boolean },
-): ApexOptions {
-  const isDark = theme.palette.mode === "dark";
-  const grid = alpha(theme.palette.divider, isDark ? 0.16 : 0.2);
-  const labelColor = alpha(theme.palette.text.primary, isDark ? 0.68 : 0.72);
-
-  return {
-    chart: {
-      fontFamily: theme.typography.fontFamily,
-      foreColor: labelColor,
-      toolbar: { show: false },
-      animations: { enabled: !options?.reducedMotion },
-      background: "transparent",
-    },
-    colors: getPublicChartPalette(theme),
-    grid: {
-      borderColor: grid,
-      strokeDashArray: 4,
-      padding: { left: 4, right: 8 },
-    },
-    dataLabels: { enabled: false },
-    tooltip: {
-      theme: isDark ? "dark" : "light",
-      marker: { show: true },
-      style: { fontSize: "12px" },
-    },
-    plotOptions: { bar: { borderRadius: 7, columnWidth: "52%" } },
-    fill: {
-      type: "gradient",
-      gradient: { shadeIntensity: 0.22, opacityFrom: 0.42, opacityTo: 0.06 },
-    },
-    stroke: { curve: "smooth", width: 2 },
-    legend: { labels: { colors: labelColor }, position: "bottom" },
-  };
+export function getPublicChartAnimations(reducedMotion: boolean): {
+  enabled: boolean;
+} {
+  return { enabled: !reducedMotion };
 }

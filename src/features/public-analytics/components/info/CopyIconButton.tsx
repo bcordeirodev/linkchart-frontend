@@ -5,6 +5,7 @@ import { Copy, Check } from "lucide-react";
 import { alpha } from "@mui/material/styles";
 
 import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { publicHairline } from "@/lib/theme/publicPageStyles";
 
 interface CopyIconButtonProps {
   /** Whether the text was recently copied (controls icon + color). */
@@ -18,14 +19,16 @@ interface CopyIconButtonProps {
 }
 
 /**
- * Bordered `IconButton` that toggles between Copy and Check icons.
+ * Hairline square that toggles between Copy and Check icons.
  *
- * Used consistently by `ShortUrlRow` and `BookmarkRow` to provide a single
- * copy-to-clipboard affordance pattern across the hero card.
+ * Same quiet grammar as the icon actions in the hero card's action row —
+ * transparent fill, 1 px hairline, and the control radius and 36 px box the
+ * theme already gives `MuiIconButton` — so the card has one kind of icon
+ * button, not two. It used to carry a `background.paper` fill, which read as a
+ * raised chip on top of the strip it belonged to.
  *
  * @remarks
  * Relies on the caller to manage clipboard state via `useClipboard`.
- * Renders a subtle `border` + `bgcolor` shell that sits on any inset surface.
  */
 export function CopyIconButton({
   copied,
@@ -35,23 +38,26 @@ export function CopyIconButton({
 }: CopyIconButtonProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
-  const iconColor = alpha(theme.palette.common.white, isDark ? 0.95 : 0.92);
 
   return (
     <IconButton
-      size="small"
       onClick={onClick}
       aria-label={ariaLabel}
-      color={copied ? "success" : "default"}
       disabled={disabled}
       sx={{
-        alignSelf: { xs: "flex-end", sm: "center" },
+        alignSelf: "center",
         flexShrink: 0,
-        color: copied ? theme.palette.success.main : iconColor,
-        border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.35 : 0.4)}`,
-        bgcolor: alpha(theme.palette.background.paper, isDark ? 0.5 : 0.86),
+        color: copied ? theme.palette.success.main : theme.palette.text.primary,
+        border: `1px solid ${
+          copied
+            ? alpha(theme.palette.success.main, 0.4)
+            : publicHairline(theme)
+        }`,
         "&:hover": {
-          bgcolor: alpha(theme.palette.background.paper, isDark ? 0.65 : 0.94),
+          borderColor: copied
+            ? alpha(theme.palette.success.main, 0.6)
+            : theme.palette.text.disabled,
+          bgcolor: alpha(theme.palette.text.primary, isDark ? 0.06 : 0.04),
         },
         "&.Mui-disabled": {
           opacity: 0.4,

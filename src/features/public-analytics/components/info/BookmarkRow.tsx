@@ -1,11 +1,11 @@
 "use client";
 
 import { Box, Stack, Typography, useTheme } from "@mui/material";
-import { Bookmark } from "lucide-react";
 import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
-import { radiusTokens } from "@/lib/theme/designSystem";
+import { typographyScale } from "@/lib/theme";
+import { publicHairline } from "@/lib/theme/publicPageStyles";
 
 import { CopyIconButton } from "./CopyIconButton";
 
@@ -27,13 +27,15 @@ interface BookmarkRowProps {
 }
 
 /**
- * Discreet "save this page" callout: a bookmark icon, a one-line reminder that
- * this URL is the only way back to the analytics, the (muted) URL itself, and a
+ * "Save this page" footer of the hero card: the one-line reminder that this
+ * URL is the only way back to the analytics, the URL itself in mono, and a
  * copy button.
  *
- * Demoted from a full titled section to a quiet info strip so it supports —
- * rather than competes with — the hero short-URL row above it. The reminder text
- * still carries the important "only access" warning, just at a lighter weight.
+ * It is a footer row closed by a hairline, not a box: it used to be a bordered
+ * tinted strip carrying a circular `Bookmark` glyph, which made it a third
+ * surface competing with the short-URL inset right above it while saying
+ * something quieter. The warning and its copy affordance are unchanged — only
+ * the packaging is.
  *
  * The analytics URL is set client-side by the parent (`LinkHeroCard`) on mount,
  * so this component is purely presentational — it renders a placeholder (`—`)
@@ -48,7 +50,6 @@ export function BookmarkRow({
   const theme = useTheme();
   const { t } = useTranslation("public");
   const isDark = theme.palette.mode === "dark";
-  const iconColor = alpha(theme.palette.text.primary, isDark ? 0.62 : 0.58);
 
   return (
     <Stack
@@ -58,29 +59,10 @@ export function BookmarkRow({
       alignItems="center"
       gap={1.25}
       sx={{
-        p: { xs: 1.25, sm: 1.4 },
-        borderRadius: `${radiusTokens.md}px`,
-        border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.22 : 0.24)}`,
-        bgcolor: alpha(theme.palette.text.primary, isDark ? 0.03 : 0.035),
+        pt: { xs: 1.75, sm: 2 },
+        borderTop: `1px solid ${publicHairline(theme, "inset")}`,
       }}
     >
-      <Box
-        aria-hidden
-        sx={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          width: 30,
-          height: 30,
-          borderRadius: "50%",
-          color: iconColor,
-          bgcolor: alpha(theme.palette.text.primary, isDark ? 0.06 : 0.05),
-        }}
-      >
-        <Bookmark size={15} strokeWidth={2} />
-      </Box>
-
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Typography
           id={headingId}
@@ -101,7 +83,7 @@ export function BookmarkRow({
             display: "block",
             mt: 0.25,
             minWidth: 0,
-            fontFamily: "monospace",
+            fontFamily: typographyScale.code.fontFamily,
             fontSize: { xs: "0.7rem", sm: "0.75rem" },
             color: alpha(theme.palette.text.primary, isDark ? 0.55 : 0.6),
             overflow: "hidden",

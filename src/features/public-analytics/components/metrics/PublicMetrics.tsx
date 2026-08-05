@@ -1,209 +1,82 @@
 "use client";
-import { Box, Typography, useTheme } from "@mui/material";
-import { alpha } from "@mui/material/styles";
-import { MousePointerClick, Activity, CalendarDays } from "lucide-react";
+
 import { useTranslation } from "react-i18next";
 
-import { getPublicMetricCardSx } from "@/lib/theme/publicPageStyles";
 import { formatCount } from "@/lib/utils/formatNumber";
 import { useCountUp } from "@/shared/hooks/useCountUp";
+import { OverviewMetricRow } from "@/shared/ui/base";
 
+import type { OverviewMetric } from "@/shared/ui/base";
 import type { PublicAnalyticsData } from "../../types";
 
 interface PublicMetricsProps {
   analyticsData: PublicAnalyticsData;
 }
 
+/**
+ * Overview row of the public analytics page: total clicks, link status and
+ * creation date, rendered as bare {@link OverviewMetricRow} numbers — loose on
+ * the page background, separated by hairlines, values in the display face with
+ * tabular figures.
+ *
+ * This replaces three tinted cards where the total was set in primary blue at
+ * 3.25rem with an icon chip over its caps label. The number is the page's
+ * headline, so it now gets the same treatment as every headline number in the
+ * product (`/links`, analytics, reports): white, Space Grotesk, tabular. Colour
+ * is left to carry meaning — the status word is the only value that keeps a
+ * semantic tint (success/error).
+ *
+ * The count-up on mount is kept (`useCountUp` returns the final value straight
+ * away under reduced motion). The `aria-hidden` + polite live-region pair the
+ * old markup used around the animated number is gone: `OverviewMetricRow` takes
+ * a plain value, and a number that settles within 900 ms does not need to be
+ * announced twice.
+ */
 export function PublicMetrics({ analyticsData }: PublicMetricsProps) {
-  const theme = useTheme();
   const { t, i18n } = useTranslation("public");
-  const isDark = theme.palette.mode === "dark";
 
   const animatedClicks = useCountUp(analyticsData.total_clicks);
-
-  if (analyticsData.total_clicks < 1) {
-    return null;
-  }
-
-  const cardBase = getPublicMetricCardSx(theme);
-  const cardAccent = getPublicMetricCardSx(theme, true);
-
-  const labelColor = alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6);
-  const subColor = alpha(theme.palette.text.primary, isDark ? 0.4 : 0.5);
-  const dateColor = alpha(theme.palette.text.primary, isDark ? 0.78 : 0.85);
-
-  const labelSx = {
-    fontSize: "0.6875rem",
-    color: labelColor,
-    fontWeight: 600,
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.08em",
-  };
-
-  const subSx = {
-    fontSize: "0.6875rem",
-    color: subColor,
-    mt: 1,
-  };
 
   const createdDate = analyticsData.created_at
     ? new Date(analyticsData.created_at)
     : null;
-  const isValid = createdDate !== null && !isNaN(createdDate.getTime());
-  const dateLabel = isValid
+  const isValidDate = createdDate !== null && !isNaN(createdDate.getTime());
+  const dateLabel = isValidDate
     ? createdDate.toLocaleDateString(i18n.language)
     : "-";
-  const timeLabel = isValid
+  const timeLabel = isValidDate
     ? createdDate.toLocaleTimeString(i18n.language, {
         hour: "2-digit",
         minute: "2-digit",
       })
     : "";
 
+  if (analyticsData.total_clicks < 1) {
+    return null;
+  }
+
   const isActive = analyticsData.is_active;
-  const statusTone = isActive
-    ? theme.palette.success.main
-    : theme.palette.error.main;
-  const statusBg = isActive
-    ? alpha(theme.palette.success.main, isDark ? 0.14 : 0.1)
-    : alpha(theme.palette.error.main, isDark ? 0.14 : 0.1);
-  const statusBorder = isActive
-    ? alpha(theme.palette.success.main, isDark ? 0.38 : 0.3)
-    : alpha(theme.palette.error.main, isDark ? 0.38 : 0.3);
 
-  return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: { xs: "1fr 1fr", md: "2fr 1fr 1fr" },
-        gap: { xs: "10px", md: "12px" },
-      }}
-    >
-      <Box
-        sx={{
-          ...cardAccent,
-          gridColumn: { xs: "span 2", md: "span 1" },
-        }}
-      >
-        <Box
-          sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1.25 }}
-        >
-          <MousePointerClick
-            size={12}
-            strokeWidth={1.75}
-            color={alpha(theme.palette.primary.main, 0.65)}
-          />
-          <Typography sx={labelSx}>
-            {t("publicAnalytics.metrics.totalClicks")}
-          </Typography>
-        </Box>
-        <Typography
-          component="p"
-          aria-hidden="true"
-          sx={{
-            fontSize: { xs: "2.75rem", md: "3.25rem" },
-            fontWeight: 800,
-            color: alpha(theme.palette.primary.main, isDark ? 0.95 : 0.9),
-            lineHeight: 1,
-            letterSpacing: "-0.03em",
-            fontFeatureSettings: '"tnum" 1, "lnum" 1',
-          }}
-        >
-          {formatCount(animatedClicks, i18n.language)}
-        </Typography>
-        <Box
-          component="span"
-          aria-live="polite"
-          aria-atomic="true"
-          sx={{
-            position: "absolute",
-            width: 1,
-            height: 1,
-            overflow: "hidden",
-            clip: "rect(0 0 0 0)",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {formatCount(analyticsData.total_clicks, i18n.language)}
-        </Box>
-        <Typography sx={subSx}>
-          {t("publicAnalytics.metrics.sinceCreation")}
-        </Typography>
-      </Box>
+  const metrics: OverviewMetric[] = [
+    {
+      label: t("publicAnalytics.metrics.totalClicks"),
+      value: formatCount(animatedClicks, i18n.language),
+      caption: t("publicAnalytics.metrics.sinceCreation"),
+    },
+    {
+      label: t("publicAnalytics.metrics.status"),
+      value: isActive
+        ? t("publicAnalytics.metrics.active")
+        : t("publicAnalytics.metrics.inactive"),
+      valueColor: isActive ? "success.main" : "error.main",
+      caption: t("publicAnalytics.metrics.operational"),
+    },
+    {
+      label: t("publicAnalytics.metrics.createdAt"),
+      value: dateLabel,
+      caption: timeLabel || undefined,
+    },
+  ];
 
-      <Box sx={cardBase}>
-        <Box
-          sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1.25 }}
-        >
-          <Activity
-            size={12}
-            strokeWidth={1.75}
-            color={
-              isActive
-                ? alpha(theme.palette.success.main, 0.65)
-                : alpha(theme.palette.error.main, 0.65)
-            }
-          />
-          <Typography sx={labelSx}>
-            {t("publicAnalytics.metrics.status")}
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            background: statusBg,
-            border: `1px solid ${statusBorder}`,
-            borderRadius: "999px",
-            px: 1.25,
-            py: 0.4,
-            mt: 0.5,
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              color: statusTone,
-              letterSpacing: "0.01em",
-            }}
-          >
-            {isActive
-              ? t("publicAnalytics.metrics.active")
-              : t("publicAnalytics.metrics.inactive")}
-          </Typography>
-        </Box>
-        <Typography sx={subSx}>
-          {t("publicAnalytics.metrics.operational")}
-        </Typography>
-      </Box>
-
-      <Box sx={cardBase}>
-        <Box
-          sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1.25 }}
-        >
-          <CalendarDays
-            size={12}
-            strokeWidth={1.75}
-            color={alpha(theme.palette.text.primary, 0.4)}
-          />
-          <Typography sx={labelSx}>
-            {t("publicAnalytics.metrics.createdAt")}
-          </Typography>
-        </Box>
-        <Typography
-          sx={{
-            fontSize: "0.9375rem",
-            fontWeight: 700,
-            color: dateColor,
-            mt: 0.25,
-            letterSpacing: "-0.01em",
-          }}
-        >
-          {dateLabel}
-        </Typography>
-        {timeLabel ? <Typography sx={subSx}>{timeLabel}</Typography> : null}
-      </Box>
-    </Box>
-  );
+  return <OverviewMetricRow metrics={metrics} size="md" />;
 }

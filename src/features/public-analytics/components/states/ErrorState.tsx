@@ -89,8 +89,13 @@ export function ErrorState({
         </Alert>
 
         <Box textAlign="center">
+          {/* `color="primary"`, explicitly: the theme's `MuiButton` default is
+              `color="inherit"`, so a bare `variant="contained"` renders grey —
+              this is the page's only action and reads as primary everywhere
+              else in the product. */}
           <Button
             variant="contained"
+            color="primary"
             startIcon={<Home {...ICON_MD} />}
             onClick={onCreateLink}
             size="large"
