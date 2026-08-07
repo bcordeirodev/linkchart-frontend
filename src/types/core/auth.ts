@@ -69,6 +69,11 @@ export interface UserResponse {
   updated_at: ISODateString;
   /** Flags de onboarding já dispensadas; `null` até o usuário dispensar a primeira */
   onboarding?: OnboardingFlags | null;
+  /**
+   * Conta com privilégio de administrador (painel /admin). Opcional: backends
+   * antigos não enviam o campo — a ausência SEMPRE significa usuário comum.
+   */
+  is_admin?: boolean;
 }
 
 /**

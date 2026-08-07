@@ -101,6 +101,14 @@ export const API_CONFIG = {
       INSIGHTS: "/api/reports/insights",
       EXPORT_CLICKS: "/api/reports/export/clicks",
     },
+
+    // --- ADMIN: agregados globais do painel /admin (requer is_admin) ---
+    ADMIN: {
+      OVERVIEW: "/api/admin/overview",
+      USERS: "/api/admin/users",
+      ENGAGEMENT: "/api/admin/engagement",
+      HEALTH: "/api/admin/health",
+    },
   },
 
   CACHE: {
