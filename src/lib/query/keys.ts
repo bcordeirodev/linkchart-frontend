@@ -25,8 +25,12 @@
  *   `bio.performanceAll()` (every `performance(period)` entry) since each
  *   can change the items ranked by `GET /api/bio/performance`; reorder does
  *   not, since that endpoint ranks by clicks, never by position.
+ * - `admin` — read-only aggregates for the `/admin` panel (requires
+ *   `is_admin`); `users` is keyed by the full `AdminUsersParams` so each
+ *   page/search/sort combination caches independently.
  */
 
+import type { AdminUsersParams } from "@/features/admin/types";
 import type { BioPerformancePeriod } from "@/features/bio/types";
 
 /**
@@ -165,5 +169,13 @@ export const queryKeys = {
      * response to go stale.
      */
     performanceAll: () => ["bio", "performance"] as const,
+  },
+  admin: {
+    /** Prefixo de invalidação de todo o módulo admin. */
+    all: () => ["admin"] as const,
+    overview: (range: string) => ["admin", "overview", range] as const,
+    users: (params: AdminUsersParams) => ["admin", "users", params] as const,
+    engagement: (range: string) => ["admin", "engagement", range] as const,
+    health: () => ["admin", "health"] as const,
   },
 };

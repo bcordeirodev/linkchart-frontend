@@ -23,6 +23,9 @@ export { default as ProfileService } from "./profile.service";
 // Reports services (aggregated, multi-link)
 export { default as ReportsService, reportsService } from "./reports.service";
 
+// Admin services (read-only aggregates for the /admin panel)
+export { default as AdminService, adminService } from "./admin.service";
+
 // Service instances (singletons)
 import AuthService from "./auth.service";
 import LinkService from "./link.service";
