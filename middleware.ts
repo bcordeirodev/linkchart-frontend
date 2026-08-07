@@ -52,6 +52,7 @@ const PROTECTED_PREFIXES = [
   "/analytics",
   "/reports",
   "/subdomains",
+  "/admin",
 ];
 
 /**

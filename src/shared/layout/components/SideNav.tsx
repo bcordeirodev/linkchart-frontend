@@ -36,7 +36,7 @@ import { useNavigate, usePathname } from "@/shared/hooks";
 import { AppLogo } from "@/shared/ui/base";
 import { AppIcon } from "@/shared/ui/icons";
 
-import { getVisibleNavItems } from "./navItems";
+import { getVisibleNavItems, normalizeUserRoles } from "./navItems";
 
 import type { Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
@@ -230,7 +230,7 @@ export function SideNav({ collapsed }: SideNavProps) {
   const { user, logout } = useAuth();
   const { t } = useTranslation("common");
 
-  const navItems = getVisibleNavItems();
+  const navItems = getVisibleNavItems(normalizeUserRoles(user?.role));
   const isProfileActive = isRouteActive(pathname, "/profile");
 
   /** Efetua logout a partir da sidebar (mesma ação do menu do `Navbar`). */
