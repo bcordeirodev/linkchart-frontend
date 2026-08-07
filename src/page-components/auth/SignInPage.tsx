@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -12,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { AuthLayout } from "@/shared/layout";
 import AuthGuardRedirect from "@/lib/auth/AuthGuardRedirect";
 import authRoles from "@/lib/auth/authRoles";
+import { sanitizeReturnTo } from "@/lib/auth/returnTo";
 import { radiusTokens } from "@/lib/theme";
 
 /** Google "G" logo in official brand colors. */
@@ -62,7 +64,23 @@ function GoogleLogo({ size = 20 }: { size?: number }) {
 function SignInPage() {
   const { t } = useTranslation("auth");
   const theme = useTheme();
+  const searchParams = useSearchParams();
   const [socialError, setSocialError] = useState<string | null>(null);
+
+  // Deep-link destination, set by `middleware.ts` when it bounced a guest off a
+  // protected route. Falls back to `/sign-in` — the historical value — so a
+  // direct visit keeps the old behaviour: Auth0 returns here, this page is
+  // guest-only, and `AuthGuardRedirect` forwards to `sessionRedirectUrl` or `/`.
+  const loginUrls = useMemo(() => {
+    const returnTo = sanitizeReturnTo(searchParams.get("returnTo"), "/sign-in");
+    const build = (connection?: string) => {
+      const params = new URLSearchParams();
+      if (connection) params.set("connection", connection);
+      params.set("returnTo", returnTo);
+      return `/auth/login?${params.toString()}`;
+    };
+    return { google: build("google-oauth2"), universal: build() };
+  }, [searchParams]);
 
   useEffect(() => {
     const errorKey = localStorage.getItem("social_login_error");
@@ -121,7 +139,7 @@ function SignInPage() {
           {/* Google OAuth button */}
           <Button
             component="a"
-            href="/auth/login?connection=google-oauth2&returnTo=/sign-in"
+            href={loginUrls.google}
             variant="outlined"
             size="large"
             fullWidth
@@ -151,7 +169,7 @@ function SignInPage() {
           {/* Universal Login (email/password + any other connection) */}
           <Button
             component="a"
-            href="/auth/login?returnTo=/sign-in"
+            href={loginUrls.universal}
             variant="contained"
             color="primary"
             size="large"

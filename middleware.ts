@@ -1,4 +1,5 @@
 import { auth0 } from "@/lib/auth0";
+import { isSafeReturnTo } from "@/lib/auth/returnTo";
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
@@ -217,12 +218,23 @@ export async function middleware(request: NextRequest) {
   // relying solely on the client-side AuthGuardRedirect. Fails open on errors
   // so a session-read hiccup can't lock out legitimate users (the client guard
   // remains as defense-in-depth).
+  //
+  // The intended destination rides along as `returnTo`. Without it, this
+  // redirect DISCARDS the path and every deep link into the app — an emailed
+  // digest CTA, a bookmark, a shared link — dies at the front door: the
+  // client-side `sessionRedirectUrl` that would have saved it never runs,
+  // because this redirect happens before any page renders. `SignInPage` reads
+  // the param back and threads it through to Auth0.
   const { pathname } = request.nextUrl;
   if (isProtectedPath(pathname)) {
     try {
       const session = await auth0.getSession(request);
       if (!session) {
         const signIn = new URL("/sign-in", request.url);
+        const intended = `${pathname}${request.nextUrl.search}`;
+        if (isSafeReturnTo(intended)) {
+          signIn.searchParams.set("returnTo", intended);
+        }
         return NextResponse.redirect(signIn);
       }
     } catch {

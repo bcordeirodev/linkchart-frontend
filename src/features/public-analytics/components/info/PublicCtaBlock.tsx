@@ -48,6 +48,17 @@ export function PublicCtaBlock({ variant = "analytics" }: PublicCtaBlockProps) {
       description={description}
       features={features}
       ctaLabel={t("publicAnalytics.cta.button")}
+      // Só no contexto `analytics`: esta página é o destino do botão do digest
+      // semanal, então parte de quem chega aqui JÁ tem conta e "criar conta
+      // grátis" é a porta errada. `/links` é rota protegida — sem sessão, o
+      // middleware devolve para /sign-in carregando `returnTo`. Em `landing`
+      // não há esse público, e o card segue com uma ação só.
+      secondaryLabel={
+        variant === "analytics"
+          ? t("publicAnalytics.cta.existingAccount")
+          : undefined
+      }
+      secondaryHref={variant === "analytics" ? "/links" : undefined}
     />
   );
 }
