@@ -3,7 +3,7 @@ import AdminPage from "@/page-components/admin/AdminPage";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Administração | Link Charts",
+  title: "Administração",
 };
 
 /**

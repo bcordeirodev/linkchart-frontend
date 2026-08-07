@@ -73,7 +73,7 @@ export function AdminTabs({
           size="small"
           value={range}
           onChange={(_, next: AdminRange | null) => next && onRangeChange(next)}
-          aria-label={t("range.30d")}
+          aria-label={t("range.label")}
           sx={segmentedSx}
         >
           <ToggleButton value="7d">{t("range.7d")}</ToggleButton>

@@ -10,6 +10,7 @@
     "health": "Health"
   },
   "range": {
+    "label": "Period",
     "7d": "7 days",
     "30d": "30 days",
     "90d": "90 days"
