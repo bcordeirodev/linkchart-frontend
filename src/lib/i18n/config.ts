@@ -2,6 +2,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
+import enAdmin from "./locales/en/admin.json";
 import enAnalytics from "./locales/en/analytics.json";
 import enApiKeys from "./locales/en/apiKeys.json";
 import enAuth from "./locales/en/auth.json";
@@ -14,6 +15,7 @@ import enPublic from "./locales/en/public.json";
 import enReports from "./locales/en/reports.json";
 import enSubdomains from "./locales/en/subdomains.json";
 import enTools from "./locales/en/tools.json";
+import ptBRAdmin from "./locales/pt-BR/admin.json";
 import ptBRAnalytics from "./locales/pt-BR/analytics.json";
 import ptBRApiKeys from "./locales/pt-BR/apiKeys.json";
 import ptBRAuth from "./locales/pt-BR/auth.json";
@@ -30,6 +32,7 @@ import ptBRTools from "./locales/pt-BR/tools.json";
 const resources = {
   en: {
     common: enCommon,
+    admin: enAdmin,
     auth: enAuth,
     links: enLinks,
     analytics: enAnalytics,
@@ -44,6 +47,7 @@ const resources = {
   },
   "pt-BR": {
     common: ptBRCommon,
+    admin: ptBRAdmin,
     auth: ptBRAuth,
     links: ptBRLinks,
     analytics: ptBRAnalytics,
@@ -86,6 +90,7 @@ export function initI18n(lng: string = "en") {
     defaultNS: "common",
     ns: [
       "common",
+      "admin",
       "auth",
       "links",
       "analytics",
