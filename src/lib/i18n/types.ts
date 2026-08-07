@@ -1,5 +1,6 @@
 import "i18next";
 
+import type enAdmin from "./locales/en/admin.json";
 import type enAnalytics from "./locales/en/analytics.json";
 import type enApiKeys from "./locales/en/apiKeys.json";
 import type enAuth from "./locales/en/auth.json";
@@ -18,6 +19,7 @@ declare module "i18next" {
     defaultNS: "common";
     resources: {
       common: typeof enCommon;
+      admin: typeof enAdmin;
       auth: typeof enAuth;
       links: typeof enLinks;
       analytics: typeof enAnalytics;
