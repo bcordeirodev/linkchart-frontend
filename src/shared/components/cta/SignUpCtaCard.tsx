@@ -1,8 +1,15 @@
 "use client";
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Link as MuiLink,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import type { SxProps, Theme } from "@mui/material/styles";
 import { alpha } from "@mui/material/styles";
 import { Check } from "lucide-react";
+import NextLink from "next/link";
 import type { ReactNode } from "react";
 
 import { isAuth0HandlerRoute } from "@/lib/auth/authNavigation";
@@ -48,6 +55,19 @@ interface SignUpCtaCardProps {
    * forking the component.
    */
   sx?: SxProps<Theme>;
+  /**
+   * Optional quiet second door for people the primary CTA doesn't address —
+   * on `/public-analytics`, someone who already has an account and arrived
+   * from the weekly digest, for whom "create a free account" is the wrong
+   * destination. Rendered as a text link under the button, never as a second
+   * button: the card keeps exactly one primary action.
+   *
+   * Opt-in, so `/shorter` and `/tools/*` render byte-identically to before.
+   * Both fields are required together — one without the other is ignored.
+   */
+  secondaryLabel?: string;
+  /** Destination for {@link secondaryLabel}. */
+  secondaryHref?: string;
 }
 
 /**
@@ -79,6 +99,8 @@ export function SignUpCtaCard({
   id,
   headerIcon,
   sx,
+  secondaryLabel,
+  secondaryHref,
 }: SignUpCtaCardProps) {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -177,23 +199,46 @@ export function SignUpCtaCard({
             </Typography>
           </Box>
         </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClick}
+        <Box
           sx={{
-            fontWeight: 600,
-            fontSize: "0.8125rem",
-            px: 3,
-            py: 1.25,
-            borderRadius: `${radiusTokens.md}px`,
-            whiteSpace: "nowrap",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: { xs: "stretch", sm: "center" },
+            gap: 0.75,
             flexShrink: 0,
             alignSelf: { xs: "stretch", sm: "center" },
           }}
         >
-          {ctaLabel}
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleClick}
+            sx={{
+              fontWeight: 600,
+              fontSize: "0.8125rem",
+              px: 3,
+              py: 1.25,
+              borderRadius: `${radiusTokens.md}px`,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {ctaLabel}
+          </Button>
+          {secondaryLabel && secondaryHref ? (
+            <MuiLink
+              component={NextLink}
+              href={secondaryHref}
+              sx={{
+                fontSize: "0.75rem",
+                color: descriptionColor,
+                textAlign: "center",
+                textDecorationColor: alpha(theme.palette.text.primary, 0.3),
+              }}
+            >
+              {secondaryLabel}
+            </MuiLink>
+          ) : null}
+        </Box>
       </Box>
 
       {features.length > 0 ? (

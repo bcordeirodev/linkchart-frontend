@@ -46,3 +46,51 @@ test.describe("Authentication", () => {
     await expect(page).toHaveURL(/\.auth0\.com\/u\/login/);
   });
 });
+
+/**
+ * Deep links into protected routes must survive the trip through login. Before
+ * this, `middleware.ts` redirected guests to a bare `/sign-in` and the intended
+ * path was lost — every emailed CTA (the weekly digest's "abra o painel
+ * completo"), bookmark and shared link dumped the user on `/` after logging in.
+ *
+ * All same-origin: these stop at the point where the destination is handed to
+ * Auth0, and never drive Auth0's hosted UI (see the note on the block above).
+ */
+test.describe("Deep link survives login", () => {
+  const DESTINATION = "/links/analytics/1?period=7d";
+
+  test("guest hitting a protected route keeps the destination", async ({
+    page,
+  }) => {
+    await page.goto(DESTINATION);
+
+    await expect(page).toHaveURL(/\/sign-in\?returnTo=/);
+    const returnTo = new URL(page.url()).searchParams.get("returnTo");
+    // Read back through URLSearchParams: asserting on the raw encoded string
+    // would pin the test to one encoding of `?` and `=`.
+    expect(returnTo).toBe(DESTINATION);
+  });
+
+  test("both doors carry the destination to the provider", async ({ page }) => {
+    await page.goto(DESTINATION);
+
+    for (const name of ["Continuar com Google", "Continuar com e-mail"]) {
+      const href = await page.getByRole("link", { name }).getAttribute("href");
+      expect(href).not.toBeNull();
+      const params = new URL(href as string, page.url()).searchParams;
+      expect(params.get("returnTo")).toBe(DESTINATION);
+    }
+  });
+
+  test("off-site destination is rejected, not forwarded", async ({ page }) => {
+    // Protocol-relative URL: left unchecked this would turn the login screen
+    // into an open redirect wearing our domain's credibility.
+    await page.goto("/sign-in?returnTo=//evil.example.com");
+
+    const href = await page
+      .getByRole("link", { name: "Continuar com e-mail" })
+      .getAttribute("href");
+    const params = new URL(href as string, page.url()).searchParams;
+    expect(params.get("returnTo")).toBe("/sign-in");
+  });
+});

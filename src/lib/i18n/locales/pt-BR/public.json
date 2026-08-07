@@ -256,7 +256,8 @@
         "Painel completo de desempenho"
       ],
       "unlockTitle": "Crie links com estatísticas como estas — grátis",
-      "unlockBody": "Você está vendo as estatísticas públicas de um link. Crie sua conta gratuita e tenha os mesmos dados nos seus links: histórico de cliques, mapa geográfico, dispositivos e rastreio de UTM."
+      "unlockBody": "Você está vendo as estatísticas públicas de um link. Crie sua conta gratuita e tenha os mesmos dados nos seus links: histórico de cliques, mapa geográfico, dispositivos e rastreio de UTM.",
+      "existingAccount": "Já tem conta? Abrir o painel"
     },
     "teaser": {
       "heading": "Mais contexto na conta gratuita",

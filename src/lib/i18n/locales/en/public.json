@@ -256,7 +256,8 @@
         "Full performance dashboard"
       ],
       "unlockTitle": "Create links with analytics like this — free",
-      "unlockBody": "You're viewing a link's public analytics. Create your free account to get the same data on your own links: click history, geographic map, devices, and UTM tracking."
+      "unlockBody": "You're viewing a link's public analytics. Create your free account to get the same data on your own links: click history, geographic map, devices, and UTM tracking.",
+      "existingAccount": "Already have an account? Open the dashboard"
     },
     "teaser": {
       "heading": "More context in a free account",
