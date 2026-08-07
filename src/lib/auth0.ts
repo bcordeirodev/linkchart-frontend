@@ -21,6 +21,20 @@ import { Auth0Client } from "@auth0/nextjs-auth0/server";
  * present in the access token, so a missing `email` scope means the backend
  * exchange gets no email even though Auth0 received it from Facebook.
  *
+ * `offline_access` is what makes Auth0 issue a refresh token. Without it the
+ * SDK has no way to renew an expired access token, and `getAccessToken()`
+ * throws `AccessTokenError: The access token has expired and a refresh token
+ * was not provided`. That matters because the session cookie outlives the
+ * access token: the cookie is rolling (~3 days) while the access token lasts
+ * 24h, so a user returning the next day still had a valid Auth0 session but
+ * an unrenewable token — `AuthContext` caught the throw and logged them out.
+ * The backend JWT expires on the same 24h clock (`JWT_TTL=1440`), so that
+ * re-exchange is exactly the path every returning user takes.
+ *
+ * Requires the Auth0 **Application** to have the `refresh_token` grant type
+ * enabled (Applications → Advanced Settings → Grant Types); the scope alone
+ * is silently ignored otherwise.
+ *
  * `beforeSessionSaved` strips the raw ID token from the encrypted session
  * cookie. User claims are already extracted into `session.user` by the SDK,
  * so discarding the raw JWT shrinks __session from ~3.5 KB to ~1 KB — well
@@ -29,7 +43,7 @@ import { Auth0Client } from "@auth0/nextjs-auth0/server";
 export const auth0 = new Auth0Client({
   appBaseUrl: process.env.APP_BASE_URL ?? process.env.NEXT_PUBLIC_APP_URL,
   authorizationParameters: {
-    scope: "openid profile email",
+    scope: "openid profile email offline_access",
   },
   // Return 204 (not 401) from /auth/profile when no session exists,
   // so useUser() sees null instead of throwing "Unauthorized".
