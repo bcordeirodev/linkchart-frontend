@@ -10,7 +10,8 @@ export type NavItemKey =
   | "bio"
   | "reports"
   | "subdomains"
-  | "apiKeys";
+  | "apiKeys"
+  | "admin";
 
 /**
  * Item de navegação principal, renderizado tanto no AppBar (desktop) quanto
@@ -25,6 +26,8 @@ export interface NavItem {
   icon: IconIntent;
   /** Item só aparece se a feature flag correspondente estiver ativa. */
   flag?: "subdomains";
+  /** Item só aparece se o papel do usuário incluir este role. */
+  requiresRole?: "admin";
 }
 
 /**
@@ -42,17 +45,42 @@ const NAV_ITEMS: NavItem[] = [
     flag: "subdomains",
   },
   { key: "apiKeys", route: "/api-keys", icon: "apiKeys" },
+  { key: "admin", route: "/admin", icon: "admin", requiresRole: "admin" },
 ];
 
 /**
- * Retorna os itens de navegação visíveis, filtrando por feature flags.
- * Subdomínios segue a mesma flag usada em `ProfilePage`
- * (`NEXT_PUBLIC_SUBDOMAINS_ENABLED`).
+ * Retorna os itens de navegação visíveis, filtrando por feature flags e
+ * pelo papel do usuário (itens com `requiresRole`).
+ *
+ * @param roles - papéis do usuário logado (`user.role`); default vazio =
+ *   nenhum item privilegiado aparece.
  */
-export function getVisibleNavItems(): NavItem[] {
-  return NAV_ITEMS.filter(
-    (item) =>
-      item.flag !== "subdomains" ||
-      process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED === "true",
-  );
+export function getVisibleNavItems(roles: readonly string[] = []): NavItem[] {
+  return NAV_ITEMS.filter((item) => {
+    if (
+      item.flag === "subdomains" &&
+      process.env.NEXT_PUBLIC_SUBDOMAINS_ENABLED !== "true"
+    ) {
+      return false;
+    }
+    if (item.requiresRole && !roles.includes(item.requiresRole)) {
+      return false;
+    }
+    return true;
+  });
+}
+
+/**
+ * Normaliza `user.role` (`string[] | string | null | undefined`, conforme
+ * `src/types/core/auth.ts`) para o array que {@link getVisibleNavItems}
+ * espera. Compartilhada pelos dois pontos de renderização da navegação
+ * (`SideNav` e `Navbar`) para não duplicar a checagem `Array.isArray`.
+ *
+ * @param role - valor bruto de `user.role`.
+ */
+export function normalizeUserRoles(
+  role: string[] | string | null | undefined,
+): string[] {
+  if (!role) return [];
+  return Array.isArray(role) ? role : [role];
 }

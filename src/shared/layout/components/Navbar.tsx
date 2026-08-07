@@ -55,7 +55,7 @@ import { AppIcon } from "@/shared/ui/icons";
 import { AppLogo } from "@/shared/ui/base";
 import { LanguageSelector } from "@/lib/i18n/components/LanguageSelector";
 
-import { getVisibleNavItems } from "./navItems";
+import { getVisibleNavItems, normalizeUserRoles } from "./navItems";
 
 interface NavbarProps {
   /** Estado de colapso da sidebar desktop, controlado pelo `MainLayout`. */
@@ -77,7 +77,7 @@ export function Navbar({ collapsed, onToggleSidebar }: NavbarProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
-  const navItems = getVisibleNavItems();
+  const navItems = getVisibleNavItems(normalizeUserRoles(user?.role));
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
