@@ -51,7 +51,8 @@
     "loginTrackingSince": "Logins tracked since {{date}} — activity was not measured before that",
     "distributionTitle": "Links per user",
     "distributionSubtitle": "How many users have 0, 1, 2–5 or 6+ real links.",
-    "bucketUsers": "users"
+    "bucketUsers_one": "user",
+    "bucketUsers_other": "users"
   },
   "health": {
     "queueDepth": "Job queue",

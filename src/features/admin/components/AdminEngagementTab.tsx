@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 
 import { DistributionBars } from "@/features/admin/components/DistributionBars";
 import { useAdminEngagement } from "@/features/admin/hooks/useAdmin";
+import { formatCount } from "@/lib/utils/formatNumber";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { OverviewMetricRow } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
@@ -32,7 +33,8 @@ interface AdminEngagementTabProps {
  * @returns Conteúdo da tab, gated por `AnalyticsStateManager`.
  */
 export function AdminEngagementTab({ range }: AdminEngagementTabProps) {
-  const { t } = useTranslation("admin");
+  const { t, i18n } = useTranslation("admin");
+  const locale = i18n.language;
   const query = useAdminEngagement(range);
   const data = query.data;
 
@@ -50,10 +52,13 @@ export function AdminEngagementTab({ range }: AdminEngagementTabProps) {
             metrics={[
               {
                 label: t("engagement.activation"),
+                // formatCount (e não formatPercent, que é locale-blind por
+                // design): o backend já arredonda para 1 casa, e o separador
+                // decimal precisa acompanhar o idioma — "33,3%" em pt-BR.
                 value:
                   data.activation_pct === null
                     ? "—"
-                    : `${data.activation_pct.toLocaleString("pt-BR")}%`,
+                    : `${formatCount(data.activation_pct, locale)}%`,
                 caption: t("engagement.activationCaption"),
               },
               {
@@ -61,16 +66,16 @@ export function AdminEngagementTab({ range }: AdminEngagementTabProps) {
                 value:
                   data.week1_return_pct === null
                     ? "—"
-                    : `${data.week1_return_pct.toLocaleString("pt-BR")}%`,
+                    : `${formatCount(data.week1_return_pct, locale)}%`,
                 caption: t("engagement.week1ReturnCaption"),
               },
               {
                 label: t("engagement.wau"),
-                value: data.wau.toLocaleString("pt-BR"),
+                value: formatCount(data.wau, locale),
               },
               {
                 label: t("engagement.mau"),
-                value: data.mau.toLocaleString("pt-BR"),
+                value: formatCount(data.mau, locale),
               },
             ]}
           />
@@ -79,7 +84,7 @@ export function AdminEngagementTab({ range }: AdminEngagementTabProps) {
             <Alert severity="info" variant="outlined">
               {t("engagement.loginTrackingSince", {
                 date: new Date(data.login_tracking_since).toLocaleDateString(
-                  "pt-BR",
+                  locale,
                 ),
               })}
             </Alert>
@@ -94,7 +99,9 @@ export function AdminEngagementTab({ range }: AdminEngagementTabProps) {
                 label: d.bucket,
                 value: d.users,
               }))}
-              unit={t("engagement.bucketUsers")}
+              // Função, não string: o sufixo concorda com a contagem de cada
+              // barra (o bucket "1" saía como "1 usuários").
+              unit={(count) => t("engagement.bucketUsers", { count })}
             />
           </ChartCard>
         </Stack>
