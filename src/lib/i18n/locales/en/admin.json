@@ -65,6 +65,7 @@
     "brokenLinksCaption": "failed the latest health check",
     "qualityTitle": "Traffic quality (7 days)",
     "qualitySubtitle": "Click distribution by anti-fraud classification. Organic is healthy traffic.",
+    "qualityEmpty": "No clicks classified in this period.",
     "tiers": {
       "organic": "Organic",
       "suspicious": "Suspicious",
