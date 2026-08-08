@@ -16,6 +16,7 @@ import {
   AdminTabs,
   type AdminTab,
 } from "@/features/admin/components/AdminTabs";
+import { AdminUsersTab } from "@/features/admin/components/AdminUsersTab";
 import AuthGuardRedirect from "@/lib/auth/AuthGuardRedirect";
 import authRoles from "@/lib/auth/authRoles";
 import { PageSectionHeading, ResponsiveContainer } from "@/shared/ui/base";
@@ -56,11 +57,11 @@ export default function AdminPage() {
           <Box className="reveal reveal-3">
             {/* Conteúdo por tab — preenchido nas Tasks 14–17:
                 growth → <AdminGrowthTab range={range} /> (Task 14, pronto)
-                users → <AdminUsersTab />
+                users → <AdminUsersTab /> (Task 15, pronto)
                 engagement → <AdminEngagementTab range={range} />
                 health → <AdminHealthTab /> */}
             {tab === "growth" ? <AdminGrowthTab range={range} /> : null}
-            {tab === "users" ? <Box /> : null}
+            {tab === "users" ? <AdminUsersTab /> : null}
             {tab === "engagement" ? <Box /> : null}
             {tab === "health" ? <Box /> : null}
           </Box>
