@@ -46,7 +46,9 @@ const RANK_COLORS_LIGHT: Record<string, string> = {
  * @param mode - `theme.palette.mode`; light merges the contrast overrides.
  */
 function rankColors(mode: "light" | "dark"): Record<string, string> {
-  return mode === "light" ? { ...RANK_COLORS, ...RANK_COLORS_LIGHT } : RANK_COLORS;
+  return mode === "light"
+    ? { ...RANK_COLORS, ...RANK_COLORS_LIGHT }
+    : RANK_COLORS;
 }
 
 interface Props {
