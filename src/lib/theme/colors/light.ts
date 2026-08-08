@@ -1,19 +1,21 @@
 /**
  * Paleta light "instrumento técnico" (modo secundário).
  *
- * Espelho da filosofia do dark recalibrado (2026-08): elevação por hairline,
- * não por sombra/cinza. Canvas cinza-papel com o mesmo matiz slate (~220°),
- * cards em branco puro separados pela mesma hairline — no dark o card
- * "acende" contra o canvas quase-preto; aqui é o inverso. Primary desce para
- * o degrau 700 da escala dark (#2C5AA0, ~6.3:1 sobre branco — AA em texto
+ * Espelho da filosofia do dark: elevação por hairline, não por sombra/cinza,
+ * neutros no mesmo matiz slate (~220°). Recalibrada em 2026-08-08 (feedback
+ * do Bruno: "branco muito forte") — o canvas desceu de #F6F7F9 para um papel
+ * técnico com corpo (#EAEDF2, L* ~93) e os cards saíram do branco puro
+ * (#F8F9FB): a página inteira deixa de operar na faixa 97–100 de luminância,
+ * que lia como glare, mantendo o degrau canvas→card + hairline. Primary no
+ * degrau 700 da escala dark (#2C5AA0, ~6.8:1 sobre a surface — AA em texto
  * normal); #4E82E6 (main do dark) vira o degrau `light`.
  */
 
 export const lightNeutral = {
-  bg: "#F6F7F9",
-  surface: "#FFFFFF",
-  elevated: "#FFFFFF",
-  input: "#EEF0F4",
+  bg: "#EAEDF2",
+  surface: "#F8F9FB",
+  elevated: "#FBFCFE",
+  input: "#E2E6ED",
   border: {
     subtle: "rgba(16, 24, 40, 0.06)",
     default: "rgba(16, 24, 40, 0.10)",
