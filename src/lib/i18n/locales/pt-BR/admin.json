@@ -65,6 +65,7 @@
     "brokenLinksCaption": "reprovados no último health check",
     "qualityTitle": "Qualidade do tráfego (7 dias)",
     "qualitySubtitle": "Distribuição dos cliques por classificação anti-fraude. Orgânico é o tráfego saudável.",
+    "qualityEmpty": "Nenhum clique classificado nesse período.",
     "tiers": {
       "organic": "Orgânico",
       "suspicious": "Suspeito",

@@ -11,7 +11,9 @@ import { useState } from "react";
 import { Box, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import { AdminEngagementTab } from "@/features/admin/components/AdminEngagementTab";
 import { AdminGrowthTab } from "@/features/admin/components/AdminGrowthTab";
+import { AdminHealthTab } from "@/features/admin/components/AdminHealthTab";
 import {
   AdminTabs,
   type AdminTab,
@@ -25,7 +27,9 @@ import type { AdminRange } from "@/features/admin/types";
 
 /**
  * Página do painel admin: header, barra de tabs/período e o conteúdo da
- * tab ativa (componentes das tasks seguintes).
+ * tab ativa (crescimento, usuários, engajamento e saúde).
+ *
+ * @returns Página `/admin`, gated por `AuthGuardRedirect`.
  */
 export default function AdminPage() {
   const { t } = useTranslation("admin");
@@ -55,15 +59,10 @@ export default function AdminPage() {
           </Box>
 
           <Box className="reveal reveal-3">
-            {/* Conteúdo por tab — preenchido nas Tasks 14–17:
-                growth → <AdminGrowthTab range={range} /> (Task 14, pronto)
-                users → <AdminUsersTab /> (Task 15, pronto)
-                engagement → <AdminEngagementTab range={range} />
-                health → <AdminHealthTab /> */}
             {tab === "growth" ? <AdminGrowthTab range={range} /> : null}
             {tab === "users" ? <AdminUsersTab /> : null}
-            {tab === "engagement" ? <Box /> : null}
-            {tab === "health" ? <Box /> : null}
+            {tab === "engagement" ? <AdminEngagementTab range={range} /> : null}
+            {tab === "health" ? <AdminHealthTab /> : null}
           </Box>
         </Stack>
       </ResponsiveContainer>
