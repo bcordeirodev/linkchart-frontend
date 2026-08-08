@@ -45,7 +45,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "@/shared/hooks";
-import { Menu as MenuIcon } from "lucide-react";
+import { Menu as MenuIcon, Moon, Sun } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
 
@@ -54,6 +54,7 @@ import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 import { AppIcon } from "@/shared/ui/icons";
 import { AppLogo } from "@/shared/ui/base";
 import { LanguageSelector } from "@/lib/i18n/components/LanguageSelector";
+import { useAppThemeMode } from "@/shared/layout/AppThemeScope";
 
 import { getVisibleNavItems, normalizeUserRoles } from "./navItems";
 
@@ -78,6 +79,7 @@ export function Navbar({ collapsed, onToggleSidebar }: NavbarProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const navItems = getVisibleNavItems(normalizeUserRoles(user?.role));
+  const themeMode = useAppThemeMode();
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -215,6 +217,44 @@ export function Navbar({ collapsed, onToggleSidebar }: NavbarProps) {
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {user ? (
               <>
+                {/* Toggle de tema — visível em mobile e desktop; só existe dentro do
+                    AppThemeScope (área logada), fora dele o hook retorna null. O ícone
+                    mostra o modo de DESTINO: sol no dark, lua no light. */}
+                {themeMode ? (
+                  <Tooltip
+                    title={
+                      themeMode.mode === "dark"
+                        ? t("nav.switchToLight")
+                        : t("nav.switchToDark")
+                    }
+                    arrow
+                  >
+                    <IconButton
+                      data-testid="theme-toggle"
+                      aria-label={
+                        themeMode.mode === "dark"
+                          ? t("nav.switchToLight")
+                          : t("nav.switchToDark")
+                      }
+                      onClick={themeMode.toggleMode}
+                      sx={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: `${radiusTokens.md}px`,
+                        transition: `background-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
+                        "&:hover": {
+                          backgroundColor: theme.palette.action.hover,
+                        },
+                      }}
+                    >
+                      {themeMode.mode === "dark" ? (
+                        <Sun size={20} strokeWidth={1.5} />
+                      ) : (
+                        <Moon size={20} strokeWidth={1.5} />
+                      )}
+                    </IconButton>
+                  </Tooltip>
+                ) : null}
                 <LanguageSelector />
                 <IconButton
                   aria-label={t("nav.openNavAriaLabel", "open navigation")}

@@ -53,3 +53,4 @@ next-env.d.ts
 # playwright authed net (minted locally, never committed)
 /e2e/.auth/
 .env.e2e.local
+.superpowers/

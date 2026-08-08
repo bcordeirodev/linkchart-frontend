@@ -47,7 +47,7 @@ function buildFillOptions(
 /**
  * Opções base de todos os gráficos ApexCharts do app (spec 2026-08-03).
  * Linhas 2px, grid só horizontal quase invisível, eixos em mono 11px,
- * barras raio 2, tooltip dark com números em mono.
+ * barras raio 2, tooltip segue `theme.palette.mode` com números em mono.
  *
  * `fill` depende de `chartType` (ver `buildFillOptions`): gradiente 18%→0
  * somente quando `chartType === "area"`; qualquer outro tipo — ou a
@@ -86,7 +86,9 @@ export function buildApexBaseOptions(
       axisTicks: { show: false },
     },
     yaxis: { labels: { style: { fontFamily: mono, fontSize: "11px" } } },
-    tooltip: { theme: "dark", style: { fontFamily: mono } },
+    // Tooltip acompanha o modo do tema — "dark" fixo renderizava tooltip escuro
+    // sobre charts em fundo branco no tema claro.
+    tooltip: { theme: theme.palette.mode, style: { fontFamily: mono } },
     legend: { fontFamily: mono, fontSize: "11px", markers: { size: 4 } },
   };
 }

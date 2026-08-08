@@ -1,23 +1,32 @@
 /**
- * Paleta light derivada (modo secundário).
- * Invertida em neutros, primary ajustado para contrastar contra bg claro.
+ * Paleta light "instrumento técnico" (modo secundário).
+ *
+ * Espelho da filosofia do dark: elevação por hairline, não por sombra/cinza,
+ * neutros no mesmo matiz slate (~220°). Recalibrada em 2026-08-08 (feedback
+ * do Bruno: "branco muito forte") — o canvas desceu de #F6F7F9 para um papel
+ * técnico com corpo (#EAEDF2, L* ~93) e os cards saíram do branco puro
+ * (#F8F9FB): a página inteira deixa de operar na faixa 97–100 de luminância,
+ * que lia como glare, mantendo o degrau canvas→card + hairline. Primary no
+ * degrau 700 da escala dark (#2C5AA0, ~6.5:1 sobre a surface #F8F9FB e
+ * ~5.8:1 sobre o canvas #EAEDF2 — AA em texto normal nos dois); #4E82E6
+ * (main do dark) vira o degrau `light`.
  */
 
 export const lightNeutral = {
-  bg: "#FAFAFA",
-  surface: "#FFFFFF",
-  elevated: "#FFFFFF",
-  input: "#F4F4F5",
+  bg: "#EAEDF2",
+  surface: "#F8F9FB",
+  elevated: "#FBFCFE",
+  input: "#E2E6ED",
   border: {
-    subtle: "rgba(0, 0, 0, 0.06)",
-    default: "rgba(0, 0, 0, 0.10)",
-    strong: "rgba(0, 0, 0, 0.16)",
+    subtle: "rgba(16, 24, 40, 0.06)",
+    default: "rgba(16, 24, 40, 0.10)",
+    strong: "rgba(16, 24, 40, 0.18)",
   },
   text: {
-    primary: "rgba(0, 0, 0, 0.92)",
-    secondary: "rgba(0, 0, 0, 0.64)",
-    tertiary: "rgba(0, 0, 0, 0.48)",
-    disabled: "rgba(0, 0, 0, 0.32)",
+    primary: "rgba(9, 14, 22, 0.92)",
+    secondary: "rgba(9, 14, 22, 0.66)",
+    tertiary: "rgba(9, 14, 22, 0.50)",
+    disabled: "rgba(9, 14, 22, 0.34)",
   },
 } as const;
 
@@ -27,7 +36,7 @@ export const lightPrimary = {
   200: "#AEC7E3",
   300: "#7DA3CF",
   400: "#4E82E6",
-  500: "#2C5AA0", // main em light (mais escuro para contraste)
+  500: "#2C5AA0", // main em light (mais escuro para contraste AA)
   600: "#234977",
   700: "#1C3A61",
   800: "#152C4A",

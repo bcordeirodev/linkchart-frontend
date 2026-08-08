@@ -8,9 +8,9 @@ export default function manifest(): MetadataRoute.Manifest {
       "Free URL shortener with real-time analytics, click tracking, and geographic insights.",
     start_url: "/",
     display: "standalone",
-    // Aligned to the app's dark chrome: background = darkNeutral.bg (#0A0A0B),
+    // Aligned to the app's dark chrome: background = darkNeutral.bg (#0B0D12),
     // theme_color = darkPrimary.main (#4E82E6). See src/lib/theme/colors/dark.ts.
-    background_color: "#0A0A0B",
+    background_color: "#0B0D12",
     theme_color: "#4E82E6",
     icons: [
       // "any" variants cover contexts that crop maskable icons (e.g. favicons,

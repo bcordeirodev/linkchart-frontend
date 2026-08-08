@@ -13,61 +13,25 @@ import { optimizedThemeOptions } from "./muiComponents";
 import type { FuseSettingsConfigType } from "../types/theme";
 import type { ThemeOptions } from "@mui/material/styles/createTheme";
 
-/**
- * Tema padrão otimizado da aplicação
- */
-const optimizedDefaultTheme = {
-  palette: {
-    mode: "light",
-    text: {
-      primary: "rgb(17, 24, 39)",
-      secondary: "rgb(107, 114, 128)",
-      disabled: "rgb(149, 156, 169)",
-    },
-    common: {
-      black: "rgb(17, 24, 39)",
-      white: "rgb(255, 255, 255)",
-    },
-    primary: {
-      light: "#bec1c5",
-      main: "#252f3e",
-      dark: "#0d121b",
-      contrastDefaultColor: "light",
-    },
-    secondary: {
-      light: "#E8E9EA",
-      main: "#9E9E9E",
-      dark: "#616161",
-    },
-    background: {
-      paper: "#FFFFFF",
-      default: "#f6f7f9",
-    },
-    error: {
-      light: "#ffcdd2",
-      main: "#f44336",
-      dark: "#b71c1c",
-    },
-  },
-};
-
 // ========================================
 // ⚙️ CONFIGURAÇÕES OTIMIZADAS
 // ========================================
 
 /**
- * Configurações padrão otimizadas do Fuse
+ * Configurações padrão otimizadas do Fuse.
+ *
+ * Não carrega um bloco `theme` — o `theme` efetivo da aplicação vem de
+ * `LayoutProvider`'s `defaultLayoutSettings` (`src/shared/layout/core/LayoutProvider.tsx`),
+ * que referencia os temas nomeados em `allThemes` ("default"/"defaultDark"),
+ * não este objeto. Um bloco `theme` local (com canvas light `#f6f7f9`, hoje
+ * desalinhado do canvas real `#EAEDF2`) existiu aqui mas nunca era
+ * consumido — nada importava `optimizedSettings`/`defaultSettings` além dos
+ * próprios barrels de re-export — e foi removido em 2026-08-08.
  */
 export const optimizedSettings = {
   customScrollbars: true,
   direction: "ltr" as const,
   layout: {},
-  theme: {
-    main: optimizedDefaultTheme,
-    navbar: optimizedDefaultTheme,
-    toolbar: optimizedDefaultTheme,
-    footer: optimizedDefaultTheme,
-  },
 };
 
 /**
