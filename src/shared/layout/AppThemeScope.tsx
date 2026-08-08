@@ -104,7 +104,10 @@ export function AppThemeScope({ initialMode, children }: AppThemeScopeProps) {
     [mode],
   );
 
-  const contextValue = useMemo(() => ({ mode, toggleMode }), [mode, toggleMode]);
+  const contextValue = useMemo(
+    () => ({ mode, toggleMode }),
+    [mode, toggleMode],
+  );
 
   return (
     <AppThemeModeContext.Provider value={contextValue}>
