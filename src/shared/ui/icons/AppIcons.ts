@@ -52,6 +52,7 @@ import {
   FileText,
   Link2,
   IdCard,
+  ShieldCheck,
   Globe,
   Monitor,
   Smartphone,
@@ -383,6 +384,9 @@ export const IconIntents = {
 
   // Página bio (link-in-bio)
   bio: IdCard,
+
+  // Painel admin
+  admin: ShieldCheck,
 
   // Status
   success: AppIcons.status.success,

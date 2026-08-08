@@ -48,7 +48,10 @@ function convertUserDBToUser(userDB: UserResponse): User {
     name: userDB.name || userDB.email,
     email: userDB.email,
     displayName: userDB.name,
-    role: ["user"],
+    // Papel derivado do backend (/api/me). Default OBRIGATÓRIO ["user"]:
+    // useUser().isGuest trata role vazio como guest — um default errado
+    // expulsaria todo usuário do app para /sign-in.
+    role: userDB.is_admin === true ? ["admin"] : ["user"],
     settings: {
       layout: { style: "layout1", config: {} },
       direction: "ltr",

@@ -12,6 +12,8 @@
     "subdomainsDesc": "Your custom addresses",
     "apiKeys": "API keys",
     "apiKeysDesc": "Create and revoke keys for the API",
+    "admin": "Administration",
+    "adminDesc": "Product growth and health",
     "signIn": "Sign In",
     "signUp": "Create account",
     "profile": "My profile",

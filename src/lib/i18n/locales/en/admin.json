@@ -1,0 +1,79 @@
+{
+  "page": {
+    "title": "Administration",
+    "subtitle": "Product growth and health — all users, demo data excluded"
+  },
+  "tabs": {
+    "growth": "Growth",
+    "users": "Users",
+    "engagement": "Engagement",
+    "health": "Health"
+  },
+  "range": {
+    "label": "Period",
+    "7d": "7 days",
+    "30d": "30 days",
+    "90d": "90 days"
+  },
+  "growth": {
+    "totalUsers": "Users",
+    "totalLinks": "Links",
+    "totalClicks": "Clicks",
+    "totalsCaption": "all-time",
+    "periodCaption": "in period vs previous",
+    "clicksChartTitle": "Clicks per day",
+    "clicksChartSubtitle": "Clicks recorded across all real links, per day (São Paulo timezone). Source: clicks table.",
+    "signupsChartTitle": "Signups per day",
+    "signupsChartSubtitle": "New accounts created per day, excluding test accounts.",
+    "linksChartTitle": "Links created per day",
+    "linksChartSubtitle": "Real links created per day, demo links excluded."
+  },
+  "users": {
+    "searchPlaceholder": "Search by name or email",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "createdAt": "Signed up",
+      "lastLoginAt": "Last login",
+      "links": "Links",
+      "clicks": "Clicks"
+    },
+    "neverLoggedIn": "—",
+    "clicksSourceNote": "Clicks = per-link counter (may differ slightly from detailed analytics under queue backlog)."
+  },
+  "engagement": {
+    "activation": "Activation",
+    "activationCaption": "% of accounts with at least 1 link",
+    "week1Return": "Week-1 return",
+    "week1ReturnCaption": "% of period signups that created a link within 7 days",
+    "wau": "Weekly active",
+    "mau": "Monthly active",
+    "loginTrackingSince": "Logins tracked since {{date}} — activity was not measured before that",
+    "distributionTitle": "Links per user",
+    "distributionSubtitle": "How many users have 0, 1, 2–5 or 6+ real links.",
+    "bucketUsers_one": "user",
+    "bucketUsers_other": "users"
+  },
+  "health": {
+    "queueDepth": "Job queue",
+    "queueDepthCaption": "waiting to process",
+    "queueUnavailable": "unavailable",
+    "failedJobs24h": "Failed jobs (24h)",
+    "failedJobs7d": "Failed jobs (7d)",
+    "activeLinks": "Active links",
+    "inactiveLinks": "Inactive links",
+    "brokenLinks": "Broken links",
+    "brokenLinksCaption": "failed the latest health check",
+    "qualityTitle": "Traffic quality (7 days)",
+    "qualitySubtitle": "Click distribution by anti-fraud classification. Organic is healthy traffic.",
+    "qualityEmpty": "No clicks classified in this period.",
+    "tiers": {
+      "organic": "Organic",
+      "suspicious": "Suspicious",
+      "likely_fraud": "Likely fraud"
+    }
+  },
+  "errors": {
+    "loadFailed": "Could not load the data. Please try again."
+  }
+}
