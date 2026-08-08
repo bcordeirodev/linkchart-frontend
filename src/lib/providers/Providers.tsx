@@ -18,7 +18,6 @@ import { LayoutProvider } from "@/shared/layout/core";
 import { MainThemeProvider, applyGlobalStyles } from "@/lib/theme";
 import { queryClient } from "@/lib/query/client";
 import { MessageProvider } from "@/lib/providers/MessageProvider";
-import { Message } from "@/shared/ui/feedback/Message";
 import AppContext from "@/lib/providers/AppContext";
 
 interface ProvidersProps {
@@ -57,7 +56,14 @@ export function Providers({ children, initialLang = "en" }: ProvidersProps) {
               <LayoutProvider>
                 <MainThemeProvider>
                   <MessageProvider>
-                    <Message />
+                    {/* The `<Message />` view is NOT mounted here: it reads
+                        `useTheme()`, and this provider sits above the route
+                        tree — above the `(app)` group's nested `AppThemeScope`
+                        light-theme override — so a toast rendered at this
+                        level would always paint dark, even on light-mode
+                        logged pages. Each route-group layout mounts its own
+                        `<Message />` instead, under the theme that actually
+                        applies to it (see `app/(app|public|auth)/layout.tsx`). */}
                     {/* strict: only the lightweight `m` component is allowed
                         (full `motion` would defeat the lazy feature split). */}
                     <LazyMotion features={domAnimation} strict>

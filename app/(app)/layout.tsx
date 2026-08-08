@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import MainLayout from "@/shared/layout/MainLayout";
 import AppThemeScope from "@/shared/layout/AppThemeScope";
+import { Message } from "@/shared/ui/feedback/Message";
 import { THEME_COOKIE_NAME, resolveThemeMode } from "@/lib/theme/themeCookie";
 
 /**
@@ -35,6 +36,10 @@ export default async function AppGroupLayout({
 
   return (
     <AppThemeScope initialMode={initialMode}>
+      {/* Mounted inside `AppThemeScope` (not in `Providers.tsx`) so the
+          toast reads the light/dark mode actually active in the logged
+          area instead of always inheriting the root dark theme. */}
+      <Message />
       <MainLayout>{children}</MainLayout>
     </AppThemeScope>
   );
