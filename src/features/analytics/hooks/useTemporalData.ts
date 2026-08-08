@@ -97,7 +97,11 @@ function calculateStats(temporalData: TemporalData): TemporalStats {
     totalDataPoints: hourlyData.length + dailyData.length,
     peakHour: String(peakHourData.hour),
     peakDay: peakDayData.day_name,
-    averageHourlyClicks: Math.round(averageHourlyClicks),
+    // Duas casas em vez de inteiro: arredondar aqui destruía qualquer média
+    // sub-0.1 antes da camada de exibição (que mostra "<0.1" nesses casos —
+    // refinamento visual 2026-08-08 §3.8). Só formatação; nenhum consumidor
+    // faz aritmética com este campo.
+    averageHourlyClicks: Math.round(averageHourlyClicks * 100) / 100,
     trendDirection,
     lastUpdate: new Date().toISOString(),
   };

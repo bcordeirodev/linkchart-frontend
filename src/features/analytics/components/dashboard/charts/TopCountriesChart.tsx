@@ -9,6 +9,8 @@ import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
+import { ViewFullAnalysisLink } from "./ViewFullAnalysisLink";
+
 import type { CountryData } from "@/types";
 
 interface TopCountriesChartProps {
@@ -34,6 +36,7 @@ export function TopCountriesChart({
     <ChartCard
       title={t("charts.topCountries")}
       subtitle={t("charts.descriptions.topCountries")}
+      action={<ViewFullAnalysisLink tab="places" />}
     >
       <ApexChartWrapper
         type="bar"

@@ -1,16 +1,12 @@
 "use client";
-import { Card, CardContent, Typography, Stack, useTheme } from "@mui/material";
+import { Typography, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import {
   getWeekdayLabel,
   isWeekendDay,
 } from "@/features/analytics/utils/weekday";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import type { TemporalInsightsProps } from "@/types/analytics";
 
@@ -33,7 +29,6 @@ export function TemporalInsights({
   showAdvancedInsights: _showAdvancedInsights = true,
   showRecommendations: _showRecommendations = true,
 }: TemporalInsightsProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
 
   // Função auxiliar para obter total de cliques
@@ -81,92 +76,66 @@ export function TemporalInsights({
   }
 
   return (
-    <Card
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: `${radiusTokens.lg}px`,
-        boxShadow:
-          theme.palette.mode === "dark"
-            ? elevationTokens.sm
-            : elevationLightTokens.sm,
-      }}
-    >
-      <CardContent>
-        <Typography
-          variant="subtitle1"
-          gutterBottom
-          sx={{
-            fontWeight: 600,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          {t("temporal.insights.title")}
+    <ChartCard title={t("temporal.insights.title")}>
+      <Stack spacing={1.5}>
+        <Typography variant="body2">
+          {t("temporal.insights.summary", {
+            total: hourlyTotal.toLocaleString(),
+            perHour: avgClicksPerHour.toFixed(1),
+            perDay: avgClicksPerDay.toFixed(1),
+          })}
         </Typography>
 
-        <Stack spacing={1.5}>
+        {peakHour.clicks > 0 && (
           <Typography variant="body2">
-            {t("temporal.insights.summary", {
-              total: hourlyTotal.toLocaleString(),
-              perHour: avgClicksPerHour.toFixed(1),
-              perDay: avgClicksPerDay.toFixed(1),
+            • <strong>{peakHour.label}</strong>{" "}
+            {t("temporal.insights.peakHourTip", { clicks: peakHour.clicks })}
+          </Typography>
+        )}
+
+        {peakDay.clicks > 0 && (
+          <Typography variant="body2">
+            •{" "}
+            <strong>{getWeekdayLabel(peakDay.day, t, peakDay.day_name)}</strong>{" "}
+            {t("temporal.insights.peakDayTip", { clicks: peakDay.clicks })}
+          </Typography>
+        )}
+
+        {isBusinessHoursActive ? (
+          <Typography variant="body2">
+            {t("temporal.insights.businessHoursActive", {
+              percent: ((businessHoursClicks / hourlyTotal) * 100).toFixed(1),
             })}
           </Typography>
+        ) : null}
 
-          {peakHour.clicks > 0 && (
-            <Typography variant="body2">
-              • <strong>{peakHour.label}</strong>{" "}
-              {t("temporal.insights.peakHourTip", { clicks: peakHour.clicks })}
-            </Typography>
-          )}
+        {!isBusinessHoursActive && hourlyTotal > 0 && (
+          <Typography variant="body2">
+            {t("temporal.insights.afterHoursActive")}
+          </Typography>
+        )}
 
-          {peakDay.clicks > 0 && (
-            <Typography variant="body2">
-              •{" "}
-              <strong>
-                {getWeekdayLabel(peakDay.day, t, peakDay.day_name)}
-              </strong>{" "}
-              {t("temporal.insights.peakDayTip", { clicks: peakDay.clicks })}
-            </Typography>
-          )}
+        {isWeekendActive ? (
+          <Typography variant="body2">
+            {t("temporal.insights.weekendActive", {
+              percent: ((weekendClicks / weeklyTotal) * 100).toFixed(1),
+            })}
+          </Typography>
+        ) : null}
 
-          {isBusinessHoursActive ? (
-            <Typography variant="body2">
-              {t("temporal.insights.businessHoursActive", {
-                percent: ((businessHoursClicks / hourlyTotal) * 100).toFixed(1),
-              })}
-            </Typography>
-          ) : null}
+        {!isWeekendActive && weeklyTotal > 0 && (
+          <Typography variant="body2">
+            {t("temporal.insights.weekdaysActive")}
+          </Typography>
+        )}
 
-          {!isBusinessHoursActive && hourlyTotal > 0 && (
-            <Typography variant="body2">
-              {t("temporal.insights.afterHoursActive")}
-            </Typography>
-          )}
-
-          {isWeekendActive ? (
-            <Typography variant="body2">
-              {t("temporal.insights.weekendActive", {
-                percent: ((weekendClicks / weeklyTotal) * 100).toFixed(1),
-              })}
-            </Typography>
-          ) : null}
-
-          {!isWeekendActive && weeklyTotal > 0 && (
-            <Typography variant="body2">
-              {t("temporal.insights.weekdaysActive")}
-            </Typography>
-          )}
-
-          {hourlyTotal > 0 && weeklyTotal > 0 && (
-            <Typography variant="body2">
-              <strong>•</strong> {t("temporal.insights.consistencyTip")}
-            </Typography>
-          )}
-        </Stack>
-      </CardContent>
-    </Card>
+        {hourlyTotal > 0 && weeklyTotal > 0 && (
+          <Typography variant="body2">
+            <strong>•</strong> {t("temporal.insights.consistencyTip")}
+          </Typography>
+        )}
+      </Stack>
+    </ChartCard>
   );
 }
 

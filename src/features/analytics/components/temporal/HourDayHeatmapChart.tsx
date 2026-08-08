@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
@@ -6,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { heatmapBlueScale } from "@/lib/theme/colors/chart";
+import { getWeekdayLabel } from "@/features/analytics/utils/weekday";
 import type { HeatmapSeriesEntry } from "@/types/analytics/temporal";
 
 interface HourDayHeatmapChartProps {
@@ -16,6 +18,23 @@ export function HourDayHeatmapChart({ data }: HourDayHeatmapChartProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
+
+  // The backend (`TemporalAnalyticsService::getHourDayHeatmap`) always
+  // returns exactly 7 rows, one per ISO weekday in order (Monday first), but
+  // labels each row's `name` with a hardcoded Portuguese abbreviation ("Seg",
+  // "Ter", …) — correct for pt-BR, wrong for every other locale. The row
+  // order is the only day signal the payload carries reliably, so it is used
+  // here (`index + 1` = ISO weekday) to relabel each row through the same
+  // localized weekday name every other temporal chart uses, instead of
+  // rendering the raw API string.
+  const localizedData = useMemo(
+    () =>
+      (data ?? []).map((entry, index) => ({
+        ...entry,
+        name: getWeekdayLabel(index + 1, t, entry.name),
+      })),
+    [data, t],
+  );
 
   if (!data || data.length === 0) {
     return null;
@@ -96,7 +115,7 @@ export function HourDayHeatmapChart({ data }: HourDayHeatmapChartProps) {
       <ApexChartWrapper
         type="heatmap"
         size="standard"
-        series={data}
+        series={localizedData}
         options={options}
       />
     </ChartCard>

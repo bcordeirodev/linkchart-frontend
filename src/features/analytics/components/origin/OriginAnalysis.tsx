@@ -225,6 +225,7 @@ export function OriginAnalysis({
       label: t("origin.subtabs.campaigns"),
       icon: <Megaphone {...ICON_SM} />,
       disabled: !hasCampaigns,
+      disabledHint: t("origin.campaignsDisabledHint"),
     },
     {
       label: t("origin.sections.technicalDetails"),

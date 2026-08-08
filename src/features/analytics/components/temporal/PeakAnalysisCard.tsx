@@ -3,8 +3,6 @@ import { useState } from "react";
 import {
   Box,
   Grid,
-  Card,
-  CardContent,
   Typography,
   Stack,
   Chip,
@@ -26,6 +24,9 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getWeekdayLabel } from "@/features/analytics/utils/weekday";
+import { formatHourShort } from "@/features/analytics/utils/displayLabels";
+import { radiusTokens } from "@/lib/theme/designSystem";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import type { PeakAnalysis, TemporalData } from "@/types";
 
@@ -63,11 +64,6 @@ export function PeakAnalysisCard({
   if (peak_hour == null) {
     return null;
   }
-
-  // Formatar hora para exibição
-  const formatHour = (hour: number) => {
-    return `${hour.toString().padStart(2, "0")}:00`;
-  };
 
   // Determinar período do dia
   const getPeriodOfDay = (
@@ -127,195 +123,166 @@ export function PeakAnalysisCard({
 
         {/* Card de Insights */}
         <Grid item xs={12}>
-          <Card
-            elevation={0}
-            sx={{ border: "1px solid", borderColor: "divider" }}
+          <ChartCard
+            title={t("temporal.peak.engagementPeakAnalysis")}
+            icon={<Zap size={16} strokeWidth={1.5} />}
+            subtitle={t("charts.descriptions.peakAnalysis")}
           >
-            <CardContent>
-              <Stack>
-                <Box>
-                  <Typography
-                    variant="subtitle1"
+            <Stack>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <Box
                     sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                      fontWeight: 600,
+                      p: 2,
+                      bgcolor: "background.paper",
+                      borderRadius: `${radiusTokens.md}px`,
+                      border: "1px solid",
+                      borderColor: "divider",
                     }}
                   >
-                    <Zap size={16} strokeWidth={1.5} />
-                    {t("temporal.peak.engagementPeakAnalysis")}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 2 }}
-                  >
-                    {t("charts.descriptions.peakAnalysis")}
-                  </Typography>
-                </Box>
-
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={6}>
-                    <Box
+                    <Typography
+                      variant="subtitle2"
+                      color="primary"
                       sx={{
-                        p: 2,
-                        bgcolor: "background.paper",
-                        borderRadius: 1,
-                        border: "1px solid",
-                        borderColor: "divider",
+                        mb: 1,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
                       }}
                     >
-                      <Typography
-                        variant="subtitle2"
-                        color="primary"
-                        sx={{
-                          mb: 1,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                        }}
-                      >
-                        <Clock size={16} strokeWidth={1.5} />
-                        {t("temporal.peak.highestImpactHour")}
-                      </Typography>
-                      <Typography
-                        variant="h5"
-                        sx={{ mb: 0.5, fontWeight: 600 }}
-                      >
-                        {formatHour(peak_hour)}
-                      </Typography>
-                      <Typography variant="body2">
-                        {t("temporal.peak.clicksConcentrated", {
-                          total: peak_hour_clicks.toLocaleString(),
-                        })}
-                      </Typography>
-                      <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
-                        <Chip
-                          label={period.label}
-                          size="small"
-                          color={period.color}
-                          icon={
-                            <Box sx={{ display: "flex", ml: 0.5 }}>
-                              {period.icon}
-                            </Box>
-                          }
-                        />
-                      </Stack>
-                    </Box>
-                  </Grid>
-
-                  <Grid item xs={12} md={6}>
-                    <Box
-                      sx={{
-                        p: 2,
-                        bgcolor: "background.paper",
-                        borderRadius: 1,
-                        border: "1px solid",
-                        borderColor: "divider",
-                      }}
-                    >
-                      <Typography
-                        variant="subtitle2"
-                        color="secondary"
-                        sx={{
-                          mb: 1,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                        }}
-                      >
-                        <Calendar size={16} strokeWidth={1.5} />
-                        {t("temporal.peak.highestEngagementDay")}
-                      </Typography>
-                      <Typography
-                        variant="h5"
-                        sx={{ mb: 0.5, fontWeight: 600 }}
-                      >
-                        {peakDayLabel}
-                      </Typography>
-                      <Typography variant="body2">
-                        {t("temporal.peak.clicksThisDay", {
-                          total: peak_day_clicks.toLocaleString(),
-                        })}
-                      </Typography>
-                      <Box sx={{ mt: 1.5 }}>
-                        <Typography variant="caption" color="text.secondary">
-                          {t("temporal.peak.bestDayForLaunches")}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
+                      <Clock size={16} strokeWidth={1.5} />
+                      {t("temporal.peak.highestImpactHour")}
+                    </Typography>
+                    <Typography variant="h5" sx={{ mb: 0.5, fontWeight: 600 }}>
+                      {formatHourShort(peak_hour)}
+                    </Typography>
+                    <Typography variant="body2">
+                      {t("temporal.peak.clicksConcentrated", {
+                        total: peak_hour_clicks.toLocaleString(),
+                      })}
+                    </Typography>
+                    <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
+                      <Chip
+                        label={period.label}
+                        size="small"
+                        color={period.color}
+                        icon={
+                          <Box sx={{ display: "flex", ml: 0.5 }}>
+                            {period.icon}
+                          </Box>
+                        }
+                      />
+                    </Stack>
+                  </Box>
                 </Grid>
 
-                {/* Collapsible recommendations */}
-                <Box sx={{ mt: 2 }}>
-                  <Button
-                    size="small"
-                    variant="text"
-                    endIcon={
-                      showRecs ? (
-                        <ChevronUp size={14} />
-                      ) : (
-                        <ChevronDown size={14} />
-                      )
-                    }
-                    onClick={() => setShowRecs((v) => !v)}
-                    sx={{ px: 0, minWidth: 0 }}
+                <Grid item xs={12} md={6}>
+                  <Box
+                    sx={{
+                      p: 2,
+                      bgcolor: "background.paper",
+                      borderRadius: `${radiusTokens.md}px`,
+                      border: "1px solid",
+                      borderColor: "divider",
+                    }}
                   >
-                    {showRecs
-                      ? t("temporal.peak.hideRecommendations")
-                      : t("temporal.peak.showRecommendations")}
-                  </Button>
-                  <Collapse in={showRecs}>
-                    <Box
+                    <Typography
+                      variant="subtitle2"
+                      color="text.secondary"
                       sx={{
-                        p: 2,
-                        mt: 1,
-                        bgcolor: "background.paper",
-                        borderRadius: 1,
-                        border: "1px solid",
-                        borderColor: "divider",
+                        mb: 1,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
                       }}
                     >
-                      <Typography
-                        variant="subtitle2"
-                        gutterBottom
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
-                        {t("temporal.peak.strategicRecommendations")}
+                      <Calendar size={16} strokeWidth={1.5} />
+                      {t("temporal.peak.highestEngagementDay")}
+                    </Typography>
+                    <Typography variant="h5" sx={{ mb: 0.5, fontWeight: 600 }}>
+                      {peakDayLabel}
+                    </Typography>
+                    <Typography variant="body2">
+                      {t("temporal.peak.clicksThisDay", {
+                        total: peak_day_clicks.toLocaleString(),
+                      })}
+                    </Typography>
+                    <Box sx={{ mt: 1.5 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        {t("temporal.peak.bestDayForLaunches")}
                       </Typography>
-                      <Stack spacing={0.5}>
-                        <Typography variant="body2">
-                          {t("temporal.peak.schedulePostsFor", {
-                            day: peakDayLabel,
-                            hour: formatHour(peak_hour),
-                          })}
-                        </Typography>
-                        <Typography variant="body2">
-                          {t("temporal.peak.peakHourRepresents", {
-                            total: peak_hour_clicks,
-                            percent:
-                              peak_day_clicks > 0
-                                ? (
-                                    (peak_hour_clicks / peak_day_clicks) *
-                                    100
-                                  ).toFixed(1)
-                                : "0",
-                          })}
-                        </Typography>
-                        <Typography variant="body2">
-                          {t("temporal.peak.focusOnContent", {
-                            period: period.label.toLowerCase(),
-                          })}
-                        </Typography>
-                      </Stack>
                     </Box>
-                  </Collapse>
-                </Box>
-              </Stack>
-            </CardContent>
-          </Card>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              {/* Collapsible recommendations */}
+              <Box sx={{ mt: 2 }}>
+                <Button
+                  size="small"
+                  variant="text"
+                  endIcon={
+                    showRecs ? (
+                      <ChevronUp size={14} />
+                    ) : (
+                      <ChevronDown size={14} />
+                    )
+                  }
+                  onClick={() => setShowRecs((v) => !v)}
+                  sx={{ px: 0, minWidth: 0 }}
+                >
+                  {showRecs
+                    ? t("temporal.peak.hideRecommendations")
+                    : t("temporal.peak.showRecommendations")}
+                </Button>
+                <Collapse in={showRecs}>
+                  <Box
+                    sx={{
+                      p: 2,
+                      mt: 1,
+                      bgcolor: "background.paper",
+                      borderRadius: `${radiusTokens.md}px`,
+                      border: "1px solid",
+                      borderColor: "divider",
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle2"
+                      gutterBottom
+                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    >
+                      {t("temporal.peak.strategicRecommendations")}
+                    </Typography>
+                    <Stack spacing={0.5}>
+                      <Typography variant="body2">
+                        {t("temporal.peak.schedulePostsFor", {
+                          day: peakDayLabel,
+                          hour: formatHourShort(peak_hour),
+                        })}
+                      </Typography>
+                      <Typography variant="body2">
+                        {t("temporal.peak.peakHourRepresents", {
+                          total: peak_hour_clicks,
+                          percent:
+                            peak_day_clicks > 0
+                              ? (
+                                  (peak_hour_clicks / peak_day_clicks) *
+                                  100
+                                ).toFixed(1)
+                              : "0",
+                        })}
+                      </Typography>
+                      <Typography variant="body2">
+                        {t("temporal.peak.focusOnContent", {
+                          period: period.label.toLowerCase(),
+                        })}
+                      </Typography>
+                    </Stack>
+                  </Box>
+                </Collapse>
+              </Box>
+            </Stack>
+          </ChartCard>
         </Grid>
       </Grid>
     </Box>

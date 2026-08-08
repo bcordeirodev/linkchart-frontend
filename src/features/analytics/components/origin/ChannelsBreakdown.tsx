@@ -1,4 +1,5 @@
 "use client";
+import { Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
@@ -51,12 +52,24 @@ export function ChannelsBreakdown({ channels }: ChannelsBreakdownProps) {
     color: getChannelColor(channel.channel, theme.palette.text.secondary),
   }));
 
+  // Only "direct" traffic recorded so far: the bar alone reads as "nothing
+  // interesting happened" rather than "no UTM-tagged traffic has arrived
+  // yet" — the hint below teaches the next step instead of leaving a bare
+  // single-row chart to speak for itself.
+  const isDirectOnly =
+    channels.length === 1 && channels[0]?.channel === "direct";
+
   return (
     <ChartCard
       title={t("origin.sections.channels")}
       subtitle={t("origin.sections.channelsDesc")}
     >
       <HorizontalBreakdownBars items={items} />
+      {isDirectOnly ? (
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+          {t("origin.channelsEmptyHint")}
+        </Typography>
+      ) : null}
     </ChartCard>
   );
 }

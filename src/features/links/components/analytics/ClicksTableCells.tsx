@@ -4,6 +4,7 @@ import { Chip, Stack, Tooltip, Typography } from "@mui/material";
 import { format, isValid } from "date-fns";
 import { useTranslation } from "react-i18next";
 
+import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
 import type { LinkClickItem } from "@/features/links/types/click";
 import type { MRT_Cell, MRT_Row } from "material-react-table";
 
@@ -130,14 +131,18 @@ type ChipColor =
  */
 export function DeviceCell({ row }: CellProps) {
   const click = row.original;
-  const label =
-    click.device ||
-    (click.is_mobile ? "Mobile" : click.is_desktop ? "Desktop" : "—");
+  const label = click.device
+    ? formatAnalyticsLabel(click.device)
+    : click.is_mobile
+      ? "Mobile"
+      : click.is_desktop
+        ? "Desktop"
+        : "—";
 
   const osLabel = click.os
     ? click.os_version
-      ? `${click.os} ${click.os_version}`
-      : click.os
+      ? `${formatAnalyticsLabel(click.os)} ${click.os_version}`
+      : formatAnalyticsLabel(click.os)
     : null;
 
   return (
@@ -169,7 +174,8 @@ export function BrowserCell({ row }: CellProps) {
     return <span>—</span>;
   }
 
-  return <span>{ver ? `${browser} ${ver}` : browser}</span>;
+  const browserLabel = formatAnalyticsLabel(browser);
+  return <span>{ver ? `${browserLabel} ${ver}` : browserLabel}</span>;
 }
 
 /**

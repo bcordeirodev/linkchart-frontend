@@ -1,11 +1,10 @@
 "use client";
-import { Card, CardContent, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
-import { radiusTokens } from "@/lib/theme/designSystem";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import type { TrafficChannel } from "@/features/analytics/hooks/useInsightsData";
 
@@ -29,7 +28,6 @@ export function ChannelEngagementChart({
   channels,
 }: ChannelEngagementChartProps) {
   const { t } = useTranslation("analytics");
-  const theme = useTheme();
 
   if (channels.length === 0) return null;
 
@@ -39,37 +37,26 @@ export function ChannelEngagementChart({
   }));
 
   return (
-    <Card
-      elevation={0}
-      sx={{
-        borderRadius: `${radiusTokens.lg}px`,
-        border: `1px solid ${theme.palette.divider}`,
-      }}
+    <ChartCard
+      title={t("insights.traffic.engagementByChannel")}
+      subtitle={t("insights.traffic.engagementByChannelDesc")}
     >
-      <CardContent>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-          {t("insights.traffic.engagementByChannel")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          {t("insights.traffic.engagementByChannelDesc")}
-        </Typography>
-        <ApexChartWrapper
-          type="bar"
-          {...formatBarChart(chartData, "name", "value", false, {
-            series: t("insights.traffic.seriesName"),
-            clicksLabel: t("temporal.viralRank.clicksUnit"),
-          })}
-          size="standard"
-        />
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ display: "block", mt: 1, lineHeight: 1.45 }}
-        >
-          {t("insights.traffic.avgSessionByChannel")}
-        </Typography>
-      </CardContent>
-    </Card>
+      <ApexChartWrapper
+        type="bar"
+        {...formatBarChart(chartData, "name", "value", false, {
+          series: t("insights.traffic.seriesName"),
+          clicksLabel: t("temporal.viralRank.clicksUnit"),
+        })}
+        size="standard"
+      />
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{ display: "block", mt: 1, lineHeight: 1.45 }}
+      >
+        {t("insights.traffic.avgSessionByChannel")}
+      </Typography>
+    </ChartCard>
   );
 }
 

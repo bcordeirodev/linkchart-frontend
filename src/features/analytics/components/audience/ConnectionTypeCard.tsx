@@ -5,12 +5,21 @@ import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
+import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import type { ConnectionTypeBreakdown } from "@/types/analytics/audience";
 
 import { normaliseBreakdown } from "./normaliseBreakdown";
+
+/**
+ * Height cap for the single-row stacked bar below — a horizontal stacked
+ * bar is one line of segments plus its legend, not a chart that needs
+ * hundreds of pixels of vertical room (spec: "barra horizontal empilhada
+ * única … altura do chart ≤ 120px").
+ */
+const STACKED_BAR_HEIGHT = 110;
 
 /** Entry in the connection type breakdown array returned by the audience API. */
 interface ConnectionEntry {
@@ -54,7 +63,7 @@ export function ConnectionTypeCard({ breakdown }: ConnectionTypeCardProps) {
   const chartData = conn.data.map((c) => ({
     name: (KNOWN_CONNECTION_TYPES as readonly string[]).includes(c.type)
       ? tStr(`audience.extraCharts.connectionLabels.${c.type}`)
-      : c.type,
+      : formatAnalyticsLabel(c.type),
     value: c.clicks,
   }));
 
@@ -74,7 +83,7 @@ export function ConnectionTypeCard({ breakdown }: ConnectionTypeCardProps) {
       )}
       <ApexChartWrapper
         type="bar"
-        size="compact"
+        height={STACKED_BAR_HEIGHT}
         {...formatHorizontalStackedBar(chartData, "name", "value")}
       />
     </ChartCard>

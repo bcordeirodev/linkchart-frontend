@@ -1,12 +1,13 @@
 "use client";
 import { useTranslation } from "react-i18next";
 
-import { dataVizPalette } from "@/lib/theme/dataViz";
+import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import type { DeviceData } from "@/types";
 
 import {
   HorizontalBreakdownBars,
+  categoricalBreakdownColor,
   type HorizontalBreakdownItem,
 } from "../HorizontalBreakdownBars";
 
@@ -33,14 +34,13 @@ export function AudienceDevicesTab({
 }: AudienceDevicesTabProps) {
   const { t } = useTranslation("analytics");
 
-  const paletteTones = Object.values(dataVizPalette);
   const items: HorizontalBreakdownItem[] = deviceBreakdown.map(
     (device, index) => ({
       key: device.device,
-      label: device.device,
+      label: formatAnalyticsLabel(device.device),
       value: device.clicks,
       percentage: totalClicks > 0 ? (device.clicks / totalClicks) * 100 : 0,
-      color: paletteTones[index % paletteTones.length],
+      color: categoricalBreakdownColor(index),
     }),
   );
 

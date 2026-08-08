@@ -1,6 +1,3 @@
-/** Inner padding for {@link EnhancedPaper} blocks in the Insights tab. */
-export const INSIGHTS_BLOCK_PAD = { xs: 2, md: 2.5 } as const;
-
 /** Subsection title (Top sources, recommendations, chart panels, etc.). */
 export const insightsSectionHeadingSx = {
   fontWeight: 600,

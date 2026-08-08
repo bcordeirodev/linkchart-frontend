@@ -1,8 +1,10 @@
 "use client";
-import { Alert, Box, Grid, Chip, Stack, Typography } from "@mui/material";
+import { Alert, Box, Grid, Stack, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { resolveCurve } from "@/lib/theme/apexBaseTheme";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type {
@@ -48,6 +50,7 @@ function normalise(data: DailyTimelineEntry[] | DailyTimeline): {
  */
 export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   const { entries, capped } = normalise(data);
 
@@ -72,17 +75,16 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
   const trend =
     previous > 0 ? Math.round(((recent - previous) / previous) * 100) : 0;
 
-  // Structural options only — colors, grid, fonts and tooltip theme all come
-  // from `ApexChartWrapper`'s shared base theme; only orientation-neutral
-  // behavior (datetime axis, date formatting) is genuinely per-chart here.
+  // Structural options only — colors, grid, fonts, tooltip theme and the
+  // integer y-axis formatter all come from `ApexChartWrapper`'s shared base
+  // theme; only orientation-neutral behavior (datetime axis, date formatting,
+  // curve honesty for sparse series) is genuinely per-chart here.
   const commonOptions = {
     xaxis: {
       type: "datetime" as const,
       labels: { datetimeUTC: false },
     },
-    yaxis: {
-      labels: { formatter: (v: number) => v.toLocaleString() },
-    },
+    stroke: { curve: resolveCurve(sorted.length) },
     tooltip: { x: { format: "dd/MM/yyyy" } },
     markers: { size: 0, hover: { size: 5 } },
   };
@@ -99,46 +101,73 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
         </Alert>
       )}
 
-      <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2, gap: 1 }}>
-        <Chip
-          label={t("temporal.timeline.totalChip", {
+      {/* Summary of the timeline as plain data, not controls: this used to be
+          a row of pill `Chip`s, which reads as buttons the user could press.
+          A dot-separated `body2` line (no border, no fill) keeps the same
+          four facts legible while making clear they are read-only. */}
+      <Stack
+        direction="row"
+        spacing={1}
+        flexWrap="wrap"
+        alignItems="center"
+        sx={{ mb: 2, rowGap: 0.5 }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          {t("temporal.timeline.totalChip", {
             total: totalClicks.toLocaleString(),
             days: sorted.length,
           })}
-          color="primary"
-          size="small"
-        />
-        <Chip
-          label={t("temporal.timeline.avgPerDay", { avg: avgPerDay })}
-          color="info"
-          size="small"
-        />
+        </Typography>
+        <Typography variant="body2" color="text.disabled" aria-hidden="true">
+          ·
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {t("temporal.timeline.avgPerDay", { avg: avgPerDay })}
+        </Typography>
         {maxDay && (
-          <Chip
-            label={t("temporal.timeline.peakOn", {
-              clicks: maxDay.clicks,
-              date: formattedPeakDate,
-            })}
-            color="secondary"
-            size="small"
-          />
+          <>
+            <Typography
+              variant="body2"
+              color="text.disabled"
+              aria-hidden="true"
+            >
+              ·
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t("temporal.timeline.peakOn", {
+                clicks: maxDay.clicks,
+                date: formattedPeakDate,
+              })}
+            </Typography>
+          </>
         )}
-        <Chip
-          icon={
-            trend > 0 ? (
-              <TrendingUp size={14} />
-            ) : trend < 0 ? (
-              <TrendingDown size={14} />
-            ) : (
-              <Minus size={14} />
-            )
-          }
-          label={t("temporal.timeline.vsLastWeek", {
-            trend: `${trend >= 0 ? "+" : ""}${trend}`,
-          })}
-          color={trend > 0 ? "success" : trend < 0 ? "error" : "default"}
-          size="small"
-        />
+        <Typography variant="body2" color="text.disabled" aria-hidden="true">
+          ·
+        </Typography>
+        <Stack direction="row" spacing={0.5} alignItems="center">
+          {trend > 0 ? (
+            <TrendingUp size={14} color={theme.palette.success.main} />
+          ) : trend < 0 ? (
+            <TrendingDown size={14} color={theme.palette.error.main} />
+          ) : (
+            <Minus size={14} color={theme.palette.text.secondary} />
+          )}
+          <Typography
+            variant="body2"
+            sx={{
+              color:
+                trend > 0
+                  ? "success.main"
+                  : trend < 0
+                    ? "error.main"
+                    : "text.secondary",
+            }}
+          >
+            {t("temporal.timeline.vsLastWeek", {
+              trend: `${trend >= 0 ? "+" : ""}${trend}`,
+            })}
+          </Typography>
+        </Stack>
       </Stack>
 
       <Typography

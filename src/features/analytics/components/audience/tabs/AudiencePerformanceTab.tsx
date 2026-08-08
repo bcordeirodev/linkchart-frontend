@@ -1,20 +1,27 @@
 "use client";
-import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
+import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import type { DevicePerformanceData } from "@/types";
 
 /**
  * Two equal columns on desktop, stacked on mobile. Real `gap` — no negative
  * margins, so the row sits flush with the panel on both edges.
+ *
+ * `alignItems: "start"` — the details list is typically shorter than the
+ * chart beside it; stretching both to the row's height used to make the
+ * list absorb the difference as dead vertical space instead of letting each
+ * card end at its own content.
  */
 const twoColGridSx = {
   display: "grid",
   gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" },
   gap: 3,
-  alignItems: "stretch",
+  alignItems: "start",
 } as const;
 
 /** Avg / min / max, three across, inside a device row. */
@@ -38,7 +45,13 @@ export interface AudiencePerformanceTabProps {
   performanceChartData: PerformanceChartItem[];
   /** Raw device performance entries for the details list. */
   devicePerformance: DevicePerformanceData[];
-  /** Outlined card sx (no shadow). */
+  /**
+   * Outlined card sx (no shadow). Unused since the migration to `ChartCard`
+   * (refinamento visual 2026-08-08, §3.3) — `ChartCard` owns its own
+   * hairline/radius styling. Kept in the prop contract so `AudienceChart`,
+   * which still passes it to a sibling tab, does not need an ownership-
+   * crossing edit.
+   */
   outlinedCardSx: Record<string, unknown>;
   /** Row item sx for list rows. */
   itemRowSx: Record<string, unknown>;
@@ -60,105 +73,92 @@ export interface AudiencePerformanceTabProps {
 export function AudiencePerformanceTab({
   performanceChartData,
   devicePerformance,
-  outlinedCardSx,
   itemRowSx,
 }: AudiencePerformanceTabProps) {
   const { t } = useTranslation("analytics");
 
+  // Device names arrive as the tracking pipeline's raw values ("desktop",
+  // "mobile") — reformatted here for display, same treatment as every other
+  // device/browser/OS/engine label on the page.
+  const displayChartData = performanceChartData.map((item) => ({
+    ...item,
+    name: formatAnalyticsLabel(item.name),
+  }));
+
   return (
     <Box sx={twoColGridSx}>
-      <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-        <CardContent>
-          <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
-            {t("audience.chart.devicePerformance")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            {t("audience.chart.tabDescriptions.performance")}
-          </Typography>
-          <ApexChartWrapper
-            type="bar"
-            {...formatBarChart(performanceChartData, "name", "value", false, {
-              clicksLabel: t("temporal.viralRank.clicksUnit"),
-            })}
-            size="standard"
-          />
-        </CardContent>
-      </Card>
+      <ChartCard
+        title={t("audience.chart.devicePerformance")}
+        subtitle={t("audience.chart.tabDescriptions.performance")}
+      >
+        <ApexChartWrapper
+          type="bar"
+          {...formatBarChart(displayChartData, "name", "value", false, {
+            clicksLabel: t("temporal.viralRank.clicksUnit"),
+          })}
+          size="standard"
+        />
+      </ChartCard>
 
-      <Card elevation={0} sx={{ ...outlinedCardSx, height: "100%" }}>
-        <CardContent
-          sx={{ display: "flex", flexDirection: "column", height: "100%" }}
-        >
-          <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
-            {t("audience.chart.performanceDetails")}
-          </Typography>
-          {/* The list is ~150px shorter than the chart beside it, but both cards
-              must end on the same line — every other row on this tab does. So
-              the rows absorb the extra height (`flex: 1` each) instead of the
-              card carrying it as a hole: not under the title (what
-              `justifyContent: center` used to cause), not at the bottom. */}
-          <Stack spacing={1.5} sx={{ flexGrow: 1, mt: 0.5 }}>
-            {devicePerformance.map((perf) => (
-              <Box
-                key={perf.device}
-                sx={{
-                  p: 1.5,
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  ...itemRowSx,
-                }}
-              >
-                <Typography
-                  variant="subtitle2"
-                  sx={{ mb: 0.5, fontWeight: 600 }}
-                >
-                  {perf.device}
-                </Typography>
-                <Box sx={statsGridSx}>
-                  <Box>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                    >
-                      {t("audience.chart.performanceAvg")}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {perf.avg_response_time}ms
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                    >
-                      {t("audience.chart.performanceMin")}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {perf.min_response_time}ms
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                    >
-                      {t("audience.chart.performanceMax")}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {perf.max_response_time}ms
-                    </Typography>
-                  </Box>
+      <ChartCard title={t("audience.chart.performanceDetails")}>
+        {/* Each row sizes to its own content now — no `flex: 1`/stretch to
+            match the chart card beside it (see `twoColGridSx`'s
+            `alignItems: "start"`). Two cards of honest, different heights
+            read better than one padded out to fake-match the other. */}
+        <Stack spacing={1.5}>
+          {devicePerformance.map((perf) => (
+            <Box
+              key={perf.device}
+              sx={{
+                p: 1.5,
+                ...itemRowSx,
+              }}
+            >
+              <Typography variant="subtitle2" sx={{ mb: 0.5, fontWeight: 600 }}>
+                {formatAnalyticsLabel(perf.device)}
+              </Typography>
+              <Box sx={statsGridSx}>
+                <Box>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    display="block"
+                  >
+                    {t("audience.chart.performanceAvg")}
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    {perf.avg_response_time}ms
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    display="block"
+                  >
+                    {t("audience.chart.performanceMin")}
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    {perf.min_response_time}ms
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    display="block"
+                  >
+                    {t("audience.chart.performanceMax")}
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    {perf.max_response_time}ms
+                  </Typography>
                 </Box>
               </Box>
-            ))}
-          </Stack>
-        </CardContent>
-      </Card>
+            </Box>
+          ))}
+        </Stack>
+      </ChartCard>
     </Box>
   );
 }

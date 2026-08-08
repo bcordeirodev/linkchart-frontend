@@ -67,3 +67,32 @@ export const dataVizPalette: DataVizPalette = {
   quaternary: "#A8BEDC",
   muted: "#7081A4",
 } as const;
+
+/**
+ * Paleta categórica para séries multi-categoria (refinamento visual,
+ * 2026-08-08) — usada quando um gráfico tem 2+ séries que representam
+ * categorias distintas (ex.: dispositivo, canal, engine), não variações de
+ * intensidade da mesma métrica.
+ *
+ * `dataVizPalette` (rampa sequencial de azuis) resolvia bem uma única série
+ * ou uma progressão de intensidade, mas colapsava tudo em "azul + azul
+ * claro" quando o gráfico tinha categorias de fato — indistinguíveis entre
+ * si. `dataVizCategorical` mantém azul como a cor de volume/tempo (série 1,
+ * herdando a identidade "instrumento técnico") e rotaciona matiz nas demais
+ * para criar diferença semântica real, sempre dessaturada — nunca
+ * arco-íris.
+ *
+ * Ordem = ordem de série (`dataVizCategorical[0]` é a 1ª série, e assim por
+ * diante). Consumida por `buildApexBaseOptions` como `colors` default.
+ *
+ * Exceções semânticas que NÃO usam esta paleta (mantidas como estão):
+ * `heatmapBlueScale` (rampa de intensidade), `RANK_COLORS` (viral),
+ * `PLATFORM_COLORS` (cores de marca) e `CONTEXT_COLORS`.
+ */
+export const dataVizCategorical = [
+  "#4E82E6", // azul — série 1 (volume/tempo, herda a identidade)
+  "#3FB6A8", // teal — série 2
+  "#9D8CE0", // violeta — série 3
+  "#D9A441", // âmbar — série 4
+  "#8A94A6", // slate — "outros"/resto
+] as const;

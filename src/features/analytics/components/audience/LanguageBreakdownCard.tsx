@@ -13,6 +13,14 @@ import type { LanguageBreakdown } from "@/types/analytics/audience";
 import { languageDisplayName } from "./aggregateFamily";
 import { normaliseBreakdown } from "./normaliseBreakdown";
 
+/**
+ * Height cap for the single-row stacked bar below — a horizontal stacked
+ * bar is one line of segments plus its legend, not a chart that needs
+ * hundreds of pixels of vertical room (spec: "barra horizontal empilhada
+ * única … altura do chart ≤ 120px").
+ */
+const STACKED_BAR_HEIGHT = 110;
+
 /** Entry in the language breakdown array returned by the audience API. */
 interface LanguageEntry {
   language: string;
@@ -82,7 +90,7 @@ export function LanguageBreakdownCard({
       )}
       <ApexChartWrapper
         type="bar"
-        size="compact"
+        height={STACKED_BAR_HEIGHT}
         {...formatHorizontalStackedBar(chartData, "name", "value")}
       />
     </ChartCard>

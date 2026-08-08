@@ -3,6 +3,32 @@ import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import type { KeyboardEvent, ReactNode } from "react";
 
+import { dataVizCategorical } from "@/lib/theme/dataViz";
+
+/**
+ * Resolves the fill color for row `index` of a multi-category breakdown,
+ * cycling through {@link dataVizCategorical} (blue → teal → violet → amber →
+ * slate).
+ *
+ * Single source of truth for the "which color is category N" question every
+ * {@link HorizontalBreakdownBars} consumer that lists true categories
+ * (devices, browsers, operating systems, …) has to answer. Before this
+ * existed, each of those consumers derived its own cycle from
+ * `dataVizPalette` — a *sequential* ramp of five blues meant for a single
+ * series' intensity, not five distinct categories — so every one of those
+ * breakdowns rendered as "blue + slightly different blue", indistinguishable
+ * from a single-series chart. Consumers that render one semantic series
+ * (e.g. a single quality tier, a brand-colored platform) keep passing their
+ * own `color`/`item.color` — this helper is purely opt-in and does not
+ * change {@link HorizontalBreakdownBars}' own API or rendering.
+ *
+ * @param index - zero-based row position in the breakdown list.
+ * @returns a hex color string from `dataVizCategorical`.
+ */
+export function categoricalBreakdownColor(index: number): string {
+  return dataVizCategorical[index % dataVizCategorical.length]!;
+}
+
 /** A single row rendered by {@link HorizontalBreakdownBars}. */
 export interface HorizontalBreakdownItem {
   /** Stable React key for the row. */

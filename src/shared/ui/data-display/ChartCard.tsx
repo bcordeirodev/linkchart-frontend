@@ -41,7 +41,8 @@ export interface ChartCardProps {
 /**
  * Card container for charts — title row (optional icon + heading) + slot for the chart body.
  *
- * Uses `radiusTokens.md` and a 1 px divider border — no `boxShadow` of its own. This is an
+ * Uses `radiusTokens.lg` (the app-wide card radius, matching the global `MuiCard` override) and
+ * a 1 px divider border — no `boxShadow` of its own. This is an
  * intentional visual change (2026-08-04 closure sweep): the component used to set an explicit
  * `boxShadow: elevationTokens.xs` here, which *did* render (an `sx` prop on `Card` wins over the
  * global `MuiCard` `styleOverrides.root` on MUI 6, so the two were not equivalent) — a subtle
@@ -87,7 +88,7 @@ export function ChartCard({
         sx={{
           height: "100%",
           width: "100%",
-          borderRadius: `${radiusTokens.md}px`,
+          borderRadius: `${radiusTokens.lg}px`,
           border: `1px solid ${theme.palette.divider}`,
         }}
       >

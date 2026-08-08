@@ -1,8 +1,8 @@
 "use client";
 import { Box } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { dataVizCategorical } from "@/lib/theme/dataViz";
 import { OverviewMetricRow } from "@/shared/ui/base";
 
 import type { OverviewMetric } from "@/shared/ui/base";
@@ -42,9 +42,7 @@ export function OverviewKpiHeader({
   sparkline,
   trendPct = null,
 }: OverviewKpiHeaderProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const { t: tl } = useTranslation("links");
 
   // Visual gate fix (2026-08-03, item 4): the neutral-arrow argument below
   // lost — Bruno's call is that the trend direction IS the information, and
@@ -61,6 +59,12 @@ export function OverviewKpiHeader({
         ? "success.main"
         : "error.main";
 
+  // With a trend value, the caption folds the ▲/▼ percentage in front of
+  // `dashboard.kpi.trendCaption` ("vs. previous period") — the number is the
+  // headline, the caption text just names what it's compared against.
+  // Without one (no prior period to compare against), the caption falls back
+  // to `dashboard.kpi.totalClicksCaption` ("in the selected period") so the
+  // metric still reads as scoped to something instead of a bare total.
   const totalClicksCaption =
     trendPct != null ? (
       <>
@@ -68,10 +72,10 @@ export function OverviewKpiHeader({
           component="span"
           sx={{ color: trendColor, fontWeight: 600 }}
         >{`${trendPct >= 0 ? "▲" : "▼"} ${Math.abs(trendPct)}%`}</Box>
-        {` · ${tl("metrics.totalClicksSubtitle")}`}
+        {` ${t("dashboard.kpi.trendCaption")}`}
       </>
     ) : (
-      tl("metrics.totalClicksSubtitle")
+      t("dashboard.kpi.totalClicksCaption")
     );
 
   const metrics: OverviewMetric[] = [
@@ -79,7 +83,11 @@ export function OverviewKpiHeader({
       label: t("metrics.totalClicks"),
       value: totalClicks.toLocaleString(),
       caption: totalClicksCaption,
-      sparkline: <Sparkline data={sparkline} color={theme.palette.info.main} />,
+      // Series 1 color: the dominant blue of `dataVizCategorical`, same hue
+      // family as every other chart on the page — was `theme.palette.info.main`,
+      // a color with no relationship to the data-viz palette (refinamento
+      // visual 2026-08-08 §3.1).
+      sparkline: <Sparkline data={sparkline} color={dataVizCategorical[0]} />,
     },
     {
       label: t("metrics.uniqueVisitors"),
@@ -96,6 +104,7 @@ export function OverviewKpiHeader({
     {
       label: t("metrics.quality"),
       value: qualityLabel,
+      caption: t("dashboard.kpi.qualityCaption"),
     },
   ];
 

@@ -1,16 +1,13 @@
 "use client";
 import { useMemo } from "react";
 import { Flame } from "lucide-react";
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
 interface ViralRankDay {
@@ -40,8 +37,6 @@ interface Props {
 export function ViralRankMiniChart({ data }: Props) {
   const { t } = useTranslation("analytics");
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
 
   // Show the chart when any data exists (including unranked pre-Phase 2 clicks).
   // Previously hidden when all days were 'cold' — now we also surface 'unranked' days.
@@ -111,86 +106,68 @@ export function ViralRankMiniChart({ data }: Props) {
   if (!hasAnyData) return null;
 
   return (
-    <Card
-      sx={{ borderRadius: `${radiusTokens.lg}px`, boxShadow: elevation.xs }}
+    <ChartCard
+      title={t("temporal.viralRank.title")}
+      icon={<Flame {...ICON_MD} />}
+      subtitle={t("temporal.viralRank.description")}
     >
-      <CardContent>
-        <Typography
-          variant="subtitle1"
+      <Box sx={{ display: "flex", gap: 2, mb: 2, flexWrap: "wrap" }}>
+        {(["cold", "warming", "trending", "viral", "unranked"] as const).map(
+          (rank) => (
+            <Box
+              key={rank}
+              sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+            >
+              <Box
+                sx={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 0.5,
+                  bgcolor: RANK_COLORS[rank],
+                }}
+              />
+              <Typography variant="caption" color="text.secondary">
+                {t(`temporal.viralRank.ranks.${rank}`)}
+              </Typography>
+            </Box>
+          ),
+        )}
+      </Box>
+
+      <ApexChartWrapper
+        type="bar"
+        series={series}
+        options={options}
+        height={180}
+      />
+
+      {peakDay && (
+        <Box
           sx={{
-            mb: 0.5,
-            fontWeight: 600,
+            mt: 1.5,
+            p: 1.5,
+            bgcolor: alpha(theme.palette.error.main, 0.08),
+            border: `1px solid ${alpha(theme.palette.error.main, 0.2)}`,
+            borderRadius: `${radiusTokens.sm}px`,
             display: "flex",
             alignItems: "center",
             gap: 1,
           }}
         >
-          <Flame {...ICON_MD} />
-          {t("temporal.viralRank.title")}
-        </Typography>
-
-        <Box sx={{ display: "flex", gap: 2, mb: 2, flexWrap: "wrap" }}>
-          {(["cold", "warming", "trending", "viral", "unranked"] as const).map(
-            (rank) => (
-              <Box
-                key={rank}
-                sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-              >
-                <Box
-                  sx={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: 0.5,
-                    bgcolor: RANK_COLORS[rank],
-                  }}
-                />
-                <Typography variant="caption" color="text.secondary">
-                  {t(`temporal.viralRank.ranks.${rank}`)}
-                </Typography>
-              </Box>
-            ),
-          )}
+          <Flame size={16} color={theme.palette.error.main} />
+          <Typography variant="caption">
+            <strong style={{ color: theme.palette.error.light }}>
+              {t("temporal.viralRank.peak")}
+            </strong>{" "}
+            <span style={{ color: theme.palette.text.secondary }}>
+              {peakDay.date} · {peakDay.click_count}{" "}
+              {t("temporal.viralRank.clicksUnit")} ·{" "}
+              {t(`temporal.viralRank.ranks.${peakDay.peak_rank}`)}
+            </span>
+          </Typography>
         </Box>
-
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-          {t("temporal.viralRank.description")}
-        </Typography>
-
-        <ApexChartWrapper
-          type="bar"
-          series={series}
-          options={options}
-          height={180}
-        />
-
-        {peakDay && (
-          <Box
-            sx={{
-              mt: 1.5,
-              p: 1.5,
-              bgcolor: alpha(theme.palette.error.main, 0.08),
-              border: `1px solid ${alpha(theme.palette.error.main, 0.2)}`,
-              borderRadius: 1.5,
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <Flame size={16} color={theme.palette.error.main} />
-            <Typography variant="caption">
-              <strong style={{ color: theme.palette.error.light }}>
-                {t("temporal.viralRank.peak")}
-              </strong>{" "}
-              <span style={{ color: theme.palette.text.secondary }}>
-                {peakDay.date} · {peakDay.click_count}{" "}
-                {t("temporal.viralRank.clicksUnit")} ·{" "}
-                {t(`temporal.viralRank.ranks.${peakDay.peak_rank}`)}
-              </span>
-            </Typography>
-          </Box>
-        )}
-      </CardContent>
-    </Card>
+      )}
+    </ChartCard>
   );
 }
 

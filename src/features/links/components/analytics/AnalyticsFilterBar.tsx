@@ -10,6 +10,7 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -42,8 +43,20 @@ interface AnalyticsFilterBarProps {
   onExcludeBotsChange: (v: boolean) => void;
 }
 
-/** Period presets shown as the segmented control's pills. */
-const PRESET_PERIODS: Period[] = ["1h", "24h", "7d", "30d", "90d", "all"];
+/**
+ * Period presets shown as the segmented control's pills. Narrow literal tuple
+ * (not `Period[]`): "custom" is deliberately absent — it has its own pill with
+ * copy from `filters.customPeriod` — and the narrow type keeps the
+ * `t(\`filters.periods.${p}\`)` template resolving only to keys that exist.
+ */
+const PRESET_PERIODS = [
+  "1h",
+  "24h",
+  "7d",
+  "30d",
+  "90d",
+  "all",
+] as const satisfies readonly Period[];
 
 /**
  * Converts a stored datetime string or ISO date string to a Date object.
@@ -134,9 +147,9 @@ export function AnalyticsFilterBar({
   /**
    * Ignores the `null` MUI emits when the user clicks the already-active
    * segment of an `exclusive` `ToggleButtonGroup` — the period control always
-   * has zero or one active segment (none when `period === "custom"`), so a
-   * click on the current one is a no-op (same guard `LinksFilters`' STATUS
-   * control uses).
+   * has exactly one active segment (including "custom", now its own pill),
+   * so a click on the current one is a no-op (same guard `LinksFilters`'
+   * STATUS control uses).
    */
   const handlePeriodChange = (
     _event: React.MouseEvent<HTMLElement>,
@@ -160,7 +173,9 @@ export function AnalyticsFilterBar({
         }}
       >
         {/* Period — segmented control, same attached-pill language as /links'
-            STATUS control. No segment is active when period === "custom". */}
+            STATUS control. "Custom" is its own segment (labelled via
+            filters.customPeriod, distinct from the periods.* preset copy) —
+            selecting it is what reveals the date-range pickers below. */}
         <ToggleButtonGroup
           value={period}
           exclusive
@@ -173,66 +188,74 @@ export function AnalyticsFilterBar({
               {t(`filters.periods.${p}`)}
             </ToggleButton>
           ))}
+          <ToggleButton value="custom">
+            {t("filters.customPeriod")}
+          </ToggleButton>
         </ToggleButtonGroup>
 
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{ display: { xs: "none", sm: "block" } }}
-        />
+        {isCustom ? (
+          <>
+            <Divider
+              orientation="vertical"
+              flexItem
+              sx={{ display: { xs: "none", sm: "block" } }}
+            />
 
-        {/* Custom datetime range — the soft primary outline (above) is the
-            only cue that it's the active filter; the old "PERSONALIZADO"
-            caption moved to an aria-label/role="group" here. */}
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          alignItems={{ xs: "flex-start", sm: "center" }}
-          spacing={1}
-          flexWrap="wrap"
-          useFlexGap
-          role="group"
-          aria-label={t("filters.periods.custom")}
-          sx={{ width: { xs: "100%", sm: "auto" } }}
-        >
-          <DateTimePicker
-            value={toDate(dateFrom)}
-            onChange={handleFromChange}
-            maxDateTime={toDate(dateTo) ?? new Date()}
-            ampm={false}
-            slots={{ textField: TextField }}
-            slotProps={{
-              textField: {
-                size: "small",
-                sx: customPickerSx,
-                inputProps: { "aria-label": t("filters.dateFrom") },
-              },
-              actionBar: { actions: [] },
-            }}
-          />
-          <Typography
-            variant="caption"
-            color="text.disabled"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            →
-          </Typography>
-          <DateTimePicker
-            value={toDate(dateTo)}
-            onChange={handleToChange}
-            minDateTime={toDate(dateFrom) ?? undefined}
-            maxDateTime={new Date()}
-            ampm={false}
-            slots={{ textField: TextField }}
-            slotProps={{
-              textField: {
-                size: "small",
-                sx: customPickerSx,
-                inputProps: { "aria-label": t("filters.dateTo") },
-              },
-              actionBar: { actions: [] },
-            }}
-          />
-        </Stack>
+            {/* Custom datetime range — only rendered once "Personalizado" is
+                selected; the soft primary outline (above) is the only cue
+                that it's the active filter, and the old "PERSONALIZADO"
+                caption lives on as this group's aria-label. */}
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              alignItems={{ xs: "flex-start", sm: "center" }}
+              spacing={1}
+              flexWrap="wrap"
+              useFlexGap
+              role="group"
+              aria-label={t("filters.customPeriod")}
+              sx={{ width: { xs: "100%", sm: "auto" } }}
+            >
+              <DateTimePicker
+                value={toDate(dateFrom)}
+                onChange={handleFromChange}
+                maxDateTime={toDate(dateTo) ?? new Date()}
+                ampm={false}
+                slots={{ textField: TextField }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: customPickerSx,
+                    inputProps: { "aria-label": t("filters.dateFrom") },
+                  },
+                  actionBar: { actions: [] },
+                }}
+              />
+              <Typography
+                variant="caption"
+                color="text.disabled"
+                sx={{ display: { xs: "none", sm: "block" } }}
+              >
+                →
+              </Typography>
+              <DateTimePicker
+                value={toDate(dateTo)}
+                onChange={handleToChange}
+                minDateTime={toDate(dateFrom) ?? undefined}
+                maxDateTime={new Date()}
+                ampm={false}
+                slots={{ textField: TextField }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: customPickerSx,
+                    inputProps: { "aria-label": t("filters.dateTo") },
+                  },
+                  actionBar: { actions: [] },
+                }}
+              />
+            </Stack>
+          </>
+        ) : null}
 
         {/* Spacer — pins the bots switch to the right edge from `md` up;
             collapses to nothing below `md`, where the switch just wraps. */}
@@ -242,27 +265,31 @@ export function AnalyticsFilterBar({
             `md` the spacer above collapses, so this just wraps onto its own
             line like every other instrument, left-aligned same as the rest
             (no special mobile alignment — "right-aligned" only applies
-            once the spacer is active, at `md`+). */}
-        <FormControlLabel
-          sx={{ ml: 0, mr: 0 }}
-          control={
-            <Switch
-              size="small"
-              checked={excludeBots}
-              onChange={(e) => onExcludeBotsChange(e.target.checked)}
-              color="success"
-            />
-          }
-          label={
-            <Typography
-              variant="caption"
-              color={excludeBots ? "success.main" : "text.secondary"}
-              sx={{ fontWeight: excludeBots ? 600 : 400 }}
-            >
-              {t("filters.excludeBots")}
-            </Typography>
-          }
-        />
+            once the spacer is active, at `md`+). Tooltip explains what
+            "bot" means here (crawlers/app previews), since the switch alone
+            doesn't say what gets filtered out. */}
+        <Tooltip title={t("filters.excludeBotsTooltip")}>
+          <FormControlLabel
+            sx={{ ml: 0, mr: 0 }}
+            control={
+              <Switch
+                size="small"
+                checked={excludeBots}
+                onChange={(e) => onExcludeBotsChange(e.target.checked)}
+                color="success"
+              />
+            }
+            label={
+              <Typography
+                variant="caption"
+                color={excludeBots ? "success.main" : "text.secondary"}
+                sx={{ fontWeight: excludeBots ? 600 : 400 }}
+              >
+                {t("filters.excludeBots")}
+              </Typography>
+            }
+          />
+        </Tooltip>
       </Box>
     </EnhancedPaper>
   );

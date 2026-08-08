@@ -1,13 +1,13 @@
 "use client";
 import { useTranslation } from "react-i18next";
 
-import { dataVizPalette } from "@/lib/theme/dataViz";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import type { LanguageData } from "@/types";
 
 import { aggregateLanguagesByFamily } from "../aggregateFamily";
 import {
   HorizontalBreakdownBars,
+  categoricalBreakdownColor,
   type HorizontalBreakdownItem,
 } from "../HorizontalBreakdownBars";
 
@@ -25,7 +25,6 @@ export interface AudienceLanguagesTabProps {
 export function AudienceLanguagesTab({ languages }: AudienceLanguagesTabProps) {
   const { t, i18n } = useTranslation("analytics");
 
-  const paletteTones = Object.values(dataVizPalette);
   const families = aggregateLanguagesByFamily(
     languages,
     i18n.language,
@@ -36,7 +35,7 @@ export function AudienceLanguagesTab({ languages }: AudienceLanguagesTabProps) {
     label: family.label,
     value: family.clicks,
     percentage: family.percentage,
-    color: paletteTones[index % paletteTones.length],
+    color: categoricalBreakdownColor(index),
   }));
 
   return (

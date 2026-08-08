@@ -1,10 +1,14 @@
 "use client";
-import { AlertCircle, Info, CheckCircle, BarChart3 } from "lucide-react";
+import {
+  AlertCircle,
+  Info,
+  CheckCircle,
+  BarChart3,
+  Lightbulb,
+} from "lucide-react";
 import {
   Box,
   Typography,
-  Card,
-  CardContent,
   Chip,
   Stack,
   Divider,
@@ -16,13 +20,11 @@ import { useTranslation } from "react-i18next";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useTheme } from "@mui/material/styles";
 
-import {
-  motionTokens,
-  radiusTokens,
-  typographyScale,
-} from "@/lib/theme/designSystem";
-import { AnalyticsEmptyState, getCardSurfaceSx } from "@/shared/ui/base";
+import { radiusTokens, typographyScale } from "@/lib/theme/designSystem";
+import { AnalyticsEmptyState } from "@/shared/ui/base";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
+import type { Theme } from "@mui/material/styles";
 import type { BusinessInsight } from "../../hooks/useInsightsData";
 
 interface HttpProtocolEntry {
@@ -44,6 +46,33 @@ interface BusinessInsightsProps {
 }
 
 /**
+ * Resolves the accent hue for an insight's priority (de-alarmized mapping,
+ * refinamento visual 2026-08-08 §3.7). `high` reads as a caution (amber),
+ * never as an error — no `BusinessInsight.type` available today represents
+ * an actual security/fraud problem, so red stays reserved for a category
+ * that would justify it, not for "you could optimize this". `low` carries no
+ * hue at all (`text.secondary`), reading as a neutral note rather than the
+ * bottom rung of a graded severity scale.
+ *
+ * @param priority - Insight priority as returned by the API.
+ * @param theme - Active MUI theme, used to resolve the semantic color tokens.
+ * @returns The hue used for this insight's chip, callout, and icon accents.
+ */
+function getSeverityHue(
+  priority: BusinessInsight["priority"],
+  theme: Theme,
+): string {
+  switch (priority) {
+    case "high":
+      return theme.palette.warning.main;
+    case "medium":
+      return theme.palette.info.main;
+    default:
+      return theme.palette.text.secondary;
+  }
+}
+
+/**
  * Renders AI-generated business insights as priority-sorted cards.
  *
  * Displays each insight with a colour-coded priority badge (high/medium/low)
@@ -53,6 +82,9 @@ interface BusinessInsightsProps {
  * priority `Chip` and the category tag at the bottom of the card) and moved
  * both cards in this file off an opaque `background.paper` fill onto the
  * translucent surface grammar shared with `/links` (`getLinkCardShellSx`).
+ * De-alarmized (2026-08-08, §3.7): severity no longer reaches for red —
+ * see {@link getSeverityHue} — and the recommendation callout reads as a
+ * tip (lightbulb icon, `text.primary` body) instead of a warning banner.
  */
 export function BusinessInsights({
   insights,
@@ -62,13 +94,6 @@ export function BusinessInsights({
 }: BusinessInsightsProps) {
   const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
-  // Translucent card fill — same `getCardSurfaceSx` formula shared by every
-  // in-page card in the app: a subtle veil over the page background rather
-  // than an opaque `background.paper` slab, so these callouts read as part
-  // of the page instead of a stacked surface competing with the rest of the
-  // redesign's card grammar.
-  const insightSurfaceBg = getCardSurfaceSx(theme).backgroundColor;
 
   /**
    * Resolves insight text by preferring an i18n key (with optional interpolation
@@ -110,15 +135,6 @@ export function BusinessInsights({
       />
     );
   }
-
-  const getPriorityPalette = (priority: string) => {
-    const palette = {
-      high: theme.palette.error,
-      medium: theme.palette.warning,
-      low: theme.palette.success,
-    };
-    return palette[priority as keyof typeof palette] || palette.low;
-  };
 
   const getPriorityIcon = (priority: string) => {
     const iconMap = {
@@ -174,7 +190,7 @@ export function BusinessInsights({
 
       <Stack spacing={2}>
         {organizedInsights.map((insight, index) => {
-          const palette = getPriorityPalette(insight.priority);
+          const hue = getSeverityHue(insight.priority, theme);
 
           const recommendationText = resolveText(
             insight.recommendation_key,
@@ -183,199 +199,189 @@ export function BusinessInsights({
           );
 
           return (
-            <Box key={index}>
-              {/* Translucent-surface callout, not an opaque `Card` — same
-                  `getCardSurfaceSx` fill shared by every in-page card, hairline
-                  border, no shadow. The severity accent lives entirely in the
-                  left border — that's the one piece of "information" color
-                  this component keeps. */}
-              <Card
-                elevation={0}
-                sx={{
-                  borderRadius: `${radiusTokens.lg}px`,
-                  backgroundColor: insightSurfaceBg,
-                  border: `1px solid ${theme.palette.divider}`,
-                  borderLeft: `3px solid ${palette.main}`,
-                  transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-                  "&:hover": {
-                    borderColor: theme.palette.text.primary,
-                  },
-                }}
-              >
-                <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
-                  <Box sx={{ minWidth: 0 }}>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={1}
-                      sx={{ mb: 1 }}
-                    >
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontWeight: 600,
-                          color: "text.primary",
-                        }}
-                      >
-                        {resolveText(
-                          insight.title_key,
-                          insight.title_params,
-                          insight.title,
-                        )}
-                      </Typography>
+            // `ChartCard` shell (refinamento visual 2026-08-08, §3.3) — no
+            // `title`/`subtitle` prop used here, since the header is a custom
+            // title+severity-chip row, not a plain heading. Everything below
+            // the shell (header row, description, recommendation callout,
+            // divider, category tag) is untouched from before the migration:
+            // de-alarmized severity (§3.7) already reads as a tip, not a
+            // warning, and swapping the wrapper doesn't change that.
+            <ChartCard key={index}>
+              <Box sx={{ minWidth: 0 }}>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  spacing={1}
+                  sx={{ mb: 1 }}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      color: "text.primary",
+                    }}
+                  >
+                    {resolveText(
+                      insight.title_key,
+                      insight.title_params,
+                      insight.title,
+                    )}
+                  </Typography>
 
-                      <Chip
-                        icon={getPriorityIcon(insight.priority)}
-                        label={t(`insights.priority.${insight.priority}`)}
-                        size="small"
-                        sx={{
-                          backgroundColor: alpha(palette.main, 0.12),
-                          // White in dark mode: the label used to be
-                          // `palette.main` over a 12% tint of `palette.main`
-                          // — the same hue on itself, which barely reads.
-                          color: isDark ? "common.white" : palette.dark,
-                          fontWeight: 600,
-                          fontSize: "0.75rem",
-                          border: `1px solid ${alpha(palette.main, 0.3)}`,
-                          "& .MuiChip-icon": {
-                            color: isDark ? "common.white" : palette.dark,
-                            fontSize: "1rem",
-                          },
-                        }}
-                      />
-                    </Stack>
+                  {/* Outline chip, not a pastel-fill + same-hue-text badge
+                      — a filled tint under text of that same hue reads as
+                      low-contrast "pastel", which is what made every
+                      severity look like decoration instead of a signal.
+                      Text/icon/border share the hue; the fill stays
+                      transparent. */}
+                  <Chip
+                    icon={getPriorityIcon(insight.priority)}
+                    label={t(`insights.priority.${insight.priority}`)}
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                      color: hue,
+                      fontWeight: 600,
+                      fontSize: "0.75rem",
+                      borderColor: alpha(hue, 0.5),
+                      "& .MuiChip-icon": {
+                        color: hue,
+                        fontSize: "1rem",
+                      },
+                    }}
+                  />
+                </Stack>
 
+                <Typography
+                  variant="body2"
+                  sx={{
+                    lineHeight: 1.6,
+                    color: "text.secondary",
+                    mb: recommendationText ? 1.5 : 2,
+                  }}
+                >
+                  {resolveText(
+                    insight.description_key,
+                    insight.description_params,
+                    insight.description,
+                  )}
+                </Typography>
+
+                {recommendationText ? (
+                  // Action callout — reads as a tip, not a warning:
+                  // lightbulb icon, `text.primary` body copy, an 8% tint
+                  // of the severity hue behind a 2px left border in the
+                  // same hue (spec §3.7).
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    alignItems="flex-start"
+                    sx={{
+                      bgcolor: alpha(hue, 0.08),
+                      borderLeft: `2px solid ${hue}`,
+                      borderRadius: `${radiusTokens.md}px`,
+                      p: 1.5,
+                      mb: 2,
+                    }}
+                  >
+                    <Lightbulb
+                      size={16}
+                      style={{ color: hue, marginTop: 2, flexShrink: 0 }}
+                    />
                     <Typography
                       variant="body2"
                       sx={{
-                        lineHeight: 1.6,
-                        color: "text.secondary",
-                        mb: recommendationText ? 1.5 : 2,
+                        fontWeight: 500,
+                        color: "text.primary",
                       }}
                     >
-                      {resolveText(
-                        insight.description_key,
-                        insight.description_params,
-                        insight.description,
-                      )}
+                      {recommendationText}
                     </Typography>
+                  </Stack>
+                ) : null}
 
-                    {recommendationText ? (
-                      <Box
-                        sx={{
-                          bgcolor: alpha(palette.main, 0.06),
-                          borderLeft: `3px solid ${palette.main}`,
-                          borderRadius: `${radiusTokens.md}px`,
-                          p: 1.5,
-                          mb: 2,
-                        }}
-                      >
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontWeight: 500,
-                            color: palette.dark ?? palette.main,
-                          }}
-                        >
-                          {recommendationText}
-                        </Typography>
-                      </Box>
-                    ) : null}
+                <Divider sx={{ my: 1 }} />
 
-                    <Divider sx={{ my: 1 }} />
-
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontFamily: typographyScale.code.fontFamily,
-                        color: palette.main,
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.06em",
-                      }}
-                    >
-                      {t(`filters.insightTypeOptions.${insight.type}`, {
-                        defaultValue:
-                          insight.type.charAt(0).toUpperCase() +
-                          insight.type.slice(1),
-                      })}
-                    </Typography>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Box>
+                {/* Category tag: monospace uppercase signature stays,
+                    but the color is always `text.secondary` now — it's a
+                    classification label, not a severity signal, so it no
+                    longer borrows the severity hue (§3.7). */}
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontFamily: typographyScale.code.fontFamily,
+                    color: "text.secondary",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  {t(`filters.insightTypeOptions.${insight.type}`, {
+                    defaultValue:
+                      insight.type.charAt(0).toUpperCase() +
+                      insight.type.slice(1),
+                  })}
+                </Typography>
+              </Box>
+            </ChartCard>
           );
         })}
       </Stack>
 
       {/* Protocolo HTTP */}
       {httpProtocol && httpProtocol.length > 0 ? (
-        <Card
-          elevation={0}
-          sx={{
-            mt: 3,
-            borderRadius: `${radiusTokens.lg}px`,
-            backgroundColor: insightSurfaceBg,
-            border: `1px solid ${theme.palette.divider}`,
-          }}
+        <ChartCard
+          title={t("insights.httpProtocolTitle")}
+          height="auto"
+          sx={{ mt: 3 }}
         >
-          <CardContent>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              sx={{ fontWeight: 600 }}
-            >
-              {t("insights.httpProtocolTitle")}
-            </Typography>
+          {(() => {
+            const http2 = httpProtocol.find(
+              (e) =>
+                e.protocol === "HTTP/2" ||
+                e.protocol === "h2" ||
+                e.protocol === "http2",
+            );
+            return http2 ? (
+              <Box sx={{ mb: 2 }}>
+                <Chip
+                  label={t("insights.http2Connections", {
+                    percent: Number(http2.percentage).toFixed(1),
+                  })}
+                  color="success"
+                  variant="filled"
+                  size="small"
+                />
+              </Box>
+            ) : null;
+          })()}
 
-            {(() => {
-              const http2 = httpProtocol.find(
-                (e) =>
-                  e.protocol === "HTTP/2" ||
-                  e.protocol === "h2" ||
-                  e.protocol === "http2",
-              );
-              return http2 ? (
-                <Box sx={{ mb: 2 }}>
-                  <Chip
-                    label={t("insights.http2Connections", {
-                      percent: Number(http2.percentage).toFixed(1),
-                    })}
-                    color="success"
-                    variant="filled"
-                    size="small"
-                  />
+          <Stack spacing={1.5}>
+            {httpProtocol.map((entry) => (
+              <Box key={entry.protocol}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 0.5,
+                  }}
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    {entry.protocol}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {entry.clicks} ({Number(entry.percentage).toFixed(1)}%)
+                  </Typography>
                 </Box>
-              ) : null;
-            })()}
-
-            <Stack spacing={1.5}>
-              {httpProtocol.map((entry) => (
-                <Box key={entry.protocol}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 0.5,
-                    }}
-                  >
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                      {entry.protocol}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {entry.clicks} ({Number(entry.percentage).toFixed(1)}%)
-                    </Typography>
-                  </Box>
-                  <LinearProgress
-                    variant="determinate"
-                    value={Number(entry.percentage)}
-                    sx={{ height: 6, borderRadius: 3 }}
-                  />
-                </Box>
-              ))}
-            </Stack>
-          </CardContent>
-        </Card>
+                <LinearProgress
+                  variant="determinate"
+                  value={Number(entry.percentage)}
+                  sx={{ height: 6, borderRadius: 3 }}
+                />
+              </Box>
+            ))}
+          </Stack>
+        </ChartCard>
       ) : null}
     </Box>
   );

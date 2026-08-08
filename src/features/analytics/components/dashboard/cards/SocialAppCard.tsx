@@ -2,16 +2,11 @@
 /**
  * SocialAppCard — shows share of clicks from mobile in-app browsers.
  */
-import { Alert, Box, Card, CardContent, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Alert, Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import {
-  elevationLightTokens,
-  elevationTokens,
-  motionTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 interface SocialIabStats {
   total: number;
@@ -33,17 +28,20 @@ interface Props {
 /**
  * Card showing share of clicks from mobile in-app browsers (Instagram, TikTok, WhatsApp…).
  *
- * When `navigation_context_available` is false, renders a MUI info chip/alert
- * explaining that IAB data is only available for recent clicks (Phase 1 tracking)
- * instead of silently showing empty data.
+ * When `navigation_context_available` is false, renders a MUI info Alert
+ * explaining that IAB data is only available for recent clicks (Phase 1
+ * tracking) instead of silently showing empty data.
  *
  * Renders nothing when `data` is undefined (hook has not resolved yet).
+ *
+ * Migrated off its own manual `Card` (with a hover `boxShadow`) onto the
+ * shared {@link ChartCard} wrapper (refinamento visual 2026-08-08, §3.3) —
+ * title/subtitle now come from `ChartCard`'s own slots, and the module has
+ * one fewer ad hoc card shell to keep in sync with the "instrumento
+ * técnico" hairline-only surface grammar.
  */
 export function SocialAppCard({ data }: Props) {
   const { t } = useTranslation("analytics");
-  const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
 
   if (!data) return null;
 
@@ -51,30 +49,14 @@ export function SocialAppCard({ data }: Props) {
   // Show the card frame with an informational notice rather than hiding it entirely.
   if (!data.navigation_context_available) {
     return (
-      <Card
-        sx={{
-          width: "100%",
-          borderRadius: `${radiusTokens.lg}px`,
-          border: `1px solid ${theme.palette.divider}`,
-          boxShadow: elevation.xs,
-          transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-          "&:hover": {
-            boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
-          },
-        }}
+      <ChartCard
+        title={t("dashboard.socialApp.title")}
+        subtitle={t("dashboard.socialApp.description")}
       >
-        <CardContent>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            {t("dashboard.socialApp.title")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-            {t("dashboard.socialApp.description")}
-          </Typography>
-          <Alert severity="info" sx={{ mt: 1 }}>
-            {t("dashboard.socialIab.phaseDisclaimer")}
-          </Alert>
-        </CardContent>
-      </Card>
+        <Alert severity="info">
+          {t("dashboard.socialIab.phaseDisclaimer")}
+        </Alert>
+      </ChartCard>
     );
   }
 
@@ -84,112 +66,96 @@ export function SocialAppCard({ data }: Props) {
   const otherPct = Math.max(0, 100 - data.ios_pct - data.android_pct);
 
   return (
-    <Card
-      sx={{
-        width: "100%",
-        borderRadius: `${radiusTokens.lg}px`,
-        border: `1px solid ${theme.palette.divider}`,
-        boxShadow: elevation.xs,
-        transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-        "&:hover": {
-          boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
-        },
-      }}
+    <ChartCard
+      title={t("dashboard.socialApp.title")}
+      subtitle={t("dashboard.socialApp.description")}
     >
-      <CardContent>
-        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-          {t("dashboard.socialApp.title")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-          {t("dashboard.socialApp.description")}
-        </Typography>
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
-          {data.percentage.toFixed(0)}%
-        </Typography>
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ mb: 2, display: "block" }}
-        >
-          {t("dashboard.socialApp.subtitle")}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            borderRadius: 1.5,
-            overflow: "hidden",
-            height: 28,
-            mb: 1,
-          }}
-        >
-          {data.ios_pct > 0 && (
-            <Box
+      <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+        {data.percentage.toFixed(0)}%
+      </Typography>
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{ mb: 2, display: "block" }}
+      >
+        {t("dashboard.socialApp.subtitle")}
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          borderRadius: `${radiusTokens.sm}px`,
+          overflow: "hidden",
+          height: 28,
+          mb: 1,
+        }}
+      >
+        {data.ios_pct > 0 && (
+          <Box
+            sx={{
+              flex: data.ios_pct,
+              bgcolor: "primary.main",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography
+              variant="caption"
               sx={{
-                flex: data.ios_pct,
-                bgcolor: "primary.main",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                color: "primary.contrastText",
+                fontWeight: 600,
+                fontSize: 11,
               }}
             >
-              <Typography
-                variant="caption"
-                sx={{
-                  color: "primary.contrastText",
-                  fontWeight: 600,
-                  fontSize: 11,
-                }}
-              >
-                iOS {data.ios_pct.toFixed(0)}%
-              </Typography>
-            </Box>
-          )}
-          {data.android_pct > 0 && (
-            <Box
+              iOS {data.ios_pct.toFixed(0)}%
+            </Typography>
+          </Box>
+        )}
+        {data.android_pct > 0 && (
+          <Box
+            sx={{
+              flex: data.android_pct,
+              bgcolor: "primary.dark",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography
+              variant="caption"
               sx={{
-                flex: data.android_pct,
-                bgcolor: "primary.dark",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                color: "primary.contrastText",
+                fontWeight: 600,
+                fontSize: 11,
               }}
             >
-              <Typography
-                variant="caption"
-                sx={{
-                  color: "primary.contrastText",
-                  fontWeight: 600,
-                  fontSize: 11,
-                }}
-              >
-                Android {data.android_pct.toFixed(0)}%
-              </Typography>
-            </Box>
-          )}
-          {otherPct > 0 && (
-            <Box
-              sx={{
-                flex: otherPct,
-                bgcolor: "action.disabledBackground",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              Android {data.android_pct.toFixed(0)}%
+            </Typography>
+          </Box>
+        )}
+        {otherPct > 0 && (
+          <Box
+            sx={{
+              flex: otherPct,
+              bgcolor: "action.disabledBackground",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography
+              variant="caption"
+              color="text.disabled"
+              sx={{ fontWeight: 600, fontSize: 11 }}
             >
-              <Typography
-                variant="caption"
-                color="text.disabled"
-                sx={{ fontWeight: 600, fontSize: 11 }}
-              >
-                {t("dashboard.socialApp.other")} {otherPct.toFixed(0)}%
-              </Typography>
-            </Box>
-          )}
-        </Box>
-        <Typography variant="caption" color="text.disabled">
-          {t("dashboard.socialApp.note")}
-        </Typography>
-      </CardContent>
-    </Card>
+              {t("dashboard.socialApp.other")} {otherPct.toFixed(0)}%
+            </Typography>
+          </Box>
+        )}
+      </Box>
+      <Typography variant="caption" color="text.disabled">
+        {t("dashboard.socialApp.note")}
+      </Typography>
+    </ChartCard>
   );
 }

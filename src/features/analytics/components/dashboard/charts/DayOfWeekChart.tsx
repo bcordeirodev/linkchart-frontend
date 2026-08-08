@@ -10,6 +10,8 @@ import { localizeWeekdayRows } from "@/features/analytics/utils/weekday";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
+import { ViewFullAnalysisLink } from "./ViewFullAnalysisLink";
+
 import type { DayOfWeekData } from "@/types";
 
 interface DayOfWeekChartProps {
@@ -18,9 +20,12 @@ interface DayOfWeekChartProps {
 }
 
 /**
- * "Cliques por Dia da Semana" — vertical bar chart. Series color and grid
- * styling come entirely from `ApexChartWrapper`'s shared base theme, no
- * local override.
+ * "Cliques por Dia da Semana" — vertical bar chart, Resumo-only instance.
+ * Series color and grid styling come entirely from `ApexChartWrapper`'s
+ * shared base theme, no local override. Subtitle is the Resumo-specific
+ * quick-view copy (`dashboard.charts.dayOfWeekSummaryDesc`) rather than the
+ * generic chart description, since the full breakdown lives one click away
+ * via the card's cross-link into the Momento tab.
  */
 export function DayOfWeekChart({ data, height }: DayOfWeekChartProps) {
   const { t } = useTranslation("analytics");
@@ -28,7 +33,8 @@ export function DayOfWeekChart({ data, height }: DayOfWeekChartProps) {
   return (
     <ChartCard
       title={t("charts.dayOfWeek")}
-      subtitle={t("charts.descriptions.dayOfWeek")}
+      subtitle={t("dashboard.charts.dayOfWeekSummaryDesc")}
+      action={<ViewFullAnalysisLink tab="when" />}
     >
       {/* The API's own `day_name` is hardcoded Portuguese — the category axis
           is labelled from the ISO day number instead. */}

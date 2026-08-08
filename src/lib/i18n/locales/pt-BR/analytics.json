@@ -19,9 +19,16 @@
     "metrics": {
       "title": "Métricas do Link"
     },
+    "kpi": {
+      "qualityCaption": "% de cliques orgânicos (não bots)",
+      "totalClicksCaption": "no período selecionado",
+      "trendCaption": "vs. período anterior"
+    },
+    "viewFullAnalysis": "Ver análise completa",
     "charts": {
       "noData": "Nenhum Dado Disponível",
-      "noDataDesc": "Compartilhe seus links para ver gráficos detalhados de cliques."
+      "noDataDesc": "Compartilhe seus links para ver gráficos detalhados de cliques.",
+      "dayOfWeekSummaryDesc": "Visão rápida do volume por dia da semana. A análise completa está na aba Momento."
     },
     "utmSource": {
       "title": "Campanhas UTM",
@@ -54,10 +61,11 @@
       "7d": "7 dias",
       "30d": "30 dias",
       "90d": "90 dias",
-      "all": "Tudo",
-      "custom": "Personalizado"
+      "all": "Tudo"
     },
+    "customPeriod": "Personalizado",
     "excludeBots": "Excluir bots",
+    "excludeBotsTooltip": "Remove cliques identificados como bots (crawlers, previews de apps) de todos os gráficos.",
     "bots": "Bots",
     "groupBy": "Agrupar por",
     "groupByOptions": {
@@ -196,7 +204,6 @@
       "peakHourSub": "Maior Atividade",
       "peakDaySub": "Dia Mais Ativo",
       "clicksPerHour": "Cliques por Hora",
-      "currentTrend": "Direção Atual",
       "trending": "Alta",
       "declining": "Baixa",
       "stable": "Estável"
@@ -253,6 +260,12 @@
       "uniqueVisitors": "visitantes únicos",
       "ofTotal": "% do total",
       "insightsLabel": "Insights"
+    },
+    "comparison": {
+      "subtitle": "Comparação direta de volume e visitantes entre dias úteis e fim de semana."
+    },
+    "engagementMetrics": {
+      "subtitle": "Volume dentro e fora do horário comercial, em números absolutos."
     },
     "peak": {
       "peakHour": "Hora de Pico",
@@ -499,6 +512,7 @@
     },
     "heatmap": {
       "titleDefault": "Mapa de Calor em Tempo Real",
+      "description": "Cada círculo é uma cidade; tamanho e intensidade acompanham o volume de cliques. Use o zoom e o filtro de cliques mínimos para explorar.",
       "autoRefresh": "Auto-refresh",
       "realtimeActive": "Tempo Real Ativo",
       "realtime": "Tempo Real",
@@ -1059,7 +1073,9 @@
   "quality": {
     "title": "Qualidade",
     "description": "Distribuição do tráfego por nível de qualidade: orgânico, suspeito e potencial fraude.",
-    "subtitle": "{{suspicious}} suspeitos · {{fraud}} fraude"
+    "subtitle": "{{suspicious}} suspeitos · {{fraud}} fraude",
+    "headerConsistencyOk": "Sem inconsistências detectadas",
+    "headerConsistencyWarn": "Inconsistências detectadas"
   },
   "sections": {
     "temporal": "Padrões Temporais",
@@ -1068,6 +1084,8 @@
   "origin": {
     "loading": "Carregando análise de origem...",
     "empty": "Este link ainda não possui dados suficientes sobre a origem do tráfego.",
+    "channelsEmptyHint": "Por enquanto só tráfego direto. Divulgue este link com parâmetros UTM para ver canais e campanhas aqui.",
+    "campaignsDisabledHint": "Sem dados de campanha ainda — adicione parâmetros UTM ao divulgar o link.",
     "sections": {
       "channels": "Canais",
       "channelsDesc": "De onde vieram os cliques: acesso direto, redes sociais, buscadores ou outros sites que linkaram para você.",

@@ -21,6 +21,8 @@ import type {
 import { GeoJSON, MapContainer } from "react-leaflet";
 import { useTranslation } from "react-i18next";
 
+import { radiusTokens } from "@/lib/theme/designSystem";
+
 import type { CountryData } from "@/types";
 
 /**
@@ -585,7 +587,7 @@ export function GeographicChoropleth({
           sx={{
             width: 100,
             height: 8,
-            borderRadius: 1,
+            borderRadius: `${radiusTokens.sm}px`,
             background: `linear-gradient(to right, ${alpha(theme.palette.primary.main, 0.15)}, ${theme.palette.primary.main})`,
           }}
         />

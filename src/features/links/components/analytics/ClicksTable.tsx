@@ -28,7 +28,11 @@ import {
 import { ClicksTableSkeleton } from "./ClicksTableSkeleton";
 
 import type { LinkClickItem } from "@/features/links/types/click";
-import type { MRT_ColumnDef, MRT_PaginationState } from "material-react-table";
+import type {
+  MRT_ColumnDef,
+  MRT_PaginationState,
+  MRT_VisibilityState,
+} from "material-react-table";
 
 interface ClicksTableProps {
   linkId: string;
@@ -49,6 +53,16 @@ const SORTABLE_COLUMNS = new Set([
   "browser",
   "referer",
 ]);
+
+/** True when a click carries a usable `social_platform` value. */
+function hasSocialPlatformValue(item: LinkClickItem): boolean {
+  return Boolean(item.social_platform);
+}
+
+/** True when a click carries a usable UTM value (source, medium or campaign). */
+function hasUtmValue(item: LinkClickItem): boolean {
+  return Boolean(item.utm?.source || item.utm?.medium || item.utm?.campaign);
+}
 
 export function ClicksTable({
   linkId,
@@ -100,6 +114,36 @@ export function ClicksTable({
   }, [globalFilter, setSearch]);
 
   const total = meta?.total ?? 0;
+
+  /**
+   * Auto-computed visibility for the two data-dependent columns. "Social
+   * Platform" and "UTM" are only worth a column when the current page of
+   * clicks actually carries a value for them — an all-NULL page (common:
+   * `social_platform` predates May 2026, most traffic has no UTM tags at
+   * all) hid nothing before and just showed a column of dashes. Recomputed
+   * per page, since a later page can carry data an earlier one didn't.
+   */
+  const autoColumnVisibility = useMemo<MRT_VisibilityState>(
+    () => ({
+      social_platform: items.some(hasSocialPlatformValue),
+      utm: items.some(hasUtmValue),
+    }),
+    [items],
+  );
+
+  /**
+   * Explicit choices made through MRT's built-in "Show/Hide columns"
+   * selector. Layered on top of {@link autoColumnVisibility} so a manual
+   * reactivation of "Social Platform"/"UTM" sticks even if a later page of
+   * data would otherwise auto-hide the column again.
+   */
+  const [columnVisibilityOverrides, setColumnVisibilityOverrides] =
+    useState<MRT_VisibilityState>({});
+
+  const columnVisibility: MRT_VisibilityState = {
+    ...autoColumnVisibility,
+    ...columnVisibilityOverrides,
+  };
 
   const columns = useMemo<MRT_ColumnDef<LinkClickItem>[]>(
     () => [
@@ -225,6 +269,14 @@ export function ClicksTable({
               globalFilter,
               isLoading: loading,
               showProgressBars: loading,
+              columnVisibility,
+            }}
+            onColumnVisibilityChange={(updater) => {
+              const next =
+                typeof updater === "function"
+                  ? updater(columnVisibility)
+                  : updater;
+              setColumnVisibilityOverrides((prev) => ({ ...prev, ...next }));
             }}
             onPaginationChange={(updater) => {
               const next =

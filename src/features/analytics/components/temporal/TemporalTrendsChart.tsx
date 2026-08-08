@@ -1,13 +1,5 @@
 "use client";
-import {
-  Box,
-  Grid,
-  Typography,
-  Card,
-  CardContent,
-  Stack,
-  Chip,
-} from "@mui/material";
+import { Box, Grid, Typography, Stack, Chip } from "@mui/material";
 import { TrendingUp, TrendingDown, LineChart } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
@@ -16,6 +8,7 @@ import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { resolveCurve } from "@/lib/theme/apexBaseTheme";
 import type {
   WeeklyTrendEntry,
   MonthlyTrendEntry,
@@ -96,13 +89,7 @@ export function TemporalTrendsChart({
                 options={{
                   chart: { zoom: { enabled: false } },
                   xaxis: { type: "category" },
-                  yaxis: {
-                    labels: {
-                      formatter(val: number) {
-                        return val.toLocaleString();
-                      },
-                    },
-                  },
+                  stroke: { curve: resolveCurve(weeklyData.length) },
                   tooltip: {
                     y: {
                       formatter(val: number) {
@@ -115,7 +102,12 @@ export function TemporalTrendsChart({
 
               {/* Insights Semanais */}
               <Box
-                sx={{ mt: 2, p: 2, bgcolor: "action.hover", borderRadius: 1 }}
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  bgcolor: "action.hover",
+                  borderRadius: `${radiusTokens.md}px`,
+                }}
               >
                 <Stack
                   spacing={1}
@@ -166,13 +158,7 @@ export function TemporalTrendsChart({
                 options={{
                   chart: { zoom: { enabled: false } },
                   xaxis: { type: "category" },
-                  yaxis: {
-                    labels: {
-                      formatter(val: number) {
-                        return val.toLocaleString();
-                      },
-                    },
-                  },
+                  stroke: { curve: resolveCurve(monthlyData.length) },
                   tooltip: {
                     y: {
                       formatter(val: number) {
@@ -185,7 +171,12 @@ export function TemporalTrendsChart({
 
               {/* Insights Mensais */}
               <Box
-                sx={{ mt: 2, p: 2, bgcolor: "action.hover", borderRadius: 1 }}
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  bgcolor: "action.hover",
+                  borderRadius: `${radiusTokens.md}px`,
+                }}
               >
                 <Stack
                   spacing={1}
@@ -220,62 +211,46 @@ export function TemporalTrendsChart({
         {/* Resumo Geral */}
         {hasWeeklyData || hasMonthlyData ? (
           <Grid item xs={12}>
-            <Card
-              elevation={0}
-              sx={{
-                border: "1px solid",
-                borderColor: "divider",
-                borderRadius: `${radiusTokens.lg}px`,
-              }}
-            >
-              <CardContent>
-                <Typography
-                  variant="subtitle1"
-                  gutterBottom
-                  sx={{ fontWeight: 600 }}
-                >
-                  {t("temporal.trends.growthAnalysis")}
-                </Typography>
-                <Grid container spacing={2}>
-                  {hasWeeklyData ? (
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle2" color="text.secondary">
-                        {t("temporal.trends.weeklyPerformance")}
-                      </Typography>
-                      <Typography variant="body2">
-                        {weeklyTrend > 0
-                          ? t("temporal.trends.weeklyGrowth", {
-                              n: weeklyTrend,
+            <ChartCard title={t("temporal.trends.growthAnalysis")}>
+              <Grid container spacing={2}>
+                {hasWeeklyData ? (
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      {t("temporal.trends.weeklyPerformance")}
+                    </Typography>
+                    <Typography variant="body2">
+                      {weeklyTrend > 0
+                        ? t("temporal.trends.weeklyGrowth", {
+                            n: weeklyTrend,
+                          })
+                        : weeklyTrend < 0
+                          ? t("temporal.trends.weeklyDrop", {
+                              n: Math.abs(weeklyTrend),
                             })
-                          : weeklyTrend < 0
-                            ? t("temporal.trends.weeklyDrop", {
-                                n: Math.abs(weeklyTrend),
-                              })
-                            : t("temporal.trends.weeklyStable")}
-                      </Typography>
-                    </Grid>
-                  ) : null}
-                  {hasMonthlyData ? (
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle2" color="text.secondary">
-                        {t("temporal.trends.monthlyPerformance")}
-                      </Typography>
-                      <Typography variant="body2">
-                        {monthlyTrend > 0
-                          ? t("temporal.trends.monthlyGrowth", {
-                              n: monthlyTrend,
+                          : t("temporal.trends.weeklyStable")}
+                    </Typography>
+                  </Grid>
+                ) : null}
+                {hasMonthlyData ? (
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      {t("temporal.trends.monthlyPerformance")}
+                    </Typography>
+                    <Typography variant="body2">
+                      {monthlyTrend > 0
+                        ? t("temporal.trends.monthlyGrowth", {
+                            n: monthlyTrend,
+                          })
+                        : monthlyTrend < 0
+                          ? t("temporal.trends.monthlyDrop", {
+                              n: Math.abs(monthlyTrend),
                             })
-                          : monthlyTrend < 0
-                            ? t("temporal.trends.monthlyDrop", {
-                                n: Math.abs(monthlyTrend),
-                              })
-                            : t("temporal.trends.monthlyStable")}
-                      </Typography>
-                    </Grid>
-                  ) : null}
-                </Grid>
-              </CardContent>
-            </Card>
+                          : t("temporal.trends.monthlyStable")}
+                    </Typography>
+                  </Grid>
+                ) : null}
+              </Grid>
+            </ChartCard>
           </Grid>
         ) : null}
       </Grid>

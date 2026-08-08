@@ -1,7 +1,4 @@
-import { dataVizPalette } from "@/lib/theme/dataViz";
-
-/** The 5 `dataVizPalette` tones, in priority order — indexed into by {@link CHANNEL_COLOR_MAP}. */
-const DATA_VIZ_TONES = Object.values(dataVizPalette);
+import { categoricalBreakdownColor } from "../audience/HorizontalBreakdownBars";
 
 /**
  * Fixed channel → color mapping shared by every chart in the "Origem" tab
@@ -12,23 +9,31 @@ const DATA_VIZ_TONES = Object.values(dataVizPalette);
  *
  * Migrated from the deprecated 8-tone `chartPalette` (indices
  * social=0/search=1/email=2/direct=3/referral=5/paid=6) to the redesign's
- * 5-tone `dataVizPalette`. The old indices are preserved verbatim and taken
- * modulo 5 against the smaller palette — `referral` (old index 5) and
- * `paid` (old index 6) therefore land back on the same tones as `social`
- * (index 0) and `search` (index 1) respectively. This is a straight palette
- * migration, not a semantic exception: channel identity isn't inherently
- * success/warning, so reusing a tone across two channels only means two
- * channels can render the same color in the same chart — acceptable here
- * since `HorizontalBreakdownBars` always labels each row with its name,
- * value and percentage, so color is never the sole differentiator.
+ * 5-tone `dataVizPalette`, and again (refinamento visual 2026-08-08, §3.1)
+ * from `dataVizPalette` — a *sequential* ramp of blues meant for a single
+ * series' intensity — to `dataVizCategorical`, whose 5 tones are actually
+ * distinguishable hues (blue/teal/violet/amber/slate), resolved here through
+ * the same {@link categoricalBreakdownColor} helper every other categorical
+ * breakdown in the module uses (single source of truth for "which color is
+ * index N"). The channel → index mapping itself is unchanged, so every
+ * channel keeps the exact tone it had before, just resolved against the new
+ * palette. The old indices are preserved verbatim and taken modulo 5 against
+ * the 5-tone palette — `referral` (old index 5) and `paid` (old index 6)
+ * therefore land on the same tones as `social` (index 0) and `search` (index
+ * 1) respectively. This is a straight palette migration, not a semantic
+ * exception: channel identity isn't inherently success/warning, so reusing a
+ * tone across two channels only means two channels can render the same
+ * color in the same chart — acceptable here since `HorizontalBreakdownBars`
+ * always labels each row with its name, value and percentage, so color is
+ * never the sole differentiator.
  */
 const CHANNEL_COLOR_MAP: Record<string, string> = {
-  social: DATA_VIZ_TONES[0 % DATA_VIZ_TONES.length],
-  search: DATA_VIZ_TONES[1 % DATA_VIZ_TONES.length],
-  email: DATA_VIZ_TONES[2 % DATA_VIZ_TONES.length],
-  direct: DATA_VIZ_TONES[3 % DATA_VIZ_TONES.length],
-  referral: DATA_VIZ_TONES[5 % DATA_VIZ_TONES.length],
-  paid: DATA_VIZ_TONES[6 % DATA_VIZ_TONES.length],
+  social: categoricalBreakdownColor(0),
+  search: categoricalBreakdownColor(1),
+  email: categoricalBreakdownColor(2),
+  direct: categoricalBreakdownColor(3),
+  referral: categoricalBreakdownColor(5),
+  paid: categoricalBreakdownColor(6),
 };
 
 /**

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-import { dataVizPalette } from "@/lib/theme/dataViz";
+import { dataVizCategorical } from "@/lib/theme/dataViz";
 import type { DeviceByPeriodEntry } from "@/types/analytics/temporal";
 
 interface DeviceByPeriodChartProps {
@@ -71,25 +71,25 @@ export function DeviceByPeriodChart({ data }: DeviceByPeriodChartProps) {
     grandTotal > 0 ? `${((n / grandTotal) * 100).toFixed(1)}%` : "0%";
 
   // Same order as `series` above — the base theme colors stacked-bar series
-  // by array position (primary/secondary/tertiary), so these three tones
-  // match the actual bar segments the reader sees.
+  // by array position from `dataVizCategorical` (azul/teal/violeta), so these
+  // three swatches match the actual bar segments the reader sees.
   const deviceRows = [
     {
       label: t("temporal.devicePeriod.desktop"),
       icon: <Monitor size={18} />,
-      color: dataVizPalette.primary,
+      color: dataVizCategorical[0],
       count: totalByDevice.desktop,
     },
     {
       label: t("temporal.devicePeriod.mobile"),
       icon: <Smartphone size={18} />,
-      color: dataVizPalette.secondary,
+      color: dataVizCategorical[1],
       count: totalByDevice.mobile,
     },
     {
       label: t("temporal.devicePeriod.tablet"),
       icon: <Tablet size={18} />,
-      color: dataVizPalette.tertiary,
+      color: dataVizCategorical[2],
       count: totalByDevice.tablet,
     },
   ];

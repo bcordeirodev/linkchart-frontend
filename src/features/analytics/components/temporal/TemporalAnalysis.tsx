@@ -6,6 +6,10 @@ import { useTranslation } from "react-i18next";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import AnalyticsTabSkeleton from "@/shared/ui/base/AnalyticsTabSkeleton";
 import { OverviewMetricRow } from "@/shared/ui/base/OverviewMetricRow";
+import {
+  formatApproxRate,
+  formatHourShort,
+} from "@/features/analytics/utils/displayLabels";
 import { getWeekdayLabel } from "../../utils/weekday";
 import { useTemporalData } from "../../hooks/useTemporalData";
 import type { Segment } from "@/features/links/hooks/useAnalyticsFilters";
@@ -51,7 +55,7 @@ export function TemporalAnalysis({
   subTabIndex,
   onSubTabChange,
 }: TemporalAnalysisProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
   const { data, stats, loading, error, refresh } = useTemporalData({
     linkId,
     enableRealtime,
@@ -69,9 +73,9 @@ export function TemporalAnalysis({
 
   const peakHour =
     peakAnalysis?.peak_hour != null
-      ? `${peakAnalysis.peak_hour.toString().padStart(2, "0")}h`
+      ? formatHourShort(peakAnalysis.peak_hour)
       : stats?.peakHour
-        ? `${stats.peakHour}h`
+        ? formatHourShort(Number(stats.peakHour))
         : "--";
 
   // `peak_day` is the ISO day NUMBER (1-7) and is what gets localized —
@@ -160,14 +164,18 @@ export function TemporalAnalysis({
                 },
                 {
                   label: t("temporal.metrics.avgPerHour"),
-                  value: stats?.averageHourlyClicks?.toString() || "0",
+                  value:
+                    formatApproxRate(
+                      stats?.averageHourlyClicks,
+                      i18n.language,
+                    ) ?? "0",
                   caption: t("temporal.metrics.clicksPerHour"),
                 },
                 {
                   label: t("temporal.metrics.trend"),
                   value: trendValue,
                   valueColor: trendColor,
-                  caption: t("temporal.metrics.currentTrend"),
+                  caption: t("dashboard.kpi.trendCaption"),
                 },
               ]}
             />

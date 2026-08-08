@@ -5,6 +5,7 @@ import { Info } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import { HorizontalBreakdownBars } from "./HorizontalBreakdownBars";
@@ -55,7 +56,7 @@ export function FetchDestChart({ fetchDestBreakdown }: FetchDestChartProps) {
 
   const items: HorizontalBreakdownItem[] = data.map((entry) => ({
     key: entry.fetch_dest,
-    label: entry.fetch_dest,
+    label: formatAnalyticsLabel(entry.fetch_dest),
     value: entry.clicks,
     percentage: entry.percentage,
     color: FETCH_DEST_COLORS[entry.fetch_dest] ?? theme.palette.primary.main,

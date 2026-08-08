@@ -1,31 +1,18 @@
 "use client";
-import { Card, CardContent, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { tDynamic } from "@/lib/i18n/tDynamic";
-import { dataVizPalette } from "@/lib/theme/dataViz";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  motionTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
 import { AnalyticsEmptyState } from "@/shared/ui/base";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
 import type { ContinentData } from "@/types/analytics/geographic";
 
 import {
+  categoricalBreakdownColor,
   HorizontalBreakdownBars,
   type HorizontalBreakdownItem,
 } from "../audience/HorizontalBreakdownBars";
-
-// Same canonical dataViz palette as every other chart (via ApexChartWrapper) —
-// a bespoke rainbow here made this card look like a different product. Cycles
-// through the 5 blue-dominant tones, same as before with the 8-tone
-// `chartPalette` it replaces.
-const CONTINENT_COLORS = Object.values(dataVizPalette);
 
 /** Props for {@link ContinentBreakdown}. */
 interface ContinentBreakdownProps {
@@ -59,40 +46,17 @@ export function ContinentBreakdown({
   activeContinentCode,
   onContinentSelect,
 }: ContinentBreakdownProps) {
-  const theme = useTheme();
   const { t } = useTranslation("analytics");
-  const isDark = theme.palette.mode === "dark";
-
-  const cardSx = {
-    borderRadius: `${radiusTokens.lg}px`,
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow: isDark ? elevationTokens.xs : elevationLightTokens.xs,
-    transition: `box-shadow ${motionTokens.duration.base} ${motionTokens.easing.default}`,
-    "&:hover": {
-      boxShadow: isDark ? elevationTokens.sm : elevationLightTokens.sm,
-    },
-  } as const;
 
   if (!continents || continents.length === 0) {
     return (
-      <Card sx={cardSx}>
-        <CardContent>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              fontWeight: 600,
-              mb: 2,
-            }}
-          >
-            {t("geographic.continents.title")}
-          </Typography>
-          <AnalyticsEmptyState
-            icon={<Globe size={32} strokeWidth={1.5} />}
-            title={t("geographic.continents.empty")}
-            compact
-          />
-        </CardContent>
-      </Card>
+      <ChartCard title={t("geographic.continents.title")}>
+        <AnalyticsEmptyState
+          icon={<Globe size={32} strokeWidth={1.5} />}
+          title={t("geographic.continents.empty")}
+          compact
+        />
+      </ChartCard>
     );
   }
 
@@ -103,7 +67,11 @@ export function ContinentBreakdown({
     }),
     value: c.clicks,
     percentage: c.percentage ?? 0,
-    color: CONTINENT_COLORS[index % CONTINENT_COLORS.length],
+    // Categorical palette (blue/teal/violet/amber/slate), not the sequential
+    // blue ramp — continents are true categories, not an intensity gradient,
+    // and a mono-blue cycle made every row read as the same series (refinamento
+    // visual 2026-08-08, §3.1).
+    color: categoricalBreakdownColor(index),
   }));
 
   /**
@@ -117,28 +85,16 @@ export function ContinentBreakdown({
     : undefined;
 
   return (
-    <Card sx={cardSx}>
-      <CardContent>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            fontWeight: 600,
-            mb: 0.5,
-          }}
-        >
-          {t("geographic.continents.title")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {t("geographic.continents.subtitle")}
-        </Typography>
-
-        <HorizontalBreakdownBars
-          items={items}
-          onItemClick={handleItemClick}
-          selectedKey={activeContinentCode ?? null}
-        />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title={t("geographic.continents.title")}
+      subtitle={t("geographic.continents.subtitle")}
+    >
+      <HorizontalBreakdownBars
+        items={items}
+        onItemClick={handleItemClick}
+        selectedKey={activeContinentCode ?? null}
+      />
+    </ChartCard>
   );
 }
 

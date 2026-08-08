@@ -2,6 +2,8 @@
 
 import { Box, Skeleton, Stack } from "@mui/material";
 
+import { radiusTokens } from "@/lib/theme/designSystem";
+
 /**
  * Loading skeleton that mirrors the Overview tab layout: a bare metric row
  * (five hairline-separated numbers, no card) → 2 chart sections (Temporal /
@@ -47,7 +49,7 @@ export function OverviewSkeleton() {
                 animation="wave"
                 width={110}
                 height={18}
-                sx={{ borderRadius: 1 }}
+                sx={{ borderRadius: `${radiusTokens.sm}px` }}
               />
               <Box sx={{ flex: 1, height: "1px", bgcolor: "divider" }} />
             </Box>
@@ -64,13 +66,13 @@ export function OverviewSkeleton() {
                 variant="rounded"
                 animation="wave"
                 height={300}
-                sx={{ borderRadius: 2 }}
+                sx={{ borderRadius: `${radiusTokens.lg}px` }}
               />
               <Skeleton
                 variant="rounded"
                 animation="wave"
                 height={300}
-                sx={{ borderRadius: 2 }}
+                sx={{ borderRadius: `${radiusTokens.lg}px` }}
               />
             </Box>
           </Box>

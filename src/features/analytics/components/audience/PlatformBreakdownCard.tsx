@@ -6,7 +6,9 @@ import { useTranslation } from "react-i18next";
 
 import { tDynamic } from "@/lib/i18n/tDynamic";
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { dataVizCategorical } from "@/lib/theme/dataViz";
 import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
+import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
@@ -14,6 +16,27 @@ import type { PlatformBreakdown } from "@/types/analytics/audience";
 
 import { getPhaseDataChipSx } from "./phaseDataChipSx";
 import { normaliseBreakdown } from "./normaliseBreakdown";
+
+/**
+ * Height cap for the single-row stacked bar below — a horizontal stacked
+ * bar is one line of segments plus its legend, not a chart that needs
+ * hundreds of pixels of vertical room (spec: "barra horizontal empilhada
+ * única … altura do chart ≤ 120px").
+ */
+const STACKED_BAR_HEIGHT = 110;
+
+/**
+ * Colors for the two-row "mobile vs. desktop" Client-Hint signal below the
+ * main platform bar. Previously a hardcoded blue/green pair — green reads as
+ * "success" everywhere else in the app, which is wrong for what is just the
+ * second of two traffic categories, not a pass/fail state. Sourced from
+ * `dataVizCategorical` instead so the pair reads as two categories, matching
+ * every other multi-category breakdown on the page.
+ */
+const CH_MOBILE_COLORS: Record<"mobile" | "not_mobile", string> = {
+  mobile: dataVizCategorical[0],
+  not_mobile: dataVizCategorical[1],
+};
 
 /** Entry in the platform breakdown array returned by the audience API. */
 interface PlatformEntry {
@@ -53,7 +76,7 @@ export function PlatformBreakdownCard({
   if (platform.data.length === 0) return null;
 
   const chartData = platform.data.map((p) => ({
-    name: p.platform,
+    name: formatAnalyticsLabel(p.platform),
     value: p.clicks,
   }));
 
@@ -73,7 +96,7 @@ export function PlatformBreakdownCard({
       )}
       <ApexChartWrapper
         type="bar"
-        size="compact"
+        height={STACKED_BAR_HEIGHT}
         {...formatHorizontalStackedBar(chartData, "name", "value")}
       />
 
@@ -95,16 +118,16 @@ export function PlatformBreakdownCard({
           <Stack spacing={0.5}>
             {[
               {
-                key: "mobile",
+                key: "mobile" as const,
                 count: chMobile.mobile,
                 total: chMobile.mobile + chMobile.not_mobile,
-                color: "#3b82f6",
+                color: CH_MOBILE_COLORS.mobile,
               },
               {
-                key: "not_mobile",
+                key: "not_mobile" as const,
                 count: chMobile.not_mobile,
                 total: chMobile.mobile + chMobile.not_mobile,
-                color: "#22c55e",
+                color: CH_MOBILE_COLORS.not_mobile,
               },
             ].map(({ key, count, total, color }) => {
               const pct = total > 0 ? Math.round((count / total) * 100) : 0;

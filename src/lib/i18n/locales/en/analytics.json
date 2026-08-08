@@ -19,9 +19,16 @@
     "metrics": {
       "title": "Link Metrics"
     },
+    "kpi": {
+      "qualityCaption": "% of organic (non-bot) clicks",
+      "totalClicksCaption": "in the selected period",
+      "trendCaption": "vs. previous period"
+    },
+    "viewFullAnalysis": "View full analysis",
     "charts": {
       "noData": "No Data Available",
-      "noDataDesc": "Share your links to see detailed click charts."
+      "noDataDesc": "Share your links to see detailed click charts.",
+      "dayOfWeekSummaryDesc": "Quick view of volume by weekday. The full analysis lives in the Timing tab."
     },
     "utmSource": {
       "title": "UTM Campaigns",
@@ -54,10 +61,11 @@
       "7d": "7 days",
       "30d": "30 days",
       "90d": "90 days",
-      "all": "All",
-      "custom": "Custom"
+      "all": "All"
     },
+    "customPeriod": "Custom",
     "excludeBots": "Exclude bots",
+    "excludeBotsTooltip": "Removes clicks identified as bots (crawlers, app previews) from every chart.",
     "bots": "Bots",
     "groupBy": "Group by",
     "groupByOptions": {
@@ -196,7 +204,6 @@
       "peakHourSub": "Highest Activity",
       "peakDaySub": "Most Active Day",
       "clicksPerHour": "Clicks Per Hour",
-      "currentTrend": "Current Direction",
       "trending": "Up",
       "declining": "Down",
       "stable": "Stable"
@@ -253,6 +260,12 @@
       "uniqueVisitors": "unique visitors",
       "ofTotal": "% of total",
       "insightsLabel": "Insights"
+    },
+    "comparison": {
+      "subtitle": "Direct comparison of volume and visitors between weekdays and weekends."
+    },
+    "engagementMetrics": {
+      "subtitle": "Volume inside and outside business hours, in absolute numbers."
     },
     "peak": {
       "peakHour": "Peak Hour",
@@ -499,6 +512,7 @@
     },
     "heatmap": {
       "titleDefault": "Real-Time Heat Map",
+      "description": "Each circle is a city; size and intensity follow click volume. Use zoom and the minimum-clicks filter to explore.",
       "autoRefresh": "Auto-refresh",
       "realtimeActive": "Real-time Active",
       "realtime": "Real-time",
@@ -1059,7 +1073,9 @@
   "quality": {
     "title": "Quality",
     "description": "Traffic distribution by quality level: organic, suspicious, and likely fraud.",
-    "subtitle": "{{suspicious}} suspicious · {{fraud}} fraud"
+    "subtitle": "{{suspicious}} suspicious · {{fraud}} fraud",
+    "headerConsistencyOk": "No inconsistencies detected",
+    "headerConsistencyWarn": "Inconsistencies detected"
   },
   "sections": {
     "temporal": "Traffic Patterns",
@@ -1068,6 +1084,8 @@
   "origin": {
     "loading": "Loading origin analysis...",
     "empty": "This link doesn't have enough traffic-origin data yet.",
+    "channelsEmptyHint": "Only direct traffic so far. Share this link with UTM parameters to see channels and campaigns here.",
+    "campaignsDisabledHint": "No campaign data yet — add UTM parameters when sharing the link.",
     "sections": {
       "channels": "Channels",
       "channelsDesc": "Where clicks came from: direct access, social media, search engines, or other sites linking to you.",

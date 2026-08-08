@@ -8,6 +8,7 @@ import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { dataVizPalette } from "@/lib/theme/dataViz";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import type { TimezoneAnalysis } from "@/types";
 
 interface TimezoneDistributionChartProps {
@@ -143,10 +144,10 @@ export function TimezoneDistributionChart({
                     value={tz.percentage || 0}
                     sx={{
                       height: 6,
-                      borderRadius: 3,
+                      borderRadius: `${radiusTokens.sm}px`,
                       bgcolor: "action.hover",
                       "& .MuiLinearProgress-bar": {
-                        borderRadius: 3,
+                        borderRadius: `${radiusTokens.sm}px`,
                         // One flat tone for every row — a per-rank rainbow
                         // (success/info/warning) implied a meaning ("top 3")
                         // that isn't real; the numbering already says that.
@@ -175,7 +176,12 @@ export function TimezoneDistributionChart({
 
             {timezoneAnalysis.length > 10 && (
               <Box
-                sx={{ mt: 2, p: 1.5, bgcolor: "action.hover", borderRadius: 1 }}
+                sx={{
+                  mt: 2,
+                  p: 1.5,
+                  bgcolor: "action.hover",
+                  borderRadius: `${radiusTokens.md}px`,
+                }}
               >
                 <Typography variant="caption" color="text.secondary">
                   {t("temporal.timezone.others", {
@@ -195,7 +201,7 @@ export function TimezoneDistributionChart({
               bgcolor: "action.hover",
               border: "1px solid",
               borderColor: "divider",
-              borderRadius: 2,
+              borderRadius: `${radiusTokens.md}px`,
             }}
           >
             <Typography variant="subtitle2" gutterBottom>

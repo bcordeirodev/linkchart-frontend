@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 
 import { useDashboardData } from "@/features/analytics/hooks/useDashboardData";
 import { useInsightsData } from "@/features/analytics/hooks/useInsightsData";
+import { formatApproxRate } from "@/features/analytics/utils/displayLabels";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { EmptyState } from "@/shared/ui/base/EmptyState";
@@ -185,11 +186,10 @@ export function LinkDashboard({
           totalClicks={data?.summary?.total_clicks ?? 0}
           uniqueVisitors={data?.summary?.unique_visitors ?? 0}
           countries={data?.summary?.countries_reached ?? 0}
-          avgDaily={
-            data?.summary?.avg_daily_clicks != null
-              ? data.summary.avg_daily_clicks.toLocaleString()
-              : null
-          }
+          avgDaily={formatApproxRate(
+            data?.summary?.avg_daily_clicks,
+            i18n.language,
+          )}
           qualityLabel={formatQuality(
             data?.summary?.quality,
             t("metrics.noData"),

@@ -73,9 +73,10 @@ _perguntas diferentes_ — não níveis de zoom da mesma pergunta.
 
 - `insightsLayout.ts` — resquício da aba Insights que foi dissolvida (os
   insights subiram para o Resumo e as fontes de tráfego viraram a aba
-  Origem), mas ainda em uso: `INSIGHTS_BLOCK_PAD` segue consumido por
-  `RetentionAnalysisChart.tsx` e `SessionDepthChart.tsx`, e
-  `insightsSectionHeadingSx` por `SessionDepthChart.tsx` (aba Público). Os
+  Origem), mas ainda em uso: `insightsSectionHeadingSx` segue consumido por
+  `SessionDepthChart.tsx` (aba Público). `INSIGHTS_BLOCK_PAD` foi removido
+  no refinamento visual 2026-08-08, quando `RetentionAnalysisChart.tsx` e
+  `SessionDepthChart.tsx` migraram para `ChartCard`. Os
   demais exports (`insightsChartPanelSx`, `insightsTileSx`,
   `insightsChartRowSx`, `insightsSectionBlockSx`, `insightsTwoColSx`,
   `insightsChartPanelTitleSx`, `insightsChartPanelDescSx`,

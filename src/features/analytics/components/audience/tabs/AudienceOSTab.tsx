@@ -1,13 +1,14 @@
 "use client";
 import { useTranslation } from "react-i18next";
 
-import { dataVizPalette } from "@/lib/theme/dataViz";
+import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import type { OSData } from "@/types";
 
 import { aggregateOSByFamily } from "../aggregateFamily";
 import {
   HorizontalBreakdownBars,
+  categoricalBreakdownColor,
   type HorizontalBreakdownItem,
 } from "../HorizontalBreakdownBars";
 
@@ -25,17 +26,16 @@ export interface AudienceOSTabProps {
 export function AudienceOSTab({ operatingSystems }: AudienceOSTabProps) {
   const { t } = useTranslation("analytics");
 
-  const paletteTones = Object.values(dataVizPalette);
   const families = aggregateOSByFamily(
     operatingSystems,
     t("audience.extraCharts.others"),
   );
   const items: HorizontalBreakdownItem[] = families.map((family, index) => ({
     key: family.key,
-    label: family.label,
+    label: formatAnalyticsLabel(family.label),
     value: family.clicks,
     percentage: family.percentage,
-    color: paletteTones[index % paletteTones.length],
+    color: categoricalBreakdownColor(index),
   }));
 
   return (

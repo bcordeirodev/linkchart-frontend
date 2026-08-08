@@ -5,11 +5,8 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { AnalyticsEmptyState, OverviewMetricRow } from "@/shared/ui/base";
-import EnhancedPaper from "@/shared/ui/base/EnhancedPaper";
-import {
-  INSIGHTS_BLOCK_PAD,
-  insightsSectionHeadingSx,
-} from "../insights/insightsLayout";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
+import { insightsSectionHeadingSx } from "../insights/insightsLayout";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
 /**
@@ -131,19 +128,19 @@ export function SessionDepthChart({
 
   if (loading) {
     return (
-      <EnhancedPaper variant="outlined">
+      <ChartCard height="auto">
         <Box sx={{ p: 3, textAlign: "center" }}>
           <Typography>{t("insights.session.loading")}</Typography>
         </Box>
-      </EnhancedPaper>
+      </ChartCard>
     );
   }
 
   if (data.session_distribution.length === 0) {
     return (
-      <EnhancedPaper variant="outlined">
+      <ChartCard height="auto">
         <AnalyticsEmptyState title={t("insights.session.noData")} />
-      </EnhancedPaper>
+      </ChartCard>
     );
   }
 
@@ -159,150 +156,139 @@ export function SessionDepthChart({
   } as const;
 
   return (
-    // No `height: 100%` — see RetentionAnalysisChart: it stretches the card to
-    // the grid row's height instead of its own content.
-    //
-    // `variant="outlined"` — a single hairline card, no fill/shadow layered
-    // on top. This is the ONE surface for the whole component now.
-    <EnhancedPaper variant="outlined" animated={false}>
-      <Box sx={{ p: INSIGHTS_BLOCK_PAD }}>
-        {showTitle ? (
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {displayTitle}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              {t("insights.session.description")}
-            </Typography>
-          </Box>
-        ) : null}
+    // `height="auto"` — see RetentionAnalysisChart: ChartCard's default
+    // `height="100%"` stretches the card to the grid row's height instead of
+    // its own content.
+    <ChartCard
+      height="auto"
+      title={showTitle ? displayTitle : undefined}
+      subtitle={showTitle ? t("insights.session.description") : undefined}
+    >
+      {/* Real Metrics — no fabricated scores.
+          `labelLines={2}` mirrors `RetentionAnalysisChart`, the card this
+          one sits beside in the loyalty grid: both rows reserve the same
+          label height, so the two cards' numbers land on the same line as
+          each other whether or not a label wraps at a given width. */}
+      <Box sx={{ mb: 3 }}>
+        <OverviewMetricRow
+          size="md"
+          labelLines={2}
+          metrics={[
+            {
+              label: t("insights.session.avgDepth"),
+              value: data.avg_session_clicks,
+              caption: t("insights.session.clicksPerSession"),
+            },
+            {
+              label: t("insights.session.powerUsers"),
+              value: `${powerUsersPct}%`,
+              caption: t("insights.session.powerUsersSub", {
+                n: data.power_users_count,
+              }),
+            },
+            {
+              label: t("insights.session.maxClicks"),
+              value: data.max_session_depth,
+              caption: t("insights.session.inSession"),
+            },
+          ]}
+        />
+      </Box>
 
-        {/* Real Metrics — no fabricated scores.
-            `labelLines={2}` mirrors `RetentionAnalysisChart`, the card this
-            one sits beside in the loyalty grid: both rows reserve the same
-            label height, so the two cards' numbers land on the same line as
-            each other whether or not a label wraps at a given width. */}
-        <Box sx={{ mb: 3 }}>
-          <OverviewMetricRow
-            size="md"
-            labelLines={2}
-            metrics={[
-              {
-                label: t("insights.session.avgDepth"),
-                value: data.avg_session_clicks,
-                caption: t("insights.session.clicksPerSession"),
-              },
-              {
-                label: t("insights.session.powerUsers"),
-                value: `${powerUsersPct}%`,
-                caption: t("insights.session.powerUsersSub", {
-                  n: data.power_users_count,
-                }),
-              },
-              {
-                label: t("insights.session.maxClicks"),
-                value: data.max_session_depth,
-                caption: t("insights.session.inSession"),
-              },
-            ]}
-          />
-        </Box>
+      {/* Distribution Histogram — bare block, no nested card */}
+      <Box sx={{ ...sectionDividerSx, mb: 3 }}>
+        <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
+          {t("insights.session.clickDistribution")}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          {t("insights.session.clickDistributionDesc")}
+        </Typography>
+        <ApexChartWrapper
+          options={distributionBarOptions}
+          series={distributionBarData}
+          type="bar"
+          size="standard"
+        />
+      </Box>
 
-        {/* Distribution Histogram — bare block, no nested card */}
-        <Box sx={{ ...sectionDividerSx, mb: 3 }}>
-          <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
-            {t("insights.session.clickDistribution")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {t("insights.session.clickDistributionDesc")}
-          </Typography>
-          <ApexChartWrapper
-            options={distributionBarOptions}
-            series={distributionBarData}
-            type="bar"
-            size="standard"
-          />
-        </Box>
-
-        {/* Distribution Detail tiles — bare block, boxless tiles */}
-        <Box sx={{ ...sectionDividerSx, mb: 3 }}>
-          <Typography variant="subtitle1" sx={insightsSectionHeadingSx}>
-            {t("insights.session.distributionDetails")}
-          </Typography>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                sm: "repeat(2, 1fr)",
-                md: "repeat(3, 1fr)",
-              },
-              gap: 2,
-            }}
-          >
-            {data.session_distribution.slice(0, 6).map((item, index) => (
-              <Box key={index}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                  {t("insights.session.clickBucket", {
-                    count: item.clicks_count,
-                  })}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {t("insights.session.usersCount", {
-                    n: item.frequency,
-                    percent: item.percentage,
-                  })}
-                </Typography>
-                {item.avg_response_time > 0 && (
-                  <Typography variant="caption" color="text.secondary">
-                    {t("insights.session.avgTime", {
-                      n: Number(item.avg_response_time).toFixed(2),
-                    })}
-                  </Typography>
-                )}
-              </Box>
-            ))}
-          </Box>
-        </Box>
-
-        {/* Insights panel — bare block, no nested card */}
-        <Box sx={sectionDividerSx}>
-          <Stack spacing={1.5}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {t("insights.session.sessionInsights")}
-            </Typography>
-
-            <Typography variant="body1">
-              {t("insights.session.analysisRaw", {
-                avg: data.avg_session_clicks,
-                power: powerUsersPct,
-                powerCount: data.power_users_count,
-              })}
-            </Typography>
-
-            <Typography variant="body2" color="text.secondary">
-              {data.avg_session_clicks >= 2.5
-                ? t("insights.session.recHigh")
-                : t("insights.session.recLow")}
-            </Typography>
-
-            {powerUsersPct > 20 && (
-              <Typography
-                variant="body2"
-                sx={{
-                  color: theme.palette.success.main,
-                  fontWeight: 500,
-                }}
-              >
-                {t("insights.session.powerUserHighlight", {
-                  percent: powerUsersPct,
+      {/* Distribution Detail tiles — bare block, boxless tiles */}
+      <Box sx={{ ...sectionDividerSx, mb: 3 }}>
+        <Typography variant="subtitle1" sx={insightsSectionHeadingSx}>
+          {t("insights.session.distributionDetails")}
+        </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+            },
+            gap: 2,
+          }}
+        >
+          {data.session_distribution.slice(0, 6).map((item, index) => (
+            <Box key={index}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {t("insights.session.clickBucket", {
+                  count: item.clicks_count,
                 })}
               </Typography>
-            )}
-          </Stack>
+              <Typography variant="body2" color="text.secondary">
+                {t("insights.session.usersCount", {
+                  n: item.frequency,
+                  percent: item.percentage,
+                })}
+              </Typography>
+              {item.avg_response_time > 0 && (
+                <Typography variant="caption" color="text.secondary">
+                  {t("insights.session.avgTime", {
+                    n: Number(item.avg_response_time).toFixed(2),
+                  })}
+                </Typography>
+              )}
+            </Box>
+          ))}
         </Box>
       </Box>
-    </EnhancedPaper>
+
+      {/* Insights panel — bare block, no nested card */}
+      <Box sx={sectionDividerSx}>
+        <Stack spacing={1.5}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+            {t("insights.session.sessionInsights")}
+          </Typography>
+
+          <Typography variant="body1">
+            {t("insights.session.analysisRaw", {
+              avg: data.avg_session_clicks,
+              power: powerUsersPct,
+              powerCount: data.power_users_count,
+            })}
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary">
+            {data.avg_session_clicks >= 2.5
+              ? t("insights.session.recHigh")
+              : t("insights.session.recLow")}
+          </Typography>
+
+          {powerUsersPct > 20 && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: theme.palette.success.main,
+                fontWeight: 500,
+              }}
+            >
+              {t("insights.session.powerUserHighlight", {
+                percent: powerUsersPct,
+              })}
+            </Typography>
+          )}
+        </Stack>
+      </Box>
+    </ChartCard>
   );
 }
 

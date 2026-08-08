@@ -1,29 +1,16 @@
 "use client";
-import {
-  Alert,
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  LinearProgress,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import { Info, ShieldAlert, Bot } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { radiusTokens } from "@/lib/theme/designSystem";
+import { dataVizCategorical } from "@/lib/theme/dataViz";
 import { SectionLabel } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import type { QualityBreakdown, QualityTier } from "@/types/analytics/audience";
+import type { Theme } from "@mui/material/styles";
 
 import {
   HorizontalBreakdownBars,
@@ -32,20 +19,29 @@ import {
 import { getPhaseDataChipSx } from "./phaseDataChipSx";
 
 /**
- * Fixed colors per quality tier — local to this component, not the shared
- * chart palette (`normal`/`suspicious`/`likely_fraud` isn't a general-purpose
- * series). `suspicious` was green in the original donut, which reads as
- * "safe" for a tier literally named "suspicious" — semantically wrong and
- * flipped to amber here since the fix is fully contained to this array. A
- * proper semantic-color pass across quality/fraud UI (e.g. aligning with
- * `quality_tier` chips elsewhere) is tracked separately and intentionally
- * out of scope for this change.
+ * Resolves the fixed fill color for each quality tier's bar from theme
+ * tokens instead of local hex values.
+ *
+ * `organic` reuses the first dataviz categorical hue — this row is the
+ * traffic-mix breakdown, not itself a pass/fail signal, so it keeps the
+ * "series 1" identity every other chart's first category uses.
+ * `suspicious`/`likely_fraud` are genuine severity levels, so they map to
+ * the theme's `warning`/`error` tokens: `suspicious` used to render green in
+ * the original donut, which read as "safe" for a tier literally named
+ * "suspicious" — semantically backwards. Warning/error keep it aligned with
+ * every other severity surface in the app instead of a component-local
+ * palette.
+ *
+ * @param theme - active MUI theme, read for the `warning`/`error` tokens.
+ * @returns a color per {@link QualityTier}.
  */
-const TIER_BAR_COLORS: Record<QualityTier, string> = {
-  organic: "#1976d2",
-  suspicious: "#F59E0B",
-  likely_fraud: "#dc004e",
-};
+function getTierBarColors(theme: Theme): Record<QualityTier, string> {
+  return {
+    organic: dataVizCategorical[0],
+    suspicious: theme.palette.warning.main,
+    likely_fraud: theme.palette.error.main,
+  };
+}
 
 interface QualitySectionProps {
   quality: QualityBreakdown;
@@ -73,43 +69,25 @@ export function QualitySection({
   const theme = useTheme();
   const { t } = useTranslation("analytics");
 
-  const elevation =
-    theme.palette.mode === "dark" ? elevationTokens : elevationLightTokens;
-
-  const cardSx = {
-    borderRadius: `${radiusTokens.lg}px`,
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow: elevation.xs,
-    height: "100%",
-  };
-
   const tStr = t as (k: string, opts?: Record<string, unknown>) => string;
 
+  const tierBarColors = getTierBarColors(theme);
   const tierItems: HorizontalBreakdownItem[] = quality.tiers.map((tier) => ({
     key: tier.tier,
     label: tStr(`audience.quality.tiers.${tier.tier}`),
     value: tier.clicks,
     percentage: tier.percentage,
-    color: TIER_BAR_COLORS[tier.tier] ?? theme.palette.grey[500],
+    color: tierBarColors[tier.tier] ?? theme.palette.grey[500],
   }));
 
-  const fingerprintColor =
-    quality.avg_fingerprint_score < 1.0
-      ? "success"
-      : quality.avg_fingerprint_score < 2.0
-        ? "warning"
-        : "error";
+  // Binary read instead of the old 3-tier gauge: either the fingerprint is
+  // fully consistent across a click's headers (0) or it isn't (> 0) — see
+  // the "Header Consistency" chip below.
+  const hasInconsistencies = quality.avg_fingerprint_score > 0;
 
   const botRateCard = (
-    <Card sx={{ ...cardSx, minHeight: 120 }}>
-      <CardContent
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 3,
-          height: "100%",
-        }}
-      >
+    <ChartCard sx={{ minHeight: 120 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
         <Box sx={{ textAlign: "center", minWidth: 80 }}>
           <Bot {...ICON_MD} style={{ marginBottom: 4 }} />
           <Typography
@@ -147,25 +125,18 @@ export function QualitySection({
             />
           )}
         </Box>
-      </CardContent>
-    </Card>
+      </Box>
+    </ChartCard>
   );
 
   const fingerprintCard = (
-    <Card sx={{ ...cardSx, minHeight: 120 }}>
-      <CardContent
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 3,
-          height: "100%",
-        }}
-      >
+    <ChartCard sx={{ minHeight: 120 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
         <Box sx={{ textAlign: "center", minWidth: 80 }}>
           <ShieldAlert {...ICON_MD} style={{ marginBottom: 4 }} />
           <Typography
             variant="h4"
-            color={`${fingerprintColor}.main`}
+            color={hasInconsistencies ? "warning.main" : "success.main"}
             sx={{ fontWeight: 700, lineHeight: 1 }}
           >
             {quality.avg_fingerprint_score.toFixed(1)}
@@ -180,20 +151,19 @@ export function QualitySection({
           <Typography variant="body2" color="text.secondary">
             {t("audience.quality.fingerprintSubtitle")}
           </Typography>
-          <Stack direction="row" spacing={0.5} sx={{ mt: 1 }}>
-            {[0, 1, 2].map((i) => (
-              <LinearProgress
-                key={i}
-                variant="determinate"
-                value={quality.avg_fingerprint_score > i ? 100 : 0}
-                color={i === 0 ? "success" : i === 1 ? "warning" : "error"}
-                sx={{ flex: 1, height: 6, borderRadius: 3 }}
-              />
-            ))}
-          </Stack>
+          <Chip
+            label={
+              hasInconsistencies
+                ? t("quality.headerConsistencyWarn")
+                : t("quality.headerConsistencyOk")
+            }
+            color={hasInconsistencies ? "warning" : "success"}
+            size="small"
+            sx={{ mt: 1 }}
+          />
         </Box>
-      </CardContent>
-    </Card>
+      </Box>
+    </ChartCard>
   );
 
   return (

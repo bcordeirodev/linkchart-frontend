@@ -9,6 +9,8 @@ import {
   formatHorizontalStackedBar,
 } from "@/features/analytics/utils/chartFormatters";
 import { localizeWeekdayRows } from "@/features/analytics/utils/weekday";
+import { resolveCurve } from "@/lib/theme/apexBaseTheme";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
@@ -44,10 +46,10 @@ export interface TemporalPatternsTabProps {
  * Shows the period summary bar charts, the pattern analysis insights card,
  * local-time area chart, and the optional weekend/business-hours comparisons.
  * All data is received via props — no hooks. Every chart's series color comes
- * from `ApexChartWrapper`'s shared base theme (`dataVizPalette`) — no local
- * override — and the former "Fim de semana vs dia de semana" pie is a single
- * horizontal stacked bar, matching every other categorical breakdown in the
- * redesigned app.
+ * from `ApexChartWrapper`'s shared base theme (`dataVizCategorical`) — no
+ * local override — and the former "Fim de semana vs dia de semana" pie is a
+ * single horizontal stacked bar, matching every other categorical breakdown
+ * in the redesigned app.
  */
 export function TemporalPatternsTab({
   hourlyData,
@@ -78,6 +80,32 @@ export function TemporalPatternsTab({
         .sort((a, b) => b.clicks - a.clicks),
     [weeklyData, t],
   );
+
+  // Pré-computado para poder mesclar `stroke.curve` (resolveCurve) sobre as
+  // opções do formatter sem clobber — série esparsa não ganha suavização.
+  const localTimeChart = useMemo(() => {
+    if (!hourlyPatternsLocal || hourlyPatternsLocal.length < 3) {
+      return null;
+    }
+    const base = formatAreaChart(
+      hourlyPatternsLocal.map((item) => ({
+        hour: `${item.hour.toString().padStart(2, "0")}:00`,
+        clicks: item.clicks,
+        avg_response_time: item.avg_response_time,
+        unique_visitors: item.unique_visitors,
+      })),
+      "hour",
+      "clicks",
+      { clicksLabel: t("temporal.viralRank.clicksUnit") },
+    );
+    return {
+      ...base,
+      options: {
+        ...base.options,
+        stroke: { curve: resolveCurve(hourlyPatternsLocal.length) },
+      },
+    };
+  }, [hourlyPatternsLocal, t]);
 
   return (
     <Stack spacing={2}>
@@ -149,26 +177,12 @@ export function TemporalPatternsTab({
       ) : null}
 
       {/* Local Time */}
-      {hourlyPatternsLocal && hourlyPatternsLocal.length >= 3 && (
+      {localTimeChart && hourlyPatternsLocal && (
         <ChartCard
           title={t("temporal.chart.localTimePatterns")}
           subtitle={t("charts.descriptions.localTimePatterns")}
         >
-          <ApexChartWrapper
-            type="area"
-            {...formatAreaChart(
-              hourlyPatternsLocal.map((item) => ({
-                hour: `${item.hour.toString().padStart(2, "0")}:00`,
-                clicks: item.clicks,
-                avg_response_time: item.avg_response_time,
-                unique_visitors: item.unique_visitors,
-              })),
-              "hour",
-              "clicks",
-              { clicksLabel: t("temporal.viralRank.clicksUnit") },
-            )}
-            size="standard"
-          />
+          <ApexChartWrapper type="area" {...localTimeChart} size="standard" />
           <Box sx={{ mt: 2 }}>
             <Typography variant="subtitle2" gutterBottom>
               {t("temporal.chart.hourlyPerformance")}
@@ -182,7 +196,7 @@ export function TemporalPatternsTab({
                     justifyContent: "space-between",
                     p: 1,
                     bgcolor: "background.paper",
-                    borderRadius: 1,
+                    borderRadius: `${radiusTokens.md}px`,
                   }}
                 >
                   <Typography variant="body2">{item.hour}h</Typography>
@@ -225,7 +239,7 @@ export function TemporalPatternsTab({
                     "name",
                     "value",
                   )}
-                  size="standard"
+                  height={110}
                 />
               </ChartCard>
             </Grid>
@@ -235,7 +249,10 @@ export function TemporalPatternsTab({
               md={4}
               sx={{ display: "flex", flexDirection: "column", minWidth: 0 }}
             >
-              <ChartCard title={t("temporal.chart.comparison")}>
+              <ChartCard
+                title={t("temporal.chart.comparison")}
+                subtitle={t("temporal.comparison.subtitle")}
+              >
                 <Stack spacing={2}>
                   <Box>
                     <Typography variant="subtitle2" color="primary">
@@ -315,7 +332,10 @@ export function TemporalPatternsTab({
               md={4}
               sx={{ display: "flex", flexDirection: "column", minWidth: 0 }}
             >
-              <ChartCard title={t("temporal.chart.engagementMetrics")}>
+              <ChartCard
+                title={t("temporal.chart.engagementMetrics")}
+                subtitle={t("temporal.engagementMetrics.subtitle")}
+              >
                 <Stack spacing={2}>
                   <Box>
                     <Typography variant="subtitle2" color="primary">

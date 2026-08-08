@@ -495,10 +495,16 @@ export const radiusTokens = {
  * Ajustado de `0.03`/`0.02` para `0.045`/`0.03` (gate 2026-08-03, rodada 5):
  * o valor original lia fraco demais contra o fundo quase-preto da página
  * (`darkNeutral.bg` `#030405`) — mantém a mesma razão dark:light (~1.5×).
+ *
+ * `dark` subiu de novo, `0.045` → `0.07` (refinamento visual, 2026-08-08):
+ * com 3 wrappers de card convergindo para `ChartCard`, o destaque por
+ * *degrau de superfície* passa a ser o único sinal de "isto é um card" (sem
+ * `boxShadow` ad hoc) — precisava de um degrau mais perceptível para
+ * carregar esse papel sozinho. `light` não muda.
  */
 export const surfaceOverlayTokens = {
   card: {
-    dark: 0.045,
+    dark: 0.07,
     light: 0.03,
   },
 } as const;

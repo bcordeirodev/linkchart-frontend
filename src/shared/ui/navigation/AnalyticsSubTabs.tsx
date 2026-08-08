@@ -1,5 +1,5 @@
 "use client";
-import { Box, Tab, Tabs, useTheme } from "@mui/material";
+import { Box, Tab, Tabs, Tooltip, useTheme } from "@mui/material";
 
 import { motionTokens, radiusTokens } from "@/lib/theme/designSystem";
 
@@ -13,6 +13,13 @@ export interface AnalyticsSubTabItem {
   icon?: ReactElement;
   /** Disables the tab when its data set is empty. */
   disabled?: boolean;
+  /**
+   * Explains why the tab is disabled (already translated). Only has an
+   * effect when {@link AnalyticsSubTabItem.disabled} is also set — when
+   * present, the tab is wrapped in a `Tooltip` showing this text instead of
+   * silently disabling with no explanation.
+   */
+  disabledHint?: string;
 }
 
 /**
@@ -169,15 +176,48 @@ export function AnalyticsSubTabs({
             },
           }}
         >
-          {tabs.map(({ label, icon, disabled }, index) => (
-            <Tab
-              key={index}
-              label={label}
-              icon={icon}
-              iconPosition="start"
-              disabled={disabled}
-            />
-          ))}
+          {tabs.map(({ label, icon, disabled, disabledHint }, index) => {
+            const showHint = Boolean(disabled && disabledHint);
+            // `Tabs` clones layout props (`selected`, `onChange`, `value`,
+            // `indicator`…) directly onto each child at this array position —
+            // wrapping the whole `Tab` in `Tooltip`/`span` here (Tooltip's own
+            // documented fix for disabled elements) would misdirect that
+            // clone onto the wrapper instead, leaking unrelated props onto a
+            // plain DOM `span` and breaking `Tabs`' selection wiring. Instead,
+            // the `Tab` stays the direct child — same fix `LinkActionsViewSwitch`
+            // uses for its disabled `ToggleButton` — and only its *label*
+            // content is Tooltip-wrapped, with `pointerEvents` restored on the
+            // disabled tab so hover still reaches that inner span.
+            const labelNode = showHint ? (
+              <Tooltip title={disabledHint} arrow>
+                <Box component="span" sx={{ display: "inline-flex" }}>
+                  {label}
+                </Box>
+              </Tooltip>
+            ) : (
+              label
+            );
+
+            return (
+              <Tab
+                key={index}
+                label={labelNode}
+                icon={icon}
+                iconPosition="start"
+                disabled={disabled}
+                sx={
+                  showHint
+                    ? {
+                        "&.Mui-disabled": {
+                          pointerEvents: "auto",
+                          cursor: "not-allowed",
+                        },
+                      }
+                    : undefined
+                }
+              />
+            );
+          })}
         </Tabs>
       </Box>
       {children}

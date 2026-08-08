@@ -9,7 +9,7 @@
 import type { Theme } from "@mui/material/styles";
 import type { ApexOptions } from "apexcharts";
 
-import { dataVizPalette } from "@/lib/theme/dataViz";
+import { dataVizCategorical } from "@/lib/theme/dataViz";
 import { typographyScale } from "@/lib/theme/designSystem";
 
 /** The chart-kind literal ApexCharts itself uses for `chart.type` (e.g. `"area"`, `"bar"`, `"donut"`). */
@@ -45,6 +45,47 @@ function buildFillOptions(
 }
 
 /**
+ * Formata o rótulo do eixo Y para métricas de contagem: arredonda para o
+ * inteiro mais próximo com agrupamento de milhar do locale, nunca exibindo
+ * casa decimal (combinado com `forceNiceScale` no `yaxis` base, evita ticks
+ * fracionários do tipo "2.5 cliques" quando o Apex escolhe uma escala
+ * automática).
+ *
+ * Em gráficos de barra **horizontal**, o ApexCharts roteia os rótulos de
+ * categoria (strings como "Brasil", ou `""` nas barras empilhadas únicas)
+ * por este mesmo formatter de `yaxis` — por isso o guard: valor não numérico
+ * é devolvido intacto, senão cada categoria viraria `NaN`/`0`.
+ *
+ * @param value Valor do tick repassado pelo ApexCharts (número no eixo de
+ * contagem; string quando o eixo é de categorias de barra horizontal).
+ * @returns O valor arredondado e agrupado, como string — ou a categoria
+ * original quando o valor não é numérico.
+ */
+function formatIntegerYAxisLabel(value: number | string): string {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return String(value ?? "");
+  }
+  return Math.round(value).toLocaleString();
+}
+
+/**
+ * Resolve a curva de linha/área a usar num gráfico a partir da quantidade de
+ * pontos da série (spec de refinamento visual, 2026-08-08 §3.6).
+ *
+ * Séries com poucos pontos desenhadas com `"smooth"` inventam picos/vales
+ * que não existem nos dados reais — a interpolação faz uma amostra esparsa
+ * parecer mais rica do que é. `resolveCurve` mantém o gráfico honesto:
+ * abaixo de 10 pontos, a linha liga os pontos reais sem suavização; a partir
+ * de 10, a suavização passa a ser uma leitura razoável da tendência.
+ *
+ * @param pointCount Quantidade de pontos de dado na série a ser renderizada.
+ * @returns `"straight"` quando `pointCount < 10`, senão `"smooth"`.
+ */
+export function resolveCurve(pointCount: number): "smooth" | "straight" {
+  return pointCount < 10 ? "straight" : "smooth";
+}
+
+/**
  * Opções base de todos os gráficos ApexCharts do app (spec 2026-08-03).
  * Linhas 2px, grid só horizontal quase invisível, eixos em mono 11px,
  * barras raio 2, tooltip segue `theme.palette.mode` com números em mono.
@@ -69,7 +110,7 @@ export function buildApexBaseOptions(
       toolbar: { show: false },
       fontFamily: theme.typography.fontFamily,
     },
-    colors: [...Object.values(dataVizPalette)],
+    colors: [...dataVizCategorical],
     stroke: { width: 2, curve: "smooth", lineCap: "round" },
     grid: {
       borderColor: theme.palette.divider,
@@ -85,7 +126,14 @@ export function buildApexBaseOptions(
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
-    yaxis: { labels: { style: { fontFamily: mono, fontSize: "11px" } } },
+    yaxis: {
+      min: 0,
+      forceNiceScale: true,
+      labels: {
+        style: { fontFamily: mono, fontSize: "11px" },
+        formatter: formatIntegerYAxisLabel,
+      },
+    },
     // Tooltip acompanha o modo do tema — "dark" fixo renderizava tooltip escuro
     // sobre charts em fundo branco no tema claro.
     tooltip: { theme: theme.palette.mode, style: { fontFamily: mono } },

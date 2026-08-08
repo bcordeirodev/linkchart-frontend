@@ -1,16 +1,12 @@
 "use client";
 import { useMemo } from "react";
 import { Zap } from "lucide-react";
-import { Box, Card, CardContent, Chip, Typography } from "@mui/material";
+import { Box, Chip, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
-import {
-  elevationLightTokens,
-  elevationTokens,
-  radiusTokens,
-} from "@/lib/theme/designSystem";
+import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import type { ClickVelocityData } from "@/types/analytics/temporal";
 
@@ -31,8 +27,6 @@ interface ClickVelocityChartProps {
 export function ClickVelocityChart({ data }: ClickVelocityChartProps) {
   const { t } = useTranslation("analytics");
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
-  const elevation = isDark ? elevationTokens : elevationLightTokens;
 
   const totalCount = useMemo(
     () => data.velocity_distribution.reduce((sum, b) => sum + b.count, 0),
@@ -85,67 +79,49 @@ export function ClickVelocityChart({ data }: ClickVelocityChartProps) {
   if (!hasData) return null;
 
   return (
-    <Card
-      sx={{ borderRadius: `${radiusTokens.lg}px`, boxShadow: elevation.xs }}
+    <ChartCard
+      title={t("temporal.clickVelocity.title")}
+      icon={<Zap {...ICON_MD} />}
+      subtitle={t("temporal.clickVelocity.description")}
     >
-      <CardContent>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            mb: 0.5,
-            fontWeight: 600,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <Zap {...ICON_MD} />
-          {t("temporal.clickVelocity.title")}
-        </Typography>
+      {!data.phase2_available && (
+        <Box sx={{ mb: 2 }}>
+          <Chip
+            size="small"
+            label={t("temporal.clickVelocity.phaseDisclaimer")}
+            sx={{
+              bgcolor: alpha(theme.palette.warning.main, 0.12),
+              color: theme.palette.warning.main,
+              border: `1px solid ${alpha(theme.palette.warning.main, 0.3)}`,
+              fontSize: "0.7rem",
+              height: "auto",
+              py: 0.25,
+              "& .MuiChip-label": {
+                whiteSpace: "normal",
+                textAlign: "center",
+              },
+            }}
+          />
+        </Box>
+      )}
 
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-          {t("temporal.clickVelocity.description")}
-        </Typography>
+      <ApexChartWrapper
+        type="bar"
+        series={series}
+        options={options}
+        height={220}
+      />
 
-        {!data.phase2_available && (
-          <Box sx={{ mb: 2 }}>
-            <Chip
-              size="small"
-              label={t("temporal.clickVelocity.phaseDisclaimer")}
-              sx={{
-                bgcolor: alpha(theme.palette.warning.main, 0.12),
-                color: theme.palette.warning.main,
-                border: `1px solid ${alpha(theme.palette.warning.main, 0.3)}`,
-                fontSize: "0.7rem",
-                height: "auto",
-                py: 0.25,
-                "& .MuiChip-label": {
-                  whiteSpace: "normal",
-                  textAlign: "center",
-                },
-              }}
-            />
-          </Box>
-        )}
-
-        <ApexChartWrapper
-          type="bar"
-          series={series}
-          options={options}
-          height={220}
-        />
-
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ mt: 1, display: "block" }}
-        >
-          {t("temporal.clickVelocity.totalWithData", {
-            count: data.total_with_data,
-          })}
-        </Typography>
-      </CardContent>
-    </Card>
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{ mt: 1, display: "block" }}
+      >
+        {t("temporal.clickVelocity.totalWithData", {
+          count: data.total_with_data,
+        })}
+      </Typography>
+    </ChartCard>
   );
 }
 
