@@ -81,3 +81,19 @@ export const useMainTheme = (): Theme => {
   const resolvedTheme = resolveTheme(current.theme.main);
   return generateMuiTheme(resolvedTheme, current.direction);
 };
+
+/**
+ * Resolve uma chave registrada em `allThemes` para um MUI Theme pronto.
+ *
+ * Existe para o provider aninhado da área logada (`AppThemeScope`), que
+ * monta o tema sem depender do `LayoutProvider` global — o efeito de resync
+ * daquele provider restaura o default e reverteria trocas locais de tema.
+ *
+ * @param themeKey - chave em `allThemes` (`"default"` | `"defaultDark"`).
+ * @param direction - direção do texto; o app só usa `"ltr"` hoje.
+ * @returns Theme MUI completo (mesma pipeline do `useMainTheme`).
+ */
+export const getMuiThemeByKey = (
+  themeKey: string,
+  direction: Direction = "ltr",
+): Theme => generateMuiTheme(resolveTheme(themeKey), direction);
