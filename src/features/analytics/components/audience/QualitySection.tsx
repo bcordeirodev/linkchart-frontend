@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { dataVizCategorical } from "@/lib/theme/dataViz";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import { SectionLabel } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import type { QualityBreakdown, QualityTier } from "@/types/analytics/audience";
@@ -37,7 +37,7 @@ import { getPhaseDataChipSx } from "./phaseDataChipSx";
  */
 function getTierBarColors(theme: Theme): Record<QualityTier, string> {
   return {
-    organic: dataVizCategorical[0],
+    organic: resolveDataVizCategorical(theme.palette.mode)[0],
     suspicious: theme.palette.warning.main,
     likely_fraud: theme.palette.error.main,
   };

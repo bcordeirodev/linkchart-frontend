@@ -1,4 +1,5 @@
 "use client";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
@@ -25,6 +26,7 @@ export interface AudienceOSTabProps {
  */
 export function AudienceOSTab({ operatingSystems }: AudienceOSTabProps) {
   const { t } = useTranslation("analytics");
+  const theme = useTheme();
 
   const families = aggregateOSByFamily(
     operatingSystems,
@@ -35,7 +37,7 @@ export function AudienceOSTab({ operatingSystems }: AudienceOSTabProps) {
     label: formatAnalyticsLabel(family.label),
     value: family.clicks,
     percentage: family.percentage,
-    color: categoricalBreakdownColor(index),
+    color: categoricalBreakdownColor(index, theme.palette.mode),
   }));
 
   return (

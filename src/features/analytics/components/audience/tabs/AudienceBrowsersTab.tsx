@@ -1,4 +1,5 @@
 "use client";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
@@ -26,6 +27,7 @@ export interface AudienceBrowsersTabProps {
  */
 export function AudienceBrowsersTab({ browsers }: AudienceBrowsersTabProps) {
   const { t } = useTranslation("analytics");
+  const theme = useTheme();
 
   const families = aggregateBrowsersByFamily(
     browsers,
@@ -36,7 +38,7 @@ export function AudienceBrowsersTab({ browsers }: AudienceBrowsersTabProps) {
     label: formatAnalyticsLabel(family.label),
     value: family.clicks,
     percentage: family.percentage,
-    color: categoricalBreakdownColor(index),
+    color: categoricalBreakdownColor(index, theme.palette.mode),
   }));
 
   return (

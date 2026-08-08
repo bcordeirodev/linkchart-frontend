@@ -96,3 +96,48 @@ export const dataVizCategorical = [
   "#D9A441", // âmbar — série 4
   "#8A94A6", // slate — "outros"/resto
 ] as const;
+
+/**
+ * Variante da paleta categórica para o MODO CLARO (pendência herdada da
+ * feat/light-theme, 2026-08-08): os 5 tons de `dataVizCategorical` foram
+ * calibrados para o fundo escuro e ficam abaixo do critério WCAG de
+ * componente não-textual (≥ 3:1) sobre as superfícies claras — ex.:
+ * teal `#3FB6A8` rende 1.98:1 e âmbar `#D9A441` 1.80:1 contra o card
+ * `#E3E6EA`. Esta rampa escurece cada tom preservando a identidade de
+ * matiz da irmã dark (azul continua a série 1 — e é literalmente
+ * `darkPrimary.dark`, mantendo a coerência de marca).
+ *
+ * Contraste medido (WCAG, não-textual) contra card `#E3E6EA` e página
+ * `#F5F6F8` do tema claro:
+ *
+ * | tom     | hex       | vs card | vs página |
+ * |---------|-----------|---------|-----------|
+ * | azul    | `#2C5AA0` | 5.45:1  | 6.31:1    |
+ * | teal    | `#1F7A6F` | 4.12:1  | 4.77:1    |
+ * | violeta | `#6353B8` | 4.85:1  | 5.61:1    |
+ * | âmbar   | `#9A6408` | 3.99:1  | 4.62:1    |
+ * | slate   | `#5A6474` | 4.78:1  | 5.53:1    |
+ */
+export const dataVizCategoricalLight = [
+  "#2C5AA0", // azul — darkPrimary.dark, série 1
+  "#1F7A6F", // teal — série 2
+  "#6353B8", // violeta — série 3
+  "#9A6408", // âmbar — série 4
+  "#5A6474", // slate — "outros"/resto
+] as const;
+
+/**
+ * Resolve a paleta categórica de séries para o modo de cor ativo.
+ *
+ * Único ponto de decisão dark/light para cores de série: consumidores nunca
+ * escolhem a rampa diretamente — recebem `theme.palette.mode` e delegam aqui,
+ * para que a regra de contraste viva num lugar só.
+ *
+ * @param mode Modo de cor ativo (`theme.palette.mode`).
+ * @returns `dataVizCategorical` no dark, `dataVizCategoricalLight` no claro.
+ */
+export function resolveDataVizCategorical(
+  mode: "light" | "dark",
+): typeof dataVizCategorical | typeof dataVizCategoricalLight {
+  return mode === "light" ? dataVizCategoricalLight : dataVizCategorical;
+}

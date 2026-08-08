@@ -2,7 +2,8 @@
 import { Box, Chip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { dataVizCategorical } from "@/lib/theme/dataViz";
+import { useTheme } from "@mui/material/styles";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
@@ -77,6 +78,7 @@ export function GeographicChart({
   hideStates = false,
 }: GeographicChartProps) {
   const { t } = useTranslation("analytics");
+  const seriesColors = resolveDataVizCategorical(useTheme().palette.mode);
 
   /** Share of the total, guarding the zero-clicks case. */
   const pct = (clicks: number) =>
@@ -101,7 +103,7 @@ export function GeographicChart({
       // Countries/states/cities are three separate rankings shown side by
       // side, not one series — each gets its own categorical tone instead of
       // three shades of the same blue (refinamento visual 2026-08-08, §3.1).
-      color: dataVizCategorical[0],
+      color: seriesColors[0],
       icon: <span aria-hidden>{getFlagEmoji(c.iso_code)}</span>,
     }));
 
@@ -112,7 +114,7 @@ export function GeographicChart({
       label: `${s.state_name || s.state} · ${s.country}`,
       value: s.clicks,
       percentage: pct(s.clicks),
-      color: dataVizCategorical[1],
+      color: seriesColors[1],
     }));
 
   const cityItems: HorizontalBreakdownItem[] = cities.slice(0, 10).map((c) => ({
@@ -126,7 +128,7 @@ export function GeographicChart({
       .join(" · "),
     value: c.clicks,
     percentage: pct(c.clicks),
-    color: dataVizCategorical[2],
+    color: seriesColors[2],
   }));
 
   return (

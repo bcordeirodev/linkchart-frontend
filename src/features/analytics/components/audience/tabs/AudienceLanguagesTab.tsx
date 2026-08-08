@@ -1,4 +1,5 @@
 "use client";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
@@ -24,6 +25,7 @@ export interface AudienceLanguagesTabProps {
  */
 export function AudienceLanguagesTab({ languages }: AudienceLanguagesTabProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   const families = aggregateLanguagesByFamily(
     languages,
@@ -35,7 +37,7 @@ export function AudienceLanguagesTab({ languages }: AudienceLanguagesTabProps) {
     label: family.label,
     value: family.clicks,
     percentage: family.percentage,
-    color: categoricalBreakdownColor(index),
+    color: categoricalBreakdownColor(index, theme.palette.mode),
   }));
 
   return (

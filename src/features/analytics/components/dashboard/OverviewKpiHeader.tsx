@@ -2,7 +2,9 @@
 import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { dataVizCategorical } from "@/lib/theme/dataViz";
+import { useTheme } from "@mui/material/styles";
+
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import { OverviewMetricRow } from "@/shared/ui/base";
 
 import type { OverviewMetric } from "@/shared/ui/base";
@@ -43,6 +45,7 @@ export function OverviewKpiHeader({
   trendPct = null,
 }: OverviewKpiHeaderProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   // Visual gate fix (2026-08-03, item 4): the neutral-arrow argument below
   // lost — Bruno's call is that the trend direction IS the information, and
@@ -87,7 +90,12 @@ export function OverviewKpiHeader({
       // family as every other chart on the page — was `theme.palette.info.main`,
       // a color with no relationship to the data-viz palette (refinamento
       // visual 2026-08-08 §3.1).
-      sparkline: <Sparkline data={sparkline} color={dataVizCategorical[0]} />,
+      sparkline: (
+        <Sparkline
+          data={sparkline}
+          color={resolveDataVizCategorical(theme.palette.mode)[0]}
+        />
+      ),
     },
     {
       label: t("metrics.uniqueVisitors"),

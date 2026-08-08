@@ -1,5 +1,6 @@
 "use client";
 import { Globe } from "lucide-react";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { tDynamic } from "@/lib/i18n/tDynamic";
@@ -47,6 +48,7 @@ export function ContinentBreakdown({
   onContinentSelect,
 }: ContinentBreakdownProps) {
   const { t } = useTranslation("analytics");
+  const theme = useTheme();
 
   if (!continents || continents.length === 0) {
     return (
@@ -71,7 +73,7 @@ export function ContinentBreakdown({
     // blue ramp — continents are true categories, not an intensity gradient,
     // and a mono-blue cycle made every row read as the same series (refinamento
     // visual 2026-08-08, §3.1).
-    color: categoricalBreakdownColor(index),
+    color: categoricalBreakdownColor(index, theme.palette.mode),
   }));
 
   /**

@@ -9,7 +9,7 @@
 import type { Theme } from "@mui/material/styles";
 import type { ApexOptions } from "apexcharts";
 
-import { dataVizCategorical } from "@/lib/theme/dataViz";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import { typographyScale } from "@/lib/theme/designSystem";
 
 /** The chart-kind literal ApexCharts itself uses for `chart.type` (e.g. `"area"`, `"bar"`, `"donut"`). */
@@ -89,6 +89,8 @@ export function resolveCurve(pointCount: number): "smooth" | "straight" {
  * Opções base de todos os gráficos ApexCharts do app (spec 2026-08-03).
  * Linhas 2px, grid só horizontal quase invisível, eixos em mono 11px,
  * barras raio 2, tooltip segue `theme.palette.mode` com números em mono.
+ * Cores de série via resolveDataVizCategorical(theme.palette.mode) — rampa
+ * dark ou light conforme o modo.
  *
  * `fill` depende de `chartType` (ver `buildFillOptions`): gradiente 18%→0
  * somente quando `chartType === "area"`; qualquer outro tipo — ou a
@@ -110,7 +112,7 @@ export function buildApexBaseOptions(
       toolbar: { show: false },
       fontFamily: theme.typography.fontFamily,
     },
-    colors: [...dataVizCategorical],
+    colors: [...resolveDataVizCategorical(theme.palette.mode)],
     stroke: { width: 2, curve: "smooth", lineCap: "round" },
     grid: {
       borderColor: theme.palette.divider,

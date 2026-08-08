@@ -3,7 +3,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import type { KeyboardEvent, ReactNode } from "react";
 
-import { dataVizCategorical } from "@/lib/theme/dataViz";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 
 /**
  * Resolves the fill color for row `index` of a multi-category breakdown,
@@ -23,10 +23,16 @@ import { dataVizCategorical } from "@/lib/theme/dataViz";
  * change {@link HorizontalBreakdownBars}' own API or rendering.
  *
  * @param index - zero-based row position in the breakdown list.
- * @returns a hex color string from `dataVizCategorical`.
+ * @param mode - active color mode (`theme.palette.mode`); picks the ramp
+ * calibrated for that background (dark default keeps old call sites valid).
+ * @returns a hex color string from the categorical ramp for `mode`.
  */
-export function categoricalBreakdownColor(index: number): string {
-  return dataVizCategorical[index % dataVizCategorical.length]!;
+export function categoricalBreakdownColor(
+  index: number,
+  mode: "light" | "dark" = "dark",
+): string {
+  const ramp = resolveDataVizCategorical(mode);
+  return ramp[index % ramp.length]!;
 }
 
 /** A single row rendered by {@link HorizontalBreakdownBars}. */

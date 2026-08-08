@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-import { dataVizCategorical } from "@/lib/theme/dataViz";
+import { useTheme } from "@mui/material/styles";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import type { DeviceByPeriodEntry } from "@/types/analytics/temporal";
 
 interface DeviceByPeriodChartProps {
@@ -14,6 +15,7 @@ interface DeviceByPeriodChartProps {
 
 export function DeviceByPeriodChart({ data }: DeviceByPeriodChartProps) {
   const { t, i18n } = useTranslation("analytics");
+  const seriesColors = resolveDataVizCategorical(useTheme().palette.mode);
 
   if (!data || data.length === 0) {
     return null;
@@ -77,19 +79,19 @@ export function DeviceByPeriodChart({ data }: DeviceByPeriodChartProps) {
     {
       label: t("temporal.devicePeriod.desktop"),
       icon: <Monitor size={18} />,
-      color: dataVizCategorical[0],
+      color: seriesColors[0],
       count: totalByDevice.desktop,
     },
     {
       label: t("temporal.devicePeriod.mobile"),
       icon: <Smartphone size={18} />,
-      color: dataVizCategorical[1],
+      color: seriesColors[1],
       count: totalByDevice.mobile,
     },
     {
       label: t("temporal.devicePeriod.tablet"),
       icon: <Tablet size={18} />,
-      color: dataVizCategorical[2],
+      color: seriesColors[2],
       count: totalByDevice.tablet,
     },
   ];

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { tDynamic } from "@/lib/i18n/tDynamic";
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { dataVizCategorical } from "@/lib/theme/dataViz";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import {
   formatHorizontalStackedBar,
   largestRemainderRound,
@@ -36,9 +36,11 @@ const STACKED_BAR_HEIGHT = 110;
  * `dataVizCategorical` instead so the pair reads as two categories, matching
  * every other multi-category breakdown on the page.
  */
-const CH_MOBILE_COLORS: Record<"mobile" | "not_mobile", string> = {
-  mobile: dataVizCategorical[0],
-  not_mobile: dataVizCategorical[1],
+const chMobileColors = (
+  mode: "light" | "dark",
+): Record<"mobile" | "not_mobile", string> => {
+  const ramp = resolveDataVizCategorical(mode);
+  return { mobile: ramp[0], not_mobile: ramp[1] };
 };
 
 /** Entry in the platform breakdown array returned by the audience API. */
@@ -136,12 +138,12 @@ export function PlatformBreakdownCard({
             {[
               {
                 key: "mobile" as const,
-                color: CH_MOBILE_COLORS.mobile,
+                color: chMobileColors(theme.palette.mode).mobile,
                 pct: chMobilePcts[0] ?? 0,
               },
               {
                 key: "not_mobile" as const,
-                color: CH_MOBILE_COLORS.not_mobile,
+                color: chMobileColors(theme.palette.mode).not_mobile,
                 pct: chMobilePcts[1] ?? 0,
               },
             ].map(({ key, color, pct }) => (

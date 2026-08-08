@@ -49,7 +49,11 @@ export function ChannelsBreakdown({ channels }: ChannelsBreakdownProps) {
     }),
     value: channel.clicks,
     percentage: channel.percentage,
-    color: getChannelColor(channel.channel, theme.palette.text.secondary),
+    color: getChannelColor(
+      channel.channel,
+      theme.palette.text.secondary,
+      theme.palette.mode,
+    ),
   }));
 
   // Only "direct" traffic recorded so far: the bar alone reads as "nothing

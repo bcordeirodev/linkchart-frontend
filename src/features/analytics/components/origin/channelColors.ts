@@ -27,13 +27,13 @@ import { categoricalBreakdownColor } from "../audience/HorizontalBreakdownBars";
  * always labels each row with its name, value and percentage, so color is
  * never the sole differentiator.
  */
-const CHANNEL_COLOR_MAP: Record<string, string> = {
-  social: categoricalBreakdownColor(0),
-  search: categoricalBreakdownColor(1),
-  email: categoricalBreakdownColor(2),
-  direct: categoricalBreakdownColor(3),
-  referral: categoricalBreakdownColor(5),
-  paid: categoricalBreakdownColor(6),
+const CHANNEL_COLOR_INDEX: Record<string, number> = {
+  social: 0,
+  search: 1,
+  email: 2,
+  direct: 3,
+  referral: 5,
+  paid: 6,
 };
 
 /**
@@ -43,7 +43,14 @@ const CHANNEL_COLOR_MAP: Record<string, string> = {
  *
  * @param channel - Raw channel key as returned by the traffic-sources API.
  * @param fallback - Color used when `channel` isn't in the fixed map.
+ * @param mode - Active color mode (`theme.palette.mode`); picks the ramp
+ * calibrated for that background. Defaults to `"dark"`.
  */
-export function getChannelColor(channel: string, fallback: string): string {
-  return CHANNEL_COLOR_MAP[channel] ?? fallback;
+export function getChannelColor(
+  channel: string,
+  fallback: string,
+  mode: "light" | "dark" = "dark",
+): string {
+  const index = CHANNEL_COLOR_INDEX[channel];
+  return index == null ? fallback : categoricalBreakdownColor(index, mode);
 }

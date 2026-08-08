@@ -1,4 +1,5 @@
 "use client";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
@@ -33,6 +34,7 @@ export function AudienceDevicesTab({
   totalClicks,
 }: AudienceDevicesTabProps) {
   const { t } = useTranslation("analytics");
+  const theme = useTheme();
 
   const items: HorizontalBreakdownItem[] = deviceBreakdown.map(
     (device, index) => ({
@@ -40,7 +42,7 @@ export function AudienceDevicesTab({
       label: formatAnalyticsLabel(device.device),
       value: device.clicks,
       percentage: totalClicks > 0 ? (device.clicks / totalClicks) * 100 : 0,
-      color: categoricalBreakdownColor(index),
+      color: categoricalBreakdownColor(index, theme.palette.mode),
     }),
   );
 
