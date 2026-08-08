@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import visuallyHidden from "@mui/utils/visuallyHidden";
 
 import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { radiusTokens } from "@/lib/theme/designSystem";
 
 import { AnalyticsPanelActiveProvider } from "@/features/analytics/context/AnalyticsPanelActiveContext";
 import { AudienceAnalysis } from "@/features/analytics/components/audience/AudienceAnalysis";
@@ -207,137 +208,171 @@ export function LinkAnalyticsTabsOptimized({
         onExcludeBotsChange={filters.setExcludeBots}
       />
 
-      {/* Tab nav — level 0, no card of its own. A single hairline below the
-           strip is what separates it from the active panel's content, same
-           gutter as the rest of the page. */}
-      <Box sx={{ borderBottom: `1px solid ${theme.palette.divider}` }}>
-        <Tabs
-          value={tabIndex}
-          onChange={handleTabChange}
-          variant={isMobile ? "scrollable" : "fullWidth"}
-          scrollButtons="auto"
-          allowScrollButtonsMobile
+      {/* Painel emoldurado (2026-08-08): as tabs são o CABEÇALHO de um painel
+           com moldura própria — borda hairline, radius de card e um degrau de
+           superfície acima do fundo da página. Antes, a faixa de tabs flutuava
+           entre o card de filtros e o conteúdo, e nada dizia que o conteúdo
+           abaixo era filho da tab ativa (lia-se como mais um filtro). Com a
+           moldura, a hierarquia vira literal: página < painel < cards. O
+           cabeçalho tem um véu um passo mais forte que o corpo, e a barra de
+           filtros fica FORA da moldura — controle global sobre o módulo, não
+           parte dele. */}
+      <Box
+        sx={{
+          mt: { xs: 2, md: 2.5 },
+          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: `${radiusTokens.lg}px`,
+          overflow: "hidden",
+          backgroundColor:
+            theme.palette.mode === "dark"
+              ? "rgba(255,255,255,0.02)"
+              : "rgba(0,0,0,0.015)",
+        }}
+      >
+        <Box
           sx={{
-            // Level 1 — the strongest level, and the only one carrying the
-            // primary accent, via the tab indicator underline. Color, hover,
-            // the (no longer filled) selected state *and* the rounded 2px
-            // indicator all come from the global `MuiTab`/`MuiTabs` overrides
-            // in `theme/config/muiComponents.ts` — they were moved there so
-            // every tab in the app shares this grammar instead of this screen
-            // re-declaring it locally. Only the L1-specific scale (52px, one
-            // step above the L2 sub-tabs' 36/40) stays here.
-            "& .MuiTab-root": {
-              minHeight: 52,
-            },
-            // Hierarquia (2026-08-08): o ícone da tab ativa assume a cor do
-            // indicador. O sublinhado sozinho fica a ~40px do rótulo em tabs
-            // fullWidth e o olho nem sempre os conecta; ícone + sublinhado na
-            // mesma matiz tornam o "onde estou" inequívoco sem reintroduzir o
-            // fill que o redesign 2026-08-04 removeu do nível 1. Escopado a
-            // esta tela — o override global de MuiTab segue neutro.
-            "& .MuiTab-root.Mui-selected .MuiTab-iconWrapper": {
-              color: theme.palette.primary.main,
-            },
+            backgroundColor:
+              theme.palette.mode === "dark"
+                ? "rgba(255,255,255,0.035)"
+                : "rgba(0,0,0,0.03)",
+            borderBottom: `1px solid ${theme.palette.divider}`,
           }}
         >
-          {tabLabels.map(({ label, Icon }, index) => (
-            <Tab
-              key={index}
-              id={`tab-${index}`}
-              aria-controls={`tabpanel-${TAB_IDS[index]}`}
-              label={label}
-              icon={
-                <Box
-                  component="span"
-                  sx={{ display: { xs: "none", sm: "inline-flex" } }}
-                >
-                  <Icon {...ICON_SM} />
-                </Box>
-              }
-              iconPosition="start"
-            />
-          ))}
-        </Tabs>
-      </Box>
+          <Tabs
+            value={tabIndex}
+            onChange={handleTabChange}
+            variant={isMobile ? "scrollable" : "fullWidth"}
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+            sx={{
+              // Level 1 — the strongest level, and the only one carrying the
+              // primary accent, via the tab indicator underline. Color, hover,
+              // the (no longer filled) selected state *and* the rounded 2px
+              // indicator all come from the global `MuiTab`/`MuiTabs` overrides
+              // in `theme/config/muiComponents.ts` — they were moved there so
+              // every tab in the app shares this grammar instead of this screen
+              // re-declaring it locally. Only the L1-specific scale (52px, one
+              // step above the L2 sub-tabs' 36/40) stays here.
+              "& .MuiTab-root": {
+                minHeight: 52,
+              },
+              // Hierarquia (2026-08-08): o ícone da tab ativa assume a cor do
+              // indicador. O sublinhado sozinho fica a ~40px do rótulo em tabs
+              // fullWidth e o olho nem sempre os conecta; ícone + sublinhado na
+              // mesma matiz tornam o "onde estou" inequívoco sem reintroduzir o
+              // fill que o redesign 2026-08-04 removeu do nível 1. Escopado a
+              // esta tela — o override global de MuiTab segue neutro.
+              "& .MuiTab-root.Mui-selected .MuiTab-iconWrapper": {
+                color: theme.palette.primary.main,
+              },
+            }}
+          >
+            {tabLabels.map(({ label, Icon }, index) => (
+              <Tab
+                key={index}
+                id={`tab-${index}`}
+                aria-controls={`tabpanel-${TAB_IDS[index]}`}
+                label={label}
+                icon={
+                  <Box
+                    component="span"
+                    sx={{ display: { xs: "none", sm: "inline-flex" } }}
+                  >
+                    <Icon {...ICON_SM} />
+                  </Box>
+                }
+                iconPosition="start"
+              />
+            ))}
+          </Tabs>
+        </Box>
 
-      {/* Tab panels — mount-once, hidden via display:none when inactive.
-           Same gutter as the tab nav above — no extra card padding. */}
-      <Box sx={{ mt: { xs: 1.5, md: 2 } }}>
-        {tabPanel(
-          "overview",
-          <LinkDashboard
-            linkId={linkId}
-            enableRealtime={false}
-            compact={false}
-            dateFrom={filters.dateFrom}
-            dateTo={filters.dateTo}
-            excludeBots={filters.excludeBots}
-          />,
-        )}
+        {/* Corpo do painel — mount-once, hidden via display:none when
+             inactive. O respiro agora é padding interno da moldura (não mais
+             gutter solto): é o que faz o conteúdo ler como "dentro" das tabs. */}
+        <Box
+          sx={{
+            px: { xs: 1.5, sm: 2, md: 2.5 },
+            pt: { xs: 1.5, md: 2 },
+            pb: { xs: 2, md: 2.5 },
+          }}
+        >
+          {tabPanel(
+            "overview",
+            <LinkDashboard
+              linkId={linkId}
+              enableRealtime={false}
+              compact={false}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+            />,
+          )}
 
-        {tabPanel(
-          "origin",
-          <OriginAnalysis
-            linkId={linkId}
-            dateFrom={filters.dateFrom}
-            dateTo={filters.dateTo}
-            excludeBots={filters.excludeBots}
-            subTabIndex={filters.originSubTab}
-            onSubTabChange={filters.setOriginSubTab}
-          />,
-        )}
+          {tabPanel(
+            "origin",
+            <OriginAnalysis
+              linkId={linkId}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              subTabIndex={filters.originSubTab}
+              onSubTabChange={filters.setOriginSubTab}
+            />,
+          )}
 
-        {tabPanel(
-          "places",
-          <GeographicAnalysis
-            linkId={linkId}
-            enableRealtime={false}
-            dateFrom={filters.dateFrom}
-            dateTo={filters.dateTo}
-            excludeBots={filters.excludeBots}
-            continent={filters.continent}
-            onContinentChange={filters.setContinent}
-            subTabIndex={filters.geoSubTab}
-            onSubTabChange={filters.setGeoSubTab}
-          />,
-        )}
+          {tabPanel(
+            "places",
+            <GeographicAnalysis
+              linkId={linkId}
+              enableRealtime={false}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              continent={filters.continent}
+              onContinentChange={filters.setContinent}
+              subTabIndex={filters.geoSubTab}
+              onSubTabChange={filters.setGeoSubTab}
+            />,
+          )}
 
-        {tabPanel(
-          "audience",
-          <AudienceAnalysis
-            linkId={linkId}
-            dateFrom={filters.dateFrom}
-            dateTo={filters.dateTo}
-            excludeBots={filters.excludeBots}
-            subTabIndex={filters.audienceSubTab}
-            onSubTabChange={filters.setAudienceSubTab}
-          />,
-        )}
+          {tabPanel(
+            "audience",
+            <AudienceAnalysis
+              linkId={linkId}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              subTabIndex={filters.audienceSubTab}
+              onSubTabChange={filters.setAudienceSubTab}
+            />,
+          )}
 
-        {tabPanel(
-          "when",
-          <TemporalAnalysis
-            linkId={linkId}
-            enableRealtime={false}
-            dateFrom={filters.dateFrom}
-            dateTo={filters.dateTo}
-            excludeBots={filters.excludeBots}
-            segment={filters.segment}
-            onSegmentChange={filters.setSegment}
-            subTabIndex={filters.temporalSubTab}
-            onSubTabChange={filters.setTemporalSubTab}
-          />,
-        )}
+          {tabPanel(
+            "when",
+            <TemporalAnalysis
+              linkId={linkId}
+              enableRealtime={false}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+              segment={filters.segment}
+              onSegmentChange={filters.setSegment}
+              subTabIndex={filters.temporalSubTab}
+              onSubTabChange={filters.setTemporalSubTab}
+            />,
+          )}
 
-        {tabPanel(
-          "clicks",
-          <ClicksTable
-            linkId={linkId}
-            dateFrom={filters.dateFrom}
-            dateTo={filters.dateTo}
-            excludeBots={filters.excludeBots}
-          />,
-        )}
+          {tabPanel(
+            "clicks",
+            <ClicksTable
+              linkId={linkId}
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              excludeBots={filters.excludeBots}
+            />,
+          )}
+        </Box>
       </Box>
     </Box>
   );
