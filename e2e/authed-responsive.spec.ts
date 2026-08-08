@@ -77,7 +77,7 @@ test("links tour opens only via the help button", async ({ page }) => {
  * Toggle de tema da área logada: alterna para light, persiste no cookie
  * `lc_theme` e sobrevive a reload já renderizado light pelo SSR (sem flash).
  * O assert mira o header (AppBar), que pinta `background.default` do tema
- * aninhado — #030405 no dark, #F6F7F9 no light.
+ * aninhado — #0B0D12 no dark, #EAEDF2 no light.
  */
 test("theme toggle: switches to light and persists across reload", async ({
   page,
@@ -91,19 +91,19 @@ test("theme toggle: switches to light and persists across reload", async ({
 
   const header = page.locator("header.MuiAppBar-root");
   await expect(header).toBeVisible();
-  await expect(header).toHaveCSS("background-color", "rgb(3, 4, 5)");
+  await expect(header).toHaveCSS("background-color", "rgb(11, 13, 18)");
 
   await page.getByTestId("theme-toggle").click();
-  await expect(header).toHaveCSS("background-color", "rgb(246, 247, 249)");
+  await expect(header).toHaveCSS("background-color", "rgb(234, 237, 242)");
 
   const cookies = await context.cookies();
   expect(cookies.find((c) => c.name === "lc_theme")?.value).toBe("light");
 
   // Reload: o HTML já deve nascer light (cookie lido no Server Component).
   await page.reload({ waitUntil: "load" });
-  await expect(header).toHaveCSS("background-color", "rgb(246, 247, 249)");
+  await expect(header).toHaveCSS("background-color", "rgb(234, 237, 242)");
 
   // Higiene: volta ao dark canônico para não vazar estado visual.
   await page.getByTestId("theme-toggle").click();
-  await expect(header).toHaveCSS("background-color", "rgb(3, 4, 5)");
+  await expect(header).toHaveCSS("background-color", "rgb(11, 13, 18)");
 });
