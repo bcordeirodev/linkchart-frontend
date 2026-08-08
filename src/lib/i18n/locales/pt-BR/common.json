@@ -26,7 +26,9 @@
     "avatarAriaLabel": "Avatar de {{name}}",
     "sidebarAriaLabel": "navegação principal",
     "collapseSidebar": "Recolher menu",
-    "expandSidebar": "Expandir menu"
+    "expandSidebar": "Expandir menu",
+    "switchToLight": "Mudar para tema claro",
+    "switchToDark": "Mudar para tema escuro"
   },
   "actions": {
     "save": "Salvar",
