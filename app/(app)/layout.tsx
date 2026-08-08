@@ -3,10 +3,7 @@ import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import MainLayout from "@/shared/layout/MainLayout";
 import AppThemeScope from "@/shared/layout/AppThemeScope";
-import {
-  THEME_COOKIE_NAME,
-  resolveThemeMode,
-} from "@/lib/theme/themeCookie";
+import { THEME_COOKIE_NAME, resolveThemeMode } from "@/lib/theme/themeCookie";
 
 /**
  * Authenticated app shell.
