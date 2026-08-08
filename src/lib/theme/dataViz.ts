@@ -44,18 +44,21 @@ export interface DataVizPalette {
  *   séries de comparação/baseline.
  *
  * Contraste validado contra o fundo dark canônico `darkNeutral.bg`
- * (`#030405`), critério WCAG de componente não-textual (traços/áreas de
+ * (`#0B0D12`), critério WCAG de componente não-textual (traços/áreas de
  * gráfico, ≥ 3:1):
  *
- * | tom        | hex       | contraste vs `#030405` |
+ * | tom        | hex       | contraste vs `#0B0D12` |
  * |------------|-----------|------------------------|
- * | primary    | `#4E82E6` | 5.53:1                 |
- * | secondary  | `#73AFDE` | 8.71:1                 |
- * | tertiary   | `#5869CA` | 4.19:1                 |
- * | quaternary | `#A8BEDC` | 10.81:1                |
- * | muted      | `#7081A4` | 5.24:1                 |
+ * | primary    | `#4E82E6` | 5.24:1                 |
+ * | secondary  | `#73AFDE` | 8.25:1                 |
+ * | tertiary   | `#5869CA` | 3.97:1                 |
+ * | quaternary | `#A8BEDC` | 10.24:1                |
+ * | muted      | `#7081A4` | 4.97:1                 |
  *
  * Todos superam o mínimo de 3:1 com margem.
+ *
+ * Em modo claro os tons atuais NÃO atingem 3:1 sobre o card — ramp light
+ * pendente (branch de refinamento de analytics).
  */
 export const dataVizPalette: DataVizPalette = {
   primary: darkPrimary.main,
