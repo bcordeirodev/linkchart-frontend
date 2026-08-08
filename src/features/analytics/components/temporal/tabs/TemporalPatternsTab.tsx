@@ -60,7 +60,7 @@ export function TemporalPatternsTab({
   showWeekendComparison,
   showBusinessComparison,
 }: TemporalPatternsTabProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   const hourlyTotal = useMemo(
     () => hourlyData.reduce((sum, h) => sum + h.clicks, 0),
@@ -97,6 +97,7 @@ export function TemporalPatternsTab({
       "hour",
       "clicks",
       { clicksLabel: t("temporal.viralRank.clicksUnit") },
+      i18n.language,
     );
     return {
       ...base,
@@ -105,7 +106,7 @@ export function TemporalPatternsTab({
         stroke: { curve: resolveCurve(hourlyPatternsLocal.length) },
       },
     };
-  }, [hourlyPatternsLocal, t]);
+  }, [hourlyPatternsLocal, t, i18n.language]);
 
   return (
     <Stack spacing={2}>
@@ -146,6 +147,7 @@ export function TemporalPatternsTab({
                       "value",
                       false,
                       { clicksLabel: t("temporal.viralRank.clicksUnit") },
+                      i18n.language,
                     )}
                   />
                 </ChartCard>
@@ -167,6 +169,7 @@ export function TemporalPatternsTab({
                       "clicks",
                       false,
                       { clicksLabel: t("temporal.viralRank.clicksUnit") },
+                      i18n.language,
                     )}
                   />
                 </ChartCard>
@@ -238,6 +241,8 @@ export function TemporalPatternsTab({
                     ],
                     "name",
                     "value",
+                    undefined,
+                    i18n.language,
                   )}
                   height={110}
                 />
@@ -321,6 +326,7 @@ export function TemporalPatternsTab({
                     "value",
                     false,
                     { clicksLabel: t("temporal.viralRank.clicksUnit") },
+                    i18n.language,
                   )}
                   size="standard"
                 />

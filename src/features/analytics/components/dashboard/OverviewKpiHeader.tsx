@@ -42,7 +42,7 @@ export function OverviewKpiHeader({
   sparkline,
   trendPct = null,
 }: OverviewKpiHeaderProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   // Visual gate fix (2026-08-03, item 4): the neutral-arrow argument below
   // lost — Bruno's call is that the trend direction IS the information, and
@@ -81,7 +81,7 @@ export function OverviewKpiHeader({
   const metrics: OverviewMetric[] = [
     {
       label: t("metrics.totalClicks"),
-      value: totalClicks.toLocaleString(),
+      value: totalClicks.toLocaleString(i18n.language),
       caption: totalClicksCaption,
       // Series 1 color: the dominant blue of `dataVizCategorical`, same hue
       // family as every other chart on the page — was `theme.palette.info.main`,
@@ -91,7 +91,7 @@ export function OverviewKpiHeader({
     },
     {
       label: t("metrics.uniqueVisitors"),
-      value: uniqueVisitors.toLocaleString(),
+      value: uniqueVisitors.toLocaleString(i18n.language),
     },
     {
       label: t("metrics.countriesReached"),

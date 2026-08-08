@@ -114,7 +114,7 @@ export function DailyTimelineChart({ data }: DailyTimelineChartProps) {
       >
         <Typography variant="body2" color="text.secondary">
           {t("temporal.timeline.totalChip", {
-            total: totalClicks.toLocaleString(),
+            total: totalClicks.toLocaleString(i18n.language),
             days: sorted.length,
           })}
         </Typography>

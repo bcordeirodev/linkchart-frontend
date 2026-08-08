@@ -81,7 +81,7 @@ export function AudienceRenderingEngineTab({
   renderingEngine,
   itemRowSx,
 }: AudienceRenderingEngineTabProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   // Engine names arrive as the tracking pipeline's raw values ("blink",
   // "webkit") — reformatted here for display, same treatment as every other
@@ -100,7 +100,13 @@ export function AudienceRenderingEngineTab({
         <ApexChartWrapper
           type="bar"
           height={STACKED_BAR_HEIGHT}
-          {...formatHorizontalStackedBar(displayChartData, "name", "value")}
+          {...formatHorizontalStackedBar(
+            displayChartData,
+            "name",
+            "value",
+            undefined,
+            i18n.language,
+          )}
         />
       </ChartCard>
 

@@ -7,7 +7,10 @@ import { useTranslation } from "react-i18next";
 import { tDynamic } from "@/lib/i18n/tDynamic";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { dataVizCategorical } from "@/lib/theme/dataViz";
-import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
+import {
+  formatHorizontalStackedBar,
+  largestRemainderRound,
+} from "@/features/analytics/utils/chartFormatters";
 import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
@@ -63,7 +66,7 @@ export function PlatformBreakdownCard({
   breakdown,
 }: PlatformBreakdownCardProps) {
   const theme = useTheme();
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   const platform = normaliseBreakdown<PlatformEntry>(breakdown);
 
@@ -79,6 +82,14 @@ export function PlatformBreakdownCard({
     name: formatAnalyticsLabel(p.platform),
     value: p.clicks,
   }));
+
+  // Largest-remainder rounding for the "mobile vs. not_mobile" companion
+  // rows below: they are complementary shares of one total, and rounding
+  // each independently (`Math.round`) can drift the displayed pair off 100
+  // (e.g. 50.5%/49.5% both rounding up to 51%/50%).
+  const chMobilePcts = chMobile
+    ? largestRemainderRound([chMobile.mobile, chMobile.not_mobile])
+    : [0, 0];
 
   return (
     <ChartCard
@@ -97,7 +108,13 @@ export function PlatformBreakdownCard({
       <ApexChartWrapper
         type="bar"
         height={STACKED_BAR_HEIGHT}
-        {...formatHorizontalStackedBar(chartData, "name", "value")}
+        {...formatHorizontalStackedBar(
+          chartData,
+          "name",
+          "value",
+          undefined,
+          i18n.language,
+        )}
       />
 
       {/* ch_is_mobile companion signal */}
@@ -119,55 +136,50 @@ export function PlatformBreakdownCard({
             {[
               {
                 key: "mobile" as const,
-                count: chMobile.mobile,
-                total: chMobile.mobile + chMobile.not_mobile,
                 color: CH_MOBILE_COLORS.mobile,
+                pct: chMobilePcts[0] ?? 0,
               },
               {
                 key: "not_mobile" as const,
-                count: chMobile.not_mobile,
-                total: chMobile.mobile + chMobile.not_mobile,
                 color: CH_MOBILE_COLORS.not_mobile,
+                pct: chMobilePcts[1] ?? 0,
               },
-            ].map(({ key, count, total, color }) => {
-              const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-              return (
-                <Box key={key}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 0.25,
-                    }}
-                  >
-                    <Typography variant="caption">
-                      {tDynamic(t, `audience.chMobile.${key}`)}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {pct}%
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      height: 4,
-                      borderRadius: 2,
-                      bgcolor: "action.hover",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: `${pct}%`,
-                        height: "100%",
-                        bgcolor: color,
-                        borderRadius: 2,
-                        transition: "width 0.4s ease",
-                      }}
-                    />
-                  </Box>
+            ].map(({ key, color, pct }) => (
+              <Box key={key}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 0.25,
+                  }}
+                >
+                  <Typography variant="caption">
+                    {tDynamic(t, `audience.chMobile.${key}`)}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {pct}%
+                  </Typography>
                 </Box>
-              );
-            })}
+                <Box
+                  sx={{
+                    height: 4,
+                    borderRadius: 2,
+                    bgcolor: "action.hover",
+                    overflow: "hidden",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: `${pct}%`,
+                      height: "100%",
+                      bgcolor: color,
+                      borderRadius: 2,
+                      transition: "width 0.4s ease",
+                    }}
+                  />
+                </Box>
+              </Box>
+            ))}
           </Stack>
         </Box>
       )}

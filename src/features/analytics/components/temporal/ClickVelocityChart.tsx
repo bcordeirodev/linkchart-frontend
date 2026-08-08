@@ -25,7 +25,7 @@ interface ClickVelocityChartProps {
  * tracking began. The chart is hidden entirely when no velocity data is present.
  */
 export function ClickVelocityChart({ data }: ClickVelocityChartProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
   const theme = useTheme();
 
   const totalCount = useMemo(
@@ -63,12 +63,12 @@ export function ClickVelocityChart({ data }: ClickVelocityChartProps) {
       tooltip: {
         y: {
           formatter: (val: number) =>
-            `${val.toLocaleString()} ${t("temporal.chart.clicks")}`,
+            `${val.toLocaleString(i18n.language)} ${t("temporal.chart.clicks")}`,
         },
       },
       legend: { show: false },
     }),
-    [bucketLabels, totalCount, t],
+    [bucketLabels, totalCount, t, i18n.language],
   );
 
   const series = useMemo(

@@ -30,11 +30,15 @@ interface HourlyClicksChartProps {
  * peaks/valleys.
  */
 export function HourlyClicksChart({ data, height }: HourlyClicksChartProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
-  const { series, options } = formatAreaChart(data, "hour", "clicks", {
-    clicksLabel: t("temporal.viralRank.clicksUnit"),
-  });
+  const { series, options } = formatAreaChart(
+    data,
+    "hour",
+    "clicks",
+    { clicksLabel: t("temporal.viralRank.clicksUnit") },
+    i18n.language,
+  );
 
   return (
     <ChartCard

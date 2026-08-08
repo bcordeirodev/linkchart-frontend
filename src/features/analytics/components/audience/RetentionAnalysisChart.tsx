@@ -32,7 +32,7 @@ export function RetentionAnalysisChart({
   title,
 }: RetentionAnalysisChartProps) {
   const theme = useTheme();
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
   const displayTitle = title ?? t("insights.retention.title");
 
   // Convert [0.0, 1.0] rates to display percentages
@@ -49,6 +49,8 @@ export function RetentionAnalysisChart({
     ],
     "name",
     "value",
+    undefined,
+    i18n.language,
   );
 
   if (loading) {
@@ -117,12 +119,12 @@ export function RetentionAnalysisChart({
             },
             {
               label: t("insights.retention.returningVisitors"),
-              value: data.return_visitors,
+              value: data.return_visitors.toLocaleString(i18n.language),
               caption: t("insights.retention.loyalUsers"),
             },
             {
               label: t("insights.retention.totalVisitors"),
-              value: data.total_visitors,
+              value: data.total_visitors.toLocaleString(i18n.language),
               caption: t("insights.retention.uniqueVisitors"),
             },
           ]}

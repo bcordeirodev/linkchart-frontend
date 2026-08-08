@@ -91,7 +91,13 @@ export function LanguageBreakdownCard({
       <ApexChartWrapper
         type="bar"
         height={STACKED_BAR_HEIGHT}
-        {...formatHorizontalStackedBar(chartData, "name", "value")}
+        {...formatHorizontalStackedBar(
+          chartData,
+          "name",
+          "value",
+          undefined,
+          i18n.language,
+        )}
       />
     </ChartCard>
   );

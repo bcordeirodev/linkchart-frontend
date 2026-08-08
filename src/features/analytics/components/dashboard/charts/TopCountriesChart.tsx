@@ -28,7 +28,7 @@ export function TopCountriesChart({
   height,
   maxCountries = 10,
 }: TopCountriesChartProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   const topCountries = data.slice(0, maxCountries);
 
@@ -48,6 +48,7 @@ export function TopCountriesChart({
           "clicks",
           true, // horizontal bars
           { clicksLabel: t("temporal.viralRank.clicksUnit") },
+          i18n.language,
         )}
       />
     </ChartCard>

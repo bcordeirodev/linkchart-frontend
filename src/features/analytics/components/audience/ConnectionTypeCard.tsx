@@ -54,7 +54,7 @@ interface ConnectionTypeCardProps {
  * which is why this card lives in the Quality sub-tab.
  */
 export function ConnectionTypeCard({ breakdown }: ConnectionTypeCardProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   const conn = normaliseBreakdown<ConnectionEntry>(breakdown);
   if (conn.data.length === 0) return null;
@@ -84,7 +84,13 @@ export function ConnectionTypeCard({ breakdown }: ConnectionTypeCardProps) {
       <ApexChartWrapper
         type="bar"
         height={STACKED_BAR_HEIGHT}
-        {...formatHorizontalStackedBar(chartData, "name", "value")}
+        {...formatHorizontalStackedBar(
+          chartData,
+          "name",
+          "value",
+          undefined,
+          i18n.language,
+        )}
       />
     </ChartCard>
   );

@@ -267,7 +267,7 @@ export function GeographicChoropleth({
   onCountrySelect,
 }: GeographicChoroplethProps) {
   const theme = useTheme();
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
   const isDark = theme.palette.mode === "dark";
 
   const mapRef = useRef<LeafletMap | null>(null);
@@ -540,7 +540,7 @@ export function GeographicChoropleth({
               {tooltip.country}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              {tooltip.clicks.toLocaleString()}{" "}
+              {tooltip.clicks.toLocaleString(i18n.language)}{" "}
               {t("geographic.choropleth.clicks")} · {tooltip.percentage}%
             </Typography>
           </Paper>
@@ -563,7 +563,9 @@ export function GeographicChoropleth({
             {countryMap[selectedNumericId].data.country}
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            {countryMap[selectedNumericId].data.clicks.toLocaleString()}{" "}
+            {countryMap[selectedNumericId].data.clicks.toLocaleString(
+              i18n.language,
+            )}{" "}
             {t("geographic.choropleth.clicks")} ·{" "}
             {countryMap[selectedNumericId].percentage}%
           </Typography>

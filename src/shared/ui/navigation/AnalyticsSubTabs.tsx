@@ -161,8 +161,19 @@ export function AnalyticsSubTabs({
               // otherwise come down to stylesheet insertion order. Pinning it
               // here keeps the level-2 pill reading as one steady neutral
               // fill under the cursor instead of dimming to `action.hover`.
+              // Fill + hairline interna (via box-shadow, sem mexer no layout):
+              // o fill neutro sozinho empatava em força com o outline dos
+              // filtros de nível 3, e o usuário não sabia dizer qual pill era
+              // navegação. A hairline dá leitura de "tecla pressionada" sem
+              // tocar no acento primário — que segue exclusivo do sublinhado
+              // do nível 1 e do filtro ativo do nível 3.
               "&.Mui-selected, &.Mui-selected:hover": {
                 backgroundColor: theme.palette.action.selected,
+                boxShadow: `inset 0 0 0 1px ${
+                  theme.palette.mode === "dark"
+                    ? "rgba(255,255,255,0.16)"
+                    : "rgba(0,0,0,0.16)"
+                }`,
                 color: "text.primary",
                 fontWeight: 600,
               },

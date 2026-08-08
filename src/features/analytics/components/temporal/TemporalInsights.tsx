@@ -29,7 +29,7 @@ export function TemporalInsights({
   showAdvancedInsights: _showAdvancedInsights = true,
   showRecommendations: _showRecommendations = true,
 }: TemporalInsightsProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   // Função auxiliar para obter total de cliques
   const getTotalClicks = (data: { clicks: number }[]) =>
@@ -80,7 +80,7 @@ export function TemporalInsights({
       <Stack spacing={1.5}>
         <Typography variant="body2">
           {t("temporal.insights.summary", {
-            total: hourlyTotal.toLocaleString(),
+            total: hourlyTotal.toLocaleString(i18n.language),
             perHour: avgClicksPerHour.toFixed(1),
             perDay: avgClicksPerDay.toFixed(1),
           })}

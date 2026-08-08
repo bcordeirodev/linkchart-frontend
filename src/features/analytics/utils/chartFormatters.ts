@@ -21,12 +21,17 @@ import type { ChartSeries } from "@/types";
  * Sem parâmetro de cor: a série assume a cor `primary` de `dataVizPalette`
  * via base do tema. `labels` só controla o nome da série e o sufixo usado no
  * tooltip — nunca aparência.
+ *
+ * @param locale - locale ativo do i18next (`i18n.language`), repassado ao
+ * `toLocaleString()` do tooltip. Omitido: usa o locale padrão do browser
+ * (comportamento anterior a esta prop).
  */
 export const formatAreaChart = (
   data: Record<string, unknown>[],
   xKey: string,
   yKey: string,
   labels?: { series?: string; clicksLabel?: string },
+  locale?: string,
 ): { series: ChartSeries[]; options: Record<string, unknown> } => {
   const seriesName = labels?.series ?? "Total";
   const clicksLabel = labels?.clicksLabel ?? "clicks";
@@ -47,7 +52,7 @@ export const formatAreaChart = (
       tooltip: {
         y: {
           formatter: (value: number) =>
-            `${value.toLocaleString()} ${clicksLabel}`,
+            `${value.toLocaleString(locale)} ${clicksLabel}`,
         },
       },
     },
@@ -107,6 +112,10 @@ const BAR_LABEL_MIN_PCT = 8;
  * `BAR_LABEL_TEXT_COLOR` (contraste legível contra a paleta) e supressão
  * abaixo de `BAR_LABEL_MIN_PCT` do total da série (barra fina demais para um
  * número legível).
+ *
+ * @param locale - locale ativo do i18next (`i18n.language`), repassado aos
+ * `toLocaleString()` do data label e do tooltip. Omitido: usa o locale
+ * padrão do browser (comportamento anterior a esta prop).
  */
 export const formatBarChart = (
   data: Record<string, unknown>[],
@@ -114,6 +123,7 @@ export const formatBarChart = (
   yKey: string,
   horizontal = false,
   labels?: { series?: string; clicksLabel?: string },
+  locale?: string,
 ): { series: ChartSeries[]; options: Record<string, unknown> } => {
   const seriesName = labels?.series ?? "Clicks";
   const clicksLabel = labels?.clicksLabel ?? "clicks";
@@ -147,7 +157,7 @@ export const formatBarChart = (
           ) {
             return "";
           }
-          return val.toLocaleString();
+          return val.toLocaleString(locale);
         },
       },
       xaxis: {
@@ -161,12 +171,57 @@ export const formatBarChart = (
       tooltip: {
         y: {
           formatter: (value: number) =>
-            `${value.toLocaleString()} ${clicksLabel}`,
+            `${value.toLocaleString(locale)} ${clicksLabel}`,
         },
       },
     },
   };
 };
+
+/**
+ * Distribui o arredondamento de um conjunto de valores-como-participação
+ * (percentuais) para que a soma exibida feche em exatamente 100 (quando o
+ * total for positivo), pelo método do maior resto (largest remainder):
+ * cada participação é primeiro arredondada para baixo (`Math.floor`); a
+ * sobra (100 menos a soma dos arredondamentos para baixo) é distribuída, um
+ * ponto por vez, para as participações com o maior resto fracionário,
+ * da maior para a menor.
+ *
+ * Arredondar cada segmento isoladamente (`Math.round`) pode passar ou não
+ * chegar a 100 — ex.: 72,5% e 27,5% arredondam individualmente para 73% e
+ * 28%, somando 101% — porque cada segmento arredonda sem enxergar os
+ * vizinhos. Este método mantém o conjunto exibido consistente entre si sem
+ * alterar os valores subjacentes (é só exibição).
+ *
+ * @param values - valores numéricos brutos (ex.: cliques por categoria),
+ * ainda não convertidos em percentual.
+ * @returns percentuais inteiros, na mesma ordem/tamanho de `values`,
+ * somando 100 sempre que `values` tiver um total positivo (todos zero caso
+ * contrário).
+ */
+export function largestRemainderRound(values: number[]): number[] {
+  const total = values.reduce((sum, value) => sum + value, 0);
+  if (total <= 0) return values.map(() => 0);
+
+  const shares = values.map((value) => (value / total) * 100);
+  const floors = shares.map((share) => Math.floor(share));
+  let leftover = 100 - floors.reduce((sum, floor) => sum + floor, 0);
+
+  const byRemainderDesc = shares
+    .map((share, index) => ({ index, remainder: share - floors[index]! }))
+    .sort((a, b) => b.remainder - a.remainder);
+
+  const result = [...floors];
+  for (
+    let i = 0;
+    i < byRemainderDesc.length && leftover > 0;
+    i += 1, leftover -= 1
+  ) {
+    result[byRemainderDesc[i]!.index]! += 1;
+  }
+
+  return result;
+}
 
 /**
  * Formata uma distribuição categórica (dispositivos, idiomas, plataformas,
@@ -190,10 +245,19 @@ export const formatBarChart = (
  * dizem nada que os `%` dos segmentos e o tooltip já não digam — ficam
  * ocultos.
  *
+ * Os `%` exibidos vêm de {@link largestRemainderRound} sobre os valores
+ * brutos, não de `Math.round` por segmento — do contrário o conjunto
+ * exibido podia somar 99 ou 101 (ex.: 72,5%/27,5% arredondando os dois para
+ * cima). O Apex chama o `formatter` do data label uma vez por segmento
+ * (série) com `opts.seriesIndex`, que indexa direto no array pré-calculado.
+ *
  * @param data - Linhas categóricas já filtradas/agrupadas pelo chamador.
  * @param labelKey - Chave de `data` usada como nome da série (rótulo da categoria).
  * @param valueKey - Chave de `data` usada como valor numérico da categoria.
  * @param labels - Rótulo opcional da única linha do eixo Y (default vazio).
+ * @param locale - locale ativo do i18next (`i18n.language`), repassado ao
+ * `toLocaleString()` do tooltip. Omitido: usa o locale padrão do browser
+ * (comportamento anterior a esta prop).
  * @returns `series`/`options` prontos para `<ApexChartWrapper type="bar">`.
  */
 export const formatHorizontalStackedBar = (
@@ -201,6 +265,7 @@ export const formatHorizontalStackedBar = (
   labelKey: string,
   valueKey: string,
   labels?: { rowLabel?: string },
+  locale?: string,
 ): {
   series: Array<{ name: string; data: number[] }>;
   options: Record<string, unknown>;
@@ -215,14 +280,13 @@ export const formatHorizontalStackedBar = (
     return { series: [], options: { chart: { stacked: true } } };
   }
 
-  const total = filtered.reduce(
-    (sum, item) => sum + Number(item[valueKey] || 0),
-    0,
-  );
+  const values = filtered.map((item) => Number(item[valueKey] || 0));
+  const total = values.reduce((sum, value) => sum + value, 0);
+  const roundedPcts = largestRemainderRound(values);
 
-  const series = filtered.map((item) => ({
+  const series = filtered.map((item, index) => ({
     name: String(item[labelKey] ?? ""),
-    data: [Number(item[valueKey] || 0)],
+    data: [values[index]!],
   }));
 
   return {
@@ -240,15 +304,19 @@ export const formatHorizontalStackedBar = (
       dataLabels: {
         enabled: true,
         style: { colors: [BAR_LABEL_TEXT_COLOR] },
-        formatter: (val: number) => {
+        formatter: (val: number, opts?: { seriesIndex?: number }) => {
           if (total <= 0) return "0%";
-          const pct = (val / total) * 100;
-          return pct < BAR_LABEL_MIN_PCT ? "" : `${Math.round(pct)}%`;
+          const rawPct = (val / total) * 100;
+          if (rawPct < BAR_LABEL_MIN_PCT) return "";
+          // Fallback (opts ausente) só se aplicaria fora de um render real
+          // do Apex — em produção `seriesIndex` sempre vem preenchido.
+          const index = opts?.seriesIndex ?? values.indexOf(val);
+          return `${roundedPcts[index] ?? Math.round(rawPct)}%`;
         },
       },
       legend: { show: true, showForSingleSeries: true, position: "bottom" },
       tooltip: {
-        y: { formatter: (val: number) => val.toLocaleString() },
+        y: { formatter: (val: number) => val.toLocaleString(locale) },
       },
     },
   };

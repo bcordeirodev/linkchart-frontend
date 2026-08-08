@@ -28,7 +28,7 @@ interface DayOfWeekChartProps {
  * via the card's cross-link into the Momento tab.
  */
 export function DayOfWeekChart({ data, height }: DayOfWeekChartProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   return (
     <ChartCard
@@ -48,6 +48,7 @@ export function DayOfWeekChart({ data, height }: DayOfWeekChartProps) {
           "clicks",
           false, // vertical bars
           { clicksLabel: t("temporal.viralRank.clicksUnit") },
+          i18n.language,
         )}
       />
     </ChartCard>

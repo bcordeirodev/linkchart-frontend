@@ -45,7 +45,7 @@ export function PeakAnalysisCard({
   peakAnalysis,
   viralRankByDay,
 }: PeakAnalysisCardProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
   const {
     peak_hour,
     peak_day,
@@ -158,7 +158,7 @@ export function PeakAnalysisCard({
                     </Typography>
                     <Typography variant="body2">
                       {t("temporal.peak.clicksConcentrated", {
-                        total: peak_hour_clicks.toLocaleString(),
+                        total: peak_hour_clicks.toLocaleString(i18n.language),
                       })}
                     </Typography>
                     <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
@@ -204,7 +204,7 @@ export function PeakAnalysisCard({
                     </Typography>
                     <Typography variant="body2">
                       {t("temporal.peak.clicksThisDay", {
-                        total: peak_day_clicks.toLocaleString(),
+                        total: peak_day_clicks.toLocaleString(i18n.language),
                       })}
                     </Typography>
                     <Box sx={{ mt: 1.5 }}>

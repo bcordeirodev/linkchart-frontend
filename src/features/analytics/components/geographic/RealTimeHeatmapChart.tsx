@@ -158,7 +158,7 @@ export function RealTimeHeatmapChart({
   bare = false,
 }: HeatmapChartProps) {
   const theme = useTheme();
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
   const displayTitle = title ?? t("geographic.heatmap.titleDefault");
   const heatmapDescription = t("geographic.heatmap.description");
 
@@ -489,7 +489,7 @@ export function RealTimeHeatmapChart({
           {showStats && stats ? (
             <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
               <Chip
-                label={`${stats.totalClicks.toLocaleString()} ${t("geographic.heatmap.clicks")}`}
+                label={`${stats.totalClicks.toLocaleString(i18n.language)} ${t("geographic.heatmap.clicks")}`}
                 color="primary"
                 size="small"
               />
@@ -720,7 +720,7 @@ export function RealTimeHeatmapChart({
                       }}
                     >
                       {t("geographic.heatmap.popupClicks", {
-                        n: point.clicks.toLocaleString(),
+                        n: point.clicks.toLocaleString(i18n.language),
                       })}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
@@ -771,7 +771,9 @@ export function RealTimeHeatmapChart({
                         sx={{ mt: 1 }}
                       >
                         {t("geographic.heatmap.popupLastClick", {
-                          time: new Date(point.last_click).toLocaleString(),
+                          time: new Date(point.last_click).toLocaleString(
+                            i18n.language,
+                          ),
                         })}
                       </Typography>
                     ) : null}

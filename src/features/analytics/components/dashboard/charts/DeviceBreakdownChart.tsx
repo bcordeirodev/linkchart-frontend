@@ -6,6 +6,7 @@
 import { useTranslation } from "react-i18next";
 
 import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
+import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
@@ -45,10 +46,15 @@ export function DeviceBreakdownChart({
   data,
   height,
 }: DeviceBreakdownChartProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
+  // Device names arrive as the tracking pipeline's raw values ("desktop",
+  // "mobile") — reformatted here for display, same treatment as every other
+  // device/browser/OS/engine label on the page (this chart drives both the
+  // stacked-bar legend and, via `formatHorizontalStackedBar`'s tooltip, the
+  // hover value).
   const chartData = data.map((item) => ({
-    device: item.device,
+    device: formatAnalyticsLabel(item.device),
     clicks: item.clicks,
   }));
 
@@ -65,7 +71,13 @@ export function DeviceBreakdownChart({
       <ApexChartWrapper
         type="bar"
         height={resolvedHeight}
-        {...formatHorizontalStackedBar(chartData, "device", "clicks")}
+        {...formatHorizontalStackedBar(
+          chartData,
+          "device",
+          "clicks",
+          undefined,
+          i18n.language,
+        )}
       />
     </ChartCard>
   );

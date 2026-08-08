@@ -26,7 +26,7 @@ interface Props {
  * com borda e hover consistentes com os demais gráficos da tab temporal.
  */
 export function HolidayImpactCard({ data }: Props) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   if (!data?.top_holidays?.length && !data?.holiday_clicks) return null;
 
@@ -52,11 +52,11 @@ export function HolidayImpactCard({ data }: Props) {
         </Box>
 
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {data?.holiday_clicks?.toLocaleString() ?? 0}{" "}
+          {data?.holiday_clicks?.toLocaleString(i18n.language) ?? 0}{" "}
           {t("temporal.holiday.holidayClicks", {
             defaultValue: "cliques em feriados",
           })}{" "}
-          · {data?.non_holiday_clicks?.toLocaleString() ?? 0}{" "}
+          · {data?.non_holiday_clicks?.toLocaleString(i18n.language) ?? 0}{" "}
           {t("temporal.holiday.normalDays", {
             defaultValue: "em dias normais",
           })}
@@ -76,7 +76,7 @@ export function HolidayImpactCard({ data }: Props) {
               >
                 <Typography variant="body2">{h.holiday}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {h.clicks.toLocaleString()} ({h.percentage}%)
+                  {h.clicks.toLocaleString(i18n.language)} ({h.percentage}%)
                 </Typography>
               </Box>
             ))}

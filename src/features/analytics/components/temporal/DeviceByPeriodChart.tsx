@@ -13,7 +13,7 @@ interface DeviceByPeriodChartProps {
 }
 
 export function DeviceByPeriodChart({ data }: DeviceByPeriodChartProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   if (!data || data.length === 0) {
     return null;
@@ -50,12 +50,12 @@ export function DeviceByPeriodChart({ data }: DeviceByPeriodChartProps) {
     },
     xaxis: { categories },
     yaxis: {
-      labels: { formatter: (v: number) => v.toLocaleString() },
+      labels: { formatter: (v: number) => v.toLocaleString(i18n.language) },
     },
     tooltip: {
       y: {
         formatter: (v: number) =>
-          `${v.toLocaleString()} ${t("temporal.chart.clicks")}`,
+          `${v.toLocaleString(i18n.language)} ${t("temporal.chart.clicks")}`,
       },
     },
     legend: { position: "top" as const },
@@ -133,8 +133,8 @@ export function DeviceByPeriodChart({ data }: DeviceByPeriodChartProps) {
                       {label}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {count.toLocaleString()} {t("temporal.chart.clicks")} ·{" "}
-                      {pct(count)}
+                      {count.toLocaleString(i18n.language)}{" "}
+                      {t("temporal.chart.clicks")} · {pct(count)}
                     </Typography>
                   </Box>
                 </Box>

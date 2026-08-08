@@ -21,7 +21,7 @@ interface TimezoneDistributionChartProps {
 export function TimezoneDistributionChart({
   timezoneAnalysis,
 }: TimezoneDistributionChartProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   if (!timezoneAnalysis || timezoneAnalysis.length === 0) {
     return (
@@ -80,7 +80,7 @@ export function TimezoneDistributionChart({
                 dataLabels: {
                   enabled: true,
                   formatter(val: number) {
-                    return val.toLocaleString();
+                    return val.toLocaleString(i18n.language);
                   },
                   offsetX: 30,
                 },
@@ -95,7 +95,7 @@ export function TimezoneDistributionChart({
                         dataPointIndex !== undefined
                           ? topTimezones[dataPointIndex]?.percentage || 0
                           : 0;
-                      return `${val.toLocaleString()} ${t("temporal.timezone.seriesName").toLowerCase()} (${percentage.toFixed(1)}%)`;
+                      return `${val.toLocaleString(i18n.language)} ${t("temporal.timezone.seriesName").toLowerCase()} (${percentage.toFixed(1)}%)`;
                     },
                   },
                 },
@@ -109,7 +109,7 @@ export function TimezoneDistributionChart({
           <ChartCard
             title={t("temporal.timezone.topTimezones")}
             subtitle={t("temporal.timezone.total", {
-              total: totalClicks.toLocaleString(),
+              total: totalClicks.toLocaleString(i18n.language),
             })}
           >
             <Stack spacing={2}>
@@ -135,8 +135,8 @@ export function TimezoneDistributionChart({
                       {index + 1}. {tz.name.split("/").pop()}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {tz.clicks.toLocaleString()} ({tz.percentage?.toFixed(1)}
-                      %)
+                      {tz.clicks.toLocaleString(i18n.language)} (
+                      {tz.percentage?.toFixed(1)}%)
                     </Typography>
                   </Stack>
                   <LinearProgress

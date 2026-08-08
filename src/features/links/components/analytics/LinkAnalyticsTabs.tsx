@@ -229,6 +229,15 @@ export function LinkAnalyticsTabsOptimized({
             "& .MuiTab-root": {
               minHeight: 52,
             },
+            // Hierarquia (2026-08-08): o ícone da tab ativa assume a cor do
+            // indicador. O sublinhado sozinho fica a ~40px do rótulo em tabs
+            // fullWidth e o olho nem sempre os conecta; ícone + sublinhado na
+            // mesma matiz tornam o "onde estou" inequívoco sem reintroduzir o
+            // fill que o redesign 2026-08-04 removeu do nível 1. Escopado a
+            // esta tela — o override global de MuiTab segue neutro.
+            "& .MuiTab-root.Mui-selected .MuiTab-iconWrapper": {
+              color: theme.palette.primary.main,
+            },
           }}
         >
           {tabLabels.map(({ label, Icon }, index) => (

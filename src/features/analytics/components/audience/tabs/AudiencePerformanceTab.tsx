@@ -75,7 +75,7 @@ export function AudiencePerformanceTab({
   devicePerformance,
   itemRowSx,
 }: AudiencePerformanceTabProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   // Device names arrive as the tracking pipeline's raw values ("desktop",
   // "mobile") — reformatted here for display, same treatment as every other
@@ -93,9 +93,14 @@ export function AudiencePerformanceTab({
       >
         <ApexChartWrapper
           type="bar"
-          {...formatBarChart(displayChartData, "name", "value", false, {
-            clicksLabel: t("temporal.viralRank.clicksUnit"),
-          })}
+          {...formatBarChart(
+            displayChartData,
+            "name",
+            "value",
+            false,
+            { clicksLabel: t("temporal.viralRank.clicksUnit") },
+            i18n.language,
+          )}
           size="standard"
         />
       </ChartCard>

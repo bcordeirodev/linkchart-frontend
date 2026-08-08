@@ -3,6 +3,7 @@ import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
+import { tDynamic } from "@/lib/i18n/tDynamic";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
@@ -27,12 +28,18 @@ interface ChannelEngagementChartProps {
 export function ChannelEngagementChart({
   channels,
 }: ChannelEngagementChartProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   if (channels.length === 0) return null;
 
+  // Channel names arrive as the tracking pipeline's raw values ("direct",
+  // "paid_search"…) — translated for display the same way `ChannelsBreakdown`
+  // does for the channel-share bar, falling back to the raw value for any
+  // channel without a translation key yet.
   const chartData = channels.map((channel) => ({
-    name: channel.channel,
+    name: tDynamic(t, `origin.channels.${channel.channel}`, {
+      defaultValue: channel.channel,
+    }),
     value: channel.avg_session_depth,
   }));
 
@@ -43,10 +50,17 @@ export function ChannelEngagementChart({
     >
       <ApexChartWrapper
         type="bar"
-        {...formatBarChart(chartData, "name", "value", false, {
-          series: t("insights.traffic.seriesName"),
-          clicksLabel: t("temporal.viralRank.clicksUnit"),
-        })}
+        {...formatBarChart(
+          chartData,
+          "name",
+          "value",
+          false,
+          {
+            series: t("insights.traffic.seriesName"),
+            clicksLabel: t("temporal.viralRank.clicksUnit"),
+          },
+          i18n.language,
+        )}
         size="standard"
       />
       <Typography

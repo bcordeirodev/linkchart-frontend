@@ -90,10 +90,10 @@ export function TemporalAnalysis({
   // single summary of peaks in the tab (the Performance sub-tab keeps only
   // the rich analysis card).
   const peakHourSubtitle = peakAnalysis?.peak_hour_clicks
-    ? `${peakAnalysis.peak_hour_clicks.toLocaleString()} ${t("temporal.peak.clicks")}`
+    ? `${peakAnalysis.peak_hour_clicks.toLocaleString(i18n.language)} ${t("temporal.peak.clicks")}`
     : t("temporal.metrics.peakHourSub");
   const peakDaySubtitle = peakAnalysis?.peak_day_clicks
-    ? `${peakAnalysis.peak_day_clicks.toLocaleString()} ${t("temporal.peak.clicks")}`
+    ? `${peakAnalysis.peak_day_clicks.toLocaleString(i18n.language)} ${t("temporal.peak.clicks")}`
     : t("temporal.metrics.peakDaySub");
 
   const trendValue =

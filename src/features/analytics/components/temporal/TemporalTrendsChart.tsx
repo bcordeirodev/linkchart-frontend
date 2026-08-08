@@ -26,7 +26,7 @@ export function TemporalTrendsChart({
   weeklyTrends,
   monthlyTrends,
 }: TemporalTrendsChartProps) {
-  const { t } = useTranslation("analytics");
+  const { t, i18n } = useTranslation("analytics");
 
   const weeklyData = [...weeklyTrends]
     .sort((a, b) => a.week.localeCompare(b.week))
@@ -93,7 +93,7 @@ export function TemporalTrendsChart({
                   tooltip: {
                     y: {
                       formatter(val: number) {
-                        return `${val.toLocaleString()} ${t("temporal.trends.seriesName").toLowerCase()}`;
+                        return `${val.toLocaleString(i18n.language)} ${t("temporal.trends.seriesName").toLowerCase()}`;
                       },
                     },
                   },
@@ -129,7 +129,7 @@ export function TemporalTrendsChart({
                   />
                   <Typography variant="body2" color="text.secondary">
                     {t("temporal.trends.weeklyTotal", {
-                      total: weeklyTotal.toLocaleString(),
+                      total: weeklyTotal.toLocaleString(i18n.language),
                       count: weeklyValues.length,
                     })}
                   </Typography>
@@ -162,7 +162,7 @@ export function TemporalTrendsChart({
                   tooltip: {
                     y: {
                       formatter(val: number) {
-                        return `${val.toLocaleString()} ${t("temporal.trends.seriesName").toLowerCase()}`;
+                        return `${val.toLocaleString(i18n.language)} ${t("temporal.trends.seriesName").toLowerCase()}`;
                       },
                     },
                   },
@@ -198,7 +198,7 @@ export function TemporalTrendsChart({
                   />
                   <Typography variant="body2" color="text.secondary">
                     {t("temporal.trends.monthlyTotal", {
-                      total: monthlyTotal.toLocaleString(),
+                      total: monthlyTotal.toLocaleString(i18n.language),
                       count: monthlyValues.length,
                     })}
                   </Typography>
