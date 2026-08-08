@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { DistributionBars } from "@/features/admin/components/DistributionBars";
 import { useAdminHealth } from "@/features/admin/hooks/useAdmin";
 import { dataVizPalette } from "@/lib/theme";
+import { formatCount } from "@/lib/utils/formatNumber";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { OverviewMetricRow } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
@@ -43,7 +44,8 @@ const TIER_COLORS: Record<QualityTier, string> = {
  * @returns Conteúdo da tab, gated por `AnalyticsStateManager`.
  */
 export function AdminHealthTab() {
-  const { t } = useTranslation("admin");
+  const { t, i18n } = useTranslation("admin");
+  const locale = i18n.language;
   const query = useAdminHealth();
   const data = query.data;
 
@@ -78,18 +80,18 @@ export function AdminHealthTab() {
                 value:
                   data.queue_depth === null
                     ? t("health.queueUnavailable")
-                    : data.queue_depth.toLocaleString("pt-BR"),
+                    : formatCount(data.queue_depth, locale),
                 caption: t("health.queueDepthCaption"),
               },
               {
                 label: t("health.failedJobs24h"),
-                value: data.failed_jobs_24h.toLocaleString("pt-BR"),
+                value: formatCount(data.failed_jobs_24h, locale),
                 valueColor:
                   data.failed_jobs_24h > 0 ? "warning.main" : undefined,
               },
               {
                 label: t("health.failedJobs7d"),
-                value: data.failed_jobs_7d.toLocaleString("pt-BR"),
+                value: formatCount(data.failed_jobs_7d, locale),
               },
             ]}
           />
@@ -99,15 +101,15 @@ export function AdminHealthTab() {
             metrics={[
               {
                 label: t("health.activeLinks"),
-                value: data.links.active.toLocaleString("pt-BR"),
+                value: formatCount(data.links.active, locale),
               },
               {
                 label: t("health.inactiveLinks"),
-                value: data.links.inactive.toLocaleString("pt-BR"),
+                value: formatCount(data.links.inactive, locale),
               },
               {
                 label: t("health.brokenLinks"),
-                value: data.links.broken.toLocaleString("pt-BR"),
+                value: formatCount(data.links.broken, locale),
                 valueColor: data.links.broken > 0 ? "warning.main" : undefined,
                 caption: t("health.brokenLinksCaption"),
               },

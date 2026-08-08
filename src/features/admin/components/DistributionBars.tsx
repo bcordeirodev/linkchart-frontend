@@ -13,8 +13,10 @@
 
 import { Box, Stack, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 import { typographyScale } from "@/lib/theme/designSystem";
+import { formatCount } from "@/lib/utils/formatNumber";
 
 /** Uma linha de barra: rótulo + contagem bruta, com share opcional. */
 export interface DistributionBarRow {
@@ -40,8 +42,15 @@ export interface DistributionBarRow {
 export interface DistributionBarsProps {
   /** Linhas a desenhar, na ordem recebida. */
   rows: DistributionBarRow[];
-  /** Sufixo textual após a contagem (ex.: "usuários"). Omitido: só conta + pct. */
-  unit?: string;
+  /**
+   * Sufixo textual após a contagem (ex.: "usuários"). Omitido: só conta + pct.
+   *
+   * Aceita uma função `(count) => string` para sufixos que precisam concordar
+   * em número com a contagem da própria linha — sem isso o bucket de 1 usuário
+   * saía como "1 usuários". O chamador resolve a forma via `t(chave, { count })`
+   * (plural do i18next), que é quem conhece as regras do idioma ativo.
+   */
+  unit?: string | ((count: number) => string);
   /**
    * Mensagem exibida no lugar das barras quando `rows` está vazio (ex.:
    * nenhum clique classificado no período — `quality_tiers_7d` é resultado
@@ -63,7 +72,7 @@ export interface DistributionBarsProps {
  * distribuição em si está vazia.
  *
  * @param props.rows Linhas a desenhar.
- * @param props.unit Sufixo textual após a contagem.
+ * @param props.unit Sufixo textual após a contagem (string ou função do count).
  * @param props.emptyMessage Mensagem para `rows` vazio.
  * @returns Pilha de barras horizontais, ou a mensagem de vazio.
  */
@@ -73,6 +82,9 @@ export function DistributionBars({
   emptyMessage,
 }: DistributionBarsProps) {
   const theme = useTheme();
+  // Só o idioma ativo interessa aqui: o componente não tem texto próprio, mas
+  // formata números — que mudam de separador entre pt-BR e en.
+  const { i18n } = useTranslation("admin");
 
   if (rows.length === 0) {
     return emptyMessage ? (
@@ -91,6 +103,7 @@ export function DistributionBars({
         const pct = row.pct ?? (total === 0 ? 0 : (row.value / total) * 100);
         const roundedPct = Math.round(pct * 10) / 10;
         const barColor = row.color ?? theme.palette.primary.main;
+        const suffix = typeof unit === "function" ? unit(row.value) : unit;
 
         return (
           <Box key={row.label}>
@@ -124,8 +137,9 @@ export function DistributionBars({
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
-                {row.value.toLocaleString("pt-BR")}
-                {unit ? ` ${unit}` : ""} · {roundedPct.toLocaleString("pt-BR")}%
+                {formatCount(row.value, i18n.language)}
+                {suffix ? ` ${suffix}` : ""} ·{" "}
+                {formatCount(roundedPct, i18n.language)}%
               </Typography>
             </Box>
             <Box

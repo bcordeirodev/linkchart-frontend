@@ -51,7 +51,8 @@
     "loginTrackingSince": "Logins registrados desde {{date}} — antes disso, atividade não era medida",
     "distributionTitle": "Links por usuário",
     "distributionSubtitle": "Quantos usuários têm 0, 1, 2–5 ou 6+ links reais.",
-    "bucketUsers": "usuários"
+    "bucketUsers_one": "usuário",
+    "bucketUsers_other": "usuários"
   },
   "health": {
     "queueDepth": "Fila de jobs",

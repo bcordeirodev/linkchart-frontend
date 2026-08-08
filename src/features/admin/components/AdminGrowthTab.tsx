@@ -12,6 +12,7 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { useAdminOverview } from "@/features/admin/hooks/useAdmin";
+import { formatCount } from "@/lib/utils/formatNumber";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import { OverviewMetricRow } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
@@ -22,6 +23,8 @@ import type {
   AdminSeriesPoint,
   AdminPeriodComparison,
 } from "@/features/admin/types";
+import type { ReactNode } from "react";
+import type { TFunction } from "i18next";
 
 interface AdminGrowthTabProps {
   /** Janela ativa (7d/30d/90d). */
@@ -31,13 +34,54 @@ interface AdminGrowthTabProps {
 /**
  * Formata a variação percentual como caption (▲ +12,3% / ▼ -4,1% / "—" sem
  * baseline), seguindo o padrão de cor semântica do OverviewMetricRow.
+ *
+ * @param cmp Par atual/anterior vindo do backend.
+ * @param locale Idioma ativo (`i18n.language`) — decide o separador decimal.
  */
-function variationCaption(cmp: AdminPeriodComparison | undefined): string {
+function variationCaption(
+  cmp: AdminPeriodComparison | undefined,
+  locale: string,
+): string {
   if (!cmp || cmp.variation_pct === null) {
     return "—";
   }
   const arrow = cmp.variation_pct >= 0 ? "▲" : "▼";
-  return `${arrow} ${cmp.variation_pct > 0 ? "+" : ""}${cmp.variation_pct.toLocaleString("pt-BR")}%`;
+  return `${arrow} ${cmp.variation_pct > 0 ? "+" : ""}${formatCount(cmp.variation_pct, locale)}%`;
+}
+
+/**
+ * Legenda de duas linhas de uma métrica de crescimento. O número grande é o
+ * total acumulado da base, mas a variação ao lado é do período selecionado —
+ * sem rotular as duas coisas, a fileira lia como se os 12% fossem do total.
+ * Linha 1 qualifica o valor ("desde o início"), linha 2 qualifica a variação
+ * ("no período vs anterior"), num tom mais apagado para não competir com o
+ * número.
+ *
+ * @param t Tradutor do namespace `admin`.
+ * @param cmp Par atual/anterior da métrica.
+ * @param locale Idioma ativo (`i18n.language`).
+ * @returns Nó de legenda para `OverviewMetric.caption`.
+ */
+function growthCaption(
+  t: TFunction<"admin">,
+  cmp: AdminPeriodComparison | undefined,
+  locale: string,
+): ReactNode {
+  return (
+    <Box component="span" sx={{ display: "block" }}>
+      {t("growth.totalsCaption")}
+      <Box
+        component="span"
+        sx={{
+          display: "block",
+          color: "text.disabled",
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {`${variationCaption(cmp, locale)} ${t("growth.periodCaption")}`}
+      </Box>
+    </Box>
+  );
 }
 
 /**
@@ -45,7 +89,8 @@ function variationCaption(cmp: AdminPeriodComparison | undefined): string {
  * três séries diárias (cliques, cadastros, links) em area charts.
  */
 export function AdminGrowthTab({ range }: AdminGrowthTabProps) {
-  const { t } = useTranslation("admin");
+  const { t, i18n } = useTranslation("admin");
+  const locale = i18n.language;
   const query = useAdminOverview(range);
   const data = query.data;
 
@@ -63,18 +108,18 @@ export function AdminGrowthTab({ range }: AdminGrowthTabProps) {
             metrics={[
               {
                 label: t("growth.totalUsers"),
-                value: data.totals.users.toLocaleString("pt-BR"),
-                caption: variationCaption(data.period.signups),
+                value: formatCount(data.totals.users, locale),
+                caption: growthCaption(t, data.period.signups, locale),
               },
               {
                 label: t("growth.totalLinks"),
-                value: data.totals.links.toLocaleString("pt-BR"),
-                caption: variationCaption(data.period.links),
+                value: formatCount(data.totals.links, locale),
+                caption: growthCaption(t, data.period.links, locale),
               },
               {
                 label: t("growth.totalClicks"),
-                value: data.totals.clicks.toLocaleString("pt-BR"),
-                caption: variationCaption(data.period.clicks),
+                value: formatCount(data.totals.clicks, locale),
+                caption: growthCaption(t, data.period.clicks, locale),
               },
             ]}
           />
@@ -86,6 +131,7 @@ export function AdminGrowthTab({ range }: AdminGrowthTabProps) {
             <GrowthAreaChart
               series={data.series.clicks}
               name={t("growth.clicksChartTitle")}
+              locale={locale}
             />
           </ChartCard>
 
@@ -103,6 +149,7 @@ export function AdminGrowthTab({ range }: AdminGrowthTabProps) {
               <GrowthAreaChart
                 series={data.series.signups}
                 name={t("growth.signupsChartTitle")}
+                locale={locale}
               />
             </ChartCard>
             <ChartCard
@@ -112,6 +159,7 @@ export function AdminGrowthTab({ range }: AdminGrowthTabProps) {
               <GrowthAreaChart
                 series={data.series.links}
                 name={t("growth.linksChartTitle")}
+                locale={locale}
               />
             </ChartCard>
           </Box>
@@ -128,6 +176,8 @@ interface GrowthAreaChartProps {
   series: AdminSeriesPoint[];
   /** Nome da série (tooltip). */
   name: string;
+  /** Idioma ativo (`i18n.language`) — separador de milhar do eixo Y. */
+  locale: string;
 }
 
 /**
@@ -143,6 +193,7 @@ function buildGrowthAreaChart(
   series: AdminSeriesPoint[],
   name: string,
   isDark: boolean,
+  locale: string,
 ) {
   const categories = series.map((point) => point.date);
   const values = series.map((point) => point.value);
@@ -177,7 +228,7 @@ function buildGrowthAreaChart(
         tooltip: { enabled: false },
       },
       yaxis: {
-        labels: { formatter: (value: number) => value.toLocaleString() },
+        labels: { formatter: (value: number) => formatCount(value, locale) },
       },
       tooltip: {
         theme: isDark ? "dark" : "light",
@@ -193,10 +244,10 @@ function buildGrowthAreaChart(
  * com a primeira cor da dataVizPalette (herdada do tema base) e eixo de
  * datas em mono.
  */
-function GrowthAreaChart({ series, name }: GrowthAreaChartProps) {
+function GrowthAreaChart({ series, name, locale }: GrowthAreaChartProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
-  const chart = buildGrowthAreaChart(series, name, isDark);
+  const chart = buildGrowthAreaChart(series, name, isDark, locale);
 
   return (
     <ApexChartWrapper
