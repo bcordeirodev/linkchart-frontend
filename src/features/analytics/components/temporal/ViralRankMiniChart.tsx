@@ -150,7 +150,7 @@ export function ViralRankMiniChart({ data }: Props) {
                   width: 10,
                   height: 10,
                   borderRadius: 0.5,
-                  bgcolor: RANK_COLORS[rank],
+                  bgcolor: rankColors(theme.palette.mode)[rank],
                 }}
               />
               <Typography variant="caption" color="text.secondary">
