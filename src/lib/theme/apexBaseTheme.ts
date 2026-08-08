@@ -86,7 +86,9 @@ export function buildApexBaseOptions(
       axisTicks: { show: false },
     },
     yaxis: { labels: { style: { fontFamily: mono, fontSize: "11px" } } },
-    tooltip: { theme: "dark", style: { fontFamily: mono } },
+    // Tooltip acompanha o modo do tema — "dark" fixo renderizava tooltip escuro
+    // sobre charts em fundo branco no tema claro.
+    tooltip: { theme: theme.palette.mode, style: { fontFamily: mono } },
     legend: { fontFamily: mono, fontSize: "11px", markers: { size: 4 } },
   };
 }
