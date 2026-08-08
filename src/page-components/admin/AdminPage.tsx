@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Box, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import { AdminGrowthTab } from "@/features/admin/components/AdminGrowthTab";
 import {
   AdminTabs,
   type AdminTab,
@@ -54,11 +55,11 @@ export default function AdminPage() {
 
           <Box className="reveal reveal-3">
             {/* Conteúdo por tab — preenchido nas Tasks 14–17:
-                growth → <AdminGrowthTab range={range} />
+                growth → <AdminGrowthTab range={range} /> (Task 14, pronto)
                 users → <AdminUsersTab />
                 engagement → <AdminEngagementTab range={range} />
                 health → <AdminHealthTab /> */}
-            {tab === "growth" ? <Box /> : null}
+            {tab === "growth" ? <AdminGrowthTab range={range} /> : null}
             {tab === "users" ? <Box /> : null}
             {tab === "engagement" ? <Box /> : null}
             {tab === "health" ? <Box /> : null}
