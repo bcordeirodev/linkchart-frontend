@@ -26,6 +26,29 @@ const RANK_COLORS: Record<string, string> = {
   unranked: "#94a3b8",
 };
 
+/**
+ * Light-mode overrides for {@link RANK_COLORS}: the dark-calibrated ambers
+ * fail WCAG non-text contrast on the light surfaces (warming 1.72:1,
+ * trending 2.24:1, unranked 2.05:1 vs card `#E3E6EA`). Each override keeps
+ * the hue identity and the cold→viral heat ordering — measured 3.80–5.17:1
+ * vs card. Keys absent here keep their dark value (already ≥3:1).
+ */
+const RANK_COLORS_LIGHT: Record<string, string> = {
+  warming: "#B45309",
+  trending: "#C2410C",
+  viral: "#B91C1C",
+  unranked: "#64748B",
+};
+
+/**
+ * Resolves the rank → color map for the active color mode.
+ *
+ * @param mode - `theme.palette.mode`; light merges the contrast overrides.
+ */
+function rankColors(mode: "light" | "dark"): Record<string, string> {
+  return mode === "light" ? { ...RANK_COLORS, ...RANK_COLORS_LIGHT } : RANK_COLORS;
+}
+
 interface Props {
   data?: ViralRankDay[];
 }
@@ -75,7 +98,9 @@ export function ViralRankMiniChart({ data }: Props) {
         bar: { borderRadius: 3, columnWidth: "60%", distributed: true },
       },
       colors: (data ?? []).map(
-        (d) => RANK_COLORS[d.peak_rank] ?? RANK_COLORS.cold,
+        (d) =>
+          rankColors(theme.palette.mode)[d.peak_rank] ??
+          rankColors(theme.palette.mode).cold,
       ),
       xaxis: {
         categories: (data ?? []).map((d) => {
@@ -100,7 +125,7 @@ export function ViralRankMiniChart({ data }: Props) {
       },
       legend: { show: false },
     }),
-    [data, t],
+    [data, t, theme.palette.mode],
   );
 
   if (!hasAnyData) return null;

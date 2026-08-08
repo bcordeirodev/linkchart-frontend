@@ -54,14 +54,23 @@ export const chartByType = {
 export const heatmapBlueScale = {
   /** Célula vazia (0 cliques) — fundo neutro por tema. */
   empty: { dark: "#1e2a3a", light: "#f0f4f8" },
-  /** 1–5 cliques. */
-  low: "#90caf9",
-  /** 6–15 cliques. */
-  medium: "#42a5f5",
-  /** 16–50 cliques — também usada como cor base da série. */
-  high: "#1976d2",
-  /** 51+ cliques. */
-  veryHigh: "#0d47a1",
+  /**
+   * 1–5 cliques. No claro, `#90caf9` rendia 1.40:1 vs o card `#E3E6EA` —
+   * o passo light desce um degrau (`#64b5f6`). Numa rampa sequencial de
+   * matiz único o primeiro passo nunca alcança 3:1 sem colapsar a escala;
+   * o stroke do grid delimita as células e "low" é semanticamente
+   * quase-vazio, então o compromisso fica documentado aqui de propósito.
+   */
+  low: { dark: "#90caf9", light: "#64b5f6" },
+  /** 6–15 cliques (light `#1e88e5`: 2.94:1 card / 3.49:1 paper). */
+  medium: { dark: "#42a5f5", light: "#1e88e5" },
+  /**
+   * 16–50 cliques — também usada como cor base da série
+   * (light `#1565c0`: 4.59:1 card).
+   */
+  high: { dark: "#1976d2", light: "#1565c0" },
+  /** 51+ cliques (light mantém `#0d47a1`: 6.89:1 card). */
+  veryHigh: { dark: "#0d47a1", light: "#0d47a1" },
 } as const;
 
 /**

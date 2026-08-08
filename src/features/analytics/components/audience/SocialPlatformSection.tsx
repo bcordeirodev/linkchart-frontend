@@ -28,6 +28,31 @@ const PLATFORM_COLORS: Record<string, string> = {
   linkedin: "#0077b5",
 };
 
+/**
+ * Light-mode overrides for the three brand colors that fail WCAG non-text
+ * contrast on the light card `#E3E6EA` (tiktok 1.54:1, whatsapp 1.58:1,
+ * twitter 2.26:1). Each override is a darker shade of the same brand hue
+ * (3.44–3.83:1 measured) — recognizable, and every row also carries the
+ * brand icon + name, so color is never the sole identifier. The other five
+ * brands already clear 3:1 and keep their canonical hex in both modes.
+ */
+const PLATFORM_COLORS_LIGHT: Record<string, string> = {
+  tiktok: "#0F7E8B",
+  twitter: "#0C7ABF",
+  whatsapp: "#128C4A",
+};
+
+/**
+ * Resolves the platform → brand color map for the active color mode.
+ *
+ * @param mode - `theme.palette.mode`; light merges the contrast overrides.
+ */
+function platformColors(mode: "light" | "dark"): Record<string, string> {
+  return mode === "light"
+    ? { ...PLATFORM_COLORS, ...PLATFORM_COLORS_LIGHT }
+    : PLATFORM_COLORS;
+}
+
 const PLATFORM_DISPLAY: Record<string, string> = {
   instagram: "Instagram",
   tiktok: "TikTok",
@@ -69,7 +94,9 @@ export function SocialPlatformSection({ platforms, showTitle = true }: Props) {
     label: PLATFORM_DISPLAY[entry.platform] ?? entry.platform,
     value: entry.clicks,
     percentage: entry.percentage,
-    color: PLATFORM_COLORS[entry.platform] ?? theme.palette.primary.main,
+    color:
+      platformColors(theme.palette.mode)[entry.platform] ??
+      theme.palette.primary.main,
     icon: <SocialBrandIcon platform={entry.platform} size={16} />,
   }));
 

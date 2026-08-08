@@ -41,6 +41,34 @@ const CONTEXT_COLORS: Record<string, string> = {
   unknown: "#94a3b8",
 };
 
+/**
+ * Light-mode overrides for the context colors that fail WCAG non-text
+ * contrast on the light card `#E3E6EA` (direct green 1.82:1, same-site cyan
+ * 1.94:1, cross-site 2.94:1, webview amber 1.72:1, unknown 2.05:1). Same
+ * hue, darker shade — 3.80–4.28:1 measured. Keys absent here already clear
+ * 3:1 and keep their dark hex in both modes.
+ */
+const CONTEXT_COLORS_LIGHT: Record<string, string> = {
+  none: "#15803D",
+  "cross-site": "#2563EB",
+  "same-site": "#0E7490",
+  browser_direct: "#15803D",
+  browser_referral: "#2563EB",
+  in_app_webview: "#B45309",
+  unknown: "#64748B",
+};
+
+/**
+ * Resolves the context → color map for the active color mode.
+ *
+ * @param mode - `theme.palette.mode`; light merges the contrast overrides.
+ */
+function contextColors(mode: "light" | "dark"): Record<string, string> {
+  return mode === "light"
+    ? { ...CONTEXT_COLORS, ...CONTEXT_COLORS_LIGHT }
+    : CONTEXT_COLORS;
+}
+
 interface BehaviorSectionProps {
   /**
    * Navigation context data. Accepts both the new phase-aware shape
@@ -101,7 +129,9 @@ export function BehaviorSection({
     }),
     value: entry.clicks,
     percentage: entry.percentage,
-    color: CONTEXT_COLORS[entry.context] ?? "#94a3b8",
+    color:
+      contextColors(theme.palette.mode)[entry.context] ??
+      (theme.palette.mode === "light" ? "#64748B" : "#94a3b8"),
   }));
 
   return (
