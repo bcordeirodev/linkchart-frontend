@@ -47,7 +47,7 @@ function buildFillOptions(
 /**
  * Opções base de todos os gráficos ApexCharts do app (spec 2026-08-03).
  * Linhas 2px, grid só horizontal quase invisível, eixos em mono 11px,
- * barras raio 2, tooltip dark com números em mono.
+ * barras raio 2, tooltip segue `theme.palette.mode` com números em mono.
  *
  * `fill` depende de `chartType` (ver `buildFillOptions`): gradiente 18%→0
  * somente quando `chartType === "area"`; qualquer outro tipo — ou a

@@ -7,8 +7,9 @@
  * técnico com corpo (#EAEDF2, L* ~93) e os cards saíram do branco puro
  * (#F8F9FB): a página inteira deixa de operar na faixa 97–100 de luminância,
  * que lia como glare, mantendo o degrau canvas→card + hairline. Primary no
- * degrau 700 da escala dark (#2C5AA0, ~6.8:1 sobre a surface — AA em texto
- * normal); #4E82E6 (main do dark) vira o degrau `light`.
+ * degrau 700 da escala dark (#2C5AA0, ~6.5:1 sobre a surface #F8F9FB e
+ * ~5.8:1 sobre o canvas #EAEDF2 — AA em texto normal nos dois); #4E82E6
+ * (main do dark) vira o degrau `light`.
  */
 
 export const lightNeutral = {
