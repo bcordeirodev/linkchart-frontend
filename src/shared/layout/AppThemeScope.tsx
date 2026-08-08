@@ -61,10 +61,17 @@ export function useAppThemeMode(): AppThemeModeContextValue | null {
 /**
  * Persiste a preferência de tema no cookie legível pelo servidor.
  *
+ * Anexa `; Secure` apenas quando servido por https — `document.cookie` não
+ * aceita o atributo `Secure` em `http://localhost`, o que quebraria a
+ * escrita do cookie (e, por consequência, a persistência do tema) no dev
+ * local.
+ *
  * @param mode - modo a gravar no cookie `lc_theme`.
  */
 function persistThemeMode(mode: ThemeMode): void {
-  document.cookie = `${THEME_COOKIE_NAME}=${mode}; path=/; max-age=${THEME_COOKIE_MAX_AGE}; SameSite=Lax`;
+  const isHttps = window.location.protocol === "https:";
+  const secureFlag = isHttps ? "; Secure" : "";
+  document.cookie = `${THEME_COOKIE_NAME}=${mode}; path=/; max-age=${THEME_COOKIE_MAX_AGE}; SameSite=Lax${secureFlag}`;
 }
 
 /** Props do AppThemeScope. */

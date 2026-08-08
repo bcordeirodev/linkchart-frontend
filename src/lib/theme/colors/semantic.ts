@@ -70,11 +70,15 @@ export const semanticLight: SemanticPalette = {
     contrastText: "#FFFFFF",
   },
   warning: {
-    main: "#D97706",
-    light: "#F59E0B",
+    // Recalibrado em 2026-08-08: o antigo main (#D97706) caiu para ~2.7:1
+    // contra o canvas light #EAEDF2 — abaixo do mínimo 3:1 para componente
+    // não-textual. #C2410C mede 4.41:1 no mesmo canvas. O antigo main vira
+    // o degrau `light`.
+    main: "#C2410C",
+    light: "#D97706",
     dark: "#B45309",
-    subtleBg: "rgba(217, 119, 6, 0.08)",
-    border: "rgba(217, 119, 6, 0.24)",
+    subtleBg: "rgba(194, 65, 12, 0.08)",
+    border: "rgba(194, 65, 12, 0.24)",
     contrastText: "#FFFFFF",
   },
   error: {
