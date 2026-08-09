@@ -55,11 +55,16 @@ export interface OverviewMetricRowProps {
    * todos os rótulos da fileira cabem em uma linha.
    *
    * `2` reserva duas linhas em **todas** as colunas da fileira, de `sm` para
-   * cima. Numa fileira estreita (ex.: um card de meia largura com 3 métricas)
-   * basta um rótulo quebrar para o número dele descer uma linha e sair da
-   * baseline dos vizinhos — o que faz a fileira parecer desalinhada, não
-   * densa. Com a altura reservada, quebrar ou não quebrar deixa de mover o
-   * número. No `xs` a fileira já é uma coluna empilhada e nada é reservado.
+   * cima — e também no `xs` quando a fileira vira grid de 2 colunas (3+
+   * métricas): cada coluna ocupa só ~50% da largura, então um rótulo pode
+   * quebrar numa célula e não na vizinha da mesma linha, desalinhando os
+   * números da linha. Numa fileira estreita (ex.: um card de meia largura
+   * com 3 métricas) basta um rótulo quebrar para o número dele descer uma
+   * linha e sair da baseline dos vizinhos — o que faz a fileira parecer
+   * desalinhada, não densa. Com a altura reservada, quebrar ou não quebrar
+   * deixa de mover o número. Com 1–2 métricas o `xs` continua coluna única
+   * de largura cheia, onde nenhum rótulo quebra sozinho — ali nada é
+   * reservado.
    *
    * Opt-in de propósito: os callers cujos rótulos cabem em uma linha não
    * devem ganhar uma linha de espaço morto acima de cada número.
@@ -121,19 +126,26 @@ export function OverviewMetricRow({
   const hairline = `1px solid ${theme.palette.divider}`;
   const isDense = metrics.length >= 5;
   const isCompact = size === "md";
+  const twoColXs = metrics.length >= 3;
   // `em`, não px: resolve contra o próprio `font-size` do rótulo (`body2`,
   // cujo `line-height` é 1.54 no `typographyScale.bodySm`), então continua
   // valendo se a escala tipográfica mudar. Só duas linhas de rótulo é o
   // caso real hoje; um `labelLines` maior seguiria a mesma conta.
   //
-  // Só a partir de `sm`: abaixo disso a fileira vira coluna empilhada, cada
-  // métrica ocupa a largura toda (nenhum rótulo quebra) e não existe baseline
-  // compartilhada para proteger — reservar a segunda linha ali seria só
-  // espaço morto acima de cada número, no viewport que menos tem altura.
+  // No `xs`, só reserva quando o grid de 2 colunas está ativo (`twoColXs`):
+  // cada célula ocupa ~50% da largura e um rótulo pode quebrar numa coluna
+  // sem quebrar na vizinha da mesma linha, desalinhando os números — o
+  // mesmo problema que a prop resolve a partir de `sm`. Com 1–2 métricas o
+  // `xs` é coluna única de largura cheia (nenhum rótulo quebra sozinho) e
+  // reservar ali seria só espaço morto acima de cada número, no viewport
+  // que menos tem altura.
   const labelMinHeight =
-    labelLines > 1 ? { xs: "auto", sm: `${labelLines * 1.54}em` } : undefined;
-
-  const twoColXs = metrics.length >= 3;
+    labelLines > 1
+      ? {
+          xs: twoColXs ? `${labelLines * 1.54}em` : "auto",
+          sm: `${labelLines * 1.54}em`,
+        }
+      : undefined;
 
   return (
     <Box
