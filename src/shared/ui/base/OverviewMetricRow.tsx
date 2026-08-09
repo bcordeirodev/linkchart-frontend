@@ -33,14 +33,14 @@ export interface OverviewMetricRowProps {
   /** Métricas a exibir, na ordem recebida. */
   metrics: OverviewMetric[];
   /**
-   * Densidade visual da fileira. `"lg"` (default) é a escala original —
-   * valor em `h2`/tabular-nums a `2.5rem` (xs) / `3rem` (sm+), com os
-   * paddings/gaps de sempre. `"md"` é ~25% mais compacto (`2rem`/`2.25rem`)
-   * com paddings proporcionalmente menores, para telas onde a fileira de
-   * métricas não deve ocupar tanta altura — `/links` (`LinkMetrics`) e, desde
-   * 2026-08-04, todas as fileiras do analytics (`OverviewKpiHeader`,
-   * `TemporalAnalysis`, retenção e sessão). Relatórios e perfil não passam
-   * esta prop e continuam em `"lg"`, pixel-idênticos a antes.
+   * Densidade visual da fileira. `"lg"` (default) é a escala compacta de
+   * 2026-08-08 — valor em `h2`/tabular-nums a `2.25rem` (xs) / `2.5rem`
+   * (sm+), `py: 1.5`. `"md"` é mais compacto ainda (`1.75rem` xs / `2rem`
+   * sm+, `py: 1`), com paddings proporcionalmente menores, para telas onde a
+   * fileira de métricas não deve ocupar tanta altura — `/links`
+   * (`LinkMetrics`) e, desde 2026-08-04, todas as fileiras do analytics
+   * (`OverviewKpiHeader`, `TemporalAnalysis`, retenção e sessão). Relatórios
+   * e perfil não passam esta prop e continuam em `"lg"`.
    *
    * **Ambos os modos respeitam a densidade automática de 5+ métricas**
    * descrita abaixo. O `"md"` só passou a respeitá-la em 2026-08-04, quando
@@ -70,40 +70,47 @@ export interface OverviewMetricRowProps {
 /**
  * Fileira de métricas de visão geral na linguagem "instrumento técnico":
  * números soltos no fundo (nível 0 — sem card, sem ícone), separados por
- * hairlines em vez de bordas de card. Mobile-first: empilha em coluna com
- * hairlines horizontais abaixo de `sm` (600px) e vira uma linha com
- * hairlines verticais (`borderLeft`) a partir de `sm`.
+ * hairlines em vez de bordas de card. Mobile-first: no `xs`, fileiras com 3+
+ * métricas viram um grid de 2 colunas (contagem ímpar: a última métrica
+ * ocupa a linha inteira via `gridColumn: "span 2"`; hairline vertical
+ * (`borderLeft`) entre colunas, horizontal (`borderTop`) entre linhas);
+ * fileiras com 1–2 métricas mantêm coluna única empilhada, como antes. A
+ * partir de `sm`, vira sempre uma linha única com hairlines verticais
+ * (`borderLeft`).
  *
  * O valor usa a escala tipográfica de `variant="h2"` (que já herda Space
- * Grotesk 700 do tema) com `fontVariantNumeric: "tabular-nums"` e um
- * `fontSize` maior, produzindo o salto de escala de 3x+ sobre a caption
- * (`body2`, `text.secondary`) pedido pelo redesign. Renderizado com
- * `component="p"` — é um valor de dado, não um heading de página, então não
- * deve poluir a árvore de headings com um `<h2>` por métrica.
+ * Grotesk 700 do tema) com `fontVariantNumeric: "tabular-nums"`. Desde
+ * 2026-08-08 a escala é mais compacta: `"lg"` (default) a `2.25rem` (xs) /
+ * `2.5rem` (sm+), `"md"` a `1.75rem` (xs) / `2rem` (sm+), ambos com
+ * `py: 1.5` (`"lg"`) / `py: 1` (`"md"`). Renderizado com `component="p"` —
+ * é um valor de dado, não um heading de página, então não deve poluir a
+ * árvore de headings com um `<h2>` por métrica.
+ *
+ * **Exceção consciente:** no modo `"md"`, o salto do valor sobre a caption
+ * (`body2`, 13px) fica em ~2.5x — abaixo da regra geral de 3x+ do projeto.
+ * Decisão de 2026-08-08: a fileira compacta prioriza densidade vertical
+ * sobre a proporção idealizada; não é lacuna a "corrigir".
  *
  * **Densidade automática (5+ métricas):** o único caller com 5 métricas
  * (`OverviewKpiHeader`) estourava a largura entre ~600–900px — a faixa em
  * que o layout já virou linha (`sm`) mas ainda não ganhou a folga do `md`
- * (900px). Com `flex: 1` e `fontSize: "3rem"`, cada coluna fica com
- * ~80–130px e o número (sem espaço para quebrar) vaza da própria coluna.
- * Quando `metrics.length >= 5`, o `fontSize` do `sm` cai um degrau (`3rem`
- * → `2rem` no `"lg"`, `2.25rem` → `1.75rem` no `"md"`) e o gutter horizontal
- * entre colunas cai de `3` para `1.5`, only at that breakpoint. O `xs`
- * (empilhado, largura cheia) e o `md`+ (com folga de sobra) não mudam.
- * Callers com 3–4 métricas têm `isDense = false` e continuam recebendo
- * exatamente o mesmo objeto de estilo de antes — zero mudança visual. O
- * valor reduzido fica abaixo do salto de 3x sobre a caption de 13px nessa
- * faixa estreita específica; é a troca deliberada (legibilidade sem vazar >
- * proporção idealizada) só para o caso denso, não uma mudança da regra geral.
+ * (900px). Com `flex: 1` e a coluna espremida, o número (sem espaço para
+ * quebrar) vaza da própria coluna. Quando `metrics.length >= 5`, o
+ * `fontSize` do `sm` cai um degrau (`2.5rem` → `1.875rem` no `"lg"`,
+ * `2rem` → `1.625rem` no `"md"`) e o gutter horizontal entre colunas cai de
+ * `3` para `1.5`, só nesse breakpoint. O `xs` (grid/empilhado) e o `md`+
+ * (com folga de sobra) não mudam. Callers com 3–4 métricas têm
+ * `isDense = false` e continuam recebendo exatamente o mesmo objeto de
+ * estilo de antes — zero mudança visual adicional.
  *
  * Puramente apresentacional: não busca dados nem contém lógica de negócio;
  * `label`/`caption` chegam já traduzidos via props.
  *
  * @param props.metrics Métricas a renderizar, na ordem recebida.
- * @param props.size Densidade visual — `"md"` (compacto) ou `"lg"` (default, escala original).
+ * @param props.size Densidade visual — `"md"` (mais compacto) ou `"lg"` (default).
  * @param props.labelLines Linhas de altura reservadas para o rótulo — `2` mantém
  * os números na mesma baseline quando algum rótulo quebra.
- * @returns Linha (coluna no mobile) de métricas sem card/ícone.
+ * @returns Linha (grid 2 colunas no mobile com 3+ métricas) de métricas sem card/ícone.
  */
 export function OverviewMetricRow({
   metrics,
@@ -126,29 +133,50 @@ export function OverviewMetricRow({
   const labelMinHeight =
     labelLines > 1 ? { xs: "auto", sm: `${labelLines * 1.54}em` } : undefined;
 
+  const twoColXs = metrics.length >= 3;
+
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: { xs: "column", sm: "row" },
+        display: { xs: "grid", sm: "flex" },
+        gridTemplateColumns: twoColXs ? "repeat(2, 1fr)" : "1fr",
+        flexDirection: { sm: "row" },
       }}
     >
       {metrics.map((metric, index) => {
         const isFirst = index === 0;
         const isLast = index === metrics.length - 1;
         const gutter = isDense ? 1.5 : 3;
+        // Grid 2 colunas no xs (3+ métricas): coluna/linha derivadas do índice;
+        // contagem ímpar deixa a última métrica ocupando a linha inteira.
+        const spansFullRow = twoColXs && isLast && metrics.length % 2 === 1;
+        const xsCol = twoColXs && !spansFullRow ? index % 2 : 0;
+        const xsRow = twoColXs ? Math.floor(index / 2) : index;
 
         return (
           <Box
             key={`${index}-${metric.label}`}
             sx={{
-              flex: 1,
+              flex: { sm: 1 },
               minWidth: 0,
-              py: isCompact ? 1.25 : 2,
-              pl: { xs: 0, sm: isFirst ? 0 : gutter },
-              pr: { xs: 0, sm: isLast ? 0 : gutter },
-              borderTop: isFirst ? "none" : { xs: hairline, sm: "none" },
-              borderLeft: isFirst ? "none" : { xs: "none", sm: hairline },
+              gridColumn: spansFullRow ? "span 2" : undefined,
+              py: isCompact ? 1 : 1.5,
+              pl: {
+                xs: xsCol === 1 ? 1.5 : 0,
+                sm: isFirst ? 0 : gutter,
+              },
+              pr: {
+                xs: twoColXs && xsCol === 0 && !spansFullRow ? 1.5 : 0,
+                sm: isLast ? 0 : gutter,
+              },
+              borderTop: {
+                xs: xsRow > 0 ? hairline : "none",
+                sm: "none",
+              },
+              borderLeft: {
+                xs: xsCol === 1 ? hairline : "none",
+                sm: isFirst ? "none" : hairline,
+              },
             }}
           >
             <Typography
@@ -169,14 +197,14 @@ export function OverviewMetricRow({
                 fontVariantNumeric: "tabular-nums",
                 fontSize: isCompact
                   ? {
-                      xs: "2rem",
-                      sm: isDense ? "1.75rem" : "2.25rem",
-                      md: "2.25rem",
+                      xs: "1.75rem",
+                      sm: isDense ? "1.625rem" : "2rem",
+                      md: "2rem",
                     }
                   : {
-                      xs: "2.5rem",
-                      sm: isDense ? "2rem" : "3rem",
-                      md: "3rem",
+                      xs: "2.25rem",
+                      sm: isDense ? "1.875rem" : "2.5rem",
+                      md: "2.5rem",
                     },
                 lineHeight: 1.1,
                 mb:
