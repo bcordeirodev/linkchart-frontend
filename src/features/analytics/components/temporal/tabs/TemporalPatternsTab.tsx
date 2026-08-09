@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { Box, Typography, Grid, Stack, Divider } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -10,6 +11,7 @@ import {
 } from "@/features/analytics/utils/chartFormatters";
 import { localizeWeekdayRows } from "@/features/analytics/utils/weekday";
 import { resolveCurve } from "@/lib/theme/apexBaseTheme";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -61,6 +63,7 @@ export function TemporalPatternsTab({
   showBusinessComparison,
 }: TemporalPatternsTabProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   const hourlyTotal = useMemo(
     () => hourlyData.reduce((sum, h) => sum + h.clicks, 0),
@@ -148,6 +151,7 @@ export function TemporalPatternsTab({
                       false,
                       { clicksLabel: t("temporal.viralRank.clicksUnit") },
                       i18n.language,
+                      { textColor: theme.palette.text.primary },
                     )}
                   />
                 </ChartCard>
@@ -170,6 +174,7 @@ export function TemporalPatternsTab({
                       false,
                       { clicksLabel: t("temporal.viralRank.clicksUnit") },
                       i18n.language,
+                      { textColor: theme.palette.text.primary },
                     )}
                   />
                 </ChartCard>
@@ -243,6 +248,7 @@ export function TemporalPatternsTab({
                     "value",
                     undefined,
                     i18n.language,
+                    resolveDataVizCategorical(theme.palette.mode),
                   )}
                   height={110}
                 />
@@ -327,6 +333,7 @@ export function TemporalPatternsTab({
                     false,
                     { clicksLabel: t("temporal.viralRank.clicksUnit") },
                     i18n.language,
+                    { textColor: theme.palette.text.primary },
                   )}
                   size="standard"
                 />

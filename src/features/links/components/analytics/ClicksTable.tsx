@@ -82,7 +82,19 @@ export function ClicksTable({
   // rather than in `DataTable` itself: that component is a generic
   // cross-feature primitive used by tables that legitimately want an opaque
   // surface, so the translucent fill is scoped to this one table.
-  const translucentTableBg = getCardSurfaceSx(theme).backgroundColor;
+  //
+  // Light-only exception (2026-08-09, F5/C3): this table lives inside the
+  // dimmed panel body (`LinkAnalyticsTabs`, `rgba(0,0,0,0.015)`). Stacking
+  // `getCardSurfaceSx`'s translucent black veil (light) on top of that panel
+  // veil is the same double-darkening that turned every light card into flat
+  // grey — same fix as `MuiCard`: a solid `background.paper` fill so the
+  // table reads as a card sitting ABOVE the panel instead of one more layer
+  // of the same veil. Dark is untouched — `getCardSurfaceSx`'s white veil
+  // still lightens correctly there, so it keeps using that formula as-is.
+  const translucentTableBg =
+    theme.palette.mode === "light"
+      ? theme.palette.background.paper
+      : getCardSurfaceSx(theme).backgroundColor;
   const {
     items,
     meta,

@@ -1,5 +1,6 @@
 "use client";
 import { Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
@@ -29,6 +30,7 @@ export function ChannelEngagementChart({
   channels,
 }: ChannelEngagementChartProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   if (channels.length === 0) return null;
 
@@ -60,6 +62,7 @@ export function ChannelEngagementChart({
             clicksLabel: t("temporal.viralRank.clicksUnit"),
           },
           i18n.language,
+          { textColor: theme.palette.text.primary },
         )}
         size="standard"
       />

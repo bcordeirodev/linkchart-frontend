@@ -32,9 +32,16 @@ import type { Theme } from "@mui/material/styles";
 export function getCardSurfaceSx(theme: Theme): { backgroundColor: string } {
   const isDark = theme.palette.mode === "dark";
 
+  // Modo claro (ajuste fino de temas, 2026-08-09 §C3): elevação CLAREIA.
+  // O véu alpha-preto original escurecia o card sobre o canvas claro e,
+  // empilhado com painel/inputs, virava cinza chapado sem hierarquia
+  // (achado F5). `background.paper` sólido (#F8F9FB) alinha este helper ao
+  // override global de `MuiCard`, que fez a mesma troca — um só destino
+  // para todo card in-page nos dois temas. Dark permanece byte-idêntico
+  // (véu branco clareando sobre o canvas escuro, o sentido correto lá).
   return {
     backgroundColor: isDark
       ? alpha(theme.palette.common.white, surfaceOverlayTokens.card.dark)
-      : alpha(theme.palette.common.black, surfaceOverlayTokens.card.light),
+      : theme.palette.background.paper,
   };
 }

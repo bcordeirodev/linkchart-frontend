@@ -1,9 +1,11 @@
 "use client";
 import { Box, Stack, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
 import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
@@ -82,6 +84,7 @@ export function AudienceRenderingEngineTab({
   itemRowSx,
 }: AudienceRenderingEngineTabProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   // Engine names arrive as the tracking pipeline's raw values ("blink",
   // "webkit") — reformatted here for display, same treatment as every other
@@ -106,6 +109,7 @@ export function AudienceRenderingEngineTab({
             "value",
             undefined,
             i18n.language,
+            resolveDataVizCategorical(theme.palette.mode),
           )}
         />
       </ChartCard>

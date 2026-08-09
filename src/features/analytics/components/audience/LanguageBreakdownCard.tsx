@@ -1,9 +1,11 @@
 "use client";
 import { Alert } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
@@ -48,6 +50,7 @@ export function LanguageBreakdownCard({
   breakdown,
 }: LanguageBreakdownCardProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   const lang = normaliseBreakdown<LanguageEntry>(breakdown);
   if (lang.data.length === 0) return null;
@@ -97,6 +100,7 @@ export function LanguageBreakdownCard({
           "value",
           undefined,
           i18n.language,
+          resolveDataVizCategorical(theme.palette.mode),
         )}
       />
     </ChartCard>

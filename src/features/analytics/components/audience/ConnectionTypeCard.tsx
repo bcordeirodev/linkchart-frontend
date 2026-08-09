@@ -1,9 +1,11 @@
 "use client";
 import { Alert } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
 import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -55,6 +57,7 @@ interface ConnectionTypeCardProps {
  */
 export function ConnectionTypeCard({ breakdown }: ConnectionTypeCardProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   const conn = normaliseBreakdown<ConnectionEntry>(breakdown);
   if (conn.data.length === 0) return null;
@@ -90,6 +93,7 @@ export function ConnectionTypeCard({ breakdown }: ConnectionTypeCardProps) {
           "value",
           undefined,
           i18n.language,
+          resolveDataVizCategorical(theme.palette.mode),
         )}
       />
     </ChartCard>

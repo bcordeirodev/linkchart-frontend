@@ -1,5 +1,6 @@
 "use client";
 import { Box, Grid, Typography, Stack, LinearProgress } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { Globe } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
@@ -22,6 +23,7 @@ export function TimezoneDistributionChart({
   timezoneAnalysis,
 }: TimezoneDistributionChartProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   if (!timezoneAnalysis || timezoneAnalysis.length === 0) {
     return (
@@ -83,6 +85,14 @@ export function TimezoneDistributionChart({
                     return val.toLocaleString(i18n.language);
                   },
                   offsetX: 30,
+                  // `position: "top"` + `offsetX: 30` push the label past the
+                  // end of the bar, onto the chart canvas/card background —
+                  // which follows the active theme. Without an explicit
+                  // color, ApexCharts' fixed default color risks going
+                  // unreadable on a light card (same class of defect as F1,
+                  // ajuste fino de temas 2026-08-09).
+                  // `theme.palette.text.primary` is always legible there.
+                  style: { colors: [theme.palette.text.primary] },
                 },
                 xaxis: {
                   categories: chartData.map((d) => d.x),

@@ -3,10 +3,12 @@
  * 📱 DEVICE BREAKDOWN CHART - Gráfico de Dispositivos
  */
 
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
 import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 
@@ -34,7 +36,11 @@ const MAX_CHART_HEIGHT = 120;
  * each device segment gets its own distinguishable tone (blue/teal/violet/…)
  * instead of shades of the same blue; no per-device color mapping is applied
  * in this component, so the legend below the bar is what identifies each
- * segment.
+ * segment. The same resolved palette (`seriesColors`) is also handed to
+ * `formatHorizontalStackedBar` so it can pick a legible per-segment label
+ * color via `labelColorFor` (ajuste fino de temas, 2026-08-09) — without it
+ * every segment falls back to a fixed near-black that goes unreadable on the
+ * darker tones of the light-mode ramp.
  *
  * The chart canvas is capped at {@link MAX_CHART_HEIGHT} and the card itself
  * is sized to its content (`height="auto"`) rather than stretching to match
@@ -47,6 +53,8 @@ export function DeviceBreakdownChart({
   height,
 }: DeviceBreakdownChartProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
+  const seriesColors = resolveDataVizCategorical(theme.palette.mode);
 
   // Device names arrive as the tracking pipeline's raw values ("desktop",
   // "mobile") — reformatted here for display, same treatment as every other
@@ -77,6 +85,7 @@ export function DeviceBreakdownChart({
           "clicks",
           undefined,
           i18n.language,
+          seriesColors,
         )}
       />
     </ChartCard>

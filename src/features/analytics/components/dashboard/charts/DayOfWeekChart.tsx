@@ -3,6 +3,7 @@
  * 📅 DAY OF WEEK CHART - Gráfico de Cliques por Dia da Semana
  */
 
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
@@ -29,6 +30,7 @@ interface DayOfWeekChartProps {
  */
 export function DayOfWeekChart({ data, height }: DayOfWeekChartProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   return (
     <ChartCard
@@ -49,6 +51,7 @@ export function DayOfWeekChart({ data, height }: DayOfWeekChartProps) {
           false, // vertical bars
           { clicksLabel: t("temporal.viralRank.clicksUnit") },
           i18n.language,
+          { textColor: theme.palette.text.primary },
         )}
       />
     </ChartCard>

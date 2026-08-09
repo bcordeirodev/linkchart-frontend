@@ -1,5 +1,6 @@
 "use client";
 import { Box, Stack, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { formatBarChart } from "@/features/analytics/utils/chartFormatters";
@@ -76,6 +77,7 @@ export function AudiencePerformanceTab({
   itemRowSx,
 }: AudiencePerformanceTabProps) {
   const { t, i18n } = useTranslation("analytics");
+  const theme = useTheme();
 
   // Device names arrive as the tracking pipeline's raw values ("desktop",
   // "mobile") — reformatted here for display, same treatment as every other
@@ -100,6 +102,7 @@ export function AudiencePerformanceTab({
             false,
             { clicksLabel: t("temporal.viralRank.clicksUnit") },
             i18n.language,
+            { textColor: theme.palette.text.primary },
           )}
           size="standard"
         />

@@ -46,6 +46,21 @@ interface BusinessInsightsProps {
 }
 
 /**
+ * Light-mode override for {@link getSeverityHue}'s `high` accent (spec
+ * §C2, finding F4). The theme's light `warning.main` (`#C2410C`) sits in
+ * the same red-orange hue family as `error.main` (`#DC2626`) — on the pale
+ * light card a "high priority" insight read as an actual error, undoing the
+ * de-alarmized severity mapping documented below. This is the same
+ * amber-dark accent `ViralRankMiniChart` uses for its light-mode `warming`
+ * rank override (`RANK_COLORS_LIGHT.warming`): ~4.8:1 against the light
+ * card `#F8F9FB`, same hue family as the dark-mode `warning.main`
+ * (`#F59E0B`), just calibrated for a light surface instead of a dark one.
+ * `medium`/`low` need no override — the theme's `info.main`/`text.secondary`
+ * already clear contrast against the light card as-is.
+ */
+const HIGH_SEVERITY_HUE_LIGHT = "#B45309";
+
+/**
  * Resolves the accent hue for an insight's priority (de-alarmized mapping,
  * refinamento visual 2026-08-08 §3.7). `high` reads as a caution (amber),
  * never as an error — no `BusinessInsight.type` available today represents
@@ -53,6 +68,11 @@ interface BusinessInsightsProps {
  * that would justify it, not for "you could optimize this". `low` carries no
  * hue at all (`text.secondary`), reading as a neutral note rather than the
  * bottom rung of a graded severity scale.
+ *
+ * Light mode swaps `high`'s accent for {@link HIGH_SEVERITY_HUE_LIGHT}
+ * (spec §C2/F4, 2026-08-09) — same pattern as `ViralRankMiniChart`'s
+ * `*_LIGHT` rank overrides. Dark mode is untouched: it keeps resolving
+ * `theme.palette.warning.main` exactly as before.
  *
  * @param priority - Insight priority as returned by the API.
  * @param theme - Active MUI theme, used to resolve the semantic color tokens.
@@ -64,12 +84,36 @@ function getSeverityHue(
 ): string {
   switch (priority) {
     case "high":
-      return theme.palette.warning.main;
+      return theme.palette.mode === "light"
+        ? HIGH_SEVERITY_HUE_LIGHT
+        : theme.palette.warning.main;
     case "medium":
       return theme.palette.info.main;
     default:
       return theme.palette.text.secondary;
   }
+}
+
+/**
+ * Recommendation-callout tint for a resolved severity hue (spec §C2). The
+ * light-mode `high` accent ({@link HIGH_SEVERITY_HUE_LIGHT}) reads slightly
+ * denser than the dark-mode amber it replaces, so its callout uses a 6%
+ * tint instead of the usual 8% to avoid the callout reading as a solid
+ * banner on the pale light card. Every other severity/mode pairing keeps
+ * the original 8% tint, byte-identical to before this fix.
+ *
+ * @param hue - Resolved severity accent, see {@link getSeverityHue}.
+ * @param priority - Insight priority driving the tint variant.
+ * @param mode - Active `theme.palette.mode`.
+ * @returns An `alpha()`-mixed background color for the recommendation callout.
+ */
+function getCalloutTint(
+  hue: string,
+  priority: BusinessInsight["priority"],
+  mode: Theme["palette"]["mode"],
+): string {
+  const isHighLight = priority === "high" && mode === "light";
+  return alpha(hue, isHighLight ? 0.06 : 0.08);
 }
 
 /**
@@ -85,6 +129,10 @@ function getSeverityHue(
  * De-alarmized (2026-08-08, §3.7): severity no longer reaches for red —
  * see {@link getSeverityHue} — and the recommendation callout reads as a
  * tip (lightbulb icon, `text.primary` body) instead of a warning banner.
+ * Light-mode fix (2026-08-09, spec §C2/F4): `high` no longer borrows the
+ * theme's light `warning.main`, which sat close enough to `error.main`'s
+ * hue to read as an actual error on light surfaces — see
+ * {@link HIGH_SEVERITY_HUE_LIGHT}. Dark mode is unchanged.
  */
 export function BusinessInsights({
   insights,
@@ -270,14 +318,19 @@ export function BusinessInsights({
                 {recommendationText ? (
                   // Action callout — reads as a tip, not a warning:
                   // lightbulb icon, `text.primary` body copy, an 8% tint
-                  // of the severity hue behind a 2px left border in the
-                  // same hue (spec §3.7).
+                  // of the severity hue (6% for light-mode `high`, see
+                  // `getCalloutTint`) behind a 2px left border in the same
+                  // hue (spec §3.7, §C2).
                   <Stack
                     direction="row"
                     spacing={1}
                     alignItems="flex-start"
                     sx={{
-                      bgcolor: alpha(hue, 0.08),
+                      bgcolor: getCalloutTint(
+                        hue,
+                        insight.priority,
+                        theme.palette.mode,
+                      ),
                       borderLeft: `2px solid ${hue}`,
                       borderRadius: `${radiusTokens.md}px`,
                       p: 1.5,

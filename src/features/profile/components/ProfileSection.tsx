@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { typographyScale } from "@/lib/theme";
@@ -47,16 +47,31 @@ interface ProfileMutedBoxProps {
  * (e.g. the OAuth security explainer, the password change security tips) —
  * a subtle background one step darker/lighter than the card so the note
  * reads as a distinct block without becoming its own bordered card.
+ *
+ * Light/dark diverge on purpose (fix 2026-08-09, F7): dark keeps
+ * `theme.palette.action.hover` exactly as before — it already clears the
+ * translucent `ProfileSection` card correctly (white veil lightens further).
+ * Light switches from `action.hover` to an explicit
+ * `alpha(common.black, 0.04)` — same numeric value MUI's default resolves to
+ * today, but pinned locally instead of inherited from the semantic
+ * `action.hover` token (que pode derivar sozinho no futuro). O que resolve
+ * o F7 de fato é a COMBINAÇÃO: `getCardSurfaceSx` agora devolve
+ * `background.paper` sólido no claro (card branco), e este véu de 4% sobre
+ * o branco (#EAEBEE) volta a ser um degrau visível — antes eram dois véus
+ * escuros empilhados sobre canvas cinza, indistinguíveis.
  */
 export function ProfileMutedBox({ children }: ProfileMutedBoxProps) {
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
   return (
     <Box
       sx={{
         p: 1.5,
         borderRadius: `${radiusTokens.md}px`,
-        bgcolor: theme.palette.action.hover,
+        bgcolor: isDark
+          ? theme.palette.action.hover
+          : alpha(theme.palette.common.black, 0.04),
         border: `1px solid ${theme.palette.divider}`,
       }}
     >

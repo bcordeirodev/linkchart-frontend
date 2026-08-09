@@ -116,6 +116,7 @@ export function PlatformBreakdownCard({
           "value",
           undefined,
           i18n.language,
+          resolveDataVizCategorical(theme.palette.mode),
         )}
       />
 

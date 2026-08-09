@@ -198,7 +198,34 @@ const inputComponents = {
   MuiOutlinedInput: {
     defaultProps: { color: "secondary" as const },
     styleOverrides: {
-      root: {},
+      // Light-only fix (2026-08-09, F6/C4): this root was empty, so every
+      // outlined input (TextField, DateTimePicker, MRT search box) fell
+      // through to MUI's own default fill (transparent) and default border
+      // (`rgba(0,0,0,0.23)` — NOT the app's `divider` token). Transparent is
+      // harmless over the page canvas, but over a translucent card (the
+      // common case — filters bar, quick-create, DateTimePickers) the input
+      // reads as the same grey as its container, no separation at all. Dark
+      // is untouched: it already read fine (border sits over a darker card)
+      // and the spec calls this light-only, so the branch below is a no-op
+      // there (`{}`, same as before).
+      // `:not(.Mui-focused)` no hover é obrigatório: sem ele o seletor de
+      // hover (0,4,0) vence o `&.Mui-focused .notchedOutline` do próprio MUI
+      // (0,3,0) e um input focado+hover perderia a cor de acento do focus.
+      // O fundo branco também não se aplica a inputs desabilitados — eles
+      // mantêm a leitura apagada padrão.
+      root: ({ theme }: { theme: Theme }) =>
+        theme.palette.mode === "light"
+          ? {
+              "&:not(.Mui-disabled)": { backgroundColor: "#FFFFFF" },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "rgba(0, 0, 0, 0.16)",
+              },
+              "&:hover:not(.Mui-disabled):not(.Mui-focused) .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "rgba(0, 0, 0, 0.24)",
+                },
+            }
+          : {},
       input: { padding: "5px 11px" },
     },
   },
@@ -270,24 +297,28 @@ const surfaceComponents = {
   MuiCard: {
     styleOverrides: {
       // Mesmo princípio de hairline do MuiPaper acima — Card não deve
-      // depender de `elevation`/shadow para parecer "elevado". O fundo é um
-      // véu translúcido, não a cor sólida de `background.paper`: sobre o
-      // fundo quase-preto (#030405) da página, um preenchimento cinza opaco
-      // lia "pesado" — a hairline já demarca a superfície, o véu só precisa
-      // dar uma leve diferença de luminância. Only `MuiCard` muda aqui — o
-      // token global `background.paper` continua intocado, e superfícies
-      // flutuantes (Dialog/Popover/Menu/Drawer/Autocomplete, ver abaixo) não
-      // usam este slot: elas dependem de opacidade total para não se
-      // "fundirem" com o conteúdo por trás.
+      // depender de `elevation`/shadow para parecer "elevado". Dark: o fundo
+      // é um véu translúcido, não a cor sólida de `background.paper` — sobre
+      // o fundo quase-preto (#030405) da página, um preenchimento cinza
+      // opaco lia "pesado", e o véu branco CLAREIA na direção certa. Only
+      // `MuiCard` muda aqui — o token global `background.paper` continua
+      // intocado, e superfícies flutuantes (Dialog/Popover/Menu/Drawer/
+      // Autocomplete, ver abaixo) não usam este slot: elas dependem de
+      // opacidade total para não se "fundirem" com o conteúdo por trás.
+      //
+      // Light (fix 2026-08-09, F5/C3): o mesmo véu preto translúcido
+      // (`alpha(black, surfaceOverlayTokens.card.light)`) ESCURECE sobre o
+      // canvas claro (`#EAEDF2`) em vez de clarear — elevação invertida, o
+      // card nasce mais escuro que a página que o envolve. `background.paper`
+      // sólido (`#F8F9FB`) restaura o sentido certo (card > canvas) com a
+      // mesma hairline de sempre. Dark permanece byte-idêntico — só o branch
+      // light muda.
       root: ({ theme }: { theme: Theme }) => ({
         borderRadius: radiusTokens.lg,
         backgroundColor:
           theme.palette.mode === "dark"
             ? alpha(theme.palette.common.white, surfaceOverlayTokens.card.dark)
-            : alpha(
-                theme.palette.common.black,
-                surfaceOverlayTokens.card.light,
-              ),
+            : theme.palette.background.paper,
         boxShadow: "none",
         border: `1px solid ${theme.palette.divider}`,
         transition: `all ${motionTokens.duration.slow} ${motionTokens.easing.default}`,

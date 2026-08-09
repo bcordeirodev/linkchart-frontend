@@ -5,6 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { formatHorizontalStackedBar } from "@/features/analytics/utils/chartFormatters";
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import { AnalyticsEmptyState, OverviewMetricRow } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -51,6 +52,7 @@ export function RetentionAnalysisChart({
     "value",
     undefined,
     i18n.language,
+    resolveDataVizCategorical(theme.palette.mode),
   );
 
   if (loading) {

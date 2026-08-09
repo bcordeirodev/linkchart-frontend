@@ -95,6 +95,13 @@ export function SessionDepthChart({
       enabled: true,
       formatter: (val: number) => `${val}%`,
       offsetY: -20,
+      // `offsetY: -20` lifts the label above the bar, onto the chart's own
+      // canvas/card background — which follows the active theme, not a
+      // fixed fill. Without an explicit color, ApexCharts' own default
+      // (fixed white) goes invisible over a short bar on a light card
+      // (achado F1, ajuste fino de temas 2026-08-09). `theme.palette.text.primary`
+      // is always legible there because it *is* the theme's text color.
+      style: { colors: [theme.palette.text.primary] },
     },
     xaxis: {
       categories: data.session_distribution.map((item) =>

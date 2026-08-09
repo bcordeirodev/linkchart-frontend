@@ -60,6 +60,19 @@ function EnhancedPaper({
       border: "none",
     },
     // `outlined` já é hairline-only e explícito — sem sombra, sem mudança.
+    // Confirmado em 2026-08-09 (F5/C3): este variant já usa
+    // `theme.palette.background.paper` sólido nos DOIS temas — é exatamente
+    // o "paper sólido igual ao card" que C3 pede para o light, e já era
+    // assim antes deste fix (dark permanece intocado). O véu translúcido que
+    // aparecia em `AnalyticsFilterBar`, `LinksQuickCreate`,
+    // `URLShortenerForm`, `ProfileSection`, `BioEditor`/`BioItemsSection`/
+    // `BioItemRow`, `SubdomainList`, `ApiKeyList`, `DangerZone` e
+    // `ReportsDateFilter` não vem daqui — cada um desses call sites espalha
+    // `sx={{ ...getCardSurfaceSx(theme) }}` por cima deste sólido depois de
+    // montar o `EnhancedPaper`, revertendo para o véu. Esses call sites estão
+    // fora do ownership deste arquivo nesta rodada; nenhuma mudança de código
+    // é necessária aqui — só o registro de que este componente já está
+    // correto e não é a causa do defeito.
     outlined: {
       backgroundColor: theme.palette.background.paper,
       border: `1px solid ${theme.palette.divider}`,

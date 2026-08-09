@@ -216,7 +216,17 @@ export function LinkAnalyticsTabsOptimized({
            moldura, a hierarquia vira literal: página < painel < cards. O
            cabeçalho tem um véu um passo mais forte que o corpo, e a barra de
            filtros fica FORA da moldura — controle global sobre o módulo, não
-           parte dele. */}
+           parte dele.
+
+           Conferido em 2026-08-09 (F5/C3): os véus abaixo (corpo 0.015,
+           cabeçalho 0.03) ficam INTOCADOS nos dois temas — não são o defeito.
+           No claro, o degrau canvas < painel < card só existia visualmente
+           antes da correção porque cards e painel usavam a mesma família de
+           véu preto translúcido (MuiCard também escurecia). Com o MuiCard
+           light corrigido para `background.paper` sólido
+           (`lib/theme/config/muiComponents.ts`), os cards dentro deste painel
+           voltam a ficar mais claros que ele, recompondo a hierarquia
+           página < painel < card sem tocar nestes dois valores. */}
       <Box
         sx={{
           mt: { xs: 2, md: 2.5 },
