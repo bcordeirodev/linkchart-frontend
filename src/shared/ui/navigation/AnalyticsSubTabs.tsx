@@ -195,10 +195,12 @@ export function AnalyticsSubTabs({
             // documented fix for disabled elements) would misdirect that
             // clone onto the wrapper instead, leaking unrelated props onto a
             // plain DOM `span` and breaking `Tabs`' selection wiring. Instead,
-            // the `Tab` stays the direct child — same fix `LinkActionsViewSwitch`
-            // uses for its disabled `ToggleButton` — and only its *label*
-            // content is Tooltip-wrapped, with `pointerEvents` restored on the
-            // disabled tab so hover still reaches that inner span.
+            // the `Tab` stays the direct child — the same fix any disabled
+            // MUI item with a tooltip needs (see the link detail header's
+            // overflow menu, which wraps only its `Box` content) — and only
+            // its *label* content is Tooltip-wrapped, with `pointerEvents`
+            // restored on the disabled tab so hover still reaches that inner
+            // span.
             const labelNode = showHint ? (
               <Tooltip title={disabledHint} arrow>
                 <Box component="span" sx={{ display: "inline-flex" }}>

@@ -130,7 +130,6 @@
     "deleteError": "Error deleting link. Please try again.",
     "back": "Back to links",
     "more": "More actions",
-    "viewSwitch": "Switch view",
     "analyticsDisabledTooltip": "No clicks yet — stats appear after the first click"
   },
   "form": {

@@ -1,15 +1,17 @@
 "use client";
 import {
   Box,
+  Divider,
   IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
+  Tooltip,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { MoreVertical, Trash2 } from "lucide-react";
+import { BarChart3, MoreVertical, Pencil, QrCode, Trash2 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -22,9 +24,9 @@ import { useNavigate } from "@/shared/hooks";
 import { LinkActionsBackLink } from "./LinkActionsBackLink";
 import { LinkActionsCopyButton } from "./LinkActionsCopyButton";
 import { LinkActionsTitleRow } from "./LinkActionsTitleRow";
-import { LinkActionsViewSwitch, type LinkView } from "./LinkActionsViewSwitch";
 
-export type { LinkView };
+/** One of the three sibling views of a single link. */
+export type LinkView = "analytics" | "edit" | "qr";
 
 export interface LinkActionsProps {
   linkId: string;
@@ -109,6 +111,50 @@ export function LinkActions({
     }
   }, [deleteLink, linkId, navigate, onDeleteSuccess]);
 
+  /**
+   * Destinos das três views irmãs — mesmo mapa que o antigo segmented
+   * control usava; agora alimenta os itens de navegação do menu ⋮.
+   */
+  const viewItems = useMemo(
+    () =>
+      [
+        {
+          id: "analytics" as const,
+          icon: BarChart3,
+          label: t("actions.analytics"),
+          path: `/links/analytics/${linkId}`,
+        },
+        {
+          id: "edit" as const,
+          icon: Pencil,
+          label: t("actions.edit"),
+          path: `/links/edit/${linkId}`,
+        },
+        {
+          id: "qr" as const,
+          icon: QrCode,
+          label: t("actions.qrCode"),
+          path: `/links/qr/${linkId}`,
+        },
+      ] satisfies {
+        id: LinkView;
+        icon: typeof BarChart3;
+        label: string;
+        path: string;
+      }[],
+    [linkId, t],
+  );
+
+  const handleNavigateView = useCallback(
+    (view: LinkView, path: string) => {
+      setMenuAnchor(null);
+      if (view !== currentView) {
+        navigate(path);
+      }
+    },
+    [currentView, navigate],
+  );
+
   const overflowTrigger = (
     <IconButton
       onClick={handleOpenMenu}
@@ -184,21 +230,58 @@ export function LinkActions({
         />
       ) : null}
 
-      {/* Row 3 — sibling-view navigation */}
-      <Box sx={{ maxWidth: { sm: 520 }, width: "100%" }}>
-        <LinkActionsViewSwitch
-          linkId={linkId}
-          currentView={currentView}
-          fullWidth={isMobile}
-          clicks={clicks}
-        />
-      </Box>
-
       <Menu
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
         onClose={handleCloseMenu}
       >
+        {viewItems.map(({ id, icon: Icon, label, path }) => {
+          // Nunca desabilitar a view em que o usuário já está — chegar por
+          // URL direta em /links/analytics/{id} não pode acinzentar o item
+          // marcado (mesma regra do antigo segmented control).
+          const disabled =
+            id === "analytics" &&
+            clicks !== undefined &&
+            clicks <= 0 &&
+            currentView !== "analytics";
+
+          return (
+            <MenuItem
+              key={id}
+              selected={id === currentView}
+              aria-current={id === currentView ? "page" : undefined}
+              disabled={disabled}
+              onClick={() => handleNavigateView(id, path)}
+              sx={
+                disabled
+                  ? {
+                      // MUI mata pointer events em item desabilitado — e junto
+                      // o hover do Tooltip que explica o porquê.
+                      "&.Mui-disabled": {
+                        pointerEvents: "auto",
+                        cursor: "not-allowed",
+                      },
+                    }
+                  : undefined
+              }
+            >
+              <Tooltip
+                title={disabled ? t("actions.analyticsDisabledTooltip") : ""}
+                arrow
+              >
+                <Box
+                  sx={{ display: "flex", alignItems: "center", width: "100%" }}
+                >
+                  <ListItemIcon>
+                    <Icon {...ICON_MD} />
+                  </ListItemIcon>
+                  <ListItemText>{label}</ListItemText>
+                </Box>
+              </Tooltip>
+            </MenuItem>
+          );
+        })}
+        <Divider />
         <MenuItem
           onClick={handleRequestDelete}
           disabled={isDeleting}

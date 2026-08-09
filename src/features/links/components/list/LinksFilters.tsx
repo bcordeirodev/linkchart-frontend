@@ -49,10 +49,10 @@ const ALL_TAGS_VALUE = "all";
 
 /**
  * Track + selected-segment styling for the STATUS instrument — the same
- * "attached pill group, active segment filled" language as
- * `LinkActionsViewSwitch` (the link detail header's Analytics/Editar/QR
- * switch): a low-contrast track (`action.hover`) holding pill-shaped
- * segments, with the active one filled by `background.paper` plus a
+ * "attached pill group, active segment filled" language used across the
+ * app's segmented controls (see `segmentedControl.ts`): a low-contrast
+ * track (`action.hover`) holding pill-shaped segments, with the active one
+ * filled by `background.paper` plus a
  * level-1 shadow so it reads as "pressed in", not just a color swap. Reused
  * here instead of loose outlined chips so STATUS carries visual weight
  * proportional to being the primary filter in this strip.
@@ -182,8 +182,10 @@ export function LinksFilters({
   /**
    * Ignores the `null` MUI emits when the user clicks the already-active
    * segment of an `exclusive` `ToggleButtonGroup` — STATUS always has one
-   * active option, so a click on the current one is a no-op (same guard
-   * `LinkActionsViewSwitch` uses).
+   * active option, so a click on the current one is a no-op (the same guard
+   * any exclusive `ToggleButtonGroup` in the app needs). The link detail
+   * header's Analytics/Editar/QR switch used to share this guard before its
+   * navigation moved into the header's overflow menu on 2026-08-09.
    */
   const handleStatusChange = (
     _event: React.MouseEvent<HTMLElement>,

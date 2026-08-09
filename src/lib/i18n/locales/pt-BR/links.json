@@ -130,7 +130,6 @@
     "deleteError": "Erro ao excluir link. Tente novamente.",
     "back": "Voltar para links",
     "more": "Mais ações",
-    "viewSwitch": "Trocar visualização",
     "analyticsDisabledTooltip": "Sem cliques ainda — as estatísticas aparecem depois do primeiro clique"
   },
   "form": {
