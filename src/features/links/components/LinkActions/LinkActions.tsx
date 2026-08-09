@@ -15,6 +15,8 @@ import { BarChart3, MoreVertical, Pencil, QrCode, Trash2 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import type { LucideIcon } from "lucide-react";
+
 import { DeleteConfirmDialog } from "@/features/links/components/list/DeleteConfirmDialog";
 import { useDeleteLink } from "@/features/links/hooks/useLinks";
 import { getShortUrl } from "@/lib/utils/shortUrl";
@@ -35,9 +37,9 @@ export interface LinkActionsProps {
   shortUrl?: string;
   title?: string;
   /**
-   * Click count, when the page already has it. Forwarded to the view switch,
-   * which disables the Analytics tab while the link has no clicks to show.
-   * Leave undefined when unknown — the tab then stays enabled.
+   * Click count, when the page already has it. Forwarded to the overflow
+   * menu, which disables its Analytics item while the link has no clicks to
+   * show. Leave undefined when unknown — the tab then stays enabled.
    */
   clicks?: number;
   onDeleteSuccess?: () => void;
@@ -138,7 +140,7 @@ export function LinkActions({
         },
       ] satisfies {
         id: LinkView;
-        icon: typeof BarChart3;
+        icon: LucideIcon;
         label: string;
         path: string;
       }[],
@@ -147,12 +149,12 @@ export function LinkActions({
 
   const handleNavigateView = useCallback(
     (view: LinkView, path: string) => {
-      setMenuAnchor(null);
+      handleCloseMenu();
       if (view !== currentView) {
         navigate(path);
       }
     },
-    [currentView, navigate],
+    [currentView, handleCloseMenu, navigate],
   );
 
   const overflowTrigger = (
@@ -251,7 +253,9 @@ export function LinkActions({
               selected={id === currentView}
               aria-current={id === currentView ? "page" : undefined}
               disabled={disabled}
-              onClick={() => handleNavigateView(id, path)}
+              onClick={
+                disabled ? undefined : () => handleNavigateView(id, path)
+              }
               sx={
                 disabled
                   ? {
@@ -281,7 +285,7 @@ export function LinkActions({
             </MenuItem>
           );
         })}
-        <Divider />
+        <Divider component="li" role="separator" />
         <MenuItem
           onClick={handleRequestDelete}
           disabled={isDeleting}
