@@ -197,7 +197,18 @@ export function OverviewMetricRow({
                 color: "text.secondary",
                 fontWeight: 500,
                 mb: isCompact ? 0.25 : 0.5,
-                minHeight: labelMinHeight,
+                // `spansFullRow` is an `xs`-only condition (it drives
+                // `gridColumn: "span 2"`, which only means anything under the
+                // `xs` grid) — the full-row item has no sibling on its own
+                // line to desync from, so its `xs` reservation zeroes out
+                // while `sm`+, where it is just another cell in the shared
+                // row, keeps the same reservation as everyone else.
+                minHeight: labelMinHeight
+                  ? {
+                      ...labelMinHeight,
+                      xs: spansFullRow ? "auto" : labelMinHeight.xs,
+                    }
+                  : undefined,
               }}
             >
               {metric.label}

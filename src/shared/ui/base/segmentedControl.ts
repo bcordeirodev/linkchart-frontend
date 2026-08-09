@@ -7,12 +7,12 @@ import type { Theme } from "@mui/material/styles";
 /**
  * Track + selected-segment `sx` for an attached-pill `ToggleButtonGroup` —
  * the "instrument strip" segmented-control language approved on `/links`
- * (`LinksFilters.tsx`'s STATUS control). The link detail header's
- * Analytics/Editar/QR switch used to share this same language before its
- * navigation moved into the header's overflow menu on 2026-08-09: a
- * low-contrast track (`action.hover`) holding pill-shaped segments, with the
- * active one filled by `background.paper` plus a level-1 shadow so it reads
- * as "pressed in", not just a color swap.
+ * (`LinksFilters.tsx`'s STATUS control): a low-contrast track
+ * (`action.hover`) holding pill-shaped segments, with the active one filled
+ * by `background.paper` plus a level-1 shadow so it reads as "pressed in",
+ * not just a color swap. The link detail header's Analytics/Editar/QR switch
+ * used to share this same language before its navigation moved into the
+ * header's overflow menu on 2026-08-08.
  *
  * Extracted 2026-08-04 so the analytics screen's period/segment/continent
  * controls can mirror `/links` exactly instead of the outlined,

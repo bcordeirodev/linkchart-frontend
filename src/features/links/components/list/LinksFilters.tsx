@@ -185,7 +185,7 @@ export function LinksFilters({
    * active option, so a click on the current one is a no-op (the same guard
    * any exclusive `ToggleButtonGroup` in the app needs). The link detail
    * header's Analytics/Editar/QR switch used to share this guard before its
-   * navigation moved into the header's overflow menu on 2026-08-09.
+   * navigation moved into the header's overflow menu on 2026-08-08.
    */
   const handleStatusChange = (
     _event: React.MouseEvent<HTMLElement>,
