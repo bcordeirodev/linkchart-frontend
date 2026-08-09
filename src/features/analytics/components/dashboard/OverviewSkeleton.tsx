@@ -12,20 +12,29 @@ import { radiusTokens } from "@/lib/theme/designSystem";
 export function OverviewSkeleton() {
   return (
     <Box>
-      {/* Metric row — 5 hairline-separated numbers, no card/icon-chip,
-          mirroring OverviewMetricRow's own layout. */}
+      {/* Metric row — mirrors OverviewMetricRow (size="md", 5 metrics):
+          2-col grid on xs with the 5th metric spanning the full row,
+          single hairline-separated row from sm up. Number skeleton height
+          tracks the compact value size (2rem × 1.1 line-height ≈ 36px). */}
       <Box
         sx={{
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          gap: { xs: 2, sm: 3 },
+          display: { xs: "grid", sm: "flex" },
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: { xs: 1.5, sm: 3 },
           mb: { xs: 2, md: 3 },
         }}
       >
         {Array.from({ length: 5 }).map((_, i) => (
-          <Box key={i} sx={{ flex: 1, minWidth: 0 }}>
-            <Skeleton variant="text" animation="wave" width="60%" height={20} />
-            <Skeleton variant="text" animation="wave" width="80%" height={44} />
+          <Box
+            key={i}
+            sx={{
+              flex: { sm: 1 },
+              minWidth: 0,
+              gridColumn: i === 4 ? "span 2" : undefined,
+            }}
+          >
+            <Skeleton variant="text" animation="wave" width="60%" height={18} />
+            <Skeleton variant="text" animation="wave" width="80%" height={36} />
           </Box>
         ))}
       </Box>
