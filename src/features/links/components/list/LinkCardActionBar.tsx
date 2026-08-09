@@ -16,7 +16,7 @@ import {
 import type { SxProps, Theme } from "@mui/material";
 
 const ACTION_HEIGHT = 36;
-/** Taller copy control on touch viewports (≥44px tap target) when analytics moves to the card body. */
+/** Taller copy/Analytics controls on touch viewports (≥44px tap target). */
 const ACTION_HEIGHT_TOUCH = { xs: 44, sm: ACTION_HEIGHT } as const;
 const ANALYTICS_MIN_WIDTH = { xs: 128, sm: 152 };
 
@@ -25,13 +25,6 @@ interface LinkCardActionBarProps {
   displayUrl?: string;
   onAnalytics: () => void;
   withTopBorder?: boolean;
-  /**
-   * How the user reaches analytics from this card.
-   * - `"inline"` (default, desktop): renders the Analytics button beside copy.
-   * - `"card"` (mobile): hides the Analytics button (the card body is tappable
-   *   instead) and lets the copy control fill the row at a ≥44px tap height.
-   */
-  analyticsAccess?: "inline" | "card";
   /**
    * Whether this link has anything to show in the dashboard yet.
    *
@@ -42,6 +35,16 @@ interface LinkCardActionBarProps {
    * @default true
    */
   showAnalytics?: boolean;
+  /**
+   * Renders the copy control and the Analytics button at a ≥44px touch
+   * target height (`ACTION_HEIGHT_TOUCH`) instead of the compact desktop
+   * height, and gives the copy control an inset background at rest (a
+   * stronger affordance than the transparent desktop idle state). Set by
+   * mobile card call sites; the desktop card leaves this at the default.
+   *
+   * @default false
+   */
+  touchTargets?: boolean;
   sx?: SxProps<Theme>;
 }
 
@@ -53,8 +56,8 @@ export function LinkCardActionBar({
   displayUrl: displayUrlProp,
   onAnalytics,
   withTopBorder = false,
-  analyticsAccess = "inline",
   showAnalytics = true,
+  touchTargets = false,
   sx,
 }: LinkCardActionBarProps) {
   const theme = useTheme();
@@ -91,10 +94,9 @@ export function LinkCardActionBar({
     : isDark
       ? theme.palette.common.white
       : theme.palette.text.primary;
-  // Desktop ("inline"): linha limpa, sem caixa — o hover revela a ação.
-  // Mobile ("card"): fundo inset (nível 1) mantém a affordance de toque.
-  const copyBgIdle =
-    analyticsAccess === "card" ? getLinksInsetBg(theme) : "transparent";
+  // Desktop: linha limpa, sem caixa — o hover revela a ação.
+  // Mobile (`touchTargets`): fundo inset (nível 1) mantém a affordance de toque.
+  const copyBgIdle = touchTargets ? getLinksInsetBg(theme) : "transparent";
   const copyBgCopied = isDark ? alpha(success, 0.1) : alpha(success, 0.06);
 
   return (
@@ -130,10 +132,8 @@ export function LinkCardActionBar({
           sx={{
             flex: 1,
             minWidth: 0,
-            height:
-              analyticsAccess === "card" ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
-            minHeight:
-              analyticsAccess === "card" ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
+            height: touchTargets ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
+            minHeight: touchTargets ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
             borderRadius: `${linksRadius.control}px`,
             textTransform: "none",
             justifyContent: "flex-start",
@@ -206,13 +206,13 @@ export function LinkCardActionBar({
         </Button>
       </Tooltip>
 
-      {analyticsAccess === "inline" && showAnalytics ? (
+      {showAnalytics ? (
         <Tooltip title={t("actions.viewAnalytics", { ns: "common" })}>
           <Box
             data-tour="analytics"
             sx={{
               flexShrink: 0,
-              height: ACTION_HEIGHT,
+              height: touchTargets ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
               display: "flex",
               alignItems: "stretch",
             }}
@@ -228,8 +228,8 @@ export function LinkCardActionBar({
                 onAnalytics();
               }}
               sx={{
-                height: ACTION_HEIGHT,
-                minHeight: ACTION_HEIGHT,
+                height: touchTargets ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
+                minHeight: touchTargets ? ACTION_HEIGHT_TOUCH : ACTION_HEIGHT,
                 minWidth: ANALYTICS_MIN_WIDTH,
                 width: {
                   xs: ANALYTICS_MIN_WIDTH.xs,

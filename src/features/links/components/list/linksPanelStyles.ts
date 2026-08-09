@@ -50,7 +50,7 @@ export function getLinkCardInnerBorderColor(theme: Theme) {
 /**
  * Superfície recuada (inset) dentro de um card ou controle de link. Dois
  * consumidores: o fundo do controle de copiar no card mobile
- * (`LinkCardActionBar`, `analyticsAccess === "card"`) e o addon de domínio do
+ * (`LinkCardActionBar`, `touchTargets`) e o addon de domínio do
  * input group de link curto (`QuickCreateLinkStrip`) — nos dois casos é o
  * segmento que *não* se digita, um degrau acima do preenchimento ao redor
  * (`getLinksControlFillBg` no input group, `getLinkCardShellSx` no card).

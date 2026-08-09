@@ -5,12 +5,14 @@
  * Optimised card list for narrow viewports. Each card shows:
  * - Favicon, title, status chip and overflow menu in the header row
  * - Destination URL (truncated)
- * - Action zone: click-to-copy short-URL strip (analytics lives on the card body tap)
+ * - Action zone: click-to-copy short-URL strip + Analytics button, both at a
+ *   ≥44px touch target height (`LinkCardActionBar`, `touchTargets`)
  * - Compact metrics footer via LinkCardMetrics (variant="compact")
  *
- * The card body only opens analytics once the link has at least one click —
- * mirroring the desktop CTA, which is hidden until then. Copy and the overflow
- * menu stay available either way.
+ * The Analytics button only renders once the link has at least one click —
+ * mirroring the desktop card, which hides the same CTA until then. Tapping
+ * the card body is a redundant shortcut to the same destination (gated by
+ * the same rule); copy and the overflow menu stay available either way.
  *
  * Shell styles match the desktop card via `getLinkCardShellSx`.
  */
@@ -145,17 +147,17 @@ const LinkMobileCard = memo(
       });
     }, [toggleActiveMutation, link.id, link.is_active]);
 
-    // No mobile o corpo do card *é* o botão de estatísticas (não há CTA na
-    // linha de ações). Sem clique não há dashboard, então o card deixa de ser
-    // alvo de toque — mesma regra do CTA no desktop, sem levar ninguém para uma
-    // tela vazia. Copiar e o menu de ações seguem funcionando.
+    // O botão Estatísticas do action bar é a affordance visível — mesma regra
+    // do CTA no desktop: sem cliques, sem CTA, para não abrir um dashboard
+    // vazio. O tap no corpo do card segue funcionando como atalho redundante,
+    // com o mesmo gate. Copiar e o menu de ações seguem disponíveis sempre.
     const hasClicks = (link.clicks ?? 0) > 0;
     const isInteractive = selectionMode || hasClicks;
 
-    /** Navigate to the link's analytics view (card body is the tap target). */
+    /** Navigate to the link's analytics view; shared by the Analytics button and the card body tap. */
     const goToAnalytics = () => navigate(`/links/analytics/${link.id}`);
 
-    /** Card body tap target: toggles selection in selection mode, opens analytics otherwise. */
+    /** Card body tap target: toggles selection in selection mode, opens analytics otherwise (redundant with the Analytics button). */
     const handleCardActivate = () => {
       if (selectionMode) {
         onToggleSelect?.(String(link.id));
@@ -311,7 +313,8 @@ const LinkMobileCard = memo(
             <LinkCardActionBar
               shortUrl={shortUrl}
               displayUrl={displayUrl}
-              analyticsAccess="card"
+              showAnalytics={hasClicks}
+              touchTargets
               onAnalytics={goToAnalytics}
               sx={{ mb: 0.75 }}
             />
