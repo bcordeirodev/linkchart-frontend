@@ -54,3 +54,8 @@ next-env.d.ts
 /e2e/.auth/
 .env.e2e.local
 .superpowers/
+
+# --- Hardening: ignora .env locais com segredos; mantem .env.example e .env.production (so IDs publicos) ---
+.env
+.env.local
+.env.*.local
