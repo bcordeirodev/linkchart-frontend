@@ -6,7 +6,7 @@
 
 **Architecture:** Phase 1 eliminates the BrowserRouter/MemoryRouter SSR crutch that currently prevents true Server-Side Rendering in every route. Phase 2 fixes the biggest SEO regression (redirect page has no OG tags for bots). Phase 3 adds the infrastructure Next.js makes trivial. Phase 4 ships to production.
 
-**Tech Stack:** Next.js 15 App Router, `next/navigation` (useRouter/usePathname/useSearchParams), `next/link`, `next/font`, middleware.ts, GitHub Actions, DigitalOcean droplet (134.209.33.182), nginx, Docker standalone build.
+**Tech Stack:** Next.js 15 App Router, `next/navigation` (useRouter/usePathname/useSearchParams), `next/link`, `next/font`, middleware.ts, GitHub Actions, DigitalOcean droplet (<DEPLOY_HOST>), nginx, Docker standalone build.
 
 ---
 
@@ -1397,7 +1397,7 @@ The existing Vite pipeline is at `frontend/.github/workflows/deploy-production.y
 
 Production server details (from memory):
 
-- SSH: `root@134.209.33.182`
+- SSH: `root@<DEPLOY_HOST>`
 - App path: `/var/www/linkchart-frontend`
 - Current frontend container: `linkcharts-frontend-prod` (Vite, maps `3000:80`)
 - Target Next.js container: map `3001:3000` during parallel running, then switch to `3000:3000` at cutover
@@ -1566,7 +1566,7 @@ services:
 - [ ] **Step 4: Create the deployment directory on production server**
 
 ```bash
-ssh root@134.209.33.182 "mkdir -p /var/www/linkchart-frontend-next"
+ssh root@<DEPLOY_HOST> "mkdir -p /var/www/linkchart-frontend-next"
 ```
 
 - [ ] **Step 5: Push the workflow to GitHub to trigger CI**
@@ -1604,7 +1604,7 @@ Go to the repository's Actions tab and confirm:
 - [ ] **Step 1: Verify current nginx config (on production)**
 
 ```bash
-ssh root@134.209.33.182 "cat /etc/nginx/sites-available/linkchart-frontend | grep proxy_pass"
+ssh root@<DEPLOY_HOST> "cat /etc/nginx/sites-available/linkchart-frontend | grep proxy_pass"
 ```
 
 Expected output shows current upstream — likely `proxy_pass http://127.0.0.1:3000`.
@@ -1614,7 +1614,7 @@ Expected output shows current upstream — likely `proxy_pass http://127.0.0.1:3
 From the previous task, the container is already running on 3001. Confirm:
 
 ```bash
-ssh root@134.209.33.182 "docker ps | grep frontend"
+ssh root@<DEPLOY_HOST> "docker ps | grep frontend"
 ```
 
 Expected: both `linkcharts-frontend-prod` (port 3000) and `linkcharts-frontend-next-prod` (port 3001) running.
@@ -1622,9 +1622,9 @@ Expected: both `linkcharts-frontend-prod` (port 3000) and `linkcharts-frontend-n
 - [ ] **Step 3: Smoke test the Next.js container directly**
 
 ```bash
-ssh root@134.209.33.182 "curl -s http://localhost:3001/api/health"
-ssh root@134.209.33.182 "curl -sI http://localhost:3001/ | head -5"
-ssh root@134.209.33.182 "curl -s http://localhost:3001/sitemap.xml | head -5"
+ssh root@<DEPLOY_HOST> "curl -s http://localhost:3001/api/health"
+ssh root@<DEPLOY_HOST> "curl -sI http://localhost:3001/ | head -5"
+ssh root@<DEPLOY_HOST> "curl -s http://localhost:3001/sitemap.xml | head -5"
 ```
 
 All should return valid responses.
@@ -1648,13 +1648,13 @@ Expected: `X-Frame-Options: DENY` header (added by Next.js middleware — proof 
 - [ ] **Step 6: Monitor for 5 minutes**
 
 ```bash
-ssh root@134.209.33.182 "docker logs linkcharts-frontend-next-prod --tail 50 -f"
+ssh root@<DEPLOY_HOST> "docker logs linkcharts-frontend-next-prod --tail 50 -f"
 ```
 
 Watch for any 500 errors. If critical errors appear, rollback immediately:
 
 ```bash
-ssh root@134.209.33.182 "sed -i 's|proxy_pass http://127.0.0.1:3001|proxy_pass http://127.0.0.1:3000|g' /etc/nginx/sites-available/linkchart-frontend && systemctl reload nginx"
+ssh root@<DEPLOY_HOST> "sed -i 's|proxy_pass http://127.0.0.1:3001|proxy_pass http://127.0.0.1:3000|g' /etc/nginx/sites-available/linkchart-frontend && systemctl reload nginx"
 ```
 
 - [ ] **Step 7: Update docker-compose.prod.yml to port 3000 (final)**
@@ -1662,7 +1662,7 @@ ssh root@134.209.33.182 "sed -i 's|proxy_pass http://127.0.0.1:3001|proxy_pass h
 Once Next.js is stable, update `docker-compose.prod.yml`: change `"3001:3000"` to `"3000:3000"`. Also stop the Vite container:
 
 ```bash
-ssh root@134.209.33.182 "docker stop linkcharts-frontend-prod"
+ssh root@<DEPLOY_HOST> "docker stop linkcharts-frontend-prod"
 ```
 
 Update nginx back to port 3000. Deploy updated `docker-compose.prod.yml`.
