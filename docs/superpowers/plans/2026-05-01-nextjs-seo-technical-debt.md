@@ -1632,7 +1632,7 @@ All should return valid responses.
 - [ ] **Step 4: Switch nginx to port 3001**
 
 ```bash
-ssh root@134.209.33.212 "sed -i 's|proxy_pass http://127.0.0.1:3000|proxy_pass http://127.0.0.1:3001|g' /etc/nginx/sites-available/linkchart-frontend && nginx -t && systemctl reload nginx"
+ssh root@<DEPLOY_HOST> "sed -i 's|proxy_pass http://127.0.0.1:3000|proxy_pass http://127.0.0.1:3001|g' /etc/nginx/sites-available/linkchart-frontend && nginx -t && systemctl reload nginx"
 ```
 
 - [ ] **Step 5: Verify production is serving Next.js**
