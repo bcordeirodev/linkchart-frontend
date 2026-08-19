@@ -357,6 +357,16 @@
       "checked_ago": "Checked {{time}} ago"
     }
   },
+  "quality": {
+    "organic": "Organic traffic",
+    "suspicious": "Suspicious traffic",
+    "likely_fraud": "Possible fraud",
+    "tooltip": {
+      "organic": "{{pct}}% of the last 30 days' clicks are organic (not bots)",
+      "suspicious": "Only {{pct}}% of the last 30 days' clicks look organic — worth checking the traffic source",
+      "likely_fraud": "Only {{pct}}% of the last 30 days' clicks look organic — strong sign of automated traffic"
+    }
+  },
   "analytics": {
     "clicksTable": {
       "title": "Recent Clicks",
@@ -426,5 +436,18 @@
     "createTag": "Failed to create tag",
     "updateTag": "Failed to update tag",
     "deleteTag": "Failed to delete tag"
+  },
+  "viewTitles": {
+    "analytics": "Link analytics",
+    "edit": "Edit link",
+    "qr": "Link QR code"
+  },
+  "viewDescriptions": {
+    "analytics": "Clicks, audience, places and sources for this link in real time.",
+    "edit": "Adjust the destination, title and options for this link.",
+    "qr": "Download and share the QR code for this link."
+  },
+  "linkIdentity": {
+    "createdAgo": "created {{time}}"
   }
 }

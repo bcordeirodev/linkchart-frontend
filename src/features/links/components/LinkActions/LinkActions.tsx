@@ -37,6 +37,12 @@ export interface LinkActionsProps {
   shortUrl?: string;
   title?: string;
   /**
+   * `created_at` do link como veio da API (`dd/MM/yyyy HH:mm:ss` do
+   * `LinkResource` ou ISO) — alimenta o "criado há X dias" da linha de
+   * identidade do header. Omitido enquanto o link não carregou.
+   */
+  createdAt?: string;
+  /**
    * Click count, when the page already has it. Forwarded to the overflow
    * menu, which disables its Analytics item while the link has no clicks to
    * show. Leave undefined when unknown — the tab then stays enabled.
@@ -51,6 +57,7 @@ export function LinkActions({
   slug,
   shortUrl: shortUrlProp,
   title,
+  createdAt,
   clicks,
   onDeleteSuccess,
 }: LinkActionsProps) {
@@ -77,6 +84,13 @@ export function LinkActions({
     }
     return "";
   }, [slug, shortUrlProp]);
+
+  /**
+   * Nome pelo qual a linha de identidade se refere ao link: o título dado
+   * pelo usuário ou, sem título, a URL curta sem protocolo (ruído numa
+   * linha de leitura). Vazio enquanto nada carregou — a linha não renderiza.
+   */
+  const linkDisplayName = title || resolvedShortUrl.replace(/^https?:\/\//, "");
 
   const isDeleting = deleteLink.isPending;
 
@@ -217,9 +231,13 @@ export function LinkActions({
         </Box>
       </Box>
 
-      {/* Row 2 — identity: title + short URL, full width */}
+      {/* Row 2 — identity: page title + description + link identity line
+          ("LINK …, criado há X dias") + short URL on mobile, full width */}
       <LinkActionsTitleRow
-        title={title}
+        pageTitle={t(`viewTitles.${currentView}`)}
+        description={t(`viewDescriptions.${currentView}`)}
+        linkName={linkDisplayName || undefined}
+        createdAt={createdAt}
         shortUrl={resolvedShortUrl || undefined}
       />
 

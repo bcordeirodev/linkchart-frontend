@@ -357,6 +357,16 @@
       "checked_ago": "Verificado {{time}}"
     }
   },
+  "quality": {
+    "organic": "Tráfego orgânico",
+    "suspicious": "Tráfego suspeito",
+    "likely_fraud": "Possível fraude",
+    "tooltip": {
+      "organic": "{{pct}}% dos cliques dos últimos 30 dias são orgânicos (não bots)",
+      "suspicious": "Só {{pct}}% dos cliques dos últimos 30 dias parecem orgânicos — vale conferir a origem do tráfego",
+      "likely_fraud": "Só {{pct}}% dos cliques dos últimos 30 dias parecem orgânicos — forte sinal de tráfego automatizado"
+    }
+  },
   "analytics": {
     "clicksTable": {
       "title": "Cliques Recentes",
@@ -426,5 +436,18 @@
     "createTag": "Erro ao criar tag",
     "updateTag": "Erro ao atualizar tag",
     "deleteTag": "Erro ao excluir tag"
+  },
+  "viewTitles": {
+    "analytics": "Estatísticas do link",
+    "edit": "Editar link",
+    "qr": "QR Code do link"
+  },
+  "viewDescriptions": {
+    "analytics": "Cliques, público, lugares e origens deste link em tempo real.",
+    "edit": "Ajuste o destino, o título e as opções deste link.",
+    "qr": "Baixe e compartilhe o QR Code deste link."
+  },
+  "linkIdentity": {
+    "createdAgo": "criado {{time}}"
   }
 }

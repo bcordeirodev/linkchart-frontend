@@ -81,6 +81,7 @@ function LinkEditPage({ id }: Props) {
                 slug={link.slug || link.custom_slug}
                 shortUrl={link.short_url}
                 title={link.title}
+                createdAt={link.created_at}
                 clicks={link.clicks}
                 onDeleteSuccess={handleDeleteSuccess}
               />

@@ -35,7 +35,7 @@ function LinkAnalyticsPage({ id }: Props) {
   if (!id) {
     return (
       <AuthGuardRedirect auth={["user", "admin"]}>
-        <ResponsiveContainer variant="page">
+        <ResponsiveContainer variant="page" sx={{ maxWidth: 1600 }}>
           <Alert severity="error">{t("dashboard.missingId")}</Alert>
         </ResponsiveContainer>
       </AuthGuardRedirect>
@@ -44,7 +44,10 @@ function LinkAnalyticsPage({ id }: Props) {
 
   return (
     <AuthGuardRedirect auth={["user", "admin"]}>
-      <ResponsiveContainer variant="page">
+      {/* Mesmo teto de largura da lista (/links) — as duas telas de análise
+          compartilham o mesmo canvas; edit/qr continuam em `md` de propósito
+          (são formulários). */}
+      <ResponsiveContainer variant="page" sx={{ maxWidth: 1600 }}>
         <Box className="reveal reveal-1">
           <LinkActions
             linkId={id}
@@ -52,6 +55,7 @@ function LinkAnalyticsPage({ id }: Props) {
             slug={linkInfo?.slug}
             shortUrl={linkInfo?.short_url}
             title={linkInfo?.title}
+            createdAt={linkInfo?.created_at}
           />
         </Box>
 
