@@ -82,7 +82,10 @@
     "copyFailed": "Could not copy",
     "saved": "Saved successfully",
     "deleted": "Deleted successfully",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "closeMessage": "Close message",
+    "queuedMessages_one": "{{count}} message queued",
+    "queuedMessages_other": "{{count}} messages queued"
   },
   "loading": {
     "default": "Loading...",
@@ -127,6 +130,8 @@
     "supportCode": "Support code: {{code}}",
     "retry": "Try again",
     "reload": "Reload page",
-    "devDetails": "Error details (development)"
+    "devDetails": "Error details (development)",
+    "homeButton": "Home",
+    "suggestionsLabel": "Maybe you are looking for:"
   }
 }

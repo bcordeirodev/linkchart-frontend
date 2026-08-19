@@ -7,6 +7,7 @@ import { Check, Minus, X } from "lucide-react";
 import { typographyScale } from "@/lib/theme";
 import {
   getPublicElevatedSx,
+  getPublicFineprintSx,
   publicHairline,
 } from "@/lib/theme/publicPageStyles";
 
@@ -299,12 +300,7 @@ export function CompareTable({
       {disclaimer && (
         <Typography
           component="p"
-          sx={{
-            mt: 1.25,
-            fontSize: "0.75rem",
-            lineHeight: 1.55,
-            color: theme.palette.text.disabled,
-          }}
+          sx={{ ...getPublicFineprintSx(theme), mt: 1.25 }}
         >
           {disclaimer}
         </Typography>

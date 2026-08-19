@@ -69,18 +69,6 @@ export function getPublicElevatedSx(theme: Theme): SxProps<Theme> {
   };
 }
 
-/** Metric cards grid on public analytics. */
-export function getPublicMetricCardSx(
-  theme: Theme,
-  accent = false,
-): SxProps<Theme> {
-  return {
-    ...getPublicInsetSx(theme, accent ? { primaryTint: true } : undefined),
-    p: { xs: "18px", md: "20px" },
-    minHeight: { xs: 116, md: 128 },
-  };
-}
-
 /**
  * Centered section label — e.g. “Como Funciona”, “Números que Impressionam”.
  * Use on standalone sections (not titles inside a card header row).
@@ -146,17 +134,22 @@ export function getPublicBlockIconShellSx(
   };
 }
 
-/** Small chips / step cards on public landing pages. */
-export function getPublicChipSx(theme: Theme): SxProps<Theme> {
+/**
+ * Fine print under a block — sources, fact-check dates, "what changed" notes.
+ *
+ * Deliberately **not** `text.disabled`: that token is 0.32 alpha in dark, which
+ * over the public canvas (#0B0D12) lands at ~2.8:1 contrast — below the 4.5:1
+ * floor for 12px text, on copy that carries the page's honesty claims. The
+ * tertiary step (0.52) reads at ~5:1 while staying a clear notch below body
+ * copy, so the hierarchy the disabled tone was reaching for survives.
+ */
+export function getPublicFineprintSx(theme: Theme): SxProps<Theme> {
+  const isDark = theme.palette.mode === "dark";
+
   return {
-    ...getPublicInsetSx(theme),
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 0.75,
-    px: 1.5,
-    py: 0.625,
-    borderRadius: `${radiusTokens.sm}px`,
-    boxShadow: "none",
+    fontSize: "0.75rem",
+    lineHeight: 1.55,
+    color: alpha(theme.palette.text.primary, isDark ? 0.52 : 0.55),
   };
 }
 
@@ -210,36 +203,5 @@ export function getPublicDisplaySx(theme: Theme): SxProps<Theme> {
     lineHeight: 1.12,
     letterSpacing: "-0.02em",
     color: alpha(theme.palette.text.primary, isDark ? 0.96 : 1),
-  };
-}
-
-/**
- * Chart cards inside public analytics — flat, soft border, no shadow.
- *
- * Drops the gradient overlay and aligns the surface to the same flat inset
- * tint used by the metric tiles ({@link getPublicInsetSx}) so the chart boxes
- * read as part of the same family rather than a distinct, glossier surface.
- */
-export function getPublicChartCardOverrideSx(theme: Theme): SxProps<Theme> {
-  const isDark = theme.palette.mode === "dark";
-  const hairline = publicHairline(theme, "inset");
-
-  return {
-    "& .MuiCard-root": {
-      border: `1px solid ${hairline}`,
-      boxShadow: "none",
-      borderRadius: `${radiusTokens.md}px`,
-      backgroundImage: "none",
-      bgcolor: alpha(theme.palette.text.primary, isDark ? 0.03 : 0.035),
-    },
-    "& .MuiCardContent-root .MuiTypography-h5": {
-      fontSize: "0.8125rem",
-      fontWeight: 600,
-      letterSpacing: "0.02em",
-      ...(isDark ? { color: alpha(theme.palette.text.primary, 0.82) } : {}),
-    },
-    "& .MuiCardContent-root .MuiTypography-body2": {
-      ...(isDark ? { color: alpha(theme.palette.text.primary, 0.68) } : {}),
-    },
   };
 }

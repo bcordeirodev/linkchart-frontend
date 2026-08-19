@@ -82,7 +82,10 @@
     "copyFailed": "Não foi possível copiar",
     "saved": "Salvo com sucesso",
     "deleted": "Excluído com sucesso",
-    "error": "Algo deu errado. Tente novamente."
+    "error": "Algo deu errado. Tente novamente.",
+    "closeMessage": "Fechar mensagem",
+    "queuedMessages_one": "{{count}} mensagem na fila",
+    "queuedMessages_other": "{{count}} mensagens na fila"
   },
   "loading": {
     "default": "Carregando...",
@@ -127,6 +130,8 @@
     "supportCode": "Código para o suporte: {{code}}",
     "retry": "Tentar novamente",
     "reload": "Recarregar página",
-    "devDetails": "Detalhes do erro (desenvolvimento)"
+    "devDetails": "Detalhes do erro (desenvolvimento)",
+    "homeButton": "Início",
+    "suggestionsLabel": "Talvez você esteja procurando:"
   }
 }

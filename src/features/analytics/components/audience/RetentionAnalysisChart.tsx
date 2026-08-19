@@ -113,6 +113,11 @@ export function RetentionAnalysisChart({
         <OverviewMetricRow
           size="md"
           labelLines={2}
+          // `nested`: esta fileira vive dentro do `ChartCard`. Desde o
+          // redesenho de tiles (2026-08-17) o tile precisa do degrau de
+          // elevação — com a superfície de card ele sumiria contra o card
+          // que o hospeda.
+          nested
           metrics={[
             {
               label: t("insights.retention.retentionRate"),

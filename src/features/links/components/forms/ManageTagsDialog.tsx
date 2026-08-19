@@ -24,7 +24,7 @@ import { useTranslation } from "react-i18next";
 import { AppIcon } from "@/shared/ui/icons";
 
 import { useDeleteTag, useTags, useUpdateTag } from "../../hooks/useTags";
-import { TAG_COLOR_PALETTE } from "../../utils/tagColors";
+import { sanitizeTagColor, TAG_COLOR_PALETTE } from "../../utils/tagColors";
 import { getTagChipSx } from "../list/linksPanelStyles";
 
 import type { Tag } from "@/types";
@@ -59,12 +59,14 @@ function ManageTagRow({ tag }: ManageTagRowProps) {
 
   const [mode, setMode] = useState<RowMode>("view");
   const [draftName, setDraftName] = useState(tag.name);
-  const [draftColor, setDraftColor] = useState(tag.color);
+  const [draftColor, setDraftColor] = useState(() =>
+    sanitizeTagColor(tag.color, TAG_COLOR_PALETTE[0]),
+  );
 
   /** Entra no modo de edição com os drafts sincronizados à tag atual. */
   const startEdit = () => {
     setDraftName(tag.name);
-    setDraftColor(tag.color);
+    setDraftColor(sanitizeTagColor(tag.color, TAG_COLOR_PALETTE[0]));
     setMode("edit");
   };
 

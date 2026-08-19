@@ -1,8 +1,9 @@
 "use client";
 
 import { Box, Typography, useTheme } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
+import { darkNeutral } from "@/lib/theme/colors/dark";
+import { lightNeutral } from "@/lib/theme/colors/light";
 import * as CookieConsent from "@/lib/consent/cookieconsent.esm.js";
 
 interface FooterProps {
@@ -28,13 +29,35 @@ interface FooterProps {
  * links fluem numa única faixa com quebra — mesma informação, metade da
  * altura. App (`compact`): só a linha legal, sempre em uma faixa fina.
  * Inclui botão de gerenciamento de cookies (LGPD art. 18 — revogação fácil).
+ *
+ * Cor vem da rampa de texto do tema (`text.secondary` para links e ©, o
+ * degrau `tertiary` para os rótulos de grupo), não de alphas ad-hoc — o
+ * rodapé continua discreto, mas legível a 12px nos dois temas.
  */
 export function Footer({ variant = "full" }: FooterProps) {
   const theme = useTheme();
   const { t } = useTranslation("common");
   const isDark = theme.palette.mode === "dark";
-  const linkColor = alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6);
-  const linkHover = alpha(theme.palette.text.primary, isDark ? 0.85 : 0.92);
+  const neutral = isDark ? darkNeutral : lightNeutral;
+  // Links do rodapé em `text.secondary` (0.68 dark / 0.66 light), não num
+  // alpha ad-hoc: a 12px, o antigo 0.5 do dark caía em ~4,3:1 sobre o canvas
+  // — abaixo do piso de 4,5:1 para texto normal, justamente em links legais
+  // (privacidade, termos, revogação de cookies) que precisam ser
+  // encontráveis. `text.secondary` sobe para ~7:1 e continua um degrau
+  // claro abaixo do corpo, então o rodapé segue discreto.
+  const linkColor = theme.palette.text.secondary;
+  const linkHover = theme.palette.text.primary;
+  // Rótulos de grupo (eyebrow de 11px): o degrau `tertiary` da rampa — um
+  // degrau abaixo dos links, que é a hierarquia que os alphas 0.35/0.42
+  // buscavam, sem cair no território ilegível de `text.disabled`. Só
+  // aparecem na variante `full` (`PublicLayout`), que hoje é dark-only:
+  // sobre o canvas #0B0D12 o 0.52 rende ~5:1.
+  //
+  // O © NÃO usa este degrau — ele renderiza também no `compact` da área
+  // logada, onde o tema claro é possível, e ali `tertiary` (0.50 sobre
+  // #EAEDF2) cairia para ~3,5:1. Como é par dos links legais ao lado
+  // (mesmo tamanho, mesma faixa), fica em `text.secondary` com eles.
+  const groupLabelColor = neutral.text.tertiary;
   const currentYear = new Date().getFullYear();
   const isCompact = variant === "compact";
 
@@ -92,7 +115,7 @@ export function Footer({ variant = "full" }: FooterProps) {
     fontWeight: 700,
     letterSpacing: "0.08em",
     textTransform: "uppercase",
-    color: alpha(theme.palette.text.primary, isDark ? 0.35 : 0.42),
+    color: groupLabelColor,
   } as const;
 
   return (
@@ -191,7 +214,7 @@ export function Footer({ variant = "full" }: FooterProps) {
           <Typography
             sx={{
               fontSize: "0.75rem",
-              color: alpha(theme.palette.text.primary, isDark ? 0.5 : 0.6),
+              color: linkColor,
               letterSpacing: "0.01em",
             }}
           >

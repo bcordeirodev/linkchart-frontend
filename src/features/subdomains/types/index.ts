@@ -14,6 +14,12 @@ export interface SubdomainItem {
   fullUrl: string;
   /** Always "active" — the list endpoint only ever returns active rows. */
   status: "active";
+  /**
+   * How many of the user's links currently point at this subdomain's
+   * hostname. Shown in the release dialog: releasing migrates those links
+   * back to the default domain (short URLs change, click history is kept).
+   */
+  linksCount: number;
   /** ISO-8601 timestamp of when the subdomain was claimed. */
   createdAt: string;
 }

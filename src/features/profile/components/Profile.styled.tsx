@@ -1,26 +1,28 @@
 import { Box, Avatar, TextField } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 
+import { radiusTokens } from "@/lib/theme/designSystem";
+
 // ========================================
 // 📝 FORM COMPONENTS
 // ========================================
 
+/**
+ * Avatar do formulário de perfil: só o gradiente de fallback (para a inicial
+ * do nome quando não há foto) e o dimensionamento responsivo.
+ *
+ * O anel de 4px, a sombra colorida `0 8px 32px` e o `scale(1.05)` no hover
+ * saíram no polish de 2026-08-17: eram elevação por sombra ad hoc e uma
+ * micro-interação isolada — ambas proibidas pela identidade "instrumento
+ * técnico" — e, na prática, já eram código morto, porque o único consumidor
+ * (`ProfileForm`) anulava as três via `sx`.
+ */
 export const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 120,
   height: 120,
   fontSize: "3rem",
   fontWeight: 600,
   background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-  boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.3)}`,
-  border: `4px solid ${alpha(theme.palette.background.paper, 0.8)}`,
-  transition: theme.transitions.create(["transform", "box-shadow"], {
-    duration: theme.transitions.duration.short,
-  }),
-
-  "&:hover": {
-    transform: "scale(1.05)",
-    boxShadow: `0 12px 40px ${alpha(theme.palette.primary.main, 0.4)}`,
-  },
 
   [theme.breakpoints.down("sm")]: {
     width: 100,
@@ -29,23 +31,34 @@ export const StyledAvatar = styled(Avatar)(({ theme }) => ({
   },
 }));
 
+/**
+ * `TextField` do formulário de perfil.
+ *
+ * Polish 2026-08-17: o raio saiu de `theme.spacing(1.5)` (12px, valor solto)
+ * para `radiusTokens.md` (8px) — o mesmo raio que `MuiInputBase` aplica em
+ * todo input da app, então o campo de nome deixa de ser o único arredondado
+ * de forma diferente. O halo `0 0 0 2px` do foco também saiu: era elevação
+ * por sombra ad hoc, e o próprio `borderWidth: 2` em `primary.main` já marca
+ * o foco (é o que os inputs de `/api-keys` e `/subdomains` fazem).
+ */
 export const StyledTextField = styled(TextField, {
   shouldForwardProp: (prop) => prop !== "isEditing",
 })<{
   isEditing?: boolean;
 }>(({ theme, isEditing = false }) => ({
   "& .MuiOutlinedInput-root": {
-    borderRadius: theme.spacing(1.5),
-    transition: theme.transitions.create(
-      ["border-color", "box-shadow", "background-color"],
-      {
-        duration: theme.transitions.duration.short,
-      },
-    ),
+    borderRadius: radiusTokens.md,
+    transition: theme.transitions.create(["border-color", "background-color"], {
+      duration: theme.transitions.duration.short,
+    }),
 
+    // Sem `backgroundColor` local no estado editável: o preenchimento do
+    // input vem do tema (`MuiOutlinedInput` — branco sólido no claro,
+    // transparente no dark). O `alpha(background.paper, 0.8)` que estava
+    // aqui devolvia, no claro, praticamente a MESMA cor do card em volta
+    // (`background.paper` também), anulando a separação campo/card que o
+    // override global existe para garantir.
     ...(isEditing && {
-      backgroundColor: alpha(theme.palette.background.paper, 0.8),
-
       "&:hover": {
         "& .MuiOutlinedInput-notchedOutline": {
           borderColor: theme.palette.primary.main,
@@ -53,9 +66,6 @@ export const StyledTextField = styled(TextField, {
       },
 
       "&.Mui-focused": {
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`,
-
         "& .MuiOutlinedInput-notchedOutline": {
           borderColor: theme.palette.primary.main,
           borderWidth: 2,

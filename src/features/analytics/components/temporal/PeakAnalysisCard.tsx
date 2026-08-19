@@ -129,12 +129,19 @@ export function PeakAnalysisCard({
             subtitle={t("charts.descriptions.peakAnalysis")}
           >
             <Stack>
+              {/* Painéis internos (varredura de temas 2026-08-17): o fill era
+                  `background.paper`, que dentro de um `ChartCard` é o próprio
+                  fill do card no tema claro (painel invisível, só a hairline
+                  aparecia) e é mais ESCURO que o véu do card no dark —
+                  elevação invertida. `action.hover` clareia no dark e escurece
+                  no claro, o degrau correto nos dois temas; a hairline de
+                  `divider` continua definindo a caixa. */}
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                   <Box
                     sx={{
                       p: 2,
-                      bgcolor: "background.paper",
+                      bgcolor: "action.hover",
                       borderRadius: `${radiusTokens.md}px`,
                       border: "1px solid",
                       borderColor: "divider",
@@ -180,7 +187,7 @@ export function PeakAnalysisCard({
                   <Box
                     sx={{
                       p: 2,
-                      bgcolor: "background.paper",
+                      bgcolor: "action.hover",
                       borderRadius: `${radiusTokens.md}px`,
                       border: "1px solid",
                       borderColor: "divider",
@@ -240,7 +247,7 @@ export function PeakAnalysisCard({
                     sx={{
                       p: 2,
                       mt: 1,
-                      bgcolor: "background.paper",
+                      bgcolor: "action.hover",
                       borderRadius: `${radiusTokens.md}px`,
                       border: "1px solid",
                       borderColor: "divider",

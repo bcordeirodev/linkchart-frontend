@@ -17,7 +17,9 @@
     "release": "Liberar",
     "releaseDialog": {
       "title": "Liberar este endereço?",
-      "body": "Links criados com este endereço deixarão de abrir. Você pode reivindicar o mesmo nome novamente mais tarde, se ele ainda estiver livre.",
+      "body": "O endereço deixará de resolver. Você pode reivindicar o mesmo nome novamente mais tarde, se ele ainda estiver livre.",
+      "linksWarning_one": "{{count}} link criado com este endereço voltará para o domínio padrão — a URL curta muda, mas os cliques e as estatísticas são preservados.",
+      "linksWarning_other": "{{count}} links criados com este endereço voltarão para o domínio padrão — as URLs curtas mudam, mas os cliques e as estatísticas são preservados.",
       "cancel": "Cancelar",
       "confirm": "Liberar"
     }

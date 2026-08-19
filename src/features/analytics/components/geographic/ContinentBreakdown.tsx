@@ -50,9 +50,15 @@ export function ContinentBreakdown({
   const { t } = useTranslation("analytics");
   const theme = useTheme();
 
+  // O `subtitle` acompanha os dois ramos: a explicação do que a seção mede é
+  // justamente o que falta quando não há dado nenhum para inferi-la — omiti-la
+  // só no vazio tirava a legenda na hora em que ela mais vale.
   if (!continents || continents.length === 0) {
     return (
-      <ChartCard title={t("geographic.continents.title")}>
+      <ChartCard
+        title={t("geographic.continents.title")}
+        subtitle={t("geographic.continents.subtitle")}
+      >
         <AnalyticsEmptyState
           icon={<Globe size={32} strokeWidth={1.5} />}
           title={t("geographic.continents.empty")}

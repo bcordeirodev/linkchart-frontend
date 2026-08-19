@@ -11,6 +11,7 @@ import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 import { typographyScale } from "@/lib/theme";
 import {
   getPublicElevatedSx,
+  getPublicFineprintSx,
   getPublicSectionHeadingSx,
   publicHairline,
   PUBLIC_SECTION_GAP,
@@ -421,12 +422,10 @@ export function GuiaAlternativaBitlyPage() {
                       <Typography
                         component="p"
                         sx={{
+                          ...getPublicFineprintSx(theme),
                           mt: 2,
                           pt: 1.5,
                           borderTop: `1px solid ${publicHairline(theme, "inset")}`,
-                          fontSize: "0.75rem",
-                          lineHeight: 1.55,
-                          color: theme.palette.text.disabled,
                         }}
                       >
                         {option.note}
@@ -439,12 +438,7 @@ export function GuiaAlternativaBitlyPage() {
 
           <Typography
             component="p"
-            sx={{
-              mt: 1.5,
-              fontSize: "0.75rem",
-              lineHeight: 1.55,
-              color: theme.palette.text.disabled,
-            }}
+            sx={{ ...getPublicFineprintSx(theme), mt: 1.5 }}
           >
             {t("guiaAlternativaBitly.options.sourcesNote")}
           </Typography>
@@ -560,11 +554,7 @@ export function GuiaAlternativaBitlyPage() {
           </Box>
           <Typography
             component="p"
-            sx={{
-              mt: 1.25,
-              fontSize: "0.75rem",
-              color: theme.palette.text.disabled,
-            }}
+            sx={{ ...getPublicFineprintSx(theme), mt: 1.25 }}
           >
             {t("guiaAlternativaBitly.bitly.note")}
           </Typography>

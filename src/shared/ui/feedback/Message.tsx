@@ -21,6 +21,7 @@ import {
   alpha,
 } from "@mui/material";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { useMessage } from "@/lib/providers/MessageProvider";
@@ -66,6 +67,7 @@ SlideDown.displayName = "SlideDown";
  */
 export function Message() {
   const theme = useTheme();
+  const { t } = useTranslation("common");
   const { open, options, queue, hideMessage } = useMessage();
 
   const isDark = theme.palette.mode === "dark";
@@ -172,7 +174,7 @@ export function Message() {
         >
           {queueCount > 0 && (
             <Box
-              aria-label={`${queueCount} mensagens na fila`}
+              aria-label={t("feedback.queuedMessages", { count: queueCount })}
               sx={{
                 px: 0.75,
                 py: 0.25,
@@ -199,7 +201,7 @@ export function Message() {
           {options.action ?? (
             <IconButton
               size="small"
-              aria-label="Fechar mensagem"
+              aria-label={t("feedback.closeMessage")}
               onClick={handleClose}
               sx={{
                 color: neutral.text.tertiary,

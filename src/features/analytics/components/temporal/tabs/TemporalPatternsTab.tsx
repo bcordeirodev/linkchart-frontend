@@ -203,7 +203,14 @@ export function TemporalPatternsTab({
                     display: "flex",
                     justifyContent: "space-between",
                     p: 1,
-                    bgcolor: "background.paper",
+                    // `action.hover`, não `background.paper` (varredura de
+                    // temas 2026-08-17): dentro de um `ChartCard`, o token
+                    // sólido é exatamente o fill do card no tema claro (a
+                    // linha some) e mais ESCURO que o véu do card no dark
+                    // (elevação invertida). `action.hover` clareia no dark e
+                    // escurece no claro — a direção certa nos dois — e é o
+                    // mesmo degrau que as outras listas internas da aba usam.
+                    bgcolor: "action.hover",
                     borderRadius: `${radiusTokens.md}px`,
                   }}
                 >

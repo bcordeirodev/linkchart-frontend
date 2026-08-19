@@ -401,10 +401,16 @@ export const LinksMobileCards = memo(
             strokeWidth={1.5}
             style={{ opacity: 0.3, marginBottom: 16 }}
           />
-          <Typography variant="h6" sx={{ color: "text.secondary", mb: 1 }}>
+          {/* Mesma hierarquia do estado vazio de desktop (`LinksEmptyState`):
+              título em `text.primary`, descrição em `text.secondary`. */}
+          <Typography variant="h6" sx={{ mb: 1 }}>
             {t("list.empty.title")}
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.disabled" }}>
+          {/* `text.secondary`, não `text.disabled`: é a única instrução do
+              estado vazio — conteúdo que importa. Em dark `text.disabled` é
+              `rgba(255,255,255,0.32)` e em light `rgba(9,14,22,0.34)`, os dois
+              abaixo do mínimo legível para corpo de texto. */}
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
             {t("list.empty.createButton")}
           </Typography>
         </Box>

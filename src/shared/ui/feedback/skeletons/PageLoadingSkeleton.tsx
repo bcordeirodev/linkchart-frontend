@@ -1,7 +1,14 @@
+"use client";
+
+// "use client" é obrigatório aqui: este arquivo é importado por `loading.tsx`
+// (Server Component) e usa `sx` em forma de função — sem a diretiva, o módulo
+// vira Server Component e a função não serializa na fronteira RSC→client
+// ("Functions cannot be passed directly to Client Components").
 import { Box, Stack, Skeleton } from "@mui/material";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { ResponsiveContainer } from "@/shared/ui/base";
+import { getCardSurfaceSx } from "@/shared/ui/base/cardSurface";
 
 /**
  * Skeleton para carregamento de páginas via Suspense (`loading.tsx` de rotas
@@ -28,27 +35,36 @@ export function PageLoadingSkeleton() {
           <Skeleton variant="text" width={380} height={28} />
         </Box>
 
-        {/* Cards de métricas ou conteúdo principal */}
+        {/* Fileira de métricas — alinhada ao `OverviewMetricRow` (4 métricas,
+            solto na página) desde o redesenho de tiles (2026-08-17): grid de
+            2 colunas no `xs`, 4 tiles de largura igual a partir de `sm`,
+            `gap: 1.5`, e a superfície de card in-page dentro da hairline.
+            Este skeleton já desenhava caixas com borda quando a fileira real
+            eram números soltos; agora as duas formas coincidem de fato. */}
         <Box
           sx={{
             display: "grid",
             gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
-              md: "repeat(4, 1fr)",
+              xs: "repeat(2, minmax(0, 1fr))",
+              sm: "repeat(4, minmax(0, 1fr))",
             },
-            gap: 2,
+            gap: 1.5,
           }}
         >
           {[1, 2, 3, 4].map((i) => (
             <Box
               key={i}
-              sx={{
+              // `sx` como função (e não `useTheme()`): este arquivo é
+              // importado por um `loading.tsx` — um Server Component — então
+              // não pode chamar hooks. O `Box` do MUI é client e resolve a
+              // função no próprio render.
+              sx={(theme) => ({
                 p: 2,
+                ...getCardSurfaceSx(theme),
                 border: 1,
                 borderColor: "divider",
                 borderRadius: `${radiusTokens.md}px`,
-              }}
+              })}
             >
               <Skeleton variant="text" width="60%" height={24} sx={{ mb: 1 }} />
               <Skeleton variant="text" width="80%" height={40} />

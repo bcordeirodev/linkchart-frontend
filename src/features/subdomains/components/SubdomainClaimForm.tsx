@@ -14,7 +14,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { useTranslation } from "react-i18next";
@@ -22,7 +21,6 @@ import { useTranslation } from "react-i18next";
 import { ApiError } from "@/lib/api/client";
 import { getSubdomainDomainSuffix } from "@/lib/utils/shortUrl";
 import { typographyScale } from "@/lib/theme";
-import { radiusTokens } from "@/lib/theme/designSystem";
 
 import { useSubdomains } from "../hooks/useSubdomains";
 
@@ -56,9 +54,16 @@ function getClaimErrorMessage(
 /**
  * Form to claim an additional subdomain for the authenticated user. Hidden by
  * the parent page once `limitReached` is true.
+ *
+ * Polish 2026-08-17: the label input dropped its local `sx`
+ * (`borderRadius: radiusTokens.md` + `bgcolor: background.default`). The
+ * radius merely restated what `MuiInputBase` already applies app-wide, and
+ * the background pinned the input to the page canvas — in light that is
+ * `#EAEDF2`, i.e. a grey field where every other input in the app (including
+ * the mirrored `/api-keys` create form) is solid white. Inheriting the theme
+ * puts both pages on the same input surface in both themes.
  */
 export function SubdomainClaimForm() {
-  const theme = useTheme();
   const { t } = useTranslation("subdomains");
   const {
     claim,
@@ -135,12 +140,6 @@ export function SubdomainClaimForm() {
                 fontFamily: typographyScale.code.fontFamily,
                 fontWeight: 500,
               },
-            },
-          }}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: `${radiusTokens.md}px`,
-              bgcolor: theme.palette.background.default,
             },
           }}
         />

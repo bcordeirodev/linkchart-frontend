@@ -24,9 +24,27 @@ export interface LinkHealth {
   http_code: number | null;
 }
 
+export type LinkQualityTier = "organic" | "suspicious" | "likely_fraud";
+
+/**
+ * Traffic-quality aggregate for a link (30-day window over Phase-3-scored
+ * clicks, computed by POST /api/links/batch-meta). Null tier/pct = no scored
+ * clicks in the window — the UI hides the indicator entirely.
+ */
+export interface LinkQuality {
+  tier: LinkQualityTier | null;
+  organic_pct: number | null;
+}
+
 export interface LinkMeta {
   sparkline: SparklinePoint[];
   trend: LinkTrend;
+  /**
+   * Optional for deploy-order safety: the field ships with backend
+   * v2.18+ — a frontend released ahead of the backend must tolerate its
+   * absence (treated the same as a null tier).
+   */
+  quality?: LinkQuality | null;
   preview: LinkPreviewMeta | null;
   health: LinkHealth;
 }

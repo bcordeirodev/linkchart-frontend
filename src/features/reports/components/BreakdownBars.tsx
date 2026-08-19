@@ -17,10 +17,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
+import { SocialBrandIcon, socialBrandColor } from "@/shared/ui/icons";
 
 import type { SelectChangeEvent } from "@mui/material";
 import type {
@@ -82,6 +84,23 @@ interface BreakdownBarsProps {
  * Where the user's clicks come from, along one selectable dimension at a
  * time — each row shows the raw label, absolute clicks, share (%) and a bar
  * scaled to the top row (rank shape, not part-of-whole; the % carries that).
+ *
+ * Color pass (2026-08-18): rows cycle through the categorical dataViz ramp
+ * (blue → teal → violet → amber → slate) instead of rendering every row in
+ * the same `primary` blue. Every dimension this `Select` offers is a list of
+ * *categories* — countries, devices, browsers — so a single hue collapsed
+ * eight distinct rows into what looked like one series' intensity ramp; the
+ * same fix the analytics-side breakdowns already took.
+ *
+ * The track moved off `alpha(primary, 0.12)` at the same time: a fixed blue
+ * tint behind a teal or amber fill reads as a second, contradictory series.
+ * `action.hover` is hue-neutral and is what `HorizontalBreakdownBars` — the
+ * analytics-side mark this list is the sibling of — already uses, in both
+ * themes.
+ *
+ * On the `social_platform` dimension a recognized platform also gets its
+ * brand glyph, tinted with the brand color. The tint is glyph-only by
+ * design: the bar stays on the ramp so the rank shape reads as one series.
  */
 export function BreakdownBars({
   data,
@@ -90,6 +109,13 @@ export function BreakdownBars({
 }: BreakdownBarsProps) {
   const theme = useTheme();
   const { t } = useTranslation("reports");
+
+  // Read straight from the theme lib rather than through the analytics
+  // module's `categoricalBreakdownColor`: that helper is the same one-line
+  // modulo over this exact ramp, but it lives inside an analytics *component*
+  // file, and `reports` importing a component module from `analytics` would
+  // be the first cross-feature import in either direction.
+  const seriesColors = resolveDataVizCategorical(theme.palette.mode);
 
   const max = Math.max(...data.map((row) => row.clicks), 1);
 
@@ -119,55 +145,86 @@ export function BreakdownBars({
       }
     >
       <Stack spacing={1.5} sx={{ pt: 0.5 }}>
-        {data.map((row) => (
-          <Box key={row.label}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "baseline",
-                gap: 1,
-                mb: 0.5,
-              }}
-            >
-              <Typography
-                variant="body2"
-                noWrap
-                title={row.label}
-                sx={{ fontWeight: 500, minWidth: 0 }}
-              >
-                {row.label}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  whiteSpace: "nowrap",
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                {row.clicks.toLocaleString()} · {row.pct}%
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                height: 6,
-                borderRadius: 3,
-                bgcolor: alpha(theme.palette.primary.main, 0.12),
-                overflow: "hidden",
-              }}
-            >
+        {data.map((row, index) => {
+          const brand =
+            dimension === "social_platform"
+              ? socialBrandColor(row.label, theme.palette.mode)
+              : null;
+
+          return (
+            <Box key={row.label}>
               <Box
                 sx={{
-                  width: `${(row.clicks / max) * 100}%`,
-                  height: "100%",
-                  borderRadius: 3,
-                  bgcolor: theme.palette.primary.main,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  // `center`, not `baseline`: a row may carry a leading brand
+                  // glyph, which baseline alignment pushes off the text line.
+                  alignItems: "center",
+                  gap: 1,
+                  mb: 0.5,
                 }}
-              />
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.75,
+                    minWidth: 0,
+                  }}
+                >
+                  {brand ? (
+                    <Box
+                      component="span"
+                      sx={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        flexShrink: 0,
+                        color: brand,
+                      }}
+                    >
+                      <SocialBrandIcon platform={row.label} size={14} />
+                    </Box>
+                  ) : null}
+                  <Typography
+                    variant="body2"
+                    noWrap
+                    title={row.label}
+                    sx={{ fontWeight: 500, minWidth: 0 }}
+                  >
+                    {row.label}
+                  </Typography>
+                </Box>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    whiteSpace: "nowrap",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {row.clicks.toLocaleString()} · {row.pct}%
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  height: 6,
+                  borderRadius: 3,
+                  bgcolor: theme.palette.action.hover,
+                  overflow: "hidden",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: `${(row.clicks / max) * 100}%`,
+                    height: "100%",
+                    borderRadius: 3,
+                    bgcolor: seriesColors[index % seriesColors.length],
+                  }}
+                />
+              </Box>
             </Box>
-          </Box>
-        ))}
+          );
+        })}
       </Stack>
     </ChartCard>
   );

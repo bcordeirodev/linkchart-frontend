@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 
 import { useTags } from "@/features/links/hooks/useTags";
 
-import { linksRadius } from "./linksPanelStyles";
+import { getTagDotSx, linksRadius } from "./linksPanelStyles";
 
 import type { Theme } from "@mui/material/styles";
 import type { SelectChangeEvent } from "@mui/material";
@@ -280,13 +280,7 @@ export function LinksFilters({
                     <Box
                       component="span"
                       aria-hidden
-                      sx={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: "50%",
-                        flexShrink: 0,
-                        bgcolor: selectedTag.color,
-                      }}
+                      sx={getTagDotSx(theme, selectedTag.color)}
                     />
                   ) : (
                     <TagIcon {...ICON_SM} />
@@ -312,13 +306,7 @@ export function LinksFilters({
                     <Box
                       component="span"
                       aria-hidden
-                      sx={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: "50%",
-                        flexShrink: 0,
-                        bgcolor: tag.color,
-                      }}
+                      sx={getTagDotSx(theme, tag.color)}
                     />
                     {tag.name}
                   </Box>

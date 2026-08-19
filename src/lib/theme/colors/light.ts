@@ -12,15 +12,21 @@
  * (main do dark) vira o degrau `light`.
  */
 
+// 2026-08-17: bordas sobem um degrau (subtle 0.06→0.08, default 0.10→0.13,
+// strong 0.18→0.22) em par com o bump do dark ("bordas mais concisas,
+// caixas mais visíveis") — no light o hairline é o principal sinal de caixa
+// (o degrau canvas→card é sutil de propósito), então o default sobe um
+// pouco menos que no dark (0.13 vs 0.14): preto sobre claro tem mais
+// contraste percebido por alpha que branco sobre escuro.
 export const lightNeutral = {
   bg: "#EAEDF2",
   surface: "#F8F9FB",
   elevated: "#FBFCFE",
   input: "#E2E6ED",
   border: {
-    subtle: "rgba(16, 24, 40, 0.06)",
-    default: "rgba(16, 24, 40, 0.10)",
-    strong: "rgba(16, 24, 40, 0.18)",
+    subtle: "rgba(16, 24, 40, 0.08)",
+    default: "rgba(16, 24, 40, 0.13)",
+    strong: "rgba(16, 24, 40, 0.22)",
   },
   text: {
     primary: "rgba(9, 14, 22, 0.92)",

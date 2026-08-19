@@ -185,8 +185,10 @@ function SubdomainCard({ item, onRelease, isReleasing }: SubdomainCardProps) {
 /**
  * Lists the authenticated user's active subdomains as a stack of cards, each
  * with copy/open actions and a release flow gated behind a confirmation
- * dialog (releasing stops the address from resolving — created links keep
- * the domain they were assigned, but it becomes unreachable).
+ * dialog. Releasing stops the address from resolving; since 2026-08-17 the
+ * backend migrates the links that pointed at it back to the default domain
+ * (short URLs change, click history is preserved) — the dialog warns with
+ * the affected-links count (`linksCount`) before the user confirms.
  */
 export function SubdomainList() {
   const theme = useTheme();
@@ -240,9 +242,13 @@ export function SubdomainList() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: isDark
-              ? darkNeutral.elevated
-              : lightNeutral.surface,
+            // Poço recuado dentro do card, nos DOIS temas. O claro usava
+            // `lightNeutral.surface` — exatamente a cor que `getCardSurfaceSx`
+            // devolve para o card no light (`background.paper`), ou seja, o
+            // círculo ficava sem preenchimento visível, só a hairline. O
+            // canvas (`lightNeutral.bg`) é o degrau abaixo do card e espelha
+            // o que `darkNeutral.elevated` já faz no dark.
+            backgroundColor: isDark ? darkNeutral.elevated : lightNeutral.bg,
             border: `1px solid ${theme.palette.divider}`,
             color: "text.secondary",
           }}
@@ -285,6 +291,13 @@ export function SubdomainList() {
             {pendingRelease?.fullUrl.replace(/^https?:\/\//, "")}
           </DialogContentText>
           <DialogContentText>{t("list.releaseDialog.body")}</DialogContentText>
+          {pendingRelease && pendingRelease.linksCount > 0 ? (
+            <DialogContentText sx={{ mt: 1, color: "warning.main" }}>
+              {t("list.releaseDialog.linksWarning", {
+                count: pendingRelease.linksCount,
+              })}
+            </DialogContentText>
+          ) : null}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setPendingRelease(null)}>

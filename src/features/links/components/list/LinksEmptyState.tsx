@@ -76,7 +76,11 @@ export function LinksEmptyState({
           width: 56,
           height: 56,
           borderRadius: `${radiusTokens.full}px`,
-          backgroundColor: isDark ? darkNeutral.elevated : lightNeutral.surface,
+          // `lightNeutral.bg` (canvas), não `surface`: o painel atrás é
+          // `background.paper` = `lightNeutral.surface`, então `surface` aqui
+          // deixava o círculo sem preenchimento visível no light — mesmo
+          // defeito já documentado e corrigido em ApiKeyList.
+          backgroundColor: isDark ? darkNeutral.elevated : lightNeutral.bg,
           border: `1px solid ${getLinksBorderColor(theme)}`,
           display: "flex",
           alignItems: "center",

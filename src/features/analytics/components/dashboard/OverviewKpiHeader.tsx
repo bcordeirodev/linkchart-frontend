@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@mui/material/styles";
 
 import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
-import { OverviewMetricRow } from "@/shared/ui/base";
+import { MetricDelta, OverviewMetricRow } from "@/shared/ui/base";
 
 import type { OverviewMetric } from "@/shared/ui/base";
 
@@ -47,36 +47,21 @@ export function OverviewKpiHeader({
   const { t, i18n } = useTranslation("analytics");
   const theme = useTheme();
 
-  // Visual gate fix (2026-08-03, item 4): the neutral-arrow argument below
-  // lost — Bruno's call is that the trend direction IS the information, and
-  // burying it in a same-color arrow made the KPI row read as "numbers with
-  // no verdict". Restored the semantic color the fleet had neutralized:
-  // green (`success.main`) trending up, red (`error.main`) trending down,
-  // default text color when there's no period to compare against (`null`)
-  // or the period is exactly flat (`0`) — a flat trend isn't bad news, so it
-  // doesn't borrow the "down" color either.
-  const trendColor =
-    trendPct == null || trendPct === 0
-      ? undefined
-      : trendPct > 0
-        ? "success.main"
-        : "error.main";
-
   // With a trend value, the caption folds the ▲/▼ percentage in front of
   // `dashboard.kpi.trendCaption` ("vs. previous period") — the number is the
-  // headline, the caption text just names what it's compared against.
+  // headline, the caption text just names what it's compared against. A cor
+  // semântica (verde subindo, vermelho caindo, neutro sem baseline/estável)
+  // vive em `MetricDelta`, compartilhado com `/reports` e `/admin`.
   // Without one (no prior period to compare against), the caption falls back
   // to `dashboard.kpi.totalClicksCaption` ("in the selected period") so the
   // metric still reads as scoped to something instead of a bare total.
   const totalClicksCaption =
     trendPct != null ? (
-      <>
-        <Box
-          component="span"
-          sx={{ color: trendColor, fontWeight: 600 }}
-        >{`${trendPct >= 0 ? "▲" : "▼"} ${Math.abs(trendPct)}%`}</Box>
-        {` ${t("dashboard.kpi.trendCaption")}`}
-      </>
+      <MetricDelta
+        value={trendPct}
+        locale={i18n.language}
+        label={t("dashboard.kpi.trendCaption")}
+      />
     ) : (
       t("dashboard.kpi.totalClicksCaption")
     );

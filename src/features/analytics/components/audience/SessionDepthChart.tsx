@@ -180,6 +180,8 @@ export function SessionDepthChart({
         <OverviewMetricRow
           size="md"
           labelLines={2}
+          // `nested`: dentro do `ChartCard`, como em `RetentionAnalysisChart`.
+          nested
           metrics={[
             {
               label: t("insights.session.avgDepth"),

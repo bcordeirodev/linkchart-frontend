@@ -83,6 +83,8 @@ export type {
   LinkPreviewMeta,
   LinkHealthStatus,
   LinkHealth,
+  LinkQualityTier,
+  LinkQuality,
   LinkMeta,
   BatchMetaResponse,
 } from "./core/link-meta";

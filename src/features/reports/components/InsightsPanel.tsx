@@ -14,10 +14,12 @@ import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
 import { useNavigate } from "@/shared/hooks";
+import { getMetricDeltaColor, MetricDelta } from "@/shared/ui/base";
 import { SectionLabel } from "@/shared/ui/base/SectionLabel";
 
 import { formatSignedPct } from "@/features/reports/utils/variationPillStyles";
 
+import type { ReactNode } from "react";
 import type { Theme } from "@mui/material/styles";
 import type {
   ReportsInsight,
@@ -82,14 +84,18 @@ function metaNumber(
  */
 function InsightCard({ insight }: { insight: ReportsInsight }) {
   const theme = useTheme();
-  const { t } = useTranslation("reports");
+  const { t, i18n } = useTranslation("reports");
   const navigate = useNavigate();
   const color = insightColor(theme, insight.key);
   const linkId = metaNumber(insight.meta, "link_id");
   const clickable = linkId !== null;
 
   let value: string;
-  let caption: string | null = null;
+  let caption: ReactNode = null;
+  // Só os dois insights que SÃO uma variação (crescimento da conta, link que
+  // mais cresce) recebem a cor de direção; os outros dois são um nome de link
+  // e uma concentração, onde verde/vermelho não significaria nada.
+  let valueColor: string | undefined;
 
   if (
     insight.key === "best_performing_link" ||
@@ -104,7 +110,10 @@ function InsightCard({ insight }: { insight: ReportsInsight }) {
         clicks !== null ? t("topLinks.clicksCount", { count: clicks }) : null;
     } else {
       const pct = metaNumber(insight.meta, "variation_pct");
-      caption = pct !== null ? formatSignedPct(pct) : null;
+      caption =
+        pct !== null ? (
+          <MetricDelta value={pct} locale={i18n.language} />
+        ) : null;
     }
   } else {
     const numericValue =
@@ -116,6 +125,10 @@ function InsightCard({ insight }: { insight: ReportsInsight }) {
         : numericValue === null
           ? t("insights.noData")
           : `${numericValue}${insight.unit ?? ""}`;
+
+    if (insight.key === "account_growth") {
+      valueColor = getMetricDeltaColor(numericValue);
+    }
   }
 
   return (
@@ -150,7 +163,7 @@ function InsightCard({ insight }: { insight: ReportsInsight }) {
 
       <Typography
         variant="body1"
-        sx={{ fontWeight: 700, lineHeight: 1.25 }}
+        sx={{ fontWeight: 700, lineHeight: 1.25, color: valueColor }}
         noWrap
         title={value}
       >

@@ -1,12 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Autocomplete, Chip, CircularProgress, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Chip,
+  CircularProgress,
+  TextField,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { Controller } from "react-hook-form";
 
-import { getTagChipSx } from "../list/linksPanelStyles";
+import { getTagChipSx, getTagDotSx } from "../list/linksPanelStyles";
 import { useCreateTag, useTags } from "../../hooks/useTags";
 import { pickLeastUsedTagColor } from "../../utils/tagColors";
 
@@ -31,6 +37,10 @@ interface LinkTagPickerProps {
  * The controlled field (`tag_ids`) holds numeric tag ids — this component
  * resolves those ids against the fetched tag list to render colored chips,
  * and converts selections back to ids on change.
+ *
+ * Selected tags render as tinted chips; the dropdown options carry the same
+ * color as a quiet 8px dot (`getTagDotSx`) instead of a second row of chips,
+ * so the tag is recognizable before it is picked.
  */
 export function LinkTagPicker({ control }: LinkTagPickerProps) {
   const theme = useTheme();
@@ -110,6 +120,31 @@ export function LinkTagPicker({ control }: LinkTagPickerProps) {
             }
             noOptionsText={t("form.tags.noOptions")}
             onChange={handleChange}
+            renderOption={(props, option) => {
+              const { key, ...optionProps } = props as typeof props & {
+                key: string;
+              };
+              const isTag = typeof option !== "string";
+
+              return (
+                <Box
+                  component="li"
+                  key={key}
+                  {...optionProps}
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  <Box
+                    component="span"
+                    aria-hidden
+                    sx={getTagDotSx(
+                      theme,
+                      isTag ? option.color : theme.palette.primary.main,
+                    )}
+                  />
+                  {isTag ? option.name : option}
+                </Box>
+              );
+            }}
             renderTags={(value, getTagProps) =>
               value.map((tag, index) => {
                 const { key, ...chipProps } = getTagProps({ index });

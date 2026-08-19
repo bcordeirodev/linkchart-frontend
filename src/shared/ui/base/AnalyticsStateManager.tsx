@@ -1,5 +1,6 @@
 "use client";
 import {
+  alpha,
   Box,
   Button,
   CircularProgress,
@@ -9,6 +10,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 import { createPresetAnimations } from "@/lib/theme";
+import { radiusTokens } from "@/lib/theme/designSystem";
 
 import type { ReactNode } from "react";
 
@@ -70,8 +72,13 @@ export function AnalyticsStateManager({
     return (
       <Box
         sx={{
+          // Painel hairline como qualquer outra superfície in-page: só o fill
+          // de `background.paper` (um cinza quase idêntico ao canvas no dark)
+          // deixava o bloco sem contorno nenhum — elevação por cinza, que a
+          // linguagem "instrumento técnico" não usa.
           backgroundColor: theme.palette.background.paper,
-          borderRadius: 2,
+          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: `${radiusTokens.lg}px`,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -103,7 +110,11 @@ export function AnalyticsStateManager({
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
-          borderRadius: 2,
+          // `borderColor` sozinho nunca desenhou nada (sem largura de borda):
+          // o contorno vermelho que este estado sempre quis mostrar só passa a
+          // existir com o `border` explícito.
+          border: `1px solid ${theme.palette.error.main}`,
+          borderRadius: `${radiusTokens.lg}px`,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -112,7 +123,6 @@ export function AnalyticsStateManager({
           textAlign: "center",
           gap: 2,
           p: compact ? 2 : 3,
-          borderColor: "error.main",
           ...animations.fadeIn,
         }}
       >
@@ -146,7 +156,11 @@ export function AnalyticsStateManager({
               color: "error.main",
               "&:hover": {
                 borderColor: "error.dark",
-                backgroundColor: "error.light",
+                // Tinta translúcida em vez do sólido `error.light`: vermelho
+                // claro chapado sob um rótulo `error.main` era vermelho sobre
+                // vermelho (o mesmo padrão de baixo contraste que a regra de
+                // chips coloridos proíbe), e nos dois temas.
+                backgroundColor: alpha(theme.palette.error.main, 0.12),
               },
             }}
           >
@@ -163,7 +177,8 @@ export function AnalyticsStateManager({
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
-          borderRadius: 2,
+          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: `${radiusTokens.lg}px`,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

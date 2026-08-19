@@ -13,15 +13,21 @@
 // tinha rodado meses em produção. `border.default` volta junto para 0.10 —
 // os dois foram recalibrados em par (o alpha 0.08 existia para o hairline
 // não gritar contra o fundo quase-preto) e devem continuar andando juntos.
+//
+// 2026-08-17: bordas sobem mais um degrau (subtle 0.06→0.08, default
+// 0.10→0.14, strong 0.16→0.20) a pedido do Bruno ("bordas mais concisas,
+// caixas mais visíveis" no dark). Sobe em par com
+// `surfaceOverlayTokens.card.dark` (0.07→0.09 em `designSystem.ts`) — o
+// degrau de superfície e o hairline continuam sendo calibrados juntos.
 export const darkNeutral = {
   bg: "#0B0D12",
   surface: "#12141B",
   elevated: "#181B23",
   input: "#1D2028",
   border: {
-    subtle: "rgba(255, 255, 255, 0.06)",
-    default: "rgba(255, 255, 255, 0.10)",
-    strong: "rgba(255, 255, 255, 0.16)",
+    subtle: "rgba(255, 255, 255, 0.08)",
+    default: "rgba(255, 255, 255, 0.14)",
+    strong: "rgba(255, 255, 255, 0.20)",
   },
   text: {
     primary: "rgba(255, 255, 255, 0.95)",

@@ -1,6 +1,6 @@
 "use client";
 import { Box, Stack, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import type { KeyboardEvent, ReactNode } from "react";
 
 import { resolveDataVizCategorical } from "@/lib/theme/dataViz";
@@ -52,6 +52,14 @@ export interface HorizontalBreakdownItem {
    * brand mark). Inherits the row's fill color, so callers do not colour it.
    */
   icon?: ReactNode;
+  /**
+   * Optional tint for {@link HorizontalBreakdownItem.icon} alone, when it must
+   * differ from the bar. Exists for brand recognition: a row for `instagram`
+   * reads faster with the glyph in Instagram's magenta, but the *bar* is a
+   * series mark and stays on the dataViz ramp — brand hues as series colors
+   * are what turns a breakdown into a rainbow. Defaults to the row's fill.
+   */
+  iconColor?: string;
 }
 
 /** Props for {@link HorizontalBreakdownBars}. */
@@ -132,8 +140,13 @@ export function HorizontalBreakdownBars({
                     p: 0.75,
                     mx: -0.75,
                     bgcolor: isSelected ? "action.selected" : "transparent",
+                    // `alpha()`, não sufixo hex "40": concatenar dois dígitos
+                    // no fim da cor só funciona enquanto `primary.main` for
+                    // hex de 6 dígitos — com qualquer outro formato o outline
+                    // vira uma cor inválida e some sem erro. Mesmo valor de
+                    // opacidade (0.25), agora derivado do token.
                     outline: isSelected
-                      ? `1px solid ${theme.palette.primary.main}40`
+                      ? `1px solid ${alpha(theme.palette.primary.main, 0.25)}`
                       : "none",
                     "&:hover": { bgcolor: "action.hover" },
                     transition: "background-color 0.15s",
@@ -158,7 +171,7 @@ export function HorizontalBreakdownBars({
                     display: "inline-flex",
                     alignItems: "center",
                     flexShrink: 0,
-                    color: item.color ?? fallbackColor,
+                    color: item.iconColor ?? item.color ?? fallbackColor,
                   }}
                 >
                   {item.icon}

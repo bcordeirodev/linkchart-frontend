@@ -1,10 +1,13 @@
 import { alpha, darken, keyframes } from "@mui/material/styles";
 
+import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
 import {
   motionTokens,
   radiusTokens,
   surfaceOverlayTokens,
 } from "@/lib/theme/designSystem";
+
+import { sanitizeTagColor } from "../../utils/tagColors";
 
 import type { Theme } from "@mui/material/styles";
 
@@ -24,12 +27,22 @@ export const linksRadius = {
   chip: radiusTokens.sm,
 } as const;
 
-/** Slightly stronger than `theme.palette.divider` for /links cards and panels. */
+/**
+ * Hairline neutra dos painéis e superfícies de /links.
+ *
+ * É literalmente `theme.palette.divider` (= `*Neutral.border.default`): antes
+ * derivava um alpha próprio de `text.primary` (0.12 dark / 0.10 light) para
+ * ficar "um pouco mais forte que o divider" — e o polish de 2026-08-17, que
+ * subiu os tokens globais de borda (dark 0.10→0.14, light 0.10→0.13), inverteu
+ * a relação: /links passou a desenhar a hairline MAIS FRACA que o resto da app
+ * e ficou de fora do bump. Apontar para o token elimina a divergência e faz a
+ * feature herdar qualquer recalibração futura.
+ *
+ * @param theme - tema MUI ativo.
+ * @returns cor da hairline de painéis/superfícies de /links.
+ */
 export function getLinksBorderColor(theme: Theme) {
-  const isDark = theme.palette.mode === "dark";
-
-  // Softer neutral border to avoid the "heavy card" look in /links.
-  return alpha(theme.palette.text.primary, isDark ? 0.12 : 0.1);
+  return theme.palette.divider;
 }
 
 /**
@@ -42,9 +55,11 @@ export function getLinksBorderColor(theme: Theme) {
  * @returns cor de borda interna do card.
  */
 export function getLinkCardInnerBorderColor(theme: Theme) {
-  const isDark = theme.palette.mode === "dark";
-
-  return alpha(theme.palette.text.primary, isDark ? 0.18 : 0.14);
+  // Um degrau acima do hairline externo (divider) nos DOIS temas. Com o bump
+  // global de 2026-08-17 o divider light subiu para 0.13 e o antigo 0.14
+  // daqui colapsou nele — 0.18 restaura o degrau sem saltar até
+  // `border.strong` (0.22), que é o tom de hover do shell.
+  return alpha(theme.palette.text.primary, 0.18);
 }
 
 /**
@@ -57,11 +72,11 @@ export function getLinkCardInnerBorderColor(theme: Theme) {
  * Precisa ler como um recuo *dentro* do card, não como um
  * retângulo mais claro colado por cima dele — por isso segue a mesma
  * gramática translúcida de `getLinkCardShellSx`/`MuiCard`, só um passo mais
- * forte (o recuo tem que se destacar do próprio card, que já é translúcido):
- * `alpha(white, 0.05)` em dark (card shell — `surfaceOverlayTokens.card.dark`
- * — = `0.045`), `alpha(black, 0.035)` em light (card shell = `0.03`) — valor
- * próprio, não derivado do token compartilhado (é "um passo acima" dele, não
- * o mesmo véu).
+ * forte (o recuo tem que se destacar do próprio card): `alpha(white, 0.05)`
+ * em dark — empilha SOBRE o véu do card (`surfaceOverlayTokens.card.dark`),
+ * não o substitui — e `alpha(black, 0.035)` em light, sobre o
+ * `background.paper` sólido do card. Valor próprio, não derivado do token
+ * compartilhado (é "um passo acima" dele, não o mesmo véu).
  *
  * Antes retornava `background.paper` sólido (dark) / um véu quase-preto
  * (light); com o card shell agora translúcido, o preenchimento sólido
@@ -189,13 +204,16 @@ const cardEnter = keyframes`
 
 /**
  * Shell dos cards de link (desktop e mobile) — nível 1 da escala de
- * superfícies ("instrumento técnico"): véu translúcido (não a cor sólida de
- * `background.paper`) + borda hairline única, sem drop shadow. Sobre o fundo
- * quase-preto da página (`#030405`), um preenchimento cinza opaco lia
- * "pesado" — o véu é sutil o bastante para a hairline continuar sendo o
- * sinal primário de que o card é um objeto separado (não elevação por
- * cinza: o véu não simula sombra/profundidade, só calibra o peso visual do
- * preenchimento). O card fica direto sobre o fundo da página (o painel
+ * superfícies ("instrumento técnico"): preenchimento + borda hairline única,
+ * sem drop shadow. Em dark é um véu branco translúcido, não a cor sólida de
+ * `background.paper`: sobre o fundo escuro da página um preenchimento cinza
+ * opaco lia "pesado", e o véu clareia na direção certa — sutil o bastante
+ * para a hairline continuar sendo o sinal primário de que o card é um objeto
+ * separado (não elevação por cinza: o véu não simula sombra/profundidade, só
+ * calibra o peso visual do preenchimento). Em light o véu equivalente seria
+ * PRETO e escureceria o card abaixo do canvas, então lá o preenchimento é
+ * `background.paper` sólido — exatamente a mesma assimetria do `MuiCard`
+ * global. O card fica direto sobre o fundo da página (o painel
  * externo que o envolvia foi achatado para nível 0 — ver
  * `LinksBrowseSection`). Hover só reforça a borda, sem mudar o fundo. A
  * animação de entrada suaviza o load da lista; o stagger vem do grid
@@ -208,16 +226,28 @@ export function getLinkCardShellSx(theme: Theme) {
     animation: `${cardEnter} 280ms ${motionTokens.easing.default} backwards`,
     "@media (prefers-reduced-motion: reduce)": { animation: "none" },
     borderRadius: `${linksRadius.card}px`,
-    // Borda do card um passo acima da hairline dos painéis — o card é o
-    // objeto principal da página e pode se afirmar.
-    border: `1px solid ${alpha(theme.palette.text.primary, isDark ? 0.14 : 0.12)}`,
+    // Hairline via token (`divider`), não um alpha próprio: os literais
+    // 0.14/0.12 que moravam aqui empataram com — e, no light, ficaram abaixo
+    // de — os tokens depois do bump global de 2026-08-17, deixando o card fora
+    // de qualquer recalibração futura. Hover sobe para o degrau `strong` da
+    // mesma escala, que é o "um passo acima" pretendido.
+    border: `1px solid ${theme.palette.divider}`,
     overflow: "hidden" as const,
     backgroundColor: isDark
       ? alpha(theme.palette.common.white, surfaceOverlayTokens.card.dark)
-      : alpha(theme.palette.common.black, surfaceOverlayTokens.card.light),
+      : // Light: `background.paper` sólido, NUNCA o véu preto translúcido —
+        // sobre o canvas claro (#EAEDF2) o véu ESCURECE o card, invertendo a
+        // elevação (o card nasce mais escuro que a página). É a mesma correção
+        // que `MuiCard` e `getCardSurfaceSx` receberam em 2026-08-09 (F5/C3) e
+        // que este shell — que não passa por nenhum dos dois — nunca tinha
+        // recebido; com o bump de `surfaceOverlayTokens.card.light`
+        // (0.03→0.045) a inversão ficaria ainda mais visível.
+        theme.palette.background.paper,
     transition: `border-color ${motionTokens.duration.base} ${motionTokens.easing.default}`,
     "&:hover": {
-      borderColor: alpha(theme.palette.text.primary, isDark ? 0.22 : 0.2),
+      borderColor: isDark
+        ? darkNeutral.border.strong
+        : lightNeutral.border.strong,
     },
   };
 }
@@ -268,6 +298,7 @@ export function getDemoChipSx(theme: Theme) {
  */
 export function getTagChipSx(theme: Theme, color: string) {
   const isDark = theme.palette.mode === "dark";
+  const safe = sanitizeTagColor(color, theme.palette.primary.main);
 
   return {
     height: 20,
@@ -275,10 +306,39 @@ export function getTagChipSx(theme: Theme, color: string) {
     borderRadius: `${linksRadius.chip}px`,
     fontSize: "0.6875rem",
     fontWeight: 600,
-    color: isDark ? theme.palette.common.white : darken(color, 0.35),
-    bgcolor: alpha(color, isDark ? 0.25 : 0.12),
-    border: `1px solid ${alpha(color, isDark ? 0.4 : 0.32)}`,
+    color: isDark ? theme.palette.common.white : darken(safe, 0.35),
+    bgcolor: alpha(safe, isDark ? 0.25 : 0.12),
+    border: `1px solid ${alpha(safe, isDark ? 0.4 : 0.32)}`,
     "& .MuiChip-label": { px: 0.75 },
+  };
+}
+
+/** Diâmetro (px) do ponto de cor que identifica uma tag fora dos chips. */
+const TAG_DOT_SIZE = 8;
+
+/**
+ * Tag dot — ponto de cor de {@link TAG_DOT_SIZE}px usado onde um chip tingido
+ * seria ruído: os itens do select de tags e as opções do autocomplete do
+ * formulário. Carrega a mesma informação do chip (qual tag é qual) com uma
+ * fração da tinta, preservando a identidade "instrumento técnico".
+ *
+ * O anel de 1px em `divider` é o que garante contraste nos dois temas: sem
+ * ele uma tag clara desaparece sobre o menu do tema claro e uma tag escura
+ * some no tema escuro. Como `divider` é neutro, o anel nunca compete com a
+ * cor da tag — só a delimita.
+ *
+ * @param theme - tema MUI ativo.
+ * @param color - hex color of the tag (saneado contra valores inválidos).
+ * @returns sx do `Box` do ponto.
+ */
+export function getTagDotSx(theme: Theme, color: string) {
+  return {
+    width: TAG_DOT_SIZE,
+    height: TAG_DOT_SIZE,
+    borderRadius: "50%",
+    flexShrink: 0,
+    bgcolor: sanitizeTagColor(color, theme.palette.primary.main),
+    border: `1px solid ${theme.palette.divider}`,
   };
 }
 

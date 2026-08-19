@@ -2,6 +2,10 @@
 
 import { Box, Typography, useTheme } from "@mui/material";
 
+import { darkNeutral, lightNeutral, radiusTokens } from "@/lib/theme";
+
+import { getCardSurfaceSx } from "./cardSurface";
+
 import type { ReactNode } from "react";
 
 export interface OverviewMetric {
@@ -35,9 +39,9 @@ export interface OverviewMetricRowProps {
   /**
    * Densidade visual da fileira. `"lg"` (default) é a escala compacta de
    * 2026-08-08 — valor em `h2`/tabular-nums a `2.25rem` (xs) / `2.5rem`
-   * (sm+), `py: 1.5`. `"md"` é mais compacto ainda (`1.75rem` xs / `2rem`
-   * sm+, `py: 1`), com paddings proporcionalmente menores, para telas onde a
-   * fileira de métricas não deve ocupar tanta altura — `/links`
+   * (sm+), `p: 2` no tile. `"md"` é mais compacto ainda (`1.75rem` xs /
+   * `2rem` sm+, `p: 1.5`), com paddings proporcionalmente menores, para
+   * telas onde a fileira não deve ocupar tanta altura — `/links`
    * (`LinkMetrics`) e, desde 2026-08-04, todas as fileiras do analytics
    * (`OverviewKpiHeader`, `TemporalAnalysis`, retenção e sessão). Relatórios
    * e perfil não passam esta prop e continuam em `"lg"`.
@@ -70,18 +74,49 @@ export interface OverviewMetricRowProps {
    * devem ganhar uma linha de espaço morto acima de cada número.
    */
   labelLines?: 1 | 2;
+  /**
+   * `true` quando a fileira vive **dentro** de um card/painel já delimitado
+   * (`ChartCard`, `ProfileSection`, o card-hero de `/reports`). Redesenho de
+   * 2026-08-17: como cada métrica agora é uma caixa, um tile com a mesma
+   * superfície do card que o contém desapareceria — sobraria só a hairline,
+   * sem degrau de fundo. Com `nested`, o tile passa a usar o degrau
+   * **acima** do card no dark (`darkNeutral.elevated`) e o degrau **abaixo**
+   * no claro (`lightNeutral.bg`, o canvas) — exatamente o precedente já
+   * usado pelos poços internos de `SubdomainList`/`ApiKeyList`/
+   * `LinksEmptyState`, onde a elevação clareia no dark e escurece no claro.
+   *
+   * Default `false`: solta na página, a fileira usa a superfície padrão de
+   * card (`getCardSurfaceSx`), que é o degrau correto sobre o canvas.
+   *
+   * Explícito (e não inferido por contexto) de propósito: o componente não
+   * tem como saber se o ancestral é um card, e um `Context` só para isso
+   * acoplaria a primitiva a quem a renderiza.
+   */
+  nested?: boolean;
 }
 
 /**
  * Fileira de métricas de visão geral na linguagem "instrumento técnico":
- * números soltos no fundo (nível 0 — sem card, sem ícone), separados por
- * hairlines em vez de bordas de card. Mobile-first: no `xs`, fileiras com 3+
- * métricas viram um grid de 2 colunas (contagem ímpar: a última métrica
- * ocupa a linha inteira via `gridColumn: "span 2"`; hairline vertical
- * (`borderLeft`) entre colunas, horizontal (`borderTop`) entre linhas);
- * fileiras com 1–2 métricas mantêm coluna única empilhada, como antes. A
- * partir de `sm`, vira sempre uma linha única com hairlines verticais
- * (`borderLeft`).
+ * um grid de **tiles** — cada métrica numa caixa própria, hairline de 1px
+ * (`divider`), raio `radiusTokens.md` e a superfície de card do app. Mobile
+ * first: no `xs`, fileiras com 3+ métricas viram um grid de 2 colunas
+ * (contagem ímpar: a última métrica ocupa a linha inteira via
+ * `gridColumn: "span 2"`); fileiras com 1–2 métricas mantêm coluna única
+ * empilhada. A partir de `sm`, vira sempre uma linha única de tiles de
+ * largura igual (`repeat(n, minmax(0, 1fr))`).
+ *
+ * **Redesenho de 2026-08-17 (tiles).** Até aqui a fileira era nível 0 —
+ * números soltos no fundo, separados por hairlines (`borderTop`/`borderLeft`)
+ * em vez de bordas de caixa, com gutters de `pl`/`pr` fazendo o respiro. A
+ * pedido do Bruno ("bordas mais concisas, caixas mais visíveis"), e no mesmo
+ * pacote em que os tokens de borda subiram um degrau nos dois temas, cada
+ * métrica passou a ser uma caixa visível: as hairlines de separação viraram
+ * a borda do próprio tile, os gutters viraram `gap` do grid e o antigo
+ * `py` virou padding interno. O bloco `<frontend_aesthetics>` do CLAUDE.md
+ * do frontend ainda descreve a regra antiga ("números soltos + hairlines")
+ * — esta é a supersessão consciente dela; o resto da identidade continua
+ * valendo (sem ícone-chip, sem fundo colorido no tile, escala numérica
+ * intocada).
  *
  * O valor usa a escala tipográfica de `variant="h2"` (que já herda Space
  * Grotesk 700 do tema) com `fontVariantNumeric: "tabular-nums"`. Desde
@@ -102,11 +137,18 @@ export interface OverviewMetricRowProps {
  * (900px). Com `flex: 1` e a coluna espremida, o número (sem espaço para
  * quebrar) vaza da própria coluna. Quando `metrics.length >= 5`, o
  * `fontSize` do `sm` cai um degrau (`2.5rem` → `1.875rem` no `"lg"`,
- * `2rem` → `1.625rem` no `"md"`) e o gutter horizontal entre colunas cai de
- * `3` para `1.5`, só nesse breakpoint. O `xs` (grid/empilhado) e o `md`+
+ * `2rem` → `1.625rem` no `"md"`) e o `gap` entre tiles cai de `1.5` para
+ * `1`, só nesse breakpoint (no layout de hairlines o mesmo degrau ia de
+ * gutter `3` para `1.5` — a proporção se manteve, a base é que encolheu
+ * junto com a troca de gutter por `gap`). O `xs` (grid/empilhado) e o `md`+
  * (com folga de sobra) não mudam. Callers com 3–4 métricas têm
- * `isDense = false` e continuam recebendo exatamente o mesmo objeto de
- * estilo de antes — zero mudança visual adicional.
+ * `isDense = false`.
+ *
+ * **Card dentro de card.** Vários callers renderizam a fileira dentro de um
+ * card já delimitado; ver a prop `nested`, que troca a superfície do tile
+ * pelo degrau de elevação em vez da superfície de card (que sumiria contra
+ * o card hospedeiro). Sem ela a regra "sem card dentro de card" seria
+ * violada de fato, não só na aparência.
  *
  * Puramente apresentacional: não busca dados nem contém lógica de negócio;
  * `label`/`caption` chegam já traduzidos via props.
@@ -115,15 +157,19 @@ export interface OverviewMetricRowProps {
  * @param props.size Densidade visual — `"md"` (mais compacto) ou `"lg"` (default).
  * @param props.labelLines Linhas de altura reservadas para o rótulo — `2` mantém
  * os números na mesma baseline quando algum rótulo quebra.
- * @returns Linha (grid 2 colunas no mobile com 3+ métricas) de métricas sem card/ícone.
+ * @param props.nested `true` quando a fileira vive dentro de um card/painel —
+ * o tile ganha o fundo de elevação em vez da superfície de card.
+ * @returns Grid de tiles de métrica (2 colunas no mobile com 3+ métricas,
+ * linha única de larguras iguais a partir de `sm`), sem ícone.
  */
 export function OverviewMetricRow({
   metrics,
   size = "lg",
   labelLines = 1,
+  nested = false,
 }: OverviewMetricRowProps) {
   const theme = useTheme();
-  const hairline = `1px solid ${theme.palette.divider}`;
+  const isDark = theme.palette.mode === "dark";
   const isDense = metrics.length >= 5;
   const isCompact = size === "md";
   const twoColXs = metrics.length >= 3;
@@ -147,48 +193,47 @@ export function OverviewMetricRow({
         }
       : undefined;
 
+  // Superfície do tile. Solto na página: a mesma superfície de card in-page
+  // de todo o app (`getCardSurfaceSx` — véu branco no dark, `background
+  // .paper` sólido no claro). Dentro de um card (`nested`): o degrau de
+  // elevação, seguindo o precedente dos poços internos de
+  // `SubdomainList`/`ApiKeyList` — no dark a elevação CLAREIA
+  // (`darkNeutral.elevated`), no claro ela ESCURECE em direção ao canvas
+  // (`lightNeutral.bg`), porque ali `background.paper` já é a cor do card
+  // hospedeiro e o tile ficaria invisível.
+  const tileSurfaceSx = nested
+    ? { backgroundColor: isDark ? darkNeutral.elevated : lightNeutral.bg }
+    : getCardSurfaceSx(theme);
+
   return (
     <Box
       sx={{
-        display: { xs: "grid", sm: "flex" },
-        gridTemplateColumns: twoColXs ? "repeat(2, 1fr)" : "1fr",
-        flexDirection: { sm: "row" },
+        display: "grid",
+        gridTemplateColumns: {
+          xs: twoColXs ? "repeat(2, minmax(0, 1fr))" : "minmax(0, 1fr)",
+          sm: `repeat(${metrics.length}, minmax(0, 1fr))`,
+        },
+        // Substitui os antigos gutters `pl`/`pr`: com tiles, o respiro é o
+        // vão ENTRE caixas, não padding assimétrico dentro de cada coluna.
+        gap: { xs: 1.5, sm: isDense ? 1 : 1.5 },
       }}
     >
       {metrics.map((metric, index) => {
-        const isFirst = index === 0;
         const isLast = index === metrics.length - 1;
-        const gutter = isDense ? 1.5 : 3;
-        // Grid 2 colunas no xs (3+ métricas): coluna/linha derivadas do índice;
-        // contagem ímpar deixa a última métrica ocupando a linha inteira.
+        // Grid 2 colunas no xs (3+ métricas): contagem ímpar deixa a última
+        // métrica ocupando a linha inteira.
         const spansFullRow = twoColXs && isLast && metrics.length % 2 === 1;
-        const xsCol = twoColXs && !spansFullRow ? index % 2 : 0;
-        const xsRow = twoColXs ? Math.floor(index / 2) : index;
 
         return (
           <Box
             key={`${index}-${metric.label}`}
             sx={{
-              flex: { sm: 1 },
               minWidth: 0,
-              gridColumn: spansFullRow ? "span 2" : undefined,
-              py: isCompact ? 1 : 1.5,
-              pl: {
-                xs: xsCol === 1 ? 1.5 : 0,
-                sm: isFirst ? 0 : gutter,
-              },
-              pr: {
-                xs: twoColXs && xsCol === 0 && !spansFullRow ? 1.5 : 0,
-                sm: isLast ? 0 : gutter,
-              },
-              borderTop: {
-                xs: xsRow > 0 ? hairline : "none",
-                sm: "none",
-              },
-              borderLeft: {
-                xs: xsCol === 1 ? hairline : "none",
-                sm: isFirst ? "none" : hairline,
-              },
+              gridColumn: { xs: spansFullRow ? "span 2" : "auto", sm: "auto" },
+              ...tileSurfaceSx,
+              border: `1px solid ${theme.palette.divider}`,
+              borderRadius: `${radiusTokens.md}px`,
+              p: isCompact ? 1.5 : 2,
             }}
           >
             <Typography

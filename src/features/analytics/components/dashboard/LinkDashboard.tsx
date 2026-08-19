@@ -261,6 +261,12 @@ export function LinkDashboard({
               mt: 2,
               p: 2,
               bgcolor: "background.paper",
+              // Hairline explícita (varredura de temas 2026-08-17): o rodapé
+              // vinha só com `background.paper`, um degrau de ~1% de
+              // luminância contra o canvas nos dois temas — na prática uma
+              // faixa de texto solta, sem caixa. A borda de `divider` é o que
+              // dá a ela o mesmo nível de superfície dos cards acima.
+              border: `1px solid ${theme.palette.divider}`,
               borderRadius: `${radiusTokens.md}px`,
             }}
           >

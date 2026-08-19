@@ -501,11 +501,20 @@ export const radiusTokens = {
  * *degrau de superfície* passa a ser o único sinal de "isto é um card" (sem
  * `boxShadow` ad hoc) — precisava de um degrau mais perceptível para
  * carregar esse papel sozinho. `light` não muda.
+ *
+ * `dark` `0.07` → `0.09` (polish 2026-08-17, "caixas mais visíveis"): sobe
+ * em par com os alphas de `darkNeutral.border` (ver `colors/dark.ts`) —
+ * superfície e hairline são calibradas juntas. No mesmo polish, `light`
+ * `0.03` → `0.045`: desde o ajuste C3 de 2026-08-09 os cards in-page em
+ * light usam `background.paper` sólido, então este alpha só alimenta os
+ * painéis-inset que escurecem de propósito (`alpha(black, light)`, ex.:
+ * `linksPanelStyles`) — o degrau sobe junto com as bordas de
+ * `lightNeutral.border` para o painel não sumir contra o canvas.
  */
 export const surfaceOverlayTokens = {
   card: {
-    dark: 0.07,
-    light: 0.03,
+    dark: 0.09,
+    light: 0.045,
   },
 } as const;
 

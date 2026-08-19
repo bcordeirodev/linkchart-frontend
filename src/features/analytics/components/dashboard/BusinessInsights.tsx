@@ -1,11 +1,5 @@
 "use client";
-import {
-  AlertCircle,
-  Info,
-  CheckCircle,
-  BarChart3,
-  Lightbulb,
-} from "lucide-react";
+import { BarChart3, Lightbulb } from "lucide-react";
 import {
   Box,
   Typography,
@@ -23,6 +17,7 @@ import { useTheme } from "@mui/material/styles";
 import { radiusTokens, typographyScale } from "@/lib/theme/designSystem";
 import { AnalyticsEmptyState } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
+import { AppIcon } from "@/shared/ui/icons";
 
 import type { Theme } from "@mui/material/styles";
 import type { BusinessInsight } from "../../hooks/useInsightsData";
@@ -65,18 +60,31 @@ const HIGH_SEVERITY_HUE_LIGHT = "#B45309";
  * refinamento visual 2026-08-08 §3.7). `high` reads as a caution (amber),
  * never as an error — no `BusinessInsight.type` available today represents
  * an actual security/fraud problem, so red stays reserved for a category
- * that would justify it, not for "you could optimize this". `low` carries no
- * hue at all (`text.secondary`), reading as a neutral note rather than the
- * bottom rung of a graded severity scale.
+ * that would justify it, not for "you could optimize this".
+ *
+ * The three-way mapping is the same one `/reports`' portfolio insight cards
+ * use, so a colored accent means the same thing on both screens:
+ * **orange = attention** (`high`), **blue = info** (`medium`),
+ * **green = positive** (`low`).
+ *
+ * `low` reads as success rather than as the bottom rung of a graded severity
+ * scale, and that is literal, not decorative: the backend generators emit
+ * `low` exactly when the measured number is *good* — see
+ * `PerformanceInsightGenerator` (`$slow ? 'high' : 'low'`) and
+ * `RetentionInsightGenerator` (`low` only at a return rate ≥ 25%). It used to
+ * resolve to `text.secondary`, which left the "your link is fast" insight
+ * looking like an unlabeled footnote next to the ones asking for action.
  *
  * Light mode swaps `high`'s accent for {@link HIGH_SEVERITY_HUE_LIGHT}
  * (spec §C2/F4, 2026-08-09) — same pattern as `ViralRankMiniChart`'s
  * `*_LIGHT` rank overrides. Dark mode is untouched: it keeps resolving
- * `theme.palette.warning.main` exactly as before.
+ * `theme.palette.warning.main` exactly as before. `medium`/`low` need no
+ * override: both `info.main` and `success.main` are already calibrated per
+ * mode in `colors/semantic.ts`.
  *
  * @param priority - Insight priority as returned by the API.
  * @param theme - Active MUI theme, used to resolve the semantic color tokens.
- * @returns The hue used for this insight's chip, callout, and icon accents.
+ * @returns The hue used for this insight's accent stripe, chip, callout and icon.
  */
 function getSeverityHue(
   priority: BusinessInsight["priority"],
@@ -90,7 +98,32 @@ function getSeverityHue(
     case "medium":
       return theme.palette.info.main;
     default:
-      return theme.palette.text.secondary;
+      return theme.palette.success.main;
+  }
+}
+
+/**
+ * Maps an insight priority to the {@link AppIcon} intent that carries the
+ * same semantics as its hue — `warning` for attention, `info` for neutral
+ * information, `success` for "this is already going well".
+ *
+ * Goes through `AppIcon` instead of importing the lucide glyphs directly so
+ * the severity glyphs stay in step with the rest of the app's status icons
+ * (`AppIcons.status`), which is where an icon swap would be made.
+ *
+ * @param priority - Insight priority as returned by the API.
+ * @returns The `AppIcon` intent for that priority.
+ */
+function severityIntent(
+  priority: BusinessInsight["priority"],
+): "warning" | "info" | "success" {
+  switch (priority) {
+    case "high":
+      return "warning";
+    case "medium":
+      return "info";
+    default:
+      return "success";
   }
 }
 
@@ -133,6 +166,13 @@ function getCalloutTint(
  * theme's light `warning.main`, which sat close enough to `error.main`'s
  * hue to read as an actual error on light surfaces — see
  * {@link HIGH_SEVERITY_HUE_LIGHT}. Dark mode is unchanged.
+ *
+ * Accent pass (2026-08-18): each card now carries the 3px left stripe that
+ * `/reports`' `InsightsPanel` already used for its portfolio insights, in
+ * the severity hue, so severity is readable from the column's edge before
+ * any text is. The hue scale gained its third semantic step at the same
+ * time — `low` resolves to `success.main` instead of `text.secondary`, see
+ * {@link getSeverityHue}.
  */
 export function BusinessInsights({
   insights,
@@ -183,15 +223,6 @@ export function BusinessInsights({
       />
     );
   }
-
-  const getPriorityIcon = (priority: string) => {
-    const iconMap = {
-      high: <AlertCircle {...ICON_MD} />,
-      medium: <Info {...ICON_MD} />,
-      low: <CheckCircle {...ICON_MD} />,
-    };
-    return iconMap[priority as keyof typeof iconMap] || <Info {...ICON_MD} />;
-  };
 
   const organizedInsights = [...insights]
     .sort((a, b) => {
@@ -254,7 +285,14 @@ export function BusinessInsights({
             // divider, category tag) is untouched from before the migration:
             // de-alarmized severity (§3.7) already reads as a tip, not a
             // warning, and swapping the wrapper doesn't change that.
-            <ChartCard key={index}>
+            //
+            // `accentColor` (2026-08-18) borrows the exact recipe from
+            // `/reports`' portfolio insight cards: a 3px stripe on the left
+            // border in the severity hue. Before it, an insight's severity
+            // was legible only *inside* the card (chip + callout), so a
+            // column of stacked insight cards read as one undifferentiated
+            // block until you started reading text.
+            <ChartCard key={index} accentColor={hue}>
               <Box sx={{ minWidth: 0 }}>
                 <Stack
                   direction="row"
@@ -283,7 +321,12 @@ export function BusinessInsights({
                       Text/icon/border share the hue; the fill stays
                       transparent. */}
                   <Chip
-                    icon={getPriorityIcon(insight.priority)}
+                    icon={
+                      <AppIcon
+                        intent={severityIntent(insight.priority)}
+                        {...ICON_MD}
+                      />
+                    }
                     label={t(`insights.priority.${insight.priority}`)}
                     size="small"
                     variant="outlined"
@@ -319,8 +362,10 @@ export function BusinessInsights({
                   // Action callout — reads as a tip, not a warning:
                   // lightbulb icon, `text.primary` body copy, an 8% tint
                   // of the severity hue (6% for light-mode `high`, see
-                  // `getCalloutTint`) behind a 2px left border in the same
-                  // hue (spec §3.7, §C2).
+                  // `getCalloutTint`) behind a 3px left border in the same
+                  // hue (spec §3.7, §C2) — 3px, not 2px, so the "what to do
+                  // about it" panel and its card share one stripe width
+                  // instead of two that almost match.
                   <Stack
                     direction="row"
                     spacing={1}
@@ -331,7 +376,7 @@ export function BusinessInsights({
                         insight.priority,
                         theme.palette.mode,
                       ),
-                      borderLeft: `2px solid ${hue}`,
+                      borderLeft: `3px solid ${hue}`,
                       borderRadius: `${radiusTokens.md}px`,
                       p: 1.5,
                       mb: 2,

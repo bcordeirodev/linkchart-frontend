@@ -26,10 +26,12 @@ import { useTranslation } from "react-i18next";
 
 import { dataVizPalette } from "@/lib/theme/dataViz";
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { getFilterSegmentSx, OverviewMetricRow } from "@/shared/ui/base";
+import {
+  getFilterSegmentSx,
+  MetricDelta,
+  OverviewMetricRow,
+} from "@/shared/ui/base";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
-
-import { formatSignedPct } from "@/features/reports/utils/variationPillStyles";
 
 import type { OverviewMetric as OverviewMetricItem } from "@/shared/ui/base";
 import type {
@@ -152,7 +154,7 @@ export function ReportsOverviewHero({
   timeseries,
 }: ReportsOverviewHeroProps) {
   const theme = useTheme();
-  const { t } = useTranslation("reports");
+  const { t, i18n } = useTranslation("reports");
   const isDark = theme.palette.mode === "dark";
 
   const [metric, setMetric] = useState<OverviewMetric>("clicks");
@@ -160,30 +162,21 @@ export function ReportsOverviewHero({
   const totalClicks = summary?.total_clicks ?? 0;
   const variationPct = summary?.variation_pct ?? null;
 
-  // Trend color mirrors `OverviewKpiHeader`'s convention (Task 9's restored
-  // semantic trend colors, Bruno's call): green trending up, red trending
-  // down, default text color when there's no baseline to compare against
-  // (`null`) or the period is exactly flat (`0`) — a flat trend isn't bad
-  // news, so it doesn't borrow the "down" color either.
-  const trendColor =
-    variationPct === null || variationPct === 0
-      ? undefined
-      : variationPct > 0
-        ? "success.main"
-        : "error.main";
-
   const heroMetrics: OverviewMetricItem[] = [
     {
       label: t("kpis.totalClicks"),
+      // `MetricDelta` (compartilhado com `/analytics` e `/admin`) carrega a
+      // convenção de cor: verde subindo, vermelho caindo, neutro sem baseline
+      // (`null`) ou estável (`0`). O rótulo "vs. período anterior" ao lado
+      // substitui a explicação que só existia no `title` — invisível no toque.
       value: totalClicks.toLocaleString(),
       caption: (
-        <Box
-          component="span"
+        <MetricDelta
+          value={variationPct}
+          locale={i18n.language}
+          label={t("kpis.trendCaption")}
           title={t("kpis.variation")}
-          sx={{ color: trendColor, fontWeight: 600 }}
-        >
-          {formatSignedPct(variationPct)}
-        </Box>
+        />
       ),
     },
     {
@@ -235,7 +228,10 @@ export function ReportsOverviewHero({
           {t("overview.subtitle")}
         </Typography>
 
-        <OverviewMetricRow metrics={heroMetrics} />
+        {/* `nested`: o strip vive dentro do card-hero. Desde o redesenho de
+            tiles (2026-08-17) cada métrica é uma caixa, e sem o degrau de
+            elevação ela sumiria contra a superfície do próprio card. */}
+        <OverviewMetricRow metrics={heroMetrics} nested />
       </Box>
 
       <Divider />

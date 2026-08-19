@@ -86,6 +86,7 @@ import {
 
   // Data & Files
   Database,
+  Inbox,
   Folder,
   FolderOpen,
   File,
@@ -257,6 +258,8 @@ export const AppIcons = {
   // ========================================
   data: {
     database: Database,
+    // Âncora canônica de "nada aqui ainda" (mesmo ícone do AnalyticsEmptyState).
+    inbox: Inbox,
     folder: Folder,
     folderOpen: FolderOpen,
     file: File,

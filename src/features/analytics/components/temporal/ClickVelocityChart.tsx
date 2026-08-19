@@ -5,6 +5,7 @@ import { Box, Chip, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
+import { typographyScale } from "@/lib/theme/designSystem";
 import { ICON_MD } from "@/lib/theme/iconDefaults";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
@@ -93,7 +94,9 @@ export function ClickVelocityChart({ data }: ClickVelocityChartProps) {
               bgcolor: alpha(theme.palette.warning.main, 0.12),
               color: theme.palette.warning.main,
               border: `1px solid ${alpha(theme.palette.warning.main, 0.3)}`,
-              fontSize: "0.7rem",
+              // `typographyScale.caption` (0.75rem) no lugar do 0.7rem solto:
+              // era o único tamanho fora da escala no módulo temporal.
+              fontSize: typographyScale.caption.fontSize,
               height: "auto",
               py: 0.25,
               "& .MuiChip-label": {

@@ -5,6 +5,7 @@ import { alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
+import { radiusTokens } from "@/lib/theme/designSystem";
 import {
   getPublicBlockTitleSx,
   getPublicElevatedSx,
@@ -108,7 +109,7 @@ export function ShorterHowItWorks() {
                 ),
                 px: 1,
                 py: 0.25,
-                borderRadius: "20px",
+                borderRadius: `${radiusTokens.sm}px`,
                 mb: 0.5,
               }}
             >

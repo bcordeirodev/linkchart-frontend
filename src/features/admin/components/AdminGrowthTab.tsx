@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useAdminOverview } from "@/features/admin/hooks/useAdmin";
 import { formatCount } from "@/lib/utils/formatNumber";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
-import { OverviewMetricRow } from "@/shared/ui/base";
+import { MetricDelta, OverviewMetricRow } from "@/shared/ui/base";
 import { ChartCard } from "@/shared/ui/data-display/ChartCard";
 import ApexChartWrapper from "@/shared/ui/data-display/ApexChartWrapper";
 
@@ -32,30 +32,13 @@ interface AdminGrowthTabProps {
 }
 
 /**
- * Formata a variação percentual como caption (▲ +12,3% / ▼ -4,1% / "—" sem
- * baseline), seguindo o padrão de cor semântica do OverviewMetricRow.
- *
- * @param cmp Par atual/anterior vindo do backend.
- * @param locale Idioma ativo (`i18n.language`) — decide o separador decimal.
- */
-function variationCaption(
-  cmp: AdminPeriodComparison | undefined,
-  locale: string,
-): string {
-  if (!cmp || cmp.variation_pct === null) {
-    return "—";
-  }
-  const arrow = cmp.variation_pct >= 0 ? "▲" : "▼";
-  return `${arrow} ${cmp.variation_pct > 0 ? "+" : ""}${formatCount(cmp.variation_pct, locale)}%`;
-}
-
-/**
  * Legenda de duas linhas de uma métrica de crescimento. O número grande é o
  * total acumulado da base, mas a variação ao lado é do período selecionado —
  * sem rotular as duas coisas, a fileira lia como se os 12% fossem do total.
- * Linha 1 qualifica o valor ("desde o início"), linha 2 qualifica a variação
- * ("no período vs anterior"), num tom mais apagado para não competir com o
- * número.
+ * Linha 1 qualifica o valor ("desde o início"), linha 2 traz a variação
+ * (`MetricDelta`: ▲ verde subindo, ▼ vermelho caindo, "—" sem baseline)
+ * seguida do que ela compara ("no período vs anterior"), num tom mais apagado
+ * para não competir com o número.
  *
  * @param t Tradutor do namespace `admin`.
  * @param cmp Par atual/anterior da métrica.
@@ -70,15 +53,12 @@ function growthCaption(
   return (
     <Box component="span" sx={{ display: "block" }}>
       {t("growth.totalsCaption")}
-      <Box
-        component="span"
-        sx={{
-          display: "block",
-          color: "text.disabled",
-          fontVariantNumeric: "tabular-nums",
-        }}
-      >
-        {`${variationCaption(cmp, locale)} ${t("growth.periodCaption")}`}
+      <Box component="span" sx={{ display: "block", color: "text.disabled" }}>
+        <MetricDelta
+          value={cmp?.variation_pct ?? null}
+          locale={locale}
+          label={t("growth.periodCaption")}
+        />
       </Box>
     </Box>
   );

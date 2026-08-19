@@ -183,7 +183,11 @@ export function ViralRankMiniChart({ data }: Props) {
         >
           <Flame size={16} color={theme.palette.error.main} />
           <Typography variant="caption">
-            <strong style={{ color: theme.palette.error.light }}>
+            {/* `error.main`, não `error.light`: o tom claro sobre o tint de
+                erro a 8% é o par de menor contraste do card — quase branco-rosa
+                sobre rosa no tema claro. `main` é o mesmo tom do ícone de chama
+                ao lado, então o rótulo e o ícone passam a ler como um par. */}
+            <strong style={{ color: theme.palette.error.main }}>
               {t("temporal.viralRank.peak")}
             </strong>{" "}
             <span style={{ color: theme.palette.text.secondary }}>

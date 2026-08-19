@@ -29,6 +29,11 @@ export {
   type OverviewMetric,
   type OverviewMetricRowProps,
 } from "./OverviewMetricRow";
+export {
+  MetricDelta,
+  getMetricDeltaColor,
+  type MetricDeltaProps,
+} from "./MetricDelta";
 export { default as EmptyState } from "./EmptyState";
 export { default as AnalyticsEmptyState } from "./AnalyticsEmptyState";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Stack, Typography } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { darkNeutral } from "@/lib/theme/colors/dark";
@@ -130,12 +130,14 @@ export function BioPreviewPhone({
   // black`). A `boxShadow` ring (not `border` — the bezel already owns that
   // property) traces the frame's existing `36px` border-radius from just
   // outside it, so the device silhouette reads without touching the bezel
-  // color or the screen content. `common.white`/`common.black` (not
-  // `text.primary`) to match the coordinator's explicit ask; 0.16 dark /
-  // 0.12 light mirrors this file's other light-vs-dark alpha ratios.
+  // color or the screen content.
+  // 2026-08-17: os alphas literais (0.16 dark / 0.12 light) viraram
+  // `border.strong` do tema ativo — é o mesmo papel ("hairline mais forte
+  // que um card") e assim a silhueta acompanha os degraus globais de borda
+  // em vez de ficar para trás a cada recalibragem.
   const frameRingColor = isAppDark
-    ? alpha(muiTheme.palette.common.white, 0.16)
-    : alpha(muiTheme.palette.common.black, 0.12);
+    ? darkNeutral.border.strong
+    : lightNeutral.border.strong;
 
   return (
     <Box

@@ -125,10 +125,7 @@ export function ShorterRecentLinks({ refreshToken }: ShorterRecentLinksProps) {
                 sx={{
                   display: "block",
                   fontSize: "0.75rem",
-                  color: alpha(
-                    theme.palette.text.primary,
-                    isDark ? 0.55 : 0.55,
-                  ),
+                  color: alpha(theme.palette.text.primary, 0.55),
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",

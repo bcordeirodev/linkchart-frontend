@@ -2,6 +2,8 @@
 
 import { Box, Grid, Skeleton } from "@mui/material";
 
+import { radiusTokens } from "@/lib/theme/designSystem";
+
 interface AnalyticsTabSkeletonProps {
   /** Number of metric card skeletons to render. Default: 4 */
   metricCards?: number;
@@ -29,7 +31,7 @@ export function AnalyticsTabSkeleton({
           variant="rounded"
           animation="wave"
           height={52}
-          sx={{ mb: 2, borderRadius: 2 }}
+          sx={{ mb: 2, borderRadius: `${radiusTokens.md}px` }}
         />
       )}
 
@@ -42,7 +44,7 @@ export function AnalyticsTabSkeleton({
                 variant="rounded"
                 animation="wave"
                 height={120}
-                sx={{ borderRadius: 2 }}
+                sx={{ borderRadius: `${radiusTokens.lg}px` }}
               />
             </Grid>
           ))}
@@ -54,7 +56,7 @@ export function AnalyticsTabSkeleton({
         variant="rounded"
         animation="wave"
         height={280}
-        sx={{ mb: 3, borderRadius: 2 }}
+        sx={{ mb: 3, borderRadius: `${radiusTokens.lg}px` }}
       />
 
       {/* Two smaller charts */}
@@ -64,7 +66,7 @@ export function AnalyticsTabSkeleton({
             variant="rounded"
             animation="wave"
             height={220}
-            sx={{ borderRadius: 2 }}
+            sx={{ borderRadius: `${radiusTokens.lg}px` }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -72,7 +74,7 @@ export function AnalyticsTabSkeleton({
             variant="rounded"
             animation="wave"
             height={220}
-            sx={{ borderRadius: 2 }}
+            sx={{ borderRadius: `${radiusTokens.lg}px` }}
           />
         </Grid>
       </Grid>

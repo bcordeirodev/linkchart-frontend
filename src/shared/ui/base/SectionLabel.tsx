@@ -35,10 +35,10 @@ export interface SectionLabelProps {
 
 /**
  * Micro-label de seção da linguagem "instrumento técnico": caps em
- * JetBrains Mono 14px (`0.875rem` — terceiro ajuste do gate visual de
- * 2026-08-03: 11px original → 13px → 14px, cada passo em resposta a "ainda
- * lê pequeno"/"aumente em pouca coisa"; 14px é um passo acima de `body2`
- * neste tema, ainda claramente um label — não corpo de texto — graças a
+ * JetBrains Mono 15px (`0.9375rem` — quarto ajuste da escada de tamanho:
+ * 11px original → 13px → 14px → 15px, cada passo em resposta a "ainda
+ * lê pequeno"/"aumente em pouca coisa" nos gates visuais de 2026-08-03 e
+ * 2026-08-17; segue claramente um label — não corpo de texto — graças a
  * caps + mono + `letterSpacing`), `fontWeight: 600` (bump anterior do mesmo
  * gate — 500 ficou "sem destaque"; 600 é peso real, não uma cor mais
  * escura fingindo negrito, por isso `app/layout.tsx` carrega JetBrains Mono
@@ -80,11 +80,11 @@ export function SectionLabel({
         aria-level={headingLevel}
         sx={{
           fontFamily: typographyScale.code.fontFamily,
-          fontSize: "0.875rem",
+          fontSize: "0.9375rem",
           fontWeight: 600,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: "text.secondary",
+          color: "text.primary",
           whiteSpace: "nowrap",
         }}
       >

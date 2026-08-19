@@ -11,6 +11,7 @@ import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
 import {
   getPublicDisplaySx,
   getPublicElevatedSx,
+  getPublicFineprintSx,
   getPublicSectionHeadingSx,
   PUBLIC_SECTION_GAP,
 } from "@/lib/theme/publicPageStyles";
@@ -313,11 +314,7 @@ export function CompareCompetitorPage({ i18nKey }: CompareCompetitorPageProps) {
             {changesNote && (
               <Typography
                 component="p"
-                sx={{
-                  mt: 1.25,
-                  fontSize: "0.75rem",
-                  color: theme.palette.text.disabled,
-                }}
+                sx={{ ...getPublicFineprintSx(theme), mt: 1.25 }}
               >
                 {changesNote}
               </Typography>

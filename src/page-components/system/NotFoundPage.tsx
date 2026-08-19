@@ -42,7 +42,7 @@ function NotFoundPage() {
       errorType="404"
       suggestions={suggestions}
       backgroundText="404"
-      iconNode={<Link2Off size={isMobile ? 36 : 48} />}
+      iconNode={<Link2Off size={isMobile ? 28 : 32} strokeWidth={1.5} />}
     >
       <Typography
         variant="h4"

@@ -30,11 +30,11 @@ interface PublicChartCardProps {
 /**
  * Thin wrapper combining the shared `ChartCard` shell with `ApexChartWrapper`.
  *
- * It passes **no `sx` override**. The card used to receive
- * `getPublicChartCardOverrideSx`, which repainted border, radius and fill —
- * the exact values `SharedChartCard` and the global `MuiCard` override already
- * produce (hairline + translucent veil + no shadow). Dropping it is what makes
- * a public chart card and a logged-in chart card the same object.
+ * It passes **no `sx` override**. The card used to receive a public-only
+ * override that repainted border, radius and fill — the exact values
+ * `SharedChartCard` and the global `MuiCard` override already produce (hairline
+ * + translucent veil + no shadow). Dropping it is what makes a public chart card
+ * and a logged-in chart card the same object.
  *
  * There is no `icon` prop anymore either: a decorative glyph next to a chart
  * title is the banned pattern in the "instrumento técnico" language.

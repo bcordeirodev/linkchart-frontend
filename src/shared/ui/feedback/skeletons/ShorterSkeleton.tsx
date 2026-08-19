@@ -3,7 +3,10 @@ import { Box, Container, Skeleton, useTheme } from "@mui/material";
 
 import { SHORTER_PAGE_CONTAINER_MAX_WIDTH } from "@/features/shorter/constants";
 import { radiusTokens } from "@/lib/theme/designSystem";
-import { publicHairline } from "@/lib/theme/publicPageStyles";
+import {
+  getPublicElevatedSx,
+  publicHairline,
+} from "@/lib/theme/publicPageStyles";
 import { PublicLayout } from "@/shared/layout";
 import { getCardSurfaceSx } from "@/shared/ui/base";
 import { SHORTER_CONTENT_MAX_WIDTH } from "@/shared/constants";
@@ -215,12 +218,13 @@ export function ShorterSkeleton() {
               <Box
                 key={i}
                 sx={{
+                  // Mesma superfície do card real (`ShorterHowItWorks`): o
+                  // hairline/veil hardcoded que existia aqui não acompanhava
+                  // os tokens e lia invisível no dark.
+                  ...getPublicElevatedSx(theme),
                   textAlign: "center",
                   px: 2.5,
                   py: 3,
-                  borderRadius: "12px",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                  background: "rgba(255,255,255,0.025)",
                 }}
               >
                 <Skeleton

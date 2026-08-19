@@ -145,7 +145,7 @@ export function SocialAppCard({ data }: Props) {
           >
             <Typography
               variant="caption"
-              color="text.disabled"
+              color="text.secondary"
               sx={{ fontWeight: 600, fontSize: 11 }}
             >
               {t("dashboard.socialApp.other")} {otherPct.toFixed(0)}%
@@ -153,7 +153,7 @@ export function SocialAppCard({ data }: Props) {
           </Box>
         )}
       </Box>
-      <Typography variant="caption" color="text.disabled">
+      <Typography variant="caption" color="text.secondary">
         {t("dashboard.socialApp.note")}
       </Typography>
     </ChartCard>

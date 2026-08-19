@@ -33,6 +33,44 @@ const FETCH_DEST_COLORS: Record<string, string> = {
 };
 
 /**
+ * Light-mode overrides for the accents that fail WCAG non-text contrast on
+ * the light card fill (`background.paper`, `#F8F9FB`) — the 500-level greens,
+ * ambers, cyans and limes wash out to a pale smear at bar size.
+ *
+ * Same hue, 600/700 shade. Five of the six repeat the exact values
+ * `BehaviorSection`/`SocialPlatformSection` already validated for the same
+ * hues, so the three breakdowns that sit in the same sub-tab keep reading as
+ * one palette instead of drifting apart per component. Keys absent here
+ * (`script`, `style`, `fetch`) already clear 3:1 and keep their single hex in
+ * both modes.
+ *
+ * This map is why the file needed one at all: `FetchDestChart` was the only
+ * one of the three siblings with no light branch, so in the light theme its
+ * bars rendered at the raw 500-level values its neighbours explicitly
+ * document as unreadable there.
+ */
+const FETCH_DEST_COLORS_LIGHT: Record<string, string> = {
+  document: "#2563EB",
+  empty: "#15803D",
+  image: "#B45309",
+  font: "#0E7490",
+  xhr: "#C2410C",
+  worker: "#4D7C0F",
+};
+
+/**
+ * Resolves the fetch-dest → accent color map for the active color mode.
+ *
+ * @param mode - `theme.palette.mode`; light merges the contrast overrides.
+ * @returns the accent map to read `entry.fetch_dest` against.
+ */
+function fetchDestColors(mode: "light" | "dark"): Record<string, string> {
+  return mode === "light"
+    ? { ...FETCH_DEST_COLORS, ...FETCH_DEST_COLORS_LIGHT }
+    : FETCH_DEST_COLORS;
+}
+
+/**
  * Breakdown of the Sec-Fetch-Dest header values collected for a link (Phase 1
  * tracking) — how the browser initiated each click request.
  *
@@ -54,12 +92,14 @@ export function FetchDestChart({ fetchDestBreakdown }: FetchDestChartProps) {
 
   const { data, phase1_available } = fetchDestBreakdown;
 
+  const accents = fetchDestColors(theme.palette.mode);
+
   const items: HorizontalBreakdownItem[] = data.map((entry) => ({
     key: entry.fetch_dest,
     label: formatAnalyticsLabel(entry.fetch_dest),
     value: entry.clicks,
     percentage: entry.percentage,
-    color: FETCH_DEST_COLORS[entry.fetch_dest] ?? theme.palette.primary.main,
+    color: accents[entry.fetch_dest] ?? theme.palette.primary.main,
   }));
 
   return (

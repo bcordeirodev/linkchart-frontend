@@ -107,7 +107,7 @@ export function QualitySection({
           </Typography>
           <Typography
             variant="caption"
-            color="text.disabled"
+            color="text.secondary"
             sx={{ mt: 0.5, display: "block" }}
           >
             {tStr("audience.quality.botClicksDetected", {

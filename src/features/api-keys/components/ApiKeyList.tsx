@@ -99,7 +99,7 @@ function ApiKeyCard({ item, onRevoke, isRevoking }: ApiKeyCardProps) {
                 fontSize: "0.75rem",
                 color: "text.secondary",
                 bgcolor: "action.hover",
-                borderRadius: "4px",
+                borderRadius: `${radiusTokens.sm}px`,
                 px: 0.75,
                 py: 0.25,
                 flexShrink: 0,
@@ -202,9 +202,13 @@ export function ApiKeyList() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: isDark
-              ? darkNeutral.elevated
-              : lightNeutral.surface,
+            // Poço recuado dentro do card, nos DOIS temas. O claro usava
+            // `lightNeutral.surface` — exatamente a cor que `getCardSurfaceSx`
+            // devolve para o card no light (`background.paper`), ou seja, o
+            // círculo ficava sem preenchimento visível, só a hairline. O
+            // canvas (`lightNeutral.bg`) é o degrau abaixo do card e espelha
+            // o que `darkNeutral.elevated` já faz no dark.
+            backgroundColor: isDark ? darkNeutral.elevated : lightNeutral.bg,
             border: `1px solid ${theme.palette.divider}`,
             color: "text.secondary",
           }}

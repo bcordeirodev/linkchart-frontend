@@ -4,6 +4,7 @@ import { RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ICON_SM } from "@/lib/theme/iconDefaults";
+import { darkNeutral, lightNeutral, radiusTokens } from "@/lib/theme";
 import {
   Box,
   Button,
@@ -124,33 +125,79 @@ export function ProfileAccountStatus({
  * "this month") while `useProfileStats` is loading — `OverviewMetricRow`'s
  * own `value` prop is typed `string | number` (no `ReactNode`), so it can't
  * host a `Skeleton` itself; this stands in for the whole block instead.
- * Mirrors the real component's responsive direction
- * (`{xs:"column", sm:"row"}`) and its value height at each breakpoint
- * (~40px/48px) so the loading state doesn't change shape once real data
- * replaces it.
+ *
+ * Atualizado no redesenho de tiles (2026-08-17): a fileira real virou um
+ * grid de caixas com borda, então o esqueleto reproduz as MESMAS caixas
+ * (mesma borda/raio/gap, `nested` como as fileiras reais deste card) com
+ * placeholders de rótulo e valor dentro — antes eram linhas de texto soltas,
+ * que agora mudariam de forma no instante em que os dados chegassem.
  */
 function ProfileActivitySkeleton() {
-  const valueSx = { height: { xs: 40, sm: 48 } };
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+  const tileSx = {
+    backgroundColor: isDark ? darkNeutral.elevated : lightNeutral.bg,
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: `${radiusTokens.md}px`,
+    p: 2,
+  } as const;
+  const rowSx = {
+    display: "grid",
+    gap: 1.5,
+  } as const;
 
   return (
     <Stack spacing={2.5}>
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        spacing={{ xs: 1.5, sm: 3 }}
+      <Box
+        sx={{
+          ...rowSx,
+          gridTemplateColumns: {
+            xs: "minmax(0, 1fr)",
+            sm: "repeat(2, minmax(0, 1fr))",
+          },
+        }}
       >
-        <Skeleton variant="text" width={64} sx={valueSx} />
-        <Skeleton variant="text" width={64} sx={valueSx} />
-      </Stack>
+        {[0, 1].map((i) => (
+          <Box key={i} sx={tileSx}>
+            <Skeleton variant="text" width="60%" height={18} />
+            <Skeleton
+              variant="text"
+              width="45%"
+              sx={{ height: { xs: 40, sm: 48 } }}
+            />
+          </Box>
+        ))}
+      </Box>
       <Box>
         <Skeleton variant="text" width={96} height={20} sx={{ mb: 1 }} />
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={{ xs: 1.5, sm: 1.5 }}
+        <Box
+          sx={{
+            ...rowSx,
+            gridTemplateColumns: {
+              xs: "repeat(2, minmax(0, 1fr))",
+              sm: "repeat(3, minmax(0, 1fr))",
+            },
+          }}
         >
-          <Skeleton variant="text" width={48} sx={valueSx} />
-          <Skeleton variant="text" width={48} sx={valueSx} />
-          <Skeleton variant="text" width={48} sx={valueSx} />
-        </Stack>
+          {[0, 1, 2].map((i) => (
+            <Box
+              key={i}
+              sx={{
+                ...tileSx,
+                // 3 métricas: no `xs` a fileira real vira grid de 2 colunas
+                // com a última ocupando a linha inteira.
+                gridColumn: { xs: i === 2 ? "span 2" : "auto", sm: "auto" },
+              }}
+            >
+              <Skeleton variant="text" width="65%" height={18} />
+              <Skeleton
+                variant="text"
+                width="50%"
+                sx={{ height: { xs: 40, sm: 48 } }}
+              />
+            </Box>
+          ))}
+        </Box>
       </Box>
     </Stack>
   );
@@ -158,9 +205,9 @@ function ProfileActivitySkeleton() {
 
 /**
  * "/ Atividade" — link/click totals as the page's information anchor: big
- * Space Grotesk numbers via the shared `OverviewMetricRow` primitive (the
- * mandated "number + hairline, no card, no icon" treatment for overview
- * metrics), not small prose rows. Right column, below
+ * Space Grotesk numbers via the shared `OverviewMetricRow` primitive (desde
+ * 2026-08-17, tiles com hairline — sem ícone), not small prose rows. Right
+ * column, below
  * {@link ProfileAccountStatus} in the two-column `/profile` composition.
  */
 export function ProfileActivity() {
@@ -182,7 +229,12 @@ export function ProfileActivity() {
           <ProfileActivitySkeleton />
         ) : (
           <Stack spacing={2.5}>
+            {/* `nested`: as duas fileiras vivem dentro do card
+                `ProfileSection`. Desde o redesenho de tiles (2026-08-17) o
+                tile precisa do degrau de elevação para não sumir contra a
+                superfície do card hospedeiro. */}
             <OverviewMetricRow
+              nested
               metrics={[
                 {
                   label: t("sidebar.totalLinks"),
@@ -203,6 +255,7 @@ export function ProfileActivity() {
                 {t("sidebar.thisMonth")}
               </Typography>
               <OverviewMetricRow
+                nested
                 metrics={[
                   { label: t("sidebar.avgClicks"), value: avgClicks },
                   {

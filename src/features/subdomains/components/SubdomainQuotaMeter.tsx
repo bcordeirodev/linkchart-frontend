@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import { radiusTokens } from "@/lib/theme/designSystem";
@@ -44,7 +44,6 @@ export function SubdomainQuotaMeter({
   loading,
 }: SubdomainQuotaMeterProps) {
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
   const { t } = useTranslation("subdomains");
 
   if (loading) {
@@ -62,10 +61,12 @@ export function SubdomainQuotaMeter({
   }
 
   const segments = Array.from({ length: Math.max(max, 1) });
-  const emptySegmentColor = alpha(
-    theme.palette.text.primary,
-    isDark ? 0.12 : 0.1,
-  );
+  // Trilha dos slots vazios = hairline do tema. Os alphas locais anteriores
+  // (0.12 dark / 0.10 light sobre `text.primary`) ficaram ABAIXO do
+  // `divider` depois do bump de bordas de 2026-08-17 (0.14 dark / 0.13
+  // light): a barra vazia lia mais fraca que qualquer borda da página nos
+  // dois temas. Amarrar ao token faz a trilha acompanhar futuros ajustes.
+  const emptySegmentColor = theme.palette.divider;
 
   return (
     <Box role="group" aria-label={t("subtitle", { count, max })}>

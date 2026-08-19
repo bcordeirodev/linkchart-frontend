@@ -167,12 +167,19 @@ export function AnalyticsSubTabs({
               // navegação. A hairline dá leitura de "tecla pressionada" sem
               // tocar no acento primário — que segue exclusivo do sublinhado
               // do nível 1 e do filtro ativo do nível 3.
+              //
+              // 0.16 → 0.22 (polish 2026-08-17): esta hairline foi calibrada
+              // para ficar um degrau ACIMA do `divider` (0.10 nos dois temas
+              // à época). Com o bump global (dark 0.14 / light 0.13) ela
+              // empatava com qualquer hairline vizinha e a pill deixava de
+              // ler como "pressionada"; 0.22 restaura o mesmo degrau,
+              // alinhado ao `border.strong` das duas paletas.
               "&.Mui-selected, &.Mui-selected:hover": {
                 backgroundColor: theme.palette.action.selected,
                 boxShadow: `inset 0 0 0 1px ${
                   theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.16)"
-                    : "rgba(0,0,0,0.16)"
+                    ? "rgba(255,255,255,0.22)"
+                    : "rgba(0,0,0,0.22)"
                 }`,
                 color: "text.primary",
                 fontWeight: 600,

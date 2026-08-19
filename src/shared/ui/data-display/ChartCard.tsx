@@ -34,6 +34,15 @@ export interface ChartCardProps {
   height?: number | string;
   /** Quando true, substitui o conteúdo por um texto de carregamento */
   loading?: boolean;
+  /**
+   * Cor de acento opcional, renderizada como faixa de 3px na borda esquerda
+   * do card. É a mesma receita dos cards de "INSIGHTS DO PORTFÓLIO" em
+   * `/reports` (`InsightsPanel`), generalizada aqui para que qualquer card
+   * de insight/veredito use um único mecanismo em vez de reimplementar a
+   * faixa. Precisa viver dentro do componente porque o `sx` público cai no
+   * `Box` externo — uma borda ali ficaria *fora* do raio do `Card`.
+   */
+  accentColor?: string;
   /** Props adicionais de estilo */
   sx?: SxProps<Theme>;
 }
@@ -53,7 +62,7 @@ export interface ChartCardProps {
  *
  * @example
  * ```tsx
- * <ChartCard title="Cliques por Hora" icon="📈" subtitle="Últimas 24h">
+ * <ChartCard title="Cliques por Hora" icon={<AppIcon intent="analytics" size={18} />} subtitle="Últimas 24h">
  *   <ApexChartWrapper {...chartProps} />
  * </ChartCard>
  * ```
@@ -66,6 +75,7 @@ export function ChartCard({
   children,
   height = "100%",
   loading = false,
+  accentColor,
   sx = {},
 }: ChartCardProps) {
   const theme = useTheme();
@@ -90,6 +100,9 @@ export function ChartCard({
           width: "100%",
           borderRadius: `${radiusTokens.lg}px`,
           border: `1px solid ${theme.palette.divider}`,
+          ...(accentColor
+            ? { borderLeft: `3px solid ${accentColor}` }
+            : undefined),
         }}
       >
         <CardContent>

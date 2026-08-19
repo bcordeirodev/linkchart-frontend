@@ -10,8 +10,10 @@ Identidade visual "instrumento técnico" (spec 2026-08-03). Toda UI nova DEVE:
   (var --font-jetbrains-mono). Números de métrica com tabular-nums e salto de
   escala 3x+ sobre a caption. Nunca introduzir outra fonte.
 - Nada de stat card com ícone-chip no canto, nem ícone decorativo ao lado de
-  título — métricas de overview usam OverviewMetricRow (números soltos +
-  hairlines); seções usam SectionLabel (caps mono com prefixo /).
+  título — métricas de overview usam OverviewMetricRow (tiles hairline
+  discretos desde 2026-08-17: borda 1px divider + superfície de card, sem
+  ícone e sem cor de fundo; `nested` quando a fileira vive dentro de um
+  card); seções usam SectionLabel (caps mono com prefixo /).
 - Superfícies: 3 níveis (solto no fundo / card hairline 1px / painel sutil).
   Sem card dentro de card, sem elevação por cinza. Raio via radiusTokens.
 - Gráficos: sempre via ApexChartWrapper (herda apexBaseTheme). Donut é proibido —

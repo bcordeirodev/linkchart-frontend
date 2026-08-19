@@ -7,13 +7,22 @@
 import { Box, Typography, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
+import { darkNeutral, lightNeutral } from "@/lib/theme/colors";
+import { radiusTokens } from "@/lib/theme/designSystem";
+import { AppIcon } from "@/shared/ui/icons";
+
 import type { BaseComponentProps } from "../components";
+import type { AnyIconName } from "@/shared/ui/icons";
 import type React from "react";
 
 interface EmptyStateProps extends BaseComponentProps {
-  /** Preset that picks a default emoji and title colour. */
+  /** Preset that picks the default lucide icon (and, for `data`, an info tint on it). */
   variant?: "default" | "charts" | "data" | "search";
-  /** Icon override — either an emoji/text string or a ReactNode. Defaults to the variant emoji. */
+  /**
+   * Icon override rendered inside the recessed well. Pass a lucide element
+   * (≈22px, `currentColor`) so it inherits the well's colour; a plain string
+   * still renders as text for legacy callers. Defaults to the variant icon.
+   */
   icon?: string | React.ReactNode;
   /** Primary heading text. Required. */
   title: string;
@@ -29,9 +38,29 @@ interface EmptyStateProps extends BaseComponentProps {
 }
 
 /**
+ * Preset → icon map. Only `data` carries a semantic tint (blue = info); the
+ * other presets stay neutral because nothing here is a warning or a success,
+ * and orange/green are reserved for those states by the design language.
+ */
+const VARIANT_CONFIG: Record<
+  NonNullable<EmptyStateProps["variant"]>,
+  { icon: AnyIconName; color: string }
+> = {
+  default: { icon: "data.inbox", color: "text.secondary" },
+  charts: { icon: "analytics.chart", color: "text.secondary" },
+  data: { icon: "content.text", color: "info.main" },
+  search: { icon: "tools.search", color: "text.secondary" },
+};
+
+/**
  * Centred empty-state placeholder with icon, title, description and optional CTA.
  *
- * Used by analytics widgets, list pages with no rows, and search results with zero matches. Variant only affects the default icon + title colour — actual layout is identical across variants.
+ * Used by analytics widgets, list pages with no rows, and search results with
+ * zero matches. The visual anchor is the app-wide "recessed well" (48px circle,
+ * `darkNeutral.elevated` in dark / `lightNeutral.bg` in light, 1px divider
+ * hairline) holding a muted lucide icon — the same recipe as the API keys and
+ * subdomains empty states. Variant only swaps that icon (and tints it for
+ * `data`); layout and title colour are identical across variants.
  */
 export function EmptyState({
   variant = "default",
@@ -43,17 +72,10 @@ export function EmptyState({
   sx,
   ...other
 }: EmptyStateProps) {
-  const _theme = useTheme();
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
-  const variantConfig = {
-    default: { icon: "📭", color: "text.secondary" },
-    charts: { icon: "📊", color: "primary.main" },
-    data: { icon: "📄", color: "info.main" },
-    search: { icon: "🔍", color: "warning.main" },
-  };
-
-  const config = variantConfig[variant];
-  const displayIcon = icon || config.icon;
+  const config = VARIANT_CONFIG[variant];
 
   return (
     <Box
@@ -72,12 +94,22 @@ export function EmptyState({
     >
       <Box
         sx={{
-          fontSize: { xs: "2.25rem", sm: "3rem" },
+          width: 48,
+          height: 48,
           mb: 2,
-          opacity: 0.7,
+          borderRadius: `${radiusTokens.full}px`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          // Poço recuado: um degrau abaixo da superfície que hospeda o bloco
+          // nos DOIS temas (elevado no dark, canvas no light), fechado por
+          // hairline — elevação por borda, nunca por cinza.
+          backgroundColor: isDark ? darkNeutral.elevated : lightNeutral.bg,
+          border: `1px solid ${theme.palette.divider}`,
+          color: config.color,
         }}
       >
-        {typeof displayIcon === "string" ? displayIcon : displayIcon}
+        {icon ?? <AppIcon name={config.icon} size={22} aria-hidden />}
       </Box>
 
       <Typography
@@ -85,7 +117,7 @@ export function EmptyState({
         component="h3"
         sx={{
           mb: 1,
-          color: config.color,
+          color: "text.primary",
           fontWeight: 600,
         }}
       >

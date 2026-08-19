@@ -19,7 +19,8 @@
     "uniqueVisitors": "Visitantes únicos",
     "activeLinks": "Links ativos",
     "avgPerDay": "Média por dia",
-    "variation": "Variação vs. período anterior"
+    "variation": "Variação vs. período anterior",
+    "trendCaption": "vs. período anterior"
   },
   "overview": {
     "title": "Visão geral",

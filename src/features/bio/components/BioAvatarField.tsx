@@ -159,7 +159,11 @@ export function BioAvatarField({ page }: BioAvatarFieldProps) {
             fontWeight: 700,
             color: "common.white",
             background: previewUrl ? "none" : fallbackGradient,
-            border: "none",
+            // Hairline em vez do reset `border: none` do <button>: uma foto
+            // de bordas escuras (ou o gradiente) encostava direto no card e
+            // o círculo perdia contorno no dark — mesmo motivo do tile de
+            // favicon em `BioItemRow`. `divider` acompanha o token global.
+            border: `1px solid ${theme.palette.divider}`,
             p: 0,
             m: 0,
             WebkitTapHighlightColor: "transparent",

@@ -147,9 +147,6 @@ export function ProfileForm({ user, photoURL }: ProfileFormProps) {
                 height: 72,
                 fontSize: "1.5rem",
                 flexShrink: 0,
-                boxShadow: "none",
-                border: "none",
-                "&:hover": { transform: "none" },
               }}
             >
               {!photoURL && formData.name?.[0]?.toUpperCase()}

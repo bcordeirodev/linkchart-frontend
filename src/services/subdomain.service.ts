@@ -11,6 +11,7 @@ interface RawSubdomainRecord {
   subdomain: string;
   full_url: string;
   status: "active" | "inactive";
+  links_count: number;
   created_at: string;
 }
 
@@ -24,6 +25,9 @@ function mapSubdomainRecord(raw: RawSubdomainRecord): SubdomainItem {
     subdomain: raw.subdomain,
     fullUrl: raw.full_url,
     status: "active",
+    // `?? 0` keeps the mapper safe against the POST /api/subdomains response,
+    // which serializes a fresh claim (always zero links) the same way.
+    linksCount: raw.links_count ?? 0,
     createdAt: raw.created_at,
   };
 }

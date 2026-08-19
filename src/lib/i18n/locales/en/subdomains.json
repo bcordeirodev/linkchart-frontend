@@ -17,7 +17,9 @@
     "release": "Release",
     "releaseDialog": {
       "title": "Release this address?",
-      "body": "Links created with this address will stop opening. You can claim the same name again later if it's still free.",
+      "body": "The address will stop resolving. You can claim the same name again later if it's still free.",
+      "linksWarning_one": "{{count}} link created with this address will revert to the default domain — its short URL changes, but clicks and stats are kept.",
+      "linksWarning_other": "{{count}} links created with this address will revert to the default domain — their short URLs change, but clicks and stats are kept.",
       "cancel": "Cancel",
       "confirm": "Release"
     }

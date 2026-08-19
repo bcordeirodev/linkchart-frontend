@@ -70,14 +70,20 @@ export function ShorterStats() {
                 },
               }}
             >
+              {/* Números grandes vão na face de display (Space Grotesk), lida
+                  de `theme.typography.h1` como em `getPublicDisplaySx` — sem
+                  `variant`/`fontFamily` a fileira caía no Inter do `body1`.
+                  Peso 700, não 800: `app/layout.tsx` carrega Space Grotesk só
+                  em 400/500/700, então 800 sintetizaria um faux-bold. */}
               <Typography
                 sx={{
+                  fontFamily: theme.typography.h1.fontFamily,
                   fontSize: { xs: "1.5rem", md: "1.875rem" },
-                  fontWeight: 800,
+                  fontWeight: 700,
                   color: theme.palette.text.primary,
                   lineHeight: 1.1,
                   letterSpacing: "-0.025em",
-                  fontFeatureSettings: '"tnum" 1, "lnum" 1',
+                  fontVariantNumeric: "tabular-nums",
                 }}
               >
                 {stat.value}

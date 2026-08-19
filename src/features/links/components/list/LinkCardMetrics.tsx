@@ -22,6 +22,7 @@ import { formatCount } from "@/lib/utils";
 import type { LinkMeta, LinkResponse } from "@/types";
 
 import { LinkHealthBadge } from "./LinkHealthBadge";
+import { LinkQualityBadge } from "./LinkQualityBadge";
 import { LinkSparkline } from "./LinkSparkline";
 import { LinkTrendBadge } from "./LinkTrendBadge";
 import {
@@ -206,7 +207,11 @@ export function LinkCardMetrics({
                 component="span"
                 sx={{
                   ...linkCardMetricValueSx,
-                  color: hasLastClick ? "text.primary" : "text.disabled",
+                  // "Sem cliques" é informação, não um controle desabilitado:
+                  // `text.secondary` (+ peso menor) já marca a ausência de dado
+                  // sem cair no alpha ~0.33 de `text.disabled`, ilegível nos
+                  // dois temas.
+                  color: hasLastClick ? "text.primary" : "text.secondary",
                   fontWeight: hasLastClick ? 600 : 500,
                 }}
               >
@@ -217,6 +222,8 @@ export function LinkCardMetrics({
             {meta?.health?.status === "error" ? (
               <LinkHealthBadge health={meta.health} />
             ) : null}
+
+            <LinkQualityBadge quality={meta?.quality} />
 
             {createdLabel ? (
               <InlineMetric label={t("table.created")}>
@@ -292,7 +299,9 @@ export function LinkCardMetrics({
             component="span"
             sx={{
               ...linkCardMetricValueSx,
-              color: "text.disabled",
+              // Único conteúdo deste segmento do rodapé — `text.secondary`,
+              // pelo mesmo motivo do "último clique" acima.
+              color: "text.secondary",
               fontWeight: 500,
             }}
           >
@@ -321,6 +330,8 @@ export function LinkCardMetrics({
         {meta?.health?.status === "error" ? (
           <LinkHealthBadge health={meta.health} />
         ) : null}
+
+        <LinkQualityBadge quality={meta?.quality} />
       </MetricsRow>
     </Box>
   );

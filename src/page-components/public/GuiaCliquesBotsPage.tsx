@@ -147,7 +147,11 @@ export function GuiaCliquesBotsPage() {
                     fontFamily: typographyScale.code.fontFamily,
                     fontSize: "0.6875rem",
                     fontWeight: 600,
-                    color: theme.palette.text.disabled,
+                    // `text.secondary`, não `text.disabled`: a 11px sobre o
+                    // canvas escuro o tom desabilitado (0.32) fica em ~2.8:1 —
+                    // e estes são os limiares (0/50/80/100) que a seção
+                    // inteira explica, não decoração.
+                    color: theme.palette.text.secondary,
                     fontVariantNumeric: "tabular-nums",
                   }}
                 >

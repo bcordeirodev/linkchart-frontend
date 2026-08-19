@@ -629,7 +629,7 @@ export function RealTimeHeatmapChart({
             </Typography>
             <Typography
               variant="caption"
-              color="text.disabled"
+              color="text.secondary"
               sx={{ ml: "auto" }}
             >
               {t("geographic.heatmap.showingLocations", {

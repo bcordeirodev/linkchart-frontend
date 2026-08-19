@@ -135,7 +135,10 @@ export function SignUpCtaCard({
         {
           position: "relative",
           borderRadius: `${radiusTokens.lg}px`,
-          border: `1px solid ${alpha(theme.palette.divider, isDark ? 0.3 : 0.28)}`,
+          // Mesma hairline de qualquer painel público (`publicHairline`), em
+          // vez do par de literais 0.3/0.28 que empatava com ela por acaso —
+          // um destino só para recalibrar a borda das páginas públicas.
+          border: `1px solid ${publicHairline(theme)}`,
           ...getCardSurfaceSx(theme),
           p: { xs: "20px", md: "22px 26px" },
           overflow: "hidden",

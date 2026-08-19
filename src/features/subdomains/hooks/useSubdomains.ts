@@ -106,6 +106,10 @@ export function useSubdomains() {
     onMutate: (id: number) => setReleasingId(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.subdomains.all() });
+      // Releasing migrates the subdomain's links back to the default domain
+      // on the backend — the cached links list still shows the old short
+      // URLs, so it must refetch too.
+      queryClient.invalidateQueries({ queryKey: queryKeys.links.all() });
     },
     onSettled: () => setReleasingId(null),
   });
