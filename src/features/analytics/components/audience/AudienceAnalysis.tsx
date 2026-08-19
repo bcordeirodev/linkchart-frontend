@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useAudienceData } from "@/features/analytics/hooks/useAudienceData";
 import { useInsightsData } from "@/features/analytics/hooks/useInsightsData";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
-import { ResponsiveContainer } from "@/shared/ui/base/ResponsiveContainer";
 import { AudienceChart } from "./AudienceChart";
 
 import type { AudienceAnalysisProps } from "@/types/analytics";
@@ -203,7 +202,11 @@ export function AudienceAnalysis({
         emptyMessage={t("audience.empty")}
         minHeight={300}
       >
-        <ResponsiveContainer style={{ padding: 0 }}>
+        {/* Sem Container interno: dentro do painel de tabs ele era um no-op
+            até a página ir a 1600px — aí o `maxWidth` dele passou a CENTRALIZAR
+            o conteúdo (~43px de margem de cada lado), desalinhando sub-tabs e
+            cards da descrição da tab. Nenhuma outra tab usa wrapper aqui. */}
+        <>
           <AudienceChart
             deviceBreakdown={deviceBreakdown}
             totalClicks={totalClicks}
@@ -229,7 +232,7 @@ export function AudienceAnalysis({
             activeTab={subTabIndex}
             onTabChange={onSubTabChange}
           />
-        </ResponsiveContainer>
+        </>
       </AnalyticsStateManager>
     </Box>
   );
