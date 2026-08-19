@@ -5,6 +5,7 @@ import { format, isValid } from "date-fns";
 import { useTranslation } from "react-i18next";
 
 import { formatAnalyticsLabel } from "@/features/analytics/utils/displayLabels";
+import { typographyScale } from "@/lib/theme/designSystem";
 import type { LinkClickItem } from "@/features/links/types/click";
 import type { MRT_Cell, MRT_Row } from "material-react-table";
 
@@ -73,7 +74,17 @@ export function WhenCell({ row }: CellProps) {
 
   return (
     <Stack spacing={0.25}>
-      <Typography variant="body2">
+      {/* Timestamp em mono tabular — é dado de leitura, mesma regra dos
+          eixos de gráfico e slugs do "instrumento técnico". */}
+      <Typography
+        variant="body2"
+        sx={{
+          fontFamily: typographyScale.code.fontFamily,
+          fontSize: "0.8125rem",
+          fontVariantNumeric: "tabular-nums",
+          whiteSpace: "nowrap",
+        }}
+      >
         {formatDate(click.created_at, t("analytics.clicksTable.dateFormat"))}
       </Typography>
       <Stack direction="row" spacing={0.5} alignItems="center" flexWrap="wrap">

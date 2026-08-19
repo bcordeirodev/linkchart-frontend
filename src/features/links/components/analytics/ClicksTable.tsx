@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import { useLinkClicks } from "@/features/links/hooks/useLinkClicks";
 import { useResponsive } from "@/lib/theme";
-import { radiusTokens } from "@/lib/theme/designSystem";
+import { radiusTokens, typographyScale } from "@/lib/theme/designSystem";
 import { getCardSurfaceSx } from "@/shared/ui/base";
 import AnalyticsStateManager from "@/shared/ui/base/AnalyticsStateManager";
 import DataTable from "@/shared/ui/data-display/DataTable";
@@ -162,8 +162,10 @@ export function ClicksTable({
       {
         accessorKey: "created_at",
         header: t("analytics.clicksTable.date"),
-        minSize: 160,
-        size: 200,
+        // Largura calibrada para o timestamp mono caber em UMA linha —
+        // "15/08/2026 às 10:03:15" quebrava com "às" pendurado no fim.
+        minSize: 200,
+        size: 220,
         Cell: WhenCell,
       },
       {
@@ -318,6 +320,12 @@ export function ClicksTable({
             enableColumnActions={false}
             enableColumnOrdering={false}
             enableColumnPinning={false}
+            // Sem scroll interno: com sticky header o MRT limita o container
+            // (~810px) e 2/3 do log ficava atrás de um segundo scrollbar
+            // aninhado dentro da página — um corredor. A tabela é paginada;
+            // deixá-la crescer e a página rolar é mais calmo, e dispensa o
+            // header sólido que o sticky exigia.
+            enableStickyHeader={false}
             // Overrides `DataTable`'s shared `mrtTheme` default
             // (`theme.palette.background.paper`, opaque) with the
             // translucent surface — see `translucentTableBg` above. Pinned
@@ -350,8 +358,49 @@ export function ClicksTable({
               pinnedRowBackgroundColor: theme.palette.background.paper,
               pinnedColumnBackgroundColor: theme.palette.background.paper,
             })}
+            // Transparente, não `translucentTableBg`: o Paper já pinta o 0.09
+            // da superfície; repintar o mesmo véu no toolbar (e nos head
+            // cells, abaixo) empilhava 0.09+0.09 e virava uma faixa cinza
+            // "elevada" — o anti-padrão elevação-por-cinza do design system.
             muiTopToolbarProps={{
-              sx: { backgroundColor: translucentTableBg },
+              sx: { backgroundColor: "transparent" },
+            }}
+            // Mesma razão do top toolbar; o `className` de layout precisa vir
+            // junto porque o merge por `_.defaults` substitui a chave inteira
+            // do default do `DataTable` em vez de mesclar.
+            muiBottomToolbarProps={{
+              className: "flex items-center min-h-14 h-14",
+              sx: { backgroundColor: "transparent", boxShadow: "none" },
+            }}
+            // Header como micro-label do "instrumento técnico": caps mono
+            // pequeno em `text.secondary` sobre fundo TRANSPARENTE, separado
+            // do corpo por uma hairline um degrau acima do divider — em vez
+            // do bloco cinza sólido que o default pintava.
+            muiTableHeadCellProps={{
+              sx: {
+                backgroundColor: "transparent",
+                py: 1.25,
+                fontFamily: typographyScale.code.fontFamily,
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: "text.secondary",
+                borderBottom: `1px solid ${
+                  theme.palette.mode === "dark"
+                    ? "rgba(255,255,255,0.14)"
+                    : "rgba(0,0,0,0.13)"
+                }`,
+                // Setas de ordenação só sussurram até serem usadas — oito
+                // pares de setas à meia-força eram metade do ruído do header.
+                "& .MuiTableSortLabel-icon": { opacity: 0.35 },
+                "& .Mui-active .MuiTableSortLabel-icon": { opacity: 1 },
+              },
+            }}
+            // Densidade de log, não de planilha: o "spacious" do DataTable
+            // dava 24px de padding vertical e linhas de ~87px.
+            muiTableBodyCellProps={{
+              sx: { py: 1.5 },
             }}
             muiTablePaperProps={{
               elevation: 0,
@@ -371,16 +420,21 @@ export function ClicksTable({
               // table's horizontal + vertical scroll stop looking like raw
               // browser defaults. scrollbar-* props cover Firefox.
               sx: (theme) => ({
+                // Sem sticky header o MRT não impõe mais maxHeight, mas o
+                // unset explícito garante que só o eixo X rola aqui.
+                maxHeight: "unset",
                 overflowX: "auto",
                 WebkitOverflowScrolling: "touch",
                 scrollbarWidth: "thin",
-                scrollbarColor: `${theme.palette.divider} ${theme.palette.background.paper}`,
+                // Track transparente: pintado de `background.paper` ele
+                // aparecia como uma régua clara colada à borda do card.
+                scrollbarColor: `${theme.palette.divider} transparent`,
                 "&::-webkit-scrollbar": {
                   width: "8px",
                   height: "8px",
                 },
                 "&::-webkit-scrollbar-track": {
-                  backgroundColor: theme.palette.background.paper,
+                  backgroundColor: "transparent",
                 },
                 "&::-webkit-scrollbar-thumb": {
                   backgroundColor: theme.palette.divider,
@@ -390,7 +444,7 @@ export function ClicksTable({
                   },
                 },
                 "&::-webkit-scrollbar-corner": {
-                  backgroundColor: theme.palette.background.paper,
+                  backgroundColor: "transparent",
                 },
               }),
             }}
